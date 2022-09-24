@@ -1,0 +1,36 @@
+{
+  "name": "carbons",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "A simple component library for Vue@3.",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "cd ./playground && npm run dev",
+    "lint": "eslint ./components --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
+  },
+  "keywords": [],
+  "author": "banlify <banlify@163.com>",
+  "peerDependencies": {
+    "vue": "^3.2.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "typescript": "^4.8.3",
+    "vue": "^3.2.39"
+  }
+}
