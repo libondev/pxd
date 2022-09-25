@@ -56,6 +56,7 @@ export default defineComponent({
   setup (props, { slots, emit }) {
     const innerClassName = createClassName('input__inner', [], [
       useSizes(props).value,
+      'c-transition',
       props.ellipsis && 'c-overflow-ellipsis'
     ])
     const disabled = useDisabled(props)
@@ -74,8 +75,8 @@ export default defineComponent({
       <div class="c-input c-inline-flex c-vertical-middle">
         <input
           type="text"
-          v-model={ modelValue.value }
           tabindex="0"
+          v-model={ modelValue.value }
           class={ innerClassName }
           disabled={ props.disabled }
           readonly={ props.readonly }

@@ -2,10 +2,10 @@
   display: inline-block;
   max-width: 20rem;
   min-width: 8.5rem;
-  vertical-align: middle;
   outline: 1px solid transparent;
   border: 1px solid transparent;
   background-color: var(--input-background-color, var(--background-color));
+  transition-property: border-color, background-color, outline-color;
   outline-offset: -2px;
   box-sizing: border-box;
   user-select: none;
@@ -15,6 +15,11 @@
   cursor: pointer;
   -webkit-appearance: none;
   -webkit-tap-highlight-color: transparent;
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 }
 
 .c-button + .c-button {
@@ -48,7 +53,7 @@
     }
 
     &-ghost {
-      color: var(--color-primary, var(--primary-6))
+      color: var(--color-primary, var(--primary-6));
     }
   }
 
@@ -61,7 +66,7 @@
     }
 
     &-ghost {
-      color: var(--color-warning, var(--warning-6))
+      color: var(--color-warning, var(--warning-6));
     }
   }
 
@@ -74,7 +79,7 @@
     }
 
     &-ghost {
-      color: var(--color-danger, var(--danger-6))
+      color: var(--color-danger, var(--danger-6));
     }
   }
 }
@@ -186,13 +191,7 @@
   &--danger:not([unfocused]):focus,
   &--danger-plain:not([unfocused]):focus,
   &--danger-ghost:not([unfocused]):focus {
-    border-color:  var(--color-danger-focus, var(--danger-7));
+    border-color: var(--color-danger-focus, var(--danger-7));
     outline-color: var(--color-danger-focus, var(--danger-7));
   }
-}
-
-// disabled state
-.c-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.6;
 }

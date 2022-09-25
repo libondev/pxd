@@ -89,7 +89,7 @@ export default defineComponent({
           : VARIANTS.includes(props.status)
             ? props.status
             : 'default'
-    ], [useSizes(props).value])
+    ], [useSizes(props).value, 'c-transition'])
 
     const onButtonClick = (event: MouseEvent): void => emit('click', event)
 

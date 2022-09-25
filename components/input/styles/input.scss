@@ -6,6 +6,7 @@
   outline: 1px solid transparent;
   outline-offset: -2px;
   background-color: var(--input-background-color, var(--shadow-gray));
+  transition-property: border-color, background-color, outline-color;
   font-family: inherit;
 
   &:not([disabled]):not([readonly]):hover {
