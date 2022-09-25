@@ -9,13 +9,14 @@ import * as components from './components'
 
 export * from './components'
 
-export default function install (app: App, globalConfig: GlobalConfig = { size: 'medium' }): App {
-  app.provide(globalSymbol, globalConfig)
+export default function (globalConfig: GlobalConfig = { size: 'medium' }) {
+  return function install (app: App<string>): App<string> {
+    app.provide(globalSymbol, globalConfig)
 
-  Object.keys(components).forEach((key) => {
-    // @ts-expect-error
-    app.component(key, components[key])
-  })
-
-  return app
+    Object.keys(components).forEach((key) => {
+      // @ts-expect-error
+      app.component(key, components[key])
+    })
+    return app
+  }
 }
