@@ -1,0 +1,198 @@
+.c-button {
+  display: inline-block;
+  max-width: 20rem;
+  min-width: 8.5rem;
+  vertical-align: middle;
+  outline: 1px solid transparent;
+  border: 1px solid transparent;
+  background-color: var(--input-background-color, var(--background-color));
+  outline-offset: -2px;
+  box-sizing: border-box;
+  user-select: none;
+  text-align: right;
+  border-radius: 0;
+  color: var(--white-color);
+  cursor: pointer;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c-button + .c-button {
+  margin-left: 10px;
+}
+
+// status styles
+.c-button {
+  &--default,
+  &--default-plain,
+  &--default-ghost {
+    color: #424242;
+  }
+
+  &--default {
+    border-color: var(--color-default, var(--border-color));
+    background-color: var(--color-default, var(--white-color));
+
+    &-plain:not(.c-button--default-ghost) {
+      background-color: var(--color-default-plain, var(--shadow-gray));
+      border-color: transparent;
+    }
+  }
+
+  &--primary {
+    background-color: var(--color-primary, var(--primary-6));
+
+    &-plain:not(.c-button--primary-ghost) {
+      background-color: var(--color-primary-plain, var(--primary-1));
+      color: var(--primary-6);
+    }
+
+    &-ghost {
+      color: var(--color-primary, var(--primary-6))
+    }
+  }
+
+  &--warning {
+    background-color: var(--color-warning, var(--warning-6));
+
+    &-plain:not(.c-button--warning-ghost) {
+      background-color: var(--color-warning-plain, var(--warning-1));
+      color: var(--warning-6);
+    }
+
+    &-ghost {
+      color: var(--color-warning, var(--warning-6))
+    }
+  }
+
+  &--danger {
+    background-color: var(--color-danger, var(--danger-6));
+
+    &-plain:not(.c-button--danger-ghost) {
+      background-color: var(--color-danger-plain, var(--danger-1));
+      color: var(--danger-6);
+    }
+
+    &-ghost {
+      color: var(--color-danger, var(--danger-6))
+    }
+  }
+}
+
+// hover state
+@media (any-hover: hover) {
+  .c-button {
+    &--default:not([disabled]):hover {
+      background-color: var(--color-default-hover, var(--normal-gray));
+    }
+
+    &--default-plain:not([disabled]):hover {
+      background-color: var(--color-default-plain-hover, var(--hover-gray));
+    }
+
+    &--primary:not([disabled]):hover {
+      background-color: var(--color-primary-hover, var(--primary-5));
+    }
+
+    &--primary-plain:not([disabled]):hover {
+      background-color: var(--color-primary-plain-hover, var(--primary-2));
+    }
+
+    &--warning:not([disabled]):hover {
+      background-color: var(--color-warning-hover, var(--warning-5));
+    }
+
+    &--warning-plain:not([disabled]):hover {
+      background-color: var(--color-warning-plain-hover, var(--warning-2));
+    }
+
+    &--danger:not([disabled]):hover {
+      background-color: var(--color-danger-hover, var(--danger-5));
+    }
+
+    &--danger-plain:not([disabled]):hover {
+      background-color: var(--color-danger-plain-hover, var(--danger-2));
+    }
+
+    // ghost hover
+    &--default-ghost:not([disabled]):hover,
+    &--primary-ghost:not([disabled]):hover,
+    &--warning-ghost:not([disabled]):hover,
+    &--danger-ghost:not([disabled]):hover {
+      background-color: var(--color-default-hover, var(--normal-gray));
+    }
+  }
+}
+
+// active state
+.c-button {
+  &--default-ghost:not([disabled]):active,
+  &--primary-ghost:not([disabled]):active,
+  &--warning-ghost:not([disabled]):active,
+  &--danger-ghost:not([disabled]):active,
+  &--default:not([disabled]):active,
+  &--default-plain:not([disabled]):active {
+    background-color: var(--color-primary-active, var(--active-color));
+  }
+
+  &--primary:not([disabled]):not(.c-button--primary-ghost):active {
+    background-color: var(--color-primary-active, var(--primary-7));
+  }
+
+  &--primary-plain:not([disabled]):not(.c-button--primary-ghost):active {
+    background-color: var(--color-primary-plain-active, var(--primary-3));
+  }
+
+  &--warning:not([disabled]):not(.c-button--warning-ghost):active {
+    background-color: var(--color-warning-active, var(--warning-7));
+  }
+
+  &--warning-plain:not([disabled]):not(.c-button--warning-ghost):active {
+    background-color: var(--color-warning-plain-active, var(--warning-3));
+  }
+
+  &--danger:not([disabled]):not(.c-button--danger-ghost):active {
+    background-color: var(--color-danger-active, var(--danger-7));
+  }
+
+  &--danger-plain:not([disabled]):not(.c-button--danger-ghost):active {
+    background-color: var(--color-warning-plain-active, var(--danger-3));
+  }
+}
+
+// focus state
+.c-button {
+  &--default:not([unfocused]):focus,
+  &--default-plain:not([unfocused]):focus,
+  &--default-ghost:not([unfocused]):focus {
+    border-color: var(--color-default-focus, var(--border-deep));
+    outline-color: var(--color-default-focus, var(--border-deep));
+  }
+
+  &--primary:not([unfocused]):focus,
+  &--primary-plain:not([unfocused]):focus,
+  &--primary-ghost:not([unfocused]):focus {
+    border-color: var(--color-primary-focus, var(--primary-7));
+    outline-color: var(--color-primary-focus, var(--primary-7));
+  }
+
+  &--warning:not([unfocused]):focus,
+  &--warning-plain:not([unfocused]):focus,
+  &--warning-ghost:not([unfocused]):focus {
+    border-color: var(--color-warning-focus, var(--warning-7));
+    outline-color: var(--color-warning-focus, var(--warning-7));
+  }
+
+  &--danger:not([unfocused]):focus,
+  &--danger-plain:not([unfocused]):focus,
+  &--danger-ghost:not([unfocused]):focus {
+    border-color:  var(--color-danger-focus, var(--danger-7));
+    outline-color: var(--color-danger-focus, var(--danger-7));
+  }
+}
+
+// disabled state
+.c-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

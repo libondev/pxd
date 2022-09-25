@@ -1,24 +1,16 @@
-import '../styles/style.scss'
+import '../styles/button.scss'
 
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
-import { BUTTON_TYPES, VARIANTS } from '../../_props'
-import type { NativeButton, VariantState } from '../../_types'
+import { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../../_props'
+import type { NativeButton, Sizes, VariantState } from '../../_types/props'
 import { createClassName } from '../../_utils'
-import { useDisabled } from '../../_utils/hooks'
+import { useDisabled, useSizes } from '../../_utils/hooks'
 
 export default defineComponent({
   name: 'CButton',
   props: {
-    /**
-     * @zh 按钮的原生类型
-     */
-    type: {
-      type: String as PropType<NativeButton>,
-      default: 'button',
-      validator: (value: NativeButton) => BUTTON_TYPES.includes(value)
-    },
     /**
      * @zh Button 变体，主要用于区分不同的状态
      */
@@ -28,6 +20,22 @@ export default defineComponent({
       validator: (value: VariantState) => VARIANTS.includes(value)
     },
     /**
+     * @zh 按钮的原生类型
+     */
+    type: {
+      type: String as PropType<NativeButton>,
+      default: 'button',
+      validator: (value: NativeButton) => NATIVE_BUTTON_TYPES.includes(value)
+    },
+    /**
+     * @zh 按钮的尺寸
+     */
+    size: {
+      type: String as PropType<Sizes>,
+      default: '',
+      validator: (value: Sizes) => SIZE.includes(value)
+    },
+    /**
      * @zh 朴素按钮
      */
     plain: {
@@ -35,7 +43,7 @@ export default defineComponent({
       default: false
     },
     /**
-     * @zh 幽灵按钮，无背景色
+     * @zh 幽灵按钮，无边框、背景色
      */
     ghost: {
       type: Boolean,
@@ -47,31 +55,58 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    /**
+     * @zh 按钮自定义圆角
+     */
+    // rounded: {
+    //   type: String as PropType<CSSUnitValue>,
+    //   default: null
+    // },
+    /**
+     * @zh 是否启用聚焦样式
+     */
+    focusable: {
+      type: Boolean,
+      default: true
     }
   },
   emits: {
-    click: (e: MouseEvent) => true
+    click: (_: MouseEvent) => true
   },
   setup (props, { emit, slots }) {
     const disabled = useDisabled(props)
 
+    /**
+     * 1. plain
+     * 2. ghost
+     * 3. status
+     */
     const className = createClassName('button', [
-      VARIANTS.includes(props.status) ? props.status : 'default',
-      props.plain && props.status + '-plain',
-      props.ghost && props.status + '-ghost'
-    ])
+      props.plain
+        ? props.status + '-plain'
+        : props.ghost
+          ? props.status + '-ghost'
+          : VARIANTS.includes(props.status)
+            ? props.status
+            : 'default'
+    ], [useSizes(props).value])
 
-    function onButtonClick (event: MouseEvent): void {
-      emit('click', event)
-    }
+    const onButtonClick = (event: MouseEvent): void => emit('click', event)
+
+    // const inlineStyle = computed(() => props.rounded ? `border-radius: ${props.rounded}` : '')
 
     return () => (
-      <button type={props.type}
-        class={className}
-        tabindex={disabled.value ? -1 : 0}
-        disabled={disabled.value}
+      <button
+        type={ props.type }
+        class={ className }
+        disabled={disabled.value }
+        tabindex={ disabled.value ? -1 : 0 }
+        unfocused={ props.focusable ? null : true }
+        // { ...(inlineStyle.value && { style: inlineStyle.value }) }
+        onClick={ onButtonClick }
       >
-        <span onClick={onButtonClick}>{slots.default?.()}</span>
+        <span>{slots.default?.()}</span>
       </button>
     )
   }
