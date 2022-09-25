@@ -1,9 +1,9 @@
-import './_designs/tokens.css'
+import './_designs/tokens.scss'
 import './_designs/themes.css'
 
 import type { App } from 'vue'
 
-import { globalSymbol } from './_internal/injectKeys'
+import { globalSymbol } from './_internal'
 import type { GlobalConfig } from './_types'
 import * as components from './components'
 

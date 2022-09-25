@@ -1,4 +1,7 @@
-import type { Sizes } from './props'
-export interface GlobalConfig {
-  size: Sizes
-}
+export type { GlobalConfig } from './config'
+export type {
+  CSSUnitValue,
+  NativeButton,
+  Sizes,
+  VariantState
+} from './props'

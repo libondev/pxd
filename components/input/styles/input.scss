@@ -1,11 +1,24 @@
+.c-input {
+  background-color: var(--input-background-color, var(--shadow-gray));
+
+  &--prepend {
+    box-sizing: inherit;
+    border-right: 1px dashed var(--border-color)
+  }
+  &--append {
+    box-sizing: inherit;
+    border-left: 1px dashed var(--border-color)
+  }
+}
+
 .c-input__inner {
   min-width: 8.5rem;
   border-radius: 0;
-  outline: none;
   border: 1px solid transparent;
   outline: 1px solid transparent;
   outline-offset: -2px;
-  background-color: var(--input-background-color, var(--shadow-gray));
+  box-sizing: inherit;
+  background-color: transparent;
   transition-property: border-color, background-color, outline-color;
   font-family: inherit;
 

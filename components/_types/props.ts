@@ -1,4 +1,4 @@
-import type { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../_props/index'
+import type { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../_internal'
 
 export type Sizes = typeof SIZE[number]
 

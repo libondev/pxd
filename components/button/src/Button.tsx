@@ -1,12 +1,12 @@
 import '../styles/button.scss'
 
 import type { PropType } from 'vue'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 
-import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_props'
-import type { NativeButton, Sizes, VariantState } from '../../_types/props'
-import { createClassName } from '../../_utils'
-import { useDisabled, useSizes } from '../../_utils/hooks'
+import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_internal'
+import type { NativeButton, Sizes, VariantState } from '../../_types'
+import { createClassName, useDisabled, useSizes } from '../../_utils'
+import { CSpinner } from '../../spinner'
 
 export default defineComponent({
   name: 'CButton',
@@ -49,19 +49,19 @@ export default defineComponent({
       default: false
     },
     /**
+     * @zh 是否处于加载中
+     */
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    /**
      * @zh 禁用按钮
      */
     disabled: {
       type: Boolean,
       default: false
     },
-    /**
-     * @zh 按钮自定义圆角
-     */
-    // rounded: {
-    //   type: String as PropType<CSSUnitValue>,
-    //   default: null
-    // },
     /**
      * @zh 是否启用聚焦样式
      */
@@ -76,12 +76,8 @@ export default defineComponent({
   setup (props, { emit, slots }) {
     const disabled = useDisabled(props)
 
-    /**
-     * 1. plain
-     * 2. ghost
-     * 3. status
-     */
-    const className = createClassName('button', [
+    // plain || ghost || status
+    const staticClassName = createClassName('button', [
       props.plain
         ? props.status + '-plain'
         : props.ghost
@@ -89,23 +85,28 @@ export default defineComponent({
           : VARIANTS.includes(props.status)
             ? props.status
             : 'default'
-    ], [useSizes(props).value, 'c-transition'])
+    ], [useSizes(props).value, 'carbons-transition'])
 
-    const onButtonClick = (event: MouseEvent): void => emit('click', event)
+    const className = computed(() => {
+      return staticClassName + (props.loading ? ' c-button--loading' : '')
+    })
 
-    // const inlineStyle = computed(() => props.rounded ? `border-radius: ${props.rounded}` : '')
+    const onButtonClick = (event: MouseEvent): void => {
+      if (props.loading) return
+      emit('click', event)
+    }
 
     return () => (
       <button
         type={ props.type }
-        class={ className }
-        disabled={disabled.value }
         tabindex={ disabled.value ? -1 : 0 }
+        class={ className.value }
+        disabled={ disabled.value }
         unfocused={ props.focusable ? null : true }
-        // { ...(inlineStyle.value && { style: inlineStyle.value }) }
         onClick={ onButtonClick }
       >
-        <span>{slots.default?.()}</span>
+        { props.loading ? <CSpinner class="c-button--loading-icon" /> : null }
+        { slots.default?.() }
       </button>
     )
   }

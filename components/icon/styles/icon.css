@@ -1,0 +1,10 @@
+.c-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  text-align: center;
+  fill: currentColor;
+  vertical-align: -2px;
+  transform: translateZ(0);
+}

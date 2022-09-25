@@ -3,9 +3,8 @@ import '../styles/input.scss'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import type { Sizes } from '../../_types/props'
-import { createClassName } from '../../_utils'
-import { useDisabled, useSizes } from '../../_utils/hooks'
+import type { Sizes } from '../../_types'
+import { createClassName, useDisabled, useSizes } from '../../_utils'
 
 export default defineComponent({
   name: 'CInput',
@@ -46,6 +45,13 @@ export default defineComponent({
       default: true
     },
     /**
+     * @zh 是否可以清空
+     */
+    clearable: {
+      type: Boolean,
+      default: true
+    },
+    /**
      * @zh 自定义提示语
      */
     placeholder: {
@@ -54,10 +60,12 @@ export default defineComponent({
     }
   },
   setup (props, { slots, emit }) {
+    const size = useSizes(props)
     const innerClassName = createClassName('input__inner', [], [
-      useSizes(props).value,
-      'c-transition',
-      props.ellipsis && 'c-overflow-ellipsis'
+      size.value,
+      'carbons-transition',
+      'carbons-width-full',
+      props.ellipsis && 'carbons-overflow-ellipsis'
     ])
     const disabled = useDisabled(props)
     const placeholder = computed(() => disabled.value || props.readonly ? '' : props.placeholder)
@@ -72,7 +80,8 @@ export default defineComponent({
     })
 
     return () => (
-      <div class="c-input c-inline-flex c-vertical-middle">
+      <div class="c-input carbons-inline-flex carbons-vertical-top">
+        {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{ slots.prepend() }</div> : null }
         <input
           type="text"
           tabindex="0"
@@ -82,6 +91,7 @@ export default defineComponent({
           readonly={ props.readonly }
           placeholder={ placeholder.value }
         />
+        {slots.append ? <div class={'c-input--append ' + size.value}>{ slots.append() }</div> : null }
       </div>
     )
   }

@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import { defineComponent, provide } from 'vue'
 
-import { globalSymbol } from '../_internal/injectKeys'
-import type { Sizes } from '../_types/props'
+import { globalSymbol } from '../_internal'
+import type { Sizes } from '../_types'
 
 export const CProvider = defineComponent({
   name: 'CProvider',

@@ -1,0 +1,136 @@
+:root {
+  --primary-1: #E8FFF4;
+  --primary-2: #B1F3D4;
+  --primary-3: #7EE7BA;
+  --primary-4: #50DCA4;
+  --primary-5: #26D091;
+  --primary-6: #00C483;
+  --primary-7: #00A674;
+  --primary-8: #008864;
+  --primary-9: #006A52;
+  --primary-10: #004D3D;
+
+  --warning-1: #FFFCE8;
+  --warning-2: #FDF4BF;
+  --warning-3: #FCE996;
+  --warning-4: #FADC6D;
+  --warning-5: #F9CC45;
+  --warning-6: #F7BA1E;
+  --warning-7: #CC9213;
+  --warning-8: #A26D0A;
+  --warning-9: #774B04;
+  --warning-10: #4D2D00;
+
+  --danger-1: #FFECE8;
+  --danger-2: #FFD2CB;
+  --danger-3: #FFB6AE;
+  --danger-4: #FF9890;
+  --danger-5: #FF7873;
+  --danger-6: #FF5656;
+  --danger-7: #D2353A;
+  --danger-8: #A61C25;
+  --danger-9: #790A15;
+  --danger-10: #4D000A;
+
+  --shadow-gray: #f6f6f6;
+  --normal-gray: #f2f3f5;
+  --border-color: #e4e4e4;
+  --border-deep: #e0e0e0;
+  --active-color: #e0e0e0;
+  --hover-gray: #e8e9e9;
+
+  --mini-padding: 1px 10px;
+  --small-padding: 2px 10px;
+  --medium-padding: 4px 10px;
+  --large-padding: 6px 10px;
+
+  --transition-duration: 150ms;
+  --transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
+/* if unset prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .carbons-transition {
+    transition-duration: var(--transition-duration, 0.15s);
+  }
+}
+
+.carbons {
+  &-mini {
+    padding: var(--mini-padding);
+
+    &-fonts {
+      @extend .carbons-mini;
+      line-height: 1.667;
+      font-size: 12px;
+    }
+  }
+
+  &-small {
+    padding: var(--small-padding);
+
+    &-fonts {
+      @extend .carbons-small;
+      line-height: 1.5715;
+      font-size: 14px;
+    }
+  }
+
+  &-medium {
+    padding: var(--medium-padding);
+
+    &-fonts {
+      @extend .carbons-medium;
+      line-height: 1.5715;
+      font-size: 14px;
+    }
+  }
+
+  &-large {
+    padding: var(--large-padding);
+
+    &-fonts {
+      @extend .carbons-large;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+  }
+
+  &-overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-width-full {
+    width: 100%
+  }
+
+  &-height-full {
+    height: 100%
+  }
+
+  &-inline-flex {
+    display: inline-flex
+  }
+
+  &-vertical-top {
+    vertical-align: top
+  }
+
+  &-vertical-middle {
+    vertical-align: middle
+  }
+
+  &-relative {
+    position: relative
+  }
+
+  &-absolute {
+    position: absolute
+  }
+
+  &-transition {
+    transition-timing-function: var(--transition-timing-function, ease-in-out)
+  }
+}
