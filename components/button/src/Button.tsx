@@ -3,7 +3,7 @@ import '../styles/button.scss'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
-import { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../../_props'
+import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_props'
 import type { NativeButton, Sizes, VariantState } from '../../_types/props'
 import { createClassName } from '../../_utils'
 import { useDisabled, useSizes } from '../../_utils/hooks'
@@ -32,8 +32,7 @@ export default defineComponent({
      */
     size: {
       type: String as PropType<Sizes>,
-      default: '',
-      validator: (value: Sizes) => SIZE.includes(value)
+      default: ''
     },
     /**
      * @zh 朴素按钮

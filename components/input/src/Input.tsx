@@ -3,7 +3,6 @@ import '../styles/input.scss'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import { SIZE } from '../../_props'
 import type { Sizes } from '../../_types/props'
 import { createClassName } from '../../_utils'
 import { useDisabled, useSizes } from '../../_utils/hooks'
@@ -23,8 +22,7 @@ export default defineComponent({
      */
     size: {
       type: String as PropType<Sizes>,
-      default: '',
-      validator: (value: Sizes) => SIZE.includes(value)
+      default: ''
     },
     /**
      * @zh 禁用
