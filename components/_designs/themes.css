@@ -1,0 +1,13 @@
+:root {
+  --white-color: #fff;
+  --black-color: #242424;
+  --background-color: var(--background-color-dark, var(--white-color));
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --white-color: #242424;
+    --block-color: #fefefe;
+  }
+}
