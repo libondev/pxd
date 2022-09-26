@@ -3,9 +3,9 @@ import '../styles/button.scss'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_internal'
-import type { NativeButton, Sizes, VariantState } from '../../_types'
-import { createClassName, useDisabled, useSizes } from '../../_utils'
+import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../../_internal'
+import type { NativeButton, Sizes, VariantState } from '../../../_types'
+import { createClassName, useDisabled, useSizes } from '../../../_utils'
 import { CSpinner } from '../../spinner'
 
 export default defineComponent({
@@ -106,7 +106,7 @@ export default defineComponent({
         onClick={ onButtonClick }
       >
         { props.loading ? <CSpinner class="c-button--loading-icon" /> : null }
-        { slots.default?.() }
+        { slots.default!() }
       </button>
     )
   }

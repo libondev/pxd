@@ -1,10 +1,10 @@
 import type { PropType } from 'vue'
 import { defineComponent, provide } from 'vue'
 
-import { globalSymbol } from '../_internal'
-import type { Sizes } from '../_types'
+import { globalSymbol } from '../../../_internal'
+import type { Sizes } from '../../../_types'
 
-export const CProvider = defineComponent({
+export default defineComponent({
   name: 'CProvider',
   props: {
     size: {
@@ -15,6 +15,6 @@ export const CProvider = defineComponent({
   setup (props, { slots }) {
     provide(globalSymbol, props)
 
-    return () => slots.default?.()
+    return () => slots.default!()
   }
 })

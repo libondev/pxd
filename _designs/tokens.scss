@@ -48,13 +48,6 @@
   --transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 
-/* if unset prefers-reduced-motion */
-@media (prefers-reduced-motion: no-preference) {
-  .carbons-transition {
-    transition-duration: var(--transition-duration, 0.15s);
-  }
-}
-
 .carbons {
   &-mini {
     padding: var(--mini-padding);
@@ -131,6 +124,14 @@
   }
 
   &-transition {
+    transition-duration: var(--transition-duration, 0.15s);
     transition-timing-function: var(--transition-timing-function, ease-in-out)
+  }
+}
+
+/* if unset prefers-reduced-motion */
+@media (prefers-reduced-motion: reduced) {
+  .carbons-transition {
+    transition-duration: 0s !important;
   }
 }
