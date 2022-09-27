@@ -18,9 +18,10 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "@internal/*": ["src/_internal/*"],
-      "@utils/*": ["src/_utils/*"],
-      "@types/*": ["src/_types/*"],
+      "@/*": ["src/*"],
+      "@internal/*": ["./src/_internal/*"],
+      "@utils/*": ["./src/_utils/*"],
+      "@types/*": ["./types/*"],
     }
   }
 }

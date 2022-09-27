@@ -1,8 +1,8 @@
 import type { ComputedRef } from 'vue'
 import { computed, inject } from 'vue'
 
+import type { Sizes } from '../../types'
 import { formSymbol, globalSymbol } from '../_internal'
-import type { Sizes } from '../_types'
 
 type SizesClassName = `carbons-${Sizes}${'-fonts' | ''}`
 

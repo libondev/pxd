@@ -1,3 +1,4 @@
+import alias from '@rollup/plugin-alias'
 import glob from 'fast-glob'
 import { resolve } from 'path'
 import { rollup } from 'rollup'
@@ -5,6 +6,7 @@ import esbuild from 'rollup-plugin-esbuild'
 import sass from 'rollup-plugin-sass'
 
 import {
+  BUILD_ALIAS,
   BUILD_EXTERNAL,
   ESBUILD_OPTIONS
 } from './constants.js'
@@ -17,6 +19,7 @@ export default async function () {
     external: BUILD_EXTERNAL,
     plugins: [
       sass(),
+      alias(BUILD_ALIAS),
       esbuild(ESBUILD_OPTIONS)
     ]
   })

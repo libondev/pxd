@@ -3,8 +3,8 @@ import '../styles/input.scss'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import type { Sizes } from '../../../_types'
-import { createClassName, useDisabled, useSizes } from '../../../_utils'
+import type { Sizes } from '../../../types'
+import { createClassName, useDisabled, useSizes } from '../../_utils'
 
 export default defineComponent({
   name: 'CInput',

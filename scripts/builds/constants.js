@@ -1,8 +1,18 @@
-export const BUILD_INPUT = './index.ts'
+import { cwd } from 'node:process'
+import { resolve } from 'path'
+
+export const BUILD_INPUT = './src/index.ts'
 
 export const BUILD_EXTERNAL = ['vue']
 
 export const BUILD_TARGET = 'es2018'
+
+export const BUILD_ALIAS = {
+  entries: [
+    { find: '@', replacement: resolve(cwd(), './src') },
+    { find: '@types', replacement: resolve(cwd(), './types') }
+  ]
+}
 
 export const ESBUILD_OPTIONS = {
   tsconfig: '../tsconfig.json',

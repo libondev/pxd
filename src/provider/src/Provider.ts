@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import { defineComponent, provide } from 'vue'
 
-import { globalSymbol } from '../../../_internal'
-import type { Sizes } from '../../../_types'
+import type { Sizes } from '../../../types'
+import { globalSymbol } from '../../_internal'
 
 export default defineComponent({
   name: 'CProvider',

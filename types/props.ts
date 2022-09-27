@@ -1,4 +1,4 @@
-import type { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../_internal'
+import type { NATIVE_BUTTON_TYPES, SIZE, VARIANTS } from '../src/_internal'
 
 export type Sizes = typeof SIZE[number]
 

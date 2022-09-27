@@ -1,4 +1,4 @@
-import type { CSSUnitValue } from '../_types'
+import type { CSSUnitValue } from '../../types'
 
 export function createClassName (
   element: string,

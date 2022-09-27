@@ -1,8 +1,10 @@
+import alias from '@rollup/plugin-alias'
 import { rollup } from 'rollup'
 import esbuild, { minify as minifyPlugin } from 'rollup-plugin-esbuild'
 import sass from 'rollup-plugin-sass'
 
 import {
+  BUILD_ALIAS,
   BUILD_EXTERNAL,
   BUILD_INPUT,
   BUILD_TARGET,
@@ -16,6 +18,7 @@ export default async function () {
     external: BUILD_EXTERNAL,
     plugins: [
       sass(),
+      alias(BUILD_ALIAS),
       esbuild(ESBUILD_OPTIONS),
       minifyPlugin({
         sourceMap: true,
@@ -26,7 +29,6 @@ export default async function () {
 
   await bundle.write({
     format: 'esm',
-    banner: '/* eslint-disable */',
     file: 'dist/index.min.js'
   })
 }
