@@ -18,6 +18,7 @@
     }
   },
   "scripts": {
+    "gen": "zx ./scripts/gc.mjs --quiet",
     "dev": "cd ./playground && npm run dev",
     "build": "node ./scripts/builds/index.js",
     "lint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
