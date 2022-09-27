@@ -4,9 +4,9 @@ import type { NativeButton, Sizes, VariantState } from '@types'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import { NATIVE_BUTTON_TYPES, VARIANTS } from '@/_internal'
-import { createClassName, useDisabled, useSizes } from '@/_utils'
-import { CSpinner } from '@/spinner'
+import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_internal'
+import { createClassName, useDisabled, useSizes } from '../../_utils'
+import { CSpinner } from '../../spinner'
 
 export default defineComponent({
   name: 'CButton',

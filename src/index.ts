@@ -4,8 +4,7 @@ import './_designs/themes.scss'
 import type { GlobalConfig } from '@types'
 import type { App } from 'vue'
 
-import { globalSymbol } from '@/_internal'
-
+import { globalSymbol } from './_internal'
 import * as components from './components'
 
 export * from './components'

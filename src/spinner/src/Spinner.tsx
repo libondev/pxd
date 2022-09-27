@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 
-import { CIcon } from '@/icon'
+import { CIcon } from '../../icon'
 
 export default defineComponent({
   name: 'CSpinner',
