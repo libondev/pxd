@@ -6,11 +6,15 @@
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "index.d.ts",
-  "files": [],
+  "files": ["dist/*", "types/*"],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*",
+      "require": "./dist/*"
     }
   },
   "scripts": {

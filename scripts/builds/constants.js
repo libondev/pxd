@@ -9,7 +9,7 @@ export const BUILD_TARGET = 'es2018'
 
 export const BUILD_ALIAS = {
   entries: [
-    { find: '@', replacement: resolve(cwd(), './src') },
+    { find: '@/', replacement: resolve(cwd(), './src/') },
     { find: '@types', replacement: resolve(cwd(), './types') }
   ]
 }

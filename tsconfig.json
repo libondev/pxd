@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "rootDir": "./",
     "strict": true,
     "strictNullChecks": true,
     "jsx": "preserve",
@@ -18,10 +19,9 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
+      "@": ["src"],
       "@/*": ["src/*"],
-      "@internal/*": ["./src/_internal/*"],
-      "@utils/*": ["./src/_utils/*"],
-      "@types/*": ["./types/*"],
+      "@types": ["./types"],
     }
   }
 }
