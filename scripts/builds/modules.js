@@ -37,6 +37,4 @@ export default async function () {
       path: resolve(process.cwd(), 'dist/')
     }
   })
-
-  console.log(bundle)
 }
