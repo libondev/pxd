@@ -17,6 +17,7 @@ importers:
       fast-glob: ^3.2.12
       fs-extra: ^10.1.0
       kolorist: ^1.5.1
+      magic-string: ^0.26.3
       stylelint: ^14.9.1
       stylelint-config-recommended-scss: ^6.0.0
       stylelint-config-standard: ^26.0.0
@@ -40,6 +41,7 @@ importers:
       fast-glob: 3.2.12
       fs-extra: 10.1.0
       kolorist: 1.5.1
+      magic-string: 0.26.3
       stylelint: 14.9.1
       stylelint-config-recommended-scss: 6.0.0_stylelint@14.9.1
       stylelint-config-standard: 26.0.0_stylelint@14.9.1
@@ -2888,6 +2890,13 @@ packages:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
       sourcemap-codec: 1.4.8
+
+  /magic-string/0.26.3:
+    resolution: {integrity: sha512-u1Po0NDyFcwdg2nzHT88wSK0+Rih0N1M+Ph1Sp08k8yvFFU3KR72wryS7e1qMPJypt99WB7fIFVCA92mQrMjrg==}
+    engines: {node: '>=12'}
+    dependencies:
+      sourcemap-codec: 1.4.8
+    dev: true
 
   /map-obj/1.0.1:
     resolution: {integrity: sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==}
