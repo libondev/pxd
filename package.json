@@ -3,27 +3,24 @@
   "version": "0.0.1",
   "type": "module",
   "description": "A simple component library for Vue@3.",
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "sideEffects": [
+    "dist/*"
+  ],
   "files": [
     "dist/*",
     "types/*"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./*": {
-      "import": "./dist/*",
-      "require": "./dist/*"
-    }
+    ".": "./dist/index.js",
+    "./*": "./dist/*"
   },
   "scripts": {
-    "gen": "zx ./scripts/gc.mjs --quiet",
+    "gen": "zx ./scripts/gc.mjs",
     "dev": "cd ./playground && npm run dev",
-    "build": "node ./scripts/builds/index.js",
+    "dev:lib": "vite build --watch --mode development -c ./scripts/components.mjs",
+    "build": "vite build -c ./scripts/components.mjs && node ./scripts/build-styles.mjs",
     "lint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore",
     "stylelint": "stylelint --fix src/**/*.{scss,css}"
   },
@@ -37,10 +34,10 @@
     "vue": "^3.2.0"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^3.1.9",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.38.0",
-    "esbuild": "^0.15.9",
+    "@vitejs/plugin-vue-jsx": "^2.0.1",
+    "csso": "^5.0.5",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
     "eslint-plugin-import": "^2.25.2",
@@ -49,14 +46,14 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
-    "rollup": "^2.79.1",
-    "rollup-plugin-esbuild": "^4.10.1",
-    "rollup-plugin-sass": "^1.12.16",
+    "kolorist": "^1.5.1",
     "stylelint": "^14.9.1",
     "stylelint-config-recommended-scss": "^6.0.0",
     "stylelint-config-standard": "^26.0.0",
     "stylelint-scss": "^4.2.0",
     "typescript": "^4.8.3",
+    "vite": "^3.1.3",
+    "vite-plugin-dts": "^1.1.1",
     "vue": "^3.2.39",
     "zx": "^7.0.8"
   }
