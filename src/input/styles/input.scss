@@ -3,15 +3,16 @@
 
   &--prepend {
     box-sizing: inherit;
-    border-right: 1px dashed var(--border-color)
+    border-right: 1px dashed var(--border-color);
   }
+
   &--append {
     box-sizing: inherit;
-    border-left: 1px dashed var(--border-color)
+    border-left: 1px dashed var(--border-color);
   }
 }
 
-.c-input__inner {
+.c-input--inner {
   min-width: 8.5rem;
   border-radius: 0;
   border: 1px solid transparent;
@@ -22,18 +23,18 @@
   transition-property: border-color, background-color, outline-color;
   font-family: inherit;
 
-  &:not([disabled]):not([readonly]):hover {
-    background-color: var(--input-background-color-hover, var(--hover-gray))
+  &:not([disabled], [readonly]):hover {
+    background-color: var(--input-background-color-hover, var(--hover-gray));
   }
 
-  &:not([disabled]):not([readonly]):focus {
+  &:not([disabled], [readonly]):focus {
     border-color: var(--color-primary-focus, var(--primary-5));
     outline-color: var(--color-primary-focus, var(--primary-5));
     background-color: var(--input-background-color-focus, var(--white-color));
   }
 
   &::placeholder {
-    color: #b6b6b6
+    color: #b6b6b6;
   }
 
   &[disabled] {

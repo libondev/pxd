@@ -4,16 +4,11 @@ import { computed, inject } from 'vue'
 import type { Sizes } from '../../types'
 import { formSymbol, globalSymbol } from '../_internal'
 
-type SizesClassName = `carbons-${Sizes}${'-fonts' | ''}`
+type SizesClassName = `carbons-${Sizes}`
 
-export function useSizes (
-  props: { size: Sizes },
-  containsFont: boolean = true
-): ComputedRef<SizesClassName> {
+export function useSizes (props: { size: Sizes }): ComputedRef<SizesClassName> {
   const globalContext = inject(globalSymbol, { size: 'medium' })
-  return computed<SizesClassName>(() => `carbons-${props.size || globalContext.size || 'medium'}${
-    containsFont ? '-fonts' : ''
-  }`)
+  return computed<SizesClassName>(() => `carbons-${props.size || globalContext.size || 'medium'}`)
 }
 
 export function useDisabled (props: any): ComputedRef<boolean> {

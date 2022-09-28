@@ -61,7 +61,7 @@ export default defineComponent({
   },
   setup (props, { slots, emit }) {
     const size = useSizes(props)
-    const innerClassName = createClassName('input__inner', [], [
+    const innerClassName = createClassName('input--inner', [], [
       size.value,
       'carbons-transition',
       'carbons-width-full',
