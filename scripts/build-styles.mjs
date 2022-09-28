@@ -15,15 +15,17 @@ function slash (path) {
 async function buildStyles () {
   const styleFiles = await glob('components/**/styles/*.scss')
 
-  styleFiles.push(join('components', 'base.scss'))
-  styleFiles.push(join('components', 'index.scss'))
+  styleFiles.push(join('components/_styles/base.css'))
+  styleFiles.push(join('components/index.scss'))
+
+  fs.mkdirSync(join('dist/_styles'))
 
   // components style `.scss` files
   for (const filepath of styleFiles) {
     const { css } = await sass.compileAsync(filepath)
     const targetPath = join('dist', slash(filepath))
 
-    fs.writeFileSync(targetPath, minify(css).css, 'utf-8')
+    fs.writeFile(targetPath, minify(css).css, 'utf-8')
   }
 }
 

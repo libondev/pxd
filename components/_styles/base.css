@@ -45,3 +45,77 @@
   --transition-duration: 150ms;
   --transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
 }
+
+.carbons-transition {
+  transition-duration: var(--transition-duration, 0.15s);
+  transition-timing-function: var(--transition-timing-function, ease-in-out);
+}
+
+/* if setting prefers-reduced-motion: reduced */
+@media (prefers-reduced-motion: reduced) {
+  .carbons-transition {
+    transition-duration: 0s !important;
+  }
+}
+
+.carbons-mini {
+  padding: var(--mini-padding);
+  line-height: 1.667;
+  font-size: 12px;
+}
+
+.carbons-small {
+  padding: var(--small-padding);
+  line-height: 1.5715;
+  font-size: 14px;
+}
+
+.carbons-medium {
+  padding: var(--medium-padding);
+  line-height: 1.5715;
+  font-size: 14px;
+}
+
+.carbons-large {
+  padding: var(--large-padding);
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.carbons-width-full {
+  width: 100%;
+}
+
+.carbons-height-full {
+  height: 100%;
+}
+
+.carbons-inline-flex {
+  display: inline-flex;
+}
+
+.carbons-vertical-top {
+  vertical-align: top;
+}
+
+.carbons-vertical-middle {
+  vertical-align: middle;
+}
+
+.carbons-relative {
+  position: relative;
+}
+
+.carbons-absolute {
+  position: absolute;
+}
+
+.carbons-fixed {
+  position: fixed;
+}
+
+.carbons-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
