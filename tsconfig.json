@@ -1,8 +1,11 @@
 {
+  "exclude": ["node_modules"],
+  "include": ["components/**/*.{ts,tsx}"],
   "compilerOptions": {
     "baseUrl": "./",
     "rootDir": "./",
     "strict": true,
+    "allowJs": true,
     "strictNullChecks": true,
     "jsx": "preserve",
     "jsxFactory": "h",

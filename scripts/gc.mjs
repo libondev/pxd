@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-import { bgRed } from 'kolorist'
+import { bgGreen, bgRed } from 'kolorist'
 import MagicString from 'magic-string'
 import process from 'node:process'
 import { $, cd, fs } from 'zx'
@@ -99,3 +99,5 @@ registryMs.overwrite(
 )
 
 fs.writeFile('./registry.ts', registryMs.toString())
+
+console.log(bgGreen(' SUCCESS '))
