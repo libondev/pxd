@@ -37,11 +37,11 @@ import { defineComponent } from 'vue'
 
 import { createClassName } from '../_utils'
 
-export const CAaaBbb = defineComponent({
-  name: 'CAaaBbb',
+export const C${camelCase} = defineComponent({
+  name: 'C${camelCase}',
   props: {},
   setup (props, { emit, slots }) {
-    const className = createClassName('aaa-bbb')
+    const className = createClassName('${componentName}')
 
     return () => (
       <div
@@ -54,25 +54,37 @@ export const CAaaBbb = defineComponent({
 })
 `
 
-const COMPONENT_STYLE = `@import url(../../base.scss);
+const COMPONENT_STYLE = `@import url(../../_styles/base.css);
 .c-${componentName} {}
 `
 
-const indexTs = fs.readFileSync('./index.ts', 'utf-8')
-const registry = fs.readFileSync('./registry.ts', 'utf-8')
+fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
+fs.writeFile(`${componentName}/styles/index.scss`, COMPONENT_STYLE)
 
-const indexMs = new MagicString(indexTs)
+const indexScss = fs.readFileSync('./index.scss', 'utf-8')
+const scssMs = new MagicString(indexScss)
+const lastNewlineIndex = indexScss.lastIndexOf('\n')
+
+scssMs.overwrite(lastNewlineIndex, lastNewlineIndex + 1, `\n@import './${componentName}/styles/index.scss';\n`)
+fs.writeFileSync('./index.scss', scssMs.toString())
+
+const indexTs = fs.readFileSync('./index.ts', 'utf-8')
+const registryTs = fs.readFileSync('./registry.ts', 'utf-8')
+
+const entryMs = new MagicString(indexTs)
 
 const lastExportStatement = indexTs.indexOf('\n// #endregion')
-indexMs.overwrite(
+entryMs.overwrite(
   lastExportStatement,
   lastExportStatement + 1,
   `\nexport * from './${componentName}'\n`
 )
 
-const registryMs = new MagicString(registry)
-const lastImportStatement = registry.indexOf('\n// #endregion')
-const lastRegistryStatement = registry.lastIndexOf('\n] as Array<Component & { name: string }>')
+fs.writeFile('./index.ts', entryMs.toString())
+
+const registryMs = new MagicString(registryTs)
+const lastImportStatement = registryTs.indexOf('\n// #endregion')
+const lastRegistryStatement = registryTs.lastIndexOf('\n] as Array<Component & { name: string }>')
 
 registryMs.overwrite(
   lastImportStatement,
@@ -83,10 +95,7 @@ registryMs.overwrite(
 registryMs.overwrite(
   lastRegistryStatement,
   lastRegistryStatement + 1,
-  `,\n  C${camelCase},\n`
+  `,\n  C${camelCase}\n`
 )
 
-fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
-fs.writeFile(`${componentName}/styles/index.scss`, COMPONENT_STYLE)
-fs.writeFile('./index.ts', indexMs.toString())
 fs.writeFile('./registry.ts', registryMs.toString())
