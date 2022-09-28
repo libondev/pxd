@@ -24,7 +24,8 @@
     "gen": "zx ./scripts/gc.mjs --quiet",
     "dev": "cd ./playground && npm run dev",
     "build": "node ./scripts/builds/index.js",
-    "lint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
+    "lint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore",
+    "stylelint": "stylelint --fix src/**/*.{scss,css}"
   },
   "keywords": [],
   "author": "banlify <banlify@163.com>",
@@ -53,6 +54,10 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-sass": "^1.12.16",
     "rollup-plugin-terser": "^7.0.2",
+    "stylelint": "^14.9.1",
+    "stylelint-config-recommended-scss": "^6.0.0",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-scss": "^4.2.0",
     "typescript": "^4.8.3",
     "vue": "^3.2.39",
     "zx": "^7.0.8"
