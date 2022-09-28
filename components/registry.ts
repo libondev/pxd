@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+
 import type { GlobalConfig } from '@types'
 import type { App, Component } from 'vue'
 

@@ -19,7 +19,7 @@ function toPascalCase (string) {
   return capitalize(toCamelCase(string))
 }
 
-const [componentName] = process.argv.slice(3)
+const [,,, componentName] = process.argv
 
 if (!/[a-zA-Z]+/.test(componentName)) {
   console.log(bgRed(` Invalid component name:【${componentName}】 `))
