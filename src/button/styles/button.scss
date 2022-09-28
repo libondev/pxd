@@ -48,14 +48,13 @@
   -webkit-tap-highlight-color: transparent;
   display: inline-block;
   max-width: 20rem;
-  min-width: 8.5rem;
+  min-width: 8rem;
   vertical-align: top;
-  outline: 1px solid transparent;
+  outline: none;
   border: 1px solid transparent;
   background-color: var(--input-background-color, var(--background-color));
   transition-property: border-color, background-color, outline-color;
   box-sizing: border-box;
-  outline-offset: -2px;
   user-select: none;
   text-align: right;
   border-radius: 0;
@@ -168,27 +167,23 @@
   &--default-plain:not([unfocused]):focus,
   &--default-ghost:not([unfocused]):focus {
     border-color: var(--color-default-focus, var(--border-deep));
-    outline-color: var(--color-default-focus, var(--border-deep));
   }
 
   &--primary:not([unfocused]):focus,
   &--primary-plain:not([unfocused]):focus,
   &--primary-ghost:not([unfocused]):focus {
     border-color: var(--color-primary-focus, var(--primary-7));
-    outline-color: var(--color-primary-focus, var(--primary-7));
   }
 
   &--warning:not([unfocused]):focus,
   &--warning-plain:not([unfocused]):focus,
   &--warning-ghost:not([unfocused]):focus {
     border-color: var(--color-warning-focus, var(--warning-7));
-    outline-color: var(--color-warning-focus, var(--warning-7));
   }
 
   &--danger:not([unfocused]):focus,
   &--danger-plain:not([unfocused]):focus,
   &--danger-ghost:not([unfocused]):focus {
     border-color: var(--color-danger-focus, var(--danger-7));
-    outline-color: var(--color-danger-focus, var(--danger-7));
   }
 }

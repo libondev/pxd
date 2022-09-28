@@ -80,7 +80,7 @@ export default defineComponent({
     })
 
     return () => (
-      <div class="c-input carbons-inline-flex carbons-vertical-top">
+      <div class="c-input carbons-inline-flex carbons-width-full carbons-vertical-top">
         {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{ slots.prepend() }</div> : null }
         <input
           type="text"

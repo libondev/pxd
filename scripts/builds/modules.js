@@ -18,11 +18,17 @@ export default async function () {
     input,
     external: BUILD_EXTERNAL,
     plugins: [
-      sass(),
       alias(BUILD_ALIAS),
+      sass({
+        output: (styles, styleNodes) => {
+          console.log({ styleNodes })
+        }
+      }),
       esbuild(ESBUILD_OPTIONS)
     ]
   })
+
+  const outputDir = resolve(process.cwd(), 'dist/')
 
   await bundle.write({
     module: 'ESNext',
@@ -30,11 +36,11 @@ export default async function () {
     output: {
       name: 'es',
       preserveModules: true,
-      preserveModulesRoot: resolve(process.cwd(), 'dist/'),
-      dir: resolve(process.cwd(), 'dist/')
+      preserveModulesRoot: outputDir,
+      dir: outputDir
     },
     bundle: {
-      path: resolve(process.cwd(), 'dist/')
+      path: outputDir
     }
   })
 }

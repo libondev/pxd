@@ -1,5 +1,4 @@
 import './_designs/tokens.scss'
-import './_designs/themes.scss'
 
 import type { GlobalConfig } from '@types'
 import type { App } from 'vue'

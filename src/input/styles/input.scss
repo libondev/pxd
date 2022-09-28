@@ -12,24 +12,24 @@
   }
 }
 
+@media (any-hover: hover) {
+  .c-input--inner:not([disabled], [readonly]):hover {
+    background-color: var(--input-background-color-hover, var(--hover-gray));
+  }
+}
+
 .c-input--inner {
-  min-width: 8.5rem;
+  min-width: 8rem;
   border-radius: 0;
+  outline: none;
   border: 1px solid transparent;
-  outline: 1px solid transparent;
-  outline-offset: -2px;
   box-sizing: inherit;
   background-color: transparent;
   transition-property: border-color, background-color, outline-color;
   font-family: inherit;
 
-  &:not([disabled], [readonly]):hover {
-    background-color: var(--input-background-color-hover, var(--hover-gray));
-  }
-
   &:not([disabled], [readonly]):focus {
     border-color: var(--color-primary-focus, var(--primary-5));
-    outline-color: var(--color-primary-focus, var(--primary-5));
     background-color: var(--input-background-color-focus, var(--white-color));
   }
 

@@ -29,6 +29,9 @@
   --danger-8: #a61c25;
   --danger-9: #790a15;
   --danger-10: #4d000a;
+  --white-color: #fff;
+  --black-color: #242424;
+  --background-color: var(--background-color-dark, var(--white-color));
   --shadow-gray: #f6f6f6;
   --normal-gray: #f2f3f5;
   --border-color: #e4e4e4;
@@ -101,11 +104,11 @@
   &-absolute {
     position: absolute;
   }
+}
 
-  &-transition {
-    transition-duration: var(--transition-duration, 0.15s);
-    transition-timing-function: var(--transition-timing-function, ease-in-out);
-  }
+.carbons-transition {
+  transition-duration: var(--transition-duration, 0.15s);
+  transition-timing-function: var(--transition-timing-function, ease-in-out);
 }
 
 /* if unset prefers-reduced-motion */

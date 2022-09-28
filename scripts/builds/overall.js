@@ -17,8 +17,8 @@ export default async function () {
     input: BUILD_INPUT,
     external: BUILD_EXTERNAL,
     plugins: [
-      sass(),
       alias(BUILD_ALIAS),
+      sass({ output: true }),
       esbuild(ESBUILD_OPTIONS),
       minifyPlugin({
         sourceMap: true,
@@ -29,6 +29,6 @@ export default async function () {
 
   await bundle.write({
     format: 'esm',
-    file: 'dist/index.min.js'
+    file: 'dist/index.mini.js'
   })
 }
