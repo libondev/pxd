@@ -47,16 +47,14 @@ export const C${camelCase} = defineComponent({
       <div
         class={ className }
       >
-        { slots.default!() }
+        { slots.default?.() }
       </div>
     )
   }
 })
 `
 
-const COMPONENT_STYLE = `@import url(../../_styles/base.css);
-.c-${componentName} {}
-`
+const COMPONENT_STYLE = `.c-${componentName} {}`
 
 fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
 fs.writeFile(`${componentName}/styles/index.scss`, COMPONENT_STYLE)
