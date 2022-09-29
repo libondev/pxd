@@ -26,14 +26,9 @@ export default defineConfig({
   plugins: [
     jsx(),
     dts({
-      entryRoot: './components',
+      entryRoot: './src',
       outputDir: './dist',
-      // exclude: []
       staticImport: true
-      // skipDiagnostics: false,
-      // logDiagnostics: true,
-      // // rollupTypes: true,
-      // insertTypesEntry: true
     })
   ]
 })

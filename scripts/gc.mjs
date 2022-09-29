@@ -26,7 +26,7 @@ if (!/[a-zA-Z]+/.test(componentName)) {
   process.exit(1)
 }
 
-cd('./components')
+cd('./src')
 await $`mkdir ${componentName}`
 await $`mkdir ${componentName}/styles`
 

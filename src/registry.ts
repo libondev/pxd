@@ -1,5 +1,5 @@
 /* eslint-disable simple-import-sort/imports */
-import type { GlobalConfig } from './types'
+import type { GlobalConfig } from './_types'
 import type { App, Component } from 'vue'
 
 import { globalSymbol } from './_internal'
