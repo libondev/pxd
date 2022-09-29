@@ -7,20 +7,20 @@ import sass from 'sass'
 function slash (path) {
   return path
     .replace(/\\/g, '/')
-    .replace(/\/?components\/?/, '')
+    .replace(/\/?src\/?/, '')
     .replace(/\/styles/, '')
     .replace(/\.scss$/, '.css')
 }
 
 async function buildStyles () {
-  const styleFiles = await glob('components/**/styles/*.scss')
+  const styleFiles = await glob('src/**/styles/*.scss')
 
-  styleFiles.push(join('components/_styles/base.css'))
-  styleFiles.push(join('components/index.scss'))
+  styleFiles.push(join('src/_styles/base.css'))
+  styleFiles.push(join('src/index.scss'))
 
   fs.mkdirSync(join('dist/_styles'))
 
-  // components style `.scss` files
+  // src style `.scss` files
   for (const filepath of styleFiles) {
     const { css } = await sass.compileAsync(filepath)
     const targetPath = join('dist', slash(filepath))

@@ -1,8 +1,8 @@
-import type { Sizes } from '@types'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
+import type { Sizes } from '../_types'
 import { createClassName } from '../_utils'
 
 export const CInput = defineComponent({

@@ -1,7 +1,7 @@
-import { CSSUnitValue } from '@types'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
+import { CSSUnitValue } from '../_types'
 import { appendCSSUnit } from '../_utils'
 
 export const CIcon = defineComponent({

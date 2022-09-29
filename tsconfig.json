@@ -1,6 +1,5 @@
 {
-  "exclude": ["node_modules"],
-  "include": ["components/**/*.{ts,tsx}"],
+  "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "baseUrl": "./",
     "rootDir": "./",
@@ -20,12 +19,6 @@
     "composite": true,
     "target": "ES6",
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "paths": {
-      "@": ["src"],
-      "@/*": ["src/*"],
-      "@types": ["./types"],
-      "@styles/*": ["./styles/*"],
-    }
+    "lib": ["ESNext", "DOM"]
   }
 }
