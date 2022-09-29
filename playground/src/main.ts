@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import CarbonsUI from '../../dist/index.js'
+import CarbonsUI from '../../src'
 
-import '../../dist/index.css'
+import '../../src/index.scss'
 
 createApp(App).use(CarbonsUI()).mount('#app')
