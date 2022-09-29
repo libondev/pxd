@@ -5,6 +5,8 @@ import { useDisabled, useSize } from '../_hooks'
 import type { Sizes } from '../_types'
 import { createClassName } from '../_utils'
 
+// TODO 非常非常多功能
+
 export const CInput = defineComponent({
   name: 'CInput',
   props: {
@@ -66,6 +68,7 @@ export const CInput = defineComponent({
       'carbons-width-full',
       props.ellipsis && 'carbons-overflow-ellipsis'
     ])
+
     const disabled = useDisabled(props)
     const placeholder = computed(() => disabled.value || props.readonly ? '' : props.placeholder)
 

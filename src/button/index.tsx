@@ -7,6 +7,8 @@ import type { NativeButton, Sizes, VariantState } from '../_types'
 import { createClassName } from '../_utils'
 import { CSpinner } from '../spinner'
 
+// TODO 一键清除功能
+
 export const CButton = defineComponent({
   name: 'CButton',
   props: {
@@ -103,7 +105,7 @@ export const CButton = defineComponent({
         onClick={ onButtonClick }
       >
         { props.loading ? <CSpinner class="c-button--loading-icon" /> : null }
-        { slots.default!() }
+        { slots.default?.() }
       </button>
     )
   }

@@ -1,0 +1,61 @@
+.c-dialog {
+  inset: 0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+
+  &--inner {
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    min-width: 320px;
+    max-height: 75vh;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: var(--border-radius);
+    transform: translateY(-50%);
+  }
+
+  &--header {
+    padding: 20px 50px 10px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #424242;
+  }
+
+  &--label {
+    margin: 3px 0 0;
+    font-size: 14px;
+    font-weight: normal;
+    color: #999
+  }
+
+  &--close {
+    right: 15px;
+    top: 15px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    z-index: 1;
+
+    &:hover {
+      background-color: var(--hover-gray)
+    }
+  }
+
+  &--content {
+    flex: 1;
+    height: 100%;
+    padding: 10px 20px;
+    overflow: overlay;
+  }
+
+  &--footer {
+    padding: 15px 15px;
+    text-align: right;
+  }
+}

@@ -8,13 +8,15 @@ export const CProvider = defineComponent({
   name: 'CProvider',
   props: {
     size: {
-      type: String as PropType<Sizes>,
-      default: 'medium'
+      type: String as PropType<Sizes>
+    },
+    zIndex: {
+      type: Number
     }
   },
   setup (props, { slots }) {
     provide(globalSymbol, props)
 
-    return () => slots.default!()
+    return () => slots.default?.()
   }
 })

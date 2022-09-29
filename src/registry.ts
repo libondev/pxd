@@ -9,6 +9,7 @@ import { CButton } from './button'
 import { CIcon } from './icon'
 import { CInput } from './input'
 import { CProvider } from './provider'
+import { CDialog } from './dialog'
 // #endregion
 
 // #region
@@ -16,7 +17,8 @@ const components = [
   CButton,
   CIcon,
   CInput,
-  CProvider
+  CProvider,
+  CDialog
 ] as Array<Component & { name: string }>
 // #endregion
 

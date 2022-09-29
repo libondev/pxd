@@ -32,7 +32,7 @@ export const CIcon = defineComponent({
         aria-hidden="true"
         style={ inlineStyle.value }
         class="c-icon carbons-vertical-middle"
-      >{ slots.default!() }</i>
+      >{ slots.default?.() }</i>
     )
   }
 })

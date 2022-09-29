@@ -1,0 +1,9 @@
+.carbons-fade-enter-active,
+.carbons-fade-leave-active {
+  transition: opacity var(--transition-duration) var(--transition-timing-function);
+}
+
+.carbons-fade-enter-from,
+.carbons-fade-leave-to {
+  opacity: 0;
+}

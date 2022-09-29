@@ -7,6 +7,7 @@ export * from './icon'
 export * from './input'
 export * from './provider'
 export * from './spinner'
+export * from './dialog'
 // #endregion
 
 export { installCarbons as default } from './registry'

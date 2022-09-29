@@ -114,6 +114,18 @@
   position: fixed;
 }
 
+.carbons-hidden {
+  display: none;
+}
+
+.carbons-pointer-events-none {
+  pointer-events: none;
+}
+
+.carbons-overflow-hidden {
+  overflow: hidden;
+}
+
 .carbons-overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
