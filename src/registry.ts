@@ -1,8 +1,9 @@
 /* eslint-disable simple-import-sort/imports */
-import type { GlobalConfig } from './_types'
 import type { App, Component } from 'vue'
 
 import { globalSymbol } from './_internal'
+import type { Sizes } from './_types'
+
 // #region
 import { CButton } from './button'
 import { CIcon } from './icon'
@@ -18,6 +19,10 @@ const components = [
   CProvider
 ] as Array<Component & { name: string }>
 // #endregion
+
+interface GlobalConfig {
+  size: Sizes
+}
 
 export function installCarbons (
   globalConfig: GlobalConfig = { size: 'medium' }
