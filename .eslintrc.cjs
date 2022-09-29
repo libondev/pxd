@@ -23,7 +23,6 @@ module.exports = {
   rules: {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/restrict-plus-operands': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off'
