@@ -59,5 +59,8 @@
     "vite-plugin-dts": "^1.6.1",
     "vue": "^3.2.39",
     "zx": "^7.0.8"
+  },
+  "dependencies": {
+    "@vueuse/core": "^9.2.0"
   }
 }
