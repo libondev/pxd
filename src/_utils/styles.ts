@@ -3,7 +3,7 @@ import type { CSSUnitValue } from '../_types'
 export function createClassName (
   element: string,
   modifier: Array<string | boolean> = [],
-  status: Array<string | boolean> = []
+  status: string | Array<string | boolean> = []
 ): string {
   let className = `c-${element}`
 
@@ -12,8 +12,10 @@ export function createClassName (
     className += ` c-${element}--${modifier.join(` c-${element}--`)}`
   }
 
-  status = status.filter(Boolean)
-  if (status.length) {
+  if (typeof status === 'string') {
+    className += ' ' + status
+  } else {
+    status = status.filter(Boolean)
     className += ` ${status.join(' ')}`
   }
 

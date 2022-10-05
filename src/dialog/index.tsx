@@ -4,12 +4,11 @@ import {
   defineComponent,
   ref,
   Teleport,
-  Transition,
-  watch
+  Transition
 } from 'vue'
 
 import { useZIndex } from '../_hooks'
-import { createClassName } from '../_utils'
+import { createClassName, createWatchers } from '../_utils'
 
 export const CDialog = defineComponent({
   name: 'CDialog',
@@ -62,47 +61,60 @@ export const CDialog = defineComponent({
     closeOnClickOutside: {
       type: Boolean,
       default: true
+    },
+    /**
+     * @zh 是否把焦点范围锁定在弹窗中
+     */
+    focusTrap: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * @zh 是否将 DOM 元素
+     */
+    appendToBody: {
+      type: Boolean,
+      default: true
     }
-
   },
-  emits: ['update:modelValue', 'close'],
+  emits: ['update:modelValue', 'before-close', 'before-open', 'close', 'open'],
   setup (props, { emit, slots }) {
     const dialogRef = ref()
     const zIndex = useZIndex()
-    const className = computed(() =>
-      createClassName('dialog', [], ['carbons-fixed'])
-    )
+    const className = computed(() => createClassName('dialog', [], 'carbons-fixed carbons-flex-column carbons-items-center'))
 
-    const display = computed({
+    const modelVisible = ref(false)
+    const coverVisible = computed({
       get () {
         return props.modelValue
       },
       set (value) {
-        emit('close')
         emit('update:modelValue', value)
       }
     })
 
-    const displayCallbacks = [] as Array<(value: boolean) => void>
+    const visibleWatchers = createWatchers(() => coverVisible.value)
 
     // lock body scroll
     if (props.lockScroll) {
-      displayCallbacks.push((value) => {
+      visibleWatchers.add((value) => {
         if (value) {
           document.body.classList.add('carbons-overflow-hidden')
           return
         }
 
-        document.body.classList.remove('carbons-overflow-hidden')
+        setTimeout(() => {
+          document.body.classList.remove('carbons-overflow-hidden')
+        }, 200)
       })
     }
 
     // click outside close dialog
     if (props.closeOnClickOutside) {
       let cleanFn: ReturnType<typeof onClickOutside> | null
-      displayCallbacks.push((value) => {
+      visibleWatchers.add((value) => {
         if (value) {
-          cleanFn = onClickOutside(dialogRef, () => { display.value = false })
+          cleanFn = onClickOutside(dialogRef, () => { coverVisible.value = false })
           return
         }
 
@@ -111,29 +123,48 @@ export const CDialog = defineComponent({
       })
     }
 
-    if (displayCallbacks.length) {
-      watch(display, (value) => displayCallbacks.forEach((fn) => fn(value)), { immediate: true })
+    const maskTransitionMethods = {
+      onBeforeEnter () {
+        emit('before-open')
+      },
+      onBeforeLeave () {
+        emit('before-close')
+      },
+      onEnter () {
+        modelVisible.value = true
+      },
+      onLeave () {
+        modelVisible.value = false
+      }
+    }
+
+    const onModelTransitionAfterEnter = (): void => {
+      emit('open')
+    }
+
+    const onModelTransitionAfterLeave = (): void => {
+      emit('close')
     }
 
     return () => (
-      <Teleport to='body'>
-        <Transition name='carbons-fade'>
-          <div
-            open
-            v-show={display.value}
-            class={className.value}
-            style={{ zIndex: zIndex.value }}
-          >
-            <dialog open ref={dialogRef} class='c-dialog--inner carbons-fixed'>
-              <div class='c-dialog--header'>
-                {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
-                {slots.label ?? props.label ? <p class='c-dialog--label'>{slots.label?.() ?? props.label}</p> : null}
-                {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={() => (display.value = false)} /> : null}
-              </div>
+      <Teleport to='body' disabled={!props.appendToBody}>
+        <Transition
+          name='carbons-fade'
+          { ...maskTransitionMethods }
+        >
+          <div v-show={ coverVisible.value } class={className.value} style={{ zIndex: zIndex.value }}>
+            <Transition name='carbons-zoom' onAfterEnter={onModelTransitionAfterEnter} onAfterLeave={onModelTransitionAfterLeave}>
+              <dialog v-show={ modelVisible.value } open ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
+                <div class='c-dialog--header'>
+                  {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
+                  {slots.label ?? props.label ? <p class='c-dialog--label'>{slots.label?.() ?? props.label}</p> : null}
+                  {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={() => (coverVisible.value = false)} /> : null}
+                </div>
 
-              {slots.default && <div class='c-dialog--content'>{slots.default()}</div>}
-              {slots.footer && <div class='c-dialog--footer'>{slots.footer()}</div>}
+                {slots.default && <div class='c-dialog--content'>{slots.default()}</div>}
+                {slots.footer && <div class='c-dialog--footer'>{slots.footer()}</div>}
               </dialog>
+            </Transition>
           </div>
         </Transition>
       </Teleport>

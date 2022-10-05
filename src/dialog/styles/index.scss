@@ -5,20 +5,18 @@
   backdrop-filter: blur(2px);
 
   &--inner {
-    display: flex;
-    flex-direction: column;
-    top: 50%;
     min-width: 320px;
     max-height: 75vh;
-    padding: 0;
+    width: var(--width, 30%);
+    padding: 15px;
     border: none;
     outline: none;
     border-radius: var(--border-radius);
-    transform: translateY(-50%);
+    z-index: 10;
   }
 
   &--header {
-    padding: 20px 50px 10px 20px;
+    padding: 5px 35px 10px 0;
     font-size: 18px;
     font-weight: 500;
     color: #424242;
@@ -50,12 +48,12 @@
   &--content {
     flex: 1;
     height: 100%;
-    padding: 10px 20px;
+    padding: 10px;
     overflow: overlay;
   }
 
   &--footer {
-    padding: 15px 15px;
+    padding: 15px 0 0;
     text-align: right;
   }
 }

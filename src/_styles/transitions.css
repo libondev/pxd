@@ -7,3 +7,15 @@
 .carbons-fade-leave-to {
   opacity: 0;
 }
+
+.carbons-zoom-enter-active,
+.carbons-zoom-leave-active {
+  transition: transform var(--transition-duration) var(--transition-timing-function),
+  opacity var(--transition-duration) var(--transition-timing-function);
+}
+
+.carbons-zoom-enter-from,
+.carbons-zoom-leave-to {
+  transform: scale(0.8);
+  opacity: 0;
+}
