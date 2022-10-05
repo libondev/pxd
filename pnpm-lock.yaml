@@ -16,6 +16,7 @@ importers:
       eslint-plugin-promise: ^6.0.0
       eslint-plugin-simple-import-sort: ^7.0.0
       fast-glob: ^3.2.12
+      focus-trap: ^7.0.0
       fs-extra: ^10.1.0
       kolorist: ^1.5.1
       magic-string: ^0.26.3
@@ -30,6 +31,7 @@ importers:
       zx: ^7.0.8
     dependencies:
       '@vueuse/core': 9.2.0_vue@3.2.39
+      focus-trap: 7.0.0
     devDependencies:
       '@typescript-eslint/eslint-plugin': 5.38.0_4gkcvl6qsi23tqqawfqgcwtp54
       '@typescript-eslint/parser': 5.38.0_7ilbxdl5iguzcjriqqcg2m5cku
@@ -2098,6 +2100,12 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
+  /focus-trap/7.0.0:
+    resolution: {integrity: sha512-uT4Bl8TwU+5vVAx/DHil/1eVS54k9unqhK/vGy2KSh7esPmqgC0koAB9J2sJ+vtj8+vmiFyGk2unLkhNLQaxoA==}
+    dependencies:
+      tabbable: 6.0.0
+    dev: false
+
   /formdata-polyfill/4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
@@ -3565,6 +3573,10 @@ packages:
   /svg-tags/1.0.0:
     resolution: {integrity: sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==}
     dev: true
+
+  /tabbable/6.0.0:
+    resolution: {integrity: sha512-SxhZErfHc3Yozz/HLAl/iPOxuIj8AtUw13NRewVOjFW7vbsqT1f3PuiHrPQbUkRcLNEgAedAv2DnjLtzynJXiw==}
+    dev: false
 
   /table/6.8.0:
     resolution: {integrity: sha512-s/fitrbVeEyHKFa7mFdkuQMWlH1Wgw/yEXMt5xACT4ZpzWFluehAxRtUUQKPuWhaLAWhFcVx6w3oC8VKaUfPGA==}

@@ -61,6 +61,7 @@
     "zx": "^7.0.8"
   },
   "dependencies": {
-    "@vueuse/core": "^9.2.0"
+    "@vueuse/core": "^9.2.0",
+    "focus-trap": "^7.0.0"
   }
 }
