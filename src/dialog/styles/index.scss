@@ -8,7 +8,7 @@
     min-width: 320px;
     max-height: 75vh;
     width: var(--width, 30%);
-    padding: 15px;
+    padding: 12px;
     border: none;
     outline: none;
     border-radius: var(--border-radius);
@@ -16,7 +16,7 @@
   }
 
   &--header {
-    padding: 5px 35px 10px 0;
+    padding: 2px 35px 10px 0;
     font-size: 18px;
     font-weight: 500;
     color: #424242;
@@ -30,8 +30,8 @@
   }
 
   &--close {
-    right: 15px;
-    top: 15px;
+    right: 10px;
+    top: 10px;
     width: 25px;
     height: 25px;
     padding: 0;

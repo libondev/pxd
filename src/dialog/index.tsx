@@ -1,4 +1,4 @@
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useEventListener } from '@vueuse/core'
 import {
   computed,
   defineComponent,
@@ -56,13 +56,6 @@ export const CDialog = defineComponent({
       default: true
     },
     /**
-     * @zh 是否可以点击遮罩关闭弹窗
-     */
-    closeOnClickOutside: {
-      type: Boolean,
-      default: true
-    },
-    /**
      * @zh 是否把焦点范围锁定在弹窗中
      */
     focusTrap: {
@@ -75,6 +68,20 @@ export const CDialog = defineComponent({
     appendToBody: {
       type: Boolean,
       default: true
+    },
+    /**
+     * @zh 是否可以点击遮罩关闭弹窗
+     */
+    closeOnClickOutside: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * @zh 是否可以通过按下 ESC 关闭 Dialog
+     */
+    closeOnPressEscape: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['update:modelValue', 'before-close', 'before-open', 'close', 'open'],
@@ -84,16 +91,12 @@ export const CDialog = defineComponent({
     const className = computed(() => createClassName('dialog', [], 'carbons-fixed carbons-flex-column carbons-items-center'))
 
     const modelVisible = ref(false)
-    const coverVisible = computed({
-      get () {
-        return props.modelValue
-      },
-      set (value) {
-        emit('update:modelValue', value)
-      }
-    })
 
-    const visibleWatchers = createWatchers(() => coverVisible.value)
+    const close = (): void => {
+      emit('update:modelValue', false)
+    }
+
+    const visibleWatchers = createWatchers(() => props.modelValue)
 
     // lock body scroll
     if (props.lockScroll) {
@@ -113,13 +116,29 @@ export const CDialog = defineComponent({
     if (props.closeOnClickOutside) {
       let cleanFn: ReturnType<typeof onClickOutside> | null
       visibleWatchers.add((value) => {
-        if (value) {
-          cleanFn = onClickOutside(dialogRef, () => { coverVisible.value = false })
+        if (!value) {
+          cleanFn?.()
+          cleanFn = null
           return
         }
 
-        cleanFn?.()
-        cleanFn = null
+        cleanFn = onClickOutside(dialogRef, close)
+      })
+    }
+
+    // press escape close dialog
+    if (props.closeOnPressEscape) {
+      let cleanFn: ReturnType<typeof useEventListener> | null
+      visibleWatchers.add((value) => {
+        if (value) {
+          cleanFn = useEventListener(document, 'keydown', (e) => {
+            if (e.key !== 'Escape') return
+
+            close()
+            cleanFn?.()
+            cleanFn = null
+          })
+        }
       })
     }
 
@@ -138,27 +157,25 @@ export const CDialog = defineComponent({
       }
     }
 
-    const onModelTransitionAfterEnter = (): void => {
-      emit('open')
-    }
-
-    const onModelTransitionAfterLeave = (): void => {
-      emit('close')
+    const modalTransitionMethods = {
+      onAfterEnter () {
+        emit('open')
+      },
+      onAfterLeave () {
+        emit('close')
+      }
     }
 
     return () => (
       <Teleport to='body' disabled={!props.appendToBody}>
-        <Transition
-          name='carbons-fade'
-          { ...maskTransitionMethods }
-        >
-          <div v-show={ coverVisible.value } class={className.value} style={{ zIndex: zIndex.value }}>
-            <Transition name='carbons-zoom' onAfterEnter={onModelTransitionAfterEnter} onAfterLeave={onModelTransitionAfterLeave}>
-              <dialog v-show={ modelVisible.value } open ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
+        <Transition name='carbons-fade' { ...maskTransitionMethods }>
+          <div v-show={ props.modelValue } class={className.value} style={{ zIndex: zIndex.value }}>
+            <Transition name='carbons-zoom' { ...modalTransitionMethods }>
+              <dialog v-show={ modelVisible.value } open role='dialog' ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
                 <div class='c-dialog--header'>
                   {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
                   {slots.label ?? props.label ? <p class='c-dialog--label'>{slots.label?.() ?? props.label}</p> : null}
-                  {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={() => (coverVisible.value = false)} /> : null}
+                  {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={ close } /> : null}
                 </div>
 
                 {slots.default && <div class='c-dialog--content'>{slots.default()}</div>}
