@@ -171,23 +171,27 @@
   &--default-plain:not([unfocused]):focus,
   &--default-ghost:not([unfocused]):focus {
     border-color: var(--color-default-focus, var(--border-deep));
+    box-shadow: inset 0 0 0 1px var(--border-deep);
   }
 
   &--primary:not([unfocused]):focus,
   &--primary-plain:not([unfocused]):focus,
   &--primary-ghost:not([unfocused]):focus {
     border-color: var(--color-primary-focus, var(--primary-7));
+    box-shadow: inset 0 0 0 1px var(--primary-7);
   }
 
   &--warning:not([unfocused]):focus,
   &--warning-plain:not([unfocused]):focus,
   &--warning-ghost:not([unfocused]):focus {
     border-color: var(--color-warning-focus, var(--warning-7));
+    box-shadow: inset 0 0 0 1px var(--warning-7);
   }
 
   &--danger:not([unfocused]):focus,
   &--danger-plain:not([unfocused]):focus,
   &--danger-ghost:not([unfocused]):focus {
     border-color: var(--color-danger-focus, var(--danger-7));
+    box-shadow: inset 0 0 0 1px var(--danger-7);
   }
 }

@@ -42,7 +42,7 @@
   --small-padding: 2px 10px;
   --medium-padding: 4px 10px;
   --large-padding: 6px 10px;
-  --transition-duration: 150ms;
+  --transition-duration: 180ms;
   --transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
@@ -88,6 +88,20 @@
 
 .carbons-height-full {
   height: 100%;
+}
+
+.carbons-flex {
+  display: flex;
+}
+
+.carbons-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.carbons-items-center {
+  align-items: center;
+  justify-content: center;
 }
 
 .carbons-inline-flex {
