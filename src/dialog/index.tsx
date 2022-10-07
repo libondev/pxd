@@ -102,6 +102,7 @@ export const CDialog = defineComponent({
     if (props.lockScroll) {
       visibleWatchers.add((value) => {
         if (value) {
+          ;(document.activeElement as HTMLElement)?.blur()
           document.body.classList.add('carbons-overflow-hidden')
           return
         }
