@@ -91,13 +91,23 @@ const CDialog = defineComponent({
     const zIndex = useZIndex()
     const className = computed(() => createClassName('dialog', [], 'carbons-fixed carbons-flex-column carbons-items-center'))
 
-    const modelVisible = ref(false)
+    const modelVisible = ref(props.modelValue)
 
     const close = (): void => {
       emit('update:modelValue', false)
     }
 
-    const visibleWatchers = createWatchers(() => props.modelValue)
+    const visibleWatchers = createWatchers(() => props.modelValue, {
+      initialValue: [
+        (value) => {
+          if (value) {
+            dialogRef.value.show()
+          } else {
+            dialogRef.value.open = false
+          }
+        }
+      ]
+    })
 
     // lock body scroll
     if (props.lockScroll) {
