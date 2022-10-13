@@ -22,6 +22,7 @@ module.exports = {
   ],
   rules: {
     'jsx-quotes': ['error', 'prefer-single'],
+    'spaced-comment': ['error', 'always', { markers: ['#__PURE__'] }],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     '@typescript-eslint/prefer-optional-chain': 'off',
