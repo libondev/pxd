@@ -1,10 +1,10 @@
-import type { PropType } from 'vue'
+import type { App, PropType } from 'vue'
 import { defineComponent, provide } from 'vue'
 
 import { globalSymbol } from '../_internal'
 import type { Sizes } from '../_types'
 
-export const CProvider = defineComponent({
+const CProvider = defineComponent({
   name: 'CProvider',
   props: {
     size: {
@@ -18,5 +18,10 @@ export const CProvider = defineComponent({
     provide(globalSymbol, props)
 
     return () => slots.default?.()
+  },
+  install (app: App) {
+    app.component(CProvider.name, CProvider)
   }
 })
+
+export { CProvider, CProvider as default }

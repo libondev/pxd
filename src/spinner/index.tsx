@@ -1,8 +1,8 @@
-import { defineComponent } from 'vue'
+import { type App, defineComponent } from 'vue'
 
 import { CIcon } from '../icon'
 
-export const CSpinner = defineComponent({
+const CSpinner = defineComponent({
   name: 'CSpinner',
   props: CIcon.props,
   render () {
@@ -35,5 +35,10 @@ export const CSpinner = defineComponent({
         </svg>
       </CIcon>
     )
+  },
+  install (app: App) {
+    app.component(CSpinner.name, CSpinner)
   }
 })
+
+export { CSpinner, CSpinner as default }

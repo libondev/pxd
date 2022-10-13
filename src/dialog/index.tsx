@@ -1,5 +1,6 @@
 import { onClickOutside, useEventListener } from '@vueuse/core'
 import {
+  type App,
   computed,
   defineComponent,
   ref,
@@ -10,7 +11,7 @@ import {
 import { useZIndex } from '../_hooks'
 import { createClassName, createWatchers } from '../_utils'
 
-export const CDialog = defineComponent({
+const CDialog = defineComponent({
   name: 'CDialog',
   props: {
     /**
@@ -187,5 +188,10 @@ export const CDialog = defineComponent({
         </Transition>
       </Teleport>
     )
+  },
+  install (app: App) {
+    app.component(CDialog.name, CDialog)
   }
 })
+
+export { CDialog, CDialog as default }

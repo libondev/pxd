@@ -1,5 +1,5 @@
 import { useToggle } from '@vueuse/core'
-import { computed, defineComponent } from 'vue'
+import { type App, computed, defineComponent } from 'vue'
 
 import { appendCSSUnit, createClassName } from '../_utils'
 import { CSpinner } from '../spinner'
@@ -114,5 +114,8 @@ export const CSwitch = defineComponent({
         </span>
       </button>
     )
+  },
+  install (app: App) {
+    app.component(CSwitch.name, CSwitch)
   }
 })

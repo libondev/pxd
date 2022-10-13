@@ -1,4 +1,4 @@
-import type { PropType } from 'vue'
+import type { App, PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
@@ -8,8 +8,7 @@ import { createClassName } from '../_utils'
 import { CSpinner } from '../spinner'
 
 // TODO 一键清除功能
-
-export const CButton = defineComponent({
+const CButton = defineComponent({
   name: 'CButton',
   props: {
     /**
@@ -108,5 +107,10 @@ export const CButton = defineComponent({
         { slots.default?.() }
       </button>
     )
+  },
+  install (app: App) {
+    app.component(CButton.name, CButton)
   }
 })
+
+export { CButton, CButton as default }

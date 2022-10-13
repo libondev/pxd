@@ -1,10 +1,10 @@
-import type { PropType } from 'vue'
+import type { App, PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
 import { CSSUnitValue } from '../_types'
 import { appendCSSUnit } from '../_utils'
 
-export const CIcon = defineComponent({
+const CIcon = defineComponent({
   name: 'CIcon',
   props: {
     size: {
@@ -34,5 +34,10 @@ export const CIcon = defineComponent({
         class='c-icon carbons-vertical-middle'
       >{ slots.default?.() }</i>
     )
+  },
+  install (app: App) {
+    app.component(CIcon.name, CIcon)
   }
 })
+
+export { CIcon, CIcon as default }
