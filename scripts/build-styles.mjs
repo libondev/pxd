@@ -15,7 +15,8 @@ function slash (path) {
 async function buildStyles () {
   const styleFiles = await glob('src/**/styles/*.scss')
 
-  styleFiles.push(join('src/_styles/base.css'))
+  styleFiles.push(join('src/_styles/base.scss'))
+  styleFiles.push(join('src/_styles/transitions.scss'))
   styleFiles.push(join('src/index.scss'))
 
   fs.mkdirSync(join('dist/_styles'))
