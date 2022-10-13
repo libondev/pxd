@@ -14,7 +14,7 @@
 
 @media (any-hover: hover) {
   .c-input--inner:not([disabled], [readonly]):hover {
-    background-color: var(--input-background-color-hover, var(--hover-gray));
+    background-color: var(--input-background-color-hover, var(--hover-state-color));
   }
 }
 
