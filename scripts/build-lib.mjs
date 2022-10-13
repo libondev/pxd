@@ -8,13 +8,14 @@ const outDir = resolve(process.cwd(), 'dist/')
 
 export default defineConfig({
   build: {
+    outDir: './dist',
     lib: {
-      entry: 'src/index.ts',
+      entry: './src/index.ts',
       formats: ['es'],
       fileName: '[name]'
     },
     rollupOptions: {
-      external: ['vue'],
+      external: ['vue', '@vueuse/core'],
       output: {
         name: 'es',
         dir: outDir,
