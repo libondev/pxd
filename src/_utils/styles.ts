@@ -13,7 +13,7 @@ export function createClassName (
   }
 
   if (typeof status === 'string') {
-    className += ' ' + status
+    className += ` ${status}`
   } else {
     status = status.filter(Boolean)
     className += ` ${status.join(' ')}`
@@ -22,7 +22,7 @@ export function createClassName (
   return className
 }
 
-export function appendCSSUnit (value: CSSUnitValue | number): string {
+export function appendCSSUnit (value: CSSUnitValue | string | number): string {
   if (typeof value === 'number') {
     return `${value}px`
   }
