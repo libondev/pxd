@@ -1,6 +1,6 @@
 /* eslint-disable simple-import-sort/imports */
 /* eslint-disable simple-import-sort/exports */
-import type { App, Component } from 'vue'
+import type { App as Vue } from 'vue'
 
 import { globalSymbol } from './_internal'
 
@@ -25,15 +25,15 @@ export * from './spinner'
 export * from './switch'
 // #endregion export
 
-interface GlobalConfig {
+export interface GlobalConfig {
   size: import('./_types/props').Sizes
 }
 
-export default function installCarbons< VueApp extends App<string> > (
+export default function installCarbons<App extends Vue<string>> (
   globalConfig?: GlobalConfig
-): (app: VueApp) => VueApp {
-  // #region registry
-  const components = [
+): (app: App) => App {
+  const components = /*#__PURE__*/[
+    // #region registry
     CButton,
     CIcon,
     CInput,
@@ -41,14 +41,14 @@ export default function installCarbons< VueApp extends App<string> > (
     CDialog,
     CSpinner,
     CSwitch
-  ] as Array<Component & { name: string }>
-  // #endregion registry
+    // #endregion registry
+  ]
 
-  return (app: VueApp): VueApp => {
+  return (app: App): App => {
     app.provide(globalSymbol, Object.assign({ size: 'medium' }, globalConfig))
 
     components.forEach(component => {
-      app.component(component.name, component)
+      component.install(app)
     })
 
     return app
