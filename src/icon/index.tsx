@@ -26,12 +26,12 @@ export const CIcon = defineComponent({
 
     return () => (
       <i
-        role="img"
-        tabindex="-1"
-        aria-label="icon"
-        aria-hidden="true"
+        role='img'
+        tabindex='-1'
+        aria-label='icon'
+        aria-hidden='true'
         style={ inlineStyle.value }
-        class="c-icon carbons-vertical-middle"
+        class='c-icon carbons-vertical-middle'
       >{ slots.default?.() }</i>
     )
   }

@@ -16,11 +16,12 @@ module.exports = {
     'CHANGELOG.md',
     'node_modules',
     'playground',
+    'examples',
+    'docs',
     'dist'
   ],
-  overrides: [
-  ],
   rules: {
+    'jsx-quotes': ['error', 'prefer-single'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     '@typescript-eslint/prefer-optional-chain': 'off',

@@ -82,11 +82,11 @@ export const CInput = defineComponent({
     })
 
     return () => (
-      <div class="c-input carbons-inline-flex carbons-width-full carbons-vertical-top">
+      <div class='c-input carbons-inline-flex carbons-width-full carbons-vertical-top'>
         {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{ slots.prepend() }</div> : null }
         <input
-          type="text"
-          tabindex="0"
+          type='text'
+          tabindex='0'
           v-model={ modelValue.value }
           class={ innerClassName }
           disabled={ props.disabled }

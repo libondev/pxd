@@ -104,7 +104,7 @@ export const CButton = defineComponent({
         unfocused={ props.focusable ? null : true }
         onClick={ onButtonClick }
       >
-        { props.loading ? <CSpinner class="c-button--loading-icon" /> : null }
+        { props.loading ? <CSpinner class='c-button--loading-icon' /> : null }
         { slots.default?.() }
       </button>
     )

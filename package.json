@@ -23,8 +23,8 @@
     "build": "npm run build:lib && npm run build:styles",
     "build:lib": "vite build -c ./scripts/build-lib.mjs",
     "build:styles": "node ./scripts/build-styles.mjs",
-    "stylelint": "stylelint --fix src/**/*.{scss,css}",
-    "lint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
+    "stylelint": "stylelint --fix src/**/*.{css,scss}",
+    "eslint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
   },
   "keywords": [],
   "author": "banlify <banlify@163.com>",
