@@ -10,6 +10,7 @@ import { CIcon } from './icon'
 import { CInput } from './input'
 import { CProvider } from './provider'
 import { CDialog } from './dialog'
+import { CSwitch } from './switch'
 // #endregion
 
 // #region
@@ -18,7 +19,8 @@ const components = [
   CIcon,
   CInput,
   CProvider,
-  CDialog
+  CDialog,
+  CSwitch
 ] as Array<Component & { name: string }>
 // #endregion
 
