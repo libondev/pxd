@@ -28,14 +28,14 @@ if (!/[a-zA-Z]+/.test(componentName)) {
 
 cd('./src')
 
-const camelCase = toPascalCase(componentName)
+const camelCase = `C${toPascalCase(componentName)}`
 
-const COMPONENT_TSX = `import type { PropType } from 'vue'\nimport { defineComponent } from 'vue'
+const COMPONENT_TSX = `import type { App, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 import { createClassName } from '../_utils'
 
-export const C${camelCase} = defineComponent({
-  name: 'C${camelCase}',
+const ${camelCase} = defineComponent({
   props: {},
   setup (props, { emit, slots }) {
     const className = createClassName('${componentName}')
@@ -47,8 +47,13 @@ export const C${camelCase} = defineComponent({
         { slots.default?.() }
       </div>
     )
+  },
+  install (app: App) {
+    app.component(${camelCase}.name, ${camelCase})
   }
-})\n`
+})\n
+export { ${camelCase}, ${camelCase} as default }
+`
 
 const entryScssFileContent = fs.readFileSync('./index.scss', 'utf-8')
 const scssMs = new MagicString(entryScssFileContent)
@@ -62,12 +67,12 @@ const entry = new MagicString(entryJsFileContent)
 
 const importStatementIndex = entryJsFileContent.indexOf('\n// #endregion import')
 const exportStatementIndex = entryJsFileContent.indexOf('\n// #endregion export')
-const registryStatementIndex = entryJsFileContent.indexOf('\n  ] as Array<Component & { name: string }>')
+const registryStatementIndex = entryJsFileContent.indexOf('\n    // #endregion registry')
 
 entry.overwrite(
   importStatementIndex,
   importStatementIndex + 1,
-  `\nimport { C${camelCase} } from './${componentName}'\n`
+  `\nimport { ${camelCase} } from './${componentName}'\n`
 )
 
 entry.overwrite(
@@ -79,7 +84,7 @@ entry.overwrite(
 entry.overwrite(
   registryStatementIndex,
   registryStatementIndex + 1,
-  `,\n    C${camelCase}\n`
+  `,\n    ${camelCase}\n`
 )
 
 await $`mkdir ${componentName}`
