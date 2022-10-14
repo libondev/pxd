@@ -60,10 +60,6 @@
   color: var(--white-color);
   cursor: pointer;
 
-  & + & {
-    margin-left: 10px;
-  }
-
   &[disabled] {
     cursor: not-allowed;
     opacity: 0.7;
@@ -173,24 +169,28 @@
   &--default:focus,
   &--default-plain:focus,
   &--default-ghost:focus {
+    z-index: 1;
     outline-color: var(--color-default-focus, var(--border-color));
   }
 
   &--primary:focus,
   &--primary-plain:focus,
   &--primary-ghost:focus {
-    outline-color: var(--color-primary-focus, var(--primary-7));
+    z-index: 1;
+    outline-color: var(--color-primary-focus, var(--primary-6));
   }
 
   &--warning:focus,
   &--warning-plain:focus,
   &--warning-ghost:focus {
-    outline-color: var(--color-warning-focus, var(--warning-7));
+    z-index: 1;
+    outline-color: var(--color-warning-focus, var(--warning-6));
   }
 
   &--danger:focus,
   &--danger-plain:focus,
   &--danger-ghost:focus {
-    outline-color: var(--color-danger-focus, var(--danger-7));
+    z-index: 1;
+    outline-color: var(--color-danger-focus, var(--danger-6));
   }
 }

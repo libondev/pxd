@@ -75,7 +75,7 @@ const Button = defineComponent({
           : VARIANTS.includes(props.status)
             ? props.status
             : 'default'
-    ], [useSize(props).value, 'carbons-transition'])
+    ], [useSize(props).value, 'carbons-transition carbons-relative'])
 
     const className = computed(() => {
       return staticClassName + (props.loading ? ' c-button--loading' : '')
