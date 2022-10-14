@@ -34,9 +34,9 @@ const camelCaseWithPrefix = `C${camelCase}`
 const COMPONENT_TSX = `import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
-import { createClassName } from '../_utils'
+import { createClassName, withInstall } from '../_utils'
 
-export const ${camelCaseWithPrefix} = defineComponent({
+const ${camelCase} = defineComponent({
   name: '${camelCaseWithPrefix}',
   props: {},
   setup (props, { emit, slots }) {
@@ -50,7 +50,10 @@ export const ${camelCaseWithPrefix} = defineComponent({
       </div>
     )
   }
-})\n`
+})
+
+export const ${camelCaseWithPrefix} = withInstall(${camelCase})
+export default ${camelCase}\n`
 
 const entryScssFileContent = fs.readFileSync('./index.scss', 'utf-8')
 const scss = new MagicString(entryScssFileContent)
@@ -90,8 +93,7 @@ await $`mkdir ${componentName}/styles`
 fs.writeFile(`${componentName}/styles/index.scss`, `.c-${componentName} {}`)
 fs.writeFile('./index.scss', scss.toString())
 
-fs.writeFile(`${componentName}/${camelCase}.tsx`, COMPONENT_TSX)
-fs.writeFile(`${componentName}/index.ts`, `export * from './${camelCase}'\n`)
+fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
 fs.writeFile('./index.ts', index.toString())
 
 console.log(`${bgGreen(' SUCCESS ')} Component 【${componentName}】 created successfully!`)
