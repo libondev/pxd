@@ -25,12 +25,14 @@ export * from './spinner'
 export * from './switch'
 // #endregion export
 
+export { default as CarbonsResolver } from './resolver'
+
 export interface GlobalConfig {
   size: import('./_types/props').Sizes
 }
 
-export default function installCarbons<App extends Vue<string>> (
-  globalConfig?: GlobalConfig
+export default function install<App extends Vue<string>> (
+  globalConfig: GlobalConfig = { size: 'medium' }
 ): (app: App) => App {
   const components = [
     // #region registry
@@ -45,7 +47,7 @@ export default function installCarbons<App extends Vue<string>> (
   ]
 
   return (app: App): App => {
-    app.provide(globalSymbol, Object.assign({ size: 'medium' }, globalConfig))
+    app.provide(globalSymbol, globalConfig)
 
     components.forEach(component => {
       component.install(app)
