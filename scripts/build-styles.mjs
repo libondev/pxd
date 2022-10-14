@@ -8,16 +8,16 @@ function slash (path) {
   return path
     .replace(/\\/g, '/')
     .replace(/\/?src\/?/, '')
-    .replace(/\/styles/, '')
     .replace(/\.scss$/, '.css')
 }
 
 async function buildStyles () {
-  const styleFiles = await glob('src/**/styles/*.scss')
+  const styleFiles = await glob('src/_styles/*.scss')
 
   styleFiles.push(join('src/_styles/base.scss'))
+  styleFiles.push(join('src/_styles/index.scss'))
+  styleFiles.push(join('src/_styles/tokens.scss'))
   styleFiles.push(join('src/_styles/transitions.scss'))
-  styleFiles.push(join('src/index.scss'))
 
   fs.mkdirSync(join('dist/_styles'))
 
