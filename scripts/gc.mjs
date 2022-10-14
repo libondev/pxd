@@ -55,19 +55,19 @@ const ${camelCase} = defineComponent({
 export const ${camelCaseWithPrefix} = withInstall(${camelCase})
 export default ${camelCase}\n`
 
-const entryScssFileContent = fs.readFileSync('./index.scss', 'utf-8')
-const scss = new MagicString(entryScssFileContent)
+const entryScssFileContent = fs.readFileSync('./_styles/index.scss', 'utf-8')
 const lastNewlineIndex = entryScssFileContent.lastIndexOf('\n')
 
-scss.overwrite(lastNewlineIndex, lastNewlineIndex + 1, `\n@import './${componentName}/styles/index.scss';\n`)
+const scss = new MagicString(entryScssFileContent)
+
+scss.overwrite(lastNewlineIndex, lastNewlineIndex + 1, `\n@import "./${componentName}.scss";\n`)
 
 const entryJsFileContent = fs.readFileSync('./index.ts', 'utf-8')
-
-const index = new MagicString(entryJsFileContent)
-
 const importStatementIndex = entryJsFileContent.indexOf('\n// #endregion import')
 const exportStatementIndex = entryJsFileContent.indexOf('\n// #endregion export')
 const registryStatementIndex = entryJsFileContent.indexOf('\n    // #endregion registry')
+
+const index = new MagicString(entryJsFileContent)
 
 index.overwrite(
   importStatementIndex,
@@ -88,10 +88,9 @@ index.overwrite(
 )
 
 await $`mkdir ${componentName}`
-await $`mkdir ${componentName}/styles`
 
-fs.writeFile(`${componentName}/styles/index.scss`, `.c-${componentName} {}`)
-fs.writeFile('./index.scss', scss.toString())
+fs.writeFile(`./_styles/${componentName}.scss`, `.c-${componentName} {}`)
+fs.writeFile('./_styles/index.scss', scss.toString())
 
 fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
 fs.writeFile('./index.ts', index.toString())
