@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, markRaw, unref, reactive } from 'vue'
 
 const value = ref(123)
 const status = ref(true)
@@ -12,23 +12,26 @@ const status = ref(true)
 <template>
   <main>
     <CProvider>
-      <CButton plain @click="status = true">open</CButton>
-      <CDialog v-model="status" title="这是一个只有标题的弹窗">
-        <!-- <div style="height: 1000px">1231</div> -->
+      <CButton>open123</CButton>
 
+      <CSwitch v-model="status" />
+      <br>
+      <br>
+      <!-- <CSwitch v-model="status" /> -->
+      <!-- <CDialog v-model="status" title="这是一个只有标题的弹窗">
         <template #footer>
           <CButton @click="status = false">Close</CButton>
           <CButton status="primary" @click="status = false">Confirm</CButton>
         </template>
-      </CDialog>
+      </CDialog> -->
     </CProvider>
   </main>
 </template>
 
 <style>
-  body {
+  /* body {
     background: #000
-  }
+  } */
 
   main {
     height: 300vh
