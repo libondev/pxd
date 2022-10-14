@@ -32,7 +32,7 @@ export interface GlobalConfig {
 export default function installCarbons<App extends Vue<string>> (
   globalConfig?: GlobalConfig
 ): (app: App) => App {
-  const components = /*#__PURE__*/[
+  const components = [
     // #region registry
     CButton,
     CIcon,

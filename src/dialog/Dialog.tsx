@@ -1,6 +1,5 @@
-import { onClickOutside, useEventListener } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 import {
-  type App,
   computed,
   defineComponent,
   ref,
@@ -8,10 +7,10 @@ import {
   Transition
 } from 'vue'
 
-import { useZIndex } from '../_hooks'
-import { createClassName, createWatchers } from '../_utils'
+import { useEventListener, useZIndex } from '../_hooks'
+import { createClassName, createWatchers, withInstall } from '../_utils'
 
-const CDialog = defineComponent({
+const Dialog = defineComponent({
   name: 'CDialog',
   props: {
     /**
@@ -113,7 +112,7 @@ const CDialog = defineComponent({
     if (props.lockScroll) {
       visibleWatchers.add((value) => {
         if (value) {
-          ;(document.activeElement as HTMLElement)?.blur()
+          ; (document.activeElement as HTMLElement)?.blur()
           document.body.classList.add('carbons-overflow-hidden')
           return
         }
@@ -143,7 +142,7 @@ const CDialog = defineComponent({
       let cleanFn: ReturnType<typeof useEventListener> | null
       visibleWatchers.add((value) => {
         if (value) {
-          cleanFn = useEventListener(document, 'keydown', (e) => {
+          cleanFn = useEventListener(document, 'keydown', (e: KeyboardEvent) => {
             if (e.key !== 'Escape') return
 
             close()
@@ -180,14 +179,14 @@ const CDialog = defineComponent({
 
     return () => (
       <Teleport to='body' disabled={!props.appendToBody}>
-        <Transition name='carbons-fade' { ...maskTransitionMethods }>
-          <div v-show={ props.modelValue } class={className.value} style={{ zIndex: zIndex.value }}>
-            <Transition name='carbons-zoom' { ...modalTransitionMethods }>
-              <dialog v-show={ modelVisible.value } open role='dialog' ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
+        <Transition name='carbons-fade' {...maskTransitionMethods}>
+          <div v-show={props.modelValue} class={className.value} style={{ zIndex: zIndex.value }}>
+            <Transition name='carbons-zoom' {...modalTransitionMethods}>
+              <dialog v-show={modelVisible.value} open role='dialog' ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
                 <div class='c-dialog--header'>
                   {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
                   {slots.label ?? props.label ? <p class='c-dialog--label'>{slots.label?.() ?? props.label}</p> : null}
-                  {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={ close } /> : null}
+                  {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={close} /> : null}
                 </div>
 
                 {slots.default && <div class='c-dialog--content'>{slots.default()}</div>}
@@ -198,10 +197,8 @@ const CDialog = defineComponent({
         </Transition>
       </Teleport>
     )
-  },
-  install (app: App) {
-    app.component(CDialog.name, CDialog)
   }
 })
 
-export { CDialog, CDialog as default }
+export const CDialog = withInstall(Dialog)
+export default Dialog

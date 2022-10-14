@@ -1,13 +1,13 @@
-import type { App, PropType } from 'vue'
+import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
 import { NATIVE_BUTTON_TYPES, VARIANTS } from '../_internal'
 import type { NativeButton, Sizes, VariantState } from '../_types'
-import { createClassName } from '../_utils'
-import { CSpinner } from '../spinner'
+import { createClassName, withInstall } from '../_utils'
+import CSpinner from '../spinner/Spinner'
 
-const CButton = defineComponent({
+const Button = defineComponent({
   name: 'CButton',
   props: {
     /**
@@ -88,20 +88,18 @@ const CButton = defineComponent({
 
     return () => (
       <button
-        type={ props.type }
-        tabindex={ disabled.value ? -1 : 0 }
-        class={ className.value }
-        disabled={ disabled.value }
-        onClick={ onButtonClick }
+        type={props.type}
+        tabindex={disabled.value ? -1 : 0}
+        class={className.value}
+        disabled={disabled.value}
+        onClick={onButtonClick}
       >
-        { props.loading ? <CSpinner class='c-button--loading-icon' /> : null }
-        { slots.default?.() }
+        {props.loading ? <CSpinner class='c-button--loading-icon' /> : null}
+        {slots.default?.()}
       </button>
     )
-  },
-  install (app: App) {
-    app.component(CButton.name, CButton)
   }
 })
 
-export { CButton, CButton as default }
+export const CButton = withInstall(Button)
+export default Button

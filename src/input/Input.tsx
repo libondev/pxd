@@ -1,12 +1,12 @@
-import type { App, PropType } from 'vue'
+import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
 import type { Sizes } from '../_types'
-import { createClassName } from '../_utils'
+import { createClassName, withInstall } from '../_utils'
 
 // TODO 非常非常多功能
-const CInput = defineComponent({
+const Input = defineComponent({
   name: 'CInput',
   props: {
     /**
@@ -95,10 +95,8 @@ const CInput = defineComponent({
         {slots.append ? <div class={'c-input--append ' + size.value}>{ slots.append() }</div> : null }
       </div>
     )
-  },
-  install (app: App) {
-    app.component(CInput.name, CInput)
   }
 })
 
-export { CInput, CInput as default }
+export const CInput = withInstall(Input)
+export default Input
