@@ -19,6 +19,7 @@
   },
   "scripts": {
     "gen": "zx ./scripts/gc.mjs",
+    "predev": "vite build --watch",
     "dev": "cd ./playground && npm run dev",
     "build": "npm run build:lib && npm run build:styles",
     "build:lib": "vite build -c ./scripts/build-lib.mjs",
