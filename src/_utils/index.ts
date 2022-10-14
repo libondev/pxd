@@ -1,4 +1,3 @@
-export { noop } from './constants'
 export { useFocusTrap } from './focus-trap'
 export { withInstall } from './install'
 export { appendCSSUnit, createClassName } from './styles'

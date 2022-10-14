@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted } from 'vue'
 
-import { noop } from '../_utils'
+import { noop } from '../_internal'
 
 export function useEventListener (...args: any[]): typeof noop {
   let target: EventTarget
