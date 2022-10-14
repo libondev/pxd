@@ -7,7 +7,6 @@ import type { NativeButton, Sizes, VariantState } from '../_types'
 import { createClassName } from '../_utils'
 import { CSpinner } from '../spinner'
 
-// TODO 一键清除功能
 const CButton = defineComponent({
   name: 'CButton',
   props: {
@@ -61,13 +60,6 @@ const CButton = defineComponent({
     disabled: {
       type: Boolean,
       default: false
-    },
-    /**
-     * @zh 是否启用聚焦样式
-     */
-    focusable: {
-      type: Boolean,
-      default: true
     }
   },
   emits: ['click'],
@@ -100,7 +92,6 @@ const CButton = defineComponent({
         tabindex={ disabled.value ? -1 : 0 }
         class={ className.value }
         disabled={ disabled.value }
-        unfocused={ props.focusable ? null : true }
         onClick={ onButtonClick }
       >
         { props.loading ? <CSpinner class='c-button--loading-icon' /> : null }

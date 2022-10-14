@@ -21,15 +21,16 @@
 .c-input--inner {
   min-width: 8rem;
   border-radius: 0;
-  outline: none;
+  box-sizing: border-box;
   border: 1px solid transparent;
-  box-sizing: inherit;
+  outline: 2px solid transparent;
   background-color: transparent;
-  transition-property: border-color, background-color, outline-color;
+  transition-property: border-color, background-color, outline-color, outline-offset;
   font-family: inherit;
 
   &:not([disabled], [readonly]):focus {
-    border-color: var(--color-primary-focus, var(--primary-5));
+    outline-color: var(--color-primary-focus, var(--primary-6));
+    border-color: var(--color-primary-focus, var(--primary-6));
     background-color: var(--input-background-color-focus, var(--white-color));
   }
 

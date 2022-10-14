@@ -33,13 +33,6 @@ export const CSwitch = defineComponent({
       default: false
     },
     /**
-     * @zh 是否启用聚焦样式
-     */
-    focusable: {
-      type: Boolean,
-      default: true
-    },
-    /**
      * @zh 真值，用于切换为激活时的值
      */
     activeValue: {
@@ -104,7 +97,6 @@ export const CSwitch = defineComponent({
         tabindex='0'
         aria-label='toggle button'
         disabled={props.disabled}
-        unfocused={props.focusable ? null : true}
         aria-checked={ modelValue.value === props.activeValue }
         style={ computedStyle.value }
         onClick={ onSwitchClick }
