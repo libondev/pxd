@@ -5,7 +5,7 @@ import { useDisabled, useSize } from '../_hooks'
 import { NATIVE_BUTTON_TYPES, VARIANTS } from '../_internal'
 import type { NativeButton, Sizes, VariantState } from '../_types'
 import { createClassName, withInstall } from '../_utils'
-import CSpinner from '../spinner/Spinner'
+import CSpinner from '../spinner'
 
 const Button = defineComponent({
   name: 'CButton',

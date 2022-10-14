@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue'
 
 import { withInstall } from '../_utils'
-import CIcon from '../icon/Icon'
+import CIcon from '../icon'
 
 export const Spinner = defineComponent({
   name: 'CSpinner',

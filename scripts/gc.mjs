@@ -11,12 +11,12 @@ function capitalize (string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-function toCamelCase (string) {
+function toPascalCase (string) {
   return string.replace(/-(\w)/g, (_, c) => (c ? c.toUpperCase() : ''))
 }
 
-function toPascalCase (string) {
-  return capitalize(toCamelCase(string))
+function toCamelCase (string) {
+  return capitalize(toPascalCase(string))
 }
 
 const [,,, componentName] = process.argv
@@ -28,14 +28,16 @@ if (!/[a-zA-Z]+/.test(componentName)) {
 
 cd('./src')
 
-const camelCase = `C${toPascalCase(componentName)}`
+const camelCase = toCamelCase(componentName)
+const camelCaseWithPrefix = `C${camelCase}`
 
-const COMPONENT_TSX = `import type { App, PropType } from 'vue'
+const COMPONENT_TSX = `import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
 import { createClassName } from '../_utils'
 
-const ${camelCase} = defineComponent({
+export const ${camelCaseWithPrefix} = defineComponent({
+  name: '${camelCaseWithPrefix}',
   props: {},
   setup (props, { emit, slots }) {
     const className = createClassName('${componentName}')
@@ -47,53 +49,49 @@ const ${camelCase} = defineComponent({
         { slots.default?.() }
       </div>
     )
-  },
-  install (app: App) {
-    app.component(${camelCase}.name, ${camelCase})
   }
-})\n
-export { ${camelCase}, ${camelCase} as default }
-`
+})\n`
 
 const entryScssFileContent = fs.readFileSync('./index.scss', 'utf-8')
-const scssMs = new MagicString(entryScssFileContent)
+const scss = new MagicString(entryScssFileContent)
 const lastNewlineIndex = entryScssFileContent.lastIndexOf('\n')
 
-scssMs.overwrite(lastNewlineIndex, lastNewlineIndex + 1, `\n@import './${componentName}/styles/index.scss';\n`)
+scss.overwrite(lastNewlineIndex, lastNewlineIndex + 1, `\n@import './${componentName}/styles/index.scss';\n`)
 
 const entryJsFileContent = fs.readFileSync('./index.ts', 'utf-8')
 
-const entry = new MagicString(entryJsFileContent)
+const index = new MagicString(entryJsFileContent)
 
 const importStatementIndex = entryJsFileContent.indexOf('\n// #endregion import')
 const exportStatementIndex = entryJsFileContent.indexOf('\n// #endregion export')
 const registryStatementIndex = entryJsFileContent.indexOf('\n    // #endregion registry')
 
-entry.overwrite(
+index.overwrite(
   importStatementIndex,
   importStatementIndex + 1,
-  `\nimport { ${camelCase} } from './${componentName}'\n`
+  `\nimport { ${camelCaseWithPrefix} } from './${componentName}'\n`
 )
 
-entry.overwrite(
+index.overwrite(
   exportStatementIndex,
   exportStatementIndex + 1,
   `\nexport * from './${componentName}'\n`
 )
 
-entry.overwrite(
+index.overwrite(
   registryStatementIndex,
   registryStatementIndex + 1,
-  `,\n    ${camelCase}\n`
+  `,\n    ${camelCaseWithPrefix}\n`
 )
 
 await $`mkdir ${componentName}`
 await $`mkdir ${componentName}/styles`
 
-fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
-fs.writeFile('./index.ts', entry.toString())
-
 fs.writeFile(`${componentName}/styles/index.scss`, `.c-${componentName} {}`)
-fs.writeFileSync('./index.scss', scssMs.toString())
+fs.writeFile('./index.scss', scss.toString())
+
+fs.writeFile(`${componentName}/${camelCase}.tsx`, COMPONENT_TSX)
+fs.writeFile(`${componentName}/index.ts`, `export * from './${camelCase}'\n`)
+fs.writeFile('./index.ts', index.toString())
 
 console.log(`${bgGreen(' SUCCESS ')} Component 【${componentName}】 created successfully!`)

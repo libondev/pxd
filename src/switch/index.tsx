@@ -2,7 +2,7 @@ import { useToggle } from '@vueuse/core'
 import { computed, defineComponent } from 'vue'
 
 import { appendCSSUnit, createClassName, withInstall } from '../_utils'
-import CSpinner from '../spinner/Spinner'
+import CSpinner from '../spinner'
 
 export const Switch = defineComponent({
   name: 'CSwitch',
