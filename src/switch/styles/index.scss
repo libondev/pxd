@@ -1,3 +1,9 @@
+@media (any-hover: hover) {
+  .c-switch:hover .c-switch--node {
+    outline: 5px solid rgba(0 0 0 / 15%)
+  }
+}
+
 .c-switch {
   width: 2em;
   height: 1em;
@@ -10,14 +16,16 @@
   font-size: var(--size, 26px);
 
   &--node {
+    position: relative;
     margin: 2px;
     width: calc(1em - 6px);
     height: calc(1em - 6px);
     line-height: 1;
     border-radius: 1em;
     box-sizing: border-box;
-    transition: transform var(--transition-duration) var(--transition-timing-function);
+    transition-property: transform, outline;
     background-color: var(--color-default, var(--white-color));
+    z-index: 1;
   }
 
   &[disabled] {
@@ -44,6 +52,6 @@
   }
 
   &:focus {
-    outline-color: var(--active-color, var(--primary-7));
+    outline-color: var(--active-color, var(--border-color));
   }
 }
