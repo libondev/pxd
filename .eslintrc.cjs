@@ -25,6 +25,7 @@ module.exports = {
     'spaced-comment': ['error', 'always', { markers: ['#__PURE__'] }],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/prefer-optional-chain': 'off',
     '@typescript-eslint/restrict-plus-operands': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
