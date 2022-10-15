@@ -1,7 +1,7 @@
 import type { ComputedRef } from 'vue'
 import { computed, inject } from 'vue'
 
-import { formSymbol } from '../_internal'
+import { formSymbol } from '../../_internal'
 
 export function useDisabled (props: any): ComputedRef<boolean> {
   const formContext = inject(formSymbol, { disabled: false })
