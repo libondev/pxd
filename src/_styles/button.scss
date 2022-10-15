@@ -2,35 +2,35 @@
 @media (any-hover: hover) {
   .c-button {
     &--default:not([disabled]):hover {
-      background-color: var(--color-default-hover, var(--normal-gray));
+      background-color: var(--fill-2);
     }
 
     &--default-plain:not([disabled]):hover {
-      background-color: var(--color-default-plain-hover, var(--hover-state-color));
+      background-color: var(--fill-3);
     }
 
     &--primary:not([disabled]):hover {
-      background-color: var(--color-primary-hover, var(--primary-5));
+      background-color: var(--primary-5);
     }
 
     &--primary-plain:not([disabled]):hover {
-      background-color: var(--color-primary-plain-hover, var(--primary-2));
+      background-color: var(--primary-2);
     }
 
     &--warning:not([disabled]):hover {
-      background-color: var(--color-warning-hover, var(--warning-5));
+      background-color: var(--warning-5);
     }
 
     &--warning-plain:not([disabled]):hover {
-      background-color: var(--color-warning-plain-hover, var(--warning-2));
+      background-color: var(--warning-2);
     }
 
     &--danger:not([disabled]):hover {
-      background-color: var(--color-danger-hover, var(--danger-5));
+      background-color: var(--danger-5);
     }
 
     &--danger-plain:not([disabled]):hover {
-      background-color: var(--color-danger-plain-hover, var(--danger-2));
+      background-color: var(--danger-2);
     }
 
     // ghost hover
@@ -38,7 +38,7 @@
     &--primary-ghost:not([disabled]):hover,
     &--warning-ghost:not([disabled]):hover,
     &--danger-ghost:not([disabled]):hover {
-      background-color: var(--color-default-hover, var(--normal-gray));
+      background-color: var(--fill-2);
     }
   }
 }
@@ -50,14 +50,14 @@
   min-width: 8rem;
   vertical-align: top;
   border: 1px solid transparent;
-  outline: 2px solid transparent;
-  background-color: var(--input-background-color, var(--background-color));
+  outline: var(--focus-width) solid transparent;
+  background-color: var(--bg-1);
   transition-property: border-color, background-color, outline-color, outline-offset;
   box-sizing: border-box;
   user-select: none;
   text-align: left;
   border-radius: 0;
-  color: var(--white-color);
+  color: var(--color-white);
   cursor: pointer;
 
   &[disabled] {
@@ -75,55 +75,59 @@
   &--default,
   &--default-plain,
   &--default-ghost {
-    color: #424242;
+    color: var(--font-1);
   }
 
   &--default {
-    border-color: var(--color-default, var(--border-color));
-    background-color: var(--color-default, var(--white-color));
+    border-color: var(--border-2);
+    background-color: var(--bg-1);
 
     &-plain:not(&-ghost) {
-      background-color: var(--color-default-plain, var(--shadow-gray));
+      background-color: var(--fill-2);
       border-color: transparent;
+    }
+
+    &-ghost {
+      background-color: transparent;
     }
   }
 
   &--primary {
-    background-color: var(--color-primary, var(--primary-6));
+    background-color: var(--primary-6);
 
     &-plain:not(&-ghost) {
-      background-color: var(--color-primary-plain, var(--primary-1));
+      background-color: var(--primary-1);
       color: var(--primary-6);
     }
 
     &-ghost {
-      color: var(--color-primary, var(--primary-6));
+      color: var(--primary-6);
     }
   }
 
   &--warning {
-    background-color: var(--color-warning, var(--warning-6));
+    background-color: var(--warning-6);
 
     &-plain:not(&-ghost) {
-      background-color: var(--color-warning-plain, var(--warning-1));
+      background-color: var(--warning-1);
       color: var(--warning-6);
     }
 
     &-ghost {
-      color: var(--color-warning, var(--warning-6));
+      color: var(--warning-6);
     }
   }
 
   &--danger {
-    background-color: var(--color-danger, var(--danger-6));
+    background-color: var(--danger-6);
 
     &-plain:not(&-ghost) {
-      background-color: var(--color-danger-plain, var(--danger-1));
+      background-color: var(--danger-1);
       color: var(--danger-6);
     }
 
     &-ghost {
-      color: var(--color-danger, var(--danger-6));
+      color: var(--danger-6);
     }
   }
 
@@ -132,37 +136,40 @@
   &--primary-ghost:not([disabled]):active,
   &--warning-ghost:not([disabled]):active,
   &--danger-ghost:not([disabled]):active,
-  &--default:not([disabled]):active,
+  &--default:not([disabled]):active {
+    background-color: var(--fill-3);
+  }
+
   &--default-plain:not([disabled]):active {
-    background-color: var(--color-primary-active, var(--active-state-color));
+    background-color: var(--fill-4);
   }
 
   &--primary:not([disabled], .c-button--primary-ghost):active {
-    background-color: var(--color-primary-active, var(--primary-7));
+    background-color: var(--primary-7);
   }
 
   &--primary-plain:not([disabled], .c-button--primary-ghost):active {
-    background-color: var(--color-primary-plain-active, var(--primary-3));
+    background-color: var(--primary-3);
   }
 
   &--warning:not([disabled], .c-button--warning-ghost):active {
-    background-color: var(--color-warning-active, var(--warning-7));
+    background-color: var(--warning-7);
   }
 
   &--warning-plain:not([disabled], .c-button--warning-ghost):active {
-    background-color: var(--color-warning-plain-active, var(--warning-3));
+    background-color: var(--warning-3);
   }
 
   &--danger:not([disabled], .c-button--danger-ghost):active {
-    background-color: var(--color-danger-active, var(--danger-7));
+    background-color: var(--danger-7);
   }
 
   &--danger-plain:not([disabled], .c-button--danger-ghost):active {
-    background-color: var(--color-warning-plain-active, var(--danger-3));
+    background-color: var(--danger-3);
   }
 
   &:not(:active):focus-visible {
-    outline-offset: 2px;
+    outline-offset: var(--focus-offset);
   }
 
   // focus state
@@ -170,27 +177,27 @@
   &--default-plain:focus,
   &--default-ghost:focus {
     z-index: 1;
-    outline-color: var(--color-default-focus, var(--border-color));
+    outline-color: var(--border-2);
   }
 
   &--primary:focus,
   &--primary-plain:focus,
   &--primary-ghost:focus {
     z-index: 1;
-    outline-color: var(--color-primary-focus, var(--primary-6));
+    outline-color: var(--primary-4);
   }
 
   &--warning:focus,
   &--warning-plain:focus,
   &--warning-ghost:focus {
     z-index: 1;
-    outline-color: var(--color-warning-focus, var(--warning-6));
+    outline-color: var(--warning-4);
   }
 
   &--danger:focus,
   &--danger-plain:focus,
   &--danger-ghost:focus {
     z-index: 1;
-    outline-color: var(--color-danger-focus, var(--danger-6));
+    outline-color: var(--danger-4);
   }
 }

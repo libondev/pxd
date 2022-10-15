@@ -1,20 +1,20 @@
 .c-input {
-  background-color: var(--input-background-color, var(--shadow-gray));
+  background-color: var(--fill-2);
 
   &--prepend {
     box-sizing: inherit;
-    border-right: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--border-2);
   }
 
   &--append {
     box-sizing: inherit;
-    border-left: 1px dashed var(--border-color);
+    border-left: 1px dashed var(--border-2);
   }
 }
 
 @media (any-hover: hover) {
   .c-input--inner:not([disabled], [readonly]):hover {
-    background-color: var(--input-background-color-hover, var(--hover-state-color));
+    background-color: var(--fill-3);
   }
 }
 
@@ -23,19 +23,19 @@
   border-radius: 0;
   box-sizing: border-box;
   border: 1px solid transparent;
-  outline: 2px solid transparent;
+  outline: var(--focus-width) solid transparent;
   background-color: transparent;
   transition-property: border-color, background-color, outline-color, outline-offset;
   font-family: inherit;
 
   &:not([disabled], [readonly]):focus {
-    outline-color: var(--color-primary-focus, var(--primary-6));
-    border-color: var(--color-primary-focus, var(--primary-6));
-    background-color: var(--input-background-color-focus, var(--white-color));
+    outline-color: var(--primary-6);
+    border-color: var(--primary-6);
+    background-color: var(--bg-1);
   }
 
   &::placeholder {
-    color: #b6b6b6;
+    color: var(--font-4);
   }
 
   &[disabled] {

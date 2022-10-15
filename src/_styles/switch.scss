@@ -9,9 +9,9 @@
   height: 1em;
   padding: 0;
   box-sizing: border-box;
-  background-color: var(--inactive-color, var(--shadow-gray));
-  border: 1px solid var(--border-color);
-  outline: 2px solid transparent;
+  background-color: var(--inactive-color, var(--fill-2));
+  border: 1px solid var(--border-2);
+  outline: var(--focus-width) solid transparent;
   font-size: var(--size, 24px);
 
   &--node {
@@ -20,9 +20,9 @@
     height: calc(1em - 6px);
     line-height: 1;
     box-sizing: border-box;
-    outline: 6px solid transparent;
+    outline: 5px solid transparent;
     transition-property: transform, border-color;
-    background-color: var(--color-default, var(--white-color));
+    background-color: var(--color-default, var(--bg-1));
     z-index: 0;
   }
 
@@ -38,7 +38,7 @@
   }
 
   &[aria-checked="true"] {
-    background-color: var(--active-color, var(--primary-6));
+    background-color: var(--active-color, var(--primary-4));
 
     .c-switch--node {
       transform: translateX(1em);
@@ -46,11 +46,11 @@
   }
 
   &:not(:active):focus-visible {
-    outline-offset: 2px;
+    outline-offset: var(--focus-offset);
   }
 
   &:focus {
-    outline-color: var(--active-color, var(--border-color));
+    outline-color: var(--border-2);
     z-index: 1;
   }
 }
