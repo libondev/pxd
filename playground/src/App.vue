@@ -8,5 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterLink tabindex="-1" to="/about">About</RouterLink>
   </nav>
 
-  <RouterView />
+  <CButton>123</CButton>
+  <CSwitch />
+  <!-- <RouterView /> -->
 </template>
