@@ -1,6 +1,6 @@
 /* eslint-disable simple-import-sort/imports */
 /* eslint-disable simple-import-sort/exports */
-import type { App as Vue } from 'vue'
+import type { App } from 'vue'
 
 import { globalSymbol } from './_internal'
 
@@ -31,9 +31,12 @@ export interface GlobalConfig {
   size: import('./_types/props').Sizes
 }
 
-export default function install<App extends Vue<string>> (
+export default function install (
+  app: App,
   globalConfig: GlobalConfig = { size: 'medium' }
-): (app: App) => App {
+): App {
+  app.provide(globalSymbol, globalConfig)
+
   const components = [
     // #region registry
     CButton,
@@ -46,13 +49,9 @@ export default function install<App extends Vue<string>> (
     // #endregion registry
   ]
 
-  return (app: App): App => {
-    app.provide(globalSymbol, globalConfig)
+  components.forEach(component => {
+    component.install(app)
+  })
 
-    components.forEach(component => {
-      component.install(app)
-    })
-
-    return app
-  }
+  return app
 }
