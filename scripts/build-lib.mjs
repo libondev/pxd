@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       jsx(),
       // build dts on production
-      mode === 'development' && dts({
+      mode !== 'development' && dts({
         entryRoot: './src',
         outputDir: './dist',
         staticImport: true
