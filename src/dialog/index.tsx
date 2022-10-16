@@ -8,7 +8,7 @@ import {
 } from 'vue'
 
 import { useFocusTrap, useZIndex } from '../_hooks'
-import { createClassName, createWatchers, withInstall } from '../_utils'
+import { createWatchers, withInstall } from '../_utils'
 
 const Dialog = defineComponent({
   name: 'CDialog',
@@ -88,7 +88,9 @@ const Dialog = defineComponent({
   setup (props, { emit, slots }) {
     const dialogRef = ref()
     const zIndex = useZIndex()
-    const className = computed(() => createClassName('dialog', [], 'carbons-fixed carbons-flex-column carbons-items-center'))
+    const className = computed(() => {
+      return ['c-dialog carbons-fixed carbons-flex-col carbons-items-center']
+    })
 
     const modelVisible = ref(props.modelValue)
 
@@ -182,7 +184,7 @@ const Dialog = defineComponent({
                 role='dialog'
                 aria-labelledby={props.title}
                 aria-describedby={props.description}
-                class='c-dialog--inner carbons-relative carbons-flex-column'
+                class='c-dialog--inner carbons-relative carbons-flex-col'
               >
                 <div class='c-dialog--header'>
                   {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}

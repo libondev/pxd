@@ -1,8 +1,9 @@
 import { useToggle } from '@vueuse/core'
-import { computed, defineComponent } from 'vue'
+import { computed, defineAsyncComponent, defineComponent } from 'vue'
 
-import { appendCSSUnit, createClassName, withInstall } from '../_utils'
-import CSpinner from '../spinner'
+import { appendCSSUnit, withInstall } from '../_utils'
+
+const CSpinner = defineAsyncComponent(async () => await import('../spinner'))
 
 export const Switch = defineComponent({
   name: 'CSwitch',
@@ -62,9 +63,8 @@ export const Switch = defineComponent({
     }
   },
   setup (props, { emit }) {
-    const staticClassName = createClassName('switch', [], ['carbons-transition carbons-inline-block carbons-cursor-pointer carbons-relative'])
     const className = computed(() => {
-      return staticClassName + (props.loading ? ' c-switch--loading' : '')
+      return ['c-switch carbons-transition carbons-inline-block carbons-cursor-pointer carbons-relative', props.loading && ' c-switch--loading']
     })
 
     const modelValue = computed({

@@ -3,7 +3,7 @@ import { computed, defineComponent } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
 import type { Sizes } from '../_types'
-import { createClassName, withInstall } from '../_utils'
+import { withInstall } from '../_utils'
 
 // TODO 非常非常多功能
 const Input = defineComponent({
@@ -61,10 +61,11 @@ const Input = defineComponent({
   },
   setup (props, { slots, emit }) {
     const size = useSize(props)
-    const innerClassName = createClassName('input--inner', [], [
-      size.value,
+    const className = computed(() => [
+      'c-input--inner',
       'carbons-transition',
       'carbons-width-full',
+      `carbons-size-${size.value}`,
       props.ellipsis && 'carbons-overflow-ellipsis'
     ])
 
@@ -82,16 +83,16 @@ const Input = defineComponent({
 
     return () => (
       <div class='c-input carbons-inline-flex carbons-width-full carbons-vertical-top'>
-        {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{ slots.prepend() }</div> : null }
+        {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{slots.prepend()}</div> : null}
         <input
           type='text'
-          v-model={ modelValue.value }
-          class={ innerClassName }
-          disabled={ props.disabled }
-          readonly={ props.readonly }
-          placeholder={ placeholder.value }
+          v-model={modelValue.value}
+          class={className.value}
+          disabled={props.disabled}
+          readonly={props.readonly}
+          placeholder={placeholder.value}
         />
-        {slots.append ? <div class={'c-input--append ' + size.value}>{ slots.append() }</div> : null }
+        {slots.append ? <div class={'c-input--append ' + size.value}>{slots.append()}</div> : null}
       </div>
     )
   }

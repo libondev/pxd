@@ -1,11 +1,11 @@
-import type { PropType } from 'vue'
-import { computed, defineComponent } from 'vue'
+import { computed, defineAsyncComponent, defineComponent, PropType } from 'vue'
 
 import { useDisabled, useSize } from '../_hooks'
 import { NATIVE_BUTTON_TYPES, VARIANTS } from '../_internal'
 import type { NativeButton, Sizes, VariantState } from '../_types'
-import { createClassName, withInstall } from '../_utils'
-import CSpinner from '../spinner'
+import { withInstall } from '../_utils'
+
+const CSpinner = defineAsyncComponent(async () => await import('../spinner'))
 
 const Button = defineComponent({
   name: 'CButton',
@@ -66,23 +66,24 @@ const Button = defineComponent({
   setup (props, { emit, slots }) {
     const disabled = useDisabled(props)
 
-    // plain || ghost || status
-    const staticClassName = createClassName('button', [
-      props.plain
-        ? props.status + '-plain'
-        : props.ghost
-          ? props.status + '-ghost'
-          : VARIANTS.includes(props.status)
-            ? props.status
-            : 'default'
-    ], [useSize(props).value, 'carbons-transition carbons-relative'])
-
+    const NAMESPACE = 'c-button'
+    const size = useSize(props)
     const className = computed(() => {
-      return staticClassName + (props.loading ? ' c-button--loading' : '')
+      let className = `${NAMESPACE} `
+
+      if (props.plain) {
+        className += `${NAMESPACE}--${props.status}-plain`
+      } else if (props.ghost) {
+        className += `${NAMESPACE}--${props.status}-ghost`
+      } else {
+        className += `${NAMESPACE}--${VARIANTS.includes(props.status) ? props.status : 'default'}`
+      }
+
+      return [className, `carbons-transition carbons-relative carbons-size-${size.value}`, props.loading && `${NAMESPACE}--loading`]
     })
 
     const onButtonClick = (event: MouseEvent): void => {
-      if (props.loading) { return }
+      if (props.loading) return
       emit('click', event)
     }
 
