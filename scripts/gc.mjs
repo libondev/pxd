@@ -34,7 +34,7 @@ const camelCaseWithPrefix = `C${camelCase}`
 const COMPONENT_TSX = `import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 
-import { withInstall } from '../_utils'
+import { getFilledClassNames, withInstall } from '../_utils'
 
 const ${camelCase} = defineComponent({
   name: '${camelCaseWithPrefix}',
@@ -46,7 +46,7 @@ const ${camelCase} = defineComponent({
 
     return () => (
       <div
-        class={ className }
+        class={ className.value }
       >
         { slots.default?.() }
       </div>
@@ -89,10 +89,10 @@ index.overwrite(
   `,\n    ${camelCaseWithPrefix}\n`
 )
 
-if (!fs.statSync(componentName)) {
-  await $`mkdir ${componentName}`
-} else {
-  await $`rm -rf ${componentName}`
+try {
+  fs.statSync(componentName)
+  fs.emptyDir(componentName)
+} catch (e) {
   await $`mkdir ${componentName}`
 }
 
