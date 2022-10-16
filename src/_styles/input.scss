@@ -34,6 +34,7 @@
   }
 
   &::placeholder {
+    user-select: none;
     color: var(--font-4);
   }
 
