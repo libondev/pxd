@@ -1,3 +1,3 @@
 # Carbons
 
-A simple component library for Vue@3.
+A stylish modern component library for Vue3.
