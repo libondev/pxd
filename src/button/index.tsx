@@ -89,7 +89,6 @@ const Button = defineComponent({
     return () => (
       <button
         type={props.type}
-        tabindex={disabled.value ? -1 : 0}
         class={className.value}
         disabled={disabled.value}
         onClick={onButtonClick}

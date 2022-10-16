@@ -27,7 +27,6 @@ const Icon = defineComponent({
     return () => (
       <i
         role='img'
-        tabindex='-1'
         aria-label='icon'
         aria-hidden='true'
         style={ inlineStyle.value }

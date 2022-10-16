@@ -85,7 +85,6 @@ const Input = defineComponent({
         {slots.prepend ? <div class={'c-input--prepend ' + size.value}>{ slots.prepend() }</div> : null }
         <input
           type='text'
-          tabindex='0'
           v-model={ modelValue.value }
           class={ innerClassName }
           disabled={ props.disabled }

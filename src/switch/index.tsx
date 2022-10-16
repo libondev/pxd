@@ -94,7 +94,6 @@ export const Switch = defineComponent({
     return () => (
       <button
         class={className.value}
-        tabindex='0'
         aria-label='toggle button'
         disabled={props.disabled}
         aria-checked={ modelValue.value === props.activeValue }

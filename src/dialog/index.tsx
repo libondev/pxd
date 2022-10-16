@@ -30,7 +30,7 @@ const Dialog = defineComponent({
     /**
      * @zh 标题下方的描述
      */
-    label: {
+    description: {
       type: String,
       default: ''
     },
@@ -112,7 +112,7 @@ const Dialog = defineComponent({
     if (props.lockScroll) {
       visibleWatchers.add((value) => {
         if (value) {
-          ; (document.activeElement as HTMLElement)?.blur()
+          (document.activeElement as HTMLElement)?.blur()
           document.body.classList.add('carbons-overflow-hidden')
           return
         }
@@ -182,10 +182,18 @@ const Dialog = defineComponent({
         <Transition name='carbons-fade' {...maskTransitionMethods}>
           <div v-show={props.modelValue} class={className.value} style={{ zIndex: zIndex.value }}>
             <Transition name='carbons-zoom' {...modalTransitionMethods}>
-              <dialog v-show={modelVisible.value} open role='dialog' ref={dialogRef} class='c-dialog--inner carbons-flex-column'>
+              <dialog
+                v-show={modelVisible.value}
+                open
+                role='dialog'
+                ref={dialogRef}
+                aria-labelledby={props.title}
+                aria-describedby={props.description}
+                class='c-dialog--inner carbons-flex-column'
+              >
                 <div class='c-dialog--header'>
                   {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
-                  {slots.label ?? props.label ? <p class='c-dialog--label'>{slots.label?.() ?? props.label}</p> : null}
+                  {slots.description ?? props.description ? <p class='c-dialog--description'>{slots.description?.() ?? props.description}</p> : null}
                   {props.showClose ? <button class='c-dialog--close carbons-absolute carbons-transition' onClick={close} /> : null}
                 </div>
 
