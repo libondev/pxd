@@ -1,0 +1,65 @@
+.c-checkbox {
+  &:hover &--target {
+    border-color: var(--primary-6)
+  }
+
+  &--target {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+    box-sizing: border-box;
+    border: 1px solid var(--border-2);
+    outline: var(--focus-width) solid transparent;
+    transition-property: outline-offset, outline-color, background-color, border-color;
+    background-color: var(--bg-1);
+    font-size: 16px;
+
+    &::before {
+      display: block;
+      width: .6em;
+      height: .2em;
+      background-color: var(--bg-1);
+      transition-property: transform;
+      transition-duration: var(--transition-duration);
+      transition-timing-function: var(--transition-timing-function);
+    }
+
+    svg {
+      display: none;
+      fill: var(--bg-1)
+    }
+  }
+
+  &--label {
+    margin-left: 0.4em;
+  }
+
+  input {
+    position: absolute;
+    cursor: pointer;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  input:checked + &--target {
+    background-color: var(--primary-4);
+    border-color: var(--primary-6)
+  }
+
+  // half checked
+  &.indeterminate input:checked + &--target::before {
+    content: '';
+  }
+
+  // checked
+  &:not(.indeterminate) input:checked + &--target svg {
+    display: block;
+  }
+
+  input:not(:active):focus-visible + &--target {
+    outline-offset: var(--focus-offset);
+    outline-color: var(--border-2);
+  }
+}

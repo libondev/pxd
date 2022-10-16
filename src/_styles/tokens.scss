@@ -143,6 +143,9 @@ body {
 
   &-items-center {
     align-items: center;
+  }
+
+  &-justify-center {
     justify-content: center;
   }
 
@@ -180,6 +183,10 @@ body {
 
   &-cursor-pointer {
     cursor: pointer;
+  }
+
+  &-select-none {
+    user-select: none;
   }
 
   &-pointer-events-none {
