@@ -8,7 +8,7 @@ import {
 } from 'vue'
 
 import { useFocusTrap, useZIndex } from '../_hooks'
-import { createWatchers, withInstall } from '../_utils'
+import { createWatchers, getFilledClassNames, withInstall } from '../_utils'
 
 const Dialog = defineComponent({
   name: 'CDialog',
@@ -89,7 +89,7 @@ const Dialog = defineComponent({
     const dialogRef = ref()
     const zIndex = useZIndex()
     const className = computed(() => {
-      return ['c-dialog carbons-fixed carbons-flex-col carbons-items-center']
+      return ['c-dialog', getFilledClassNames('fixed flex-col items-center justify-center')]
     })
 
     const modelVisible = ref(props.modelValue)

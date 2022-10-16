@@ -3,7 +3,7 @@ import { computed, defineAsyncComponent, defineComponent, PropType } from 'vue'
 import { useDisabled, useSize } from '../_hooks'
 import { NATIVE_BUTTON_TYPES, VARIANTS } from '../_internal'
 import type { NativeButton, Sizes, VariantState } from '../_types'
-import { withInstall } from '../_utils'
+import { getFilledClassNames, withInstall } from '../_utils'
 
 const CSpinner = defineAsyncComponent(async () => await import('../spinner'))
 
@@ -79,7 +79,7 @@ const Button = defineComponent({
         className += `${NAMESPACE}--${VARIANTS.includes(props.status) ? props.status : 'default'}`
       }
 
-      return [className, `carbons-transition carbons-relative carbons-size-${size.value}`, props.loading && `${NAMESPACE}--loading`]
+      return [className, getFilledClassNames('transition relative'), `carbons-size-${size.value}`, props.loading && `${NAMESPACE}--loading`]
     })
 
     const onButtonClick = (event: MouseEvent): void => {

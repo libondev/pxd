@@ -100,7 +100,7 @@ export const Switch = defineComponent({
         style={ computedStyle.value }
         onClick={ onSwitchClick }
       >
-        <span class='c-switch--node carbons-flex carbons-items-center carbons-transition carbons-relative'>
+        <span class='c-switch--node carbons-flex carbons-items-center carbons-justify-center carbons-transition carbons-relative'>
           { props.loading ? <CSpinner size='.68em' color='var(--primary-6)' /> : null }
         </span>
       </button>
