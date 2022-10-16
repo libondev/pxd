@@ -12,6 +12,7 @@ import { CInput } from './input'
 import { CProvider } from './provider'
 import { CSpinner } from './spinner'
 import { CSwitch } from './switch'
+import { CSpace } from './space'
 // #endregion import
 
 // #region export
@@ -23,6 +24,7 @@ export * from './input'
 export * from './provider'
 export * from './spinner'
 export * from './switch'
+export * from './space'
 // #endregion export
 
 export { default as CarbonsResolver } from './resolver'
@@ -45,7 +47,8 @@ export default function install (
     CProvider,
     CDialog,
     CSpinner,
-    CSwitch
+    CSwitch,
+    CSpace
     // #endregion registry
   ]
 

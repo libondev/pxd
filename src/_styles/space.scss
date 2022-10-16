@@ -1,0 +1,20 @@
+.c-space {
+  flex-wrap: wrap;
+  align-items: var(--align, center);
+
+  &--mini {
+    gap: calc(var(--size-mini) * 2);
+  }
+
+  &--small {
+    gap: calc(var(--size-small) * 2);
+  }
+
+  &--medium {
+    gap: calc(var(--size-medium) * 2);
+  }
+
+  &--large {
+    gap: calc(var(--size-large) * 2);
+  }
+}
