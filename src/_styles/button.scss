@@ -170,34 +170,31 @@
 
   &:not(:active):focus-visible {
     outline-offset: var(--focus-offset);
+    z-index: 1
   }
 
   // focus state
-  &--default:focus,
-  &--default-plain:focus,
-  &--default-ghost:focus {
-    z-index: 1;
+  &--default:not(:active):focus-visible,
+  &--default-plain:not(:active):focus-visible,
+  &--default-ghost:not(:active):focus-visible {
     outline-color: var(--border-2);
   }
 
-  &--primary:focus,
-  &--primary-plain:focus,
-  &--primary-ghost:focus {
-    z-index: 1;
+  &--primary:not(:active):focus-visible,
+  &--primary-plain:not(:active):focus-visible,
+  &--primary-ghost:not(:active):focus-visible {
     outline-color: var(--primary-4);
   }
 
-  &--warning:focus,
-  &--warning-plain:focus,
-  &--warning-ghost:focus {
-    z-index: 1;
+  &--warning:not(:active):focus-visible,
+  &--warning-plain:not(:active):focus-visible,
+  &--warning-ghost:not(:active):focus-visible {
     outline-color: var(--warning-4);
   }
 
-  &--danger:focus,
-  &--danger-plain:focus,
-  &--danger-ghost:focus {
-    z-index: 1;
+  &--danger:not(:active):focus-visible,
+  &--danger-plain:not(:active):focus-visible,
+  &--danger-ghost:not(:active):focus-visible {
     outline-color: var(--danger-4);
   }
 }

@@ -93,8 +93,8 @@ body {
 
 .carbons {
   &-transition {
-    transition-duration: var(--transition-duration, 0.15s);
-    transition-timing-function: var(--transition-timing-function, ease-in-out);
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-timing-function);
   }
 
   &-mini {

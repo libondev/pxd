@@ -21,7 +21,7 @@
     line-height: 1;
     box-sizing: border-box;
     outline: 5px solid transparent;
-    transition-property: transform, border-color;
+    transition-property: transform, border-color, outline-color;
     background-color: var(--color-default, var(--bg-1));
     z-index: 0;
   }
@@ -47,9 +47,6 @@
 
   &:not(:active):focus-visible {
     outline-offset: var(--focus-offset);
-  }
-
-  &:focus {
     outline-color: var(--border-2);
     z-index: 1;
   }

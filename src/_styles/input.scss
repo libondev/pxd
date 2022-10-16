@@ -23,13 +23,12 @@
   border-radius: 0;
   box-sizing: border-box;
   border: 1px solid transparent;
-  outline: var(--focus-width) solid transparent;
+  outline: none;
   background-color: transparent;
-  transition-property: border-color, background-color, outline-color, outline-offset;
+  transition-property: border-color, background-color;
   font-family: inherit;
 
-  &:not([disabled], [readonly]):focus {
-    outline-color: var(--primary-6);
+  &:not([disabled], [readonly]):focus-visible {
     border-color: var(--primary-6);
     background-color: var(--bg-1);
   }
