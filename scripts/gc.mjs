@@ -32,15 +32,17 @@ const camelCase = toCamelCase(componentName)
 const camelCaseWithPrefix = `C${camelCase}`
 
 const COMPONENT_TSX = `import type { PropType } from 'vue'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 
-import { createClassName, withInstall } from '../_utils'
+import { withInstall } from '../_utils'
 
 const ${camelCase} = defineComponent({
   name: '${camelCaseWithPrefix}',
   props: {},
   setup (props, { emit, slots }) {
-    const className = createClassName('${componentName}')
+    const className = computed(() => {
+      return ['c-${componentName}']
+    })
 
     return () => (
       <div
@@ -87,7 +89,12 @@ index.overwrite(
   `,\n    ${camelCaseWithPrefix}\n`
 )
 
-await $`mkdir ${componentName}`
+if (!fs.statSync(componentName)) {
+  await $`mkdir ${componentName}`
+} else {
+  await $`rm -rf ${componentName}`
+  await $`mkdir ${componentName}`
+}
 
 fs.writeFile(`./_styles/${componentName}.scss`, `.c-${componentName} {}`)
 fs.writeFile('./_styles/index.scss', scss.toString())
