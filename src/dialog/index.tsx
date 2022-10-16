@@ -7,7 +7,7 @@ import {
   Transition
 } from 'vue'
 
-import { useEventListener, useZIndex } from '../_hooks'
+import { useFocusTrap, useZIndex } from '../_hooks'
 import { createClassName, createWatchers, withInstall } from '../_utils'
 
 const Dialog = defineComponent({
@@ -96,23 +96,15 @@ const Dialog = defineComponent({
       emit('update:modelValue', false)
     }
 
+    const { activate, deactivate } = useFocusTrap(dialogRef)
     const visibleWatchers = createWatchers(() => props.modelValue, {
-      initialValue: [
-        (value) => {
-          if (value) {
-            dialogRef.value.show()
-          } else {
-            dialogRef.value.open = false
-          }
-        }
-      ]
+      initialValue: [(value) => value ? activate() : deactivate()]
     })
 
     // lock body scroll
     if (props.lockScroll) {
       visibleWatchers.add((value) => {
         if (value) {
-          (document.activeElement as HTMLElement)?.blur()
           document.body.classList.add('carbons-overflow-hidden')
           return
         }
@@ -139,16 +131,17 @@ const Dialog = defineComponent({
 
     // press escape close dialog
     if (props.closeOnPressEscape) {
-      let cleanFn: ReturnType<typeof useEventListener> | null
+      const listener = (e: KeyboardEvent): void => {
+        if (e.key !== 'Escape') return
+
+        close()
+      }
+
       visibleWatchers.add((value) => {
         if (value) {
-          cleanFn = useEventListener(document, 'keydown', (e: KeyboardEvent) => {
-            if (e.key !== 'Escape') return
-
-            close()
-            cleanFn?.()
-            cleanFn = null
-          })
+          document.addEventListener('keydown', listener)
+        } else {
+          document.removeEventListener('keydown', listener)
         }
       })
     }
@@ -182,14 +175,14 @@ const Dialog = defineComponent({
         <Transition name='carbons-fade' {...maskTransitionMethods}>
           <div v-show={props.modelValue} class={className.value} style={{ zIndex: zIndex.value }}>
             <Transition name='carbons-zoom' {...modalTransitionMethods}>
-              <dialog
+              <div
                 v-show={modelVisible.value}
-                open
-                role='dialog'
                 ref={dialogRef}
+                tabindex='0'
+                role='dialog'
                 aria-labelledby={props.title}
                 aria-describedby={props.description}
-                class='c-dialog--inner carbons-flex-column'
+                class='c-dialog--inner carbons-relative carbons-flex-column'
               >
                 <div class='c-dialog--header'>
                   {slots.title ?? props.title ? <span class='c-dialog--text'>{slots.title?.() ?? props.title}</span> : null}
@@ -199,7 +192,7 @@ const Dialog = defineComponent({
 
                 {slots.default && <div class='c-dialog--content'>{slots.default()}</div>}
                 {slots.footer && <div class='c-dialog--footer'>{slots.footer()}</div>}
-              </dialog>
+              </div>
             </Transition>
           </div>
         </Transition>
