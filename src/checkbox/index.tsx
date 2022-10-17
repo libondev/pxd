@@ -48,7 +48,8 @@ const Checkbox = defineComponent({
     })
 
     function onChangeValue (evt: Event): void {
-      emit('change')
+      emit('change', props.value)
+      emit('update:modelValue')
     }
 
     return () => (
