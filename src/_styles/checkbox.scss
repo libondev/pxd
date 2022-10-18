@@ -34,15 +34,6 @@
     margin-left: 0.4em;
   }
 
-  input {
-    position: absolute;
-    cursor: pointer;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    margin: 0;
-  }
-
   input:checked + &--target {
     background-color: var(--primary-4);
     border-color: var(--primary-6)

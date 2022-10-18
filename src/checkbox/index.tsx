@@ -60,6 +60,7 @@ const Checkbox = defineComponent({
         <input
           ref={checkboxRef}
           type='checkbox'
+          class='carbons-outside'
           value={props.value}
           checked={checked.value}
           onChange={onChangeValue}
