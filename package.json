@@ -26,7 +26,13 @@
     "stylelint": "stylelint --fix src/**/*.{css,scss}",
     "eslint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
   },
-  "keywords": [],
+  "keywords": [
+    "vue",
+    "vue3",
+    "component",
+    "library",
+    "ui"
+  ],
   "author": "banlify <banlify@163.com>",
   "repository": {
     "type": "git",
@@ -38,7 +44,9 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.38.0",
+    "@vitejs/plugin-vue": "^3.1.2",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
+    "@vue/eslint-config-typescript": "^11.0.1",
     "csso": "^5.0.5",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
@@ -46,6 +54,7 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-vue": "^9.6.0",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
     "kolorist": "^1.5.1",
@@ -55,7 +64,7 @@
     "stylelint-config-standard": "^26.0.0",
     "stylelint-scss": "^4.2.0",
     "typescript": "^4.8.3",
-    "unplugin-vue-components": "^0.22.7",
+    "unplugin-auto-import": "^0.11.2",
     "vite": "^3.1.2",
     "vite-plugin-dts": "^1.6.1",
     "vue": "^3.2.39",
