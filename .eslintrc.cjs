@@ -6,7 +6,12 @@ module.exports = {
     node: true
   },
   plugins: ['simple-import-sort'],
-  extends: ['standard-with-typescript'],
+  extends: [
+    'standard-with-typescript',
+    'plugin:vue/vue3-essential',
+    '@vue/eslint-config-typescript',
+    './.eslintrc-auto-import.json'
+  ],
   parserOptions: {
     project: './tsconfig.json',
     ecmaVersion: 'latest',
