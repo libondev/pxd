@@ -5,10 +5,11 @@ module.exports = {
     es2021: true,
     node: true
   },
-  plugins: ['simple-import-sort'],
+  plugins: ['unicorn', 'promise', 'import'],
   extends: [
     'standard-with-typescript',
     'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-recommended',
     '@vue/eslint-config-typescript',
     './.eslintrc-auto-import.json'
   ],
@@ -27,13 +28,11 @@ module.exports = {
   ],
   rules: {
     'jsx-quotes': ['error', 'prefer-single'],
-    'spaced-comment': ['error', 'always', { markers: ['#__PURE__'] }],
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/prefer-optional-chain': 'off',
     '@typescript-eslint/restrict-plus-operands': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
-    '@typescript-eslint/restrict-template-expressions': 'off'
+    '@typescript-eslint/restrict-template-expressions': 'off',
+    'vue/multi-word-component-names': 'off'
   }
 }

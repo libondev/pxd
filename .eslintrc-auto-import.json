@@ -1,14 +1,5 @@
 {
   "globals": {
-    "CButton": true,
-    "CCheckbox": true,
-    "CDialog": true,
-    "CIcon": true,
-    "CInput": true,
-    "CProvider": true,
-    "CSpace": true,
-    "CSpinner": true,
-    "CSwitch": true,
     "EffectScope": true,
     "Spinner": true,
     "Switch": true,
