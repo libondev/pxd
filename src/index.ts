@@ -14,6 +14,7 @@ import { CSpinner } from './spinner'
 import { CSwitch } from './switch'
 import { CSpace } from './space'
 import { CCheckbox } from './checkbox'
+import { CRadio } from './radio'
 // #endregion import
 
 // #region export
@@ -27,6 +28,7 @@ export * from './spinner'
 export * from './switch'
 export * from './space'
 export * from './checkbox'
+export * from './radio'
 // #endregion export
 
 export { default as CarbonsResolver } from './resolver'
@@ -51,7 +53,8 @@ export default function install (
     CSpinner,
     CSwitch,
     CSpace,
-    CCheckbox
+    CCheckbox,
+    CRadio
     // #endregion registry
   ]
 
