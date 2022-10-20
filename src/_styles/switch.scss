@@ -38,7 +38,7 @@
   }
 
   &[aria-checked="true"] {
-    background-color: var(--active-color, var(--primary-4));
+    background-color: var(--active-color, var(--primary-6));
 
     .c-switch--node {
       transform: translateX(1em);

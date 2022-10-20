@@ -1,6 +1,11 @@
 .c-checkbox {
-  &:hover &--target {
+  &:not([aria-disabled="true"]):hover &--target {
     border-color: var(--primary-6)
+  }
+
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 
   &--target {
@@ -14,16 +19,6 @@
     background-color: var(--bg-1);
     font-size: 16px;
 
-    &::before {
-      display: block;
-      width: .6em;
-      height: .2em;
-      background-color: var(--bg-1);
-      transition-property: transform;
-      transition-duration: var(--transition-duration);
-      transition-timing-function: var(--transition-timing-function);
-    }
-
     svg {
       display: none;
       fill: var(--bg-1)
@@ -32,6 +27,7 @@
 
   &--label {
     margin-left: 0.4em;
+    font-size: 14px;
   }
 
   input:checked + &--target {
@@ -42,6 +38,13 @@
   // half checked
   &.indeterminate input:checked + &--target::before {
     content: '';
+    display: block;
+    width: .6em;
+    height: .2em;
+    background-color: var(--bg-1);
+    transition-property: transform;
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-timing-function);
   }
 
   // checked
