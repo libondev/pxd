@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import defineName from 'unplugin-vue-setup-extend-plus/vite'
 import dts from 'vite-plugin-dts'
 import imports from 'unplugin-auto-import/vite'
-import jsx from '@vitejs/plugin-vue-jsx'
+// import jsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 
@@ -29,13 +29,13 @@ export default defineConfig(({ mode }) => {
       }
     },
     plugins: [
-      jsx(),
+      // jsx(),
       vue(),
       defineName(),
       imports({
         dts: false,
         imports: ['vue'],
-        dirs: ['src/**/*.tsx']
+        dirs: ['src/**/*.vue']
       }),
       // build dts on production
       mode === 'production' && dts({
