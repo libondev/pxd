@@ -1,39 +1,29 @@
-import { isRef, ref } from 'vue'
+import type { Ref, WritableComputedRef } from 'vue'
 
-export interface UseToggleOptions<Truthy, Falsy> {
-  truthyValue?: Truthy
-  falsyValue?: Falsy
+export interface UseToggleOptions {
+  truthyValue?: boolean | number | string
+  falsyValue?: boolean | number | string
 }
 
-export function useToggle (
-  initialValue: boolean = false,
-  options: UseToggleOptions<true, false> = {}
-): any {
+export function useToggle<T> (
+  valueRef: Ref<T> | WritableComputedRef<T>,
+  options: UseToggleOptions = {}
+): (value?: T) => T {
   const {
     truthyValue = true,
     falsyValue = false
   } = options
 
-  const valueIsRef = isRef(initialValue)
-  const _value = ref(initialValue)
-
-  function toggle (value?: boolean): boolean {
+  function toggle (value?: T): T {
     // has arguments
     if (arguments.length) {
-      _value.value = value!
-      return _value.value
-    } else {
-      _value.value = _value.value === truthyValue
-        ? falsyValue
-        : truthyValue
-
-      return _value.value
+      valueRef.value = value!
+      return valueRef.value
     }
+
+    valueRef.value = (valueRef.value === truthyValue ? falsyValue : truthyValue) as T
+    return valueRef.value
   }
 
-  if (valueIsRef) {
-    return toggle
-  } else {
-    return [_value, toggle] as const
-  }
+  return toggle
 }
