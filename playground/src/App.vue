@@ -7,11 +7,13 @@ const status = ref(false)
 </script>
 
 <template>
-  <CBreadcrumb />
+  <!-- <CBreadcrumb /> -->
   <CSpace>
-    <button>1</button>
-    <button>1</button>
-    <button>1</button>
+    <CButton>123</CButton>
+    <CRadio>123</CRadio>
+    <CCheckbox>123</CCheckbox>
+    <CIcon></CIcon>
+    <CSpinner>123</CSpinner>
     <CSwitch v-model="status" />
   </CSpace>
   <!-- <nav>

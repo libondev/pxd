@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-
 import { createRouter, createWebHistory } from 'vue-router'
+
+import App from './App.vue'
+import { createApp } from 'vue'
 import routes from '~pages'
 
 const router = createRouter({
@@ -9,13 +9,13 @@ const router = createRouter({
   routes
 })
 
-import CarbonsInstall from '../../src'
-import '../../src/_styles/index.scss'
+// import CarbonsInstall from '../../src'
+// import '../../src/_styles/index.scss'
 
 const app = createApp(App)
 
 // @ts-ignore
-app.use(CarbonsInstall)
+// app.use(CarbonsInstall)
 
 app.use(router)
 
