@@ -37,7 +37,7 @@
     opacity: 0.7;
   }
 
-  &[aria-checked="true"] {
+  &[aria-checked="true" i] {
     background-color: var(--active-color, var(--primary-6));
 
     .px-switch--node {

@@ -37,7 +37,7 @@ const className = computed(() => {
     className += `${NAMESPACE}--${VARIANTS.includes(status) ? status : 'default'}`
   }
 
-  return [className, `px-size-${size.value}`, loading && `${NAMESPACE}--loading`]
+  return [className, `px-padding-${size.value} px-font-${size.value}`, loading && `${NAMESPACE}--loading`]
 })
 
 function onButtonClick (event: MouseEvent): void {

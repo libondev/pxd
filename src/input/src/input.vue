@@ -1,6 +1,6 @@
 <template>
   <div class="px-input px-inline-flex px-width-full px-vertical-top">
-    <div v-if="$slots.prepend" class="`px-input--prepend px-size-${size}`">
+    <div v-if="$slots.prepend" :class="`px-input--prepend px-padding-${size} px-font-${size}`">
       <slot name="prepend" />
     </div>
 
@@ -13,7 +13,7 @@
       :placeholder="placeholder"
     >
 
-    <div v-if="$slots.append" :class="`px-input--append px-size-${size}`">
+    <div v-if="$slots.append" :class="`px-input--append px-padding-${size} px-font-${size}`">
       <slot name="append" />
     </div>
   </div>
@@ -33,8 +33,8 @@ const className = computed(() => [
   'px-input--inner',
   'px-transition',
   'px-width-full',
-      `px-size-${size.value}`,
-      props.ellipsis && 'px-overflow-ellipsis'
+  `px-padding-${size.value} px-font-${size.value}`,
+  props.ellipsis && 'px-overflow-ellipsis'
 ])
 
 const disabled = useDisabled(props)

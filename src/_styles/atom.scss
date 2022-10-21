@@ -1,4 +1,3 @@
-
 /* if setting prefers-reduced-motion: reduced */
 @media (prefers-reduced-motion: reduced) {
   body {
@@ -7,37 +6,64 @@
 }
 
 .px {
-  &-transition {
-    transition-duration: var(--transition-duration);
-    transition-timing-function: var(--transition-timing-function);
+  &-color {
+    &-primary {
+      color: var(--primary-6)
+    }
+
+    &-warning {
+      color: var(--warning-6)
+    }
+
+    &-danger {
+      color: var(--danger-6)
+    }
   }
 
-  &-size {
+  &-padding {
     &-mini {
       padding: var(--size-mini) 10px;
+    }
+
+    &-small {
+      padding: var(--size-small) 10px;
+    }
+
+    &-medium {
+      padding: var(--size-medium) 10px;
+    }
+
+    &-large {
+      padding: var(--size-large) 10px;
+    }
+  }
+
+  &-font {
+    &-mini {
       line-height: 1.667;
       font-size: 12px;
     }
 
     &-small {
-      padding: var(--size-small) 10px;
       line-height: 1.5715;
       font-size: 14px;
     }
 
     &-medium {
-      padding: var(--size-medium) 10px;
       line-height: 1.5715;
       font-size: 14px;
     }
 
     &-large {
-      padding: var(--size-large) 10px;
       line-height: 1.8;
       font-size: 16px;
     }
   }
 
+  &-transition {
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-timing-function);
+  }
 
   &-width-full {
     width: 100%;

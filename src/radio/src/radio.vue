@@ -10,7 +10,7 @@
 
     <i class="px-radio--target px-relative px-transition px-items-center px-justify-center" />
 
-    <span v-if="$slots.default" class="px-radio--label">
+    <span v-if="$slots.default" class="px-radio--label px-font-medium">
       <slot />
     </span>
   </label>
