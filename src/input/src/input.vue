@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="CInput">
+<script lang="ts" setup name="PxInput">
 import { inputProps } from './constraints'
 import { useDisabled, useSize } from '../../_hooks'
 

@@ -1,8 +1,8 @@
 <template>
   <div class="about">
-    <CProvider>
-      <CInput />
-      <CButton>123</CButton>
-    </CProvider>
+    <PxProvider>
+      <PxInput />
+      <PxButton>123</PxButton>
+    </PxProvider>
   </div>
 </template>

@@ -3,6 +3,6 @@
   <h3>Button</h3>
 
   <router-link to="/button">
-    <CButton>Button</CButton>
+    <PxButton>Button</PxButton>
   </router-link>
 </template>

@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="CSpace">
+<script lang="ts" setup name="PxSpace">
 import { spaceProps } from './constraints'
 import { useSize } from '../../_hooks'
 

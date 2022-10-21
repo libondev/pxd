@@ -34,7 +34,7 @@
   </i>
 </template>
 
-<script lang="ts" setup name="CSpinner">
+<script lang="ts" setup name="PxSpinner">
 import { useIcon } from '../../icon/src/composables/use-icon'
 import { iconProps } from '../../icon/src/constraints'
 

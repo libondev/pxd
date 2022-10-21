@@ -3,22 +3,22 @@
 
 <template>
   <br />
-  <CButton>123</CButton>
-  <CButton status="primary">123</CButton>
-  <CButton status="warning">123</CButton>
-  <CButton status="danger">123</CButton>
+  <PxButton>123</PxButton>
+  <PxButton status="primary">123</PxButton>
+  <PxButton status="warning">123</PxButton>
+  <PxButton status="danger">123</PxButton>
   <br />
   <br />
 
-  <CButton plain>123</CButton>
-  <CButton plain status="primary">123</CButton>
-  <CButton plain status="warning">123</CButton>
-  <CButton plain status="danger">123</CButton>
+  <PxButton plain>123</PxButton>
+  <PxButton plain status="primary">123</PxButton>
+  <PxButton plain status="warning">123</PxButton>
+  <PxButton plain status="danger">123</PxButton>
   <br />
   <br />
 
-  <CButton ghost>123</CButton>
-  <CButton ghost status="primary">123</CButton>
-  <CButton ghost status="warning">123</CButton>
-  <CButton ghost status="danger">123</CButton>
+  <PxButton ghost>123</PxButton>
+  <PxButton ghost status="primary">123</PxButton>
+  <PxButton ghost status="warning">123</PxButton>
+  <PxButton ghost status="danger">123</PxButton>
 </template>

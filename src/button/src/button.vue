@@ -14,7 +14,7 @@
   </button>
 </template>
 
-<script lang="ts" setup name="CButton">
+<script lang="ts" setup name="PxButton">
 import { buttonProps } from './constraints'
 import { useDisabled, useSize } from '../../_hooks'
 import { VARIANTS } from '../../_internal'

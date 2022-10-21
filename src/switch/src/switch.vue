@@ -17,7 +17,7 @@
   </button>
 </template>
 
-<script lang="ts" setup name="CSwitch">
+<script lang="ts" setup name="PxSwitch">
 import { switchProps } from './constraints'
 import { appendCSSUnit } from '../../_utils'
 import { useToggle } from '../../_hooks'

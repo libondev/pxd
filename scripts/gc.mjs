@@ -30,7 +30,7 @@ if (!/[a-zA-Z]+/.test(componentName)) {
 cd('./src')
 
 const camelCase = toCamelCase(componentName)
-const camelCaseWithPrefix = `C${camelCase}`
+const camelCaseWithPrefix = `Px${camelCase}`
 
 const COMPONENT_INDEX = `import ${camelCase} from './src/${componentName}.vue'
 import { withInstall } from '../_utils'

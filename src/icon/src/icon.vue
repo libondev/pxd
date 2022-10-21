@@ -10,7 +10,7 @@
   </i>
 </template>
 
-<script lang="ts" setup name="CIcon">
+<script lang="ts" setup name="PxIcon">
 import { useIcon } from './composables/use-icon'
 import { iconProps } from '../../icon/src/constraints'
 

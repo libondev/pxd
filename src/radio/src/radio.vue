@@ -20,7 +20,7 @@
   </label>
 </template>
 
-<script lang="ts" setup name="CRadio">
+<script lang="ts" setup name="PxRadio">
 import { radioProps } from './constraints'
 import { formSymbol, radioGroupSymbol } from '../../_internal'
 import { getFilledClassNames } from '../../_utils'

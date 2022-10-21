@@ -7,24 +7,16 @@ const status = ref(false)
 </script>
 
 <template>
-  <!-- <CBreadcrumb /> -->
-  <CSpace>
-    <CButton>123</CButton>
-    <CRadio>123</CRadio>
-    <CCheckbox>123</CCheckbox>
-    <CIcon></CIcon>
-    <CSpinner>123</CSpinner>
-    <CSwitch v-model="status" />
-  </CSpace>
+  <PxSpace>
+    <PxButton>123</PxButton>
+    <PxRadio>123</PxRadio>
+    <PxCheckbox>123</PxCheckbox>
+    <PxIcon></PxIcon>
+    <PxSpinner>123</PxSpinner>
+    <PxSwitch v-model="status" />
+  </PxSpace>
   <!-- <nav>
     <RouterLink tabindex="-1" to="/">Home</RouterLink> |
     <RouterLink tabindex="-1" to="/about">About</RouterLink>
   </nav> -->
-
-  <!-- <CSpace>
-    <CSwitch v-model="status" />
-    <CCheckbox v-model="value" :value="1">111</CCheckbox>
-    <CCheckbox v-model="value" :value="2" />
-    <CCheckbox v-model="value" :value="3" />
-  </CSpace> -->
 </template>

@@ -1,15 +1,15 @@
 import type { App } from 'vue'
 // #region import
-import { CButton } from './button'
-import { CCheckbox } from './checkbox'
-import { CDialog } from './dialog'
-import { CIcon } from './icon'
-import { CInput } from './input'
-import { CProvider } from './provider'
-import { CRadio } from './radio'
-import { CSpace } from './space'
-import { CSpinner } from './spinner'
-import { CSwitch } from './switch'
+import { PxButton } from './button'
+import { PxCheckbox } from './checkbox'
+import { PxDialog } from './dialog'
+import { PxIcon } from './icon'
+import { PxInput } from './input'
+import { PxProvider } from './provider'
+import { PxRadio } from './radio'
+import { PxSpace } from './space'
+import { PxSpinner } from './spinner'
+import { PxSwitch } from './switch'
 import { globalSymbol } from './_internal'
 // #endregion import
 
@@ -41,16 +41,16 @@ export default function install (
 
   const components = [
     // #region registry
-    CButton,
-    CIcon,
-    CInput,
-    CProvider,
-    CDialog,
-    CSpinner,
-    CSwitch,
-    CSpace,
-    CCheckbox,
-    CRadio
+    PxButton,
+    PxIcon,
+    PxInput,
+    PxProvider,
+    PxDialog,
+    PxSpinner,
+    PxSwitch,
+    PxSpace,
+    PxCheckbox,
+    PxRadio
     // #endregion registry
   ]
 

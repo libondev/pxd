@@ -25,7 +25,7 @@
   </label>
 </template>
 
-<script lang="ts" setup name="CCheckbox">
+<script lang="ts" setup name="PxCheckbox">
 import { checkboxProps } from './constraints'
 import { checkboxGroupSymbol, formSymbol } from '../../_internal'
 

@@ -13,9 +13,9 @@ export default function PxResolver (): ComponentResolver {
   return {
     type: 'component',
     resolve: (name: string) => {
-      if (!name.match(/^C[A-Z]/)) { return }
+      if (!name.match(/^Px[A-Z]/)) { return }
 
-      const partialName = name.replace(/^C/, '').toLowerCase()
+      const partialName = name.replace(/^Px/, '').toLowerCase()
 
       return {
         importName: name,

@@ -66,7 +66,7 @@
   </Teleport>
 </template>
 
-<script lang="ts" setup name="CDialog">
+<script lang="ts" setup name="PxDialog">
 import { dialogProps } from './constraints'
 import { createWatchers, getFilledClassNames } from '../../_utils'
 import { useFocusTrap, useZIndex } from '../../_hooks'
