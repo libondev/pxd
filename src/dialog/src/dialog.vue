@@ -4,7 +4,7 @@
     :disabled="!props.appendToBody"
   >
     <Transition
-      name="carbons-fade"
+      name="px-fade"
       v-bind="maskTransitionMethods"
     >
       <div
@@ -13,7 +13,7 @@
         :style="{ zIndex }"
       >
         <Transition
-          name="carbons-zoom"
+          name="px-zoom"
           v-bind="modalTransitionMethods"
         >
           <div
@@ -23,18 +23,18 @@
             role="dialog"
             :aria-labelledby="title"
             :aria-describedby="description"
-            class="c-dialog--inner carbons-relative carbons-flex-col"
+            class="px-dialog--inner px-relative px-flex-col"
           >
-            <div class="c-dialog--header">
+            <div class="px-dialog--header">
               <span
                 v-if="$slots.title ?? title"
-                class="c-dialog--text"
+                class="px-dialog--text"
               >
                 <slot name="title">{{ title }}</slot>
               </span>
               <p
                 v-if="$slots.description ?? description"
-                class="c-dialog--description"
+                class="px-dialog--description"
               >
                 <slot name="description">
                   {{ description }}
@@ -42,20 +42,20 @@
               </p>
               <button
                 v-if="showClose"
-                class="c-dialog--close carbons-absolute carbons-transition"
+                class="px-dialog--close px-absolute px-transition"
                 @click="close"
               />
             </div>
 
             <div
               v-if="$slots.default"
-              class="c-dialog--content"
+              class="px-dialog--content"
             >
               <slot />
             </div>
             <div
               v-if="$slots.footer"
-              class="c-dialog--footer"
+              class="px-dialog--footer"
             >
               <slot name="footer" />
             </div>
@@ -85,7 +85,7 @@ const emits = defineEmits<{
 const dialogRef = ref()
 const zIndex = useZIndex()
 const className = computed(() => {
-  return ['c-dialog', getFilledClassNames('fixed flex-col items-center justify-center')]
+  return ['px-dialog', getFilledClassNames('fixed flex-col items-center justify-center')]
 })
 
 const modelVisible = ref(props.modelValue)
@@ -103,12 +103,12 @@ const visibleWatchers = createWatchers(() => props.modelValue, {
 if (props.lockScroll) {
   visibleWatchers.add((value) => {
     if (value) {
-      document.body.classList.add('carbons-overflow-hidden')
+      document.body.classList.add('px-overflow-hidden')
       return
     }
 
     setTimeout(() => {
-      document.body.classList.remove('carbons-overflow-hidden')
+      document.body.classList.remove('px-overflow-hidden')
     }, 200)
   })
 }

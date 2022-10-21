@@ -51,7 +51,7 @@ export type ${camelCase}Instance = InstanceType<typeof ${camelCase}>
 `
 
 const COMPONENT_VUE = `<template>
-  <div class="c-${componentName}"></div>
+  <div class="px-${componentName}"></div>
 </template>
 
 <script lang="ts" setup name="${camelCaseWithPrefix}">
@@ -102,7 +102,7 @@ try {
   await $`mkdir ${componentName}/src`
 }
 
-fs.writeFile(`./_styles/${componentName}.scss`, `.c-${componentName} {}`)
+fs.writeFile(`./_styles/${componentName}.scss`, `.px-${componentName} {}`)
 fs.writeFile('./_styles/index.scss', scss.toString())
 
 fs.writeFile(`${componentName}/index.ts`, COMPONENT_INDEX)

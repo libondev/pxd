@@ -1,13 +1,13 @@
 <template>
   <button
-    :class="['c-switch carbons-transition carbons-inline-block carbons-cursor-pointer carbons-relative', { 'c-switch--loading': loading }]"
+    :class="['px-switch px-transition px-inline-block px-cursor-pointer px-relative', { 'px-switch--loading': loading }]"
     :disabled="disabled"
     :style="computedStyle"
     aria-label="toggle button"
     :aria-checked="modelValue === props.activeValue"
     @click="onSwitchClick"
   >
-    <i class="c-switch--node carbons-flex carbons-items-center carbons-justify-center carbons-transition carbons-relative">
+    <i class="px-switch--node px-flex px-items-center px-justify-center px-transition px-relative">
       <loading-spinner
         v-if="loading"
         size=".68em"

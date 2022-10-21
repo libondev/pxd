@@ -1,4 +1,4 @@
-.c-input {
+.px-input {
   background-color: var(--fill-2);
 
   &--prepend {
@@ -13,12 +13,12 @@
 }
 
 @media (any-hover: hover) {
-  .c-input--inner:not([disabled], [readonly]):hover {
+  .px-input--inner:not([disabled], [readonly]):hover {
     background-color: var(--fill-3);
   }
 }
 
-.c-input--inner {
+.px-input--inner {
   min-width: 8rem;
   border-radius: 0;
   box-sizing: border-box;

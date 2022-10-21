@@ -1,14 +1,14 @@
 <template>
   <button
     :type="type"
-    class="carbons-transition carbons-relative"
+    class="px-transition px-relative"
     :class="className"
     :disabled="disabled"
     @click="onButtonClick"
   >
     <loading-spinner
       v-if="loading"
-      class="c-button--loading-icon"
+      class="px-button--loading-icon"
     />
     <slot />
   </button>
@@ -27,7 +27,7 @@ const props = defineProps(buttonProps)
 const size = useSize(props)
 const disabled = useDisabled(props)
 
-const NAMESPACE = 'c-button'
+const NAMESPACE = 'px-button'
 const className = computed(() => {
   const { plain, ghost, status, loading } = props
   let className = `${NAMESPACE} `
@@ -40,7 +40,7 @@ const className = computed(() => {
     className += `${NAMESPACE}--${VARIANTS.includes(status) ? status : 'default'}`
   }
 
-  return [className, `carbons-size-${size.value}`, loading && `${NAMESPACE}--loading`]
+  return [className, `px-size-${size.value}`, loading && `${NAMESPACE}--loading`]
 })
 
 function onButtonClick (event: MouseEvent): void {

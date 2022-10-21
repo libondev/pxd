@@ -27,7 +27,7 @@ export * from './checkbox'
 export * from './radio'
 // #endregion export
 
-export { default as CarbonsResolver } from './resolver'
+export { default as PxResolver } from './resolver'
 
 export interface GlobalConfig {
   size: import('./_types/props').Sizes

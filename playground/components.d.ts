@@ -7,15 +7,15 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    CButton: typeof import('carbons/button')['default']
-    CCheckbox: typeof import('carbons/checkbox')['default']
-    CIcon: typeof import('carbons/icon')['default']
-    CInput: typeof import('carbons/input')['default']
-    CProvider: typeof import('carbons/provider')['default']
-    CRadio: typeof import('carbons/radio')['default']
-    CSpace: typeof import('carbons/space')['default']
-    CSpinner: typeof import('carbons/spinner')['default']
-    CSwitch: typeof import('carbons/switch')['default']
+    CButton: typeof import('px-ui/button')['default']
+    CCheckbox: typeof import('px-ui/checkbox')['default']
+    CIcon: typeof import('px-ui/icon')['default']
+    CInput: typeof import('px-ui/input')['default']
+    CProvider: typeof import('px-ui/provider')['default']
+    CRadio: typeof import('px-ui/radio')['default']
+    CSpace: typeof import('px-ui/space')['default']
+    CSpinner: typeof import('px-ui/spinner')['default']
+    CSwitch: typeof import('px-ui/switch')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

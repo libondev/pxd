@@ -1,7 +1,7 @@
 <template>
   <i
     role="img"
-    class="c-spinner"
+    class="px-spinner"
     aria-label="icon"
     aria-hidden="true"
     :style="inlineStyles"

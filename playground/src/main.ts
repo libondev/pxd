@@ -9,13 +9,13 @@ const router = createRouter({
   routes
 })
 
-// import CarbonsInstall from '../../src'
+// import PxInstall from '../../src'
 // import '../../src/_styles/index.scss'
 
 const app = createApp(App)
 
 // @ts-ignore
-// app.use(CarbonsInstall)
+// app.use(PxInstall)
 
 app.use(router)
 

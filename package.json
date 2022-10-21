@@ -1,6 +1,6 @@
 {
-  "name": "carbons",
-  "version": "0.0.1",
+  "name": "px-ui",
+  "version": "0.0.0",
   "type": "module",
   "description": "A stylish modern component library for Vue3. 一个别具一格的现代 Vue3 组件库。",
   "main": "./dist/index.js",
@@ -36,7 +36,7 @@
   "author": "banlify <banlify@163.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/banlify/carbons.git"
+    "url": "git+https://github.com/banlify/px-ui.git"
   },
   "peerDependencies": {
     "vue": "^3.2.0"

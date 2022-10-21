@@ -1,14 +1,15 @@
 import type { ComponentResolver, SideEffectsInfo } from 'unplugin-vue-components'
 
+const LIBRARY_NAME = 'px-ui'
 const STYLELESS = ['provider']
 
 function getSideEffects (name: string): SideEffectsInfo | undefined {
   if (STYLELESS.includes(name)) return
 
-  return ['carbons/_styles/base.css', `carbons/_styles/${name}.css`]
+  return [`${LIBRARY_NAME}/_styles/base.css`, `px-ui/_styles/${name}.css`]
 }
 
-export default function CarbonsResolver (): ComponentResolver {
+export default function PxResolver (): ComponentResolver {
   return {
     type: 'component',
     resolve: (name: string) => {
@@ -18,7 +19,7 @@ export default function CarbonsResolver (): ComponentResolver {
 
       return {
         importName: name,
-        from: `carbons/${partialName}`,
+        from: `${LIBRARY_NAME}/${partialName}`,
         sideEffects: getSideEffects(partialName)
       }
     }

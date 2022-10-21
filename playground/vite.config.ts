@@ -1,9 +1,9 @@
 import { URL, fileURLToPath } from 'node:url'
 
-import CarbonsResolver from './carbons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import Inspect from 'vite-plugin-inspect'
 import Pages from 'vite-plugin-pages'
+import PxResolver from './px-ui/resolver'
 import { defineConfig } from 'vite'
 import exportName from 'unplugin-vue-setup-extend-plus/vite'
 import imports from 'unplugin-auto-import/vite'
@@ -24,13 +24,13 @@ export default defineConfig({
       extensions: ['vue', 'jsx', 'md'],
     }),
     Components({
-      resolvers: [CarbonsResolver()]
+      resolvers: [PxResolver()]
     })
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      carbons: fileURLToPath(new URL('./carbons', import.meta.url))
+      'px-ui': fileURLToPath(new URL('./px-ui', import.meta.url))
     }
   }
 })

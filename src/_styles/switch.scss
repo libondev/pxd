@@ -1,10 +1,10 @@
 @media (any-hover: hover) {
-  .c-switch:hover .c-switch--node {
+  .px-switch:hover .px-switch--node {
     outline-color: rgba(0 0 0 / 15%)
   }
 }
 
-.c-switch {
+.px-switch {
   width: 2em;
   height: 1em;
   padding: 0;
@@ -40,7 +40,7 @@
   &[aria-checked="true"] {
     background-color: var(--active-color, var(--primary-6));
 
-    .c-switch--node {
+    .px-switch--node {
       transform: translateX(1em);
     }
   }

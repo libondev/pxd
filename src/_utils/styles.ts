@@ -6,7 +6,7 @@ export function getFilledClassNames (classNames: string | string[]): string {
     classNames = classNames.split(' ')
   }
 
-  return `carbons-${classNames.join(' carbons-')}`
+  return `px-${classNames.join(' px-')}`
 }
 
 export function appendCSSUnit (value: CSSUnitValue | string | number | undefined): string | undefined {

@@ -6,14 +6,14 @@
     <input
       ref="radioRef"
       type="radio"
-      class="carbons-outside"
+      class="px-outside"
       :disabled="disabledComputed"
       @change="onChangeValue"
     >
-    <i class="c-radio--target carbons-relative carbons-transition carbons-items-center carbons-justify-center" />
+    <i class="px-radio--target px-relative px-transition px-items-center px-justify-center" />
     <span
       v-if="$slots.default"
-      class="c-radio--label"
+      class="px-radio--label"
     >
       <slot />
     </span>
@@ -29,7 +29,7 @@ const props = defineProps(radioProps)
 
 const radioRef = ref<HTMLInputElement>()
 const className = computed(() => {
-  return ['c-radio', getFilledClassNames('relation inline-flex items-center cursor-pointer select-none')]
+  return ['px-radio', getFilledClassNames('relation inline-flex items-center cursor-pointer select-none')]
 })
 
 const form = inject(formSymbol, { disabled: false })

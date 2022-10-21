@@ -1,8 +1,8 @@
 <template>
-  <div class="c-input carbons-inline-flex carbons-width-full carbons-vertical-top">
+  <div class="px-input px-inline-flex px-width-full px-vertical-top">
     <div
       v-if="$slots.prepend"
-      class="`c-input--prepend carbons-size-${size}`"
+      class="`px-input--prepend px-size-${size}`"
     >
       <slot name="prepend" />
     </div>
@@ -18,7 +18,7 @@
 
     <div
       v-if="$slots.append"
-      :class="`c-input--append carbons-size-${size}`"
+      :class="`px-input--append px-size-${size}`"
     >
       <slot name="append" />
     </div>
@@ -36,11 +36,11 @@ const emits = defineEmits<{
 
 const size = useSize(props)
 const className = computed(() => [
-  'c-input--inner',
-  'carbons-transition',
-  'carbons-width-full',
-      `carbons-size-${size.value}`,
-      props.ellipsis && 'carbons-overflow-ellipsis'
+  'px-input--inner',
+  'px-transition',
+  'px-width-full',
+      `px-size-${size.value}`,
+      props.ellipsis && 'px-overflow-ellipsis'
 ])
 
 const disabled = useDisabled(props)

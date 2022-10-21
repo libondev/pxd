@@ -22,8 +22,8 @@ const ALIGN_MAP = {
 
 const size = useSize(props)
 const className = computed(() => [
-  'c-space',
-  `c-space--${size.value}`,
-  `carbons-flex${props.vertical ? '-col' : ''}`
+  'px-space',
+  `px-space--${size.value}`,
+  `px-flex${props.vertical ? '-col' : ''}`
 ])
 </script>
