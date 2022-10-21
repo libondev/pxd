@@ -1,9 +1,9 @@
 import { URL, fileURLToPath } from 'node:url'
 
-import Components from 'unplugin-vue-components/vite'
+// import Components from 'unplugin-vue-components/vite'
 import Inspect from 'vite-plugin-inspect'
 import Pages from 'vite-plugin-pages'
-import PxResolver from './pxd/resolver'
+// import PxResolver from './pxd/resolver'
 import { defineConfig } from 'vite'
 import exportName from 'unplugin-vue-setup-extend-plus/vite'
 import imports from 'unplugin-auto-import/vite'
@@ -23,14 +23,14 @@ export default defineConfig({
     Pages({
       extensions: ['vue', 'jsx', 'md'],
     }),
-    Components({
-      resolvers: [PxResolver()]
-    })
+    // Components({
+    //   resolvers: [PxResolver()]
+    // })
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'pxd': fileURLToPath(new URL('./pxd', import.meta.url))
+      '~pxd': fileURLToPath(new URL('./pxd', import.meta.url))
     }
   }
 })

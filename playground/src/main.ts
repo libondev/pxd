@@ -1,7 +1,10 @@
+import '../../src/_styles/index.scss'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 import App from './App.vue'
 import { createApp } from 'vue'
+import { installer } from '../../src'
 import routes from '~pages'
 
 const router = createRouter({
@@ -9,13 +12,9 @@ const router = createRouter({
   routes
 })
 
-// import PxInstall from '../../src'
-// import '../../src/_styles/index.scss'
-
 const app = createApp(App)
 
-// @ts-ignore
-// app.use(PxInstall)
+app.use(installer)
 
 app.use(router)
 
