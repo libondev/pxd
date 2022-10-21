@@ -1,15 +1,12 @@
 <template>
   <button
     :type="type"
-    class="px-transition px-relative"
-    :class="className"
     :disabled="disabled"
+    :class="className"
+    class="px-transition px-relative"
     @click="onButtonClick"
   >
-    <loading-spinner
-      v-if="loading"
-      class="px-button--loading-icon"
-    />
+    <loading-spinner v-if="loading" class="px-button--loading-icon" />
     <slot />
   </button>
 </template>

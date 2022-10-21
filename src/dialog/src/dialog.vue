@@ -1,21 +1,8 @@
 <template>
-  <Teleport
-    to="body"
-    :disabled="!props.appendToBody"
-  >
-    <Transition
-      name="px-fade"
-      v-bind="maskTransitionMethods"
-    >
-      <div
-        v-show="modelValue"
-        :class="className"
-        :style="{ zIndex }"
-      >
-        <Transition
-          name="px-zoom"
-          v-bind="modalTransitionMethods"
-        >
+  <Teleport to="body" :disabled="!props.appendToBody">
+    <Transition name="px-fade" v-bind="maskTransitionMethods">
+      <div v-show="modelValue" :class="className" :style="{ zIndex }">
+        <Transition name="px-zoom" v-bind="modalTransitionMethods">
           <div
             v-show="modelVisible"
             ref="dialogRef"
@@ -26,37 +13,22 @@
             class="px-dialog--inner px-relative px-flex-col"
           >
             <div class="px-dialog--header">
-              <span
-                v-if="$slots.title ?? title"
-                class="px-dialog--text"
-              >
+              <span v-if="$slots.title ?? title" class="px-dialog--text">
                 <slot name="title">{{ title }}</slot>
               </span>
-              <p
-                v-if="$slots.description ?? description"
-                class="px-dialog--description"
-              >
+              <p v-if="$slots.description ?? description" class="px-dialog--description">
                 <slot name="description">
                   {{ description }}
                 </slot>
               </p>
-              <button
-                v-if="showClose"
-                class="px-dialog--close px-absolute px-transition"
-                @click="close"
-              />
+              <button v-if="showClose" class="px-dialog--close px-absolute px-transition" @click="close" />
             </div>
 
-            <div
-              v-if="$slots.default"
-              class="px-dialog--content"
-            >
+            <div v-if="$slots.default" class="px-dialog--content">
               <slot />
             </div>
-            <div
-              v-if="$slots.footer"
-              class="px-dialog--footer"
-            >
+
+            <div v-if="$slots.footer" class="px-dialog--footer">
               <slot name="footer" />
             </div>
           </div>

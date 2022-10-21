@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="className"
-    :style="{ '--align': ALIGN_MAP[props.align] }"
-  >
+  <div :class="className" :style="{ '--align': ALIGN_MAP[props.align] }">
     <slot />
   </div>
 </template>

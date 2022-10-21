@@ -1,8 +1,5 @@
 <template>
-  <label
-    :class="className"
-    :aria-disabled="disabledComputed"
-  >
+  <label :class="className" :aria-disabled="disabledComputed">
     <input
       ref="radioRef"
       type="radio"
@@ -10,11 +7,10 @@
       :disabled="disabledComputed"
       @change="onChangeValue"
     >
+
     <i class="px-radio--target px-relative px-transition px-items-center px-justify-center" />
-    <span
-      v-if="$slots.default"
-      class="px-radio--label"
-    >
+
+    <span v-if="$slots.default" class="px-radio--label">
       <slot />
     </span>
   </label>

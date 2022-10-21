@@ -34,6 +34,11 @@ module.exports = {
     '@typescript-eslint/restrict-plus-operands': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/block-lang': ['error', { script: { lang: 'ts' } }],
+    'vue/max-attributes-per-line': ['error', {
+      singleline: { max: 3 },
+      multiline: { max: 1 }
+    }]
   }
 }

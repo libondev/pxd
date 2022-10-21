@@ -8,11 +8,7 @@
     @click="onSwitchClick"
   >
     <i class="px-switch--node px-flex px-items-center px-justify-center px-transition px-relative">
-      <loading-spinner
-        v-if="loading"
-        size=".68em"
-        color="var(--primary-6)"
-      />
+      <loading-spinner v-if="loading" size=".68em" color="var(--primary-6)" />
     </i>
   </button>
 </template>

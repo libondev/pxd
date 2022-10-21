@@ -1,9 +1,6 @@
 <template>
   <div class="px-input px-inline-flex px-width-full px-vertical-top">
-    <div
-      v-if="$slots.prepend"
-      class="`px-input--prepend px-size-${size}`"
-    >
+    <div v-if="$slots.prepend" class="`px-input--prepend px-size-${size}`">
       <slot name="prepend" />
     </div>
 
@@ -16,10 +13,7 @@
       :placeholder="placeholder"
     >
 
-    <div
-      v-if="$slots.append"
-      :class="`px-input--append px-size-${size}`"
-    >
+    <div v-if="$slots.append" :class="`px-input--append px-size-${size}`">
       <slot name="append" />
     </div>
   </div>
