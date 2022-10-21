@@ -1,0 +1,130 @@
+
+/* if setting prefers-reduced-motion: reduced */
+@media (prefers-reduced-motion: reduced) {
+  body {
+    --transition-duration: 0s !important;
+  }
+}
+
+.px {
+  &-transition {
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-timing-function);
+  }
+
+  &-size {
+    &-mini {
+      padding: var(--size-mini) 10px;
+      line-height: 1.667;
+      font-size: 12px;
+    }
+
+    &-small {
+      padding: var(--size-small) 10px;
+      line-height: 1.5715;
+      font-size: 14px;
+    }
+
+    &-medium {
+      padding: var(--size-medium) 10px;
+      line-height: 1.5715;
+      font-size: 14px;
+    }
+
+    &-large {
+      padding: var(--size-large) 10px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+  }
+
+
+  &-width-full {
+    width: 100%;
+  }
+
+  &-height-full {
+    height: 100%;
+  }
+
+  &-flex {
+    display: flex;
+  }
+
+  &-flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-items-center {
+    align-items: center;
+  }
+
+  &-justify-center {
+    justify-content: center;
+  }
+
+  &-inline-block {
+    display: inline-block;
+  }
+
+  &-inline-flex {
+    display: inline-flex;
+  }
+
+  &-vertical-top {
+    vertical-align: top;
+  }
+
+  &-vertical-middle {
+    vertical-align: middle;
+  }
+
+  &-relative {
+    position: relative;
+  }
+
+  &-absolute {
+    position: absolute;
+  }
+
+  &-fixed {
+    position: fixed;
+  }
+
+  &-hidden,
+  &-empty-hidden:empty {
+    display: none;
+  }
+
+  &-outside {
+    position: fixed;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0
+  }
+
+  &-cursor-pointer {
+    cursor: pointer;
+  }
+
+  &-select-none {
+    user-select: none;
+  }
+
+  &-pointer-events-none {
+    pointer-events: none;
+  }
+
+  &-overflow-hidden {
+    overflow: hidden;
+  }
+
+  &-overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
