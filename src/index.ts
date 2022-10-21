@@ -25,7 +25,6 @@ export * from './switch'
 export * from './space'
 export * from './checkbox'
 export * from './radio'
-export * from './breadcrumb'
 // #endregion export
 
 export { default as CarbonsResolver } from './resolver'

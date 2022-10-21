@@ -1,6 +1,6 @@
 import type { ComponentResolver, SideEffectsInfo } from 'unplugin-vue-components'
 
-const STYLELESS = ['provider', 'spinner']
+const STYLELESS = ['provider']
 
 function getSideEffects (name: string): SideEffectsInfo | undefined {
   if (STYLELESS.includes(name)) return
@@ -12,14 +12,14 @@ export default function CarbonsResolver (): ComponentResolver {
   return {
     type: 'component',
     resolve: (name: string) => {
-      if (name.match(/^C[A-Z]/)) {
-        const partialName = name.replace(/^C/, '').toLowerCase()
+      if (!name.match(/^C[A-Z]/)) { return }
 
-        return {
-          importName: name,
-          from: `carbons/${partialName}`,
-          sideEffects: getSideEffects(partialName)
-        }
+      const partialName = name.replace(/^C/, '').toLowerCase()
+
+      return {
+        importName: name,
+        from: `carbons/${partialName}`,
+        sideEffects: getSideEffects(partialName)
       }
     }
   }

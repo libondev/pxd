@@ -1,7 +1,7 @@
 <template>
   <i
-    class="c-spinner carbons-vertical-middle"
     role="img"
+    class="c-spinner"
     aria-label="icon"
     aria-hidden="true"
     :style="inlineStyles"
@@ -34,7 +34,7 @@
   </i>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="CSpinner">
 import { useIcon } from '../../icon/src/composables/use-icon'
 import { iconProps } from '../../icon/src/constraints'
 
