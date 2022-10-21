@@ -1,5 +1,5 @@
 {
-  "name": "px-ui",
+  "name": "pxd",
   "type": "module",
   "version": "0.0.1",
   "description": "A stylish modern component library for Vue3. 一个别具一格的现代 Vue3 组件库。",
@@ -34,13 +34,13 @@
   },
   "license": "MIT",
   "author": "banlify <banlify@163.com>",
-  "homepage": "https://github.com/banlify/px-ui#readme",
+  "homepage": "https://github.com/banlify/pxd#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/banlify/px-ui.git"
+    "url": "git+https://github.com/banlify/pxd.git"
   },
   "bugs": {
-    "url": "https://github.com/banlify/px-ui/issues"
+    "url": "https://github.com/banlify/pxd/issues"
   },
   "peerDependencies": {
     "vue": "^3.2.0"

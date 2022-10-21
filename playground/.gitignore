@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-px-ui
+pxd
 node_modules
 .DS_Store
 dist

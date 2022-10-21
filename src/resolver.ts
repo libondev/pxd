@@ -1,12 +1,12 @@
 import type { ComponentResolver, SideEffectsInfo } from 'unplugin-vue-components'
 
-const LIBRARY_NAME = 'px-ui'
+const LIBRARY_NAME = 'pxd'
 const STYLELESS = ['provider']
 
 function getSideEffects (name: string): SideEffectsInfo | undefined {
   if (STYLELESS.includes(name)) return
 
-  return [`${LIBRARY_NAME}/_styles/base.css`, `px-ui/_styles/${name}.css`]
+  return [`${LIBRARY_NAME}/_styles/base.css`, `pxd/_styles/${name}.css`]
 }
 
 export default function PxResolver (): ComponentResolver {

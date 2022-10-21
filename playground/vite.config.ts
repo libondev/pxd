@@ -3,7 +3,7 @@ import { URL, fileURLToPath } from 'node:url'
 import Components from 'unplugin-vue-components/vite'
 import Inspect from 'vite-plugin-inspect'
 import Pages from 'vite-plugin-pages'
-import PxResolver from './px-ui/resolver'
+import PxResolver from './pxd/resolver'
 import { defineConfig } from 'vite'
 import exportName from 'unplugin-vue-setup-extend-plus/vite'
 import imports from 'unplugin-auto-import/vite'
@@ -30,7 +30,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'px-ui': fileURLToPath(new URL('./px-ui', import.meta.url))
+      'pxd': fileURLToPath(new URL('./pxd', import.meta.url))
     }
   }
 })
