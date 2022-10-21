@@ -7,10 +7,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "style": "dist/_styles/index.css",
-  "sideEffects": ["dist/*"],
+  "sideEffects": ["dist/*", "dist/_styles/*"],
   "files": ["dist/*"],
   "exports": {
     ".": "./dist/index.js",
+    "./index.css": "./dist/_styles/index.css",
     "./*": "./dist/*"
   },
   "scripts": {

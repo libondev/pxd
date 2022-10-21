@@ -9,19 +9,17 @@ function getSideEffects (name: string): SideEffectsInfo | undefined {
   return [`${LIBRARY_NAME}/_styles/base.css`, `pxd/_styles/${name}.css`]
 }
 
-export default function PxResolver (): ComponentResolver {
-  return {
-    type: 'component',
-    resolve: (name: string) => {
-      if (!name.match(/^Px[A-Z]/)) { return }
+export default (): ComponentResolver => ({
+  type: 'component',
+  resolve: (name: string) => {
+    if (!name.match(/^Px[A-Z]/)) { return }
 
-      const partialName = name.replace(/^Px/, '').toLowerCase()
+    const partialName = name.replace(/^Px/, '').toLowerCase()
 
-      return {
-        importName: name,
-        from: `${LIBRARY_NAME}/${partialName}`,
-        sideEffects: getSideEffects(partialName)
-      }
+    return {
+      importName: name,
+      from: `${LIBRARY_NAME}/${partialName}`,
+      sideEffects: getSideEffects(partialName)
     }
   }
-}
+})

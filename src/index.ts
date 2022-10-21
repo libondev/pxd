@@ -1,4 +1,5 @@
-import type { App } from 'vue'
+import type { App, Plugin } from 'vue'
+
 // #region import
 import { PxButton } from './button'
 import { PxCheckbox } from './checkbox'
@@ -11,6 +12,7 @@ import { PxSpace } from './space'
 import { PxSpinner } from './spinner'
 import { PxSwitch } from './switch'
 import { globalSymbol } from './_internal'
+
 // #endregion import
 
 // #region export
@@ -27,19 +29,19 @@ export * from './checkbox'
 export * from './radio'
 // #endregion export
 
-export { default as PxResolver } from './resolver'
+export { default as PxdResolver } from './resolver'
 
 export interface GlobalConfig {
   size: import('./_types/props').Sizes
 }
 
-export default function install (
-  app: App,
-  globalConfig: GlobalConfig = { size: 'medium' }
-): App {
-  app.provide(globalSymbol, globalConfig)
+export const installer: Plugin = (
+  app: App<Element>,
+  configs: GlobalConfig
+) => {
+  app.provide(globalSymbol, Object.assign({ size: 'medium' }, configs));
 
-  const components = [
+  [
     // #region registry
     PxButton,
     PxIcon,
@@ -52,11 +54,7 @@ export default function install (
     PxCheckbox,
     PxRadio
     // #endregion registry
-  ]
-
-  components.forEach(component => {
-    component.install(app)
-  })
+  ].forEach(component => app.use(component))
 
   return app
 }
