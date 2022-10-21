@@ -27,6 +27,7 @@ module.exports = {
     'dist'
   ],
   rules: {
+    'func-call-spacing': 'off',
     'jsx-quotes': ['error', 'prefer-single'],
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/prefer-optional-chain': 'off',
