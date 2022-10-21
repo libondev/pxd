@@ -1,9 +1,10 @@
 #!/usr/bin/env zx
 
+import { $, cd, fs } from 'zx'
 import { bgGreen, bgRed } from 'kolorist'
+
 import MagicString from 'magic-string'
 import process from 'node:process'
-import { $, cd, fs } from 'zx'
 
 $.quiet = true
 
@@ -31,31 +32,34 @@ cd('./src')
 const camelCase = toCamelCase(componentName)
 const camelCaseWithPrefix = `C${camelCase}`
 
-const COMPONENT_TSX = `import type { PropType } from 'vue'
-import { computed, defineComponent } from 'vue'
-
-import { getFilledClassNames, withInstall } from '../_utils'
-
-const ${camelCase} = defineComponent({
-  name: '${camelCaseWithPrefix}',
-  props: {},
-  setup (props, { emit, slots }) {
-    const className = computed(() => {
-      return ['c-${componentName}']
-    })
-
-    return () => (
-      <div
-        class={ className.value }
-      >
-        { slots.default?.() }
-      </div>
-    )
-  }
-})
+const COMPONENT_INDEX = `import ${camelCase} from './src/${componentName}.vue'
+import { withInstall } from '../_utils'
 
 export const ${camelCaseWithPrefix} = withInstall(${camelCase})
 export default ${camelCase}\n`
+
+const CONSTRAINTS = `import type { ExtractPropTypes, PropType } from 'vue'
+
+import type ${camelCase} from './${componentName}.vue'
+
+export const ${componentName}Props = {
+
+}
+
+export type ${camelCase}Props = ExtractPropTypes<typeof ${componentName}Props>
+export type ${camelCase}Instance = InstanceType<typeof ${camelCase}>
+`
+
+const COMPONENT_VUE = `<template>
+  <div class="c-${componentName}"></div>
+</template>
+
+<script lang="ts" setup name="${camelCaseWithPrefix}">
+import { ${componentName}Props } from './constraints'
+
+const props = defineProps(${componentName}Props)
+</script>
+`
 
 const entryScssFileContent = fs.readFileSync('./_styles/index.scss', 'utf-8')
 const lastNewlineIndex = entryScssFileContent.lastIndexOf('\n')
@@ -92,14 +96,18 @@ index.overwrite(
 try {
   fs.statSync(componentName)
   fs.emptyDir(componentName)
+  await $`mkdir ${componentName}/src`
 } catch (e) {
   await $`mkdir ${componentName}`
+  await $`mkdir ${componentName}/src`
 }
 
 fs.writeFile(`./_styles/${componentName}.scss`, `.c-${componentName} {}`)
 fs.writeFile('./_styles/index.scss', scss.toString())
 
-fs.writeFile(`${componentName}/index.tsx`, COMPONENT_TSX)
+fs.writeFile(`${componentName}/index.ts`, COMPONENT_INDEX)
+fs.writeFile(`${componentName}/src/constraints.ts`, CONSTRAINTS)
+fs.writeFile(`${componentName}/src/${componentName}.vue`, COMPONENT_VUE)
 fs.writeFile('./index.ts', index.toString())
 
-console.log(`${bgGreen(' SUCCESS ')} Component 【${componentName}】 created successfully!`)
+console.log(`${bgGreen(' SUCCESS ')} Component【${componentName}】created successfully!`)

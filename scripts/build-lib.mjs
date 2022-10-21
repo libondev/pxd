@@ -1,10 +1,11 @@
-import vue from '@vitejs/plugin-vue'
+import { cwd } from 'node:process'
+import { defineConfig } from 'vite'
+import defineName from 'unplugin-vue-setup-extend-plus/vite'
+import dts from 'vite-plugin-dts'
+import imports from 'unplugin-auto-import/vite'
 import jsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'node:path'
-import { cwd } from 'node:process'
-import imports from 'unplugin-auto-import/vite'
-import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import vue from '@vitejs/plugin-vue'
 
 const outDir = resolve(cwd(), 'dist/')
 
@@ -30,13 +31,11 @@ export default defineConfig(({ mode }) => {
     plugins: [
       jsx(),
       vue(),
+      defineName(),
       imports({
+        dts: false,
         imports: ['vue'],
-        dirs: ['src/**/*.tsx'],
-        dts: './src/_types/imports.d.ts',
-        eslintrc: {
-          enabled: true
-        }
+        dirs: ['src/**/*.tsx']
       }),
       // build dts on production
       mode === 'production' && dts({

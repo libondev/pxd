@@ -1,20 +1,16 @@
-/* eslint-disable simple-import-sort/imports */
-/* eslint-disable simple-import-sort/exports */
 import type { App } from 'vue'
-
-import { globalSymbol } from './_internal'
-
 // #region import
 import { CButton } from './button'
+import { CCheckbox } from './checkbox'
 import { CDialog } from './dialog'
 import { CIcon } from './icon'
 import { CInput } from './input'
 import { CProvider } from './provider'
+import { CRadio } from './radio'
+import { CSpace } from './space'
 import { CSpinner } from './spinner'
 import { CSwitch } from './switch'
-import { CSpace } from './space'
-import { CCheckbox } from './checkbox'
-import { CRadio } from './radio'
+import { globalSymbol } from './_internal'
 // #endregion import
 
 // #region export
@@ -29,6 +25,7 @@ export * from './switch'
 export * from './space'
 export * from './checkbox'
 export * from './radio'
+export * from './breadcrumb'
 // #endregion export
 
 export { default as CarbonsResolver } from './resolver'
