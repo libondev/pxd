@@ -33,7 +33,7 @@ export const inputProps = {
     default: false
   },
   /**
-   * @zh 是否移除展示省略号
+   * @zh 是否展示未聚焦时的溢出省略号
    */
   ellipsis: {
     type: Boolean,

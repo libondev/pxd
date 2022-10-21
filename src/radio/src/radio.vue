@@ -3,7 +3,7 @@
     <input
       ref="radioRef"
       type="radio"
-      class="px-outside"
+      class="px-outside-hidden"
       :disabled="disabledComputed"
       @change="onChangeValue"
     >

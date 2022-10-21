@@ -1,6 +1,4 @@
 .px-input {
-  background-color: var(--fill-2);
-
   &--prepend {
     box-sizing: inherit;
     border-right: 1px dashed var(--border-2);
@@ -21,25 +19,21 @@
 .px-input--inner {
   min-width: 8rem;
   border-radius: 0;
+  outline: none;
   box-sizing: border-box;
   border: 1px solid transparent;
-  outline: none;
-  background-color: transparent;
+  background-color: var(--fill-2);
   transition-property: border-color, background-color;
   font-family: inherit;
+  color: var(--font-1);
 
   &:not([disabled], [readonly]):focus-visible {
     border-color: var(--primary-6);
     background-color: var(--bg-1);
   }
 
-  &::placeholder {
-    user-select: none;
-    color: var(--font-4);
-  }
-
   &[disabled] {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 }

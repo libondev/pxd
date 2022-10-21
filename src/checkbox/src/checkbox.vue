@@ -7,7 +7,7 @@
     <input
       ref="checkboxRef"
       type="checkbox"
-      class="px-outside"
+      class="px-outside-hidden"
       :value="value"
       :disabled="disabledComputed"
       :checked="checked"
