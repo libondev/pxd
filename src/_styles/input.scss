@@ -1,17 +1,20 @@
 .px-input {
+  box-sizing: border-box;
+  background-color: var(--fill-2);
+
   &--prepend {
-    box-sizing: inherit;
-    border-right: 1px dashed var(--border-2);
+    margin-right: -1px;
+    border-right: 1px solid var(--border-2);
   }
 
   &--append {
-    box-sizing: inherit;
-    border-left: 1px dashed var(--border-2);
+    margin-left: -1px;
+    border-left: 1px solid var(--border-2);
   }
 }
 
 @media (any-hover: hover) {
-  .px-input--inner:not([disabled], [readonly]):hover {
+  .px-input--inner:not([disabled]):hover {
     background-color: var(--fill-3);
   }
 }
@@ -22,18 +25,19 @@
   outline: none;
   box-sizing: border-box;
   border: 1px solid transparent;
-  background-color: var(--fill-2);
+  background-color: transparent;
   transition-property: border-color, background-color;
   font-family: inherit;
   color: var(--font-1);
 
-  &:not([disabled], [readonly]):focus-visible {
+  &:not([disabled]):focus-visible {
     border-color: var(--primary-6);
     background-color: var(--bg-1);
+    z-index: 1;
   }
 
   &[disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 }

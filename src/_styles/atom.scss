@@ -60,7 +60,7 @@
     }
 
     &-large {
-      line-height: 1.8;
+      line-height: 1.75;
       font-size: 16px;
     }
   }
@@ -70,11 +70,11 @@
     transition-timing-function: var(--transition-timing-function);
   }
 
-  &-width-full {
+  &-w-full {
     width: 100%;
   }
 
-  &-height-full {
+  &-h-full {
     height: 100%;
   }
 
