@@ -1,7 +1,6 @@
 import type { ExtractPropTypes, PropType } from 'vue'
 
 import type { Sizes } from '../../_types'
-import type Space from './space.vue'
 
 export const spaceProps = {
   /**
@@ -28,4 +27,3 @@ export const spaceProps = {
 }
 
 export type SpaceProps = ExtractPropTypes<typeof spaceProps>
-export type SpaceInstance = InstanceType<typeof Space>

@@ -15,8 +15,7 @@
 import { buttonProps } from './constraints'
 import { useDisabled, useSize } from '../../_hooks'
 import { VARIANTS } from '../../_internal'
-
-const LoadingSpinner = defineAsyncComponent(() => import('../../spinner'))
+import LoadingSpinner from '../../spinner'
 
 const emits = defineEmits(['click'])
 const props = defineProps(buttonProps)

@@ -2,8 +2,6 @@ import type { ExtractPropTypes, PropType } from 'vue'
 import { NATIVE_BUTTON_TYPES, VARIANTS } from '../../_internal'
 import type { NativeButton, Sizes, VariantState } from '../../_types'
 
-import type Button from './button.vue'
-
 export const buttonProps = {
   /**
    * @zh Button 状态
@@ -59,4 +57,3 @@ export const buttonProps = {
 }
 
 export type ButtonProps = ExtractPropTypes<typeof buttonProps>
-export type ButtonInstance = InstanceType<typeof Button>

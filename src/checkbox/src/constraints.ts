@@ -1,4 +1,3 @@
-import type Checkbox from './checkbox.vue'
 import type { ExtractPropTypes } from 'vue'
 
 export const checkboxProps = {
@@ -25,4 +24,3 @@ export const checkboxProps = {
 }
 
 export type CheckboxProps = ExtractPropTypes<typeof checkboxProps>
-export type CheckboxInstance = InstanceType<typeof Checkbox>

@@ -1,6 +1,5 @@
 import type { ExtractPropTypes, PropType } from 'vue'
 
-import type Provider from './provider.vue'
 import type { Sizes } from '../../_types'
 
 export const providerProps = {
@@ -15,4 +14,3 @@ export const providerProps = {
 }
 
 export type ProviderProps = ExtractPropTypes<typeof providerProps>
-export type ProviderInstance = InstanceType<typeof Provider>

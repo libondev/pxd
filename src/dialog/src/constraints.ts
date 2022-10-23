@@ -1,4 +1,3 @@
-import type Dialog from './dialog.vue'
 import type { ExtractPropTypes } from 'vue'
 
 export const dialogProps = {
@@ -75,4 +74,3 @@ export const dialogProps = {
 }
 
 export type DialogProps = ExtractPropTypes<typeof dialogProps>
-export type DialogInstance = InstanceType<typeof Dialog>

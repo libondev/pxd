@@ -1,7 +1,6 @@
 import type { ExtractPropTypes, PropType } from 'vue'
 
 import type { CSSUnitValue } from '../../_types'
-import type Icon from './icon.vue'
 
 export const iconProps = {
   size: {
@@ -15,4 +14,3 @@ export const iconProps = {
 }
 
 export type IconProps = ExtractPropTypes<typeof iconProps>
-export type IconInstance = InstanceType<typeof Icon>

@@ -1,6 +1,5 @@
 import type { ExtractPropTypes, PropType } from 'vue'
 
-import type Input from './input.vue'
 import type { Sizes } from '../../_types'
 
 export const inputProps = {
@@ -56,4 +55,3 @@ export const inputProps = {
 }
 
 export type InputProps = ExtractPropTypes<typeof inputProps>
-export type InputInstance = InstanceType<typeof Input>

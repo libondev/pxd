@@ -1,5 +1,4 @@
 import type { ExtractPropTypes } from 'vue'
-import type Radio from './radio.vue'
 
 export const radioProps = {
   /**
@@ -12,4 +11,3 @@ export const radioProps = {
 }
 
 export type RadioProps = ExtractPropTypes<typeof radioProps>
-export type RadioInstance = InstanceType<typeof Radio>

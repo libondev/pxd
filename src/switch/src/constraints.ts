@@ -1,5 +1,4 @@
 import type { ExtractPropTypes } from 'vue'
-import type Switch from './switch.vue'
 
 export const switchProps = {
   modelValue: {
@@ -58,4 +57,3 @@ export const switchProps = {
 }
 
 export type SwitchProps = ExtractPropTypes<typeof switchProps>
-export type SwitchInstance = InstanceType<typeof Switch>

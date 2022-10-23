@@ -30,7 +30,7 @@ const emits = defineEmits<{
 
 const size = useSize(props)
 const className = computed(() => [
-  'px-input--inner px-floating-tip px-transition px-width-full',
+  'px-input--inner px-floating-tip px-relative px-transition px-width-full',
   `px-padding-${size.value} px-font-${size.value}`,
   props.ellipsis && 'px-overflow-ellipsis'
 ])

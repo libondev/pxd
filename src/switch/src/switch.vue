@@ -17,8 +17,7 @@
 import { switchProps } from './constraints'
 import { appendCSSUnit } from '../../_utils'
 import { useToggle } from '../../_hooks'
-
-const LoadingSpinner = defineAsyncComponent(() => import('../../spinner'))
+import LoadingSpinner from '../../spinner'
 
 const props = defineProps(switchProps)
 const emits = defineEmits <{
