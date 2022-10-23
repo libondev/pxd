@@ -40,14 +40,11 @@ export default ${camelCase}\n`
 
 const CONSTRAINTS = `import type { ExtractPropTypes, PropType } from 'vue'
 
-import type ${camelCase} from './${componentName}.vue'
-
 export const ${componentName}Props = {
 
 }
 
 export type ${camelCase}Props = ExtractPropTypes<typeof ${componentName}Props>
-export type ${camelCase}Instance = InstanceType<typeof ${camelCase}>
 `
 
 const COMPONENT_VUE = `<template>

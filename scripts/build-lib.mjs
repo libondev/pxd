@@ -1,17 +1,14 @@
-import { cwd } from 'node:process'
+import AutoImports from 'unplugin-auto-import/vite'
+import Dts from 'vite-plugin-dts'
+import SetupName from 'unplugin-vue-setup-extend-plus/vite'
+import Vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
-import defineName from 'unplugin-vue-setup-extend-plus/vite'
-import dts from 'vite-plugin-dts'
-import imports from 'unplugin-auto-import/vite'
 // import jsx from '@vitejs/plugin-vue-jsx'
-import { resolve } from 'node:path'
-import vue from '@vitejs/plugin-vue'
-
-const outDir = resolve(cwd(), 'dist/')
 
 export default defineConfig(({ mode }) => {
   return {
     build: {
+      minify: true,
       outDir: './dist',
       lib: {
         entry: './src/index.ts',
@@ -19,29 +16,27 @@ export default defineConfig(({ mode }) => {
         fileName: '[name]'
       },
       rollupOptions: {
-        external: ['vue', '@vueuse/core'],
+        external: [/\.scss/, 'vue', '@vueuse/core'],
         output: {
-          name: 'es',
-          dir: outDir,
           preserveModules: true,
-          preserveModulesRoot: outDir
+          preserveModulesRoot: 'src'
         }
       }
     },
     plugins: [
       // jsx(),
-      vue(),
-      defineName(),
-      imports({
+      Vue(),
+      SetupName(),
+      AutoImports({
         dts: false,
         imports: ['vue'],
         dirs: ['src/**/*.vue']
       }),
       // build dts on production
-      mode === 'production' && dts({
+      mode === 'production' && Dts({
+        staticImport: true,
         entryRoot: './src',
-        outputDir: './dist',
-        staticImport: true
+        outputDir: './dist'
       })
     ]
   }
