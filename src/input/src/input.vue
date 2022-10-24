@@ -1,21 +1,24 @@
 <template>
   <div class="px-input px-inline-flex px-width-full px-vertical-top">
-    <div v-if="$slots.prepend" :class="`px-input--prepend px-padding-${size} px-font-${size}`">
+    <span v-if="$slots.prepend" :class="`px-input--prepend px-padding-${size} px-font-${size}`">
       <slot name="prepend" />
+    </span>
+
+    <div class="px-input--wrapper px-relative">
+      <input
+        v-model="modelValue"
+        type="text"
+        :class="className"
+        :disabled="disabled"
+        :readonly="readonly"
+        :placeholder="placeholder"
+      >
+      <span class="px-input--clear-icon px-absolute px-hidden px-cursor-pointer" @click="onClearClick">x</span>
     </div>
 
-    <input
-      v-model="modelValue"
-      type="text"
-      :class="className"
-      :disabled="disabled"
-      :readonly="readonly"
-      :placeholder="placeholder"
-    >
-
-    <div v-if="$slots.append" :class="`px-input--append px-padding-${size} px-font-${size}`">
+    <span v-if="$slots.append" :class="`px-input--append px-padding-${size} px-font-${size}`">
       <slot name="append" />
-    </div>
+    </span>
   </div>
 </template>
 
@@ -46,4 +49,8 @@ const modelValue = computed({
     emits('update:modelValue', value)
   }
 })
+
+function onClearClick () {
+  modelValue.value = ''
+}
 </script>

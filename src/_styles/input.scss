@@ -11,6 +11,12 @@
     margin-left: -1px;
     border-left: 1px solid var(--border-2);
   }
+
+  &--clear-icon {
+    right: 0;
+    top: 0;
+    z-index: 2
+  }
 }
 
 @media (any-hover: hover) {
@@ -34,6 +40,10 @@
     border-color: var(--primary-6);
     background-color: var(--bg-1);
     z-index: 1;
+
+    & + .px-input--clear-icon {
+      display: block;
+    }
   }
 
   &[disabled] {
