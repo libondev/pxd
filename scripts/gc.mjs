@@ -22,7 +22,7 @@ function toCamelCase (string) {
 
 const [,,, componentName] = process.argv
 
-if (!/[a-zA-Z]+/.test(componentName)) {
+if (!/^[a-zA-Z]+?[-|_|a-zA-Z0-9]*?$/.test(componentName)) {
   console.log(bgRed(` Invalid component name:【${componentName}】 `))
   process.exit(1)
 }

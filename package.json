@@ -18,8 +18,8 @@
     "gen": "zx ./scripts/gc.mjs",
     "dev": "cd ./playground && npm run dev",
     "build": "npm run build:lib && npm run build:styles",
-    "build:lib": "vite build -c ./scripts/build-lib.mjs",
-    "build:styles": "node ./scripts/build-styles.mjs",
+    "build:lib": "vite build -c ./scripts/build/library.mjs",
+    "build:styles": "node ./scripts/build/styles.mjs",
     "stylelint": "stylelint --fix src/**/*.{css,scss}",
     "eslint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
   },

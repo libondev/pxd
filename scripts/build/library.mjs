@@ -2,14 +2,14 @@ import AutoImports from 'unplugin-auto-import/vite'
 import Dts from 'vite-plugin-dts'
 import SetupName from 'unplugin-vue-setup-extend-plus/vite'
 import Vue from '@vitejs/plugin-vue'
-import { defineConfig } from 'vite'
-// import jsx from '@vitejs/plugin-vue-jsx'
 
-export default defineConfig(({ mode }) => {
+/** @type {import('vite').UserConfigExport} */
+export default ({ mode }) => {
   return {
     build: {
       minify: true,
       outDir: './dist',
+      target: 'modules',
       lib: {
         entry: './src/index.ts',
         formats: ['es'],
@@ -18,13 +18,13 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: [/\.scss/, 'vue', '@vueuse/core'],
         output: {
+          exports: 'named',
           preserveModules: true,
           preserveModulesRoot: 'src'
         }
       }
     },
     plugins: [
-      // jsx(),
       Vue(),
       SetupName(),
       AutoImports({
@@ -40,4 +40,4 @@ export default defineConfig(({ mode }) => {
       })
     ]
   }
-})
+}
