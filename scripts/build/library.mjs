@@ -36,7 +36,8 @@ export default ({ mode }) => {
       mode === 'production' && Dts({
         staticImport: true,
         entryRoot: './src',
-        outputDir: './dist'
+        outputDir: './dist',
+        exclude: ['**/constraints.ts']
       })
     ]
   }
