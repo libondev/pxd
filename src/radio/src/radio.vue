@@ -1,5 +1,5 @@
 <template>
-  <label :class="className" :aria-disabled="disabledComputed">
+  <label class="px-relation px-inline-flex px-items-center px-cursor-pointer px-select-none px-vertical-middle px-radio" :aria-disabled="disabledComputed">
     <input
       ref="radioRef"
       type="radio"
@@ -19,14 +19,10 @@
 <script lang="ts" setup name="PxRadio">
 import { radioProps } from './constraints'
 import { formSymbol, radioGroupSymbol } from '../../_internal'
-import { getFilledClassNames } from '../../_utils'
 
 const props = defineProps(radioProps)
 
 const radioRef = ref<HTMLInputElement>()
-const className = computed(() => {
-  return ['px-radio', getFilledClassNames('relation inline-flex items-center cursor-pointer select-none')]
-})
 
 const form = inject(formSymbol, { disabled: false })
 const radioGroup = inject(radioGroupSymbol, { disabled: false })

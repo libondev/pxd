@@ -1,6 +1,7 @@
 <template>
   <button
-    :class="['px-switch px-transition px-inline-block px-cursor-pointer px-relative', { 'px-switch--loading': loading }]"
+    class="px-switch px-transition px-inline-block px-cursor-pointer px-relative"
+    :class="{ 'px-switch--loading': loading }"
     :disabled="disabled"
     :style="computedStyle"
     aria-label="toggle button"

@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body" :disabled="!props.appendToBody">
     <Transition name="px-fade" v-bind="maskTransitionMethods">
-      <div v-show="modelValue" :class="className" :style="{ zIndex }">
+      <div v-show="modelValue" class="px-dialog px-fixed px-flex-col px-items-center px-justify-center" :style="{ zIndex }">
         <Transition name="px-zoom" v-bind="modalTransitionMethods">
           <div
             v-show="modelVisible"
@@ -40,7 +40,7 @@
 
 <script lang="ts" setup name="PxDialog">
 import { dialogProps } from './constraints'
-import { createWatchers, getFilledClassNames } from '../../_utils'
+import { createWatchers } from '../../_utils'
 import { useFocusTrap, useZIndex } from '../../_hooks'
 
 import { onClickOutside } from '@vueuse/core'
@@ -56,9 +56,6 @@ const emits = defineEmits<{
 
 const dialogRef = ref()
 const zIndex = useZIndex()
-const className = computed(() => {
-  return ['px-dialog', getFilledClassNames('fixed flex-col items-center justify-center')]
-})
 
 const modelVisible = ref(props.modelValue)
 
