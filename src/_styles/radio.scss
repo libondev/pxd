@@ -1,6 +1,13 @@
+@media (any-hover: hover) {
+  .px-radio:not([aria-disabled="true" i]):hover .px-radio--target {
+    border-color: var(--primary-6);
+    outline-color: rgba(0 0 0 / 10%)
+  }
+}
+
 .px-radio {
-  &:not([aria-disabled="true" i]):hover &--target {
-    border-color: var(--primary-6)
+  & + & {
+    margin-left: 10px;
   }
 
   &[aria-disabled="true" i] {

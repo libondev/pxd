@@ -1,6 +1,13 @@
+@media (any-hover: hover) {
+  .px-checkbox:not([aria-disabled="true" i]):hover .px-checkbox--target {
+    border-color: var(--primary-6);
+    outline-color: rgba(0 0 0 / 10%)
+  }
+}
+
 .px-checkbox {
-  &:not([aria-disabled="true" i]):hover &--target {
-    border-color: var(--primary-6)
+  & + & {
+    margin-left: 10px;
   }
 
   &[aria-disabled="true" i] {
@@ -21,7 +28,9 @@
 
     svg {
       display: none;
-      fill: var(--bg-1)
+      fill: var(--bg-1);
+      line-height: 0;
+      vertical-align: top;
     }
   }
 
@@ -48,7 +57,7 @@
 
   // checked
   &:not(.indeterminate) input:checked + &--target svg {
-    display: block;
+    display: inline-block;
   }
 
   input:not(:active):focus-visible + &--target {
