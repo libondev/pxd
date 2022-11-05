@@ -30,6 +30,7 @@ if (!/^[a-zA-Z]+?[-|_|a-zA-Z0-9]*?$/.test(componentName)) {
 cd('./src')
 
 const camelCase = toCamelCase(componentName)
+const camelCaseLower = camelCase.slice(0, 1).toLowerCase() + camelCase.slice(1)
 const camelCaseWithPrefix = `Px${camelCase}`
 
 const COMPONENT_INDEX = `import ${camelCase} from './src/${componentName}.vue'
@@ -40,11 +41,11 @@ export default ${camelCase}\n`
 
 const CONSTRAINTS = `import type { ExtractPropTypes, PropType } from 'vue'
 
-export const ${componentName}Props = {
+export const ${camelCaseLower}Props = {
 
 }
 
-export type ${camelCase}Props = ExtractPropTypes<typeof ${componentName}Props>
+export type ${camelCase}Props = ExtractPropTypes<typeof ${camelCaseLower}Props>
 `
 
 const COMPONENT_VUE = `<template>
@@ -52,9 +53,9 @@ const COMPONENT_VUE = `<template>
 </template>
 
 <script lang="ts" setup name="${camelCaseWithPrefix}">
-import { ${componentName}Props } from './constraints'
+import { ${camelCaseLower}Props } from './constraints'
 
-const props = defineProps(${componentName}Props)
+const props = defineProps(${camelCaseLower}Props)
 </script>
 `
 
