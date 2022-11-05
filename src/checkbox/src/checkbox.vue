@@ -5,13 +5,11 @@
     :class="className"
   >
     <input
-      ref="checkboxRef"
       type="checkbox"
       class="px-outside-hidden"
-      :value="value"
-      :disabled="disabledComputed"
       :checked="checked"
-      @change="onChangeValue"
+      :disabled="disabledComputed"
+      @change="onValueChange"
     >
 
     <i class="px-checkbox--target px-relative px-transition px-items-center px-justify-center">
@@ -34,25 +32,25 @@ const emits = defineEmits<{
   (e: 'update:modelValue',): void
 }>()
 
-const checked = ref(false)
-const checkboxRef = ref<HTMLInputElement>()
-
 const form = inject(formSymbol, { disabled: false })
-const checkboxGroup = inject(checkboxGroupSymbol, { disabled: false })
+const checkboxGroup = inject(checkboxGroupSymbol)
+
+// default checked status
+const checked = ref(checkboxGroup?.getCheckedStatus(props.value) ?? props.modelValue)
 
 const disabledComputed = computed<boolean>(() => {
-  return props.disabled || checkboxGroup.disabled || form.disabled
+  return props.disabled || checkboxGroup?.disabled || form?.disabled
 })
 
-const className = computed(() => {
-  return [
-    props.disabled && 'px-checkbox--disabled',
-    props.indeterminate && 'indeterminate'
-  ]
-})
+const className = computed(() => [
+  props.disabled && 'px-checkbox--disabled',
+  props.indeterminate && 'indeterminate'
+])
 
-function onChangeValue (): void {
-  emits('change')
+function onValueChange (): void {
   emits('update:modelValue')
+
+  // If it's nested inside the checkbox group
+  checkboxGroup && checkboxGroup.onValueChange(props.value)
 }
 </script>

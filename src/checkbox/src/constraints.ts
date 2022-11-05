@@ -5,7 +5,8 @@ export const checkboxProps = {
     type: Boolean
   },
   value: {
-    type: [String, Number, Boolean, Object]
+    type: [String, Number, Boolean, Array, Object],
+    default: ''
   },
   /**
    * @zh 是否禁用

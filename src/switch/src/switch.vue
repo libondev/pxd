@@ -1,6 +1,6 @@
 <template>
   <button
-    class="px-switch px-transition px-inline-block px-cursor-pointer px-relative"
+    class="px-transition px-inline-block px-cursor-pointer px-relative px-vertical-middle px-switch"
     :class="{ 'px-switch--loading': loading }"
     :disabled="disabled"
     :style="computedStyle"

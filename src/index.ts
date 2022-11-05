@@ -13,6 +13,7 @@ import { PxSpinner } from './spinner'
 import { PxSwitch } from './switch'
 import { globalSymbol } from './_internal'
 
+import { PxCheckboxGroup } from './checkbox-group'
 // #endregion import
 
 // #region export
@@ -27,6 +28,7 @@ export * from './switch'
 export * from './space'
 export * from './checkbox'
 export * from './radio'
+export * from './checkbox-group'
 // #endregion export
 
 export { default as PxdResolver } from './resolver'
@@ -52,7 +54,8 @@ export const installer: Plugin = (
     PxSwitch,
     PxSpace,
     PxCheckbox,
-    PxRadio
+    PxRadio,
+    PxCheckboxGroup
     // #endregion registry
   ].forEach(component => app.use(component))
 
