@@ -13,8 +13,13 @@
   }
 
   &--clear-icon {
-    right: 0;
-    top: 0;
+    right: 5px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    transform: translateY(-50%);
     z-index: 2
   }
 }
