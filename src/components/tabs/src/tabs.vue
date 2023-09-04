@@ -41,7 +41,7 @@ provide(TriggerSymbol, triggers)
 </script>
 
 <template>
-  <TabsRoot v-model="checkState" class="w-300px">
+  <TabsRoot v-model="checkState" activation-mode="manual">
     <TabsList
       :aria-label="label"
       class="box-border flex w-full group items-center justify-center bg-muted text-muted-foreground"
@@ -51,7 +51,7 @@ provide(TriggerSymbol, triggers)
         v-for="value, label in triggers"
         :key="value"
         :value="value"
-        class="b-0 flex-1 py-0 box-border bg-transparent h-full text-foreground font-inherit group-hover:transition-background-color data-[active=true]:(bg-background shadow-sm)"
+        class="b-0 flex-1 py-0 box-border bg-transparent outlines h-full text-foreground font-inherit group-hover:transition-background-color data-[active=true]:(bg-background shadow-sm)"
         :class="SIZES[size].inner"
       >
         {{ label }}
