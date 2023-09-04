@@ -1,9 +1,7 @@
 {
-  "cSpell.ignoreWords": [
-    "csso"
-  ],
   "cSpell.words": [
-    "predev",
-    "unplugin"
+    "esno",
+    "lightningcss",
+    "tsup"
   ]
 }

@@ -1,26 +1,19 @@
 {
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "scripts"],
-  "compilerOptions": {
-    "baseUrl": "./",
-    "rootDir": "./",
-    "strict": true,
-    "allowJs": true,
-    "strictNullChecks": true,
-    "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
-    "preserveSymlinks": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": false,
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "forceConsistentCasingInFileNames": true,
-    "composite": true,
-    "target": "ES6",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "lib": ["ESNext", "DOM"]
-  }
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext", "dom"],
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"strictNullChecks": true,
+		"resolveJsonModule": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
+		"jsx": "preserve",
+		"types": ["node", "vite/client"]
+	},
+	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "shims/**.d.ts"],
+	"exclude": ["**/dist/**", "**/node_modules/**"]
 }

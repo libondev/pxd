@@ -1,27 +1,21 @@
 {
   "name": "pxd",
-  "type": "module",
   "version": "0.0.1",
   "description": "A stylish modern component library for Vue3. 一个别具一格的现代 Vue3 组件库。",
+  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "style": "dist/_styles/index.css",
-  "sideEffects": ["dist/*", "dist/_styles/*"],
-  "files": ["dist/*"],
+  "style": "dist/styles.css",
+  "sideEffects": false,
+  "files": [
+    "dist/*"
+  ],
   "exports": {
     ".": "./dist/index.js",
-    "./index.css": "./dist/_styles/index.css",
+    "./styles.css": "./dist/styles.css",
+    "./resolver": "./dist/plugins/resolver.js",
     "./*": "./dist/*"
-  },
-  "scripts": {
-    "gen": "zx ./scripts/gc.mjs",
-    "dev": "cd ./playground && npm run dev",
-    "build": "npm run build:lib && npm run build:styles",
-    "build:lib": "vite build -c ./scripts/build/library.mjs",
-    "build:styles": "node ./scripts/build/styles.mjs",
-    "stylelint": "stylelint --fix src/**/*.{css,scss}",
-    "eslint": "eslint ./src --ext .vue,.ts,.tsx --fix --ignore-path .gitignore"
   },
   "keywords": [
     "ui",
@@ -34,57 +28,52 @@
     "access": "public"
   },
   "license": "MIT",
-  "author": "banlify <banlify@163.com>",
-  "homepage": "https://github.com/banlify/pxd#readme",
+  "author": "libondev <bon.li@outlook.com>",
+  "homepage": "https://github.com/libondev/pxd#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/banlify/pxd.git"
+    "url": "git+https://github.com/libondev/pxd.git"
   },
   "bugs": {
-    "url": "https://github.com/banlify/pxd/issues"
+    "url": "https://github.com/libondev/pxd/issues"
+  },
+  "scripts": {
+    "build1": "run-p type-check build:components && npm run cleanEmpty",
+    "build": "npm run build:components",
+    "cleanEmpty": "esno ./scripts/clean.ts",
+    "dev": "vite --config ./scripts/build.ts",
+    "build:components": "vite build --config ./scripts/build.ts",
+    "type-check": "vue-tsc --noEmit --composite false",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
   },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
-    "@vitejs/plugin-vue": "^4.0.0",
-    "@vitejs/plugin-vue-jsx": "^3.0.0",
-    "@vue/eslint-config-typescript": "^11.0.2",
-    "csso": "^5.0.5",
-    "eslint": "^8.25.0",
-    "eslint-config-standard-with-typescript": "^23.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.3.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unicorn": "^43.0.2",
-    "eslint-plugin-vue": "^9.6.0",
-    "fast-glob": "^3.2.12",
-    "fs-extra": "^10.1.0",
-    "kolorist": "^1.6.0",
-    "magic-string": "^0.26.7",
-    "sass": "^1.55.0",
-    "stylelint": "^14.14.0",
-    "stylelint-config-recommended-scss": "^6.0.0",
-    "stylelint-config-standard": "^26.0.0",
-    "stylelint-scss": "^4.3.0",
-    "typescript": "^4.8.4",
-    "unplugin-auto-import": "^0.11.2",
-    "unplugin-vue-components": "^0.22.8",
-    "unplugin-vue-setup-extend-plus": "^0.3.2",
-    "vite": "^4.0.0",
-    "vite-plugin-dts": "^1.6.6",
-    "vue": "^3.2.41",
-    "zx": "^7.1.1"
-  },
   "dependencies": {
-    "@vueuse/core": "^9.3.1",
-    "focus-trap": "^7.0.0"
+    "radix-vue": "^0.1.30"
   },
-  "browserslist": [
-    "> 1%",
-    "not ie 11",
-    "not op_mini all"
-  ]
+  "devDependencies": {
+    "@iconify-json/ic": "^1.1.14",
+    "@types/node": "^18.17.12",
+    "@unocss/transformer-directives": "^0.55.3",
+    "@unocss/transformer-variant-group": "^0.55.3",
+    "@vitejs/plugin-vue": "^4.3.4",
+    "@vitejs/plugin-vue-jsx": "^3.0.2",
+    "animated-unocss": "^0.0.6",
+    "eslint": "^8.48.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sort-destructure-keys": "^1.5.0",
+    "esno": "^0.17.0",
+    "fast-glob": "^3.3.1",
+    "lightningcss": "^1.21.5",
+    "npm-run-all": "^4.1.5",
+    "radix-vue": "^0.1.29",
+    "typescript": "~5.2.2",
+    "unocss": "^0.55.3",
+    "unplugin-auto-import": "^0.16.6",
+    "unplugin-vue-components": "^0.25.2",
+    "vite": "^4.4.9",
+    "vue": "^3.3.4",
+    "vue-tsc": "^1.8.8"
+  }
 }

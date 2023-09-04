@@ -1,0 +1,72 @@
+@layer base {
+  :root {
+    --background: 0, 0%, 100%;
+    --foreground: 222.2, 47.4%, 11.2%;
+
+    --muted: 240, 4.8%, 95.9%;
+    --muted-foreground: 240, 3.8%, 46.1%;
+
+    --popover: 0, 0%, 100%;
+    --popover-foreground: 222.2, 47.4%, 11.2%;
+
+    --border: 240, 5.9%, 90%;
+    --input: 220, 13%, 92%;
+
+    --card: 0, 0%, 100%;
+    --card-foreground: 222.2, 47.4%, 11.2%;
+
+    --primary: 0, 0%, 9.02%;
+    --primary-foreground: 210, 40%, 98%;
+
+    --secondary: 220, 13.04%, 95.49%;
+    --secondary-foreground: 222.2, 47.4%, 11.2%;
+
+    --accent: 210, 4.8%, 95.9%;
+    --accent-foreground: 222.2, 47.4%, 11.2%;
+
+    --danger: 0, 90.1%, 60.39%;
+    --danger-foreground: 210, 40%, 98%;
+
+    --ring: 215, 20.2%, 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224, 71%, 4%;
+    --foreground: 213, 31%, 91%;
+
+    --muted: 240, 3.7%, 15.9%;
+    --muted-foreground: 240, 5%, 64.9%;
+
+    --accent: 216, 34%, 17%;
+    --accent-foreground: 210, 40%, 98%;
+
+    --popover: 224, 71%, 4%;
+    --popover-foreground: 215, 20.2%, 65.1%;
+
+    --border: 216, 34%, 17%;
+    --input: 240, 3.7%, 15.9%;
+
+    --card: 224, 71%, 4%;
+    --card-foreground: 213, 31%, 91%;
+
+    --primary: 210, 40%, 98%;
+    --primary-foreground: 222.2, 47.4%, 1.2%;
+
+    --secondary: 240, 3.8%, 15.49%;
+    --secondary-foreground: 210, 40%, 98%;
+
+    --danger: 1.64, 90.12%, 68.24%;
+    --danger-foreground: 210, 40%, 98%;
+
+    --ring: 216, 34%, 17%;
+
+    --radius: 0.5rem;
+  }
+
+  .outlines:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+}
