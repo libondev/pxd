@@ -41,8 +41,8 @@
     "build1": "run-p type-check build:components && npm run cleanEmpty",
     "build": "npm run build:components",
     "cleanEmpty": "esno ./scripts/clean.ts",
-    "dev": "vite --config ./scripts/build.ts",
-    "build:components": "vite build --config ./scripts/build.ts",
+    "dev": "vite",
+    "build:components": "vite build",
     "type-check": "vue-tsc --noEmit --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },

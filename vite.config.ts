@@ -7,7 +7,7 @@ import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 // import VueComponents from 'unplugin-vue-components/vite'
-// import resolver from '../src/plugins/resolver'
+// import resolver from 'src/plugins/resolver'
 
 const GLOB_ENTRY = [
   'src/components/**/*.ts',
@@ -22,7 +22,7 @@ const components = Object.fromEntries(
         'src',
         file.slice(0, file.length - path.extname(file).length)
       ),
-      fileURLToPath(new URL(`../${file}`, import.meta.url))
+      fileURLToPath(new URL(file, import.meta.url))
     ]
   })
 )
@@ -40,7 +40,7 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       external: ['vue', 'unocss', 'radix-vue'],
       input: {
-        'styles': fileURLToPath(new URL(`../src/styles.ts`, import.meta.url)),
+        'styles': fileURLToPath(new URL(`src/styles.ts`, import.meta.url)),
         ...components
       },
       output: {
