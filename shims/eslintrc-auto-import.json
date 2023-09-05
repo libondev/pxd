@@ -16,6 +16,7 @@
     "effectScope": true,
     "getCurrentInstance": true,
     "getCurrentScope": true,
+    "getSize": true,
     "h": true,
     "inject": true,
     "isProxy": true,
@@ -58,7 +59,6 @@
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true,
-    "getSize": true
+    "watchSyncEffect": true
   }
 }

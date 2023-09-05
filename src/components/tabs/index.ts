@@ -1,4 +1,4 @@
-import { InjectionKey } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 
 export interface TriggerItem {
   label: string
