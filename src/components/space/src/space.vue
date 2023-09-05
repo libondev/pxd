@@ -3,7 +3,7 @@
 defineProps({
   gap: {
     type: String as PropType<Size>,
-    default: 4,
+    default: 'default',
   },
   direction: {
     type: String as PropType<'horizontal' | 'vertical'>,
