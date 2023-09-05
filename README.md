@@ -1,6 +1,8 @@
 # PXD
 A library of Vue3 components based on radix-vue and unocss. Everything is just right.
 
+![](./public/preview.png)
+
 ## Acknowledgement
 rankings are in no particular order, they are all very important to this project.
 
