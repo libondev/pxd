@@ -6,6 +6,7 @@ import { fileURLToPath, URL } from 'node:url'
 import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
+import dts from 'vite-plugin-dts'
 // import VueComponents from 'unplugin-vue-components/vite'
 // import resolver from 'src/plugins/resolver'
 
@@ -14,18 +15,6 @@ const GLOB_ENTRY = [
   'src/composables/**/*.ts',
   'src/plugins/**/*.ts'
 ]
-
-const components = Object.fromEntries(
-  glob.sync(GLOB_ENTRY).map(file => {
-    return [
-      path.relative(
-        'src',
-        file.slice(0, file.length - path.extname(file).length)
-      ),
-      fileURLToPath(new URL(file, import.meta.url))
-    ]
-  })
-)
 
 export default defineConfig({
   base: './',
@@ -40,8 +29,17 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       external: ['vue', 'unocss', 'radix-vue'],
       input: {
+        'index': fileURLToPath(new URL(`src/index.ts`, import.meta.url)),
         'styles': fileURLToPath(new URL(`src/styles.ts`, import.meta.url)),
-        ...components
+
+        ...Object.fromEntries(
+          glob.sync(GLOB_ENTRY).map(file => {
+            return [
+              path.relative('src', file.slice(0, file.length - path.extname(file).length)),
+              fileURLToPath(new URL(file, import.meta.url))
+            ]
+          })
+        )
       },
       output: {
         format: 'es',
@@ -53,12 +51,18 @@ export default defineConfig({
     }
   },
 
+  esbuild: {
+    target: 'esnext',
+    drop: ['console', 'debugger']
+  },
+
   css: {
     devSourcemap: true,
     transformer: 'lightningcss'
   },
 
   plugins: [
+    dts(),
     unocss(),
     vueJsx(),
     vue({
