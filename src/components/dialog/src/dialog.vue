@@ -2,6 +2,7 @@
 import {
   DialogClose,
   DialogContent,
+  AlertDialogContent,
   DialogDescription,
   DialogOverlay,
   DialogPortal,
@@ -25,6 +26,14 @@ defineProps({
   description: {
     type: String,
     default: ''
+  },
+
+  /**
+   * Click on the modal to close the dialog.
+   */
+  closeOnClickModal: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -39,7 +48,8 @@ const openState = defineModel<boolean>()
 
     <DialogPortal to="body">
       <DialogOverlay class="fixed inset-0 z-10 bg-background/90 animated animated-duration-150 data-[state=open]:animated-fade-in data-[state=closed]:animated-fade-out" />
-      <DialogContent
+      <component
+        :is="closeOnClickModal ? DialogContent : AlertDialogContent"
         class="pxd-dialog fixed left-0 right-0 top-50% translate-y--50% mx-auto z-11 grid gap-4 w-full box-border max-w-lg bg-background rounded-lg p-8 shadow-lg b-(1 solid border) origin-center animated animated-duration-150 data-[state=open]:animated-zoom-in data-[state=closed]:animated-zoom-out"
       >
         <div class="pxd-dialog--header">
@@ -64,7 +74,7 @@ const openState = defineModel<boolean>()
         </div>
 
         <slot />
-      </DialogContent>
+      </component>
     </DialogPortal>
   </DialogRoot>
 </template>
