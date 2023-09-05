@@ -11,7 +11,7 @@ export default (): ComponentResolver => ({
 
     return {
       importName: name,
-      from: `${LIBRARY_NAME}/${partialName}/index.js`,
+      from: `${LIBRARY_NAME}/components/${partialName}/index.js`,
       sideEffects: []
     }
   }
