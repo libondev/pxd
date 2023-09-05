@@ -1,7 +1,7 @@
 {
   "name": "pxd",
   "version": "0.0.2",
-  "description": "A stylish modern component library for Vue3. 一个别具一格的现代 Vue3 组件库。",
+  "description": "A library of Vue3 components based on radix-vue and unocss.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -9,7 +9,8 @@
   "style": "dist/styles.css",
   "sideEffects": false,
   "files": [
-    "dist/*"
+    "dist/*",
+    "public/*"
   ],
   "exports": {
     ".": "./dist/index.js",
@@ -38,7 +39,6 @@
     "url": "https://github.com/libondev/pxd/issues"
   },
   "scripts": {
-    "build1": "run-p type-check build:components && npm run cleanEmpty",
     "build": "npm run build:components",
     "cleanEmpty": "esno ./scripts/clean.ts",
     "dev": "vite",
