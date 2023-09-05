@@ -28,7 +28,7 @@ defineOptions({
 
 defineProps({
   size: {
-    type: String as PropType<Sizes>,
+    type: String as PropType<Size>,
     default: 'default'
   },
   options: {
@@ -48,7 +48,7 @@ const selectedValue = defineModel<string>()
   <SelectRoot v-model="selectedValue">
     <SelectTrigger
       class="pxd-select shadow-sm inline-flex w-full text-inherit font-inherit items-center b-(1 solid input) outlines bg-background text-sm data-[disabled]:(cursor-not-allowed bg-secondary b-transparent)"
-      :class="getSizes(size)"
+      :class="getSize(size)"
       aria-label="Customize options"
     >
       <SelectValue :data-tips="placeholder" class="w-full text-left empty:before:(content-[attr(data-tips)] text-gray/500)" />

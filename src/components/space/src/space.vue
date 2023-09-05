@@ -2,7 +2,7 @@
 
 defineProps({
   gap: {
-    type: String as PropType<Sizes>,
+    type: String as PropType<Size>,
     default: 4,
   },
   direction: {

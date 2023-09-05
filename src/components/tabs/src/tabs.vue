@@ -13,7 +13,7 @@ const checkState = defineModel<string>()
 
 defineProps({
   size: {
-    type: String as PropType<Sizes>,
+    type: String as PropType<Size>,
     default: 'default'
   },
   label: {

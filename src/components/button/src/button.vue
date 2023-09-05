@@ -22,7 +22,7 @@ defineProps({
     default: 'button'
   },
   size: {
-    type: String as PropType<Sizes>,
+    type: String as PropType<Size>,
     default: 'default'
   },
   variant: {
@@ -37,7 +37,7 @@ defineProps({
   <button
     :type="type"
     class="pxd-button inline-flex items-center  font-inherit b-(1 solid) b-transparent justify-center outlines text-sm not-disabled:cursor-pointer disabled:(pointer-events-none op-50)"
-    :class="[VARIANTS[variant], getSizes(size)]"
+    :class="[VARIANTS[variant], getSize(size)]"
   >
     <slot />
   </button>

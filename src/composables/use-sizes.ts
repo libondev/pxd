@@ -5,7 +5,7 @@ const SIZES = {
 }
 
 declare global {
-  export type Sizes = keyof typeof SIZES
+  export type Size = keyof typeof SIZES
 }
 
-export const getSizes = (size: Sizes) => SIZES[size] || SIZES.default
+export const getSize = (size: Size) => SIZES[size] || SIZES.default

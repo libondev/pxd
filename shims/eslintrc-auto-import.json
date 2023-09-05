@@ -59,6 +59,6 @@
     "watchEffect": true,
     "watchPostEffect": true,
     "watchSyncEffect": true,
-    "getSizes": true
+    "getSize": true
   }
 }
