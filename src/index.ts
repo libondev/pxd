@@ -2,10 +2,12 @@ import type { App } from 'vue'
 
 import Button from './components/button'
 import Switch from './components/switch'
+import Checkbox from './components/checkbox'
 
 export {
   Button,
-  Switch
+  Switch,
+  Checkbox
 }
 
 const COMPONENTS = [
