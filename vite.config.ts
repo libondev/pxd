@@ -8,7 +8,7 @@ import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 // import VueComponents from 'unplugin-vue-components/vite'
-// import resolver from 'src/plugins/resolver'
+// import resolver from './src/plugins/resolver'
 
 const GLOB_ENTRY = [
   'src/components/**/*.ts',

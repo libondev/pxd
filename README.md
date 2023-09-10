@@ -22,11 +22,39 @@ export default defineConfig({
   plugins: [
     VueComponents({
       resolvers: [
-        PxResolver()
+        PxResolver({ ...options })
       ]
     }
   ]
 })
+```
+
+#### Resolver Options
+```ts
+interface ResolverOptions {
+  namespace: string
+}
+```
+You can specify automatically imported component name prefixes by passing in the namespace parameter, such as:
+```js
+// vite.config.ts
+{
+  plugins: [
+    VueComponents({
+      resolvers: [
+        resolver({ namespace: 'v' })
+      ]
+    })
+  ]
+}
+```
+
+```html
+<!-- App.vue -->
+<template>
+  <!-- `px-button` -> `v-button` -->
+  <v-button>Button</v-button>
+</template>
 ```
 
 ### Global install
