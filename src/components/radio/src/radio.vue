@@ -9,12 +9,6 @@ defineOptions({
   name: 'PxRadio'
 })
 
-interface OptionItem {
-  label: string
-  value: string
-  disabled?: boolean
-}
-
 const SIZES = {
   sm: 'h-5 px-2 rounded-md',
   default: 'h-6.5 px-2.5',

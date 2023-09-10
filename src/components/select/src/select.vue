@@ -13,12 +13,6 @@ import {
   SelectViewport,
 } from 'radix-vue'
 
-interface OptionItem {
-  label: string
-  value: string
-  disabled?: boolean
-}
-
 defineOptions({
   name: 'PxSelect'
 })
