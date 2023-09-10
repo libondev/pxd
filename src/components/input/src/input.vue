@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 
 defineOptions({
-  name: 'PxInput',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxInput'
 })
 
 defineProps({

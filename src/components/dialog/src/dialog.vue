@@ -12,10 +12,7 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxDialog',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxDialog'
 })
 
 defineProps({

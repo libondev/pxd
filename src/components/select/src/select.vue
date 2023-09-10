@@ -20,10 +20,7 @@ interface OptionItem {
 }
 
 defineOptions({
-  name: 'PxSelect',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxSelect'
 })
 
 defineProps({

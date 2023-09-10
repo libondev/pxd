@@ -2,10 +2,7 @@
 import { CheckboxIndicator, CheckboxRoot } from 'radix-vue'
 
 defineOptions({
-  name: 'PxCheckbox',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxCheckbox'
 })
 
 const checkState = defineModel<boolean>()

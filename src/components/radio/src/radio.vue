@@ -6,10 +6,7 @@ import {
 import { PropType } from 'vue';
 
 defineOptions({
-  name: 'PxRadio',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxRadio'
 })
 
 interface OptionItem {

@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 
 defineOptions({
-  name: 'PxTextarea',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxTextarea'
 })
 
 defineProps({

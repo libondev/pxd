@@ -2,10 +2,7 @@
 import { SwitchRoot, SwitchThumb } from 'radix-vue'
 
 defineOptions({
-  name: 'PxSwitch',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxSwitch'
 })
 
 const SIZES = {

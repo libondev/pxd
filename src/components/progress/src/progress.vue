@@ -2,10 +2,7 @@
 import { ProgressIndicator, ProgressRoot } from 'radix-vue'
 
 defineOptions({
-  name: 'PxProgress',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxProgress'
 })
 
 defineProps({

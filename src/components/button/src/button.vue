@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 
 defineOptions({
-  name: 'PxButton',
-  install(this: Component, app: App) {
-    app.component(this.name, this)
-  }
+  name: 'PxButton'
 })
 
 const VARIANTS = {
