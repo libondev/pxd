@@ -39,10 +39,11 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build",
     "dev": "vite",
-    "type-check": "vue-tsc --noEmit --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "build": "vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "vue-tsc --noEmit --composite false"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
