@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
+  AlertDialogContent,
   DialogClose,
   DialogContent,
-  AlertDialogContent,
   DialogDescription,
   DialogOverlay,
   DialogPortal,
@@ -12,17 +12,17 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxDialog'
+  name: 'PxDialog',
 })
 
 defineProps({
   title: {
     type: String,
-    default: ''
+    default: '',
   },
   description: {
     type: String,
-    default: ''
+    default: '',
   },
 
   /**
@@ -30,8 +30,8 @@ defineProps({
    */
   closeOnClickModal: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const openState = defineModel<boolean>()

@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-
 defineOptions({
-  name: 'PxTextarea'
+  name: 'PxTextarea',
 })
 
 defineProps({
   size: {
     type: String as PropType<Size>,
-    default: 'default'
-  }
+    default: 'default',
+  },
 })
 
 const inputText = defineModel<string>()

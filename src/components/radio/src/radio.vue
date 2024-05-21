@@ -1,42 +1,42 @@
 <script lang="ts" setup>
 import {
-  RadioGroupRoot,
   RadioGroupItem,
+  RadioGroupRoot,
 } from 'radix-vue'
-import { PropType } from 'vue';
+import type { PropType } from 'vue'
 
 defineOptions({
-  name: 'PxRadio'
+  name: 'PxRadio',
+})
+
+defineProps({
+  variant: {
+    type: String as PropType<'default' | 'button'>,
+    default: 'default',
+  },
+  size: {
+    type: String as PropType<keyof typeof SIZES>,
+    default: 'default',
+  },
+  defaultValue: {
+    type: String,
+    default: '',
+  },
+  vertical: {
+    type: Boolean,
+    default: false,
+  },
+  options: {
+    type: Array as PropType<OptionItem[]>,
+    default: () => [],
+  },
 })
 
 const SIZES = {
   sm: 'h-5 px-2 rounded-md',
   default: 'h-6.5 px-2.5',
-  lg: 'h-8 px-4 rounded-md'
+  lg: 'h-8 px-4 rounded-md',
 }
-
-defineProps({
-  variant: {
-    type: String as PropType<'default' | 'button'>,
-    default: 'default'
-  },
-  size: {
-    type: String as PropType<keyof typeof SIZES>,
-    default: 'default'
-  },
-  defaultValue: {
-    type: String,
-    default: ''
-  },
-  vertical: {
-    type: Boolean,
-    default: false
-  },
-  options: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => []
-  }
-})
 
 const checkState = defineModel<string>()
 
@@ -51,14 +51,14 @@ const classNames = {
     v-model="checkState"
     :aria-label="$attrs.name"
     :default-value="defaultValue"
-    :orientation="vertical ? 'vertical' :'horizontal'"
+    :orientation="vertical ? 'vertical' : 'horizontal'"
     class="flex gap-2 data-[orientation=vertical]:(flex-col)"
   >
     <label
       v-for="option, index of options"
       :key="option.value + index"
       class="inline-flex items-center"
-     >
+    >
       <RadioGroupItem
         class="b-(1 solid input) outlines shadow-sm text-inherit font-inherit cursor-default bg-background leading-none"
         :class="[classNames[variant], variant === 'button' && SIZES[size]]"

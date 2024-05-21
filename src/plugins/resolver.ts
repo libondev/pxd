@@ -15,7 +15,8 @@ export default ({ namespace = 'Px' } = {} as ResolverOptions): ComponentResolver
   resolve: (name: string) => {
     const prefixRegex = new RegExp(`^${namespace}[A-Z]`)
 
-    if (!name.match(prefixRegex)) { return }
+    if (!name.match(prefixRegex))
+      return
 
     const partialName = name
       .replace(new RegExp(namespace, 'i'), '')
@@ -26,7 +27,7 @@ export default ({ namespace = 'Px' } = {} as ResolverOptions): ComponentResolver
     return {
       importName: name,
       from: `${LIBRARY_NAME}/components/${partialName}/index.js`,
-      sideEffects: []
+      sideEffects: [],
     }
-  }
+  },
 })

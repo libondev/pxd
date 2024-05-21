@@ -3,34 +3,32 @@ import { TabsContent } from 'radix-vue'
 
 import { TriggerSymbol } from '../../tabs'
 
-const triggers = inject(TriggerSymbol)
-
 const props = defineProps({
   label: {
     type: String,
-    required: true
+    required: true,
   },
   value: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
+
+const triggers = inject(TriggerSymbol)
 
 watch(
   () => props.value,
   (newValue, oldValue) => {
-    if (!triggers) {
+    if (!triggers)
       return
-    }
 
-    if (newValue === oldValue) {
+    if (newValue === oldValue)
       return
-    } else {
-      triggers.value[newValue] = props.label
-      oldValue && delete triggers[oldValue]
-    }
+
+    triggers.value[newValue] = props.label
+    oldValue && delete triggers[oldValue]
   },
-  { immediate: true, flush: 'pre' }
+  { immediate: true, flush: 'pre' },
 )
 </script>
 

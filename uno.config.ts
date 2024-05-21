@@ -5,17 +5,17 @@ import { animatedUno } from 'animated-unocss'
 export default defineConfig({
   presets: [
     animatedUno({
-      buildFullVersion: false
+      buildFullVersion: false,
     }),
     presetMini({
-      variablePrefix: ''
+      variablePrefix: '',
     }),
     presetIcons({
       extraProperties: {
-        display: 'inline-block',
-        'vertical-align': '-2px'
-      }
-    })
+        'display': 'inline-block',
+        'vertical-align': '-2px',
+      },
+    }),
   ],
 
   shortcuts: [
@@ -23,8 +23,8 @@ export default defineConfig({
       'flex-center': 'flex justify-center items-center',
       'flex-col-center': 'flex flex-col justify-center items-center',
       'absolute-center': 'absolute left-50% top-50% translate-x--50% translate-y--50%',
-      'fixed-center': 'fixed left-50% top-50% translate-x--50% translate-y--50%'
-    }
+      'fixed-center': 'fixed left-50% top-50% translate-x--50% translate-y--50%',
+    },
   ],
 
   rules: [
@@ -32,13 +32,13 @@ export default defineConfig({
     [/^va-(.+)$/, ([, v]: string[]) => ({ 'vertical-align': v })],
     [/^rotate-y-full$/, () => ({ transform: 'rotateY(180deg)' })],
     [/^rotate-x-full$/, () => ({ transform: 'rotateX(180deg)' })],
-    [/^letter-spacing-(.+)$/, ([, d]: string[]) => ({ 'letter-spacing': d })]
+    [/^letter-spacing-(.+)$/, ([, d]: string[]) => ({ 'letter-spacing': d })],
   ],
 
   transformers: [
     // hover:(bg-gray-400 font-medium) font-(light mono) ↓
     // hover:bg-gray-400 hover:font-medium font-light font-mono
-    transformerVariantGroup()
+    transformerVariantGroup(),
   ],
 
   theme: {
@@ -82,6 +82,6 @@ export default defineConfig({
       lg: `var(--radius)`,
       md: `calc(var(--radius) - 2px)`,
       sm: 'calc(var(--radius) - 4px)',
-    }
-  }
+    },
+  },
 })

@@ -4,11 +4,22 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionRoot,
-  AccordionTrigger
+  AccordionTrigger,
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxAccordion'
+  name: 'PxAccordion',
+})
+
+defineProps({
+  type: {
+    type: String as PropType<'single' | 'multiple'>,
+    default: 'single',
+  },
+  options: {
+    type: Array as PropType<OptionItem[]>,
+    default: () => [],
+  },
 })
 
 interface OptionItem {
@@ -16,17 +27,6 @@ interface OptionItem {
   value: string
   content: string
 }
-
-defineProps({
-  type: {
-    type: String as PropType<'single' | 'multiple'>,
-    default: 'single'
-  },
-  options: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => []
-  }
-})
 </script>
 
 <template>
@@ -47,7 +47,7 @@ defineProps({
         </AccordionHeader>
 
         <AccordionContent class="overflow-hidden px-4 pb-4 animated data-[state=open]:animated-fade-in">
-            {{ item.content }}
+          {{ item.content }}
         </AccordionContent>
       </AccordionItem>
     </template>

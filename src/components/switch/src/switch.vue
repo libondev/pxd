@@ -2,34 +2,34 @@
 import { SwitchRoot, SwitchThumb } from 'radix-vue'
 
 defineOptions({
-  name: 'PxSwitch'
+  name: 'PxSwitch',
+})
+
+defineProps({
+  size: {
+    type: String as PropType<keyof typeof SIZES>,
+    default: 'default',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const SIZES = {
   sm: {
     track: 'w-36px h-20px',
-    inner: 'w-4 h-4'
+    inner: 'w-4 h-4',
   },
   default: {
     track: 'w-44px h-24px',
-    inner: 'w-5 h-5'
+    inner: 'w-5 h-5',
   },
   lg: {
     track: 'w-52px h-28px',
-    inner: 'w-6 h-6'
-  }
-}
-
-defineProps({
-  size: {
-    type: String as PropType<keyof typeof SIZES>,
-    default: 'default'
+    inner: 'w-6 h-6',
   },
-  disabled: {
-    type: Boolean,
-    default: false
-  }
-})
+}
 
 const checkState = defineModel<boolean>()
 </script>

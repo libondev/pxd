@@ -14,22 +14,22 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxSelect'
+  name: 'PxSelect',
 })
 
 defineProps({
   size: {
     type: String as PropType<Size>,
-    default: 'default'
+    default: 'default',
   },
   options: {
     type: Array as PropType<OptionItem[]>,
-    default: () => []
+    default: () => [],
   },
   placeholder: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const selectedValue = defineModel<string>()
@@ -72,7 +72,9 @@ const selectedValue = defineModel<string>()
               {{ option.value }}
             </SelectItem>
           </template>
-          <div v-else class="text-center cursor-default pointer-events-none select-none py-1.5 px-2 truncate text-sm op-50">Not has options</div>
+          <div v-else class="text-center cursor-default pointer-events-none select-none py-1.5 px-2 truncate text-sm op-50">
+            Not has options
+          </div>
         </SelectViewport>
 
         <SelectScrollDownButton class="flex-center h-5 z-11 absolute bottom-0 cursor-s-resize w-full bg-background cursor-default hover:bg-secondary">

@@ -3,11 +3,11 @@ import {
   ScrollAreaRoot,
   ScrollAreaScrollbar,
   ScrollAreaThumb,
-  ScrollAreaViewport
+  ScrollAreaViewport,
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxScrollbar'
+  name: 'PxScrollbar',
 })
 </script>
 

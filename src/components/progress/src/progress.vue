@@ -2,7 +2,7 @@
 import { ProgressIndicator, ProgressRoot } from 'radix-vue'
 
 defineOptions({
-  name: 'PxProgress'
+  name: 'PxProgress',
 })
 
 defineProps({
@@ -19,25 +19,25 @@ defineProps({
   direction: {
     type: String as PropType<Direction>,
     default: 'horizontal',
-  }
+  },
 })
 
 const progressValue = defineModel<number>({
-  default: 0
+  default: 0,
 })
 
 const SIZE = {
   sm: {
     horizontal: 'w-full h-1',
-    vertical: 'w-1 h-full rotate-x-full'
+    vertical: 'w-1 h-full rotate-x-full',
   },
   default: {
     horizontal: 'w-full h-2',
-    vertical: 'w-2 h-300px rotate-x-full'
+    vertical: 'w-2 h-300px rotate-x-full',
   },
   lg: {
     horizontal: 'w-full h-3',
-    vertical: 'w-3 h-full rotate-x-full'
+    vertical: 'w-3 h-full rotate-x-full',
   },
 }
 </script>

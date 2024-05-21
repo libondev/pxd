@@ -4,12 +4,12 @@ A library of Vue3 components based on radix-vue and unocss. Everything is just r
 > [!IMPORTANT]
 > The library is still under development and may undergo major changes at any time.
 
-
 ![](./res/preview.png)
 
 ## Install
+
 ```bash
-npm i pxd
+pnpm i pxd
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ export default defineConfig({
       resolvers: [
         PxResolver({ ...options })
       ]
-    }
+    })
   ]
 })
 ```
@@ -66,8 +66,8 @@ You can specify automatically imported component name prefixes by passing in the
 ```js
 // main.ts
 import { createApp } from 'vue'
-import App from './App.vue'
 import pxd from 'pxd'
+import App from './App.vue'
 import 'pxd/styles.css'
 
 const app = createApp(App)

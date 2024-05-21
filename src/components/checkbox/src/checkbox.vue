@@ -2,7 +2,7 @@
 import { CheckboxIndicator, CheckboxRoot } from 'radix-vue'
 
 defineOptions({
-  name: 'PxCheckbox'
+  name: 'PxCheckbox',
 })
 
 const checkState = defineModel<boolean>()
@@ -10,7 +10,8 @@ const checkState = defineModel<boolean>()
 
 <template>
   <label class="pxd-checkbox outline-none">
-    <CheckboxRoot v-model:checked="checkState"
+    <CheckboxRoot
+      v-model:checked="checkState"
       class="w-4 h-4 p-0 b-(1 solid input) shadow-sm rounded outlines bg-background overflow-hidden data-[state=unchecked]:va--1.4px data-[state=checked]:(b-primary va--1px)"
       v-bind="$attrs"
     >

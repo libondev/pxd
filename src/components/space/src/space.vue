@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 defineProps({
   gap: {
     type: String as PropType<Size>,
@@ -14,7 +13,7 @@ defineProps({
 const gapMap = {
   sm: 'gap-2',
   default: 'gap-4',
-  lg: 'gap-8'
+  lg: 'gap-8',
 }
 </script>
 
