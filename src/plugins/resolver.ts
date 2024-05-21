@@ -1,16 +1,15 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-
-const LIBRARY_NAME = 'pxd'
+import { name as LIBRARY_NAME } from '../../package.json'
 
 interface ResolverOptions {
   /**
    * Replaces the component prefix used for automatic import.
-   * @default 'Px'
+   * @default 'P'
    */
   namespace: string
 }
 
-export default ({ namespace = 'Px' } = {} as ResolverOptions): ComponentResolver => ({
+export default ({ namespace = LIBRARY_NAME[0] } = {} as ResolverOptions): ComponentResolver => ({
   type: 'component',
   resolve: (name: string) => {
     const prefixRegex = new RegExp(`^${namespace}[A-Z]`)
