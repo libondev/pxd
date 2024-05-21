@@ -1,8 +1,14 @@
 import transformerVariantGroup from '@unocss/transformer-variant-group'
-import { defineConfig, presetIcons, presetMini } from 'unocss'
 import { animatedUno } from 'animated-unocss'
+import { defineConfig, presetIcons, presetMini } from 'unocss'
 
 export default defineConfig({
+  content: {
+    pipeline: {
+      include: ['./src/**/*.{vue,tsx,ts}'],
+    },
+  },
+
   presets: [
     animatedUno({
       buildFullVersion: false,
@@ -18,14 +24,12 @@ export default defineConfig({
     }),
   ],
 
-  shortcuts: [
-    {
-      'flex-center': 'flex justify-center items-center',
-      'flex-col-center': 'flex flex-col justify-center items-center',
-      'absolute-center': 'absolute left-50% top-50% translate-x--50% translate-y--50%',
-      'fixed-center': 'fixed left-50% top-50% translate-x--50% translate-y--50%',
-    },
-  ],
+  shortcuts: {
+    'flex-center': 'flex justify-center items-center',
+    'flex-col-center': 'flex flex-col justify-center items-center',
+    'fixed-center': 'fixed left-50% top-50% translate-x--50% translate-y--50%',
+    'absolute-center': 'absolute left-50% top-50% translate-x--50% translate-y--50%',
+  },
 
   rules: [
     // va--2px => vertical-align: -2px

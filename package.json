@@ -23,14 +23,14 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.js",
-    "./styles.css": "./dist/styles.css",
+    "./vars.css": "./dist/vars.css",
     "./resolver": "./dist/plugins/resolver.js",
     "./*": "./dist/*"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "style": "dist/styles.css",
+  "style": "dist/vars.css",
   "files": [
     "dist/*",
     "res/*"
@@ -39,7 +39,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.dev.ts",
     "build": "vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

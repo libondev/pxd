@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ProgressIndicator, ProgressRoot } from 'radix-vue'
+import type { Size } from '../../../types'
 
 defineOptions({
   name: 'PProgress',
@@ -26,7 +27,7 @@ const progressValue = defineModel<number>({
   default: 0,
 })
 
-const SIZE = {
+const SIZES = {
   sm: {
     horizontal: 'w-full h-1',
     vertical: 'w-1 h-full rotate-x-full',
@@ -46,7 +47,7 @@ const SIZE = {
   <ProgressRoot
     v-model="progressValue"
     class="shadow-sm h-1 overflow-hidden rounded-full bg-input"
-    :class="SIZE[size][direction]"
+    :class="SIZES[size][direction]"
   >
     <ProgressIndicator
       :data-direction="direction"

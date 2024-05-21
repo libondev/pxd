@@ -1,22 +1,5 @@
 <script setup lang="ts">
-import 'virtual:uno.css'
-import './styles/global.css'
-
 import { shallowRef, watchEffect } from 'vue'
-
-import PxButton from './components/button'
-import PxSwitch from './components/switch'
-import PxSelect from './components/select'
-import PxInput from './components/input'
-import PxCheckbox from './components/checkbox'
-import PxRadio from './components/radio'
-import PxTabs from './components/tabs'
-import PxTabsItem from './components/tabs-item'
-import PxTextarea from './components/textarea'
-import PxProgress from './components/progress'
-import Dialog from './components/dialog'
-import Scrollbar from './components/scrollbar'
-import PxAccordion from './components/accordion'
 
 const darkMode = shallowRef(false)
 
@@ -58,51 +41,51 @@ watchEffect(() => {
 
 <template>
   <div class="flex flex-wrap items-center gap-2">
-    <PxSwitch v-model="darkMode" />
+    <PSwitch v-model="darkMode" />
 
-    <PxButton variant="default">
+    <PButton variant="default">
       Primary
-    </PxButton>
+    </PButton>
 
     <Dialog label="弹窗标题" description="这是一段很长的弹窗描述文本">
       <template #trigger>
-        <PxButton variant="outline">
+        <PButton variant="outline">
           打开弹窗
-        </PxButton>
+        </PButton>
       </template>
 
       <span>是的, 这里是弹窗的内容</span>
     </Dialog>
 
-    <PxInput placeholder="Please Input" />
+    <p-input placeholder="Please Input" />
 
-    <PxSelect placeholder="Please Select" :options="options" />
+    <PSelect placeholder="Please Select" :options="options" />
 
-    <PxCheckbox name="approve" value="true">
+    <PCheckbox name="approve" value="true">
       123123
-    </PxCheckbox>
+    </PCheckbox>
 
-    <PxRadio v-model="radioCheck" :options="options" />
+    <PRadio v-model="radioCheck" :options="options" />
 
-    <PxProgress v-model="number" />
+    <PProgress v-model="number" />
 
-    <PxTextarea size="lg" />
+    <PTextarea size="lg" />
 
-    <PxTabs v-model="tabCheck">
-      <PxTabsItem label="chinese" value="chinese">
+    <PTabs v-model="tabCheck">
+      <PTabsItem label="chinese" value="chinese">
         中文
-      </PxTabsItem>
-      <PxTabsItem label="english" value="english">
+      </PTabsItem>
+      <PTabsItem label="english" value="english">
         英文
-      </PxTabsItem>
-      <PxTabsItem label="number" value="number">
+      </PTabsItem>
+      <PTabsItem label="number" value="number">
         2222
-      </PxTabsItem>
-    </PxTabs>
+      </PTabsItem>
+    </PTabs>
 
-    <PxAccordion class="w-full" :options="accordionOptions">
+    <PAccordion class="w-full" :options="accordionOptions">
       1231
-    </PxAccordion>
+    </PAccordion>
 
     <Scrollbar class="h-100px">
       <ul>

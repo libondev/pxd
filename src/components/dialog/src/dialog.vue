@@ -13,6 +13,7 @@ import {
 
 defineOptions({
   name: 'PDialog',
+  inheritAttrs: false,
 })
 
 defineProps({

@@ -1,5 +1,9 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-import { name as LIBRARY_NAME } from '../../package.json'
+import { name } from '../../package.json'
+
+const DEFAULT_NAMESPACE = name[0].toUpperCase()
+// eslint-disable-next-line node/prefer-global/process
+const LIBRARY_NAME = process.env.NODE_ENV === 'development' ? './' : name
 
 interface ResolverOptions {
   /**
@@ -9,7 +13,7 @@ interface ResolverOptions {
   namespace: string
 }
 
-export default ({ namespace = LIBRARY_NAME[0] } = {} as ResolverOptions): ComponentResolver => ({
+export default ({ namespace = DEFAULT_NAMESPACE } = {} as ResolverOptions): ComponentResolver => ({
   type: 'component',
   resolve: (name: string) => {
     const prefixRegex = new RegExp(`^${namespace}[A-Z]`)
@@ -25,7 +29,7 @@ export default ({ namespace = LIBRARY_NAME[0] } = {} as ResolverOptions): Compon
 
     return {
       importName: name,
-      from: `${LIBRARY_NAME}/components/${partialName}/index.js`,
+      from: `${LIBRARY_NAME}/components/${partialName}/index`,
       sideEffects: [],
     }
   },

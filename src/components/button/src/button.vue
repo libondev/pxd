@@ -8,10 +8,6 @@ defineProps({
     type: String as PropType<HTMLButtonElement['type']>,
     default: 'button',
   },
-  size: {
-    type: String as PropType<Size>,
-    default: 'default',
-  },
   variant: {
     type: String as PropType<keyof typeof VARIANTS>,
     default: 'default',
@@ -31,8 +27,8 @@ const VARIANTS = {
 <template>
   <button
     :type="type"
-    class="pxd-button inline-flex items-center  font-inherit b-(1 solid) b-transparent justify-center outlines text-sm not-disabled:cursor-pointer disabled:(pointer-events-none op-50)"
-    :class="[VARIANTS[variant], getSize(size)]"
+    class="pxd-button inline-flex items-center h-8 rounded px-3 py-2 font-inherit b-(1 solid) b-transparent justify-center outlines text-sm not-disabled:cursor-pointer disabled:(pointer-events-none op-50)"
+    :class="[VARIANTS[variant]]"
   >
     <slot />
   </button>

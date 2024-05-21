@@ -20,7 +20,6 @@
     "effectScope": true,
     "getCurrentInstance": true,
     "getCurrentScope": true,
-    "getSize": true,
     "h": true,
     "inject": true,
     "isProxy": true,

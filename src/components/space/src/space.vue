@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Size } from '../../../types'
+
 defineProps({
   gap: {
     type: String as PropType<Size>,

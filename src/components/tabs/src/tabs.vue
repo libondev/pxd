@@ -4,8 +4,8 @@ import {
   TabsRoot,
   TabsTrigger,
 } from 'radix-vue'
-
 import { TriggerSymbol, type Triggers } from '..'
+import type { Size } from '../../../types'
 
 defineProps({
   size: {

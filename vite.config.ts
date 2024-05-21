@@ -7,8 +7,6 @@ import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-// import VueComponents from 'unplugin-vue-components/vite'
-// import resolver from './src/plugins/resolver'
 
 const GLOB_ENTRY = [
   'src/components/**/*.ts',
@@ -16,7 +14,7 @@ const GLOB_ENTRY = [
   'src/plugins/**/*.ts',
 ]
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   base: './',
 
   build: {
@@ -29,6 +27,8 @@ export default defineConfig(({ mode }) => ({
       preserveEntrySignatures: 'strict',
       external: ['vue', 'radix-vue'],
       input: {
+        vars: fileURLToPath(new URL(`src/styles/vars.css`, import.meta.url)),
+
         ...Object.fromEntries(
           glob.sync(GLOB_ENTRY).map((file) => {
             return [
@@ -39,8 +39,8 @@ export default defineConfig(({ mode }) => ({
         ),
       },
       output: {
-        format: 'es',
         dir: 'dist',
+        format: 'es',
         chunkFileNames: '[name].js',
         entryFileNames: '[name].js',
         assetFileNames: '[name][extname]', // css
@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => ({
 
   esbuild: {
     target: 'esnext',
-    drop: mode === 'production' ? ['console', 'debugger'] : [],
+    drop: ['console', 'debugger'],
   },
 
   css: {
@@ -85,12 +85,6 @@ export default defineConfig(({ mode }) => ({
         filepath: './shims/eslintrc-auto-import.json',
       },
     }),
-
-    // VueComponents({
-    //   resolvers: [
-    //     resolver()
-    //   ]
-    // })
   ],
 
   resolve: {
@@ -98,4 +92,4 @@ export default defineConfig(({ mode }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-}))
+})
