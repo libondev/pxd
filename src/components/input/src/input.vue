@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineOptions({
-  name: 'PxInput',
+  name: 'PInput',
 })
 
 defineProps({

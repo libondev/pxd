@@ -7,7 +7,7 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxScrollbar',
+  name: 'PScrollbar',
 })
 </script>
 

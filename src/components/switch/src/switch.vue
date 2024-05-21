@@ -2,7 +2,7 @@
 import { SwitchRoot, SwitchThumb } from 'radix-vue'
 
 defineOptions({
-  name: 'PxSwitch',
+  name: 'PSwitch',
 })
 
 defineProps({

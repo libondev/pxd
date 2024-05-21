@@ -12,7 +12,7 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxDialog',
+  name: 'PDialog',
 })
 
 defineProps({

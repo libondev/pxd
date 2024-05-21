@@ -8,19 +8,19 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxAccordion',
+  name: 'PAccordion',
 })
 
-defineProps({
-  type: {
-    type: String as PropType<'single' | 'multiple'>,
-    default: 'single',
+withDefaults(
+  defineProps<{
+    type?: 'single' | 'multiple'
+    options: OptionItem[]
+  }>(),
+  {
+    type: 'single',
+    options: () => [],
   },
-  options: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => [],
-  },
-})
+)
 
 interface OptionItem {
   label: string

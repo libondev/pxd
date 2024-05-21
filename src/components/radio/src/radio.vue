@@ -6,7 +6,7 @@ import {
 import type { PropType } from 'vue'
 
 defineOptions({
-  name: 'PxRadio',
+  name: 'PRadio',
 })
 
 defineProps({

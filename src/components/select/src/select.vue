@@ -14,7 +14,7 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PxSelect',
+  name: 'PSelect',
 })
 
 defineProps({

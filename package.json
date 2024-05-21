@@ -46,7 +46,7 @@
     "type-check": "vue-tsc --noEmit --composite false"
   },
   "peerDependencies": {
-    "vue": "^3.2.0"
+    "vue": "^3.4.0"
   },
   "dependencies": {
     "radix-vue": "^1.8.0"

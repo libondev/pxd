@@ -29,8 +29,6 @@ export default defineConfig(({ mode }) => ({
       preserveEntrySignatures: 'strict',
       external: ['vue', 'radix-vue'],
       input: {
-        index: fileURLToPath(new URL(`src/index.ts`, import.meta.url)),
-
         ...Object.fromEntries(
           glob.sync(GLOB_ENTRY).map((file) => {
             return [
@@ -61,7 +59,6 @@ export default defineConfig(({ mode }) => ({
   },
 
   plugins: [
-    dts(),
     unocss(),
     vueJsx(),
     vue({
@@ -69,6 +66,10 @@ export default defineConfig(({ mode }) => ({
         defineModel: true,
         propsDestructure: true,
       },
+    }),
+
+    dts({
+      cleanVueFileName: true,
     }),
 
     autoImport({

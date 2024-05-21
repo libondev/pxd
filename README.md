@@ -61,21 +61,8 @@ You can specify automatically imported component name prefixes by passing in the
 </template>
 ```
 
-### Global install
-
-```js
-// main.ts
-import { createApp } from 'vue'
-import pxd from 'pxd'
-import App from './App.vue'
-import 'pxd/styles.css'
-
-const app = createApp(App)
-
-app.use(pxd)
-
-app.mount('#app')
-```
+### Global import
+We strongly recommend using automatic import because it can significantly reduce the package size.
 
 ## Import Directly
 
