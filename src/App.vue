@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import 'virtual:uno.css'
+import './styles/global.css'
+
 import { shallowRef, watchEffect } from 'vue'
 
 import PxButton from './components/button'
@@ -18,8 +21,10 @@ import PxAccordion from './components/accordion'
 const darkMode = shallowRef(false)
 
 const options = [
-'Apple', 'Banana', 'Blueberry'
-].map((value) => ({ label: value, value }))
+  'Apple',
+  'Banana',
+  'Blueberry',
+].map(value => ({ label: value, value }))
 
 const radioCheck = shallowRef('Apple')
 
@@ -29,7 +34,7 @@ const tabCheck = shallowRef('chinese')
 
 const accordionOptions = [
 
-{
+  {
     value: 'item-1',
     label: 'Is it accessible?',
     content: 'Yes. It adheres to the WAI-ARIA design pattern.',
@@ -61,38 +66,49 @@ watchEffect(() => {
 
     <Dialog label="弹窗标题" description="这是一段很长的弹窗描述文本">
       <template #trigger>
-        <px-button variant="outline">打开弹窗</px-button>
+        <PxButton variant="outline">
+          打开弹窗
+        </PxButton>
       </template>
 
       <span>是的, 这里是弹窗的内容</span>
     </Dialog>
 
-    <PxInput placeholder="Please Input"></PxInput>
+    <PxInput placeholder="Please Input" />
 
     <PxSelect placeholder="Please Select" :options="options" />
 
-    <PxCheckbox name="approve" value="true">123123</PxCheckbox>
+    <PxCheckbox name="approve" value="true">
+      123123
+    </PxCheckbox>
 
-    <PxRadio v-model="radioCheck" :options="options">
-    </PxRadio>
+    <PxRadio v-model="radioCheck" :options="options" />
 
     <PxProgress v-model="number" />
 
     <PxTextarea size="lg" />
 
-    <px-tabs v-model="tabCheck">
-      <px-tabs-item label="chinese" value="chinese">中文</px-tabs-item>
-      <px-tabs-item label="english" value="english">英文</px-tabs-item>
-      <px-tabs-item label="number" value="number">2222</px-tabs-item>
-    </px-tabs>
+    <PxTabs v-model="tabCheck">
+      <PxTabsItem label="chinese" value="chinese">
+        中文
+      </PxTabsItem>
+      <PxTabsItem label="english" value="english">
+        英文
+      </PxTabsItem>
+      <PxTabsItem label="number" value="number">
+        2222
+      </PxTabsItem>
+    </PxTabs>
 
-    <px-accordion class="w-full" :options="accordionOptions">
+    <PxAccordion class="w-full" :options="accordionOptions">
       1231
-    </px-accordion>
+    </PxAccordion>
 
     <Scrollbar class="h-100px">
       <ul>
-        <li v-for="i of 30" :key="i">{{  i  }}</li>
+        <li v-for="i of 30" :key="i">
+          {{ i }}
+        </li>
       </ul>
     </Scrollbar>
   </div>

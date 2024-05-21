@@ -1,6 +1,10 @@
 # PXD
 A library of Vue3 components based on radix-vue and unocss. Everything is just right.
 
+> [!IMPORTANT]
+> The library is still under development and may undergo major changes at any time.
+
+
 ![](./res/preview.png)
 
 ## Install

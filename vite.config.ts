@@ -1,8 +1,8 @@
+import path from 'node:path'
+import { URL, fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import glob from 'fast-glob'
-import path from 'node:path';
-import { fileURLToPath, URL } from 'node:url'
 import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
@@ -13,10 +13,10 @@ import dts from 'vite-plugin-dts'
 const GLOB_ENTRY = [
   'src/components/**/*.ts',
   'src/composables/**/*.ts',
-  'src/plugins/**/*.ts'
+  'src/plugins/**/*.ts',
 ]
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: './',
 
   build: {
@@ -27,19 +27,18 @@ export default defineConfig({
     reportCompressedSize: false,
     rollupOptions: {
       preserveEntrySignatures: 'strict',
-      external: ['vue', 'unocss', 'radix-vue'],
+      external: ['vue', 'radix-vue'],
       input: {
-        'index': fileURLToPath(new URL(`src/index.ts`, import.meta.url)),
-        'styles': fileURLToPath(new URL(`src/styles.ts`, import.meta.url)),
+        index: fileURLToPath(new URL(`src/index.ts`, import.meta.url)),
 
         ...Object.fromEntries(
-          glob.sync(GLOB_ENTRY).map(file => {
+          glob.sync(GLOB_ENTRY).map((file) => {
             return [
               path.relative('src', file.slice(0, file.length - path.extname(file).length)),
-              fileURLToPath(new URL(file, import.meta.url))
+              fileURLToPath(new URL(file, import.meta.url)),
             ]
-          })
-        )
+          }),
+        ),
       },
       output: {
         format: 'es',
@@ -48,17 +47,17 @@ export default defineConfig({
         entryFileNames: '[name].js',
         assetFileNames: '[name][extname]', // css
       },
-    }
+    },
   },
 
   esbuild: {
     target: 'esnext',
-    drop: ['console', 'debugger']
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
   },
 
   css: {
     devSourcemap: true,
-    transformer: 'lightningcss'
+    transformer: 'lightningcss',
   },
 
   plugins: [
@@ -68,23 +67,23 @@ export default defineConfig({
     vue({
       script: {
         defineModel: true,
-        propsDestructure: true
-      }
+        propsDestructure: true,
+      },
     }),
 
     autoImport({
       dts: './shims/auto-imports.d.ts',
       imports: ['vue'],
       dirs: [
-        './src/composables'
+        './src/composables',
       ],
       vueTemplate: true,
       eslintrc: {
         enabled: true,
         globalsPropValue: true,
         filepath: './shims/eslintrc-auto-import.json',
-      }
-    })
+      },
+    }),
 
     // VueComponents({
     //   resolvers: [
@@ -95,7 +94,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
-})
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+}))

@@ -1,21 +1,6 @@
-// import transformerDirectives from '@unocss/transformer-directives'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import { defineConfig, presetIcons, presetMini } from 'unocss'
 import { animatedUno } from 'animated-unocss'
-
-const safelist = [
-  'h-7', 'h-8', 'h-9', 'px-2', 'px-3', 'px-4', 'py-2', 'rounded', 'rounded-md'
-]
-
-const transformers = [
-  // @apply text-center my-0 font-medium ↓
-  // margin-top: 0rem; margin-bottom: 0rem; text-align: center; font-weight: 500;
-  // transformerDirectives(),
-
-  // hover:(bg-gray-400 font-medium) font-(light mono) ↓
-  // hover:bg-gray-400 hover:font-medium font-light font-mono
-  transformerVariantGroup()
-]
 
 export default defineConfig({
   presets: [
@@ -50,9 +35,11 @@ export default defineConfig({
     [/^letter-spacing-(.+)$/, ([, d]: string[]) => ({ 'letter-spacing': d })]
   ],
 
-  safelist,
-
-  transformers,
+  transformers: [
+    // hover:(bg-gray-400 font-medium) font-(light mono) ↓
+    // hover:bg-gray-400 hover:font-medium font-light font-mono
+    transformerVariantGroup()
+  ],
 
   theme: {
     colors: {

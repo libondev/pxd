@@ -9,18 +9,18 @@ export {
   Button,
   Switch,
   Checkbox,
-  Dialog
+  Dialog,
 }
 
 const COMPONENTS = [
   Button,
   Switch,
   Checkbox,
-  Dialog
+  Dialog,
 ]
 
 export default function (Vue: App) {
   COMPONENTS.forEach((component) => {
-    Vue.component(component.name, component)
+    Vue.component(component.name!, component)
   })
 }

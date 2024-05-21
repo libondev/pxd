@@ -1,35 +1,10 @@
 {
   "name": "pxd",
+  "type": "module",
   "version": "0.0.2",
   "description": "A library of Vue3 components based on radix-vue and unocss.",
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "style": "dist/styles.css",
-  "sideEffects": false,
-  "files": [
-    "dist/*",
-    "res/*"
-  ],
-  "exports": {
-    ".": "./dist/index.js",
-    "./styles.css": "./dist/styles.css",
-    "./resolver": "./dist/plugins/resolver.js",
-    "./*": "./dist/*"
-  },
-  "keywords": [
-    "ui",
-    "vue",
-    "vue3",
-    "ui framework",
-    "component library"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "license": "MIT",
   "author": "libondev <bon.li@outlook.com>",
+  "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
   "repository": {
     "type": "git",
@@ -38,9 +13,33 @@
   "bugs": {
     "url": "https://github.com/libondev/pxd/issues"
   },
+  "keywords": [
+    "ui",
+    "vue",
+    "vue3",
+    "ui framework",
+    "component library"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./styles.css": "./dist/styles.css",
+    "./resolver": "./dist/plugins/resolver.js",
+    "./*": "./dist/*"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "style": "dist/styles.css",
+  "files": [
+    "dist/*",
+    "res/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
-    "cleanEmpty": "esno ./scripts/clean.ts",
     "dev": "vite",
     "type-check": "vue-tsc --noEmit --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
@@ -49,31 +48,27 @@
     "vue": "^3.2.0"
   },
   "dependencies": {
-    "radix-vue": "^0.1.30"
+    "radix-vue": "^1.8.0"
   },
   "devDependencies": {
-    "@iconify-json/ic": "^1.1.14",
-    "@types/node": "^18.17.12",
-    "@unocss/transformer-directives": "^0.55.3",
-    "@unocss/transformer-variant-group": "^0.55.3",
-    "@vitejs/plugin-vue": "^4.3.4",
-    "@vitejs/plugin-vue-jsx": "^3.0.2",
+    "@antfu/eslint-config": "^2.18.1",
+    "@iconify-json/ic": "^1.1.17",
+    "@types/node": "^20.12.12",
+    "@unocss/transformer-variant-group": "^0.60.3",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "animated-unocss": "^0.0.6",
-    "eslint": "^8.48.0",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-sort-destructure-keys": "^1.5.0",
-    "esno": "^0.17.0",
-    "fast-glob": "^3.3.1",
-    "lightningcss": "^1.21.5",
-    "npm-run-all": "^4.1.5",
-    "radix-vue": "^0.1.29",
-    "typescript": "~5.2.2",
-    "unocss": "^0.55.3",
-    "unplugin-auto-import": "^0.16.6",
-    "unplugin-vue-components": "^0.25.2",
-    "vite": "^4.4.9",
-    "vite-plugin-dts": "^3.5.3",
-    "vue": "^3.3.4",
-    "vue-tsc": "^1.8.8"
+    "eslint": "^9.3.0",
+    "fast-glob": "^3.3.2",
+    "lightningcss": "^1.25.0",
+    "radix-vue": "^1.8.0",
+    "typescript": "~5.4.5",
+    "unocss": "^0.60.3",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.0",
+    "vite": "^5.2.11",
+    "vite-plugin-dts": "^3.9.1",
+    "vue": "^3.4.27",
+    "vue-tsc": "^2.0.19"
   }
 }
