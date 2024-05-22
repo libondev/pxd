@@ -3,8 +3,12 @@
     "target": "esnext",
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
+    "baseUrl": "./",
     "module": "esnext",
     "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "types": ["node", "vite/client"],
     "strict": true,

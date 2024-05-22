@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Size } from '../../../types'
+import type { Size } from '@/types'
 
 defineProps({
   gap: {

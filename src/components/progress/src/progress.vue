@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ProgressIndicator, ProgressRoot } from 'radix-vue'
-import type { Size } from '../../../types'
+import type { Size } from '@/types'
 
 defineOptions({
   name: 'PProgress',
