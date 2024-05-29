@@ -13,7 +13,7 @@ defineOptions({
 
 withDefaults(
   defineProps<{
-    type?: 'single' | 'multiple'
+    type?: 'single'
     options: OptionItem[]
   }>(),
   {
