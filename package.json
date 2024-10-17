@@ -2,7 +2,7 @@
   "name": "pxd",
   "type": "module",
   "version": "0.0.3",
-  "description": "A library of Vue3 components based on radix-vue and unocss.",
+  "description": "Vue Community Component Library Based on geist design system",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
@@ -49,22 +49,22 @@
     "vue": "^3.4.0"
   },
   "dependencies": {
-    "radix-vue": "^1.8.0"
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "radix-vue": "^1.8.0",
+    "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.18.1",
     "@iconify-json/ic": "^1.1.17",
     "@types/node": "^20.12.12",
-    "@unocss/transformer-variant-group": "^0.60.3",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "animated-unocss": "^0.0.6",
     "eslint": "^9.3.0",
     "fast-glob": "^3.3.2",
     "lightningcss": "^1.25.0",
     "radix-vue": "^1.8.0",
     "typescript": "~5.4.5",
-    "unocss": "^0.60.3",
     "unplugin-auto-import": "^0.17.6",
     "unplugin-vue-components": "^0.27.0",
     "vite": "^5.2.11",

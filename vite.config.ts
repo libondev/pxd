@@ -3,7 +3,6 @@ import { URL, fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import glob from 'fast-glob'
-import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
@@ -59,7 +58,6 @@ export default defineConfig({
   },
 
   plugins: [
-    unocss(),
     vueJsx(),
     vue({
       script: {

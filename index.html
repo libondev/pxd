@@ -12,9 +12,9 @@
         box-sizing: border-box;
       }
 
-      .dark {
-        background: #000;
-        color: #fff
+      html,.dark {
+        background: light-dark(var(--p-background-100), #000);
+        color: light-dark(#000, #fff);
       }
     </style>
   </head>
