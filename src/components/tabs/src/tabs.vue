@@ -51,7 +51,7 @@ provide(TriggerSymbol, triggers)
         v-for="value, text in triggers"
         :key="value"
         :value="value"
-        class="b-0 flex-1 py-0 box-border bg-transparent outlines h-full text-foreground font-inherit group-hover:transition-background-color data-[active=true]:(bg-background shadow-sm)"
+        class="b-0 flex-1 py-0 box-border bg-transparent h-full text-foreground font-inherit group-hover:transition-background-color data-[active=true]:(bg-background shadow-sm)"
         :class="SIZES[size].inner"
       >
         {{ text }}

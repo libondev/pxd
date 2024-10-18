@@ -15,3 +15,7 @@ declare global {
     disabled?: boolean
   }
 }
+
+declare module 'vue' {
+  function useAttrs(): ReturnType<typeof useAttrs> & { class?: string }
+}

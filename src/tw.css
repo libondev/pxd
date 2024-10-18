@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+  background: var(--p-background-200);
+  color: hsla(var(--p-gray-1000-value), 1);
+  font-family: Geist, Inter, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+}

@@ -38,7 +38,7 @@ const checkState = defineModel<boolean>()
   <SwitchRoot
     v-model:checked="checkState"
     :disabled="disabled"
-    class="pxd-switch shadow-sm b-0 p-2px rounded-full transition outlines bg-input cursor-default data-[state=checked]:bg-primary disabled:(op-50 cursor-not-allowed)"
+    class="pxd-switch shadow-sm b-0 p-2px rounded-full transition bg-input cursor-default data-[state=checked]:bg-primary disabled:(op-50 cursor-not-allowed)"
     :class="SIZES[size].track"
   >
     <SwitchThumb

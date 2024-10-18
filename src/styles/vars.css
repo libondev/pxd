@@ -1,6 +1,17 @@
 :root {
+  --radius: 0.5rem;
+
   --p-background-100: #fff;
   --p-background-200: #fafafa;
+
+  --accents-1: #fafafa;
+  --accents-2: #eaeaea;
+  --accents-3: #999;
+  --accents-4: #888;
+  --accents-5: #666;
+  --accents-6: #444;
+  --accents-7: #333;
+  --accents-8: #111;
 
   --p-gray-alpha-100: rgba(0, 0, 0, .05);
   --p-gray-alpha-200: rgba(0, 0, 0, .08);
@@ -12,94 +23,6 @@
   --p-gray-alpha-800: rgba(0, 0, 0, .51);
   --p-gray-alpha-900: rgba(0, 0, 0, .61);
   --p-gray-alpha-1000: rgba(0, 0, 0, .91);
-
-  --p-gray-100: hsla(var(--p-gray-100-value), 1);
-  --p-gray-200: hsla(var(--p-gray-200-value), 1);
-  --p-gray-300: hsla(var(--p-gray-300-value), 1);
-  --p-gray-400: hsla(var(--p-gray-400-value), 1);
-  --p-gray-500: hsla(var(--p-gray-500-value), 1);
-  --p-gray-600: hsla(var(--p-gray-600-value), 1);
-  --p-gray-700: hsla(var(--p-gray-700-value), 1);
-  --p-gray-800: hsla(var(--p-gray-800-value), 1);
-  --p-gray-900: hsla(var(--p-gray-900-value), 1);
-  --p-gray-1000: hsla(var(--p-gray-1000-value), 1);
-
-  --p-blue-100: hsla(var(--p-blue-100-value), 1);
-  --p-blue-200: hsla(var(--p-blue-200-value), 1);
-  --p-blue-300: hsla(var(--p-blue-300-value), 1);
-  --p-blue-400: hsla(var(--p-blue-400-value), 1);
-  --p-blue-500: hsla(var(--p-blue-500-value), 1);
-  --p-blue-600: hsla(var(--p-blue-600-value), 1);
-  --p-blue-700: hsla(var(--p-blue-700-value), 1);
-  --p-blue-800: hsla(var(--p-blue-800-value), 1);
-  --p-blue-900: hsla(var(--p-blue-900-value), 1);
-  --p-blue-1000: hsla(var(--p-blue-1000-value), 1);
-
-  --p-amber-100: hsla(var(--p-amber-100-value), 1);
-  --p-amber-200: hsla(var(--p-amber-200-value), 1);
-  --p-amber-300: hsla(var(--p-amber-300-value), 1);
-  --p-amber-400: hsla(var(--p-amber-400-value), 1);
-  --p-amber-500: hsla(var(--p-amber-500-value), 1);
-  --p-amber-600: hsla(var(--p-amber-600-value), 1);
-  --p-amber-700: hsla(var(--p-amber-700-value), 1);
-  --p-amber-800: hsla(var(--p-amber-800-value), 1);
-  --p-amber-900: hsla(var(--p-amber-900-value), 1);
-  --p-amber-1000: hsla(var(--p-amber-1000-value), 1);
-
-  --p-red-100: hsla(var(--p-red-100-value), 1);
-  --p-red-200: hsla(var(--p-red-200-value), 1);
-  --p-red-300: hsla(var(--p-red-300-value), 1);
-  --p-red-400: hsla(var(--p-red-400-value), 1);
-  --p-red-500: hsla(var(--p-red-500-value), 1);
-  --p-red-600: hsla(var(--p-red-600-value), 1);
-  --p-red-700: hsla(var(--p-red-700-value), 1);
-  --p-red-800: hsla(var(--p-red-800-value), 1);
-  --p-red-900: hsla(var(--p-red-900-value), 1);
-  --p-red-1000: hsla(var(--p-red-1000-value), 1);
-
-  --p-green-100: hsla(var(--p-green-100-value), 1);
-  --p-green-200: hsla(var(--p-green-200-value), 1);
-  --p-green-300: hsla(var(--p-green-300-value), 1);
-  --p-green-400: hsla(var(--p-green-400-value), 1);
-  --p-green-500: hsla(var(--p-green-500-value), 1);
-  --p-green-600: hsla(var(--p-green-600-value), 1);
-  --p-green-700: hsla(var(--p-green-700-value), 1);
-  --p-green-800: hsla(var(--p-green-800-value), 1);
-  --p-green-900: hsla(var(--p-green-900-value), 1);
-  --p-green-1000: hsla(var(--p-green-1000-value), 1);
-
-  --p-teal-100: hsla(var(--p-teal-100-value), 1);
-  --p-teal-200: hsla(var(--p-teal-200-value), 1);
-  --p-teal-300: hsla(var(--p-teal-300-value), 1);
-  --p-teal-400: hsla(var(--p-teal-400-value), 1);
-  --p-teal-500: hsla(var(--p-teal-500-value), 1);
-  --p-teal-600: hsla(var(--p-teal-600-value), 1);
-  --p-teal-700: hsla(var(--p-teal-700-value), 1);
-  --p-teal-800: hsla(var(--p-teal-800-value), 1);
-  --p-teal-900: hsla(var(--p-teal-900-value), 1);
-  --p-teal-1000: hsla(var(--p-teal-1000-value), 1);
-
-  --p-purple-100: hsla(var(--p-purple-100-value), 1);
-  --p-purple-200: hsla(var(--p-purple-200-value), 1);
-  --p-purple-300: hsla(var(--p-purple-300-value), 1);
-  --p-purple-400: hsla(var(--p-purple-400-value), 1);
-  --p-purple-500: hsla(var(--p-purple-500-value), 1);
-  --p-purple-600: hsla(var(--p-purple-600-value), 1);
-  --p-purple-700: hsla(var(--p-purple-700-value), 1);
-  --p-purple-800: hsla(var(--p-purple-800-value), 1);
-  --p-purple-900: hsla(var(--p-purple-900-value), 1);
-  --p-purple-1000: hsla(var(--p-purple-1000-value), 1);
-
-  --p-pink-100: hsla(var(--p-pink-100-value), 1);
-  --p-pink-200: hsla(var(--p-pink-200-value), 1);
-  --p-pink-300: hsla(var(--p-pink-300-value), 1);
-  --p-pink-400: hsla(var(--p-pink-400-value), 1);
-  --p-pink-500: hsla(var(--p-pink-500-value), 1);
-  --p-pink-600: hsla(var(--p-pink-600-value), 1);
-  --p-pink-700: hsla(var(--p-pink-700-value), 1);
-  --p-pink-800: hsla(var(--p-pink-800-value), 1);
-  --p-pink-900: hsla(var(--p-pink-900-value), 1);
-  --p-pink-1000: hsla(var(--p-pink-1000-value), 1);
 
   --p-gray-100-value: 0, 0%, 95%;
   --p-gray-200-value: 0, 0%, 92%;
@@ -198,6 +121,15 @@
   --p-background-100: #0a0a0a;
   --p-background-200: #000;
 
+  --accents-1: #111;
+  --accents-2: #333;
+  --accents-3: #444;
+  --accents-4: #666;
+  --accents-5: #888;
+  --accents-6: #999;
+  --accents-7: #eaeaea;
+  --accents-8: #fafafa;
+
   --p-gray-100-value: 0, 0%, 10%;
   --p-gray-200-value: 0, 0%, 12%;
   --p-gray-300-value: 0, 0%, 16%;
@@ -208,6 +140,7 @@
   --p-gray-800-value: 0, 0%, 49%;
   --p-gray-900-value: 0, 0%, 63%;
   --p-gray-1000-value: 0, 0%, 93%;
+
   --p-blue-100-value: 216, 50%, 12%;
   --p-blue-200-value: 214, 59%, 15%;
   --p-blue-300-value: 213, 71%, 20%;
@@ -218,6 +151,7 @@
   --p-blue-800-value: 212, 100%, 41%;
   --p-blue-900-value: 210, 100%, 66%;
   --p-blue-1000-value: 206, 100%, 96%;
+
   --p-red-100-value: 357, 37%, 12%;
   --p-red-200-value: 357, 46%, 16%;
   --p-red-300-value: 356, 54%, 22%;
@@ -228,6 +162,7 @@
   --p-red-800-value: 358, 69%, 52%;
   --p-red-900-value: 358, 100%, 69%;
   --p-red-1000-value: 353, 90%, 96%;
+
   --p-amber-100-value: 35, 100%, 8%;
   --p-amber-200-value: 32, 100%, 10%;
   --p-amber-300-value: 33, 100%, 15%;
@@ -238,6 +173,7 @@
   --p-amber-800-value: 35, 100%, 52%;
   --p-amber-900-value: 39, 90%, 50%;
   --p-amber-1000-value: 40, 94%, 93%;
+
   --p-green-100-value: 136, 50%, 9%;
   --p-green-200-value: 137, 50%, 12%;
   --p-green-300-value: 136, 50%, 14%;
@@ -248,6 +184,7 @@
   --p-green-800-value: 132, 43%, 39%;
   --p-green-900-value: 131, 43%, 57%;
   --p-green-1000-value: 136, 73%, 94%;
+
   --p-teal-100-value: 169, 78%, 7%;
   --p-teal-200-value: 170, 74%, 9%;
   --p-teal-300-value: 171, 75%, 13%;
@@ -258,6 +195,7 @@
   --p-teal-800-value: 173, 83%, 30%;
   --p-teal-900-value: 174, 90%, 41%;
   --p-teal-1000-value: 166, 71%, 93%;
+
   --p-purple-100-value: 283, 30%, 12%;
   --p-purple-200-value: 281, 38%, 16%;
   --p-purple-300-value: 279, 44%, 23%;
@@ -268,6 +206,7 @@
   --p-purple-800-value: 272, 47%, 45%;
   --p-purple-900-value: 275, 80%, 71%;
   --p-purple-1000-value: 281, 73%, 96%;
+
   --p-pink-100-value: 335, 32%, 12%;
   --p-pink-200-value: 335, 43%, 16%;
   --p-pink-300-value: 335, 47%, 21%;
@@ -278,6 +217,7 @@
   --p-pink-800-value: 336, 74%, 51%;
   --p-pink-900-value: 341, 90%, 67%;
   --p-pink-1000-value: 333, 90%, 96%;
+
   --p-gray-alpha-100: hsla(0, 0%, 100%, .06);
   --p-gray-alpha-200: hsla(0, 0%, 100%, .09);
   --p-gray-alpha-300: hsla(0, 0%, 100%, .13);
@@ -292,4 +232,9 @@
   --p-focus-border: 0 0 0 1px var(--p-gray-alpha-600), 0px 0px 0px 4px hsla(0, 0%, 100%, .24);
   --p-focus-color: var(--p-blue-900);
   --p-shadow-border-inset: inset 0 0 0 1px hsla(0, 0%, 100%, .1);
+}
+
+[class^='pxd-'],
+[class^='pxd-'] * {
+  box-sizing: border-box;
 }

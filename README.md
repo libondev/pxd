@@ -1,5 +1,5 @@
 # PXD
-Vue Community Component Library Based on geist design system. Everything is just right.
+Vue component library based on radix-vue and geist design system. Everything is just right.
 
 > [!IMPORTANT]
 > The library is still under development and may undergo major changes at any time.

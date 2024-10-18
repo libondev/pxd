@@ -3,33 +3,59 @@ defineOptions({
   name: 'PButton',
 })
 
-defineProps({
-  type: {
-    type: String as PropType<HTMLButtonElement['type']>,
-    default: 'button',
+const props = withDefaults(
+  defineProps<{
+    type?: HTMLButtonElement['type']
+    variant?: keyof typeof VARIANTS
+    disabled?: boolean
+    loading?: boolean
+    shadow?: boolean
+    shape?: 'normal' | 'square' | 'rounded' | 'circle'
+  }>(),
+  {
+    type: 'button',
+    variant: 'default',
+    disabled: false,
+    shape: 'normal',
+    shadow: true,
   },
-  variant: {
-    type: String as PropType<keyof typeof VARIANTS>,
-    default: 'default',
-  },
-})
+)
 
 const VARIANTS = {
-  default: 'shadow-sm bg-primary text-primary-foreground not-disabled:(hover:bg-primary/75 active:bg-primary/90)',
-  secondary: 'shadow-sm bg-secondary text-secondary-foreground not-disabled:(hover:bg-input/75 active:bg-input)',
-  danger: 'shadow-sm bg-danger text-danger-foreground not-disabled:(hover:bg-danger/75 active:bg-danger/90)',
-  outline: 'shadow-sm !b-input text-primary bg-background not-disabled:(hover:bg-secondary active:bg-input)',
-  ghost: 'bg-transparent text-primary not-disabled:(hover:bg-secondary active:bg-input)',
-  link: 'bg-transparent text-primary underline-offset-3 not-disabled:(hover:underline hover:bg-secondary active:bg-input)',
+  default: 'bg-gray-1000 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
+  secondary: 'bg-gray-100 text-gray-1000 border-transparent hover:bg-gray-200 active:bg-gray-alpha-300',
+  danger: 'bg-red-800 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
+  warning: 'bg-amber-800 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
+  outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 hover:bg-gray-50 active:bg-gray-100',
+  ghost: 'bg-transparent text-gray-1000 border-transparent hover:bg-gray-100 active:bg-gray-200',
+  link: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 hover:opacity-90 active:opacity-70',
 }
+
+const SHAPES = {
+  normal: 'rounded-md',
+  square: 'rounded-none',
+  rounded: 'rounded-full',
+  circle: 'rounded-full overflow-hidden w-8 !p-1',
+}
+
+const enableShadow = computed(() => props.shadow && !['ghost', 'link'].includes(props.variant))
 </script>
 
 <template>
   <button
     :type="type"
-    class="pxd-button inline-flex items-center h-8 rounded px-3 py-2 font-inherit b-(1 solid) b-transparent justify-center outlines text-sm not-disabled:cursor-pointer disabled:(pointer-events-none op-50)"
-    :class="[VARIANTS[variant]]"
+    :disabled="disabled || loading"
+    class="pxd-button inline-flex items-center h-8 px-2 select-none border font-inherit b-(1 solid) justify-center text-sm cursor-pointer disabled:pointer-events-none disabled:!bg-gray-100 disabled:!text-gray-700 disabled:!border-gray-400"
+    :class="[VARIANTS[variant], SHAPES[shape], { 'shadow-sm': enableShadow }]"
   >
-    <slot />
+    <svg v-if="loading" xmlns="http://www.w3.org/2000/svg" class="animate-spin" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8" /></svg>
+
+    <slot name="prefix" />
+
+    <span class="px-1">
+      <slot />
+    </span>
+
+    <slot name="suffix" />
   </button>
 </template>

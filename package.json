@@ -2,7 +2,7 @@
   "name": "pxd",
   "type": "module",
   "version": "0.0.3",
-  "description": "Vue Community Component Library Based on geist design system",
+  "description": "Vue component library based on radix-vue and geist design system.",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
@@ -48,28 +48,24 @@
   "peerDependencies": {
     "vue": "^3.4.0"
   },
-  "dependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "radix-vue": "^1.8.0",
-    "tailwindcss": "^3.4.3"
-  },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.18.1",
-    "@iconify-json/ic": "^1.1.17",
-    "@types/node": "^20.12.12",
-    "@vitejs/plugin-vue": "^5.0.4",
-    "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "eslint": "^9.3.0",
+    "@antfu/eslint-config": "^3.8.0",
+    "@iconify-json/ic": "^1.2.1",
+    "@types/node": "^20.16.12",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue-jsx": "^4.0.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.12.0",
     "fast-glob": "^3.3.2",
-    "lightningcss": "^1.25.0",
-    "radix-vue": "^1.8.0",
-    "typescript": "~5.4.5",
-    "unplugin-auto-import": "^0.17.6",
-    "unplugin-vue-components": "^0.27.0",
-    "vite": "^5.2.11",
-    "vite-plugin-dts": "^3.9.1",
-    "vue": "^3.4.27",
-    "vue-tsc": "^2.0.19"
+    "postcss": "^8.4.47",
+    "radix-vue": "^1.9.7",
+    "tailwindcss": "^3.4.14",
+    "typescript": "~5.6.3",
+    "unplugin-auto-import": "^0.18.3",
+    "unplugin-vue-components": "^0.27.4",
+    "vite": "^5.4.9",
+    "vite-plugin-dts": "^4.2.4",
+    "vue": "^3.5.12",
+    "vue-tsc": "^2.1.6"
   }
 }

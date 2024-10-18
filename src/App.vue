@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef, watchEffect } from 'vue'
 
-const darkMode = shallowRef(false)
+const darkMode = shallowRef(true)
 
 const options = [
   'Apple',
@@ -9,7 +9,8 @@ const options = [
   'Blueberry',
 ].map(value => ({ label: value, value }))
 
-const radioCheck = shallowRef('Apple')
+const single = ref('')
+const multiple = ref([])
 
 const number = shallowRef(50)
 
@@ -35,12 +36,94 @@ const accordionOptions = [
 ]
 
 watchEffect(() => {
-  darkMode.value ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')
+  // darkMode.value ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')
 })
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-2">
+  <div class=" gap-2">
+    <!-- <PBook title="web frontend" /> -->
+
+    <div>单选：{{ single }}</div>
+    <div>多选：{{ multiple }}</div>
+
+    <PInput>
+      <template #prefix>
+        000
+      </template>
+      <template #suffix>
+        111
+      </template>
+    </PInput>
+    <PInput />
+    <PInput error="an error message" />
+
+    <PInput disabled />
+
+    <!-- <PBadge>123</PBadge>
+    <PBadge variant="gray">
+      123
+    </PBadge>
+    <PBadge variant="blue">
+      123
+    </PBadge>
+    <PBadge variant="purple">
+      123
+    </PBadge>
+    <PBadge variant="amber">
+      123
+    </PBadge>
+    <PBadge variant="green">
+      123
+    </PBadge>
+    <PBadge variant="red">
+      123
+    </PBadge>
+    <PBadge variant="pink">
+      123
+    </PBadge>
+    <PBadge variant="teal">
+      123
+    </PBadge>
+    <PBadge variant="inverted">
+      123
+    </PBadge>
+    <PBadge variant="trial">
+      Trial
+    </PBadge>
+    <PBadge variant="turborepo">
+      Turborepo
+    </PBadge>
+    <PBadge variant="vue">
+      Vue
+    </PBadge>
+
+    <PBadge variant="gray-subtle">
+      123
+    </PBadge>
+    <PBadge variant="blue-subtle">
+      123
+    </PBadge>
+    <PBadge variant="purple-subtle">
+      123
+    </PBadge>
+    <PBadge variant="amber-subtle">
+      123
+    </PBadge>
+    <PBadge variant="green-subtle">
+      123
+    </PBadge>
+    <PBadge variant="red-subtle">
+      123
+    </PBadge>
+    <PBadge variant="pink-subtle">
+      123
+    </PBadge>
+    <PBadge variant="teal-subtle">
+      123
+    </PBadge> -->
+
+    <!--
     <PSwitch v-model="darkMode" />
 
     <PButton variant="default">
@@ -93,6 +176,6 @@ watchEffect(() => {
           {{ i }}
         </li>
       </ul>
-    </Scrollbar>
+    </Scrollbar> -->
   </div>
 </template>

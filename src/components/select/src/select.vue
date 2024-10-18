@@ -35,7 +35,7 @@ const selectedValue = defineModel<string>()
 <template>
   <SelectRoot v-model="selectedValue">
     <SelectTrigger
-      class="pxd-select shadow-sm h-8 rounded px-3 py-2 inline-flex w-full text-inherit font-inherit items-center b-(1 solid input) outlines bg-background text-sm data-[disabled]:(cursor-not-allowed bg-secondary b-transparent)"
+      class="pxd-select shadow-sm h-8 rounded px-3 py-2 inline-flex w-full text-inherit font-inherit items-center b-(1 solid input) bg-background text-sm data-[disabled]:(cursor-not-allowed bg-secondary b-transparent)"
       aria-label="Customize options"
     >
       <SelectValue

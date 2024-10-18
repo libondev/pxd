@@ -1,79 +1,47 @@
 <script lang="ts" setup>
-import {
-  RadioGroupItem,
-  RadioGroupRoot,
-} from 'radix-vue'
-import type { PropType } from 'vue'
+import type { Options } from '@/types'
+import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'radix-vue'
 
-defineOptions({
-  name: 'PRadio',
-})
-
-defineProps({
-  variant: {
-    type: String as PropType<'default' | 'button'>,
-    default: 'default',
-  },
-  size: {
-    type: String as PropType<keyof typeof SIZES>,
-    default: 'default',
-  },
-  defaultValue: {
-    type: String,
-    default: '',
-  },
-  vertical: {
-    type: Boolean,
-    default: false,
-  },
-  options: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => [],
-  },
-})
-
-const SIZES = {
-  sm: 'h-5 px-2 rounded-md',
-  default: 'h-6.5 px-2.5',
-  lg: 'h-8 px-4 rounded-md',
+interface RadioOptions extends Options {
 }
+
+interface RadioProps {
+  direction?: 'horizontal' | 'vertical'
+  options?: RadioOptions[]
+}
+
+withDefaults(
+  defineProps<RadioProps>(),
+  {
+    direction: 'horizontal',
+    value: 'default',
+  },
+)
 
 const checkState = defineModel<string>()
-
-const classNames = {
-  default: 'w-4 h-4 rounded-full p-0 before:(content-empty block w-full h-full rounded-full pointer-events-none bg-transparent) data-[state=checked]:(b-primary p-.75 before:bg-primary)',
-  button: 'rounded data-[state=checked]:(b-primary bg-primary text-background) disabled:(op-50 bg-secondary)',
-}
 </script>
 
 <template>
   <RadioGroupRoot
     v-model="checkState"
-    :aria-label="$attrs.name"
-    :default-value="defaultValue"
-    :orientation="vertical ? 'vertical' : 'horizontal'"
-    class="flex gap-2 data-[orientation=vertical]:(flex-col)"
+    :orientation="direction"
+    class="pxd-radio flex gap-2 data-[orientation=vertical]:flex-col text-gray-1000"
   >
-    <label
-      v-for="option, index of options"
-      :key="option.value + index"
-      class="inline-flex items-center"
-    >
+    <label v-for="option in options" :key="option.value" class="group inline-flex items-center">
       <RadioGroupItem
-        class="b-(1 solid input) outlines shadow-sm text-inherit font-inherit cursor-default bg-background leading-none"
-        :class="[classNames[variant], variant === 'button' && SIZES[size]]"
         :value="option.value"
-        :title="option.label"
-        :disabled="option.disabled"
+        class="
+          relative w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
+          disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 disabled:text-gray-600
+          group-hover:[&:not(:disabled,[data-state=checked])]:bg-gray-200 group-hover:[&:not(:disabled,[data-state=checked])]:border-gray-700
+        "
       >
-        <slot v-if="variant === 'button'" v-bind="option">
-          {{ option.label }}
-        </slot>
+        <RadioGroupIndicator
+          class="absolute inset-0 m-auto w-1/2 h-1/2 rounded-full bg-background-100 data-[state=checked]:bg-current"
+        />
       </RadioGroupItem>
 
-      <span v-if="variant === 'default'" class="pl-1.5 active:select-none">
-        <slot v-bind="option">{{ option.label }}</slot>
-      </span>
+      <span class="pl-1 pr-1.5 leading-0 active:select-none text-sm text-gray-1000 empty:hidden peer-disabled:text-gray-500">{{ option.label }}</span>
     </label>
   </RadioGroupRoot>
 </template>
