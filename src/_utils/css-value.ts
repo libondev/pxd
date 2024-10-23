@@ -1,3 +1,12 @@
+export function autoUnit(target: string | number): string {
+  // @ts-expect-error do it
+  // eslint-disable-next-line unicorn/prefer-number-properties
+  if (typeof target === 'number' || !isNaN(target as number))
+    return `${target}px`
+
+  return target
+}
+
 /**
  * Increase string a value with unit
  *
@@ -16,15 +25,6 @@ export function increaseWithUnit(target: string | number, delta: number): string
   if (Number.isNaN(result))
     return target
   return result + unit
-}
-
-export function autoUnit(target: string | number): string {
-  // @ts-expect-error do it
-  // eslint-disable-next-line unicorn/prefer-number-properties
-  if (typeof target === 'number' || !isNaN(target as number))
-    return `${target}px`
-
-  return target
 }
 
 // export function getUnitValue(target: string): { value: string, unit: string } {
