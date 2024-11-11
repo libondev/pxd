@@ -38,7 +38,7 @@ const isSelected = computed(() => modelValue.value?.includes(props.value))
 
       <span v-if="multiple" :data-selected="isSelected" class="relative group block size-4 rounded border border-gray-500 bg-background-100 data-[selected=true]:border-blue-900 data-[selected=true]:bg-blue-900">
         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32" class="hidden group-data-[selected=true]:block absolute left-[-1px] top-[-1px] m-auto p-px">
-          <path fill="none" stroke="var(--p-background-100)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="translate-y-[2px]" d="M28 7L13 22L5 14" />
+          <path fill="none" stroke="var(--p-background-100)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="translate-y-0.5" d="M28 7L13 22L5 14" />
         </svg>
       </span>
 

@@ -8,7 +8,7 @@ import {
 } from 'radix-vue'
 
 defineOptions({
-  name: 'PAccordion',
+  name: 'PCollapse',
 })
 
 withDefaults(
@@ -28,7 +28,7 @@ interface OptionItem {
 </script>
 
 <template>
-  <AccordionRoot collapsible class="bg-background-100" :default-value="options[0].value">
+  <AccordionRoot collapsible class="pxd-collapse bg-background-100" :default-value="options[0].value">
     <AccordionItem v-for="item in options" :key="item.value" :value="item.value" class="[&:not(:last-child)]:border-b border-gray-400">
       <AccordionHeader class="flex m-0 cursor-pointer text-4">
         <AccordionTrigger

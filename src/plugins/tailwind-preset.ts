@@ -138,6 +138,11 @@ export default {
           from: { backgroundPosition: '200% 0' },
           to: { backgroundPosition: '-200% 0' },
         },
+        'fade-loading': {
+          '0%': { opacity: 0.2 },
+          '20%': { opacity: 1 },
+          '100%': { opacity: 0.2 },
+        },
         'slide-down': {
           from: { height: 0 },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -150,6 +155,7 @@ export default {
 
       animation: {
         'flash-loading': 'flash-loading 8s ease-in-out infinite',
+        'fade-loading': 'fade-loading 1.4s ease-in-out infinite both',
         'slide-down': 'slide-down 300ms ease',
         'slide-up': 'slide-up 300ms ease',
       },
