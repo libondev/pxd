@@ -75,6 +75,10 @@
     "autoUnit": true,
     "getLayoutDirection": true,
     "increaseWithUnit": true,
-    "getUnitValue": true
+    "getUnitValue": true,
+    "shadowBorder": true,
+    "useLazyShow": true,
+    "useLazyDestroy": true,
+    "focusVisibleRing": true
   }
 }

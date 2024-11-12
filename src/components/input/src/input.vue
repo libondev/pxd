@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inputBorder } from '../index'
+import { inputBorder } from '../index.js'
 
 interface InputProps {
   error?: string

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SwitchRoot, SwitchThumb } from 'radix-vue'
+import { shadowBorder } from '@/_utils/style.js'
 
 defineOptions({
   name: 'PSwitch',
@@ -35,7 +35,7 @@ const checkState = defineModel<SwitchProps['activeValue'] | SwitchProps['inactiv
 </script>
 
 <template>
-  <div class="pxd-switch inline-flex items-center p-1 h-10 rounded-md shadow-[0_0_0_1px_var(--p-gray-alpha-400)]" :class="SIZES[size]">
+  <div class="pxd-switch inline-flex items-center p-1 h-10 rounded-md" :class="[SIZES[size], shadowBorder]">
     <label class="pxd-switch--item group h-full font-medium">
       <input v-model="checkState" :disabled="disabled" class="peer sr-only" type="radio" name="default" :value="activeValue">
       <slot name="active">

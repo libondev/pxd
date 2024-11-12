@@ -13,7 +13,7 @@ const options = [
 
 const single = ref('checked')
 const multiple = ref([])
-
+const boolean = ref(false)
 const number = shallowRef(0)
 
 const tabCheck = shallowRef('chinese')
@@ -71,26 +71,28 @@ const error = {
     <span>{{ darkMode }}</span>
     <div>单选：{{ single }}</div>
     <div>多选：{{ multiple }}</div>
-    {{ number }}
 
-    <PButton variant="outline" icon>
-      <Icon icon="carbon:chevron-down" />
+    <PButton variant="outline" @click="boolean = !boolean">
+      <Icon icon="carbon:checkmark" />
+      打开弹窗
     </PButton>
 
+    <PDialog v-model="boolean" title="123123" description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi asperiores dolor illo qui nihil neque officiis. Tempora esse reiciendis, vel, totam quod cum cupiditate rerum velit eligendi autem ad explicabo?">
+      <template #trigger />
+
+      12312321
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi asperiores dolor illo qui nihil neque officiis. Tempora esse reiciendis, vel, totam quod cum cupiditate rerum velit eligendi autem ad explicabo?
+
+      <template #footer>
+        12321
+        <PButton type="submit">
+          Confirm
+        </PButton>
+      </template>
+    </PDialog>
+
     <PCheckbox />
-
-    <PCollapse :options="accordionOptions" />
-
-    <PChoiceboxGroup v-model="multiple" multiple>
-      <PChoicebox title="123" value="111" />
-      <PChoicebox title="123" value="222" />
-      <PChoicebox title="123" value="333" />
-    </PChoiceboxGroup>
-
-    <PShowMore />
-    <PStatusDot label />
-
-    <PError :error="error" />
+    <PRadio :options="options" />
 
     <!-- <PBadge>123</PBadge>
     <PBadge variant="gray">

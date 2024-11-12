@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { Size } from '@/types'
 import {
   TabsList,
   TabsRoot,
   TabsTrigger,
 } from 'radix-vue'
-import { TriggerSymbol, type Triggers } from '..'
-import type { Size } from '@/types'
+import { type Triggers, TriggerSymbol } from '../index.js'
 
 defineProps({
   size: {

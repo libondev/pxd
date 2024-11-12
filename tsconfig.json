@@ -7,9 +7,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "@/*": ["./src/*"],
-      "@utils/*": ["./src/_utils/*"],
-      "@internal/*": ["./src/_internal/*"]
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "types": ["node", "vite/client"],

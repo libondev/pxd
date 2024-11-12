@@ -66,6 +66,7 @@
     "typescript": "~5.6.3",
     "unplugin-auto-import": "^0.18.3",
     "unplugin-vue-components": "^0.27.4",
+    "v-lazy-show": "^0.2.4",
     "vite": "^5.4.9",
     "vite-plugin-dts": "^4.2.4",
     "vue": "^3.5.12",

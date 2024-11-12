@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { AvatarProps } from '..'
-import { autoUnit } from '@utils/css'
+import type { AvatarProps } from '../index.js'
+import { autoUnit } from '@/_utils/css.js'
 
 defineOptions({
   name: 'PAvatar',

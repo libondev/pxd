@@ -20,11 +20,11 @@ const props = withDefaults(
 const progressValue = defineModel<number>({ default: 50 })
 
 const typeColors = {
-  default: 'hsl(var(--p-gray-1000-value))',
-  success: 'hsl(var(--p-blue-700-value))',
-  warning: 'hsl(var(--p-amber-700-value))',
-  secondary: 'hsl(var(--p-gray-700-value))',
-  error: 'hsl(var(--p-red-700-value))',
+  default: 'hsl(var(--gray-1000-value))',
+  success: 'hsl(var(--blue-700-value))',
+  warning: 'hsl(var(--amber-700-value))',
+  secondary: 'hsl(var(--gray-700-value))',
+  error: 'hsl(var(--red-700-value))',
 }
 
 const sortedColorKeys = computed(() => props.colors ? Object.keys(props.colors).map(Number).sort((a, b) => a - b) : [])

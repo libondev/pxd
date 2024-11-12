@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChoiceboxInjectionKey, type ChoiceboxProps } from '..'
+import { ChoiceboxInjectionKey, type ChoiceboxProps } from '../index.js'
 
 defineOptions({
   name: 'PChoiceboxGroup',

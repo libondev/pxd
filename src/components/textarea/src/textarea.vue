@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inputBorder } from '@/components/input/index'
+import { inputBorder } from '@/components/input/index.js'
 
 interface TextareaProps {
   error?: string

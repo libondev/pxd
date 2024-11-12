@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { buttonVariants } from '../index'
+import { focusVisibleRing } from '@/_utils/style.js'
+import { buttonVariants } from '../index.js'
 
 interface ButtonProps {
   type?: HTMLButtonElement['type']
@@ -34,7 +35,7 @@ const SHAPES = {
   circle: 'rounded-full overflow-hidden w-8 !p-1',
 }
 
-const enableShadow = computed(() => props.shadow && !['ghost', 'link'].includes(props.variant))
+const enableShadow = computed(() => props.shadow && !['ghost', 'underline'].includes(props.variant))
 </script>
 
 <template>
@@ -46,6 +47,7 @@ const enableShadow = computed(() => props.shadow && !['ghost', 'link'].includes(
       buttonVariants.base,
       buttonVariants[variant],
       SHAPES[shape],
+      focusVisibleRing,
       { 'shadow-sm': enableShadow, 'w-8 h-8 p-0': icon },
     ]"
   >
@@ -53,7 +55,7 @@ const enableShadow = computed(() => props.shadow && !['ghost', 'link'].includes(
 
     <slot name="prefix" />
 
-    <span class="px-1">
+    <span class="flex items-center text-nowrap overflow-hidden">
       <slot />
     </span>
 

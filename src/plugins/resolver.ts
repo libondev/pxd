@@ -6,24 +6,40 @@ const NAMESPACE = name[0].toUpperCase()
 // eslint-disable-next-line node/prefer-global/process
 const LIBRARY_NAME = process.env.NODE_ENV === 'development' ? '@/' : name
 
-export default (): ComponentResolver => ({
-  type: 'component',
-  resolve: (name: string) => {
-    const prefixRegex = new RegExp(`^${NAMESPACE}[A-Z]`)
+const componentDependencies = {
+  'avatar-group': ['PAvatar'],
+  'button': ['spinner'],
+  'input': ['error'],
+  'textarea': ['error'],
+  'error': ['link'],
+  'dialog': ['overlay'],
+}
 
-    if (!name.match(prefixRegex))
-      return
+const getPath = (name: string) => `${LIBRARY_NAME}/components/${name}/index.js`
+const getEffects = (name: string) => (componentDependencies[name] || []).map(getPath)
 
-    const partialName = name
-      .replace(new RegExp(NAMESPACE, 'i'), '')
-      .replace(/([A-Z])/g, '-$1')
-      .toLowerCase()
-      .slice(1)
+function PxdResolver(): ComponentResolver {
+  return {
+    type: 'component',
+    resolve: (name: string) => {
+      const prefixRegex = new RegExp(`^${NAMESPACE}[A-Z]`)
 
-    return {
-      importName: name,
-      from: `${LIBRARY_NAME}/components/${partialName}/index`,
-      sideEffects: [],
-    }
-  },
-})
+      if (!name.match(prefixRegex))
+        return
+
+      const partialName = name
+        .replace(new RegExp(NAMESPACE, 'i'), '')
+        .replace(/([A-Z])/g, '-$1')
+        .toLowerCase()
+        .slice(1)
+
+      return {
+        importName: name,
+        from: getPath(partialName),
+        sideEffects: getEffects(name),
+      }
+    },
+  }
+}
+
+export default PxdResolver

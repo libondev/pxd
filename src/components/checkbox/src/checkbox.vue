@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { focusVisibleRing } from '@/_utils/style.js'
 import { Icon } from '@iconify/vue'
 import { CheckboxIndicator, CheckboxRoot } from 'radix-vue'
 
@@ -24,6 +25,7 @@ const checkState = defineModel<boolean>()
         disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 disabled:text-gray-600
         group-hover:[&:not(:disabled,[data-state=checked])]:bg-gray-200 group-hover:[&:not(:disabled,[data-state=checked])]:border-gray-700
       "
+      :class="focusVisibleRing"
       v-bind="$attrs"
     >
       <CheckboxIndicator as-child class="block h-full p-px -m-px">

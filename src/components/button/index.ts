@@ -6,7 +6,7 @@ export const buttonVariants = {
   warning: 'bg-amber-800 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
   outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 hover:bg-gray-50 active:bg-gray-100',
   ghost: 'bg-transparent text-gray-1000 border-transparent hover:bg-gray-100 active:bg-gray-200',
-  link: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 hover:opacity-90 active:opacity-70',
+  underline: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 hover:opacity-90 active:opacity-70',
 }
 
 export { default } from './src/button.vue'

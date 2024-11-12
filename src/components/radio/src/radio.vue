@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { Options } from '@/types'
+
+import { focusVisibleRing } from '@/_utils/style.js'
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'radix-vue'
 
 interface RadioOptions extends Options {
@@ -30,6 +32,7 @@ const checkState = defineModel<string>()
     <label v-for="option in options" :key="option.value" class="group inline-flex items-center">
       <RadioGroupItem
         :value="option.value"
+        :class="focusVisibleRing"
         class="
           relative w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
           disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 disabled:text-gray-600

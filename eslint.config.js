@@ -7,4 +7,8 @@ export default antfu({
     'playground/*',
     'node_modules/*',
   ],
+
+  rules: {
+    'vue/require-toggle-inside-transition': 'off',
+  },
 })

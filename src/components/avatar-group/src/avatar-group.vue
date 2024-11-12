@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AvatarGroupProps } from '..'
+import type { AvatarGroupProps } from '../index.js'
 import { computed } from 'vue'
 
 defineOptions({

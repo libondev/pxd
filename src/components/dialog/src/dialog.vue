@@ -1,78 +1,69 @@
 <script setup lang="ts">
-import {
-  AlertDialogContent,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogOverlay,
-  DialogPortal,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from 'radix-vue'
+import { useLazyDestroy } from '@/composables/use-lazy-destroy'
+
+interface DialogProps {
+  title?: string
+  description?: string
+  destroyDelay?: number
+  destroyOnClose?: boolean
+  closeOnClickModal?: boolean
+}
 
 defineOptions({
   name: 'PDialog',
   inheritAttrs: false,
 })
 
-defineProps({
-  title: {
-    type: String,
-    default: '',
-  },
-  description: {
-    type: String,
-    default: '',
-  },
+defineProps<DialogProps>()
+const openState = defineModel<boolean>({ default: false })
 
-  /**
-   * Click on the modal to close the dialog.
-   */
-  closeOnClickModal: {
-    type: Boolean,
-    default: false,
-  },
+const dialogRef = useTemplateRef('dialogRef')
+
+function onOpenDialog() {
+  document.body.style.overflow = 'hidden'
+  dialogRef.value?.showModal()
+}
+
+function onCloseDialog() {
+  dialogRef.value?.close()
+  openState.value = false
+  document.body.style.overflow = ''
+}
+
+watchEffect(() => {
+  if (openState.value) {
+    onOpenDialog()
+  }
 })
-
-const openState = defineModel<boolean>()
 </script>
 
 <template>
-  <DialogRoot v-model:open="openState">
-    <DialogTrigger v-if="$slots.trigger" as-child>
-      <slot name="trigger" />
-    </DialogTrigger>
-
-    <DialogPortal to="body">
-      <DialogOverlay class="fixed inset-0 z-10 bg-background/90 animated animated-duration-150 data-[state=open]:animated-fade-in data-[state=closed]:animated-fade-out" />
-      <component
-        :is="closeOnClickModal ? DialogContent : AlertDialogContent"
-        class="pxd-dialog fixed left-0 right-0 top-50% translate-y--50% mx-auto z-11 grid gap-4 w-full box-border max-w-lg bg-background rounded-lg p-8 shadow-lg b-(1 solid border) origin-center animated animated-duration-150 data-[state=open]:animated-zoom-in data-[state=closed]:animated-zoom-out"
-      >
-        <div class="pxd-dialog--header">
-          <DialogTitle class="text-lg font-500 tracking-tight m-0">
-            <slot name="title">
-              {{ title }}
-            </slot>
-          </DialogTitle>
-
-          <DialogDescription v-if="description" class="text-muted-foreground m-0 text-sm leading-normal">
-            <slot name="description">
-              {{ description }}
-            </slot>
-          </DialogDescription>
-
-          <DialogClose
-            class="absolute right-4 top-4 z-11 b-0 outline-none p-1 rounded text-4 bg-transparent op-50 hover:(bg-secondary op-100) cursor-pointer text-inherit"
-            aria-label="Close"
-          >
-            <i class="block pointer-events-none i-ic-close" />
-          </DialogClose>
-        </div>
+  <Transition name="transition-slide-down">
+    <dialog
+      v-if="openState"
+      ref="dialogRef"
+      class="
+        pxd-dialog fixed inset-0 m-auto z-50 w-[540px] rounded-xl shadow-sm outline-0 flex flex-col
+        [&::backdrop]:bg-gray-alpha-500 [&::backdrop]:backdrop-blur-sm
+      "
+      @close="onCloseDialog"
+    >
+      <div class="flex-1 px-6 pb-6 overflow-y-auto max-h-[min(800px,80vh)]">
+        <header class="sticky top-0 left-0 bg-background-100">
+          <h3 class="empty:hidden py-6 text-2xl font-semibold tracking-tight">
+            {{ title }}
+          </h3>
+          <p class="empty:hidden text-sm -mt-6 pb-4 text-gray-900">
+            {{ description }}
+          </p>
+        </header>
 
         <slot />
-      </component>
-    </DialogPortal>
-  </DialogRoot>
+      </div>
+
+      <footer v-if="$slots.footer" class="flex items-center justify-between border-t border-gray-alpha-400 bg-background-200 p-4">
+        <slot name="footer" />
+      </footer>
+    </dialog>
+  </Transition>
 </template>

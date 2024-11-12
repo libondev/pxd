@@ -18,8 +18,8 @@ withDefaults(
   defineProps<ToggleProps>(),
   {
     size: 'default',
-    activeColor: 'hsl(var(--p-blue-700-value))',
-    inactiveColor: 'var(--p-background-200)',
+    activeColor: 'hsl(var(--blue-700-value))',
+    inactiveColor: 'var(--background-200)',
   },
 )
 

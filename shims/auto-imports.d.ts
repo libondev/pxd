@@ -14,6 +14,7 @@ declare global {
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
   const effectScope: typeof import('vue')['effectScope']
+  const focusVisibleRing: typeof import('../src/_utils/style')['focusVisibleRing']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getLayoutDirection: typeof import('../src/_utils/css')['getLayoutDirection']
@@ -47,6 +48,7 @@ declare global {
   const readonly: typeof import('vue')['readonly']
   const ref: typeof import('vue')['ref']
   const resolveComponent: typeof import('vue')['resolveComponent']
+  const shadowBorder: typeof import('../src/_utils/style')['shadowBorder']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
@@ -61,6 +63,8 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useId: typeof import('vue')['useId']
+  const useLazyDestroy: typeof import('../src/composables/use-lazy-destroy')['useLazyDestroy']
+  const useLazyShow: typeof import('../src/composables/use-lazy-destroy')['useLazyShow']
   const useModel: typeof import('vue')['useModel']
   const useRandomId: typeof import('../src/composables/use-random-id')['useRandomId']
   const useSlots: typeof import('vue')['useSlots']
@@ -89,12 +93,11 @@ declare module 'vue' {
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly focusVisibleRing: UnwrapRef<typeof import('../src/_utils/style')['focusVisibleRing']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getLayoutDirection: UnwrapRef<typeof import('../src/_utils/css')['getLayoutDirection']>
-    readonly getUnitValue: UnwrapRef<typeof import('../src/_utils/css')['getUnitValue']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
-    readonly increaseWithUnit: UnwrapRef<typeof import('../src/_utils/css')['increaseWithUnit']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
@@ -121,6 +124,7 @@ declare module 'vue' {
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly shadowBorder: UnwrapRef<typeof import('../src/_utils/style')['shadowBorder']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
@@ -134,6 +138,7 @@ declare module 'vue' {
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useLazyDestroy: UnwrapRef<typeof import('../src/composables/use-lazy-destroy')['useLazyDestroy']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>

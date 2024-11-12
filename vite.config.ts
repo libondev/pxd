@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import glob from 'fast-glob'
 import autoImport from 'unplugin-auto-import/vite'
+import { transformLazyShow } from 'v-lazy-show'
 import { defineConfig, type UserConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
@@ -24,6 +25,7 @@ const buildConfig: UserConfig['build'] = {
           'src/components/**/*.ts',
           'src/composables/**/*.ts',
           'src/plugins/**/*.ts',
+          'src/_utils/**/*.ts',
         ]).map((file) => {
           return [
             path.relative('src', file.slice(0, file.length - path.extname(file).length)),
@@ -54,6 +56,11 @@ export const pluginsConfig: UserConfig['plugins'] = [
       defineModel: true,
       propsDestructure: true,
     },
+    template: {
+      compilerOptions: {
+        nodeTransforms: [transformLazyShow],
+      },
+    },
   }),
   autoImport({
     dts: './shims/auto-imports.d.ts',
@@ -80,8 +87,6 @@ export const pluginsConfig: UserConfig['plugins'] = [
 export const resolveConfig: UserConfig['resolve'] = {
   alias: {
     '@': fileURLToPath(new URL('./src', import.meta.url)),
-    '@utils': fileURLToPath(new URL('./src/_utils', import.meta.url)),
-    '@internal': fileURLToPath(new URL('./src/_internal', import.meta.url)),
   },
 }
 

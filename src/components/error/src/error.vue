@@ -40,10 +40,10 @@ const SIZES = {
     <div class="pxd-error--text">
       <template v-if="error">
         <span class="mr-1">{{ error.message }}</span>
-        <a v-if="error.link" rel="noopener" target="_blank" class="inline-flex items-center font-medium underline underline-offset-2 pxd-error--link" :href="error.link">
+
+        <PLink v-if="error.link" :href="error.link" underline>
           {{ error.action }}
-          <Icon icon="carbon:launch" />
-        </a>
+        </PLink>
       </template>
       <template v-else>
         <span v-if="label" class="font-medium mr-1">{{ label }}:</span>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CheckboxGroupProps } from '..'
+import type { CheckboxGroupProps } from '../index.js'
 
 const props = withDefaults(
   defineProps<CheckboxGroupProps>(),

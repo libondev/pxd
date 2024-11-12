@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { buttonVariants } from '@/components/button/index'
+import { focusVisibleRing } from '@/_utils/style.js'
+import { buttonVariants } from '@/components/button/index.js'
 import { Icon } from '@iconify/vue'
 
 interface ShowMoreProps {
@@ -36,7 +37,7 @@ function onToggleExpand() {
 
     <div
       class="pxd-show-more--button rounded-full px-3"
-      :class="buttonVariants.base + buttonVariants.outline"
+      :class="[buttonVariants.base, buttonVariants.outline, focusVisibleRing]"
       @click="onToggleExpand"
     >
       {{ expandValue ? collapseText : expandText }}
