@@ -27,9 +27,16 @@ export function increaseWithUnit(target: string | number, delta: number): string
   return result + unit
 }
 
-// export function getUnitValue(target: string): { value: string, unit: string } {
-//   const value = target.match(/^-?\d+\.?\d*/)?.[0] || ''
-//   const unit = target.slice(value.length)
+export function getUnitValue(target: string): { value: string, unit: string } {
+  const value = target.match(/^-?\d+\.?\d*/)?.[0] || ''
+  const unit = target.slice(value.length)
 
-//   return { value, unit }
-// }
+  return { value, unit }
+}
+
+export function getLayoutDirection(propValue: string): '' | 'flex-col' {
+  if (propValue === 'row')
+    return ''
+
+  return 'flex-col'
+}

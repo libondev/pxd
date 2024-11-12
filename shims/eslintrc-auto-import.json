@@ -75,6 +75,6 @@
     "autoUnit": true,
     "getLayoutDirection": true,
     "increaseWithUnit": true,
-    "useRandomId": true
+    "getUnitValue": true
   }
 }

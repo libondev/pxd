@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { autoUnit } from '@utils/css-value'
+import { autoUnit } from '@utils/css'
 
 interface SpinnerProps {
   size?: string | number

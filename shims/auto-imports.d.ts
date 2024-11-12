@@ -7,7 +7,7 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
-  const autoUnit: typeof import('../src/_utils/css-value')['autoUnit']
+  const autoUnit: typeof import('../src/_utils/css')['autoUnit']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']
@@ -16,9 +16,10 @@ declare global {
   const effectScope: typeof import('vue')['effectScope']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
-  const getLayoutDirection: typeof import('../src/_utils/layout')['getLayoutDirection']
+  const getLayoutDirection: typeof import('../src/_utils/css')['getLayoutDirection']
+  const getUnitValue: typeof import('../src/_utils/css')['getUnitValue']
   const h: typeof import('vue')['h']
-  const increaseWithUnit: typeof import('../src/_utils/css-value')['increaseWithUnit']
+  const increaseWithUnit: typeof import('../src/_utils/css')['increaseWithUnit']
   const inject: typeof import('vue')['inject']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']
@@ -81,7 +82,7 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
-    readonly autoUnit: UnwrapRef<typeof import('../src/_utils/css-value')['autoUnit']>
+    readonly autoUnit: UnwrapRef<typeof import('../src/_utils/css')['autoUnit']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
@@ -90,9 +91,10 @@ declare module 'vue' {
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
-    readonly getLayoutDirection: UnwrapRef<typeof import('../src/_utils/layout')['getLayoutDirection']>
+    readonly getLayoutDirection: UnwrapRef<typeof import('../src/_utils/css')['getLayoutDirection']>
+    readonly getUnitValue: UnwrapRef<typeof import('../src/_utils/css')['getUnitValue']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
-    readonly increaseWithUnit: UnwrapRef<typeof import('../src/_utils/css-value')['increaseWithUnit']>
+    readonly increaseWithUnit: UnwrapRef<typeof import('../src/_utils/css')['increaseWithUnit']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
@@ -133,7 +135,6 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
-    readonly useRandomId: UnwrapRef<typeof import('../src/composables/use-random-id')['useRandomId']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>

@@ -1,10 +1,11 @@
 # PXD
 Vue component library based on radix-vue and geist design system. Everything is just right.
 
+> [!WARNING]
+> This is a COMMUNITY PROJECT, not associated with Vercel, originating from [Vercel design system](https://vercel.com/geist/introduction).
+
 > [!IMPORTANT]
 > The library is still under development and may undergo major changes at any time.
-
-![](./res/preview.png)
 
 ## Install
 
@@ -26,47 +27,19 @@ import 'pxd/vars.css'
 
 ```js
 // vite.config.js
-import { defineConfig } from 'vite'
-import VueComponents from 'unplugin-vue-components/vite'
 import PxResolver from 'pxd/resolver'
+import VueComponents from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
     VueComponents({
       resolvers: [
-        PxResolver({ ...options })
+        PxResolver()
       ]
     })
   ]
 })
-```
-
-#### Resolver Options
-```ts
-interface ResolverOptions {
-  namespace: string
-}
-```
-You can specify automatically imported component name prefixes by passing in the namespace parameter, such as:
-```js
-// vite.config.ts
-{
-  plugins: [
-    VueComponents({
-      resolvers: [
-        resolver({ namespace: 'v' })
-      ]
-    })
-  ]
-}
-```
-
-```html
-<!-- App.vue -->
-<template>
-  <!-- `px-button` -> `v-button` -->
-  <v-button>Button</v-button>
-</template>
 ```
 
 ### Global import

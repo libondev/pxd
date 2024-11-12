@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { AvatarProps } from '..'
-import { autoUnit } from '@utils/css-value'
+import { autoUnit } from '@utils/css'
 
 defineOptions({
   name: 'PAvatar',

@@ -1,5 +1,7 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
 import { shallowRef, watchEffect } from 'vue'
+import { Icon } from '@iconify/vue'
 
 const darkMode = shallowRef(true)
 
@@ -9,10 +11,10 @@ const options = [
   'Blueberry',
 ].map(value => ({ label: value, value }))
 
-const single = ref('')
+const single = ref('checked')
 const multiple = ref([])
 
-const number = shallowRef(50)
+const number = shallowRef(0)
 
 const tabCheck = shallowRef('chinese')
 
@@ -38,27 +40,57 @@ const accordionOptions = [
 watchEffect(() => {
   // darkMode.value ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')
 })
+
+// setInterval(() => {
+//   if (number.value >= 100) {
+//     number.value = 0
+//   } else {
+//     number.value += 5
+//   }
+// }, 1000)
+
+const progressColors = {
+  0: '#f00',
+  25: '#ff0',
+  // 50: '#0f0',
+  // 75: '#0ff',
+  50: '#000',
+}
+
+const error = {
+  message: 'The request failed.',
+  action: 'Contact Us',
+  link: 'https://vercel.com/contact',
+}
 </script>
 
 <template>
-  <div class=" gap-2">
+  <div class=" gap-2 bg-white p-2">
     <!-- <PBook title="web frontend" /> -->
 
+    <span>{{ darkMode }}</span>
     <div>单选：{{ single }}</div>
     <div>多选：{{ multiple }}</div>
+    {{ number }}
 
-    <PInput>
-      <template #prefix>
-        000
-      </template>
-      <template #suffix>
-        111
-      </template>
-    </PInput>
-    <PInput />
-    <PInput error="an error message" />
+    <PButton variant="outline" icon>
+      <Icon icon="carbon:chevron-down" />
+    </PButton>
 
-    <PInput disabled />
+    <PCheckbox />
+
+    <PCollapse :options="accordionOptions" />
+
+    <PChoiceboxGroup v-model="multiple" multiple>
+      <PChoicebox title="123" value="111" />
+      <PChoicebox title="123" value="222" />
+      <PChoicebox title="123" value="333" />
+    </PChoiceboxGroup>
+
+    <PShowMore />
+    <PStatusDot label />
+
+    <PError :error="error" />
 
     <!-- <PBadge>123</PBadge>
     <PBadge variant="gray">

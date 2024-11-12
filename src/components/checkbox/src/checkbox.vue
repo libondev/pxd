@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Icon } from '@iconify/vue'
 import { CheckboxIndicator, CheckboxRoot } from 'radix-vue'
 
 interface CheckboxProps {
@@ -26,9 +27,7 @@ const checkState = defineModel<boolean>()
       v-bind="$attrs"
     >
       <CheckboxIndicator as-child class="block h-full p-px -m-px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32">
-          <path fill="none" stroke="var(--p-background-100)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="translate-y-0.5" d="M28 7L13 22L5 14" />
-        </svg>
+        <Icon icon="carbon:checkmark" class="text-background-100" />
       </CheckboxIndicator>
     </CheckboxRoot>
 

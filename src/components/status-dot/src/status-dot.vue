@@ -21,7 +21,7 @@ const stateClassNames = {
 }
 
 function getLabelText(
-  state: StateDotProps['state'],
+  state: StatusDotProps['state'],
   label: StatusDotProps['label'],
 ) {
   if (!label) {
@@ -29,7 +29,7 @@ function getLabelText(
   }
 
   if (typeof label === 'boolean') {
-    return state[0] + state.slice(1).toLowerCase()
+    return state
   }
 
   return label
@@ -40,7 +40,7 @@ function getLabelText(
   <span class="pxd-state-dot inline-flex items-center">
     <span class="inline-block w-2.5 h-2.5 rounded-full" :class="stateClassNames[state]" />
 
-    <span v-if="label" class="pl-2 pr-1 min-w-0 text-sm truncate">
+    <span v-if="label" class="pl-2 pr-1 min-w-0 text-sm truncate capitalize">
       {{ getLabelText(state, label) }}
     </span>
   </span>
