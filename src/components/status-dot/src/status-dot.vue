@@ -4,13 +4,10 @@ interface StatusDotProps {
   state?: 'QUEUED' | 'BUILDING' | 'READY' | 'ERROR' | 'CANCELED'
 }
 
-withDefaults(
-  defineProps<StatusDotProps>(),
-  {
-    label: false,
-    state: 'QUEUED',
-  },
-)
+const {
+  label = false,
+  state = 'QUEUED',
+} = defineProps<StatusDotProps>()
 
 const stateClassNames = {
   READY: 'bg-[#50e3c2]',

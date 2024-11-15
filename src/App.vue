@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <script setup lang="ts">
 import { shallowRef, watchEffect } from 'vue'
-import { Icon } from '@iconify/vue'
+import { CheckIcon } from '@radix-icons/vue'
 
 const darkMode = shallowRef(true)
 
@@ -62,6 +62,19 @@ const error = {
   action: 'Contact Us',
   link: 'https://vercel.com/contact',
 }
+
+const size = ref('default')
+
+setTimeout(() => {
+  size.value = 'small'
+}, 3000)
+
+const errorMsg = 'The request failed.'
+
+function onToggle() {
+  boolean.value = !boolean.value
+  console.debug('🚀src/App.vue:67/[boolean.value]:\n ', boolean.value)
+}
 </script>
 
 <template>
@@ -72,27 +85,17 @@ const error = {
     <div>单选：{{ single }}</div>
     <div>多选：{{ multiple }}</div>
 
-    <PButton variant="outline" @click="boolean = !boolean">
-      <Icon icon="carbon:checkmark" />
-      打开弹窗
+    <PCombobox :options="options" />
+
+    <PKeyboardInput>1232</PKeyboardInput>
+    <PButton :size>
+      123123
     </PButton>
-
-    <PDialog v-model="boolean" title="123123" description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi asperiores dolor illo qui nihil neque officiis. Tempora esse reiciendis, vel, totam quod cum cupiditate rerum velit eligendi autem ad explicabo?">
-      <template #trigger />
-
-      12312321
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi asperiores dolor illo qui nihil neque officiis. Tempora esse reiciendis, vel, totam quod cum cupiditate rerum velit eligendi autem ad explicabo?
-
-      <template #footer>
-        12321
-        <PButton type="submit">
-          Confirm
-        </PButton>
-      </template>
-    </PDialog>
-
-    <PCheckbox />
+    <PCheckbox label="1232" />
     <PRadio :options="options" />
+
+    <PInput :size="size" />
+    <PTextarea />
 
     <!-- <PBadge>123</PBadge>
     <PBadge variant="gray">

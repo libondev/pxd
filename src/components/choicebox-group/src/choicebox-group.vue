@@ -1,25 +1,22 @@
 <script setup lang="ts">
+import { getFlowDirection } from '../../_utils/css.js'
 import { ChoiceboxInjectionKey, type ChoiceboxProps } from '../index.js'
 
 defineOptions({
   name: 'PChoiceboxGroup',
 })
 
-const props = withDefaults(
-  defineProps<ChoiceboxProps>(),
-  {
-    direction: 'row',
-  },
-)
-
-const multiple = toRef(props.multiple)
+const {
+  direction = 'row',
+  multiple = false,
+} = defineProps<ChoiceboxProps>()
 
 const modelValue = defineModel<string | string[]>({ required: true })
 
-const layoutDirection = getLayoutDirection(props.direction)
+const layoutDirection = getFlowDirection(direction)
 
 function onChoiceboxItemChange(value: string) {
-  if (multiple.value) {
+  if (multiple) {
     const _modelValue = modelValue.value as string[]
 
     if (_modelValue.includes(value)) {
@@ -36,7 +33,7 @@ function onChoiceboxItemChange(value: string) {
 }
 
 provide(ChoiceboxInjectionKey, {
-  multiple,
+  multiple: toRef(multiple),
   modelValue,
   onChoiceboxItemChange,
 })

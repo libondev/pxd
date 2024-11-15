@@ -3,12 +3,9 @@ interface BadgeProps {
   variant?: keyof typeof VARIANTS
 }
 
-withDefaults(
-  defineProps<BadgeProps>(),
-  {
-    variant: 'default',
-  },
-)
+const {
+  variant = 'default',
+} = defineProps<BadgeProps>()
 
 const VARIANTS = {
   'default': 'font-medium bg-background-100',
@@ -28,7 +25,6 @@ const VARIANTS = {
   'pink-subtle': 'font-medium bg-pink-200 text-pink-700',
   'green-subtle': 'font-medium bg-green-200 text-green-700',
   'teal-subtle': 'font-medium bg-teal-200 text-teal-700',
-
   'inverted': 'font-medium bg-gray-1000 text-background-100',
   'vue': 'font-medium text-background-100 bg-gradient-to-br from-[#42d392] via-[#42d392] via-25% to-[#647eff]',
   'trial': 'font-medium text-background-100 bg-gradient-to-br from-[#0070f3] to-[#f81ce5]',

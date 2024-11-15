@@ -21,6 +21,12 @@
     "component library"
   ],
   "sideEffects": false,
+  "imports": {
+    "#/*": "./src/*",
+    "#types": "./src/types",
+    "#types/*": "./src/types/*",
+    "#utils/*": "./src/components/_utils/*"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./vars.css": "./dist/vars.css",
@@ -53,8 +59,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
-    "@iconify-json/carbon": "^1.2.4",
-    "@iconify/vue": "^4.1.2",
+    "@radix-icons/vue": "^1.0.0",
     "@types/node": "^20.16.12",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vitejs/plugin-vue-jsx": "^4.0.1",

@@ -7,12 +7,7 @@ defineOptions({
   name: 'PLoadingDots',
 })
 
-withDefaults(
-  defineProps<LoadingDotsProps>(),
-  {
-    size: 4,
-  },
-)
+const { size = 4 } = defineProps<LoadingDotsProps>()
 </script>
 
 <template>

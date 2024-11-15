@@ -9,13 +9,11 @@ defineOptions({
   name: 'PProgress',
 })
 
-const props = withDefaults(
-  defineProps<ProgressProps>(),
-  {
-    max: 100,
-    type: 'default',
-  },
-)
+const {
+  colors,
+  max = 100,
+  type = 'default',
+} = defineProps<ProgressProps>()
 
 const progressValue = defineModel<number>({ default: 50 })
 
@@ -27,23 +25,23 @@ const typeColors = {
   error: 'hsl(var(--red-700-value))',
 }
 
-const sortedColorKeys = computed(() => props.colors ? Object.keys(props.colors).map(Number).sort((a, b) => a - b) : [])
+const sortedColorKeys = computed(() => colors ? Object.keys(colors).map(Number).sort((a, b) => a - b) : [])
 
 const progressColor = computed(() => {
-  if (props.colors) {
+  if (colors) {
     const sortedKeys = sortedColorKeys.value
 
     for (let i = 0; i < sortedKeys.length; i++) {
       if (progressValue.value < sortedKeys[i]) {
-        return props.colors[sortedKeys[i - 1]]
+        return colors[sortedKeys[i - 1]]
       }
     }
 
-    return props.colors[sortedKeys[sortedKeys.length - 1]]
+    return colors[sortedKeys[sortedKeys.length - 1]]
   }
 
-  if (props.type && typeColors[props.type]) {
-    return typeColors[props.type]
+  if (type && typeColors[type]) {
+    return typeColors[type]
   }
 
   return typeColors.default

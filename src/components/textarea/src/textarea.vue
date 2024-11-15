@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { inputBorder } from '@/components/input/index.js'
-
 interface TextareaProps {
   error?: string
+  resize?: boolean
   disabled?: boolean
   readonly?: boolean
 }
@@ -24,11 +23,9 @@ const inputText = defineModel<string>()
       :disabled="disabled"
       :readonly="readonly"
       :data-disabled="disabled"
-      class="flex w-full h-8 min-h-24 rounded px-3 py-2 outline-0 bg-background-100 rounded-md text-sm text-inherit font-inherit transition-shadow placeholder:text-gray-700 disabled:bg-gray-100"
-      :class="[inputBorder.base, error ? inputBorder.error : inputBorder.default]"
+      class="p-focusable w-full min-h-24 px-3 py-2 outline-0 bg-background-100 rounded-md text-sm text-inherit font-inherit transition-shadow placeholder:text-gray-700 disabled:bg-gray-100"
+      :class="{ 'p-focusable-error': error, 'resize-none': !resize }"
     />
-    <PError v-if="error" class="mt-1.5">
-      {{ error }}
-    </PError>
+    <PError v-if="error" class="mt-1.5" :error="error" />
   </div>
 </template>

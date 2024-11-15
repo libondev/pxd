@@ -1,11 +1,11 @@
 # PXD
 Vue component library based on radix-vue and geist design system. Everything is just right.
 
-> [!WARNING]
-> This is a COMMUNITY PROJECT, not associated with Vercel, originating from [Vercel design system](https://vercel.com/geist/introduction).
-
 > [!IMPORTANT]
 > The library is still under development and may undergo major changes at any time.
+
+> [!INFO]
+> This is a COMMUNITY PROJECT, not associated with Vercel, originating from [Vercel design system](https://vercel.com/geist/introduction). Did not strictly follow its implementation, and added some personal ideas.
 
 ## Install
 

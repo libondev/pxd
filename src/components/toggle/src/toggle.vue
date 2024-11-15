@@ -14,14 +14,11 @@ defineOptions({
   name: 'PToggle',
 })
 
-withDefaults(
-  defineProps<ToggleProps>(),
-  {
-    size: 'default',
-    activeColor: 'hsl(var(--blue-700-value))',
-    inactiveColor: 'var(--background-200)',
-  },
-)
+const {
+  size = 'default',
+  activeColor = 'hsl(var(--blue-700-value))',
+  inactiveColor = 'var(--background-200)',
+} = defineProps<ToggleProps>()
 
 const SIZES = {
   small: 'w-[22px] h-3',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Size } from '@/types'
+import type { StandardSize } from '#types'
 import {
   TabsList,
   TabsRoot,
@@ -9,7 +9,7 @@ import { type Triggers, TriggerSymbol } from '../index.js'
 
 defineProps({
   size: {
-    type: String as PropType<Size>,
+    type: String as PropType<StandardSize>,
     default: 'default',
   },
   label: {
@@ -23,7 +23,7 @@ const triggers = ref<Triggers>({})
 const checkState = defineModel<string>()
 
 const SIZES = {
-  sm: {
+  small: {
     track: 'p-1 rounded-md',
     inner: 'px-2 py-1 rounded-sm',
   },
@@ -31,7 +31,7 @@ const SIZES = {
     track: 'p-1 rounded-md',
     inner: 'px-4 py-1.5 rounded-sm text-sm',
   },
-  lg: {
+  large: {
     track: 'p-1.5 rounded-lg',
     inner: 'px-5 py-2.5 rounded-md text-4',
   },

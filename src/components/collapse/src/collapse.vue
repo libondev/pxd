@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Icon } from '@iconify/vue'
+import type { OptionItem } from '#types'
+import { ChevronDownIcon } from '@radix-icons/vue'
 import {
   AccordionContent,
   AccordionHeader,
@@ -8,24 +9,21 @@ import {
   AccordionTrigger,
 } from 'radix-vue'
 
+type CollapseOptionItem = Pick<OptionItem, 'label' | 'value'> & {
+  content: string
+}
+
+interface CollapseProps {
+  options: CollapseOptionItem[]
+}
+
 defineOptions({
   name: 'PCollapse',
 })
 
-withDefaults(
-  defineProps<{
-    options: OptionItem[]
-  }>(),
-  {
-    options: () => [],
-  },
-)
-
-interface OptionItem {
-  label: string
-  value: string
-  content: string
-}
+const {
+  options,
+} = defineProps<CollapseProps>()
 </script>
 
 <template>
@@ -34,7 +32,7 @@ interface OptionItem {
       <AccordionHeader class="flex m-0 cursor-pointer text-4">
         <AccordionTrigger class="group relative w-full text-inherit font-size-inherit font-inherit pl-2 py-3 pr-8 text-left b-0 bg-transparent cursor-pointer">
           {{ item.label }}
-          <Icon icon="carbon:chevron-down" class="absolute right-4 top-4 transition-transform group-data-[state=open]:rotate-180" />
+          <ChevronDownIcon class="absolute right-4 top-4 transition-transform group-data-[state=open]:rotate-180" />
         </AccordionTrigger>
       </AccordionHeader>
 

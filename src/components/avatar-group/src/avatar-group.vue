@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import type { AvatarGroupProps } from '../index.js'
-import { computed } from 'vue'
 
 defineOptions({
   name: 'PAvatarGroup',
 })
 
-const props = withDefaults(
-  defineProps<AvatarGroupProps>(),
-  {
-    max: 5,
-    gap: 10,
-    size: 32,
-    members: () => [],
-  },
-)
+const {
+  max = 5,
+  size = 32,
+  members = [],
+} = defineProps<AvatarGroupProps>()
 
-const maxedMembers = computed(() => props.members.slice(0, props.max))
+const maxedMembers = computed(() => members.slice(0, max))
 
-provide('avatarGroupProvider', { size: props.size })
+provide('avatarGroupProvider', { size })
 </script>
 
 <template>

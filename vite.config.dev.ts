@@ -19,7 +19,8 @@ export default defineConfig({
     ...pluginsConfig as any,
 
     VueComponents({
-      dts: './shims/components.d.ts',
+      // dts: './shims/components.d.ts',
+      dts: false,
       resolvers: [
         resolver(),
       ],

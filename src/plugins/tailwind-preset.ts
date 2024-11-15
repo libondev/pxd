@@ -1,4 +1,47 @@
-export default {
+import type { PluginAPI } from 'tailwindcss/types/config'
+
+function pxdClassNamesShortcuts({ addComponents }: PluginAPI) {
+  addComponents({
+    '.p-border, .p-focusable': {
+      'box-shadow': '0 0 0 1px var(--gray-alpha-400)',
+    },
+
+    '.p-ring': {
+      'outline': '0',
+
+      '&:focus-within,&:focus-visible': {
+        'box-shadow': 'var(--background-100) 0 0 0 2px, 0 0 0 4px hsl(var(--blue-700-value))',
+      },
+
+      '&.p-border:focus-within,&.p-border:focus-visible': {
+        'box-shadow': '0 0 0 1px var(--gray-alpha-400), 0 0 0 2px var(--background-100), 0 0 0 4px hsl(var(--blue-700-value))',
+      },
+    },
+
+    '.p-focusable': {
+      'outline': '0',
+      'transition': 'box-shadow .15s',
+
+      '&:not(:disabled,[disabled],[disabled=true],[data-disabled=true]):hover': {
+        'box-shadow': '0 0 0 1px var(--gray-alpha-500)',
+      },
+
+      '&:not(:disabled,[disabled],[disabled=true],[data-disabled=true]):focus, &:not(:disabled,[disabled],[disabled=true],[data-disabled=true]):focus-within': {
+        'box-shadow': '0 0 0 1px var(--gray-alpha-600), 0 0 0 3px rgba(0,0,0,.16)!important',
+      },
+    },
+
+    '.p-focusable-error': {
+      'box-shadow': '0 0 0 1px hsl(var(--red-900-value)), 0 0 0 3px hsl(var(--red-300-value))',
+
+      '&:not(:disabled,[disabled],[disabled=true],[data-disabled=true]):hover': {
+        'box-shadow': '0 0 0 1px hsl(var(--red-900-value)), 0 0 0 3px hsl(var(--red-500-value))',
+      },
+    },
+  })
+}
+
+const tailwindPreset = {
   theme: {
     extend: {
       colors: {
@@ -118,6 +161,7 @@ export default {
       },
 
       borderRadius: {
+        inherit: 'inherit',
         xl: 'calc(var(--radius) + 4px)',
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -162,4 +206,10 @@ export default {
       },
     },
   },
+
+  plugins: [
+    pxdClassNamesShortcuts,
+  ],
 }
+
+export default tailwindPreset

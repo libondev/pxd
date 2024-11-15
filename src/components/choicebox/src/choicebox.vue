@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ChoiceboxProvider } from '../../choicebox-group'
 
-import { Icon } from '@iconify/vue'
+import { CheckIcon } from '@radix-icons/vue'
 import { ChoiceboxInjectionKey } from '../../choicebox-group'
 
 interface ChoiceboxProps {
@@ -10,10 +10,7 @@ interface ChoiceboxProps {
   description?: string
 }
 
-const props = withDefaults(
-  defineProps<ChoiceboxProps>(),
-  {},
-)
+const props = defineProps<ChoiceboxProps>()
 
 const {
   multiple,
@@ -39,7 +36,7 @@ const isSelected = computed(() => modelValue.value?.includes(props.value))
       </div>
 
       <span v-if="multiple" :data-selected="isSelected" class="relative group block size-4 rounded border border-gray-500 bg-background-100 data-[selected=true]:border-blue-900 data-[selected=true]:bg-blue-900">
-        <Icon icon="carbon:checkmark" class="text-background-100 absolute left-[-1px] top-[-1px] p-px" />
+        <CheckIcon class="text-background-100 absolute left-[-1px] top-[-1px] p-px" />
       </span>
 
       <span v-else :data-selected="isSelected" class="relative group block size-4 rounded-full bg-background-100 border border-gray-500 data-[selected=true]:border-blue-900">

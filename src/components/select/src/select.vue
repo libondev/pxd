@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { OptionItem } from '#types'
 import {
   SelectContent,
   // SelectGroup,
@@ -14,20 +15,16 @@ import {
   SelectViewport,
 } from 'radix-vue'
 
+interface SelectProps {
+  options: OptionItem[]
+  placeholder?: string
+}
+
 defineOptions({
   name: 'PSelect',
 })
 
-defineProps({
-  options: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => [],
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
-})
+defineProps<SelectProps>()
 
 const selectedValue = defineModel<string>()
 </script>
@@ -35,7 +32,7 @@ const selectedValue = defineModel<string>()
 <template>
   <SelectRoot v-model="selectedValue">
     <SelectTrigger
-      class="pxd-select shadow-sm h-8 rounded px-3 py-2 inline-flex w-full text-inherit font-inherit items-center b-(1 solid input) bg-background text-sm data-[disabled]:(cursor-not-allowed bg-secondary b-transparent)"
+      class="pxd-select p-focusable w-full flex items-center justify-center h-8 rounded-md transition-shadow"
       aria-label="Customize options"
     >
       <SelectValue

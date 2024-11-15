@@ -6,13 +6,10 @@ interface BookProps {
   variant?: 'default' | 'simple'
 }
 
-withDefaults(
-  defineProps<BookProps>(),
-  {
-    width: 196,
-    variant: 'default',
-  },
-)
+const {
+  width = 196,
+  variant = 'default',
+} = defineProps<BookProps>()
 </script>
 
 <template>

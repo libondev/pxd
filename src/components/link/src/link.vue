@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
+import { ExternalLinkIcon } from '@radix-icons/vue'
 
 interface LinkProps {
   href: string
@@ -7,21 +7,19 @@ interface LinkProps {
   underline?: boolean
 }
 
-const props = withDefaults(
-  defineProps<LinkProps>(),
-  {
-    external: 'auto',
-  },
-)
+const {
+  href,
+  external = 'auto',
+} = defineProps<LinkProps>()
 
 const isExternal = computed(() => {
   const currentUrl = window.location.origin + window.location.pathname
 
-  if (props.external === 'auto') {
-    return !props.href.startsWith(currentUrl)
+  if (external === 'auto') {
+    return !href.startsWith(currentUrl)
   }
 
-  return props.external
+  return external
 })
 </script>
 
@@ -34,6 +32,6 @@ const isExternal = computed(() => {
     :class="{ underline }"
   >
     <slot />
-    <Icon v-if="isExternal" icon="carbon:launch" class="text-lg" />
+    <ExternalLinkIcon v-if="isExternal" class="text-lg" />
   </a>
 </template>

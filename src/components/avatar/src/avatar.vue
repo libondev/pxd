@@ -1,20 +1,16 @@
 <script lang="ts" setup>
 import type { AvatarProps } from '../index.js'
-import { autoUnit } from '@/_utils/css.js'
+import { autoUnit } from '#utils/css.js'
 
 defineOptions({
   name: 'PAvatar',
 })
 
-withDefaults(
-  defineProps<AvatarProps>(),
-  {
-    size: 32,
-    placeholder: false,
-  },
-)
+const { size = 32 } = defineProps<AvatarProps>()
 
-defineEmits(['error'])
+defineEmits<{
+  error: [Event]
+}>()
 </script>
 
 <template>

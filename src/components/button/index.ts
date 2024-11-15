@@ -1,12 +1,36 @@
+import type { StandardSize } from '#types'
+import { getStandardSize } from '#utils/css.js'
+
+export const getButtonSizes = getStandardSize({
+  default: 'px-2',
+  small: 'px-1.5',
+  large: 'px-2.5',
+})
+
+export const buttonShapes = {
+  normal: 'rounded-md',
+  square: 'rounded-none',
+  rounded: 'rounded-full',
+  circle: 'rounded-full overflow-hidden w-8 !p-1',
+}
+
 export const buttonVariants = {
-  base: 'inline-flex items-center h-8 px-2 select-none border font-inherit b-(1 solid) justify-center text-sm cursor-pointer disabled:pointer-events-none disabled:!bg-gray-100 disabled:!text-gray-700 disabled:!border-gray-400',
-  default: 'bg-gray-1000 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
-  secondary: 'bg-gray-100 text-gray-1000 border-transparent hover:bg-gray-200 active:bg-gray-alpha-300',
-  danger: 'bg-red-800 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
-  warning: 'bg-amber-800 text-background-100 border-transparent hover:opacity-90 active:opacity-80',
-  outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 hover:bg-gray-50 active:bg-gray-100',
-  ghost: 'bg-transparent text-gray-1000 border-transparent hover:bg-gray-100 active:bg-gray-200',
-  underline: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 hover:opacity-90 active:opacity-70',
+  base: 'inline-flex items-center select-none border font-inherit b-(1 solid) justify-center text-sm cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:border-gray-400',
+  default: 'bg-gray-1000 text-background-100 border-transparent enabled:hover:opacity-90 enabled:active:opacity-80',
+  secondary: 'bg-gray-100 text-gray-1000 border-transparent enabled:hover:bg-gray-200 enabled:active:bg-gray-alpha-300',
+  danger: 'bg-red-800 text-background-100 border-transparent enabled:hover:opacity-90 enabled:active:opacity-80',
+  warning: 'bg-amber-800 text-background-100 border-transparent enabled:hover:opacity-90 enabled:active:opacity-80',
+  outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 enabled:hover:bg-gray-50 enabled:active:bg-gray-100',
+  ghost: 'bg-transparent text-gray-1000 border-transparent enabled:hover:bg-gray-100 enabled:active:bg-gray-200',
+  underline: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 enabled:hover:opacity-90 enabled:active:opacity-70',
+}
+
+export type ButtonSizes = StandardSize
+export type ButtonShapes = keyof typeof buttonShapes
+export type ButtonVariants = keyof typeof buttonVariants
+
+export function getButtonVariant(variant: ButtonVariants, withBase = true) {
+  return (buttonVariants[variant] || buttonVariants.default) + (withBase ? ` ${buttonVariants.base}` : '')
 }
 
 export { default } from './src/button.vue'

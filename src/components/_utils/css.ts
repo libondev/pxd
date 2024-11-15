@@ -34,9 +34,31 @@ export function autoUnit(target: string | number): string {
 //   return { value, unit }
 // }
 
-export function getLayoutDirection(propValue: string): '' | 'flex-col' {
+export function getFlowDirection(propValue: string): '' | 'flex-col' {
   if (propValue === 'row')
     return ''
 
   return 'flex-col'
+}
+
+export function getStandardSize(mergeSizes?: Record<string, string>): (v: string) => string {
+  const _SIZES = {
+    small: 'h-7 text-sm',
+    default: 'h-8 text-sm',
+    large: 'h-10 text-base',
+  }
+
+  // 挨个合并，使用 assign 会直接覆盖
+  if (mergeSizes) {
+    Object.keys(mergeSizes).forEach((key) => {
+      if (key in _SIZES) {
+        _SIZES[key] += ` ${mergeSizes[key]}`
+      }
+      else {
+        _SIZES[key] = mergeSizes[key]
+      }
+    })
+  }
+
+  return (propValue: string) => _SIZES[propValue] || _SIZES.default
 }

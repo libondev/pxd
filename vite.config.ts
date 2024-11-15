@@ -1,3 +1,4 @@
+import type { PreRenderedChunk } from 'rollup'
 import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
@@ -37,9 +38,15 @@ const buildConfig: UserConfig['build'] = {
     output: {
       dir: 'dist',
       format: 'es',
-      chunkFileNames: '[name].js',
       entryFileNames: '[name].js',
       assetFileNames: '[name][extname]', // css
+      chunkFileNames: (chunk: PreRenderedChunk) => {
+        if (chunk.moduleIds[0].includes('icons')) {
+          return 'components/_icons/[name].js'
+        }
+
+        return `${chunk.name}.js`
+      },
     },
   },
 }
@@ -52,10 +59,10 @@ const esbuildConfig: UserConfig['esbuild'] = {
 export const pluginsConfig: UserConfig['plugins'] = [
   vueJsx(),
   vue({
-    script: {
-      defineModel: true,
-      propsDestructure: true,
-    },
+    // script: {
+    //   defineModel: true,
+    //   propsDestructure: true,
+    // },
     template: {
       compilerOptions: {
         nodeTransforms: [transformLazyShow],
@@ -70,11 +77,7 @@ export const pluginsConfig: UserConfig['plugins'] = [
         // 'tailwind-merge': [['twMerge', 'merge']],
       },
     ],
-    dirs: [
-      './src/composables',
-      './src/_internal',
-      './src/_utils',
-    ],
+    dirs: [],
     vueTemplate: true,
     eslintrc: {
       enabled: true,
@@ -86,7 +89,8 @@ export const pluginsConfig: UserConfig['plugins'] = [
 
 export const resolveConfig: UserConfig['resolve'] = {
   alias: {
-    '@': fileURLToPath(new URL('./src', import.meta.url)),
+    '#': fileURLToPath(new URL('./src', import.meta.url)),
+    '#utils': fileURLToPath(new URL('./src/components/_utils', import.meta.url)),
   },
 }
 

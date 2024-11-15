@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { focusVisibleRing } from '@/_utils/style.js'
-import { buttonVariants } from '../index.js'
+import type { ButtonShapes, ButtonSizes, ButtonVariants } from '../index.js'
+
+import { buttonShapes, getButtonSizes, getButtonVariant } from '../index.js'
 
 interface ButtonProps {
   type?: HTMLButtonElement['type']
@@ -8,46 +9,38 @@ interface ButtonProps {
   shadow?: boolean
   loading?: boolean
   disabled?: boolean
-  shape?: keyof typeof SHAPES
-  variant?: keyof typeof buttonVariants
+  shape?: ButtonShapes
+  variant?: ButtonVariants
+  size?: ButtonSizes
 }
 
 defineOptions({
   name: 'PButton',
 })
 
-const props = withDefaults(
-  defineProps<ButtonProps>(),
-  {
-    icon: false,
-    type: 'button',
-    variant: 'default',
-    disabled: false,
-    shape: 'normal',
-    shadow: true,
-  },
-)
+const {
+  type = 'button',
+  shadow = true,
+  shape = 'normal',
+  variant = 'default',
+  size = 'default',
+} = defineProps<ButtonProps>()
 
-const SHAPES = {
-  normal: 'rounded-md',
-  square: 'rounded-none',
-  rounded: 'rounded-full',
-  circle: 'rounded-full overflow-hidden w-8 !p-1',
-}
+const enableShadow = computed(() => shadow && !['ghost', 'underline'].includes(variant))
 
-const enableShadow = computed(() => props.shadow && !['ghost', 'underline'].includes(props.variant))
+const buttonSize = computed(() => getButtonSizes(size))
+const buttonVariant = computed(() => getButtonVariant(variant))
 </script>
 
 <template>
   <button
     :type="type"
-    class="pxd-button"
+    class="pxd-button p-ring"
     :disabled="disabled || loading"
     :class="[
-      buttonVariants.base,
-      buttonVariants[variant],
-      SHAPES[shape],
-      focusVisibleRing,
+      buttonVariant,
+      buttonSize,
+      buttonShapes[shape],
       { 'shadow-sm': enableShadow, 'w-8 h-8 p-0': icon },
     ]"
   >
@@ -55,7 +48,7 @@ const enableShadow = computed(() => props.shadow && !['ghost', 'underline'].incl
 
     <slot name="prefix" />
 
-    <span class="flex items-center text-nowrap overflow-hidden">
+    <span class="px-1.5 flex items-center text-nowrap overflow-hidden">
       <slot />
     </span>
 

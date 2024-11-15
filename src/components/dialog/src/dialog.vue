@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { useLazyDestroy } from '@/composables/use-lazy-destroy'
-
 interface DialogProps {
   title?: string
   description?: string
-  destroyDelay?: number
-  destroyOnClose?: boolean
+  // destroyDelay?: number
+  // destroyOnClose?: boolean
   closeOnClickModal?: boolean
 }
 
@@ -14,20 +12,35 @@ defineOptions({
   inheritAttrs: false,
 })
 
-defineProps<DialogProps>()
+const props = defineProps<DialogProps>()
+
 const openState = defineModel<boolean>({ default: false })
 
-const dialogRef = useTemplateRef('dialogRef')
+const dialogRef = useTemplateRef<HTMLDialogElement>('dialogRef')
 
 function onOpenDialog() {
-  document.body.style.overflow = 'hidden'
   dialogRef.value?.showModal()
+  document.body.style.overflow = 'hidden'
 }
 
 function onCloseDialog() {
   dialogRef.value?.close()
   openState.value = false
   document.body.style.overflow = ''
+}
+
+// outside click close
+function onDialogClick(ev: MouseEvent) {
+  const [dialog] = ev.composedPath()
+
+  if (dialog !== dialogRef.value)
+    return
+
+  if (!props.closeOnClickModal)
+    return
+
+  ev.preventDefault()
+  onCloseDialog()
 }
 
 watchEffect(() => {
@@ -41,12 +54,14 @@ watchEffect(() => {
   <Transition name="transition-slide-down">
     <dialog
       v-if="openState"
+      v-show="openState"
       ref="dialogRef"
       class="
         pxd-dialog fixed inset-0 m-auto z-50 w-[540px] rounded-xl shadow-sm outline-0 flex flex-col
         [&::backdrop]:bg-gray-alpha-500 [&::backdrop]:backdrop-blur-sm
       "
       @close="onCloseDialog"
+      @click="onDialogClick"
     >
       <div class="flex-1 px-6 pb-6 overflow-y-auto max-h-[min(800px,80vh)]">
         <header class="sticky top-0 left-0 bg-background-100">
@@ -61,7 +76,7 @@ watchEffect(() => {
         <slot />
       </div>
 
-      <footer v-if="$slots.footer" class="flex items-center justify-between border-t border-gray-alpha-400 bg-background-200 p-4">
+      <footer v-if="$slots.footer" class="flex items-center justify-between border-t border-gray-alpha-400 bg-background-200 p-3.5">
         <slot name="footer" />
       </footer>
     </dialog>

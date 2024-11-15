@@ -69,16 +69,6 @@
     "onWatcherCleanup": true,
     "useId": true,
     "useModel": true,
-    "useTemplateRef": true,
-    "merge": true,
-    "twMerge": true,
-    "autoUnit": true,
-    "getLayoutDirection": true,
-    "increaseWithUnit": true,
-    "getUnitValue": true,
-    "shadowBorder": true,
-    "useLazyShow": true,
-    "useLazyDestroy": true,
-    "focusVisibleRing": true
+    "useTemplateRef": true
   }
 }

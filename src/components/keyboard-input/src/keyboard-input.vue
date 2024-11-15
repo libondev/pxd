@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { shadowBorder } from '@/_utils/style.js'
-
 interface KeyboardInputProps {
   meta?: boolean
   shift?: boolean
@@ -30,8 +28,8 @@ const internalKey = computed(() => {
 
 <template>
   <kbd
-    class="pxd-keyboard-input inline-flex px-1.5 items-center bg-background-100 text-gray-1000 text-center rounded font-sans ml-1"
-    :class="[shadowBorder, small ? 'h-5 text-xs' : 'h-6 text-sm']"
+    class="pxd-keyboard-input p-border inline-flex px-1.5 items-center bg-background-100 text-gray-1000 text-center rounded font-sans ml-1"
+    :class="[small ? 'h-5 text-xs' : 'h-6 text-sm']"
   >
     {{ internalKey }}
     <slot>{{ label }}</slot>

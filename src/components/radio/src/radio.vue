@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import type { Options } from '@/types'
+import type { OptionItem } from '#types'
 
-import { focusVisibleRing } from '@/_utils/style.js'
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'radix-vue'
 
-interface RadioOptions extends Options {
+interface RadioOptions extends OptionItem {
 }
 
 interface RadioProps {
@@ -12,13 +11,10 @@ interface RadioProps {
   options?: RadioOptions[]
 }
 
-withDefaults(
-  defineProps<RadioProps>(),
-  {
-    direction: 'horizontal',
-    value: 'default',
-  },
-)
+const {
+  direction = 'horizontal',
+  options,
+} = defineProps<RadioProps>()
 
 const checkState = defineModel<string>()
 </script>
@@ -32,9 +28,8 @@ const checkState = defineModel<string>()
     <label v-for="option in options" :key="option.value" class="group inline-flex items-center">
       <RadioGroupItem
         :value="option.value"
-        :class="focusVisibleRing"
         class="
-          relative w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
+          p-ring relative w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
           disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 disabled:text-gray-600
           group-hover:[&:not(:disabled,[data-state=checked])]:bg-gray-200 group-hover:[&:not(:disabled,[data-state=checked])]:border-gray-700
         "
