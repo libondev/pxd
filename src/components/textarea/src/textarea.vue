@@ -23,7 +23,7 @@ const inputText = defineModel<string>()
       :disabled="disabled"
       :readonly="readonly"
       :data-disabled="disabled"
-      class="p-focusable w-full min-h-24 px-3 py-2 outline-0 bg-background-100 rounded-md text-sm text-inherit font-inherit transition-shadow placeholder:text-gray-700 disabled:bg-gray-100"
+      class="p-focusable p-input w-full min-h-24 px-3 py-2 rounded-md text-sm"
       :class="{ 'p-focusable-error': error, 'resize-none': !resize }"
     />
     <PError v-if="error" class="mt-1.5" :error="error" />

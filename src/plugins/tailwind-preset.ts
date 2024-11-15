@@ -2,8 +2,12 @@ import type { PluginAPI } from 'tailwindcss/types/config'
 
 function pxdClassNamesShortcuts({ addComponents }: PluginAPI) {
   addComponents({
-    '.p-border, .p-focusable': {
+    '.p-shadow-border, .p-focusable': {
       'box-shadow': '0 0 0 1px var(--gray-alpha-400)',
+    },
+
+    '.p-shadow-border-large': {
+      'box-shadow': '0 0 0 1px #00000018, 0px 2px 2px #0000000a,0px 8px 16px -4px #0000000a',
     },
 
     '.p-ring': {
@@ -13,7 +17,7 @@ function pxdClassNamesShortcuts({ addComponents }: PluginAPI) {
         'box-shadow': 'var(--background-100) 0 0 0 2px, 0 0 0 4px hsl(var(--blue-700-value))',
       },
 
-      '&.p-border:focus-within,&.p-border:focus-visible': {
+      '&.p-shadow-border:focus-within,&.p-shadow-border:focus-visible': {
         'box-shadow': '0 0 0 1px var(--gray-alpha-400), 0 0 0 2px var(--background-100), 0 0 0 4px hsl(var(--blue-700-value))',
       },
     },
@@ -36,6 +40,34 @@ function pxdClassNamesShortcuts({ addComponents }: PluginAPI) {
 
       '&:not(:disabled,[disabled],[disabled=true],[data-disabled=true]):hover': {
         'box-shadow': '0 0 0 1px hsl(var(--red-900-value)), 0 0 0 3px hsl(var(--red-500-value))',
+      },
+    },
+
+    '.p-input': {
+      'outline': '0',
+      'font-family': 'inherit',
+      'background-color': 'var(--background-100)',
+
+      '&::placeholder': {
+        color: 'hsl(var(--gray-500-value))',
+      },
+
+      '&:disabled,[disabled],[disabled=true],[data-disabled=true]': {
+        'cursor': 'not-allowed!important',
+        'background-color': 'hsl(var(--gray-100-value))!important',
+
+        '&::placeholder': {
+          opacity: '0',
+        },
+      },
+    },
+
+    '.p-select-list': {
+      '&:has([data-highlighted]) [data-highlighted]': {
+        'background-color': 'var(--gray-alpha-300)',
+      },
+      '&:not(:has([data-highlighted])) [data-state=checked]': {
+        'background-color': 'var(--gray-alpha-300)',
       },
     },
   })
@@ -179,6 +211,10 @@ const tailwindPreset = {
       },
 
       keyframes: {
+        'fade': {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
         'flash-loading': {
           from: { backgroundPosition: '200% 0' },
           to: { backgroundPosition: '-200% 0' },
@@ -188,21 +224,23 @@ const tailwindPreset = {
           '20%': { opacity: 1 },
           '100%': { opacity: 0.2 },
         },
-        'slide-down': {
+        'collapse-slide-down': {
           from: { height: 0 },
           to: { height: 'var(--radix-accordion-content-height)' },
         },
-        'slide-up': {
+        'collapse-slide-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 },
         },
       },
 
       animation: {
+        'fade-in': 'fade .25s ease',
+        'fade-out': 'fade .25s ease reverse',
+        'collapse-slide-up': 'collapse-slide-up .25s ease',
+        'collapse-slide-down': 'collapse-slide-down .25s ease',
         'flash-loading': 'flash-loading 8s ease-in-out infinite',
         'fade-loading': 'fade-loading 1.4s ease-in-out infinite both',
-        'slide-down': 'slide-down 300ms ease',
-        'slide-up': 'slide-up 300ms ease',
       },
     },
   },

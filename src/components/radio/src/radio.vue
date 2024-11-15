@@ -29,7 +29,7 @@ const checkState = defineModel<string>()
       <RadioGroupItem
         :value="option.value"
         class="
-          p-ring relative w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
+          p-ring relative w-4 min-w-4 h-4 rounded-full bg-background-100 border border-gray-700 transition-colors cursor-pointer
           disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 disabled:text-gray-600
           group-hover:[&:not(:disabled,[data-state=checked])]:bg-gray-200 group-hover:[&:not(:disabled,[data-state=checked])]:border-gray-700
         "

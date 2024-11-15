@@ -30,7 +30,7 @@ const checkState = defineModel<SwitchProps['activeValue'] | SwitchProps['inactiv
 </script>
 
 <template>
-  <div class="pxd-switch inline-flex items-center p-1 h-10 rounded-md p-border" :class="SIZES[size]">
+  <div class="pxd-switch inline-flex items-center p-1 h-10 rounded-md p-shadow-border" :class="SIZES[size]">
     <label class="pxd-switch--item group h-full font-medium">
       <input v-model="checkState" :disabled="disabled" class="peer sr-only" type="radio" name="default" :value="activeValue">
       <slot name="active">

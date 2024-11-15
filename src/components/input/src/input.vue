@@ -36,8 +36,7 @@ const inputSize = computed(() => getInputSizes(size))
       <input
         :id="randomId"
         class="
-          w-full h-full px-3 rounded-inherit font-inherit bg-background-100 text-sm placeholder:text-gray-500
-          disabled:cursor-not-allowed disabled:bg-gray-100 disabled:placeholder:opacity-0 outline-none
+          w-full h-full px-3 rounded-inherit text-sm p-input outline-none
           file:border-0 file:bg-transparent file:text-sm file:font-medium
         "
         :readonly="readonly"

@@ -1,75 +1,130 @@
 <script lang="ts" setup>
-import type { OptionItem, StandardError } from '#types'
+import type { OptionItem, StandardError, StandardSize } from '#types'
 
-import { CheckIcon, ChevronDownIcon } from '@radix-icons/vue'
+import { getInputSizes } from '#/components/input/index.js'
+import { CheckIcon, ChevronDownIcon, Cross2Icon, MagnifyingGlassIcon } from '@radix-icons/vue'
 import {
   ComboboxAnchor,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxGroup,
+  // ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
   ComboboxItemIndicator,
-  ComboboxLabel,
+  // ComboboxLabel,
   ComboboxRoot,
-  ComboboxSeparator,
+  // ComboboxSeparator,
   ComboboxTrigger,
   ComboboxViewport,
 } from 'radix-vue'
 
 interface SelectProps {
+  size?: StandardSize
   error?: StandardError
+  disabled?: boolean
   placeholder?: string
   options: OptionItem[]
+  emptyText?: string
 }
 
 defineOptions({
   name: 'PCombobox',
 })
 
-defineProps<SelectProps>()
+const {
+  size = 'default',
+  options,
+  placeholder = 'Search...',
+  emptyText = 'Nothing to see here...',
+} = defineProps<SelectProps>()
 
 const modelValue = defineModel<string>()
+const _internalValue = shallowRef({} as OptionItem)
+
+const inputSize = computed(() => getInputSizes(size))
+
+function updateModelValue(option: any) {
+  modelValue.value = option.value
+}
+
+function resetInternalValue() {
+  _internalValue.value = {} as OptionItem
+}
+
+function clearModelValue() {
+  modelValue.value = ''
+  resetInternalValue()
+}
+
+watchEffect(() => {
+  if (modelValue.value) {
+    const option = options.find(option => option.value === modelValue.value)
+
+    if (option) {
+      _internalValue.value = option
+      return
+    }
+  }
+
+  resetInternalValue()
+})
 </script>
 
 <template>
-  <ComboboxRoot v-model="modelValue" class="pxd-combobox relative">
+  <ComboboxRoot v-model="_internalValue" :disabled="disabled" class="pxd-combobox relative" @update:model-value="updateModelValue">
     <ComboboxAnchor
-      class="pxd-combobox--anchor p-focusable h-8 rounded-md"
-      :class="{ 'p-focusable-error': error }"
+      :data-disabled="disabled"
+      class="p-focusable rounded-md"
+      :class="[{ 'p-focusable-error': error }, inputSize]"
     >
-      <ComboboxInput class="outline-0 rounded-inherit" :placeholder="placeholder" />
+      <div class="absolute left-0 top-0 text-gray-700 w-8 h-full flex items-center">
+        <MagnifyingGlassIcon class="mx-auto" />
+      </div>
 
-      <ComboboxTrigger>
-        <ChevronDownIcon />
+      <ComboboxInput
+        class="px-8 w-full h-full rounded-inherit p-input"
+        :placeholder="placeholder"
+        :value="_internalValue?.label"
+      />
+
+      <ComboboxTrigger class="absolute right-0 top-0 text-gray-700 w-8 h-full flex items-center justify-center transition-transform data-[state=open]:rotate-180">
+        <span v-if="modelValue" class="inline-block w-fit h-fit p-0.5 rounded-full transition-colors hover:bg-gray-alpha-300" @click.stop="clearModelValue">
+          <Cross2Icon />
+        </span>
+        <ChevronDownIcon v-else />
       </ComboboxTrigger>
+
+      <PError v-if="error" :error="error" class="mt-2" />
     </ComboboxAnchor>
 
     <ComboboxContent
-      class="absolute z-10 w-full mt-2 min-w-[160px] bg-white overflow-hidden rounded shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+      class="absolute p-shadow-border-large z-10 w-full mt-2 min-w-40 bg-white overflow-hidden rounded-lg data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out"
     >
-      <ComboboxViewport class="p-[5px]">
-        <ComboboxEmpty class="text-mauve8 text-xs font-medium text-center py-2" />
+      <ComboboxViewport class="p-select-list p-2 text-sm">
+        <ComboboxEmpty class="text-gray-alpha-600 text-xs font-medium text-center py-2 select-none">
+          {{ emptyText }}
+        </ComboboxEmpty>
 
-        <ComboboxGroup>
-          <ComboboxLabel class="px-[25px] text-xs leading-[25px] text-mauve11">
-            Fruits
-          </ComboboxLabel>
+        <!-- <ComboboxGroup> -->
+        <ComboboxItem
+          v-for="(option, index) in options"
+          :key="index"
+          :value="option"
+          :title="option.label"
+          :disabled="option.disabled"
+          class="
+            p-select-item outline-0 flex items-center h-9 pl-7 pr-2 relative select-none rounded-md
+            data-[disabled]:text-gray-alpha-600 data-[disabled]:cursor-not-allowed data-[state=checked]:text-gray-1000
+          "
+        >
+          <ComboboxItemIndicator class="absolute left-1 w-6 inline-flex items-center justify-center">
+            <CheckIcon />
+          </ComboboxItemIndicator>
 
-          <ComboboxItem
-            v-for="(option, index) in options" :key="index"
-            class="text-[13px] leading-none text-grass11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-grass9 data-[highlighted]:text-grass1"
-            :value="option"
-          >
-            <ComboboxItemIndicator class="absolute left-0 w-[25px] inline-flex items-center justify-center">
-              <CheckIcon />
-            </ComboboxItemIndicator>
-            <span>
-              {{ option }}
-            </span>
-          </ComboboxItem>
-          <ComboboxSeparator class="h-[1px] bg-grass6 m-[5px]" />
-        </ComboboxGroup>
+          {{ option.value }}
+        </ComboboxItem>
+        <!-- <ComboboxSeparator class="h-[1px] bg-grass6 m-[5px]" />
+        </ComboboxGroup> -->
       </ComboboxViewport>
     </ComboboxContent>
   </ComboboxRoot>
