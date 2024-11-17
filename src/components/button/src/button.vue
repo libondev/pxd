@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonShapes, ButtonSizes, ButtonVariants } from '../index.js'
 
+import Spinner from '~/spinner/index.js'
 import { buttonShapes, getButtonSizes, getButtonVariant } from '../index.js'
 
 interface ButtonProps {
@@ -44,7 +45,7 @@ const buttonVariant = computed(() => getButtonVariant(variant))
       { 'shadow-sm': enableShadow, 'w-8 h-8 !p-0': icon },
     ]"
   >
-    <PSpinner v-if="loading" />
+    <Spinner v-if="loading" />
 
     <slot name="prefix" />
 

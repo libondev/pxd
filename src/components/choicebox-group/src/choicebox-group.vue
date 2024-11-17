@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getFlowDirection } from '../../_utils/css.js'
+import { getFlowDirection } from '#utils/css.js'
 import { ChoiceboxInjectionKey, type ChoiceboxProps } from '../index.js'
 
 defineOptions({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CheckboxGroupProps } from '../index.js'
-import { getFlowDirection } from '../../_utils/css.js'
+import { getFlowDirection } from '#utils/css.js'
 
 const {
   direction = 'row',

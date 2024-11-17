@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import type { CheckboxRootProps } from 'radix-vue'
 import { CheckIcon } from '@radix-icons/vue'
 import { CheckboxIndicator, CheckboxRoot } from 'radix-vue'
 
-interface CheckboxProps {
+interface CheckboxProps extends CheckboxRootProps {
 }
 
 defineOptions({

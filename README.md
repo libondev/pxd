@@ -16,10 +16,21 @@ pnpm i pxd
 ## Usage
 
 ### Styles
+```js
+// tailwind.config.js
+
+export default {
+  content: [
+    './src/**/*.{ts,tsx,vue}',
+    './node_modules/pxd/dist/components/**/*.js',
+  ]
+}
+```
 
 ### vars.css
 
 ```js
+// main.ts
 import 'pxd/vars.css'
 ```
 
@@ -45,13 +56,24 @@ export default defineConfig({
 ### Global import
 We strongly recommend using automatic import because it can significantly reduce the package size.
 
-## Import Directly
-
+## Manual Import
 ```js
-import Button from 'pxd/components/button/index.js'
+// main.ts
 
 // All components only need to import this style file.
 import 'pxd/vars.css'
+```
+
+```vue
+<script setup>
+import Button from 'pxd/components/button/index.js'
+</script>
+
+<template>
+  <Button>
+    Button
+  </Button>
+</template>
 ```
 
 ## Acknowledgement

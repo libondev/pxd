@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { StandardError, StandardErrorObject, StandardSize } from '#types'
+import Link from '~/link/index.js'
 import { ExclamationTriangleIcon } from '@radix-icons/vue'
 
 interface ErrorProps {
@@ -14,7 +15,7 @@ defineOptions({
 
 const {
   size = 'default',
-  error = '',
+  error,
 } = defineProps<ErrorProps>()
 
 const SIZES = {
@@ -22,8 +23,6 @@ const SIZES = {
   default: 'text-sm',
   large: 'text-lg',
 }
-
-const isObjectTypeError = computed(() => typeof error === 'object' && 'message' in error)
 </script>
 
 <template>
@@ -33,12 +32,12 @@ const isObjectTypeError = computed(() => typeof error === 'object' && 'message' 
     </div>
 
     <div class="pxd-error--text">
-      <template v-if="isObjectTypeError">
-        <span class="mr-1">{{ (error as StandardErrorObject).message }}</span>
+      <template v-if="typeof error === 'object'">
+        <span class="mr-1">{{ error.message }}</span>
 
-        <PLink v-if="error.link" :href="error.link" underline>
-          {{ (error as StandardErrorObject).action }}
-        </PLink>
+        <Link v-if="error.link" :href="error.link" underline>
+          {{ error.action }}
+        </Link>
       </template>
       <template v-else>
         <span v-if="label" class="font-medium mr-1">{{ label }}:</span>

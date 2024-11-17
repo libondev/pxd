@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { StandardError } from '#types'
+import Error from '~/error/index.js'
 import { getInputSizes, type InputSizes } from '../index.js'
 
 interface InputProps {
@@ -49,6 +50,6 @@ const inputSize = computed(() => getInputSizes(size))
       </label>
     </div>
 
-    <PError v-if="error" class="mt-1.5" :error="error" />
+    <Error v-if="error" class="mt-1.5" :error="error" />
   </div>
 </template>

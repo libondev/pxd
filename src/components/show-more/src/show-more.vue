@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Button from '~/button/index.js'
 import { ChevronDownIcon } from '@radix-icons/vue'
 
 interface ShowMoreProps {
@@ -30,13 +31,13 @@ function onToggleExpand() {
   <div class="pxd-show-more mt-5 ml-5 flex items-center w-[calc(100%-40px)] min-h-[30px]">
     <div class="pxd-show-more--line bg-gray-alpha-400 flex-grow h-px" />
 
-    <PButton variant="outline" shape="rounded" @click="onToggleExpand">
+    <Button variant="outline" shape="rounded" @click="onToggleExpand">
       {{ expandValue ? collapseText : expandText }}
 
       <template #suffix>
         <ChevronDownIcon class="-ml-0.5 transition-transform duration-200" :class="{ 'rotate-180': expandValue }" />
       </template>
-    </PButton>
+    </Button>
 
     <div class="pxd-show-more--line bg-gray-alpha-400 flex-grow h-px" />
   </div>

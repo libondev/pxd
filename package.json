@@ -25,11 +25,13 @@
     "#/*": "./src/*",
     "#types": "./src/types",
     "#types/*": "./src/types/*",
+    "~/*": "./src/components/*",
     "#utils/*": "./src/components/_utils/*"
   },
   "exports": {
     ".": "./dist/index.js",
     "./vars.css": "./dist/vars.css",
+    "./components": "./dist/components/*",
     "./resolver": "./dist/plugins/resolver.js",
     "./*": "./dist/*"
   },
@@ -45,9 +47,9 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "vite --config vite.config.docs.ts",
-    "build": "vite build --config vite.config.ts",
-    "build:docs": "vite build --config vite.config.docs.ts",
+    "dev": "pnpm --filter docs dev",
+    "build": "vite build",
+    "build:docs": "pnpm --filter docs build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --noEmit --composite false"

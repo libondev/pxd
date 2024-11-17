@@ -8,6 +8,7 @@
     "moduleResolution": "bundler",
     "paths": {
       "#/*": ["./src/*"],
+      "~/*": ["./src/components/*"],
       "#types": ["./src/types"],
       "#types/*": ["./src/types/*"],
       "#utils/*": ["./src/components/_utils/*"]
@@ -23,8 +24,9 @@
   },
   "include": [
     "shims/**/*.d.ts",
-    "src/**/*.{ts,tsx,vue}",
-    "docs/**/*.{ts,tsx,vue}"
+    "src/**/*.vue",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": ["**/dist/**", "**/node_modules/**"]
 }

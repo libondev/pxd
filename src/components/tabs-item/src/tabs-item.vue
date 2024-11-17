@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TabsContent } from 'radix-vue'
 
-import { TriggerSymbol } from '../../tabs'
+import { TriggerSymbol } from '~/tabs/index.js'
 
 const props = defineProps({
   label: {

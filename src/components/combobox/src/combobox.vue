@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { OptionItem, StandardError, StandardSize } from '#types'
-
-import { getInputSizes } from '#/components/input/index.js'
+import Error from '~/error/index.js'
+import { getInputSizes } from '~/input/index.js'
 import { CheckIcon, ChevronDownIcon, Cross2Icon, MagnifyingGlassIcon } from '@radix-icons/vue'
 import {
   ComboboxAnchor,
@@ -94,7 +94,7 @@ watchEffect(() => {
         <ChevronDownIcon v-else />
       </ComboboxTrigger>
 
-      <PError v-if="error" :error="error" class="mt-2" />
+      <Error v-if="error" :error="error" class="mt-2" />
     </ComboboxAnchor>
 
     <ComboboxContent

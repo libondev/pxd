@@ -1,23 +1,18 @@
+/* eslint-disable node/prefer-global/process */
+
 import type { ComponentResolver } from 'unplugin-vue-components'
 import { name } from '../../package.json'
 
 const NAMESPACE = name[0].toUpperCase()
 
-// eslint-disable-next-line node/prefer-global/process
-const LIBRARY_NAME = process.env.NODE_ENV === 'development' ? '#/' : name
+const LIBRARY_NAME = process.env.NODE_ENV === 'development'
+  ? new URL('../../src', import.meta.url).pathname
+  : name
 
-const componentDependencies = {
-  'avatar-group': ['PAvatar'],
-  'button': ['spinner'],
-  'input': ['error'],
-  'textarea': ['error'],
-  'error': ['link'],
-  'dialog': ['overlay'],
-  'show-more': ['button'],
-}
-
-const getPath = (name: string) => `${LIBRARY_NAME}/components/${name}/index.js`
-const getEffects = (name: string) => (componentDependencies[name] || []).map(getPath)
+const getPath = (() => {
+  const suffix = process.env.NODE_ENV === 'development' ? '' : '.js'
+  return (name: string) => `${LIBRARY_NAME}/components/${name}/index${suffix}`
+})()
 
 function PxdResolver(): ComponentResolver {
   return {
@@ -37,7 +32,7 @@ function PxdResolver(): ComponentResolver {
       return {
         importName: name,
         from: getPath(partialName),
-        sideEffects: getEffects(name),
+        sideEffects: [],
       }
     },
   }

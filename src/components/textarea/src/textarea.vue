@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Error from '~/error/index.js'
+
 interface TextareaProps {
   error?: string
   resize?: boolean
@@ -26,6 +28,6 @@ const inputText = defineModel<string>()
       class="p-focusable p-input w-full min-h-24 px-3 py-2 rounded-md text-sm"
       :class="{ 'p-focusable-error': error, 'resize-none': !resize }"
     />
-    <PError v-if="error" class="mt-1.5" :error="error" />
+    <Error v-if="error" class="mt-1.5" :error="error" />
   </div>
 </template>
