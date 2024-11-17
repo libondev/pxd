@@ -1,7 +1,7 @@
 {
   "name": "pxd",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Vue component library based on radix-vue and geist design system.",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
