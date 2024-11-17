@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout
 
       - name: Checkout pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup
         with:
           version: latest
 
@@ -40,17 +40,17 @@ jobs:
         run: pwd && pnpm i
 
       - name: Build docs
-        run: pwd && pnpm --filter docs build
+        run: pwd && pnpm run build:docs
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact
         with:
           # Upload entire repository
           path: './docs/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages

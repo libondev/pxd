@@ -5,9 +5,9 @@ import { name } from '../../package.json'
 
 const NAMESPACE = name[0].toUpperCase()
 
-const LIBRARY_NAME = process.env.NODE_ENV === 'development'
+const LIBRARY_NAME = process.env.NODE_ENV === 'development' || process.env.CI
   ? new URL(/* @vite-ignore */ '../../src', import.meta.url).pathname
-  : `${name}/dist`
+  : name
 
 const getPath = (() => {
   const suffix = process.env.NODE_ENV === 'development' ? '' : '.js'
