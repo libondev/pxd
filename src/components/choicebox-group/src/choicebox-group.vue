@@ -33,7 +33,7 @@ function onChoiceboxItemChange(value: string) {
 }
 
 provide(ChoiceboxInjectionKey, {
-  multiple: toRef(multiple),
+  multiple: toRef(() => multiple),
   modelValue,
   onChoiceboxItemChange,
 })

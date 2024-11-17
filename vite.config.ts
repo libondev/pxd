@@ -13,7 +13,6 @@ const buildConfig: UserConfig['build'] = {
   minify: true,
   outDir: './dist',
   target: 'modules',
-  // cssMinify: 'lightningcss',
   reportCompressedSize: false,
   rollupOptions: {
     preserveEntrySignatures: 'strict',
@@ -24,15 +23,11 @@ const buildConfig: UserConfig['build'] = {
       ...Object.fromEntries(
         glob.sync([
           'src/components/**/*.ts',
-          'src/composables/**/*.ts',
           'src/plugins/**/*.ts',
-          'src/_utils/**/*.ts',
-        ]).map((file) => {
-          return [
-            path.relative('src', file.slice(0, file.length - path.extname(file).length)),
-            fileURLToPath(new URL(file, import.meta.url)),
-          ]
-        }),
+        ]).map(file => [
+          path.relative('src', file.slice(0, file.length - path.extname(file).length)),
+          fileURLToPath(new URL(file, import.meta.url)),
+        ]),
       ),
     },
     output: {

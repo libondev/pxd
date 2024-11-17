@@ -20,7 +20,7 @@ export const buttonVariants = {
   secondary: 'bg-gray-100 text-gray-1000 border-transparent enabled:hover:bg-gray-200 enabled:active:bg-gray-alpha-300',
   danger: 'bg-red-800 text-background-100 border-transparent enabled:hover:opacity-90 enabled:active:opacity-80',
   warning: 'bg-amber-800 text-background-100 border-transparent enabled:hover:opacity-90 enabled:active:opacity-80',
-  outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 enabled:hover:bg-gray-50 enabled:active:bg-gray-100',
+  outline: 'text-gray-1000 bg-background-100 border-gray-alpha-400 enabled:hover:bg-gray-100 enabled:active:bg-gray-200',
   ghost: 'bg-transparent text-gray-1000 border-transparent enabled:hover:bg-gray-100 enabled:active:bg-gray-200',
   underline: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 enabled:hover:opacity-90 enabled:active:opacity-70',
 }

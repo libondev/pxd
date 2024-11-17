@@ -20,7 +20,7 @@ defineOptions({
 
 const {
   type = 'button',
-  shadow = true,
+  shadow = false,
   shape = 'normal',
   variant = 'default',
   size = 'default',
@@ -41,7 +41,7 @@ const buttonVariant = computed(() => getButtonVariant(variant))
       buttonVariant,
       buttonSize,
       buttonShapes[shape],
-      { 'shadow-sm': enableShadow, 'w-8 h-8 p-0': icon },
+      { 'shadow-sm': enableShadow, 'w-8 h-8 !p-0': icon },
     ]"
   >
     <PSpinner v-if="loading" />

@@ -13,9 +13,16 @@ const {
 } = defineProps<LinkProps>()
 
 const isExternal = computed(() => {
+  if (!href)
+    return false
+
   const currentUrl = window.location.origin + window.location.pathname
 
   if (external === 'auto') {
+    if (['/', '#'].includes(href[0])) {
+      return false
+    }
+
     return !href.startsWith(currentUrl)
   }
 
@@ -24,8 +31,8 @@ const isExternal = computed(() => {
 </script>
 
 <template>
-  <a
-    :href="href"
+  <RouterLink
+    :to="href"
     rel="noopener"
     :target="isExternal ? '_blank' : undefined"
     class="pxd-link inline-flex items-center font-medium underline-offset-2 hover:underline"
@@ -33,5 +40,5 @@ const isExternal = computed(() => {
   >
     <slot />
     <ExternalLinkIcon v-if="isExternal" class="text-lg" />
-  </a>
+  </RouterLink>
 </template>

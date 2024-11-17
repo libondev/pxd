@@ -5,7 +5,7 @@
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "#/*": ["./src/*"],
       "#types": ["./src/types"],
@@ -21,6 +21,10 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "shims/**.d.ts", "src/types/**/*.d.ts"],
+  "include": [
+    "shims/**/*.d.ts",
+    "src/**/*.{ts,tsx,vue}",
+    "docs/**/*.{ts,tsx,vue}"
+  ],
   "exclude": ["**/dist/**", "**/node_modules/**"]
 }
