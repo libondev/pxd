@@ -31,12 +31,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+
       - name: Checkout pnpm
         uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7.13.4
+        # with:
+        #   version: 7.13.4
 
-      - name: Build core
+      - name: install dependencies
         run: pwd && pnpm i
 
       - name: Build docs
