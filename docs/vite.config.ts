@@ -9,7 +9,7 @@ import pxdResolver from '../src/plugins/resolver'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/pxd/',
 
   esbuild: {
     target: 'esnext',
