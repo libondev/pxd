@@ -18,20 +18,20 @@ defineOptions({
     </ScrollAreaViewport>
 
     <ScrollAreaScrollbar
-      class="h-3 w-full p-.5 box-border select-none touch-none animated data-[state=visible]:animated-fade-in"
+      class="h-3 w-full p-0.5 box-border select-none touch-none animated data-[state=visible]:animated-fade-in"
       orientation="horizontal"
     >
       <ScrollAreaThumb
-        class="relative !h-full bg-primary/25 hover:bg-primary/50 rounded-3 cursor-default before:(content-empty absolute bottom-0 left-0 w-full h-full)"
+        class="relative !h-full bg-gray-alpha-300 hover:bg-gray-alpha-500 rounded-md cursor-default before:content-empty before:absolute before:bottom-0 before:left-0 before:w-full before:h-full"
       />
     </ScrollAreaScrollbar>
 
     <ScrollAreaScrollbar
-      class="w-3 h-full p-.5 box-border select-none touch-none animated data-[state=visible]:animated-fade-in"
+      class="w-3 h-full p-0.5 box-border select-none touch-none animated data-[state=visible]:animated-fade-in"
       orientation="vertical"
     >
       <ScrollAreaThumb
-        class="relative h-full bg-primary/25 hover:bg-primary/50 rounded-3 cursor-default before:(content-empty absolute top-0 right-0 w-full h-full)"
+        class="relative h-full bg-gray-alpha-300 hover:bg-gray-alpha-500 rounded-md cursor-default before:content-empty before:absolute before:right-0 before:left-0 before:w-full before:h-full"
       />
     </ScrollAreaScrollbar>
   </ScrollAreaRoot>

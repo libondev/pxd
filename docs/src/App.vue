@@ -18,7 +18,7 @@ const components = routes.reduce((list, route) => {
   }
 
   return list
-}, [] as RouteRecordRaw[])
+}, [] as RouteRecordRaw[]).sort((a, b) => (a.name as string).localeCompare(b.name as string))
 
 const isDark = useDark({ storageKey: 'pxd-ui-theme' })
 const toggleDarkMode = useToggle(isDark)
@@ -52,20 +52,20 @@ watchEffect(() => {
       </div>
     </header>
 
-    <div class="relative h-full flex-1 flex border-l border-r transform-gpu">
-      <aside class="sticky left-0 top-16 bottom-0 p-2 border-r select-none w-60 min-w-60 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
-        <PLink href="/introduction" class="mb-0.5 capitalize w-full py-1.5 px-3 rounded font-normal cursor-default hover:bg-gray-100 active:bg-gray-alpha-200">
+    <div class="relative h-full flex-1 flex border-l border-r transform-gpu ">
+      <aside class="capitalize sticky left-0 top-16 bottom-0 p-2 border-r select-none w-60 min-w-60 space-y-0.5 overflow-y-auto h-[calc(100vh-4rem)]">
+        <PLink href="/introduction" class="text-sm mb-0.5  w-full py-2 px-3 rounded font-normal cursor-default hover:bg-gray-100 active:bg-gray-alpha-200">
           introduction
         </PLink>
 
-        <div class="px-3 text-xs font-medium text-gray-600">
+        <div class="px-3 !my-2 text-xs font-medium text-gray-600">
           COMPONENTS
         </div>
 
         <template v-for="item of components" :key="item.path">
           <PLink
             :href="item.path"
-            class="capitalize w-full py-1.5 px-3 rounded font-normal cursor-default hover:bg-gray-100 active:bg-gray-alpha-200"
+            class="w-full py-2 px-3 rounded text-sm font-normal cursor-default hover:bg-gray-100 active:bg-gray-alpha-200"
           >
             {{ item.meta?.title }}
           </PLink>
