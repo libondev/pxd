@@ -3,23 +3,42 @@ import { ExternalLinkIcon } from '@radix-icons/vue'
 
 interface LinkProps {
   href: string
+  withIcon?: boolean
   external?: boolean | string
   underline?: boolean
   hoverUnderline?: boolean
 }
 
-const { hoverUnderline = true } = defineProps<LinkProps>()
+const {
+  href,
+  external,
+  withIcon = true,
+  hoverUnderline = true,
+} = defineProps<LinkProps>()
+
+const attrs = computed(() => {
+  if (external) {
+    return {
+      href,
+      rel: 'noopener',
+      target: '_blank',
+    }
+  }
+
+  return {
+    to: href,
+  }
+})
 </script>
 
 <template>
-  <RouterLink
-    :to="href"
-    rel="noopener"
-    :target="external ? '_blank' : undefined"
-    class="pxd-link inline-flex items-center font-medium"
+  <Component
+    :is="external ? 'a' : 'RouterLink'"
+    v-bind="attrs"
+    class="pxd-link p-ring inline-flex items-center font-medium"
     :class="{ 'underline underline-offset-2': underline, 'hover:underline': hoverUnderline }"
   >
     <slot />
-    <ExternalLinkIcon v-if="external" class="text-lg" />
-  </RouterLink>
+    <ExternalLinkIcon v-if="withIcon && external" class="text-lg" />
+  </component>
 </template>

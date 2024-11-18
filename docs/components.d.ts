@@ -7,8 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    PButton: typeof import('pxd/components/button/index.js')['default']
-    PLink: typeof import('pxd/components/link/index.js')['default']
+    PButton: typeof import('./../../../E:/_SOURCES/pxd/src/components/button/index')['default']
+    PLink: typeof import('./../../../E:/_SOURCES/pxd/src/components/link/index')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Section: typeof import('./src/components/Section.vue')['default']

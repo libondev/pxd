@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RouteRecordRaw } from 'vue-router'
 
-import { MoonIcon, SunIcon } from '@radix-icons/vue'
+import { GithubLogoIcon, MoonIcon, SunIcon } from '@radix-icons/vue'
 
 import { useDark, useToggle } from '@vueuse/core'
 
@@ -30,24 +30,30 @@ watchEffect(() => {
 
 <template>
   <div class="flex flex-col max-w-screen-xl mx-auto h-full">
-    <header class="sticky top-0 left-0 h-16 bg-background-100 flex items-center justify-between border border-t-0">
-      <h2 class="flex items-center h-full pl-6 text-lg font-semibold tracking-tight w-60 border-r">
+    <header class="sticky top-0 left-0 h-16 z-10 bg-background-100 flex items-center justify-between border border-t-0">
+      <div class="flex items-center h-full pl-6 text-lg font-semibold tracking-tight w-60 border-r">
         <span class="logo inline-block size-7 bg-gray-1000 mr-3" />
         <RouterLink to="/">
           PXD UI
         </RouterLink>
-      </h2>
+      </div>
 
-      <div class="p-4 flex gap-2">
+      <div class="p-4 flex gap-1.5">
         <PButton variant="outline" icon @click="toggleDarkMode()">
           <MoonIcon v-if="isDark" />
           <SunIcon v-else />
         </PButton>
+
+        <PLink href="https://github.com/libondev/pxd" external :with-icon="false" tabindex="-1">
+          <PButton variant="outline" icon>
+            <GithubLogoIcon />
+          </PButton>
+        </PLink>
       </div>
     </header>
 
     <div class="relative h-full flex-1 flex border-l border-r transform-gpu">
-      <aside class="sticky left-0 top-16 bottom-0 p-2 border-r select-none w-60 min-w-60 bg-background-100 space-y-1 overflow-y-auto">
+      <aside class="sticky left-0 top-16 bottom-0 p-2 border-r select-none w-60 min-w-60 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
         <PLink href="/introduction" class="mb-0.5 capitalize w-full py-1.5 px-3 rounded font-normal cursor-default hover:bg-gray-100 active:bg-gray-alpha-200">
           introduction
         </PLink>
@@ -86,7 +92,7 @@ watchEffect(() => {
 }
 
 .logo {
-  animation: logo-animation 3s infinite linear;
+  animation: logo-animation 8s infinite linear;
   animation-direction: alternate-reverse
 }
 </style>

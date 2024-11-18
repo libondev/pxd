@@ -13,11 +13,13 @@ function pxdClassNamesShortcuts({ addComponents }: PluginAPI) {
     '.p-ring': {
       'outline': '0',
 
-      '&:focus-within,&:focus-visible': {
+      // '&:focus-within,&:focus-visible': {
+      '&:focus-visible': {
         'box-shadow': 'var(--background-100) 0 0 0 2px, 0 0 0 4px hsl(var(--blue-700-value))',
       },
 
-      '&.p-shadow-border:focus-within,&.p-shadow-border:focus-visible': {
+      // '&.p-shadow-border:focus-within,&.p-shadow-border:focus-visible': {
+      '&.p-shadow-border:focus-visible': {
         'box-shadow': '0 0 0 1px var(--gray-alpha-400), 0 0 0 2px var(--background-100), 0 0 0 4px hsl(var(--blue-700-value))',
       },
     },
