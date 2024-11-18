@@ -5,9 +5,15 @@ import { name } from '../../package.json'
 
 const NAMESPACE = name[0].toUpperCase()
 
-const LIBRARY_NAME = process.env.NODE_ENV === 'development' || process.env.CI
-  ? new URL(/* @vite-ignore */ '../../src', import.meta.url).pathname
-  : name
+let LIBRARY_NAME = name
+if (process.env.NODE_ENV === 'development') {
+  if (process.env.CI) {
+    LIBRARY_NAME = new URL(/* @vite-ignore */ '../../dist', import.meta.url).pathname
+  }
+  else {
+    LIBRARY_NAME = new URL(/* @vite-ignore */ '../../src', import.meta.url).pathname
+  }
+}
 
 const getPath = (() => {
   const suffix = process.env.NODE_ENV === 'development' ? '' : '.js'
