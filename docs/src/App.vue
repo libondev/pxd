@@ -11,7 +11,7 @@ import { watchEffect } from 'vue'
 const components = routes.reduce((list, route) => {
   if (route.path.startsWith('/components')) {
     route.meta = {
-      title: (route.name as string).replace('components-', ''),
+      title: (route.name as string).replace('components-', '').replace('-', ' '),
     }
 
     list.push(route)
@@ -79,7 +79,7 @@ watchEffect(() => {
   </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 @keyframes logo-animation {
   0% {
     border-radius: 0
@@ -95,4 +95,4 @@ watchEffect(() => {
   animation: logo-animation 8s infinite linear;
   animation-direction: alternate-reverse
 }
-</style>
+</style> -->

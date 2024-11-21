@@ -1,3 +1,17 @@
+<script setup lang="ts">
+const defaultCode = `<PButton size="small">Button</PButton>
+<PButton>Button</PButton>
+<PButton size="large">Button</PButton>`
+
+const variantCode = `<PButton>Button</PButton>
+<PButton variant="secondary">Button</PButton>
+<PButton variant="danger">Button</PButton>
+<PButton variant="warning">Button</PButton>
+<PButton variant="outline">Button</PButton>
+<PButton variant="ghost">Button</PButton>
+<PButton variant="underline">Button</PButton>`
+</script>
+
 <template>
   <Section
     title="Button"
@@ -5,40 +19,42 @@
   />
 
   <Section title="Sizes">
-    <div class="flex items-center gap-4">
-      <PButton size="small">
-        12312
-      </PButton>
-      <PButton>
-        12312
-      </PButton>
-      <PButton size="large">
-        12312
-      </PButton>
-    </div>
+    <Preview slot-class="flex items-center gap-4" :code="defaultCode">
+      <div class="flex items-center gap-4">
+        <PButton size="small">
+          Button
+        </PButton>
+        <PButton>
+          Button
+        </PButton>
+        <PButton size="large">
+          Button
+        </PButton>
+      </div>
+    </Preview>
   </Section>
 
   <Section title="Types">
-    <div class="flex items-center gap-4">
-      <PButton>12312</PButton>
+    <Preview :code="variantCode" slot-class="flex items-center gap-4">
+      <PButton>Button</PButton>
       <PButton variant="secondary">
-        12312
+        Button
       </PButton>
       <PButton variant="danger">
-        12312
+        Button
       </PButton>
       <PButton variant="warning">
-        12312
+        Button
       </PButton>
       <PButton variant="outline">
-        12312
+        Button
       </PButton>
       <PButton variant="ghost">
-        12312
+        Button
       </PButton>
       <PButton variant="underline">
-        12312
+        Button
       </PButton>
-    </div>
+    </Preview>
   </Section>
 </template>

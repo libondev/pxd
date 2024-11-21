@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="p-12 border-b">
+  <div class="px-12 py-14 border-b">
     <component :is="heading ? 'h1' : 'h2'" class="text-3xl font-semibold">
       {{ title }}
     </component>

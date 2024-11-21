@@ -207,6 +207,10 @@ const tailwindPreset = {
         em: '1em',
       },
 
+      fontFamily: {
+        mono: ['Geist Mono', 'MonoLisa', '"JetBrains Mono"', 'IBM Plex Mono', 'monospace'],
+      },
+
       lineHeight: {
         0: '0',
         full: '100%',

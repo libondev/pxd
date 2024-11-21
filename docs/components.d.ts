@@ -7,9 +7,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    PButton: typeof import('./../../../E:/_SOURCES/pxd/src/components/button/index')['default']
-    PLink: typeof import('./../../../E:/_SOURCES/pxd/src/components/link/index')['default']
-    PScroller: typeof import('./../../../E:/_SOURCES/pxd/src/components/scroller/index')['default']
+    Block: typeof import('./src/components/Block.vue')['default']
+    PButton: typeof import('./../src/components/button/index')['default']
+    PCodeBlock: typeof import('./../src/components/code-block/index')['default']
+    PLink: typeof import('./../src/components/link/index')['default']
+    Preview: typeof import('./src/components/Preview.vue')['default']
+    PScroller: typeof import('./../src/components/scroller/index')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Section: typeof import('./src/components/Section.vue')['default']

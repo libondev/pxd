@@ -19,9 +19,10 @@ export default defineConfig({
     reportCompressedSize: false,
     rollupOptions: {
       preserveEntrySignatures: 'strict',
-      external: ['vue', 'radix-vue'],
+      external: ['vue', 'radix-vue', 'shiki'],
       input: {
-        vars: fileURLToPath(new URL(`src/styles/vars.css`, import.meta.url)),
+        'vars': fileURLToPath(new URL(`src/styles/vars.css`, import.meta.url)),
+        'code-block': fileURLToPath(new URL(`src/styles/code-block.css`, import.meta.url)),
 
         ...Object.fromEntries(
           glob.sync([

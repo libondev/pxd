@@ -11,11 +11,13 @@
   "dependencies": {
     "@vueuse/core": "^11.2.0",
     "pxd": "workspace:*",
+    "sass": "^1.81.0",
     "vue": "^3.5.12"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
     "autoprefixer": "^10.4.20",
+    "shiki": "^1.23.1",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.6.2",
     "unplugin-auto-import": "^0.18.3",

@@ -2,7 +2,7 @@
   "name": "pxd",
   "type": "module",
   "version": "0.0.4",
-  "description": "Vue component library based on radix-vue and geist design system.",
+  "description": "Vue component library based on radix-vue and Geist Design System.",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
@@ -58,6 +58,9 @@
   },
   "dependencies": {
     "radix-vue": "^1.9.7"
+  },
+  "optionalDependencies": {
+    "shiki": "^1.23.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",

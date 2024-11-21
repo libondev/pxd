@@ -4,6 +4,7 @@ import tailwindPreset from '../src/plugins/tailwind-preset'
 export default {
   content: [
     './src/**/*.{ts,vue}',
+    '../src/components/**/*.{ts,vue}',
     './node_modules/pxd/dist/components/**/*.js',
   ],
 

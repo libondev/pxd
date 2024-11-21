@@ -15,6 +15,10 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
+const sideEffects = {
+  'code-block': ['pxd/code-block.css'],
+}
+
 const getPath = (() => {
   const suffix = process.env.NODE_ENV === 'development' ? '' : '.js'
   return (name: string) => `${LIBRARY_NAME}/components/${name}/index${suffix}`
@@ -38,7 +42,7 @@ function PxdResolver(): ComponentResolver {
       return {
         importName: name,
         from: getPath(partialName),
-        sideEffects: [],
+        sideEffects: sideEffects[partialName] || [],
       }
     },
   }
