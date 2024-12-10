@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-icons/vue'
+
 const defaultCode = `<PButton size="small">Button</PButton>
 <PButton>Button</PButton>
 <PButton size="large">Button</PButton>`
@@ -54,6 +56,85 @@ const variantCode = `<PButton>Button</PButton>
       </PButton>
       <PButton variant="underline">
         Button
+      </PButton>
+    </Preview>
+  </Section>
+
+  <Section title="Shapes">
+    <Preview slot-class="flex items-center gap-6 flex-wrap" :code="variantCode">
+      <PButton size="tiny" shape="normal">
+        Button
+      </PButton>
+      <PButton size="small" shape="normal">
+        Button
+      </PButton>
+      <PButton size="default" shape="normal">
+        Button
+      </PButton>
+      <PButton size="large" shape="normal">
+        Button
+      </PButton>
+      <PButton size="tiny" shape="square">
+        Button
+      </PButton>
+      <PButton size="small" shape="square">
+        Button
+      </PButton>
+      <PButton size="default" shape="square">
+        Button
+      </PButton>
+      <PButton size="large" shape="square">
+        Button
+      </PButton>
+      <PButton size="tiny" shape="rounded">
+        Button
+      </PButton>
+      <PButton size="small" shape="rounded">
+        Button
+      </PButton>
+      <PButton size="default" shape="rounded">
+        Button
+      </PButton>
+      <PButton size="large" shape="rounded">
+        Button
+      </PButton>
+      <PButton size="tiny" shape="circle">
+        Button
+      </PButton>
+      <PButton size="small" shape="circle">
+        Button
+      </PButton>
+      <PButton size="default" shape="circle">
+        Button
+      </PButton>
+      <PButton size="large" shape="circle">
+        Button
+      </PButton>
+    </Preview>
+  </Section>
+
+  <Section title="Prefix and suffix">
+    <Preview slot-class="flex items-center gap-4" :code="variantCode">
+      <PButton>
+        <template #prefix>
+          <ArrowLeftIcon />
+        </template>
+        Button
+      </PButton>
+      <PButton>
+        Button
+        <template #suffix>
+          <ArrowRightIcon />
+        </template>
+      </PButton>
+      <PButton>
+        <template #prefix>
+          <ArrowLeftIcon />
+        </template>
+        Button
+        <template #suffix>
+          <ArrowRightIcon />
+        </template>
       </PButton>
     </Preview>
   </Section>
