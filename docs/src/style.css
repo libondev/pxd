@@ -9,3 +9,7 @@ html {
   color: hsla(var(--gray-1000-value), 1);
   font-family: Geist, Inter, sans-serif;
 }
+
+.dark {
+  color-scheme: dark;
+}
