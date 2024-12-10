@@ -2,16 +2,17 @@ import type { StandardSize } from '#types'
 import { getStandardSize } from '#utils/css.js'
 
 export const getButtonSizes = getStandardSize({
-  default: 'px-2',
-  small: 'px-1.5',
-  large: 'px-2.5',
+  tiny: 'w-6 h-6 p-0',
+  default: 'px-2 gap-2',
+  small: 'px-1.5 gap-1',
+  large: 'px-2.5 gap-2',
 })
 
 export const buttonShapes = {
   normal: 'rounded-md',
   square: 'rounded-none',
   rounded: 'rounded-full',
-  circle: 'rounded-full overflow-hidden w-8 !p-1',
+  circle: 'rounded-full overflow-hidden aspect-square !p-1',
 }
 
 export const buttonVariants = {
@@ -25,7 +26,7 @@ export const buttonVariants = {
   underline: 'bg-transparent text-gray-1000 border-transparent underline underline-offset-4 enabled:hover:opacity-90 enabled:active:opacity-70',
 }
 
-export type ButtonSizes = StandardSize
+export type ButtonSizes = StandardSize | 'tiny'
 export type ButtonShapes = keyof typeof buttonShapes
 export type ButtonVariants = keyof typeof buttonVariants
 

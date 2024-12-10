@@ -49,7 +49,7 @@ const buttonVariant = computed(() => getButtonVariant(variant))
 
     <slot name="prefix" />
 
-    <span class="px-1.5 flex items-center text-nowrap overflow-hidden">
+    <span class="flex items-center text-nowrap overflow-hidden">
       <slot />
     </span>
 
