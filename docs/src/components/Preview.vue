@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronRightIcon } from '@radix-icons/vue'
+import { ChevronRightIcon } from 'gdsi/vue'
 
 defineProps<{
   code: string

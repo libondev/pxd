@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExternalLinkIcon } from '@radix-icons/vue'
+import { ExternalIcon } from 'gdsi/vue'
 
 interface LinkProps {
   href: string
@@ -39,6 +39,6 @@ const attrs = computed(() => {
     :class="{ 'underline underline-offset-2': underline, 'hover:underline': hoverUnderline }"
   >
     <slot />
-    <ExternalLinkIcon v-if="withIcon && external" class="text-lg" />
+    <ExternalIcon v-if="withIcon && external" class="text-lg" />
   </component>
 </template>

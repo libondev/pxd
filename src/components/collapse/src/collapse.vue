@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { OptionItem } from '#types'
-import { ChevronDownIcon } from '@radix-icons/vue'
+import { ChevronDownIcon } from 'gdsi/vue'
 import {
   AccordionContent,
   AccordionHeader,

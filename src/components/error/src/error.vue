@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { StandardError, StandardErrorObject, StandardSize } from '#types'
+import { StopIcon } from 'gdsi/vue'
 import Link from '~/link/index.js'
-import { ExclamationTriangleIcon } from '@radix-icons/vue'
 
 interface ErrorProps {
   size?: StandardSize
@@ -28,7 +28,7 @@ const SIZES = {
 <template>
   <div class="pxd-error flex items-start text-red-900 text-sm" :class="SIZES[size]">
     <div aria-hidden="true" class="inline-flex items-center mr-1 mt-[3px]">
-      <ExclamationTriangleIcon />
+      <StopIcon />
     </div>
 
     <div class="pxd-error--text">

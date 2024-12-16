@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import glob from 'fast-glob'
+import IconResolver from 'gdsi/resolver'
 import autoImport from 'unplugin-auto-import/vite'
 import { transformLazyShow } from 'v-lazy-show'
 import { defineConfig } from 'vite'
@@ -19,7 +20,7 @@ export default defineConfig({
     reportCompressedSize: false,
     rollupOptions: {
       preserveEntrySignatures: 'strict',
-      external: ['vue', 'radix-vue', 'shiki'],
+      external: ['vue', 'radix-vue', 'shiki', 'gdsi'],
       input: {
         'vars': fileURLToPath(new URL(`src/styles/vars.css`, import.meta.url)),
         'code-block': fileURLToPath(new URL(`src/styles/code-block.css`, import.meta.url)),
@@ -82,6 +83,12 @@ export default defineConfig({
         {
           // 'tailwind-merge': [['twMerge', 'merge']],
         },
+      ],
+      resolvers: [
+        IconResolver({
+          type: 'vue',
+          prefix: 'I',
+        }),
       ],
       dirs: [],
       vueTemplate: true,

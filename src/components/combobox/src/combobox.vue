@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { OptionItem, StandardError, StandardSize } from '#types'
-import Error from '~/error/index.js'
-import { getInputSizes } from '~/input/index.js'
-import { CheckIcon, ChevronDownIcon, Cross2Icon, MagnifyingGlassIcon } from '@radix-icons/vue'
+import { CheckIcon, ChevronDownIcon, CrossIcon, MagnifyingGlassIcon } from 'gdsi/vue'
 import {
   ComboboxAnchor,
   ComboboxContent,
@@ -17,6 +15,8 @@ import {
   ComboboxTrigger,
   ComboboxViewport,
 } from 'radix-vue'
+import Error from '~/error/index.js'
+import { getInputSizes } from '~/input/index.js'
 
 interface SelectProps {
   size?: StandardSize
@@ -89,7 +89,7 @@ watchEffect(() => {
 
       <ComboboxTrigger class="absolute right-0 top-0 text-gray-700 w-8 h-full flex items-center justify-center transition-transform data-[state=open]:rotate-180">
         <span v-if="modelValue" class="inline-block w-fit h-fit p-0.5 rounded-full transition-colors hover:bg-gray-alpha-300" @click.stop="clearModelValue">
-          <Cross2Icon />
+          <CrossIcon />
         </span>
         <ChevronDownIcon v-else />
       </ComboboxTrigger>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { RouteRecordRaw } from 'vue-router'
 
-import { GithubLogoIcon, MoonIcon, SunIcon } from '@radix-icons/vue'
-
 import { useDark, useToggle } from '@vueuse/core'
 
 import routes from '~pages'
+
+import { LogoGithubIcon, MoonIcon, SunIcon } from 'gdsi/vue'
 import { watchEffect } from 'vue'
 
 const components = routes.reduce((list, route) => {
@@ -46,7 +46,7 @@ watchEffect(() => {
 
         <PLink href="https://github.com/libondev/pxd" external :with-icon="false" tabindex="-1">
           <PButton variant="outline" icon>
-            <GithubLogoIcon />
+            <LogoGithubIcon />
           </PButton>
         </PLink>
       </div>

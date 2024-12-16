@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ChoiceboxProvider } from '~/choicebox-group'
+import { CheckIcon } from 'gdsi/vue'
 
+import type { ChoiceboxProvider } from '~/choicebox-group'
 import { ChoiceboxInjectionKey } from '~/choicebox-group/index.js'
-import { CheckIcon } from '@radix-icons/vue'
 
 interface ChoiceboxProps {
   title: string

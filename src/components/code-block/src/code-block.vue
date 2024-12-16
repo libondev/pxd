@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CheckIcon, CopyIcon } from '@radix-icons/vue'
+import { CheckIcon, CopyIcon } from 'gdsi/vue'
 import { type BundledLanguage, codeToHtml } from 'shiki'
 import PButton from '~/button/index.js'
 
@@ -66,14 +66,14 @@ function onCopyText() {
       </div>
 
       <PButton variant="ghost" icon @click="onCopyText">
-        <CheckIcon v-if="isCopied" class="text-green-700 size-6" />
+        <CheckIcon v-if="isCopied" class="text-green-700" />
         <CopyIcon v-else />
       </PButton>
     </div>
 
     <div class="pxd-code-block--body group relative">
       <PButton v-if="!filename" variant="outline" class="absolute right-3 top-3 hidden group-hover:block" icon @click="onCopyText">
-        <CheckIcon v-if="isCopied" class="text-green-700 size-6" />
+        <CheckIcon v-if="isCopied" class="text-green-700" />
         <CopyIcon v-else />
       </PButton>
 

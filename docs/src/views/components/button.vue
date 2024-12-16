@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeftIcon, ArrowRightIcon } from '@radix-icons/vue'
+import { ArrowLeftIcon, ArrowRightIcon } from 'gdsi/vue'
 
 const defaultCode = `<PButton size="small">Button</PButton>
 <PButton>Button</PButton>

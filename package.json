@@ -54,6 +54,7 @@
     "type-check": "vue-tsc --noEmit --composite false"
   },
   "peerDependencies": {
+    "gdsi": "^1.0.0",
     "vue": "^3.4.0"
   },
   "dependencies": {
@@ -64,12 +65,12 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
-    "@radix-icons/vue": "^1.0.0",
     "@types/node": "^20.16.12",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "eslint": "^9.12.0",
     "fast-glob": "^3.3.2",
+    "gdsi": "^1.0.0",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.6.3",
     "unplugin-auto-import": "^0.18.3",
