@@ -33,6 +33,7 @@
     "./vars.css": "./dist/vars.css",
     "./components": "./dist/components/*",
     "./resolver": "./dist/plugins/resolver.js",
+    "./tailwind.config": "./dist/plugins/tailwind-preset.js",
     "./*": "./dist/*"
   },
   "main": "./dist/index.js",
