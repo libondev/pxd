@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StandardError } from '#types'
-import Error from '~/error/index.js'
+import Error from '#/components/error/index.js'
 import { getInputSizes, type InputSizes } from '../index.js'
 
 interface InputProps {

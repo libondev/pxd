@@ -12,8 +12,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(vue@3.5.13(typescript@5.6.3))
       gdsi:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: latest
+        version: 1.0.1
       pxd:
         specifier: workspace:*
         version: link:..
@@ -739,8 +739,8 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gdsi@1.0.0:
-    resolution: {integrity: sha512-DjYKFoEW9EDkK4OJrg69WuTD7mP+fbCAvc/Dug0I+M7skvFPOC/4iTHjAYlM2q61+zej9iVKiKRDGodPfdRS7A==}
+  gdsi@1.0.1:
+    resolution: {integrity: sha512-uOqtiwaPR7YkOoRWpyS+wud62hAzILNTfeaqT/4UsdObdbohnGIKkAMsZntC0h/mQ4n5hUlQGD/8zvExR+mQYA==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -1865,7 +1865,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gdsi@1.0.0: {}
+  gdsi@1.0.1: {}
 
   glob-parent@5.1.2:
     dependencies:

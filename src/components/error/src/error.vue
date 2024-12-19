@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { StandardError, StandardErrorObject, StandardSize } from '#types'
 import { StopIcon } from 'gdsi/vue'
-import Link from '~/link/index.js'
+import Link from '#/components/link/index.js'
 
 interface ErrorProps {
   size?: StandardSize

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChevronDownIcon } from 'gdsi/vue'
-import Button from '~/button/index.js'
+import Button from '#/components/button/index.js'
 
 interface ShowMoreProps {
   expandText?: string

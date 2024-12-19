@@ -1,15 +1,12 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-import { name } from '../../package.json'
 
-const NAMESPACE = name[0].toUpperCase()
-
-const LIBRARY_NAME = name
+const NAMESPACE = 'P'
 
 const sideEffects = {
-  'code-block': ['pxd/code-block.css'],
+  'code-block': ['@/../../src/styles/code-block.css'],
 }
 
-const getPath = (name: string) => `${LIBRARY_NAME}/components/${name}/index`
+const getPath = (name: string) => `@/../../src/components/${name}/index`
 
 function PxdResolver(): ComponentResolver {
   return {

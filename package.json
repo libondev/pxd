@@ -25,7 +25,6 @@
     "#/*": "./src/*",
     "#types": "./src/types",
     "#types/*": "./src/types/*",
-    "~/*": "./src/components/*",
     "#utils/*": "./src/components/_utils/*"
   },
   "exports": {
@@ -47,7 +46,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "pnpm --filter docs dev",
+    "dev:lib": "vite build --watch",
+    "dev:docs": "pnpm --filter docs dev",
     "build": "vite build",
     "build:docs": "pnpm --filter docs build",
     "lint": "eslint .",

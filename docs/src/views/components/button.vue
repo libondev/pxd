@@ -62,9 +62,6 @@ const variantCode = `<PButton>Button</PButton>
 
   <Section title="Shapes">
     <Preview slot-class="flex items-center gap-6 flex-wrap" :code="variantCode">
-      <PButton size="tiny" shape="normal">
-        Button
-      </PButton>
       <PButton size="small" shape="normal">
         Button
       </PButton>
@@ -72,9 +69,6 @@ const variantCode = `<PButton>Button</PButton>
         Button
       </PButton>
       <PButton size="large" shape="normal">
-        Button
-      </PButton>
-      <PButton size="tiny" shape="square">
         Button
       </PButton>
       <PButton size="small" shape="square">
@@ -86,9 +80,6 @@ const variantCode = `<PButton>Button</PButton>
       <PButton size="large" shape="square">
         Button
       </PButton>
-      <PButton size="tiny" shape="rounded">
-        Button
-      </PButton>
       <PButton size="small" shape="rounded">
         Button
       </PButton>
@@ -98,17 +89,14 @@ const variantCode = `<PButton>Button</PButton>
       <PButton size="large" shape="rounded">
         Button
       </PButton>
-      <PButton size="tiny" shape="circle">
-        Button
-      </PButton>
       <PButton size="small" shape="circle">
-        Button
+        B
       </PButton>
       <PButton size="default" shape="circle">
-        Button
+        B
       </PButton>
       <PButton size="large" shape="circle">
-        Button
+        B
       </PButton>
     </Preview>
   </Section>

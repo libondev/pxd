@@ -15,8 +15,8 @@ import {
   ComboboxTrigger,
   ComboboxViewport,
 } from 'radix-vue'
-import Error from '~/error/index.js'
-import { getInputSizes } from '~/input/index.js'
+import Error from '#/components/error/index.js'
+import { getInputSizes } from '#/components/input/index.js'
 
 interface SelectProps {
   size?: StandardSize

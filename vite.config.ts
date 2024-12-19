@@ -4,7 +4,6 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import glob from 'fast-glob'
-import IconResolver from 'gdsi/resolver'
 import autoImport from 'unplugin-auto-import/vite'
 import { transformLazyShow } from 'v-lazy-show'
 import { defineConfig } from 'vite'
@@ -84,12 +83,7 @@ export default defineConfig({
           // 'tailwind-merge': [['twMerge', 'merge']],
         },
       ],
-      resolvers: [
-        IconResolver({
-          type: 'vue',
-          prefix: 'I',
-        }),
-      ],
+      resolvers: [],
       dirs: [],
       vueTemplate: true,
       eslintrc: {
@@ -108,7 +102,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '#': fileURLToPath(new URL('./src', import.meta.url)),
-      '~': fileURLToPath(new URL('./src/components/', import.meta.url)),
       '#utils': fileURLToPath(new URL('./src/components/_utils', import.meta.url)),
     },
   },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AvatarGroupProps } from '../index.js'
-import Avatar from '~/avatar/index.js'
+import Avatar from '#/components/avatar/index.js'
 
 defineOptions({
   name: 'PAvatarGroup',

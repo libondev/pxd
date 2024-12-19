@@ -8,7 +8,6 @@
     "moduleResolution": "bundler",
     "paths": {
       "#/*": ["./src/*"],
-      "~/*": ["./src/components/*"],
       "#types": ["./src/types"],
       "#types/*": ["./src/types/*"],
       "#utils/*": ["./src/components/_utils/*"]

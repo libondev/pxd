@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Error from '~/error/index.js'
+import Error from '#/components/error/index.js'
 
 interface TextareaProps {
   error?: string

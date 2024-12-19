@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { CheckIcon, CopyIcon } from 'gdsi/vue'
 import { type BundledLanguage, codeToHtml } from 'shiki'
-import PButton from '~/button/index.js'
+import PButton from '#/components/button/index.js'
 
 interface CodeBlockProps {
   code: string
