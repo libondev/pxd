@@ -26,3 +26,7 @@ shims/components.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+components.d.ts
+auto-imports.d.ts
+**/pnpm-lock.yaml

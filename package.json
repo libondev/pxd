@@ -1,8 +1,8 @@
 {
   "name": "pxd",
   "type": "module",
-  "version": "0.0.5",
-  "description": "Vue component library based on radix-vue and Geist Design System.",
+  "version": "0.0.6",
+  "description": "A universal UI component library for Vue2&3.",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
@@ -16,71 +16,85 @@
   "keywords": [
     "ui",
     "vue",
-    "vue3",
     "ui framework",
     "component library"
   ],
   "sideEffects": false,
-  "imports": {
-    "#/*": "./src/*",
-    "#types": "./src/types",
-    "#types/*": "./src/types/*",
-    "#utils/*": "./src/components/_utils/*"
-  },
   "exports": {
-    ".": "./dist/index.js",
-    "./vars.css": "./dist/vars.css",
-    "./components": "./dist/components/*",
-    "./resolver": "./dist/plugins/resolver.js",
-    "./tailwind.config": "./dist/plugins/tailwind-preset.js",
-    "./*": "./dist/*"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./nuxt": {
+      "types": "./dist/plugins/nuxt.d.ts",
+      "default": "./dist/plugins/nuxt.js"
+    },
+    "./resolver": {
+      "types": "./dist/plugins/resolver.d.ts",
+      "default": "./dist/plugins/resolver.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./components/*": "./dist/components/*/index.vue"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "style": "dist/vars.css",
+  "style": "./dist/tokens.css",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*",
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
   "files": [
-    "dist/*"
+    "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev:lib": "vite build --watch",
+    "predev": "unbuild --stub",
+    "dev": "pnpm dev:docs",
     "dev:docs": "pnpm --filter docs dev",
-    "build": "vite build",
-    "build:docs": "pnpm --filter docs build",
+    "dev:vue2": "pnpm predev && pnpm --filter vue2 dev",
+    "prebuild": "node scripts/update-exports.js && unbuild",
+    "build": "pnpm build:docs",
+    "build:docs": "pnpm prebuild && pnpm --filter docs build",
+    "build:vue2": "pnpm prebuild && pnpm --filter vue2 build",
+    "preview": "pnpm --filter docs preview",
+    "preview:vue2": "pnpm --filter vue2 preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "vue-tsc --noEmit --composite false"
-  },
-  "peerDependencies": {
-    "gdsi": "^1.0.0",
-    "vue": "^3.4.0"
-  },
-  "dependencies": {
-    "radix-vue": "^1.9.7"
-  },
-  "optionalDependencies": {
-    "shiki": "^1.23.1"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.8.0",
-    "@types/node": "^20.16.12",
-    "@vitejs/plugin-vue": "^5.1.4",
-    "@vitejs/plugin-vue-jsx": "^4.0.1",
-    "eslint": "^9.12.0",
-    "fast-glob": "^3.3.2",
-    "gdsi": "^1.0.0",
-    "tailwindcss": "^3.4.14",
-    "typescript": "~5.6.3",
-    "unplugin-auto-import": "^0.18.3",
-    "unplugin-vue-components": "^0.27.4",
-    "v-lazy-show": "^0.2.4",
-    "vite": "^5.4.9",
-    "vite-plugin-dts": "^4.2.4",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5",
-    "vue-tsc": "^2.1.6"
+    "@antfu/eslint-config": "catalog:",
+    "@nuxt/kit": "catalog:",
+    "@nuxt/schema": "catalog:",
+    "@testing-library/vue": "catalog:",
+    "@tsconfig/node22": "catalog:",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/test-utils": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "eslint": "catalog:",
+    "jsdom": "catalog:",
+    "mkdist": "catalog:",
+    "tailwindcss": "catalog:",
+    "tinyglobby": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "unplugin-auto-import": "catalog:",
+    "unplugin-vue-components": "catalog:",
+    "vitest": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
   }
 }

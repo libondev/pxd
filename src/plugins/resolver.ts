@@ -1,24 +1,18 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-import { name } from '../../package.json'
 
-const NAMESPACE = name[0].toUpperCase()
+const LIBRARY_NAME = 'pxd'
 
-const LIBRARY_NAME = name
+const NAMESPACE = LIBRARY_NAME[0].toUpperCase()
 
-const sideEffects = {
-  'code-block': ['pxd/code-block.css'],
-}
+function resolver(): ComponentResolver {
+  const prefixRegex = /^P[A-Z]/
 
-const getPath = (name: string) => `${LIBRARY_NAME}/components/${name}/index`
-
-function PxdResolver(): ComponentResolver {
   return {
     type: 'component',
-    resolve: (name: string) => {
-      const prefixRegex = new RegExp(`^${NAMESPACE}[A-Z]`)
-
-      if (!name.match(prefixRegex))
+    resolve(name: string) {
+      if (!prefixRegex.test(name)) {
         return
+      }
 
       const partialName = name
         .replace(new RegExp(NAMESPACE, 'i'), '')
@@ -28,11 +22,10 @@ function PxdResolver(): ComponentResolver {
 
       return {
         importName: name,
-        from: getPath(partialName),
-        sideEffects: sideEffects[partialName] || [],
+        from: `pxd/components/${partialName}`,
       }
     },
   }
 }
 
-export default PxdResolver
+export default resolver

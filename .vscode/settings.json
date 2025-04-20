@@ -1,7 +1,15 @@
 {
+  "css.customData": [".vscode/tailwind.json"],
   "cSpell.words": [
+    "antfu",
     "esno",
-    "tsup"
+    "libondev",
+    "predev",
+    "tsup",
+    "vite",
+    "vitest",
+    "gdsi",
+    "pxd"
   ],
 
   // Disable the default formatter, use eslint instead
@@ -25,5 +33,11 @@
     "markdown",
     "json",
     "jsonc"
-  ]
+  ],
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "build.config.*": "jsconfig*, vitest.*, eslint.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .npmrc, .yarnrc*, yarn*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
+  }
 }

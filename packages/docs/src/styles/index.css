@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import "../../node_modules/pxd/dist/tokens.css";
+@source "../../node_modules/pxd";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+}
+
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
+}
+
+html,
+body,
+#app {
+  @apply h-full;
+}
+
+#app {
+  @apply flex flex-col;
+}

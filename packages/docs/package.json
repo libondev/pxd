@@ -1,0 +1,30 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gdsi": "^1.1.2",
+    "pxd": "workspace:*",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vitejs/plugin-vue-jsx": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-auto-import": "catalog:",
+    "unplugin-vue-components": "catalog:",
+    "unplugin-vue-router": "^0.10.9",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}
