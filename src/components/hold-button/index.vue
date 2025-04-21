@@ -21,8 +21,8 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   confirm: []
-  finished: [v: boolean]
   canceled: []
+  finished: [v: boolean]
 }>()
 
 type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'

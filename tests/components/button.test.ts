@@ -22,7 +22,7 @@ describe('button', () => {
         },
       })
 
-      expect(button.html()).toMatchInlineSnapshot(`"<button class="pxd-button cursor-pointer transition-colors items-center justify-center bg-background text-foreground hover:bg-background-hover active:bg-background-active border border-input px-2.5 rounded-md h-8 text-sm inline-flex"><span class="px-1 inline-flex truncate"></span></button>"`)
+      expect(button.html()).toMatchInlineSnapshot(`"<button class="pxd-button cursor-pointer transition-colors items-center justify-center border bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input px-2.5 rounded-md h-8 text-sm inline-flex"><span class="px-1 inline-flex truncate"></span></button>"`)
     })
   })
 
