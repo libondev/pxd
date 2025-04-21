@@ -66,14 +66,32 @@ const computedClassNames = computed(() => {
 
   return twMerge(classNames, props.class as string)
 })
+
+const renderAs = computed(() => {
+  const to = props.href
+
+  if (to) {
+    if (['/', '#'].includes(to.slice(0, 1))) {
+      return 'router-link'
+    }
+
+    return 'a'
+  }
+
+  return 'button'
+})
+
+const linkPropName = computed(() => {
+  return renderAs.value === 'a' ? 'href' : 'to'
+})
 </script>
 
 <template>
   <Component
-    :is="props.href ? 'router-link' : 'button'"
+    :is="renderAs"
     :class="computedClassNames"
     :disabled="disabled"
-    :to="href"
+    :[linkPropName]="href"
   >
     <slot name="prefix" />
 
