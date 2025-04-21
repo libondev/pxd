@@ -29,7 +29,7 @@ pnpm build:docs
 
 ## NOTES
 
-- Vue@2.7 `withDefaults` 默认值不能传入对象引用, 但是可以使用 `{...obj}`
+- Vue@2.7 `withDefaults` 默认值只能使用对象字面量，也不能传入对象引用, 这个配置只能重新写一个对象
   ```ts
   // don't work
   const props = withDefaults(
@@ -40,7 +40,7 @@ pnpm build:docs
   // working
   const props = withDefaults(
     defineProps<Props>(),
-    { ...defaultConfig },
+    { sm: 'md' },
   )
   ```
 

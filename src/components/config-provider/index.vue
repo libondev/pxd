@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VNode } from 'vue'
-import { type ComponentSize, defaultConfig, provideConfigProvider } from '../../composables/useConfigProviderContext'
+import type { ComponentSize } from '../../composables/useConfigProviderContext'
+import { provideConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
   as?: keyof HTMLElementTagNameMap | VNode
@@ -13,7 +14,7 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<Props>(),
-  { as: 'div', ...defaultConfig },
+  { as: 'div', size: 'md' },
 )
 
 provideConfigProvider(props)

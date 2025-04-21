@@ -8,14 +8,14 @@ export interface ConfigProviderProps {
   size?: ComponentSize
 }
 
-export const defaultConfig: Required<ConfigProviderProps> = {
-  size: 'md',
-}
-
 export function provideConfigProvider(configProvider: ConfigProviderProps) {
   provide(injectionKey, configProvider)
 }
 
 export function useConfigProvider() {
+  const defaultConfig: Required<ConfigProviderProps> = {
+    size: 'md',
+  }
+
   return inject(injectionKey, defaultConfig)
 }
