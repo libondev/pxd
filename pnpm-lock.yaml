@@ -45,6 +45,9 @@ catalogs:
     npm-run-all2:
       specifier: ^7.0.2
       version: 7.0.2
+    tailwind-merge:
+      specifier: ^3.2.0
+      version: 3.2.0
     tailwindcss:
       specifier: ^4.1.4
       version: 4.1.4
@@ -79,6 +82,10 @@ catalogs:
 importers:
 
   .:
+    dependencies:
+      tailwind-merge:
+        specifier: 'catalog:'
+        version: 3.2.0
     devDependencies:
       '@antfu/eslint-config':
         specifier: 'catalog:'
@@ -3253,6 +3260,9 @@ packages:
   synckit@0.9.2:
     resolution: {integrity: sha512-vrozgXDQwYO72vHjUb/HnFbQx1exDjoKzqx23aXEg2a9VIg2TSFZ8FmeZpTjUCFMYw7mpX4BE2SFu8wI7asYsw==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  tailwind-merge@3.2.0:
+    resolution: {integrity: sha512-FQT/OVqCD+7edmmJpsgCsY820RTD5AkBryuG5IUqR5YQZSdj5xlH5nLgH7YPths7WsLPSpSBNneJdM8aS8aeFA==}
 
   tailwindcss@4.1.4:
     resolution: {integrity: sha512-1ZIUqtPITFbv/DxRmDr5/agPqJwF69d24m9qmM1939TJehgY539CtzeZRjbLt5G6fSy/7YqqYsfvoTEw9xUI2A==}
@@ -6974,6 +6984,8 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.1.2
       tslib: 2.8.1
+
+  tailwind-merge@3.2.0: {}
 
   tailwindcss@4.1.4: {}
 

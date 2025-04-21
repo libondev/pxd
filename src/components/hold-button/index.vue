@@ -100,7 +100,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 
 <template>
   <Button
-    class="pxd-hold-button relative !transition-all"
+    class="pxd-hold-button relative transition-all"
     :class="{ scale, effective: status !== 'canceled' }"
     :disabled="disabled"
     @pointerdown="onPointerDown"

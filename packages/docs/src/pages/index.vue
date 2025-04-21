@@ -48,7 +48,7 @@ function onFinished(isFinished) {
 
         <template #suffix>
           <Transition name="fade">
-            <ArrowRightIcon v-if="showArrowIcon" class="mt-px animate-[bounce-right_1s_ease-out_infinite]" />
+            <ArrowRightIcon v-if="showArrowIcon" class="animate-[bounce-right_1s_ease-out_infinite]" />
           </Transition>
         </template>
       </PHoldButton>

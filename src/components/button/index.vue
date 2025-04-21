@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { twMerge } from 'tailwind-merge'
+import { computed, useAttrs } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   disabled?: boolean
   block?: boolean
   href?: string
+  class?: string | object | any[]
   shape?: 'square' | 'rounded'
 }
 
@@ -40,10 +42,10 @@ const VARIANTS = {
   success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent ',
 }
 
-const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 !text-gray-700 border-none shadow-[0_0_0_1px_hsl(var(--gray-200-value))] !cursor-not-allowed '
+const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 border-gray-300  '
 
 const computedClassNames = computed(() => {
-  let classNames = ''
+  let classNames = 'pxd-button cursor-pointer transition-colors items-center justify-center border '
 
   classNames += (VARIANTS[props.variant] || VARIANTS.outline)
 
@@ -56,20 +58,19 @@ const computedClassNames = computed(() => {
   }
 
   if (props.shape === 'square') {
-    classNames += '!rounded-none '
+    classNames += 'rounded-none '
   }
   else if (props.shape === 'rounded') {
-    classNames += '!rounded-full '
+    classNames += 'rounded-full '
   }
 
-  return classNames
+  return twMerge(classNames, props.class as string)
 })
 </script>
 
 <template>
   <Component
     :is="props.href ? 'router-link' : 'button'"
-    class="pxd-button cursor-pointer transition-colors items-center justify-center border"
     :class="computedClassNames"
     :disabled="disabled"
     :to="href"
