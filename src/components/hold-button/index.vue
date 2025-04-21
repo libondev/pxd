@@ -4,11 +4,13 @@ import Button from '../button/index.vue'
 
 interface Props {
   scale?: boolean
+  disabled?: boolean
   durations?: number | string
   maskColor?: string
+  cancelable?: boolean
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<Props>(),
   {
     scale: true,
@@ -18,38 +20,94 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  trigger: []
-  confirm: [v: boolean]
+  confirm: []
+  finished: [v: boolean]
+  canceled: []
 }>()
 
-let isPointerDown = true
-const isConfirm = shallowRef(false)
+type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
 
-function onPointerDown() {
-  isPointerDown = true
-  isConfirm.value = false
-}
+let isStarted = false
+const status = shallowRef<Status>('idle')
 
-function onTransitionEnd(ev: TransitionEvent) {
-  const targetElement = ev.target as HTMLElement
-  const styleValue = getComputedStyle(targetElement).getPropertyValue(ev.propertyName)
+function onPointerEnter() {
+  if (props.disabled) {
+    return
+  }
 
-  if (isPointerDown && styleValue === 'inset(0px)') {
-    emits('trigger')
-    isPointerDown = false
-    isConfirm.value = true
+  if (!isStarted) {
+    status.value = 'idle'
+    return
+  }
+
+  if (status.value === 'canceled') {
+    status.value = 'loading'
   }
 }
 
+function onPointerLeave() {
+  if (
+    props.disabled
+    || !isStarted
+    || !props.cancelable
+  ) {
+    return
+  }
+
+  status.value = 'canceled'
+  emits('canceled')
+}
+
+function onPointerDown() {
+  if (props.disabled) {
+    return
+  }
+
+  isStarted = true
+  status.value = 'loading'
+}
+
 function onPointerUp() {
-  emits('confirm', isConfirm.value)
-  isPointerDown = false
-  isConfirm.value = false
+  if (props.disabled) {
+    return
+  }
+
+  const isConfirmed = status.value === 'confirmed'
+
+  isStarted = false
+  status.value = 'idle'
+
+  emits('finished', isConfirmed)
+}
+
+function onTransitionEnd({ target, propertyName }: TransitionEvent) {
+  if (status.value !== 'loading') {
+    return
+  }
+
+  const stylesValue = getComputedStyle(target as HTMLElement).getPropertyValue(propertyName)
+  const isConfirmed = stylesValue === 'inset(0px)'
+
+  if (isConfirmed) {
+    emits('confirm')
+    status.value = 'confirmed'
+    return
+  }
+
+  status.value = 'loading'
 }
 </script>
 
 <template>
-  <Button class="pxd-hold-button relative !transition-all" :class="{ scale }" @pointerdown="onPointerDown" @pointerup="onPointerUp">
+  <Button
+    class="pxd-hold-button relative !transition-all"
+    :class="{ scale, effective: status !== 'canceled' }"
+    :disabled="disabled"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
+    @pointerenter="onPointerEnter"
+    @pointerleave="onPointerLeave"
+  >
     <template #prefix>
       <slot name="prefix" />
     </template>
@@ -60,7 +118,7 @@ function onPointerUp() {
       <slot name="suffix" />
       <div
         class="pxd-hold-button--overlay absolute -inset-px bg-(--mc) rounded-[inherit] pointer-events-none"
-        :class="{ confirm: isConfirm }"
+        :class="{ finished: status === 'confirmed' }"
         :style="`--ds:${durations}s;--mc:${maskColor}`"
         @transitionend="onTransitionEnd"
       />
@@ -69,23 +127,23 @@ function onPointerUp() {
 </template>
 
 <style lang="postcss">
-.pxd-hold-button--overlay {
-  --opacity: .48;
-  opacity: var(--opacity);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path .1s ease-out, opacity 0s linear;
-
-  &.confirm {
-    --opacity: .72;
-  }
-}
-
 .pxd-hold-button.scale:active {
   transform: scale(.97);
 }
 
-.pxd-hold-button:active .pxd-hold-button--overlay {
-  clip-path: inset(0);
+.pxd-hold-button--overlay {
+  --opacity: .45;
+  opacity: var(--opacity);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path .1s ease-out, opacity 0s linear;
+
+  &.finished {
+    --opacity: .68;
+  }
+}
+
+.pxd-hold-button.effective:not(.is-disabled):active .pxd-hold-button--overlay {
+  clip-path: inset(0px);
   transition: clip-path var(--ds) ease-out, opacity .2s ease-out;
 }
 </style>

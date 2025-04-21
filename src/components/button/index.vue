@@ -40,7 +40,7 @@ const VARIANTS = {
   success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent ',
 }
 
-const DISABLED_CLASS_NAMES = 'disabled:bg-gray-100 !text-gray-700 border-none shadow-[0_0_0_1px_hsl(var(--gray-200-value))] !cursor-not-allowed '
+const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 !text-gray-700 border-none shadow-[0_0_0_1px_hsl(var(--gray-200-value))] !cursor-not-allowed '
 
 const computedClassNames = computed(() => {
   let classNames = ''

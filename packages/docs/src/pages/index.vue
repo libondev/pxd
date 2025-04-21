@@ -9,12 +9,16 @@ function onTrigger() {
   showArrowIcon.value = true
 }
 
-function onConfirm(isConfirm) {
+function onCanceled() {
   showArrowIcon.value = false
+}
 
-  if (isConfirm) {
-    router.push('/about')
+function onFinished(isFinished) {
+  if (!isFinished) {
+    return
   }
+
+  router.push('/about')
 }
 </script>
 
@@ -30,18 +34,21 @@ function onConfirm(isConfirm) {
 
     <div class="mt-16">
       <PHoldButton
-        shape="rounded" durations="1"
-        mask-color="hsl(var(--blue-600-value))"
+        cancelable
+        durations=".5"
         :scale="false"
+        shape="rounded"
         variant="primary"
-        @trigger="onTrigger"
-        @confirm="onConfirm"
+        mask-color="hsl(var(--green-600-value))"
+        @confirm="onTrigger"
+        @finished="onFinished"
+        @canceled="onCanceled"
       >
         Get Started
 
         <template #suffix>
           <Transition name="fade">
-            <ArrowRightIcon v-if="showArrowIcon" />
+            <ArrowRightIcon v-if="showArrowIcon" class="mt-px animate-[bounce-right_1s_ease-out_infinite]" />
           </Transition>
         </template>
       </PHoldButton>
@@ -52,11 +59,31 @@ function onConfirm(isConfirm) {
 <style>
 .fade-enter-active {
   transform: scale(1);
-  transition: transform 0.5s ease;
+  opacity: 1;
+  width: 1em;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: transform .15s ease-out, width .15s ease-out, opacity .15s ease-out;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  transform: scale(0);
+  transform: scale(.68);
+  opacity: 0;
+  width: 0;
+}
+
+@keyframes bounce-right {
+  0%, 100% {
+    transform: translateX(-20%) scale(1) translateZ(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateX(45%) scale(0.68) translateZ(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 </style>
