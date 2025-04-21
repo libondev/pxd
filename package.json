@@ -76,7 +76,8 @@
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit"
   },
   "peerDependencies": {
-    "tailwind-merge": "catalog:"
+    "tailwind-merge": "catalog:",
+    "vue": ">=2.7.0 || >=3.2.0"
   },
   "peerDependenciesMeta": {
     "tailwind-merge": {
@@ -107,8 +108,8 @@
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
     "vitest": "catalog:",
+    "vue": "catalog:",
     "vue-sfc-transformer": "catalog:",
-    "vue-tsc": "catalog:",
-    "vue": "catalog:"
+    "vue-tsc": "catalog:"
   }
 }

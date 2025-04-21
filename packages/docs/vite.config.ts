@@ -3,30 +3,51 @@ import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import GdsiResolver from 'gdsi/resolver'
+import gdsiResolver from 'gdsi/resolver'
+import {
+  container,
+  noticeboard,
+  codeLineNumbers,
+  collectBlockCode,
+} from 'markdown-it-plugins'
 import autoImport from 'unplugin-auto-import/vite'
 import components from 'unplugin-vue-components/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import router from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
-import PxdResolver from '../../src/plugins/resolver'
+import markdown from 'vite-plugin-md'
+import pxdResolver from '../../src/plugins/resolver'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     router({
       dts: './shims/typed-router.d.ts',
+      extensions: ['.vue', '.md'],
     }),
     vue({
       include: [/\.vue$/, /\.md$/],
+    }),
+    markdown({
+      markdownItOptions: {
+        html: true,
+        linkify: true,
+        typographer: true,
+      },
+      markdownItSetup(md) {
+        md.use(container)
+        md.use(noticeboard)
+        md.use(codeLineNumbers)
+        md.use(collectBlockCode)
+      },
     }),
     vueJsx(),
     tailwindcss(),
     components({
       dts: './shims/components.d.ts',
       resolvers: [
-        PxdResolver(),
-        GdsiResolver({
+        pxdResolver(),
+        gdsiResolver({
           type: 'vue',
           prefix: 'Icon',
         }),
@@ -48,6 +69,6 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ['gdsi/vue'],
+    include: ['gdsi/vue', 'tailwind-merge'],
   },
 })

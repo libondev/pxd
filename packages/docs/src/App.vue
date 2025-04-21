@@ -4,7 +4,7 @@
 <template>
   <SiteHeader />
 
-  <div class="flex-1 container mx-auto p-4">
+  <div class="flex-1 container mx-auto">
     <RouterView />
   </div>
 

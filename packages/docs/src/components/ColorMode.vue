@@ -4,11 +4,9 @@ import { customRef } from 'vue'
 
 const colorModes = {
   dark: {
-    render: MoonIcon,
     transition: 'light',
   },
   light: {
-    render: SunIcon,
     transition: 'dark',
   },
 } as const
@@ -46,11 +44,11 @@ function toggleColorMode() {
 </script>
 
 <template>
-  <PButton class="h-full px-3.5" variant="ghost" shape="square" @click="toggleColorMode">
+  <PButton variant="ghost" shape="square" @click="toggleColorMode">
     <div class="size-[1em]">
       <Transition name="fade" mode="out-in">
-        <IconSun v-if="colorMode === 'light'" />
-        <IconMoon v-else />
+        <SunIcon v-if="colorMode === 'light'" />
+        <MoonIcon v-else />
       </Transition>
     </div>
   </PButton>

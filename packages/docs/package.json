@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "gdsi": "^1.1.2",
+    "markdown-it-plugins": "^0.1.6",
     "pxd": "workspace:*",
     "vue": "catalog:",
     "vue-router": "catalog:"
@@ -25,6 +26,7 @@
     "unplugin-vue-components": "catalog:",
     "unplugin-vue-router": "^0.10.9",
     "vite": "catalog:",
+    "vite-plugin-md": "^0.21.5",
     "vue-tsc": "catalog:"
   }
 }
