@@ -47,10 +47,12 @@ function toggleColorMode() {
 
 <template>
   <PButton class="h-full px-3.5" variant="ghost" shape="square" @click="toggleColorMode">
-    <Transition name="fade" mode="out-in">
-      <IconSun v-if="colorMode === 'light'" />
-      <IconMoon v-else />
-    </Transition>
+    <div class="size-[1em]">
+      <Transition name="fade" mode="out-in">
+        <IconSun v-if="colorMode === 'light'" />
+        <IconMoon v-else />
+      </Transition>
+    </div>
   </PButton>
 </template>
 
@@ -60,7 +62,10 @@ function toggleColorMode() {
   transition: transform 0.15s ease;
 }
 
-.fade-enter-from,
+.fade-enter-from {
+  transform: rotate(-45deg) scale(0.68);
+}
+
 .fade-leave-to {
   transform: rotate(45deg) scale(0.68);
 }

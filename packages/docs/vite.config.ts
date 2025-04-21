@@ -17,7 +17,9 @@ export default defineConfig({
     router({
       dts: './shims/typed-router.d.ts',
     }),
-    vue(),
+    vue({
+      include: [/\.vue$/, /\.md$/],
+    }),
     vueJsx(),
     tailwindcss(),
     components({

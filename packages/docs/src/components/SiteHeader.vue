@@ -1,12 +1,18 @@
 <script lang="ts" setup>
+import { LogoGithubIcon } from 'gdsi/vue'
+
 const menus = [
   {
     label: 'Home',
     to: '/',
   },
   {
-    label: 'About',
-    to: '/about',
+    label: 'Guide',
+    to: '/guide',
+  },
+  {
+    label: 'Components',
+    to: '/components',
   },
 ]
 </script>
@@ -21,16 +27,28 @@ const menus = [
         </h2>
       </RouterLink>
 
-      <nav class="ml-auto h-full flex">
-        <div v-for="menu in menus" :key="menu.to" class="border-l">
+      <nav class="ml-auto h-full flex [&>*]:border-l [&>*]:list-none">
+        <li v-for="menu in menus" :key="menu.to">
           <PButton variant="ghost" class="h-full px-3.5" shape="square" :href="menu.to">
             {{ menu.label }}
           </PButton>
-        </div>
+        </li>
 
-        <div class="border-l">
+        <li>
+          <PButton
+            variant="ghost"
+            class="h-full px-3.5"
+            shape="square"
+            target="_blank"
+            href="https://github.com/libondev/pxd"
+          >
+            <LogoGithubIcon />
+          </PButton>
+        </li>
+
+        <li>
           <ColorMode />
-        </div>
+        </li>
       </nav>
     </div>
   </header>

@@ -18,7 +18,7 @@ function onFinished(isFinished) {
     return
   }
 
-  router.push('/about')
+  router.push('/guide')
 }
 </script>
 
