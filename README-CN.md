@@ -9,8 +9,6 @@
 pnpm install
 
 pnpm dev
-
-pnpm dev:docs
 ```
 
 ### Build
@@ -62,4 +60,4 @@ pnpm build:docs
   }
   ```
 
-- 同一个工作区安装了多个不同版本的 vue 会出现各种奇怪的问题，比如开发时使用的 `provide/inject` 是正常的，但是打包运行以后，`inject` 会无法获取
+- 同一个工作区安装了多个不同版本的 vue 会出现各种奇怪的问题，比如开发时使用的 `provide/inject` 是正常的，但是打包运行以后，`inject` 会无法获取，所以 Vue2 还是单独新建项目进行测试

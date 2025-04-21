@@ -38,6 +38,7 @@
       "default": "./dist/components/index.js"
     },
     "./tw.css": "./dist/styles/tw.css",
+    "./tokens.css": "./dist/styles/tokens.css",
     "./components/*": "./dist/components/*/index.vue"
   },
   "main": "./dist/index.js",
@@ -61,8 +62,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev": "unbuild --stub",
-    "dev:docs": "pnpm --filter docs dev",
+    "dev": "unbuild --stub && pnpm --filter docs dev",
     "build": "run-s typecheck update-exports build:lib",
     "build:lib": "unbuild",
     "build:docs": "pnpm build && pnpm --filter docs build",

@@ -9,8 +9,6 @@ A universal UI component library for Vue2&3
 pnpm install
 
 pnpm dev
-
-pnpm dev:docs
 ```
 
 ### Build
