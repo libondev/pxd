@@ -1,5 +1,21 @@
 <script setup>
 import { ArrowRightIcon } from 'gdsi/vue'
+import { ref } from 'vue'
+
+const router = useRouter()
+const showArrowIcon = ref(false)
+
+function onTrigger() {
+  showArrowIcon.value = true
+}
+
+function onConfirm(isConfirm) {
+  showArrowIcon.value = false
+
+  if (isConfirm) {
+    router.push('/about')
+  }
+}
 </script>
 
 <template>
@@ -13,13 +29,34 @@ import { ArrowRightIcon } from 'gdsi/vue'
     </p>
 
     <div class="mt-16">
-      <PButton variant="primary" href="/about" shape="rounded">
+      <PHoldButton
+        shape="rounded" durations="1"
+        mask-color="hsl(var(--blue-600-value))"
+        :scale="false"
+        variant="primary"
+        @trigger="onTrigger"
+        @confirm="onConfirm"
+      >
         Get Started
 
         <template #suffix>
-          <ArrowRightIcon />
+          <Transition name="fade">
+            <ArrowRightIcon v-if="showArrowIcon" />
+          </Transition>
         </template>
-      </PButton>
+      </PHoldButton>
     </div>
   </main>
 </template>
+
+<style>
+.fade-enter-active {
+  transform: scale(1);
+  transition: transform 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  transform: scale(0);
+}
+</style>

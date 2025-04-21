@@ -32,12 +32,12 @@ const SIZES = {
 }
 
 const VARIANTS = {
-  outline: 'bg-background text-foreground hover:bg-background-hover active:bg-background-active border border-input ',
-  ghost: 'bg-transparent text-foreground hover:bg-gray-alpha-200 active:bg-gray-alpha-300 ',
-  primary: 'bg-foreground text-background hover:bg-foreground/80 active:bg-foreground ',
-  error: 'bg-red-800 text-white  hover:bg-red-700 active:bg-red-800 ',
-  warning: 'bg-amber-800 text-black hover:bg-amber-700 active:bg-amber-800 ',
-  success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 ',
+  outline: 'bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input ',
+  ghost: 'bg-transparent text-foreground hover:bg-gray-alpha-200 active:bg-gray-alpha-300 border-transparent ',
+  primary: 'bg-foreground text-background hover:bg-foreground/80 active:bg-foreground border-transparent ',
+  error: 'bg-red-800 text-white  hover:bg-red-700 active:bg-red-800 border-transparent ',
+  warning: 'bg-amber-800 text-black hover:bg-amber-700 active:bg-amber-800 border-transparent ',
+  success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent ',
 }
 
 const DISABLED_CLASS_NAMES = 'disabled:bg-gray-100 !text-gray-700 border-none shadow-[0_0_0_1px_hsl(var(--gray-200-value))] !cursor-not-allowed '
@@ -69,7 +69,7 @@ const computedClassNames = computed(() => {
 <template>
   <Component
     :is="props.href ? 'router-link' : 'button'"
-    class="pxd-button cursor-pointer transition-colors items-center justify-center"
+    class="pxd-button cursor-pointer transition-colors items-center justify-center border"
     :class="computedClassNames"
     :disabled="disabled"
     :to="href"

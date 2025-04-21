@@ -1,2 +1,3 @@
 export { default as Button } from './button/index.vue'
 export { default as ConfigProvider } from './config-provider/index.vue'
+export { default as HoldButton } from './hold-button/index.vue'
