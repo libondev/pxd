@@ -5,13 +5,15 @@ import path from 'node:path'
 import process from 'node:process'
 import { globSync } from 'tinyglobby'
 
-const files = globSync('src/components/**/*.vue')
-
-function toPascalCase(str) {
-  if (!str)
+/**
+ * @param {string} name 组件名称
+ * @returns {string} 组件名称的 PascalCase 形式
+ */
+function toPascalCase(name) {
+  if (!name)
     return ''
 
-  return str
+  return name
     .split(/[^a-z0-9]/i)
     .map((word) => {
       if (!word.length)
@@ -22,33 +24,27 @@ function toPascalCase(str) {
     .join('')
 }
 
-const componentNameRegex = /src\/components\/(.*?)\/index.vue/
+function updateComponentsIndex() {
+  const files = globSync('src/components/**/*.vue')
 
-const components = files.map((file) => {
-  const [,name] = file.match(componentNameRegex) || []
+  const matchRegex = /src\/components\/(.*?)\/index.vue/
 
-  return {
-    name: toPascalCase(name),
-    file: file.replace('src', '.'),
-  }
-})
+  const components = files.map((file) => {
+    const [,name] = file.match(matchRegex) || []
 
-let importsContent = 'import type { App } from \'vue\'\n'
-let exportsContent = 'export {\n'
-
-const fullRegistry = `const components = [${components.map(({ name }) => name).join(', ')}]
-export default function install(app: App) {
-  components.forEach((component) => {
-    app.component(component.name!, component)
+    return {
+      name: toPascalCase(name),
+      file: file.replace('src/components', '.'),
+    }
   })
+
+  const fileContent = components.reduce((exports, component) => {
+    exports += `export { default as ${component.name} } from '${component.file}'\n`
+
+    return exports
+  }, '')
+
+  fs.writeFileSync(path.join(process.cwd(), 'src', 'components', 'index.ts'), fileContent)
 }
-`
 
-components.forEach((component) => {
-  importsContent += `import ${component.name} from '${component.file}'\n`
-  exportsContent += `  ${component.name},\n`
-})
-
-const fileContent = `${importsContent}\n${fullRegistry}\n${exportsContent}}\n`
-
-fs.writeFileSync(path.join(process.cwd(), 'src', 'index.ts'), fileContent)
+updateComponentsIndex()

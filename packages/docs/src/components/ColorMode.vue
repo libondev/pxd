@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { MoonIcon } from 'gdsi/vue/moon'
-import { SunIcon } from 'gdsi/vue/sun'
+import { MoonIcon, SunIcon } from 'gdsi/vue'
 import { customRef } from 'vue'
 
 const colorModes = {
@@ -18,7 +17,7 @@ type ColorMode = keyof typeof colorModes
 
 const colorMode = customRef<ColorMode>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
-  const { documentElement: root, body } = document
+  const { documentElement: root } = document
   let curMode: ColorMode = root.classList.contains('dark') ? 'dark' : 'light'
 
   return {

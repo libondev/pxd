@@ -1,25 +1,35 @@
 # PXD
 一个兼容 Vue2&3 的 UI 框架
 
-## Contribution
+## 本地开发
 
 ### Dev
+
 ```shell
 pnpm install
 
-pnpm dev:lib
-
 pnpm dev
+
+pnpm dev:docs
 ```
 
 ### Build
+
+#### Core
+
 ```shell
 pnpm build
 ```
 
+#### Docs
+
+```shell
+pnpm build:docs
+```
+
 ## NOTES
 
-- Vue@2.7 `withDefaults` 默认值不能传入对象引用, 但是可以使用 `{...obj}` 来解决
+- Vue@2.7 `withDefaults` 默认值不能传入对象引用, 但是可以使用 `{...obj}`
   ```ts
   // don't work
   const props = withDefaults(
@@ -47,7 +57,9 @@ pnpm build
 
   // working
   interface Props {
-    as?: keyof HTMLElementTagNameMap | VNode
+    as?: keyof HTMLElementTagNameMap | VNode;
     size?: string
   }
   ```
+
+- 同一个工作区安装了多个不同版本的 vue 会出现各种奇怪的问题，比如开发时使用的 `provide/inject` 是正常的，但是打包运行以后，`inject` 会无法获取

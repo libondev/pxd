@@ -9,10 +9,9 @@ describe('config-provider', () => {
       props: {
         as: 'div',
         class: 'pxd-config-provider',
-      }
+      },
     })
 
     expect(wrapper.html()).toMatchInlineSnapshot(`"<div class="pxd-config-provider"></div>"`)
   })
-
 })

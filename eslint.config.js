@@ -6,6 +6,11 @@ export default antfu({
     'node_modules/*',
   ],
 
+  jsonc: true,
+  markdown: false,
+  typescript: true,
+  vue: true,
+
   rules: {
   },
 })

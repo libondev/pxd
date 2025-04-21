@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useConfigProvider } from '../../composables/useConfigProvider'
 import { computed } from 'vue'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
   variant?: keyof typeof VARIANTS
@@ -43,9 +43,9 @@ const VARIANTS = {
 const DISABLED_CLASS_NAMES = 'disabled:bg-gray-100 !text-gray-700 border-none shadow-[0_0_0_1px_hsl(var(--gray-200-value))] !cursor-not-allowed '
 
 const computedClassNames = computed(() => {
-  let classNames = 'cursor-pointer transition-colors items-center justify-center '
+  let classNames = ''
 
-  classNames += VARIANTS[props.variant]
+  classNames += (VARIANTS[props.variant] || VARIANTS.outline)
 
   classNames += SIZES[props.size || config.size]
 
@@ -69,7 +69,8 @@ const computedClassNames = computed(() => {
 <template>
   <Component
     :is="props.href ? 'router-link' : 'button'"
-    class="pxd-button" :class="computedClassNames"
+    class="pxd-button cursor-pointer transition-colors items-center justify-center"
+    :class="computedClassNames"
     :disabled="disabled"
     :to="href"
   >

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { injectionKey, useConfigProvider } from '../../src/composables/useConfigProvider'
+import { injectionKey, useConfigProvider } from '../../src/composables/useConfigProviderContext'
 import { useInjectedSetup } from '../helpers/provide-inject'
 
 describe('useConfigProvider', () => {

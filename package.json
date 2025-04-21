@@ -33,13 +33,16 @@
       "types": "./dist/plugins/resolver.d.ts",
       "default": "./dist/plugins/resolver.js"
     },
-    "./tokens.css": "./dist/tokens.css",
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "default": "./dist/components/index.js"
+    },
+    "./tw.css": "./dist/styles/tw.css",
     "./components/*": "./dist/components/*/index.vue"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "style": "./dist/tokens.css",
   "typesVersions": {
     "*": {
       "*": [
@@ -58,16 +61,14 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "predev": "unbuild --stub",
-    "dev": "pnpm dev:docs",
+    "dev": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
-    "dev:vue2": "pnpm predev && pnpm --filter vue2 dev",
-    "prebuild": "node scripts/update-exports.js && unbuild",
-    "build": "pnpm build:docs",
-    "build:docs": "pnpm prebuild && pnpm --filter docs build",
-    "build:vue2": "pnpm prebuild && pnpm --filter vue2 build",
-    "preview": "pnpm --filter docs preview",
-    "preview:vue2": "pnpm --filter vue2 preview",
+    "build": "run-s typecheck update-exports build:lib",
+    "build:lib": "unbuild",
+    "build:docs": "pnpm build && pnpm --filter docs build",
+    "preview:docs": "pnpm --filter docs preview",
+    "update-exports": "node scripts/update-exports.js",
+    "prepublishOnly": "pnpm build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
@@ -87,6 +88,7 @@
     "eslint": "catalog:",
     "jsdom": "catalog:",
     "mkdist": "catalog:",
+    "npm-run-all2": "catalog:",
     "tailwindcss": "catalog:",
     "tinyglobby": "catalog:",
     "typescript": "catalog:",
@@ -95,6 +97,7 @@
     "unplugin-vue-components": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
+    "vue-sfc-transformer": "catalog:",
     "vue-tsc": "catalog:"
   }
 }

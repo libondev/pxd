@@ -1,4 +1,5 @@
 <script setup>
+import { ArrowRightIcon } from 'gdsi/vue'
 </script>
 
 <template>
@@ -16,7 +17,7 @@
         Get Started
 
         <template #suffix>
-          <IconArrowRight />
+          <ArrowRightIcon />
         </template>
       </PButton>
     </div>

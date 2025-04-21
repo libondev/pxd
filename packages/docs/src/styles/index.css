@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../../node_modules/pxd/dist/tokens.css";
+@import "../../node_modules/pxd/dist/styles/tw.css";
 @source "../../node_modules/pxd";
 
 @theme {

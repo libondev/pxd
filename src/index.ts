@@ -1,15 +1,10 @@
 import type { App } from 'vue'
-import Button from './components/button/index.vue'
-import ConfigProvider from './components/config-provider/index.vue'
+import * as components from './components/index'
 
-const components = [Button, ConfigProvider]
+export * from './components/index'
+
 export default function install(app: App) {
-  components.forEach((component) => {
-    app.component(component.name!, component)
+  Object.entries(components).forEach(([key, component]) => {
+    app.component(key, component)
   })
-}
-
-export {
-  Button,
-  ConfigProvider,
 }
