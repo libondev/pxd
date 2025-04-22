@@ -1,4 +1,3 @@
-import process from 'node:process'
 import { fileURLToPath, URL } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
@@ -15,66 +14,61 @@ import autoImport from 'unplugin-auto-import/vite'
 import components from 'unplugin-vue-components/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import router from 'unplugin-vue-router/vite'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import markdown from 'vite-plugin-md'
 import pxdResolver from '../../src/plugins/resolver'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-
-  return {
-    base: env.VITE_BASE_PATH,
-    plugins: [
-      router({
-        dts: './shims/typed-router.d.ts',
-        extensions: ['.vue', '.md'],
-      }),
-      vue({
-        include: [/\.vue$/, /\.md$/],
-      }),
-      markdown({
-        markdownItOptions: {
-          html: true,
-          linkify: true,
-          typographer: true,
-        },
-        markdownItSetup(md) {
-          md.use(container)
-          md.use(noticeboard)
-          md.use(codeLineNumbers)
-          md.use(collectBlockCode)
-        },
-      }),
-      vueJsx(),
-      tailwindcss(),
-      components({
-        dts: './shims/components.d.ts',
-        resolvers: [
-          pxdResolver(),
-          gdsiResolver({
-            type: 'vue',
-            prefix: 'Icon',
-          }),
-        ],
-      }),
-      autoImport({
-        dts: './shims/auto-imports.d.ts',
-        imports: [
-          'vue',
-          VueRouterAutoImports,
-        ],
-      }),
-    ],
-
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
+export default defineConfig({
+  plugins: [
+    router({
+      dts: './shims/typed-router.d.ts',
+      extensions: ['.vue', '.md'],
+    }),
+    vue({
+      include: [/\.vue$/, /\.md$/],
+    }),
+    markdown({
+      markdownItOptions: {
+        html: true,
+        linkify: true,
+        typographer: true,
       },
-    },
+      markdownItSetup(md) {
+        md.use(container)
+        md.use(noticeboard)
+        md.use(codeLineNumbers)
+        md.use(collectBlockCode)
+      },
+    }),
+    vueJsx(),
+    tailwindcss(),
+    components({
+      dts: './shims/components.d.ts',
+      resolvers: [
+        pxdResolver(),
+        gdsiResolver({
+          type: 'vue',
+          prefix: 'Icon',
+        }),
+      ],
+    }),
+    autoImport({
+      dts: './shims/auto-imports.d.ts',
+      imports: [
+        'vue',
+        VueRouterAutoImports,
+      ],
+    }),
+  ],
 
-    optimizeDeps: {
-      include: ['gdsi/vue', 'tailwind-merge'],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-  }
+  },
+
+  optimizeDeps: {
+    include: ['gdsi/vue', 'tailwind-merge'],
+  },
 })
