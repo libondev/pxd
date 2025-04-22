@@ -1,0 +1,51 @@
+name: 构建与部署文档
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: 安装 PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建库
+        run: pnpm build:lib
+
+      - name: 构建文档
+        run: pnpm build:docs
+
+      - name: 设置 Pages
+        uses: actions/configure-pages@v4
+
+      - name: 上传构建文件
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: packages/docs/dist
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3

@@ -79,13 +79,8 @@
     "bump": "bumpp"
   },
   "peerDependencies": {
-    "tailwind-merge": "catalog:",
+    "tailwind-merge": ">=3.0.0",
     "vue": ">=2.7.0 || >=3.3.0"
-  },
-  "peerDependenciesMeta": {
-    "tailwind-merge": {
-      "optional": true
-    }
   },
   "dependencies": {
     "gdsi": "catalog:",
