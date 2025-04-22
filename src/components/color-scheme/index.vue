@@ -4,24 +4,20 @@ import { customRef } from 'vue'
 import Button from '../button/index.vue'
 
 const emits = defineEmits<{
-  toggle: [v: keyof typeof colorModes]
+  toggle: [v: ColorScheme]
 }>()
 
-const colorModes = {
-  dark: {
-    transition: 'light',
-  },
-  light: {
-    transition: 'dark',
-  },
+const colorTransitions = {
+  dark: 'light',
+  light: 'dark',
 } as const
 
-type ColorMode = keyof typeof colorModes
+type ColorScheme = keyof typeof colorTransitions
 
-const colorMode = customRef<ColorMode>((track, trigger) => {
+const colorMode = customRef<ColorScheme>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
   const rootClassList = document.documentElement.classList
-  let curMode: ColorMode = rootClassList.contains('dark') ? 'dark' : 'light'
+  let curMode: ColorScheme = rootClassList.contains('dark') ? 'dark' : 'light'
 
   return {
     get() {
@@ -44,7 +40,7 @@ const colorMode = customRef<ColorMode>((track, trigger) => {
 })
 
 function toggleColorMode() {
-  colorMode.value = colorModes[colorMode.value].transition
+  colorMode.value = colorTransitions[colorMode.value]
   emits('toggle', colorMode.value)
 }
 </script>
@@ -52,8 +48,9 @@ function toggleColorMode() {
 <template>
   <Button aria-label="Toggle color mode" @click="toggleColorMode">
     <Transition name="color-mode" mode="out-in">
-      <SunIcon v-if="colorMode === 'light'" class="size-[1em]" />
-      <MoonIcon v-else class="size-[1em]" />
+      <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-[1em]" />
+      <!-- <SunIcon v-if="colorMode === 'light'" class="size-[1em]" />
+      <MoonIcon v-else class="size-[1em]" /> -->
     </Transition>
   </Button>
 </template>

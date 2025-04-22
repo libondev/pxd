@@ -1,6 +1,6 @@
 <script setup>
 import { githubLink } from '@/consts/link'
-import { ArrowRightIcon, CornerDownRightIcon, LogoGithubIcon, StarFillIcon } from 'gdsi/vue'
+import { ArrowRightIcon, StarFillIcon } from 'gdsi/vue'
 import { ref } from 'vue'
 
 const router = useRouter()
