@@ -10,6 +10,10 @@ interface Props {
   cancelable?: boolean
 }
 
+defineOptions({
+  name: 'PHoldButton',
+})
+
 const props = withDefaults(
   defineProps<Props>(),
   {

@@ -3,7 +3,7 @@ import DefaultLayout from '@/layouts/default.vue'
 
 const menus = [
   {
-    label: 'README',
+    label: 'Guide',
     path: '/guide',
   },
 ]

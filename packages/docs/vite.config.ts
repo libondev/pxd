@@ -5,10 +5,10 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import gdsiResolver from 'gdsi/resolver'
 import {
-  container,
-  noticeboard,
   codeLineNumbers,
   collectBlockCode,
+  container,
+  noticeboard,
 } from 'markdown-it-plugins'
 import autoImport from 'unplugin-auto-import/vite'
 import components from 'unplugin-vue-components/vite'

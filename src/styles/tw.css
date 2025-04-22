@@ -10,16 +10,16 @@
   --radius: 0.5rem;
 
   --background-100: #fff;
-  --background-200: #fafafa;
+  --background-200: #f5f5f5;
 
-  --accents-1: #fafafa;
+  /* --accents-1: #fafafa;
   --accents-2: #eaeaea;
   --accents-3: #999;
   --accents-4: #888;
   --accents-5: #666;
   --accents-6: #444;
   --accents-7: #333;
-  --accents-8: #111;
+  --accents-8: #111; */
 
   --gray-alpha-100: hsla(0, 0%, 0%, 0.05);
   --gray-alpha-200: hsla(0, 0%, 0%, 0.08);
@@ -124,20 +124,22 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 :root.dark {
-  --background-100: #0a0a0a;
+  --background-100: #121212;
   --background-200: #000;
 
-  --accents-1: #111;
+  /* --accents-1: #111;
   --accents-2: #333;
   --accents-3: #444;
   --accents-4: #666;
   --accents-5: #888;
   --accents-6: #999;
   --accents-7: #eaeaea;
-  --accents-8: #fafafa;
+  --accents-8: #fafafa; */
 
   --gray-100-value: 0, 0%, 10%;
   --gray-200-value: 0, 0%, 12%;
@@ -369,10 +371,5 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
   }
 }

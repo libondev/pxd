@@ -2,24 +2,23 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import HoldButton from '../../src/components/hold-button/index.vue'
 
-describe('HoldButton', () => {
-
+describe('hold-button', () => {
   it('should trigger `confirm` and `finished` event', async () => {
     const transitionEndEvent = new Event('transitionend')
     Object.defineProperty(transitionEndEvent, 'propertyName', {
-      value: 'clip-path'
+      value: 'clip-path',
     })
 
     Object.defineProperty(window, 'getComputedStyle', {
       value: () => ({
-        getPropertyValue: () => 'inset(0px)'
-      })
+        getPropertyValue: () => 'inset(0px)',
+      }),
     })
 
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 0.01
-      }
+        durations: 0.01,
+      },
     })
 
     await wrapper.trigger('pointerdown')
@@ -33,14 +32,16 @@ describe('HoldButton', () => {
     expect(wrapper.emitted()).toHaveProperty('confirm')
     expect(wrapper.emitted()).toHaveProperty('finished')
     expect(wrapper.emitted().finished[0]).toEqual([true])
+
+    wrapper.unmount()
   })
 
   it('should trigger `canceled` and `finished` event', async () => {
     const wrapper = mount(HoldButton, {
       props: {
         cancelable: true,
-        durations: 0.01
-      }
+        durations: 0.01,
+      },
     })
 
     await wrapper.trigger('pointerdown')
@@ -52,6 +53,8 @@ describe('HoldButton', () => {
 
     expect(wrapper.emitted()).toHaveProperty('finished')
     expect(wrapper.emitted().finished[0]).toEqual([false])
+
+    wrapper.unmount()
   })
 
   it('should trigger `finished` event and reset value is truth', async () => {
@@ -59,19 +62,19 @@ describe('HoldButton', () => {
 
     const transitionEndEvent = new Event('transitionend')
     Object.defineProperty(transitionEndEvent, 'propertyName', {
-      value: 'clip-path'
+      value: 'clip-path',
     })
 
     Object.defineProperty(window, 'getComputedStyle', {
       value: () => ({
-        getPropertyValue: () => 'inset(0px)'
-      })
+        getPropertyValue: () => 'inset(0px)',
+      }),
     })
 
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 0.1
-      }
+        durations: 0.1,
+      },
     })
 
     await wrapper.trigger('pointerdown')
@@ -87,6 +90,8 @@ describe('HoldButton', () => {
 
     expect(wrapper.emitted()).toHaveProperty('finished')
     expect(wrapper.emitted().finished[0]).toEqual([true])
+
+    wrapper.unmount()
 
     vi.useRealTimers()
   })

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
+import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
+  as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
   disabled?: boolean
   block?: boolean
-  href?: string
   class?: string | object | any[]
   shape?: 'square' | 'rounded'
 }
@@ -20,6 +21,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    as: 'button',
     variant: 'outline',
   },
 )
@@ -66,32 +68,14 @@ const computedClassNames = computed(() => {
 
   return twMerge(classNames, props.class as string)
 })
-
-const renderAs = computed(() => {
-  const to = props.href
-
-  if (to) {
-    if (['/', '#'].includes(to.slice(0, 1))) {
-      return 'router-link'
-    }
-
-    return 'a'
-  }
-
-  return 'button'
-})
-
-const linkPropName = computed(() => {
-  return renderAs.value === 'a' ? 'href' : 'to'
-})
 </script>
 
 <template>
   <Component
-    :is="renderAs"
-    :class="computedClassNames"
+    :is="as"
+    aria-role="button"
     :disabled="disabled"
-    :[linkPropName]="href"
+    :class="computedClassNames"
   >
     <slot name="prefix" />
 

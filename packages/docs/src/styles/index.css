@@ -4,6 +4,7 @@
 
 @theme {
   --font-sans: 'Inter', sans-serif;
+  --default-mono-font-family: 'MonoLisa', 'Geist Mono', 'JetBrains Mono', monospace;
 }
 
 :root {
@@ -18,8 +19,4 @@ html,
 body,
 #app {
   @apply h-full;
-}
-
-#app {
-  @apply flex flex-col;
 }

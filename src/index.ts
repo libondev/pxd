@@ -3,8 +3,8 @@ import * as components from './components/index'
 
 export * from './components/index'
 
-export default function install(app: App) {
+export default function install(app: App, prefix = 'P') {
   Object.entries(components).forEach(([key, component]) => {
-    app.component(key, component)
+    app.component(`${prefix}${key}`, component)
   })
 }

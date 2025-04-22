@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "gdsi": "^1.1.2",
     "markdown-it-plugins": "^0.1.6",
     "pxd": "workspace:*",
     "vue": "catalog:",

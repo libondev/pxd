@@ -1,32 +1,52 @@
 <script setup lang="ts" generic="T extends { label: string, path: string }">
-
 interface Props {
   menus: T[]
 }
 
-const props = defineProps<Props>()
+const {
+  menus,
+} = defineProps<Props>()
 </script>
 
 <template>
-  <div class="flex w-full h-full prose">
-    <div class="w-72 p-3 border-x h-full bg-background-secondary">
-      <slot name="sidebar" />
+  <div class="sidebar fixed top-12 left-0 bottom-0 z-10 border-r border-t w-72 sm:border-x bg-background-secondary">
+    <div class="h-full overflow-y-auto p-3">
+      <ul>
+        <li>
+          <PLinkButton v-for="menu of menus" :key="menu.path" variant="ghost" :href="menu.path" block>
+            {{ menu.label }}
+          </PLinkButton>
+        </li>
+      </ul>
     </div>
+  </div>
 
-    <div class="p-12 flex-1 h-full border-r">
+  <div class="prose ml-72 flex-1 min-h-0">
+    <main class="p-16">
       <slot />
-    </div>
+    </main>
+
+    <SiteFooter />
   </div>
 </template>
 
 <style lang="postcss">
+.pxd-link-button.router-link-exact-active {
+  background-color: var(--color-background);
+  pointer-events: none;
+}
+
+.sidebar .pxd-link-button.router-link-exact-active {
+  border-color: hsl(var(--gray-300-value));
+}
+
 .prose {
-  line-height: 1.5625;
+  line-height: 1.68;
 
   :is(h1, h2, h3, h4) {
     font-weight: 500;
     position: relative;
-    margin-bottom: 0.25em;
+    margin-bottom: 5px;
 
     &:not(:first-child) {
       margin-top: 1em;
@@ -39,7 +59,7 @@ const props = defineProps<Props>()
     position: absolute;
     left: 0;
     bottom: 4px;
-    transform: translateX(-120%);
+    transform: translateX(-110%) scale(0.8);
     font-size: 12px;
     font-weight: 500;
     color: var(--color-muted);
@@ -73,10 +93,15 @@ const props = defineProps<Props>()
     font-size: 1.125rem;
   }
 
+  p {
+    text-indent: 1.5em;
+  }
+
   p > code {
     font-size: 0.875rem;
-    padding: 0.25em 0.5em;
+    padding: 0.15em 0.5em;
     border-radius: 0.25em;
+    white-space: nowrap;
     background-color: var(--gray-alpha-200);
     border: 1px solid var(--gray-alpha-300);
   }
@@ -84,6 +109,10 @@ const props = defineProps<Props>()
   a {
     text-decoration: underline;
     text-underline-offset: 0.1em;
+  }
+
+  hr {
+    margin-block: 1.68em;
   }
 }
 </style>

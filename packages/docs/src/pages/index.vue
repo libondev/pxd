@@ -23,12 +23,12 @@ function onFinished(isFinished) {
 </script>
 
 <template>
-  <main class="px-4 py-24 text-center sm:py-32 md:py-48 relative max-w-2xl mx-auto mb-32">
+  <main class="flex flex-col justify-center sm:h-screen sm:-mt-12 py-40 px-4 text-center relative max-w-2xl mx-auto mb-32">
     <h1 class="text-balance text-6xl font-bold">
       PXD
     </h1>
 
-    <p class="leading-tight text-lg text-secondary mt-8">
+    <p class="leading-tight text-lg text-secondary text-pretty mt-8">
       A universal UI component library for Vue2&3
     </p>
 

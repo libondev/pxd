@@ -62,8 +62,10 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev": "unbuild --stub && pnpm --filter docs dev",
-    "build": "run-s typecheck update-exports build:lib",
+    "dev": "run-s update-exports dev:lib dev:docs",
+    "dev:lib": "unbuild --stub",
+    "dev:docs": "pnpm --filter docs dev",
+    "build": "run-s update-exports typecheck lint:fix build:lib",
     "build:lib": "unbuild",
     "build:docs": "pnpm build && pnpm --filter docs build",
     "preview:docs": "pnpm --filter docs preview",
@@ -73,11 +75,12 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit"
+    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
+    "bump": "bumpp"
   },
   "peerDependencies": {
     "tailwind-merge": "catalog:",
-    "vue": ">=2.7.0 || >=3.2.0"
+    "vue": ">=2.7.0 || >=3.3.0"
   },
   "peerDependenciesMeta": {
     "tailwind-merge": {
@@ -85,6 +88,7 @@
     }
   },
   "dependencies": {
+    "gdsi": "catalog:",
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
@@ -97,6 +101,7 @@
     "@vitejs/plugin-vue": "catalog:",
     "@vue/test-utils": "catalog:",
     "@vue/tsconfig": "catalog:",
+    "bumpp": "catalog:",
     "eslint": "catalog:",
     "jsdom": "catalog:",
     "mkdist": "catalog:",

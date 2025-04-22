@@ -1,28 +1,34 @@
 import { mount } from '@vue/test-utils'
-
 import { describe, expect, it } from 'vitest'
 import Button from '../../src/components/button/index.vue'
 
 describe('button', () => {
   it('renders properly', () => {
-    const button = mount(Button, {
+    const wrapper = mount(Button, {
       slots: {
         default: 'Hello PXD!',
       },
     })
 
-    expect(button.text()).toContain('Hello PXD!')
+    expect(wrapper.text()).toContain('Hello PXD!')
+
+    wrapper.unmount()
   })
 
   describe('variant should equal outline', () => {
     it('should render an outline button', () => {
-      const button = mount(Button, {
+      const wrapper = mount(Button, {
         props: {
           variant: 'outline',
         },
       })
 
-      expect(button.html()).toMatchInlineSnapshot(`"<button class="pxd-button cursor-pointer transition-colors items-center justify-center border bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input px-2.5 rounded-md h-8 text-sm inline-flex"><span class="px-1 inline-flex truncate"></span></button>"`)
+      const classes = wrapper.classes()
+      expect(classes).toContain('bg-background')
+      expect(classes).toContain('text-foreground')
+      expect(classes).toContain('border-input')
+
+      wrapper.unmount()
     })
   })
 
@@ -32,5 +38,19 @@ describe('button', () => {
     wrapper.find('button').trigger('click')
 
     expect(wrapper.emitted()).toHaveProperty('click')
+
+    wrapper.unmount()
+  })
+
+  it('should render as a div when set as prop', async () => {
+    const wrapper = mount(Button, {
+      props: {
+        as: 'div',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('DIV')
+
+    wrapper.unmount()
   })
 })

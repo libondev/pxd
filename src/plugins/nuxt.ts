@@ -1,9 +1,8 @@
 // Mandatory to avoid a bug when building
 import type { } from '@nuxt/schema'
 import { addComponent, defineNuxtModule } from '@nuxt/kit'
-import * as components from '..'
 
-import { name } from '../../package.json'
+import * as components from '../components'
 
 export interface ModuleOptions {
   prefix: string
@@ -18,7 +17,7 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: {
-    prefix: '',
+    prefix: 'P',
   },
   async setup(options) {
     // if (nuxt.options.builder === '@nuxt/vite-builder') {
@@ -33,7 +32,7 @@ export default defineNuxtModule<ModuleOptions>({
       addComponent({
         name: `${options.prefix}${component}`,
         export: component,
-        filePath: name,
+        filePath: 'pxd',
       })
     }
   },
