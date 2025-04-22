@@ -39,7 +39,7 @@ jobs:
         run: pnpm -w build:lib
 
       - name: Build docs
-        run: pnpm -w build:docs
+        run: pnpm --filter docs build
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
