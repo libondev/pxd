@@ -67,7 +67,7 @@
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports typecheck lint:fix build:lib",
     "build:lib": "unbuild",
-    "build:docs": "pnpm build && pnpm --filter docs build",
+    "build:docs": "pnpm --filter docs build",
     "preview:docs": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
     "prepublishOnly": "pnpm build",
