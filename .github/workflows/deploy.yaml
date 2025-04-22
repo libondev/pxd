@@ -29,14 +29,17 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
+      - name: Output working directory
+        run: pwd
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm -w install --frozen-lockfile
 
       - name: Build lib
-        run: pnpm build:lib
+        run: pnpm -w build:lib
 
       - name: Build docs
-        run: pnpm build:docs
+        run: pnpm -w build:docs
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
