@@ -9,19 +9,21 @@ const {
 </script>
 
 <template>
-  <div class="sidebar fixed top-12 left-0 bottom-0 z-10 border-r border-t w-72 sm:border-x bg-background-secondary">
-    <div class="h-full overflow-y-auto p-2.5">
-      <ul>
-        <li>
-          <PLinkButton v-for="menu of menus" :key="menu.path" variant="ghost" :href="menu.path" block>
-            {{ menu.label }}
-          </PLinkButton>
-        </li>
-      </ul>
+  <div class="absolute left-0 top-0">
+    <div class="sidebar fixed top-12 mt-px z-10 h-screen border-r w-72 sm:border-x bg-background-secondary">
+      <div class=" h-full overflow-y-auto p-2.5">
+        <ul>
+          <li>
+            <PLinkButton v-for="menu of menus" :key="menu.path" variant="ghost" :href="menu.path" block>
+              {{ menu.label }}
+            </PLinkButton>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="prose ml-72 flex-1 min-h-0">
+  <div class="prose ml-72 border-r flex-1 min-h-0">
     <main class="p-16">
       <slot />
     </main>
