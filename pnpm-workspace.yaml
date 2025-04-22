@@ -12,7 +12,6 @@ catalog:
   '@vitejs/plugin-vue': ^5.2.3
   '@vue/test-utils': ^2.4.6
   '@vue/tsconfig': ^0.7.0
-  bumpp: ^10.1.0
   eslint: ^9.25.0
   gdsi: ^1.2.1
   jsdom: ^26.1.0

@@ -15,7 +15,7 @@ Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macro
 
 ## 为什么要做?
 
-我很早开始一直想自己实现一个组件库，而 `pxd` 距离是在 `2022-10-21` 发布的第一个版本，距今(2025-04-21)已近三年，期间组件库一直在不断被重构/设计，现在已经是第四版了。在前期探索阶段，我一直在思考项目的定位与实现方式。如今，借助 [`unbuild`](https://github.com/unjs/unbuild)、 [`mkdist`](https://github.com/unjs/mkdist) 和 [`vue-sfc-transformer`](https://github.com/nuxt-contrib/vue-sfc-transformer) 等工具，我逐渐明白了我到底想要做成什么样子：实现一个兼容 Vue2 和 Vue3 的组件库，我相信这也会是前端行业里第一个达成这个目标的组件库，希望在 `pxd` 的影响下，业内会有更多精彩的项目。
+我很早开始一直想自己实现一个组件库，而 `pxd` 距离是在 `2022-10-21` 发布的第一个版本，距今(2025-04-21)已近三年，期间组件库一直在不断被重构/设计，现在已经是第四版了。在前期探索阶段，我一直在思考项目的定位与实现方式。如今，借助 [`unbuild`](https://github.com/unjs/unbuild)、 [`mkdist`](https://github.com/unjs/mkdist) 和 [`vue-sfc-transformer`](https://github.com/nuxt-contrib/vue-sfc-transformer) 等工具，我逐渐明白了我到底想要做成什么样子：实现一个兼容 Vue2 和 Vue3 的组件库，我相信这也会是前端行业里第一个实现这个目标的组件库。
 
 ## 这是怎么实现的?
 

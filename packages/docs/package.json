@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "markdown-it-plugins": "^0.1.6",
     "pxd": "workspace:*",
     "vue": "catalog:",
     "vue-router": "catalog:"
@@ -19,6 +18,7 @@
     "@vitejs/plugin-vue": "catalog:",
     "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/tsconfig": "catalog:",
+    "markdown-it-plugins": "^0.2.1",
     "tailwindcss": "^4.1.4",
     "typescript": "catalog:",
     "unplugin-auto-import": "catalog:",

@@ -23,8 +23,8 @@ const {
     </div>
   </div>
 
-  <div class="prose ml-72 border-r flex-1 min-h-0">
-    <main class="p-16">
+  <div class="prose ml-72 border-r flex-1 min-h-screen">
+    <main class="p-16 h-full">
       <slot />
     </main>
 
