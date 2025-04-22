@@ -31,11 +31,6 @@ const {
 </template>
 
 <style lang="postcss">
-.pxd-link-button.router-link-exact-active {
-  background-color: var(--color-background);
-  pointer-events: none;
-}
-
 .sidebar .pxd-link-button.router-link-exact-active {
   border-color: hsl(var(--gray-300-value));
 }

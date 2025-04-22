@@ -15,11 +15,11 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "catalog:",
-    "@vitejs/plugin-vue": "catalog:",
-    "@vitejs/plugin-vue-jsx": "catalog:",
+    "@tailwindcss/vite": "^4.1.4",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/tsconfig": "catalog:",
-    "tailwindcss": "catalog:",
+    "tailwindcss": "^4.1.4",
     "typescript": "catalog:",
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",

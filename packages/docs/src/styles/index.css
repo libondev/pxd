@@ -20,3 +20,8 @@ body,
 #app {
   @apply h-full;
 }
+
+.pxd-link-button.router-link-exact-active {
+  background-color: var(--color-background);
+  pointer-events: none;
+}
