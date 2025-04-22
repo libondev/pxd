@@ -10,7 +10,7 @@ const {
 
 <template>
   <div class="sidebar fixed top-12 left-0 bottom-0 z-10 border-r border-t w-72 sm:border-x bg-background-secondary">
-    <div class="h-full overflow-y-auto p-3">
+    <div class="h-full overflow-y-auto p-2.5">
       <ul>
         <li>
           <PLinkButton v-for="menu of menus" :key="menu.path" variant="ghost" :href="menu.path" block>

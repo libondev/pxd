@@ -25,3 +25,7 @@ body,
   background-color: var(--color-background);
   pointer-events: none;
 }
+
+.pxd-link-button.router-link-exact-active:not(:hover) {
+  transition: none
+}

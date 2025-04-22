@@ -1,5 +1,6 @@
 <script setup>
-import { ArrowRightIcon } from 'gdsi/vue'
+import { githubLink } from '@/consts/link'
+import { ArrowRightIcon, CornerDownRightIcon, LogoGithubIcon, StarFillIcon } from 'gdsi/vue'
 import { ref } from 'vue'
 
 const router = useRouter()
@@ -23,7 +24,7 @@ function onFinished(isFinished) {
 </script>
 
 <template>
-  <main class="flex flex-col justify-center sm:h-screen sm:-mt-12 py-40 px-4 text-center relative max-w-2xl mx-auto mb-32">
+  <main class="flex flex-col justify-center sm:h-screen sm:-mt-13 py-40 px-4 text-center relative max-w-2xl mx-auto">
     <h1 class="text-balance text-6xl font-bold">
       PXD
     </h1>
@@ -32,7 +33,7 @@ function onFinished(isFinished) {
       A universal UI component library for Vue2&3
     </p>
 
-    <div class="mt-16">
+    <div class="mt-16 justify-center flex gap-2">
       <PHoldButton
         cancelable
         durations=".5"
@@ -52,6 +53,14 @@ function onFinished(isFinished) {
           </Transition>
         </template>
       </PHoldButton>
+
+      <PLinkButton :href="githubLink" target="_blank" external-icon shape="rounded" variant="outline">
+        <template #prefix>
+          <StarFillIcon class="text-amber-600" />
+        </template>
+
+        Star on GitHub
+      </PLinkButton>
     </div>
   </main>
 </template>

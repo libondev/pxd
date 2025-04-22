@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { MoonIcon, SunIcon } from 'gdsi/vue'
 import { customRef } from 'vue'
+import Button from '../button/index.vue'
+
+const emits = defineEmits<{
+  toggle: [v: keyof typeof colorModes]
+}>()
 
 const colorModes = {
   dark: {
@@ -15,8 +20,8 @@ type ColorMode = keyof typeof colorModes
 
 const colorMode = customRef<ColorMode>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
-  const { documentElement: root } = document
-  let curMode: ColorMode = root.classList.contains('dark') ? 'dark' : 'light'
+  const rootClassList = document.documentElement.classList
+  let curMode: ColorMode = rootClassList.contains('dark') ? 'dark' : 'light'
 
   return {
     get() {
@@ -27,8 +32,8 @@ const colorMode = customRef<ColorMode>((track, trigger) => {
       if (newMode === curMode)
         return
 
-      root.classList.remove(curMode)
-      root.classList.add(newMode)
+      rootClassList.remove(curMode)
+      rootClassList.add(newMode)
 
       localStorage.setItem(storageKey, newMode)
       curMode = newMode
@@ -40,31 +45,30 @@ const colorMode = customRef<ColorMode>((track, trigger) => {
 
 function toggleColorMode() {
   colorMode.value = colorModes[colorMode.value].transition
+  emits('toggle', colorMode.value)
 }
 </script>
 
 <template>
-  <PButton variant="ghost" shape="square" @click="toggleColorMode">
-    <div class="size-[1em]">
-      <Transition name="fade" mode="out-in">
-        <SunIcon v-if="colorMode === 'light'" />
-        <MoonIcon v-else />
-      </Transition>
-    </div>
-  </PButton>
+  <Button aria-label="Toggle color mode" @click="toggleColorMode">
+    <Transition name="color-mode" mode="out-in">
+      <SunIcon v-if="colorMode === 'light'" class="size-[1em]" />
+      <MoonIcon v-else class="size-[1em]" />
+    </Transition>
+  </Button>
 </template>
 
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
+<style>
+.color-mode-enter-active,
+.color-mode-leave-active {
   transition: transform 0.15s ease;
 }
 
-.fade-enter-from {
+.color-mode-enter-from {
   transform: rotate(-45deg) scale(0.68);
 }
 
-.fade-leave-to {
+.color-mode-leave-to {
   transform: rotate(45deg) scale(0.68);
 }
 </style>

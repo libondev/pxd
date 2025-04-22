@@ -71,7 +71,7 @@ function linkAttrs(): LinkAttrs {
 
     <template #suffix>
       <slot name="suffix" />
-      <ExternalIcon v-if="externalIcon" class="opacity-60" />
+      <ExternalIcon v-if="externalIcon" class="opacity-50 scale-y-90" />
     </template>
   </Button>
 </template>

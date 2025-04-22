@@ -9,6 +9,7 @@ catalog:
   '@testing-library/vue': ^8.1.0
   '@tsconfig/node22': ^22.0.1
   '@types/node': ^22.14.1
+  '@vitejs/plugin-vue': ^5.2.3
   '@vue/test-utils': ^2.4.6
   '@vue/tsconfig': ^0.7.0
   bumpp: ^10.1.0

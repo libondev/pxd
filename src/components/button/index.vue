@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
   as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
-  disabled?: boolean
   block?: boolean
   class?: string | object | any[]
   shape?: 'square' | 'rounded'
@@ -25,6 +24,8 @@ const props = withDefaults(
     variant: 'outline',
   },
 )
+
+const attrs = useAttrs()
 
 const config = useConfigProvider()
 
@@ -55,7 +56,7 @@ const computedClassNames = computed(() => {
 
   classNames += props.block ? 'flex ' : 'inline-flex '
 
-  if (props.disabled) {
+  if (attrs.disabled) {
     classNames += DISABLED_CLASS_NAMES
   }
 
@@ -73,13 +74,12 @@ const computedClassNames = computed(() => {
 <template>
   <Component
     :is="as"
-    aria-role="button"
-    :disabled="disabled"
+    role="button"
     :class="computedClassNames"
   >
     <slot name="prefix" />
 
-    <span class="px-1 inline-flex truncate">
+    <span class="px-1.5 inline-flex truncate">
       <slot />
     </span>
 

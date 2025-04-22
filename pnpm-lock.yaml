@@ -24,6 +24,9 @@ catalogs:
     '@types/node':
       specifier: ^22.14.1
       version: 22.14.1
+    '@vitejs/plugin-vue':
+      specifier: ^5.2.3
+      version: 5.2.3
     '@vue/test-utils':
       specifier: ^2.4.6
       version: 2.4.6
@@ -108,6 +111,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.14.1
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 5.2.3(vite@5.4.18(@types/node@22.14.1))(vue@3.5.13(typescript@5.8.3))
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -1071,6 +1077,13 @@ packages:
     resolution: {integrity: sha512-uNnVmvDLZBDQ4sLFNTugTtzUH9LEoHXG46HdWaih+pK4knwi+wcz+nd0fQC92n/dH4PwPc5T8XArvlCKpfU6vQ==}
     cpu: [x64]
     os: [win32]
+
+  '@vitejs/plugin-vue@5.2.3':
+    resolution: {integrity: sha512-IYSLEQj4LgZZuoVpdSUCw3dIynTWQgPlaRP6iAvMle4My0HdYwr5g5wQAfwOeHQBmYwEkqF70nRpSilr6PoUDg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0 || ^6.0.0
+      vue: ^3.2.25
 
   '@vitest/eslint-plugin@1.1.43':
     resolution: {integrity: sha512-OLoUMO67Yg+kr7E6SjF5+Qvl2f6uNJ7ImQYnXT8WgnPiZE41ZQBsnzn70jehXrhFVadphHs2smk+yl0TFKLV5Q==}
@@ -4422,6 +4435,11 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.6.1':
     optional: true
+
+  '@vitejs/plugin-vue@5.2.3(vite@5.4.18(@types/node@22.14.1))(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      vite: 5.4.18(@types/node@22.14.1)
+      vue: 3.5.13(typescript@5.8.3)
 
   '@vitest/eslint-plugin@1.1.43(@typescript-eslint/utils@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jsdom@26.1.0))':
     dependencies:
