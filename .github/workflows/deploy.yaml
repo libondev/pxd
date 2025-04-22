@@ -1,4 +1,4 @@
-name: 构建与部署文档
+name: Build and Deploy Docs
 
 on:
   push:
@@ -14,38 +14,38 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出代码
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 设置 Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: 安装 PNPM
+      - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
           run_install: false
 
-      - name: 安装依赖
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 构建库
+      - name: Build lib
         run: pnpm build:lib
 
-      - name: 构建文档
+      - name: Build docs
         run: pnpm build:docs
 
-      - name: 设置 Pages
-        uses: actions/configure-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-      - name: 上传构建文件
-        uses: actions/upload-pages-artifact@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: packages/docs/dist
 
-      - name: 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
