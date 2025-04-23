@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import Spinner from '../spinner/index.vue'
 
 interface Props {
   as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
-  block?: boolean
   class?: string | object | any[]
   shape?: 'square' | 'rounded'
+  block?: boolean
+  loading?: boolean
+  disabled?: boolean
 }
 
 defineOptions({
@@ -24,8 +27,6 @@ const props = withDefaults(
     variant: 'outline',
   },
 )
-
-const attrs = useAttrs()
 
 const config = useConfigProvider()
 
@@ -45,7 +46,11 @@ const VARIANTS = {
   success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent',
 }
 
-const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 border-gray-300'
+const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
+
+const computedDisabled = computed(() => {
+  return props.disabled || props.loading
+})
 
 const computedClassNames = computed(() => {
   const classNames = ['pxd-button cursor-pointer motion-safe:transition-colors items-center justify-center border']
@@ -56,7 +61,7 @@ const computedClassNames = computed(() => {
 
   classNames.push(props.block ? 'flex ' : 'inline-flex')
 
-  if (attrs.disabled) {
+  if (computedDisabled.value) {
     classNames.push(DISABLED_CLASS_NAMES)
   }
 
@@ -77,7 +82,10 @@ const computedClassNames = computed(() => {
     :is="as"
     role="button"
     :class="computedClassNames"
+    :disabled="computedDisabled"
   >
+    <Spinner v-if="loading" />
+
     <slot name="prefix" />
 
     <span class="px-1.5 inline-flex truncate">

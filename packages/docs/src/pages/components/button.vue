@@ -1,22 +1,25 @@
 <template>
   <div class="wrapper flex items-center gap-2 p-2">
-    <PButton variant="ghost">
-      Mini
+    <PButton>
+      default(outline)
     </PButton>
-    <PButton variant="outline">
-      Small
+    <PButton variant="ghost">
+      ghost
     </PButton>
     <PButton variant="error">
-      Medium
+      error
     </PButton>
     <PButton variant="primary">
-      Large
+      primary
     </PButton>
     <PButton variant="success">
-      Large
+      success
     </PButton>
-    <PButton variant="warning">
-      Large
+    <PButton disabled>
+      disabled
+    </PButton>
+    <PButton loading>
+      loading
     </PButton>
   </div>
 </template>

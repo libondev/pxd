@@ -69,6 +69,6 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ['gdsi/vue', 'tailwind-merge'],
+    include: ['gdsi/vue', 'tailwind-merge', '@vue/shared'],
   },
 })
