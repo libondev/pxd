@@ -27,6 +27,7 @@ shims/components.d.ts
 *.sln
 *.sw?
 
+.nuxt
 components.d.ts
 auto-imports.d.ts
 **/pnpm-lock.yaml
