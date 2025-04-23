@@ -1,10 +1,10 @@
 <script setup lang="ts" generic="T extends { label: string, path: string }">
 interface Props {
-  menus: T[]
+  menus?: T[]
 }
 
 const {
-  menus,
+  menus = [],
 } = defineProps<Props>()
 </script>
 
@@ -38,6 +38,7 @@ const {
 }
 
 .prose {
+  --background: var(--color-background);
   line-height: 1.68;
 
   :is(h1, h2, h3, h4) {
@@ -88,10 +89,6 @@ const {
 
   h4 {
     font-size: 1.125rem;
-  }
-
-  p {
-    text-indent: 1.5em;
   }
 
   p > code {

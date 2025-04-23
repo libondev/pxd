@@ -19,6 +19,7 @@ type LinkAttrs =
     href: string
     target?: Props['target']
   }
+  | null
 
 defineOptions({
   name: 'PLinkButton',
@@ -39,6 +40,10 @@ const alignClassName = {
 }
 
 function linkAttrs(): LinkAttrs {
+  if (!props.href) {
+    return null
+  }
+
   const firstChar = props.href.slice(0, 1)
 
   if (['#', '/'].includes(firstChar)) {
@@ -59,8 +64,9 @@ function linkAttrs(): LinkAttrs {
 <template>
   <Button
     v-bind="linkAttrs()"
+    role="link"
     rel="noopener noreferrer"
-    class="pxd-link-button"
+    class="pxd-link-button !no-underline"
     :class="alignClassName[align]"
   >
     <template #prefix>

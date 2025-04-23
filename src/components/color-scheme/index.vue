@@ -49,23 +49,23 @@ function toggleColorMode() {
   <Button aria-label="Toggle color mode" @click="toggleColorMode">
     <Transition name="color-mode" mode="out-in">
       <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-[1em]" />
-      <!-- <SunIcon v-if="colorMode === 'light'" class="size-[1em]" />
-      <MoonIcon v-else class="size-[1em]" /> -->
     </Transition>
   </Button>
 </template>
 
 <style>
-.color-mode-enter-active,
-.color-mode-leave-active {
-  transition: transform 0.15s ease;
-}
+@media (prefers-reduced-motion: no-preference) {
+  .color-mode-enter-active,
+  .color-mode-leave-active {
+    transition: transform 0.15s ease-out;
+  }
 
-.color-mode-enter-from {
-  transform: rotate(-45deg) scale(0.68);
-}
+  .color-mode-enter-from {
+    transform: rotate(-45deg) scale(0.68);
+  }
 
-.color-mode-leave-to {
-  transform: rotate(45deg) scale(0.68);
+  .color-mode-leave-to {
+    transform: rotate(45deg) scale(0.68);
+  }
 }
 </style>

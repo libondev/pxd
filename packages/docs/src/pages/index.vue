@@ -1,10 +1,13 @@
 <script setup>
 import { githubLink } from '@/consts/link'
 import { ArrowRightIcon, StarFillIcon } from 'gdsi/vue'
+import { MEDIA_QUERY, useMediaQuery } from 'pxd/composables'
 import { ref } from 'vue'
 
 const router = useRouter()
 const showArrowIcon = ref(false)
+
+const reduceMotion = useMediaQuery(MEDIA_QUERY.MOTION_REDUCE)
 
 function onTrigger() {
   showArrowIcon.value = true
@@ -38,8 +41,7 @@ function onFinished(isFinished) {
         cancelable
         durations=".5"
         :scale="false"
-        shape="rounded"
-        variant="primary"
+        shape="rounded" variant="primary"
         mask-color="hsl(var(--green-600-value))"
         @confirm="onTrigger"
         @finished="onFinished"
@@ -48,7 +50,10 @@ function onFinished(isFinished) {
         Get Started
 
         <template #suffix>
-          <Transition name="fade">
+          <template v-if="reduceMotion">
+            <ArrowRightIcon v-if="showArrowIcon" class="animate-[bounce-right_1s_ease-out_infinite]" />
+          </template>
+          <Transition v-else name="scale-fade">
             <ArrowRightIcon v-if="showArrowIcon" class="animate-[bounce-right_1s_ease-out_infinite]" />
           </Transition>
         </template>
@@ -66,33 +71,37 @@ function onFinished(isFinished) {
 </template>
 
 <style>
-.fade-enter-active {
-  transform: scale(1);
-  opacity: 1;
-  width: 1em;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: transform .15s ease-out, width .15s ease-out, opacity .15s ease-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  transform: scale(.68);
-  opacity: 0;
-  width: 0;
-}
-
-@keyframes bounce-right {
-  0%, 100% {
-    transform: translateX(-20%) scale(1) translateZ(0);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+@media (prefers-reduced-motion: no-preference) {
+  .scale-fade-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    width: 1em;
   }
 
-  50% {
-    transform: translateX(45%) scale(0.68) translateZ(0);
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  .scale-fade-enter-active,
+  .scale-fade-leave-active {
+    transition: transform .15s ease-out, width .15s ease-out, opacity .15s ease-out;
+  }
+
+  .scale-fade-enter-from,
+  .scale-fade-leave-to {
+    transform: scale(.68);
+    opacity: 0;
+    width: 0;
+  }
+
+  @keyframes bounce-right {
+
+    0%,
+    100% {
+      transform: translateX(-20%) scale(1) translateZ(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+
+    50% {
+      transform: translateX(45%) scale(0.68) translateZ(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
   }
 }
 </style>

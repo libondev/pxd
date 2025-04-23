@@ -1,10 +1,11 @@
 @import "tailwindcss";
 @import "../../node_modules/pxd/dist/styles/tw.css";
 @source "../../node_modules/pxd";
+@source "../../node_modules/markdown-it-plugins";
 
 @theme {
   --font-sans: 'Inter', sans-serif;
-  --default-mono-font-family: 'MonoLisa', 'Geist Mono', 'JetBrains Mono', monospace;
+  --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', monospace;
 }
 
 :root {

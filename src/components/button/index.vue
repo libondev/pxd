@@ -30,41 +30,42 @@ const attrs = useAttrs()
 const config = useConfigProvider()
 
 const SIZES = {
-  xs: 'px-1 rounded-md h-6 text-sm ',
-  sm: 'px-1.5 rounded-md h-7 text-sm ',
-  md: 'px-2.5 rounded-md h-8 text-sm ',
-  lg: 'px-3.5 rounded-lg h-9 text-base ',
+  xs: 'px-1 rounded-md h-6 text-sm',
+  sm: 'px-1.5 rounded-md h-7 text-sm',
+  md: 'px-2.5 rounded-md h-8 text-sm',
+  lg: 'px-3.5 rounded-lg h-9 text-base',
 }
 
 const VARIANTS = {
-  outline: 'bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input ',
-  ghost: 'bg-transparent text-foreground hover:bg-gray-alpha-200 active:bg-gray-alpha-300 border-transparent ',
-  primary: 'bg-foreground text-background hover:bg-foreground/80 active:bg-foreground border-transparent ',
-  error: 'bg-red-800 text-white  hover:bg-red-700 active:bg-red-800 border-transparent ',
-  warning: 'bg-amber-800 text-black hover:bg-amber-700 active:bg-amber-800 border-transparent ',
-  success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent ',
+  outline: 'bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input',
+  ghost: 'bg-transparent text-foreground hover:bg-gray-alpha-200 active:bg-gray-alpha-300 border-transparent',
+  primary: 'bg-foreground text-background hover:bg-foreground/80 active:bg-foreground border-transparent',
+  error: 'bg-red-800 text-white  hover:bg-red-700 active:bg-red-800 border-transparent',
+  warning: 'bg-amber-800 text-black hover:bg-amber-700 active:bg-amber-800 border-transparent',
+  success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-800 border-transparent',
 }
 
-const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 border-gray-300  '
+const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 border-gray-300'
 
 const computedClassNames = computed(() => {
-  let classNames = 'pxd-button cursor-pointer transition-colors items-center justify-center border '
+  const classNames = ['pxd-button cursor-pointer motion-safe:transition-colors items-center justify-center border']
 
-  classNames += (VARIANTS[props.variant] || VARIANTS.outline)
+  classNames.push(VARIANTS[props.variant] || VARIANTS.outline)
 
-  classNames += SIZES[props.size || config.size]
+  classNames.push(SIZES[props.size || config.size])
 
-  classNames += props.block ? 'flex ' : 'inline-flex '
+  classNames.push(props.block ? 'flex ' : 'inline-flex')
 
   if (attrs.disabled) {
-    classNames += DISABLED_CLASS_NAMES
+    classNames.push(DISABLED_CLASS_NAMES)
   }
 
-  if (props.shape === 'square') {
-    classNames += 'rounded-none '
-  }
-  else if (props.shape === 'rounded') {
-    classNames += 'rounded-full '
+  if (props.shape) {
+    classNames.push(
+      props.shape === 'square'
+        ? 'rounded-none'
+        : 'rounded-full',
+    )
   }
 
   return twMerge(classNames, props.class as string)

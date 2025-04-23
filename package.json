@@ -37,6 +37,10 @@
       "types": "./dist/components/index.d.ts",
       "default": "./dist/components/index.js"
     },
+    "./composables": {
+      "types": "./dist/composables/index.d.ts",
+      "default": "./dist/composables/index.js"
+    },
     "./tw.css": "./dist/styles/tw.css",
     "./tokens.css": "./dist/styles/tokens.css",
     "./components/*": "./dist/components/*/index.vue"
