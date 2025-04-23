@@ -1,8 +1,5 @@
-// Mandatory to avoid a bug when building
-import type { } from '@nuxt/schema'
 import { addComponent, defineNuxtModule } from '@nuxt/kit'
-
-import * as components from '../components'
+import * as components from 'pxd/components'
 
 export interface ModuleOptions {
   prefix: string
@@ -19,14 +16,9 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     prefix: 'P',
   },
-  async setup(options) {
-    // if (nuxt.options.builder === '@nuxt/vite-builder') {
-    //   const Tailwind = await import('@tailwindcss/vite').then(r => r.default)
-    //   addVitePlugin(Tailwind())
-    // }
-    // else {
-    //   nuxt.options.postcss.plugins['@tailwindcss/postcss'] = {}
-    // }
+  async setup(options: ModuleOptions) {
+    // 仅用于测试
+    console.warn('PXD Module loaded successfully!')
 
     for (const component in components) {
       addComponent({

@@ -25,10 +25,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./nuxt": {
-      "types": "./dist/plugins/nuxt.d.ts",
-      "default": "./dist/plugins/nuxt.js"
-    },
     "./resolver": {
       "types": "./dist/plugins/resolver.d.ts",
       "default": "./dist/plugins/resolver.js"
@@ -92,8 +88,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
-    "@nuxt/kit": "catalog:",
-    "@nuxt/schema": "catalog:",
     "@testing-library/vue": "catalog:",
     "@tsconfig/node22": "catalog:",
     "@types/node": "catalog:",

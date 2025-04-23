@@ -1,0 +1,29 @@
+{
+  "name": "@pxd/nuxt",
+  "type": "module",
+  "version": "0.0.1",
+  "exports": {
+    ".": {
+      "types": "./dist/module.d.ts",
+      "import": "./dist/module.js"
+    }
+  },
+  "main": "./dist/module.js",
+  "types": "./dist/module.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@nuxt/kit": "catalog:",
+    "pxd": "workspace:*"
+  },
+  "devDependencies": {
+    "mkdist": "catalog:",
+    "unbuild": "catalog:"
+  }
+}
