@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import { LogoGithubIcon } from 'gdsi/vue'
+import { LogoGeistIcon, LogoGithubIcon } from 'gdsi/vue'
 
 const links = [
   {
     label: 'Github',
     href: 'https://github.com/libondev/pxd',
     icon: LogoGithubIcon,
+  },
+  {
+    label: 'Geist Design System',
+    href: 'https://vercel.com/geist/introduction',
+    icon: LogoGeistIcon,
   },
 ]
 </script>

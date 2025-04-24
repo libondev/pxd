@@ -2,7 +2,7 @@ import { inject, provide } from 'vue'
 
 export const injectionKey = 'configProvider'
 
-export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg'
+export type ComponentSize = 'sm' | 'md' | 'lg'
 
 export interface ConfigProviderProps {
   size?: ComponentSize

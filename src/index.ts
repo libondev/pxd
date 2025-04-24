@@ -8,3 +8,5 @@ export default function install(app: App, prefix = 'P') {
     app.component(`${prefix}${key}`, component)
   })
 }
+
+export const version = '0.0.10'

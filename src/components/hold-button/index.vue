@@ -131,23 +131,25 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 </template>
 
 <style lang="postcss">
-.pxd-hold-button.scalable:active {
-  transform: scale(.97);
-}
-
-.pxd-hold-button--overlay {
-  --opacity: .45;
-  opacity: var(--opacity);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path .1s ease-out, opacity 0s linear;
-
-  &.finished {
-    --opacity: .68;
+.pxd-hold-button {
+  &.scalable:active {
+    transform: scale(.97);
   }
-}
 
-.pxd-hold-button.effective:not(.is-disabled):active .pxd-hold-button--overlay {
-  clip-path: inset(0px);
-  transition: clip-path var(--ds) ease-out, opacity .2s ease-out;
+  .pxd-hold-button--overlay {
+    --opacity: .45;
+    opacity: var(--opacity);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path .1s ease-out, opacity 0s linear;
+
+    &.finished {
+      --opacity: .68;
+    }
+  }
+
+  &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
+    clip-path: inset(0px);
+    transition: clip-path var(--ds) ease-out, opacity .2s ease-out;
+  }
 }
 </style>

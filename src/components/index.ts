@@ -1,3 +1,4 @@
+export { default as Badge } from './badge/index.vue'
 export { default as Button } from './button/index.vue'
 export { default as ColorScheme } from './color-scheme/index.vue'
 export { default as ConfigProvider } from './config-provider/index.vue'

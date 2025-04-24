@@ -1,6 +1,7 @@
 <script setup>
 import { githubLink } from '@/consts/link'
 import { ArrowRightIcon, StarFillIcon } from 'gdsi/vue'
+import { version } from 'pxd'
 import { MEDIA_QUERY, useMediaQuery } from 'pxd/composables'
 import { ref } from 'vue'
 
@@ -28,8 +29,12 @@ function onFinished(isFinished) {
 
 <template>
   <main class="flex flex-col justify-center sm:h-screen sm:-mt-13 py-40 px-4 text-center relative max-w-2xl mx-auto">
-    <h1 class="text-balance text-6xl font-bold">
-      PXD
+    <h1 class="text-balance text-6xl font-bold flex items-start justify-center">
+      <span class="mr-1">PXD</span>
+
+      <PBadge variant="vue">
+        v{{ version }}
+      </PBadge>
     </h1>
 
     <p class="leading-tight text-lg text-secondary text-pretty mt-8">
