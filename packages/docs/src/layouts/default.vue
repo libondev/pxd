@@ -13,8 +13,8 @@ const {
     <div class="sidebar fixed top-12 mt-px z-10 h-screen border-r w-64 sm:border-x bg-background-secondary">
       <div class=" h-full overflow-y-auto p-2.5">
         <ul>
-          <li>
-            <PLinkButton v-for="menu of menus" :key="menu.path" variant="ghost" :href="menu.path" block>
+          <li v-for="menu of menus" :key="menu.path" class="mb-0.5">
+            <PLinkButton variant="ghost" :href="menu.path" block>
               {{ menu.label }}
             </PLinkButton>
           </li>
@@ -35,6 +35,7 @@ const {
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
   border-color: hsl(var(--gray-300-value));
+  pointer-events: none;
 }
 
 .prose {

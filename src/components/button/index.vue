@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import Spinner from '../spinner/index.vue'
 
@@ -9,7 +9,6 @@ interface Props {
   as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
-  class?: string | object | any[]
   shape?: 'square' | 'rounded'
   block?: boolean
   loading?: boolean
@@ -28,6 +27,11 @@ const props = withDefaults(
   },
 )
 
+const emits = defineEmits<{
+  click: [MouseEvent]
+}>()
+
+const attrs = useAttrs()
 const config = useConfigProvider()
 
 const SIZES = {
@@ -73,8 +77,12 @@ const computedClassNames = computed(() => {
     )
   }
 
-  return twMerge(classNames, props.class as string)
+  return twMerge(classNames, attrs.class as string)
 })
+
+function onButtonClick(event: MouseEvent) {
+  emits('click', event)
+}
 </script>
 
 <template>
@@ -83,6 +91,7 @@ const computedClassNames = computed(() => {
     role="button"
     :class="computedClassNames"
     :disabled="computedDisabled"
+    @click="onButtonClick"
   >
     <Spinner v-if="loading" />
 

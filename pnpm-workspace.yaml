@@ -6,7 +6,6 @@ catalog:
   '@antfu/eslint-config': ^4.12.0
   '@nuxt/kit': ^3.16.2
   '@nuxt/schema': ^3.16.2
-  '@testing-library/vue': ^8.1.0
   '@tsconfig/node22': ^22.0.1
   '@types/node': ^22.14.1
   '@vitejs/plugin-vue': ^5.2.3

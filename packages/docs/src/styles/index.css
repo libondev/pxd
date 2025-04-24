@@ -22,11 +22,10 @@ body,
   @apply h-full;
 }
 
-.pxd-link-button.router-link-exact-active {
+.pxd-link-button.router-link-active {
   background-color: var(--color-background);
-  pointer-events: none;
 }
 
-.pxd-link-button.router-link-exact-active:not(:hover) {
+.pxd-link-button.router-link-active:not(:hover) {
   transition: none
 }

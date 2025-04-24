@@ -45,6 +45,8 @@ export default defineConfig({
     tailwindcss(),
     components({
       dts: './shims/components.d.ts',
+      extensions: ['vue', 'md'],
+      include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.md$/],
       resolvers: [
         pxdResolver(),
         gdsiResolver({
@@ -55,6 +57,8 @@ export default defineConfig({
     }),
     autoImport({
       dts: './shims/auto-imports.d.ts',
+      extensions: ['.vue', '.md'],
+      include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.md$/],
       imports: [
         'vue',
         VueRouterAutoImports,

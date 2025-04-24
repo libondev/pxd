@@ -7,10 +7,11 @@ interface Props {
   moreText?: string
   lessText?: string
   modelValue?: boolean
+  buttonProps?: InstanceType<typeof Button>['$props']
 }
 
 defineOptions({
-  name: 'PxdMoreButton',
+  name: 'PMoreButton',
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -23,6 +24,7 @@ const props = withDefaults(
     moreText: 'Show More',
     lessText: 'Show Less',
     modelValue: false,
+    buttonProps: () => ({}),
   },
 )
 
@@ -39,14 +41,21 @@ const isExpanded = computed({
   },
 })
 
+function getButtonProps(): Props['buttonProps'] {
+  return {
+    shape: 'rounded',
+    ...props.buttonProps,
+  }
+}
+
 function onToggleExpand() {
   isExpanded.value = !isExpanded.value
 }
 </script>
 
 <template>
-  <div class="pxd-more-button flex justify-center items-center relative px-4">
-    <Button variant="outline" shape="rounded" v-bind="$attrs" class="z-10" @click="onToggleExpand">
+  <div class="pxd-more-button w-full flex items-center px-4">
+    <Button class="relative z-10" v-bind="getButtonProps()" @click="onToggleExpand">
       {{ isExpanded ? lessText : moreText }}
 
       <template #suffix>
@@ -57,13 +66,11 @@ function onToggleExpand() {
 </template>
 
 <style>
-.pxd-more-button::before {
+.pxd-more-button::before,
+.pxd-more-button::after {
   content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
   display: block;
   width: 100%;
-  border-bottom: 1px solid var(--gray-alpha-300);
+  border-top: 1px solid var(--gray-alpha-300);
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
-  import * as components from 'pxd/components'
-  import OverviewCard from '@/components/OverviewCard.vue'
+import * as components from 'pxd/components'
+import OverviewCard from '@/components/OverviewCard.vue'
 
 </script>
 

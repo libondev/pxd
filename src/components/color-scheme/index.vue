@@ -3,6 +3,10 @@ import { MoonIcon, SunIcon } from 'gdsi/vue'
 import { customRef } from 'vue'
 import Button from '../button/index.vue'
 
+defineOptions({
+  name: 'PColorScheme',
+})
+
 const emits = defineEmits<{
   toggle: [v: ColorScheme]
 }>()

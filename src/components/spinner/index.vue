@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PSpinner',
+})
+
 const ITEMS_COUNT = 12
 const ROTATE_STEP = 360 / ITEMS_COUNT
 const OPACITY_STEP = 1 / ITEMS_COUNT

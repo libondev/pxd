@@ -25,10 +25,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./nuxt": {
-      "types": "./dist/plugins/nuxt.d.ts",
-      "default": "./dist/plugins/nuxt.js"
-    },
     "./resolver": {
       "types": "./dist/plugins/resolver.d.ts",
       "default": "./dist/plugins/resolver.js"
@@ -43,7 +39,8 @@
     },
     "./tw.css": "./dist/styles/tw.css",
     "./tokens.css": "./dist/styles/tokens.css",
-    "./components/*": "./dist/components/*/index.vue"
+    "./components/*": "./dist/components/*/index.vue",
+    "./composables/*": "./dist/composables/*/index.js"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -92,9 +89,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
-    "@nuxt/kit": "catalog:",
-    "@nuxt/schema": "catalog:",
-    "@testing-library/vue": "catalog:",
     "@tsconfig/node22": "catalog:",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
@@ -107,7 +101,6 @@
     "tinyglobby": "catalog:",
     "typescript": "catalog:",
     "unbuild": "catalog:",
-    "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
