@@ -1,7 +1,12 @@
 <script lang="ts" setup>
-import { BookOpenIcon, BoxIcon, LogoGithubIcon } from 'gdsi/vue'
+import { BookOpenIcon, BoxIcon, HomeIcon, LogoGithubIcon } from 'gdsi/vue'
 
 const menus = [
+  {
+    label: 'Home',
+    to: '/',
+    icon: HomeIcon,
+  },
   {
     label: 'Guide',
     to: '/guide',

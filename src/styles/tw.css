@@ -1,6 +1,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @utility scrollbar-hidden {
+  & {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -371,5 +377,9 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+
+  ::selection {
+    background-color: var(--color-green-500);
   }
 }

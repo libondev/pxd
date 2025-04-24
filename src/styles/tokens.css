@@ -233,6 +233,12 @@
   --gray-alpha-1000: hsla(0, 0%, 100%, .92);
 }
 
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }

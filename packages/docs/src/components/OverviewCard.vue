@@ -13,11 +13,11 @@ function getPath(name: string) {
 
 <template>
   <RouterLink :to="getPath(name)" class="border rounded-lg w-1/5 !no-underline cursor-pointer hover:bg-background-secondary motion-safe:transition-colors">
-    <div class="border-b border-dashed px-4 py-2">
+    <div class="border-b border-dashed truncate px-4 py-2">
       {{ name }}
     </div>
 
-    <div class="p-4">
+    <div class="p-4 truncate">
       <slot />
     </div>
   </RouterLink>

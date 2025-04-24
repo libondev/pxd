@@ -60,7 +60,7 @@ const badgeRenderType = computed(() => {
 
 const computedClass = computed(() =>
   twMerge(
-    'pxd-badge inline-flex items-center justify-center font-medium px-2.5 h-6 text-xs rounded-full font-sans',
+    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans',
     VARIANTS[props.variant],
     SIZES[props.size || config.size],
     attrs.class as string,

@@ -15,21 +15,19 @@ describe('button', () => {
     wrapper.unmount()
   })
 
-  describe('variant should equal outline', () => {
-    it('should render an outline button', () => {
-      const wrapper = mount(Button, {
-        props: {
-          variant: 'outline',
-        },
-      })
-
-      const classes = wrapper.classes()
-      expect(classes).toContain('bg-background')
-      expect(classes).toContain('text-foreground')
-      expect(classes).toContain('border-input')
-
-      wrapper.unmount()
+  it('should render an outline button', () => {
+    const wrapper = mount(Button, {
+      props: {
+        variant: 'outline',
+      },
     })
+
+    const classes = wrapper.classes()
+    expect(classes).toContain('bg-background')
+    expect(classes).toContain('text-foreground')
+    expect(classes).toContain('border-input')
+
+    wrapper.unmount()
   })
 
   it('should emit a click event when clicked', async () => {
