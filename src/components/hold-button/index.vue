@@ -3,7 +3,7 @@ import { shallowRef } from 'vue'
 import Button from '../button/index.vue'
 
 interface Props {
-  scale?: boolean
+  scalable?: boolean
   disabled?: boolean
   durations?: number | string
   maskColor?: string
@@ -17,7 +17,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    scale: true,
+    scalable: true,
     durations: 2,
     maskColor: 'hsl(var(--red-600-value))',
   },
@@ -105,7 +105,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 <template>
   <Button
     class="pxd-hold-button relative motion-safe:transition-all"
-    :class="{ scale, effective: status !== 'canceled' }"
+    :class="{ scalable, effective: status !== 'canceled' }"
     :disabled="disabled"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
@@ -131,7 +131,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 </template>
 
 <style lang="postcss">
-.pxd-hold-button.scale:active {
+.pxd-hold-button.scalable:active {
   transform: scale(.97);
 }
 
