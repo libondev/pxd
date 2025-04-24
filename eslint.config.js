@@ -6,6 +6,7 @@ export default antfu({
     'node_modules/*',
   ],
 
+  test: true,
   jsonc: true,
   markdown: false,
   typescript: true,

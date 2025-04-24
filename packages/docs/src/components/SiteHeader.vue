@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import { BookOpenIcon, BoxIcon, HomeIcon, LogoGithubIcon } from 'gdsi/vue'
+import { BookOpenIcon, BoxIcon, LogoGithubIcon } from 'gdsi/vue'
 
 const menus = [
-  {
-    label: 'Home',
-    to: '/',
-    icon: HomeIcon,
-  },
   {
     label: 'Guide',
     to: '/guide',
@@ -24,7 +19,7 @@ const menus = [
   <header class="sticky top-0 z-10 border-b bg-background-secondary select-none">
     <div class="container sm:border-x mx-auto h-12 flex items-center">
       <RouterLink v-slot="{ navigate }" to="/" custom>
-        <h2 class="px-4.5 h-full flex items-center font-medium cursor-pointer" @click="navigate">
+        <h2 class="px-3 h-full flex items-center font-medium cursor-pointer" @click="navigate">
           <SiteLogo class="mr-2 text-2xl" />
           <span>PXD</span>
         </h2>
