@@ -7,9 +7,25 @@ export default defineConfig({
     vue(),
   ],
   test: {
-    environment: 'jsdom',
+    globals: false,
+    fileParallelism: true,
+    environment: 'happy-dom',
+    include: ['tests/**/*.test.ts'],
     exclude: [...configDefaults.exclude, 'e2e/**'],
     root: fileURLToPath(new URL('./', import.meta.url)),
     setupFiles: './vitest.setup.ts',
+    server: {
+      deps: {
+        inline: [/gdsi/],
+      },
+    },
+    deps: {
+      optimizer: {
+        web: {
+          enabled: false,
+        },
+      },
+    },
+    pool: 'vmThreads',
   },
 })

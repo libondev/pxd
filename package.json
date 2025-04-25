@@ -95,7 +95,7 @@
     "@vue/test-utils": "catalog:",
     "@vue/tsconfig": "catalog:",
     "eslint": "catalog:",
-    "jsdom": "catalog:",
+    "happy-dom": "catalog:",
     "mkdist": "catalog:",
     "npm-run-all2": "catalog:",
     "tinyglobby": "catalog:",
