@@ -6,7 +6,7 @@ interface Props {
   fader?: boolean
   color?: string
   scrollbar?: boolean
-  scrollbarWidth?: number
+  scrollbarSize?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string
 }
@@ -21,7 +21,7 @@ const props = withDefaults(
     size: 30,
     fader: true,
     scrollbar: true,
-    scrollbarWidth: 6,
+    scrollbarSize: 6,
     scrollbarColor: 'var(--gray-alpha-300)',
     scrollbarHoverColor: 'var(--gray-alpha-500)',
   },
@@ -64,17 +64,13 @@ const dragState = ref({
 // 计算垂直滚动条样式
 const verticalThumbStyle = computed(() => ({
   height: `${scrollInfo.value.verticalThumbHeight}px`,
-  width: `${props.scrollbarWidth}px`,
   transform: `translateY(${scrollInfo.value.verticalThumbTop}px)`,
-  cursor: 'pointer',
 }))
 
 // 计算水平滚动条样式
 const horizontalThumbStyle = computed(() => ({
   width: `${scrollInfo.value.horizontalThumbWidth}px`,
-  height: `${props.scrollbarWidth}px`,
   transform: `translateX(${scrollInfo.value.horizontalThumbLeft}px)`,
-  cursor: 'pointer',
 }))
 
 function updateScrollbarMetrics() {
@@ -133,6 +129,18 @@ function updateScrollbarMetrics() {
 }
 
 function onContainerScroll(ev: Event) {
+  if (props.fader) {
+    updateDirectionFader(ev.target as HTMLElement)
+  }
+
+  // 只有在非拖拽状态下才更新滚动条位置
+  if (props.scrollbar && !dragState.value.isDragging) {
+    updateScrollbarMetrics()
+  }
+}
+
+// 滚动时计算是否展示渐变
+function updateDirectionFader(target: HTMLElement) {
   const {
     scrollTop,
     scrollLeft,
@@ -140,7 +148,7 @@ function onContainerScroll(ev: Event) {
     scrollHeight,
     clientWidth,
     clientHeight,
-  } = ev.target as HTMLElement
+  } = target
 
   const hasTop = scrollTop >= props.size
   const hasBottom = scrollTop + clientHeight !== scrollHeight
@@ -152,11 +160,6 @@ function onContainerScroll(ev: Event) {
     left: hasLeft,
     right: hasRight,
     bottom: hasBottom,
-  }
-
-  // 只有在非拖拽状态下才更新滚动条位置
-  if (!dragState.value.isDragging) {
-    updateScrollbarMetrics()
   }
 }
 
@@ -289,18 +292,15 @@ onMounted(async () => {
 
   container.addEventListener('scroll', onContainerScroll, { passive: true })
 
-  // 初始化滚动条
   updateScrollbarMetrics()
 
-  // 添加窗口大小调整事件监听
   window.addEventListener('resize', updateScrollbarMetrics, { passive: true })
 })
 
 onBeforeUnmount(() => {
   scrollContainer.value?.removeEventListener('scroll', onContainerScroll)
-  window.removeEventListener('resize', updateScrollbarMetrics)
 
-  // 清除任何可能的拖拽事件监听
+  window.removeEventListener('resize', updateScrollbarMetrics)
   document.removeEventListener('mousemove', onDragMove)
   document.removeEventListener('mouseup', endDrag)
 })
@@ -309,8 +309,9 @@ onBeforeUnmount(() => {
 <template>
   <div
     class="pxd-scrollable group relative overflow-hidden" :style="{
-      '--size': `${size}px`,
-      '--color': color,
+      '--c': color,
+      '--s': `${size}px`,
+      '--ss': `${scrollbarSize}px`,
       '--sc': scrollbarColor,
       '--shc': scrollbarHoverColor,
     }"
@@ -338,11 +339,12 @@ onBeforeUnmount(() => {
     <template v-if="scrollbar">
       <div
         v-show="scrollInfo.isScrollable.y"
-        class="pxd-scrollable--custom-scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 motion-safe:transition-opacity"
-        :style="{ width: `${scrollbarWidth + 8}px` }"
+        aria-hidden="true"
+        class="pxd-scrollable--custom-scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 active:opacity-100 motion-safe:transition-opacity"
+        style="width:calc(var(--ss) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full w-(--ss) bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -350,14 +352,12 @@ onBeforeUnmount(() => {
 
       <div
         v-show="scrollInfo.isScrollable.x"
-        class="pxd-scrollable--custom-scrollbar-x absolute left-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 motion-safe:transition-opacity"
-        :style="{
-          height: `${scrollbarWidth + 8}px`,
-          right: scrollInfo.isScrollable.y ? `${scrollbarWidth + 8}px` : '0',
-        }"
+        aria-hidden="true"
+        class="pxd-scrollable--custom-scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 active:opacity-100 motion-safe:transition-opacity"
+        style="height:calc(var(--ss) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full h-(--ss) bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />
@@ -374,8 +374,8 @@ onBeforeUnmount(() => {
     content: '';
     position: absolute;
     backdrop-filter: blur(10px);
-    background: linear-gradient(var(--dir), transparent, var(--color, var(--background-100)));
-    mask-image: linear-gradient(var(--dir-revert), var(--color, var(--background-100)) 33%, transparent);
+    background: linear-gradient(var(--dir), transparent, var(--c, var(--background-100)));
+    mask-image: linear-gradient(var(--dir-revert), var(--c, var(--background-100)) 33%, transparent);
     opacity: 0;
   }
 
@@ -391,7 +391,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--size, 30px);
+    width: var(--s, 30px);
     height: 100%;
   }
 
@@ -413,7 +413,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--size, 30px);
+    height: var(--s, 30px);
   }
 
   &::before {
