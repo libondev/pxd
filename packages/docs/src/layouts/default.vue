@@ -48,7 +48,7 @@ const {
     margin-bottom: .25em;
 
     &:not(:first-child) {
-      margin-top: 1em;
+      margin-top: 1.5em;
     }
   }
 
@@ -106,17 +106,30 @@ const {
     text-underline-offset: 0.1em;
   }
 
+  ul {
+    padding-left: 2em;
+    list-style-type: auto;
+  }
+
+  li {
+    margin-block: 0.5em;
+  }
+
   hr {
     margin-block: 1.68em;
   }
 
-  .collect-block-trigger {
-    min-height: 40px;
+  pre {
+    padding: .68em 1.2em;
+    margin-block: 1em;
+    line-height: 1.25;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-alpha-300);
+    background-color: #121212;
   }
 
-  .collect-block-content {
-    padding-inline: 12px;
-    padding-block: 6px;
+  pre code {
+    font-size: 0.875rem;
   }
 }
 </style>

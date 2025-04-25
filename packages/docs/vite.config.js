@@ -4,12 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import gdsiResolver from 'gdsi/resolver'
+import anchor from 'markdown-it-anchor'
+import attrs from 'markdown-it-attrs'
 import {
-  codeLineNumbers,
-  collectBlockCode,
   container,
   noticeboard,
 } from 'markdown-it-plugins'
+import prism from 'markdown-it-prism'
 import autoImport from 'unplugin-auto-import/vite'
 import components from 'unplugin-vue-components/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
@@ -34,11 +35,12 @@ export default defineConfig({
         linkify: true,
         typographer: true,
       },
-      markdownItSetup(md) {
+      async markdownItSetup(md) {
         md.use(container)
         md.use(noticeboard)
-        md.use(codeLineNumbers)
-        md.use(collectBlockCode)
+        md.use(prism)
+        md.use(anchor)
+        md.use(attrs)
       },
     }),
     vueJsx(),

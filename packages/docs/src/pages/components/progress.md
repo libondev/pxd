@@ -1,5 +1,7 @@
 # Progress
 
+Display progress relative to a limit or related to a task.
+
 <script setup>
   const value = ref(50)
 

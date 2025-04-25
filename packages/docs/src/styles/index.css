@@ -2,9 +2,10 @@
 @import "../../node_modules/pxd/dist/styles/tw.css";
 @source "../../node_modules/pxd";
 @source "../../node_modules/markdown-it-plugins";
+@import "prismjs/themes/prism-tomorrow.css";
 
 @theme {
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'Inter', 'Geist', sans-serif;
   --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', monospace;
 }
 
