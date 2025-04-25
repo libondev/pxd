@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
@@ -23,7 +23,6 @@ const props = withDefaults(
   },
 )
 
-const attrs = useAttrs()
 const config = useConfigProvider()
 
 const SIZES = {
@@ -62,7 +61,6 @@ const computedClass = computed(() =>
     'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans',
     VARIANTS[props.variant],
     SIZES[props.size || config.size],
-    attrs.class as string,
   ),
 )
 </script>

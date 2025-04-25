@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { shallowRef } from 'vue'
+import type { ButtonProps } from '../button/types'
+import { computed, shallowRef } from 'vue'
 import Button from '../button/index.vue'
 
-interface Props {
+interface Props extends Omit<ButtonProps, 'as'> {
   scalable?: boolean
-  disabled?: boolean
   durations?: number | string
   maskColor?: string
   cancelable?: boolean
@@ -33,6 +33,18 @@ type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
 
 let isStarted = false
 const status = shallowRef<Status>('idle')
+
+const computedAttrs = computed(() => {
+  const { scalable, durations, maskColor, cancelable, ...rest } = props
+
+  return {
+    class: ['pxd-hold-button relative motion-safe:transition-all', {
+      scalable,
+      effective: status.value !== 'canceled',
+    }],
+    ...rest,
+  }
+})
 
 function onPointerEnter() {
   if (props.disabled) {
@@ -106,7 +118,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
   <Button
     class="pxd-hold-button relative motion-safe:transition-all"
     :class="{ scalable, effective: status !== 'canceled' }"
-    :disabled="disabled"
+    v-bind="computedAttrs"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
     @pointerenter="onPointerEnter"
@@ -121,7 +133,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
     <template #suffix>
       <slot name="suffix" />
       <div
-        class="pxd-hold-button--overlay absolute -inset-px bg-(--mc) rounded-[inherit] pointer-events-none"
+        class="pxd-hold-button--overlay absolute -inset-px bg-(--mc) rounded-inherit pointer-events-none"
         :class="{ finished: status === 'confirmed' }"
         :style="`--ds:${durations}s;--mc:${maskColor}`"
         @transitionend="onTransitionEnd"

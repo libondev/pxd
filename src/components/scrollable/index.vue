@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, shallowRef } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 
 interface Props {
   size?: number
   fader?: boolean
   color?: string
+  scrollbar?: boolean
 }
 
 defineOptions({
@@ -14,14 +15,15 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    size: 40,
-    fader: true
+    size: 30,
+    fader: true,
+    scrollbar: true,
   },
 )
 
 const scrollContainer = shallowRef<HTMLElement>(null!)
 
-const scrollDirs = ref({
+const faderDirections = ref({
   top: false,
   left: false,
   right: false,
@@ -35,7 +37,7 @@ function onContainerScroll(ev: Event) {
     scrollWidth,
     scrollHeight,
     clientWidth,
-    clientHeight
+    clientHeight,
   } = ev.target as HTMLElement
 
   const hasTop = scrollTop >= props.size
@@ -43,31 +45,42 @@ function onContainerScroll(ev: Event) {
   const hasLeft = scrollLeft >= props.size
   const hasRight = scrollLeft + clientWidth !== scrollWidth
 
-  scrollDirs.value = {
+  faderDirections.value = {
     top: hasTop,
     left: hasLeft,
     right: hasRight,
-    bottom: hasBottom
+    bottom: hasBottom,
   }
 }
 
 onMounted(async () => {
   await nextTick()
 
-  const hasScrollbarX = scrollContainer.value.scrollWidth > scrollContainer.value.clientWidth
-  const hasScrollbarY = scrollContainer.value.scrollHeight > scrollContainer.value.clientHeight
+  if (!props.scrollbar && !props.fader) {
+    return
+  }
 
-  scrollDirs.value.right = hasScrollbarX
-  scrollDirs.value.bottom = hasScrollbarY
+  const container = scrollContainer.value
+
+  const hasScrollbarX = container.scrollWidth > container.clientWidth
+  const hasScrollbarY = container.scrollHeight > container.clientHeight
+
+  faderDirections.value.right = hasScrollbarX
+  faderDirections.value.bottom = hasScrollbarY
+
+  container.addEventListener('scroll', onContainerScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  scrollContainer.value.removeEventListener('scroll', onContainerScroll)
 })
 </script>
 
 <template>
-  <div class="pxd-scrollable relative overflow-hidden" :style="{ '--size': size + 'px', '--color': color }">
+  <div class="pxd-scrollable relative overflow-hidden" :style="{ '--size': `${size}px`, '--color': color }">
     <div
       ref="scrollContainer"
       class="pxd-scrollable--content w-full h-full scrollbar-hidden overflow-scroll"
-      @scroll="onContainerScroll"
     >
       <slot />
     </div>
@@ -75,13 +88,13 @@ onMounted(async () => {
     <template v-if="fader">
       <div
         aria-hidden="true"
-        :class="{ left: scrollDirs.left, right: scrollDirs.right }"
-        class="pxd-scrollable--x-fader z-10 pointer-events-none w-full h-full absolute inset-0"
+        :class="{ left: faderDirections.left, right: faderDirections.right }"
+        class="pxd-scrollable--x-fader pointer-events-none w-full h-full absolute inset-0"
       />
       <div
         aria-hidden="true"
-        :class="{ top: scrollDirs.top, bottom: scrollDirs.bottom }"
-        class="pxd-scrollable--y-fader z-10 pointer-events-none w-full h-full absolute inset-0"
+        :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
+        class="pxd-scrollable--y-fader pointer-events-none w-full h-full absolute inset-0"
       />
     </template>
   </div>
@@ -96,7 +109,7 @@ onMounted(async () => {
     position: absolute;
     backdrop-filter: blur(10px);
     background: linear-gradient(var(--dir), transparent, var(--color, var(--background-100)));
-    mask-image: linear-gradient(var(--dir-revert), var(--color, var(--background-100)) 40%, transparent);
+    mask-image: linear-gradient(var(--dir-revert), var(--color, var(--background-100)) 33%, transparent);
     opacity: 0;
   }
 

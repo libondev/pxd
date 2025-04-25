@@ -29,15 +29,15 @@ function onFinished(isFinished) {
 
 <template>
   <main class="flex flex-col justify-center sm:h-screen sm:-mt-13 py-40 px-4 text-center relative max-w-2xl mx-auto">
-    <h1 class="text-balance text-6xl font-bold flex items-start justify-center">
-      <span class="mr-1">PXD</span>
+    <h1 class="relative text-6xl font-bold flex items-start justify-center">
+      PXD
 
       <PBadge variant="vue">
         v{{ version }}
       </PBadge>
     </h1>
 
-    <p class="leading-tight text-lg text-secondary text-pretty mt-8">
+    <p class="text-balance leading-tight text-lg text-secondary text-pretty mt-8">
       A universal UI component library for Vue2&3
     </p>
 
@@ -46,7 +46,8 @@ function onFinished(isFinished) {
         cancelable
         durations=".5"
         :scale="false"
-        shape="rounded" variant="primary"
+        shape="rounded"
+        variant="primary"
         mask-color="hsl(var(--green-600-value))"
         @confirm="onTrigger"
         @finished="onFinished"

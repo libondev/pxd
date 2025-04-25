@@ -1,26 +1,16 @@
 <script lang="ts" setup>
-import type { VNode } from 'vue'
+import type { ButtonProps } from './types'
 import { twMerge } from 'tailwind-merge'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import Spinner from '../spinner/index.vue'
-
-interface Props {
-  as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
-  variant?: keyof typeof VARIANTS
-  size?: keyof typeof SIZES
-  shape?: 'square' | 'rounded'
-  block?: boolean
-  loading?: boolean
-  disabled?: boolean
-}
 
 defineOptions({
   name: 'PButton',
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<ButtonProps>(),
   {
     as: 'button',
     variant: 'outline',
@@ -31,7 +21,6 @@ const emits = defineEmits<{
   click: [MouseEvent]
 }>()
 
-const attrs = useAttrs()
 const config = useConfigProvider()
 
 const SIZES = {
@@ -63,7 +52,7 @@ const computedClassNames = computed(() => {
 
   classNames.push(SIZES[props.size || config.size])
 
-  classNames.push(props.block ? 'flex ' : 'inline-flex')
+  classNames.push(props.block ? 'flex w-full' : 'inline-flex')
 
   if (computedDisabled.value) {
     classNames.push(DISABLED_CLASS_NAMES)
@@ -77,7 +66,7 @@ const computedClassNames = computed(() => {
     )
   }
 
-  return twMerge(classNames, attrs.class as string)
+  return twMerge(classNames)
 })
 
 function onButtonClick(event: MouseEvent) {

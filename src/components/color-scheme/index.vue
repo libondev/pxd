@@ -3,9 +3,15 @@ import { MoonIcon, SunIcon } from 'gdsi/vue'
 import { customRef } from 'vue'
 import Button from '../button/index.vue'
 
+interface Props {
+  block?: boolean
+}
+
 defineOptions({
   name: 'PColorScheme',
 })
+
+defineProps<Props>()
 
 const emits = defineEmits<{
   toggle: [v: ColorScheme]
@@ -50,7 +56,12 @@ function toggleColorMode() {
 </script>
 
 <template>
-  <Button aria-label="Toggle color mode" @click="toggleColorMode">
+  <Button
+    aria-label="Toggle color mode"
+    :block="block"
+    v-bind="$attrs"
+    @click="toggleColorMode"
+  >
     <Transition name="color-mode" mode="out-in">
       <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-[1em]" />
     </Transition>

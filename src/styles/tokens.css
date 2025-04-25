@@ -246,3 +246,7 @@
 * {
   border-color: hsl(var(--gray-300-value));
 }
+
+.rounded-inherit {
+  border-radius: inherit;
+}

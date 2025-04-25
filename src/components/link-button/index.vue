@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ExternalIcon } from 'gdsi/vue'
+import { computed } from 'vue'
 import Button from '../button/index.vue'
 
 interface Props {
@@ -39,7 +40,7 @@ const alignClassName = {
   right: 'justify-end',
 }
 
-function linkAttrs(): LinkAttrs {
+const computedAttrs = computed<LinkAttrs>(() => {
   if (!props.href) {
     return null
   }
@@ -58,16 +59,16 @@ function linkAttrs(): LinkAttrs {
     href: props.href,
     target: props.target,
   }
-}
+})
 </script>
 
 <template>
   <Button
-    v-bind="linkAttrs()"
     role="link"
     rel="noopener noreferrer"
     class="pxd-link-button !no-underline"
     :class="alignClassName[align]"
+    v-bind="computedAttrs"
   >
     <template #prefix>
       <slot name="prefix" />
