@@ -77,7 +77,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
-    "bump": "pnpx bumpp"
+    "bump": "pnpx bumpp",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "tailwind-merge": ">=3.0.0",
@@ -96,6 +97,7 @@
     "@vue/tsconfig": "catalog:",
     "eslint": "catalog:",
     "happy-dom": "catalog:",
+    "husky": "^9.1.7",
     "mkdist": "catalog:",
     "npm-run-all2": "catalog:",
     "tinyglobby": "catalog:",
