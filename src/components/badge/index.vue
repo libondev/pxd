@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { VNode } from 'vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, useAttrs } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
+  as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
   href?: string
@@ -16,6 +18,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    as: 'span',
     variant: 'default',
   },
 )
@@ -54,10 +57,6 @@ const VARIANTS = {
   'turborepo': 'text-background bg-gradient-to-br from-[#ff1e56] to-[#0096ff]',
 }
 
-const badgeRenderType = computed(() => {
-  return props.variant === 'pill' ? 'a' : 'span'
-})
-
 const computedClass = computed(() =>
   twMerge(
     'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans',
@@ -69,7 +68,7 @@ const computedClass = computed(() =>
 </script>
 
 <template>
-  <component :is="badgeRenderType" :class="computedClass" :href="href">
+  <component :is="as" :class="computedClass" :href="href">
     <slot />
   </component>
 </template>

@@ -2,14 +2,16 @@
   "css.customData": [".vscode/tailwind.json"],
   "cSpell.words": [
     "antfu",
+    "bumpp",
     "esno",
+    "gdsi",
     "libondev",
+    "mkdist",
     "predev",
+    "pxd",
     "tsup",
     "vite",
-    "vitest",
-    "gdsi",
-    "pxd"
+    "vitest"
   ],
 
   // Disable the default formatter, use eslint instead

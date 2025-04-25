@@ -11,6 +11,7 @@ describe('badge', () => {
     })
 
     expect(wrapper.text()).toContain('Hello PXD!')
+    expect(wrapper.element.tagName).toBe('SPAN')
 
     wrapper.unmount()
   })
@@ -26,6 +27,18 @@ describe('badge', () => {
     expect(classes).toContain('from-[#42d392]')
     expect(classes).toContain('via-[#42d392]')
     expect(classes).toContain('to-[#647eff]')
+
+    wrapper.unmount()
+  })
+
+  it('should render as a tag', () => {
+    const wrapper = mount(Badge, {
+      props: {
+        as: 'a',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('A')
 
     wrapper.unmount()
   })
