@@ -5,7 +5,7 @@ interface ProgressProps {
   max?: number
   type?: 'default' | 'success' | 'warning' | 'error' | 'secondary'
   colors?: Record<string, string>
-  modelValue?: number
+  modelValue: number
 }
 
 defineOptions({
@@ -20,7 +20,6 @@ const props = withDefaults(
   defineProps<ProgressProps>(),
   {
     max: 100,
-    colors: null,
     type: 'default',
   },
 )
