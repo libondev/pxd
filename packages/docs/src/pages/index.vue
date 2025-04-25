@@ -29,13 +29,15 @@ function onFinished(isFinished) {
 
 <template>
   <main class="flex flex-col justify-center sm:h-screen sm:-mt-13 py-40 px-4 text-center relative max-w-2xl mx-auto">
-    <h1 class="relative text-6xl font-bold flex items-start justify-center">
-      PXD
+    <div class="relative">
+      <h1 class="font-bold inline text-6xl">
+        PXD
+      </h1>
 
-      <PBadge variant="vue">
+      <PBadge variant="vue" class="absolute top-0">
         v{{ version }}
       </PBadge>
-    </h1>
+    </div>
 
     <p class="text-balance leading-tight text-lg text-secondary text-pretty mt-8">
       A universal UI component library for Vue2&3

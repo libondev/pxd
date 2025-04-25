@@ -12,7 +12,7 @@ Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macro
 
 ## 为什么要做?
 
-我很早开始一直想自己实现一个组件库，而 `pxd` 距离是在 `2022-10-21` 发布的第一个版本，距今(2025-04-21)已近三年，期间组件库一直在不断被重构/设计，现在已经是第四版了。在前期探索阶段，我一直在思考项目的定位与实现方式。如今，借助 [`unbuild`](https://github.com/unjs/unbuild)、 [`mkdist`](https://github.com/unjs/mkdist) 和 [`vue-sfc-transformer`](https://github.com/nuxt-contrib/vue-sfc-transformer) 等工具，我逐渐明白了我到底想要做成什么样子：实现一个兼容 Vue2 和 Vue3 的组件库。就目前而言，这个赛道还没有一个正式可用的产品。
+我很早开始一直想自己实现一个组件库，而 `pxd` 距离是在 `2022-10-21` 发布的第一个版本，距今(2025-04-21)已近三年，期间组件库一直在不断被重构/设计，现在已经是第四版了。在前期探索阶段，我一直在思考项目的定位与实现方式。如今，借助 [`unbuild`](https://github.com/unjs/unbuild)、 [`mkdist`](https://github.com/unjs/mkdist) 和 [`vue-sfc-transformer`](https://github.com/nuxt-contrib/vue-sfc-transformer) 等工具，我逐渐明白了我到底想要做成什么样子：实现一个兼容 Vue2 和 Vue3 的组件库。
 
 ## 这是怎么实现的?
 
@@ -28,6 +28,11 @@ Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macro
     defineProps<Props>(),
     defaultConfig,
   )
+  // don't work
+  const props = withDefaults(
+    defineProps<Props>(),
+    { ...defaultConfig },
+  )
 
   // working
   const props = withDefaults(
@@ -39,6 +44,22 @@ Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macro
 - 同一个工作区安装了多个不同版本的 vue 会出现各种奇怪的问题，比如开发时使用的 `provide/inject` 是正常的，但是打包运行以后，`inject` 会无法获取，所以 Vue2 还是单独新建项目进行测试
 
 - 由于 Vue2 中事件透传的机制与 Vue3 不同（Vue3中不再区分原生事件和自定义事件），所以类似 `Button` 之类包含用户交互的 `click` 事件需要主动使用 emit 声明并向上传递事件
+  ```html
+  <template>
+    <button @click="handleClick">
+      Click me
+    </button>
+  </template>
+
+  <script setup>
+  const emits = defineEmits(['click'])
+
+  function handleClick(ev) {
+    emits('click', ev)
+  }
+  </script>
+  ```
+
 - 同样由于 Vue2 中 v-bind 的行为有所不同，所以可能有些属性不能正常传递和覆盖，如果在组件中遇到用户可以传入属性进行覆盖的就可以先合并再一次性传入：
   ```js
   function getButtonProps() {

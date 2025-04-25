@@ -23,8 +23,8 @@ const {
     </div>
   </div>
 
-  <div class="prose ml-64 border-r flex-1 min-h-screen">
-    <main class="p-16 h-full">
+  <div class="ml-64 border-r flex-1 min-h-screen">
+    <main class="prose p-16 h-full">
       <slot />
     </main>
 
@@ -125,7 +125,7 @@ const {
     line-height: 1.25;
     border-radius: var(--radius);
     border: 1px solid var(--gray-alpha-300);
-    background-color: #121212;
+    background-color: #000;
   }
 
   pre code {
