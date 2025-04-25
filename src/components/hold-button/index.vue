@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ButtonProps } from '../button/types'
+import type { ButtonProps } from '../../types/components'
 import { computed, shallowRef } from 'vue'
 import Button from '../button/index.vue'
 

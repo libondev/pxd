@@ -2,11 +2,11 @@
 
 ## 这是什么?
 
+-> `pxd` 是一个同时兼容 Vue@2 和 Vue@3 的 UI 组件库，让开发者无需切换依赖版本即可适配不同 Vue 版本的项目。
+
 ::: details Vue2 请先看这里
 Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macros.dev/macros/define-options.html) 以支持 [`defineOptions()`](https://vuejs.org/api/sfc-script-setup.html#defineoptions)
 :::
-
--> `pxd` 是一个同时兼容 Vue@2 和 Vue@3 的 UI 组件库，让开发者无需切换依赖版本即可适配不同 Vue 版本的项目。
 
 需要注意的是，`pxd` 并非兼容 Vue 的所有版本。为了抹平 Vue2 和 Vue3 之间的差异，项目的 Vue 版本要求不低于 `2.7+`，或在 Vue3 版本不低于 `3.3`。这是因为 `<script setup>` 语法在 `2.7` 和 `3.2` 版本才被正式使用，而 `defineOptions()` 宏则是在 `3.3` 版本才得到官方支持（如需在 Vue3.2 环境中使用，可通过安装 `unplugin-vue-define-options` 插件实现兼容）。
 
@@ -21,6 +21,7 @@ Vue2 需要安装额外插件: [`unplugin-vue-define-options`](https://vue-macro
 ## 过程中遇到过的问题
 
 - Vue@2.7 `withDefaults` 默认值只能使用对象字面量，也不能传入对象引用, 这个配置只能重新写一个对象
+
   ```ts
   // don't work
   const props = withDefaults(

@@ -45,7 +45,7 @@ const {
   :is(h1, h2, h3, h4) {
     font-weight: 500;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: .25em;
 
     &:not(:first-child) {
       margin-top: 1em;
@@ -108,6 +108,15 @@ const {
 
   hr {
     margin-block: 1.68em;
+  }
+
+  .collect-block-trigger {
+    min-height: 40px;
+  }
+
+  .collect-block-content {
+    padding-inline: 12px;
+    padding-block: 6px;
   }
 }
 </style>

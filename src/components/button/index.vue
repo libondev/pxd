@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ButtonProps } from './types'
+import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
