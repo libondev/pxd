@@ -27,6 +27,10 @@ const props = withDefaults(
   },
 )
 
+const emits = defineEmits<{
+  scroll: [Event]
+}>()
+
 const PADDING = 4
 const DOUBLE_PADDING = PADDING * 2
 
@@ -129,8 +133,10 @@ function updateScrollbarMetrics() {
 }
 
 function onContainerScroll(ev: Event) {
+  emits('scroll', ev)
+
   if (props.fader) {
-    updateDirectionFader(ev.target as HTMLElement)
+    updateDirectionFader()
   }
 
   // 只有在非拖拽状态下才更新滚动条位置
@@ -140,7 +146,11 @@ function onContainerScroll(ev: Event) {
 }
 
 // 滚动时计算是否展示渐变
-function updateDirectionFader(target: HTMLElement) {
+function updateDirectionFader() {
+  const container = scrollContainer.value
+  if (!container)
+    return
+
   const {
     scrollTop,
     scrollLeft,
@@ -148,7 +158,7 @@ function updateDirectionFader(target: HTMLElement) {
     scrollHeight,
     clientWidth,
     clientHeight,
-  } = target
+  } = container
 
   const hasTop = scrollTop >= props.size
   const hasBottom = scrollTop + clientHeight !== scrollHeight
@@ -303,6 +313,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', updateScrollbarMetrics)
   document.removeEventListener('mousemove', onDragMove)
   document.removeEventListener('mouseup', endDrag)
+})
+
+defineExpose({
+  forceUpdate: onContainerScroll,
 })
 </script>
 

@@ -29,7 +29,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [value: boolean]
+  'update:modelValue': [boolean]
 }>()
 
 const isExpanded = computed({

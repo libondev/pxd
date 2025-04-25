@@ -14,7 +14,7 @@ defineOptions({
 defineProps<Props>()
 
 const emits = defineEmits<{
-  toggle: [v: ColorScheme]
+  toggle: [ColorScheme]
 }>()
 
 const colorTransitions = {

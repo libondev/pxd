@@ -34,6 +34,10 @@ const props = withDefaults(
   },
 )
 
+const emits = defineEmits<{
+  click: [MouseEvent]
+}>()
+
 const alignClassName = {
   left: 'justify-start',
   center: 'justify-center',
@@ -60,6 +64,10 @@ const computedAttrs = computed<LinkAttrs>(() => {
     target: props.target,
   }
 })
+
+function onLinkClick(ev: MouseEvent) {
+  emits('click', ev)
+}
 </script>
 
 <template>
@@ -69,6 +77,7 @@ const computedAttrs = computed<LinkAttrs>(() => {
     class="pxd-link-button !no-underline"
     :class="alignClassName[align]"
     v-bind="computedAttrs"
+    @click="onLinkClick"
   >
     <template #prefix>
       <slot name="prefix" />
