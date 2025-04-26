@@ -32,6 +32,7 @@ declare module 'vue-router/auto-routes' {
     '/components/progress': RouteRecordInfo<'/components/progress', '/components/progress', Record<never, never>, Record<never, never>>,
     '/components/scrollable': RouteRecordInfo<'/components/scrollable', '/components/scrollable', Record<never, never>, Record<never, never>>,
     '/components/spinner': RouteRecordInfo<'/components/spinner', '/components/spinner', Record<never, never>, Record<never, never>>,
+    '/components/stack': RouteRecordInfo<'/components/stack', '/components/stack', Record<never, never>, Record<never, never>>,
     '/components/status-dot': RouteRecordInfo<'/components/status-dot', '/components/status-dot', Record<never, never>, Record<never, never>>,
     '/components/toggle': RouteRecordInfo<'/components/toggle', '/components/toggle', Record<never, never>, Record<never, never>>,
     '/guide': RouteRecordInfo<'/guide', '/guide', Record<never, never>, Record<never, never>>,
