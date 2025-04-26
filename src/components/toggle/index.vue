@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext.ts'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 type ValueType = boolean | number | string
 
