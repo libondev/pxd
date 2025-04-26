@@ -27,6 +27,8 @@
   --accents-7: #333;
   --accents-8: #111; */
 
+  --color-primary: hsl(var(--gray-1000-value));
+
   --gray-alpha-100: hsla(0, 0%, 0%, 0.05);
   --gray-alpha-200: hsla(0, 0%, 0%, 0.08);
   --gray-alpha-300: hsla(0, 0%, 0%, 0.12);
@@ -255,7 +257,7 @@
   --color-background-hover: hsl(var(--gray-200-value));
   --color-background-active: hsl(var(--gray-300-value));
 
-  --color-primary: hsl(var(--blue-700-value));
+  --color-primary: var(--color-primary);
   --color-secondary: hsl(var(--gray-700-value));
   --color-muted: var(--gray-alpha-800);
   --color-accent: hsl(var(--green-700-value));

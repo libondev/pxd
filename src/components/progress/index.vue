@@ -29,7 +29,7 @@ const emits = defineEmits<{
 }>()
 
 const typeColors = {
-  default: 'hsl(var(--gray-1000-value))',
+  default: 'var(--color-primary)',
   success: 'hsl(var(--blue-700-value))',
   warning: 'hsl(var(--amber-700-value))',
   secondary: 'hsl(var(--gray-700-value))',
@@ -55,11 +55,11 @@ const progressColor = computed(() => {
 
     for (let i = 0; i < sortedKeys.length; i++) {
       if (progressValue.value < sortedKeys[i]) {
-        return colors[sortedKeys[i - 1]]
+        return colors[sortedKeys[i - 1]] || typeColors.default
       }
     }
 
-    return colors[sortedKeys[sortedKeys.length - 1]]
+    return colors[sortedKeys[sortedKeys.length - 1]] || typeColors.default
   }
 
   if (type && typeColors[type]) {

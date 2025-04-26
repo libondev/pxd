@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { VNode } from 'vue'
 import type { ConfigProviderProps } from '../../composables/useConfigProviderContext'
+import type { ComponentAs } from '../../types/components'
 import { provideConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props extends ConfigProviderProps {
-  as?: keyof HTMLElementTagNameMap | VNode
+  as?: ComponentAs
 }
 
 defineOptions({

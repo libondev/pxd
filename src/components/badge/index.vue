@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { VNode } from 'vue'
+import type { ComponentAs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
-  as?: keyof HTMLElementTagNameMap | 'router-link' | VNode
+  as?: ComponentAs
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
   href?: string
@@ -19,7 +19,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     as: 'span',
-    variant: 'default',
+    variant: 'gray',
   },
 )
 
@@ -33,8 +33,7 @@ const SIZES = {
 
 const VARIANTS = {
   'pill': 'bg-background shadow-[0_0_0_1px_var(--color-gray-300)]',
-  'default': 'bg-background-100',
-  'gray': 'bg-gray-700 text-background',
+  'gray': 'bg-gray-600 text-background',
   'blue': 'bg-blue-700 text-background',
   'purple': 'bg-purple-700 text-background',
   'amber': 'bg-amber-700',
@@ -58,15 +57,29 @@ const VARIANTS = {
 
 const computedClass = computed(() =>
   twMerge(
-    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans',
+    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline',
     VARIANTS[props.variant],
     SIZES[props.size || config.size],
   ),
 )
+
+const badgeAttrs = computed(() => {
+  if (props.as === 'router-link' || props.as === 'RouterLink') {
+    return {
+      to: props.href,
+    }
+  } else if (props.as === 'a') {
+    return {
+      href: props.href,
+    }
+  }
+
+  return {}
+})
 </script>
 
 <template>
-  <component :is="as" :class="computedClass" :href="href">
+  <component :is="as" :class="computedClass" v-bind="badgeAttrs">
     <slot />
   </component>
 </template>
