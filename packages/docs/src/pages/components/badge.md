@@ -3,7 +3,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ## Basic
 
-<div class="flex flex-wrap gap-2">
+<div class="flex flex-wrap gap-2 capitalize">
   <PBadge variant="gray">
     gray
   </PBadge>
