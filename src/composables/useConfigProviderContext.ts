@@ -1,8 +1,7 @@
+import type { ComponentSize } from '../types/components'
 import { inject, provide } from 'vue'
 
 export const injectionKey = 'configProvider'
-
-export type ComponentSize = 'sm' | 'md' | 'lg'
 
 export interface ConfigProviderProps {
   size?: ComponentSize

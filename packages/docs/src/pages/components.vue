@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DefaultLayout from '@/layouts/default.vue'
 import { components } from '@/consts/components'
+import DefaultLayout from '@/layouts/default.vue'
 
 const menus = components.map(({ name, camelized }) => {
   return {

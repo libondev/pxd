@@ -30,8 +30,8 @@ describe('stack', () => {
   it('should apply styles when direction is row', () => {
     const wrapper = mount(Stack, {
       props: {
-        direction: 'row'
-      }
+        direction: 'row',
+      },
     })
 
     const classes = wrapper.classes()
@@ -44,8 +44,8 @@ describe('stack', () => {
   it('should apply custom gap value', () => {
     const wrapper = mount(Stack, {
       props: {
-        gap: 4
-      }
+        gap: 4,
+      },
     })
 
     expect(wrapper.attributes('style')).toContain('--gap: 16px')
@@ -58,9 +58,9 @@ describe('stack', () => {
       props: {
         direction: {
           xs: 'col',
-          md: 'row'
-        }
-      }
+          md: 'row',
+        },
+      },
     })
 
     const classes = wrapper.classes()
@@ -74,9 +74,9 @@ describe('stack', () => {
       props: {
         gap: {
           xs: 1,
-          md: 3
-        }
-      }
+          md: 3,
+        },
+      },
     })
 
     const style = wrapper.attributes('style')
@@ -91,14 +91,14 @@ describe('stack', () => {
       props: {
         direction: {
           xs: 'col',
-          lg: 'row'
+          lg: 'row',
         },
         gap: {
           xs: 1,
           md: 2,
-          lg: 4
-        }
-      }
+          lg: 4,
+        },
+      },
     })
 
     const classes = wrapper.classes()

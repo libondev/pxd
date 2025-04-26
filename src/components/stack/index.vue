@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import type { ComponentBreakpointKeys } from '../../types/components'
+import { computed } from 'vue'
 
 defineOptions({
   name: 'PStack',
@@ -44,13 +44,13 @@ const presetGapClasses = {
 
 const classes = computed(() => {
   const basic = ['pxd-stack flex', getDirectionClasses()]
-  console.info('🍀index.vue:47/(basic):\n', basic)
 
   if (typeof props.gap === 'number') {
     basic.push('gap-(--gap)')
-  } else if (typeof props.gap === 'object') {
+  }
+  else if (typeof props.gap === 'object') {
     basic.push(
-      Object.keys(props.gap).map((bp) => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' ')
+      Object.keys(props.gap).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' '),
     )
   }
 
@@ -71,7 +71,6 @@ const calcGapSize = computed(() => {
 
 function getDirectionClasses() {
   const direction = props.direction
-  console.info('🍀index.vue:74/(direction):\n', direction)
 
   switch (typeof direction) {
     case 'string':
@@ -84,7 +83,6 @@ function getDirectionClasses() {
       return 'flex-col'
   }
 }
-
 </script>
 
 <template>

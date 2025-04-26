@@ -3,20 +3,22 @@ import { onUnmounted, shallowRef } from 'vue'
 export function useMediaQuery(query: string) {
   const matches = shallowRef(false)
 
-  if (typeof window !== 'undefined' && window.matchMedia) {
-    matches.value = window.matchMedia(query).matches
-
-    const mediaQuery = window.matchMedia(query)
-    const handler = (event: MediaQueryListEvent) => {
-      matches.value = event.matches
-    }
-
-    mediaQuery.addEventListener('change', handler, { passive: true })
-
-    onUnmounted(() => {
-      mediaQuery.removeEventListener('change', handler)
-    })
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return matches
   }
+
+  const mediaQuery = window.matchMedia(query)
+  matches.value = mediaQuery.matches
+
+  const handler = (event: MediaQueryListEvent) => {
+    matches.value = event.matches
+  }
+
+  mediaQuery.addEventListener('change', handler, { passive: true })
+
+  onUnmounted(() => {
+    mediaQuery.removeEventListener('change', handler)
+  })
 
   return matches
 }
