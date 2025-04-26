@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 # LinkButton
 Inherit button style links.
 
@@ -13,7 +17,7 @@ Inherit button style links.
 ```
 
 ## Sizes
-<div class="space-x-2">
+<PStack>
   <PLinkButton size="sm" href="/components/link-button">
     sm
   </PLinkButton>
@@ -23,17 +27,19 @@ Inherit button style links.
   <PLinkButton size="lg" href="/components/link-button">
     lg
   </PLinkButton>
-</div>
+</PStack>
 
 
 ## Variant
-<PLinkButton variant="ghost" href="/components/link-button">
-  ghost link
-</PLinkButton>
+<PStack>
+  <PLinkButton variant="ghost" href="/components/link-button">
+    ghost link
+  </PLinkButton>
 
-<PLinkButton variant="primary" href="/components/link-button">
-  primary link
-</PLinkButton>
+  <PLinkButton variant="primary" href="/components/link-button">
+    primary link
+  </PLinkButton>
+</PStack>
 
 ```html
 <PLinkButton variant="ghost" href="/components/link-button">

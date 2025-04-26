@@ -1,10 +1,12 @@
+<script setup>
 
+</script>
 
 # Button
 One of the most basic components, it will help you complete the interaction.
 
 ## Basic
-<div class="space-x-2">
+<PStack>
   <PButton> default(outline) </PButton>
   <PButton variant="ghost"> ghost </PButton>
   <PButton variant="error"> error </PButton>
@@ -12,7 +14,7 @@ One of the most basic components, it will help you complete the interaction.
   <PButton variant="success"> success </PButton>
   <PButton disabled> disabled </PButton>
   <PButton loading> loading </PButton>
-</div>
+</PStack>
 
 ```html
 <PButton> default(outline) </PButton>
@@ -25,11 +27,11 @@ One of the most basic components, it will help you complete the interaction.
 ```
 
 ## Sizes
-<div class="space-x-2">
+<PStack>
   <PButton size="sm">sm</PButton>
   <PButton size="md">md(default)</PButton>
   <PButton size="lg">lg</PButton>
-</div>
+</PStack>
 
 ```html
 <PButton size="sm">sm</PButton>
@@ -38,11 +40,11 @@ One of the most basic components, it will help you complete the interaction.
 ```
 
 ## Shape
-<div class="space-x-2">
+<PStack>
   <PButton>default</PButton>
   <PButton shape="square">square</PButton>
   <PButton shape="rounded">rounded</PButton>
-</div>
+</PStack>
 
 ```html
 <PButton>default</PButton>

@@ -21,7 +21,8 @@ function resolver(): ComponentResolver {
         .slice(1)
 
       return {
-        importName: name,
+        name: 'default',
+        as: name,
         from: `pxd/components/${partialName}`,
       }
     },

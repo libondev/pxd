@@ -1,8 +1,12 @@
+<script setup>
+
+</script>
+
 # ConfigProvider
 Config Provider is used for providing global configurations,
 
 ## Basic
-<div class="space-y-4">
+<PStack>
   <PConfigProvider size="sm">
     <PButton>Button</PButton>
   </PConfigProvider>
@@ -14,7 +18,7 @@ Config Provider is used for providing global configurations,
   <PConfigProvider size="lg">
     <PButton>Button</PButton>
   </PConfigProvider>
-</div>
+</PStack>
 
 ```html
 <PConfigProvider size="sm">

@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 # HoldButton
 Press and hold the button to trigger some logic (such as delete).
 
@@ -16,7 +20,7 @@ function onCanceled() {
 </script>
 
 ## Basic
-<div class="space-x-2">
+<PStack>
   <PHoldButton v-on:confirm="onConfirm" v-on:finished="onFinished">
     Hole me
   </PHoldButton>
@@ -28,7 +32,7 @@ function onCanceled() {
   <PHoldButton shape="square" v-on:confirm="onConfirm" v-on:finished="onFinished">
     Hole me
   </PHoldButton>
-</div>
+</PStack>
 
 ```html
 <PHoldButton>
@@ -47,7 +51,7 @@ function onCanceled() {
 ## Variants
 You can set the same `variant` property as the button.
 
-<div class="space-x-2">
+<PStack>
   <PHoldButton> default </PHoldButton>
   <PHoldButton variant="ghost"> ghost </PHoldButton>
   <PHoldButton variant="error"> error </PHoldButton>
@@ -55,7 +59,7 @@ You can set the same `variant` property as the button.
   <PHoldButton variant="success"> success </PHoldButton>
   <PHoldButton disabled> disabled </PHoldButton>
   <PHoldButton loading> loading </PHoldButton>
-</div>
+</PStack>
 
 ```html
 <PHoldButton> default(outline) </PHoldButton>

@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 # Stack
 Display elements vertically or horizontally on the page.
 

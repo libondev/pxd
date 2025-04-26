@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 # Scrollable
 
 <PScrollable class="w-100 h-100 border rounded-md">

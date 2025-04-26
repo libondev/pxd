@@ -1,12 +1,12 @@
-# Toggle
-Switch between two values
-
 <script setup>
   import { ref } from 'vue'
 
   const isChecked = ref(false)
   const customValue = ref('closed')
 </script>
+
+# Toggle
+Switch between two values
 
 ## Default
 
@@ -18,11 +18,11 @@ Switch between two values
 
 ## Sizes
 
-<div class="space-x-4">
+<PStack>
   <PToggle v-model="isChecked" size="sm" />
   <PToggle v-model="isChecked" size="md" />
   <PToggle v-model="isChecked" size="lg" />
-</div>
+</PStack>
 
 ```html
 <PToggle v-model="isChecked" />

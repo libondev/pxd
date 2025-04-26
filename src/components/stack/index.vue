@@ -2,6 +2,12 @@
 import type { ComponentBreakpointKeys } from '../../types/components'
 import { computed } from 'vue'
 
+interface Props {
+  wrap?: boolean
+  gap?: number | ResponsiveValue<number>
+  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
+}
+
 defineOptions({
   name: 'PStack',
 })
@@ -9,17 +15,13 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    direction: 'col',
     gap: 2,
+    wrap: true,
+    direction: 'row',
   },
 )
 
 type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
-
-interface Props {
-  gap?: number | ResponsiveValue<number>
-  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
-}
 
 const presetDirClasses = {
   'xs:col': 'xs:flex-col',
@@ -44,6 +46,10 @@ const presetGapClasses = {
 
 const classes = computed(() => {
   const basic = ['pxd-stack flex', getDirectionClasses()]
+
+  if (props.wrap) {
+    basic.push('flex-wrap')
+  }
 
   if (typeof props.gap === 'number') {
     basic.push('gap-(--gap)')

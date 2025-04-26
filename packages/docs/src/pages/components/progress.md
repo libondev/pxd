@@ -1,9 +1,5 @@
-# Progress
-
-Display progress relative to a limit or related to a task.
-
 <script setup>
-  import { ref } from 'vue'
+  import { ref, onBeforeUnmount } from 'vue'
 
   const value = ref(50)
 
@@ -23,6 +19,10 @@ Display progress relative to a limit or related to a task.
     clearInterval(timer)
   })
 </script>
+
+# Progress
+
+Display progress relative to a limit or related to a task.
 
 ## Basic
 

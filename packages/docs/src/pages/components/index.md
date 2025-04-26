@@ -7,8 +7,8 @@ import { components } from '@/consts/components'
 # Overview
 
 <div class="flex flex-wrap gap-5">
-  <template v-for="{name} in components" :key="name">
-    <OverviewCard :name="name">
+  <template v-for="{ camelized, name } in components" :key="name">
+    <OverviewCard :name="camelized">
       {{ name }}
     </OverviewCard>
   </template>

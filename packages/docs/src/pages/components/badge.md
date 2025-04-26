@@ -1,9 +1,13 @@
+<script setup>
+
+</script>
+
 # Badge
 A label that emphasizes an element that requires attention, or helps categorize with other similar elements.
 
 ## Basic
 
-<div class="flex flex-wrap gap-2 capitalize">
+<PStack class="capitalize">
   <PBadge variant="gray">
     gray
   </PBadge>
@@ -36,6 +40,24 @@ A label that emphasizes an element that requires attention, or helps categorize 
     teal
   </PBadge>
 
+  <PBadge variant="inverted">
+    inverted
+  </PBadge>
+
+  <PBadge variant="vue">
+    vue
+  </PBadge>
+
+  <PBadge variant="trial">
+    trial
+  </PBadge>
+
+  <PBadge variant="turborepo">
+    turborepo
+  </PBadge>
+</PStack>
+
+<PStack class="mt-2">
   <PBadge variant="gray-subtle">
     gray-subtle
   </PBadge>
@@ -67,23 +89,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
   <PBadge variant="teal-subtle">
     teal-subtle
   </PBadge>
-
-  <PBadge variant="inverted">
-    inverted
-  </PBadge>
-
-  <PBadge variant="vue">
-    vue
-  </PBadge>
-
-  <PBadge variant="trial">
-    trial
-  </PBadge>
-
-  <PBadge variant="turborepo">
-    turborepo
-  </PBadge>
-</div>
+</PStack>
 
 ```html
 <PBadge variant="gray"> gray </PBadge>
@@ -109,11 +115,11 @@ A label that emphasizes an element that requires attention, or helps categorize 
 ```
 
 ## Sizes
-<div class="space-x-2">
+<PStack>
   <PBadge size="sm">sm</PBadge>
   <PBadge size="md">md(default)</PBadge>
   <PBadge size="lg">lg</PBadge>
-</div>
+</PStack>
 
 ```html
 <PBadge size="sm">sm</PBadge>
@@ -122,7 +128,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 ```
 
 ## With Icons
-<div class="space-x-2">
+<PStack>
   <PBadge size="sm">
     <IconShield />
     Gray
@@ -137,21 +143,21 @@ A label that emphasizes an element that requires attention, or helps categorize 
     <IconShield />
     Gray
   </PBadge>
-</div>
+</PStack>
 
 ```html
 <PBadge size="sm">
-  <IconShield />
+  <ShieldIcon />
   Gray
 </PBadge>
 
 <PBadge size="md">
-  <IconShield />
+  <ShieldIcon />
   Gray
 </PBadge>
 
 <PBadge size="lg">
-  <IconShield />
+  <ShieldIcon />
   Gray
 </PBadge>
 ```

@@ -1,11 +1,13 @@
+<script setup>
+  import { ref } from 'vue'
+
+  const expanded = ref(false)
+</script>
+
 # MoreButton
 Styling component to show expanded or collapsed content.
 
 ## Basic
-<script setup>
-  import { ref } from 'vue'
-  const expanded = ref(false)
-</script>
 
 <PMoreButton v-model="expanded" />
 <PMoreButton v-model="expanded" :button-props="{variant:'primary'}" />
