@@ -21,7 +21,7 @@ describe('stack', () => {
 
     const classes = wrapper.classes()
     expect(classes).toContain('flex')
-    expect(classes).toContain('flex-col')
+    expect(classes).toContain('flex-row')
     expect(wrapper.attributes('style')).toContain('--gap: 8px')
 
     wrapper.unmount()
