@@ -3,6 +3,8 @@
 Display progress relative to a limit or related to a task.
 
 <script setup>
+  import { ref } from 'vue'
+
   const value = ref(50)
 
   const colors = {

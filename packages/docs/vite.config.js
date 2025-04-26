@@ -60,7 +60,8 @@ export default defineConfig({
     }),
     autoImport({
       dts: './shims/auto-imports.d.ts',
-      extensions: ['.vue', '.md'],
+      extensions: ['vue', 'md'],
+      dirs: ['./src/components', './src/pages'],
       include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.md$/],
       imports: [
         'vue',

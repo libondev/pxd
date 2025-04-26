@@ -69,7 +69,7 @@
     "build": "run-s update-exports typecheck lint build:lib",
     "build:lib": "unbuild",
     "build:docs": "pnpm --filter docs build",
-    "preview:docs": "pnpm --filter docs preview",
+    "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
     "prepublishOnly": "pnpm build",
     "lint": "eslint .",

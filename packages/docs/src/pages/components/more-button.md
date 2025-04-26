@@ -3,6 +3,7 @@ Styling component to show expanded or collapsed content.
 
 ## Basic
 <script setup>
+  import { ref } from 'vue'
   const expanded = ref(false)
 </script>
 

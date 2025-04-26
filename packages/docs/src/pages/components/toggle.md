@@ -2,6 +2,8 @@
 Switch between two values
 
 <script setup>
+  import { ref } from 'vue'
+
   const isChecked = ref(false)
   const customValue = ref('closed')
 </script>
