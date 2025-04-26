@@ -18,6 +18,7 @@ import router from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import markdown from 'vite-plugin-md'
 import pxdResolver from '../../src/plugins/resolver'
+import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -66,6 +67,7 @@ export default defineConfig({
         VueRouterAutoImports,
       ],
     }),
+    fileCreateWatcher(),
   ],
 
   resolve: {

@@ -119,6 +119,10 @@ const {
     margin-block: 1.68em;
   }
 
+  p {
+    margin-block: .5em;
+  }
+
   pre {
     padding: .68em 1.2em;
     margin-block: 1em;
@@ -130,6 +134,7 @@ const {
 
   pre code {
     font-size: 0.875rem;
+    white-space: pre-wrap;
   }
 }
 </style>
