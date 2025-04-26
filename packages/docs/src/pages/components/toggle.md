@@ -14,7 +14,7 @@ Switch between two values
 <PToggle v-model="isChecked" />
 ```
 
-## Size
+## Sizes
 
 <div class="space-x-4">
   <PToggle v-model="isChecked" size="sm" />

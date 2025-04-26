@@ -13,3 +13,8 @@ Styling component to show expanded or collapsed content.
 <PMoreButton v-model="expanded" />
 <PMoreButton v-model="expanded" :button-props="{variant:'primary'}" />
 ```
+
+## Texts
+You can modify the button text by setting `lessText` and `moreText`.
+
+<PMoreButton v-model="expanded" more-text="moreee" less-text="lessss" />

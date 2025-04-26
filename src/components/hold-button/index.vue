@@ -19,7 +19,7 @@ const props = withDefaults(
   {
     scalable: true,
     durations: 2,
-    maskColor: 'hsl(var(--red-600-value))',
+    maskColor: 'var(--gray-alpha-600)',
   },
 )
 
@@ -144,7 +144,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 
 <style lang="postcss">
 .pxd-hold-button {
-  &.scalable:active {
+  &.scalable:not(.is-disabled):active {
     transform: scale(.97);
   }
 

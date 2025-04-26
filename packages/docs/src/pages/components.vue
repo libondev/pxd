@@ -1,22 +1,10 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/default.vue'
-import { camelize } from 'vue'
+import { components } from '@/consts/components'
 
-function pascalize(name: string) {
-  const camelized = camelize(name)
-  return camelized.charAt(0).toUpperCase() + camelized.slice(1)
-}
-
-const glob = import.meta.glob([
-  './components/**/*.md',
-  '!./components/index.md',
-], { eager: true })
-
-const menus = Object.keys(glob).map((path) => {
-  const name = path.split('/').pop()!.replace('.md', '')
-
+const menus = components.map(({ name, camelized }) => {
   return {
-    label: pascalize(name),
+    label: camelized,
     path: `/components/${name}`,
   }
 })

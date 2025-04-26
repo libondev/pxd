@@ -46,7 +46,7 @@ const computedDisabled = computed(() => {
 })
 
 const computedClassNames = computed(() => {
-  const classNames = ['pxd-button cursor-pointer motion-safe:transition-colors items-center justify-center border']
+  const classNames = ['pxd-button cursor-pointer select-none motion-safe:transition-colors items-center justify-center border']
 
   classNames.push(VARIANTS[props.variant] || VARIANTS.outline)
 

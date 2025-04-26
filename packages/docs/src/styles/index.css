@@ -23,10 +23,6 @@ body,
   @apply h-full;
 }
 
-.pxd-link-button.router-link-active {
+:is(header, .sidebar) .pxd-link-button.router-link-active {
   background-color: var(--color-background);
-}
-
-.pxd-link-button.router-link-active:not(:hover) {
-  transition: none
 }

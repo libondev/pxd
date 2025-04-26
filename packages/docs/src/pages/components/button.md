@@ -5,27 +5,13 @@ One of the most basic components, it will help you complete the interaction.
 
 ## Basic
 <div class="space-x-2">
-  <PButton>
-    default(outline)
-  </PButton>
-  <PButton variant="ghost">
-    ghost
-  </PButton>
-  <PButton variant="error">
-    error
-  </PButton>
-  <PButton variant="primary">
-    primary
-  </PButton>
-  <PButton variant="success">
-    success
-  </PButton>
-  <PButton disabled>
-    disabled
-  </PButton>
-  <PButton loading>
-    loading
-  </PButton>
+  <PButton> default(outline) </PButton>
+  <PButton variant="ghost"> ghost </PButton>
+  <PButton variant="error"> error </PButton>
+  <PButton variant="primary"> primary </PButton>
+  <PButton variant="success"> success </PButton>
+  <PButton disabled> disabled </PButton>
+  <PButton loading> loading </PButton>
 </div>
 
 ```html
@@ -38,7 +24,7 @@ One of the most basic components, it will help you complete the interaction.
 <PButton loading> loading </PButton>
 ```
 
-## Size
+## Sizes
 <div class="space-x-2">
   <PButton size="sm">sm</PButton>
   <PButton size="md">md(default)</PButton>
