@@ -27,6 +27,7 @@ declare module 'vue-router/auto-routes' {
     '/components/more-button': RouteRecordInfo<'/components/more-button', '/components/more-button', Record<never, never>, Record<never, never>>,
     '/components/progress': RouteRecordInfo<'/components/progress', '/components/progress', Record<never, never>, Record<never, never>>,
     '/components/scrollable': RouteRecordInfo<'/components/scrollable', '/components/scrollable', Record<never, never>, Record<never, never>>,
+    '/components/status-dot': RouteRecordInfo<'/components/status-dot', '/components/status-dot', Record<never, never>, Record<never, never>>,
     '/guide': RouteRecordInfo<'/guide', '/guide', Record<never, never>, Record<never, never>>,
     '/guide/': RouteRecordInfo<'/guide/', '/guide', Record<never, never>, Record<never, never>>,
   }
