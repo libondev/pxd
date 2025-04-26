@@ -24,9 +24,7 @@ describe('badge', () => {
     })
 
     const classes = wrapper.classes()
-    expect(classes).toContain('from-[#42d392]')
-    expect(classes).toContain('via-[#42d392]')
-    expect(classes).toContain('to-[#647eff]')
+    expect(classes).toContain('bg-linear-[315deg,#42d392_25%,#647eff]')
 
     wrapper.unmount()
   })
