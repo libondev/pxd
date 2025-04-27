@@ -37,5 +37,6 @@ declare module 'vue-router/auto-routes' {
     '/components/toggle': RouteRecordInfo<'/components/toggle', '/components/toggle', Record<never, never>, Record<never, never>>,
     '/guide': RouteRecordInfo<'/guide', '/guide', Record<never, never>, Record<never, never>>,
     '/guide/': RouteRecordInfo<'/guide/', '/guide', Record<never, never>, Record<never, never>>,
+    '/guide/installation': RouteRecordInfo<'/guide/installation', '/guide/installation', Record<never, never>, Record<never, never>>,
   }
 }

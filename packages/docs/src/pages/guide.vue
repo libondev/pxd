@@ -3,8 +3,8 @@ import DefaultLayout from '@/layouts/default.vue'
 
 const menus = [
   {
-    label: 'Guide',
-    path: '/guide',
+    label: 'Installation',
+    path: '/guide/installation',
   },
 ]
 </script>
