@@ -4,7 +4,7 @@ import { computed } from 'vue'
 
 interface Props {
   wrap?: boolean
-  gap?: number | ResponsiveValue<number>
+  gap?: number | string | ResponsiveValue<number>
   direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
 }
 
@@ -51,7 +51,7 @@ const classes = computed(() => {
     basic.push('flex-wrap')
   }
 
-  if (typeof props.gap === 'number') {
+  if (['number', 'string'].includes(typeof props.gap)) {
     basic.push('gap-(--gap)')
   }
   else if (typeof props.gap === 'object') {
@@ -66,8 +66,8 @@ const classes = computed(() => {
 const calcGapSize = computed(() => {
   const gap = props.gap ?? 1
 
-  if (typeof gap === 'number') {
-    return `--gap: ${gap * 4}px`
+  if (['number', 'string'].includes(typeof gap)) {
+    return `--gap: ${Number(gap) * 4}px`
   }
 
   return Object.entries(gap).map(([bp, value]) => {
