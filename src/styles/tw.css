@@ -356,6 +356,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-inherit: inherit;
+
+  --spacing-em: 1em;
 }
 
 

@@ -73,10 +73,10 @@ const progressColor = computed(() => {
 <template>
   <progress
     class="
-      pxd-progress block w-full h-2 rounded overflow-hidden appearance-none align-[unset]
-      [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-bar]:rounded
-      [&::-moz-progress-value]:bg-(--fg) [&::-moz-progress-bar]:rounded [&::-moz-progress-bar]:transition-all
-      [&::-webkit-progress-value]:bg-(--fg) [&::-webkit-progress-value]:rounded [&::-webkit-progress-value]:transition-all
+      pxd-progress block w-full h-2 rounded-sm overflow-hidden appearance-none align-[unset]
+      [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-bar]:rounded-sm
+      [&::-moz-progress-value]:bg-(--fg) [&::-moz-progress-bar]:rounded-sm [&::-moz-progress-bar]:transition-all
+      [&::-webkit-progress-value]:bg-(--fg) [&::-webkit-progress-value]:rounded-sm [&::-webkit-progress-value]:transition-all
     "
     :style="`--fg: ${progressColor}`"
     :value="progressValue"

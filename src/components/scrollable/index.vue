@@ -78,8 +78,8 @@ const horizontalThumbStyle = computed(() => ({
 }))
 
 function updateScrollbarMetrics() {
-  const container = scrollContainer.value
-  if (!container)
+  const wrapper = scrollContainer.value
+  if (!wrapper)
     return
 
   const {
@@ -89,7 +89,7 @@ function updateScrollbarMetrics() {
     scrollHeight,
     clientWidth,
     clientHeight,
-  } = container
+  } = wrapper
 
   // 检查是否可滚动
   const isScrollableX = scrollWidth > clientWidth
@@ -147,8 +147,8 @@ function onContainerScroll(ev: Event) {
 
 // 滚动时计算是否展示渐变
 function updateDirectionFader() {
-  const container = scrollContainer.value
-  if (!container)
+  const wrapper = scrollContainer.value
+  if (!wrapper)
     return
 
   const {
@@ -158,7 +158,7 @@ function updateDirectionFader() {
     scrollHeight,
     clientWidth,
     clientHeight,
-  } = container
+  } = wrapper
 
   const hasTop = scrollTop >= props.size
   const hasBottom = scrollTop + clientHeight !== scrollHeight
@@ -178,8 +178,8 @@ function startDragVertical(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const container = scrollContainer.value
-  if (!container)
+  const wrapper = scrollContainer.value
+  if (!wrapper)
     return
 
   dragState.value = {
@@ -187,8 +187,8 @@ function startDragVertical(e: MouseEvent) {
     direction: 'vertical',
     startClientPos: e.clientY,
     startScrollPos: scrollInfo.value.verticalThumbTop,
-    containerSize: container.clientHeight,
-    contentSize: container.scrollHeight,
+    containerSize: wrapper.clientHeight,
+    contentSize: wrapper.scrollHeight,
     thumbSize: scrollInfo.value.verticalThumbHeight,
   }
 
@@ -204,8 +204,8 @@ function startDragHorizontal(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const container = scrollContainer.value
-  if (!container)
+  const wrapper = scrollContainer.value
+  if (!wrapper)
     return
 
   dragState.value = {
@@ -213,8 +213,8 @@ function startDragHorizontal(e: MouseEvent) {
     direction: 'horizontal',
     startClientPos: e.clientX,
     startScrollPos: scrollInfo.value.horizontalThumbLeft,
-    containerSize: container.clientWidth,
-    contentSize: container.scrollHeight,
+    containerSize: wrapper.clientWidth,
+    contentSize: wrapper.scrollHeight,
     thumbSize: scrollInfo.value.horizontalThumbWidth,
   }
 
@@ -230,8 +230,8 @@ function onDragMove(e: MouseEvent) {
   if (!dragState.value.isDragging || !dragState.value.direction)
     return
 
-  const container = scrollContainer.value
-  if (!container)
+  const wrapper = scrollContainer.value
+  if (!wrapper)
     return
 
   const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState.value
@@ -248,7 +248,7 @@ function onDragMove(e: MouseEvent) {
 
     // 计算并设置容器的滚动位置
     const scrollRatio = newThumbTop / (scrollableHeight - DOUBLE_PADDING)
-    container.scrollTop = scrollRatio * (contentSize - containerSize)
+    wrapper.scrollTop = scrollRatio * (contentSize - containerSize)
 
     // 直接更新滑块位置
     scrollInfo.value.verticalThumbTop = newThumbTop
@@ -265,7 +265,7 @@ function onDragMove(e: MouseEvent) {
 
     // 计算并设置容器的滚动位置
     const scrollRatio = newThumbLeft / (scrollableWidth - DOUBLE_PADDING)
-    container.scrollLeft = scrollRatio * (container.scrollWidth - containerSize)
+    wrapper.scrollLeft = scrollRatio * (wrapper.scrollWidth - containerSize)
 
     // 直接更新滑块位置
     scrollInfo.value.horizontalThumbLeft = newThumbLeft
@@ -292,15 +292,15 @@ onMounted(async () => {
     return
   }
 
-  const container = scrollContainer.value
+  const wrapper = scrollContainer.value
 
-  const hasScrollbarX = container.scrollWidth > container.clientWidth
-  const hasScrollbarY = container.scrollHeight > container.clientHeight
+  const hasScrollbarX = wrapper.scrollWidth > wrapper.clientWidth
+  const hasScrollbarY = wrapper.scrollHeight > wrapper.clientHeight
 
   faderDirections.value.right = hasScrollbarX
   faderDirections.value.bottom = hasScrollbarY
 
-  container.addEventListener('scroll', onContainerScroll, { passive: true })
+  wrapper.addEventListener('scroll', onContainerScroll, { passive: true })
 
   updateScrollbarMetrics()
 

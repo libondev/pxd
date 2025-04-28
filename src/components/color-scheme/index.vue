@@ -63,7 +63,7 @@ function toggleColorMode() {
     @click="toggleColorMode"
   >
     <Transition name="color-mode" mode="out-in">
-      <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-[1em]" />
+      <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
     </Transition>
   </Button>
 </template>

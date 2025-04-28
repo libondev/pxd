@@ -1,5 +1,5 @@
 <template>
-  <svg viewBox="0 0 300 300" class="pxd-logo block" width="1em" height="1em">
+  <svg viewBox="0 0 300 300" class="pxd-logo block size-em">
     <path class="shape fill-current stroke-current stroke-2 transform-origin-center" d="M 0,0 L 300,0 L 300,300 L 0,300 Z" />
   </svg>
 </template>

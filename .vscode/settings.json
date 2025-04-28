@@ -24,6 +24,15 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass"
+  ],
+  "tailwindCSS.classFunctions": ["tw", "clsx", "twMerge"],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
 
   // Enable eslint for all supported languages
   "eslint.validate": [

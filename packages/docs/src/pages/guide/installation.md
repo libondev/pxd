@@ -16,7 +16,6 @@ npm install pxd
 ```
 
 ## Styles
-Just this is enough.
 
 ### Tailwindcss@4
 
@@ -52,8 +51,7 @@ const app = createApp()
 app.use(PXD)
 ```
 
-```vue
-<!-- App.vue -->
+```html
 <template>
   <PButton>Click me</PButton>
 </template>

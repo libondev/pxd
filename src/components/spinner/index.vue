@@ -9,14 +9,23 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
 </script>
 
 <template>
-  <div class="pxd-spinner relative text-gray-700 motion-safe:animate-spin overflow-hidden pointer-events-none size-[1em]">
-    <div class="absolute left-1/2 top-1/2 w-full h-full">
+  <div class="pxd-spinner relative text-gray-700 overflow-hidden pointer-events-none size-em transform-origin-center motion-safe:animate-spin">
+    <div class="pxd-spinner-container absolute w-full h-full top-0 left-0">
       <div
         v-for="i of ITEMS_COUNT"
         :key="i"
-        class="pxd-spinner-item absolute rounded bg-current left-[-10%] top-[-3.9%] w-[24%] h-[8%]"
+        class="pxd-spinner-item absolute rounded-sm bg-current"
         :style="{ opacity: i * OPACITY_STEP, transform: `rotate(${i * ROTATE_STEP}deg) translate(146%)` }"
       />
     </div>
   </div>
 </template>
+
+<style>
+.pxd-spinner-item {
+  left: 38%;
+  top: 46%;
+  width: 24%;
+  height: 8%;
+}
+</style>
