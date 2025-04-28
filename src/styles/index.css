@@ -123,10 +123,7 @@
   --pink-900-value: 336, 65%, 45%;
   --pink-1000-value: 333, 74%, 15%;
 
-  font-family: Inter, Geist, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
+  color-scheme: light;
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
@@ -233,6 +230,8 @@
   --gray-alpha-800: hsla(0, 0%, 100%, .47);
   --gray-alpha-900: hsla(0, 0%, 100%, .61);
   --gray-alpha-1000: hsla(0, 0%, 100%, .92);
+
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -360,6 +359,14 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-inherit: inherit;
+
+  --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-xs: 0px 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 5px 10px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.12);
+  --shadow-sticky: 0 12px 10px -10px rgba(0, 0, 0, 0.12);
 
   --spacing-em: 1em;
 }

@@ -29,8 +29,8 @@ const props = withDefaults(
   {
     activeValue: true,
     inactiveValue: false,
-    activeBgColor: 'var(--color-blue-700)',
-    inactiveBgColor: 'var(--color-background-secondary)',
+    activeBgColor: 'var(--color-primary)',
+    inactiveBgColor: 'var(--color-gray-alpha-200)',
   },
 )
 
@@ -92,7 +92,7 @@ function onCheckboxChange(e: Event) {
       class="pxd-toggle--handle border border-gray-alpha-200 p-px rounded-full motion-safe:transition-colors [--tx:0] bg-(--ibc) peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
       :class="computedSize"
     >
-      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-white aspect-square h-full rounded-full border border-gray-alpha-200 translate-z-0 translate-x-(--tx) motion-safe:transition-transform">
+      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 translate-z-0 translate-x-(--tx) motion-safe:transition-transform">
         <slot v-if="isChecked" name="active-icon" />
         <slot v-else name="inactive-icon" />
       </span>

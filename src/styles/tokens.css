@@ -103,10 +103,7 @@
   --pink-900-value: 336, 65%, 45%;
   --pink-1000-value: 333, 74%, 15%;
 
-  font-family: Inter, Geist, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
+  color-scheme: light;
   background-color: var(--background-100);
   color: hsl(var(--gray-1000-value));
 }
@@ -213,6 +210,8 @@
   --gray-alpha-800: hsla(0, 0%, 100%, .47);
   --gray-alpha-900: hsla(0, 0%, 100%, .61);
   --gray-alpha-1000: hsla(0, 0%, 100%, .92);
+
+  color-scheme: dark;
 }
 
 .scrollbar-hidden {
@@ -225,10 +224,15 @@
   display: none;
 }
 
-* {
-  border-color: hsl(var(--gray-300-value));
-}
-
 .rounded-inherit {
   border-radius: inherit;
+}
+
+.size-em {
+  width: 1em;
+  height: 1em;
+}
+
+* {
+  border-color: hsl(var(--gray-300-value));
 }
