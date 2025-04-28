@@ -7,7 +7,7 @@
 # MoreButton
 Styling component to show expanded or collapsed content.
 
-## Basic
+## Default
 
 <PMoreButton v-model="expanded" />
 <PMoreButton v-model="expanded" :button-props="{variant:'primary'}" />

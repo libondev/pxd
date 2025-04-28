@@ -5,7 +5,7 @@
 # ConfigProvider
 Config Provider is used for providing global configurations,
 
-## Basic
+## Default
 <PStack>
   <PConfigProvider size="sm">
     <PButton>Button</PButton>

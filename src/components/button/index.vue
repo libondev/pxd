@@ -45,7 +45,7 @@ const computedDisabled = computed(() => {
   return props.disabled || props.loading
 })
 
-const computedClassNames = computed(() => {
+const computedClasses = computed(() => {
   const classNames = ['pxd-button cursor-pointer select-none motion-safe:transition-colors items-center justify-center border']
 
   classNames.push(VARIANTS[props.variant] || VARIANTS.outline)
@@ -78,7 +78,7 @@ function onButtonClick(event: MouseEvent) {
   <Component
     :is="as"
     role="button"
-    :class="computedClassNames"
+    :class="computedClasses"
     :disabled="computedDisabled"
     @click="onButtonClick"
   >

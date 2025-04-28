@@ -14,6 +14,8 @@
     "vite",
     "vitest"
   ],
+  "javascript.preferences.importModuleSpecifierEnding": "index",
+  "typescript.preferences.importModuleSpecifierEnding": "index",
 
   // Disable the default formatter, use eslint instead
   "prettier.enable": true,

@@ -5,7 +5,7 @@
 # Badge
 A label that emphasizes an element that requires attention, or helps categorize with other similar elements.
 
-## Basic
+## Default
 
 <PStack class="capitalize">
   <PBadge variant="gray">

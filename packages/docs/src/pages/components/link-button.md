@@ -5,7 +5,7 @@
 # LinkButton
 Inherit button style links.
 
-## Basic
+## Default
 <PLinkButton href="/components/link-button">
   to link-button page
 </PLinkButton>

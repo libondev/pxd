@@ -5,7 +5,7 @@
 # Spinner
 Indicate an action running in the background. Unlike the loading dots, this should generally be used to indicate loading feedback in response to a user action, like for buttons, pagination, etc.
 
-## Basic
+## Default
 <PSpinner />
 
 ```html

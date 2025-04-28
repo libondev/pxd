@@ -5,7 +5,7 @@
 # StatusDot
 Display an indicator of deployment status.
 
-## Basic
+## Default
 
 <PStack direction="col" class="px-2">
   <PStatusDot state="QUEUED" />

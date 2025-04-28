@@ -5,7 +5,7 @@
 # Button
 One of the most basic components, it will help you complete the interaction.
 
-## Basic
+## Default
 <PStack>
   <PButton> default(outline) </PButton>
   <PButton variant="ghost"> ghost </PButton>

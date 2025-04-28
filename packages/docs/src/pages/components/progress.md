@@ -24,7 +24,7 @@
 
 Display progress relative to a limit or related to a task.
 
-## Basic
+## Default
 
 <PProgress :model-value="30" />
 

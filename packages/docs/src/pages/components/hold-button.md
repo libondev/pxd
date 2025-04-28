@@ -19,7 +19,7 @@ function onCanceled() {
 }
 </script>
 
-## Basic
+## Default
 <PStack>
   <PHoldButton v-on:confirm="onConfirm" v-on:finished="onFinished">
     Hole me
