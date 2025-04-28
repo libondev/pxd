@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ExternalIcon } from 'gdsi/vue'
 import { computed } from 'vue'
+import { isExternalLink } from '../../utils/format'
 import Button from '../button/index.vue'
 
 interface Props {
@@ -45,23 +46,23 @@ const alignClassName = {
 }
 
 const computedAttrs = computed<LinkAttrs>(() => {
-  if (!props.href) {
+  const { href, target } = props
+
+  if (!href) {
     return null
   }
 
-  const firstChar = props.href.slice(0, 1)
-
-  if (['#', '/'].includes(firstChar)) {
+  if (isExternalLink(href)) {
     return {
-      as: 'router-link',
-      to: props.href,
+      as: 'a',
+      href,
+      target,
     }
   }
 
   return {
-    as: 'a',
-    href: props.href,
-    target: props.target,
+    as: 'router-link',
+    to: href,
   }
 })
 
