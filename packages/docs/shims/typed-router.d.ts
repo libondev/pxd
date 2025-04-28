@@ -26,6 +26,7 @@ declare module 'vue-router/auto-routes' {
     '/components/button': RouteRecordInfo<'/components/button', '/components/button', Record<never, never>, Record<never, never>>,
     '/components/color-sheme': RouteRecordInfo<'/components/color-sheme', '/components/color-sheme', Record<never, never>, Record<never, never>>,
     '/components/config-provider': RouteRecordInfo<'/components/config-provider', '/components/config-provider', Record<never, never>, Record<never, never>>,
+    '/components/error': RouteRecordInfo<'/components/error', '/components/error', Record<never, never>, Record<never, never>>,
     '/components/hold-button': RouteRecordInfo<'/components/hold-button', '/components/hold-button', Record<never, never>, Record<never, never>>,
     '/components/link-button': RouteRecordInfo<'/components/link-button', '/components/link-button', Record<never, never>, Record<never, never>>,
     '/components/loading-dots': RouteRecordInfo<'/components/loading-dots', '/components/loading-dots', Record<never, never>, Record<never, never>>,
