@@ -15,17 +15,15 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
         v-for="i of ITEMS_COUNT"
         :key="i"
         class="pxd-spinner-item absolute rounded-sm bg-current"
-        :style="{ opacity: i * OPACITY_STEP, transform: `rotate(${i * ROTATE_STEP}deg) translate(146%)` }"
+        :style="{
+          left: '38%',
+          top: '46%',
+          width: '24%',
+          height: '8%',
+          opacity: i * OPACITY_STEP,
+          transform: `rotate(${i * ROTATE_STEP}deg) translate(146%)`,
+        }"
       />
     </div>
   </div>
 </template>
-
-<style>
-.pxd-spinner-item {
-  left: 38%;
-  top: 46%;
-  width: 24%;
-  height: 8%;
-}
-</style>
