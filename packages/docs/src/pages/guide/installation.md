@@ -1,7 +1,8 @@
 # Installation
-This project is deeply bound with [tailwindcss@4](https://tailwindcss.com/), so please make sure tailwindcss@4 is installed in the project for the best effect.
 
-At present, tailwindcss is the fastest solution on the market, but we still have plans to support other solutions, even native CSS.
+Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/), we still provide a native way to help those projects that do not use tailwindcss access.
+
+The adaptation of unocss/tailwindcss@3 will be completed later.
 
 ## Install
 
@@ -17,6 +18,8 @@ npm install pxd
 ## Styles
 Just this is enough.
 
+### Tailwindcss@4
+
 ```css
 /* src/styles/index.css */
 @import "tailwindcss";
@@ -25,6 +28,14 @@ Just this is enough.
 @import "../../node_modules/pxd/dist/styles/tw.css";
 @source "../../node_modules/pxd";
 ```
+
+### Native CSS
+Just import this stylesheet globally.
+```js
+// main.js
+import 'pxd/styles.css'
+```
+
 
 ## Usage
 You can register globally or import on demand, or import automatically.
@@ -39,6 +50,13 @@ import { createApp } from 'vue'
 const app = createApp()
 
 app.use(PXD)
+```
+
+```vue
+<!-- App.vue -->
+<template>
+  <PButton>Click me</PButton>
+</template>
 ```
 
 ### Import on demand
@@ -65,16 +83,16 @@ Use `unpluggin-vue-components' to simplify the import process.
 // vite.config.js
 
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import components from 'unplugin-vue-components/vite'
-import pxdResolver from 'pxd/resolver'
+import Vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import PxdResolver from 'pxd/resolver'
 
 export default defineConfig({
   plugins: [
-    vue(),
-    components({
+    Vue(),
+    Components({
       resolvers: [
-        pxdResolver(),
+        PxdResolver(),
       ],
     }),
   ],

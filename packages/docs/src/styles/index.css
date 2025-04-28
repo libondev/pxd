@@ -26,3 +26,7 @@ body,
 :is(header, .sidebar) .pxd-link-button.router-link-active {
   background-color: var(--color-background);
 }
+
+::selection {
+  background-color: var(--color-green-500);
+}

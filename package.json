@@ -38,6 +38,7 @@
       "default": "./dist/composables/index.js"
     },
     "./tw.css": "./dist/styles/tw.css",
+    "./styles.css": "./dist/styles/index.css",
     "./tokens.css": "./dist/styles/tokens.css",
     "./components/*": "./dist/components/*/index.vue",
     "./composables/*": "./dist/composables/*/index.js"
@@ -45,6 +46,7 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "style": "./dist/styles/index.css",
   "typesVersions": {
     "*": {
       "*": [
@@ -70,9 +72,10 @@
     "build:only": "run-s build:lib build:docs",
     "build:lib": "unbuild",
     "build:docs": "pnpm --filter docs build",
+    "build:css": "tailwindcss -i ./src/styles/index.css -o ./dist/styles/index.css -m",
     "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "run-s update-exports build:lib build:css",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
@@ -91,6 +94,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
+    "@tailwindcss/cli": "^4.1.4",
     "@tsconfig/node22": "catalog:",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
