@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { LogoGeistIcon, LogoGithubIcon } from 'gdsi/vue'
+import LogoGeistIcon from 'gdsi/vue/logo-geist'
+import LogoGithubIcon from 'gdsi/vue/logo-github'
 
 const links = [
   {

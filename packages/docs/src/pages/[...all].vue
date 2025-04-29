@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/default.vue'
-import { ArrowLeftIcon } from 'gdsi/vue'
 
 const menus = [
   { label: 'Home', path: '/' },
@@ -18,7 +17,7 @@ const menus = [
 
       <PLinkButton href="/components">
         <template #prefix>
-          <ArrowLeftIcon />
+          <IconArrowLeft />
         </template>
 
         Back Components Page

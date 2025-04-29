@@ -23,7 +23,7 @@ defineOptions({
 <style>
 @keyframes fade-loading {
   0%,100% { opacity: 0.2 }
-  20% { opacity: 1 }
+  20% { opacity: .8 }
 }
 
 @media (prefers-reduced-motion: no-preference) {

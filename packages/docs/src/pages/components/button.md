@@ -1,62 +1,51 @@
-<script setup>
-
-</script>
-
 # Button
 One of the most basic components, it will help you complete the interaction.
 
 ## Default
-<PStack>
-  <PButton> default(outline) </PButton>
-  <PButton variant="ghost"> ghost </PButton>
-  <PButton variant="error"> error </PButton>
-  <PButton variant="primary"> primary </PButton>
-  <PButton variant="success"> success </PButton>
-  <PButton disabled> disabled </PButton>
-  <PButton loading> loading </PButton>
-</PStack>
 
-```html
-<PButton> default(outline) </PButton>
-<PButton variant="ghost"> ghost </PButton>
-<PButton variant="error"> error </PButton>
-<PButton variant="primary"> primary </PButton>
-<PButton variant="success"> success </PButton>
-<PButton disabled> disabled </PButton>
-<PButton loading> loading </PButton>
+```vue demo
+<template>
+  <PStack>
+    <PButton> default(outline) </PButton>
+    <PButton variant="ghost"> ghost </PButton>
+    <PButton variant="error"> error </PButton>
+    <PButton variant="primary"> primary </PButton>
+    <PButton variant="success"> success </PButton>
+    <PButton disabled> disabled </PButton>
+    <PButton loading> loading </PButton>
+  </PStack>
+</template>
 ```
 
 ## Sizes
-<PStack>
-  <PButton size="sm">sm</PButton>
-  <PButton size="md">md(default)</PButton>
-  <PButton size="lg">lg</PButton>
-</PStack>
 
-```html
-<PButton size="sm">sm</PButton>
-<PButton size="md">md(default)</PButton>
-<PButton size="lg">lg</PButton>
+```vue demo
+<template>
+  <PStack>
+    <PButton size="sm">sm</PButton>
+    <PButton size="md">md(default)</PButton>
+    <PButton size="lg">lg</PButton>
+  </PStack>
+</template>
 ```
 
 ## Shape
-<PStack>
-  <PButton>default</PButton>
-  <PButton shape="square">square</PButton>
-  <PButton shape="rounded">rounded</PButton>
-</PStack>
 
-```html
-<PButton>default</PButton>
-<PButton shape="square">square</PButton>
-<PButton shape="rounded">rounded</PButton>
+```vue demo
+<template>
+  <PStack>
+    <PButton>default</PButton>
+    <PButton shape="square">square</PButton>
+    <PButton shape="rounded">rounded</PButton>
+  </PStack>
+</template>
 ```
 
 ## Block
 Set the `block` property to make the button exclusive to one line.
 
-<PButton block> block button </Button>
-
-```html
-<PButton block> block button </Button>
+```vue demo
+<template>
+  <PButton block> block button </PButton>
+</template>
 ```

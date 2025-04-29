@@ -1,53 +1,40 @@
-<script setup>
-import { ref } from 'vue'
-
-const error = ref({
-  message: 'The request failed.',
-  action: 'Contact Us',
-  label: 'Error',
-  link: 'https://vercel.com/contact',
-})
-</script>
-
 # Error
 Good error design is clear, useful, and friendly. Designing concise and accurate error messages unblocks users and builds trust by meeting people where they are.
 
 ## Default
 
-<PError>This email address is already in use.</PError>
-
-```html
-<PError>This email address is already in use.</PError>
+```vue demo
+<template>
+  <PError>This email address is already in use.</PError>
+</template>
 ```
 
 ## Custom Label
 
-<PError label="Email Error">This email address is already in use.</PError>
-
-```html
-<PError label="Email Error">This email address is already in use.</PError>
+```vue demo
+<template>
+  <PError label="Email Error">This email address is already in use.</PError>
+</template>
 ```
 
 ## Sizes
 
-<PStack gap="8">
-  <PError size="sm">This email is in use.</PError>
-  <PError size="md">This email is in use.</PError>
-  <PError size="lg">This email is in use.</PError>
-</PStack>
-
-```html
-<PError size="sm">This email is in use.</PError>
-<PError size="md">This email is in use.</PError>
-<PError size="lg">This email is in use.</PError>
+```vue demo
+<template>
+  <PStack gap="8">
+    <PError size="sm">This email is in use.</PError>
+    <PError size="md">This email is in use.</PError>
+    <PError size="lg">This email is in use.</PError>
+  </PStack>
+</template>
 ```
 
 ## With an error property
 
-<PError :error="error" />
-
-```html
+```vue demo
 <script setup>
+import { ref } from 'vue'
+
 const error = ref({
   message: 'The request failed.',
   action: 'Contact Us',

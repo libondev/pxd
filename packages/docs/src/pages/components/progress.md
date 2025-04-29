@@ -1,24 +1,4 @@
-<script setup>
-  import { ref, onBeforeUnmount } from 'vue'
 
-  const value = ref(50)
-
-  const colors = {
-    10: '#f00',
-    30: '#f0f',
-    50: '#ff0',
-    70: '#0ff',
-    90: '#0f0',
-  }
-
-  const timer = setInterval(() => {
-    value.value = Math.random() * 100
-  }, 1000)
-
-  onBeforeUnmount(() => {
-    clearInterval(timer)
-  })
-</script>
 
 # Progress
 
@@ -26,19 +6,25 @@ Display progress relative to a limit or related to a task.
 
 ## Default
 
-<PProgress :model-value="30" />
+```vue demo
+<template>
+  <PProgress :model-value="30" />
+</template>
+```
 
 ## Animation
 
-<PProgress v-model="value" />
-
-```html
+```vue demo
 <script setup>
   const value = ref(50)
 
-  setInterval(() => {
+  const timer = setInterval(() => {
     value.value = Math.random() * 100
   }, 1000)
+
+  onUnmounted(() => {
+    clearInterval(timer)
+  })
 </script>
 
 <template>
@@ -49,9 +35,7 @@ Display progress relative to a limit or related to a task.
 ## Colors
 Customize the colors of the display at different stages.
 
-<PProgress v-model="value" :colors="colors" />
-
-```html
+```vue demo
 <script setup>
   const value = ref(50)
 

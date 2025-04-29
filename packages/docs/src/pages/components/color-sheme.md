@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 # ColorScheme
 One-key switching system and light-dark theme of components
 
@@ -14,11 +10,19 @@ Put the following code in your `html > head` to ensure the correctness of the th
 
 ## Default
 
-<PColorScheme />
+```vue demo
+<template>
+  <PColorScheme />
+</template>
+```
 
 ## Variants/Shape
 
-<PStack>
-  <PColorScheme variant="primary" />
-  <PColorScheme shape="rounded" />
-</PStack>
+```vue demo
+<template>
+  <PStack>
+    <PColorScheme variant="primary" />
+    <PColorScheme shape="rounded" />
+  </PStack>
+</template>
+```

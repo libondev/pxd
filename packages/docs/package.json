@@ -29,7 +29,7 @@
     "unplugin-vue-components": "catalog:",
     "unplugin-vue-router": "^0.10.9",
     "vite": "catalog:",
-    "vite-plugin-md": "^0.21.5",
+    "vite-vue-md": "^1.4.0",
     "vue-tsc": "catalog:"
   }
 }

@@ -1,64 +1,57 @@
-<script setup>
-
-</script>
-
 # LinkButton
 Inherit button style links.
 
 ## Default
-<PLinkButton href="/components/link-button">
-  to link-button page
-</PLinkButton>
 
-```html
-<PLinkButton href="/components/link-button">
-  to link-button page
-</PLinkButton>
+```vue demo
+<template>
+  <PLinkButton href="/components/link-button">
+    to link-button page
+  </PLinkButton>
+</template>
 ```
 
 ## Sizes
-<PStack>
-  <PLinkButton size="sm" href="/components/link-button">
-    sm
-  </PLinkButton>
-  <PLinkButton size="md" href="/components/link-button">
-    md(default)
-  </PLinkButton>
-  <PLinkButton size="lg" href="/components/link-button">
-    lg
-  </PLinkButton>
-</PStack>
 
+```vue demo
+<template>
+  <PStack>
+    <PLinkButton size="sm" href="/components/link-button">
+      sm
+    </PLinkButton>
+    <PLinkButton size="md" href="/components/link-button">
+      md(default)
+    </PLinkButton>
+    <PLinkButton size="lg" href="/components/link-button">
+      lg
+    </PLinkButton>
+  </PStack>
+</template>
+```
 
 ## Variant
-<PStack>
-  <PLinkButton variant="ghost" href="/components/link-button">
-    ghost link
-  </PLinkButton>
 
-  <PLinkButton variant="primary" href="/components/link-button">
-    primary link
-  </PLinkButton>
-</PStack>
+```vue demo
+<template>
+  <PStack>
+    <PLinkButton variant="ghost" href="/components/link-button">
+      ghost link
+    </PLinkButton>
 
-```html
-<PLinkButton variant="ghost" href="/components/link-button">
-  ghost link
-</PLinkButton>
-
-<PLinkButton variant="primary" href="/components/link-button">
-  ghost link
-</PLinkButton>
+    <PLinkButton variant="primary" href="/components/link-button">
+      primary link
+    </PLinkButton>
+  </PStack>
+</template>
 ```
 
 
 ## Shape
-<PLinkButton shape="rounded" href="/components/link-button">
-  rounded link
-</PLinkButton>
 
-```html
-<PLinkButton shape="rounded" href="/components/link-button">
-  ghost link
-</PLinkButton>
+```vue demo
+<template>
+  <PLinkButton shape="rounded" href="/components/link-button">
+    rounded link
+  </PLinkButton>
+</template>
 ```

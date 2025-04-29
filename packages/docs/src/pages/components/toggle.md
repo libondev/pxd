@@ -1,54 +1,91 @@
-<script setup>
-  import { ref } from 'vue'
-
-  const isChecked = ref(false)
-  const customValue = ref('closed')
-</script>
-
 # Toggle
 Switch between two values
 
 ## Default
 
-<PToggle v-model="isChecked" />
+```vue demo
+<script setup>
+  import { ref } from 'vue'
 
-```html
-<PToggle v-model="isChecked" />
+  const isChecked = ref(false)
+</script>
+
+<template>
+  <PToggle v-model="isChecked" />
+</template>
 ```
 
 ## Sizes
 
-<PStack>
-  <PToggle v-model="isChecked" size="sm" />
-  <PToggle v-model="isChecked" size="md" />
-  <PToggle v-model="isChecked" size="lg" />
-</PStack>
+```vue demo
+<script setup>
+  import { ref } from 'vue'
 
-```html
-<PToggle v-model="isChecked" />
+  const isChecked = ref(false)
+</script>
+
+<template>
+  <PStack gap="8">
+    <PToggle v-model="isChecked" size="sm" />
+    <PToggle v-model="isChecked" size="md" />
+    <PToggle v-model="isChecked" size="lg" />
+  </PStack>
+</template>
 ```
 
 ## Custom Color
 
-<PToggle v-model="isChecked" inactive-bg-color="hsl(var(--red-700-value))" active-bg-color="hsl(var(--green-700-value))" />
+```vue demo
+<script setup>
+  import { ref } from 'vue'
 
-```html
-<PToggle v-model="isChecked"  inactive-bg-color="hsl(var(--red-700-value))" active-bg-color="hsl(var(--green-700-value))" />
+  const isChecked = ref(false)
+</script>
+
+<template>
+  <PToggle
+    v-model="isChecked"
+    inactive-bg-color="hsl(var(--red-700-value))"
+    active-bg-color="hsl(var(--green-700-value))"
+  />
+</template>
 ```
 
 ## With Label
 
-<PToggle v-model="isChecked" inactive-label="Uncheck" active-label="Checked" />
+```vue demo
+<script setup>
+  import { ref } from 'vue'
 
-```html
-<PToggle v-model="isChecked" inactive-label="Uncheck" active-label="Checked" />
+  const isChecked = ref(false)
+</script>
+
+<template>
+  <PToggle
+    v-model="isChecked"
+    inactive-label="Uncheck"
+    active-label="Checked"
+  />
+</template>
 ```
 
 ## Custom checked value
 You can customize the selected and unselected values.
 
-<PToggle v-model="customValue" inactive-label="Closed" active-label="Opened" inactive-value="closed" active-value="opened" />
+```vue demo
+<script setup>
+  import { ref } from 'vue'
 
-```html
-<PToggle v-model="isChecked" inactive-label="Closed" active-label="Opened" inactive-value="closed" active-value="opened" />
+  const customValue = ref(false)
+</script>
+
+<template>
+  <PToggle
+    v-model="customValue"
+    inactive-label="Closed"
+    active-label="Opened"
+    inactive-value="closed"
+    active-value="opened"
+  />
+</template>
 ```

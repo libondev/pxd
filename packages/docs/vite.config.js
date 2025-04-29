@@ -16,7 +16,7 @@ import components from 'unplugin-vue-components/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import router from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
-import markdown from 'vite-plugin-md'
+import markdown from 'vite-vue-md'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 
 // https://vite.dev/config/
@@ -43,6 +43,16 @@ export default defineConfig(({ mode }) => {
           md.use(anchor)
           md.use(attrs)
         },
+        // onDemo(component, code) {
+        //   this.registerComponent('CodeBlock', '@/components/CodeBlock.vue')
+
+        //   return `<CodeBlock>
+        //     ${component}
+        //     <template #code>
+        //       ${code}
+        //     </template>
+        //   </CodeBlock>`
+        // },
       }),
       vueJsx(),
       tailwindcss(),

@@ -5,7 +5,6 @@ function camelize(name: string): string {
 
 const componentsMap = import.meta.glob([
   '../pages/components/**/*.md',
-  '!../pages/components/index.md',
 ], { eager: true })
 
 export const components = Object.keys(componentsMap).map((path) => {

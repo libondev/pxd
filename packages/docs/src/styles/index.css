@@ -30,5 +30,5 @@ body,
 }
 
 ::selection {
-  background-color: var(--color-green-500);
+  background-color: var(--color-green-400);
 }

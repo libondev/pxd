@@ -48,7 +48,11 @@ const {
     margin-bottom: .25em;
 
     &:not(:first-child) {
-      margin-top: 1.5em;
+      margin-top: 1.68em;
+    }
+
+    & + p {
+      margin-top: 0;
     }
   }
 
