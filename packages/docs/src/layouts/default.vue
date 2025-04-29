@@ -135,12 +135,12 @@ const {
   }
 
   pre {
-    padding: .68em 1.2em;
+    padding: 1em 1.2em;
     margin-block: 1em;
     line-height: 1.25;
     border-radius: var(--radius);
     border: 1px solid var(--gray-alpha-300);
-    background-color: #000;
+    background-color: var(--color-bg-code-block);
   }
 
   pre code {
