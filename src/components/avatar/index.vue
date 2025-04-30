@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 
 interface Props {
   src?: string
@@ -36,17 +36,19 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
 
 <template>
   <div
-    class="pxd-avatar inline-flex relative rounded-full border border-white select-none size-(--s)"
+    class="pxd-avatar inline-flex items-center justify-center relative rounded-full border border-white select-none size-(--s)"
     :style="{ '--s': computedSize }"
   >
-    <img
-      v-if="!computedLoading"
-      :src="src"
-      alt="avatar"
-      aria-hidden="true"
-      class="relative block rounded-inherit overflow-hidden w-full h-full"
-      @error="$emit('error', $event)"
-    >
+    <slot>
+      <img
+        v-if="!computedLoading"
+        :src="src"
+        alt="avatar"
+        aria-hidden="true"
+        class="relative block rounded-inherit overflow-hidden w-full h-full"
+        @error="$emit('error', $event)"
+      >
+    </slot>
 
     <div
       v-if="$slots.badge"

@@ -1,5 +1,5 @@
 # Avatar
-Avatars represent a user or a team. Stacked avatars represent a group of people
+Avatars represent a user or a team
 
 ## Default
 
