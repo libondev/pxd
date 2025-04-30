@@ -24,7 +24,7 @@ function updateComponentsIndex() {
     exports += `export { default as ${component.name} } from '${component.file}'\n`
 
     return exports
-  }, '')
+  }, '/* eslint-disable perfectionist/sort-exports */\n')
 
   fs.writeFileSync(path.join(process.cwd(), 'src', 'components', 'index.ts'), fileContent)
 }

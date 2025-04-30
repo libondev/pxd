@@ -139,11 +139,12 @@ const {
   }
 
   pre {
-    padding: 1em 1.25em;
+    padding: 1.25em 3em;
     line-height: 1.25;
   }
 
   pre:not(.shiki) {
+    padding-left: 1.25em;
     margin-block: 1em;
     border-radius: var(--radius);
   }
@@ -151,6 +152,27 @@ const {
   pre code {
     font-size: 0.875rem;
     white-space: pre-wrap;
+  }
+
+  pre.shiki > code {
+    counter-reset: section;
+  }
+
+  pre.shiki code .line {
+    position: relative;
+  }
+
+  pre.shiki code .line:not(:last-child)::before {
+    content: counter(section);
+    position: absolute;
+    top: 0;
+    left: -2.5em;
+    width: 25px;
+    user-select: none;
+    text-align: right;
+    pointer-events: none;
+    color: hsl(var(--gray-600-value));
+    counter-increment: section;
   }
 }
 
