@@ -38,7 +38,7 @@ const computedDisabled = computed(() => {
 })
 
 const computedBoxClasses = computed(() => {
-  const basic = ['size-4 inline-flex items-center justify-center rounded-sm border motion-safe:transition-colors']
+  const basic = ['pxd-checkbox--box size-4 inline-flex items-center justify-center rounded-sm border motion-safe:transition-colors']
 
   if (props.modelValue) {
     if (computedDisabled.value) {
