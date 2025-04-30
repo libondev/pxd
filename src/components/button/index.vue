@@ -25,9 +25,9 @@ const config = useConfigProvider()
 
 const SIZES = {
   xs: 'px-1 rounded-md h-6 text-sm',
-  sm: 'px-1.5 rounded-md h-7 text-sm',
-  md: 'px-2.5 rounded-md h-8 text-sm',
-  lg: 'px-3.5 rounded-lg h-9 text-base',
+  sm: 'px-1.5 rounded-md h-7.5 text-sm',
+  md: 'px-2.5 rounded-md h-9 text-sm',
+  lg: 'px-3.5 rounded-lg h-10.5 text-base',
 }
 
 const VARIANTS = {

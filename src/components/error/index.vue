@@ -1,15 +1,8 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize, ErrorType } from '../../types/components'
 import { ExternalIcon, StopIcon } from 'gdsi/vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isExternalLink } from '../../utils/format'
-
-interface ErrorType {
-  message: string
-  action?: string
-  link?: string
-  label?: string
-}
 
 interface Props {
   size?: ComponentSize
