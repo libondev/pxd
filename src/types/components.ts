@@ -14,3 +14,10 @@ export interface ButtonProps {
   loading?: boolean
   disabled?: boolean
 }
+
+export interface ErrorType {
+  message: string
+  action?: string
+  link?: string
+  label?: string
+}

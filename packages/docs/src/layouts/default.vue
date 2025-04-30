@@ -9,9 +9,9 @@ const {
 </script>
 
 <template>
-  <div class="absolute left-0 top-0">
-    <div class="sidebar fixed top-12 mt-px z-10 h-screen border-r w-64 sm:border-x bg-background-secondary">
-      <div class=" h-full overflow-y-auto p-2.5">
+  <div class="absolute left-0 top-0 bottom-0">
+    <div class="sidebar fixed top-12 bottom-0 mt-px z-10 border-r w-64 sm:border-x bg-background-secondary">
+      <PScrollable class="h-full overflow-y-auto p-2.5">
         <ul>
           <li v-for="menu of menus" :key="menu.path" class="mb-0.5">
             <PLinkButton variant="ghost" :href="menu.path" block>
@@ -19,7 +19,7 @@ const {
             </PLinkButton>
           </li>
         </ul>
-      </div>
+      </PScrollable>
     </div>
   </div>
 
@@ -139,18 +139,27 @@ const {
   }
 
   pre {
-    padding: 1em 1.5em;
+    padding: 1em 1.25em;
     line-height: 1.25;
-    border-radius: var(--radius);
   }
 
   pre:not(.shiki) {
     margin-block: 1em;
+    border-radius: var(--radius);
   }
 
   pre code {
     font-size: 0.875rem;
     white-space: pre-wrap;
   }
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 </style>

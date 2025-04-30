@@ -1,7 +1,19 @@
 # Button
 One of the most basic components, it will help you complete the interaction.
 
-## Default
+## Sizes
+
+```vue demo
+<template>
+  <PStack>
+    <PButton size="sm">sm</PButton>
+    <PButton size="md">md(default)</PButton>
+    <PButton size="lg">lg</PButton>
+  </PStack>
+</template>
+```
+
+## Types
 
 ```vue demo
 <template>
@@ -13,18 +25,6 @@ One of the most basic components, it will help you complete the interaction.
     <PButton variant="success">success</PButton>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
-  </PStack>
-</template>
-```
-
-## Sizes
-
-```vue demo
-<template>
-  <PStack>
-    <PButton size="sm">sm</PButton>
-    <PButton size="md">md(default)</PButton>
-    <PButton size="lg">lg</PButton>
   </PStack>
 </template>
 ```

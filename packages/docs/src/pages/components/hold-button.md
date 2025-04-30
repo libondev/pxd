@@ -17,15 +17,15 @@ function onFinished(isFinished) {
 
 <template>
   <PStack>
-    <PHoldButton v-on:confirm="onConfirm" v-on:finished="onFinished">
+    <PHoldButton @confirm="onConfirm" @finished="onFinished">
       Hole me
     </PHoldButton>
 
-    <PHoldButton shape="rounded" v-on:confirm="onConfirm" v-on:finished="onFinished">
+    <PHoldButton shape="rounded" @confirm="onConfirm" @finished="onFinished">
       Hole me
     </PHoldButton>
 
-    <PHoldButton shape="square" v-on:confirm="onConfirm" v-on:finished="onFinished">
+    <PHoldButton shape="square" @confirm="onConfirm" @finished="onFinished">
       Hole me
     </PHoldButton>
   </PStack>
