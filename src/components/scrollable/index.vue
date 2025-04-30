@@ -4,7 +4,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 
 interface Props {
   size?: number
   fader?: boolean
-  color?: string
+  maskColor?: string
   scrollbar?: boolean
   scrollbarSize?: number
   scrollbarColor?: string
@@ -33,6 +33,7 @@ const emits = defineEmits<{
 
 const PADDING = 4
 const DOUBLE_PADDING = PADDING * 2
+const DIFF_THRESHOLD = 1
 
 const scrollContainer = shallowRef<HTMLElement>(null!)
 
@@ -161,9 +162,10 @@ function updateDirectionFader() {
   } = wrapper
 
   const hasTop = scrollTop >= props.size
-  const hasBottom = scrollTop + clientHeight !== scrollHeight
+  // 有时候会出现滚动条的位置和最大高度相差 0.x 的误差，所以这里减去一个阈值
+  const hasBottom = scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD
   const hasLeft = scrollLeft >= props.size
-  const hasRight = scrollLeft + clientWidth !== scrollWidth
+  const hasRight = scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD
 
   faderDirections.value = {
     top: hasTop,
@@ -237,39 +239,33 @@ function onDragMove(e: MouseEvent) {
   const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState.value
 
   if (direction === 'vertical') {
-    // 计算移动距离
     const deltaY = e.clientY - startClientPos
 
-    // 计算可滚动区域
     const scrollableHeight = containerSize - scrollInfo.value.verticalThumbHeight
 
-    // 计算新的滑块位置（考虑padding）
     const newThumbTop = Math.max(0, Math.min(scrollableHeight - DOUBLE_PADDING, startScrollPos + deltaY))
 
-    // 计算并设置容器的滚动位置
     const scrollRatio = newThumbTop / (scrollableHeight - DOUBLE_PADDING)
     wrapper.scrollTop = scrollRatio * (contentSize - containerSize)
 
-    // 直接更新滑块位置
     scrollInfo.value.verticalThumbTop = newThumbTop
+
+    return
   }
-  else {
-    // 计算移动距离
-    const deltaX = e.clientX - startClientPos
 
-    // 计算可滚动区域
-    const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
+  // 计算移动距离
+  const deltaX = e.clientX - startClientPos
 
-    // 计算新的滑块位置（考虑padding）
-    const newThumbLeft = Math.max(0, Math.min(scrollableWidth - DOUBLE_PADDING, startScrollPos + deltaX))
+  // 计算可滚动区域
+  const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
 
-    // 计算并设置容器的滚动位置
-    const scrollRatio = newThumbLeft / (scrollableWidth - DOUBLE_PADDING)
-    wrapper.scrollLeft = scrollRatio * (wrapper.scrollWidth - containerSize)
+  // 计算新的滑块位置（考虑padding）
+  const newThumbLeft = Math.max(0, Math.min(scrollableWidth - DOUBLE_PADDING, startScrollPos + deltaX))
 
-    // 直接更新滑块位置
-    scrollInfo.value.horizontalThumbLeft = newThumbLeft
-  }
+  const scrollRatio = newThumbLeft / (scrollableWidth - DOUBLE_PADDING)
+  wrapper.scrollLeft = scrollRatio * (wrapper.scrollWidth - containerSize)
+
+  scrollInfo.value.horizontalThumbLeft = newThumbLeft
 }
 
 // 结束拖拽
@@ -323,7 +319,7 @@ defineExpose({
 <template>
   <div
     class="pxd-scrollable group relative overflow-hidden" :style="{
-      '--c': color,
+      '--c': maskColor,
       '--s': `${size}px`,
       '--ss': `${scrollbarSize}px`,
       '--sc': scrollbarColor,
@@ -340,13 +336,13 @@ defineExpose({
     <template v-if="fader">
       <div
         aria-hidden="true"
-        :class="{ left: faderDirections.left, right: faderDirections.right }"
         class="pxd-scrollable--x-fader pointer-events-none w-full h-full absolute inset-0"
+        :class="{ left: faderDirections.left, right: faderDirections.right }"
       />
       <div
         aria-hidden="true"
-        :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
         class="pxd-scrollable--y-fader pointer-events-none w-full h-full absolute inset-0"
+        :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
       />
     </template>
 
@@ -387,9 +383,9 @@ defineExpose({
   &::after {
     content: '';
     position: absolute;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(30px);
     background: linear-gradient(var(--dir), transparent, var(--c, var(--background-100)));
-    mask-image: linear-gradient(var(--dir-revert), var(--c, var(--background-100)) 33%, transparent);
+    mask-image: linear-gradient(var(--dir-revert), var(--c, var(--background-100)) 50%, transparent);
     opacity: 0;
   }
 
