@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { ComponentSize, ErrorType } from '../../types/components'
+import type { ComponentSizeWithXs, ErrorType } from '../../types/components'
 import { ExternalIcon, StopIcon } from 'gdsi/vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isExternalLink } from '../../utils/format'
 
 interface Props {
-  size?: ComponentSize
+  size?: ComponentSizeWithXs
   label?: string
   error?: ErrorType
 }
@@ -15,6 +15,7 @@ defineProps<Props>()
 const config = useConfigProvider()
 
 const SIZES = {
+  xs: 'text-xs',
   sm: 'text-xs',
   md: 'text-sm',
   lg: 'text-base',

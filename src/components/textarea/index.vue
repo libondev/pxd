@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
@@ -12,14 +12,12 @@ interface Props {
   disabled?: boolean
   modelValue?: string
   placeholder?: string
-  prefixStyle?: boolean
-  suffixStyle?: boolean
   minlength?: number | string
   maxlength?: number | string
 }
 
 defineOptions({
-  name: 'PInput',
+  name: 'PTextarea',
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
@@ -31,8 +29,6 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: '',
-    prefixStyle: true,
-    suffixStyle: true,
   },
 )
 
@@ -46,10 +42,10 @@ const emits = defineEmits<{
 const config = useConfigProvider()
 
 const SIZES = {
-  xs: 'h-6 text-xs',
-  sm: 'h-7.5 text-sm',
-  md: 'h-9 text-sm',
-  lg: 'h-10.5 text-base',
+  xs: 'text-xs',
+  sm: 'text-sm',
+  md: 'text-sm',
+  lg: 'text-base',
 }
 
 const modelValue = computed({
@@ -95,20 +91,11 @@ function onInputChange(event: Event) {
 </script>
 
 <template>
-  <div class="pxd-input max-w-full">
+  <div class="pxd-textarea w-full max-w-full">
     <label :class="computedClasses">
-      <div
-        v-if="$slots.prefix"
-        aria-hidden="true"
-        class="pl-3 h-full flex items-center text-sm text-gray-700 "
-        :class="{ 'bg-background-secondary rounded-tl-inherit rounded-bl-inherit border-r pr-3': prefixStyle }"
-      >
-        <slot name="prefix" />
-      </div>
-
-      <input
+      <textarea
         v-model="modelValue"
-        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
+        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 placeholder:select-none"
         :readonly="readonly"
         :disabled="disabled"
         :placeholder="placeholder"
@@ -121,16 +108,7 @@ function onInputChange(event: Event) {
         @change="onInputChange"
         @focus="onInputFocus"
         @blur="onInputBlur"
-      >
-
-      <div
-        v-if="$slots.suffix"
-        aria-hidden="true"
-        class="pr-3 h-full flex items-center text-sm text-gray-700"
-        :class="{ 'bg-background-secondary rounded-tr-inherit rounded-br-inherit border-l pl-3': suffixStyle }"
-      >
-        <slot name="suffix" />
-      </div>
+      />
     </label>
 
     <PError v-if="error" class="mt-1.5" :size="size">
