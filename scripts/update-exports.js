@@ -3,17 +3,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { camelize } from '@vue/shared'
 import { globSync } from 'tinyglobby'
-
-/**
- * @param {string} name
- * @returns {string} 转换后的字符串
- */
-function pascalize(name) {
-  const camelized = camelize(name)
-  return camelized.charAt(0).toUpperCase() + camelized.slice(1)
-}
+import { pascalize } from './utils.js'
 
 function updateComponentsIndex() {
   const files = globSync('src/components/**/*.vue')

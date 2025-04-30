@@ -1,6 +1,7 @@
-import { exec } from 'node:child_process'
-import path from 'node:path'
+import { execSync } from 'node:child_process'
+import path, { sep } from 'node:path'
 import process from 'node:process'
+import { pascalize } from '../../../scripts/utils.js'
 
 export function fileCreateWatcher() {
   return {
@@ -9,21 +10,19 @@ export function fileCreateWatcher() {
       const watcher = server.watcher
 
       watcher.add([
-        path.resolve(process.cwd(), 'src/pages/components'),
+        path.resolve(process.cwd(), '../../src/components'),
+        path.resolve(process.cwd(), '../../src/composables'),
       ])
 
       watcher.on('add', (filePath) => {
-        // 如果创建的不是 .md 文件, 则不处理
-        // 在创建 .md 文件的时候更新组件的导出结果
-        if (!filePath.endsWith('.md')) {
-          return
-        }
+        execSync(`cd ../.. && pnpm update-exports`)
 
-        exec('cd ../.. && pnpm update-exports', (error) => {
-          if (error) {
-            console.error(`执行错误: ${error}`)
-          }
-        })
+        if (filePath.endsWith('index.vue')) {
+          const componentName = filePath.split(sep).at(-2)
+          const componentNamePascal = pascalize(componentName)
+
+          execSync(`echo # ${componentNamePascal} > ./src/pages/components/${componentName}.md`)
+        }
       })
     },
   }
