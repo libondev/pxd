@@ -44,7 +44,11 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
         v-if="!computedLoading"
         :src="src"
         alt="avatar"
+        loading="lazy"
+        decoding="async"
         aria-hidden="true"
+        fetchpriority="low"
+        crossorigin="anonymous"
         class="relative block rounded-inherit overflow-hidden w-full h-full"
         @error="$emit('error', $event)"
       >
