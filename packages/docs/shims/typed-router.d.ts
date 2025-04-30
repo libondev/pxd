@@ -26,6 +26,7 @@ declare module 'vue-router/auto-routes' {
     '/components/avatar-group': RouteRecordInfo<'/components/avatar-group', '/components/avatar-group', Record<never, never>, Record<never, never>>,
     '/components/badge': RouteRecordInfo<'/components/badge', '/components/badge', Record<never, never>, Record<never, never>>,
     '/components/button': RouteRecordInfo<'/components/button', '/components/button', Record<never, never>, Record<never, never>>,
+    '/components/checkbox': RouteRecordInfo<'/components/checkbox', '/components/checkbox', Record<never, never>, Record<never, never>>,
     '/components/color-sheme': RouteRecordInfo<'/components/color-sheme', '/components/color-sheme', Record<never, never>, Record<never, never>>,
     '/components/config-provider': RouteRecordInfo<'/components/config-provider', '/components/config-provider', Record<never, never>, Record<never, never>>,
     '/components/error': RouteRecordInfo<'/components/error', '/components/error', Record<never, never>, Record<never, never>>,
