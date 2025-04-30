@@ -5,6 +5,8 @@ import { computed } from 'vue'
 interface Props {
   wrap?: boolean
   gap?: number | string | ResponsiveValue<number>
+  align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
+  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
   direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
 }
 
@@ -17,6 +19,8 @@ const props = withDefaults(
   {
     gap: 2,
     wrap: true,
+    align: 'start',
+    justify: 'start',
     direction: 'row',
   },
 )
@@ -44,8 +48,31 @@ const presetGapClasses = {
   xl: 'xl:gap-(--xl-gap)',
 }
 
+const presetAlignClasses = {
+  start: 'items-start',
+  end: 'items-end',
+  center: 'items-center',
+  between: 'items-between',
+  around: 'items-around',
+  evenly: 'items-evenly',
+  stretch: 'items-stretch',
+}
+
+const presetJustifyClasses = {
+  start: 'flex-start',
+  end: 'flex-end',
+  center: 'justify-center',
+  between: 'justify-between',
+  around: 'justify-around',
+  evenly: 'justify-evenly',
+  stretch: 'justify-stretch',
+}
+
 const classes = computed(() => {
   const basic = ['pxd-stack flex', getDirectionClasses()]
+
+  basic.push(presetAlignClasses[props.align])
+  basic.push(presetJustifyClasses[props.justify])
 
   if (props.wrap) {
     basic.push('flex-wrap')
