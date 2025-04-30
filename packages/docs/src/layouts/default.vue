@@ -139,12 +139,13 @@ const {
   }
 
   pre {
-    padding: 1em 1.2em;
-    margin-block: 1em;
+    padding: 1em 1.5em;
     line-height: 1.25;
     border-radius: var(--radius);
-    border: 1px solid var(--gray-alpha-300);
-    background-color: var(--color-bg-code-block);
+  }
+
+  pre:not(.shiki) {
+    margin-block: 1em;
   }
 
   pre code {

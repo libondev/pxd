@@ -2,17 +2,22 @@
 </script>
 
 <template>
-  <div class="code-block">
-    <div>
+  <div class="code-block border rounded-lg overflow-hidden">
+    <div class="p-6">
       <slot />
     </div>
 
-    <details class="code-block">
-      <summary class="flex items-center">
-        <IconArrowRight />
+    <details class="code-block group">
+      <summary class="flex items-center px-4 h-11 border-t text-xs text-gray-900 select-none cursor-pointer bg-background-secondary">
+        <IconChevronRight class="text-xs mr-2 group-open:rotate-90 motion-safe:transition-transform" />
+        <span
+          data-open="Show"
+          data-close="Hide"
+          class="before:content-[attr(data-open)] group-open:before:content-[attr(data-close)]"
+        > Code</span>
       </summary>
 
-      <div>
+      <div class="border-t">
         <slot name="code" />
       </div>
     </details>

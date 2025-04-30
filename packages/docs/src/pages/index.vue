@@ -54,7 +54,7 @@ import { version } from 'pxd'
     }
 
     50% {
-      transform: translateX(45%) scale(0.8) translateZ(0);
+      transform: translateX(25%) scale(0.9) translateZ(0);
       animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
   }

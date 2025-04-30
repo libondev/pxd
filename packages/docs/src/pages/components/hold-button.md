@@ -39,13 +39,13 @@ You can set the same `variant` property as the button.
 ```vue demo
 <template>
   <PStack>
-    <PHoldButton> default </PHoldButton>
-    <PHoldButton variant="ghost"> ghost </PHoldButton>
-    <PHoldButton variant="error"> error </PHoldButton>
-    <PHoldButton variant="primary" mask-color="var(--background-100)"> primary </PHoldButton>
-    <PHoldButton variant="success"> success </PHoldButton>
-    <PHoldButton disabled> disabled </PHoldButton>
-    <PHoldButton loading> loading </PHoldButton>
+    <PHoldButton>default</PHoldButton>
+    <PHoldButton variant="ghost">ghost</PHoldButton>
+    <PHoldButton variant="error">error</PHoldButton>
+    <PHoldButton variant="primary" mask-color="var(--background-100)">primary</PHoldButton>
+    <PHoldButton variant="success">success</PHoldButton>
+    <PHoldButton disabled>disabled</PHoldButton>
+    <PHoldButton loading>loading</PHoldButton>
   </PStack>
 </template>
 ```

@@ -6,13 +6,13 @@ One of the most basic components, it will help you complete the interaction.
 ```vue demo
 <template>
   <PStack>
-    <PButton> default(outline) </PButton>
-    <PButton variant="ghost"> ghost </PButton>
-    <PButton variant="error"> error </PButton>
-    <PButton variant="primary"> primary </PButton>
-    <PButton variant="success"> success </PButton>
-    <PButton disabled> disabled </PButton>
-    <PButton loading> loading </PButton>
+    <PButton>default(outline)</PButton>
+    <PButton variant="ghost">ghost</PButton>
+    <PButton variant="error">error</PButton>
+    <PButton variant="primary">primary</PButton>
+    <PButton variant="success">success</PButton>
+    <PButton disabled>disabled</PButton>
+    <PButton loading>loading</PButton>
   </PStack>
 </template>
 ```
@@ -46,6 +46,6 @@ Set the `block` property to make the button exclusive to one line.
 
 ```vue demo
 <template>
-  <PButton block> block button </PButton>
+  <PButton block>blockbutton </PButton>
 </template>
 ```
