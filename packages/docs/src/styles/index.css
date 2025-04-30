@@ -26,9 +26,3 @@ body,
 ::selection {
   background-color: var(--color-green-400);
 }
-
-/* 避免切换主题的时候，transition 闪烁 */
-[class*='pxd-']:not(:hover),
-[class*='pxd-'] *:not(:hover) {
-  transition: none !important;
-}
