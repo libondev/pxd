@@ -27,8 +27,8 @@ const config = useConfigProvider()
 
 const SIZES = {
   sm: 'px-1.5 h-5 text-xs',
-  md: 'px-2.5 h-6 text-sm',
-  lg: 'px-3 h-7 text-md',
+  md: 'px-2.5 h-6 text-xs',
+  lg: 'px-3 h-7 text-sm',
 }
 
 const VARIANTS = {
