@@ -5,13 +5,13 @@ import { components } from '@/consts/components'
 
 <template>
   <h1>
-    Overview
+    Components Overview
   </h1>
 
-  <div class="flex flex-wrap gap-5">
+  <div class="flex flex-wrap gap-5 mt-6">
     <template v-for="{ camelized, name } in components" :key="name">
       <OverviewCard :name="camelized">
-        {{ name }}
+        {{ camelized }}
       </OverviewCard>
     </template>
   </div>

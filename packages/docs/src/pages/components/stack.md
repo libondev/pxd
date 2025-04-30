@@ -2,7 +2,7 @@
 Display elements vertically or horizontally on the page.
 
 ## Gap
-Gap is a unit on a 4px grid scale.
+Gap is a unit on a `4px` grid scale.
 
 ```vue demo
 <template>

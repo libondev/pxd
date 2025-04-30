@@ -20,7 +20,7 @@ const INTERNAL_KEYS = {
   meta: '⌘',
   shift: '⇧',
   alt: '⌥',
-  ctrl: '⌃',
+  ctrl: 'Ctrl',
 }
 const internalKey = computed(() => {
   return Object.entries(INTERNAL_KEYS).filter(([k]) => {

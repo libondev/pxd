@@ -4,19 +4,13 @@
 @source "../../node_modules/markdown-it-plugins";
 
 @theme {
-  --font-sans: 'Inter', 'Geist', sans-serif;
+  --font-sans: 'Geist', 'Inter', sans-serif;
   --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', monospace;
 }
 
 :root {
   font-family: var(--font-sans);
   font-feature-settings: 'liga' 1, 'calt' 1;
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: InterVariable, sans-serif;
-  }
 }
 
 html,

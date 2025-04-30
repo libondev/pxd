@@ -11,10 +11,7 @@ defineOptions({
   name: 'PAvatar',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {},
-)
+const props = defineProps<Props>()
 
 defineEmits<{
   error: [Event]
@@ -27,7 +24,7 @@ const groupSize = inject<number | string>('groupSize', 32)
 const computedSize = computed(() => {
   const _size = props.size || groupSize
 
-  if (_size === 'group') {
+  if (typeof _size === 'number') {
     return `${_size}px`
   }
 
@@ -35,20 +32,12 @@ const computedSize = computed(() => {
 })
 
 const computedLoading = computed(() => props.loading || isLoadFailed.value)
-
-const formatSize = computed(() => {
-  if (typeof props.size === 'number') {
-    return `${props.size}px`
-  }
-
-  return props.size
-})
 </script>
 
 <template>
   <div
     class="pxd-avatar inline-flex relative rounded-full border border-white select-none size-(--s)"
-    :style="{ '--s': formatSize }"
+    :style="{ '--s': computedSize }"
   >
     <img
       v-if="!computedLoading"
