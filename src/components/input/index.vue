@@ -108,7 +108,7 @@ function onInputChange(event: Event) {
 
       <input
         v-model="modelValue"
-        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
+        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
         :readonly="readonly"
         :disabled="disabled"
         :placeholder="placeholder"

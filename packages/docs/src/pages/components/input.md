@@ -98,7 +98,7 @@ Retrieve text input from a user.
 
 ```vue demo
 <template>
-  <PStack gap="12" direction="col" class="py-4">
+  <PStack gap="8" direction="col" class="py-4">
     <PInput error="An error message." size="xs" placeholder="Default" />
     <PInput error="An error message." size="sm" placeholder="Default" />
     <PInput error="An error message." size="md" placeholder="Default" />
