@@ -2,6 +2,7 @@
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useModelValue } from '../../composables/useModelValue'
 
 type ValueType = boolean | number | string
 
@@ -46,14 +47,8 @@ const SIZES = {
   lg: 'w-11 h-6',
 }
 
-const isChecked = computed({
-  get() {
-    return props.modelValue === props.activeValue
-  },
-  set(value: boolean) {
-    emits('update:modelValue', value ? props.activeValue : props.inactiveValue)
-  },
-})
+const modelValue = useModelValue(props, emits)
+const isChecked = computed(() => modelValue.value === props.activeValue)
 
 const computedSize = computed(() => {
   return SIZES[props.size || config.size]
@@ -61,7 +56,7 @@ const computedSize = computed(() => {
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement
-  isChecked.value = target.checked
+  modelValue.value = target.checked ? props.activeValue : props.inactiveValue
 }
 </script>
 
@@ -70,7 +65,7 @@ function onCheckboxChange(e: Event) {
     role="switch"
     class="pxd-toggle inline-flex items-center cursor-pointer select-none"
     :aria-checked="isChecked"
-    :aria-label="isChecked ? activeLabel : inactiveLabel"
+    :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--abc': activeBgColor,
       '--ibc': inactiveBgColor,
@@ -93,7 +88,7 @@ function onCheckboxChange(e: Event) {
       :class="computedSize"
     >
       <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 transform-gpu translate-x-(--tx) motion-safe:transition-transform">
-        <slot v-if="isChecked" name="active-icon" />
+        <slot v-if="modelValue" name="active-icon" />
         <slot v-else name="inactive-icon" />
       </span>
     </div>

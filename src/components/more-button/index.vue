@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChevronDownIcon } from 'gdsi/vue'
-import { computed } from 'vue'
+import { useModelValue } from '../../composables/useModelValue'
 import Button from '../button/index.vue'
 
 interface Props {
@@ -32,14 +32,7 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const isExpanded = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value: boolean) {
-    emits('update:modelValue', value)
-  },
-})
+const isExpanded = useModelValue(props, emits)
 
 function getButtonProps(): Props['buttonProps'] {
   return {

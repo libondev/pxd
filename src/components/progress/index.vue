@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { useModelValue } from '../../composables/useModelValue'
 
 interface Props {
   max?: number
@@ -36,14 +37,7 @@ const typeColors = {
   error: 'hsl(var(--red-700-value))',
 }
 
-const progressValue = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value: number) {
-    emits('update:modelValue', value)
-  },
-})
+const progressValue = useModelValue(props, emits)
 
 const sortedColorKeys = computed(() => props.colors ? Object.keys(props.colors).map(Number).sort((a, b) => a - b) : [])
 

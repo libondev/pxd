@@ -3,6 +3,7 @@ import type { ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useModelValue } from '../../composables/useModelValue'
 import PError from '../error/index.vue'
 
 interface Props {
@@ -52,14 +53,7 @@ const SIZES = {
   lg: 'h-10.5 text-base',
 }
 
-const modelValue = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value) {
-    emits('update:modelValue', value)
-  },
-})
+const modelValue = useModelValue(props, emits)
 
 const computedClasses = computed(() => {
   const basic = ['pxd-input--container flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']

@@ -2,6 +2,7 @@
 import { CheckIcon, MinusIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
+import { useModelValue } from '../../composables/useModelValue'
 
 interface Props {
   label?: string
@@ -26,14 +27,7 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const modelValue = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value: boolean) {
-    emits('update:modelValue', value)
-  },
-})
+const modelValue = useModelValue(props, emits)
 
 const computedChecked = computed(() => {
   if (props.value !== undefined) {

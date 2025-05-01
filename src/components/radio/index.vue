@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
+import { useModelValue } from '../../composables/useModelValue'
 
 interface Props {
   label?: string
@@ -26,14 +27,7 @@ const emits = defineEmits<{
 
 const randomName = inject('radioGroupName', `P${Math.random()}`)
 
-const modelValue = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value: string | number) {
-    emits('update:modelValue', value)
-  },
-})
+const modelValue = useModelValue(props, emits)
 
 const computedChecked = computed(() => {
   return props.modelValue === props.value
