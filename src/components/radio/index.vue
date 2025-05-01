@@ -73,7 +73,7 @@ const computedInnerClasses = computed(() => {
       :value="value"
       class="hidden peer"
       :required="required"
-      :disabled="disabled"
+      :disabled="computedDisabled"
       :name="radioGroupName"
     >
 
