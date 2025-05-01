@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { StackProps } from '../../types/components'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
 import Radio from '../radio/index.vue'
 import Stack from '../stack/index.vue'
 
-interface RadioGroupOptions extends StackProps {
+interface RadioGroupOptions {
   label: string
   value: string | number
   disabled?: boolean
 }
 
 interface Props {
+  disabled?: boolean
   modelValue: string | number
   options?: RadioGroupOptions[]
 }
