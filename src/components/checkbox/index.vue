@@ -23,7 +23,7 @@ defineOptions({
 const props = defineProps<Props>()
 
 const emits = defineEmits<{
-  'update:modelValue': [boolean]
+  'update:modelValue': [Props['modelValue']]
 }>()
 
 const modelValue = computed({

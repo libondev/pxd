@@ -21,7 +21,7 @@ defineOptions({
 const props = defineProps<Props>()
 
 const emits = defineEmits<{
-  'update:modelValue': [string | number]
+  'update:modelValue': [Props['modelValue']]
 }>()
 
 const randomName = inject('radioGroupName', `P${Math.random()}`)

@@ -35,7 +35,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [ValueType]
+  'update:modelValue': [Props['modelValue']]
 }>()
 
 const config = useConfigProvider()

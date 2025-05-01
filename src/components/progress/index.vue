@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 
-interface ProgressProps {
+interface Props {
   max?: number
   type?: 'default' | 'success' | 'warning' | 'error' | 'secondary'
   colors?: Record<string, string>
@@ -17,7 +17,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<ProgressProps>(),
+  defineProps<Props>(),
   {
     max: 100,
     type: 'default',
@@ -25,7 +25,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [number]
+  'update:modelValue': [Props['modelValue']]
 }>()
 
 const typeColors = {
