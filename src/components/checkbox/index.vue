@@ -83,7 +83,7 @@ const computedInnerClasses = computed(() => {
 
     <span aria-hidden="true" :class="computedInnerClasses">
       <CheckIcon v-if="computedChecked" class="size-3 text-gray-100" />
-      <MinusIcon v-else-if="indeterminate" class="size-3 text-gray-100" />
+      <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />
     </span>
 
