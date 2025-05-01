@@ -1,14 +1,19 @@
 import { computed } from 'vue'
 
+interface Options {
+  get?: (value: any) => any
+  set?: (value: any) => void
+}
+
 export function useModelValue<
   P extends { modelValue: any },
   E extends { (event: 'update:modelValue', ...args: any[]): void },
->(props: P, emits: E) {
+>(props: P, emits: E, options: Options = {}) {
   type V = P['modelValue']
 
   const modelValue = computed<V>({
-    get: () => props.modelValue,
-    set: (value: V) => emits('update:modelValue', value),
+    get: options.get || (() => props.modelValue),
+    set: options.set || ((value: V) => emits('update:modelValue', value)),
   })
 
   return modelValue
