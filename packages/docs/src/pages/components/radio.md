@@ -17,23 +17,6 @@ const modelValue = ref('')
 </template>
 ```
 
-## Disabled
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const modelValue = ref('one')
-</script>
-
-<template>
-  <PStack direction="col">
-    <PRadio v-model="modelValue" disabled label="Option 1" value="one" />
-    <PRadio v-model="modelValue" disabled value="two">Option 2</PRadio>
-  </PStack>
-</template>
-```
-
 ## Group
 Support all props of `stack` components
 
@@ -65,6 +48,23 @@ const options = [
     class="mt-6"
     direction="col"
   />
+</template>
+```
+
+## Disabled
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const modelValue = ref('one')
+</script>
+
+<template>
+  <PStack direction="col">
+    <PRadio v-model="modelValue" disabled label="Option 1" value="one" />
+    <PRadio v-model="modelValue" disabled value="two">Option 2</PRadio>
+  </PStack>
 </template>
 ```
 
