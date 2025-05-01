@@ -34,6 +34,26 @@ const modelValue = ref('one')
 </template>
 ```
 
+## Group
+Support all props of `stack` components
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+const options = [
+  { label: 'Options 1', value: 'one' },
+  { label: 'Options 2', value: 'tow' },
+  { label: 'Options 3', value: 'three' },
+]
+</script>
+
+<template>
+  <PRadioGroup v-model="value" :options="options" gap="3" direction="col" />
+</template>
+```
+
 ## Radio standalone
 Standalone unlabelled radio input for use in custom UI.
 

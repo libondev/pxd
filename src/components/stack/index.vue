@@ -1,22 +1,15 @@
 <script lang="ts" setup>
-import type { ComponentBreakpointKeys } from '../../types/components'
+import type { StackProps } from '../../types/components'
 import { computed } from 'vue'
-
-interface Props {
-  wrap?: boolean
-  gap?: number | string | ResponsiveValue<number>
-  align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
-}
 
 defineOptions({
   name: 'PStack',
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<StackProps>(),
   {
+    as: 'div',
     gap: 2,
     wrap: true,
     align: 'start',
@@ -24,8 +17,6 @@ const props = withDefaults(
     direction: 'row',
   },
 )
-
-type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
 
 const presetDirClasses = {
   'xs:col': 'xs:flex-col',
@@ -119,7 +110,7 @@ function getDirectionClasses() {
 </script>
 
 <template>
-  <div :class="classes" :style="calcGapSize">
+  <component :is="props.as" :class="classes" :style="calcGapSize">
     <slot />
-  </div>
+  </component>
 </template>

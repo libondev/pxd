@@ -2,6 +2,7 @@
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
+import { useRandomValue } from '../../composables/useRandomValueContext'
 
 interface Props {
   label?: string
@@ -25,7 +26,8 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const randomName = inject('radioGroupName', `P${Math.random()}`)
+const radioGroupName = useRandomValue('radioGroupName')
+const radioGroupProps = inject('radioGroupProps', { disabled: false })!
 
 const modelValue = useModelValue(props, emits)
 
@@ -34,7 +36,7 @@ const computedChecked = computed(() => {
 })
 
 const computedDisabled = computed(() => {
-  return props.disabled
+  return props.disabled || radioGroupProps.disabled
 })
 
 const computedInnerClasses = computed(() => {
@@ -69,10 +71,10 @@ const computedInnerClasses = computed(() => {
       v-model="modelValue"
       type="radio"
       :value="value"
-      :name="randomName"
       class="hidden peer"
       :required="required"
       :disabled="disabled"
+      :name="radioGroupName"
     >
 
     <span aria-hidden="true" :class="computedInnerClasses" />
