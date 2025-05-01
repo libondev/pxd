@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { useRandomValue } from '../../composables/useRandomValueContext'
+import { getRandomId } from '../../utils/random'
 
 interface Props {
   label?: string | number
@@ -26,6 +27,7 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
+const randomId = getRandomId()
 const modelValue = useModelValue(props, emits)
 
 const radioGroupName = useRandomValue('radioGroupName')
@@ -39,9 +41,10 @@ const computedDisabled = computed(() => props.disabled || radioGroupProps.disabl
 const computedRequired = computed(() => props.required || radioGroupProps.required)
 
 const computedInnerClasses = computed(() => {
-  const basic = ['pxd-radio--inner size-4 rounded-full inline-flex items-center justify-center border motion-safe:transition-colors']
-
-  basic.push('after:content-empty after:size-2 after:rounded-full after:bg-gray-1000 after:scale-0 motion-safe:after:transition-transform peer-checked:after:scale-100')
+  const basic = [
+    'pxd-radio--inner size-4 rounded-full inline-flex items-center justify-center border peer-focus-ring motion-safe:transition-colors',
+    'after:content-empty after:size-2 after:rounded-full after:bg-gray-1000 after:scale-0 peer-checked:after:scale-100 motion-safe:after:transition-transform',
+  ]
 
   if (isChecked.value) {
     if (computedDisabled.value) {
@@ -65,12 +68,17 @@ const computedInnerClasses = computed(() => {
 </script>
 
 <template>
-  <label class="pxd-radio group inline-flex items-center" :class="{ 'is-disabled cursor-not-allowed text-gray-500': disabled }">
+  <label
+    class="pxd-radio group inline-flex items-center"
+    :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
+    :for="randomId"
+  >
     <input
+      :id="randomId"
       v-model="modelValue"
       type="radio"
-      class="hidden peer"
       :value="value"
+      class="smallest peer"
       :name="radioGroupName"
       :required="computedRequired"
       :disabled="computedDisabled"

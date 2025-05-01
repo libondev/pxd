@@ -1,9 +1,8 @@
 import { inject, provide } from 'vue'
-
-const getRandomValue = () => `P${Math.random()}`
+import { getRandomId } from '../utils/random'
 
 export function provideRandomValue(provideKey: string = 'randomValue') {
-  const randomValue = getRandomValue()
+  const randomValue = getRandomId()
 
   provide(provideKey, randomValue)
 
@@ -11,7 +10,7 @@ export function provideRandomValue(provideKey: string = 'randomValue') {
 }
 
 export function useRandomValue(provideKey: string = 'randomValue') {
-  const randomValue = inject(provideKey, getRandomValue())
+  const randomValue = inject(provideKey, getRandomId())
 
   return randomValue
 }

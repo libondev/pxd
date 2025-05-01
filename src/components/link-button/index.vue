@@ -74,6 +74,7 @@ function onLinkClick(ev: MouseEvent) {
 <template>
   <Button
     role="link"
+    tabindex="0"
     rel="noopener noreferrer"
     class="pxd-link-button !no-underline"
     :class="alignClassName[align]"

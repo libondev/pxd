@@ -5,7 +5,7 @@ Indicate an action running in the background.
 
 ```vue demo
 <template>
-  <PStack direction="col" :gap="2" class="p-2">
+  <PStack direction="col" :gap="2">
     <PLoadingDots />
     <PLoadingDots class="text-xl" />
   </PStack>
@@ -16,7 +16,7 @@ Indicate an action running in the background.
 
 ```vue demo
 <template>
-  <PLoadingDots class="p-2">
+  <PLoadingDots>
     <template #prefix>
       <span class="text-gray-900 text-sm">Loading Left</span>
     </template>

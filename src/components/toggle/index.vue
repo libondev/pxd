@@ -3,6 +3,7 @@ import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
+import { getRandomId } from '../../utils/random'
 
 type ValueType = boolean | number | string
 
@@ -47,6 +48,7 @@ const SIZES = {
   lg: 'w-11 h-6',
 }
 
+const randomId = getRandomId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
@@ -64,17 +66,18 @@ function onCheckboxChange(e: Event) {
   <label
     role="switch"
     class="pxd-toggle inline-flex items-center cursor-pointer select-none"
-    :aria-checked="isChecked"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--abc': activeBgColor,
       '--ibc': inactiveBgColor,
     }"
+    :for="randomId"
   >
     <input
+      :id="randomId"
       type="checkbox"
       :checked="isChecked"
-      class="pxd-toggle--input hidden peer"
+      class="smallest peer"
       @change="onCheckboxChange"
     >
 
@@ -84,7 +87,7 @@ function onCheckboxChange(e: Event) {
     >{{ inactiveLabel }}</span>
 
     <div
-      class="pxd-toggle--handle border border-gray-alpha-200 p-px rounded-full motion-safe:transition-colors [--tx:0] bg-(--ibc) peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
+      class="pxd-toggle--handle border border-gray-alpha-200 p-px rounded-full motion-safe:transition-colors [--tx:0] bg-(--ibc) peer-focus-ring peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
       :class="computedSize"
     >
       <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 transform-gpu translate-x-(--tx) motion-safe:transition-transform">

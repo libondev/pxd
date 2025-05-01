@@ -3,6 +3,7 @@ import { CheckIcon, MinusIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
+import { getRandomId } from '../../utils/random'
 
 type ValueType = string | number | boolean
 
@@ -32,6 +33,7 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
+const randomId = getRandomId()
 const modelValue = useModelValue(props, emits)
 
 const checkboxGroupProps = inject('checkboxGroupProps', {
@@ -55,7 +57,10 @@ const computedDisabled = computed(() => props.disabled || checkboxGroupProps.dis
 const computedRequired = computed(() => props.required || checkboxGroupProps.required)
 
 const computedInnerClasses = computed(() => {
-  const basic = ['pxd-checkbox--inner size-4 flex-shrink-0 inline-flex items-center justify-center rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors']
+  const basic = [
+    'pxd-checkbox--inner size-4 flex-shrink-0 inline-flex items-center justify-center peer-focus-ring',
+    'rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors',
+  ]
 
   if (isChecked.value) {
     basic.push(
@@ -75,9 +80,7 @@ const computedInnerClasses = computed(() => {
   return twMerge(basic)
 })
 
-function onInputChange(event: Event) {
-  const isChecked = (event.target as HTMLInputElement).checked
-
+function toggleChecked(isChecked: boolean) {
   if (Array.isArray(modelValue.value)) {
     modelValue.value = isChecked
       ? [...modelValue.value, props.value]
@@ -88,26 +91,30 @@ function onInputChange(event: Event) {
 
   modelValue.value = isChecked
 }
+
+function onInputChange(event: Event) {
+  const isInputChecked = (event.target as HTMLInputElement).checked
+
+  toggleChecked(isInputChecked)
+}
 </script>
 
 <template>
   <label
-    tabindex="0"
-    role="checkbox"
-    :aria-checked="isChecked"
     class="pxd-checkbox inline-flex items-center group"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
+    :for="randomId"
   >
     <input
+      :id="randomId"
       :value="value"
       type="checkbox"
-      class="hidden peer"
+      class="smallest peer"
       :checked="isChecked"
       :required="computedRequired"
       :disabled="computedDisabled"
       @change="onInputChange"
     >
-
     <span aria-hidden="true" :class="computedInnerClasses">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
