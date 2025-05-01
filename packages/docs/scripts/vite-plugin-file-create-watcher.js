@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import { writeFileSync } from 'node:fs'
 import path, { sep } from 'node:path'
 import process from 'node:process'
 import { pascalize } from '../../../scripts/utils.js'
@@ -15,13 +16,15 @@ export function fileCreateWatcher() {
       ])
 
       watcher.on('add', (filePath) => {
-        execSync(`cd ../.. && pnpm update-exports`)
+        execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
 
         if (filePath.endsWith('index.vue')) {
           const componentName = filePath.split(sep).at(-2)
           const componentNamePascal = pascalize(componentName)
 
-          execSync(`echo # ${componentNamePascal} > ./src/pages/components/${componentName}.md`)
+          const mdFilePath = path.resolve(process.cwd(), 'src', 'pages', 'components', `${componentName}.md`)
+
+          writeFileSync(mdFilePath, `# ${componentNamePascal}`)
         }
       })
     },

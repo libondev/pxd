@@ -65,7 +65,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev": "run-s update-exports dev:lib dev:docs",
+    "dev": "run-s dev:lib dev:docs",
     "dev:lib": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports typecheck build:lib build:docs",
