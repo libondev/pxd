@@ -10,8 +10,10 @@
     "predev",
     "pxd",
     "shiki",
+    "shikijs",
     "tsup",
     "vite",
+    "vitesse",
     "vitest"
   ],
   "javascript.preferences.importModuleSpecifierEnding": "index",

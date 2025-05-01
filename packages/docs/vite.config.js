@@ -24,8 +24,8 @@ import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 const codeHighlighter = await createHighlighterCore({
   engine: createJavaScriptRegexEngine(),
   themes: [
-    import('@shikijs/themes/github-dark'),
-    import('@shikijs/themes/github-light'),
+    import('@shikijs/themes/vitesse-dark'),
+    import('@shikijs/themes/vitesse-light'),
   ],
   langs: [
     import('@shikijs/langs/vue'),
@@ -85,8 +85,8 @@ export default defineConfig(({ mode }) => {
           const highlightedCode = codeHighlighter.codeToHtml(code, {
             lang: 'vue',
             themes: {
-              light: 'github-light',
-              dark: 'github-dark',
+              light: 'vitesse-light',
+              dark: 'vitesse-dark',
             },
           })
 

@@ -138,8 +138,8 @@ const {
     margin-block: .75em;
   }
 
-  pre {
-    padding: 1.25em 3em;
+  pre.shiki {
+    padding: 1.25em 3.25em;
     line-height: 1.25;
   }
 
@@ -166,7 +166,7 @@ const {
     content: counter(section);
     position: absolute;
     top: 0;
-    left: -2.5em;
+    left: -2.75em;
     width: 25px;
     user-select: none;
     text-align: right;
