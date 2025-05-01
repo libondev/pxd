@@ -13,6 +13,38 @@ const checked = ref(false)
 </template>
 ```
 
+## Group
+
+```vue demo
+<script setup>
+const value = ref(['one'])
+
+const options = [
+  { label: 'Options 1', value: 'one' },
+  { label: 'Options 2', value: 'tow' },
+  { label: 'Options 3', value: 'three' },
+]
+</script>
+
+<template>
+  <PCheckboxGroup
+    v-model="value"
+    :options="options"
+    gap="3"
+    direction="col"
+  />
+
+  <PCheckboxGroup
+    v-model="value"
+    :options="options"
+    gap="3"
+    disabled
+    direction="col"
+    class="mt-6"
+  />
+</template>
+```
+
 ## Indeterminate
 
 ```vue demo
