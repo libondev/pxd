@@ -96,6 +96,10 @@ const {
     font-size: 1.125rem;
   }
 
+  h2 + p {
+    color: hsl(var(--gray-900-value));
+  }
+
   :not(pre) > code {
     font-size: 0.875rem;
     padding: 0.15em 0.5em;

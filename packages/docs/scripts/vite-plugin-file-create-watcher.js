@@ -23,8 +23,15 @@ export function fileCreateWatcher() {
           const componentNamePascal = pascalize(componentName)
 
           const mdFilePath = path.resolve(process.cwd(), 'src', 'pages', 'components', `${componentName}.md`)
-
-          writeFileSync(mdFilePath, `# ${componentNamePascal}`)
+          const mdFileContent = `# ${componentNamePascal}\n
+## Default\n
+\`\`\`vue demo
+<template>
+  <P${componentNamePascal} />
+</template>
+\`\`\`
+`
+          writeFileSync(mdFilePath, mdFileContent)
         }
       })
     },
