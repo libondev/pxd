@@ -6,13 +6,14 @@ import Radio from '../radio/index.vue'
 import Stack from '../stack/index.vue'
 
 interface RadioGroupOptions {
-  label: string
+  label: string | number
   value: string | number
   disabled?: boolean
 }
 
 interface Props {
   disabled?: boolean
+  required?: boolean
   modelValue: string | number
   options?: RadioGroupOptions[]
 }

@@ -5,7 +5,7 @@ import { useModelValue } from '../../composables/useModelValue'
 import { useRandomValue } from '../../composables/useRandomValueContext'
 
 interface Props {
-  label?: string
+  label?: string | number
   value: string | number
   required?: boolean
   disabled?: boolean
@@ -26,25 +26,24 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const radioGroupName = useRandomValue('radioGroupName')
-const radioGroupProps = inject('radioGroupProps', { disabled: false })!
-
 const modelValue = useModelValue(props, emits)
 
-const computedChecked = computed(() => {
-  return props.modelValue === props.value
+const radioGroupName = useRandomValue('radioGroupName')
+const radioGroupProps = inject('radioGroupProps', {
+  disabled: false,
+  required: false,
 })
 
-const computedDisabled = computed(() => {
-  return props.disabled || radioGroupProps.disabled
-})
+const isChecked = computed(() => props.modelValue === props.value)
+const computedDisabled = computed(() => props.disabled || radioGroupProps.disabled)
+const computedRequired = computed(() => props.required || radioGroupProps.required)
 
 const computedInnerClasses = computed(() => {
   const basic = ['pxd-radio--inner size-4 rounded-full inline-flex items-center justify-center border motion-safe:transition-colors']
 
   basic.push('after:content-empty after:size-2 after:rounded-full after:bg-gray-1000 after:scale-0 motion-safe:after:transition-transform peer-checked:after:scale-100')
 
-  if (computedChecked.value) {
+  if (isChecked.value) {
     if (computedDisabled.value) {
       basic.push('bg-gray-100 border-gray-500 after:bg-gray-500')
     }
@@ -70,11 +69,11 @@ const computedInnerClasses = computed(() => {
     <input
       v-model="modelValue"
       type="radio"
-      :value="value"
       class="hidden peer"
-      :required="required"
-      :disabled="computedDisabled"
+      :value="value"
       :name="radioGroupName"
+      :required="computedRequired"
+      :disabled="computedDisabled"
     >
 
     <span aria-hidden="true" :class="computedInnerClasses" />
