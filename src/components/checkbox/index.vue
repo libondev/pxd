@@ -5,7 +5,9 @@ import { computed } from 'vue'
 
 interface Props {
   label?: string
+  value?: string | number | boolean
   disabled?: boolean
+  required?: boolean
   modelValue?: boolean
   indeterminate?: boolean
 }
@@ -33,12 +35,20 @@ const modelValue = computed({
   },
 })
 
+const computedChecked = computed(() => {
+  if (props.value !== undefined) {
+    return props.modelValue === props.value
+  }
+
+  return props.modelValue
+})
+
 const computedDisabled = computed(() => {
   return props.disabled
 })
 
-const computedBoxClasses = computed(() => {
-  const basic = ['pxd-checkbox--box size-4 inline-flex items-center justify-center rounded-sm border motion-safe:transition-colors']
+const computedInnerClasses = computed(() => {
+  const basic = ['pxd-checkbox--inner size-4 inline-flex items-center justify-center rounded-sm border motion-safe:transition-colors']
 
   if (props.modelValue) {
     if (computedDisabled.value) {
@@ -62,15 +72,22 @@ const computedBoxClasses = computed(() => {
 </script>
 
 <template>
-  <label class="pxd-checkbox flex items-center group" :class="{ 'is-disabled cursor-not-allowed text-gray-500': disabled }">
-    <input v-model="modelValue" :disabled="disabled" type="checkbox" class="hidden peer">
+  <label class="pxd-checkbox inline-flex items-center group" :class="{ 'is-disabled cursor-not-allowed text-gray-500': disabled }">
+    <input
+      v-model="modelValue"
+      type="checkbox"
+      class="hidden peer"
+      :required="required"
+      :disabled="disabled"
+      :checked="computedChecked"
+    >
 
-    <span :class="computedBoxClasses">
+    <span aria-hidden="true" :class="computedInnerClasses">
       <CheckIcon v-if="modelValue" class="text-xs text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="text-xs" />
     </span>
 
-    <span class="ml-2 text-sm">
+    <span class="ml-2 text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>
