@@ -41,7 +41,7 @@ Support all props of `stack` components
 <script setup>
 import { ref } from 'vue'
 
-const value = ref('')
+const value = ref('one')
 const options = [
   { label: 'Options 1', value: 'one' },
   { label: 'Options 2', value: 'tow' },
@@ -50,7 +50,21 @@ const options = [
 </script>
 
 <template>
-  <PRadioGroup v-model="value" :options="options" gap="3" direction="col" />
+  <PRadioGroup
+    v-model="value"
+    :options="options"
+    gap="3"
+    direction="col"
+  />
+
+  <PRadioGroup
+    v-model="value"
+    :options="options"
+    gap="3"
+    disabled
+    class="mt-6"
+    direction="col"
+  />
 </template>
 ```
 
