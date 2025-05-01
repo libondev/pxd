@@ -79,7 +79,6 @@ const computedInnerClasses = computed(() => {
       class="hidden peer"
       :required="required"
       :disabled="disabled"
-      :checked="computedChecked"
     >
 
     <span aria-hidden="true" :class="computedInnerClasses" />

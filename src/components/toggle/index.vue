@@ -92,7 +92,7 @@ function onCheckboxChange(e: Event) {
       class="pxd-toggle--handle border border-gray-alpha-200 p-px rounded-full motion-safe:transition-colors [--tx:0] bg-(--ibc) peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
       :class="computedSize"
     >
-      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 translate-z-0 translate-x-(--tx) motion-safe:transition-transform">
+      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 transform-gpu translate-x-(--tx) motion-safe:transition-transform">
         <slot v-if="isChecked" name="active-icon" />
         <slot v-else name="inactive-icon" />
       </span>
