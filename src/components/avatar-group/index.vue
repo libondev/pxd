@@ -42,7 +42,7 @@ provide('groupSize', props.size)
       class="[&:nth-child(n+2)]:-ml-3"
     />
 
-    <Avatar v-if="slicedOptions.length < options.length" class="text-md bg-gray-1000 text-gray-100 -ml-3">
+    <Avatar v-if="slicedOptions.length < options.length" class="text-xs bg-gray-1000 text-gray-100 -ml-3">
       +{{ options.length - slicedOptions.length }}
     </Avatar>
   </div>
