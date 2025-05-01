@@ -40,8 +40,14 @@
     "./tw.css": "./dist/styles/tw.css",
     "./styles.css": "./dist/styles/index.css",
     "./tokens.css": "./dist/styles/tokens.css",
-    "./components/*": "./dist/components/*/index.vue",
-    "./composables/*": "./dist/composables/*/index.js"
+    "./components/*": {
+      "types": "./dist/components/*/index.vue.d.ts",
+      "default": "./dist/components/*/index.vue"
+    },
+    "./composables/*": {
+      "types": "./dist/composables/*/*.d.ts",
+      "default": "./dist/composables/*/*.js"
+    }
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -72,10 +78,11 @@
     "build:only": "run-s build:lib build:docs",
     "build:lib": "unbuild",
     "build:docs": "pnpm --filter docs build",
+    "build:types": "vue-tsc ./src/components/**/*.vue --declaration --emitDeclarationOnly --outDir dist",
     "build:css": "tailwindcss -i ./src/styles/index.css -o ./dist/styles/index.css -m",
     "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
-    "prepublishOnly": "run-s update-exports build:lib build:css",
+    "prepublishOnly": "run-s update-exports build:lib build:css build:types",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
