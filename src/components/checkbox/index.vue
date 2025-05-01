@@ -48,9 +48,9 @@ const computedDisabled = computed(() => {
 })
 
 const computedInnerClasses = computed(() => {
-  const basic = ['pxd-checkbox--inner size-4 inline-flex items-center justify-center rounded-sm border motion-safe:transition-colors']
+  const basic = ['pxd-checkbox--inner size-4 flex-shrink-0 inline-flex items-center justify-center rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors']
 
-  if (props.modelValue) {
+  if (computedChecked.value) {
     if (computedDisabled.value) {
       basic.push('bg-gray-600 border-gray-600')
     }
@@ -79,12 +79,12 @@ const computedInnerClasses = computed(() => {
       class="hidden peer"
       :required="required"
       :disabled="disabled"
-      :checked="computedChecked"
     >
 
     <span aria-hidden="true" :class="computedInnerClasses">
-      <CheckIcon v-if="modelValue" class="text-xs text-gray-100" />
-      <MinusIcon v-else-if="indeterminate" class="text-xs" />
+      <CheckIcon v-if="computedChecked" class="size-3 text-gray-100" />
+      <MinusIcon v-else-if="indeterminate" class="size-3 text-gray-100" />
+      <span v-else class="size-3" />
     </span>
 
     <span class="ml-2 text-sm empty:hidden">
