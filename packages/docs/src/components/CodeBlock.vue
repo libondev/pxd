@@ -2,14 +2,14 @@
 </script>
 
 <template>
-  <div class="code-block border rounded-lg">
+  <div class="code-block border rounded-lg mt-3">
     <div class="p-6">
       <slot />
     </div>
 
     <details class="code-block group">
       <summary
-        class="flex items-center px-4 h-11 border-t text-xs text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open:rounded-none"
+        class="flex items-center px-4 h-12 border-t text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open:rounded-none"
       >
         <IconChevronRight class="text-xs mr-2 group-open:rotate-90 motion-safe:transition-transform" />
         <span

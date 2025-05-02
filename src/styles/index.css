@@ -271,8 +271,9 @@
   --color-primary: var(--color-primary);
   --color-secondary: hsl(var(--gray-700-value));
   --color-muted: var(--gray-alpha-800);
+  --color-amber: hsl(var(--amber-700-value));
   --color-accent: hsl(var(--green-700-value));
-  --color-destructive: hsl(var(--red-700-value));
+  --color-danger: hsl(var(--red-700-value));
 
   --color-border: hsl(var(--gray-300-value));
   --color-border-hover: hsl(var(--gray-500-value));
@@ -395,6 +396,7 @@
   --shadow-sticky: 0 12px 10px -10px rgba(0, 0, 0, 0.12);
 
   --spacing-em: 1em;
+  --z-1: 1;
 }
 
 @layer base {

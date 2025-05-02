@@ -267,8 +267,9 @@
   --color-primary: var(--color-primary);
   --color-secondary: hsl(var(--gray-700-value));
   --color-muted: var(--gray-alpha-800);
+  --color-amber: hsl(var(--amber-700-value));
   --color-accent: hsl(var(--green-700-value));
-  --color-destructive: hsl(var(--red-700-value));
+  --color-danger: hsl(var(--red-700-value));
 
   --color-border: hsl(var(--gray-300-value));
   --color-border-hover: hsl(var(--gray-500-value));
