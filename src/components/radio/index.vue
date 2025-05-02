@@ -43,7 +43,7 @@ const computedRequired = computed(() => props.required || radioGroupProps.requir
 const computedInnerClasses = computed(() => {
   const basic = [
     'pxd-radio--inner size-4 rounded-full inline-flex items-center justify-center border peer-focus-ring motion-safe:transition-colors',
-    'after:content-empty after:size-2 after:rounded-full after:bg-gray-1000 after:scale-0 peer-checked:after:scale-100 motion-safe:after:transition-transform',
+    'after:content-empty after:size-2 after:rounded-full after:bg-gray-1000 after:scale-40 after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:after:transition-all',
   ]
 
   if (isChecked.value) {
