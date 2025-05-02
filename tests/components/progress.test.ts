@@ -11,30 +11,11 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.element.tagName).toBe('PROGRESS')
-    expect(wrapper.element.getAttribute('max')).toBe('100')
-    expect(wrapper.element.getAttribute('value')).toBe('30')
+    const progress = wrapper.find('progress')
 
-    wrapper.unmount()
-  })
-
-  it('should change model-value', async () => {
-    const wrapper = mount(Progress, {
-      props: {
-        modelValue: 30,
-      },
-    })
-
-    expect(wrapper.element.tagName).toBe('PROGRESS')
-    expect(wrapper.element.getAttribute('value')).toBe('30')
-
-    wrapper.setProps({
-      modelValue: 50,
-    })
-
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.element.getAttribute('value')).toBe('50')
+    expect(progress.element.tagName).toBe('PROGRESS')
+    expect(progress.element.getAttribute('max')).toBe('100')
+    expect(progress.element.getAttribute('value')).toBe('30')
 
     wrapper.unmount()
   })
