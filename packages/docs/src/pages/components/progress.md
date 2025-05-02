@@ -57,11 +57,12 @@ Customize the colors of the display at different stages.
 </script>
 
 <template>
-  <span>{{ progressValue }}</span>
+  <PProgress v-model="progressValue" :colors="colors" label />
+  <PProgress v-model="progressValue" :colors="colors">
+    {{ progressValue }} / 100
+  </PProgress>
 
-  <PProgress v-model="progressValue" :colors="colors" class="my-4" />
-
-  <PStack>
+  <PStack class="mt-4">
     <PButton variant="primary" @click="increase">Increase</PButton>
     <PButton @click="decrease">Decrease</PButton>
   </PStack>
