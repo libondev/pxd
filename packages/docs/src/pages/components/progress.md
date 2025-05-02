@@ -7,8 +7,12 @@ Display progress relative to a limit or related to a task.
 ## Default
 
 ```vue demo
+<script setup>
+  const value = ref(30)
+</script>
+
 <template>
-  <PProgress :model-value="30" />
+  <PProgress v-model="value" />
 </template>
 ```
 
@@ -40,7 +44,6 @@ Customize the colors of the display at different stages.
   }
 
   function increase() {
-    console.log('🎡progress.md:40/(progressValue.value):\n', progressValue.value)
     if (progressValue.value < 100) {
       progressValue.value += 10
     }
@@ -54,8 +57,11 @@ Customize the colors of the display at different stages.
 </script>
 
 <template>
-  <PProgress v-model="progressValue" :colors="colors" />
-  <PStack class="mt-4">
+  <span>{{ progressValue }}</span>
+
+  <PProgress v-model="progressValue" :colors="colors" class="my-4" />
+
+  <PStack>
     <PButton variant="primary" @click="increase">Increase</PButton>
     <PButton @click="decrease">Decrease</PButton>
   </PStack>

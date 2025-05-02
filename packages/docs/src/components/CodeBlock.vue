@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="code-block border rounded-lg mt-3">
+  <div class="code-block border rounded-lg mt-4">
     <div class="p-6">
       <slot />
     </div>

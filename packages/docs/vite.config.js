@@ -88,7 +88,7 @@ export default defineConfig(({ mode }) => {
               light: 'vitesse-light',
               dark: 'vitesse-dark',
             },
-          })
+          }).replace(/\{\{(.*?)\}\}/g, '&lbrace;&lbrace;$1&rbrace;&rbrace;')
 
           return `<CodeBlock>
             ${component}
