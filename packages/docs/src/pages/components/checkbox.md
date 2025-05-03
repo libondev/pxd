@@ -9,6 +9,7 @@ const checked = ref(false)
 </script>
 
 <template>
+  <div>isChecked: {{ checked }}</div>
   <PCheckbox v-model="checked" label="Checkbox" />
 </template>
 ```
@@ -27,6 +28,8 @@ const options = [
 </script>
 
 <template>
+  <div class="mb-2">checkedValues: {{ value }}</div>
+
   <PCheckboxGroup
     v-model="value"
     :options="options"
