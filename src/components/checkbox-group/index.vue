@@ -35,7 +35,20 @@ const emits = defineEmits<{
 
 const modelValue = useModelValue(props, emits)
 
+function isCheckedAll() {
+  return props.options.every(option => modelValue.value.includes(option.value))
+}
+
+function isCheckedPartial() {
+  return modelValue.value.length > 0 && !isCheckedAll()
+}
+
 provide('checkboxGroupProps', props)
+
+defineExpose({
+  isCheckedAll,
+  isCheckedPartial,
+})
 </script>
 
 <template>

@@ -97,6 +97,18 @@ function onInputChange(event: Event) {
 
   toggleChecked(isInputChecked)
 }
+
+function getCheckedState() {
+  if (props.indeterminate) {
+    return 'indeterminate'
+  }
+
+  return isChecked.value ? 'checked' : 'unchecked'
+}
+
+defineExpose({
+  getCheckedState,
+})
 </script>
 
 <template>
