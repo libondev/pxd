@@ -5,9 +5,23 @@ Inherit button style links.
 
 ```vue demo
 <template>
-  <PLinkButton href="/components/link-button">
-    to link-button page
-  </PLinkButton>
+  <PStack>
+    <PLinkButton href="/components/link-button" text="text prop button" />
+    <PLinkButton href="/components/link-button">
+      slot button
+    </PLinkButton>
+  </PStack>
+</template>
+```
+
+## Text Link
+Set `shape="text"` to convert it into a link in normal text form.
+
+```vue demo
+<template>
+  <PStack>
+    <PLinkButton href="/components/link-button" text="text prop button" shape="text" />
+  </PStack>
 </template>
 ```
 

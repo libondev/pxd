@@ -6,6 +6,8 @@ import Button from '../button/index.vue'
 
 interface Props {
   href: string
+  text?: string
+  shape?: 'button' | 'text'
   align?: 'left' | 'center' | 'right'
   target?: '_blank' | '_self' | '_parent' | '_top'
   externalIcon?: boolean
@@ -30,6 +32,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    type: 'button',
     align: 'left',
     target: '_self',
   },
@@ -45,6 +48,16 @@ const alignClassName = {
   right: 'justify-end',
 }
 
+const computedClasses = computed(() => {
+  const basic = ['pxd-link-button !no-underline', alignClassName[props.align]]
+
+  if (props.shape === 'text') {
+    basic.push('!p-0 !h-auto font-medium border-none hover:!bg-transparent hover:!underline active:opacity-60 motion-safe:transition-opacity')
+  }
+
+  return basic
+})
+
 const computedAttrs = computed<LinkAttrs>(() => {
   const { href, target } = props
 
@@ -57,6 +70,7 @@ const computedAttrs = computed<LinkAttrs>(() => {
       as: 'a',
       href,
       target,
+      rel: 'noopener noreferrer',
     }
   }
 
@@ -73,11 +87,7 @@ function onLinkClick(ev: MouseEvent) {
 
 <template>
   <Button
-    role="link"
-    tabindex="0"
-    rel="noopener noreferrer"
-    class="pxd-link-button !no-underline"
-    :class="alignClassName[align]"
+    :class="computedClasses"
     v-bind="computedAttrs"
     @click="onLinkClick"
   >
@@ -85,7 +95,9 @@ function onLinkClick(ev: MouseEvent) {
       <slot name="prefix" />
     </template>
 
-    <slot />
+    <slot>
+      {{ text }}
+    </slot>
 
     <template #suffix>
       <slot name="suffix" />
