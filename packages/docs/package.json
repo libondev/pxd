@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "canvas-confetti": "^1.9.3",
     "pxd": "workspace:*",
     "vue": "catalog:",
     "vue-router": "catalog:"

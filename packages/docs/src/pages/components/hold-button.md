@@ -6,28 +6,30 @@ Press and hold the button to trigger some logic (such as delete).
 
 ```vue demo
 <script setup>
+import confetti from 'canvas-confetti'
+
 function onConfirm() {
-  alert('onConfirm')
+  confetti()
 }
 
 function onFinished(isFinished) {
-  alert(`isFinished: ${isFinished}`)
+  if (isFinished) {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.7 },
+    })
+  }
 }
 </script>
 
 <template>
   <PStack>
-    <PHoldButton @confirm="onConfirm" @finished="onFinished">
-      Hole me
-    </PHoldButton>
+    <PHoldButton @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
 
-    <PHoldButton shape="rounded" @confirm="onConfirm" @finished="onFinished">
-      Hole me
-    </PHoldButton>
+    <PHoldButton shape="rounded" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
 
-    <PHoldButton shape="square" @confirm="onConfirm" @finished="onFinished">
-      Hole me
-    </PHoldButton>
+    <PHoldButton shape="square" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
   </PStack>
 </template>
 ```
@@ -38,9 +40,7 @@ Set the `durations` property to determine how long it will trigger. (Unit: secon
 
 ```vue demo
 <template>
-  <PHoldButton durations="1">
-    Lasts one second
-  </PHoldButton>
+  <PHoldButton durations="1"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -54,7 +54,9 @@ You can set the same `variant` property as the button.
     <PHoldButton durations="1">default</PHoldButton>
     <PHoldButton durations="1" variant="ghost">ghost</PHoldButton>
     <PHoldButton durations="1" variant="error">error</PHoldButton>
-    <PHoldButton durations="1" variant="primary" mask-color="var(--background-100)">primary</PHoldButton>
+    <PHoldButton durations="1" variant="primary" mask-color="var(--background-100)"
+      >primary</PHoldButton
+    >
     <PHoldButton durations="1" variant="success">success</PHoldButton>
     <PHoldButton durations="1" disabled>disabled</PHoldButton>
     <PHoldButton durations="1" loading>loading</PHoldButton>
@@ -68,9 +70,7 @@ Set `mask-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" mask-color="hsl(var(--red-500-value))">
-    Lasts one second
-  </PHoldButton>
+  <PHoldButton durations="1" mask-color="hsl(var(--red-500-value))"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -80,13 +80,21 @@ After `cancelable` is set, the process can be cancelled by pressing and leaving 
 
 ```vue demo
 <script setup>
-  function onCanceled() {
-    alert('canceled')
-  }
+import confetti from 'canvas-confetti'
 
-  function onFinished(isFinished) {
-    alert(`isFinished: ${isFinished}`)
+function onCanceled() {
+  alert('canceled')
+}
+
+function onFinished(isFinished) {
+  if (isFinished) {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.7 },
+    })
   }
+}
 </script>
 
 <template>
@@ -102,8 +110,6 @@ Set `scalable="false"` to disable zooming when pressed.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" :scalable="false">
-    Lasts one second
-  </PHoldButton>
+  <PHoldButton durations="1" :scalable="false"> Lasts one second </PHoldButton>
 </template>
 ```
