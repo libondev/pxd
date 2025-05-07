@@ -73,7 +73,7 @@ const computedInnerClasses = computed(() => {
     basic.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'
-        : 'bg-background border-gray-alpha-400 group-hover:bg-gray-200',
+        : 'bg-background border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
     )
   }
 
@@ -113,7 +113,7 @@ defineExpose({
 
 <template>
   <label
-    class="pxd-checkbox inline-flex items-center group"
+    class="pxd-checkbox inline-flex items-center group/checkbox"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="randomId"
   >

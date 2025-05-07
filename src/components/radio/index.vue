@@ -59,7 +59,7 @@ const computedInnerClasses = computed(() => {
       basic.push('bg-gray-100 border-gray-500')
     }
     else {
-      basic.push('bg-background border-gray-alpha-400 group-hover:bg-gray-200')
+      basic.push('bg-background border-gray-alpha-400 group-hover/radio:bg-gray-200')
     }
   }
 
@@ -69,7 +69,7 @@ const computedInnerClasses = computed(() => {
 
 <template>
   <label
-    class="pxd-radio group inline-flex items-center"
+    class="pxd-radio group/radio inline-flex items-center"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="randomId"
   >
