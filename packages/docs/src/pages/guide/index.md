@@ -1,6 +1,4 @@
-
-# Guide
-
+# README
 `pxd` is a versatile component library designed to bridge the compatibility gap between Vue 2 and Vue 3, enabling shared UI components across versions. This library proves remarkably effective for implementing universal applications.
 
 ?> While cross-version compatibility is a key feature, certain version requirements still apply: `Vue <= 2.7 || Vue >= 3.3`

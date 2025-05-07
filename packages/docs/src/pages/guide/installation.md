@@ -17,6 +17,13 @@ npm install pxd
 
 ## Styles
 
+### Native CSS
+Just import this stylesheet globally.
+```js
+// main.js
+import 'pxd/styles.css'
+```
+
 ### Tailwindcss@4
 
 ```css
@@ -27,14 +34,6 @@ npm install pxd
 @import "../../node_modules/pxd/dist/styles/tw.css";
 @source "../../node_modules/pxd";
 ```
-
-### Native CSS
-Just import this stylesheet globally.
-```js
-// main.js
-import 'pxd/styles.css'
-```
-
 
 ## Usage
 You can register globally or import on demand, or import automatically.
@@ -58,13 +57,13 @@ app.use(PXD)
 ```
 
 ### Import on demand
-Only import the components you use to avoid the problem of large file size.
+Only use the components you need to avoid being too big after packaging.
 
 ```html
 <script setup>
 import { Button } from 'pxd'
 // OR
-import Button from 'pxd/components/button'
+// import Button from 'pxd/components/button'
 </script>
 
 <template>
@@ -75,7 +74,7 @@ import Button from 'pxd/components/button'
 ```
 
 ### Import automatically
-Use `unpluggin-vue-components' to simplify the import process.
+Use `unplugin-vue-components` to simplify the import process.
 
 ```js
 // vite.config.js
