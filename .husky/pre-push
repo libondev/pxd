@@ -1,2 +1,2 @@
-pnpm build
-pnpm test
+pnpm update-exports
+pnpm typecheck
