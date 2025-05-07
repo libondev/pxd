@@ -57,6 +57,7 @@ function onPointerEnter() {
   }
 
   if (status.value === 'canceled') {
+    isStarted = true
     status.value = 'loading'
   }
 }
@@ -70,6 +71,7 @@ function onPointerLeave() {
     return
   }
 
+  isStarted = false
   status.value = 'canceled'
   emits('canceled')
 }
@@ -81,6 +83,8 @@ function onPointerDown() {
 
   isStarted = true
   status.value = 'loading'
+
+  document.addEventListener('pointerup', onPointerUp, { once: true })
 }
 
 function onPointerUp() {
@@ -120,7 +124,6 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
     :class="{ scalable, effective: status !== 'canceled' }"
     v-bind="computedAttrs"
     @pointerdown="onPointerDown"
-    @pointerup="onPointerUp"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
   >
