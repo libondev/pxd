@@ -14,6 +14,22 @@ Retrieve text input from a user.
 </template>
 ```
 
+## Password
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const password = ref('')
+</script>
+
+<template>
+  <PStack>
+    <PInput v-model="password" password placeholder="Enter your password" />
+  </PStack>
+</template>
+```
+
 ## Prefix and suffix
 
 ```vue demo

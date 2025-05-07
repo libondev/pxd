@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSizeWithXs } from '../../types/components'
+import { EyeIcon, EyeOffIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import PError from '../error/index.vue'
@@ -11,6 +12,7 @@ interface Props {
   error?: string
   readonly?: boolean
   disabled?: boolean
+  password?: boolean
   modelValue?: string
   placeholder?: string
   prefixStyle?: boolean
@@ -54,9 +56,10 @@ const SIZES = {
 }
 
 const modelValue = useModelValue(props, emits)
+const internalInputType = shallowRef(props.password ? 'password' : 'text')
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--container flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const basic = ['pxd-input--container relative flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
   basic.push(SIZES[props.size || config.size])
 
@@ -86,6 +89,10 @@ function onInputBlur(event: FocusEvent) {
 function onInputChange(event: Event) {
   emits('change', event)
 }
+
+function togglePasswordType() {
+  internalInputType.value = internalInputType.value === 'password' ? 'text' : 'password'
+}
 </script>
 
 <template>
@@ -103,9 +110,11 @@ function onInputChange(event: Event) {
       <input
         v-model="modelValue"
         class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
+        :class="{ 'pr-10': password }"
         :readonly="readonly"
         :disabled="disabled"
         :placeholder="placeholder"
+        :type="internalInputType"
         autocapitalize="off"
         autocomplete="off"
         autocorrect="off"
@@ -116,6 +125,11 @@ function onInputChange(event: Event) {
         @focus="onInputFocus"
         @blur="onInputBlur"
       >
+
+      <div v-if="password && modelValue" class="pxd-input--pw-icon absolute right-0 top-0 p-3 h-full text-gray-900 hover:text-gray-1000 motion-safe:transition-colors cursor-pointer flex items-center" @click.prevent="togglePasswordType">
+        <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
+        <EyeOffIcon v-else class="size-3" />
+      </div>
 
       <div
         v-if="$slots.suffix"
