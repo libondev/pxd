@@ -5,39 +5,55 @@ export function useResizeObserver(
   target: MaybeRef<HTMLElement | null>,
   callback: (entries: ResizeObserverEntry) => void,
 ) {
-  const resizeObserver = new ResizeObserver((entries) => {
-    entries.forEach(callback)
-  })
+  let observer: ResizeObserver | undefined
 
-  const stop = () => {
-    resizeObserver.disconnect()
+  const cleanup = () => {
+    if (!observer) {
+      return
+    }
+
+    observer.disconnect()
+    observer = undefined
   }
 
-  watch(
+  const unwatch = watch(
     () => unref(target),
     (newVal, oldVal) => {
-      if (oldVal) {
-        resizeObserver.unobserve(oldVal)
+      if (typeof window === 'undefined' || typeof ResizeObserver === 'undefined') {
+        return
       }
-      else {
-        stop()
+
+      cleanup()
+
+      observer = new ResizeObserver((entries) => {
+        entries.forEach(callback)
+      })
+
+      if (oldVal) {
+        observer.unobserve(oldVal)
       }
 
       if (newVal) {
-        resizeObserver.observe(newVal)
+        observer.observe(newVal)
       }
     },
     {
       immediate: true,
+      flush: 'post',
     },
   )
+
+  const stop = () => {
+    cleanup()
+    unwatch()
+  }
 
   onBeforeUnmount(() => {
     stop()
   })
 
   return {
-    observer: resizeObserver,
+    observer,
     stop,
   }
 }
