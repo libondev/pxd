@@ -37,10 +37,6 @@
       "types": "./dist/composables/index.d.ts",
       "default": "./dist/composables/index.js"
     },
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "default": "./dist/utils/index.js"
-    },
     "./tw.css": "./dist/styles/tw.css",
     "./styles.css": "./dist/styles/index.css",
     "./tokens.css": "./dist/styles/tokens.css",
@@ -51,6 +47,14 @@
     "./composables/*": {
       "types": "./dist/composables/*/*.d.ts",
       "default": "./dist/composables/*/*.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "default": "./dist/types/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "default": "./dist/utils/*.js"
     }
   },
   "main": "./dist/index.js",
