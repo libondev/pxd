@@ -64,7 +64,7 @@ Set `mask-color` to modify the color of the progress bar.
 
 ## Durations
 
-Set the `durations` property to determine how long it will trigger.
+Set the `durations` property to determine how long it will trigger. (Unit: second)
 
 ```vue demo
 <template>

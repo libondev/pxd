@@ -124,6 +124,10 @@ const {
     margin-block: .75em;
   }
 
+  a:not(.pxd-link-button) {
+    font-weight: 500;
+  }
+
   pre.shiki {
     padding: 1.25em 3.25em;
     line-height: 1.25;
