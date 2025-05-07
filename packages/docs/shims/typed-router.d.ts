@@ -35,6 +35,7 @@ declare module 'vue-router/auto-routes' {
     '/components/link-button': RouteRecordInfo<'/components/link-button', '/components/link-button', Record<never, never>, Record<never, never>>,
     '/components/loading-dots': RouteRecordInfo<'/components/loading-dots', '/components/loading-dots', Record<never, never>, Record<never, never>>,
     '/components/more-button': RouteRecordInfo<'/components/more-button', '/components/more-button', Record<never, never>, Record<never, never>>,
+    '/components/note': RouteRecordInfo<'/components/note', '/components/note', Record<never, never>, Record<never, never>>,
     '/components/progress': RouteRecordInfo<'/components/progress', '/components/progress', Record<never, never>, Record<never, never>>,
     '/components/radio': RouteRecordInfo<'/components/radio', '/components/radio', Record<never, never>, Record<never, never>>,
     '/components/scrollable': RouteRecordInfo<'/components/scrollable', '/components/scrollable', Record<never, never>, Record<never, never>>,
