@@ -5,7 +5,7 @@ import { useModelValue } from '../../composables/useModelValue'
 interface Props {
   max?: number
   label?: string | number | boolean
-  type?: 'default' | 'success' | 'warning' | 'error' | 'secondary'
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
   colors?: Record<string, string>
   modelValue: number
 }
@@ -23,7 +23,7 @@ const props = withDefaults(
   {
     max: 100,
     label: false,
-    type: 'default',
+    variant: 'default',
   },
 )
 
@@ -35,7 +35,7 @@ const typeColors = {
   default: 'var(--color-primary)',
   success: 'hsl(var(--blue-700-value))',
   warning: 'hsl(var(--amber-700-value))',
-  secondary: 'hsl(var(--gray-700-value))',
+  info: 'hsl(var(--gray-700-value))',
   error: 'hsl(var(--red-700-value))',
 }
 
@@ -44,7 +44,7 @@ const progressValue = useModelValue(props, emits)
 const sortedColorKeys = computed(() => props.colors ? Object.keys(props.colors).map(Number).sort((a, b) => a - b) : [])
 
 const computedColors = computed(() => {
-  const { colors, type } = props
+  const { colors, variant } = props
 
   if (colors) {
     const sortedKeys = sortedColorKeys.value
@@ -58,8 +58,8 @@ const computedColors = computed(() => {
     return colors[sortedKeys[sortedKeys.length - 1]] || typeColors.default
   }
 
-  if (type && typeColors[type]) {
-    return typeColors[type]
+  if (variant && typeColors[variant]) {
+    return typeColors[variant]
   }
 
   return typeColors.default

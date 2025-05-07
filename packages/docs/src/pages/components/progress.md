@@ -74,10 +74,10 @@ Customize the colors of the display at different stages.
 ```vue demo
 <template>
   <PStack gap="6">
-    <PProgress :model-value="80" type="success" />
-    <PProgress :model-value="10" type="error" />
-    <PProgress :model-value="40" type="warning" />
-    <PProgress :model-value="70" type="secondary" />
+    <PProgress :model-value="80" variant="success" />
+    <PProgress :model-value="10" variant="error" />
+    <PProgress :model-value="40" variant="warning" />
+    <PProgress :model-value="70" variant="info" />
   </PStack>
 </template>
 ```
