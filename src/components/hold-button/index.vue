@@ -73,11 +73,6 @@ function onPointerLeave() {
     return
   }
 
-  if (status.value !== 'loading') {
-    return
-  }
-
-  isStarted = false
   status.value = 'canceled'
   emits('canceled')
 }
