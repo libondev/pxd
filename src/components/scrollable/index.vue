@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { useResizeObserver } from '../../composables/useResizeObserver'
 
 interface Props {
   size?: number
@@ -7,6 +8,7 @@ interface Props {
   maskColor?: string
   scrollbar?: boolean
   scrollbarSize?: number
+  staticContent?: boolean
   scrollbarColor?: string
   scrollbarHoverColor?: string
 }
@@ -78,9 +80,38 @@ const horizontalThumbStyle = computed(() => ({
   transform: `translateX(${scrollInfo.value.horizontalThumbLeft}px)`,
 }))
 
+// 滚动时计算是否展示渐变
+function updateDirectionFader() {
+  const wrapper = scrollContainer.value
+  if (!wrapper || !props.fader)
+    return
+
+  const {
+    scrollTop,
+    scrollLeft,
+    scrollWidth,
+    scrollHeight,
+    clientWidth,
+    clientHeight,
+  } = wrapper
+
+  const hasTop = scrollTop >= props.size
+  // 有时候会出现滚动条的位置和最大高度相差 0.x 的误差，所以这里减去一个阈值
+  const hasBottom = scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD
+  const hasLeft = scrollLeft >= props.size
+  const hasRight = scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD
+
+  faderDirections.value = {
+    top: hasTop,
+    left: hasLeft,
+    right: hasRight,
+    bottom: hasBottom,
+  }
+}
+
 function updateScrollbarMetrics() {
   const wrapper = scrollContainer.value
-  if (!wrapper)
+  if (!wrapper || !props.scrollbar)
     return
 
   const {
@@ -95,7 +126,6 @@ function updateScrollbarMetrics() {
   // 检查是否可滚动
   const isScrollableX = scrollWidth > clientWidth
   const isScrollableY = scrollHeight > clientHeight
-  scrollInfo.value.isScrollable = { x: isScrollableX, y: isScrollableY }
 
   // 计算滚动条尺寸比例
   const verticalRatio = clientHeight / scrollHeight
@@ -123,7 +153,7 @@ function updateScrollbarMetrics() {
 
   // 更新状态
   scrollInfo.value = {
-    ...scrollInfo.value,
+    isScrollable: { x: isScrollableX, y: isScrollableY },
     verticalRatio,
     horizontalRatio,
     verticalThumbHeight,
@@ -131,6 +161,11 @@ function updateScrollbarMetrics() {
     verticalThumbTop,
     horizontalThumbLeft,
   }
+}
+
+function updateScrollbarInfo() {
+  updateDirectionFader()
+  updateScrollbarMetrics()
 }
 
 function onContainerScroll(ev: Event) {
@@ -146,36 +181,6 @@ function onContainerScroll(ev: Event) {
   }
 }
 
-// 滚动时计算是否展示渐变
-function updateDirectionFader() {
-  const wrapper = scrollContainer.value
-  if (!wrapper)
-    return
-
-  const {
-    scrollTop,
-    scrollLeft,
-    scrollWidth,
-    scrollHeight,
-    clientWidth,
-    clientHeight,
-  } = wrapper
-
-  const hasTop = scrollTop >= props.size
-  // 有时候会出现滚动条的位置和最大高度相差 0.x 的误差，所以这里减去一个阈值
-  const hasBottom = scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD
-  const hasLeft = scrollLeft >= props.size
-  const hasRight = scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD
-
-  faderDirections.value = {
-    top: hasTop,
-    left: hasLeft,
-    right: hasRight,
-    bottom: hasBottom,
-  }
-}
-
-// 开始拖拽垂直滚动条
 function startDragVertical(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
@@ -195,13 +200,12 @@ function startDragVertical(e: MouseEvent) {
   }
 
   document.addEventListener('mousemove', onDragMove)
-  document.addEventListener('mouseup', endDrag)
+  document.addEventListener('mouseup', endDrag, { once: true })
 
   // 添加禁止选择类
   document.body.classList.add('select-none')
 }
 
-// 开始拖拽水平滚动条
 function startDragHorizontal(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
@@ -221,13 +225,12 @@ function startDragHorizontal(e: MouseEvent) {
   }
 
   document.addEventListener('mousemove', onDragMove)
-  document.addEventListener('mouseup', endDrag)
+  document.addEventListener('mouseup', endDrag, { once: true })
 
   // 添加禁止选择类
   document.body.classList.add('select-none')
 }
 
-// 拖拽移动处理
 function onDragMove(e: MouseEvent) {
   if (!dragState.value.isDragging || !dragState.value.direction)
     return
@@ -272,7 +275,6 @@ function onDragMove(e: MouseEvent) {
 function endDrag() {
   dragState.value.isDragging = false
   document.removeEventListener('mousemove', onDragMove)
-  document.removeEventListener('mouseup', endDrag)
 
   // 移除禁止选择类
   document.body.classList.remove('select-none')
@@ -281,30 +283,27 @@ function endDrag() {
   updateScrollbarMetrics()
 }
 
-onMounted(async () => {
-  await nextTick()
+if (props.scrollbar || props.fader) {
+  useResizeObserver(scrollContainer, () => {
+    updateScrollbarInfo()
 
+    if (!props.staticContent) {
+      setTimeout(updateScrollbarInfo, 1000)
+    }
+  })
+}
+
+onMounted(async () => {
   if (!props.scrollbar && !props.fader) {
     return
   }
 
-  const wrapper = scrollContainer.value
-
-  const hasScrollbarX = wrapper.scrollWidth > wrapper.clientWidth
-  const hasScrollbarY = wrapper.scrollHeight > wrapper.clientHeight
-
-  faderDirections.value.right = hasScrollbarX
-  faderDirections.value.bottom = hasScrollbarY
-
-  wrapper.addEventListener('scroll', onContainerScroll, { passive: true })
-
-  updateScrollbarMetrics()
-
+  scrollContainer.value.addEventListener('scroll', onContainerScroll, { passive: true })
   window.addEventListener('resize', updateScrollbarMetrics, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  scrollContainer.value?.removeEventListener('scroll', onContainerScroll)
+  scrollContainer.value.removeEventListener('scroll', onContainerScroll)
 
   window.removeEventListener('resize', updateScrollbarMetrics)
   document.removeEventListener('mousemove', onDragMove)
@@ -312,13 +311,13 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
-  forceUpdate: onContainerScroll,
+  forceUpdate: updateScrollbarInfo,
 })
 </script>
 
 <template>
   <div
-    class="pxd-scrollable group relative overflow-hidden" :style="{
+    class="pxd-scrollable group/scrollable relative overflow-hidden [--sv:0] hover:[--sv:1]" :style="{
       '--c': maskColor,
       '--s': `${size}px`,
       '--ss': `${scrollbarSize}px`,
@@ -328,7 +327,7 @@ defineExpose({
   >
     <div
       ref="scrollContainer"
-      class="pxd-scrollable--content w-full h-full scrollbar-hidden overflow-scroll"
+      class="pxd-scrollable--content max-h-full scrollbar-hidden overflow-scroll"
     >
       <slot />
     </div>
@@ -350,7 +349,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--custom-scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--custom-scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--ss) + 8px)"
       >
         <div
@@ -363,7 +362,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--custom-scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-0 group-hover:opacity-100 active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--custom-scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--ss) + 8px)"
       >
         <div
