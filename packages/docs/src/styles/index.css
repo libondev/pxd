@@ -19,7 +19,8 @@ body,
   @apply h-full;
 }
 
-:is(header, .sidebar) .pxd-link-button.router-link-active {
+header .pxd-link-button.router-link-active,
+.sidebar .router-link-exact-active {
   background-color: var(--color-background);
 }
 
