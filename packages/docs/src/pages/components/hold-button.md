@@ -32,6 +32,18 @@ function onFinished(isFinished) {
 </template>
 ```
 
+## Durations
+
+Set the `durations` property to determine how long it will trigger. (Unit: second)
+
+```vue demo
+<template>
+  <PHoldButton durations="1">
+    Lasts one second
+  </PHoldButton>
+</template>
+```
+
 ## Variants
 
 You can set the same `variant` property as the button.
@@ -39,13 +51,13 @@ You can set the same `variant` property as the button.
 ```vue demo
 <template>
   <PStack>
-    <PHoldButton>default</PHoldButton>
-    <PHoldButton variant="ghost">ghost</PHoldButton>
-    <PHoldButton variant="error">error</PHoldButton>
-    <PHoldButton variant="primary" mask-color="var(--background-100)">primary</PHoldButton>
-    <PHoldButton variant="success">success</PHoldButton>
-    <PHoldButton disabled>disabled</PHoldButton>
-    <PHoldButton loading>loading</PHoldButton>
+    <PHoldButton durations="1">default</PHoldButton>
+    <PHoldButton durations="1" variant="ghost">ghost</PHoldButton>
+    <PHoldButton durations="1" variant="error">error</PHoldButton>
+    <PHoldButton durations="1" variant="primary" mask-color="var(--background-100)">primary</PHoldButton>
+    <PHoldButton durations="1" variant="success">success</PHoldButton>
+    <PHoldButton durations="1" disabled>disabled</PHoldButton>
+    <PHoldButton durations="1" loading>loading</PHoldButton>
   </PStack>
 </template>
 ```
@@ -56,19 +68,7 @@ Set `mask-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton mask-color="hsl(var(--red-500-value))">
-    Lasts one second
-  </PHoldButton>
-</template>
-```
-
-## Durations
-
-Set the `durations` property to determine how long it will trigger. (Unit: second)
-
-```vue demo
-<template>
-  <PHoldButton durations="1">
+  <PHoldButton durations="1" mask-color="hsl(var(--red-500-value))">
     Lasts one second
   </PHoldButton>
 </template>
@@ -83,10 +83,14 @@ After `cancelable` is set, the process can be cancelled by pressing and leaving 
   function onCanceled() {
     alert('canceled')
   }
+
+  function onFinished(isFinished) {
+    alert(`isFinished: ${isFinished}`)
+  }
 </script>
 
 <template>
-  <PHoldButton durations="1" cancelable @canceled="onCanceled">
+  <PHoldButton durations="1" cancelable @canceled="onCanceled" @finished="onFinished">
     Lasts one second
   </PHoldButton>
 </template>
@@ -96,6 +100,10 @@ After `cancelable` is set, the process can be cancelled by pressing and leaving 
 
 Set `scalable="false"` to disable zooming when pressed.
 
-<PHoldButton :scalable="false">
-  Lasts one second
-</PHoldButton>
+```vue demo
+<template>
+  <PHoldButton durations="1" :scalable="false">
+    Lasts one second
+  </PHoldButton>
+</template>
+```

@@ -27,6 +27,8 @@ const emits = defineEmits<{
   confirm: []
   canceled: []
   finished: [boolean]
+  pointerup: [PointerEvent]
+  pointerdown: [PointerEvent]
 }>()
 
 type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
@@ -71,12 +73,16 @@ function onPointerLeave() {
     return
   }
 
+  if (status.value !== 'loading') {
+    return
+  }
+
   isStarted = false
   status.value = 'canceled'
   emits('canceled')
 }
 
-function onPointerDown() {
+function onPointerDown(event: PointerEvent) {
   if (props.disabled) {
     return
   }
@@ -84,10 +90,11 @@ function onPointerDown() {
   isStarted = true
   status.value = 'loading'
 
+  emits('pointerdown', event)
   document.addEventListener('pointerup', onPointerUp, { once: true })
 }
 
-function onPointerUp() {
+function onPointerUp(event: PointerEvent) {
   if (props.disabled) {
     return
   }
@@ -98,6 +105,7 @@ function onPointerUp() {
   status.value = 'idle'
 
   emits('finished', isConfirmed)
+  emits('pointerup', event)
 }
 
 function onTransitionEnd({ target, propertyName }: TransitionEvent) {
@@ -120,8 +128,6 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 
 <template>
   <Button
-    class="pxd-hold-button relative motion-safe:transition-all"
-    :class="{ scalable, effective: status !== 'canceled' }"
     v-bind="computedAttrs"
     @pointerdown="onPointerDown"
     @pointerenter="onPointerEnter"

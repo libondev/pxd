@@ -27,7 +27,7 @@ describe('hold-button', () => {
     overlay.element.dispatchEvent(transitionEndEvent)
     await wrapper.vm.$nextTick()
 
-    await wrapper.trigger('pointerup')
+    document.dispatchEvent(new Event('pointerup'))
 
     expect(wrapper.emitted()).toHaveProperty('confirm')
     expect(wrapper.emitted()).toHaveProperty('finished')
@@ -49,7 +49,7 @@ describe('hold-button', () => {
 
     expect(wrapper.emitted()).toHaveProperty('canceled')
 
-    await wrapper.trigger('pointerup')
+    document.dispatchEvent(new Event('pointerup'))
 
     expect(wrapper.emitted()).toHaveProperty('finished')
     expect(wrapper.emitted().finished[0]).toEqual([false])
@@ -86,7 +86,7 @@ describe('hold-button', () => {
     overlay.element.dispatchEvent(transitionEndEvent)
     await wrapper.vm.$nextTick()
 
-    await wrapper.trigger('pointerup')
+    document.dispatchEvent(new Event('pointerup'))
 
     expect(wrapper.emitted()).toHaveProperty('finished')
     expect(wrapper.emitted().finished[0]).toEqual([true])
