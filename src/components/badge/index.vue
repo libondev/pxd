@@ -57,7 +57,7 @@ const VARIANTS = {
 
 const computedClass = computed(() =>
   twMerge(
-    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline',
+    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     VARIANTS[props.variant],
     SIZES[props.size || config.size],
   ),

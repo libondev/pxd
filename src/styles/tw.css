@@ -275,7 +275,7 @@
   --color-border-hover: hsl(var(--gray-500-value));
   --color-border-active: hsl(var(--gray-600-value));
 
-  --color-input: var(--gray-alpha-400);
+  --color-input: var(--gray-alpha-300);
   --color-ring: hsl(var(--blue-900-value));
 
   --color-gray-100: hsl(var(--gray-100-value));
