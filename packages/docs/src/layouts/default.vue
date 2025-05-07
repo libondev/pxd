@@ -96,15 +96,6 @@ const {
     font-size: 1.125rem;
   }
 
-  :not(pre) > code {
-    font-size: 0.875rem;
-    padding: 0.15em 0.5em;
-    border-radius: 0.25em;
-    white-space: nowrap;
-    background-color: var(--gray-alpha-200);
-    border: 1px solid var(--gray-alpha-300);
-  }
-
   blockquote {
     padding-left: 1em;
     padding-block: 1px;
@@ -114,11 +105,6 @@ const {
     p {
       margin-block: 0.25em;
     }
-  }
-
-  a {
-    text-decoration: underline;
-    text-underline-offset: 0.1em;
   }
 
   ul {

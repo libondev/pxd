@@ -4,7 +4,7 @@
 @source "../../node_modules/markdown-it-plugins";
 
 @theme {
-  --font-sans: 'Geist', 'Inter', sans-serif;
+  --font-sans: 'Inter', 'Geist', sans-serif;
   --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', monospace;
 }
 
@@ -25,4 +25,19 @@ body,
 
 ::selection {
   background-color: var(--color-green-400);
+}
+
+:not(pre) > code {
+  font-size: 0.875rem;
+  margin-right: 0.22em;
+  padding: 0.15em 0.5em;
+  border-radius: 0.25em;
+  white-space: nowrap;
+  background-color: var(--gray-alpha-200);
+  border: 1px solid var(--gray-alpha-300);
+}
+
+a {
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
 }
