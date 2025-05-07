@@ -8,6 +8,11 @@ const menus = components.map(({ name, camelized }) => {
     path: `/components/${name}`,
   }
 })
+
+menus.unshift({
+  label: 'Overview',
+  path: '/components',
+})
 </script>
 
 <template>
