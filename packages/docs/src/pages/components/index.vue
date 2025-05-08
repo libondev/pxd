@@ -4,8 +4,8 @@ import { components } from '@/consts/components'
 </script>
 
 <template>
-  <h1>
-    Components Overview
+  <h1 class="text-2xl font-medium">
+    Overview
   </h1>
 
   <div class="flex flex-wrap gap-5 mt-6">

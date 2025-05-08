@@ -5,7 +5,7 @@ import { version } from 'pxd'
 
 <template>
   <main class="w-full px-4 relative max-w-screen-lg mx-auto">
-    <section class="py-40 text-center">
+    <section class="my-32 sm:py-40 text-center">
       <div class="relative">
         <h1 class="font-bold inline text-6xl">
           PXD
@@ -44,7 +44,7 @@ import { version } from 'pxd'
       </div>
     </section>
 
-    <hr class="mx-12 my-8">
+    <hr class="mx-12 mb-8 sm:mb-20">
 
     <section class="py-20 flex flex-wrap gap-4 cursor-default">
       <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">

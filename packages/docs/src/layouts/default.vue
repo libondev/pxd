@@ -10,7 +10,7 @@ const {
 
 <template>
   <div class="absolute left-0 top-0 bottom-0">
-    <div class="sidebar fixed top-12 bottom-0 mt-px z-10 border-r w-64 sm:border-x bg-background-secondary">
+    <div class="sidebar fixed -translate-x-full sm:translate-x-0 top-12 bottom-0 mt-px z-10 border-r w-64 sm:border-x bg-background-secondary">
       <PScrollable class="h-full overflow-y-auto p-2.5">
         <ul>
           <li v-for="menu of menus" :key="menu.path" class="mb-0.5">
@@ -23,8 +23,8 @@ const {
     </div>
   </div>
 
-  <div class="ml-64 border-r flex-1 min-h-screen">
-    <main class="prose px-20 py-16 h-full">
+  <div class="sm:ml-64 border-r flex-1 min-h-screen">
+    <main class="prose px-6 sm:px-20 py-16 h-full">
       <slot />
     </main>
 
@@ -38,9 +38,13 @@ const {
   pointer-events: none;
 }
 
+.noticeboard {
+  line-height: 1.5 !important;
+}
+
 .prose {
   --background: var(--color-background);
-  line-height: 1.68;
+  line-height: 1.5;
 
   :is(h1, h2, h3, h4) {
     font-weight: 500;
@@ -62,7 +66,7 @@ const {
     position: absolute;
     left: 0;
     bottom: 4px;
-    transform: translateX(-110%) scale(0.8);
+    transform: translateX(-100%) scale(0.75);
     font-size: 12px;
     font-weight: 500;
     color: var(--color-muted);
@@ -140,8 +144,10 @@ const {
   }
 
   pre code {
+    max-width: 100%;
     font-size: 0.875rem;
     white-space: pre-wrap;
+    word-break: break-word;
   }
 
   pre.shiki > code {
