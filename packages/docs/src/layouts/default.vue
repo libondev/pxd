@@ -130,6 +130,8 @@ const {
 
   a:not(.pxd-link-button) {
     font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 0.1em;
   }
 
   pre.shiki {

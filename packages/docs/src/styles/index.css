@@ -37,8 +37,3 @@ header .pxd-link-button.router-link-active,
   background-color: var(--gray-alpha-200);
   border: 1px solid var(--gray-alpha-300);
 }
-
-a {
-  text-decoration: underline;
-  text-underline-offset: 0.1em;
-}

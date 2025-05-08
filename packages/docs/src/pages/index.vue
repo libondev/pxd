@@ -63,14 +63,12 @@ import { version } from 'pxd'
         </h3>
 
         <p class="text-secondary text-sm">
-          It takes little effort to make all components natively support light and dark mode. See
-          <RouterLink
-            to="/components/color-scheme"
-            class="text-primary font-medium mr-0.5"
-          >
-            here
-          </RouterLink>
-          for more information.
+          It takes little effort to make all components natively support light and dark mode. See<PLinkButton
+            href="/components/color-scheme"
+            class="text-primary underline"
+            type="text"
+            text="here"
+          />for more information.
         </p>
       </div>
 
