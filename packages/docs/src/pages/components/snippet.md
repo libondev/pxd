@@ -32,11 +32,15 @@ const text = [
 </template>
 ```
 
-## No prompt
+## Prompt
 
 ```vue demo
 <template>
-  <PSnippet text="npm install pxd" width="300px" :prompt="false" />
+  <PStack direction="col">
+    <PSnippet text="npm install pxd" width="300px" :prompt="false" />
+    <PSnippet text="npm install pxd" width="300px" prompt="# " />
+    <PSnippet text="npm install pxd" width="300px" prompt="\ " />
+  </PStack>
 </template>
 ```
 

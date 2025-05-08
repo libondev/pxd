@@ -9,7 +9,7 @@ interface Props {
   text: string | string[]
   width?: string | number
   size?: ComponentSize
-  prompt?: boolean
+  prompt?: boolean | string
   variant?: ComponentVariant
 }
 
@@ -20,7 +20,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    prompt: true,
+    prompt: '$ ',
     variant: 'default',
   },
 )
@@ -39,7 +39,7 @@ const SIZES = {
 }
 
 const VARIANTS = {
-  default: 'text-gray-900 border-gray-alpha-300 bg-background',
+  default: 'border-gray-alpha-300 bg-background',
   primary: 'text-gray-100 border-gray-alpha-300 bg-primary',
   success: 'text-blue-900 border-gray-alpha-300 bg-blue-200',
   error: 'text-red-900 border-gray-alpha-300 bg-red-200',
@@ -86,7 +86,7 @@ function onCopyClick() {
 <template>
   <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }">
     <div>
-      <pre v-for="(t, i) of computedTextArray" :key="i" class="!m-0 !p-0" :class="{ 'pxd-snippet--with-prompt': prompt }">{{ t }}</pre>
+      <pre v-for="(t, i) of computedTextArray" :key="i" class="!m-0 !p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
     </div>
 
     <div
@@ -95,19 +95,13 @@ function onCopyClick() {
       @click="onCopyClick"
     >
       <Transition name="fade-scale" mode="out-in">
-        <CheckIcon v-if="isCopied" class="check-icon w-4 h-4" />
-        <CopyIcon v-else class="copy-icon w-4 h-4" />
+        <Component :is="isCopied ? CheckIcon : CopyIcon" class="w-4 h-4" />
       </Transition>
     </div>
   </div>
 </template>
 
 <style>
-.pxd-snippet--with-prompt::before {
-  content: '$ ';
-  user-select: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .fade-scale-enter-active,
   .fade-scale-leave-active {
