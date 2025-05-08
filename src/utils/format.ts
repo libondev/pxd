@@ -32,7 +32,11 @@ export function toArray(value: unknown | unknown[]) {
   return [value]
 }
 
-export function getCssUnitValue(value: string | number) {
+export function getCssUnitValue(value?: string | number) {
+  if (value === undefined) {
+    return undefined
+  }
+
   if (typeof value === 'number') {
     return `${value}px`
   }
