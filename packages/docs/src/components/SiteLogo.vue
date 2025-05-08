@@ -22,7 +22,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .shape {
-    animation: morph 5s infinite ease-in-out;
+    animation: morph 10s infinite ease-in-out;
   }
 }
 </style>
