@@ -15,12 +15,12 @@ Inherit button style links.
 ```
 
 ## Text Link
-Set `shape="text"` to convert it into a link in normal text form.
+Set `type="text"` to convert it into a link in normal text form.
 
 ```vue demo
 <template>
   <PStack>
-    <PLinkButton href="/components/link-button" text="text prop button" shape="text" />
+    <PLinkButton href="/components/link-button" text="text prop button" type="text" />
   </PStack>
 </template>
 ```

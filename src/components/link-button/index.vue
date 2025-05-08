@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ExternalIcon } from 'gdsi/vue'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
 import Button from '../button/index.vue'
 
@@ -42,6 +42,8 @@ const emits = defineEmits<{
   click: [MouseEvent]
 }>()
 
+const attrs = useAttrs()
+
 const alignClassName = {
   left: 'justify-start',
   center: 'justify-center',
@@ -52,24 +54,27 @@ const computedClasses = computed(() => {
   const basic = ['pxd-link-button !no-underline', alignClassName[props.align]]
 
   if (props.type === 'text') {
-    basic.push('!p-0 !h-auto font-medium border-none hover:!bg-transparent hover:!underline active:opacity-60 motion-safe:transition-opacity')
+    basic.push('font-medium hover:!underline active:opacity-60 motion-safe:transition-opacity')
   }
 
   return basic
 })
 
 const computedAttrs = computed<LinkAttrs>(() => {
-  const { href, target } = props
+  const { href, target, type } = props
 
   if (!href) {
     return null
   }
+
+  const variant = type === 'text' ? 'simple' : attrs.variant || 'outline'
 
   if (isExternalLink(href)) {
     return {
       as: 'a',
       href,
       target,
+      variant,
       rel: 'noopener noreferrer',
     }
   }
@@ -77,6 +82,7 @@ const computedAttrs = computed<LinkAttrs>(() => {
   return {
     as: 'router-link',
     to: href,
+    variant,
   }
 })
 
