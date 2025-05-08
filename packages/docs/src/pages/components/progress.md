@@ -12,11 +12,15 @@ Display progress relative to a limit or related to a task.
 </script>
 
 <template>
-  <PProgress v-model="value" />
+  <PStack gap="4">
+    <PProgress v-model="value" size="sm" />
+    <PProgress v-model="value" size="md" />
+    <PProgress v-model="value" size="lg" />
+  </PStack>
 </template>
 ```
 
-## Custom max
+## Custom min/max
 
 ```vue demo
 <script setup>
@@ -24,7 +28,7 @@ Display progress relative to a limit or related to a task.
 </script>
 
 <template>
-  <PProgress v-model="value" :max="40" />
+  <PProgress v-model="value" :min="20" :max="40" />
 </template>
 ```
 

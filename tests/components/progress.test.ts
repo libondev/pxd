@@ -7,15 +7,14 @@ describe('progress', () => {
     const wrapper = mount(Progress, {
       props: {
         modelValue: 30,
-        max: 100,
+        max: 80,
+        min: 20,
       },
     })
 
-    const progress = wrapper.find('progress')
-
-    expect(progress.element.tagName).toBe('PROGRESS')
-    expect(progress.element.getAttribute('max')).toBe('100')
-    expect(progress.element.getAttribute('value')).toBe('30')
+    expect(wrapper.attributes('aria-valuemin')).toBe('20')
+    expect(wrapper.attributes('aria-valuemax')).toBe('80')
+    expect(wrapper.attributes('aria-valuenow')).toBe('30')
 
     wrapper.unmount()
   })
