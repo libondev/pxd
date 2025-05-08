@@ -8,7 +8,7 @@ export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterL
 
 export interface ButtonProps {
   as?: ComponentAs
-  variant?: 'outline' | 'ghost' | 'primary' | 'error' | 'warning' | 'success'
+  variant?: 'outline' | 'ghost' | 'primary' | 'error' | 'warning' | 'success' | 'simple'
   size?: ComponentSize
   shape?: 'square' | 'rounded'
   block?: boolean

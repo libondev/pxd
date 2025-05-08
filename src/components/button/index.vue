@@ -24,13 +24,21 @@ const emits = defineEmits<{
 const config = useConfigProvider()
 
 const SIZES = {
-  xs: 'px-1 rounded-md h-6 text-sm',
-  sm: 'px-1.5 rounded-md h-7.5 text-sm',
-  md: 'px-2.5 rounded-md h-9 text-sm',
-  lg: 'px-3.5 rounded-lg h-10.5 text-base',
+  xs: 'px-1 rounded-md h-6',
+  sm: 'px-1.5 rounded-md h-7.5',
+  md: 'px-2.5 rounded-md h-9',
+  lg: 'px-3.5 rounded-lg h-10.5',
+}
+
+const FONT_SIZE = {
+  xs: 'text-sm',
+  sm: 'text-sm',
+  md: 'text-sm',
+  lg: 'text-base',
 }
 
 const VARIANTS = {
+  simple: '',
   outline: 'bg-background text-foreground hover:bg-background-hover active:bg-background-active border-input',
   ghost: 'bg-transparent text-foreground hover:bg-gray-alpha-200 active:bg-gray-alpha-300 border-transparent',
   primary: 'bg-primary text-gray-100 hover:bg-primary/80 active:bg-primary border-transparent',
@@ -46,11 +54,17 @@ const computedDisabled = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const classNames = ['pxd-button cursor-pointer select-none items-center justify-center border outline-none self-focus-ring motion-safe:transition-all']
+  const classNames = ['pxd-button cursor-pointer select-none items-center justify-center  motion-safe:transition-all']
 
-  classNames.push(VARIANTS[props.variant] || VARIANTS.outline)
+  classNames.push(FONT_SIZE[props.size || config.size])
 
-  classNames.push(SIZES[props.size || config.size])
+  if (props.variant !== 'simple') {
+    classNames.push('border outline-none self-focus-ring')
+
+    classNames.push(VARIANTS[props.variant] || VARIANTS.outline)
+
+    classNames.push(SIZES[props.size || config.size])
+  }
 
   classNames.push(props.block ? 'flex w-full' : 'inline-flex')
 
