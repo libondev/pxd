@@ -11,3 +11,31 @@ export function isExternalLink(href: string) {
 
   return true
 }
+
+export function toArray(value: unknown | unknown[]) {
+  if (value === null || value === undefined) {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  if (value instanceof Set) {
+    return Array.from(value)
+  }
+
+  if (value instanceof Map) {
+    return Array.from(value.entries())
+  }
+
+  return [value]
+}
+
+export function getCssUnitValue(value: string | number) {
+  if (typeof value === 'number') {
+    return `${value}px`
+  }
+
+  return value
+}

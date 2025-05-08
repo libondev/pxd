@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue'
+import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   src?: string
@@ -21,15 +22,7 @@ const isLoadFailed = ref(false)
 
 const groupSize = inject<number | string>('groupSize', 32)
 
-const computedSize = computed(() => {
-  const _size = props.size || groupSize
-
-  if (typeof _size === 'number') {
-    return `${_size}px`
-  }
-
-  return _size
-})
+const computedSize = computed(() => getCssUnitValue(props.size || groupSize))
 
 const computedLoading = computed(() => props.loading || isLoadFailed.value)
 </script>
