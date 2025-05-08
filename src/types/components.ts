@@ -1,6 +1,7 @@
 import type { VNode } from 'vue'
 
 export type ComponentSize = 'sm' | 'md' | 'lg'
+export type ComponentVariant = 'default' | 'primary' | 'error' | 'warning' | 'success'
 export type ComponentSizeWithXs = ComponentSize | 'xs'
 export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type ComponentBreakpoint = Record<ComponentBreakpointKeys, string>
@@ -8,7 +9,7 @@ export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterL
 
 export interface ButtonProps {
   as?: ComponentAs
-  variant?: 'outline' | 'ghost' | 'primary' | 'error' | 'warning' | 'success' | 'simple'
+  variant?: ComponentVariant | 'ghost' | 'simple'
   size?: ComponentSize
   shape?: 'square' | 'rounded'
   block?: boolean

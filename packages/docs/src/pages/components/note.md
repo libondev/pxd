@@ -44,25 +44,29 @@
 ```vue demo
 <template>
   <PStack direction="col" gap="3">
+    <PNote variant="default"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
+
+    <PNote variant="primary"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
+
     <PNote variant="success"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="error"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="warning"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
-    <PNote variant="info"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
-
     <PNote variant="violet"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="cyan"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
+
+    <PNote variant="default" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
+
+    <PNote variant="primary" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="success" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="error" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="warning" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
-
-    <PNote variant="info" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="violet" fill> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
@@ -76,19 +80,24 @@
 ```vue demo
 <template>
   <PStack direction="col" gap="4">
-    <div>
-      <b class="text-sm font-medium">Custom Label</b>
-      <PNote label="Note">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      </PNote>
-    </div>
+    <b class="text-sm font-medium">Custom Label</b>
 
-    <div>
-      <b class="text-sm font-medium">No Label</b>
-      <PNote :label="false">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      </PNote>
-    </div>
+    <PNote label="Note">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </PNote>
+
+    <PNote>
+      <template #label>
+        <b class="text-sm font-medium">Custom Label</b>
+      </template>
+
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </PNote>
+
+    <b class="text-sm font-medium">No Label</b>
+    <PNote :label="false">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </PNote>
   </PStack>
 </template>
 ```

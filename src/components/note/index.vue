@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { CheckCircleIcon, InformationIcon, StopIcon, WarningIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 
 interface Props {
-  variant?: keyof typeof VARIANTS
+  variant?: ComponentVariant
   size?: ComponentSize
   fill?: boolean
   label?: string | boolean
@@ -20,7 +20,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     label: true,
-    variant: 'info',
+    variant: 'default',
   },
 )
 
@@ -48,10 +48,15 @@ const VARIANTS = {
     fill: 'text-amber-900 bg-amber-200 border-amber-100',
     classes: 'text-amber-900 border-amber-500',
   },
-  info: {
+  default: {
     icon: InformationIcon,
     fill: 'text-gray-900 bg-gray-200 border-gray-100',
     classes: 'text-gray-900 border-gray-400',
+  },
+  primary: {
+    icon: InformationIcon,
+    fill: 'text-gray-100 bg-gray-1000 border-gray-100',
+    classes: 'text-gray-1000 border-gray-900',
   },
   violet: {
     icon: InformationIcon,
@@ -70,7 +75,7 @@ const computedLabel = computed(() => {
 
   // hack vue2 boolean value
   if (label === true || label === '') {
-    return (VARIANTS[props.variant] || VARIANTS.info).icon
+    return (VARIANTS[props.variant] || VARIANTS.default).icon
   }
 
   if (typeof label === 'string' && label) {
@@ -86,10 +91,10 @@ const computedClasses = computed(() => {
   basic.push(SIZES[props.size || config.size])
 
   if (props.fill) {
-    basic.push((VARIANTS[props.variant] || VARIANTS.info)?.fill)
+    basic.push((VARIANTS[props.variant] || VARIANTS.default)?.fill)
   }
   else {
-    basic.push((VARIANTS[props.variant] || VARIANTS.info).classes)
+    basic.push((VARIANTS[props.variant] || VARIANTS.default).classes)
   }
 
   return twMerge(basic)

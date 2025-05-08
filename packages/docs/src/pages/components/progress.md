@@ -77,7 +77,7 @@ Customize the colors of the display at different stages.
     <PProgress :model-value="80" variant="success" />
     <PProgress :model-value="10" variant="error" />
     <PProgress :model-value="40" variant="warning" />
-    <PProgress :model-value="70" variant="info" />
+    <PProgress :model-value="70" variant="secondary" />
   </PStack>
 </template>
 ```

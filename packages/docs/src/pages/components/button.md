@@ -18,7 +18,7 @@ One of the most basic components, it will help you complete the interaction.
 ```vue demo
 <template>
   <PStack>
-    <PButton>default(outline)</PButton>
+    <PButton>default</PButton>
     <PButton variant="ghost">ghost</PButton>
     <PButton variant="error">error</PButton>
     <PButton variant="primary">primary</PButton>

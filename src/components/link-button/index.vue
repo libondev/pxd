@@ -67,7 +67,7 @@ const computedAttrs = computed<LinkAttrs>(() => {
     return null
   }
 
-  const variant = type === 'text' ? 'simple' : attrs.variant || 'outline'
+  const variant = type === 'text' ? 'simple' : attrs.variant || 'default'
 
   if (isExternalLink(href)) {
     return {

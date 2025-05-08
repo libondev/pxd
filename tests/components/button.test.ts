@@ -15,10 +15,10 @@ describe('button', () => {
     wrapper.unmount()
   })
 
-  it('should render an outline button', () => {
+  it('should render an default button', () => {
     const wrapper = mount(Button, {
       props: {
-        variant: 'outline',
+        variant: 'default',
       },
     })
 

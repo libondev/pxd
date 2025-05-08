@@ -5,7 +5,7 @@ import { useModelValue } from '../../composables/useModelValue'
 interface Props {
   max?: number
   label?: string | number | boolean
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'secondary'
   colors?: Record<string, string>
   modelValue: number
 }
@@ -35,7 +35,7 @@ const typeColors = {
   default: 'var(--color-primary)',
   success: 'hsl(var(--blue-700-value))',
   warning: 'hsl(var(--amber-700-value))',
-  info: 'hsl(var(--gray-700-value))',
+  secondary: 'hsl(var(--gray-700-value))',
   error: 'hsl(var(--red-700-value))',
 }
 

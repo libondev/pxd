@@ -20,7 +20,7 @@ import { version } from 'pxd'
         A universal UI component library for Vue2&3
       </p>
 
-      <div class="mt-16 justify-center flex gap-2">
+      <div class="mt-16 justify-center flex gap-3">
         <PLinkButton
           :scale="false"
           shape="rounded"
@@ -34,7 +34,7 @@ import { version } from 'pxd'
           </template>
         </PLinkButton>
 
-        <PLinkButton :href="githubLink" target="_blank" external-icon shape="rounded" variant="outline">
+        <PLinkButton :href="githubLink" target="_blank" external-icon shape="rounded">
           <template #prefix>
             <IconStarFill class="text-amber-600" />
           </template>
