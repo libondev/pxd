@@ -85,17 +85,17 @@ const computedLabel = computed(() => {
   <div class="pxd-progress w-full flex items-center">
     <progress
       class="
-        flex-1 h-2.5 rounded-sm overflow-hidden appearance-none align-[unset]
-        [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-bar]:rounded-sm
-        [&::-moz-progress-value]:bg-(--fg) [&::-moz-progress-bar]:rounded-sm [&::-moz-progress-bar]:transition-all
-        [&::-webkit-progress-value]:bg-(--fg) [&::-webkit-progress-value]:rounded-sm [&::-webkit-progress-value]:transition-all
+        flex-1 h-2.5 rounded-full overflow-hidden appearance-none align-[unset]
+        [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-bar]:rounded-full
+        [&::-moz-progress-value]:bg-(--fg) [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:motion-safe:transition-all
+        [&::-webkit-progress-value]:bg-(--fg) [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:motion-safe:transition-all
       "
       :style="`--fg: ${computedColors}`"
       :value="progressValue"
       :max="max"
     />
 
-    <span v-if="computedLabel || $slots.default" class="text-gray-900 text-sm ml-3 empty:hidden">
+    <span v-if="computedLabel || $slots.default" class="text-gray-900 text-sm ml-3 font-mono empty:hidden">
       <slot>
         {{ computedLabel }}
       </slot>
