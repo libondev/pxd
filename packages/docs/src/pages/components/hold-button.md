@@ -25,11 +25,21 @@ function onFinished(isFinished) {
 
 <template>
   <PStack>
-    <PHoldButton @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+    <PHoldButton size="sm" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+    <PHoldButton size="md" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+    <PHoldButton size="lg" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+  </PStack>
+</template>
+```
 
-    <PHoldButton shape="rounded" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+## Shape
 
-    <PHoldButton shape="square" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+```vue demo
+<template>
+  <PStack>
+    <PHoldButton> Hole me </PHoldButton>
+    <PHoldButton shape="rounded"> Hole me </PHoldButton>
+    <PHoldButton shape="square"> Hole me </PHoldButton>
   </PStack>
 </template>
 ```
