@@ -51,10 +51,10 @@ const alignClassName = {
 }
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-link-button !no-underline', alignClassName[props.align]]
+  const basic = ['pxd-link-button', alignClassName[props.align]]
 
   if (props.type === 'text') {
-    basic.push('font-medium hover:!underline active:opacity-60 motion-safe:transition-opacity')
+    basic.push('font-medium hover:underline hover:opacity-60 active:opacity-80 motion-safe:transition-opacity')
   }
 
   return basic
