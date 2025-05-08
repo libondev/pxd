@@ -9,7 +9,7 @@
 
     <details class="code-block group/code-block">
       <summary
-        class="flex items-center px-4 h-12 border-t text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open/code-block:rounded-none"
+        class="flex items-center px-4 h-11 border-t text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open/code-block:rounded-none"
       >
         <IconChevronRight class="text-xs mr-2 group-open/code-block:rotate-90 motion-safe:transition-transform" />
         <span

@@ -15,7 +15,12 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 
 ```vue demo
 <template>
-  <PScrollable class="w-100 h-100 border rounded-md" mask-color="var(--color-primary)" scrollbarColor="hsl(var(--blue-700-value))">
+  <PScrollable
+    class="w-100 h-100 border rounded-md"
+    mask-color="var(--color-pink-400)"
+    scrollbarColor="hsl(var(--red-700-value))"
+    scrollbar-hover-color="hsl(var(--red-500-value))"
+  >
     <div class="p-4 w-screen h-screen bg-background rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
     </div>

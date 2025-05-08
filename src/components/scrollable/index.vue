@@ -353,7 +353,7 @@ defineExpose({
         style="width:calc(var(--ss) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full w-(--ss) bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full w-(--ss) bg-(--sc) hover:bg-(--shc) active:bg-(--shc) motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -366,7 +366,7 @@ defineExpose({
         style="height:calc(var(--ss) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full h-(--ss) bg-(--sc) hover:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full h-(--ss) bg-(--sc) hover:bg-(--shc) active:bg-(--shc) motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />

@@ -90,7 +90,7 @@ function onCopyClick() {
     </div>
 
     <div
-      class="absolute top-1/2 -translate-y-1/2 right-0.5 p-2 cursor-pointer"
+      class="absolute top-1/2 -translate-y-1/2 right-1 p-2 cursor-pointer hover:bg-background-hover active:bg-background-active rounded-md"
       :class="{ copied: isCopied }"
       @click="onCopyClick"
     >
