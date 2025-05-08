@@ -87,10 +87,10 @@ function onCheckboxChange(e: Event) {
     >{{ inactiveLabel }}</span>
 
     <div
-      class="pxd-toggle--handle border border-gray-alpha-200 p-px rounded-full motion-safe:transition-all [--tx:0] bg-(--ibc) peer-focus-ring peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
+      class="pxd-toggle--handle border border-input p-px rounded-full motion-safe:transition-all [--tx:0] bg-(--ibc) peer-focus-ring peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
       :class="computedSize"
     >
-      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-gray-alpha-200 transform-gpu translate-x-(--tx) motion-safe:transition-transform">
+      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-input transform-gpu translate-x-(--tx) motion-safe:transition-transform">
         <slot v-if="modelValue" name="active-icon" />
         <slot v-else name="inactive-icon" />
       </span>

@@ -78,7 +78,7 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
   }
 }
 
-@keyframes gradient {
+@keyframes placeholder {
   0% {
     background-position: 200% 0;
   }
@@ -90,7 +90,7 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
 
 @media (prefers-reduced-motion: no-preference) {
   .pxd-avatar::before {
-    animation: gradient 8s ease-in-out infinite;
+    animation: placeholder 8s ease-in-out infinite;
   }
 }
 </style>

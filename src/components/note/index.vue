@@ -51,7 +51,7 @@ const VARIANTS = {
   default: {
     icon: InformationIcon,
     fill: 'text-gray-900 bg-gray-200 border-gray-100',
-    classes: 'text-gray-900 border-gray-400',
+    classes: 'text-gray-900 border-input',
   },
   primary: {
     icon: InformationIcon,
