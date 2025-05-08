@@ -62,7 +62,7 @@ function toggleColorMode() {
     v-bind="$attrs"
     @click="toggleColorMode"
   >
-    <Transition name="color-mode" mode="out-in">
+    <Transition name="rotate-scale" mode="out-in">
       <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
     </Transition>
   </Button>
@@ -70,16 +70,16 @@ function toggleColorMode() {
 
 <style>
 @media (prefers-reduced-motion: no-preference) {
-  .color-mode-enter-active,
-  .color-mode-leave-active {
+  .rotate-scale-enter-active,
+  .rotate-scale-leave-active {
     transition: transform 0.15s ease-out;
   }
 
-  .color-mode-enter-from {
+  .rotate-scale-enter-from {
     transform: rotate(-45deg) scale(0.68);
   }
 
-  .color-mode-leave-to {
+  .rotate-scale-leave-to {
     transform: rotate(45deg) scale(0.68);
   }
 }
