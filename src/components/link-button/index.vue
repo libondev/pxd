@@ -7,7 +7,7 @@ import Button from '../button/index.vue'
 interface Props {
   href: string
   text?: string
-  shape?: 'button' | 'text'
+  type?: 'button' | 'text'
   align?: 'left' | 'center' | 'right'
   target?: '_blank' | '_self' | '_parent' | '_top'
   externalIcon?: boolean
@@ -51,7 +51,7 @@ const alignClassName = {
 const computedClasses = computed(() => {
   const basic = ['pxd-link-button !no-underline', alignClassName[props.align]]
 
-  if (props.shape === 'text') {
+  if (props.type === 'text') {
     basic.push('!p-0 !h-auto font-medium border-none hover:!bg-transparent hover:!underline active:opacity-60 motion-safe:transition-opacity')
   }
 
