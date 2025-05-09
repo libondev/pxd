@@ -97,7 +97,7 @@
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
     "prepare": "husky",
-    "preversion": "npm run update-exports --stage",
+    "preversion": "node scripts/update-exports.js --stage",
     "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
   "peerDependencies": {
