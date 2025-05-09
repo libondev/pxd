@@ -1,10 +1,13 @@
 // @ts-check
 
+import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { globSync } from 'tinyglobby'
 import { pascalize } from './utils.js'
+
+const isNeedStageChange = process.argv.includes('--stage')
 
 function updateComponentsIndex() {
   const files = globSync('src/components/**/*.vue')
@@ -69,3 +72,8 @@ async function updateAppVersion() {
 updateAppVersion()
 updateComponentsIndex()
 updateComposablesIndex()
+
+if (isNeedStageChange) {
+  execSync('git add src/index.ts src/components/index.ts src/composables/index.ts')
+  execSync('git commit -m "chore: update pkg exports"')
+}

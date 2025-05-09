@@ -90,14 +90,15 @@
     "build:types": "vue-tsc -p tsconfig.type.json",
     "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
-    "prepublishOnly": "run-s update-exports build:lib build:style build:types",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
-    "prepare": "husky"
+    "prepare": "husky",
+    "preversion": "npm run update-exports --stage",
+    "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
   "peerDependencies": {
     "tailwind-merge": ">=3.0.0",
