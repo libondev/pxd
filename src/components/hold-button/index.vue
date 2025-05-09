@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components'
-import { computed, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import Button from '../button/index.vue'
 
 interface Props extends Omit<ButtonProps, 'as'> {
@@ -86,7 +86,9 @@ function onPointerDown(event: PointerEvent) {
   status.value = 'loading'
 
   emits('pointerdown', event)
+
   document.addEventListener('pointerup', onPointerUp, { once: true })
+  document.addEventListener('pointercancel', onPointerUp, { once: true })
 }
 
 function onPointerUp(event: PointerEvent) {
@@ -101,6 +103,8 @@ function onPointerUp(event: PointerEvent) {
 
   emits('finished', isConfirmed)
   emits('pointerup', event)
+
+  cleanPointerReleaseEvents()
 }
 
 function onTransitionEnd({ target, propertyName }: TransitionEvent) {
@@ -119,6 +123,15 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 
   status.value = 'loading'
 }
+
+function cleanPointerReleaseEvents() {
+  document.removeEventListener('pointerup', onPointerUp)
+  document.removeEventListener('pointercancel', onPointerUp)
+}
+
+onBeforeUnmount(() => {
+  cleanPointerReleaseEvents()
+})
 </script>
 
 <template>
