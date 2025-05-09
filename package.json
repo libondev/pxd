@@ -87,7 +87,7 @@
     "build:lib": "unbuild",
     "build:docs": "pnpm --filter docs build",
     "build:style": "tailwindcss -i ./src/styles/index.css -o ./dist/styles/index.css -m",
-    "build:types": "vue-tsc ./src/components/**/*.vue --declaration --emitDeclarationOnly --outDir dist",
+    "build:types": "vue-tsc -p tsconfig.type.json",
     "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
     "prepublishOnly": "run-s update-exports build:lib build:style build:types",
