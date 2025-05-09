@@ -14,7 +14,7 @@ interface Props {
 }
 
 defineOptions({
-  name: 'PxdSnippet',
+  name: 'PSnippet',
 })
 
 const props = withDefaults(

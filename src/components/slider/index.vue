@@ -15,7 +15,7 @@ interface Props {
 }
 
 defineOptions({
-  name: 'PxdSlider',
+  name: 'PSlider',
 })
 
 const props = withDefaults(

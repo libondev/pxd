@@ -10,6 +10,10 @@ interface Props {
   error?: ErrorType
 }
 
+defineOptions({
+  name: 'PError',
+})
+
 defineProps<Props>()
 
 const config = useConfigProvider()
