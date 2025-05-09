@@ -52,16 +52,20 @@ const VARIANTS_COLORS = {
   error: 'hsl(var(--red-700-value))',
 }
 
-const progressValue = useModelValue(props, emits)
+const progress = useModelValue(props, emits)
 
-const sortedColorKeys = computed(() => props.colors ? Object.keys(props.colors).map(Number).sort((a, b) => a - b) : [])
+const sortedColorKeys = computed(() => {
+  return props.colors
+    ? Object.keys(props.colors).map(Number).sort((a, b) => a - b)
+    : []
+})
 
 const computedLabel = computed(() => {
   const { label } = props
 
   // hack vue2 boolean value
   if (label === true || label === '') {
-    return String(progressValue.value)
+    return String(progress.value)
   }
 
   if (typeof label === 'string' && label) {
@@ -78,12 +82,12 @@ const computedColors = computed(() => {
     const sortedKeys = sortedColorKeys.value
 
     for (let i = 0; i < sortedKeys.length; i++) {
-      if (progressValue.value < sortedKeys[i]) {
+      if (progress.value < sortedKeys[i]) {
         return colors[sortedKeys[i - 1]]
       }
     }
 
-    return colors[sortedKeys[sortedKeys.length - 1]]
+    return colors[sortedKeys.at(-1)!]
   }
 
   return VARIANTS_COLORS[variant]
@@ -93,14 +97,14 @@ const computedProgressBarStyles = computed(() => {
   const { min, max } = props
 
   return {
-    width: `${(progressValue.value / (max - min)) * 100}%`,
+    width: `${(progress.value / (max - min)) * 100}%`,
     backgroundColor: computedColors.value || VARIANTS_COLORS.primary,
   }
 })
 </script>
 
 <template>
-  <div role="progressbar" class="pxd-progress w-full flex items-center" :aria-valuenow="progressValue" :aria-valuemin="min" :aria-valuemax="max">
+  <div role="progressbar" class="pxd-progress w-full flex items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
     <div class="flex-1 rounded-full overflow-hidden bg-gray-200" :class="SIZES[size || config.size]">
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>

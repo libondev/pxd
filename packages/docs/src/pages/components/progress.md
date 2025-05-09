@@ -37,7 +37,7 @@ Customize the colors of the display at different stages.
 
 ```vue demo
 <script setup>
-  const progressValue = ref(0)
+  const progress = ref(0)
 
   const colors = {
     0: 'var(--color-foreground)',
@@ -48,22 +48,22 @@ Customize the colors of the display at different stages.
   }
 
   function increase() {
-    if (progressValue.value < 100) {
-      progressValue.value += 10
+    if (progress.value < 100) {
+      progress.value += 10
     }
   }
 
   function decrease() {
-    if (progressValue.value > 0) {
-      progressValue.value -= 10
+    if (progress.value > 0) {
+      progress.value -= 10
     }
   }
 </script>
 
 <template>
-  <PProgress v-model="progressValue" :colors="colors" label />
-  <PProgress v-model="progressValue" :colors="colors">
-    {{ progressValue }} / 100
+  <PProgress v-model="progress" :colors="colors" label />
+  <PProgress v-model="progress" :colors="colors">
+    {{ progress }} / 100
   </PProgress>
 
   <PStack class="mt-4">
