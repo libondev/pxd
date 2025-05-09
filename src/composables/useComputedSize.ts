@@ -1,10 +1,15 @@
-import type { ComponentSize } from '../types/components'
+import type { ComponentSize, ComponentSizeWithXs } from '../types/components'
 import { useConfigProvider } from './useConfigProviderContext'
 
-export function useComputedSize<Size extends ComponentSize>(
+type ComponentSizeType = ComponentSize | ComponentSizeWithXs | undefined
+
+export function useComputedSize<
+  Size extends ComponentSizeType,
+  Values extends Record<string, any>,
+>(
   propSize: Size,
-  sizes: Record<string, number | string>,
-) {
+  sizes: Values,
+): Values[keyof Values] {
   const config = useConfigProvider()
 
   // props.size 不存在或者传递了一些奇怪的值，则回退到 config.size

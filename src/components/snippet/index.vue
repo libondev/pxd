@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariant } from '../../types/components'
+import type { ComponentSize, ComponentVariantWithDefault } from '../../types/components'
 import { CheckIcon, CopyIcon } from 'gdsi/vue'
 import { computed, ref } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
@@ -10,7 +10,7 @@ interface Props {
   width?: string | number
   size?: ComponentSize
   prompt?: boolean | string
-  variant?: ComponentVariant
+  variant?: ComponentVariantWithDefault
 }
 
 defineOptions({

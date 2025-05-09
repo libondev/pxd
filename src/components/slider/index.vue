@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
@@ -10,7 +10,7 @@ interface Props {
   step?: number
   range?: boolean
   size?: ComponentSize
-  variant?: keyof typeof VARIANTS
+  variant?: ComponentVariant | 'secondary'
   modelValue?: number | [number, number]
 }
 

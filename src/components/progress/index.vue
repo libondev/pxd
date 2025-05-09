@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
@@ -9,7 +9,7 @@ interface Props {
   max?: number
   size?: ComponentSize
   label?: string | number | boolean
-  variant?: keyof typeof VARIANTS_COLORS
+  variant?: ComponentVariant | 'secondary'
   colors?: Record<string, string>
   modelValue: number
 }

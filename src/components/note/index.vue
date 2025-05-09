@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariant } from '../../types/components'
+import type { ComponentSize } from '../../types/components'
 import { CheckCircleIcon, InformationIcon, StopIcon, WarningIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 
 interface Props {
-  variant?: ComponentVariant
+  variant?: keyof typeof VARIANTS
   size?: ComponentSize
   fill?: boolean
   label?: string | boolean
