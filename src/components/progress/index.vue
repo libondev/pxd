@@ -11,7 +11,7 @@ interface Props {
   label?: string | number | boolean
   variant?: ComponentVariant | 'secondary'
   colors?: Record<string, string>
-  modelValue: number | string | null
+  modelValue?: number | null
 }
 
 defineOptions({

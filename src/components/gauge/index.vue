@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 
 interface Props {
-  modelValue?: number | string | null
+  modelValue?: number | null
   showValue?: boolean
   indeterminate?: boolean
   size?: ComponentSizeWithXs

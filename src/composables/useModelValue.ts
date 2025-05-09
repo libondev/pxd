@@ -9,7 +9,7 @@ export function useModelValue<
   P extends { modelValue: any },
   E extends { (event: 'update:modelValue', ...args: any[]): void },
 >(props: P, emits: E, options: Options = {}) {
-  type V = P['modelValue']
+  type V = NonNullable<P['modelValue']>
 
   const modelValue = computed<V>({
     get: options.get || (() => props.modelValue),
