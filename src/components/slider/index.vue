@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import type { ComponentSize } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 
 interface Props {
@@ -7,6 +9,8 @@ interface Props {
   max?: number
   step?: number
   range?: boolean
+  size?: ComponentSize
+  variant?: keyof typeof VARIANTS
   modelValue?: number | [number, number]
 }
 
@@ -21,12 +25,38 @@ const props = withDefaults(
     max: 100,
     step: 1,
     modelValue: 0,
+    variant: 'primary',
   },
 )
 
 const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
+
+const config = useConfigProvider()
+
+const SIZES = {
+  sm: {
+    track: 'h-2',
+    thumb: 'w-1.5 h-3.5',
+  },
+  md: {
+    track: 'h-2.5',
+    thumb: 'w-2 h-4.5',
+  },
+  lg: {
+    track: 'h-3.5',
+    thumb: 'w-2.5 h-5',
+  },
+}
+
+const VARIANTS = {
+  primary: 'var(--color-primary)',
+  success: 'hsl(var(--blue-700-value))',
+  warning: 'hsl(var(--amber-700-value))',
+  secondary: 'hsl(var(--gray-700-value))',
+  error: 'hsl(var(--red-700-value))',
+}
 
 let isDragging = false
 let lastClientX: number | null
@@ -36,6 +66,10 @@ const activeThumb = shallowRef<'start' | 'end' | null>()
 const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
+
+const computedSize = computed(() => {
+  return SIZES[props.size || config.size]
+})
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {
@@ -60,9 +94,14 @@ const trackStyle = computed(() => {
     return {
       left: `${startPercentage.value}%`,
       width: `${endPercentage.value - startPercentage.value}%`,
+      backgroundColor: VARIANTS[props.variant] || VARIANTS.primary,
     }
   }
-  return { width: `${endPercentage.value}%` }
+
+  return {
+    width: `${endPercentage.value}%`,
+    backgroundColor: VARIANTS[props.variant] || VARIANTS.primary,
+  }
 })
 
 function updateValueFromPosition(clientX: number) {
@@ -231,11 +270,10 @@ onBeforeUnmount(() => {
   <div
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    class="pxd-slider group/slider relative h-2.5 bg-gray-200 flex items-center rounded-full select-none touch-none"
+    :class="computedSize.track"
+    class="pxd-slider group/slider relative bg-gray-200 flex items-center rounded-full select-none touch-none"
     @pointerdown.prevent="onWrapperPointerdown"
   >
-    <div class="pxd-slider--rail absolute h-full w-full bg-gray-200 rounded-full" />
-
     <div
       class="pxd-slider--track absolute h-full bg-primary rounded-full group-hover/slider:will-change-[width,left]"
       :style="trackStyle"
@@ -243,15 +281,15 @@ onBeforeUnmount(() => {
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb absolute bg-background rounded-xs w-2 h-4 hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
-      :class="{ 'scale-130': activeThumb === 'start' }"
+      class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      :class="[{ 'scale-130': activeThumb === 'start' }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
-      class="pxd-slider--thumb absolute bg-background rounded-xs w-2 h-4 hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
-      :class="{ 'scale-130': activeThumb === 'end' }"
+      class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      :class="[{ 'scale-130': activeThumb === 'end' }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     />

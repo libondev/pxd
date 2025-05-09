@@ -11,9 +11,21 @@ const value = ref(0)
 </script>
 
 <template>
-  <PStack align="center" gap="3">
-    <PSlider v-model="value" style="width: 200px;" />
-    <span class="text-sm text-gray-900">{{ value }}</span>
+  <PStack direction="col" gap="3">
+    <div class="flex items-center gap-3">
+      <PSlider v-model="value" size="sm" style="width: 200px;" />
+      <span class="text-sm text-gray-900">{{ value }}</span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <PSlider v-model="value" style="width: 200px;" />
+      <span class="text-sm text-gray-900">{{ value }}</span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <PSlider v-model="value" size="lg" style="width: 200px;" />
+      <span class="text-sm text-gray-900">{{ value }}</span>
+    </div>
   </PStack>
 </template>
 ```
@@ -49,6 +61,26 @@ const value = ref(35)
   <PStack align="center" gap="3">
     <PSlider v-model="value" :min="30" :max="80" style="width: 200px;" />
     <span class="text-sm text-gray-900">{{ value }}</span>
+  </PStack>
+</template>
+```
+
+## Variants
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(35)
+</script>
+
+<template>
+  <PStack direction="col" gap="6">
+    <PSlider v-model="value" variant="primary" style="width: 200px;" />
+    <PSlider v-model="value" variant="success" style="width: 200px;" />
+    <PSlider v-model="value" variant="warning" style="width: 200px;" />
+    <PSlider v-model="value" variant="error" style="width: 200px;" />
+    <PSlider v-model="value" variant="secondary" style="width: 200px;" />
   </PStack>
 </template>
 ```
