@@ -55,11 +55,12 @@ const SIZES = {
 
 const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
+const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
   const basic = ['pxd-input--container relative flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
-  basic.push(useComputedSize(props.size, SIZES))
+  basic.push(computedSize.value)
 
   if (props.disabled) {
     basic.push('is-disabled bg-gray-100')

@@ -46,10 +46,12 @@ const VARIANTS = {
   warning: 'text-amber-900 border-gray-alpha-300 bg-amber-200',
 }
 
+const computedSize = useComputedSize(props.size, SIZES)
+
 const computedClasses = computed(() => {
   const basic = ['pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all']
 
-  basic.push(useComputedSize(props.size, SIZES))
+  basic.push(computedSize.value)
 
   if (props.variant) {
     basic.push(VARIANTS[props.variant] || VARIANTS.default)

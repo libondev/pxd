@@ -47,21 +47,21 @@ const VARIANTS = {
 
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
-const computedDisabled = computed(() => {
-  return props.disabled || props.loading
-})
+const computedSize = useComputedSize(props.size, SIZES)
+const computedFontSize = useComputedSize(props.size, FONT_SIZES)
+const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClasses = computed(() => {
   const classNames = ['pxd-button cursor-pointer select-none items-center justify-center  motion-safe:transition-all']
 
-  classNames.push(useComputedSize(props.size, FONT_SIZES))
+  classNames.push(computedFontSize.value)
 
   if (props.variant !== 'simple') {
     classNames.push('border outline-none self-focus-ring')
 
     classNames.push(VARIANTS[props.variant] || VARIANTS.default)
 
-    classNames.push(useComputedSize(props.size, SIZES))
+    classNames.push(computedSize.value)
   }
 
   classNames.push(props.block ? 'flex w-full' : 'inline-flex')

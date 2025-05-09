@@ -65,7 +65,7 @@ const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = computed(() => useComputedSize(props.size, SIZES))
+const computedSize = useComputedSize(props.size, SIZES)
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {

@@ -83,10 +83,12 @@ const computedLabel = computed(() => {
   return false
 })
 
+const computedSize = useComputedSize(props.size, SIZES)
+
 const computedClasses = computed(() => {
   const basic = ['pxd-note flex items-center gap-3 border rounded-md w-max']
 
-  basic.push(useComputedSize(props.size, SIZES))
+  basic.push(computedSize.value)
 
   if (props.fill) {
     basic.push((VARIANTS[props.variant] || VARIANTS.default)?.fill)

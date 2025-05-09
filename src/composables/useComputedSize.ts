@@ -1,4 +1,7 @@
+import type { ComputedRef } from 'vue'
 import type { ComponentSize, ComponentSizeWithXs } from '../types/components'
+
+import { computed } from 'vue'
 import { useConfigProvider } from './useConfigProviderContext'
 
 type ComponentSizeType = ComponentSize | ComponentSizeWithXs | undefined
@@ -9,9 +12,9 @@ export function useComputedSize<
 >(
   propSize: Size,
   sizes: Values,
-): Values[keyof Values] {
+): ComputedRef<Values[keyof Values]> {
   const config = useConfigProvider()
 
   // props.size 不存在或者传递了一些奇怪的值，则回退到 config.size
-  return sizes[propSize || config.size] ?? sizes[config.size]
+  return computed(() => sizes[propSize || config.size] ?? sizes[config.size])
 }

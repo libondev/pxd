@@ -14,7 +14,7 @@ export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterL
 export interface ButtonProps {
   as?: ComponentAs
   variant?: ComponentVariantWithDefault | 'ghost' | 'simple'
-  size?: ComponentSize
+  size?: ComponentSizeWithXs
   shape?: 'square' | 'rounded'
   block?: boolean
   loading?: boolean

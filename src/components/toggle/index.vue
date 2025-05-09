@@ -50,7 +50,7 @@ const randomId = getRandomId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
-const computedSize = computed(() => useComputedSize(props.size, SIZES))
+const computedSize = useComputedSize(props.size, SIZES)
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement
