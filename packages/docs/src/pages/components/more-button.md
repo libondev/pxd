@@ -5,9 +5,9 @@ Styling component to show expanded or collapsed content.
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const expanded = ref(false)
+const expanded = ref(false)
 </script>
 
 <template>
@@ -20,6 +20,12 @@ Styling component to show expanded or collapsed content.
 You can modify the button text by setting `lessText` and `moreText`.
 
 ```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const expanded = ref(false)
+</script>
+
 <template>
   <PMoreButton
     v-model="expanded"
