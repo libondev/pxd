@@ -11,7 +11,7 @@ interface Props {
   range?: boolean
   size?: ComponentSize
   variant?: ComponentVariant | 'secondary'
-  modelValue?: number | [number, number]
+  modelValue?: number | [number, number] | null
 }
 
 defineOptions({
@@ -63,7 +63,22 @@ const activeThumb = shallowRef<'start' | 'end' | null>()
 
 const sliderRef = shallowRef<HTMLElement>()
 
-const modelValue = useModelValue(props, emits)
+const modelValue = useModelValue(props, emits, {
+  get() {
+    if (!props.modelValue) {
+      if (props.range) {
+        return Array.isArray(props.modelValue)
+          ? props.modelValue
+          : [props.min, props.modelValue]
+      }
+
+      return props.modelValue
+    }
+
+    return props.range ? [props.min, props.min] : props.min
+  },
+
+})
 
 const computedSize = useComputedSize(props.size, SIZES)
 

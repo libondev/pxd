@@ -11,7 +11,7 @@ interface Props {
   error?: string
   readonly?: boolean
   disabled?: boolean
-  modelValue?: string
+  modelValue?: string | number | readonly string[] | null
   placeholder?: string
   minlength?: number | string
   maxlength?: number | string

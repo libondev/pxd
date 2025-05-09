@@ -11,7 +11,7 @@ interface Props {
   label?: string | number | boolean
   variant?: ComponentVariant | 'secondary'
   colors?: Record<string, string>
-  modelValue: number
+  modelValue: number | string | null
 }
 
 defineOptions({
@@ -52,7 +52,9 @@ const VARIANTS_COLORS = {
   error: 'hsl(var(--red-700-value))',
 }
 
-const progress = useModelValue(props, emits)
+const progress = useModelValue(props, emits, {
+  get: () => props.modelValue || 0,
+})
 
 const sortedColorKeys = computed(() => {
   return props.colors

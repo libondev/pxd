@@ -13,7 +13,7 @@ interface Props {
   readonly?: boolean
   disabled?: boolean
   password?: boolean
-  modelValue?: string
+  modelValue?: string | number | readonly string[] | null
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
