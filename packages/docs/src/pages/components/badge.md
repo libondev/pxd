@@ -40,7 +40,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 <template>
   <PStack>
     <PBadge size="sm">small</PBadge>
-    <PBadge size="md">medium(default)</PBadge>
+    <PBadge>medium(default)</PBadge>
     <PBadge size="lg">large</PBadge>
   </PStack>
 </template>
@@ -57,7 +57,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
       Gray
     </PBadge>
 
-    <PBadge size="md">
+    <PBadge>
       <IconShield />
       Gray
     </PBadge>

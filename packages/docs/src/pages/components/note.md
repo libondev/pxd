@@ -7,7 +7,7 @@
   <PStack gap="2">
     <PNote size="sm"> A small note. </PNote>
 
-    <PNote size="md"> A default note. </PNote>
+    <PNote> A default note. </PNote>
 
     <PNote size="lg"> A large note. </PNote>
   </PStack>

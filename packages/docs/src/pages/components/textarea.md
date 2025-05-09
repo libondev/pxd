@@ -49,7 +49,6 @@ const value = ref('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed 
     />
     <PTextarea
       v-model="value"
-      size="md"
       class="min-h-25"
       error="There has been an error."
     />

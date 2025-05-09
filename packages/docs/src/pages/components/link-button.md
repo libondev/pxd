@@ -33,7 +33,7 @@ Set `type="text"` to convert it into a link in normal text form.
     <PLinkButton size="sm" href="/components/link-button">
       sm
     </PLinkButton>
-    <PLinkButton size="md" href="/components/link-button">
+    <PLinkButton href="/components/link-button">
       md(default)
     </PLinkButton>
     <PLinkButton size="lg" href="/components/link-button">

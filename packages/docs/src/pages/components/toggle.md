@@ -27,7 +27,7 @@ Switch between two values
 <template>
   <PStack gap="8">
     <PToggle v-model="isChecked" size="sm" />
-    <PToggle v-model="isChecked" size="md" />
+    <PToggle v-model="isChecked" />
     <PToggle v-model="isChecked" size="lg" />
   </PStack>
 </template>

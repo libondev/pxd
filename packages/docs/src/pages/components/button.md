@@ -7,7 +7,7 @@ One of the most basic components, it will help you complete the interaction.
 <template>
   <PStack>
     <PButton size="sm">sm</PButton>
-    <PButton size="md">md(default)</PButton>
+    <PButton>md(default)</PButton>
     <PButton size="lg">lg</PButton>
   </PStack>
 </template>

@@ -117,7 +117,7 @@ const password = ref('')
   <PStack gap="8" direction="col" class="py-4">
     <PInput error="An error message." size="xs" placeholder="Default" />
     <PInput error="An error message." size="sm" placeholder="Default" />
-    <PInput error="An error message." size="md" placeholder="Default" />
+    <PInput error="An error message." placeholder="Default" />
     <PInput error="An error message." size="lg" placeholder="Default" />
   </PStack>
 </template>

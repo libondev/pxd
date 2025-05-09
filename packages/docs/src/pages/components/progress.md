@@ -14,7 +14,7 @@ Display progress relative to a limit or related to a task.
 <template>
   <PStack gap="4">
     <PProgress v-model="value" size="sm" />
-    <PProgress v-model="value" size="md" />
+    <PProgress v-model="value" />
     <PProgress v-model="value" size="lg" />
   </PStack>
 </template>

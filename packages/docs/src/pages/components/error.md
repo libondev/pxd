@@ -23,7 +23,7 @@ Good error design is clear, useful, and friendly. Designing concise and accurate
 <template>
   <PStack gap="8">
     <PError size="sm">This email is in use.</PError>
-    <PError size="md">This email is in use.</PError>
+    <PError>This email is in use.</PError>
     <PError size="lg">This email is in use.</PError>
   </PStack>
 </template>
