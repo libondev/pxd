@@ -24,10 +24,10 @@ export function fileCreateWatcher() {
 
           const mdFilePath = path.resolve(process.cwd(), 'src', 'pages', 'components', `${componentName}.md`)
           const mdFileContent = `# ${componentNamePascal}\n
-## Default\n
+## Default\n\n
 \`\`\`vue demo
 <template>
-  <P${componentNamePascal} />
+  <P${componentNamePascal}><P${componentNamePascal} />
 </template>
 \`\`\`
 `
