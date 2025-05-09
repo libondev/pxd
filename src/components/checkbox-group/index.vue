@@ -19,6 +19,10 @@ interface Props {
 
 defineOptions({
   name: 'PCheckboxGroup',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(

@@ -16,6 +16,10 @@ interface Props {
 
 defineOptions({
   name: 'PSlider',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(
@@ -190,25 +194,25 @@ function scheduleUpdate() {
 }
 
 // 统一的事件处理函数
-function startDragging(e: PointerEvent, thumb: 'start' | 'end') {
+function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   isDragging = true
   activeThumb.value = thumb
-  lastClientX = e.clientX
+  lastClientX = ev.clientX
 
   // 立即更新一次值
-  updateValueFromPosition(e.clientX)
+  updateValueFromPosition(ev.clientX)
 
   document.addEventListener('pointermove', handleMove, { passive: false })
   document.addEventListener('pointerup', endDragging, { once: true })
   document.addEventListener('pointercancel', endDragging, { once: true })
 }
 
-function handleMove(e: PointerEvent) {
+function handleMove(ev: PointerEvent) {
   if (!isDragging)
     return
 
-  e.preventDefault()
-  lastClientX = e.clientX
+  ev.preventDefault()
+  lastClientX = ev.clientX
   scheduleUpdate()
 }
 
@@ -226,7 +230,7 @@ function endDragging() {
   document.removeEventListener('pointercancel', endDragging)
 }
 
-function handleSliderClick(e: PointerEvent) {
+function handleSliderClick(ev: PointerEvent) {
   if (isDragging || !props.range)
     return
 
@@ -234,7 +238,7 @@ function handleSliderClick(e: PointerEvent) {
   if (!rect)
     return
 
-  const clickPosition = (e.clientX - rect.left) / rect.width
+  const clickPosition = (ev.clientX - rect.left) / rect.width
   const startPos = startPercentage.value / 100
   const endPos = endPercentage.value / 100
 
@@ -243,7 +247,7 @@ function handleSliderClick(e: PointerEvent) {
     ? 'start'
     : 'end'
 
-  startDragging(e, thumb)
+  startDragging(ev, thumb)
 }
 
 function onWrapperPointerdown(ev: PointerEvent) {

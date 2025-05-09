@@ -14,6 +14,10 @@ interface Props {
 
 defineOptions({
   name: 'PGauge',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(
