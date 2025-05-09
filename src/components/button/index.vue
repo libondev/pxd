@@ -2,7 +2,7 @@
 import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import Spinner from '../spinner/index.vue'
 
 defineOptions({
@@ -21,8 +21,6 @@ const emits = defineEmits<{
   click: [MouseEvent]
 }>()
 
-const config = useConfigProvider()
-
 const SIZES = {
   xs: 'px-1 rounded-md h-6',
   sm: 'px-1.5 rounded-md h-7.5',
@@ -30,7 +28,7 @@ const SIZES = {
   lg: 'px-3.5 rounded-lg h-10.5',
 }
 
-const FONT_SIZE = {
+const FONT_SIZES = {
   xs: 'text-sm',
   sm: 'text-sm',
   md: 'text-sm',
@@ -56,14 +54,14 @@ const computedDisabled = computed(() => {
 const computedClasses = computed(() => {
   const classNames = ['pxd-button cursor-pointer select-none items-center justify-center  motion-safe:transition-all']
 
-  classNames.push(FONT_SIZE[props.size || config.size])
+  classNames.push(useComputedSize(props.size, FONT_SIZES))
 
   if (props.variant !== 'simple') {
     classNames.push('border outline-none self-focus-ring')
 
     classNames.push(VARIANTS[props.variant] || VARIANTS.default)
 
-    classNames.push(SIZES[props.size || config.size])
+    classNames.push(useComputedSize(props.size, SIZES))
   }
 
   classNames.push(props.block ? 'flex w-full' : 'inline-flex')

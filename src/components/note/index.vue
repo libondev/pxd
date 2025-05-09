@@ -3,7 +3,7 @@ import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { CheckCircleIcon, InformationIcon, StopIcon, WarningIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 
 interface Props {
   variant?: ComponentVariant
@@ -23,8 +23,6 @@ const props = withDefaults(
     variant: 'default',
   },
 )
-
-const config = useConfigProvider()
 
 const SIZES = {
   sm: 'px-2 py-1.5 text-xs',
@@ -88,7 +86,7 @@ const computedLabel = computed(() => {
 const computedClasses = computed(() => {
   const basic = ['pxd-note flex items-center gap-3 border rounded-md w-max']
 
-  basic.push(SIZES[props.size || config.size])
+  basic.push(useComputedSize(props.size, SIZES))
 
   if (props.fill) {
     basic.push((VARIANTS[props.variant] || VARIANTS.default)?.fill)

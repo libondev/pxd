@@ -2,7 +2,7 @@
 import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { CheckIcon, CopyIcon } from 'gdsi/vue'
 import { computed, ref } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import { getCssUnitValue, toArray } from '../../utils/format'
 
 interface Props {
@@ -46,12 +46,10 @@ const VARIANTS = {
   warning: 'text-amber-900 border-gray-alpha-300 bg-amber-200',
 }
 
-const config = useConfigProvider()
-
 const computedClasses = computed(() => {
   const basic = ['pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all']
 
-  basic.push(SIZES[props.size || config.size])
+  basic.push(useComputedSize(props.size, SIZES))
 
   if (props.variant) {
     basic.push(VARIANTS[props.variant] || VARIANTS.default)

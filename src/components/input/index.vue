@@ -3,7 +3,7 @@ import type { ComponentSizeWithXs } from '../../types/components'
 import { EyeIcon, EyeOffIcon } from 'gdsi/vue'
 import { twMerge } from 'tailwind-merge'
 import { computed, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
 import PError from '../error/index.vue'
 
@@ -46,8 +46,6 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
-const config = useConfigProvider()
-
 const SIZES = {
   xs: 'h-6 text-xs',
   sm: 'h-7.5 text-sm',
@@ -61,7 +59,7 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedClasses = computed(() => {
   const basic = ['pxd-input--container relative flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
-  basic.push(SIZES[props.size || config.size])
+  basic.push(useComputedSize(props.size, SIZES))
 
   if (props.disabled) {
     basic.push('is-disabled bg-gray-100')

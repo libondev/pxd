@@ -2,7 +2,7 @@
 import type { ComponentAs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 
 interface Props {
   as?: ComponentAs
@@ -22,8 +22,6 @@ const props = withDefaults(
     variant: 'gray',
   },
 )
-
-const config = useConfigProvider()
 
 const SIZES = {
   sm: 'px-1.5 h-5 text-xs',
@@ -59,7 +57,7 @@ const computedClass = computed(() =>
   twMerge(
     'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     VARIANTS[props.variant],
-    SIZES[props.size || config.size],
+    useComputedSize(props.size, SIZES),
   ),
 )
 

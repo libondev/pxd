@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
 import { getRandomId } from '../../utils/random'
 
@@ -9,7 +9,7 @@ type ValueType = boolean | number | string
 
 interface Props {
   size?: ComponentSize
-  modelValue: ValueType
+  modelValue?: ValueType
   activeValue?: ValueType
   inactiveValue?: ValueType
   activeLabel?: string
@@ -40,8 +40,6 @@ const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const config = useConfigProvider()
-
 const SIZES = {
   sm: 'w-7 h-4',
   md: 'w-9 h-5',
@@ -52,9 +50,7 @@ const randomId = getRandomId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
-const computedSize = computed(() => {
-  return SIZES[props.size || config.size]
-})
+const computedSize = computed(() => useComputedSize(props.size, SIZES))
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement

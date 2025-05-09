@@ -2,7 +2,7 @@
 import type { ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
 import PError from '../error/index.vue'
 
@@ -40,8 +40,6 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
-const config = useConfigProvider()
-
 const SIZES = {
   xs: 'text-xs',
   sm: 'text-sm',
@@ -54,7 +52,7 @@ const modelValue = useModelValue(props, emits)
 const computedClasses = computed(() => {
   const basic = ['pxd-input--container flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
-  basic.push(SIZES[props.size || config.size])
+  basic.push(useComputedSize(props.size, SIZES))
 
   if (props.disabled) {
     basic.push('is-disabled bg-gray-100')

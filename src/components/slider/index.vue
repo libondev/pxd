@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
 
 interface Props {
@@ -32,8 +32,6 @@ const props = withDefaults(
 const emits = defineEmits<{
   'update:modelValue': [Props['modelValue']]
 }>()
-
-const config = useConfigProvider()
 
 const SIZES = {
   sm: {
@@ -67,9 +65,7 @@ const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = computed(() => {
-  return SIZES[props.size || config.size]
-})
+const computedSize = computed(() => useComputedSize(props.size, SIZES))
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {
