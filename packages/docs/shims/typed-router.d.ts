@@ -29,6 +29,7 @@ declare module 'vue-router/auto-routes' {
     '/components/color-scheme': RouteRecordInfo<'/components/color-scheme', '/components/color-scheme', Record<never, never>, Record<never, never>>,
     '/components/config-provider': RouteRecordInfo<'/components/config-provider', '/components/config-provider', Record<never, never>, Record<never, never>>,
     '/components/error': RouteRecordInfo<'/components/error', '/components/error', Record<never, never>, Record<never, never>>,
+    '/components/gauge': RouteRecordInfo<'/components/gauge', '/components/gauge', Record<never, never>, Record<never, never>>,
     '/components/hold-button': RouteRecordInfo<'/components/hold-button', '/components/hold-button', Record<never, never>, Record<never, never>>,
     '/components/input': RouteRecordInfo<'/components/input', '/components/input', Record<never, never>, Record<never, never>>,
     '/components/kbd': RouteRecordInfo<'/components/kbd', '/components/kbd', Record<never, never>, Record<never, never>>,
