@@ -22,10 +22,10 @@ const emits = defineEmits<{
 }>()
 
 const SIZES = {
-  xs: 'px-1 rounded-md h-6',
-  sm: 'px-1.5 rounded-md h-7.5',
-  md: 'px-2.5 rounded-md h-9',
-  lg: 'px-3.5 rounded-lg h-10.5',
+  xs: 'h-6 px-1 rounded-md',
+  sm: 'h-7.5 px-1.5 rounded-md',
+  md: 'h-9 px-2.5 rounded-md',
+  lg: 'h-10 px-3.5 rounded-lg',
 }
 
 const FONT_SIZES = {

@@ -33,9 +33,9 @@ const isCopied = ref(false)
 let copiedTimer: ReturnType<typeof setTimeout>
 
 const SIZES = {
-  sm: 'px-1.5 py-2 min-h-7.5 text-sm',
-  md: 'px-2.5 py-2.5 min-h-9 text-sm',
-  lg: 'px-3.5 py-3 min-h-10.5 text-base',
+  sm: 'min-h-7.5 px-1.5 py-2 text-sm',
+  md: 'min-h-9 px-2.5 py-2.5 text-sm',
+  lg: 'min-h-10 px-3.5 py-3 text-base',
 }
 
 const VARIANTS = {

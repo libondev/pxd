@@ -50,7 +50,7 @@ const SIZES = {
   xs: 'h-6 text-xs',
   sm: 'h-7.5 text-sm',
   md: 'h-9 text-sm',
-  lg: 'h-10.5 text-base',
+  lg: 'h-10 text-base',
 }
 
 const modelValue = useModelValue(props, emits)
