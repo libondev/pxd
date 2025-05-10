@@ -80,7 +80,7 @@ Set `mask-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" mask-color="hsl(var(--red-500-value))"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
 </template>
 ```
 

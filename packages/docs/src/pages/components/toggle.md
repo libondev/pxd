@@ -45,8 +45,8 @@ Switch between two values
 <template>
   <PToggle
     v-model="isChecked"
-    inactive-bg-color="hsl(var(--red-700-value))"
-    active-bg-color="hsl(var(--green-700-value))"
+    inactive-bg-color="var(--color-red-700)"
+    active-bg-color="var(--color-green-700)"
   />
 </template>
 ```

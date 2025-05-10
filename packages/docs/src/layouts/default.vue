@@ -34,7 +34,7 @@ const {
 
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
-  border-color: hsl(var(--gray-300-value));
+  border-color: var(--color-gray-300);
   pointer-events: none;
 }
 
@@ -169,7 +169,7 @@ const {
     user-select: none;
     text-align: right;
     pointer-events: none;
-    color: hsl(var(--gray-600-value));
+    color: var(--color-gray-600);
     counter-increment: section;
   }
 }
