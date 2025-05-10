@@ -4,11 +4,13 @@ import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
+import { getRandomId } from '../../utils/random'
 import PError from '../error/index.vue'
 
 interface Props {
   size?: ComponentSizeWithXs
   error?: string
+  label?: string
   readonly?: boolean
   disabled?: boolean
   modelValue?: string | number | readonly string[] | null
@@ -39,6 +41,8 @@ const emits = defineEmits<{
   'blur': [FocusEvent]
   'change': [Event]
 }>()
+
+const randomId = getRandomId()
 
 const SIZES = {
   xs: 'text-xs',
@@ -85,9 +89,14 @@ function onInputChange(event: Event) {
 </script>
 
 <template>
-  <div class="pxd-textarea w-full max-w-full">
-    <label :class="computedClasses">
+  <label class="pxd-textarea w-full max-w-full" :for="randomId">
+    <div v-if="label || $slots.label" class="text-sm text-gray-900 mb-2 max-w-full">
+      <slot name="label">{{ label }}</slot>
+    </div>
+
+    <div :class="computedClasses">
       <textarea
+        :id="randomId"
         v-model="modelValue"
         class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none"
         :readonly="readonly"
@@ -103,12 +112,12 @@ function onInputChange(event: Event) {
         @focus="onInputFocus"
         @blur="onInputBlur"
       />
-    </label>
+    </div>
 
     <PError v-if="error" class="mt-1.5" :size="size">
       {{ error }}
     </PError>
-  </div>
+  </label>
 </template>
 
 <style lang="postcss">
