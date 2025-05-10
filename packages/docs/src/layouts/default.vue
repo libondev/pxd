@@ -139,7 +139,7 @@ const {
     line-height: 1.25;
   }
 
-  pre:not(.shiki) {
+  .markdown-body > pre:not(.shiki) {
     padding-left: 1.25em;
     margin-block: 1em;
     border-radius: var(--radius);

@@ -85,8 +85,8 @@ function onCopyClick() {
 
 <template>
   <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }">
-    <div>
-      <pre v-for="(t, i) of computedTextArray" :key="i" class="!m-0 !p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
+    <div class="pxd-snippet--container">
+      <pre v-for="(t, i) of computedTextArray" :key="i" class="m-0 p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
     </div>
 
     <div
