@@ -5,25 +5,26 @@ import { twMerge } from 'tailwind-merge'
 import { computed, shallowRef } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
+import { getRandomId } from '../../utils/random'
 import PError from '../error/index.vue'
 
 interface Props {
   size?: ComponentSizeWithXs
   error?: string
+  label?: string
   readonly?: boolean
   disabled?: boolean
   password?: boolean
+  minlength?: number | string
+  maxlength?: number | string
   modelValue?: string | number | readonly string[] | null
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
-  minlength?: number | string
-  maxlength?: number | string
 }
 
 defineOptions({
   name: 'PInput',
-  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -46,6 +47,8 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
+const randomId = getRandomId()
+
 const SIZES = {
   xs: 'h-6 text-xs',
   sm: 'h-7.5 text-sm',
@@ -58,7 +61,7 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--container relative flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const basic = ['pxd-input--container flex items-center relative rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
   basic.push(computedSize.value)
 
@@ -95,8 +98,12 @@ function togglePasswordType() {
 </script>
 
 <template>
-  <div class="pxd-input max-w-full">
-    <label :class="computedClasses">
+  <label class="pxd-input max-w-full" :for="randomId">
+    <div v-if="label || $slots.label" class="text-sm text-gray-900 mb-2 max-w-full">
+      <slot name="label">{{ label }}</slot>
+    </div>
+
+    <div :class="computedClasses">
       <div
         v-if="$slots.prefix"
         aria-hidden="true"
@@ -107,6 +114,7 @@ function togglePasswordType() {
       </div>
 
       <input
+        :id="randomId"
         v-model="modelValue"
         class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
         :class="{ 'pr-10': password }"
@@ -138,12 +146,12 @@ function togglePasswordType() {
       >
         <slot name="suffix" />
       </div>
-    </label>
+    </div>
 
-    <PError v-if="error" class="mt-1.5" :size="size">
+    <PError v-if="error" class="mt-2" :size="size">
       {{ error }}
     </PError>
-  </div>
+  </label>
 </template>
 
 <style lang="postcss">

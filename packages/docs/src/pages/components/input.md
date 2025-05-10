@@ -122,3 +122,11 @@ const password = ref('')
   </PStack>
 </template>
 ```
+
+## Label
+
+```vue demo
+<template>
+  <PInput label="My Label"/>
+</template>
+```
