@@ -98,7 +98,7 @@ function togglePasswordType() {
 </script>
 
 <template>
-  <label class="pxd-input max-w-full" :for="randomId">
+  <label class="pxd-input w-full max-w-full" :for="randomId">
     <div v-if="label || $slots.label" class="pxd-input--label text-sm text-gray-900 mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
