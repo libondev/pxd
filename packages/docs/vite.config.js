@@ -35,6 +35,10 @@ const codeHighlighter = await createHighlighterCore({
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   return {
+    build: {
+      reportCompressedSize: false,
+    },
+
     plugins: [
       router({
         dts: './shims/typed-router.d.ts',
