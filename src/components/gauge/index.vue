@@ -3,6 +3,7 @@ import type { ComponentSizeWithXs } from '../../types/components'
 import { ChartActivityIcon } from 'gdsi/vue'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
+import { getStateColor } from '../../utils/colors'
 
 interface Props {
   modelValue?: number | null
@@ -114,8 +115,6 @@ const trackOffset = computed(() => {
   return -progressArc.value - GAP_LENGTH
 })
 
-const sortedColorKeys = computed(() => Object.keys(props.colors || defaultColors).map(Number).sort((a, b) => a - b))
-
 const progressColors = computed(() => {
   const colors = props.colors || defaultColors
 
@@ -127,19 +126,7 @@ const progressColors = computed(() => {
     secondaryColor = 'hsl(var(--gray-200-value))'
   }
   else if (!primaryColor) {
-    const sortedKeys = sortedColorKeys.value
-
-    for (let i = 0; i < sortedKeys.length; i++) {
-      if (progress.value < sortedKeys[i]) {
-        primaryColor = colors[sortedKeys[i - 1]]
-        break
-      }
-    }
-
-    // 如果循环后 primaryColor 仍然未定义，使用最大阈值的颜色
-    if (!primaryColor && sortedKeys.length > 0) {
-      primaryColor = colors[sortedKeys.at(-1)!]
-    }
+    primaryColor = getStateColor(progress.value, colors) || colors.primary
   }
 
   return {

@@ -3,6 +3,7 @@ import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
+import { getStateColor } from '../../utils/colors'
 
 interface Props {
   min?: number
@@ -56,12 +57,6 @@ const progress = useModelValue(props, emits, {
   get: () => props.modelValue || 0,
 })
 
-const sortedColorKeys = computed(() => {
-  return props.colors
-    ? Object.keys(props.colors).map(Number).sort((a, b) => a - b)
-    : []
-})
-
 const computedLabel = computed(() => {
   const { label } = props
 
@@ -81,15 +76,7 @@ const computedColors = computed(() => {
   const { colors, variant } = props
 
   if (colors) {
-    const sortedKeys = sortedColorKeys.value
-
-    for (let i = 0; i < sortedKeys.length; i++) {
-      if (progress.value < sortedKeys[i]) {
-        return colors[sortedKeys[i - 1]]
-      }
-    }
-
-    return colors[sortedKeys.at(-1)!]
+    return getStateColor(progress.value, colors) || VARIANTS_COLORS[variant]
   }
 
   return VARIANTS_COLORS[variant]
