@@ -34,7 +34,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [Props['modelValue']]
+  'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
 const SIZES = {

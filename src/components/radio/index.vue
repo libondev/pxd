@@ -24,7 +24,7 @@ defineOptions({
 const props = defineProps<Props>()
 
 const emits = defineEmits<{
-  'update:modelValue': [Props['modelValue']]
+  'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
 const randomId = getRandomId()
