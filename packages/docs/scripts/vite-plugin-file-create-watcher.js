@@ -23,11 +23,11 @@ export function fileCreateWatcher() {
           const componentNamePascal = pascalize(componentName)
 
           const mdFilePath = path.resolve(process.cwd(), 'src', 'pages', 'components', `${componentName}.md`)
-          const mdFileContent = `# ${componentNamePascal}\n
-## Default\n\n
+          const mdFileContent = `# ${componentNamePascal}\n\n
+## Default\n
 \`\`\`vue demo
 <template>
-  <P${componentNamePascal}><P${componentNamePascal} />
+  <P${componentNamePascal}></P${componentNamePascal}>
 </template>
 \`\`\`
 `
