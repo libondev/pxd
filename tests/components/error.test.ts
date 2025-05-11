@@ -13,6 +13,8 @@ describe('errorComponent', () => {
     expect(wrapper.find('.pxd-error').exists()).toBe(true)
     expect(wrapper.find('svg').exists()).toBe(true)
     expect(wrapper.text()).toContain('This email address is already in use.')
+
+    wrapper.unmount()
   })
 
   it('should render label', async () => {
@@ -31,6 +33,8 @@ describe('errorComponent', () => {
       error: { label: 'Validation Error', message: 'This email address is already in use.' },
     })
     expect(wrapper.find('b').text()).toBe('Validation Error:')
+
+    wrapper.unmount()
   })
 
   it('should render with action and link', () => {
@@ -49,6 +53,8 @@ describe('errorComponent', () => {
     expect(wrapper.find('a').text()).toContain('View Documentation')
     expect(wrapper.find('a').attributes('href')).toBe('/docs')
     expect(wrapper.find('a').attributes('target')).toBe('_self')
+
+    wrapper.unmount()
   })
 
   it('should render external link', () => {
@@ -64,5 +70,7 @@ describe('errorComponent', () => {
 
     expect(wrapper.find('a').attributes('target')).toBe('_blank')
     expect(wrapper.find('a svg').exists()).toBe(true)
+
+    wrapper.unmount()
   })
 })

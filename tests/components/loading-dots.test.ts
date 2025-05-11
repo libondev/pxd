@@ -9,6 +9,8 @@ describe('loading-dots', () => {
     expect(wrapper.findAll('.pxd-loading--dot').length).toBe(3)
 
     expect(wrapper.find('.pxd-loading-dots--text').exists()).toBe(false)
+
+    wrapper.unmount()
   })
 
   it('with both slots', () => {
@@ -24,5 +26,7 @@ describe('loading-dots', () => {
 
     expect(slots[0].text()).toBe('loading')
     expect(slots[1].text()).toBe('please wait')
+
+    wrapper.unmount()
   })
 })

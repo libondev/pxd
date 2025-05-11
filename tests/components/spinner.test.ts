@@ -7,6 +7,8 @@ describe('spinner', () => {
     const wrapper = mount(PSpinner)
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.find('.pxd-spinner').exists()).toBe(true)
+
+    wrapper.unmount()
   })
 
   it('each spinner item has correct styles', () => {
@@ -21,5 +23,7 @@ describe('spinner', () => {
       expect(item.attributes('style')).toContain(`opacity: ${opacityValue}`)
       expect(item.attributes('style')).toContain(`transform: rotate(${rotateValue}deg) translate(146%)`)
     })
+
+    wrapper.unmount()
   })
 })

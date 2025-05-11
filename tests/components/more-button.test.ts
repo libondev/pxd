@@ -51,7 +51,7 @@ describe('more-button', () => {
     const wrapper = mount(MoreButton, {
       props: {
         'modelValue': false,
-        'onUpdate:modelValue': (value: boolean) => {
+        'onUpdate:modelValue': (value) => {
           wrapper.setProps({
             modelValue: value,
           })
