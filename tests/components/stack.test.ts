@@ -6,12 +6,12 @@ describe('stack', () => {
   it('should render component and its children', () => {
     const wrapper = mount(Stack, {
       slots: {
-        default: '<div>内容测试</div>',
+        default: '<div>Content Text</div>',
       },
     })
 
     expect(wrapper.find('.pxd-stack').exists()).toBe(true)
-    expect(wrapper.html()).toContain('<div>内容测试</div>')
+    expect(wrapper.html()).toContain('<div>Content Text</div>')
 
     wrapper.unmount()
   })

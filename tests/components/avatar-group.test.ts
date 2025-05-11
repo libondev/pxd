@@ -19,7 +19,7 @@ describe('avatar-group', () => {
     const img = wrapper.find('img')
     expect(img.exists()).toBe(true)
     expect(img.attributes('src')).toBe(avatarSrc)
-    expect(wrapper.html()).toContain('+1')
+    expect(wrapper.text()).toContain('+1')
 
     wrapper.unmount()
   })
