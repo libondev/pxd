@@ -99,7 +99,7 @@ function togglePasswordType() {
 
 <template>
   <label class="pxd-input max-w-full" :for="randomId">
-    <div v-if="label || $slots.label" class="text-sm text-gray-900 mb-2 max-w-full">
+    <div v-if="label || $slots.label" class="pxd-input--label text-sm text-gray-900 mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
 
@@ -107,7 +107,7 @@ function togglePasswordType() {
       <div
         v-if="$slots.prefix"
         aria-hidden="true"
-        class="pl-3 h-full flex items-center text-sm text-gray-700 "
+        class="pxd-input--prefix pl-3 h-full flex items-center text-sm text-gray-700 "
         :class="{ 'bg-background-secondary rounded-tl-inherit rounded-bl-inherit border-r pr-3': prefixStyle }"
       >
         <slot name="prefix" />
@@ -141,7 +141,7 @@ function togglePasswordType() {
       <div
         v-if="$slots.suffix"
         aria-hidden="true"
-        class="pr-3 h-full flex items-center text-sm text-gray-700"
+        class="pxd-input--suffix pr-3 h-full flex items-center text-sm text-gray-700"
         :class="{ 'bg-background-secondary rounded-tr-inherit rounded-br-inherit border-l pl-3': suffixStyle }"
       >
         <slot name="suffix" />

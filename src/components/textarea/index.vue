@@ -90,7 +90,7 @@ function onInputChange(event: Event) {
 
 <template>
   <label class="pxd-textarea w-full max-w-full" :for="randomId">
-    <div v-if="label || $slots.label" class="text-sm text-gray-900 mb-2 max-w-full">
+    <div v-if="label || $slots.label" class="pxd-textarea--label text-sm text-gray-900 mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
 
