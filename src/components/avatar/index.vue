@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, inject, ref } from 'vue'
+import { computed, inject, shallowRef } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
@@ -14,17 +14,44 @@ defineOptions({
 
 const props = defineProps<Props>()
 
-defineEmits<{
+const emits = defineEmits<{
+  load: [Event]
   error: [Event]
+  loadstart: [Event]
 }>()
 
-const isLoadFailed = ref(false)
+type LoadingStatus = 'idle' | 'loading' | 'loaded' | 'error'
+
+const loadingStatus = shallowRef<LoadingStatus>('idle')
 
 const groupSize = inject<number | string>('groupSize', 32)
 
 const computedSize = computed(() => getCssUnitValue(props.size || groupSize))
 
-const computedLoading = computed(() => props.loading || isLoadFailed.value)
+const computedLoading = computed(() => props.loading || loadingStatus.value === 'error')
+
+function onLoadError(event: Event) {
+  loadingStatus.value = 'error'
+  emits('error', event)
+}
+
+function onLoadSuccess(event: Event) {
+  loadingStatus.value = 'loaded'
+  emits('load', event)
+}
+
+function onLoadStart(event: Event) {
+  loadingStatus.value = 'loading'
+  emits('loadstart', event)
+}
+
+function getLoadingStatus() {
+  return loadingStatus.value
+}
+
+defineExpose({
+  getLoadingStatus,
+})
 </script>
 
 <template>
@@ -43,7 +70,10 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
         fetchpriority="low"
         crossorigin="anonymous"
         class="relative block rounded-inherit overflow-hidden w-full h-full"
-        @error="$emit('error', $event)"
+        @load="onLoadSuccess"
+        @loadstart="onLoadStart"
+        @abort="onLoadError"
+        @error="onLoadError"
       >
     </slot>
 
@@ -69,7 +99,7 @@ const computedLoading = computed(() => props.loading || isLoadFailed.value)
   }
 
   &::before {
-    background-image: linear-gradient(270deg, var(--gray-alpha-100), var(--gray-alpha-300), var(--gray-alpha-300), var(--gray-alpha-100));
+    background-image: linear-gradient(270deg, var(--gray-alpha-100), var(--gray-alpha-400), var(--gray-alpha-400), var(--gray-alpha-100));
     background-size: 400% 100%;
   }
 
