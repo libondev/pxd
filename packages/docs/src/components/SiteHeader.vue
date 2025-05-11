@@ -25,7 +25,7 @@ const menus = [
     <div class="container sm:border-x mx-auto h-12 flex items-center">
       <RouterLink v-slot="{ navigate }" to="/" custom>
         <h2 class="px-3 h-full flex items-center font-medium cursor-pointer" @click="navigate">
-          <SiteLogo class="mr-2 text-2xl" />
+          <SiteLogo class="mr-2 text-2xl hidden sm:block" />
           <span>PXD</span>
         </h2>
       </RouterLink>
