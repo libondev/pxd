@@ -5,37 +5,42 @@ Show the activity of users, and show different levels of brightness according to
 
 ```vue demo
 <script setup>
-const today = new Date()
+import { ref } from 'vue'
 
-const data = [];
+function getRandomData(date, count) {
+  const random = Math.floor(Math.random() * count)
 
-data.push({
-  date: today.toISOString().split('T')[0],
-  count: 20,
-})
+  return {
+    date: date.toISOString().split('T')[0],
+    count: random,
+  }
+}
 
-today.setDate(today.getDate() - 1)
-data.push({
-  date: today.toISOString().split('T')[0],
-  count: 15,
-})
+function genData() {
+  const today = new Date()
 
-today.setDate(today.getDate() - 1)
+  const data = []
 
-data.push({
-  date: today.toISOString().split('T')[0],
-  count: 10,
-})
+  for (let i = 0; i < 30; i++) {
+    const day = Math.floor(Math.random() * 20)
+    today.setDate(today.getDate() - day)
+    data.push(getRandomData(today, 20))
+  }
 
-today.setDate(today.getDate() - 1)
-data.push({
-  date: today.toISOString().split('T')[0],
-  count: 5,
-})
+  return data
+}
+
+const data = ref(genData())
 </script>
 
 <template>
-  <PActiveGraph :data="data" />
+  <PStack direction="col">
+    <PButton @click="data = genData()">
+      Refresh
+    </PButton>
+
+    <PActiveGraph :data="data" />
+  </PStack>
 </template>
 ```
 
@@ -47,12 +52,11 @@ const colors = {
   0: 'var(--gray-alpha-200)',
   5: 'var(--color-red-400)',
   10: 'var(--color-green-500)',
-  15: 'var(--color-amber-700)',
+  15: 'var(--color-amber-600)',
   20: 'var(--color-blue-900)',
 }
 
 const data = [
-  { date: '2025-05-05', count: 0 },
   { date: '2025-05-06', count: 5 },
   { date: '2025-05-07', count: 10 },
   { date: '2025-05-08', count: 15 },
