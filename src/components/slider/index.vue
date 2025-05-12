@@ -9,6 +9,7 @@ interface Props {
   max?: number
   step?: number
   range?: boolean
+  disabled?: boolean
   size?: ComponentSize
   variant?: ComponentVariant | 'secondary'
   modelValue?: number | [number, number] | null
@@ -109,13 +110,13 @@ const trackStyle = computed(() => {
     return {
       left: `${startPercentage.value}%`,
       width: `${endPercentage.value - startPercentage.value}%`,
-      backgroundColor: VARIANTS[props.variant] || VARIANTS.primary,
+      backgroundColor: props.disabled ? 'var(--gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
     }
   }
 
   return {
     width: `${endPercentage.value}%`,
-    backgroundColor: VARIANTS[props.variant] || VARIANTS.primary,
+    backgroundColor: props.disabled ? 'var(--gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
   }
 })
 
@@ -208,7 +209,7 @@ function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
 }
 
 function handleMove(ev: PointerEvent) {
-  if (!isDragging)
+  if (!isDragging || props.disabled)
     return
 
   ev.preventDefault()
@@ -231,7 +232,7 @@ function endDragging() {
 }
 
 function handleSliderClick(ev: PointerEvent) {
-  if (isDragging || !props.range)
+  if (isDragging || !props.range || props.disabled)
     return
 
   const rect = sliderRef.value?.getBoundingClientRect()
@@ -251,6 +252,10 @@ function handleSliderClick(ev: PointerEvent) {
 }
 
 function onWrapperPointerdown(ev: PointerEvent) {
+  if (props.disabled) {
+    return
+  }
+
   if (props.range) {
     handleSliderClick(ev)
     return
@@ -285,8 +290,8 @@ onBeforeUnmount(() => {
   <div
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    :class="computedSize.track"
     class="pxd-slider group/slider relative bg-gray-200 flex items-center rounded-full select-none touch-none"
+    :class="[{ 'cursor-not-allowed': disabled }, computedSize.track]"
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div
@@ -297,14 +302,14 @@ onBeforeUnmount(() => {
     <div
       v-if="props.range"
       class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
-      :class="[{ 'scale-130': activeThumb === 'start' }, computedSize.thumb]"
+      :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
       class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
-      :class="[{ 'scale-130': activeThumb === 'end' }, computedSize.thumb]"
+      :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     />
