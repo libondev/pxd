@@ -24,4 +24,8 @@ export default {
       6: '六',
     },
   },
+  compare: {
+    less: '少',
+    more: '多',
+  },
 }

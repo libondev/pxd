@@ -24,4 +24,8 @@ export default {
       6: 'Sat',
     },
   },
+  compare: {
+    less: 'Less',
+    more: 'More',
+  },
 }

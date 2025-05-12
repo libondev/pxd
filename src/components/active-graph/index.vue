@@ -183,16 +183,25 @@ const tableMonths = computed(() => {
             :style="`opacity: ${col.hidden ? 0 : undefined}; background-color: ${col.color}`"
           />
         </tr>
+
+        <template v-if="props.legend">
+          <tr />
+          <tr class="pxd-active-graph--legend select-none">
+            <td class="relative h-3 text-xs text-gray-700">
+              <span class="absolute -top-px right-1">{{ config.locale.compare.less }}</span>
+            </td>
+
+            <td
+              v-for="color in props.colors"
+              :key="color" class="w-3 h-3 rounded-xs" :style="`background-color: ${color}`"
+            />
+
+            <td class="relative h-3 text-xs text-gray-700 w-3">
+              <span class="absolute -top-px left-px" style="width: 30px;min-width: 30px;">{{ config.locale.compare.more }}</span>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
-
-    <div v-if="props.legend" class="flex items-center gap-[2.5px] mt-1">
-      <span class="text-xs text-gray-900" style="width:30px">Less</span>
-      <div
-        v-for="color in props.colors"
-        :key="color" class="w-3 h-3 rounded-sm" :style="`background-color: ${color}`"
-      />
-      <span class="text-xs text-gray-900">More</span>
-    </div>
   </div>
 </template>
