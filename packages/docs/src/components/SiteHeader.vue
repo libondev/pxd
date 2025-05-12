@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { BookOpenIcon, BoxIcon, HomeIcon, LogoGithubIcon } from 'gdsi/vue'
+import BookOpenIcon from 'gdsi/vue/book-open'
+import BoxIcon from 'gdsi/vue/box'
+import HomeIcon from 'gdsi/vue/home'
+import LogoGithubIcon from 'gdsi/vue/logo-github'
+// import MenuAltIcon from 'gdsi/vue/menu-alt'
 
 const menus = [
   {
@@ -23,12 +27,11 @@ const menus = [
 <template>
   <header class="sticky top-0 z-10 border-b bg-background-secondary select-none">
     <div class="container sm:border-x mx-auto h-12 flex items-center">
-      <RouterLink v-slot="{ navigate }" to="/" custom>
-        <h2 class="px-3 h-full flex items-center font-medium cursor-pointer" @click="navigate">
-          <SiteLogo class="mr-2 text-2xl hidden sm:block" />
-          <span>PXD</span>
-        </h2>
-      </RouterLink>
+      <h2 class="px-3 h-full flex items-center font-medium cursor-pointer">
+        <SiteLogo class="mr-2 text-2xl hidden sm:block" />
+        <!-- <MenuAltIcon class="block sm:hidden mr-1.5 text-gray-900" /> -->
+        <span>PXD</span>
+      </h2>
 
       <nav class="ml-auto h-full">
         <ul class="h-full flex [&>*]:border-l [&>*]:list-none">

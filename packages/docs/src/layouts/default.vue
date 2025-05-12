@@ -10,7 +10,9 @@ const {
 
 <template>
   <div class="absolute left-0 top-0 bottom-0">
-    <div class="sidebar fixed -translate-x-full sm:translate-x-0 top-12 bottom-0 mt-px z-10 border-r w-64 sm:border-x bg-background-secondary">
+    <div class="hidden fixed inset-0 bg-gray-alpha-400 z-0 " />
+
+    <div class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-64 bg-background-secondary sm:border-x sm:translate-x-0">
       <PScrollable class="h-full overflow-y-auto p-2.5">
         <ul>
           <li v-for="menu of menus" :key="menu.path" class="mb-0.5">

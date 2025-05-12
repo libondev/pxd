@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSizeWithXs } from '../../types/components'
-import { EyeIcon, EyeOffIcon } from 'gdsi/vue'
+import EyeIcon from 'gdsi/vue/eye'
+import EyeOffIcon from 'gdsi/vue/eye-off'
 import { twMerge } from 'tailwind-merge'
 import { computed, shallowRef } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'

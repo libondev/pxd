@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExternalIcon } from 'gdsi/vue'
+import ExternalIcon from 'gdsi/vue/external'
 import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
 import Button from '../button/index.vue'

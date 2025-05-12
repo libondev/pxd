@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { CheckIcon, MinusIcon } from 'gdsi/vue'
+import CheckIcon from 'gdsi/vue/check'
+import MinusIcon from 'gdsi/vue/minus'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'

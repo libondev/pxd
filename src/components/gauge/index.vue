@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentSizeWithXs } from '../../types/components'
-import { ChartActivityIcon } from 'gdsi/vue'
+import ChartActivityIcon from 'gdsi/vue/chart-activity'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { getStateColor } from '../../utils/colors'
