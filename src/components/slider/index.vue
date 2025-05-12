@@ -68,22 +68,7 @@ const activeThumb = shallowRef<'start' | 'end' | null>()
 
 const sliderRef = shallowRef<HTMLElement>()
 
-const modelValue = useModelValue(props, emits, {
-  get() {
-    if (!props.modelValue) {
-      if (props.range) {
-        return Array.isArray(props.modelValue)
-          ? props.modelValue
-          : [props.min, props.modelValue]
-      }
-
-      return props.modelValue
-    }
-
-    return props.range ? [props.min, props.min] : props.min
-  },
-
-})
+const modelValue = useModelValue(props, emits)
 
 const computedSize = useComputedSize(props.size, SIZES)
 
@@ -182,11 +167,11 @@ function scheduleUpdate() {
     return
 
   animationFrameId = requestAnimationFrame(() => {
+    animationFrameId = null
+
     if (lastClientX !== null) {
       updateValueFromPosition(lastClientX)
     }
-
-    animationFrameId = null
 
     if (isDragging) {
       scheduleUpdate()
@@ -295,20 +280,20 @@ onBeforeUnmount(() => {
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div
-      class="pxd-slider--track absolute h-full bg-primary rounded-full group-hover/slider:will-change-[width,left]"
+      class="pxd-slider--track absolute h-full bg-primary rounded-full touch-none group-active/slider:will-change-[width,left]"
       :style="trackStyle"
     />
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 group-active/slider:will-change-[width,left] active:scale-130 active:z-10 -translate-x-1/2"
       :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
-      class="pxd-slider--thumb absolute bg-background rounded-xs hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 group-active/slider:will-change-[width,left] active:scale-130 active:z-10 -translate-x-1/2"
       :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
