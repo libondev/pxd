@@ -3,7 +3,7 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 
 ```vue demo
 <template>
-  <PScrollable class="w-100 h-100 border rounded-md">
+  <PScrollable class="w-100 max-w-full h-100 border rounded-md">
     <div class="p-4 w-screen h-screen bg-background rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
     </div>
@@ -16,7 +16,7 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 ```vue demo
 <template>
   <PScrollable
-    class="w-100 h-100 border rounded-md"
+    class="w-100 max-w-full h-100 border rounded-md"
     mask-color="var(--color-pink-400)"
     scrollbarColor="var(--color-red-700)"
     scrollbar-hover-color="var(--color-red-500)"
@@ -33,7 +33,7 @@ If your content is static, you can set `static-content` to `true` to optimize pe
 
 ```vue demo
 <template>
-  <PScrollable class="w-100 h-100 border rounded-md" static-content>
+  <PScrollable class="w-100 max-w-full h-100 border rounded-md" static-content>
     <div class="p-4 w-screen h-screen bg-background rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
     </div>
@@ -46,7 +46,7 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 
 ```vue demo
 <template>
-  <PScrollable class="w-100 h-100 border rounded-md" :fader="false" :scrollbar="false">
+  <PScrollable class="w-100 max-w-full h-100 border rounded-md" :fader="false" :scrollbar="false">
     <div class="p-4 w-screen h-screen bg-background rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
     </div>

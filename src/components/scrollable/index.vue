@@ -382,7 +382,6 @@ defineExpose({
   &::after {
     content: '';
     position: absolute;
-    backdrop-filter: blur(30px);
     background: linear-gradient(var(--dir), transparent, var(--c, var(--background-100)));
     mask-image: linear-gradient(var(--dir-revert), var(--c, var(--background-100)) 50%, transparent);
     opacity: 0;
