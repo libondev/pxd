@@ -14,9 +14,9 @@ interface Props {
 
 interface FormattedData {
   hidden: boolean
-  date: string
+  date: string | undefined
   count: number
-  color: string
+  color: string | undefined
 }
 
 defineOptions({
@@ -32,8 +32,8 @@ const props = withDefaults(
       const date = new Date()
       date.setFullYear(date.getFullYear() - 1)
 
-      // 向后找到第一个星期一
-      while (date.getDay() !== 1) {
+      // 向后找到第一个星期日
+      while (date.getDay() !== 0) {
         date.setDate(date.getDate() + 1)
       }
 
@@ -49,6 +49,10 @@ const props = withDefaults(
     }),
   },
 )
+
+const emits = defineEmits<{
+  cellClick: [MouseEvent, string]
+}>()
 
 const config = useConfigProvider()
 
@@ -66,37 +70,37 @@ const dataCountsMap = computed<Record<string, number>>(() => {
 
 const formatData = computed(() => {
   const dataMap = dataCountsMap.value
-  const dates = allDates.value.dates
+  const dateList = allDates.value.dates
+  const dateListLength = dateList.length
   const result: FormattedData[][] = []
 
-  // 获取第一天是星期几 (0-6, 0代表星期日)
-  const firstDayOfWeek = new Date(dates[0]).getDay()
+  const firstDayOfWeek = new Date(dateList[0]).getDay()
 
-  // 行模式：每行对应一个星期几，列代表不同的周
   for (let i = 0; i < 7; i++) {
     const row = []
 
     if (i < firstDayOfWeek) {
       row.push({
         hidden: true,
-        date: dates[i],
+        date: undefined,
         count: 0,
-        color: props.colors[0],
+        color: undefined,
       })
     }
 
     result.push(row)
   }
 
-  // 填充数据
-  for (let i = 0; i < dates.length; i++) {
-    const date = dates[i]
+  for (let i = 0; i < dateListLength; i++) {
+    const date = dateList[i]
+    const dateCount = dataMap[date] || 0
     const dayOfWeek = new Date(date).getDay()
+
     result[dayOfWeek].push({
       hidden: false,
       date,
-      count: dataMap[date] || 0,
-      color: getStateColor(dataMap[date] || 0, props.colors),
+      count: dateCount,
+      color: getStateColor(dateCount, props.colors),
     })
   }
 
@@ -145,6 +149,17 @@ const tableMonths = computed(() => {
 
   return result
 })
+
+function onCellClick(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  const date = target.dataset.date
+
+  if (!date) {
+    return
+  }
+
+  emits('cellClick', event, date)
+}
 </script>
 
 <template>
@@ -169,7 +184,7 @@ const tableMonths = computed(() => {
         </tr>
       </thead>
 
-      <tbody class="text-xs">
+      <tbody class="text-xs" @click="onCellClick">
         <tr v-for="(row, i) of formatData" :key="i" class="h-3">
           <td class="relative leading-none">
             <span class="absolute top-0.5 left-0">{{ i % 2 === 0 ? config.locale.date.day[i] : ' ' }}</span>
