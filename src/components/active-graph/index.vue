@@ -193,7 +193,7 @@ function onCellClick(event: MouseEvent) {
           <td
             v-for="col of row"
             :key="col.date"
-            class="rounded-xs w-3 min-w-3"
+            class="rounded-xs w-3 min-w-3 motion-safe:transition-colors"
             :data-date="col.date"
             :class="{ 'pointer-events-none opacity-0': col.hidden }"
             :style="`background: ${col.color}`"
@@ -209,7 +209,7 @@ function onCellClick(event: MouseEvent) {
 
             <td
               v-for="color in props.colors"
-              :key="color" class="w-3 h-3 rounded-xs" :style="`background-color: ${color}`"
+              :key="color" class="w-3 h-3 rounded-xs motion-safe:transition-colors" :style="`background-color: ${color}`"
             />
 
             <td class="relative h-3 text-xs text-gray-700 w-3">
