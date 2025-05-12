@@ -196,7 +196,7 @@ function onCellClick(event: MouseEvent) {
             class="rounded-xs w-3 min-w-3"
             :data-date="col.date"
             :class="{ 'pointer-events-none opacity-0': col.hidden }"
-            :style="`background-color: ${col.color}`"
+            :style="`background: ${col.color}`"
           />
         </tr>
 
