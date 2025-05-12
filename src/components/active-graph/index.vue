@@ -167,40 +167,41 @@ function onCellClick(event: MouseEvent) {
     <table
       role="grid"
       aria-readonly="true"
-      class="pr-4 overflow-hidden"
+      class="pr-5 overflow-hidden"
       style="border-spacing: 3px; border-collapse: separate"
     >
       <thead>
         <tr class="h-3">
-          <th style="width: 28px;min-width: 28px;" />
+          <th style="width: 30px;min-width: 30px;" />
 
           <th
             v-for="col in tableMonths"
             :key="col"
-            class="relative font-normal text-xs"
+            class="relative font-normal text-xs text-gray-900"
           >
-            <span class="absolute -top-0.5 left-0 whitespace-nowrap">{{ col }}</span>
+            <span class="absolute -top-1 left-0 whitespace-nowrap">{{ col }}</span>
           </th>
         </tr>
       </thead>
 
       <tbody class="text-xs" @click="onCellClick">
         <tr v-for="(row, i) of formatData" :key="i" class="h-3">
-          <td class="relative leading-none">
-            <span class="absolute top-0.5 left-0">{{ i % 2 === 0 ? config.locale.date.day[i] : ' ' }}</span>
+          <td class="relative leading-none text-gray-900">
+            <span class="absolute top-0 right-1">{{ [1, 3, 5].includes(i) ? config.locale.date.day[i] : ' ' }}</span>
           </td>
 
           <td
             v-for="col of row"
             :key="col.date"
-            class="rounded-[3px] w-3 min-w-3"
+            class="rounded-xs w-3 min-w-3"
             :data-date="col.date"
-            :style="`opacity: ${col.hidden ? 0 : undefined}; background-color: ${col.color}`"
+            :class="{ 'pointer-events-none opacity-0': col.hidden }"
+            :style="`background-color: ${col.color}`"
           />
         </tr>
 
         <template v-if="props.legend">
-          <tr />
+          <tr class="h-0.5" />
           <tr class="pxd-active-graph--legend select-none">
             <td class="relative h-3 text-xs text-gray-700">
               <span class="absolute -top-px right-1">{{ config.locale.compare.less }}</span>
