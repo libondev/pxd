@@ -7,6 +7,14 @@ interface Result<T> {
   dates: T[]
 }
 
+function getYMDDateString(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
 /**
  * 获取两个日期之间的所有日期
  */
@@ -14,19 +22,16 @@ export function getAllDatesBetween(
   startDate: Date | string,
   endDate: Date | string,
   format?: 'string',
-  isIncludeEnd?: boolean,
 ): Result<string>
 export function getAllDatesBetween(
   startDate: Date | string,
   endDate: Date | string,
   format?: 'object',
-  isIncludeEnd?: boolean,
 ): Result<Date>
 export function getAllDatesBetween(
   startDate: Date | string,
   endDate: Date | string,
   format: 'string' | 'object' = 'string',
-  isIncludeEnd: boolean = true,
 ) {
   // 确保输入是Date对象
   let start = startDate instanceof Date ? startDate : new Date(startDate)
@@ -58,20 +63,14 @@ export function getAllDatesBetween(
     years.add(currentDate.getFullYear())
     months.add(currentDate.getMonth() + 1)
     weeks.add(currentDate.getDay())
+
     dates.push(
       format === 'object'
         ? new Date(currentDate)
-        : currentDate.toISOString().split('T')[0], // YYYY-MM-DD
+        : getYMDDateString(currentDate), // YYYY-MM-DD
     )
 
     currentDate.setDate(currentDate.getDate() + 1)
-  }
-
-  if (isIncludeEnd) {
-    years.add(end.getFullYear())
-    months.add(end.getMonth() + 1)
-    weeks.add(end.getDay())
-    dates.push(end.toISOString().split('T')[0])
   }
 
   return {
