@@ -40,16 +40,15 @@ const props = withDefaults(
       return date
     },
     endDate: () => new Date().toISOString().split('T')[0],
+    colors: () => ({
+      0: 'var(--gray-alpha-200)',
+      5: 'var(--color-green-300)',
+      10: 'var(--color-green-500)',
+      15: 'var(--color-green-700)',
+      20: 'var(--color-green-900)',
+    }),
   },
 )
-
-const DEFAULT_COLORS = {
-  0: 'var(--gray-alpha-200)',
-  5: 'var(--color-green-300)',
-  10: 'var(--color-green-500)',
-  15: 'var(--color-green-700)',
-  20: 'var(--color-green-900)',
-}
 
 const config = useConfigProvider()
 
@@ -82,7 +81,7 @@ const formatData = computed(() => {
         hidden: true,
         date: dates[i],
         count: 0,
-        color: (props.colors || DEFAULT_COLORS)[0],
+        color: props.colors[0],
       })
     }
 
@@ -97,7 +96,7 @@ const formatData = computed(() => {
       hidden: false,
       date,
       count: dataMap[date] || 0,
-      color: getStateColor(dataMap[date] || 0, props.colors || DEFAULT_COLORS),
+      color: getStateColor(dataMap[date] || 0, props.colors),
     })
   }
 
@@ -153,7 +152,7 @@ const tableMonths = computed(() => {
     <table
       role="grid"
       aria-readonly="true"
-      class="pr-3 overflow-hidden"
+      class="pr-4 overflow-hidden"
       style="border-spacing: 3px; border-collapse: separate"
     >
       <thead>
@@ -187,9 +186,12 @@ const tableMonths = computed(() => {
       </tbody>
     </table>
 
-    <div v-if="props.legend" class="flex items-center gap-1">
-      <span class="text-xs text-gray-900">Less</span>
-      <div v-for="color in Object.values(props.colors || DEFAULT_COLORS)" :key="color" class="w-3 h-3 rounded-sm" :style="`background-color: ${color}`" />
+    <div v-if="props.legend" class="flex items-center gap-[2.5px] mt-1">
+      <span class="text-xs text-gray-900" style="width:30px">Less</span>
+      <div
+        v-for="color in props.colors"
+        :key="color" class="w-3 h-3 rounded-sm" :style="`background-color: ${color}`"
+      />
       <span class="text-xs text-gray-900">More</span>
     </div>
   </div>
