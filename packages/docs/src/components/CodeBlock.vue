@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <div class="code-block border rounded-lg mt-4">
-    <div class="p-6">
+  <div class="code-block border w-full max-w-full rounded-lg mt-4">
+    <div class="p-6 overflow-x-auto">
       <slot />
     </div>
 
@@ -19,7 +19,7 @@
         > Code</span>
       </summary>
 
-      <div class="border-t rounded-bl-lg rounded-br-lg">
+      <div class="border-t rounded-bl-lg rounded-br-lg overflow-auto">
         <slot name="code" />
       </div>
     </details>

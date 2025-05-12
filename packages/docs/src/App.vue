@@ -1,7 +1,9 @@
 <script setup>
+// import { zhCN } from 'pxd/locales'
 </script>
 
 <template>
+  <!-- :locale="zhCN" -->
   <PConfigProvider class="flex flex-col min-h-screen">
     <SiteHeader />
 

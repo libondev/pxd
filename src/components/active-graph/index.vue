@@ -6,7 +6,7 @@ import { getAllDatesBetween } from '../../utils/date'
 
 interface Props {
   data?: any[]
-  direction?: 'row' | 'col'
+  legend?: boolean
   startDate?: string | Date
   endDate?: string | Date
   colors?: Record<string, string>
@@ -26,8 +26,8 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    legend: true,
     data: () => [],
-    direction: 'row',
     startDate: () => {
       const date = new Date()
       date.setFullYear(date.getFullYear() - 1)
@@ -73,144 +73,73 @@ const formatData = computed(() => {
   // 获取第一天是星期几 (0-6, 0代表星期日)
   const firstDayOfWeek = new Date(dates[0]).getDay()
 
-  if (props.direction === 'row') {
-    // 行模式：每行对应一个星期几，列代表不同的周
-    for (let i = 0; i < 7; i++) {
-      const row = []
+  // 行模式：每行对应一个星期几，列代表不同的周
+  for (let i = 0; i < 7; i++) {
+    const row = []
 
-      if (i < firstDayOfWeek) {
-        row.push({
-          hidden: true,
-          date: dates[i],
-          count: 0,
-          color: (props.colors || DEFAULT_COLORS)[0],
-        })
-      }
-
-      result.push(row)
-    }
-
-    // 填充数据
-    for (let i = 0; i < dates.length; i++) {
-      const date = dates[i]
-      const dayOfWeek = new Date(date).getDay()
-      result[dayOfWeek].push({
-        hidden: false,
-        date,
-        count: dataMap[date] || 0,
-        color: getStateColor(dataMap[date] || 0, props.colors || DEFAULT_COLORS),
+    if (i < firstDayOfWeek) {
+      row.push({
+        hidden: true,
+        date: dates[i],
+        count: 0,
+        color: (props.colors || DEFAULT_COLORS)[0],
       })
     }
+
+    result.push(row)
   }
-  else {
-    // 列模式：每列对应一周，行代表星期几
-    const totalWeeks = Math.ceil((dates.length + firstDayOfWeek) / 7)
 
-    for (let week = 0; week < totalWeeks; week++) {
-      const weekData = []
-
-      for (let day = 0; day < 7; day++) {
-        const dateIndex = week * 7 + day - firstDayOfWeek
-        const _date = dates[dateIndex]
-
-        if (dateIndex < 0 || dateIndex >= dates.length) {
-          weekData.push({
-            hidden: true,
-            date: _date,
-            count: 0,
-            color: (props.colors || DEFAULT_COLORS)[0],
-          })
-        }
-        else {
-          const _count = dataMap[_date] || 0
-          weekData.push({
-            hidden: false,
-            date: _date,
-            count: _count,
-            color: getStateColor(_count, props.colors || DEFAULT_COLORS),
-          })
-        }
-      }
-
-      result.push(weekData)
-    }
+  // 填充数据
+  for (let i = 0; i < dates.length; i++) {
+    const date = dates[i]
+    const dayOfWeek = new Date(date).getDay()
+    result[dayOfWeek].push({
+      hidden: false,
+      date,
+      count: dataMap[date] || 0,
+      color: getStateColor(dataMap[date] || 0, props.colors || DEFAULT_COLORS),
+    })
   }
 
   return result
 })
 
-const tableHeaderColumns = computed(() => {
+const tableMonths = computed(() => {
   const dates = allDates.value.dates
-  const result = []
+  const result: string[] = []
 
-  if (props.direction === 'row') {
-    // 行模式：表头是每列的标签，每列代表不同的周
-    const colCount = Math.ceil(allDates.value.dates.length / 7)
+  const colCount = Math.ceil(allDates.value.dates.length / 7)
 
-    // 初始化结果数组
-    for (let i = 0; i < colCount; i++) {
-      result.push('')
-    }
-
-    // 第一列总是显示月份
-    const firstDate = new Date(dates[0])
-    result[0] = config.locale.date.month[firstDate.getMonth()]
-
-    // 获取第一天是星期几，用于计算后续日期的列索引
-    const firstDayOfWeek = firstDate.getDay()
-
-    // 遍历所有日期，查找每个月的第一天
-    let currentMonth = firstDate.getMonth()
-
-    for (let i = 1; i < dates.length; i++) {
-      const date = new Date(dates[i])
-      const month = date.getMonth()
-      const day = date.getDate()
-
-      // 如果月份发生变化且是该月第一天
-      if (month !== currentMonth && day === 1) {
-        // 计算该日期在哪一列
-        // (i - firstDayOfWeek) 是修正第一天偏移
-        // Math.floor((i - firstDayOfWeek) / 7) + 1 计算出以周为单位的列索引
-        const colIndex = Math.floor((i + 7 - firstDayOfWeek) / 7)
-
-        if (colIndex < colCount) {
-          result[colIndex] = config.locale.date.month[month]
-          currentMonth = month
-        }
-      }
-    }
+  // 初始化结果数组
+  for (let i = 0; i < colCount; i++) {
+    result.push('')
   }
-  else {
-    // 列模式：表头是每行的标签，每行代表不同的周
-    const rowCount = Math.ceil(allDates.value.dates.length / 7) - 1 // 减去表头行
 
-    // 初始化结果数组
-    for (let i = 0; i < rowCount; i++) {
-      result.push('')
-    }
+  // 第一列总是显示月份
+  const firstDate = new Date(dates[0])
+  result[0] = config.locale.date.month[firstDate.getMonth()]
 
-    // 第一行总是显示月份
-    const firstDate = new Date(dates[0])
-    result[0] = config.locale.date.month[firstDate.getMonth()]
+  // 获取第一天是星期几，用于计算后续日期的列索引
+  const firstDayOfWeek = firstDate.getDay()
 
-    // 遍历所有日期，查找每个月的第一天
-    let currentMonth = firstDate.getMonth()
+  // 遍历所有日期，查找每个月的第一天
+  let currentMonth = firstDate.getMonth()
 
-    for (let i = 7; i < dates.length; i++) {
-      const date = new Date(dates[i])
-      const month = date.getMonth()
-      const day = date.getDate()
+  for (let i = 1; i < dates.length; i++) {
+    const date = new Date(dates[i])
+    const month = date.getMonth()
+    const day = date.getDate()
 
-      // 如果月份发生变化且是该月第一天
-      if (month !== currentMonth && day === 1) {
-        // 计算该日期在哪一行
-        const rowIndex = Math.floor(i / 7)
+    // 如果月份发生变化且是该月第一天
+    if (month !== currentMonth && day === 1) {
+      // 计算该日期在哪一列
+      // (i - firstDayOfWeek) 是修正第一天偏移
+      // Math.floor((i - firstDayOfWeek) / 7) + 1 计算出以周为单位的列索引
+      const colIndex = Math.floor((i + 7 - firstDayOfWeek) / 7)
 
-        if (rowIndex < rowCount) {
-          result[rowIndex] = config.locale.date.month[month]
-          currentMonth = month
-        }
+      if (colIndex < colCount) {
+        result[colIndex] = config.locale.date.month[month]
+        currentMonth = month
       }
     }
   }
@@ -220,41 +149,48 @@ const tableHeaderColumns = computed(() => {
 </script>
 
 <template>
-  <table
-    role="grid"
-    aria-readonly="true"
-    class="pxd-active-graph max-w-full overflow-hidden"
-    style="border-spacing: 3px; border-collapse: separate"
-  >
-    <!-- ; table-layout: fixed; -->
-    <thead>
-      <tr class="h-3">
-        <th style="width: 28px;" />
+  <div class="pxd-active-graph">
+    <table
+      role="grid"
+      aria-readonly="true"
+      class="pr-3 overflow-hidden"
+      style="border-spacing: 3px; border-collapse: separate"
+    >
+      <thead>
+        <tr class="h-3">
+          <th style="width: 28px;min-width: 28px;" />
 
-        <th
-          v-for="col in tableHeaderColumns"
-          :key="col"
-          class="relative font-normal text-xs"
-        >
-          <span class="absolute -top-0.5 left-0">{{ col }}</span>
-        </th>
-      </tr>
-    </thead>
+          <th
+            v-for="col in tableMonths"
+            :key="col"
+            class="relative font-normal text-xs"
+          >
+            <span class="absolute -top-0.5 left-0 whitespace-nowrap">{{ col }}</span>
+          </th>
+        </tr>
+      </thead>
 
-    <tbody class="text-xs">
-      <tr v-for="(row, i) of formatData" :key="i" class="h-3">
-        <td class="relative leading-none">
-          <span class="absolute top-0.5 left-0">{{ i % 2 === 0 ? config.locale.date.day[i] : ' ' }}</span>
-        </td>
+      <tbody class="text-xs">
+        <tr v-for="(row, i) of formatData" :key="i" class="h-3">
+          <td class="relative leading-none">
+            <span class="absolute top-0.5 left-0">{{ i % 2 === 0 ? config.locale.date.day[i] : ' ' }}</span>
+          </td>
 
-        <td
-          v-for="col of row"
-          :key="col.date"
-          class="rounded-[3px] w-3"
-          :data-date="col.date"
-          :style="`opacity: ${col.hidden ? 0 : undefined}; background-color: ${col.color}`"
-        />
-      </tr>
-    </tbody>
-  </table>
+          <td
+            v-for="col of row"
+            :key="col.date"
+            class="rounded-[3px] w-3 min-w-3"
+            :data-date="col.date"
+            :style="`opacity: ${col.hidden ? 0 : undefined}; background-color: ${col.color}`"
+          />
+        </tr>
+      </tbody>
+    </table>
+
+    <div v-if="props.legend" class="flex items-center gap-1">
+      <span class="text-xs text-gray-900">Less</span>
+      <div v-for="color in Object.values(props.colors || DEFAULT_COLORS)" :key="color" class="w-3 h-3 rounded-sm" :style="`background-color: ${color}`" />
+      <span class="text-xs text-gray-900">More</span>
+    </div>
+  </div>
 </template>

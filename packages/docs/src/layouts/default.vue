@@ -23,7 +23,7 @@ const {
     </div>
   </div>
 
-  <div class="sm:ml-64 border-r flex-1 min-h-screen">
+  <div class="sm:ml-64 border-r w-full max-w-full flex-1 min-h-screen">
     <main class="prose px-6 sm:px-20 py-16 h-full">
       <slot />
     </main>
@@ -148,8 +148,8 @@ const {
   pre code {
     max-width: 100%;
     font-size: 0.875rem;
-    white-space: pre-wrap;
-    word-break: break-word;
+    /* white-space: pre-wrap;
+    word-break: break-word; */
   }
 
   pre.shiki > code {
