@@ -28,20 +28,23 @@ const SIZES = {
 </script>
 
 <template>
-  <div class="pxd-error flex items-center gap-1.5 text-red-900" :class="SIZES[size || config.size]">
-    <StopIcon class="size-4" />
-    <b v-if="label || error?.label" class="font-medium">{{ label || error?.label }}:</b>
+  <div class="pxd-error flex text-red-900" :class="SIZES[size || config.size]">
+    <StopIcon class="size-4 min-w-4 mr-2 mt-0.5" :class="{ 'mt-1': size === 'lg' || config.size === 'lg' }" />
 
-    <slot>
-      {{ error?.message }}
+    <div class="flex-1">
+      <b v-if="label || error?.label" class="font-medium whitespace-nowrap">{{ label || error?.label }}:</b>
 
-      <span v-if="error?.action && error?.link">
-        <a :href="error.link" class="text-red-900 font-medium inline-flex items-center gap-1 underline" :target="isExternalLink(error.link) ? '_blank' : '_self'">
-          {{ error.action }}
+      <slot>
+        {{ error?.message }}
 
-          <ExternalIcon v-if="isExternalLink(error.link)" class="text-sm" />
-        </a>
-      </span>
-    </slot>
+        <span v-if="error?.action && error?.link">
+          <a :href="error.link" class="text-red-900 font-medium inline-flex items-center gap-1 underline" :target="isExternalLink(error.link) ? '_blank' : '_self'">
+            {{ error.action }}
+
+            <ExternalIcon v-if="isExternalLink(error.link)" class="text-sm" />
+          </a>
+        </span>
+      </slot>
+    </div>
   </div>
 </template>
