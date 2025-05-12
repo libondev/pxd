@@ -19,6 +19,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   click: [MouseEvent]
+  dblclick: [MouseEvent]
 }>()
 
 const SIZES = {
@@ -84,6 +85,10 @@ const computedClasses = computed(() => {
 function onButtonClick(event: MouseEvent) {
   emits('click', event)
 }
+
+function onButtonDblClick(event: MouseEvent) {
+  emits('dblclick', event)
+}
 </script>
 
 <template>
@@ -93,6 +98,7 @@ function onButtonClick(event: MouseEvent) {
     :class="computedClasses"
     :disabled="computedDisabled"
     @click="onButtonClick"
+    @dblclick.prevent="onButtonDblClick"
   >
     <Spinner v-if="loading" />
 
