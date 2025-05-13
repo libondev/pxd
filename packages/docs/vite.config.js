@@ -1,9 +1,9 @@
 import { fileURLToPath, URL } from 'node:url'
 
+import gdsiResolver from '@gdsicon/vue/resolver'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import gdsiResolver from 'gdsi/resolver'
 import anchor from 'markdown-it-anchor'
 import attrs from 'markdown-it-attrs'
 import {
@@ -54,10 +54,7 @@ export default defineConfig(({ mode }) => {
         extensions: ['vue', 'md'],
         include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.md$/],
         resolvers: [
-          gdsiResolver({
-            type: 'vue',
-            prefix: 'Icon',
-          }),
+          gdsiResolver({ prefix: 'Icon' }),
         ],
       }),
       autoImport({
@@ -110,7 +107,7 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      include: ['gdsi/vue', 'tailwind-merge', '@vue/shared'],
+      include: ['tailwind-merge', '@vue/shared', 'canvas-confetti'],
     },
   }
 })

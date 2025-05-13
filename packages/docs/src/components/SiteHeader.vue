@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import BookOpenIcon from 'gdsi/vue/book-open'
-import BoxIcon from 'gdsi/vue/box'
-import HomeIcon from 'gdsi/vue/home'
-import LogoGithubIcon from 'gdsi/vue/logo-github'
-// import MenuAltIcon from 'gdsi/vue/menu-alt'
+import BookOpenIcon from '@gdsicon/vue/book-open'
+import BoxIcon from '@gdsicon/vue/box'
+import HomeIcon from '@gdsicon/vue/home'
+import LogoGithubIcon from '@gdsicon/vue/logo-github'
+// import MenuAltIcon from '@gdsicon/vue/menu-alt'
 
 const menus = [
   {

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/components'
-import CheckCircleIcon from 'gdsi/vue/check-circle'
-import InformationIcon from 'gdsi/vue/information'
-import StopIcon from 'gdsi/vue/stop'
-import WarningIcon from 'gdsi/vue/warning'
+import CheckCircleIcon from '@gdsicon/vue/check-circle'
+import InformationIcon from '@gdsicon/vue/information'
+import StopIcon from '@gdsicon/vue/stop'
+import WarningIcon from '@gdsicon/vue/warning'
 import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'

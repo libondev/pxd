@@ -38,7 +38,7 @@ const options = [
 
 ```vue demo
 <script setup>
-import LogoGithubIcon from 'gdsi/vue/logo-github'
+import LogoGithubIcon from '@gdsicon/vue/logo-github'
 </script>
 
 <template>

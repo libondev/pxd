@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/components'
-import CheckIcon from 'gdsi/vue/check'
-import CopyIcon from 'gdsi/vue/copy'
+import CheckIcon from '@gdsicon/vue/check'
+import CopyIcon from '@gdsicon/vue/copy'
 import { computed, ref } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { getCssUnitValue, toArray } from '../../utils/format'

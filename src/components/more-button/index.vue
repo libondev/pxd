@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ChevronDownIcon from 'gdsi/vue/chevron-down'
+import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { useModelValue } from '../../composables/useModelValue'
 import Button from '../button/index.vue'
 

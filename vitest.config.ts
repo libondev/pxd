@@ -16,7 +16,7 @@ export default defineConfig({
     setupFiles: './vitest.setup.ts',
     server: {
       deps: {
-        inline: [/gdsi/],
+        inline: [/@gdsicon\/vue/],
       },
     },
     deps: {

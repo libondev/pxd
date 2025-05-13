@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSizeWithXs, ErrorType } from '../../types/components'
-import ExternalIcon from 'gdsi/vue/external'
-import StopIcon from 'gdsi/vue/stop'
+import ExternalIcon from '@gdsicon/vue/external'
+import StopIcon from '@gdsicon/vue/stop'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isExternalLink } from '../../utils/format'
 

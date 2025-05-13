@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import InformationFillSmallIcon from 'gdsi/vue/information-fill-small'
+import InformationFillSmallIcon from '@gdsicon/vue/information-fill-small'
 
 interface Props {
   title?: string

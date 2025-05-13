@@ -9,6 +9,12 @@ catalogs:
     '@antfu/eslint-config':
       specifier: ^4.12.0
       version: 4.12.0
+    '@gdsicon/vue':
+      specifier: ^1.0.1
+      version: 1.0.1
+    '@tailwindcss/cli':
+      specifier: ^4.1.4
+      version: 4.1.4
     '@tsconfig/node22':
       specifier: ^22.0.1
       version: 22.0.1
@@ -27,12 +33,15 @@ catalogs:
     eslint:
       specifier: ^9.25.1
       version: 9.25.1
-    gdsi:
-      specifier: ^2.0.0
-      version: 2.0.0
     happy-dom:
       specifier: ^17.4.4
       version: 17.4.4
+    husky:
+      specifier: ^9.1.7
+      version: 9.1.7
+    lint-staged:
+      specifier: ^16.0.0
+      version: 16.0.0
     mkdist:
       specifier: ^2.3.0
       version: 2.3.0
@@ -71,9 +80,9 @@ importers:
 
   .:
     dependencies:
-      gdsi:
+      '@gdsicon/vue':
         specifier: 'catalog:'
-        version: 2.0.0
+        version: 1.0.1(vue@3.5.13(typescript@5.8.3))
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.2.0
@@ -82,7 +91,7 @@ importers:
         specifier: 'catalog:'
         version: 4.12.0(@typescript-eslint/utils@8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(@vue/compiler-sfc@3.5.13)(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.14.1)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.2)(yaml@2.7.1))
       '@tailwindcss/cli':
-        specifier: ^4.1.4
+        specifier: 'catalog:'
         version: 4.1.4
       '@tsconfig/node22':
         specifier: 'catalog:'
@@ -106,10 +115,10 @@ importers:
         specifier: 'catalog:'
         version: 17.4.4
       husky:
-        specifier: ^9.1.7
+        specifier: 'catalog:'
         version: 9.1.7
       lint-staged:
-        specifier: ^16.0.0
+        specifier: 'catalog:'
         version: 16.0.0
       mkdist:
         specifier: 'catalog:'
@@ -481,6 +490,11 @@ packages:
   '@eslint/plugin-kit@0.2.8':
     resolution: {integrity: sha512-ZAoA40rNMPwSm+AeHpCq8STiNAwzWLJuP8Xv4CHIc9wv/PSuExjMrmjfYNj682vW0OOiZ1HKxzvjQr9XZIisQA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@gdsicon/vue@1.0.1':
+    resolution: {integrity: sha512-Y2GI0zJ94Q8YFGUGG+DoRb0B7AjQNtoxTBp0B6xZczjNPs6lqWSKl/RyguH3D2oqW3PCqLU9pN40YV7MUuPjfg==}
+    peerDependencies:
+      vue: '*'
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1860,9 +1874,6 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
-  gdsi@2.0.0:
-    resolution: {integrity: sha512-VjxtHHLEdsNGwz0a7FuvwX6m3s5URYROsnHGeUiOq5BuqvbdS9iEkMhI1xCPsqj0CPqRHC3B4g6/oXn9UFxUog==}
 
   get-east-asian-width@1.3.0:
     resolution: {integrity: sha512-vpeMIQKxczTD/0s2CdEWHcb0eeJe6TFjxb+J5xgX7hScxqrGuyjmv4c1D4A/gelKfyox0gJJwIHF+fLjeaM8kQ==}
@@ -3699,6 +3710,10 @@ snapshots:
       '@eslint/core': 0.13.0
       levn: 0.4.1
 
+  '@gdsicon/vue@1.0.1(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      vue: 3.5.13(typescript@5.8.3)
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -5145,8 +5160,6 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
-
-  gdsi@2.0.0: {}
 
   get-east-asian-width@1.3.0: {}
 
