@@ -4,8 +4,7 @@ packages:
 
 catalog:
   '@antfu/eslint-config': ^4.12.0
-  '@nuxt/kit': ^3.16.2
-  '@nuxt/schema': ^3.16.2
+  '@tailwindcss/cli': ^4.1.4
   '@tsconfig/node22': ^22.0.1
   '@types/node': ^22.14.1
   '@vitejs/plugin-vue': ^5.2.3
@@ -14,6 +13,8 @@ catalog:
   eslint: ^9.25.1
   gdsi: ^2.0.0
   happy-dom: ^17.4.4
+  husky: ^9.1.7
+  lint-staged: ^16.0.0
   mkdist: ^2.3.0
   npm-run-all2: ^7.0.2
   tailwind-merge: ^3.2.0

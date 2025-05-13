@@ -120,7 +120,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
-    "@tailwindcss/cli": "^4.1.4",
+    "@tailwindcss/cli": "catalog:",
     "@tsconfig/node22": "catalog:",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
@@ -128,7 +128,8 @@
     "@vue/tsconfig": "catalog:",
     "eslint": "catalog:",
     "happy-dom": "catalog:",
-    "husky": "^9.1.7",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
     "mkdist": "catalog:",
     "npm-run-all2": "catalog:",
     "tinyglobby": "catalog:",
@@ -139,5 +140,11 @@
     "vue": "catalog:",
     "vue-sfc-transformer": "catalog:",
     "vue-tsc": "catalog:"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,vue}": [
+      "pnpm lint",
+      "pnpm test"
+    ]
   }
 }
