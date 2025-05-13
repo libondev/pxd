@@ -1,2 +1,3 @@
 pnpm update-exports
 pnpm typecheck
+pnpm test
