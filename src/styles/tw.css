@@ -1,43 +1,5 @@
 @custom-variant dark (&:is(.dark *));
 
-@utility scrollbar-hidden {
-  & {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-@utility smallest {
-  & {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-}
-
-@utility peer-focus-ring {
-  .peer:focus-visible ~ & {
-    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px var(--color-ring)
-  }
-}
-
-@utility self-focus-ring {
-  &:focus-visible {
-    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px var(--color-ring)
-  }
-}
-
 :root {
   --radius: 0.5rem;
 
@@ -154,6 +116,17 @@
   --background-100: #121212;
   --background-200: #000;
 
+  --gray-alpha-100: hsla(0, 0%, 100%, .06);
+  --gray-alpha-200: hsla(0, 0%, 100%, .09);
+  --gray-alpha-300: hsla(0, 0%, 100%, .13);
+  --gray-alpha-400: hsla(0, 0%, 100%, .14);
+  --gray-alpha-500: hsla(0, 0%, 100%, .24);
+  --gray-alpha-600: hsla(0, 0%, 100%, .51);
+  --gray-alpha-700: hsla(0, 0%, 100%, .54);
+  --gray-alpha-800: hsla(0, 0%, 100%, .47);
+  --gray-alpha-900: hsla(0, 0%, 100%, .61);
+  --gray-alpha-1000: hsla(0, 0%, 100%, .92);
+
   --gray-100-value: 0, 0%, 10%;
   --gray-200-value: 0, 0%, 12%;
   --gray-300-value: 0, 0%, 16%;
@@ -241,17 +214,6 @@
   --pink-800-value: 336, 74%, 51%;
   --pink-900-value: 341, 90%, 67%;
   --pink-1000-value: 333, 90%, 96%;
-
-  --gray-alpha-100: hsla(0, 0%, 100%, .06);
-  --gray-alpha-200: hsla(0, 0%, 100%, .09);
-  --gray-alpha-300: hsla(0, 0%, 100%, .13);
-  --gray-alpha-400: hsla(0, 0%, 100%, .14);
-  --gray-alpha-500: hsla(0, 0%, 100%, .24);
-  --gray-alpha-600: hsla(0, 0%, 100%, .51);
-  --gray-alpha-700: hsla(0, 0%, 100%, .54);
-  --gray-alpha-800: hsla(0, 0%, 100%, .47);
-  --gray-alpha-900: hsla(0, 0%, 100%, .61);
-  --gray-alpha-1000: hsla(0, 0%, 100%, .92);
 
   color-scheme: dark;
 }
@@ -393,6 +355,44 @@
 
   --spacing-em: 1em;
   --z-1: 1;
+}
+
+@utility scrollbar-hidden {
+  & {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility peer-focus-ring {
+  .peer:focus-visible ~ & {
+    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px var(--color-ring)
+  }
+}
+
+@utility self-focus-ring {
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px var(--color-ring)
+  }
+}
+
+@utility smallest {
+  & {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
 
 @layer base {
