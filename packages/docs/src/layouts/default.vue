@@ -26,7 +26,7 @@ const {
   </div>
 
   <div class="sm:ml-64 border-r w-full max-w-full flex-1 min-h-screen">
-    <main class="prose px-6 sm:px-20 py-16 h-full">
+    <main class="prose px-6 sm:px-20 py-16 w-full h-full">
       <slot />
     </main>
 
@@ -145,6 +145,11 @@ const {
     padding-left: 1.25em;
     margin-block: 1em;
     border-radius: var(--radius);
+
+    code {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   }
 
   pre code {
