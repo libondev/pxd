@@ -1,0 +1,30 @@
+{
+  "name": "@pxd/cli",
+  "version": "0.0.1",
+  "description": "pxd cli",
+  "author": "libondev <bon.li@outlook.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/libondev/pxd#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/libondev/pxd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/libondev/pxd/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "prepublishOnly": "unbuild"
+  },
+  "devDependencies": {
+    "mkdist": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:"
+  }
+}
