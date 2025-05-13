@@ -65,7 +65,7 @@ import { version } from 'pxd'
         <p class="text-foreground-secondary text-sm">
           It takes little effort to make all components natively support light and dark mode. See<PLinkButton
             href="/components/color-scheme"
-            class="text-primary underline"
+            class="text-foreground underline"
             type="text"
             text="here"
           />for more information.

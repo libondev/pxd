@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div
-      class="pxd-slider--track absolute h-full bg-primary rounded-full touch-none group-active/slider:will-change-[width,left]"
+      class="pxd-slider--track absolute h-full rounded-full touch-none group-active/slider:will-change-[width,left]"
       :style="trackStyle"
     />
 

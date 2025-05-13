@@ -7,7 +7,7 @@ Input to select a value from a given range.
 <script setup>
 import { ref } from 'vue'
 
-const value = ref(0)
+const value = ref(30)
 </script>
 
 <template>
@@ -75,7 +75,7 @@ Set `step` size with the step attribute
 <script setup>
 import { ref } from 'vue'
 
-const value = ref(0)
+const value = ref(30)
 </script>
 
 <template>

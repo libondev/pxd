@@ -9,7 +9,7 @@ import { components } from '@/consts/components'
   </h1>
 
   <p class="text-sm text-gray-900">
-    A total of <span class="font-medium text-primary">{{ components.length }}</span> components
+    A total of <span class="font-medium text-text-foreground">{{ components.length }}</span> components
   </p>
 
   <div class="flex flex-wrap gap-5 mt-6">
