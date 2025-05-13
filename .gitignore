@@ -31,3 +31,4 @@ shims/components.d.ts
 components.d.ts
 auto-imports.d.ts
 **/pnpm-lock.yaml
+src/styles/styles.css
