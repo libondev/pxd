@@ -157,23 +157,23 @@ function togglePasswordType() {
 
 <style lang="postcss">
 .pxd-input--container {
-  box-shadow: 0 0 0 1px var(--border-color, var(--gray-alpha-300));
+  box-shadow: 0 0 0 1px var(--border-color, var(--color-gray-alpha-300));
 
   &:not(.is-disabled, .is-readonly):hover {
-    --border-color: var(--gray-alpha-600);
+    --border-color: var(--color-gray-alpha-600);
   }
 
   &:not(.is-disabled, .is-readonly):focus-within {
-    box-shadow: 0 0 0 1px var(--gray-alpha-600), 0 0 0 4px var(--gray-alpha-300);
+    box-shadow: 0 0 0 1px var(--color-gray-alpha-600), 0 0 0 4px var(--color-gray-alpha-300);
   }
 
   &.is-error {
     &, &:focus-within {
-      box-shadow: 0 0 0 1px hsl(var(--red-900-value)), 0 0 0 4px hsl(var(--red-300-value));
+      box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-300-value));
     }
 
     &:not(.is-disabled, .is-readonly, :focus):hover {
-      box-shadow: 0 0 0 1px hsl(var(--red-900-value)), 0 0 0 4px hsl(var(--red-500-value));
+      box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-500-value));
     }
   }
 }

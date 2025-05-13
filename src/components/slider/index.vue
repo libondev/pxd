@@ -55,10 +55,10 @@ const SIZES = {
 
 const VARIANTS = {
   primary: 'var(--color-primary)',
-  success: 'hsl(var(--blue-700-value))',
-  warning: 'hsl(var(--amber-700-value))',
-  secondary: 'hsl(var(--gray-700-value))',
-  error: 'hsl(var(--red-700-value))',
+  success: 'hsl(var(--color-blue-700-value))',
+  warning: 'hsl(var(--color-amber-700-value))',
+  secondary: 'hsl(var(--color-gray-700-value))',
+  error: 'hsl(var(--color-red-700-value))',
 }
 
 let isDragging = false
@@ -95,13 +95,13 @@ const trackStyle = computed(() => {
     return {
       left: `${startPercentage.value}%`,
       width: `${endPercentage.value - startPercentage.value}%`,
-      backgroundColor: props.disabled ? 'var(--gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
+      backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
     }
   }
 
   return {
     width: `${endPercentage.value}%`,
-    backgroundColor: props.disabled ? 'var(--gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
+    backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
   }
 })
 
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
 
 <style>
 .pxd-slider--thumb {
-  box-shadow: 0 0 0 1px var(--gray-alpha-500), 0 1px 2px var(--gray-alpha-100);
+  box-shadow: 0 0 0 1px var(--color-gray-alpha-500), 0 1px 2px var(--color-gray-alpha-100);
 }
 
 .pxd-slider--thumb::after {

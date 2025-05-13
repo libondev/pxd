@@ -99,12 +99,12 @@ defineExpose({
   }
 
   &::before {
-    background-image: linear-gradient(270deg, var(--gray-alpha-100), var(--gray-alpha-400), var(--gray-alpha-400), var(--gray-alpha-100));
+    background-image: linear-gradient(270deg, var(--color-gray-alpha-100), var(--color-gray-alpha-400), var(--color-gray-alpha-400), var(--color-gray-alpha-100));
     background-size: 400% 100%;
   }
 
   &::after {
-    border: 1px solid var(--gray-alpha-400)
+    border: 1px solid var(--color-gray-alpha-400)
   }
 }
 

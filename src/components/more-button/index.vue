@@ -64,6 +64,6 @@ function onToggleExpand() {
   content: '';
   display: block;
   width: 100%;
-  border-top: 1px solid var(--gray-alpha-300);
+  border-top: 1px solid var(--color-gray-alpha-300);
 }
 </style>

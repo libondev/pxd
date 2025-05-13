@@ -16,7 +16,7 @@ import { version } from 'pxd'
         </PBadge>
       </div>
 
-      <p class="text-balance leading-tight text-lg text-secondary mt-8">
+      <p class="text-balance leading-tight text-lg text-foreground-secondary mt-8">
         A universal UI component library for Vue2&3
       </p>
 
@@ -52,7 +52,7 @@ import { version } from 'pxd'
           Consistent experience
         </h3>
 
-        <p class="text-secondary text-sm">
+        <p class="text-foreground-secondary text-sm">
           It can run in 2 and 3 without modifying any syntax.
         </p>
       </div>
@@ -62,7 +62,7 @@ import { version } from 'pxd'
           Full light and dark support
         </h3>
 
-        <p class="text-secondary text-sm">
+        <p class="text-foreground-secondary text-sm">
           It takes little effort to make all components natively support light and dark mode. See<PLinkButton
             href="/components/color-scheme"
             class="text-primary underline"
@@ -77,7 +77,7 @@ import { version } from 'pxd'
           Support for reducing animation
         </h3>
 
-        <p class="text-secondary text-sm">
+        <p class="text-foreground-secondary text-sm">
           Set <code class="text-gray-900">prefers-reduced-motion: reduce</code> to disable transitions and animations in components.
         </p>
       </div>

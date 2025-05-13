@@ -24,8 +24,8 @@ const props = withDefaults(
     fader: true,
     scrollbar: true,
     scrollbarSize: 6,
-    scrollbarColor: 'var(--gray-alpha-300)',
-    scrollbarHoverColor: 'var(--gray-alpha-500)',
+    scrollbarColor: 'var(--color-gray-alpha-300)',
+    scrollbarHoverColor: 'var(--color-gray-alpha-500)',
   },
 )
 

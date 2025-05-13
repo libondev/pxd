@@ -47,10 +47,10 @@ const SIZES = {
 
 const VARIANTS_COLORS = {
   primary: 'var(--color-primary)',
-  success: 'hsl(var(--blue-700-value))',
-  warning: 'hsl(var(--amber-700-value))',
-  secondary: 'hsl(var(--gray-700-value))',
-  error: 'hsl(var(--red-700-value))',
+  success: 'hsl(var(--color-blue-700-value))',
+  warning: 'hsl(var(--color-amber-700-value))',
+  secondary: 'hsl(var(--color-gray-700-value))',
+  error: 'hsl(var(--color-red-700-value))',
 }
 
 const progress = useModelValue(props, emits, {

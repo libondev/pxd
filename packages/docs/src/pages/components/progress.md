@@ -41,10 +41,10 @@ Customize the colors of the display at different stages.
 
   const colors = {
     0: 'var(--color-foreground)',
-    25: 'var(--color-danger)',
-    50: 'var(--color-amber)',
+    25: 'var(--color-red-700)',
+    50: 'var(--color-amber-700)',
     75: 'var(--color-pink-700)',
-    100: 'var(--color-accent)'
+    100: 'var(--color-blue-700)'
   }
 
   function increase() {

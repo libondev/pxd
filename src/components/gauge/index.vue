@@ -119,11 +119,11 @@ const progressColors = computed(() => {
   const colors = props.colors || defaultColors
 
   let primaryColor = colors.primary
-  let secondaryColor = colors.secondary || 'hsl(var(--gray-200-value))'
+  let secondaryColor = colors.secondary || 'hsl(var(--color-gray-200-value))'
 
   if (props.indeterminate) {
-    primaryColor = 'hsl(var(--gray-200-value))'
-    secondaryColor = 'hsl(var(--gray-200-value))'
+    primaryColor = 'hsl(var(--color-gray-200-value))'
+    secondaryColor = 'hsl(var(--color-gray-200-value))'
   }
   else if (!primaryColor) {
     primaryColor = getStateColor(progress.value, colors) || colors.primary

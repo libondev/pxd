@@ -19,7 +19,7 @@ const props = withDefaults(
   {
     scalable: true,
     durations: 2,
-    maskColor: 'var(--gray-alpha-600)',
+    maskColor: 'var(--color-gray-alpha-600)',
   },
 )
 

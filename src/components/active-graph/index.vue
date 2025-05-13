@@ -41,7 +41,7 @@ const props = withDefaults(
     },
     endDate: () => new Date().toISOString().split('T')[0],
     colors: () => ({
-      0: 'var(--gray-alpha-200)',
+      0: 'var(--color-gray-alpha-200)',
       5: 'var(--color-green-300)',
       10: 'var(--color-green-500)',
       15: 'var(--color-green-700)',

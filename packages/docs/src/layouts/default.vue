@@ -71,7 +71,7 @@ const {
     transform: translateX(-100%) scale(0.75);
     font-size: 12px;
     font-weight: 500;
-    color: var(--color-muted);
+    color: hsl(var(--color-gray-800-value));
   }
 
   h2::before {
@@ -105,8 +105,8 @@ const {
   blockquote {
     padding-left: 1em;
     padding-block: 1px;
-    border-left: 4px solid var(--gray-alpha-300);
-    background-color: var(--gray-alpha-100);
+    border-left: 4px solid var(--color-gray-alpha-300);
+    background-color: var(--color-gray-alpha-100);
 
     p {
       margin-block: 0.25em;
