@@ -9,7 +9,7 @@ interface Props {
 }
 
 defineOptions({
-  name: 'PColorScheme',
+  name: 'PThemeSwitcher',
 })
 
 defineProps<Props>()
@@ -60,6 +60,7 @@ function toggleColorMode() {
   <Button
     aria-label="Toggle color mode"
     :block="block"
+    class="pxd-theme-switcher"
     v-bind="$attrs"
     @click="toggleColorMode"
   >
@@ -71,6 +72,7 @@ function toggleColorMode() {
 
 <style>
 @media (prefers-reduced-motion: no-preference) {
+
   .rotate-scale-enter-active,
   .rotate-scale-leave-active {
     transition: transform 0.15s ease-out;

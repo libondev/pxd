@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-import ColorScheme from '../../src/components/color-scheme/index.vue'
+import ThemeSwitcher from '../../src/components/theme-switcher/index.vue'
 
-describe('color-scheme', () => {
+describe('theme-switcher', () => {
   it('should emit toggle event when button is clicked', async () => {
-    const wrapper = mount(ColorScheme)
+    const wrapper = mount(ThemeSwitcher)
 
     await wrapper.find('button').trigger('click')
 

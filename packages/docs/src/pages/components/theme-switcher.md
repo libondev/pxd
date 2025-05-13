@@ -1,5 +1,6 @@
-# ColorScheme
-One-key switching system and light-dark theme of components
+
+# ThemeSwitcher
+Component that allows users to switch between light and dark themes.
 
 ## Premise
 Put the following code in your `html > head`to ensure the correctness of the theme when the page is overloaded.
@@ -12,7 +13,7 @@ Put the following code in your `html > head`to ensure the correctness of the the
 
 ```vue demo
 <template>
-  <PColorScheme />
+  <PThemeSwitcher />
 </template>
 ```
 
@@ -21,8 +22,8 @@ Put the following code in your `html > head`to ensure the correctness of the the
 ```vue demo
 <template>
   <PStack>
-    <PColorScheme variant="primary" />
-    <PColorScheme shape="rounded" />
+    <PThemeSwitcher variant="primary" />
+    <PThemeSwitcher shape="rounded" />
   </PStack>
 </template>
 ```

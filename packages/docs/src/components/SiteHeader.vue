@@ -56,7 +56,7 @@ const menus = [
           </li>
 
           <li>
-            <PColorScheme variant="ghost" shape="square" class="h-full sm:px-3" />
+            <PThemeSwitcher variant="ghost" shape="square" class="h-full sm:px-3" />
           </li>
         </ul>
       </nav>
