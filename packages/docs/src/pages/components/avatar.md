@@ -44,7 +44,8 @@ import LogoGithubIcon from 'gdsi/vue/logo-github'
 <template>
   <PAvatar src="https://avatars.githubusercontent.com/u/6880091?v=4">
     <template #badge>
-      <LogoGithubIcon />
+      <!-- fix dark mode icon color -->
+      <LogoGithubIcon class="text-black" />
     </template>
   </PAvatar>
 </template>
