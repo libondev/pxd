@@ -111,7 +111,9 @@ const computedClasses = computed(() => {
         <component :is="computedLabel" class="font-medium flex-shrink-0" />
       </slot>
 
-      <slot />
+      <span class="flex-1">
+        <slot />
+      </span>
     </div>
 
     <div v-if="$slots.action" class="pxd-note--action">

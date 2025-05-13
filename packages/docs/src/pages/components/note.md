@@ -82,10 +82,12 @@
   <PStack direction="col" gap="4">
     <b class="text-sm font-medium">Custom Label</b>
 
+    <!-- prop label -->
     <PNote label="Note">
       Lorem ipsum dolor sit amet consectetur adipisicing elit.
     </PNote>
 
+    <!-- slot label -->
     <PNote>
       <template #label>
         <b class="text-sm font-medium">Custom Label</b>
