@@ -24,6 +24,11 @@ header .pxd-link-button.router-link-active,
   background-color: var(--color-background);
 }
 
+header .pxd-link-button:not(:hover),
+.sidebar .pxd-link-button:not(:hover) {
+  transition: none !important;
+}
+
 ::selection {
   background-color: var(--color-green-400);
 }
