@@ -1,5 +1,5 @@
-export function getRandomId() {
-  return `Pxd_${Math.random()}`
+export function getRandomKey() {
+  return `pxd_k_${Math.random()}`
 }
 
 export function getRandomValue(min: number, max: number) {

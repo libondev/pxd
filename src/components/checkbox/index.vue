@@ -4,7 +4,7 @@ import MinusIcon from 'gdsi/vue/minus'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import { getRandomId } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 
 type ValueType = string | number | boolean
 
@@ -34,7 +34,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const randomId = getRandomId()
+const randomId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
 const checkboxGroupProps = inject('checkboxGroupProps', {

@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
-import { getRandomId } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 import PError from '../error/index.vue'
 
 interface Props {
@@ -42,7 +42,7 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
-const randomId = getRandomId()
+const randomId = getUniqueId()
 
 const SIZES = {
   xs: 'text-xs',

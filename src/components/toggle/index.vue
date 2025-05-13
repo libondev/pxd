@@ -3,7 +3,7 @@ import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
-import { getRandomId } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 
 type ValueType = boolean | number | string
 
@@ -46,7 +46,7 @@ const SIZES = {
   lg: 'w-11 h-6',
 }
 
-const randomId = getRandomId()
+const randomId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 

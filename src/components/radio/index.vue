@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { useRandomValue } from '../../composables/useRandomValueContext'
-import { getRandomId } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   label?: string | number
@@ -27,7 +27,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const randomId = getRandomId()
+const randomId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
 const radioGroupName = useRandomValue('radioGroupName')
