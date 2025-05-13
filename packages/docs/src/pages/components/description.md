@@ -1,0 +1,14 @@
+# Description
+Displays a brief heading and subheading to communicate any additional information or context a user needs to continue.
+
+## Default
+
+```vue demo
+<template>
+  <PDescription
+    title="Section Title"
+    content="Data about this section."
+    tooltip="Additional context about what this section refers to."
+  />
+</template>
+```
