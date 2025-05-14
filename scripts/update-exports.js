@@ -90,6 +90,10 @@ updateComponentsIndex()
 updateComposablesIndex()
 
 if (isNeedStageChange) {
-  execSync('git add src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json')
-  execSync('git commit -m "chore: update pkg exports"')
+  try {
+    execSync('git add src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json')
+    execSync('git commit -m "chore: update pkg exports"')
+  } catch (error) {
+    console.error('Stage change failed')
+  }
 }
