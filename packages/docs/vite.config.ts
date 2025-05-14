@@ -22,8 +22,6 @@ import markdown from 'vite-vue-md'
 import pxdResolver from '../../src/plugins/resolver'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 
-console.info('✨vite.config.ts:23/(pxdResolver):\n', pxdResolver)
-
 const codeHighlighter = await createHighlighterCore({
   engine: createJavaScriptRegexEngine(),
   themes: [
