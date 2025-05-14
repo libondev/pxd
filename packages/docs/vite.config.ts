@@ -19,7 +19,10 @@ import { VueRouterAutoImports } from 'unplugin-vue-router'
 import router from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import markdown from 'vite-vue-md'
+import pxdResolver from '../../src/plugins/resolver'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
+
+console.info('✨vite.config.ts:23/(pxdResolver):\n', pxdResolver)
 
 const codeHighlighter = await createHighlighterCore({
   engine: createJavaScriptRegexEngine(),
@@ -55,6 +58,7 @@ export default defineConfig(({ mode }) => {
         include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.md$/],
         resolvers: [
           gdsiResolver({ prefix: 'Icon' }),
+          pxdResolver(),
         ],
       }),
       autoImport({

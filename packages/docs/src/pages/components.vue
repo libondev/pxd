@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { components } from '@/consts/components'
+import components from '@/consts/components.json'
 import DefaultLayout from '@/layouts/default.vue'
 
 const menus = components.map(({ name, camelized }) => {

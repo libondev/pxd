@@ -1,5 +1,3 @@
-// @ts-check
-
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -9,12 +7,11 @@ import { pascalize } from './utils.js'
 
 const isNeedStageChange = process.argv.includes('--stage')
 
+const components = globSync('src/components/**/*.vue')
+const matchRegex = /src\/components\/(.*?)\/index.vue/
+
 function updateComponentsIndex() {
-  const files = globSync('src/components/**/*.vue')
-
-  const matchRegex = /src\/components\/(.*?)\/index.vue/
-
-  const components = files.map((file) => {
+  const _components = components.map((file) => {
     const [,name] = file.match(matchRegex) || []
 
     return {
@@ -23,7 +20,7 @@ function updateComponentsIndex() {
     }
   })
 
-  const fileContent = components.reduce((exports, component) => {
+  const fileContent = _components.reduce((exports, component) => {
     exports += `export { default as ${component.name} } from '${component.file}'\n`
 
     return exports
@@ -55,7 +52,7 @@ function updateComposablesIndex() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'composables', 'index.ts'), fileContent)
 }
 
-async function updateAppVersion() {
+function updateAppVersion() {
   const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
   const appIndexFileContent = fs.readFileSync(path.join(process.cwd(), 'src', 'index.ts'), 'utf-8')
 
@@ -69,11 +66,27 @@ async function updateAppVersion() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'index.ts'), newVersion)
 }
 
+function updateDocsComponents() {
+  const jsonContent = components.reduce((acc, cur) => {
+    const [, name] = cur.match(matchRegex) || []
+
+    acc.push({
+      camelized: pascalize(name),
+      name,
+    })
+
+    return acc
+  }, [])
+
+  fs.writeFileSync(path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'), `${JSON.stringify(jsonContent, null, 2)}\n`)
+}
+
 updateAppVersion()
+updateDocsComponents()
 updateComponentsIndex()
 updateComposablesIndex()
 
 if (isNeedStageChange) {
-  execSync('git add src/index.ts src/components/index.ts src/composables/index.ts')
+  execSync('git add src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json')
   execSync('git commit -m "chore: update pkg exports"')
 }

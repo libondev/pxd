@@ -1,0 +1,122 @@
+[
+  {
+    "camelized": "ActiveGraph",
+    "name": "active-graph"
+  },
+  {
+    "camelized": "Avatar",
+    "name": "avatar"
+  },
+  {
+    "camelized": "AvatarGroup",
+    "name": "avatar-group"
+  },
+  {
+    "camelized": "Badge",
+    "name": "badge"
+  },
+  {
+    "camelized": "Button",
+    "name": "button"
+  },
+  {
+    "camelized": "Checkbox",
+    "name": "checkbox"
+  },
+  {
+    "camelized": "CheckboxGroup",
+    "name": "checkbox-group"
+  },
+  {
+    "camelized": "ConfigProvider",
+    "name": "config-provider"
+  },
+  {
+    "camelized": "Description",
+    "name": "description"
+  },
+  {
+    "camelized": "Error",
+    "name": "error"
+  },
+  {
+    "camelized": "Gauge",
+    "name": "gauge"
+  },
+  {
+    "camelized": "HoldButton",
+    "name": "hold-button"
+  },
+  {
+    "camelized": "Input",
+    "name": "input"
+  },
+  {
+    "camelized": "Kbd",
+    "name": "kbd"
+  },
+  {
+    "camelized": "LinkButton",
+    "name": "link-button"
+  },
+  {
+    "camelized": "LoadingDots",
+    "name": "loading-dots"
+  },
+  {
+    "camelized": "MoreButton",
+    "name": "more-button"
+  },
+  {
+    "camelized": "Note",
+    "name": "note"
+  },
+  {
+    "camelized": "Progress",
+    "name": "progress"
+  },
+  {
+    "camelized": "Radio",
+    "name": "radio"
+  },
+  {
+    "camelized": "RadioGroup",
+    "name": "radio-group"
+  },
+  {
+    "camelized": "Scrollable",
+    "name": "scrollable"
+  },
+  {
+    "camelized": "Slider",
+    "name": "slider"
+  },
+  {
+    "camelized": "Snippet",
+    "name": "snippet"
+  },
+  {
+    "camelized": "Spinner",
+    "name": "spinner"
+  },
+  {
+    "camelized": "Stack",
+    "name": "stack"
+  },
+  {
+    "camelized": "StatusDot",
+    "name": "status-dot"
+  },
+  {
+    "camelized": "Textarea",
+    "name": "textarea"
+  },
+  {
+    "camelized": "ThemeSwitcher",
+    "name": "theme-switcher"
+  },
+  {
+    "camelized": "Toggle",
+    "name": "toggle"
+  }
+]
