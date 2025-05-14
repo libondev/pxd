@@ -41,13 +41,15 @@ const VARIANTS = {
   success: 'var(--color-green-700)',
 }
 
+interface TooltipStyle {
+  left: string
+  top: string
+}
+
 const isVisible = shallowRef(false)
 const tooltipRef = shallowRef<HTMLElement>()
 const triggerRef = shallowRef<HTMLElement>()
-const tooltipStyle = shallowRef<{
-  left: string
-  top: string
-}>({})
+const tooltipStyle = shallowRef({} as TooltipStyle)
 
 const computedTooltipStyles = computed(() => {
   const bgColor = VARIANTS[props.variant] || VARIANTS.primary
