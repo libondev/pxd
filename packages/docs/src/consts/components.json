@@ -106,5 +106,9 @@
   {
     "camelized": "Toggle",
     "name": "toggle"
+  },
+  {
+    "camelized": "Tooltip",
+    "name": "tooltip"
   }
 ]

@@ -263,3 +263,15 @@
 * {
   border-color: var(--color-border);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pxd-transition--fade-enter-active,
+  .pxd-transition--fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .pxd-transition--fade-enter-from,
+  .pxd-transition--fade-leave-to {
+    opacity: 0;
+  }
+}

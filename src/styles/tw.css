@@ -117,16 +117,16 @@
   --background-100: #121212;
   --background-200: #000;
 
-  --color-gray-alpha-100: hsla(0, 0%, 100%, .06);
-  --color-gray-alpha-200: hsla(0, 0%, 100%, .09);
-  --color-gray-alpha-300: hsla(0, 0%, 100%, .13);
-  --color-gray-alpha-400: hsla(0, 0%, 100%, .14);
-  --color-gray-alpha-500: hsla(0, 0%, 100%, .24);
-  --color-gray-alpha-600: hsla(0, 0%, 100%, .51);
-  --color-gray-alpha-700: hsla(0, 0%, 100%, .54);
-  --color-gray-alpha-800: hsla(0, 0%, 100%, .47);
-  --color-gray-alpha-900: hsla(0, 0%, 100%, .61);
-  --color-gray-alpha-1000: hsla(0, 0%, 100%, .92);
+  --color-gray-alpha-100: hsla(0, 0%, 100%, 0.06);
+  --color-gray-alpha-200: hsla(0, 0%, 100%, 0.09);
+  --color-gray-alpha-300: hsla(0, 0%, 100%, 0.13);
+  --color-gray-alpha-400: hsla(0, 0%, 100%, 0.14);
+  --color-gray-alpha-500: hsla(0, 0%, 100%, 0.24);
+  --color-gray-alpha-600: hsla(0, 0%, 100%, 0.51);
+  --color-gray-alpha-700: hsla(0, 0%, 100%, 0.54);
+  --color-gray-alpha-800: hsla(0, 0%, 100%, 0.47);
+  --color-gray-alpha-900: hsla(0, 0%, 100%, 0.61);
+  --color-gray-alpha-1000: hsla(0, 0%, 100%, 0.92);
 
   --color-gray-100-value: 0, 0%, 10%;
   --color-gray-200-value: 0, 0%, 12%;
@@ -365,13 +365,13 @@
 
 @utility peer-focus-ring {
   .peer:focus-visible ~ & {
-    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px hsl(var(--ring))
+    box-shadow: 0 0 0 2px var(--background-100), 0 0 0 4px hsl(var(--ring));
   }
 }
 
 @utility self-focus-ring {
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--background-100),0 0 0 4px hsl(var(--ring))
+    box-shadow: 0 0 0 2px var(--background-100), 0 0 0 4px hsl(var(--ring));
   }
 }
 
@@ -392,5 +392,17 @@
 @layer base {
   * {
     @apply border-border;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pxd-transition--fade-enter-active,
+  .pxd-transition--fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .pxd-transition--fade-enter-from,
+  .pxd-transition--fade-leave-to {
+    opacity: 0;
   }
 }

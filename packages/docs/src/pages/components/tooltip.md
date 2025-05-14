@@ -1,0 +1,187 @@
+# Tooltip
+A set of headings, vertically stacked, that each reveal an related section of content. Commonly referred to as an accordion.
+
+## Default
+
+```vue demo
+<template>
+  <PStack>
+    <PTooltip
+      position="left"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      position="top"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      position="bottom"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      position="right"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+  </PStack>
+</template>
+```
+
+## No delay
+
+```vue demo
+<template>
+  <PStack>
+    <PTooltip
+      :delay="0"
+      position="left"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="top"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="bottom"
+       content="The Evil Rabbit Jumped over the Fence"
+     >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="right"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+  </PStack>
+</template>
+```
+
+## Custom content
+
+```vue demo
+<template>
+  <PStack>
+    <PTooltip
+      :delay="0"
+      position="left"
+    >
+      <PButton>Hover me</PButton>
+
+      <template #content>
+        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
+      </template>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="top"
+    >
+      <PButton>Hover me</PButton>
+      <template #content>
+        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
+      </template>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="bottom"
+     >
+      <PButton>Hover me</PButton>
+      <template #content>
+        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
+      </template>
+    </PTooltip>
+
+    <PTooltip
+      :delay="0"
+      position="right"
+    >
+      <PButton>Hover me</PButton>
+      <template #content>
+        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
+      </template>
+    </PTooltip>
+  </PStack>
+</template>
+```
+
+## Custom type
+
+```vue demo
+<template>
+  <PStack>
+    <PTooltip
+      variant="primary"
+      position="left"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="success"
+      position="top"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="warning"
+      position="bottom"
+      content="The Evil Rabbit Jumped over the Fence"
+     >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="error"
+      position="right"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+  </PStack>
+</template>
+```
+
+## Components
+
+```vue demo
+<template>
+  <PStack align="center" gap="8">
+    <PTooltip content="The Evil Rabbit Jumped over the Fence">
+      <PCheckbox label="Checkbox" />
+    </PTooltip>
+
+    <PTooltip content="The Evil Rabbit Jumped over the Fence">
+      <PBadge>LEFT</PBadge>
+    </PTooltip>
+
+    <PTooltip content="The Evil Rabbit Jumped over the Fence">
+      <PSpinner />
+    </PTooltip>
+  </PStack>
+</template>
+```

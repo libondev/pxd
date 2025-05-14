@@ -30,7 +30,8 @@ header .pxd-link-button:not(:hover),
 }
 
 ::selection {
-  background-color: var(--color-green-400);
+  background-color: var(--color-green-1000);
+  color: var(--color-green-100);
 }
 
 :not(pre) > code {
