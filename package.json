@@ -111,6 +111,7 @@
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
     "prepare": "husky",
+    "postinstall": "node scripts/setup-git-ignore.js",
     "postversion": "node scripts/update-exports.js --stage",
     "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
