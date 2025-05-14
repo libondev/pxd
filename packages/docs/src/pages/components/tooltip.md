@@ -189,3 +189,15 @@ A set of headings, vertically stacked, that each reveal an related section of co
   </PStack>
 </template>
 ```
+
+## Other
+
+```vue demo
+<template>
+  <PStack align="center" gap="8">
+    <PTooltip content="The Evil Rabbit Jumped over the Fence" :show-arrow="false">
+      No arrow
+    </PTooltip>
+  </PStack>
+</template>
+```
