@@ -39,7 +39,7 @@ const props = withDefaults(
 
       return date
     },
-    endDate: () => new Date().toISOString().split('T')[0],
+    endDate: () => new Date(),
     colors: () => ({
       0: 'var(--color-gray-alpha-200)',
       5: 'var(--color-green-300)',
@@ -170,14 +170,14 @@ function onCellClick(event: MouseEvent) {
       class="pr-5 overflow-hidden"
       style="border-spacing: 3px; border-collapse: separate"
     >
-      <thead>
+      <thead class="text-xs">
         <tr class="h-3">
           <th style="width: 30px;min-width: 30px;" />
 
           <th
             v-for="col in tableMonths"
             :key="col"
-            class="relative font-normal text-xs text-gray-900"
+            class="relative font-normal text-gray-900"
           >
             <span class="absolute -top-1 left-0 whitespace-nowrap">{{ col }}</span>
           </th>
@@ -203,8 +203,8 @@ function onCellClick(event: MouseEvent) {
         <template v-if="props.legend">
           <tr class="h-0.5" />
           <tr class="pxd-active-graph--legend select-none">
-            <td class="relative h-3 text-xs text-gray-700">
-              <span class="absolute -top-px right-1">{{ config.locale.compare.less }}</span>
+            <td class="relative h-3 text-gray-700">
+              <span class="absolute top-1/2 right-1 -translate-y-1/2">{{ config.locale.compare.less }}</span>
             </td>
 
             <td
@@ -212,8 +212,8 @@ function onCellClick(event: MouseEvent) {
               :key="color" class="w-3 h-3 rounded-xs motion-safe:transition-colors" :style="`background-color: ${color}`"
             />
 
-            <td class="relative h-3 text-xs text-gray-700 w-3">
-              <span class="absolute -top-px left-px" style="width: 30px;min-width: 30px;">{{ config.locale.compare.more }}</span>
+            <td class="relative h-3 text-gray-700 w-3">
+              <span class="absolute top-1/2 left-px -translate-y-1/2" style="width: 30px;min-width: 30px;">{{ config.locale.compare.more }}</span>
             </td>
           </tr>
         </template>

@@ -39,18 +39,13 @@ function refreshData() {
 }
 
 function onCellClick(event, date) {
-  lastClickDate.value = date
+  console.log({ date })
 }
 </script>
 
 <template>
   <PStack direction="col">
     <PActiveGraph :data="data" @cell-click="onCellClick" />
-
-    <span class="text-gray-900 text-sm">
-      last click date:
-      {{ lastClickDate }}
-    </span>
 
     <PButton class="ml-8" @click="refreshData()">
       Refresh
