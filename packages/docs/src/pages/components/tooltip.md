@@ -43,7 +43,8 @@ A set of headings, vertically stacked, that each reveal an related section of co
 <template>
   <PStack>
     <PTooltip
-      :delay="0"
+      :show-delay="0"
+      :hide-delay="0"
       position="left"
       content="The Evil Rabbit Jumped over the Fence"
     >
@@ -51,7 +52,8 @@ A set of headings, vertically stacked, that each reveal an related section of co
     </PTooltip>
 
     <PTooltip
-      :delay="0"
+      :show-delay="0"
+      :hide-delay="0"
       position="top"
       content="The Evil Rabbit Jumped over the Fence"
     >
@@ -59,15 +61,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
     </PTooltip>
 
     <PTooltip
-      :delay="0"
+      :show-delay="0"
+      :hide-delay="0"
       position="bottom"
-       content="The Evil Rabbit Jumped over the Fence"
-     >
+      content="The Evil Rabbit Jumped over the Fence"
+    >
       <PButton>Hover me</PButton>
     </PTooltip>
 
     <PTooltip
-      :delay="0"
+      :show-delay="0"
+      :hide-delay="0"
       position="right"
       content="The Evil Rabbit Jumped over the Fence"
     >

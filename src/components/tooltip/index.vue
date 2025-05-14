@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import type { ComponentVariant } from '../../types/components'
-import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
+import { throttle } from '../../utils/fn'
 
 interface Props {
-  delay?: number
   width?: string
   content?: string
+  showDelay?: number
+  hideDelay?: number
   disabled?: boolean
   enterable?: boolean
   showArrow?: boolean
@@ -21,7 +23,8 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    delay: 200,
+    showDelay: 200,
+    hideDelay: 100,
     width: 'auto',
     position: 'top',
     enterable: true,
@@ -44,7 +47,7 @@ const triggerRef = shallowRef<HTMLElement>()
 const tooltipStyle = shallowRef<{
   left: string
   top: string
-}>()
+}>({})
 
 const computedTooltipStyles = computed(() => {
   const bgColor = VARIANTS[props.variant] || VARIANTS.primary
@@ -60,6 +63,8 @@ const computedTooltipStyles = computed(() => {
 
 let isMouseInTooltip = false
 let isMouseInTrigger = false
+
+const throttledCalculatePosition = throttle(calculatePosition, 1000 / 60) // 16.6667
 
 function calculatePosition() {
   if (!triggerRef.value || !tooltipRef.value)
@@ -91,16 +96,19 @@ function calculatePosition() {
       break
   }
 
-  // 边界检查，确保tooltip在视窗内
+  // ensure tooltip is in viewport
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
 
   if (left < 0)
     left = 0
+
   if (top < 0)
     top = 0
+
   if (left + tooltipRect.width > viewportWidth)
     left = viewportWidth - tooltipRect.width
+
   if (top + tooltipRect.height > viewportHeight)
     top = viewportHeight - tooltipRect.height
 
@@ -113,7 +121,78 @@ function calculatePosition() {
 let showTimer: number | null = null
 let hideTimer: number | null = null
 
-// 显示tooltip
+let documentClickHandler: ((e: MouseEvent) => void) | null = null
+
+function setupTrigger() {
+  if (!triggerRef.value)
+    return
+
+  const trigger = props.trigger
+
+  if (trigger === 'hover') {
+    triggerRef.value.addEventListener('mouseenter', showTooltip)
+    triggerRef.value.addEventListener('mouseleave', hideTooltip)
+  }
+  else if (trigger === 'focus') {
+    triggerRef.value.addEventListener('focus', showTooltip)
+    triggerRef.value.addEventListener('blur', hideTooltip)
+  }
+  else if (trigger === 'click') {
+    triggerRef.value.addEventListener('click', () => {
+      if (isVisible.value) {
+        hideTooltip()
+      }
+      else {
+        showTooltip()
+      }
+    })
+
+    // 保存引用以便清理
+    documentClickHandler = (e: MouseEvent) => {
+      if (isVisible.value && triggerRef.value && !triggerRef.value.contains(e.target as Node)) {
+        hideTooltip()
+      }
+    }
+
+    document.addEventListener('click', documentClickHandler)
+  }
+}
+
+onUnmounted(() => {
+  if (triggerRef.value) {
+    const trigger = props.trigger
+    if (trigger === 'hover') {
+      triggerRef.value.removeEventListener('mouseenter', showTooltip)
+      triggerRef.value.removeEventListener('mouseleave', hideTooltip)
+    }
+    else if (trigger === 'focus') {
+      triggerRef.value.removeEventListener('focus', showTooltip)
+      triggerRef.value.removeEventListener('blur', hideTooltip)
+    }
+    else if (trigger === 'click') {
+      triggerRef.value.removeEventListener('click', showTooltip)
+    }
+  }
+
+  if (documentClickHandler) {
+    document.removeEventListener('click', documentClickHandler)
+  }
+
+  if (tooltipRef.value) {
+    tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
+    tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
+  }
+
+  window.removeEventListener('scroll', throttledCalculatePosition, true)
+  window.removeEventListener('resize', throttledCalculatePosition)
+
+  if (showTimer)
+    clearTimeout(showTimer)
+
+  if (hideTimer)
+    clearTimeout(hideTimer)
+})
+
 function showTooltip() {
   if (props.disabled)
     return
@@ -128,22 +207,20 @@ function showTooltip() {
   showTimer = window.setTimeout(() => {
     isVisible.value = true
     nextTick(() => {
-      calculatePosition()
-      // 监听滚动和resize事件以更新位置
-      window.addEventListener('scroll', calculatePosition, true)
-      window.addEventListener('resize', calculatePosition)
+      calculatePosition() // first time calculate without throttle
 
-      // 如果enterable为true，为tooltip添加鼠标事件
+      window.addEventListener('scroll', throttledCalculatePosition, true)
+      window.addEventListener('resize', throttledCalculatePosition)
+
       if (props.enterable && tooltipRef.value && props.trigger === 'hover') {
-        tooltipRef.value.addEventListener('mouseenter', handleTooltipMouseEnter)
-        tooltipRef.value.addEventListener('mouseleave', handleTooltipMouseLeave)
+        tooltipRef.value.addEventListener('mouseenter', onTooltipMouseEnter)
+        tooltipRef.value.addEventListener('mouseleave', onTooltipMouseLeave)
       }
     })
-  }, props.delay)
+  }, props.showDelay)
 }
 
-// 处理鼠标进入tooltip
-function handleTooltipMouseEnter() {
+function onTooltipMouseEnter() {
   isMouseInTooltip = true
   if (hideTimer) {
     clearTimeout(hideTimer)
@@ -151,14 +228,12 @@ function handleTooltipMouseEnter() {
   }
 }
 
-// 处理鼠标离开tooltip
-function handleTooltipMouseLeave() {
+function onTooltipMouseLeave() {
   isMouseInTooltip = false
   if (!isMouseInTrigger)
     hideTooltip()
 }
 
-// 隐藏tooltip
 function hideTooltip() {
   if (showTimer) {
     clearTimeout(showTimer)
@@ -176,78 +251,19 @@ function hideTooltip() {
     isMouseInTooltip = false
 
     // 移除事件监听
-    window.removeEventListener('scroll', calculatePosition, true)
-    window.removeEventListener('resize', calculatePosition)
+    window.removeEventListener('scroll', throttledCalculatePosition, true)
+    window.removeEventListener('resize', throttledCalculatePosition)
 
     // 移除tooltip鼠标事件
     if (tooltipRef.value) {
-      tooltipRef.value.removeEventListener('mouseenter', handleTooltipMouseEnter)
-      tooltipRef.value.removeEventListener('mouseleave', handleTooltipMouseLeave)
+      tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
+      tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
     }
-  }, 100)
+  }, props.hideDelay)
 }
 
-// 设置事件监听
-function setupTrigger() {
-  if (!triggerRef.value)
-    return
-
-  const trigger = props.trigger
-
-  if (trigger === 'hover') {
-    triggerRef.value.addEventListener('mouseenter', showTooltip)
-    triggerRef.value.addEventListener('mouseleave', hideTooltip)
-  }
-  else if (trigger === 'click') {
-    triggerRef.value.addEventListener('click', () => {
-      if (isVisible.value) {
-        hideTooltip()
-      }
-      else {
-        showTooltip()
-      }
-    })
-    // 点击外部区域关闭tooltip
-    document.addEventListener('click', (e) => {
-      if (isVisible.value && triggerRef.value && !triggerRef.value.contains(e.target as Node)) {
-        hideTooltip()
-      }
-    })
-  }
-  else if (trigger === 'focus') {
-    triggerRef.value.addEventListener('focus', showTooltip)
-    triggerRef.value.addEventListener('blur', hideTooltip)
-  }
-}
-
-// 组件挂载完成后设置事件监听
 onMounted(() => {
   setupTrigger()
-})
-
-// 组件卸载前清除事件监听和定时器
-onUnmounted(() => {
-  if (triggerRef.value) {
-    const trigger = props.trigger
-    if (trigger === 'hover') {
-      triggerRef.value.removeEventListener('mouseenter', showTooltip)
-      triggerRef.value.removeEventListener('mouseleave', hideTooltip)
-    }
-  }
-
-  if (tooltipRef.value) {
-    tooltipRef.value.removeEventListener('mouseenter', handleTooltipMouseEnter)
-    tooltipRef.value.removeEventListener('mouseleave', handleTooltipMouseLeave)
-  }
-
-  window.removeEventListener('scroll', calculatePosition, true)
-  window.removeEventListener('resize', calculatePosition)
-
-  if (showTimer)
-    clearTimeout(showTimer)
-
-  if (hideTimer)
-    clearTimeout(hideTimer)
 })
 </script>
 
