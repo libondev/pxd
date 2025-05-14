@@ -8,10 +8,6 @@
     "name": "avatar"
   },
   {
-    "camelized": "AvatarGroup",
-    "name": "avatar-group"
-  },
-  {
     "camelized": "Badge",
     "name": "badge"
   },
@@ -22,10 +18,6 @@
   {
     "camelized": "Checkbox",
     "name": "checkbox"
-  },
-  {
-    "camelized": "CheckboxGroup",
-    "name": "checkbox-group"
   },
   {
     "camelized": "ConfigProvider",
@@ -78,10 +70,6 @@
   {
     "camelized": "Radio",
     "name": "radio"
-  },
-  {
-    "camelized": "RadioGroup",
-    "name": "radio-group"
   },
   {
     "camelized": "Scrollable",

@@ -7,10 +7,10 @@ import { pascalize } from './utils.js'
 
 const isNeedStageChange = process.argv.includes('--stage')
 
-const components = globSync('src/components/**/*.vue')
-const matchRegex = /src\/components\/(.*?)\/index.vue/
-
 function updateComponentsIndex() {
+  const components = globSync('src/components/**/*.vue')
+  const matchRegex = /src\/components\/(.*?)\/index.vue/
+
   const _components = components.map((file) => {
     const [,name] = file.match(matchRegex) || []
 
@@ -67,6 +67,9 @@ function updateAppVersion() {
 }
 
 function updateDocsComponents() {
+  const components = globSync('packages/docs/src/pages/components/**/*.md')
+  const matchRegex = /packages\/docs\/src\/pages\/components\/(.*?)\.md/
+
   const jsonContent = components.reduce((acc, cur) => {
     const [, name] = cur.match(matchRegex) || []
 
