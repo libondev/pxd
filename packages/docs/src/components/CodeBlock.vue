@@ -7,7 +7,7 @@
       <slot />
     </div>
 
-    <details class="code-block group/code-block">
+    <details class="group/code-block">
       <summary
         class="flex items-center px-4 h-11 border-t text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open/code-block:rounded-none"
       >
@@ -16,7 +16,7 @@
         <span
           data-open="Show"
           data-close="Hide"
-          class="before:content-[attr(data-open)] group-open/code-block:before:content-[attr(data-close)] text-[13px]"
+          class="before:content-[attr(data-open)] group-open/code-block:before:content-[attr(data-close)] text-sm"
         > code</span>
       </summary>
 

@@ -136,11 +136,6 @@ const {
     text-underline-offset: 0.1em;
   }
 
-  pre.shiki {
-    padding: 1.25em 3.25em;
-    line-height: 1.25;
-  }
-
   .markdown-body > pre:not(.shiki) {
     padding-left: 1.25em;
     margin-block: 1em;
@@ -150,6 +145,12 @@ const {
       white-space: pre-wrap;
       word-break: break-word;
     }
+  }
+
+  pre.shiki {
+    width: max-content;
+    padding: 1.25em 1.5em 1.25em 3.25em;
+    line-height: 1.25;
   }
 
   pre code {
