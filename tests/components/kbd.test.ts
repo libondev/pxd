@@ -17,8 +17,8 @@ describe('kbd', () => {
 
   it('custom label', async () => {
     const wrapper = mount(Kbd, {
-      props: {
-        label: 'custom label',
+      slots: {
+        default: 'custom label',
       },
     })
 
