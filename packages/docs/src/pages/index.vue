@@ -46,7 +46,7 @@ import { version } from 'pxd'
 
     <hr class="mx-12 mb-8 sm:mb-20">
 
-    <section class="py-20 flex flex-wrap gap-4 cursor-default">
+    <section class="py-20 mb-8 flex flex-wrap gap-4 cursor-default">
       <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
         <h3 class="font-medium mb-1.5">
           Consistent experience
