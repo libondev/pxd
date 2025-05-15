@@ -4,6 +4,7 @@ import Avatar from '../avatar/index.vue'
 
 interface AvatarGroupOptions {
   src?: string
+  alt?: string
   loading?: boolean
 }
 
@@ -38,6 +39,7 @@ provide('groupSize', props.size)
       :key="index"
       :size="size"
       :src="option.src"
+      :alt="option.alt"
       :loading="option.loading"
       class="[&:nth-child(n+2)]:-ml-3"
     />

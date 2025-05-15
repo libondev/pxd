@@ -4,6 +4,7 @@ import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   src?: string
+  alt?: string
   size?: number | string
   loading?: boolean
 }
@@ -63,7 +64,7 @@ defineExpose({
       <img
         v-if="!computedLoading"
         :src="src"
-        alt="avatar"
+        :alt="alt"
         loading="lazy"
         decoding="async"
         aria-hidden="true"
