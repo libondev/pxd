@@ -42,7 +42,7 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
-const randomId = getUniqueId()
+const uniqueId = getUniqueId()
 
 const SIZES = {
   xs: 'text-xs',
@@ -89,14 +89,14 @@ function onInputChange(event: Event) {
 </script>
 
 <template>
-  <label class="pxd-textarea w-full max-w-full" :for="randomId">
+  <label class="pxd-textarea w-full max-w-full" :for="uniqueId">
     <div v-if="label || $slots.label" class="pxd-textarea--label text-sm text-gray-900 mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
 
     <div :class="computedClasses">
       <textarea
-        :id="randomId"
+        :id="uniqueId"
         v-model="modelValue"
         class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none"
         :readonly="readonly"

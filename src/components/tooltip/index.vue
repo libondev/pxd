@@ -3,6 +3,7 @@ import type { ComponentVariant } from '../../types/components'
 import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
 import { useResizeObserver } from '../../composables/useResizeObserver'
+import { isTouchDevice } from '../../utils/device'
 import { throttle, THROTTLE_GAP } from '../../utils/fn'
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   disabled?: boolean
   enterable?: boolean
   showArrow?: boolean
+  desktopOnly?: boolean
   variant?: ComponentVariant
   trigger?: 'hover' | 'click' | 'focus'
   position?: 'top' | 'right' | 'bottom' | 'left'
@@ -52,6 +54,10 @@ const isVisible = shallowRef(false)
 const tooltipRef = shallowRef<HTMLElement>()
 const triggerRef = shallowRef<HTMLElement>()
 const tooltipStyle = shallowRef({} as TooltipStyle)
+
+const computedDisabled = computed(() => {
+  return props.disabled || (props.desktopOnly && isTouchDevice())
+})
 
 const throttledCalculatePosition = throttle(calculatePosition, THROTTLE_GAP)
 
@@ -168,7 +174,7 @@ function setupTrigger() {
 }
 
 function showTooltip() {
-  if (props.disabled) {
+  if (computedDisabled.value) {
     return
   }
 

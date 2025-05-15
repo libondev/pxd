@@ -27,7 +27,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const randomId = getUniqueId()
+const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
 const radioGroupName = useRandomValue('radioGroupName')
@@ -68,10 +68,10 @@ const computedInnerClasses = computed(() => {
   <label
     class="pxd-radio group/radio inline-flex items-center"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
-    :for="randomId"
+    :for="uniqueId"
   >
     <input
-      :id="randomId"
+      :id="uniqueId"
       v-model="modelValue"
       type="radio"
       :value="value"

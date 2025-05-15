@@ -48,7 +48,7 @@ const emits = defineEmits<{
   'change': [Event]
 }>()
 
-const randomId = getUniqueId()
+const uniqueId = getUniqueId()
 
 const SIZES = {
   xs: 'h-6 text-xs',
@@ -99,7 +99,7 @@ function togglePasswordType() {
 </script>
 
 <template>
-  <label class="pxd-input w-full max-w-full" :for="randomId">
+  <label class="pxd-input w-full max-w-full" :for="uniqueId">
     <div v-if="label || $slots.label" class="pxd-input--label text-sm text-gray-900 mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
@@ -115,7 +115,7 @@ function togglePasswordType() {
       </div>
 
       <input
-        :id="randomId"
+        :id="uniqueId"
         v-model="modelValue"
         class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
         :class="{ 'pr-10': password }"

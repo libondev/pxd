@@ -1,20 +1,15 @@
 <script setup lang="ts">
+import type { ComponentOptions } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import Checkbox from '../checkbox/index.vue'
 import Stack from '../stack/index.vue'
 
-interface CheckboxGroupOptions {
-  label?: string | number
-  value: string | number
-  disabled?: boolean
-}
-
 interface Props {
   disabled?: boolean
   required?: boolean
   modelValue?: (string | number)[]
-  options?: CheckboxGroupOptions[]
+  options?: ComponentOptions[]
 }
 
 defineOptions({

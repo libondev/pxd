@@ -46,7 +46,7 @@ const SIZES = {
   lg: 'w-11 h-6',
 }
 
-const randomId = getUniqueId()
+const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
@@ -67,10 +67,10 @@ function onCheckboxChange(e: Event) {
       '--abc': activeBgColor,
       '--ibc': inactiveBgColor,
     }"
-    :for="randomId"
+    :for="uniqueId"
   >
     <input
-      :id="randomId"
+      :id="uniqueId"
       type="checkbox"
       :checked="isChecked"
       class="smallest peer"

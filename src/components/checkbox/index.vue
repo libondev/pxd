@@ -34,7 +34,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const randomId = getUniqueId()
+const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
 const checkboxGroupProps = inject('checkboxGroupProps', {
@@ -115,10 +115,10 @@ defineExpose({
   <label
     class="pxd-checkbox inline-flex items-center group/checkbox"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
-    :for="randomId"
+    :for="uniqueId"
   >
     <input
-      :id="randomId"
+      :id="uniqueId"
       :value="value"
       type="checkbox"
       class="smallest peer"
