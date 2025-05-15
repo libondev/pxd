@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComponentLabel } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
@@ -6,7 +7,7 @@ import { useRandomValue } from '../../composables/useRandomValueContext'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
-  label?: string | number
+  label?: ComponentLabel
   value: string | number
   required?: boolean
   disabled?: boolean
@@ -36,7 +37,7 @@ const radioGroupProps = inject('radioGroupProps', {
   required: false,
 })
 
-const isChecked = computed(() => props.modelValue === props.value)
+const isChecked = computed(() => modelValue.value === props.value)
 const computedDisabled = computed(() => props.disabled || radioGroupProps.disabled)
 const computedRequired = computed(() => props.required || radioGroupProps.required)
 
@@ -66,6 +67,7 @@ const computedInnerClasses = computed(() => {
 
 <template>
   <label
+    :aria-checked="isChecked"
     class="pxd-radio group/radio inline-flex items-center"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="uniqueId"
@@ -76,6 +78,7 @@ const computedInnerClasses = computed(() => {
       type="radio"
       :value="value"
       class="smallest peer"
+      :checked="isChecked"
       :name="radioGroupName"
       :required="computedRequired"
       :disabled="computedDisabled"

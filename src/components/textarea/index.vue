@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentSizeWithXs } from '../../types/components'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
@@ -13,7 +13,7 @@ interface Props {
   label?: string
   readonly?: boolean
   disabled?: boolean
-  modelValue?: string | number | readonly string[] | null
+  modelValue?: ComponentLabel
   placeholder?: string
   minlength?: number | string
   maxlength?: number | string

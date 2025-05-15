@@ -10,6 +10,7 @@ export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type ComponentBreakpoint = Record<ComponentBreakpointKeys, string>
 
 export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterLink' | VNode
+export type ComponentLabel = string | number | readonly string[] | null
 
 export interface ButtonProps {
   as?: ComponentAs
@@ -37,4 +38,10 @@ export interface ErrorType {
   action?: string
   link?: string
   label?: string
+}
+
+export interface ComponentOptions {
+  label: ComponentLabel
+  value: string | number
+  disabled?: boolean
 }

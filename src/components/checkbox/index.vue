@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComponentLabel } from '../../types/components'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { twMerge } from 'tailwind-merge'
@@ -9,7 +10,7 @@ import { getUniqueId } from '../../utils/uid'
 type ValueType = string | number | boolean
 
 interface Props {
-  label?: string | number
+  label?: ComponentLabel
   value?: ValueType
   disabled?: boolean
   required?: boolean

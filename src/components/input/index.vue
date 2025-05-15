@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSizeWithXs } from '../../types/components'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { twMerge } from 'tailwind-merge'
@@ -18,7 +18,7 @@ interface Props {
   password?: boolean
   minlength?: number | string
   maxlength?: number | string
-  modelValue?: string | number | readonly string[] | null
+  modelValue?: ComponentLabel
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
