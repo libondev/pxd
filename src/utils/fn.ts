@@ -1,3 +1,20 @@
+export const THROTTLE_GAP = 1000 / 90
+
+export function debounce(fn: (...args: any[]) => void, delay: number) {
+  let timer: number | null = null
+
+  return function (this: any, ...args: any[]) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+
+    timer = window.setTimeout(() => {
+      fn.apply(this, args)
+      timer = null
+    }, delay)
+  }
+}
+
 export function throttle(fn: (...args: any[]) => void, delay: number) {
   let timer: number | null = null
   let lastTime = 0

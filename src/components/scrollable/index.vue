@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useResizeObserver'
+import { THROTTLE_GAP } from '../../utils/fn'
 
 interface Props {
   size?: number
@@ -37,6 +38,7 @@ const PADDING = 4
 const DOUBLE_PADDING = PADDING * 2
 const DIFF_THRESHOLD = 1
 
+let scrollThrottleTimer: number | null = null
 const scrollContainer = shallowRef<HTMLElement>(null!)
 
 const faderDirections = ref({
@@ -173,14 +175,22 @@ function updateScrollbarInfo() {
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
 
-  if (props.fader) {
-    updateDirectionFader()
+  if (scrollThrottleTimer) {
+    return
   }
 
-  // 只有在非拖拽状态下才更新滚动条位置
-  if (props.scrollbar && !dragState.value.isDragging) {
-    updateScrollbarMetrics()
-  }
+  scrollThrottleTimer = window.setTimeout(() => {
+    if (props.fader) {
+      updateDirectionFader()
+    }
+
+    // 只有在非拖拽状态下才更新滚动条位置
+    if (props.scrollbar && !dragState.value.isDragging) {
+      updateScrollbarMetrics()
+    }
+
+    scrollThrottleTimer = null
+  }, THROTTLE_GAP)
 }
 
 function startDragVertical(e: MouseEvent) {
@@ -224,7 +234,7 @@ function startDragHorizontal(e: MouseEvent) {
     startClientPos: e.clientX,
     startScrollPos: scrollInfo.value.horizontalThumbLeft,
     containerSize: wrapper.clientWidth,
-    contentSize: wrapper.scrollHeight,
+    contentSize: wrapper.scrollWidth,
     thumbSize: scrollInfo.value.horizontalThumbWidth,
   }
 
@@ -280,22 +290,19 @@ function onDragMove(e: MouseEvent) {
 // 结束拖拽
 function endDrag() {
   dragState.value.isDragging = false
+  dragState.value.direction = null // 重置方向
   document.removeEventListener('mousemove', onDragMove)
 
   // 移除禁止选择类
   document.body.classList.remove('select-none')
 
   // 更新滚动条指标
-  updateScrollbarMetrics()
+  requestAnimationFrame(updateScrollbarMetrics) // 使用 requestAnimationFrame 避免与滚动事件计算冲突
 }
 
 if (props.scrollbar || props.fader) {
   useResizeObserver(scrollContainer, () => {
     updateScrollbarInfo()
-
-    if (!props.staticContent) {
-      setTimeout(updateScrollbarInfo, 1000)
-    }
   })
 }
 
@@ -310,10 +317,10 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   scrollContainer.value.removeEventListener('scroll', onContainerScroll)
-
   window.removeEventListener('resize', updateScrollbarMetrics)
   document.removeEventListener('mousemove', onDragMove)
   document.removeEventListener('mouseup', endDrag)
+  document.body.classList.remove('select-none')
 })
 
 defineExpose({

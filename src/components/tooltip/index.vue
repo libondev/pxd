@@ -3,7 +3,7 @@ import type { ComponentVariant } from '../../types/components'
 import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
 import { useResizeObserver } from '../../composables/useResizeObserver'
-import { throttle } from '../../utils/fn'
+import { throttle, THROTTLE_GAP } from '../../utils/fn'
 
 interface Props {
   width?: string
@@ -53,7 +53,7 @@ const tooltipRef = shallowRef<HTMLElement>()
 const triggerRef = shallowRef<HTMLElement>()
 const tooltipStyle = shallowRef({} as TooltipStyle)
 
-const throttledCalculatePosition = throttle(calculatePosition, 1000 / 60) // 16.6667
+const throttledCalculatePosition = throttle(calculatePosition, THROTTLE_GAP)
 
 const resizeObserver = useResizeObserver(null, throttledCalculatePosition)
 const intersectionObserver = useIntersectionObserver(null, throttledCalculatePosition)
