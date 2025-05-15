@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentVariant } from '../../types/components'
 import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
+import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
+import { useResizeObserver } from '../../composables/useResizeObserver'
 import { throttle } from '../../utils/fn'
 
 interface Props {
@@ -51,6 +53,11 @@ const tooltipRef = shallowRef<HTMLElement>()
 const triggerRef = shallowRef<HTMLElement>()
 const tooltipStyle = shallowRef({} as TooltipStyle)
 
+const throttledCalculatePosition = throttle(calculatePosition, 1000 / 60) // 16.6667
+
+const resizeObserver = useResizeObserver(null, throttledCalculatePosition)
+const intersectionObserver = useIntersectionObserver(null, throttledCalculatePosition)
+
 const computedTooltipStyles = computed(() => {
   const bgColor = VARIANTS[props.variant] || VARIANTS.primary
 
@@ -65,8 +72,6 @@ const computedTooltipStyles = computed(() => {
 
 let isMouseInTooltip = false
 let isMouseInTrigger = false
-
-const throttledCalculatePosition = throttle(calculatePosition, 1000 / 60) // 16.6667
 
 function calculatePosition() {
   if (!triggerRef.value || !tooltipRef.value)
@@ -172,8 +177,8 @@ function showTooltip() {
     nextTick(() => {
       calculatePosition() // first time calculate without throttle
 
-      window.addEventListener('scroll', throttledCalculatePosition, true)
-      window.addEventListener('resize', throttledCalculatePosition)
+      resizeObserver.observer?.observe(triggerRef.value!)
+      intersectionObserver.observer?.observe(triggerRef.value!)
 
       if (props.enterable && tooltipRef.value && props.trigger === 'hover') {
         tooltipRef.value.addEventListener('mouseenter', onTooltipMouseEnter)
@@ -181,20 +186,6 @@ function showTooltip() {
       }
     })
   }, props.showDelay)
-}
-
-function onTooltipMouseEnter() {
-  isMouseInTooltip = true
-  if (hideTimer) {
-    clearTimeout(hideTimer)
-    hideTimer = null
-  }
-}
-
-function onTooltipMouseLeave() {
-  isMouseInTooltip = false
-  if (!isMouseInTrigger)
-    hideTooltip()
 }
 
 function hideTooltip() {
@@ -214,8 +205,8 @@ function hideTooltip() {
     isMouseInTooltip = false
 
     // 移除事件监听
-    window.removeEventListener('scroll', throttledCalculatePosition, true)
-    window.removeEventListener('resize', throttledCalculatePosition)
+    resizeObserver.observer?.unobserve(triggerRef.value!)
+    intersectionObserver.observer?.unobserve(triggerRef.value!)
 
     // 移除tooltip鼠标事件
     if (tooltipRef.value) {
@@ -223,6 +214,22 @@ function hideTooltip() {
       tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
     }
   }, props.hideDelay)
+}
+
+function onTooltipMouseEnter() {
+  isMouseInTooltip = true
+  if (hideTimer) {
+    clearTimeout(hideTimer)
+    hideTimer = null
+  }
+}
+
+function onTooltipMouseLeave() {
+  isMouseInTooltip = false
+
+  if (!isMouseInTrigger) {
+    hideTooltip()
+  }
 }
 
 function unbindEvents() {
