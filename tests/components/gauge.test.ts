@@ -13,7 +13,7 @@ describe('gauge', () => {
 
     expect(wrapper.find('svg').exists()).toBe(true)
     expect(wrapper.findAll('circle').length).toBe(2)
-    expect(wrapper.find('[data-pxd-gauge-value]').text()).toBe('50')
+    expect(wrapper.find('.pxd-gauge--value').text()).toBe('50')
 
     wrapper.unmount()
   })
