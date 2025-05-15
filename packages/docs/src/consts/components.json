@@ -96,6 +96,10 @@
     "name": "status-dot"
   },
   {
+    "camelized": "Switch",
+    "name": "switch"
+  },
+  {
     "camelized": "Textarea",
     "name": "textarea"
   },

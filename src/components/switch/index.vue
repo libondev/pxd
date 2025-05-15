@@ -1,0 +1,77 @@
+<script lang="ts" setup>
+import type { ComputedRef } from 'vue'
+import type { ComponentLabel } from '../../types/components'
+import { twMerge } from 'tailwind-merge'
+import { computed, inject } from 'vue'
+import { useRandomValue } from '../../composables/useRandomValueContext'
+import { getUniqueId } from '../../utils/uid'
+
+interface Props {
+  label?: ComponentLabel
+  value: string | number
+  disabled?: boolean
+  required?: boolean
+}
+
+defineOptions({
+  name: 'PSwitch',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
+})
+
+const props = defineProps<Props>()
+
+const uniqueId = getUniqueId()
+const modelValue = inject<ComputedRef<Props['value']>>('switchGroupModelValue')!
+
+const switchGroupName = useRandomValue('switchGroupName')
+const switchGroupProps = inject('switchGroupProps', {
+  disabled: false,
+  required: false,
+})
+
+const isChecked = computed(() => modelValue.value === props.value)
+const computedDisabled = computed(() => props.disabled || switchGroupProps.disabled)
+const computedRequired = computed(() => props.required || switchGroupProps.required)
+
+const computedClasses = computed(() => {
+  const basic = [
+    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm',
+    'font-medium text-sm select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100',
+  ]
+
+  if (!computedDisabled.value) {
+    basic.push('peer-checked:text-foreground')
+  }
+
+  return twMerge(basic)
+})
+</script>
+
+<template>
+  <label
+    :aria-checked="isChecked"
+    class="pxd-switch flex-1 cursor-pointer"
+    :for="uniqueId"
+  >
+    <input
+      :id="uniqueId"
+      v-model="modelValue"
+      type="radio"
+      :value="value"
+      class="smallest peer"
+      :checked="isChecked"
+      :name="switchGroupName"
+      :disabled="computedDisabled"
+      :required="computedRequired"
+    >
+
+    <div :class="computedClasses">
+      <slot>
+        {{ label }}
+      </slot>
+    </div>
+  </label>
+</template>
