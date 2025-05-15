@@ -2,7 +2,7 @@ import type { MaybeRef } from 'vue'
 import { onBeforeUnmount, unref, watch } from 'vue'
 
 export function useIntersectionObserver(
-  target: MaybeRef<HTMLElement | null>,
+  target: MaybeRef<HTMLElement | null | undefined>,
   callback: (entries: IntersectionObserverEntry) => void,
 ) {
   let observer: IntersectionObserver | undefined

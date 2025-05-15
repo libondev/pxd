@@ -2,7 +2,7 @@ import type { MaybeRef } from 'vue'
 import { onBeforeUnmount, unref, watch } from 'vue'
 
 export function useResizeObserver(
-  target: MaybeRef<HTMLElement | null>,
+  target: MaybeRef<HTMLElement | null | undefined>,
   callback: (entries: ResizeObserverEntry) => void,
 ) {
   let observer: ResizeObserver | undefined

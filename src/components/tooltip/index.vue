@@ -61,8 +61,8 @@ const computedDisabled = computed(() => {
 
 const throttledCalculatePosition = throttle(calculatePosition, THROTTLE_GAP)
 
-const resizeObserver = useResizeObserver(null, throttledCalculatePosition)
-const intersectionObserver = useIntersectionObserver(null, throttledCalculatePosition)
+const resizeObserver = useResizeObserver(triggerRef, throttledCalculatePosition)
+const intersectionObserver = useIntersectionObserver(triggerRef, throttledCalculatePosition)
 
 const computedTooltipStyles = computed(() => {
   const bgColor = VARIANTS[props.variant] || VARIANTS.primary
@@ -76,6 +76,8 @@ const computedTooltipStyles = computed(() => {
   }
 })
 
+let lastMouseX = 0
+let lastMouseY = 0
 let isMouseInTooltip = false
 let isMouseInTrigger = false
 
@@ -188,10 +190,14 @@ function showTooltip() {
   showTimer = window.setTimeout(() => {
     isVisible.value = true
     nextTick(() => {
-      calculatePosition() // first time calculate without throttle
+      calculatePosition() // 首次计算位置
 
+      // 同时使用两种方式
       resizeObserver.observer?.observe(triggerRef.value!)
       intersectionObserver.observer?.observe(triggerRef.value!)
+
+      // 添加滚动监听
+      window.addEventListener('scroll', handleScroll, true)
 
       if (props.enterable && tooltipRef.value && props.trigger === 'hover') {
         tooltipRef.value.addEventListener('mouseenter', onTooltipMouseEnter)
@@ -227,11 +233,18 @@ function hideTooltip() {
       tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
       tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
     }
+
+    // 移除滚动监听
+    window.removeEventListener('scroll', handleScroll, true)
   }, props.hideDelay)
 }
 
-function onTooltipMouseEnter() {
+function onTooltipMouseEnter(ev: MouseEvent) {
   isMouseInTooltip = true
+
+  lastMouseX = ev.clientX
+  lastMouseY = ev.clientY
+
   if (hideTimer) {
     clearTimeout(hideTimer)
     hideTimer = null
@@ -269,7 +282,7 @@ function unbindEvents() {
     tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
   }
 
-  window.removeEventListener('scroll', throttledCalculatePosition, true)
+  window.removeEventListener('scroll', handleScroll, true)
   window.removeEventListener('resize', throttledCalculatePosition)
 }
 
@@ -282,6 +295,38 @@ function cleanupTimer() {
   if (hideTimer) {
     clearTimeout(hideTimer)
     hideTimer = null
+  }
+}
+
+function handleScroll() {
+  // 先执行原来的位置计算
+  throttledCalculatePosition()
+
+  // 检查鼠标是否还在trigger或tooltip元素上
+  if (isVisible.value) {
+    const mouseX = lastMouseX || 0
+    const mouseY = lastMouseY || 0
+
+    // 检查鼠标是否在trigger元素上
+    let inTrigger = false
+    if (triggerRef.value) {
+      const rect = triggerRef.value.getBoundingClientRect()
+      inTrigger = mouseX >= rect.left && mouseX <= rect.right
+        && mouseY >= rect.top && mouseY <= rect.bottom
+    }
+
+    // 检查鼠标是否在tooltip元素上
+    let inTooltip = false
+    if (tooltipRef.value) {
+      const rect = tooltipRef.value.getBoundingClientRect()
+      inTooltip = mouseX >= rect.left && mouseX <= rect.right
+        && mouseY >= rect.top && mouseY <= rect.bottom
+    }
+
+    // 如果鼠标既不在trigger上也不在tooltip上，则隐藏tooltip
+    if (!inTrigger && !(props.enterable && inTooltip)) {
+      hideTooltip()
+    }
   }
 }
 

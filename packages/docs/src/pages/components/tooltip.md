@@ -196,7 +196,11 @@ A set of headings, vertically stacked, that each reveal an related section of co
 <template>
   <PStack align="center" gap="8">
     <PTooltip content="The Evil Rabbit Jumped over the Fence" :show-arrow="false">
-      No arrow
+      <PButton>No arrow</PButton>
+    </PTooltip>
+
+    <PTooltip content="The Evil Rabbit Jumped over the Fence" desktop-only>
+      <PButton>Only show on desktop.</PButton>
     </PTooltip>
   </PStack>
 </template>
