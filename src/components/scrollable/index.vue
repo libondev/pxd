@@ -83,8 +83,9 @@ const horizontalThumbStyle = computed(() => ({
 // 滚动时计算是否展示渐变
 function updateDirectionFader() {
   const wrapper = scrollContainer.value
-  if (!wrapper || !props.fader)
+  if (!wrapper || !props.fader) {
     return
+  }
 
   const {
     scrollTop,
@@ -111,8 +112,9 @@ function updateDirectionFader() {
 
 function updateScrollbarMetrics() {
   const wrapper = scrollContainer.value
-  if (!wrapper || !props.scrollbar)
+  if (!wrapper || !props.scrollbar) {
     return
+  }
 
   const {
     scrollTop,
@@ -186,8 +188,9 @@ function startDragVertical(e: MouseEvent) {
   e.stopPropagation()
 
   const wrapper = scrollContainer.value
-  if (!wrapper)
+  if (!wrapper) {
     return
+  }
 
   dragState.value = {
     isDragging: true,
@@ -211,8 +214,9 @@ function startDragHorizontal(e: MouseEvent) {
   e.stopPropagation()
 
   const wrapper = scrollContainer.value
-  if (!wrapper)
+  if (!wrapper) {
     return
+  }
 
   dragState.value = {
     isDragging: true,
@@ -232,12 +236,14 @@ function startDragHorizontal(e: MouseEvent) {
 }
 
 function onDragMove(e: MouseEvent) {
-  if (!dragState.value.isDragging || !dragState.value.direction)
+  if (!dragState.value.isDragging || !dragState.value.direction) {
     return
+  }
 
   const wrapper = scrollContainer.value
-  if (!wrapper)
+  if (!wrapper) {
     return
+  }
 
   const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState.value
 

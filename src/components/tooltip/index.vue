@@ -74,8 +74,9 @@ let isMouseInTooltip = false
 let isMouseInTrigger = false
 
 function calculatePosition() {
-  if (!triggerRef.value || !tooltipRef.value)
+  if (!triggerRef.value || !tooltipRef.value) {
     return
+  }
 
   const triggerRect = triggerRef.value.getBoundingClientRect()
   const tooltipRect = tooltipRef.value.getBoundingClientRect()
@@ -107,17 +108,21 @@ function calculatePosition() {
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
 
-  if (left < 0)
+  if (left < 0) {
     left = 0
+  }
 
-  if (top < 0)
+  if (top < 0) {
     top = 0
+  }
 
-  if (left + tooltipRect.width > viewportWidth)
+  if (left + tooltipRect.width > viewportWidth) {
     left = viewportWidth - tooltipRect.width
+  }
 
-  if (top + tooltipRect.height > viewportHeight)
+  if (top + tooltipRect.height > viewportHeight) {
     top = viewportHeight - tooltipRect.height
+  }
 
   tooltipStyle.value = {
     left: `${left}px`,
@@ -131,8 +136,9 @@ let hideTimer: number | null = null
 let documentClickHandler: ((e: MouseEvent) => void) | null = null
 
 function setupTrigger() {
-  if (!triggerRef.value)
+  if (!triggerRef.value) {
     return
+  }
 
   const trigger = props.trigger
 
@@ -162,8 +168,9 @@ function setupTrigger() {
 }
 
 function showTooltip() {
-  if (props.disabled)
+  if (props.disabled) {
     return
+  }
 
   isMouseInTrigger = true
 
@@ -195,8 +202,9 @@ function hideTooltip() {
   }
 
   // 如果enterable为true且鼠标在tooltip内，不隐藏
-  if (props.enterable && isMouseInTooltip && props.trigger === 'hover')
+  if (props.enterable && isMouseInTooltip && props.trigger === 'hover') {
     return
+  }
 
   isMouseInTrigger = false
 

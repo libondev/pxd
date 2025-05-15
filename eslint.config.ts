@@ -13,6 +13,7 @@ export default antfu({
   vue: true,
 
   rules: {
-    'style/brace-style': ['error', '1tbs'],
+    'curly': ['error', 'all'],
+    'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
   },
 })

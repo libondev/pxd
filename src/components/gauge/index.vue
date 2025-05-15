@@ -62,8 +62,9 @@ const progress = computed(() => {
 })
 
 const progressArc = computed(() => {
-  if (progress.value === 0 || progress.value === 100)
+  if (progress.value === 0 || progress.value === 100) {
     return (progress.value / 100) * CIRCUMFERENCE
+  }
 
   const baseArc = (progress.value / 100) * CIRCUMFERENCE
 
@@ -84,11 +85,13 @@ const progressStatus = computed(() => {
 
 // 判断剩余空间是否足够显示轨道
 const shouldShowTrack = computed(() => {
-  if (progressStatus.value.isComplete)
+  if (progressStatus.value.isComplete) {
     return false
+  }
 
-  if (!progressStatus.value.hasProgress)
+  if (!progressStatus.value.hasProgress) {
     return true
+  }
 
   const remainingPercent = 100 - progress.value
   return remainingPercent >= MIN_VISIBLE_TRACK
@@ -96,20 +99,23 @@ const shouldShowTrack = computed(() => {
 
 // 计算轨道的弧长和偏移
 const trackArc = computed(() => {
-  if (!shouldShowTrack.value)
+  if (!shouldShowTrack.value) {
     return 0
+  }
 
-  // 进度为0时，显示完整轨道
-  if (!progressStatus.value.hasProgress)
+  // 进度为 0 时，显示完整轨道
+  if (!progressStatus.value.hasProgress) {
     return CIRCUMFERENCE
+  }
 
   // 否则显示剩余部分，减去两个间隙
   return CIRCUMFERENCE - progressArc.value - GAP_LENGTH * 2
 })
 
 const trackOffset = computed(() => {
-  if (!shouldShowTrack.value || !progressStatus.value.hasProgress)
+  if (!shouldShowTrack.value || !progressStatus.value.hasProgress) {
     return 0
+  }
 
   // 从进度条结束处算起，加上一个间隙
   return -progressArc.value - GAP_LENGTH

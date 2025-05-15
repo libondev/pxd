@@ -106,8 +106,9 @@ const trackStyle = computed(() => {
 })
 
 function updateValueFromPosition(clientX: number) {
-  if (!sliderRef.value || !activeThumb.value)
+  if (!sliderRef.value || !activeThumb.value) {
     return
+  }
 
   const rect = sliderRef.value.getBoundingClientRect()
 
@@ -159,10 +160,11 @@ function updateValueFromPosition(clientX: number) {
   }
 }
 
-// 使用requestAnimationFrame优化视图动画更新
+// 使用 requestAnimationFrame 优化视图动画更新
 function scheduleUpdate() {
-  if (animationFrameId)
+  if (animationFrameId) {
     return
+  }
 
   animationFrameId = requestAnimationFrame(() => {
     animationFrameId = null
@@ -192,8 +194,9 @@ function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
 }
 
 function handleMove(ev: PointerEvent) {
-  if (!isDragging || props.disabled)
+  if (!isDragging || props.disabled) {
     return
+  }
 
   ev.preventDefault()
   lastClientX = ev.clientX
@@ -215,12 +218,14 @@ function endDragging() {
 }
 
 function handleSliderClick(ev: PointerEvent) {
-  if (isDragging || !props.range || props.disabled)
+  if (isDragging || !props.range || props.disabled) {
     return
+  }
 
   const rect = sliderRef.value?.getBoundingClientRect()
-  if (!rect)
+  if (!rect) {
     return
+  }
 
   const clickPosition = (ev.clientX - rect.left) / rect.width
   const startPos = startPercentage.value / 100
