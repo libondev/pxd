@@ -93,12 +93,11 @@ const computedClasses = computed(() => {
 
   basic.push(computedSize.value)
 
-  if (props.fill) {
-    basic.push((VARIANTS[props.variant] || VARIANTS.default)?.fill)
-  }
-  else {
-    basic.push((VARIANTS[props.variant] || VARIANTS.default).classes)
-  }
+  basic.push(
+    props.fill
+      ? (VARIANTS[props.variant] || VARIANTS.default)?.fill
+      : (VARIANTS[props.variant] || VARIANTS.default).classes,
+  )
 
   return twMerge(basic)
 })

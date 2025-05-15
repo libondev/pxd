@@ -69,8 +69,7 @@ const computedInnerClasses = computed(() => {
         ? 'bg-gray-600 border-gray-600'
         : 'bg-gray-1000 border-gray-1000',
     )
-  }
-  else {
+  } else {
     basic.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'

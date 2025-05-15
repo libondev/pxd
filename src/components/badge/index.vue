@@ -68,8 +68,7 @@ const badgeAttrs = computed(() => {
     return {
       to: props.href,
     }
-  }
-  else if (props.as === 'a') {
+  } else if (props.as === 'a') {
     return {
       href: props.href,
     }

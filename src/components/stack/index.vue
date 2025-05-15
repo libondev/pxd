@@ -71,8 +71,7 @@ const classes = computed(() => {
 
   if (['number', 'string'].includes(typeof props.gap)) {
     basic.push('gap-(--gap)')
-  }
-  else if (typeof props.gap === 'object') {
+  } else if (typeof props.gap === 'object') {
     basic.push(
       Object.keys(props.gap).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' '),
     )

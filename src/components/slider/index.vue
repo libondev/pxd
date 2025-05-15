@@ -140,8 +140,7 @@ function updateValueFromPosition(clientX: number) {
         [newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
         activeThumb.value = 'end'
       }
-    }
-    else {
+    } else {
       newValueArray[1] = newValue
 
       // 处理滑块交换
@@ -155,8 +154,7 @@ function updateValueFromPosition(clientX: number) {
     if (valueArray.value[0] !== newValueArray[0] || valueArray.value[1] !== newValueArray[1]) {
       modelValue.value = newValueArray
     }
-  }
-  else if (modelValue.value !== newValue) {
+  } else if (modelValue.value !== newValue) {
     modelValue.value = newValue
   }
 }
@@ -253,8 +251,7 @@ function onWrapperPointerdown(ev: PointerEvent) {
 function initModelValue() {
   if (props.range && !Array.isArray(modelValue.value)) {
     modelValue.value = [props.min, modelValue.value as number]
-  }
-  else if (!props.range && Array.isArray(modelValue.value)) {
+  } else if (!props.range && Array.isArray(modelValue.value)) {
     modelValue.value = modelValue.value[1]
   }
 }

@@ -13,5 +13,6 @@ export default antfu({
   vue: true,
 
   rules: {
+    'style/brace-style': ['error', '1tbs'],
   },
 })

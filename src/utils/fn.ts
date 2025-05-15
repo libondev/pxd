@@ -7,8 +7,7 @@ export function throttle(fn: (...args: any[]) => void, delay: number) {
     if (now - lastTime >= delay) {
       fn.apply(this, args)
       lastTime = now
-    }
-    else if (!timer) {
+    } else if (!timer) {
       timer = window.setTimeout(() => {
         fn.apply(this, args)
         lastTime = Date.now()

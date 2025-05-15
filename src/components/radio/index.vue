@@ -47,20 +47,17 @@ const computedInnerClasses = computed(() => {
   ]
 
   if (isChecked.value) {
-    if (computedDisabled.value) {
-      basic.push('bg-gray-100 border-gray-500 after:bg-gray-500')
-    }
-    else {
-      basic.push('bg-background border-gray-1000 peer-checked:after:scale-100')
-    }
-  }
-  else {
-    if (computedDisabled.value) {
-      basic.push('bg-gray-100 border-gray-500')
-    }
-    else {
-      basic.push('bg-background border-gray-alpha-400 group-hover/radio:bg-gray-200')
-    }
+    basic.push(
+      computedDisabled.value
+        ? 'bg-gray-100 border-gray-500 after:bg-gray-500'
+        : 'bg-background border-gray-1000 peer-checked:after:scale-100',
+    )
+  } else {
+    basic.push(
+      computedDisabled.value
+        ? 'bg-gray-100 border-gray-500'
+        : 'bg-background border-gray-alpha-400 group-hover/radio:bg-gray-200',
+    )
   }
 
   return twMerge(basic)

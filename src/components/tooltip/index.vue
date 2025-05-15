@@ -134,22 +134,18 @@ function setupTrigger() {
   if (trigger === 'hover') {
     triggerRef.value.addEventListener('mouseenter', showTooltip)
     triggerRef.value.addEventListener('mouseleave', hideTooltip)
-  }
-  else if (trigger === 'focus') {
+  } else if (trigger === 'focus') {
     triggerRef.value.addEventListener('focus', showTooltip)
     triggerRef.value.addEventListener('blur', hideTooltip)
-  }
-  else if (trigger === 'click') {
+  } else if (trigger === 'click') {
     triggerRef.value.addEventListener('click', () => {
       if (isVisible.value) {
         hideTooltip()
-      }
-      else {
+      } else {
         showTooltip()
       }
     })
 
-    // 保存引用以便清理
     documentClickHandler = (e: MouseEvent) => {
       if (isVisible.value && triggerRef.value && !triggerRef.value.contains(e.target as Node)) {
         hideTooltip()
@@ -159,41 +155,6 @@ function setupTrigger() {
     document.addEventListener('click', documentClickHandler)
   }
 }
-
-onUnmounted(() => {
-  if (triggerRef.value) {
-    const trigger = props.trigger
-    if (trigger === 'hover') {
-      triggerRef.value.removeEventListener('mouseenter', showTooltip)
-      triggerRef.value.removeEventListener('mouseleave', hideTooltip)
-    }
-    else if (trigger === 'focus') {
-      triggerRef.value.removeEventListener('focus', showTooltip)
-      triggerRef.value.removeEventListener('blur', hideTooltip)
-    }
-    else if (trigger === 'click') {
-      triggerRef.value.removeEventListener('click', showTooltip)
-    }
-  }
-
-  if (documentClickHandler) {
-    document.removeEventListener('click', documentClickHandler)
-  }
-
-  if (tooltipRef.value) {
-    tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
-    tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
-  }
-
-  window.removeEventListener('scroll', throttledCalculatePosition, true)
-  window.removeEventListener('resize', throttledCalculatePosition)
-
-  if (showTimer)
-    clearTimeout(showTimer)
-
-  if (hideTimer)
-    clearTimeout(hideTimer)
-})
 
 function showTooltip() {
   if (props.disabled)
@@ -264,8 +225,52 @@ function hideTooltip() {
   }, props.hideDelay)
 }
 
+function unbindEvents() {
+  if (triggerRef.value) {
+    const trigger = props.trigger
+    if (trigger === 'hover') {
+      triggerRef.value.removeEventListener('mouseenter', showTooltip)
+      triggerRef.value.removeEventListener('mouseleave', hideTooltip)
+    } else if (trigger === 'focus') {
+      triggerRef.value.removeEventListener('focus', showTooltip)
+      triggerRef.value.removeEventListener('blur', hideTooltip)
+    } else if (trigger === 'click') {
+      triggerRef.value.removeEventListener('click', showTooltip)
+    }
+  }
+
+  if (documentClickHandler) {
+    document.removeEventListener('click', documentClickHandler)
+  }
+
+  if (tooltipRef.value) {
+    tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
+    tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
+  }
+
+  window.removeEventListener('scroll', throttledCalculatePosition, true)
+  window.removeEventListener('resize', throttledCalculatePosition)
+}
+
+function cleanupTimer() {
+  if (showTimer) {
+    clearTimeout(showTimer)
+    showTimer = null
+  }
+
+  if (hideTimer) {
+    clearTimeout(hideTimer)
+    hideTimer = null
+  }
+}
+
 onMounted(() => {
   setupTrigger()
+})
+
+onUnmounted(() => {
+  unbindEvents()
+  cleanupTimer()
 })
 </script>
 
