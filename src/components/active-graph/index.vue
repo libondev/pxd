@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useDelayChange } from '../../composables/useDelayChange'
 import { getStateColor } from '../../utils/colors'
 import { getAllDatesBetween } from '../../utils/date'
 
@@ -10,6 +11,8 @@ interface Props {
   startDate?: string | Date
   endDate?: string | Date
   colors?: Record<string, string>
+  onlyGraph?: boolean
+  tooltipText?: string
 }
 
 interface FormattedData {
@@ -27,6 +30,8 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     legend: true,
+    onlyGraph: false,
+    tooltipText: '{COUNT} on {DATE}',
     data: () => [],
     startDate: () => {
       const date = new Date()
@@ -160,17 +165,92 @@ function onCellClick(event: MouseEvent) {
 
   emits('cellClick', event, date)
 }
+
+interface TooltipInfo {
+  date: string
+  count: number
+  left: number
+  top: number
+}
+
+const CELL_GAP = 3
+const CELL_SIZE = 12
+const tbodyRef = shallowRef<HTMLTableSectionElement>()
+const {
+  value: showTooltip,
+  set: setTooltipValue,
+  setImmediate: setTooltipValueImmediate,
+} = useDelayChange(false, 500)
+const tooltipInfo = shallowRef({} as TooltipInfo)
+
+const formatTooltipText = computed(() => {
+  return props.tooltipText
+    .replace(/\{DATE\}/g, tooltipInfo.value.date)
+    .replace(/\{COUNT\}/g, tooltipInfo.value.count.toString())
+})
+
+let tbodyRect: DOMRect
+
+function onMouseEnter() {
+  if (tbodyRef.value) {
+    tbodyRect = tbodyRef.value.getBoundingClientRect()
+  }
+}
+
+function onMouseLeave() {
+  setTooltipValueImmediate(false)
+  tooltipInfo.value = {} as TooltipInfo
+  tbodyRect = null!
+}
+
+function onMouseOver(ev: MouseEvent) {
+  const targetEl = ev.target as HTMLTableCellElement
+
+  if (targetEl.tagName !== 'TD') {
+    setTooltipValue(false)
+    return
+  }
+
+  const date = targetEl.dataset.date
+
+  // 没有数据则可能是移动到 legend 上，需要隐藏
+  if (!date) {
+    setTooltipValueImmediate(false)
+    return
+  }
+
+  // 移动到 TD 的时候展示避免刚从别的元素移动过来时，因为 delay 时间没有到，导致不展示
+  setTooltipValueImmediate(true)
+  const rect = targetEl.getBoundingClientRect()
+
+  let top = rect.top - tbodyRect.top - CELL_SIZE
+
+  if (props.onlyGraph) {
+    top -= CELL_SIZE
+  }
+
+  tooltipInfo.value = {
+    date,
+    count: dataCountsMap.value[date] || 0,
+    left: rect.left - tbodyRect.left + CELL_GAP,
+    top,
+  }
+}
 </script>
 
 <template>
-  <div class="pxd-active-graph">
+  <div class="pxd-active-graph relative">
     <table
       role="grid"
       aria-readonly="true"
-      class="pr-5 overflow-hidden"
-      style="border-spacing: 3px; border-collapse: separate"
+      class="border-separate"
+      :class="[onlyGraph ? 'py-[3px] pr-[3px]' : 'pr-5']"
+      style="border-spacing: 3px;"
+      @pointerover="onMouseOver"
+      @pointerenter="onMouseEnter"
+      @pointerleave="onMouseLeave"
     >
-      <thead class="text-xs">
+      <thead v-if="!onlyGraph" class="text-xs">
         <tr class="h-3">
           <th style="width: 30px;min-width: 30px;" />
 
@@ -184,16 +264,16 @@ function onCellClick(event: MouseEvent) {
         </tr>
       </thead>
 
-      <tbody class="text-xs" @click="onCellClick">
+      <tbody ref="tbodyRef" class="text-xs" @click="onCellClick">
         <tr v-for="(row, i) of formatData" :key="i" class="h-3">
-          <td class="relative leading-none text-gray-900">
+          <td class="relative leading-none text-gray-900 overflow-hidden">
             <span class="absolute top-0 right-1">{{ [1, 3, 5].includes(i) ? config.locale.date.day[i] : ' ' }}</span>
           </td>
 
           <td
             v-for="col of row"
             :key="col.date"
-            class="rounded-xs w-3 min-w-3 motion-safe:transition-colors"
+            class="pxd-active-graph--item rounded-xs w-3 min-w-3 motion-safe:transition-colors"
             :data-date="col.date"
             :class="{ 'pointer-events-none opacity-0': col.hidden }"
             :style="`background: ${col.color}`"
@@ -219,5 +299,17 @@ function onCellClick(event: MouseEvent) {
         </template>
       </tbody>
     </table>
+
+    <Transition name="pxd-transition--fade">
+      <div
+        v-if="showTooltip"
+        class="pxd-active-graph--tooltip left-0 top-0 bg-gray-1000 pointer-events-none text-gray-100 absolute z-10 px-2 py-1 text-[13px] rounded-sm w-max"
+        :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
+      >
+        <slot name="tooltip" :data="tooltipInfo">
+          {{ formatTooltipText }}
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>

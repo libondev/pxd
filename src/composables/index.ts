@@ -1,5 +1,6 @@
 export * from './useComputedSize.js'
 export * from './useConfigProviderContext.js'
+export * from './useDelayChange.js'
 export * from './useIntersectionObserver.js'
 export * from './useMediaQuery.js'
 export * from './useModelValue.js'

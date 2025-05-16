@@ -95,3 +95,61 @@ const colors = {
   />
 </template>
 ```
+
+## Custom Tooltip
+
+```vue demo
+<script setup>
+const data = [
+  { date: '2025-05-06', count: 5 },
+  { date: '2025-05-07', count: 10 },
+  { date: '2025-05-08', count: 15 },
+  { date: '2025-05-09', count: 20 },
+];
+</script>
+
+<template>
+  <PStack direction="col" gap="12">
+    <PActiveGraph
+      :data="data"
+      start-date="2025-05-01"
+      end-date="2025-05-31"
+      tooltip-text="The user has {COUNT} activities on the {DATE}"
+    >
+    </PActiveGraph>
+
+    <PActiveGraph
+      :data="data"
+      start-date="2025-05-01"
+      end-date="2025-05-31"
+    >
+      <template #tooltip="{ data }">
+        {{ data.count }} contributions on {{ data.date }}.
+      </template>
+    </PActiveGraph>
+  </PStack>
+</template>
+```
+
+## Only Graph
+
+```vue demo
+<script setup>
+const data = [
+  { date: '2025-05-06', count: 5 },
+  { date: '2025-05-07', count: 10 },
+  { date: '2025-05-08', count: 15 },
+  { date: '2025-05-09', count: 20 },
+];
+</script>
+
+<template>
+  <PActiveGraph
+    only-graph
+    :data="data"
+    :legend="false"
+    start-date="2025-05-01"
+    end-date="2025-05-31"
+  />
+</template>
+```
