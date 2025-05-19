@@ -28,6 +28,7 @@ interface CellData {
 interface RowData extends Array<CellData> {
   isMonthFirstRow?: boolean
   monthName?: string
+  headerText: string
 }
 
 /** 提示框信息 */
@@ -63,7 +64,7 @@ const props = withDefaults(
     },
     endDate: () => new Date(),
     colors: () => ({
-      0: 'var(--color-gray-alpha-200)',
+      0: '',
       5: 'var(--color-green-300)',
       10: 'var(--color-green-500)',
       15: 'var(--color-green-700)',
@@ -221,35 +222,7 @@ function createTransposedTableData(): RowData[] {
     }
   }
 
-  // 标记月份信息
   return markMonthRows(monthRows)
-}
-
-/** 为行添加月份标记 */
-function markMonthRows(rows: RowData[]): RowData[] {
-  const monthMap = {} as Record<string, boolean>
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i]
-    const firstValidCell = row.find(cell => !cell.hidden && cell.date)
-
-    if (firstValidCell) {
-      const date = new Date(firstValidCell.date!)
-      const month = date.getMonth()
-      const year = date.getFullYear()
-      const day = date.getDate()
-      const key = `${year}-${month}`
-
-      // 标记月份第一行
-      if (!monthMap[key] || day === 1) {
-        monthMap[key] = true
-        row.isMonthFirstRow = true
-        row.monthName = config.locale.date.month[month]
-      }
-    }
-  }
-
-  return rows
 }
 
 /** 创建标准模式的表格数据（行为星期，列为日期） */
@@ -273,7 +246,11 @@ function createStandardTableData(): RowData[] {
       })
     }
 
-    return row as RowData
+    // 添加headerText属性
+    const rowWithHeader = row as RowData
+    rowWithHeader.headerText = [1, 3, 5].includes(i) ? getLocalizedDay(i) : ' '
+
+    return rowWithHeader
   })
 
   // 填充所有日期数据
@@ -293,6 +270,34 @@ function createStandardTableData(): RowData[] {
   return result
 }
 
+/** 为行添加月份标记 */
+function markMonthRows(rows: RowData[]): RowData[] {
+  const monthMap = {} as Record<string, boolean>
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+    const firstValidCell = row.find(cell => !cell.hidden && cell.date)
+
+    if (firstValidCell) {
+      const date = new Date(firstValidCell.date!)
+      const month = date.getMonth()
+      const year = date.getFullYear()
+      const day = date.getDate()
+      const key = `${year}-${month}`
+
+      // 标记月份第一行
+      if (!monthMap[key] || day === 1) {
+        monthMap[key] = true
+        row.isMonthFirstRow = true
+        row.monthName = config.locale.date.month[month]
+        row.headerText = row.monthName!
+      }
+    }
+  }
+
+  return rows
+}
+
 function onCellClick(event: MouseEvent) {
   const target = event.target as HTMLElement
   const date = target.dataset.date
@@ -304,21 +309,25 @@ function onCellClick(event: MouseEvent) {
   emits('cellClick', event, date)
 }
 
-// Tooltip相关
+let tbodyRect: DOMRect
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
 const {
   value: showTooltip,
-  set: setTooltipValue,
-  setImmediate: setTooltipValueImmediate,
+  set: setShowTooltip,
+  setImmediate: setShowTooltipImmediate,
 } = useDelayChange(false, 500)
 const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
-let tbodyRect: DOMRect
 
 const formatTooltipText = computed(() => {
-  const { date, count } = tooltipInfo.value
-  return props.tooltipText
-    .replace(/\{DATE\}/g, date)
-    .replace(/\{COUNT\}/g, count.toString())
+  if (props.tooltipText) {
+    const { date = '', count = 0 } = tooltipInfo.value
+
+    return props.tooltipText
+      .replace(/\{DATE\}/g, date)
+      .replace(/\{COUNT\}/g, String(count))
+  }
+
+  return ''
 })
 
 // 鼠标进入获取表格区域的位置信息, 用于计算提示框的位置
@@ -328,7 +337,7 @@ function onMouseEnter() {
 
 // 鼠标离开表格区域, 隐藏提示框
 function onMouseLeave() {
-  setTooltipValueImmediate(false)
+  setShowTooltipImmediate(false)
   tooltipInfo.value = {} as TooltipInfo
   tbodyRect = null!
 }
@@ -338,7 +347,7 @@ function onMouseOver(ev: MouseEvent) {
   const targetEl = ev.target as HTMLTableCellElement
 
   if (targetEl.tagName !== 'TD') {
-    setTooltipValue(false)
+    setShowTooltip(false)
     return
   }
 
@@ -346,12 +355,12 @@ function onMouseOver(ev: MouseEvent) {
 
   // 没有日期数据则隐藏提示
   if (!date) {
-    setTooltipValueImmediate(false)
+    setShowTooltipImmediate(false)
     return
   }
 
   // 立即显示提示
-  setTooltipValueImmediate(true)
+  setShowTooltipImmediate(true)
   const rect = targetEl.getBoundingClientRect()
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
@@ -370,12 +379,11 @@ function onMouseOver(ev: MouseEvent) {
 </script>
 
 <template>
-  <div class="pxd-active-graph relative">
+  <div class="pxd-active-graph relative" :class="[onlyGraph ? 'py-[3px] pr-[3px]' : 'pr-5']">
     <table
       role="grid"
       aria-readonly="true"
       class="border-separate"
-      :class="[onlyGraph ? 'py-[3px] pr-[3px]' : 'pr-5']"
       style="border-spacing: 3px;"
       @pointerenter="onMouseEnter"
       @pointerleave="onMouseLeave"
@@ -403,16 +411,14 @@ function onMouseOver(ev: MouseEvent) {
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
           <td class="relative leading-none text-gray-900 overflow-hidden">
             <span class="absolute top-0 right-1">
-              {{ props.transpose
-                ? (row.isMonthFirstRow ? row.monthName : '')
-                : ([1, 3, 5].includes(i) ? getLocalizedDay(i) : ' ') }}
+              {{ row.headerText }}
             </span>
           </td>
 
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item rounded-xs w-3 min-w-3 motion-safe:transition-colors"
+            class="pxd-active-graph--item rounded-xs w-3 min-w-3 bg-gray-alpha-200 motion-safe:transition-colors"
             :data-date="col.date"
             :class="{ 'pointer-events-none opacity-0': col.hidden }"
             :style="`background: ${col.color}`"
@@ -420,19 +426,24 @@ function onMouseOver(ev: MouseEvent) {
         </tr>
 
         <template v-if="props.legend">
-          <tr class="h-0.5" />
-          <tr class="pxd-active-graph--legend select-none">
+          <tr class="pxd-active-graph--placeholder pointer-events-none h-0.5" />
+          <tr class="pxd-active-graph--legend pointer-events-none">
             <td class="relative h-3 text-gray-700">
               <span class="absolute top-1/2 right-1 -translate-y-1/2">{{ config.locale.compare.less }}</span>
             </td>
 
             <td
               v-for="color in props.colors"
-              :key="color" class="w-3 h-3 rounded-xs motion-safe:transition-colors" :style="`background-color: ${color}`"
+              :key="color"
+              class="w-3 h-3 rounded-xs bg-gray-alpha-200 motion-safe:transition-colors"
+              :style="`background-color: ${color}`"
             />
 
             <td class="relative h-3 text-gray-700 w-3">
-              <span class="absolute top-1/2 left-px -translate-y-1/2" style="width: 30px;min-width: 30px;">{{ config.locale.compare.more }}</span>
+              <span
+                class="absolute top-1/2 left-px -translate-y-1/2"
+                style="width: 30px;min-width: 30px;"
+              >{{ config.locale.compare.more }}</span>
             </td>
           </tr>
         </template>
