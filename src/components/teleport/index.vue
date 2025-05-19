@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, v
 
 interface Props {
   to?: string
+  disabled?: boolean
 }
 
 defineOptions({
@@ -23,8 +24,12 @@ const containerRef = shallowRef<HTMLElement>()
 const targetContainer = computed(() => isVue3 ? null : document.querySelector(props.to))
 
 const unwatchChildrenUpdate = watch(
-  () => renderSlots.default?.(),
+  () => [renderSlots.default?.(), props.disabled],
   () => {
+    if (props.disabled) {
+      return
+    }
+
     if (containerRef.value && targetContainer.value) {
       if (isMounted) {
         containerRef.value.remove()
@@ -38,12 +43,12 @@ const unwatchChildrenUpdate = watch(
 
 function setup() {
   nextTick(() => {
-    if (isVue3 || !containerRef.value) {
+    if (isVue3 || !containerRef.value || props.disabled) {
       unwatchChildrenUpdate()
       return
     }
 
-    if (!targetContainer.value) {
+    if (!targetContainer.value || props.disabled) {
       return
     }
 
@@ -60,11 +65,11 @@ function teardown() {
 }
 
 onMounted(() => {
-  isMounted = true
-
   if (typeof window === 'undefined') {
     return
   }
+
+  isMounted = true
 
   setup()
 })
@@ -75,7 +80,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="isVue3" :to="to">
+  <Teleport v-if="isVue3" :to="to" :disabled="disabled">
     <slot />
   </Teleport>
 
