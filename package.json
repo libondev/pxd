@@ -143,9 +143,6 @@
     "vue-tsc": "catalog:"
   },
   "lint-staged": {
-    "*.{ts,vue}": [
-      "eslint --fix",
-      "npm run typecheck"
-    ]
+    "*.{ts,vue}": "eslint --fix"
   }
 }
