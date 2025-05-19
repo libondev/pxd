@@ -1,33 +1,48 @@
 <script lang="ts" setup>
-import type { StackProps } from '../../types/components'
+import type { ComponentAs, ComponentBreakpointKeys } from '../../types/components'
 import { computed } from 'vue'
+
+type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
+
+export interface Props {
+  as?: ComponentAs
+  wrap?: boolean
+  gap?: number | string | ResponsiveValue<number>
+  scale?: number
+  align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
+  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
+  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
+}
 
 defineOptions({
   name: 'PStack',
 })
 
 const props = withDefaults(
-  defineProps<StackProps>(),
+  defineProps<Props>(),
   {
     as: 'div',
     gap: 2,
     wrap: true,
+    scale: 4,
     align: 'start',
     justify: 'start',
     direction: 'row',
   },
 )
 
+const DEFAULT_GAP = 2
+
 const presetDirClasses = {
-  'xs:col': 'xs:flex-col',
+  'xs:col': 'flex-col',
+  'xs:row': 'flex-row',
   'sm:col': 'sm:flex-col',
-  'md:col': 'md:flex-col',
-  'lg:col': 'lg:flex-col',
-  'xl:col': 'xl:flex-col',
-  'xs:row': 'xs:flex-row',
   'sm:row': 'sm:flex-row',
+  'md:col': 'md:flex-col',
   'md:row': 'md:flex-row',
+  'lg:col': 'lg:flex-col',
   'lg:row': 'lg:flex-row',
+  'xl:col': 'xl:flex-col',
   'xl:row': 'xl:flex-row',
 }
 
@@ -59,57 +74,62 @@ const presetJustifyClasses = {
   stretch: 'justify-stretch',
 }
 
-const classes = computed(() => {
-  const basic = ['pxd-stack flex', getDirectionClasses()]
+const formattedGap = computed(() => {
+  const { gap, scale } = props
 
-  basic.push(presetAlignClasses[props.align])
-  basic.push(presetJustifyClasses[props.justify])
+  if (typeof gap === 'object') {
+    return Object.entries(gap).reduce((acc, [bp, value]) => {
+      acc[bp] = value * scale
+
+      return acc
+    }, { xs: DEFAULT_GAP * scale } as Record<string, number>)
+  }
+
+  return {
+    xs: Number(gap) * scale,
+  }
+})
+
+const formattedDir = computed(() => {
+  const { direction } = props
+
+  const defaultBreakpoints: Record<string, string> = { '': 'flex-col' }
+
+  if (typeof direction === 'string') {
+    return defaultBreakpoints
+  }
+
+  return Object.entries(direction).reduce((acc, [bp, value]) => {
+    acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
+
+    return acc
+  }, defaultBreakpoints)
+})
+
+const computedClasses = computed(() => {
+  const basic = ['pxd-stack flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     basic.push('flex-wrap')
   }
 
-  if (['number', 'string'].includes(typeof props.gap)) {
-    basic.push('gap-(--gap)')
-  } else if (typeof props.gap === 'object') {
-    basic.push(
-      Object.keys(props.gap).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' '),
-    )
-  }
+  basic.push(
+    ...Object.values(formattedDir.value),
+    Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' '),
+  )
 
-  return basic
+  return basic.join(' ')
 })
 
-const calcGapSize = computed(() => {
-  const gap = props.gap ?? 1
-
-  if (['number', 'string'].includes(typeof gap)) {
-    return `--gap: ${Number(gap) * 4}px`
-  }
-
-  return Object.entries(gap).map(([bp, value]) => {
-    return `--${bp}-gap: ${value * 4}px`
+const gapSizeStyles = computed(() => {
+  return Object.entries(formattedGap.value).map(([bp, value]) => {
+    return `--${bp}-gap: ${value}px`
   }).join(';')
 })
-
-function getDirectionClasses() {
-  const direction = props.direction
-
-  switch (typeof direction) {
-    case 'string':
-      return direction === 'col' ? 'flex-col' : 'flex-row'
-    case 'object':
-      return Object.entries(direction).map(([breakpoint, value]) => {
-        return presetDirClasses[`${breakpoint}:${value}` as keyof typeof presetDirClasses]
-      }).join(' ')
-    default:
-      return 'flex-col'
-  }
-}
 </script>
 
 <template>
-  <component :is="props.as" :class="classes" :style="calcGapSize">
+  <component :is="props.as" :class="computedClasses" :style="gapSizeStyles">
     <slot />
   </component>
 </template>

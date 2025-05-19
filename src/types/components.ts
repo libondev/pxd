@@ -22,17 +22,6 @@ export interface ButtonProps {
   disabled?: boolean
 }
 
-type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
-
-export interface StackProps {
-  as?: ComponentAs
-  wrap?: boolean
-  gap?: number | string | ResponsiveValue<number>
-  align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
-}
-
 export interface ErrorType {
   message: string
   action?: string
