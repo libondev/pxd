@@ -1,6 +1,13 @@
+import type { Ref } from 'vue'
 import { shallowRef } from 'vue'
 
-export function useDelayChange<T>(value: T, delayTime = 1000) {
+interface UseDelayChangeReturnType<T> {
+  value: Ref<T>
+  set: (value: T) => void
+  setImmediate: (value: T) => void
+}
+
+export function useDelayChange<T>(value: T, delay = 1000): UseDelayChangeReturnType<T> {
   const delayValue = shallowRef(value)
   let timerId: ReturnType<typeof setTimeout>
 
@@ -8,7 +15,7 @@ export function useDelayChange<T>(value: T, delayTime = 1000) {
     clearTimeout(timerId)
     timerId = setTimeout(() => {
       setImmediate(value)
-    }, delayTime)
+    }, delay)
   }
 
   function setImmediate(value: T) {

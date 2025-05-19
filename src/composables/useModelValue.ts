@@ -1,3 +1,4 @@
+import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
 
 interface Options {
@@ -8,7 +9,7 @@ interface Options {
 export function useModelValue<
   P extends { modelValue: any },
   E extends { (event: 'update:modelValue', ...args: any[]): void },
->(props: P, emits: E, options: Options = {}) {
+>(props: P, emits: E, options: Options = {}): WritableComputedRef<NonNullable<P['modelValue']>> {
   type V = NonNullable<P['modelValue']>
 
   const modelValue = computed<V>({

@@ -1,6 +1,7 @@
+import type { Ref } from 'vue'
 import { onUnmounted, shallowRef } from 'vue'
 
-export function useMediaQuery(query: string) {
+export function useMediaQuery(query: string): Ref<boolean> {
   const matches = shallowRef(false)
 
   if (typeof window === 'undefined' || !window.matchMedia) {

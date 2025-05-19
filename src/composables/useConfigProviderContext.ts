@@ -9,11 +9,11 @@ export interface ConfigProviderProps {
   locale?: Record<string, any>
 }
 
-export function provideConfigProvider(configProvider: ConfigProviderProps) {
+export function provideConfigProvider(configProvider: ConfigProviderProps): void {
   provide(injectionKey, configProvider)
 }
 
-export function useConfigProvider() {
+export function useConfigProvider(): Required<ConfigProviderProps> {
   const defaultConfig: Required<ConfigProviderProps> = {
     size: 'md',
     locale: enUS,

@@ -1,10 +1,15 @@
 import type { MaybeRef } from 'vue'
 import { onBeforeUnmount, unref, watch } from 'vue'
 
+interface UseIntersectionObserverReturnType {
+  observer: IntersectionObserver | undefined
+  stop: () => void
+}
+
 export function useIntersectionObserver(
   target: MaybeRef<HTMLElement | null | undefined>,
   callback: (entries: IntersectionObserverEntry) => void,
-) {
+): UseIntersectionObserverReturnType {
   let observer: IntersectionObserver | undefined
 
   const cleanup = () => {
