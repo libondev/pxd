@@ -22,8 +22,8 @@ function genRandomData() {
 
   const data = []
 
-  for (let i = 0; i < 30; i++) {
-    const day = Math.floor(Math.random() * 20)
+  for (let i = 0; i < 50; i++) {
+    const day = Math.floor(Math.random() * 15)
     today.setDate(today.getDate() - day)
     data.push(getRandomData(today, 20))
   }
@@ -51,6 +51,28 @@ function onCellClick(event, date) {
       Refresh
     </PButton>
   </PStack>
+</template>
+```
+
+## Transpose
+
+```vue demo
+<script setup>
+const data = [
+  { date: '2025-05-06', count: 5 },
+  { date: '2025-05-07', count: 10 },
+  { date: '2025-05-08', count: 15 },
+  { date: '2025-05-09', count: 20 },
+];
+</script>
+
+<template>
+  <PActiveGraph
+    transpose
+    :data="data"
+    start-date="2025-05-01"
+    end-date="2025-05-31"
+  />
 </template>
 ```
 
@@ -88,6 +110,7 @@ const colors = {
 
 <template>
   <PActiveGraph
+    transpose
     :data="data"
     :colors="colors"
     start-date="2025-05-01"
@@ -111,6 +134,7 @@ const data = [
 <template>
   <PStack direction="col" gap="12">
     <PActiveGraph
+      transpose
       :data="data"
       start-date="2025-05-01"
       end-date="2025-05-31"
@@ -119,6 +143,7 @@ const data = [
     </PActiveGraph>
 
     <PActiveGraph
+      transpose
       :data="data"
       start-date="2025-05-01"
       end-date="2025-05-31"
@@ -144,12 +169,23 @@ const data = [
 </script>
 
 <template>
-  <PActiveGraph
-    only-graph
-    :data="data"
-    :legend="false"
-    start-date="2025-05-01"
-    end-date="2025-05-31"
-  />
+  <PStack direction="col" gap="12">
+    <PActiveGraph
+      only-graph
+      :data="data"
+      :legend="false"
+      start-date="2025-05-01"
+      end-date="2025-05-31"
+    />
+
+    <PActiveGraph
+      transpose
+      only-graph
+      :data="data"
+      :legend="false"
+      start-date="2025-05-01"
+      end-date="2025-05-31"
+    />
+  </PStack>
 </template>
 ```

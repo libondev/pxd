@@ -6,20 +6,36 @@ import { getStateColor } from '../../utils/colors'
 import { getAllDatesBetween } from '../../utils/date'
 
 interface Props {
-  data?: any[]
+  data?: Array<{ date: string, count: number }>
   legend?: boolean
   startDate?: string | Date
   endDate?: string | Date
   colors?: Record<string, string>
   onlyGraph?: boolean
+  transpose?: boolean
   tooltipText?: string
 }
 
-interface FormattedData {
+/** 格式化后的单元格数据 */
+interface CellData {
   hidden: boolean
   date: string | undefined
   count: number
   color: string | undefined
+}
+
+/** 行数据（包含月份信息） */
+interface RowData extends Array<CellData> {
+  isMonthFirstRow?: boolean
+  monthName?: string
+}
+
+/** 提示框信息 */
+interface TooltipInfo {
+  date: string
+  count: number
+  left: number
+  top: number
 }
 
 defineOptions({
@@ -34,6 +50,7 @@ const props = withDefaults(
     tooltipText: '{COUNT} on {DATE}',
     data: () => [],
     startDate: () => {
+      // 默认起始日期为一年前的第一个周日
       const date = new Date()
       date.setFullYear(date.getFullYear() - 1)
 
@@ -61,88 +78,57 @@ const emits = defineEmits<{
 
 const config = useConfigProvider()
 
+const CELL_GAP = 3
+const CELL_SIZE = 12
+
 const allDates = computed(() => getAllDatesBetween(props.startDate, props.endDate))
 
-const dataCountsMap = computed<Record<string, number>>(() => {
-  const map = props.data.reduce((acc, cur) => {
+const dateCountMap = computed(() => {
+  return props.data.reduce((acc, cur) => {
     acc[cur.date] = (acc[cur.date] || 0) + cur.count
-
     return acc
-  }, {})
-
-  return map
+  }, {} as Record<string, number>)
 })
 
-const formatData = computed(() => {
-  const dataMap = dataCountsMap.value
-  const dateList = allDates.value.dates
-  const dateListLength = dateList.length
-  const result: FormattedData[][] = []
+/** 根据日期索引获取本地化的星期几 */
+function getLocalizedDay(dayIndex: number) {
+  return config.locale.date.day[dayIndex]
+}
 
-  const firstDayOfWeek = new Date(dateList[0]).getDay()
-
-  for (let i = 0; i < 7; i++) {
-    const row = []
-
-    if (i < firstDayOfWeek) {
-      row.push({
-        hidden: true,
-        date: undefined,
-        count: 0,
-        color: undefined,
-      })
-    }
-
-    result.push(row)
-  }
-
-  for (let i = 0; i < dateListLength; i++) {
-    const date = dateList[i]
-    const dateCount = dataMap[date] || 0
-    const dayOfWeek = new Date(date).getDay()
-
-    result[dayOfWeek].push({
-      hidden: false,
-      date,
-      count: dateCount,
-      color: getStateColor(dateCount, props.colors),
+/** 创建表头（月份或星期）数据 */
+const tableHeadList = computed(() => {
+  // 转置模式：表头为星期几
+  if (props.transpose) {
+    return Array.from({ length: 7 }, (_, i) => {
+      return [1, 3, 5].includes(i) ? getLocalizedDay(i) : ''
     })
   }
 
-  return result
+  // 非转置模式：表头为月份
+  return createMonthHeaders()
 })
 
-const tableMonths = computed(() => {
+/** 创建月份表头 */
+function createMonthHeaders() {
   const dates = allDates.value.dates
-  const result: string[] = []
-
-  const colCount = Math.ceil(allDates.value.dates.length / 7)
-
-  // 初始化结果数组
-  for (let i = 0; i < colCount; i++) {
-    result.push('')
-  }
+  const colCount = Math.ceil(dates.length / 7)
+  const result = Array.from({ length: colCount }, () => '')
 
   // 第一列总是显示月份
   const firstDate = new Date(dates[0])
   result[0] = config.locale.date.month[firstDate.getMonth()]
 
-  // 获取第一天是星期几，用于计算后续日期的列索引
   const firstDayOfWeek = firstDate.getDay()
-
-  // 遍历所有日期，查找每个月的第一天
   let currentMonth = firstDate.getMonth()
 
+  // 标记每个月第一天的列
   for (let i = 1; i < dates.length; i++) {
     const date = new Date(dates[i])
     const month = date.getMonth()
     const day = date.getDate()
 
-    // 如果月份发生变化且是该月第一天
+    // 月份变化且是月初，计算列索引并添加月份名称
     if (month !== currentMonth && day === 1) {
-      // 计算该日期在哪一列
-      // (i - firstDayOfWeek) 是修正第一天偏移
-      // Math.floor((i - firstDayOfWeek) / 7) + 1 计算出以周为单位的列索引
       const colIndex = Math.floor((i + 7 - firstDayOfWeek) / 7)
 
       if (colIndex < colCount) {
@@ -153,7 +139,159 @@ const tableMonths = computed(() => {
   }
 
   return result
+}
+
+// ===== 表格数据生成 =====
+/** 计算表格主体数据 */
+const tableBodyList = computed<RowData[]>(() => {
+  return props.transpose
+    ? createTransposedTableData()
+    : createStandardTableData()
 })
+
+/** 创建转置模式的表格数据（行为日期，列为星期） */
+function createTransposedTableData(): RowData[] {
+  const dataMap = dateCountMap.value
+  const dateList = allDates.value.dates
+  const dateListLength = dateList.length
+
+  const monthRows: RowData[] = []
+  let currentMonth = -1
+  let currentYear = -1
+  let currentRow: CellData[] | null = null
+
+  for (let i = 0; i < dateListLength; i++) {
+    const dateStr = dateList[i]
+    const date = new Date(dateStr)
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const dayOfWeek = date.getDay()
+    const count = dataMap[dateStr] || 0
+
+    // 创建新行
+    if (currentRow === null) {
+      currentRow = []
+
+      // 只有第一行需要填充空白单元格
+      if (i === 0) {
+        for (let j = 0; j < dayOfWeek; j++) {
+          currentRow.push({
+            hidden: true,
+            date: undefined,
+            count: 0,
+            color: undefined,
+          })
+        }
+      }
+    }
+
+    // 添加当前日期单元格
+    currentRow.push({
+      hidden: false,
+      date: dateStr,
+      count,
+      color: getStateColor(count, props.colors),
+    })
+
+    // 记录月份变化
+    if (month !== currentMonth || year !== currentYear) {
+      currentMonth = month
+      currentYear = year
+    }
+
+    const isLastItem = i === dateListLength - 1
+    const isRowFull = currentRow.length >= 7
+
+    // 行满或是最后一项，添加到结果
+    if (isRowFull || isLastItem) {
+      // 补齐最后一行
+      if (currentRow.length < 7 && isLastItem) {
+        while (currentRow.length < 7) {
+          currentRow.push({
+            hidden: true,
+            date: undefined,
+            count: 0,
+            color: undefined,
+          })
+        }
+      }
+
+      monthRows.push([...currentRow] as RowData)
+      currentRow = null
+    }
+  }
+
+  // 标记月份信息
+  return markMonthRows(monthRows)
+}
+
+/** 为行添加月份标记 */
+function markMonthRows(rows: RowData[]): RowData[] {
+  const monthMap = {} as Record<string, boolean>
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+    const firstValidCell = row.find(cell => !cell.hidden && cell.date)
+
+    if (firstValidCell) {
+      const date = new Date(firstValidCell.date!)
+      const month = date.getMonth()
+      const year = date.getFullYear()
+      const day = date.getDate()
+      const key = `${year}-${month}`
+
+      // 标记月份第一行
+      if (!monthMap[key] || day === 1) {
+        monthMap[key] = true
+        row.isMonthFirstRow = true
+        row.monthName = config.locale.date.month[month]
+      }
+    }
+  }
+
+  return rows
+}
+
+/** 创建标准模式的表格数据（行为星期，列为日期） */
+function createStandardTableData(): RowData[] {
+  const dataMap = dateCountMap.value
+  const dateList = allDates.value.dates
+  const dateListLength = dateList.length
+  const firstDayOfWeek = new Date(dateList[0]).getDay()
+
+  // 初始化7行（代表星期几）
+  const result: RowData[] = Array.from({ length: 7 }, (_, i) => {
+    const row: CellData[] = []
+
+    // 第一周不完整时填充空白单元格
+    if (i < firstDayOfWeek) {
+      row.push({
+        hidden: true,
+        date: undefined,
+        count: 0,
+        color: undefined,
+      })
+    }
+
+    return row as RowData
+  })
+
+  // 填充所有日期数据
+  for (let i = 0; i < dateListLength; i++) {
+    const dateStr = dateList[i]
+    const count = dataMap[dateStr] || 0
+    const dayOfWeek = new Date(dateStr).getDay()
+
+    result[dayOfWeek].push({
+      hidden: false,
+      date: dateStr,
+      count,
+      color: getStateColor(count, props.colors),
+    })
+  }
+
+  return result
+}
 
 function onCellClick(event: MouseEvent) {
   const target = event.target as HTMLElement
@@ -166,43 +304,36 @@ function onCellClick(event: MouseEvent) {
   emits('cellClick', event, date)
 }
 
-interface TooltipInfo {
-  date: string
-  count: number
-  left: number
-  top: number
-}
-
-const CELL_GAP = 3
-const CELL_SIZE = 12
+// Tooltip相关
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
 const {
   value: showTooltip,
   set: setTooltipValue,
   setImmediate: setTooltipValueImmediate,
 } = useDelayChange(false, 500)
-const tooltipInfo = shallowRef({} as TooltipInfo)
-
-const formatTooltipText = computed(() => {
-  return props.tooltipText
-    .replace(/\{DATE\}/g, tooltipInfo.value.date)
-    .replace(/\{COUNT\}/g, tooltipInfo.value.count.toString())
-})
-
+const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
 let tbodyRect: DOMRect
 
+const formatTooltipText = computed(() => {
+  const { date, count } = tooltipInfo.value
+  return props.tooltipText
+    .replace(/\{DATE\}/g, date)
+    .replace(/\{COUNT\}/g, count.toString())
+})
+
+// 鼠标进入获取表格区域的位置信息, 用于计算提示框的位置
 function onMouseEnter() {
-  if (tbodyRef.value) {
-    tbodyRect = tbodyRef.value.getBoundingClientRect()
-  }
+  tbodyRect = tbodyRef.value!.getBoundingClientRect()
 }
 
+// 鼠标离开表格区域, 隐藏提示框
 function onMouseLeave() {
   setTooltipValueImmediate(false)
   tooltipInfo.value = {} as TooltipInfo
   tbodyRect = null!
 }
 
+// 鼠标悬停在单元格上, 显示提示框
 function onMouseOver(ev: MouseEvent) {
   const targetEl = ev.target as HTMLTableCellElement
 
@@ -213,25 +344,25 @@ function onMouseOver(ev: MouseEvent) {
 
   const date = targetEl.dataset.date
 
-  // 没有数据则可能是移动到 legend 上，需要隐藏
+  // 没有日期数据则隐藏提示
   if (!date) {
     setTooltipValueImmediate(false)
     return
   }
 
-  // 移动到 TD 的时候展示避免刚从别的元素移动过来时，因为 delay 时间没有到，导致不展示
+  // 立即显示提示
   setTooltipValueImmediate(true)
   const rect = targetEl.getBoundingClientRect()
-
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
+  // 如果只显示图表, 则提示框位置需要减去一个单元格的高度, 因为标题被隐藏了位置会偏上
   if (props.onlyGraph) {
     top -= CELL_SIZE
   }
 
   tooltipInfo.value = {
     date,
-    count: dataCountsMap.value[date] || 0,
+    count: dateCountMap.value[date] || 0,
     left: rect.left - tbodyRect.left + CELL_GAP,
     top,
   }
@@ -246,7 +377,6 @@ function onMouseOver(ev: MouseEvent) {
       class="border-separate"
       :class="[onlyGraph ? 'py-[3px] pr-[3px]' : 'pr-5']"
       style="border-spacing: 3px;"
-      @pointerover="onMouseOver"
       @pointerenter="onMouseEnter"
       @pointerleave="onMouseLeave"
     >
@@ -255,7 +385,7 @@ function onMouseOver(ev: MouseEvent) {
           <th style="width: 30px;min-width: 30px;" />
 
           <th
-            v-for="col in tableMonths"
+            v-for="col in tableHeadList"
             :key="col"
             class="relative font-normal text-gray-900"
           >
@@ -264,10 +394,19 @@ function onMouseOver(ev: MouseEvent) {
         </tr>
       </thead>
 
-      <tbody ref="tbodyRef" class="text-xs" @click="onCellClick">
-        <tr v-for="(row, i) of formatData" :key="i" class="h-3">
+      <tbody
+        ref="tbodyRef"
+        class="text-xs"
+        @click="onCellClick"
+        @pointerover="onMouseOver"
+      >
+        <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
           <td class="relative leading-none text-gray-900 overflow-hidden">
-            <span class="absolute top-0 right-1">{{ [1, 3, 5].includes(i) ? config.locale.date.day[i] : ' ' }}</span>
+            <span class="absolute top-0 right-1">
+              {{ props.transpose
+                ? (row.isMonthFirstRow ? row.monthName : '')
+                : ([1, 3, 5].includes(i) ? getLocalizedDay(i) : ' ') }}
+            </span>
           </td>
 
           <td
