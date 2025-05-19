@@ -3,6 +3,7 @@ import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
+import { off, on, once } from '../../utils/events'
 
 interface Props {
   min?: number
@@ -188,9 +189,9 @@ function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   // 立即更新一次值
   updateValueFromPosition(ev.clientX)
 
-  document.addEventListener('pointermove', handleMove, { passive: false })
-  document.addEventListener('pointerup', endDragging, { once: true })
-  document.addEventListener('pointercancel', endDragging, { once: true })
+  on(document, 'pointermove', handleMove, { passive: false })
+  once(document, 'pointerup', endDragging)
+  once(document, 'pointercancel', endDragging)
 }
 
 function handleMove(ev: PointerEvent) {
@@ -213,8 +214,8 @@ function endDragging() {
     animationFrameId = null
   }
 
-  document.removeEventListener('pointermove', handleMove)
-  document.removeEventListener('pointercancel', endDragging)
+  off(document, 'pointermove', handleMove)
+  off(document, 'pointercancel', endDragging)
 }
 
 function handleSliderClick(ev: PointerEvent) {
@@ -267,9 +268,10 @@ onBeforeUnmount(() => {
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId)
   }
-  document.removeEventListener('pointermove', handleMove)
-  document.removeEventListener('pointerup', endDragging)
-  document.removeEventListener('pointercancel', endDragging)
+
+  off(document, 'pointermove', handleMove)
+  off(document, 'pointerup', endDragging)
+  off(document, 'pointercancel', endDragging)
 })
 </script>
 

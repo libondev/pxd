@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useResizeObserver'
+import { off, on, once } from '../../utils/events'
 import { THROTTLE_GAP } from '../../utils/fn'
 
 interface Props {
@@ -212,8 +213,8 @@ function startDragVertical(e: MouseEvent) {
     thumbSize: scrollInfo.value.verticalThumbHeight,
   }
 
-  document.addEventListener('mousemove', onDragMove)
-  document.addEventListener('mouseup', endDrag, { once: true })
+  on(document, 'mousemove', onDragMove)
+  once(document, 'mouseup', endDrag)
 
   // 添加禁止选择类
   document.body.classList.add('select-none')
@@ -238,8 +239,8 @@ function startDragHorizontal(e: MouseEvent) {
     thumbSize: scrollInfo.value.horizontalThumbWidth,
   }
 
-  document.addEventListener('mousemove', onDragMove)
-  document.addEventListener('mouseup', endDrag, { once: true })
+  on(document, 'mousemove', onDragMove)
+  once(document, 'mouseup', endDrag)
 
   // 添加禁止选择类
   document.body.classList.add('select-none')
@@ -291,7 +292,7 @@ function onDragMove(e: MouseEvent) {
 function endDrag() {
   dragState.value.isDragging = false
   dragState.value.direction = null // 重置方向
-  document.removeEventListener('mousemove', onDragMove)
+  off(document, 'mousemove', onDragMove)
 
   // 移除禁止选择类
   document.body.classList.remove('select-none')
@@ -311,15 +312,15 @@ onMounted(async () => {
     return
   }
 
-  scrollContainer.value.addEventListener('scroll', onContainerScroll, { passive: true })
-  window.addEventListener('resize', updateScrollbarMetrics, { passive: true })
+  on(scrollContainer.value, 'scroll', onContainerScroll, { passive: true })
+  on(window, 'resize', updateScrollbarMetrics, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  scrollContainer.value.removeEventListener('scroll', onContainerScroll)
-  window.removeEventListener('resize', updateScrollbarMetrics)
-  document.removeEventListener('mousemove', onDragMove)
-  document.removeEventListener('mouseup', endDrag)
+  off(scrollContainer.value, 'scroll', onContainerScroll)
+  off(window, 'resize', updateScrollbarMetrics)
+  off(document, 'mousemove', onDragMove)
+  off(document, 'mouseup', endDrag)
   document.body.classList.remove('select-none')
 })
 

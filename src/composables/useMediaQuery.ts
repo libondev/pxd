@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 import { onUnmounted, shallowRef } from 'vue'
+import { on } from '../utils/events'
 
 export function useMediaQuery(query: string): Ref<boolean> {
   const matches = shallowRef(false)
@@ -15,11 +16,9 @@ export function useMediaQuery(query: string): Ref<boolean> {
     matches.value = event.matches
   }
 
-  mediaQuery.addEventListener('change', handler, { passive: true })
+  const unbindEvent = on(mediaQuery, 'change', handler, { passive: true })
 
-  onUnmounted(() => {
-    mediaQuery.removeEventListener('change', handler)
-  })
+  onUnmounted(unbindEvent)
 
   return matches
 }

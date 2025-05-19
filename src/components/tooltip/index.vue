@@ -4,6 +4,7 @@ import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
 import { useResizeObserver } from '../../composables/useResizeObserver'
 import { isTouchDevice } from '../../utils/device'
+import { off, on } from '../../utils/events'
 import { throttle, THROTTLE_GAP } from '../../utils/fn'
 
 interface Props {
@@ -151,13 +152,13 @@ function setupTrigger() {
   const trigger = props.trigger
 
   if (trigger === 'hover') {
-    triggerRef.value.addEventListener('mouseenter', showTooltip)
-    triggerRef.value.addEventListener('mouseleave', hideTooltip)
+    on(triggerRef.value, 'mouseenter', showTooltip)
+    on(triggerRef.value, 'mouseleave', hideTooltip)
   } else if (trigger === 'focus') {
-    triggerRef.value.addEventListener('focus', showTooltip)
-    triggerRef.value.addEventListener('blur', hideTooltip)
+    on(triggerRef.value, 'focus', showTooltip)
+    on(triggerRef.value, 'blur', hideTooltip)
   } else if (trigger === 'click') {
-    triggerRef.value.addEventListener('click', () => {
+    on(triggerRef.value, 'click', () => {
       if (isVisible.value) {
         hideTooltip()
       } else {
@@ -171,7 +172,7 @@ function setupTrigger() {
       }
     }
 
-    document.addEventListener('click', documentClickHandler)
+    on(document, 'click', documentClickHandler)
   }
 }
 
@@ -197,11 +198,11 @@ function showTooltip() {
       intersectionObserver.observer?.observe(triggerRef.value!)
 
       // 添加滚动监听
-      window.addEventListener('scroll', handleScroll, true)
+      on(window, 'scroll', handleScroll)
 
       if (props.enterable && tooltipRef.value && props.trigger === 'hover') {
-        tooltipRef.value.addEventListener('mouseenter', onTooltipMouseEnter)
-        tooltipRef.value.addEventListener('mouseleave', onTooltipMouseLeave)
+        on(tooltipRef.value, 'mouseenter', onTooltipMouseEnter)
+        on(tooltipRef.value, 'mouseleave', onTooltipMouseLeave)
       }
     })
   }, props.showDelay)
@@ -229,13 +230,11 @@ function hideTooltip() {
     intersectionObserver.observer?.unobserve(triggerRef.value!)
 
     // 移除tooltip鼠标事件
-    if (tooltipRef.value) {
-      tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
-      tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
-    }
+    off(tooltipRef.value!, 'mouseenter', onTooltipMouseEnter)
+    off(tooltipRef.value!, 'mouseleave', onTooltipMouseLeave)
 
     // 移除滚动监听
-    window.removeEventListener('scroll', handleScroll, true)
+    off(window, 'scroll', handleScroll)
   }, props.hideDelay)
 }
 
@@ -263,27 +262,27 @@ function unbindEvents() {
   if (triggerRef.value) {
     const trigger = props.trigger
     if (trigger === 'hover') {
-      triggerRef.value.removeEventListener('mouseenter', showTooltip)
-      triggerRef.value.removeEventListener('mouseleave', hideTooltip)
+      off(triggerRef.value, 'mouseenter', showTooltip)
+      off(triggerRef.value, 'mouseleave', hideTooltip)
     } else if (trigger === 'focus') {
-      triggerRef.value.removeEventListener('focus', showTooltip)
-      triggerRef.value.removeEventListener('blur', hideTooltip)
+      off(triggerRef.value, 'focus', showTooltip)
+      off(triggerRef.value, 'blur', hideTooltip)
     } else if (trigger === 'click') {
-      triggerRef.value.removeEventListener('click', showTooltip)
+      off(triggerRef.value, 'click', showTooltip)
     }
   }
 
   if (documentClickHandler) {
-    document.removeEventListener('click', documentClickHandler)
+    off(document, 'click', documentClickHandler)
   }
 
   if (tooltipRef.value) {
-    tooltipRef.value.removeEventListener('mouseenter', onTooltipMouseEnter)
-    tooltipRef.value.removeEventListener('mouseleave', onTooltipMouseLeave)
+    off(tooltipRef.value, 'mouseenter', onTooltipMouseEnter)
+    off(tooltipRef.value, 'mouseleave', onTooltipMouseLeave)
   }
 
-  window.removeEventListener('scroll', handleScroll, true)
-  window.removeEventListener('resize', throttledCalculatePosition)
+  off(window, 'scroll', handleScroll)
+  off(window, 'resize', throttledCalculatePosition)
 }
 
 function cleanupTimer() {
