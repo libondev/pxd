@@ -93,7 +93,7 @@ const formattedGap = computed(() => {
 const formattedDir = computed(() => {
   const { direction } = props
 
-  const defaultBreakpoints: Record<string, string> = { '': 'flex-col' }
+  const defaultBreakpoints: Record<string, string> = { '': props.direction === 'col' ? 'flex-col' : 'flex-row' }
 
   if (typeof direction === 'string') {
     return defaultBreakpoints
@@ -115,7 +115,7 @@ const computedClasses = computed(() => {
 
   basic.push(
     ...Object.values(formattedDir.value),
-    Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]).join(' '),
+    ...Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]),
   )
 
   return basic.join(' ')
