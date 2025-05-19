@@ -2,8 +2,8 @@
 import { computed, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useDelayChange } from '../../composables/useDelayChange'
-import { getStateColor } from '../../utils/colors'
-import { getAllDatesBetween } from '../../utils/date'
+import { getColorByThreshold } from '../../utils/colors'
+import { getAllDatesBetween } from '../../utils/dates'
 
 interface Props {
   data?: Array<{ date: string, count: number }>
@@ -82,7 +82,7 @@ const config = useConfigProvider()
 const CELL_GAP = 3
 const CELL_SIZE = 12
 
-const allDates = computed(() => getAllDatesBetween(props.startDate, props.endDate))
+const rangedDates = computed(() => getAllDatesBetween(props.startDate, props.endDate))
 
 const dateCountMap = computed(() => {
   return props.data.reduce((acc, cur) => {
@@ -111,7 +111,7 @@ const tableHeadList = computed(() => {
 
 /** 创建月份表头 */
 function createMonthHeaders() {
-  const dates = allDates.value.dates
+  const dates = rangedDates.value.dates
   const colCount = Math.ceil(dates.length / 7)
   const result = Array.from({ length: colCount }, () => '')
 
@@ -119,7 +119,7 @@ function createMonthHeaders() {
   const firstDate = new Date(dates[0])
   result[0] = config.locale.date.month[firstDate.getMonth()]
 
-  const firstDayOfWeek = firstDate.getDay()
+  const firstDayOfWeek = rangedDates.value.weeks[0]
   let currentMonth = firstDate.getMonth()
 
   // 标记每个月第一天的列
@@ -153,7 +153,7 @@ const tableBodyList = computed<RowData[]>(() => {
 /** 创建转置模式的表格数据（行为日期，列为星期） */
 function createTransposedTableData(): RowData[] {
   const dataMap = dateCountMap.value
-  const dateList = allDates.value.dates
+  const dateList = rangedDates.value.dates
   const dateListLength = dateList.length
 
   const monthRows: RowData[] = []
@@ -191,7 +191,7 @@ function createTransposedTableData(): RowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getStateColor(count, props.colors),
+      color: getColorByThreshold(count, props.colors),
     })
 
     // 记录月份变化
@@ -228,9 +228,9 @@ function createTransposedTableData(): RowData[] {
 /** 创建标准模式的表格数据（行为星期，列为日期） */
 function createStandardTableData(): RowData[] {
   const dataMap = dateCountMap.value
-  const dateList = allDates.value.dates
+  const dateList = rangedDates.value.dates
   const dateListLength = dateList.length
-  const firstDayOfWeek = new Date(dateList[0]).getDay()
+  const firstDayOfWeek = rangedDates.value.weeks[0]
 
   // 初始化7行（代表星期几）
   const result: RowData[] = Array.from({ length: 7 }, (_, i) => {
@@ -263,7 +263,7 @@ function createStandardTableData(): RowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getStateColor(count, props.colors),
+      color: getColorByThreshold(count, props.colors),
     })
   }
 

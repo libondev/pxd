@@ -3,7 +3,7 @@ import type { ComponentSizeWithXs } from '../../types/components'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
-import { getStateColor } from '../../utils/colors'
+import { getColorByThreshold } from '../../utils/colors'
 
 interface Props {
   modelValue?: number | null
@@ -131,7 +131,7 @@ const progressColors = computed(() => {
     primaryColor = 'hsl(var(--color-gray-200-value))'
     secondaryColor = 'hsl(var(--color-gray-200-value))'
   } else if (!primaryColor) {
-    primaryColor = getStateColor(progress.value, colors) || colors.primary
+    primaryColor = getColorByThreshold(progress.value, colors) || colors.primary
   }
 
   return {

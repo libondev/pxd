@@ -3,7 +3,7 @@ import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
-import { getStateColor } from '../../utils/colors'
+import { getColorByThreshold } from '../../utils/colors'
 
 interface Props {
   min?: number
@@ -76,7 +76,7 @@ const computedColors = computed(() => {
   const { colors, variant } = props
 
   if (colors) {
-    return getStateColor(progress.value, colors) || VARIANTS_COLORS[variant]
+    return getColorByThreshold(progress.value, colors) || VARIANTS_COLORS[variant]
   }
 
   return VARIANTS_COLORS[variant]

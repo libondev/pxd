@@ -1,9 +1,9 @@
 /* eslint-disable no-unmodified-loop-condition */
 
 interface Result<T> {
-  years: string[]
-  months: string[]
-  weeks: string[]
+  years: number[]
+  months: number[]
+  weeks: number[]
   dates: T[]
 }
 
@@ -32,7 +32,7 @@ export function getAllDatesBetween(
   startDate: Date | string,
   endDate: Date | string,
   format: 'string' | 'object' = 'string',
-) {
+): Result<string | Date> {
   // 确保输入是Date对象
   let start = startDate instanceof Date ? startDate : new Date(startDate)
   let end = endDate instanceof Date ? endDate : new Date(endDate)
@@ -74,9 +74,9 @@ export function getAllDatesBetween(
   }
 
   return {
-    years: Array.from(years, String),
-    months: Array.from(months, String),
-    weeks: Array.from(weeks, String),
+    years: Array.from(years),
+    months: Array.from(months),
+    weeks: Array.from(weeks),
     dates,
   }
 }

@@ -1,7 +1,7 @@
-export function getStateColor(
+export function getColorByThreshold(
   value: number,
   colors: Record<string, string>,
-) {
+): string {
   const keys = Object.keys(colors)
   const keyLength = keys.length
 
