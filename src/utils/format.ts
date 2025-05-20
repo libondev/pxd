@@ -32,12 +32,13 @@ export function toArray(value: unknown | unknown[]) {
   return [value]
 }
 
+const CSS_UNIT_REGEX = /^\d+$/
 export function getCssUnitValue(value?: string | number) {
   if (value === undefined) {
     return undefined
   }
 
-  if (typeof value === 'number') {
+  if (typeof value === 'number' || CSS_UNIT_REGEX.test(value)) {
     return `${value}px`
   }
 

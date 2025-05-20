@@ -12,6 +12,10 @@
     "name": "badge"
   },
   {
+    "camelized": "Book",
+    "name": "book"
+  },
+  {
     "camelized": "Button",
     "name": "button"
   },
