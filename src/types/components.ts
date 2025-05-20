@@ -12,6 +12,8 @@ export type ComponentBreakpoint = Record<ComponentBreakpointKeys, string>
 export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterLink' | VNode
 export type ComponentLabel = string | number | readonly string[] | null
 
+export type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
+
 export interface ButtonProps {
   as?: ComponentAs
   variant?: ComponentVariantWithDefault | 'ghost' | 'simple'

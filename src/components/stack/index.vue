@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import type { ComponentAs, ComponentBreakpointKeys } from '../../types/components'
+import type { ComponentAs, ResponsiveValue } from '../../types/components'
 import { computed } from 'vue'
-
-type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
 
 export interface Props {
   as?: ComponentAs
