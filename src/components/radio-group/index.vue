@@ -3,8 +3,8 @@ import type { ComponentOptions } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
-import Radio from '../radio/index.vue'
-import Stack from '../stack/index.vue'
+import PRadio from '../radio/index.vue'
+import PStack from '../stack/index.vue'
 
 interface Props {
   disabled?: boolean
@@ -39,9 +39,9 @@ provide('radioGroupProps', props)
 </script>
 
 <template>
-  <Stack class="pxd-radio-group">
+  <PStack class="pxd-radio-group">
     <slot>
-      <Radio
+      <PRadio
         v-for="option in options"
         :key="option.value"
         v-model="modelValue"
@@ -50,5 +50,5 @@ provide('radioGroupProps', props)
         :disabled="option.disabled"
       />
     </slot>
-  </Stack>
+  </PStack>
 </template>

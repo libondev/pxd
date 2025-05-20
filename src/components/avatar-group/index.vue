@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, provide } from 'vue'
-import Avatar from '../avatar/index.vue'
+import PAvatar from '../avatar/index.vue'
 
 interface AvatarGroupOptions {
   src?: string
@@ -34,7 +34,7 @@ provide('groupSize', props.size)
 
 <template>
   <div class="pxd-avatar-group flex flex-wrap items-center">
-    <Avatar
+    <PAvatar
       v-for="(option, index) in slicedOptions"
       :key="index"
       :size="size"
@@ -44,8 +44,8 @@ provide('groupSize', props.size)
       class="[&:nth-child(n+2)]:-ml-3"
     />
 
-    <Avatar v-if="slicedOptions.length < options.length" class="text-xs bg-gray-1000 text-gray-100 -ml-3">
+    <PAvatar v-if="slicedOptions.length < options.length" class="text-xs bg-gray-1000 text-gray-100 -ml-3">
       +{{ options.length - slicedOptions.length }}
-    </Avatar>
+    </PAvatar>
   </div>
 </template>

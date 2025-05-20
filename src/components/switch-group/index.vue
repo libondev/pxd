@@ -4,7 +4,7 @@ import { provide } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
-import Switch from '../switch/index.vue'
+import PSwitch from '../switch/index.vue'
 
 interface Props {
   block?: boolean
@@ -52,7 +52,7 @@ provide('switchGroupModelValue', modelValue)
 <template>
   <div class="pxd-switch-group rounded-md flex border p-1" :class="[block ? 'w-full' : 'w-max', computedSize]">
     <slot>
-      <Switch
+      <PSwitch
         v-for="option in options"
         :key="option.value"
         v-model="modelValue"

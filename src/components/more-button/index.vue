@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { useModelValue } from '../../composables/useModelValue'
-import Button from '../button/index.vue'
+import PButton from '../button/index.vue'
 
 interface Props {
   moreText?: string
   lessText?: string
   modelValue?: boolean
-  buttonProps?: InstanceType<typeof Button>['$props']
+  buttonProps?: InstanceType<typeof PButton>['$props']
 }
 
 defineOptions({
@@ -48,13 +48,13 @@ function onToggleExpand() {
 
 <template>
   <div class="pxd-more-button w-full flex items-center px-4 mt-4">
-    <Button class="relative z-10" v-bind="getButtonProps()" @click="onToggleExpand">
+    <PButton class="relative z-10" v-bind="getButtonProps()" @click="onToggleExpand">
       {{ isExpanded ? lessText : moreText }}
 
       <template #suffix>
         <ChevronDownIcon class="-ml-0.5 motion-safe:transition-transform motion-safe:duration-200" :class="{ 'rotate-180': isExpanded }" />
       </template>
-    </Button>
+    </PButton>
   </div>
 </template>
 

@@ -2,7 +2,7 @@
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { customRef } from 'vue'
-import Button from '../button/index.vue'
+import PButton from '../button/index.vue'
 
 interface Props {
   block?: boolean
@@ -58,7 +58,7 @@ function toggleColorMode() {
 </script>
 
 <template>
-  <Button
+  <PButton
     aria-label="Toggle color mode"
     :block="block"
     class="pxd-theme-switcher"
@@ -68,12 +68,11 @@ function toggleColorMode() {
     <Transition name="rotate-scale" mode="out-in">
       <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
     </Transition>
-  </Button>
+  </PButton>
 </template>
 
 <style>
 @media (prefers-reduced-motion: no-preference) {
-
   .rotate-scale-enter-active,
   .rotate-scale-leave-active {
     transition: transform 0.15s ease-out;

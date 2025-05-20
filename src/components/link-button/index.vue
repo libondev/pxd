@@ -2,7 +2,7 @@
 import ExternalIcon from '@gdsicon/vue/external'
 import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
-import Button from '../button/index.vue'
+import PButton from '../button/index.vue'
 
 interface Props {
   href: string
@@ -92,7 +92,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <Button
+  <PButton
     :class="computedClasses"
     v-bind="computedAttrs"
     @click="onLinkClick"
@@ -109,5 +109,5 @@ function onLinkClick(ev: MouseEvent) {
       <slot name="suffix" />
       <ExternalIcon v-if="externalIcon" class="opacity-50 scale-y-90" />
     </template>
-  </Button>
+  </PButton>
 </template>

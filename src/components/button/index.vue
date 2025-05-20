@@ -3,7 +3,7 @@ import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useComputedSize } from '../../composables/useComputedSize'
-import Spinner from '../spinner/index.vue'
+import PSpinner from '../spinner/index.vue'
 
 defineOptions({
   name: 'PButton',
@@ -100,7 +100,7 @@ function onButtonDblClick(event: MouseEvent) {
     @click="onButtonClick"
     @dblclick.prevent="onButtonDblClick"
   >
-    <Spinner v-if="loading" />
+    <PSpinner v-if="loading" />
 
     <slot name="prefix" />
 

@@ -2,8 +2,8 @@
 import type { ComponentOptions } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import Checkbox from '../checkbox/index.vue'
-import Stack from '../stack/index.vue'
+import PCheckbox from '../checkbox/index.vue'
+import PStack from '../stack/index.vue'
 
 interface Props {
   disabled?: boolean
@@ -51,9 +51,9 @@ defineExpose({
 </script>
 
 <template>
-  <Stack class="pxd-checkbox-group">
+  <PStack class="pxd-checkbox-group">
     <slot>
-      <Checkbox
+      <PCheckbox
         v-for="option in options"
         :key="option.value"
         v-model="modelValue"
@@ -62,5 +62,5 @@ defineExpose({
         :disabled="option.disabled"
       />
     </slot>
-  </Stack>
+  </PStack>
 </template>

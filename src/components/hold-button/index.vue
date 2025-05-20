@@ -2,7 +2,7 @@
 import type { ButtonProps } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { off, once } from '../../utils/events'
-import Button from '../button/index.vue'
+import PButton from '../button/index.vue'
 
 interface Props extends Omit<ButtonProps, 'as'> {
   scalable?: boolean
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Button
+  <PButton
     v-bind="computedAttrs"
     @pointerdown="onPointerDown"
     @pointerenter="onPointerEnter"
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
         @transitionend="onTransitionEnd"
       />
     </template>
-  </Button>
+  </PButton>
 </template>
 
 <style lang="postcss">

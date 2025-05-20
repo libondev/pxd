@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import InformationIcon from '@gdsicon/vue/information-fill-small'
-import Tooltip from '../tooltip/index.vue'
+import PTooltip from '../tooltip/index.vue'
 
 interface Props {
   title?: string
@@ -22,9 +22,9 @@ defineProps<Props>()
         {{ title }}
       </slot>
 
-      <Tooltip v-if="tooltip" :content="tooltip">
+      <PTooltip v-if="tooltip" :content="tooltip">
         <InformationIcon class="ml-1" />
-      </Tooltip>
+      </PTooltip>
     </dt>
     <dd data-pxd-description-content class="text-sm text-foreground font-medium leading-4">
       <slot name="content">
