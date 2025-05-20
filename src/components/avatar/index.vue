@@ -57,8 +57,8 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar inline-flex items-center justify-center relative rounded-full border border-white select-none size-(--s)"
-    :style="{ '--s': computedSize }"
+    class="pxd-avatar inline-flex items-center justify-center relative rounded-full border border-white select-none"
+    :style="{ '--size': computedSize }"
   >
     <slot>
       <img
@@ -89,6 +89,9 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-avatar {
+  width: var(--size);
+  height: var(--size);
+
   &::before,
   &::after {
     content: '';
