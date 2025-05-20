@@ -76,6 +76,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   teardown()
+  unwatchChildrenUpdate()
 })
 </script>
 

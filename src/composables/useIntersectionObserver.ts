@@ -1,5 +1,10 @@
+// https://github.com/vueuse/vueuse/blob/main/packages/core/useIntersectionObserver/index.ts
+
 import type { MaybeRef } from 'vue'
-import { onBeforeUnmount, unref, watch } from 'vue'
+import { computed, onBeforeUnmount, toValue, watch } from 'vue'
+import { notNullish } from '../utils/filter'
+import { toArray } from '../utils/format'
+import { unrefElement } from '../utils/unref'
 
 interface UseIntersectionObserverReturnType {
   observer: IntersectionObserver | undefined
@@ -7,10 +12,13 @@ interface UseIntersectionObserverReturnType {
 }
 
 export function useIntersectionObserver(
-  target: MaybeRef<HTMLElement | null | undefined>,
+  target: MaybeRef<HTMLElement | null | undefined> | MaybeRef<HTMLElement | null | undefined>[],
   callback: (entries: IntersectionObserverEntry) => void,
+  options?: IntersectionObserverInit,
 ): UseIntersectionObserverReturnType {
-  let observer: IntersectionObserver | undefined
+  let observer: UseIntersectionObserverReturnType['observer']
+
+  const targets = computed(() => toArray(toValue(target)).map(unrefElement).filter(notNullish))
 
   const cleanup = () => {
     if (!observer) {
@@ -22,8 +30,8 @@ export function useIntersectionObserver(
   }
 
   const unwatch = watch(
-    () => unref(target),
-    (newVal, oldVal) => {
+    () => [targets.value],
+    ([newTargets]) => {
       if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
         return
       }
@@ -32,15 +40,9 @@ export function useIntersectionObserver(
 
       observer = new IntersectionObserver((entries) => {
         entries.forEach(callback)
-      })
+      }, options)
 
-      if (oldVal) {
-        observer.unobserve(oldVal)
-      }
-
-      if (newVal) {
-        observer.observe(newVal)
-      }
+      newTargets.forEach(el => observer!.observe(el))
     },
     {
       immediate: true,

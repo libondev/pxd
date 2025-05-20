@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
 import { getElementRectFromContainer } from '../../utils/dom'
 import { off, on } from '../../utils/events'
 import { toArray } from '../../utils/format'
@@ -62,16 +63,33 @@ const emits = defineEmits<{
   hide: []
 }>()
 
-const isVisible = shallowRef(props.visible)
-const triggerRef = shallowRef<HTMLElement>()
-const contentRef = shallowRef<HTMLElement>()
-const containerStyle = shallowRef({} as PopoverContainerStyle)
-
 let rootRect: DOMRect | null = null
 let triggerRect: DOMRect | null = null
+let triggerVisible = true
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
+
+const isVisible = shallowRef(props.visible)
+const triggerRef = shallowRef<HTMLElement>()
+const containerRef = shallowRef<HTMLElement>()
+const positionInternal = shallowRef(props.position)
+const containerStyle = shallowRef({} as PopoverContainerStyle)
+
+useIntersectionObserver([triggerRef, containerRef], (e) => {
+  if (e.target === triggerRef.value) {
+    triggerVisible = e.isIntersecting
+
+    return
+  }
+
+  if (triggerVisible && e.intersectionRatio < 1) {
+    reversePosition()
+    updateContentPosition()
+  }
+}, {
+  threshold: [0.5, 1.0],
+})
 
 const triggerMethods = computed(() => toArray(props.trigger))
 
@@ -79,12 +97,12 @@ function handlePopoverShow() {
   return new Promise((resolve) => {
     clearTimeout(hidePopoverTimer)
     clearTimeout(showPopoverTimer)
+
     showPopoverTimer = setTimeout(() => {
       updateContentPosition()
       isVisible.value = true
-      emits('show')
-
       resolve(true)
+      emits('show')
     }, props.showDelay)
   })
 }
@@ -93,11 +111,14 @@ function handlePopoverHide() {
   return new Promise((resolve) => {
     clearTimeout(showPopoverTimer)
     clearTimeout(hidePopoverTimer)
+
     hidePopoverTimer = setTimeout(() => {
       isVisible.value = false
+      resolve(true)
       emits('hide')
 
-      resolve(true)
+      // 关闭时重置方向，避免下次打开时方向不正确
+      positionInternal.value = props.position
     }, props.hideDelay)
   })
 }
@@ -192,7 +213,7 @@ function onTriggerContextmenu(ev: MouseEvent) {
 function onClickOutsideToHide(ev: MouseEvent) {
   const target = ev.target as HTMLElement
 
-  if (!triggerRef.value?.contains(target) && !contentRef.value?.contains(target)) {
+  if (!triggerRef.value?.contains(target) && !containerRef.value?.contains(target)) {
     handlePopoverHide()
   }
 }
@@ -218,7 +239,8 @@ function onContentPointerLeave() {
 }
 
 function updateContentPosition() {
-  const { offset, position, arrowColor, maxWidth } = props
+  const position = positionInternal.value
+  const { offset, arrowColor, maxWidth } = props
   const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, rootRect!)
 
   const isVertical = position.startsWith('top') || position.startsWith('bottom')
@@ -292,6 +314,19 @@ function updateContentPosition() {
   }
 }
 
+// 当屏幕可用空间不足时反转方向
+function reversePosition() {
+  if (positionInternal.value.startsWith('top')) {
+    positionInternal.value = positionInternal.value.replace('top', 'bottom') as Position
+  } else if (positionInternal.value.startsWith('bottom')) {
+    positionInternal.value = positionInternal.value.replace('bottom', 'top') as Position
+  } else if (positionInternal.value.startsWith('left')) {
+    positionInternal.value = positionInternal.value.replace('left', 'right') as Position
+  } else if (positionInternal.value.startsWith('right')) {
+    positionInternal.value = positionInternal.value.replace('right', 'left') as Position
+  }
+}
+
 watch(
   () => props.visible,
   (visible) => {
@@ -302,6 +337,7 @@ watch(
 
 onBeforeUnmount(() => {
   off(document, 'click', onClickOutsideToHide)
+  off(document, 'contextmenu', onTriggerContextmenu)
   clearTimeout(showPopoverTimer)
   clearTimeout(hidePopoverTimer)
 })
@@ -332,10 +368,10 @@ defineExpose({
       <Transition name="pxd-transition--fade">
         <div
           v-if="isVisible"
-          ref="contentRef"
+          ref="containerRef"
           :style="containerStyle"
-          :data-position="position"
-          class="pxd-popover__container isolate absolute -left-full -top-full z-10"
+          :data-position="positionInternal"
+          class="pxd-popover__container isolate absolute z-10"
           :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
@@ -353,6 +389,9 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover__container {
+  top: -100%;
+  left: -100%;
+
   &[data-position^='top'] {
     padding-bottom: var(--offset);
   }
