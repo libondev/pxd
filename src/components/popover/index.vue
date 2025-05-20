@@ -24,10 +24,11 @@ interface Props {
   arrowColor?: string
   triggerClass?: string
   popoverClass?: string
+  popoverStyle?: CSSProperties | string
   maxWidth?: number
 }
 
-interface PopoverStyle extends CSSProperties {
+interface PopoverContainerStyle extends CSSProperties {
   'top': string
   'left': string
   'transform': string
@@ -62,7 +63,7 @@ const emits = defineEmits<{
 const isVisible = shallowRef(props.visible)
 const triggerRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
-const popoverStyle = shallowRef({} as PopoverStyle)
+const containerStyle = shallowRef({} as PopoverContainerStyle)
 
 let rootRect: DOMRect | null = null
 let triggerRect: DOMRect | null = null
@@ -279,7 +280,7 @@ function updateContentPosition() {
     }
   }
 
-  popoverStyle.value = {
+  containerStyle.value = {
     left,
     top,
     transform,
@@ -330,14 +331,14 @@ defineExpose({
         <div
           v-if="isVisible"
           ref="contentRef"
-          :style="popoverStyle"
+          :style="containerStyle"
           :data-position="position"
           class="pxd-popover__container isolate absolute -left-full -top-full z-10"
-          :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }, popoverClass]"
+          :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
-          <div class="pxd-popover__content">
+          <div class="pxd-popover__content" :class="popoverClass" :style="popoverStyle">
             <slot name="content">
               {{ content }}
             </slot>
