@@ -64,6 +64,10 @@
     "name": "note"
   },
   {
+    "camelized": "Popover",
+    "name": "popover"
+  },
+  {
     "camelized": "Progress",
     "name": "progress"
   },
