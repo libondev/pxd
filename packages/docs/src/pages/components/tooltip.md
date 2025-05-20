@@ -200,7 +200,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
     </PTooltip>
 
     <PTooltip content="The Evil Rabbit Jumped over the Fence" desktop-only>
-      <PButton>Only show on desktop.</PButton>
+      <PButton>Only show on desktop</PButton>
     </PTooltip>
   </PStack>
 </template>

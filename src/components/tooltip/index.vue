@@ -1,24 +1,15 @@
 <script lang="ts" setup>
+import type { CSSProperties } from 'vue'
 import type { ComponentVariant } from '../../types/components'
-import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
-import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
-import { useResizeObserver } from '../../composables/useResizeObserver'
-import { isTouchDevice } from '../../utils/device'
-import { off, on } from '../../utils/events'
-import { throttle, THROTTLE_GAP } from '../../utils/fn'
+import { computed } from 'vue'
+import PPopover from '../popover/index.vue'
 
 interface Props {
-  width?: string
   content?: string
-  showDelay?: number
-  hideDelay?: number
-  disabled?: boolean
-  enterable?: boolean
-  showArrow?: boolean
   desktopOnly?: boolean
+  popoverClass?: string
+  popoverStyle?: CSSProperties | string
   variant?: ComponentVariant
-  trigger?: 'hover' | 'click' | 'focus'
-  position?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 defineOptions({
@@ -28,14 +19,9 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    showDelay: 200,
-    hideDelay: 100,
-    width: 'auto',
-    position: 'top',
-    enterable: true,
-    showArrow: true,
-    trigger: 'hover',
     variant: 'primary',
+    popoverClass: '',
+    popoverStyle: '',
   },
 )
 
@@ -46,366 +32,34 @@ const VARIANTS = {
   success: 'var(--color-green-700)',
 }
 
-interface TooltipStyle {
-  left: string
-  top: string
-}
-
-const isVisible = shallowRef(false)
-const tooltipRef = shallowRef<HTMLElement>()
-const triggerRef = shallowRef<HTMLElement>()
-const tooltipStyle = shallowRef({} as TooltipStyle)
-
-const computedDisabled = computed(() => {
-  return props.disabled || (props.desktopOnly && isTouchDevice())
+const computedPopoverClass = computed(() => {
+  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--arrow-color)'].concat(props.popoverClass).join(' ')
 })
 
-const throttledCalculatePosition = throttle(calculatePosition, THROTTLE_GAP)
-
-const resizeObserver = useResizeObserver(triggerRef, throttledCalculatePosition)
-const intersectionObserver = useIntersectionObserver(triggerRef, throttledCalculatePosition)
-
-const computedTooltipStyles = computed(() => {
-  const bgColor = VARIANTS[props.variant] || VARIANTS.primary
-
-  return {
-    'width': props.width,
-    ...tooltipStyle.value,
-    '--arrow-color': bgColor,
-    'backgroundColor': bgColor,
-    'color': props.variant === 'warning' ? 'var(--color-gray-1000)' : undefined,
-  }
-})
-
-let lastMouseX = 0
-let lastMouseY = 0
-let isMouseInTooltip = false
-let isMouseInTrigger = false
-
-function calculatePosition() {
-  if (!triggerRef.value || !tooltipRef.value) {
-    return
-  }
-
-  const triggerRect = triggerRef.value.getBoundingClientRect()
-  const tooltipRect = tooltipRef.value.getBoundingClientRect()
-  const position = props.position
-
-  let left = 0
-  let top = 0
-
-  switch (position) {
-    case 'top':
-      left = triggerRect.left + (triggerRect.width / 2) - (tooltipRect.width / 2)
-      top = triggerRect.top - tooltipRect.height - 8
-      break
-    case 'right':
-      left = triggerRect.right + 8
-      top = triggerRect.top + (triggerRect.height / 2) - (tooltipRect.height / 2)
-      break
-    case 'bottom':
-      left = triggerRect.left + (triggerRect.width / 2) - (tooltipRect.width / 2)
-      top = triggerRect.bottom + 8
-      break
-    case 'left':
-      left = triggerRect.left - tooltipRect.width - 8
-      top = triggerRect.top + (triggerRect.height / 2) - (tooltipRect.height / 2)
-      break
-  }
-
-  // ensure tooltip is in viewport
-  const viewportWidth = window.innerWidth
-  const viewportHeight = window.innerHeight
-
-  if (left < 0) {
-    left = 0
-  }
-
-  if (top < 0) {
-    top = 0
-  }
-
-  if (left + tooltipRect.width > viewportWidth) {
-    left = viewportWidth - tooltipRect.width
-  }
-
-  if (top + tooltipRect.height > viewportHeight) {
-    top = viewportHeight - tooltipRect.height
-  }
-
-  tooltipStyle.value = {
-    left: `${left}px`,
-    top: `${top}px`,
-  }
-}
-
-let showTimer: number | null = null
-let hideTimer: number | null = null
-
-let documentClickHandler: ((e: MouseEvent) => void) | null = null
-
-function setupTrigger() {
-  if (!triggerRef.value) {
-    return
-  }
-
-  const trigger = props.trigger
-
-  if (trigger === 'hover') {
-    on(triggerRef.value, 'mouseenter', showTooltip)
-    on(triggerRef.value, 'mouseleave', hideTooltip)
-  } else if (trigger === 'focus') {
-    on(triggerRef.value, 'focus', showTooltip)
-    on(triggerRef.value, 'blur', hideTooltip)
-  } else if (trigger === 'click') {
-    on(triggerRef.value, 'click', () => {
-      if (isVisible.value) {
-        hideTooltip()
-      } else {
-        showTooltip()
-      }
-    })
-
-    documentClickHandler = (e: MouseEvent) => {
-      if (isVisible.value && triggerRef.value && !triggerRef.value.contains(e.target as Node)) {
-        hideTooltip()
-      }
-    }
-
-    on(document, 'click', documentClickHandler)
-  }
-}
-
-function showTooltip() {
-  if (computedDisabled.value) {
-    return
-  }
-
-  isMouseInTrigger = true
-
-  if (hideTimer) {
-    clearTimeout(hideTimer)
-    hideTimer = null
-  }
-
-  showTimer = window.setTimeout(() => {
-    isVisible.value = true
-    nextTick(() => {
-      calculatePosition() // 首次计算位置
-
-      // 同时使用两种方式
-      resizeObserver.observer?.observe(triggerRef.value!)
-      intersectionObserver.observer?.observe(triggerRef.value!)
-
-      // 添加滚动监听
-      on(window, 'scroll', handleScroll)
-
-      if (props.enterable && tooltipRef.value && props.trigger === 'hover') {
-        on(tooltipRef.value, 'mouseenter', onTooltipMouseEnter)
-        on(tooltipRef.value, 'mouseleave', onTooltipMouseLeave)
-      }
-    })
-  }, props.showDelay)
-}
-
-function hideTooltip() {
-  if (showTimer) {
-    clearTimeout(showTimer)
-    showTimer = null
-  }
-
-  // 如果enterable为true且鼠标在tooltip内，不隐藏
-  if (props.enterable && isMouseInTooltip && props.trigger === 'hover') {
-    return
-  }
-
-  isMouseInTrigger = false
-
-  hideTimer = window.setTimeout(() => {
-    isVisible.value = false
-    isMouseInTooltip = false
-
-    // 移除事件监听
-    resizeObserver.observer?.unobserve(triggerRef.value!)
-    intersectionObserver.observer?.unobserve(triggerRef.value!)
-
-    // 移除tooltip鼠标事件
-    off(tooltipRef.value!, 'mouseenter', onTooltipMouseEnter)
-    off(tooltipRef.value!, 'mouseleave', onTooltipMouseLeave)
-
-    // 移除滚动监听
-    off(window, 'scroll', handleScroll)
-  }, props.hideDelay)
-}
-
-function onTooltipMouseEnter(ev: MouseEvent) {
-  isMouseInTooltip = true
-
-  lastMouseX = ev.clientX
-  lastMouseY = ev.clientY
-
-  if (hideTimer) {
-    clearTimeout(hideTimer)
-    hideTimer = null
-  }
-}
-
-function onTooltipMouseLeave() {
-  isMouseInTooltip = false
-
-  if (!isMouseInTrigger) {
-    hideTooltip()
-  }
-}
-
-function unbindEvents() {
-  if (triggerRef.value) {
-    const trigger = props.trigger
-    if (trigger === 'hover') {
-      off(triggerRef.value, 'mouseenter', showTooltip)
-      off(triggerRef.value, 'mouseleave', hideTooltip)
-    } else if (trigger === 'focus') {
-      off(triggerRef.value, 'focus', showTooltip)
-      off(triggerRef.value, 'blur', hideTooltip)
-    } else if (trigger === 'click') {
-      off(triggerRef.value, 'click', showTooltip)
+const computedPopoverStyle = computed(() => {
+  if (typeof props.popoverStyle === 'string') {
+    return `${props.popoverStyle};--arrow-color: ${VARIANTS[props.variant] || VARIANTS.primary}`
+  } else {
+    return {
+      ...(props.popoverStyle ?? {}),
+      '--arrow-color': VARIANTS[props.variant] || VARIANTS.primary,
     }
   }
-
-  if (documentClickHandler) {
-    off(document, 'click', documentClickHandler)
-  }
-
-  if (tooltipRef.value) {
-    off(tooltipRef.value, 'mouseenter', onTooltipMouseEnter)
-    off(tooltipRef.value, 'mouseleave', onTooltipMouseLeave)
-  }
-
-  off(window, 'scroll', handleScroll)
-  off(window, 'resize', throttledCalculatePosition)
-}
-
-function cleanupTimer() {
-  if (showTimer) {
-    clearTimeout(showTimer)
-    showTimer = null
-  }
-
-  if (hideTimer) {
-    clearTimeout(hideTimer)
-    hideTimer = null
-  }
-}
-
-function handleScroll() {
-  // 先执行原来的位置计算
-  throttledCalculatePosition()
-
-  // 检查鼠标是否还在trigger或tooltip元素上
-  if (isVisible.value) {
-    const mouseX = lastMouseX || 0
-    const mouseY = lastMouseY || 0
-
-    // 检查鼠标是否在trigger元素上
-    let inTrigger = false
-    if (triggerRef.value) {
-      const rect = triggerRef.value.getBoundingClientRect()
-      inTrigger = mouseX >= rect.left && mouseX <= rect.right
-        && mouseY >= rect.top && mouseY <= rect.bottom
-    }
-
-    // 检查鼠标是否在tooltip元素上
-    let inTooltip = false
-    if (tooltipRef.value) {
-      const rect = tooltipRef.value.getBoundingClientRect()
-      inTooltip = mouseX >= rect.left && mouseX <= rect.right
-        && mouseY >= rect.top && mouseY <= rect.bottom
-    }
-
-    // 如果鼠标既不在trigger上也不在tooltip上，则隐藏tooltip
-    if (!inTrigger && !(props.enterable && inTooltip)) {
-      hideTooltip()
-    }
-  }
-}
-
-onMounted(() => {
-  setupTrigger()
-})
-
-onUnmounted(() => {
-  unbindEvents()
-  cleanupTimer()
 })
 </script>
 
 <template>
-  <div class="pxd-tooltip relative inline-flex">
-    <div ref="triggerRef" class="pxd-tooltip--trigger">
-      <slot />
-    </div>
+  <PPopover
+    class="pxd-tooltip"
+    :popover-class="computedPopoverClass"
+    :popover-style="computedPopoverStyle"
+  >
+    <slot />
 
-    <Transition name="pxd-transition--fade">
-      <div
-        v-if="isVisible"
-        ref="tooltipRef"
-        class="pxd-tooltip--content isolate fixed z-10 px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line"
-        :class="{ 'show-arrow': showArrow }"
-        :data-position="position"
-        :style="computedTooltipStyles"
-      >
-        <slot name="content">
-          {{ content }}
-        </slot>
-      </div>
-    </Transition>
-  </div>
+    <template #content>
+      <slot name="content">
+        {{ content }}
+      </slot>
+    </template>
+  </PPopover>
 </template>
-
-<style lang="postcss">
-.pxd-tooltip--content.show-arrow {
-  --arrow-color: var(--color-gray-1000);
-
-  &::after {
-    content: '';
-    position: absolute;
-    border-style: solid;
-  }
-
-  &[data-position='top']::after,
-  &[data-position='bottom']::after {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  &[data-position='left']::after,
-  &[data-position='right']::after {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  &[data-position='top']::after {
-    bottom: -5px;
-    border-width: 6px 6px 0;
-    border-color: var(--arrow-color) transparent transparent;
-  }
-
-  &[data-position='bottom']::after {
-    top: -5px;
-    border-width: 0 6px 6px;
-    border-color: transparent transparent var(--arrow-color);
-  }
-
-  &[data-position='left']::after {
-    right: -5px;
-    border-width: 6px 0 6px 6px;
-    border-color: transparent transparent transparent var(--arrow-color);
-  }
-
-  &[data-position='right']::after {
-    left: -5px;
-    border-width: 6px 6px 6px 0;
-    border-color: transparent var(--arrow-color) transparent transparent;
-  }
-}
-</style>
