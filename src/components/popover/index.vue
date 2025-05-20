@@ -8,7 +8,9 @@ import PTeleport from '../teleport/index.vue'
 
 type TriggerType = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
-type Position = 'top' | 'bottom' | 'left' | 'right' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'left-start' | 'left-end' | 'right-start' | 'right-end'
+type Position = 'top' | 'bottom' | 'left' | 'right'
+  | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end'
+  | 'left-start' | 'left-end' | 'right-start' | 'right-end'
 
 interface Props {
   offset?: number
@@ -16,6 +18,7 @@ interface Props {
   visible?: boolean
   trigger?: TriggerType | TriggerType[]
   disabled?: boolean
+  maxWidth?: number
   position?: Position
   showDelay?: number
   hideDelay?: number
@@ -25,7 +28,6 @@ interface Props {
   triggerClass?: string
   popoverClass?: string
   popoverStyle?: CSSProperties | string
-  maxWidth?: number
 }
 
 interface PopoverContainerStyle extends CSSProperties {

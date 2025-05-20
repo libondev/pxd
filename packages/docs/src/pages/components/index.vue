@@ -15,7 +15,7 @@ import components from '@/consts/components.json'
   <div class="flex flex-wrap gap-5 mt-6">
     <template v-for="{ camelized, name } in components" :key="name">
       <OverviewCard :name="camelized">
-        {{ camelized }}
+        There should be a preview here.
       </OverviewCard>
     </template>
   </div>

@@ -17,7 +17,7 @@ function getPath(name: string) {
       {{ name }}
     </div>
 
-    <div class="p-4 truncate">
+    <div class="p-4 truncate text-sm text-foreground-secondary">
       <slot />
     </div>
   </RouterLink>
