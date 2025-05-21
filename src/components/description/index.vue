@@ -17,13 +17,13 @@ defineProps<Props>()
 
 <template>
   <dl class="pxd-description">
-    <dt data-pxd-description-title class="flex items-center text-sm text-foreground-secondary leading-none mb-2 min-h-3.5 capitalize text-nowrap">
+    <dt data-pxd-description-title class="flex gap-1 items-center text-sm text-foreground-secondary leading-none mb-2 min-h-3.5 capitalize text-nowrap">
       <slot name="title">
         {{ title }}
       </slot>
 
       <PTooltip v-if="tooltip" :content="tooltip" enterable>
-        <InformationIcon class="ml-1" />
+        <InformationIcon class="text-base" />
       </PTooltip>
     </dt>
     <dd data-pxd-description-content class="text-sm text-foreground font-medium leading-4">
