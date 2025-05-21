@@ -38,7 +38,7 @@ The component inherits from popover and supports all the properties of popover. 
 </template>
 ```
 
-## No delay
+## Delay
 
 ```vue demo
 <template>
@@ -46,37 +46,23 @@ The component inherits from popover and supports all the properties of popover. 
     <PTooltip
       :show-delay="0"
       :hide-delay="0"
-      position="left"
       content="The Evil Rabbit Jumped over the Fence"
     >
-      <PButton>Hover me</PButton>
+      <PButton>0ms</PButton>
     </PTooltip>
 
     <PTooltip
-      :show-delay="0"
-      :hide-delay="0"
-      position="top"
       content="The Evil Rabbit Jumped over the Fence"
     >
-      <PButton>Hover me</PButton>
+      <PButton>300ms(default)</PButton>
     </PTooltip>
 
     <PTooltip
-      :show-delay="0"
-      :hide-delay="0"
-      position="bottom"
+      :show-delay="100"
+      :hide-delay="400"
       content="The Evil Rabbit Jumped over the Fence"
     >
-      <PButton>Hover me</PButton>
-    </PTooltip>
-
-    <PTooltip
-      :show-delay="0"
-      :hide-delay="0"
-      position="right"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
-      <PButton>Hover me</PButton>
+      <PButton>Show: 100ms, Hide: 400ms</PButton>
     </PTooltip>
   </PStack>
 </template>
