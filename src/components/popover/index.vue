@@ -29,6 +29,7 @@ interface Props {
   triggerClass?: string
   popoverClass?: string
   popoverStyle?: CSSProperties | string
+  translateOffset?: string | number
 }
 
 interface PopoverContainerStyle extends CSSProperties {
@@ -55,6 +56,7 @@ const props = withDefaults(
     hideDelay: 300,
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
+    translateOffset: 2,
   },
 )
 
@@ -76,22 +78,8 @@ const containerRef = shallowRef<HTMLElement>()
 const positionInternal = shallowRef(props.position)
 const containerStyle = shallowRef({} as PopoverContainerStyle)
 
-useIntersectionObserver([triggerRef, containerRef], (e) => {
-  if (e.target === triggerRef.value) {
-    triggerVisible = e.isIntersecting
-
-    return
-  }
-
-  if (triggerVisible && e.intersectionRatio < 1) {
-    reversePosition()
-    updateContentPosition()
-  }
-}, {
-  threshold: [0.5, 1.0],
-})
-
 const triggerMethods = computed(() => toArray(props.trigger))
+const transitionName = computed(() => `pxd-transition--popover-${positionInternal.value.split('-')[0]}`)
 
 function handlePopoverShow() {
   return new Promise((resolve) => {
@@ -335,6 +323,21 @@ watch(
   },
 )
 
+useIntersectionObserver([triggerRef, containerRef], (e) => {
+  if (e.target === triggerRef.value) {
+    triggerVisible = e.isIntersecting
+
+    return
+  }
+
+  if (triggerVisible && e.intersectionRatio < 1) {
+    reversePosition()
+    updateContentPosition()
+  }
+}, {
+  threshold: [0.5, 1.0],
+})
+
 onBeforeUnmount(() => {
   off(document, 'click', onClickOutsideToHide)
   off(document, 'contextmenu', onTriggerContextmenu)
@@ -365,7 +368,7 @@ defineExpose({
     </div>
 
     <PTeleport>
-      <Transition name="pxd-transition--fade">
+      <Transition :name="transitionName" mode="out-in" :style="{ '--translate-offset': translateOffset }">
         <div
           v-if="isVisible"
           ref="containerRef"
@@ -476,6 +479,50 @@ defineExpose({
     &[data-position='bottom-end'] .pxd-popover__content::after {
       right: 15px;
     }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pxd-transition--popover-top-enter-active,
+  .pxd-transition--popover-top-leave-active,
+  .pxd-transition--popover-bottom-enter-active,
+  .pxd-transition--popover-bottom-leave-active,
+  .pxd-transition--popover-left-enter-active,
+  .pxd-transition--popover-left-leave-active,
+  .pxd-transition--popover-right-enter-active,
+  .pxd-transition--popover-right-leave-active {
+    transition: opacity 0.2s ease-in-out, margin 0.2s ease-in-out;
+  }
+
+  .pxd-transition--popover-top-enter-from,
+  .pxd-transition--popover-top-leave-to,
+  .pxd-transition--popover-bottom-enter-from,
+  .pxd-transition--popover-bottom-leave-to,
+  .pxd-transition--popover-left-enter-from,
+  .pxd-transition--popover-left-leave-to,
+  .pxd-transition--popover-right-enter-from,
+  .pxd-transition--popover-right-leave-to  {
+    opacity: 0;
+  }
+
+  .pxd-transition--popover-top-enter-from,
+  .pxd-transition--popover-top-leave-to {
+    margin-top: calc(-1px * var(--translate-offset));
+  }
+
+  .pxd-transition--popover-bottom-enter-from,
+  .pxd-transition--popover-bottom-leave-to {
+    margin-top: calc(1px * var(--translate-offset));
+  }
+
+  .pxd-transition--popover-left-enter-from,
+  .pxd-transition--popover-left-leave-to {
+    margin-left: calc(-1px * var(--translate-offset));
+  }
+
+  .pxd-transition--popover-right-enter-from,
+  .pxd-transition--popover-right-leave-to {
+    margin-left: calc(1px * var(--translate-offset));
   }
 }
 </style>

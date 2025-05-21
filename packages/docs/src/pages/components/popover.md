@@ -207,3 +207,33 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   </PPopover>
 </template>
 ```
+
+## Transition offset
+
+```vue demo
+<script setup>
+const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
+</script>
+
+<template>
+  <PStack gap="2">
+    <PPopover :content="content" :translate-offset="0">
+      <PButton>
+        0px(no translate)
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" :translate-offset="2">
+      <PButton>
+        2px(default)
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" :translate-offset="10">
+      <PButton>
+        10px
+      </PButton>
+    </PPopover>
+  </PStack>
+</template>
+```
