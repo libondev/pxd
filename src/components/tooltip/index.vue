@@ -45,13 +45,15 @@ const computedPopoverClass = computed(() => {
 })
 
 const computedPopoverStyle = computed(() => {
+  const arrowColor = VARIANTS[props.variant] || VARIANTS.primary
+
   if (typeof props.popoverStyle === 'string') {
-    return `${props.popoverStyle};--arrow-color: ${VARIANTS[props.variant] || VARIANTS.primary}`
-  } else {
-    return {
-      ...(props.popoverStyle ?? {}),
-      '--arrow-color': VARIANTS[props.variant] || VARIANTS.primary,
-    }
+    return `${props.popoverStyle};--arrow-color: ${arrowColor}`
+  }
+
+  return {
+    ...(props.popoverStyle ?? {}),
+    '--arrow-color': arrowColor,
   }
 })
 </script>
@@ -63,6 +65,7 @@ const computedPopoverStyle = computed(() => {
     :disabled="computedDisabled"
     :popover-class="computedPopoverClass"
     :popover-style="computedPopoverStyle"
+    v-bind="$attrs"
   >
     <slot />
 
