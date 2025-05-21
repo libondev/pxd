@@ -100,7 +100,7 @@ function togglePasswordType() {
 
 <template>
   <label class="pxd-input w-full max-w-full" :for="uniqueId">
-    <div v-if="label || $slots.label" class="pxd-input--label text-sm text-gray-900 mb-2 max-w-full">
+    <div v-if="label || $slots.label" class="pxd-input--label text-sm text-foreground-secondary mb-2 max-w-full">
       <slot name="label">{{ label }}</slot>
     </div>
 
@@ -134,7 +134,7 @@ function togglePasswordType() {
         @blur="onInputBlur"
       >
 
-      <div v-if="password && modelValue" class="pxd-input--pw-icon absolute right-0 top-0 p-3 h-full text-gray-900 hover:text-gray-1000 motion-safe:transition-colors cursor-pointer flex items-center" @click.prevent="togglePasswordType">
+      <div v-if="password && modelValue" class="pxd-input--pw-icon absolute right-0 top-0 p-3 h-full text-foreground-secondary hover:text-gray-1000 motion-safe:transition-colors cursor-pointer flex items-center" @click.prevent="togglePasswordType">
         <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
         <EyeOffIcon v-else class="size-3" />
       </div>

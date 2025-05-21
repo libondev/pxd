@@ -395,7 +395,7 @@ function onMouseOver(ev: MouseEvent) {
           <th
             v-for="col in tableHeadList"
             :key="col"
-            class="relative font-normal text-gray-900"
+            class="relative font-normal text-foreground-secondary"
           >
             <span class="absolute -top-1 left-0 whitespace-nowrap">{{ col }}</span>
           </th>
@@ -409,7 +409,7 @@ function onMouseOver(ev: MouseEvent) {
         @pointerover="onMouseOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
-          <td class="relative leading-none text-gray-900 overflow-hidden">
+          <td class="relative leading-none text-foreground-secondary overflow-hidden">
             <span class="absolute top-0 right-1">
               {{ row.headerText }}
             </span>

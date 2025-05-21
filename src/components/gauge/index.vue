@@ -182,7 +182,7 @@ const progressColors = computed(() => {
 
     <div
       v-if="indeterminate"
-      class="pxd-gauge--indeterminate absolute inset-0 flex items-center justify-center text-center font-medium text-gray-900"
+      class="pxd-gauge--indeterminate absolute inset-0 flex items-center justify-center text-center font-medium text-foreground-secondary"
       style="font-size: clamp(10px, calc(var(--size, 48px) * 0.38), 50px)"
     >
       <ChartActivityIcon />

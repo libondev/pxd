@@ -98,7 +98,7 @@ const computedProgressBarStyles = computed(() => {
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>
 
-    <span v-if="computedLabel || $slots.default" class="text-gray-900 text-sm ml-3 font-mono empty:hidden">
+    <span v-if="computedLabel || $slots.default" class="text-foreground-secondary text-sm ml-3 font-mono empty:hidden">
       <slot>
         {{ computedLabel }}
       </slot>
