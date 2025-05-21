@@ -22,7 +22,7 @@ defineProps<Props>()
         {{ title }}
       </slot>
 
-      <PTooltip v-if="tooltip" :content="tooltip">
+      <PTooltip v-if="tooltip" :content="tooltip" enterable>
         <InformationIcon class="ml-1" />
       </PTooltip>
     </dt>
