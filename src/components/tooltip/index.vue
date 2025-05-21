@@ -35,7 +35,7 @@ const VARIANTS = {
 }
 
 const computedDisabled = computed(() => {
-  return props.disabled || (props.desktopOnly && !isTouchDevice())
+  return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
 const computedPopoverClass = computed(() => {
