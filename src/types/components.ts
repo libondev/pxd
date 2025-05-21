@@ -36,3 +36,9 @@ export interface ComponentOptions {
   value: string | number
   disabled?: boolean
 }
+
+export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
+
+export type PopoverPosition = 'top' | 'bottom' | 'left' | 'right'
+  | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end'
+  | 'left-start' | 'left-end' | 'right-start' | 'right-end'

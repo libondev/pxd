@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentVariant } from '../../types/components'
+import type { ComponentVariant, PopoverPosition } from '../../types/components'
 import { computed } from 'vue'
 import { isTouchDevice } from '../../utils/device'
 import PPopover from '../popover/index.vue'
@@ -8,6 +8,7 @@ import PPopover from '../popover/index.vue'
 interface Props {
   content?: string
   disabled?: boolean
+  position?: PopoverPosition
   desktopOnly?: boolean
   popoverClass?: string
   popoverStyle?: CSSProperties | string
@@ -24,6 +25,7 @@ const props = withDefaults(
     variant: 'primary',
     popoverClass: '',
     popoverStyle: '',
+    position: 'top',
   },
 )
 
@@ -57,6 +59,7 @@ const computedPopoverStyle = computed(() => {
 <template>
   <PPopover
     class="pxd-tooltip"
+    :position="position"
     :disabled="computedDisabled"
     :popover-class="computedPopoverClass"
     :popover-style="computedPopoverStyle"

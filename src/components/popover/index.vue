@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
+import type { PopoverPosition, PopoverTrigger } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
 import { getElementRectFromContainer } from '../../utils/dom'
@@ -7,20 +8,14 @@ import { off, on } from '../../utils/events'
 import { toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
-type TriggerType = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
-
-type Position = 'top' | 'bottom' | 'left' | 'right'
-  | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end'
-  | 'left-start' | 'left-end' | 'right-start' | 'right-end'
-
 interface Props {
   offset?: number
   content?: string
   visible?: boolean
-  trigger?: TriggerType | TriggerType[]
+  trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
   maxWidth?: number
-  position?: Position
+  position?: PopoverPosition
   showDelay?: number
   hideDelay?: number
   showArrow?: boolean
@@ -49,7 +44,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     offset: 10,
-    trigger: 'hover',
+    trigger: () => ['hover'],
     position: 'bottom',
     maxWidth: 300,
     showDelay: 300,
@@ -305,13 +300,13 @@ function updateContentPosition() {
 // 当屏幕可用空间不足时反转方向
 function reversePosition() {
   if (positionInternal.value.startsWith('top')) {
-    positionInternal.value = positionInternal.value.replace('top', 'bottom') as Position
+    positionInternal.value = positionInternal.value.replace('top', 'bottom') as PopoverPosition
   } else if (positionInternal.value.startsWith('bottom')) {
-    positionInternal.value = positionInternal.value.replace('bottom', 'top') as Position
+    positionInternal.value = positionInternal.value.replace('bottom', 'top') as PopoverPosition
   } else if (positionInternal.value.startsWith('left')) {
-    positionInternal.value = positionInternal.value.replace('left', 'right') as Position
+    positionInternal.value = positionInternal.value.replace('left', 'right') as PopoverPosition
   } else if (positionInternal.value.startsWith('right')) {
-    positionInternal.value = positionInternal.value.replace('right', 'left') as Position
+    positionInternal.value = positionInternal.value.replace('right', 'left') as PopoverPosition
   }
 }
 
