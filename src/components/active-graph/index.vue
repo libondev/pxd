@@ -5,13 +5,18 @@ import { useDelayChange } from '../../composables/useDelayChange'
 import { getColorByThreshold } from '../../utils/colors'
 import { getAllDatesBetween } from '../../utils/dates'
 
+interface DataItem {
+  date: string
+  count: number
+}
+
 interface Props {
-  data?: Array<{ date: string, count: number }>
+  data?: DataItem[]
   legend?: boolean
   startDate?: string | Date
   endDate?: string | Date
   colors?: Record<string, string>
-  onlyGraph?: boolean
+  graphOnly?: boolean
   transpose?: boolean
   tooltipText?: string
 }
@@ -47,7 +52,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     legend: true,
-    onlyGraph: false,
+    graphOnly: false,
     tooltipText: '{COUNT} on {DATE}',
     data: () => [],
     startDate: () => {
@@ -55,9 +60,9 @@ const props = withDefaults(
       const date = new Date()
       date.setFullYear(date.getFullYear() - 1)
 
-      // 向后找到第一个星期日
+      // 向前找到第一个星期日
       while (date.getDay() !== 0) {
-        date.setDate(date.getDate() + 1)
+        date.setDate(date.getDate() - 1)
       }
 
       return date
@@ -115,9 +120,7 @@ function createMonthHeaders() {
   const colCount = Math.ceil(dates.length / 7)
   const result = Array.from({ length: colCount }, () => '')
 
-  // 第一列总是显示月份
   const firstDate = new Date(dates[0])
-  result[0] = config.locale.date.month[firstDate.getMonth()]
 
   const firstDayOfWeek = rangedDates.value.weeks[0]
   let currentMonth = firstDate.getMonth()
@@ -137,6 +140,11 @@ function createMonthHeaders() {
         currentMonth = month
       }
     }
+  }
+
+  // 如果第二列的月份为空, 则第一列添加月份, 否则会因为两个月相邻导致月份重叠
+  if (result[1] === '') {
+    result[0] = config.locale.date.month[firstDate.getMonth()]
   }
 
   return result
@@ -365,7 +373,7 @@ function onMouseOver(ev: MouseEvent) {
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
   // 如果只显示图表, 则提示框位置需要减去一个单元格的高度, 因为标题被隐藏了位置会偏上
-  if (props.onlyGraph) {
+  if (props.graphOnly) {
     top -= CELL_SIZE
   }
 
@@ -379,7 +387,7 @@ function onMouseOver(ev: MouseEvent) {
 </script>
 
 <template>
-  <div class="pxd-active-graph relative" :class="[onlyGraph ? 'py-[3px] pr-[3px]' : 'pr-5']">
+  <div class="pxd-active-graph relative" :class="[graphOnly ? 'py-[3px] pr-[3px]' : 'pr-5']">
     <table
       role="grid"
       aria-readonly="true"
@@ -388,9 +396,9 @@ function onMouseOver(ev: MouseEvent) {
       @pointerenter="onMouseEnter"
       @pointerleave="onMouseLeave"
     >
-      <thead v-if="!onlyGraph" class="text-xs">
+      <thead v-if="!graphOnly" class="text-xs">
         <tr class="h-3">
-          <th style="width: 30px;min-width: 30px;" />
+          <th style="width: 28px;min-width: 28px;" />
 
           <th
             v-for="col in tableHeadList"
@@ -440,10 +448,7 @@ function onMouseOver(ev: MouseEvent) {
             />
 
             <td class="relative h-3 text-gray-700 w-3">
-              <span
-                class="absolute top-1/2 left-px -translate-y-1/2"
-                style="width: 30px;min-width: 30px;"
-              >{{ config.locale.compare.more }}</span>
+              <span class="absolute top-1/2 left-px -translate-y-1/2">{{ config.locale.compare.more }}</span>
             </td>
           </tr>
         </template>

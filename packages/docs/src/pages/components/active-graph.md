@@ -76,7 +76,7 @@ const data = [
 </template>
 ```
 
-## Custom Colors and Date
+## Custom colors
 
 ```vue demo
 <script setup>
@@ -119,7 +119,7 @@ const colors = {
 </template>
 ```
 
-## Custom Tooltip
+## Custom tooltip
 
 ```vue demo
 <script setup>
@@ -156,7 +156,7 @@ const data = [
 </template>
 ```
 
-## Only Graph
+## Graph Only
 
 ```vue demo
 <script setup>
@@ -171,7 +171,7 @@ const data = [
 <template>
   <PStack direction="col" gap="12">
     <PActiveGraph
-      only-graph
+      graph-only
       :data="data"
       :legend="false"
       start-date="2025-05-01"
@@ -180,7 +180,7 @@ const data = [
 
     <PActiveGraph
       transpose
-      only-graph
+      graph-only
       :data="data"
       :legend="false"
       start-date="2025-05-01"
