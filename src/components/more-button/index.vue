@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import PButton from '../button/index.vue'
 
@@ -34,12 +35,12 @@ const emits = defineEmits<{
 
 const isExpanded = useModelValue(props, emits)
 
-function getButtonProps(): Props['buttonProps'] {
+const buttonProps = computed(() => {
   return {
     shape: 'rounded',
     ...props.buttonProps,
   }
-}
+})
 
 function onToggleExpand() {
   isExpanded.value = !isExpanded.value
@@ -48,7 +49,7 @@ function onToggleExpand() {
 
 <template>
   <div class="pxd-more-button w-full flex items-center px-4 mt-4">
-    <PButton class="relative z-10" v-bind="getButtonProps()" @click="onToggleExpand">
+    <PButton class="relative z-10" v-bind="buttonProps" @click="onToggleExpand">
       {{ isExpanded ? lessText : moreText }}
 
       <template #suffix>
