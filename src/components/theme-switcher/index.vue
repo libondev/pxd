@@ -66,7 +66,7 @@ function toggleColorMode() {
     @click="toggleColorMode"
   >
     <Transition name="rotate-scale" mode="out-in">
-      <Component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
+      <component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
     </Transition>
   </PButton>
 </template>

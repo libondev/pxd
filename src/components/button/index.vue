@@ -92,7 +92,7 @@ function onButtonDblClick(event: MouseEvent) {
 </script>
 
 <template>
-  <Component
+  <component
     :is="as"
     role="button"
     :class="computedClasses"
@@ -109,5 +109,5 @@ function onButtonDblClick(event: MouseEvent) {
     </span>
 
     <slot name="suffix" />
-  </Component>
+  </component>
 </template>

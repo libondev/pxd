@@ -96,7 +96,7 @@ function onCopyClick() {
       @click="onCopyClick"
     >
       <Transition name="fade-scale" mode="out-in">
-        <Component :is="isCopied ? CheckIcon : CopyIcon" class="w-4 h-4" />
+        <component :is="isCopied ? CheckIcon : CopyIcon" class="w-4 h-4" />
       </Transition>
     </div>
   </div>
