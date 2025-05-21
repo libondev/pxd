@@ -51,7 +51,7 @@ const props = withDefaults(
     hideDelay: 300,
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
-    translateOffset: 2,
+    translateOffset: 3,
   },
 )
 
@@ -502,22 +502,22 @@ defineExpose({
 
   .pxd-transition--popover-top-enter-from,
   .pxd-transition--popover-top-leave-to {
-    margin-top: calc(-1px * var(--translate-offset));
+    margin-top: calc(1px * var(--translate-offset));
   }
 
   .pxd-transition--popover-bottom-enter-from,
   .pxd-transition--popover-bottom-leave-to {
-    margin-top: calc(1px * var(--translate-offset));
+    margin-top: calc(-1px * var(--translate-offset));
   }
 
   .pxd-transition--popover-left-enter-from,
   .pxd-transition--popover-left-leave-to {
-    margin-left: calc(-1px * var(--translate-offset));
+    margin-left: calc(1px * var(--translate-offset));
   }
 
   .pxd-transition--popover-right-enter-from,
   .pxd-transition--popover-right-leave-to {
-    margin-left: calc(1px * var(--translate-offset));
+    margin-left: calc(-1px * var(--translate-offset));
   }
 }
 </style>

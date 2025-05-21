@@ -219,19 +219,25 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   <PStack gap="2">
     <PPopover :content="content" :translate-offset="0">
       <PButton>
-        0px(no translate)
+        0px(No translate)
       </PButton>
     </PPopover>
 
-    <PPopover :content="content" :translate-offset="2">
+    <PPopover :content="content">
       <PButton>
-        2px(default)
+        (3px)Default
       </PButton>
     </PPopover>
 
     <PPopover :content="content" :translate-offset="10">
       <PButton>
         10px
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" :translate-offset="-5">
+      <PButton>
+        -5px(Reverse translate)
       </PButton>
     </PPopover>
   </PStack>
