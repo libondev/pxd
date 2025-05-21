@@ -5,7 +5,7 @@ import LogoGithubIcon from '@gdsicon/vue/logo-github'
 
 const links = [
   {
-    label: 'Github',
+    label: 'PXD Github',
     href: 'https://github.com/libondev/pxd',
     icon: LogoGithubIcon,
   },
@@ -18,6 +18,11 @@ const links = [
     label: 'Geist Design System',
     href: 'https://www.figma.com/community/file/1330020847221146106/geist-design-system-vercel',
     icon: LogoFigmaIcon,
+  },
+  {
+    label: 'Arco Design Vue',
+    href: 'https://github.com/arco-design/arco-design-vue',
+    icon: LogoGithubIcon,
   },
 ]
 </script>

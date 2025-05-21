@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { PopoverPosition, PopoverTrigger } from '../../types/components'
-import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useIntersectionObserver } from '../../composables/useIntersectionObserver'
-import { getElementRectFromContainer } from '../../utils/dom'
+import type { PopoverBasePosition, PopoverPosition, PopoverTrigger } from '../../types/components'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
+import { isClient } from '../../utils/env'
 import { off, on } from '../../utils/events'
+import { throttle } from '../../utils/fn'
 import { toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
@@ -23,6 +24,7 @@ interface Props {
   arrowColor?: string
   triggerClass?: string
   popoverClass?: string
+  autoPosition?: boolean
   popoverStyle?: CSSProperties | string
   translateOffset?: string | number
 }
@@ -52,6 +54,7 @@ const props = withDefaults(
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
     translateOffset: 3,
+    autoPosition: true,
   },
 )
 
@@ -62,7 +65,7 @@ const emits = defineEmits<{
 
 let rootRect: DOMRect | null = null
 let triggerRect: DOMRect | null = null
-let triggerVisible = true
+let scrollContainer: ReturnType<typeof getScrollContainer>
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
@@ -74,10 +77,36 @@ const positionInternal = shallowRef(props.position)
 const containerStyle = shallowRef({} as PopoverContainerStyle)
 
 const triggerMethods = computed(() => toArray(props.trigger))
-const transitionName = computed(() => `pxd-transition--popover-${positionInternal.value.split('-')[0]}`)
+const generalPosition = computed(() => positionInternal.value.split('-')[0] as PopoverBasePosition)
+const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
 
-function handlePopoverShow() {
-  return new Promise((resolve) => {
+// 判断 containerRef 的元素在渲染后是否超出了屏幕之外
+function isContainerOverlapping(
+  containerRect: DOMRect,
+  rootRect: DOMRect,
+  scrollInfo: ReturnType<typeof getScrollPositions>,
+) {
+  const containerTop = containerRect.top - scrollInfo.scrollTop
+  const containerBottom = containerRect.bottom - scrollInfo.scrollTop
+  const containerLeft = containerRect.left - scrollInfo.scrollLeft
+  const containerRight = containerRect.right - scrollInfo.scrollLeft
+
+  const isTopOverlapping = containerTop < rootRect.top
+  const isBottomOverlapping = containerBottom > rootRect.bottom
+  const isLeftOverlapping = containerLeft < rootRect.left
+  const isRightOverlapping = containerRight > rootRect.right
+
+  return {
+    isOverlapping: isTopOverlapping || isBottomOverlapping || isLeftOverlapping || isRightOverlapping,
+    top: isTopOverlapping,
+    bottom: isBottomOverlapping,
+    left: isLeftOverlapping,
+    right: isRightOverlapping,
+  }
+}
+
+async function handlePopoverShow() {
+  await new Promise((resolve) => {
     clearTimeout(hidePopoverTimer)
     clearTimeout(showPopoverTimer)
 
@@ -88,10 +117,22 @@ function handlePopoverShow() {
       emits('show')
     }, props.showDelay)
   })
+
+  if (props.autoPosition) {
+    // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
+    const scrollInfo = getScrollPositions(scrollContainer)
+    const containerRect = containerRef.value!.getBoundingClientRect()
+    const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+
+    if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
+      reversePosition()
+      updateContentPosition()
+    }
+  }
 }
 
-function handlePopoverHide() {
-  return new Promise((resolve) => {
+async function handlePopoverHide() {
+  await new Promise((resolve) => {
     clearTimeout(showPopoverTimer)
     clearTimeout(hidePopoverTimer)
 
@@ -310,6 +351,24 @@ function reversePosition() {
   }
 }
 
+const onParentsScroll = throttle(() => {
+  if (!isVisible.value) {
+    return
+  }
+
+  const scrollInfo = getScrollPositions(scrollContainer)
+  const containerRect = containerRef.value!.getBoundingClientRect()
+  const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+
+  if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
+    reversePosition()
+    updateContentPosition()
+  } else if (!overlapping.isOverlapping) {
+    positionInternal.value = props.position
+    updateContentPosition()
+  }
+}, 500)
+
 watch(
   () => props.visible,
   (visible) => {
@@ -318,26 +377,26 @@ watch(
   },
 )
 
-useIntersectionObserver([triggerRef, containerRef], (e) => {
-  if (e.target === triggerRef.value) {
-    triggerVisible = e.isIntersecting
-
+onMounted(() => {
+  if (!isClient) {
     return
   }
 
-  if (triggerVisible && e.intersectionRatio < 1) {
-    reversePosition()
-    updateContentPosition()
+  if (props.autoPosition) {
+    scrollContainer = getScrollContainer(triggerRef.value!, true)
+    on(scrollContainer, 'scroll', onParentsScroll, { passive: true })
   }
-}, {
-  threshold: [0.5, 1.0],
 })
 
 onBeforeUnmount(() => {
-  off(document, 'click', onClickOutsideToHide)
-  off(document, 'contextmenu', onTriggerContextmenu)
+  rootRect = null
+  triggerRect = null
+
   clearTimeout(showPopoverTimer)
   clearTimeout(hidePopoverTimer)
+  off(document, 'click', onClickOutsideToHide)
+  off(document, 'contextmenu', onTriggerContextmenu)
+  off(scrollContainer, 'scroll', onParentsScroll)
 })
 
 defineExpose({

@@ -6,6 +6,10 @@ export function on<E extends Event = Event>(
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
 ) {
+  if (!el) {
+    return () => { }
+  }
+
   el.addEventListener(
     event,
     handler as EventListener,
@@ -23,6 +27,10 @@ export function off<E extends Event = Event>(
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
 ) {
+  if (!el) {
+    return
+  }
+
   el.removeEventListener(
     event,
     handler as EventListener,
@@ -36,6 +44,10 @@ export function once<E extends Event = Event>(
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
 ) {
+  if (!el) {
+    return
+  }
+
   el.addEventListener(
     event,
     handler as EventListener,

@@ -39,6 +39,8 @@ export interface ComponentOptions {
 
 export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
-export type PopoverPosition = 'top' | 'bottom' | 'left' | 'right'
-  | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end'
-  | 'left-start' | 'left-end' | 'right-start' | 'right-end'
+export type PopoverBasePosition = 'top' | 'bottom' | 'left' | 'right'
+export type PopoverPosition =
+  | PopoverBasePosition
+  | `${PopoverBasePosition}-start`
+  | `${PopoverBasePosition}-end`

@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { ComponentVariant, PopoverPosition } from '../../types/components'
 import { computed } from 'vue'
-import { isTouchDevice } from '../../utils/device'
+import { isTouchDevice } from '../../utils/env'
 import PPopover from '../popover/index.vue'
 
 interface Props {
