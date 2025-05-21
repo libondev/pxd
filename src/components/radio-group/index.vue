@@ -39,7 +39,7 @@ provide('radioGroupProps', props)
 </script>
 
 <template>
-  <PStack class="pxd-radio-group">
+  <PStack class="pxd-radio-group" v-bind="$attrs">
     <slot>
       <PRadio
         v-for="option in options"

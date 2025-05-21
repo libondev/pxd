@@ -51,7 +51,7 @@ defineExpose({
 </script>
 
 <template>
-  <PStack class="pxd-checkbox-group">
+  <PStack class="pxd-checkbox-group" v-bind="$attrs">
     <slot>
       <PCheckbox
         v-for="option in options"
