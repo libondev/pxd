@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverBasePosition, PopoverPosition, PopoverTrigger } from '../../types/components'
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
-import { isClient } from '../../utils/env'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { getElementRectFromContainer } from '../../utils/dom'
 import { off, on } from '../../utils/events'
-import { throttle } from '../../utils/fn'
 import { toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
@@ -24,7 +22,7 @@ interface Props {
   arrowColor?: string
   triggerClass?: string
   popoverClass?: string
-  autoPosition?: boolean
+  // autoPosition?: boolean
   popoverStyle?: CSSProperties | string
   translateOffset?: string | number
 }
@@ -54,7 +52,7 @@ const props = withDefaults(
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
     translateOffset: 3,
-    autoPosition: true,
+    // autoPosition: true,
   },
 )
 
@@ -65,7 +63,7 @@ const emits = defineEmits<{
 
 let rootRect: DOMRect | null = null
 let triggerRect: DOMRect | null = null
-let scrollContainer: ReturnType<typeof getScrollContainer>
+// let scrollContainer: ReturnType<typeof getScrollContainer>
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
@@ -81,29 +79,29 @@ const generalPosition = computed(() => positionInternal.value.split('-')[0] as P
 const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
 
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
-function isContainerOverlapping(
-  containerRect: DOMRect,
-  rootRect: DOMRect,
-  scrollInfo: ReturnType<typeof getScrollPositions>,
-) {
-  const containerTop = containerRect.top - scrollInfo.scrollTop
-  const containerBottom = containerRect.bottom - scrollInfo.scrollTop
-  const containerLeft = containerRect.left - scrollInfo.scrollLeft
-  const containerRight = containerRect.right - scrollInfo.scrollLeft
+// function isContainerOverlapping(
+//   containerRect: DOMRect,
+//   rootRect: DOMRect,
+//   scrollInfo: ReturnType<typeof getScrollPositions>,
+// ) {
+//   const containerTop = containerRect.top - scrollInfo.scrollTop
+//   const containerBottom = containerRect.bottom - scrollInfo.scrollTop
+//   const containerLeft = containerRect.left - scrollInfo.scrollLeft
+//   const containerRight = containerRect.right - scrollInfo.scrollLeft
 
-  const isTopOverlapping = containerTop < rootRect.top
-  const isBottomOverlapping = containerBottom > rootRect.bottom
-  const isLeftOverlapping = containerLeft < rootRect.left
-  const isRightOverlapping = containerRight > rootRect.right
+//   const isTopOverlapping = containerTop < rootRect.top
+//   const isBottomOverlapping = containerBottom > rootRect.bottom
+//   const isLeftOverlapping = containerLeft < rootRect.left
+//   const isRightOverlapping = containerRight > rootRect.right
 
-  return {
-    isOverlapping: isTopOverlapping || isBottomOverlapping || isLeftOverlapping || isRightOverlapping,
-    top: isTopOverlapping,
-    bottom: isBottomOverlapping,
-    left: isLeftOverlapping,
-    right: isRightOverlapping,
-  }
-}
+//   return {
+//     isOverlapping: isTopOverlapping || isBottomOverlapping || isLeftOverlapping || isRightOverlapping,
+//     top: isTopOverlapping,
+//     bottom: isBottomOverlapping,
+//     left: isLeftOverlapping,
+//     right: isRightOverlapping,
+//   }
+// }
 
 async function handlePopoverShow() {
   await new Promise((resolve) => {
@@ -118,17 +116,17 @@ async function handlePopoverShow() {
     }, props.showDelay)
   })
 
-  if (props.autoPosition) {
-    // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
-    const scrollInfo = getScrollPositions(scrollContainer)
-    const containerRect = containerRef.value!.getBoundingClientRect()
-    const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+  // if (props.autoPosition) {
+  //   // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
+  //   const scrollInfo = getScrollPositions(scrollContainer)
+  //   const containerRect = containerRef.value!.getBoundingClientRect()
+  //   const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
 
-    if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
-      reversePosition()
-      updateContentPosition()
-    }
-  }
+  //   if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
+  //     reversePosition()
+  //     updateContentPosition()
+  //   }
+  // }
 }
 
 async function handlePopoverHide() {
@@ -339,35 +337,35 @@ function updateContentPosition() {
 }
 
 // 当屏幕可用空间不足时反转方向
-function reversePosition() {
-  if (positionInternal.value.startsWith('top')) {
-    positionInternal.value = positionInternal.value.replace('top', 'bottom') as PopoverPosition
-  } else if (positionInternal.value.startsWith('bottom')) {
-    positionInternal.value = positionInternal.value.replace('bottom', 'top') as PopoverPosition
-  } else if (positionInternal.value.startsWith('left')) {
-    positionInternal.value = positionInternal.value.replace('left', 'right') as PopoverPosition
-  } else if (positionInternal.value.startsWith('right')) {
-    positionInternal.value = positionInternal.value.replace('right', 'left') as PopoverPosition
-  }
-}
+// function reversePosition() {
+//   if (positionInternal.value.startsWith('top')) {
+//     positionInternal.value = positionInternal.value.replace('top', 'bottom') as PopoverPosition
+//   } else if (positionInternal.value.startsWith('bottom')) {
+//     positionInternal.value = positionInternal.value.replace('bottom', 'top') as PopoverPosition
+//   } else if (positionInternal.value.startsWith('left')) {
+//     positionInternal.value = positionInternal.value.replace('left', 'right') as PopoverPosition
+//   } else if (positionInternal.value.startsWith('right')) {
+//     positionInternal.value = positionInternal.value.replace('right', 'left') as PopoverPosition
+//   }
+// }
 
-const onParentsScroll = throttle(() => {
-  if (!isVisible.value) {
-    return
-  }
+// const onParentsScroll = throttle(() => {
+//   if (!isVisible.value) {
+//     return
+//   }
 
-  const scrollInfo = getScrollPositions(scrollContainer)
-  const containerRect = containerRef.value!.getBoundingClientRect()
-  const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+//   const scrollInfo = getScrollPositions(scrollContainer)
+//   const containerRect = containerRef.value!.getBoundingClientRect()
+//   const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
 
-  if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
-    reversePosition()
-    updateContentPosition()
-  } else if (!overlapping.isOverlapping) {
-    positionInternal.value = props.position
-    updateContentPosition()
-  }
-}, 500)
+//   if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
+//     reversePosition()
+//     updateContentPosition()
+//   } else if (!overlapping.isOverlapping) {
+//     positionInternal.value = props.position
+//     updateContentPosition()
+//   }
+// }, 500)
 
 watch(
   () => props.visible,
@@ -377,16 +375,16 @@ watch(
   },
 )
 
-onMounted(() => {
-  if (!isClient) {
-    return
-  }
+// onMounted(() => {
+//   if (!isClient) {
+//     return
+//   }
 
-  if (props.autoPosition) {
-    scrollContainer = getScrollContainer(triggerRef.value!, true)
-    on(scrollContainer, 'scroll', onParentsScroll, { passive: true })
-  }
-})
+//   if (props.autoPosition) {
+//     scrollContainer = getScrollContainer(triggerRef.value!, true)
+//     on(scrollContainer, 'scroll', onParentsScroll, { passive: true })
+//   }
+// })
 
 onBeforeUnmount(() => {
   rootRect = null
@@ -396,7 +394,7 @@ onBeforeUnmount(() => {
   clearTimeout(hidePopoverTimer)
   off(document, 'click', onClickOutsideToHide)
   off(document, 'contextmenu', onTriggerContextmenu)
-  off(scrollContainer, 'scroll', onParentsScroll)
+  // off(scrollContainer, 'scroll', onParentsScroll)
 })
 
 defineExpose({
