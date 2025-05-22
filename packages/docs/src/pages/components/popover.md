@@ -9,7 +9,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 </script>
 
 <template>
-  <PStack gap="2">
+  <PStack gap="4">
     <PPopover position="left" :content="content">
       <PButton>
         left
@@ -35,7 +35,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PPopover>
   </PStack>
 
-  <PStack gap="2" class="mt-2">
+  <PStack gap="4" class="mt-4">
     <PPopover position="top-start" :content="content">
       <PButton>
         top-start
@@ -61,7 +61,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PPopover>
   </PStack>
 
-  <PStack gap="2" class="mt-2">
+  <PStack gap="4" class="mt-4">
     <PPopover position="left-start" :content="content">
       <PButton>
         left-start
@@ -152,11 +152,31 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 </script>
 
 <template>
-  <PPopover :content="content" :offset="20">
-    <PButton>
-      Hover to active
-    </PButton>
-  </PPopover>
+  <PStack gap="4">
+    <PPopover :content="content" position="left" :offset="30">
+      <PButton>
+        Hover to active
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" position="top" :offset="30">
+      <PButton>
+        Hover to active
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" position="bottom" :offset="30">
+      <PButton>
+        Hover to active
+      </PButton>
+    </PPopover>
+
+    <PPopover :content="content" position="right" :offset="30">
+      <PButton>
+        Hover to active
+      </PButton>
+    </PPopover>
+  </PStack>
 </template>
 ```
 
@@ -216,7 +236,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PStack gap="2">
+  <PStack gap="4">
     <PPopover :content="content" :translate-offset="0">
       <PButton>
         0px(No translate)
