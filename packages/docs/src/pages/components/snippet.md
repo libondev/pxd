@@ -12,7 +12,11 @@ const onCopied = () => {
 </script>
 
 <template>
-  <PSnippet text="npm install pxd" @copy="onCopied" />
+  <PStack direction="col">
+    <PSnippet text="npm install pxd" @copy="onCopied" size="sm" />
+    <PSnippet text="npm install pxd" @copy="onCopied" size="md" />
+    <PSnippet text="npm install pxd" @copy="onCopied" size="lg" />
+  </PStack>
 </template>
 ```
 
