@@ -3,6 +3,7 @@ import type { ComponentAs, ResponsiveValue } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { getFallbackVariant } from '../../composables/useFallbackProps'
+import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   as?: ComponentAs
@@ -10,8 +11,9 @@ interface Props {
   size?: string | number | ResponsiveValue<number>
   align?: 'left' | 'center' | 'right'
   variant?: keyof typeof VARIANTS
-  truncate?: boolean | number
+  truncate?: boolean | number | string
   monospace?: boolean
+  secondary?: boolean
 }
 
 defineOptions({
@@ -40,11 +42,11 @@ const presetAlignClasses = {
 }
 
 const presetSizeClasses = {
-  xs: 'fs-xs',
-  sm: 'sm:fs-sm',
-  md: 'md:fs-md',
-  lg: 'lg:fs-lg',
-  xl: 'xl:fs-xl',
+  xs: 'text-(length:--xs)',
+  sm: 'sm:text-(length:--sm)',
+  md: 'md:text-(length:--md)',
+  lg: 'lg:text-(length:--lg)',
+  xl: 'xl:text-(length:--xl)',
 }
 
 const formattedSize = computed(() => {
@@ -52,33 +54,37 @@ const formattedSize = computed(() => {
 
   if (typeof size === 'object') {
     return Object.entries(size).reduce((acc, [bp, value]) => {
-      acc[bp] = value
+      acc[bp] = `${value}px`
 
       return acc
-    }, { xs: 16 } as Record<string, number>)
+    }, { xs: '14px' } as Record<string, string>)
   }
 
   return {
-    xs: size as number,
+    xs: getCssUnitValue(size)!,
   }
 })
 
 const computedStyle = computed(() => {
-  const styles = Object.entries(formattedSize.value).reduce((acc, [bp, value]) => {
-    acc[`--fs-${bp}`] = value
+  const { truncate } = props
 
-    return acc
-  }, {} as typeof formattedSize.value)
+  const styles = {
+    ...Object.entries(formattedSize.value).reduce((acc, [bp, value]) => {
+      acc[`--${bp}`] = value
 
-  if (typeof props.truncate === 'number') {
-    styles['--text-clamp'] = props.truncate
+      return acc
+    }, {} as typeof formattedSize.value),
+  }
+
+  if (typeof truncate !== 'boolean' && truncate !== '') {
+    styles['--text-clamp'] = truncate as string
   }
 
   return styles
 })
 
 const computedClasses = computed(() => {
-  const { truncate, monospace } = props
+  const { truncate, monospace, secondary } = props
 
   const basic = [
     'pxd-text m-0',
@@ -91,10 +97,15 @@ const computedClasses = computed(() => {
     basic.push('font-mono')
   }
 
-  if (truncate) {
-    if (typeof props.truncate === 'boolean') {
+  if (secondary) {
+    basic.push('text-foreground-secondary')
+  }
+
+  // hack vue2 boolean prop
+  if (truncate || truncate === '') {
+    if (typeof truncate === 'boolean' || truncate === '') {
       basic.push('truncate')
-    } else if (typeof truncate === 'number') {
+    } else {
       basic.push(`text-clamp`)
     }
   }

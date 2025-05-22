@@ -18,25 +18,35 @@ Display text using well-defined typographic styles.
 </template>
 ```
 
+## Responsive
+
+```vue demo
+<template>
+  <PText :size="{ sm: 24, md: 32, lg: 48 }">The Evil Rabbit jumps.</PText>
+</template>
+```
 
 ## Truncate
 
 ```vue demo
 <template>
-  <PText truncate style="max-width:100px">The Evil Rabbit jumps.</PText>
-</template>
-```
+  <PStack direction="col" gap="7">
+    <PText truncate style="max-width:200px">The Evil Rabbit jumps. The Evil Rabbit jumps.</PText>
 
-## Clamp
+    <PText truncate="2" style="max-width: 200px">
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps.
+    </PText>
 
-```vue demo
-<template>
-  <PText :truncate="2" style="max-width: 200px">
-    The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-    Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-    Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-    Evil Rabbit jumps. The Evil Rabbit jumps.
-  </PText>
+    <PText :truncate="3" style="max-width: 200px">
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+      Evil Rabbit jumps. The Evil Rabbit jumps.
+    </PText>
+  </PStack>
 </template>
 ```
 

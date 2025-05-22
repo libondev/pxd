@@ -108,6 +108,8 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
+  --shadow-border-value: 0 0 0 1px rgba(0,0,0,0.08);
+
   color-scheme: light;
   background-color: var(--color-background);
   color: var(--color-foreground);
@@ -215,6 +217,8 @@
   --color-pink-800-value: 336, 74%, 51%;
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
+
+  --shadow-border-value: 0 0 0 1px rgba(255,255,255,0.145);
 
   color-scheme: dark;
 }
@@ -349,6 +353,7 @@
   --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.12);
   --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.12);
   --shadow-sticky: 0 12px 10px -10px rgba(0, 0, 0, 0.12);
+  --shadow-modal: var(--shadow-border), 0px 1px 1px rgba(0,0,0,0.02), 0px 8px 16px -4px rgba(0,0,0,0.04), 0px 24px 32px -8px rgba(0,0,0,0.06);
 }
 
 @utility scrollbar-hidden {
@@ -376,17 +381,15 @@
 }
 
 @utility smallest {
-  & {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 @layer base {
@@ -414,8 +417,3 @@
   -webkit-line-clamp: var(--text-clamp, 1);
   -webkit-box-orient: vertical;
 }
-
-.fs-xs {
-  font-size: calc(var(--fs-xs) * 1px);
-}
-
