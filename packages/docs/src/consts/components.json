@@ -112,6 +112,10 @@
     "name": "teleport"
   },
   {
+    "camelized": "Text",
+    "name": "text"
+  },
+  {
     "camelized": "Textarea",
     "name": "textarea"
   },

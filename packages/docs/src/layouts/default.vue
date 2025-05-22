@@ -113,12 +113,12 @@ const {
     }
   }
 
-  ul {
+  ul:not([class*="pxd-"]) {
     padding-left: 2em;
     list-style-type: auto;
   }
 
-  li {
+  li:not([class*="pxd-"]) {
     margin-block: 0.5em;
   }
 
@@ -126,7 +126,7 @@ const {
     margin-block: 1.68em;
   }
 
-  p {
+  p:not([class*="pxd-"]) {
     margin-block: .75em;
   }
 

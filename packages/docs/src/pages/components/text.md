@@ -1,0 +1,60 @@
+# Text
+Display text using well-defined typographic styles.
+
+## Default
+
+```vue demo
+<template>
+  <PStack direction="col">
+    <PText :size="48">The Evil Rabbit jumps.</PText>
+    <PText :size="32">The Evil Rabbit jumps.</PText>
+    <PText :size="24">The Evil Rabbit jumps.</PText>
+    <PText :size="20">The Evil Rabbit jumps.</PText>
+    <PText :size="16">The Evil Rabbit jumps.</PText>
+    <PText :size="14">The Evil Rabbit jumps.</PText>
+    <PText :size="12">The Evil Rabbit jumps.</PText>
+    <PText :size="10">The Evil Rabbit jumps.</PText>
+  </PStack>
+</template>
+```
+
+
+## Truncate
+
+```vue demo
+<template>
+  <PText truncate style="max-width:100px">The Evil Rabbit jumps.</PText>
+</template>
+```
+
+## Clamp
+
+```vue demo
+<template>
+  <PText :truncate="2" style="max-width: 200px">
+    The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+    Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+    Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
+    Evil Rabbit jumps. The Evil Rabbit jumps.
+  </PText>
+</template>
+```
+
+## Align
+
+```vue demo
+<template>
+  <PText align="left">The Evil Rabbit jumps.</PText>
+  <PText align="center">The Evil Rabbit jumps.</PText>
+  <PText align="right">The Evil Rabbit jumps.</PText>
+</template>
+```
+
+## Monospace
+
+```vue demo
+<template>
+  <PText>This is a sans-serif font.</PText>
+  <PText monospace>This is a monospace font.</PText>
+</template>
+```
