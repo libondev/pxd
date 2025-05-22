@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
 import { useModelValue } from '../../composables/useModelValue'
 import { off, on, once } from '../../utils/events'
 
@@ -96,13 +96,13 @@ const trackStyle = computed(() => {
     return {
       left: `${startPercentage.value}%`,
       width: `${endPercentage.value - startPercentage.value}%`,
-      backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
+      backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary'),
     }
   }
 
   return {
     width: `${endPercentage.value}%`,
-    backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : VARIANTS[props.variant] || VARIANTS.primary,
+    backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary'),
   }
 })
 

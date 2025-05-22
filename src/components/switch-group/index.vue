@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOptions, ComponentSize } from '../../types/components'
 import { provide } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { useComputedSize } from '../../composables/useFallbackProps'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
 import PSwitch from '../switch/index.vue'

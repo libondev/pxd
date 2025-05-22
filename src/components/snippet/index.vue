@@ -3,7 +3,7 @@ import type { ComponentSize, ComponentVariantWithDefault } from '../../types/com
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import { computed, ref } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
 import { getCssUnitValue, toArray } from '../../utils/format'
 
 interface Props {
@@ -34,9 +34,9 @@ const isCopied = ref(false)
 let copiedTimer: ReturnType<typeof setTimeout>
 
 const SIZES = {
-  sm: 'min-h-7.5 px-1.5 py-2 text-sm',
-  md: 'min-h-9 px-2.5 py-2.5 text-sm',
-  lg: 'min-h-10 px-3.5 py-3 text-base',
+  sm: 'min-h-7.5 pl-3.5 pr-1.5 py-2 text-sm',
+  md: 'min-h-9 pl-3.5 pr-2.5 py-2.5 text-sm',
+  lg: 'min-h-10 pl-3.5 pr-3.5 py-3 text-base',
 }
 
 const VARIANTS = {
@@ -50,16 +50,14 @@ const VARIANTS = {
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all']
-
-  basic.push(computedSize.value)
-
-  if (props.variant) {
-    basic.push(VARIANTS[props.variant] || VARIANTS.default)
-  }
+  const basic = [
+    'pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all',
+    getFallbackVariant(props.variant, VARIANTS),
+    computedSize.value,
+  ]
 
   if (props.prompt) {
-    basic.push('pxd-snippet-prompt')
+    basic.push('pxd-snippet--prompt')
   }
 
   return basic

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { useComputedSize } from '../../composables/useFallbackProps'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 

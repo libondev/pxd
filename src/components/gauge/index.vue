@@ -2,7 +2,7 @@
 import type { ComponentSizeWithXs } from '../../types/components'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { useComputedSize } from '../../composables/useFallbackProps'
 import { getColorByThreshold } from '../../utils/colors'
 
 interface Props {

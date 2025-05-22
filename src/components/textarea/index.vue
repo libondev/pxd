@@ -2,7 +2,7 @@
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { useComputedSize } from '../../composables/useFallbackProps'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 import PError from '../error/index.vue'

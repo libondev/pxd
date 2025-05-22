@@ -2,6 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { ComponentVariant, PopoverPosition } from '../../types/components'
 import { computed } from 'vue'
+import { getFallbackVariant } from '../../composables/useFallbackProps'
 import { isTouchDevice } from '../../utils/env'
 import PPopover from '../popover/index.vue'
 
@@ -45,7 +46,7 @@ const computedPopoverClass = computed(() => {
 })
 
 const computedPopoverStyle = computed(() => {
-  const arrowColor = VARIANTS[props.variant] || VARIANTS.primary
+  const arrowColor = getFallbackVariant(props.variant, VARIANTS, 'primary')
 
   if (typeof props.popoverStyle === 'string') {
     return `${props.popoverStyle};--arrow-color: ${arrowColor}`

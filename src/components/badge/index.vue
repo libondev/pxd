@@ -2,7 +2,7 @@
 import type { ComponentAs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
 
 interface Props {
   as?: ComponentAs
@@ -58,7 +58,7 @@ const computedSize = useComputedSize(props.size, SIZES)
 const computedClass = computed(() =>
   twMerge(
     'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
-    VARIANTS[props.variant],
+    getFallbackVariant(props.variant, VARIANTS, 'gray'),
     computedSize.value,
   ),
 )

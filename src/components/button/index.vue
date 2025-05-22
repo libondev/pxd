@@ -2,7 +2,7 @@
 import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useComputedSize'
+import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
 import PSpinner from '../spinner/index.vue'
 
 defineOptions({
@@ -60,7 +60,7 @@ const computedClasses = computed(() => {
   if (props.variant !== 'simple') {
     classNames.push('border outline-none self-focus-ring')
 
-    classNames.push(VARIANTS[props.variant] || VARIANTS.default)
+    classNames.push(getFallbackVariant(props.variant, VARIANTS))
 
     classNames.push(computedSize.value)
   }
