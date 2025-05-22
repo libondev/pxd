@@ -91,17 +91,11 @@ const formattedGap = computed(() => {
 const formattedDir = computed(() => {
   const { direction } = props
 
-  const defaultBreakpoints: Record<string, string> = { '': props.direction === 'col' ? 'flex-col' : 'flex-row' }
-
-  if (typeof direction === 'string') {
-    return defaultBreakpoints
-  }
-
   return Object.entries(direction).reduce((acc, [bp, value]) => {
     acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
 
     return acc
-  }, defaultBreakpoints)
+  }, { xs: props.direction === 'col' ? 'flex-col' : 'flex-row' } as Record<string, string>)
 })
 
 const computedClasses = computed(() => {

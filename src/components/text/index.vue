@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentAs, ResponsiveValue } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { getFallbackVariant } from '../../composables/useFallbackProps'
 import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
@@ -10,7 +8,6 @@ interface Props {
   color?: string
   size?: string | number | ResponsiveValue<number>
   align?: 'left' | 'center' | 'right'
-  variant?: keyof typeof VARIANTS
   truncate?: boolean | number | string
   monospace?: boolean
   secondary?: boolean
@@ -30,10 +27,6 @@ const props = withDefaults(
     truncate: false,
   },
 )
-
-const VARIANTS = {
-  default: 'text-foreground',
-}
 
 const presetAlignClasses = {
   left: 'text-left',
@@ -77,7 +70,7 @@ const computedStyle = computed(() => {
   }
 
   if (typeof truncate !== 'boolean' && truncate !== '') {
-    styles['--text-clamp'] = truncate as string
+    styles['--line-clamp'] = truncate as string
   }
 
   return styles
@@ -88,7 +81,6 @@ const computedClasses = computed(() => {
 
   const basic = [
     'pxd-text m-0',
-    getFallbackVariant(props.variant, VARIANTS),
     presetAlignClasses[props.align],
     ...Object.keys(formattedSize.value).map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses]),
   ]
@@ -106,16 +98,16 @@ const computedClasses = computed(() => {
     if (typeof truncate === 'boolean' || truncate === '') {
       basic.push('truncate')
     } else {
-      basic.push(`text-clamp`)
+      basic.push(`line-clamp`)
     }
   }
 
-  return twMerge(basic)
+  return basic
 })
 </script>
 
 <template>
-  <component :is="as" :class="computedClasses" :style="computedStyle" v-bind="$attrs">
+  <component :is="as" :class="computedClasses" :style="computedStyle">
     <slot />
   </component>
 </template>

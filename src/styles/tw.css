@@ -410,10 +410,10 @@
   }
 }
 
-.text-clamp {
+.line-clamp {
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
-  -webkit-line-clamp: var(--text-clamp, 1);
+  -webkit-line-clamp: var(--line-clamp, 1);
   -webkit-box-orient: vertical;
 }
