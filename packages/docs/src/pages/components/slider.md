@@ -14,17 +14,17 @@ const value = ref(30)
   <PStack direction="col" gap="3">
     <div class="flex items-center gap-3">
       <PSlider v-model="value" size="sm" style="width: 200px;" />
-      <span class="text-sm text-gray-900">{{ value }}</span>
+      <PText secondary>{{ value }}</PText>
     </div>
 
     <div class="flex items-center gap-3">
       <PSlider v-model="value" style="width: 200px;" />
-      <span class="text-sm text-gray-900">{{ value }}</span>
+      <PText secondary>{{ value }}</PText>
     </div>
 
     <div class="flex items-center gap-3">
       <PSlider v-model="value" size="lg" style="width: 200px;" />
-      <span class="text-sm text-gray-900">{{ value }}</span>
+      <PText secondary>{{ value }}</PText>
     </div>
   </PStack>
 </template>
@@ -81,7 +81,7 @@ const value = ref(30)
 <template>
   <PStack align="center" gap="3">
     <PSlider v-model="value" :step="5" style="width: 200px;" />
-    <span class="text-sm text-gray-900">{{ value }}</span>
+    <PText secondary>{{ value }}</PText>
   </PStack>
 </template>
 ```
@@ -98,7 +98,7 @@ const value = ref(40)
 <template>
   <PStack align="center" gap="3">
     <PSlider v-model="value" :min="30" :max="80" style="width: 200px;" />
-    <span class="text-sm text-gray-900">{{ value }}</span>
+    <PText secondary>{{ value }}</PText>
   </PStack>
 </template>
 ```
@@ -115,7 +115,7 @@ const value = ref([30, 60])
 <template>
   <PStack align="center" gap="3">
     <PSlider v-model="value" :min="10" :max="90" range style="width: 200px;" />
-    <span class="text-sm text-gray-900">{{ value }}</span>
+    <PText secondary>{{ value }}</PText>
   </PStack>
 </template>
 ```

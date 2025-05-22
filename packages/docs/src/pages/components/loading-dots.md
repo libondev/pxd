@@ -18,10 +18,10 @@ Indicate an action running in the background.
 <template>
   <PLoadingDots>
     <template #prefix>
-      <span class="text-gray-900 text-sm">Loading Left</span>
+      <PText secondary>Loading Left</PText>
     </template>
     <template #suffix>
-      <span class="text-gray-900 text-sm">Loading Right</span>
+      <PText secondary>Loading Right</PText>
     </template>
   </PLoadingDots>
 </template>

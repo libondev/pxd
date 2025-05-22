@@ -52,9 +52,9 @@ import { version } from 'pxd'
           Consistent experience
         </h3>
 
-        <p class="text-foreground-secondary text-sm">
+        <PText secondary>
           It can run in 2 and 3 without modifying any syntax.
-        </p>
+        </PText>
       </div>
 
       <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
@@ -62,14 +62,14 @@ import { version } from 'pxd'
           Full light and dark support
         </h3>
 
-        <p class="text-foreground-secondary text-sm">
+        <PText secondary>
           It takes little effort to make all components natively support light and dark mode. See<PLinkButton
             href="/components/color-scheme"
             class="text-foreground underline"
             type="text"
             text="here"
           />for more information.
-        </p>
+        </PText>
       </div>
 
       <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
@@ -77,9 +77,9 @@ import { version } from 'pxd'
           Support for reducing animation
         </h3>
 
-        <p class="text-foreground-secondary text-sm">
+        <PText secondary>
           Set <code class="text-gray-900">prefers-reduced-motion: reduce</code> to disable transitions and animations in components.
-        </p>
+        </PText>
       </div>
     </section>
   </main>
