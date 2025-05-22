@@ -25,7 +25,7 @@ const {
     </div>
   </div>
 
-  <div class="sm:ml-64 border-r w-full max-w-full flex-1 min-h-screen">
+  <div class="sm:pl-64 border-r w-full max-w-full flex-1 min-h-screen">
     <main class="prose px-6 sm:px-20 py-16 w-full h-full">
       <slot />
     </main>
