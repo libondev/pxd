@@ -56,8 +56,8 @@ const VARIANTS = {
   },
   primary: {
     icon: InformationIcon,
-    fill: 'text-gray-100 bg-gray-1000 border-gray-100',
-    classes: 'text-gray-1000 border-gray-900',
+    fill: 'text-gray-100 bg-primary border-gray-100',
+    classes: 'text-primary border-gray-alpha-400',
   },
   violet: {
     icon: InformationIcon,
