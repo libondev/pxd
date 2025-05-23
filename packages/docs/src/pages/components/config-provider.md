@@ -32,3 +32,36 @@ const sizes = [
   </PStack>
 </template>
 ```
+
+## Locale
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import { zhCN, enUS } from 'pxd/locales'
+
+const locale = ref('enUS')
+
+const sizes = [
+  { label: 'EnUS', value: 'enUS' },
+  { label: 'ZhCN', value: 'zhCN' },
+]
+
+const locales = {
+  zhCN,
+  enUS,
+}
+</script>
+
+<template>
+  <PStack direction="col" gap="4">
+    <PRadioGroup v-model="locale" gap="5" :options="sizes" />
+
+    <PConfigProvider :locale="locales[locale]">
+      <PStack direction="col">
+        <PActiveGraph start-date="2025-01-01" end-date="2025-01-31" />
+      </PStack>
+    </PConfigProvider>
+  </PStack>
+</template>
+```
