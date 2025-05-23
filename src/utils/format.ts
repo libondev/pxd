@@ -1,3 +1,5 @@
+import type { Nullable } from '../types/shared'
+
 export function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
@@ -33,9 +35,12 @@ export function toArray(value: unknown | unknown[]) {
 }
 
 const CSS_UNIT_REGEX = /^\d+$/
-export function getCssUnitValue(value?: string | number) {
-  if (value === undefined) {
-    return undefined
+export function getCssUnitValue(
+  value: Nullable<string | number>,
+  fallbackValue?: string | number,
+) {
+  if (value == null) {
+    return fallbackValue
   }
 
   if (typeof value === 'number' || CSS_UNIT_REGEX.test(value)) {

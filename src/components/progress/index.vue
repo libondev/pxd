@@ -9,7 +9,7 @@ interface Props {
   min?: number
   max?: number
   size?: ComponentSize
-  label?: string | number | boolean
+  label?: boolean | string | number
   variant?: ComponentVariant | 'secondary'
   colors?: Record<string, string>
   modelValue?: number | null

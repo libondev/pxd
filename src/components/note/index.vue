@@ -12,7 +12,7 @@ interface Props {
   variant?: keyof typeof VARIANTS
   size?: ComponentSize
   fill?: boolean
-  label?: string | boolean
+  label?: boolean | string
 }
 
 defineOptions({

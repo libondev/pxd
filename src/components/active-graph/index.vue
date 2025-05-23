@@ -143,7 +143,7 @@ function createMonthHeaders() {
   }
 
   // 如果第二列的月份为空, 则第一列添加月份, 否则会因为两个月相邻导致月份重叠
-  if (result[1] === '') {
+  if (!result[1]) {
     result[0] = config.locale.date.month[firstDate.getMonth()]
   }
 
