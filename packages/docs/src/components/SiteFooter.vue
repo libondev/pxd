@@ -45,7 +45,7 @@ const links = [
       </li>
 
       <li v-for="link in links" :key="link.href">
-        <PLinkButton variant="ghost" :href="link.href" external-icon class="justify-start" target="_blank" block>
+        <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" block>
           <template #prefix>
             <component :is="link.icon" />
           </template>

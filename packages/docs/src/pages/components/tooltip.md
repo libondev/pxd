@@ -2,7 +2,7 @@
 Display prompt information for mouse hover.
 
 ## Default
-The component inherits from popover and supports all the properties of popover. For details, See: [Popover](#/components/popover).
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
 
 ```vue demo
 <template>

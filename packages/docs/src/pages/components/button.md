@@ -46,6 +46,6 @@ Set the `block` property to make the button exclusive to one line.
 
 ```vue demo
 <template>
-  <PButton block>blockbutton </PButton>
+  <PButton block>Block Button </PButton>
 </template>
 ```
