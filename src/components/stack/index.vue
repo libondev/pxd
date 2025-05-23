@@ -20,7 +20,6 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     as: 'div',
-    gap: 2,
     wrap: true,
     scale: 4,
     align: 'start',
@@ -28,8 +27,6 @@ const props = withDefaults(
     direction: 'row',
   },
 )
-
-const DEFAULT_GAP = 2
 
 const presetDirClasses = {
   'xs:col': 'flex-col',
@@ -45,11 +42,11 @@ const presetDirClasses = {
 }
 
 const presetGapClasses = {
-  xs: 'gap-(--xs-gap)',
-  sm: 'sm:gap-(--sm-gap)',
-  md: 'md:gap-(--md-gap)',
-  lg: 'lg:gap-(--lg-gap)',
-  xl: 'xl:gap-(--xl-gap)',
+  '--gap-xs': 'gap-(--gap-xs)',
+  '--gap-sm': 'sm:gap-(--gap-sm)',
+  '--gap-md': 'md:gap-(--gap-md)',
+  '--gap-lg': 'lg:gap-(--gap-lg)',
+  '--gap-xl': 'xl:gap-(--gap-xl)',
 }
 
 const presetAlignClasses = {
@@ -73,19 +70,21 @@ const presetJustifyClasses = {
 }
 
 const formattedGap = computed(() => {
-  const { gap, scale } = props
+  const { gap = 2, scale } = props
+
+  const defaultGap = {
+    '--gap-xs': `${Number(gap) * scale}px`,
+  } as Record<string, string>
 
   if (typeof gap === 'object') {
     return Object.entries(gap).reduce((acc, [bp, value]) => {
-      acc[bp] = value * scale
+      acc[`--gap-${bp}`] = `${value * scale}px`
 
       return acc
-    }, { xs: DEFAULT_GAP * scale } as Record<string, number>)
+    }, defaultGap)
   }
 
-  return {
-    xs: Number(gap) * scale,
-  }
+  return defaultGap
 })
 
 const formattedDir = computed(() => {
@@ -112,16 +111,10 @@ const computedClasses = computed(() => {
 
   return basic.join(' ')
 })
-
-const gapSizeStyles = computed(() => {
-  return Object.entries(formattedGap.value).map(([bp, value]) => {
-    return `--${bp}-gap: ${value}px`
-  }).join(';')
-})
 </script>
 
 <template>
-  <component :is="props.as" :class="computedClasses" :style="gapSizeStyles">
+  <component :is="props.as" :class="computedClasses" :style="formattedGap">
     <slot />
   </component>
 </template>

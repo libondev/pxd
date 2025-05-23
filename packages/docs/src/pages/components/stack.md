@@ -33,7 +33,7 @@ Resize the window to observe changes to the layout.
 ```vue demo
 <template>
   <PStack
-    :gap="{ sm: 2, md: 5, lg: 10, xl: 15 }"
+    :gap="{ sm: 3, md: 5, lg: 10, xl: 15 }"
     :direction="{ xs: 'row', lg: 'row' }"
   >
     <div class="bg-gray-1000 h-12 w-12 rounded-md" />
