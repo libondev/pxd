@@ -20,8 +20,18 @@ const links = [
     icon: LogoFigmaIcon,
   },
   {
+    label: 'Vue Use',
+    href: 'https://github.com/vueuse/vueuse',
+    icon: LogoGithubIcon,
+  },
+  {
     label: 'Arco Design Vue',
     href: 'https://github.com/arco-design/arco-design-vue',
+    icon: LogoGithubIcon,
+  },
+  {
+    label: 'Element Plus',
+    href: 'https://github.com/element-plus/element-plus',
     icon: LogoGithubIcon,
   },
 ]
@@ -29,7 +39,7 @@ const links = [
 
 <template>
   <footer class="border-t border-r p-6 bg-background-secondary">
-    <ul class="max-w-[200px]">
+    <ul class="max-w-50">
       <li class="text-xl font-medium mb-1 pl-[11px]">
         Links
       </li>

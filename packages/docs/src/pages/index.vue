@@ -64,7 +64,7 @@ import { version } from 'pxd'
 
         <PText secondary>
           It takes little effort to make all components natively support light and dark mode. See<PLinkButton
-            href="/components/color-scheme"
+            href="/components/theme-switcher#premise"
             class="text-foreground underline"
             type="text"
             text="here"
@@ -74,11 +74,21 @@ import { version } from 'pxd'
 
       <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
         <h3 class="font-medium mb-1.5">
+          On demand Import
+        </h3>
+
+        <PText secondary>
+          Provide resolver to automatically import only used components.
+        </PText>
+      </div>
+
+      <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
+        <h3 class="font-medium mb-1.5">
           Support for reducing animation
         </h3>
 
         <PText secondary>
-          Set <code class="text-gray-900">prefers-reduced-motion: reduce</code> to disable transitions and animations in components.
+          Set <code class="text-foreground-secondary">prefers-reduced-motion: reduce</code> to disable transitions and animations in components.
         </PText>
       </div>
     </section>
