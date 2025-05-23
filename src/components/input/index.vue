@@ -12,10 +12,11 @@ import PError from '../error/index.vue'
 interface Props {
   size?: ComponentSizeWithXs
   error?: string
-  label?: string
+  label?: ComponentLabel
   readonly?: boolean
   disabled?: boolean
   password?: boolean
+  required?: boolean
   minlength?: number | string
   maxlength?: number | string
   modelValue?: ComponentLabel
@@ -62,7 +63,7 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--border flex items-center relative rounded-inherit h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const basic = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   basic.push(computedSize.value)
 
@@ -100,7 +101,7 @@ function togglePasswordType() {
 
 <template>
   <label class="pxd-input w-full max-w-full" :for="uniqueId">
-    <div v-if="label || $slots.label" class="pxd-input--label text-sm text-foreground-secondary mb-2 max-w-full">
+    <div v-if="label || $slots.label" class="pxd-input--label">
       <slot name="label">{{ label }}</slot>
     </div>
 
@@ -117,15 +118,16 @@ function togglePasswordType() {
       <input
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none file:border-0 file:bg-transparent file:font-medium"
+        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none placeholder:text-gray-600 file:border-0 file:bg-transparent file:font-medium"
         :class="{ 'pr-10': password }"
+        :type="internalInputType"
+        autocorrect="off"
+        autocomplete="off"
+        inputmode="numeric"
+        autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
-        :placeholder="placeholder"
-        :type="internalInputType"
-        autocapitalize="off"
-        autocomplete="off"
-        autocorrect="off"
+        :required="required"
         :minlength="minlength"
         :maxlength="maxlength"
         v-bind="$attrs"

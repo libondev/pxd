@@ -304,3 +304,10 @@
 .pxd-input--border.is-error:not(.is-disabled, .is-readonly, :focus):hover {
   box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-500-value));
 }
+
+.pxd-input--label {
+  font-size: 14px;
+  color: var(--color-foreground-secondary);
+  margin-bottom: 8px;
+  max-width: 100%;
+}

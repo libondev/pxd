@@ -10,9 +10,10 @@ import PError from '../error/index.vue'
 interface Props {
   size?: ComponentSizeWithXs
   error?: string
-  label?: string
+  label?: ComponentLabel
   readonly?: boolean
   disabled?: boolean
+  required?: boolean
   modelValue?: ComponentLabel
   placeholder?: string
   minlength?: number | string
@@ -56,7 +57,7 @@ const modelValue = useModelValue(props, emits)
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--border flex items-center justify-center rounded-inherit h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const basic = ['pxd-input--border flex items-center justify-center h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
   basic.push(computedSize.value)
 
@@ -90,7 +91,7 @@ function onInputChange(event: Event) {
 
 <template>
   <label class="pxd-textarea w-full max-w-full" :for="uniqueId">
-    <div v-if="label || $slots.label" class="pxd-textarea--label text-sm text-foreground-secondary mb-2 max-w-full">
+    <div v-if="label || $slots.label" class="pxd-input--label">
       <slot name="label">{{ label }}</slot>
     </div>
 
@@ -98,15 +99,17 @@ function onInputChange(event: Event) {
       <textarea
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none"
+        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none placeholder:text-gray-600"
+        autocorrect="off"
+        autocomplete="off"
+        inputmode="numeric"
+        autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
-        :placeholder="placeholder"
-        autocapitalize="off"
-        autocomplete="off"
-        autocorrect="off"
+        :required="required"
         :minlength="minlength"
         :maxlength="maxlength"
+        :placeholder="placeholder"
         v-bind="$attrs"
         @change="onInputChange"
         @focus="onInputFocus"
