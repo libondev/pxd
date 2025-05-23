@@ -5,7 +5,7 @@ import { version } from 'pxd'
 
 <template>
   <main class="w-full px-4 relative max-w-screen-lg mx-auto">
-    <section class="my-32 sm:py-40 text-center">
+    <section class="my-28 sm:py-28 text-center">
       <div class="relative">
         <h1 class="font-bold inline text-6xl">
           PXD
