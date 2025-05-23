@@ -32,3 +32,4 @@ components.d.ts
 auto-imports.d.ts
 typed-router.d.ts
 **/pnpm-lock.yaml
+.vite-ssg-temp

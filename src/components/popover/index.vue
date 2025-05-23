@@ -61,8 +61,8 @@ const emits = defineEmits<{
   hide: []
 }>()
 
-let rootRect: DOMRect | null = null
 let triggerRect: DOMRect | null = null
+let viewportRect: DOMRect | null = null
 // let scrollContainer: ReturnType<typeof getScrollContainer>
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
@@ -81,7 +81,7 @@ const transitionName = computed(() => `pxd-transition--popover-${generalPosition
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
 // function isContainerOverlapping(
 //   containerRect: DOMRect,
-//   rootRect: DOMRect,
+//   viewportRect: DOMRect,
 //   scrollInfo: ReturnType<typeof getScrollPositions>,
 // ) {
 //   const containerTop = containerRect.top - scrollInfo.scrollTop
@@ -89,10 +89,10 @@ const transitionName = computed(() => `pxd-transition--popover-${generalPosition
 //   const containerLeft = containerRect.left - scrollInfo.scrollLeft
 //   const containerRight = containerRect.right - scrollInfo.scrollLeft
 
-//   const isTopOverlapping = containerTop < rootRect.top
-//   const isBottomOverlapping = containerBottom > rootRect.bottom
-//   const isLeftOverlapping = containerLeft < rootRect.left
-//   const isRightOverlapping = containerRight > rootRect.right
+//   const isTopOverlapping = containerTop < viewportRect.top
+//   const isBottomOverlapping = containerBottom > viewportRect.bottom
+//   const isLeftOverlapping = containerLeft < viewportRect.left
+//   const isRightOverlapping = containerRight > viewportRect.right
 
 //   return {
 //     isOverlapping: isTopOverlapping || isBottomOverlapping || isLeftOverlapping || isRightOverlapping,
@@ -104,8 +104,8 @@ const transitionName = computed(() => `pxd-transition--popover-${generalPosition
 // }
 
 function getTriggerRect() {
-  rootRect = document.documentElement.getBoundingClientRect()
   triggerRect = triggerRef.value!.getBoundingClientRect()
+  viewportRect = document.documentElement.getBoundingClientRect()
 }
 
 async function handlePopoverShow() {
@@ -126,7 +126,7 @@ async function handlePopoverShow() {
   //   // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
   //   const scrollInfo = getScrollPositions(scrollContainer)
   //   const containerRect = containerRef.value!.getBoundingClientRect()
-  //   const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+  //   const overlapping = isContainerOverlapping(containerRect, viewportRect!, scrollInfo)
 
   //   if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
   //     reversePosition()
@@ -250,7 +250,7 @@ function onContentPointerLeave() {
 function updateContentPosition() {
   const position = positionInternal.value
   const { offset, arrowColor, maxWidth } = props
-  const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, rootRect!)
+  const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
 
   const isVertical = position.startsWith('top') || position.startsWith('bottom')
   const isHorizontal = position.startsWith('left') || position.startsWith('right')
@@ -343,7 +343,7 @@ function updateContentPosition() {
 
 //   const scrollInfo = getScrollPositions(scrollContainer)
 //   const containerRect = containerRef.value!.getBoundingClientRect()
-//   const overlapping = isContainerOverlapping(containerRect, rootRect!, scrollInfo)
+//   const overlapping = isContainerOverlapping(containerRect, viewportRect!, scrollInfo)
 
 //   if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
 //     reversePosition()
@@ -428,8 +428,8 @@ watch<[HTMLElement | undefined, PopoverTrigger[]]>(
 // })
 
 onBeforeUnmount(() => {
-  rootRect = null
   triggerRect = null
+  viewportRect = null
 
   clearTimeout(showPopoverTimer)
   clearTimeout(hidePopoverTimer)

@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useResizeObserver'
 import { off, on, once } from '../../utils/events'
 import { THROTTLE_GAP } from '../../utils/fn'
+import { isServer } from '../../utils/is'
 
 interface Props {
   size?: number
@@ -216,7 +217,6 @@ function startDragVertical(e: MouseEvent) {
   on(document, 'mousemove', onDragMove)
   once(document, 'mouseup', endDrag)
 
-  // 添加禁止选择类
   document.body.classList.add('select-none')
 }
 
@@ -308,6 +308,10 @@ if (props.scrollbar || props.fader) {
 }
 
 onMounted(async () => {
+  if (isServer) {
+    return
+  }
+
   if (!props.scrollbar && !props.fader) {
     return
   }

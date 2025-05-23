@@ -110,5 +110,11 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ['tailwind-merge', '@vue/shared', 'canvas-confetti'],
     },
+
+    ssgOptions: {
+      beastiesOptions: {
+        preload: 'media',
+      },
+    },
   }
 })

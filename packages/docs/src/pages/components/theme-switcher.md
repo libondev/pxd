@@ -6,7 +6,7 @@ Component that allows users to switch between light and dark themes.
 Put the following code in your `html > head`to ensure the correctness of the theme when the page is overloaded.
 
 ```js
-(function(){var p=matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;var s=localStorage.getItem('fe.system.color-mode')||'auto';if(s==='dark'||(p&&s==='auto')){document.documentElement.classList.toggle('dark',true);}})()
+(function(){if(typeof window === 'undefined')return;var p=matchMedia('(prefers-color-scheme: dark)').matches;var s=localStorage.getItem('fe.system.color-mode')||'auto';if(s==='dark'||(p&&s==='auto')){document.documentElement.classList.toggle('dark',true);}})()
 ```
 
 ## Default

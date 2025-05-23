@@ -2,6 +2,7 @@
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { customRef } from 'vue'
+import { isClient } from '../../utils/is'
 import PButton from '../button/index.vue'
 
 interface Props {
@@ -27,7 +28,13 @@ type ColorScheme = keyof typeof colorTransitions
 
 const colorMode = customRef<ColorScheme>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
-  const rootClassList = document.documentElement.classList
+  const rootClassList = isClient
+    ? document.documentElement.classList
+    : {
+        contains: () => false,
+        remove: () => {},
+        add: () => {},
+      }
   let curMode: ColorScheme = rootClassList.contains('dark') ? 'dark' : 'light'
 
   return {

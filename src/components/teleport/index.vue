@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, version, watch } from 'vue'
+import { isServer } from '../../utils/is'
 
 interface Props {
   to?: string
@@ -65,7 +66,7 @@ function teardown() {
 }
 
 onMounted(() => {
-  if (typeof window === 'undefined') {
+  if (isServer) {
     return
   }
 

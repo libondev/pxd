@@ -3,7 +3,7 @@ import type { CSSProperties } from 'vue'
 import type { ComponentVariant, PopoverPosition } from '../../types/components'
 import { computed } from 'vue'
 import { getFallbackVariant } from '../../composables/useFallbackProps'
-import { isTouchDevice } from '../../utils/env'
+import { isTouchDevice } from '../../utils/is'
 import PPopover from '../popover/index.vue'
 
 interface Props {

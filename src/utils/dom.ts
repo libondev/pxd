@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'vue'
 import { camelize } from 'vue'
-import { isClient } from './env'
+import { isClient } from './is'
 
 export function getElementRectFromContainer(
   elementOrRect: HTMLElement | DOMRect,
@@ -67,7 +67,7 @@ export function isScrollable(el: HTMLElement, isVertical?: boolean): boolean {
   return ['scroll', 'auto', 'overlay'].some(s => overflow.includes(s))
 }
 
-const windowTop = [window, document, document.documentElement] as const
+const windowTop = [globalThis, globalThis.document, globalThis.document.documentElement] as const
 export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Window | HTMLElement {
   let parent: HTMLElement = el
 
