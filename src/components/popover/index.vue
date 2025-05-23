@@ -158,22 +158,20 @@ function getTriggerRect() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
 }
 
-function onTriggerClick() {
+async function onTriggerClick() {
   if (props.disabled || !triggerMethods.value.includes('click')) {
     return
   }
 
   if (isVisible.value) {
-    handlePopoverHide().then(() => {
-      off(document, 'click', onClickOutsideToHide)
-    })
+    await handlePopoverHide()
+    off(document, 'click', onClickOutsideToHide)
 
     return
   }
 
-  handlePopoverShow().then(() => {
-    on(document, 'click', onClickOutsideToHide)
-  })
+  await handlePopoverShow()
+  on(document, 'click', onClickOutsideToHide)
 }
 
 function onTriggerPointerEnter() {
@@ -210,7 +208,7 @@ function onTriggerFocusout() {
   handlePopoverHide()
 }
 
-function onTriggerContextmenu(ev: MouseEvent) {
+async function onTriggerContextmenu(ev: MouseEvent) {
   if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
     return
   }
@@ -218,18 +216,16 @@ function onTriggerContextmenu(ev: MouseEvent) {
   ev.preventDefault()
 
   if (isVisible.value) {
-    handlePopoverHide().then(() => {
-      off(document, 'click', onClickOutsideToHide)
-      off(document, 'contextmenu', onTriggerContextmenu)
-    })
+    await handlePopoverHide()
+    off(document, 'click', onClickOutsideToHide)
+    off(document, 'contextmenu', onTriggerContextmenu)
 
     return
   }
 
-  handlePopoverShow().then(() => {
-    on(document, 'click', onClickOutsideToHide)
-    on(document, 'contextmenu', onTriggerContextmenu)
-  })
+  await handlePopoverShow()
+  on(document, 'click', onClickOutsideToHide)
+  on(document, 'contextmenu', onTriggerContextmenu)
 }
 
 function onClickOutsideToHide(ev: MouseEvent) {
