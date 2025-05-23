@@ -22,7 +22,7 @@ describe('stack', () => {
     const classes = wrapper.classes()
     expect(classes).toContain('flex')
     expect(classes).toContain('flex-row')
-    expect(wrapper.attributes('style')).toContain('--xs-gap: 8px')
+    expect(wrapper.attributes('style')).toContain('--gap-xs: 8px')
 
     wrapper.unmount()
   })
@@ -48,7 +48,7 @@ describe('stack', () => {
       },
     })
 
-    expect(wrapper.attributes('style')).toContain('--xs-gap: 16px')
+    expect(wrapper.attributes('style')).toContain('--gap-xs: 16px')
 
     wrapper.unmount()
   })
@@ -82,8 +82,8 @@ describe('stack', () => {
     })
 
     const style = wrapper.attributes('style')
-    expect(style).toContain('--xs-gap: 4px')
-    expect(style).toContain('--md-gap: 12px')
+    expect(style).toContain('--gap-xs: 4px')
+    expect(style).toContain('--gap-md: 12px')
 
     wrapper.unmount()
   })
@@ -108,9 +108,9 @@ describe('stack', () => {
     expect(classes).includes('lg:flex-row')
 
     const style = wrapper.attributes('style')
-    expect(style).toContain('--xs-gap: 4px')
-    expect(style).toContain('--md-gap: 8px')
-    expect(style).toContain('--lg-gap: 16px')
+    expect(style).toContain('--gap-xs: 4px')
+    expect(style).toContain('--gap-md: 8px')
+    expect(style).toContain('--gap-lg: 16px')
 
     wrapper.unmount()
   })
