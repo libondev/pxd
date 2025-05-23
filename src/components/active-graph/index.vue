@@ -398,7 +398,7 @@ function onMouseOver(ev: MouseEvent) {
     >
       <thead v-if="!graphOnly" class="text-xs">
         <tr class="h-3">
-          <th style="width: 28px;min-width: 28px;" />
+          <th class="pxd-active-graph--label" style="width: 30px;min-width: 30px;" />
 
           <th
             v-for="(col, i) in tableHeadList"
@@ -417,7 +417,7 @@ function onMouseOver(ev: MouseEvent) {
         @pointerover="onMouseOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
-          <td class="relative leading-none text-foreground-secondary overflow-hidden">
+          <td class="pxd-active-graph--label relative leading-none text-foreground-secondary overflow-hidden">
             <span class="absolute top-0 right-1">
               {{ row.headerText }}
             </span>
@@ -436,7 +436,7 @@ function onMouseOver(ev: MouseEvent) {
         <template v-if="props.legend">
           <tr class="pxd-active-graph--placeholder pointer-events-none h-0.5" />
           <tr class="pxd-active-graph--legend pointer-events-none">
-            <td class="relative h-3 text-gray-700">
+            <td class="relative h-3 text-foreground-secondary">
               <span class="absolute top-1/2 right-1 -translate-y-1/2">{{ config.locale.compare.less }}</span>
             </td>
 
@@ -447,7 +447,7 @@ function onMouseOver(ev: MouseEvent) {
               :style="`background-color: ${color}`"
             />
 
-            <td class="relative h-3 text-gray-700 w-3">
+            <td class="relative h-3 text-foreground-secondary w-3">
               <span class="absolute top-1/2 left-px -translate-y-1/2">{{ config.locale.compare.more }}</span>
             </td>
           </tr>
