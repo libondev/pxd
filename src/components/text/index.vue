@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import type { ComponentAs, ResponsiveValue } from '../../types/components'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   as?: ComponentAs
-  color?: string
   size?: string | number | ResponsiveValue<number>
   align?: 'left' | 'center' | 'right'
   truncate?: boolean | number | string
@@ -21,7 +19,6 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     as: 'p',
-    size: 14,
     align: 'left',
     variant: 'default',
     truncate: false,
@@ -35,42 +32,40 @@ const presetAlignClasses = {
 }
 
 const presetSizeClasses = {
-  xs: 'text-(length:--xs)',
-  sm: 'sm:text-(length:--sm)',
-  md: 'md:text-(length:--md)',
-  lg: 'lg:text-(length:--lg)',
-  xl: 'xl:text-(length:--xl)',
+  '--text-xs': 'text-xs',
+  '--text-sm': 'sm:text-sm',
+  '--text-md': 'md:text-md',
+  '--text-lg': 'lg:text-lg',
+  '--text-xl': 'xl:text-xl',
 }
 
 const formattedSize = computed(() => {
   const { size } = props
 
+  const defaultSize = {
+    '--text-xs': '14px',
+  } as Record<string, string | number>
+
   if (typeof size === 'object') {
     return Object.entries(size).reduce((acc, [bp, value]) => {
-      acc[bp] = `${value}px`
+      acc[`--text-${bp}`] = `${value}px`
 
       return acc
-    }, { xs: '14px' } as Record<string, string>)
+    }, defaultSize)
   }
 
-  return {
-    xs: getCssUnitValue(size)!,
-  }
+  return defaultSize
 })
 
 const computedStyle = computed(() => {
   const { truncate } = props
 
   const styles = {
-    ...Object.entries(formattedSize.value).reduce((acc, [bp, value]) => {
-      acc[`--${bp}`] = value
-
-      return acc
-    }, {} as typeof formattedSize.value),
+    ...formattedSize.value,
   }
 
-  if (typeof truncate !== 'boolean' && truncate !== '') {
-    styles['--line-clamp'] = truncate as string
+  if (truncate && typeof truncate !== 'boolean') {
+    styles['--line-clamp'] = truncate
   }
 
   return styles
@@ -94,12 +89,10 @@ const computedClasses = computed(() => {
   }
 
   // hack vue2 boolean prop
-  if (truncate || truncate === '') {
-    if (typeof truncate === 'boolean' || truncate === '') {
-      basic.push('truncate')
-    } else {
-      basic.push(`line-clamp`)
-    }
+  if (truncate === true || truncate === '') {
+    basic.push('truncate')
+  } else if (truncate) {
+    basic.push(`line-clamp`)
   }
 
   return basic
