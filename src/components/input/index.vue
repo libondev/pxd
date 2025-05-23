@@ -62,7 +62,7 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--container flex items-center relative rounded-inherit h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const basic = ['pxd-input--border flex items-center relative rounded-inherit h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   basic.push(computedSize.value)
 
@@ -154,27 +154,3 @@ function togglePasswordType() {
     </PError>
   </label>
 </template>
-
-<style lang="postcss">
-.pxd-input--container {
-  box-shadow: 0 0 0 1px var(--border-color, var(--color-gray-alpha-300));
-
-  &:not(.is-disabled, .is-readonly):hover {
-    --border-color: var(--color-gray-alpha-600);
-  }
-
-  &:not(.is-disabled, .is-readonly):focus-within {
-    box-shadow: 0 0 0 1px var(--color-gray-alpha-600), 0 0 0 4px var(--color-gray-alpha-300);
-  }
-
-  &.is-error {
-    &, &:focus-within {
-      box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-300-value));
-    }
-
-    &:not(.is-disabled, .is-readonly, :focus):hover {
-      box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-500-value));
-    }
-  }
-}
-</style>

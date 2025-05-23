@@ -283,3 +283,24 @@
   -webkit-line-clamp: var(--text-clamp, 1);
   -webkit-box-orient: vertical;
 }
+
+.pxd-input--border {
+  box-shadow: 0 0 0 1px var(--border-color, var(--color-gray-alpha-300));
+}
+
+.pxd-input--border:not(.is-disabled, .is-readonly):hover {
+  --border-color: var(--color-gray-alpha-600);
+}
+
+.pxd-input--border:not(.is-disabled, .is-readonly):focus-within {
+  box-shadow: 0 0 0 1px var(--color-gray-alpha-600), 0 0 0 4px var(--color-gray-alpha-300);
+}
+
+.pxd-input--border.is-error,
+.pxd-input--border.is-error:focus-within {
+  box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-300-value));
+}
+
+.pxd-input--border.is-error:not(.is-disabled, .is-readonly, :focus):hover {
+  box-shadow: 0 0 0 1px hsl(var(--color-red-900-value)), 0 0 0 4px hsl(var(--color-red-500-value));
+}
