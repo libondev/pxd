@@ -68,6 +68,10 @@
     "name": "note"
   },
   {
+    "camelized": "PinInput",
+    "name": "pin-input"
+  },
+  {
     "camelized": "Popover",
     "name": "popover"
   },
