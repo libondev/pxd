@@ -401,8 +401,8 @@ function onMouseOver(ev: MouseEvent) {
           <th style="width: 28px;min-width: 28px;" />
 
           <th
-            v-for="col in tableHeadList"
-            :key="col"
+            v-for="(col, i) in tableHeadList"
+            :key="col + i"
             class="relative font-normal text-foreground-secondary"
           >
             <span class="absolute -top-1 left-0 whitespace-nowrap">{{ col }}</span>
