@@ -1,10 +1,10 @@
-@import "tailwindcss";
-@import "../../node_modules/pxd/dist/styles/tw.css";
-@source "../../node_modules/pxd";
-@source "../../node_modules/markdown-it-plugins";
+@import 'tailwindcss';
+@import '../../node_modules/pxd/dist/styles/tw.css';
+@source '../../node_modules/pxd';
+@source '../../node_modules/markdown-it-plugins';
 
 @theme {
-  --font-sans: 'Inter', 'Geist', sans-serif;
+  --font-sans: 'Inter','Inter Fallback','Geist',ui-sans-serif,system-ui,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
   --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', monospace;
 }
 
