@@ -13,7 +13,6 @@ Display text using well-defined typographic styles.
     <PText :size="16">The Evil Rabbit jumps.</PText>
     <PText :size="14">The Evil Rabbit jumps.</PText>
     <PText :size="12">The Evil Rabbit jumps.</PText>
-    <PText :size="10">The Evil Rabbit jumps.</PText>
   </PStack>
 </template>
 ```

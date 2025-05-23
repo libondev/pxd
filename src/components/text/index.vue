@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentAs, ResponsiveValue } from '../../types/components'
 import { computed } from 'vue'
+import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   as?: ComponentAs
@@ -42,9 +43,7 @@ const presetSizeClasses = {
 const formattedSize = computed(() => {
   const { size } = props
 
-  const defaultSize = {
-    '--text-xs': '14px',
-  } as Record<string, string | number>
+  const defaultSize = {} as Record<string, string | number>
 
   if (typeof size === 'object') {
     return Object.entries(size).reduce((acc, [bp, value]) => {
@@ -52,6 +51,8 @@ const formattedSize = computed(() => {
 
       return acc
     }, defaultSize)
+  } else {
+    defaultSize['--text-xs'] = getCssUnitValue(size, '14px') as string
   }
 
   return defaultSize
