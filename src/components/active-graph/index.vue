@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useDelayChange } from '../../composables/useDelayChange'
 import { getColorByThreshold } from '../../utils/colors'
@@ -338,11 +338,6 @@ const formatTooltipText = computed(() => {
   return ''
 })
 
-// 鼠标进入获取表格区域的位置信息, 用于计算提示框的位置
-function onMouseEnter() {
-  tbodyRect = tbodyRef.value!.getBoundingClientRect()
-}
-
 // 鼠标离开表格区域, 隐藏提示框
 function onMouseLeave() {
   setShowTooltipImmediate(false)
@@ -351,7 +346,7 @@ function onMouseLeave() {
 }
 
 // 鼠标悬停在单元格上, 显示提示框
-function onMouseOver(ev: MouseEvent) {
+async function onMouseOver(ev: MouseEvent) {
   const targetEl = ev.target as HTMLTableCellElement
 
   if (targetEl.tagName !== 'TD') {
@@ -365,6 +360,13 @@ function onMouseOver(ev: MouseEvent) {
   if (!date) {
     setShowTooltipImmediate(false)
     return
+  }
+
+  // 移动端 pointerover 事件比 pointerenter 事件先触发，
+  // 并且在滚动后位置信息可能会出现变化
+  // 所以放在使用前获取就能保证获取到正确的位置信息
+  if (!tbodyRect) {
+    tbodyRect = tbodyRef.value!.getBoundingClientRect()
   }
 
   // 立即显示提示
@@ -384,6 +386,10 @@ function onMouseOver(ev: MouseEvent) {
     top,
   }
 }
+
+onBeforeUnmount(() => {
+  onMouseLeave()
+})
 </script>
 
 <template>
@@ -393,7 +399,6 @@ function onMouseOver(ev: MouseEvent) {
       aria-readonly="true"
       class="border-separate"
       style="border-spacing: 3px;"
-      @pointerenter="onMouseEnter"
       @pointerleave="onMouseLeave"
     >
       <thead v-if="!graphOnly" class="text-xs">
@@ -414,7 +419,7 @@ function onMouseOver(ev: MouseEvent) {
         ref="tbodyRef"
         class="text-xs"
         @click="onCellClick"
-        @pointerover="onMouseOver"
+        @pointerover.capture="onMouseOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
           <td class="pxd-active-graph--label relative leading-none text-foreground-secondary overflow-hidden">
