@@ -24,8 +24,11 @@ withDefaults(
 </script>
 
 <template>
-  <div class="pxd-book inline-flex w-fit" :style="{ '--book-width': width, '--book-color': color }">
-    <div class="pxd-book--container w-fit relative transform-3d cursor-default duration-300 motion-safe:transition-transform">
+  <div class="pxd-book inline-flex w-fit">
+    <div
+      class="pxd-book--container w-fit relative transform-3d cursor-default duration-300 motion-safe:transition-transform"
+      :style="{ '--book-width': width, '--book-color': color }"
+    >
       <div class="pxd-book--content flex flex-col h-full overflow-hidden translate-z-0 relative bg-background-secondary">
         <div
           v-if="variant === 'stripe'"
@@ -82,17 +85,14 @@ withDefaults(
 .pxd-book--container {
   aspect-ratio: var(--aspect-ratio);
   transform: rotate(0deg);
-  min-width: calc(var(--book-width) * 1px);
+  width: calc(var(--book-width) * 1px);
   container-type: inline-size;
-
-  & > :first-child {
-    position: absolute;
-    min-width: calc(var(--book-width) * 1px);
-  }
 }
 
 .pxd-book--content {
-  width: calc(var(--book-width) * 1px);
+  position: absolute;
+  width: 100%;
+  min-width: 100%;
   border-radius: var(--book-border-radius);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .02), 0 4px 8px -4px rgba(0, 0, 0, .1), 0 16px 24px -8px rgba(0, 0, 0, .03);
 
@@ -153,7 +153,7 @@ withDefaults(
 }
 
 .pxd-book--back {
-  width: calc(var(--book-width) * 1px);
+  width: 100%;
   border-radius: var(--book-border-radius);
   transform: translateZ(calc(-1 * var(--book-depth)));
 }
