@@ -44,14 +44,8 @@ const emits = defineEmits<{
 
 const attrs = useAttrs()
 
-const alignClassName = {
-  left: 'justify-start',
-  center: 'justify-center',
-  right: 'justify-end',
-}
-
 const computedClasses = computed(() => {
-  const basic = ['pxd-link-button', alignClassName[props.align]]
+  const basic = ['pxd-link-button']
 
   if (props.type === 'text') {
     basic.push('font-medium hover:underline hover:opacity-60 active:opacity-80 motion-safe:transition-opacity')
@@ -93,6 +87,7 @@ function onLinkClick(ev: MouseEvent) {
 
 <template>
   <PButton
+    :align="align"
     :class="computedClasses"
     v-bind="computedAttrs"
     @click="onLinkClick"

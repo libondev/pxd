@@ -13,6 +13,7 @@ const props = withDefaults(
   defineProps<ButtonProps>(),
   {
     as: 'button',
+    align: 'center',
     variant: 'default',
   },
 )
@@ -46,6 +47,12 @@ const VARIANTS = {
   success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-900 border-transparent',
 }
 
+const ALIGNMENTS = {
+  left: 'justify-start',
+  center: 'justify-center',
+  right: 'justify-end',
+}
+
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
 const computedSize = useComputedSize(props.size, SIZES)
@@ -53,7 +60,7 @@ const computedFontSize = useComputedSize(props.size, FONT_SIZES)
 const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClasses = computed(() => {
-  const classNames = ['pxd-button cursor-pointer select-none items-center justify-center  motion-safe:transition-all']
+  const classNames = ['pxd-button cursor-pointer select-none items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
 
   classNames.push(computedFontSize.value)
 
