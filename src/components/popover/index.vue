@@ -74,7 +74,7 @@ const containerRef = shallowRef<HTMLElement>()
 const positionInternal = shallowRef(props.position)
 const containerStyle = shallowRef({} as PopoverContainerStyle)
 
-const triggerMethods = computed(() => toArray(props.trigger))
+const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const generalPosition = computed(() => positionInternal.value.split('-')[0] as PopoverBasePosition)
 const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
 
@@ -103,8 +103,14 @@ const transitionName = computed(() => `pxd-transition--popover-${generalPosition
 //   }
 // }
 
+function getTriggerRect() {
+  rootRect = document.documentElement.getBoundingClientRect()
+  triggerRect = triggerRef.value!.getBoundingClientRect()
+}
+
 async function handlePopoverShow() {
   await new Promise((resolve) => {
+    getTriggerRect()
     clearTimeout(hidePopoverTimer)
     clearTimeout(showPopoverTimer)
 
@@ -145,21 +151,8 @@ async function handlePopoverHide() {
   })
 }
 
-function togglePopover() {
-  if (isVisible.value) {
-    handlePopoverHide()
-  } else {
-    handlePopoverShow()
-  }
-}
-
-function getTriggerRect() {
-  rootRect = document.documentElement.getBoundingClientRect()
-  triggerRect = triggerRef.value!.getBoundingClientRect()
-}
-
 async function onTriggerClick() {
-  if (props.disabled || !triggerMethods.value.includes('click')) {
+  if (props.disabled) {
     return
   }
 
@@ -175,9 +168,7 @@ async function onTriggerClick() {
 }
 
 function onTriggerPointerEnter() {
-  getTriggerRect()
-
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
+  if (props.disabled) {
     return
   }
 
@@ -185,7 +176,7 @@ function onTriggerPointerEnter() {
 }
 
 function onTriggerPointerLeave() {
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
+  if (props.disabled) {
     return
   }
 
@@ -193,7 +184,7 @@ function onTriggerPointerLeave() {
 }
 
 function onTriggerFocusin() {
-  if (props.disabled || !triggerMethods.value.includes('focus')) {
+  if (props.disabled) {
     return
   }
 
@@ -201,7 +192,7 @@ function onTriggerFocusin() {
 }
 
 function onTriggerFocusout() {
-  if (props.disabled || !triggerMethods.value.includes('focus')) {
+  if (props.disabled) {
     return
   }
 
@@ -209,7 +200,7 @@ function onTriggerFocusout() {
 }
 
 async function onTriggerContextmenu(ev: MouseEvent) {
-  if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
+  if (props.disabled) {
     return
   }
 
@@ -237,7 +228,7 @@ function onClickOutsideToHide(ev: MouseEvent) {
 }
 
 function onContentPointerEnter() {
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
+  if (props.disabled) {
     return
   }
 
@@ -247,7 +238,7 @@ function onContentPointerEnter() {
 }
 
 function onContentPointerLeave() {
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
+  if (props.disabled) {
     return
   }
 
@@ -366,8 +357,62 @@ function updateContentPosition() {
 watch(
   () => props.visible,
   (visible) => {
-    isVisible.value = visible
-    togglePopover()
+    if (visible) {
+      handlePopoverShow()
+    } else {
+      handlePopoverHide()
+    }
+  },
+)
+
+const triggerMethodEvents = {
+  click: [
+    ['click', onTriggerClick],
+  ],
+  focus: [
+    ['focusin', onTriggerFocusin],
+    ['focusout', onTriggerFocusout],
+  ],
+  hover: [
+    ['pointerenter', onTriggerPointerEnter],
+    ['pointerleave', onTriggerPointerLeave],
+  ],
+  contextmenu: [
+    ['contextmenu', onTriggerContextmenu],
+  ],
+} as const
+
+watch<[HTMLElement | undefined, PopoverTrigger[]]>(
+  () => [triggerRef.value, triggerMethods.value],
+  ([newDom, newMethods], [oldDom, oldMethods]) => {
+    // unbind old trigger methods events
+    if (oldDom) {
+      for (const method of oldMethods) {
+        const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
+
+        if (!events) {
+          continue
+        }
+
+        for (const event of events) {
+          off(oldDom, event[0], event[1])
+        }
+      }
+    }
+
+    if (newDom) {
+      for (const method of newMethods) {
+        const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
+
+        if (!events) {
+          continue
+        }
+
+        for (const event of events) {
+          on(newDom, event[0], event[1])
+        }
+      }
+    }
   },
 )
 
@@ -405,12 +450,6 @@ defineExpose({
       ref="triggerRef"
       class="pxd-popover__trigger"
       :class="triggerClass"
-      @click="onTriggerClick"
-      @pointerenter="onTriggerPointerEnter"
-      @pointerleave="onTriggerPointerLeave"
-      @focusin="onTriggerFocusin"
-      @focusout="onTriggerFocusout"
-      @contextmenu="onTriggerContextmenu"
     >
       <slot />
     </div>

@@ -135,6 +135,12 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </PButton>
     </PPopover>
 
+    <PPopover :trigger="['hover', 'click', 'focus']" :content="content">
+      <PButton>
+        Hover/Click/Focus to active
+      </PButton>
+    </PPopover>
+
     <PPopover trigger="manual" :visible="visible" :content="content">
       <PButton @click="visible = !visible">
         Manual to active
@@ -255,9 +261,9 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
       </PButton>
     </PPopover>
 
-    <PPopover :content="content" :translate-offset="-5">
+    <PPopover :content="content" :translate-offset="-10">
       <PButton>
-        -5px(Reverse translate)
+        -10px(Reverse translate)
       </PButton>
     </PPopover>
   </PStack>
