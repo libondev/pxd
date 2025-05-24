@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { HTMLAttributes } from 'vue'
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { computed, ref, shallowRef } from 'vue'
 import { useComputedSize } from '../../composables/useFallbackProps'
@@ -15,6 +16,7 @@ interface Props {
   required?: boolean
   modelValue?: string
   placeholder?: string
+  inputMode?: HTMLAttributes['inputmode']
   type?: 'numeric' | 'alphabetic' | 'alphanumeric' | 'numeric-password' | 'alphabetic-password' | 'alphanumeric-password'
 }
 
@@ -76,14 +78,12 @@ const computedInputType = computed(() => {
   return 'text'
 })
 
-const computedInputMode = computed(() => props.type.includes('numeric') ? 'numeric' : 'text')
+const computedInputMode = computed(() => {
+  return props.type.includes('numeric') ? 'numeric' : 'text'
+})
 
 const computedClasses = computed(() => {
-  const basic = [
-    'pxd-input--border aspect-square text-center rounded-md outline-none bg-transparent',
-    'disabled:bg-gray-100 disabled:text-gray-700 disabled:cursor-not-allowed disabled:placeholder:text-gray-400',
-    'placeholder:select-none placeholder:text-gray-600 focus:placeholder:opacity-0 motion-safe:transition-all',
-  ]
+  const basic = ['pxd-input--border rounded-md motion-safe:transition-all']
 
   if (props.error) {
     basic.push('is-error')
@@ -98,7 +98,22 @@ const computedClasses = computed(() => {
   return basic
 })
 
-function onInputFocus(ev: FocusEvent) {
+function toggleFocusInput(index: number) {
+  if (index < 0 || index > props.length) {
+    return
+  }
+
+  const input = containerRef.value!.querySelector(`div:nth-child(${index + 1}) > input`) as HTMLInputElement
+
+  if (!input) {
+    return
+  }
+
+  input.select()
+}
+
+// 点击空白的地方时聚焦输入框并选中方便下一次输入
+function onContainerClick(ev: Event) {
   const el = ev.target as HTMLInputElement
 
   if (el.tagName !== 'INPUT') {
@@ -106,20 +121,6 @@ function onInputFocus(ev: FocusEvent) {
   }
 
   el.select()
-}
-
-function toggleFocusInput(index: number) {
-  if (index < 0 || index >= props.length) {
-    return
-  }
-
-  const input = containerRef.value!.children[index] as HTMLInputElement
-
-  if (!input) {
-    return
-  }
-
-  input.select()
 }
 
 // 有些语言可以通过输入法来组合输入内容，但是不会触发 keydown, 在输入后清空输入框
@@ -130,64 +131,103 @@ function onCompositionEnd(ev: CompositionEvent) {
   targetInput.value = ''
 }
 
-const DELETE_KEYS = ['Backspace', 'Delete']
-const TOGGLE_KEYS = ['ArrowLeft', 'ArrowRight', 'Tab']
-const ALLOWED_KEYS = [...DELETE_KEYS, ...TOGGLE_KEYS]
-
 const NUMERIC_REGEX = /^\d$/
 const ALPHABETIC_REGEX = /^[a-z]$/i
 const ALPHANUMERIC_REGEX = /^[0-9a-z]$/i
 
-async function onInputValue(ev: KeyboardEvent) {
-  const targetInput = ev.target as HTMLInputElement
-  const index = Number(targetInput.dataset.index)
-  const value = ev.key
-
-  const type = props.type
-
-  if (type.startsWith('numeric') && !ALLOWED_KEYS.includes(value)) {
-    if (!NUMERIC_REGEX.test(value)) {
-      return
-    }
-  } else if (type.startsWith('alphabetic') && !ALLOWED_KEYS.includes(value)) {
-    if (!ALPHABETIC_REGEX.test(value)) {
-      return
-    }
-  } else if (type.startsWith('alphanumeric') && !ALLOWED_KEYS.includes(value)) {
-    if (!ALPHANUMERIC_REGEX.test(value)) {
-      return
-    }
+function shouldToggleNextInput(value: string) {
+  if (!value) {
+    return false
   }
 
-  if (DELETE_KEYS.includes(value)) {
-    modelValueLocal.value[index] = ''
-    modelValue.value = modelValueLocal.value.join('')
+  const { type } = props
 
-    // 可能会有多个连续空格，需要找到第一个空格的索引
-    const firstEmptyIndex = modelValueLocal.value.indexOf('')
-    if (firstEmptyIndex === index) {
-      toggleFocusInput(index - 1)
-    } else {
-      toggleFocusInput(firstEmptyIndex)
-    }
-
-    return
+  if (type.startsWith('numeric')) {
+    return NUMERIC_REGEX.test(value)
+  } else if (type.startsWith('alphabetic')) {
+    return ALPHABETIC_REGEX.test(value)
+  } else if (type.startsWith('alphanumeric')) {
+    return ALPHANUMERIC_REGEX.test(value)
   }
 
-  if (TOGGLE_KEYS.includes(value)) {
-    if (value === 'ArrowLeft' || (value === 'Tab' && ev.shiftKey)) {
-      toggleFocusInput(index - 1)
-    } else if (value === 'ArrowRight' || (value === 'Tab' && !ev.shiftKey)) {
-      toggleFocusInput(index + 1)
-    }
+  return false
+}
 
-    return
-  }
-
-  modelValueLocal.value[index] = value
+function clearCurrentInputAndToggleInput(input: HTMLInputElement, index: number) {
+  input.value = ''
+  modelValueLocal.value[index] = ''
   modelValue.value = modelValueLocal.value.join('')
 
-  toggleFocusInput(index + 1)
+  const firstEmptyIndex = modelValueLocal.value.indexOf('')
+
+  if (firstEmptyIndex === index || firstEmptyIndex === -1) {
+    toggleFocusInput(index - 1)
+  } else {
+    toggleFocusInput(firstEmptyIndex)
+  }
+}
+
+const ARROW_KEYS = ['ArrowLeft', 'ArrowRight']
+const DELETE_KEYS = ['Backspace', 'Delete']
+
+function onContainerKeydown(ev: KeyboardEvent) {
+  const input = ev.target as HTMLInputElement
+  const index = Number(input.dataset.index)
+  const keyCode = ev.key
+
+  if (ARROW_KEYS.includes(keyCode)) {
+    ev.preventDefault()
+
+    if (keyCode === 'ArrowLeft') {
+      toggleFocusInput(index - 1)
+    } else {
+      toggleFocusInput(index + 1)
+    }
+  } else if (DELETE_KEYS.includes(keyCode)) {
+    // 按下退格或删除键时也会触发 beforeinput
+    // 而在移动端如果在这里不处理则需要删除两次才能清空并切换焦点
+    ev.preventDefault()
+
+    clearCurrentInputAndToggleInput(input, index)
+  } else if (keyCode === 'Enter') {
+    ev.preventDefault()
+  }
+}
+
+function onBeforeInputValue(ev: Event) {
+  const input = ev.target as HTMLInputElement
+  const index = Number(input.dataset.index)
+  const value = (ev as InputEvent).data || ''
+
+  ev.preventDefault()
+
+  if (!value) {
+    clearCurrentInputAndToggleInput(input, index)
+
+    return
+  }
+
+  // 判断输入的内容是否符合类型定义
+  if (shouldToggleNextInput(value)) {
+    input.value = value
+    toggleFocusInput(index + 1)
+    modelValueLocal.value[index] = value
+    modelValue.value = modelValueLocal.value.join('')
+  }
+}
+
+function onInputPasteValue(ev: ClipboardEvent) {
+  ev.preventDefault()
+  const text = ev.clipboardData?.getData('text')
+
+  if (!text) {
+    return
+  }
+
+  const slicedText = text.slice(0, props.length)
+
+  modelValue.value = slicedText
+  modelValueLocal.value = slicedText.split('')
 }
 </script>
 
@@ -200,29 +240,31 @@ async function onInputValue(ev: KeyboardEvent) {
     <div
       ref="containerRef"
       class="flex items-center gap-2"
-      @focusin="onInputFocus"
-      @keydown.prevent="onInputValue"
+      @click="onContainerClick"
+      @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
     >
-      <input
-        v-for="(n, i) of length"
-        :key="n"
-        :value="modelValueLocal[i]"
-        :class="computedClasses"
-        :aria-label="`pin code ${n} of ${length}`"
-        :type="computedInputType"
-        :data-index="i"
-        minlength="1"
-        maxlength="1"
-        autocorrect="off"
-        autocomplete="off"
-        autocapitalize="off"
-        :readonly="readonly"
-        :disabled="disabled"
-        :required="required"
-        :placeholder="placeholder"
-        :inputmode="computedInputMode"
-      >
+      <div v-for="(n, i) of length" :key="n" :class="computedClasses">
+        <input
+          :value="modelValueLocal[i]"
+          :aria-label="`pin code ${n} of ${length}`"
+          :type="computedInputType"
+          :data-index="i"
+          class="aspect-square outline-none bg-transparent w-full h-full text-center rounded-inherit disabled:bg-gray-100 disabled:text-gray-700 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600 focus:placeholder:opacity-0 motion-safe:transition-all"
+          minlength="1"
+          maxlength="1"
+          autocorrect="off"
+          autocomplete="off"
+          autocapitalize="off"
+          :readonly="readonly"
+          :disabled="disabled"
+          :required="required"
+          :placeholder="placeholder"
+          :inputmode="computedInputMode"
+          @paste="onInputPasteValue"
+          @beforeinput="onBeforeInputValue"
+        >
+      </div>
     </div>
 
     <PError v-if="error" class="mt-2" :size="size">
