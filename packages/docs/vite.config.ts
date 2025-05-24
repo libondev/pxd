@@ -111,6 +111,10 @@ export default defineConfig(({ mode }) => {
       include: ['tailwind-merge', '@vue/shared', 'canvas-confetti'],
     },
 
+    server: {
+      host: '0.0.0.0',
+    },
+
     ssgOptions: {
       beastiesOptions: {
         preload: 'media',
