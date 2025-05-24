@@ -62,7 +62,7 @@ const computedClasses = computed(() => {
   basic.push(computedSize.value)
 
   if (props.disabled) {
-    basic.push('is-disabled bg-gray-100')
+    basic.push('is-disabled')
   }
 
   if (props.readonly) {
@@ -99,7 +99,7 @@ function onInputChange(event: Event) {
       <textarea
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none placeholder:text-gray-600"
+        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600"
         autocorrect="off"
         autocomplete="off"
         inputmode="numeric"

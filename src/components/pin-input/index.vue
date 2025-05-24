@@ -64,12 +64,10 @@ const modelValueLocal = ref<string[]>(
 const modelValue = useModelValue(props, emits)
 const computedSize = useComputedSize(props.size, SIZES)
 
-const PASSWORD_TYPES = ['numeric-password', 'alphabetic-password', 'alphanumeric-password']
-
-const computedType = computed(() => {
+const computedInputType = computed(() => {
   const { type } = props
 
-  if (PASSWORD_TYPES.includes(type)) {
+  if (type.includes('password')) {
     return 'password'
   } else if (type === 'numeric') {
     return 'tel'
@@ -78,10 +76,13 @@ const computedType = computed(() => {
   return 'text'
 })
 
+const computedInputMode = computed(() => props.type.includes('numeric') ? 'numeric' : 'text')
+
 const computedClasses = computed(() => {
   const basic = [
     'pxd-input--border aspect-square text-center rounded-md outline-none bg-transparent',
-    'disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none placeholder:text-gray-600 active:placeholder:opacity-0 focus:placeholder:opacity-0 motion-safe:transition-all',
+    'disabled:bg-gray-100 disabled:text-gray-700 disabled:cursor-not-allowed disabled:placeholder:text-gray-400',
+    'placeholder:select-none placeholder:text-gray-600 focus:placeholder:opacity-0 motion-safe:transition-all',
   ]
 
   if (props.error) {
@@ -96,6 +97,38 @@ const computedClasses = computed(() => {
 
   return basic
 })
+
+function onInputFocus(ev: FocusEvent) {
+  const el = ev.target as HTMLInputElement
+
+  if (el.tagName !== 'INPUT') {
+    return
+  }
+
+  el.select()
+}
+
+function toggleFocusInput(index: number) {
+  if (index < 0 || index >= props.length) {
+    return
+  }
+
+  const input = containerRef.value!.children[index] as HTMLInputElement
+
+  if (!input) {
+    return
+  }
+
+  input.select()
+}
+
+// 有些语言可以通过输入法来组合输入内容，但是不会触发 keydown, 在输入后清空输入框
+function onCompositionEnd(ev: CompositionEvent) {
+  const targetInput = ev.target as HTMLInputElement
+
+  ev.preventDefault()
+  targetInput.value = ''
+}
 
 const DELETE_KEYS = ['Backspace', 'Delete']
 const TOGGLE_KEYS = ['ArrowLeft', 'ArrowRight', 'Tab']
@@ -156,42 +189,10 @@ async function onInputValue(ev: KeyboardEvent) {
 
   toggleFocusInput(index + 1)
 }
-
-function toggleFocusInput(index: number) {
-  if (index < 0 || index >= props.length) {
-    return
-  }
-
-  const input = containerRef.value!.children[index] as HTMLInputElement
-
-  if (!input) {
-    return
-  }
-
-  input.select()
-}
-
-function onContainerClick(ev: Event) {
-  const targetInput = ev.target as HTMLInputElement
-
-  if (targetInput.tagName !== 'INPUT') {
-    return
-  }
-
-  targetInput.select()
-}
-
-// 有些语言可以通过输入法来组合输入内容，但是不会触发 keydown, 在输入后清空输入框
-function onCompositionEnd(ev: CompositionEvent) {
-  const targetInput = ev.target as HTMLInputElement
-
-  ev.preventDefault()
-  targetInput.value = ''
-}
 </script>
 
 <template>
-  <label class="pxd-pin-input" @click="onContainerClick">
+  <label class="pxd-pin-input">
     <div v-if="label || $slots.label" class="pxd-input--label">
       <slot name="label">{{ label }}</slot>
     </div>
@@ -199,6 +200,7 @@ function onCompositionEnd(ev: CompositionEvent) {
     <div
       ref="containerRef"
       class="flex items-center gap-2"
+      @focusin="onInputFocus"
       @keydown.prevent="onInputValue"
       @compositionend="onCompositionEnd"
     >
@@ -208,18 +210,18 @@ function onCompositionEnd(ev: CompositionEvent) {
         :value="modelValueLocal[i]"
         :class="computedClasses"
         :aria-label="`pin code ${n} of ${length}`"
-        :type="computedType"
+        :type="computedInputType"
         :data-index="i"
         minlength="1"
         maxlength="1"
         autocorrect="off"
         autocomplete="off"
-        inputmode="numeric"
         autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
         :required="required"
         :placeholder="placeholder"
+        :inputmode="computedInputMode"
       >
     </div>
 

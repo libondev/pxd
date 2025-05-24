@@ -4,7 +4,7 @@ Used to capture a pin code or otp from the user
 ## Default
 
 ```vue demo
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 
 const code = ref('1234')
@@ -12,6 +12,20 @@ const code = ref('1234')
 
 <template>
   <PPinInput v-model="code" />
+</template>
+```
+
+## Disabled
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const code = ref('12')
+</script>
+
+<template>
+  <PPinInput v-model="code" disabled />
 </template>
 ```
 

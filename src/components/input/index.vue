@@ -68,7 +68,7 @@ const computedClasses = computed(() => {
   basic.push(computedSize.value)
 
   if (props.disabled) {
-    basic.push('is-disabled bg-gray-100')
+    basic.push('is-disabled')
   }
 
   if (props.readonly) {
@@ -118,7 +118,7 @@ function togglePasswordType() {
       <input
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:cursor-not-allowed placeholder:select-none placeholder:text-gray-600 file:border-0 file:bg-transparent file:font-medium"
+        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600 file:border-0 file:bg-transparent file:font-medium"
         :class="{ 'pr-10': password }"
         :type="internalInputType"
         autocorrect="off"
