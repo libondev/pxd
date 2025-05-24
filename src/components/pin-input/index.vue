@@ -13,7 +13,7 @@ interface Props {
   readonly?: boolean
   disabled?: boolean
   required?: boolean
-  modelValue?: string | number
+  modelValue?: string
   placeholder?: string
   type?: 'numeric' | 'alphabetic' | 'alphanumeric' | 'numeric-password' | 'alphabetic-password' | 'alphanumeric-password'
 }
@@ -50,9 +50,15 @@ const SIZES = {
 const containerRef = shallowRef<HTMLLabelElement>()
 
 const modelValueLocal = ref<string[]>(
-  props.modelValue
-    ? props.modelValue.toString().split('')
-    : Array.from({ length: props.length }).fill(''),
+  (() => {
+    if (typeof props.modelValue === 'string') {
+      return (props.modelValue).split('')
+    } else if (Array.isArray(props.modelValue)) {
+      return props.modelValue
+    }
+
+    return Array.from({ length: props.length }, String)
+  })(),
 )
 
 const modelValue = useModelValue(props, emits)
@@ -91,19 +97,33 @@ const computedClasses = computed(() => {
   return basic
 })
 
-const NUMERIC_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 const DELETE_KEYS = ['Backspace', 'Delete']
 const TOGGLE_KEYS = ['ArrowLeft', 'ArrowRight', 'Tab']
-const ALLOWED_KEYS = [...NUMERIC_KEYS, ...DELETE_KEYS, ...TOGGLE_KEYS]
+const ALLOWED_KEYS = [...DELETE_KEYS, ...TOGGLE_KEYS]
+
+const NUMERIC_REGEX = /^\d$/
+const ALPHABETIC_REGEX = /^[a-z]$/i
+const ALPHANUMERIC_REGEX = /^[0-9a-z]$/i
 
 async function onInputValue(ev: KeyboardEvent) {
   const targetInput = ev.target as HTMLInputElement
   const index = Number(targetInput.dataset.index)
   const value = ev.key
 
-  // TODO: 需要支持其他输入类型
-  if (!NUMERIC_KEYS.includes(value) && !ALLOWED_KEYS.includes(value)) {
-    return
+  const type = props.type
+
+  if (type.startsWith('numeric') && !ALLOWED_KEYS.includes(value)) {
+    if (!NUMERIC_REGEX.test(value)) {
+      return
+    }
+  } else if (type.startsWith('alphabetic') && !ALLOWED_KEYS.includes(value)) {
+    if (!ALPHABETIC_REGEX.test(value)) {
+      return
+    }
+  } else if (type.startsWith('alphanumeric') && !ALLOWED_KEYS.includes(value)) {
+    if (!ALPHANUMERIC_REGEX.test(value)) {
+      return
+    }
   }
 
   if (DELETE_KEYS.includes(value)) {
