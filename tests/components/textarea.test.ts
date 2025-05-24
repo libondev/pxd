@@ -49,7 +49,7 @@ describe('textarea', () => {
       },
     })
 
-    const label = wrapper.find('.pxd-textarea--label')
+    const label = wrapper.find('.pxd-input--label')
     expect(label.exists()).toBe(true)
 
     expect(label.text()).toBe('label')
