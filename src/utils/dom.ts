@@ -107,3 +107,62 @@ export function getScrollPositions(el: HTMLElement | Window | Document) {
     scrollHeight,
   }
 }
+
+export interface ScrollbarSize {
+  width: number // 垂直滚动条宽度
+  height: number // 水平滚动条高度
+}
+
+/**
+ * 获取滚动条尺寸（宽度和高度）
+ * @param element - 要测量的元素，默认为document.body
+ * @returns 包含滚动条宽度和高度的对象
+ */
+export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
+  // 如果未提供元素，则创建临时元素测量全局滚动条
+  if (!element) {
+    const div = document.createElement('div')
+    div.style.cssText = 'width: 100px; height: 100px; overflow: scroll; position: absolute; top: -9999px; visibility: hidden; box-sizing: content-box;'
+    document.body.appendChild(div)
+
+    const size = {
+      width: div.offsetWidth - div.clientWidth,
+      height: div.offsetHeight - div.clientHeight,
+    }
+
+    document.body.removeChild(div)
+    return size
+  }
+
+  // 测量特定元素的滚动条
+  const verticalScrollable = isScrollable(element, true)
+  const horizontalScrollable = isScrollable(element, false)
+  const hasVerticalScrollbar = verticalScrollable && hasScrollbar(element, true)
+  const hasHorizontalScrollbar = horizontalScrollable && hasScrollbar(element, false)
+
+  // 创建克隆元素进行测量，避免原始元素样式干扰
+  if (hasVerticalScrollbar || hasHorizontalScrollbar) {
+    const clone = element.cloneNode(true) as HTMLElement
+    clone.style.visibility = 'hidden'
+    clone.style.position = 'absolute'
+    clone.style.top = '-9999px'
+    clone.style.overflow = 'auto' // 确保可以测量滚动条
+
+    // 将克隆元素添加到DOM并设置与原始元素相同的尺寸
+    document.body.appendChild(clone)
+    clone.style.width = `${element.offsetWidth}px`
+    clone.style.height = `${element.offsetHeight}px`
+
+    const verticalWidth = hasVerticalScrollbar ? (clone.offsetWidth - clone.clientWidth) : 0
+    const horizontalHeight = hasHorizontalScrollbar ? (clone.offsetHeight - clone.clientHeight) : 0
+
+    document.body.removeChild(clone)
+
+    return {
+      width: verticalWidth,
+      height: horizontalHeight,
+    }
+  }
+
+  return { width: 0, height: 0 }
+}
