@@ -88,6 +88,10 @@
     "name": "scrollable"
   },
   {
+    "camelized": "Skeleton",
+    "name": "skeleton"
+  },
+  {
     "camelized": "Slider",
     "name": "slider"
   },
