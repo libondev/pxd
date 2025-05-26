@@ -49,7 +49,10 @@ const SIZES = {
   lg: 'w-10 text-base',
 }
 
-const containerRef = shallowRef<HTMLLabelElement>()
+const inputsRef = shallowRef<HTMLInputElement[]>([])
+
+const modelValue = useModelValue(props, emits)
+const computedSize = useComputedSize(props.size, SIZES)
 
 const modelValueLocal = ref<string[]>(
   (() => {
@@ -59,12 +62,9 @@ const modelValueLocal = ref<string[]>(
       return props.modelValue
     }
 
-    return Array.from({ length: props.length }, String)
+    return Array.from({ length: props.length }, () => '')
   })(),
 )
-
-const modelValue = useModelValue(props, emits)
-const computedSize = useComputedSize(props.size, SIZES)
 
 const computedInputType = computed(() => {
   const { type } = props
@@ -98,44 +98,59 @@ const computedClasses = computed(() => {
   return basic
 })
 
-function toggleFocusInput(index: number) {
-  if (index < 0 || index > props.length) {
-    return
+function setInputValue(value: string, index?: number) {
+  if (index !== undefined) {
+    inputsRef.value[index].value = value
+    modelValueLocal.value[index] = value
+  } else {
+    modelValueLocal.value = value.split('')
   }
 
-  const input = containerRef.value!.querySelector(`div:nth-child(${index + 1}) > input`) as HTMLInputElement
-
-  if (!input) {
-    return
-  }
-
-  input.select()
+  modelValue.value = value
 }
 
-// 点击空白的地方时聚焦输入框并选中方便下一次输入
-function onContainerClick(ev: Event) {
-  const el = ev.target as HTMLInputElement
+function focusInputField(dir: 'next' | 'prev', index: number): void
+function focusInputField(dir: 'first' | 'last', index?: number): void
+function focusInputField(dir: 'next' | 'prev' | 'first' | 'last', index?: number): void {
+  let correctIndex = -1
 
-  if (el.tagName !== 'INPUT') {
+  if (dir === 'next') {
+    correctIndex = index! + 1
+  } else if (dir === 'prev') {
+    correctIndex = index! - 1
+  } else if (dir === 'first') {
+    correctIndex = 0
+  } else if (dir === 'last') {
+    correctIndex = props.length - 1
+  }
+
+  if (correctIndex < 0 || correctIndex >= props.length) {
     return
   }
 
-  el.select()
+  inputsRef.value[correctIndex].select()
 }
 
-// 有些语言可以通过输入法来组合输入内容，但是不会触发 keydown, 在输入后清空输入框
+// 使用输入法输入完成后触发 compositionend
 function onCompositionEnd(ev: CompositionEvent) {
-  const targetInput = ev.target as HTMLInputElement
+  const input = ev.target as HTMLInputElement
+  const index = Number(input.dataset.index)
+  const value = ev.data
 
-  ev.preventDefault()
-  targetInput.value = ''
+  if (validateInputValue(value)) {
+    setInputValue(value)
+
+    return
+  }
+
+  setInputValue('', index)
 }
 
-const NUMERIC_REGEX = /^\d$/
-const ALPHABETIC_REGEX = /^[a-z]$/i
-const ALPHANUMERIC_REGEX = /^[0-9a-z]$/i
+const NUMERIC_REGEX = /^\d+$/
+const ALPHABETIC_REGEX = /^[a-z]+$/i
+const ALPHANUMERIC_REGEX = /^[0-9a-z]+$/i
 
-function shouldToggleNextInput(value: string) {
+function validateInputValue(value: string) {
   if (!value) {
     return false
   }
@@ -153,70 +168,52 @@ function shouldToggleNextInput(value: string) {
   return false
 }
 
-function clearCurrentInputAndToggleInput(input: HTMLInputElement, index: number) {
-  input.value = ''
-  modelValueLocal.value[index] = ''
-  modelValue.value = modelValueLocal.value.join('')
-
-  const firstEmptyIndex = modelValueLocal.value.indexOf('')
-
-  if (firstEmptyIndex === index || firstEmptyIndex === -1) {
-    toggleFocusInput(index - 1)
-  } else {
-    toggleFocusInput(firstEmptyIndex)
-  }
-}
-
-const ARROW_KEYS = ['ArrowLeft', 'ArrowRight']
-const DELETE_KEYS = ['Backspace', 'Delete']
-
+// 按下方向键的时候切换输入框的焦点
 function onContainerKeydown(ev: KeyboardEvent) {
-  const input = ev.target as HTMLInputElement
-  const index = Number(input.dataset.index)
-  const keyCode = ev.key
+  const index = Number((ev.target as HTMLInputElement).dataset.index)
+  const key = ev.key
 
-  if (ARROW_KEYS.includes(keyCode)) {
+  if (key === 'ArrowLeft') {
     ev.preventDefault()
-
-    if (keyCode === 'ArrowLeft') {
-      toggleFocusInput(index - 1)
-    } else {
-      toggleFocusInput(index + 1)
-    }
-  } else if (DELETE_KEYS.includes(keyCode)) {
-    // 按下退格或删除键时也会触发 beforeinput
-    // 而在移动端如果在这里不处理则需要删除两次才能清空并切换焦点
+    focusInputField('prev', index)
+  } else if (key === 'ArrowRight') {
     ev.preventDefault()
-
-    clearCurrentInputAndToggleInput(input, index)
-  } else if (keyCode === 'Enter') {
-    ev.preventDefault()
+    focusInputField('next', index)
   }
 }
 
 function onBeforeInputValue(ev: Event) {
-  const input = ev.target as HTMLInputElement
-  const index = Number(input.dataset.index)
-  const value = (ev as InputEvent).data || ''
+  const event = ev as InputEvent
 
-  ev.preventDefault()
-
-  if (!value) {
-    clearCurrentInputAndToggleInput(input, index)
-
+  if (event.isComposing) {
+    ev.preventDefault()
     return
   }
 
-  // 判断输入的内容是否符合类型定义
-  if (shouldToggleNextInput(value)) {
-    input.value = value
-    toggleFocusInput(index + 1)
-    modelValueLocal.value[index] = value
-    modelValue.value = modelValueLocal.value.join('')
+  const input = event.target as HTMLInputElement
+  const index = Number(input.dataset.index)
+  const value = event.data || ''
+
+  if (event.inputType === 'deleteContentBackward') {
+    ev.preventDefault()
+    setInputValue('', index)
+    focusInputField('prev', index)
+  } else if (event.inputType === 'deleteContentForward') {
+    ev.preventDefault()
+    setInputValue('', index)
+  } else if (event.inputType === 'insertCompositionText') {
+    ev.preventDefault()
+  } else if (event.inputType === 'insertText') {
+    ev.preventDefault()
+
+    if (validateInputValue(value)) {
+      setInputValue(value, index)
+      focusInputField('next', index)
+    }
   }
 }
 
-function onInputPasteValue(ev: ClipboardEvent) {
+function onInputPastedValue(ev: ClipboardEvent) {
   ev.preventDefault()
   const text = ev.clipboardData?.getData('text')
 
@@ -226,8 +223,9 @@ function onInputPasteValue(ev: ClipboardEvent) {
 
   const slicedText = text.slice(0, props.length)
 
-  modelValue.value = slicedText
-  modelValueLocal.value = slicedText.split('')
+  if (validateInputValue(slicedText)) {
+    setInputValue(slicedText)
+  }
 }
 </script>
 
@@ -238,14 +236,13 @@ function onInputPasteValue(ev: ClipboardEvent) {
     </div>
 
     <div
-      ref="containerRef"
       class="flex items-center gap-2"
-      @click="onContainerClick"
       @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
     >
       <div v-for="(n, i) of length" :key="n" :class="computedClasses">
         <input
+          ref="inputsRef"
           :value="modelValueLocal[i]"
           :aria-label="`pin code ${n} of ${length}`"
           :type="computedInputType"
@@ -261,7 +258,7 @@ function onInputPasteValue(ev: ClipboardEvent) {
           :required="required"
           :placeholder="placeholder"
           :inputmode="computedInputMode"
-          @paste="onInputPasteValue"
+          @paste="onInputPastedValue"
           @beforeinput="onBeforeInputValue"
         >
       </div>
