@@ -43,12 +43,12 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 ```vue demo
 <template>
   <PStack direction="col" gap="4">
-    <PPinInput type="numeric" />
-    <PPinInput type="alphabetic" />
-    <PPinInput type="alphanumeric" />
-    <PPinInput type="numeric-password" />
-    <PPinInput type="alphabetic-password" />
-    <PPinInput type="alphanumeric-password" />
+    <PPinInput label="numeric" type="numeric" />
+    <PPinInput label="alphabetic" type="alphabetic" />
+    <PPinInput label="alphanumeric" type="alphanumeric" />
+    <PPinInput label="numeric-password" type="numeric-password" />
+    <PPinInput label="alphabetic-password" type="alphabetic-password" />
+    <PPinInput label="alphanumeric-password" type="alphanumeric-password" />
   </PStack>
 </template>
 ```
