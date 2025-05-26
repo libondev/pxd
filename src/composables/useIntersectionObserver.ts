@@ -2,8 +2,8 @@
 
 import type { MaybeRef } from 'vue'
 import { computed, onBeforeUnmount, toValue, watch } from 'vue'
-import { notNullish } from '../utils/filter'
 import { toArray } from '../utils/format'
+import { isNotNullish } from '../utils/is'
 import { unrefElement } from '../utils/unref'
 
 interface UseIntersectionObserverReturnType {
@@ -18,7 +18,7 @@ export function useIntersectionObserver(
 ): UseIntersectionObserverReturnType {
   let observer: UseIntersectionObserverReturnType['observer']
 
-  const targets = computed(() => toArray(toValue(target)).map(unrefElement).filter(notNullish))
+  const targets = computed(() => toArray(toValue(target)).map(unrefElement).filter(isNotNullish))
 
   const cleanup = () => {
     if (!observer) {
