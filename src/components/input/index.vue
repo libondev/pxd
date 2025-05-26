@@ -101,7 +101,7 @@ function togglePasswordType() {
 
 <template>
   <label class="pxd-input w-full max-w-full" :for="uniqueId">
-    <div v-if="label || $slots.label" class="pxd-input--label">
+    <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
 

@@ -233,7 +233,7 @@ function onInputPasteValue(ev: ClipboardEvent) {
 
 <template>
   <label class="pxd-pin-input">
-    <div v-if="label || $slots.label" class="pxd-input--label">
+    <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
 
