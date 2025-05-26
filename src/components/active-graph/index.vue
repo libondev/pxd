@@ -114,43 +114,53 @@ const tableHeadList = computed(() => {
   return createMonthHeaders()
 })
 
-/** 创建月份表头 */
+/** 检查是否需要在此位置显示月份标记 */
+function shouldMarkAsMonthHeader(
+  currentMonth: number,
+  newMonth: number,
+  dayOfMonth: number,
+): boolean {
+  return currentMonth !== newMonth && dayOfMonth === 1
+}
+
+/**
+ * 获取月份表头标记位置和名称
+ */
 function createMonthHeaders() {
   const dates = rangedDates.value.dates
-  const colCount = Math.ceil(dates.length / 7)
-  const result = Array.from({ length: colCount }, () => '')
+  const columnsCount = Math.ceil(dates.length / 7)
+  const monthHeaders = Array.from({ length: columnsCount }, () => '')
 
   const firstDate = new Date(dates[0])
+  let trackedMonth = firstDate.getMonth()
 
-  const firstDayOfWeek = rangedDates.value.weeks[0]
-  let currentMonth = firstDate.getMonth()
+  for (let col = 0; col < columnsCount; col++) {
+    for (let dayInWeek = 0; dayInWeek < 7; dayInWeek++) {
+      const dateIndex = col * 7 + dayInWeek
 
-  // 标记每个月第一天的列
-  for (let i = 1; i < dates.length; i++) {
-    const date = new Date(dates[i])
-    const month = date.getMonth()
-    const day = date.getDate()
+      if (dateIndex < dates.length) {
+        const currentDate = new Date(dates[dateIndex])
+        const currentMonth = currentDate.getMonth()
+        const dayOfMonth = currentDate.getDate()
 
-    // 月份变化且是月初，计算列索引并添加月份名称
-    if (month !== currentMonth && day === 1) {
-      const colIndex = Math.floor((i + 7 - firstDayOfWeek) / 7)
-
-      if (colIndex < colCount) {
-        result[colIndex] = config.locale.date.month[month]
-        currentMonth = month
+        // 检查是否为新月份的第一天
+        if (shouldMarkAsMonthHeader(trackedMonth, currentMonth, dayOfMonth)) {
+          trackedMonth = currentMonth
+          monthHeaders[col] = config.locale.date.month[currentMonth]
+        }
       }
     }
   }
 
-  // 如果第二列的月份为空, 则第一列添加月份, 否则会因为两个月相邻导致月份重叠
-  if (!result[1]) {
-    result[0] = config.locale.date.month[firstDate.getMonth()]
+  // 处理边缘情况：确保第一个月份正确显示且不会和其他月份重叠
+  const isFirstTwoColumnsEmpty = monthHeaders[0] === '' && monthHeaders[1] === ''
+  if (isFirstTwoColumnsEmpty) {
+    monthHeaders[0] = config.locale.date.month[firstDate.getMonth()]
   }
 
-  return result
+  return monthHeaders
 }
 
-// ===== 表格数据生成 =====
 /** 计算表格主体数据 */
 const tableBodyList = computed<RowData[]>(() => {
   return props.transpose
