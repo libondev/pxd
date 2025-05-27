@@ -22,7 +22,6 @@ interface Props {
 
 defineOptions({
   name: 'PTextarea',
-  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -57,7 +56,7 @@ const modelValue = useModelValue(props, emits)
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-input--border flex items-center justify-center h-full motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const basic = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
   basic.push(computedSize.value)
 
@@ -99,7 +98,7 @@ function onInputChange(event: Event) {
       <textarea
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600"
+        class="w-full h-full min-h-[inherit] py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600"
         autocorrect="off"
         autocomplete="off"
         inputmode="numeric"
