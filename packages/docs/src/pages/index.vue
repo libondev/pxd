@@ -11,7 +11,7 @@ import { version } from 'pxd'
           PXD
         </h1>
 
-        <PBadge variant="vue" class="absolute top-0">
+        <PBadge variant="vue" class="absolute top-0 select-none">
           v{{ version }}
         </PBadge>
       </div>
