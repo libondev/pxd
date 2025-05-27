@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ComputedRef } from 'vue'
 import type { ComponentLabel } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
@@ -24,7 +23,7 @@ defineOptions({
 const props = defineProps<Props>()
 
 const uniqueId = getUniqueId()
-const modelValue = inject<ComputedRef<Props['value']>>('switchGroupModelValue')!
+const modelValue = inject('switchGroupModelValue', { value: '' })
 
 const switchGroupName = useRandomValue('switchGroupName')
 const switchGroupProps = inject('switchGroupProps', {
@@ -38,8 +37,8 @@ const computedRequired = computed(() => props.required || switchGroupProps.requi
 
 const computedClasses = computed(() => {
   const basic = [
-    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm',
-    'font-medium text-sm select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
+    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm',
+    'font-medium select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
   ]
 
   if (!computedDisabled.value) {
