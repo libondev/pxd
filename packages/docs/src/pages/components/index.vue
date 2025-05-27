@@ -18,9 +18,11 @@ const filteredComponents = computed(() => {
     A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
   </PText>
 
-  <PInput v-model="searchKeyword" class="mt-5" />
+  <div class="py-4 sticky top-[49px] z-10 bg-background border-b">
+    <PInput v-model="searchKeyword" />
+  </div>
 
-  <div class="flex flex-wrap gap-4 mt-6 md:-mr-4">
+  <div class="flex flex-wrap gap-4 mt-4 md:-mr-4">
     <TransitionGroup name="collapse" mode="out-in">
       <template v-for="{ camelized, name } in filteredComponents" :key="name">
         <OverviewCard :name="camelized">
