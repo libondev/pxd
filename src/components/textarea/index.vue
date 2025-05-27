@@ -90,7 +90,7 @@ function onInputChange(event: Event) {
 </script>
 
 <template>
-  <label class="pxd-textarea w-full max-w-full" :for="uniqueId">
+  <label class="pxd-textarea block w-full max-w-full" :for="uniqueId">
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
@@ -110,7 +110,6 @@ function onInputChange(event: Event) {
         :minlength="minlength"
         :maxlength="maxlength"
         :placeholder="placeholder"
-        v-bind="$attrs"
         @change="onInputChange"
         @focus="onInputFocus"
         @blur="onInputBlur"

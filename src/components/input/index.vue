@@ -100,7 +100,7 @@ function togglePasswordType() {
 </script>
 
 <template>
-  <label class="pxd-input w-full max-w-full" :for="uniqueId">
+  <label class="pxd-input block w-full max-w-full" :for="uniqueId">
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
@@ -130,7 +130,6 @@ function togglePasswordType() {
         :required="required"
         :minlength="minlength"
         :maxlength="maxlength"
-        v-bind="$attrs"
         @change="onInputChange"
         @focus="onInputFocus"
         @blur="onInputBlur"
