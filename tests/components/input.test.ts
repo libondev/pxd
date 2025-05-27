@@ -29,7 +29,7 @@ describe('input', () => {
   it('should type is password', async () => {
     const wrapper = mount(Input, {
       props: {
-        type: 'password',
+        password: true,
       },
     })
 
