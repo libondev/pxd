@@ -30,6 +30,22 @@ const password = ref('')
 </template>
 ```
 
+## allowClear
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const password = ref('')
+</script>
+
+<template>
+  <PStack class="max-w-md">
+    <PInput v-model="password" allow-clear placeholder="Enter your password" />
+  </PStack>
+</template>
+```
+
 ## Prefix and suffix
 
 ```vue demo

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
+import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { twMerge } from 'tailwind-merge'
@@ -20,6 +21,7 @@ interface Props {
   minlength?: number | string
   maxlength?: number | string
   modelValue?: ComponentLabel
+  allowClear?: boolean
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
@@ -97,6 +99,10 @@ function onInputChange(event: Event) {
 function togglePasswordType() {
   internalInputType.value = internalInputType.value === 'password' ? 'text' : 'password'
 }
+
+function clearInputValue() {
+  modelValue.value = ''
+}
 </script>
 
 <template>
@@ -119,7 +125,7 @@ function togglePasswordType() {
         :id="uniqueId"
         v-model="modelValue"
         class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600 file:border-0 file:bg-transparent file:font-medium"
-        :class="{ 'pr-10': password }"
+        :class="{ 'pr-9': password || allowClear }"
         :type="internalInputType"
         autocorrect="off"
         autocomplete="off"
@@ -136,9 +142,18 @@ function togglePasswordType() {
         @blur="onInputBlur"
       >
 
-      <div v-if="password && modelValue" class="pxd-input--pw-icon absolute right-0 top-0 p-3 h-full text-foreground-secondary hover:text-gray-1000 motion-safe:transition-colors cursor-pointer flex items-center" @click.prevent="togglePasswordType">
-        <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
-        <EyeOffIcon v-else class="size-3" />
+      <div
+        v-if="password || allowClear"
+        v-show="modelValue"
+        class="pxd-input--icon absolute right-0 top-0 h-full text-foreground-secondary rounded-tr-inherit rounded-br-inherit cursor-pointer flex items-center hover:text-gray-1000 hover:bg-gray-alpha-100 active:bg-gray-alpha-300 motion-safe:transition-colors"
+      >
+        <div v-if="password" class="p-3" @click.prevent="togglePasswordType">
+          <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
+          <EyeOffIcon v-else class="size-3" />
+        </div>
+        <div v-if="allowClear" class="p-3" @click.prevent="clearInputValue">
+          <CrossIcon class="size-3" />
+        </div>
       </div>
 
       <div
