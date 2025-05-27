@@ -10,6 +10,7 @@ interface Props {
   fader?: boolean
   maskColor?: string
   scrollbar?: boolean
+  contentClass?: string
   scrollbarSize?: number
   staticContent?: boolean
   scrollbarColor?: string
@@ -345,6 +346,7 @@ defineExpose({
   >
     <div
       ref="scrollContainer"
+      :class="contentClass"
       class="pxd-scrollable--content max-h-full scrollbar-hidden overflow-scroll"
     >
       <slot />
