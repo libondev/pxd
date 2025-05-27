@@ -56,6 +56,12 @@ The skeleton will hide when children are not null, but the size is retained.
   <PStack gap="4" direction="col">
     <PSkeleton shape="default" width="48" />
 
+    <PSkeleton shape="rounded" width="48" />
+
+    <PSkeleton shape="squared" width="48" />
+
+    <PSkeleton shape="default" width="48" height="48" />
+
     <PSkeleton shape="rounded" width="48" height="48" />
 
     <PSkeleton shape="squared" width="48" height="48" />
