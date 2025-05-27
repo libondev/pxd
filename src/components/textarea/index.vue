@@ -14,10 +14,11 @@ interface Props {
   readonly?: boolean
   disabled?: boolean
   required?: boolean
-  modelValue?: ComponentLabel
-  placeholder?: string
+  autofocus?: boolean
   minlength?: number | string
   maxlength?: number | string
+  modelValue?: ComponentLabel
+  placeholder?: string
 }
 
 defineOptions({
@@ -101,11 +102,11 @@ function onInputChange(event: Event) {
         class="w-full h-full min-h-[inherit] py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600"
         autocorrect="off"
         autocomplete="off"
-        inputmode="numeric"
         autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
         :required="required"
+        :autofocus="autofocus"
         :minlength="minlength"
         :maxlength="maxlength"
         :placeholder="placeholder"

@@ -18,6 +18,7 @@ interface Props {
   disabled?: boolean
   password?: boolean
   required?: boolean
+  autofocus?: boolean
   minlength?: number | string
   maxlength?: number | string
   modelValue?: ComponentLabel
@@ -129,13 +130,13 @@ function clearInputValue() {
         :type="internalInputType"
         autocorrect="off"
         autocomplete="off"
-        inputmode="numeric"
         autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
         :required="required"
         :minlength="minlength"
         :maxlength="maxlength"
+        :autofocus="autofocus"
         :placeholder="placeholder"
         @change="onInputChange"
         @focus="onInputFocus"
