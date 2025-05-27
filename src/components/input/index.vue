@@ -130,6 +130,7 @@ function togglePasswordType() {
         :required="required"
         :minlength="minlength"
         :maxlength="maxlength"
+        :placeholder="placeholder"
         @change="onInputChange"
         @focus="onInputFocus"
         @blur="onInputBlur"
