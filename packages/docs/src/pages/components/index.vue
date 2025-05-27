@@ -19,7 +19,7 @@ const filteredComponents = computed(() => {
   </PText>
 
   <div class="py-4 sticky top-[49px] z-10 bg-background border-b">
-    <PInput v-model="searchKeyword" />
+    <PInput v-model="searchKeyword" placeholder="Search components" />
   </div>
 
   <div class="flex flex-wrap gap-4 mt-4 md:-mr-4">
