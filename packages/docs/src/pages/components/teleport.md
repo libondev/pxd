@@ -18,7 +18,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 border border-dashed" />
+  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 border border-dashed"></div>
 
   <PTeleport v-if="renderTeleport" to="#teleport-container">
     <PButton>
