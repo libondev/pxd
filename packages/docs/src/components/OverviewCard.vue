@@ -12,13 +12,18 @@ function getPath(name: string) {
 </script>
 
 <template>
-  <RouterLink :to="getPath(name)" class="pxd-link-button border rounded-lg w-full sm:w-1/5 !no-underline cursor-pointer hover:bg-background-secondary motion-safe:transition-colors not-hover:transition-none">
+  <RouterLink
+    :to="getPath(name)"
+    class="pxd-link-button border rounded-lg w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] !no-underline cursor-pointer hover:bg-background-secondary motion-safe:transition-colors not-hover:transition-none overflow-hidden"
+  >
     <div class="border-b border-dashed truncate px-4 py-2">
       {{ name }}
     </div>
 
-    <PText truncate="2" secondary class="p-4">
-      <slot />
-    </PText>
+    <div class="p-4">
+      <PText truncate="2" secondary>
+        <slot />
+      </PText>
+    </div>
   </RouterLink>
 </template>
