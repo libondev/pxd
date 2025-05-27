@@ -18,7 +18,7 @@ const filteredComponents = computed(() => {
     A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
   </PText>
 
-  <div class="py-4 sticky top-[49px] z-10 bg-background border-b">
+  <div class="py-4 sticky top-[49.5px] z-10 bg-background border-b">
     <PInput v-model="searchKeyword" placeholder="Search components" />
   </div>
 
