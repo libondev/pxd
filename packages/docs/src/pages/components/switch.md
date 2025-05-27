@@ -57,14 +57,21 @@ import { ref } from 'vue'
 
 const modelValue = ref('1')
 
-const options = [
+const options1 = [
   { label: 'Source', value: '1' },
   { label: 'Output', value: '2' },
+]
+const options2 = [
+  { label: 'Source', value: '1' },
+  { label: 'Output', value: '2', disabled: true },
 ]
 </script>
 
 <template>
-  <PSwitchGroup v-model="modelValue" :options="options" />
+  <PStack gap="6" direction="col">
+    <PSwitchGroup v-model="modelValue" disabled :options="options1" />
+    <PSwitchGroup v-model="modelValue" :options="options2" />
+  </PStack>
 </template>
 ```
 
