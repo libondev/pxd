@@ -24,6 +24,10 @@
     "name": "checkbox"
   },
   {
+    "camelized": "Collapse",
+    "name": "collapse"
+  },
+  {
     "camelized": "ConfigProvider",
     "name": "config-provider"
   },
