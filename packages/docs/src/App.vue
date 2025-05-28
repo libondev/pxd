@@ -4,7 +4,7 @@
 
 <template>
   <!-- :locale="zhCN" -->
-  <PConfigProvider class="flex flex-col min-h-screen">
+  <PConfigProvider class="flex flex-col">
     <SiteHeader />
 
     <div class="flex-1 container mx-auto flex relative">

@@ -46,7 +46,7 @@ if (isClient) {
   </div>
 
   <div class="sm:pl-64 border-r w-full max-w-full flex-1 min-h-screen">
-    <main class="prose px-6 md:px-12 lg:px-16 xl:px-30 py-16 w-full h-full">
+    <main class="prose px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
       <slot />
     </main>
 

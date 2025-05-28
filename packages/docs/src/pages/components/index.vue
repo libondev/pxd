@@ -14,7 +14,7 @@ const filteredComponents = computed(() => {
     Overview
   </h1>
 
-  <PText secondary>
+  <PText secondary class="mt-2">
     A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
   </PText>
 
