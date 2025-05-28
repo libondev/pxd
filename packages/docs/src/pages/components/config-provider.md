@@ -18,7 +18,7 @@ const sizes = [
 
 <template>
   <PStack direction="col" gap="4">
-    <PRadioGroup v-model="size" gap="5" :options="sizes" />
+    <PSwitchGroup v-model="size" gap="5" :options="sizes" />
 
     <PConfigProvider :size="size">
       <PStack direction="col">
@@ -55,7 +55,7 @@ const locales = {
 
 <template>
   <PStack direction="col" gap="4">
-    <PRadioGroup v-model="locale" gap="5" :options="sizes" />
+    <PSwitchGroup v-model="locale" gap="5" :options="sizes" />
 
     <PConfigProvider :locale="locales[locale]">
       <PStack direction="col">
