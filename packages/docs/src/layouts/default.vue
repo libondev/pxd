@@ -32,7 +32,7 @@ if (isClient) {
   <div class="absolute left-0 top-0 bottom-0">
     <div class="hidden fixed inset-0 bg-gray-alpha-400 z-0 " />
 
-    <div class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-64 bg-background-secondary sm:border-x sm:translate-x-0">
+    <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-64 bg-background-secondary sm:border-x sm:translate-x-0">
       <PScrollable class="h-full overflow-y-auto" content-class="p-2.5">
         <ul>
           <li v-for="menu of menus" :key="menu.path" class="mb-0.5">
@@ -42,11 +42,11 @@ if (isClient) {
           </li>
         </ul>
       </PScrollable>
-    </div>
+    </aside>
   </div>
 
-  <div class="sm:pl-64 border-r w-full max-w-full flex-1 min-h-screen">
-    <main class="prose px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
+  <div class="sm:pl-64 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
+    <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
       <slot />
     </main>
 

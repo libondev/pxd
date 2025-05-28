@@ -30,7 +30,12 @@ const menus = [
       <h2 class="px-3 h-full flex items-center font-medium cursor-pointer">
         <SiteLogo class="mr-2 text-2xl hidden sm:block" />
         <!-- <MenuAltIcon class="block sm:hidden mr-1.5 text-gray-900" /> -->
-        <span>PXD</span>
+
+        <RouterLink to="/" class="hidden sm:inline">
+          <span>PXD</span>
+        </RouterLink>
+
+        <span class="sm:hidden">PXD</span>
       </h2>
 
       <nav class="ml-auto h-full">
