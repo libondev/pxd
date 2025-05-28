@@ -18,6 +18,7 @@ interface Props {
 
 defineOptions({
   name: 'PTooltip',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(

@@ -14,6 +14,7 @@ interface Props {
 
 defineOptions({
   name: 'PCheckboxGroup',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -29,6 +30,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -40,6 +42,11 @@ function isCheckedAll() {
 
 function isCheckedPartial() {
   return modelValue.value.length > 0 && !isCheckedAll()
+}
+
+function onUpdateModelValue(v: Props['modelValue']) {
+  emits('change', v)
+  emits('update:modelValue', v)
 }
 
 provide('checkboxGroupProps', props)
@@ -56,10 +63,9 @@ defineExpose({
       <PCheckbox
         v-for="option in options"
         :key="option.value"
-        v-model="modelValue"
-        :label="option.label"
-        :value="option.value"
-        :disabled="option.disabled"
+        :model-value="modelValue"
+        v-bind="option"
+        @update:model-value="onUpdateModelValue"
       />
     </slot>
   </PStack>

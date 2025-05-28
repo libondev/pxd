@@ -128,13 +128,14 @@ defineExpose({
       :disabled="computedDisabled"
       @change="onInputChange"
     >
+
     <span aria-hidden="true" :class="computedInnerClasses">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />
     </span>
 
-    <span class="ml-2 text-sm empty:hidden">
+    <span class="mx-2 text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>

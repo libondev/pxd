@@ -11,6 +11,7 @@ interface Props {
 
 defineOptions({
   name: 'PThemeSwitcher',
+  inheritAttrs: false,
 })
 
 defineProps<Props>()

@@ -6,7 +6,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const modelValue = ref('')
+const modelValue = ref('one')
 </script>
 
 <template>

@@ -63,6 +63,10 @@ const computedInnerClasses = computed(() => {
 
   return twMerge(basic)
 })
+
+function onChangeValue() {
+  emits('update:modelValue', props.value)
+}
 </script>
 
 <template>
@@ -74,7 +78,6 @@ const computedInnerClasses = computed(() => {
   >
     <input
       :id="uniqueId"
-      v-model="modelValue"
       type="radio"
       :value="value"
       class="smallest peer"
@@ -82,11 +85,12 @@ const computedInnerClasses = computed(() => {
       :name="radioGroupName"
       :required="computedRequired"
       :disabled="computedDisabled"
+      @change="onChangeValue"
     >
 
     <span aria-hidden="true" :class="computedInnerClasses" />
 
-    <span class="ml-2 text-sm empty:hidden">
+    <span class="mx-2 text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>
