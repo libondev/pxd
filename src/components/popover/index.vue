@@ -2,6 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { PopoverBasePosition, PopoverPosition, PopoverTrigger } from '../../types/components'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
 import { off, on } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
@@ -24,6 +25,7 @@ interface Props {
   arrowColor?: string
   triggerClass?: string
   popoverClass?: string
+  destroyDelay?: number
   scrollHidden?: boolean
   popoverStyle?: CSSProperties | string
   translateOffset?: string | number
@@ -53,6 +55,7 @@ const props = withDefaults(
     hideDelay: 300,
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
+    destroyDelay: 2000,
     translateOffset: 3,
     scrollHidden: true,
   },
@@ -70,7 +73,16 @@ let scrollContainer: ReturnType<typeof getScrollContainer>
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
 
-const isVisible = shallowRef(props.visible)
+const {
+  render: isRender,
+  visible: isVisible,
+  open: openPopover,
+  close: closePopover,
+} = useDelayDestroy({
+  default: props.visible,
+  delay: props.destroyDelay,
+})
+
 const triggerRef = shallowRef<HTMLElement>()
 const containerRef = shallowRef<HTMLElement>()
 const positionInternal = shallowRef(props.position)
@@ -118,7 +130,7 @@ async function handlePopoverShow() {
 
     showPopoverTimer = setTimeout(() => {
       updateContentPosition()
-      isVisible.value = true
+      openPopover()
       resolve(true)
       emits('show')
     }, props.showDelay)
@@ -141,12 +153,9 @@ async function handlePopoverHide() {
     clearTimeout(hidePopoverTimer)
 
     hidePopoverTimer = setTimeout(() => {
-      isVisible.value = false
+      closePopover()
       resolve(true)
       emits('hide')
-
-      // 关闭时重置方向，避免下次打开时方向不正确
-      positionInternal.value = props.position
     }, props.hideDelay)
   })
 }
@@ -447,7 +456,8 @@ defineExpose({
     <PTeleport>
       <Transition :name="transitionName" mode="out-in" :style="{ '--translate-offset': translateOffset }">
         <div
-          v-if="isVisible"
+          v-if="isRender"
+          v-show="isVisible"
           ref="containerRef"
           :style="containerStyle"
           :data-position="positionInternal"

@@ -159,25 +159,7 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 
 <template>
   <PStack gap="4">
-    <PPopover :content="content" position="left" :offset="30">
-      <PButton>
-        Hover to active
-      </PButton>
-    </PPopover>
-
-    <PPopover :content="content" position="top" :offset="30">
-      <PButton>
-        Hover to active
-      </PButton>
-    </PPopover>
-
-    <PPopover :content="content" position="bottom" :offset="30">
-      <PButton>
-        Hover to active
-      </PButton>
-    </PPopover>
-
-    <PPopover :content="content" position="right" :offset="30">
+    <PPopover :content="content" :offset="30">
       <PButton>
         Hover to active
       </PButton>
@@ -264,6 +246,25 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
     <PPopover :content="content" :translate-offset="-10">
       <PButton>
         -10px(Reverse translate)
+      </PButton>
+    </PPopover>
+  </PStack>
+</template>
+```
+
+## Destroy delay
+-> For the sake of performance optimization, elements will not be destroyed immediately after popover hiding, which is to avoid the performance overhead caused by repeated rendering of hiding when frequently triggered, but this may not need to be considered in some cases.
+
+```vue demo
+<script setup>
+const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
+</script>
+
+<template>
+  <PStack gap="4">
+    <PPopover :content="content" :destroy-delay="0">
+      <PButton>
+        0ms(Immediately destroy)
       </PButton>
     </PPopover>
   </PStack>
