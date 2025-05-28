@@ -14,40 +14,40 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<Props>(),
-  {
-    multiple: false,
-  },
+  { multiple: false },
 )
 
 const SIZES = {
   sm: {
     padding: '12px',
     fontSize: '16px',
-    fontWidth: '500',
+    fontWeight: '500',
   },
   md: {
     padding: '24px',
     fontSize: '24px',
-    fontWidth: '600',
+    fontWeight: '600',
   },
   lg: {
     padding: '30px',
     fontSize: '28px',
-    fontWidth: '600',
+    fontWeight: '600',
   },
 }
+
+const expandedItems = ref<string[]>([])
 
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedStyle = computed(() => {
+  const { padding, fontSize, fontWeight } = computedSize.value
+
   return {
-    '--size': computedSize.value.padding,
-    '--font-size': computedSize.value.fontSize,
-    '--font-weight': computedSize.value.fontWidth,
+    '--size': padding,
+    '--font-size': fontSize,
+    '--font-weight': fontWeight,
   }
 })
-
-const expandedItems = ref<string[]>([])
 
 function toggleItem(id: string, expanded: boolean) {
   if (expanded) {
@@ -56,17 +56,19 @@ function toggleItem(id: string, expanded: boolean) {
     } else {
       expandedItems.value = [id]
     }
-  } else {
-    expandedItems.value = expandedItems.value.filter(item => item !== id)
+
+    return
   }
+
+  expandedItems.value = expandedItems.value.filter(item => item !== id)
 }
 
 const isExpanded = (id: string) => expandedItems.value.includes(id)
 
 provide('collapseGroup', {
   multiple: computed(() => props.multiple),
-  toggleItem,
   isExpanded,
+  toggleItem,
 })
 </script>
 

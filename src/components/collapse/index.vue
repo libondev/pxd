@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComputedRef } from 'vue'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, inject, onMounted, ref, watch } from 'vue'
 import { getUniqueId } from '../../utils/uid'
@@ -9,9 +10,9 @@ interface Props {
 }
 
 interface CollapseGroupContext {
-  multiple: { value: boolean }
-  toggleItem: (id: string, expanded: boolean) => void
+  multiple: ComputedRef<boolean>
   isExpanded: (id: string) => boolean
+  toggleItem: (id: string, expanded: boolean) => void
 }
 
 defineOptions({
@@ -28,9 +29,8 @@ const props = withDefaults(
 
 const uid = getUniqueId()
 
-const collapseGroup = inject<CollapseGroupContext | null>('collapseGroup', null)
-
 const localExpand = ref(props.expand)
+const collapseGroup = inject<CollapseGroupContext | null>('collapseGroup', null)
 
 const isExpanded = computed(() => {
   if (collapseGroup) {
@@ -40,30 +40,25 @@ const isExpanded = computed(() => {
   return localExpand.value
 })
 
-watch(
-  () => props.expand,
-  (expand) => {
-    if (!collapseGroup) {
+if (!collapseGroup) {
+  watch(
+    () => props.expand,
+    (expand) => {
       localExpand.value = expand
-    }
-  },
-  { immediate: true },
-)
-
-onMounted(() => {
-  if (props.expand && collapseGroup) {
-    collapseGroup.toggleItem(uid, true)
-  }
-})
+    },
+    { immediate: true },
+  )
+}
 
 function onTriggerClick() {
   const newState = !isExpanded.value
 
   if (collapseGroup) {
     collapseGroup.toggleItem(uid, newState)
-  } else {
-    localExpand.value = newState
+    return
   }
+
+  localExpand.value = newState
 }
 
 function beforeEnter(el: Element) {
@@ -91,6 +86,12 @@ function beforeLeave(el: Element) {
 function leave(el: Element) {
   (el as HTMLElement).style.height = '0'
 }
+
+onMounted(() => {
+  if (props.expand && collapseGroup) {
+    collapseGroup.toggleItem(uid, true)
+  }
+})
 </script>
 
 <template>
