@@ -67,8 +67,8 @@ export function isScrollable(el: HTMLElement, isVertical?: boolean): boolean {
   return ['scroll', 'auto', 'overlay'].some(s => overflow.includes(s))
 }
 
-const windowTop = [globalThis, globalThis.document, globalThis.document?.documentElement] as const
 export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Window | HTMLElement {
+  const windowTop = [window, document, document.documentElement] as const
   let parent: HTMLElement = el
 
   while (parent) {

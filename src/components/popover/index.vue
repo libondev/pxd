@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverBasePosition, PopoverPosition, PopoverTrigger } from '../../types/components'
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
 import { off, on } from '../../utils/events'
@@ -85,17 +85,20 @@ const {
 
 const triggerRef = shallowRef<HTMLElement>()
 const containerRef = shallowRef<HTMLElement>()
-const positionInternal = shallowRef(props.position)
-const containerStyle = shallowRef({} as PopoverContainerStyle)
+const localPosition = shallowRef(props.position)
+const containerStyle = shallowRef({
+  left: '-100%',
+  top: '-100%',
+} as PopoverContainerStyle)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
-const generalPosition = computed(() => positionInternal.value.split('-')[0] as PopoverBasePosition)
+const generalPosition = computed(() => localPosition.value.split('-')[0] as PopoverBasePosition)
 const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
 
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
 function isContainerOverlapping(
-  containerRect: DOMRect,
   viewportRect: DOMRect,
+  containerRect: DOMRect,
   scrollInfo: ReturnType<typeof getScrollPositions>,
 ) {
   const containerTop = containerRect.top - scrollInfo.scrollTop
@@ -129,6 +132,7 @@ async function handlePopoverShow() {
     clearTimeout(showPopoverTimer)
 
     showPopoverTimer = setTimeout(() => {
+      localPosition.value = props.position
       updateContentPosition()
       openPopover()
       resolve(true)
@@ -136,15 +140,19 @@ async function handlePopoverShow() {
     }, props.showDelay)
   })
 
-  // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
-  const scrollInfo = getScrollPositions(scrollContainer)
-  const containerRect = containerRef.value!.getBoundingClientRect()
-  const overlapping = isContainerOverlapping(containerRect, viewportRect!, scrollInfo)
+  nextTick(() => {
+    // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
+    const overlapping = isContainerOverlapping(
+      viewportRect!,
+      containerRef.value!.getBoundingClientRect(),
+      getScrollPositions(scrollContainer),
+    )
 
-  if (overlapping.isOverlapping && overlapping[generalPosition.value]) {
-    reversePosition()
-    updateContentPosition()
-  }
+    if (overlapping.isOverlapping) {
+      reverseRenderPosition(overlapping)
+      updateContentPosition()
+    }
+  })
 }
 
 async function handlePopoverHide() {
@@ -257,7 +265,7 @@ function onContentPointerLeave() {
 }
 
 function updateContentPosition() {
-  const position = positionInternal.value
+  const position = localPosition.value
   const { offset, arrowColor, maxWidth } = props
   const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
 
@@ -333,19 +341,53 @@ function updateContentPosition() {
 }
 
 // 当屏幕可用空间不足时反转方向
-function reversePosition() {
-  if (positionInternal.value.startsWith('top')) {
-    positionInternal.value = positionInternal.value.replace('top', 'bottom') as PopoverPosition
-  } else if (positionInternal.value.startsWith('bottom')) {
-    positionInternal.value = positionInternal.value.replace('bottom', 'top') as PopoverPosition
-  } else if (positionInternal.value.startsWith('left')) {
-    positionInternal.value = positionInternal.value.replace('left', 'right') as PopoverPosition
-  } else if (positionInternal.value.startsWith('right')) {
-    positionInternal.value = positionInternal.value.replace('right', 'left') as PopoverPosition
+function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverlapping>) {
+  if (!overlapping) {
+    localPosition.value = props.position
+    return
   }
+
+  const currentPosition = localPosition.value
+  const [position, modifier] = currentPosition.includes('-')
+    ? currentPosition.split('-') as [PopoverBasePosition, string]
+    : [currentPosition as PopoverBasePosition, '']
+
+  const oppositePositionMap = {
+    top: 'bottom',
+    bottom: 'top',
+    left: 'right',
+    right: 'left',
+  } as const
+
+  let newPosition = position
+  let newModifier = modifier
+
+  if (overlapping[position]) {
+    newPosition = oppositePositionMap[position]
+  }
+
+  if (['left', 'right'].includes(position)) {
+    if (overlapping.top) {
+      newModifier = 'start'
+    } else if (overlapping.bottom) {
+      newModifier = 'end'
+    }
+  } else if (['top', 'bottom'].includes(position)) {
+    if (overlapping.left) {
+      newModifier = 'start'
+    } else if (overlapping.right) {
+      newModifier = 'end'
+    }
+  }
+
+  localPosition.value = (
+    newModifier
+      ? `${newPosition}-${newModifier}`
+      : newPosition
+  ) as PopoverPosition
 }
 
-const onParentsScroll = throttleByRaf(() => {
+const onContainerScroll = throttleByRaf(() => {
   if (!isVisible.value) {
     return
   }
@@ -381,36 +423,34 @@ const triggerMethodEvents = {
   ],
 } as const
 
+function updateTriggerEvents(
+  methods: PopoverTrigger[],
+  dom: HTMLElement,
+  handler: typeof on | typeof off,
+) {
+  for (const method of methods) {
+    const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
+
+    if (!events) {
+      continue
+    }
+
+    for (const event of events) {
+      handler(dom, event[0], event[1])
+    }
+  }
+}
+
 watch<[HTMLElement | undefined, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
-    // unbind old trigger methods events
+    // unbind old trigger events
     if (oldDom) {
-      for (const method of oldMethods) {
-        const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
-
-        if (!events) {
-          continue
-        }
-
-        for (const event of events) {
-          off(oldDom, event[0], event[1])
-        }
-      }
+      updateTriggerEvents(oldMethods, oldDom, off)
     }
 
     if (newDom) {
-      for (const method of newMethods) {
-        const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
-
-        if (!events) {
-          continue
-        }
-
-        for (const event of events) {
-          on(newDom, event[0], event[1])
-        }
-      }
+      updateTriggerEvents(newMethods, newDom, on)
     }
   },
 )
@@ -422,7 +462,7 @@ onMounted(() => {
 
   if (props.scrollHidden) {
     scrollContainer = getScrollContainer(triggerRef.value!, true)
-    on(scrollContainer, 'scroll', onParentsScroll, { passive: true })
+    on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
   }
 })
 
@@ -434,7 +474,7 @@ onBeforeUnmount(() => {
   clearTimeout(hidePopoverTimer)
   off(document, 'click', onClickOutsideToHide)
   off(document, 'contextmenu', onTriggerContextmenu)
-  off(scrollContainer, 'scroll', onParentsScroll)
+  off(scrollContainer, 'scroll', onContainerScroll)
 })
 
 defineExpose({
@@ -460,8 +500,8 @@ defineExpose({
           v-show="isVisible"
           ref="containerRef"
           :style="containerStyle"
-          :data-position="positionInternal"
-          class="pxd-popover__container isolate absolute z-10"
+          :data-position="localPosition"
+          class="pxd-popover__container isolate absolute z-10 w-max"
           :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
@@ -479,8 +519,6 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover__container {
-  top: -100%;
-  left: -100%;
 
   &[data-position^='top'] {
     padding-bottom: var(--offset);
