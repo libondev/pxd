@@ -90,11 +90,17 @@ const formattedGap = computed(() => {
 const formattedDir = computed(() => {
   const { direction } = props
 
-  return Object.entries(direction).reduce((acc, [bp, value]) => {
-    acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
+  const defaultDir = { xs: props.direction === 'col' ? 'flex-col' : 'flex-row' } as Record<string, string>
 
-    return acc
-  }, { xs: props.direction === 'col' ? 'flex-col' : 'flex-row' } as Record<string, string>)
+  if (typeof direction === 'object') {
+    return Object.entries(direction).reduce((acc, [bp, value]) => {
+      acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
+
+      return acc
+    }, defaultDir)
+  }
+
+  return defaultDir
 })
 
 const computedClasses = computed(() => {
