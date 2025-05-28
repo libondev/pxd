@@ -44,11 +44,11 @@ const {
   line-height: 1.5 !important;
 }
 
-.prose {
+.markdown-body {
   --background: var(--color-background);
   line-height: 1.5;
 
-  :is(h1, h2, h3, h4) {
+  & > :is(h1, h2, h3, h4) {
     font-weight: 500;
     position: relative;
     margin-bottom: .25em;
@@ -62,9 +62,9 @@ const {
     }
   }
 
-  h2::before,
-  h3::before,
-  h4::before {
+  & > h2::before,
+  & > h3::before,
+  & > h4::before {
     position: absolute;
     left: 0;
     bottom: 4px;
@@ -74,31 +74,31 @@ const {
     color: hsl(var(--color-gray-800-value));
   }
 
-  h2::before {
+  & > h2::before {
     content: 'h2';
   }
 
-  h3::before {
+  & > h3::before {
     content: 'h3';
   }
 
-  h4::before {
+  & > h4::before {
     content: 'h4';
   }
 
-  h1 {
+  & > h1 {
     font-size: 1.875rem;
   }
 
-  h2 {
+  & > h2 {
     font-size: 1.5rem;
   }
 
-  h3 {
+  & > h3 {
     font-size: 1.25rem;
   }
 
-  h4 {
+  & > h4 {
     font-size: 1.125rem;
   }
 
