@@ -1,4 +1,6 @@
 <script setup lang="ts" generic="T extends { label: string, path: string }">
+import { isClient } from 'pxd/utils/is'
+
 interface Props {
   menus?: T[]
 }
@@ -6,6 +8,24 @@ interface Props {
 const {
   menus = [],
 } = defineProps<Props>()
+
+const route = useRoute()
+
+if (isClient) {
+  watch(
+    () => route.path,
+    () => {
+      nextTick(() => {
+        const heading = document.querySelector('h1')
+
+        if (heading) {
+          document.title = `${heading.textContent} - PXD`
+        }
+      })
+    },
+    { immediate: true },
+  )
+}
 </script>
 
 <template>
