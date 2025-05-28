@@ -284,20 +284,20 @@ onBeforeUnmount(() => {
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div
-      class="pxd-slider--track absolute h-full rounded-full touch-none group-active/slider:will-change-[width,left]"
+      class="pxd-slider--track absolute h-full rounded-full touch-none"
       :style="trackStyle"
     />
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 group-active/slider:will-change-[width,left] active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
       :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 group-active/slider:will-change-[width,left] active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
       :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
@@ -318,5 +318,10 @@ onBeforeUnmount(() => {
   transform: translate(-50%, -50%);
   width: 200%;
   height: 200%;
+}
+
+.pxd-slider:active .pxd-slider--track,
+.pxd-slider:active .pxd-slider--thumb {
+  will-change: width, left;
 }
 </style>
