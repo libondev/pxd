@@ -12,7 +12,6 @@ interface Props {
   scrollbar?: boolean
   contentClass?: string
   scrollbarSize?: number
-  staticContent?: boolean
   scrollbarColor?: string
   scrollbarHoverColor?: string
 }
