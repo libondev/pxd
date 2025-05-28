@@ -56,7 +56,7 @@ const props = withDefaults(
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
     destroyDelay: 2000,
-    translateOffset: 3,
+    translateOffset: 0,
     scrollHidden: true,
   },
 )

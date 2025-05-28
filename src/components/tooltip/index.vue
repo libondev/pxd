@@ -63,6 +63,7 @@ const computedPopoverStyle = computed(() => {
   <PPopover
     class="pxd-tooltip"
     :position="position"
+    :translate-offset="3"
     :disabled="computedDisabled"
     :popover-class="computedPopoverClass"
     :popover-style="computedPopoverStyle"
