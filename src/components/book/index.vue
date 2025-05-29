@@ -208,9 +208,7 @@ const computedClass = computed(() => {
   transform: translateZ(calc(-1 * var(--book-depth)));
 }
 
-@media (hover: hover) {
-  .pxd-book:hover .pxd-book--container {
-    transform: rotateY(var(--hover-rotate)) scale(var(--hover-scale)) translateX(var(--hover-translate-x));
-  }
+.pxd-book:hover .pxd-book--container {
+  transform: rotateY(var(--hover-rotate)) scale(var(--hover-scale)) translateX(var(--hover-translate-x));
 }
 </style>
