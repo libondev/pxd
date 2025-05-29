@@ -80,6 +80,17 @@ import Alpha from '@gdsicon/vue/alpha'
 </template>
 ```
 
+## Responsive
+
+```vue demo
+<template>
+  <PBook
+    title="The user experience of the Frontend Cloud"
+    :width="{ sm: 150, md: 220 }"
+  />
+</template>
+```
+
 ## Width
 
 ```vue demo

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentLabel, ResponsiveValue } from '../../types/components'
+import { computed } from 'vue'
 
 interface Props {
   color?: string
   title?: ComponentLabel
-  width?: number | string
+  width?: number | string | ResponsiveValue<number>
   variant?: 'simple' | 'stripe'
   textured?: boolean
 }
@@ -13,7 +14,7 @@ defineOptions({
   name: 'PBook',
 })
 
-withDefaults(
+const props = withDefaults(
   defineProps<Props>(),
   {
     width: 196,
@@ -21,13 +22,58 @@ withDefaults(
     variant: 'stripe',
   },
 )
+
+const presetWidthClasses = {
+  '--width-xs': '[--book-width:var(--width-xs)]',
+  '--width-sm': 'sm:[--book-width:var(--width-sm)]',
+  '--width-md': 'md:[--book-width:var(--width-md)]',
+  '--width-lg': 'lg:[--book-width:var(--width-lg)]',
+  '--width-xl': 'xl:[--book-width:var(--width-xl)]',
+}
+
+const formattedWidth = computed(() => {
+  const { width } = props
+
+  const defaultWidth = {
+    '--width-xs': typeof width === 'object' ? width.xs || 196 : width,
+  } as Record<string, string | number>
+
+  if (typeof width === 'object') {
+    return Object.entries(width).reduce((acc, [bp, value]) => {
+      acc[`--width-${bp}`] = value
+
+      return acc
+    }, defaultWidth)
+  }
+
+  return defaultWidth
+})
+
+const computedStyle = computed(() => {
+  const { color } = props
+
+  return {
+    ...formattedWidth.value,
+    '--book-color': color,
+  }
+})
+
+const computedClass = computed(() => {
+  const basic = ['pxd-book--container w-fit relative transform-3d cursor-default duration-300 motion-safe:transition-transform']
+
+  basic.push(
+    ...Object.keys(formattedWidth.value).map(bp => presetWidthClasses[bp as keyof typeof presetWidthClasses]),
+  )
+
+  return basic
+})
 </script>
 
 <template>
   <div class="pxd-book inline-flex w-fit">
     <div
-      class="pxd-book--container w-fit relative transform-3d cursor-default duration-300 motion-safe:transition-transform"
-      :style="{ '--book-width': width, '--book-color': color }"
+      :class="computedClass"
+      :style="computedStyle"
     >
       <div class="pxd-book--content flex flex-col h-full overflow-hidden translate-z-0 relative bg-background-secondary">
         <div
