@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentOptions } from '../../types'
+import type { ComponentOptions, ComponentValue } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import PCheckbox from '../checkbox/index.vue'
@@ -8,7 +8,7 @@ import PStack from '../stack/index.vue'
 interface Props {
   disabled?: boolean
   required?: boolean
-  modelValue?: (string | number)[]
+  modelValue?: ComponentValue[]
   options?: ComponentOptions[]
 }
 
@@ -44,11 +44,6 @@ function isCheckedPartial() {
   return modelValue.value.length > 0 && !isCheckedAll()
 }
 
-function onUpdateModelValue(v: Props['modelValue']) {
-  emits('change', v)
-  emits('update:modelValue', v)
-}
-
 provide('checkboxGroupProps', props)
 
 defineExpose({
@@ -63,9 +58,8 @@ defineExpose({
       <PCheckbox
         v-for="option in options"
         :key="option.value"
-        :model-value="modelValue"
+        v-model="modelValue"
         v-bind="option"
-        @update:model-value="onUpdateModelValue"
       />
     </slot>
   </PStack>

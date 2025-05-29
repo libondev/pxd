@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentLabel, ComponentValue } from '../../types/components'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { twMerge } from 'tailwind-merge'
@@ -7,14 +7,12 @@ import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 
-type ValueType = string | number | boolean
-
 interface Props {
   label?: ComponentLabel
-  value?: ValueType
+  value?: ComponentValue
   disabled?: boolean
   required?: boolean
-  modelValue?: ValueType | ValueType[]
+  modelValue?: ComponentValue | ComponentValue[]
   indeterminate?: boolean
 }
 
@@ -28,7 +26,10 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<Props>(),
-  { modelValue: false, value: true },
+  {
+    modelValue: () => [],
+    value: true,
+  },
 )
 
 const emits = defineEmits<{
@@ -114,7 +115,8 @@ defineExpose({
 
 <template>
   <label
-    class="pxd-checkbox inline-flex items-center group/checkbox"
+    :aria-checked="isChecked"
+    class="pxd-checkbox inline-flex items-center group/checkbox gap-2"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="uniqueId"
   >
@@ -135,7 +137,7 @@ defineExpose({
       <span v-else class="size-3" />
     </span>
 
-    <span class="mx-2 text-sm empty:hidden">
+    <span class="text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>

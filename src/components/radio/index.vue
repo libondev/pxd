@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentLabel, ComponentValue } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
@@ -8,10 +8,10 @@ import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   label?: ComponentLabel
-  value: string | number
+  value: ComponentValue
   required?: boolean
   disabled?: boolean
-  modelValue?: string | number
+  modelValue?: ComponentValue
 }
 
 defineOptions({
@@ -72,7 +72,7 @@ function onChangeValue() {
 <template>
   <label
     :aria-checked="isChecked"
-    class="pxd-radio group/radio inline-flex items-center"
+    class="pxd-radio group/radio inline-flex items-center gap-2"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="uniqueId"
   >
@@ -90,7 +90,7 @@ function onChangeValue() {
 
     <span aria-hidden="true" :class="computedInnerClasses" />
 
-    <span class="mx-2 text-sm empty:hidden">
+    <span class="text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { ComponentOptions } from '../../types'
+import type { ComponentOptions, ComponentValue } from '../../types'
 import { provide } from 'vue'
+import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
 import PRadio from '../radio/index.vue'
 import PStack from '../stack/index.vue'
@@ -8,7 +9,7 @@ import PStack from '../stack/index.vue'
 interface Props {
   disabled?: boolean
   required?: boolean
-  modelValue: string | number
+  modelValue?: ComponentValue
   options?: ComponentOptions[]
 }
 
@@ -33,10 +34,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-function onUpdateModelValue(v: Props['modelValue']) {
-  emits('change', v)
-  emits('update:modelValue', v)
-}
+const modelValue = useModelValue(props, emits)
 
 provideRandomValue('radioGroupName')
 provide('radioGroupProps', props)
@@ -48,9 +46,8 @@ provide('radioGroupProps', props)
       <PRadio
         v-for="option in options"
         :key="option.value"
-        :model-value="modelValue"
+        v-model="modelValue"
         v-bind="option"
-        @update:model-value="onUpdateModelValue"
       />
     </slot>
   </PStack>
