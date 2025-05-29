@@ -15,7 +15,8 @@
     "tsup",
     "vite",
     "vitesse",
-    "vitest"
+    "vitest",
+    "choicebox"
   ],
   "javascript.preferences.importModuleSpecifierEnding": "index",
   "typescript.preferences.importModuleSpecifierEnding": "index",

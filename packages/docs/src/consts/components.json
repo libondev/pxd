@@ -24,6 +24,10 @@
     "name": "checkbox"
   },
   {
+    "camelized": "Choicebox",
+    "name": "choicebox"
+  },
+  {
     "camelized": "Collapse",
     "name": "collapse"
   },
