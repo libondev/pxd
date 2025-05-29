@@ -68,6 +68,10 @@
     "name": "loading-dots"
   },
   {
+    "camelized": "Material",
+    "name": "material"
+  },
+  {
     "camelized": "MoreButton",
     "name": "more-button"
   },

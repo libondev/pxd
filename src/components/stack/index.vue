@@ -104,7 +104,7 @@ const formattedDir = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const basic = ['pxd-stack flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const basic = ['pxd-stack w-full flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     basic.push('flex-wrap')
