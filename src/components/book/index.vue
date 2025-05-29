@@ -95,7 +95,11 @@ const computedClass = computed(() => {
           <div aria-hidden="true" class="pxd-book--spine h-full opacity-20" />
 
           <div class="pxd-book--content-inner flex flex-col w-full">
-            <span class="pxd-book--title font-semibold text-balance pr-2">{{ title }}</span>
+            <span class="pxd-book--title font-semibold text-balance pr-2">
+              <slot name="title">
+                {{ title }}
+              </slot>
+            </span>
 
             <div v-if="variant === 'simple'" class="pxd-book--icon">
               <slot name="icon">
