@@ -7,16 +7,16 @@
   --ring: var(--color-blue-900-value);
   --primary: var(--color-gray-1000-value);
 
-  --color-gray-alpha-100: hsla(0, 0%, 0%, 0.05);
-  --color-gray-alpha-200: hsla(0, 0%, 0%, 0.08);
-  --color-gray-alpha-300: hsla(0, 0%, 0%, 0.12);
-  --color-gray-alpha-400: hsla(0, 0%, 0%, 0.17);
-  --color-gray-alpha-500: hsla(0, 0%, 0%, 0.21);
-  --color-gray-alpha-600: hsla(0, 0%, 0%, 0.34);
-  --color-gray-alpha-700: hsla(0, 0%, 0%, 0.44);
-  --color-gray-alpha-800: hsla(0, 0%, 0%, 0.51);
-  --color-gray-alpha-900: hsla(0, 0%, 0%, 0.61);
-  --color-gray-alpha-1000: hsla(0, 0%, 0%, 0.91);
+  --color-gray-alpha-100: hsla(0, 0%, 0%, .05);
+  --color-gray-alpha-200: hsla(0, 0%, 0%, .08);
+  --color-gray-alpha-300: hsla(0, 0%, 0%, .12);
+  --color-gray-alpha-400: hsla(0, 0%, 0%, .17);
+  --color-gray-alpha-500: hsla(0, 0%, 0%, .21);
+  --color-gray-alpha-600: hsla(0, 0%, 0%, .34);
+  --color-gray-alpha-700: hsla(0, 0%, 0%, .44);
+  --color-gray-alpha-800: hsla(0, 0%, 0%, .51);
+  --color-gray-alpha-900: hsla(0, 0%, 0%, .61);
+  --color-gray-alpha-1000: hsla(0, 0%, 0%, .91);
 
   --color-gray-100-value: 0, 0%, 95%;
   --color-gray-200-value: 0, 0%, 93%;
@@ -105,6 +105,15 @@
   --color-pink-800-value: 336, 74%, 51%;
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
+
+  --shadow-border-default: 0 0 0 1px rgba(0,0,0,0.08);
+  --shadow-border-small: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04);
+  --shadow-border-medium: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 8px -8px rgba(0,0,0,0.04);
+  --shadow-border-large: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
+  --shadow-border-tooltip: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
+  --shadow-border-menu: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
+  --shadow-border-modal: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-fullscreen: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
 
   color-scheme: light;
   background-color: var(--color-background);
@@ -213,6 +222,15 @@
   --color-pink-800-value: 336, 74%, 51%;
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
+
+  --shadow-border-default: 0 0 0 1px rgba(255,255,255,0.145);
+  --shadow-border-small: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 2px rgba(0,0,0,0.16);
+  --shadow-border-medium: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.32),0px 8px 8px -8px rgba(0,0,0,0.16);
+  --shadow-border-large: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
+  --shadow-border-tooltip: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
+  --shadow-border-menu: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
+  --shadow-border-modal: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-fullscreen: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
 
   color-scheme: dark;
 }
