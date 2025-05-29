@@ -1,12 +1,32 @@
 <script lang="ts" setup>
-import OverviewCard from '@/components/OverviewCard.vue'
 import components from '@/consts/components.json'
+import { useMediaQuery } from 'pxd/composables'
+import { isClient } from 'pxd/utils/is'
 
 const searchKeyword = ref('')
+
+const containerRef = shallowRef<HTMLDivElement>()
 
 const filteredComponents = computed(() => {
   return components.filter(({ name }) => name.includes(searchKeyword.value.toLowerCase()))
 })
+
+const bookSize = reactive({
+  xs: 160,
+  sm: 157,
+})
+
+const isMobile = useMediaQuery('(max-width: 768px)')
+
+if (isClient) {
+  watch([() => isMobile.value, () => containerRef.value], ([value, container]) => {
+    if (!container) {
+      return
+    }
+
+    bookSize.xs = value ? container.clientWidth / 2 - 10 : 160
+  }, { immediate: true })
+}
 </script>
 
 <template>
@@ -22,27 +42,24 @@ const filteredComponents = computed(() => {
     <PInput v-model="searchKeyword" placeholder="Search components" allow-clear />
   </div>
 
-  <div class="flex flex-wrap gap-4 mt-4 md:-mr-4">
-    <TransitionGroup name="collapse" mode="out-in">
-      <template v-for="{ camelized, name } in filteredComponents" :key="name">
-        <OverviewCard :name="camelized">
-          There should be a preview here.
-        </OverviewCard>
-      </template>
-    </TransitionGroup>
+  <div ref="containerRef" class="flex flex-wrap gap-4 mt-4 md:-mr-4">
+    <template v-for="{ camelized, name } in filteredComponents" :key="name">
+      <RouterLink :to="`/components/${name}`">
+        <PBook :title="camelized" variant="simple" :width="bookSize">
+          <template #icon>
+            <PText secondary>
+              There should be a preview here.
+            </PText>
+          </template>
+        </PBook>
+      </RouterLink>
+    </template>
   </div>
 </template>
 
 <style lang="postcss">
-.collapse-enter-active,
-.collapse-leave-active {
-  transition: all 0.2s ease;
-}
-
-.collapse-enter-from,
-.collapse-leave-to {
-  opacity: 0;
-  transform-origin: top;
-  transform: scaleY(0.5);
+.pxd-book--title {
+  padding-top: 2em;
+  font-size: 13cqw;
 }
 </style>
