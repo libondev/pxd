@@ -24,7 +24,7 @@ describe('badge', () => {
     })
 
     const classes = wrapper.classes()
-    expect(classes).toContain('bg-linear-[315deg,#42d392_25%,#647eff]')
+    expect(classes).toContain('vue')
 
     wrapper.unmount()
   })
