@@ -33,7 +33,7 @@ export interface ErrorType {
   label?: string
 }
 
-export interface ComponentOptions {
+export interface ComponentOption {
   label: ComponentLabel
   value: string | number
   disabled?: boolean

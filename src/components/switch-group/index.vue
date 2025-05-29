@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentOptions, ComponentSize } from '../../types/components'
+import type { ComponentOption, ComponentSize } from '../../types/components'
 import { provide } from 'vue'
 import { useComputedSize } from '../../composables/useFallbackProps'
 import { useModelValue } from '../../composables/useModelValue'
@@ -12,7 +12,7 @@ interface Props {
   required?: boolean
   size?: ComponentSize
   modelValue?: string | number
-  options?: ComponentOptions[]
+  options?: ComponentOption[]
 }
 
 defineOptions({

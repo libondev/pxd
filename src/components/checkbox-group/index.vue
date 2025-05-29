@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentOptions, ComponentValue } from '../../types'
+import type { ComponentOption, ComponentValue } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import PCheckbox from '../checkbox/index.vue'
@@ -9,7 +9,7 @@ interface Props {
   disabled?: boolean
   required?: boolean
   modelValue?: ComponentValue[]
-  options?: ComponentOptions[]
+  options?: ComponentOption[]
 }
 
 defineOptions({
@@ -59,7 +59,9 @@ defineExpose({
         v-for="option in options"
         :key="option.value"
         v-model="modelValue"
-        v-bind="option"
+        :label="option.label"
+        :value="option.value"
+        :disabled="option.disabled"
       />
     </slot>
   </PStack>
