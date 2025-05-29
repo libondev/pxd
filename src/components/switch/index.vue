@@ -37,7 +37,7 @@ const computedRequired = computed(() => props.required || switchGroupProps.requi
 
 const computedClasses = computed(() => {
   const basic = [
-    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm',
+    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm peer-focus-ring',
     'font-medium select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
   ]
 
