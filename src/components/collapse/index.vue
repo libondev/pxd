@@ -136,8 +136,10 @@ onMounted(() => {
   will-change: height;
 }
 
-.pxd-transition--collapse-enter-active,
-.pxd-transition--collapse-leave-active {
-  transition: height 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+@media (prefers-reduced-motion: no-preference) {
+  .pxd-transition--collapse-enter-active,
+  .pxd-transition--collapse-leave-active {
+    transition: height 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+  }
 }
 </style>
