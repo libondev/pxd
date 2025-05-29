@@ -69,7 +69,7 @@ if (isClient) {
   line-height: 1.5;
 
   & > :is(h1, h2, h3, h4) {
-    font-weight: 500;
+    font-weight: 600;
     position: relative;
     margin-bottom: .25em;
 
