@@ -24,7 +24,7 @@ if (isClient) {
       return
     }
 
-    bookSize.xs = value ? container.clientWidth / 2 - 10 : 160
+    bookSize.xs = value ? container.clientWidth / 2 - 18 : 160
   }, { immediate: true })
 }
 </script>
@@ -42,24 +42,24 @@ if (isClient) {
     <PInput v-model="searchKeyword" placeholder="Search components" allow-clear />
   </div>
 
-  <div ref="containerRef" class="flex flex-wrap gap-4 mt-4 md:-mr-4">
+  <div ref="containerRef" class="flex flex-wrap space-x-4 space-y-4 mt-4 translate-x-2.5 md:-mr-4">
     <template v-for="{ camelized, name } in filteredComponents" :key="name">
       <RouterLink :to="`/components/${name}`">
-        <PBook :title="camelized" variant="simple" :width="bookSize">
-          <template #icon>
-            <PText secondary>
+        <PBook :title="camelized" :width="bookSize">
+          <!-- <template #icon>
+            <PText>
               There should be a preview here.
             </PText>
-          </template>
+          </template> -->
         </PBook>
       </RouterLink>
     </template>
   </div>
 </template>
 
-<style lang="postcss">
-.pxd-book--title {
-  padding-top: 2em;
+<style scoped>
+:deep() .pxd-book--title {
+  padding-top: .25em;
   font-size: 13cqw;
 }
 </style>
