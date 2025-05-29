@@ -137,7 +137,7 @@ defineExpose({
       <span v-else class="size-3" />
     </span>
 
-    <span class="text-sm empty:hidden">
+    <span class="flex-1 text-sm empty:hidden">
       <slot>
         {{ label }}
       </slot>
