@@ -48,18 +48,19 @@ const VARIANTS = {
   'green-subtle': 'bg-green-200 text-green-900',
   'teal-subtle': 'bg-teal-200 text-teal-900',
   'inverted': 'bg-gray-1000 text-gray-100',
-  'vue': 'text-gray-100 dark:text-gray-1000 bg-linear-[315deg,#42d392_25%,#647eff]',
-  'trial': 'text-gray-100 dark:text-gray-1000 bg-linear-[135deg,#0070f3,#f81ce5]',
-  'turborepo': 'text-gray-100 dark:text-gray-1000 bg-linear-[135deg,#ff1e56,#0096ff]',
+  'vue': 'text-gray-100 dark:text-gray-1000',
+  'trial': 'text-gray-100 dark:text-gray-1000',
+  'turborepo': 'text-gray-100 dark:text-gray-1000',
 }
 
 const computedSize = useComputedSize(props.size, SIZES)
 
 const computedClass = computed(() =>
   twMerge(
-    'pxd-badge inline-flex items-center justify-center px-2.5 h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
+    'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     getFallbackVariant(props.variant, VARIANTS, 'gray'),
     computedSize.value,
+    props.variant,
   ),
 )
 
@@ -83,3 +84,21 @@ const badgeAttrs = computed(() => {
     <slot />
   </component>
 </template>
+
+<style>
+.pxd-badge.pill {
+  box-shadow: 0 0 0 1px var(--color-gray-300);
+}
+
+.pxd-badge.vue {
+  background: linear-gradient(315deg, #42d392 25%, #647eff);
+}
+
+.pxd-badge.trial {
+  background: linear-gradient(135deg, #0070f3, #f81ce5);
+}
+
+.pxd-badge.turborepo {
+  background: linear-gradient(135deg, #ff1e56, #0096ff);
+}
+</style>

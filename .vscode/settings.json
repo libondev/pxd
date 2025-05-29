@@ -3,6 +3,7 @@
   "cSpell.words": [
     "antfu",
     "bumpp",
+    "choicebox",
     "esno",
     "gdsi",
     "gdsicon",
@@ -13,10 +14,10 @@
     "shiki",
     "shikijs",
     "tsup",
+    "turborepo",
     "vite",
     "vitesse",
-    "vitest",
-    "choicebox"
+    "vitest"
   ],
   "javascript.preferences.importModuleSpecifierEnding": "index",
   "typescript.preferences.importModuleSpecifierEnding": "index",
