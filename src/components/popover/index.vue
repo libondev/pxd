@@ -133,7 +133,7 @@ function getTriggerRect() {
   viewportRect = document.documentElement.getBoundingClientRect()
 }
 
-async function handlePopoverShow() {
+async function handlePopoverShow(immediate: boolean = false) {
   await new Promise((resolve) => {
     getTriggerRect()
     clearTimeout(hidePopoverTimer)
@@ -145,7 +145,7 @@ async function handlePopoverShow() {
       openPopover()
       resolve(true)
       emits('show')
-    }, props.showDelay)
+    }, immediate ? 0 : props.showDelay)
   })
 
   // 懒绑定 scroll 事件, 减少组件在未触发时绑定事件的性能损耗
@@ -166,7 +166,7 @@ async function handlePopoverShow() {
   })
 }
 
-async function handlePopoverHide() {
+async function handlePopoverHide(immediate: boolean = false) {
   await new Promise((resolve) => {
     clearTimeout(showPopoverTimer)
     clearTimeout(hidePopoverTimer)
@@ -175,7 +175,7 @@ async function handlePopoverHide() {
       closePopover()
       resolve(true)
       emits('hide')
-    }, props.hideDelay)
+    }, immediate ? 0 : props.hideDelay)
   })
 
   off(scrollContainer, 'scroll', onContainerScroll)
