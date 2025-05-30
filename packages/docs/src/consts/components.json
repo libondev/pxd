@@ -76,6 +76,10 @@
     "name": "material"
   },
   {
+    "camelized": "Menu",
+    "name": "menu"
+  },
+  {
     "camelized": "MoreButton",
     "name": "more-button"
   },

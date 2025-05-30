@@ -46,3 +46,13 @@ export type PopoverPosition =
   | PopoverBasePosition
   | `${PopoverBasePosition}-start`
   | `${PopoverBasePosition}-end`
+
+export interface MenuListOption {
+  type?: 'error'
+  label?: string
+  value?: string | number
+  disabled?: boolean
+  prefix?: ComponentAs
+  suffix?: ComponentAs
+  onClick?: (option: MenuListOption) => void
+}
