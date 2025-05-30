@@ -27,5 +27,7 @@ export default {
   compare: {
     less: '少',
     more: '多',
+    next: '之后',
+    prev: '之前',
   },
 }

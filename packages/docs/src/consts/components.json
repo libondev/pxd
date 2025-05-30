@@ -80,6 +80,10 @@
     "name": "note"
   },
   {
+    "camelized": "Pagination",
+    "name": "pagination"
+  },
+  {
     "camelized": "PinInput",
     "name": "pin-input"
   },

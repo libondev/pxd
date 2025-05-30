@@ -27,5 +27,7 @@ export default {
   compare: {
     less: 'Less',
     more: 'More',
+    next: 'Next',
+    prev: 'Prev',
   },
 }
