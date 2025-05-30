@@ -13,7 +13,7 @@ const filteredComponents = computed(() => {
 
 const bookSize = reactive({
   xs: 160,
-  sm: 157,
+  sm: 156,
 })
 
 const isMobile = useMediaQuery('(max-width: 768px)')
@@ -38,11 +38,11 @@ if (isClient) {
     A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
   </PText>
 
-  <div class="py-4 sticky top-[49.5px] z-10 bg-background border-b">
+  <div class="py-4 sticky top-[49px] z-10 bg-background border-b">
     <PInput v-model="searchKeyword" placeholder="Search components" allow-clear />
   </div>
 
-  <div ref="containerRef" class="flex flex-wrap space-x-4 space-y-4 mt-4 translate-x-2.5 md:-mr-4">
+  <div ref="containerRef" class="flex flex-wrap space-x-4 space-y-4 mt-4 translate-x-2.5 md:translate-x-1 md:-mr-4">
     <template v-for="{ camelized, name } in filteredComponents" :key="name">
       <RouterLink :to="`/components/${name}`">
         <PBook :title="camelized" :width="bookSize">
