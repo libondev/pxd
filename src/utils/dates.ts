@@ -80,3 +80,20 @@ export function getAllDatesBetween(
     dates,
   }
 }
+
+/**
+ * 获取指定年月的天数、第一天是周几、最后一天是周几
+ * @param year 年份
+ * @param month 月份
+ * @returns 天数、第一天是周几、最后一天是周几
+ */
+export function getMonthDays(year: number, month: number) {
+  const firstDay = new Date(year, month - 1, 1)
+  const lastDay = new Date(year, month, 0)
+
+  return {
+    days: lastDay.getDate(),
+    firstDay: firstDay.getDay(),
+    lastDay: lastDay.getDay(),
+  }
+}
