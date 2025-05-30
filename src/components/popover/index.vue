@@ -56,8 +56,8 @@ const props = withDefaults(
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
     destroyDelay: 2000,
-    translateOffset: 0,
     scrollHidden: true,
+    translateOffset: 0,
   },
 )
 
@@ -100,7 +100,7 @@ const onContainerScroll = throttleByRaf(() => {
     return
   }
 
-  handlePopoverHide()
+  handlePopoverHide(true)
 })
 
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
@@ -262,9 +262,11 @@ function onContentPointerEnter() {
     return
   }
 
-  if (props.enterable) {
-    handlePopoverShow()
+  if (!props.enterable) {
+    return
   }
+
+  handlePopoverShow()
 }
 
 function onContentPointerLeave() {
@@ -273,8 +275,10 @@ function onContentPointerLeave() {
   }
 
   if (props.enterable) {
-    handlePopoverHide()
+    return
   }
+
+  handlePopoverHide()
 }
 
 function updateContentPosition() {
