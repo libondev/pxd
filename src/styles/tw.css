@@ -360,14 +360,13 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-inherit: inherit;
 
-  --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-xs: 0px 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-sm: 0 5px 10px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.12);
-  --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.12);
-  --shadow-sticky: 0 12px 10px -10px rgba(0, 0, 0, 0.12);
-  --shadow-modal: var(--shadow-border), 0px 1px 1px rgba(0,0,0,0.02), 0px 8px 16px -4px rgba(0,0,0,0.04), 0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-default: var(--shadow-border-default);
+  --shadow-border-small: var(--shadow-border-small);
+  --shadow-border-medium: var(--shadow-border-medium);
+  --shadow-border-large: var(--shadow-border-large);
+  --shadow-border-tooltip: var(--shadow-border-tooltip);
+  --shadow-border-menu: var(--shadow-border-menu);
+  --shadow-border-modal: var(--shadow-border-modal);
 }
 
 @utility scrollbar-hidden {
