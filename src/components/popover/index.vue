@@ -347,7 +347,7 @@ function updateContentPosition() {
     left,
     top,
     transform,
-    'max-width': `${maxWidth}px`,
+    'max-width': `${maxWidth || triggerRect!.width}px`,
     '--offset': `${offset}px`,
     '--arrow-color': arrowColor,
   }
