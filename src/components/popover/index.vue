@@ -95,6 +95,14 @@ const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const generalPosition = computed(() => localPosition.value.split('-')[0] as PopoverBasePosition)
 const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
 
+const onContainerScroll = throttleByRaf(() => {
+  if (!isVisible.value) {
+    return
+  }
+
+  handlePopoverHide()
+})
+
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
 function isContainerOverlapping(
   viewportRect: DOMRect,
@@ -140,6 +148,9 @@ async function handlePopoverShow() {
     }, props.showDelay)
   })
 
+  // 懒绑定 scroll 事件, 减少组件在未触发时绑定事件的性能损耗
+  on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
+
   nextTick(() => {
     // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
     const overlapping = isContainerOverlapping(
@@ -166,6 +177,8 @@ async function handlePopoverHide() {
       emits('hide')
     }, props.hideDelay)
   })
+
+  off(scrollContainer, 'scroll', onContainerScroll)
 }
 
 async function onTriggerClick() {
@@ -387,14 +400,6 @@ function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverla
   ) as PopoverPosition
 }
 
-const onContainerScroll = throttleByRaf(() => {
-  if (!isVisible.value) {
-    return
-  }
-
-  handlePopoverHide()
-})
-
 watch(
   () => props.visible,
   (visible) => {
@@ -462,7 +467,6 @@ onMounted(() => {
 
   if (props.scrollHidden) {
     scrollContainer = getScrollContainer(triggerRef.value!, true)
-    on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
   }
 })
 
