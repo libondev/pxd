@@ -450,7 +450,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .pxd-transition--fade-enter-active,
   .pxd-transition--fade-leave-active {
-    transition: opacity 0.2s ease;
+    transition: opacity var(--default-transition-duration) ease;
   }
 
   .pxd-transition--fade-enter-from,

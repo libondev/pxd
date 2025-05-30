@@ -620,7 +620,7 @@ defineExpose({
   .pxd-transition--popover-left-leave-active,
   .pxd-transition--popover-right-enter-active,
   .pxd-transition--popover-right-leave-active {
-    transition: opacity 0.2s ease-in-out, margin 0.2s ease-in-out;
+    transition: opacity var(--default-transition-duration) ease-in-out, margin  var(--default-transition-duration) ease-in-out;
   }
 
   .pxd-transition--popover-top-enter-from,

@@ -106,7 +106,7 @@ onMounted(() => {
           {{ title }}
         </slot>
 
-        <ChevronDownIcon class="flex-shrink-0 size-4 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform motion-safe:duration-200" />
+        <ChevronDownIcon class="flex-shrink-0 size-4 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
       </button>
     </h3>
 
@@ -139,7 +139,7 @@ onMounted(() => {
 @media (prefers-reduced-motion: no-preference) {
   .pxd-transition--collapse-enter-active,
   .pxd-transition--collapse-leave-active {
-    transition: height 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    transition: height var(--default-transition-duration) cubic-bezier(0.33, 1, 0.68, 1);
   }
 }
 </style>

@@ -336,11 +336,11 @@ defineExpose({
 <template>
   <div
     class="pxd-scrollable group/scrollable relative overflow-hidden [--sv:0] hover:[--sv:1]" :style="{
-      '--c': maskColor,
-      '--s': `${size}px`,
-      '--ss': `${scrollbarSize}px`,
-      '--sc': scrollbarColor,
-      '--shc': scrollbarHoverColor,
+      '--size': `${size}px`,
+      '--mask-color': maskColor,
+      '--scrollbar-size': `${scrollbarSize}px`,
+      '--scrollbar-color': scrollbarColor,
+      '--scrollbar-color-hover': scrollbarHoverColor,
     }"
   >
     <div
@@ -354,12 +354,12 @@ defineExpose({
     <template v-if="fader">
       <div
         aria-hidden="true"
-        class="pxd-scrollable--x-fader pointer-events-none w-full h-full absolute inset-0"
+        class="pxd-scrollable--fader-x pointer-events-none w-full h-full absolute inset-0"
         :class="{ left: faderDirections.left, right: faderDirections.right }"
       />
       <div
         aria-hidden="true"
-        class="pxd-scrollable--y-fader pointer-events-none w-full h-full absolute inset-0"
+        class="pxd-scrollable--fader-y pointer-events-none w-full h-full absolute inset-0"
         :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
       />
     </template>
@@ -368,11 +368,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--custom-scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
-        style="width:calc(var(--ss) + 8px)"
+        class="pxd-scrollable--scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        style="width:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full w-(--ss) bg-(--sc) hover:bg-(--shc) active:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute rounded-full w-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -381,11 +381,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--custom-scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
-        style="height:calc(var(--ss) + 8px)"
+        class="pxd-scrollable--scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        style="height:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--custom-scrollbar-thumb absolute rounded-full h-(--ss) bg-(--sc) hover:bg-(--shc) active:bg-(--shc) motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute rounded-full h-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />
@@ -395,14 +395,14 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-scrollable--x-fader,
-.pxd-scrollable--y-fader {
+.pxd-scrollable--fader-x,
+.pxd-scrollable--fader-y {
   &::before,
   &::after {
     content: '';
     position: absolute;
-    background: linear-gradient(var(--dir), transparent, var(--c, var(--background-100)));
-    mask-image: linear-gradient(var(--dir-revert), var(--c, var(--background-100)) 50%, transparent);
+    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--background-100)));
+    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--background-100)) 50%, transparent);
     opacity: 0;
   }
 
@@ -414,11 +414,11 @@ defineExpose({
   }
 }
 
-.pxd-scrollable--x-fader {
+.pxd-scrollable--fader-x {
   &::before,
   &::after {
     top: 0;
-    width: var(--s, 30px);
+    width: var(--size, 30px);
     height: 100%;
   }
 
@@ -435,12 +435,12 @@ defineExpose({
   }
 }
 
-.pxd-scrollable--y-fader {
+.pxd-scrollable--fader-y {
   &::before,
   &::after {
     left: 0;
     width: 100%;
-    height: var(--s, 30px);
+    height: var(--size, 30px);
   }
 
   &::before {
@@ -457,16 +457,16 @@ defineExpose({
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .pxd-scrollable--x-fader,
-  .pxd-scrollable--y-fader {
+  .pxd-scrollable--fader-x,
+  .pxd-scrollable--fader-y {
     &::before,
     &::after {
-      transition: opacity .2s ease-out;
+      transition: opacity var(--default-transition-duration) ease-out;
     }
   }
 }
 
-.pxd-scrollable--custom-scrollbar-thumb:active {
+.pxd-scrollable--thumb:active {
   opacity: 1 !important;
 }
 </style>
