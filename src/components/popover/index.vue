@@ -274,10 +274,6 @@ function onContentPointerLeave() {
     return
   }
 
-  if (props.enterable) {
-    return
-  }
-
   handlePopoverHide()
 }
 
