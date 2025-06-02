@@ -28,6 +28,7 @@ interface Props {
   destroyDelay?: number
   scrollHidden?: boolean
   popoverStyle?: CSSProperties | string
+  transitionName?: string
   translateOffset?: string | number
 }
 
@@ -93,7 +94,7 @@ const containerStyle = shallowRef({
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const generalPosition = computed(() => localPosition.value.split('-')[0] as PopoverBasePosition)
-const transitionName = computed(() => `pxd-transition--popover-${generalPosition.value}`)
+const transitionName = computed(() => props.transitionName ?? `pxd-transition--popover-${generalPosition.value}`)
 
 const onContainerScroll = throttleByRaf(() => {
   if (!isVisible.value) {
