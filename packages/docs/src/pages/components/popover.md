@@ -10,25 +10,25 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 
 <template>
   <PStack gap="4">
-    <PPopover position="left" :content="content">
+    <PPopover popover-class="popover-demo" position="left" :content="content">
       <PButton>
         left
       </PButton>
     </PPopover>
 
-    <PPopover position="top" :content="content">
+    <PPopover popover-class="popover-demo" position="top" :content="content">
       <PButton>
         top
       </PButton>
     </PPopover>
 
-    <PPopover position="bottom" :content="content">
+    <PPopover popover-class="popover-demo" position="bottom" :content="content">
       <PButton>
         bottom
       </PButton>
     </PPopover>
 
-    <PPopover position="right" :content="content">
+    <PPopover popover-class="popover-demo" position="right" :content="content">
       <PButton>
         right
       </PButton>
@@ -36,25 +36,25 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
   </PStack>
 
   <PStack gap="4" class="mt-4">
-    <PPopover position="top-start" :content="content">
+    <PPopover popover-class="popover-demo" position="top-start" :content="content">
       <PButton>
         top-start
       </PButton>
     </PPopover>
 
-    <PPopover position="top-end" :content="content">
+    <PPopover popover-class="popover-demo" position="top-end" :content="content">
       <PButton>
         top-end
       </PButton>
     </PPopover>
 
-    <PPopover position="bottom-start" :content="content">
+    <PPopover popover-class="popover-demo" position="bottom-start" :content="content">
       <PButton>
         bottom-start
       </PButton>
     </PPopover>
 
-    <PPopover position="bottom-end" :content="content">
+    <PPopover popover-class="popover-demo" position="bottom-end" :content="content">
       <PButton>
         bottom-end
       </PButton>
@@ -62,25 +62,25 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
   </PStack>
 
   <PStack gap="4" class="mt-4">
-    <PPopover position="left-start" :content="content">
+    <PPopover popover-class="popover-demo" position="left-start" :content="content">
       <PButton>
         left-start
       </PButton>
     </PPopover>
 
-    <PPopover position="left-end" :content="content">
+    <PPopover popover-class="popover-demo" position="left-end" :content="content">
       <PButton>
         left-end
       </PButton>
     </PPopover>
 
-    <PPopover position="right-start" :content="content">
+    <PPopover popover-class="popover-demo" position="right-start" :content="content">
       <PButton>
         right-start
       </PButton>
     </PPopover>
 
-    <PPopover position="right-end" :content="content">
+    <PPopover popover-class="popover-demo" position="right-end" :content="content">
       <PButton>
         right-end
       </PButton>
@@ -89,7 +89,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 </template>
 
 <style>
-.pxd-popover__content {
+.popover-demo {
   background: var(--color-gray-1000);
   border-radius: 8px;
   padding: 8px;
@@ -111,43 +111,53 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
 
 <template>
   <PStack gap="4">
-    <PPopover trigger="hover" :content="content">
+    <PPopover popover-class="popover-demo" trigger="hover" :content="content">
       <PButton>
         Hover to active
       </PButton>
     </PPopover>
 
-    <PPopover trigger="click" :content="content">
+    <PPopover popover-class="popover-demo" trigger="click" :content="content">
       <PButton>
         Click to active
       </PButton>
     </PPopover>
 
-    <PPopover trigger="focus" :content="content">
+    <PPopover popover-class="popover-demo" trigger="focus" :content="content">
       <PButton>
         Focus to active
       </PButton>
     </PPopover>
 
-    <PPopover trigger="contextmenu" :content="content">
+    <PPopover popover-class="popover-demo" trigger="contextmenu" :content="content">
       <PButton>
         Contextmenu to active
       </PButton>
     </PPopover>
 
-    <PPopover :trigger="['hover', 'click', 'focus']" :content="content">
+    <PPopover popover-class="popover-demo" :trigger="['hover', 'click', 'focus']" :content="content">
       <PButton>
         Hover/Click/Focus to active
       </PButton>
     </PPopover>
 
-    <PPopover trigger="manual" :visible="visible" :content="content">
+    <PPopover popover-class="popover-demo" trigger="manual" :visible="visible" :content="content">
       <PButton @click="visible = !visible">
         Manual to active
       </PButton>
     </PPopover>
   </PStack>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## Offset
@@ -159,13 +169,23 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 
 <template>
   <PStack gap="4">
-    <PPopover :content="content" :offset="30">
+    <PPopover popover-class="popover-demo" :content="content" :offset="30">
       <PButton>
         Hover to active
       </PButton>
     </PPopover>
   </PStack>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## No arrow
@@ -176,12 +196,22 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover :content="content" :show-arrow="false">
+  <PPopover popover-class="popover-demo" :content="content" :show-arrow="false">
     <PButton>
       Hover to active
     </PButton>
   </PPopover>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## Max width
@@ -192,12 +222,22 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover :content="content" :max-width="200">
+  <PPopover popover-class="popover-demo" :content="content" :max-width="200">
     <PButton>
       Hover to active
     </PButton>
   </PPopover>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## Enterable
@@ -208,12 +248,22 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover :content="content" enterable>
+  <PPopover popover-class="popover-demo" :content="content" enterable>
     <PButton>
       Hover to active
     </PButton>
   </PPopover>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## Transition offset
@@ -225,25 +275,35 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 <template>
   <PStack gap="4">
-    <PPopover :content="content">
+    <PPopover popover-class="popover-demo" :content="content">
       <PButton>
         No translate
       </PButton>
     </PPopover>
 
-    <PPopover :content="content" :translate-offset="10">
+    <PPopover popover-class="popover-demo" :content="content" :translate-offset="10">
       <PButton>
         10px
       </PButton>
     </PPopover>
 
-    <PPopover :content="content" :translate-offset="-10">
+    <PPopover popover-class="popover-demo" :content="content" :translate-offset="-10">
       <PButton>
         -10px(Reverse translate)
       </PButton>
     </PPopover>
   </PStack>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
 
 ## Destroy delay
@@ -256,11 +316,21 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 <template>
   <PStack gap="4">
-    <PPopover :content="content" :destroy-delay="0">
+    <PPopover popover-class="popover-demo" :content="content" :destroy-delay="0">
       <PButton>
         0ms(Immediately destroy)
       </PButton>
     </PPopover>
   </PStack>
 </template>
+
+<style>
+.popover-demo {
+  background: var(--color-gray-1000);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--color-gray-100);
+}
+</style>
 ```
