@@ -39,8 +39,11 @@ function onOptionClick(option: MenuListOption) {
     ref="popoverRef"
     trigger="click"
     class="pxd-menu"
+    :open-delay="0"
+    :hide-delay="300"
     :show-arrow="false"
     :position="position"
+    :show-transition="false"
     enterable
   >
     <slot />
