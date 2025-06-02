@@ -40,8 +40,9 @@ const computedStyle = computed(() => {
 // 跳过禁用的选项后，获取正确的索引
 function getCorrectIndex(dir: 'prev' | 'next', index: number) {
   const nextIndex = dir === 'prev' ? index - 1 : index + 1
+  const nextOption = props.options[nextIndex]
 
-  if (props.options[nextIndex].disabled) {
+  if (nextOption?.disabled) {
     return getCorrectIndex(dir, nextIndex)
   }
 
@@ -108,7 +109,7 @@ function onContainerClick(ev: MouseEvent) {
     index = Number(target.dataset.index)
   } else {
     target = target.closest('li.pxd-menu-item') as HTMLElement
-    index = Number(target.dataset.index)
+    index = Number(target?.dataset.index) || -1
   }
 
   if (!target || index === -1) {
