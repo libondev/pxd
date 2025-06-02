@@ -274,6 +274,10 @@ function onContentPointerLeave() {
     return
   }
 
+  if (!triggerMethods.value.includes('hover')) {
+    return
+  }
+
   handlePopoverHide()
 }
 
