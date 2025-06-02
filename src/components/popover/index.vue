@@ -20,8 +20,8 @@ interface Props {
   position?: PopoverPosition
   showDelay?: number
   hideDelay?: number
-  showArrow?: boolean
   enterable?: boolean
+  showArrow?: boolean
   arrowColor?: string
   triggerClass?: string
   popoverClass?: string
@@ -29,6 +29,8 @@ interface Props {
   scrollHidden?: boolean
   popoverStyle?: CSSProperties | string
   transitionName?: string
+  showTransition?: boolean
+  hideTransition?: boolean
   translateOffset?: string | number
 }
 
@@ -59,6 +61,8 @@ const props = withDefaults(
     destroyDelay: 2000,
     scrollHidden: true,
     translateOffset: 0,
+    showTransition: true,
+    hideTransition: true,
   },
 )
 
@@ -503,7 +507,12 @@ defineExpose({
     </div>
 
     <PTeleport>
-      <Transition :name="transitionName" mode="out-in" :style="{ '--translate-offset': translateOffset }">
+      <Transition
+        mode="out-in"
+        :name="transitionName"
+        :class="{ showTransition, hideTransition }"
+        :style="{ '--translate-offset': translateOffset }"
+      >
         <div
           v-if="isRender"
           v-show="isVisible"
@@ -617,45 +626,45 @@ defineExpose({
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .pxd-transition--popover-top-enter-active,
-  .pxd-transition--popover-top-leave-active,
-  .pxd-transition--popover-bottom-enter-active,
-  .pxd-transition--popover-bottom-leave-active,
-  .pxd-transition--popover-left-enter-active,
-  .pxd-transition--popover-left-leave-active,
-  .pxd-transition--popover-right-enter-active,
-  .pxd-transition--popover-right-leave-active {
+  .showTransition.pxd-transition--popover-top-enter-active,
+  .hideTransition.pxd-transition--popover-top-leave-active,
+  .showTransition.pxd-transition--popover-bottom-enter-active,
+  .hideTransition.pxd-transition--popover-bottom-leave-active,
+  .showTransition.pxd-transition--popover-left-enter-active,
+  .hideTransition.pxd-transition--popover-left-leave-active,
+  .showTransition.pxd-transition--popover-right-enter-active,
+  .hideTransition.pxd-transition--popover-right-leave-active {
     transition: opacity var(--default-transition-duration) ease-in-out, margin  var(--default-transition-duration) ease-in-out;
   }
 
-  .pxd-transition--popover-top-enter-from,
-  .pxd-transition--popover-top-leave-to,
-  .pxd-transition--popover-bottom-enter-from,
-  .pxd-transition--popover-bottom-leave-to,
-  .pxd-transition--popover-left-enter-from,
-  .pxd-transition--popover-left-leave-to,
-  .pxd-transition--popover-right-enter-from,
-  .pxd-transition--popover-right-leave-to  {
+  .showTransition.pxd-transition--popover-top-enter-from,
+  .hideTransition.pxd-transition--popover-top-leave-to,
+  .showTransition.pxd-transition--popover-bottom-enter-from,
+  .hideTransition.pxd-transition--popover-bottom-leave-to,
+  .showTransition.pxd-transition--popover-left-enter-from,
+  .hideTransition.pxd-transition--popover-left-leave-to,
+  .showTransition.pxd-transition--popover-right-enter-from,
+  .hideTransition.pxd-transition--popover-right-leave-to  {
     opacity: 0;
   }
 
-  .pxd-transition--popover-top-enter-from,
-  .pxd-transition--popover-top-leave-to {
+  .showTransition.pxd-transition--popover-top-enter-from,
+  .hideTransition.pxd-transition--popover-top-leave-to {
     margin-top: calc(1px * var(--translate-offset));
   }
 
-  .pxd-transition--popover-bottom-enter-from,
-  .pxd-transition--popover-bottom-leave-to {
+  .showTransition.pxd-transition--popover-bottom-enter-from,
+  .hideTransition.pxd-transition--popover-bottom-leave-to {
     margin-top: calc(-1px * var(--translate-offset));
   }
 
-  .pxd-transition--popover-left-enter-from,
-  .pxd-transition--popover-left-leave-to {
+  .showTransition.pxd-transition--popover-left-enter-from,
+  .hideTransition.pxd-transition--popover-left-leave-to {
     margin-left: calc(1px * var(--translate-offset));
   }
 
-  .pxd-transition--popover-right-enter-from,
-  .pxd-transition--popover-right-leave-to {
+  .showTransition.pxd-transition--popover-right-enter-from,
+  .hideTransition.pxd-transition--popover-right-leave-to {
     margin-left: calc(-1px * var(--translate-offset));
   }
 }
