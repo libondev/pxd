@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
 
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
-    transition: clip-path var(--ds) ease-out, opacity var(--default-transition-duration) ease-out;
+    transition: clip-path var(--ds) ease-out, opacity var(--default-transition-duration) var(--default-transition-timing-function);
   }
 }
 </style>

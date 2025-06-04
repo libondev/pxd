@@ -139,7 +139,7 @@ onMounted(() => {
 @media (prefers-reduced-motion: no-preference) {
   .pxd-transition--collapse-enter-active,
   .pxd-transition--collapse-leave-active {
-    transition: height var(--default-transition-duration) cubic-bezier(0.33, 1, 0.68, 1);
+    transition: height var(--default-transition-duration) var(--default-transition-timing-function);
   }
 }
 </style>

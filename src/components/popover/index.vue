@@ -634,7 +634,9 @@ defineExpose({
   .hideTransition.pxd-transition--popover-left-leave-active,
   .showTransition.pxd-transition--popover-right-enter-active,
   .hideTransition.pxd-transition--popover-right-leave-active {
-    transition: opacity var(--default-transition-duration) ease-in-out, margin  var(--default-transition-duration) ease-in-out;
+    transition:
+      opacity var(--default-transition-duration) var(--default-transition-timing-function),
+      margin  var(--default-transition-duration) var(--default-transition-timing-function);
   }
 
   .showTransition.pxd-transition--popover-top-enter-from,

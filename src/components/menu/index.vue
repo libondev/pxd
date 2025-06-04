@@ -40,7 +40,7 @@ function onOptionClick(option: MenuListOption) {
     trigger="click"
     class="pxd-menu"
     :open-delay="0"
-    :hide-delay="300"
+    :hide-delay="200"
     :show-arrow="false"
     :position="position"
     :show-transition="false"

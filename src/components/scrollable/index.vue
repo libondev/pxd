@@ -461,7 +461,7 @@ defineExpose({
   .pxd-scrollable--fader-y {
     &::before,
     &::after {
-      transition: opacity var(--default-transition-duration) ease-out;
+      transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
     }
   }
 }
