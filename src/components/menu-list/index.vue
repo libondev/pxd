@@ -109,7 +109,7 @@ function onContainerClick(ev: MouseEvent) {
     index = Number(target.dataset.index)
   } else {
     target = target.closest('li.pxd-menu-item') as HTMLElement
-    index = Number(target?.dataset.index) || -1
+    index = Number(target?.dataset.index) ?? -1
   }
 
   if (!target || index === -1) {
