@@ -9,7 +9,6 @@
 }
 
 :root {
-  font-family: var(--font-sans);
   font-feature-settings: 'liga' 1, 'calt' 1;
 }
 

@@ -9,16 +9,16 @@
   --ring: var(--color-blue-900-value);
   --primary: var(--color-gray-1000-value);
 
-  --color-gray-alpha-100: hsla(0, 0%, 0%, .05);
-  --color-gray-alpha-200: hsla(0, 0%, 0%, .08);
-  --color-gray-alpha-300: hsla(0, 0%, 0%, .12);
-  --color-gray-alpha-400: hsla(0, 0%, 0%, .17);
-  --color-gray-alpha-500: hsla(0, 0%, 0%, .21);
-  --color-gray-alpha-600: hsla(0, 0%, 0%, .34);
-  --color-gray-alpha-700: hsla(0, 0%, 0%, .44);
-  --color-gray-alpha-800: hsla(0, 0%, 0%, .51);
-  --color-gray-alpha-900: hsla(0, 0%, 0%, .61);
-  --color-gray-alpha-1000: hsla(0, 0%, 0%, .91);
+  --color-gray-alpha-100-value: hsla(0, 0%, 0%, .05);
+  --color-gray-alpha-200-value: hsla(0, 0%, 0%, .08);
+  --color-gray-alpha-300-value: hsla(0, 0%, 0%, .12);
+  --color-gray-alpha-400-value: hsla(0, 0%, 0%, .17);
+  --color-gray-alpha-500-value: hsla(0, 0%, 0%, .21);
+  --color-gray-alpha-600-value: hsla(0, 0%, 0%, .34);
+  --color-gray-alpha-700-value: hsla(0, 0%, 0%, .44);
+  --color-gray-alpha-800-value: hsla(0, 0%, 0%, .51);
+  --color-gray-alpha-900-value: hsla(0, 0%, 0%, .61);
+  --color-gray-alpha-1000-value: hsla(0, 0%, 0%, .91);
 
   --color-gray-100-value: 0, 0%, 95%;
   --color-gray-200-value: 0, 0%, 93%;
@@ -108,14 +108,14 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
-  --shadow-border-default: 0 0 0 1px rgba(0,0,0,0.08);
-  --shadow-border-small: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04);
-  --shadow-border-medium: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 8px -8px rgba(0,0,0,0.04);
-  --shadow-border-large: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
-  --shadow-border-tooltip: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
-  --shadow-border-menu: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
-  --shadow-border-modal: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
-  --shadow-border-fullscreen: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,0.08);
+  --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04);
+  --shadow-border-medium-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 8px -8px rgba(0,0,0,0.04);
+  --shadow-border-large-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
+  --shadow-border-tooltip-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
+  --shadow-border-menu-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
+  --shadow-border-modal-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-fullscreen-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
 
   color-scheme: light;
   background-color: var(--color-background);
@@ -126,16 +126,16 @@
   --background-100: #121212;
   --background-200: #000;
 
-  --color-gray-alpha-100: hsla(0, 0%, 100%, .06);
-  --color-gray-alpha-200: hsla(0, 0%, 100%, .09);
-  --color-gray-alpha-300: hsla(0, 0%, 100%, .13);
-  --color-gray-alpha-400: hsla(0, 0%, 100%, .14);
-  --color-gray-alpha-500: hsla(0, 0%, 100%, .24);
-  --color-gray-alpha-600: hsla(0, 0%, 100%, .51);
-  --color-gray-alpha-700: hsla(0, 0%, 100%, .54);
-  --color-gray-alpha-800: hsla(0, 0%, 100%, .47);
-  --color-gray-alpha-900: hsla(0, 0%, 100%, .61);
-  --color-gray-alpha-1000: hsla(0, 0%, 100%, .92);
+  --color-gray-alpha-100-value: hsla(0, 0%, 100%, .06);
+  --color-gray-alpha-200-value: hsla(0, 0%, 100%, .09);
+  --color-gray-alpha-300-value: hsla(0, 0%, 100%, .13);
+  --color-gray-alpha-400-value: hsla(0, 0%, 100%, .14);
+  --color-gray-alpha-500-value: hsla(0, 0%, 100%, .24);
+  --color-gray-alpha-600-value: hsla(0, 0%, 100%, .51);
+  --color-gray-alpha-700-value: hsla(0, 0%, 100%, .54);
+  --color-gray-alpha-800-value: hsla(0, 0%, 100%, .47);
+  --color-gray-alpha-900-value: hsla(0, 0%, 100%, .61);
+  --color-gray-alpha-1000-value: hsla(0, 0%, 100%, .92);
 
   --color-gray-100-value: 0, 0%, 10%;
   --color-gray-200-value: 0, 0%, 12%;
@@ -225,14 +225,14 @@
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
 
-  --shadow-border-default: 0 0 0 1px rgba(255,255,255,0.145);
-  --shadow-border-small: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 2px rgba(0,0,0,0.16);
-  --shadow-border-medium: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.32),0px 8px 8px -8px rgba(0,0,0,0.16);
-  --shadow-border-large: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
-  --shadow-border-tooltip: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
-  --shadow-border-menu: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
-  --shadow-border-modal: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
-  --shadow-border-fullscreen: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(255,255,255,0.145);
+  --shadow-border-small-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 2px rgba(0,0,0,0.16);
+  --shadow-border-medium-value: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.32),0px 8px 8px -8px rgba(0,0,0,0.16);
+  --shadow-border-large-value: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
+  --shadow-border-tooltip-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
+  --shadow-border-menu-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
+  --shadow-border-modal-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-fullscreen-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
 
   color-scheme: dark;
 }
@@ -252,16 +252,16 @@
   --color-background-hover: hsl(var(--color-gray-200-value));
   --color-background-active: hsl(var(--color-gray-300-value));
 
-  --color-gray-alpha-100: var(--color-gray-alpha-100);
-  --color-gray-alpha-200: var(--color-gray-alpha-200);
-  --color-gray-alpha-300: var(--color-gray-alpha-300);
-  --color-gray-alpha-400: var(--color-gray-alpha-400);
-  --color-gray-alpha-500: var(--color-gray-alpha-500);
-  --color-gray-alpha-600: var(--color-gray-alpha-600);
-  --color-gray-alpha-700: var(--color-gray-alpha-700);
-  --color-gray-alpha-800: var(--color-gray-alpha-800);
-  --color-gray-alpha-900: var(--color-gray-alpha-900);
-  --color-gray-alpha-1000: var(--color-gray-alpha-1000);
+  --color-gray-alpha-100: var(--color-gray-alpha-100-value);
+  --color-gray-alpha-200: var(--color-gray-alpha-200-value);
+  --color-gray-alpha-300: var(--color-gray-alpha-300-value);
+  --color-gray-alpha-400: var(--color-gray-alpha-400-value);
+  --color-gray-alpha-500: var(--color-gray-alpha-500-value);
+  --color-gray-alpha-600: var(--color-gray-alpha-600-value);
+  --color-gray-alpha-700: var(--color-gray-alpha-700-value);
+  --color-gray-alpha-800: var(--color-gray-alpha-800-value);
+  --color-gray-alpha-900: var(--color-gray-alpha-900-value);
+  --color-gray-alpha-1000: var(--color-gray-alpha-1000-value);
 
   --color-gray-100: hsl(var(--color-gray-100-value));
   --color-gray-200: hsl(var(--color-gray-200-value));
@@ -360,13 +360,13 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-inherit: inherit;
 
-  --shadow-border-default: var(--shadow-border-default);
-  --shadow-border-small: var(--shadow-border-small);
-  --shadow-border-medium: var(--shadow-border-medium);
-  --shadow-border-large: var(--shadow-border-large);
-  --shadow-border-tooltip: var(--shadow-border-tooltip);
-  --shadow-border-menu: var(--shadow-border-menu);
-  --shadow-border-modal: var(--shadow-border-modal);
+  --shadow-border-default: var(--shadow-border-default-value);
+  --shadow-border-small: var(--shadow-border-small-value);
+  --shadow-border-medium: var(--shadow-border-medium-value);
+  --shadow-border-large: var(--shadow-border-large-value);
+  --shadow-border-tooltip: var(--shadow-border-tooltip-value);
+  --shadow-border-menu: var(--shadow-border-menu-value);
+  --shadow-border-modal: var(--shadow-border-modal-value);
 }
 
 @utility scrollbar-hidden {
@@ -449,7 +449,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .pxd-transition--fade-enter-active,
   .pxd-transition--fade-leave-active {
-    transition: opacity var(--default-transition-duration) ease;
+    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
   }
 
   .pxd-transition--fade-enter-from,
