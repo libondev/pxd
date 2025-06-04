@@ -7,6 +7,7 @@ interface Props {
   alt?: string
   size?: number | string
   loading?: boolean
+  placeholder?: boolean
 }
 
 defineOptions({
@@ -29,7 +30,7 @@ const groupSize = inject<number | string>('groupSize', 32)
 
 const computedSize = computed(() => getCssUnitValue(props.size || groupSize))
 
-const computedLoading = computed(() => props.loading || loadingStatus.value === 'error')
+const hideAvatar = computed(() => !props.src || props.placeholder || loadingStatus.value === 'error')
 
 function onLoadError(event: Event) {
   loadingStatus.value = 'error'
@@ -57,12 +58,12 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar inline-flex items-center justify-center relative rounded-full border border-white select-none"
+    class="pxd-avatar inline-flex items-center justify-center relative rounded-full border border-background select-none"
     :style="{ '--size': computedSize }"
   >
     <slot>
       <img
-        v-if="!computedLoading"
+        v-if="!hideAvatar"
         :src="src"
         :alt="alt"
         loading="lazy"
@@ -78,11 +79,13 @@ defineExpose({
       >
     </slot>
 
+    <div v-if="loading" class="pxd-avatar--loading" />
+
     <div
-      v-if="$slots.badge"
-      class="absolute -bottom-1 -left-1 z-10 w-1/2 h-1/2 flex items-center rounded-full border border-white bg-white overflow-hidden"
+      v-if="$slots.icon"
+      class="absolute -bottom-1 -left-1 z-10 w-1/2 h-1/2 flex items-center rounded-full border border-background bg-background overflow-hidden"
     >
-      <slot name="badge" />
+      <slot name="icon" />
     </div>
   </div>
 </template>
@@ -109,6 +112,30 @@ defineExpose({
 
   &::after {
     border: 1px solid var(--color-gray-alpha-400)
+  }
+}
+
+.pxd-avatar--loading {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backdrop-filter: blur(1px);
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border-style: solid;
+    border-width: 2px 2px 1px 0;
+    border-color: var(--color-primary) var(--color-primary) transparent transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pxd-avatar--loading::after {
+    animation: var(--animate-spin);
   }
 }
 

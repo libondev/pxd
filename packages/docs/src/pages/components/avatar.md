@@ -51,10 +51,48 @@ import LogoGithubIcon from '@gdsicon/vue/logo-github'
 </template>
 ```
 
+## With custom icon
+
+```vue demo
+<script setup>
+import ArrowCircleDownIcon from '@gdsicon/vue/arrow-circle-down'
+import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
+import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
+</script>
+
+<template>
+  <PStack direction="col">
+    <PAvatar>
+      <template #icon>
+        <ArrowCircleDownIcon class="text-gray-900" />
+      </template>
+    </PAvatar>
+    <PAvatar>
+      <template #icon>
+        <CheckCircleFillIcon class="text-gray-900" />
+      </template>
+    </PAvatar>
+    <PAvatar>
+      <template #icon>
+        <ClockDashedIcon class="text-gray-900" />
+      </template>
+    </PAvatar>
+  </PStack>
+</template>
+```
+
 ## Loading
 
 ```vue demo
 <template>
-  <PAvatar loading />
+  <PAvatar src="https://avatars.githubusercontent.com/u/3676859?v=4" loading />
+</template>
+```
+
+## Placeholder
+
+```vue demo
+<template>
+  <PAvatar placeholder />
 </template>
 ```
