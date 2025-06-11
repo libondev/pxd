@@ -23,14 +23,14 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  select: [option: MenuListOption]
+  optionClick: [option: MenuListOption]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
 function onOptionClick(option: MenuListOption) {
+  emits('optionClick', option)
   popoverRef.value!.hide()
-  emits('select', option)
 }
 </script>
 
