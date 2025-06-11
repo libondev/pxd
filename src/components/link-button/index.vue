@@ -44,7 +44,7 @@ const emits = defineEmits<{
 
 const attrs = useAttrs()
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-link-button']
 
   if (props.type === 'text') {
@@ -88,7 +88,7 @@ function onLinkClick(ev: MouseEvent) {
 <template>
   <PButton
     :align="align"
-    :class="computedClasses"
+    :class="computedClass"
     v-bind="computedAttrs"
     @click="onLinkClick"
   >

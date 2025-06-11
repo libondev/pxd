@@ -72,7 +72,7 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const { truncate, monospace, secondary } = props
 
   const basic = [
@@ -101,7 +101,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <component :is="as" :class="computedClasses" :style="computedStyle">
+  <component :is="as" :class="computedClass" :style="computedStyle">
     <slot />
   </component>
 </template>

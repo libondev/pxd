@@ -103,7 +103,7 @@ const formattedDir = computed(() => {
   return defaultDir
 })
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-stack w-full flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
@@ -120,7 +120,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <component :is="props.as" :class="computedClasses" :style="formattedGap">
+  <component :is="props.as" :class="computedClass" :style="formattedGap">
     <slot />
   </component>
 </template>

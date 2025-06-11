@@ -35,7 +35,7 @@ const isChecked = computed(() => modelValue.value === props.value)
 const computedDisabled = computed(() => props.disabled || switchGroupProps.disabled)
 const computedRequired = computed(() => props.required || switchGroupProps.required)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = [
     'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm peer-focus-ring',
     'font-medium select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
@@ -67,7 +67,7 @@ const computedClasses = computed(() => {
       :required="computedRequired"
     >
 
-    <div :class="computedClasses">
+    <div :class="computedClass">
       <slot>
         {{ label }}
       </slot>
