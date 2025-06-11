@@ -49,7 +49,7 @@ const VARIANTS = {
 
 const computedSize = useComputedSize(props.size, SIZES)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = [
     'pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all',
     getFallbackVariant(props.variant, VARIANTS),
@@ -83,7 +83,7 @@ function onCopyClick() {
 </script>
 
 <template>
-  <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }">
+  <div :class="computedClass" :style="{ width: getCssUnitValue(props.width) }">
     <div class="pxd-snippet--container">
       <pre v-for="(t, i) of computedTextArray" :key="i" class="m-0 p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
     </div>

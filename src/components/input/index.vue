@@ -65,7 +65,7 @@ const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useComputedSize(props.size, SIZES)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   basic.push(computedSize.value)
@@ -112,7 +112,7 @@ function clearInputValue() {
       <slot name="label">{{ label }}</slot>
     </div>
 
-    <div :class="computedClasses">
+    <div :class="computedClass">
       <div
         v-if="$slots.prefix"
         aria-hidden="true"

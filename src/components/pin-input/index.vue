@@ -82,7 +82,7 @@ const computedInputMode = computed(() => {
   return props.type.includes('numeric') ? 'numeric' : 'text'
 })
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-input--border rounded-md motion-safe:transition-all']
 
   if (props.error) {
@@ -240,7 +240,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
       @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
     >
-      <div v-for="(n, i) of length" :key="n" :class="computedClasses">
+      <div v-for="(n, i) of length" :key="n" :class="computedClass">
         <input
           ref="inputsRef"
           :value="modelValueLocal[i]"

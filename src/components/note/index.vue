@@ -88,7 +88,7 @@ const computedLabel = computed(() => {
 
 const computedSize = useComputedSize(props.size, SIZES)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
 
   basic.push(computedSize.value)
@@ -102,7 +102,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses">
+  <div :class="computedClass">
     <div class="flex items-center gap-3">
       <slot v-if="computedLabel" name="label">
         <component :is="computedLabel" class="font-medium flex-shrink-0" />

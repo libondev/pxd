@@ -40,7 +40,7 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const { loading, shape, animated } = props
   const basic = ['pxd-skeleton relative block flex-shrink-0 overflow-hidden']
 
@@ -66,7 +66,7 @@ const computedClasses = computed(() => {
 
 <template>
   <div
-    :class="computedClasses"
+    :class="computedClass"
     :style="computedStyle"
   >
     <slot />

@@ -59,7 +59,7 @@ const computedSize = useComputedSize(props.size, SIZES)
 const computedFontSize = useComputedSize(props.size, FONT_SIZES)
 const computedDisabled = computed(() => props.disabled || props.loading)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const classNames = ['pxd-button cursor-pointer select-none items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
 
   classNames.push(computedFontSize.value)
@@ -102,7 +102,7 @@ function onButtonDblClick(event: MouseEvent) {
   <component
     :is="as"
     role="button"
-    :class="computedClasses"
+    :class="computedClass"
     :disabled="computedDisabled"
     @click="onButtonClick"
     @dblclick.prevent="onButtonDblClick"

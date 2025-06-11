@@ -56,7 +56,7 @@ const modelValue = useModelValue(props, emits)
 
 const computedSize = useComputedSize(props.size, SIZES)
 
-const computedClasses = computed(() => {
+const computedClass = computed(() => {
   const basic = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
   basic.push(computedSize.value)
@@ -95,7 +95,7 @@ function onInputChange(event: Event) {
       <slot name="label">{{ label }}</slot>
     </div>
 
-    <div :class="computedClasses">
+    <div :class="computedClass">
       <textarea
         :id="uniqueId"
         v-model="modelValue"
