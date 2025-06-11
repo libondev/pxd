@@ -108,6 +108,10 @@
     "name": "radio"
   },
   {
+    "camelized": "Resizable",
+    "name": "resizable"
+  },
+  {
     "camelized": "Scrollable",
     "name": "scrollable"
   },
