@@ -215,7 +215,7 @@ function startDragVertical(e: MouseEvent) {
   }
 
   on(document, 'mousemove', onDragMove)
-  once(document, 'mouseup', endDrag)
+  once(document, 'mouseup', onEndDrag)
 
   document.body.classList.add('select-none')
 }
@@ -240,7 +240,7 @@ function startDragHorizontal(e: MouseEvent) {
   }
 
   on(document, 'mousemove', onDragMove)
-  once(document, 'mouseup', endDrag)
+  once(document, 'mouseup', onEndDrag)
 
   // 添加禁止选择类
   document.body.classList.add('select-none')
@@ -289,7 +289,7 @@ function onDragMove(e: MouseEvent) {
 }
 
 // 结束拖拽
-function endDrag() {
+function onEndDrag() {
   dragState.value.isDragging = false
   dragState.value.direction = null // 重置方向
   off(document, 'mousemove', onDragMove)
@@ -299,6 +299,14 @@ function endDrag() {
 
   // 更新滚动条指标
   requestAnimationFrame(updateScrollbarMetrics) // 使用 requestAnimationFrame 避免与滚动事件计算冲突
+}
+
+function scrollTo(top: number, left: number) {
+  if (!scrollContainer.value) {
+    return
+  }
+
+  scrollContainer.value.scrollTo({ top, left })
 }
 
 if (props.scrollbar || props.fader) {
@@ -324,11 +332,12 @@ onBeforeUnmount(() => {
   off(scrollContainer.value, 'scroll', onContainerScroll)
   off(window, 'resize', updateScrollbarMetrics)
   off(document, 'mousemove', onDragMove)
-  off(document, 'mouseup', endDrag)
+  off(document, 'mouseup', onEndDrag)
   document.body.classList.remove('select-none')
 })
 
 defineExpose({
+  scrollTo,
   forceUpdate: updateScrollbarInfo,
 })
 </script>
