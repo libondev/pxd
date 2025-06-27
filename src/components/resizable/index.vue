@@ -239,7 +239,7 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: num
     newNextSize = nextMinSize
   }
 
-  // 在 Vue 2.7 中，确保数组的响应式更新
+  // hack vue2
   const newSizes = [...panelSizes.value]
   newSizes[index] = newPrevSize
   newSizes[index + 1] = newNextSize
@@ -256,7 +256,7 @@ onMounted(async () => {
   <div
     ref="containerRef"
     :data-orientation="direction"
-    class="pxd-resizable flex"
+    class="pxd-resizable flex w-full h-full"
   >
     <slot />
   </div>
