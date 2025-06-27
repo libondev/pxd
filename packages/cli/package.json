@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "pxd cli",
   "author": "libondev <bon.li@outlook.com>",
-  "bin": {
-    "create-pxd": "dist/index.js"
-  },
   "license": "MIT",
   "homepage": "https://github.com/libondev/pxd#readme",
   "repository": {
@@ -18,6 +15,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "pxd": "dist/index.js"
+  },
   "files": [
     "dist"
   ],
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@clack/prompts": "catalog:",
+    "cross-spawn": "catalog:",
     "mri": "catalog:"
   },
   "devDependencies": {
