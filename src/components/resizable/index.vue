@@ -1,10 +1,21 @@
 <script lang="ts" setup>
-import type { VNode } from 'vue'
-import { cloneVNode, computed, nextTick, onMounted, ref, shallowRef, useSlots } from 'vue'
-import PResizableHandle from '../resizable-handle/index.vue'
+import { computed, nextTick, onMounted, provide, ref, shallowRef } from 'vue'
 
 interface Props {
   direction?: 'row' | 'col'
+}
+
+interface PanelConfig {
+  id: string
+  initialSize?: number | null
+  minSize?: number
+  order: number
+}
+
+interface HandleConfig {
+  id: string
+  order: number
+  onDrag: (delta: { deltaX: number, deltaY: number }) => void
 }
 
 defineOptions({
@@ -15,67 +26,88 @@ const props = withDefaults(defineProps<Props>(), {
   direction: 'row',
 })
 
-const slots = useSlots()
+const panelConfigs = ref<PanelConfig[]>([])
+const handleConfigs = ref<HandleConfig[]>([])
 const panelSizes = ref<number[]>([])
 const containerRef = shallowRef<HTMLElement | null>(null)
+const orderCounter = ref(0)
 
-function getVNodeName(vnode: VNode): string | undefined {
-  if (!vnode) {
-    return undefined
-  }
-  // @ts-expect-error vue 2 compat
-  if (vnode.type?.name) {
-    // vue 3
-    // @ts-expect-error vue 2 compat
-    return vnode.type.name
-  }
-  // @ts-expect-error vue 2 compat
-  if (vnode.componentOptions?.Ctor?.options?.name) {
-    // vue 2
-    // @ts-expect-error vue 2 compat
-    return vnode.componentOptions.Ctor.options.name
-  }
-  return undefined
-}
-
-const panelVNodes = computed(() => {
-  if (!slots.default) {
-    return []
-  }
-  return slots.default().filter(vnode => getVNodeName(vnode) === 'PResizablePanel')
+// 提供给子组件的上下文
+provide('resizable-context', {
+  registerPanel,
+  unregisterPanel,
+  registerHandle,
+  unregisterHandle,
+  getPanelSize,
+  onHandleDrag,
+  direction: computed(() => props.direction),
+  panelSizes,
+  panelConfigs,
 })
 
-// 从 VNode 中安全地获取属性值
-function getVNodeProp(vnode: VNode, propName: string, defaultValue: any = undefined): any {
-  if (!vnode) {
-    return defaultValue
+// 提供给子组件注册使用的方法
+function registerPanel(config: Omit<PanelConfig, 'order'>) {
+  const existingIndex = panelConfigs.value.findIndex(p => p.id === config.id)
+  if (existingIndex === -1) {
+    panelConfigs.value.push({ ...config, order: orderCounter.value++ })
+  } else {
+    panelConfigs.value[existingIndex] = { ...config, order: panelConfigs.value[existingIndex].order }
+  }
+  // 重新排序并初始化面板大小
+  panelConfigs.value.sort((a, b) => a.order - b.order)
+  nextTick(() => {
+    initPanelSizes()
+  })
+}
+
+function unregisterPanel(id: string) {
+  const index = panelConfigs.value.findIndex(p => p.id === id)
+  if (index !== -1) {
+    panelConfigs.value.splice(index, 1)
+    panelSizes.value.splice(index, 1)
+  }
+}
+
+function registerHandle(config: Omit<HandleConfig, 'order'>) {
+  const existingIndex = handleConfigs.value.findIndex(h => h.id === config.id)
+  if (existingIndex === -1) {
+    handleConfigs.value.push({ ...config, order: orderCounter.value++ })
+  } else {
+    handleConfigs.value[existingIndex] = { ...config, order: handleConfigs.value[existingIndex].order }
+  }
+  // 重新排序 handles
+  handleConfigs.value.sort((a, b) => a.order - b.order)
+}
+
+function unregisterHandle(id: string) {
+  const index = handleConfigs.value.findIndex(h => h.id === id)
+  if (index !== -1) {
+    handleConfigs.value.splice(index, 1)
+  }
+}
+
+function getPanelSize(id: string): number {
+  const index = panelConfigs.value.findIndex(p => p.id === id)
+  return index !== -1 ? panelSizes.value[index] || 0 : 0
+}
+
+function onHandleDrag(handleId: string, delta: { deltaX: number, deltaY: number }) {
+  // 根据 handle 在 DOM 中的位置找到对应的面板索引
+  // 每个 handle 控制其前后两个面板的大小调整
+  const handleOrder = handleConfigs.value.find(h => h.id === handleId)?.order
+  if (handleOrder === undefined) {
+    return
   }
 
-  // Vue 3 方式
-  if (vnode.props && propName in vnode.props) {
-    return vnode.props[propName]
-  }
+  // 找到这个 handle 前面有多少个面板
+  const panelsBeforeThisHandle = panelConfigs.value.filter(p => p.order < handleOrder).length
 
-  // 尝试 kebab-case
-  const kebabCase = propName.replace(/([A-Z])/g, '-$1').toLowerCase()
-  if (vnode.props && kebabCase in vnode.props) {
-    return vnode.props[kebabCase]
-  }
+  // 这个 handle 控制的是第 panelsBeforeThisHandle 和 panelsBeforeThisHandle + 1 个面板
+  const panelIndex = panelsBeforeThisHandle - 1
 
-  // Vue 2 方式
-  // @ts-expect-error vue 2 compat
-  if (vnode.componentOptions?.propsData && propName in vnode.componentOptions.propsData) {
-    // @ts-expect-error vue 2 compat
-    return vnode.componentOptions.propsData[propName]
+  if (panelIndex >= 0 && panelIndex + 1 < panelConfigs.value.length) {
+    onDrag(panelIndex, delta)
   }
-
-  // @ts-expect-error vue 2 compat
-  if (vnode.componentOptions?.propsData && kebabCase in vnode.componentOptions.propsData) {
-    // @ts-expect-error vue 2 compat
-    return vnode.componentOptions.propsData[kebabCase]
-  }
-
-  return defaultValue
 }
 
 /**
@@ -99,16 +131,18 @@ function calculateInitialPanelSizes(totalSize: number): {
   remainingSize: number
   autoSizedPanelIndices: number[]
 } {
-  const sizes = Array.from({ length: panelVNodes.value.length }, () => 0)
+  const sizes = Array.from({ length: panelConfigs.value.length }, () => 0)
   let remainingSize = totalSize
   const autoSizedPanelIndices: number[] = []
 
-  panelVNodes.value.forEach((vnode, index) => {
-    const minSize = Number(getVNodeProp(vnode, 'minSize', 0))
-    const initialSize = getVNodeProp(vnode, 'initialSize', null)
-    const initialSizeNum = initialSize !== null ? Number(initialSize) : null
+  // 确保按顺序处理面板配置
+  const sortedConfigs = [...panelConfigs.value].sort((a, b) => a.order - b.order)
 
-    if (initialSizeNum !== null) {
+  sortedConfigs.forEach((config, index) => {
+    const minSize = config.minSize || 0
+    const initialSizeNum = config.initialSize
+
+    if (initialSizeNum !== null && initialSizeNum !== undefined) {
       // 面板有指定初始大小
       const size = Math.max(initialSizeNum, minSize)
       sizes[index] = size
@@ -156,7 +190,7 @@ function distributeRemainingSpace(
  * 初始化所有面板的大小
  */
 async function initPanelSizes() {
-  if (panelVNodes.value.length === 0) {
+  if (panelConfigs.value.length === 0) {
     return
   }
 
@@ -174,13 +208,16 @@ async function initPanelSizes() {
 }
 
 function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: number }) {
+  if (index < 0 || index + 1 >= panelSizes.value.length) {
+    return
+  }
+
   const delta = props.direction === 'row' ? deltaX : deltaY
   const prevSize = panelSizes.value[index]
   const nextSize = panelSizes.value[index + 1]
 
-  // 使用安全获取属性函数
-  const prevMinSize = Number(getVNodeProp(panelVNodes.value[index], 'minSize', 0))
-  const nextMinSize = Number(getVNodeProp(panelVNodes.value[index + 1], 'minSize', 0))
+  const prevMinSize = panelConfigs.value[index]?.minSize || 0
+  const nextMinSize = panelConfigs.value[index + 1]?.minSize || 0
 
   let newPrevSize = prevSize + delta
   let newNextSize = nextSize - delta
@@ -202,32 +239,11 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: num
     newNextSize = nextMinSize
   }
 
-  panelSizes.value[index] = newPrevSize
-  panelSizes.value[index + 1] = newNextSize
-}
-
-/**
- * 克隆面板VNode并注入所需属性
- */
-function clonePanelVNode(vnode: VNode, index: number): VNode {
-  // 获取原始属性
-  const originalProps = vnode.props || {}
-
-  // 获取原始的 initialSize 和 minSize，确保使用正确的方法获取
-  const originalInitialSize = getVNodeProp(vnode, 'initialSize', null)
-  const originalMinSize = getVNodeProp(vnode, 'minSize', 0)
-
-  // 创建克隆属性，确保保留所有原始属性
-  const cloneProps = {
-    ...originalProps,
-    size: panelSizes.value[index],
-    key: `panel-${index}`,
-    // 显式传递这些属性，确保它们被保留
-    initialSize: originalInitialSize,
-    minSize: originalMinSize,
-  }
-
-  return cloneVNode(vnode, cloneProps)
+  // 在 Vue 2.7 中，确保数组的响应式更新
+  const newSizes = [...panelSizes.value]
+  newSizes[index] = newPrevSize
+  newSizes[index + 1] = newNextSize
+  panelSizes.value = newSizes
 }
 
 onMounted(async () => {
@@ -240,12 +256,9 @@ onMounted(async () => {
   <div
     ref="containerRef"
     :data-orientation="direction"
-    class="pxd-resizable flex w-full h-full"
+    class="pxd-resizable flex"
   >
-    <template v-for="(vnode, index) in panelVNodes" :key="vnode.key">
-      <component :is="clonePanelVNode(vnode, index)" />
-      <PResizableHandle v-if="index < panelVNodes.length - 1" @drag="onDrag(index, $event)" />
-    </template>
+    <slot />
   </div>
 </template>
 

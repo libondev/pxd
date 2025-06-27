@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'vue'
-import { camelize } from 'vue'
+import { camelize } from './format'
 import { isClient } from './is'
 
 export function getElementRectFromContainer(

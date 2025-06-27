@@ -1,12 +1,35 @@
 <script lang="ts" setup>
+import { inject, onBeforeUnmount, onMounted } from 'vue'
+import { getRandomKey } from '../../utils/random'
+
+interface ResizableContext {
+  registerPanel: (config: { id: string, initialSize?: number | null, minSize?: number }) => void
+  unregisterPanel: (id: string) => void
+  registerHandle: (config: { id: string, onDrag: (delta: { deltaX: number, deltaY: number }) => void }) => void
+  unregisterHandle: (id: string) => void
+  getPanelSize: (id: string) => number
+  onHandleDrag: (handleId: string, delta: { deltaX: number, deltaY: number }) => void
+  direction: { value: 'row' | 'col' }
+}
+
 defineOptions({
   name: 'PResizableHandle',
 })
 
-const emits = defineEmits(['drag'])
+const context = inject<ResizableContext>('resizable-context')
+if (!context) {
+  throw new Error('PResizableHandle must be used within PResizable')
+}
+
+// 生成唯一 ID
+const handleId = getRandomKey()
 
 let isDragging = false
 let startPosition = { x: 0, y: 0 }
+
+function onDrag(delta: { deltaX: number, deltaY: number }) {
+  context?.onHandleDrag(handleId, delta)
+}
 
 function handlePointerDown(e: PointerEvent) {
   isDragging = true
@@ -23,7 +46,7 @@ function handlePointerMove(e: PointerEvent) {
   const deltaX = e.clientX - startPosition.x
   const deltaY = e.clientY - startPosition.y
 
-  emits('drag', { deltaX, deltaY })
+  onDrag({ deltaX, deltaY })
 
   // 更新起始位置
   startPosition = { x: e.clientX, y: e.clientY }
@@ -34,11 +57,24 @@ function handlePointerUp(e: PointerEvent) {
   isDragging = false
   ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
 }
+
+// 注册 handle
+onMounted(() => {
+  context?.registerHandle({
+    id: handleId,
+    onDrag,
+  })
+})
+
+// 注销 handle
+onBeforeUnmount(() => {
+  context?.unregisterHandle(handleId)
+})
 </script>
 
 <template>
   <div
-    class="pxd-resizable-handle relative bg-border select-none touch-none hover:z-1 hover:bg-primary active:after:bg-primary/50 motion-safe:transition-colors after:motion-safe:transition-colors"
+    class="pxd-resizable-handle relative bg-border flex-shrink-0 select-none touch-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/40 motion-safe:transition-colors after:motion-safe:transition-colors"
     @pointerdown.prevent="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import type { ResizableContext } from '../../types/components/resizable'
+import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue'
+import { getRandomKey } from '../../utils/random'
 
 interface Props {
-  size?: number
   initialSize?: number | null
   minSize?: number
 }
@@ -12,18 +13,58 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 0,
   initialSize: null,
   minSize: 0,
 })
 
-const computedStyle = computed(() => {
-  const size = props.size
+const context = inject<ResizableContext>('resizable-context')
 
+if (!context) {
+  throw new Error('PResizablePanel must be used within PResizable')
+}
+
+const panelId = getRandomKey()
+
+// 注册面板
+onMounted(() => {
+  context?.registerPanel({
+    id: panelId,
+    initialSize: props.initialSize,
+    minSize: props.minSize,
+  })
+})
+
+// 注销面板
+onBeforeUnmount(() => {
+  context?.unregisterPanel(panelId)
+})
+
+// 监听 props 变化并更新注册信息
+watch(() => [props.initialSize, props.minSize], () => {
+  context?.registerPanel({
+    id: panelId,
+    initialSize: props.initialSize,
+    minSize: props.minSize,
+  })
+}, { deep: true })
+
+const computedStyle = computed(() => {
+  if (!context) {
+    return {}
+  }
+
+  // 直接通过索引获取尺寸，确保响应式更新
+  const panelIndex = context.panelConfigs.value.findIndex(p => p.id === panelId)
+  const size = panelIndex >= 0 ? context.panelSizes.value[panelIndex] || 0 : 0
+
+  // 确保在 Vue 2.7 中正确响应数据变化
   return {
-    flexBasis: size ? `${size}px` : '0',
-    flexGrow: size ? 0 : 1,
-    flexShrink: size ? 0 : 1,
+    flexBasis: size > 0 ? `${size}px` : 'auto',
+    flexGrow: size > 0 ? 0 : 1,
+    flexShrink: size > 0 ? 0 : 1,
+    // 在 Vue 2.7 中添加显式的 width/height 以确保更新生效
+    ...(size > 0 && context.direction.value === 'row' ? { width: `${size}px` } : {}),
+    ...(size > 0 && context.direction.value === 'col' ? { height: `${size}px` } : {}),
   }
 })
 </script>
