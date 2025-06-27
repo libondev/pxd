@@ -11,6 +11,7 @@ import { isClient } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
+  zIndex?: number
   offset?: number
   content?: string
   visible?: boolean
@@ -50,6 +51,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    zIndex: 10,
     offset: 10,
     trigger: () => ['hover'],
     position: 'bottom',
@@ -59,7 +61,7 @@ const props = withDefaults(
     showArrow: true,
     arrowColor: 'var(--color-gray-1000)',
     destroyDelay: 2000,
-    scrollHidden: true,
+    scrollHidden: false,
     translateOffset: 0,
     showTransition: true,
     hideTransition: true,
@@ -74,6 +76,8 @@ const emits = defineEmits<{
 let triggerRect: DOMRect | null = null
 let viewportRect: DOMRect | null = null
 let scrollContainer: ReturnType<typeof getScrollContainer>
+let cachedContainerRect: DOMRect | null = null
+let lastScrollInfo: ReturnType<typeof getScrollPositions> | null = null
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
@@ -91,13 +95,26 @@ const {
 const triggerRef = shallowRef<HTMLElement>()
 const containerRef = shallowRef<HTMLElement>()
 const localPosition = shallowRef(props.position)
+const originalPosition = shallowRef(props.position)
 const containerStyle = shallowRef({
   left: '-100%',
   top: '-100%',
 } as PopoverContainerStyle)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
-const generalPosition = computed(() => localPosition.value.split('-')[0] as PopoverBasePosition)
+
+let cachedGeneralPosition: PopoverBasePosition | null = null
+let cachedPositionForGeneral: string | null = null
+
+const generalPosition = computed(() => {
+  if (cachedPositionForGeneral === localPosition.value && cachedGeneralPosition) {
+    return cachedGeneralPosition
+  }
+  cachedPositionForGeneral = localPosition.value
+  cachedGeneralPosition = localPosition.value.split('-')[0] as PopoverBasePosition
+  return cachedGeneralPosition
+})
+
 const transitionName = computed(() => props.transitionName ?? `pxd-transition--popover-${generalPosition.value}`)
 
 const onContainerScroll = throttleByRaf(() => {
@@ -105,7 +122,13 @@ const onContainerScroll = throttleByRaf(() => {
     return
   }
 
-  handlePopoverHide(true)
+  if (props.scrollHidden) {
+    handlePopoverHide(true)
+    return
+  }
+
+  // 动态调整位置
+  handleDynamicPositionAdjustment()
 })
 
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
@@ -138,6 +161,80 @@ function getTriggerRect() {
   viewportRect = document.documentElement.getBoundingClientRect()
 }
 
+function handleDynamicPositionAdjustment() {
+  if (!containerRef.value || !triggerRect || !viewportRect) {
+    return
+  }
+
+  const containerRect = containerRef.value.getBoundingClientRect()
+  const scrollInfo = getScrollPositions(scrollContainer)
+
+  if (cachedContainerRect && lastScrollInfo) {
+    const rectChanged = Math.abs(containerRect.top - cachedContainerRect.top) > 1
+      || Math.abs(containerRect.left - cachedContainerRect.left) > 1
+    const scrollChanged = Math.abs(scrollInfo.scrollTop - lastScrollInfo.scrollTop) > 5
+      || Math.abs(scrollInfo.scrollLeft - lastScrollInfo.scrollLeft) > 5
+
+    if (!rectChanged && !scrollChanged) {
+      return
+    }
+  }
+
+  cachedContainerRect = containerRect
+  lastScrollInfo = scrollInfo
+
+  getTriggerRect()
+
+  // 检查当前位置是否被遮挡
+  const currentOverlapping = isContainerOverlapping(viewportRect, containerRect, scrollInfo)
+  let needsUpdate = false
+
+  if (currentOverlapping.isOverlapping) {
+    // 如果当前位置被遮挡，尝试调整位置
+    if (localPosition.value === originalPosition.value) {
+      // 当前是原始位置，需要切换到其他位置
+      reverseRenderPosition(currentOverlapping)
+      needsUpdate = true
+    }
+  } else {
+    // 当前位置没有被遮挡
+    if (localPosition.value !== originalPosition.value) {
+      // 如果当前不是原始位置，检查原始位置是否可用
+      handleOriginalPositionCheck()
+      return // 避免重复更新
+    }
+  }
+
+  if (needsUpdate) {
+    updateContentPosition()
+  }
+}
+
+// 分离原始位置检查逻辑
+function handleOriginalPositionCheck() {
+  const tempPosition = localPosition.value
+  localPosition.value = originalPosition.value
+  updateContentPosition()
+
+  // 在下一帧检查原始位置是否仍然可用
+  nextTick(() => {
+    if (!containerRef.value || !viewportRect) {
+      return
+    }
+
+    const newContainerRect = containerRef.value.getBoundingClientRect()
+    const newOverlapping = isContainerOverlapping(viewportRect, newContainerRect, getScrollPositions(scrollContainer))
+
+    // 原始位置仍然被遮挡，恢复到之前的位置
+    if (newOverlapping.isOverlapping) {
+      localPosition.value = tempPosition
+      updateContentPosition()
+    }
+
+    cachedContainerRect = newContainerRect
+  })
+}
+
 async function handlePopoverShow(immediate: boolean = false) {
   await new Promise((resolve) => {
     getTriggerRect()
@@ -146,6 +243,7 @@ async function handlePopoverShow(immediate: boolean = false) {
 
     showPopoverTimer = setTimeout(() => {
       localPosition.value = props.position
+      originalPosition.value = props.position
       updateContentPosition()
       openPopover()
       resolve(true)
@@ -183,6 +281,9 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
+  // 清理缓存
+  cachedContainerRect = null
+  lastScrollInfo = null
   off(scrollContainer, 'scroll', onContainerScroll)
 }
 
@@ -474,14 +575,16 @@ onMounted(() => {
     return
   }
 
-  if (props.scrollHidden) {
-    scrollContainer = getScrollContainer(triggerRef.value!, true)
-  }
+  scrollContainer = getScrollContainer(triggerRef.value!, true)
 })
 
 onBeforeUnmount(() => {
   triggerRect = null
   viewportRect = null
+  cachedContainerRect = null
+  lastScrollInfo = null
+  cachedGeneralPosition = null
+  cachedPositionForGeneral = null
 
   clearTimeout(showPopoverTimer)
   clearTimeout(hidePopoverTimer)
@@ -498,31 +601,20 @@ defineExpose({
 
 <template>
   <div class="pxd-popover relative inline-flex w-max">
-    <div
-      ref="triggerRef"
-      class="pxd-popover__trigger"
-      :class="triggerClass"
-    >
+    <div ref="triggerRef" class="pxd-popover__trigger" :class="triggerClass">
       <slot />
     </div>
 
     <PTeleport>
       <Transition
-        mode="out-in"
-        :name="transitionName"
-        :class="{ showTransition, hideTransition }"
-        :style="{ '--translate-offset': translateOffset }"
+        mode="out-in" :name="transitionName" :class="{ showTransition, hideTransition }"
+        :style="{ '--translate-offset': translateOffset, zIndex }"
       >
         <div
-          v-if="isRender"
-          v-show="isVisible"
-          ref="containerRef"
-          :style="containerStyle"
-          :data-position="localPosition"
-          class="pxd-popover__container isolate absolute z-10 w-max"
+          v-if="isRender" v-show="isVisible" ref="containerRef" :style="containerStyle"
+          :data-position="localPosition" class="pxd-popover__container isolate absolute w-max"
           :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
-          @pointerenter="onContentPointerEnter"
-          @pointerleave="onContentPointerLeave"
+          @pointerenter="onContentPointerEnter" @pointerleave="onContentPointerLeave"
         >
           <div class="pxd-popover__content" :class="popoverClass" :style="popoverStyle">
             <slot name="content">
@@ -541,12 +633,15 @@ defineExpose({
   &[data-position^='top'] {
     padding-bottom: var(--offset);
   }
+
   &[data-position^='bottom'] {
     padding-top: var(--offset);
   }
+
   &[data-position^='left'] {
     padding-right: var(--offset);
   }
+
   &[data-position^='right'] {
     padding-left: var(--offset);
   }
@@ -626,6 +721,7 @@ defineExpose({
 }
 
 @media (prefers-reduced-motion: no-preference) {
+
   .showTransition.pxd-transition--popover-top-enter-active,
   .hideTransition.pxd-transition--popover-top-leave-active,
   .showTransition.pxd-transition--popover-bottom-enter-active,
@@ -636,7 +732,7 @@ defineExpose({
   .hideTransition.pxd-transition--popover-right-leave-active {
     transition:
       opacity var(--default-transition-duration) var(--default-transition-timing-function),
-      margin  var(--default-transition-duration) var(--default-transition-timing-function);
+      margin var(--default-transition-duration) var(--default-transition-timing-function);
   }
 
   .showTransition.pxd-transition--popover-top-enter-from,
@@ -646,7 +742,7 @@ defineExpose({
   .showTransition.pxd-transition--popover-left-enter-from,
   .hideTransition.pxd-transition--popover-left-leave-to,
   .showTransition.pxd-transition--popover-right-enter-from,
-  .hideTransition.pxd-transition--popover-right-leave-to  {
+  .hideTransition.pxd-transition--popover-right-leave-to {
     opacity: 0;
   }
 

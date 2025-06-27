@@ -39,6 +39,7 @@ function onOptionClick(option: MenuListOption) {
     ref="popoverRef"
     trigger="click"
     class="pxd-menu"
+    scroll-hidden
     :open-delay="0"
     :hide-delay="200"
     :show-arrow="false"
