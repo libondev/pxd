@@ -4,6 +4,7 @@ packages:
 
 catalog:
   '@antfu/eslint-config': ^4.12.0
+  '@clack/prompts': ^0.11.0
   '@gdsicon/vue': ^1.0.1
   '@tailwindcss/cli': ^4.1.4
   '@tsconfig/node22': ^22.0.1
@@ -16,6 +17,7 @@ catalog:
   husky: ^9.1.7
   lint-staged: ^16.0.0
   mkdist: ^2.3.0
+  mri: ^1.2.0
   npm-run-all2: ^7.0.2
   tailwind-merge: ^3.2.0
   tinyglobby: ^0.2.13
