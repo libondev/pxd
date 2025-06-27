@@ -59,7 +59,7 @@ const computedStyle = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const basic = ['pxd-book--container w-fit relative transform-3d cursor-default duration-300 motion-safe:transition-transform']
+  const basic = ['pxd-book--container w-fit relative transform-3d duration-300 motion-safe:transition-transform']
 
   basic.push(
     ...Object.keys(formattedWidth.value).map(bp => presetWidthClasses[bp as keyof typeof presetWidthClasses]),
