@@ -56,3 +56,5 @@
   ```html
   <Button v-bind="getButtonProps()" />
   ```
+
+- Vue2 中如果事件是以小驼峰的形式('optionClick') emit , 在父组件中以分割线的形式('@option-click')来监听则事件会无法触发, 但如果是以分割线的形式 emit, 那么父级组件就可以正常监听
