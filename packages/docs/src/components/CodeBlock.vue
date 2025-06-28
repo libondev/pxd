@@ -1,4 +1,22 @@
 <script lang="ts" setup>
+import { CheckIcon, CopyIcon } from '@gdsicon/vue'
+
+const isSuccessful = shallowRef(false)
+
+let copyTimeoutId: ReturnType<typeof setTimeout>
+
+async function onCopyClick(ev: MouseEvent) {
+  const code = (ev.target as HTMLElement).parentNode?.textContent
+
+  if (code) {
+    clearTimeout(copyTimeoutId)
+    await navigator.clipboard.writeText(code)
+    isSuccessful.value = true
+    copyTimeoutId = setTimeout(() => {
+      isSuccessful.value = false
+    }, 2000)
+  }
+}
 </script>
 
 <template>
@@ -20,8 +38,12 @@
         > code</span>
       </summary>
 
-      <div class="border-t rounded-bl-lg rounded-br-lg overflow-auto">
+      <div class="relative border-t rounded-bl-lg rounded-br-lg overflow-auto">
         <slot name="code" />
+
+        <div class="absolute top-2 right-2 p-2 rounded cursor-pointer hover:bg-gray-100 active:bg-gray-200" @click="onCopyClick">
+          <component :is="isSuccessful ? CheckIcon : CopyIcon" class="pointer-events-none" />
+        </div>
       </div>
     </details>
   </div>
