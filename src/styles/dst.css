@@ -308,11 +308,13 @@
 
 .pxd-input--border:not(.is-disabled, .is-readonly):hover,
 .pxd-input--border:not(.is-disabled, .is-readonly):focus-within {
-  --border-color: var(--color-gray-alpha-600);
+  /* --border-color: var(--color-gray-alpha-600); */
+  --border-color: var(--color-primary);
 }
 
 .pxd-input--border:not(.is-disabled, .is-readonly):focus-within {
-  box-shadow: 0 0 0 3px var(--color-gray-alpha-300);
+  /* box-shadow: 0 0 0 3px var(--color-gray-alpha-300); */
+  box-shadow: 0 0 0 3px hsla(var(--primary), .2);
 }
 
 .pxd-input--border.is-error:not(:focus)::placeholder {
