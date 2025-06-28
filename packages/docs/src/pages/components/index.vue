@@ -2,21 +2,20 @@
 import components from '@/consts/components.json'
 import { useMediaQuery } from 'pxd/composables'
 import { isClient } from 'pxd/utils/is'
+import { useRoute } from 'vue-router'
 
-const searchKeyword = ref('')
+const route = useRoute()
+const searchKeyword = ref(route.query.q as string)
+
+const isMobile = useMediaQuery('(max-width: 768px)')
 
 const containerRef = shallowRef<HTMLDivElement>()
-
-const filteredComponents = computed(() => {
-  return components.filter(({ name }) => name.includes(searchKeyword.value.toLowerCase()))
-})
+const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
 
 const bookSize = reactive({
   xs: 160,
   sm: 156,
 })
-
-const isMobile = useMediaQuery('(max-width: 768px)')
 
 if (isClient) {
   watch([() => isMobile.value, () => containerRef.value], ([value, container]) => {
@@ -26,6 +25,20 @@ if (isClient) {
 
     bookSize.xs = value ? container.clientWidth / 2 - 18 : 160
   }, { immediate: true })
+}
+
+function getFilteredComponents(value: string) {
+  if (!value) {
+    return components
+  }
+
+  return components.filter(({ name }) => name.includes(value.toLowerCase()))
+}
+
+function handleSearch(value: string) {
+  window.history.replaceState(null, '', `/components?q=${value}`)
+
+  filteredComponents.value = getFilteredComponents(value)
 }
 </script>
 
@@ -39,7 +52,12 @@ if (isClient) {
   </PText>
 
   <div class="py-4 sticky top-[49px] z-10 bg-background border-b">
-    <PInput v-model="searchKeyword" placeholder="Search components" allow-clear />
+    <PInput
+      v-model="searchKeyword"
+      placeholder="Search components"
+      allow-clear
+      @update:model-value="handleSearch"
+    />
   </div>
 
   <div ref="containerRef" class="flex flex-wrap space-x-4 space-y-4 mt-4 translate-x-2.5 md:translate-x-1 md:-mr-4">
