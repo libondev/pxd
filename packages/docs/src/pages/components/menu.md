@@ -8,15 +8,25 @@ Dropdown menu opened via button. Supports typeahead and keyboard navigation.
 const options = [
   { label: 'One' },
   { label: 'Two' },
-  { label: 'Three' },
+  { label: 'Three', disabled: true },
   { label: 'Delete', type: 'error' },
 ]
 </script>
 
 <template>
-  <PMenu :options="options">
-    <PButton variant="primary">Actions</PButton>
-  </PMenu>
+  <PStack>
+    <PMenu :options="options">
+      <PButton variant="primary">Actions</PButton>
+    </PMenu>
+
+    <PMenu :options="options">
+      <PButton variant="primary">Actions</PButton>
+
+      <template #items>
+        <PMenuItem v-for="item of options" v-bind="item" />
+      </template>
+    </PMenu>
+  </PStack>
 </template>
 ```
 

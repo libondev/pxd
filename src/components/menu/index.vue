@@ -23,13 +23,13 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  optionClick: [option: MenuListOption]
+  optionClick: [option: MenuListOption, index: number]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
-function onOptionClick(option: MenuListOption) {
-  emits('optionClick', option)
+function onOptionClick(option: MenuListOption, index: number) {
+  emits('optionClick', option, index)
   popoverRef.value!.hide()
 }
 </script>
@@ -54,7 +54,9 @@ function onOptionClick(option: MenuListOption) {
         :width="menuWidth"
         :options="options"
         @option-click="onOptionClick"
-      />
+      >
+        <slot name="items" />
+      </PMenuList>
     </template>
   </PPopover>
 </template>
