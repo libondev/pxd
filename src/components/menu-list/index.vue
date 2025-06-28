@@ -23,8 +23,11 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  optionClick: [option: MenuListOption, index: number]
+  selected: [option: MenuListOption, index: number]
 }>()
+
+const MENU_ITEM_CLASS = 'pxd-menu-item'
+const MENU_ITEM_SELECTOR = `.${MENU_ITEM_CLASS}`
 
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
@@ -98,7 +101,7 @@ function onOptionsClick(option: MenuListOption, index: number) {
     return
   }
 
-  emits('optionClick', option, index)
+  emits('selected', option, index)
 
   if (typeof option.onClick === 'function') {
     option.onClick(option)
@@ -136,7 +139,7 @@ function onContainerKeydown(ev: KeyboardEvent) {
 
 function onPointerOver(ev: PointerEvent) {
   const target = ev.target as HTMLElement
-  const menuItem = target.closest('.pxd-menu-item') as HTMLElement
+  const menuItem = target.closest(MENU_ITEM_SELECTOR) as HTMLElement
 
   if (!menuItem || menuItem.dataset.index === undefined) {
     return
@@ -149,10 +152,10 @@ function onContainerClick(ev: MouseEvent) {
   const target = ev.target as HTMLElement
   let menuItem: HTMLElement | null = null
 
-  if (target.classList.contains('pxd-menu-item')) {
+  if (target.classList.contains(MENU_ITEM_CLASS)) {
     menuItem = target
   } else {
-    menuItem = target.closest('.pxd-menu-item') as HTMLElement
+    menuItem = target.closest(MENU_ITEM_SELECTOR) as HTMLElement
   }
 
   if (!menuItem || menuItem.dataset.index === undefined) {

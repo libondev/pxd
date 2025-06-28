@@ -23,13 +23,13 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  optionClick: [option: MenuListOption, index: number]
+  selected: [option: MenuListOption, index: number]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
 function onOptionClick(option: MenuListOption, index: number) {
-  emits('optionClick', option, index)
+  emits('selected', option, index)
   popoverRef.value!.hide()
 }
 </script>
@@ -53,7 +53,7 @@ function onOptionClick(option: MenuListOption, index: number) {
       <PMenuList
         :width="menuWidth"
         :options="options"
-        @option-click="onOptionClick"
+        @selected="onOptionClick"
       >
         <slot name="items" />
       </PMenuList>
