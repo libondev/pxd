@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
-import { customRef } from 'vue'
+import { computed, customRef } from 'vue'
 import { isClient } from '../../utils/is'
 import PButton from '../button/index.vue'
 
@@ -21,8 +22,9 @@ const emits = defineEmits<{
 }>()
 
 const colorTransitions = {
+  auto: 'dark',
   dark: 'light',
-  light: 'dark',
+  light: 'auto',
 } as const
 
 type ColorScheme = keyof typeof colorTransitions
@@ -36,7 +38,36 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
         remove: () => {},
         add: () => {},
       }
-  let curMode: ColorScheme = rootClassList.contains('dark') ? 'dark' : 'light'
+
+  function getSystemPreference(): 'light' | 'dark' {
+    return isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  function applyTheme(mode: ColorScheme) {
+    if (mode === 'auto') {
+      const systemTheme = getSystemPreference()
+      rootClassList.remove('dark', 'light')
+      rootClassList.add(systemTheme)
+    } else {
+      rootClassList.remove('dark', 'light', 'auto')
+      rootClassList.add(mode)
+    }
+  }
+
+  const savedMode = isClient ? localStorage.getItem(storageKey) as ColorScheme || 'auto' : 'light'
+  let curMode: ColorScheme = savedMode
+
+  if (isClient) {
+    applyTheme(curMode)
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    mediaQuery.addEventListener('change', () => {
+      if (curMode === 'auto') {
+        applyTheme('auto')
+        trigger()
+      }
+    })
+  }
 
   return {
     get() {
@@ -48,10 +79,10 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
         return
       }
 
-      rootClassList.remove(curMode)
-      rootClassList.add(newMode)
-
-      localStorage.setItem(storageKey, newMode)
+      applyTheme(newMode)
+      if (isClient) {
+        localStorage.setItem(storageKey, newMode)
+      }
       curMode = newMode
 
       trigger()
@@ -59,8 +90,20 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
   }
 })
 
+const RenderIcon = computed(() => {
+  if (colorMode.value === 'light') {
+    return SunIcon
+  }
+
+  if (colorMode.value === 'dark') {
+    return MoonIcon
+  }
+
+  return DeviceAlternateIcon
+})
+
 function toggleColorMode() {
-  colorMode.value = colorTransitions[colorMode.value]
+  colorMode.value = colorTransitions[colorMode.value] || colorTransitions.auto
   emits('toggle', colorMode.value)
 }
 </script>
@@ -74,24 +117,7 @@ function toggleColorMode() {
     @click="toggleColorMode"
   >
     <Transition name="rotate-scale" mode="out-in">
-      <component :is="colorMode === 'light' ? SunIcon : MoonIcon" class="size-em" />
+      <component :is="RenderIcon" class="size-em" />
     </Transition>
   </PButton>
 </template>
-
-<style>
-@media (prefers-reduced-motion: no-preference) {
-  .rotate-scale-enter-active,
-  .rotate-scale-leave-active {
-    transition: transform 0.15s ease-out;
-  }
-
-  .rotate-scale-enter-from {
-    transform: rotate(-45deg) scale(0.68);
-  }
-
-  .rotate-scale-leave-to {
-    transform: rotate(45deg) scale(0.68);
-  }
-}
-</style>
