@@ -1,52 +1,61 @@
 <script lang="ts" setup>
-import type { Ref } from 'vue'
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentPublicInstance, Ref } from 'vue'
+import type { ComponentAs, ComponentLabel } from '../../types/components'
 import { computed, inject, onMounted, onUnmounted, shallowRef } from 'vue'
 
 interface Props {
+  as?: ComponentAs
   type?: 'error'
   label?: ComponentLabel
   disabled?: boolean
-  isFromOption?: boolean
 }
 
 defineOptions({
   name: 'PMenuItem',
 })
 
-const props = withDefaults(defineProps<Props>(), {
-  disabled: false,
-  isFromOption: false,
-})
+const props = withDefaults(
+  defineProps<Props>(),
+  {
+    as: 'li',
+    disabled: false,
+  },
+)
 
-const activeIndex = inject<Ref<number>>('menuListActiveIndex')!
-const registerOptionItem = inject<(el: HTMLElement) => void>('registerOptionItem')
-const registerSlotItem = inject<(el: HTMLElement) => void>('registerSlotItem')
-const unregisterItem = inject<(el: HTMLElement) => void>('unregisterMenuItem')
+type RegisterItem = (el: HTMLElement) => void
+
+interface MenuList {
+  activeIndex: Ref<number>
+  registerMenuItem: RegisterItem
+  unregisterMenuItem: RegisterItem
+}
+
+const {
+  activeIndex,
+  registerMenuItem,
+  unregisterMenuItem,
+} = inject<MenuList>('menuList')!
 
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)
 
 const itemClass = computed(() => {
   return {
-    'bg-gray-alpha-100': activeIndex.value === currentIndex.value,
     [props.type === 'error' ? 'text-red-900' : '']: true,
     [props.disabled ? 'pointer-events-none text-gray-700' : 'cursor-pointer']: true,
   }
 })
 
-function setRef(el: any) {
-  if (!el || !(el instanceof HTMLElement)) {
+function setRef(el: HTMLElement | ComponentPublicInstance) {
+  if (!el) {
     return
   }
 
-  itemRef.value = el
+  itemRef.value = el instanceof HTMLElement ? el : el.$el!
 
-  // 根据来源注册到不同的列表
-  if (props.isFromOption && registerOptionItem) {
-    registerOptionItem(el)
-  } else if (!props.isFromOption && registerSlotItem) {
-    registerSlotItem(el)
+  // 注册菜单项
+  if (registerMenuItem) {
+    registerMenuItem(itemRef.value!)
   }
 
   // 更新当前索引
@@ -81,14 +90,15 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (itemRef.value && unregisterItem) {
-    unregisterItem(itemRef.value)
+  if (itemRef.value && unregisterMenuItem) {
+    unregisterMenuItem(itemRef.value)
   }
 })
 </script>
 
 <template>
-  <li
+  <component
+    :is="as"
     :ref="setRef"
     :data-index="currentIndex"
     :data-selected="activeIndex === currentIndex"
@@ -98,7 +108,7 @@ onUnmounted(() => {
     <slot>
       {{ label }}
     </slot>
-  </li>
+  </component>
 </template>
 
 <style>
