@@ -79,6 +79,7 @@ if (isClient) {
 
     & + p {
       margin-top: 0;
+      color: var(--color-foreground-secondary);
     }
   }
 
