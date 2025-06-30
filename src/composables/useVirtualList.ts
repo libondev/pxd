@@ -126,7 +126,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
 
     renderList.value.forEach((_, i) => {
       const index = start.value + i
-      const itemData = props.listData![index]
+      const itemData = props.listData[index]
       const itemEl = itemRefs.get(itemData[props.dataKey!])
       const position = positions.value[index]
 
