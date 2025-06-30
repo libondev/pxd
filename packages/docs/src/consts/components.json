@@ -166,5 +166,9 @@
   {
     "camelized": "Tooltip",
     "name": "tooltip"
+  },
+  {
+    "camelized": "VirtualList",
+    "name": "virtual-list"
   }
 ]

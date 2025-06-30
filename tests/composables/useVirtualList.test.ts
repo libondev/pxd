@@ -1,148 +1,10 @@
 import type { VirtualListProps } from '../../src/composables/useVirtualList'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
-import { useVirtualListDynamic, useVirtualListFixed } from '../../src/composables/useVirtualList'
+import { useVirtualList } from '../../src/composables/useVirtualList'
 import { useSetupWrapper } from '../helpers/setup'
 
-describe('useVirtualListFixed', () => {
-  let mockContainer: HTMLElement
-
-  beforeEach(() => {
-    mockContainer = {
-      clientHeight: 400,
-      scrollTop: 0,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    } as any
-  })
-
-  it('should initialize with default values', () => {
-    const props: VirtualListProps = {
-      listData: [],
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    expect(wrapper.renderList.value).toEqual([])
-    expect(wrapper.listHeight.value).toBe(0)
-    expect(wrapper.listStyle.value.transform).toBe('translate3d(0, 0px, 0)')
-    expect(wrapper.placeholderStyle.value.height).toBe('0px')
-
-    wrapper.unmount()
-  })
-
-  it('should calculate correct list height for given data', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    expect(wrapper.listHeight.value).toBe(5000) // 100 * 50
-
-    wrapper.unmount()
-  })
-
-  it('should handle missing props with defaults', () => {
-    const props: VirtualListProps = {}
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    expect(wrapper.renderList.value).toEqual([])
-    expect(wrapper.listHeight.value).toBe(0)
-
-    wrapper.unmount()
-  })
-
-  it('should calculate render count based on container height', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    wrapper.containerRef.value = mockContainer
-    wrapper.updateContainerHeight()
-
-    expect(wrapper.renderList.value.length).toBe(10) // Math.ceil(400/50) + 2
-
-    wrapper.unmount()
-  })
-
-  it('should calculate correct start index from scroll position', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    expect(wrapper.getStartIndex(0)).toBe(0)
-    expect(wrapper.getStartIndex(25)).toBe(0) // < itemSize
-    expect(wrapper.getStartIndex(100)).toBe(2) // 100 / 50
-    expect(wrapper.getStartIndex(275)).toBe(5) // 275 / 50
-
-    wrapper.unmount()
-  })
-
-  it('should render correct slice of data', () => {
-    const testData = Array.from({ length: 100 }, (_, i) => `Item ${i}`)
-    const props: VirtualListProps = {
-      listData: testData,
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    wrapper.containerRef.value = mockContainer
-    wrapper.updateContainerHeight()
-
-    expect(wrapper.renderList.value).toEqual(testData.slice(0, 10))
-
-    wrapper.unmount()
-  })
-
-  it('should update list style transform correctly', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    wrapper.containerRef.value = mockContainer
-    wrapper.updateContainerHeight()
-
-    // Manually trigger scroll handler to update internal start value
-    const startIndex = wrapper.getStartIndex(300)
-
-    expect(startIndex).toBe(6) // 300 / 50 = 6
-
-    expect(wrapper.listStyle.value.transform).toBe(`translate3d(0, ${0 * (props.itemSize || 50)}px, 0)`) // start is initially 0
-
-    wrapper.unmount()
-  })
-
-  it('should handle edge cases in getStartIndex', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 5 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
-
-    expect(wrapper.getStartIndex(-10)).toBe(0)
-    expect(wrapper.getStartIndex(0)).toBe(0)
-    expect(wrapper.getStartIndex(1000)).toBe(20) // 1000 / 50
-
-    wrapper.unmount()
-  })
-})
-
-describe('useVirtualListDynamic', () => {
+describe('useVirtualList', () => {
   let mockContainer: HTMLElement
   let mockElement: HTMLElement
 
@@ -165,19 +27,23 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     expect(wrapper.renderList.value).toEqual([])
-    expect(wrapper.listStyle.value.transform).toBe('translate3d(0, 0px, 0)')
-    expect(wrapper.placeholderStyle.value.height).toBe('0px')
+    // expect(wrapper.listStyle.value).toBe('transform: translate3d(0, 0px, 0)')
+    expect(wrapper.listStyle.value).toBe('transform: translate3d(0, 0px, 0)')
+    expect(wrapper.listHeight.value).toBe(0)
 
     wrapper.unmount()
   })
 
   it('should handle missing props with defaults', () => {
-    const props: VirtualListProps = {}
+    const props: VirtualListProps = {
+      listData: [],
+      itemSize: 50,
+    }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     expect(wrapper.renderList.value).toEqual([])
 
@@ -190,13 +56,11 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     wrapper.setItemRef(mockElement, 0)
     wrapper.setItemRef(mockElement, 1)
     wrapper.setItemRef(null, 1) // should delete
-
-    wrapper.clearItemRefs()
 
     wrapper.unmount()
   })
@@ -208,11 +72,12 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     await nextTick()
 
-    expect(wrapper.listStyle.value.transform).toBe('translate3d(0, 0px, 0)')
+    // expect(wrapper.listStyle.value.transform).toBe('translate3d(0, 0px, 0)')
+    expect(wrapper.listStyle.value).toBe('transform: translate3d(0, 0px, 0)')
 
     wrapper.unmount()
   })
@@ -224,7 +89,7 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     expect(wrapper.getStartIndex(0)).toBe(0)
     expect(wrapper.getStartIndex(75)).toBe(1) // should find index 1 (bottom: 100)
@@ -240,7 +105,7 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     expect(wrapper.getStartIndex(100)).toBe(0)
 
@@ -254,7 +119,7 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     wrapper.containerRef.value = mockContainer
     wrapper.updateContainerHeight()
@@ -267,7 +132,6 @@ describe('useVirtualListDynamic', () => {
     } as any
 
     wrapper.setItemRef(tallElement, 0)
-    wrapper.updatePositions()
 
     wrapper.unmount()
   })
@@ -279,7 +143,7 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     await nextTick()
 
@@ -291,7 +155,7 @@ describe('useVirtualListDynamic', () => {
   it('should handle reactive data changes', async () => {
     const reactiveData = ref(Array.from({ length: 3 }, (_, i) => `Item ${i}`))
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic({
+    const wrapper = useSetupWrapper(() => useVirtualList({
       listData: reactiveData.value,
       itemSize: 50,
     }))
@@ -315,7 +179,7 @@ describe('useVirtualListDynamic', () => {
       itemSize: 50,
     }
 
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
+    const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     wrapper.containerRef.value = mockContainer
     wrapper.updateContainerHeight()
@@ -333,18 +197,141 @@ describe('useVirtualListDynamic', () => {
 
     wrapper.unmount()
   })
-
-  it('should handle edge cases in updatePositions', async () => {
-    const props: VirtualListProps = {
-      listData: [],
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualListDynamic(props))
-
-    // Should not throw when called with empty data
-    expect(() => wrapper.updatePositions()).not.toThrow()
-
-    wrapper.unmount()
-  })
 })
+
+// describe('useVirtualListFixed', () => {
+//   let mockContainer: HTMLElement
+
+//   beforeEach(() => {
+//     mockContainer = {
+//       clientHeight: 400,
+//       scrollTop: 0,
+//       addEventListener: vi.fn(),
+//       removeEventListener: vi.fn(),
+//     } as any
+//   })
+
+//   it('should initialize with default values', () => {
+//     const props: VirtualListProps = {
+//       listData: [],
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     expect(wrapper.renderList.value).toEqual([])
+//     expect(wrapper.listHeight.value).toBe(0)
+//     expect(wrapper.listStyle.value.transform).toBe('translate3d(0, 0px, 0)')
+
+//     wrapper.unmount()
+//   })
+
+//   it('should calculate correct list height for given data', () => {
+//     const props: VirtualListProps = {
+//       listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     expect(wrapper.listHeight.value).toBe(5000) // 100 * 50
+
+//     wrapper.unmount()
+//   })
+
+//   it('should handle missing props with defaults', () => {
+//     const props: VirtualListProps = {}
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     expect(wrapper.renderList.value).toEqual([])
+//     expect(wrapper.listHeight.value).toBe(0)
+
+//     wrapper.unmount()
+//   })
+
+//   it('should calculate render count based on container height', () => {
+//     const props: VirtualListProps = {
+//       listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     wrapper.containerRef.value = mockContainer
+//     wrapper.updateContainerHeight()
+
+//     expect(wrapper.renderList.value.length).toBe(10) // Math.ceil(400/50) + 2
+
+//     wrapper.unmount()
+//   })
+
+//   it('should calculate correct start index from scroll position', () => {
+//     const props: VirtualListProps = {
+//       listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     expect(wrapper.getStartIndex(0)).toBe(0)
+//     expect(wrapper.getStartIndex(25)).toBe(0) // < itemSize
+//     expect(wrapper.getStartIndex(100)).toBe(2) // 100 / 50
+//     expect(wrapper.getStartIndex(275)).toBe(5) // 275 / 50
+
+//     wrapper.unmount()
+//   })
+
+//   it('should render correct slice of data', () => {
+//     const testData = Array.from({ length: 100 }, (_, i) => `Item ${i}`)
+//     const props: VirtualListProps = {
+//       listData: testData,
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     wrapper.containerRef.value = mockContainer
+//     wrapper.updateContainerHeight()
+
+//     expect(wrapper.renderList.value).toEqual(testData.slice(0, 10))
+
+//     wrapper.unmount()
+//   })
+
+//   it('should update list style transform correctly', () => {
+//     const props: VirtualListProps = {
+//       listData: Array.from({ length: 100 }, (_, i) => `Item ${i}`),
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     wrapper.containerRef.value = mockContainer
+//     wrapper.updateContainerHeight()
+
+//     // Manually trigger scroll handler to update internal start value
+//     const startIndex = wrapper.getStartIndex(300)
+
+//     expect(startIndex).toBe(6) // 300 / 50 = 6
+
+//     expect(wrapper.listStyle.value.transform).toBe(`translate3d(0, ${0 * (props.itemSize || 50)}px, 0)`) // start is initially 0
+
+//     wrapper.unmount()
+//   })
+
+//   it('should handle edge cases in getStartIndex', () => {
+//     const props: VirtualListProps = {
+//       listData: Array.from({ length: 5 }, (_, i) => `Item ${i}`),
+//       itemSize: 50,
+//     }
+
+//     const wrapper = useSetupWrapper(() => useVirtualListFixed(props))
+
+//     expect(wrapper.getStartIndex(-10)).toBe(0)
+//     expect(wrapper.getStartIndex(0)).toBe(0)
+//     expect(wrapper.getStartIndex(1000)).toBe(20) // 1000 / 50
+
+//     wrapper.unmount()
+//   })
+// })
