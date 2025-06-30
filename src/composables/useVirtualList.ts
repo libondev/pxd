@@ -1,3 +1,4 @@
+import type { ComponentPublicInstance } from 'vue'
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 
 export interface VirtualListProps {
@@ -51,9 +52,9 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
   // }))
   const listStyle = computed(() => `transform: translate3d(0, ${offset.value}px, 0)`)
 
-  const setItemRef = (el: HTMLElement | null, key: number | string) => {
+  const setItemRef = (el: Element | ComponentPublicInstance | null, key: number | string) => {
     if (el) {
-      itemRefs.set(key, el)
+      itemRefs.set(key, el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el)
     } else {
       itemRefs.delete(key)
     }

@@ -31,7 +31,7 @@ const {
       <div
         v-for="item in renderList"
         :key="item[dataKey]"
-        :ref="(el) => setItemRef(el as HTMLElement, item[dataKey])"
+        :ref="(el) => setItemRef(el, item[dataKey])"
         class="pxd-virtual-list--item w-full"
       >
         <slot :data="item" />
