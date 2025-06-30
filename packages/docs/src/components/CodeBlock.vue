@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { CheckIcon, CopyIcon } from '@gdsicon/vue'
+import CheckIcon from '@gdsicon/vue/check'
+import CopyIcon from '@gdsicon/vue/copy'
 
 const isSuccessful = shallowRef(false)
 
