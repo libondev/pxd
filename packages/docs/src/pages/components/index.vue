@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import components from '@/consts/components.json'
 import { useMediaQuery } from 'pxd/composables'
 import { isClient } from 'pxd/utils/is'
 import { useRoute } from 'vue-router'
+import components from '@/consts/components.json'
 
 const route = useRoute()
 const searchKeyword = ref(route.query.q as string)

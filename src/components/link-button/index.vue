@@ -13,8 +13,8 @@ interface Props {
   externalIcon?: boolean
 }
 
-type LinkAttrs =
-  | {
+type LinkAttrs
+  = | {
     as: 'router-link'
     to: string
   }
