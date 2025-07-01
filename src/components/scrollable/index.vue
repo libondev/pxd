@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useResizeObserver'
 import { off, on, once } from '../../utils/events'
-import { THROTTLE_GAP } from '../../utils/fn'
+import { throttleByRaf } from '../../utils/fn'
 import { isServer } from '../../utils/is'
 
 interface Props {
@@ -40,7 +40,6 @@ const PADDING = 4
 const DOUBLE_PADDING = PADDING * 2
 const DIFF_THRESHOLD = 1
 
-let scrollThrottleTimer: number | null = null
 const scrollContainer = shallowRef<HTMLElement>(null!)
 
 const faderDirections = ref({
@@ -174,26 +173,18 @@ function updateScrollbarInfo() {
   updateScrollbarMetrics()
 }
 
-function onContainerScroll(ev: Event) {
+const onContainerScroll = throttleByRaf((ev: Event) => {
   emits('scroll', ev)
 
-  if (scrollThrottleTimer) {
-    return
+  if (props.fader) {
+    updateDirectionFader()
   }
 
-  scrollThrottleTimer = window.setTimeout(() => {
-    if (props.fader) {
-      updateDirectionFader()
-    }
-
-    // 只有在非拖拽状态下才更新滚动条位置
-    if (props.scrollbar && !dragState.value.isDragging) {
-      updateScrollbarMetrics()
-    }
-
-    scrollThrottleTimer = null
-  }, THROTTLE_GAP)
-}
+  // 只有在非拖拽状态下才更新滚动条位置
+  if (props.scrollbar && !dragState.value.isDragging) {
+    updateScrollbarMetrics()
+  }
+})
 
 function startDragVertical(e: MouseEvent) {
   e.preventDefault()
