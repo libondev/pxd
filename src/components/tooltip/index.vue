@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentVariant, PopoverPosition } from '../../types/components'
+import type { ComponentPosition, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
 import { getFallbackVariant } from '../../composables/useFallbackProps'
 import { isTouchDevice } from '../../utils/is'
@@ -9,7 +9,7 @@ import PPopover from '../popover/index.vue'
 interface Props {
   content?: string
   disabled?: boolean
-  position?: PopoverPosition
+  position?: ComponentPosition
   desktopOnly?: boolean
   popoverClass?: string
   popoverStyle?: CSSProperties | string

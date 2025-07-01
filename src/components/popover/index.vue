@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { PopoverBasePosition, PopoverPosition, PopoverTrigger } from '../../types/components'
+import type { ComponentBasePosition, ComponentPosition, PopoverTrigger } from '../../types/components'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
@@ -18,7 +18,7 @@ interface Props {
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
   maxWidth?: number
-  position?: PopoverPosition
+  position?: ComponentPosition
   showDelay?: number
   hideDelay?: number
   enterable?: boolean
@@ -103,7 +103,7 @@ const containerStyle = shallowRef({
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
-let cachedGeneralPosition: PopoverBasePosition | null = null
+let cachedGeneralPosition: ComponentBasePosition | null = null
 let cachedPositionForGeneral: string | null = null
 
 const generalPosition = computed(() => {
@@ -111,7 +111,7 @@ const generalPosition = computed(() => {
     return cachedGeneralPosition
   }
   cachedPositionForGeneral = localPosition.value
-  cachedGeneralPosition = localPosition.value.split('-')[0] as PopoverBasePosition
+  cachedGeneralPosition = localPosition.value.split('-')[0] as ComponentBasePosition
   return cachedGeneralPosition
 })
 
@@ -472,8 +472,8 @@ function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverla
 
   const currentPosition = localPosition.value
   const [position, modifier] = currentPosition.includes('-')
-    ? currentPosition.split('-') as [PopoverBasePosition, string]
-    : [currentPosition as PopoverBasePosition, '']
+    ? currentPosition.split('-') as [ComponentBasePosition, string]
+    : [currentPosition as ComponentBasePosition, '']
 
   const oppositePositionMap = {
     top: 'bottom',
@@ -507,7 +507,7 @@ function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverla
     newModifier
       ? `${newPosition}-${newModifier}`
       : newPosition
-  ) as PopoverPosition
+  ) as ComponentPosition
 }
 
 watch(

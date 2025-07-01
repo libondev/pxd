@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { MenuListOption, PopoverPosition } from '../../types/components'
+import type { ComponentPosition, MenuListOption } from '../../types/components'
 import { shallowRef } from 'vue'
 import PMenuList from '../menu-list/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
   options?: MenuListOption[]
-  position?: PopoverPosition
+  position?: ComponentPosition
   menuWidth?: string | number
 }
 

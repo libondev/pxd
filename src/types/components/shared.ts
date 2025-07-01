@@ -13,6 +13,12 @@ export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterL
 export type ComponentLabel = string | number | readonly string[] | null
 export type ComponentValue = string | number | boolean
 
+export type ComponentBasePosition = 'top' | 'bottom' | 'left' | 'right'
+export type ComponentPosition
+  = | ComponentBasePosition
+    | `${ComponentBasePosition}-start`
+    | `${ComponentBasePosition}-end`
+
 export type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
 
 export interface ComponentOption {
