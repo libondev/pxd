@@ -42,7 +42,7 @@ const computedStyle = computed(() => {
 
 const computedClass = computed(() => {
   const { loading, shape, animated } = props
-  const basic = ['pxd-skeleton relative block flex-shrink-0 overflow-hidden']
+  const basic = ['pxd-skeleton relative block shrink-0 overflow-hidden']
 
   if (loading) {
     basic.push('loading invisible')

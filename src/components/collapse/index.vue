@@ -106,7 +106,7 @@ onMounted(() => {
           {{ title }}
         </slot>
 
-        <ChevronDownIcon class="flex-shrink-0 size-4 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
+        <ChevronDownIcon class="shrink-0 size-4 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
       </button>
     </h3>
 

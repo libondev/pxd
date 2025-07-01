@@ -61,7 +61,7 @@ const computedRequired = computed(() => props.required || checkboxGroupProps.req
 
 const computedInnerClasses = computed(() => {
   const basic = [
-    'pxd-checkbox--inner size-4 flex-shrink-0 inline-flex items-center justify-center peer-focus-ring',
+    'pxd-checkbox--inner size-4 shrink-0 inline-flex items-center justify-center peer-focus-ring',
     'rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors',
   ]
 
