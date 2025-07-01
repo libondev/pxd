@@ -36,7 +36,7 @@ function getFilteredComponents(value: string) {
 }
 
 function handleSearch(value: string) {
-  window.history.replaceState(null, '', `/components?q=${value}`)
+  window.history.replaceState(history.state, '', `${route.path}?q=${value}`)
 
   filteredComponents.value = getFilteredComponents(value)
 }
