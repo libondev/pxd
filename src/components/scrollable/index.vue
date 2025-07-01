@@ -173,9 +173,7 @@ function updateScrollbarInfo() {
   updateScrollbarMetrics()
 }
 
-const onContainerScroll = throttleByRaf((ev: Event) => {
-  emits('scroll', ev)
-
+const throttledUpdate = throttleByRaf(() => {
   if (props.fader) {
     updateDirectionFader()
   }
@@ -185,6 +183,11 @@ const onContainerScroll = throttleByRaf((ev: Event) => {
     updateScrollbarMetrics()
   }
 })
+
+function onContainerScroll(ev: Event) {
+  emits('scroll', ev)
+  throttledUpdate()
+}
 
 function startDragVertical(e: MouseEvent) {
   e.preventDefault()
@@ -287,6 +290,7 @@ function onEndDrag() {
 
   // 移除禁止选择类
   document.body.classList.remove('select-none')
+  throttledUpdate.cancel()
 
   // 更新滚动条指标
   requestAnimationFrame(updateScrollbarMetrics) // 使用 requestAnimationFrame 避免与滚动事件计算冲突
@@ -325,6 +329,7 @@ onBeforeUnmount(() => {
   off(document, 'mousemove', onDragMove)
   off(document, 'mouseup', onEndDrag)
   document.body.classList.remove('select-none')
+  throttledUpdate.cancel()
 })
 
 defineExpose({
