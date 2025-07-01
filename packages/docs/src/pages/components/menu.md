@@ -19,11 +19,14 @@ const options = [
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
+    <!-- Custom rendering menu-items -->
     <PMenu :options="options">
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
-        <PMenuItem v-for="item of options" v-bind="item" />
+        <PMenuItem v-for="(item, index) of options" v-bind="item">
+          {{ index }} - {{ item.label }}
+        </PMenuItem>
       </template>
     </PMenu>
   </PStack>
