@@ -29,6 +29,24 @@ One of the most basic components, it will help you complete the interaction.
 </template>
 ```
 
+## Icon
+
+```vue demo
+<script setup>
+import HeartIcon from '@gdsicon/vue/heart-fill'
+</script>
+
+<template>
+  <PStack>
+    <PButton icon><HeartIcon /></PButton>
+    <PButton icon variant="ghost"><HeartIcon /></PButton>
+    <PButton icon variant="error"><HeartIcon /></PButton>
+    <PButton icon variant="primary"><HeartIcon /></PButton>
+    <PButton icon variant="success"><HeartIcon /></PButton>
+  </PStack>
+</template>
+```
+
 ## Shape
 
 ```vue demo

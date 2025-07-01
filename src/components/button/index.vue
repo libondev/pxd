@@ -12,6 +12,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<ButtonProps>(),
   {
+    icon: false,
     as: 'button',
     align: 'center',
     variant: 'default',
@@ -62,25 +63,31 @@ const computedDisabled = computed(() => props.disabled || props.loading)
 const computedClass = computed(() => {
   const classNames = ['pxd-button cursor-pointer select-none items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
 
+  const { variant, block, shape, icon } = props
+
   classNames.push(computedFontSize.value)
 
-  if (props.variant !== 'simple') {
+  if (icon) {
+    classNames.push('aspect-square !p-0')
+  }
+
+  if (variant !== 'simple') {
     classNames.push('border outline-none self-focus-ring')
 
-    classNames.push(getFallbackVariant(props.variant, VARIANTS))
+    classNames.push(getFallbackVariant(variant, VARIANTS))
 
     classNames.push(computedSize.value)
   }
 
-  classNames.push(props.block ? 'flex w-full' : 'inline-flex')
+  classNames.push(block ? 'flex w-full' : 'inline-flex')
 
   if (computedDisabled.value) {
     classNames.push(DISABLED_CLASS_NAMES)
   }
 
-  if (props.shape) {
+  if (shape) {
     classNames.push(
-      props.shape === 'square'
+      shape === 'square'
         ? 'rounded-none'
         : 'rounded-full',
     )

@@ -2,10 +2,11 @@ import type { ComponentAs, ComponentSizeWithXs, ComponentVariantWithDefault } fr
 
 export interface ButtonProps {
   as?: ComponentAs
-  variant?: ComponentVariantWithDefault | 'ghost' | 'simple'
+  variant?: ComponentVariantWithDefault | 'ghost' | 'simple' | 'icon'
   size?: ComponentSizeWithXs
   shape?: 'square' | 'rounded'
   align?: 'left' | 'center' | 'right'
+  icon?: boolean
   block?: boolean
   loading?: boolean
   disabled?: boolean
