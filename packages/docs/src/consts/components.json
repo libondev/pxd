@@ -24,6 +24,10 @@
     "name": "checkbox"
   },
   {
+    "camelized": "Chip",
+    "name": "chip"
+  },
+  {
     "camelized": "Choicebox",
     "name": "choicebox"
   },
