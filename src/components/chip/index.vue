@@ -29,7 +29,7 @@ const variantPresets = {
 }
 
 const computedClass = computed(() => {
-  const basic = ['pxd-chip--label absolute border rounded-full border-background text-xs top-0 right-0']
+  const basic = ['pxd-chip--label absolute border rounded-full border-background text-xs top-0 right-0 motion-safe:transition-all']
 
   const { variant, inset, label } = props
 
