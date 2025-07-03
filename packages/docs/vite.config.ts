@@ -85,7 +85,10 @@ export default defineConfig(({ mode }) => {
 
           const highlightedCode = codeHighlighter.codeToHtml(code, {
             lang: 'vue',
-            theme: 'github-dark',
+            themes: {
+              light: 'github-dark',
+              dark: 'github-dark',
+            },
           }).replace(/\{\{(.*?)\}\}/g, '&lbrace;&lbrace;$1&rbrace;&rbrace;')
 
           return `<CodeBlock>
