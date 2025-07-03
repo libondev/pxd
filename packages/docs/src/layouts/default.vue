@@ -122,10 +122,6 @@ if (isClient) {
     font-size: 1.125rem;
   }
 
-  p {
-    color: var(--color-foreground-secondary);
-  }
-
   blockquote {
     padding-left: 1em;
     padding-block: 1px;
@@ -154,10 +150,6 @@ if (isClient) {
     margin-block: .75em;
   }
 
-  a {
-    color: var(--color-foreground);
-  }
-
   a:not(.pxd-link-button) {
     font-weight: 500;
     text-decoration: underline;
@@ -184,9 +176,6 @@ if (isClient) {
   pre code {
     max-width: 100%;
     font-size: 0.875rem;
-    color: var(--color-foreground)
-    /* white-space: pre-wrap;
-    word-break: break-word; */
   }
 
   pre.shiki > code {
