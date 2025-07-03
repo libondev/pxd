@@ -236,7 +236,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
     </div>
 
     <div
-      class="flex items-center gap-2"
+      class="flex items-center gap-1.5"
       @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
     >
