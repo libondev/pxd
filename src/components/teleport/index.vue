@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="isVue3" :to="to" :disabled="disabled">
+  <Teleport v-if="isVue3" :disabled="disabled" :to="to" defer>
     <slot />
   </Teleport>
 
