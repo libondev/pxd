@@ -39,12 +39,12 @@ async function onCopyClick(ev: MouseEvent) {
         > code</span>
       </summary>
 
-      <div class="relative group border-t rounded-bl-lg rounded-br-lg overflow-auto">
+      <div class="relative group border-t rounded-bl-lg rounded-br-lg overflow-auto bg-(--color-bg-code-block)">
         <div class="overflow-auto max-h-100">
           <slot name="code" />
         </div>
 
-        <div class="absolute hidden group-hover:block top-2 right-2 p-2 rounded cursor-pointer hover:bg-gray-100 active:bg-gray-200" @click="onCopyClick">
+        <div class="absolute hidden group-hover:block top-4 right-4 p-2 rounded-md cursor-pointer bg-background hover:bg-background-hover active:bg-background-active" @click="onCopyClick">
           <component :is="isSuccessful ? CheckIcon : CopyIcon" class="pointer-events-none" />
         </div>
       </div>
