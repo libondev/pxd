@@ -54,7 +54,7 @@ if (isClient) {
 
       <h2>Source</h2>
 
-      <PLinkButton type="text" :href="componentSourcePath" external-icon target="_blank" text="View Source" />
+      <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="View Source" />
     </main>
 
     <SiteFooter />
