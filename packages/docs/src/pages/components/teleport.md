@@ -7,19 +7,31 @@ Provide 2.7 with behavior similar to the `<Teleport>` component built in 3.
 <script setup>
 import { ref } from 'vue'
 
+const renderDisabled = ref(false)
 const renderTeleport = ref(false)
 
+// Because the elements to be mounted by teleport
+// must exist before teleport rendering, the teleport
+// component is delayed to render here.
+setTimeout(() => {
+  renderTeleport.value = true
+}, 1000)
+
 function toggleTeleport() {
-  renderTeleport.value = !renderTeleport.value
+  renderDisabled.value = !renderDisabled.value
 }
 </script>
 
 <template>
-  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 mb-2 border border-dashed"></div>
-
   <PButton @click="toggleTeleport">Toggle</PButton>
 
-  <PTeleport v-if="renderTeleport" to="#teleport-container">
+  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 my-2 border border-dashed"></div>
+
+  <PTeleport
+    v-if="renderTeleport"
+    :disabled="renderDisabled"
+    to="#teleport-container"
+  >
     <PButton>
       Teleport
     </PButton>
