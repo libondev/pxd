@@ -12,6 +12,7 @@ const {
 
 const route = useRoute()
 
+const showViewSource = computed(() => route.path.startsWith('/components') && !route.path.endsWith('/components'))
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
 if (isClient) {
@@ -52,9 +53,11 @@ if (isClient) {
     <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
       <slot />
 
-      <h2>Source</h2>
+      <template v-if="showViewSource">
+        <h2>Source</h2>
 
-      <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="View Source" />
+        <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="View Source" />
+      </template>
     </main>
 
     <SiteFooter />
