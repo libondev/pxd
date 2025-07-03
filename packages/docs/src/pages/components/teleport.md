@@ -9,16 +9,15 @@ import { ref } from 'vue'
 
 const renderTeleport = ref(false)
 
-// Because the elements to be mounted by teleport
-// must exist before teleport rendering, the teleport
-// component is delayed to render here.
-setTimeout(() => {
-  renderTeleport.value = true
-}, 1000)
+function toggleTeleport() {
+  renderTeleport.value = !renderTeleport.value
+}
 </script>
 
 <template>
-  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 border border-dashed"></div>
+  <div id="teleport-container" class="w-40 h-40 bg-background-secondary rounded-md p-2 mb-2 border border-dashed"></div>
+
+  <PButton @click="toggleTeleport">Toggle</PButton>
 
   <PTeleport v-if="renderTeleport" to="#teleport-container">
     <PButton>
