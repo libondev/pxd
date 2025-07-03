@@ -71,7 +71,8 @@ if (isClient) {
   line-height: 1.5 !important;
 }
 
-.prose {
+.prose,
+.markdown-body {
   --background: var(--color-background);
   line-height: 1.5;
 
