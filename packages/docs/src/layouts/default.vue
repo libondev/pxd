@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T extends { label: string, path: string }">
 import { isClient } from 'pxd/utils/is'
+import { githubLink } from '@/consts/link'
 
 interface Props {
   menus?: T[]
@@ -10,6 +11,8 @@ const {
 } = defineProps<Props>()
 
 const route = useRoute()
+
+const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
 if (isClient) {
   watch(
@@ -48,6 +51,10 @@ if (isClient) {
   <div class="sm:pl-64 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
     <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
       <slot />
+
+      <h2>Source</h2>
+
+      <PLinkButton type="text" :href="componentSourcePath" external-icon target="_blank" text="View Source" />
     </main>
 
     <SiteFooter />
@@ -64,7 +71,7 @@ if (isClient) {
   line-height: 1.5 !important;
 }
 
-.markdown-body {
+.prose {
   --background: var(--color-background);
   line-height: 1.5;
 
