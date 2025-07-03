@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, version, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, version, watch } from 'vue'
 import { isServer } from '../../utils/is'
 
 interface Props {
-  to?: string
+  to?: string | HTMLElement
   disabled?: boolean
 }
 
@@ -16,68 +16,88 @@ const props = withDefaults(
   { to: 'body' },
 )
 
-let isMounted = false
+interface Location {
+  parent: Node
+  nextSibling: Node | null
+}
+
 const isVue3 = version.startsWith('3')
 
-const renderSlots = useSlots()
 const containerRef = shallowRef<HTMLElement>()
 
-const targetContainer = computed(() => isVue3 ? null : document.querySelector(props.to))
+let isTeleported = false
+let homeLocation: Location | null
 
-const unwatchChildrenUpdate = watch(
-  () => [renderSlots.default?.(), props.disabled],
+const targetContainer = computed(() => {
+  const { disabled, to } = props
+
+  if (isServer || isVue3 || disabled || !to) {
+    return null
+  }
+
+  if (to instanceof HTMLElement) {
+    return to
+  }
+
+  return document.querySelector(to)
+})
+
+watch(
+  () => [targetContainer.value, props.disabled],
   () => {
-    if (props.disabled) {
+    if (isVue3 || isServer) {
       return
     }
 
-    if (containerRef.value && targetContainer.value) {
-      if (isMounted) {
-        containerRef.value.remove()
+    const el = containerRef.value
+    if (!el || !homeLocation) {
+      return
+    }
+
+    if (props.disabled) {
+      if (isTeleported) {
+        const { parent, nextSibling } = homeLocation
+        parent.insertBefore(el, nextSibling)
+        isTeleported = false
       }
 
-      targetContainer.value.append(containerRef.value)
+      return
+    }
+
+    if (targetContainer.value) {
+      targetContainer.value.append(el)
+      isTeleported = true
     }
   },
   { flush: 'post' },
 )
 
-function setup() {
-  nextTick(() => {
-    if (isVue3 || !containerRef.value || props.disabled) {
-      unwatchChildrenUpdate()
-      return
+onMounted(() => {
+  if (isVue3 || isServer) {
+    return
+  }
+
+  const el = containerRef.value
+  if (el && el.parentNode) {
+    homeLocation = {
+      parent: el.parentNode,
+      nextSibling: el.nextSibling,
     }
 
-    if (!targetContainer.value || props.disabled) {
-      return
+    if (!props.disabled && targetContainer.value) {
+      targetContainer.value.append(el)
+      isTeleported = true
     }
+  }
+})
 
-    targetContainer.value.append(containerRef.value)
-  })
-}
-
-function teardown() {
-  if (isVue3) {
+onBeforeUnmount(() => {
+  if (isVue3 || isServer) {
     return
   }
 
   containerRef.value?.remove()
-}
-
-onMounted(() => {
-  if (isServer) {
-    return
-  }
-
-  isMounted = true
-
-  setup()
-})
-
-onBeforeUnmount(() => {
-  teardown()
-  unwatchChildrenUpdate()
+  homeLocation = null
 })
 </script>
 
