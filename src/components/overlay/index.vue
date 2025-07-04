@@ -18,8 +18,6 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    zIndex: 10,
-    background: 'hsla(var(--background-100-value), .8)',
     modelValue: false,
     appendToBody: true,
   },
@@ -76,6 +74,7 @@ onBeforeUnmount(() => {
         v-if="modelValue"
         ref="overlayRef"
         tabindex="-1"
+        class="pxd-overlay fixed inset-0"
         :class="overlayClass"
         :style="computedStyle"
         @click="onOverlayClick"
@@ -85,3 +84,10 @@ onBeforeUnmount(() => {
     <slot />
   </PTeleport>
 </template>
+
+<style>
+.pxd-overlay {
+  z-index: var(--z, 10);
+  background: var(--bg, hsla(var(--background-100-value), .8));
+}
+</style>
