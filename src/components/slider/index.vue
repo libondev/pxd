@@ -92,17 +92,18 @@ const startPercentage = computed(() => getPercentage(valueArray.value[0]))
 const endPercentage = computed(() => getPercentage(valueArray.value[1]))
 
 const trackStyle = computed(() => {
+  const backgroundColor = props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary')
   if (props.range) {
     return {
       left: `${startPercentage.value}%`,
       width: `${endPercentage.value - startPercentage.value}%`,
-      backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary'),
+      backgroundColor,
     }
   }
 
   return {
     width: `${endPercentage.value}%`,
-    backgroundColor: props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary'),
+    backgroundColor,
   }
 })
 
