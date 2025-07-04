@@ -180,7 +180,7 @@ if (isClient) {
 
   pre.shiki {
     width: max-content;
-    padding: 1.25em 1.5em 1.25em 3.25em;
+    padding: 1.25em 1.5em 1.25em 3.5em;
     line-height: 1.25;
   }
 
@@ -201,7 +201,7 @@ if (isClient) {
     content: counter(section);
     position: absolute;
     top: 0;
-    left: -2.75em;
+    left: -3em;
     width: 25px;
     user-select: none;
     text-align: right;

@@ -5,8 +5,6 @@ Virtual list, supporting variable height items.
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
-
 const listData = Array.from({ length: 100 }, (_, i) => ({
   id: i,
   name: `Item ${i}`,
@@ -29,8 +27,6 @@ Set an approximate height for each item.
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
-
 const listData = Array.from({ length: 100 }, (_, i) => ({
   key: i,
   name: `Item ${i}`,
