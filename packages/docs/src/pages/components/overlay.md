@@ -11,7 +11,6 @@ const isVisible = ref(false)
 
 function onClickToClose() {
   isVisible.value = false
-  console.log('🥑overlay.md:13/(false):\n', false)
 }
 </script>
 

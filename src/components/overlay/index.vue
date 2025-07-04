@@ -70,31 +70,16 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PTeleport v-if="modelValue" :disabled="!appendToBody">
-    <div
-      ref="overlayRef"
-      class="pxd-overlay fixed inset-0 z-(--z) bg-(--bg)"
-      :class="overlayClass"
-      :style="computedStyle"
-      @click="onOverlayClick"
-    />
+  <PTeleport :disabled="!appendToBody">
+    <Transition name="pxd-transition--fade" mode="out-in">
+      <div
+        v-if="modelValue"
+        ref="overlayRef"
+        class="pxd-overlay fixed inset-0 z-(--z) bg-(--bg)"
+        :class="overlayClass"
+        :style="computedStyle"
+        @click="onOverlayClick"
+      />
+    </Transition>
   </PTeleport>
 </template>
-
-<style>
-@keyframes overlay-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-overlay {
-    animation: overlay-fade-in var(--default-transition-duration) var(--default-transition-timing-function);
-  }
-}
-</style>
