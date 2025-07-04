@@ -75,11 +75,13 @@ onBeforeUnmount(() => {
       <div
         v-if="modelValue"
         ref="overlayRef"
-        class="pxd-overlay fixed inset-0 z-(--z) bg-(--bg)"
+        tabindex="-1"
         :class="overlayClass"
         :style="computedStyle"
         @click="onOverlayClick"
       />
     </Transition>
+
+    <slot />
   </PTeleport>
 </template>
