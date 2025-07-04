@@ -33,10 +33,10 @@ async function onCopyClick(ev: MouseEvent) {
         <IconChevronRight class="text-xs mr-2 group-open/code-block:rotate-90 motion-safe:transition-transform" />
 
         <span
-          data-open="Show"
-          data-close="Hide"
+          data-open="Show code"
+          data-close="Hide code"
           class="before:content-[attr(data-open)] group-open/code-block:before:content-[attr(data-close)] text-sm"
-        > code</span>
+        />
       </summary>
 
       <div class="relative group border-t rounded-bl-lg rounded-br-lg overflow-auto bg-(--color-bg-code-block)">

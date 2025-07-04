@@ -89,7 +89,9 @@ export default defineConfig(({ mode }) => {
               light: 'github-dark',
               dark: 'github-dark',
             },
-          }).replace(/\{\{(.*?)\}\}/g, '&lbrace;&lbrace;$1&rbrace;&rbrace;')
+          })
+            .replace(/\{\{(.*?)\}\}/g, '&lbrace;&lbrace;$1&rbrace;&rbrace;')
+            .replace('tabindex="0"', 'translate="no"')
 
           return `<CodeBlock>
             ${component}
