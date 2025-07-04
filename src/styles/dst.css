@@ -282,16 +282,20 @@
   border-color: var(--color-border);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-transition--fade-enter-active,
-  .pxd-transition--fade-leave-active {
-    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --default-transition-duration: 0 !important;
   }
+}
 
-  .pxd-transition--fade-enter-from,
-  .pxd-transition--fade-leave-to {
-    opacity: 0;
-  }
+.pxd-transition--fade-enter-active,
+.pxd-transition--fade-leave-active {
+  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+}
+
+.pxd-transition--fade-enter-from,
+.pxd-transition--fade-leave-to {
+  opacity: 0;
 }
 
 .text-clamp {

@@ -133,12 +133,6 @@ defineExpose({
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-avatar--loading::after {
-    animation: var(--animate-spin);
-  }
-}
-
 @keyframes placeholder {
   0% {
     background-position: 200% 0;
@@ -152,6 +146,10 @@ defineExpose({
 @media (prefers-reduced-motion: no-preference) {
   .pxd-avatar::before {
     animation: placeholder 8s ease-in-out infinite;
+  }
+
+  .pxd-avatar--loading::after {
+    animation: var(--animate-spin);
   }
 }
 </style>

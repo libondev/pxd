@@ -1,7 +1,7 @@
 <script setup>
+import { githubLink } from '@/consts/link'
 import { useHead } from '@unhead/vue'
 import { version } from 'pxd'
-import { githubLink } from '@/consts/link'
 
 useHead({
   title: 'PXD - A Vue UI Component Library',
@@ -101,18 +101,16 @@ useHead({
 </template>
 
 <style>
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes bounce-right {
-    0%,
-    100% {
-      transform: translateX(-20%) scale(1) translateZ(0);
-      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    }
+@keyframes bounce-right {
+  0%,
+  100% {
+    transform: translateX(-20%) scale(1) translateZ(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
 
-    50% {
-      transform: translateX(25%) scale(0.9) translateZ(0);
-      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
+  50% {
+    transform: translateX(25%) scale(0.9) translateZ(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }
 </style>

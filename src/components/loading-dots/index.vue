@@ -28,7 +28,7 @@ defineOptions({
 
 @media (prefers-reduced-motion: no-preference) {
   .pxd-loading-dots .pxd-loading--dot {
-    animation: fade-loading 1.4s infinite ease-in-out;
+    animation: fade-loading 1.4s infinite var(--default-transition-timing-function);
   }
 }
 </style>

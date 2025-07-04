@@ -720,50 +720,47 @@ defineExpose({
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
+.showTransition.pxd-transition--popover-top-enter-active,
+.hideTransition.pxd-transition--popover-top-leave-active,
+.showTransition.pxd-transition--popover-bottom-enter-active,
+.hideTransition.pxd-transition--popover-bottom-leave-active,
+.showTransition.pxd-transition--popover-left-enter-active,
+.hideTransition.pxd-transition--popover-left-leave-active,
+.showTransition.pxd-transition--popover-right-enter-active,
+.hideTransition.pxd-transition--popover-right-leave-active {
+  transition:
+    opacity var(--default-transition-duration) var(--default-transition-timing-function),
+    margin var(--default-transition-duration) var(--default-transition-timing-function);
+}
 
-  .showTransition.pxd-transition--popover-top-enter-active,
-  .hideTransition.pxd-transition--popover-top-leave-active,
-  .showTransition.pxd-transition--popover-bottom-enter-active,
-  .hideTransition.pxd-transition--popover-bottom-leave-active,
-  .showTransition.pxd-transition--popover-left-enter-active,
-  .hideTransition.pxd-transition--popover-left-leave-active,
-  .showTransition.pxd-transition--popover-right-enter-active,
-  .hideTransition.pxd-transition--popover-right-leave-active {
-    transition:
-      opacity var(--default-transition-duration) var(--default-transition-timing-function),
-      margin var(--default-transition-duration) var(--default-transition-timing-function);
-  }
+.showTransition.pxd-transition--popover-top-enter-from,
+.hideTransition.pxd-transition--popover-top-leave-to,
+.showTransition.pxd-transition--popover-bottom-enter-from,
+.hideTransition.pxd-transition--popover-bottom-leave-to,
+.showTransition.pxd-transition--popover-left-enter-from,
+.hideTransition.pxd-transition--popover-left-leave-to,
+.showTransition.pxd-transition--popover-right-enter-from,
+.hideTransition.pxd-transition--popover-right-leave-to {
+  opacity: 0;
+}
 
-  .showTransition.pxd-transition--popover-top-enter-from,
-  .hideTransition.pxd-transition--popover-top-leave-to,
-  .showTransition.pxd-transition--popover-bottom-enter-from,
-  .hideTransition.pxd-transition--popover-bottom-leave-to,
-  .showTransition.pxd-transition--popover-left-enter-from,
-  .hideTransition.pxd-transition--popover-left-leave-to,
-  .showTransition.pxd-transition--popover-right-enter-from,
-  .hideTransition.pxd-transition--popover-right-leave-to {
-    opacity: 0;
-  }
+.showTransition.pxd-transition--popover-top-enter-from,
+.hideTransition.pxd-transition--popover-top-leave-to {
+  margin-top: calc(1px * var(--translate-offset));
+}
 
-  .showTransition.pxd-transition--popover-top-enter-from,
-  .hideTransition.pxd-transition--popover-top-leave-to {
-    margin-top: calc(1px * var(--translate-offset));
-  }
+.showTransition.pxd-transition--popover-bottom-enter-from,
+.hideTransition.pxd-transition--popover-bottom-leave-to {
+  margin-top: calc(-1px * var(--translate-offset));
+}
 
-  .showTransition.pxd-transition--popover-bottom-enter-from,
-  .hideTransition.pxd-transition--popover-bottom-leave-to {
-    margin-top: calc(-1px * var(--translate-offset));
-  }
+.showTransition.pxd-transition--popover-left-enter-from,
+.hideTransition.pxd-transition--popover-left-leave-to {
+  margin-left: calc(1px * var(--translate-offset));
+}
 
-  .showTransition.pxd-transition--popover-left-enter-from,
-  .hideTransition.pxd-transition--popover-left-leave-to {
-    margin-left: calc(1px * var(--translate-offset));
-  }
-
-  .showTransition.pxd-transition--popover-right-enter-from,
-  .hideTransition.pxd-transition--popover-right-leave-to {
-    margin-left: calc(-1px * var(--translate-offset));
-  }
+.showTransition.pxd-transition--popover-right-enter-from,
+.hideTransition.pxd-transition--popover-right-leave-to {
+  margin-left: calc(-1px * var(--translate-offset));
 }
 </style>

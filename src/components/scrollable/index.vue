@@ -461,13 +461,11 @@ defineExpose({
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-scrollable--fader-x,
-  .pxd-scrollable--fader-y {
-    &::before,
-    &::after {
-      transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
-    }
+.pxd-scrollable--fader-x,
+.pxd-scrollable--fader-y {
+  &::before,
+  &::after {
+    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
   }
 }
 

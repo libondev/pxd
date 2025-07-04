@@ -102,16 +102,14 @@ function onCopyClick() {
 </template>
 
 <style>
-@media (prefers-reduced-motion: no-preference) {
-  .fade-scale-enter-active,
-  .fade-scale-leave-active {
-    transition: all 0.15s ease-in-out;
-  }
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all var(--default-transition-duration) var(--default-transition-timing-function);
+}
 
-  .fade-scale-enter-from,
-  .fade-scale-leave-to {
-    opacity: 0;
-    transform: scale(.68);
-  }
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(.68);
 }
 </style>

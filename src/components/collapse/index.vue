@@ -136,10 +136,8 @@ onMounted(() => {
   will-change: height;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-transition--collapse-enter-active,
-  .pxd-transition--collapse-leave-active {
-    transition: height var(--default-transition-duration) var(--default-transition-timing-function);
-  }
+.pxd-transition--collapse-enter-active,
+.pxd-transition--collapse-leave-active {
+  transition: height var(--default-transition-duration) var(--default-transition-timing-function);
 }
 </style>
