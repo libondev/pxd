@@ -92,6 +92,10 @@
     "name": "note"
   },
   {
+    "camelized": "Overlay",
+    "name": "overlay"
+  },
+  {
     "camelized": "Pagination",
     "name": "pagination"
   },
