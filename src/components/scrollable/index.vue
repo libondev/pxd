@@ -406,8 +406,8 @@ defineExpose({
   &::after {
     content: '';
     position: absolute;
-    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--background-100)));
-    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--background-100)) 50%, transparent);
+    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--color-background)));
+    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--color-background)) 50%, transparent);
     opacity: 0;
   }
 
