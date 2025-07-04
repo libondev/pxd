@@ -2,7 +2,8 @@
 import type { ComponentAs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   as?: ComponentAs
@@ -53,12 +54,12 @@ const VARIANTS = {
   'turborepo': 'text-gray-100 dark:text-gray-1000',
 }
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() =>
   twMerge(
     'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
-    getFallbackVariant(props.variant, VARIANTS, 'gray'),
+    getFallbackValue(props.variant, VARIANTS, 'gray'),
     computedSize.value,
     props.variant,
   ),

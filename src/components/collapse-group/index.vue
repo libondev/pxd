@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/components'
 import { computed, provide, ref } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 
 interface Props {
   multiple?: boolean
@@ -37,7 +37,7 @@ const SIZES = {
 
 const expandedItems = ref<string[]>([])
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedStyle = computed(() => {
   const { padding, fontSize, fontWeight } = computedSize.value

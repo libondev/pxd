@@ -5,7 +5,7 @@ import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { twMerge } from 'tailwind-merge'
 import { computed, shallowRef } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 import PError from '../error/index.vue'
@@ -63,7 +63,7 @@ const SIZES = {
 
 const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const basic = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']

@@ -2,7 +2,7 @@
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 import PError from '../error/index.vue'
@@ -54,7 +54,7 @@ const SIZES = {
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const basic = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']

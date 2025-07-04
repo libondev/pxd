@@ -2,7 +2,7 @@
 import type { ComponentSizeWithXs } from '../../types/components'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { getColorByThreshold } from '../../utils/colors'
 
 interface Props {
@@ -51,7 +51,7 @@ const defaultColors: Props['colors'] = {
   60: 'var(--color-green-700)',
 }
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const progress = computed(() => {
   if (props.indeterminate) {

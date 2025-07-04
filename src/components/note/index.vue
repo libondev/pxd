@@ -6,7 +6,8 @@ import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
 import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
-import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   variant?: keyof typeof VARIANTS
@@ -76,7 +77,7 @@ const computedLabel = computed(() => {
 
   // hack vue2 boolean value
   if (label === true || label === '') {
-    return getFallbackVariant(props.variant, VARIANTS).icon
+    return getFallbackValue(props.variant, VARIANTS).icon
   }
 
   if (typeof label === 'string' && label) {
@@ -86,14 +87,14 @@ const computedLabel = computed(() => {
   return false
 })
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const basic = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
 
   basic.push(computedSize.value)
 
-  const { fill, classes } = getFallbackVariant(props.variant, VARIANTS)
+  const { fill, classes } = getFallbackValue(props.variant, VARIANTS)
 
   basic.push(props.fill ? fill : classes)
 

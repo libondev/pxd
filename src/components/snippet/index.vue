@@ -3,8 +3,9 @@ import type { ComponentSize, ComponentVariantWithDefault } from '../../types/com
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import { computed, ref } from 'vue'
-import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { getCssUnitValue, toArray } from '../../utils/format'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   text: string | string[]
@@ -47,12 +48,12 @@ const VARIANTS = {
   warning: 'text-amber-900 border-gray-alpha-300 bg-amber-200',
 }
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const basic = [
     'pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all',
-    getFallbackVariant(props.variant, VARIANTS),
+    getFallbackValue(props.variant, VARIANTS),
     computedSize.value,
   ]
 

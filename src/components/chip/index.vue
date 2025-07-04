@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { ComponentLabel, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
-import { getFallbackVariant } from '../../composables/useFallbackProps'
 import { getCssUnitValue } from '../../utils/format'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   size?: number | string
@@ -41,7 +41,7 @@ const computedClass = computed(() => {
     basic.push('translate-x-1/2 -translate-y-1/3')
   }
 
-  basic.push(getFallbackVariant(variant, variantPresets, 'primary'))
+  basic.push(getFallbackValue(variant, variantPresets, 'primary'))
 
   return basic
 })

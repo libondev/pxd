@@ -2,7 +2,8 @@
 import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
-import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { getFallbackValue } from '../../utils/value'
 import PSpinner from '../spinner/index.vue'
 
 defineOptions({
@@ -56,8 +57,8 @@ const ALIGNMENTS = {
 
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
-const computedSize = useComputedSize(props.size, SIZES)
-const computedFontSize = useComputedSize(props.size, FONT_SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
+const computedFontSize = useConfigProviderSize(props.size, FONT_SIZES)
 const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClass = computed(() => {
@@ -74,7 +75,7 @@ const computedClass = computed(() => {
   if (variant !== 'simple') {
     classNames.push('border outline-none self-focus-ring')
 
-    classNames.push(getFallbackVariant(variant, VARIANTS))
+    classNames.push(getFallbackValue(variant, VARIANTS))
 
     classNames.push(computedSize.value)
   }

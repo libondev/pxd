@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
 
@@ -50,7 +50,7 @@ const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement

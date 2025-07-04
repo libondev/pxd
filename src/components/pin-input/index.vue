@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from 'vue'
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { computed, ref, shallowRef } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import PError from '../error/index.vue'
 
@@ -52,7 +52,7 @@ const SIZES = {
 const inputsRef = shallowRef<HTMLInputElement[]>([])
 
 const modelValue = useModelValue(props, emits)
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const modelValueLocal = ref<string[]>(
   (() => {

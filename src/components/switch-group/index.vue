@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption, ComponentSize } from '../../types/components'
 import { provide } from 'vue'
-import { useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideRandomValue } from '../../composables/useRandomValueContext'
 import PSwitch from '../switch/index.vue'
@@ -42,7 +42,7 @@ const SIZES = {
 }
 
 const modelValue = useModelValue(props, emits)
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 provideRandomValue('switchGroupName')
 provide('switchGroupProps', props)

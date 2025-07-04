@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { getFallbackVariant, useComputedSize } from '../../composables/useFallbackProps'
+import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { off, on, once } from '../../utils/events'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   min?: number
@@ -71,7 +72,7 @@ const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = useComputedSize(props.size, SIZES)
+const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {
@@ -92,7 +93,7 @@ const startPercentage = computed(() => getPercentage(valueArray.value[0]))
 const endPercentage = computed(() => getPercentage(valueArray.value[1]))
 
 const trackStyle = computed(() => {
-  const backgroundColor = props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackVariant(props.variant, VARIANTS, 'primary')
+  const backgroundColor = props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackValue(props.variant, VARIANTS, 'primary')
   if (props.range) {
     return {
       left: `${startPercentage.value}%`,
