@@ -84,6 +84,10 @@
     "name": "menu"
   },
   {
+    "camelized": "Modal",
+    "name": "modal"
+  },
+  {
     "camelized": "MoreButton",
     "name": "more-button"
   },
