@@ -14,6 +14,7 @@ export default antfu({
 
   rules: {
     'curly': ['error', 'all'],
+    'vue/custom-event-name-casing': ['error', 'kebab-case'],
     'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
   },
 })
