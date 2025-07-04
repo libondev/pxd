@@ -1,12 +1,21 @@
 # PXD
-一个兼容 Vue2&3 的 UI 框架
+基于 Geist Design System（略有调整）实现的 Vue2&3 通用组件库
+
+- [Geist Design System](https://vercel.com/geist/introduction)
+- [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
+
+[Online Preview](https://pxd-ui.netlify.app/)
 
 > [!WARNING]
 > 项目正在积极开发中，尚未做好投入生产的准备
 
-[Online Preview](https://pxd-ui.netlify.app/)
+## 特性
 
-## 贡献代码
+- 使用 Vue 3 Composition API
+- 100% 兼容 Vue2&3
+- 完整的 tree-shaking 支持
+
+## 贡献指南
 
 ### 启动开发环境
 
