@@ -340,7 +340,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-scrollable group/scrollable relative overflow-hidden [--sv:0] hover:[--sv:1]" :style="{
+    class="pxd-scrollable flex group/scrollable relative overflow-hidden [--sv:0] hover:[--sv:1]" :style="{
       '--size': `${size}px`,
       '--mask-color': maskColor,
       '--scrollbar-size': `${scrollbarSize}px`,
@@ -351,7 +351,7 @@ defineExpose({
     <div
       ref="scrollContainer"
       :class="contentClass"
-      class="pxd-scrollable--content max-h-full scrollbar-hidden overflow-scroll"
+      class="pxd-scrollable--content relative flex-1 max-h-full scrollbar-hidden overflow-scroll"
     >
       <slot />
     </div>
