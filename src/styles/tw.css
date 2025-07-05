@@ -123,7 +123,7 @@
 }
 
 :root.dark {
-  --background-100-value: 0, 0%, 7%;
+  --background-100-value: 0, 0%, 5%;
   --background-200-value: 0, 0%, 0%;
 
   --color-gray-alpha-100-value: hsla(0, 0%, 100%, .06);

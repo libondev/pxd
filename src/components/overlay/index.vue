@@ -5,7 +5,6 @@ import PTeleport from '../teleport/index.vue'
 
 interface Props {
   zIndex?: number
-  background?: string
   modelValue?: boolean
   appendToBody?: boolean
   overlayClass?: string
@@ -31,7 +30,6 @@ const overlayRef = shallowRef<HTMLElement>()
 const computedStyle = computed(() => {
   return {
     '--z': props.zIndex,
-    '--bg': props.background,
   }
 })
 
@@ -74,7 +72,7 @@ onBeforeUnmount(() => {
         v-if="modelValue"
         ref="overlayRef"
         tabindex="-1"
-        class="pxd-overlay fixed inset-0"
+        class="pxd-overlay fixed inset-0 bg-black/40 sm:bg-background/80 motion-safe:transition-colors"
         :class="overlayClass"
         :style="computedStyle"
         @click="onOverlayClick"
@@ -88,6 +86,5 @@ onBeforeUnmount(() => {
 <style>
 .pxd-overlay {
   z-index: var(--z, 10);
-  background: var(--bg, hsla(var(--background-100-value), .8));
 }
 </style>
