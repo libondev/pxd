@@ -23,7 +23,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    size: 30,
+    size: 10,
     fader: true,
     scrollbar: true,
     scrollbarSize: 6,
@@ -406,8 +406,8 @@ defineExpose({
   &::after {
     content: '';
     position: absolute;
-    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--color-background)));
-    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--color-background)) 50%, transparent);
+    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--color-gray-alpha-500)));
+    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--color-gray-alpha-500)) 50%, transparent);
     opacity: 0;
   }
 
@@ -423,7 +423,7 @@ defineExpose({
   &::before,
   &::after {
     top: 0;
-    width: var(--size, 30px);
+    width: var(--size);
     height: 100%;
   }
 
