@@ -1,14 +1,17 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import type { ComponentLabel } from '../../types/components'
+import { nextTick, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import { getCssUnitValue } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import PTeleport from '../teleport/index.vue'
+import PScrollable from '../scrollable/index.vue'
 
 interface Props {
-  title?: string
+  title?: ComponentLabel
+  subtitle?: ComponentLabel
   width?: number | string
   modelValue?: boolean
+  headerStyle?: boolean
+  footerStyle?: boolean
   appendToBody?: boolean
   closeOnClickModal?: boolean
 }
@@ -20,76 +23,117 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    width: 540,
     modelValue: false,
+    headerStyle: false,
+    footerStyle: true,
     appendToBody: true,
-    closeOnClickModal: true,
+    closeOnClickModal: false,
   },
 )
 
 const emits = defineEmits<{
   'open': []
   'close': []
+  'click-outside': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
 
+const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
 
-const modalWidth = computed(() => getCssUnitValue(props.width))
+function onOverlayClick(ev: MouseEvent) {
+  emits('click-outside', ev)
 
-function onOverlayClick() {
   if (!props.closeOnClickModal) {
     return
   }
 
   isVisible.value = false
-  emits('close')
 }
+
+watch(() => isVisible.value, (visible) => {
+  nextTick(() => {
+    if (visible) {
+      emits('open')
+      return
+    }
+
+    emits('close')
+  })
+}, { flush: 'post' })
 </script>
 
 <template>
-  <div tabindex="-1">
-    <POverlay v-model="isVisible" :append-to-body="appendToBody" @click="onOverlayClick" />
-
-    <PTeleport v-if="isVisible" :disabled="!appendToBody">
+  <POverlay v-model="isVisible" :append-to-body="appendToBody" @click="onOverlayClick">
+    <Transition name="pxd-transition--modal" mode="out-in">
       <div
-        class="pxd-modal fixed inset-0 z-10 shadow-border-modal rounded-xl bg-background top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 motion-safe:transition-all"
-        :style="{ width: modalWidth }"
+        v-if="isVisible"
+        ref="modalRef"
+        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg sm:rounded-xl bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all"
+        :style="{ '--width': width }"
       >
-        <header class="pxd-modal--header py-5 px-6 text-2xl font-[600]">
-          <slot name="title">
-            {{ title }}
-          </slot>
+        <header
+          class="pxd-modal--header relative shrink-0 py-5 px-6 -mb-6"
+          :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
+        >
+          <h3 class="text-2xl font-semibold">
+            <slot name="title">
+              {{ title }}
+            </slot>
+          </h3>
+
+          <div v-if="subtitle" class="mt-4">
+            <slot name="subtitle">
+              {{ subtitle }}
+            </slot>
+          </div>
         </header>
 
-        <div class="pxd-modal--content pb-5 px-6">
+        <PScrollable
+          class="pxd-modal--content flex-1"
+          content-class="p-6"
+        >
           <slot />
-        </div>
+        </PScrollable>
 
-        <footer class="pxd-modal--footer p-4 empty:hidden">
+        <footer
+          class="pxd-modal--footer relative p-4 shrink-0 flex items-center justify-between"
+          :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
+        >
           <slot name="footer" />
         </footer>
       </div>
-    </PTeleport>
-  </div>
+    </Transition>
+  </POverlay>
 </template>
 
 <style>
-@keyframes modal-in {
-  from {
-    transform: scale(0.98);
-    opacity: .8;
+.pxd-transition--modal-enter-active,
+.pxd-transition--modal-leave-active {
+  transition-timing-function: cubic-bezier(0.175,0.885,0.32,1.1);
+  transition:
+    transform var(--default-transition-duration),
+    opacity var(--default-transition-duration);
+}
+
+.pxd-transition--modal-enter-from,
+.pxd-transition--modal-leave-to {
+  transform: translate(0, 100%);
+}
+
+@media (width >= 40rem) {
+  .pxd-transition--modal-enter-from,
+  .pxd-transition--modal-leave-to {
+    opacity: 0;
+    transform: scale(0.98) !important;
   }
 
-  to {
-    transform: scale(1);
-    opacity: 1;
+  .pxd-modal {
+    width: calc(var(--width, 540) * 1px);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-modal {
-    animation: modal-in var(--default-transition-duration) var(--default-transition-timing-function);
-  }
+.pxd-modal {
+  max-height: min(800px, 80vh);
 }
 </style>
