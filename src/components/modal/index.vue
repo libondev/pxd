@@ -76,7 +76,7 @@ watch(() => isVisible.value, (visible) => {
           class="pxd-modal--header relative shrink-0 py-5 px-6 -mb-6"
           :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <h3 class="text-2xl font-semibold">
+          <h3 class="text-2xl font-semibold tracking-tight">
             <slot name="title">
               {{ title }}
             </slot>
@@ -110,7 +110,8 @@ watch(() => isVisible.value, (visible) => {
 <style>
 .pxd-transition--modal-enter-active,
 .pxd-transition--modal-leave-active {
-  transition-timing-function: cubic-bezier(0.175,0.885,0.32,1.1);
+  /* transition-timing-function: cubic-bezier(0.175,0.885,0.32,1.1); */
+  transition-timing-function: var(--default-transition-timing-function);
   transition:
     transform var(--default-transition-duration),
     opacity var(--default-transition-duration);
