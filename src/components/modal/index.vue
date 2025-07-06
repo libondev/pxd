@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { nextTick, shallowRef, watch } from 'vue'
+import { nextTick, watch } from 'vue'
+import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
@@ -38,8 +39,8 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
+const { containerRef: modalRef } = useFocusTrap()
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
@@ -69,8 +70,12 @@ watch(() => isVisible.value, (visible) => {
       <div
         v-if="isVisible"
         ref="modalRef"
+        role="dialog"
+        tabindex="-1"
+        aria-modal="true"
         class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg sm:rounded-xl bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all"
         :style="{ '--width': width }"
+        open
       >
         <header
           class="pxd-modal--header relative shrink-0 py-5 px-6 -mb-6"
