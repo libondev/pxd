@@ -1,7 +1,7 @@
 {
   "name": "pxd",
   "type": "module",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "A universal UI component library for Vue2&3.",
   "author": "libondev <bon.li@outlook.com>",
   "license": "MIT",
