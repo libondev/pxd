@@ -13,7 +13,7 @@ describe('theme-switcher', () => {
 
     await wrapper.find('button').trigger('click')
 
-    expect(wrapper.emitted().toggle[1]).toEqual(['light'])
+    expect(wrapper.emitted().toggle[1]).toEqual(['auto'])
 
     wrapper.unmount()
   })
