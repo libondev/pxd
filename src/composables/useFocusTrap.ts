@@ -33,7 +33,7 @@ export function useFocusTrap() {
 
     nextTick(() => {
       const unbindEvent = on(container, 'keydown', onContainerKeydown)
-      elements = [...container.querySelectorAll<HTMLElement>(selectors.join(','))]
+      elements = Array.from(container.querySelectorAll<HTMLElement>(selectors.join(',')))
 
       if (elements.length) {
         elements[0].focus()
