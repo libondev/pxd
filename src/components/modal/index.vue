@@ -14,8 +14,8 @@ interface Props {
   headerStyle?: boolean
   footerStyle?: boolean
   appendToBody?: boolean
-  closeOnClickModal?: boolean
   closeOnPressEscape?: boolean
+  closeOnClickOverlay?: boolean
 }
 
 defineOptions({
@@ -33,8 +33,8 @@ const props = withDefaults(
     headerStyle: false,
     footerStyle: true,
     appendToBody: true,
-    closeOnClickModal: false,
     closeOnPressEscape: false,
+    closeOnClickOverlay: false,
   },
 )
 
@@ -51,7 +51,7 @@ const { containerRef: modalRef } = useFocusTrap()
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickModal) {
+  if (!props.closeOnClickOverlay) {
     return
   }
 
