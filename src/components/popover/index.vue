@@ -3,7 +3,12 @@ import type { CSSProperties } from 'vue'
 import type { ComponentBasePosition, ComponentPosition, PopoverTrigger } from '../../types/components'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
-import { getElementRectFromContainer, getScrollContainer, getScrollPositions } from '../../utils/dom'
+import {
+  getElementRectFromContainer,
+  getScrollContainer,
+  getScrollElByContainer,
+  getScrollPositions,
+} from '../../utils/dom'
 import { off, on } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
 import { toArray } from '../../utils/format'
@@ -34,6 +39,11 @@ interface Props {
   hideTransition?: boolean
   translateOffset?: string | number
   closeOnPressEscape?: boolean
+  // 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗
+  scrollHiddenThreshold?: number
+  // 动态位置调整的阈值, 当滚动距离超过该值时, 自动调整位置
+  // 避免频繁调整位置, 影响性能
+  dynamicPositionThreshold?: number
 }
 
 interface PopoverContainerStyle extends CSSProperties {
@@ -67,6 +77,8 @@ const props = withDefaults(
     showTransition: true,
     hideTransition: true,
     closeOnPressEscape: false,
+    scrollHiddenThreshold: 60,
+    dynamicPositionThreshold: 8,
   },
 )
 
@@ -105,6 +117,7 @@ const containerStyle = shallowRef({
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
+let cachedScrollTop: number = 0
 let cachedGeneralPosition: ComponentBasePosition | null = null
 let cachedPositionForGeneral: string | null = null
 
@@ -119,18 +132,23 @@ const generalPosition = computed(() => {
 
 const transitionName = computed(() => props.transitionName ?? `pxd-transition--popover-${generalPosition.value}`)
 
-const onContainerScroll = throttleByRaf(() => {
+const onContainerScroll = throttleByRaf((ev: Event) => {
   if (!isVisible.value) {
     return
   }
 
-  if (props.scrollHidden) {
+  const scrollTop = getScrollElByContainer(ev.target).scrollTop
+  const delta = Math.abs(scrollTop - cachedScrollTop)
+
+  if (props.scrollHidden && delta >= props.scrollHiddenThreshold) {
     handlePopoverHide(true)
     return
   }
 
   // 动态调整位置
-  handleDynamicPositionAdjustment()
+  if (delta >= props.dynamicPositionThreshold) {
+    handleDynamicPositionAdjustment()
+  }
 })
 
 // 判断 containerRef 的元素在渲染后是否超出了屏幕之外
@@ -253,7 +271,7 @@ async function handlePopoverShow(immediate: boolean = false) {
     }, immediate ? 0 : props.showDelay)
   })
 
-  // 懒绑定 scroll 事件, 减少组件在未触发时绑定事件的性能损耗
+  cachedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
   on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
   nextTick(() => {
