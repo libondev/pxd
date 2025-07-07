@@ -67,8 +67,8 @@ export function isScrollable(el: HTMLElement, isVertical?: boolean): boolean {
   return ['scroll', 'auto', 'overlay'].some(s => overflow.includes(s))
 }
 
-const windowTop = [window, document, document.documentElement]
 export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Window | HTMLElement {
+  const windowTop = [window, document, document.documentElement]
   let parent: HTMLElement = el
 
   while (parent) {
@@ -110,6 +110,7 @@ export function getScrollPositions(el: HTMLElement | Window | Document) {
 
 // 获取滚动元素的 DOM 对象, 通常用户获取滚动距离
 export function getScrollElByContainer(target: any) {
+  const windowTop = [window, document, document.documentElement]
   if (!target || windowTop.includes(target)) {
     return document.documentElement
   }
