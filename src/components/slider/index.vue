@@ -292,14 +292,14 @@ onBeforeUnmount(() => {
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2 motion-safe:transition-transform"
       :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2"
+      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2 motion-safe:transition-transform"
       :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
