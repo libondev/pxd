@@ -19,6 +19,10 @@ interface Props {
 
 defineOptions({
   name: 'PModal',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(
