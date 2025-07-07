@@ -2,12 +2,11 @@
 import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
-import { computed, customRef } from 'vue'
+import { computed, customRef, onMounted } from 'vue'
 import { isClient } from '../../utils/is'
 import PButton from '../button/index.vue'
 
 interface Props {
-  block?: boolean
 }
 
 defineOptions({
@@ -25,9 +24,13 @@ const colorTransitions = {
   auto: 'dark',
   dark: 'light',
   light: 'auto',
-} as const
+}
 
 type ColorScheme = keyof typeof colorTransitions
+
+function getSystemPreference(): 'light' | 'dark' {
+  return isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
 
 const colorMode = customRef<ColorScheme>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
@@ -38,10 +41,6 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
         remove: () => {},
         add: () => {},
       }
-
-  function getSystemPreference(): 'light' | 'dark' {
-    return isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
 
   function applyTheme(mode: ColorScheme) {
     if (mode === 'auto') {
@@ -103,9 +102,17 @@ const RenderIcon = computed(() => {
 })
 
 function toggleColorMode() {
-  colorMode.value = colorTransitions[colorMode.value] || colorTransitions.auto
+  colorMode.value = (colorTransitions[colorMode.value] || colorTransitions.auto) as ColorScheme
   emits('toggle', colorMode.value)
 }
+
+onMounted(() => {
+  const preference = getSystemPreference()
+
+  // 动态调整主题的可选项，只允许在两个模式之间切换，避免偏好和系统一致时需要手动切换两次
+  colorTransitions.auto = preference === 'light' ? 'dark' : 'light'
+  colorTransitions[colorTransitions.auto as keyof typeof colorTransitions] = 'auto'
+})
 </script>
 
 <template>
