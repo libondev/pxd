@@ -111,13 +111,10 @@ function toggleColorMode() {
 <template>
   <PButton
     aria-label="Toggle color mode"
-    :block="block"
     class="pxd-theme-switcher"
     v-bind="$attrs"
     @click="toggleColorMode"
   >
-    <Transition name="rotate-scale" mode="out-in">
-      <component :is="RenderIcon" class="size-em" />
-    </Transition>
+    <component :is="RenderIcon" class="size-em" />
   </PButton>
 </template>

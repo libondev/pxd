@@ -4,6 +4,11 @@ export function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
 
+// 某些没有主动声明的二次封装组件中透传 boolean 类型的值可能会是一个空字符串
+export function isTruthyProp(value: unknown) {
+  return value || value === ''
+}
+
 export function isExternalLink(href: string) {
   const firstChar = href.slice(0, 1)
 

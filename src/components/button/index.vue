@@ -3,6 +3,7 @@ import type { ButtonProps } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 import PSpinner from '../spinner/index.vue'
 
@@ -80,7 +81,7 @@ const computedClass = computed(() => {
     classNames.push(computedSize.value)
   }
 
-  classNames.push(block ? 'flex w-full' : 'inline-flex')
+  classNames.push(isTruthyProp(block) ? 'flex w-full' : 'inline-flex')
 
   if (computedDisabled.value) {
     classNames.push(DISABLED_CLASS_NAMES)
