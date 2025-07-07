@@ -15,6 +15,7 @@ interface Props {
   footerStyle?: boolean
   appendToBody?: boolean
   closeOnClickModal?: boolean
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
@@ -33,6 +34,7 @@ const props = withDefaults(
     footerStyle: true,
     appendToBody: true,
     closeOnClickModal: false,
+    closeOnPressEscape: false,
   },
 )
 
@@ -50,6 +52,14 @@ function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
   if (!props.closeOnClickModal) {
+    return
+  }
+
+  isVisible.value = false
+}
+
+function onModalKeydown() {
+  if (!props.closeOnPressEscape) {
     return
   }
 
@@ -77,9 +87,9 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg sm:rounded-xl bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all"
+        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg sm:rounded-xl bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all"
         :style="{ '--width': width }"
-        open
+        @keydown.esc="onModalKeydown"
       >
         <header
           class="pxd-modal--header relative shrink-0 py-5 px-6 -mb-6"

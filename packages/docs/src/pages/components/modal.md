@@ -121,3 +121,40 @@ function handleClose() {
   </PModal>
 </template>
 ```
+
+## Close on press escape
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+
+function handleOpen() {
+  isVisible.value = true
+}
+
+function handleClose() {
+  isVisible.value = false
+}
+</script>
+
+<template>
+  <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
+
+  <PModal
+    v-model="isVisible"
+    title="Create Token"
+    close-on-press-escape
+    @click-outside="handleClose"
+  >
+    <PText> Some content contained within the modal. </PText>
+
+    <template #footer>
+      <PButton block @click="handleClose">
+        Cancel
+      </PButton>
+    </template>
+  </PModal>
+</template>
+```
