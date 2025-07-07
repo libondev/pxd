@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { getScrollContainer } from '../../utils/dom'
+import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -37,7 +37,7 @@ function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 }
 
-let scrollContainer: HTMLElement
+let scrollContainer: HTMLElement | null
 
 watch(() => props.modelValue, (visible) => {
   if (!visible) {
@@ -50,8 +50,7 @@ watch(() => props.modelValue, (visible) => {
 
   nextTick(() => {
     if (!scrollContainer) {
-      const container = getScrollContainer(overlayRef.value!)
-      scrollContainer = container === window ? document.documentElement : container as HTMLElement
+      scrollContainer = getScrollElByContainer(getScrollContainer(overlayRef.value!))
     }
 
     scrollContainer.classList.add('scroll-disabled')
@@ -59,9 +58,12 @@ watch(() => props.modelValue, (visible) => {
 }, { immediate: true })
 
 onBeforeUnmount(() => {
-  if (scrollContainer) {
-    scrollContainer.classList.remove('scroll-disabled')
+  if (!scrollContainer) {
+    return
   }
+
+  scrollContainer.classList.remove('scroll-disabled')
+  scrollContainer = null
 })
 </script>
 
