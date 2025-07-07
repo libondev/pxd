@@ -33,6 +33,7 @@ interface Props {
   showTransition?: boolean
   hideTransition?: boolean
   translateOffset?: string | number
+  closeOnPressEscape?: boolean
 }
 
 interface PopoverContainerStyle extends CSSProperties {
@@ -65,6 +66,7 @@ const props = withDefaults(
     translateOffset: 0,
     showTransition: true,
     hideTransition: true,
+    closeOnPressEscape: false,
   },
 )
 
@@ -556,6 +558,14 @@ function updateTriggerEvents(
   }
 }
 
+function onTriggerKeydown() {
+  if (!props.closeOnPressEscape) {
+    return
+  }
+
+  handlePopoverHide()
+}
+
 watch<[HTMLElement | undefined, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
@@ -601,7 +611,12 @@ defineExpose({
 
 <template>
   <div class="pxd-popover relative inline-flex w-max">
-    <div ref="triggerRef" class="pxd-popover__trigger" :class="triggerClass">
+    <div
+      ref="triggerRef"
+      class="pxd-popover__trigger"
+      :class="triggerClass"
+      @keydown.esc.stop="onTriggerKeydown"
+    >
       <slot />
     </div>
 
