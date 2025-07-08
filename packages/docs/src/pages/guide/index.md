@@ -14,3 +14,19 @@ Native support for this feature is absent in Vue 2.7 and Vue 3.2. Only Vue 3.3 a
 ## Implementation Guide
 
 For practical examples of utilizing compiled macros with various bundling tools, explore the [pxd-vue-examples](https://github.com/libondev/pxd-vue-examples) repository. This resource offers several implementation examples demonstrating how to effectively integrate this component library into your projects.
+
+## Q&A
+
+### Use camelCase style in Vue2 but the event doesn't take effect?
+
+Because the events in vue2 distinguish between camelCase and kebab-case style, but the common style in vue2 is kebab-case style, please use the form of @kebab-case when the events do not take effect.
+
+```html
+<!-- Vue2 only -->
+
+<!-- Bad (does't work) -->
+<PActiveGraph @cellClick="handleCellClick" />
+
+<!-- Good (it works) -->
+<PActiveGraph @cell-click="handleCellClick" />
+```
