@@ -77,8 +77,8 @@ const props = withDefaults(
     showTransition: true,
     hideTransition: true,
     closeOnPressEscape: false,
-    scrollHiddenThreshold: 60,
-    dynamicPositionThreshold: 8,
+    scrollHiddenThreshold: 100,
+    dynamicPositionThreshold: 5,
   },
 )
 
