@@ -28,7 +28,7 @@ async function onCopyClick(ev: MouseEvent) {
 
     <details class="group/code-block">
       <summary
-        class="flex items-center px-4 h-11 border -mb-px -mx-px text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open/code-block:rounded-none group-open/code-block:sticky group-open/code-block:top-12 z-1"
+        class="flex items-center px-4 h-12 border -mb-px -mx-px text-sm text-gray-900 select-none cursor-pointer outline-none self-focus-ring rounded-bl-lg rounded-br-lg bg-background-secondary group-open/code-block:rounded-none group-open/code-block:sticky group-open/code-block:top-12 z-1"
       >
         <IconChevronRight class="text-xs mr-2 group-open/code-block:rotate-90 motion-safe:transition-transform" />
 
