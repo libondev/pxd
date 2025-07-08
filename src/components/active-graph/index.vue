@@ -79,7 +79,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  cellClick: [MouseEvent, string]
+  'cell-click': [MouseEvent, string]
 }>()
 
 const config = useConfigProvider()
@@ -324,7 +324,7 @@ function onCellClick(event: MouseEvent) {
     return
   }
 
-  emits('cellClick', event, date)
+  emits('cell-click', event, date)
 }
 
 let tbodyRect: DOMRect
