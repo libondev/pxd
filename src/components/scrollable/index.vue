@@ -36,8 +36,6 @@ const emits = defineEmits<{
   scroll: [Event]
 }>()
 
-const PADDING = 4
-const DOUBLE_PADDING = PADDING * 2
 const DIFF_THRESHOLD = 1
 
 const scrollContainer = shallowRef<HTMLElement>(null!)
@@ -153,8 +151,8 @@ function updateScrollbarMetrics() {
   horizontalScrollPercentage = Math.max(0, Math.min(1, horizontalScrollPercentage))
 
   // 正确计算初始位置，不再添加额外的PADDING
-  const verticalThumbTop = verticalScrollPercentage * (scrollableHeight - DOUBLE_PADDING)
-  const horizontalThumbLeft = horizontalScrollPercentage * (scrollableWidth - DOUBLE_PADDING)
+  const verticalThumbTop = verticalScrollPercentage * scrollableHeight
+  const horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
 
   // 更新状态
   scrollInfo.value = {
@@ -257,9 +255,9 @@ function onDragMove(e: MouseEvent) {
 
     const scrollableHeight = containerSize - scrollInfo.value.verticalThumbHeight
 
-    const newThumbTop = Math.max(0, Math.min(scrollableHeight - DOUBLE_PADDING, startScrollPos + deltaY))
+    const newThumbTop = Math.max(0, Math.min(scrollableHeight, startScrollPos + deltaY))
 
-    const scrollRatio = newThumbTop / (scrollableHeight - DOUBLE_PADDING)
+    const scrollRatio = newThumbTop / scrollableHeight
     wrapper.scrollTop = scrollRatio * (contentSize - containerSize)
 
     scrollInfo.value.verticalThumbTop = newThumbTop
@@ -274,9 +272,9 @@ function onDragMove(e: MouseEvent) {
   const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
 
   // 计算新的滑块位置（考虑padding）
-  const newThumbLeft = Math.max(0, Math.min(scrollableWidth - DOUBLE_PADDING, startScrollPos + deltaX))
+  const newThumbLeft = Math.max(0, Math.min(scrollableWidth, startScrollPos + deltaX))
 
-  const scrollRatio = newThumbLeft / (scrollableWidth - DOUBLE_PADDING)
+  const scrollRatio = newThumbLeft / scrollableWidth
   wrapper.scrollLeft = scrollRatio * (wrapper.scrollWidth - containerSize)
 
   scrollInfo.value.horizontalThumbLeft = newThumbLeft
@@ -359,12 +357,12 @@ defineExpose({
     <template v-if="fader">
       <div
         aria-hidden="true"
-        class="pxd-scrollable--fader-x pointer-events-none w-full h-full absolute inset-0"
+        class="pxd-scrollable--fader-x pointer-events-none w-full h-full absolute inset-0 rounded-inherit"
         :class="{ left: faderDirections.left, right: faderDirections.right }"
       />
       <div
         aria-hidden="true"
-        class="pxd-scrollable--fader-y pointer-events-none w-full h-full absolute inset-0"
+        class="pxd-scrollable--fader-y pointer-events-none w-full h-full absolute inset-0 rounded-inherit"
         :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
       />
     </template>
@@ -373,11 +371,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y absolute top-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y absolute top-0 right-0 bottom-0 px-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute rounded-full w-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute rounded-full w-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -386,11 +384,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x absolute left-0 right-0 bottom-0 p-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x absolute left-0 right-0 bottom-0 py-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute rounded-full h-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute rounded-full h-(--scrollbar-size) bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />
@@ -406,8 +404,10 @@ defineExpose({
   &::after {
     content: '';
     position: absolute;
+    border-radius: inherit;
     background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--color-gray-alpha-500)));
     mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--color-gray-alpha-500)) 50%, transparent);
+    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
     opacity: 0;
   }
 
@@ -459,17 +459,5 @@ defineExpose({
     --dir: to bottom;
     --dir-revert: to top;
   }
-}
-
-.pxd-scrollable--fader-x,
-.pxd-scrollable--fader-y {
-  &::before,
-  &::after {
-    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
-  }
-}
-
-.pxd-scrollable--thumb:active {
-  opacity: 1 !important;
 }
 </style>
