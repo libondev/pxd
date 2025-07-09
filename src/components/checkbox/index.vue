@@ -39,7 +39,7 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const checkboxGroupProps = inject('checkboxGroupProps', {
+const checkboxGroupProps = inject('pxdCheckboxGroupProps', {
   disabled: false,
   required: false,
 })

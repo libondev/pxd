@@ -16,7 +16,7 @@ defineOptions({
   name: 'PResizableHandle',
 })
 
-const context = inject<ResizableContext>('resizable-context')
+const context = inject<ResizableContext>('pxdResizable')
 if (!context) {
   throw new Error('PResizableHandle must be used within PResizable')
 }

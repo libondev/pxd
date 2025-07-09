@@ -65,7 +65,7 @@ function toggleItem(id: string, expanded: boolean) {
 
 const isExpanded = (id: string) => expandedItems.value.includes(id)
 
-provide('collapseGroup', {
+provide('pxdCollapseGroup', {
   multiple: computed(() => props.multiple),
   isExpanded,
   toggleItem,

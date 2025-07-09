@@ -26,7 +26,7 @@ type LoadingStatus = 'idle' | 'loading' | 'loaded' | 'error'
 
 const loadingStatus = shallowRef<LoadingStatus>('idle')
 
-const groupSize = inject<number | string>('groupSize', 32)
+const groupSize = inject<number | string>('pxdAvatarGroupSize', 32)
 
 const computedSize = computed(() => getCssUnitValue(props.size || groupSize))
 

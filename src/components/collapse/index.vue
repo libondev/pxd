@@ -30,7 +30,7 @@ const props = withDefaults(
 const uid = getUniqueId()
 
 const localExpand = ref(props.expand)
-const collapseGroup = inject<CollapseGroupContext | null>('collapseGroup', null)
+const collapseGroup = inject<CollapseGroupContext>('pxdCollapseGroup')!
 
 const isExpanded = computed(() => {
   if (collapseGroup) {

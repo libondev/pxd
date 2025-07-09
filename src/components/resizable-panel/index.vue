@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   minSize: 0,
 })
 
-const context = inject<ResizableContext>('resizable-context')
+const context = inject<ResizableContext>('pxdResizable')
 
 if (!context) {
   throw new Error('PResizablePanel must be used within PResizable')

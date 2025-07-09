@@ -18,8 +18,8 @@ defineOptions({
 
 const props = defineProps<Props>()
 
-const modelValue = inject('choiceboxGroupModelValue') as ComponentValue | ComponentValue[]
-const choiceboxGroupProps = inject('choiceboxGroupProps', { multiple: false })
+const modelValue = inject('pxdChoiceboxGroupModelValue') as ComponentValue | ComponentValue[]
+const choiceboxGroupProps = inject('pxdChoiceboxGroupProps', { multiple: false })
 
 const renderComponent = computed(() => markRaw(choiceboxGroupProps.multiple ? PCheckbox : PRadio))
 

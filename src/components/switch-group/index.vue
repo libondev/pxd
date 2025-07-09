@@ -44,9 +44,9 @@ const SIZES = {
 const modelValue = useModelValue(props, emits)
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
-provideRandomValue('switchGroupName')
-provide('switchGroupProps', props)
-provide('switchGroupModelValue', modelValue)
+provideRandomValue('pxdSwitchGroupName')
+provide('pxdSwitchGroupProps', props)
+provide('pxdSwitchGroupModelValue', modelValue)
 </script>
 
 <template>

@@ -23,10 +23,10 @@ defineOptions({
 const props = defineProps<Props>()
 
 const uniqueId = getUniqueId()
-const modelValue = inject('switchGroupModelValue', { value: '' })
+const modelValue = inject('pxdSwitchGroupModelValue', { value: '' })
 
-const switchGroupName = useRandomValue('switchGroupName')
-const switchGroupProps = inject('switchGroupProps', {
+const switchGroupName = useRandomValue('pxdSwitchGroupName')
+const switchGroupProps = inject('pxdSwitchGroupProps', {
   disabled: false,
   required: false,
 })

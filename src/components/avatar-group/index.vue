@@ -29,7 +29,7 @@ const props = withDefaults(
 
 const slicedOptions = computed(() => props.options?.slice(0, props.max))
 
-provide('groupSize', props.size)
+provide('pxdAvatarGroupSize', props.size)
 </script>
 
 <template>

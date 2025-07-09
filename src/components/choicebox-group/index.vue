@@ -70,8 +70,8 @@ const computedAttrs = computed(() => {
   }
 })
 
-provide('choiceboxGroupProps', props)
-provide('choiceboxGroupModelValue', modelValue)
+provide('pxdChoiceboxGroupProps', props)
+provide('pxdChoiceboxGroupModelValue', modelValue)
 </script>
 
 <template>

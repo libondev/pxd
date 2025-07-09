@@ -32,8 +32,7 @@ const panelSizes = ref<number[]>([])
 const containerRef = shallowRef<HTMLElement | null>(null)
 const orderCounter = ref(0)
 
-// 提供给子组件的上下文
-provide('resizable-context', {
+provide('pxdResizable', {
   registerPanel,
   unregisterPanel,
   registerHandle,

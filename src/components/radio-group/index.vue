@@ -36,8 +36,8 @@ const emits = defineEmits<{
 
 const modelValue = useModelValue(props, emits)
 
-provideRandomValue('radioGroupName')
-provide('radioGroupProps', props)
+provideRandomValue('pxdRadioGroupName')
+provide('pxdRadioGroupProps', props)
 </script>
 
 <template>

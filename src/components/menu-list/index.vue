@@ -145,7 +145,7 @@ function onPointerOver(ev: PointerEvent) {
   activeIndex.value = Number(menuItem.dataset.index)
 }
 
-provide('menuList', {
+provide('pxdMenuList', {
   activeIndex,
   registerMenuItem,
   unregisterMenuItem,

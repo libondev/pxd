@@ -46,7 +46,7 @@ const {
   activeIndex,
   registerMenuItem,
   unregisterMenuItem,
-} = inject<MenuListProvider>('menuList')!
+} = inject<MenuListProvider>('pxdMenuList')!
 
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)

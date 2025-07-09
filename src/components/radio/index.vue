@@ -31,8 +31,8 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const radioGroupName = useRandomValue('radioGroupName')
-const radioGroupProps = inject('radioGroupProps', {
+const radioGroupName = useRandomValue('pxdRadioGroupName')
+const radioGroupProps = inject('pxdRadioGroupProps', {
   disabled: false,
   required: false,
 })

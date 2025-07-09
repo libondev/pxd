@@ -44,7 +44,7 @@ function isCheckedPartial() {
   return modelValue.value.length > 0 && !isCheckedAll()
 }
 
-provide('checkboxGroupProps', props)
+provide('pxdCheckboxGroupProps', props)
 
 defineExpose({
   isCheckedAll,
