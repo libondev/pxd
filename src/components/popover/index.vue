@@ -83,8 +83,9 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  show: []
-  hide: []
+  'show': []
+  'hide': []
+  'trigger-keydown': [KeyboardEvent]
 }>()
 
 let triggerRect: DOMRect | null = null
@@ -576,10 +577,22 @@ function updateTriggerEvents(
   }
 }
 
-function onTriggerKeydown() {
+function onTriggerKeydown(ev: KeyboardEvent) {
+  if (!isVisible.value) {
+    return
+  }
+
+  emits('trigger-keydown', ev)
+
   if (!props.closeOnPressEscape) {
     return
   }
+
+  if (ev.key !== 'Escape') {
+    return
+  }
+
+  ev.stopPropagation()
 
   handlePopoverHide()
 }
@@ -633,7 +646,7 @@ defineExpose({
       ref="triggerRef"
       class="pxd-popover__trigger"
       :class="triggerClass"
-      @keydown.esc.stop="onTriggerKeydown"
+      @keydown="onTriggerKeydown"
     >
       <slot />
     </div>
@@ -644,10 +657,15 @@ defineExpose({
         :style="{ '--translate-offset': translateOffset, zIndex }"
       >
         <div
-          v-if="isRender" v-show="isVisible" ref="containerRef" :style="containerStyle"
-          :data-position="localPosition" class="pxd-popover__container isolate absolute w-max"
+          v-if="isRender"
+          v-show="isVisible"
+          ref="containerRef"
+          :style="containerStyle"
+          :data-position="localPosition"
+          class="pxd-popover__container isolate absolute w-max"
           :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
-          @pointerenter="onContentPointerEnter" @pointerleave="onContentPointerLeave"
+          @pointerenter="onContentPointerEnter"
+          @pointerleave="onContentPointerLeave"
         >
           <div class="pxd-popover__content" :class="popoverClass" :style="popoverStyle">
             <slot name="content">
