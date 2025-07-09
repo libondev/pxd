@@ -32,15 +32,9 @@ import InboxIcon from '@gdsicon/vue/inbox'
 ## Size
 
 ```vue demo
-<script setup>
-import InboxIcon from '@gdsicon/vue/inbox'
-</script>
-
 <template>
   <PChip size="15">
-    <PButton icon>
-      <InboxIcon />
-    </PButton>
+    <PButton icon />
   </PChip>
 </template>
 ```
@@ -66,7 +60,7 @@ Use the inset prop to display the Chip inside the component. This is useful when
 
 ```vue demo
 <template>
-  <PChip inset>
+  <PChip variant="success" inset>
     <PAvatar src="https://avatars.githubusercontent.com/u/47918504?v=4" />
   </PChip>
 </template>
