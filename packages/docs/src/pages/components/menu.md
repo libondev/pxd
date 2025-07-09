@@ -46,7 +46,7 @@ const options = [
 </script>
 
 <template>
-  <PMenu :options="options" menu-width="200px">
+  <PMenu :options="options" width="200">
     <PButton variant="primary">Actions</PButton>
   </PMenu>
 </template>
@@ -65,9 +65,21 @@ const options = [
 </script>
 
 <template>
-  <PMenu :options="options" menu-width="200px">
-    <PButton variant="primary">Actions</PButton>
-  </PMenu>
+  <PStack>
+    <PMenu :options="options" width="200">
+      <PButton variant="primary">Actions</PButton>
+    </PMenu>
+
+    <PMenu width="200">
+      <PButton variant="primary">Actions</PButton>
+
+      <template #items>
+        <PMenuItem v-for="(item, index) of options" as="RouterLink" :to="item.to" v-bind="item">
+          {{ index }} - {{ item.label }}
+        </PMenuItem>
+      </template>
+    </PMenu>
+  </PStack>
 </template>
 ```
 
@@ -84,7 +96,7 @@ const options = [
 </script>
 
 <template>
-  <PMenu :options="options" position="right-start" menu-width="200px">
+  <PMenu :options="options" position="right-start" width="200">
     <PButton variant="primary">Actions</PButton>
   </PMenu>
 </template>

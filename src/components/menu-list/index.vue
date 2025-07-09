@@ -5,6 +5,7 @@ import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PMenuItem from '../menu-item/index.vue'
+import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   width?: string | number
@@ -22,15 +23,8 @@ const props = withDefaults(
   },
 )
 
-const emits = defineEmits<{
-  selected: [option: MenuListOption, index: number]
-}>()
-
 const MENU_ITEM_CLASS = 'pxd-menu-item'
 const MENU_ITEM_SELECTOR = `.${MENU_ITEM_CLASS}`
-
-const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
-const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
 
 const activeIndex = shallowRef(-1)
 const allItems = shallowRef<HTMLElement[]>([])
@@ -65,6 +59,7 @@ function unregisterMenuItem(el: HTMLElement): void {
 // 获取项目数据
 function getItemData(index: number): MenuListOption | null {
   const element = allItems.value[index]
+
   if (!element) {
     return null
   }
@@ -96,17 +91,8 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
   return nextIndex
 }
 
-function onOptionsClick(option: MenuListOption, index: number) {
-  if (option.disabled) {
-    return
-  }
-
-  emits('selected', option, index)
-
-  if (typeof option.onClick === 'function') {
-    option.onClick(option)
-  }
-}
+const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
+const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
 
 function onContainerKeydown(ev: KeyboardEvent) {
   const count = allItems.value.length
@@ -115,26 +101,37 @@ function onContainerKeydown(ev: KeyboardEvent) {
     return
   }
 
-  if (PREV_KEYS.includes(ev.key)) {
+  const { key } = ev
+
+  if (key === 'Tab') {
+    return
+  }
+
+  if (PREV_KEYS.includes(key)) {
     ev.preventDefault()
+
     activeIndex.value = activeIndex.value === -1
       ? count - 1
       : getCorrectIndex('prev', activeIndex.value)
-  } else if (NEXT_KEYS.includes(ev.key)) {
+  } else if (NEXT_KEYS.includes(key)) {
     ev.preventDefault()
+
     activeIndex.value = activeIndex.value === -1
       ? 0
       : getCorrectIndex('next', activeIndex.value)
-  } else if (ev.key === 'Enter') {
+  } else if (key === 'Enter') {
     ev.preventDefault()
 
-    if (activeIndex.value >= 0) {
-      const item = getItemData(activeIndex.value)
-      if (item) {
-        onOptionsClick(item, activeIndex.value)
-      }
-    }
+    allItems.value[activeIndex.value]?.click()
   }
+
+  if (allItems.value.length <= 0) {
+    return
+  }
+
+  allItems.value[activeIndex.value].scrollIntoView({
+    block: 'nearest',
+  })
 }
 
 function onPointerOver(ev: PointerEvent) {
@@ -146,28 +143,6 @@ function onPointerOver(ev: PointerEvent) {
   }
 
   activeIndex.value = Number(menuItem.dataset.index)
-}
-
-function onContainerClick(ev: MouseEvent) {
-  const target = ev.target as HTMLElement
-  let menuItem: HTMLElement | null = null
-
-  if (target.classList.contains(MENU_ITEM_CLASS)) {
-    menuItem = target
-  } else {
-    menuItem = target.closest(MENU_ITEM_SELECTOR) as HTMLElement
-  }
-
-  if (!menuItem || menuItem.dataset.index === undefined) {
-    return
-  }
-
-  const index = Number(menuItem.dataset.index)
-  const item = getItemData(index)
-
-  if (item) {
-    onOptionsClick(item, index)
-  }
 }
 
 provide('menuList', {
@@ -197,17 +172,21 @@ onBeforeUnmount(() => {
 
 <template>
   <ul
-    class="pxd-menu-list shadow-border-menu bg-background rounded-xl p-2 list-none outline-none"
+    role="menu"
+    tabindex="-1"
+    class="pxd-menu-list shadow-border-menu bg-background rounded-xl p-2 pr-0 list-none outline-none"
     :style="computedStyle"
     @pointerover="onPointerOver"
-    @click="onContainerClick"
+    @keydown="onContainerKeydown"
   >
-    <slot>
-      <PMenuItem
-        v-for="(option, index) in options"
-        :key="option.value ?? index"
-        v-bind="option"
-      />
-    </slot>
+    <PScrollable class="max-h-68" :fader="false" content-class="pr-2">
+      <slot>
+        <PMenuItem
+          v-for="(option, index) in options"
+          :key="option.value ?? index"
+          v-bind="option"
+        />
+      </slot>
+    </PScrollable>
   </ul>
 </template>

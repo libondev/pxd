@@ -22,28 +22,49 @@ const props = withDefaults(
   },
 )
 
+const emits = defineEmits<{
+  click: [ev: MouseEvent, index: number]
+}>()
+
 type RegisterItem = (el: HTMLElement) => void
 
-interface MenuList {
+interface MenuListProvider {
   activeIndex: Ref<number>
   registerMenuItem: RegisterItem
   unregisterMenuItem: RegisterItem
 }
 
+interface MenuProvider {
+  onOptionClick: (ev: MouseEvent, index: number) => void
+}
+
+const {
+  onOptionClick,
+} = inject<MenuProvider>('pxdMenu')!
+
 const {
   activeIndex,
   registerMenuItem,
   unregisterMenuItem,
-} = inject<MenuList>('menuList')!
+} = inject<MenuListProvider>('menuList')!
 
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)
 
 const itemClass = computed(() => {
-  return {
-    [props.type === 'error' ? 'text-red-900' : '']: true,
-    [props.disabled ? 'pointer-events-none text-gray-700' : 'cursor-pointer']: true,
+  const classes = []
+
+  if (props.type === 'error') {
+    classes.push('text-red-900')
   }
+
+  if (props.disabled) {
+    classes.push('pointer-events-none text-gray-700')
+  } else {
+    classes.push('cursor-pointer')
+  }
+
+  return classes.join(' ')
 })
 
 function setRef(el: HTMLElement | ComponentPublicInstance) {
@@ -66,6 +87,11 @@ function updateCurrentIndex() {
   if (itemRef.value && itemRef.value.dataset.index) {
     currentIndex.value = Number(itemRef.value.dataset.index)
   }
+}
+
+function onItemClick(ev: MouseEvent) {
+  emits('click', ev, currentIndex.value)
+  onOptionClick?.(ev, currentIndex.value)
 }
 
 onMounted(() => {
@@ -100,10 +126,14 @@ onUnmounted(() => {
   <component
     :is="as"
     :ref="setRef"
+    tabindex="-1"
+    role="menuitem"
     :data-index="currentIndex"
+    :data-disabled="disabled"
     :data-selected="activeIndex === currentIndex"
     class="pxd-menu-item h-10 px-2 rounded-md text-sm w-full flex items-center outline-none motion-safe:transition-colors"
     :class="itemClass"
+    @click="onItemClick"
   >
     <slot>
       {{ label }}

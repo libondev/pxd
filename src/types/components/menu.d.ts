@@ -6,5 +6,5 @@ export interface MenuListOption extends Record<string, any> {
   label?: ComponentLabel
   value?: string | number
   disabled?: boolean
-  onClick?: (option: MenuListOption) => void
+  onClick?: (ev: MouseEvent, index: number) => void
 }

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { ComponentPosition, MenuListOption } from '../../types/components'
-import { shallowRef } from 'vue'
+import { provide, shallowRef } from 'vue'
 import PMenuList from '../menu-list/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
   options?: MenuListOption[]
   position?: ComponentPosition
-  menuWidth?: string | number
+  width?: string | number
 }
 
 defineOptions({
@@ -23,15 +23,19 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  selected: [option: MenuListOption, index: number]
+  selected: [ev: MouseEvent, index: number]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
-function onOptionClick(option: MenuListOption, index: number) {
-  emits('selected', option, index)
+function onOptionClick(ev: MouseEvent, index: number) {
+  emits('selected', ev, index)
   popoverRef.value!.hide()
 }
+
+provide('pxdMenu', {
+  onOptionClick,
+})
 </script>
 
 <template>
@@ -51,7 +55,7 @@ function onOptionClick(option: MenuListOption, index: number) {
 
     <template #content>
       <PMenuList
-        :width="menuWidth"
+        :width="width"
         :options="options"
         @selected="onOptionClick"
       >
