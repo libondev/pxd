@@ -95,7 +95,7 @@ const computedClass = computed(() => {
           <div aria-hidden="true" class="pxd-book--spine h-full opacity-20" />
 
           <div class="pxd-book--content-inner flex flex-col w-full">
-            <span class="pxd-book--title font-semibold text-balance pr-2">
+            <span class="pxd-book--title font-semibold text-balance break-all pr-2">
               <slot name="title">
                 {{ title }}
               </slot>
