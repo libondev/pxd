@@ -75,7 +75,7 @@ const computedClass = computed(() => {
       :class="computedClass"
       :style="computedStyle"
     >
-      <div class="pxd-book--content flex flex-col h-full overflow-hidden translate-z-0 relative bg-background-secondary">
+      <div class="pxd-book--content absolute w-full min-w-full flex flex-col h-full overflow-hidden translate-z-0 bg-background-secondary">
         <div
           v-if="variant === 'stripe'"
           class="flex w-full relative flex-1 overflow-hidden translate-z-0"
@@ -113,7 +113,7 @@ const computedClass = computed(() => {
       </div>
 
       <div aria-hidden="true" class="pxd-book--pages absolute" />
-      <div aria-hidden="true" class="pxd-book--back absolute left-0 h-full bg-gray-200" />
+      <div aria-hidden="true" class="pxd-book--back absolute left-0 w-full h-full bg-gray-200" />
     </div>
   </div>
 </template>
@@ -140,9 +140,6 @@ const computedClass = computed(() => {
 }
 
 .pxd-book--content {
-  position: absolute;
-  width: 100%;
-  min-width: 100%;
   border-radius: var(--book-border-radius);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .02), 0 4px 8px -4px rgba(0, 0, 0, .1), 0 16px 24px -8px rgba(0, 0, 0, .03);
 
@@ -203,7 +200,6 @@ const computedClass = computed(() => {
 }
 
 .pxd-book--back {
-  width: 100%;
   border-radius: var(--book-border-radius);
   transform: translateZ(calc(-1 * var(--book-depth)));
 }
