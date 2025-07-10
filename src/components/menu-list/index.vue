@@ -125,7 +125,7 @@ function onContainerKeydown(ev: KeyboardEvent) {
     allItems.value[activeIndex.value]?.click()
   }
 
-  if (allItems.value.length <= 0) {
+  if (allItems.value.length <= 0 || activeIndex.value < 0) {
     return
   }
 
