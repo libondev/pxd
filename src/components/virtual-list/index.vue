@@ -34,7 +34,7 @@ const {
         :ref="(el) => setItemRef(el, item[dataKey])"
         class="pxd-virtual-list--item w-full"
       >
-        <slot :data="item" />
+        <slot :item="item" />
       </div>
     </div>
 
