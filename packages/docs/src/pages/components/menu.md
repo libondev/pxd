@@ -20,35 +20,16 @@ const options = [
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu :options="options">
+    <PMenu>
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
-        <PMenuItem v-for="(item, index) of options" v-bind="item">
+        <PMenuItem v-for="(item, index) of options" :key="item.label" v-bind="item">
           {{ index }} - {{ item.label }}
         </PMenuItem>
       </template>
     </PMenu>
   </PStack>
-</template>
-```
-
-## Disabled items
-
-```vue demo
-<script setup>
-const options = [
-  { label: 'One', onClick: () => undefined },
-  { label: 'Two', onClick: () => undefined },
-  { label: 'Three', disabled: true },
-  { label: 'Delete', type: 'error' },
-]
-</script>
-
-<template>
-  <PMenu :options="options" width="200">
-    <PButton variant="primary">Actions</PButton>
-  </PMenu>
 </template>
 ```
 
@@ -70,11 +51,12 @@ const options = [
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
+    <!-- Custom rendering menu-items -->
     <PMenu width="200">
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
-        <PMenuItem v-for="(item, index) of options" as="RouterLink" :to="item.to" v-bind="item">
+        <PMenuItem v-for="(item, index) of options" :key="item.label" v-bind="item">
           {{ index }} - {{ item.label }}
         </PMenuItem>
       </template>
@@ -96,8 +78,14 @@ const options = [
 </script>
 
 <template>
-  <PMenu :options="options" position="right-start" width="200">
-    <PButton variant="primary">Actions</PButton>
-  </PMenu>
+  <PStack>
+    <PMenu :options="options" position="left-start" width="200">
+      <PButton variant="primary">Actions</PButton>
+    </PMenu>
+
+    <PMenu :options="options" position="bottom-end" width="200">
+      <PButton variant="primary">Actions</PButton>
+    </PMenu>
+  </PStack>
 </template>
 ```
