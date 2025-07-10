@@ -9,7 +9,7 @@ interface UseMutationObserverReturnType {
 export function useMutationObserver(
   target: MaybeRef<HTMLElement | null | undefined>,
   callback: MutationCallback,
-  options: MaybeRef<MutationObserverInit>,
+  options?: MaybeRef<MutationObserverInit>,
 ): UseMutationObserverReturnType {
   let observer: MutationObserver | undefined
 
