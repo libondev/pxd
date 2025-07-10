@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { useResizeObserver } from '../../composables/useResizeObserver'
+import { useResizeObserver } from '../../composables/useBrowserObserver'
 import { off, on, once } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
 import { isServer } from '../../utils/is'
@@ -303,9 +303,7 @@ function scrollTo(top: number, left: number) {
 }
 
 if (props.scrollbar || props.fader) {
-  useResizeObserver(scrollContainer, () => {
-    updateScrollbarInfo()
-  })
+  useResizeObserver(scrollContainer, updateScrollbarInfo)
 }
 
 onMounted(async () => {

@@ -2,7 +2,7 @@
 
 import type { ComponentPublicInstance, MaybeRef, MaybeRefOrGetter } from 'vue'
 
-import { toValue } from 'vue'
+import { unref } from 'vue'
 
 export type MaybeElement = HTMLElement | SVGElement | ComponentPublicInstance | undefined | null
 export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
@@ -11,6 +11,6 @@ export type MaybeComputedElementRef<T extends MaybeElement = MaybeElement> = May
 export type UnRefElementReturn<T extends MaybeElement = MaybeElement> = T extends ComponentPublicInstance ? Exclude<MaybeElement, ComponentPublicInstance> : T | undefined
 
 export function unrefElement<T extends MaybeElement>(elRef: MaybeComputedElementRef<T>): UnRefElementReturn<T> {
-  const plain = toValue(elRef)
+  const plain = unref(elRef)
   return (plain as ComponentPublicInstance)?.$el ?? plain
 }
