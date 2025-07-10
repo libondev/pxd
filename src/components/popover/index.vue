@@ -314,14 +314,14 @@ async function onTriggerClick() {
   }
 
   if (isVisible.value) {
-    await handlePopoverHide()
     off(document, 'click', onClickOutsideToHide)
+    await handlePopoverHide()
 
     return
   }
 
-  await handlePopoverShow()
   on(document, 'click', onClickOutsideToHide)
+  await handlePopoverShow()
 }
 
 function onTriggerPointerEnter() {
