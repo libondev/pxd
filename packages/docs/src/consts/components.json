@@ -64,6 +64,10 @@
     "name": "input"
   },
   {
+    "camelized": "IntersectionObserver",
+    "name": "intersection-observer"
+  },
+  {
     "camelized": "Kbd",
     "name": "kbd"
   },
