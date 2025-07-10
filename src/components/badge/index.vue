@@ -31,7 +31,7 @@ const SIZES = {
 }
 
 const VARIANTS = {
-  'pill': 'bg-background shadow-[0_0_0_1px_var(--color-gray-300)]',
+  'pill': 'bg-background',
   'gray': 'bg-gray-600 text-white',
   'blue': 'bg-blue-700 text-gray-100 dark:text-gray-1000',
   'purple': 'bg-purple-700 text-gray-100 dark:text-gray-1000',
