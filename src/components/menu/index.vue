@@ -44,8 +44,7 @@ provide('pxdMenu', {
     trigger="click"
     class="pxd-menu"
     scroll-hidden
-    :open-delay="0"
-    :hide-delay="200"
+    :show-delay="0"
     :show-arrow="false"
     :position="position"
     :show-transition="false"
