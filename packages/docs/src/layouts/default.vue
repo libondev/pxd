@@ -83,7 +83,7 @@ if (isClient) {
     font-weight: 600;
     position: relative;
     margin-bottom: .25em;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
 
     &:not(:first-child) {
       margin-top: 1.68em;
