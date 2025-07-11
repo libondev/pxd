@@ -59,7 +59,12 @@ Setting an estimated size can prevent large layout deviation after rendering. (A
 
 ```vue demo
 <script setup>
-import { shallowRef } from 'vue'
+import { shallowRef, defineAsyncComponent } from 'vue'
+
+// Because the component will not be rendered initially,
+// the corresponding resource file will only be loaded when it is visible.
+// (You can see when the resource is loaded in the console network panel.)
+const LazyLoadedComponent = defineAsyncComponent(() => import('@/components/TestDemo.vue'))
 
 const isVisible = shallowRef(false)
 
@@ -76,12 +81,12 @@ function onVisibleChange(visible) {
 
   <div class="w-100 h-60 overflow-auto mt-2 p-4">
     <PIntersectionObserver
-      class="rounded-md border border-dashed mt-60 bg-background-secondary"
-      width="100"
-      height="30"
+      class="mt-60"
+      width="100%"
+      height="64px"
       @change="onVisibleChange"
      >
-      <div>Hello, world!</div>
+      <LazyLoadedComponent />
     </PIntersectionObserver>
   </div>
 </template>
