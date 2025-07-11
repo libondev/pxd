@@ -74,21 +74,22 @@ useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-intersection-observer">
-    <template v-if="isVisible">
-      <slot />
-    </template>
-
-    <div v-else class="pxd-intersection-observer--placeholder" :style="containerSize" />
+  <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize">
+    <slot v-if="isVisible" />
   </div>
 </template>
 
 <style>
-.pxd-intersection-observer--placeholder {
+.pxd-intersection-observer::before {
+  display: block;
   width: var(--width);
   height: var(--height);
   contain: size;
   content-visibility: auto;
   contain-intrinsic-size: var(--width) var(--height);
+}
+
+.pxd-intersection-observer:empty::before {
+  content: '';
 }
 </style>
