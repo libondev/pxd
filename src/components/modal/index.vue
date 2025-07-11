@@ -92,7 +92,7 @@ watch(() => isVisible.value, (visible) => {
         @keydown.esc="onModalKeydown"
       >
         <header
-          class="pxd-modal--header relative shrink-0 py-5 px-6 -mb-6"
+          class="pxd-modal--header relative shrink-0 p-6 -mb-6"
           :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <h3 class="text-2xl font-semibold tracking-tight">
@@ -101,7 +101,7 @@ watch(() => isVisible.value, (visible) => {
             </slot>
           </h3>
 
-          <div v-if="subtitle" class="mt-4">
+          <div v-if="subtitle" class="mt-6">
             <slot name="subtitle">
               {{ subtitle }}
             </slot>
