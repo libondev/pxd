@@ -4,6 +4,7 @@ import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
+  blur?: boolean
   zIndex?: number
   modelValue?: boolean
   appendToBody?: boolean
@@ -27,11 +28,9 @@ const emits = defineEmits<{
 }>()
 
 const overlayRef = shallowRef<HTMLElement>()
-const computedStyle = computed(() => {
-  return {
-    '--z': props.zIndex,
-  }
-})
+const computedStyle = computed(() => ({
+  '--z': props.zIndex,
+}))
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
@@ -73,8 +72,8 @@ onBeforeUnmount(() => {
       <div
         v-if="modelValue"
         ref="overlayRef"
-        tabindex="-1"
-        class="pxd-overlay fixed inset-0 bg-black/40 sm:bg-background/80 motion-safe:transition-colors"
+        :data-blur="blur"
+        class="pxd-overlay fixed inset-0 bg-black/40 z-[var(--z,10)] sm:bg-background/80 data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
         :class="overlayClass"
         :style="computedStyle"
         @click="onOverlayClick"
@@ -84,9 +83,3 @@ onBeforeUnmount(() => {
     <slot />
   </PTeleport>
 </template>
-
-<style>
-.pxd-overlay {
-  z-index: var(--z, 10);
-}
-</style>
