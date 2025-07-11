@@ -1,7 +1,7 @@
 # IntersectionObserver
 Render only when components are visible in the viewport.
 
-> Inspiration comes from [isaact/vue-infinity - Github](https://github.dev/isaact/vue-infinity)
+> Inspiration comes from [isaact/vue-infinity - Github](https://github.com/isaact/vue-infinity){target="_blank"}
 
 ## Default
 The component supports the `root/root-margin/threshold` attribute, which will be passed directly to IntersectionObserver.
