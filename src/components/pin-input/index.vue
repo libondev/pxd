@@ -131,6 +131,33 @@ function focusInputField(dir: 'next' | 'prev' | 'first' | 'last', index?: number
   inputsRef.value[correctIndex].select()
 }
 
+function getFirstEmptyIndex() {
+  const length = modelValueLocal.value.length
+
+  if (length === props.length) {
+    return modelValueLocal.value.findIndex(value => !value)
+  }
+
+  return length
+}
+
+function onContainerClick(ev: MouseEvent) {
+  const input = ev.target as HTMLInputElement
+
+  if (input.tagName !== 'INPUT') {
+    return
+  }
+
+  const index = Number(input.dataset.index)
+  const firstEmptyIndex = getFirstEmptyIndex()
+
+  if (index === firstEmptyIndex || firstEmptyIndex >= props.length) {
+    return
+  }
+
+  inputsRef.value[firstEmptyIndex]?.select()
+}
+
 // 使用输入法输入完成后触发 compositionend
 function onCompositionEnd(ev: CompositionEvent) {
   const input = ev.target as HTMLInputElement
@@ -230,15 +257,16 @@ function onInputPastedValue(ev: ClipboardEvent) {
 </script>
 
 <template>
-  <label class="pxd-pin-input">
+  <label class="pxd-pin-input flex flex-col w-max">
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
 
     <div
-      class="flex items-center gap-1.5"
+      class="w-max flex items-center gap-1.5"
       @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
+      @click="onContainerClick"
     >
       <div v-for="(n, i) of length" :key="n" :class="computedClass">
         <input
