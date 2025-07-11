@@ -2,11 +2,13 @@
 import { nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/useBrowserObserver'
 import { getCssUnitValue } from '../../utils/format'
+import KeepAliveContent from './content.vue'
 
 interface Props {
   // estimated size
   width?: number | string
   height?: number | string
+  keepAlive?: boolean
 
   // source from: typescript/lib/lib.dom.d.ts
   root?: Element | Document | null
@@ -42,7 +44,7 @@ const containerSize = shallowRef({
   '--height': getCssUnitValue(props.height),
 })
 
-function getRenderedSize() {
+function getRenderedSlotSize() {
   const rect = containerRef.value!.getBoundingClientRect()
 
   containerSize.value = {
@@ -51,18 +53,18 @@ function getRenderedSize() {
   }
 }
 
-useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
+function onVisibleChange(isIntersecting: boolean) {
   if (isIntersecting && !isVisible.value) {
     isVisible.value = true
     emits('before-show')
 
     nextTick(() => {
       emits('show')
-      getRenderedSize()
     })
   } else if (!isIntersecting && isVisible.value) {
     isVisible.value = false
     emits('before-hide')
+    getRenderedSlotSize()
 
     nextTick(() => {
       emits('hide')
@@ -70,12 +72,23 @@ useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
   }
 
   emits('change', isIntersecting)
+}
+
+useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
+  onVisibleChange(isIntersecting)
 }, props)
 </script>
 
 <template>
   <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize">
-    <slot v-if="isVisible" />
+    <KeepAlive v-if="keepAlive">
+      <KeepAliveContent v-if="isVisible">
+        <slot />
+      </KeepAliveContent>
+    </KeepAlive>
+    <template v-else>
+      <slot v-if="isVisible" />
+    </template>
   </div>
 </template>
 
