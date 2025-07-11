@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { nextTick, shallowRef } from 'vue'
-import { useIntersectionObserver, useResizeObserver } from '../../composables/useBrowserObserver'
+import { useIntersectionObserver } from '../../composables/useBrowserObserver'
+import { getCssUnitValue } from '../../utils/format'
 
-// source from: typescript/lib/lib.dom.d.ts
 interface Props {
+  // estimated size
+  width?: number | string
+  height?: number | string
+
+  // source from: typescript/lib/lib.dom.d.ts
   root?: Element | Document | null
   rootMargin?: string
   threshold?: number | number[]
@@ -17,7 +22,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     root: null,
-    rootMargin: undefined,
+    rootMargin: '20%',
     threshold: 0,
   },
 )
@@ -30,21 +35,21 @@ const emits = defineEmits<{
   'hide': []
 }>()
 
-const isVisible = shallowRef(true)
+const isVisible = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef({
-  '--width': '0',
-  '--height': '0',
+  '--width': getCssUnitValue(props.width),
+  '--height': getCssUnitValue(props.height),
 })
 
-useResizeObserver(containerRef, ([{ target }]) => {
-  const rect = target.getBoundingClientRect()
+function getRenderedSize() {
+  const rect = containerRef.value!.getBoundingClientRect()
 
   containerSize.value = {
     '--width': `${rect.width}px`,
     '--height': `${rect.height}px`,
   }
-})
+}
 
 useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
   if (isIntersecting && !isVisible.value) {
@@ -53,6 +58,7 @@ useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
 
     nextTick(() => {
       emits('show')
+      getRenderedSize()
     })
   } else if (!isIntersecting && isVisible.value) {
     isVisible.value = false
