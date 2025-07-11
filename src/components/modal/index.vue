@@ -87,7 +87,7 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--width,540)*1px)]"
+        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--width,540)*1px)]"
         :style="{ '--width': width }"
         @keydown.esc="onModalKeydown"
       >
@@ -129,17 +129,16 @@ watch(() => isVisible.value, (visible) => {
 <style>
 .pxd-transition--modal-enter-active,
 .pxd-transition--modal-leave-active {
-  /* transition-timing-function: cubic-bezier(0.175,0.885,0.32,1.1); */
   transition-timing-function: var(--default-transition-timing-function);
   transition:
     transform var(--default-transition-duration),
     opacity var(--default-transition-duration);
 }
 
-.pxd-transition--modal-enter-from,
-.pxd-transition--modal-leave-to {
+.pxd-modal.pxd-transition--modal-enter-from,
+.pxd-modal.pxd-transition--modal-leave-to {
   opacity: var(--o, 1);
-  transform: var(--t, translate(0, 100%)) !important;
+  transform: var(--t, translate(0, 100%));
 }
 
 .pxd-modal {
