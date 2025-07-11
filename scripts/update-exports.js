@@ -8,8 +8,8 @@ import { pascalize } from './utils.js'
 const isNeedStageChange = process.argv.includes('--stage')
 
 function updateComponentsIndex() {
-  const components = globSync('src/components/**/*.vue')
-  const matchRegex = /src\/components\/(.*?)\/index.vue/
+  const components = globSync('src/components/**/index.vue')
+  const matchRegex = /src\/components\/(.*?)\/index\.vue/
 
   const _components = components.map((file) => {
     const [,name] = file.match(matchRegex) || []
