@@ -39,7 +39,7 @@ function onHide() {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 h-60 overflow-auto mt-2 p-4">
+  <div class="w-100 h-60 overflow-auto mt-2">
     <PIntersectionObserver
       class="w-80 h-40 rounded-md border border-dashed mb-60 mr-100 bg-background-secondary"
       @change="onVisibleChange"
@@ -64,7 +64,7 @@ import { shallowRef, defineAsyncComponent } from 'vue'
 // Because the component will not be rendered initially,
 // the corresponding resource file will only be loaded when it is visible.
 // (You can see when the resource is loaded in the console network panel.)
-const LazyLoadedComponent = defineAsyncComponent(() => import('@/components/TestDemo.vue'))
+const LazyLoadedComponent = defineAsyncComponent(() => import('@/components/demos/Static.vue'))
 
 const isVisible = shallowRef(false)
 
@@ -87,6 +87,43 @@ function onVisibleChange(visible) {
       @change="onVisibleChange"
      >
       <LazyLoadedComponent />
+    </PIntersectionObserver>
+  </div>
+</template>
+```
+
+## KeepAlive
+When your component switching costs a lot, you can enable `keep-alive` to cache components.
+
+```vue demo
+<script setup>
+import { defineAsyncComponent } from 'vue'
+
+const Counter = defineAsyncComponent(() => import('@/components/demos/Counter.vue'))
+</script>
+
+<template>
+  <div class="w-100 h-60 overflow-auto mt-2 p-4">
+    <PIntersectionObserver
+      class="mt-60 mb-2"
+      width="100%"
+      height="36px"
+      keep-alive
+    >
+      <PStack align="center">
+        <Counter />
+        <span>With keep-alive</span>
+      </PStack>
+    </PIntersectionObserver>
+
+    <PIntersectionObserver
+      width="100%"
+      height="36px"
+    >
+      <PStack align="center">
+        <Counter />
+        <span>Without keep-alive</span>
+      </PStack>
     </PIntersectionObserver>
   </div>
 </template>
