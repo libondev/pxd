@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { nextTick, watch } from 'vue'
+import { nextTick, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import POverlay from '../overlay/index.vue'
@@ -45,8 +45,10 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
-const { containerRef: modalRef } = useFocusTrap()
+
+useFocusTrap(modalRef)
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
