@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { nextTick, shallowRef, watch } from 'vue'
+import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import POverlay from '../overlay/index.vue'
@@ -69,15 +69,13 @@ function onModalKeydown() {
 }
 
 watch(() => isVisible.value, (visible) => {
-  nextTick(() => {
-    if (visible) {
-      emits('open')
-      return
-    }
+  if (visible) {
+    emits('open')
+    return
+  }
 
-    emits('close')
-  })
-}, { flush: 'post' })
+  emits('close')
+})
 </script>
 
 <template>
