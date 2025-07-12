@@ -94,10 +94,10 @@ watch(() => isVisible.value, (visible) => {
         @keydown.esc="onModalKeydown"
       >
         <header
-          class="pxd-modal--header relative shrink-0 p-6 -mb-6"
+          class="pxd-modal--header relative shrink-0 px-6 py-4 sm:py-6 -mb-6"
           :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <h3 class="text-2xl font-semibold tracking-tight">
+          <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
               {{ title }}
             </slot>
