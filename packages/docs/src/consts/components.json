@@ -44,6 +44,10 @@
     "name": "description"
   },
   {
+    "camelized": "Drawer",
+    "name": "drawer"
+  },
+  {
     "camelized": "EmptyState",
     "name": "empty-state"
   },
