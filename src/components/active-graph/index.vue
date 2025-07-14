@@ -473,7 +473,7 @@ onBeforeUnmount(() => {
     <Transition name="pxd-transition--fade">
       <div
         v-if="showTooltip"
-        class="pxd-active-graph--tooltip left-0 top-0 bg-gray-1000 pointer-events-none text-gray-100 absolute z-10 px-2 py-1 text-[13px] rounded-sm w-max"
+        class="pxd-active-graph--tooltip left-0 top-0 bg-gray-1000 pointer-events-none text-gray-100 absolute z-10 px-2 py-1 text-[13px] rounded-sm w-max duration-50 motion-safe:transition-transform"
         :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
       >
         <slot name="tooltip" :data="tooltipInfo">
