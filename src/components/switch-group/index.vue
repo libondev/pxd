@@ -3,7 +3,7 @@ import type { ComponentOption, ComponentSize } from '../../types/components'
 import { provide } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
-import { provideRandomValue } from '../../composables/useRandomValueContext'
+import { provideUniqueId } from '../../composables/useUniqueIdContext'
 import PSwitch from '../switch/index.vue'
 
 interface Props {
@@ -44,7 +44,7 @@ const SIZES = {
 const modelValue = useModelValue(props, emits)
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
-provideRandomValue('pxdSwitchGroupName')
+provideUniqueId('pxdSwitchGroupName')
 provide('pxdSwitchGroupProps', props)
 provide('pxdSwitchGroupModelValue', modelValue)
 </script>
