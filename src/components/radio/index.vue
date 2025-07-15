@@ -3,7 +3,7 @@ import type { ComponentLabel, ComponentValue } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import { useRandomValue } from '../../composables/useRandomValueContext'
+import { useUniqueId } from '../../composables/useUniqueIdContext'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -31,7 +31,7 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const radioGroupName = useRandomValue('pxdRadioGroupName')
+const radioGroupName = useUniqueId('pxdRadioGroupName')
 const radioGroupProps = inject('pxdRadioGroupProps', {
   disabled: false,
   required: false,

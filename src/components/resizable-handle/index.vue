@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, onMounted } from 'vue'
-import { getRandomKey } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 
 interface ResizableContext {
   registerPanel: (config: { id: string, initialSize?: number | null, minSize?: number }) => void
@@ -8,7 +8,7 @@ interface ResizableContext {
   registerHandle: (config: { id: string, onDrag: (delta: { deltaX: number, deltaY: number }) => void }) => void
   unregisterHandle: (id: string) => void
   getPanelSize: (id: string) => number
-  onHandleDrag: (handleId: string, delta: { deltaX: number, deltaY: number }) => void
+  onHandleDrag: (uniqueId: string, delta: { deltaX: number, deltaY: number }) => void
   direction: { value: 'row' | 'col' }
 }
 
@@ -21,14 +21,13 @@ if (!context) {
   throw new Error('PResizableHandle must be used within PResizable')
 }
 
-// 生成唯一 ID
-const handleId = getRandomKey()
+const uniqueId = getUniqueId()
 
 let isDragging = false
 let startPosition = { x: 0, y: 0 }
 
 function onDrag(delta: { deltaX: number, deltaY: number }) {
-  context?.onHandleDrag(handleId, delta)
+  context?.onHandleDrag(uniqueId, delta)
 }
 
 function handlePointerDown(e: PointerEvent) {
@@ -61,14 +60,14 @@ function handlePointerUp(e: PointerEvent) {
 // 注册 handle
 onMounted(() => {
   context?.registerHandle({
-    id: handleId,
+    id: uniqueId,
     onDrag,
   })
 })
 
 // 注销 handle
 onBeforeUnmount(() => {
-  context?.unregisterHandle(handleId)
+  context?.unregisterHandle(uniqueId)
 })
 </script>
 
