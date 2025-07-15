@@ -166,6 +166,12 @@ onBeforeUnmount(() => {
     transform: scale(.97);
   }
 
+  &:hover {
+    .pxd-hold-button--overlay {
+      will-change: clip-path;
+    }
+  }
+
   .pxd-hold-button--overlay {
     --opacity: .45;
     opacity: var(--opacity);
