@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { nextTick, watch } from 'vue'
+import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import POverlay from '../overlay/index.vue'
@@ -45,8 +45,10 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
-const { containerRef: modalRef } = useFocusTrap()
+
+useFocusTrap(modalRef)
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
@@ -67,15 +69,13 @@ function onModalKeydown() {
 }
 
 watch(() => isVisible.value, (visible) => {
-  nextTick(() => {
-    if (visible) {
-      emits('open')
-      return
-    }
+  if (visible) {
+    emits('open')
+    return
+  }
 
-    emits('close')
-  })
-}, { flush: 'post' })
+  emits('close')
+})
 </script>
 
 <template>
@@ -92,10 +92,10 @@ watch(() => isVisible.value, (visible) => {
         @keydown.esc="onModalKeydown"
       >
         <header
-          class="pxd-modal--header relative shrink-0 p-6 -mb-6"
+          class="pxd-modal--header relative shrink-0 px-6 py-4 sm:py-6 -mb-6"
           :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <h3 class="text-2xl font-semibold tracking-tight">
+          <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
               {{ title }}
             </slot>
