@@ -32,7 +32,6 @@ const containerRef = shallowRef<HTMLDivElement>()
 
 const slides = shallowRef<CarouselItemState[]>([])
 const internalIndex = shallowRef(props.index)
-const disableTransition = shallowRef(false)
 
 const computedStyle = computed(() => {
   let translate = 0
@@ -53,51 +52,31 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const onToggleClick = throttle((delta: number) => {
-  const max = slides.value.length
-
-  if (max === 0) {
-    return
-  }
-
-  if (props.loop) {
-    if (internalIndex.value === max - 1) {
-      internalIndex.value = max
-    } else {
-      internalIndex.value = (internalIndex.value + delta + max) % max
-      translateItems()
-    }
-
-    disableTransition.value = internalIndex.value === 0 || internalIndex.value === max
-  } else {
-    internalIndex.value = Math.max(0, Math.min(internalIndex.value + delta, max - 1))
-  }
-
-  emits('change', internalIndex.value)
-}, 0)
-
 function translateItems() {
   slides.value.forEach((carousel, index) => {
     carousel.translateItem(index, internalIndex.value)
   })
 }
 
-function resetContainerPosition() {
-  containerRef.value!.style.transitionDuration = '0'
+const onToggleClick = throttle((delta: number) => {
+  const length = slides.value.length
+  const maxWithVirtual = length + 1
 
-  slides.value.forEach((carousel) => {
-    carousel.resetPosition()
-  })
-
-  if (internalIndex.value === slides.value.length) {
-    internalIndex.value = 1
-  } else if (internalIndex.value === slides.value.length) {
-    internalIndex.value = slides.value.length - 1
+  if (length === 0) {
+    return
   }
 
-  containerRef.value!.style.transitionDuration = ''
-  disableTransition.value = false
-}
+  if (props.loop) {
+    // internalIndex.value = (internalIndex.value + delta + maxWithVirtual) % maxWithVirtual
+    internalIndex.value = (internalIndex.value + delta)
+
+    translateItems()
+  } else {
+    internalIndex.value = Math.max(0, Math.min(internalIndex.value + delta, maxWithVirtual - 1))
+  }
+
+  emits('change', internalIndex.value >= 0 ? internalIndex.value : length - 1)
+}, 0)
 
 function onWheelToggle(e: WheelEvent) {
   if (!props.toggleOnWheel) {
@@ -117,11 +96,17 @@ function onWheelToggle(e: WheelEvent) {
 }
 
 function onTransitionEnd() {
-  if (!disableTransition.value) {
-    return
-  }
+  if (internalIndex.value >= slides.value.length) {
+    containerRef.value!.classList.add('\!transition-none')
 
-  resetContainerPosition()
+    slides.value.forEach((carousel) => {
+      carousel.resetPosition()
+    })
+
+    internalIndex.value = 0
+
+    containerRef.value!.classList.remove('\!transition-none')
+  }
 }
 
 function registerCarousel(state: CarouselItemState) {
@@ -129,7 +114,7 @@ function registerCarousel(state: CarouselItemState) {
 }
 
 function unregisterCarousel(id: string) {
-  slides.value = slides.value.filter(slide => slide.id !== id)
+  slides.value = slides.value.filter(slide => slide.uid !== id)
 }
 
 onBeforeUnmount(() => {
@@ -165,7 +150,7 @@ provide(carouselGroupContextKey, {
 
     <div
       ref="containerRef"
-      class="pxd-carousel-group--container w-full flex h-(--h) transition-transform duration-500 translate-z-0 group-hover/carousel:will-change-transform"
+      class="pxd-carousel-group--container w-full flex h-(--h) transition-transform translate-z-0 duration-500 group-hover/carousel:will-change-transform"
       :style="computedStyle"
       @transitionend="onTransitionEnd"
     >

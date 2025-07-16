@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CarouselGroupContext } from '../carousel-group/constants'
-import { inject, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { inject, onBeforeUnmount, shallowRef } from 'vue'
 import { useUniqueId } from '../../composables/useUniqueIdContext'
 import { carouselGroupContextKey } from '../carousel-group/constants'
 
@@ -15,6 +15,7 @@ if (!carouselGroupContext) {
 }
 
 const {
+  props,
   slides,
   registerCarousel,
   unregisterCarousel,
@@ -28,24 +29,31 @@ function resetPosition() {
   transformStyle.value = ''
 }
 
+function getTranslateStyle(translate: number) {
+  return props.direction === 'horizontal'
+    ? `translateX(${translate}%)`
+    : `translateY(${translate}%)`
+}
+
 function translateItem(index: number, activeIndex: number) {
   const maxLength = slides.value.length
   const lastIndex = maxLength - 1
 
-  // 第一个 item 在非激活的情况下需要移动到最右侧以确保可以循环切换
-  if (index === 0 && activeIndex === lastIndex) {
-    transformStyle.value = `translateX(${maxLength * 100}%)`
+  if (index === 0 && activeIndex === maxLength) {
+    // 正向切换：第一个项目移到最右侧
+    transformStyle.value = getTranslateStyle(maxLength * 100)
+  } else if (index === lastIndex && activeIndex === 0) {
+    // 反向切换：最后一个项目移到最左侧
+    transformStyle.value = getTranslateStyle(-maxLength * 100)
   } else {
     resetPosition()
   }
 }
 
-onMounted(() => {
-  registerCarousel({
-    id: uniqueId,
-    resetPosition,
-    translateItem,
-  })
+registerCarousel({
+  uid: uniqueId,
+  resetPosition,
+  translateItem,
 })
 
 onBeforeUnmount(() => {

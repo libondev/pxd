@@ -13,7 +13,7 @@ export interface CarouselGroupProps {
 }
 
 export interface CarouselItemState {
-  id: string
+  uid: string
   resetPosition: () => void
   translateItem: (index: number, activeIndex: number) => void
 }
