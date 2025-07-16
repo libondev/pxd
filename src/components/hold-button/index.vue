@@ -5,6 +5,7 @@ import { off, once } from '../../utils/events'
 import PButton from '../button/index.vue'
 
 interface Props extends Omit<ButtonProps, 'as'> {
+  vibrate?: boolean
   scalable?: boolean
   durations?: number | string
   maskColor?: string
@@ -18,6 +19,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    vibrate: true,
     scalable: true,
     durations: 2,
     maskColor: 'var(--color-gray-alpha-600)',
@@ -48,6 +50,18 @@ const computedAttrs = computed(() => {
     ...rest,
   }
 })
+
+function onTriggerVibrate() {
+  if (!props.vibrate) {
+    return
+  }
+
+  if (typeof window.navigator.vibrate !== 'function') {
+    return
+  }
+
+  window.navigator.vibrate(100)
+}
 
 function onPointerEnter() {
   if (props.disabled) {
@@ -104,6 +118,8 @@ function onPointerUp(event: PointerEvent) {
 
   emits('finished', isConfirmed)
   emits('pointerup', event)
+
+  onTriggerVibrate()
 
   cleanPointerReleaseEvents()
 }
