@@ -42,33 +42,30 @@ const computedStyle = computed(() => {
 
 const computedClass = computed(() => {
   const { loading, shape, animated } = props
-  const basic = ['pxd-skeleton relative block shrink-0 overflow-hidden']
+  const classes = ['pxd-skeleton relative block shrink-0 overflow-hidden']
 
   if (loading) {
-    basic.push('loading invisible')
+    classes.push('loading invisible')
   }
 
   if (shape === 'rounded') {
-    basic.push('rounded-full')
+    classes.push('rounded-full')
   } else if (shape === 'squared') {
-    basic.push('rounded-none')
+    classes.push('rounded-none')
   } else {
-    basic.push('rounded-md')
+    classes.push('rounded-md')
   }
 
   if (animated) {
-    basic.push('animated')
+    classes.push('animated')
   }
 
-  return basic
+  return classes.join(' ')
 })
 </script>
 
 <template>
-  <div
-    :class="computedClass"
-    :style="computedStyle"
-  >
+  <div :class="computedClass" :style="computedStyle">
     <slot />
   </div>
 </template>

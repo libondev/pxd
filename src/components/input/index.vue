@@ -3,7 +3,6 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
-import { twMerge } from 'tailwind-merge'
 import { computed, shallowRef } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
@@ -66,23 +65,23 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
-  const basic = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const classes = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
-  basic.push(computedSize.value)
+  classes.push(computedSize.value)
 
   if (props.disabled) {
-    basic.push('is-disabled')
+    classes.push('is-disabled')
   }
 
   if (props.readonly) {
-    basic.push('is-readonly')
+    classes.push('is-readonly')
   }
 
   if (props.error) {
-    basic.push('is-error')
+    classes.push('is-error')
   }
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 
 function onInputFocus(event: FocusEvent) {

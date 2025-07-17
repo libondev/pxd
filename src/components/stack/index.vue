@@ -104,18 +104,18 @@ const formattedDir = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const basic = ['pxd-stack w-full flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = ['pxd-stack w-full flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
-    basic.push('flex-wrap')
+    classes.push('flex-wrap')
   }
 
-  basic.push(
+  classes.push(
     ...Object.values(formattedDir.value),
     ...Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]),
   )
 
-  return basic.join(' ')
+  return classes.join(' ')
 })
 </script>
 

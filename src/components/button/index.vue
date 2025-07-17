@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { isTruthyProp } from '../../utils/format'
@@ -63,39 +62,39 @@ const computedFontSize = useConfigProviderSize(props.size, FONT_SIZES)
 const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClass = computed(() => {
-  const classNames = ['pxd-button cursor-pointer select-none items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
+  const classes = ['pxd-button cursor-pointer select-none items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
 
   const { variant, block, shape, icon } = props
 
-  classNames.push(computedFontSize.value)
+  classes.push(computedFontSize.value)
 
   if (icon) {
-    classNames.push('aspect-square !p-0')
+    classes.push('aspect-square !p-0')
   }
 
   if (variant !== 'simple') {
-    classNames.push('border outline-none self-focus-ring')
-
-    classNames.push(getFallbackValue(variant, VARIANTS))
-
-    classNames.push(computedSize.value)
+    classes.push(
+      'border outline-none self-focus-ring',
+      getFallbackValue(variant, VARIANTS),
+      computedSize.value,
+    )
   }
 
-  classNames.push(isTruthyProp(block) ? 'flex w-full' : 'inline-flex')
+  classes.push(isTruthyProp(block) ? 'flex w-full' : 'inline-flex')
 
   if (computedDisabled.value) {
-    classNames.push(DISABLED_CLASS_NAMES)
+    classes.push(DISABLED_CLASS_NAMES)
   }
 
   if (shape) {
-    classNames.push(
+    classes.push(
       shape === 'square'
         ? 'rounded-none'
         : 'rounded-full',
     )
   }
 
-  return twMerge(classNames)
+  return classes.join(' ')
 })
 
 function onButtonClick(event: MouseEvent) {

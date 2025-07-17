@@ -109,7 +109,7 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      include: ['tailwind-merge', '@vue/shared', 'canvas-confetti'],
+      include: ['@vue/shared', 'canvas-confetti'],
     },
 
     server: {

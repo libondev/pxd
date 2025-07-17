@@ -75,29 +75,29 @@ const transitionName = computed(() => {
 })
 
 // 计算内容位置类名
-const contentClasses = computed(() => {
-  const baseClasses = ['pxd-drawer outline-none translate-z-0 shadow-border-modal fixed bg-background flex flex-col z-10']
+const computedClass = computed(() => {
+  const classes = ['pxd-drawer outline-none translate-z-0 shadow-border-modal fixed bg-background flex flex-col z-10']
 
   switch (ensureCorrectPosition.value) {
     case 'top':
-      baseClasses.push('top-0', 'left-0', 'right-0')
+      classes.push('top-0', 'left-0', 'right-0')
       break
     case 'right':
-      baseClasses.push('top-0', 'right-0', 'bottom-0')
+      classes.push('top-0', 'right-0', 'bottom-0')
       break
     case 'bottom':
-      baseClasses.push('bottom-0', 'left-0', 'right-0')
+      classes.push('bottom-0', 'left-0', 'right-0')
       break
     case 'left':
-      baseClasses.push('top-0', 'left-0', 'bottom-0')
+      classes.push('top-0', 'left-0', 'bottom-0')
       break
   }
 
-  return baseClasses
+  return classes.join(' ')
 })
 
 // 计算容器宽高
-const contentStyle = computed(() => {
+const computedStyle = computed(() => {
   const style: CSSProperties = {}
 
   const sizeField = ['left', 'right'].includes(ensureCorrectPosition.value) ? 'width' : 'height'
@@ -146,8 +146,8 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        :class="contentClasses"
-        :style="contentStyle"
+        :class="computedClass"
+        :style="computedStyle"
       >
         <header
           v-if="$slots.title || $slots.subtitle || title || subtitle"

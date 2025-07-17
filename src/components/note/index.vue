@@ -4,7 +4,6 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
-import { twMerge } from 'tailwind-merge'
 import { computed, h } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { getFallbackValue } from '../../utils/value'
@@ -38,37 +37,37 @@ const VARIANTS = {
   success: {
     icon: CheckCircleIcon,
     fill: 'text-blue-900 bg-blue-200 border-blue-100',
-    classes: 'text-blue-900 border-blue-500',
+    basic: 'text-blue-900 border-blue-500',
   },
   error: {
     icon: StopIcon,
     fill: 'text-red-900 bg-red-200 border-red-100',
-    classes: 'text-red-900 border-red-500',
+    basic: 'text-red-900 border-red-500',
   },
   warning: {
     icon: WarningIcon,
     fill: 'text-amber-900 bg-amber-200 border-amber-100',
-    classes: 'text-amber-900 border-amber-500',
+    basic: 'text-amber-900 border-amber-500',
   },
   default: {
     icon: InformationIcon,
     fill: 'text-foreground-secondary bg-gray-200 border-gray-100',
-    classes: 'text-foreground-secondary border-input',
+    basic: 'text-foreground-secondary border-input',
   },
   primary: {
     icon: InformationIcon,
     fill: 'text-gray-100 bg-primary border-gray-100',
-    classes: 'text-primary border-gray-alpha-400',
+    basic: 'text-primary border-gray-alpha-400',
   },
   violet: {
     icon: InformationIcon,
     fill: 'text-violet-900 bg-violet-200 border-violet-100',
-    classes: 'text-violet-900 border-violet-400',
+    basic: 'text-violet-900 border-violet-400',
   },
   cyan: {
     icon: InformationIcon,
     fill: 'text-teal-900 bg-teal-200 border-teal-100',
-    classes: 'text-teal-900 border-teal-400',
+    basic: 'text-teal-900 border-teal-400',
   },
 }
 
@@ -90,15 +89,15 @@ const computedLabel = computed(() => {
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
-  const basic = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
+  const classes = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
 
-  basic.push(computedSize.value)
+  classes.push(computedSize.value)
 
-  const { fill, classes } = getFallbackValue(props.variant, VARIANTS)
+  const { fill, basic } = getFallbackValue(props.variant, VARIANTS)
 
-  basic.push(props.fill ? fill : classes)
+  classes.push(props.fill ? fill : basic)
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 </script>
 

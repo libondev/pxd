@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ComponentAs } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { getFallbackValue } from '../../utils/value'
@@ -56,14 +55,16 @@ const VARIANTS = {
 
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
-const computedClass = computed(() =>
-  twMerge(
+const computedClass = computed(() => {
+  const classes = [
     'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS, 'gray'),
     computedSize.value,
     props.variant,
-  ),
-)
+  ]
+
+  return classes.join(' ')
+})
 
 const badgeAttrs = computed(() => {
   if (props.as === 'router-link' || props.as === 'RouterLink') {

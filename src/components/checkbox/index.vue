@@ -2,7 +2,6 @@
 import type { ComponentLabel, ComponentValue } from '../../types/components'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
-import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
@@ -59,27 +58,27 @@ const isChecked = computed(() => {
 const computedDisabled = computed(() => props.disabled || checkboxGroupProps.disabled)
 const computedRequired = computed(() => props.required || checkboxGroupProps.required)
 
-const computedInnerClasses = computed(() => {
-  const basic = [
+const computedClass = computed(() => {
+  const classes = [
     'pxd-checkbox--inner size-4 shrink-0 inline-flex items-center justify-center peer-focus-ring',
     'rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors',
   ]
 
   if (isChecked.value) {
-    basic.push(
+    classes.push(
       computedDisabled.value
         ? 'bg-gray-600 border-gray-600'
         : 'bg-primary border-primary',
     )
   } else {
-    basic.push(
+    classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'
         : 'bg-background border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
     )
   }
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 
 function toggleChecked(isChecked: boolean) {
@@ -131,7 +130,7 @@ defineExpose({
       @change="onInputChange"
     >
 
-    <span aria-hidden="true" :class="computedInnerClasses">
+    <span aria-hidden="true" :class="computedClass">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />

@@ -59,22 +59,19 @@ const computedStyle = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const basic = ['pxd-book--container w-fit relative transform-3d duration-300 motion-safe:transition-transform']
+  const classes = ['pxd-book--container w-fit relative transform-3d duration-300 motion-safe:transition-transform']
 
-  basic.push(
+  classes.push(
     ...Object.keys(formattedWidth.value).map(bp => presetWidthClasses[bp as keyof typeof presetWidthClasses]),
   )
 
-  return basic
+  return classes.join(' ')
 })
 </script>
 
 <template>
   <div class="pxd-book inline-flex w-fit">
-    <div
-      :class="computedClass"
-      :style="computedStyle"
-    >
+    <div :class="computedClass" :style="computedStyle">
       <div class="pxd-book--content absolute w-full min-w-full flex flex-col h-full overflow-hidden translate-z-0 bg-background-secondary">
         <div
           v-if="variant === 'stripe'"

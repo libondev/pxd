@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
@@ -57,23 +56,23 @@ const modelValue = useModelValue(props, emits)
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
-  const basic = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const classes = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
-  basic.push(computedSize.value)
+  classes.push(computedSize.value)
 
   if (props.disabled) {
-    basic.push('is-disabled')
+    classes.push('is-disabled')
   }
 
   if (props.readonly) {
-    basic.push('is-readonly')
+    classes.push('is-readonly')
   }
 
   if (props.error) {
-    basic.push('is-error')
+    classes.push('is-error')
   }
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 
 function onInputFocus(event: FocusEvent) {

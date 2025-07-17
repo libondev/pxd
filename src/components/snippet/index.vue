@@ -51,17 +51,17 @@ const VARIANTS = {
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
-  const basic = [
+  const classes = [
     'pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS),
     computedSize.value,
   ]
 
   if (props.prompt) {
-    basic.push('pxd-snippet--prompt')
+    classes.push('pxd-snippet--prompt')
   }
 
-  return basic
+  return classes.join(' ')
 })
 
 const computedTextArray = computed(() => toArray(props.text))

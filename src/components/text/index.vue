@@ -75,28 +75,28 @@ const computedStyle = computed(() => {
 const computedClass = computed(() => {
   const { truncate, monospace, secondary } = props
 
-  const basic = [
+  const classes = [
     'pxd-text m-0',
     presetAlignClasses[props.align],
     ...Object.keys(formattedSize.value).map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses]),
   ]
 
   if (monospace) {
-    basic.push('font-mono')
+    classes.push('font-mono')
   }
 
   if (secondary) {
-    basic.push('text-foreground-secondary')
+    classes.push('text-foreground-secondary')
   }
 
   // hack vue2 boolean prop
   if (truncate === true || truncate === '') {
-    basic.push('truncate')
+    classes.push('truncate')
   } else if (truncate) {
-    basic.push(`line-clamp`)
+    classes.push(`line-clamp`)
   }
 
-  return basic
+  return classes.join(' ')
 })
 </script>
 

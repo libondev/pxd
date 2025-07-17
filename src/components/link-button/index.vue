@@ -45,13 +45,13 @@ const emits = defineEmits<{
 const attrs = useAttrs()
 
 const computedClass = computed(() => {
-  const basic = ['pxd-link-button']
+  const classes = ['pxd-link-button']
 
   if (props.type === 'text') {
-    basic.push('font-medium hover:underline hover:opacity-60 active:opacity-80 motion-safe:transition-opacity')
+    classes.push('font-medium hover:underline hover:opacity-60 active:opacity-80 motion-safe:transition-opacity')
   }
 
-  return basic
+  return classes.join(' ')
 })
 
 const computedAttrs = computed<LinkAttrs>(() => {

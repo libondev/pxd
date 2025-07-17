@@ -83,19 +83,19 @@ const computedInputMode = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const basic = ['pxd-input--border rounded-md motion-safe:transition-all']
+  const classes = ['pxd-input--border rounded-md motion-safe:transition-all']
 
   if (props.error) {
-    basic.push('is-error')
+    classes.push('is-error')
   }
 
   if (props.disabled) {
-    basic.push('is-disabled')
+    classes.push('is-disabled')
   }
 
-  basic.push(computedSize.value)
+  classes.push(computedSize.value)
 
-  return basic
+  return classes.join(' ')
 })
 
 function setInputValue(value: string, index?: number) {

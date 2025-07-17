@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useUniqueId } from '../../composables/useUniqueIdContext'
 import { getUniqueId } from '../../utils/uid'
@@ -36,16 +35,16 @@ const computedDisabled = computed(() => props.disabled || switchGroupProps.disab
 const computedRequired = computed(() => props.required || switchGroupProps.required)
 
 const computedClass = computed(() => {
-  const basic = [
+  const classes = [
     'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm peer-focus-ring',
     'font-medium select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
   ]
 
   if (!computedDisabled.value) {
-    basic.push('peer-checked:text-foreground')
+    classes.push('peer-checked:text-foreground')
   }
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 </script>
 

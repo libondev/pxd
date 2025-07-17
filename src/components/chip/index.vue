@@ -29,21 +29,21 @@ const variantPresets = {
 }
 
 const computedClass = computed(() => {
-  const basic = ['pxd-chip--label absolute border rounded-full border-background text-xs top-0 right-0 motion-safe:transition-all']
+  const classes = ['pxd-chip--label absolute border rounded-full border-background text-xs top-0 right-0 motion-safe:transition-all']
 
   const { variant, inset, label } = props
 
   if (!label) {
-    basic.push('size-(--size)')
+    classes.push('size-(--size)')
   }
 
   if (!inset) {
-    basic.push('translate-x-1/2 -translate-y-1/3')
+    classes.push('translate-x-1/2 -translate-y-1/3')
   }
 
-  basic.push(getFallbackValue(variant, variantPresets, 'primary'))
+  classes.push(getFallbackValue(variant, variantPresets, 'primary'))
 
-  return basic
+  return classes.join(' ')
 })
 </script>
 

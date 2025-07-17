@@ -113,14 +113,12 @@
     "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
   "peerDependencies": {
-    "tailwind-merge": ">=3.0.0",
     "vue": ">=2.7.0 || >=3.3.0"
   },
   "dependencies": {
     "@gdsicon/vue": "catalog:",
     "lodash.debounce": "catalog:default",
-    "lodash.throttle": "catalog:default",
-    "tailwind-merge": "catalog:"
+    "lodash.throttle": "catalog:default"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",

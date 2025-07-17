@@ -51,7 +51,7 @@ const {
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)
 
-const itemClass = computed(() => {
+const computedClass = computed(() => {
   const classes = []
 
   if (props.type === 'error') {
@@ -132,7 +132,7 @@ onUnmounted(() => {
     :data-disabled="disabled"
     :data-selected="activeIndex === currentIndex"
     class="pxd-menu-item h-10 px-2 rounded-md text-sm w-full flex items-center outline-none motion-safe:transition-colors"
-    :class="itemClass"
+    :class="computedClass"
     @click="onItemClick"
   >
     <slot>

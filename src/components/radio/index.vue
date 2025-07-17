@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { ComponentLabel, ComponentValue } from '../../types/components'
-import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { useUniqueId } from '../../composables/useUniqueIdContext'
@@ -42,26 +41,26 @@ const computedDisabled = computed(() => props.disabled || radioGroupProps.disabl
 const computedRequired = computed(() => props.required || radioGroupProps.required)
 
 const computedInnerClasses = computed(() => {
-  const basic = [
+  const classes = [
     'pxd-radio--inner size-4 rounded-full inline-flex items-center justify-center border peer-focus-ring motion-safe:transition-colors',
     'after:content-empty after:size-2 after:rounded-full after:bg-primary after:scale-40 after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:after:transition-all',
   ]
 
   if (isChecked.value) {
-    basic.push(
+    classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500 after:bg-gray-500'
         : 'bg-background border-primary peer-checked:after:scale-100',
     )
   } else {
-    basic.push(
+    classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'
         : 'bg-background border-gray-alpha-400 group-hover/radio:bg-gray-200',
     )
   }
 
-  return twMerge(basic)
+  return classes.join(' ')
 })
 
 function onChangeValue() {
