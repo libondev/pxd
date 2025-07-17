@@ -368,6 +368,7 @@
   --shadow-border-tooltip: var(--shadow-border-tooltip-value);
   --shadow-border-menu: var(--shadow-border-menu-value);
   --shadow-border-modal: var(--shadow-border-modal-value);
+  --shadow-border-fullscreen: var(--shadow-border-fullscreen-value);
 }
 
 @utility scrollbar-hidden {
