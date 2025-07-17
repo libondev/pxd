@@ -155,8 +155,8 @@ watch(() => isVisible.value, (visible) => {
       >
         <header
           v-if="$slots.title || $slots.subtitle || title || subtitle"
-          class="pxd-drawer--header flex gap-2 items-start justify-between px-6 py-4 -mb-4 sm:py-6 sm:-mb-6"
-          :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
+          class="pxd-drawer--header flex gap-2 items-start justify-between px-6 py-4 sm:py-6"
+          :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <div class="flex-1 shrink-0">
             <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
@@ -185,15 +185,16 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <PScrollable
-          class="pxd-drawer--content flex-1"
-          content-class="p-6"
+          :data-header="headerStyle"
+          class="pxd-drawer--content group flex-1"
+          content-class="group-data-[header=true]:pt-6 px-6 pb-6"
         >
           <slot />
         </PScrollable>
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer bg-background flex items-center justify-between border-t min-h-12 gap-4 p-4 shrink-0"
+          class="pxd-drawer--footer bg-background flex items-center justify-between border-t min-h-12 gap-2 p-4 shrink-0"
           :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >
           <slot name="footer" />
