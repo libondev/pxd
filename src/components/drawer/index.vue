@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { ComponentLabel } from '../../types/components'
 import CloseIcon from '@gdsicon/vue/cross'
-import { computed, nextTick, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import { getCssUnitValue } from '../../utils/format'
@@ -11,16 +11,17 @@ import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
 interface Props {
+  size?: number | string
   title?: ComponentLabel
   subtitle?: ComponentLabel
   modelValue?: boolean
+  headerStyle?: boolean
+  footerStyle?: boolean
   appendToBody?: boolean
+  showCloseButton?: boolean
   closeOnClickOverlay?: boolean
   closeOnPressEscape?: boolean
-  showCloseButton?: boolean
   position?: 'top' | 'right' | 'bottom' | 'left'
-  width?: number | string
-  height?: number | string
 }
 
 defineOptions({
@@ -35,14 +36,15 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    size: '30%',
+    position: 'right',
     modelValue: false,
+    footerStyle: true,
+    headerStyle: false,
     appendToBody: true,
+    showCloseButton: true,
     closeOnClickOverlay: true,
     closeOnPressEscape: true,
-    showCloseButton: true,
-    position: 'right',
-    width: '300px',
-    height: '300px',
   },
 )
 
@@ -63,6 +65,44 @@ const ensureCorrectPosition = computed(() => {
   }
 
   return 'right'
+})
+
+// 计算动画名称
+const transitionName = computed(() => {
+  return `pxd-transition--drawer-slide-${ensureCorrectPosition.value}`
+})
+
+// 计算内容位置类名
+const contentClasses = computed(() => {
+  const baseClasses = ['pxd-drawer outline-none translate-z-0 shadow-border-modal fixed bg-background flex flex-col z-10']
+
+  switch (ensureCorrectPosition.value) {
+    case 'top':
+      baseClasses.push('top-0', 'left-0', 'right-0')
+      break
+    case 'right':
+      baseClasses.push('top-0', 'right-0', 'bottom-0')
+      break
+    case 'bottom':
+      baseClasses.push('bottom-0', 'left-0', 'right-0')
+      break
+    case 'left':
+      baseClasses.push('top-0', 'left-0', 'bottom-0')
+      break
+  }
+
+  return baseClasses
+})
+
+// 计算容器宽高
+const contentStyle = computed(() => {
+  const style: CSSProperties = {}
+
+  const sizeField = ['left', 'right'].includes(ensureCorrectPosition.value) ? 'width' : 'height'
+
+  style[sizeField] = getCssUnitValue(props.size)
+
+  return style
 })
 
 function onOverlayClick(ev: MouseEvent) {
@@ -89,63 +129,12 @@ function onDrawerKeydown() {
 }
 
 watch(() => isVisible.value, (visible) => {
-  nextTick(() => {
-    if (visible) {
-      emits('open')
-      return
-    }
-
-    emits('close')
-  })
-}, { flush: 'post' })
-
-// 计算内容位置类名
-const contentClasses = computed(() => {
-  const baseClasses = [
-    'pxd-drawer',
-    'outline-none translate-z-0 shadow-border-modal',
-    'fixed',
-    'bg-background',
-    'shadow-lg',
-    'flex',
-    'flex-col',
-    'z-10',
-  ]
-
-  switch (ensureCorrectPosition.value) {
-    case 'top':
-      baseClasses.push('top-0', 'left-0', 'right-0')
-      break
-    case 'right':
-      baseClasses.push('top-0', 'right-0', 'bottom-0')
-      break
-    case 'bottom':
-      baseClasses.push('bottom-0', 'left-0', 'right-0')
-      break
-    case 'left':
-      baseClasses.push('top-0', 'left-0', 'bottom-0')
-      break
+  if (visible) {
+    emits('open')
+    return
   }
 
-  return baseClasses
-})
-
-// 计算容器宽高
-const contentStyle = computed(() => {
-  const style: CSSProperties = {}
-
-  if (['left', 'right'].includes(ensureCorrectPosition.value)) {
-    style.width = getCssUnitValue(props.width)
-  } else {
-    style.height = getCssUnitValue(props.height)
-  }
-
-  return style
-})
-
-// 计算动画名称
-const transitionName = computed(() => {
-  return `pxd-transition--drawer-slide-${ensureCorrectPosition.value}`
+  emits('close')
 })
 </script>
 
@@ -164,16 +153,17 @@ const transitionName = computed(() => {
       >
         <header
           v-if="$slots.title || $slots.subtitle || title || subtitle"
-          class="pxd-drawer--header flex items-start justify-between p-6 border-b"
+          class="pxd-drawer--header flex gap-2 items-start justify-between px-6 py-4 -mb-4 sm:py-6 sm:-mb-6"
+          :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <div class="flex-1">
-            <h3 class="text-2xl font-semibold tracking-tight">
+          <div class="flex-1 shrink-0">
+            <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
               <slot name="title">
                 {{ title }}
               </slot>
             </h3>
 
-            <div v-if="subtitle" class="mt-2 text-sm text-muted-foreground">
+            <div v-if="subtitle" class="mt-4 text-sm text-muted-foreground">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -185,7 +175,7 @@ const transitionName = computed(() => {
             variant="ghost"
             size="sm"
             icon
-            class="ml-4 flex-shrink-0"
+            class="shrink-0"
             @click="closeDrawer"
           >
             <CloseIcon class="h-4 w-4" />
@@ -201,7 +191,8 @@ const transitionName = computed(() => {
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer bg-background flex items-center justify-end border-t min-h-12 gap-4 px-6 py-3 flex-shrink-0"
+          class="pxd-drawer--footer bg-background flex items-center justify-between border-t min-h-12 gap-4 p-4 shrink-0"
+          :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >
           <slot name="footer" />
         </footer>
