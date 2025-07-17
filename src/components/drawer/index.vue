@@ -210,57 +210,36 @@ const transitionName = computed(() => {
 <style>
 /* 右侧滑入滑出动画 */
 .pxd-transition--drawer-slide-right-enter-active,
-.pxd-transition--drawer-slide-right-leave-active {
-  transition: transform var(--default-transition-duration, 0.3s) cubic-bezier(0.4, 0, 0.2, 1);
+.pxd-transition--drawer-slide-right-leave-active,
+/* 左侧滑入滑出动画 */
+.pxd-transition--drawer-slide-left-enter-active,
+.pxd-transition--drawer-slide-left-leave-active,
+/* 顶部滑入滑出动画 */
+.pxd-transition--drawer-slide-top-enter-active,
+.pxd-transition--drawer-slide-top-leave-active,
+/* 底部滑入滑出动画 */
+.pxd-transition--drawer-slide-bottom-enter-active,
+.pxd-transition--drawer-slide-bottom-leave-active  {
+  transition: transform var(--default-transition-duration, 0.3s) var(--default-transition-timing-function);
 }
 
+.pxd-transition--drawer-slide-right-leave-to,
 .pxd-transition--drawer-slide-right-enter-from {
   transform: translateX(100%);
 }
 
-.pxd-transition--drawer-slide-right-leave-to {
-  transform: translateX(100%);
-}
-
-/* 左侧滑入滑出动画 */
-.pxd-transition--drawer-slide-left-enter-active,
-.pxd-transition--drawer-slide-left-leave-active {
-  transition: transform var(--default-transition-duration, 0.3s) cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+.pxd-transition--drawer-slide-left-leave-to,
 .pxd-transition--drawer-slide-left-enter-from {
   transform: translateX(-100%);
 }
 
-.pxd-transition--drawer-slide-left-leave-to {
-  transform: translateX(-100%);
-}
-
-/* 顶部滑入滑出动画 */
-.pxd-transition--drawer-slide-top-enter-active,
-.pxd-transition--drawer-slide-top-leave-active {
-  transition: transform var(--default-transition-duration, 0.3s) cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+.pxd-transition--drawer-slide-top-leave-to,
 .pxd-transition--drawer-slide-top-enter-from {
   transform: translateY(-100%);
 }
 
-.pxd-transition--drawer-slide-top-leave-to {
-  transform: translateY(-100%);
-}
-
-/* 底部滑入滑出动画 */
-.pxd-transition--drawer-slide-bottom-enter-active,
-.pxd-transition--drawer-slide-bottom-leave-active {
-  transition: transform var(--default-transition-duration, 0.3s) cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+.pxd-transition--drawer-slide-bottom-leave-to,
 .pxd-transition--drawer-slide-bottom-enter-from {
-  transform: translateY(100%);
-}
-
-.pxd-transition--drawer-slide-bottom-leave-to {
   transform: translateY(100%);
 }
 </style>
