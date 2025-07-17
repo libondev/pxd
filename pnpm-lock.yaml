@@ -75,9 +75,6 @@ catalogs:
     npm-run-all2:
       specifier: ^8.0.4
       version: 8.0.4
-    tailwind-merge:
-      specifier: ^3.3.1
-      version: 3.3.1
     tailwindcss:
       specifier: ^4.1.4
       version: 4.1.11
@@ -128,9 +125,6 @@ importers:
       lodash.throttle:
         specifier: catalog:default
         version: 4.1.1
-      tailwind-merge:
-        specifier: 'catalog:'
-        version: 3.3.1
     devDependencies:
       '@antfu/eslint-config':
         specifier: 'catalog:'
@@ -3579,9 +3573,6 @@ packages:
   synckit@0.11.8:
     resolution: {integrity: sha512-+XZ+r1XGIJGeQk3VvXhT6xx/VpbHsRzsTkGgF6E5RX9TTXD0118l87puaEBZ566FhqblC6U0d4XnubznJDm30A==}
     engines: {node: ^14.18.0 || >=16.0.0}
-
-  tailwind-merge@3.3.1:
-    resolution: {integrity: sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==}
 
   tailwindcss@4.1.11:
     resolution: {integrity: sha512-2E9TBm6MDD/xKYe+dvJZAmg3yxIEDNRc0jwlNyDg/4Fil2QcSLjFKGVff0lAf1jjeaArlG/M75Ey/EYr/OJtBA==}
@@ -7597,8 +7588,6 @@ snapshots:
   synckit@0.11.8:
     dependencies:
       '@pkgr/core': 0.2.7
-
-  tailwind-merge@3.3.1: {}
 
   tailwindcss@4.1.11: {}
 
