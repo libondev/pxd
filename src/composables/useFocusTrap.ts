@@ -1,9 +1,8 @@
-import { nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
+import type { Ref } from 'vue'
+import { nextTick, onBeforeUnmount, watch } from 'vue'
 import { on } from '../utils/events'
 
-export function useFocusTrap() {
-  const containerRef = shallowRef<HTMLElement>()
-
+export function useFocusTrap(containerRef: Ref<HTMLElement | undefined>) {
   const selectors = ['input:not([inert])', 'select:not([inert])', 'textarea:not([inert])', 'a[href]:not([inert])', 'button:not([inert])', '[tabindex]:not(slot):not([inert])', 'audio[controls]:not([inert])', 'video[controls]:not([inert])', '[contenteditable]:not([contenteditable="false"]):not([inert])', 'details>summary:first-of-type:not([inert])', 'details:not([inert])']
 
   let elements: HTMLElement[] = []
@@ -23,7 +22,7 @@ export function useFocusTrap() {
     elements[nextFocusIndex]?.focus()
   }
 
-  watch(() => containerRef.value, (container, _, onCleanup) => {
+  const unwatch = watch(() => containerRef.value, (container, _, onCleanup) => {
     if (!container) {
       previousFocusedElement?.focus()
       return
@@ -49,11 +48,13 @@ export function useFocusTrap() {
   })
 
   onBeforeUnmount(() => {
+    unwatch()
     elements = []
     previousFocusedElement = null
   })
 
   return {
     containerRef,
+    stop: unwatch,
   }
 }

@@ -205,6 +205,7 @@ const computedClass = computed(() => {
 }
 
 .pxd-book:hover .pxd-book--container {
+  will-change: transform;
   transform: rotateY(var(--hover-rotate)) scale(var(--hover-scale)) translateX(var(--hover-translate-x));
 }
 </style>

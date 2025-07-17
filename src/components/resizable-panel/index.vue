@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ResizableContext } from '../../types/components/resizable'
 import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue'
-import { getRandomKey } from '../../utils/random'
+import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   initialSize?: number | null
@@ -23,12 +23,12 @@ if (!context) {
   throw new Error('PResizablePanel must be used within PResizable')
 }
 
-const panelId = getRandomKey()
+const uniqueId = getUniqueId()
 
 // 注册面板
 onMounted(() => {
   context?.registerPanel({
-    id: panelId,
+    id: uniqueId,
     initialSize: props.initialSize,
     minSize: props.minSize,
   })
@@ -36,13 +36,13 @@ onMounted(() => {
 
 // 注销面板
 onBeforeUnmount(() => {
-  context?.unregisterPanel(panelId)
+  context?.unregisterPanel(uniqueId)
 })
 
 // 监听 props 变化并更新注册信息
 watch(() => [props.initialSize, props.minSize], () => {
   context?.registerPanel({
-    id: panelId,
+    id: uniqueId,
     initialSize: props.initialSize,
     minSize: props.minSize,
   })
@@ -54,7 +54,7 @@ const computedStyle = computed(() => {
   }
 
   // 直接通过索引获取尺寸，确保响应式更新
-  const panelIndex = context.panelConfigs.value.findIndex(p => p.id === panelId)
+  const panelIndex = context.panelConfigs.value.findIndex(p => p.id === uniqueId)
   const size = panelIndex >= 0 ? context.panelSizes.value[panelIndex] || 0 : 0
 
   // 确保在 Vue 2.7 中正确响应数据变化

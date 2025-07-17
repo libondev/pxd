@@ -61,7 +61,7 @@ function onCheckboxChange(e: Event) {
 <template>
   <label
     role="switch"
-    class="pxd-toggle inline-flex items-center cursor-pointer select-none"
+    class="pxd-toggle group/toggle inline-flex items-center cursor-pointer select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--abc': activeBgColor,
@@ -86,7 +86,7 @@ function onCheckboxChange(e: Event) {
       class="pxd-toggle--handle border border-input p-px rounded-full motion-safe:transition-all [--tx:0] bg-(--ibc) peer-focus-ring peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
       :class="computedSize"
     >
-      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-input transform-gpu translate-x-(--tx) motion-safe:transition-transform">
+      <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-input transform-gpu translate-x-(--tx) motion-safe:transition-transform group-hover/toggle:will-change-transform">
         <slot v-if="modelValue" name="active-icon" />
         <slot v-else name="inactive-icon" />
       </span>

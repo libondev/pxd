@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { nextTick, watch } from 'vue'
+import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import POverlay from '../overlay/index.vue'
@@ -45,8 +45,10 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
-const { containerRef: modalRef } = useFocusTrap()
+
+useFocusTrap(modalRef)
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
@@ -67,15 +69,13 @@ function onModalKeydown() {
 }
 
 watch(() => isVisible.value, (visible) => {
-  nextTick(() => {
-    if (visible) {
-      emits('open')
-      return
-    }
+  if (visible) {
+    emits('open')
+    return
+  }
 
-    emits('close')
-  })
-}, { flush: 'post' })
+  emits('close')
+})
 </script>
 
 <template>
@@ -87,21 +87,21 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--width,540)*1px)]"
-        :style="{ '--width': width }"
+        class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)]"
+        :style="{ '--w': width }"
         @keydown.esc="onModalKeydown"
       >
         <header
-          class="pxd-modal--header relative shrink-0 p-6 -mb-6"
+          class="pxd-modal--header relative shrink-0 px-6 py-4 -mb-4 sm:py-6 sm:-mb-6"
           :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <h3 class="text-2xl font-semibold tracking-tight">
+          <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
               {{ title }}
             </slot>
           </h3>
 
-          <div v-if="subtitle" class="mt-6">
+          <div v-if="subtitle" class="mt-4 text-sm text-muted-foreground">
             <slot name="subtitle">
               {{ subtitle }}
             </slot>

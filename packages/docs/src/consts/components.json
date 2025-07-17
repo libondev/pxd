@@ -20,6 +20,10 @@
     "name": "button"
   },
   {
+    "camelized": "Carousel",
+    "name": "carousel"
+  },
+  {
     "camelized": "Checkbox",
     "name": "checkbox"
   },

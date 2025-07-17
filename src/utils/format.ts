@@ -42,10 +42,10 @@ export function toArray(value: unknown | unknown[]) {
 const CSS_UNIT_REGEX = /^\d+$/
 export function getCssUnitValue(
   value: Nullable<string | number>,
-  fallbackValue?: string | number,
-) {
+  fallbackValue?: string,
+): string {
   if (value == null) {
-    return fallbackValue
+    return fallbackValue!
   }
 
   if (typeof value === 'number' || CSS_UNIT_REGEX.test(value)) {

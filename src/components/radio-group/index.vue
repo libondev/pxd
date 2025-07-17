@@ -2,7 +2,7 @@
 import type { ComponentOption, ComponentValue } from '../../types'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import { provideRandomValue } from '../../composables/useRandomValueContext'
+import { provideUniqueId } from '../../composables/useUniqueIdContext'
 import PRadio from '../radio/index.vue'
 import PStack from '../stack/index.vue'
 
@@ -36,7 +36,7 @@ const emits = defineEmits<{
 
 const modelValue = useModelValue(props, emits)
 
-provideRandomValue('pxdRadioGroupName')
+provideUniqueId('pxdRadioGroupName')
 provide('pxdRadioGroupProps', props)
 </script>
 

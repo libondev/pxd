@@ -2,7 +2,7 @@
 import type { ComponentLabel } from '../../types/components'
 import { twMerge } from 'tailwind-merge'
 import { computed, inject } from 'vue'
-import { useRandomValue } from '../../composables/useRandomValueContext'
+import { useUniqueId } from '../../composables/useUniqueIdContext'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -25,7 +25,7 @@ const props = defineProps<Props>()
 const uniqueId = getUniqueId()
 const modelValue = inject('pxdSwitchGroupModelValue', { value: '' })
 
-const switchGroupName = useRandomValue('pxdSwitchGroupName')
+const switchGroupName = useUniqueId('pxdSwitchGroupName')
 const switchGroupProps = inject('pxdSwitchGroupProps', {
   disabled: false,
   required: false,

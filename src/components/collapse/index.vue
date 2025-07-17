@@ -95,7 +95,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pxd-collapse border-b">
+  <div class="pxd-collapse border-b will-change-contents">
     <h3 class="pxd-collapse--title">
       <button
         class="pxd-collapse--trigger flex items-center justify-between w-full pr-1 appearance-none group/collapse cursor-pointer outline-none border-none bg-transparent self-focus-ring"
