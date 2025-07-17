@@ -91,13 +91,13 @@ watch(() => isVisible.value, (visible) => {
           class="pxd-modal--header relative shrink-0 px-6 py-4 sm:py-6"
           :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
-          <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
+          <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
               {{ title }}
             </slot>
           </h3>
 
-          <div v-if="subtitle" class="mt-4 text-sm text-muted-foreground">
+          <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
             <slot name="subtitle">
               {{ subtitle }}
             </slot>
@@ -113,6 +113,7 @@ watch(() => isVisible.value, (visible) => {
         </PScrollable>
 
         <footer
+          v-if="$slots.footer"
           class="pxd-modal--footer relative p-4 shrink-0 flex items-center gap-2 justify-between"
           :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >

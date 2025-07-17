@@ -151,17 +151,17 @@ watch(() => isVisible.value, (visible) => {
       >
         <header
           v-if="$slots.title || $slots.subtitle || title || subtitle"
-          class="pxd-drawer--header flex gap-2 items-start justify-between px-6 py-4 sm:py-6"
+          class="pxd-drawer--header relative shrink-0 px-6 py-4 sm:py-6 flex gap-2"
           :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <div class="flex-1 shrink-0">
-            <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
+            <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
               <slot name="title">
                 {{ title }}
               </slot>
             </h3>
 
-            <div v-if="subtitle" class="mt-4 text-sm text-muted-foreground">
+            <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -190,7 +190,7 @@ watch(() => isVisible.value, (visible) => {
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer bg-background flex items-center justify-between border-t min-h-12 gap-2 p-4 shrink-0"
+          class="pxd-drawer--footer relative p-4 shrink-0 flex items-center gap-2 justify-between"
           :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >
           <slot name="footer" />

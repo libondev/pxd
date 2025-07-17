@@ -225,20 +225,11 @@ function resetForm() {
     size="500px"
   >
     <div class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium mb-2">Name</label>
-        <PInput v-model="formData.name" placeholder="Your name" />
-      </div>
+      <PInput v-model="formData.name" label="Name" placeholder="Your name" />
 
-      <div>
-        <label class="block text-sm font-medium mb-2">Email</label>
-        <PInput v-model="formData.email" type="email" placeholder="your@email.com" />
-      </div>
+      <PInput v-model="formData.email" label="Email" type="email" placeholder="your@email.com" />
 
-      <div>
-        <label class="block text-sm font-medium mb-2">Message</label>
-        <PTextarea v-model="formData.message" placeholder="Your message..." rows="4" />
-      </div>
+      <PTextarea v-model="formData.message" label="Message" placeholder="Your message..." rows="4" />
     </div>
 
     <template #footer>
