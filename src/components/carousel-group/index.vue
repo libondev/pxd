@@ -186,7 +186,8 @@ provide(carouselGroupContextKey, {
 
 <template>
   <div
-    class="pxd-carousel-group group/carousel w-full relative overflow-hidden"
+    tabindex="-1"
+    class="pxd-carousel-group group w-full relative overflow-hidden touch-manipulation"
     :style="{ height: getCssUnitValue(height) }"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
@@ -195,7 +196,7 @@ provide(carouselGroupContextKey, {
     <div
       ref="containerRef"
       :data-direction="direction"
-      class="pxd-carousel-group--container w-full h-full translate-z-0 data-[direction=horizontal]:flex group-hover/carousel:will-change-transform"
+      class="pxd-carousel-group--container w-full h-full translate-z-0 data-[direction=horizontal]:flex group-hover:will-change-transform"
       :style="computedStyle"
       :class="TRANSITION_CLASSES"
       @transitionend="onTransitionsEnd"
@@ -205,13 +206,18 @@ provide(carouselGroupContextKey, {
 
     <template v-if="arrow">
       <button
-        class="pxd-carousel-group--prev-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer left-0 -translate-x-full disabled:pointer-events-none group-hover/carousel:translate-x-1/2 group-hover/carousel:opacity-30 hover:opacity-90 active:opacity-100 motion-safe:transition-all"
+        type="button"
+        aria-label="Carousel arrow left"
+        class="pxd-carousel-group--prev-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer left-0 -translate-x-full disabled:pointer-events-none group-hover:translate-x-1/2 group-hover:opacity-50 group-focus-within:translate-x-1/2 group-focus-within:opacity-50 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-all"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
       </button>
+
       <button
-        class="pxd-carousel-group--next-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer right-0 translate-x-full disabled:pointer-events-none group-hover/carousel:-translate-x-1/2 group-hover/carousel:opacity-30 hover:opacity-90 active:opacity-100 motion-safe:transition-all"
+        type="button"
+        aria-label="Carousel arrow right"
+        class="pxd-carousel-group--next-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer right-0 translate-x-full disabled:pointer-events-none group-hover:-translate-x-1/2 group-hover:opacity-50 group-focus-within:-translate-x-1/2 group-focus-within:opacity-50 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-all"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
