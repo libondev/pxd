@@ -39,11 +39,3 @@ catalog:
   tailwindcss: ^4.1.4
   vue-sfc-transformer: ^0.1.16
   vue-tsc: ^3.0.1
-
-preferFrozenLockfile: true
-
-shamefullyHoist: true
-
-sharedWorkspaceLockfile: true
-
-strictPeerDependencies: false
