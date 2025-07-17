@@ -16,7 +16,7 @@ if (!carouselGroupContext) {
 
 const {
   props,
-  slides,
+  carousels,
   registerCarousel,
   unregisterCarousel,
 } = carouselGroupContext
@@ -36,13 +36,13 @@ function getTranslateStyle(translate: number) {
 }
 
 function translateItem(index: number, activeIndex: number) {
-  const maxLength = slides.value.length
+  const maxLength = carousels.value.length
   const lastIndex = maxLength - 1
 
   if (index === 0 && activeIndex === maxLength) {
     // 正向切换：第一个项目移到最右侧
     transformStyle.value = getTranslateStyle(maxLength * 100)
-  } else if (index === lastIndex && activeIndex === 0) {
+  } else if (index === lastIndex && activeIndex <= 0) {
     // 反向切换：最后一个项目移到最左侧
     transformStyle.value = getTranslateStyle(-maxLength * 100)
   } else {
@@ -52,7 +52,6 @@ function translateItem(index: number, activeIndex: number) {
 
 registerCarousel({
   uid: uniqueId,
-  resetPosition,
   translateItem,
 })
 

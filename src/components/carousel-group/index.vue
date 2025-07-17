@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { CarouselGroupProps, CarouselItemState } from './constants'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, onBeforeUnmount, provide, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef } from 'vue'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
-import { carouselGroupContextKey } from './constants'
+import { carouselGroupContextKey, THROTTLE_DELAY, TRANSITION_CLASSES } from './constants'
 
 defineOptions({
   name: 'PCarouselGroup',
@@ -16,6 +16,7 @@ const props = withDefaults(
     index: 0,
     loop: true,
     arrow: true,
+    height: 150,
     autoplay: true,
     interval: 3000,
     direction: 'horizontal',
@@ -28,133 +29,193 @@ const emits = defineEmits<{
   change: [index: number]
 }>()
 
+let autoPlayTimer: ReturnType<typeof requestAnimationFrame>
+
 const containerRef = shallowRef<HTMLDivElement>()
 
-const slides = shallowRef<CarouselItemState[]>([])
-const internalIndex = shallowRef(props.index)
+const carousels = ref<CarouselItemState[]>([])
 
-const computedStyle = computed(() => {
-  let translate = 0
+const virtualIndex = shallowRef(props.index)
 
-  if (internalIndex.value === -1) {
-    translate = (slides.value.length - 1) * -100
-  } else {
-    translate = internalIndex.value * -100
+// 由于虚拟索引可能超出范围以便于实现无缝切换，需要一个处理边界的索引来指示真实索引
+const correctIndex = computed(() => {
+  const index = virtualIndex.value
+
+  if (index >= carousels.value.length) {
+    return 0
   }
 
+  if (index <= -1) {
+    return carousels.value.length - 1
+  }
+
+  return index
+})
+
+const computedStyle = computed(() => {
+  const translateValue = virtualIndex.value * -100
+
   const styles = {
-    '--h': getCssUnitValue(props.height),
-    'transform': props.direction === 'horizontal'
-      ? `translateX(${translate}%)`
-      : `translateY(${translate}%)`,
+    transform: props.direction === 'horizontal'
+      ? `translateX(${translateValue}%)`
+      : `translateY(${translateValue}%)`,
   }
 
   return styles
 })
 
 function translateItems() {
-  slides.value.forEach((carousel, index) => {
-    carousel.translateItem(index, internalIndex.value)
+  carousels.value.forEach((carousel, index) => {
+    carousel.translateItem(index, virtualIndex.value)
   })
 }
 
 const onToggleClick = throttle((delta: number) => {
-  const length = slides.value.length
-  const maxWithVirtual = length + 1
+  const length = carousels.value.length
 
   if (length === 0) {
     return
   }
 
   if (props.loop) {
-    // internalIndex.value = (internalIndex.value + delta + maxWithVirtual) % maxWithVirtual
-    internalIndex.value = (internalIndex.value + delta)
+    virtualIndex.value += delta
 
     translateItems()
   } else {
-    internalIndex.value = Math.max(0, Math.min(internalIndex.value + delta, maxWithVirtual - 1))
+    virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
-  emits('change', internalIndex.value >= 0 ? internalIndex.value : length - 1)
-}, 0)
+  emits('change', correctIndex.value)
+}, THROTTLE_DELAY, { leading: true, trailing: false })
 
-function onWheelToggle(e: WheelEvent) {
+function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
     return
   }
 
-  const valueSource = props.direction === 'horizontal' ? e.deltaX : e.deltaY
-  const delta = valueSource > 0 ? 1 : -1
+  const delta = ev.deltaY > 0 ? 1 : -1
 
-  const oldIndex = internalIndex.value
   onToggleClick(delta)
 
-  if (internalIndex.value !== oldIndex) {
-    e.preventDefault()
-    e.stopPropagation()
+  const index = virtualIndex.value
+
+  if (!props.loop && (index !== 0 && index !== carousels.value.length - 1)) {
+    ev.preventDefault()
   }
 }
 
-function onTransitionEnd() {
-  if (internalIndex.value >= slides.value.length) {
-    containerRef.value!.classList.add('\!transition-none')
+// 禁用过渡效果，并重置索引以复位容器
+function resetContainerPosition(resetIndex: number) {
+  const containerClassList = containerRef.value!.classList
 
-    slides.value.forEach((carousel) => {
-      carousel.resetPosition()
-    })
+  containerClassList.remove(...TRANSITION_CLASSES)
 
-    internalIndex.value = 0
+  virtualIndex.value = resetIndex
+  translateItems()
 
-    containerRef.value!.classList.remove('\!transition-none')
+  setTimeout(() => {
+    containerClassList.add(...TRANSITION_CLASSES)
+  }, 0)
+}
+
+function onTransitionsEnd() {
+  if (!props.loop) {
+    return
   }
+
+  if (virtualIndex.value >= carousels.value.length) {
+    resetContainerPosition(0)
+  } else if (virtualIndex.value <= -1) {
+    resetContainerPosition(carousels.value.length - 1)
+  }
+}
+
+function setAutoPlayTimer() {
+  const startTime = performance.now()
+
+  function onAnimationFrame() {
+    const currentTime = performance.now()
+    const elapsedTime = currentTime - startTime
+
+    if (elapsedTime >= props.interval) {
+      onToggleClick(1)
+      setAutoPlayTimer()
+    } else {
+      autoPlayTimer = requestAnimationFrame(onAnimationFrame)
+    }
+  }
+
+  autoPlayTimer = requestAnimationFrame(onAnimationFrame)
+}
+
+function onPointerEnter() {
+  cancelAnimationFrame(autoPlayTimer)
+}
+
+function onPointerLeave() {
+  if (!props.autoplay) {
+    return
+  }
+
+  setAutoPlayTimer()
 }
 
 function registerCarousel(state: CarouselItemState) {
-  slides.value.push(state)
+  carousels.value.push(state)
 }
 
 function unregisterCarousel(id: string) {
-  slides.value = slides.value.filter(slide => slide.uid !== id)
+  carousels.value = carousels.value.filter(({ uid }) => uid !== id)
 }
 
+onMounted(() => {
+  onPointerLeave()
+})
+
 onBeforeUnmount(() => {
-  slides.value = []
+  carousels.value = []
 })
 
 provide(carouselGroupContextKey, {
   props,
-  slides,
+  carousels,
   registerCarousel,
   unregisterCarousel,
 })
 </script>
 
 <template>
-  {{ internalIndex }}
+  <div
+    class="pxd-carousel-group group/carousel w-full relative overflow-hidden"
+    :style="{ height: getCssUnitValue(height) }"
+    @pointerenter="onPointerEnter"
+    @pointerleave="onPointerLeave"
+    @wheel="onWheelToggle"
+  >
+    <div
+      ref="containerRef"
+      :data-direction="direction"
+      class="pxd-carousel-group--container w-full h-full translate-z-0 data-[direction=horizontal]:flex group-hover/carousel:will-change-transform"
+      :style="computedStyle"
+      :class="TRANSITION_CLASSES"
+      @transitionend="onTransitionsEnd"
+    >
+      <slot />
+    </div>
 
-  <div class="pxd-carousel-group group/carousel w-full relative overflow-hidden" @wheel="onWheelToggle">
     <template v-if="arrow">
       <button
-        class="pxd-carousel-group--prev-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer left-0 -translate-x-full disabled:pointer-events-none group-hover/carousel:translate-x-1/2 group-hover/carousel:opacity-40 hover:opacity-80 active:opacity-100 motion-safe:transition-all"
+        class="pxd-carousel-group--prev-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer left-0 -translate-x-full disabled:pointer-events-none group-hover/carousel:translate-x-1/2 group-hover/carousel:opacity-30 hover:opacity-90 active:opacity-100 motion-safe:transition-all"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
       </button>
       <button
-        class="pxd-carousel-group--next-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer right-0 translate-x-full disabled:pointer-events-none group-hover/carousel:-translate-x-1/2 group-hover/carousel:opacity-40 hover:opacity-80 active:opacity-100 motion-safe:transition-all"
+        class="pxd-carousel-group--next-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer right-0 translate-x-full disabled:pointer-events-none group-hover/carousel:-translate-x-1/2 group-hover/carousel:opacity-30 hover:opacity-90 active:opacity-100 motion-safe:transition-all"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
       </button>
     </template>
-
-    <div
-      ref="containerRef"
-      class="pxd-carousel-group--container w-full flex h-(--h) transition-transform translate-z-0 duration-500 group-hover/carousel:will-change-transform"
-      :style="computedStyle"
-      @transitionend="onTransitionEnd"
-    >
-      <slot />
-    </div>
   </div>
 </template>
