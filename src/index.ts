@@ -3,7 +3,7 @@ import * as components from './components/index'
 
 export * from './components/index'
 
-export const version = '0.0.24'
+export const version = '0.0.25'
 
 export default function install(app: App, prefix = 'P') {
   Object.entries(components).forEach(([key, component]) => {
