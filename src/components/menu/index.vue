@@ -56,6 +56,7 @@ provide('pxdMenu', {
       <PMenuList
         :width="width"
         :options="options"
+        class="shadow-border-menu bg-background rounded-xl p-2 pr-0 list-none outline-none"
         @selected="onOptionClick"
       >
         <slot name="items" />

@@ -2,6 +2,7 @@
 import type { MenuListOption } from '../../types/components'
 import { computed, onBeforeUnmount, onMounted, provide, shallowRef } from 'vue'
 import { off, on } from '../../utils/events'
+import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PMenuItem from '../menu-item/index.vue'
@@ -22,6 +23,10 @@ const props = withDefaults(
     options: () => [],
   },
 )
+
+const emits = defineEmits<{
+  toggle: [index: number]
+}>()
 
 const MENU_ITEM_CLASS = 'pxd-menu-item'
 const MENU_ITEM_SELECTOR = `.${MENU_ITEM_CLASS}`
@@ -94,7 +99,7 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
 
-function onContainerKeydown(ev: KeyboardEvent) {
+const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   const count = allItems.value.length
 
   if (count === 0) {
@@ -107,22 +112,23 @@ function onContainerKeydown(ev: KeyboardEvent) {
     return
   }
 
-  if (PREV_KEYS.includes(key)) {
-    ev.preventDefault()
+  if (key === 'Enter') {
+    allItems.value[activeIndex.value]?.click()
+    return
+  }
 
+  if (PREV_KEYS.includes(key)) {
     activeIndex.value = activeIndex.value === -1
       ? count - 1
       : getCorrectIndex('prev', activeIndex.value)
-  } else if (NEXT_KEYS.includes(key)) {
-    ev.preventDefault()
 
+    emits('toggle', activeIndex.value)
+  } else if (NEXT_KEYS.includes(key)) {
     activeIndex.value = activeIndex.value === -1
       ? 0
       : getCorrectIndex('next', activeIndex.value)
-  } else if (key === 'Enter') {
-    ev.preventDefault()
 
-    allItems.value[activeIndex.value]?.click()
+    emits('toggle', activeIndex.value)
   }
 
   if (allItems.value.length <= 0 || activeIndex.value < 0) {
@@ -132,6 +138,11 @@ function onContainerKeydown(ev: KeyboardEvent) {
   allItems.value[activeIndex.value].scrollIntoView({
     block: 'nearest',
   })
+}, 255, { leading: true, trailing: false })
+
+function onContainerKeydown(ev: KeyboardEvent) {
+  ev.preventDefault()
+  containerKeydownThrottled(ev)
 }
 
 function onPointerOver(ev: PointerEvent) {
@@ -174,7 +185,7 @@ onBeforeUnmount(() => {
   <ul
     role="menu"
     tabindex="-1"
-    class="pxd-menu-list shadow-border-menu bg-background rounded-xl p-2 pr-0 list-none outline-none"
+    class="pxd-menu-list"
     :style="computedStyle"
     @pointerover="onPointerOver"
     @keydown="onContainerKeydown"
