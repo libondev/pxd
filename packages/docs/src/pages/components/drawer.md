@@ -68,7 +68,7 @@ const leftVisible = ref(false)
     v-model="topVisible"
     position="top"
     title="Top Drawer"
-    height="300px"
+    size="300px"
   >
     <PText>This drawer slides in from the top.</PText>
   </PDrawer>
@@ -77,7 +77,7 @@ const leftVisible = ref(false)
     v-model="rightVisible"
     position="right"
     title="Right Drawer"
-    width="400px"
+    size="400px"
   >
     <PText>This drawer slides in from the right.</PText>
   </PDrawer>
@@ -86,7 +86,7 @@ const leftVisible = ref(false)
     v-model="bottomVisible"
     position="bottom"
     title="Bottom Drawer"
-    height="300px"
+    size="300px"
   >
     <PText>This drawer slides in from the bottom.</PText>
   </PDrawer>
@@ -95,7 +95,7 @@ const leftVisible = ref(false)
     v-model="leftVisible"
     position="left"
     title="Left Drawer"
-    width="400px"
+    size="400px"
   >
     <PText>This drawer slides in from the left.</PText>
   </PDrawer>
@@ -103,7 +103,7 @@ const leftVisible = ref(false)
 ```
 
 ## Custom Size
-You can customize the drawer size using width and height props.
+You can customize the drawer size using `size` prop.
 
 ```vue demo
 <script setup>
@@ -124,7 +124,7 @@ const fullVisible = ref(false)
   <PDrawer
     v-model="smallVisible"
     title="Small Drawer"
-    width="240px"
+    size="240px"
   >
     <PText>This is a small drawer with 240px width.</PText>
   </PDrawer>
@@ -132,7 +132,7 @@ const fullVisible = ref(false)
   <PDrawer
     v-model="largeVisible"
     title="Large Drawer"
-    width="600px"
+    size="600px"
   >
     <PText>This is a large drawer with 600px width.</PText>
     <PText class="mt-4">More content can fit in this larger drawer.</PText>
@@ -141,7 +141,7 @@ const fullVisible = ref(false)
   <PDrawer
     v-model="fullVisible"
     title="Full Width Drawer"
-    width="100vw"
+    size="100%"
   >
     <PText>This drawer takes the full width of the viewport.</PText>
   </PDrawer>
@@ -170,7 +170,7 @@ const isVisible = ref(false)
     <PText>This drawer will only close when you click the close button or use the footer buttons.</PText>
 
     <template #footer>
-      <PButton variant="primary" @click="isVisible = false">
+      <PButton block @click="isVisible = false">
         Close Drawer
       </PButton>
     </template>
@@ -222,7 +222,7 @@ function resetForm() {
     v-model="isVisible"
     title="Contact Form"
     subtitle="Send us a message and we'll get back to you"
-    width="500px"
+    size="500px"
   >
     <div class="space-y-4">
       <div>
@@ -245,9 +245,10 @@ function resetForm() {
       <PButton @click="resetForm">
         Reset
       </PButton>
-      <PButton @click="closeForm">
+      <PButton class="mr-auto" @click="closeForm">
         Cancel
       </PButton>
+
       <PButton variant="primary" @click="submitForm">
         Send Message
       </PButton>
@@ -290,7 +291,7 @@ function openMenu() {
     v-model="isVisible"
     title="Navigation"
     position="left"
-    width="280px"
+    size="280px"
   >
     <nav class="space-y-2">
       <a
@@ -327,7 +328,7 @@ const isVisible = ref(false)
 <template>
   <PButton variant="primary" @click="isVisible = true">Open Simple Drawer</PButton>
 
-  <PDrawer v-model="isVisible" width="350px">
+  <PDrawer v-model="isVisible" size="350px">
     <div class="p-4">
       <h3 class="text-lg font-semibold mb-4">Custom Header</h3>
       <PText>This drawer doesn't use the built-in header. You can create your own custom header and content layout.</PText>
@@ -362,7 +363,7 @@ const longContent = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}: This is
     v-model="isVisible"
     title="Long Content"
     subtitle="This drawer contains scrollable content"
-    width="400px"
+    size="400px"
   >
     <div class="space-y-3">
       <div
@@ -401,7 +402,7 @@ const secondDrawer = ref(false)
     v-model="firstDrawer"
     title="First Drawer"
     subtitle="This is the first drawer"
-    width="400px"
+    size="400px"
   >
     <PText>This is the first drawer. You can open another drawer from here.</PText>
 
@@ -410,7 +411,7 @@ const secondDrawer = ref(false)
     </PButton>
 
     <template #footer>
-      <PButton @click="firstDrawer = false">
+      <PButton block @click="firstDrawer = false">
         Close First
       </PButton>
     </template>
@@ -420,14 +421,14 @@ const secondDrawer = ref(false)
     v-model="secondDrawer"
     title="Second Drawer"
     subtitle="This is nested inside the first drawer"
-    width="350px"
+    size="350px"
     position="left"
   >
     <PText>This is the second drawer, opened from within the first drawer.</PText>
     <PText class="mt-4">Notice how it slides in from the left to differentiate from the first drawer.</PText>
 
     <template #footer>
-      <PButton variant="primary" @click="secondDrawer = false">
+      <PButton block @click="secondDrawer = false">
         Close Second
       </PButton>
     </template>
