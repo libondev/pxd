@@ -22,7 +22,14 @@ interface Props {
   height?: number | string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+defineOptions({
+  name: 'PDrawer',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
+})
+
   modelValue: false,
   appendToBody: true,
   closeOnClickOverlay: true,
