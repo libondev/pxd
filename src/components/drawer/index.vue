@@ -30,6 +30,9 @@ defineOptions({
   },
 })
 
+const props = withDefaults(
+  defineProps<Props>(),
+  {
   modelValue: false,
   appendToBody: true,
   closeOnClickOverlay: true,
@@ -38,7 +41,8 @@ defineOptions({
   placement: 'right',
   width: '300px',
   height: '300px',
-})
+  },
+)
 
 const emits = defineEmits<{
   'open': []
