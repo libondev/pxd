@@ -5,6 +5,7 @@ import CloseIcon from '@gdsicon/vue/cross'
 import { computed, nextTick, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
+import { getCssUnitValue } from '../../utils/format'
 import PButton from '../button/index.vue'
 import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
@@ -17,13 +18,14 @@ interface Props {
   closeOnClickOverlay?: boolean
   closeOnPressEscape?: boolean
   showCloseButton?: boolean
-  placement?: 'top' | 'right' | 'bottom' | 'left'
+  position?: 'top' | 'right' | 'bottom' | 'left'
   width?: number | string
   height?: number | string
 }
 
 defineOptions({
   name: 'PDrawer',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -33,14 +35,14 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-  modelValue: false,
-  appendToBody: true,
-  closeOnClickOverlay: true,
-  closeOnPressEscape: true,
-  showCloseButton: true,
-  placement: 'right',
-  width: '300px',
-  height: '300px',
+    modelValue: false,
+    appendToBody: true,
+    closeOnClickOverlay: true,
+    closeOnPressEscape: true,
+    showCloseButton: true,
+    position: 'right',
+    width: '300px',
+    height: '300px',
   },
 )
 
@@ -53,6 +55,15 @@ const emits = defineEmits<{
 
 const isVisible = useModelValue(props, emits)
 const { containerRef: drawerRef } = useFocusTrap()
+
+const ensureCorrectPosition = computed(() => {
+  const { position } = props
+  if (['top', 'bottom', 'left', 'right'].includes(position)) {
+    return position
+  }
+
+  return 'right'
+})
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
@@ -92,6 +103,7 @@ watch(() => isVisible.value, (visible) => {
 const contentClasses = computed(() => {
   const baseClasses = [
     'pxd-drawer',
+    'outline-none translate-z-0 shadow-border-modal',
     'fixed',
     'bg-background',
     'shadow-lg',
@@ -100,8 +112,7 @@ const contentClasses = computed(() => {
     'z-10',
   ]
 
-  // 根据方向添加位置类
-  switch (props.placement) {
+  switch (ensureCorrectPosition.value) {
     case 'top':
       baseClasses.push('top-0', 'left-0', 'right-0')
       break
@@ -122,19 +133,11 @@ const contentClasses = computed(() => {
 // 计算容器宽高
 const contentStyle = computed(() => {
   const style: CSSProperties = {}
-  // 根据方向设置尺寸
-  if (props.placement === 'left' || props.placement === 'right') {
-    if (typeof props.width === 'number') {
-      style.width = `${props.width}px`
-    } else {
-      style.width = props.width
-    }
+
+  if (['left', 'right'].includes(ensureCorrectPosition.value)) {
+    style.width = getCssUnitValue(props.width)
   } else {
-    if (typeof props.height === 'number') {
-      style.height = `${props.height}px`
-    } else {
-      style.height = props.height
-    }
+    style.height = getCssUnitValue(props.height)
   }
 
   return style
@@ -142,7 +145,7 @@ const contentStyle = computed(() => {
 
 // 计算动画名称
 const transitionName = computed(() => {
-  return `pxd-transition--drawer-slide-${props.placement}`
+  return `pxd-transition--drawer-slide-${ensureCorrectPosition.value}`
 })
 </script>
 

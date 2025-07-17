@@ -43,7 +43,7 @@ function closeDrawer() {
 </template>
 ```
 
-## Placement
+## Position
 Drawer can slide in from different directions: top, right, bottom, or left.
 
 ```vue demo
@@ -66,7 +66,7 @@ const leftVisible = ref(false)
 
   <PDrawer
     v-model="topVisible"
-    placement="top"
+    position="top"
     title="Top Drawer"
     height="300px"
   >
@@ -75,7 +75,7 @@ const leftVisible = ref(false)
 
   <PDrawer
     v-model="rightVisible"
-    placement="right"
+    position="right"
     title="Right Drawer"
     width="400px"
   >
@@ -84,7 +84,7 @@ const leftVisible = ref(false)
 
   <PDrawer
     v-model="bottomVisible"
-    placement="bottom"
+    position="bottom"
     title="Bottom Drawer"
     height="300px"
   >
@@ -93,7 +93,7 @@ const leftVisible = ref(false)
 
   <PDrawer
     v-model="leftVisible"
-    placement="left"
+    position="left"
     title="Left Drawer"
     width="400px"
   >
@@ -229,12 +229,12 @@ function resetForm() {
         <label class="block text-sm font-medium mb-2">Name</label>
         <PInput v-model="formData.name" placeholder="Your name" />
       </div>
-      
+
       <div>
         <label class="block text-sm font-medium mb-2">Email</label>
         <PInput v-model="formData.email" type="email" placeholder="your@email.com" />
       </div>
-      
+
       <div>
         <label class="block text-sm font-medium mb-2">Message</label>
         <PTextarea v-model="formData.message" placeholder="Your message..." rows="4" />
@@ -289,7 +289,7 @@ function openMenu() {
   <PDrawer
     v-model="isVisible"
     title="Navigation"
-    placement="left"
+    position="left"
     width="280px"
   >
     <nav class="space-y-2">
@@ -421,7 +421,7 @@ const secondDrawer = ref(false)
     title="Second Drawer"
     subtitle="This is nested inside the first drawer"
     width="350px"
-    placement="left"
+    position="left"
   >
     <PText>This is the second drawer, opened from within the first drawer.</PText>
     <PText class="mt-4">Notice how it slides in from the left to differentiate from the first drawer.</PText>
