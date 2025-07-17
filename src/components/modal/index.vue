@@ -60,14 +60,6 @@ function onOverlayClick(ev: MouseEvent) {
   isVisible.value = false
 }
 
-function onModalKeydown() {
-  if (!props.closeOnPressEscape) {
-    return
-  }
-
-  isVisible.value = false
-}
-
 watch(() => isVisible.value, (visible) => {
   if (visible) {
     emits('open')
@@ -79,7 +71,12 @@ watch(() => isVisible.value, (visible) => {
 </script>
 
 <template>
-  <POverlay v-model="isVisible" :append-to-body="appendToBody" @click="onOverlayClick">
+  <POverlay
+    v-model="isVisible"
+    :append-to-body="appendToBody"
+    :close-on-press-escape="closeOnPressEscape"
+    @click="onOverlayClick"
+  >
     <Transition name="pxd-transition--modal" mode="out-in">
       <div
         v-if="isVisible"
@@ -89,7 +86,6 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         class="pxd-modal fixed z-10 flex flex-col h-max overflow-hidden shadow-border-modal rounded-tl-lg rounded-tr-lg bg-background dark:bg-background-secondary w-full max-w-full left-0 bottom-0 outline-none translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 motion-safe:transition-all sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)]"
         :style="{ '--w': width }"
-        @keydown.esc="onModalKeydown"
       >
         <header
           class="pxd-modal--header relative shrink-0 px-6 py-4 sm:py-6"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
+import { off, on } from '../../utils/events'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -9,10 +10,15 @@ interface Props {
   modelValue?: boolean
   appendToBody?: boolean
   overlayClass?: string
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
   name: 'POverlay',
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(
@@ -20,11 +26,13 @@ const props = withDefaults(
   {
     modelValue: false,
     appendToBody: true,
+    closeOnPressEscape: true,
   },
 )
 
 const emits = defineEmits<{
-  click: [MouseEvent]
+  'click': [MouseEvent]
+  'update:modelValue': [boolean]
 }>()
 
 const overlayRef = shallowRef<HTMLElement>()
@@ -36,6 +44,22 @@ function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 }
 
+function onOverlayKeydown(ev: KeyboardEvent) {
+  if (!props.closeOnPressEscape) {
+    return
+  }
+
+  if (ev.key !== 'Escape') {
+    return
+  }
+
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+    return
+  }
+
+  emits('update:modelValue', false)
+}
+
 let scrollContainer: HTMLElement | null
 
 watch(() => props.modelValue, (visible) => {
@@ -43,6 +67,8 @@ watch(() => props.modelValue, (visible) => {
     if (scrollContainer) {
       scrollContainer.classList.remove('scroll-disabled')
     }
+
+    off(document, 'keydown', onOverlayKeydown)
 
     return
   }
@@ -52,6 +78,7 @@ watch(() => props.modelValue, (visible) => {
       scrollContainer = getScrollElByContainer(getScrollContainer(overlayRef.value!))
     }
 
+    on(document, 'keydown', onOverlayKeydown)
     scrollContainer.classList.add('scroll-disabled')
   })
 }, { immediate: true })

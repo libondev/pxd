@@ -19,8 +19,8 @@ interface Props {
   footerStyle?: boolean
   appendToBody?: boolean
   showCloseButton?: boolean
-  closeOnClickOverlay?: boolean
   closeOnPressEscape?: boolean
+  closeOnClickOverlay?: boolean
   position?: 'top' | 'right' | 'bottom' | 'left'
 }
 
@@ -43,8 +43,8 @@ const props = withDefaults(
     headerStyle: false,
     appendToBody: true,
     showCloseButton: true,
-    closeOnClickOverlay: true,
     closeOnPressEscape: true,
+    closeOnClickOverlay: true,
   },
 )
 
@@ -122,14 +122,6 @@ function closeDrawer() {
   emits('close')
 }
 
-function onDrawerKeydown() {
-  if (!props.closeOnPressEscape) {
-    return
-  }
-
-  isVisible.value = false
-}
-
 watch(() => isVisible.value, (visible) => {
   if (visible) {
     emits('open')
@@ -141,7 +133,12 @@ watch(() => isVisible.value, (visible) => {
 </script>
 
 <template>
-  <POverlay v-model="isVisible" :append-to-body="appendToBody" @click="onOverlayClick">
+  <POverlay
+    v-model="isVisible"
+    :append-to-body="appendToBody"
+    :close-on-press-escape="closeOnPressEscape"
+    @click="onOverlayClick"
+  >
     <Transition :name="transitionName" mode="out-in">
       <div
         v-if="isVisible"
@@ -151,7 +148,6 @@ watch(() => isVisible.value, (visible) => {
         tabindex="-1"
         :class="contentClasses"
         :style="contentStyle"
-        @keydown.esc="onDrawerKeydown"
       >
         <header
           v-if="$slots.title || $slots.subtitle || title || subtitle"
