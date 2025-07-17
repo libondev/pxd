@@ -11,8 +11,8 @@ describe('description', () => {
       },
     })
 
-    expect(wrapper.find('[data-pxd-description-title]').text()).toBe('Title')
-    expect(wrapper.find('[data-pxd-description-content]').text()).toBe('Content')
+    expect(wrapper.find('.pxd-description--title').text()).toBe('Title')
+    expect(wrapper.find('.pxd-description--content').text()).toBe('Content')
 
     wrapper.unmount()
   })
