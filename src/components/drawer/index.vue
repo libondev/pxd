@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { ComponentLabel } from '../../types/components'
 import CloseIcon from '@gdsicon/vue/cross'
-import { computed, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import { getCssUnitValue } from '../../utils/format'
@@ -55,8 +55,10 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+const drawerRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
-const { containerRef: drawerRef } = useFocusTrap()
+
+useFocusTrap(drawerRef)
 
 const ensureCorrectPosition = computed(() => {
   const { position } = props
