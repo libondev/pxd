@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentPosition, ComponentVariant } from '../../types/components'
+import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/components'
 import { computed } from 'vue'
 import { isTouchDevice } from '../../utils/is'
 import { getFallbackValue } from '../../utils/value'
@@ -11,7 +11,7 @@ interface Props {
   disabled?: boolean
   position?: ComponentPosition
   desktopOnly?: boolean
-  popoverClass?: string
+  popoverClass?: ComponentClass
   popoverStyle?: CSSProperties | string
   variant?: ComponentVariant
 }
@@ -43,7 +43,7 @@ const computedDisabled = computed(() => {
 })
 
 const computedPopoverClass = computed(() => {
-  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--arrow-color)'].concat(props.popoverClass).join(' ')
+  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--arrow-color)', props.popoverClass]
 })
 
 const computedPopoverStyle = computed(() => {

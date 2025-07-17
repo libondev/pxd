@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentClass } from '../../types/components'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useBrowserObserver'
 import { off, on, once } from '../../utils/events'
@@ -10,7 +11,7 @@ interface Props {
   fader?: boolean
   maskColor?: string
   scrollbar?: boolean
-  contentClass?: string
+  contentClass?: ComponentClass
   scrollbarSize?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string

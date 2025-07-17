@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentBasePosition, ComponentPosition, PopoverTrigger } from '../../types/components'
+import type { ComponentBasePosition, ComponentClass, ComponentPosition, PopoverTrigger } from '../../types/components'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import {
@@ -29,8 +29,8 @@ interface Props {
   enterable?: boolean
   showArrow?: boolean
   arrowColor?: string
-  triggerClass?: string
-  popoverClass?: string
+  triggerClass?: ComponentClass
+  popoverClass?: ComponentClass
   destroyDelay?: number
   scrollHidden?: boolean
   popoverStyle?: CSSProperties | string

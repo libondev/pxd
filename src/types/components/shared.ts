@@ -13,6 +13,8 @@ export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterL
 export type ComponentLabel = string | number | readonly string[] | null
 export type ComponentValue = string | number | boolean
 
+export type ComponentClass = string | any[] | Record<string, any>
+
 export type ComponentBasePosition = 'top' | 'bottom' | 'left' | 'right'
 export type ComponentPosition
   = | ComponentBasePosition

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComponentClass } from '../../types/components'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { off, on } from '../../utils/events'
@@ -9,7 +10,7 @@ interface Props {
   zIndex?: number
   modelValue?: boolean
   appendToBody?: boolean
-  overlayClass?: string
+  overlayClass?: ComponentClass
   closeOnPressEscape?: boolean
 }
 
