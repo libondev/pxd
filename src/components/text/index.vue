@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentAs, ResponsiveValue } from '../../types/components'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 
 interface Props {
   as?: ComponentAs
@@ -89,8 +89,7 @@ const computedClass = computed(() => {
     classes.push('text-foreground-secondary')
   }
 
-  // hack vue2 boolean prop
-  if (truncate === true || truncate === '') {
+  if (isTruthyProp(truncate)) {
     classes.push('truncate')
   } else if (truncate) {
     classes.push(`line-clamp`)

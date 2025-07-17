@@ -6,6 +6,7 @@ import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 
 interface Props {
@@ -74,8 +75,7 @@ const VARIANTS = {
 const computedLabel = computed(() => {
   const { label } = props
 
-  // hack vue2 boolean value
-  if (label === true || label === '') {
+  if (isTruthyProp(label)) {
     return getFallbackValue(props.variant, VARIANTS).icon
   }
 

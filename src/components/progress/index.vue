@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getColorByThreshold } from '../../utils/colors'
+import { isTruthyProp } from '../../utils/format'
 
 interface Props {
   min?: number
@@ -60,8 +61,7 @@ const progress = useModelValue(props, emits, {
 const computedLabel = computed(() => {
   const { label } = props
 
-  // hack vue2 boolean value
-  if (label === true || label === '') {
+  if (isTruthyProp(label)) {
     return String(progress.value)
   }
 
