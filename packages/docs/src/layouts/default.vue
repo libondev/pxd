@@ -12,7 +12,10 @@ const {
 
 const route = useRoute()
 
-const showViewSource = computed(() => route.path.startsWith('/components') && !route.path.endsWith('/components'))
+const showViewSource = computed(() => {
+  return route.path.startsWith('/components') && !route.path.endsWith('/components') && !['/[...all]'].includes(route.name)
+})
+
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
 if (isClient) {
