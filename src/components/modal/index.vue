@@ -92,8 +92,8 @@ watch(() => isVisible.value, (visible) => {
         @keydown.esc="onModalKeydown"
       >
         <header
-          class="pxd-modal--header relative shrink-0 px-6 py-4 -mb-4 sm:py-6 sm:-mb-6"
-          :class="{ 'mb-0 border-b bg-background-secondary dark:bg-background': headerStyle }"
+          class="pxd-modal--header relative shrink-0 px-6 py-4 sm:py-6"
+          :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <h3 class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
@@ -109,14 +109,15 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <PScrollable
-          class="pxd-modal--content flex-1"
-          content-class="p-6"
+          :data-header="headerStyle"
+          class="pxd-modal--content group flex-1"
+          content-class="group-data-[header=true]:pt-6 px-6 pb-6"
         >
           <slot />
         </PScrollable>
 
         <footer
-          class="pxd-modal--footer relative p-4 shrink-0 flex items-center justify-between"
+          class="pxd-modal--footer relative p-4 shrink-0 flex items-center gap-2 justify-between"
           :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >
           <slot name="footer" />
