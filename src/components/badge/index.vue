@@ -57,7 +57,7 @@ const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 text-xs rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
+    'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS, 'gray'),
     computedSize.value,
     props.variant,

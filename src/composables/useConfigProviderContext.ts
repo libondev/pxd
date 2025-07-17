@@ -27,6 +27,7 @@ export function useConfigProvider(): Required<ConfigProviderProps> {
 
 type ComponentSizeType = ComponentSize | ComponentSizeWithXs | undefined
 
+// TODO: Values as const get prop keys
 export function useConfigProviderSize<
   Size extends ComponentSizeType,
   Values extends Record<string, any>,

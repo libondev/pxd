@@ -65,7 +65,7 @@ const internalInputType = shallowRef(props.password ? 'password' : 'text')
 const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border flex items-center relative h-full overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const classes = ['pxd-input--border flex items-center relative overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   classes.push(computedSize.value)
 

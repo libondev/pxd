@@ -26,10 +26,20 @@ const emits = defineEmits<{
 }>()
 
 const SIZES = {
-  xs: 'h-6 px-1 rounded-md',
-  sm: 'h-7.5 px-1.5 rounded-md',
-  md: 'h-9 px-2.5 rounded-md',
-  lg: 'h-10 px-3.5 rounded-lg',
+  xs: 'h-6 px-1',
+  sm: 'h-7.5 px-1.5',
+  md: 'h-9 px-2.5',
+  lg: 'h-10 px-3.5',
+}
+
+const ROUNDED = {
+  xs: 'rounded-md',
+  sm: 'rounded-md',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  square: 'rounded-none',
+  rounded: 'rounded-full',
 }
 
 const FONT_SIZES = {
@@ -58,6 +68,7 @@ const ALIGNMENTS = {
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
 const computedSize = useConfigProviderSize(props.size, SIZES)
+const computedRounded = useConfigProviderSize(props.size, ROUNDED)
 const computedFontSize = useConfigProviderSize(props.size, FONT_SIZES)
 const computedDisabled = computed(() => props.disabled || props.loading)
 
@@ -66,7 +77,11 @@ const computedClass = computed(() => {
 
   const { variant, block, shape, icon } = props
 
-  classes.push(computedFontSize.value)
+  classes.push(
+    computedFontSize.value,
+    isTruthyProp(block) ? 'flex w-full' : 'inline-flex',
+    shape ? ROUNDED[shape] : computedRounded.value,
+  )
 
   if (icon) {
     classes.push('aspect-square !p-0')
@@ -80,18 +95,8 @@ const computedClass = computed(() => {
     )
   }
 
-  classes.push(isTruthyProp(block) ? 'flex w-full' : 'inline-flex')
-
   if (computedDisabled.value) {
     classes.push(DISABLED_CLASS_NAMES)
-  }
-
-  if (shape) {
-    classes.push(
-      shape === 'square'
-        ? 'rounded-none'
-        : 'rounded-full',
-    )
   }
 
   return classes.join(' ')
