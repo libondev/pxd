@@ -644,8 +644,9 @@ defineExpose({
   <div class="pxd-popover relative inline-flex w-max">
     <div
       ref="triggerRef"
-      class="pxd-popover__trigger"
+      class="pxd-popover__trigger active:select-none"
       :class="triggerClass"
+      @contextmenu.prevent
       @keydown="onTriggerKeydown"
     >
       <slot />

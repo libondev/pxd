@@ -9,11 +9,11 @@ import PPopover from '../popover/index.vue'
 interface Props {
   content?: string
   disabled?: boolean
+  variant?: ComponentVariant
   position?: ComponentPosition
   desktopOnly?: boolean
   popoverClass?: ComponentClass
   popoverStyle?: CSSProperties | string
-  variant?: ComponentVariant
 }
 
 defineOptions({
@@ -64,7 +64,6 @@ const computedPopoverStyle = computed(() => {
   <PPopover
     class="pxd-tooltip"
     :position="position"
-    :translate-offset="3"
     :disabled="computedDisabled"
     :popover-class="computedPopoverClass"
     :popover-style="computedPopoverStyle"
