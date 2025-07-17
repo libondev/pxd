@@ -118,12 +118,16 @@
   },
   "dependencies": {
     "@gdsicon/vue": "catalog:",
+    "lodash.debounce": "catalog:default",
+    "lodash.throttle": "catalog:default",
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@tailwindcss/cli": "catalog:",
     "@tsconfig/node22": "catalog:",
+    "@types/lodash.debounce": "catalog:",
+    "@types/lodash.throttle": "catalog:",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "@vue/test-utils": "catalog:",
