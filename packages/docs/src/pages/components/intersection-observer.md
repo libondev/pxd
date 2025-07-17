@@ -39,9 +39,9 @@ function onHide() {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 h-60 overflow-auto mt-2">
+  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
     <PIntersectionObserver
-      class="w-80 h-40 rounded-md border border-dashed mb-60 mr-100 bg-background-secondary"
+      class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-secondary"
       @change="onVisibleChange"
       @before-show="onBeforeShow"
       @show="onShow"
@@ -79,9 +79,9 @@ function onVisibleChange(visible) {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 h-60 overflow-auto mt-2 p-4">
+  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
     <PIntersectionObserver
-      class="mt-60"
+      class="mt-60 max-w-full"
       width="100%"
       height="64px"
       @change="onVisibleChange"
@@ -103,10 +103,18 @@ const Counter = defineAsyncComponent(() => import('@/components/demos/Counter.vu
 </script>
 
 <template>
-  <div class="w-100 h-60 overflow-auto mt-2 p-4">
+  <div class="w-100 max-w-full h-60 overflow-auto p-1 flex flex-col gap-2">
     <PIntersectionObserver
-      class="mt-60 mb-2"
-      width="100%"
+      height="36px"
+      class="mt-60"
+    >
+      <PStack align="center">
+        <Counter />
+        <span>Without keep-alive</span>
+      </PStack>
+    </PIntersectionObserver>
+
+    <PIntersectionObserver
       height="36px"
       keep-alive
     >
@@ -115,16 +123,9 @@ const Counter = defineAsyncComponent(() => import('@/components/demos/Counter.vu
         <span>With keep-alive</span>
       </PStack>
     </PIntersectionObserver>
-
-    <PIntersectionObserver
-      width="100%"
-      height="36px"
-    >
-      <PStack align="center">
-        <Counter />
-        <span>Without keep-alive</span>
-      </PStack>
-    </PIntersectionObserver>
   </div>
 </template>
 ```
+
+## FAQ
+If it is found that the component is no longer visible, but the component is not destroyed, adding 1px padding on the outer layer of the component can solve the problem, the specific reason is temporarily unknown.
