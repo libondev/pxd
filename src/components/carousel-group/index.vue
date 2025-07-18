@@ -19,6 +19,7 @@ const props = withDefaults(
     height: 150,
     autoplay: true,
     interval: 3000,
+    indicator: true,
     direction: 'horizontal',
     pauseOnHover: true,
     toggleOnWheel: true,
@@ -160,6 +161,13 @@ function onPointerLeave() {
   setAutoPlayTimer()
 }
 
+function onIndicatorClick(ev: MouseEvent) {
+  const target = ev.target as HTMLButtonElement
+  const targetIndex = Number(target.dataset.index)
+
+  virtualIndex.value = targetIndex
+}
+
 function registerCarousel(state: CarouselItemState) {
   carousels.value.push(state)
 }
@@ -204,6 +212,21 @@ provide(carouselGroupContextKey, {
       <slot />
     </div>
 
+    <template v-if="indicator">
+      <div
+        class="pxd-carousel-group--indicator absolute left-1/2 bottom-2 -translate-x-1/2 w-max flex items-center gap-2 z-10"
+        @click="onIndicatorClick"
+      >
+        <button
+          v-for="(_, i) in carousels.length"
+          :key="i"
+          :data-index="i"
+          class="pxd-carousel-group--indicator-item relative w-4 h-1 rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
+          :class="{ 'pointer-events-none bg-primary': i === correctIndex }"
+        />
+      </div>
+    </template>
+
     <template v-if="arrow">
       <button
         type="button"
@@ -225,3 +248,11 @@ provide(carouselGroupContextKey, {
     </template>
   </div>
 </template>
+
+<style>
+.pxd-carousel-group--indicator-item::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+</style>

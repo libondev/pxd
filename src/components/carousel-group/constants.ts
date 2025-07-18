@@ -7,9 +7,10 @@ export interface CarouselGroupProps {
   height?: number | string
   autoplay?: boolean
   interval?: number
+  indicator?: boolean
+  direction?: 'horizontal' | 'vertical'
   pauseOnHover?: boolean
   toggleOnWheel?: boolean
-  direction?: 'horizontal' | 'vertical'
 }
 
 export interface CarouselItemState {
@@ -24,6 +25,6 @@ export interface CarouselGroupContext {
   unregisterCarousel: (id: string) => void
 }
 
-export const THROTTLE_DELAY = 550 // 比过渡事件稍长以预留给容器重置位置一点时间
+export const THROTTLE_DELAY = 550 // 比过渡事件稍长以预留给容器重置位置的时间
 export const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
 export const carouselGroupContextKey = 'pxdCarouselGroup' as unknown as InjectionKey<CarouselGroupContext>
