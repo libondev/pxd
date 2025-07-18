@@ -44,10 +44,6 @@
     "name": "collapse"
   },
   {
-    "camelized": "Components",
-    "name": "components"
-  },
-  {
     "camelized": "ConfigProvider",
     "name": "config-provider"
   },
