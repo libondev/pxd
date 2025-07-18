@@ -40,6 +40,17 @@ Loop a series of images or texts in a limited space.
 </template>
 ```
 
+## Disable indicator
+```vue demo
+<template>
+  <PCarouselGroup :indicator="false">
+    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      {{ i }}
+    </PCarousel>
+  </PCarouselGroup>
+</template>
+```
+
 ## Disable wheel toggle
 By default, it can be switched by the scroll wheel.
 
