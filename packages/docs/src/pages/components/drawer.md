@@ -167,7 +167,7 @@ const isVisible = ref(false)
     subtitle="This drawer won't close when clicking outside"
     :close-on-click-overlay="false"
   >
-    <PText>This drawer will only close when you click the close button or use the footer buttons.</PText>
+    <PText>This drawer will only close when you use the footer buttons.</PText>
 
     <template #footer>
       <PButton block @click="isVisible = false">

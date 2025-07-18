@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { ComponentLabel } from '../../types/components'
-import CloseIcon from '@gdsicon/vue/cross'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
 import { getCssUnitValue } from '../../utils/format'
-import PButton from '../button/index.vue'
 import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
@@ -18,7 +16,6 @@ interface Props {
   headerStyle?: boolean
   footerStyle?: boolean
   appendToBody?: boolean
-  showCloseButton?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   position?: 'top' | 'right' | 'bottom' | 'left'
@@ -42,7 +39,6 @@ const props = withDefaults(
     footerStyle: true,
     headerStyle: false,
     appendToBody: true,
-    showCloseButton: true,
     closeOnPressEscape: true,
     closeOnClickOverlay: true,
   },
@@ -150,8 +146,7 @@ watch(() => isVisible.value, (visible) => {
         :style="computedStyle"
       >
         <header
-          v-if="$slots.title || $slots.subtitle || title || subtitle"
-          class="pxd-drawer--header relative shrink-0 px-6 py-4 sm:py-6 flex gap-2"
+          class="pxd-drawer--header relative shrink-0 px-6 py-4 sm:py-6"
           :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <div class="flex-1 shrink-0">
@@ -167,17 +162,6 @@ watch(() => isVisible.value, (visible) => {
               </slot>
             </div>
           </div>
-
-          <PButton
-            v-if="showCloseButton"
-            variant="ghost"
-            size="sm"
-            icon
-            class="shrink-0"
-            @click="closeDrawer"
-          >
-            <CloseIcon class="h-4 w-4" />
-          </PButton>
         </header>
 
         <PScrollable
