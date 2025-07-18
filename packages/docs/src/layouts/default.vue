@@ -3,6 +3,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import MenuAltIcon from '@gdsicon/vue/menu-alt'
 import { isClient } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
+import Menus from './components/Menus.vue'
 
 interface MenuItem {
   label: string
@@ -25,12 +26,24 @@ const {
 } = defineProps<Props>()
 
 const route = useRoute()
+const openSidebar = ref(false)
 
 const showViewSource = computed(() => {
   return !['/[...all]', '/components'].includes(route.name)
 })
 
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
+
+function handleBackToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
+
+function handleToggleSidebar() {
+  openSidebar.value = !openSidebar.value
+}
 
 if (isClient) {
   watch(
@@ -51,46 +64,32 @@ if (isClient) {
 
 <template>
   <div class="absolute left-0 top-0 bottom-0">
-    <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-48 md:w-64 bg-background-secondary sm:border-x sm:translate-x-0">
+    <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-60 bg-background sm:border-x sm:translate-x-0">
       <PScrollable class="h-full overflow-y-auto" content-class="p-2.5">
-        <ul>
-          <li v-for="menu of menus" :key="menu.label" class="mb-0.5">
-            <template v-if="'children' in menu">
-              <ul>
-                <p class="text-foreground-secondary text-sm my-1 px-0.5">
-                  {{ menu.label }}
-                </p>
-
-                <li v-for="child of menu.children" :key="child.path" class="mb-0.5">
-                  <PLinkButton variant="ghost" :href="child.path" block>
-                    {{ child.label }}
-                  </PLinkButton>
-                </li>
-              </ul>
-            </template>
-
-            <template v-else>
-              <PLinkButton variant="ghost" :href="menu.path" block>
-                {{ menu.label }}
-              </PLinkButton>
-            </template>
-          </li>
-        </ul>
+        <Menus :menus="menus" />
       </PScrollable>
     </aside>
   </div>
 
-  <div class="sm:pl-48 md:pl-64 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
-    <div class="sm:hidden flex items-center justify-between p-2 border-b">
-      <PButton variant="ghost" size="sm" class="text-foreground-secondary">
-        <MenuAltIcon class="mr-1 text-xs" />
+  <div class="sm:pl-60 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
+    <div class="sticky top-[49px] z-10 bg-background sm:hidden flex items-center justify-between p-2 border-b">
+      <PButton variant="ghost" size="sm" @click="handleToggleSidebar">
+        <template #prefix>
+          <MenuAltIcon class="text-xs" />
+        </template>
         Menu
       </PButton>
 
-      <PButton variant="ghost" size="sm" class="text-foreground-secondary">
-        <ArrowUpIcon class="mr-1 text-xs" />
+      <PButton variant="ghost" size="sm" @click="handleBackToTop">
+        <template #prefix>
+          <ArrowUpIcon class="text-xs" />
+        </template>
         Back to top
       </PButton>
+
+      <PDrawer v-model="openSidebar" title="Menu" position="bottom" header-style size="68%">
+        <Menus :menus="menus" class="-m-2" @link-click="handleToggleSidebar" />
+      </PDrawer>
     </div>
 
     <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
@@ -109,6 +108,7 @@ if (isClient) {
 
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
+  background-color: var(--color-background-secondary);
   border-color: var(--color-gray-300);
   pointer-events: none;
 }

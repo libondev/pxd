@@ -12,16 +12,16 @@ const menus = [
 </script>
 
 <template>
-  <header class="sticky top-0 z-10 border-b border-t sm:border-t-0 bg-background-secondary select-none">
-    <div class="w-full max-w-full md:max-w-screen-2xl sm:border-x mx-auto h-12 flex items-center">
-      <h2>
+  <header class="sticky top-0 z-10 border-b bg-background select-none">
+    <div class="w-full max-w-full md:max-w-screen-2xl mx-auto h-12 flex items-center">
+      <h2 class="h-full border-l sm:w-60 sm:border-r">
         <RouterLink to="/" class="px-3 h-full flex items-center font-medium cursor-pointer">
           <SiteLogo class="mr-2 text-2xl " />
           <span>PXD</span>
         </RouterLink>
       </h2>
 
-      <nav class="ml-auto h-full">
+      <nav class="ml-auto h-full border-r">
         <ul class="h-full flex [&>*]:border-l [&>*]:list-none">
           <li v-for="menu in menus" :key="menu.to">
             <PLinkButton variant="ghost" class="h-full sm:px-3" shape="square" :href="menu.to">
