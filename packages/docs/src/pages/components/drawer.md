@@ -284,11 +284,11 @@ function openMenu() {
     position="left"
     size="280px"
   >
-    <nav class="space-y-2">
+    <nav class="space-y-2 -mx-2">
       <a
         v-for="item in menuItems"
         :key="item.label"
-        :href="item.href"
+        href="javascript:void(0)"
         class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors"
         @click="isVisible = false"
       >
@@ -327,7 +327,7 @@ const isVisible = ref(false)
     </div>
 
     <template #footer>
-      <PButton @click="isVisible = false">
+      <PButton block @click="isVisible = false">
         Close
       </PButton>
     </template>
@@ -367,7 +367,7 @@ const longContent = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}: This is
     </div>
 
     <template #footer>
-      <PButton @click="isVisible = false">
+      <PButton block @click="isVisible = false">
         Close
       </PButton>
     </template>
@@ -455,7 +455,7 @@ function handleClose() {
     <PText>Press the escape key to close this drawer.</PText>
 
     <template #footer>
-      <PButton @click="handleClose">
+      <PButton block @click="handleClose">
         Close
       </PButton>
     </template>

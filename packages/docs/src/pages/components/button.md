@@ -13,16 +13,16 @@ One of the most basic components, it will help you complete the interaction.
 </template>
 ```
 
-## Types
+## Variants
 
 ```vue demo
 <template>
   <PStack>
     <PButton>default</PButton>
-    <PButton variant="ghost">ghost</PButton>
-    <PButton variant="error">error</PButton>
     <PButton variant="primary">primary</PButton>
     <PButton variant="success">success</PButton>
+    <PButton variant="error">error</PButton>
+    <PButton variant="ghost">ghost</PButton>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
   </PStack>
@@ -39,10 +39,10 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
 <template>
   <PStack>
     <PButton icon><HeartIcon /></PButton>
-    <PButton icon variant="ghost"><HeartIcon /></PButton>
-    <PButton icon variant="error"><HeartIcon /></PButton>
     <PButton icon variant="primary"><HeartIcon /></PButton>
     <PButton icon variant="success"><HeartIcon /></PButton>
+    <PButton icon variant="error"><HeartIcon /></PButton>
+    <PButton icon variant="ghost"><HeartIcon /></PButton>
   </PStack>
 </template>
 ```
