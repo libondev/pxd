@@ -3,6 +3,7 @@ import type { ComponentClass } from '../../types/components'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { off, on } from '../../utils/events'
+import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -64,6 +65,10 @@ function onOverlayKeydown(ev: KeyboardEvent) {
 let scrollContainer: HTMLElement | null
 
 watch(() => props.modelValue, (visible) => {
+  if (isServer) {
+    return
+  }
+
   if (!visible) {
     if (scrollContainer) {
       scrollContainer.classList.remove('scroll-disabled')
