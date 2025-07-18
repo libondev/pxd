@@ -1,9 +1,21 @@
-<script setup lang="ts" generic="T extends { label: string, path: string }">
+<script setup lang="ts">
 import { isClient } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 
+interface MenuItem {
+  label: string
+  path: string
+}
+
+interface MenuGroup {
+  label: string
+  children: MenuItem[]
+}
+
+type Menu = MenuItem | MenuGroup
+
 interface Props {
-  menus?: T[]
+  menus?: Menu[]
 }
 
 const {
@@ -13,7 +25,7 @@ const {
 const route = useRoute()
 
 const showViewSource = computed(() => {
-  return route.path.startsWith('/components') && !route.path.endsWith('/components') && !['/[...all]'].includes(route.name)
+  return !['/[...all]', '/components'].includes(route.name)
 })
 
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
@@ -40,10 +52,26 @@ if (isClient) {
     <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-48 md:w-64 bg-background-secondary sm:border-x sm:translate-x-0">
       <PScrollable class="h-full overflow-y-auto" content-class="p-2.5">
         <ul>
-          <li v-for="menu of menus" :key="menu.path" class="mb-0.5">
-            <PLinkButton variant="ghost" :href="menu.path" block>
-              {{ menu.label }}
-            </PLinkButton>
+          <li v-for="menu of menus" :key="menu.label" class="mb-0.5">
+            <template v-if="'children' in menu">
+              <ul>
+                <p class="text-foreground-secondary text-sm my-1 px-0.5">
+                  {{ menu.label }}
+                </p>
+
+                <li v-for="child of menu.children" :key="child.path" class="mb-0.5">
+                  <PLinkButton variant="ghost" :href="child.path" block>
+                    {{ child.label }}
+                  </PLinkButton>
+                </li>
+              </ul>
+            </template>
+
+            <template v-else>
+              <PLinkButton variant="ghost" :href="menu.path" block>
+                {{ menu.label }}
+              </PLinkButton>
+            </template>
           </li>
         </ul>
       </PScrollable>

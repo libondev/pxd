@@ -1,24 +1,10 @@
 <script setup lang="ts">
+import { asideMenus } from '@/consts/components'
 import DefaultLayout from '@/layouts/default.vue'
-
-const menus = [
-  // {
-  //   label: 'Problems',
-  //   path: '/guide/problems',
-  // },
-  {
-    label: 'Guide',
-    path: '/guide',
-  },
-  {
-    label: 'Installation',
-    path: '/guide/installation',
-  },
-]
 </script>
 
 <template>
-  <DefaultLayout :menus="menus">
+  <DefaultLayout :menus="asideMenus">
     <RouterView />
   </DefaultLayout>
 </template>

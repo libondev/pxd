@@ -1,24 +1,11 @@
 <script lang="ts" setup>
-import BookOpenIcon from '@gdsicon/vue/book-open'
 import BoxIcon from '@gdsicon/vue/box'
-import HomeIcon from '@gdsicon/vue/home'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
-// import MenuAltIcon from '@gdsicon/vue/menu-alt'
 
 const menus = [
   {
-    label: 'Home',
-    to: '/',
-    icon: HomeIcon,
-  },
-  {
-    label: 'Guide',
+    label: 'Documentation',
     to: '/guide',
-    icon: BookOpenIcon,
-  },
-  {
-    label: 'Components',
-    to: '/components',
     icon: BoxIcon,
   },
 ]
@@ -27,15 +14,11 @@ const menus = [
 <template>
   <header class="sticky top-0 z-10 border-b border-t sm:border-t-0 bg-background-secondary select-none">
     <div class="w-full max-w-full md:max-w-screen-2xl sm:border-x mx-auto h-12 flex items-center">
-      <h2 class="px-3 h-full flex items-center font-medium cursor-pointer">
-        <SiteLogo class="mr-2 text-2xl hidden sm:block" />
-        <!-- <MenuAltIcon class="block sm:hidden mr-1.5 text-gray-900" /> -->
-
-        <RouterLink to="/" class="hidden sm:inline">
+      <h2>
+        <RouterLink to="/" class="px-3 h-full flex items-center font-medium cursor-pointer">
+          <SiteLogo class="mr-2 text-2xl " />
           <span>PXD</span>
         </RouterLink>
-
-        <span class="sm:hidden">PXD</span>
       </h2>
 
       <nav class="ml-auto h-full">
