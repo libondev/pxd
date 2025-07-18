@@ -124,7 +124,7 @@ function onButtonDblClick(event: MouseEvent) {
 
     <slot name="prefix" />
 
-    <span class="px-1.5 inline-flex truncate">
+    <span class="px-1.5 inline-flex items-center truncate">
       <slot />
     </span>
 
