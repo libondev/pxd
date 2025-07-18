@@ -106,14 +106,14 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
-  --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,0.08);
-  --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04);
-  --shadow-border-medium-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 8px -8px rgba(0,0,0,0.04);
-  --shadow-border-large-value: 0 0 0 1px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
-  --shadow-border-tooltip-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
-  --shadow-border-menu-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
-  --shadow-border-modal-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
-  --shadow-border-fullscreen-value: 0 0 0 1px rgba(0,0,0,0.08),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,.08);
+  --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);
+  --shadow-border-medium-value: 0 0 0 1px rgba(0,0,0,.08), 0px 2px 2px rgba(0,0,0,.04),0px 8px 8px -8px rgba(0,0,0,.04);
+  --shadow-border-large-value: 0 0 0 1px rgba(0,0,0,.08), 0px 2px 2px rgba(0,0,0,.04),0px 8px 16px -4px rgba(0,0,0,.04);
+  --shadow-border-tooltip-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px rgba(0,0,0,.04);
+  --shadow-border-menu-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px -4px rgba(0,0,0,.04),0px 16px 24px -8px rgba(0,0,0,.06);
+  --shadow-border-modal-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
+  --shadow-border-fullscreen-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
 
   text-autospace: auto;
   color-scheme: light;
@@ -224,14 +224,14 @@
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
 
-  --shadow-border-default-value: 0 0 0 1px rgba(255,255,255,0.145);
-  --shadow-border-small-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 2px rgba(0,0,0,0.16);
-  --shadow-border-medium-value: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.32),0px 8px 8px -8px rgba(0,0,0,0.16);
-  --shadow-border-large-value: 0 0 0 1px rgba(255,255,255,0.145),0px 2px 2px rgba(0,0,0,0.04),0px 8px 16px -4px rgba(0,0,0,0.04);
-  --shadow-border-tooltip-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px rgba(0,0,0,0.04);
-  --shadow-border-menu-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 4px 8px -4px rgba(0,0,0,0.04),0px 16px 24px -8px rgba(0,0,0,0.06);
-  --shadow-border-modal-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
-  --shadow-border-fullscreen-value: 0 0 0 1px rgba(255,255,255,0.145),0px 1px 1px rgba(0,0,0,0.02),0px 8px 16px -4px rgba(0,0,0,0.04),0px 24px 32px -8px rgba(0,0,0,0.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(255,255,255,.145);
+  --shadow-border-small-value: 0 0 0 1px rgba(255,255,255,.145),0 1px 2px 0 rgba(0,0,0,.04);
+  --shadow-border-medium-value: 0 0 0 1px rgba(255,255,255,.145),0px 2px 2px rgba(0,0,0,.32),0px 8px 8px -8px rgba(0,0,0,.16);
+  --shadow-border-large-value: 0 0 0 1px rgba(255,255,255,.145),0px 2px 2px rgba(0,0,0,.04),0px 8px 16px -4px rgba(0,0,0,.04);
+  --shadow-border-tooltip-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px rgba(0,0,0,.04);
+  --shadow-border-menu-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px -4px rgba(0,0,0,.04),0px 16px 24px -8px rgba(0,0,0,.06);
+  --shadow-border-modal-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
+  --shadow-border-fullscreen-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
 
   color-scheme: dark;
 }
