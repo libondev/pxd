@@ -1,5 +1,6 @@
 export * from './useBrowserObserver.js'
 export * from './useConfigProviderContext.js'
+export * from './useCopyClick.js'
 export * from './useDelayChange.js'
 export * from './useDelayDestroy.js'
 export * from './useFocusTrap.js'

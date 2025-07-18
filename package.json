@@ -47,7 +47,6 @@
       "default": "./dist/locales/index.js"
     },
     "./tw.css": "./dist/styles/tw.css",
-    "./dst.css": "./dist/styles/dst.css",
     "./styles.css": "./dist/styles/styles.css",
     "./components/*": {
       "types": "./dist/components/*/index.vue.d.ts",

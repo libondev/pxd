@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/components'
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
 import { computed, ref } from 'vue'
 import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useCopyClick } from '../../composables/useCopyClick'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 
@@ -32,7 +31,6 @@ const emits = defineEmits<{
 }>()
 
 const isCopied = ref(false)
-let copiedTimer: ReturnType<typeof setTimeout>
 
 const SIZES = {
   sm: 'min-h-7.5 pl-3.5 pr-1.5 py-2 text-sm',
@@ -52,7 +50,7 @@ const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-snippet relative pr-14 rounded-md flex w-max items-center border motion-safe:transition-all',
+    'pxd-snippet relative pr-14 rounded-lg flex w-max items-center border motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS),
     computedSize.value,
   ]
@@ -66,20 +64,14 @@ const computedClass = computed(() => {
 
 const computedTextArray = computed(() => toArray(props.text))
 
-function onCopyClick() {
-  clearTimeout(copiedTimer)
+const { renderAs, onCopyClick } = useCopyClick()
 
+async function onCopyButtonClick() {
   const text = computedTextArray.value.join('\n')
 
-  navigator.clipboard.writeText(text)
-
-  isCopied.value = true
+  await onCopyClick(text)
 
   emits('copy', text)
-
-  copiedTimer = setTimeout(() => {
-    isCopied.value = false
-  }, 1500)
 }
 </script>
 
@@ -92,24 +84,11 @@ function onCopyClick() {
     <div
       class="absolute top-1/2 -translate-y-1/2 right-1 p-2 cursor-pointer hover:bg-background-hover active:bg-background-active rounded-md"
       :class="{ copied: isCopied }"
-      @click="onCopyClick"
+      @click="onCopyButtonClick"
     >
-      <Transition name="fade-scale" mode="out-in">
-        <component :is="isCopied ? CheckIcon : CopyIcon" class="w-4 h-4" />
+      <Transition name="pxd-transition--fade-scale" mode="out-in">
+        <component :is="renderAs" class="text-sm" />
       </Transition>
     </div>
   </div>
 </template>
-
-<style>
-.fade-scale-enter-active,
-.fade-scale-leave-active {
-  transition: all var(--default-transition-duration) var(--default-transition-timing-function);
-}
-
-.fade-scale-enter-from,
-.fade-scale-leave-to {
-  opacity: 0;
-  transform: scale(.68);
-}
-</style>

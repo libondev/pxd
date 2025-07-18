@@ -470,6 +470,17 @@
   opacity: 0;
 }
 
+.pxd-transition--fade-scale-enter-active,
+.pxd-transition--fade-scale-leave-active {
+  transition: all var(--default-transition-duration) var(--default-transition-timing-function);
+}
+
+.pxd-transition--fade-scale-enter-from,
+.pxd-transition--fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(.8);
+}
+
 .line-clamp {
   display: -webkit-box;
   overflow: hidden;
