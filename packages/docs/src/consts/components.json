@@ -16,6 +16,10 @@
     "name": "book"
   },
   {
+    "camelized": "Browser",
+    "name": "browser"
+  },
+  {
     "camelized": "Button",
     "name": "button"
   },
