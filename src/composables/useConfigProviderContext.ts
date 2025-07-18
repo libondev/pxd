@@ -37,5 +37,7 @@ export function useConfigProviderSize<
 ): ComputedRef<Values[keyof Values]> {
   const config = useConfigProvider()
 
-  return computed(() => getFallbackValue(propSize, sizes, config.size))
+  const computedSize = computed(() => getFallbackValue(propSize, sizes, config.size))
+
+  return computedSize
 }

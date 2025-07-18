@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ArrowUpIcon from '@gdsicon/vue/arrow-up'
+import MenuAltIcon from '@gdsicon/vue/menu-alt'
 import { isClient } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 
@@ -79,6 +81,18 @@ if (isClient) {
   </div>
 
   <div class="sm:pl-48 md:pl-64 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
+    <div class="sm:hidden flex items-center justify-between p-2 border-b">
+      <PButton variant="ghost" size="sm" class="text-foreground-secondary">
+        <MenuAltIcon class="mr-1 text-xs" />
+        Menu
+      </PButton>
+
+      <PButton variant="ghost" size="sm" class="text-foreground-secondary">
+        <ArrowUpIcon class="mr-1 text-xs" />
+        Back to top
+      </PButton>
+    </div>
+
     <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
       <slot />
 
