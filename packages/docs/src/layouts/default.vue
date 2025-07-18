@@ -32,6 +32,35 @@ const showViewSource = computed(() => {
   return !['/[...all]', '/components'].includes(route.name)
 })
 
+const flattenedMenus = computed(() => {
+  const _menus = menus.flatMap((menu) => {
+    if ('children' in menu) {
+      return menu.children
+    }
+
+    return menu
+  })
+
+  return _menus
+})
+
+const paginationData = computed(() => {
+  const index = flattenedMenus.value.findIndex(menu => menu.path === route.path)
+  const prev = flattenedMenus.value[index - 1]
+  const next = flattenedMenus.value[index + 1]
+
+  return {
+    prev: prev && {
+      label: prev.label,
+      href: prev.path,
+    },
+    next: next && {
+      label: next.label,
+      href: next.path,
+    },
+  }
+})
+
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
 function handleBackToTop() {
@@ -100,6 +129,13 @@ if (isClient) {
 
         <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="View Source" />
       </template>
+
+      <div class="mt-16 -mx-2">
+        <PPagination
+          :prev="paginationData.prev"
+          :next="paginationData.next"
+        />
+      </div>
     </main>
 
     <SiteFooter />
@@ -206,7 +242,6 @@ if (isClient) {
   }
 
   a:not(.pxd-link-button) {
-    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 0.1em;
   }
