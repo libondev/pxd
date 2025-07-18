@@ -7,7 +7,7 @@
   <PConfigProvider class="flex flex-col">
     <SiteHeader />
 
-    <div class="flex-1 container mx-auto flex relative">
+    <div class="md:max-w-screen-2xl flex-1 mx-auto flex relative">
       <RouterView />
     </div>
   </PConfigProvider>

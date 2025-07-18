@@ -14,16 +14,17 @@ const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value)
 
 const bookSize = reactive({
   xs: 160,
-  sm: 156,
+  sm: 150,
+  md: 152,
 })
 
 if (isClient) {
-  watch([() => isMobile.value, () => containerRef.value], ([value, container]) => {
-    if (!container) {
+  watch([() => isMobile.value, () => containerRef.value], ([mobile, wrapper]) => {
+    if (!wrapper) {
       return
     }
 
-    bookSize.xs = value ? container.clientWidth / 2 - 18 : 160
+    bookSize.xs = mobile ? wrapper.clientWidth / 2 - 20 : 160
   }, { immediate: true })
 }
 

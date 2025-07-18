@@ -26,7 +26,7 @@ const menus = [
 
 <template>
   <header class="sticky top-0 z-10 border-b border-t sm:border-t-0 bg-background-secondary select-none">
-    <div class="container sm:border-x mx-auto h-12 flex items-center">
+    <div class="md:max-w-screen-2xl sm:border-x mx-auto h-12 flex items-center">
       <h2 class="px-3 h-full flex items-center font-medium cursor-pointer">
         <SiteLogo class="mr-2 text-2xl hidden sm:block" />
         <!-- <MenuAltIcon class="block sm:hidden mr-1.5 text-gray-900" /> -->
