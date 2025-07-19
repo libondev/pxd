@@ -4,13 +4,13 @@ import { version } from 'pxd'
 import { githubLink } from '@/consts/link'
 
 useHead({
-  title: 'PXD - A Vue UI Component Library',
+  title: 'PXD - A universal UI component library for Vue2&3',
 })
 </script>
 
 <template>
   <main class="w-full px-4 relative max-w-screen-lg mx-auto">
-    <section class="my-28 sm:py-28 text-center">
+    <section class="my-28 py-12 sm:py-28 text-center">
       <div class="relative">
         <h1 class="font-bold inline text-6xl">
           PXD

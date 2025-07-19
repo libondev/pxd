@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import MenuAltIcon from '@gdsicon/vue/menu-alt'
+import { pascalize } from 'pxd/utils/format'
 import { isClient } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 import Menus from './components/Menus.vue'
@@ -78,13 +79,7 @@ if (isClient) {
   watch(
     () => route.path,
     () => {
-      nextTick(() => {
-        const heading = document.querySelector('h1')
-
-        if (heading) {
-          document.title = `${heading.textContent} - PXD`
-        }
-      })
+      document.title = `${pascalize(route.path.split('/').pop()!)} - PXD`
     },
     { immediate: true },
   )
@@ -102,18 +97,18 @@ if (isClient) {
 
   <div class="sm:pl-60 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
     <div class="sticky top-[49px] z-10 bg-background sm:hidden flex items-center justify-between p-2 border-b">
-      <PButton variant="ghost" size="sm" @click="handleToggleSidebar">
+      <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
           <MenuAltIcon class="text-xs" />
         </template>
         Menu
       </PButton>
 
-      <PButton variant="ghost" size="sm" @click="handleBackToTop">
+      <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleBackToTop">
         <template #prefix>
           <ArrowUpIcon class="text-xs" />
         </template>
-        Back to top
+        Return to top
       </PButton>
 
       <PDrawer v-model="openSidebar" title="Menu" position="bottom" header-style size="68%">
@@ -121,7 +116,7 @@ if (isClient) {
       </PDrawer>
     </div>
 
-    <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 pt-12 pb-24 w-full">
+    <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 py-12 w-full">
       <slot />
 
       <template v-if="showViewSource">

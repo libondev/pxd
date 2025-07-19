@@ -4,6 +4,15 @@ export function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
 
+const camelizeRE = /-(\w)/g
+export function camelize(str: string): string {
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+}
+
+export function pascalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+}
+
 // 某些没有主动声明的二次封装组件中透传 boolean 类型的值可能会是一个空字符串
 export function isTruthyProp(value: unknown) {
   return value || value === ''
@@ -80,9 +89,4 @@ export function increaseWithUnit(target: string | number, delta: number): string
   }
 
   return result + unit
-}
-
-const camelizeRE = /-(\w)/g
-export function camelize(str: string): string {
-  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
 }
