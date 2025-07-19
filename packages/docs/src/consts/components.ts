@@ -10,7 +10,6 @@ const componentsMenus = components.map(({ name, camelized }) => {
 export const asideMenus = [
   {
     label: 'Guide',
-    path: '/guide',
     children: [
       {
         label: 'Guide',
@@ -24,6 +23,12 @@ export const asideMenus = [
   },
   {
     label: 'Components',
-    children: componentsMenus,
+    children: [
+      {
+        label: 'Overview',
+        path: '/components',
+      },
+      ...componentsMenus,
+    ],
   },
 ]
