@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
+import { getFallbackValue } from '../../utils/value'
 
 type ValueType = boolean | number | string
 
@@ -47,10 +48,12 @@ const SIZES = {
 }
 
 const uniqueId = getUniqueId()
-const modelValue = useModelValue(props, emits)
-const isChecked = computed(() => modelValue.value === props.activeValue)
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const config = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+
+const isChecked = computed(() => modelValue.value === props.activeValue)
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement

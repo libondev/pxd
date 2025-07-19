@@ -5,7 +5,7 @@ import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 
@@ -72,6 +72,8 @@ const VARIANTS = {
   },
 }
 
+const config = useConfigProvider()
+
 const computedLabel = computed(() => {
   const { label } = props
 
@@ -86,12 +88,10 @@ const computedLabel = computed(() => {
   return false
 })
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
-
 const computedClass = computed(() => {
   const classes = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
 
-  classes.push(computedSize.value)
+  classes.push(getFallbackValue(props.size, SIZES, config.size))
 
   const { fill, basic } = getFallbackValue(props.variant, VARIANTS)
 

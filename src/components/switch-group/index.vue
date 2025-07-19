@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { ComponentOption, ComponentSize } from '../../types/components'
-import { provide } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { computed, provide } from 'vue'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideUniqueId } from '../../composables/useUniqueIdContext'
+import { getFallbackValue } from '../../utils/value'
 import PSwitch from '../switch/index.vue'
 
 interface Props {
@@ -41,8 +42,9 @@ const SIZES = {
   lg: 'h-10',
 }
 
+const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 provideUniqueId('pxdSwitchGroupName')
 provide('pxdSwitchGroupProps', props)

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 import PSpinner from '../spinner/index.vue'
@@ -67,9 +67,7 @@ const ALIGNMENTS = {
 
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
-const computedRounded = useConfigProviderSize(props.size, ROUNDED)
-const computedFontSize = useConfigProviderSize(props.size, FONT_SIZES)
+const config = useConfigProvider()
 const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClass = computed(() => {
@@ -78,9 +76,9 @@ const computedClass = computed(() => {
   const { variant, block, shape, icon } = props
 
   classes.push(
-    computedFontSize.value,
     isTruthyProp(block) ? 'flex w-full' : 'inline-flex',
-    shape ? ROUNDED[shape] : computedRounded.value,
+    getFallbackValue(props.size, FONT_SIZES, config.size),
+    shape ? ROUNDED[shape] : getFallbackValue(props.size, ROUNDED, config.size),
   )
 
   if (icon) {
@@ -91,7 +89,7 @@ const computedClass = computed(() => {
     classes.push(
       'border outline-none self-focus-ring',
       getFallbackValue(variant, VARIANTS),
-      computedSize.value,
+      getFallbackValue(props.size, SIZES, config.size),
     )
   }
 
@@ -124,7 +122,7 @@ function onButtonDblClick(event: MouseEvent) {
 
     <slot name="prefix" />
 
-    <span class="px-1.5 inline-flex items-center truncate">
+    <span class="inline-flex items-center truncate" :class="{ 'px-1.5': !icon }">
       <slot />
     </span>
 

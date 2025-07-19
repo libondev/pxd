@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
+import LockClosedIcon from '@gdsicon/vue/lock-closed'
 import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
 import { useCopyClick } from '../../composables/useCopyClick'
 import PButton from '../button/index.vue'
@@ -35,8 +36,10 @@ const { renderAs, onCopyClick } = useCopyClick()
       </div>
 
       <div class="flex items-center flex-1 justify-center gap-4 min-w-0 first:justify-start md:first:max-w-[140px] max-md:first:flex-none last:justify-end md:last:max-w-[140px]">
-        <div class="lg:max-w-xs bg-background-secondary border border-gray-400 w-full rounded-full pl-4 pr-1 py-1 flex items-center justify-between">
-          <div class="text-[13px] text-gray-1000 truncate flex-1 min-w-0 text-center">
+        <div class="lg:max-w-xs bg-background-secondary border border-gray-400 w-full rounded-full pl-2.5 pr-1 py-1 flex items-center justify-between">
+          <LockClosedIcon class="text-gray-900 text-sm" />
+
+          <div class="pl-1.5 text-[13px] text-gray-1000 truncate flex-1 min-w-0 text-center truncate">
             {{ address }}
           </div>
 

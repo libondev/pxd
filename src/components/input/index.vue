@@ -4,9 +4,10 @@ import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
+import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 
 interface Props {
@@ -60,14 +61,14 @@ const SIZES = {
   lg: 'h-10 text-base',
 }
 
+const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
-const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const computedClass = computed(() => {
   const classes = ['pxd-input--border flex items-center relative overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
-  classes.push(computedSize.value)
+  classes.push(getFallbackValue(props.size, SIZES, config.size))
 
   if (props.disabled) {
     classes.push('is-disabled')

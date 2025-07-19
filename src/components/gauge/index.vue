@@ -2,8 +2,9 @@
 import type { ComponentSizeWithXs } from '../../types/components'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { getColorByThreshold } from '../../utils/colors'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   modelValue?: number | null
@@ -51,7 +52,9 @@ const defaultColors: Props['colors'] = {
   60: 'var(--color-green-700)',
 }
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const config = useConfigProvider()
+
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 const progress = computed(() => {
   if (props.indeterminate) {
@@ -144,11 +147,9 @@ const progressColors = computed(() => {
 <template>
   <div class="pxd-gauge relative w-max h-max" :style="`--size: ${computedSize}px`">
     <svg
-      class="pxd-gauge--svg block overflow-visible -rotate-[85deg]"
+      class="pxd-gauge--svg block overflow-visible size-(--size) -rotate-[85deg]"
       aria-hidden="true"
       fill="none"
-      :width="computedSize"
-      :height="computedSize"
       viewBox="0 0 100 100"
     >
       <circle

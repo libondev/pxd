@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/components'
 import { computed, ref } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useCopyClick } from '../../composables/useCopyClick'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
@@ -46,13 +46,13 @@ const VARIANTS = {
   warning: 'text-amber-900 border-gray-alpha-300 bg-amber-200',
 }
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = [
     'pxd-snippet relative pr-14 rounded-lg flex w-max items-center border motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS),
-    computedSize.value,
+    getFallbackValue(props.size, SIZES, config.size),
   ]
 
   if (props.prompt) {

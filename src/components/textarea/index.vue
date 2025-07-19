@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getUniqueId } from '../../utils/uid'
+import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 
 interface Props {
@@ -53,12 +54,12 @@ const SIZES = {
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
 
-  classes.push(computedSize.value)
+  classes.push(getFallbackValue(props.size, SIZES, config.size))
 
   if (props.disabled) {
     classes.push('is-disabled')

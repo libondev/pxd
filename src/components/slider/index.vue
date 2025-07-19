@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariant } from '../../types/components'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { off, on, once } from '../../utils/events'
 import { getFallbackValue } from '../../utils/value'
@@ -66,13 +66,15 @@ const VARIANTS = {
 let isDragging = false
 let lastClientX: number | null
 let animationFrameId: number | null
-const activeThumb = shallowRef<'start' | 'end' | null>()
+
+const config = useConfigProvider()
 
 const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const activeThumb = shallowRef<'start' | 'end' | null>()
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentAs } from '../../types/components'
 import { computed } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { getFallbackValue } from '../../utils/value'
 
 interface Props {
@@ -53,13 +53,13 @@ const VARIANTS = {
   'turborepo': 'text-gray-100 dark:text-gray-1000',
 }
 
-const computedSize = useConfigProviderSize(props.size, SIZES)
+const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = [
     'pxd-badge inline-flex items-center justify-center px-2.5 font-medium h-6 rounded-full font-sans gap-1 !no-underline motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS, 'gray'),
-    computedSize.value,
+    getFallbackValue(props.size, SIZES, config.size),
     props.variant,
   ]
 

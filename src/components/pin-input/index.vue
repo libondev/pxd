@@ -2,8 +2,9 @@
 import type { HTMLAttributes } from 'vue'
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
 import { computed, ref, shallowRef } from 'vue'
-import { useConfigProviderSize } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
+import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 
 interface Props {
@@ -49,10 +50,11 @@ const SIZES = {
   lg: 'w-10 text-base',
 }
 
+const config = useConfigProvider()
+
 const inputsRef = shallowRef<HTMLInputElement[]>([])
 
 const modelValue = useModelValue(props, emits)
-const computedSize = useConfigProviderSize(props.size, SIZES)
 
 const modelValueLocal = ref<string[]>(
   (() => {
@@ -93,7 +95,7 @@ const computedClass = computed(() => {
     classes.push('is-disabled')
   }
 
-  classes.push(computedSize.value)
+  classes.push(getFallbackValue(props.size, SIZES, config.size))
 
   return classes.join(' ')
 })
