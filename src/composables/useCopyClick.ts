@@ -14,7 +14,11 @@ export function useCopyClick() {
   async function onCopyClick(text: string | undefined) {
     clearTimeout(copiedTimer)
 
-    await navigator.clipboard.writeText(text || '')
+    if (typeof navigator.clipboard !== 'undefined') {
+      await navigator.clipboard.writeText(text || '')
+    } else {
+      hackCopy(text || '')
+    }
 
     isCopied.value = true
 
@@ -28,4 +32,13 @@ export function useCopyClick() {
     renderAs: render,
     onCopyClick,
   }
+}
+
+function hackCopy(text: string) {
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
 }
