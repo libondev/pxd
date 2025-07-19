@@ -19,7 +19,7 @@ function onLinkClick(event: MouseEvent) {
     <li v-for="menu of menus" :key="menu.label" class="mb-0.5">
       <template v-if="'children' in menu">
         <ul>
-          <p class="text-foreground-secondary text-sm mb-1 not-first:mt-1 px-0.5">
+          <p class="text-foreground-secondary text-[13px] sm:text-sm my-1 px-0.5">
             {{ menu.label }}
           </p>
 
