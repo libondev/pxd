@@ -95,7 +95,7 @@ if (isClient) {
     </aside>
   </div>
 
-  <div class="sm:pl-60 border-r w-full max-w-full flex-1 flex flex-col min-h-screen">
+  <div class="sm:pl-60 border-r w-full max-w-full flex-1 flex flex-col min-h-[calc(100vh-50px)]">
     <div class="sticky top-[49px] z-10 bg-background sm:hidden flex items-center justify-between p-2 border-b">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>

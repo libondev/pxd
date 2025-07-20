@@ -13,11 +13,15 @@ export const asideMenus = [
     children: [
       {
         label: 'Introduction',
-        path: '/guide',
+        path: '/guide/introduction',
       },
       {
         label: 'Installation',
         path: '/guide/installation',
+      },
+      {
+        label: 'FAQ',
+        path: '/guide/faq',
       },
     ],
   },

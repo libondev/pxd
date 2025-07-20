@@ -5,7 +5,7 @@ import LogoGithubIcon from '@gdsicon/vue/logo-github'
 const menus = [
   {
     label: 'Docs',
-    href: '/guide',
+    href: '/guide/introduction',
     target: undefined,
     icon: BookOpenIcon,
   },

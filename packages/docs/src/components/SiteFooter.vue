@@ -38,7 +38,7 @@ const links = [
 </script>
 
 <template>
-  <footer class="border-t border-r p-6 bg-background-secondary">
+  <footer class="border-t p-6 bg-background-secondary">
     <ul class="max-w-50">
       <li class="text-xl font-medium mb-1 pl-[11px]">
         Links
