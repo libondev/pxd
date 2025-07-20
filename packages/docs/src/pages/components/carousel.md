@@ -68,10 +68,10 @@ const indicatorPosition = ref('bottom')
 </template>
 ```
 
-## Disable indicator
+## Disable indicator and arrow
 ```vue demo
 <template>
-  <PCarouselGroup :indicator="false">
+  <PCarouselGroup :indicator="false" :arrow="false">
     <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
     </PCarousel>
