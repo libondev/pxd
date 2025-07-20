@@ -1,5 +1,5 @@
 # EmptyState
-
+Fill spaces when no content has been added yet, or is temporarily empty due to the nature of the feature and should be designed to prevent confusion.
 
 ## Default
 

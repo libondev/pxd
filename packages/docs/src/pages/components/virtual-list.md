@@ -1,5 +1,5 @@
 # VirtualList
-Virtual list, supporting variable height items.
+Loads infinite lists of data, but doesn't really render them.
 
 ## Fixed height items
 

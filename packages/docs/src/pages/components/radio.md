@@ -1,4 +1,5 @@
 # Radio
+Provides single user input from a selection of options.
 
 ## Default
 
