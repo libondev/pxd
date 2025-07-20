@@ -21,7 +21,6 @@ interface Props {
   tooltipText?: string
 }
 
-/** 格式化后的单元格数据 */
 interface CellData {
   hidden: boolean
   date: string | undefined
@@ -29,14 +28,12 @@ interface CellData {
   color: string | undefined
 }
 
-/** 行数据（包含月份信息） */
 interface RowData extends Array<CellData> {
   isMonthFirstRow?: boolean
   monthName?: string
   headerText: string
 }
 
-/** 提示框信息 */
 interface TooltipInfo {
   date: string
   count: number
