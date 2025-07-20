@@ -5,11 +5,6 @@ import LogoGithubIcon from '@gdsicon/vue/logo-github'
 
 const links = [
   {
-    label: 'PXD Github',
-    href: 'https://github.com/libondev/pxd',
-    icon: LogoGithubIcon,
-  },
-  {
     label: 'Geist Design System',
     href: 'https://vercel.com/geist/introduction',
     icon: LogoGeistIcon,
