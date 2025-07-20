@@ -44,7 +44,7 @@ function onCellClick(event, date) {
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PActiveGraph :data="data" @cell-click="onCellClick" />
 
     <PButton class="ml-8" @click="refreshData()">
@@ -132,7 +132,7 @@ const data = [
 </script>
 
 <template>
-  <PStack direction="col" gap="12">
+  <PStack direction="vertical" gap="12">
     <PActiveGraph
       transpose
       :data="data"
@@ -169,7 +169,7 @@ const data = [
 </script>
 
 <template>
-  <PStack direction="col" gap="12">
+  <PStack direction="vertical" gap="12">
     <PActiveGraph
       graph-only
       :data="data"

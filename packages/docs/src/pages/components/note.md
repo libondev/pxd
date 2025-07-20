@@ -43,7 +43,7 @@
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="3">
+  <PStack direction="vertical" gap="3">
     <PNote variant="default"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <PNote variant="primary"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
@@ -79,7 +79,7 @@
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="4">
+  <PStack direction="vertical" gap="4">
     <b class="text-sm font-medium">Custom Label</b>
 
     <!-- prop label -->

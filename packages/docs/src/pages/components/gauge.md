@@ -86,7 +86,7 @@ function decrease() {
 </script>
 
 <template>
-  <PStack direction="col" gap="8">
+  <PStack direction="vertical" gap="8">
     <PGauge v-model="progress" show-value />
 
     <PStack>

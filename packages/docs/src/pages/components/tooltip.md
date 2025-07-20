@@ -184,7 +184,7 @@ The component inherits from popover and supports all the properties of popover. 
 
 ```vue demo
 <template>
-  <PStack align="center" gap="8">
+  <PStack>
     <PTooltip content="The Evil Rabbit Jumped over the Fence" :show-arrow="false">
       <PButton>No arrow</PButton>
     </PTooltip>

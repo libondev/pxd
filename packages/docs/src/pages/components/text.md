@@ -5,7 +5,7 @@ Display text using well-defined typographic styles.
 
 ```vue demo
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PText :size="48">The Evil Rabbit jumps.</PText>
     <PText :size="32">The Evil Rabbit jumps.</PText>
     <PText :size="24">The Evil Rabbit jumps.</PText>
@@ -29,7 +29,7 @@ Display text using well-defined typographic styles.
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="7">
+  <PStack direction="vertical" gap="7">
     <PText truncate style="max-width:200px">The Evil Rabbit jumps. The Evil Rabbit jumps.</PText>
 
     <PText truncate="2" style="max-width: 200px">

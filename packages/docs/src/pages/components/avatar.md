@@ -61,7 +61,7 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PAvatar>
       <template #icon>
         <ArrowCircleDownIcon class="text-gray-900" />

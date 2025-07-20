@@ -11,7 +11,7 @@ const modelValue = ref('1')
 </script>
 
 <template>
-  <PStack gap="6" align="center">
+  <PStack align="center">
     <PSwitchGroup v-model="modelValue" size="sm">
       <PSwitch value="1" label="Source"></PSwitch>
       <PSwitch value="2">Output</PSwitch>
@@ -68,7 +68,7 @@ const options2 = [
 </script>
 
 <template>
-  <PStack gap="6" direction="col">
+  <PStack direction="vertical">
     <PSwitchGroup v-model="modelValue" disabled :options="options1" />
     <PSwitchGroup v-model="modelValue" :options="options2" />
   </PStack>

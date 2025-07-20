@@ -5,7 +5,7 @@ Various surfaces with shadows, built on top of `<Stack>`.
 
 ```vue demo
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PMaterial variant="default">
       <div class="w-full h-30"></div>
     </PMaterial>

@@ -11,7 +11,7 @@ const modelValue = ref('one')
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PRadio v-model="modelValue" label="Option 1" value="one" />
     <PRadio v-model="modelValue" value="two">Option 2</PRadio>
   </PStack>
@@ -38,7 +38,7 @@ const options = [
     v-model="value"
     :options="options"
     gap="3"
-    direction="col"
+    direction="vertical"
   />
 
   <PRadioGroup
@@ -47,7 +47,7 @@ const options = [
     gap="3"
     disabled
     class="mt-6"
-    direction="col"
+    direction="vertical"
   />
 </template>
 ```
@@ -62,7 +62,7 @@ const modelValue = ref('one')
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PRadio v-model="modelValue" disabled label="Option 1" value="one" />
     <PRadio v-model="modelValue" disabled value="two">Option 2</PRadio>
   </PStack>

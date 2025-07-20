@@ -91,7 +91,7 @@ const options2 = [
 </script>
 
 <template>
-  <PStack direction="col" gap="6">
+  <PStack direction="vertical" gap="6">
     <PChoiceboxGroup
       v-model="modelValue1"
       :options="options1"

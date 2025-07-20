@@ -1,12 +1,11 @@
 # Input
-
 Retrieve text input from a user.
 
 ## Default
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="4" :direction="{ sm: 'col', md: 'row' }">
+  <PStack class="max-w-md" gap="4" direction="vertical">
     <PInput size="sm" placeholder="sm" />
     <PInput placeholder="md(default)" />
     <PInput size="lg" placeholder="lg" />
@@ -50,7 +49,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="6" direction="col">
+  <PStack class="max-w-md" gap="6" direction="vertical">
     <PInput placeholder="Default">
       <template #prefix>
         <IconArrowCircleUp />
@@ -90,7 +89,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="6" direction="col">
+  <PStack class="max-w-md" gap="6" direction="vertical">
     <PInput disabled placeholder="Default">
       <template #prefix>
         <IconArrowCircleUp />
@@ -130,7 +129,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="8" direction="col">
+  <PStack class="max-w-md" gap="8" direction="vertical">
     <PInput error="An error message." size="xs" placeholder="Default" />
     <PInput error="An error message." size="sm" placeholder="Default" />
     <PInput error="An error message." placeholder="Default" />

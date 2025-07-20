@@ -11,7 +11,7 @@ const value = ref(30)
 </script>
 
 <template>
-  <PStack direction="col" gap="3">
+  <PStack direction="vertical" gap="3">
     <div class="flex items-center gap-3">
       <PSlider v-model="value" size="sm" style="width: 200px;" />
       <PText secondary>{{ value }}</PText>
@@ -40,7 +40,7 @@ const value = ref(30)
 </script>
 
 <template>
-  <PStack direction="col" gap="3">
+  <PStack direction="vertical" gap="3">
     <PSlider v-model="value" size="sm" style="width: 200px;" disabled />
     <PSlider v-model="value" style="width: 200px;" disabled />
     <PSlider v-model="value" size="lg" style="width: 200px;" disabled />
@@ -58,7 +58,7 @@ const value = ref(35)
 </script>
 
 <template>
-  <PStack direction="col" gap="6">
+  <PStack direction="vertical" gap="6">
     <PSlider v-model="value" variant="primary" style="width: 200px;" />
     <PSlider v-model="value" variant="success" style="width: 200px;" />
     <PSlider v-model="value" variant="warning" style="width: 200px;" />

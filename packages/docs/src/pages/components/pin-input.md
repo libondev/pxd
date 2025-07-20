@@ -42,7 +42,7 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="4">
+  <PStack direction="vertical" gap="4">
     <PPinInput label="numeric" type="numeric" />
     <PPinInput label="alphabetic" type="alphabetic" />
     <PPinInput label="alphanumeric" type="alphanumeric" />

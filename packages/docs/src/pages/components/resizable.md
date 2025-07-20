@@ -7,14 +7,14 @@ Resizable panel groups
 <script setup>
 import { ref } from 'vue'
 
-const direction = ref('row')
+const direction = ref('horizontal')
 </script>
 
 <template>
-  <PStack direction="col" gap="2">
+  <PStack direction="vertical">
     <PSwitchGroup v-model="direction">
-      <PSwitch value="row">Row</PSwitch>
-      <PSwitch value="col">Col</PSwitch>
+      <PSwitch value="horizontal">Row</PSwitch>
+      <PSwitch value="vertical">Col</PSwitch>
     </PSwitchGroup>
 
     <div class="w-100 h-100 border rounded-lg">
@@ -36,7 +36,7 @@ const direction = ref('row')
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="2">
+  <PStack direction="vertical" gap="2">
     <div class="w-100 h-100 border rounded-lg">
       <PResizable>
         <PResizablePanel class="flex items-center justify-center">
@@ -44,7 +44,7 @@ const direction = ref('row')
         </PResizablePanel>
         <PResizableHandle />
         <PResizablePanel class="flex items-center justify-center">
-          <PResizable direction="col">
+          <PResizable direction="vertical">
             <PResizablePanel class="flex items-center justify-center">
               One
             </PResizablePanel>
@@ -64,7 +64,7 @@ const direction = ref('row')
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="2">
+  <PStack direction="vertical" gap="2">
     <div class="w-100 h-100 border rounded-lg">
       <PResizable>
         <PResizablePanel :initial-size="50" class="flex items-center justify-center">

@@ -22,7 +22,7 @@ Setting the height to `auto` automatically calculates the height.
 
 ```vue demo
 <template>
-  <PStack gap="4" direction="col">
+  <PStack gap="4" direction="vertical">
     <PSkeleton height="auto">
       <PButton>Hidden by skeleton</PButton>
     </PSkeleton>
@@ -39,7 +39,7 @@ The skeleton will hide when children are not null, but the size is retained.
 
 ```vue demo
 <template>
-  <PStack gap="4" direction="col">
+  <PStack gap="4" direction="vertical">
     <PSkeleton height="100" width="100%" />
 
     <PSkeleton :loading="false" height="100" width="100%">
@@ -53,7 +53,7 @@ The skeleton will hide when children are not null, but the size is retained.
 
 ```vue demo
 <template>
-  <PStack gap="4" direction="col">
+  <PStack gap="4" direction="vertical">
     <PSkeleton shape="default" width="48" />
 
     <PSkeleton shape="rounded" width="48" />
@@ -73,7 +73,7 @@ The skeleton will hide when children are not null, but the size is retained.
 
 ```vue demo
 <template>
-  <PStack gap="4" direction="col">
+  <PStack gap="4" direction="vertical">
     <PSkeleton height="100" width="100%" :animated="false" />
   </PStack>
 </template>

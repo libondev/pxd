@@ -65,7 +65,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 
 ```vue demo
 <template>
-  <PStack direction="col" gap="8">
+  <PStack direction="vertical" gap="8">
     <PCollapseGroup size="sm">
       <PCollapse title="Question A">
         <div class="mb-4">

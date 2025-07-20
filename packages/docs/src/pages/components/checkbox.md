@@ -58,7 +58,7 @@ watch(
     v-model="value"
     :options="options"
     gap="3"
-    direction="col"
+    direction="vertical"
   />
 
   <PCheckboxGroup
@@ -66,7 +66,7 @@ watch(
     :options="options"
     gap="3"
     disabled
-    direction="col"
+    direction="vertical"
     class="mt-6"
   />
 </template>
@@ -81,7 +81,7 @@ const checked2 = ref(true)
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PCheckbox v-model="checked" label="Disabled" disabled />
     <PCheckbox v-model="checked2" label="Disabled Checked" disabled />
     <PCheckbox v-model="checked" label="Disabled Indeterminate" disabled indeterminate />

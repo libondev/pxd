@@ -34,7 +34,7 @@ const value = ref('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed 
 </script>
 
 <template>
-  <PStack gap="12" direction="col">
+  <PStack gap="12" direction="vertical">
     <PTextarea
       v-model="value"
       size="xs"

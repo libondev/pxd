@@ -13,7 +13,7 @@ const onCopied = () => {
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PSnippet text="npm install pxd" @copy="onCopied" size="sm" />
     <PSnippet text="npm install pxd" @copy="onCopied" size="md" />
     <PSnippet text="npm install pxd" @copy="onCopied" size="lg" />
@@ -41,7 +41,7 @@ const text = [
 
 ```vue demo
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PSnippet text="npm install pxd" width="300px" :prompt="false" />
     <PSnippet text="npm install pxd" width="300px" prompt="# " />
     <PSnippet text="npm install pxd" width="300px" prompt="\ " />
@@ -53,7 +53,7 @@ const text = [
 
 ```vue demo
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PSnippet text="npm install pxd" width="300px" variant="primary" />
     <PSnippet text="npm install pxd" width="300px" variant="success" />
     <PSnippet text="npm install pxd" width="300px" variant="error" />

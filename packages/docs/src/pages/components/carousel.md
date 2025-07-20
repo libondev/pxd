@@ -41,7 +41,7 @@ const indicatorPosition = ref('bottom')
 </script>
 
 <template>
-  <PStack direction="col">
+  <PStack direction="vertical">
     <PSwitchGroup v-model="direction">
       <PSwitch label="horizontal" value="horizontal" />
       <PSwitch label="vertical" value="vertical" />

@@ -9,7 +9,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PPopover popover-class="popover-demo" position="left" :content="content">
       <PButton>
         left
@@ -35,7 +35,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PPopover>
   </PStack>
 
-  <PStack gap="4" class="mt-4">
+  <PStack class="mt-2">
     <PPopover popover-class="popover-demo" position="top-start" :content="content">
       <PButton>
         top-start
@@ -61,7 +61,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PPopover>
   </PStack>
 
-  <PStack gap="4" class="mt-4">
+  <PStack class="mt-2">
     <PPopover popover-class="popover-demo" position="left-start" :content="content">
       <PButton>
         left-start
@@ -110,7 +110,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PPopover popover-class="popover-demo" trigger="hover" :content="content">
       <PButton>
         Hover to active
@@ -168,7 +168,7 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PPopover popover-class="popover-demo" :content="content" :offset="30">
       <PButton>
         Hover to active
@@ -274,7 +274,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PPopover popover-class="popover-demo" :content="content">
       <PButton>
         No translate
@@ -315,7 +315,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PPopover popover-class="popover-demo" :content="content" :destroy-delay="0">
       <PButton>
         0ms(Immediately destroy)

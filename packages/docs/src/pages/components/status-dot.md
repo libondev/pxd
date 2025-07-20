@@ -5,7 +5,7 @@ Display an indicator of deployment status.
 
 ```vue demo
 <template>
-  <PStack direction="col" class="px-2">
+  <PStack direction="vertical">
     <PStatusDot state="QUEUED" />
     <PStatusDot state="BUILDING" />
     <PStatusDot state="ERROR" />
@@ -20,7 +20,7 @@ Set the `label` property to show the status text.
 
 ```vue demo
 <template>
-  <PStack direction="col" class="px-2">
+  <PStack direction="vertical">
     <PStatusDot label state="QUEUED" />
     <PStatusDot label state="BUILDING" />
     <PStatusDot label state="ERROR" />
@@ -35,7 +35,7 @@ Or pass a `string` to the `label` to customize the text.
 
 ```vue demo
 <template>
-  <PStack direction="col" class="px-2">
+  <PStack direction="vertical">
     <PStatusDot label="QuEuEd" state="QUEUED" />
     <PStatusDot label="BuIlDiNg" state="BUILDING" />
     <PStatusDot label="ErRoR" state="ERROR" />

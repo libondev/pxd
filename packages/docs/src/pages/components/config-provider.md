@@ -17,11 +17,11 @@ const sizes = [
 </script>
 
 <template>
-  <PStack direction="col" gap="4">
+  <PStack direction="vertical" gap="4">
     <PSwitchGroup v-model="size" gap="5" :options="sizes" />
 
     <PConfigProvider :size="size">
-      <PStack direction="col">
+      <PStack direction="vertical">
         <PToggle />
         <PBadge>Badge</PBadge>
         <PButton>Button</PButton>
@@ -54,11 +54,11 @@ const locales = {
 </script>
 
 <template>
-  <PStack direction="col" gap="4">
+  <PStack direction="vertical" gap="4">
     <PSwitchGroup v-model="locale" gap="5" :options="sizes" />
 
     <PConfigProvider :locale="locales[locale]">
-      <PStack direction="col">
+      <PStack direction="vertical">
         <PActiveGraph start-date="2025-01-01" end-date="2025-01-31" />
       </PStack>
     </PConfigProvider>
