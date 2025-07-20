@@ -30,8 +30,8 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: false,
-    headerStyle: false,
     footerStyle: true,
+    headerStyle: false,
     appendToBody: true,
     closeOnPressEscape: false,
     closeOnClickOverlay: false,

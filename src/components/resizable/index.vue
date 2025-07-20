@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, provide, ref, shallowRef } from 'vue'
 
 interface Props {
-  direction?: 'row' | 'col'
+  direction?: 'horizontal' | 'vertical'
 }
 
 interface PanelConfig {
@@ -23,7 +23,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<Props>(), {
-  direction: 'row',
+  direction: 'horizontal',
 })
 
 const panelConfigs = ref<PanelConfig[]>([])
@@ -117,7 +117,7 @@ function calculateContainerSize(): number {
     return 0
   }
 
-  return props.direction === 'row'
+  return props.direction === 'horizontal'
     ? containerRef.value.offsetWidth
     : containerRef.value.offsetHeight
 }
@@ -211,7 +211,7 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: num
     return
   }
 
-  const delta = props.direction === 'row' ? deltaX : deltaY
+  const delta = props.direction === 'horizontal' ? deltaX : deltaY
   const prevSize = panelSizes.value[index]
   const nextSize = panelSizes.value[index + 1]
 
@@ -254,19 +254,9 @@ onMounted(async () => {
 <template>
   <div
     ref="containerRef"
-    :data-orientation="direction"
-    class="pxd-resizable flex w-full h-full"
+    :data-direction="direction"
+    class="pxd-resizable flex w-full h-full flex-row data-[direction=vertical]:flex-col"
   >
     <slot />
   </div>
 </template>
-
-<style lang="postcss">
-.pxd-resizable {
-  flex-direction: row;
-
-  &[data-orientation='col'] {
-    flex-direction: column;
-  }
-}
-</style>

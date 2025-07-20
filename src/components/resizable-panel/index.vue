@@ -57,14 +57,13 @@ const computedStyle = computed(() => {
   const panelIndex = context.panelConfigs.value.findIndex(p => p.id === uniqueId)
   const size = panelIndex >= 0 ? context.panelSizes.value[panelIndex] || 0 : 0
 
-  // 确保在 Vue 2.7 中正确响应数据变化
   return {
     flexBasis: size > 0 ? `${size}px` : 'auto',
     flexGrow: size > 0 ? 0 : 1,
     flexShrink: size > 0 ? 0 : 1,
     // 在 Vue 2.7 中添加显式的 width/height 以确保更新生效
-    ...(size > 0 && context.direction.value === 'row' ? { width: `${size}px` } : {}),
-    ...(size > 0 && context.direction.value === 'col' ? { height: `${size}px` } : {}),
+    ...(size > 0 && context.direction.value === 'horizontal' ? { width: `${size}px` } : {}),
+    ...(size > 0 && context.direction.value === 'vertical' ? { height: `${size}px` } : {}),
   }
 })
 </script>

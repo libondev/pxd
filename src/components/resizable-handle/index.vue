@@ -1,16 +1,7 @@
 <script lang="ts" setup>
+import type { ResizableContext } from '../../types/components/resizable'
 import { inject, onBeforeUnmount, onMounted } from 'vue'
 import { getUniqueId } from '../../utils/uid'
-
-interface ResizableContext {
-  registerPanel: (config: { id: string, initialSize?: number | null, minSize?: number }) => void
-  unregisterPanel: (id: string) => void
-  registerHandle: (config: { id: string, onDrag: (delta: { deltaX: number, deltaY: number }) => void }) => void
-  unregisterHandle: (id: string) => void
-  getPanelSize: (id: string) => number
-  onHandleDrag: (uniqueId: string, delta: { deltaX: number, deltaY: number }) => void
-  direction: { value: 'row' | 'col' }
-}
 
 defineOptions({
   name: 'PResizableHandle',
@@ -73,7 +64,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pxd-resizable-handle relative bg-border shrink-0 select-none touch-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/40 motion-safe:transition-colors after:motion-safe:transition-colors"
+    class="pxd-resizable-handle relative bg-border shrink-0 select-none touch-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/30 motion-safe:transition-colors after:motion-safe:transition-colors"
     @pointerdown.prevent="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
@@ -91,7 +82,7 @@ onBeforeUnmount(() => {
   transform: translate(-50%, -50%);
 }
 
-[data-orientation='row'] .pxd-resizable-handle {
+[data-direction='horizontal'] .pxd-resizable-handle {
   width: 1px;
   height: 100%;
   cursor: ew-resize;
@@ -101,7 +92,7 @@ onBeforeUnmount(() => {
   }
 }
 
-[data-orientation='col'] .pxd-resizable-handle {
+[data-direction='vertical'] .pxd-resizable-handle {
   width: 100%;
   height: 1px;
   cursor: ns-resize;

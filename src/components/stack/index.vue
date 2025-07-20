@@ -9,7 +9,7 @@ export interface Props {
   scale?: number
   align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
   justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  direction?: 'row' | 'col' | ResponsiveValue<'row' | 'col'>
+  direction?: 'horizontal' | 'vertical' | ResponsiveValue<'horizontal' | 'vertical'>
 }
 
 defineOptions({
@@ -24,7 +24,7 @@ const props = withDefaults(
     scale: 4,
     align: 'start',
     justify: 'start',
-    direction: 'row',
+    direction: 'horizontal',
   },
 )
 
@@ -90,7 +90,7 @@ const formattedGap = computed(() => {
 const formattedDir = computed(() => {
   const { direction } = props
 
-  const defaultDir = { xs: props.direction === 'col' ? 'flex-col' : 'flex-row' } as Record<string, string>
+  const defaultDir = { xs: props.direction === 'horizontal' ? 'flex-row' : 'flex-col' } as Record<string, string>
 
   if (typeof direction === 'object') {
     return Object.entries(direction).reduce((acc, [bp, value]) => {

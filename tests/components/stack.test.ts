@@ -30,7 +30,7 @@ describe('stack', () => {
   it('should apply styles when direction is row', () => {
     const wrapper = mount(Stack, {
       props: {
-        direction: 'row',
+        direction: 'horizontal',
       },
     })
 
@@ -57,8 +57,8 @@ describe('stack', () => {
     const wrapper = mount(Stack, {
       props: {
         direction: {
-          xs: 'col',
-          md: 'row',
+          xs: 'vertical',
+          md: 'horizontal',
         },
       },
     })
@@ -92,8 +92,8 @@ describe('stack', () => {
     const wrapper = mount(Stack, {
       props: {
         direction: {
-          xs: 'col',
-          lg: 'row',
+          xs: 'vertical',
+          lg: 'horizontal',
         },
         gap: {
           xs: 1,

@@ -8,7 +8,7 @@ interface PanelConfig {
 }
 
 export interface ResizableContext {
-  direction: Ref<'row' | 'col'>
+  direction: Ref<'horizontal' | 'vertical'>
   panelSizes: Ref<number[]>
   panelConfigs: Ref<PanelConfig[]>
   getPanelSize: (id: string) => number
@@ -16,4 +16,5 @@ export interface ResizableContext {
   registerPanel: (config: { id: string, initialSize?: number | null, minSize?: number }) => void
   registerHandle: (config: { id: string, onDrag: (delta: { deltaX: number, deltaY: number }) => void }) => void
   unregisterPanel: (id: string) => void
+  unregisterHandle: (id: string) => void
 }
