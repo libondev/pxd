@@ -9,7 +9,7 @@ import InboxIcon from '@gdsicon/vue/inbox'
 </script>
 
 <template>
-  <PStack gap="5">
+  <PStack gap="4">
     <PChip variant="primary">
       <PButton icon></PButton>
     </PChip>

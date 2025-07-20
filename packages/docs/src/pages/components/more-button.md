@@ -2,6 +2,7 @@
 Styling component to show expanded or collapsed content.
 
 ## Default
+Based on the `button` component, props owns all buttons.
 
 ```vue demo
 <script setup>
@@ -12,7 +13,7 @@ const expanded = ref(false)
 
 <template>
   <PMoreButton v-model="expanded" />
-  <PMoreButton v-model="expanded" :button-props="{variant:'primary'}" />
+  <PMoreButton v-model="expanded" variant="primary" />
 </template>
 ```
 
