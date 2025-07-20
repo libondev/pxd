@@ -30,7 +30,7 @@ const route = useRoute()
 const openSidebar = ref(false)
 
 const showViewSource = computed(() => {
-  return !['/[...all]', '/components'].includes(route.name)
+  return !['/[...all]', '/components/'].includes(route.name)
 })
 
 const flattenedMenus = computed(() => {
