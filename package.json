@@ -56,6 +56,10 @@
       "types": "./dist/composables/*/*.d.ts",
       "default": "./dist/composables/*/*.js"
     },
+    "./contexts/*": {
+      "types": "./dist/contexts/*/*.d.ts",
+      "default": "./dist/contexts/*/*.js"
+    },
     "./locales/*": {
       "types": "./dist/locales/*/*.d.ts",
       "default": "./dist/locales/*/*.js"

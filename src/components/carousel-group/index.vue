@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { CarouselGroupProps, CarouselItemState } from './constants'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
-import { carouselGroupContextKey, THROTTLE_DELAY, TRANSITION_CLASSES } from './constants'
+import { THROTTLE_DELAY, TRANSITION_CLASSES } from './constants'
 
 defineOptions({
   name: 'PCarouselGroup',
@@ -186,7 +187,7 @@ onBeforeUnmount(() => {
   carousels.value = []
 })
 
-provide(carouselGroupContextKey, {
+provideCarouselGroupContext({
   props,
   carousels,
   registerCarousel,

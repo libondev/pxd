@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import type { CarouselGroupContext } from '../carousel-group/constants'
-import { inject, onBeforeUnmount, shallowRef } from 'vue'
+import { onBeforeUnmount, shallowRef } from 'vue'
+import { useCarouselGroupContext } from '../../contexts/carousel'
 import { getUniqueId } from '../../utils/uid'
-import { carouselGroupContextKey } from '../carousel-group/constants'
 
 defineOptions({
   name: 'PCarousel',
 })
 
-const carouselGroupContext = inject<CarouselGroupContext>(carouselGroupContextKey)
+const carouselGroupContext = useCarouselGroupContext()
 
 if (!carouselGroupContext) {
   throw new Error('CarouselGroupContext is not provided')
