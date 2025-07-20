@@ -30,7 +30,7 @@ const config = useConfigProvider()
       </PText>
 
       <div class="pxd-pagination--label prev text-foreground relative flex items-center">
-        <span class="text-foreground">{{ prev.label }}</span>
+        <span class="text-foreground font-medium">{{ prev.label }}</span>
         <ChevronRightIcon class="absolute text-foreground-secondary -left-5 rotate-180" />
       </div>
     </RouterLink>
@@ -45,7 +45,7 @@ const config = useConfigProvider()
       </PText>
 
       <div class="pxd-pagination--label next text-foreground relative flex items-center">
-        <span class="text-foreground">{{ next.label }}</span>
+        <span class="text-foreground font-medium">{{ next.label }}</span>
         <ChevronRightIcon class="absolute text-foreground-secondary -right-5" />
       </div>
     </RouterLink>

@@ -28,6 +28,6 @@ export default {
     less: 'Less',
     more: 'More',
     next: 'Next',
-    prev: 'Prev',
+    prev: 'Previous',
   },
 }
