@@ -279,7 +279,7 @@ provide(carouselGroupContextKey, {
   &[data-indicator-position="top"] {
     .pxd-carousel-group--indicator {
       left: 12px;
-      top: 12px;
+      top: 8px;
     }
 
     .pxd-carousel-group--toggle-buttons {
@@ -291,7 +291,7 @@ provide(carouselGroupContextKey, {
   &[data-indicator-position="bottom"] {
     .pxd-carousel-group--indicator {
       left: 12px;
-      bottom: 12px;
+      bottom: 8px;
     }
 
     .pxd-carousel-group--toggle-buttons {
@@ -302,7 +302,7 @@ provide(carouselGroupContextKey, {
 
   &[data-indicator-position="left"] {
     .pxd-carousel-group--indicator {
-      left: 12px;
+      left: 8px;
       top: 12px;
     }
 
@@ -314,7 +314,7 @@ provide(carouselGroupContextKey, {
 
   &[data-indicator-position="right"] {
     .pxd-carousel-group--indicator {
-      right: 12px;
+      right: 8px;
       top: 12px;
     }
 
