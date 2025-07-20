@@ -70,10 +70,12 @@ const presetJustifyClasses = {
 }
 
 const formattedGap = computed(() => {
-  const { gap = 2, scale } = props
+  const { gap, scale } = props
+
+  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) || 2
 
   const defaultGap = {
-    '--gap-xs': `${Number(gap) * scale}px`,
+    '--gap-xs': `${Number(defaultXsGap) * scale}px`,
   } as Record<string, string>
 
   if (typeof gap === 'object') {
