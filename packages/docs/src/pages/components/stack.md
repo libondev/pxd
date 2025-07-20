@@ -36,9 +36,9 @@ Resize the window to observe changes to the layout.
     :gap="{ sm: 3, md: 5, lg: 10, xl: 15 }"
     :direction="{ xs: 'horizontal', lg: 'vertical' }"
   >
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
+    <div class="bg-gray-1000 h-12 w-12 rounded-md"></div>
+    <div class="bg-gray-1000 h-12 w-12 rounded-md"></div>
+    <div class="bg-gray-1000 h-12 w-12 rounded-md"></div>
   </PStack>
 </template>
 ```

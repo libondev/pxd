@@ -29,16 +29,16 @@ const props = withDefaults(
 )
 
 const presetDirClasses = {
-  'xs:col': 'flex-col',
-  'xs:row': 'flex-row',
-  'sm:col': 'sm:flex-col',
-  'sm:row': 'sm:flex-row',
-  'md:col': 'md:flex-col',
-  'md:row': 'md:flex-row',
-  'lg:col': 'lg:flex-col',
-  'lg:row': 'lg:flex-row',
-  'xl:col': 'xl:flex-col',
-  'xl:row': 'xl:flex-row',
+  'xs:vertical': 'flex-col',
+  'xs:horizontal': 'flex-row',
+  'sm:vertical': 'sm:flex-col',
+  'sm:horizontal': 'sm:flex-row',
+  'md:vertical': 'md:flex-col',
+  'md:horizontal': 'md:flex-row',
+  'lg:vertical': 'lg:flex-col',
+  'lg:horizontal': 'lg:flex-row',
+  'xl:vertical': 'xl:flex-col',
+  'xl:horizontal': 'xl:flex-row',
 }
 
 const presetGapClasses = {
@@ -89,20 +89,21 @@ const formattedGap = computed(() => {
   return defaultGap
 })
 
-const formattedDir = computed(() => {
+const formattedDirection = computed(() => {
   const { direction } = props
 
-  const defaultDir = { xs: props.direction === 'horizontal' ? 'flex-row' : 'flex-col' } as Record<string, string>
+  const defaultDirection = typeof direction === 'string' ? direction : direction.xs || 'horizontal'
+  const defaultDirs = { xs: defaultDirection === 'horizontal' ? 'flex-row' : 'flex-col' } as Record<string, string>
 
   if (typeof direction === 'object') {
     return Object.entries(direction).reduce((acc, [bp, value]) => {
       acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
 
       return acc
-    }, defaultDir)
+    }, defaultDirs)
   }
 
-  return defaultDir
+  return defaultDirs
 })
 
 const computedClass = computed(() => {
@@ -113,11 +114,11 @@ const computedClass = computed(() => {
   }
 
   classes.push(
-    ...Object.values(formattedDir.value),
+    ...Object.values(formattedDirection.value),
     ...Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]),
   )
 
-  return classes.join(' ')
+  return classes.filter(Boolean).join(' ')
 })
 </script>
 
