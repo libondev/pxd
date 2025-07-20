@@ -89,7 +89,7 @@ if (isClient) {
 <template>
   <div class="absolute left-0 top-0 bottom-0">
     <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-60 bg-background sm:border-x sm:translate-x-0">
-      <PScrollable class="h-full overflow-y-auto" content-class="p-2.5">
+      <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
     </aside>

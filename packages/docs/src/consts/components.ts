@@ -12,7 +12,7 @@ export const asideMenus = [
     label: 'Guide',
     children: [
       {
-        label: 'Guide',
+        label: 'Introduction',
         path: '/guide',
       },
       {
