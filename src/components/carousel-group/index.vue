@@ -226,7 +226,7 @@ provide(carouselGroupContextKey, {
           :key="i"
           :data-index="i"
           class="pxd-carousel-group--indicator-item w-(--w) h-(--h) relative rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
-          :class="{ 'pointer-events-none bg-primary': i === correctIndex }"
+          :class="{ '!bg-primary': i === correctIndex }"
         />
       </div>
     </template>
