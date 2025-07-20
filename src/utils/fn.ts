@@ -1,5 +1,4 @@
 import type { Callback } from '../types/shared'
-import { caf, raf } from './raf'
 
 export { default as debounce } from 'lodash.debounce'
 export { default as throttle } from 'lodash.throttle'
@@ -13,20 +12,18 @@ interface ThrottleByRafReturnType<T extends Callback> {
 export function throttleByRaf<T extends Callback>(
   callback: T,
 ): ThrottleByRafReturnType<T> {
-  let timer = 0
+  let timer: number
 
   const throttle = (...args: any[]): void => {
-    if (timer) {
-      caf(timer)
-    }
-    timer = raf(() => {
+    timer && window.cancelAnimationFrame(timer)
+    timer = window.requestAnimationFrame(() => {
       callback(...args)
       timer = 0
     })
   }
 
   throttle.cancel = () => {
-    caf(timer)
+    window.cancelAnimationFrame(timer)
     timer = 0
   }
 
