@@ -9,6 +9,8 @@ export interface CarouselGroupProps {
   interval?: number
   indicator?: boolean
   direction?: 'horizontal' | 'vertical'
+  indicatorType?: 'dot' | 'line'
+  indicatorPosition?: 'top' | 'right' | 'bottom' | 'left'
   pauseOnHover?: boolean
   toggleOnWheel?: boolean
 }

@@ -29,14 +29,42 @@ Loop a series of images or texts in a limited space.
 </style>
 ```
 
-## Disable autoplay and loop
+## Indicator
+
 ```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const direction = ref('horizontal')
+const indicatorType = ref('line')
+const indicatorPosition = ref('bottom')
+</script>
+
 <template>
-  <PCarouselGroup :autoplay="false" :loop="false">
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
-      {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
+  <PStack direction="col">
+    <PSwitchGroup v-model="direction">
+      <PSwitch label="horizontal" value="horizontal" />
+      <PSwitch label="vertical" value="vertical" />
+    </PSwitchGroup>
+
+    <PSwitchGroup v-model="indicatorType">
+      <PSwitch label="dot" value="dot" />
+      <PSwitch label="line" value="line" />
+    </PSwitchGroup>
+
+    <PSwitchGroup v-model="indicatorPosition">
+      <PSwitch label="top" value="top" />
+      <PSwitch label="bottom" value="bottom" />
+      <PSwitch label="left" value="left" />
+      <PSwitch label="right" value="right" />
+    </PSwitchGroup>
+
+    <PCarouselGroup :direction="direction" :indicator-type="indicatorType" :indicator-position="indicatorPosition">
+      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+        {{ i }}
+      </PCarousel>
+    </PCarouselGroup>
+  </PStack>
 </template>
 ```
 
@@ -44,6 +72,17 @@ Loop a series of images or texts in a limited space.
 ```vue demo
 <template>
   <PCarouselGroup :indicator="false">
+    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      {{ i }}
+    </PCarousel>
+  </PCarouselGroup>
+</template>
+```
+
+## Disable autoplay and loop
+```vue demo
+<template>
+  <PCarouselGroup :autoplay="false" :loop="false">
     <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
     </PCarousel>

@@ -16,10 +16,12 @@ const props = withDefaults(
     index: 0,
     loop: true,
     arrow: true,
-    height: 150,
+    height: 180,
     autoplay: true,
     interval: 3000,
     indicator: true,
+    indicatorType: 'line',
+    indicatorPosition: 'bottom',
     direction: 'horizontal',
     pauseOnHover: true,
     toggleOnWheel: true,
@@ -195,6 +197,9 @@ provide(carouselGroupContextKey, {
 <template>
   <div
     tabindex="-1"
+    :data-direction="direction"
+    :data-indicator-type="indicatorType"
+    :data-indicator-position="indicatorPosition"
     class="pxd-carousel-group group w-full relative overflow-hidden touch-manipulation"
     :style="{ height: getCssUnitValue(height) }"
     @pointerenter="onPointerEnter"
@@ -203,8 +208,7 @@ provide(carouselGroupContextKey, {
   >
     <div
       ref="containerRef"
-      :data-direction="direction"
-      class="pxd-carousel-group--container w-full h-full translate-z-0 data-[direction=horizontal]:flex group-hover:will-change-transform"
+      class="pxd-carousel-group--container w-full h-full translate-z-0 group-data-[direction=horizontal]:flex group-hover:will-change-transform"
       :style="computedStyle"
       :class="TRANSITION_CLASSES"
       @transitionend="onTransitionsEnd"
@@ -214,42 +218,113 @@ provide(carouselGroupContextKey, {
 
     <template v-if="indicator">
       <div
-        class="pxd-carousel-group--indicator absolute left-1/2 bottom-2 -translate-x-1/2 w-max flex items-center gap-2 z-10"
+        class="pxd-carousel-group--indicator absolute w-max flex items-center gap-2 group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
         @click="onIndicatorClick"
       >
         <button
           v-for="(_, i) in carousels.length"
           :key="i"
           :data-index="i"
-          class="pxd-carousel-group--indicator-item relative w-4 h-1 rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
+          class="pxd-carousel-group--indicator-item w-(--w) h-(--h) relative rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
           :class="{ 'pointer-events-none bg-primary': i === correctIndex }"
         />
       </div>
     </template>
 
     <template v-if="arrow">
-      <button
-        type="button"
-        aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer left-0 -translate-x-full disabled:pointer-events-none group-hover:translate-x-1/2 group-hover:opacity-50 group-focus-within:translate-x-1/2 group-focus-within:opacity-50 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-all"
-        @click="onToggleClick(-1)"
-      >
-        <ChevronRightIcon class="rotate-180" />
-      </button>
+      <div class="pxd-carousel-group--toggle-buttons flex gap-2 absolute group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
+        <button
+          type="button"
+          aria-label="Carousel arrow left"
+          class="pxd-carousel-group--prev-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
+          @click="onToggleClick(-1)"
+        >
+          <ChevronRightIcon class="rotate-180" />
+        </button>
 
-      <button
-        type="button"
-        aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-button z-10 appearance-none absolute top-1/2 p-2 rounded-full bg-gray-alpha-200 -translate-y-1/2 opacity-0 cursor-pointer right-0 translate-x-full disabled:pointer-events-none group-hover:-translate-x-1/2 group-hover:opacity-50 group-focus-within:-translate-x-1/2 group-focus-within:opacity-50 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-all"
-        @click="onToggleClick(1)"
-      >
-        <ChevronRightIcon />
-      </button>
+        <button
+          type="button"
+          aria-label="Carousel arrow right"
+          class="pxd-carousel-group--next-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
+          @click="onToggleClick(1)"
+        >
+          <ChevronRightIcon />
+        </button>
+      </div>
     </template>
   </div>
 </template>
 
-<style>
+<style lang="postcss">
+.pxd-carousel-group {
+  &[data-indicator-type="dot"] {
+    --w: 8px;
+    --h: 8px;
+  }
+
+  &[data-indicator-type="line"] {
+    &[data-indicator-position="top"],
+    &[data-indicator-position="bottom"] {
+      --w: 16px;
+      --h: 4px;
+    }
+
+    &[data-indicator-position="left"],
+    &[data-indicator-position="right"] {
+      --w: 4px;
+      --h: 16px;
+    }
+  }
+
+  &[data-indicator-position="top"] {
+    .pxd-carousel-group--indicator {
+      left: 12px;
+      top: 12px;
+    }
+
+    .pxd-carousel-group--toggle-buttons {
+      right: 8px;
+      top: 8px;
+    }
+  }
+
+  &[data-indicator-position="bottom"] {
+    .pxd-carousel-group--indicator {
+      left: 12px;
+      bottom: 12px;
+    }
+
+    .pxd-carousel-group--toggle-buttons {
+      right: 8px;
+      bottom: 8px;
+    }
+  }
+
+  &[data-indicator-position="left"] {
+    .pxd-carousel-group--indicator {
+      left: 12px;
+      top: 12px;
+    }
+
+    .pxd-carousel-group--toggle-buttons {
+      left: 8px;
+      bottom: 8px;
+    }
+  }
+
+  &[data-indicator-position="right"] {
+    .pxd-carousel-group--indicator {
+      right: 12px;
+      top: 12px;
+    }
+
+    .pxd-carousel-group--toggle-buttons {
+      right: 8px;
+      bottom: 8px;
+    }
+  }
+}
+
 .pxd-carousel-group--indicator-item::before {
   content: '';
   position: absolute;
