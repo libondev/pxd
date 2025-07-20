@@ -1,3 +1,4 @@
+import { setupLayouts } from 'virtual:meta-layouts'
 import { ViteSSG } from 'vite-ssg'
 import { routes } from 'vue-router/auto-routes'
 import App from './App.vue'
@@ -8,7 +9,7 @@ import '@jongwooo/prism-theme-github/themes/prism-github-default-dark.css'
 export const createApp = ViteSSG(
   App,
   {
-    routes,
+    routes: setupLayouts(routes),
     base: import.meta.env.BASE_URL,
     scrollBehavior(to, from, savedPosition) {
       if (savedPosition) {

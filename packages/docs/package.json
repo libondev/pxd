@@ -33,6 +33,7 @@
     "unplugin-vue-components": "catalog:",
     "unplugin-vue-router": "catalog:",
     "vite": "catalog:",
+    "vite-plugin-vue-meta-layouts": "^0.5.1",
     "vite-ssg": "^27.0.1",
     "vite-vue-md": "^1.4.0",
     "vue-router": "^4.5.0"
