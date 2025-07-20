@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CarouselGroupContext } from '../carousel-group/constants'
 import { inject, onBeforeUnmount, shallowRef } from 'vue'
-import { useUniqueId } from '../../composables/useUniqueIdContext'
+import { getUniqueId } from '../../utils/uid'
 import { carouselGroupContextKey } from '../carousel-group/constants'
 
 defineOptions({
@@ -21,7 +21,7 @@ const {
   unregisterCarousel,
 } = carouselGroupContext
 
-const uniqueId = useUniqueId()
+const uniqueId = getUniqueId()
 
 const transformStyle = shallowRef('')
 

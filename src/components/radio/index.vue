@@ -2,7 +2,7 @@
 import type { ComponentLabel, ComponentValue } from '../../types/components'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
-import { useUniqueId } from '../../composables/useUniqueIdContext'
+import { injectUniqueId } from '../../composables/useUniqueIdContext'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -30,7 +30,7 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const radioGroupName = useUniqueId('pxdRadioGroupName')
+const radioGroupName = injectUniqueId('pxdRadioGroupName')
 const radioGroupProps = inject('pxdRadioGroupProps', {
   disabled: false,
   required: false,

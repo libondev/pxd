@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
 import { computed, inject } from 'vue'
-import { useUniqueId } from '../../composables/useUniqueIdContext'
+import { injectUniqueId } from '../../composables/useUniqueIdContext'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -24,7 +24,7 @@ const props = defineProps<Props>()
 const uniqueId = getUniqueId()
 const modelValue = inject('pxdSwitchGroupModelValue', { value: '' })
 
-const switchGroupName = useUniqueId('pxdSwitchGroupName')
+const switchGroupName = injectUniqueId('pxdSwitchGroupName')
 const switchGroupProps = inject('pxdSwitchGroupProps', {
   disabled: false,
   required: false,

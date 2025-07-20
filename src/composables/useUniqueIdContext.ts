@@ -9,7 +9,7 @@ export function provideUniqueId(provideKey: string = 'uniqueId'): string {
   return uniqueId
 }
 
-export function useUniqueId(provideKey: string = 'uniqueId'): string {
+export function injectUniqueId(provideKey: string = 'uniqueId'): string {
   const injectedValue = inject(provideKey, getUniqueId())
 
   return injectedValue
