@@ -216,42 +216,39 @@ provide(carouselGroupContextKey, {
       <slot />
     </div>
 
-    <template v-if="indicator">
-      <div
-        class="pxd-carousel-group--indicator absolute w-max flex items-center gap-2 group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
-        @click="onIndicatorClick"
+    <div
+      v-if="indicator"
+      class="pxd-carousel-group--indicator absolute w-max flex items-center gap-2 group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
+      @click="onIndicatorClick"
+    >
+      <button
+        v-for="(_, i) in carousels.length"
+        :key="i"
+        :data-index="i"
+        class="pxd-carousel-group--indicator-item w-(--w) h-(--h) relative rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
+        :class="{ '!bg-primary': i === correctIndex }"
+      />
+    </div>
+
+    <div v-if="arrow" class="pxd-carousel-group--toggle-buttons flex gap-2 absolute group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
+      <button
+        type="button"
+        aria-label="Carousel arrow left"
+        class="pxd-carousel-group--prev-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
+        @click="onToggleClick(-1)"
       >
-        <button
-          v-for="(_, i) in carousels.length"
-          :key="i"
-          :data-index="i"
-          class="pxd-carousel-group--indicator-item w-(--w) h-(--h) relative rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
-          :class="{ '!bg-primary': i === correctIndex }"
-        />
-      </div>
-    </template>
+        <ChevronRightIcon class="rotate-180" />
+      </button>
 
-    <template v-if="arrow">
-      <div class="pxd-carousel-group--toggle-buttons flex gap-2 absolute group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
-        <button
-          type="button"
-          aria-label="Carousel arrow left"
-          class="pxd-carousel-group--prev-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
-          @click="onToggleClick(-1)"
-        >
-          <ChevronRightIcon class="rotate-180" />
-        </button>
-
-        <button
-          type="button"
-          aria-label="Carousel arrow right"
-          class="pxd-carousel-group--next-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
-          @click="onToggleClick(1)"
-        >
-          <ChevronRightIcon />
-        </button>
-      </div>
-    </template>
+      <button
+        type="button"
+        aria-label="Carousel arrow right"
+        class="pxd-carousel-group--next-button group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none opacity-40 hover:opacity-100 active:bg-gray-alpha-400 motion-safe:transition-colors"
+        @click="onToggleClick(1)"
+      >
+        <ChevronRightIcon />
+      </button>
+    </div>
   </div>
 </template>
 
