@@ -17,7 +17,6 @@ Avatars represent a user or a team
 
 ```vue demo
 <script setup>
-
 const options = [
   { src: 'https://avatars.githubusercontent.com/u/6880091?v=4' },
   { src: 'https://avatars.githubusercontent.com/u/9113740?v=4' },
@@ -25,14 +24,12 @@ const options = [
   { src: 'https://avatars.githubusercontent.com/u/169298?v=4' },
   { src: 'https://avatars.githubusercontent.com/u/3676859?v=4' },
 ]
-
 </script>
 
 <template>
-  <PAvatarGroup :options="options" :max="3" />
+  <PAvatarGroup :options="options" :max="3" size="28" />
 </template>
 ```
-
 
 ## Badge
 
@@ -43,7 +40,7 @@ import LogoGithubIcon from '@gdsicon/vue/logo-github'
 
 <template>
   <PAvatar src="https://avatars.githubusercontent.com/u/6880091?v=4">
-    <template #badge>
+    <template #icon>
       <!-- fix dark mode icon color -->
       <LogoGithubIcon class="text-black" />
     </template>

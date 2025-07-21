@@ -1,25 +1,15 @@
 <script lang="ts" setup>
-import { computed, provide } from 'vue'
+import type { AvatarGroupProps } from '../../types/components/avatar'
+import { computed } from 'vue'
+import { provideAvatarGroupContext } from '../../contexts/avatar'
 import PAvatar from '../avatar/index.vue'
-
-interface AvatarGroupOptions {
-  src?: string
-  alt?: string
-  loading?: boolean
-}
-
-interface Props {
-  max?: number
-  size?: number | string
-  options?: AvatarGroupOptions[]
-}
 
 defineOptions({
   name: 'PAvatarGroup',
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<AvatarGroupProps>(),
   {
     max: 5,
     size: 32,
@@ -27,9 +17,14 @@ const props = withDefaults(
   },
 )
 
-const slicedOptions = computed(() => props.options?.slice(0, props.max))
+const slicedOptions = computed(() => {
+  const { max, options = [] } = props
+  const maxCount = Math.max(Math.min(max, options.length), 1)
 
-provide('pxdAvatarGroupSize', props.size)
+  return options.slice(0, maxCount)
+})
+
+provideAvatarGroupContext(props)
 </script>
 
 <template>

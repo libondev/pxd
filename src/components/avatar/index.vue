@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, inject, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
+import { useAvatarGroupContext } from '../../contexts/avatar'
 import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
@@ -26,9 +27,11 @@ type LoadingStatus = 'idle' | 'loading' | 'loaded' | 'error'
 
 const loadingStatus = shallowRef<LoadingStatus>('idle')
 
-const groupSize = inject<number | string>('pxdAvatarGroupSize', 32)
+const avatarGroupContext = useAvatarGroupContext({
+  size: 32,
+})
 
-const computedSize = computed(() => getCssUnitValue(props.size || groupSize))
+const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext.size))
 
 const hideAvatar = computed(() => !props.src || props.placeholder || loadingStatus.value === 'error')
 
