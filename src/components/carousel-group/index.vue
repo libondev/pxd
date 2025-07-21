@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import type { CarouselGroupProps, CarouselItemState } from './constants'
+import type { CarouselState } from '../../contexts/carousel'
+import type { CarouselGroupProps } from './constants'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
-import { THROTTLE_DELAY, TRANSITION_CLASSES } from './constants'
+import { THROTTLE_INTERVALS, TRANSITION_CLASSES } from './constants'
 
 defineOptions({
   name: 'PCarouselGroup',
@@ -37,7 +38,7 @@ let autoPlayTimer: ReturnType<typeof requestAnimationFrame>
 
 const containerRef = shallowRef<HTMLDivElement>()
 
-const carousels = ref<CarouselItemState[]>([])
+const carousels = ref<CarouselState[]>([])
 
 const virtualIndex = shallowRef(props.index)
 
@@ -90,7 +91,7 @@ const onToggleClick = throttle((delta: number) => {
   }
 
   emits('change', correctIndex.value)
-}, THROTTLE_DELAY, { leading: true, trailing: false })
+}, THROTTLE_INTERVALS, { leading: true, trailing: false })
 
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
@@ -171,7 +172,7 @@ function onIndicatorClick(ev: MouseEvent) {
   virtualIndex.value = targetIndex
 }
 
-function registerCarousel(state: CarouselItemState) {
+function registerCarousel(state: CarouselState) {
   carousels.value.push(state)
 }
 
