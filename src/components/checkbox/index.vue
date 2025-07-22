@@ -2,8 +2,9 @@
 import type { ComponentLabel, ComponentValue } from '../../types/shared'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
+import { useCheckboxGroupContext } from '../../contexts/checkbox'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -38,10 +39,7 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const checkboxGroupProps = inject('pxdCheckboxGroupProps', {
-  disabled: false,
-  required: false,
-})
+const checkboxGroupProps = useCheckboxGroupContext()
 
 const isChecked = computed(() => {
   if (Array.isArray(modelValue.value)) {
@@ -55,8 +53,8 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => props.disabled || checkboxGroupProps.disabled)
-const computedRequired = computed(() => props.required || checkboxGroupProps.required)
+const computedDisabled = computed(() => props.disabled || checkboxGroupProps?.disabled)
+const computedRequired = computed(() => props.required || checkboxGroupProps?.required)
 
 const computedClass = computed(() => {
   const classes = [

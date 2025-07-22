@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import type { ComponentOption, ComponentValue } from '../../types/shared'
-import { provide } from 'vue'
+import type { CheckboxGroupProps } from '../../types/components/checkbox'
 import { useModelValue } from '../../composables/useModelValue'
+import { provideCheckboxGroupContext } from '../../contexts/checkbox'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
-
-interface Props {
-  disabled?: boolean
-  required?: boolean
-  modelValue?: ComponentValue[]
-  options?: ComponentOption[]
-}
 
 defineOptions({
   name: 'PCheckboxGroup',
@@ -22,7 +15,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<CheckboxGroupProps>(),
   {
     modelValue: () => [],
     options: () => [],
@@ -30,8 +23,8 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'change': [NonNullable<CheckboxGroupProps['modelValue']>]
+  'update:modelValue': [NonNullable<CheckboxGroupProps['modelValue']>]
 }>()
 
 const modelValue = useModelValue(props, emits)
@@ -50,7 +43,7 @@ function isCheckedPartial() {
   return modelValue.value.length > 0 && !isCheckedAll()
 }
 
-provide('pxdCheckboxGroupProps', props)
+provideCheckboxGroupContext(props)
 
 defineExpose({
   isCheckedAll,

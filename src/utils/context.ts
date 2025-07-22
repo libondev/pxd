@@ -10,7 +10,7 @@ import { inject, provide } from 'vue'
  */
 export function createContext<ContextValue>(
   providerComponentName: string | string[],
-  fallbackValue?: ContextValue,
+  fallbackValue?: ContextValue | null,
 ) {
   const symbolDescription = `${providerComponentName}Context`
 
