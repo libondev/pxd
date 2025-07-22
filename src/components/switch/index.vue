@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/components'
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 import { injectUniqueId } from '../../composables/useUniqueIdContext'
+import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -22,17 +23,14 @@ defineOptions({
 const props = defineProps<Props>()
 
 const uniqueId = getUniqueId()
-const modelValue = inject('pxdSwitchGroupModelValue', { value: '' })
 
-const switchGroupName = injectUniqueId('pxdSwitchGroupName')
-const switchGroupProps = inject('pxdSwitchGroupProps', {
-  disabled: false,
-  required: false,
-})
+const switchGroupName = injectUniqueId('SwitchGroupName')
+const switchGroupContext = useSwitchGroupContext()
+const switchGroupModelValue = useSwitchGroupModelValue()
 
-const isChecked = computed(() => modelValue.value === props.value)
-const computedDisabled = computed(() => props.disabled || switchGroupProps.disabled)
-const computedRequired = computed(() => props.required || switchGroupProps.required)
+const isChecked = computed(() => switchGroupModelValue.value === props.value)
+const computedDisabled = computed(() => props.disabled || switchGroupContext.disabled)
+const computedRequired = computed(() => props.required || switchGroupContext.required)
 
 const computedClass = computed(() => {
   const classes = [
@@ -56,7 +54,7 @@ const computedClass = computed(() => {
   >
     <input
       :id="uniqueId"
-      v-model="modelValue"
+      v-model="switchGroupModelValue"
       type="radio"
       :value="value"
       class="smallest peer"

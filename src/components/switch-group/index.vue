@@ -1,20 +1,12 @@
 <script lang="ts" setup>
-import type { ComponentOption, ComponentSize } from '../../types/components'
-import { computed, provide } from 'vue'
+import type { SwitchGroupProps } from '../../types/components/switch'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideUniqueId } from '../../composables/useUniqueIdContext'
+import { provideSwitchGroupContext, provideSwitchGroupModelValue } from '../../contexts/switch'
 import { getFallbackValue } from '../../utils/value'
 import PSwitch from '../switch/index.vue'
-
-interface Props {
-  block?: boolean
-  disabled?: boolean
-  required?: boolean
-  size?: ComponentSize
-  modelValue?: string | number
-  options?: ComponentOption[]
-}
 
 defineOptions({
   name: 'PSwitchGroup',
@@ -25,7 +17,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<SwitchGroupProps>(),
   {
     options: () => [],
     modelValue: '',
@@ -33,7 +25,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'update:modelValue': [NonNullable<SwitchGroupProps['modelValue']>]
 }>()
 
 const SIZES = {
@@ -46,9 +38,9 @@ const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
-provideUniqueId('pxdSwitchGroupName')
-provide('pxdSwitchGroupProps', props)
-provide('pxdSwitchGroupModelValue', modelValue)
+provideUniqueId('SwitchGroupName')
+provideSwitchGroupContext(props)
+provideSwitchGroupModelValue(modelValue)
 </script>
 
 <template>
