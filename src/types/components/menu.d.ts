@@ -1,4 +1,4 @@
-import type { ComponentAs, ComponentLabel } from './shared'
+import type { ComponentAs, ComponentLabel } from '../shared'
 
 export interface MenuListOption extends Record<string, any> {
   as?: ComponentAs

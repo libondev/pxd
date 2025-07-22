@@ -1,4 +1,4 @@
-import type { ComponentAs, ComponentSizeWithXs, ComponentVariantWithDefault } from './shared'
+import type { ComponentAs, ComponentSizeWithXs, ComponentVariantWithDefault } from '../shared'
 
 export interface ButtonProps {
   as?: ComponentAs
