@@ -1,18 +1,12 @@
 <script lang="ts" setup>
-import type { ComputedRef } from 'vue'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { computed, inject, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useCollapseGroupContext } from '../../contexts/collapse'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   title?: string
   expand?: boolean
-}
-
-interface CollapseGroupContext {
-  multiple: ComputedRef<boolean>
-  isExpanded: (id: string) => boolean
-  toggleItem: (id: string, expanded: boolean) => void
 }
 
 defineOptions({
@@ -30,7 +24,7 @@ const props = withDefaults(
 const uid = getUniqueId()
 
 const localExpand = ref(props.expand)
-const collapseGroup = inject<CollapseGroupContext>('pxdCollapseGroup')!
+const collapseGroup = useCollapseGroupContext()
 
 const isExpanded = computed(() => {
   if (collapseGroup) {

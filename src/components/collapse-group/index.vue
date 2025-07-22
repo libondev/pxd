@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/shared'
-import { computed, provide, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   multiple?: boolean
   size?: ComponentSize
 }
-
 defineOptions({
   name: 'PCollapseGroup',
 })
@@ -65,7 +65,7 @@ function toggleItem(id: string, expanded: boolean) {
 
 const isExpanded = (id: string) => expandedItems.value.includes(id)
 
-provide('pxdCollapseGroup', {
+provideCollapseGroupContext({
   multiple: computed(() => props.multiple),
   isExpanded,
   toggleItem,
