@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariant } from '../../types/components'
+import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { getColorByThreshold } from '../../utils/colors'
 import { isTruthyProp } from '../../utils/format'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   min?: number
@@ -72,6 +73,12 @@ const computedLabel = computed(() => {
   return false
 })
 
+const computedClass = computed(() => {
+  const classes = ['pxd-progress-bar flex-1 rounded-full overflow-hidden bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
+
+  return classes.join(' ')
+})
+
 const computedColors = computed(() => {
   const { colors, variant } = props
 
@@ -94,7 +101,7 @@ const computedProgressBarStyles = computed(() => {
 
 <template>
   <div role="progressbar" class="pxd-progress w-full flex items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
-    <div class="flex-1 rounded-full overflow-hidden bg-gray-200" :class="SIZES[size || config.size]">
+    <div :class="computedClass">
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>
 

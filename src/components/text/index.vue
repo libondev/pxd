@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentAs, ResponsiveValue } from '../../types/components'
+import type { ComponentAs, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 

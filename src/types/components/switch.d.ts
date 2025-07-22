@@ -1,4 +1,4 @@
-import type { ComponentOption, ComponentSize } from '../../types/components/shared'
+import type { ComponentOption, ComponentSize } from './shared'
 
 export interface SwitchGroupProps {
   block?: boolean

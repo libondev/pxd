@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentLabel, ComponentVariant } from '../../types/components'
+import type { ComponentLabel, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'

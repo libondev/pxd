@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/components'
+import type { ComponentLabel, ComponentValue } from '../../types/shared'
 import { computed, inject } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { injectUniqueId } from '../../composables/useUniqueIdContext'

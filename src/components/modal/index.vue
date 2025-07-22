@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentLabel } from '../../types/shared'
 import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'

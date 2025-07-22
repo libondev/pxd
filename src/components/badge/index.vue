@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentAs } from '../../types/components'
+import type { ComponentAs } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { getFallbackValue } from '../../utils/value'

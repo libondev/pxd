@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSizeWithXs } from '../../types/components'
+import type { ComponentSizeWithXs } from '../../types/shared'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'

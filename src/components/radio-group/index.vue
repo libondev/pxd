@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentOption, ComponentValue } from '../../types'
+import type { ComponentOption, ComponentValue } from '../../types/shared'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideUniqueId } from '../../composables/useUniqueIdContext'

@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../types/components'
+import type { ComponentSize } from '../types/shared'
 import enUS from '../locales/en-US'
 import { createContext } from '../utils/context'
 

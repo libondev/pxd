@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'

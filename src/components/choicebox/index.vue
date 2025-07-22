@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/components'
+import type { ComponentLabel, ComponentValue } from '../../types/shared'
 import { computed, inject, markRaw } from 'vue'
 import PCheckbox from '../checkbox/index.vue'
 import PRadio from '../radio/index.vue'

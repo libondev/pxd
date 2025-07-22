@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentBasePosition, ComponentClass, ComponentPosition, PopoverTrigger } from '../../types/components'
+import type { PopoverTrigger } from '../../types/components/popover'
+import type { ComponentBasePosition, ComponentClass, ComponentPosition } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import {

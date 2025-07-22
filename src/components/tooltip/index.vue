@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/components'
+import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { isTouchDevice } from '../../utils/is'
 import { getFallbackValue } from '../../utils/value'

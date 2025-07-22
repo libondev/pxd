@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize } from '../../types/shared'
 import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ConfigProviderProps } from '../../composables/useConfigProviderContext'
-import type { ComponentAs } from '../../types/components'
+import type { ComponentAs } from '../../types/shared'
 import { provideConfigProvider } from '../../composables/useConfigProviderContext'
 import enUS from '../../locales/en-US'
 

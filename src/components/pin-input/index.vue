@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue'
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/components'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'

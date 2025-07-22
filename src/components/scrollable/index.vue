@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentClass } from '../../types/components'
+import type { ComponentClass } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useBrowserObserver'
 import { off, on, once } from '../../utils/events'

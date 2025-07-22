@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariantWithDefault } from '../../types/components'
+import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
 import { computed, ref } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useCopyClick } from '../../composables/useCopyClick'

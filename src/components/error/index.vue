@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { ComponentSizeWithXs, ErrorType } from '../../types/components'
+import type { ErrorType } from '../../types/components/error'
+import type { ComponentSizeWithXs } from '../../types/shared'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'

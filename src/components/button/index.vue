@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ButtonProps } from '../../types/components'
+import type { ButtonProps } from '../../types/components/button'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isTruthyProp } from '../../utils/format'

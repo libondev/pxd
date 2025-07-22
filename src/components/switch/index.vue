@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/components'
+import type { ComponentLabel } from '../../types/shared'
 import { computed } from 'vue'
 import { injectUniqueId } from '../../composables/useUniqueIdContext'
 import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'

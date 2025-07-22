@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentPublicInstance, Ref } from 'vue'
-import type { ComponentAs, ComponentLabel } from '../../types/components'
+import type { ComponentAs, ComponentLabel } from '../../types/shared'
 import { computed, inject, onMounted, onUnmounted, shallowRef } from 'vue'
 
 interface Props {

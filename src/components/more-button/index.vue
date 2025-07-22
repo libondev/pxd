@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ButtonProps } from '../../types/components'
+import type { ButtonProps } from '../../types/components/button'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'

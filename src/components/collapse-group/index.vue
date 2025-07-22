@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/components'
+import type { ComponentSize } from '../../types/shared'
 import { computed, provide, ref } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { getFallbackValue } from '../../utils/value'

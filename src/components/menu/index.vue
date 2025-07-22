@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { ComponentPosition, MenuListOption } from '../../types/components'
+import type { MenuListOption } from '../../types/components/menu'
+import type { ComponentPosition } from '../../types/shared'
 import { provide, shallowRef } from 'vue'
 import PMenuList from '../menu-list/index.vue'
 import PPopover from '../popover/index.vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentOption, ComponentValue } from '../../types/components'
+import type { ComponentOption, ComponentValue } from '../../types/shared'
 import { computed, markRaw, provide, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import PCheckboxGroup from '../checkbox-group/index.vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/components'
+import type { ComponentLabel, ComponentValue } from '../../types/shared'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, inject } from 'vue'

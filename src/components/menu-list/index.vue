@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MenuListOption } from '../../types/components'
+import type { MenuListOption } from '../../types/components/menu'
 import { computed, onBeforeUnmount, onMounted, provide, shallowRef } from 'vue'
 import { off, on } from '../../utils/events'
 import { throttle } from '../../utils/fn'

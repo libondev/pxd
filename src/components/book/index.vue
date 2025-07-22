@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ResponsiveValue } from '../../types/components'
+import type { ComponentLabel, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 
 interface Props {

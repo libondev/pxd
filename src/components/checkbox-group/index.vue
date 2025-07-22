@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentOption, ComponentValue } from '../../types'
+import type { ComponentOption, ComponentValue } from '../../types/shared'
 import { provide } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import PCheckbox from '../checkbox/index.vue'
@@ -37,7 +37,13 @@ const emits = defineEmits<{
 const modelValue = useModelValue(props, emits)
 
 function isCheckedAll() {
-  return props.options.every(option => modelValue.value.includes(option.value))
+  const { options = [] } = props
+
+  if (options.length === 0) {
+    return false
+  }
+
+  return options.every(option => modelValue.value.includes(option.value))
 }
 
 function isCheckedPartial() {

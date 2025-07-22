@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentClass } from '../../types/components'
+import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { off, on } from '../../utils/events'
