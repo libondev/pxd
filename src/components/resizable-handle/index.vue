@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import type { ResizableContext } from '../../types/components/resizable'
-import { inject, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PResizableHandle',
 })
 
-const context = inject<ResizableContext>('pxdResizable')
-if (!context) {
-  throw new Error('PResizableHandle must be used within PResizable')
-}
+const context = useResizableContext()
 
 const uniqueId = getUniqueId()
 

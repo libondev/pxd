@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import { createContext } from '../utils/context'
 
 interface PanelConfig {
   id: string
@@ -18,3 +19,8 @@ export interface ResizableContext {
   unregisterPanel: (id: string) => void
   unregisterHandle: (id: string) => void
 }
+
+export const [
+  provideResizableContext,
+  useResizableContext,
+] = createContext<ResizableContext>('ResizableContext')

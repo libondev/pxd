@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, provide, ref, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
+import { provideResizableContext } from '../../contexts/resizable'
 
 interface Props {
   direction?: 'horizontal' | 'vertical'
@@ -31,18 +32,6 @@ const handleConfigs = ref<HandleConfig[]>([])
 const panelSizes = ref<number[]>([])
 const containerRef = shallowRef<HTMLElement | null>(null)
 const orderCounter = ref(0)
-
-provide('pxdResizable', {
-  registerPanel,
-  unregisterPanel,
-  registerHandle,
-  unregisterHandle,
-  getPanelSize,
-  onHandleDrag,
-  direction: computed(() => props.direction),
-  panelSizes,
-  panelConfigs,
-})
 
 // 提供给子组件注册使用的方法
 function registerPanel(config: Omit<PanelConfig, 'order'>) {
@@ -244,6 +233,18 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: num
   newSizes[index + 1] = newNextSize
   panelSizes.value = newSizes
 }
+
+provideResizableContext({
+  registerPanel,
+  unregisterPanel,
+  registerHandle,
+  unregisterHandle,
+  getPanelSize,
+  onHandleDrag,
+  direction: computed(() => props.direction),
+  panelSizes,
+  panelConfigs,
+})
 
 onMounted(async () => {
   await nextTick()
