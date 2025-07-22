@@ -63,8 +63,10 @@ const modelValue = ref('one')
 
 <template>
   <PStack direction="vertical">
-    <PRadio v-model="modelValue" disabled label="Option 1" value="one" />
-    <PRadio v-model="modelValue" disabled value="two">Option 2</PRadio>
+    <PRadioGroup v-model="modelValue">
+      <PRadio disabled label="Option 1" value="one" />
+      <PRadio disabled value="two">Option 2</PRadio>
+    </PRadioGroup>
   </PStack>
 </template>
 ```

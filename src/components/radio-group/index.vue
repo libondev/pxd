@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import type { ComponentOption, ComponentValue } from '../../types/shared'
-import { provide } from 'vue'
+import type { RadioGroupProps } from '../../types/components/radio'
 import { useModelValue } from '../../composables/useModelValue'
 import { provideUniqueId } from '../../composables/useUniqueIdContext'
+import { provideRadioGroupContext } from '../../contexts/radio'
 import PRadio from '../radio/index.vue'
 import PStack from '../stack/index.vue'
-
-interface Props {
-  disabled?: boolean
-  required?: boolean
-  modelValue?: ComponentValue
-  options?: ComponentOption[]
-}
 
 defineOptions({
   name: 'PRadioGroup',
@@ -23,21 +16,21 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<RadioGroupProps>(),
   {
     options: () => [],
   },
 )
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'change': [NonNullable<RadioGroupProps['modelValue']>]
+  'update:modelValue': [NonNullable<RadioGroupProps['modelValue']>]
 }>()
 
 const modelValue = useModelValue(props, emits)
 
-provideUniqueId('pxdRadioGroupName')
-provide('pxdRadioGroupProps', props)
+provideUniqueId('RadioGroupName')
+provideRadioGroupContext(props)
 </script>
 
 <template>

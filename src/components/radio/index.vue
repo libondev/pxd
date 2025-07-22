@@ -1,17 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/shared'
-import { computed, inject } from 'vue'
+import type { RadioProps } from '../../types/components/radio'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { useUniqueId } from '../../composables/useUniqueIdContext'
+import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
-
-interface Props {
-  label?: ComponentLabel
-  value: ComponentValue
-  required?: boolean
-  disabled?: boolean
-  modelValue?: ComponentValue
-}
 
 defineOptions({
   name: 'PRadio',
@@ -21,24 +14,21 @@ defineOptions({
   },
 })
 
-const props = defineProps<Props>()
+const props = defineProps<RadioProps>()
 
 const emits = defineEmits<{
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'update:modelValue': [NonNullable<RadioProps['modelValue']>]
 }>()
 
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const radioGroupName = useUniqueId('pxdRadioGroupName')
-const radioGroupProps = inject('pxdRadioGroupProps', {
-  disabled: false,
-  required: false,
-})
+const radioGroupName = useUniqueId('RadioGroupName')
+const radioGroupContext = useRadioGroupContext()
 
 const isChecked = computed(() => modelValue.value === props.value)
-const computedDisabled = computed(() => props.disabled || radioGroupProps.disabled)
-const computedRequired = computed(() => props.required || radioGroupProps.required)
+const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
+const computedRequired = computed(() => props.required || radioGroupContext?.required)
 
 const computedInnerClasses = computed(() => {
   const classes = [
