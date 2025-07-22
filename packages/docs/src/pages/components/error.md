@@ -21,7 +21,7 @@ Good error design is clear, useful, and friendly. Designing concise and accurate
 
 ```vue demo
 <template>
-  <PStack gap="8">
+  <PStack direction="vertical">
     <PError size="sm">This email is in use.</PError>
     <PError>This email is in use.</PError>
     <PError size="lg">This email is in use.</PError>

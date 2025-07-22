@@ -2,8 +2,10 @@
 import type { ComponentSizeWithXs, ErrorType } from '../../types/components'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { isExternalLink } from '../../utils/format'
+import { getFallbackValue } from '../../utils/value'
 
 interface Props {
   size?: ComponentSizeWithXs
@@ -15,21 +17,32 @@ defineOptions({
   name: 'PError',
 })
 
-defineProps<Props>()
+const props = withDefaults(
+  defineProps<Props>(),
+  {
+    size: 'md',
+  },
+)
+
+const SIZES = {
+  xs: 'text-xs [--mt:2px]',
+  sm: 'text-[13px] [--mt:2px]',
+  md: 'text-sm [--mt:2px]',
+  lg: 'text-base [--mt:4px]',
+}
 
 const config = useConfigProvider()
 
-const SIZES = {
-  xs: 'text-xs',
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-}
+const computedClass = computed(() => {
+  const classes = ['pxd-error flex text-red-900', getFallbackValue(props.size, SIZES, config.size)]
+
+  return classes.join(' ')
+})
 </script>
 
 <template>
-  <div class="pxd-error flex text-red-900" :class="SIZES[size || config.size]">
-    <StopIcon class="size-4 min-w-4 mr-2 mt-0.5" :class="{ 'mt-1': size === 'lg' || config.size === 'lg' }" />
+  <div :class="computedClass">
+    <StopIcon class="size-4 min-w-4 mr-2 mt-(--mt)" />
 
     <div class="flex-1">
       <b v-if="label || error?.label" class="font-medium whitespace-nowrap">{{ label || error?.label }}:</b>
