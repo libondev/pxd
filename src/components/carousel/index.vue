@@ -9,17 +9,6 @@ defineOptions({
 
 const carouselGroupContext = useCarouselGroupContext()
 
-if (!carouselGroupContext) {
-  throw new Error('CarouselGroupContext is not provided')
-}
-
-const {
-  props,
-  carousels,
-  registerCarousel,
-  unregisterCarousel,
-} = carouselGroupContext
-
 const uniqueId = getUniqueId()
 
 const transformStyle = shallowRef('')
@@ -29,13 +18,13 @@ function resetPosition() {
 }
 
 function getTranslateStyle(translate: number) {
-  return props.direction === 'horizontal'
+  return carouselGroupContext.props.direction === 'horizontal'
     ? `translateX(${translate}%)`
     : `translateY(${translate}%)`
 }
 
 function translateItem(index: number, activeIndex: number) {
-  const maxLength = carousels.value.length
+  const maxLength = carouselGroupContext.carousels.value.length
   const lastIndex = maxLength - 1
 
   if (index === 0 && activeIndex === maxLength) {
@@ -49,13 +38,13 @@ function translateItem(index: number, activeIndex: number) {
   }
 }
 
-registerCarousel({
+carouselGroupContext.registerCarousel({
   uid: uniqueId,
   translateItem,
 })
 
 onBeforeUnmount(() => {
-  unregisterCarousel(uniqueId)
+  carouselGroupContext.unregisterCarousel(uniqueId)
 })
 </script>
 

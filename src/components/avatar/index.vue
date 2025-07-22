@@ -27,9 +27,7 @@ type LoadingStatus = 'idle' | 'loading' | 'loaded' | 'error'
 
 const loadingStatus = shallowRef<LoadingStatus>('idle')
 
-const avatarGroupContext = useAvatarGroupContext({
-  size: 32,
-})
+const avatarGroupContext = useAvatarGroupContext()
 
 const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext.size))
 
