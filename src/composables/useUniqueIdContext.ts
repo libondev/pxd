@@ -1,16 +1,16 @@
 import { inject, provide } from 'vue'
 import { getUniqueId } from '../utils/uid'
 
-export function provideUniqueId(provideKey: string = 'uniqueId'): string {
+export function provideUniqueId(injectionKey: string = 'uniqueId'): string {
   const uniqueId = getUniqueId()
 
-  provide(provideKey, uniqueId)
+  provide(injectionKey, uniqueId)
 
   return uniqueId
 }
 
-export function injectUniqueId(provideKey: string = 'uniqueId'): string {
-  const injectedValue = inject(provideKey, getUniqueId())
+export function useUniqueId(injectionKey: string = 'uniqueId'): string {
+  const injectedValue = inject(injectionKey, getUniqueId())
 
   return injectedValue
 }

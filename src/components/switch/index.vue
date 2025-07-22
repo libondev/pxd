@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/shared'
 import { computed } from 'vue'
-import { injectUniqueId } from '../../composables/useUniqueIdContext'
+import { useUniqueId } from '../../composables/useUniqueIdContext'
 import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
 import { getUniqueId } from '../../utils/uid'
 
@@ -24,7 +24,7 @@ const props = defineProps<Props>()
 
 const uniqueId = getUniqueId()
 
-const switchGroupName = injectUniqueId('SwitchGroupName')
+const switchGroupName = useUniqueId('SwitchGroupName')
 const switchGroupContext = useSwitchGroupContext()
 const switchGroupModelValue = useSwitchGroupModelValue()
 

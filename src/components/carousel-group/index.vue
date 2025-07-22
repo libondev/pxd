@@ -180,19 +180,19 @@ function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
 }
 
+provideCarouselGroupContext({
+  props,
+  carousels,
+  registerCarousel,
+  unregisterCarousel,
+})
+
 onMounted(() => {
   onPointerLeave()
 })
 
 onBeforeUnmount(() => {
   carousels.value = []
-})
-
-provideCarouselGroupContext({
-  props,
-  carousels,
-  registerCarousel,
-  unregisterCarousel,
 })
 </script>
 

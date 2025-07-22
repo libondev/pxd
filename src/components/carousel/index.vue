@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useCarouselGroupContext } from '../../contexts/carousel'
 import { getUniqueId } from '../../utils/uid'
 
@@ -38,13 +38,15 @@ function translateItem(index: number, activeIndex: number) {
   }
 }
 
-carouselGroupContext.registerCarousel({
-  uid: uniqueId,
-  translateItem,
+onMounted(() => {
+  carouselGroupContext?.registerCarousel({
+    uid: uniqueId,
+    translateItem,
+  })
 })
 
 onBeforeUnmount(() => {
-  carouselGroupContext.unregisterCarousel(uniqueId)
+  carouselGroupContext?.unregisterCarousel(uniqueId)
 })
 </script>
 
