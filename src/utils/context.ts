@@ -28,8 +28,8 @@ export function createContext<ContextValue>(
    */
   const injectContext = <
     T extends ContextValue | null | undefined = ContextValue,
-  >(): T extends null ? ContextValue | null : ContextValue => {
-    const context = inject(injectionKey, fallbackValue)
+  >(fallback?: T): T extends null ? ContextValue | null : ContextValue => {
+    const context = inject(injectionKey, fallback || fallbackValue)
 
     if (context) {
       return context
