@@ -10,4 +10,4 @@ export const [
 export const [
   provideSwitchGroupModelValue,
   useSwitchGroupModelValue,
-] = createContext<Ref<SwitchGroupProps['modelValue']>>('SwitchGroup')
+] = createContext<Ref<SwitchGroupProps['modelValue']>>('SwitchGroupModalValue')
