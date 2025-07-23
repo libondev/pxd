@@ -4,32 +4,30 @@ import { inject, provide } from 'vue'
 type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | null)
 
 /**
- * @param providerComponentName - The name(s) of the component(s) providing the context.
- *
- * There are situations where context can come from multiple components. In such cases, you might need to give an array of component names to provide your context, instead of just a single string.
+ * @param providerComponentName - The name of the component providing the context.
  */
 export function createContext<ContextValue>(
-  providerComponentName: string | string[],
+  providerComponentName: string,
 ): readonly [
   (contextValue: ContextValue) => ContextValue,
   InjectContextStrict<ContextValue>,
 ]
 export function createContext<ContextValue>(
-  providerComponentName: string | string[],
+  providerComponentName: string,
   fallbackValue: ContextValue,
 ): readonly [
   (contextValue: ContextValue) => ContextValue,
   InjectContextStrict<ContextValue>,
 ]
 export function createContext<ContextValue>(
-  providerComponentName: string | string[],
+  providerComponentName: string,
   fallbackValue: null,
 ): readonly [
   (contextValue: ContextValue) => ContextValue,
   (fallback?: ContextValue | null) => ContextValue | null,
 ]
 export function createContext<ContextValue>(
-  providerComponentName: string | string[],
+  providerComponentName: string,
   fallbackValue?: ContextValue | null,
 ) {
   const symbolDescription = `${providerComponentName}Context`
@@ -49,19 +47,10 @@ export function createContext<ContextValue>(
   const injectContext = (fallback?: ContextValue | null) => {
     const context = inject(injectionKey, fallback ?? fallbackValue)
 
-    if (context == null) {
-      if (fallback === undefined && fallbackValue === undefined) {
-        throw new Error(
-          `Injection \`${injectionKey.toString()}\` not found. Component must be used within ${
-            Array.isArray(providerComponentName)
-              ? `one of the following components: ${providerComponentName.join(
-                ', ',
-              )}`
-              : `\`${providerComponentName}\``
-          }`,
-        )
-      }
-      return null
+    if (context === undefined) {
+      throw new Error(
+        `Injection \`${injectionKey.toString()}\` not found. Component must be used within \`${providerComponentName}\``,
+      )
     }
 
     return context
