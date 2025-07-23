@@ -1,4 +1,4 @@
-import type { ComponentOption, ComponentValue } from '../shared'
+import type { ComponentLabel, ComponentOption, ComponentValue } from '../shared'
 
 export interface RadioGroupProps {
   disabled?: boolean

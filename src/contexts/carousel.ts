@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { CarouselGroupProps } from '../components/carousel-group/constants'
+import type { CarouselGroupProps } from '../types/components/carousel'
 import { createContext } from '../utils/context'
 
 export interface CarouselState {

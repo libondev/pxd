@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentBasePosition, ComponentClass, ComponentPosition } from '../../types/shared'
+import type { BasePosition, ComponentClass, ComponentPosition } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import {
@@ -120,7 +120,7 @@ const containerStyle = shallowRef({
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 let cachedScrollTop: number = 0
-let cachedGeneralPosition: ComponentBasePosition | null = null
+let cachedGeneralPosition: BasePosition | null = null
 let cachedPositionForGeneral: string | null = null
 
 const generalPosition = computed(() => {
@@ -128,7 +128,7 @@ const generalPosition = computed(() => {
     return cachedGeneralPosition
   }
   cachedPositionForGeneral = localPosition.value
-  cachedGeneralPosition = localPosition.value.split('-')[0] as ComponentBasePosition
+  cachedGeneralPosition = localPosition.value.split('-')[0] as BasePosition
   return cachedGeneralPosition
 })
 
@@ -494,8 +494,8 @@ function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverla
 
   const currentPosition = localPosition.value
   const [position, modifier] = currentPosition.includes('-')
-    ? currentPosition.split('-') as [ComponentBasePosition, string]
-    : [currentPosition as ComponentBasePosition, '']
+    ? currentPosition.split('-') as [BasePosition, string]
+    : [currentPosition as BasePosition, '']
 
   const oppositePositionMap = {
     top: 'bottom',

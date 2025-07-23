@@ -1,4 +1,4 @@
-interface AvatarGroupOptions {
+interface Options {
   src?: string
   alt?: string
   loading?: boolean
@@ -7,5 +7,5 @@ interface AvatarGroupOptions {
 export interface AvatarGroupProps {
   max?: number
   size?: number | string
-  options?: AvatarGroupOptions[]
+  options?: Options[]
 }

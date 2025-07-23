@@ -1,20 +1,11 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/shared'
+import type { CheckboxProps } from '../../types/components/checkbox'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
 import { useCheckboxGroupContext } from '../../contexts/checkbox'
 import { getUniqueId } from '../../utils/uid'
-
-interface Props {
-  label?: ComponentLabel
-  value?: ComponentValue
-  disabled?: boolean
-  required?: boolean
-  modelValue?: ComponentValue | ComponentValue[]
-  indeterminate?: boolean
-}
 
 defineOptions({
   name: 'PCheckbox',
@@ -25,7 +16,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<CheckboxProps>(),
   {
     modelValue: () => [],
     value: true,
@@ -33,13 +24,13 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'update:modelValue': [NonNullable<CheckboxProps['modelValue']>]
 }>()
 
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
-const checkboxGroupProps = useCheckboxGroupContext()
+const checkboxGroupContext = useCheckboxGroupContext()
 
 const isChecked = computed(() => {
   if (Array.isArray(modelValue.value)) {
@@ -53,8 +44,8 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => props.disabled || checkboxGroupProps?.disabled)
-const computedRequired = computed(() => props.required || checkboxGroupProps?.required)
+const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.disabled)
+const computedRequired = computed(() => props.required || checkboxGroupContext?.required)
 
 const computedClass = computed(() => {
   const classes = [

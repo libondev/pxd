@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentBasePosition, ComponentLabel } from '../../types/shared'
+import type { BasePosition, ComponentLabel } from '../../types/shared'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useModelValue } from '../../composables/useModelValue'
@@ -18,7 +18,7 @@ interface Props {
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  position?: ComponentBasePosition
+  position?: BasePosition
 }
 
 defineOptions({

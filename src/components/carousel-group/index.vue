@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import type { CarouselState } from '../../contexts/carousel'
-import type { CarouselGroupProps } from './constants'
+import type { CarouselGroupProps } from '../../types/components/carousel'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
-import { THROTTLE_INTERVALS, TRANSITION_CLASSES } from './constants'
 
 defineOptions({
   name: 'PCarouselGroup',
@@ -33,6 +32,9 @@ const props = withDefaults(
 const emits = defineEmits<{
   change: [index: number]
 }>()
+
+const THROTTLE_INTERVALS = 550 // 比过渡事件稍长以预留给容器重置位置的时间
+const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
 
 let autoPlayTimer: ReturnType<typeof requestAnimationFrame>
 

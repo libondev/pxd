@@ -15,11 +15,11 @@ export type ComponentValue = string | number | boolean
 
 export type ComponentClass = string | any[] | Record<string, any>
 
-export type ComponentBasePosition = 'top' | 'bottom' | 'left' | 'right'
+export type BasePosition = 'top' | 'bottom' | 'left' | 'right'
 export type ComponentPosition
-  = | ComponentBasePosition
-    | `${ComponentBasePosition}-start`
-    | `${ComponentBasePosition}-end`
+  = | BasePosition
+    | `${BasePosition}-start`
+    | `${BasePosition}-end`
 
 export type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
 
