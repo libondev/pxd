@@ -1,27 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentOption, ComponentValue } from '../../types/shared'
-import { computed, markRaw, provide, useAttrs } from 'vue'
+import type { ChoiceboxGroupProps } from '../../types/components/choicebox'
+import { computed, markRaw, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/useModelValue'
+import { provideChoiceboxGroupContext, provideChoiceboxGroupModelValue } from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
-
-interface Option extends ComponentOption {
-  description?: string
-}
-
-interface BaseProps {
-  label?: string
-  multiple?: boolean
-  required?: boolean
-  disabled?: boolean
-  options?: Option[]
-}
-
-interface Props extends BaseProps {
-  modelValue?: BaseProps['multiple'] extends true
-    ? ComponentValue[]
-    : ComponentValue
-}
 
 defineOptions({
   name: 'PChoiceboxGroup',
@@ -33,7 +16,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<ChoiceboxGroupProps>(),
   {
     type: 'radio',
     required: false,
@@ -43,12 +26,12 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [NonNullable<Props['modelValue']>]
+  'update:modelValue': [NonNullable<ChoiceboxGroupProps['modelValue']>]
 }>()
 
 const attrs = useAttrs()
 
-const modelValue = useModelValue(props, emits)
+const modelValue = useModelValue(props, emits) as any
 
 const renderComponent = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
 
@@ -70,8 +53,8 @@ const computedAttrs = computed(() => {
   }
 })
 
-provide('pxdChoiceboxGroupProps', props)
-provide('pxdChoiceboxGroupModelValue', modelValue)
+provideChoiceboxGroupContext(props)
+provideChoiceboxGroupModelValue(modelValue)
 </script>
 
 <template>

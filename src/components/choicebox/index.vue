@@ -1,27 +1,20 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentValue } from '../../types/shared'
-import { computed, inject, markRaw } from 'vue'
+import type { ChoiceboxProps } from '../../types/components/choicebox'
+import { computed, markRaw } from 'vue'
+import { useChoiceboxGroupContext, useChoiceboxGroupModelValue } from '../../contexts/choicebox'
 import PCheckbox from '../checkbox/index.vue'
 import PRadio from '../radio/index.vue'
-
-interface Props {
-  label?: ComponentLabel
-  value?: ComponentValue
-  disabled?: boolean
-  required?: boolean
-  description?: string
-}
 
 defineOptions({
   name: 'PChoicebox',
 })
 
-const props = defineProps<Props>()
+const props = defineProps<ChoiceboxProps>()
 
-const modelValue = inject('pxdChoiceboxGroupModelValue') as ComponentValue | ComponentValue[]
-const choiceboxGroupProps = inject('pxdChoiceboxGroupProps', { multiple: false })
+const choiceboxModelValue = useChoiceboxGroupModelValue()
+const choiceboxGroupContext = useChoiceboxGroupContext()
 
-const renderComponent = computed(() => markRaw(choiceboxGroupProps.multiple ? PCheckbox : PRadio))
+const renderComponent = computed(() => markRaw(choiceboxGroupContext.multiple ? PCheckbox : PRadio))
 
 const computedAttrs = computed(() => {
   const { disabled, required, value } = props
@@ -36,7 +29,7 @@ const computedAttrs = computed(() => {
 </script>
 
 <template>
-  <component :is="renderComponent" v-model="modelValue" v-bind="computedAttrs">
+  <component :is="renderComponent" v-model="choiceboxModelValue" v-bind="computedAttrs">
     <div class="flex flex-col gap-1">
       <span class="pxd-choicebox--label font-medium">
         <slot name="label">
