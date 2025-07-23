@@ -30,7 +30,7 @@ useHead({
           :scale="false"
           shape="rounded"
           variant="primary"
-          href="/guide"
+          href="/guide/introduction"
         >
           Get Started
 
