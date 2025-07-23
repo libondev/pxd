@@ -29,7 +29,7 @@ const loadingStatus = shallowRef<LoadingStatus>('idle')
 
 const avatarGroupContext = useAvatarGroupContext()
 
-const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext.size))
+const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext?.size, '32px'))
 
 const hideAvatar = computed(() => !props.src || props.placeholder || loadingStatus.value === 'error')
 

@@ -4,6 +4,4 @@ import { createContext } from '../utils/context'
 export const [
   provideAvatarGroupContext,
   useAvatarGroupContext,
-] = createContext<AvatarGroupProps>('AvatarGroup', {
-  size: 32,
-})
+] = createContext<AvatarGroupProps>('AvatarGroup', null)
