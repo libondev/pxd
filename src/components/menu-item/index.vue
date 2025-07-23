@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { ComponentPublicInstance, Ref } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import type { ComponentAs, ComponentLabel } from '../../types/shared'
-import { computed, inject, onMounted, onUnmounted, shallowRef } from 'vue'
+import { computed, onMounted, onUnmounted, shallowRef } from 'vue'
+import { useMenuListContext } from '../../contexts/menu'
 
 interface Props {
   as?: ComponentAs
@@ -26,27 +27,12 @@ const emits = defineEmits<{
   click: [ev: MouseEvent, index: number]
 }>()
 
-type RegisterItem = (el: HTMLElement) => void
-
-interface MenuListProvider {
-  activeIndex: Ref<number>
-  registerMenuItem: RegisterItem
-  unregisterMenuItem: RegisterItem
-}
-
-interface MenuProvider {
-  onOptionClick: (ev: MouseEvent, index: number) => void
-}
-
-const {
-  onOptionClick,
-} = inject<MenuProvider>('pxdMenu')!
-
 const {
   activeIndex,
+  onOptionClick,
   registerMenuItem,
   unregisterMenuItem,
-} = inject<MenuListProvider>('pxdMenuList')!
+} = useMenuListContext()
 
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)

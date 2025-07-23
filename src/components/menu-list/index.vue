@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { MenuListOption } from '../../types/components/menu'
-import { computed, onBeforeUnmount, onMounted, provide, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { provideMenuListContext } from '../../contexts/menu'
 import { off, on } from '../../utils/events'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
@@ -26,6 +27,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   toggle: [index: number]
+  selected: [ev: MouseEvent, index: number]
 }>()
 
 const MENU_ITEM_CLASS = 'pxd-menu-item'
@@ -156,8 +158,14 @@ function onPointerOver(ev: PointerEvent) {
   activeIndex.value = Number(menuItem.dataset.index)
 }
 
-provide('pxdMenuList', {
+function onOptionClick(ev: MouseEvent, index: number) {
+  activeIndex.value = index
+  emits('selected', ev, index)
+}
+
+provideMenuListContext({
   activeIndex,
+  onOptionClick,
   registerMenuItem,
   unregisterMenuItem,
 })
