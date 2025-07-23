@@ -1,6 +1,6 @@
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
-import { computed, ref } from 'vue'
+import { computed, markRaw, ref } from 'vue'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
@@ -8,7 +8,7 @@ export function useCopyClick() {
   const isCopied = ref(false)
 
   const render = computed(() => {
-    return isCopied.value ? CheckIcon : CopyIcon
+    return markRaw(isCopied.value ? CheckIcon : CopyIcon)
   })
 
   async function onCopyClick(text: string | undefined) {
