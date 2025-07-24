@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { BasePosition, ComponentClass, ComponentPosition } from '../../types/shared'
+import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/useDelayDestroy'
 import {
@@ -43,7 +43,6 @@ interface Props {
   // 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗
   scrollHiddenThreshold?: number
   // 动态位置调整的阈值, 当滚动距离超过该值时, 自动调整位置
-  // 避免频繁调整位置, 影响性能
   dynamicPositionThreshold?: number
 }
 
@@ -562,7 +561,7 @@ const triggerMethodEvents = {
 
 function updateTriggerEvents(
   methods: PopoverTrigger[],
-  dom: HTMLElement,
+  dom: Nullable<EventTarget>,
   handler: typeof on | typeof off,
 ) {
   for (const method of methods) {
@@ -598,17 +597,13 @@ function onTriggerKeydown(ev: KeyboardEvent) {
   handlePopoverHide()
 }
 
-watch<[HTMLElement | undefined, PopoverTrigger[]]>(
+watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
     // unbind old trigger events
-    if (oldDom) {
-      updateTriggerEvents(oldMethods, oldDom, off)
-    }
+    updateTriggerEvents(oldMethods, oldDom, off)
 
-    if (newDom) {
-      updateTriggerEvents(newMethods, newDom, on)
-    }
+    updateTriggerEvents(newMethods, newDom, on)
   },
 )
 
