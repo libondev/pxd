@@ -24,7 +24,7 @@ const config = useConfigProvider()
 
 <template>
   <nav aria-label="pagination" class="pxd-pagination flex flex-wrap w-full relative justify-between items-start">
-    <RouterLink v-if="prev" :to="prev.href" class="pxd-pagination--prev min-h-13 group py-1 pl-2 pl-6 !no-underline">
+    <RouterLink v-if="prev" :to="prev.href" class="pxd-pagination--prev min-h-13 group py-1 pr-2 pl-6 !no-underline">
       <PText secondary class="text-[13px] group-hover:text-foreground">
         {{ config.locale.compare.prev }}
       </PText>
