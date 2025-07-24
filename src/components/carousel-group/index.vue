@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none hover:bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-400 motion-safe:transition-colors"
+        class="pxd-carousel-group--prev-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md cursor-pointer bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -247,7 +247,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md bg-gray-alpha-200 cursor-pointer disabled:pointer-events-none hover:bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-400 motion-safe:transition-colors outline-none"
+        class="pxd-carousel-group--next-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md cursor-pointer bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
