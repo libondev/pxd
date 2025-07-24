@@ -14,6 +14,7 @@ export interface Props {
 
 defineOptions({
   name: 'PStack',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -123,7 +124,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <component :is="props.as" :class="computedClass" :style="formattedGap">
+  <component :is="props.as" :class="computedClass" v-bind="$attrs" :style="formattedGap">
     <slot />
   </component>
 </template>

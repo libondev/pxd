@@ -60,6 +60,7 @@ function onChangeValue() {
 
 <template>
   <label
+    role="radio"
     :aria-checked="isChecked"
     class="pxd-radio group/radio inline-flex items-center gap-2"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"

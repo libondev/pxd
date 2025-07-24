@@ -103,6 +103,7 @@ defineExpose({
 
 <template>
   <label
+    role="checkbox"
     :aria-checked="isChecked"
     class="pxd-checkbox inline-flex items-center group/checkbox gap-2"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
