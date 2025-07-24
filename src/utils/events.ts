@@ -1,7 +1,9 @@
+import type { Nullable } from '../types/shared'
+
 type EventHandler<E extends Event = Event> = (event: E) => void
 
 export function on<E extends Event = Event>(
-  el: EventTarget,
+  el: Nullable<EventTarget>,
   event: string,
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
@@ -22,7 +24,7 @@ export function on<E extends Event = Event>(
 }
 
 export function off<E extends Event = Event>(
-  el: EventTarget,
+  el: Nullable<EventTarget>,
   event: string,
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
@@ -39,7 +41,7 @@ export function off<E extends Event = Event>(
 }
 
 export function once<E extends Event = Event>(
-  el: EventTarget,
+  el: Nullable<EventTarget>,
   event: string,
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
@@ -56,4 +58,64 @@ export function once<E extends Event = Event>(
       once: true,
     },
   )
+}
+
+export function optimizedOn<E extends Event = Event>(
+  el: Nullable<EventTarget>,
+  event: string,
+  handler: EventHandler<E>,
+  options?: AddEventListenerOptions,
+) {
+  if (!el) {
+    return
+  }
+
+  let cachedEventHandlers = (el as any)[`__cached_${event}`] as EventListener[]
+
+  if (cachedEventHandlers) {
+    cachedEventHandlers.push(handler as EventListener)
+    return
+  }
+
+  const scheduler: EventListener = (ev: Event) => {
+    cachedEventHandlers.slice(1).forEach(handler => handler(ev))
+  }
+
+  cachedEventHandlers = [scheduler, handler as EventListener]
+
+  // eslint-disable-next-line ts/ban-ts-comment
+  // @ts-expect-error
+  el[`__cached_${event}`] = cachedEventHandlers
+
+  el.addEventListener(event, scheduler, options)
+}
+
+export function optimizedOff<E extends Event = Event>(
+  el: Nullable<EventTarget>,
+  event: string,
+  handler: EventHandler<E>,
+  options?: AddEventListenerOptions,
+) {
+  if (!el) {
+    return
+  }
+
+  const cachedEventHandlers = (el as any)[`__cached_${event}`] as EventListener[]
+
+  if (!cachedEventHandlers) {
+    return
+  }
+
+  const index = cachedEventHandlers.indexOf(handler as EventListener)
+
+  if (index === -1) {
+    return
+  }
+
+  cachedEventHandlers.splice(index, 1)
+
+  if (cachedEventHandlers.length <= 1) {
+    el.removeEventListener(event, cachedEventHandlers[0], options)
+    delete (el as any)[`__cached_${event}`]
+  }
 }

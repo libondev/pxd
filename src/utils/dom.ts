@@ -119,8 +119,8 @@ export function getScrollElByContainer(target: any) {
 }
 
 export interface ScrollbarSize {
-  width: number // 垂直滚动条宽度
-  height: number // 水平滚动条高度
+  width: number
+  height: number
 }
 
 /**

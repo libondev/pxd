@@ -2,7 +2,7 @@
 import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
-import { off, on } from '../../utils/events'
+import { optimizedOff, optimizedOn } from '../../utils/events'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
@@ -74,7 +74,7 @@ watch(() => props.modelValue, (visible) => {
       scrollContainer.classList.remove('scroll-disabled')
     }
 
-    off(document, 'keydown', onOverlayKeydown)
+    optimizedOff(document, 'keydown', onOverlayKeydown)
 
     return
   }
@@ -84,18 +84,18 @@ watch(() => props.modelValue, (visible) => {
       scrollContainer = getScrollElByContainer(getScrollContainer(overlayRef.value!))
     }
 
-    on(document, 'keydown', onOverlayKeydown)
+    optimizedOn(document, 'keydown', onOverlayKeydown)
     scrollContainer.classList.add('scroll-disabled')
   })
 }, { immediate: true })
 
 onBeforeUnmount(() => {
-  if (!scrollContainer) {
-    return
-  }
+  optimizedOff(document, 'keydown', onOverlayKeydown)
 
-  scrollContainer.classList.remove('scroll-disabled')
-  scrollContainer = null
+  if (scrollContainer) {
+    scrollContainer.classList.remove('scroll-disabled')
+    scrollContainer = null
+  }
 })
 </script>
 
