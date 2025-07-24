@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { useHead } from '@unhead/vue'
+
+useHead({
+  title: '404 Not found - PXD',
+})
+</script>
+
 <template>
   <div class="fixed inset-0 flex flex-col items-center justify-center">
     <h1 class="mb-8 text-lg text-balance text-center">
