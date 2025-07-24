@@ -2,7 +2,7 @@
 import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselGroupProps } from '../../types/components/carousel'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
@@ -84,6 +84,7 @@ const onToggleClick = throttle((delta: number) => {
     return
   }
 
+  onPointerEnter()
   if (props.loop) {
     virtualIndex.value += delta
 
@@ -92,6 +93,7 @@ const onToggleClick = throttle((delta: number) => {
     virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
+  nextTick(onPointerLeave)
   emits('change', correctIndex.value)
 }, THROTTLE_INTERVALS, { leading: true, trailing: false })
 
@@ -168,10 +170,16 @@ function onPointerLeave() {
 }
 
 function onIndicatorClick(ev: MouseEvent) {
+  // 键盘导航的时候鼠标可能不会触发 pointerenter
+  // 所以在切换的时候清空自动播放定时器
+  onPointerEnter()
+
   const target = ev.target as HTMLButtonElement
   const targetIndex = Number(target.dataset.index)
 
   virtualIndex.value = targetIndex
+
+  nextTick(onPointerLeave)
 }
 
 function registerCarousel(state: CarouselState) {
