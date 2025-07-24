@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, RouterLinkStub } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import Pagination from '../../src/components/pagination/index.vue'
 
@@ -15,6 +15,11 @@ describe('pagination', () => {
           href: '#',
         },
       },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
+        },
+      },
     })
 
     expect(wrapper.find('.pxd-pagination--label.prev').text()).toBe('Prev')
@@ -27,6 +32,11 @@ describe('pagination', () => {
     const wrapper = mount(Pagination, {
       slots: {
         default: 'test',
+      },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
+        },
       },
     })
 
@@ -45,6 +55,11 @@ describe('pagination', () => {
         next: {
           label: 'Next',
           href: '#',
+        },
+      },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
         },
       },
     })
