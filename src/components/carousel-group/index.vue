@@ -38,7 +38,7 @@ const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
 
 let autoPlayTimer: ReturnType<typeof requestAnimationFrame>
 
-const containerRef = shallowRef<HTMLDivElement>()
+const sliderRef = shallowRef<HTMLDivElement>()
 
 const carousels = ref<CarouselState[]>([])
 
@@ -115,7 +115,7 @@ function onWheelToggle(ev: WheelEvent) {
 
 // 禁用过渡效果，并重置索引以复位容器
 function resetContainerPosition(resetIndex: number) {
-  const containerClassList = containerRef.value!.classList
+  const containerClassList = sliderRef.value!.classList
 
   containerClassList.remove(...TRANSITION_CLASSES)
 
@@ -218,14 +218,16 @@ onBeforeUnmount(() => {
     @pointerleave="onPointerLeave"
     @wheel="onWheelToggle"
   >
-    <div
-      ref="containerRef"
-      class="pxd-carousel-group--container w-full h-full translate-z-0 group-data-[direction=horizontal]:flex group-hover:will-change-transform"
-      :style="computedStyle"
-      :class="TRANSITION_CLASSES"
-      @transitionend="onTransitionsEnd"
-    >
-      <slot />
+    <div class="pxd-carousel-group--container w-full h-full">
+      <div
+        ref="sliderRef"
+        class="pxd-carousel-group--slider w-full h-full translate-z-0 group-data-[direction=horizontal]:flex group-hover:will-change-transform"
+        :style="computedStyle"
+        :class="TRANSITION_CLASSES"
+        @transitionend="onTransitionsEnd"
+      >
+        <slot />
+      </div>
     </div>
 
     <div
