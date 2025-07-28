@@ -81,11 +81,8 @@ export function optimizedOn<E extends Event = Event>(
     cachedEventHandlers.slice(1).forEach(handler => handler(ev))
   }
 
-  cachedEventHandlers = [scheduler, handler as EventListener]
-
-  // eslint-disable-next-line ts/ban-ts-comment
-  // @ts-expect-error
-  el[`__cached_${event}`] = cachedEventHandlers
+  cachedEventHandlers = [scheduler, handler as EventListener];
+  (el as any)[`__cached_${event}`] = cachedEventHandlers
 
   el.addEventListener(event, scheduler, options)
 }
