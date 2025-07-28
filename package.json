@@ -110,8 +110,7 @@
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
-    "prepare": "husky",
-    "postinstall": "node scripts/setup-git-ignore.js",
+    "prepare": "node scripts/setup.js",
     "postversion": "node scripts/update-exports.js --stage",
     "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
