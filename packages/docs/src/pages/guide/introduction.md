@@ -15,3 +15,7 @@ Native support for this feature is absent in Vue 2.7 and Vue 3.2. Only Vue 3.3 a
 ## Implementation Guide
 
 For practical examples of utilizing compiled macros with various bundling tools, explore the [pxd-vue-examples](https://github.com/libondev/pxd-vue-examples) repository. This resource offers several implementation examples demonstrating how to effectively integrate this component library into your projects.
+
+## Acknowledgements
+
+The implementation of many components and methods largely refers to some open source works and projects, and you can always find links to these projects in the footer. (In no particular order, thanks to these open source projects 🙏🏻)
