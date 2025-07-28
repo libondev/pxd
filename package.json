@@ -102,7 +102,7 @@
     "build:types": "vue-tsc -p tsconfig.type.json",
     "preview": "pnpm --filter docs preview",
     "update-exports": "node scripts/update-exports.js",
-    "gen-styles-file": "node scripts/gen-native-styles.js",
+    "gen-styles-file": "node scripts/gen-css.js",
     "gen-tw-css-file": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/styles.css -m",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -110,7 +110,7 @@
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
-    "prepare": "node scripts/setup.js",
+    "prepare": "node scripts/setup-scripts.js",
     "postversion": "node scripts/update-exports.js --stage",
     "prepublishOnly": "run-s update-exports build:lib build:style build:types"
   },
