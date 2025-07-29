@@ -4,7 +4,6 @@ import { routes } from 'vue-router/auto-routes'
 import App from './App.vue'
 
 import './styles/index.css'
-import '@jongwooo/prism-theme-github/themes/prism-github-default-dark.css'
 
 export const createApp = ViteSSG(
   App,

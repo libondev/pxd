@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import gdsiResolver from '@gdsicon/vue/resolver'
+import { fromHighlighter } from '@shikijs/markdown-it/core'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -10,7 +11,6 @@ import {
   container,
   noticeboard,
 } from 'markdown-it-plugins'
-import prism from 'markdown-it-prism'
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import autoImport from 'unplugin-auto-import/vite'
@@ -23,13 +23,21 @@ import markdown from 'vite-vue-md'
 import pxdResolver from '../../src/plugins/resolver'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 
+const codeThemes = {
+  dark: 'github-dark',
+  light: 'github-light',
+}
+
 const codeHighlighter = await createHighlighterCore({
   engine: createJavaScriptRegexEngine(),
   themes: [
-    import('@shikijs/themes/github-dark'),
+    import(`@shikijs/themes/${codeThemes.dark}`),
+    import(`@shikijs/themes/${codeThemes.light}`),
   ],
   langs: [
     import('@shikijs/langs/vue'),
+    import('@shikijs/langs/javascript'),
+    import('@shikijs/langs/bash'),
   ],
 })
 
@@ -77,23 +85,23 @@ export default defineConfig(({ mode }) => {
           html: true,
           linkify: true,
           typographer: true,
+          quotes: '""\'\'',
         },
         async markdownItSetup(md) {
-          md.use(prism)
           md.use(attrs)
           md.use(anchor)
           md.use(container)
           md.use(noticeboard)
+          md.use(fromHighlighter(codeHighlighter, {
+            themes: codeThemes,
+          }))
         },
         onDemo(component, code) {
           this.registerComponent('CodeBlock', '@/components/CodeBlock.vue')
 
           const highlightedCode = codeHighlighter.codeToHtml(code, {
             lang: 'vue',
-            themes: {
-              light: 'github-dark',
-              dark: 'github-dark',
-            },
+            themes: codeThemes,
           })
             .replace(/\{\{(.*?)\}\}/g, '&lbrace;&lbrace;$1&rbrace;&rbrace;')
             .replace('tabindex="0"', 'translate="no"')
