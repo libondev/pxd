@@ -61,9 +61,7 @@ Only use the components you need to avoid being too big after packaging.
 
 ```html
 <script setup>
-import { Button } from 'pxd'
-// OR
-// import Button from 'pxd/components/button'
+import Button from 'pxd/components/button'
 </script>
 
 <template>

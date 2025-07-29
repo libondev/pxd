@@ -2,6 +2,12 @@
 import { useCopyClick } from 'pxd/composables'
 
 const { renderAs, onCopyClick } = useCopyClick()
+
+function onCopy(ev: MouseEvent) {
+  const code = (ev.target as HTMLElement).parentNode?.textContent
+
+  onCopyClick(code ?? '')
+}
 </script>
 
 <template>
@@ -28,7 +34,10 @@ const { renderAs, onCopyClick } = useCopyClick()
           <slot name="code" />
         </div>
 
-        <div class="absolute hidden group-hover:block top-3 right-4 p-2 rounded-md cursor-pointer bg-background hover:bg-background-hover active:bg-background-active" @click="onCopyClick">
+        <div
+          class="absolute hidden group-hover:block top-3 right-4 p-2 rounded-md cursor-pointer bg-background hover:bg-background-hover active:bg-background-active"
+          @click="onCopy"
+        >
           <Transition name="pxd-transition--fade-scale" mode="out-in">
             <component :is="renderAs" class="text-sm text-foreground-secondary" />
           </Transition>
@@ -37,3 +46,13 @@ const { renderAs, onCopyClick } = useCopyClick()
     </details>
   </div>
 </template>
+
+<style>
+.code-block pre.shiki {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  white-space: pre !important;
+  word-break: unset !important;
+}
+</style>

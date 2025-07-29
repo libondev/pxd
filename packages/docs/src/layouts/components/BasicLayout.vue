@@ -253,9 +253,14 @@ if (isClient) {
   }
 
   pre.shiki {
-    width: max-content;
+    max-width: 100%;
+    margin-top: 1em;
     padding: 1.25em 1.5em 1.25em 3.5em;
     line-height: 1.25;
+    border-radius: 0.5em;
+    white-space: pre-wrap;
+    word-break: break-all;
+    border: 1px solid hsl(var(--color-gray-300-value));
   }
 
   pre code {
@@ -271,7 +276,7 @@ if (isClient) {
     position: relative;
   }
 
-  pre.shiki code .line:not(:last-child)::before {
+  pre.shiki code .line::before {
     content: counter(section);
     position: absolute;
     top: 0;
@@ -282,6 +287,10 @@ if (isClient) {
     pointer-events: none;
     color: var(--color-gray-600);
     counter-increment: section;
+  }
+
+  pre.shiki code.language-bash .line::before {
+    content: '$';
   }
 }
 
