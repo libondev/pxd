@@ -1,23 +1,7 @@
 <script lang="ts" setup>
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
+import { useCopyClick } from 'pxd/composables'
 
-const isSuccessful = shallowRef(false)
-
-let copyTimeoutId: ReturnType<typeof setTimeout>
-
-async function onCopyClick(ev: MouseEvent) {
-  const code = (ev.target as HTMLElement).parentNode?.textContent
-
-  if (code) {
-    clearTimeout(copyTimeoutId)
-    await navigator.clipboard.writeText(code)
-    isSuccessful.value = true
-    copyTimeoutId = setTimeout(() => {
-      isSuccessful.value = false
-    }, 2000)
-  }
-}
+const { renderAs, onCopyClick } = useCopyClick()
 </script>
 
 <template>
@@ -44,8 +28,10 @@ async function onCopyClick(ev: MouseEvent) {
           <slot name="code" />
         </div>
 
-        <div class="absolute hidden group-hover:block top-4 right-4 p-2 rounded-md cursor-pointer bg-background hover:bg-background-hover active:bg-background-active" @click="onCopyClick">
-          <component :is="isSuccessful ? CheckIcon : CopyIcon" class="pointer-events-none" />
+        <div class="absolute hidden group-hover:block top-3 right-4 p-2 rounded-md cursor-pointer bg-background hover:bg-background-hover active:bg-background-active" @click="onCopyClick">
+          <Transition name="pxd-transition--fade-scale" mode="out-in">
+            <component :is="renderAs" class="text-sm text-foreground-secondary" />
+          </Transition>
         </div>
       </div>
     </details>
