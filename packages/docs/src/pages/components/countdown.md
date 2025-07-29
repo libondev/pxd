@@ -22,7 +22,6 @@ function resetStatus() {
     <PCountdown
       :active="active"
       :durations="durations"
-      @reset="resetStatus"
       @finish="resetStatus"
     />
   </PStack>
@@ -50,7 +49,6 @@ function resetStatus() {
     <PCountdown
       :active="active"
       :durations="durations"
-      @reset="resetStatus"
       @finish="resetStatus"
     />
 
@@ -58,7 +56,6 @@ function resetStatus() {
       :active="active"
       :precision="1"
       :durations="durations"
-      @reset="resetStatus"
       @finish="resetStatus"
     />
 
@@ -66,7 +63,6 @@ function resetStatus() {
       :active="active"
       :precision="2"
       :durations="durations"
-      @reset="resetStatus"
       @finish="resetStatus"
     />
 
@@ -74,7 +70,6 @@ function resetStatus() {
       :active="active"
       :precision="3"
       :durations="durations"
-      @reset="resetStatus"
       @finish="resetStatus"
     />
   </PStack>
