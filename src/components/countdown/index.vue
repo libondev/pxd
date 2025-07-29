@@ -1,0 +1,62 @@
+<script lang="ts" setup>
+import type { Options } from '../../composables/useCountdown'
+import { computed } from 'vue'
+import { useCountdown } from '../../composables/useCountdown'
+
+interface Props extends Options {
+  display?: string
+}
+
+defineOptions({
+  name: 'PCountDown',
+})
+
+const props = withDefaults(
+  defineProps<Props>(),
+  {
+    active: false,
+    endTime: 0,
+    durations: 0,
+    precision: 0,
+    autoReset: true,
+    millisecond: true,
+    display: 'hh:mm:ss.ms',
+  },
+)
+
+defineEmits<{
+  reset: []
+  finish: []
+}>()
+
+const {
+  reset,
+  times,
+} = useCountdown(props)
+
+const displayTimes = computed(() => {
+  const { display, precision } = props
+  let result = display
+
+  result = result.replace(/\.ms/, precision ? `.${times.value.ms}` : '')
+
+  return result
+    .replace(/dd/, times.value.dd)
+    .replace(/hh/, times.value.hh)
+    .replace(/mm/, times.value.mm)
+    .replace(/ss/, times.value.ss)
+})
+
+defineExpose({
+  reset,
+  times,
+})
+</script>
+
+<template>
+  <div class="pxd-countdown flex items-center justify-center leading-none tabular-nums">
+    <slot :times="times">
+      {{ displayTimes }}
+    </slot>
+  </div>
+</template>

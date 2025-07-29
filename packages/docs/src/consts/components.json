@@ -48,6 +48,10 @@
     "name": "config-provider"
   },
   {
+    "camelized": "Countdown",
+    "name": "countdown"
+  },
+  {
     "camelized": "Description",
     "name": "description"
   },
