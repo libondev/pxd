@@ -119,8 +119,7 @@ import { shallowRef } from 'vue'
 
 const active = shallowRef(false)
 
-// One day later
-const endTime = Date.now() + 86400001
+const endTime = Date.now() + 3600000 // 1 hour later
 
 function resetStatus() {
   active.value = false
@@ -134,7 +133,6 @@ function resetStatus() {
     <PCountdown
       :active="active"
       :endTime="endTime"
-      display="dd hh:mm:ss"
       @finish="resetStatus"
     />
   </PStack>
@@ -173,7 +171,7 @@ function resetStatus() {
 </template>
 ```
 
-## Custom render
+## Format
 Passing in a target time will automatically calculate the remaining time.
 
 ```vue demo
@@ -195,7 +193,7 @@ function resetStatus() {
       :active="active"
       :durations="90000000"
       :precision="3"
-      display="dd hh:mm:ss.ms"
+      format="dd hh:mm:ss.ms"
       @finish="resetStatus"
     />
   </PStack>

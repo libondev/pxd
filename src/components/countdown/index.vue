@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { useCountdown } from '../../composables/useCountdown'
 
 interface Props extends Options {
-  display?: string
+  format?: string
 }
 
 defineOptions({
@@ -20,11 +20,12 @@ const props = withDefaults(
     precision: 0,
     autoReset: true,
     millisecond: true,
-    display: 'hh:mm:ss.ms',
+    format: 'hh:mm:ss.ms',
   },
 )
 
-defineEmits<{
+const emits = defineEmits<{
+  change: [active: boolean]
   reset: []
   finish: []
 }>()
@@ -32,11 +33,11 @@ defineEmits<{
 const {
   reset,
   times,
-} = useCountdown(props)
+} = useCountdown<typeof emits>(props, emits)
 
 const displayTimes = computed(() => {
-  const { display, precision } = props
-  let result = display
+  const { format, precision } = props
+  let result = format
 
   result = result.replace(/\.ms/, precision ? `.${times.value.ms}` : '')
 

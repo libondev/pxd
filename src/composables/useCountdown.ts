@@ -1,6 +1,7 @@
+import type { EmitFn } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 
-export interface BaseOptions {
+export interface Options {
   /**
    * 是否激活
    * Whether the countdown is active.
@@ -38,15 +39,6 @@ export interface BaseOptions {
   millisecond?: boolean
 }
 
-interface CountdownEvents {
-  onStart?: () => void
-  onPause?: () => void
-  onReset?: () => void
-  onFinish?: () => void
-}
-
-export interface Options extends BaseOptions, CountdownEvents {}
-
 interface CountDownTimeInfo {
   dd: number
   hh: number
@@ -55,7 +47,7 @@ interface CountDownTimeInfo {
   ms: number
 }
 
-export function useCountdown(props: Options) {
+export function useCountdown<T extends Record<string, any>>(props: Options, emits: EmitFn<T>) {
   let pnow = -1
   let timerId: ReturnType<typeof setTimeout> | null = null
   let finished = false
@@ -148,10 +140,12 @@ export function useCountdown(props: Options) {
   }
 
   function reset() {
-    setDistance()
     pnow = performance.now()
     finished = false
+    setDistance()
     stopTimer()
+
+    emits('reset')
 
     if (props.active) {
       frame()
@@ -166,7 +160,7 @@ export function useCountdown(props: Options) {
       finished = true
       stopTimer()
 
-      props.onFinish?.()
+      emits('finish')
       return
     }
 
@@ -183,6 +177,8 @@ export function useCountdown(props: Options) {
   const unwatchActive = watch(
     () => props.active,
     (isActive) => {
+      emits('change', isActive)
+
       if (isActive) {
         pnow = performance.now()
 
