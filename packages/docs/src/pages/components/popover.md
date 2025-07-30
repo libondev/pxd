@@ -266,46 +266,6 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </style>
 ```
 
-## Transition offset
-
-```vue demo
-<script setup>
-const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
-</script>
-
-<template>
-  <PStack>
-    <PPopover popover-class="popover-demo" :content="content">
-      <PButton>
-        No translate
-      </PButton>
-    </PPopover>
-
-    <PPopover popover-class="popover-demo" :content="content" :translate-offset="10">
-      <PButton>
-        10px
-      </PButton>
-    </PPopover>
-
-    <PPopover popover-class="popover-demo" :content="content" :translate-offset="-10">
-      <PButton>
-        -10px(Reverse translate)
-      </PButton>
-    </PPopover>
-  </PStack>
-</template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
-```
-
 ## Destroy delay
 -> For the sake of performance optimization, elements will not be destroyed immediately after popover hiding, which is to avoid the performance overhead caused by repeated rendering of hiding when frequently triggered, but this may not need to be considered in some cases.
 

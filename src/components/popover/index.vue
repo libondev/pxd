@@ -38,7 +38,6 @@ interface Props {
   transitionName?: string
   showTransition?: boolean
   hideTransition?: boolean
-  translateOffset?: string | number
   closeOnPressEscape?: boolean
   // 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗
   scrollHiddenThreshold?: number
@@ -73,7 +72,6 @@ const props = withDefaults(
     arrowColor: 'var(--color-gray-1000)',
     destroyDelay: 2000,
     scrollHidden: false,
-    translateOffset: 0,
     showTransition: true,
     hideTransition: true,
     closeOnPressEscape: false,
@@ -651,7 +649,7 @@ defineExpose({
     <PTeleport>
       <Transition
         mode="out-in" :name="transitionName" :class="{ showTransition, hideTransition }"
-        :style="{ '--translate-offset': translateOffset, zIndex }"
+        :style="{ zIndex }"
       >
         <div
           v-if="isRender"
@@ -776,9 +774,7 @@ defineExpose({
 .hideTransition.pxd-transition--popover-left-leave-active,
 .showTransition.pxd-transition--popover-right-enter-active,
 .hideTransition.pxd-transition--popover-right-leave-active {
-  transition:
-    opacity var(--default-transition-duration) var(--default-transition-timing-function),
-    margin var(--default-transition-duration) var(--default-transition-timing-function);
+  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
 }
 
 .showTransition.pxd-transition--popover-top-enter-from,
@@ -790,25 +786,5 @@ defineExpose({
 .showTransition.pxd-transition--popover-right-enter-from,
 .hideTransition.pxd-transition--popover-right-leave-to {
   opacity: 0;
-}
-
-.showTransition.pxd-transition--popover-top-enter-from,
-.hideTransition.pxd-transition--popover-top-leave-to {
-  margin-top: calc(1px * var(--translate-offset));
-}
-
-.showTransition.pxd-transition--popover-bottom-enter-from,
-.hideTransition.pxd-transition--popover-bottom-leave-to {
-  margin-top: calc(-1px * var(--translate-offset));
-}
-
-.showTransition.pxd-transition--popover-left-enter-from,
-.hideTransition.pxd-transition--popover-left-leave-to {
-  margin-left: calc(1px * var(--translate-offset));
-}
-
-.showTransition.pxd-transition--popover-right-enter-from,
-.hideTransition.pxd-transition--popover-right-leave-to {
-  margin-left: calc(-1px * var(--translate-offset));
 }
 </style>
