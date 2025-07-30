@@ -2,7 +2,7 @@
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import MenuAltIcon from '@gdsicon/vue/menu-alt'
 import { pascalize } from 'pxd/utils/format'
-import { isClient } from 'pxd/utils/is'
+import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 import Menus from './Menus.vue'
 
@@ -75,7 +75,7 @@ function handleToggleSidebar() {
   openSidebar.value = !openSidebar.value
 }
 
-if (isClient) {
+if (!isServer) {
   watch(
     () => route.path,
     () => {

@@ -3,7 +3,7 @@ import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, customRef, onMounted } from 'vue'
-import { isClient } from '../../utils/is'
+import { isServer } from '../../utils/is'
 import PButton from '../button/index.vue'
 
 interface Props {
@@ -29,12 +29,12 @@ const colorTransitions = {
 type ColorScheme = keyof typeof colorTransitions
 
 function getSystemPreference(): 'light' | 'dark' {
-  return isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return !isServer && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 const colorMode = customRef<ColorScheme>((track, trigger) => {
   const storageKey = 'fe.system.color-mode'
-  const rootClassList = isClient
+  const rootClassList = !isServer
     ? document.documentElement.classList
     : {
         contains: () => false,
@@ -53,10 +53,10 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
     }
   }
 
-  const savedMode = isClient ? localStorage.getItem(storageKey) as ColorScheme || 'auto' : 'light'
+  const savedMode = !isServer ? localStorage.getItem(storageKey) as ColorScheme || 'auto' : 'light'
   let curMode: ColorScheme = savedMode
 
-  if (isClient) {
+  if (!isServer) {
     applyTheme(curMode)
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
@@ -79,7 +79,7 @@ const colorMode = customRef<ColorScheme>((track, trigger) => {
       }
 
       applyTheme(newMode)
-      if (isClient) {
+      if (!isServer) {
         localStorage.setItem(storageKey, newMode)
       }
       curMode = newMode

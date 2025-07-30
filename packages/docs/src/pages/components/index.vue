@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useMediaQuery } from 'pxd/composables'
-import { isClient } from 'pxd/utils/is'
+import { useMediaQuery } from 'pxd/composables/useMediaQuery'
+import { isServer } from 'pxd/utils/is'
 import { useRoute } from 'vue-router'
 import components from '@/consts/components.json'
 
@@ -18,7 +18,7 @@ const bookSize = reactive({
   md: 152,
 })
 
-if (isClient) {
+if (!isServer) {
   watch([() => isMobile.value, () => containerRef.value], ([mobile, wrapper]) => {
     if (!wrapper) {
       return

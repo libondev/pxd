@@ -13,7 +13,7 @@ import {
 import { off, on } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
 import { toArray } from '../../utils/format'
-import { isClient } from '../../utils/is'
+import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -606,7 +606,7 @@ watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
 )
 
 onMounted(() => {
-  if (!isClient) {
+  if (isServer) {
     return
   }
 

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'vue'
 import { camelize } from './format'
-import { isClient } from './is'
+import { isServer } from './is'
 
 export function getElementRectFromContainer(
   elementOrRect: HTMLElement | DOMRect,
@@ -24,7 +24,7 @@ export function getElementRectFromContainer(
 }
 
 export function getStyle(element: HTMLElement, styleName: keyof CSSProperties): string {
-  if (!isClient || !element || !styleName) {
+  if (isServer || !element || !styleName) {
     return ''
   }
 
