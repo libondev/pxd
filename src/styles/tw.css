@@ -369,6 +369,9 @@
   --shadow-border-menu: var(--shadow-border-menu-value);
   --shadow-border-modal: var(--shadow-border-modal-value);
   --shadow-border-fullscreen: var(--shadow-border-fullscreen-value);
+
+  --default-transition-duration: .2s;
+  --default-transition-timing-function: ease-in-out;
 }
 
 @utility scrollbar-hidden {

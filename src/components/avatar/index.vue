@@ -146,7 +146,7 @@ defineExpose({
 
 @media (prefers-reduced-motion: no-preference) {
   .pxd-avatar::before {
-    animation: placeholder 8s ease-in-out infinite;
+    animation: placeholder 8s var(--default-transition-timing-function) infinite;
   }
 
   .pxd-avatar--loading::after {

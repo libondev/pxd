@@ -80,7 +80,7 @@ const computedClass = computed(() => {
 }
 
 .pxd-skeleton.animated::after {
-  animation: skeleton-loading 1.5s ease-in-out infinite reverse;
+  animation: skeleton-loading 1.5s var(--default-transition-timing-function) infinite reverse;
 }
 
 @keyframes skeleton-loading {

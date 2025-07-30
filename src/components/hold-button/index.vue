@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
     --opacity: .45;
     opacity: var(--opacity);
     clip-path: inset(0 100% 0 0);
-    transition: clip-path .1s ease-out, opacity 0s linear;
+    transition: clip-path .1s var(--default-transition-timing-function), opacity 0s linear;
 
     &.finished {
       --opacity: .68;
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
 
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
-    transition: clip-path var(--ds) ease-out, opacity var(--default-transition-duration) var(--default-transition-timing-function);
+    transition: clip-path var(--ds) var(--default-transition-timing-function), opacity var(--default-transition-duration) var(--default-transition-timing-function);
   }
 }
 </style>

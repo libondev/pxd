@@ -26,7 +26,7 @@ function onFinished(isFinished) {
 <template>
   <PStack>
     <PHoldButton size="sm" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
-    <PHoldButton @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
+    <PHoldButton size="md" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
     <PHoldButton size="lg" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
   </PStack>
 </template>
