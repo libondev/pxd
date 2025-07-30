@@ -53,21 +53,18 @@
       "default": "./dist/components/*/index.vue"
     },
     "./composables/*": {
-      "types": "./dist/composables/*/*.d.ts",
-      "default": "./dist/composables/*/*.js"
+      "types": "./dist/composables/*.d.ts",
+      "default": "./dist/composables/*.js"
     },
     "./contexts/*": {
-      "types": "./dist/contexts/*/*.d.ts",
-      "default": "./dist/contexts/*/*.js"
+      "types": "./dist/contexts/*.d.ts",
+      "default": "./dist/contexts/*.js"
     },
     "./locales/*": {
-      "types": "./dist/locales/*/*.d.ts",
-      "default": "./dist/locales/*/*.js"
+      "types": "./dist/locales/*.d.ts",
+      "default": "./dist/locales/*.js"
     },
-    "./types/*": {
-      "types": "./dist/types/*.d.ts",
-      "default": "./dist/types/*.js"
-    },
+    "./types/*": "./dist/types/*.d.ts",
     "./utils/*": {
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
