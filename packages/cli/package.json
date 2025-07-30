@@ -1,5 +1,6 @@
 {
   "name": "@pxd-ui/cli",
+  "type": "module",
   "version": "0.0.1",
   "description": "pxd cli",
   "author": "libondev <bon.li@outlook.com>",
@@ -22,18 +23,19 @@
     "dist"
   ],
   "scripts": {
-    "dev": "unbuild --stub",
-    "build": "unbuild",
-    "prepublishOnly": "unbuild"
-  },
-  "dependencies": {
-    "@clack/prompts": "catalog:",
-    "cross-spawn": "catalog:",
-    "mri": "catalog:"
+    "dev": "tsdown --watch --no-dts",
+    "build": "tsdown",
+    "prepublishOnly": "tsdown"
   },
   "devDependencies": {
-    "mkdist": "catalog:",
-    "typescript": "catalog:",
-    "unbuild": "catalog:"
+    "@clack/prompts": "^0.11.0",
+    "@types/fs-extra": "^11.0.4",
+    "cac": "^6.7.14",
+    "fdir": "^6.4.6",
+    "find-up": "^7.0.0",
+    "fs-extra": "^11.3.0",
+    "picocolors": "^1.1.1",
+    "tsdown": "^0.13.0",
+    "typescript": "catalog:"
   }
 }

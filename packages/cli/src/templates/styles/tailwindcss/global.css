@@ -1,0 +1,3 @@
+@import 'tailwindcss';
+@import '#ROOT/node_modules/pxd/dist/styles/tw.css';
+@source '#ROOT/node_modules/pxd';
