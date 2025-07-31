@@ -39,7 +39,7 @@ const { renderAs, onCopyClick } = useCopyClick()
         <div class="lg:max-w-xs bg-background-secondary border border-gray-400 w-full rounded-full pl-2.5 pr-1 py-1 flex items-center justify-between">
           <LockClosedIcon class="text-gray-900 text-sm" />
 
-          <div class="pl-1.5 text-[13px] text-gray-1000 truncate flex-1 min-w-0 text-center truncate">
+          <div class="pl-1.5 text-[13px] text-gray-1000 flex-1 min-w-0 text-center truncate">
             {{ address }}
           </div>
 

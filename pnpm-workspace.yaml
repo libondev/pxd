@@ -10,8 +10,6 @@ catalog:
   '@tailwindcss/vite': ^4.1.11
   '@tsconfig/node22': ^22.0.2
   '@types/node': ^22.16.4
-  '@types/lodash.debounce': ^4.0.8
-  '@types/lodash.throttle': ^4.1.1
   '@vitejs/plugin-vue': ^6.0.0
   '@vue/test-utils': ^2.4.6
   '@vue/tsconfig': ^0.7.0
@@ -21,8 +19,6 @@ catalog:
   happy-dom: ^18.0.1
   husky: ^9.1.7
   lint-staged: ^16.1.2
-  lodash.debounce: ^4.0.8
-  lodash.throttle: ^4.1.1
   mkdist: ^2.3.0
   mri: ^1.2.0
   npm-run-all2: ^8.0.4

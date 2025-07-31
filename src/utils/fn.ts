@@ -1,8 +1,5 @@
 import type { Callback } from '../types/shared'
 
-export { default as debounce } from 'lodash.debounce'
-export { default as throttle } from 'lodash.throttle'
-
 interface ThrottleByRafReturnType<T extends Callback> {
   (...args: Parameters<T>): void
   cancel: () => void

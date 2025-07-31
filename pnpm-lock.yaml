@@ -9,45 +9,27 @@ catalogs:
     '@antfu/eslint-config':
       specifier: ^4.17.0
       version: 4.17.0
-    '@clack/prompts':
-      specifier: ^0.11.0
-      version: 0.11.0
     '@gdsicon/vue':
       specifier: ^1.0.2
       version: 1.0.2
     '@tailwindcss/cli':
       specifier: ^4.1.11
       version: 4.1.11
-    '@tailwindcss/vite':
-      specifier: ^4.1.11
-      version: 4.1.11
     '@tsconfig/node22':
       specifier: ^22.0.2
       version: 22.0.2
-    '@types/lodash.debounce':
-      specifier: ^4.0.8
-      version: 4.0.9
-    '@types/lodash.throttle':
-      specifier: ^4.1.1
-      version: 4.1.9
     '@types/node':
       specifier: ^22.16.4
       version: 22.16.4
     '@vitejs/plugin-vue':
       specifier: ^6.0.0
       version: 6.0.0
-    '@vue/compiler-sfc':
-      specifier: ^3.5.17
-      version: 3.5.17
     '@vue/test-utils':
       specifier: ^2.4.6
       version: 2.4.6
     '@vue/tsconfig':
       specifier: ^0.7.0
       version: 0.7.0
-    cross-spawn:
-      specifier: ^7.0.6
-      version: 7.0.6
     eslint:
       specifier: ^9.31.0
       version: 9.31.0
@@ -60,24 +42,12 @@ catalogs:
     lint-staged:
       specifier: ^16.1.2
       version: 16.1.2
-    lodash.debounce:
-      specifier: ^4.0.8
-      version: 4.0.8
-    lodash.throttle:
-      specifier: ^4.1.1
-      version: 4.1.1
     mkdist:
       specifier: ^2.3.0
       version: 2.3.0
-    mri:
-      specifier: ^1.2.0
-      version: 1.2.0
     npm-run-all2:
       specifier: ^8.0.4
       version: 8.0.4
-    tailwindcss:
-      specifier: ^4.1.4
-      version: 4.1.11
     tinyglobby:
       specifier: ^0.2.14
       version: 0.2.14
@@ -87,18 +57,9 @@ catalogs:
     unbuild:
       specifier: ^3.5.0
       version: 3.5.0
-    unplugin-auto-import:
-      specifier: ^19.3.0
-      version: 19.3.0
     unplugin-vue-components:
       specifier: ^28.8.0
       version: 28.8.0
-    unplugin-vue-router:
-      specifier: ^0.14.0
-      version: 0.14.0
-    vite:
-      specifier: ^7.0.4
-      version: 7.0.4
     vitest:
       specifier: ^3.2.4
       version: 3.2.4
@@ -119,12 +80,6 @@ importers:
       '@gdsicon/vue':
         specifier: 'catalog:'
         version: 1.0.2(vue@3.5.17(typescript@5.8.3))
-      lodash.debounce:
-        specifier: catalog:default
-        version: 4.0.8
-      lodash.throttle:
-        specifier: catalog:default
-        version: 4.1.1
     devDependencies:
       '@antfu/eslint-config':
         specifier: 'catalog:'
@@ -135,12 +90,6 @@ importers:
       '@tsconfig/node22':
         specifier: 'catalog:'
         version: 22.0.2
-      '@types/lodash.debounce':
-        specifier: 'catalog:'
-        version: 4.0.9
-      '@types/lodash.throttle':
-        specifier: 'catalog:'
-        version: 4.1.9
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.4
@@ -1338,15 +1287,6 @@ packages:
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
-
-  '@types/lodash.debounce@4.0.9':
-    resolution: {integrity: sha512-Ma5JcgTREwpLRwMM+XwBR7DaWe96nC38uCBDFKZWbNKD+osjVzdpnUSwBcqCptrp16sSOLBAUb50Car5I0TCsQ==}
-
-  '@types/lodash.throttle@4.1.9':
-    resolution: {integrity: sha512-PCPVfpfueguWZQB7pJQK890F2scYKoDUL3iM522AptHWn7d5NQmeS/LTEHIcLr5PaTzl3dK2Z0xSUHHTHwaL5g==}
-
-  '@types/lodash@4.17.20':
-    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
   '@types/markdown-it@14.1.2':
     resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
@@ -2699,17 +2639,11 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash.debounce@4.0.8:
-    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
-
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  lodash.throttle@4.1.1:
-    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
   lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}
@@ -5008,16 +4942,6 @@ snapshots:
 
   '@types/linkify-it@5.0.0': {}
 
-  '@types/lodash.debounce@4.0.9':
-    dependencies:
-      '@types/lodash': 4.17.20
-
-  '@types/lodash.throttle@4.1.9':
-    dependencies:
-      '@types/lodash': 4.17.20
-
-  '@types/lodash@4.17.20': {}
-
   '@types/markdown-it@14.1.2':
     dependencies:
       '@types/linkify-it': 5.0.0
@@ -6554,13 +6478,9 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash.debounce@4.0.8: {}
-
   lodash.memoize@4.1.2: {}
 
   lodash.merge@4.6.2: {}
-
-  lodash.throttle@4.1.1: {}
 
   lodash.uniq@4.5.0: {}
 

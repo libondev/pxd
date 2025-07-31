@@ -3,7 +3,7 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   clean: true,
   declaration: true,
-  externals: ['vue'],
+  externals: ['vue', '@gdsicon/vue'],
   entries: [
     {
       builder: 'mkdist',

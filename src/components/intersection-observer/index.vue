@@ -9,8 +9,6 @@ interface Props {
   width?: number | string
   height?: number | string
   keepAlive?: boolean
-
-  // source from: typescript/lib/lib.dom.d.ts
   root?: Element | Document | null
   rootMargin?: string
   threshold?: number | number[]

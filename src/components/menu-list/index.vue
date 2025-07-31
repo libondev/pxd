@@ -3,9 +3,9 @@ import type { MenuListOption } from '../../types/components/menu'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideMenuListContext } from '../../contexts/menu'
 import { off, on } from '../../utils/events'
-import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
+import { throttle } from '../../utils/throttle'
 import PMenuItem from '../menu-item/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
@@ -100,6 +100,7 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
 
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
+const THROTTLE_INTERVALS = 255
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   const count = allItems.value.length
@@ -140,7 +141,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   allItems.value[activeIndex.value].scrollIntoView({
     block: 'nearest',
   })
-}, 255, { leading: true, trailing: false })
+}, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onContainerKeydown(ev: KeyboardEvent) {
   ev.preventDefault()

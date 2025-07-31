@@ -4,8 +4,8 @@ import type { CarouselGroupProps } from '../../types/components/carousel'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
-import { throttle } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
+import { throttle } from '../../utils/throttle'
 
 defineOptions({
   name: 'PCarouselGroup',
@@ -95,7 +95,7 @@ const onToggleClick = throttle((delta: number) => {
 
   nextTick(onPointerLeave)
   emits('change', correctIndex.value)
-}, THROTTLE_INTERVALS, { leading: true, trailing: false })
+}, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
