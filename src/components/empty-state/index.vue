@@ -12,7 +12,7 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background">
+  <div class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background-100">
     <div class="max-w-sm space-y-6 mx-auto flex flex-col">
       <template v-if="$slots.icon">
         <div class="pxd-empty-state--icon p-3.5 size-15 mx-auto flex items-center justify-center rounded-md border text-foreground-secondary">

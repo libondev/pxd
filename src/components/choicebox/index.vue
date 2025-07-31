@@ -57,7 +57,7 @@ const computedAttrs = computed(() => {
 }
 
 .pxd-choicebox.is-disabled {
-  background-color: var(--color-background);
+  background-color: var(--color-background-100);
   border-color: var(--color-border);
 
   .pxd-choicebox--label,

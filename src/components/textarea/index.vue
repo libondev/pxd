@@ -57,7 +57,7 @@ const modelValue = useModelValue(props, emits)
 const config = useConfigProvider()
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border flex h-full min-h-[inherit] items-center justify-center overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const classes = ['pxd-input--border flex h-full min-h-[inherit] items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 

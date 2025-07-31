@@ -66,7 +66,7 @@ const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border relative flex items-center overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const classes = ['pxd-input--border relative flex items-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -117,7 +117,7 @@ function clearInputValue() {
         v-if="$slots.prefix"
         aria-hidden="true"
         class="pxd-input--prefix pl-3 text-sm flex h-full items-center text-gray-700"
-        :class="{ 'pr-3 rounded-l-inherit border-r bg-background-secondary': prefixStyle }"
+        :class="{ 'pr-3 rounded-l-inherit border-r bg-background-200': prefixStyle }"
       >
         <slot name="prefix" />
       </div>
@@ -161,7 +161,7 @@ function clearInputValue() {
         v-if="$slots.suffix"
         aria-hidden="true"
         class="pxd-input--suffix pr-3 text-sm flex h-full items-center text-gray-700"
-        :class="{ 'pl-3 rounded-r-inherit border-l bg-background-secondary': suffixStyle }"
+        :class="{ 'pl-3 rounded-r-inherit border-l bg-background-200': suffixStyle }"
       >
         <slot name="suffix" />
       </div>

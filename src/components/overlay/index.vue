@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
         v-if="modelValue"
         ref="overlayRef"
         :data-blur="blur"
-        class="pxd-overlay inset-0 bg-black/40 sm:bg-background/80 fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
+        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
         :class="overlayClass"
         :style="computedStyle"
         @click="onOverlayClick"

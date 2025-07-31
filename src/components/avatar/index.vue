@@ -59,7 +59,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex items-center justify-center rounded-full border border-background select-none"
+    class="pxd-avatar relative inline-flex items-center justify-center rounded-full border border-background-100 select-none"
     :style="{ '--size': computedSize }"
   >
     <slot>
@@ -84,7 +84,7 @@ defineExpose({
 
     <div
       v-if="$slots.icon"
-      class="-bottom-1 -left-1 absolute z-10 flex size-1/2 items-center overflow-hidden rounded-full border border-background bg-background"
+      class="-bottom-1 -left-1 absolute z-10 flex size-1/2 items-center overflow-hidden rounded-full border border-background-100 bg-background-100"
     >
       <slot name="icon" />
     </div>

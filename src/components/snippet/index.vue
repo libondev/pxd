@@ -39,7 +39,7 @@ const SIZES = {
 }
 
 const VARIANTS = {
-  default: 'border-gray-alpha-300 bg-background',
+  default: 'border-gray-alpha-300 bg-background-100',
   primary: 'text-gray-100 border-gray-alpha-300 bg-primary',
   success: 'text-blue-900 border-gray-alpha-300 bg-blue-200',
   error: 'text-red-900 border-gray-alpha-300 bg-red-200',

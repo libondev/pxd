@@ -63,7 +63,7 @@ const computedClass = computed(() => {
     classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'
-        : 'bg-background border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
+        : 'bg-background-100 border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
     )
   }
 

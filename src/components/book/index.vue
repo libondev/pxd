@@ -72,7 +72,7 @@ const computedClass = computed(() => {
 <template>
   <div class="pxd-book inline-flex w-fit">
     <div :class="computedClass" :style="computedStyle">
-      <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-secondary">
+      <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200">
         <div
           v-if="variant === 'stripe'"
           class="translate-z-0 relative flex w-full flex-1 overflow-hidden"

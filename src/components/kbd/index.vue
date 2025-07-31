@@ -31,7 +31,7 @@ const internalKey = computed(() => {
 
 <template>
   <kbd
-    class="pxd-keyboard px-1.5 font-sans ml-1 inline-flex items-center rounded-md border border-input bg-background text-center text-gray-1000"
+    class="pxd-keyboard px-1.5 font-sans ml-1 inline-flex items-center rounded-md border border-input bg-background-100 text-center text-gray-1000"
     :class="[small ? 'h-5 text-xs' : 'h-6 text-sm']"
   >
     {{ internalKey }}

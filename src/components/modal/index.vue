@@ -84,12 +84,12 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-secondary"
+        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
         :style="{ '--w': width }"
       >
         <header
           class="pxd-modal--header px-6 py-4 sm:py-6 relative shrink-0"
-          :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
+          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStyle }"
         >
           <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
             <slot name="title">
@@ -115,7 +115,7 @@ watch(() => isVisible.value, (visible) => {
         <footer
           v-if="$slots.footer"
           class="pxd-modal--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
-          :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
+          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStyle }"
         >
           <slot name="footer" />
         </footer>

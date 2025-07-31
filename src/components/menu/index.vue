@@ -54,7 +54,7 @@ function onOptionClick(ev: MouseEvent, index: number) {
       <PMenuList
         :width="width"
         :options="options"
-        class="p-2 pr-0 list-none rounded-xl bg-background shadow-border-menu outline-none"
+        class="p-2 pr-0 list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
         @selected="onOptionClick"
       >
         <slot name="items" />

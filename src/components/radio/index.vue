@@ -40,13 +40,13 @@ const computedInnerClasses = computed(() => {
     classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500 after:bg-gray-500'
-        : 'bg-background border-primary peer-checked:after:scale-100',
+        : 'bg-background-100 border-primary peer-checked:after:scale-100',
     )
   } else {
     classes.push(
       computedDisabled.value
         ? 'bg-gray-100 border-gray-500'
-        : 'bg-background border-gray-alpha-400 group-hover/radio:bg-gray-200',
+        : 'bg-background-100 border-gray-alpha-400 group-hover/radio:bg-gray-200',
     )
   }
 

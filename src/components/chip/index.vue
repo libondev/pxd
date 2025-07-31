@@ -21,15 +21,15 @@ const props = withDefaults(
 )
 
 const variantPresets = {
-  primary: 'bg-primary text-background',
-  error: 'bg-red-700 text-background dark:text-gray-1000',
+  primary: 'bg-primary text-background-100',
+  error: 'bg-red-700 text-background-100 dark:text-gray-1000',
   warning: 'bg-amber-700 text-gray-1000 dark:text-gray-100',
-  success: 'bg-green-700 text-background dark:text-gray-1000',
-  secondary: 'bg-gray-700 text-background dark:text-gray-1000',
+  success: 'bg-green-700 text-background-100 dark:text-gray-1000',
+  secondary: 'bg-gray-700 text-background-100 dark:text-gray-1000',
 }
 
 const computedClass = computed(() => {
-  const classes = ['pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background motion-safe:transition-all']
+  const classes = ['pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-all']
 
   const { variant, inset, label } = props
 

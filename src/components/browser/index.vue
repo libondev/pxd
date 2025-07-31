@@ -19,8 +19,8 @@ const { renderAs, onCopyClick } = useCopyClick()
 </script>
 
 <template>
-  <div class="pxd-browser overflow-hidden rounded-md bg-background-secondary shadow-border-small">
-    <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background">
+  <div class="pxd-browser overflow-hidden rounded-md bg-background-200 shadow-border-small">
+    <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background-100">
       <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
         <div class="gap-2 flex items-center">
           <div class="w-3 h-3 rounded-full bg-[#FE5F57]" />
@@ -36,7 +36,7 @@ const { renderAs, onCopyClick } = useCopyClick()
       </div>
 
       <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
-        <div class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-secondary">
+        <div class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200">
           <LockClosedIcon class="text-sm text-gray-900" />
 
           <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-[13px] text-gray-1000">
