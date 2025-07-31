@@ -39,6 +39,8 @@ const sizes = [
 <script setup>
 import { ref } from 'vue'
 import { zhCN, enUS } from 'pxd/locales'
+// or only import enUS
+// import enUS from 'pxd/locales/en-us'
 
 const locale = ref('enUS')
 

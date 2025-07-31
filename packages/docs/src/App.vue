@@ -1,5 +1,5 @@
 <script setup>
-// import zhCN from 'pxd/locales/zh-CN'
+// import zhCN from 'pxd/locales/zh-cn'
 </script>
 
 <template>

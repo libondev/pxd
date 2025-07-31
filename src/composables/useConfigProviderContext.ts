@@ -1,5 +1,5 @@
 import type { ComponentSize } from '../types/shared'
-import enUS from '../locales/en-US'
+import enUS from '../locales/en-us'
 import { createContext } from '../utils/context'
 
 export const injectionKey = 'ConfigProvider'

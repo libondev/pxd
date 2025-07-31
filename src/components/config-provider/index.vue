@@ -2,7 +2,7 @@
 import type { ConfigProviderProps } from '../../composables/useConfigProviderContext'
 import type { ComponentAs } from '../../types/shared'
 import { provideConfigProvider } from '../../composables/useConfigProviderContext'
-import enUS from '../../locales/enUS'
+import enUS from '../../locales/en-us'
 
 interface Props extends ConfigProviderProps {
   as?: ComponentAs
