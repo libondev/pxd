@@ -241,6 +241,7 @@ provideResizableContext({
   unregisterHandle,
   getPanelSize,
   onHandleDrag,
+  resetPanels: initPanelSizes,
   direction: computed(() => props.direction),
   panelSizes,
   panelConfigs,

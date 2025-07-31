@@ -7,7 +7,7 @@ defineOptions({
   name: 'PResizableHandle',
 })
 
-const context = useResizableContext()
+const resizableContext = useResizableContext()
 
 const uniqueId = getUniqueId()
 
@@ -15,7 +15,7 @@ let isDragging = false
 let startPosition = { x: 0, y: 0 }
 
 function onDrag(delta: { deltaX: number, deltaY: number }) {
-  context?.onHandleDrag(uniqueId, delta)
+  resizableContext?.onHandleDrag(uniqueId, delta)
 }
 
 function handlePointerDown(e: PointerEvent) {
@@ -41,13 +41,17 @@ function handlePointerMove(e: PointerEvent) {
 
 // 处理拖拽结束
 function handlePointerUp(e: PointerEvent) {
+  (e.target as HTMLElement).releasePointerCapture(e.pointerId)
   isDragging = false
-  ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+}
+
+function handleDoubleClick() {
+  resizableContext?.resetPanels()
 }
 
 // 注册 handle
 onMounted(() => {
-  context?.registerHandle({
+  resizableContext?.registerHandle({
     id: uniqueId,
     onDrag,
   })
@@ -55,7 +59,7 @@ onMounted(() => {
 
 // 注销 handle
 onBeforeUnmount(() => {
-  context?.unregisterHandle(uniqueId)
+  resizableContext?.unregisterHandle(uniqueId)
 })
 </script>
 
@@ -66,6 +70,7 @@ onBeforeUnmount(() => {
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
     @pointercancel="handlePointerUp"
+    @dblclick.prevent.stop="handleDoubleClick"
   />
 </template>
 

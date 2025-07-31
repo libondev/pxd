@@ -14,6 +14,7 @@ export interface ResizableContext {
   panelConfigs: Ref<PanelConfig[]>
   getPanelSize: (id: string) => number
   onHandleDrag: (id: string, delta: { deltaX: number, deltaY: number }) => void
+  resetPanels: () => void
   registerPanel: (config: { id: string, size?: number | null, minSize?: number }) => void
   registerHandle: (config: { id: string, onDrag: (delta: { deltaX: number, deltaY: number }) => void }) => void
   unregisterPanel: (id: string) => void
