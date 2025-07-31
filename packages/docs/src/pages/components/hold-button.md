@@ -64,7 +64,7 @@ You can set the same `variant` property as the button.
     <PHoldButton durations="1">default</PHoldButton>
     <PHoldButton durations="1" variant="ghost">ghost</PHoldButton>
     <PHoldButton durations="1" variant="error">error</PHoldButton>
-    <PHoldButton durations="1" variant="primary" mask-color="var(--color-background)"
+    <PHoldButton durations="1" variant="primary" mask-color="var(--color-background-100)"
       >primary</PHoldButton
     >
     <PHoldButton durations="1" variant="success">success</PHoldButton>

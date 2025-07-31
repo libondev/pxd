@@ -17,7 +17,7 @@ function toggleTeleport() {
 <template>
   <PButton variant="primary" @click="toggleTeleport">Toggle</PButton>
 
-  <div id="target" class="w-40 h-40 bg-background-secondary rounded-md p-2 my-2 border border-dashed"></div>
+  <div id="target" class="w-40 h-40 bg-background-200 rounded-md p-2 my-2 border border-dashed"></div>
 
   <PTeleport to="#target" :disabled="renderDisabled">
     <PButton>

@@ -41,7 +41,7 @@ function onHide() {
 
   <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
     <PIntersectionObserver
-      class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-secondary"
+      class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-200"
       @change="onVisibleChange"
       @before-show="onBeforeShow"
       @show="onShow"

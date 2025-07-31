@@ -18,7 +18,7 @@ function onCopy(ev: MouseEvent) {
 
     <details class="group/code-block">
       <summary
-        class="px-4 h-12 text-sm z-1 -mx-px -mb-px flex cursor-pointer items-center rounded-b-lg border bg-background-secondary text-gray-900 self-focus-ring outline-none select-none group-open/code-block:top-12 group-open/code-block:sticky group-open/code-block:rounded-none"
+        class="px-4 h-12 text-sm z-1 -mx-px -mb-px flex cursor-pointer items-center rounded-b-lg border bg-background-200 text-gray-900 self-focus-ring outline-none select-none group-open/code-block:top-12 group-open/code-block:sticky group-open/code-block:rounded-none"
       >
         <IconChevronRight class="text-xs mr-2 group-open/code-block:rotate-90 motion-safe:transition-transform" />
 
@@ -35,7 +35,7 @@ function onCopy(ev: MouseEvent) {
         </div>
 
         <div
-          class="top-3 right-4 p-2 absolute hidden cursor-pointer rounded-md bg-background group-hover:block hover:bg-background-hover active:bg-background-active"
+          class="top-3 right-4 p-2 absolute hidden cursor-pointer rounded-md bg-background-100 group-hover:block hover:bg-background-hover active:bg-background-active"
           @click="onCopy"
         >
           <Transition name="pxd-transition--fade-scale" mode="out-in">

@@ -88,7 +88,7 @@ if (!isServer) {
 
 <template>
   <div class="left-0 top-0 bottom-0 absolute">
-    <aside class="sidebar top-12 bottom-0 w-60 sm:border-x sm:translate-x-0 fixed z-10 mt-px -translate-x-full border-r bg-background">
+    <aside class="sidebar top-12 bottom-0 w-60 sm:border-x sm:translate-x-0 fixed z-10 mt-px -translate-x-full border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
@@ -96,7 +96,7 @@ if (!isServer) {
   </div>
 
   <div class="sm:pl-60 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
-    <div class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background">
+    <div class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background-100">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
           <MenuAltIcon class="text-xs" />
@@ -139,7 +139,7 @@ if (!isServer) {
 
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-200);
   border-color: var(--color-gray-300);
   pointer-events: none;
 }
@@ -150,7 +150,7 @@ if (!isServer) {
 
 .prose,
 .markdown-body {
-  --background: var(--color-background);
+  --background: var(--color-background-100);
   line-height: 1.5;
 
   & > :is(h1, h2, h3, h4) {

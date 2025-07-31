@@ -53,7 +53,7 @@ const LINKS = [
 </script>
 
 <template>
-  <footer class="p-6 gap-4 flex flex-wrap border-t bg-background-secondary">
+  <footer class="p-6 gap-4 flex flex-wrap border-t bg-background-200">
     <div v-for="group in LINKS" :key="group.name">
       <div class="text-xl font-medium mb-1 pl-[11px]">
         {{ group.name }}

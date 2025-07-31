@@ -21,7 +21,7 @@ body,
 /*
 header .pxd-link-button.router-link-active,
 .sidebar .router-link-exact-active {
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-200);
 } */
 
 header .pxd-link-button:not(:hover),

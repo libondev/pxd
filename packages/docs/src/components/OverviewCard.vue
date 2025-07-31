@@ -14,7 +14,7 @@ function getPath(name: string) {
 <template>
   <RouterLink
     :to="getPath(name)"
-    class="pxd-link-button md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] w-full cursor-pointer overflow-hidden rounded-lg border no-underline! not-hover:transition-none hover:bg-background-secondary motion-safe:transition-colors"
+    class="pxd-link-button md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] w-full cursor-pointer overflow-hidden rounded-lg border no-underline! not-hover:transition-none hover:bg-background-200 motion-safe:transition-colors"
   >
     <div class="px-4 py-2 truncate border-b border-dashed">
       {{ name }}
