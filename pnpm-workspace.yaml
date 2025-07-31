@@ -11,17 +11,19 @@ catalog:
   '@tsconfig/node22': ^22.0.2
   '@types/node': ^22.16.4
   '@vitejs/plugin-vue': ^6.0.0
+  '@vue/compiler-sfc': ^3.5.17
   '@vue/test-utils': ^2.4.6
   '@vue/tsconfig': ^0.7.0
-  '@vue/compiler-sfc': ^3.5.17
   cross-spawn: ^7.0.6
   eslint: ^9.31.0
+  eslint-plugin-better-tailwindcss: ^3.7.2
   happy-dom: ^18.0.1
   husky: ^9.1.7
   lint-staged: ^16.1.2
   mkdist: ^2.3.0
   mri: ^1.2.0
   npm-run-all2: ^8.0.4
+  tailwindcss: ^4.1.4
   tinyglobby: ^0.2.14
   typescript: ^5.8.3
   unbuild: ^3.5.0
@@ -31,6 +33,5 @@ catalog:
   vite: ^7.0.4
   vitest: ^3.2.4
   vue: ^3.5.17
-  tailwindcss: ^4.1.4
   vue-sfc-transformer: ^0.1.16
   vue-tsc: ^3.0.1

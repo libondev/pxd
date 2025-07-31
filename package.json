@@ -126,6 +126,7 @@
     "@vue/test-utils": "catalog:",
     "@vue/tsconfig": "catalog:",
     "eslint": "catalog:",
+    "eslint-plugin-better-tailwindcss": "catalog:",
     "happy-dom": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",
