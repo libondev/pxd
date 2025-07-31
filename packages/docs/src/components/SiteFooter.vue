@@ -23,7 +23,7 @@ const LINKS = [
     name: 'Projects',
     children: [
       {
-        label: 'Vue Use',
+        label: 'VueUse',
         href: 'https://github.com/vueuse/vueuse',
         icon: LogoGithubIcon,
       },
@@ -38,13 +38,13 @@ const LINKS = [
         icon: LogoGithubIcon,
       },
       {
-        label: 'Element Plus',
-        href: 'https://github.com/element-plus/element-plus',
+        label: 'NaiveUI',
+        href: 'https://github.com/tusen-ai/naive-ui',
         icon: LogoGithubIcon,
       },
       {
-        label: 'NaiveUI',
-        href: 'https://github.com/tusen-ai/naive-ui',
+        label: 'es-toolkit',
+        href: 'https://github.com/toss/es-toolkit',
         icon: LogoGithubIcon,
       },
     ],
@@ -54,7 +54,7 @@ const LINKS = [
 
 <template>
   <footer class="border-t p-6 bg-background-secondary flex flex-wrap gap-4">
-    <div v-for="group in LINKS" :key="group.name" class="">
+    <div v-for="group in LINKS" :key="group.name">
       <div class="text-xl font-medium mb-1 pl-[11px]">
         {{ group.name }}
       </div>

@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
           'vue',
           VueRouterAutoImports,
         ],
-      }),
+      }) as any,
       markdown({
         markdownItOptions: {
           html: true,
@@ -122,7 +122,7 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      include: ['@vue/shared', 'canvas-confetti'],
+      include: ['@vue/shared', 'canvas-confetti', '@unhead/vue'],
     },
 
     server: {
