@@ -65,7 +65,7 @@ function onCheckboxChange(e: Event) {
 <template>
   <label
     role="switch"
-    class="pxd-toggle group/toggle inline-flex flex-col cursor-pointer select-none"
+    class="pxd-toggle group/toggle inline-flex cursor-pointer flex-col select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--abc': activeBgColor,
@@ -82,20 +82,20 @@ function onCheckboxChange(e: Event) {
         :id="uniqueId"
         type="checkbox"
         :checked="isChecked"
-        class="smallest peer"
+        class="peer smallest"
         @change="onCheckboxChange"
       >
 
       <span
         v-if="inactiveLabel"
-        class="pxd-toggle--label text-sm opacity-100 peer-checked:opacity-50 mr-1.5 pl-0.5 motion-safe:transition-opacity"
+        class="pxd-toggle--label text-sm mr-1.5 pl-0.5 opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
       >{{ inactiveLabel }}</span>
 
       <div
-        class="pxd-toggle--handle border border-input p-px rounded-full motion-safe:transition-all [--tx:0] bg-(--ibc) peer-focus-ring peer-checked:bg-(--abc) peer-checked:[--tx:100%]"
+        class="pxd-toggle--handle rounded-full border border-input bg-(--ibc) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--abc) peer-checked:[--tx:100%] motion-safe:transition-all"
         :class="computedSize"
       >
-        <span class="pxd-toggle--handle-icon flex items-center justify-center bg-background aspect-square h-full rounded-full border border-input transform-gpu translate-x-(--tx) motion-safe:transition-transform group-hover/toggle:will-change-transform">
+        <span class="pxd-toggle--handle-icon flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center rounded-full border border-input bg-background group-hover/toggle:will-change-transform motion-safe:transition-transform">
           <slot v-if="modelValue" name="active-icon" />
           <slot v-else name="inactive-icon" />
         </span>
@@ -103,7 +103,7 @@ function onCheckboxChange(e: Event) {
 
       <span
         v-if="activeLabel"
-        class="pxd-toggle--label text-sm opacity-50 peer-checked:opacity-100 ml-1.5 pr-0.5 motion-safe:transition-opacity"
+        class="pxd-toggle--label text-sm ml-1.5 pr-0.5 opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
       >{{ activeLabel }}</span>
     </div>
   </label>

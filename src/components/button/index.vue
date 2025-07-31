@@ -71,7 +71,7 @@ const config = useConfigProvider()
 const computedDisabled = computed(() => props.disabled || props.loading)
 
 const computedClass = computed(() => {
-  const classes = ['pxd-button cursor-pointer select-none shrink-0 items-center motion-safe:transition-all', ALIGNMENTS[props.align]]
+  const classes = ['pxd-button shrink-0 cursor-pointer items-center select-none motion-safe:transition-all', ALIGNMENTS[props.align]]
 
   const { variant, block, shape, icon } = props
 

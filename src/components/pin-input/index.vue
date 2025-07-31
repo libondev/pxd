@@ -259,13 +259,13 @@ function onInputPastedValue(ev: ClipboardEvent) {
 </script>
 
 <template>
-  <label class="pxd-pin-input flex flex-col w-max">
+  <label class="pxd-pin-input flex w-max flex-col">
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
 
     <div
-      class="w-max flex items-center gap-1.5"
+      class="gap-1.5 flex w-max items-center"
       @keydown="onContainerKeydown"
       @compositionend="onCompositionEnd"
       @click="onContainerClick"
@@ -277,7 +277,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
           :aria-label="`pin code ${n} of ${length}`"
           :type="computedInputType"
           :data-index="i"
-          class="aspect-square outline-none bg-transparent w-full h-full text-center rounded-inherit disabled:bg-gray-100 disabled:text-gray-700 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600 focus:placeholder:opacity-0 motion-safe:transition-all"
+          class="aspect-square size-full rounded-inherit bg-transparent text-center outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
           minlength="1"
           maxlength="1"
           autocorrect="off"

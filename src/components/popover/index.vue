@@ -657,7 +657,7 @@ defineExpose({
           ref="containerRef"
           :style="containerStyle"
           :data-position="localPosition"
-          class="pxd-popover__container isolate absolute w-max"
+          class="pxd-popover__container absolute isolate w-max"
           :class="[{ 'pointer-events-none': !enterable, 'show-arrow': showArrow }]"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"

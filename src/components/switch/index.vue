@@ -34,8 +34,8 @@ const computedRequired = computed(() => props.required || switchGroupContext.req
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-switch--label w-full h-full px-3 flex items-center justify-center text-foreground-secondary rounded-sm truncate text-sm peer-focus-ring',
-    'font-medium select-none empty:hidden peer-disabled:cursor-not-allowed peer-checked:bg-gray-100 motion-safe:transition-all',
+    'pxd-switch--label px-3 text-sm flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring',
+    'font-medium select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed empty:hidden motion-safe:transition-all',
   ]
 
   if (!computedDisabled.value) {
@@ -57,7 +57,7 @@ const computedClass = computed(() => {
       v-model="switchGroupModelValue"
       type="radio"
       :value="value"
-      class="smallest peer"
+      class="peer smallest"
       :checked="isChecked"
       :name="switchGroupName"
       :disabled="computedDisabled"

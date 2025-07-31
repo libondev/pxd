@@ -66,7 +66,7 @@ const modelValue = useModelValue(props, emits)
 const internalInputType = shallowRef(props.password ? 'password' : 'text')
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border flex items-center relative overflow-hidden rounded-md bg-background motion-safe:transition-all']
+  const classes = ['pxd-input--border relative flex items-center overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -116,8 +116,8 @@ function clearInputValue() {
       <div
         v-if="$slots.prefix"
         aria-hidden="true"
-        class="pxd-input--prefix pl-3 h-full flex items-center text-sm text-gray-700 "
-        :class="{ 'bg-background-secondary rounded-tl-inherit rounded-bl-inherit border-r pr-3': prefixStyle }"
+        class="pxd-input--prefix pl-3 text-sm flex h-full items-center text-gray-700"
+        :class="{ 'pr-3 rounded-l-inherit border-r bg-background-secondary': prefixStyle }"
       >
         <slot name="prefix" />
       </div>
@@ -125,7 +125,7 @@ function clearInputValue() {
       <input
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full px-3 rounded-inherit outline-none bg-transparent disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600 file:border-0 file:bg-transparent file:font-medium"
+        class="px-3 size-full rounded-inherit bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
         :class="{ 'pr-9': password || allowClear }"
         :type="internalInputType"
         autocorrect="off"
@@ -146,7 +146,7 @@ function clearInputValue() {
       <div
         v-if="password || allowClear"
         v-show="modelValue"
-        class="pxd-input--icon absolute right-0 top-0 h-full text-foreground-secondary rounded-tr-inherit rounded-br-inherit cursor-pointer flex items-center hover:text-gray-1000 hover:bg-gray-alpha-100 active:bg-gray-alpha-300 motion-safe:transition-colors"
+        class="pxd-input--icon right-0 top-0 absolute flex h-full cursor-pointer items-center rounded-r-inherit text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-1000 active:bg-gray-alpha-300 motion-safe:transition-colors"
       >
         <div v-if="password" class="p-3" @click.prevent="togglePasswordType">
           <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
@@ -160,8 +160,8 @@ function clearInputValue() {
       <div
         v-if="$slots.suffix"
         aria-hidden="true"
-        class="pxd-input--suffix pr-3 h-full flex items-center text-sm text-gray-700"
-        :class="{ 'bg-background-secondary rounded-tr-inherit rounded-br-inherit border-l pl-3': suffixStyle }"
+        class="pxd-input--suffix pr-3 text-sm flex h-full items-center text-gray-700"
+        :class="{ 'pl-3 rounded-r-inherit border-l bg-background-secondary': suffixStyle }"
       >
         <slot name="suffix" />
       </div>

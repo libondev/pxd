@@ -61,7 +61,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pxd-resizable-handle relative bg-border shrink-0 select-none touch-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/30 motion-safe:transition-colors after:motion-safe:transition-colors"
+    class="pxd-resizable-handle relative shrink-0 touch-none bg-border select-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/30 motion-safe:transition-colors after:motion-safe:transition-colors"
     @pointerdown.prevent="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"

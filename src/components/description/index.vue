@@ -17,7 +17,7 @@ defineProps<Props>()
 
 <template>
   <dl class="pxd-description">
-    <dt class="pxd-description--title flex gap-1 items-center text-sm text-foreground-secondary leading-none mb-2 min-h-3.5 capitalize text-nowrap">
+    <dt class="pxd-description--title gap-1 text-sm mb-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize">
       <slot name="title">
         {{ title }}
       </slot>
@@ -26,7 +26,7 @@ defineProps<Props>()
         <InformationIcon class="text-base scale-125" />
       </PTooltip>
     </dt>
-    <dd class="pxd-description--content text-sm text-foreground font-medium leading-4">
+    <dd class="pxd-description--content text-sm font-medium leading-4 text-foreground">
       <slot name="content">
         {{ content }}
       </slot>

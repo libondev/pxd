@@ -39,7 +39,7 @@ provideAvatarGroupContext(props)
       class="[&:nth-child(n+2)]:-ml-3 hover:z-10"
     />
 
-    <PAvatar v-if="slicedOptions.length < options.length" class="text-xs bg-gray-1000 text-gray-100 -ml-3">
+    <PAvatar v-if="slicedOptions.length < options.length" class="text-xs -ml-3 bg-gray-1000 text-gray-100">
       +{{ options.length - slicedOptions.length }}
     </PAvatar>
   </div>

@@ -29,7 +29,7 @@ const variantPresets = {
 }
 
 const computedClass = computed(() => {
-  const classes = ['pxd-chip--label absolute border rounded-full border-background text-xs top-0 right-0 motion-safe:transition-all']
+  const classes = ['pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background motion-safe:transition-all']
 
   const { variant, inset, label } = props
 
@@ -48,7 +48,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-chip inline-flex relative shrink-0">
+  <div class="pxd-chip relative inline-flex shrink-0">
     <slot />
 
     <span :data-label="label" :class="computedClass" :style="{ '--size': getCssUnitValue(size) }" />

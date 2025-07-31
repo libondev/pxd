@@ -19,27 +19,27 @@ const { renderAs, onCopyClick } = useCopyClick()
 </script>
 
 <template>
-  <div class="pxd-browser shadow-border-small rounded-md overflow-hidden bg-background-secondary">
-    <div class="bg-background py-2.5 px-5 flex justify-between gap-4 md:gap-6">
-      <div class="flex items-center flex-1 justify-center gap-4 min-w-0 first:justify-start md:first:max-w-[140px] max-md:first:flex-none last:justify-end md:last:max-w-[140px]">
-        <div class="flex items-center gap-2">
+  <div class="pxd-browser overflow-hidden rounded-md bg-background-secondary shadow-border-small">
+    <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background">
+      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
+        <div class="gap-2 flex items-center">
           <div class="w-3 h-3 rounded-full bg-[#FE5F57]" />
           <div class="w-3 h-3 rounded-full bg-[#FEBB2E]" />
           <div class="w-3 h-3 rounded-full bg-[#26C941]" />
         </div>
 
-        <div class="flex items-center gap-4 max-md:hidden text-sm text-gray-900">
+        <div class="gap-4 text-sm flex items-center text-gray-900 max-md:hidden">
           <ArrowLeftIcon />
           <ArrowLeftIcon class="rotate-180" />
           <RefreshClockwiseIcon />
         </div>
       </div>
 
-      <div class="flex items-center flex-1 justify-center gap-4 min-w-0 first:justify-start md:first:max-w-[140px] max-md:first:flex-none last:justify-end md:last:max-w-[140px]">
-        <div class="lg:max-w-xs bg-background-secondary border border-gray-400 w-full rounded-full pl-2.5 pr-1 py-1 flex items-center justify-between">
-          <LockClosedIcon class="text-gray-900 text-sm" />
+      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
+        <div class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-secondary">
+          <LockClosedIcon class="text-sm text-gray-900" />
 
-          <div class="pl-1.5 text-[13px] text-gray-1000 flex-1 min-w-0 text-center truncate">
+          <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-[13px] text-gray-1000">
             {{ address }}
           </div>
 
@@ -51,7 +51,7 @@ const { renderAs, onCopyClick } = useCopyClick()
         </div>
       </div>
 
-      <div class="flex items-center flex-1 justify-center gap-4 min-w-0 first:justify-start md:first:max-w-[140px] max-md:first:flex-none last:justify-end md:last:max-w-[140px] max-lg:hidden" />
+      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none max-lg:hidden first:justify-start last:justify-end" />
     </div>
 
     <slot />

@@ -12,22 +12,22 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="pxd-empty-state border rounded-lg py-12 px-18 bg-background w-full">
-    <div class="max-w-sm mx-auto flex flex-col space-y-6">
+  <div class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background">
+    <div class="max-w-sm space-y-6 mx-auto flex flex-col">
       <template v-if="$slots.icon">
-        <div class="pxd-empty-state--icon border rounded-md p-3.5 size-15 flex items-center justify-center mx-auto text-foreground-secondary">
+        <div class="pxd-empty-state--icon p-3.5 size-15 mx-auto flex items-center justify-center rounded-md border text-foreground-secondary">
           <slot name="icon" />
         </div>
       </template>
 
-      <div class="pxd-empty-state--content flex flex-col gap-2">
-        <p class="pxd-empty-state--title text-foreground text-base text-center font-medium">
+      <div class="pxd-empty-state--content gap-2 flex flex-col">
+        <p class="pxd-empty-state--title text-base font-medium text-center text-foreground">
           <slot name="title">
             {{ title }}
           </slot>
         </p>
 
-        <p class="pxd-empty-state--description text-foreground-secondary text-sm text-center">
+        <p class="pxd-empty-state--description text-sm text-center text-foreground-secondary">
           <slot name="description">
             {{ description }}
           </slot>

@@ -44,7 +44,7 @@ provideSwitchGroupModelValue(modelValue)
 </script>
 
 <template>
-  <div class="pxd-switch-group rounded-md flex border p-1" :class="[block ? 'w-full' : 'w-max', computedSize]">
+  <div class="pxd-switch-group p-1 flex rounded-md border" :class="[block ? 'w-full' : 'w-max', computedSize]">
     <slot>
       <PSwitch
         v-for="option in options"

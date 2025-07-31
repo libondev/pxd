@@ -53,14 +53,14 @@ const LINKS = [
 </script>
 
 <template>
-  <footer class="border-t p-6 bg-background-secondary flex flex-wrap gap-4">
+  <footer class="p-6 gap-4 flex flex-wrap border-t bg-background-secondary">
     <div v-for="group in LINKS" :key="group.name">
       <div class="text-xl font-medium mb-1 pl-[11px]">
         {{ group.name }}
       </div>
 
-      <ul class="max-h-40 flex flex-col gap-x-2 sm:flex-wrap">
-        <div v-for="link in group.children" :key="link.href" class="w-full sm:w-auto">
+      <ul class="max-h-40 gap-x-2 sm:flex-wrap flex flex-col">
+        <div v-for="link in group.children" :key="link.href" class="sm:w-auto w-full">
           <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" block>
             <template #prefix>
               <component :is="link.icon" />

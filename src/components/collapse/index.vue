@@ -92,7 +92,7 @@ onMounted(() => {
   <div class="pxd-collapse border-b will-change-contents">
     <h3 class="pxd-collapse--title">
       <button
-        class="pxd-collapse--trigger flex items-center justify-between w-full pr-1 appearance-none group/collapse cursor-pointer outline-none border-none bg-transparent self-focus-ring"
+        class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer appearance-none items-center justify-between border-none bg-transparent self-focus-ring outline-none"
         :data-state="isExpanded ? 'open' : 'closed'"
         @click="onTriggerClick"
       >
@@ -100,7 +100,7 @@ onMounted(() => {
           {{ title }}
         </slot>
 
-        <ChevronDownIcon class="shrink-0 size-4 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
+        <ChevronDownIcon class="size-4 shrink-0 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
       </button>
     </h3>
 

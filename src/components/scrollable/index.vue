@@ -337,7 +337,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-scrollable flex group/scrollable relative overflow-hidden sm:[--sv:0] hover:[--sv:1]" :style="{
+    class="pxd-scrollable group/scrollable sm:[--sv:0] relative flex overflow-hidden hover:[--sv:1]" :style="{
       '--size': `${size}px`,
       '--mask-color': maskColor,
       '--scrollbar-size': `${scrollbarSize}px`,
@@ -348,7 +348,7 @@ defineExpose({
     <div
       ref="scrollContainer"
       :class="contentClass"
-      class="pxd-scrollable--content relative flex-1 max-h-full scrollbar-hidden overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
     >
       <slot />
     </div>
@@ -356,12 +356,12 @@ defineExpose({
     <template v-if="fader">
       <div
         aria-hidden="true"
-        class="pxd-scrollable--fader-x pointer-events-none w-full h-full absolute inset-0 rounded-inherit"
+        class="pxd-scrollable--fader-x inset-0 pointer-events-none absolute size-full rounded-inherit"
         :class="{ left: faderDirections.left, right: faderDirections.right }"
       />
       <div
         aria-hidden="true"
-        class="pxd-scrollable--fader-y pointer-events-none w-full h-full absolute inset-0 rounded-inherit"
+        class="pxd-scrollable--fader-y inset-0 pointer-events-none absolute size-full rounded-inherit"
         :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
       />
     </template>
@@ -370,11 +370,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y absolute top-0 right-0 bottom-0 px-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute rounded-full w-(--scrollbar-size) bg-(--scrollbar-color) hover:will-change-transform hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) hover:will-change-transform active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -383,11 +383,11 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x absolute left-0 right-0 bottom-0 py-1 opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute rounded-full h-(--scrollbar-size) bg-(--scrollbar-color) hover:will-change-transform hover:bg-(--scrollbar-color-hover) active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) hover:will-change-transform active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />

@@ -30,7 +30,7 @@ const computedAttrs = computed(() => {
 
 <template>
   <component :is="renderComponent" v-model="choiceboxModelValue" v-bind="computedAttrs">
-    <div class="flex flex-col gap-1">
+    <div class="gap-1 flex flex-col">
       <span class="pxd-choicebox--label font-medium">
         <slot name="label">
           {{ label }}

@@ -74,7 +74,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-progress-bar flex-1 rounded-full overflow-hidden bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
+  const classes = ['pxd-progress-bar flex-1 overflow-hidden rounded-full bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
 
   return classes.join(' ')
 })
@@ -100,12 +100,12 @@ const computedProgressBarStyles = computed(() => {
 </script>
 
 <template>
-  <div role="progressbar" class="pxd-progress w-full flex items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
+  <div role="progressbar" class="pxd-progress flex w-full items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
     <div :class="computedClass">
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>
 
-    <span v-if="computedLabel || $slots.default" class="text-foreground-secondary text-sm ml-3 font-mono empty:hidden">
+    <span v-if="computedLabel || $slots.default" class="text-sm ml-3 font-mono text-foreground-secondary empty:hidden">
       <slot>
         {{ computedLabel }}
       </slot>

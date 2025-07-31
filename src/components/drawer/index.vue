@@ -72,7 +72,7 @@ const transitionName = computed(() => {
 
 // 计算内容位置类名
 const computedClass = computed(() => {
-  const classes = ['pxd-drawer outline-none translate-z-0 shadow-border-modal fixed bg-background flex flex-col z-10']
+  const classes = ['pxd-drawer translate-z-0 fixed z-10 flex flex-col bg-background shadow-border-modal outline-none']
 
   switch (ensureCorrectPosition.value) {
     case 'top':
@@ -146,7 +146,7 @@ watch(() => isVisible.value, (visible) => {
         :style="computedStyle"
       >
         <header
-          class="pxd-drawer--header relative shrink-0 px-6 py-4 sm:py-6"
+          class="pxd-drawer--header px-6 py-4 sm:py-6 relative shrink-0"
           :class="{ 'border-b bg-background-secondary dark:bg-background': headerStyle }"
         >
           <div class="flex-1 shrink-0">
@@ -174,7 +174,7 @@ watch(() => isVisible.value, (visible) => {
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer relative p-4 shrink-0 flex items-center gap-2 justify-between"
+          class="pxd-drawer--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
           :class="{ 'border-t bg-background-secondary dark:bg-background': footerStyle }"
         >
           <slot name="footer" />

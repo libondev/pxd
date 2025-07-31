@@ -26,8 +26,8 @@ const {
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-virtual-list overflow-auto relative">
-    <div class="pxd-virtual-list--content w-full absolute top-0 z-0" :style="listStyle">
+  <div ref="containerRef" class="pxd-virtual-list relative overflow-auto">
+    <div class="pxd-virtual-list--content top-0 absolute z-0 w-full" :style="listStyle">
       <div
         v-for="item in renderList"
         :key="item[dataKey]"

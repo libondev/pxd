@@ -89,7 +89,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-note flex flex-col sm:flex-row sm:items-center gap-2 border rounded-md w-max max-w-full']
+  const classes = ['pxd-note sm:flex-row sm:items-center gap-2 flex w-max max-w-full flex-col rounded-md border']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -103,7 +103,7 @@ const computedClass = computed(() => {
 
 <template>
   <div :class="computedClass">
-    <div class="flex items-center gap-3">
+    <div class="gap-3 flex items-center">
       <slot v-if="computedLabel" name="label">
         <component :is="computedLabel" class="font-medium shrink-0" />
       </slot>

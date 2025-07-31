@@ -415,9 +415,9 @@ onBeforeUnmount(() => {
           <th
             v-for="(col, i) in tableHeadList"
             :key="col + i"
-            class="relative font-normal text-foreground-secondary"
+            class="font-normal relative text-foreground-secondary"
           >
-            <span class="absolute -top-1 left-0 whitespace-nowrap">{{ col }}</span>
+            <span class="-top-1 left-0 absolute whitespace-nowrap">{{ col }}</span>
           </th>
         </tr>
       </thead>
@@ -429,8 +429,8 @@ onBeforeUnmount(() => {
         @pointerover.capture="onMouseOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
-          <td class="pxd-active-graph--label relative leading-none text-foreground-secondary overflow-hidden">
-            <span class="absolute top-0 right-1">
+          <td class="pxd-active-graph--label relative overflow-hidden leading-none text-foreground-secondary">
+            <span class="top-0 right-1 absolute">
               {{ row.headerText }}
             </span>
           </td>
@@ -446,10 +446,10 @@ onBeforeUnmount(() => {
         </tr>
 
         <template v-if="props.legend">
-          <tr class="pxd-active-graph--placeholder pointer-events-none h-0.5" />
+          <tr class="pxd-active-graph--placeholder h-0.5 pointer-events-none" />
           <tr class="pxd-active-graph--legend pointer-events-none">
-            <td class="relative h-3 text-foreground-secondary">
-              <span class="absolute top-1/2 right-1 -translate-y-1/2">{{ config.locale.compare.less }}</span>
+            <td class="h-3 relative text-foreground-secondary">
+              <span class="right-1 absolute top-1/2 -translate-y-1/2">{{ config.locale.compare.less }}</span>
             </td>
 
             <td
@@ -459,7 +459,7 @@ onBeforeUnmount(() => {
               :style="`background-color: ${color}`"
             />
 
-            <td class="relative h-3 text-foreground-secondary w-3">
+            <td class="h-3 w-3 relative text-foreground-secondary">
               <span class="absolute top-1/2 left-px -translate-y-1/2">{{ config.locale.compare.more }}</span>
             </td>
           </tr>
@@ -470,7 +470,7 @@ onBeforeUnmount(() => {
     <Transition name="pxd-transition--fade">
       <div
         v-if="showTooltip"
-        class="pxd-active-graph--tooltip left-0 top-0 bg-gray-1000 pointer-events-none text-gray-100 absolute z-10 px-2 py-1 text-[13px] rounded-sm w-max duration-50 will-change-transform motion-safe:transition-transform"
+        class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 pointer-events-none absolute z-10 w-max rounded-sm bg-gray-1000 text-[13px] text-gray-100 duration-50 will-change-transform motion-safe:transition-transform"
         :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
       >
         <slot name="tooltip" :data="tooltipInfo">

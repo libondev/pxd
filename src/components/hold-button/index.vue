@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
     <template #suffix>
       <slot name="suffix" />
       <div
-        class="pxd-hold-button--overlay absolute -inset-px bg-(--mc) rounded-inherit pointer-events-none"
+        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--mc)"
         :class="{ finished: status === 'confirmed' }"
         :style="`--ds:${durations}s;--mc:${maskColor}`"
         @transitionend="onTransitionEnd"

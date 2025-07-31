@@ -256,7 +256,7 @@ onMounted(async () => {
   <div
     ref="containerRef"
     :data-direction="direction"
-    class="pxd-resizable flex w-full h-full flex-row data-[direction=vertical]:flex-col"
+    class="pxd-resizable flex size-full flex-row data-[direction=vertical]:flex-col"
   >
     <slot />
   </div>

@@ -57,7 +57,7 @@ const modelValue = useModelValue(props, emits)
 const config = useConfigProvider()
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border flex items-center justify-center h-full min-h-[inherit] motion-safe:transition-all overflow-hidden rounded-md bg-background']
+  const classes = ['pxd-input--border flex h-full min-h-[inherit] items-center justify-center overflow-hidden rounded-md bg-background motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -99,7 +99,7 @@ function onInputChange(event: Event) {
       <textarea
         :id="uniqueId"
         v-model="modelValue"
-        class="w-full h-full min-h-[inherit] py-2.5 px-3 rounded-inherit outline-none bg-transparent resize-none disabled:text-gray-700 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:placeholder:text-gray-400 placeholder:select-none placeholder:text-gray-600"
+        class="py-2.5 px-3 size-full min-h-[inherit] resize-none rounded-inherit bg-transparent outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
         autocorrect="off"
         autocomplete="off"
         autocapitalize="off"

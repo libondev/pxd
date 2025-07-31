@@ -87,16 +87,16 @@ if (!isServer) {
 </script>
 
 <template>
-  <div class="absolute left-0 top-0 bottom-0">
-    <aside class="sidebar fixed top-12 bottom-0 -translate-x-full mt-px z-10 border-r w-60 bg-background sm:border-x sm:translate-x-0">
+  <div class="left-0 top-0 bottom-0 absolute">
+    <aside class="sidebar top-12 bottom-0 w-60 sm:border-x sm:translate-x-0 fixed z-10 mt-px -translate-x-full border-r bg-background">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
     </aside>
   </div>
 
-  <div class="sm:pl-60 border-r w-full max-w-full flex-1 flex flex-col min-h-[calc(100vh-50px)]">
-    <div class="sticky top-[49px] z-10 bg-background sm:hidden flex items-center justify-between p-2 border-b">
+  <div class="sm:pl-60 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
+    <div class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
           <MenuAltIcon class="text-xs" />
@@ -116,7 +116,7 @@ if (!isServer) {
       </PDrawer>
     </div>
 
-    <main class="prose flex-1 px-6 md:px-12 lg:px-16 xl:px-30 py-12 w-full">
+    <main class="prose px-6 md:px-12 lg:px-16 xl:px-30 py-12 w-full flex-1">
       <slot />
 
       <template v-if="showViewSource">

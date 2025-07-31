@@ -49,8 +49,8 @@ const computedRequired = computed(() => props.required || checkboxGroupContext?.
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-checkbox--inner size-4 shrink-0 inline-flex items-center justify-center peer-focus-ring',
-    'rounded-sm border overflow-hidden transform-gpu motion-safe:transition-colors',
+    'pxd-checkbox--inner size-4 inline-flex shrink-0 items-center justify-center peer-focus-ring',
+    'transform-gpu overflow-hidden rounded-sm border motion-safe:transition-colors',
   ]
 
   if (isChecked.value) {
@@ -105,7 +105,7 @@ defineExpose({
   <label
     role="checkbox"
     :aria-checked="isChecked"
-    class="pxd-checkbox inline-flex items-center group/checkbox gap-2"
+    class="pxd-checkbox group/checkbox gap-2 inline-flex items-center"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="uniqueId"
   >
@@ -113,7 +113,7 @@ defineExpose({
       :id="uniqueId"
       :value="value"
       type="checkbox"
-      class="smallest peer"
+      class="peer smallest"
       :checked="isChecked"
       :required="computedRequired"
       :disabled="computedDisabled"
@@ -126,7 +126,7 @@ defineExpose({
       <span v-else class="size-3" />
     </span>
 
-    <span class="flex-1 text-sm empty:hidden">
+    <span class="text-sm flex-1 empty:hidden">
       <slot>
         {{ label }}
       </slot>

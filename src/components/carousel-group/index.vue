@@ -212,16 +212,16 @@ onBeforeUnmount(() => {
     :data-direction="direction"
     :data-indicator-type="indicatorType"
     :data-indicator-position="indicatorPosition"
-    class="pxd-carousel-group group w-full relative overflow-hidden touch-manipulation"
+    class="pxd-carousel-group group relative w-full touch-manipulation overflow-hidden"
     :style="{ height: getCssUnitValue(height) }"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
     @wheel="onWheelToggle"
   >
-    <div class="pxd-carousel-group--container w-full h-full">
+    <div class="pxd-carousel-group--container size-full">
       <div
         ref="sliderRef"
-        class="pxd-carousel-group--slider w-full h-full translate-z-0 group-data-[direction=horizontal]:flex group-hover:will-change-transform"
+        class="pxd-carousel-group--slider translate-z-0 size-full group-hover:will-change-transform group-data-[direction=horizontal]:flex"
         :style="computedStyle"
         :class="TRANSITION_CLASSES"
         @transitionend="onTransitionsEnd"
@@ -232,23 +232,23 @@ onBeforeUnmount(() => {
 
     <div
       v-if="indicator"
-      class="pxd-carousel-group--indicator absolute w-max flex items-center gap-2 group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
+      class="pxd-carousel-group--indicator gap-2 absolute flex w-max items-center group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
       @click="onIndicatorClick"
     >
       <button
         v-for="(_, i) in carousels.length"
         :key="i"
         :data-index="i"
-        class="pxd-carousel-group--indicator-item w-(--w) h-(--h) self-focus-ring relative rounded-full appearance-none cursor-pointer outline-none bg-gray-alpha-200 motion-safe:transition-colors hover:bg-gray-alpha-400"
-        :class="{ '!bg-primary': i === correctIndex }"
+        class="pxd-carousel-group--indicator-item relative h-(--h) w-(--w) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+        :class="{ 'bg-primary!': i === correctIndex }"
       />
     </div>
 
-    <div v-if="arrow" class="pxd-carousel-group--toggle-buttons flex gap-2 absolute group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
+    <div v-if="arrow" class="pxd-carousel-group--toggle-buttons gap-2 absolute flex group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md cursor-pointer bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--prev-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -257,7 +257,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-button outline-none self-focus-ring group-data-[direction=vertical]:rotate-90 appearance-none p-1.5 rounded-md cursor-pointer bg-gray-alpha-100 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--next-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-gray-alpha-200 active:bg-gray-alpha-300 disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />

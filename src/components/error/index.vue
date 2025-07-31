@@ -52,7 +52,7 @@ const computedClass = computed(() => {
         {{ error?.message }}
 
         <span v-if="error?.action && error?.link">
-          <a :href="error.link" class="text-red-900 font-medium inline-flex items-center gap-1 underline" :target="isExternalLink(error.link) ? '_blank' : '_self'">
+          <a :href="error.link" class="font-medium gap-1 inline-flex items-center text-red-900 underline" :target="isExternalLink(error.link) ? '_blank' : '_self'">
             {{ error.action }}
 
             <ExternalIcon v-if="isExternalLink(error.link)" class="text-sm" />

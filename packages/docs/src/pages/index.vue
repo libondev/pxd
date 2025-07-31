@@ -9,23 +9,23 @@ useHead({
 </script>
 
 <template>
-  <main class="w-full px-4 relative max-w-screen-lg mx-auto">
+  <main class="px-4 max-w-screen-lg relative mx-auto w-full">
     <section class="my-28 py-12 sm:py-28 text-center">
       <div class="relative">
-        <h1 class="font-bold inline text-6xl">
+        <h1 class="font-bold text-6xl inline">
           PXD
         </h1>
 
-        <PBadge variant="vue" class="absolute top-0 select-none">
+        <PBadge variant="vue" class="top-0 absolute select-none">
           v{{ version }}
         </PBadge>
       </div>
 
-      <p class="text-balance leading-tight text-lg text-foreground-secondary mt-8">
+      <p class="leading-tight text-lg mt-8 text-balance text-foreground-secondary">
         A universal UI component library for Vue2&3
       </p>
 
-      <div class="mt-16 justify-center flex gap-3">
+      <div class="mt-16 gap-3 flex justify-center">
         <PLinkButton
           :scale="false"
           shape="rounded"
@@ -51,8 +51,8 @@ useHead({
 
     <hr class="mx-12 mb-8 sm:mb-20">
 
-    <section class="py-20 mb-8 flex flex-wrap gap-4 cursor-default">
-      <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
+    <section class="py-20 mb-8 gap-4 flex cursor-default flex-wrap">
+      <div class="p-5 sm:w-[calc(50%-0.5rem)] w-full rounded-lg border">
         <h3 class="font-medium mb-1.5">
           Consistent experience
         </h3>
@@ -62,7 +62,7 @@ useHead({
         </PText>
       </div>
 
-      <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
+      <div class="p-5 sm:w-[calc(50%-0.5rem)] w-full rounded-lg border">
         <h3 class="font-medium mb-1.5">
           Full light and dark support
         </h3>
@@ -77,7 +77,7 @@ useHead({
         </PText>
       </div>
 
-      <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
+      <div class="p-5 sm:w-[calc(50%-0.5rem)] w-full rounded-lg border">
         <h3 class="font-medium mb-1.5">
           On demand Import
         </h3>
@@ -87,7 +87,7 @@ useHead({
         </PText>
       </div>
 
-      <div class="p-5 rounded-lg border w-full sm:w-[calc(50%-0.5rem)]">
+      <div class="p-5 sm:w-[calc(50%-0.5rem)] w-full rounded-lg border">
         <h3 class="font-medium mb-1.5">
           Support for reducing animation
         </h3>

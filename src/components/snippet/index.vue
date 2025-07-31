@@ -50,7 +50,7 @@ const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-snippet relative pr-14 rounded-lg flex w-max items-center border motion-safe:transition-all',
+    'pxd-snippet pr-14 relative flex w-max items-center rounded-lg border motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS),
     getFallbackValue(props.size, SIZES, config.size),
   ]
@@ -82,7 +82,7 @@ async function onCopyButtonClick() {
     </div>
 
     <div
-      class="absolute top-1/2 -translate-y-1/2 right-1 p-2 cursor-pointer hover:bg-background-hover active:bg-background-active rounded-md"
+      class="right-1 p-2 absolute top-1/2 -translate-y-1/2 cursor-pointer rounded-md hover:bg-background-hover active:bg-background-active"
       :class="{ copied: isCopied }"
       @click="onCopyButtonClick"
     >

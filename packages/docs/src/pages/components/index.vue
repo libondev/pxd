@@ -52,7 +52,7 @@ function handleSearch(value: string) {
     A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
   </PText>
 
-  <div class="py-4 z-10 bg-background border-b">
+  <div class="py-4 z-10 border-b bg-background">
     <PInput
       v-model="searchKeyword"
       placeholder="Search components"
@@ -61,7 +61,7 @@ function handleSearch(value: string) {
     />
   </div>
 
-  <div ref="containerRef" class="flex flex-wrap space-x-4 space-y-4 mt-4 translate-x-2.5 md:translate-x-1 md:-mr-4">
+  <div ref="containerRef" class="space-x-4 space-y-4 mt-4 translate-x-2.5 md:translate-x-1 md:-mr-4 flex flex-wrap">
     <template v-for="{ camelized, name } in filteredComponents" :key="name">
       <RouterLink :to="`/components/${name}`">
         <PBook :title="camelized" :width="bookSize" class="cursor-pointer">

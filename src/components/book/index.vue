@@ -59,7 +59,7 @@ const computedStyle = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-book--container w-fit relative transform-3d duration-300 motion-safe:transition-transform']
+  const classes = ['pxd-book--container relative w-fit duration-300 transform-3d motion-safe:transition-transform']
 
   classes.push(
     ...Object.keys(formattedWidth.value).map(bp => presetWidthClasses[bp as keyof typeof presetWidthClasses]),
@@ -72,27 +72,27 @@ const computedClass = computed(() => {
 <template>
   <div class="pxd-book inline-flex w-fit">
     <div :class="computedClass" :style="computedStyle">
-      <div class="pxd-book--content absolute w-full min-w-full flex flex-col h-full overflow-hidden translate-z-0 bg-background-secondary">
+      <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-secondary">
         <div
           v-if="variant === 'stripe'"
-          class="flex w-full relative flex-1 overflow-hidden translate-z-0"
+          class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
           style="background-color: var(--book-color, var(--color-amber-600))"
         >
-          <div class="absolute flex flex-col w-full object-cover">
+          <div class="absolute flex w-full flex-col object-cover">
             <slot name="icon" />
           </div>
 
-          <div aria-hidden="true" class="pxd-book--spine absolute left-0 h-full mix-blend-overlay" />
+          <div aria-hidden="true" class="pxd-book--spine left-0 absolute h-full mix-blend-overlay" />
         </div>
 
         <div
           :class="{ 'pxd-book--cover-simple': variant === 'simple' }"
-          class="flex w-full relative flex-1 overflow-hidden translate-z-0"
+          class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
         >
           <div aria-hidden="true" class="pxd-book--spine h-full opacity-20" />
 
-          <div class="pxd-book--content-inner flex flex-col w-full">
-            <span class="pxd-book--title font-semibold text-balance break-all pr-2">
+          <div class="pxd-book--content-inner flex w-full flex-col">
+            <span class="pxd-book--title font-semibold pr-2 text-balance break-all">
               <slot name="title">
                 {{ title }}
               </slot>
@@ -106,11 +106,11 @@ const computedClass = computed(() => {
           </div>
         </div>
 
-        <div v-if="textured" class="pxd-book--textured absolute inset-0 opacity-50 pointer-events-none bg-cover" />
+        <div v-if="textured" class="pxd-book--textured inset-0 pointer-events-none absolute bg-cover opacity-50" />
       </div>
 
       <div aria-hidden="true" class="pxd-book--pages absolute" />
-      <div aria-hidden="true" class="pxd-book--back absolute left-0 w-full h-full bg-gray-200" />
+      <div aria-hidden="true" class="pxd-book--back left-0 absolute size-full bg-gray-200" />
     </div>
   </div>
 </template>

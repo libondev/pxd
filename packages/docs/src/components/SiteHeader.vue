@@ -19,26 +19,26 @@ const menus = [
 </script>
 
 <template>
-  <header class="sticky top-0 z-10 border-b bg-background select-none">
-    <div class="w-full max-w-full md:max-w-screen-2xl mx-auto h-12 flex items-center">
-      <h2 class="h-full border-l sm:w-60 sm:border-r">
-        <RouterLink to="/" class="px-3 h-full flex items-center font-medium cursor-pointer">
-          <SiteLogo class="mr-2 text-2xl " />
+  <header class="top-0 sticky z-10 border-b bg-background select-none">
+    <div class="md:max-w-screen-2xl h-12 mx-auto flex w-full max-w-full items-center">
+      <h2 class="sm:w-60 sm:border-r h-full border-l">
+        <RouterLink to="/" class="px-3 font-medium flex h-full cursor-pointer items-center">
+          <SiteLogo class="mr-2 text-2xl" />
           <span>PXD</span>
         </RouterLink>
       </h2>
 
       <nav class="ml-auto h-full border-r">
-        <ul class="h-full flex [&>*]:border-l [&>*]:list-none">
+        <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
           <li v-for="menu in menus" :key="menu.href">
-            <PLinkButton variant="ghost" class="h-full sm:px-3" shape="square" :target="menu.target" :href="menu.href">
+            <PLinkButton variant="ghost" class="sm:px-3 h-full" shape="square" :target="menu.target" :href="menu.href">
               <Component :is="menu.icon" />
-              <span class="hidden sm:block ml-1.5">{{ menu.label }}</span>
+              <span class="sm:block ml-1.5 hidden">{{ menu.label }}</span>
             </PLinkButton>
           </li>
 
           <li>
-            <PThemeSwitcher variant="ghost" shape="square" class="h-full sm:px-3" />
+            <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
           </li>
         </ul>
       </nav>

@@ -10,9 +10,9 @@ defineOptions({
       <slot name="prefix" />
     </div>
 
-    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] motion-reduce:opacity-20 rounded-full bg-gray-900" />
-    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] motion-reduce:opacity-50 rounded-full bg-gray-900" style="animation-delay:.2s" />
-    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] motion-reduce:opacity-80 rounded-full bg-gray-900" style="animation-delay:.4s" />
+    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 motion-reduce:opacity-20" />
+    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 motion-reduce:opacity-50" style="animation-delay:.2s" />
+    <span class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 motion-reduce:opacity-80" style="animation-delay:.4s" />
 
     <div v-if="$slots.suffix" class="pxd-loading-dots--text ml-3">
       <slot name="suffix" />

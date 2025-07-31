@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pxd-carousel w-full h-full shrink-0" :style="{ transform: transformStyle }">
+  <div class="pxd-carousel size-full shrink-0" :style="{ transform: transformStyle }">
     <slot />
   </div>
 </template>

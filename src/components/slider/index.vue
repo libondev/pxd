@@ -283,25 +283,25 @@ onBeforeUnmount(() => {
   <div
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    class="pxd-slider group/slider relative bg-gray-200 flex items-center rounded-full select-none touch-none"
+    class="pxd-slider group/slider relative flex touch-none items-center rounded-full bg-gray-200 select-none"
     :class="[{ 'cursor-not-allowed': disabled }, computedSize.track]"
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div
-      class="pxd-slider--track absolute h-full rounded-full touch-none"
+      class="pxd-slider--track absolute h-full touch-none rounded-full"
       :style="trackStyle"
     />
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2 motion-safe:transition-transform"
+      class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background hover:scale-130 active:z-10 active:scale-130 motion-safe:transition-transform"
       :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
-      class="pxd-slider--thumb absolute bg-background rounded-xs touch-none hover:scale-130 active:scale-130 active:z-10 -translate-x-1/2 motion-safe:transition-transform"
+      class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background hover:scale-130 active:z-10 active:scale-130 motion-safe:transition-transform"
       :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
