@@ -5,7 +5,7 @@ import { computed } from 'vue'
 interface Props {
   color?: string
   title?: ComponentLabel
-  width?: number | string | ResponsiveValue<number>
+  width?: ResponsiveValue<number | string>
   variant?: 'simple' | 'stripe'
   textured?: boolean
 }

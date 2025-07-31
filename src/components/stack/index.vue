@@ -5,11 +5,11 @@ import { computed } from 'vue'
 export interface Props {
   as?: ComponentAs
   wrap?: boolean
-  gap?: number | string | ResponsiveValue<number>
+  gap?: ResponsiveValue<number | string>
   scale?: number
   align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
   justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  direction?: 'horizontal' | 'vertical' | ResponsiveValue<'horizontal' | 'vertical'>
+  direction?: ResponsiveValue<'horizontal' | 'vertical'>
 }
 
 defineOptions({
@@ -81,7 +81,7 @@ const formattedGap = computed(() => {
 
   if (typeof gap === 'object') {
     return Object.entries(gap).reduce((acc, [bp, value]) => {
-      acc[`--gap-${bp}`] = `${value * scale}px`
+      acc[`--gap-${bp}`] = `${Number(value) * scale}px`
 
       return acc
     }, defaultGap)

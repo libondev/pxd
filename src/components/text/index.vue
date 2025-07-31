@@ -5,7 +5,7 @@ import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 
 interface Props {
   as?: ComponentAs
-  size?: string | number | ResponsiveValue<number>
+  size?: ResponsiveValue<number | string>
   align?: 'left' | 'center' | 'right'
   truncate?: boolean | number | string
   monospace?: boolean

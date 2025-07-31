@@ -7,7 +7,7 @@ export type ComponentSize = 'sm' | 'md' | 'lg'
 export type ComponentSizeWithXs = ComponentSize | 'xs'
 
 export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-export type ComponentBreakpoint = Record<ComponentBreakpointKeys, string>
+export type ComponentBreakpoint<T = string> = Record<ComponentBreakpointKeys, T>
 
 export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterLink' | VNode
 export type ComponentLabel = string | number | readonly string[] | null
@@ -21,7 +21,7 @@ export type ComponentPosition
     | `${BasePosition}-start`
     | `${BasePosition}-end`
 
-export type ResponsiveValue<T> = T | Partial<Record<ComponentBreakpointKeys, T>>
+export type ResponsiveValue<T> = T | Partial<ComponentBreakpoint<T>>
 
 export interface ComponentOption {
   label: ComponentLabel
