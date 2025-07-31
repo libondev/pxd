@@ -8,7 +8,7 @@ interface Props {
 
 interface PanelConfig {
   id: string
-  initialSize?: number | null
+  size?: number | null
   minSize?: number
   order: number
 }
@@ -128,7 +128,7 @@ function calculateInitialPanelSizes(totalSize: number): {
 
   sortedConfigs.forEach((config, index) => {
     const minSize = config.minSize || 0
-    const initialSizeNum = config.initialSize
+    const initialSizeNum = config.size
 
     if (initialSizeNum !== null && initialSizeNum !== undefined) {
       // 面板有指定初始大小

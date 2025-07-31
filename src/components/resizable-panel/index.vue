@@ -4,7 +4,7 @@ import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
-  initialSize?: number | null
+  size?: number | null
   minSize?: number
 }
 
@@ -13,7 +13,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<Props>(), {
-  initialSize: null,
+  size: null,
   minSize: 0,
 })
 
@@ -43,21 +43,19 @@ const computedStyle = computed(() => {
 onMounted(() => {
   resizableContext?.registerPanel({
     id: uniqueId,
-    initialSize: props.initialSize,
+    size: props.size,
     minSize: props.minSize,
   })
 })
 
-// 注销面板
 onBeforeUnmount(() => {
   resizableContext?.unregisterPanel(uniqueId)
 })
 
-// 监听 props 变化并更新注册信息
-watch(() => [props.initialSize, props.minSize], () => {
+watch(() => [props.size, props.minSize], () => {
   resizableContext?.registerPanel({
     id: uniqueId,
-    initialSize: props.initialSize,
+    size: props.size,
     minSize: props.minSize,
   })
 }, { deep: true })

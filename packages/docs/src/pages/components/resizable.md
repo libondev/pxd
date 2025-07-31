@@ -67,7 +67,7 @@ const direction = ref('horizontal')
   <PStack direction="vertical" gap="2">
     <div class="w-100 h-100 border rounded-lg">
       <PResizable>
-        <PResizablePanel :initial-size="50" class="flex items-center justify-center">
+        <PResizablePanel :size="50" class="flex items-center justify-center">
           One
         </PResizablePanel>
         <PResizableHandle />
