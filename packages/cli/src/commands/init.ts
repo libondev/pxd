@@ -151,9 +151,10 @@ export async function init() {
     }
   }
 
-  await updatePkgJson(packagePath, packageJson, willInstallDependencies, willInstallDevDependencies)
-  await injectStyle(projectDir, appEntryFilePath, globalStylePath, styleFramework)
+  await updatePkgDeps(packageJson, willInstallDependencies, willInstallDevDependencies)
+  await injectStyles(projectDir, appEntryFilePath, globalStylePath, styleFramework)
   await injectPlugin(projectDir, usingWhatBundler)
+  await updatePkgJson(packagePath, packageJson)
 
   outro('Thank you for using PXD CLI')
 }
@@ -166,7 +167,7 @@ function isInstalled(packageJson: Record<string, any>, packageName: string) {
   return packageJson.dependencies?.[packageName] || packageJson.devDependencies?.[packageName]
 }
 
-async function updatePkgJson(packagePath: string, pkgJson: Record<string, any>, dependencies: string[], devDependencies: string[]) {
+async function updatePkgDeps(pkgJson: Record<string, any>, dependencies: string[], devDependencies: string[]) {
   pkgJson.dependencies ??= {}
   pkgJson.devDependencies ??= {}
 
@@ -181,8 +182,6 @@ async function updatePkgJson(packagePath: string, pkgJson: Record<string, any>, 
 
     pkgJson.devDependencies[name] = version
   })
-
-  await fs.outputJson(packagePath, pkgJson, { spaces: 2 })
 }
 
 function splitDependencySafely(dependency: string) {
@@ -191,7 +190,7 @@ function splitDependencySafely(dependency: string) {
   return [`${dependency.slice(0, 1)}${name}`, version]
 }
 
-async function injectStyle(
+async function injectStyles(
   rootPath: string,
   entryFilePath: string,
   globalStylePath: string,
@@ -215,4 +214,8 @@ async function injectPlugin(
   bundlerType: (typeof BUNDLER_TYPES)[number]['value'],
 ) {
   console.info('🛰️init.ts:181/(rootPath):\n', rootPath, bundlerType)
+}
+
+async function updatePkgJson(packagePath: string, pkgJson: Record<string, any>) {
+  await fs.outputJson(packagePath, pkgJson, { spaces: 2 })
 }
