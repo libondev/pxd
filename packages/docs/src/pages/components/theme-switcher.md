@@ -10,6 +10,7 @@ Put the following code in your `html > head`to ensure the correctness of the the
 ```
 
 ## Default
+Support all attributes of the [button](/components/button) component (except slots)
 
 ```vue demo
 <template>
