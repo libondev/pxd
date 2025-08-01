@@ -128,11 +128,5 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0',
     },
-
-    ssgOptions: {
-      beastiesOptions: {
-        preload: 'media',
-      },
-    },
   }
 })

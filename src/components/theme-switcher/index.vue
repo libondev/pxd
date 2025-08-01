@@ -24,7 +24,7 @@ const colorTransitions = {
 type ColorScheme = keyof typeof colorTransitions
 
 function getSystemPreference(): 'light' | 'dark' {
-  return !isServer && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 const colorMode = customRef<ColorScheme>((track, trigger) => {
@@ -102,6 +102,10 @@ function toggleColorMode() {
 }
 
 onMounted(() => {
+  if (isServer) {
+    return
+  }
+
   const preference = getSystemPreference()
 
   // 动态调整主题的可选项，只允许在两个模式之间切换，避免偏好和系统一致时需要手动切换两次

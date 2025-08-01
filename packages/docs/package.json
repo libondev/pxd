@@ -21,7 +21,6 @@
     "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/compiler-sfc": "catalog:",
     "@vue/tsconfig": "catalog:",
-    "beasties": "^0.3.4",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-attrs": "^4.3.1",
     "markdown-it-plugins": "^0.4.0",
