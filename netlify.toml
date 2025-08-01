@@ -1,5 +1,6 @@
 [build]
-  publish = "dist"
+  base = "packages/docs"
+  publish = "packages/docs/dist"
   command = "pnpm run build"
 
 [build.environment]
