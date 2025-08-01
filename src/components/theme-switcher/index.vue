@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
+import type { ColorScheme } from './constants'
+import DeviceIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
-import { computed, customRef, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { isServer } from '../../utils/is'
 import PButton from '../button/index.vue'
+import { ColorSchemeSystem } from './constants'
 
 defineOptions({
   name: 'PThemeSwitcher',
@@ -21,96 +23,84 @@ const colorTransitions = {
   light: 'auto',
 }
 
-type ColorScheme = keyof typeof colorTransitions
+let colorSchemeSystemInstance: ColorSchemeSystem
 
-function getSystemPreference(): 'light' | 'dark' {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
+const storageKey = 'fe.system.color-scheme'
 
-const colorMode = customRef<ColorScheme>((track, trigger) => {
-  const storageKey = 'fe.system.color-mode'
-  const rootClassList = !isServer
-    ? document.documentElement.classList
-    : {
-        contains: () => false,
-        remove: () => {},
-        add: () => {},
-      }
-
-  function applyTheme(mode: ColorScheme) {
-    if (mode === 'auto') {
-      const systemTheme = getSystemPreference()
-      rootClassList.remove('dark', 'light')
-      rootClassList.add(systemTheme)
-    } else {
-      rootClassList.remove('dark', 'light', 'auto')
-      rootClassList.add(mode)
-    }
+const colorScheme = shallowRef<ColorScheme>((() => {
+  if (isServer) {
+    return 'auto'
   }
 
-  const savedMode = !isServer ? localStorage.getItem(storageKey) as ColorScheme || 'auto' : 'light'
-  let curMode: ColorScheme = savedMode
+  return localStorage.getItem(storageKey) as ColorScheme || 'auto'
+})())
 
-  if (!isServer) {
-    applyTheme(curMode)
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    mediaQuery.addEventListener('change', () => {
-      if (curMode === 'auto') {
-        applyTheme('auto')
-        trigger()
-      }
-    })
+const renderIcon = computed(() => {
+  if (isServer) {
+    return DeviceIcon
   }
 
-  return {
-    get() {
-      track()
-      return curMode
-    },
-    set(newMode) {
-      if (newMode === curMode) {
-        return
-      }
-
-      applyTheme(newMode)
-      if (!isServer) {
-        localStorage.setItem(storageKey, newMode)
-      }
-      curMode = newMode
-
-      trigger()
-    },
-  }
-})
-
-const RenderIcon = computed(() => {
-  if (colorMode.value === 'light') {
+  if (colorScheme.value === 'light') {
     return SunIcon
   }
 
-  if (colorMode.value === 'dark') {
+  if (colorScheme.value === 'dark') {
     return MoonIcon
   }
 
-  return DeviceAlternateIcon
+  return DeviceIcon
 })
 
-function toggleColorMode() {
-  colorMode.value = (colorTransitions[colorMode.value] || colorTransitions.auto) as ColorScheme
-  emits('toggle', colorMode.value)
+function updateNextColorScheme() {
+  // 动态调整主题的可选项值，只允许在两个模式之间切换，避免偏好和系统一致时需要手动切换两次
+  colorTransitions.auto = colorSchemeSystemInstance.isPreferredDark ? 'light' : 'dark'
+  colorTransitions[colorTransitions.auto as keyof typeof colorTransitions] = 'auto'
 }
+
+function applySystemTheme(mode: ColorScheme) {
+  const rootClassList = document.documentElement.classList
+
+  rootClassList.remove('auto', 'dark', 'light')
+  rootClassList.add(mode === 'auto' ? colorSchemeSystemInstance.isPreferredDark ? 'dark' : 'light' : mode)
+}
+
+function onToggleColorScheme() {
+  colorScheme.value = (colorTransitions[colorScheme.value] || colorTransitions.auto) as ColorScheme
+  colorSchemeSystemInstance.emit(colorScheme.value)
+
+  applySystemTheme(colorScheme.value)
+  emits('toggle', colorScheme.value)
+}
+
+function onPrefersChange(mode: ColorScheme, isManual: boolean) {
+  if (isManual) {
+    colorScheme.value = mode
+    return
+  }
+
+  colorScheme.value = 'auto'
+  applySystemTheme(mode)
+  updateNextColorScheme()
+}
+
+watch(() => colorScheme.value, (newMode) => {
+  localStorage.setItem(storageKey, newMode)
+})
 
 onMounted(() => {
   if (isServer) {
     return
   }
 
-  const preference = getSystemPreference()
+  colorSchemeSystemInstance = new ColorSchemeSystem()
+  colorSchemeSystemInstance.on(onPrefersChange)
+  applySystemTheme(colorScheme.value)
 
-  // 动态调整主题的可选项，只允许在两个模式之间切换，避免偏好和系统一致时需要手动切换两次
-  colorTransitions.auto = preference === 'light' ? 'dark' : 'light'
-  colorTransitions[colorTransitions.auto as keyof typeof colorTransitions] = 'auto'
+  updateNextColorScheme()
+})
+
+onBeforeUnmount(() => {
+  colorSchemeSystemInstance?.off(onPrefersChange)
 })
 </script>
 
@@ -119,8 +109,9 @@ onMounted(() => {
     aria-label="Toggle color mode"
     class="pxd-theme-switcher"
     v-bind="$attrs"
-    @click="toggleColorMode"
+    icon
+    @click="onToggleColorScheme"
   >
-    <component :is="RenderIcon" class="size-em" />
+    <component :is="renderIcon" class="size-em" />
   </PButton>
 </template>
