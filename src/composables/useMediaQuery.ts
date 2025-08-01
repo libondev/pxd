@@ -1,24 +1,51 @@
 import type { Ref } from 'vue'
-import { onUnmounted, shallowRef } from 'vue'
+import { onBeforeUnmount, shallowRef } from 'vue'
 import { on } from '../utils/events'
+import { isServer } from '../utils/is'
 
-export function useMediaQuery(query: string): Ref<boolean> {
+interface CacheObject {
+  [key: string]: {
+    count: number
+    query: MediaQueryList
+  }
+}
+
+const CACHED_QUERIES: CacheObject = {}
+
+export function useMediaQuery(condition: string): Ref<boolean> {
   const matches = shallowRef(false)
 
-  if (typeof window === 'undefined' || !window.matchMedia) {
+  if (isServer) {
     return matches
   }
 
-  const mediaQuery = window.matchMedia(query)
-  matches.value = mediaQuery.matches
+  let mediaQuery = CACHED_QUERIES[condition]
 
-  const handler = (event: MediaQueryListEvent) => {
+  if (!mediaQuery) {
+    mediaQuery = CACHED_QUERIES[condition] = {
+      count: 1,
+      query: window.matchMedia(condition),
+    }
+  }
+
+  matches.value = mediaQuery.query.matches
+
+  const callback = (event: MediaQueryListEvent) => {
     matches.value = event.matches
   }
 
-  const unbindEvent = on(mediaQuery, 'change', handler, { passive: true })
+  const unbindEvent = on(mediaQuery.query, 'change', callback, { passive: true })
 
-  onUnmounted(unbindEvent)
+  onBeforeUnmount(() => {
+    unbindEvent()
+    mediaQuery.count--
+
+    if (mediaQuery.count <= 0) {
+      delete CACHED_QUERIES[condition]
+    }
+
+    mediaQuery = undefined!
+  })
 
   return matches
 }
