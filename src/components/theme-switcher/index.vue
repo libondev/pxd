@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { ColorScheme } from './useDark'
+import type { ColorScheme } from '../../composables/useColorScheme'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, watch } from 'vue'
 import PButton from '../button/index.vue'
-import { useDark } from './useDark'
+import { useColorScheme } from './../../composables/useColorScheme'
 
 defineOptions({
   name: 'PThemeSwitcher',
@@ -15,13 +15,13 @@ const emits = defineEmits<{
   toggle: [ColorScheme]
 }>()
 
-const { isDark, toggleDark } = useDark()
+const { isDark, toggleDarkMode } = useColorScheme()
 
-const renderIcon = computed(() => isDark.value ? SunIcon : MoonIcon)
+const renderIcon = computed(() => isDark.value ? MoonIcon : SunIcon)
 
 watch(() => isDark.value, (newVal) => {
   emits('toggle', newVal ? 'dark' : 'light')
-}, { immediate: true })
+})
 </script>
 
 <template>
@@ -30,7 +30,7 @@ watch(() => isDark.value, (newVal) => {
     class="pxd-theme-switcher"
     v-bind="$attrs"
     icon
-    @click="toggleDark()"
+    @click="toggleDarkMode"
   >
     <component :is="renderIcon" class="size-em" />
   </PButton>
