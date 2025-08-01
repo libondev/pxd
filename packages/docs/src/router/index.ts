@@ -1,9 +1,10 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { setupLayouts } from 'virtual:meta-layouts'
+import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
-  routes,
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: setupLayouts(routes),
   scrollBehavior() {
     return {
       top: 0,

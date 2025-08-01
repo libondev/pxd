@@ -1,11 +1,10 @@
 <script setup>
-import { useHead } from '@unhead/vue'
 import { version } from 'pxd'
 import { githubLink } from '@/consts/link'
 
-useHead({
-  title: 'PXD - A universal UI component library for Vue2&3',
-})
+// useHead({
+//   title: 'PXD - A universal UI component library for Vue2&3',
+// })
 </script>
 
 <template>

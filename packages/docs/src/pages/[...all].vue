@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useHead } from '@unhead/vue'
+// import { useHead } from '@unhead/vue'
 
-useHead({
-  title: '404 Not found - PXD',
-})
+// useHead({
+//   title: '404 Not found - PXD',
+// })
 </script>
 
 <template>
@@ -26,4 +26,5 @@ useHead({
 <route lang="yaml">
 meta:
   layout: false
+  title: '404 Not found - PXD'
 </route>
