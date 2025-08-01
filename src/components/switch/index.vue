@@ -35,7 +35,7 @@ const computedRequired = computed(() => props.required || switchGroupContext.req
 const computedClass = computed(() => {
   const classes = [
     'pxd-switch--label px-3 text-sm flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring',
-    'font-medium select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed empty:hidden motion-safe:transition-all',
+    'font-medium select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden motion-safe:transition-all',
   ]
 
   if (!computedDisabled.value) {

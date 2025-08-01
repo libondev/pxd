@@ -69,7 +69,7 @@ const options2 = [
 
 <template>
   <PStack direction="vertical">
-    <PSwitchGroup v-model="modelValue" disabled :options="options1" />
+    <PSwitchGroup v-model="modelValue" :options="options1" disabled />
     <PSwitchGroup v-model="modelValue" :options="options2" />
   </PStack>
 </template>

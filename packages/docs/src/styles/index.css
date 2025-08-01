@@ -18,17 +18,6 @@ body,
   @apply h-full;
 }
 
-/*
-header .pxd-link-button.router-link-active,
-.sidebar .router-link-exact-active {
-  background-color: var(--color-background-200);
-} */
-
-header .pxd-link-button:not(:hover),
-.sidebar .pxd-link-button:not(:hover) {
-  transition: none !important;
-}
-
 ::selection {
   background-color: var(--color-green-1000);
   color: var(--color-green-100);
