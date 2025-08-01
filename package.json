@@ -92,7 +92,6 @@
     "dev:lib": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports build:lib build:docs",
-    "build:only": "run-s build:lib build:docs",
     "build:lib": "unbuild",
     "build:docs": "pnpm --filter docs build",
     "build:style": "run-s gen-styles-file gen-tw-css-file",

@@ -1,7 +1,7 @@
 [build]
-  base = "packages/docs"
-  publish = "packages/docs/dist"
-  command = "pnpm run build"
+  base = "./"
+  publish = "./packages/docs/dist"
+  command = "pnpm -w run build"
 
 [build.environment]
   NODE_VERSION = "22"
