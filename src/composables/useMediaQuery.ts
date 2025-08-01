@@ -12,7 +12,25 @@ interface CacheObject {
 
 const CACHED_QUERIES: CacheObject = {}
 
-export function useMediaQuery(condition: string): Ref<boolean> {
+export const PRESET_MEDIA_QUERIES = {
+  MOTION_REDUCE: '(prefers-reduced-motion: reduce)',
+  MOTION_NO_PREFERENCE: '(prefers-reduced-motion: no-preference)',
+  MOTION_NO_REDUCE: '(prefers-reduced-motion: no-reduce)',
+
+  COLOR_SCHEME_LIGHT: '(prefers-color-scheme: light)',
+  COLOR_SCHEME_DARK: '(prefers-color-scheme: dark)',
+  COLOR_SCHEME_NO_PREFERENCE: '(prefers-color-scheme: no-preference)',
+
+  SCROLLBAR_WIDTH: '(scrollbar-width: thin)',
+  SCROLLBAR_WIDTH_NONE: '(scrollbar-width: none)',
+  SCROLLBAR_HEIGHT: '(scrollbar-height: thin)',
+  SCROLLBAR_HEIGHT_NONE: '(scrollbar-height: none)',
+}
+
+export function useMediaQuery(
+  condition: string,
+  callback?: (e: MediaQueryList) => void,
+): Ref<boolean> {
   const matches = shallowRef(false)
 
   if (isServer) {
@@ -21,7 +39,9 @@ export function useMediaQuery(condition: string): Ref<boolean> {
 
   let mediaQuery = CACHED_QUERIES[condition]
 
-  if (!mediaQuery) {
+  if (mediaQuery) {
+    mediaQuery.count++
+  } else {
     mediaQuery = CACHED_QUERIES[condition] = {
       count: 1,
       query: window.matchMedia(condition),
@@ -30,11 +50,14 @@ export function useMediaQuery(condition: string): Ref<boolean> {
 
   matches.value = mediaQuery.query.matches
 
-  const callback = (event: MediaQueryListEvent) => {
+  callback?.(mediaQuery.query)
+
+  const handler = (event: MediaQueryListEvent) => {
+    callback?.(mediaQuery.query)
     matches.value = event.matches
   }
 
-  const unbindEvent = on(mediaQuery.query, 'change', callback, { passive: true })
+  const unbindEvent = on(mediaQuery.query, 'change', handler, { passive: true })
 
   onBeforeUnmount(() => {
     unbindEvent()
@@ -48,19 +71,4 @@ export function useMediaQuery(condition: string): Ref<boolean> {
   })
 
   return matches
-}
-
-export const MEDIA_QUERY = {
-  MOTION_REDUCE: '(prefers-reduced-motion: reduce)',
-  MOTION_NO_PREFERENCE: '(prefers-reduced-motion: no-preference)',
-  MOTION_NO_REDUCE: '(prefers-reduced-motion: no-reduce)',
-
-  COLOR_SCHEME_LIGHT: '(prefers-color-scheme: light)',
-  COLOR_SCHEME_DARK: '(prefers-color-scheme: dark)',
-  COLOR_SCHEME_NO_PREFERENCE: '(prefers-color-scheme: no-preference)',
-
-  SCROLLBAR_WIDTH: '(scrollbar-width: thin)',
-  SCROLLBAR_WIDTH_NONE: '(scrollbar-width: none)',
-  SCROLLBAR_HEIGHT: '(scrollbar-height: thin)',
-  SCROLLBAR_HEIGHT_NONE: '(scrollbar-height: none)',
 }
