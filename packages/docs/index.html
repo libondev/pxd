@@ -16,7 +16,8 @@
     <meta property="twitter:description" content="Compatible with Vue2&3 without changing versions.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PXD - A universal UI component library for Vue2&3</title>
-    <script>(function(){if(typeof window === 'undefined')return;var p=matchMedia('(prefers-color-scheme: dark)').matches;var s=localStorage.getItem('fe.system.color-mode')||'auto';if(s==='dark'||(p&&s==='auto')){document.documentElement.classList.toggle('dark',true);}})()</script>
+    <style>:root.dark{background-color:var(--color-background-100,#000)}</style>
+    <script>(function(){if(typeof window === 'undefined')return;let p=matchMedia('(prefers-color-scheme: dark)').matches;let s=localStorage.getItem('fe.system.color-mode')||'auto';if(s==='dark'||(p&&s==='auto')){document.documentElement.classList.toggle('dark',true);}})()</script>
   </head>
   <body>
     <div id="app"></div>

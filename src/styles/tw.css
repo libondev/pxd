@@ -125,7 +125,7 @@
   text-size-adjust: none;
   text-autospace: auto;
   font-synthesis: none;
-  color-scheme: light;
+  color-scheme: light dark;
   background-color: var(--color-background-100);
   color: var(--color-foreground);
 }
