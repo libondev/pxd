@@ -8,7 +8,7 @@ useHead({
 
 <template>
   <div class="inset-0 fixed flex flex-col items-center justify-center">
-    <h1 class="mb-8 text-lg text-center text-balance">
+    <h1 class="mb-8 text-center text-balance">
       <span class="font-medium">404</span>
       <span class="ml-2">Sorry, the page you are looking for does not exist.</span>
     </h1>

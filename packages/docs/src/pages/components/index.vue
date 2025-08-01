@@ -1,32 +1,12 @@
 <script lang="ts" setup>
-import { useMediaQuery } from 'pxd/composables/useMediaQuery'
-import { isServer } from 'pxd/utils/is'
 import { useRoute } from 'vue-router'
 import components from '@/consts/components.json'
+import OverviewCard from '../../components/OverviewCard.vue'
 
 const route = useRoute()
 const searchKeyword = ref(route.query.q as string)
 
-const isMobile = useMediaQuery('(max-width: 768px)')
-
-const containerRef = shallowRef<HTMLDivElement>()
 const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
-
-const bookSize = reactive({
-  xs: 160,
-  sm: 150,
-  md: 152,
-})
-
-if (!isServer) {
-  watch([() => isMobile.value, () => containerRef.value], ([mobile, wrapper]) => {
-    if (!wrapper) {
-      return
-    }
-
-    bookSize.xs = mobile ? wrapper.clientWidth / 2 - 20 : 160
-  }, { immediate: true })
-}
 
 function getFilteredComponents(value: string) {
   if (!value) {
@@ -61,24 +41,11 @@ function handleSearch(value: string) {
     />
   </div>
 
-  <div ref="containerRef" class="space-x-4 space-y-4 mt-4 translate-x-2.5 md:translate-x-1 md:-mr-4 flex flex-wrap">
+  <div class="gap-4 mt-4 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))]">
     <template v-for="{ camelized, name } in filteredComponents" :key="name">
-      <RouterLink :to="`/components/${name}`">
-        <PBook :title="camelized" :width="bookSize" class="cursor-pointer">
-          <!-- <template #icon>
-            <PText>
-              There should be a preview here.
-            </PText>
-          </template> -->
-        </PBook>
-      </RouterLink>
+      <OverviewCard :name="name" :title="camelized">
+        There should be a preview here.
+      </OverviewCard>
     </template>
   </div>
 </template>
-
-<style scoped>
-:deep() .pxd-book--title {
-  padding-top: .25em;
-  font-size: 13cqw;
-}
-</style>
