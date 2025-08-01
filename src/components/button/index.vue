@@ -68,7 +68,7 @@ const ALIGNMENTS = {
 const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 cursor-not-allowed text-gray-700 border-gray-300'
 
 const config = useConfigProvider()
-const computedDisabled = computed(() => props.disabled || props.loading)
+const computedDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
 
 const computedClass = computed(() => {
   const classes = ['pxd-button shrink-0 cursor-pointer items-center select-none motion-safe:transition-all', ALIGNMENTS[props.align]]
@@ -81,7 +81,7 @@ const computedClass = computed(() => {
     shape ? ROUNDED[shape] : getFallbackValue(props.size, ROUNDED, config.size),
   )
 
-  if (icon) {
+  if (isTruthyProp(icon)) {
     classes.push('aspect-square !p-0')
   }
 

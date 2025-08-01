@@ -6,15 +6,10 @@ import { computed, customRef, onMounted } from 'vue'
 import { isServer } from '../../utils/is'
 import PButton from '../button/index.vue'
 
-interface Props {
-}
-
 defineOptions({
   name: 'PThemeSwitcher',
   inheritAttrs: false,
 })
-
-defineProps<Props>()
 
 const emits = defineEmits<{
   toggle: [ColorScheme]
