@@ -1,4 +1,5 @@
 export * from './useBrowserObserver.js'
+export * from './useColorScheme.js'
 export * from './useConfigProviderContext.js'
 export * from './useCopyClick.js'
 export * from './useCountdown.js'
