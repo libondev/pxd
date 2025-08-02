@@ -93,6 +93,7 @@
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports build:lib build:docs",
     "build:lib": "unbuild",
+    "build:only": "run-s build:lib build:docs",
     "build:docs": "pnpm --filter docs build",
     "build:style": "run-s gen-styles-file gen-tw-css-file",
     "build:types": "vue-tsc -p tsconfig.type.json",
