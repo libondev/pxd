@@ -188,32 +188,6 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 </style>
 ```
 
-## No arrow
-
-```vue demo
-<script setup>
-const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
-</script>
-
-<template>
-  <PPopover popover-class="popover-demo" :content="content" :show-arrow="false">
-    <PButton>
-      Hover to active
-    </PButton>
-  </PPopover>
-</template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
-```
-
 ## Max width
 
 ```vue demo

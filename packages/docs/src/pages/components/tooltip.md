@@ -71,6 +71,22 @@ The component inherits from popover and supports all the properties of popover. 
 </template>
 ```
 
+## No arrow
+
+```vue demo
+<script setup>
+const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
+</script>
+
+<template>
+  <PTooltip :content="content" :show-arrow="false">
+    <PButton>
+      Hover to active
+    </PButton>
+  </PTooltip>
+</template>
+```
+
 ## Custom content
 
 ```vue demo
