@@ -7,12 +7,16 @@ import { getFallbackValue } from '../../utils/value'
 import PPopover from '../popover/index.vue'
 
 interface Props {
+  offset?: number
   content?: string
-  disabled?: boolean
   variant?: ComponentVariant
   position?: ComponentPosition
+  disabled?: boolean
+  showArrow?: boolean
   desktopOnly?: boolean
+  triggerClass?: ComponentClass
   popoverClass?: ComponentClass
+  triggerStyle?: CSSProperties | string
   popoverStyle?: CSSProperties | string
 }
 
@@ -25,9 +29,10 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     variant: 'primary',
+    position: 'top',
+    showArrow: true,
     popoverClass: '',
     popoverStyle: '',
-    position: 'top',
   },
 )
 
@@ -38,35 +43,28 @@ const VARIANTS = {
   success: 'var(--color-green-700)',
 }
 
+const computedVariant = computed(() => getFallbackValue(props.variant, VARIANTS, 'primary'))
+
 const computedDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
 const computedPopoverClass = computed(() => {
-  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--arrow-color)', props.popoverClass]
-})
-
-const computedPopoverStyle = computed(() => {
-  const arrowColor = getFallbackValue(props.variant, VARIANTS, 'primary')
-
-  if (typeof props.popoverStyle === 'string') {
-    return `${props.popoverStyle};--arrow-color: ${arrowColor}`
-  }
-
-  return {
-    ...(props.popoverStyle ?? {}),
-    '--arrow-color': arrowColor,
-  }
+  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--color)', props.popoverClass].join(' ')
 })
 </script>
 
 <template>
   <PPopover
     class="pxd-tooltip"
+    show-arrow
     :position="position"
     :disabled="computedDisabled"
+    :arrow-color="computedVariant"
+    :trigger-class="triggerClass"
+    :trigger-style="triggerStyle"
     :popover-class="computedPopoverClass"
-    :popover-style="computedPopoverStyle"
+    :popover-style="popoverStyle"
     v-bind="$attrs"
   >
     <slot />

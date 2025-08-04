@@ -43,7 +43,6 @@ function onOptionClick(ev: MouseEvent, index: number) {
     scroll-hidden
     :show-delay="0"
     :hide-delay="100"
-    :show-arrow="false"
     :position="position"
     :show-transition="false"
     enterable
