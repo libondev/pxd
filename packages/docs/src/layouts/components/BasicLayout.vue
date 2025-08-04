@@ -116,7 +116,7 @@ if (!isServer) {
       </PDrawer>
     </div>
 
-    <main class="prose px-6 md:px-12 lg:px-16 xl:px-30 py-12 w-full flex-1">
+    <main class="prose px-6 md:px-16 xl:px-30 py-12 w-full flex-1">
       <slot />
 
       <template v-if="showViewSource">
