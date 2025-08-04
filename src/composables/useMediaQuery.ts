@@ -13,18 +13,24 @@ interface CacheObject {
 const CACHED_QUERIES: CacheObject = {}
 
 export const PRESET_MEDIA_QUERIES = {
-  MOTION_REDUCE: '(prefers-reduced-motion: reduce)',
   MOTION_NO_PREFERENCE: '(prefers-reduced-motion: no-preference)',
   MOTION_NO_REDUCE: '(prefers-reduced-motion: no-reduce)',
+  MOTION_REDUCE: '(prefers-reduced-motion: reduce)',
 
-  COLOR_SCHEME_LIGHT: '(prefers-color-scheme: light)',
   COLOR_SCHEME_DARK: '(prefers-color-scheme: dark)',
+  COLOR_SCHEME_LIGHT: '(prefers-color-scheme: light)',
   COLOR_SCHEME_NO_PREFERENCE: '(prefers-color-scheme: no-preference)',
 
-  SCROLLBAR_WIDTH: '(scrollbar-width: thin)',
-  SCROLLBAR_WIDTH_NONE: '(scrollbar-width: none)',
-  SCROLLBAR_HEIGHT: '(scrollbar-height: thin)',
-  SCROLLBAR_HEIGHT_NONE: '(scrollbar-height: none)',
+  // SCROLLBAR_WIDTH_THIN: '(scrollbar-width: thin)',
+  // SCROLLBAR_WIDTH_NONE: '(scrollbar-width: none)',
+  // SCROLLBAR_HEIGHT_THIN: '(scrollbar-height: thin)',
+  // SCROLLBAR_HEIGHT_NONE: '(scrollbar-height: none)',
+
+  SM_UP: '(width >= 40rem)',
+  MD_UP: '(width >= 48rem)',
+  LG_UP: '(width >= 64rem)',
+  XL_UP: '(width >= 80rem)',
+  XXL_UP: '(width >= 96rem)',
 }
 
 export function useMediaQuery(
@@ -50,8 +56,6 @@ export function useMediaQuery(
 
   matches.value = mediaQuery.query.matches
 
-  callback?.(mediaQuery.query)
-
   const handler = (event: MediaQueryListEvent) => {
     callback?.(mediaQuery.query)
     matches.value = event.matches
@@ -61,6 +65,11 @@ export function useMediaQuery(
 
   onBeforeUnmount(() => {
     unbindEvent()
+
+    if (!mediaQuery) {
+      return
+    }
+
     mediaQuery.count--
 
     if (mediaQuery.count <= 0) {
