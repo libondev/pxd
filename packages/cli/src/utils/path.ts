@@ -21,7 +21,8 @@ export function getRelativePathFromRoot(target: string) {
 // 如果文件存在则直接读取并返回内容，如果不存在则创建这个文件并返回空字符串
 export async function readOrCreate(filePath: string) {
   if (await fs.pathExists(filePath)) {
-    return await fs.readFile(filePath, 'utf-8')
+    const content = await fs.readFile(filePath, 'utf-8')
+    return content as string
   }
 
   await fs.ensureFile(filePath)

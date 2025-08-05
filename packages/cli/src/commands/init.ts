@@ -1,5 +1,6 @@
 import path from 'node:path'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import { cancel, confirm, intro, isCancel, outro, select, text } from '@clack/prompts'
 import { findUp } from 'find-up'
 import fs from 'fs-extra'
@@ -160,7 +161,8 @@ export async function init() {
 }
 
 async function findPackageJson(projectDir: string) {
-  return JSON.parse(await fs.readFile(projectDir, 'utf-8'))
+  const content = await fs.readJson(projectDir, 'utf-8')
+  return content
 }
 
 function isInstalled(packageJson: Record<string, any>, packageName: string) {
@@ -196,12 +198,14 @@ async function injectStyles(
   globalStylePath: string,
   styleFramework: (typeof STYLE_FRAMEWORKS)[number]['value'],
 ) {
+  const currentDir = path.dirname(fileURLToPath(import.meta.url))
+  const templatePath = path.resolve(currentDir, '..', 'src', 'templates', 'styles', styleFramework, 'global.css')
+
+  const templateContent = await fs.readFile(templatePath, 'utf-8') as string
+  const fileContent = templateContent.replace(/#ROOT/g, getRelativePathFromRoot(globalStylePath))
   const globalStyleContent = await readOrCreate(path.join(rootPath, globalStylePath))
 
-  const templatePath = path.join(process.cwd(), 'src/templates/styles', styleFramework)
-  const templateContent = (await fs.readFile(path.join(templatePath, 'global.css'), 'utf-8')).replace(/#ROOT/g, getRelativePathFromRoot(globalStylePath))
-
-  await upsertFile(path.join(rootPath, globalStylePath), globalStyleContent, templateContent, 'start')
+  await upsertFile(path.join(rootPath, globalStylePath), globalStyleContent, fileContent, 'start')
 
   // update entry file
   const entryFileContent = await readOrCreate(path.join(rootPath, entryFilePath))
