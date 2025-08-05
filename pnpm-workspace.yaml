@@ -5,7 +5,7 @@ packages:
 catalog:
   '@antfu/eslint-config': ^4.17.0
   '@clack/prompts': ^0.11.0
-  '@gdsicon/vue': ^1.0.2
+  '@gdsicon/vue': ^1.0.4
   '@tailwindcss/cli': ^4.1.11
   '@tailwindcss/vite': ^4.1.11
   '@tsconfig/node22': ^22.0.2
