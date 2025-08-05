@@ -20,6 +20,10 @@ export const asideMenus = [
         path: '/guide/installation',
       },
       {
+        label: 'Icons',
+        path: '/guide/icons',
+      },
+      {
         label: 'FAQ',
         path: '/guide/faq',
       },
