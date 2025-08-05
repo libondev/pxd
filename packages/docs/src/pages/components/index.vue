@@ -13,7 +13,9 @@ function getFilteredComponents(value: string) {
     return components
   }
 
-  return components.filter(({ name }) => name.includes(value.toLowerCase()))
+  const matchRegex = new RegExp(value, 'i')
+
+  return components.filter(({ name }) => matchRegex.test(name))
 }
 
 function handleSearch(value: string) {
