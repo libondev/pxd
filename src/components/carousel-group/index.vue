@@ -177,6 +177,10 @@ function onIndicatorClick(ev: MouseEvent) {
   const target = ev.target as HTMLButtonElement
   const targetIndex = Number(target.dataset.index)
 
+  if (Number.isNaN(targetIndex)) {
+    return
+  }
+
   virtualIndex.value = targetIndex
 
   nextTick(onPointerLeave)
@@ -235,20 +239,22 @@ onBeforeUnmount(() => {
       class="pxd-carousel-group--indicator gap-2 absolute flex w-max items-center group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
       @click="onIndicatorClick"
     >
-      <button
-        v-for="(_, i) in carousels.length"
-        :key="i"
-        :data-index="i"
-        class="pxd-carousel-group--indicator-item relative h-(--h) w-(--w) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
-        :class="{ '!bg-primary': i === correctIndex }"
-      />
+      <slot name="indicator" :current="correctIndex + 1" :total="carousels.length">
+        <button
+          v-for="(_, i) in carousels.length"
+          :key="i"
+          :data-index="i"
+          class="pxd-carousel-group--indicator-item relative h-(--h) w-(--w) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+          :class="{ '!bg-primary': i === correctIndex }"
+        />
+      </slot>
     </div>
 
     <div v-if="arrow" class="pxd-carousel-group--toggle-buttons gap-2 absolute flex group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--prev-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -257,7 +263,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--next-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />

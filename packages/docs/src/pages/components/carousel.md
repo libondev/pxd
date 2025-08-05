@@ -64,6 +64,18 @@ const indicatorPosition = ref('bottom')
         {{ i }}
       </PCarousel>
     </PCarouselGroup>
+
+    <PCarouselGroup :direction="direction" :indicator-type="indicatorType" :indicator-position="indicatorPosition">
+      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+        {{ i }}
+      </PCarousel>
+
+      <template #indicator="{ total, current }">
+        <span class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-alpha-200">
+          {{ current }}/{{ total }}
+        </span>
+      </template>
+    </PCarouselGroup>
   </PStack>
 </template>
 ```
