@@ -183,7 +183,6 @@ function handleClose() {
     v-model="isVisible"
     title="Create Token"
     close-on-press-escape
-    close-on-click-overlay
   >
     <PText> Some content contained within the modal. </PText>
 
