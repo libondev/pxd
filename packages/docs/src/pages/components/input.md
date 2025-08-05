@@ -5,6 +5,13 @@ Retrieve text input from a user.
 
 ```vue demo
 <template>
+  <PInput />
+</template>
+```
+
+## Sizes
+```vue demo
+<template>
   <PStack class="max-w-md" gap="4" direction="vertical">
     <PInput size="sm" placeholder="sm" />
     <PInput placeholder="md(default)" />
@@ -74,11 +81,11 @@ const password = ref('')
 
     <PInput placeholder="Default" :prefix-style="false" :suffix-style="false">
       <template #prefix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="ml-3" />
       </template>
 
       <template #suffix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="mr-3" />
       </template>
     </PInput>
   </PStack>

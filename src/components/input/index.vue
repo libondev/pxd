@@ -1,32 +1,15 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
+import type { InputProps } from '../../types/components/input'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
-import { computed, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
+import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
 import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
-
-interface Props {
-  size?: ComponentSizeWithXs
-  error?: string
-  label?: ComponentLabel
-  readonly?: boolean
-  disabled?: boolean
-  password?: boolean
-  required?: boolean
-  autofocus?: boolean
-  minlength?: number | string
-  maxlength?: number | string
-  modelValue?: ComponentLabel
-  allowClear?: boolean
-  placeholder?: string
-  prefixStyle?: boolean
-  suffixStyle?: boolean
-}
 
 defineOptions({
   name: 'PInput',
@@ -37,8 +20,9 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<Props>(),
+  defineProps<InputProps>(),
   {
+    align: 'left',
     modelValue: '',
     prefixStyle: true,
     suffixStyle: true,
@@ -46,13 +30,16 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [string]
+  'update:modelValue': [InputProps['modelValue']]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
-  'change': [Event]
+  'change': [InputProps['modelValue']]
+  'keydown': [KeyboardEvent]
+  'input': [InputProps['modelValue']]
+  'compositionstart': [CompositionEvent]
+  'compositionupdate': [CompositionEvent]
+  'compositionend': [CompositionEvent]
 }>()
-
-const uniqueId = getUniqueId()
 
 const SIZES = {
   xs: 'h-6 text-xs',
@@ -61,20 +48,32 @@ const SIZES = {
   lg: 'h-10 text-base',
 }
 
+const ALIGN = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+}
+
+const uniqueId = getUniqueId()
+const inputRef = shallowRef<HTMLInputElement>()
+
 const config = useConfigProvider()
-const modelValue = useModelValue(props, emits)
-const internalInputType = shallowRef(props.password ? 'password' : 'text')
+const computedModelValue = useModelValue(props, emits)
+
+const isComposing = shallowRef(false)
+const isPasswordVisible = shallowRef(!props.password)
+const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
 const computedClass = computed(() => {
   const classes = ['pxd-input--border relative flex items-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
-  if (props.disabled) {
+  if (isTruthyProp(props.disabled)) {
     classes.push('is-disabled')
   }
 
-  if (props.readonly) {
+  if (isTruthyProp(props.readonly)) {
     classes.push('is-readonly')
   }
 
@@ -85,29 +84,106 @@ const computedClass = computed(() => {
   return classes.join(' ')
 })
 
-function onInputFocus(event: FocusEvent) {
+function getValueFromEvent(ev: Event) {
+  let { value } = ev.target as HTMLInputElement
+
+  if (props.parser) {
+    value = props.parser(value)
+  }
+
+  return value
+}
+
+function setNativeInputValue(value: any) {
+  const input = inputRef.value
+
+  const formatterValue = props.formatter
+    ? props.formatter(value)
+    : value
+
+  if (input == null || input.value === formatterValue) {
+    return
+  }
+
+  input.value = formatterValue
+}
+
+function onFocus(event: FocusEvent) {
   emits('focus', event)
 }
 
-function onInputBlur(event: FocusEvent) {
+function onBlur(event: FocusEvent) {
   emits('blur', event)
 }
 
-function onInputChange(event: Event) {
-  emits('change', event)
+async function onInput(event: Event) {
+  const ev = event as InputEvent
+
+  if (ev.isComposing || isComposing.value) {
+    return
+  }
+
+  const value = getValueFromEvent(event)
+  computedModelValue.value = value
+
+  emits('input', value)
+
+  await nextTick()
+  setNativeInputValue(value)
 }
 
-function togglePasswordType() {
-  internalInputType.value = internalInputType.value === 'password' ? 'text' : 'password'
+async function onChange(event: Event) {
+  const value = getValueFromEvent(event)
+  emits('change', value)
+
+  // await nextTick()
+  // setNativeInputValue(value)
 }
 
-function clearInputValue() {
-  modelValue.value = ''
+function onKeydown(event: KeyboardEvent) {
+  emits('keydown', event)
 }
+
+function onCompositionStart(event: CompositionEvent) {
+  isComposing.value = true
+  emits('compositionstart', event)
+}
+
+function onCompositionUpdate(event: CompositionEvent) {
+  isComposing.value = true
+  emits('compositionupdate', event)
+}
+
+async function onCompositionEnd(event: CompositionEvent) {
+  isComposing.value = false
+  emits('compositionend', event)
+
+  await nextTick()
+  setNativeInputValue(getValueFromEvent(event))
+}
+
+function toggleType() {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
+
+function clearValue() {
+  computedModelValue.value = ''
+}
+
+const blur = () => inputRef.value?.blur()
+const focus = () => inputRef.value?.focus()
+const select = () => inputRef.value?.select()
+
+defineExpose({
+  blur,
+  focus,
+  select,
+  clear: clearValue,
+})
 </script>
 
 <template>
-  <label class="pxd-input block w-full max-w-full" :for="uniqueId">
+  <label class="pxd-input block w-full max-w-full" :for="uniqueId" @dragstart.prevent>
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
@@ -115,53 +191,60 @@ function clearInputValue() {
     <div :class="computedClass">
       <div
         v-if="$slots.prefix"
-        aria-hidden="true"
-        class="pxd-input--prefix pl-3 text-sm flex h-full items-center text-gray-700"
-        :class="{ 'pr-3 rounded-l-inherit border-r bg-background-200': prefixStyle }"
+        class="pxd-input--prefix text-sm flex h-full items-center text-gray-700"
+        :class="{ 'px-3 rounded-l-inherit border-r bg-background-200': prefixStyle }"
       >
         <slot name="prefix" />
       </div>
 
       <input
         :id="uniqueId"
-        v-model="modelValue"
+        ref="inputRef"
+        :value="computedModelValue"
         class="px-3 size-full rounded-inherit bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
-        :class="{ 'pr-9': password || allowClear }"
+        :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
         :type="internalInputType"
+        :min="min"
+        :max="max"
         autocorrect="off"
         autocomplete="off"
         autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
         :required="required"
+        :inputmode="inputmode"
         :minlength="minlength"
         :maxlength="maxlength"
         :autofocus="autofocus"
         :placeholder="placeholder"
-        @change="onInputChange"
-        @focus="onInputFocus"
-        @blur="onInputBlur"
+        @blur="onBlur"
+        @focus="onFocus"
+        @input="onInput"
+        @change="onChange"
+        @keydown="onKeydown"
+        @compositionstart="onCompositionStart"
+        @compositionupdate="onCompositionUpdate"
+        @compositionend="onCompositionEnd"
       >
 
       <div
         v-if="password || allowClear"
-        v-show="modelValue"
-        class="pxd-input--icon right-0 top-0 absolute flex h-full cursor-pointer items-center rounded-r-inherit text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-1000 active:bg-gray-alpha-300 motion-safe:transition-colors"
+        v-show="computedModelValue"
+        class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
       >
-        <div v-if="password" class="p-3" @click.prevent="togglePasswordType">
-          <EyeIcon v-if="internalInputType === 'password'" class="size-3" />
-          <EyeOffIcon v-else class="size-3" />
+        <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.prevent="toggleType">
+          <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
+          <EyeIcon v-else class="size-3" />
         </div>
-        <div v-if="allowClear" class="p-3" @click.prevent="clearInputValue">
+        <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.prevent="clearValue">
           <CrossIcon class="size-3" />
         </div>
       </div>
 
       <div
         v-if="$slots.suffix"
-        aria-hidden="true"
-        class="pxd-input--suffix pr-3 text-sm flex h-full items-center text-gray-700"
-        :class="{ 'pl-3 rounded-r-inherit border-l bg-background-200': suffixStyle }"
+        class="pxd-input--suffix text-sm flex h-full items-center text-gray-700"
+        :class="{ 'px-3 rounded-r-inherit border-l bg-background-200': suffixStyle }"
       >
         <slot name="suffix" />
       </div>
@@ -172,3 +255,15 @@ function clearInputValue() {
     </PError>
   </label>
 </template>
+
+<style>
+.pxd-input:has(.pxd-input--prefix) input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.pxd-input:has(.pxd-input--suffix) input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+</style>

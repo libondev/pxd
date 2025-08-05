@@ -14,7 +14,7 @@ function getPath() {
     :to="getPath()"
     class="pxd-link-button w-full cursor-pointer overflow-hidden rounded-lg border !no-underline hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
   >
-    <div class="px-4 py-2 truncate border-b border-dashed">
+    <div class="px-4 py-2 truncate border-b border-dashed text-[15px]">
       {{ title }}
     </div>
 

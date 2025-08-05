@@ -289,7 +289,7 @@ function openMenu() {
         v-for="item in menuItems"
         :key="item.label"
         href="javascript:void(0)"
-        class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors"
+        class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-hover transition-colors"
         @click="isVisible = false"
       >
         <component :is="item.icon" />

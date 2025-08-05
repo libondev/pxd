@@ -1,2 +1,3 @@
 pnpm run update-exports
+pnpm run typecheck
 pnpm run test

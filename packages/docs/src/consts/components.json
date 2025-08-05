@@ -116,6 +116,10 @@
     "name": "note"
   },
   {
+    "camelized": "NumberInput",
+    "name": "number-input"
+  },
+  {
     "camelized": "Overlay",
     "name": "overlay"
   },
