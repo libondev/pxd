@@ -81,6 +81,10 @@ function decreaseValue() {
 }
 
 function numberParser(value: string) {
+  if (value === '') {
+    return ''
+  }
+
   const formattedValue = Number.parseFloat(value)
 
   if (Number.isNaN(formattedValue)) {
