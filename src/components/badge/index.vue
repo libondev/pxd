@@ -57,7 +57,7 @@ const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-badge px-2.5 font-medium h-6 font-sans gap-1 inline-flex items-center justify-center rounded-full no-underline! motion-safe:transition-all',
+    'pxd-badge px-2.5 font-medium h-6 font-sans gap-1 inline-flex items-center justify-center rounded-full !no-underline motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS, 'gray'),
     getFallbackValue(props.size, SIZES, config.size),
     props.variant,

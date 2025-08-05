@@ -1,12 +1,12 @@
 [build]
-  base = "./"
-  publish = "./packages/docs/dist"
-  command = "pnpm -w run build:only"
+base = "./"
+publish = "./packages/docs/dist"
+command = "pnpm -w run build:only"
 
 [build.environment]
-  NODE_VERSION = "22"
+NODE_VERSION = "22"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
