@@ -61,6 +61,20 @@ const value = ref(0)
 </template>
 ```
 
+## Precision
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PNumberInput v-model="value" :precision="2" :step="0.68" class="max-w-xs" />
+</template>
+```
+
 ## Prefix and Suffix
 ```vue demo
 <script setup>

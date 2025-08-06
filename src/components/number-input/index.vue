@@ -12,6 +12,7 @@ interface Props {
   step?: number
   readonly?: boolean
   disabled?: boolean
+  precision?: number
   scientific?: boolean
   modelValue?: number | null
 }
@@ -34,6 +35,7 @@ const props = withDefaults(
     readonly: false,
     disabled: false,
     scientific: true,
+    precision: 0,
   },
 )
 
@@ -41,16 +43,40 @@ const emits = defineEmits<{
   'update:modelValue': [number]
 }>()
 
+const computedDisabled = computed(() => props.disabled)
+
 const INTEGER_REGEX = /^-?\d+$/
 const INTEGER_REGEX_WITH_SCIENTIFIC = /^-?\d+(?:\.\d*)?(e-?\d+)?$/
 
 const allowedRegex = computed(() => props.scientific ? INTEGER_REGEX_WITH_SCIENTIFIC : INTEGER_REGEX)
 
+function toPrecision(value: number, precision: number) {
+  if (!Number.isFinite(value)) {
+    return value
+  }
+  const p = Math.max(0, precision ?? 0)
+  const factor = 10 ** p
+  // 避免浮点误差
+  return Math.round(value * factor) / factor
+}
+
+function clampToRange(value: number) {
+  if (value > props.max) {
+    return props.max
+  }
+
+  if (value < props.min) {
+    return props.min
+  }
+
+  return value
+}
+
 const {
   start: startIncrease,
   stop: stopIncrease,
 } = useRepeatAction({
-  disabled: computed(() => props.disabled),
+  disabled: computedDisabled,
   action: increaseValue,
 })
 
@@ -58,7 +84,7 @@ const {
   start: startDecrease,
   stop: stopDecrease,
 } = useRepeatAction({
-  disabled: computed(() => props.disabled),
+  disabled: computedDisabled,
   action: decreaseValue,
 })
 
@@ -69,7 +95,8 @@ function increaseValue() {
     return
   }
 
-  modelValue.value += props.step
+  const next = toPrecision(modelValue.value + props.step, props.precision)
+  modelValue.value = clampToRange(next)
 }
 
 function decreaseValue() {
@@ -77,7 +104,8 @@ function decreaseValue() {
     return
   }
 
-  modelValue.value -= props.step
+  const next = toPrecision(modelValue.value - props.step, props.precision)
+  modelValue.value = clampToRange(next)
 }
 
 function numberParser(value: string) {
@@ -85,13 +113,32 @@ function numberParser(value: string) {
     return ''
   }
 
-  const formattedValue = Number.parseFloat(value)
+  const parsed = Number.parseFloat(value)
 
-  if (Number.isNaN(formattedValue)) {
+  if (Number.isNaN(parsed)) {
     return 0
   }
 
-  return formattedValue
+  const rounded = toPrecision(parsed, props.precision)
+  return clampToRange(rounded)
+}
+
+// 用于原生 input 的显示格式化：保留尾随 0
+function numberFormatter(value: string | number | null | undefined) {
+  if ([null, undefined, ''].includes(value as string)) {
+    return ''
+  }
+
+  const number = typeof value === 'number' ? value : Number.parseFloat(String(value))
+
+  if (Number.isNaN(number)) {
+    return ''
+  }
+
+  const { precision } = props
+
+  const rounded = toPrecision(number, precision)
+  return rounded.toFixed(Math.max(0, precision))
 }
 
 const ALLOWED_KEY = [
@@ -146,11 +193,12 @@ function onInputKeydown(ev: KeyboardEvent) {
     :prefix-style="false"
     :suffix-style="false"
     :parser="numberParser"
+    :formatter="numberFormatter"
     @keydown="onInputKeydown"
   >
     <template #prefix>
       <button
-        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="disabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
@@ -170,7 +218,7 @@ function onInputKeydown(ev: KeyboardEvent) {
       </span>
 
       <button
-        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="disabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"
