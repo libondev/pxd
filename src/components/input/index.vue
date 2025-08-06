@@ -234,6 +234,8 @@ defineExpose({
         :maxlength="maxlength"
         :autofocus="autofocus"
         :placeholder="placeholder"
+        :aria-disabled="disabled"
+        :data-value="computedModelValue"
         @blur="onBlur"
         @focus="onFocus"
         @input="onInput"

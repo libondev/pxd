@@ -188,6 +188,7 @@ function onInputKeydown(ev: KeyboardEvent) {
     :min="min"
     :max="max"
     align="center"
+    input-type="number"
     :disabled="disabled"
     :readonly="readonly"
     :prefix-style="false"
