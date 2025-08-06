@@ -155,7 +155,11 @@ function onCompositionUpdate(event: CompositionEvent) {
 }
 
 async function onCompositionEnd(event: CompositionEvent) {
-  isComposing.value = false
+  if (isComposing.value) {
+    const value = getValueFromEvent(event)
+    computedModelValue.value = value
+  }
+
   emits('compositionend', event)
 
   await nextTick()
