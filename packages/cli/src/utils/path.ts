@@ -25,7 +25,7 @@ export async function readOrCreate(filePath: string) {
     return content as string
   }
 
-  await fs.ensureFile(filePath)
+  await fs.createFile(filePath)
 
   return ''
 }
