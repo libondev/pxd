@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
   transform: translate(-50%, -50%);
 }
 
-[data-direction='horizontal'] .pxd-resizable-handle {
+.pxd-resizable[data-direction='horizontal'] .pxd-resizable-handle {
   width: 1px;
   height: 100%;
   cursor: ew-resize;
@@ -94,7 +94,7 @@ onBeforeUnmount(() => {
   }
 }
 
-[data-direction='vertical'] .pxd-resizable-handle {
+.pxd-resizable[data-direction='vertical'] .pxd-resizable-handle {
   width: 100%;
   height: 1px;
   cursor: ns-resize;

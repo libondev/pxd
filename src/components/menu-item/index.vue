@@ -117,7 +117,7 @@ onUnmounted(() => {
     :data-index="currentIndex"
     :data-disabled="disabled"
     :data-selected="activeIndex === currentIndex"
-    class="pxd-menu-item h-10 px-2 text-sm flex w-full items-center rounded-md outline-none motion-safe:transition-colors"
+    class="pxd-menu-item h-10 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
     :class="computedClass"
     @click="onItemClick"
   >
@@ -126,9 +126,3 @@ onUnmounted(() => {
     </slot>
   </component>
 </template>
-
-<style>
-.pxd-menu-item[data-selected="true"] {
-  background-color: var(--color-gray-alpha-100);
-}
-</style>

@@ -59,7 +59,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex items-center justify-center rounded-full border border-background-100 select-none"
+    class="pxd-avatar relative inline-flex size-(--size) items-center justify-center rounded-full border border-background-100 select-none"
     :style="{ '--size': computedSize }"
   >
     <slot>
@@ -80,7 +80,7 @@ defineExpose({
       >
     </slot>
 
-    <div v-if="loading" class="pxd-avatar--loading" />
+    <div v-if="loading" class="pxd-avatar--loading inset-0 backdrop-blur-xs absolute z-1 rounded-inherit" />
 
     <div
       v-if="$slots.icon"
@@ -93,9 +93,6 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-avatar {
-  width: var(--size);
-  height: var(--size);
-
   &::before,
   &::after {
     content: '';
@@ -116,22 +113,14 @@ defineExpose({
   }
 }
 
-.pxd-avatar--loading {
+.pxd-avatar--loading::after {
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  backdrop-filter: blur(1px);
-  z-index: 1;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border-style: solid;
-    border-width: 2px 2px 1px 0;
-    border-color: var(--color-primary) var(--color-primary) transparent transparent;
-  }
+  border-style: solid;
+  border-width: 2px 2px 1px 0;
+  border-color: var(--color-primary) var(--color-primary) transparent transparent;
 }
 
 @keyframes placeholder {

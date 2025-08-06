@@ -89,7 +89,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pxd-collapse border-b will-change-contents">
+  <div class="pxd-collapse group/collapse border-b">
     <h3 class="pxd-collapse--title">
       <button
         class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer appearance-none items-center justify-between border-none bg-transparent self-focus-ring outline-none"
@@ -112,7 +112,7 @@ onMounted(() => {
       @before-leave="beforeLeave"
       @leave="leave"
     >
-      <div v-show="isExpanded" class="pxd-collapse--content">
+      <div v-show="isExpanded" class="pxd-collapse--content group-hover/collapse:will-change-[height]">
         <slot />
       </div>
     </Transition>
@@ -124,10 +124,6 @@ onMounted(() => {
   padding-block: var(--size, 24px);
   font-size: var(--font-size, 24px);
   font-weight: var(--font-weight, 600);
-}
-
-.pxd-collapse--content {
-  will-change: height;
 }
 
 .pxd-transition--collapse-enter-active,

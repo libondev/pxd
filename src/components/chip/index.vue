@@ -56,7 +56,7 @@ const computedClass = computed(() => {
 </template>
 
 <style>
-.pxd-chip--label:after {
+.pxd-chip--label::after {
   display: block;
   content: attr(data-label);
   transform: scale(0.875);
