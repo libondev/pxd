@@ -3,7 +3,7 @@ import type { InputProps } from '../../types/components/input'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
-import { computed, nextTick, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/useConfigProviderContext'
 import { useModelValue } from '../../composables/useModelValue'
 import { isTruthyProp } from '../../utils/format'
@@ -94,12 +94,16 @@ function getValueFromEvent(ev: Event) {
   return value
 }
 
+function getFormattedValue(value: InputProps['modelValue']) {
+  return typeof props.formatter === 'function'
+    ? props.formatter(value)
+    : value
+}
+
 function setNativeInputValue(value: any) {
   const input = inputRef.value
 
-  const formatterValue = props.formatter
-    ? props.formatter(value)
-    : value
+  const formatterValue = getFormattedValue(value)
 
   if (input == null || input.value === formatterValue) {
     return
@@ -178,6 +182,16 @@ const blur = () => inputRef.value?.blur()
 const focus = () => inputRef.value?.focus()
 const select = () => inputRef.value?.select()
 
+watch(() => props.modelValue, (value) => {
+  setNativeInputValue(getFormattedValue(value))
+})
+
+onMounted(async () => {
+  await nextTick()
+
+  setNativeInputValue(getFormattedValue(computedModelValue.value))
+})
+
 defineExpose({
   blur,
   focus,
@@ -204,7 +218,6 @@ defineExpose({
       <input
         :id="uniqueId"
         ref="inputRef"
-        :value="computedModelValue"
         class="px-3 size-full rounded-inherit bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
         :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
         :type="internalInputType"
