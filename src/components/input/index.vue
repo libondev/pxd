@@ -132,16 +132,12 @@ async function onInput(event: Event) {
 
   emits('input', value)
 
+  if (value !== computedModelValue.value) {
+    emits('change', value)
+  }
+
   await nextTick()
   setNativeInputValue(value)
-}
-
-async function onChange(event: Event) {
-  const value = getValueFromEvent(event)
-  emits('change', value)
-
-  // await nextTick()
-  // setNativeInputValue(value)
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -239,7 +235,6 @@ defineExpose({
         @blur="onBlur"
         @focus="onFocus"
         @input="onInput"
-        @change="onChange"
         @keydown="onKeydown"
         @compositionstart="onCompositionStart"
         @compositionupdate="onCompositionUpdate"
