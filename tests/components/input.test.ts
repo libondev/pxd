@@ -13,17 +13,30 @@ describe('input', () => {
     const input = wrapper.find('input')
     expect(input.exists()).toBe(true)
 
-    expect(input.element.value).toBe('test')
+    expect(input.element.getAttribute('data-value')).toBe('test')
 
-    await input.setValue('test2')
+    wrapper.setProps({
+      modelValue: 'test2',
+    })
 
     await wrapper.vm.$nextTick()
 
-    expect(input.element.value).toBe('test2')
-
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+    expect(input.element.getAttribute('data-value')).toBe('test2')
 
     wrapper.unmount()
+  })
+
+  it('should emit update:modelValue', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: 'test',
+      },
+    })
+
+    wrapper.find('input').setValue('test2')
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
   })
 
   it('should type is password', async () => {
