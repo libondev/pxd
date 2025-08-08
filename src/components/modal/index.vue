@@ -10,6 +10,7 @@ interface Props {
   title?: ComponentLabel
   subtitle?: ComponentLabel
   width?: number | string
+  loading?: boolean
   modelValue?: boolean
   headerStyle?: boolean
   footerStyle?: boolean
@@ -53,11 +54,19 @@ useFocusTrap(modalRef)
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay) {
+  if (!props.closeOnClickOverlay || props.loading) {
     return
   }
 
   isVisible.value = false
+}
+
+function onUpdateModelValue(visible: boolean) {
+  if (props.loading) {
+    return
+  }
+
+  isVisible.value = visible
 }
 
 watch(() => isVisible.value, (visible) => {
@@ -72,9 +81,10 @@ watch(() => isVisible.value, (visible) => {
 
 <template>
   <POverlay
-    v-model="isVisible"
+    :model-value="isVisible"
     :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
+    @update:model-value="onUpdateModelValue"
     @click="onOverlayClick"
   >
     <Transition name="pxd-transition--modal" mode="out-in">
@@ -107,7 +117,7 @@ watch(() => isVisible.value, (visible) => {
         <PScrollable
           :data-header="headerStyle"
           class="pxd-modal--content group flex-1"
-          content-class="group-data-[header=true]:pt-6 px-6 pb-6"
+          content-class="group-data-[header=true]:pt-6 px-6 pb-6 empty:hidden"
         >
           <slot />
         </PScrollable>

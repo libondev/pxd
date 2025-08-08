@@ -42,6 +42,51 @@ function handleClose() {
 </template>
 ```
 
+## Loading
+
+When `loading=true` is set, modal cannot be closed temporarily.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isLoading = ref(false)
+const isVisible = ref(false)
+
+function handleOpen() {
+  isVisible.value = true
+}
+
+function handleClose() {
+  isLoading.value = true
+
+  setTimeout(() => {
+    isLoading.value = false
+    isVisible.value = false
+  }, 2000)
+}
+</script>
+
+<template>
+  <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
+
+  <PModal
+    v-model="isVisible"
+    title="Async Logic"
+    :loading="isLoading"
+    close-on-press-escape
+    close-on-click-overlay
+    subtitle="Content of the modal."
+  >
+    <template #footer>
+      <PButton block :loading="isLoading" @click="handleClose">
+        Close (after two seconds)
+      </PButton>
+    </template>
+  </PModal>
+</template>
+```
+
 ## Sticky
 
 ```vue demo
@@ -79,43 +124,6 @@ function handleClose() {
 
       <PButton variant="primary" @click="handleClose">
         Submit
-      </PButton>
-    </template>
-  </PModal>
-</template>
-```
-
-## Single button
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const isVisible = ref(false)
-
-function handleOpen() {
-  isVisible.value = true
-}
-
-function handleClose() {
-  isVisible.value = false
-}
-</script>
-
-<template>
-  <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
-
-  <PModal
-    v-model="isVisible"
-    title="Create Token"
-    header-style
-    @click-outside="handleClose"
-  >
-    <PText> Some content contained within the modal. </PText>
-
-    <template #footer>
-      <PButton block @click="handleClose">
-        Cancel
       </PButton>
     </template>
   </PModal>
