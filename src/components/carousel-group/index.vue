@@ -3,6 +3,7 @@ import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselGroupProps } from '../../types/components/carousel'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { usePointerGesture } from '../../composables/usePointerGesture'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { getCssUnitValue } from '../../utils/format'
 import { throttle } from '../../utils/throttle'
@@ -221,6 +222,28 @@ function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
 }
 
+usePointerGesture(sliderRef, {
+  axis: () => props.direction === 'horizontal' ? 'x' : 'y',
+  directionGuard: (d) => {
+    if (props.direction === 'horizontal') {
+      return d === 'left' || d === 'right'
+    }
+
+    return d === 'up' || d === 'down'
+  },
+  onRelease(hit, dir, kind) {
+    if (!hit || !dir || kind === 'longpress') {
+      return
+    }
+
+    if (dir === 'left' || dir === 'up') {
+      onToggleClick(1)
+    } else if (dir === 'right' || dir === 'down') {
+      onToggleClick(-1)
+    }
+  },
+})
+
 provideCarouselGroupContext({
   props,
   carousels,
@@ -248,7 +271,7 @@ onBeforeUnmount(() => {
     :data-direction="direction"
     :data-indicator-type="indicatorType"
     :data-indicator-position="indicatorPosition"
-    class="pxd-carousel-group group relative w-full touch-manipulation overflow-hidden"
+    class="pxd-carousel-group group relative w-full touch-none overflow-hidden"
     :style="{ height: getCssUnitValue(height) }"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
