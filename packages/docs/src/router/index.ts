@@ -11,10 +11,21 @@ const router = createRouter({
     }
 
     if (to.hash) {
-      return {
-        el: to.hash,
-        behavior: 'smooth',
-      }
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          const el = document.querySelector(to.hash) as HTMLElement | null
+
+          if (!el) {
+            return resolve({ left: 0, top: 0 })
+          }
+
+          const header = document.querySelector('header') as HTMLElement | null
+          const offset = header?.offsetHeight ?? 0
+          const top = el.getBoundingClientRect().top + window.scrollY - offset - 10
+
+          resolve({ top, behavior: 'smooth' })
+        })
+      })
     }
 
     return {
