@@ -32,6 +32,7 @@ interface Props {
   showArrow?: boolean
   arrowColor?: string
   destroyDelay?: number
+  autoPosition?: boolean
   scrollHidden?: boolean
   triggerClass?: ComponentClass
   popoverClass?: ComponentClass
@@ -40,11 +41,13 @@ interface Props {
   transitionName?: string
   showTransition?: boolean
   hideTransition?: boolean
+  /** 最小可见比例(0~1), 仅当前可见区域比例小于该阈值时才会触发滚动过程中的自适应翻转 */
+  minVisibleRatio?: number
   closeOnPressEscape?: boolean
-  // 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗
+  /** 自动调整位置的阈值, 当滚动距离超过该值时, 自动调整位置, 单位: px */
+  autoPositionThreshold?: number
+  /** 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗, 单位: px */
   scrollHiddenThreshold?: number
-  // 动态位置调整的阈值, 当滚动距离超过该值时, 自动调整位置
-  dynamicPositionThreshold?: number
 }
 
 defineOptions({
@@ -54,7 +57,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    zIndex: 10,
+    zIndex: 5,
     offset: 10,
     trigger: () => ['hover'],
     position: 'bottom',
@@ -63,13 +66,15 @@ const props = withDefaults(
     hideDelay: 300,
     showArrow: false,
     arrowColor: 'hsl(var(--primary))',
+    autoPosition: true,
     destroyDelay: 2000,
     scrollHidden: false,
     showTransition: true,
     hideTransition: true,
+    minVisibleRatio: 0.68,
     closeOnPressEscape: false,
+    autoPositionThreshold: 30,
     scrollHiddenThreshold: 150,
-    dynamicPositionThreshold: 5,
   },
 )
 
@@ -83,8 +88,6 @@ const triggerRect = shallowRef<DOMRect>()
 
 let viewportRect: DOMRect | null = null
 let scrollContainer: ReturnType<typeof getScrollContainer>
-let cachedContainerRect: DOMRect | null = null
-let lastScrollInfo: ReturnType<typeof getScrollPositions> | null = null
 
 let showPopoverTimer: ReturnType<typeof setTimeout>
 let hidePopoverTimer: ReturnType<typeof setTimeout>
@@ -142,9 +145,40 @@ const onContainerScroll = throttleByRaf((ev: Event) => {
     return
   }
 
+  if (!props.autoPosition) {
+    return
+  }
+
   // 动态调整位置
-  if (delta >= props.dynamicPositionThreshold) {
-    handleDynamicPositionAdjustment()
+  if (delta >= props.autoPositionThreshold) {
+    getTriggerRect()
+    cachedScrollTop = scrollTop
+
+    // 先回到初始位置
+    localPosition.value = props.position
+    updateContentPosition()
+
+    // 等待样式生效后再判断遮挡，再决定是否翻转
+    nextTick().then(() => {
+      const scrollInfo = getScrollPositions(scrollContainer)
+      const containerRect = wrapperRef.value!.getBoundingClientRect()
+      const overlapping = isContainerOverlapping(
+        viewportRect!,
+        containerRect,
+        scrollInfo,
+      )
+
+      // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
+      const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
+      if (visibleRatio >= (props.minVisibleRatio ?? 0)) {
+        return
+      }
+
+      if (overlapping.isOverlapping) {
+        applyAutoPosition(overlapping)
+        updateContentPosition()
+      }
+    })
   }
 })
 
@@ -173,81 +207,34 @@ function isContainerOverlapping(
   }
 }
 
+// 计算容器在视口内的可见比例(面积占比: 0~1)
+function getVisibleRatio(
+  viewportRect: DOMRect,
+  containerRect: DOMRect,
+  scrollInfo: ReturnType<typeof getScrollPositions>,
+) {
+  const containerTop = containerRect.top - scrollInfo.scrollTop
+  const containerBottom = containerRect.bottom - scrollInfo.scrollTop
+  const containerLeft = containerRect.left - scrollInfo.scrollLeft
+  const containerRight = containerRect.right - scrollInfo.scrollLeft
+
+  const visibleLeft = Math.max(containerLeft, viewportRect.left)
+  const visibleRight = Math.min(containerRight, viewportRect.right)
+  const visibleTop = Math.max(containerTop, viewportRect.top)
+  const visibleBottom = Math.min(containerBottom, viewportRect.bottom)
+
+  const visibleWidth = Math.max(0, visibleRight - visibleLeft)
+  const visibleHeight = Math.max(0, visibleBottom - visibleTop)
+
+  const visibleArea = visibleWidth * visibleHeight
+  const totalArea = Math.max(1, containerRect.width * containerRect.height)
+
+  return visibleArea / totalArea
+}
+
 function getTriggerRect() {
   triggerRect.value = triggerRef.value!.getBoundingClientRect()
   viewportRect = document.documentElement.getBoundingClientRect()
-}
-
-function handleDynamicPositionAdjustment() {
-  if (!wrapperRef.value || !triggerRect.value || !viewportRect) {
-    return
-  }
-
-  const containerRect = wrapperRef.value.getBoundingClientRect()
-  const scrollInfo = getScrollPositions(scrollContainer)
-
-  if (cachedContainerRect && lastScrollInfo) {
-    const rectChanged = Math.abs(containerRect.top - cachedContainerRect.top) > 1
-      || Math.abs(containerRect.left - cachedContainerRect.left) > 1
-    const scrollChanged = Math.abs(scrollInfo.scrollTop - lastScrollInfo.scrollTop) > 5
-      || Math.abs(scrollInfo.scrollLeft - lastScrollInfo.scrollLeft) > 5
-
-    if (!rectChanged && !scrollChanged) {
-      return
-    }
-  }
-
-  cachedContainerRect = containerRect
-  lastScrollInfo = scrollInfo
-
-  getTriggerRect()
-
-  const originalPosition = props.position
-  // 检查当前位置是否被遮挡
-  const currentOverlapping = isContainerOverlapping(viewportRect, containerRect, scrollInfo)
-  let needsUpdate = false
-
-  if (currentOverlapping.isOverlapping) {
-    // 如果当前位置被遮挡，尝试调整位置
-    if (localPosition.value === originalPosition) {
-      // 当前是原始位置，需要切换到其他位置
-      reverseRenderPosition(currentOverlapping)
-      needsUpdate = true
-    }
-  } else if (localPosition.value !== originalPosition) {
-    // 如果当前不是原始位置，检查原始位置是否可用
-    handleOriginalPositionCheck()
-    return // 避免重复更新
-  }
-
-  if (needsUpdate) {
-    updateContentPosition()
-  }
-}
-
-// 原始位置检查逻辑
-function handleOriginalPositionCheck() {
-  const tempPosition = localPosition.value
-  localPosition.value = props.position
-  updateContentPosition()
-
-  // 在下一帧检查原始位置是否仍然可用
-  nextTick(() => {
-    if (!wrapperRef.value || !viewportRect) {
-      return
-    }
-
-    const newContainerRect = wrapperRef.value.getBoundingClientRect()
-    const newOverlapping = isContainerOverlapping(viewportRect, newContainerRect, getScrollPositions(scrollContainer))
-
-    // 原始位置仍然被遮挡，恢复到之前的位置
-    if (newOverlapping.isOverlapping) {
-      localPosition.value = tempPosition
-      updateContentPosition()
-    }
-
-    cachedContainerRect = newContainerRect
-  })
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
@@ -268,6 +255,10 @@ async function handlePopoverShow(immediate: boolean = false) {
   cachedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
   on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
+  if (!props.autoPosition) {
+    return
+  }
+
   await nextTick()
 
   // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
@@ -278,7 +269,7 @@ async function handlePopoverShow(immediate: boolean = false) {
   )
 
   if (overlapping.isOverlapping) {
-    reverseRenderPosition(overlapping)
+    applyAutoPosition(overlapping)
     updateContentPosition()
   }
 }
@@ -295,9 +286,6 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
-  // 清理缓存
-  cachedContainerRect = null
-  lastScrollInfo = null
   off(scrollContainer, 'scroll', onContainerScroll)
 }
 
@@ -510,8 +498,15 @@ function updateContentPosition() {
   }
 }
 
-// 当屏幕可用空间不足时反转方向
-function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverlapping>) {
+/**
+ * 当屏幕可用空间不足时调整位置, 优先保证最大的内容可见度:
+ * - top 被遮挡 → bottom
+ * - bottom 被遮挡 → top
+ * - left 被遮挡 → top（优先向上）
+ * - right 被遮挡 → top（优先向上）
+ * @param overlapping 是否被遮挡
+ */
+function applyAutoPosition(overlapping?: ReturnType<typeof isContainerOverlapping>) {
   if (!overlapping) {
     localPosition.value = props.position
     return
@@ -522,27 +517,28 @@ function reverseRenderPosition(overlapping?: ReturnType<typeof isContainerOverla
     ? currentPosition.split('-') as [BasePosition, string]
     : [currentPosition as BasePosition, '']
 
-  const oppositePositionMap = {
+  const flipTargetMap: Record<BasePosition, BasePosition> = {
     top: 'bottom',
     bottom: 'top',
-    left: 'right',
-    right: 'left',
-  } as const
+    left: 'top',
+    right: 'top',
+  }
 
   let newPosition = position
   let newModifier = modifier
 
   if (overlapping[position]) {
-    newPosition = oppositePositionMap[position]
+    newPosition = flipTargetMap[position]
   }
 
-  if (['left', 'right'].includes(position)) {
+  // 根据“新方向”的轴向来计算修饰符（start/end），以保证对齐更贴边更可见
+  if (['left', 'right'].includes(newPosition)) {
     if (overlapping.top) {
       newModifier = 'start'
     } else if (overlapping.bottom) {
       newModifier = 'end'
     }
-  } else if (['top', 'bottom'].includes(position)) {
+  } else if (['top', 'bottom'].includes(newPosition)) {
     if (overlapping.left) {
       newModifier = 'start'
     } else if (overlapping.right) {
@@ -654,9 +650,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   viewportRect = null
-  triggerRect.value = undefined
-  cachedContainerRect = null
-  lastScrollInfo = null
   cachedBasePosition = null
   cachedPositionForBase = null
 
