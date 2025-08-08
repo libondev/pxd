@@ -41,6 +41,46 @@ The component inherits from popover and supports all the properties of popover. 
 </template>
 ```
 
+## Variant
+
+```vue demo
+<template>
+  <PStack>
+    <PTooltip
+      variant="primary"
+      position="left"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="success"
+      position="top"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="warning"
+      position="bottom"
+      content="The Evil Rabbit Jumped over the Fence"
+     >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+
+    <PTooltip
+      variant="error"
+      position="right"
+      content="The Evil Rabbit Jumped over the Fence"
+    >
+      <PButton>Hover me</PButton>
+    </PTooltip>
+  </PStack>
+</template>
+```
+
 ## Delay
 
 ```vue demo
@@ -131,46 +171,6 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
       <template #content>
         The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
       </template>
-    </PTooltip>
-  </PStack>
-</template>
-```
-
-## Custom type
-
-```vue demo
-<template>
-  <PStack>
-    <PTooltip
-      variant="primary"
-      position="left"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
-      <PButton>Hover me</PButton>
-    </PTooltip>
-
-    <PTooltip
-      variant="success"
-      position="top"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
-      <PButton>Hover me</PButton>
-    </PTooltip>
-
-    <PTooltip
-      variant="warning"
-      position="bottom"
-      content="The Evil Rabbit Jumped over the Fence"
-     >
-      <PButton>Hover me</PButton>
-    </PTooltip>
-
-    <PTooltip
-      variant="error"
-      position="right"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
-      <PButton>Hover me</PButton>
     </PTooltip>
   </PStack>
 </template>

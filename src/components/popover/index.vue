@@ -609,7 +609,7 @@ function onTriggerKeydown(ev: KeyboardEvent) {
 }
 
 function onResizeUpdatePosition() {
-  if (!isVisible.value) {
+  if (!isVisible.value || !props.autoPosition) {
     return
   }
 

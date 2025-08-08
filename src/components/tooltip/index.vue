@@ -50,7 +50,7 @@ const computedDisabled = computed(() => {
 })
 
 const computedPopoverClass = computed(() => {
-  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line bg-(--color)', props.popoverClass].join(' ')
+  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line shadow-border-tooltip bg-(--color)', props.popoverClass].join(' ')
 })
 </script>
 
