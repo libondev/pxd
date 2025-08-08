@@ -1,4 +1,4 @@
-import type { BasePosition } from '../shared'
+import type { BasePosition, ComponentDirection } from '../shared'
 
 export interface CarouselGroupProps {
   index?: number
@@ -8,7 +8,7 @@ export interface CarouselGroupProps {
   autoplay?: boolean
   interval?: number
   indicator?: boolean
-  direction?: 'horizontal' | 'vertical'
+  direction?: ComponentDirection
   indicatorType?: 'dot' | 'line'
   indicatorPosition?: BasePosition
   pauseOnHover?: boolean

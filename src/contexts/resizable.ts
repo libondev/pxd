@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import type { ComponentDirection } from '../types/shared/props'
 import { createContext } from '../utils/context'
 
 interface PanelConfig {
@@ -9,7 +10,7 @@ interface PanelConfig {
 }
 
 export interface ResizableContext {
-  direction: Ref<'horizontal' | 'vertical'>
+  direction: Ref<ComponentDirection>
   panelSizes: Ref<number[]>
   panelConfigs: Ref<PanelConfig[]>
   getPanelSize: (id: string) => number

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import type { ComponentDirection } from '../../types/shared/props'
 import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
 import { provideResizableContext } from '../../contexts/resizable'
 
 interface Props {
-  direction?: 'horizontal' | 'vertical'
+  direction?: ComponentDirection
 }
 
 interface PanelConfig {

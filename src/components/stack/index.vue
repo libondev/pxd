@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentAs, ResponsiveValue } from '../../types/shared'
+import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 
 export interface Props {
@@ -9,7 +9,7 @@ export interface Props {
   scale?: number
   align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
   justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  direction?: ResponsiveValue<'horizontal' | 'vertical'>
+  direction?: ResponsiveValue<ComponentDirection>
 }
 
 defineOptions({

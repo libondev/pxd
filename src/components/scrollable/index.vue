@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentClass } from '../../types/shared'
+import type { ComponentClass, ComponentDirection } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/useBrowserObserver'
 import { off, on, once } from '../../utils/events'
@@ -62,7 +62,7 @@ const scrollInfo = ref({
 // 拖拽状态
 const dragState = ref({
   isDragging: false,
-  direction: null as 'vertical' | 'horizontal' | null,
+  direction: null as ComponentDirection | null,
   startClientPos: 0,
   startScrollPos: 0,
   containerSize: 0,
