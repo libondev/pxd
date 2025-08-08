@@ -687,13 +687,13 @@ defineExpose({
           v-show="isVisible"
           ref="wrapperRef"
           :style="wrapperStyle"
-          :data-arrow="showArrow"
           :data-enterable="enterable"
           :data-position="localPosition"
           class="pxd-popover--container sm:max-w-(--max-width) p-2.5 sm:p-0 absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
+          <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
           <div class="pxd-popover--content" :class="popoverClass" :style="popoverStyle">
             <slot name="content">
               {{ content }}
@@ -724,77 +724,72 @@ defineExpose({
     padding-left: var(--offset);
   }
 
-  &[data-arrow="true"] {
-    .pxd-popover--content::after {
-      content: '';
-      position: absolute;
-      border-style: solid;
-      z-index: 1;
-    }
+  .pxd-popover--arrow {
+    border-style: solid;
+  }
 
-    &[data-position="top"] .pxd-popover--content::after,
-    &[data-position="top-start"] .pxd-popover--content::after,
-    &[data-position="top-end"] .pxd-popover--content::after {
-      bottom: var(--arrow-offset);
-      border-width: 6px 6px 0;
-      border-color: var(--color) transparent transparent;
-    }
+  &[data-position="top"] .pxd-popover--arrow,
+  &[data-position="top-start"] .pxd-popover--arrow,
+  &[data-position="top-end"] .pxd-popover--arrow {
+    bottom: var(--arrow-offset);
+    border-width: 6px 6px 0;
+    border-color: var(--color) transparent transparent;
+  }
 
-    &[data-position='bottom'] .pxd-popover--content::after,
-    &[data-position='bottom-start'] .pxd-popover--content::after,
-    &[data-position='bottom-end'] .pxd-popover--content::after {
-      top: var(--arrow-offset);
-      border-width: 0 6px 6px;
-      border-color: transparent transparent var(--color);
-    }
+  &[data-position='bottom'] .pxd-popover--arrow,
+  &[data-position='bottom-start'] .pxd-popover--arrow,
+  &[data-position='bottom-end'] .pxd-popover--arrow {
+    top: var(--arrow-offset);
+    border-width: 0 6px 6px;
+    border-color: transparent transparent var(--color);
+  }
 
-    &[data-position='left'] .pxd-popover--content::after,
-    &[data-position='left-start'] .pxd-popover--content::after,
-    &[data-position='left-end'] .pxd-popover--content::after {
-      right: var(--arrow-offset);
-      border-width: 6px 0 6px 6px;
-      border-color: transparent transparent transparent var(--color);
-    }
+  &[data-position='left'] .pxd-popover--arrow,
+  &[data-position='left-start'] .pxd-popover--arrow,
+  &[data-position='left-end'] .pxd-popover--arrow {
+    right: var(--arrow-offset);
+    border-width: 6px 0 6px 6px;
+    border-color: transparent transparent transparent var(--color);
+  }
 
-    &[data-position='right'] .pxd-popover--content::after,
-    &[data-position='right-start'] .pxd-popover--content::after,
-    &[data-position='right-end'] .pxd-popover--content::after {
-      left: var(--arrow-offset);
-      border-width: 6px 6px 6px 0;
-      border-color: transparent var(--color) transparent transparent;
-    }
+  &[data-position='right'] .pxd-popover--arrow,
+  &[data-position='right-start'] .pxd-popover--arrow,
+  &[data-position='right-end'] .pxd-popover--arrow {
+    left: var(--arrow-offset);
+    border-width: 6px 6px 6px 0;
+    border-color: transparent var(--color) transparent transparent;
+  }
 
-    &[data-position='top'] .pxd-popover--content::after,
-    &[data-position='bottom'] .pxd-popover--content::after {
-      left: 50%;
-      transform: translateX(-50%);
-    }
+  &[data-position='top'] .pxd-popover--arrow,
+  &[data-position='bottom'] .pxd-popover--arrow {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-    &[data-position='left'] .pxd-popover--content::after,
-    &[data-position='right'] .pxd-popover--content::after {
-      top: 50%;
-      transform: translateY(-50%);
-    }
+  &[data-position='left'] .pxd-popover--arrow,
+  &[data-position='right'] .pxd-popover--arrow {
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
-    &[data-position='left-start'] .pxd-popover--content::after,
-    &[data-position='right-start'] .pxd-popover--content::after {
-      top: 15px;
-    }
+  &[data-position='left-start'] .pxd-popover--arrow,
+  &[data-position='right-start'] .pxd-popover--arrow {
+    top: 15px;
+  }
 
-    &[data-position='left-end'] .pxd-popover--content::after,
-    &[data-position='right-end'] .pxd-popover--content::after {
-      bottom: 15px;
-    }
+  &[data-position='left-end'] .pxd-popover--arrow,
+  &[data-position='right-end'] .pxd-popover--arrow {
+    bottom: 15px;
+  }
 
-    &[data-position='top-start'] .pxd-popover--content::after,
-    &[data-position='bottom-start'] .pxd-popover--content::after {
-      left: 15px;
-    }
+  &[data-position='top-start'] .pxd-popover--arrow,
+  &[data-position='bottom-start'] .pxd-popover--arrow {
+    left: 15px;
+  }
 
-    &[data-position='top-end'] .pxd-popover--content::after,
-    &[data-position='bottom-end'] .pxd-popover--content::after {
-      right: 15px;
-    }
+  &[data-position='top-end'] .pxd-popover--arrow,
+  &[data-position='bottom-end'] .pxd-popover--arrow {
+    right: 15px;
   }
 }
 
