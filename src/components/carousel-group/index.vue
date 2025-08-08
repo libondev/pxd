@@ -36,12 +36,13 @@ const emits = defineEmits<{
 const THROTTLE_INTERVALS = 550 // 比过渡事件稍长以预留给容器重置位置的时间
 const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
 
-let autoPlayTimer: ReturnType<typeof requestAnimationFrame>
-
-const sliderRef = shallowRef<HTMLDivElement>()
+// 使用单一会话 + rAF id，避免并发叠加
+let autoPlayRafId: number | null = null
+let autoPlaySession = 0
+let isPointerEntering = false
 
 const carousels = ref<CarouselState[]>([])
-
+const sliderRef = shallowRef<HTMLElement | null>(null)
 const virtualIndex = shallowRef(props.index)
 
 // 由于虚拟索引可能超出范围以便于实现无缝切换，需要一个处理边界的索引来指示真实索引
@@ -84,7 +85,6 @@ const onToggleClick = throttle((delta: number) => {
     return
   }
 
-  onPointerEnter()
   if (props.loop) {
     virtualIndex.value += delta
 
@@ -93,8 +93,8 @@ const onToggleClick = throttle((delta: number) => {
     virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
-  nextTick(onPointerLeave)
   emits('change', correctIndex.value)
+  nextTick(onPointerLeave)
 }, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onWheelToggle(ev: WheelEvent) {
@@ -127,7 +127,12 @@ function resetContainerPosition(resetIndex: number) {
   }, 0)
 }
 
-function onTransitionsEnd() {
+function onTransitionsEnd(ev: TransitionEvent) {
+  // 仅处理 slider 自身的 transform 过渡结束，避免冒泡导致的多次触发
+  if (ev.propertyName !== 'transform' || ev.target !== sliderRef.value) {
+    return
+  }
+
   if (!props.loop) {
     return
   }
@@ -139,49 +144,71 @@ function onTransitionsEnd() {
   }
 }
 
+function clearAutoPlayTimer() {
+  autoPlaySession++
+  if (autoPlayRafId != null) {
+    cancelAnimationFrame(autoPlayRafId)
+    autoPlayRafId = null
+  }
+}
+
 function setAutoPlayTimer() {
+  const mySession = autoPlaySession
   const startTime = performance.now()
 
-  function onAnimationFrame() {
+  const onAnimationFrame = () => {
+    if (mySession !== autoPlaySession || isPointerEntering) {
+      return
+    }
+
     const currentTime = performance.now()
     const elapsedTime = currentTime - startTime
 
     if (elapsedTime >= props.interval) {
+      // 触发一次切换, 随后由 onToggleClick 内的 nextTick(onPointerLeave) 负责重启自动播放
       onToggleClick(1)
-      setAutoPlayTimer()
-    } else {
-      autoPlayTimer = requestAnimationFrame(onAnimationFrame)
+      return
     }
+
+    autoPlayRafId = requestAnimationFrame(onAnimationFrame)
   }
 
-  autoPlayTimer = requestAnimationFrame(onAnimationFrame)
+  autoPlayRafId = requestAnimationFrame(onAnimationFrame)
 }
 
 function onPointerEnter() {
-  cancelAnimationFrame(autoPlayTimer)
+  if (props.pauseOnHover) {
+    isPointerEntering = true
+    clearAutoPlayTimer()
+  }
 }
 
 function onPointerLeave() {
+  isPointerEntering = false
+
   if (!props.autoplay) {
     return
   }
 
+  clearAutoPlayTimer()
   setAutoPlayTimer()
 }
 
 function onIndicatorClick(ev: MouseEvent) {
-  // 键盘导航的时候鼠标可能不会触发 pointerenter
-  // 所以在切换的时候清空自动播放定时器
-  onPointerEnter()
+  clearAutoPlayTimer()
 
-  const target = ev.target as HTMLButtonElement
-  const targetIndex = Number(target.dataset.index)
+  const targetEl = (ev.target as HTMLElement).closest('[data-index]') as HTMLButtonElement | null
+  const targetIndex = Number(targetEl?.dataset.index)
 
   if (Number.isNaN(targetIndex)) {
     return
   }
 
-  virtualIndex.value = targetIndex
+  const deltaIndex = targetIndex - virtualIndex.value
+
+  if (deltaIndex !== 0) {
+    onToggleClick(deltaIndex)
+  }
 
   nextTick(onPointerLeave)
 }
@@ -201,11 +228,16 @@ provideCarouselGroupContext({
   unregisterCarousel,
 })
 
-onMounted(() => {
+onMounted(async () => {
   onPointerLeave()
+
+  await nextTick()
+
+  translateItems()
 })
 
 onBeforeUnmount(() => {
+  clearAutoPlayTimer()
   carousels.value = []
 })
 </script>
@@ -225,7 +257,7 @@ onBeforeUnmount(() => {
     <div class="pxd-carousel-group--container size-full">
       <div
         ref="sliderRef"
-        class="pxd-carousel-group--slider translate-z-0 size-full group-hover:will-change-transform group-data-[direction=horizontal]:flex"
+        class="pxd-carousel-group--slider translate-z-0 size-full group-data-[direction=horizontal]:flex"
         :style="computedStyle"
         :class="TRANSITION_CLASSES"
         @transitionend="onTransitionsEnd"
