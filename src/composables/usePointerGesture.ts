@@ -5,9 +5,32 @@ import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 type Axis = 'x' | 'y' | 'both'
 type Dir = 'left' | 'right' | 'up' | 'down' | null
 
+/**
+ * 带时间戳的坐标点。
+ * @property x - X 坐标（px）
+ * @property y - Y 坐标（px）
+ * @property t - 时间戳（ms，来自 performance.now()）
+ */
 interface Point { x: number, y: number, t: number }
+
+/**
+ * 速度向量。
+ * @property x - X 方向速度（px/s）
+ * @property y - Y 方向速度（px/s）
+ * @property v - 合速度（px/s）
+ */
 interface Velocity { x: number, y: number, v: number }
 
+/**
+ * 对外公开的手势状态。
+ * @property isActive - 指针是否按下激活
+ * @property isDragging - 是否处于拖拽中（超过启动阈值）
+ * @property isLongPressing - 是否处于长按态
+ * @property direction - 当前判定的方向（可能为 null）
+ * @property delta - 自按下以来位移（px）
+ * @property velocity - 当前速度（px/s）
+ * @property progress - 触发进度（0~1，基于 triggerThreshold）
+ */
 export interface PublicState {
   isActive: boolean
   isDragging: boolean
@@ -18,29 +41,126 @@ export interface PublicState {
   progress: number
 }
 
+/**
+ * usePointerGesture 的可配置项。
+ * 如未指定，均有默认值（见 OPTIONS_DEFAULTS）。
+ */
 export interface UsePointerGestureOptions {
+  /**
+   * 限制生效轴向。
+   * 返回 'x' | 'y' | 'both'，默认为 'both'。
+   */
   axis?: () => Axis
+  /**
+   * 拖拽启动阈值（px）。手指移动距离超过该值后进入拖拽。
+   * 默认 6。
+   */
   startThreshold?: number
+  /**
+   * 触发阈值（px）。释放时若位移达到该值视为命中触发（kind='threshold'）。
+   * 默认 80。
+   */
   triggerThreshold?: number
+  /**
+   * 甩动触发速度阈值（px/s）。移动中若合速度超过该值将记录可能触发为 'fling'。
+   * 默认 1000。
+   */
   velocityThreshold?: number
+  /**
+   * 长按判定时长（ms）。到达该时长后进入长按态并触发 onLongPress。
+   * 默认 300。
+   */
   longPressMs?: number
+  /**
+   * 长按容忍移动距离（px）。在进入拖拽前，若移动超过该距离则取消长按。
+   * 默认 4。
+   */
   longPressMoveTolerance?: number
+  /**
+   * 是否在拖拽开始时锁定轴向。开启后根据初始位移较大方向锁定为 'x' 或 'y'。
+   * 默认 true。
+   */
   lockDirectionOnStart?: boolean
+  /**
+   * 是否允许在可滚动容器尚可继续滚动时将移动交由滚动，直到触达边缘才接管拖拽。
+   * 默认 true。
+   */
   allowScrollUntilEdge?: boolean
+  /**
+   * 拖拽期间是否调用 preventDefault 阻止滚动。
+   * 默认 true。
+   */
   preventScrollOnDrag?: boolean
+  /**
+   * 是否使用 Pointer Capture（setPointerCapture/releasePointerCapture）。
+   * 默认 true。
+   */
   usePointerCapture?: boolean
+  /**
+   * RTL 支持：
+   * - 若为 boolean，true 表示水平方向取反（dx>0 视为向左）；false 为自然方向
+   * - 若为函数，可根据 dx 自定义返回 'left' 或 'right'
+   * 默认 false。
+   */
   rtl?: boolean | ((dx: number) => 'left' | 'right')
+  /**
+   * 提供一个返回可参与滚动判断的元素（通常为最近滚动容器内的滚动元素）。
+   * 若不提供，将自动查找。
+   */
   getScrollable?: () => HTMLElement | null
+  /**
+   * 指针按下时回调。
+   * @param e - PointerEvent
+   * @param ctx - 当前公开状态
+   */
   onStart?: (e: PointerEvent, ctx: PublicState) => void
+  /**
+   * 指针移动时回调（拖拽中会持续触发，可用于执行动画）。
+   * @param e - PointerEvent
+   * @param ctx - 当前公开状态
+   */
   onMove?: (e: PointerEvent, ctx: PublicState) => void
   // 指针释放时统一回调；命中触发条件时 hit=true，并提供 kind；未命中时 hit=false，kind=null
+  /**
+   * 指针释放时统一回调。
+   * - 命中触发条件时：hit=true，并给出方向 dir 与触发类型 kind（'threshold' | 'longpress' | 'fling'）
+   * - 未命中时：hit=false，dir=null，kind=null；此时会自动调用 onReset 便于复位动画
+   * @param hit - 是否命中触发
+   * @param dir - 方向（未命中为 null）
+   * @param kind - 触发类型（未命中为 null）
+   * @param ctx - 当前公开状态
+   */
   onRelease?: (hit: boolean, dir: Dir, kind: null | 'threshold' | 'longpress' | 'fling', ctx: PublicState) => void
+  /**
+   * 指针生命周期结束时回调（在 onRelease 之前调用）。
+   * @param e - PointerEvent
+   * @param ctx - 当前公开状态
+   */
   onEnd?: (e: PointerEvent, ctx: PublicState) => void
+  /**
+   * 手势被取消时回调（如 pointercancel 或主动 cancel）。
+   * @param e - 事件对象；由 cancel() 触发时为 null
+   * @param ctx - 当前公开状态
+   */
   onCancel?: (e: Event | null, ctx: PublicState) => void
   // 取消或未命中时自动调用 onReset，便于做复位动画
+  /**
+   * 复位回调：取消或未命中触发条件时会自动调用，便于执行复位动画。
+   * @param ctx - 当前公开状态
+   */
   onReset?: (ctx: PublicState) => void
+  /**
+   * 长按回调：达到长按时长后触发。
+   * @param ctx - 当前公开状态
+   */
   onLongPress?: (ctx: PublicState) => void
   // strategy extensions
+  /**
+   * 方向守卫：在记录触发与最终释放判定处均会调用，用于限制允许的触发方向。
+   * 返回 true 表示允许，false 表示阻止触发。
+   * @param dir - 非空方向
+   * @param ctx - 当前公开状态
+   */
   directionGuard?: (dir: Exclude<Dir, null>, ctx: PublicState) => boolean
 }
 
@@ -127,7 +247,8 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
   }
 
   function updateProgress(dx: number, dy: number) {
-    const t = options.triggerThreshold ?? OPTIONS_DEFAULTS.triggerThreshold
+    const triggerThreshold = options.triggerThreshold ?? OPTIONS_DEFAULTS.triggerThreshold
+
     let primary: number
     if (lockedAxis === 'y') {
       primary = Math.abs(dy)
@@ -136,7 +257,7 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
     } else {
       primary = Math.abs(Math.abs(dx) >= Math.abs(dy) ? dx : dy)
     }
-    progress.value = Math.max(0, Math.min(1, primary / t))
+    progress.value = Math.max(0, Math.min(1, primary / triggerThreshold))
   }
 
   function getScrollEl(): HTMLElement | null {
