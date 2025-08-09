@@ -12,7 +12,7 @@ Display progress relative to a limit or related to a task.
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PProgress v-model="value" size="sm" />
     <PProgress v-model="value" />
     <PProgress v-model="value" size="lg" />

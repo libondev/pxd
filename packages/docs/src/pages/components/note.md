@@ -79,7 +79,7 @@
 
 ```vue demo
 <template>
-  <PStack direction="vertical" gap="4">
+  <PStack direction="vertical">
     <b class="text-sm font-medium">Custom Label</b>
 
     <!-- prop label -->

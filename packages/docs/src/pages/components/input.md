@@ -12,7 +12,7 @@ Retrieve text input from a user.
 ## Sizes
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="4" direction="vertical">
+  <PStack class="max-w-md" direction="vertical">
     <PInput size="sm" placeholder="sm" />
     <PInput placeholder="md(default)" />
     <PInput size="lg" placeholder="lg" />

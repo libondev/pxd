@@ -19,7 +19,7 @@ const options = [
 
 <template>
   <PStack>
-    <PCheckboxGroup v-model="show" gap="4" :options="options" />
+    <PCheckboxGroup v-model="show" :options="options" />
   </PStack>
 
   <div class="mt-2 relative size-50 max-w-full rounded-md border border-dashed">

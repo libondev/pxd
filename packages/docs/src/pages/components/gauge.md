@@ -126,7 +126,7 @@ const progress = ref(50)
 </script>
 
 <template>
-  <PStack align="center" gap="4">
+  <PStack align="center">
     <PGauge v-model="progress" size="xs" indeterminate />
     <PGauge v-model="progress" size="sm" indeterminate />
     <PGauge v-model="progress" indeterminate />

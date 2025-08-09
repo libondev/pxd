@@ -17,19 +17,17 @@ const sizes = [
 </script>
 
 <template>
-  <PStack direction="vertical" gap="4">
-    <PSwitchGroup v-model="size" gap="5" :options="sizes" />
+  <PSwitchGroup v-model="size" :options="sizes" />
 
-    <PConfigProvider :size="size">
-      <PStack direction="vertical">
-        <PToggle />
-        <PBadge>Badge</PBadge>
-        <PButton>Button</PButton>
-        <PInput placeholder="Input" />
-        <PTextarea placeholder="Textarea" />
-      </PStack>
-    </PConfigProvider>
-  </PStack>
+  <PConfigProvider :size="size" class="mt-4">
+    <PStack direction="vertical">
+      <PToggle />
+      <PBadge>Badge</PBadge>
+      <PButton>Button</PButton>
+      <PInput placeholder="Input" />
+      <PTextarea placeholder="Textarea" />
+    </PStack>
+  </PConfigProvider>
 </template>
 ```
 
@@ -56,14 +54,11 @@ const locales = {
 </script>
 
 <template>
-  <PStack direction="vertical" gap="4">
-    <PSwitchGroup v-model="locale" gap="5" :options="sizes" />
-
-    <PConfigProvider :locale="locales[locale]">
-      <PStack direction="vertical">
-        <PActiveGraph start-date="2025-01-01" end-date="2025-01-31" />
-      </PStack>
-    </PConfigProvider>
-  </PStack>
+  <PConfigProvider :locale="locales[locale]">
+    <PStack direction="vertical">
+      <PSwitchGroup v-model="locale" :options="sizes" />
+      <PActiveGraph start-date="2025-01-01" end-date="2025-01-31" />
+    </PStack>
+  </PConfigProvider>
 </template>
 ```

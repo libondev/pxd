@@ -57,7 +57,7 @@ const leftVisible = ref(false)
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PButton @click="topVisible = true">Top</PButton>
     <PButton @click="rightVisible = true">Right</PButton>
     <PButton @click="bottomVisible = true">Bottom</PButton>
@@ -115,7 +115,7 @@ const fullVisible = ref(false)
 </script>
 
 <template>
-  <PStack gap="4">
+  <PStack>
     <PButton @click="smallVisible = true">Small (240px)</PButton>
     <PButton @click="largeVisible = true">Large (600px)</PButton>
     <PButton @click="fullVisible = true">Full Width</PButton>
