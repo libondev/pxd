@@ -73,7 +73,7 @@ const presetJustifyClasses = {
 const formattedGap = computed(() => {
   const { gap, scale } = props
 
-  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) || 2
+  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) || 4
 
   const defaultGap = {
     '--gap-xs': `${Number(defaultXsGap) * scale}px`,
@@ -108,7 +108,7 @@ const formattedDirection = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-stack flex w-full', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = ['pxd-stack flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     classes.push('flex-wrap')
