@@ -18,10 +18,10 @@ export type ComponentClass = string | any[] | Record<string, any>
 export type ComponentDirection = 'horizontal' | 'vertical'
 
 export type BasePosition = 'top' | 'bottom' | 'left' | 'right'
-export type ComponentPosition
-  = | BasePosition
-    | `${BasePosition}-start`
-    | `${BasePosition}-end`
+export type ComponentPosition<Position = BasePosition>
+  = | Position
+    | `${Position}-start`
+    | `${Position}-end`
 
 export type ResponsiveValue<T> = T | Partial<ComponentBreakpoint<T>>
 
