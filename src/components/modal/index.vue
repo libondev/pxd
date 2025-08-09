@@ -98,7 +98,7 @@ watch(() => isVisible.value, (visible) => {
         :style="{ '--w': width }"
       >
         <header
-          class="pxd-modal--header px-6 py-4 sm:py-6 relative shrink-0"
+          class="pxd-modal--header px-6 py-4 sm:py-6 relative shrink-0 empty:py-3"
           :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStyle }"
         >
           <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
@@ -115,6 +115,7 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <PScrollable
+          v-if="$slots.default"
           :data-header="headerStyle"
           class="pxd-modal--content group flex-1"
           content-class="group-data-[header=true]:pt-6 px-6 pb-6 empty:hidden"

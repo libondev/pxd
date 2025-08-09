@@ -320,11 +320,9 @@ const isVisible = ref(false)
   <PButton variant="primary" @click="isVisible = true">Open Simple Drawer</PButton>
 
   <PDrawer v-model="isVisible" size="350px">
-    <div class="p-4">
-      <h3 class="text-lg font-semibold mb-4">Custom Header</h3>
-      <PText>This drawer doesn't use the built-in header. You can create your own custom header and content layout.</PText>
-      <PText class="mt-4">This gives you complete control over the drawer's appearance.</PText>
-    </div>
+    <h3 class="text-lg font-semibold mb-4">Custom Header</h3>
+    <PText>This drawer doesn't use the built-in header. You can create your own custom header and content layout.</PText>
+    <PText class="mt-4">This gives you complete control over the drawer's appearance.</PText>
 
     <template #footer>
       <PButton block @click="isVisible = false">

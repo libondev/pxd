@@ -146,25 +146,24 @@ watch(() => isVisible.value, (visible) => {
         :style="computedStyle"
       >
         <header
-          class="pxd-drawer--header px-6 py-4 sm:py-6 relative shrink-0"
+          class="pxd-drawer--header px-6 py-4 sm:py-6 relative shrink-0 empty:py-3"
           :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStyle }"
         >
-          <div class="flex-1 shrink-0">
-            <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
-              <slot name="title">
-                {{ title }}
-              </slot>
-            </h3>
+          <h3 v-if="$slots.title || title" class="text-base sm:text-2xl font-semibold tracking-tight">
+            <slot name="title">
+              {{ title }}
+            </slot>
+          </h3>
 
-            <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
-              <slot name="subtitle">
-                {{ subtitle }}
-              </slot>
-            </div>
+          <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
+            <slot name="subtitle">
+              {{ subtitle }}
+            </slot>
           </div>
         </header>
 
         <PScrollable
+          v-if="$slots.default"
           :data-header="headerStyle"
           class="pxd-drawer--content group flex-1"
           content-class="group-data-[header=true]:pt-6 px-6 pb-6"
