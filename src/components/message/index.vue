@@ -130,7 +130,7 @@ function onPointerOut(e: PointerEvent) {
           :data-key="item.key"
           :data-type="item.type"
           :class="item.class"
-          class="pxd-message--item group py-2 pl-3 pr-2 text-sm flex w-max items-center rounded-lg bg-background-100 shadow-border-modal motion-safe:transition-all"
+          class="pxd-message--item group py-2 pl-3 pr-2 text-sm flex w-max items-center rounded-lg bg-background-100 shadow-border-modal"
         >
           <component :is="TYPE_ICONS[item.type]" v-if="item.type" class="mr-2 pxd-message--icon" :class="item.type" />
 
@@ -215,14 +215,14 @@ function onPointerOut(e: PointerEvent) {
     &.info {
       color: var(--color-gray-600)
     }
-    &.success {
-      color: var(--color-green-500)
-    }
     &.error {
-      color: var(--color-red-500)
+      color: var(--color-red-700)
     }
     &.warning {
       color: var(--color-yellow-500)
+    }
+    &.success {
+      color: var(--color-green-700)
     }
   }
 }
