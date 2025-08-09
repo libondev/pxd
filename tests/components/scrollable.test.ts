@@ -38,10 +38,10 @@ describe('pScrollable', () => {
     })
     expect(wrapper.find('.pxd-scrollable').exists()).toBe(true)
     expect(wrapper.find('.pxd-scrollable--content').exists()).toBe(true)
-    expect(wrapper.find('.pxd-scrollable--fader-x').exists()).toBe(true)
-    expect(wrapper.find('.pxd-scrollable--fader-y').exists()).toBe(true)
     expect(wrapper.find('.pxd-scrollable--scrollbar-y').isVisible()).toBe(true)
     expect(wrapper.find('.pxd-scrollable--scrollbar-x').isVisible()).toBe(true)
+    expect(wrapper.find('.pxd-fader[data-direction="horizontal"]').exists()).toBe(true)
+    expect(wrapper.find('.pxd-fader[data-direction="vertical"]').exists()).toBe(true)
   })
 
   it('emits scroll event when content is scrolled', async () => {

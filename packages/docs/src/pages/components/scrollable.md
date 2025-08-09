@@ -11,15 +11,16 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 </template>
 ```
 
-## Custom Color
+## Fader
 
 ```vue demo
 <template>
   <PScrollable
     class="w-100 max-w-full h-100 border rounded-md"
-    mask-color="var(--color-pink-400)"
-    scrollbarColor="var(--color-red-700)"
-    scrollbar-hover-color="var(--color-red-500)"
+    fader-size="50"
+    fader-color="var(--color-blue-300)"
+    scrollbar-color="var(--color-orange-400)"
+    scrollbar-hover-color="var(--color-orange-600)"
   >
     <div class="p-4 w-screen h-screen bg-background-100 rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.

@@ -5,11 +5,12 @@ import { useResizeObserver } from '../../composables/useBrowserObserver'
 import { off, on, once } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
 import { isServer } from '../../utils/is'
+import PFader from '../fader/index.vue'
 
 interface Props {
-  size?: number
   fader?: boolean
-  maskColor?: string
+  faderSize?: number
+  faderColor?: string
   scrollbar?: boolean
   contentClass?: ComponentClass
   scrollbarSize?: number
@@ -24,8 +25,8 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    size: 10,
     fader: true,
+    faderSize: 16,
     scrollbar: true,
     scrollbarSize: 6,
     scrollbarColor: 'var(--color-gray-alpha-300)',
@@ -98,10 +99,10 @@ function updateDirectionFader() {
     clientHeight,
   } = wrapper
 
-  const hasTop = scrollTop >= props.size
+  const hasTop = scrollTop >= props.faderSize
   // 有时候会出现滚动条的位置和最大高度相差 0.x 的误差，所以这里减去一个阈值
   const hasBottom = scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD
-  const hasLeft = scrollLeft >= props.size
+  const hasLeft = scrollLeft >= props.faderSize
   const hasRight = scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD
 
   faderDirections.value = {
@@ -337,12 +338,11 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-scrollable group/scrollable sm:[--sv:0] relative flex overflow-hidden hover:[--sv:1]" :style="{
-      '--size': `${size}px`,
-      '--mask-color': maskColor,
+    class="pxd-scrollable group/scrollable sm:[--sv:0] relative flex overflow-hidden hover:[--sv:1]"
+    :style="{
       '--scrollbar-size': `${scrollbarSize}px`,
       '--scrollbar-color': scrollbarColor,
-      '--scrollbar-color-hover': scrollbarHoverColor,
+      '--scrollbar-hover-color': scrollbarHoverColor,
     }"
   >
     <div
@@ -354,15 +354,19 @@ defineExpose({
     </div>
 
     <template v-if="fader">
-      <div
-        aria-hidden="true"
-        class="pxd-scrollable--fader-x inset-0 pointer-events-none absolute size-full rounded-inherit"
-        :class="{ left: faderDirections.left, right: faderDirections.right }"
+      <PFader
+        :size="faderSize"
+        :color="faderColor"
+        direction="vertical"
+        :top="faderDirections.top"
+        :bottom="faderDirections.bottom"
       />
-      <div
-        aria-hidden="true"
-        class="pxd-scrollable--fader-y inset-0 pointer-events-none absolute size-full rounded-inherit"
-        :class="{ top: faderDirections.top, bottom: faderDirections.bottom }"
+      <PFader
+        :size="faderSize"
+        :color="faderColor"
+        direction="horizontal"
+        :left="faderDirections.left"
+        :right="faderDirections.right"
       />
     </template>
 
@@ -374,7 +378,7 @@ defineExpose({
         style="width:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) hover:will-change-transform active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -387,7 +391,7 @@ defineExpose({
         style="height:calc(var(--scrollbar-size) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-color-hover) hover:will-change-transform active:bg-(--scrollbar-color-hover) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />
@@ -395,68 +399,3 @@ defineExpose({
     </template>
   </div>
 </template>
-
-<style lang="postcss">
-.pxd-scrollable--fader-x,
-.pxd-scrollable--fader-y {
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    border-radius: inherit;
-    background: linear-gradient(var(--dir), transparent, var(--mask-color, var(--color-gray-alpha-500)));
-    mask-image: linear-gradient(var(--dir-revert), var(--mask-color, var(--color-gray-alpha-500)) 50%, transparent);
-    transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
-    opacity: 0;
-  }
-
-  &.left::before,
-  &.right::after,
-  &.top::before,
-  &.bottom::after {
-    opacity: 1;
-  }
-}
-
-.pxd-scrollable--fader-x {
-  &::before,
-  &::after {
-    top: 0;
-    width: var(--size);
-    height: 100%;
-  }
-
-  &::before {
-    left: 0;
-    --dir: to left;
-    --dir-revert: to right;
-  }
-
-  &::after {
-    right: 0;
-    --dir: to right;
-    --dir-revert: to left;
-  }
-}
-
-.pxd-scrollable--fader-y {
-  &::before,
-  &::after {
-    left: 0;
-    width: 100%;
-    height: var(--size, 30px);
-  }
-
-  &::before {
-    top: 0;
-    --dir: to top;
-    --dir-revert: to bottom;
-  }
-
-  &::after {
-    bottom: 0;
-    --dir: to bottom;
-    --dir-revert: to top;
-  }
-}
-</style>
