@@ -30,7 +30,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [InputProps['modelValue']]
+  'update:modelValue': [string]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
   'change': [InputProps['modelValue']]
