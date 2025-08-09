@@ -2,6 +2,7 @@
 Display global messages as feedback in response to user operations.
 
 ## Default
+Message can be used only once in the root component. If you need to register multiple times or want to show it in different locations, you can set the group property to isolate it.
 
 ```vue demo
 <script setup>
@@ -19,7 +20,7 @@ const options = [
   { label: 'Bottom End', value: 'bottom-end' },
 ]
 
-function onAddMessage(type) {
+function addMessage(type) {
   useMessage('Now it\'s:' + Date.now(), { type })
 }
 </script>
@@ -31,12 +32,35 @@ function onAddMessage(type) {
     <PRadioGroup v-model="position" :options="options" />
 
     <PStack gap="2">
-      <PButton @click="onAddMessage()">Add normal</PButton>
-      <PButton @click="onAddMessage('info')">Add info</PButton>
-      <PButton @click="onAddMessage('error')">Add error</PButton>
-      <PButton @click="onAddMessage('warning')">Add warning</PButton>
-      <PButton @click="onAddMessage('success')">Add success</PButton>
+      <PButton @click="addMessage()">Add normal</PButton>
+      <PButton @click="addMessage('info')">Add info</PButton>
+      <PButton @click="addMessage('error')">Add error</PButton>
+      <PButton @click="addMessage('warning')">Add warning</PButton>
+      <PButton @click="addMessage('success')">Add success</PButton>
     </PStack>
   </PStack>
+</template>
+```
+
+## Max
+Max prop limits how many message can be displayed at the same time. (default: 6)
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import { useMessage } from 'pxd'
+
+function addMessage() {
+  useMessage('Now it\'s:' + Date.now(), {
+    group: 'max',
+    durations: 100000
+  })
+}
+</script>
+
+<template>
+  <PMessage group="max" :max="3" />
+
+  <PButton @click="addMessage()">Add</PButton>
 </template>
 ```

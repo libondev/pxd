@@ -42,7 +42,7 @@ const ITEM_SELECTOR = '.pxd-message--item'
 const groupMessages = computed(() => messages.value.filter(m => m.group === props.group))
 
 const visibleMessages = computed(() => {
-  const max = Number(props.max || 0)
+  const max = Math.max(props.max, 0)
   const list = groupMessages.value
 
   if (!max || max <= 0) {
