@@ -49,8 +49,8 @@ interface CountDownTimeInfo {
 
 export function useCountdown<T extends Record<string, any>>(props: Options, emits: EmitFn<T>) {
   let pnow = -1
-  let timerId: ReturnType<typeof setTimeout> | null = null
   let finished = false
+  let isPaused = false
 
   const UPDATE_INTERVAL = 34
   const TIME_CONSTANTS = {
@@ -95,25 +95,6 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     }
   })
 
-  function getDelay(precision: number, distance: number): number {
-    // When the distance is very close, it will be completed immediately.
-    // If it is less than the minimum time, it will be completed immediately.
-    if (distance <= 0 || distance <= UPDATE_INTERVAL) {
-      return 0
-    }
-
-    switch (precision) {
-      case 3:
-        return UPDATE_INTERVAL
-      case 2:
-        return Math.min(Math.max(UPDATE_INTERVAL, distance % 10), 100)
-      case 1:
-        return Math.min(Math.max(UPDATE_INTERVAL, distance % 100), 1000)
-      default:
-        return Math.min(Math.max(UPDATE_INTERVAL, distance % 1000), 1000)
-    }
-  }
-
   function getTimeInfo(time: number): CountDownTimeInfo {
     const dd = Math.floor(time / TIME_CONSTANTS.DAY)
     const hh = Math.floor((time % TIME_CONSTANTS.DAY) / TIME_CONSTANTS.HOUR)
@@ -132,18 +113,18 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     distanceRef.value = durations.value
   }
 
-  function stopTimer() {
-    if (timerId) {
-      clearTimeout(timerId)
-      timerId = null
-    }
+  function finish() {
+    distanceRef.value = 0
+    finished = true
+
+    emits('finish')
   }
 
   function reset() {
     pnow = performance.now()
     finished = false
+    isPaused = false
     setDistance()
-    stopTimer()
 
     emits('reset')
 
@@ -152,26 +133,34 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     }
   }
 
-  function frame() {
+  let previousFrameTime = 0
+  function frame(timestamp?: DOMHighResTimeStamp) {
     const distance = getDistance(performance.now())
+    let isLastFrame = false
+
+    if (isPaused) {
+      if (distance < UPDATE_INTERVAL) {
+        isLastFrame = true
+      } else {
+        return
+      }
+    }
+
+    if (performance.now() - previousFrameTime < UPDATE_INTERVAL && !isLastFrame) {
+      requestAnimationFrame(frame)
+      return
+    }
+
+    previousFrameTime = timestamp!
 
     if (distance <= 0) {
-      distanceRef.value = 0
-      finished = true
-      stopTimer()
-
-      emits('finish')
+      finish()
       return
     }
 
     distanceRef.value = Math.max(0, distance)
-    const delay = getDelay(props.precision ?? 0, distance)
 
-    if (delay > 0) {
-      timerId = setTimeout(frame, delay)
-    } else {
-      requestAnimationFrame(frame)
-    }
+    requestAnimationFrame(frame)
   }
 
   const unwatchActive = watch(
@@ -180,7 +169,13 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
       emits('change', isActive)
 
       if (isActive) {
-        pnow = performance.now()
+        if (isPaused) {
+          pnow = performance.now() - durations.value + distanceRef.value
+        } else {
+          pnow = performance.now()
+        }
+
+        isPaused = false
 
         if (finished && props.autoReset) {
           reset()
@@ -190,7 +185,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
 
         frame()
       } else {
-        stopTimer()
+        isPaused = true
       }
     },
     { immediate: true },
@@ -210,7 +205,6 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
   )
 
   onBeforeUnmount(() => {
-    stopTimer()
     unwatchTimes()
     unwatchActive()
   })
