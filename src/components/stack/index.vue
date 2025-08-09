@@ -108,7 +108,7 @@ const formattedDirection = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-stack flex', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = ['pxd-stack flex max-w-full', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     classes.push('flex-wrap')
