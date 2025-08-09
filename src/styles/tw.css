@@ -478,17 +478,20 @@
 .pxd-transition--fade-enter-from,
 .pxd-transition--fade-leave-to {
   opacity: 0;
+  will-change: opacity;
 }
 
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
-  transition: all var(--default-transition-duration) var(--default-transition-timing-function);
+  transition: var(--default-transition-duration) var(--default-transition-timing-function);
+  transition-property: opacity, transform;
+  will-change: opacity, transform;
 }
 
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  transform: scale(.8);
+  transform: scale(var(--scale,.8)) translateZ(0);
 }
 
 .line-clamp {
