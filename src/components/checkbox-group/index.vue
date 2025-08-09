@@ -52,7 +52,7 @@ defineExpose({
 </script>
 
 <template>
-  <PStack class="pxd-checkbox-group" role="group" aria-label="Checkbox Group" v-bind="$attrs">
+  <PStack class="pxd-checkbox-group w-max" role="group" aria-label="Checkbox Group" v-bind="$attrs">
     <slot>
       <PCheckbox
         v-for="option in options"
