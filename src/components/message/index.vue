@@ -166,7 +166,7 @@ function onPointerOut(e: PointerEvent) {
 
   .pxd-message--group {
     align-items: center;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   &[data-position^="top"] {
@@ -181,7 +181,7 @@ function onPointerOut(e: PointerEvent) {
     bottom: 0;
 
     .pxd-message--group {
-      flex-direction: column;
+      flex-direction: column-reverse;
     }
 
     .pxd-message--item {
