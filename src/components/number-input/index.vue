@@ -2,8 +2,8 @@
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/useModelValue'
-import { useRepeatAction } from '../../composables/useRepeatAction'
+import { useModelValue } from '../../composables/use-model-value'
+import { useRepeatAction } from '../../composables/use-repeat-action'
 import PInput from '../input/index.vue'
 
 interface Props {

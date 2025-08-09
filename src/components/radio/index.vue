@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { RadioProps } from '../../types/components/radio'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/useModelValue'
-import { useUniqueId } from '../../composables/useUniqueIdContext'
+import { useModelValue } from '../../composables/use-model-value'
+import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
 

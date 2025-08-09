@@ -3,7 +3,7 @@ import type { CheckboxProps } from '../../types/components/checkbox'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/useModelValue'
+import { useModelValue } from '../../composables/use-model-value'
 import { useCheckboxGroupContext } from '../../contexts/checkbox'
 import { getUniqueId } from '../../utils/uid'
 

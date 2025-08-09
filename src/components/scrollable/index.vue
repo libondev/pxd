@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentClass, ComponentDirection } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { useResizeObserver } from '../../composables/useBrowserObserver'
+import { useResizeObserver } from '../../composables/use-browser-observer'
 import { off, on, once } from '../../utils/events'
 import { throttleByRaf } from '../../utils/fn'
 import { isServer } from '../../utils/is'

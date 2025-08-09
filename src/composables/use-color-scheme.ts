@@ -1,6 +1,6 @@
 import { computed, onBeforeUnmount, shallowRef, watchEffect } from 'vue'
 import { isServer } from '../utils/is'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from './useMediaQuery'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 
 export type ColorScheme = 'light' | 'dark'
 export type ColorPreference = ColorScheme | 'auto'

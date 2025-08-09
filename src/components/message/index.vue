@@ -145,7 +145,7 @@ function onPointerOut(e: PointerEvent) {
             size="xs"
             variant="ghost"
             class="ml-1 touch-none opacity-0 group-hover:opacity-100 motion-safe:transition-opacity"
-            @click="closeMessage(item.key!)"
+            @click="closeMessage(item.key)"
           >
             <CloseIcon />
           </PButton>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
-import { useDelayChange } from '../../composables/useDelayChange'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useDelayChange } from '../../composables/use-delay-change'
 import { getColorByThreshold } from '../../utils/colors'
 import { getAllDatesBetween } from '../../utils/dates'
 

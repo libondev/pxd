@@ -2,7 +2,7 @@
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
 import LockClosedIcon from '@gdsicon/vue/lock-closed'
 import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
-import { useCopyClick } from '../../composables/useCopyClick'
+import { useCopyClick } from '../../composables/use-copy-click'
 import PButton from '../button/index.vue'
 
 interface Props {

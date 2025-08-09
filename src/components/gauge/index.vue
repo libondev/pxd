@@ -2,7 +2,7 @@
 import type { ComponentSizeWithXs } from '../../types/shared'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { getColorByThreshold } from '../../utils/colors'
 import { getFallbackValue } from '../../utils/value'
 

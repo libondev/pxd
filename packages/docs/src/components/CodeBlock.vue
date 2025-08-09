@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCopyClick } from 'pxd/composables/useCopyClick'
+import { useCopyClick } from 'pxd/composables/use-copy-click'
 
 const { renderAs, onCopyClick } = useCopyClick()
 

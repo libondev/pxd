@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentLabel } from '../../types/shared'
 import { shallowRef, watch } from 'vue'
-import { useFocusTrap } from '../../composables/useFocusTrap'
-import { useModelValue } from '../../composables/useModelValue'
+import { useFocusTrap } from '../../composables/use-focus-trap'
+import { useModelValue } from '../../composables/use-model-value'
 import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
 

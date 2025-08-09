@@ -2,7 +2,7 @@
 import type { ButtonProps } from '../../types/components/button'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/useModelValue'
+import { useModelValue } from '../../composables/use-model-value'
 import PButton from '../button/index.vue'
 
 interface Props extends ButtonProps {

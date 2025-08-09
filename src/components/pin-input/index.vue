@@ -2,8 +2,8 @@
 import type { HTMLAttributes } from 'vue'
 import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
-import { useModelValue } from '../../composables/useModelValue'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useModelValue } from '../../composables/use-model-value'
 import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 

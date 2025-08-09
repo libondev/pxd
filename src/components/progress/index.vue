@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
-import { useModelValue } from '../../composables/useModelValue'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useModelValue } from '../../composables/use-model-value'
 import { getColorByThreshold } from '../../utils/colors'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'

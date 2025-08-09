@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import PText from '../text/index.vue'
 
 interface Page {

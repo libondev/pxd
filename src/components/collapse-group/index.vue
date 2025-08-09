@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/shared'
 import { computed, ref } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { getFallbackValue } from '../../utils/value'
 

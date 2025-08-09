@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
-import { useModelValue } from '../../composables/useModelValue'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useModelValue } from '../../composables/use-model-value'
 import { off, on, once } from '../../utils/events'
 import { getFallbackValue } from '../../utils/value'
 

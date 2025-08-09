@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
 import { computed, ref } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
-import { useCopyClick } from '../../composables/useCopyClick'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useCopyClick } from '../../composables/use-copy-click'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ChoiceboxGroupProps } from '../../types/components/choicebox'
 import { computed, markRaw, useAttrs } from 'vue'
-import { useModelValue } from '../../composables/useModelValue'
+import { useModelValue } from '../../composables/use-model-value'
 import { provideChoiceboxGroupContext, provideChoiceboxGroupModelValue } from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
 import PRadioGroup from '../radio-group/index.vue'

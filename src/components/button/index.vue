@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components/button'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 import PSpinner from '../spinner/index.vue'

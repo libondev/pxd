@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { Options } from '../../composables/useCountdown'
+import type { Options } from '../../composables/use-countdown'
 import { computed } from 'vue'
-import { useCountdown } from '../../composables/useCountdown'
+import { useCountdown } from '../../composables/use-countdown'
 
 interface Props extends Options {
   format?: string

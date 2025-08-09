@@ -5,7 +5,7 @@ import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useVirtualList } from '../../composables/useVirtualList'
+import { useVirtualList } from '../../composables/use-virtual-list'
 
 interface Props {
   dataKey?: string

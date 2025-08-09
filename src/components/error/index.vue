@@ -4,7 +4,7 @@ import type { ComponentSizeWithXs } from '../../types/shared'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/useConfigProviderContext'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isExternalLink } from '../../utils/format'
 import { getFallbackValue } from '../../utils/value'
 

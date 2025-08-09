@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CheckboxGroupProps } from '../../types/components/checkbox'
-import { useModelValue } from '../../composables/useModelValue'
+import { useModelValue } from '../../composables/use-model-value'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'

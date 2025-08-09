@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, shallowRef } from 'vue'
-import { useIntersectionObserver } from '../../composables/useBrowserObserver'
+import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { getCssUnitValue } from '../../utils/format'
 import KeepAliveContent from './content.vue'
 

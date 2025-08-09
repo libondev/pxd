@@ -1,7 +1,7 @@
-import type { VirtualListProps } from '../../src/composables/useVirtualList'
+import type { VirtualListProps } from '../../src/composables/use-virtual-list'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
-import { useVirtualList } from '../../src/composables/useVirtualList'
+import { useVirtualList } from '../../src/composables/use-virtual-list'
 import { useSetupWrapper } from '../helpers/setup'
 
 describe('useVirtualList', () => {

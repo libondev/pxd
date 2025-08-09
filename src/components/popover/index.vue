@@ -3,8 +3,8 @@ import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
 import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useDelayDestroy } from '../../composables/useDelayDestroy'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/useMediaQuery'
+import { useDelayDestroy } from '../../composables/use-delay-destroy'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import {
   getElementRectFromContainer,
   getScrollContainer,
