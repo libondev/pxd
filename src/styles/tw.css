@@ -481,6 +481,7 @@
   will-change: opacity;
 }
 
+.pxd-transition--fade-scale-move,
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
   transition: var(--default-transition-duration) var(--default-transition-timing-function);

@@ -108,6 +108,10 @@
     "name": "menu"
   },
   {
+    "camelized": "Message",
+    "name": "message"
+  },
+  {
     "camelized": "Modal",
     "name": "modal"
   },
