@@ -13,7 +13,10 @@ interface Options {
   closeable?: boolean
 }
 
-interface MessageItem extends Required<Options> {
+type RequireAllExcept<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>
+type RequiredOptionsExceptType = RequireAllExcept<Options, 'type'>
+
+interface MessageItem extends RequiredOptionsExceptType {
   message: string | VNode
   _remainingMs?: number
   _startedAtMs?: number
@@ -51,15 +54,15 @@ export function configureMessages(config: Partial<MessageConfig>) {
 export function useMessage(msg: string | VNode, options?: Options) {
   options ??= {} as Options
 
-  const message = {
+  const message: MessageItem = {
     key: options.key || getUniqueId(),
     message: msg,
-    type: options.type || 'info',
-    class: options.class!,
+    type: options.type,
+    class: options.class ?? '',
     group: options.group || 'default',
     durations: options.durations ?? 3000,
-    closeable: options.closeable || false,
-  } satisfies MessageItem
+    closeable: options.closeable ?? false,
+  }
 
   messages.value.push(message)
 

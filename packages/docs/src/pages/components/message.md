@@ -19,8 +19,8 @@ const options = [
   { label: 'Bottom End', value: 'bottom-end' },
 ]
 
-function onAddMessage() {
-  useMessage('Now it\'s:' + Date.now())
+function onAddMessage(type) {
+  useMessage('Now it\'s:' + Date.now(), { type })
 }
 </script>
 
@@ -30,7 +30,13 @@ function onAddMessage() {
   <PStack direction="vertical">
     <PRadioGroup v-model="position" :options="options" />
 
-    <PButton @click="onAddMessage">Add Message</PButton>
+    <PStack gap="2">
+      <PButton @click="onAddMessage()">Add normal</PButton>
+      <PButton @click="onAddMessage('info')">Add info</PButton>
+      <PButton @click="onAddMessage('error')">Add error</PButton>
+      <PButton @click="onAddMessage('warning')">Add warning</PButton>
+      <PButton @click="onAddMessage('success')">Add success</PButton>
+    </PStack>
   </PStack>
 </template>
 ```
