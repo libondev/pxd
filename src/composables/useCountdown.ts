@@ -51,6 +51,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
   let pnow = -1
   let timerId: ReturnType<typeof setTimeout> | null = null
   let finished = false
+  let isPaused = false
 
   const UPDATE_INTERVAL = 34
   const TIME_CONSTANTS = {
@@ -139,9 +140,18 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     }
   }
 
+  function finish() {
+    distanceRef.value = 0
+    finished = true
+    stopTimer()
+
+    emits('finish')
+  }
+
   function reset() {
     pnow = performance.now()
     finished = false
+    isPaused = false
     setDistance()
     stopTimer()
 
@@ -156,11 +166,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     const distance = getDistance(performance.now())
 
     if (distance <= 0) {
-      distanceRef.value = 0
-      finished = true
-      stopTimer()
-
-      emits('finish')
+      finish()
       return
     }
 
@@ -180,7 +186,11 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
       emits('change', isActive)
 
       if (isActive) {
-        pnow = performance.now()
+        if (isPaused) {
+          pnow = performance.now() - durations.value + distanceRef.value
+        } else {
+          pnow = performance.now()
+        }
 
         if (finished && props.autoReset) {
           reset()
@@ -190,6 +200,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
 
         frame()
       } else {
+        isPaused = true
         stopTimer()
       }
     },
