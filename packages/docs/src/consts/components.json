@@ -68,6 +68,10 @@
     "name": "error"
   },
   {
+    "camelized": "Fader",
+    "name": "fader"
+  },
+  {
     "camelized": "Gauge",
     "name": "gauge"
   },
