@@ -39,34 +39,25 @@ export interface Options {
   millisecond?: boolean
 }
 
-interface CountDownTimeInfo {
-  dd: number
-  hh: number
-  mm: number
-  ss: number
-  ms: number
-}
-
-export function useCountdown<T extends Record<string, any>>(props: Options, emits: EmitFn<T>) {
+export function useCountdown<T extends Record<string, any>>(
+  props: Options,
+  emits: EmitFn<T>,
+) {
   let pnow = -1
   let finished = false
   let isPaused = false
 
   const UPDATE_INTERVAL = 34
-  const TIME_CONSTANTS = {
-    DAY: 86400000,
-    HOUR: 3600000,
-    MINUTE: 60000,
-    SECOND: 1000,
-  }
 
+  const startDate = shallowRef(0)
   const distanceRef = shallowRef<number>(0)
 
   const durations = computed(() => {
     const { endTime, durations = 0, millisecond } = props
 
     if (endTime) {
-      const end = (String(endTime).length >= 13 ? endTime : endTime * 1000) - Date.now()
+      const end
+        = (String(endTime).length >= 13 ? endTime : endTime * 1000) - Date.now()
       return Math.max(0, end)
     }
 
@@ -76,34 +67,6 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
 
     return Math.max(0, time)
   })
-
-  const times = computed(() => {
-    const { dd, hh, mm, ss, ms } = getTimeInfo(distanceRef.value)
-    const formatMs
-      = props.precision === 0
-        ? 0
-        : Math.floor(
-            ms / (props.precision === 1 ? 100 : props.precision === 2 ? 10 : 1),
-          )
-
-    return {
-      dd: String(dd).padStart(2, '0'),
-      hh: String(hh).padStart(2, '0'),
-      mm: String(mm).padStart(2, '0'),
-      ss: String(ss).padStart(2, '0'),
-      ms: formatMs.toString().padStart(props.precision || 0, '0'),
-    }
-  })
-
-  function getTimeInfo(time: number): CountDownTimeInfo {
-    const dd = Math.floor(time / TIME_CONSTANTS.DAY)
-    const hh = Math.floor((time % TIME_CONSTANTS.DAY) / TIME_CONSTANTS.HOUR)
-    const mm = Math.floor((time % TIME_CONSTANTS.HOUR) / TIME_CONSTANTS.MINUTE)
-    const ss = Math.floor((time % TIME_CONSTANTS.MINUTE) / TIME_CONSTANTS.SECOND)
-    const ms = Math.floor(time % TIME_CONSTANTS.SECOND)
-
-    return { dd, hh, mm, ss, ms }
-  }
 
   function getDistance(time: DOMHighResTimeStamp): number {
     return durations.value + pnow - time
@@ -129,6 +92,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
     emits('reset')
 
     if (props.active) {
+      startDate.value = Date.now()
       frame()
     }
   }
@@ -146,7 +110,10 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
       }
     }
 
-    if (performance.now() - previousFrameTime < UPDATE_INTERVAL && !isLastFrame) {
+    if (
+      performance.now() - previousFrameTime < UPDATE_INTERVAL
+      && !isLastFrame
+    ) {
       requestAnimationFrame(frame)
       return
     }
@@ -183,6 +150,7 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
           return
         }
 
+        startDate.value = Date.now()
         frame()
       } else {
         isPaused = true
@@ -211,6 +179,6 @@ export function useCountdown<T extends Record<string, any>>(props: Options, emit
 
   return {
     reset,
-    times,
+    timestamp: distanceRef,
   }
 }

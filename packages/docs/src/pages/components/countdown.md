@@ -28,14 +28,14 @@ function resetStatus() {
 </template>
 ```
 
-## Precision
+## Format
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
 const active = ref(false)
-const durations = ref(5000)
+const durations = ref(86400000)
 
 function resetStatus() {
   active.value = false
@@ -48,27 +48,28 @@ function resetStatus() {
 
     <PCountdown
       :active="active"
+      format="DD HH:mm:ss"
       :durations="durations"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
-      :precision="1"
+      format="DD HH:mm:ss:S"
       :durations="durations"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
-      :precision="2"
+      format="DD HH:mm:ss:SS"
       :durations="durations"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
-      :precision="3"
+      format="DD HH:mm:ss:SSS"
       :durations="durations"
       @finish="resetStatus"
     />
@@ -165,35 +166,6 @@ function resetStatus() {
       :active="active"
       :millisecond="false"
       :durations="endTime"
-      @finish="resetStatus"
-    />
-  </PStack>
-</template>
-```
-
-## Format
-Passing in a target time will automatically calculate the remaining time.
-
-```vue demo
-<script setup>
-import { shallowRef } from 'vue'
-
-const active = shallowRef(false)
-
-function resetStatus() {
-  active.value = false
-}
-</script>
-
-<template>
-  <PStack direction="vertical">
-    <PToggle v-model="active" label="Active" />
-
-    <PCountdown
-      :active="active"
-      :durations="90000000"
-      :precision="3"
-      format="dd hh:mm:ss.ms"
       @finish="resetStatus"
     />
   </PStack>

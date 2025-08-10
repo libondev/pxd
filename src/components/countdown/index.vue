@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import type { Options } from '../../composables/use-countdown'
+import dayjs from 'dayjs'
+import dayjsDuration from 'dayjs/plugin/duration'
 import { computed } from 'vue'
 import { useCountdown } from '../../composables/use-countdown'
+import millisecondTokenPlugin from '../../utils/dayjs-millisecond-token'
 
 interface Props extends Options {
   format?: string
@@ -20,7 +23,7 @@ const props = withDefaults(
     precision: 0,
     autoReset: true,
     millisecond: true,
-    format: 'hh:mm:ss.ms',
+    format: 'HH:mm:ss',
   },
 )
 
@@ -30,22 +33,32 @@ const emits = defineEmits<{
   finish: []
 }>()
 
+dayjs.extend(dayjsDuration)
+dayjs.extend(millisecondTokenPlugin)
+
 const {
   reset,
-  times,
+  timestamp,
 } = useCountdown<typeof emits>(props, emits)
 
+const times = computed(() => {
+  const t = dayjs.duration(timestamp.value)
+
+  return {
+    dd: t.format('DD'),
+    hh: t.format('HH'),
+    mm: t.format('mm'),
+    ss: t.format('ss'),
+    ms: t.format('SSS'),
+  }
+})
+
 const displayTimes = computed(() => {
-  const { format, precision } = props
-  let result = format
+  const time = dayjs
+    .duration(timestamp.value)
+    .format(props.format)
 
-  result = result.replace(/\.ms/, precision ? `.${times.value.ms}` : '')
-
-  return result
-    .replace(/dd/, times.value.dd)
-    .replace(/hh/, times.value.hh)
-    .replace(/mm/, times.value.mm)
-    .replace(/ss/, times.value.ss)
+  return time
 })
 
 defineExpose({
