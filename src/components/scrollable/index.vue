@@ -210,8 +210,6 @@ function startDragVertical(e: MouseEvent) {
 
   on(document, 'mousemove', onDragMove)
   once(document, 'mouseup', onEndDrag)
-
-  document.body.classList.add('select-none')
 }
 
 function startDragHorizontal(e: MouseEvent) {
@@ -235,9 +233,6 @@ function startDragHorizontal(e: MouseEvent) {
 
   on(document, 'mousemove', onDragMove)
   once(document, 'mouseup', onEndDrag)
-
-  // 添加禁止选择类
-  document.body.classList.add('select-none')
 }
 
 function onDragMove(e: MouseEvent) {
@@ -285,15 +280,12 @@ function onDragMove(e: MouseEvent) {
 // 结束拖拽
 function onEndDrag() {
   dragState.value.isDragging = false
-  dragState.value.direction = null // 重置方向
+  dragState.value.direction = null
   off(document, 'mousemove', onDragMove)
 
-  // 移除禁止选择类
-  document.body.classList.remove('select-none')
   throttledUpdate.cancel()
 
-  // 更新滚动条指标
-  requestAnimationFrame(updateScrollbarMetrics) // 使用 requestAnimationFrame 避免与滚动事件计算冲突
+  requestAnimationFrame(updateScrollbarMetrics)
 }
 
 function scrollTo(top: number, left: number) {
@@ -317,16 +309,13 @@ onMounted(async () => {
     return
   }
 
-  on(scrollContainer.value, 'scroll', onContainerScroll, { passive: true })
   on(window, 'resize', updateScrollbarMetrics, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  off(scrollContainer.value, 'scroll', onContainerScroll)
   off(window, 'resize', updateScrollbarMetrics)
   off(document, 'mousemove', onDragMove)
   off(document, 'mouseup', onEndDrag)
-  document.body.classList.remove('select-none')
   throttledUpdate.cancel()
 })
 
@@ -349,6 +338,7 @@ defineExpose({
       ref="scrollContainer"
       :class="contentClass"
       class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
+      @scroll.passive="onContainerScroll"
     >
       <slot />
     </div>
@@ -361,6 +351,7 @@ defineExpose({
         :top="faderDirections.top"
         :bottom="faderDirections.bottom"
       />
+
       <PFader
         :size="faderSize"
         :color="faderColor"
@@ -374,7 +365,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--scrollbar-size) + 8px)"
       >
         <div
@@ -387,7 +378,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute opacity-(--sv) active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--scrollbar-size) + 8px)"
       >
         <div
