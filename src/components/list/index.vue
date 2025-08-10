@@ -23,6 +23,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     options: () => [],
+    closeOnPressEscape: true,
   },
 )
 
