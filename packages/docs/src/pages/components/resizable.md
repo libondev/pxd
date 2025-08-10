@@ -17,7 +17,7 @@ const direction = ref('horizontal')
       <PSwitch value="vertical">Col</PSwitch>
     </PSwitchGroup>
 
-    <div class="w-100 h-100 border rounded-lg">
+    <div class="w-100 h-100 max-w-full border rounded-lg">
       <PResizable :direction="direction">
         <PResizablePanel class="flex items-center justify-center">
           One

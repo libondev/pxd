@@ -207,7 +207,7 @@ onBeforeUnmount(() => {
     @pointerover="onPointerOver"
     @keydown="onContainerKeydown"
   >
-    <PScrollable class="max-h-68" :fader="false" content-class="pr-2">
+    <PScrollable class="max-h-68" content-class="pr-2">
       <slot>
         <PListItem
           v-for="(option, index) in options"
