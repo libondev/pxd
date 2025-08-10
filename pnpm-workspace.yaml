@@ -15,6 +15,7 @@ catalog:
   '@vue/test-utils': ^2.4.6
   '@vue/tsconfig': ^0.7.0
   cross-spawn: ^7.0.6
+  dayjs: ^1.11.13
   eslint: ^9.32.0
   eslint-plugin-better-tailwindcss: ^3.7.4
   happy-dom: ^18.0.1

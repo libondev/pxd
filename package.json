@@ -115,7 +115,8 @@
     "vue": ">=2.7.0 || >=3.2.0"
   },
   "dependencies": {
-    "@gdsicon/vue": "catalog:"
+    "@gdsicon/vue": "catalog:",
+    "dayjs": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
