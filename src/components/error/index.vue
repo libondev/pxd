@@ -43,7 +43,7 @@ const computedClass = computed(() => {
 
 <template>
   <div :class="computedClass">
-    <StopIcon class="size-4 min-w-4 mr-2 mt-(--mt)" />
+    <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1">
       <b v-if="label || error?.label" class="font-medium whitespace-nowrap">{{ label || error?.label }}:</b>
