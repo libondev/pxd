@@ -11,7 +11,7 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 </template>
 ```
 
-## Fader
+## Stylize
 
 ```vue demo
 <template>

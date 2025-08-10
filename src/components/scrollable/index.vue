@@ -38,18 +38,18 @@ const emits = defineEmits<{
   scroll: [Event]
 }>()
 
-const DIFF_THRESHOLD = 1
+const containerRef = shallowRef<HTMLElement>()
 
-const scrollContainer = shallowRef<HTMLElement>(null!)
+let dragState = {
+  isDragging: false,
+  direction: null as ComponentDirection | null,
+  startClientPos: 0,
+  startScrollPos: 0,
+  containerSize: 0,
+  contentSize: 0,
+  thumbSize: 0,
+}
 
-const faderDirections = ref({
-  top: false,
-  left: false,
-  right: false,
-  bottom: false,
-})
-
-// 滚动条状态
 const scrollInfo = ref({
   verticalRatio: 0,
   horizontalRatio: 0,
@@ -60,61 +60,18 @@ const scrollInfo = ref({
   isScrollable: { x: false, y: false },
 })
 
-// 拖拽状态
-const dragState = ref({
-  isDragging: false,
-  direction: null as ComponentDirection | null,
-  startClientPos: 0,
-  startScrollPos: 0,
-  containerSize: 0,
-  contentSize: 0,
-  thumbSize: 0,
-})
-
-// 计算垂直滚动条样式
 const verticalThumbStyle = computed(() => ({
   height: `${scrollInfo.value.verticalThumbHeight}px`,
   transform: `translateY(${scrollInfo.value.verticalThumbTop}px)`,
 }))
 
-// 计算水平滚动条样式
 const horizontalThumbStyle = computed(() => ({
   width: `${scrollInfo.value.horizontalThumbWidth}px`,
   transform: `translateX(${scrollInfo.value.horizontalThumbLeft}px)`,
 }))
 
-// 滚动时计算是否展示渐变
-function updateDirectionFader() {
-  const wrapper = scrollContainer.value
-  if (!wrapper || !props.fader) {
-    return
-  }
-
-  const {
-    scrollTop,
-    scrollLeft,
-    scrollWidth,
-    scrollHeight,
-    clientWidth,
-    clientHeight,
-  } = wrapper
-
-  const hasTop = scrollTop >= props.faderSize
-  // 有时候会出现滚动条的位置和最大高度相差 0.x 的误差，所以这里减去一个阈值
-  const hasBottom = scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD
-  const hasLeft = scrollLeft >= props.faderSize
-  const hasRight = scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD
-
-  faderDirections.value = {
-    top: hasTop,
-    left: hasLeft,
-    right: hasRight,
-    bottom: hasBottom,
-  }
-}
-
 function updateScrollbarMetrics() {
-  const wrapper = scrollContainer.value
+  const wrapper = containerRef.value
   if (!wrapper || !props.scrollbar) {
     return
   }
@@ -152,7 +109,6 @@ function updateScrollbarMetrics() {
   verticalScrollPercentage = Math.max(0, Math.min(1, verticalScrollPercentage))
   horizontalScrollPercentage = Math.max(0, Math.min(1, horizontalScrollPercentage))
 
-  // 正确计算初始位置，不再添加额外的PADDING
   const verticalThumbTop = verticalScrollPercentage * scrollableHeight
   const horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
 
@@ -168,37 +124,27 @@ function updateScrollbarMetrics() {
   }
 }
 
-function updateScrollbarInfo() {
-  updateDirectionFader()
-  updateScrollbarMetrics()
-}
-
-const throttledUpdate = throttleByRaf(() => {
-  if (props.fader) {
-    updateDirectionFader()
-  }
-
-  // 只有在非拖拽状态下才更新滚动条位置
-  if (props.scrollbar && !dragState.value.isDragging) {
-    updateScrollbarMetrics()
-  }
-})
+const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
 
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
-  throttledUpdate()
+
+  // 只有在非拖拽状态下才更新滚动条位置
+  if (props.scrollbar && !dragState.isDragging) {
+    throttledUpdate()
+  }
 }
 
 function startDragVertical(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = scrollContainer.value
+  const wrapper = containerRef.value
   if (!wrapper) {
     return
   }
 
-  dragState.value = {
+  dragState = {
     isDragging: true,
     direction: 'vertical',
     startClientPos: e.clientY,
@@ -216,12 +162,12 @@ function startDragHorizontal(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = scrollContainer.value
+  const wrapper = containerRef.value
   if (!wrapper) {
     return
   }
 
-  dragState.value = {
+  dragState = {
     isDragging: true,
     direction: 'horizontal',
     startClientPos: e.clientX,
@@ -236,16 +182,16 @@ function startDragHorizontal(e: MouseEvent) {
 }
 
 function onDragMove(e: MouseEvent) {
-  if (!dragState.value.isDragging || !dragState.value.direction) {
+  if (!dragState.isDragging || !dragState.direction) {
     return
   }
 
-  const wrapper = scrollContainer.value
+  const wrapper = containerRef.value
   if (!wrapper) {
     return
   }
 
-  const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState.value
+  const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState
 
   if (direction === 'vertical') {
     const deltaY = e.clientY - startClientPos
@@ -262,13 +208,12 @@ function onDragMove(e: MouseEvent) {
     return
   }
 
-  // 计算移动距离
   const deltaX = e.clientX - startClientPos
 
   // 计算可滚动区域
   const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
 
-  // 计算新的滑块位置（考虑padding）
+  // 计算新的滑块位置
   const newThumbLeft = Math.max(0, Math.min(scrollableWidth, startScrollPos + deltaX))
 
   const scrollRatio = newThumbLeft / scrollableWidth
@@ -279,8 +224,8 @@ function onDragMove(e: MouseEvent) {
 
 // 结束拖拽
 function onEndDrag() {
-  dragState.value.isDragging = false
-  dragState.value.direction = null
+  dragState.isDragging = false
+  dragState.direction = null
   off(document, 'mousemove', onDragMove)
 
   throttledUpdate.cancel()
@@ -289,15 +234,15 @@ function onEndDrag() {
 }
 
 function scrollTo(top: number, left: number) {
-  if (!scrollContainer.value) {
+  if (!containerRef.value) {
     return
   }
 
-  scrollContainer.value.scrollTo({ top, left })
+  containerRef.value.scrollTo({ top, left })
 }
 
-if (props.scrollbar || props.fader) {
-  useResizeObserver(scrollContainer, updateScrollbarInfo)
+if (props.scrollbar) {
+  useResizeObserver(containerRef, throttledUpdate)
 }
 
 onMounted(async () => {
@@ -321,7 +266,7 @@ onBeforeUnmount(() => {
 
 defineExpose({
   scrollTo,
-  forceUpdate: updateScrollbarInfo,
+  forceUpdate: throttledUpdate,
 })
 </script>
 
@@ -335,7 +280,7 @@ defineExpose({
     }"
   >
     <div
-      ref="scrollContainer"
+      ref="containerRef"
       :class="contentClass"
       class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
       @scroll.passive="onContainerScroll"
@@ -343,23 +288,12 @@ defineExpose({
       <slot />
     </div>
 
-    <template v-if="fader">
-      <PFader
-        :size="faderSize"
-        :color="faderColor"
-        direction="vertical"
-        :top="faderDirections.top"
-        :bottom="faderDirections.bottom"
-      />
-
-      <PFader
-        :size="faderSize"
-        :color="faderColor"
-        direction="horizontal"
-        :left="faderDirections.left"
-        :right="faderDirections.right"
-      />
-    </template>
+    <PFader
+      v-if="fader"
+      :size="faderSize"
+      :color="faderColor"
+      :container="containerRef"
+    />
 
     <template v-if="scrollbar">
       <div
