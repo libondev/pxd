@@ -6,11 +6,11 @@ interface Props {
 defineProps<Props>()
 
 const emits = defineEmits<{
-  'link-click': [MouseEvent]
+  click: [MouseEvent]
 }>()
 
 function onLinkClick(event: MouseEvent) {
-  emits('link-click', event)
+  emits('click', event)
 }
 </script>
 

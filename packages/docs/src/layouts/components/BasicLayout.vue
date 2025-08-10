@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import MenuAltIcon from '@gdsicon/vue/menu-alt'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { pascalize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
@@ -28,6 +29,8 @@ const {
 
 const route = useRoute()
 const openSidebar = ref(false)
+
+const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
 const showViewSource = computed(() => {
   return route.name?.startsWith('/components') && !route.name?.endsWith('/')
@@ -87,7 +90,7 @@ if (!isServer) {
 </script>
 
 <template>
-  <div class="left-0 top-0 bottom-0 absolute">
+  <div v-if="isSmUp" class="left-0 top-0 bottom-0 absolute">
     <aside class="sidebar top-12 bottom-0 w-60 sm:border-x sm:translate-x-0 fixed z-1 mt-px -translate-x-full border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
@@ -96,7 +99,7 @@ if (!isServer) {
   </div>
 
   <div class="sm:pl-60 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
-    <div class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background-100">
+    <div v-if="!isSmUp" class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background-100">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
           <MenuAltIcon class="text-xs" />
@@ -112,7 +115,7 @@ if (!isServer) {
       </PButton>
 
       <PDrawer v-model="openSidebar" title="Menu" position="bottom" header-style size="68%">
-        <Menus :menus="menus" class="-m-2" @link-click="handleToggleSidebar" />
+        <Menus :menus="menus" class="-m-2" @click="handleToggleSidebar" />
       </PDrawer>
     </div>
 
