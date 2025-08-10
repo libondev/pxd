@@ -19,7 +19,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    direction: 'horizontal',
+    direction: 'both',
   },
 )
 
