@@ -199,11 +199,12 @@ function onInputKeydown(ev: KeyboardEvent) {
   >
     <template #prefix>
       <button
-        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="disabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
         @pointerup="stopDecrease"
+        @contextmenu.prevent
       >
         <MinusIcon class="pointer-events-none" />
       </button>
@@ -219,11 +220,12 @@ function onInputKeydown(ev: KeyboardEvent) {
       </span>
 
       <button
-        class="flex aspect-square h-full cursor-pointer appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="disabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"
         @pointerup="stopIncrease"
+        @contextmenu.prevent
       >
         <PlusIcon class="pointer-events-none" />
       </button>

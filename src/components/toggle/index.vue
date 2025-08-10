@@ -65,7 +65,7 @@ function onCheckboxChange(e: Event) {
 <template>
   <label
     role="switch"
-    class="pxd-toggle group/toggle inline-flex cursor-pointer flex-col select-none"
+    class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation flex-col select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--abc': activeBgColor,

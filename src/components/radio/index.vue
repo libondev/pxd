@@ -62,7 +62,7 @@ function onChangeValue() {
   <label
     role="radio"
     :aria-checked="isChecked"
-    class="pxd-radio group/radio gap-2 inline-flex items-center"
+    class="pxd-radio group/radio gap-2 inline-flex touch-manipulation items-center"
     :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
     :for="uniqueId"
   >
