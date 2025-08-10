@@ -49,7 +49,6 @@ export function useCountdown<T extends Record<string, any>>(
 
   const UPDATE_INTERVAL = 34
 
-  const startDate = shallowRef(0)
   const distanceRef = shallowRef<number>(0)
 
   const durations = computed(() => {
@@ -92,7 +91,6 @@ export function useCountdown<T extends Record<string, any>>(
     emits('reset')
 
     if (props.active) {
-      startDate.value = Date.now()
       frame()
     }
   }
@@ -150,7 +148,6 @@ export function useCountdown<T extends Record<string, any>>(
           return
         }
 
-        startDate.value = Date.now()
         frame()
       } else {
         isPaused = true
