@@ -37,10 +37,22 @@ const props = withDefaults(
 )
 
 const VARIANTS = {
-  primary: 'var(--color-primary)',
-  error: 'var(--color-red-700)',
-  warning: 'var(--color-amber-700)',
-  success: 'var(--color-green-700)',
+  primary: {
+    bg: 'var(--color-primary)',
+    text: 'text-gray-100',
+  },
+  error: {
+    bg: 'var(--color-red-700)',
+    text: 'text-gray-100 dark:text-gray-1000',
+  },
+  warning: {
+    bg: 'var(--color-amber-700)',
+    text: 'text-gray-1000 dark:text-gray-100',
+  },
+  success: {
+    bg: 'var(--color-green-700)',
+    text: 'text-gray-100 dark:text-gray-1000',
+  },
 }
 
 const computedVariant = computed(() => getFallbackValue(props.variant, VARIANTS, 'primary'))
@@ -50,7 +62,11 @@ const computedDisabled = computed(() => {
 })
 
 const computedPopoverClass = computed(() => {
-  return ['px-3 py-2 text-gray-100 rounded-md text-[13px] break-words whitespace-pre-line shadow-border-tooltip bg-(--color)', props.popoverClass].join(' ')
+  return [
+    'px-3 py-2 rounded-md text-[13px] break-words whitespace-pre-line shadow-border-tooltip bg-(--color)',
+    computedVariant.value.text,
+    props.popoverClass,
+  ].join(' ')
 })
 </script>
 
@@ -60,7 +76,7 @@ const computedPopoverClass = computed(() => {
     show-arrow
     :position="position"
     :disabled="computedDisabled"
-    :arrow-color="computedVariant"
+    :arrow-color="computedVariant.bg"
     :trigger-class="triggerClass"
     :trigger-style="triggerStyle"
     :popover-class="computedPopoverClass"
