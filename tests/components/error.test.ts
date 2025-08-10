@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import Error from '../../src/components/error/index.vue'
 
-describe('errorComponent', () => {
+describe('error', () => {
   it('render default', () => {
     const wrapper = mount(Error, {
       slots: {

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import PScrollable from '../../src/components/scrollable/index.vue'
 
-describe('pScrollable', () => {
+describe('scrollable', () => {
   let wrapper: ReturnType<typeof mount<typeof PScrollable>>
 
   const createLargeContent = (width = 1000, height = 1000) => {
