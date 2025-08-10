@@ -24,9 +24,9 @@ const options = [
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
-        <PMenuItem v-for="(item, index) of options" :key="item.label" v-bind="item">
+        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
           {{ index }} - {{ item.label }}
-        </PMenuItem>
+        </PListItem>
       </template>
     </PMenu>
   </PStack>
@@ -56,9 +56,9 @@ const options = [
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
-        <PMenuItem v-for="(item, index) of options" :key="item.label" v-bind="item">
+        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
           {{ index }} - {{ item.label }}
-        </PMenuItem>
+        </PListItem>
       </template>
     </PMenu>
   </PStack>

@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import type { MenuListOption } from '../../types/components/menu'
+import type { ListOption } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { provideMenuListContext } from '../../contexts/menu'
+import { provideListContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
-import PMenuItem from '../menu-item/index.vue'
+import PListItem from '../list-item/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   width?: string | number
-  options?: MenuListOption[]
+  options?: ListOption[]
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
-  name: 'PMenuList',
+  name: 'PList',
 })
 
 const props = withDefaults(
@@ -26,12 +27,13 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  close: []
   toggle: [index: number]
   selected: [ev: MouseEvent, index: number]
 }>()
 
-const MENU_ITEM_CLASS = 'pxd-menu-item'
-const MENU_ITEM_SELECTOR = `.${MENU_ITEM_CLASS}`
+const ITEM_CLASS = 'pxd-list-item'
+const ITEM_SELECTOR = `.${ITEM_CLASS}`
 
 const activeIndex = shallowRef(-1)
 const allItems = shallowRef<HTMLElement[]>([])
@@ -48,14 +50,14 @@ function updateAllItemsIndex() {
   })
 }
 
-function registerMenuItem(el: HTMLElement): void {
+function registerListItem(el: HTMLElement): void {
   if (!allItems.value.includes(el)) {
     allItems.value.push(el)
     updateAllItemsIndex()
   }
 }
 
-function unregisterMenuItem(el: HTMLElement): void {
+function unregisterListItem(el: HTMLElement): void {
   const index = allItems.value.indexOf(el)
   if (index > -1) {
     allItems.value.splice(index, 1)
@@ -63,8 +65,7 @@ function unregisterMenuItem(el: HTMLElement): void {
   }
 }
 
-// 获取项目数据
-function getItemData(index: number): MenuListOption | null {
+function getItemData(index: number): ListOption | null {
   const element = allItems.value[index]
 
   if (!element) {
@@ -91,6 +92,7 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
   }
 
   const item = getItemData(nextIndex)
+
   if (item?.disabled) {
     return getCorrectIndex(dir, nextIndex)
   }
@@ -117,6 +119,11 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 
   if (key === 'Enter') {
     allItems.value[activeIndex.value]?.click()
+    return
+  }
+
+  if (key === 'Escape' && props.closeOnPressEscape) {
+    emits('close')
     return
   }
 
@@ -150,25 +157,26 @@ function onContainerKeydown(ev: KeyboardEvent) {
 
 function onPointerOver(ev: PointerEvent) {
   const target = ev.target as HTMLElement
-  const menuItem = target.closest(MENU_ITEM_SELECTOR) as HTMLElement
+  const listItem = target.closest(ITEM_SELECTOR) as HTMLElement
 
-  if (!menuItem || menuItem.dataset.index === undefined) {
+  if (!listItem || listItem.dataset.index === undefined) {
     return
   }
 
-  activeIndex.value = Number(menuItem.dataset.index)
+  activeIndex.value = Number(listItem.dataset.index)
 }
 
 function onOptionClick(ev: MouseEvent, index: number) {
   activeIndex.value = index
   emits('selected', ev, index)
+  emits('close')
 }
 
-provideMenuListContext({
+provideListContext({
   activeIndex,
   onOptionClick,
-  registerMenuItem,
-  unregisterMenuItem,
+  registerListItem,
+  unregisterListItem,
 })
 
 onMounted(() => {
@@ -192,16 +200,16 @@ onBeforeUnmount(() => {
 
 <template>
   <ul
-    role="menu"
+    role="list"
     tabindex="-1"
-    class="pxd-menu-list"
+    class="pxd-list"
     :style="computedStyle"
     @pointerover="onPointerOver"
     @keydown="onContainerKeydown"
   >
     <PScrollable class="max-h-68" :fader="false" content-class="pr-2">
       <slot>
-        <PMenuItem
+        <PListItem
           v-for="(option, index) in options"
           :key="option.value ?? index"
           v-bind="option"

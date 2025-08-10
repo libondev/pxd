@@ -2,7 +2,7 @@
 import type { ComponentPublicInstance } from 'vue'
 import type { ComponentAs, ComponentLabel } from '../../types/shared'
 import { computed, onMounted, onUnmounted, shallowRef } from 'vue'
-import { useMenuListContext } from '../../contexts/menu'
+import { useListContext } from '../../contexts/list'
 
 interface Props {
   as?: ComponentAs
@@ -12,7 +12,7 @@ interface Props {
 }
 
 defineOptions({
-  name: 'PMenuItem',
+  name: 'PListItem',
 })
 
 const props = withDefaults(
@@ -30,9 +30,9 @@ const emits = defineEmits<{
 const {
   activeIndex,
   onOptionClick,
-  registerMenuItem,
-  unregisterMenuItem,
-} = useMenuListContext()
+  registerListItem,
+  unregisterListItem,
+} = useListContext()
 
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)
@@ -60,12 +60,10 @@ function setRef(el: HTMLElement | ComponentPublicInstance) {
 
   itemRef.value = el instanceof HTMLElement ? el : el.$el!
 
-  // 注册菜单项
-  if (registerMenuItem) {
-    registerMenuItem(itemRef.value!)
+  if (registerListItem) {
+    registerListItem(itemRef.value!)
   }
 
-  // 更新当前索引
   updateCurrentIndex()
 }
 
@@ -83,7 +81,6 @@ function onItemClick(ev: MouseEvent) {
 onMounted(() => {
   updateCurrentIndex()
 
-  // 监听索引变化
   const observer = new MutationObserver(() => {
     updateCurrentIndex()
   })
@@ -95,15 +92,14 @@ onMounted(() => {
     })
   }
 
-  // 清理观察器
   onUnmounted(() => {
     observer.disconnect()
   })
 })
 
 onUnmounted(() => {
-  if (itemRef.value && unregisterMenuItem) {
-    unregisterMenuItem(itemRef.value)
+  if (itemRef.value && unregisterListItem) {
+    unregisterListItem(itemRef.value)
   }
 })
 </script>
@@ -113,11 +109,11 @@ onUnmounted(() => {
     :is="as"
     :ref="setRef"
     tabindex="-1"
-    role="menuitem"
+    role="listitem"
     :data-index="currentIndex"
     :data-disabled="disabled"
     :data-selected="activeIndex === currentIndex"
-    class="pxd-menu-item h-10 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
+    class="pxd-list-item h-10 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
     :class="computedClass"
     @click="onItemClick"
   >

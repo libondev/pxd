@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { MenuListOption } from '../../types/components/menu'
+import type { ListOption } from '../../types/components/list'
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
-import PMenuList from '../menu-list/index.vue'
+import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
-  options?: MenuListOption[]
+  options?: ListOption[]
   position?: ComponentPosition
   width?: string | number
 }
@@ -29,9 +29,12 @@ const emits = defineEmits<{
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
+function closePopover() {
+  popoverRef.value?.hide()
+}
+
 function onOptionClick(ev: MouseEvent, index: number) {
   emits('selected', ev, index)
-  popoverRef.value!.hide()
 }
 </script>
 
@@ -50,14 +53,15 @@ function onOptionClick(ev: MouseEvent, index: number) {
     <slot />
 
     <template #content>
-      <PMenuList
+      <PList
         :width="width"
         :options="options"
         class="p-2 pr-0 list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
+        @close="closePopover"
         @selected="onOptionClick"
       >
         <slot name="items" />
-      </PMenuList>
+      </PList>
     </template>
   </PPopover>
 </template>
