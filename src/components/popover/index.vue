@@ -4,7 +4,6 @@ import type { PopoverTrigger } from '../../types/components/popover'
 import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import {
   getElementRectFromContainer,
   getScrollContainer,
@@ -110,9 +109,6 @@ const {
   default: props.visible,
   delay: props.destroyDelay,
 })
-
-// 是否是比小屏更大的显示设备
-const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
@@ -438,53 +434,40 @@ function updateContentPosition() {
       left = `${scrollLeft + width}px`
       translateX = '-100%'
     }
-
-    // 如果是移动端则重置位置, 使其宽度占满屏幕
-    if (!isSmUp.value) {
-      left = ''
-      translateX = '0'
-    }
   } else if (isHorizontal) {
-    if (isSmUp.value) {
-      if (position === 'left') {
-        top = `${scrollTop + height / 2}px`
-        left = `${scrollLeft}px`
+    if (position === 'left') {
+      top = `${scrollTop + height / 2}px`
+      left = `${scrollLeft}px`
 
-        translateX = '-100%'
-        translateY = '-50%'
-      } else if (position === 'right') {
-        top = `${scrollTop + height / 2}px`
-        left = `${scrollLeft + width}px`
+      translateX = '-100%'
+      translateY = '-50%'
+    } else if (position === 'right') {
+      top = `${scrollTop + height / 2}px`
+      left = `${scrollLeft + width}px`
 
-        translateX = '0'
-        translateY = '-50%'
-      } else if (position === 'left-start') {
-        top = `${scrollTop}px`
-        left = `${scrollLeft}px`
-
-        translateX = '-100%'
-        translateY = '0'
-      } else if (position === 'left-end') {
-        top = `${scrollTop + height}px`
-        left = `${scrollLeft}px`
-
-        translateX = '-100%'
-        translateY = '-100%'
-      } else if (position === 'right-start') {
-        top = `${scrollTop}px`
-        left = `${scrollLeft + width}px`
-      } else if (position === 'right-end') {
-        top = `${scrollTop + height}px`
-        left = `${scrollLeft + width}px`
-
-        translateX = '0'
-        translateY = '-100%'
-      }
-    } else {
+      translateX = '0'
+      translateY = '-50%'
+    } else if (position === 'left-start') {
       top = `${scrollTop}px`
-      left = ''
+      left = `${scrollLeft}px`
+
+      translateX = '-100%'
+      translateY = '0'
+    } else if (position === 'left-end') {
+      top = `${scrollTop + height}px`
+      left = `${scrollLeft}px`
+
+      translateX = '-100%'
       translateY = '-100%'
-      localPosition.value = 'top-start'
+    } else if (position === 'right-start') {
+      top = `${scrollTop}px`
+      left = `${scrollLeft + width}px`
+    } else if (position === 'right-end') {
+      top = `${scrollTop + height}px`
+      left = `${scrollLeft + width}px`
+
+      translateX = '0'
+      translateY = '-100%'
     }
   }
 
@@ -776,22 +759,22 @@ defineExpose({
 
   &[data-position='left-start'] .pxd-popover--arrow,
   &[data-position='right-start'] .pxd-popover--arrow {
-    top: 15px;
+    top: 16px;
   }
 
   &[data-position='left-end'] .pxd-popover--arrow,
   &[data-position='right-end'] .pxd-popover--arrow {
-    bottom: 15px;
+    bottom: 16px;
   }
 
   &[data-position='top-start'] .pxd-popover--arrow,
   &[data-position='bottom-start'] .pxd-popover--arrow {
-    left: 15px;
+    left: 16px;
   }
 
   &[data-position='top-end'] .pxd-popover--arrow,
   &[data-position='bottom-end'] .pxd-popover--arrow {
-    right: 15px;
+    right: 16px;
   }
 }
 
