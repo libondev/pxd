@@ -5,26 +5,55 @@ Indicates that there is still something to show in a certain direction.
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from "vue"
 
-const show = ref([])
+const containerRef = shallowRef()
+const direction = shallowRef('both')
 
 const options = [
-  { label: 'Left', value: 'left' },
-  { label: 'Top', value: 'top' },
-  { label: 'Right', value: 'right' },
-  { label: 'Bottom', value: 'bottom' },
+  { label: 'Both', value: 'both' },
+  { label: 'Only Horizontal', value: 'horizontal' },
+  { label: 'Only Vertical', value: 'vertical' },
 ]
 </script>
 
 <template>
-  <PStack>
-    <PCheckboxGroup v-model="show" :options="options" />
-  </PStack>
+  <PStack direction="vertical">
+    <PSwitchGroup v-model="direction" :options="options" />
 
-  <div class="mt-2 relative size-50 max-w-full rounded-md border border-dashed">
-    <PFader direction="vertical" :top="show.includes('top')" :bottom="show.includes('bottom')" />
-    <PFader direction="horizontal" :left="show.includes('left')" :right="show.includes('right')" />
+    <div class="relative size-50 max-w-full rounded-lg border border-dashed">
+      <div
+        ref="containerRef"
+        class="size-full overflow-scroll"
+      >
+        <div class="size-100"></div>
+      </div>
+
+      <PFader :direction="direction" :container="containerRef" />
+    </div>
+  </PStack>
+</template>
+```
+
+## Stylize
+
+```vue demo
+<script setup>
+import { shallowRef } from "vue"
+
+const containerRef = shallowRef()
+</script>
+
+<template>
+  <div class="relative size-50 max-w-full rounded-lg border border-dashed">
+    <div
+      ref="containerRef"
+      class="size-full overflow-scroll"
+    >
+      <div class="size-100"></div>
+    </div>
+
+    <PFader :size="50" color="var(--color-blue-300)" :container="containerRef" />
   </div>
 </template>
 ```
