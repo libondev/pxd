@@ -287,6 +287,8 @@ async function handlePopoverHide(immediate: boolean = false) {
   })
 
   off(scrollContainer, 'scroll', onContainerScroll)
+  off(document, 'click', onClickOutsideToHide)
+  off(document, 'contextmenu', onTriggerContextmenu)
 }
 
 async function onTriggerClick() {
