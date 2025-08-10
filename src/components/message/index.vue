@@ -117,7 +117,7 @@ function onPointerOut(e: PointerEvent) {
       <TransitionGroup
         name="pxd-transition--fade-scale"
         tag="div"
-        class="pxd-message--group gap-3 sm:pointer-events-auto relative flex"
+        class="pxd-message--group gap-3 pointer-events-auto relative flex"
         appear
         @pointerover="onPointerOver"
         @pointerout="onPointerOut"
@@ -129,10 +129,10 @@ function onPointerOut(e: PointerEvent) {
           aria-live="polite"
           :data-key="item.key"
           :data-type="item.type"
-          :class="item.class"
-          class="pxd-message--item group py-2 pl-3 pr-2 text-sm flex w-max max-w-full items-center rounded-lg bg-background-100 shadow-border-modal"
+          :class="[item.class, { 'pr-9': item.closeable }]"
+          class="pxd-message--item py-2 px-3 text-sm relative flex w-max max-w-full rounded-lg bg-background-100 break-all shadow-border-modal"
         >
-          <component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon mr-2 shrink-0" :class="item.type" />
+          <component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
 
           <span v-if="typeof item.message === 'string'">
             {{ item.message }}
@@ -144,7 +144,7 @@ function onPointerOut(e: PointerEvent) {
             icon
             size="xs"
             variant="ghost"
-            class="ml-1 touch-none text-foreground-secondary"
+            class="right-1.5 top-1.5 absolute z-1 touch-none text-foreground-secondary"
             @click="closeMessage(item.key)"
           >
             <CloseIcon />
