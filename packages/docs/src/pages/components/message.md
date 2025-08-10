@@ -20,8 +20,10 @@ const options = [
   { label: 'Bottom End', value: 'bottom-end' },
 ]
 
+const loremText = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque minima, excepturi distinctio quis asperiores magnam voluptate nostrum quibusdam!'
+
 function addMessage(type) {
-  useMessage('Now it\'s:' + Date.now(), { type })
+  useMessage(loremText.slice(0, Math.floor(Math.random() * 100)), { type })
 }
 </script>
 
@@ -53,7 +55,9 @@ import { useMessage } from 'pxd'
 function addMessage() {
   useMessage('Now it\'s:' + Date.now(), {
     group: 'max',
-    durations: 100000
+    class: 'bg-blue-100',
+    durations: 1500,
+    closeable: true,
   })
 }
 </script>
