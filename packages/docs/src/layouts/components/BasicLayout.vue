@@ -99,7 +99,7 @@ if (!isServer) {
   </div>
 
   <div class="sm:pl-60 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
-    <div v-if="!isSmUp" class="sm:hidden p-2 sticky top-[49px] z-10 flex items-center justify-between border-b bg-background-100">
+    <div v-if="!isSmUp" class="sm:hidden p-2 top-12.5 sticky z-10 flex items-center justify-between border-b bg-background-100">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
           <MenuAltIcon class="text-xs" />
