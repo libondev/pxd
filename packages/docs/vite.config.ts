@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 import gdsiResolver from '@gdsicon/vue/resolver'
 import { fromHighlighter } from '@shikijs/markdown-it/core'
+import slugify from '@sindresorhus/slugify'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -89,7 +90,10 @@ export default defineConfig(({ mode }) => {
         },
         async markdownItSetup(md) {
           md.use(attrs)
-          md.use(anchor)
+          md.use(anchor, {
+            slugify: s => slugify(s),
+            permalink: anchor.permalink.headerLink(),
+          })
           md.use(container)
           md.use(noticeboard)
           md.use(fromHighlighter(codeHighlighter, {

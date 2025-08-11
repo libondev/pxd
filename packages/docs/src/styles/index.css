@@ -18,6 +18,14 @@ body,
   @apply h-full;
 }
 
+html {
+  scroll-padding-top: 60px;
+}
+
+html:has(:is(h1,h2,h3,h4):hover) {
+  scroll-behavior: smooth;
+}
+
 ::selection {
   background-color: var(--color-green-1000);
   color: var(--color-green-100);

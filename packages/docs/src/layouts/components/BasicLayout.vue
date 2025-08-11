@@ -123,9 +123,11 @@ if (!isServer) {
       <slot />
 
       <template v-if="showViewSource">
-        <h2>Source</h2>
+        <h2 id="source" tabindex="-1">
+          <a class="header-anchor" href="#source">Source</a>
+        </h2>
 
-        <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="View Source" />
+        <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="Source" />
       </template>
 
       <div class="mt-16 -mx-2">
@@ -169,30 +171,21 @@ if (!isServer) {
     & + p {
       margin-top: 0;
     }
+
+    &:hover::before {
+      content: '#'
+    }
   }
 
+  & > h1::before,
   & > h2::before,
   & > h3::before,
   & > h4::before {
     position: absolute;
-    left: 0;
-    bottom: 4px;
+    left: -2px;
     transform: translateX(-100%) scale(0.75);
-    font-size: 12px;
     font-weight: 500;
     color: hsl(var(--color-gray-800-value));
-  }
-
-  & > h2::before {
-    content: 'h2';
-  }
-
-  & > h3::before {
-    content: 'h3';
-  }
-
-  & > h4::before {
-    content: 'h4';
   }
 
   & > h1 {
@@ -237,11 +230,6 @@ if (!isServer) {
 
   p:not([class*="pxd-"]) {
     margin-block: .75em;
-  }
-
-  a:not(.pxd-link-button) {
-    text-decoration: underline;
-    text-underline-offset: 0.1em;
   }
 
   .markdown-body > pre:not(.shiki) {

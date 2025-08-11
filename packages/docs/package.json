@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@shikijs/markdown-it": "^3.8.1",
+    "@sindresorhus/slugify": "^2.2.1",
     "@tailwindcss/vite": "catalog:",
     "@unhead/vue": "^2.0.13",
     "@vitejs/plugin-vue": "catalog:",
