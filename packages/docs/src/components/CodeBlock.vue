@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import CheckIcon from '@gdsicon/vue/check'
+import CopyIcon from '@gdsicon/vue/copy'
 import { useCopyClick } from 'pxd/composables/use-copy-click'
 
-const { renderAs, copyText } = useCopyClick()
+const { isCopied, copyText } = useCopyClick()
 
 function onCopy(ev: MouseEvent) {
   const code = (ev.target as HTMLElement).parentNode?.textContent
@@ -39,7 +41,7 @@ function onCopy(ev: MouseEvent) {
           @click="onCopy"
         >
           <Transition name="pxd-transition--fade-scale" mode="out-in">
-            <component :is="renderAs" class="text-sm text-foreground-secondary" />
+            <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
           </Transition>
         </div>
       </div>

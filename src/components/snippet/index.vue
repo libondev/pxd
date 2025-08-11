@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
-import { computed, ref } from 'vue'
+import CheckIcon from '@gdsicon/vue/check'
+import CopyIcon from '@gdsicon/vue/copy'
+import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useCopyClick } from '../../composables/use-copy-click'
 import { getCssUnitValue, toArray } from '../../utils/format'
@@ -29,8 +31,6 @@ const props = withDefaults(
 const emits = defineEmits<{
   copy: [string]
 }>()
-
-const isCopied = ref(false)
 
 const SIZES = {
   sm: 'min-h-7.5 pl-3.5 pr-1.5 py-2 text-sm',
@@ -64,7 +64,7 @@ const computedClass = computed(() => {
 
 const computedTextArray = computed(() => toArray(props.text))
 
-const { renderAs, copyText } = useCopyClick()
+const { isCopied, copyText } = useCopyClick()
 
 async function onCopyButtonClick() {
   const text = computedTextArray.value.join('\n')
@@ -87,7 +87,7 @@ async function onCopyButtonClick() {
       @click="onCopyButtonClick"
     >
       <Transition name="pxd-transition--fade-scale" mode="out-in">
-        <component :is="renderAs" class="text-sm" />
+        <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm" />
       </Transition>
     </div>
   </div>

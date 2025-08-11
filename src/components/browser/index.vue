@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
+import CheckIcon from '@gdsicon/vue/check'
+import CopyIcon from '@gdsicon/vue/copy'
 import LockClosedIcon from '@gdsicon/vue/lock-closed'
 import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
 import { useCopyClick } from '../../composables/use-copy-click'
@@ -15,7 +17,7 @@ defineOptions({
 
 defineProps<Props>()
 
-const { renderAs, copyText } = useCopyClick()
+const { isCopied, copyText } = useCopyClick()
 </script>
 
 <template>
@@ -45,7 +47,7 @@ const { renderAs, copyText } = useCopyClick()
 
           <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="copyText(address)">
             <Transition name="pxd-transition--fade-scale" mode="out-in">
-              <component :is="renderAs" class="text-sm text-foreground-secondary" />
+              <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
             </Transition>
           </PButton>
         </div>

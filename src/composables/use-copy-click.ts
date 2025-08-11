@@ -1,26 +1,20 @@
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
-import { computed, markRaw, ref } from 'vue'
+import { shallowRef } from 'vue'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
   let copyPromise: Promise<void> | null = null
 
-  const isCopied = ref(false)
+  const isCopied = shallowRef(false)
 
-  const render = computed(() => {
-    return markRaw(isCopied.value ? CheckIcon : CopyIcon)
-  })
-
-  async function copyText(text: string | undefined) {
+  async function copyText(text: string | undefined = '') {
     if (copyPromise) {
       return copyPromise
     }
 
-    if (typeof navigator.clipboard !== 'undefined') {
-      await navigator.clipboard.writeText(text || '')
-    } else {
-      hackCopy(text || '')
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      legacyCopyText(text)
     }
 
     copyPromise = new Promise<void>((resolve) => {
@@ -40,12 +34,11 @@ export function useCopyClick() {
 
   return {
     isCopied,
-    renderAs: render,
     copyText,
   }
 }
 
-function hackCopy(text: string) {
+function legacyCopyText(text: string) {
   const textarea = document.createElement('textarea')
   textarea.value = text
   document.body.appendChild(textarea)
