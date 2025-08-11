@@ -1,4 +1,4 @@
-import type { PluginFunc } from 'dayjs'
+import type { PluginFunc } from 'dayjs/esm/index.js'
 
 function replaceMillisecondToken(
   formatStr: string,
