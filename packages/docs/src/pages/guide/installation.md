@@ -6,7 +6,7 @@ The adaptation of unocss/tailwindcss@3 will be completed later.
 
 ## Install
 
-<div class="h-5">
+<div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">
 
 ![](https://img.shields.io/npm/v/pxd.svg)
 </div>
