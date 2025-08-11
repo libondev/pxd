@@ -1,25 +1,5 @@
 {
   "css.customData": [".vscode/tailwind.json"],
-  "cSpell.words": [
-    "antfu",
-    "bumpp",
-    "choicebox",
-    "esno",
-    "gdsi",
-    "gdsicon",
-    "libondev",
-    "mkdist",
-    "predev",
-    "pxd",
-    "rspack",
-    "shiki",
-    "shikijs",
-    "tsup",
-    "turborepo",
-    "vite",
-    "vitesse",
-    "vitest"
-  ],
   "javascript.preferences.importModuleSpecifierEnding": "index",
   "typescript.preferences.importModuleSpecifierEnding": "index",
 
@@ -59,5 +39,29 @@
     "tsconfig.json": "tsconfig.*.json, env.d.ts",
     "build.config.*": "jsconfig*, vitest.*, eslint.config.*, cypress.config.*, playwright.config.*",
     "package.json": "package-lock.json, pnpm*, .npmrc, .yarnrc*, yarn*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
-  }
+  },
+  "cSpell.words": [
+    "antfu",
+    "bumpp",
+    "choicebox",
+    "esno",
+    "gdsi",
+    "gdsicon",
+    "libondev",
+    "mkdist",
+    "predev",
+    "pxd",
+    "rspack",
+    "shiki",
+    "shikijs",
+    "tsup",
+    "turborepo",
+    "vite",
+    "vitesse",
+    "vitest",
+    "nums",
+    "kabab",
+    "pascalize",
+    "uncapitalize"
+  ]
 }
