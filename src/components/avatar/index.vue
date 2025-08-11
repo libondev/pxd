@@ -84,7 +84,7 @@ defineExpose({
 
     <div
       v-if="$slots.icon"
-      class="-bottom-1 -left-1 absolute z-10 flex size-1/2 items-center overflow-hidden rounded-full border border-background-100 bg-background-100"
+      class="-bottom-1 -left-1 absolute z-1 flex size-1/2 items-center overflow-hidden rounded-full border border-background-100 bg-background-100"
     >
       <slot name="icon" />
     </div>

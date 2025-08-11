@@ -36,7 +36,7 @@ provideAvatarGroupContext(props)
       :src="option.src"
       :alt="option.alt"
       :loading="option.loading"
-      class="[&:nth-child(n+2)]:-ml-3 hover:z-10"
+      class="[&:nth-child(n+2)]:-ml-2.5 hover:z-1"
     />
 
     <PAvatar v-if="slicedOptions.length < options.length" class="text-xs -ml-3 bg-gray-1000 text-gray-100">
