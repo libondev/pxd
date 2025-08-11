@@ -4,7 +4,7 @@ import { nextTick, ref } from 'vue'
 import { useVirtualList } from '../../src/composables/use-virtual-list'
 import { useSetupWrapper } from '../helpers/setup'
 
-describe('useVirtualList', () => {
+describe('use-virtual-list', () => {
   let mockContainer: HTMLElement
   let mockElement: HTMLElement
 

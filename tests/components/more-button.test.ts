@@ -41,7 +41,7 @@ describe('more-button', () => {
 
     // Verify button has correct variants
     const button = wrapper.find('button')
-    expect(button.attributes('class')).toContain('z-10')
+    expect(button.attributes('class')).toContain('z-1')
 
     wrapper.unmount()
   })
