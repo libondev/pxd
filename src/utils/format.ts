@@ -1,16 +1,24 @@
 import type { Nullable } from '../types/shared'
 
+/** string -> String */
 export function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
 
 const camelizeRE = /-(\w)/g
+/** kabab-case -> kababCase */
 export function camelize(str: string): string {
   return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
 }
 
+/** kabab-case -> KababCase */
 export function pascalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+}
+
+/** KababCase -> kabab-case */
+export function uncapitalize(text: string) {
+  return text.charAt(0).toLowerCase() + text.slice(1).replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
 // 某些没有主动声明的二次封装组件中透传 boolean 类型的值可能会是一个空字符串
