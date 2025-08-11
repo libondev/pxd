@@ -47,12 +47,9 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     return positions.value[positions.value.length - 1]?.bottom || 0
   })
 
-  // const listStyle = computed(() => ({
-  //   transform: `translate3d(0, ${offset.value}px, 0)`,
-  // }))
   const listStyle = computed(() => `transform: translate3d(0, ${offset.value}px, 0)`)
 
-  const setItemRef = (el: Element | ComponentPublicInstance | null, key: number | string) => {
+  function setItemRef(el: Element | ComponentPublicInstance | null, key: number | string) {
     if (el) {
       itemRefs.set(key, el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el)
     } else {
@@ -60,11 +57,11 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     }
   }
 
-  const clearItemRefs = () => {
+  function clearItemRefs() {
     itemRefs.clear()
   }
 
-  const getStartIndex = (scrollTop: number): number => {
+  function getStartIndex(scrollTop: number): number {
     if (positions.value.length === 0) {
       return 0
     }
@@ -92,7 +89,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     return Math.min(result, positions.value.length - 1)
   }
 
-  const handleScroll = (ev: Event) => {
+  function handleScroll(ev: Event) {
     const target = ev.target as HTMLElement
     if (!target) {
       return
@@ -103,7 +100,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     offset.value = newStart > 0 && positions.value[newStart] ? positions.value[newStart].top : 0
   }
 
-  const initPositions = () => {
+  function initPositions() {
     if (!safeListData.value.length) {
       positions.value = []
       return
@@ -117,7 +114,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     }))
   }
 
-  const updatePositions = () => {
+  function updatePositions() {
     if (!renderList.value.length || positions.value.length === 0) {
       return
     }
@@ -176,21 +173,29 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     }
   }
 
-  const updateContainerHeight = () => {
-    if (containerRef.value) {
-      containerHeight.value = containerRef.value.clientHeight
+  function updateContainerHeight() {
+    if (!containerRef.value) {
+      return
     }
+
+    containerHeight.value = containerRef.value.clientHeight
   }
 
-  watch(() => props.listData, () => {
+  const unwatchList = watch(() => props.listData, () => {
     clearItemRefs()
     initPositions()
   }, { immediate: true })
 
-  // 更新列表数据时，更新位置信息
-  watch(() => renderList.value, () => {
+  const unwatchRenderList = watch(() => renderList.value, () => {
     updatePositions()
   })
+
+  function stop() {
+    containerRef.value?.removeEventListener('scroll', handleScroll)
+    unwatchRenderList()
+    clearItemRefs()
+    unwatchList()
+  }
 
   onMounted(() => {
     if (!containerRef.value) {
@@ -202,8 +207,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
   })
 
   onUnmounted(() => {
-    containerRef.value?.removeEventListener('scroll', handleScroll)
-    clearItemRefs()
+    stop()
   })
 
   return {
@@ -211,6 +215,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     renderList,
     listHeight,
     listStyle,
+    stop,
     setItemRef,
     updateContainerHeight,
     getStartIndex,

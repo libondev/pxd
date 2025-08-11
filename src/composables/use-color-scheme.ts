@@ -87,5 +87,9 @@ export function useColorScheme() {
     })
   }
 
-  return { isDark, colorScheme, toggleDarkMode }
+  return {
+    isDark,
+    colorScheme,
+    toggleDarkMode,
+  }
 }

@@ -167,13 +167,13 @@ export function useCountdown<T extends Record<string, any>>(
     { immediate: true },
   )
 
-  function clean() {
+  function stop() {
     unwatchTimes()
     unwatchActive()
   }
 
   return {
-    clean,
+    stop,
     reset,
     timestamp: timeRef,
   }

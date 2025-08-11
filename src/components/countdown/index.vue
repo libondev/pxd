@@ -37,7 +37,7 @@ dayjs.extend(durationPlugin)
 dayjs.extend(millisecondTokenPlugin)
 
 const {
-  clean,
+  stop,
   reset,
   timestamp,
 } = useCountdown<typeof emits>(props, emits)
@@ -63,7 +63,7 @@ const displayTimes = computed(() => {
 })
 
 onBeforeUnmount(() => {
-  clean()
+  stop()
 })
 
 defineExpose({

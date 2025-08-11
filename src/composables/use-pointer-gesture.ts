@@ -597,12 +597,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     resetInternal()
   }
 
-  function destroy() {
-    resetInternal()
-    unbind()
-  }
-
-  watch(
+  const unwatchContainer = watch(
     () => unref(container),
     (el, prev) => {
       if (el === prev) {
@@ -614,8 +609,14 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     { immediate: true },
   )
 
+  const stop = () => {
+    unwatchContainer()
+    resetInternal()
+    unbind()
+  }
+
   onBeforeUnmount(() => {
-    destroy()
+    stop()
   })
 
   return {
@@ -628,6 +629,6 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     progress,
     reset,
     cancel,
-    destroy,
+    stop,
   }
 }

@@ -63,7 +63,7 @@ export function useMediaQuery(
 
   const unbindEvent = on(mediaQuery.query, 'change', handler, { passive: true })
 
-  onBeforeUnmount(() => {
+  function stop() {
     unbindEvent()
 
     if (!mediaQuery) {
@@ -77,6 +77,10 @@ export function useMediaQuery(
     }
 
     mediaQuery = undefined!
+  }
+
+  onBeforeUnmount(() => {
+    stop()
   })
 
   return matches

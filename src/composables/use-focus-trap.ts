@@ -73,7 +73,6 @@ export function useFocusTrap(container: DOMRef) {
   })
 
   return {
-    container,
     stop: unwatch,
   }
 }
