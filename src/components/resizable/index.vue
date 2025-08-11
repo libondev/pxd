@@ -28,11 +28,12 @@ const props = withDefaults(defineProps<Props>(), {
   direction: 'horizontal',
 })
 
+const panelSizes = ref<number[]>([])
 const panelConfigs = ref<PanelConfig[]>([])
 const handleConfigs = ref<HandleConfig[]>([])
-const panelSizes = ref<number[]>([])
-const containerRef = shallowRef<HTMLElement | null>(null)
+
 const orderCounter = ref(0)
+const containerRef = shallowRef<HTMLElement>()
 
 // 提供给子组件注册使用的方法
 function registerPanel(config: Omit<PanelConfig, 'order'>) {

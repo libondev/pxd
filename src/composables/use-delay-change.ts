@@ -7,8 +7,8 @@ interface UseDelayChangeReturnType<T> {
   setImmediate: (value: T) => void
 }
 
-export function useDelayChange<T>(value: T, delay = 1000): UseDelayChangeReturnType<T> {
-  const delayValue = shallowRef(value)
+export function useDelayChange<T>(defaultValue: T, delay = 1000): UseDelayChangeReturnType<T> {
+  const delayValue = shallowRef(defaultValue)
   let timerId: ReturnType<typeof setTimeout>
 
   function set(value: T) {

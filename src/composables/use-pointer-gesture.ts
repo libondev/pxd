@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import type { DOMRef } from '../types/shared/utils'
+import { onBeforeUnmount, shallowRef, unref, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 
 type Axis = 'x' | 'y' | 'both'
@@ -120,7 +120,6 @@ export interface UsePointerGestureOptions {
    * @param ctx - 当前公开状态
    */
   onMove?: (e: PointerEvent, ctx: PublicState) => void
-  // 指针释放时统一回调；命中触发条件时 hit=true，并提供 kind；未命中时 hit=false，kind=null
   /**
    * 指针释放时统一回调。
    * - 命中触发条件时：hit=true，并给出方向 dir 与触发类型 kind（'threshold' | 'longpress' | 'fling'）
@@ -143,7 +142,6 @@ export interface UsePointerGestureOptions {
    * @param ctx - 当前公开状态
    */
   onCancel?: (e: Event | null, ctx: PublicState) => void
-  // 取消或未命中时自动调用 onReset，便于做复位动画
   /**
    * 复位回调：取消或未命中触发条件时会自动调用，便于执行复位动画。
    * @param ctx - 当前公开状态
@@ -154,7 +152,6 @@ export interface UsePointerGestureOptions {
    * @param ctx - 当前公开状态
    */
   onLongPress?: (ctx: PublicState) => void
-  // strategy extensions
   /**
    * 方向守卫：在记录触发与最终释放判定处均会调用，用于限制允许的触发方向。
    * 返回 true 表示允许，false 表示阻止触发。
@@ -178,7 +175,7 @@ const OPTIONS_DEFAULTS = {
   usePointerCapture: true,
 }
 
-export function usePointerGesture(target: Ref<HTMLElement | null>, options: UsePointerGestureOptions = {}) {
+export function usePointerGesture(container: DOMRef, options: UsePointerGestureOptions = {}) {
   const isActive = shallowRef(false)
   const isDragging = shallowRef(false)
   const isLongPressing = shallowRef(false)
@@ -265,13 +262,15 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
       return options.getScrollable()
     }
 
-    const container = boundEl
+    const el = boundEl
       ? getScrollContainer(boundEl)
-      : (target.value ? getScrollContainer(target.value) : null)
-    if (!container) {
+      : unref(container) && getScrollContainer(unref(container)!)
+
+    if (!el) {
       return null
     }
-    return getScrollElByContainer(container)
+
+    return getScrollElByContainer(el)
   }
 
   function canScrollFurther(scrollEl: HTMLElement, dx: number, dy: number) {
@@ -401,7 +400,7 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
     startLongPress()
     options.onStart?.(e, publicState())
 
-    boundEl = target.value
+    boundEl = unref(container)!
 
     if (usePointerCapture && boundEl) {
       try {
@@ -562,7 +561,7 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
     el.removeEventListener('pointercancel', onPointerCancel, true)
   }
 
-  function bind(el: HTMLElement | null) {
+  function bind(el: HTMLElement | null | undefined) {
     unbind(el)
 
     if (!el) {
@@ -574,7 +573,7 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
   }
 
   function unbind(el?: HTMLElement | null) {
-    const _el = el ?? target.value
+    const _el = el ?? unref(container)
 
     if (!_el) {
       return
@@ -603,21 +602,20 @@ export function usePointerGesture(target: Ref<HTMLElement | null>, options: UseP
     unbind()
   }
 
-  onMounted(() => {
-    bind(target.value)
-  })
+  watch(
+    () => unref(container),
+    (el, prev) => {
+      if (el === prev) {
+        return
+      }
+
+      bind(el!)
+    },
+    { immediate: true },
+  )
 
   onBeforeUnmount(() => {
     destroy()
-  })
-
-  watch(target, (el, prev) => {
-    if (el === prev) {
-      return
-    }
-
-    unbind(prev)
-    bind(el)
   })
 
   return {

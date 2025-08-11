@@ -76,23 +76,22 @@ const computedClass = computed(() => {
 
   switch (ensureCorrectPosition.value) {
     case 'top':
-      classes.push('top-0', 'left-0', 'right-0')
+      classes.push('top-0 left-0 right-0')
       break
     case 'right':
-      classes.push('top-0', 'right-0', 'bottom-0')
+      classes.push('top-0 right-0 bottom-0')
       break
     case 'bottom':
-      classes.push('bottom-0', 'left-0', 'right-0')
+      classes.push('bottom-0 left-0 right-0')
       break
     case 'left':
-      classes.push('top-0', 'left-0', 'bottom-0')
+      classes.push('top-0 left-0 bottom-0')
       break
   }
 
   return classes.join(' ')
 })
 
-// 计算容器宽高
 const computedStyle = computed(() => {
   const style: CSSProperties = {}
 

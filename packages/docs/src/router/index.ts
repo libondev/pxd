@@ -13,13 +13,13 @@ const router = createRouter({
     if (to.hash) {
       return new Promise((resolve) => {
         requestAnimationFrame(() => {
-          const el = document.querySelector(to.hash) as HTMLElement | null
+          const el = document.querySelector<HTMLElement>(to.hash)
 
           if (!el) {
             return resolve({ left: 0, top: 0 })
           }
 
-          const header = document.querySelector('header') as HTMLElement | null
+          const header = document.querySelector<HTMLElement>('header')
           const offset = header?.offsetHeight ?? 0
           const top = el.getBoundingClientRect().top + window.scrollY - offset - 10
 

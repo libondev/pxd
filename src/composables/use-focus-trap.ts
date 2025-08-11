@@ -1,8 +1,8 @@
-import type { Ref } from 'vue'
-import { nextTick, onBeforeUnmount, watch } from 'vue'
+import type { DOMRef } from '../types/shared/utils'
+import { nextTick, onBeforeUnmount, unref, watch } from 'vue'
 import { on } from '../utils/events'
 
-export function useFocusTrap(containerRef: Ref<HTMLElement | undefined>) {
+export function useFocusTrap(container: DOMRef) {
   const FOCUSABLE_SELECTORS = [
     ':focus',
     'a[href]:not([tabindex^="-"])',
@@ -41,7 +41,7 @@ export function useFocusTrap(containerRef: Ref<HTMLElement | undefined>) {
     elements[nextFocusIndex]?.focus()
   }
 
-  const unwatch = watch(() => containerRef.value, (container, _, onCleanup) => {
+  const unwatch = watch(() => unref(container), (container, _, onCleanup) => {
     if (!container) {
       previousFocusedElement?.focus()
       return
@@ -73,7 +73,7 @@ export function useFocusTrap(containerRef: Ref<HTMLElement | undefined>) {
   })
 
   return {
-    containerRef,
+    container,
     stop: unwatch,
   }
 }

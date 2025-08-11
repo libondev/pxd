@@ -18,7 +18,7 @@ const DEFAULT_ITEM_SIZE = 50
 const BUFFER_SIZE = 2
 
 export function useVirtualList<Props extends VirtualListProps>(props: Props) {
-  const containerRef = shallowRef<HTMLElement | null>(null)
+  const containerRef = shallowRef<HTMLElement>()
   const itemRefs = new Map<number | string, HTMLElement>()
 
   const start = ref(0)
@@ -216,78 +216,3 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     getStartIndex,
   }
 }
-
-// export function useVirtualListFixed<Props extends VirtualListProps>(props: Props) {
-//   const containerRef = shallowRef<HTMLElement | null>(null)
-//   const containerHeight = ref(0)
-//   const start = ref(0)
-
-//   const safeListData = computed(() => props.listData || [])
-//   const safeItemSize = computed(() => props.itemSize || DEFAULT_ITEM_SIZE)
-
-//   const renderCount = computed(() => {
-//     if (containerHeight.value === 0 || safeItemSize.value === 0) {
-//       return 0
-//     }
-//     return Math.ceil(containerHeight.value / safeItemSize.value) + BUFFER_SIZE
-//   })
-
-//   const listHeight = computed(() => {
-//     return safeListData.value.length * safeItemSize.value
-//   })
-
-//   const end = computed(() => Math.min(start.value + renderCount.value, safeListData.value.length))
-
-//   const renderList = computed(() => safeListData.value.slice(start.value, end.value))
-
-//   const listStyle = computed(() => ({
-//     transform: `translate3d(0, ${start.value * safeItemSize.value}px, 0)`,
-//   }))
-
-//   const getStartIndex = (scrollTop: number): number => {
-//     if (scrollTop < safeItemSize.value) {
-//       return 0
-//     }
-//     return Math.floor(scrollTop / safeItemSize.value)
-//   }
-
-//   const handleScroll = (ev: Event) => {
-//     const target = ev.target as HTMLElement
-//     if (!target) {
-//       return
-//     }
-
-//     start.value = getStartIndex(target.scrollTop)
-//   }
-
-//   const updateContainerHeight = () => {
-//     if (containerRef.value) {
-//       containerHeight.value = containerRef.value.clientHeight
-//     }
-//   }
-
-//   const setItemRef = (_el: HTMLElement | null, _index: number) => { }
-
-//   onMounted(() => {
-//     if (!containerRef.value) {
-//       return
-//     }
-
-//     updateContainerHeight()
-//     containerRef.value.addEventListener('scroll', handleScroll, { passive: true })
-//   })
-
-//   onUnmounted(() => {
-//     containerRef.value?.removeEventListener('scroll', handleScroll)
-//   })
-
-//   return {
-//     containerRef,
-//     renderList,
-//     listHeight,
-//     listStyle,
-//     setItemRef,
-//     updateContainerHeight,
-//     getStartIndex,
-//   }
-// }

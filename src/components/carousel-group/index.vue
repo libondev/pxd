@@ -43,7 +43,7 @@ let autoPlaySession = 0
 let isPointerEntering = false
 
 const carousels = ref<CarouselState[]>([])
-const sliderRef = shallowRef<HTMLElement | null>(null)
+const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 
 // 由于虚拟索引可能超出范围以便于实现无缝切换，需要一个处理边界的索引来指示真实索引
