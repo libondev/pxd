@@ -60,6 +60,14 @@ const scrollInfo = ref({
   isScrollable: { x: false, y: false },
 })
 
+const computedStyle = computed(() => {
+  return {
+    '--scrollbar-size': `${props.scrollbarSize}px`,
+    '--scrollbar-color': props.scrollbarColor,
+    '--scrollbar-hover-color': props.scrollbarHoverColor,
+  }
+})
+
 const verticalThumbStyle = computed(() => ({
   height: `${scrollInfo.value.verticalThumbHeight}px`,
   transform: `translateY(${scrollInfo.value.verticalThumbTop}px)`,
@@ -210,10 +218,8 @@ function onDragMove(e: MouseEvent) {
 
   const deltaX = e.clientX - startClientPos
 
-  // 计算可滚动区域
   const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
 
-  // 计算新的滑块位置
   const newThumbLeft = Math.max(0, Math.min(scrollableWidth, startScrollPos + deltaX))
 
   const scrollRatio = newThumbLeft / scrollableWidth
@@ -222,7 +228,6 @@ function onDragMove(e: MouseEvent) {
   scrollInfo.value.horizontalThumbLeft = newThumbLeft
 }
 
-// 结束拖拽
 function onEndDrag() {
   dragState.isDragging = false
   dragState.direction = null
@@ -273,16 +278,12 @@ defineExpose({
 <template>
   <div
     class="pxd-scrollable group/scrollable sm:[--sv:0] relative flex overflow-hidden hover:[--sv:1]"
-    :style="{
-      '--scrollbar-size': `${scrollbarSize}px`,
-      '--scrollbar-color': scrollbarColor,
-      '--scrollbar-hover-color': scrollbarHoverColor,
-    }"
+    :style="computedStyle"
   >
     <div
       ref="containerRef"
       :class="contentClass"
-      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 touch-none overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
       <slot />

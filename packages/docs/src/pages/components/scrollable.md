@@ -17,7 +17,7 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 <template>
   <PScrollable
     class="w-100 max-w-full h-100 border rounded-md"
-    fader-size="50"
+    :fader-size="50"
     fader-color="var(--color-blue-300)"
     scrollbar-color="var(--color-orange-400)"
     scrollbar-hover-color="var(--color-orange-600)"

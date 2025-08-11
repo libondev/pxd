@@ -10,7 +10,7 @@
   --primary: var(--color-gray-1000-value);
 
   --color-gray-alpha-100-value: hsla(0, 0%, 0%, .05);
-  --color-gray-alpha-200-value: hsla(0, 0%, 0%, .08);
+  --color-gray-alpha-200-value: hsla(0, 0%, 0%, .082);
   --color-gray-alpha-300-value: hsla(0, 0%, 0%, .12);
   --color-gray-alpha-400-value: hsla(0, 0%, 0%, .17);
   --color-gray-alpha-500-value: hsla(0, 0%, 0%, .21);
