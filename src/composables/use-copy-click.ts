@@ -4,6 +4,7 @@ import { computed, markRaw, ref } from 'vue'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
+  let copyPromise: Promise<void> | null = null
 
   const isCopied = ref(false)
 
@@ -11,8 +12,10 @@ export function useCopyClick() {
     return markRaw(isCopied.value ? CheckIcon : CopyIcon)
   })
 
-  async function onCopyClick(text: string | undefined) {
-    clearTimeout(copiedTimer)
+  async function copyText(text: string | undefined) {
+    if (copyPromise) {
+      return copyPromise
+    }
 
     if (typeof navigator.clipboard !== 'undefined') {
       await navigator.clipboard.writeText(text || '')
@@ -20,17 +23,25 @@ export function useCopyClick() {
       hackCopy(text || '')
     }
 
-    isCopied.value = true
+    copyPromise = new Promise<void>((resolve) => {
+      isCopied.value = true
 
-    copiedTimer = setTimeout(() => {
-      isCopied.value = false
-    }, 1500)
+      resolve()
+      clearTimeout(copiedTimer)
+
+      copiedTimer = setTimeout(() => {
+        isCopied.value = false
+        copyPromise = null
+      }, 1500)
+    })
+
+    return copyPromise
   }
 
   return {
     isCopied,
     renderAs: render,
-    onCopyClick,
+    copyText,
   }
 }
 

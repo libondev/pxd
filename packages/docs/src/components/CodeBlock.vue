@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useCopyClick } from 'pxd/composables/use-copy-click'
 
-const { renderAs, onCopyClick } = useCopyClick()
+const { renderAs, copyText } = useCopyClick()
 
 function onCopy(ev: MouseEvent) {
   const code = (ev.target as HTMLElement).parentNode?.textContent
 
-  onCopyClick(code ?? '')
+  copyText(code ?? '')
 }
 </script>
 

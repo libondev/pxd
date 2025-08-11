@@ -15,7 +15,7 @@ defineOptions({
 
 defineProps<Props>()
 
-const { renderAs, onCopyClick } = useCopyClick()
+const { renderAs, copyText } = useCopyClick()
 </script>
 
 <template>
@@ -43,7 +43,7 @@ const { renderAs, onCopyClick } = useCopyClick()
             {{ address }}
           </div>
 
-          <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="onCopyClick(address)">
+          <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="copyText(address)">
             <Transition name="pxd-transition--fade-scale" mode="out-in">
               <component :is="renderAs" class="text-sm text-foreground-secondary" />
             </Transition>
