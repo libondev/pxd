@@ -28,7 +28,7 @@ describe('useCountdown', () => {
 
   it('should start countdown from specified durations value', () => {
     const { timestamp } = useCountdown(
-      { durations: 5000, active: false, invert: false },
+      { durations: 5000, active: false, invert: false, millisecond: true },
       mockEmits,
     )
     expect(timestamp.value).toBe(5000)

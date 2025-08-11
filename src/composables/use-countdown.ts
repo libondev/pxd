@@ -52,49 +52,45 @@ export function useCountdown<T extends Record<string, any>>(
   props: Options,
   emits: EmitFn<T>,
 ) {
-  let pnow = -1
-  let finished = false
+  let startTimestamp = -1
+  let isFinished = false
   let isPaused = false
 
-  const distanceRef = shallowRef<number>(0)
+  const timeRef = shallowRef<number>(0)
 
-  const durations = computed(() => {
+  const totalDuration = computed(() => {
     const { endTime, durations = 0, millisecond } = props
-
     if (endTime) {
-      const end
-        = (String(endTime).length >= MILLISECOND_LENGTH ? endTime : endTime * 1000) - Date.now()
+      const end = (String(endTime).length >= MILLISECOND_LENGTH ? endTime : endTime * 1000) - Date.now()
       return Math.max(0, end)
     }
-
-    const time = millisecond
-      ? Math.round(durations)
-      : Math.round(durations * 1000)
-
+    // 默认按“毫秒”解释；仅当 millisecond === false 时按“秒”转毫秒
+    const time = millisecond === false ? Math.round(durations * 1000) : Math.round(durations)
     return Math.max(0, time)
   })
 
-  function getDistance(time: DOMHighResTimeStamp): number {
-    return durations.value + pnow - time
+  // 获取当前计时（正计时为已过去，倒计时为剩余）
+  function getCurrent(now: DOMHighResTimeStamp): number {
+    return props.invert
+      ? now - startTimestamp
+      : totalDuration.value + startTimestamp - now
   }
 
-  function setDistance() {
-    distanceRef.value = durations.value
+  function setCurrent() {
+    timeRef.value = props.invert ? 0 : totalDuration.value
   }
 
   function finish() {
-    distanceRef.value = 0
-    finished = true
-
+    timeRef.value = props.invert ? totalDuration.value : 0
+    isFinished = true
     emits('finish')
   }
 
   function reset() {
-    pnow = performance.now()
-    finished = false
+    startTimestamp = performance.now()
+    isFinished = false
     isPaused = false
-    setDistance()
-
+    setCurrent()
     emits('reset')
 
     if (props.active) {
@@ -104,33 +100,33 @@ export function useCountdown<T extends Record<string, any>>(
 
   let previousFrameTime = 0
   function frame(timestamp?: DOMHighResTimeStamp) {
-    const distance = getDistance(performance.now())
+    const now = performance.now()
+    const current = getCurrent(now)
     let isLastFrame = false
 
     if (isPaused) {
-      if (distance < UPDATE_INTERVAL) {
+      if ((!props.invert && current < UPDATE_INTERVAL) || (props.invert && current >= totalDuration.value)) {
         isLastFrame = true
       } else {
         return
       }
     }
 
-    if (
-      performance.now() - previousFrameTime < UPDATE_INTERVAL
-      && !isLastFrame
-    ) {
+    if (now - previousFrameTime < UPDATE_INTERVAL && !isLastFrame) {
       requestAnimationFrame(frame)
       return
     }
 
     previousFrameTime = timestamp!
 
-    if (distance <= 0) {
+    if ((!props.invert && current <= 0) || (props.invert && current >= totalDuration.value)) {
       finish()
       return
     }
 
-    distanceRef.value = Math.max(0, distance)
+    timeRef.value = props.invert
+      ? Math.min(current, totalDuration.value)
+      : Math.max(0, current)
 
     requestAnimationFrame(frame)
   }
@@ -139,22 +135,18 @@ export function useCountdown<T extends Record<string, any>>(
     () => props.active,
     (isActive) => {
       emits('change', isActive)
-
       if (isActive) {
         if (isPaused) {
-          pnow = performance.now() - durations.value + distanceRef.value
+          startTimestamp = performance.now() - (props.invert ? timeRef.value : totalDuration.value - timeRef.value)
         } else {
-          pnow = performance.now()
+          startTimestamp = performance.now()
         }
-
         isPaused = false
-
-        if (finished && props.autoReset) {
+        if (isFinished && props.autoReset) {
           reset()
-        } else if (finished) {
+        } else if (isFinished) {
           return
         }
-
         frame()
       } else {
         isPaused = true
@@ -166,9 +158,8 @@ export function useCountdown<T extends Record<string, any>>(
   const unwatchTimes = watch(
     () => [props.durations, props.endTime],
     () => {
-      setDistance()
-      finished = false
-
+      setCurrent()
+      isFinished = false
       if (props.active) {
         reset()
       }
@@ -184,6 +175,6 @@ export function useCountdown<T extends Record<string, any>>(
   return {
     clean,
     reset,
-    timestamp: distanceRef,
+    timestamp: timeRef,
   }
 }
