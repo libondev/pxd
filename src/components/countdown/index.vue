@@ -2,7 +2,7 @@
 import type { Options } from '../../composables/use-countdown'
 import dayjs from 'dayjs'
 import dayjsDuration from 'dayjs/plugin/duration'
-import { computed } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 import { useCountdown } from '../../composables/use-countdown'
 import millisecondTokenPlugin from '../../utils/dayjs-millisecond-token'
 
@@ -37,6 +37,7 @@ dayjs.extend(dayjsDuration)
 dayjs.extend(millisecondTokenPlugin)
 
 const {
+  clean,
   reset,
   timestamp,
 } = useCountdown<typeof emits>(props, emits)
@@ -59,6 +60,10 @@ const displayTimes = computed(() => {
     .format(props.format)
 
   return time
+})
+
+onBeforeUnmount(() => {
+  clean()
 })
 
 defineExpose({
