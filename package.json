@@ -91,9 +91,10 @@
     "dev": "run-s dev:lib dev:docs",
     "dev:lib": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
-    "build": "run-s update-exports build:lib build:docs",
-    "build:lib": "unbuild",
-    "build:only": "run-s build:lib build:docs",
+    "build": "run-s update-exports build:core build:docs",
+    "build:lib": "run-s update-exports build:core build:style build:types",
+    "build:core": "unbuild",
+    "build:only": "run-s build:core build:docs",
     "build:docs": "pnpm --filter docs build",
     "build:style": "run-s gen-styles-file gen-tw-css-file",
     "build:types": "vue-tsc -p tsconfig.type.json",
@@ -109,7 +110,7 @@
     "bump": "pnpx bumpp",
     "prepare": "node scripts/setup-scripts.js",
     "postversion": "node scripts/update-exports.js --stage",
-    "prepublishOnly": "run-s update-exports build:lib build:style build:types"
+    "prepublishOnly": "npm run build:lib"
   },
   "peerDependencies": {
     "vue": ">=2.7.0 || >=3.2.0"
