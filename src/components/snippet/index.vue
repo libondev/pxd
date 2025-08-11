@@ -64,12 +64,12 @@ const computedClass = computed(() => {
 
 const computedTextArray = computed(() => toArray(props.text))
 
-const { renderAs, onCopyClick } = useCopyClick()
+const { renderAs, copyText } = useCopyClick()
 
 async function onCopyButtonClick() {
   const text = computedTextArray.value.join('\n')
 
-  await onCopyClick(text)
+  await copyText(text)
 
   emits('copy', text)
 }
