@@ -76,8 +76,9 @@ function handleClose() {
     :loading="isLoading"
     close-on-press-escape
     close-on-click-overlay
-    subtitle="Content of the modal."
   >
+    <PText>Content of the modal.</PText>
+
     <template #footer>
       <PButton block :loading="isLoading" @click="handleClose">
         Close (after two seconds)
@@ -109,8 +110,9 @@ function handleClose() {
 
   <PModal
     v-model="isVisible"
-    title="Create Token"
     header-style
+    title="Create Token"
+    subtitle="This action cannot be undone."
     @click-outside="handleClose"
   >
     <PText>
