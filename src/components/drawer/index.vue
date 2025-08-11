@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { BasePosition, ComponentLabel } from '../../types/shared'
+import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
@@ -9,16 +9,17 @@ import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
 interface Props {
-  size?: number | string
   title?: ComponentLabel
   subtitle?: ComponentLabel
+  size?: number | string
+  position?: BasePosition
   modelValue?: boolean
-  headerStyle?: boolean
-  footerStyle?: boolean
   appendToBody?: boolean
+  headerStylize?: boolean
+  footerStylize?: boolean
+  drawerClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  position?: BasePosition
 }
 
 defineOptions({
@@ -36,9 +37,9 @@ const props = withDefaults(
     size: '30%',
     position: 'right',
     modelValue: false,
-    footerStyle: true,
-    headerStyle: false,
     appendToBody: true,
+    footerStylize: true,
+    headerStylize: false,
     closeOnPressEscape: true,
     closeOnClickOverlay: true,
   },
@@ -56,7 +57,7 @@ const isVisible = useModelValue(props, emits)
 
 useFocusTrap(drawerRef)
 
-const ensureCorrectPosition = computed(() => {
+const ensurePosition = computed(() => {
   const { position } = props
   if (['top', 'bottom', 'left', 'right'].includes(position)) {
     return position
@@ -65,39 +66,12 @@ const ensureCorrectPosition = computed(() => {
   return 'right'
 })
 
-// 计算动画名称
-const transitionName = computed(() => {
-  return `pxd-transition--drawer-slide-${ensureCorrectPosition.value}`
-})
-
-// 计算内容位置类名
-const computedClass = computed(() => {
-  const classes = ['pxd-drawer translate-z-0 fixed z-10 flex flex-col bg-background-100 shadow-border-modal outline-none']
-
-  switch (ensureCorrectPosition.value) {
-    case 'top':
-      classes.push('top-0 left-0 right-0')
-      break
-    case 'right':
-      classes.push('top-0 right-0 bottom-0')
-      break
-    case 'bottom':
-      classes.push('bottom-0 left-0 right-0')
-      break
-    case 'left':
-      classes.push('top-0 left-0 bottom-0')
-      break
-  }
-
-  return classes.join(' ')
-})
+const transitionName = computed(() => `pxd-transition--drawer-slide-${ensurePosition.value}`)
 
 const computedStyle = computed(() => {
-  const style: CSSProperties = {}
-
-  const sizeField = ['left', 'right'].includes(ensureCorrectPosition.value) ? 'width' : 'height'
-
-  style[sizeField] = getCssUnitValue(props.size)
+  const style: CSSProperties = {
+    '--size': getCssUnitValue(props.size),
+  }
 
   return style
 })
@@ -141,12 +115,14 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        :class="computedClass"
+        class="pxd-drawer translate-z-0 fixed z-10 flex flex-col bg-background-100 shadow-border-modal outline-none"
+        :class="drawerClass"
         :style="computedStyle"
+        :data-position="ensurePosition"
       >
         <header
           class="pxd-drawer--header p-6 sm:py-4 relative shrink-0 empty:py-3"
-          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStyle }"
+          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <h3 v-if="$slots.title || title" class="text-xl font-semibold tracking-tight">
             <slot name="title">
@@ -163,7 +139,7 @@ watch(() => isVisible.value, (visible) => {
 
         <PScrollable
           v-if="$slots.default"
-          :data-header="headerStyle"
+          :data-header="headerStylize"
           class="pxd-drawer--content group flex-1"
           content-class="group-data-[header=true]:pt-5 px-6 pb-5"
         >
@@ -173,7 +149,7 @@ watch(() => isVisible.value, (visible) => {
         <footer
           v-if="$slots.footer"
           class="pxd-drawer--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
-          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStyle }"
+          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStylize }"
         >
           <slot name="footer" />
         </footer>
@@ -183,16 +159,48 @@ watch(() => isVisible.value, (visible) => {
 </template>
 
 <style>
-/* 右侧滑入滑出动画 */
+.pxd-drawer {
+  &[data-position="left"] {
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  &[data-position="top"] {
+    left: 0;
+    top: 0;
+    right: 0;
+  }
+
+  &[data-position="right"] {
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  &[data-position="bottom"] {
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.pxd-drawer[data-position="left"],
+.pxd-drawer[data-position="right"] {
+  width: var(--size, 30vw);
+}
+
+.pxd-drawer[data-position="top"],
+.pxd-drawer[data-position="bottom"] {
+  height: var(--size, 30vw);
+}
+
 .pxd-transition--drawer-slide-right-enter-active,
 .pxd-transition--drawer-slide-right-leave-active,
-/* 左侧滑入滑出动画 */
 .pxd-transition--drawer-slide-left-enter-active,
 .pxd-transition--drawer-slide-left-leave-active,
-/* 顶部滑入滑出动画 */
 .pxd-transition--drawer-slide-top-enter-active,
 .pxd-transition--drawer-slide-top-leave-active,
-/* 底部滑入滑出动画 */
 .pxd-transition--drawer-slide-bottom-enter-active,
 .pxd-transition--drawer-slide-bottom-leave-active  {
   transition: transform var(--default-transition-duration, 0.3s) var(--default-transition-timing-function);

@@ -110,7 +110,7 @@ function handleClose() {
 
   <PModal
     v-model="isVisible"
-    header-style
+    header-stylize
     title="Create Token"
     subtitle="This action cannot be undone."
     @click-outside="handleClose"

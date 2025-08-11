@@ -114,7 +114,7 @@ if (!isServer) {
         Return to top
       </PButton>
 
-      <PDrawer v-model="openSidebar" title="Menu" position="bottom" header-style size="68%">
+      <PDrawer v-model="openSidebar" title="Menu" position="bottom" size="68%" header-stylize>
         <Menus :menus="menus" class="-m-2" @click="handleToggleSidebar" />
       </PDrawer>
     </div>

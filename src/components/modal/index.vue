@@ -12,9 +12,9 @@ interface Props {
   width?: number | string
   loading?: boolean
   modelValue?: boolean
-  headerStyle?: boolean
-  footerStyle?: boolean
   appendToBody?: boolean
+  headerStylize?: boolean
+  footerStylize?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -31,9 +31,9 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: false,
-    footerStyle: true,
-    headerStyle: false,
     appendToBody: true,
+    footerStylize: true,
+    headerStylize: false,
     closeOnPressEscape: false,
     closeOnClickOverlay: false,
   },
@@ -99,7 +99,7 @@ watch(() => isVisible.value, (visible) => {
       >
         <header
           class="pxd-modal--header p-6 sm:py-4 relative shrink-0 empty:py-3"
-          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStyle }"
+          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <h3 v-if="$slots.title || title" class="text-xl font-semibold tracking-tight">
             <slot name="title">
@@ -116,7 +116,7 @@ watch(() => isVisible.value, (visible) => {
 
         <PScrollable
           v-if="$slots.default"
-          :data-header="headerStyle"
+          :data-header="headerStylize"
           class="pxd-modal--content group flex-1"
           content-class="group-data-[header=true]:pt-5 px-6 pb-5"
         >
@@ -126,7 +126,7 @@ watch(() => isVisible.value, (visible) => {
         <footer
           v-if="$slots.footer"
           class="pxd-modal--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
-          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStyle }"
+          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStylize }"
         >
           <slot name="footer" />
         </footer>
