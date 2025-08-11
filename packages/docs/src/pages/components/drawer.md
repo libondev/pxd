@@ -68,7 +68,7 @@ const leftVisible = ref(false)
     v-model="topVisible"
     position="top"
     title="Top Drawer"
-    size="300px"
+    size="350px"
   >
     <PText>This drawer slides in from the top.</PText>
   </PDrawer>
@@ -77,7 +77,7 @@ const leftVisible = ref(false)
     v-model="rightVisible"
     position="right"
     title="Right Drawer"
-    size="400px"
+    size="350px"
   >
     <PText>This drawer slides in from the right.</PText>
   </PDrawer>
@@ -86,7 +86,7 @@ const leftVisible = ref(false)
     v-model="bottomVisible"
     position="bottom"
     title="Bottom Drawer"
-    size="300px"
+    size="350px"
   >
     <PText>This drawer slides in from the bottom.</PText>
   </PDrawer>
@@ -95,7 +95,7 @@ const leftVisible = ref(false)
     v-model="leftVisible"
     position="left"
     title="Left Drawer"
-    size="400px"
+    size="350px"
   >
     <PText>This drawer slides in from the left.</PText>
   </PDrawer>
@@ -352,7 +352,7 @@ const longContent = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}: This is
     v-model="isVisible"
     title="Long Content"
     subtitle="This drawer contains scrollable content"
-    size="400px"
+    size="350px"
   >
     <div class="space-y-3">
       <div
@@ -391,7 +391,7 @@ const secondDrawer = ref(false)
     v-model="firstDrawer"
     title="First Drawer"
     subtitle="This is the first drawer"
-    size="400px"
+    size="350px"
   >
     <PText>This is the first drawer. You can open another drawer from here.</PText>
 
