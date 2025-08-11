@@ -34,7 +34,6 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    size: '30%',
     position: 'right',
     modelValue: false,
     appendToBody: true,
@@ -69,11 +68,13 @@ const ensurePosition = computed(() => {
 const transitionName = computed(() => `pxd-transition--drawer-slide-${ensurePosition.value}`)
 
 const computedStyle = computed(() => {
-  const style: CSSProperties = {
-    '--size': getCssUnitValue(props.size),
+  const styles: CSSProperties = {}
+
+  if (props.size) {
+    styles['--size'] = getCssUnitValue(props.size)
   }
 
-  return style
+  return styles
 })
 
 function onOverlayClick(ev: MouseEvent) {
@@ -115,7 +116,7 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="pxd-drawer translate-z-0 fixed z-10 flex flex-col bg-background-100 shadow-border-modal outline-none"
+        class="pxd-drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] fixed z-10 flex flex-col bg-background-100 shadow-border-modal outline-none"
         :class="drawerClass"
         :style="computedStyle"
         :data-position="ensurePosition"
@@ -187,12 +188,12 @@ watch(() => isVisible.value, (visible) => {
 
 .pxd-drawer[data-position="left"],
 .pxd-drawer[data-position="right"] {
-  width: var(--size, 30vw);
+  width: var(--size, var(--w, 80vw));
 }
 
 .pxd-drawer[data-position="top"],
 .pxd-drawer[data-position="bottom"] {
-  height: var(--size, 30vw);
+  height: var(--size, var(--h, 80vw));
 }
 
 .pxd-transition--drawer-slide-right-enter-active,
