@@ -37,7 +37,8 @@ function addMessage(type) {
       <PButton @click="addMessage()">Add normal</PButton>
       <PButton @click="addMessage('info')">Add info</PButton>
       <PButton @click="addMessage('error')">Add error</PButton>
-      <PButton @click="addMessage('warning')">Add warning</PButton>
+      <PButton @click="addMessage('loading')">Add loading</PButton>
+      <PButton @click="addMessage('success')">Add success</PButton>
       <PButton @click="addMessage('success')">Add success</PButton>
     </PStack>
   </PStack>

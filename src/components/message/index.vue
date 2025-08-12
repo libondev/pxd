@@ -4,7 +4,9 @@ import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
+import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
+
 import { computed, onBeforeUnmount } from 'vue'
 import {
   clearGroup,
@@ -41,6 +43,7 @@ const TYPE_ICONS = {
   success: SuccessFillIcon,
   warning: WarningFillIcon,
   error: ErrorFillIcon,
+  loading: LoadingIcon,
 }
 
 const ITEM_SELECTOR = '.pxd-message--item'
@@ -227,6 +230,10 @@ onBeforeUnmount(() => {
     }
     &.error {
       color: var(--color-red-700)
+    }
+    &.loading {
+      animation: spin 1s linear infinite;
+      color: var(--color-blue-700)
     }
     &.warning {
       color: var(--color-yellow-500)

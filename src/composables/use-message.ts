@@ -6,7 +6,7 @@ import { getUniqueId } from '../utils/uid'
 
 interface Options {
   key?: string
-  type?: 'info' | 'success' | 'warning' | 'error'
+  type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false
   class?: ComponentClass
   group?: string
   durations?: number
