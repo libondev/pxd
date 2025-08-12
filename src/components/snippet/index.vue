@@ -82,7 +82,7 @@ async function onCopyButtonClick() {
     </div>
 
     <div
-      class="right-1 p-2 absolute top-1/2 -translate-y-1/2 cursor-pointer touch-none rounded-md select-none hover:bg-background-hover active:bg-background-active"
+      class="right-1 p-2 absolute top-1/2 -translate-y-1/2 cursor-pointer rounded-md select-none hover:bg-background-hover active:bg-background-active"
       :class="{ copied: isCopied }"
       @click="onCopyButtonClick"
     >

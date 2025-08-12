@@ -142,7 +142,7 @@ watch(() => isVisible.value, (visible) => {
           v-if="$slots.default"
           :data-header="headerStylize"
           class="pxd-drawer--content group flex-1"
-          content-class="group-data-[header=true]:pt-5 touch-none px-6 pb-5"
+          content-class="group-data-[header=true]:pt-5 px-6 pb-5"
         >
           <slot />
         </PScrollable>
