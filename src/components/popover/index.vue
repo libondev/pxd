@@ -112,29 +112,19 @@ const {
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
-let cachedScrollTop: number = 0
-let cachedBasePosition: BasePosition | null = null
-let cachedPositionForBase: string | null = null
+const computedTransitionName = computed(() =>
+  props.transitionName ?? `pxd-transition--popover-${localPosition.value.split('-')[0]}`,
+)
 
-const basePosition = computed(() => {
-  if (cachedPositionForBase === localPosition.value && cachedBasePosition) {
-    return cachedBasePosition
-  }
+let savedScrollTop: number = 0
 
-  cachedPositionForBase = localPosition.value
-  cachedBasePosition = localPosition.value.split('-')[0] as BasePosition
-  return cachedBasePosition
-})
-
-const computedTransitionName = computed(() => props.transitionName ?? `pxd-transition--popover-${basePosition.value}`)
-
-const onContainerScroll = throttleByRaf((ev: Event) => {
+const onContainerScroll = throttleByRaf(async (ev: Event) => {
   if (!isVisible.value) {
     return
   }
 
   const scrollTop = getScrollElByContainer(ev.target).scrollTop
-  const delta = Math.abs(scrollTop - cachedScrollTop)
+  const delta = Math.abs(scrollTop - savedScrollTop)
 
   if (props.scrollHidden && delta >= props.scrollHiddenThreshold) {
     handlePopoverHide(true)
@@ -145,41 +135,46 @@ const onContainerScroll = throttleByRaf((ev: Event) => {
     return
   }
 
-  // 动态调整位置
-  if (delta >= props.autoPositionThreshold) {
-    getTriggerRect()
-    cachedScrollTop = scrollTop
+  if (delta < props.autoPositionThreshold) {
+    return
+  }
 
-    // 先回到初始位置
-    localPosition.value = props.position
+  getTriggerRect()
+  savedScrollTop = scrollTop
+
+  // 先回到初始位置
+  localPosition.value = props.position
+  updateContentPosition()
+
+  // 等待样式生效后再判断遮挡，再决定是否翻转
+  await nextTick()
+  const scrollInfo = getScrollPositions(scrollContainer)
+  const containerRect = wrapperRef.value!.getBoundingClientRect()
+  const overlapping = getOverlapping(
+    viewportRect!,
+    containerRect,
+    scrollInfo,
+  )
+
+  // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
+  const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
+  if (visibleRatio >= props.minVisibleRatio) {
+    return
+  }
+
+  if (overlapping.isOverlapping) {
+    applyAutoPosition(overlapping)
     updateContentPosition()
-
-    // 等待样式生效后再判断遮挡，再决定是否翻转
-    nextTick().then(() => {
-      const scrollInfo = getScrollPositions(scrollContainer)
-      const containerRect = wrapperRef.value!.getBoundingClientRect()
-      const overlapping = isContainerOverlapping(
-        viewportRect!,
-        containerRect,
-        scrollInfo,
-      )
-
-      // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
-      const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
-      if (visibleRatio >= (props.minVisibleRatio ?? 0)) {
-        return
-      }
-
-      if (overlapping.isOverlapping) {
-        applyAutoPosition(overlapping)
-        updateContentPosition()
-      }
-    })
   }
 })
 
+function getTriggerRect() {
+  triggerRect.value = triggerRef.value!.getBoundingClientRect()
+  viewportRect = document.documentElement.getBoundingClientRect()
+}
+
 // 判断元素在渲染后是否超出了屏幕之外
-function isContainerOverlapping(
+function getOverlapping(
   viewportRect: DOMRect,
   containerRect: DOMRect,
   scrollInfo: ReturnType<typeof getScrollPositions>,
@@ -228,11 +223,6 @@ function getVisibleRatio(
   return visibleArea / totalArea
 }
 
-function getTriggerRect() {
-  triggerRect.value = triggerRef.value!.getBoundingClientRect()
-  viewportRect = document.documentElement.getBoundingClientRect()
-}
-
 async function handlePopoverShow(immediate: boolean = false) {
   await new Promise((resolve) => {
     getTriggerRect()
@@ -248,7 +238,7 @@ async function handlePopoverShow(immediate: boolean = false) {
     }, immediate ? 0 : props.showDelay)
   })
 
-  cachedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
+  savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
   on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
   if (!props.autoPosition) {
@@ -258,7 +248,7 @@ async function handlePopoverShow(immediate: boolean = false) {
   await nextTick()
 
   // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
-  const overlapping = isContainerOverlapping(
+  const overlapping = getOverlapping(
     viewportRect!,
     wrapperRef.value!.getBoundingClientRect(),
     getScrollPositions(scrollContainer),
@@ -491,7 +481,7 @@ function updateContentPosition() {
  * - right 被遮挡 → top（优先向上）
  * @param overlapping 是否被遮挡
  */
-function applyAutoPosition(overlapping?: ReturnType<typeof isContainerOverlapping>) {
+function applyAutoPosition(overlapping?: ReturnType<typeof getOverlapping>) {
   if (!overlapping) {
     localPosition.value = props.position
     return
@@ -635,8 +625,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   viewportRect = null
-  cachedBasePosition = null
-  cachedPositionForBase = null
 
   clearTimeout(showPopoverTimer)
   clearTimeout(hidePopoverTimer)
