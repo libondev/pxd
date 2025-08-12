@@ -662,7 +662,7 @@ defineExpose({
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--max-width) p-2.5 sm:p-0 absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
+          class="pxd-popover--container sm:max-w-(--max-width) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
