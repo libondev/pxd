@@ -109,7 +109,7 @@ watch(() => isVisible.value, (visible) => {
     :close-on-press-escape="closeOnPressEscape"
     @click="onOverlayClick"
   >
-    <Transition :name="transitionName" mode="out-in">
+    <Transition :name="transitionName" mode="out-in" appear>
       <div
         v-if="isVisible"
         ref="drawerRef"

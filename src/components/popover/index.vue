@@ -659,7 +659,7 @@ defineExpose({
     </div>
 
     <PTeleport>
-      <Transition mode="out-in" :name="computedTransitionName" :class="{ showTransition, hideTransition }">
+      <Transition mode="out-in" :name="computedTransitionName" appear :class="{ showTransition, hideTransition }">
         <div
           v-if="isRender"
           v-show="isVisible"

@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
   <ul
     role="list"
     tabindex="-1"
-    class="pxd-list"
+    class="pxd-list max-w-full"
     :style="computedStyle"
     @pointerover="onPointerOver"
     @keydown="onContainerKeydown"

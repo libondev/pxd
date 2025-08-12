@@ -87,7 +87,7 @@ watch(() => isVisible.value, (visible) => {
     @update:model-value="onUpdateModelValue"
     @click="onOverlayClick"
   >
-    <Transition name="pxd-transition--modal" mode="out-in">
+    <Transition name="pxd-transition--modal" mode="out-in" appear>
       <div
         v-if="isVisible"
         ref="modalRef"

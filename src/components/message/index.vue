@@ -129,8 +129,8 @@ onBeforeUnmount(() => {
       <TransitionGroup
         name="pxd-transition--fade-scale"
         tag="div"
-        class="pxd-message--group gap-3 not-empty:sm:pointer-events-auto relative flex"
         appear
+        class="pxd-message--group gap-3 not-empty:sm:pointer-events-auto relative flex"
         @pointerover="onPointerOver"
         @pointerout="onPointerOut"
       >

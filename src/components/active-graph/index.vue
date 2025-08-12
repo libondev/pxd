@@ -467,7 +467,7 @@ onBeforeUnmount(() => {
       </tbody>
     </table>
 
-    <Transition name="pxd-transition--fade">
+    <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         v-if="showTooltip"
         class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-[13px] text-gray-100 duration-50 will-change-transform motion-safe:transition-transform"

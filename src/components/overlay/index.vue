@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :disabled="!appendToBody">
-    <Transition name="pxd-transition--fade" mode="out-in">
+    <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         v-if="modelValue"
         ref="overlayRef"
