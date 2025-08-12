@@ -25,6 +25,8 @@ One of the most basic components, it will help you complete the interaction.
     <PButton variant="ghost">ghost</PButton>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
+    <PButton variant="primary" disabled>disabled</PButton>
+    <PButton variant="primary" loading>loading</PButton>
   </PStack>
 </template>
 ```
