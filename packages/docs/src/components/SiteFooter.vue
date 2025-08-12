@@ -63,7 +63,7 @@ const LINKS = [
         <div v-for="link in group.children" :key="link.href" class="sm:w-auto w-full">
           <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" block>
             <template #prefix>
-              <component :is="link.icon" />
+              <Component :is="link.icon" />
             </template>
 
             {{ link.label }}

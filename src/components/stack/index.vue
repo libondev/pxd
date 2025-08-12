@@ -124,7 +124,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <component :is="props.as" :class="computedClass" :data-direction="direction" v-bind="$attrs" :style="formattedGap">
+  <Component :is="props.as" :class="computedClass" :data-direction="direction" v-bind="$attrs" :style="formattedGap">
     <slot />
   </component>
 </template>

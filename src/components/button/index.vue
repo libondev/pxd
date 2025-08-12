@@ -110,7 +110,7 @@ function onButtonDblClick(event: MouseEvent) {
 </script>
 
 <template>
-  <component
+  <Component
     :is="as"
     role="button"
     :class="computedClass"

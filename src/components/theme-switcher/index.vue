@@ -32,6 +32,6 @@ watch(() => isDark.value, (newVal) => {
     icon
     @click="toggleDarkMode"
   >
-    <component :is="renderIcon" class="size-em" />
+    <Component :is="renderIcon" class="size-em" />
   </PButton>
 </template>

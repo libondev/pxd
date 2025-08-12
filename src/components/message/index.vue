@@ -6,7 +6,6 @@ import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
 import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
-
 import { computed, onBeforeUnmount } from 'vue'
 import {
   clearGroup,
@@ -145,10 +144,10 @@ onBeforeUnmount(() => {
           :class="[item.class, { 'pr-9': item.closeable }]"
           class="pxd-message--item py-2 px-3 text-sm relative flex w-max max-w-full rounded-lg bg-background-100 break-all shadow-border-modal"
         >
-          <component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
+          <Component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
 
           <span v-if="typeof item.message === 'string'" v-html="item.message" />
-          <component :is="item.message" v-else :key="item.key" />
+          <Component :is="item.message" v-else :key="item.key" />
 
           <PButton
             v-if="item.closeable"

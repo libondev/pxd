@@ -105,7 +105,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <component
+  <Component
     :is="as"
     :ref="setRef"
     tabindex="-1"

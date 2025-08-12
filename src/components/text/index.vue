@@ -100,7 +100,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <component :is="as" :class="computedClass" :style="computedStyle">
+  <Component :is="as" :class="computedClass" :style="computedStyle">
     <slot />
   </component>
 </template>

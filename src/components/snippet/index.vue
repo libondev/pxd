@@ -87,7 +87,7 @@ async function onCopyButtonClick() {
       @click="onCopyButtonClick"
     >
       <Transition name="pxd-transition--fade-scale" mode="out-in">
-        <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm" />
+        <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm" />
       </Transition>
     </div>
   </div>

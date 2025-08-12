@@ -47,7 +47,7 @@ const { isCopied, copyText } = useCopyClick()
 
           <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="copyText(address)">
             <Transition name="pxd-transition--fade-scale" mode="out-in">
-              <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
+              <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
             </Transition>
           </PButton>
         </div>

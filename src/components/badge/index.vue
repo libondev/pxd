@@ -82,7 +82,7 @@ const badgeAttrs = computed(() => {
 </script>
 
 <template>
-  <component :is="as" :class="computedClass" v-bind="badgeAttrs">
+  <Component :is="as" :class="computedClass" v-bind="badgeAttrs">
     <slot />
   </component>
 </template>

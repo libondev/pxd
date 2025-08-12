@@ -41,7 +41,7 @@ function onCopy(ev: MouseEvent) {
           @click="onCopy"
         >
           <Transition name="pxd-transition--fade-scale" mode="out-in">
-            <component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
+            <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
           </Transition>
         </div>
       </div>

@@ -292,7 +292,7 @@ function openMenu() {
         class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-hover transition-colors"
         @click="isVisible = false"
       >
-        <component :is="item.icon" />
+        <Component :is="item.icon" />
         <span>{{ item.label }}</span>
       </a>
     </nav>

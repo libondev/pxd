@@ -65,7 +65,7 @@ provideChoiceboxGroupModelValue(modelValue)
       </slot>
     </div>
 
-    <component
+    <Component
       :is="renderComponent"
       v-model="modelValue"
       v-bind="computedAttrs"
