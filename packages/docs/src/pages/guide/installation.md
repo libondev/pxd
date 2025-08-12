@@ -38,6 +38,21 @@ import 'pxd/styles.css'
 ## Usage
 You can register globally or import on demand, or import automatically.
 
+### Vite user instructions
+?> If the build tool used is not vite, this article can be ignored.
+Because vite is a feature of loading files on demand, when using some composables, it will be inconsistent with the internal construction of components, so the following configuration needs to be added in vite.config.*
+
+```ts
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  optimizeDeps: {
+    exclude: ['pxd'],
+  }
+})
+```
+
+
 ### Global Import
 You can register all the components to the global at one time, but this may lead to a larger volume after your construction.
 
@@ -91,6 +106,9 @@ export default defineConfig({
       ],
     }),
   ],
+  optimizeDeps: {
+    exclude: ['pxd'],
+  }
 })
 ```
 
