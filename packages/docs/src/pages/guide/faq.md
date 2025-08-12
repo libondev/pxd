@@ -15,13 +15,13 @@ Because the events in vue2 distinguish between camelCase and kebab-case style, b
 <PActiveGraph @cell-click="handleCellClick" />
 ```
 
-## No loader is configured for ".wue" files
+## No loader is configured for ".vue" files
 e.g.:
 ```js
 import XxxIcon from "@gdsicon/vue/xxx"
 ```
 
-This is because the source file provided by the logo library has a suffix of `. vue`, and vite will not read the `. vue` file imported by js in the child dependency by default.
+This is because the source file provided by the logo library has a suffix of `.vue`, and vite will not read the `.vue` file imported by js in the child dependency by default.
 
 The solution is to set `optimizeDeps.exclude` in vite.config:
 
