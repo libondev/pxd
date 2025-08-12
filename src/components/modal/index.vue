@@ -98,8 +98,8 @@ watch(() => isVisible.value, (visible) => {
         :style="{ '--w': width }"
       >
         <header
-          class="pxd-modal--header p-6 sm:py-4 relative shrink-0 empty:py-3"
-          :class="{ 'border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-modal--header p-6 sm:pb-4 relative shrink-0 empty:py-3"
+          :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <h3 v-if="$slots.title || title" class="text-xl font-semibold tracking-tight">
             <slot name="title">
