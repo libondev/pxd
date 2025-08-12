@@ -110,14 +110,14 @@ function onPointerOut(e: PointerEvent) {
 <template>
   <PTeleport to="body">
     <div
-      class="pxd-message p-4 fixed z-10 w-full empty:pointer-events-none"
+      class="pxd-message p-4 pointer-events-none fixed z-20 w-full"
       :style="{ zIndex }"
       :data-position="position"
     >
       <TransitionGroup
         name="pxd-transition--fade-scale"
         tag="div"
-        class="pxd-message--group gap-3 relative flex"
+        class="pxd-message--group gap-3 not-empty:sm:pointer-events-auto relative flex"
         appear
         @pointerover="onPointerOver"
         @pointerout="onPointerOut"
