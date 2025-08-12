@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearAll, clearGroup, configureMessages, messages, pauseMessage, resumeMessage, useMessage } from '../../src/composables/use-message'
+import { clearGroup, clearMessageAll, configureMessages, messages, pauseMessage, resumeMessage, useMessage } from '../../src/composables/use-message'
 
 describe('use-message', () => {
   beforeEach(() => {
@@ -12,11 +12,11 @@ describe('use-message', () => {
       maxPersistentPerGroup: 50,
       minImmediateCloseMs: 100,
     })
-    clearAll()
+    clearMessageAll()
   })
 
   afterEach(() => {
-    clearAll()
+    clearMessageAll()
     vi.useRealTimers()
   })
 
@@ -76,7 +76,7 @@ describe('use-message', () => {
 
   it('should enforce maxPerGroup by removing oldest in the group', () => {
     configureMessages({ maxPerGroup: 2, maxTotal: 100, maxPersistentPerGroup: 50 })
-    clearAll()
+    clearMessageAll()
 
     useMessage('a', { key: 'g1-1', group: 'g1', durations: 0 })
     useMessage('b', { key: 'g1-2', group: 'g1', durations: 0 })
@@ -91,7 +91,7 @@ describe('use-message', () => {
 
   it('should enforce maxPersistentPerGroup by removing oldest persistent message', () => {
     configureMessages({ maxPerGroup: 100, maxPersistentPerGroup: 1 })
-    clearAll()
+    clearMessageAll()
 
     useMessage('p1', { key: 'p-1', group: 'g2', durations: 0 })
     useMessage('p2', { key: 'p-2', group: 'g2', durations: 0 })
@@ -103,7 +103,7 @@ describe('use-message', () => {
   })
 
   it('should clear group', () => {
-    clearAll()
+    clearMessageAll()
     useMessage('a', { key: 'ga-1', group: 'ga', durations: 0 })
     useMessage('b', { key: 'ga-2', group: 'ga', durations: 0 })
     useMessage('c', { key: 'gb-1', group: 'gb', durations: 0 })
@@ -117,12 +117,12 @@ describe('use-message', () => {
   })
 
   it('should clear all', () => {
-    clearAll()
+    clearMessageAll()
     useMessage('a', { key: 'x1', group: 'g', durations: 0 })
     useMessage('b', { key: 'x2', group: 'g', durations: 0 })
     expect(messages.value.length).toBe(2)
 
-    clearAll()
+    clearMessageAll()
     expect(messages.value.length).toBe(0)
   })
 })

@@ -28,7 +28,6 @@ const groupIndex = new Map<string, string[]>()
 
 export const messages = ref<MessageItem[]>([])
 
-// 内存治理配置
 interface MessageConfig {
   maxTotal: number
   maxPerGroup: number
@@ -45,13 +44,17 @@ const messageConfig: MessageConfig = {
   maxPersistentPerGroup: 50,
   // 当恢复时剩余时间低于该阈值（ms），直接关闭以避免极短定时器调度
   minImmediateCloseMs: 100,
-}
+} as const
 
 export function configureMessages(config: Partial<MessageConfig>) {
   Object.assign(messageConfig, config)
 }
 
 export function useMessage(msg: string | VNode, options?: Options) {
+  if (isServer) {
+    return
+  }
+
   options ??= {} as Options
 
   const message: MessageItem = {
@@ -78,7 +81,7 @@ export function useMessage(msg: string | VNode, options?: Options) {
   // 保证不超过最大数量
   enforceLimits(group)
 
-  if (!isServer && message.durations && message.durations > 0) {
+  if (message.durations && message.durations > 0) {
     startAutoCloseTimer(message)
   }
 }
@@ -172,7 +175,7 @@ export function resumeMessage(key: string | number) {
   startAutoCloseTimer(message)
 }
 
-export function clearAll() {
+export function clearMessageAll() {
   // 拷贝 keys，逐一关闭以确保定时器清理与索引同步
   const keys = Array.from(messageMap.keys())
   for (const k of keys) {
