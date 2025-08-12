@@ -28,7 +28,7 @@ const containerRef = shallowRef<HTMLElement>()
 let isTeleported = false
 let homeLocation: Location | null
 
-const targetContainer = computed(() => {
+const targetEl = computed(() => {
   const { disabled, to } = props
 
   if (isServer || isVue3 || disabled || !to) {
@@ -39,11 +39,16 @@ const targetContainer = computed(() => {
     return to
   }
 
-  return document.querySelector(to)
+  let container: HTMLElement | null = null
+  try {
+    container = document.querySelector<HTMLElement>(to)
+  } catch {}
+
+  return container ?? document.body
 })
 
 watch(
-  () => [targetContainer.value, props.disabled],
+  () => [targetEl.value, props.disabled],
   () => {
     if (isVue3 || isServer) {
       return
@@ -64,8 +69,8 @@ watch(
       return
     }
 
-    if (targetContainer.value) {
-      targetContainer.value.append(el)
+    if (targetEl.value) {
+      targetEl.value.append(el)
       isTeleported = true
     }
   },
@@ -84,8 +89,8 @@ onMounted(() => {
       nextSibling: el.nextSibling,
     }
 
-    if (!props.disabled && targetContainer.value) {
-      targetContainer.value.append(el)
+    if (!props.disabled && targetEl.value) {
+      targetEl.value.append(el)
       isTeleported = true
     }
   }
