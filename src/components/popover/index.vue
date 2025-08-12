@@ -80,6 +80,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   'show': []
   'hide': []
+  'trigger-click': [PointerEvent]
   'trigger-keydown': [KeyboardEvent]
 }>()
 
@@ -277,8 +278,14 @@ async function handlePopoverHide(immediate: boolean = false) {
   off(document, 'contextmenu', onTriggerContextmenu)
 }
 
-async function onTriggerClick() {
+async function onTriggerClick(ev: Event) {
   if (props.disabled) {
+    return
+  }
+
+  emits('trigger-click', ev as PointerEvent)
+
+  if (!triggerMethods.value.includes('click')) {
     return
   }
 
@@ -529,9 +536,6 @@ function applyAutoPosition(overlapping?: ReturnType<typeof getOverlapping>) {
 }
 
 const triggerMethodEvents = {
-  click: [
-    ['click', onTriggerClick],
-  ],
   focus: [
     ['focusin', onTriggerFocusin],
     ['focusout', onTriggerFocusout],
@@ -648,6 +652,7 @@ defineExpose({
       :class="triggerClass"
       :style="triggerStyle"
       @contextmenu.prevent
+      @click="onTriggerClick"
       @keydown="onTriggerKeydown"
     >
       <slot />
