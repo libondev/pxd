@@ -65,7 +65,7 @@ const ensurePosition = computed(() => {
   return 'right'
 })
 
-const transitionName = computed(() => `pxd-transition--drawer-slide-${ensurePosition.value}`)
+const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
 
 const computedStyle = computed(() => {
   const styles: CSSProperties = {}
@@ -196,34 +196,34 @@ watch(() => isVisible.value, (visible) => {
   height: var(--size, var(--h, 80vw));
 }
 
-.pxd-transition--drawer-slide-right-enter-active,
-.pxd-transition--drawer-slide-right-leave-active,
-.pxd-transition--drawer-slide-left-enter-active,
-.pxd-transition--drawer-slide-left-leave-active,
-.pxd-transition--drawer-slide-top-enter-active,
-.pxd-transition--drawer-slide-top-leave-active,
-.pxd-transition--drawer-slide-bottom-enter-active,
-.pxd-transition--drawer-slide-bottom-leave-active  {
+.pxd-transition--drawer-right-enter-active,
+.pxd-transition--drawer-right-leave-active,
+.pxd-transition--drawer-left-enter-active,
+.pxd-transition--drawer-left-leave-active,
+.pxd-transition--drawer-top-enter-active,
+.pxd-transition--drawer-top-leave-active,
+.pxd-transition--drawer-bottom-enter-active,
+.pxd-transition--drawer-bottom-leave-active  {
   transition: transform var(--default-transition-duration, 0.3s) var(--default-transition-timing-function);
 }
 
-.pxd-transition--drawer-slide-right-leave-to,
-.pxd-transition--drawer-slide-right-enter-from {
+.pxd-transition--drawer-right-leave-to,
+.pxd-transition--drawer-right-enter-from {
   transform: translateX(100%);
 }
 
-.pxd-transition--drawer-slide-left-leave-to,
-.pxd-transition--drawer-slide-left-enter-from {
+.pxd-transition--drawer-left-leave-to,
+.pxd-transition--drawer-left-enter-from {
   transform: translateX(-100%);
 }
 
-.pxd-transition--drawer-slide-top-leave-to,
-.pxd-transition--drawer-slide-top-enter-from {
+.pxd-transition--drawer-top-leave-to,
+.pxd-transition--drawer-top-enter-from {
   transform: translateY(-100%);
 }
 
-.pxd-transition--drawer-slide-bottom-leave-to,
-.pxd-transition--drawer-slide-bottom-enter-from {
+.pxd-transition--drawer-bottom-leave-to,
+.pxd-transition--drawer-bottom-enter-from {
   transform: translateY(100%);
 }
 </style>
