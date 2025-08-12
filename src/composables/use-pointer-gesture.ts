@@ -153,6 +153,12 @@ export interface UsePointerGestureOptions {
    */
   onLongPress?: (ctx: PublicState) => void
   /**
+   * 指针守卫：记录后续是否需要响应事件, 只在 pointer-down 中执行一次
+   * 返回 true 表示允许，false 表示阻止触发。
+   * @param e - PointerEvent
+   */
+  pointerGuard?: (e: PointerEvent) => boolean
+  /**
    * 方向守卫：在记录触发与最终释放判定处均会调用，用于限制允许的触发方向。
    * 返回 true 表示允许，false 表示阻止触发。
    * @param dir - 非空方向
@@ -382,6 +388,10 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     const usePointerCapture = (options.usePointerCapture ?? OPTIONS_DEFAULTS.usePointerCapture)
 
     if (e.button != null && e.button !== 0) {
+      return
+    }
+
+    if (!options.pointerGuard?.(e)) {
       return
     }
 
