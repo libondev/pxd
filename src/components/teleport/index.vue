@@ -7,8 +7,14 @@ interface Props {
   disabled?: boolean
 }
 
+interface Location {
+  parent: Node
+  nextSibling: Node | null
+}
+
 defineOptions({
   name: 'PTeleport',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -16,17 +22,9 @@ const props = withDefaults(
   { to: 'body' },
 )
 
-interface Location {
-  parent: Node
-  nextSibling: Node | null
-}
-
 const isVue3 = version.startsWith('3')
 
 const containerRef = shallowRef<HTMLElement>()
-
-let isTeleported = false
-let homeLocation: Location | null
 
 const targetEl = computed(() => {
   const { disabled, to } = props
@@ -47,35 +45,8 @@ const targetEl = computed(() => {
   return container ?? document.body
 })
 
-watch(
-  () => [targetEl.value, props.disabled],
-  () => {
-    if (isVue3 || isServer) {
-      return
-    }
-
-    const el = containerRef.value
-    if (!el || !homeLocation) {
-      return
-    }
-
-    if (props.disabled) {
-      if (isTeleported) {
-        const { parent, nextSibling } = homeLocation
-        parent.insertBefore(el, nextSibling)
-        isTeleported = false
-      }
-
-      return
-    }
-
-    if (targetEl.value) {
-      targetEl.value.append(el)
-      isTeleported = true
-    }
-  },
-  { flush: 'post' },
-)
+let isTeleported = false
+let homeLocation: Location | null
 
 onMounted(() => {
   if (isVue3 || isServer) {
@@ -94,6 +65,31 @@ onMounted(() => {
       isTeleported = true
     }
   }
+
+  watch(
+    () => [targetEl.value, props.disabled],
+    () => {
+      const el = containerRef.value
+      if (!el || !homeLocation) {
+        return
+      }
+
+      if (props.disabled) {
+        if (isTeleported) {
+          const { parent, nextSibling } = homeLocation
+          parent.insertBefore(el, nextSibling)
+          isTeleported = false
+        }
+
+        return
+      }
+
+      if (targetEl.value) {
+        targetEl.value.append(el)
+        isTeleported = true
+      }
+    },
+  )
 })
 
 onBeforeUnmount(() => {
@@ -107,7 +103,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="isVue3" :disabled="disabled" :to="to" defer>
+  <Teleport v-if="isVue3" :disabled="disabled" :to="to">
     <slot />
   </Teleport>
 
