@@ -73,9 +73,9 @@ const computedPopoverClass = computed(() => {
 <template>
   <PPopover
     class="pxd-tooltip"
-    show-arrow
     :position="position"
     :disabled="computedDisabled"
+    :show-arrow="showArrow"
     :arrow-color="computedVariant.bg"
     :trigger-class="triggerClass"
     :trigger-style="triggerStyle"
