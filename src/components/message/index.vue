@@ -147,9 +147,7 @@ onBeforeUnmount(() => {
         >
           <component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
 
-          <span v-if="typeof item.message === 'string'">
-            {{ item.message }}
-          </span>
+          <span v-if="typeof item.message === 'string'" v-html="item.message" />
           <component :is="item.message" v-else :key="item.key" />
 
           <PButton
