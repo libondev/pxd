@@ -65,7 +65,7 @@ const ALIGNMENTS = {
   right: 'justify-end',
 }
 
-const DISABLED_CLASS_NAMES = 'is-disabled bg-gray-100 hover:bg-gray-100 active:bg-gray-100 disabled:cursor-not-allowed text-gray-700 border-gray-300'
+const DISABLED_CLASS_NAMES = 'is-disabled disabled:bg-gray-100 hover:bg-gray-100 active:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-700 disabled:border-gray-300'
 
 const config = useConfigProvider()
 const computedDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
