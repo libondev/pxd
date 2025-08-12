@@ -6,5 +6,6 @@ export interface ListOption extends Record<string, any> {
   label?: ComponentLabel
   value?: string | number
   disabled?: boolean
+  description?: ComponentLabel
   onClick?: (ev: MouseEvent, index: number) => void
 }

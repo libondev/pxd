@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import type { ComponentPublicInstance } from 'vue'
 import type { ComponentAs, ComponentLabel } from '../../types/shared'
-import { computed, onMounted, onUnmounted, shallowRef } from 'vue'
+import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
 import { useListContext } from '../../contexts/list'
 
 interface Props {
   as?: ComponentAs
-  type?: 'error'
+  type?: 'error' | 'warning'
   label?: ComponentLabel
   disabled?: boolean
+  description?: ComponentLabel
 }
 
 defineOptions({
@@ -34,14 +35,20 @@ const {
   unregisterListItem,
 } = useListContext()
 
+const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()
 const currentIndex = shallowRef(-1)
 
-const computedClass = computed(() => {
-  const classes = []
+const itemTypeMap = {
+  error: 'text-red-900',
+  warning: 'text-yellow-900',
+}
 
-  if (props.type === 'error') {
-    classes.push('text-red-900')
+const computedClass = computed(() => {
+  const classes = [attrs.class]
+
+  if (props.type) {
+    classes.push(itemTypeMap[props.type])
   }
 
   if (props.disabled) {
@@ -113,12 +120,13 @@ onUnmounted(() => {
     :data-index="currentIndex"
     :data-disabled="disabled"
     :data-selected="activeIndex === currentIndex"
-    class="pxd-list-item h-10 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
+    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
     :class="computedClass"
     @click="onItemClick"
   >
     <slot>
-      {{ label }}
+      <span class="gap-2 flex items-center">{{ label }}</span>
+      <span v-if="description" class="text-sm text-foreground-secondary">{{ description }}</span>
     </slot>
   </component>
 </template>
