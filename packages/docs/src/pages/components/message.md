@@ -56,7 +56,7 @@ function addMessage() {
   useMessage('Now it\'s:' + Date.now(), {
     group: 'max',
     class: 'bg-blue-100',
-    durations: 1500,
+    durations: 5000,
     closeable: true,
   })
 }
