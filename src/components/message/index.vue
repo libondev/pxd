@@ -5,8 +5,14 @@ import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
-import { computed } from 'vue'
-import { closeMessage, messages, pauseMessage, resumeMessage } from '../../composables/use-message'
+import { computed, onBeforeUnmount } from 'vue'
+import {
+  clearGroup,
+  closeMessage,
+  messages,
+  pauseMessage,
+  resumeMessage,
+} from '../../composables/use-message'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'
 
@@ -105,6 +111,10 @@ function onPointerOut(e: PointerEvent) {
     resumeMessage(key)
   }
 }
+
+onBeforeUnmount(() => {
+  clearGroup(props.group)
+})
 </script>
 
 <template>
