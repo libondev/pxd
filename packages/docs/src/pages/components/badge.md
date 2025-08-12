@@ -6,7 +6,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ```vue demo
 <template>
-  <PStack class="capitalize">
+  <PStack class="capitalize" gap="2">
     <PBadge variant="gray">gray</PBadge>
     <PBadge variant="blue">blue</PBadge>
     <PBadge variant="purple">purple</PBadge>
@@ -21,7 +21,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
     <PBadge variant="turborepo">turborepo</PBadge>
   </PStack>
 
-  <PStack class="mt-2 capitalize">
+  <PStack class="mt-2 capitalize" gap="2">
     <PBadge variant="gray-subtle">gray-subtle</PBadge>
     <PBadge variant="blue-subtle">blue-subtle</PBadge>
     <PBadge variant="purple-subtle">purple-subtle</PBadge>
