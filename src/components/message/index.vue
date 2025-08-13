@@ -248,6 +248,12 @@ onBeforeUnmount(() => {
   optimizedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
   optimizedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
+
+defineExpose({
+  getMessage: getMessageByKey,
+  closeMessage: closeMessageByKey,
+  closeMessageAll: closeMessageByKeyAll,
+})
 </script>
 
 <template>
