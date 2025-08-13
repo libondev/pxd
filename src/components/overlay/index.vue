@@ -13,6 +13,7 @@ interface Props {
   appendToBody?: boolean
   overlayClass?: ComponentClass
   closeOnPressEscape?: boolean
+  closeOnClickOverlay?: boolean
 }
 
 defineOptions({
@@ -44,6 +45,12 @@ const computedStyle = computed(() => ({
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
+
+  if (!props.closeOnClickOverlay) {
+    return
+  }
+
+  emits('update:modelValue', false)
 }
 
 function onOverlayKeydown(ev: KeyboardEvent) {
