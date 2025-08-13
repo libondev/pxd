@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { getScrollContainer, getScrollElByContainer, hasScrollbar } from '../../utils/dom'
+import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/events'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -76,8 +76,15 @@ function addScrollDisabled() {
     return
   }
 
-  if (hasScrollbar(scrollContainer)) {
-    scrollContainer.classList.add('scroll-disabled')
+  // 一次性判断 x/y, 避免读取两次造成重复回流
+  const { scrollHeight, clientWidth, scrollWidth, clientHeight } = scrollContainer
+
+  if (scrollWidth > clientWidth) {
+    scrollContainer.classList.add('scroll-disabled-x')
+  }
+
+  if (scrollHeight > clientHeight) {
+    scrollContainer.classList.add('scroll-disabled-y')
   }
 }
 
@@ -86,7 +93,7 @@ function removeScrollDisabled() {
     return
   }
 
-  scrollContainer.classList.remove('scroll-disabled')
+  scrollContainer.classList.remove('scroll-disabled-x', 'scroll-disabled-y')
 }
 
 watch(() => props.modelValue, (visible) => {
