@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
+import { getScrollContainer, getScrollElByContainer, hasScrollbar } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/events'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -38,6 +38,8 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+let scrollContainer: HTMLElement | null
+
 const overlayRef = shallowRef<HTMLElement>()
 const computedStyle = computed(() => ({
   '--z': props.zIndex,
@@ -58,18 +60,34 @@ function onOverlayKeydown(ev: KeyboardEvent) {
     return
   }
 
-  if (ev.key !== 'Escape') {
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
     return
   }
 
-  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+  if (ev.key !== 'Escape') {
     return
   }
 
   emits('update:modelValue', false)
 }
 
-let scrollContainer: HTMLElement | null
+function addScrollDisabled() {
+  if (!scrollContainer) {
+    return
+  }
+
+  if (hasScrollbar(scrollContainer)) {
+    scrollContainer.classList.add('scroll-disabled')
+  }
+}
+
+function removeScrollDisabled() {
+  if (!scrollContainer) {
+    return
+  }
+
+  scrollContainer.classList.remove('scroll-disabled')
+}
 
 watch(() => props.modelValue, (visible) => {
   if (isServer) {
@@ -77,10 +95,7 @@ watch(() => props.modelValue, (visible) => {
   }
 
   if (!visible) {
-    if (scrollContainer) {
-      scrollContainer.classList.remove('scroll-disabled')
-    }
-
+    removeScrollDisabled()
     optimizedOff(document, 'keydown', onOverlayKeydown)
 
     return
@@ -91,18 +106,16 @@ watch(() => props.modelValue, (visible) => {
       scrollContainer = getScrollElByContainer(getScrollContainer(overlayRef.value!))
     }
 
+    addScrollDisabled()
     optimizedOn(document, 'keydown', onOverlayKeydown)
-    scrollContainer.classList.add('scroll-disabled')
   })
 }, { immediate: true })
 
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
 
-  if (scrollContainer) {
-    scrollContainer.classList.remove('scroll-disabled')
-    scrollContainer = null
-  }
+  removeScrollDisabled()
+  scrollContainer = null
 })
 </script>
 
