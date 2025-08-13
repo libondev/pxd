@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/shared'
+import type { ComponentClass, ComponentLabel } from '../../types/shared'
 import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
@@ -10,11 +10,12 @@ interface Props {
   title?: ComponentLabel
   subtitle?: ComponentLabel
   width?: number | string
-  loading?: boolean
+  pending?: boolean
   modelValue?: boolean
   appendToBody?: boolean
   headerStylize?: boolean
   footerStylize?: boolean
+  modalClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -54,7 +55,7 @@ useFocusTrap(modalRef)
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.loading) {
+  if (!props.closeOnClickOverlay || props.pending) {
     return
   }
 
@@ -62,7 +63,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onUpdateModelValue(visible: boolean) {
-  if (props.loading) {
+  if (!visible && props.pending) {
     return
   }
 
@@ -95,6 +96,7 @@ watch(() => isVisible.value, (visible) => {
         tabindex="-1"
         aria-modal="true"
         class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
+        :class="modalClass"
         :style="{ '--w': width }"
       >
         <header
