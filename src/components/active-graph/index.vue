@@ -329,7 +329,6 @@ const tbodyRef = shallowRef<HTMLTableSectionElement>()
 const {
   value: showTooltip,
   setValue: setShowTooltip,
-  setValueDelay: setShowTooltipDelay,
 } = useDelayChange(false, 500)
 const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
 
@@ -347,7 +346,7 @@ const formatTooltipText = computed(() => {
 
 // 鼠标离开表格区域, 隐藏提示框
 function onMouseLeave() {
-  setShowTooltip(false)
+  setShowTooltip(false, true)
   tooltipInfo.value = {} as TooltipInfo
   tbodyRect = null!
 }
@@ -357,7 +356,7 @@ async function onMouseOver(ev: MouseEvent) {
   const targetEl = ev.target as HTMLTableCellElement
 
   if (targetEl.tagName !== 'TD') {
-    setShowTooltipDelay(false)
+    setShowTooltip(false)
     return
   }
 
@@ -365,7 +364,7 @@ async function onMouseOver(ev: MouseEvent) {
 
   // 没有日期数据则隐藏提示
   if (!date) {
-    setShowTooltip(false)
+    setShowTooltip(false, true)
     return
   }
 
@@ -376,8 +375,7 @@ async function onMouseOver(ev: MouseEvent) {
     tbodyRect = tbodyRef.value!.getBoundingClientRect()
   }
 
-  // 立即显示提示
-  setShowTooltip(true)
+  setShowTooltip(true, true)
   const rect = targetEl.getBoundingClientRect()
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
@@ -471,7 +469,7 @@ onBeforeUnmount(() => {
       <div
         v-if="showTooltip"
         class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-[13px] text-gray-100 duration-50 will-change-transform motion-safe:transition-transform"
-        :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
+        :style="`transform: translate3d(${tooltipInfo.left}px, ${tooltipInfo.top}px, 0);`"
       >
         <slot name="tooltip" :data="tooltipInfo">
           {{ formatTooltipText }}

@@ -3,29 +3,28 @@ import { shallowRef } from 'vue'
 
 interface UseDelayChangeReturnType<T> {
   value: Ref<T>
-  setValue: (value: T) => void
-  setValueDelay: (value: T) => void
+  setValue: (value: T, immediate?: boolean) => void
 }
 
-export function useDelayChange<T>(defaultValue: T, delay = 1000): UseDelayChangeReturnType<T> {
-  const delayValue = shallowRef(defaultValue)
+export function useDelayChange<T>(defaultValue: T, delayMs = 1000): UseDelayChangeReturnType<T> {
   let timerId: ReturnType<typeof setTimeout>
+  const delayValue = shallowRef(defaultValue)
 
-  function setValueDelay(value: T) {
+  function setValue(newValue: T, immediate = false) {
     clearTimeout(timerId)
+
+    if (immediate) {
+      delayValue.value = newValue
+      return
+    }
+
     timerId = setTimeout(() => {
-      setValue(value)
-    }, delay)
-  }
-
-  function setValue(value: T) {
-    clearTimeout(timerId)
-    delayValue.value = value
+      delayValue.value = newValue
+    }, delayMs)
   }
 
   return {
     value: delayValue,
-    setValueDelay,
     setValue,
   }
 }
