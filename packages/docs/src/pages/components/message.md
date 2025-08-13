@@ -46,7 +46,7 @@ function addMessage(type) {
 ```
 
 ## Max
-Max prop limits how many message can be displayed at the same time. (default: 6)
+Max prop limits how many message can be displayed at the same time. (default: 5)
 
 ```vue demo
 <script setup>

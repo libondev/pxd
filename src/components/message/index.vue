@@ -31,7 +31,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    max: 6,
+    max: 5,
     group: 'default',
     position: 'top',
   },
