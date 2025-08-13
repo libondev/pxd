@@ -36,7 +36,8 @@ const emits = defineEmits<{
 const ITEM_CLASS = 'pxd-list-item'
 const ITEM_SELECTOR = `.${ITEM_CLASS}`
 
-const activeIndex = shallowRef(-1)
+const initialIndex = Number.NaN
+const activeIndex = shallowRef(initialIndex)
 const allItems = shallowRef<HTMLElement[]>([])
 
 const computedStyle = computed(() => {
@@ -60,7 +61,7 @@ function registerListItem(el: HTMLElement): void {
 
 function unregisterListItem(el: HTMLElement): void {
   const index = allItems.value.indexOf(el)
-  if (index > -1) {
+  if (index >= 0) {
     allItems.value.splice(index, 1)
     updateAllItemsIndex()
   }
@@ -73,9 +74,11 @@ function getItemData(index: number): ListOption | null {
     return null
   }
 
+  const { disabled, type = 'default' } = element.dataset
+
   return {
-    disabled: element.classList.contains('text-gray-700') || element.hasAttribute('disabled'),
-    type: element.classList.contains('text-red-900') ? 'error' : undefined,
+    disabled: disabled === 'true',
+    type: type as ListOption['type'],
   }
 }
 
@@ -103,6 +106,8 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
 
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
+const FUNCTION_KEYS = ['Enter', 'Escape', 'Tab']
+const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const THROTTLE_INTERVALS = 255
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
@@ -129,13 +134,13 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   if (PREV_KEYS.includes(key)) {
-    activeIndex.value = activeIndex.value === -1
+    activeIndex.value = Object.is(activeIndex.value, initialIndex)
       ? count - 1
       : getCorrectIndex('prev', activeIndex.value)
 
     emits('toggle', activeIndex.value)
   } else if (NEXT_KEYS.includes(key)) {
-    activeIndex.value = activeIndex.value === -1
+    activeIndex.value = Object.is(activeIndex.value, initialIndex)
       ? 0
       : getCorrectIndex('next', activeIndex.value)
 
@@ -152,7 +157,11 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 }, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onContainerKeydown(ev: KeyboardEvent) {
-  ev.preventDefault()
+  if (PREVENT_DEFAULT_KEYS.includes(ev.key)) {
+    ev.preventDefault()
+  }
+
+  ev.stopPropagation()
   containerKeydownThrottled(ev)
 }
 
@@ -202,7 +211,6 @@ onBeforeUnmount(() => {
     class="pxd-list max-w-full"
     :style="computedStyle"
     @pointerover="onPointerOver"
-    @keydown="onContainerKeydown"
   >
     <PScrollable class="max-h-68" content-class="pr-2">
       <slot>
