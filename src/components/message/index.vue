@@ -113,20 +113,7 @@ function setAutoCloseTimer(message: Message) {
   }, message._remainingMs)
 }
 
-// 鼠标移入时，暂停自动关闭定时器
-function onPointerOver(e: PointerEvent) {
-  const currentItem = getItemElementFromEvent(e)
-  if (!currentItem) {
-    return
-  }
-
-  const relatedItem = getRelatedItemElement(e)
-  if (currentItem === relatedItem) {
-    return
-  }
-
-  const key = currentItem.dataset.key
-
+function pauseMessageByKey(key: string) {
   if (!key) {
     return
   }
@@ -153,19 +140,7 @@ function onPointerOver(e: PointerEvent) {
   }
 }
 
-function onPointerOut(e: PointerEvent) {
-  const currentItem = getItemElementFromEvent(e)
-  if (!currentItem) {
-    return
-  }
-
-  const relatedItem = getRelatedItemElement(e)
-  if (currentItem === relatedItem) {
-    return
-  }
-
-  const key = currentItem.dataset.key
-
+function resumeMessageByKey(key: string) {
   if (!key) {
     return
   }
@@ -188,6 +163,35 @@ function onPointerOut(e: PointerEvent) {
   }
 
   setAutoCloseTimer(message)
+}
+
+// 鼠标移入时，暂停自动关闭定时器
+function onPointerOver(e: PointerEvent) {
+  const currentItem = getItemElementFromEvent(e)
+  if (!currentItem) {
+    return
+  }
+
+  const relatedItem = getRelatedItemElement(e)
+  if (currentItem === relatedItem) {
+    return
+  }
+
+  pauseMessageByKey(currentItem.dataset.key!)
+}
+
+function onPointerOut(e: PointerEvent) {
+  const currentItem = getItemElementFromEvent(e)
+  if (!currentItem) {
+    return
+  }
+
+  const relatedItem = getRelatedItemElement(e)
+  if (currentItem === relatedItem) {
+    return
+  }
+
+  resumeMessageByKey(currentItem.dataset.key!)
 }
 
 function closeMessageByKey(key: string) {
@@ -250,7 +254,11 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
+  messages: groupMessages,
+  visibleMessages,
   getMessage: getMessageByKey,
+  pauseMessage: pauseMessageByKey,
+  resumeMessage: resumeMessageByKey,
   closeMessage: closeMessageByKey,
   closeMessageAll: closeMessageByKeyAll,
 })
