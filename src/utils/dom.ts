@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'vue'
-import { camelize } from './format'
+import { camelize, toArray } from './format'
 import { isServer } from './is'
 
 export function getElementRectFromContainer(
@@ -23,53 +23,51 @@ export function getElementRectFromContainer(
   }
 }
 
-export function getStyle(element: HTMLElement, styleName: keyof CSSProperties): string {
-  if (isServer || !element || !styleName) {
-    return ''
+export function getStyle(element: HTMLElement, styleNames: keyof CSSProperties | (keyof CSSProperties)[]): string[] {
+  if (isServer || !element || !styleNames) {
+    return []
   }
 
-  let key = camelize(styleName)
-  if (key === 'float') {
-    key = 'cssFloat'
+  const keys = toArray(styleNames).map((k) => {
+    return k === 'float' ? 'cssFloat' : camelize(k)
+  })
+
+  const computedStyle = document.defaultView?.getComputedStyle(element, '') || element.style
+
+  return keys.map(k => computedStyle[k as keyof CSSStyleDeclaration] as string)
+}
+
+export function isScrollable(el: HTMLElement) {
+  const [x, y] = getStyle(el, ['overflow-x', 'overflow-y'])
+
+  const allowValues = ['scroll', 'auto', 'overlay']
+
+  // 由于 html 是最后的滚动容器，所以当子元素高度超过 html 的高度时
+  // 即便没有设置 overflow 的为以上值时，html 依然是可以滚动的
+  if (el.tagName === 'HTML') {
+    allowValues.push('visible')
   }
-  try {
-    const style = (element.style as any)[key]
-    if (style) {
-      return style
-    }
-    const computed: any = document.defaultView?.getComputedStyle(element, '')
-    return computed ? computed[key] : ''
-  } catch {
-    return (element.style as any)[key]
+
+  return {
+    x: allowValues.includes(x),
+    y: allowValues.includes(y),
   }
 }
 
-export function hasScrollbar(el: HTMLElement, isVertical?: boolean): boolean {
-  if (isVertical) {
-    return el.scrollHeight > el.clientHeight
+export function hasScrollbar(el: HTMLElement) {
+  const { scrollHeight, clientHeight, scrollWidth, clientWidth } = el
+
+  return {
+    x: scrollWidth > clientWidth,
+    y: scrollHeight > clientHeight,
   }
-
-  return el.scrollWidth > el.clientWidth
-}
-
-// https://github.com/element-plus/element-plus/blob/8ddbb1d85a706e9a2fce3aeeb347fc0346949f86/packages/utils/dom/scroll.ts
-export function isScrollable(el: HTMLElement, isVertical?: boolean): boolean {
-  const key = (
-    {
-      undefined: 'overflow',
-      true: 'overflow-y',
-      false: 'overflow-x',
-    } as const
-  )[String(isVertical)]!
-
-  const overflow = getStyle(el, key)
-
-  return ['scroll', 'auto', 'overlay'].some(s => overflow.includes(s))
 }
 
 export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Window | HTMLElement {
   const windowTop = [window, document, document.documentElement]
   let parent: HTMLElement = el
+
+  const direction = isVertical ? 'y' : 'x'
 
   while (parent) {
     if (windowTop.includes(parent)) {
@@ -77,7 +75,7 @@ export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Windo
     }
 
     // 先判断是否可滚动, 如果可滚动再判断是否是滚动元素
-    if (isScrollable(parent, isVertical) && hasScrollbar(parent, isVertical)) {
+    if (isScrollable(parent)[direction] && hasScrollbar(parent)[direction]) {
       return parent
     }
 
@@ -145,10 +143,10 @@ export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
   }
 
   // 测量特定元素的滚动条
-  const verticalScrollable = isScrollable(element, true)
-  const horizontalScrollable = isScrollable(element, false)
-  const hasVerticalScrollbar = verticalScrollable && hasScrollbar(element, true)
-  const hasHorizontalScrollbar = horizontalScrollable && hasScrollbar(element, false)
+  const { x: isXScrollable, y: isYScrollable } = isScrollable(element)
+  const { x: hasXScrollbar, y: hasYScrollbar } = hasScrollbar(element)
+  const hasVerticalScrollbar = isYScrollable && hasYScrollbar
+  const hasHorizontalScrollbar = isXScrollable && hasXScrollbar
 
   // 创建克隆元素进行测量，避免原始元素样式干扰
   if (hasVerticalScrollbar || hasHorizontalScrollbar) {
