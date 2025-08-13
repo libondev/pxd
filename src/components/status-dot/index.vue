@@ -15,11 +15,11 @@ const props = withDefaults(
 )
 
 const stateClassNames = {
-  READY: 'bg-teal-600',
-  ERROR: 'bg-red-700',
-  QUEUED: 'bg-gray-alpha-200',
-  CANCELED: 'bg-gray-alpha-400',
-  BUILDING: 'bg-amber-600',
+  READY: 'is-ready bg-teal-600',
+  ERROR: 'is-error bg-red-700',
+  QUEUED: 'is-queued bg-gray-alpha-200',
+  CANCELED: 'is-canceled bg-gray-alpha-400',
+  BUILDING: 'is-building bg-amber-600',
 }
 
 function getLabelText() {

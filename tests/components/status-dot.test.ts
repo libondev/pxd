@@ -10,7 +10,7 @@ describe('status-dot', () => {
     expect(wrapper.find('i').exists()).toBe(true)
 
     // default state is QUEUED
-    expect(wrapper.find('i').classes()).toContain('bg-gray-alpha-400')
+    expect(wrapper.find('i').classes()).toContain('is-queued')
 
     expect(wrapper.find('span span').exists()).toBe(false)
 
@@ -21,16 +21,16 @@ describe('status-dot', () => {
     const wrapper = mount(StatusDot)
 
     await wrapper.setProps({ state: 'READY' })
-    expect(wrapper.find('i').classes()).toContain('bg-green-600')
+    expect(wrapper.find('i').classes()).toContain('is-ready')
 
     await wrapper.setProps({ state: 'ERROR' })
-    expect(wrapper.find('i').classes()).toContain('bg-red-600')
+    expect(wrapper.find('i').classes()).toContain('is-error')
 
     await wrapper.setProps({ state: 'BUILDING' })
-    expect(wrapper.find('i').classes()).toContain('bg-yellow-500')
+    expect(wrapper.find('i').classes()).toContain('is-building')
 
     await wrapper.setProps({ state: 'CANCELED' })
-    expect(wrapper.find('i').classes()).toContain('bg-gray-alpha-400')
+    expect(wrapper.find('i').classes()).toContain('is-canceled')
 
     wrapper.unmount()
   })
