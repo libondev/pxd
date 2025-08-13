@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
+import { getScrollContainer, getScrollElByContainer, hasScrollbar, isScrollable } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/events'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -56,7 +56,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onOverlayKeydown(ev: KeyboardEvent) {
-  if (!props.closeOnPressEscape) {
+  if (!props.closeOnPressEscape || !props.modelValue) {
     return
   }
 
@@ -76,15 +76,15 @@ function addScrollDisabled() {
     return
   }
 
-  // 一次性判断 x/y, 避免读取两次造成重复回流
-  const { scrollHeight, clientWidth, scrollWidth, clientHeight } = scrollContainer
+  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
+  const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
 
-  if (scrollWidth > clientWidth) {
-    scrollContainer.classList.add('scroll-disabled-x')
+  if (xScrollbar && xScrollable) {
+    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
   }
 
-  if (scrollHeight > clientHeight) {
-    scrollContainer.classList.add('scroll-disabled-y')
+  if (yScrollbar && yScrollable) {
+    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
   }
 }
 
@@ -93,7 +93,7 @@ function removeScrollDisabled() {
     return
   }
 
-  scrollContainer.classList.remove('scroll-disabled-x', 'scroll-disabled-y')
+  scrollContainer.classList.remove('scroll-disabled-x', 'scroll-disabled-y', 'scrollbar-stable')
 }
 
 watch(() => props.modelValue, (visible) => {
@@ -110,7 +110,9 @@ watch(() => props.modelValue, (visible) => {
 
   nextTick(() => {
     if (!scrollContainer) {
-      scrollContainer = getScrollElByContainer(getScrollContainer(overlayRef.value!))
+      scrollContainer = getScrollElByContainer(
+        getScrollContainer(overlayRef.value!, true),
+      )
     }
 
     addScrollDisabled()

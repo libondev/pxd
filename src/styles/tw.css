@@ -503,12 +503,16 @@
   -webkit-box-orient: vertical;
 }
 
-.scroll-disabled-x {
-  overflow-x: clip !important;
-  scrollbar-gutter: stable !important;
+.scrollbar-stable {
+  scrollbar-gutter: stable;
 }
 
+.scroll-disabled-both,
+.scroll-disabled-x {
+  overflow-x: clip !important;
+}
+
+.scroll-disabled-both,
 .scroll-disabled-y {
   overflow-y: clip !important;
-  scrollbar-gutter: stable !important;
 }
