@@ -61,7 +61,7 @@ export function getCssUnitValue(
   value: Nullable<string | number>,
   fallbackValue?: string,
 ): string {
-  if (value == null) {
+  if (value == null || value === '') {
     return fallbackValue!
   }
 

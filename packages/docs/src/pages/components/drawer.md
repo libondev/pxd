@@ -10,33 +10,78 @@ import { ref } from 'vue'
 
 const isVisible = ref(false)
 
-function openDrawer() {
+function handleOpen() {
   isVisible.value = true
 }
 
-function closeDrawer() {
+function handleClose() {
   isVisible.value = false
 }
 </script>
 
 <template>
-  <PButton variant="primary" @click="openDrawer">Open Drawer</PButton>
+  <PButton variant="primary" @click="handleOpen">Open Drawer</PButton>
 
   <PDrawer
     v-model="isVisible"
     title="Settings"
     subtitle="Configure your application settings"
-    @click-outside="closeDrawer"
+    @click-outside="handleClose"
   >
     <PText>This is the drawer content. You can put any content here.</PText>
     <PText class="mt-4">The drawer will close when you click outside or press the close button.</PText>
 
     <template #footer>
-      <PButton @click="closeDrawer">
+      <PButton @click="handleClose">
         Cancel
       </PButton>
-      <PButton variant="primary" @click="closeDrawer">
+      <PButton variant="primary" @click="handleClose">
         Save Changes
+      </PButton>
+    </template>
+  </PDrawer>
+</template>
+```
+
+## Pending
+When `pending=true` is set, drawer cannot be closed temporarily.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isPending = ref(false)
+const isVisible = ref(false)
+
+function handleOpen() {
+  isVisible.value = true
+}
+
+function handleClose() {
+  isPending.value = true
+
+  setTimeout(() => {
+    isPending.value = false
+    isVisible.value = false
+  }, 2000)
+}
+</script>
+
+<template>
+  <PButton variant="primary" @click="handleOpen">Open Drawer</PButton>
+
+  <PDrawer
+    v-model="isVisible"
+    :pending="isPending"
+    title="Settings"
+    subtitle="Configure your application settings"
+    close-on-press-escape
+    close-on-click-overlay
+    @click-outside="handleClose"
+  >
+    <template #footer>
+      <PButton block @click="handleClose">
+        Cancel
       </PButton>
     </template>
   </PDrawer>

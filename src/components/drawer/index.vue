@@ -12,6 +12,7 @@ interface Props {
   title?: ComponentLabel
   subtitle?: ComponentLabel
   size?: number | string
+  pending?: boolean
   position?: BasePosition
   modelValue?: boolean
   appendToBody?: boolean
@@ -80,16 +81,20 @@ const computedStyle = computed(() => {
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay) {
+  if (!props.closeOnClickOverlay || props.pending) {
     return
   }
 
-  closeDrawer()
+  isVisible.value = false
 }
 
-function closeDrawer() {
-  isVisible.value = false
-  emits('close')
+function onUpdateModelValue(visible: boolean) {
+  // 关闭前检查状态是否处于等待中
+  if (!visible && props.pending) {
+    return
+  }
+
+  isVisible.value = visible
 }
 
 watch(() => isVisible.value, (visible) => {
@@ -104,9 +109,10 @@ watch(() => isVisible.value, (visible) => {
 
 <template>
   <POverlay
-    v-model="isVisible"
+    :model-value="isVisible"
     :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
+    :update:model-value="onUpdateModelValue"
     @click="onOverlayClick"
   >
     <Transition :name="transitionName" mode="out-in" appear>
@@ -146,6 +152,7 @@ watch(() => isVisible.value, (visible) => {
         >
           <slot />
         </PScrollable>
+        <div v-else class="flex-1" />
 
         <footer
           v-if="$slots.footer"
