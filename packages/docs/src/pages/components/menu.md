@@ -9,6 +9,7 @@ const options = [
   { label: 'One' },
   { label: 'Two' },
   { label: 'Three', disabled: true },
+  { label: 'Remove', type: 'warning' },
   { label: 'Delete', type: 'error' },
 ]
 </script>
@@ -41,6 +42,7 @@ const options = [
   { as: 'RouterLink', to: '#', label: 'One' },
   { as: 'RouterLink', to: '#', label: 'Two' },
   { as: 'RouterLink', to: '#', label: 'Three', disabled: true },
+  { as: 'RouterLink', to: '#', label: 'Four', type: 'warning' },
   { as: 'RouterLink', to: '#', label: 'Delete', type: 'error' },
 ]
 </script>
