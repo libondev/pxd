@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOption } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { provideListContext } from '../../contexts/list'
+import { provideListContext, provideListItemIndexContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
@@ -38,6 +38,7 @@ const ITEM_SELECTOR = `.${ITEM_CLASS}`
 
 const initialIndex = Number.NaN
 const activeIndex = shallowRef(initialIndex)
+const increaseIndex = shallowRef(0)
 const allItems = shallowRef<HTMLElement[]>([])
 
 const computedStyle = computed(() => {
@@ -46,16 +47,9 @@ const computedStyle = computed(() => {
   }
 })
 
-function updateAllItemsIndex() {
-  allItems.value.forEach((item, index) => {
-    item.dataset.index = String(index)
-  })
-}
-
 function registerListItem(el: HTMLElement): void {
   if (!allItems.value.includes(el)) {
     allItems.value.push(el)
-    updateAllItemsIndex()
   }
 }
 
@@ -63,7 +57,6 @@ function unregisterListItem(el: HTMLElement): void {
   const index = allItems.value.indexOf(el)
   if (index >= 0) {
     allItems.value.splice(index, 1)
-    updateAllItemsIndex()
   }
 }
 
@@ -182,6 +175,7 @@ function onOptionClick(ev: MouseEvent, index: number) {
   emits('close')
 }
 
+provideListItemIndexContext(increaseIndex)
 provideListContext({
   activeIndex,
   onOptionClick,

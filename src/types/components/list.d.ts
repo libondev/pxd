@@ -2,7 +2,7 @@ import type { ComponentAs, ComponentLabel } from '../shared'
 
 export interface ListOption extends Record<string, any> {
   as?: ComponentAs
-  type?: 'error'
+  type?: 'error' | 'warning' | 'default'
   label?: ComponentLabel
   value?: string | number
   disabled?: boolean

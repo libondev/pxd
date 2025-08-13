@@ -12,3 +12,8 @@ export const [
   provideListContext,
   useListContext,
 ] = createContext<ListContext>('List')
+
+export const [
+  provideListItemIndexContext,
+  useListItemIndexContext,
+] = createContext<Ref<number>>('ListIndex')

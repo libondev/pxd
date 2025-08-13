@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import type { ComponentPublicInstance } from 'vue'
-import type { ComponentAs, ComponentLabel } from '../../types/shared'
+import type { ListOption } from '../../types/components/list'
 import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
-import { useListContext } from '../../contexts/list'
+import { useListContext, useListItemIndexContext } from '../../contexts/list'
 
 interface Props {
-  as?: ComponentAs
-  type?: 'error' | 'warning'
-  label?: ComponentLabel
-  disabled?: boolean
-  description?: ComponentLabel
+  as?: ListOption['as']
+  type?: ListOption['type']
+  label?: ListOption['label']
+  disabled?: ListOption['disabled']
+  description?: ListOption['description']
 }
 
 defineOptions({
@@ -20,6 +19,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     as: 'li',
+    type: 'default',
     disabled: false,
   },
 )
@@ -35,50 +35,29 @@ const {
   unregisterListItem,
 } = useListContext()
 
+const listItemIndex = useListItemIndexContext()
+
 const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()
-const currentIndex = shallowRef(-1)
+const currentIndex = shallowRef(listItemIndex.value++)
 
 const itemTypeMap = {
-  error: 'text-red-900',
-  warning: 'text-yellow-900',
+  error: 'text-red-900 data-[selected=true]:bg-red-100',
+  warning: 'text-amber-900 data-[selected=true]:bg-amber-100',
+  default: 'text-foreground data-[selected=true]:bg-gray-alpha-100',
 }
 
+const isSelected = computed(() => activeIndex.value === currentIndex.value)
+
 const computedClass = computed(() => {
-  const classes = [attrs.class]
+  const classes = ['cursor-pointer data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700', attrs.class]
 
   if (props.type) {
     classes.push(itemTypeMap[props.type])
   }
 
-  if (props.disabled) {
-    classes.push('pointer-events-none text-gray-700')
-  } else {
-    classes.push('cursor-pointer')
-  }
-
   return classes.join(' ')
 })
-
-function setRef(el: HTMLElement | ComponentPublicInstance) {
-  if (!el) {
-    return
-  }
-
-  itemRef.value = el instanceof HTMLElement ? el : el.$el!
-
-  if (registerListItem) {
-    registerListItem(itemRef.value!)
-  }
-
-  updateCurrentIndex()
-}
-
-function updateCurrentIndex() {
-  if (itemRef.value && itemRef.value.dataset.index) {
-    currentIndex.value = Number(itemRef.value.dataset.index)
-  }
-}
 
 function onItemClick(ev: MouseEvent) {
   emits('click', ev, currentIndex.value)
@@ -86,27 +65,14 @@ function onItemClick(ev: MouseEvent) {
 }
 
 onMounted(() => {
-  updateCurrentIndex()
-
-  const observer = new MutationObserver(() => {
-    updateCurrentIndex()
-  })
-
-  if (itemRef.value) {
-    observer.observe(itemRef.value, {
-      attributes: true,
-      attributeFilter: ['data-index'],
-    })
+  if (registerListItem) {
+    registerListItem(itemRef.value!)
   }
-
-  onUnmounted(() => {
-    observer.disconnect()
-  })
 })
 
 onUnmounted(() => {
-  if (itemRef.value && unregisterListItem) {
-    unregisterListItem(itemRef.value)
+  if (unregisterListItem) {
+    unregisterListItem(itemRef.value!)
   }
 })
 </script>
@@ -114,13 +80,14 @@ onUnmounted(() => {
 <template>
   <Component
     :is="as"
-    :ref="setRef"
+    ref="itemRef"
     tabindex="-1"
     role="listitem"
+    :data-type="type"
     :data-index="currentIndex"
     :data-disabled="disabled"
-    :data-selected="activeIndex === currentIndex"
-    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none data-[selected=true]:bg-gray-alpha-100 motion-safe:transition-colors"
+    :data-selected="isSelected"
+    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none motion-safe:transition-colors"
     :class="computedClass"
     @click="onItemClick"
   >
