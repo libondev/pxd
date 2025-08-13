@@ -93,7 +93,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if (isVue3 || isServer) {
+  if (isVue3) {
     return
   }
 

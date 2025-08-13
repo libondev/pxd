@@ -189,10 +189,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if (isServer) {
-    return
-  }
-
   off(document, 'keydown', onContainerKeydown)
 
   allItems.value = []
