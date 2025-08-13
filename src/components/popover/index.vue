@@ -70,7 +70,7 @@ const props = withDefaults(
     scrollHidden: false,
     showTransition: true,
     hideTransition: true,
-    minVisibleRatio: 0.68,
+    minVisibleRatio: 0.88,
     closeOnPressEscape: false,
     autoPositionThreshold: 30,
     scrollHiddenThreshold: 150,
@@ -147,26 +147,7 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
   localPosition.value = props.position
   updateContentPosition()
 
-  // 等待样式生效后再判断遮挡，再决定是否翻转
-  await nextTick()
-  const scrollInfo = getScrollPositions(scrollContainer)
-  const containerRect = wrapperRef.value!.getBoundingClientRect()
-  const overlapping = getOverlapping(
-    viewportRect!,
-    containerRect,
-    scrollInfo,
-  )
-
-  // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
-  const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
-  if (visibleRatio >= props.minVisibleRatio) {
-    return
-  }
-
-  if (overlapping.isOverlapping) {
-    applyAutoPosition(overlapping)
-    updateContentPosition()
-  }
+  handleDirectionInvertIfNeed()
 })
 
 function getTriggerRect() {
@@ -224,6 +205,32 @@ function getVisibleRatio(
   return visibleArea / totalArea
 }
 
+// 处理是否需要翻转方向
+async function handleDirectionInvertIfNeed() {
+  await nextTick()
+
+  const scrollInfo = getScrollPositions(scrollContainer)
+  const containerRect = wrapperRef.value!.getBoundingClientRect()
+
+  // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
+  const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
+  if (visibleRatio >= props.minVisibleRatio) {
+    return
+  }
+
+  // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
+  const overlapping = getOverlapping(
+    viewportRect!,
+    containerRect,
+    scrollInfo,
+  )
+
+  if (overlapping.isOverlapping) {
+    applyAutoPosition(overlapping)
+    updateContentPosition()
+  }
+}
+
 async function handlePopoverShow(immediate: boolean = false) {
   await new Promise((resolve) => {
     getTriggerRect()
@@ -246,19 +253,7 @@ async function handlePopoverShow(immediate: boolean = false) {
     return
   }
 
-  await nextTick()
-
-  // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
-  const overlapping = getOverlapping(
-    viewportRect!,
-    wrapperRef.value!.getBoundingClientRect(),
-    getScrollPositions(scrollContainer),
-  )
-
-  if (overlapping.isOverlapping) {
-    applyAutoPosition(overlapping)
-    updateContentPosition()
-  }
+  handleDirectionInvertIfNeed()
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
