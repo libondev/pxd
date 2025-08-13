@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Message } from '../../composables/use-message'
+import type { MessageItem } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
@@ -47,7 +47,7 @@ const TYPE_ICONS = {
 
 const ITEM_SELECTOR = '.pxd-message--item'
 
-const groupMessages = ref<Message[]>([])
+const groupMessages = ref<MessageItem[]>([])
 
 const visibleMessages = computed(() => {
   const max = Math.max(props.max, 0)
@@ -97,7 +97,7 @@ function getRelatedItemElement(e: PointerEvent) {
   return related.closest<HTMLElement>(ITEM_SELECTOR)
 }
 
-function setAutoCloseTimer(message: Message) {
+function setAutoCloseTimer(message: MessageItem) {
   message._startedAtMs = Date.now()
 
   if (message._remainingMs == null) {
@@ -209,7 +209,7 @@ function closeMessageByKey(key: string) {
   groupMessages.value.splice(index, 1)
 }
 
-function onCreateMessage({ detail: data }: CustomEvent<Message>) {
+function onCreateMessage({ detail: data }: CustomEvent<MessageItem>) {
   if (!data || data.group !== props.group) {
     return
   }
@@ -221,7 +221,7 @@ function onCreateMessage({ detail: data }: CustomEvent<Message>) {
   groupMessages.value.push(data)
 }
 
-function onRemoveMessage({ detail: data }: CustomEvent<Message>) {
+function onRemoveMessage({ detail: data }: CustomEvent<MessageItem>) {
   if (!data || !data.key || data.group !== props.group) {
     return
   }

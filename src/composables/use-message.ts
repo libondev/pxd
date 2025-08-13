@@ -15,7 +15,7 @@ interface Options {
 type RequireAllExcept<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>
 type RequiredOptionsExceptType = RequireAllExcept<Options, 'type'>
 
-export interface Message extends RequiredOptionsExceptType {
+export interface MessageItem extends RequiredOptionsExceptType {
   message: string | VNode
   _timerId?: ReturnType<typeof setTimeout>
   _remainingMs?: number
@@ -32,7 +32,7 @@ export function useMessage(msg: string | VNode, options?: Options) {
 
   options ??= {} as Options
 
-  const message: Message = {
+  const message: MessageItem = {
     key: options.key || getUniqueId(),
     message: msg,
     type: options.type,
