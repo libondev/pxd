@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
       color: var(--color-blue-700)
     }
     &.warning {
-      color: var(--color-yellow-500)
+      color: var(--color-amber-700)
     }
     &.success {
       color: var(--color-green-700)
