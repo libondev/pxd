@@ -328,8 +328,8 @@ let tbodyRect: DOMRect
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
 const {
   value: showTooltip,
-  set: setShowTooltip,
-  setImmediate: setShowTooltipImmediate,
+  setValue: setShowTooltip,
+  setValueDelay: setShowTooltipDelay,
 } = useDelayChange(false, 500)
 const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
 
@@ -347,7 +347,7 @@ const formatTooltipText = computed(() => {
 
 // 鼠标离开表格区域, 隐藏提示框
 function onMouseLeave() {
-  setShowTooltipImmediate(false)
+  setShowTooltip(false)
   tooltipInfo.value = {} as TooltipInfo
   tbodyRect = null!
 }
@@ -357,7 +357,7 @@ async function onMouseOver(ev: MouseEvent) {
   const targetEl = ev.target as HTMLTableCellElement
 
   if (targetEl.tagName !== 'TD') {
-    setShowTooltip(false)
+    setShowTooltipDelay(false)
     return
   }
 
@@ -365,7 +365,7 @@ async function onMouseOver(ev: MouseEvent) {
 
   // 没有日期数据则隐藏提示
   if (!date) {
-    setShowTooltipImmediate(false)
+    setShowTooltip(false)
     return
   }
 
@@ -377,7 +377,7 @@ async function onMouseOver(ev: MouseEvent) {
   }
 
   // 立即显示提示
-  setShowTooltipImmediate(true)
+  setShowTooltip(true)
   const rect = targetEl.getBoundingClientRect()
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
