@@ -18,7 +18,7 @@ withDefaults(
 </script>
 
 <template>
-  <PStack class="pxd-material bg-background-100" :class="variant">
+  <PStack class="pxd-material w-full bg-background-100" :class="variant">
     <slot />
   </PStack>
 </template>
