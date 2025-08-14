@@ -1,8 +1,7 @@
 import type { EmitFn } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 
-const UPDATE_INTERVAL = 34
-const MILLISECOND_LENGTH = 13
+const UPDATE_INTERVAL = Math.ceil(1000 / 25)
 
 export interface Options {
   /**
@@ -61,11 +60,11 @@ export function useCountdown<T extends Record<string, any>>(
   const totalDuration = computed(() => {
     const { endTime, durations = 0, millisecond } = props
     if (endTime) {
-      const end = (String(endTime).length >= MILLISECOND_LENGTH ? endTime : endTime * 1000) - Date.now()
+      const end = Math.round(millisecond ? endTime : endTime * 1000) - Date.now()
       return Math.max(0, end)
     }
-    // 默认按“毫秒”解释；仅当 millisecond === false 时按“秒”转毫秒
-    const time = millisecond === false ? Math.round(durations * 1000) : Math.round(durations)
+
+    const time = Math.round(millisecond ? durations : durations * 1000)
     return Math.max(0, time)
   })
 

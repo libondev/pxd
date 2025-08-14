@@ -67,24 +67,6 @@ describe('useCountdown', () => {
     expect(timestamp.value).toBe(0)
   })
 
-  it('should normalize 10-digit end time correctly', () => {
-    mockDateNow.mockReturnValue(1000000000000)
-    const { timestamp } = useCountdown(
-      { endTime: 1000000005, active: false, invert: false },
-      mockEmits,
-    )
-    expect(timestamp.value).toBe(5000)
-  })
-
-  it('should normalize 13-digit end time correctly', () => {
-    mockDateNow.mockReturnValue(1000000000000)
-    const { timestamp } = useCountdown(
-      { endTime: 1000000005000, active: false, invert: false },
-      mockEmits,
-    )
-    expect(timestamp.value).toBe(5000)
-  })
-
   it('should handle durations of 0', () => {
     const { timestamp } = useCountdown(
       { durations: 0, active: false, invert: false },
