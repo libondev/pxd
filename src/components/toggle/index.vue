@@ -118,7 +118,7 @@ async function onCheckboxChange(e: Event) {
         class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
         :class="computedSize"
       >
-        <div class="pxd-toggle--handle-icon text-xs relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full border border-input bg-background-100 text-foreground-secondary motion-safe:transition-transform">
+        <div class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform">
           <div class="inset-0 absolute flex items-center justify-center">
             <Transition name="pxd-transition--fade" mode="out-in">
               <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
