@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useDelayChange } from '../../composables/use-delay-change'
 import { getColorByThreshold } from '../../utils/colors'
-import { getAllDatesBetween } from '../../utils/dates'
+import { getAllDatesBetween } from '../../utils/date'
 
 interface DataItem {
   date: string

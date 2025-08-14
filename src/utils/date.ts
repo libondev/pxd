@@ -1,4 +1,12 @@
 import dayjs from 'dayjs/esm/index.js'
+import dayjsDurationPlugin from 'dayjs/esm/plugin/duration/index.js'
+import dayjsMillisecondTokenPlugin from './dayjs-millisecond-token.js'
+
+export {
+  dayjs,
+  dayjsDurationPlugin,
+  dayjsMillisecondTokenPlugin,
+}
 
 interface Result<T> {
   years: number[]

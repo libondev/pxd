@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { Options } from '../../composables/use-countdown'
-import dayjs from 'dayjs/esm/index.js'
-import durationPlugin from 'dayjs/esm/plugin/duration/index.js'
 import { computed, onBeforeUnmount } from 'vue'
 import { useCountdown } from '../../composables/use-countdown'
-import millisecondTokenPlugin from '../../utils/dayjs-millisecond-token'
+import {
+  dayjs,
+  dayjsDurationPlugin,
+  dayjsMillisecondTokenPlugin,
+} from '../../utils/date'
 
 interface Props extends Options {
   format?: string
@@ -33,8 +35,8 @@ const emits = defineEmits<{
   finish: []
 }>()
 
-dayjs.extend(durationPlugin)
-dayjs.extend(millisecondTokenPlugin)
+dayjs.extend(dayjsDurationPlugin)
+dayjs.extend(dayjsMillisecondTokenPlugin)
 
 const {
   stop,
