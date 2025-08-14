@@ -11,6 +11,7 @@ interface Props {
   fader?: boolean
   faderSize?: number
   faderColor?: string
+  faderDirection?: ComponentDirection | 'both'
   scrollbar?: boolean
   contentClass?: ComponentClass
   scrollbarSize?: number
@@ -294,6 +295,7 @@ defineExpose({
       :size="faderSize"
       :color="faderColor"
       :container="containerRef"
+      :direction="faderDirection"
     />
 
     <template v-if="scrollbar">
