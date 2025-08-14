@@ -93,8 +93,8 @@ const formattedGap = computed(() => {
 const formattedDirection = computed(() => {
   const { direction } = props
 
-  const defaultDirection = typeof direction === 'string' ? direction : direction.xs || 'horizontal'
-  const defaultDirs = { xs: defaultDirection === 'horizontal' ? 'flex-row' : 'flex-col' } as Record<string, string>
+  const defaultDirection = typeof direction === 'string' ? direction : direction.xs ?? 'horizontal'
+  const defaultDirs = { xs: presetDirClasses[`xs:${defaultDirection}`] } as Record<string, string>
 
   if (typeof direction === 'object') {
     return Object.entries(direction).reduce((acc, [bp, value]) => {
