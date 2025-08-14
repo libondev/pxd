@@ -39,6 +39,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -58,7 +59,9 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.s
 
 function onCheckboxChange(e: Event) {
   const target = e.target as HTMLInputElement
-  modelValue.value = target.checked ? props.activeValue : props.inactiveValue
+  const changedValue = target.checked ? props.activeValue : props.inactiveValue
+  modelValue.value = changedValue
+  emits('change', changedValue)
 }
 </script>
 
