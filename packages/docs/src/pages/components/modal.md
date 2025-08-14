@@ -42,7 +42,7 @@ function handleClose() {
 </template>
 ```
 
-## Pending
+## Loading
 
 When `pending=true` is set, modal cannot be closed temporarily.
 
@@ -50,7 +50,7 @@ When `pending=true` is set, modal cannot be closed temporarily.
 <script setup>
 import { ref } from 'vue'
 
-const isPending = ref(false)
+const isLoading = ref(false)
 const isVisible = ref(false)
 
 function handleOpen() {
@@ -58,10 +58,10 @@ function handleOpen() {
 }
 
 function handleClose() {
-  isPending.value = true
+  isLoading.value = true
 
   setTimeout(() => {
-    isPending.value = false
+    isLoading.value = false
     isVisible.value = false
   }, 2000)
 }
@@ -73,14 +73,14 @@ function handleClose() {
   <PModal
     v-model="isVisible"
     title="Async Logic"
-    :pending="isPending"
+    :loading="isLoading"
     close-on-press-escape
     close-on-click-overlay
   >
     <PText>Content of the modal.</PText>
 
     <template #footer>
-      <PButton block :loading="isPending" @click="handleClose">
+      <PButton block :loading="isLoading" @click="handleClose">
         Close (after two seconds)
       </PButton>
     </template>

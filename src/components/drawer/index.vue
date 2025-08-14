@@ -12,7 +12,7 @@ interface Props {
   title?: ComponentLabel
   subtitle?: ComponentLabel
   size?: number | string
-  pending?: boolean
+  loading?: boolean
   position?: BasePosition
   modelValue?: boolean
   appendToBody?: boolean
@@ -81,7 +81,7 @@ const computedStyle = computed(() => {
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.pending) {
+  if (!props.closeOnClickOverlay || props.loading) {
     return
   }
 
@@ -90,7 +90,7 @@ function onOverlayClick(ev: MouseEvent) {
 
 function onUpdateModelValue(visible: boolean) {
   // 关闭前检查状态是否处于等待中
-  if (!visible && props.pending) {
+  if (!visible && props.loading) {
     return
   }
 

@@ -10,7 +10,7 @@ interface Props {
   title?: ComponentLabel
   subtitle?: ComponentLabel
   width?: number | string
-  pending?: boolean
+  loading?: boolean
   modelValue?: boolean
   appendToBody?: boolean
   headerStylize?: boolean
@@ -55,7 +55,7 @@ useFocusTrap(modalRef)
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.pending) {
+  if (!props.closeOnClickOverlay || props.loading) {
     return
   }
 
@@ -63,7 +63,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onUpdateModelValue(visible: boolean) {
-  if (!visible && props.pending) {
+  if (!visible && props.loading) {
     return
   }
 

@@ -43,14 +43,14 @@ function handleClose() {
 </template>
 ```
 
-## Pending
+## Loading
 When `pending=true` is set, drawer cannot be closed temporarily.
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
-const isPending = ref(false)
+const isLoading = ref(false)
 const isVisible = ref(false)
 
 function handleOpen() {
@@ -58,10 +58,10 @@ function handleOpen() {
 }
 
 function handleClose() {
-  isPending.value = true
+  isLoading.value = true
 
   setTimeout(() => {
-    isPending.value = false
+    isLoading.value = false
     isVisible.value = false
   }, 2000)
 }
@@ -72,7 +72,7 @@ function handleClose() {
 
   <PDrawer
     v-model="isVisible"
-    :pending="isPending"
+    :loading="isLoading"
     title="Settings"
     subtitle="Configure your application settings"
     close-on-press-escape
