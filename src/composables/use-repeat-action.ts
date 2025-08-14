@@ -1,7 +1,8 @@
 import type { MaybeRef } from 'vue'
 import type { Callback } from '../types/shared/utils'
-import { onBeforeUnmount, unref } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { off, on } from '../utils/events'
+import { toValue } from '../utils/ref'
 
 interface RepeatActionReturnType {
   start: Callback
@@ -54,7 +55,7 @@ export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callba
   }
 
   const start = () => {
-    if (timer || unref(disabled)) {
+    if (timer || toValue(disabled)) {
       return
     }
 

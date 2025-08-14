@@ -10,7 +10,11 @@ export type MaybeComputedElementRef<T extends MaybeElement = MaybeElement> = May
 
 export type UnRefElementReturn<T extends MaybeElement = MaybeElement> = T extends ComponentPublicInstance ? Exclude<MaybeElement, ComponentPublicInstance> : T | undefined
 
-export function unrefElement<T extends MaybeElement>(elRef: MaybeComputedElementRef<T>): UnRefElementReturn<T> {
-  const plain = unref(elRef)
+export function toValue<T>(source: MaybeRefOrGetter<T>): T {
+  return typeof source === 'function' ? (source as () => T)() : unref(source)
+}
+
+export function unrefElement<T extends MaybeElement>(elRef: MaybeRefOrGetter<T>): UnRefElementReturn<T> {
+  const plain = toValue(elRef)
   return (plain as ComponentPublicInstance)?.$el ?? plain
 }

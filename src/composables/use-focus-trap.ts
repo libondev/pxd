@@ -1,6 +1,7 @@
 import type { DOMRef } from '../types/shared/utils'
-import { nextTick, onBeforeUnmount, unref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, watch } from 'vue'
 import { on } from '../utils/events'
+import { toValue } from '../utils/ref'
 
 export function useFocusTrap(container: DOMRef) {
   const FOCUSABLE_SELECTORS = [
@@ -41,7 +42,7 @@ export function useFocusTrap(container: DOMRef) {
     elements[nextFocusIndex]?.focus()
   }
 
-  const unwatch = watch(() => unref(container), (container, _, onCleanup) => {
+  const unwatch = watch(() => toValue(container), (container, _, onCleanup) => {
     if (!container) {
       previousFocusedElement?.focus()
       return

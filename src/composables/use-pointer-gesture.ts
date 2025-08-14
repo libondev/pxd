@@ -1,6 +1,7 @@
 import type { DOMRef } from '../types/shared/utils'
-import { onBeforeUnmount, shallowRef, unref, watch } from 'vue'
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
+import { toValue } from '../utils/ref'
 
 type Axis = 'x' | 'y' | 'both'
 type Dir = 'left' | 'right' | 'up' | 'down' | null
@@ -270,7 +271,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
 
     const el = boundEl
       ? getScrollContainer(boundEl)
-      : unref(container) && getScrollContainer(unref(container)!)
+      : toValue(container) && getScrollContainer(toValue(container)!)
 
     if (!el) {
       return null
@@ -410,7 +411,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     startLongPress()
     options.onStart?.(e, publicState())
 
-    boundEl = unref(container)!
+    boundEl = toValue(container)!
 
     if (usePointerCapture && boundEl) {
       try {
@@ -583,7 +584,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
   }
 
   function unbind(el?: HTMLElement | null) {
-    const _el = el ?? unref(container)
+    const _el = el ?? toValue(container)
 
     if (!_el) {
       return
@@ -608,7 +609,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
   }
 
   const unwatchContainer = watch(
-    () => unref(container),
+    () => toValue(container),
     (el, prev) => {
       if (el === prev) {
         return
