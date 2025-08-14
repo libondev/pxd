@@ -121,11 +121,11 @@ const password = ref('')
 
     <PInput disabled placeholder="Default" :prefix-style="false" :suffix-style="false">
       <template #prefix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="ml-3" />
       </template>
 
       <template #suffix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="mr-3" />
       </template>
     </PInput>
   </PStack>
@@ -137,7 +137,6 @@ const password = ref('')
 ```vue demo
 <template>
   <PStack class="max-w-md" gap="8" direction="vertical">
-    <PInput error="An error message." size="xs" placeholder="Default" />
     <PInput error="An error message." size="sm" placeholder="Default" />
     <PInput error="An error message." placeholder="Default" />
     <PInput error="An error message." size="lg" placeholder="Default" />

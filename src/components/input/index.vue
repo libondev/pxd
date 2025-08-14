@@ -65,7 +65,7 @@ const isPasswordVisible = shallowRef(!props.password)
 const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border relative flex items-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all']
+  const classes = ['pxd-input--border group relative flex items-center overflow-hidden rounded-md bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -202,11 +202,11 @@ defineExpose({
       <slot name="label">{{ label }}</slot>
     </div>
 
-    <div :class="computedClass">
+    <div :data-disabled="disabled" :class="computedClass">
       <div
         v-if="$slots.prefix"
         class="pxd-input--prefix text-sm flex h-full items-center text-gray-700"
-        :class="{ 'px-3 rounded-l-inherit border-r bg-background-200': prefixStyle }"
+        :class="{ 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
       >
         <slot name="prefix" />
       </div>
@@ -214,7 +214,7 @@ defineExpose({
       <input
         :id="uniqueId"
         ref="inputRef"
-        class="px-3 size-full rounded-inherit bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
+        class="px-3 size-full rounded-inherit bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
         :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
         :type="internalInputType"
         :min="min"
@@ -258,7 +258,7 @@ defineExpose({
       <div
         v-if="$slots.suffix"
         class="pxd-input--suffix text-sm flex h-full items-center text-gray-700"
-        :class="{ 'px-3 rounded-r-inherit border-l bg-background-200': suffixStyle }"
+        :class="{ 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
       >
         <slot name="suffix" />
       </div>
