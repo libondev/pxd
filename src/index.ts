@@ -3,6 +3,7 @@ import * as components from './components/index'
 
 export * from './components/index.js'
 export * from './composables/index.js'
+export type * from './types/shared'
 
 export const version = '0.0.36'
 
