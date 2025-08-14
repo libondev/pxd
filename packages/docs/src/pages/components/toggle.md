@@ -15,7 +15,7 @@ Switch between two values
 </template>
 ```
 
-## Loading
+## Loading/Disabled
 
 ```vue demo
 <script setup>
@@ -26,28 +26,43 @@ const isChecked2 = ref(true)
 </script>
 
 <template>
-  <PStack>
+  <PStack direction="vertical">
     <PToggle v-model="isChecked1" loading />
     <PToggle v-model="isChecked2" loading />
+    <PToggle v-model="isChecked1" disabled />
+    <PToggle v-model="isChecked2" disabled />
   </PStack>
 </template>
 ```
 
-## Disabled
+## Async
+Set an asynchronous or synchronous function to decide whether to allow this modification.
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
-const isChecked1 = ref(false)
-const isChecked2 = ref(true)
+const isChecked = ref(false)
+const isLoading = ref(false)
+
+function onBeforeChange(v) {
+  return new Promise((resolve) => {
+    isLoading.value = true
+    setTimeout(() => {
+      resolve(true)
+    }, 500)
+  }).finally(() => {
+    isLoading.value = false
+  })
+}
 </script>
 
 <template>
-  <PStack>
-    <PToggle v-model="isChecked1" disabled />
-    <PToggle v-model="isChecked2" disabled />
-  </PStack>
+  <PToggle
+    v-model="isChecked"
+    :loading="isLoading"
+    :before-change="onBeforeChange"
+  />
 </template>
 ```
 

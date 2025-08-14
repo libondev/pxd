@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { ComponentLabel, ComponentSize } from '../../types/shared'
+import type { ComponentBeforeChange, ComponentLabel, ComponentSize } from '../../types/shared'
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { getUniqueId } from '../../utils/uid'
 import { getFallbackValue } from '../../utils/value'
-import PSpinner from '../spinner/index.vue'
 
 type ValueType = boolean | number | string
 
@@ -17,6 +17,7 @@ interface Props {
   modelValue?: ValueType
   activeValue?: ValueType
   inactiveValue?: ValueType
+  beforeChange?: ComponentBeforeChange<ValueType>
   activeColor?: string
   inactiveColor?: string
   activeLabel?: string
@@ -60,13 +61,24 @@ const modelValue = useModelValue(props, emits)
 const isChecked = computed(() => modelValue.value === props.activeValue)
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
-function onCheckboxChange(e: Event) {
+async function onCheckboxChange(e: Event) {
   if (props.loading) {
     return
   }
 
-  const target = e.target as HTMLInputElement
-  const changedValue = target.checked ? props.activeValue : props.inactiveValue
+  const input = e.target as HTMLInputElement
+  const rawValue = input.checked
+
+  if (typeof props.beforeChange === 'function') {
+    input.checked = !rawValue
+    const isAllowed = await props.beforeChange(modelValue.value)
+
+    if (!isAllowed) {
+      return
+    }
+  }
+
+  const changedValue = rawValue ? props.activeValue : props.inactiveValue
   modelValue.value = changedValue
   emits('change', changedValue)
 }
@@ -94,7 +106,7 @@ function onCheckboxChange(e: Event) {
         :disabled="disabled || loading"
         :checked="isChecked"
         class="pxd-toggle--input peer smallest"
-        @change="onCheckboxChange"
+        @change.prevent="onCheckboxChange"
       >
 
       <span
@@ -106,10 +118,14 @@ function onCheckboxChange(e: Event) {
         class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
         :class="computedSize"
       >
-        <div class="pxd-toggle--handle-icon text-xs p-0.5 flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full border border-input bg-background-100 text-foreground-secondary motion-safe:transition-transform">
-          <PSpinner v-if="loading" />
-          <slot v-else-if="modelValue" name="checked" />
-          <slot v-else name="unchecked" />
+        <div class="pxd-toggle--handle-icon text-xs relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full border border-input bg-background-100 text-foreground-secondary motion-safe:transition-transform">
+          <div class="inset-0 absolute flex items-center justify-center">
+            <Transition name="pxd-transition--fade" mode="out-in">
+              <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
+              <slot v-else-if="modelValue" name="checked" />
+              <slot v-else name="unchecked" />
+            </Transition>
+          </div>
         </div>
       </div>
 

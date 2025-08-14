@@ -30,3 +30,5 @@ export interface ComponentOption {
   value: string | number
   disabled?: boolean
 }
+
+export type ComponentBeforeChange<T> = (value: T) => PromiseLike<T> | T
