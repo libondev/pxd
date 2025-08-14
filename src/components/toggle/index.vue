@@ -5,19 +5,22 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { useModelValue } from '../../composables/use-model-value'
 import { getUniqueId } from '../../utils/uid'
 import { getFallbackValue } from '../../utils/value'
+import PSpinner from '../spinner/index.vue'
 
 type ValueType = boolean | number | string
 
 interface Props {
   size?: ComponentSize
   label?: ComponentLabel
+  loading?: boolean
+  disabled?: boolean
   modelValue?: ValueType
   activeValue?: ValueType
   inactiveValue?: ValueType
+  activeColor?: string
+  inactiveColor?: string
   activeLabel?: string
   inactiveLabel?: string
-  activeBgColor?: string
-  inactiveBgColor?: string
 }
 
 defineOptions({
@@ -33,8 +36,8 @@ const props = withDefaults(
   {
     activeValue: true,
     inactiveValue: false,
-    activeBgColor: 'var(--color-primary)',
-    inactiveBgColor: 'var(--color-gray-alpha-200)',
+    activeColor: 'var(--color-primary)',
+    inactiveColor: 'var(--color-gray-alpha-100)',
   },
 )
 
@@ -58,6 +61,10 @@ const isChecked = computed(() => modelValue.value === props.activeValue)
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 function onCheckboxChange(e: Event) {
+  if (props.loading) {
+    return
+  }
+
   const target = e.target as HTMLInputElement
   const changedValue = target.checked ? props.activeValue : props.inactiveValue
   modelValue.value = changedValue
@@ -71,8 +78,8 @@ function onCheckboxChange(e: Event) {
     class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation flex-col select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
-      '--abc': activeBgColor,
-      '--ibc': inactiveBgColor,
+      '--ac': activeColor,
+      '--ic': inactiveColor,
     }"
     :for="uniqueId"
   >
@@ -84,8 +91,9 @@ function onCheckboxChange(e: Event) {
       <input
         :id="uniqueId"
         type="checkbox"
+        :disabled="disabled || loading"
         :checked="isChecked"
-        class="peer smallest"
+        class="pxd-toggle--input peer smallest"
         @change="onCheckboxChange"
       >
 
@@ -95,13 +103,14 @@ function onCheckboxChange(e: Event) {
       >{{ inactiveLabel }}</span>
 
       <div
-        class="pxd-toggle--handle rounded-full border border-input bg-(--ibc) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--abc) peer-checked:[--tx:100%] motion-safe:transition-all"
+        class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
         :class="computedSize"
       >
-        <span class="pxd-toggle--handle-icon flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center rounded-full border border-input bg-background-100 group-hover/toggle:will-change-transform motion-safe:transition-transform">
-          <slot v-if="modelValue" name="active-icon" />
-          <slot v-else name="inactive-icon" />
-        </span>
+        <div class="pxd-toggle--handle-icon text-xs p-0.5 flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full border border-input bg-background-100 text-foreground-secondary motion-safe:transition-transform">
+          <PSpinner v-if="loading" />
+          <slot v-else-if="modelValue" name="checked" />
+          <slot v-else name="unchecked" />
+        </div>
       </div>
 
       <span
@@ -111,3 +120,9 @@ function onCheckboxChange(e: Event) {
     </div>
   </label>
 </template>
+
+<style lang="postcss">
+.pxd-toggle--input:checked:disabled + .pxd-toggle--handle {
+  background-color: var(--color-gray-300)
+}
+</style>

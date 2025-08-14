@@ -15,6 +15,42 @@ Switch between two values
 </template>
 ```
 
+## Loading
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isChecked1 = ref(false)
+const isChecked2 = ref(true)
+</script>
+
+<template>
+  <PStack>
+    <PToggle v-model="isChecked1" loading />
+    <PToggle v-model="isChecked2" loading />
+  </PStack>
+</template>
+```
+
+## Disabled
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isChecked1 = ref(false)
+const isChecked2 = ref(true)
+</script>
+
+<template>
+  <PStack>
+    <PToggle v-model="isChecked1" disabled />
+    <PToggle v-model="isChecked2" disabled />
+  </PStack>
+</template>
+```
+
 ## Sizes
 
 ```vue demo
@@ -45,9 +81,46 @@ Switch between two values
 <template>
   <PToggle
     v-model="isChecked"
-    inactive-bg-color="var(--color-red-700)"
-    active-bg-color="var(--color-green-700)"
+    active-color="var(--color-green-700)"
+    inactive-color="var(--color-red-700)"
   />
+</template>
+```
+
+## Icons
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import LockOpenIcon from '@gdsicon/vue/lock-open'
+import LockClosedIcon from '@gdsicon/vue/lock-closed'
+
+const isChecked1 = ref(false)
+const isChecked2 = ref(true)
+</script>
+
+<template>
+  <PStack>
+    <PToggle v-model="isChecked1">
+      <template #checked>
+        <LockClosedIcon />
+      </template>
+
+      <template #unchecked>
+        <LockOpenIcon />
+      </template>
+    </PToggle>
+
+    <PToggle v-model="isChecked2">
+      <template #checked>
+        <LockClosedIcon />
+      </template>
+
+      <template #unchecked>
+        <LockOpenIcon />
+      </template>
+    </PToggle>
+  </PStack>
 </template>
 ```
 
