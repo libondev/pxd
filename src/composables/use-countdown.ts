@@ -17,6 +17,11 @@ export interface Options {
    */
   active?: boolean
   /**
+   * 开始时间于
+   * The start time of the countdown.
+   */
+  startAt?: number
+  /**
    * 结束时间
    * The end time of the countdown.
    */
@@ -54,39 +59,78 @@ export function useCountdown<T extends Record<string, any>>(
   let startTimestamp = -1
   let isFinished = false
   let isPaused = false
+  let previousFrameTime = 0
 
   const timeRef = shallowRef<number>(0)
 
   const totalDuration = computed(() => {
-    const { endTime, durations = 0, millisecond } = props
+    const { endTime, durations } = props
+
+    // 如果设置了结束时间，计算剩余时间
     if (endTime) {
-      const end = Math.round(millisecond ? endTime : endTime * 1000) - Date.now()
+      const end = formatTime(endTime) - Date.now()
       return Math.max(0, end)
     }
 
-    const time = Math.round(millisecond ? durations : durations * 1000)
-    return Math.max(0, time)
+    // 如果是正计时模式且没有设置 durations，支持无限计时
+    if (props.invert && [undefined, 0].includes(durations)) {
+      return Infinity
+    }
+
+    // 返回格式化后的持续时间
+    return Math.max(0, formatTime(durations ?? 0))
   })
 
-  // 获取当前计时（正计时为已过去，倒计时为剩余）
+  // 判断是否为无限计时模式
+  const isInfiniteCountup = computed(() =>
+    props.invert && totalDuration.value === Infinity,
+  )
+
+  // 格式化时间（毫秒或秒转换）
+  function formatTime(time: number = 0): number {
+    return props.millisecond ? Math.round(time) : Math.round(time * 1000)
+  }
+
+  // 获取当前计时值
   function getCurrent(now: DOMHighResTimeStamp): number {
     return props.invert
       ? now - startTimestamp
       : totalDuration.value + startTimestamp - now
   }
 
-  function setCurrent() {
-    timeRef.value = props.invert ? 0 : totalDuration.value
+  function setCurrent(): void {
+    const startAtValue = formatTime(props.startAt)
+
+    if (props.invert) {
+      // 正计时模式：从 startAt 开始计时
+      timeRef.value = isInfiniteCountup.value
+        ? startAtValue
+        : Math.min(startAtValue, totalDuration.value)
+    } else {
+      // 倒计时模式：从 totalDuration - startAt 开始倒计时
+      timeRef.value = Math.max(0, totalDuration.value - startAtValue)
+    }
   }
 
-  function finish() {
+  // 检查是否应该结束计时
+  function shouldFinish(current: number): boolean {
+    if (!props.invert) {
+      // 倒计时模式：时间小于等于0时结束
+      return current <= 0
+    } else {
+      // 正计时模式：非无限模式且达到总时长时结束
+      return !isInfiniteCountup.value && current >= totalDuration.value
+    }
+  }
+
+  function finish(): void {
     timeRef.value = props.invert ? totalDuration.value : 0
     isFinished = true
     emits('finish')
   }
 
-  function reset() {
-    startTimestamp = performance.now()
+  function reset(): void {
+    startTimestamp = performance.now() - formatTime(props.startAt)
     isFinished = false
     isPaused = false
     setCurrent()
@@ -97,14 +141,13 @@ export function useCountdown<T extends Record<string, any>>(
     }
   }
 
-  let previousFrameTime = 0
-  function frame(timestamp?: DOMHighResTimeStamp) {
+  function frame(timestamp?: DOMHighResTimeStamp): void {
     const now = performance.now()
     const current = getCurrent(now)
     let isLastFrame = false
 
     if (isPaused) {
-      if ((!props.invert && current < UPDATE_INTERVAL) || (props.invert && current >= totalDuration.value)) {
+      if (shouldFinish(current)) {
         isLastFrame = true
       } else {
         return
@@ -118,29 +161,40 @@ export function useCountdown<T extends Record<string, any>>(
 
     previousFrameTime = timestamp!
 
-    if ((!props.invert && current <= 0) || (props.invert && current >= totalDuration.value)) {
+    // 检查是否应该结束
+    if (shouldFinish(current)) {
       finish()
       return
     }
 
-    timeRef.value = props.invert
-      ? Math.min(current, totalDuration.value)
-      : Math.max(0, current)
+    // 更新时间值
+    if (props.invert) {
+      timeRef.value = isInfiniteCountup.value
+        ? current
+        : Math.min(current, totalDuration.value)
+    } else {
+      timeRef.value = Math.max(0, current)
+    }
 
     requestAnimationFrame(frame)
   }
 
+  // 监听激活状态变化
   const unwatchActive = watch(
     () => props.active,
     (isActive) => {
       emits('change', isActive)
+
       if (isActive) {
         if (isPaused) {
-          startTimestamp = performance.now() - (props.invert ? timeRef.value : totalDuration.value - timeRef.value)
+          const elapsed = props.invert ? timeRef.value : totalDuration.value - timeRef.value
+          startTimestamp = performance.now() - elapsed
         } else {
-          startTimestamp = performance.now()
+          startTimestamp = performance.now() - formatTime(props.startAt)
         }
+
         isPaused = false
+
         if (isFinished && props.autoReset) {
           reset()
         } else if (isFinished) {
@@ -155,7 +209,7 @@ export function useCountdown<T extends Record<string, any>>(
   )
 
   const unwatchTimes = watch(
-    () => [props.durations, props.endTime],
+    () => [props.durations, props.endTime, props.startAt],
     () => {
       setCurrent()
       isFinished = false
@@ -166,7 +220,7 @@ export function useCountdown<T extends Record<string, any>>(
     { immediate: true },
   )
 
-  function stop() {
+  function stop(): void {
     unwatchTimes()
     unwatchActive()
   }

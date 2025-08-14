@@ -149,8 +149,6 @@ import { shallowRef } from 'vue'
 
 const active = shallowRef(false)
 
-const currentTime = new Date()
-
 const endTime = 3600 // 3600 seconds(1 hour)
 
 function resetStatus() {
@@ -179,8 +177,48 @@ Setting the `invert` property can be converted into positive timing, and the `du
 <script setup>
 import { ref } from 'vue'
 
+const active1 = ref(false)
+const active2 = ref(false)
+
+function resetStatus() {
+  active1.value = false
+}
+
+function onChange(s) {
+  if (s) {
+    active2.value = true
+  }
+}
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PToggle v-model="active1" label="Active" @change="onChange" />
+
+    <PCountdown
+      invert
+      :active="active1"
+      :durations="5000"
+      @finish="resetStatus"
+    />
+
+    <!-- timers without durations will not stop voluntarily -->
+    <PCountdown
+      invert
+      :active="active2"
+    />
+  </PStack>
+</template>
+```
+
+## StartAt
+Specifies when to start, and is often used to resume timing from an interrupted timer.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
 const active = ref(false)
-const durations = ref(5000)
 
 function resetStatus() {
   active.value = false
@@ -192,10 +230,19 @@ function resetStatus() {
     <PToggle v-model="active" label="Active" />
 
     <PCountdown
+      :active="active"
+      :startAt="5000"
+      format="HH:mm:ss.SSS"
+      :durations="10000"
+      @finish="resetStatus"
+    />
+
+    <PCountdown
       invert
       :active="active"
+      :startAt="5000"
       format="HH:mm:ss.SSS"
-      :durations="durations"
+      :durations="10000"
       @finish="resetStatus"
     />
   </PStack>
