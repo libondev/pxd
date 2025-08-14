@@ -126,7 +126,7 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      include: ['@vue/shared', 'canvas-confetti', '@unhead/vue'],
+      include: ['@vue/shared', 'canvas-confetti', '@unhead/vue', 'dayjs/esm/index.js', 'dayjs/esm/plugin/duration/index.js'],
     },
 
     server: {
