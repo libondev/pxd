@@ -7,6 +7,7 @@ interface Props {
 
 defineOptions({
   name: 'PMaterial',
+  inheritAttrs: false,
 })
 
 withDefaults(
@@ -18,7 +19,7 @@ withDefaults(
 </script>
 
 <template>
-  <PStack class="pxd-material w-full bg-background-100" :class="variant">
+  <PStack class="pxd-material w-full bg-background-100" :class="variant" v-bind="$attrs">
     <slot />
   </PStack>
 </template>
