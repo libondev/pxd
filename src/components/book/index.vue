@@ -47,7 +47,7 @@ const computedStyle = computed(() => {
 
   return {
     ...formattedWidth.value,
-    '--book-color': color,
+    '--bc': color,
   }
 })
 
@@ -69,7 +69,7 @@ const computedClass = computed(() => {
         <div
           v-if="variant === 'stripe'"
           class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
-          style="background-color: var(--book-color, var(--color-amber-600))"
+          style="background-color: var(--bc, var(--color-amber-600))"
         >
           <div class="absolute flex w-full flex-col object-cover">
             <slot name="icon" />
@@ -158,7 +158,7 @@ const computedClass = computed(() => {
 }
 
 .pxd-book--cover-simple {
-  background-color: var(--book-color, var(--color-gray-200));
+  background-color: var(--bc, var(--color-gray-200));
 }
 
 .pxd-book--textured {
