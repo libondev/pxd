@@ -6,7 +6,7 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useCopyClick } from '../../composables/use-copy-click'
 import { getCssUnitValue, toArray } from '../../utils/format'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   text: string | string[]

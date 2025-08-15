@@ -11,9 +11,9 @@ import {
   getScrollPositions,
 } from '../../utils/dom'
 import { off, on, optimizedOff, optimizedOn } from '../../utils/events'
-import { throttleByRaf } from '../../utils/fn'
 import { toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
+import { throttleByRaf } from '../../utils/throttle'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {

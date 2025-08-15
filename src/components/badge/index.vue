@@ -2,7 +2,7 @@
 import type { ComponentAs } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   as?: ComponentAs

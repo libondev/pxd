@@ -2,8 +2,8 @@
 import type { ComponentDirection } from '../../types/shared/props'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { off, on } from '../../utils/events'
-import { throttleByRaf } from '../../utils/fn'
 import { getCssUnitValue } from '../../utils/format'
+import { throttleByRaf } from '../../utils/throttle'
 
 interface Props {
   size?: number

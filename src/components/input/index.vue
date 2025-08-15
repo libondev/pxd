@@ -7,8 +7,8 @@ import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
+import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
-import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 
 defineOptions({

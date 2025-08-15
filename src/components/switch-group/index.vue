@@ -5,7 +5,7 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { useModelValue } from '../../composables/use-model-value'
 import { provideUniqueId } from '../../composables/use-unique-id-context'
 import { provideSwitchGroupContext, provideSwitchGroupModelValue } from '../../contexts/switch'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 import PSwitch from '../switch/index.vue'
 
 defineOptions({

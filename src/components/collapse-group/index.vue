@@ -3,7 +3,7 @@ import type { ComponentSize } from '../../types/shared'
 import { computed, ref } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   multiple?: boolean

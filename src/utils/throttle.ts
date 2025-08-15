@@ -1,5 +1,7 @@
 // from: https://github.com/toss/es-toolkit/blob/main/src/function/throttle.ts
 
+import type { Callback } from '../types/shared'
+
 import { debounce } from './debounce'
 
 interface ThrottleOptions {
@@ -76,4 +78,31 @@ export function throttle<F extends (...args: any[]) => void>(
   throttled.flush = debounced.flush
 
   return throttled
+}
+
+interface ThrottleByRafReturnType<T extends Callback> {
+  (...args: Parameters<T>): void
+  cancel: () => void
+}
+
+// https://github.com/arco-design/arco-design-vue/blob/main/packages/web-vue/components/_utils/throttle-by-raf.ts
+export function throttleByRaf<T extends Callback>(
+  callback: T,
+): ThrottleByRafReturnType<T> {
+  let timer: number
+
+  const throttle = (...args: any[]): void => {
+    timer && window.cancelAnimationFrame(timer)
+    timer = window.requestAnimationFrame(() => {
+      callback(...args)
+      timer = 0
+    })
+  }
+
+  throttle.cancel = () => {
+    window.cancelAnimationFrame(timer)
+    timer = 0
+  }
+
+  return throttle
 }

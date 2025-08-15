@@ -3,7 +3,7 @@ import type { ButtonProps } from '../../types/components/button'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isTruthyProp } from '../../utils/format'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 import PSpinner from '../spinner/index.vue'
 
 defineOptions({

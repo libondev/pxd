@@ -2,7 +2,7 @@
 import type { ComponentLabel, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   size?: number | string

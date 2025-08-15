@@ -3,8 +3,8 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
+import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
-import { getFallbackValue } from '../../utils/value'
 import PError from '../error/index.vue'
 
 interface Props {

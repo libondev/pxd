@@ -6,7 +6,7 @@ import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isExternalLink } from '../../utils/format'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   size?: ComponentSizeWithXs

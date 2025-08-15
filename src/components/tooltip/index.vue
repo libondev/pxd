@@ -2,8 +2,8 @@
 import type { CSSProperties } from 'vue'
 import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
+import { getFallbackValue } from '../../utils/get'
 import { isTouchDevice } from '../../utils/is'
-import { getFallbackValue } from '../../utils/value'
 import PPopover from '../popover/index.vue'
 
 interface Props {

@@ -7,7 +7,7 @@ import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isTruthyProp } from '../../utils/format'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   variant?: keyof typeof VARIANTS

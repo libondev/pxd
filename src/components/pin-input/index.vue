@@ -4,7 +4,7 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
-import { getFallbackValue } from '../../utils/value'
+import { getFallbackValue } from '../../utils/get'
 import PError from '../error/index.vue'
 
 interface Props {
