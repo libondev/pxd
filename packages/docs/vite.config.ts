@@ -47,6 +47,46 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       reportCompressedSize: false,
+      cssCodeSplit: false,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          experimentalMinChunkSize: 20000,
+          manualChunks(id) {
+            const normalized = id.replace(/\\/g, '/')
+
+            if (normalized.includes('/node_modules/')) {
+              if (normalized.includes('/@gdsicon/')) {
+                return 'gdsi-icons'
+              }
+
+              if (/@shikijs|\bshiki\b|markdown-it/.test(normalized)) {
+                return 'md-shiki'
+              }
+
+              if (/(?:^|\/)vue(?:\/|$)|vue-router|@unhead/.test(normalized)) {
+                return 'vue-vendor'
+              }
+
+              if (normalized.includes('/dayjs/')) {
+                return 'dayjs'
+              }
+
+              if (normalized.includes('canvas-confetti')) {
+                return 'misc-vendor'
+              }
+
+              return 'vendor'
+            }
+
+            if (normalized.includes('/src/components/')) {
+              return 'app-ui'
+            }
+          },
+        },
+      },
     },
 
     plugins: [
@@ -126,7 +166,13 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      include: ['@vue/shared', 'canvas-confetti', '@unhead/vue', 'dayjs/esm/index.js', 'dayjs/esm/plugin/duration/index.js'],
+      include: [
+        '@vue/shared',
+        'canvas-confetti',
+        '@unhead/vue',
+        'dayjs/esm/index.js',
+        'dayjs/esm/plugin/duration/index.js',
+      ],
     },
 
     server: {

@@ -5,7 +5,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-q
 import { pascalize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
-import Menus from './Menus.vue'
+import Menus from '../../components/Menus.vue'
 
 interface MenuItem {
   label: string
