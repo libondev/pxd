@@ -163,6 +163,15 @@ if (!isServer) {
     position: relative;
     margin-bottom: .25em;
     letter-spacing: -0.03em;
+    outline: none;
+
+    & > a {
+      outline: none;
+
+      &:focus-visible {
+        box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px hsl(var(--ring));
+      }
+    }
 
     &:not(:first-child) {
       margin-top: 1.68em;
