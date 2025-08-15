@@ -22,10 +22,19 @@ export interface MessageItem extends RequiredOptionsExceptType {
   _startedAtMs?: number
 }
 
+interface UseMessage {
+  (msg: string | VNode, options?: Options): void
+  info: (msg: string | VNode, options?: Options) => void
+  success: (msg: string | VNode, options?: Options) => void
+  warning: (msg: string | VNode, options?: Options) => void
+  error: (msg: string | VNode, options?: Options) => void
+  loading: (msg: string | VNode, options?: Options) => void
+}
+
 export const CREATE_MESSAGE_EVENT_NAME = '#create-message'
 export const REMOVE_MESSAGE_EVENT_NAME = '#remove-message'
 
-export function useMessage(msg: string | VNode, options?: Options) {
+export const useMessage = ((msg: string | VNode, options?: Options) => {
   if (isServer) {
     return
   }
@@ -45,4 +54,12 @@ export function useMessage(msg: string | VNode, options?: Options) {
   window.dispatchEvent(
     new CustomEvent(CREATE_MESSAGE_EVENT_NAME, { detail: message }),
   )
-}
+}) as UseMessage
+
+const shortcutTypes = ['info', 'error', 'loading', 'warning', 'success'] as const
+
+shortcutTypes.forEach((type) => {
+  useMessage[type] = (msg: string | VNode, options?: Options) => {
+    useMessage(msg, { ...(options ?? {}), type })
+  }
+})
