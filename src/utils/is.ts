@@ -1,3 +1,7 @@
+import { version } from 'vue'
+
+export const isVue3 = version.startsWith('3')
+
 export const isServer = typeof window === 'undefined'
 
 export const isTouchDevice = () => typeof document === 'undefined' ? false : 'ontouchstart' in document

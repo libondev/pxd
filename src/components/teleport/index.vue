@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, shallowRef, version, watch } from 'vue'
-import { isServer } from '../../utils/is'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { isServer, isVue3 } from '../../utils/is'
 
 interface Props {
   to?: string | HTMLElement
@@ -21,8 +21,6 @@ const props = withDefaults(
   defineProps<Props>(),
   { to: 'body' },
 )
-
-const isVue3 = version.startsWith('3')
 
 const containerRef = shallowRef<HTMLElement>()
 
