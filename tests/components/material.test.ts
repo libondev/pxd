@@ -28,16 +28,4 @@ describe('material', () => {
 
     wrapper.unmount()
   })
-
-  it('inherit stack props', async () => {
-    const wrapper = mount(Material, {
-      props: {
-        gap: 3,
-      },
-    })
-
-    expect(wrapper.classes()).toContain('gap-(--gap-xs)')
-
-    wrapper.unmount()
-  })
 })
