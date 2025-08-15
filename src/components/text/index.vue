@@ -2,10 +2,11 @@
 import type { ComponentAs, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import { getResponsiveValue } from '../../utils/responsive'
 
 interface Props {
   as?: ComponentAs
-  size?: ResponsiveValue<number | string>
+  size?: ResponsiveValue<string | number>
   align?: 'left' | 'center' | 'right'
   truncate?: boolean | number | string
   monospace?: boolean
@@ -41,21 +42,13 @@ const presetSizeClasses = {
 }
 
 const formattedSize = computed(() => {
-  const { size } = props
+  const { size = 14 } = props
 
-  const defaultSize = {} as Record<string, string | number>
+  const defaultSize = { '--text-xs': getCssUnitValue(typeof size === 'object' ? size.xs : size, '14px') }
 
-  if (typeof size === 'object') {
-    return Object.entries(size).reduce((acc, [bp, value]) => {
-      acc[`--text-${bp}`] = `${value}px`
-
-      return acc
-    }, defaultSize)
-  } else {
-    defaultSize['--text-xs'] = getCssUnitValue(size, '14px') as string
-  }
-
-  return defaultSize
+  return getResponsiveValue(size!, defaultSize, (acc, bp, value) => {
+    acc[`--text-${bp}`] = `${value}px`
+  })
 })
 
 const computedStyle = computed(() => {
