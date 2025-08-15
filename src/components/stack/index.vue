@@ -2,13 +2,15 @@
 import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 
+type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
+
 export interface Props {
   as?: ComponentAs
   wrap?: boolean
   gap?: ResponsiveValue<number | string>
   scale?: number
-  align?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
+  align?: Align
+  justify?: Align
   direction?: ResponsiveValue<ComponentDirection>
 }
 
