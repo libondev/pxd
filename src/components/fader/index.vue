@@ -31,8 +31,8 @@ const fader = shallowRef({
 })
 
 const computedStyle = computed(() => ({
-  '--color': props.color,
-  '--size': getCssUnitValue(props.size),
+  '--c': props.color,
+  '--s': getCssUnitValue(props.size),
 }))
 
 const DIFF_THRESHOLD = 1
@@ -86,8 +86,8 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--color, var(--color-gray-alpha-500)));
-  mask-image: linear-gradient(var(--dir-revert), var(--color, var(--color-gray-alpha-500)) 50%, transparent);
+  background: linear-gradient(var(--dir), transparent, var(--c, var(--color-gray-alpha-500)));
+  mask-image: linear-gradient(var(--dir-revert), var(--c, var(--color-gray-alpha-500)) 50%, transparent);
   transition: opacity var(--default-transition-timing-function) var(--default-transition-duration);
   opacity: 0;
 }
@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--size, 16px);
+    width: var(--s, 16px);
     height: 100%;
   }
 
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--size, 16px);
+    height: var(--s, 16px);
   }
 
   &::before {

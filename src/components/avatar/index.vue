@@ -59,8 +59,8 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--size) items-center justify-center rounded-full border border-background-100 select-none"
-    :style="{ '--size': computedSize }"
+    class="pxd-avatar relative inline-flex size-(--s) items-center justify-center rounded-full border border-background-100 select-none"
+    :style="{ '--s': computedSize }"
   >
     <slot>
       <img

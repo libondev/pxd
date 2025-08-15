@@ -43,9 +43,9 @@ const computedStyle = computed(() => {
   const { padding, fontSize, fontWeight } = getFallbackValue(props.size, SIZES, config.size)
 
   return {
-    '--size': padding,
-    '--font-size': fontSize,
-    '--font-weight': fontWeight,
+    '--s': padding,
+    '--fs': fontSize,
+    '--fw': fontWeight,
   }
 })
 

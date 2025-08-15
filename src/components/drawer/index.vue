@@ -72,7 +72,7 @@ const computedStyle = computed(() => {
   const styles: CSSProperties = {}
 
   if (props.size) {
-    styles['--size'] = getCssUnitValue(props.size)
+    styles['--s'] = getCssUnitValue(props.size)
   }
 
   return styles
@@ -195,12 +195,12 @@ watch(() => isVisible.value, (visible) => {
 
 .pxd-drawer[data-position="left"],
 .pxd-drawer[data-position="right"] {
-  width: var(--size, var(--w, 80vw));
+  width: var(--s, var(--w, 80vw));
 }
 
 .pxd-drawer[data-position="top"],
 .pxd-drawer[data-position="bottom"] {
-  height: var(--size, var(--h, 80vw));
+  height: var(--s, var(--h, 80vw));
 }
 
 .pxd-transition--drawer-right-enter-active,

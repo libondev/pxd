@@ -63,9 +63,9 @@ const scrollInfo = ref({
 
 const computedStyle = computed(() => {
   return {
-    '--scrollbar-size': `${props.scrollbarSize}px`,
-    '--scrollbar-color': props.scrollbarColor,
-    '--scrollbar-hover-color': props.scrollbarHoverColor,
+    '--sz': `${props.scrollbarSize}px`,
+    '--sc': props.scrollbarColor,
+    '--shc': props.scrollbarHoverColor,
   }
 })
 
@@ -303,10 +303,10 @@ defineExpose({
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
-        style="width:calc(var(--scrollbar-size) + 8px)"
+        style="width:calc(var(--sz) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute w-(--sz) rounded-full bg-(--sc) hover:bg-(--shc) hover:will-change-transform active:bg-(--shc) active:opacity-100 motion-safe:transition-colors"
           :style="verticalThumbStyle"
           @mousedown="startDragVertical"
         />
@@ -316,10 +316,10 @@ defineExpose({
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
-        style="height:calc(var(--scrollbar-size) + 8px)"
+        style="height:calc(var(--sz) + 8px)"
       >
         <div
-          class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
+          class="pxd-scrollable--thumb absolute h-(--sz) rounded-full bg-(--sc) hover:bg-(--shc) hover:will-change-transform active:bg-(--shc) active:opacity-100 motion-safe:transition-colors"
           :style="horizontalThumbStyle"
           @mousedown="startDragHorizontal"
         />
