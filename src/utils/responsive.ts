@@ -1,17 +1,15 @@
-import type { ResponsiveValue } from '../types/shared'
+import type { ResponsiveValue } from '../types/shared/props'
 
-export function getResponsiveValue<T extends string | number>(
-  propsValue: ResponsiveValue<T> | undefined,
-  defaultValue: Record<string, T> = {},
-  valueSetter: (acc: Record<string, T>, bp: string, v: T) => void,
+export function getResponsiveValue<V extends string | number>(
+  prop: ResponsiveValue<V> | undefined,
+  xsValue: V,
+  valueSetter: (acc: Record<string, V>, bp: any, v: V) => void,
 ) {
-  if (typeof propsValue === 'object') {
-    return Object.entries(propsValue).reduce((acc, [bp, value]) => {
-      valueSetter(acc, bp, value)
+  const formatted = Object.assign({ xs: xsValue }, typeof prop === 'object' ? prop : {})
 
-      return acc
-    }, defaultValue)
-  }
+  return Object.entries(formatted).reduce((acc, [bp, value]) => {
+    valueSetter(acc, bp, value)
 
-  return defaultValue
+    return acc
+  }, {} as Parameters<typeof valueSetter>[0])
 }

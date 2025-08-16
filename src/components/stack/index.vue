@@ -75,28 +75,23 @@ const presetJustifyClasses = {
 const formattedGap = computed(() => {
   const { gap, scale } = props
 
-  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) ?? 4
-
-  const gapMap = {
-    '--xs': `${Number(defaultXsGap) * scale}px`,
-  }
-
-  return getResponsiveValue(gap, gapMap, (acc, bp, value) => {
-    acc[`--${bp}`] = `${Number(value) * scale}px`
-  })
+  return getResponsiveValue(
+    gap,
+    (typeof gap === 'object' ? gap.xs : gap) ?? 4,
+    (acc, bp, value) => acc[`--${bp}`] = `${Number(value) * scale}px`,
+  )
 })
 
 const formattedDirection = computed(() => {
   const { direction } = props
 
-  const defaultDirection = (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal'
-  const defaultDirs = {
-    xs: presetDirClasses[`--xs:${defaultDirection}`],
-  }
-
-  return getResponsiveValue(direction, defaultDirs, (acc, bp, value) => {
-    acc[bp] = presetDirClasses[`--${bp}:${value}` as keyof typeof presetDirClasses]
-  })
+  return getResponsiveValue(
+    props.direction,
+    (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal',
+    (acc, bp, value) => {
+      acc[bp] = presetDirClasses[`--${bp}:${value}` as keyof typeof presetDirClasses] as ComponentDirection
+    },
+  )
 })
 
 const computedClass = computed(() => {
