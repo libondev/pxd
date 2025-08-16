@@ -43,7 +43,26 @@ const emits = defineEmits<{
   'update:modelValue': [number]
 }>()
 
-const computedDisabled = computed(() => props.disabled)
+const modelValue = useModelValue(props, emits)
+
+const decreaseDisabled = computed(() => props.disabled || modelValue.value <= props.min)
+const increaseDisabled = computed(() => props.disabled || modelValue.value >= props.max)
+
+const {
+  start: startDecrease,
+  stop: stopDecrease,
+} = useRepeatAction({
+  disabled: decreaseDisabled,
+  action: decreaseValue,
+})
+
+const {
+  start: startIncrease,
+  stop: stopIncrease,
+} = useRepeatAction({
+  disabled: increaseDisabled,
+  action: increaseValue,
+})
 
 const INTEGER_REGEX = /^-?\d+$/
 const INTEGER_REGEX_WITH_SCIENTIFIC = /^-?\d+(?:\.\d*)?(e-?\d+)?$/
@@ -71,24 +90,6 @@ function clampToRange(value: number) {
 
   return value
 }
-
-const {
-  start: startIncrease,
-  stop: stopIncrease,
-} = useRepeatAction({
-  disabled: computedDisabled,
-  action: increaseValue,
-})
-
-const {
-  start: startDecrease,
-  stop: stopDecrease,
-} = useRepeatAction({
-  disabled: computedDisabled,
-  action: decreaseValue,
-})
-
-const modelValue = useModelValue(props, emits)
 
 function increaseValue() {
   if (modelValue.value >= props.max) {
@@ -200,7 +201,7 @@ function onInputKeydown(ev: KeyboardEvent) {
     <template #prefix>
       <button
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-        :disabled="disabled"
+        :disabled="decreaseDisabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
         @pointerup="stopDecrease"
@@ -221,7 +222,7 @@ function onInputKeydown(ev: KeyboardEvent) {
 
       <button
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-        :disabled="disabled"
+        :disabled="increaseDisabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"
         @pointerup="stopIncrease"

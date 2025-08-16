@@ -18,11 +18,24 @@ Gap is a unit on a `4px` grid scale.
 You can modify the default zoom ratio by passing in the `scale` attribute. (The gap is `3 * 3 = 9`)
 
 ```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const gap = ref(4)
+const scale = ref(4)
+</script>
+
 <template>
-  <PStack :gap="3" :scale="3">
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
-    <div class="bg-gray-1000 h-12 w-12 rounded-md" />
+  <PStack direction="vertical">
+    <PNumberInput v-model="gap" label="gap" :min="0" :max="50" class="!w-40" />
+
+    <PNumberInput v-model="scale" label="scale" :min="0" :max="50" class="!w-40" />
+
+    <PStack :gap="gap" :scale="scale">
+      <div class="bg-gray-1000 h-12 w-12 rounded-md" />
+      <div class="bg-gray-1000 h-12 w-12 rounded-md" />
+      <div class="bg-gray-1000 h-12 w-12 rounded-md" />
+    </PStack>
   </PStack>
 </template>
 ```
@@ -34,7 +47,7 @@ Resize the window to observe changes to the layout.
 <template>
   <PStack
     :gap="{ sm: 3, md: 5, lg: 10, xl: 15 }"
-    :direction="{ xs: 'horizontal', lg: 'vertical' }"
+    :direction="{ xs: 'vertical', lg: 'horizontal' }"
   >
     <div class="bg-gray-1000 h-12 w-12 rounded-md"></div>
     <div class="bg-gray-1000 h-12 w-12 rounded-md"></div>

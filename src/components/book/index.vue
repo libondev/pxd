@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { ComponentLabel, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
+import { getResponsiveValue } from '../../utils/responsive'
 
 interface Props {
   color?: string
   title?: ComponentLabel
-  width?: ResponsiveValue<number | string>
+  width?: ResponsiveValue<string | number>
   variant?: 'simple' | 'stripe'
   textured?: boolean
 }
@@ -17,36 +18,26 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    width: 196,
     textured: false,
     variant: 'stripe',
   },
 )
 
 const presetWidthClasses = {
-  '--width-xs': '[--book-width:var(--width-xs)]',
-  '--width-sm': 'sm:[--book-width:var(--width-sm)]',
-  '--width-md': 'md:[--book-width:var(--width-md)]',
-  '--width-lg': 'lg:[--book-width:var(--width-lg)]',
-  '--width-xl': 'xl:[--book-width:var(--width-xl)]',
+  '--xs': '[--bw:var(--xs)]',
+  '--sm': 'sm:[--bw:var(--sm)]',
+  '--md': 'md:[--bw:var(--md)]',
+  '--lg': 'lg:[--bw:var(--lg)]',
+  '--xl': 'xl:[--bw:var(--xl)]',
 }
 
 const formattedWidth = computed(() => {
   const { width } = props
-
-  const defaultWidth = {
-    '--width-xs': typeof width === 'object' ? width.xs || 196 : width,
-  } as Record<string, string | number>
-
-  if (typeof width === 'object') {
-    return Object.entries(width).reduce((acc, [bp, value]) => {
-      acc[`--width-${bp}`] = value
-
-      return acc
-    }, defaultWidth)
-  }
-
-  return defaultWidth
+  return getResponsiveValue(
+    width,
+    (typeof width === 'object' ? width.xs : width) ?? 196,
+    (acc, bp, value) => acc[bp] = acc[`--${bp}`] = value,
+  )
 })
 
 const computedStyle = computed(() => {
@@ -54,7 +45,7 @@ const computedStyle = computed(() => {
 
   return {
     ...formattedWidth.value,
-    '--book-color': color,
+    '--bc': color,
   }
 })
 
@@ -76,7 +67,7 @@ const computedClass = computed(() => {
         <div
           v-if="variant === 'stripe'"
           class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
-          style="background-color: var(--book-color, var(--color-amber-600))"
+          style="background-color: var(--bc, var(--color-amber-600))"
         >
           <div class="absolute flex w-full flex-col object-cover">
             <slot name="icon" />
@@ -132,7 +123,7 @@ const computedClass = computed(() => {
 .pxd-book--container {
   aspect-ratio: var(--aspect-ratio);
   transform: rotate(0deg);
-  width: calc(var(--book-width) * 1px);
+  width: calc(var(--bw) * 1px);
   container-type: inline-size;
 }
 
@@ -159,13 +150,13 @@ const computedClass = computed(() => {
 }
 
 .pxd-book--content-inner {
-  gap: calc((24px / var(--book-default-width)) * var(--book-width));
+  gap: calc((24px / var(--book-default-width)) * var(--bw));
   padding: 6.1%;
   container-type: inline-size;
 }
 
 .pxd-book--cover-simple {
-  background-color: var(--book-color, var(--color-gray-200));
+  background-color: var(--bc, var(--color-gray-200));
 }
 
 .pxd-book--textured {
@@ -192,7 +183,7 @@ const computedClass = computed(() => {
   top: 3px;
   height: calc(100% - 2 * 3px);
   width: calc(var(--book-depth) - 2px);
-  transform: translateX(calc(var(--book-width) * 1px - var(--book-depth) / 2 - 3px)) rotateY(90deg) translateX(calc(var(--book-depth) / 2));
+  transform: translateX(calc(var(--bw) * 1px - var(--book-depth) / 2 - 3px)) rotateY(90deg) translateX(calc(var(--book-depth) / 2));
   background: linear-gradient(90deg, #eaeaea, transparent 70%), linear-gradient(#fff, #fafafa);
 }
 

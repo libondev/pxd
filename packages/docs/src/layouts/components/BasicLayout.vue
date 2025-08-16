@@ -91,14 +91,14 @@ if (!isServer) {
 
 <template>
   <div v-if="isSmUp" class="left-0 top-0 bottom-0 absolute">
-    <aside class="sidebar top-12 bottom-0 w-60 sm:border-x sm:translate-x-0 fixed z-1 mt-px -translate-x-full border-r bg-background-100">
+    <aside class="sidebar top-12 bottom-0 w-55 sm:border-x sm:translate-x-0 fixed z-1 mt-px -translate-x-full border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
     </aside>
   </div>
 
-  <div class="sm:pl-60 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
+  <div class="sm:pl-55 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col border-r">
     <div v-if="!isSmUp" class="sm:hidden p-2 top-12.5 sticky z-10 flex items-center justify-between border-b bg-background-100">
       <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
         <template #prefix>
@@ -119,7 +119,7 @@ if (!isServer) {
       </PDrawer>
     </div>
 
-    <main class="prose px-6 md:px-16 xl:px-30 py-12 w-full flex-1">
+    <main class="prose p-6 py-12 sm:px-16 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
       <template v-if="showViewSource">
@@ -161,11 +161,19 @@ if (!isServer) {
   & > :is(h1, h2, h3, h4) {
     font-weight: 600;
     position: relative;
-    margin-bottom: .25em;
     letter-spacing: -0.03em;
+    outline: none;
+
+    & > a {
+      outline: none;
+
+      &:focus-visible {
+        box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px hsl(var(--ring));
+      }
+    }
 
     &:not(:first-child) {
-      margin-top: 1.68em;
+      margin-top: 2em;
     }
 
     & + p {
@@ -229,7 +237,7 @@ if (!isServer) {
   }
 
   p:not([class*="pxd-"]) {
-    margin-block: .75em;
+    margin-block: .5em;
   }
 
   .markdown-body > pre:not(.shiki) {

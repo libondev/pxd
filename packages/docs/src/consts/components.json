@@ -76,6 +76,10 @@
     "name": "gauge"
   },
   {
+    "camelized": "Grid",
+    "name": "grid"
+  },
+  {
     "camelized": "HoldButton",
     "name": "hold-button"
   },

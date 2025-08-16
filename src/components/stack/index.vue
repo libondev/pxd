@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
+import { getResponsiveValue } from '../../utils/responsive'
 
 type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
 
 export interface Props {
   as?: ComponentAs
   wrap?: boolean
-  gap?: ResponsiveValue<number | string>
+  gap?: ResponsiveValue<string | number>
   scale?: number
   align?: Align
   justify?: Align
@@ -27,29 +28,28 @@ const props = withDefaults(
     scale: 4,
     align: 'start',
     justify: 'start',
-    direction: 'horizontal',
   },
 )
 
 const presetDirClasses = {
-  'xs:vertical': 'flex-col',
-  'xs:horizontal': 'flex-row',
-  'sm:vertical': 'sm:flex-col',
-  'sm:horizontal': 'sm:flex-row',
-  'md:vertical': 'md:flex-col',
-  'md:horizontal': 'md:flex-row',
-  'lg:vertical': 'lg:flex-col',
-  'lg:horizontal': 'lg:flex-row',
-  'xl:vertical': 'xl:flex-col',
-  'xl:horizontal': 'xl:flex-row',
+  '--xs:vertical': 'flex-col',
+  '--xs:horizontal': 'flex-row',
+  '--sm:vertical': 'sm:flex-col',
+  '--sm:horizontal': 'sm:flex-row',
+  '--md:vertical': 'md:flex-col',
+  '--md:horizontal': 'md:flex-row',
+  '--lg:vertical': 'lg:flex-col',
+  '--lg:horizontal': 'lg:flex-row',
+  '--xl:vertical': 'xl:flex-col',
+  '--xl:horizontal': 'xl:flex-row',
 }
 
 const presetGapClasses = {
-  '--gap-xs': 'gap-(--gap-xs)',
-  '--gap-sm': 'sm:gap-(--gap-sm)',
-  '--gap-md': 'md:gap-(--gap-md)',
-  '--gap-lg': 'lg:gap-(--gap-lg)',
-  '--gap-xl': 'xl:gap-(--gap-xl)',
+  '--xs': 'gap-(--xs)',
+  '--sm': 'sm:gap-(--sm)',
+  '--md': 'md:gap-(--md)',
+  '--lg': 'lg:gap-(--lg)',
+  '--xl': 'xl:gap-(--xl)',
 }
 
 const presetAlignClasses = {
@@ -75,42 +75,27 @@ const presetJustifyClasses = {
 const formattedGap = computed(() => {
   const { gap, scale } = props
 
-  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) || 4
-
-  const defaultGap = {
-    '--gap-xs': `${Number(defaultXsGap) * scale}px`,
-  } as Record<string, string>
-
-  if (typeof gap === 'object') {
-    return Object.entries(gap).reduce((acc, [bp, value]) => {
-      acc[`--gap-${bp}`] = `${Number(value) * scale}px`
-
-      return acc
-    }, defaultGap)
-  }
-
-  return defaultGap
+  return getResponsiveValue(
+    gap,
+    (typeof gap === 'object' ? gap.xs : gap) ?? 4,
+    (acc, bp, value) => acc[`--${bp}`] = `${Number(value) * scale}px`,
+  )
 })
 
 const formattedDirection = computed(() => {
   const { direction } = props
 
-  const defaultDirection = typeof direction === 'string' ? direction : direction.xs ?? 'horizontal'
-  const defaultDirs = { xs: presetDirClasses[`xs:${defaultDirection}`] } as Record<string, string>
-
-  if (typeof direction === 'object') {
-    return Object.entries(direction).reduce((acc, [bp, value]) => {
-      acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
-
-      return acc
-    }, defaultDirs)
-  }
-
-  return defaultDirs
+  return getResponsiveValue(
+    props.direction,
+    (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal',
+    (acc, bp, value) => {
+      acc[bp] = presetDirClasses[`--${bp}:${value}` as keyof typeof presetDirClasses] as ComponentDirection
+    },
+  )
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-stack flex max-w-full', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = [presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     classes.push('flex-wrap')
@@ -126,7 +111,13 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <Component :is="props.as" :class="computedClass" :data-direction="direction" v-bind="$attrs" :style="formattedGap">
+  <Component
+    :is="props.as"
+    class="pxd-stack flex max-w-full"
+    :class="computedClass"
+    v-bind="$attrs"
+    :style="formattedGap"
+  >
     <slot />
   </component>
 </template>
