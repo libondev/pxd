@@ -80,10 +80,6 @@ export default defineConfig(({ mode }) => {
 
               return 'vendor'
             }
-
-            if (normalized.includes('/src/components/')) {
-              return 'app-ui'
-            }
           },
         },
       },
