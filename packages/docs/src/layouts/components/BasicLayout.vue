@@ -161,7 +161,6 @@ if (!isServer) {
   & > :is(h1, h2, h3, h4) {
     font-weight: 600;
     position: relative;
-    margin-bottom: .25em;
     letter-spacing: -0.03em;
     outline: none;
 
@@ -174,7 +173,7 @@ if (!isServer) {
     }
 
     &:not(:first-child) {
-      margin-top: 1.68em;
+      margin-top: 2em;
     }
 
     & + p {
@@ -238,7 +237,7 @@ if (!isServer) {
   }
 
   p:not([class*="pxd-"]) {
-    margin-block: .75em;
+    margin-block: .5em;
   }
 
   .markdown-body > pre:not(.shiki) {
