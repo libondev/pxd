@@ -36,29 +36,26 @@ const formattedRows = computed(() => {
 
   return getResponsiveValue(
     rows,
-    (typeof rows === 'object' ? rows.xs : rows) ?? 1,
-    (acc, bp, value) => acc[`--${bp}-rows`] = value,
+    (typeof rows === 'object' ? rows.xs : rows) ?? 0,
+    (acc, bp, value) => acc[`--${bp}-rows`] = `repeat(${value}, minmax(0, 1fr))`,
   )
 })
 
 const formattedCols = computed(() => {
   const { columns } = props
+
   return getResponsiveValue(
     columns,
     (typeof columns === 'object' ? columns.xs : columns) ?? 1,
-    (acc, bp, value) => acc[`--${bp}-cols`] = value,
+    (acc, bp, value) => acc[`--${bp}-cols`] = `repeat(${value}, minmax(0, 1fr))`,
   )
 })
 
 const computedClass = computed(() => {
-  const classes: string[] = []
-
-  classes.push(
+  return [
     ...Object.keys(formattedRows.value).map(bp => presetGridRows[bp as keyof typeof presetGridRows]),
     ...Object.keys(formattedCols.value).map(bp => presetGridCols[bp as keyof typeof presetGridCols]),
-  )
-
-  return classes.join(' ')
+  ].join(' ')
 })
 
 const computedStyle = computed(() => {
