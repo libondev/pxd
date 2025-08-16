@@ -53,7 +53,7 @@ Grid component with responsive rows and columns props at all 3 breakpoints as we
   </PGrid>
 </template>
 ```
-
+<!--
 ## Grid with overlaying cells
 Grid component with cells that overlay another in various states.
 
@@ -102,4 +102,4 @@ Grid component with guide clipping enabled on specific cells.
     </PGridItem>
   </PGrid>
 </template>
-```
+``` -->
