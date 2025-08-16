@@ -100,7 +100,7 @@ const formattedDirection = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-stack flex max-w-full', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = [presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     classes.push('flex-wrap')
@@ -116,7 +116,13 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <Component :is="props.as" :class="computedClass" :data-direction="direction" v-bind="$attrs" :style="formattedGap">
+  <Component
+    :is="props.as"
+    class="pxd-stack flex max-w-full"
+    :class="computedClass"
+    v-bind="$attrs"
+    :style="formattedGap"
+  >
     <slot />
   </component>
 </template>
