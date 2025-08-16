@@ -28,21 +28,20 @@ const props = withDefaults(
     scale: 4,
     align: 'start',
     justify: 'start',
-    direction: 'horizontal',
   },
 )
 
 const presetDirClasses = {
-  'xs:vertical': 'flex-col',
-  'xs:horizontal': 'flex-row',
-  'sm:vertical': 'sm:flex-col',
-  'sm:horizontal': 'sm:flex-row',
-  'md:vertical': 'md:flex-col',
-  'md:horizontal': 'md:flex-row',
-  'lg:vertical': 'lg:flex-col',
-  'lg:horizontal': 'lg:flex-row',
-  'xl:vertical': 'xl:flex-col',
-  'xl:horizontal': 'xl:flex-row',
+  '--xs:vertical': 'flex-col',
+  '--xs:horizontal': 'flex-row',
+  '--sm:vertical': 'sm:flex-col',
+  '--sm:horizontal': 'sm:flex-row',
+  '--md:vertical': 'md:flex-col',
+  '--md:horizontal': 'md:flex-row',
+  '--lg:vertical': 'lg:flex-col',
+  '--lg:horizontal': 'lg:flex-row',
+  '--xl:vertical': 'xl:flex-col',
+  '--xl:horizontal': 'xl:flex-row',
 }
 
 const presetGapClasses = {
@@ -74,13 +73,15 @@ const presetJustifyClasses = {
 }
 
 const formattedGap = computed(() => {
-  const { gap = 4, scale } = props
+  const { gap, scale } = props
 
-  const defaultXsGap = typeof gap === 'object' ? gap.xs : gap
+  const defaultXsGap = (typeof gap === 'object' ? gap.xs : gap) ?? 4
 
-  const gapMap = { '--xs': `${Number(defaultXsGap) * scale}px` }
+  const gapMap = {
+    '--xs': `${Number(defaultXsGap) * scale}px`,
+  }
 
-  return getResponsiveValue(gap!, gapMap, (acc, bp, value) => {
+  return getResponsiveValue(gap, gapMap, (acc, bp, value) => {
     acc[`--${bp}`] = `${Number(value) * scale}px`
   })
 })
@@ -88,11 +89,13 @@ const formattedGap = computed(() => {
 const formattedDirection = computed(() => {
   const { direction } = props
 
-  const defaultDirection = typeof direction === 'string' ? direction : direction.xs ?? 'horizontal'
-  const defaultDirs = { xs: presetDirClasses[`xs:${defaultDirection}`] }
+  const defaultDirection = (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal'
+  const defaultDirs = {
+    xs: presetDirClasses[`--xs:${defaultDirection}`],
+  }
 
   return getResponsiveValue(direction, defaultDirs, (acc, bp, value) => {
-    acc[bp] = presetDirClasses[`${bp}:${value}` as keyof typeof presetDirClasses]
+    acc[bp] = presetDirClasses[`--${bp}:${value}` as keyof typeof presetDirClasses]
   })
 })
 

@@ -18,7 +18,6 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    width: 196,
     textured: false,
     variant: 'stripe',
   },
@@ -35,7 +34,9 @@ const presetWidthClasses = {
 const formattedWidth = computed(() => {
   const { width } = props
 
-  const defaultWidth = { '--xs': typeof width === 'object' ? width.xs || 196 : width }
+  const defaultWidth = {
+    '--xs': (typeof width === 'object' ? width.xs : width) ?? 196,
+  }
 
   return getResponsiveValue(width, defaultWidth, (acc, bp, value) => {
     acc[`--${bp}`] = value

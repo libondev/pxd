@@ -1,7 +1,7 @@
 import type { ResponsiveValue } from '../types/shared'
 
 export function getResponsiveValue<T extends string | number>(
-  propsValue: ResponsiveValue<T>,
+  propsValue: ResponsiveValue<T> | undefined,
   defaultValue: Record<string, T> = {},
   valueSetter: (acc: Record<string, T>, bp: string, v: T) => void,
 ) {

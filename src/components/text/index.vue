@@ -42,11 +42,13 @@ const presetSizeClasses = {
 }
 
 const formattedSize = computed(() => {
-  const { size = 14 } = props
+  const { size } = props
 
-  const defaultSize = { '--text-xs': getCssUnitValue(typeof size === 'object' ? size.xs : size, '14px') }
+  const defaultSize = {
+    '--text-xs': getCssUnitValue(typeof size === 'object' ? size.xs : size, '14px'),
+  }
 
-  return getResponsiveValue(size!, defaultSize, (acc, bp, value) => {
+  return getResponsiveValue(size, defaultSize, (acc, bp, value) => {
     acc[`--text-${bp}`] = `${value}px`
   })
 })
