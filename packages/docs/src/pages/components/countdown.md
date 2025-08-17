@@ -274,8 +274,8 @@ const active = ref(false)
         </PButton>
 
         <div
-          class="absolute bg-red-200 left-0 top-0 flex gap-2 items-center justify-center text-sm px-2 w-full h-full rounded-md transition-all opacity-0 -z-1"
-          :class="{ 'translate-y-full opacity-100': active }"
+          class="absolute bg-red-200 left-0 top-0 flex gap-1.5 items-center justify-center text-sm px-2 w-full h-full rounded-bl-lg rounded-br-lg transition-all opacity-0 -z-1"
+          :class="{ 'translate-y-[90%] opacity-100': active }"
         >
           <i class="size-2 rounded-full bg-red-800" />
           {{ times.mm }}:{{ times.ss }}
