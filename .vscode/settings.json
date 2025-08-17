@@ -63,6 +63,10 @@
     "kabab",
     "pascalize",
     "uncapitalize",
-    "rolldown"
+    "rolldown",
+    "rgba",
+    "nowrap",
+    "autospace",
+    "grayscale"
   ]
 }
