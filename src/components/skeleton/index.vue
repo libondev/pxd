@@ -22,6 +22,7 @@ const props = withDefaults(
     loading: true,
     height: 24,
     shape: 'default',
+    animated: true,
   },
 )
 
