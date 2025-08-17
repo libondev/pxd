@@ -248,3 +248,40 @@ function resetStatus() {
   </PStack>
 </template>
 ```
+
+## Customize
+
+```vue demo
+<script setup>
+import PlayCircleIcon from '@gdsicon/vue/play-circle'
+import PauseCircleIcon from '@gdsicon/vue/pause-circle'
+
+import { ref } from 'vue'
+
+const active = ref(false)
+</script>
+
+<template>
+  <div class="h-16">
+    <PCountdown :active="active" :durations="5000" @finish="active = false">
+      <template #default="{times}">
+        <PButton variant="primary" @click="active = !active">
+          <template #prefix>
+            <Component :is="active ? PauseCircleIcon : PlayCircleIcon" />
+          </template>
+
+          {{ active ? 'Stop' : 'Start' }}
+        </PButton>
+
+        <div
+          class="absolute bg-red-200 left-0 top-0 flex gap-2 items-center justify-center text-sm px-2 w-full h-full rounded-md transition-all opacity-0 -z-1"
+          :class="{ 'translate-y-full opacity-100': active }"
+        >
+          <i class="size-2 rounded-full bg-red-800" />
+          {{ times.mm }}:{{ times.ss }}
+        </div>
+      </template>
+    </PCountdown>
+  </div>
+</template>
+```
