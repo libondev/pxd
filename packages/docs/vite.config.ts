@@ -163,6 +163,7 @@ export default defineConfig(({ mode }) => {
 
     optimizeDeps: {
       include: [
+        '@gdsicon/vue',
         '@vue/shared',
         'canvas-confetti',
         '@unhead/vue',
