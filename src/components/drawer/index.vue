@@ -128,10 +128,10 @@ watch(() => isVisible.value, (visible) => {
         :data-position="ensurePosition"
       >
         <header
-          class="pxd-drawer--header p-6 sm:pb-4 relative shrink-0 empty:py-3"
+          class="pxd-drawer--header px-6 py-4 relative shrink-0 empty:py-3"
           :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
-          <h3 v-if="$slots.title || title" class="text-xl font-semibold tracking-tight m-0">
+          <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
             <slot name="title">
               {{ title }}
             </slot>

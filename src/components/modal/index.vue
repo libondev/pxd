@@ -100,16 +100,16 @@ watch(() => isVisible.value, (visible) => {
         :style="{ '--w': width }"
       >
         <header
-          class="pxd-modal--header p-6 sm:pb-4 relative shrink-0 empty:py-3"
+          class="pxd-modal--header px-6 py-4 relative shrink-0 empty:py-3"
           :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
-          <h3 v-if="$slots.title || title" class="text-xl font-semibold tracking-tight m-0">
+          <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
             <slot name="title">
               {{ title }}
             </slot>
           </h3>
 
-          <div v-if="$slots.subtitle || subtitle" class="mt-3 text-sm text-muted-foreground">
+          <div v-if="$slots.subtitle || subtitle" class="mt-2 text-sm text-muted-foreground">
             <slot name="subtitle">
               {{ subtitle }}
             </slot>
