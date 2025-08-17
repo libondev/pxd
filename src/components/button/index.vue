@@ -53,7 +53,7 @@ const VARIANTS = {
   simple: '',
   default: 'bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active border-input',
   ghost: 'bg-transparent text-foreground hover:bg-background-hover active:bg-background-active border-transparent',
-  primary: 'bg-primary text-gray-100 hover:bg-primary/80 active:bg-gray-900 border-transparent',
+  primary: 'bg-primary text-gray-100 hover:bg-primary-hover active:bg-primary-active border-transparent',
   error: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-transparent',
   warning: 'bg-amber-800 text-black hover:bg-amber-700 active:bg-amber-900 border-transparent',
   success: 'bg-green-800 text-white hover:bg-green-700 active:bg-green-900 border-transparent',

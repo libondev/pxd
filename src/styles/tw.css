@@ -8,6 +8,8 @@
 
   --ring: var(--color-blue-900-value);
   --primary: var(--color-gray-1000-value);
+  --primary-hover: hsla(var(--primary), 80%);
+  --primary-active: hsla(var(--primary), 90%);
 
   --color-gray-alpha-100-value: hsla(0, 0%, 0%, .05);
   --color-gray-alpha-200-value: hsla(0, 0%, 0%, .082);
@@ -245,8 +247,17 @@
   color-scheme: dark;
 }
 
+@supports (color: color-mix(in hsl, red, red)) {
+  :root {
+    --primary-hover: color-mix(in hsl, var(--color-primary) 80%, hsl(var(--background-100-value)));
+    --primary-active: color-mix(in hsl, var(--color-primary) 90%, hsl(var(--background-100-value)));
+  }
+}
+
 @theme inline {
   --color-primary: hsl(var(--primary));
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
 
   --color-input: var(--color-gray-alpha-300);
   --color-border: hsl(var(--color-gray-300-value));
@@ -257,8 +268,8 @@
   --color-foreground-secondary: hsl(var(--color-gray-900-value));
   --color-background-100: hsl(var(--background-100-value));
   --color-background-200: hsl(var(--background-200-value));
-  --color-background-hover: var(--color-gray-alpha-200-value);
-  --color-background-active: var(--color-gray-alpha-300-value);
+  --color-background-hover: hsl(var(--color-gray-200-value));
+  --color-background-active: hsl(var(--color-gray-400-value));
 
   --color-gray-alpha-100: var(--color-gray-alpha-100-value);
   --color-gray-alpha-200: var(--color-gray-alpha-200-value);
