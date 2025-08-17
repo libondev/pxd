@@ -23,10 +23,20 @@ One of the most basic components, it will help you complete the interaction.
     <PButton variant="success">success</PButton>
     <PButton variant="error">error</PButton>
     <PButton variant="ghost">ghost</PButton>
+  </PStack>
+</template>
+```
+
+## Disabled/Loading
+
+```vue demo
+<template>
+  <PStack>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
+
     <PButton variant="primary" disabled>disabled</PButton>
-    <PButton variant="primary" loading>loading</PButton>
+    <PButton variant="ghost" loading>loading</PButton>
   </PStack>
 </template>
 ```
