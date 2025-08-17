@@ -75,8 +75,8 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-countdown flex items-center justify-center leading-none tabular-nums">
-    <slot :times="times">
+  <div class="pxd-countdown relative w-max max-w-full leading-none tabular-nums">
+    <slot :active="active" :times="times">
       {{ displayTimes }}
     </slot>
   </div>
