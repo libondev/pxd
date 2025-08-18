@@ -72,23 +72,6 @@ watch(
 </template>
 ```
 
-## Disabled
-
-```vue demo
-<script setup>
-const checked = ref(false)
-const checked2 = ref(true)
-</script>
-
-<template>
-  <PStack direction="vertical">
-    <PCheckbox v-model="checked" label="Disabled" disabled />
-    <PCheckbox v-model="checked2" label="Disabled Checked" disabled />
-    <PCheckbox v-model="checked" label="Disabled Indeterminate" disabled indeterminate />
-  </PStack>
-</template>
-```
-
 ## Indeterminate
 
 ```vue demo
@@ -97,7 +80,10 @@ const checked = ref(false)
 </script>
 
 <template>
-  <PCheckbox v-model="checked" label="Checkbox" indeterminate />
+  <PStack>
+    <PCheckbox v-model="checked" label="Checkbox" indeterminate />
+    <PCheckbox v-model="checked" label="Checkbox" indeterminate disabled />
+  </PStack>
 </template>
 ```
 
