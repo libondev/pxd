@@ -7,28 +7,28 @@ Various surfaces with shadows, built on top of `<Stack>`.
 <template>
   <PStack direction="vertical">
     <PMaterial variant="default">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="small">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="medium">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="large">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="tooltip">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="menu">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="modal">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
     <PMaterial variant="fullscreen">
-      <div class="w-full h-30"></div>
+      <PPlaceholder height="120" />
     </PMaterial>
   </PStack>
 </template>
