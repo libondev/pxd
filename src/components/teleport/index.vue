@@ -101,11 +101,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="isVue3" :disabled="disabled" :to="to">
+  <Teleport v-if="isVue3" :disabled="disabled" :to="to" v-bind="$attrs">
     <slot />
   </Teleport>
 
-  <div v-else ref="containerRef" class="pxd-teleport">
+  <div v-else ref="containerRef" class="pxd-teleport" v-bind="$attrs">
     <slot />
   </div>
 </template>
