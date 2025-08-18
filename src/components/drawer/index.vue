@@ -112,7 +112,7 @@ watch(() => isVisible.value, (visible) => {
     :model-value="isVisible"
     :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
-    :update:model-value="onUpdateModelValue"
+    @update:model-value="onUpdateModelValue"
     @click="onOverlayClick"
   >
     <Transition :name="transitionName" mode="out-in" appear>
