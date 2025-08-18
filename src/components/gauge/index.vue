@@ -144,9 +144,9 @@ const progressColors = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-gauge relative size-max" :style="`--size: ${computedSize}px`">
+  <div class="pxd-gauge relative size-max" :style="`--s: ${computedSize}px`">
     <svg
-      class="pxd-gauge--svg block size-(--size) -rotate-[85deg] overflow-visible"
+      class="pxd-gauge--svg block size-(--s) -rotate-[85deg] overflow-visible"
       aria-hidden="true"
       fill="none"
       viewBox="0 0 100 100"
@@ -183,7 +183,7 @@ const progressColors = computed(() => {
     <div
       v-if="indeterminate"
       class="pxd-gauge--indeterminate inset-0 font-medium absolute flex items-center justify-center text-center text-foreground-secondary"
-      style="font-size: clamp(10px, calc(var(--size, 48px) * 0.38), 50px)"
+      style="font-size: clamp(10px, calc(var(--s, 48px) * 0.38), 50px)"
     >
       <ChartActivityIcon />
     </div>
@@ -191,7 +191,7 @@ const progressColors = computed(() => {
     <div
       v-else-if="showValue && size !== 'xs'"
       class="pxd-gauge--value inset-0 font-medium absolute flex items-center justify-center text-center"
-      style="font-size: calc(var(--size, 48px) * 0.28)"
+      style="font-size: calc(var(--s, 48px) * 0.28)"
     >
       {{ progress }}
     </div>

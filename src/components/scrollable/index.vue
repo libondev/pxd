@@ -278,7 +278,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-scrollable group/scrollable sm:[--sv:0] relative flex overflow-hidden hover:[--sv:1]"
+    class="pxd-scrollable group/scrollable sm:[--o:0] relative flex overflow-hidden hover:[--o:1]"
     :style="computedStyle"
   >
     <div
@@ -302,7 +302,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.y"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-1 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--sz) + 8px)"
       >
         <div
@@ -315,7 +315,7 @@ defineExpose({
       <div
         v-show="scrollInfo.isScrollable.x"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute touch-none opacity-(--sv) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-1 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--sz) + 8px)"
       >
         <div
