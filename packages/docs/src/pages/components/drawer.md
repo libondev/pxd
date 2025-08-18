@@ -80,7 +80,7 @@ function handleClose() {
     @click-outside="handleClose"
   >
     <template #footer>
-      <PButton block @click="handleClose">
+      <PButton block :loading="isLoading" @click="handleClose">
         Cancel
       </PButton>
     </template>
@@ -172,6 +172,10 @@ const fullVisible = ref(false)
     size="240px"
   >
     <PText>This is a small drawer with 240px width.</PText>
+
+    <template #footer>
+      <PButton block @click="smallVisible = false">Close</PButton>
+    </template>
   </PDrawer>
 
   <PDrawer
@@ -181,6 +185,10 @@ const fullVisible = ref(false)
   >
     <PText>This is a large drawer with 600px width.</PText>
     <PText class="mt-4">More content can fit in this larger drawer.</PText>
+
+    <template #footer>
+      <PButton block @click="largeVisible = false">Close</PButton>
+    </template>
   </PDrawer>
 
   <PDrawer
@@ -189,6 +197,10 @@ const fullVisible = ref(false)
     size="100%"
   >
     <PText>This drawer takes the full width of the viewport.</PText>
+
+    <template #footer>
+      <PButton block @click="fullVisible = false">Close</PButton>
+    </template>
   </PDrawer>
 </template>
 ```
@@ -403,7 +415,7 @@ const longContent = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}: This is
       <div
         v-for="item in longContent"
         :key="item"
-        class="p-3 bg-gray-50 rounded-md"
+        class="p-3 bg-background-200 rounded-md"
       >
         {{ item }}
       </div>
