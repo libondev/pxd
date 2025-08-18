@@ -6,6 +6,7 @@ interface Props {
   color?: string
   width?: string
   height?: string
+  border?: boolean
 }
 
 defineOptions({
@@ -26,7 +27,8 @@ const computedStyle = computed(() => {
 
 <template>
   <div
-    class="pxd-placeholder relative max-w-full overflow-hidden rounded-lg border border-dashed"
+    class="pxd-placeholder relative max-w-full overflow-hidden rounded-lg border-dashed"
+    :class="{ border }"
     :style="computedStyle"
     v-bind="$attrs"
   />
@@ -34,11 +36,12 @@ const computedStyle = computed(() => {
 
 <style scoped>
 .pxd-placeholder {
+  width: 100%;
   height: 36px;
-  color: var(--color-gray-400);
+  color: var(--color-gray-300);
   background-image:
     repeating-linear-gradient(
-      45deg,
+      -45deg,
       currentColor 0,
       currentColor 1px,
       transparent 1px,
