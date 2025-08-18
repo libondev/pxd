@@ -189,3 +189,26 @@ const data = [
   </PStack>
 </template>
 ```
+
+## No tooltip
+
+```vue demo
+<script setup>
+const data = [
+  { date: '2025-05-06', count: 5 },
+  { date: '2025-05-07', count: 10 },
+  { date: '2025-05-08', count: 15 },
+  { date: '2025-05-09', count: 20 },
+];
+</script>
+
+<template>
+  <PActiveGraph
+    transpose
+    :data="data"
+    :tooltip="false"
+    start-date="2025-05-01"
+    end-date="2025-05-31"
+  />
+</template>
+```
