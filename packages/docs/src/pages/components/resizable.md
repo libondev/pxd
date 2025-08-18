@@ -17,17 +17,15 @@ const direction = ref('horizontal')
       <PSwitch value="vertical">Col</PSwitch>
     </PSwitchGroup>
 
-    <div class="w-100 h-100 max-w-full border rounded-lg">
-      <PResizable :direction="direction">
-        <PResizablePanel class="flex items-center justify-center">
-          One
-        </PResizablePanel>
-        <PResizableHandle />
-        <PResizablePanel class="flex items-center justify-center">
-          Two
-        </PResizablePanel>
-      </PResizable>
-    </div>
+    <PResizable :direction="direction" class="w-100 h-50 max-w-full border rounded-lg">
+      <PResizablePanel class="flex items-center justify-center">
+        One
+      </PResizablePanel>
+      <PResizableHandle />
+      <PResizablePanel class="flex items-center justify-center">
+        Two
+      </PResizablePanel>
+    </PResizable>
   </PStack>
 </template>
 ```
@@ -36,27 +34,23 @@ const direction = ref('horizontal')
 
 ```vue demo
 <template>
-  <PStack direction="vertical" gap="2">
-    <div class="w-100 h-100 border rounded-lg">
-      <PResizable>
+  <PResizable class="w-100 h-100 max-w-full border rounded-lg">
+    <PResizablePanel class="flex items-center justify-center">
+      One
+    </PResizablePanel>
+    <PResizableHandle />
+    <PResizablePanel class="flex items-center justify-center">
+      <PResizable direction="vertical">
         <PResizablePanel class="flex items-center justify-center">
           One
         </PResizablePanel>
         <PResizableHandle />
         <PResizablePanel class="flex items-center justify-center">
-          <PResizable direction="vertical">
-            <PResizablePanel class="flex items-center justify-center">
-              One
-            </PResizablePanel>
-            <PResizableHandle />
-            <PResizablePanel class="flex items-center justify-center">
-              Two
-            </PResizablePanel>
-          </PResizable>
+          Two
         </PResizablePanel>
       </PResizable>
-    </div>
-  </PStack>
+    </PResizablePanel>
+  </PResizable>
 </template>
 ```
 
@@ -64,18 +58,14 @@ const direction = ref('horizontal')
 
 ```vue demo
 <template>
-  <PStack direction="vertical" gap="2">
-    <div class="w-100 h-100 border rounded-lg">
-      <PResizable>
-        <PResizablePanel :size="50" class="flex items-center justify-center">
-          One
-        </PResizablePanel>
-        <PResizableHandle />
-        <PResizablePanel :min-size="50" class="flex items-center justify-center">
-          Two
-        </PResizablePanel>
-      </PResizable>
-    </div>
-  </PStack>
+  <PResizable class="w-100 h-100 max-w-full border rounded-lg">
+    <PResizablePanel :size="50" class="flex items-center justify-center">
+      One
+    </PResizablePanel>
+    <PResizableHandle />
+    <PResizablePanel :min-size="50" class="flex items-center justify-center">
+      Two
+    </PResizablePanel>
+  </PResizable>
 </template>
 ```
