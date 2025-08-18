@@ -52,25 +52,6 @@ const options = [
 </template>
 ```
 
-## Disabled
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const modelValue = ref('one')
-</script>
-
-<template>
-  <PStack direction="vertical">
-    <PRadioGroup v-model="modelValue">
-      <PRadio disabled label="Option 1" value="one" />
-      <PRadio disabled value="two">Option 2</PRadio>
-    </PRadioGroup>
-  </PStack>
-</template>
-```
-
 ## Radio standalone
 Standalone unlabelled radio input for use in custom UI.
 

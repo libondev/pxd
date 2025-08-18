@@ -26,7 +26,7 @@ const modelValue = useModelValue(props, emits)
 const radioGroupName = useUniqueId('RadioGroupName')
 const radioGroupContext = useRadioGroupContext()
 
-const isChecked = computed(() => modelValue.value === props.value)
+const isChecked = computed(() => (radioGroupContext?.modelValue ?? modelValue.value) === props.value)
 const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
 const computedRequired = computed(() => props.required || radioGroupContext?.required)
 
@@ -39,7 +39,7 @@ const computedInnerClasses = computed(() => {
   if (isChecked.value) {
     classes.push(
       computedDisabled.value
-        ? 'bg-gray-100 border-gray-500 after:bg-gray-500'
+        ? 'bg-gray-100 border-gray-500 peer-disabled:after:bg-gray-500'
         : 'bg-background-100 border-primary peer-checked:after:scale-100',
     )
   } else {
