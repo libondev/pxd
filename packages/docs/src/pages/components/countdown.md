@@ -170,47 +170,6 @@ function resetStatus() {
 </template>
 ```
 
-## Invert
-Setting the `invert` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const active1 = ref(false)
-const active2 = ref(false)
-
-function resetStatus() {
-  active1.value = false
-}
-
-function onChange(s) {
-  if (s) {
-    active2.value = true
-  }
-}
-</script>
-
-<template>
-  <PStack direction="vertical">
-    <PToggle v-model="active1" label="Active" @change="onChange" />
-
-    <PCountdown
-      invert
-      :active="active1"
-      :durations="5000"
-      @finish="resetStatus"
-    />
-
-    <!-- timers without durations will not stop voluntarily -->
-    <PCountdown
-      invert
-      :active="active2"
-    />
-  </PStack>
-</template>
-```
-
 ## StartAt
 Specifies when to start, and is often used to resume timing from an interrupted timer.
 
@@ -231,7 +190,7 @@ function resetStatus() {
 
     <PCountdown
       :active="active"
-      :startAt="5000"
+      :start-at="3000"
       format="HH:mm:ss.SSS"
       :durations="10000"
       @finish="resetStatus"
@@ -240,10 +199,45 @@ function resetStatus() {
     <PCountdown
       invert
       :active="active"
-      :startAt="5000"
+      :start-at="3000"
       format="HH:mm:ss.SSS"
       :durations="10000"
       @finish="resetStatus"
+    />
+  </PStack>
+</template>
+```
+
+## Invert
+Setting the `invert` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const active = ref(false)
+
+function resetStatus() {
+  active.value = false
+}
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PToggle v-model="active" label="Active" @change="onChange" />
+
+    <PCountdown
+      invert
+      :active="active"
+      :durations="5000"
+      @finish="resetStatus"
+    />
+
+    <!-- timers without durations will not stop voluntarily -->
+    <PCountdown
+      invert
+      :active="active"
+      :start-at="3000"
     />
   </PStack>
 </template>
@@ -274,7 +268,7 @@ const active = ref(false)
         </PButton>
 
         <div
-          class="absolute bg-red-200 left-0 top-0 flex gap-1.5 items-center justify-center pt-1 text-sm px-2 w-full h-full rounded-bl-lg rounded-br-lg transition-all opacity-0 -z-1"
+          class="absolute bg-red-200 left-0 top-0 flex gap-1.5 items-center justify-center pt-0.5 text-sm px-2 w-full h-full rounded-bl-lg rounded-br-lg transition-all opacity-0 -z-1"
           :class="{ 'translate-y-[90%] opacity-100': active }"
         >
           <i class="size-2 rounded-full bg-red-800" />
