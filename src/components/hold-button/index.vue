@@ -21,7 +21,7 @@ const props = withDefaults(
   {
     vibrate: true,
     scalable: true,
-    durations: 2,
+    durations: 2000,
     maskColor: 'var(--color-gray-alpha-600)',
   },
 )
@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
       <div
         class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--mc)"
         :class="{ finished: status === 'confirmed' }"
-        :style="`--ds:${durations}s;--mc:${maskColor}`"
+        :style="`--ds:${durations}ms;--mc:${maskColor}`"
         @transitionend="onTransitionEnd"
       />
     </template>
