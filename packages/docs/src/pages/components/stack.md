@@ -15,7 +15,7 @@ Gap is a unit on a `4px` grid scale.
 ```
 
 ## Scale
-You can modify the default zoom ratio by passing in the `scale` attribute. (The gap is `3 * 3 = 9`)
+You can modify the default zoom ratio by passing in the `scale` attribute. (The gap is `4 * 4 = 16`)
 
 ```vue demo
 <script setup>
