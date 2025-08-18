@@ -496,13 +496,14 @@
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
   transition: var(--default-transition-duration) var(--default-transition-timing-function);
-  transition-property: opacity, transform;
-  will-change: opacity, transform;
+  transition-property: opacity, transform, filter;
+  will-change: opacity, transform, filter;
 }
 
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
+  filter: blur(2px);
   transform: scale(var(--scale,.8)) translateZ(0);
 }
 
