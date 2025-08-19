@@ -36,7 +36,6 @@ const emits = defineEmits<{
 
 type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
 
-let isStarted = false
 const status = shallowRef<Status>('idle')
 
 const computedAttrs = computed(() => {
@@ -63,33 +62,34 @@ function onTriggerVibrate() {
   window.navigator.vibrate(100)
 }
 
-function onPointerEnter() {
+function onPointerEnter(e: PointerEvent) {
   if (props.disabled) {
     return
   }
 
-  if (!isStarted) {
+  if (!checkIsHolding(e)) {
     status.value = 'idle'
     return
   }
 
   if (status.value === 'canceled') {
-    isStarted = true
     status.value = 'loading'
   }
 }
 
-function onPointerLeave() {
+function onPointerLeave(e: PointerEvent) {
   if (
     props.disabled
-    || !isStarted
+    || !checkIsHolding(e)
     || !props.cancelable
   ) {
     return
   }
 
-  status.value = 'canceled'
-  emits('canceled')
+  if (status.value === 'loading' || status.value === 'confirmed') {
+    status.value = 'canceled'
+    emits('canceled')
+  }
 }
 
 function onPointerDown(event: PointerEvent) {
@@ -97,7 +97,6 @@ function onPointerDown(event: PointerEvent) {
     return
   }
 
-  isStarted = true
   status.value = 'loading'
 
   emits('pointerdown', event)
@@ -113,7 +112,6 @@ function onPointerUp(event: PointerEvent) {
 
   const isConfirmed = status.value === 'confirmed'
 
-  isStarted = false
   status.value = 'idle'
 
   emits('finished', isConfirmed)
@@ -144,6 +142,10 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
 function cleanPointerReleaseEvents() {
   off(document, 'pointerup', onPointerUp)
   off(document, 'pointercancel', onPointerUp)
+}
+
+function checkIsHolding(e: PointerEvent) {
+  return e.buttons
 }
 
 onBeforeUnmount(() => {
