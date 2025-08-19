@@ -26,7 +26,6 @@ onMounted(() => {
           rotateX(${y * maxTilt}deg)
           rotateY(${x * -maxTilt}deg)
         `
-
         dot.style = `
           left: ${(x + 0.5) * rect.width}px;
           top: ${(y + 0.5) * rect.height}px;
@@ -42,6 +41,7 @@ onMounted(() => {
           rotateY(0deg)
           `
         dot.style.opacity = 0
+
         card.removeEventListener('mousemove', onMouseMove)
       })
     })
@@ -101,79 +101,77 @@ onMounted(() => {
 
     <hr class="mx-12 mb-8 sm:mb-20">
 
-    <section class="py-20">
-      <div class="mb-8 gap-4 relative flex cursor-default flex-wrap">
-        <div
-          class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
-        >
-          <h3 class="font-medium mb-1.5">
-            Consistent experience
-          </h3>
+    <section class="py-20 mb-8 gap-4 relative flex cursor-default flex-wrap">
+      <div
+        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+      >
+        <h3 class="font-medium mb-1.5">
+          Consistent experience
+        </h3>
 
-          <PText secondary>
-            It can run in 2 and 3 without modifying any syntax.
-          </PText>
-
-          <div
-            class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0 transition-opacity"
-          />
-        </div>
+        <PText secondary>
+          It can run in 2 and 3 without modifying any syntax.
+        </PText>
 
         <div
-          class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
-        >
-          <h3 class="font-medium mb-1.5">
-            Full light and dark support
-          </h3>
+          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
+        />
+      </div>
 
-          <PText secondary>
-            It takes little effort to make all components natively support light
-            and dark mode. See<PLinkButton
-              href="/components/theme-switcher#premise"
-              class="text-foreground underline"
-              type="text"
-              text="here"
-            />for more information.
-          </PText>
+      <div
+        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+      >
+        <h3 class="font-medium mb-1.5">
+          Full light and dark support
+        </h3>
 
-          <div
-            class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0 transition-opacity"
-          />
-        </div>
-
-        <div
-          class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
-        >
-          <h3 class="font-medium mb-1.5">
-            On demand Import
-          </h3>
-
-          <PText secondary>
-            Provide resolver to automatically import only used components.
-          </PText>
-
-          <div
-            class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0 transition-opacity"
-          />
-        </div>
+        <PText secondary>
+          It takes little effort to make all components natively support light
+          and dark mode. See<PLinkButton
+            href="/components/theme-switcher#premise"
+            class="text-foreground underline"
+            type="text"
+            text="here"
+          />for more information.
+        </PText>
 
         <div
-          class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
-        >
-          <h3 class="font-medium mb-1.5">
-            Support for reducing animation
-          </h3>
+          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
+        />
+      </div>
 
-          <PText secondary>
-            Set
-            <code class="text-foreground-secondary">prefers-reduced-motion: reduce</code>
-            to disable transitions and animations in components.
-          </PText>
+      <div
+        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+      >
+        <h3 class="font-medium mb-1.5">
+          On demand Import
+        </h3>
 
-          <div
-            class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
-          />
-        </div>
+        <PText secondary>
+          Provide resolver to automatically import only used components.
+        </PText>
+
+        <div
+          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
+        />
+      </div>
+
+      <div
+        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+      >
+        <h3 class="font-medium mb-1.5">
+          Support for reducing animation
+        </h3>
+
+        <PText secondary>
+          Set
+          <code class="text-foreground-secondary">prefers-reduced-motion: reduce</code>
+          to disable transitions and animations in components.
+        </PText>
+
+        <div
+          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
+        />
       </div>
     </section>
   </main>
