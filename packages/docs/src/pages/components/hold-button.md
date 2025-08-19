@@ -48,9 +48,11 @@ function onFinished(isFinished) {
 
 Set the `durations` property to determine how long it will trigger.
 
+It receives a number or a number of string type (if it cannot be converted by `Number()`, the default value will be 2000).
+
 ```vue demo
 <template>
-  <PHoldButton durations="1000"> Lasts one second </PHoldButton>
+  <PHoldButton :durations="1000"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -61,15 +63,15 @@ You can set the same `variant` property as the button.
 ```vue demo
 <template>
   <PStack>
-    <PHoldButton durations="1">default</PHoldButton>
-    <PHoldButton durations="1" variant="ghost">ghost</PHoldButton>
-    <PHoldButton durations="1" variant="error">error</PHoldButton>
-    <PHoldButton durations="1" variant="primary" mask-color="var(--color-background-100)"
+    <PHoldButton>default</PHoldButton>
+    <PHoldButton variant="ghost">ghost</PHoldButton>
+    <PHoldButton variant="error">error</PHoldButton>
+    <PHoldButton variant="primary" mask-color="var(--color-background-100)"
       >primary</PHoldButton
     >
-    <PHoldButton durations="1" variant="success">success</PHoldButton>
-    <PHoldButton durations="1" disabled>disabled</PHoldButton>
-    <PHoldButton durations="1" loading>loading</PHoldButton>
+    <PHoldButton variant="success">success</PHoldButton>
+    <PHoldButton disabled>disabled</PHoldButton>
+    <PHoldButton loading>loading</PHoldButton>
   </PStack>
 </template>
 ```
@@ -80,13 +82,13 @@ Set `mask-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1000" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
 </template>
 ```
 
 ## Cancelable
 
-After `cancelable` is set, the process can be cancelled by pressing and leaving the button on time. At the same time, you can listen to the `cancelled` event to know when it has been cancelled.
+After `cancelable` is set, the process can be cancelled while mouse is holding and leaving the button. At the same time, you can listen to the `cancelled` event to know when it has been cancelled.
 
 ```vue demo
 <script setup>
@@ -108,7 +110,7 @@ function onFinished(isFinished) {
 </script>
 
 <template>
-  <PHoldButton durations="1" cancelable @canceled="onCanceled" @finished="onFinished">
+  <PHoldButton durations="1000" cancelable @canceled="onCanceled" @finished="onFinished">
     Lasts one second
   </PHoldButton>
 </template>
@@ -120,6 +122,6 @@ Set `scalable="false"` to disable zooming when pressed.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" :scalable="false"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1000" :scalable="false"> Lasts one second </PHoldButton>
 </template>
 ```

@@ -45,7 +45,9 @@ describe('hold-button', () => {
     })
 
     await wrapper.trigger('pointerdown')
-    await wrapper.trigger('pointerleave')
+    await wrapper.trigger('pointerleave', {
+      buttons: 1,
+    })
 
     expect(wrapper.emitted()).toHaveProperty('canceled')
 

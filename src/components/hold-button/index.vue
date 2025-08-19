@@ -36,7 +36,6 @@ const emits = defineEmits<{
 
 type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
 
-let isStarted = false
 const status = shallowRef<Status>('idle')
 
 const computedAttrs = computed(() => {
@@ -48,6 +47,21 @@ const computedAttrs = computed(() => {
       effective: status.value !== 'canceled',
     }],
     ...rest,
+  }
+})
+
+const computedStyle = computed(() => {
+  const { durations, maskColor } = props
+
+  let _durations = Number(durations)
+  if (Number.isNaN(_durations) || _durations < 0) {
+    console.warn('Invalid durations value provided to PHoldButton, defaulting to 2000')
+    _durations = 2000
+  }
+
+  return {
+    '--ds': `${_durations}ms`,
+    '--mc': maskColor,
   }
 })
 
@@ -63,33 +77,34 @@ function onTriggerVibrate() {
   window.navigator.vibrate(100)
 }
 
-function onPointerEnter() {
+function onPointerEnter(e: PointerEvent) {
   if (props.disabled) {
     return
   }
 
-  if (!isStarted) {
+  if (!checkIsHolding(e)) {
     status.value = 'idle'
     return
   }
 
   if (status.value === 'canceled') {
-    isStarted = true
     status.value = 'loading'
   }
 }
 
-function onPointerLeave() {
+function onPointerLeave(e: PointerEvent) {
   if (
     props.disabled
-    || !isStarted
+    || !checkIsHolding(e)
     || !props.cancelable
   ) {
     return
   }
 
-  status.value = 'canceled'
-  emits('canceled')
+  if (status.value === 'loading' || status.value === 'confirmed') {
+    status.value = 'canceled'
+    emits('canceled')
+  }
 }
 
 function onPointerDown(event: PointerEvent) {
@@ -97,7 +112,6 @@ function onPointerDown(event: PointerEvent) {
     return
   }
 
-  isStarted = true
   status.value = 'loading'
 
   emits('pointerdown', event)
@@ -113,7 +127,6 @@ function onPointerUp(event: PointerEvent) {
 
   const isConfirmed = status.value === 'confirmed'
 
-  isStarted = false
   status.value = 'idle'
 
   emits('finished', isConfirmed)
@@ -146,6 +159,10 @@ function cleanPointerReleaseEvents() {
   off(document, 'pointercancel', onPointerUp)
 }
 
+function checkIsHolding(e: PointerEvent) {
+  return e.buttons === 1
+}
+
 onBeforeUnmount(() => {
   cleanPointerReleaseEvents()
 })
@@ -169,7 +186,7 @@ onBeforeUnmount(() => {
       <div
         class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--mc)"
         :class="{ finished: status === 'confirmed' }"
-        :style="`--ds:${durations}ms;--mc:${maskColor}`"
+        :style="computedStyle"
         @transitionend="onTransitionEnd"
       />
     </template>
