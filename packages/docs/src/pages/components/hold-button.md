@@ -48,9 +48,11 @@ function onFinished(isFinished) {
 
 Set the `durations` property to determine how long it will trigger.
 
+It receives a number or a number of string type (if it cannot be converted by `Number()`, the default value will be 2000).
+
 ```vue demo
 <template>
-  <PHoldButton durations="1000"> Lasts one second </PHoldButton>
+  <PHoldButton :durations="1000"> Lasts one second </PHoldButton>
 </template>
 ```
 
