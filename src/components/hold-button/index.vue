@@ -50,6 +50,21 @@ const computedAttrs = computed(() => {
   }
 })
 
+const computedStyle = computed(() => {
+  const { durations, maskColor } = props
+
+  let _durations = Number(durations)
+  if (Number.isNaN(_durations) || _durations < 0) {
+    console.warn('Invalid durations value provided to PHoldButton, defaulting to 2000')
+    _durations = 2000
+  }
+
+  return {
+    '--ds': `${_durations}ms`,
+    '--mc': maskColor,
+  }
+})
+
 function onTriggerVibrate() {
   if (!props.vibrate) {
     return
@@ -171,7 +186,7 @@ onBeforeUnmount(() => {
       <div
         class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--mc)"
         :class="{ finished: status === 'confirmed' }"
-        :style="`--ds:${durations}ms;--mc:${maskColor}`"
+        :style="computedStyle"
         @transitionend="onTransitionEnd"
       />
     </template>
