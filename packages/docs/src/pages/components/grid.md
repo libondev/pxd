@@ -5,7 +5,7 @@ Display elements in a grid layout.
 
 ```vue demo
 <template>
-  <PGrid class="grid-line min-h-40" :rows="2" :columns="3">
+  <PGrid class="min-h-40" :rows="2" :columns="3" debug>
     <PGridItem
       v-for="i of 6"
       :key="i"
@@ -14,22 +14,10 @@ Display elements in a grid layout.
 </template>
 
 <style>
-.grid-line {
-  border-top: 1px solid;
-  border-left: 1px solid;
-  border-color: hsl(var(--color-gray-300-value));
-}
-
 .pxd-grid-item {
   display: flex;
   align-items: center;
   padding-inline: 48px;
-}
-
-.grid-line .pxd-grid-item {
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-  border-color: hsl(var(--color-gray-300-value));
 }
 </style>
 ```
@@ -39,7 +27,12 @@ Grid component with responsive rows and columns props at all 3 breakpoints as we
 
 ```vue demo
 <template>
-  <PGrid class="grid-line min-h-40" :columns="{ sm: 1, md: 2, lg: 3 }" :rows="{ sm: 6, md: 3, lg: 2 }">
+  <PGrid
+    class="min-h-40"
+    :columns="{ sm: 1, md: 2, lg: 3 }"
+    :rows="{ sm: 6, md: 3, lg: 2 }"
+    debug
+  >
     <PGridItem
       :column="{ sm: '1', md: '1/3' }"
       :row="{ sm: '1/3', md: 1 }"
@@ -53,13 +46,13 @@ Grid component with responsive rows and columns props at all 3 breakpoints as we
   </PGrid>
 </template>
 ```
-<!--
+
 ## Grid with overlaying cells
 Grid component with cells that overlay another in various states.
 
 ```vue demo
 <template>
-  <PGrid class="border min-h-50" columns="12" rows="3">
+  <PGrid class="min-h-50" columns="12" rows="3" debug>
     <PGridItem column="1/3" row="1/3" solid>
       1
     </PGridItem>
@@ -84,7 +77,7 @@ Grid component with guide clipping enabled on specific cells.
 
 ```vue demo
 <template>
-  <PGrid class="border min-h-50" columns="3" rows="4">
+  <PGrid class="min-h-50" columns="3" rows="4" debug>
     <PGridItem column="1/2" row="1/3" solid>
       1
     </PGridItem>
@@ -102,4 +95,4 @@ Grid component with guide clipping enabled on specific cells.
     </PGridItem>
   </PGrid>
 </template>
-``` -->
+```
