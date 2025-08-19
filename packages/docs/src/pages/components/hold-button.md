@@ -80,13 +80,13 @@ Set `mask-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1000" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
 </template>
 ```
 
 ## Cancelable
 
-After `cancelable` is set, the process can be cancelled by pressing and leaving the button on time. At the same time, you can listen to the `cancelled` event to know when it has been cancelled.
+After `cancelable` is set, the process can be cancelled while mouse is holding and leaving the button. At the same time, you can listen to the `cancelled` event to know when it has been cancelled.
 
 ```vue demo
 <script setup>
@@ -108,7 +108,7 @@ function onFinished(isFinished) {
 </script>
 
 <template>
-  <PHoldButton durations="1" cancelable @canceled="onCanceled" @finished="onFinished">
+  <PHoldButton durations="1000" cancelable @canceled="onCanceled" @finished="onFinished">
     Lasts one second
   </PHoldButton>
 </template>
@@ -120,6 +120,6 @@ Set `scalable="false"` to disable zooming when pressed.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1" :scalable="false"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1000" :scalable="false"> Lasts one second </PHoldButton>
 </template>
 ```
