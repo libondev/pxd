@@ -37,7 +37,7 @@ function onCopy(ev: MouseEvent) {
         </div>
 
         <div
-          class="top-3 right-4 p-2 absolute hidden cursor-pointer rounded-md bg-background-100 group-hover:block hover:bg-background-hover active:bg-background-active"
+          class="top-3 right-4 p-2 absolute hidden cursor-pointer rounded-md bg-background-100 shadow-border-default group-hover:block hover:bg-background-hover active:bg-background-active"
           @click="onCopy"
         >
           <Transition name="pxd-transition--fade-scale" mode="out-in">
