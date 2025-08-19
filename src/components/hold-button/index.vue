@@ -145,7 +145,7 @@ function cleanPointerReleaseEvents() {
 }
 
 function checkIsHolding(e: PointerEvent) {
-  return e.buttons
+  return e.buttons === 1
 }
 
 onBeforeUnmount(() => {
