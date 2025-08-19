@@ -61,15 +61,15 @@ You can set the same `variant` property as the button.
 ```vue demo
 <template>
   <PStack>
-    <PHoldButton durations="1">default</PHoldButton>
-    <PHoldButton durations="1" variant="ghost">ghost</PHoldButton>
-    <PHoldButton durations="1" variant="error">error</PHoldButton>
-    <PHoldButton durations="1" variant="primary" mask-color="var(--color-background-100)"
+    <PHoldButton>default</PHoldButton>
+    <PHoldButton variant="ghost">ghost</PHoldButton>
+    <PHoldButton variant="error">error</PHoldButton>
+    <PHoldButton variant="primary" mask-color="var(--color-background-100)"
       >primary</PHoldButton
     >
-    <PHoldButton durations="1" variant="success">success</PHoldButton>
-    <PHoldButton durations="1" disabled>disabled</PHoldButton>
-    <PHoldButton durations="1" loading>loading</PHoldButton>
+    <PHoldButton variant="success">success</PHoldButton>
+    <PHoldButton disabled>disabled</PHoldButton>
+    <PHoldButton loading>loading</PHoldButton>
   </PStack>
 </template>
 ```
