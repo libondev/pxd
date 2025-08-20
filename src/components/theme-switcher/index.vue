@@ -32,6 +32,8 @@ watch(() => isDark.value, (newVal) => {
     icon
     @click="toggleDarkMode"
   >
-    <Component :is="renderIcon" class="size-em" />
+    <Transition name="pxd-transition--fade-scale" mode="out-in">
+      <Component :is="renderIcon" class="size-em" />
+    </Transition>
   </PButton>
 </template>

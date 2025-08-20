@@ -1,11 +1,19 @@
 import { computed, onBeforeUnmount, shallowRef, watchEffect } from 'vue'
+import { on } from '../utils/events'
 import { isServer } from '../utils/is'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 
 export type ColorScheme = 'light' | 'dark'
 export type ColorPreference = ColorScheme | 'auto'
 
+interface Subscriber {
+  id: number | string
+  mode: ColorPreference
+}
+
 export function useColorScheme() {
+  const RANDOM_KEY = Math.random()
+  const EVENT_NAME = '#toggle-color-scheme'
   const STORAGE_KEY = 'fe.system.color-scheme'
 
   const colorScheme = shallowRef<ColorPreference>('auto')
@@ -62,6 +70,22 @@ export function useColorScheme() {
 
     updateStorages()
     removeDisableTransitionStyle()
+
+    // 同步所有 theme-switcher 组件内部状态
+    window.dispatchEvent(new CustomEvent(EVENT_NAME, {
+      detail: {
+        id: RANDOM_KEY,
+        mode: colorScheme.value,
+      },
+    }))
+  }
+
+  function onToggleModeType({ detail }: CustomEvent<Subscriber>) {
+    if (detail.id === RANDOM_KEY) {
+      return
+    }
+
+    colorScheme.value = detail.mode
   }
 
   if (!isServer) {
@@ -82,8 +106,11 @@ export function useColorScheme() {
       }
     })
 
+    const unbindSubscriber = on(window, EVENT_NAME, onToggleModeType)
+
     onBeforeUnmount(() => {
       stopEffect()
+      unbindSubscriber()
     })
   }
 
