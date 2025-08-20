@@ -1,21 +1,22 @@
 <script setup>
 import { useHead } from '@unhead/vue'
 import { version } from 'pxd'
+import { off, on, once } from 'pxd/utils/events'
 import { githubLink } from '@/consts/link'
 
 useHead({
   title: 'PXD - A universal UI component library for Vue2&3',
 })
 
-onMounted(() => {
-  const dots = document.querySelectorAll('.dot')
-  const cards = document.querySelectorAll('.card')
+const bindEvents = []
 
-  cards.forEach((card, idx) => {
-    card.addEventListener('mouseenter', (e) => {
+function setParallaxEffect() {
+  const cards = document.querySelectorAll('.feature-item')
+
+  cards.forEach((card) => {
+    const cancelFn = on(card, 'mouseenter', (e) => {
       const rect = e.target.getBoundingClientRect()
       const maxTilt = 20 // 最大倾斜角度
-      const dot = dots[idx]
 
       const onMouseMove = (e) => {
         const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -26,26 +27,32 @@ onMounted(() => {
           rotateX(${y * maxTilt}deg)
           rotateY(${x * -maxTilt}deg)
         `
-        dot.style = `
-          left: ${(x + 0.5) * rect.width}px;
-          top: ${(y + 0.5) * rect.height}px;
-          opacity: 0.5;
-        `
       }
 
-      card.addEventListener('mousemove', onMouseMove)
-      card.addEventListener('mouseleave', () => {
+      const onMouseLeave = () => {
         card.style.transform = `
           perspective(1000px)
           rotateX(0deg)
           rotateY(0deg)
           `
-        dot.style.opacity = 0
 
-        card.removeEventListener('mousemove', onMouseMove)
-      })
+        off(card, 'mousemove', onMouseMove)
+      }
+
+      on(card, 'mousemove', onMouseMove)
+      once(card, 'mouseleave', onMouseLeave)
     })
+
+    bindEvents.push(cancelFn)
   })
+}
+
+onMounted(() => {
+  setParallaxEffect()
+})
+
+onBeforeUnmount(() => {
+  bindEvents.forEach(fn => fn())
 })
 </script>
 
@@ -101,9 +108,9 @@ onMounted(() => {
 
     <hr class="mx-12 mb-8 sm:mb-20">
 
-    <section class="py-20 mb-8 gap-4 relative flex cursor-default flex-wrap">
+    <section class="features py-20 mb-8 gap-4 relative flex cursor-default flex-wrap">
       <div
-        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="font-medium mb-1.5">
           Consistent experience
@@ -112,14 +119,10 @@ onMounted(() => {
         <PText secondary>
           It can run in 2 and 3 without modifying any syntax.
         </PText>
-
-        <div
-          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
-        />
       </div>
 
       <div
-        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="font-medium mb-1.5">
           Full light and dark support
@@ -134,14 +137,10 @@ onMounted(() => {
             text="here"
           />for more information.
         </PText>
-
-        <div
-          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
-        />
       </div>
 
       <div
-        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="font-medium mb-1.5">
           On demand Import
@@ -150,14 +149,10 @@ onMounted(() => {
         <PText secondary>
           Provide resolver to automatically import only used components.
         </PText>
-
-        <div
-          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
-        />
       </div>
 
       <div
-        class="card p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg"
+        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="font-medium mb-1.5">
           Support for reducing animation
@@ -168,10 +163,6 @@ onMounted(() => {
           <code class="text-foreground-secondary">prefers-reduced-motion: reduce</code>
           to disable transitions and animations in components.
         </PText>
-
-        <div
-          class="dot w-4 h-4 bg-black pointer-events-none absolute z-1 rounded-lg opacity-0"
-        />
       </div>
     </section>
   </main>
