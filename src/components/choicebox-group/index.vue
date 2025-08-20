@@ -58,7 +58,7 @@ provideChoiceboxGroupModelValue(modelValue)
 </script>
 
 <template>
-  <div class="pxd-choicebox-group w-full">
+  <div class="pxd-choicebox-group w-full max-w-full">
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">
         {{ label }}
