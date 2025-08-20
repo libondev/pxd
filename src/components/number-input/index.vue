@@ -4,6 +4,7 @@ import PlusIcon from '@gdsicon/vue/plus'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useRepeatAction } from '../../composables/use-repeat-action'
+import { FLOATING_REGEX, SCIENCE_NUMERIC_REGEX } from '../../utils/regexp'
 import PInput from '../input/index.vue'
 
 interface Props {
@@ -64,10 +65,7 @@ const {
   action: increaseValue,
 })
 
-const INTEGER_REGEX = /^-?\d+$/
-const INTEGER_REGEX_WITH_SCIENTIFIC = /^-?\d+(?:\.\d*)?(e-?\d+)?$/
-
-const allowedRegex = computed(() => props.scientific ? INTEGER_REGEX_WITH_SCIENTIFIC : INTEGER_REGEX)
+const allowedRegex = computed(() => props.scientific ? SCIENCE_NUMERIC_REGEX : FLOATING_REGEX)
 
 function toPrecision(value: number, precision: number) {
   if (!Number.isFinite(value)) {

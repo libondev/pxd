@@ -1,4 +1,4 @@
-import type { Nullable } from '../types/shared'
+import { FLOATING_REGEX, INTEGER_REGEX } from './regexp'
 
 /** string -> String */
 export function capitalize(text: string) {
@@ -56,7 +56,6 @@ export function toArray(value: unknown | unknown[]) {
   return [value]
 }
 
-const CSS_UNIT_REGEX = /^\d+$/
 export function getCssUnitValue(
   value: Nullable<string | number>,
   fallbackValue?: string,
@@ -65,7 +64,7 @@ export function getCssUnitValue(
     return fallbackValue!
   }
 
-  if (typeof value === 'number' || CSS_UNIT_REGEX.test(value)) {
+  if (typeof value === 'number' || INTEGER_REGEX.test(value)) {
     return `${value}px`
   }
 
@@ -88,7 +87,7 @@ export function increaseWithUnit(target: string | number, delta: number): string
     return target + delta
   }
 
-  const value = target.match(/^-?\d+\.?\d*/)?.[0] || ''
+  const value = target.match(FLOATING_REGEX)?.[0] || ''
   const unit = target.slice(value.length)
   const result = (Number.parseFloat(value) + delta)
 
