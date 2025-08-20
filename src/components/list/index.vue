@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
     :style="computedStyle"
     @pointerover="onPointerOver"
   >
-    <PScrollable class="max-h-68" content-class="pr-2">
+    <PScrollable class="max-h-68 p-2 rounded-inherit" content-class="" fader-direction="vertical">
       <slot>
         <PListItem
           v-for="(option, index) in options"
