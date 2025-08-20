@@ -17,7 +17,7 @@ Display elements in a grid layout.
 .pxd-grid-item {
   display: flex;
   align-items: center;
-  padding-inline: 48px;
+  padding-inline: 24px;
 }
 </style>
 ```
