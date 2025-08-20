@@ -27,35 +27,35 @@ withDefaults(
 <style lang="postcss">
 .pxd-material {
   &.default {
-    border-radius: 6px;
+    border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-default);
   }
   &.small {
-    border-radius: 6px;
+    border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-small);
   }
   &.medium {
-    border-radius: 12px;
+    border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-medium);
   }
   &.large {
-    border-radius: 12px;
+    border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-large);
   }
   &.tooltip {
-    border-radius: 6px;
+    border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-tooltip);
   }
   &.menu {
-    border-radius: 12px;
+    border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-menu);
   }
   &.modal {
-    border-radius: 12px;
+    border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-modal);
   }
   &.fullscreen {
-    border-radius: 16px;
+    border-radius: calc(var(--radius) + 8px);
     box-shadow: var(--shadow-border-fullscreen);
   }
 }
