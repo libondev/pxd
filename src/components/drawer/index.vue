@@ -4,7 +4,7 @@ import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/s
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
@@ -81,7 +81,7 @@ const computedStyle = computed(() => {
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.loading) {
+  if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
     return
   }
 

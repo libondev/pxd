@@ -3,6 +3,7 @@ import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer, hasScrollbar, isScrollable } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/events'
+import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
@@ -48,7 +49,7 @@ const computedStyle = computed(() => ({
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 
-  if (!props.closeOnClickOverlay) {
+  if (!isTruthyProp(props.closeOnClickOverlay)) {
     return
   }
 
@@ -56,7 +57,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onOverlayKeydown(ev: KeyboardEvent) {
-  if (!props.closeOnPressEscape || !props.modelValue) {
+  if (!isTruthyProp(props.closeOnPressEscape) || !props.modelValue) {
     return
   }
 
