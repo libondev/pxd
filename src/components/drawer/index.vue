@@ -6,7 +6,6 @@ import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   title?: ComponentLabel
@@ -146,15 +145,12 @@ watch(() => isVisible.value, (visible) => {
           </slot>
         </header>
 
-        <PScrollable
-          v-if="$slots.default"
-          :data-header="headerStylize"
-          class="pxd-drawer--content group flex-1"
-          content-class="group-data-[header=true]:pt-5 px-6 pb-5"
+        <div
+          class="pxd-drawer--content group px-6 pb-5 flex-1 overflow-auto"
+          :class="{ 'pt-5': headerStylize }"
         >
           <slot />
-        </PScrollable>
-        <div v-else class="flex-1" />
+        </div>
 
         <footer
           v-if="$slots.footer"
