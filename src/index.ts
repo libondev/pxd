@@ -5,7 +5,7 @@ export * from './components/index.js'
 export * from './composables/index.js'
 export type * from './types/shared'
 
-export const version = '0.0.37'
+export const version = '0.0.38'
 
 export default function install(app: App, prefix = 'P') {
   Object.entries(components).forEach(([key, component]) => {
