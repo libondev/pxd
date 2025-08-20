@@ -77,7 +77,7 @@ const formattedGap = computed(() => {
 
   return getResponsiveValue(
     gap,
-    (typeof gap === 'object' ? gap.xs : gap) ?? 4,
+    (typeof gap === 'object' ? gap.xs : gap),
     (acc, bp, value) => acc[`--${bp}`] = `${Number(value) * scale}px`,
   )
 })
@@ -95,7 +95,7 @@ const formattedDirection = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = [presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const classes = ['gap-(--xs) [--xs:16px]', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
 
   if (props.wrap) {
     classes.push('flex-wrap')

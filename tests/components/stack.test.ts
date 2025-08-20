@@ -22,7 +22,8 @@ describe('stack', () => {
     const classes = wrapper.classes()
     expect(classes).toContain('flex')
     expect(classes).toContain('flex-row')
-    expect(wrapper.attributes('style')).toContain('--xs: 16px')
+    expect(classes).toContain('gap-(--xs)')
+    expect(classes).toContain('[--xs:16px]')
 
     wrapper.unmount()
   })
@@ -44,11 +45,11 @@ describe('stack', () => {
   it('should apply custom gap value', () => {
     const wrapper = mount(Stack, {
       props: {
-        gap: 4,
+        gap: 6,
       },
     })
 
-    expect(wrapper.attributes('style')).toContain('--xs: 16px')
+    expect(wrapper.attributes('style')).toContain('--xs: 24px')
 
     wrapper.unmount()
   })
