@@ -46,6 +46,7 @@
       "types": "./dist/locales/index.d.ts",
       "default": "./dist/locales/index.js"
     },
+    "./volar": "./volar.d.ts",
     "./tw.css": "./dist/styles/tw.css",
     "./styles.css": "./dist/styles/styles.css",
     "./components/*": {
@@ -85,7 +86,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "volar.d.ts"
   ],
   "scripts": {
     "dev": "run-s dev:lib dev:docs",
@@ -102,6 +104,7 @@
     "update-exports": "node scripts/update-exports.js",
     "gen-styles-file": "node scripts/gen-css.js",
     "gen-tw-css-file": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/styles.css -m",
+    "gen-volar-dts": "node scripts/gen-component-dts.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
@@ -110,7 +113,7 @@
     "bump": "pnpx bumpp",
     "prepare": "node scripts/setup-scripts.js",
     "postversion": "node scripts/update-exports.js --stage",
-    "prepublishOnly": "npm run build:lib"
+    "prepublishOnly": "run-s build:lib gen-volar-dts"
   },
   "peerDependencies": {
     "vue": ">=2.7.0 || >=3.2.0"
