@@ -15,7 +15,9 @@ const emits = defineEmits<{
   toggle: [ColorScheme]
 }>()
 
-const { isDark, toggleDarkMode } = useColorScheme()
+const { isDark, toggleDarkMode } = useColorScheme({
+  syncStatus: true,
+})
 
 const renderIcon = computed(() => isDark.value ? MoonIcon : SunIcon)
 

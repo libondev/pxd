@@ -6,12 +6,16 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 export type ColorScheme = 'light' | 'dark'
 export type ColorPreference = ColorScheme | 'auto'
 
+interface Options {
+  syncStatus?: boolean
+}
+
 interface Subscriber {
   id: number | string
   mode: ColorPreference
 }
 
-export function useColorScheme() {
+export function useColorScheme(options: Options = {}) {
   const RANDOM_KEY = Math.random()
   const EVENT_NAME = '#toggle-color-scheme'
   const STORAGE_KEY = 'fe.system.color-scheme'
@@ -72,12 +76,11 @@ export function useColorScheme() {
     removeDisableTransitionStyle()
 
     // 同步所有 theme-switcher 组件内部状态
-    window.dispatchEvent(new CustomEvent(EVENT_NAME, {
-      detail: {
-        id: RANDOM_KEY,
-        mode: colorScheme.value,
-      },
-    }))
+    if (options.syncStatus) {
+      const payload = { id: RANDOM_KEY, mode: colorScheme.value }
+
+      window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: payload }))
+    }
   }
 
   function onToggleModeType({ detail }: CustomEvent<Subscriber>) {
@@ -106,7 +109,11 @@ export function useColorScheme() {
       }
     })
 
-    const unbindSubscriber = on(window, EVENT_NAME, onToggleModeType)
+    let unbindSubscriber = () => { }
+
+    if (options.syncStatus) {
+      unbindSubscriber = on(window, EVENT_NAME, onToggleModeType)
+    }
 
     onBeforeUnmount(() => {
       stopEffect()
