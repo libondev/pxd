@@ -105,8 +105,9 @@ defineExpose({
   <label
     role="checkbox"
     :aria-checked="isChecked"
-    class="pxd-checkbox group/checkbox gap-2 inline-flex cursor-pointer touch-manipulation items-center"
-    :class="{ 'is-disabled cursor-not-allowed text-gray-500': computedDisabled }"
+    :data-disabled="computedDisabled"
+    class="pxd-checkbox group/checkbox gap-2 inline-flex cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
+    :class="{ 'is-disabled text-gray-500': computedDisabled }"
     :for="uniqueId"
   >
     <input
