@@ -1,4 +1,5 @@
 import type { VNode } from 'vue'
+import type { Awaitable } from './utils'
 
 export type ComponentVariant = 'primary' | 'error' | 'warning' | 'success'
 export type ComponentVariantWithDefault = ComponentVariant | 'default'
@@ -31,4 +32,4 @@ export interface ComponentOption {
   disabled?: boolean
 }
 
-export type ComponentBeforeChange<T> = (value: T) => PromiseLike<T> | T
+export type ComponentBeforeChange<T> = (value: T) => Awaitable<T>

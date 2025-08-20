@@ -1,3 +1,5 @@
+import type { Nullable } from '../types/shared/utils'
+
 type PathArray = ReadonlyArray<PropertyKey>
 
 type PathValue<T, P extends PathArray>
@@ -189,7 +191,7 @@ export function get(obj: any, path: any, defaultValue?: any) {
 export function getFallbackValue<
   Variants extends Record<string, any>,
 >(
-  variant: string | undefined,
+  variant: Nullable<string>,
   variants: Variants,
   defaultVariant: keyof Variants = 'default',
 ) {

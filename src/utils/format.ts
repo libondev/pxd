@@ -1,3 +1,4 @@
+import type { CSSValue, Nullable } from '../types/shared/utils'
 import { FLOATING_REGEX, INTEGER_REGEX } from './regexp'
 
 /** string -> String */
@@ -57,18 +58,18 @@ export function toArray(value: unknown | unknown[]) {
 }
 
 export function getCssUnitValue(
-  value: Nullable<string | number>,
+  value: Nullable<CSSValue | string>,
   fallbackValue?: string,
 ): string {
   if (value == null || value === '') {
     return fallbackValue!
   }
 
-  if (typeof value === 'number' || INTEGER_REGEX.test(value)) {
+  if (typeof value === 'number' || INTEGER_REGEX.test(value as string)) {
     return `${value}px`
   }
 
-  return value
+  return value as string
 }
 
 // https://github.com/vueuse/vueuse/blob/main/packages/shared/utils/general.ts#L71
@@ -78,7 +79,6 @@ export function getCssUnitValue(
  * @example '2px' + 1 = '3px'
  * @example '15em' + (-2) = '13em'
  */
-
 export function increaseWithUnit(target: number, delta: number): number
 export function increaseWithUnit(target: string, delta: number): string
 export function increaseWithUnit(target: string | number, delta: number): string | number
@@ -87,12 +87,12 @@ export function increaseWithUnit(target: string | number, delta: number): string
     return target + delta
   }
 
-  const value = target.match(FLOATING_REGEX)?.[0] || ''
-  const unit = target.slice(value.length)
+  const value = String(target).match(FLOATING_REGEX)?.[0] || ''
+  const unit = String(target).slice(value.length)
   const result = (Number.parseFloat(value) + delta)
 
   if (Number.isNaN(result)) {
-    return target
+    return target as string
   }
 
   return result + unit

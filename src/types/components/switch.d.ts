@@ -5,6 +5,6 @@ export interface SwitchGroupProps {
   disabled?: boolean
   required?: boolean
   size?: ComponentSize
-  modelValue?: string | number
   options?: ComponentOption[]
+  modelValue?: string | number
 }

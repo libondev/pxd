@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Nullable, Numeric } from '../../types/shared/utils'
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed } from 'vue'
@@ -123,7 +124,7 @@ function numberParser(value: string) {
 }
 
 // 用于原生 input 的显示格式化：保留尾随 0
-function numberFormatter(value: string | number | null | undefined) {
+function numberFormatter(value: Nullable<Numeric>) {
   if ([null, undefined, ''].includes(value as string)) {
     return ''
   }

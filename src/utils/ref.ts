@@ -2,13 +2,16 @@
 
 import type { ComponentPublicInstance, MaybeRef, MaybeRefOrGetter } from 'vue'
 
+import type { Nullable } from '../types/shared/utils'
 import { unref } from 'vue'
 
-export type MaybeElement = HTMLElement | SVGElement | ComponentPublicInstance | undefined | null
+export type MaybeElement = Nullable<HTMLElement | SVGElement | ComponentPublicInstance>
 export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
 export type MaybeComputedElementRef<T extends MaybeElement = MaybeElement> = MaybeRefOrGetter<T>
 
-export type UnRefElementReturn<T extends MaybeElement = MaybeElement> = T extends ComponentPublicInstance ? Exclude<MaybeElement, ComponentPublicInstance> : T | undefined
+export type UnRefElementReturn<T extends MaybeElement = MaybeElement> = T extends ComponentPublicInstance
+  ? Exclude<MaybeElement, ComponentPublicInstance>
+  : T | undefined
 
 export function toValue<T>(source: MaybeRefOrGetter<T>): T {
   return typeof source === 'function' ? (source as () => T)() : unref(source)

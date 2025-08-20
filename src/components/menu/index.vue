@@ -6,9 +6,9 @@ import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
+  width?: string | number
   options?: ListOption[]
   position?: ComponentPosition
-  width?: string | number
 }
 
 defineOptions({

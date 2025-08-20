@@ -1,4 +1,4 @@
-import type { DOMRef } from '../types/shared/utils'
+import type { DOMRef, Nullable } from '../types/shared/utils'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 import { toValue } from '../utils/ref'
@@ -572,7 +572,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
     el.removeEventListener('pointercancel', onPointerCancel, true)
   }
 
-  function bind(el: HTMLElement | null | undefined) {
+  function bind(el: Nullable<HTMLElement>) {
     unbind(el)
 
     if (!el) {
