@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as icons from '@gdsicon/vue'
 import { useCopyClick, useMessage } from 'pxd'
+import { debounce } from 'pxd/utils/debounce'
 import { uncapitalize } from 'pxd/utils/format'
 import { throttle } from 'pxd/utils/throttle'
 
@@ -32,11 +33,11 @@ function getFilteredComponents(value: string) {
   return allIcons.filter(({ name }) => matchRegex.test(name))
 }
 
-function handleSearch(value: string) {
+const handleSearch = debounce((value: string) => {
   window.history.replaceState(history.state, '', `${route.path}?q=${value}`)
 
   filteredComponents.value = getFilteredComponents(value)
-}
+}, 300)
 
 const onIconClick = throttle(async (ev: MouseEvent) => {
   const target = (ev.target as HTMLElement).closest<HTMLElement>('.icon-item')

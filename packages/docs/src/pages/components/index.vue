@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { debounce } from 'pxd/utils/debounce'
 import { useRoute } from 'vue-router'
 import components from '@/consts/components.json'
 import OverviewCard from '../../components/OverviewCard.vue'
@@ -18,11 +19,11 @@ function getFilteredComponents(value: string) {
   return components.filter(({ name }) => matchRegex.test(name))
 }
 
-function handleSearch(value: string) {
+const handleSearch = debounce((value: string) => {
   window.history.replaceState(history.state, '', `${route.path}?q=${value}`)
 
   filteredComponents.value = getFilteredComponents(value)
-}
+}, 300)
 </script>
 
 <template>
