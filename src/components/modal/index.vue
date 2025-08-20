@@ -15,7 +15,8 @@ interface Props {
   appendToBody?: boolean
   headerStylize?: boolean
   footerStylize?: boolean
-  modalClass?: ComponentClass
+  wrapperClass?: ComponentClass
+  contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -96,7 +97,7 @@ watch(() => isVisible.value, (visible) => {
         tabindex="-1"
         aria-modal="true"
         class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
-        :class="modalClass"
+        :class="wrapperClass"
         :style="{ '--w': getCssUnitValue(width) }"
       >
         <header
@@ -121,7 +122,7 @@ watch(() => isVisible.value, (visible) => {
         <div
           v-if="$slots.default"
           class="pxd-modal--content group px-6 pb-5 flex-1 overflow-auto"
-          :class="{ 'pt-5': headerStylize }"
+          :class="[{ 'pt-5': headerStylize }, contentClass]"
         >
           <slot />
         </div>

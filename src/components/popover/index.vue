@@ -34,9 +34,10 @@ interface Props {
   autoPosition?: boolean
   scrollHidden?: boolean
   triggerClass?: ComponentClass
-  popoverClass?: ComponentClass
+  wrapperClass?: ComponentClass
+  contentClass?: ComponentClass
   triggerStyle?: CSSProperties | string
-  popoverStyle?: CSSProperties | string
+  contentStyle?: CSSProperties | string
   transitionName?: string
   showTransition?: boolean
   hideTransition?: boolean
@@ -659,6 +660,7 @@ defineExpose({
           v-if="isRender"
           v-show="isVisible"
           ref="wrapperRef"
+          :class="wrapperClass"
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
@@ -667,7 +669,7 @@ defineExpose({
           @pointerleave="onContentPointerLeave"
         >
           <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
-          <div class="pxd-popover--content" :class="popoverClass" :style="popoverStyle">
+          <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
             <slot name="content">
               {{ content }}
             </slot>

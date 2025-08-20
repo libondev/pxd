@@ -17,7 +17,8 @@ interface Props {
   appendToBody?: boolean
   headerStylize?: boolean
   footerStylize?: boolean
-  drawerClass?: ComponentClass
+  wrapperClass?: ComponentClass
+  contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -122,7 +123,7 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         class="pxd-drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
-        :class="drawerClass"
+        :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
       >
@@ -147,7 +148,7 @@ watch(() => isVisible.value, (visible) => {
 
         <div
           class="pxd-drawer--content group px-6 pb-5 flex-1 overflow-auto"
-          :class="{ 'pt-5': headerStylize }"
+          :class="[{ 'pt-5': headerStylize }, contentClass]"
         >
           <slot />
         </div>
