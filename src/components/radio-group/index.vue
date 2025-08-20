@@ -34,7 +34,7 @@ provideRadioGroupContext(props)
 </script>
 
 <template>
-  <PStack class="pxd-radio-group w-max" role="radiogroup" aria-label="Radio Group" v-bind="$attrs">
+  <PStack class="pxd-radio-group" role="radiogroup" aria-label="Radio Group" v-bind="$attrs">
     <slot>
       <PRadio
         v-for="option in options"
