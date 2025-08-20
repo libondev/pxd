@@ -469,10 +469,10 @@ function updateContentPosition() {
     top,
     zIndex,
     'transform': `translate3d(${translateX}, ${translateY}, 0)`,
-    '--c': arrowColor,
-    '--o': `${offset}px`,
-    '--mw': `${maxWidth}px`,
-    '--ao': `${offset - 5}px`,
+    '--popover-bg': arrowColor,
+    '--popover-offset': `${offset}px`,
+    '--popover-max-width': `${maxWidth}px`,
+    '--popover-arrow-offset': `${offset - 5}px`,
   }
 }
 
@@ -664,7 +664,7 @@ defineExpose({
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--mw) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
+          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
@@ -684,19 +684,19 @@ defineExpose({
 .pxd-popover--container {
 
   &[data-position^='top'] {
-    padding-bottom: var(--o);
+    padding-bottom: var(--popover-offset);
   }
 
   &[data-position^='bottom'] {
-    padding-top: var(--o);
+    padding-top: var(--popover-offset);
   }
 
   &[data-position^='left'] {
-    padding-right: var(--o);
+    padding-right: var(--popover-offset);
   }
 
   &[data-position^='right'] {
-    padding-left: var(--o);
+    padding-left: var(--popover-offset);
   }
 
   .pxd-popover--arrow {
@@ -706,33 +706,33 @@ defineExpose({
   &[data-position="top"] .pxd-popover--arrow,
   &[data-position="top-start"] .pxd-popover--arrow,
   &[data-position="top-end"] .pxd-popover--arrow {
-    bottom: var(--ao);
+    bottom: var(--popover-arrow-offset);
     border-width: 6px 6px 0;
-    border-color: var(--c) transparent transparent;
+    border-color: var(--popover-bg) transparent transparent;
   }
 
   &[data-position='bottom'] .pxd-popover--arrow,
   &[data-position='bottom-start'] .pxd-popover--arrow,
   &[data-position='bottom-end'] .pxd-popover--arrow {
-    top: var(--ao);
+    top: var(--popover-arrow-offset);
     border-width: 0 6px 6px;
-    border-color: transparent transparent var(--c);
+    border-color: transparent transparent var(--popover-bg);
   }
 
   &[data-position='left'] .pxd-popover--arrow,
   &[data-position='left-start'] .pxd-popover--arrow,
   &[data-position='left-end'] .pxd-popover--arrow {
-    right: var(--ao);
+    right: var(--popover-arrow-offset);
     border-width: 6px 0 6px 6px;
-    border-color: transparent transparent transparent var(--c);
+    border-color: transparent transparent transparent var(--popover-bg);
   }
 
   &[data-position='right'] .pxd-popover--arrow,
   &[data-position='right-start'] .pxd-popover--arrow,
   &[data-position='right-end'] .pxd-popover--arrow {
-    left: var(--ao);
+    left: var(--popover-arrow-offset);
     border-width: 6px 6px 6px 0;
-    border-color: transparent var(--c) transparent transparent;
+    border-color: transparent var(--popover-bg) transparent transparent;
   }
 
   &[data-position='top'] .pxd-popover--arrow,
