@@ -13,7 +13,7 @@ interface MenuItem {
 }
 
 interface MenuGroup {
-  label: string
+  group: string
   children: MenuItem[]
 }
 
