@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
-import type { ComponentClass, ComponentDirection } from '../../types/shared'
+import type { ComponentClass, ComponentDirection, Nullable } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { off, on, once } from '../../utils/events'
@@ -42,26 +42,30 @@ const emits = defineEmits<{
   scroll: [Event]
 }>()
 
+const wrapperRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
-let dragState = {
+const MIN_THUMB = 30
+
+let dragState: {
+  isDragging: boolean
+  direction: Nullable<ComponentDirection>
+  startClientPos: number
+  startThumbPos: number
+} = {
   isDragging: false,
-  direction: null as ComponentDirection | null,
+  direction: null,
   startClientPos: 0,
-  startScrollPos: 0,
-  containerSize: 0,
-  contentSize: 0,
-  thumbSize: 0,
+  startThumbPos: 0,
 }
 
 const scrollInfo = ref({
-  verticalRatio: 0,
-  horizontalRatio: 0,
+  isScrollableX: false,
+  isScrollableY: false,
   verticalThumbHeight: 0,
   horizontalThumbWidth: 0,
   verticalThumbTop: 0,
   horizontalThumbLeft: 0,
-  isScrollable: { x: false, y: false },
 })
 
 const computedStyle = computed(() => {
@@ -83,52 +87,58 @@ const horizontalThumbStyle = computed(() => ({
 }))
 
 function updateScrollbarMetrics() {
-  const wrapper = contentRef.value
-  if (!wrapper || !props.scrollbar) {
+  const contentEl = contentRef.value
+  if (!contentEl || !props.scrollbar) {
     return
   }
 
+  const cs = getComputedStyle(contentEl)
+  const pt = Number.parseFloat(cs.paddingTop) || 0
+  const pb = Number.parseFloat(cs.paddingBottom) || 0
+  const pl = Number.parseFloat(cs.paddingLeft) || 0
+  const pr = Number.parseFloat(cs.paddingRight) || 0
+
   const {
-    scrollTop,
-    scrollLeft,
-    scrollWidth,
-    scrollHeight,
-    clientWidth,
-    clientHeight,
-  } = wrapper
+    clientWidth: clientW,
+    clientHeight: clientH,
+    scrollWidth: scrollW,
+    scrollHeight: scrollH,
+  } = contentEl
 
-  // 检查是否可滚动
-  const isScrollableX = scrollWidth > clientWidth
-  const isScrollableY = scrollHeight > clientHeight
+  // 轨道尺寸使用外层 wrapper 的 padding-box，确保外层 padding 时计算准确
+  const trackW = wrapperRef.value?.clientWidth ?? clientW
+  const trackH = wrapperRef.value?.clientHeight ?? clientH
 
-  // 计算滚动条尺寸比例
-  const verticalRatio = clientHeight / scrollHeight
-  const horizontalRatio = clientWidth / scrollWidth
+  const effClientW = Math.max(0, clientW - pl - pr)
+  const effClientH = Math.max(0, clientH - pt - pb)
+  const effScrollW = Math.max(effClientW, scrollW - pl - pr)
+  const effScrollH = Math.max(effClientH, scrollH - pt - pb)
 
-  // 计算滚动条滑块尺寸
-  const verticalThumbHeight = Math.max(clientHeight * verticalRatio, 30)
-  const horizontalThumbWidth = Math.max(clientWidth * horizontalRatio, 30)
+  // 可滚动性与比例基于有效尺寸，滑块像素基于轨道尺寸
+  const isScrollableX = effScrollW > effClientW
+  const isScrollableY = effScrollH > effClientH
 
-  // 计算可滚动区域
-  const scrollableHeight = clientHeight - verticalThumbHeight
-  const scrollableWidth = clientWidth - horizontalThumbWidth
+  const verticalRatio = effScrollH > 0 ? (effClientH / effScrollH) : 0
+  const horizontalRatio = effScrollW > 0 ? (effClientW / effScrollW) : 0
 
-  // 计算滑块位置的百分比
-  let verticalScrollPercentage = scrollTop / (scrollHeight - clientHeight)
-  let horizontalScrollPercentage = scrollLeft / (scrollWidth - clientWidth)
+  const verticalThumbHeight = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
+  const horizontalThumbWidth = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)
 
-  // 确保百分比在0-1之间
-  verticalScrollPercentage = Math.max(0, Math.min(1, verticalScrollPercentage))
-  horizontalScrollPercentage = Math.max(0, Math.min(1, horizontalScrollPercentage))
+  const scrollableWidth = Math.max(0, trackW - horizontalThumbWidth)
+  const scrollableHeight = Math.max(0, trackH - verticalThumbHeight)
+
+  const maxScrollX = Math.max(1, scrollW - clientW)
+  const maxScrollY = Math.max(1, scrollH - clientH)
+
+  const verticalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollTop / maxScrollY))
+  const horizontalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollLeft / maxScrollX))
 
   const verticalThumbTop = verticalScrollPercentage * scrollableHeight
   const horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
 
-  // 更新状态
   scrollInfo.value = {
-    isScrollable: { x: isScrollableX, y: isScrollableY },
-    verticalRatio,
-    horizontalRatio,
+    isScrollableX,
+    isScrollableY,
     verticalThumbHeight,
     horizontalThumbWidth,
     verticalThumbTop,
@@ -140,8 +150,6 @@ const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
 
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
-
-  // 只有在非拖拽状态下才更新滚动条位置
   if (props.scrollbar && !dragState.isDragging) {
     throttledUpdate()
   }
@@ -151,8 +159,7 @@ function startDragVertical(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = contentRef.value
-  if (!wrapper) {
+  if (!contentRef.value) {
     return
   }
 
@@ -160,10 +167,7 @@ function startDragVertical(e: MouseEvent) {
     isDragging: true,
     direction: 'vertical',
     startClientPos: e.clientY,
-    startScrollPos: scrollInfo.value.verticalThumbTop,
-    containerSize: wrapper.clientHeight,
-    contentSize: wrapper.scrollHeight,
-    thumbSize: scrollInfo.value.verticalThumbHeight,
+    startThumbPos: scrollInfo.value.verticalThumbTop,
   }
 
   on(document, 'mousemove', onDragMove)
@@ -174,8 +178,7 @@ function startDragHorizontal(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = contentRef.value
-  if (!wrapper) {
+  if (!contentRef.value) {
     return
   }
 
@@ -183,10 +186,7 @@ function startDragHorizontal(e: MouseEvent) {
     isDragging: true,
     direction: 'horizontal',
     startClientPos: e.clientX,
-    startScrollPos: scrollInfo.value.horizontalThumbLeft,
-    containerSize: wrapper.clientWidth,
-    contentSize: wrapper.scrollWidth,
-    thumbSize: scrollInfo.value.horizontalThumbWidth,
+    startThumbPos: scrollInfo.value.horizontalThumbLeft,
   }
 
   on(document, 'mousemove', onDragMove)
@@ -198,47 +198,39 @@ function onDragMove(e: MouseEvent) {
     return
   }
 
-  const wrapper = contentRef.value
-  if (!wrapper) {
+  const contentEl = contentRef.value
+  if (!contentEl) {
     return
   }
 
-  const { direction, startClientPos, startScrollPos, containerSize, contentSize } = dragState
-
-  if (direction === 'vertical') {
-    const deltaY = e.clientY - startClientPos
-
-    const scrollableHeight = containerSize - scrollInfo.value.verticalThumbHeight
-
-    const newThumbTop = Math.max(0, Math.min(scrollableHeight, startScrollPos + deltaY))
-
-    const scrollRatio = newThumbTop / scrollableHeight
-    wrapper.scrollTop = scrollRatio * (contentSize - containerSize)
-
+  if (dragState.direction === 'vertical') {
+    const trackH = wrapperRef.value?.clientHeight ?? contentEl.clientHeight
+    const thumbH = scrollInfo.value.verticalThumbHeight
+    const scrollableH = Math.max(0, trackH - thumbH)
+    const delta = e.clientY - dragState.startClientPos
+    const newThumbTop = Math.max(0, Math.min(scrollableH, dragState.startThumbPos + delta))
+    const maxScroll = Math.max(0, contentEl.scrollHeight - contentEl.clientHeight)
+    contentEl.scrollTop = scrollableH > 0 ? (newThumbTop / scrollableH) * maxScroll : 0
     scrollInfo.value.verticalThumbTop = newThumbTop
-
     return
   }
 
-  const deltaX = e.clientX - startClientPos
-
-  const scrollableWidth = containerSize - scrollInfo.value.horizontalThumbWidth
-
-  const newThumbLeft = Math.max(0, Math.min(scrollableWidth, startScrollPos + deltaX))
-
-  const scrollRatio = newThumbLeft / scrollableWidth
-  wrapper.scrollLeft = scrollRatio * (wrapper.scrollWidth - containerSize)
-
+  const trackW = wrapperRef.value?.clientWidth ?? contentEl.clientWidth
+  const thumbW = scrollInfo.value.horizontalThumbWidth
+  const scrollableW = Math.max(0, trackW - thumbW)
+  const delta = e.clientX - dragState.startClientPos
+  const newThumbLeft = Math.max(0, Math.min(scrollableW, dragState.startThumbPos + delta))
+  const maxScroll = Math.max(0, contentEl.scrollWidth - contentEl.clientWidth)
+  contentEl.scrollLeft = scrollableW > 0 ? (newThumbLeft / scrollableW) * maxScroll : 0
   scrollInfo.value.horizontalThumbLeft = newThumbLeft
 }
 
-function onEndDrag() {
+function onEndDrag(ev: MouseEvent) {
+  ev.stopPropagation()
   dragState.isDragging = false
   dragState.direction = null
   off(document, 'mousemove', onDragMove)
-
   throttledUpdate.cancel()
-
   requestAnimationFrame(updateScrollbarMetrics)
 }
 
@@ -246,24 +238,24 @@ function scrollTo(top: number, left: number) {
   if (!contentRef.value) {
     return
   }
-
   contentRef.value.scrollTo({ top, left })
 }
 
 if (props.scrollbar) {
   useResizeObserver(contentRef, throttledUpdate)
+  useResizeObserver(wrapperRef, throttledUpdate)
 }
 
 onMounted(async () => {
   if (isServer) {
     return
   }
-
   if (!props.scrollbar && !props.fader) {
     return
   }
 
   on(window, 'resize', updateScrollbarMetrics, { passive: true })
+  requestAnimationFrame(updateScrollbarMetrics)
 })
 
 onBeforeUnmount(() => {
@@ -281,6 +273,7 @@ defineExpose({
 
 <template>
   <div
+    ref="wrapperRef"
     class="pxd-scrollable group/scrollable sm:[--o:0] relative flex overflow-hidden hover:[--o:1]"
     :class="wrapperClass"
     :style="computedStyle"
@@ -305,7 +298,7 @@ defineExpose({
 
     <template v-if="scrollbar">
       <div
-        v-if="scrollInfo.isScrollable.y"
+        v-if="scrollInfo.isScrollableY"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--scrollbar-size) + 4px)"
@@ -318,7 +311,7 @@ defineExpose({
       </div>
 
       <div
-        v-if="scrollInfo.isScrollable.x"
+        v-if="scrollInfo.isScrollableX"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--scrollbar-size) + 4px)"
