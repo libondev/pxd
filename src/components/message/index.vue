@@ -9,6 +9,7 @@ import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import {
+  CLEAR_MESSAGES_EVENT_NAME,
   CREATE_MESSAGE_EVENT_NAME,
   REMOVE_MESSAGE_EVENT_NAME,
 } from '../../composables/use-message'
@@ -60,7 +61,7 @@ const visibleMessages = computed(() => {
   return list.slice(-max)
 })
 
-function getMessageByKey(key: string) {
+function getMessageByKey(key: MessageItem['key']) {
   const index = groupMessages.value.findIndex(m => m.key === key)
   const message = groupMessages.value[index]
 
@@ -113,7 +114,7 @@ function setAutoCloseTimer(message: MessageItem) {
   }, message._remainingMs)
 }
 
-function pauseMessageByKey(key: string) {
+function pauseMessageByKey(key: MessageItem['key']) {
   if (!key) {
     return
   }
@@ -194,7 +195,7 @@ function onPointerOut(e: PointerEvent) {
   resumeMessageByKey(currentItem.dataset.key!)
 }
 
-function closeMessageByKey(key: string) {
+function closeMessageByKey(key: MessageItem['key']) {
   const { index, message } = getMessageByKey(key)
 
   if (!message) {
@@ -207,6 +208,14 @@ function closeMessageByKey(key: string) {
   }
 
   groupMessages.value.splice(index, 1)
+}
+
+function clearMessage() {
+  groupMessages.value.forEach((m) => {
+    m._timerId && clearTimeout(m._timerId)
+  })
+
+  groupMessages.value = []
 }
 
 function onCreateMessage({ detail: data }: CustomEvent<MessageItem>) {
@@ -229,12 +238,12 @@ function onRemoveMessage({ detail: data }: CustomEvent<MessageItem>) {
   closeMessageByKey(data.key)
 }
 
-function closeMessageByKeyAll() {
-  groupMessages.value.forEach((m) => {
-    m._timerId && clearTimeout(m._timerId)
-  })
+function onClearMessages({ detail: data }: CustomEvent<MessageItem>) {
+  if (!data || data.group !== props.group) {
+    return
+  }
 
-  groupMessages.value = []
+  clearMessage()
 }
 
 onMounted(() => {
@@ -242,13 +251,15 @@ onMounted(() => {
     return
   }
 
+  optimizedOn(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
   optimizedOn(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
   optimizedOn(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
 
 onBeforeUnmount(() => {
-  closeMessageByKeyAll()
+  clearMessage()
 
+  optimizedOff(window, CLEAR_MESSAGES_EVENT_NAME, onCreateMessage)
   optimizedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
   optimizedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
@@ -260,7 +271,7 @@ defineExpose({
   pauseMessage: pauseMessageByKey,
   resumeMessage: resumeMessageByKey,
   closeMessage: closeMessageByKey,
-  closeMessageAll: closeMessageByKeyAll,
+  clearMessage,
 })
 </script>
 

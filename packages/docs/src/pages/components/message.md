@@ -6,10 +6,10 @@ Message can be used only once in the root component. If you need to register mul
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 import { useMessage } from 'pxd'
 
-const position = ref('top')
+const position = shallowRef('top')
 
 const options = [
   { label: 'Top Start', value: 'top-start' },
@@ -50,7 +50,6 @@ Max prop limits how many message can be displayed at the same time. (default: 5)
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
 import { useMessage } from 'pxd'
 
 function addMessage() {
@@ -67,5 +66,46 @@ function addMessage() {
   <PMessage group="max" :max="3" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
+</template>
+```
+
+## Clear
+
+```vue demo
+<script setup>
+import { shallowRef } from 'vue'
+import { useMessage, closeMessage, clearMessage } from 'pxd'
+
+let lastKey = 0
+const messageRef = shallowRef()
+
+function addMessage() {
+  useMessage('Now it\'s:' + Date.now(), {
+    key: ++lastKey,
+    group: 'clear'
+  })
+}
+
+function closeLast() {
+  closeMessage('clear', lastKey--)
+  // Or use the instance method (no need to set group)
+  // messageRef.value.closeMessage(lastKey--)
+}
+
+function clearAll() {
+  clearMessage('clear')
+  // Or use the instance method (no need to set group)
+  // messageRef.value.clearMessage()
+}
+</script>
+
+<template>
+  <PMessage ref="messageRef" group="clear" position="bottom" />
+
+  <PStack>
+    <PButton @click="addMessage">Add</PButton>
+    <PButton @click="closeLast">Close last</PButton>
+    <PButton @click="clearAll">Clear all</PButton>
+  </PStack>
 </template>
 ```

@@ -4,7 +4,7 @@ import { isServer } from '../utils/is'
 import { getUniqueId } from '../utils/uid'
 
 interface Options {
-  key?: string
+  key?: string | number
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
   class?: ComponentClass
   group?: string
@@ -31,6 +31,7 @@ interface UseMessage {
   loading: (msg: string | VNode, options?: Options) => void
 }
 
+export const CLEAR_MESSAGES_EVENT_NAME = '#clear-messages'
 export const CREATE_MESSAGE_EVENT_NAME = '#create-message'
 export const REMOVE_MESSAGE_EVENT_NAME = '#remove-message'
 
@@ -63,3 +64,23 @@ shortcutTypes.forEach((type) => {
     useMessage(msg, { ...(options ?? {}), type })
   }
 })
+
+export function closeMessage(group: Options['group'], key: Options['key']) {
+  if (!key) {
+    return
+  }
+
+  window.dispatchEvent(
+    new CustomEvent(REMOVE_MESSAGE_EVENT_NAME, {
+      detail: { group: group ?? 'default', key },
+    }),
+  )
+}
+
+export function clearMessage(group: Options['group']) {
+  window.dispatchEvent(
+    new CustomEvent(CLEAR_MESSAGES_EVENT_NAME, {
+      detail: { group: group ?? 'default' },
+    }),
+  )
+}
