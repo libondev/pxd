@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CSSProperties } from 'vue'
 import type { ComponentClass, ComponentDirection } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
@@ -13,7 +14,9 @@ interface Props {
   faderColor?: string
   faderDirection?: ComponentDirection | 'both'
   scrollbar?: boolean
+  wrapperClass?: ComponentClass
   contentClass?: ComponentClass
+  contentStyle?: CSSProperties | string
   scrollbarSize?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string
@@ -39,7 +42,7 @@ const emits = defineEmits<{
   scroll: [Event]
 }>()
 
-const containerRef = shallowRef<HTMLElement>()
+const contentRef = shallowRef<HTMLElement>()
 
 let dragState = {
   isDragging: false,
@@ -80,7 +83,7 @@ const horizontalThumbStyle = computed(() => ({
 }))
 
 function updateScrollbarMetrics() {
-  const wrapper = containerRef.value
+  const wrapper = contentRef.value
   if (!wrapper || !props.scrollbar) {
     return
   }
@@ -148,7 +151,7 @@ function startDragVertical(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = containerRef.value
+  const wrapper = contentRef.value
   if (!wrapper) {
     return
   }
@@ -171,7 +174,7 @@ function startDragHorizontal(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const wrapper = containerRef.value
+  const wrapper = contentRef.value
   if (!wrapper) {
     return
   }
@@ -195,7 +198,7 @@ function onDragMove(e: MouseEvent) {
     return
   }
 
-  const wrapper = containerRef.value
+  const wrapper = contentRef.value
   if (!wrapper) {
     return
   }
@@ -240,15 +243,15 @@ function onEndDrag() {
 }
 
 function scrollTo(top: number, left: number) {
-  if (!containerRef.value) {
+  if (!contentRef.value) {
     return
   }
 
-  containerRef.value.scrollTo({ top, left })
+  contentRef.value.scrollTo({ top, left })
 }
 
 if (props.scrollbar) {
-  useResizeObserver(containerRef, throttledUpdate)
+  useResizeObserver(contentRef, throttledUpdate)
 }
 
 onMounted(async () => {
@@ -279,11 +282,13 @@ defineExpose({
 <template>
   <div
     class="pxd-scrollable group/scrollable sm:[--o:0] relative flex overflow-hidden hover:[--o:1]"
+    :class="wrapperClass"
     :style="computedStyle"
   >
     <div
-      ref="containerRef"
+      ref="contentRef"
       :class="contentClass"
+      :style="contentStyle"
       class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
@@ -294,13 +299,13 @@ defineExpose({
       v-if="fader"
       :size="faderSize"
       :color="faderColor"
-      :container="containerRef"
+      :container="contentRef"
       :direction="faderDirection"
     />
 
     <template v-if="scrollbar">
       <div
-        v-show="scrollInfo.isScrollable.y"
+        v-if="scrollInfo.isScrollable.y"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="width:calc(var(--scrollbar-size) + 4px)"
@@ -313,7 +318,7 @@ defineExpose({
       </div>
 
       <div
-        v-show="scrollInfo.isScrollable.x"
+        v-if="scrollInfo.isScrollable.x"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
         style="height:calc(var(--scrollbar-size) + 4px)"
