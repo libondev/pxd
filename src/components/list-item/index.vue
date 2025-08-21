@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption } from '../../types/components/list'
+import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
 import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
 import { useListContext, useListItemIndexContext } from '../../contexts/list'
 
@@ -7,6 +7,7 @@ interface Props {
   as?: ListOption['as']
   type?: ListOption['type']
   label?: ListOption['label']
+  value?: ListOption['value']
   disabled?: ListOption['disabled']
   description?: ListOption['description']
 }
@@ -25,7 +26,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  click: [ev: MouseEvent, index: number]
+  click: ListOptionCallbackParams
 }>()
 
 const {
@@ -60,8 +61,11 @@ const computedClass = computed(() => {
 })
 
 function onItemClick(ev: MouseEvent) {
-  emits('click', ev, currentIndex.value)
-  onOptionClick?.(ev, currentIndex.value)
+  const { as, ...option } = props
+  const index = currentIndex.value
+
+  emits('click', ev, option, index)
+  onOptionClick?.(ev, option, index)
 }
 
 onMounted(() => {

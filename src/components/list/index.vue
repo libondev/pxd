@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption } from '../../types/components/list'
+import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext, provideListItemIndexContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
@@ -17,6 +17,7 @@ interface Props {
 
 defineOptions({
   name: 'PList',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -28,9 +29,9 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  close: []
+  hide: []
   toggle: [index: number]
-  selected: [ev: MouseEvent, index: number]
+  select: ListOptionCallbackParams
 }>()
 
 const ITEM_CLASS = 'pxd-list-item'
@@ -101,7 +102,7 @@ const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
 const FUNCTION_KEYS = ['Enter', 'Escape', 'Tab']
 const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
-const THROTTLE_INTERVALS = 255
+const THROTTLE_INTERVALS = 200
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   const count = allItems.value.length
@@ -122,7 +123,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   if (key === 'Escape' && props.closeOnPressEscape) {
-    emits('close')
+    emits('hide')
     return
   }
 
@@ -169,10 +170,14 @@ function onPointerOver(ev: PointerEvent) {
   activeIndex.value = Number(listItem.dataset.index)
 }
 
-function onOptionClick(ev: MouseEvent, index: number) {
+function onOptionClick(
+  ev: ListOptionCallbackParams[0],
+  item: ListOptionCallbackParams[1],
+  index: ListOptionCallbackParams[2],
+) {
   activeIndex.value = index
-  emits('selected', ev, index)
-  emits('close')
+  emits('select', ev, item, index)
+  emits('hide')
 }
 
 provideListItemIndexContext(increaseIndex)
@@ -204,6 +209,7 @@ onBeforeUnmount(() => {
     tabindex="-1"
     class="pxd-list max-w-full"
     :style="computedStyle"
+    v-bind="$attrs"
     @pointerover="onPointerOver"
   >
     <PScrollable class="max-h-68 p-2 rounded-inherit" fader-direction="vertical">

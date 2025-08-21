@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption } from '../../types/components/list'
+import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
 import PList from '../list/index.vue'
@@ -24,7 +24,7 @@ withDefaults(
 )
 
 const emits = defineEmits<{
-  selected: [ev: MouseEvent, index: number]
+  select: ListOptionCallbackParams
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
@@ -33,8 +33,12 @@ function closePopover() {
   popoverRef.value?.hide()
 }
 
-function onOptionClick(ev: MouseEvent, index: number) {
-  emits('selected', ev, index)
+function onOptionClick(
+  ev: ListOptionCallbackParams[0],
+  item: ListOptionCallbackParams[1],
+  index: ListOptionCallbackParams[2],
+) {
+  emits('select', ev, item, index)
 }
 </script>
 
@@ -57,8 +61,8 @@ function onOptionClick(ev: MouseEvent, index: number) {
         :width="width"
         :options="options"
         class="list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
-        @close="closePopover"
-        @selected="onOptionClick"
+        @hide="closePopover"
+        @select="onOptionClick"
       >
         <slot name="items" />
       </PList>

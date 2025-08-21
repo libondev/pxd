@@ -12,16 +12,20 @@ const options = [
   { label: 'Remove', type: 'warning' },
   { label: 'Delete', type: 'error' },
 ]
+
+function onSelect(ev, item, index) {
+  console.log(ev, item, index)
+}
 </script>
 
 <template>
   <PStack>
-    <PMenu :options="options">
+    <PMenu :options="options" @select="onSelect">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu>
+    <PMenu @select="onSelect">
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
