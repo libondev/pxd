@@ -11,8 +11,8 @@ import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   width?: string | number
-  visible?: boolean
   options?: ListOption[]
+  keyListener?: boolean
   closeOnPressEscape?: boolean
 }
 
@@ -24,14 +24,14 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    visible: true,
     options: () => [],
+    keyListener: true,
     closeOnPressEscape: true,
   },
 )
 
 const emits = defineEmits<{
-  hide: []
+  escape: []
   toggle: [index: number]
   select: ListOptionCallbackParams
 }>()
@@ -107,7 +107,7 @@ const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const THROTTLE_INTERVALS = 200
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
-  if (!props.visible) {
+  if (!props.keyListener) {
     return
   }
 
@@ -129,7 +129,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   if (key === 'Escape' && props.closeOnPressEscape) {
-    emits('hide')
+    emits('escape')
     return
   }
 
@@ -146,6 +146,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 
     emits('toggle', activeIndex.value)
   }
+  // TODO: support [Home] and [End] keydown
 
   if (allItems.value.length <= 0 || activeIndex.value < 0) {
     return
@@ -159,6 +160,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 function onContainerKeydown(ev: KeyboardEvent) {
   if (PREVENT_DEFAULT_KEYS.includes(ev.key)) {
     ev.preventDefault()
+    ev.stopPropagation()
   }
 
   ev.stopPropagation()
@@ -183,7 +185,6 @@ function onOptionClick(
 ) {
   activeIndex.value = index
   emits('select', ev, item, index)
-  emits('hide')
 }
 
 provideListItemIndexContext(increaseIndex)
