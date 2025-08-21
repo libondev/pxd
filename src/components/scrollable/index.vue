@@ -20,6 +20,8 @@ interface Props {
   scrollbarSize?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string
+  loading?: boolean
+  endThreshold?: number
 }
 
 defineOptions({
@@ -32,6 +34,7 @@ const props = withDefaults(
     fader: true,
     faderSize: 16,
     scrollbar: true,
+    endThreshold: 10,
     scrollbarSize: 6,
     scrollbarColor: 'var(--color-gray-alpha-300)',
     scrollbarHoverColor: 'var(--color-gray-alpha-500)',
@@ -40,6 +43,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   scroll: [Event]
+  end: [Event, ComponentDirection]
 }>()
 
 const wrapperRef = shallowRef<HTMLElement>()
@@ -148,11 +152,64 @@ function updateScrollbarMetrics() {
 
 const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
 
+let lastScrollTop = 0
+let lastScrollLeft = 0
+let lastScrollInited = false
+
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
+
   if (props.scrollbar && !dragState.isDragging) {
     throttledUpdate()
   }
+
+  const el = contentRef.value
+  if (!el) {
+    return
+  }
+
+  if (props.loading) {
+    // 加载中仅更新快照，不触发 end
+    lastScrollTop = el.scrollTop
+    lastScrollLeft = el.scrollLeft
+    lastScrollInited = true
+    return
+  }
+
+  const currTop = el.scrollTop
+  const currLeft = el.scrollLeft
+
+  let movedY = false
+  let movedX = false
+
+  if (!lastScrollInited) {
+    lastScrollTop = currTop
+    lastScrollLeft = currLeft
+    lastScrollInited = true
+  } else {
+    movedY = currTop !== lastScrollTop
+    movedX = currLeft !== lastScrollLeft
+  }
+
+  const endDistance = props.endThreshold ?? 0
+
+  // 仅在对应方向发生滚动时才进行该方向的 end 判定
+  if (movedY) {
+    const distanceToBottom = el.scrollHeight - (currTop + el.clientHeight)
+    if (distanceToBottom <= endDistance) {
+      emits('end', ev, 'vertical')
+    }
+  }
+
+  if (movedX) {
+    const distanceToRight = el.scrollWidth - (currLeft + el.clientWidth)
+    if (distanceToRight <= endDistance) {
+      emits('end', ev, 'horizontal')
+    }
+  }
+
+  lastScrollTop = currTop
+  lastScrollLeft = currLeft
 }
 
 function startDragVertical(e: MouseEvent) {
