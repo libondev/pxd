@@ -11,6 +11,7 @@ import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   width?: string | number
+  visible?: boolean
   options?: ListOption[]
   closeOnPressEscape?: boolean
 }
@@ -23,6 +24,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    visible: true,
     options: () => [],
     closeOnPressEscape: true,
   },
@@ -105,6 +107,10 @@ const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const THROTTLE_INTERVALS = 200
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
+  if (!props.visible) {
+    return
+  }
+
   const count = allItems.value.length
 
   if (count === 0) {
