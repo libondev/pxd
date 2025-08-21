@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
+import type { ListOption, ListOptionCallbackParams, SelectedListOption } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext, provideListItemIndexContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
@@ -38,13 +38,19 @@ const emits = defineEmits<{
   select: ListOptionCallbackParams
 }>()
 
+interface CollectionOptionItem {
+  el: HTMLElement
+  data: ListOption
+}
+
 const ITEM_CLASS = 'pxd-list-item'
 const ITEM_SELECTOR = `.${ITEM_CLASS}`
 
 const initialIndex = Number.NaN
-const activeIndex = shallowRef(initialIndex)
 const increaseIndex = shallowRef(0)
-const allItems = shallowRef<HTMLElement[]>([])
+const activeIndex = shallowRef(initialIndex)
+
+const allItemsMap = new Map<number, CollectionOptionItem>()
 
 const computedStyle = computed(() => {
   return {
@@ -52,38 +58,18 @@ const computedStyle = computed(() => {
   }
 })
 
-function registerListItem(el: HTMLElement): void {
-  if (!allItems.value.includes(el)) {
-    allItems.value.push(el)
-  }
+function registerListItem(index: number, el: HTMLElement, data: ListOption): void {
+  allItemsMap.set(index, { el, data })
 }
 
-function unregisterListItem(el: HTMLElement): void {
-  const index = allItems.value.indexOf(el)
-  if (index >= 0) {
-    allItems.value.splice(index, 1)
-  }
-}
-
-function getItemData(index: number): ListOption | null {
-  const element = allItems.value[index]
-
-  if (!element) {
-    return null
-  }
-
-  const { disabled, type = 'default' } = element.dataset
-
-  return {
-    disabled: disabled === 'true',
-    type: type as ListOption['type'],
-  }
+function unregisterListItem(index: number): void {
+  allItemsMap.delete(index)
 }
 
 // 跳过禁用的选项后，获取正确的索引
 function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
   const nextIndex = dir === 'prev' ? index - 1 : index + 1
-  const length = allItems.value.length
+  const length = allItemsMap.size
 
   if (nextIndex < 0) {
     return length - 1
@@ -93,9 +79,9 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
     return 0
   }
 
-  const item = getItemData(nextIndex)
+  const item = allItemsMap.get(nextIndex)
 
-  if (item?.disabled) {
+  if (item?.data.disabled) {
     return getCorrectIndex(dir, nextIndex)
   }
 
@@ -106,14 +92,14 @@ const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
 const FUNCTION_KEYS = ['Enter', 'Escape', 'Tab']
 const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
-const THROTTLE_INTERVALS = 200
+const THROTTLE_INTERVALS = 100
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   if (!props.keyListener) {
     return
   }
 
-  const count = allItems.value.length
+  const count = allItemsMap.size
 
   if (count === 0) {
     return
@@ -126,7 +112,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   if (key === 'Enter') {
-    allItems.value[activeIndex.value]?.click()
+    allItemsMap.get(activeIndex.value)?.el.click()
     return
   }
 
@@ -150,11 +136,11 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
   // TODO: support [Home] and [End] keydown
 
-  if (allItems.value.length <= 0 || activeIndex.value < 0) {
+  if (allItemsMap.size <= 0 || activeIndex.value < 0) {
     return
   }
 
-  allItems.value[activeIndex.value].scrollIntoView({
+  allItemsMap.get(activeIndex.value)?.el.scrollIntoView({
     block: 'nearest',
   })
 }, THROTTLE_INTERVALS, { edges: ['leading'] })
@@ -181,12 +167,14 @@ function onPointerOver(ev: PointerEvent) {
 }
 
 function onOptionClick(
-  ev: ListOptionCallbackParams[0],
-  item: ListOptionCallbackParams[1],
-  index: ListOptionCallbackParams[2],
+  ev: MouseEvent,
+  item: SelectedListOption,
+  index: number,
 ) {
+  const { as, onClick, ...option } = item
+
   activeIndex.value = index
-  emits('select', ev, item, index)
+  emits('select', ev, option, index)
 }
 
 provideListItemIndexContext(increaseIndex)
@@ -208,7 +196,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   off(document, 'keydown', onContainerKeydown)
 
-  allItems.value = []
+  allItemsMap.clear()
 })
 </script>
 

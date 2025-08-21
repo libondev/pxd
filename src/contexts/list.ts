@@ -5,8 +5,8 @@ import { createContext } from '../utils/context'
 export interface ListContext {
   activeIndex: Ref<number>
   onOptionClick: ListOption['onClick']
-  registerListItem: (el: HTMLElement) => void
-  unregisterListItem: (el: HTMLElement) => void
+  registerListItem: (index: number, el: HTMLElement, data: ListOption) => void
+  unregisterListItem: (index: number) => void
 }
 
 export const [

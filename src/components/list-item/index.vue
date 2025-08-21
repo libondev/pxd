@@ -38,10 +38,10 @@ const {
 } = useListContext()
 
 const listItemIndex = useListItemIndexContext()
+const currentIndex = listItemIndex.value++
 
 const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()
-const currentIndex = shallowRef(listItemIndex.value++)
 
 const itemTypeMap = {
   error: 'text-red-900 data-[selected=true]:bg-red-100',
@@ -50,7 +50,7 @@ const itemTypeMap = {
   separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
-const isSelected = computed(() => activeIndex.value === currentIndex.value)
+const isSelected = computed(() => activeIndex.value === currentIndex)
 
 const computedClass = computed(() => {
   const { type = 'default' } = props
@@ -66,11 +66,10 @@ const computedClass = computed(() => {
 const computedDisabled = computed(() => props.disabled || props.type === 'separator')
 
 function onItemClick(ev: MouseEvent) {
-  const { as, ...option } = props
-  const index = currentIndex.value
+  const index = currentIndex
 
-  emits('click', ev, option, index)
-  onOptionClick?.(ev, option, index)
+  emits('click', ev, props, index)
+  onOptionClick?.(ev, props, index)
 }
 
 onMounted(() => {
@@ -78,7 +77,7 @@ onMounted(() => {
     return
   }
 
-  registerListItem(unrefElement(itemRef)!)
+  registerListItem(currentIndex, unrefElement(itemRef)!, props)
 })
 
 onUnmounted(() => {
@@ -86,7 +85,7 @@ onUnmounted(() => {
     return
   }
 
-  unregisterListItem(unrefElement(itemRef)!)
+  unregisterListItem(currentIndex)
 })
 </script>
 
