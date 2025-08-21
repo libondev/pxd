@@ -9,6 +9,7 @@ interface Props {
   width?: string | number
   options?: ListOption[]
   position?: ComponentPosition
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
@@ -20,10 +21,12 @@ withDefaults(
   {
     position: 'bottom-start',
     options: () => [],
+    closeOnPressEscape: true,
   },
 )
 
 const emits = defineEmits<{
+  change: [visible: boolean]
   select: ListOptionCallbackParams
 }>()
 
@@ -35,6 +38,7 @@ function closePopover() {
 }
 
 function onPopoverToggle(visible: boolean) {
+  emits('change', visible)
   popoverVisible.value = visible
 }
 
@@ -44,12 +48,14 @@ function onOptionClick(
   index: ListOptionCallbackParams[2],
 ) {
   emits('select', ev, item, index)
+  closePopover()
 }
 </script>
 
 <template>
   <PPopover
     ref="popoverRef"
+    enterable
     trigger="click"
     class="pxd-menu"
     scroll-hidden
@@ -57,9 +63,7 @@ function onOptionClick(
     :hide-delay="100"
     :position="position"
     :show-transition="false"
-    enterable
-    @show="onPopoverToggle(true)"
-    @hide="onPopoverToggle(false)"
+    @change="onPopoverToggle"
   >
     <slot />
 
@@ -67,9 +71,10 @@ function onOptionClick(
       <PList
         :width="width"
         :options="options"
-        :visible="popoverVisible"
+        :key-listener="popoverVisible"
+        :close-on-press-escape="closeOnPressEscape"
         class="list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
-        @hide="closePopover"
+        @escape="closePopover"
         @select="onOptionClick"
       >
         <slot name="items" />

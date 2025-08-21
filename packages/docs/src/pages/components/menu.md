@@ -71,6 +71,26 @@ const options = [
 </template>
 ```
 
+## Without closeOnPressEscape
+Pressing esc after setting will not close.
+
+```vue demo
+<script setup>
+const options = [
+  { label: 'One' },
+  { label: 'Two' },
+  { label: 'Three', disabled: true },
+  { label: 'Delete', type: 'error' },
+]
+</script>
+
+<template>
+  <PMenu :options="options" :close-on-press-escape="false">
+    <PButton variant="primary">Actions</PButton>
+  </PMenu>
+</template>
+```
+
 ## Menu position
 
 ```vue demo
