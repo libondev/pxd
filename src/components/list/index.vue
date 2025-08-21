@@ -26,7 +26,7 @@ const props = withDefaults(
   {
     options: () => [],
     keyListener: true,
-    closeOnPressEscape: true,
+    closeOnPressEscape: false,
   },
 )
 

@@ -2,6 +2,7 @@
 import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
 import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
 import { useListContext, useListItemIndexContext } from '../../contexts/list'
+import { unrefElement } from '../../utils/ref'
 
 interface Props {
   as?: ListOption['as']
@@ -69,15 +70,19 @@ function onItemClick(ev: MouseEvent) {
 }
 
 onMounted(() => {
-  if (registerListItem) {
-    registerListItem(itemRef.value!)
+  if (!registerListItem) {
+    return
   }
+
+  registerListItem(unrefElement(itemRef)!)
 })
 
 onUnmounted(() => {
-  if (unregisterListItem) {
-    unregisterListItem(itemRef.value!)
+  if (!unregisterListItem) {
+    return
   }
+
+  unregisterListItem(unrefElement(itemRef)!)
 })
 </script>
 
