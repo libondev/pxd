@@ -13,6 +13,7 @@ interface Props {
   width?: string | number
   options?: ListOption[]
   keyListener?: boolean
+  itemTransition?: boolean
   closeOnPressEscape?: boolean
 }
 
@@ -26,6 +27,7 @@ const props = withDefaults(
   {
     options: () => [],
     keyListener: true,
+    itemTransition: true,
     closeOnPressEscape: false,
   },
 )
@@ -214,7 +216,8 @@ onBeforeUnmount(() => {
   <ul
     role="list"
     tabindex="-1"
-    class="pxd-list max-w-full"
+    :data-transition="itemTransition"
+    class="pxd-list group/list max-w-full"
     :style="computedStyle"
     v-bind="$attrs"
     @pointerover="onPointerOver"

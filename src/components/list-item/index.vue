@@ -100,7 +100,7 @@ onUnmounted(() => {
     :data-index="currentIndex"
     :data-selected="isSelected"
     :data-disabled="computedDisabled"
-    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none motion-safe:transition-colors"
+    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none group-data-[transition=true]/list:motion-safe:transition-colors"
     :class="computedClass"
     @click.prevent.stop="onItemClick"
   >
