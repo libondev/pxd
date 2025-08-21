@@ -6,14 +6,14 @@ interface Options {
   delay?: number
 }
 
-interface ReturnType {
+interface UseDelayDestroyReturnType {
   render: Ref<boolean>
   visible: Ref<boolean>
   open: () => void
   close: () => void
 }
 
-export function useDelayDestroy(valueOrOptions: boolean | Options = {}): ReturnType {
+export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDelayDestroyReturnType {
   const {
     delay = 300,
     default: value = false,
@@ -24,7 +24,7 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): ReturnT
   const render = shallowRef(value)
   const visible = shallowRef(value)
 
-  let delayTimeoutId = -1
+  let delayTimeoutId: ReturnType<typeof setTimeout>
 
   const open = () => {
     clearTimeout(delayTimeoutId)
@@ -39,7 +39,7 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): ReturnT
   const close = () => {
     visible.value = false
 
-    delayTimeoutId = window.setTimeout(() => {
+    delayTimeoutId = setTimeout(() => {
       render.value = false
     }, delay)
   }

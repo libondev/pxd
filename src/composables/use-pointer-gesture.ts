@@ -195,8 +195,8 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
   let start: Point | null = null
   let last: Point | null = null
   let lockedAxis: Axis | null = null
-  let longPressTimer: number | null = null
   let activePointerId: number | null = null
+  let longPressTimer: ReturnType<typeof setTimeout> | null
   // 记录可能的触发类型（在释放时统一判定与回调）
   let mayTriggerKind: 'threshold' | 'longpress' | 'fling' | null = null
   // 记录当前绑定的元素与滚动容器，避免在 move 高频路径反复查询
@@ -329,7 +329,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
       return
     }
 
-    longPressTimer = window.setTimeout(() => {
+    longPressTimer = setTimeout(() => {
       isLongPressing.value = true
       options.onLongPress?.(publicState())
     }, lp)
