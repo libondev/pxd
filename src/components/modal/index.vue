@@ -42,8 +42,8 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'open': []
-  'close': []
+  'show': []
+  'hide': []
   'click-outside': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
@@ -73,11 +73,11 @@ function onUpdateModelValue(visible: boolean) {
 
 watch(() => isVisible.value, (visible) => {
   if (visible) {
-    emits('open')
+    emits('show')
     return
   }
 
-  emits('close')
+  emits('hide')
 })
 </script>
 
