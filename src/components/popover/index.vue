@@ -81,6 +81,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   'show': []
   'hide': []
+  'change': [visible: boolean]
   'trigger-click': [PointerEvent]
   'trigger-keydown': [KeyboardEvent]
 }>()
@@ -244,6 +245,7 @@ async function handlePopoverShow(immediate: boolean = false) {
       openPopover()
       resolve(true)
       emits('show')
+      emits('change', true)
     }, immediate ? 0 : props.showDelay)
   })
 
@@ -266,6 +268,7 @@ async function handlePopoverHide(immediate: boolean = false) {
       closePopover()
       resolve(true)
       emits('hide')
+      emits('change', false)
     }, immediate ? 0 : props.hideDelay)
   })
 
