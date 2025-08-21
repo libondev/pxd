@@ -96,7 +96,7 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
+        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] fixed z-10 flex h-max max-h-[min(800px,80vh)] w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
         :class="wrapperClass"
         :style="{ '--w': getCssUnitValue(width) }"
       >
@@ -152,9 +152,5 @@ watch(() => isVisible.value, (visible) => {
 .pxd-modal.pxd-transition--modal-leave-to {
   opacity: var(--o, 1);
   transform: var(--t, translate(0, 100%));
-}
-
-.pxd-modal {
-  max-height: min(800px, 80vh);
 }
 </style>
