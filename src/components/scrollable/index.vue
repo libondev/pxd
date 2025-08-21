@@ -300,8 +300,7 @@ defineExpose({
       <div
         v-if="scrollInfo.isScrollableY"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 px-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
-        style="width:calc(var(--scrollbar-size) + 4px)"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute w-(--scrollbar-size) touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
       >
         <div
           class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
@@ -313,8 +312,7 @@ defineExpose({
       <div
         v-if="scrollInfo.isScrollableX"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 py-0.5 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
-        style="height:calc(var(--scrollbar-size) + 4px)"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute h-(--scrollbar-size) touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
       >
         <div
           class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
