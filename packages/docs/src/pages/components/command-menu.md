@@ -7,14 +7,19 @@ Launch a set of actions as a full-screen overlay.
 <script setup>
 import { ref } from 'vue'
 
-const open = ref(false)
+const showCommandMenu = ref(false)
 </script>
 
 <template>
-  <PButton variant="primary" @click="open = true">
+  <PButton variant="primary" @click="showCommandMenu = true">
     Open Command Menu
   </PButton>
 
-  <PCommandMenu v-model="open" />
+  <PCommandMenu
+    v-model="showCommandMenu"
+    placeholder="What do you need?"
+  >
+    <PListItem v-for="i of 10" :key="i" :label="i" />
+  </PCommandMenu>
 </template>
 ```
