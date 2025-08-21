@@ -47,19 +47,23 @@ const itemTypeMap = {
   error: 'text-red-900 data-[selected=true]:bg-red-100',
   warning: 'text-amber-900 data-[selected=true]:bg-amber-100',
   default: 'text-foreground data-[selected=true]:bg-gray-alpha-100',
+  separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
 const isSelected = computed(() => activeIndex.value === currentIndex.value)
 
 const computedClass = computed(() => {
+  const { type = 'default' } = props
   const classes = ['cursor-pointer data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700', attrs.class]
 
-  if (props.type) {
-    classes.push(itemTypeMap[props.type])
+  if (type in itemTypeMap) {
+    classes.push(itemTypeMap[type])
   }
 
   return classes.join(' ')
 })
+
+const computedDisabled = computed(() => props.disabled || props.type === 'separator')
 
 function onItemClick(ev: MouseEvent) {
   const { as, ...option } = props
@@ -94,13 +98,13 @@ onUnmounted(() => {
     role="listitem"
     :data-type="type"
     :data-index="currentIndex"
-    :data-disabled="disabled"
     :data-selected="isSelected"
+    :data-disabled="computedDisabled"
     class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none motion-safe:transition-colors"
     :class="computedClass"
-    @click="onItemClick"
+    @click.prevent.stop="onItemClick"
   >
-    <slot>
+    <slot v-if="type !== 'separator'">
       <span class="gap-2 flex items-center">{{ label }}</span>
       <span v-if="description" class="text-sm text-foreground-secondary">{{ description }}</span>
     </slot>

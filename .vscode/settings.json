@@ -67,6 +67,7 @@
     "tsup",
     "turborepo",
     "uncapitalize",
+    "unref",
     "vite",
     "vitesse",
     "vitest"
