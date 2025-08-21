@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ListOptionCallbackParams } from '../../types/components/list'
-import { shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { debounce } from '../../utils/debounce'
 import { throttle } from '../../utils/throttle'
@@ -46,16 +46,25 @@ const emits = defineEmits<{
 
 const modelValue = useModelValue(props, emits)
 
-const searchKeyword = shallowRef('')
+const filterKeyword = shallowRef('')
+
+const matchFilterResult = computed(() => {
+  return filterKeyword.value
+})
 
 const onKeywordChange = throttle((ev: Event) => {
-  const targetValue = (ev.target as HTMLInputElement).value
-  searchKeyword.value = targetValue.trim()
+  const inputValue = (ev.target as HTMLInputElement).value.trim()
+
+  if (filterKeyword.value === inputValue) {
+    return
+  }
+
+  filterKeyword.value = inputValue
 }, 200, { edges: ['leading', 'trailing'] })
 
 const closeModal = debounce(() => {
   modelValue.value = false
-  searchKeyword.value = ''
+  filterKeyword.value = ''
   emits('hide')
 }, 500, { edges: ['leading'] })
 
@@ -87,7 +96,7 @@ function onListItemSelect(...args: ListOptionCallbackParams) {
     <template #header>
       <div class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b">
         <input
-          :value="searchKeyword"
+          :value="filterKeyword"
           :placeholder="placeholder"
           class="h-7 flex-1 appearance-none border-none bg-transparent text-foreground outline-none"
           @input="onKeywordChange"
@@ -96,7 +105,7 @@ function onListItemSelect(...args: ListOptionCallbackParams) {
         <PButton
           v-if="closeOnPressEscape"
           size="xs"
-          class="!px-0 text-xs"
+          class="!px-0 text-xs shrink-0"
           @click="closeModal"
         >
           Esc
@@ -105,8 +114,26 @@ function onListItemSelect(...args: ListOptionCallbackParams) {
     </template>
 
     <PList
+      v-if="matchFilterResult"
       :item-transition="false"
       :key-listener="modelValue"
+      @select="onListItemSelect"
+    >
+      <template v-if="matchFilterResult">
+        112
+      </template>
+
+      <template v-else>
+        <p class="py-7.5 text-sm text-center text-foreground-secondary">
+          No results found for <span class="text-foreground">{{ filterKeyword }}</span>
+        </p>
+      </template>
+    </PList>
+
+    <PList
+      v-else
+      :item-transition="false"
+      :key-listener="modelValue && !filterKeyword"
       @select="onListItemSelect"
     >
       <slot />
