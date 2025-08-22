@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionCallbackParams, ListOptionSelected } from '../../types/components/list'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
+import { nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
@@ -10,6 +10,7 @@ import PListItem from '../list-item/index.vue'
 import PScrollable from '../scrollable/index.vue'
 
 interface Props {
+  loop?: boolean
   width?: string | number
   options?: ListOption[]
   keyListener?: boolean
@@ -24,6 +25,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
+    loop: true,
     options: () => [],
     keyListener: true,
     itemTransition: true,
@@ -31,73 +33,25 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  toggle: [index: number]
-  select: ListOptionCallbackParams
+  toggle: []
+  select: [MouseEvent, ListOptionSelected]
 }>()
 
-interface CollectionOptionItem {
-  el: HTMLElement
-  data: ListOption
-}
+const activeValue = shallowRef('')
+const containerRef = shallowRef<HTMLElement>()
 
 const ITEM_CLASS = 'pxd-list-item'
-const ITEM_SELECTOR = `.${ITEM_CLASS}`
-
-const initialIndex = Number.NaN
-const increaseIndex = shallowRef(0)
-const activeIndex = shallowRef(initialIndex)
-
-const allItemsMap = new Map<number, CollectionOptionItem>()
-
-const computedStyle = computed(() => {
-  return {
-    width: getCssUnitValue(props.width),
-  }
-})
-
-function registerListItem(index: number, el: HTMLElement, data: ListOption): void {
-  allItemsMap.set(index, { el, data })
-}
-
-function unregisterListItem(index: number): void {
-  allItemsMap.delete(index)
-}
-
-// 跳过禁用的选项后，获取正确的索引
-function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
-  const nextIndex = dir === 'prev' ? index - 1 : index + 1
-  const length = allItemsMap.size
-
-  if (nextIndex < 0) {
-    return length - 1
-  }
-
-  if (nextIndex >= length) {
-    return 0
-  }
-
-  const item = allItemsMap.get(nextIndex)
-
-  if (item?.data.disabled) {
-    return getCorrectIndex(dir, nextIndex)
-  }
-
-  return nextIndex
-}
+const itemSelector = `.${ITEM_CLASS}:not([data-disabled="true"])`
 
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
-const FUNCTION_KEYS = ['Enter', 'Tab']
+const FUNCTION_KEYS = ['Enter', 'Tab', 'Home', 'End']
 const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
-const THROTTLE_INTERVALS = 100
+
+const listItemKeys: string[] = []
+const listItemsMap = new Map<string, HTMLElement>()
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
-  const count = allItemsMap.size
-
-  if (count === 0) {
-    return
-  }
-
   const { key } = ev
 
   if (key === 'Tab') {
@@ -105,34 +59,57 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   if (key === 'Enter') {
-    allItemsMap.get(activeIndex.value)?.el.click()
+    listItemsMap.get(activeValue.value)?.click()
     return
   }
+
+  let newActiveValue = ''
 
   if (PREV_KEYS.includes(key)) {
-    activeIndex.value = Object.is(activeIndex.value, initialIndex)
-      ? count - 1
-      : getCorrectIndex('prev', activeIndex.value)
-
-    emits('toggle', activeIndex.value)
+    if (activeValue.value) {
+      const index = listItemKeys.indexOf(activeValue.value)
+      if (props.loop) {
+        const prevIndex = (index - 1 + listItemKeys.length) % listItemKeys.length
+        newActiveValue = listItemKeys[prevIndex]
+      } else if (index > 0) {
+        newActiveValue = listItemKeys[index - 1]
+      }
+    } else {
+      newActiveValue = listItemKeys.at(-1)!
+    }
   } else if (NEXT_KEYS.includes(key)) {
-    activeIndex.value = Object.is(activeIndex.value, initialIndex)
-      ? 0
-      : getCorrectIndex('next', activeIndex.value)
-
-    emits('toggle', activeIndex.value)
+    if (activeValue.value) {
+      const index = listItemKeys.indexOf(activeValue.value)
+      if (props.loop) {
+        const nextIndex = (index + 1) % listItemKeys.length
+        newActiveValue = listItemKeys[nextIndex]
+      } else if (index < listItemKeys.length - 1) {
+        newActiveValue = listItemKeys[index + 1]
+      }
+    } else {
+      newActiveValue = listItemKeys.at(0)!
+    }
+  } else if (key === 'Home') {
+    newActiveValue = listItemKeys.at(0)!
+  } else if (key === 'End') {
+    newActiveValue = listItemKeys.at(-1)!
   }
-  // TODO: support [Home] and [End] keydown
 
-  if (allItemsMap.size <= 0 || activeIndex.value < 0) {
+  if (activeValue.value !== newActiveValue) {
+    emits('toggle')
+
+    activeValue.value = newActiveValue
+  }
+
+  if (!activeValue.value) {
     return
   }
 
-  allItemsMap.get(activeIndex.value)?.el.scrollIntoView({ block: 'nearest' })
-}, THROTTLE_INTERVALS, { edges: ['leading'] })
+  listItemsMap.get(activeValue.value)?.scrollIntoView({ block: 'nearest' })
+}, 100, { edges: ['leading'] })
 
 function onContainerKeydown(ev: KeyboardEvent) {
-  if (!props.keyListener) {
+  if (!props.keyListener || listItemKeys.length === 0) {
     return
   }
 
@@ -146,57 +123,60 @@ function onContainerKeydown(ev: KeyboardEvent) {
 
 function onPointerOver(ev: PointerEvent) {
   const target = ev.target as HTMLElement
-  const listItem = target.closest(ITEM_SELECTOR) as HTMLElement
-  const itemIndex = listItem?.dataset.index
+  const listItem = target.closest(`.${ITEM_CLASS}`) as HTMLElement
+  const itemValue = listItem?.dataset.value
 
-  if (!listItem || itemIndex === undefined) {
+  if (!listItem || itemValue === undefined) {
     return
   }
 
-  activeIndex.value = Number(itemIndex)
+  activeValue.value = itemValue
 }
 
-function onOptionClick(
-  ev: MouseEvent,
-  item: ListOptionSelected,
-  index: number,
-) {
+function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   const { as, onClick, ...option } = item
 
-  activeIndex.value = index
-  emits('select', ev, option, index)
+  activeValue.value = ''
+  emits('select', ev, option)
 }
 
 provideListContext({
-  activeIndex,
-  increaseIndex,
+  activeValue,
   onOptionClick,
-  registerListItem,
-  unregisterListItem,
 })
 
-onMounted(() => {
+onMounted(async () => {
   if (isServer) {
     return
   }
+
+  await nextTick()
+
+  Array.from(containerRef.value!.querySelectorAll<HTMLElement>(itemSelector)).forEach((el) => {
+    const key = el.dataset.value!
+    listItemsMap.set(key, el)
+    listItemKeys.push(key)
+  })
 
   on(document, 'keydown', onContainerKeydown)
 })
 
 onBeforeUnmount(() => {
-  off(document, 'keydown', onContainerKeydown)
+  listItemsMap.clear()
+  listItemKeys.splice(0)
 
-  allItemsMap.clear()
+  off(document, 'keydown', onContainerKeydown)
 })
 </script>
 
 <template>
   <ul
+    ref="containerRef"
     role="list"
     tabindex="-1"
     :data-transition="itemTransition"
     class="pxd-list group/list max-w-full"
-    :style="computedStyle"
+    :style="{ width: getCssUnitValue(width) }"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >

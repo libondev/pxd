@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
 import PList from '../list/index.vue'
@@ -27,7 +27,7 @@ withDefaults(
 
 const emits = defineEmits<{
   change: [visible: boolean]
-  select: ListOptionCallbackParams
+  select: [MouseEvent, ListOptionSelected]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
@@ -42,12 +42,8 @@ function onPopoverToggle(visible: boolean) {
   popoverVisible.value = visible
 }
 
-function onOptionClick(
-  ev: ListOptionCallbackParams[0],
-  item: ListOptionCallbackParams[1],
-  index: ListOptionCallbackParams[2],
-) {
-  emits('select', ev, item, index)
+function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
+  emits('select', ev, item)
   closePopover()
 }
 </script>

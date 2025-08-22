@@ -3,11 +3,8 @@ import type { ListOption } from '../types/components/list'
 import { createContext } from '../utils/context'
 
 export interface ListContext {
-  activeIndex: Ref<number>
-  increaseIndex: Ref<number>
+  activeValue: Ref<string>
   onOptionClick: ListOption['onClick']
-  registerListItem: (index: number, el: HTMLElement, data: ListOption) => void
-  unregisterListItem: (index: number) => void
 }
 
 export const [

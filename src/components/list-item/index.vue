@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
-import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
+import { computed, shallowRef } from 'vue'
 import { useListContext } from '../../contexts/list'
-import { unrefElement } from '../../utils/ref'
+import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   as?: ListOption['as']
@@ -27,20 +27,16 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  click: ListOptionCallbackParams
+  click: [MouseEvent, ListOptionSelected]
 }>()
 
 const {
-  activeIndex,
-  increaseIndex,
+  activeValue,
   onOptionClick,
-  registerListItem,
-  unregisterListItem,
 } = useListContext()
 
-const currentIndex = increaseIndex.value++
+const currentValue = getUniqueId()
 
-const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()
 
 const itemTypeMap = {
@@ -50,11 +46,12 @@ const itemTypeMap = {
   separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
-const isSelected = computed(() => activeIndex.value === currentIndex)
+const isSelected = computed(() => activeValue.value === currentValue)
+const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
 const computedClass = computed(() => {
   const { type = 'default' } = props
-  const classes = ['cursor-pointer data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700', attrs.class]
+  const classes = ['pxd-list-item h-10 gap-1 px-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700 group-data-[transition=true]/list:motion-safe:transition-colors']
 
   if (type in itemTypeMap) {
     classes.push(itemTypeMap[type])
@@ -63,30 +60,10 @@ const computedClass = computed(() => {
   return classes.join(' ')
 })
 
-const computedDisabled = computed(() => props.disabled || props.type === 'separator')
-
 function onItemClick(ev: MouseEvent) {
-  const index = currentIndex
-
-  emits('click', ev, props, index)
-  onOptionClick?.(ev, props, index)
+  emits('click', ev, props)
+  onOptionClick?.(ev, props)
 }
-
-onMounted(() => {
-  if (!registerListItem) {
-    return
-  }
-
-  registerListItem(currentIndex, unrefElement(itemRef)!, props)
-})
-
-onUnmounted(() => {
-  if (!unregisterListItem) {
-    return
-  }
-
-  unregisterListItem(currentIndex)
-})
 </script>
 
 <template>
@@ -96,10 +73,9 @@ onUnmounted(() => {
     tabindex="-1"
     role="listitem"
     :data-type="type"
-    :data-index="currentIndex"
+    :data-value="currentValue"
     :data-selected="isSelected"
-    :data-disabled="computedDisabled"
-    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none group-data-[transition=true]/list:motion-safe:transition-colors"
+    :data-disabled="isDisabled"
     :class="computedClass"
     @click.prevent.stop="onItemClick"
   >

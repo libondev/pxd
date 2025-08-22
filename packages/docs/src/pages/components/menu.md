@@ -13,8 +13,8 @@ const options = [
   { label: 'Delete', type: 'error' },
 ]
 
-function onSelect(ev, item, index) {
-  console.log(ev, item, index)
+function onSelect(ev, item) {
+  console.log(ev, item)
 }
 </script>
 
