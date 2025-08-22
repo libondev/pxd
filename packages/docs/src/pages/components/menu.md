@@ -7,11 +7,9 @@ Dropdown menu opened via button. Supports typeahead and keyboard navigation.
 <script setup>
 const options = [
   { label: 'One' },
-  { type: 'separator' },
   { label: 'Two' },
   { label: 'Three', disabled: true },
   { label: 'Remove', type: 'warning' },
-  { type: 'separator' },
   { label: 'Delete', type: 'error' },
 ]
 
@@ -48,7 +46,6 @@ const options = [
   { as: 'RouterLink', to: 'menu', label: 'One' },
   { as: 'RouterLink', to: 'menu', label: 'Two' },
   { as: 'RouterLink', to: 'menu', label: 'Three', disabled: true },
-  { type: 'separator' },
   { as: 'RouterLink', to: 'menu', label: 'Four', type: 'warning' },
   { as: 'RouterLink', to: 'menu', label: 'Delete', type: 'error' },
 ]

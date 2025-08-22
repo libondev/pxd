@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOption, ListOptionCallbackParams, SelectedListOption } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { provideListContext, provideListItemIndexContext } from '../../contexts/list'
+import { provideListContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
@@ -14,7 +14,6 @@ interface Props {
   options?: ListOption[]
   keyListener?: boolean
   itemTransition?: boolean
-  closeOnPressEscape?: boolean
 }
 
 defineOptions({
@@ -28,12 +27,10 @@ const props = withDefaults(
     options: () => [],
     keyListener: true,
     itemTransition: true,
-    closeOnPressEscape: false,
   },
 )
 
 const emits = defineEmits<{
-  escape: []
   toggle: [index: number]
   select: ListOptionCallbackParams
 }>()
@@ -90,7 +87,7 @@ function getCorrectIndex(dir: 'prev' | 'next', index: number): number {
 
 const PREV_KEYS = ['ArrowUp', 'ArrowLeft']
 const NEXT_KEYS = ['ArrowDown', 'ArrowRight']
-const FUNCTION_KEYS = ['Enter', 'Escape', 'Tab']
+const FUNCTION_KEYS = ['Enter', 'Tab']
 const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const THROTTLE_INTERVALS = 100
 
@@ -116,11 +113,6 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
     return
   }
 
-  if (key === 'Escape' && props.closeOnPressEscape) {
-    emits('escape')
-    return
-  }
-
   if (PREV_KEYS.includes(key)) {
     activeIndex.value = Object.is(activeIndex.value, initialIndex)
       ? count - 1
@@ -140,9 +132,7 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
     return
   }
 
-  allItemsMap.get(activeIndex.value)?.el.scrollIntoView({
-    block: 'nearest',
-  })
+  allItemsMap.get(activeIndex.value)?.el.scrollIntoView({ block: 'nearest' })
 }, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onContainerKeydown(ev: KeyboardEvent) {
@@ -158,12 +148,13 @@ function onContainerKeydown(ev: KeyboardEvent) {
 function onPointerOver(ev: PointerEvent) {
   const target = ev.target as HTMLElement
   const listItem = target.closest(ITEM_SELECTOR) as HTMLElement
+  const itemIndex = listItem?.dataset.index
 
-  if (!listItem || listItem.dataset.index === undefined) {
+  if (!listItem || itemIndex === undefined) {
     return
   }
 
-  activeIndex.value = Number(listItem.dataset.index)
+  activeIndex.value = Number(itemIndex)
 }
 
 function onOptionClick(
@@ -177,9 +168,9 @@ function onOptionClick(
   emits('select', ev, option, index)
 }
 
-provideListItemIndexContext(increaseIndex)
 provideListContext({
   activeIndex,
+  increaseIndex,
   onOptionClick,
   registerListItem,
   unregisterListItem,

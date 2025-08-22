@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOption, ListOptionCallbackParams } from '../../types/components/list'
 import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
-import { useListContext, useListItemIndexContext } from '../../contexts/list'
+import { useListContext } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
 
 interface Props {
@@ -32,13 +32,13 @@ const emits = defineEmits<{
 
 const {
   activeIndex,
+  increaseIndex,
   onOptionClick,
   registerListItem,
   unregisterListItem,
 } = useListContext()
 
-const listItemIndex = useListItemIndexContext()
-const currentIndex = listItemIndex.value++
+const currentIndex = increaseIndex.value++
 
 const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()

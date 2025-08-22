@@ -19,8 +19,8 @@ defineOptions({
 withDefaults(
   defineProps<Props>(),
   {
-    position: 'bottom-start',
     options: () => [],
+    position: 'bottom-start',
     closeOnPressEscape: true,
   },
 )
@@ -63,6 +63,7 @@ function onOptionClick(
     :hide-delay="100"
     :position="position"
     :show-transition="false"
+    :close-on-press-escape="closeOnPressEscape"
     @change="onPopoverToggle"
   >
     <slot />
@@ -72,7 +73,6 @@ function onOptionClick(
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
-        :close-on-press-escape="closeOnPressEscape"
         class="list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
         @escape="closePopover"
         @select="onOptionClick"
