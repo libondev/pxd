@@ -64,7 +64,7 @@ function onOptionClick(
     :position="position"
     :show-transition="false"
     :close-on-press-escape="closeOnPressEscape"
-    @change="onPopoverToggle"
+    @visible-change="onPopoverToggle"
   >
     <slot />
 

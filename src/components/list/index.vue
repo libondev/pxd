@@ -92,10 +92,6 @@ const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const THROTTLE_INTERVALS = 100
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
-  if (!props.keyListener) {
-    return
-  }
-
   const count = allItemsMap.size
 
   if (count === 0) {
@@ -136,9 +132,12 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 }, THROTTLE_INTERVALS, { edges: ['leading'] })
 
 function onContainerKeydown(ev: KeyboardEvent) {
+  if (!props.keyListener) {
+    return
+  }
+
   if (PREVENT_DEFAULT_KEYS.includes(ev.key)) {
     ev.preventDefault()
-    ev.stopPropagation()
   }
 
   ev.stopPropagation()

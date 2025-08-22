@@ -42,7 +42,7 @@ function onHide() {
   <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
     <PIntersectionObserver
       class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-200"
-      @change="onVisibleChange"
+      @visible-change="onVisibleChange"
       @before-show="onBeforeShow"
       @show="onShow"
       @before-hide="onBeforeHide"
@@ -84,7 +84,7 @@ function onVisibleChange(visible) {
       class="mt-60 max-w-full"
       width="100%"
       height="64px"
-      @change="onVisibleChange"
+      @visible-change="onVisibleChange"
      >
       <LazyLoadedComponent />
     </PIntersectionObserver>
