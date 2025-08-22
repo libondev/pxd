@@ -244,8 +244,6 @@ async function handlePopoverShow(immediate: boolean = false) {
       updateContentPosition()
       openPopover()
       resolve(true)
-      emits('show')
-      emits('visible-change', true)
     }, immediate ? 0 : props.showDelay)
   })
 
@@ -267,8 +265,6 @@ async function handlePopoverHide(immediate: boolean = false) {
     hidePopoverTimer = setTimeout(() => {
       closePopover()
       resolve(true)
-      emits('hide')
-      emits('visible-change', false)
     }, immediate ? 0 : props.hideDelay)
   })
 
@@ -606,6 +602,16 @@ watch(
     }
   },
 )
+
+watch(() => isVisible.value, (visible) => {
+  emits('visible-change', visible)
+
+  if (visible) {
+    emits('show')
+  } else {
+    emits('hide')
+  }
+})
 
 watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
