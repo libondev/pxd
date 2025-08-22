@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionCallbackParams, SelectedListOption } from '../../types/components/list'
+import type { ListOption, ListOptionCallbackParams, ListOptionSelected } from '../../types/components/list'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
 import { off, on } from '../../utils/events'
@@ -159,7 +159,7 @@ function onPointerOver(ev: PointerEvent) {
 
 function onOptionClick(
   ev: MouseEvent,
-  item: SelectedListOption,
+  item: ListOptionSelected,
   index: number,
 ) {
   const { as, onClick, ...option } = item

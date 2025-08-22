@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { ListOptionCallbackParams } from '../../types/components/list'
-import { computed, shallowRef } from 'vue'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { provideCommandMenuContext } from '../../contexts/command-menu'
 import { debounce } from '../../utils/debounce'
 import { throttle } from '../../utils/throttle'
 import PButton from '../button/index.vue'
@@ -39,13 +40,14 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   'update:modelValue': [boolean]
-  'select': ListOptionCallbackParams
+  'select': [MouseEvent, ListOptionSelected]
   'show': []
   'hide': []
 }>()
 
 const modelValue = useModelValue(props, emits)
 
+const allItems = new Set<ListOption>()
 const filterKeyword = shallowRef('')
 
 const matchFilterResult = computed(() => {
@@ -72,13 +74,30 @@ function onShowModal() {
   emits('show')
 }
 
-function onListItemSelect(...args: ListOptionCallbackParams) {
-  emits('select', ...args)
+function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
+  emits('select', ev, item)
 
   if (props.closeOnSelectItem) {
     closeModal()
   }
 }
+
+function registerCommandMenuItem(data: ListOption) {
+  allItems.add(data)
+}
+
+function unregisterCommandMenuItem(data: ListOption) {
+  allItems.delete(data)
+}
+
+provideCommandMenuContext({
+  registerCommandMenuItem,
+  unregisterCommandMenuItem,
+})
+
+onBeforeUnmount(() => {
+  allItems.clear()
+})
 </script>
 
 <template>
@@ -114,12 +133,12 @@ function onListItemSelect(...args: ListOptionCallbackParams) {
     </template>
 
     <PList
-      v-if="matchFilterResult"
+      v-if="filterKeyword"
       :item-transition="false"
       :key-listener="modelValue"
       @select="onListItemSelect"
     >
-      <template v-if="matchFilterResult">
+      <template v-if="matchFilterResult.length">
         112
       </template>
 
