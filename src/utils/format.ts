@@ -22,6 +22,11 @@ export function uncapitalize(text: string) {
   return text.charAt(0).toLowerCase() + text.slice(1).replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
+/** 'kabab-case' -> 'Kabab Case' */
+export function humanize(text: string) {
+  return text.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+}
+
 // 某些没有主动声明的二次封装组件中透传 boolean 类型的值可能会是一个空字符串
 export function isTruthyProp(value: unknown) {
   return value || value === ''
