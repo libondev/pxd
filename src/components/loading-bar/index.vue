@@ -35,21 +35,23 @@ const props = withDefaults(
   },
 )
 
+let hideTimerId: ReturnType<typeof setTimeout>
 let prevTimestamp = 0
 let prevAnimationKey = 0
 
-type Status = 'idle' | 'running' | 'error' | 'finish'
+type Status = 'running' | 'error' | 'finish'
 
-const status = shallowRef<Status>('idle')
+const status = shallowRef<Status>('finish')
+const hidden = shallowRef(false)
 const progress = shallowRef(0)
 
 const computedClass = computed(() => {
   const _status = status.value
 
   return {
-    'bg-primary': _status === 'running',
-    'bg-red-900 animate-[loading-bar-hide_1s_forwards]': _status === 'error',
-    'bg-primary animate-[loading-bar-hide_1s_forwards]': _status === 'finish',
+    'opacity-0': hidden.value,
+    'bg-primary': _status === 'running' || _status === 'finish',
+    'bg-red-900': _status === 'error',
   }
 })
 
@@ -87,7 +89,7 @@ function increaseProgress(n?: number) {
   const threshold = props.trickleThreshold || 200
 
   if (delta < threshold && props.trickle) {
-    prevAnimationKey = requestAnimationFrame(increaseProgress)
+    prevAnimationKey = requestAnimationFrame(() => increaseProgress())
     return
   }
 
@@ -99,20 +101,17 @@ function increaseProgress(n?: number) {
     return
   }
 
-  prevAnimationKey = requestAnimationFrame(increaseProgress)
-}
-
-function onAnimationEnd() {
-  status.value = 'idle'
-  progress.value = 0
+  prevAnimationKey = requestAnimationFrame(() => increaseProgress())
 }
 
 function onStartProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (!detail || detail.group !== props.group) {
+  if (detail.group !== props.group) {
     return
   }
 
+  hidden.value = false
   status.value = 'running'
+  clearTimeout(hideTimerId)
 
   // Set the initial value to avoid starting with nothing when manual control
   progress.value = props.minimum
@@ -123,31 +122,41 @@ function onStartProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
 
   prevTimestamp = 0
 
-  requestAnimationFrame(increaseProgress)
+  requestAnimationFrame(() => increaseProgress())
 }
 
 function onErrorProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (!detail || detail.group !== props.group) {
+  if (detail.group !== props.group) {
     return
   }
 
   cancelAnimationFrame(prevAnimationKey)
+  clearTimeout(hideTimerId)
   status.value = 'error'
+  hidden.value = false
   progress.value = 1
+  hideTimerId = setTimeout(() => {
+    hidden.value = true
+  }, 300)
 }
 
 function onFinishProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (!detail || detail.group !== props.group) {
+  if (detail.group !== props.group) {
     return
   }
 
   cancelAnimationFrame(prevAnimationKey)
+  clearTimeout(hideTimerId)
   status.value = 'finish'
+  hidden.value = false
   progress.value = 1
+  hideTimerId = setTimeout(() => {
+    hidden.value = true
+  }, 300)
 }
 
 function onIncreaseProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (!detail || detail.group !== props.group) {
+  if (detail.group !== props.group) {
     return
   }
 
@@ -180,20 +189,7 @@ onBeforeUnmount(() => {
         class="pxd-loading-bar--inner size-full origin-left rounded-r-full motion-safe:transition-all"
         :class="computedClass"
         :style="{ transform: `scaleX(${progress})` }"
-        @animationend="onAnimationEnd"
       />
     </div>
   </PTeleport>
 </template>
-
-<style>
-@keyframes loading-bar-hide {
-  0%, 25% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-</style>

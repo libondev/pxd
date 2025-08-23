@@ -28,18 +28,18 @@ export function useLoadingBar(options: Options = {}) {
   window.dispatchEvent(new CustomEvent(event, { detail: data }))
 }
 
-useLoadingBar.start = function (group?: string) {
+useLoadingBar.start = function (group: string = 'default') {
   useLoadingBar({ type: 'start', group })
 }
 
-useLoadingBar.error = function (group?: string) {
+useLoadingBar.error = function (group: string = 'default') {
   useLoadingBar({ type: 'error', group })
 }
 
-useLoadingBar.finish = function (group?: string) {
+useLoadingBar.finish = function (group: string = 'default') {
   useLoadingBar({ type: 'finish', group })
 }
 
-useLoadingBar.increase = function (group?: string, value?: number) {
+useLoadingBar.increase = function (group: string = 'default', value?: number) {
   useLoadingBar({ type: 'increase', group, value })
 }
