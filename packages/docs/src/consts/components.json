@@ -104,6 +104,10 @@
     "name": "link-button"
   },
   {
+    "camelized": "LoadingBar",
+    "name": "loading-bar"
+  },
+  {
     "camelized": "LoadingDots",
     "name": "loading-dots"
   },
