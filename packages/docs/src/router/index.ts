@@ -1,3 +1,4 @@
+import { useLoadingBar } from 'pxd'
 import { setupLayouts } from 'virtual:meta-layouts'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
@@ -33,6 +34,15 @@ const router = createRouter({
       left: 0,
     }
   },
+})
+
+router.beforeEach((to, from, next) => {
+  useLoadingBar.start('website')
+  next()
+})
+
+router.afterEach(() => {
+  useLoadingBar.finish('website')
 })
 
 if (import.meta.hot) {
