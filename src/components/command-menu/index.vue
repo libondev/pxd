@@ -48,10 +48,11 @@ const emits = defineEmits<{
 
 const uniqueId = getUniqueId()
 
-const listRef = shallowRef<InstanceType<typeof PList>>()
-
 const modelValue = useModelValue(props, emits)
 
+const listRef = shallowRef<InstanceType<typeof PList>>()
+
+const isEmptyResult = shallowRef(false)
 const filterKeyword = shallowRef('')
 const filterKeywordRegex = computed(() => {
   if (!filterKeyword.value) {
@@ -75,6 +76,7 @@ const onKeywordChange = throttle(async (ev: Event) => {
   await nextTick()
   list.updateListItem()
   list.setActiveValue()
+  isEmptyResult.value = list.isNoVisibleItem()
 }, 300, { edges: ['leading', 'trailing'] })
 
 const closeModal = debounce(() => {
@@ -154,7 +156,7 @@ provideCommandMenuContext({
     >
       <slot />
 
-      <p class="py-7.5 text-sm hidden text-center text-foreground-secondary">
+      <p v-if="isEmptyResult" class="py-8 text-sm text-center text-foreground-secondary">
         No results found for <span class="text-foreground">"{{ filterKeyword }}"</span>
       </p>
     </PList>

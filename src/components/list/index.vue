@@ -151,6 +151,10 @@ function updateListItem() {
   })
 }
 
+function isNoVisibleItem() {
+  return listItemsMap.size === 0
+}
+
 function setActiveValue(newValue: string = '') {
   activeValue.value = newValue
 }
@@ -186,6 +190,7 @@ onBeforeUnmount(() => {
 defineExpose({
   setActiveValue,
   updateListItem,
+  isNoVisibleItem,
   setActiveValueToFirst,
 })
 </script>
@@ -196,7 +201,7 @@ defineExpose({
     role="list"
     tabindex="-1"
     :data-transition="itemTransition"
-    class="pxd-list group/list max-w-full"
+    class="pxd-list group/list max-w-full outline-none"
     :style="{ width: getCssUnitValue(width) }"
     v-bind="$attrs"
     @pointerover="onPointerOver"
