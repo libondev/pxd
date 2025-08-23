@@ -31,7 +31,11 @@ function openCommandMenu() {
 }
 
 function onKeydown(ev: KeyboardEvent) {
-  if (!ev.ctrlKey || ev.key !== 'k') {
+  if (!(ev.ctrlKey || ev.metaKey) || ev.key !== 'k') {
+    return
+  }
+
+  if (!showSearchInput.value) {
     return
   }
 
