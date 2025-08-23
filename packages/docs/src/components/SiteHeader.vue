@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
+import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
+import { off, on } from 'pxd/utils/event'
+import { isServer } from 'pxd/utils/is'
+import { asideMenus } from '../consts/components'
 
 const menus = [
   {
@@ -16,6 +20,33 @@ const menus = [
     icon: LogoGithubIcon,
   },
 ] as const
+
+const showCommandMenu = shallowRef(false)
+
+function openCommandMenu() {
+  showCommandMenu.value = true
+}
+
+function onKeydown(ev: KeyboardEvent) {
+  if (!ev.ctrlKey || ev.key !== 'k') {
+    return
+  }
+
+  ev.preventDefault()
+  openCommandMenu()
+}
+
+onMounted(() => {
+  if (isServer) {
+    return
+  }
+
+  on(window, 'keydown', onKeydown)
+})
+
+onBeforeUnmount(() => {
+  off(window, 'keydown', onKeydown)
+})
 </script>
 
 <template>
@@ -30,6 +61,14 @@ const menus = [
 
       <nav class="sm:border-r ml-auto h-full">
         <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
+          <li>
+            <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
+              <MagnifyingGlassIcon />
+              <span class="sm:block ml-1.5 hidden">Search</span>
+              <PKbd class="sm:!inline-flex ml-1.5 !hidden" ctrl label="K" size="sm" />
+            </PButton>
+          </li>
+
           <li v-for="menu in menus" :key="menu.href">
             <PLinkButton variant="ghost" class="sm:px-3 h-full" shape="square" :target="menu.target" :href="menu.href">
               <Component :is="menu.icon" />
@@ -42,6 +81,12 @@ const menus = [
           </li>
         </ul>
       </nav>
+
+      <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
+        <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
+          <PCommandMenuItem v-for="e of i.children" :key="e.path" :label="e.label" as="RouterLink" :to="e.path" />
+        </PCommandMenuGroup>
+      </PCommandMenu>
     </div>
   </header>
 </template>
