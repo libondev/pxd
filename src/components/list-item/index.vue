@@ -50,7 +50,7 @@ const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
 const computedClass = computed(() => {
   const { type = 'default' } = props
-  const classes = ['pxd-list-item h-10 gap-1 px-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700 group-data-[transition=true]/list:motion-safe:transition-colors']
+  const classes = ['pxd-list-item h-10 gap-2 px-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700 group-data-[transition=true]/list:motion-safe:transition-colors']
 
   if (type in itemTypeMap) {
     classes.push(itemTypeMap[type])
