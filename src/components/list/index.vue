@@ -140,6 +140,25 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   emits('select', ev, option)
 }
 
+function updateListItem() {
+  listItemsMap.clear()
+  listItemKeys.splice(0)
+
+  Array.from(containerRef.value!.querySelectorAll<HTMLElement>(itemSelector)).forEach((el) => {
+    const key = el.dataset.value!
+    listItemsMap.set(key, el)
+    listItemKeys.push(key)
+  })
+}
+
+function setActiveValue(newValue: string = '') {
+  activeValue.value = newValue
+}
+
+function setActiveValueToFirst() {
+  setActiveValue(listItemKeys[0])
+}
+
 provideListContext({
   activeValue,
   onOptionClick,
@@ -152,11 +171,7 @@ onMounted(async () => {
 
   await nextTick()
 
-  Array.from(containerRef.value!.querySelectorAll<HTMLElement>(itemSelector)).forEach((el) => {
-    const key = el.dataset.value!
-    listItemsMap.set(key, el)
-    listItemKeys.push(key)
-  })
+  updateListItem()
 
   on(document, 'keydown', onContainerKeydown)
 })
@@ -166,6 +181,12 @@ onBeforeUnmount(() => {
   listItemKeys.splice(0)
 
   off(document, 'keydown', onContainerKeydown)
+})
+
+defineExpose({
+  setActiveValue,
+  updateListItem,
+  setActiveValueToFirst,
 })
 </script>
 

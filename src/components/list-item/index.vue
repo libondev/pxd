@@ -8,7 +8,6 @@ interface Props {
   as?: ListOption['as']
   type?: ListOption['type']
   label?: ListOption['label']
-  value?: ListOption['value']
   disabled?: ListOption['disabled']
   description?: ListOption['description']
 }
@@ -35,7 +34,7 @@ const {
   onOptionClick,
 } = useListContext()
 
-const currentValue = getUniqueId()
+const currentValue = String(props.label) || getUniqueId()
 
 const itemRef = shallowRef<HTMLElement>()
 

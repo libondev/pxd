@@ -69,7 +69,7 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
-        class="list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
+        class="max-h-68 list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
         @escape="closePopover"
         @select="onOptionClick"
       >
