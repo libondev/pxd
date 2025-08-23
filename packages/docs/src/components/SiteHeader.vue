@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
-import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
+import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass-small'
 import { off, on } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="top-0 sm:border-t-0 sticky z-10 border-y bg-background-100 select-none">
-    <div class="md:max-w-screen-2xl h-12 mx-auto flex w-full max-w-full items-center">
+    <div class="md:max-w-screen-2xl h-12 mx-auto flex w-full max-w-full items-center justify-between">
       <h2 class="sm:w-55 sm:border-x h-full">
         <RouterLink to="/" class="px-3 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
           <SiteLogo class="mr-2 text-2xl" />
@@ -59,9 +59,23 @@ onBeforeUnmount(() => {
         </RouterLink>
       </h2>
 
-      <nav class="sm:border-r ml-auto h-full">
+      <div class="px-3 sm:block hidden">
+        <PButton class="px-2 text-foreground-secondary" size="sm" @click="openCommandMenu">
+          <template #prefix>
+            <MagnifyingGlassIcon />
+          </template>
+
+          <span class="pr-6">Search</span>
+
+          <template #suffix>
+            <PKbd ctrl label="K" size="sm" />
+          </template>
+        </PButton>
+      </div>
+
+      <nav class="sm:border-r ml-auto flex h-full items-center">
         <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
-          <li>
+          <li class="sm:hidden">
             <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
               <MagnifyingGlassIcon />
               <span class="sm:block ml-1.5 hidden">Search</span>
