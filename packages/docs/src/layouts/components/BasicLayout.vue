@@ -27,7 +27,7 @@ const {
 
 const route = useRoute()
 
-const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
+const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.MD_UP)
 
 const showViewSource = computed(() => {
   return route.name?.startsWith('/components') && !route.name?.endsWith('/')
@@ -77,14 +77,14 @@ if (!isServer) {
 
 <template>
   <div v-if="isSmUp" class="left-0 top-0 bottom-0 absolute">
-    <aside class="sidebar top-12 bottom-0 w-55 sm:border-x sm:translate-x-0 sm:border-r fixed z-1 mt-px -translate-x-full bg-background-100">
+    <aside class="sidebar top-12 bottom-0 w-58 sm:border-x sm:translate-x-0 sm:border-r fixed z-1 mt-px -translate-x-full bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
     </aside>
   </div>
 
-  <div class="sm:pl-55 sm:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
+  <div class="md:pl-58 sm:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
     <main class="prose p-6 py-12 sm:px-16 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
