@@ -27,7 +27,7 @@ const props = withDefaults(
 
 const SIZES = {
   xs: 'text-xs [--mt:2px]',
-  sm: 'text-[13px] [--mt:2px]',
+  sm: 'text-13px [--mt:2px]',
   md: 'text-sm [--mt:2px]',
   lg: 'text-base [--mt:4px]',
 }

@@ -61,7 +61,7 @@ const computedDisabled = computed(() => {
 
 const mergedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-[13px] break-words whitespace-pre-line shadow-border-tooltip bg-(--c)',
+    'px-3 py-2 rounded-md text-13px break-words whitespace-pre-line shadow-border-tooltip bg-(--c)',
     computedVariant.value.text,
     props.contentClass,
   ].join(' ')
