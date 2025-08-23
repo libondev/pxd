@@ -184,7 +184,12 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div aria-hidden="true" class="pxd-loading-bar top-0 left-0 right-0 h-0.5 pointer-events-none fixed z-10 max-w-full overflow-hidden" v-bind="$attrs">
+    <div
+      aria-hidden="true"
+      class="pxd-loading-bar top-0 left-0 right-0 h-0.5 pointer-events-none z-10 max-w-full overflow-hidden"
+      :class="to ? 'absolute' : 'fixed'"
+      v-bind="$attrs"
+    >
       <div
         class="pxd-loading-bar--inner size-full origin-left rounded-r-full motion-safe:transition-all"
         :class="computedClass"
