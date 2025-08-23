@@ -146,7 +146,7 @@ provideCommandMenuContext({
     <PList
       ref="listRef"
       :loop="false"
-      class="max-h-110"
+      class="sm:h-auto sm:max-h-110 h-[70vh]"
       :item-transition="false"
       :key-listener="modelValue"
       @select="onListItemSelect"

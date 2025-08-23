@@ -201,7 +201,7 @@ defineExpose({
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
-    <PScrollable class="p-2 max-h-inherit rounded-inherit" fader-direction="vertical">
+    <PScrollable class="p-2 h-full max-h-inherit rounded-inherit" fader-direction="vertical">
       <slot>
         <PListItem
           v-for="(option, index) in options"

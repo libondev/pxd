@@ -39,9 +39,9 @@ const currentValue = String(props.label) || getUniqueId()
 const itemRef = shallowRef<HTMLElement>()
 
 const itemTypeMap = {
-  error: 'text-red-900 data-[selected=true]:bg-red-100',
-  warning: 'text-amber-900 data-[selected=true]:bg-amber-100',
-  default: 'text-foreground data-[selected=true]:bg-gray-alpha-100',
+  error: 'text-red-900 pointer-coarse:active:bg-red-100 pointer-fine:data-[selected=true]:bg-red-100',
+  warning: 'text-amber-900 pointer-coarse:active:bg-amber-100 pointer-fine:data-[selected=true]:bg-amber-100',
+  default: 'text-foreground pointer-coarse:active:bg-gray-alpha-100 pointer-fine:data-[selected=true]:bg-gray-alpha-100',
   separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
