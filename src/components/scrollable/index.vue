@@ -299,8 +299,7 @@ function scrollTo(top: number, left: number) {
 }
 
 if (props.scrollbar) {
-  useResizeObserver(contentRef, throttledUpdate)
-  useResizeObserver(wrapperRef, throttledUpdate)
+  useResizeObserver([wrapperRef, contentRef], throttledUpdate)
 }
 
 onMounted(async () => {

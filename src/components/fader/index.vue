@@ -2,6 +2,7 @@
 import type { ComponentDirection } from '../../types/shared/props'
 import type { Nullable } from '../../types/shared/utils'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useResizeObserver } from '../../composables/use-browser-observer'
 import { off, on } from '../../utils/events'
 import { getCssUnitValue } from '../../utils/format'
 import { throttleByRaf } from '../../utils/throttle'
@@ -39,8 +40,8 @@ const computedStyle = computed(() => ({
 const DIFF_THRESHOLD = 1
 
 const onContainerScroll = throttleByRaf(() => {
-  const { size = 16 } = props
-  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = props.container!
+  const { size = 16, container } = props
+  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container!
 
   fader.value = {
     left: scrollLeft >= size,
@@ -49,6 +50,8 @@ const onContainerScroll = throttleByRaf(() => {
     bottom: scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD,
   }
 })
+
+useResizeObserver(() => props.container, onContainerScroll)
 
 watch(() => props.container, (container, oldDom) => {
   if (oldDom) {
@@ -61,7 +64,6 @@ watch(() => props.container, (container, oldDom) => {
     return
   }
 
-  onContainerScroll()
   on(container, 'scroll', onContainerScroll)
 })
 
