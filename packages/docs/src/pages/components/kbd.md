@@ -5,7 +5,7 @@ Display keyboard input that triggers an action.
 
 ```vue demo
 <template>
-  <PStack>
+  <PStack gap="2">
     <PKbd meta />
     <PKbd shift />
     <PKbd alt />
@@ -22,10 +22,14 @@ Display keyboard input that triggers an action.
 </template>
 ```
 
-## Small
+## Sizes
 
 ```vue demo
 <template>
-  <PKbd small>/</PKbd>
+  <PStack align="center" gap="2">
+    <PKbd size="sm">P</PKbd>
+    <PKbd size="md">P</PKbd>
+    <PKbd size="lg">P</PKbd>
+  </PStack>
 </template>
 ```
