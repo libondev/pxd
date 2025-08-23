@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../../types/components/list'
-import { computed, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideCommandMenuContext } from '../../contexts/command-menu'
 import { debounce } from '../../utils/debounce'
@@ -72,8 +72,9 @@ const onKeywordChange = throttle(async (ev: Event) => {
     return
   }
 
+  await nextTick()
   list.updateListItem()
-  list.setActiveValueToFirst()
+  list.setActiveValue()
 }, 300, { edges: ['leading', 'trailing'] })
 
 const closeModal = debounce(() => {
