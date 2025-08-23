@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { shallowRef } from 'vue'
+import { nextTick, shallowRef } from 'vue'
 
 interface Options {
   default?: boolean
@@ -31,7 +31,7 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
 
     render.value = true
 
-    Promise.resolve().then(() => {
+    nextTick().then(() => {
       visible.value = true
     })
   }
