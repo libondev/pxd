@@ -45,7 +45,8 @@ const TYPE_ICONS = {
   loading: LoadingIcon,
 }
 
-const ITEM_SELECTOR = '.pxd-message--item'
+const ITEM_CLASSES = 'pxd-message--item'
+const ITEM_SELECTOR = `.${ITEM_CLASSES}`
 
 const groupMessages = ref<MessageItem[]>([])
 
@@ -286,7 +287,7 @@ defineExpose({
           aria-live="polite"
           :data-key="item.key"
           :data-type="item.type"
-          :class="[ITEM_SELECTOR, item.class, { 'pr-9 pointer-events-auto': item.closeable }]"
+          :class="[ITEM_CLASSES, item.class, { 'pr-9 pointer-events-auto': item.closeable }]"
           class="py-2 px-3 text-sm relative flex w-max max-w-full rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal"
         >
           <Component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
