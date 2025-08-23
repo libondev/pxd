@@ -19,7 +19,18 @@ const showCommandMenu = ref(false)
     v-model="showCommandMenu"
     placeholder="What do you need?"
   >
-    <PListItem v-for="i of 10" :key="i" :label="i" />
+    <PCommandMenuGroup label="Suggestions">
+      <PCommandMenuItem label="Figma Import" />
+    </PCommandMenuGroup>
+
+    <PCommandMenuGroup label="Commands">
+      <PCommandMenuItem label="Import Extension" />
+      <PCommandMenuItem label="Manage Extensions" />
+    </PCommandMenuGroup>
+
+    <PCommandMenuGroup label="Collaboration">
+      <PCommandMenuItem label="Flags Explorer" />
+    </PCommandMenuGroup>
   </PCommandMenu>
 </template>
 ```

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionSelected } from '../../types/components/list'
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import type { ListOptionSelected } from '../../types/components/list'
+import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideCommandMenuContext } from '../../contexts/command-menu'
 import { debounce } from '../../utils/debounce'
 import { throttle } from '../../utils/throttle'
+import { getUniqueId } from '../../utils/uid'
 import PButton from '../button/index.vue'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
@@ -45,24 +46,35 @@ const emits = defineEmits<{
   'hide': []
 }>()
 
+const uniqueId = getUniqueId()
+
+const listRef = shallowRef<InstanceType<typeof PList>>()
+
 const modelValue = useModelValue(props, emits)
 
-const allItems = new Set<ListOption>()
 const filterKeyword = shallowRef('')
+const filterKeywordRegex = computed(() => {
+  if (!filterKeyword.value) {
+    return null
+  }
 
-const matchFilterResult = computed(() => {
-  return filterKeyword.value
+  return new RegExp(filterKeyword.value, 'i')
 })
 
-const onKeywordChange = throttle((ev: Event) => {
+const onKeywordChange = throttle(async (ev: Event) => {
   const inputValue = (ev.target as HTMLInputElement).value.trim()
 
-  if (filterKeyword.value === inputValue) {
+  filterKeyword.value = inputValue
+
+  const list = listRef.value
+
+  if (!list) {
     return
   }
 
-  filterKeyword.value = inputValue
-}, 200, { edges: ['leading', 'trailing'] })
+  list.updateListItem()
+  list.setActiveValueToFirst()
+}, 300, { edges: ['leading', 'trailing'] })
 
 const closeModal = debounce(() => {
   modelValue.value = false
@@ -82,21 +94,9 @@ function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
   }
 }
 
-function registerCommandMenuItem(data: ListOption) {
-  allItems.add(data)
-}
-
-function unregisterCommandMenuItem(data: ListOption) {
-  allItems.delete(data)
-}
-
 provideCommandMenuContext({
-  registerCommandMenuItem,
-  unregisterCommandMenuItem,
-})
-
-onBeforeUnmount(() => {
-  allItems.clear()
+  filterKeyword,
+  filterKeywordRegex,
 })
 </script>
 
@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
     v-model="modelValue"
     width="640px"
     class="pxd-command-menu"
-    content-class="!p-0 max-h-110"
+    content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/6 sm:translate-y-0"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
@@ -113,10 +113,21 @@ onBeforeUnmount(() => {
     @hide="closeModal"
   >
     <template #header>
-      <div class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b">
+      <label :for="uniqueId" class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b">
         <input
+          :id="uniqueId"
           :value="filterKeyword"
           :placeholder="placeholder"
+          aria-autocomplete="list"
+          :aria-controls="uniqueId"
+          :aria-labelledby="uniqueId"
+          aria-expanded="true"
+          autocomplete="off"
+          autocorrect="off"
+          role="combobox"
+          spellcheck="false"
+          type="text"
+          name="command-menu-filter-input"
           class="h-7 flex-1 appearance-none border-none bg-transparent text-foreground outline-none"
           @input="onKeywordChange"
         >
@@ -129,33 +140,22 @@ onBeforeUnmount(() => {
         >
           Esc
         </PButton>
-      </div>
+      </label>
     </template>
 
     <PList
-      v-if="filterKeyword"
+      ref="listRef"
+      :loop="false"
+      class="max-h-110"
       :item-transition="false"
       :key-listener="modelValue"
       @select="onListItemSelect"
     >
-      <template v-if="matchFilterResult.length">
-        112
-      </template>
-
-      <template v-else>
-        <p class="py-7.5 text-sm text-center text-foreground-secondary">
-          No results found for <span class="text-foreground">{{ filterKeyword }}</span>
-        </p>
-      </template>
-    </PList>
-
-    <PList
-      v-else
-      :item-transition="false"
-      :key-listener="modelValue && !filterKeyword"
-      @select="onListItemSelect"
-    >
       <slot />
+
+      <p class="py-7.5 text-sm hidden text-center text-foreground-secondary">
+        No results found for <span class="text-foreground">"{{ filterKeyword }}"</span>
+      </p>
     </PList>
 
     <slot name="footer" />

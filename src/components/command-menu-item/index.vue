@@ -1,44 +1,31 @@
 <script lang="ts" setup>
 import type { ListOption } from '../../types/components/list'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useCommandMenuContext } from '../../contexts/command-menu'
+import PListItem from '../list-item/index.vue'
 
 interface Props {
   as?: ListOption['as']
   type?: ListOption['type']
   label?: ListOption['label']
-  value?: ListOption['value']
   disabled?: ListOption['disabled']
   description?: ListOption['description']
 }
 
 defineOptions({
   name: 'PCommandMenuItem',
-  inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'li',
-    type: 'default',
-    disabled: false,
-  },
-)
+const props = defineProps<Props>()
 
-const {
-  registerCommandMenuItem,
-  unregisterCommandMenuItem,
-} = useCommandMenuContext()
+const commandMenuContext = useCommandMenuContext()
 
-onMounted(() => {
-  registerCommandMenuItem(props)
-})
-
-onBeforeUnmount(() => {
-  unregisterCommandMenuItem(props)
+const isVisible = computed(() => {
+  return !commandMenuContext?.filterKeyword.value
+    || commandMenuContext?.filterKeywordRegex.value?.test(String(props.label))
 })
 </script>
 
-<!-- eslint-disable-next-line vue/valid-template-root -->
-<template />
+<template>
+  <PListItem v-if="isVisible" v-bind="props" />
+</template>

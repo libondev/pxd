@@ -1,9 +1,9 @@
-import type { ListOption } from '../types/components/list'
+import type { Ref } from 'vue'
 import { createContext } from '../utils/context'
 
 export interface CommandMenuContext {
-  registerCommandMenuItem: (data: ListOption) => void
-  unregisterCommandMenuItem: (data: ListOption) => void
+  filterKeyword: Ref<string>
+  filterKeywordRegex: Ref<RegExp | null>
 }
 
 export const [
