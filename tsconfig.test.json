@@ -3,7 +3,10 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
     "lib": ["DOM"],
-    "types": ["node", "vitest/jsdom"]
+    "baseUrl": "./",
+    "rootDir": "./",
+    "types": ["node", "vitest/jsdom"],
+    "skipLibCheck": true
   },
   "include": ["tests/**/*.test.ts", "env.d.ts"],
   "exclude": []
