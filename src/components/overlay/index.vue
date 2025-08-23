@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { ComponentClass } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer, hasScrollbar, isScrollable } from '../../utils/dom'
-import { optimizedOff, optimizedOn } from '../../utils/events'
+import { optimizedOff, optimizedOn } from '../../utils/event'
+import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
@@ -11,13 +11,13 @@ interface Props {
   zIndex?: number
   modelValue?: boolean
   appendToBody?: boolean
-  overlayClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
 
 defineOptions({
   name: 'POverlay',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -48,7 +48,7 @@ const computedStyle = computed(() => ({
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 
-  if (!props.closeOnClickOverlay) {
+  if (!isTruthyProp(props.closeOnClickOverlay)) {
     return
   }
 
@@ -56,7 +56,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onOverlayKeydown(ev: KeyboardEvent) {
-  if (!props.closeOnPressEscape || !props.modelValue) {
+  if (!isTruthyProp(props.closeOnPressEscape) || !props.modelValue) {
     return
   }
 
@@ -136,8 +136,8 @@ onBeforeUnmount(() => {
         ref="overlayRef"
         :data-blur="blur"
         class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
-        :class="overlayClass"
         :style="computedStyle"
+        v-bind="$attrs"
         @click="onOverlayClick"
       />
     </Transition>

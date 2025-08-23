@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { onBeforeUnmount, shallowRef } from 'vue'
-import { on } from '../utils/events'
+import { on } from '../utils/event'
 import { isServer } from '../utils/is'
 
 interface CacheObject {

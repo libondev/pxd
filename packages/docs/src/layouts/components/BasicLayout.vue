@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import ArrowUpIcon from '@gdsicon/vue/arrow-up'
-import MenuAltIcon from '@gdsicon/vue/menu-alt'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { pascalize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
@@ -13,7 +11,7 @@ interface MenuItem {
 }
 
 interface MenuGroup {
-  label: string
+  group: string
   children: MenuItem[]
 }
 
@@ -28,7 +26,6 @@ const {
 } = defineProps<Props>()
 
 const route = useRoute()
-const openSidebar = ref(false)
 
 const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
@@ -67,17 +64,6 @@ const paginationData = computed(() => {
 
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
-function handleBackToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  })
-}
-
-function handleToggleSidebar() {
-  openSidebar.value = !openSidebar.value
-}
-
 if (!isServer) {
   watch(
     () => route.path,
@@ -99,31 +85,11 @@ if (!isServer) {
   </div>
 
   <div class="sm:pl-55 sm:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
-    <div v-if="!isSmUp" class="sm:hidden p-2 top-12.5 sticky z-10 flex items-center justify-between border-b bg-background-100">
-      <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleToggleSidebar">
-        <template #prefix>
-          <MenuAltIcon class="text-xs" />
-        </template>
-        Menu
-      </PButton>
-
-      <PButton variant="ghost" size="sm" class="text-xs text-foreground-secondary" @click="handleBackToTop">
-        <template #prefix>
-          <ArrowUpIcon class="text-xs" />
-        </template>
-        Return to top
-      </PButton>
-
-      <PDrawer v-model="openSidebar" title="Menu" position="bottom" size="68%" header-stylize>
-        <Menus :menus="menus" class="-m-2" @click="handleToggleSidebar" />
-      </PDrawer>
-    </div>
-
     <main class="prose p-6 py-12 sm:px-16 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
       <template v-if="showViewSource">
-        <h2 id="source" tabindex="-1">
+        <h2 id="source" class="mb-4" tabindex="-1">
           <a class="header-anchor" href="#source">Source</a>
         </h2>
 

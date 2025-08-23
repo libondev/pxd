@@ -12,16 +12,20 @@ const options = [
   { label: 'Remove', type: 'warning' },
   { label: 'Delete', type: 'error' },
 ]
+
+function onSelect(ev, item) {
+  console.log(ev, item)
+}
 </script>
 
 <template>
   <PStack>
-    <PMenu :options="options">
+    <PMenu :options="options" @select="onSelect">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu>
+    <PMenu @select="onSelect">
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
@@ -39,11 +43,11 @@ const options = [
 ```vue demo
 <script setup>
 const options = [
-  { as: 'RouterLink', to: '#', label: 'One' },
-  { as: 'RouterLink', to: '#', label: 'Two' },
-  { as: 'RouterLink', to: '#', label: 'Three', disabled: true },
-  { as: 'RouterLink', to: '#', label: 'Four', type: 'warning' },
-  { as: 'RouterLink', to: '#', label: 'Delete', type: 'error' },
+  { as: 'RouterLink', to: 'menu', label: 'One' },
+  { as: 'RouterLink', to: 'menu', label: 'Two' },
+  { as: 'RouterLink', to: 'menu', label: 'Three', disabled: true },
+  { as: 'RouterLink', to: 'menu', label: 'Four', type: 'warning' },
+  { as: 'RouterLink', to: 'menu', label: 'Delete', type: 'error' },
 ]
 </script>
 
@@ -64,6 +68,26 @@ const options = [
       </template>
     </PMenu>
   </PStack>
+</template>
+```
+
+## Without closeOnPressEscape
+Pressing esc after setting will not close.
+
+```vue demo
+<script setup>
+const options = [
+  { label: 'One' },
+  { label: 'Two' },
+  { label: 'Three', disabled: true },
+  { label: 'Delete', type: 'error' },
+]
+</script>
+
+<template>
+  <PMenu :options="options" :close-on-press-escape="false">
+    <PButton variant="primary">Actions</PButton>
+  </PMenu>
 </template>
 ```
 

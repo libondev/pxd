@@ -15,9 +15,9 @@ interface Props {
   showArrow?: boolean
   desktopOnly?: boolean
   triggerClass?: ComponentClass
-  popoverClass?: ComponentClass
+  contentClass?: ComponentClass
   triggerStyle?: CSSProperties | string
-  popoverStyle?: CSSProperties | string
+  contentStyle?: CSSProperties | string
 }
 
 defineOptions({
@@ -31,8 +31,6 @@ const props = withDefaults(
     variant: 'primary',
     position: 'top',
     showArrow: true,
-    popoverClass: '',
-    popoverStyle: '',
   },
 )
 
@@ -61,11 +59,11 @@ const computedDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
-const computedPopoverClass = computed(() => {
+const mergedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-[13px] break-words whitespace-pre-line shadow-border-tooltip bg-(--c)',
+    'px-3 py-2 rounded-md text-13px break-words whitespace-pre-line shadow-border-tooltip bg-(--c)',
     computedVariant.value.text,
-    props.popoverClass,
+    props.contentClass,
   ].join(' ')
 })
 </script>
@@ -79,8 +77,8 @@ const computedPopoverClass = computed(() => {
     :arrow-color="computedVariant.bg"
     :trigger-class="triggerClass"
     :trigger-style="triggerStyle"
-    :popover-class="computedPopoverClass"
-    :popover-style="popoverStyle"
+    :content-style="contentStyle"
+    :content-class="mergedClasses"
     v-bind="$attrs"
   >
     <slot />

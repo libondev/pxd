@@ -1,6 +1,6 @@
 import type { DOMRef } from '../types/shared/utils'
 import { nextTick, onBeforeUnmount, watch } from 'vue'
-import { on } from '../utils/events'
+import { on } from '../utils/event'
 import { toValue } from '../utils/ref'
 
 export function useFocusTrap(container: DOMRef) {

@@ -7,6 +7,7 @@ interface Props {
   width?: string
   height?: string
   border?: boolean
+  invert?: boolean
 }
 
 defineOptions({
@@ -27,21 +28,27 @@ const computedStyle = computed(() => {
 
 <template>
   <div
-    class="pxd-placeholder relative max-w-full overflow-hidden rounded-lg border-dashed"
-    :class="{ border }"
+    class="pxd-placeholder relative max-w-full overflow-hidden rounded-lg"
+    :class="{ 'border': border, 'is-invert': invert }"
     :style="computedStyle"
     v-bind="$attrs"
   />
 </template>
 
-<style scoped>
+<style lang="postcss">
 .pxd-placeholder {
+  --deg: -45deg;
+
+  &.is-invert {
+    --deg: 45deg;
+  }
+
   width: 100%;
   height: 36px;
-  color: var(--color-gray-300);
+  color: var(--color-gray-400);
   background-image:
     repeating-linear-gradient(
-      -45deg,
+      var(--deg),
       currentColor 0,
       currentColor 1px,
       transparent 1px,

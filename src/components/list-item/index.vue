@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { ListOption } from '../../types/components/list'
-import { computed, onMounted, onUnmounted, shallowRef, useAttrs } from 'vue'
-import { useListContext, useListItemIndexContext } from '../../contexts/list'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
+import { computed, shallowRef } from 'vue'
+import { useListContext } from '../../contexts/list'
+import { getUniqueId } from '../../utils/uid'
 
 interface Props {
   as?: ListOption['as']
@@ -25,56 +26,43 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  click: [ev: MouseEvent, index: number]
+  click: [MouseEvent, ListOptionSelected]
 }>()
 
 const {
-  activeIndex,
+  activeValue,
   onOptionClick,
-  registerListItem,
-  unregisterListItem,
 } = useListContext()
 
-const listItemIndex = useListItemIndexContext()
+const currentValue = String(props.label) || getUniqueId()
 
-const attrs = useAttrs()
 const itemRef = shallowRef<HTMLElement>()
-const currentIndex = shallowRef(listItemIndex.value++)
 
 const itemTypeMap = {
-  error: 'text-red-900 data-[selected=true]:bg-red-100',
-  warning: 'text-amber-900 data-[selected=true]:bg-amber-100',
-  default: 'text-foreground data-[selected=true]:bg-gray-alpha-100',
+  error: 'text-red-900 pointer-coarse:active:bg-red-100 pointer-fine:data-[selected=true]:bg-red-100',
+  warning: 'text-amber-900 pointer-coarse:active:bg-amber-100 pointer-fine:data-[selected=true]:bg-amber-100',
+  default: 'text-foreground pointer-coarse:active:bg-gray-alpha-100 pointer-fine:data-[selected=true]:bg-gray-alpha-100',
+  separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
-const isSelected = computed(() => activeIndex.value === currentIndex.value)
+const isSelected = computed(() => activeValue.value === currentValue)
+const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
 const computedClass = computed(() => {
-  const classes = ['cursor-pointer data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700', attrs.class]
+  const { type = 'default' } = props
+  const classes = ['pxd-list-item h-10 gap-2 px-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700 group-data-[transition=true]/list:motion-safe:transition-colors']
 
-  if (props.type) {
-    classes.push(itemTypeMap[props.type])
+  if (type in itemTypeMap) {
+    classes.push(itemTypeMap[type])
   }
 
   return classes.join(' ')
 })
 
 function onItemClick(ev: MouseEvent) {
-  emits('click', ev, currentIndex.value)
-  onOptionClick?.(ev, currentIndex.value)
+  emits('click', ev, props)
+  onOptionClick?.(ev, props)
 }
-
-onMounted(() => {
-  if (registerListItem) {
-    registerListItem(itemRef.value!)
-  }
-})
-
-onUnmounted(() => {
-  if (unregisterListItem) {
-    unregisterListItem(itemRef.value!)
-  }
-})
 </script>
 
 <template>
@@ -84,14 +72,13 @@ onUnmounted(() => {
     tabindex="-1"
     role="listitem"
     :data-type="type"
-    :data-index="currentIndex"
-    :data-disabled="disabled"
+    :data-value="currentValue"
     :data-selected="isSelected"
-    class="pxd-list-item h-10 gap-1 px-2 text-sm flex w-full items-center rounded-md outline-none motion-safe:transition-colors"
+    :data-disabled="isDisabled"
     :class="computedClass"
-    @click="onItemClick"
+    @click.prevent.stop="onItemClick"
   >
-    <slot>
+    <slot v-if="type !== 'separator'">
       <span class="gap-2 flex items-center">{{ label }}</span>
       <span v-if="description" class="text-sm text-foreground-secondary">{{ description }}</span>
     </slot>

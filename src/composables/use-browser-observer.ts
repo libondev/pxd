@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue'
+import type { MaybeRef, MaybeRefOrGetter } from 'vue'
 import type { Nullable } from '../types/shared/utils'
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { toArray } from '../utils/format'
@@ -19,7 +19,7 @@ export const useResizeObserver = createObserver(
 
 type Observers = IntersectionObserver | ResizeObserver | MutationObserver
 type Constructor = typeof IntersectionObserver | typeof ResizeObserver | typeof MutationObserver
-type TargetRef = MaybeRef<Nullable<HTMLElement>> | MaybeRef<Nullable<HTMLElement>>[]
+type TargetRef = MaybeRefOrGetter<Nullable<HTMLElement>> | MaybeRefOrGetter<Nullable<HTMLElement>>[]
 
 interface ObserverReturnType<T extends Observers> {
   observer: T | undefined

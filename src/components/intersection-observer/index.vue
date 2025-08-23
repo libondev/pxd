@@ -28,9 +28,9 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'visible-change': [boolean]
   'before-show': []
   'before-hide': []
-  'change': [visible: boolean]
   'show': []
   'hide': []
 }>()
@@ -69,7 +69,7 @@ function onVisibleChange(isIntersecting: boolean) {
     })
   }
 
-  emits('change', isIntersecting)
+  emits('visible-change', isIntersecting)
 }
 
 useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {

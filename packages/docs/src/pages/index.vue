@@ -1,7 +1,7 @@
 <script setup>
 import { useHead } from '@unhead/vue'
 import { version } from 'pxd'
-import { off, on, once } from 'pxd/utils/events'
+import { off, on, once } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
 useHead({

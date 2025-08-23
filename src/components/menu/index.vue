@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOption } from '../../types/components/list'
+import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
 import PList from '../list/index.vue'
@@ -9,6 +9,7 @@ interface Props {
   width?: string | number
   options?: ListOption[]
   position?: ComponentPosition
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
@@ -18,29 +19,39 @@ defineOptions({
 withDefaults(
   defineProps<Props>(),
   {
-    position: 'bottom-start',
     options: () => [],
+    position: 'bottom-start',
+    closeOnPressEscape: true,
   },
 )
 
 const emits = defineEmits<{
-  selected: [ev: MouseEvent, index: number]
+  change: [visible: boolean]
+  select: [MouseEvent, ListOptionSelected]
 }>()
 
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
+const popoverVisible = shallowRef(false)
 
 function closePopover() {
   popoverRef.value?.hide()
 }
 
-function onOptionClick(ev: MouseEvent, index: number) {
-  emits('selected', ev, index)
+function onPopoverToggle(visible: boolean) {
+  emits('change', visible)
+  popoverVisible.value = visible
+}
+
+function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
+  emits('select', ev, item)
+  closePopover()
 }
 </script>
 
 <template>
   <PPopover
     ref="popoverRef"
+    enterable
     trigger="click"
     class="pxd-menu"
     scroll-hidden
@@ -48,7 +59,8 @@ function onOptionClick(ev: MouseEvent, index: number) {
     :hide-delay="100"
     :position="position"
     :show-transition="false"
-    enterable
+    :close-on-press-escape="closeOnPressEscape"
+    @visible-change="onPopoverToggle"
   >
     <slot />
 
@@ -56,9 +68,10 @@ function onOptionClick(ev: MouseEvent, index: number) {
       <PList
         :width="width"
         :options="options"
-        class="p-2 pr-0 list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
-        @close="closePopover"
-        @selected="onOptionClick"
+        :key-listener="popoverVisible"
+        class="max-h-68 list-none rounded-xl bg-background-100 shadow-border-menu outline-none"
+        @escape="closePopover"
+        @select="onOptionClick"
       >
         <slot name="items" />
       </PList>

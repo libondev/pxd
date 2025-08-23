@@ -4,9 +4,8 @@ import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/s
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   title?: ComponentLabel
@@ -18,7 +17,8 @@ interface Props {
   appendToBody?: boolean
   headerStylize?: boolean
   footerStylize?: boolean
-  drawerClass?: ComponentClass
+  wrapperClass?: ComponentClass
+  contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -46,8 +46,9 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'open': []
-  'close': []
+  'show': []
+  'hide': []
+  'visible-change': [boolean]
   'click-outside': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
@@ -81,7 +82,7 @@ const computedStyle = computed(() => {
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.loading) {
+  if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
     return
   }
 
@@ -98,12 +99,14 @@ function onUpdateModelValue(visible: boolean) {
 }
 
 watch(() => isVisible.value, (visible) => {
+  emits('visible-change', visible)
+
   if (visible) {
-    emits('open')
+    emits('show')
     return
   }
 
-  emits('close')
+  emits('hide')
 })
 </script>
 
@@ -123,7 +126,7 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         class="pxd-drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
-        :class="drawerClass"
+        :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
       >
@@ -131,28 +134,27 @@ watch(() => isVisible.value, (visible) => {
           class="pxd-drawer--header px-6 py-4 relative shrink-0 empty:py-3"
           :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
-          <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
-            <slot name="title">
-              {{ title }}
-            </slot>
-          </h3>
+          <slot name="header">
+            <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
+              <slot name="title">
+                {{ title }}
+              </slot>
+            </h3>
 
-          <div v-if="$slots.subtitle || subtitle" class="mt-3 text-sm text-muted-foreground">
-            <slot name="subtitle">
-              {{ subtitle }}
-            </slot>
-          </div>
+            <div v-if="$slots.subtitle || subtitle" class="mt-3 text-sm text-muted-foreground">
+              <slot name="subtitle">
+                {{ subtitle }}
+              </slot>
+            </div>
+          </slot>
         </header>
 
-        <PScrollable
-          v-if="$slots.default"
-          :data-header="headerStylize"
-          class="pxd-drawer--content group flex-1"
-          content-class="group-data-[header=true]:pt-5 px-6 pb-5"
+        <div
+          class="pxd-drawer--content group px-6 pb-5 flex-1 overflow-auto"
+          :class="[{ 'pt-5': headerStylize }, contentClass]"
         >
           <slot />
-        </PScrollable>
-        <div v-else class="flex-1" />
+        </div>
 
         <footer
           v-if="$slots.footer"

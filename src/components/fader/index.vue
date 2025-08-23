@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { ComponentDirection } from '../../types/shared/props'
+import type { Nullable } from '../../types/shared/utils'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { off, on } from '../../utils/events'
+import { useResizeObserver } from '../../composables/use-browser-observer'
+import { off, on } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { throttleByRaf } from '../../utils/throttle'
 
 interface Props {
   size?: number
   color?: string
-  container: HTMLElement | undefined | null
+  container: Nullable<HTMLElement>
   direction?: ComponentDirection | 'both'
 }
 
@@ -31,15 +33,15 @@ const fader = shallowRef({
 })
 
 const computedStyle = computed(() => ({
-  '--c': props.color,
-  '--s': getCssUnitValue(props.size),
+  '--fader-color': props.color,
+  '--fader-size': getCssUnitValue(props.size),
 }))
 
 const DIFF_THRESHOLD = 1
 
 const onContainerScroll = throttleByRaf(() => {
-  const { size = 16 } = props
-  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = props.container!
+  const { size = 16, container } = props
+  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container!
 
   fader.value = {
     left: scrollLeft >= size,
@@ -48,6 +50,8 @@ const onContainerScroll = throttleByRaf(() => {
     bottom: scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD,
   }
 })
+
+useResizeObserver(() => props.container, onContainerScroll)
 
 watch(() => props.container, (container, oldDom) => {
   if (oldDom) {
@@ -60,7 +64,6 @@ watch(() => props.container, (container, oldDom) => {
     return
   }
 
-  onContainerScroll()
   on(container, 'scroll', onContainerScroll)
 })
 
@@ -86,8 +89,8 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--c, var(--color-gray-alpha-500)));
-  mask-image: linear-gradient(var(--dir-revert), var(--c, var(--color-gray-alpha-500)) 50%, transparent);
+  background: linear-gradient(var(--dir), transparent, var(--fader-color, var(--color-gray-200)));
+  mask-image: linear-gradient(var(--dir-revert), var(--fader-color, var(--color-gray-200)) 50%, transparent);
   transition: opacity var(--default-transition-timing-function) var(--default-transition-duration);
   opacity: 0;
 }
@@ -103,7 +106,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--s, 16px);
+    width: var(--fader-size, 16px);
     height: 100%;
   }
 
@@ -125,7 +128,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--s, 16px);
+    height: var(--fader-size, 16px);
   }
 
   &::before {

@@ -3,9 +3,8 @@ import type { ComponentClass, ComponentLabel } from '../../types/shared'
 import { shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   title?: ComponentLabel
@@ -16,7 +15,8 @@ interface Props {
   appendToBody?: boolean
   headerStylize?: boolean
   footerStylize?: boolean
-  modalClass?: ComponentClass
+  wrapperClass?: ComponentClass
+  contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }
@@ -42,8 +42,9 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  'open': []
-  'close': []
+  'show': []
+  'hide': []
+  'visible-change': [boolean]
   'click-outside': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
@@ -56,7 +57,7 @@ useFocusTrap(modalRef)
 function onOverlayClick(ev: MouseEvent) {
   emits('click-outside', ev)
 
-  if (!props.closeOnClickOverlay || props.loading) {
+  if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
     return
   }
 
@@ -72,12 +73,14 @@ function onUpdateModelValue(visible: boolean) {
 }
 
 watch(() => isVisible.value, (visible) => {
+  emits('visible-change', visible)
+
   if (visible) {
-    emits('open')
+    emits('show')
     return
   }
 
-  emits('close')
+  emits('hide')
 })
 </script>
 
@@ -96,35 +99,36 @@ watch(() => isVisible.value, (visible) => {
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[calc(var(--w,540)*1px)] fixed z-10 flex h-max w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
-        :class="modalClass"
+        class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] fixed z-10 flex h-max max-h-[min(800px,80vh)] w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
+        :class="wrapperClass"
         :style="{ '--w': getCssUnitValue(width) }"
       >
         <header
           class="pxd-modal--header px-6 py-4 relative shrink-0 empty:py-3"
           :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
-          <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
-            <slot name="title">
-              {{ title }}
-            </slot>
-          </h3>
+          <slot name="header">
+            <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
+              <slot name="title">
+                {{ title }}
+              </slot>
+            </h3>
 
-          <div v-if="$slots.subtitle || subtitle" class="mt-2 text-sm text-muted-foreground">
-            <slot name="subtitle">
-              {{ subtitle }}
-            </slot>
-          </div>
+            <div v-if="$slots.subtitle || subtitle" class="mt-2 text-sm text-muted-foreground">
+              <slot name="subtitle">
+                {{ subtitle }}
+              </slot>
+            </div>
+          </slot>
         </header>
 
-        <PScrollable
+        <div
           v-if="$slots.default"
-          :data-header="headerStylize"
-          class="pxd-modal--content group flex-1"
-          content-class="group-data-[header=true]:pt-5 px-6 pb-5"
+          class="pxd-modal--content group px-6 pb-5 flex-1 overflow-auto"
+          :class="[{ 'pt-5': headerStylize }, contentClass]"
         >
           <slot />
-        </PScrollable>
+        </div>
 
         <footer
           v-if="$slots.footer"
@@ -151,9 +155,5 @@ watch(() => isVisible.value, (visible) => {
 .pxd-modal.pxd-transition--modal-leave-to {
   opacity: var(--o, 1);
   transform: var(--t, translate(0, 100%));
-}
-
-.pxd-modal {
-  max-height: min(800px, 80vh);
 }
 </style>

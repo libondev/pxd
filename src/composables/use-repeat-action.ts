@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue'
 import type { Callback } from '../types/shared/utils'
 import { onBeforeUnmount } from 'vue'
-import { off, on } from '../utils/events'
+import { off, on } from '../utils/event'
 import { toValue } from '../utils/ref'
 
 interface RepeatActionReturnType {

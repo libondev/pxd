@@ -9,7 +9,7 @@ const componentsMenus = components.map(({ name, camelized }) => {
 
 export const asideMenus = [
   {
-    label: 'Guide',
+    group: 'Guide',
     children: [
       {
         label: 'Introduction',
@@ -30,7 +30,7 @@ export const asideMenus = [
     ],
   },
   {
-    label: 'Components',
+    group: 'Components',
     children: [
       {
         label: 'Overview',

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components/button'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { off, once } from '../../utils/events'
+import { off, once } from '../../utils/event'
 import PButton from '../button/index.vue'
 
 interface Props extends Omit<ButtonProps, 'as'> {

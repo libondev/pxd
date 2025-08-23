@@ -44,6 +44,10 @@
     "name": "collapse"
   },
   {
+    "camelized": "CommandMenu",
+    "name": "command-menu"
+  },
+  {
     "camelized": "ConfigProvider",
     "name": "config-provider"
   },
