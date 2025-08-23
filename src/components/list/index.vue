@@ -95,14 +95,14 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
     newActiveValue = listItemKeys.at(-1)!
   }
 
+  if (!newActiveValue) {
+    return
+  }
+
   if (activeValue.value !== newActiveValue) {
     emits('toggle')
 
     activeValue.value = newActiveValue
-  }
-
-  if (!activeValue.value) {
-    return
   }
 
   listItemsMap.get(activeValue.value)?.scrollIntoView({ block: 'nearest' })
