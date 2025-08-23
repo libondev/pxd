@@ -15,6 +15,7 @@ interface Props {
 
 defineOptions({
   name: 'PKbd',
+  inheritAttrs: false,
 })
 
 const props = defineProps<Props>()
@@ -46,6 +47,7 @@ const internalKey = computed(() => {
   <kbd
     class="pxd-keyboard px-1.5 font-sans ml-1 inline-flex items-center rounded-md border border-input bg-background-100 text-center text-gray-1000"
     :class="computedSize"
+    v-bind="$attrs"
   >
     {{ internalKey }}
     <slot>{{ label }}</slot>

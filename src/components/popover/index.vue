@@ -10,7 +10,7 @@ import {
   getScrollElByContainer,
   getScrollPositions,
 } from '../../utils/dom'
-import { off, on, optimizedOff, optimizedOn } from '../../utils/events'
+import { off, on, optimizedOff, optimizedOn } from '../../utils/event'
 import { toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'

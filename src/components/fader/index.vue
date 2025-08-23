@@ -3,7 +3,7 @@ import type { ComponentDirection } from '../../types/shared/props'
 import type { Nullable } from '../../types/shared/utils'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
-import { off, on } from '../../utils/events'
+import { off, on } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { throttleByRaf } from '../../utils/throttle'
 

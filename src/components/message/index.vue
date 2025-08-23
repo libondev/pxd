@@ -12,7 +12,7 @@ import {
   CREATE_MESSAGE_EVENT_NAME,
   REMOVE_MESSAGE_EVENT_NAME,
 } from '../../composables/use-message'
-import { optimizedOff, optimizedOn } from '../../utils/events'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'

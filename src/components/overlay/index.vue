@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer, hasScrollbar, isScrollable } from '../../utils/dom'
-import { optimizedOff, optimizedOn } from '../../utils/events'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
