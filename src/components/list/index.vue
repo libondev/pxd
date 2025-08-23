@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
-    <PScrollable class="max-h-68 p-2 rounded-inherit" fader-direction="vertical">
+    <PScrollable class="p-2 max-h-inherit rounded-inherit" fader-direction="vertical">
       <slot>
         <PListItem
           v-for="(option, index) in options"

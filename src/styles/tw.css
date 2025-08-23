@@ -372,6 +372,7 @@
 
   --z-1: 1;
   --spacing-em: 1em;
+  --spacing-inherit: inherit;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
