@@ -76,6 +76,33 @@ const data = [
 </template>
 ```
 
+## Field Names
+Custom data field.
+
+```vue demo
+<script setup>
+
+const fieldNames = { date: 'created_at', count: 'value' }
+
+const data = [
+  { created_at: '2025-05-06', value: 5 },
+  { created_at: '2025-05-07', value: 10 },
+  { created_at: '2025-05-08', value: 15 },
+  { created_at: '2025-05-09', value: 20 },
+];
+</script>
+
+<template>
+  <PActiveGraph
+    transpose
+    :data="data"
+    :field-names="fieldNames"
+    start-date="2025-05-01"
+    end-date="2025-05-31"
+  />
+</template>
+```
+
 ## Custom colors
 
 ```vue demo

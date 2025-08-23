@@ -5,13 +5,13 @@ import { useDelayChange } from '../../composables/use-delay-change'
 import { getAllDatesBetween } from '../../utils/date'
 import { getColorByThreshold } from '../../utils/get'
 
-interface DataItem {
+interface FieldNames {
   date: string
-  count: number
+  count: string
 }
 
 interface Props {
-  data?: DataItem[]
+  data?: Record<string, any>[]
   legend?: boolean
   startDate?: string | Date
   endDate?: string | Date
@@ -20,6 +20,7 @@ interface Props {
   transpose?: boolean
   tooltip?: boolean
   tooltipText?: string
+  fieldNames?: FieldNames
 }
 
 interface CellData {
@@ -89,8 +90,10 @@ const CELL_SIZE = 12
 const rangedDates = computed(() => getAllDatesBetween(props.startDate, props.endDate))
 
 const dateCountMap = computed(() => {
+  const { date, count } = props.fieldNames || { date: 'date', count: 'count' }
+
   return props.data.reduce((acc, cur) => {
-    acc[cur.date] = (acc[cur.date] || 0) + cur.count
+    acc[cur[date]] = (acc[cur[date]] || 0) + cur[count]
     return acc
   }, {} as Record<string, number>)
 })
