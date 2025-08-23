@@ -21,7 +21,10 @@ const menus = [
   },
 ] as const
 
+const route = useRoute()
+
 const showCommandMenu = shallowRef(false)
+const showSearchInput = computed(() => route.name && route.name !== '/')
 
 function openCommandMenu() {
   showCommandMenu.value = true
@@ -59,7 +62,7 @@ onBeforeUnmount(() => {
         </RouterLink>
       </h2>
 
-      <div class="px-3 md:block hidden">
+      <div v-if="showSearchInput" class="px-3 md:block hidden">
         <PButton class="px-2 text-foreground-secondary" size="sm" @click="openCommandMenu">
           <template #prefix>
             <MagnifyingGlassIcon />
@@ -75,7 +78,7 @@ onBeforeUnmount(() => {
 
       <nav class="sm:border-r ml-auto flex h-full items-center">
         <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
-          <li class="md:hidden">
+          <li v-if="showSearchInput" class="md:hidden">
             <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
               <MagnifyingGlassIcon />
               <span class="sm:block ml-1.5 hidden">Search</span>
