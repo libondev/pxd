@@ -3,6 +3,7 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   clean: true,
   declaration: true,
+  failOnWarn: false,
   externals: ['vue', '@gdsicon/vue'],
   entries: [
     {
