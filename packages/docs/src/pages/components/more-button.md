@@ -1,4 +1,4 @@
-# MoreButton
+# More Button
 Styling component to show expanded or collapsed content.
 
 ## Default

@@ -1,4 +1,4 @@
-# PinInput
+# Pin Input
 Used to capture a pin code or otp from the user
 
 ## Default

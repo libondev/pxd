@@ -1,4 +1,4 @@
-# LoadingBar
+# Loading Bar
 Display the progress of a page or action.
 
 ## Default

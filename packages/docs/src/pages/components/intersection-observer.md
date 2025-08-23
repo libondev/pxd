@@ -1,4 +1,4 @@
-# IntersectionObserver
+# Intersection Observer
 Render only when components are visible in the viewport.
 
 > Inspiration comes from [isaact/vue-infinity - Github](https://github.com/isaact/vue-infinity){target="_blank"}

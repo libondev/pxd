@@ -1,4 +1,4 @@
-# HoldButton
+# Hold Button
 
 Press and hold the button to trigger some logic (such as delete).
 

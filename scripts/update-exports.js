@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { globSync } from 'tinyglobby'
-import { pascalize } from './utils.js'
+import { humanize, pascalize } from './utils.js'
 
 const isNeedStageChange = process.argv.includes('--stage')
 
@@ -74,7 +74,7 @@ function updateDocsComponents() {
     const [, name] = cur.match(matchRegex) || []
 
     acc.push({
-      camelized: pascalize(name),
+      camelized: humanize(name),
       name,
     })
 

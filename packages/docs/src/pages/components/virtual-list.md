@@ -1,4 +1,4 @@
-# VirtualList
+# Virtual List
 Loads infinite lists of data, but doesn't really render them.
 
 ## Fixed height items

@@ -1,5 +1,5 @@
 
-# ThemeSwitcher
+# Theme Switcher
 Component that allows users to switch between light and dark themes.
 
 ## Further

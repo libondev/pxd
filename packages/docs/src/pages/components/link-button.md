@@ -1,4 +1,4 @@
-# LinkButton
+# Link Button
 Inherit button style links.
 
 ## Default

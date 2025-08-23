@@ -1,6 +1,6 @@
 [
   {
-    "camelized": "ActiveGraph",
+    "camelized": "Active Graph",
     "name": "active-graph"
   },
   {
@@ -44,11 +44,11 @@
     "name": "collapse"
   },
   {
-    "camelized": "CommandMenu",
+    "camelized": "Command Menu",
     "name": "command-menu"
   },
   {
-    "camelized": "ConfigProvider",
+    "camelized": "Config Provider",
     "name": "config-provider"
   },
   {
@@ -64,7 +64,7 @@
     "name": "drawer"
   },
   {
-    "camelized": "EmptyState",
+    "camelized": "Empty State",
     "name": "empty-state"
   },
   {
@@ -84,7 +84,7 @@
     "name": "grid"
   },
   {
-    "camelized": "HoldButton",
+    "camelized": "Hold Button",
     "name": "hold-button"
   },
   {
@@ -92,7 +92,7 @@
     "name": "input"
   },
   {
-    "camelized": "IntersectionObserver",
+    "camelized": "Intersection Observer",
     "name": "intersection-observer"
   },
   {
@@ -100,15 +100,15 @@
     "name": "kbd"
   },
   {
-    "camelized": "LinkButton",
+    "camelized": "Link Button",
     "name": "link-button"
   },
   {
-    "camelized": "LoadingBar",
+    "camelized": "Loading Bar",
     "name": "loading-bar"
   },
   {
-    "camelized": "LoadingDots",
+    "camelized": "Loading Dots",
     "name": "loading-dots"
   },
   {
@@ -128,7 +128,7 @@
     "name": "modal"
   },
   {
-    "camelized": "MoreButton",
+    "camelized": "More Button",
     "name": "more-button"
   },
   {
@@ -136,7 +136,7 @@
     "name": "note"
   },
   {
-    "camelized": "NumberInput",
+    "camelized": "Number Input",
     "name": "number-input"
   },
   {
@@ -148,7 +148,7 @@
     "name": "pagination"
   },
   {
-    "camelized": "PinInput",
+    "camelized": "Pin Input",
     "name": "pin-input"
   },
   {
@@ -196,7 +196,7 @@
     "name": "stack"
   },
   {
-    "camelized": "StatusDot",
+    "camelized": "Status Dot",
     "name": "status-dot"
   },
   {
@@ -216,7 +216,7 @@
     "name": "textarea"
   },
   {
-    "camelized": "ThemeSwitcher",
+    "camelized": "Theme Switcher",
     "name": "theme-switcher"
   },
   {
@@ -228,7 +228,7 @@
     "name": "tooltip"
   },
   {
-    "camelized": "VirtualList",
+    "camelized": "Virtual List",
     "name": "virtual-list"
   }
 ]

@@ -1,4 +1,4 @@
-# LoadingDots
+# Loading Dots
 Indicate an action running in the background.
 
 ## Default

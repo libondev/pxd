@@ -1,4 +1,4 @@
-# StatusDot
+# Status Dot
 Display an indicator of deployment status.
 
 ## Default

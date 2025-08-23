@@ -1,4 +1,4 @@
-# CommandMenu
+# Command Menu
 Launch a set of actions as a full-screen overlay.
 
 ## Default

@@ -1,4 +1,4 @@
-# ActiveGraph
+# Active Graph
 Show the activity of users, and show different levels of brightness according to the level.
 
 ## Default

@@ -1,4 +1,4 @@
-# NumberInput
+# Number Input
 Input box for entering numbers only.
 
 ## Default
