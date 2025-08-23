@@ -1,5 +1,5 @@
 import { computed, onBeforeUnmount, shallowRef, watchEffect } from 'vue'
-import { on } from '../utils/events'
+import { on } from '../utils/event'
 import { isServer } from '../utils/is'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 
