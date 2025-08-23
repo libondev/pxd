@@ -30,4 +30,7 @@ export default {
     next: 'Next',
     prev: 'Previous',
   },
+  empty: {
+    search: 'No results found for',
+  },
 }

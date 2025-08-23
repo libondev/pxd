@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../../types/components/list'
 import { computed, nextTick, shallowRef } from 'vue'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideCommandMenuContext } from '../../contexts/command-menu'
 import { debounce } from '../../utils/debounce'
@@ -48,6 +49,7 @@ const emits = defineEmits<{
 
 const uniqueId = getUniqueId()
 
+const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const listRef = shallowRef<InstanceType<typeof PList>>()
@@ -157,7 +159,7 @@ provideCommandMenuContext({
       <slot />
 
       <p v-if="isEmptyResult" class="py-8 text-sm text-center text-foreground-secondary">
-        No results found for <span class="text-foreground">"{{ filterKeyword }}"</span>
+        {{ config.locale.empty.search }} <span class="text-foreground">"{{ filterKeyword }}"</span>
       </p>
     </PList>
 

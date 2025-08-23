@@ -30,4 +30,7 @@ export default {
     next: '之后',
     prev: '之前',
   },
+  empty: {
+    search: '未找到结果',
+  },
 }
