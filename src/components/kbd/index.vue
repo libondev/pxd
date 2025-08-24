@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import type { ComponentLabel } from 'pxd'
+import type { ComponentSize } from '../../types/shared'
 import { useConfigProvider } from 'pxd'
-import { getFallbackValue } from 'pxd/utils/get'
 import { computed } from 'vue'
+import { getFallbackValue } from '../../utils/get'
 
 interface Props {
-  meta?: boolean
-  shift?: boolean
   alt?: boolean
   ctrl?: boolean
-  small?: boolean
-  label?: string
-  size?: 'md' | 'sm'
+  meta?: boolean
+  enter?: boolean
+  shift?: boolean
+  label?: ComponentLabel
+  size?: ComponentSize
 }
 
 defineOptions({
@@ -31,6 +33,7 @@ const INTERNAL_KEYS = {
   shift: '⇧',
   alt: '⌥',
   ctrl: 'Ctrl',
+  enter: '↵',
 }
 
 const config = useConfigProvider()
