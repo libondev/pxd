@@ -103,7 +103,7 @@ const data = [
 </template>
 ```
 
-## Custom colors
+## Stylize
 
 ```vue demo
 <script setup>
@@ -140,6 +140,7 @@ const colors = {
     transpose
     :data="data"
     :colors="colors"
+    item-radius="20"
     start-date="2025-05-01"
     end-date="2025-05-31"
   />

@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useDelayChange } from '../../composables/use-delay-change'
 import { getAllDatesBetween } from '../../utils/date'
+import { getCssUnitValue } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/get'
 
 interface FieldNames {
@@ -21,6 +22,7 @@ interface Props {
   tooltip?: boolean
   tooltipText?: string
   fieldNames?: FieldNames
+  itemRadius?: string | number
 }
 
 interface CellData {
@@ -432,6 +434,7 @@ onBeforeUnmount(() => {
       <tbody
         ref="tbodyRef"
         class="text-xs"
+        :style="{ '--item-radius': getCssUnitValue(itemRadius, '2px') }"
         @click="onCellClick"
         @pointerover.capture="onMouseOver"
       >
@@ -445,7 +448,7 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item rounded-xs w-3 min-w-3 bg-gray-alpha-200 motion-safe:transition-colors"
+            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) bg-gray-alpha-200 motion-safe:transition-colors"
             :data-date="col.date"
             :class="{ 'pointer-events-none opacity-0': col.hidden }"
             :style="`background: ${col.color}`"
@@ -462,7 +465,7 @@ onBeforeUnmount(() => {
             <td
               v-for="color in props.colors"
               :key="color"
-              class="w-3 h-3 rounded-xs bg-gray-alpha-200 motion-safe:transition-colors"
+              class="w-3 h-3 rounded-(--item-radius) bg-gray-alpha-200 motion-safe:transition-colors"
               :style="`background-color: ${color}`"
             />
 
