@@ -89,13 +89,13 @@ function addMessage() {
 function closeLast() {
   closeMessage('clear', lastKey--)
   // Or use the instance method (no need to set group)
-  // messageRef.value.closeMessage(lastKey--)
+  // messageRef.value.close(lastKey--)
 }
 
 function clearAll() {
   clearMessage('clear')
   // Or use the instance method (no need to set group)
-  // messageRef.value.clearMessage()
+  // messageRef.value.clear()
 }
 </script>
 

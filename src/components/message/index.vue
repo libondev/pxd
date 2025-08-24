@@ -268,11 +268,11 @@ onBeforeUnmount(() => {
 defineExpose({
   messages: groupMessages,
   visibleMessages,
-  getMessage: getMessageByKey,
-  pauseMessage: pauseMessageByKey,
-  resumeMessage: resumeMessageByKey,
-  closeMessage: closeMessageByKey,
-  clearMessage,
+  get: getMessageByKey,
+  pause: pauseMessageByKey,
+  resume: resumeMessageByKey,
+  close: closeMessageByKey,
+  clear: clearMessage,
 })
 </script>
 

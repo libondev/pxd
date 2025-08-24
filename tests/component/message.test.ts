@@ -112,7 +112,7 @@ describe('message', () => {
 
     expect(wrapper.vm.messages.length).toBe(1)
 
-    wrapper.vm.closeMessage('closable-1')
+    wrapper.vm.close('closable-1')
 
     expect(wrapper.vm.messages.length).toBe(0)
 
