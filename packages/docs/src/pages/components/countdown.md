@@ -55,22 +55,54 @@ function resetStatus() {
 
     <PCountdown
       :active="active"
-      format="DD HH:mm:ss:S"
+      format="DD HH:mm:ss.S"
       :durations="durations"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
-      format="DD HH:mm:ss:SS"
+      format="DD HH:mm:ss.SS"
       :durations="durations"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
-      format="DD HH:mm:ss:SSS"
+      format="DD HH:mm:ss.SSS"
       :durations="durations"
+      @finish="resetStatus"
+    />
+  </PStack>
+</template>
+```
+
+## Intuitive
+By default, because the time is less than one second, it will be displayed as `0.123` at the end, and it will be displayed as a time more in line with human intuition after setting.
+
+-> The millisecond will always be 0 after turning on.
+
+```vue demo
+<script setup>
+import { shallowRef } from 'vue'
+
+const active = shallowRef(false)
+
+function resetStatus() {
+  active.value = false
+}
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PToggle v-model="active" label="Active" />
+
+    <PCountdown
+      ref="countdownRef"
+      intuitive
+      :active="active"
+      :durations="5000"
+      format="HH:mm:ss.SSS"
       @finish="resetStatus"
     />
   </PStack>
@@ -224,7 +256,7 @@ function resetStatus() {
 
 <template>
   <PStack direction="vertical">
-    <PToggle v-model="active" label="Active" @change="onChange" />
+    <PToggle v-model="active" label="Active" />
 
     <PCountdown
       invert
@@ -257,7 +289,7 @@ const active = ref(false)
 
 <template>
   <div class="h-16">
-    <PCountdown :active="active" :durations="5000" @finish="active = false">
+    <PCountdown intuitive :active="active" :durations="5000" @finish="active = false">
       <template #default="{times}">
         <PButton variant="primary" @click="active = !active">
           <template #prefix>

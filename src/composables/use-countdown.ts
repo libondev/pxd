@@ -50,6 +50,12 @@ export interface Options {
    * @default true
    */
   millisecond?: boolean
+  /**
+   * 是否启用人性化时间显示（向上取整到秒）
+   * Whether to enable human-friendly time display (ceil to seconds).
+   * @default false
+   */
+  intuitive?: boolean
 }
 
 export function useCountdown<T extends Record<string, any>>(
@@ -66,7 +72,6 @@ export function useCountdown<T extends Record<string, any>>(
   const totalDuration = computed(() => {
     const { endTime, durations } = props
 
-    // 如果设置了结束时间，计算剩余时间
     if (endTime) {
       const end = formatTime(endTime) - Date.now()
       return Math.max(0, end)
@@ -77,25 +82,30 @@ export function useCountdown<T extends Record<string, any>>(
       return Infinity
     }
 
-    // 返回格式化后的持续时间
     return Math.max(0, formatTime(durations ?? 0))
   })
 
-  // 判断是否为无限计时模式
   const isInfiniteCountup = computed(() =>
     props.invert && totalDuration.value === Infinity,
   )
 
-  // 格式化时间（毫秒或秒转换）
   function formatTime(time: number = 0): number {
     return props.millisecond ? Math.round(time) : Math.round(time * 1000)
   }
 
   // 获取当前计时值
   function getCurrent(now: DOMHighResTimeStamp): number {
-    return props.invert
+    const rawCurrent = props.invert
       ? now - startTimestamp
       : totalDuration.value + startTimestamp - now
+
+    // 将毫秒转换为秒，向上取整，然后转回毫秒
+    if (props.intuitive && !props.invert && rawCurrent > 0) {
+      const seconds = Math.ceil(rawCurrent / 1000)
+      return Math.max(0, seconds * 1000)
+    }
+
+    return rawCurrent
   }
 
   function setCurrent(): void {
@@ -108,19 +118,29 @@ export function useCountdown<T extends Record<string, any>>(
         : Math.min(startAtValue, totalDuration.value)
     } else {
       // 倒计时模式：从 totalDuration - startAt 开始倒计时
-      timeRef.value = Math.max(0, totalDuration.value - startAtValue)
+      const rawTime = Math.max(0, totalDuration.value - startAtValue)
+
+      // 如果设置了 intuitive 则对初始值也进行向上取整处理
+      if (props.intuitive && rawTime > 0) {
+        const seconds = Math.ceil(rawTime / 1000)
+        timeRef.value = Math.max(0, seconds * 1000)
+      } else {
+        timeRef.value = rawTime
+      }
     }
   }
 
-  // 检查是否应该结束计时
   function shouldFinish(current: number): boolean {
     if (!props.invert) {
-      // 倒计时模式：时间小于等于0时结束
+      if (props.intuitive) {
+        const actualCurrent = totalDuration.value + startTimestamp - performance.now()
+        return actualCurrent <= 0
+      }
+
       return current <= 0
-    } else {
-      // 正计时模式：非无限模式且达到总时长时结束
-      return !isInfiniteCountup.value && current >= totalDuration.value
     }
+
+    return !isInfiniteCountup.value && current >= totalDuration.value
   }
 
   function finish(): void {
@@ -161,13 +181,11 @@ export function useCountdown<T extends Record<string, any>>(
 
     previousFrameTime = now
 
-    // 检查是否应该结束
     if (shouldFinish(current)) {
       finish()
       return
     }
 
-    // 更新时间值
     if (props.invert) {
       timeRef.value = isInfiniteCountup.value
         ? current
@@ -179,7 +197,6 @@ export function useCountdown<T extends Record<string, any>>(
     requestAnimationFrame(frame)
   }
 
-  // 监听激活状态变化
   const unwatchActive = watch(
     () => props.active,
     (isActive) => {
