@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
-import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass-small'
+import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { off, on } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
@@ -21,10 +21,7 @@ const menus = [
   },
 ] as const
 
-const route = useRoute()
-
 const showCommandMenu = shallowRef(false)
-const showSearchInput = computed(() => route.name && route.name !== '/')
 
 function openCommandMenu() {
   showCommandMenu.value = true
@@ -32,10 +29,6 @@ function openCommandMenu() {
 
 function onKeydown(ev: KeyboardEvent) {
   if (!(ev.ctrlKey || ev.metaKey) || ev.key !== 'k') {
-    return
-  }
-
-  if (!showSearchInput.value) {
     return
   }
 
@@ -66,26 +59,17 @@ onBeforeUnmount(() => {
         </RouterLink>
       </h2>
 
-      <div v-if="showSearchInput" class="px-3 md:block hidden">
-        <PButton class="px-2 text-foreground-secondary" size="sm" @click="openCommandMenu">
-          <template #prefix>
-            <MagnifyingGlassIcon />
-          </template>
-
-          <span class="pr-6">Search</span>
-
-          <template #suffix>
-            <PKbd ctrl label="K" size="sm" />
-          </template>
-        </PButton>
-      </div>
-
       <nav class="sm:border-r ml-auto flex h-full items-center">
         <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
-          <li v-if="showSearchInput" class="md:hidden">
+          <li>
             <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
               <MagnifyingGlassIcon />
+
               <span class="sm:block ml-1.5 hidden">Search</span>
+
+              <template #suffix>
+                <PKbd ctrl label="K" size="sm" class="sm:!inline-flex !hidden" />
+              </template>
             </PButton>
           </li>
 
@@ -106,6 +90,23 @@ onBeforeUnmount(() => {
         <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
           <PCommandMenuItem v-for="e of i.children" :key="e.path" :label="e.label" as="RouterLink" :to="e.path" />
         </PCommandMenuGroup>
+
+        <template #footer>
+          <div class="sm:flex py-2 px-3 hidden items-center justify-end border-t bg-background-200">
+            <PKbd enter />
+            <PText secondary class="px-1.5 text-13px">
+              Open
+            </PText>
+
+            <div class="mx-3 h-4 border-l" />
+
+            <PKbd label="↑" />
+            <PKbd label="↓" />
+            <PText secondary class="px-1.5 text-13px">
+              Toggle
+            </PText>
+          </div>
+        </template>
       </PCommandMenu>
     </div>
   </header>
