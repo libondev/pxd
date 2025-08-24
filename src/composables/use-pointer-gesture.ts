@@ -392,7 +392,7 @@ export function usePointerGesture(container: DOMRef, options: UsePointerGestureO
       return
     }
 
-    if (!options.pointerGuard?.(e)) {
+    if (typeof options.pointerGuard === 'function' && !options.pointerGuard(e)) {
       return
     }
 
