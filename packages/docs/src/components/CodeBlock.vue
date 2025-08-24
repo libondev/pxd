@@ -3,6 +3,7 @@ import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import { useCopyClick } from 'pxd/composables/use-copy-click'
 
+const codeContainer = shallowRef<HTMLElement>()
 const { isCopied, copyText } = useCopyClick()
 
 function onCopy(ev: MouseEvent) {
@@ -32,7 +33,7 @@ function onCopy(ev: MouseEvent) {
       </summary>
 
       <div class="group relative overflow-auto rounded-b-lg border-t bg-(--color-bg-code-block)">
-        <div class="max-h-100 overflow-auto">
+        <div ref="codeContainer" class="max-h-100 overflow-auto">
           <slot name="code" />
         </div>
 
@@ -44,6 +45,8 @@ function onCopy(ev: MouseEvent) {
             <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
           </Transition>
         </div>
+
+        <PFader blur :container="codeContainer" />
       </div>
     </details>
   </div>
