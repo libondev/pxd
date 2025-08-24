@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
-import { pascalize } from 'pxd/utils/format'
+import { humanize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 import Menus from '../../components/Menus.vue'
@@ -69,7 +69,7 @@ if (!isServer) {
   watch(
     () => route.path,
     () => {
-      document.title = `${pascalize(route.path.split('/').pop()!)} - PXD`
+      document.title = `${humanize(route.path.split('/').pop()!)} - PXD`
     },
     { immediate: true },
   )

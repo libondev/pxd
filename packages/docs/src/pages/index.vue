@@ -162,3 +162,8 @@ onBeforeUnmount(() => {
     </section>
   </main>
 </template>
+
+<route lang="yaml">
+meta:
+  layout: false
+</route>
