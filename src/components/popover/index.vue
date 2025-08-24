@@ -116,7 +116,7 @@ const {
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 const computedTransitionName = computed(() =>
-  props.transitionName ?? `pxd-transition--popover-${localPosition.value.split('-')[0]}`,
+  props.transitionName ?? 'pxd-transition--popover',
 )
 
 let savedScrollTop: number = 0
@@ -777,25 +777,16 @@ defineExpose({
   }
 }
 
-.showTransition.pxd-transition--popover-top-enter-active,
-.hideTransition.pxd-transition--popover-top-leave-active,
-.showTransition.pxd-transition--popover-bottom-enter-active,
-.hideTransition.pxd-transition--popover-bottom-leave-active,
-.showTransition.pxd-transition--popover-left-enter-active,
-.hideTransition.pxd-transition--popover-left-leave-active,
-.showTransition.pxd-transition--popover-right-enter-active,
-.hideTransition.pxd-transition--popover-right-leave-active {
-  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+.showTransition.pxd-transition--popover-enter-active,
+.hideTransition.pxd-transition--popover-leave-active {
+  transition: var(--default-transition-duration) var(--default-transition-timing-function);
+  transition-property: opacity, filter, transform;
+  will-change: opacity, filter, transform;
 }
 
-.showTransition.pxd-transition--popover-top-enter-from,
-.hideTransition.pxd-transition--popover-top-leave-to,
-.showTransition.pxd-transition--popover-bottom-enter-from,
-.hideTransition.pxd-transition--popover-bottom-leave-to,
-.showTransition.pxd-transition--popover-left-enter-from,
-.hideTransition.pxd-transition--popover-left-leave-to,
-.showTransition.pxd-transition--popover-right-enter-from,
-.hideTransition.pxd-transition--popover-right-leave-to {
+.showTransition.pxd-transition--popover-enter-from,
+.hideTransition.pxd-transition--popover-leave-to {
+  filter: blur(2px);
   opacity: 0;
 }
 </style>

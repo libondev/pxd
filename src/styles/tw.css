@@ -487,12 +487,12 @@
 .pxd-transition--fade-enter-active,
 .pxd-transition--fade-leave-active {
   transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+  will-change: opacity;
 }
 
 .pxd-transition--fade-enter-from,
 .pxd-transition--fade-leave-to {
   opacity: 0;
-  will-change: opacity;
 }
 
 .pxd-transition--fade-scale-move,

@@ -145,15 +145,13 @@ watch(() => isVisible.value, (visible) => {
 <style>
 .pxd-transition--modal-enter-active,
 .pxd-transition--modal-leave-active {
-  transition-timing-function: var(--default-transition-timing-function);
-  transition:
-    transform var(--default-transition-duration),
-    opacity var(--default-transition-duration);
+  transition: var(--default-transition-duration) var(--default-transition-timing-function);
+  transition-property: transform, opacity;
 }
 
 .pxd-modal.pxd-transition--modal-enter-from,
 .pxd-modal.pxd-transition--modal-leave-to {
   opacity: var(--o, 1);
-  transform: var(--t, translate(0, 100%));
+  transform: var(--t, translate3d(0, 100%, 0));
 }
 </style>
