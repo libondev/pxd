@@ -1,4 +1,4 @@
-import type { DOMRef, Nullable } from '../types/shared/utils'
+import type { MaybeElementRef, Nullable } from '../types/shared/utils'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 import { toValue } from '../utils/ref'
@@ -182,7 +182,7 @@ const OPTIONS_DEFAULTS = {
   usePointerCapture: true,
 }
 
-export function usePointerGesture(container: DOMRef, options: UsePointerGestureOptions = {}) {
+export function usePointerGesture(container: MaybeElementRef<HTMLElement>, options: UsePointerGestureOptions = {}) {
   const isActive = shallowRef(false)
   const isDragging = shallowRef(false)
   const isLongPressing = shallowRef(false)

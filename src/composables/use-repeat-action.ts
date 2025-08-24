@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { Callback } from '../types/shared/utils'
 import { onBeforeUnmount } from 'vue'
 import { off, on } from '../utils/event'
@@ -11,7 +11,7 @@ interface RepeatActionReturnType {
 
 interface UseRepeatActionOptions {
   action: Callback
-  disabled?: MaybeRef<boolean>
+  disabled?: MaybeRefOrGetter<boolean>
   finalInterval?: number
   initialInterval?: number
   accelerationDuration?: number
@@ -69,8 +69,8 @@ export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callba
   }
 
   onBeforeUnmount(() => {
-    off(document, 'pointerup', stop, { once: true })
-    off(document, 'pointercancel', stop, { once: true })
+    off(document, 'pointerup', stop)
+    off(document, 'pointercancel', stop)
   })
 
   return {

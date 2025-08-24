@@ -1,4 +1,4 @@
-import type { MaybeRef, MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { Nullable } from '../types/shared/utils'
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { toArray } from '../utils/format'
@@ -31,27 +31,27 @@ function createObserver(
 ): (
   target: TargetRef,
   callback: IntersectionObserverCallback,
-  options?: MaybeRef<IntersectionObserverInit>
+  options?: MaybeRefOrGetter<IntersectionObserverInit>
 ) => ObserverReturnType<IntersectionObserver>
 function createObserver(
   ObserverConstructor: typeof MutationObserver
 ): (
   target: TargetRef,
   callback: MutationCallback,
-  options?: MaybeRef<MutationObserverInit>
+  options?: MaybeRefOrGetter<MutationObserverInit>
 ) => ObserverReturnType<MutationObserver>
 function createObserver(
   ObserverConstructor: typeof ResizeObserver
 ): (
   target: TargetRef,
   callback: ResizeObserverCallback,
-  options?: MaybeRef<ResizeObserverOptions>
+  options?: MaybeRefOrGetter<ResizeObserverOptions>
 ) => ObserverReturnType<ResizeObserver>
 function createObserver(ObserverConstructor: Constructor) {
   function observerWrapper(
     target: TargetRef,
     callback: IntersectionObserverCallback | ResizeObserverCallback | MutationCallback,
-    options?: MaybeRef<IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit>,
+    options?: MaybeRefOrGetter<IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit>,
   ) {
     let observer: Observers | undefined
 

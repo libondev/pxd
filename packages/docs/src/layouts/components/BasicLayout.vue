@@ -30,7 +30,8 @@ const route = useRoute()
 const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.MD_UP)
 
 const showViewSource = computed(() => {
-  return route.name?.startsWith('/components') && !route.name?.endsWith('/')
+  const { name } = route
+  return (name.startsWith('/components') || name.startsWith('/composables')) && !name.endsWith('/')
 })
 
 const flattenedMenus = computed(() => {

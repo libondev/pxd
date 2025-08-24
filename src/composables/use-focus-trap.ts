@@ -1,9 +1,9 @@
-import type { DOMRef } from '../types/shared/utils'
+import type { MaybeElementRef } from '../types/shared/utils'
 import { nextTick, onBeforeUnmount, watch } from 'vue'
 import { on } from '../utils/event'
 import { toValue } from '../utils/ref'
 
-export function useFocusTrap(container: DOMRef) {
+export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
   const FOCUSABLE_SELECTORS = [
     ':focus',
     'a[href]:not([tabindex^="-"])',
@@ -42,8 +42,8 @@ export function useFocusTrap(container: DOMRef) {
     elements[nextFocusIndex]?.focus()
   }
 
-  const unwatch = watch(() => toValue(container), (container, _, onCleanup) => {
-    if (!container) {
+  const unwatch = watch(() => toValue(container), (target, _, onCleanup) => {
+    if (!target) {
       previousFocusedElement?.focus()
       return
     }
@@ -51,13 +51,13 @@ export function useFocusTrap(container: DOMRef) {
     previousFocusedElement = document.activeElement as HTMLElement
 
     nextTick(() => {
-      const unbindEvent = on(container, 'keydown', onContainerKeydown)
-      elements = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS))
+      const unbindEvent = on(target, 'keydown', onContainerKeydown)
+      elements = Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS))
 
       if (elements.length) {
         elements[0].focus()
       } else {
-        container.focus({ preventScroll: true })
+        target.focus({ preventScroll: true })
       }
 
       onCleanup(() => {

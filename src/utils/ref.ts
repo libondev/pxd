@@ -1,13 +1,9 @@
 // https://github.com/vueuse/vueuse/blob/main/packages/core/unrefElement/index.ts#L16
 
-import type { ComponentPublicInstance, MaybeRef, MaybeRefOrGetter } from 'vue'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 
-import type { Nullable } from '../types/shared/utils'
+import type { MaybeElement } from '../types/shared/utils'
 import { unref } from 'vue'
-
-export type MaybeElement = Nullable<HTMLElement | SVGElement | ComponentPublicInstance>
-export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
-export type MaybeComputedElementRef<T extends MaybeElement = MaybeElement> = MaybeRefOrGetter<T>
 
 export type UnRefElementReturn<T extends MaybeElement = MaybeElement> = T extends ComponentPublicInstance
   ? Exclude<MaybeElement, ComponentPublicInstance>
