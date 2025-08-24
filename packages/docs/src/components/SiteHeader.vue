@@ -2,26 +2,17 @@
 import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
+import { version } from 'pxd'
 import { off, on } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
 
-const menus = [
-  {
-    label: 'Docs',
-    href: '/guide/introduction',
-    target: undefined,
-    icon: BookOpenIcon,
-  },
-  {
-    label: 'Github',
-    href: 'https://github.com/libondev/pxd',
-    target: '_blank',
-    icon: LogoGithubIcon,
-  },
-] as const
-
 const showCommandMenu = shallowRef(false)
+const prereleaseVersion = (() => {
+  const versions = version.split('.')
+  versions[2] = String(Number(versions[2]) + 1)
+  return versions.join('.')
+})()
 
 function openCommandMenu() {
   showCommandMenu.value = true
@@ -50,12 +41,18 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="top-0 sm:border-t-0 sticky z-10 border-y bg-background-100 select-none">
+  <header class="top-0 sm:border-t-0 sticky z-1 border-y bg-background-100 select-none">
     <div class="md:max-w-screen-2xl h-12 mx-auto flex w-full max-w-full items-center justify-between">
       <h2 class="sm:w-58 md:border-x h-full">
-        <RouterLink to="/" class="px-3 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
-          <SiteLogo class="mr-2 text-2xl" />
+        <RouterLink to="/" class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
+          <SiteLogo class="text-2xl" />
           <span>PXD</span>
+
+          <PTooltip content="Internal development version" desktop-only position="bottom">
+            <PBadge size="sm" variant="gray-subtle">
+              v{{ prereleaseVersion }}
+            </PBadge>
+          </PTooltip>
         </RouterLink>
       </h2>
 
@@ -73,10 +70,19 @@ onBeforeUnmount(() => {
             </PButton>
           </li>
 
-          <li v-for="menu in menus" :key="menu.href">
-            <PLinkButton variant="ghost" class="sm:px-3 h-full" shape="square" :target="menu.target" :href="menu.href">
-              <Component :is="menu.icon" />
-              <span class="sm:block ml-1.5 hidden">{{ menu.label }}</span>
+          <li class="sm:block hidden">
+            <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" href="/guide/introduction">
+              <BookOpenIcon />
+
+              <span class="sm:block ml-1.5 hidden">Docs</span>
+            </PLinkButton>
+          </li>
+
+          <li>
+            <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" target="_blank" href="https://github.com/libondev/pxd">
+              <LogoGithubIcon />
+
+              <span class="sm:block ml-1.5 hidden">Github</span>
             </PLinkButton>
           </li>
 

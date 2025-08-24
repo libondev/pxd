@@ -1,6 +1,5 @@
 <script setup>
 import { useHead } from '@unhead/vue'
-import { version } from 'pxd'
 import { off, on, once } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
@@ -64,14 +63,12 @@ onBeforeUnmount(() => {
           PXD
         </h1>
 
-        <PBadge variant="vue" class="top-0 absolute select-none">
-          v{{ version }}
-        </PBadge>
+        <span class="top-0 absolute select-none">
+          <img src="https://img.shields.io/npm/v/pxd.svg">
+        </span>
       </div>
 
-      <p
-        class="leading-tight text-lg mt-8 text-balance text-foreground-secondary"
-      >
+      <p class="leading-tight text-lg mt-8 text-balance text-foreground-secondary">
         A universal UI component library for Vue2&3
       </p>
 
@@ -85,9 +82,7 @@ onBeforeUnmount(() => {
           Get Started
 
           <template #suffix>
-            <IconArrowRight
-              class="motion-safe:animate-[bounce-right_1s_ease-out_infinite]"
-            />
+            <IconArrowRight />
           </template>
         </PLinkButton>
 
@@ -167,23 +162,3 @@ onBeforeUnmount(() => {
     </section>
   </main>
 </template>
-
-<style>
-@keyframes bounce-right {
-  0%,
-  100% {
-    transform: translateX(-20%) scale(1) translateZ(0);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-  }
-
-  50% {
-    transform: translateX(25%) scale(0.9) translateZ(0);
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-</style>
-
-<route lang="yaml">
-meta:
-  layout: false
-</route>
