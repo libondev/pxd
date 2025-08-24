@@ -1,7 +1,7 @@
 import type { EmitFn } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 
-const UPDATE_INTERVAL = Math.ceil(1000 / 25)
+const UPDATE_INTERVAL = 100 // 100ms = 10fps
 
 export interface Options {
   /**
@@ -141,7 +141,7 @@ export function useCountdown<T extends Record<string, any>>(
     }
   }
 
-  function frame(timestamp?: DOMHighResTimeStamp): void {
+  function frame(): void {
     const now = performance.now()
     const current = getCurrent(now)
     let isLastFrame = false
@@ -159,7 +159,7 @@ export function useCountdown<T extends Record<string, any>>(
       return
     }
 
-    previousFrameTime = timestamp!
+    previousFrameTime = now
 
     // 检查是否应该结束
     if (shouldFinish(current)) {
