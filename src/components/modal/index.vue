@@ -149,8 +149,8 @@ watch(() => isVisible.value, (visible) => {
   transition-property: transform, opacity;
 }
 
-.pxd-modal.pxd-transition--modal-enter-from,
-.pxd-modal.pxd-transition--modal-leave-to {
+.pxd-transition--modal-enter-from,
+.pxd-transition--modal-leave-to {
   opacity: var(--o, 1);
   transform: var(--t, translate3d(0, 100%, 0));
 }

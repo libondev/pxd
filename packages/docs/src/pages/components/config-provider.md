@@ -10,9 +10,9 @@ import { ref } from 'vue'
 const size = ref('md')
 
 const sizes = [
-  { label: 'sm', value: 'sm' },
-  { label: 'md', value: 'md' },
-  { label: 'lg', value: 'lg' },
+  { label: 'Small', value: 'sm' },
+  { label: 'Medium', value: 'md' },
+  { label: 'Large', value: 'lg' },
 ]
 </script>
 

@@ -27,5 +27,7 @@ const isVisible = computed(() => {
 </script>
 
 <template>
-  <PListItem v-if="isVisible" v-bind="props" />
+  <PListItem v-if="isVisible" v-bind="props">
+    <slot />
+  </PListItem>
 </template>

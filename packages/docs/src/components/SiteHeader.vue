@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ArrowRightIcon from '@gdsicon/vue/arrow-right'
 import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
@@ -94,23 +95,26 @@ onBeforeUnmount(() => {
 
       <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
         <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
-          <PCommandMenuItem v-for="e of i.children" :key="e.path" :label="e.label" as="RouterLink" :to="e.path" />
+          <PCommandMenuItem v-for="e of i.children" :key="e.path" :label="e.label" as="RouterLink" :to="e.path">
+            <ArrowRightIcon class="text-foreground-secondary" />
+            {{ e.label }}
+          </PCommandMenuItem>
         </PCommandMenuGroup>
 
         <template #footer>
-          <div class="sm:flex py-2 px-3 hidden items-center justify-end border-t bg-background-200">
-            <PKbd enter />
-            <PText secondary class="px-1.5 text-13px">
+          <div class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200">
+            <PText secondary class="text-13px">
               Open
             </PText>
+            <PKbd enter />
 
             <div class="mx-3 h-4 border-l" />
 
-            <PKbd label="↑" />
-            <PKbd label="↓" />
-            <PText secondary class="px-1.5 text-13px">
+            <PText secondary class="text-13px">
               Toggle
             </PText>
+            <PKbd label="↑" />
+            <PKbd label="↓" />
           </div>
         </template>
       </PCommandMenu>

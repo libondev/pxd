@@ -45,8 +45,6 @@ function onCopy(ev: MouseEvent) {
             <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
           </Transition>
         </div>
-
-        <PFader blur :container="codeContainer" />
       </div>
     </details>
   </div>

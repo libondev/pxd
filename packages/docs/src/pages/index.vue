@@ -63,7 +63,7 @@ onBeforeUnmount(() => {
           PXD
         </h1>
 
-        <span class="top-0 absolute select-none">
+        <span class="top-0 ml-1 absolute select-none">
           <img src="https://img.shields.io/npm/v/pxd.svg">
         </span>
       </div>

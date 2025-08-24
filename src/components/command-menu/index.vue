@@ -79,15 +79,15 @@ const onKeywordChange = throttle(async (ev: Event) => {
   await nextTick()
   list.updateListItem()
   isEmptyResult.value = list.isNoVisibleItem()
-}, 300, { edges: ['leading', 'trailing'] })
+}, 200, { edges: ['leading', 'trailing'] })
 
-const closeModal = debounce(() => {
+const hideModal = debounce(() => {
   modelValue.value = false
   filterKeyword.value = ''
   emits('hide')
 }, 500, { edges: ['leading'] })
 
-function onShowModal() {
+function showModal() {
   emits('show')
 }
 
@@ -95,7 +95,7 @@ function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
   emits('select', ev, item)
 
   if (props.closeOnSelectItem) {
-    closeModal()
+    hideModal()
   }
 }
 
@@ -114,11 +114,11 @@ provideCommandMenuContext({
     wrapper-class="sm:top-1/6 sm:translate-y-0"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
-    @show="onShowModal"
-    @hide="closeModal"
+    @show="showModal"
+    @hide="hideModal"
   >
     <template #header>
-      <label :for="uniqueId" class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b">
+      <label :for="uniqueId" class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b bg-background-100">
         <input
           :id="uniqueId"
           :value="filterKeyword"
@@ -141,7 +141,7 @@ provideCommandMenuContext({
           v-if="closeOnPressEscape"
           size="xs"
           class="!px-0 text-xs shrink-0"
-          @click="closeModal"
+          @click="hideModal"
         >
           Esc
         </PButton>
