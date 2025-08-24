@@ -9,6 +9,7 @@ import { throttleByRaf } from '../../utils/throttle'
 
 interface Props {
   size?: number
+  blur?: boolean
   color?: string
   container: Nullable<HTMLElement>
   direction?: ComponentDirection | 'both'
@@ -33,6 +34,7 @@ const fader = shallowRef({
 })
 
 const computedStyle = computed(() => ({
+  '--fader-blur': props.blur ? 'blur(1px)' : undefined,
   '--fader-color': props.color,
   '--fader-size': getCssUnitValue(props.size),
 }))
@@ -89,9 +91,10 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--fader-color, var(--color-gray-200)));
-  mask-image: linear-gradient(var(--dir-revert), var(--fader-color, var(--color-gray-200)) 50%, transparent);
-  transition: opacity var(--default-transition-timing-function) var(--default-transition-duration);
+  background: linear-gradient(var(--dir), transparent 20%, var(--fader-color, rgba(0,0,0,0.1)) 80%);
+  mask-image: linear-gradient(var(--dir-revert), transparent, var(--fader-color) 30%, var(--fader-color) 70%, transparent);
+  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+  backdrop-filter: var(--fader-blur);
   opacity: 0;
 }
 
@@ -106,7 +109,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--fader-size, 16px);
+    width: var(--fader-size, 1rem);
     height: 100%;
   }
 
@@ -128,7 +131,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--fader-size, 16px);
+    height: var(--fader-size, 1rem);
   }
 
   &::before {
