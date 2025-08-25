@@ -68,9 +68,9 @@ const onKeywordChange = throttle(async (ev: Event) => {
     return
   }
 
-  list.setActiveValue()
   await nextTick()
   list.updateListItem()
+  list.setActiveValueToFirst()
   isEmptyResult.value = list.isNoVisibleItem()
 }, 200, { edges: ['leading', 'trailing'] })
 
