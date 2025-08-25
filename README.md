@@ -27,14 +27,20 @@ pnpm dev
 
 ### Build
 
-#### Core
+#### Core only
 
 ```shell
-pnpm build
+pnpm build:lib
 ```
 
-#### Docs
+#### Docs only
 
 ```shell
 pnpm build:docs
+```
+
+#### Deploy
+
+```shell
+pnpm build
 ```
