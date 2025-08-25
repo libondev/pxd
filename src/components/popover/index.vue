@@ -19,7 +19,6 @@ import PTeleport from '../teleport/index.vue'
 interface Props {
   zIndex?: number
   offset?: number
-  content?: string
   visible?: boolean
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
@@ -679,9 +678,7 @@ defineExpose({
         >
           <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
           <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
-            <slot name="content">
-              {{ content }}
-            </slot>
+            <slot name="content" />
           </div>
         </div>
       </Transition>
