@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Transition name="pxd-transition--fade" appear>
+  <Transition name="pxd-transition--fade-scale" appear>
     <div
       v-show="scrollTop >= visibleThreshold"
       ref="wrapperRef"
