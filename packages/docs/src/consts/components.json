@@ -8,6 +8,10 @@
     "name": "avatar"
   },
   {
+    "camelized": "Backtop",
+    "name": "backtop"
+  },
+  {
     "camelized": "Badge",
     "name": "badge"
   },

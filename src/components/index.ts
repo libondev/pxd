@@ -2,6 +2,7 @@
 export { default as ActiveGraph } from './active-graph/index.vue'
 export { default as Avatar } from './avatar/index.vue'
 export { default as AvatarGroup } from './avatar-group/index.vue'
+export { default as Backtop } from './backtop/index.vue'
 export { default as Badge } from './badge/index.vue'
 export { default as Book } from './book/index.vue'
 export { default as Browser } from './browser/index.vue'
