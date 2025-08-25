@@ -220,6 +220,10 @@
     "name": "theme-switcher"
   },
   {
+    "camelized": "Time Picker",
+    "name": "time-picker"
+  },
+  {
     "camelized": "Toggle",
     "name": "toggle"
   },
