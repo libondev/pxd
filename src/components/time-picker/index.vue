@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { shallowRef } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import PButton from '../button/index.vue'
+import { computed, ref, shallowRef, watch } from 'vue'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { dayjs } from '../../utils/date'
+import { throttle } from '../../utils/throttle'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
-  format?: string
-  modelValue?: string
-  valueFormat?: string
+  modelValue?: Date | string | number
   placeholder?: string
   closeOnPressEscape?: boolean
 }
@@ -26,23 +25,60 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: '',
+    format: 'HH:mm:ss',
+    valueFormat: 'HH:mm:ss',
     closeOnPressEscape: true,
   },
 )
 
-const emits = defineEmits<{
+const _emits = defineEmits<{
   'change': [visible: boolean]
   'select': [MouseEvent]
   'update:modelValue': [Props['modelValue']]
 }>()
 
-const modelValue = useModelValue(props, emits)
+const HEIGHT = 32
+const VALUE_POSITION_MAP = {
+  hours: 0,
+  minutes: 1,
+  seconds: 2,
+} as const
+
+const config = useConfigProvider()
+
+const modelValueList = ref<string[]>([])
+
+const modelValue = computed<string>({
+  get() {
+    return modelValueList.value.join(':')
+  },
+  set() {
+  },
+})
+
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
 const popoverVisible = shallowRef(false)
 
 function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
+}
+
+function getFormattedValue(value: Props['modelValue']) {
+  let _value = value
+  if (_value == null || _value === '') {
+    return ''
+  }
+
+  if (typeof _value === 'string') {
+    const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
+
+    _value = `${formatDate} ${_value}`
+  } else {
+    _value = new Date(_value)
+  }
+
+  return dayjs(_value).format('HH:mm:ss')
 }
 
 function closePopover() {
@@ -52,6 +88,15 @@ function closePopover() {
 function onPopoverVisibleChange(visible: boolean = false) {
   popoverVisible.value = visible
 }
+
+const onTimeListScroll = throttle((ev: Event) => {
+  const target = ev.target as HTMLElement
+  const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
+  const value = Math.ceil(target.scrollTop / HEIGHT)
+  const index = VALUE_POSITION_MAP[type]
+
+  modelValueList.value[index] = padStringZero(value)
+}, 150, { edges: ['leading', 'trailing'] })
 
 function onContainerClick(ev: MouseEvent) {
   const target = ev.target as HTMLElement
@@ -80,6 +125,14 @@ function onContainerClick(ev: MouseEvent) {
     behavior: 'smooth',
   })
 }
+
+function onConfirmClick() {
+  closePopover()
+}
+
+watch(() => props.modelValue, (value) => {
+  modelValueList.value = getFormattedValue(value).split(':')
+}, { immediate: true })
 </script>
 
 <template>
@@ -87,39 +140,46 @@ function onContainerClick(ev: MouseEvent) {
     ref="popoverRef"
     enterable
     trigger="click"
-    class="pxd-time-picker"
     scroll-hidden
     :show-delay="0"
     :hide-delay="100"
     :show-transition="false"
+    position="bottom-start"
+    class="pxd-time-picker w-full"
     :close-on-press-escape="closeOnPressEscape"
     content-class="rounded-xl bg-background-100 shadow-border-menu"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput v-model="modelValue" :placeholder="placeholder" />
+    <PInput v-model="modelValue" v-bind="$attrs" :placeholder="placeholder" />
 
     <template #content>
-      <div class="p-2 gap-1 text-sm flex w-full max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
-        <ul data-type="hours" class="pxd-time-picker--list w-12 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none">
-          <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-            {{ padStringZero(i) }}
-          </li>
-        </ul>
-        <ul data-type="minutes" class="pxd-time-picker--list w-12 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none">
-          <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-            {{ padStringZero(i) }}
-          </li>
-        </ul>
-        <ul data-type="seconds" class="pxd-time-picker--list w-12 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none">
-          <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-            {{ padStringZero(i) }}
-          </li>
-        </ul>
+      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
+        <div class="p-2 gap-1 flex items-center">
+          <ul data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+            <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              {{ padStringZero(i) }}
+            </li>
+          </ul>
+          <ul data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+            <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              {{ padStringZero(i) }}
+            </li>
+          </ul>
+          <ul data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+            <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              {{ padStringZero(i) }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="w-24 p-2 h-44 border-l">
+          <span>123</span>
+        </div>
       </div>
 
       <div class="p-2 flex items-center justify-end border-t">
-        <PButton size="xs" variant="ghost" @click="closePopover">
-          OK
+        <PButton size="xs" variant="ghost" @click="onConfirmClick">
+          {{ config.locale.confirm.ok }}
         </PButton>
       </div>
     </template>
@@ -131,7 +191,7 @@ function onContainerClick(ev: MouseEvent) {
   content: '';
   position: fixed;
   top: 72px;
-  width: 48px;
+  width: 32px;
   height: 32px;
   z-index: -1;
   border-radius: var(--radius-md);
@@ -144,10 +204,10 @@ function onContainerClick(ev: MouseEvent) {
 }
 
 .pxd-time-picker--list:nth-child(2)::before {
-  left: 60px;
+  left: 44px;
 }
 
 .pxd-time-picker--list:nth-child(3)::before {
-  left: 112px;
+  left: 80px;
 }
 </style>

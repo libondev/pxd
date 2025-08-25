@@ -33,4 +33,8 @@ export default {
   empty: {
     search: 'No results found for',
   },
+  confirm: {
+    ok: 'OK',
+    cancel: 'Cancel',
+  },
 }

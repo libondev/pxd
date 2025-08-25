@@ -33,4 +33,8 @@ export default {
   empty: {
     search: '未找到结果',
   },
+  confirm: {
+    ok: '确定',
+    cancel: '取消',
+  },
 }
