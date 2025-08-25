@@ -11,3 +11,8 @@ export const [
   provideListContext,
   useListContext,
 ] = createContext<ListContext>('List')
+
+export const [
+  provideListFilterValue,
+  useListFilterValue,
+] = createContext<Ref<string>>('ListFilterValue', null)

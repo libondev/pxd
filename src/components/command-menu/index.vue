@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../../types/components/list'
-import { computed, nextTick, shallowRef } from 'vue'
+import { nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
-import { provideCommandMenuContext } from '../../contexts/command-menu'
+import { provideListFilterValue } from '../../contexts/list'
 import { debounce } from '../../utils/debounce'
 import { throttle } from '../../utils/throttle'
 import { getUniqueId } from '../../utils/uid'
@@ -54,15 +54,8 @@ const modelValue = useModelValue(props, emits)
 
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
-const isEmptyResult = shallowRef(false)
 const filterKeyword = shallowRef('')
-const filterKeywordRegex = computed(() => {
-  if (!filterKeyword.value) {
-    return null
-  }
-
-  return new RegExp(filterKeyword.value, 'i')
-})
+const isEmptyResult = shallowRef(false)
 
 const onKeywordChange = throttle(async (ev: Event) => {
   const inputValue = (ev.target as HTMLInputElement).value.trim()
@@ -99,10 +92,7 @@ function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
   }
 }
 
-provideCommandMenuContext({
-  filterKeyword,
-  filterKeywordRegex,
-})
+provideListFilterValue(filterKeyword)
 </script>
 
 <template>

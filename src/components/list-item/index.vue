@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ListOption, ListOptionSelected } from '../../types/components/list'
-import { computed, shallowRef } from 'vue'
-import { useListContext } from '../../contexts/list'
+import { computed, nextTick, onMounted, shallowRef } from 'vue'
+import { useListContext, useListFilterValue } from '../../contexts/list'
+import { unrefElement } from '../../utils/ref'
 import { getUniqueId } from '../../utils/uid'
 
 interface Props {
@@ -34,9 +35,11 @@ const {
   onOptionClick,
 } = useListContext()
 
-const currentValue = props.label || getUniqueId()
+const uniqueId = getUniqueId()
+const filterValue = useListFilterValue()
 
 const itemRef = shallowRef<HTMLElement>()
+const currentValue = shallowRef('')
 
 const itemTypeMap = {
   error: 'text-red-900 pointer-coarse:active:bg-red-100 pointer-fine:data-[selected=true]:bg-red-100',
@@ -45,7 +48,8 @@ const itemTypeMap = {
   separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
-const isSelected = computed(() => activeValue.value === currentValue)
+const isVisible = computed(() => filterValue?.value ? currentValue.value.includes(filterValue.value) : true)
+const isSelected = computed(() => activeValue.value === uniqueId)
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
 const computedClass = computed(() => {
@@ -63,24 +67,35 @@ function onItemClick(ev: MouseEvent) {
   emits('click', ev, props)
   onOptionClick?.(ev, props)
 }
+
+onMounted(async () => {
+  await nextTick()
+
+  if (props.label) {
+    currentValue.value = `${String(props.label || '')}${(props.description || '')}`.toLowerCase()
+  } else {
+    currentValue.value = (unrefElement(itemRef.value)?.textContent || '').toLowerCase()
+  }
+})
 </script>
 
 <template>
   <Component
     :is="as"
+    v-if="isVisible"
     ref="itemRef"
     tabindex="-1"
     role="listitem"
     :data-type="type"
-    :data-value="currentValue"
+    :data-value="uniqueId"
     :data-selected="isSelected"
     :data-disabled="isDisabled"
     :class="computedClass"
     @click.prevent.stop="onItemClick"
   >
     <slot v-if="type !== 'separator'">
-      <span class="gap-2 flex items-center">{{ label }}</span>
-      <span v-if="description" class="text-sm text-foreground-secondary">{{ description }}</span>
+      <span>{{ label }}</span>
+      <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
     </slot>
   </component>
 </template>
