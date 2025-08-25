@@ -10,80 +10,128 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 
 <template>
   <PStack gap="2">
-    <PPopover content-class="popover-demo" position="left" :content="content">
+    <PPopover content-class="popover-demo" position="left">
       <PButton>
         left
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="top" :content="content">
+    <PPopover content-class="popover-demo" position="top">
       <PButton>
         top
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="bottom" :content="content">
+    <PPopover content-class="popover-demo" position="bottom">
       <PButton>
         bottom
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="right" :content="content">
+    <PPopover content-class="popover-demo" position="right">
       <PButton>
         right
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
   </PStack>
 
   <PStack class="mt-2" gap="2">
-    <PPopover content-class="popover-demo" position="top-start" :content="content">
+    <PPopover content-class="popover-demo" position="top-start">
       <PButton>
         top-start
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="top-end" :content="content">
+    <PPopover content-class="popover-demo" position="top-end">
       <PButton>
         top-end
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="bottom-start" :content="content">
+    <PPopover content-class="popover-demo" position="bottom-start">
       <PButton>
         bottom-start
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="bottom-end" :content="content">
+    <PPopover content-class="popover-demo" position="bottom-end">
       <PButton>
         bottom-end
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
   </PStack>
 
   <PStack class="mt-2" gap="2">
-    <PPopover content-class="popover-demo" position="left-start" :content="content">
+    <PPopover content-class="popover-demo" position="left-start">
       <PButton>
         left-start
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="left-end" :content="content">
+    <PPopover content-class="popover-demo" position="left-end">
       <PButton>
         left-end
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="right-start" :content="content">
+    <PPopover content-class="popover-demo" position="right-start">
       <PButton>
         right-start
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="right-end" :content="content">
+    <PPopover content-class="popover-demo" position="right-end">
       <PButton>
         right-end
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
   </PStack>
 </template>
@@ -111,40 +159,64 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
 
 <template>
   <PStack gap="2">
-    <PPopover content-class="popover-demo" trigger="hover" :content="content">
+    <PPopover content-class="popover-demo" trigger="hover">
       <PButton>
         Hover to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="click" :content="content">
+    <PPopover content-class="popover-demo" trigger="click">
       <PButton>
         Click to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="focus" :content="content">
+    <PPopover content-class="popover-demo" trigger="focus">
       <PButton>
         Focus to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="contextmenu" :content="content">
+    <PPopover content-class="popover-demo" trigger="contextmenu">
       <PButton>
         Contextmenu to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" :trigger="['hover', 'click', 'focus']" :content="content">
+    <PPopover content-class="popover-demo" :trigger="['hover', 'click', 'focus']">
       <PButton>
         Hover/Click/Focus to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="manual" :visible="visible" :content="content">
+    <PPopover content-class="popover-demo" trigger="manual" :visible="visible">
       <PButton @click="visible = !visible">
         Manual to active
       </PButton>
+
+      <template #content>
+        {{ content }}
+      </template>
     </PPopover>
   </PStack>
 </template>
@@ -168,10 +240,14 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :content="content" :offset="30">
+  <PPopover content-class="popover-demo" :offset="30">
     <PButton>
       Hover to active
     </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
   </PPopover>
 </template>
 
@@ -194,10 +270,14 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :content="content" :max-width="200">
+  <PPopover content-class="popover-demo" :max-width="200">
     <PButton>
       Hover to active
     </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
   </PPopover>
 </template>
 
@@ -220,10 +300,14 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :content="content" enterable>
+  <PPopover content-class="popover-demo" enterable>
     <PButton>
       Hover to active
     </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
   </PPopover>
 </template>
 
@@ -247,10 +331,14 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :content="content" :destroy-delay="0">
+  <PPopover content-class="popover-demo" :destroy-delay="0">
     <PButton>
       0ms(Immediately destroy)
     </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
   </PPopover>
 </template>
 
