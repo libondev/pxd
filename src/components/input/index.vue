@@ -31,6 +31,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'click': [MouseEvent]
   'input': [string]
   'change': [string]
   'focus': [FocusEvent]
@@ -125,6 +126,10 @@ function onChange(event: Event) {
   emits('change', getValueFromEvent(event))
 }
 
+function onClick(event: MouseEvent) {
+  emits('click', event)
+}
+
 async function onInput(event: Event) {
   const ev = event as InputEvent
 
@@ -199,7 +204,7 @@ defineExpose({
 </script>
 
 <template>
-  <label class="pxd-input block w-full max-w-full" :for="uniqueId" @dragstart.prevent>
+  <label class="pxd-input block w-full max-w-full" :for="uniqueId" @click="onClick" @dragstart.prevent>
     <div v-if="label || $slots.label" class="pxd-form--label">
       <slot name="label">{{ label }}</slot>
     </div>
