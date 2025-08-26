@@ -60,7 +60,7 @@ const LINKS = [
       </div>
 
       <ul class="max-h-40 gap-x-2 sm:flex-wrap flex flex-col">
-        <div v-for="link in group.children" :key="link.href" class="sm:w-auto w-full">
+        <li v-for="link in group.children" :key="link.href" class="sm:w-auto w-full">
           <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" block>
             <template #prefix>
               <Component :is="link.icon" />
@@ -68,7 +68,7 @@ const LINKS = [
 
             {{ link.label }}
           </PLinkButton>
-        </div>
+        </li>
       </ul>
     </div>
   </footer>
