@@ -10,7 +10,7 @@ import {
   getScrollElByContainer,
   getScrollPositions,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn, sleep } from '../../utils/event'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
@@ -89,6 +89,9 @@ const triggerRect = shallowRef<DOMRect>()
 
 let viewportRect: DOMRect | null = null
 let scrollContainer: ReturnType<typeof getScrollContainer>
+
+let showPopoverTimer: ReturnType<typeof setTimeout> | null
+let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
@@ -230,9 +233,20 @@ async function handleDirectionInvertIfNeed() {
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
+  if (isVisible.value || showPopoverTimer) {
+    return
+  }
+
   getTriggerRect()
 
-  await sleep(immediate ? 0 : props.showDelay)
+  await new Promise<void>((resolve) => {
+    hidePopoverTimer && clearTimeout(hidePopoverTimer)
+
+    showPopoverTimer = setTimeout(() => {
+      showPopoverTimer = null
+      resolve()
+    }, immediate ? 0 : props.showDelay)
+  })
 
   localPosition.value = props.position
   updateContentPosition()
@@ -251,7 +265,18 @@ async function handlePopoverShow(immediate: boolean = false) {
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
-  await sleep(immediate ? 0 : props.showDelay)
+  if (!isVisible.value || hidePopoverTimer) {
+    return
+  }
+
+  await new Promise<void>((resolve) => {
+    showPopoverTimer && clearTimeout(showPopoverTimer)
+
+    hidePopoverTimer = setTimeout(() => {
+      hidePopoverTimer = null
+      resolve()
+    }, immediate ? 0 : props.hideDelay)
+  })
 
   await closePopover()
 
