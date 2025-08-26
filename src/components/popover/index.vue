@@ -81,6 +81,7 @@ const emits = defineEmits<{
   'show': []
   'hide': []
   'visible-change': [boolean]
+  'outside-click': [MouseEvent]
   'trigger-click': [PointerEvent]
   'trigger-keydown': [KeyboardEvent]
 }>()
@@ -359,7 +360,11 @@ async function onTriggerContextmenu(ev: MouseEvent) {
 }
 
 function onClickOutsideToHide(ev: MouseEvent) {
-  if (!triggerMethods.value.includes('click')) {
+  if (
+    !triggerMethods.value.includes('click')
+    && !triggerMethods.value.includes('manual')
+    && !triggerMethods.value.includes('contextmenu')
+  ) {
     return
   }
 
@@ -369,6 +374,7 @@ function onClickOutsideToHide(ev: MouseEvent) {
     !triggerRef.value?.contains(target)
     && !wrapperRef.value?.contains(target)
   ) {
+    emits('outside-click', ev)
     handlePopoverHide()
   }
 }
