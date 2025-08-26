@@ -10,7 +10,7 @@ import {
   getScrollElByContainer,
   getScrollPositions,
 } from '../../utils/dom'
-import { off, on, optimizedOff, optimizedOn, sleep } from '../../utils/event'
+import { optimizedOff, optimizedOn, sleep } from '../../utils/event'
 import { toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
@@ -322,8 +322,8 @@ async function onTriggerContextmenu(ev: MouseEvent) {
 
   if (isVisible.value) {
     await handlePopoverHide()
-    off(document, 'click', onClickOutsideToHide)
-    off(document, 'contextmenu', onTriggerContextmenu)
+    optimizedOff(document, 'click', onClickOutsideToHide)
+    optimizedOff(document, 'contextmenu', onTriggerContextmenu)
 
     return
   }
@@ -539,7 +539,7 @@ const triggerMethodEvents = {
 function updateTriggerEvents(
   methods: PopoverTrigger[],
   dom: Nullable<EventTarget>,
-  handler: typeof on | typeof off,
+  handler: typeof optimizedOn | typeof optimizedOff,
 ) {
   for (const method of methods) {
     const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
@@ -609,9 +609,9 @@ watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
     // unbind old trigger events
-    updateTriggerEvents(oldMethods, oldDom, off)
+    updateTriggerEvents(oldMethods, oldDom, optimizedOff)
 
-    updateTriggerEvents(newMethods, newDom, on)
+    updateTriggerEvents(newMethods, newDom, optimizedOn)
   },
 )
 
@@ -627,8 +627,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   viewportRect = null
 
-  off(document, 'click', onClickOutsideToHide)
-  off(document, 'contextmenu', onTriggerContextmenu)
+  optimizedOff(document, 'click', onClickOutsideToHide)
+  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
   optimizedOff(window, 'resize', onResizeUpdatePosition)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 })
