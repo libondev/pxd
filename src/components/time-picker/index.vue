@@ -31,10 +31,10 @@ const props = withDefaults(
   },
 )
 
-const _emits = defineEmits<{
+const emits = defineEmits<{
   'change': [visible: boolean]
   'select': [MouseEvent]
-  'update:modelValue': [Props['modelValue']]
+  'update:modelValue': [string]
 }>()
 
 const HEIGHT = 32
@@ -52,7 +52,8 @@ const modelValue = computed<string>({
   get() {
     return modelValueList.value.join(':')
   },
-  set() {
+  set(value: string) {
+    emits('update:modelValue', value)
   },
 })
 
@@ -121,18 +122,26 @@ function onContainerClick(ev: MouseEvent) {
   const newScrollTop = targetOffsetFromTop - containerCenter + targetCenter
 
   scrollContainer.scrollTo({
-    top: newScrollTop,
+    top: Math.max(0, newScrollTop),
     behavior: 'smooth',
   })
 }
 
-function onConfirmClick() {
+function onCancelClick() {
+  updateValueList(props.modelValue)
   closePopover()
 }
 
-watch(() => props.modelValue, (value) => {
+function onConfirmClick() {
+  modelValue.value = modelValueList.value.join(':')
+  closePopover()
+}
+
+function updateValueList(value: Props['modelValue'] = props.modelValue) {
   modelValueList.value = getFormattedValue(value).split(':')
-}, { immediate: true })
+}
+
+watch(() => props.modelValue, updateValueList, { immediate: true })
 </script>
 
 <template>
@@ -144,13 +153,14 @@ watch(() => props.modelValue, (value) => {
     :show-delay="0"
     :hide-delay="100"
     :show-transition="false"
-    position="bottom-start"
-    class="pxd-time-picker w-full"
+    class="pxd-time-picker"
     :close-on-press-escape="closeOnPressEscape"
+    trigger-class="w-full"
     content-class="rounded-xl bg-background-100 shadow-border-menu"
+    v-bind="$attrs"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput v-model="modelValue" v-bind="$attrs" :placeholder="placeholder" />
+    <PInput v-model="modelValue" :placeholder="placeholder" />
 
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
@@ -178,6 +188,9 @@ watch(() => props.modelValue, (value) => {
       </div>
 
       <div class="p-2 flex items-center justify-end border-t">
+        <PButton size="xs" variant="ghost" @click="onCancelClick">
+          {{ config.locale.confirm.cancel }}
+        </PButton>
         <PButton size="xs" variant="ghost" @click="onConfirmClick">
           {{ config.locale.confirm.ok }}
         </PButton>

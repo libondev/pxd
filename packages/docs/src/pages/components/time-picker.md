@@ -11,6 +11,6 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" class="!max-w-md"></PTimePicker>
+  <PTimePicker v-model="time" class="!w-[220px]"></PTimePicker>
 </template>
 ```

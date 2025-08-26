@@ -639,7 +639,7 @@ defineExpose({
   <div class="pxd-popover relative inline-flex max-w-full">
     <div
       ref="triggerRef"
-      class="pxd-popover--trigger w-max max-w-full active:select-none"
+      class="pxd-popover--trigger max-w-full active:select-none"
       :class="triggerClass"
       :style="triggerStyle"
       @contextmenu.prevent
