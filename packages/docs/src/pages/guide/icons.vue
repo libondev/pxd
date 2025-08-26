@@ -11,7 +11,7 @@ const allIcons = Object.entries(icons).map(([name, icon]) => ({ name, icon }))
 const route = useRoute()
 const { copyText } = useCopyClick()
 
-const copyType = ref<'name' | 'import'>('import')
+const copyType = ref<'name' | 'import' | 'element'>('import')
 const quoteType = ref<'single' | 'double' | 'single-hight'>('single')
 const searchKeyword = ref(route.query.q as string)
 
@@ -53,6 +53,8 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     const filename = uncapitalize(iconName.replace('Icon', ''))
     const quote = quoteTypeMap[quoteType.value] || '\''
     contents = `import ${iconName} from ${quote}@gdsicon/vue/${filename}${quote}`
+  } else if (copyType.value === 'element') {
+    contents = `<${iconName} />`
   }
 
   await copyText(contents)
@@ -80,8 +82,9 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
 
   <div class="mt-4 gap-4 flex">
     <PSwitchGroup v-model="copyType">
-      <PSwitch label="Full import" value="import" />
-      <PSwitch label="Only name" value="name" />
+      <PSwitch label="Import" value="import" />
+      <PSwitch label="Element" value="element" />
+      <PSwitch label="Name" value="name" />
     </PSwitchGroup>
     <PSwitchGroup v-model="quoteType">
       <PSwitch label="'" value="single" />
