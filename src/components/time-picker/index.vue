@@ -2,6 +2,7 @@
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
+import { clampValue } from '../../utils/format'
 import { throttle } from '../../utils/throttle'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
@@ -25,8 +26,6 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: '',
-    format: 'HH:mm:ss',
-    valueFormat: 'HH:mm:ss',
     closeOnPressEscape: true,
   },
 )
@@ -45,6 +44,7 @@ const VALUE_POSITION_MAP = {
 } as const
 
 const config = useConfigProvider()
+const inputRef = shallowRef<InstanceType<typeof PInput>>()
 
 const modelValueList = ref<string[]>([])
 
@@ -137,8 +137,24 @@ function onConfirmClick() {
   closePopover()
 }
 
-function updateValueList(value: Props['modelValue'] = props.modelValue) {
+function updateValueList(value: Props['modelValue']) {
   modelValueList.value = getFormattedValue(value).split(':')
+}
+
+function parseValue(value: string, max: number) {
+  const numberValue = value ? Number.parseInt(value.slice(0, 2)) : 0
+
+  if (!numberValue) {
+    return '00'
+  }
+
+  return padStringZero(clampValue(numberValue, 0, max).toString())
+}
+
+function inputValueParser(value: string) {
+  const [h, m, s] = value.split(':')
+
+  modelValueList.value = [parseValue(h, 23), parseValue(m, 59), parseValue(s, 59)]
 }
 
 watch(() => props.modelValue, updateValueList, { immediate: true })
@@ -160,7 +176,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     v-bind="$attrs"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput v-model="modelValue" :placeholder="placeholder" />
+    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="inputValueParser" />
 
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
