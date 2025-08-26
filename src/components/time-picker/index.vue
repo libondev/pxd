@@ -77,23 +77,6 @@ function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
 }
 
-function getFormattedValue(value: Props['modelValue']) {
-  let _value = value
-  if (_value == null || _value === '') {
-    return ''
-  }
-
-  if (typeof _value === 'string') {
-    const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
-
-    _value = `${formatDate} ${_value}`
-  } else {
-    _value = new Date(_value)
-  }
-
-  return dayjs(_value).format('HH:mm:ss')
-}
-
 function closePopover() {
   popoverRef.value?.hide()
 }
@@ -106,6 +89,10 @@ function onPopoverVisibleChange(visible: boolean = false) {
   }
 
   setTimesScrollTop()
+}
+
+function onInputClick() {
+  popoverRef.value?.show()
 }
 
 function onContainerClick(ev: MouseEvent) {
@@ -150,6 +137,23 @@ function onInputValueChange(value: string) {
   const [h, m, s] = value.split(':')
 
   modelValueList.value = [parseValue(h, 23), parseValue(m, 59), parseValue(s, 59)]
+}
+
+function getFormattedValue(value: Props['modelValue']) {
+  let _value = value
+  if (_value == null || _value === '') {
+    return ''
+  }
+
+  if (typeof _value === 'string') {
+    const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
+
+    _value = `${formatDate} ${_value}`
+  } else {
+    _value = new Date(_value)
+  }
+
+  return dayjs(_value).format('HH:mm:ss')
 }
 
 function parseValue(value: string, max: number) {
@@ -197,7 +201,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     v-bind="$attrs"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" />
+    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" @click.stop="onInputClick" />
 
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
