@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, nextTick, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
@@ -45,6 +45,9 @@ const VALUE_POSITION_MAP = {
 
 const config = useConfigProvider()
 const inputRef = shallowRef<InstanceType<typeof PInput>>()
+const timeHoursRef = shallowRef<HTMLElement>()
+const timeMinutesRef = shallowRef<HTMLElement>()
+const timeSecondsRef = shallowRef<HTMLElement>()
 
 const modelValueList = ref<string[]>([])
 
@@ -60,6 +63,15 @@ const modelValue = computed<string>({
 const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 
 const popoverVisible = shallowRef(false)
+
+const onTimeListScroll = throttle((ev: Event) => {
+  const target = ev.target as HTMLElement
+  const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
+  const value = Math.ceil(target.scrollTop / HEIGHT)
+  const index = VALUE_POSITION_MAP[type]
+
+  modelValueList.value[index] = padStringZero(value)
+}, 150, { edges: ['leading', 'trailing'] })
 
 function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
@@ -88,16 +100,13 @@ function closePopover() {
 
 function onPopoverVisibleChange(visible: boolean = false) {
   popoverVisible.value = visible
+
+  if (!visible) {
+    return
+  }
+
+  setTimesScrollTop()
 }
-
-const onTimeListScroll = throttle((ev: Event) => {
-  const target = ev.target as HTMLElement
-  const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
-  const value = Math.ceil(target.scrollTop / HEIGHT)
-  const index = VALUE_POSITION_MAP[type]
-
-  modelValueList.value[index] = padStringZero(value)
-}, 150, { edges: ['leading', 'trailing'] })
 
 function onContainerClick(ev: MouseEvent) {
   const target = ev.target as HTMLElement
@@ -137,8 +146,10 @@ function onConfirmClick() {
   closePopover()
 }
 
-function updateValueList(value: Props['modelValue']) {
-  modelValueList.value = getFormattedValue(value).split(':')
+function onInputValueChange(value: string) {
+  const [h, m, s] = value.split(':')
+
+  modelValueList.value = [parseValue(h, 23), parseValue(m, 59), parseValue(s, 59)]
 }
 
 function parseValue(value: string, max: number) {
@@ -151,10 +162,20 @@ function parseValue(value: string, max: number) {
   return padStringZero(clampValue(numberValue, 0, max).toString())
 }
 
-function inputValueParser(value: string) {
-  const [h, m, s] = value.split(':')
+function updateValueList(value: Props['modelValue']) {
+  modelValueList.value = getFormattedValue(value).split(':')
+}
 
-  modelValueList.value = [parseValue(h, 23), parseValue(m, 59), parseValue(s, 59)]
+async function setTimesScrollTop() {
+  await nextTick()
+
+  const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
+
+  elList.forEach((el, i) => {
+    const scrollTop = Number(modelValueList.value[i] || 0) * HEIGHT
+
+    el?.scrollTo(0, scrollTop)
+  })
 }
 
 watch(() => props.modelValue, updateValueList, { immediate: true })
@@ -176,22 +197,22 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     v-bind="$attrs"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="inputValueParser" />
+    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" />
 
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
         <div class="p-2 gap-1 flex items-center">
-          <ul data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeHoursRef" data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
             <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
           </ul>
-          <ul data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeMinutesRef" data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
             <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
           </ul>
-          <ul data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeSecondsRef" data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
             <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
