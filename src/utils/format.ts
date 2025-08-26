@@ -32,6 +32,12 @@ export function isTruthyProp(value: unknown) {
   return value || value === ''
 }
 
+export function clampValue(n: number, min: number, max: number) {
+  return min != null && max != null
+    ? Math.min(Math.max(n, min), max)
+    : n
+}
+
 export function isExternalLink(href: string) {
   const firstChar = href.slice(0, 1)
 
