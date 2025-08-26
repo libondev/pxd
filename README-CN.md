@@ -30,11 +30,16 @@ pnpm dev
 #### 组件
 
 ```shell
-pnpm build
+pnpm build:lib
 ```
 
 #### 文档
 
 ```shell
 pnpm build:docs
+```
+
+#### 部署
+```shell
+pnpm build
 ```

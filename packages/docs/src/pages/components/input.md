@@ -5,14 +5,14 @@ Retrieve text input from a user.
 
 ```vue demo
 <template>
-  <PInput />
+  <PInput class="max-w-sm" />
 </template>
 ```
 
 ## Sizes
 ```vue demo
 <template>
-  <PStack class="max-w-md" direction="vertical">
+  <PStack class="max-w-sm" direction="vertical">
     <PInput size="sm" placeholder="sm" />
     <PInput placeholder="md(default)" />
     <PInput size="lg" placeholder="lg" />
@@ -30,7 +30,7 @@ const password = ref('')
 </script>
 
 <template>
-  <PStack class="max-w-md">
+  <PStack class="max-w-sm">
     <PInput v-model="password" password placeholder="Enter your password" />
   </PStack>
 </template>
@@ -46,7 +46,7 @@ const password = ref('')
 </script>
 
 <template>
-  <PStack class="max-w-md">
+  <PStack class="max-w-sm">
     <PInput v-model="password" allow-clear placeholder="Enter your password" />
   </PStack>
 </template>
@@ -56,7 +56,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="6" direction="vertical">
+  <PStack class="max-w-sm" gap="6" direction="vertical">
     <PInput placeholder="Default">
       <template #prefix>
         <IconArrowCircleUp />
@@ -96,7 +96,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="6" direction="vertical">
+  <PStack class="max-w-sm" gap="6" direction="vertical">
     <PInput disabled placeholder="Default">
       <template #prefix>
         <IconArrowCircleUp />
@@ -136,7 +136,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <PStack class="max-w-md" gap="8" direction="vertical">
+  <PStack class="max-w-sm" gap="8" direction="vertical">
     <PInput error="An error message." size="sm" placeholder="Default" />
     <PInput error="An error message." placeholder="Default" />
     <PInput error="An error message." size="lg" placeholder="Default" />
@@ -148,7 +148,7 @@ const password = ref('')
 
 ```vue demo
 <template>
-  <div class="max-w-md">
+  <div class="max-w-sm">
     <PInput label="My Label"/>
   </div>
 </template>

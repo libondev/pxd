@@ -10,7 +10,7 @@ import {
   getScrollElByContainer,
   getScrollPositions,
 } from '../../utils/dom'
-import { off, on, optimizedOff, optimizedOn } from '../../utils/event'
+import { off, on, optimizedOff, optimizedOn, sleep } from '../../utils/event'
 import { toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
@@ -19,7 +19,6 @@ import PTeleport from '../teleport/index.vue'
 interface Props {
   zIndex?: number
   offset?: number
-  content?: string
   visible?: boolean
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
@@ -90,9 +89,6 @@ const triggerRect = shallowRef<DOMRect>()
 
 let viewportRect: DOMRect | null = null
 let scrollContainer: ReturnType<typeof getScrollContainer>
-
-let showPopoverTimer: ReturnType<typeof setTimeout>
-let hidePopoverTimer: ReturnType<typeof setTimeout>
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
@@ -234,21 +230,17 @@ async function handleDirectionInvertIfNeed() {
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
-  await new Promise((resolve) => {
-    getTriggerRect()
-    clearTimeout(hidePopoverTimer)
-    clearTimeout(showPopoverTimer)
+  getTriggerRect()
 
-    showPopoverTimer = setTimeout(() => {
-      localPosition.value = props.position
-      updateContentPosition()
-      openPopover()
-      resolve(true)
-    }, immediate ? 0 : props.showDelay)
-  })
+  await sleep(immediate ? 0 : props.showDelay)
+
+  localPosition.value = props.position
+  updateContentPosition()
+
+  await openPopover()
 
   savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
-  on(scrollContainer, 'scroll', onContainerScroll, { passive: true })
+  optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
   if (!props.autoPosition) {
     return
@@ -258,19 +250,13 @@ async function handlePopoverShow(immediate: boolean = false) {
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
-  await new Promise((resolve) => {
-    clearTimeout(showPopoverTimer)
-    clearTimeout(hidePopoverTimer)
+  await sleep(immediate ? 0 : props.showDelay)
 
-    hidePopoverTimer = setTimeout(() => {
-      closePopover()
-      resolve(true)
-    }, immediate ? 0 : props.hideDelay)
-  })
+  await closePopover()
 
-  off(scrollContainer, 'scroll', onContainerScroll)
   off(document, 'click', onClickOutsideToHide)
   off(document, 'contextmenu', onTriggerContextmenu)
+  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 }
 
 async function onTriggerClick(ev: Event) {
@@ -292,7 +278,7 @@ async function onTriggerClick(ev: Event) {
   }
 
   on(document, 'click', onClickOutsideToHide)
-  await handlePopoverShow()
+  handlePopoverShow()
 }
 
 function onTriggerPointerEnter() {
@@ -363,7 +349,8 @@ function onContentPointerEnter() {
     return
   }
 
-  if (!props.enterable) {
+  // 如果 content 不可交互或者 content 已经关闭了但是还在 transition 的动画中
+  if (!props.enterable || !isVisible.value) {
     return
   }
 
@@ -375,7 +362,8 @@ function onContentPointerLeave() {
     return
   }
 
-  if (!triggerMethods.value.includes('hover')) {
+  // 如果 content 可交互并且触发方式中没有 hover 表示需要通过其他方式来关闭
+  if (props.enterable && !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -635,12 +623,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   viewportRect = null
 
-  clearTimeout(showPopoverTimer)
-  clearTimeout(hidePopoverTimer)
   off(document, 'click', onClickOutsideToHide)
   off(document, 'contextmenu', onTriggerContextmenu)
-  off(scrollContainer, 'scroll', onContainerScroll)
   optimizedOff(window, 'resize', onResizeUpdatePosition)
+  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 })
 
 defineExpose({
@@ -650,10 +636,10 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-popover relative inline-flex w-max">
+  <div class="pxd-popover relative inline-flex max-w-full">
     <div
       ref="triggerRef"
-      class="pxd-popover--trigger active:select-none"
+      class="pxd-popover--trigger max-w-full active:select-none"
       :class="triggerClass"
       :style="triggerStyle"
       @contextmenu.prevent
@@ -673,15 +659,13 @@ defineExpose({
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
+          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate max-w-full data-[enterable=false]:pointer-events-none"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
           <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
           <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
-            <slot name="content">
-              {{ content }}
-            </slot>
+            <slot name="content" />
           </div>
         </div>
       </Transition>
@@ -786,7 +770,7 @@ defineExpose({
 
 .showTransition.pxd-transition--popover-enter-from,
 .hideTransition.pxd-transition--popover-leave-to {
-  filter: blur(2px);
+  filter: blur(1.5px);
   opacity: 0;
 }
 </style>

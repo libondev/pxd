@@ -9,8 +9,8 @@ interface Options {
 interface UseDelayDestroyReturnType {
   render: Ref<boolean>
   visible: Ref<boolean>
-  open: () => void
-  close: () => void
+  open: () => Promise<boolean>
+  close: () => Promise<boolean>
 }
 
 export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDelayDestroyReturnType {
@@ -26,22 +26,26 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
 
   let delayTimeoutId: ReturnType<typeof setTimeout>
 
-  const open = () => {
-    clearTimeout(delayTimeoutId)
+  const open = async () => {
+    return new Promise<boolean>((resolve) => {
+      clearTimeout(delayTimeoutId)
 
-    render.value = true
+      render.value = true
 
-    nextTick().then(() => {
-      visible.value = true
+      nextTick().then(() => {
+        resolve(visible.value = true)
+      })
     })
   }
 
   const close = () => {
-    visible.value = false
+    return new Promise<boolean>((resolve) => {
+      visible.value = false
 
-    delayTimeoutId = setTimeout(() => {
-      render.value = false
-    }, delay)
+      delayTimeoutId = setTimeout(() => {
+        resolve(render.value = false)
+      }, delay)
+    })
   }
 
   return {

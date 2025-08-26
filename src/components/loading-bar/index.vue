@@ -8,6 +8,7 @@ import {
   START_LOADING_BAR_EVENT_NAME,
 } from '../../composables/use-loading-bar'
 import { off, on } from '../../utils/event'
+import { clampValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 
@@ -55,15 +56,6 @@ const computedClass = computed(() => {
   }
 })
 
-function clamp(n: number, min: number, max: number) {
-  if (n < min) {
-    return min
-  } else if (n > max) {
-    return max
-  }
-  return n
-}
-
 function getIncreaseDelta(n: number) {
   if (n >= 0 && n < 0.2) {
     return 0.1
@@ -95,7 +87,7 @@ function increaseProgress(n?: number) {
 
   prevTimestamp = now
   const amount = n || getIncreaseDelta(progress.value)
-  progress.value = clamp(progress.value + amount, 0, 0.994)
+  progress.value = clampValue(progress.value + amount, 0, 0.994)
 
   if (amount === 0 || !props.trickle) {
     return

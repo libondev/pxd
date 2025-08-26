@@ -24,18 +24,19 @@ const props = withDefaults(
   {
     align: 'left',
     modelValue: '',
+    placeholder: '',
     prefixStyle: true,
     suffixStyle: true,
   },
 )
 
 const emits = defineEmits<{
-  'update:modelValue': [string]
+  'input': [string]
+  'change': [string]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
-  'change': [InputProps['modelValue']]
   'keydown': [KeyboardEvent]
-  'input': [InputProps['modelValue']]
+  'update:modelValue': [string]
   'compositionstart': [CompositionEvent]
   'compositionupdate': [CompositionEvent]
   'compositionend': [CompositionEvent]
@@ -120,6 +121,10 @@ function onBlur(event: FocusEvent) {
   emits('blur', event)
 }
 
+function onChange(event: Event) {
+  emits('change', getValueFromEvent(event))
+}
+
 async function onInput(event: Event) {
   const ev = event as InputEvent
 
@@ -131,10 +136,6 @@ async function onInput(event: Event) {
   computedModelValue.value = value
 
   emits('input', value)
-
-  if (value !== computedModelValue.value) {
-    emits('change', value)
-  }
 
   await nextTick()
   setNativeInputValue(value)
@@ -193,6 +194,7 @@ defineExpose({
   focus,
   select,
   clear: clearValue,
+  setInputValue: setNativeInputValue,
 })
 </script>
 
@@ -235,6 +237,7 @@ defineExpose({
         @blur="onBlur"
         @focus="onFocus"
         @input="onInput"
+        @change="onChange"
         @keydown="onKeydown"
         @compositionstart="onCompositionStart"
         @compositionupdate="onCompositionUpdate"

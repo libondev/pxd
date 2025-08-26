@@ -116,3 +116,7 @@ export function optimizedOff<E extends Event = Event>(
     delete (el as any)[`__cached_${event}`]
   }
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
