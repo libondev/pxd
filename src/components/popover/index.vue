@@ -240,6 +240,7 @@ async function handlePopoverShow(immediate: boolean = false) {
   await openPopover()
 
   savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
+  optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
   if (!props.autoPosition) {
@@ -254,8 +255,8 @@ async function handlePopoverHide(immediate: boolean = false) {
 
   await closePopover()
 
-  off(document, 'click', onClickOutsideToHide)
-  off(document, 'contextmenu', onTriggerContextmenu)
+  optimizedOff(document, 'click', onClickOutsideToHide)
+  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 }
 
@@ -271,13 +272,12 @@ async function onTriggerClick(ev: Event) {
   }
 
   if (isVisible.value) {
-    off(document, 'click', onClickOutsideToHide)
+    optimizedOff(document, 'click', onClickOutsideToHide)
     await handlePopoverHide()
 
     return
   }
 
-  on(document, 'click', onClickOutsideToHide)
   handlePopoverShow()
 }
 
@@ -329,11 +329,15 @@ async function onTriggerContextmenu(ev: MouseEvent) {
   }
 
   await handlePopoverShow()
-  on(document, 'click', onClickOutsideToHide)
-  on(document, 'contextmenu', onTriggerContextmenu)
+  optimizedOn(document, 'click', onClickOutsideToHide)
+  optimizedOn(document, 'contextmenu', onTriggerContextmenu)
 }
 
 function onClickOutsideToHide(ev: MouseEvent) {
+  if (!triggerMethods.value.includes('click')) {
+    return
+  }
+
   const target = ev.target as HTMLElement
 
   if (
