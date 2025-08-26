@@ -48,8 +48,8 @@ const props = withDefaults(
 const emits = defineEmits<{
   'show': []
   'hide': []
+  'outside-click': [MouseEvent]
   'visible-change': [boolean]
-  'click-outside': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
 
@@ -80,7 +80,7 @@ const computedStyle = computed(() => {
 })
 
 function onOverlayClick(ev: MouseEvent) {
-  emits('click-outside', ev)
+  emits('outside-click', ev)
 
   if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
     return

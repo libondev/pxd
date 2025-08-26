@@ -45,7 +45,7 @@ const emits = defineEmits<{
   'show': []
   'hide': []
   'visible-change': [boolean]
-  'click-outside': [MouseEvent]
+  'outside-click': [MouseEvent]
   'update:modelValue': [boolean]
 }>()
 
@@ -55,7 +55,7 @@ const isVisible = useModelValue(props, emits)
 useFocusTrap(modalRef)
 
 function onOverlayClick(ev: MouseEvent) {
-  emits('click-outside', ev)
+  emits('outside-click', ev)
 
   if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
     return
