@@ -211,17 +211,17 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
         <div class="p-2 gap-1 flex items-center">
-          <ul ref="timeHoursRef" data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeHoursRef" data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
             <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
           </ul>
-          <ul ref="timeMinutesRef" data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeMinutesRef" data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
             <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
           </ul>
-          <ul ref="timeSecondsRef" data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
+          <ul ref="timeSecondsRef" data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
             <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
               {{ padStringZero(i) }}
             </li>
