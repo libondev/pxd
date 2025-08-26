@@ -254,6 +254,9 @@ async function handlePopoverShow(immediate: boolean = false) {
 
   await openPopover()
 
+  emits('show')
+  emits('visible-change', true)
+
   savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
   optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
@@ -280,6 +283,9 @@ async function handlePopoverHide(immediate: boolean = false) {
   })
 
   await closePopover()
+
+  emits('hide')
+  emits('visible-change', false)
 
   optimizedOff(document, 'click', onClickOutsideToHide)
   optimizedOff(document, 'contextmenu', onTriggerContextmenu)
@@ -626,16 +632,6 @@ watch(
   },
 )
 
-watch(() => isVisible.value, (visible) => {
-  emits('visible-change', visible)
-
-  if (visible) {
-    emits('show')
-  } else {
-    emits('hide')
-  }
-})
-
 watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
@@ -678,8 +674,8 @@ defineExpose({
       :class="triggerClass"
       :style="triggerStyle"
       @contextmenu.prevent
-      @click="onTriggerClick"
       @keydown="onTriggerKeydown"
+      @click.capture="onTriggerClick"
     >
       <slot />
     </div>

@@ -14,6 +14,7 @@ interface Props {
 
 defineOptions({
   name: 'PMenu',
+  inheritAttrs: false,
 })
 
 withDefaults(
@@ -30,37 +31,37 @@ const emits = defineEmits<{
   select: [MouseEvent, ListOptionSelected]
 }>()
 
-const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
 const popoverVisible = shallowRef(false)
 
-function closePopover() {
-  popoverRef.value?.hide()
+function showPopover() {
+  popoverVisible.value = true
 }
 
-function onPopoverToggle(visible: boolean) {
-  emits('change', visible)
-  popoverVisible.value = visible
+function hidePopover() {
+  popoverVisible.value = false
 }
 
 function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   emits('select', ev, item)
-  closePopover()
+  hidePopover()
 }
 </script>
 
 <template>
   <PPopover
-    ref="popoverRef"
     enterable
-    trigger="click"
-    class="pxd-menu"
     scroll-hidden
+    class="pxd-menu"
+    trigger="manual"
     :show-delay="0"
     :hide-delay="100"
     :position="position"
     :show-transition="false"
+    :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
-    @visible-change="onPopoverToggle"
+    v-bind="$attrs"
+    @outside-click="hidePopover"
+    @trigger-click="showPopover"
   >
     <slot />
 
