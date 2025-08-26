@@ -77,8 +77,55 @@ function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
 }
 
-function closePopover() {
+function showPopover() {
+  popoverRef.value?.show()
+}
+
+function hidePopover() {
   popoverRef.value?.hide()
+}
+
+function parseTimeValue(value: string, max: number) {
+  const numberValue = value ? Number.parseInt(value.slice(0, 2)) : 0
+
+  if (!numberValue) {
+    return '00'
+  }
+
+  return padStringZero(clampValue(numberValue, 0, max).toString())
+}
+
+function updateValueList(value: Props['modelValue']) {
+  modelValueList.value = getFormattedValue(value).split(':')
+}
+
+function getFormattedValue(value: Props['modelValue']) {
+  let _value = value
+  if (_value == null || _value === '') {
+    return ''
+  }
+
+  if (typeof _value === 'string') {
+    const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
+
+    _value = `${formatDate} ${_value}`
+  } else {
+    _value = new Date(_value)
+  }
+
+  return dayjs(_value).format('HH:mm:ss')
+}
+
+async function setTimesScrollTop() {
+  await nextTick()
+
+  const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
+
+  elList.forEach((el, i) => {
+    const scrollTop = Number(modelValueList.value[i] || 0) * HEIGHT
+
+    el?.scrollTo(0, scrollTop)
+  })
 }
 
 function onPopoverVisibleChange(visible: boolean = false) {
@@ -91,11 +138,7 @@ function onPopoverVisibleChange(visible: boolean = false) {
   setTimesScrollTop()
 }
 
-function onInputClick() {
-  popoverRef.value?.show()
-}
-
-function onContainerClick(ev: MouseEvent) {
+function onTimesContainerClick(ev: MouseEvent) {
   const target = ev.target as HTMLElement
 
   if (target.tagName !== 'LI') {
@@ -125,61 +168,18 @@ function onContainerClick(ev: MouseEvent) {
 
 function onCancelClick() {
   updateValueList(props.modelValue)
-  closePopover()
+  hidePopover()
 }
 
 function onConfirmClick() {
   modelValue.value = modelValueList.value.join(':')
-  closePopover()
+  hidePopover()
 }
 
 function onInputValueChange(value: string) {
   const [h, m, s] = value.split(':')
 
-  modelValueList.value = [parseValue(h, 23), parseValue(m, 59), parseValue(s, 59)]
-}
-
-function getFormattedValue(value: Props['modelValue']) {
-  let _value = value
-  if (_value == null || _value === '') {
-    return ''
-  }
-
-  if (typeof _value === 'string') {
-    const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
-
-    _value = `${formatDate} ${_value}`
-  } else {
-    _value = new Date(_value)
-  }
-
-  return dayjs(_value).format('HH:mm:ss')
-}
-
-function parseValue(value: string, max: number) {
-  const numberValue = value ? Number.parseInt(value.slice(0, 2)) : 0
-
-  if (!numberValue) {
-    return '00'
-  }
-
-  return padStringZero(clampValue(numberValue, 0, max).toString())
-}
-
-function updateValueList(value: Props['modelValue']) {
-  modelValueList.value = getFormattedValue(value).split(':')
-}
-
-async function setTimesScrollTop() {
-  await nextTick()
-
-  const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
-
-  elList.forEach((el, i) => {
-    const scrollTop = Number(modelValueList.value[i] || 0) * HEIGHT
-
-    el?.scrollTo(0, scrollTop)
-  })
+  modelValueList.value = [parseTimeValue(h, 23), parseTimeValue(m, 59), parseTimeValue(s, 59)]
 }
 
 watch(() => props.modelValue, updateValueList, { immediate: true })
@@ -201,10 +201,10 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     v-bind="$attrs"
     @visible-change="onPopoverVisibleChange"
   >
-    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" @click.stop="onInputClick" />
+    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" @click.stop="showPopover" />
 
     <template #content>
-      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onContainerClick">
+      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
         <div class="p-2 gap-1 flex items-center">
           <ul ref="timeHoursRef" data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll="onTimeListScroll">
             <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
