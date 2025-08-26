@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, shallowRef, watch } from 'vue'
+import CalendarIcon from '@gdsicon/vue/calendar'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
+import { sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
 import { throttle } from '../../utils/throttle'
 import PInput from '../input/index.vue'
@@ -9,6 +11,7 @@ import PPopover from '../popover/index.vue'
 
 interface Props {
   modelValue?: Date | string | number
+  prefixIcon?: boolean
   placeholder?: string
   closeOnPressEscape?: boolean
 }
@@ -26,6 +29,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     modelValue: '',
+    prefixIcon: true,
     closeOnPressEscape: true,
   },
 )
@@ -49,6 +53,8 @@ const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
 const timeSecondsRef = shallowRef<HTMLElement>()
 
+const popoverVisible = shallowRef(false)
+
 const modelValueList = ref<string[]>([])
 
 const modelValue = computed<string>({
@@ -59,10 +65,6 @@ const modelValue = computed<string>({
     emits('update:modelValue', value)
   },
 })
-
-const popoverRef = shallowRef<InstanceType<typeof PPopover>>()
-
-const popoverVisible = shallowRef(false)
 
 const onTimeListScroll = throttle((ev: Event) => {
   const target = ev.target as HTMLElement
@@ -78,11 +80,12 @@ function padStringZero(value: number | string): string {
 }
 
 function showPopover() {
-  popoverRef.value?.show()
+  popoverVisible.value = true
+  setTimesScrollTop()
 }
 
 function hidePopover() {
-  popoverRef.value?.hide()
+  popoverVisible.value = false
 }
 
 function parseTimeValue(value: string, max: number) {
@@ -117,25 +120,16 @@ function getFormattedValue(value: Props['modelValue']) {
 }
 
 async function setTimesScrollTop() {
-  await nextTick()
+  // Ensure that the asynchronous rendering is completed(In fact, 5ms is sufficient in most cases)
+  await sleep(10)
 
   const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
 
   elList.forEach((el, i) => {
     const scrollTop = Number(modelValueList.value[i] || 0) * HEIGHT
 
-    el?.scrollTo(0, scrollTop)
+    el?.scrollTo({ top: scrollTop })
   })
-}
-
-function onPopoverVisibleChange(visible: boolean = false) {
-  popoverVisible.value = visible
-
-  if (!visible) {
-    return
-  }
-
-  setTimesScrollTop()
 }
 
 function onTimesContainerClick(ev: MouseEvent) {
@@ -187,21 +181,32 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 
 <template>
   <PPopover
-    ref="popoverRef"
     enterable
-    trigger="click"
     scroll-hidden
+    trigger="manual"
     :show-delay="0"
     :hide-delay="100"
     :show-transition="false"
-    class="pxd-time-picker"
+    :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
+    class="pxd-time-picker"
     trigger-class="w-full"
     content-class="rounded-xl bg-background-100 shadow-border-menu"
     v-bind="$attrs"
-    @visible-change="onPopoverVisibleChange"
+    @trigger-click="showPopover"
+    @outside-click="onConfirmClick"
   >
-    <PInput ref="inputRef" :model-value="modelValue" :placeholder="placeholder" @change="onInputValueChange" @click.stop="showPopover" />
+    <PInput
+      ref="inputRef"
+      :model-value="modelValue"
+      :placeholder="placeholder"
+      :prefix-style="false"
+      @change="onInputValueChange"
+    >
+      <template v-if="prefixIcon" #prefix>
+        <CalendarIcon class="ml-3" />
+      </template>
+    </PInput>
 
     <template #content>
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
@@ -228,11 +233,11 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
         </div>
       </div>
 
-      <div class="p-2 flex items-center justify-end border-t">
-        <PButton size="xs" variant="ghost" @click="onCancelClick">
+      <div class="p-2 gap-1 flex items-center justify-end border-t">
+        <PButton size="xs" variant="ghost" class="!px-0" @click="onCancelClick">
           {{ config.locale.confirm.cancel }}
         </PButton>
-        <PButton size="xs" variant="ghost" @click="onConfirmClick">
+        <PButton size="xs" variant="ghost" class="!px-0" @click="onConfirmClick">
           {{ config.locale.confirm.ok }}
         </PButton>
       </div>
