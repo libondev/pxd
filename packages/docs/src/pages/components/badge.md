@@ -52,7 +52,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ```vue demo
 <template>
-  <PStack>
+  <PStack align="center">
     <PBadge size="sm">
       <IconShield />
       Gray
