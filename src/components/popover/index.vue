@@ -38,8 +38,6 @@ interface Props {
   triggerStyle?: CSSProperties | string
   contentStyle?: CSSProperties | string
   transitionName?: string
-  showTransition?: boolean
-  hideTransition?: boolean
   /** 最小可见比例(0~1), 仅当前可见区域比例小于该阈值时才会触发滚动过程中的自适应翻转 */
   minVisibleRatio?: number
   closeOnPressEscape?: boolean
@@ -47,6 +45,8 @@ interface Props {
   autoPositionThreshold?: number
   /** 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗, 单位: px */
   scrollHiddenThreshold?: number
+  disabledShowTransition?: boolean
+  disabledHideTransition?: boolean
 }
 
 defineOptions({
@@ -68,8 +68,6 @@ const props = withDefaults(
     autoPosition: true,
     destroyDelay: 2000,
     scrollHidden: false,
-    showTransition: true,
-    hideTransition: true,
     minVisibleRatio: 0.88,
     closeOnPressEscape: false,
     autoPositionThreshold: 30,
@@ -116,7 +114,7 @@ const {
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 const computedTransitionName = computed(() =>
-  props.transitionName ?? 'pxd-transition--popover',
+  props.transitionName ?? 'pxd-transition--fade',
 )
 
 let savedScrollTop: number = 0
@@ -681,7 +679,12 @@ defineExpose({
     </div>
 
     <PTeleport>
-      <Transition mode="out-in" :name="computedTransitionName" appear :class="{ showTransition, hideTransition }">
+      <Transition
+        appear
+        mode="out-in"
+        :name="computedTransitionName"
+        :class="{ disabledShowTransition, disabledHideTransition }"
+      >
         <div
           v-if="isRender"
           v-show="isVisible"
@@ -792,16 +795,8 @@ defineExpose({
   }
 }
 
-.showTransition.pxd-transition--popover-enter-active,
-.hideTransition.pxd-transition--popover-leave-active {
-  transition: var(--default-transition-duration) var(--default-transition-timing-function);
-  transition-property: opacity, filter, transform;
-  will-change: opacity, filter, transform;
-}
-
-.showTransition.pxd-transition--popover-enter-from,
-.hideTransition.pxd-transition--popover-leave-to {
-  filter: blur(1.5px);
-  opacity: 0;
+.disabledShowTransition.pxd-transition--fade-enter-active,
+.disabledHideTransition.pxd-transition--fade-leave-active {
+  --default-transition-duration: 0 !important
 }
 </style>

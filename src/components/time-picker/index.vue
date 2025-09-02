@@ -198,7 +198,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     trigger="manual"
     :show-delay="0"
     :hide-delay="100"
-    :show-transition="false"
+    disabled-show-transition
     :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker"
