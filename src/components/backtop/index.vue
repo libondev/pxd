@@ -9,6 +9,7 @@ import PButton from '../button/index.vue'
 interface Props {
   right?: string | number
   bottom?: string | number
+  zIndex?: string | number
   visibleThreshold?: number
 }
 
@@ -32,6 +33,7 @@ const wrapperRef = shallowRef<HTMLElement>()
 
 const computedStyle = computed(() => {
   return {
+    zIndex: props.zIndex,
     right: getCssUnitValue(props.right),
     bottom: getCssUnitValue(props.bottom),
   }
@@ -78,7 +80,7 @@ onBeforeUnmount(() => {
     <div
       v-show="scrollTop >= visibleThreshold"
       ref="wrapperRef"
-      class="right-6 bottom-6 fixed z-10"
+      class="right-6 bottom-6 fixed z-1"
       :style="computedStyle"
       v-bind="$attrs"
       @click="onBacktopClick"
