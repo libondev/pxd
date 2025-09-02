@@ -2,7 +2,7 @@
 import { nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { getCssUnitValue } from '../../utils/format'
-import KeepAliveContent from './content.vue'
+import PKeepAliveContainer from '../keep-alive-container/index.vue'
 
 interface Props {
   // estimated size
@@ -80,9 +80,9 @@ useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
 <template>
   <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize">
     <KeepAlive v-if="keepAlive">
-      <KeepAliveContent v-if="isVisible">
+      <PKeepAliveContainer v-if="isVisible">
         <slot />
-      </KeepAliveContent>
+      </PKeepAliveContainer>
     </KeepAlive>
     <template v-else>
       <slot v-if="isVisible" />
