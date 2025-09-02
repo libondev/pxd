@@ -10,6 +10,7 @@ import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
+  presets?: []
   modelValue?: Date | string | number
   prefixIcon?: boolean
   placeholder?: string
@@ -170,6 +171,17 @@ function onConfirmClick() {
   hidePopover()
 }
 
+function onNowBtnClick() {
+  const now = new Date()
+  modelValueList.value = [
+    padStringZero(now.getHours()),
+    padStringZero(now.getMinutes()),
+    padStringZero(now.getSeconds()),
+  ]
+
+  onConfirmClick()
+}
+
 function onInputValueChange(value: string) {
   const [h, m, s] = value.split(':')
 
@@ -228,17 +240,18 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
           </ul>
         </div>
 
-        <div class="w-24 p-2 h-44 border-l">
-          <span>123</span>
-        </div>
+        <ul v-if="presets?.length" class="w-24 p-2 h-44 gap-2 p-0 m-0 flex list-none flex-wrap border-l outline-none">
+          <li>123</li>
+        </ul>
       </div>
 
-      <div class="p-2 gap-1 flex items-center justify-end border-t">
-        <PButton size="xs" variant="ghost" class="!px-0" @click="onCancelClick">
-          {{ config.locale.confirm.cancel }}
+      <div class="p-2 gap-1 flex items-center justify-between border-t">
+        <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onNowBtnClick">
+          {{ config.locale.date.now }}
         </PButton>
-        <PButton size="xs" variant="ghost" class="!px-0" @click="onConfirmClick">
-          {{ config.locale.confirm.ok }}
+
+        <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onCancelClick">
+          {{ config.locale.confirm.cancel }}
         </PButton>
       </div>
     </template>

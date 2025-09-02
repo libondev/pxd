@@ -1,5 +1,15 @@
 export default {
   date: {
+    now: 'Now',
+    day: {
+      0: 'Sun',
+      1: 'Mon',
+      2: 'Tue',
+      3: 'Wed',
+      4: 'Thu',
+      5: 'Fri',
+      6: 'Sat',
+    },
     month: {
       0: 'Jan',
       1: 'Feb',
@@ -13,15 +23,6 @@ export default {
       9: 'Oct',
       10: 'Nov',
       11: 'Dec',
-    },
-    day: {
-      0: 'Sun',
-      1: 'Mon',
-      2: 'Tue',
-      3: 'Wed',
-      4: 'Thu',
-      5: 'Fri',
-      6: 'Sat',
     },
   },
   compare: {
