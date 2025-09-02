@@ -2,6 +2,7 @@
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { dayjs } from '../../utils/date'
 import { sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
@@ -53,6 +54,8 @@ const inputRef = shallowRef<InstanceType<typeof PInput>>()
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
 const timeSecondsRef = shallowRef<HTMLElement>()
+
+const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
 const popoverVisible = shallowRef(false)
 
@@ -198,12 +201,14 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     trigger="manual"
     :show-delay="0"
     :hide-delay="100"
+    :auto-position="!isSmUp"
     disabled-show-transition
     :visible="popoverVisible"
+    :position="isSmUp ? 'bottom' : 'bottom-start'"
     :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker"
     trigger-class="w-full"
-    content-class="rounded-xl bg-background-100 shadow-border-menu"
+    wrapper-class="max-sm:!left-0 max-sm:!top-0 max-sm:!p-0"
     v-bind="$attrs"
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"
@@ -221,38 +226,48 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
-        <div class="p-2 gap-1 flex items-center">
-          <ul ref="timeHoursRef" data-type="hours" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
-            <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-              {{ padStringZero(i) }}
-            </li>
-          </ul>
-          <ul ref="timeMinutesRef" data-type="minutes" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
-            <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-              {{ padStringZero(i) }}
-            </li>
-          </ul>
-          <ul ref="timeSecondsRef" data-type="seconds" class="pxd-time-picker--list w-8 h-40 py-16 relative scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll text-center outline-none" @scroll.stop="onTimeListScroll">
-            <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
-              {{ padStringZero(i) }}
-            </li>
-          </ul>
+      <div class="mas-sm:fixed flex flex-col justify-end max-sm:w-screen max-sm:h-screen max-sm:bg-black/40" @click="onConfirmClick">
+        <div class="max-sm:rounded-bl-none max-sm:rounded-br-none rounded-xl bg-background-100 shadow-border-menu">
+          <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
+            <div class="p-2 gap-1 relative flex items-center">
+              <div class="pxd-time-picker--list relative">
+                <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                  <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+                    {{ padStringZero(i) }}
+                  </li>
+                </ul>
+              </div>
+              <div class="pxd-time-picker--list relative">
+                <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                  <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+                    {{ padStringZero(i) }}
+                  </li>
+                </ul>
+              </div>
+              <div class="pxd-time-picker--list relative">
+                <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                  <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+                    {{ padStringZero(i) }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <ul v-if="presets?.length" class="w-24 p-2 h-44 gap-2 p-0 m-0 flex list-none flex-wrap border-l outline-none">
+              <li>123</li>
+            </ul>
+          </div>
+
+          <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
+            <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onNowBtnClick">
+              {{ config.locale.date.now }}
+            </PButton>
+
+            <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onCancelClick">
+              {{ config.locale.confirm.cancel }}
+            </PButton>
+          </div>
         </div>
-
-        <ul v-if="presets?.length" class="w-24 p-2 h-44 gap-2 p-0 m-0 flex list-none flex-wrap border-l outline-none">
-          <li>123</li>
-        </ul>
-      </div>
-
-      <div class="p-2 gap-1 flex items-center justify-between border-t">
-        <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onNowBtnClick">
-          {{ config.locale.date.now }}
-        </PButton>
-
-        <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onCancelClick">
-          {{ config.locale.confirm.cancel }}
-        </PButton>
       </div>
     </template>
   </PPopover>
