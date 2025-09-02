@@ -4,7 +4,6 @@ import {
   computed,
   nextTick,
   onBeforeUnmount,
-  onMounted,
   ref,
   shallowRef,
   toValue,
@@ -28,7 +27,7 @@ interface Props {
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  shownElement: MaybeRefOrGetter<HTMLElement>
+  shownElement?: MaybeRefOrGetter<HTMLElement>
 }
 
 defineOptions({
@@ -138,33 +137,33 @@ watch(
 
       addScrollDisabled()
       optimizedOn(document, 'keydown', onOverlayKeydown)
+      tryGetNeedShownElement()
     })
   },
   { immediate: true },
 )
 
-onMounted(() => {
-  setTimeout(() => {
-    const elem = toValue(props.shownElement)
-    if (elem) {
-      // 获取元素的位置和尺寸信息
-      const rect = elem.getBoundingClientRect()
+watch(() => props.shownElement, tryGetNeedShownElement)
+function tryGetNeedShownElement() {
+  const elem = toValue(props.shownElement)
+  if (!elem) {
+    return
+  }
+  const rect = elem.getBoundingClientRect()
 
-      clipPath.value = `polygon(
-          0% 0%,
-          0% 100%,
-          ${rect.left}px 100%,
-          ${rect.left}px ${rect.top}px,
-          ${rect.right}px ${rect.top}px,
-          ${rect.right}px ${rect.bottom}px,
-          ${rect.left}px ${rect.bottom}px,
-          ${rect.left}px 100%,
-          100% 100%,
-          100% 0%
-        )`
-    }
-  })
-})
+  clipPath.value = `polygon(
+    0% 0%,
+    0% 100%,
+    ${rect.left}px 100%,
+    ${rect.left}px ${rect.top}px,
+    ${rect.right}px ${rect.top}px,
+    ${rect.right}px ${rect.bottom}px,
+    ${rect.left}px ${rect.bottom}px,
+    ${rect.left}px 100%,
+    100% 100%,
+    100% 0%
+  )`
+}
 
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
