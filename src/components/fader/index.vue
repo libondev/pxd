@@ -3,7 +3,7 @@ import type { ComponentDirection } from '../../types/shared/props'
 import type { Nullable } from '../../types/shared/utils'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
-import { off, on } from '../../utils/event'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { throttleByRaf } from '../../utils/throttle'
 
@@ -55,7 +55,7 @@ useResizeObserver(() => props.container, onContainerScroll)
 
 watch(() => props.container, (container, oldDom) => {
   if (oldDom) {
-    off(oldDom, 'scroll', onContainerScroll)
+    optimizedOff(oldDom, 'scroll', onContainerScroll)
 
     return
   }
@@ -64,11 +64,11 @@ watch(() => props.container, (container, oldDom) => {
     return
   }
 
-  on(container, 'scroll', onContainerScroll)
-})
+  optimizedOn(container, 'scroll', onContainerScroll)
+}, { immediate: true })
 
 onBeforeUnmount(() => {
-  off(props.container, 'scroll', onContainerScroll)
+  optimizedOff(props.container, 'scroll', onContainerScroll)
 })
 </script>
 

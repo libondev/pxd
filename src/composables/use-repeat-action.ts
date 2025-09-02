@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
 import type { Callback } from '../types/shared/utils'
 import { onBeforeUnmount } from 'vue'
-import { off, on } from '../utils/event'
+import { off, once } from '../utils/event'
 import { toValue } from '../utils/ref'
 
 interface RepeatActionReturnType {
@@ -64,8 +64,8 @@ export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callba
 
     timer = setTimeout(step, initialInterval)
 
-    on(document, 'pointerup', stop, { once: true })
-    on(document, 'pointercancel', stop, { once: true })
+    once(document, 'pointerup', stop)
+    once(document, 'pointercancel', stop)
   }
 
   onBeforeUnmount(() => {

@@ -2,7 +2,7 @@
 import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
-import { off, on } from '../../utils/event'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
@@ -177,14 +177,14 @@ onMounted(async () => {
 
   updateListItem()
 
-  on(document, 'keydown', onContainerKeydown)
+  optimizedOn(document, 'keydown', onContainerKeydown)
 })
 
 onBeforeUnmount(() => {
   listItemsMap.clear()
   listItemKeys.splice(0)
 
-  off(document, 'keydown', onContainerKeydown)
+  optimizedOff(document, 'keydown', onContainerKeydown)
 })
 
 defineExpose({

@@ -3,7 +3,7 @@ import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
-import { off, on, once } from '../../utils/event'
+import { once, optimizedOff, optimizedOn } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'
 
 interface Props {
@@ -193,9 +193,9 @@ function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   // 立即更新一次值
   updateValueFromPosition(ev.clientX)
 
-  on(document, 'pointermove', handleMove, { passive: false })
   once(document, 'pointerup', endDragging)
   once(document, 'pointercancel', endDragging)
+  optimizedOn(document, 'pointermove', handleMove, { passive: false })
 }
 
 function handleMove(ev: PointerEvent) {
@@ -218,8 +218,8 @@ function endDragging() {
     animationFrameId = null
   }
 
-  off(document, 'pointermove', handleMove)
-  off(document, 'pointercancel', endDragging)
+  optimizedOff(document, 'pointermove', handleMove)
+  optimizedOff(document, 'pointercancel', endDragging)
 }
 
 function handleSliderClick(ev: PointerEvent) {
@@ -273,9 +273,9 @@ onBeforeUnmount(() => {
     cancelAnimationFrame(animationFrameId)
   }
 
-  off(document, 'pointermove', handleMove)
-  off(document, 'pointerup', endDragging)
-  off(document, 'pointercancel', endDragging)
+  optimizedOff(document, 'pointermove', handleMove)
+  optimizedOff(document, 'pointerup', endDragging)
+  optimizedOff(document, 'pointercancel', endDragging)
 })
 </script>
 
