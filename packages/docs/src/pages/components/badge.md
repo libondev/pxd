@@ -39,10 +39,10 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ```vue demo
 <template>
-  <PStack>
-    <PBadge size="sm">small</PBadge>
-    <PBadge>medium(default)</PBadge>
-    <PBadge size="lg">large</PBadge>
+  <PStack align="center">
+    <PBadge size="sm">Small</PBadge>
+    <PBadge>Medium</PBadge>
+    <PBadge size="lg">Large</PBadge>
   </PStack>
 </template>
 ```

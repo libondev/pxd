@@ -10,6 +10,7 @@ Retrieve text input from a user.
 ```
 
 ## Sizes
+
 ```vue demo
 <template>
   <PStack class="max-w-sm" direction="vertical">

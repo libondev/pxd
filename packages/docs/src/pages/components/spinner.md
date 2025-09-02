@@ -11,6 +11,7 @@ Indicate an action running in the background. Unlike the loading dots, this shou
 ```
 
 ## Sizes
+
 The size of `spinner` is determined by the `font-size`.
 
 ```vue demo

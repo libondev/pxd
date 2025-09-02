@@ -15,6 +15,24 @@ Switch between two values
 </template>
 ```
 
+## Sizes
+
+```vue demo
+<script setup>
+  import { ref } from 'vue'
+
+  const isChecked = ref(false)
+</script>
+
+<template>
+  <PStack align="center">
+    <PToggle v-model="isChecked" size="sm" />
+    <PToggle v-model="isChecked" />
+    <PToggle v-model="isChecked" size="lg" />
+  </PStack>
+</template>
+```
+
 ## Loading/Disabled
 
 ```vue demo
@@ -63,24 +81,6 @@ function onBeforeChange(v) {
     :loading="isLoading"
     :before-change="onBeforeChange"
   />
-</template>
-```
-
-## Sizes
-
-```vue demo
-<script setup>
-  import { ref } from 'vue'
-
-  const isChecked = ref(false)
-</script>
-
-<template>
-  <PStack gap="8">
-    <PToggle v-model="isChecked" size="sm" />
-    <PToggle v-model="isChecked" />
-    <PToggle v-model="isChecked" size="lg" />
-  </PStack>
 </template>
 ```
 

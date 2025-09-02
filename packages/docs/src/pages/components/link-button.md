@@ -14,30 +14,19 @@ Inherit button style links.
 </template>
 ```
 
-## Text Link
-Set `type="text"` to convert it into a link in normal text form.
-
-```vue demo
-<template>
-  <PStack>
-    <PLinkButton href="/components/link-button" text="text prop button" type="text" />
-  </PStack>
-</template>
-```
-
 ## Sizes
 
 ```vue demo
 <template>
-  <PStack>
+  <PStack align="center">
     <PLinkButton size="sm" href="/components/link-button">
-      sm
+      Small
     </PLinkButton>
     <PLinkButton href="/components/link-button">
-      md(default)
+      Medium
     </PLinkButton>
     <PLinkButton size="lg" href="/components/link-button">
-      lg
+      Large
     </PLinkButton>
   </PStack>
 </template>
@@ -59,6 +48,16 @@ Set `type="text"` to convert it into a link in normal text form.
 </template>
 ```
 
+## Text Link
+Set `type="text"` to convert it into a link in normal text form.
+
+```vue demo
+<template>
+  <PStack>
+    <PLinkButton href="/components/link-button" text="text prop button" type="text" />
+  </PStack>
+</template>
+```
 
 ## Shape
 

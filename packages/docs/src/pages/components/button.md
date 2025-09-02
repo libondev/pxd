@@ -5,10 +5,10 @@ One of the most basic components, it will help you complete the interaction.
 
 ```vue demo
 <template>
-  <PStack>
-    <PButton size="sm">sm</PButton>
-    <PButton>md(default)</PButton>
-    <PButton size="lg">lg</PButton>
+  <PStack align="center">
+    <PButton size="sm">Small</PButton>
+    <PButton>Medium</PButton>
+    <PButton size="lg">Large</PButton>
   </PStack>
 </template>
 ```
