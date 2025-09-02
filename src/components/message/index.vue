@@ -327,6 +327,10 @@ defineExpose({
   max-width: min(500px, 100vw);
   max-height: min(800px, 50vh);
 
+  .pxd-transition--fade-scale-leave-active {
+    position: absolute;
+  }
+
   .pxd-message--item {
     --scale: .95;
   }
@@ -396,9 +400,5 @@ defineExpose({
       color: var(--color-green-700)
     }
   }
-}
-
-.relative > .pxd-transition--fade-scale-leave-active {
-  position: absolute;
 }
 </style>

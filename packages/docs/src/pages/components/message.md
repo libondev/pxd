@@ -2,7 +2,7 @@
 Display global messages as feedback in response to user operations.
 
 ## Default
-Message can be used only once in the root component. If you need to register multiple times or want to show it in different locations, you can set the group property to isolate it.
+useMessage needs to ensure that the Message component has been mounted before being invoked. If you need to register multiple times or want to show it in different locations, you can set the group property to isolate it.
 
 ```vue demo
 <script setup>
