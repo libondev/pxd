@@ -13,6 +13,7 @@ import PPopover from '../popover/index.vue'
 interface Props {
   allowClear?: boolean
   presets?: DateTimePreset[]
+  disabled?: boolean
   modelValue?: Date | string | number
   prefixIcon?: boolean
   placeholder?: string
@@ -252,6 +253,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
   >
     <PInput
       ref="inputRef"
+      :disabled="disabled"
       :allow-clear="allowClear"
       :model-value="modelValue"
       :placeholder="placeholder"
@@ -260,7 +262,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       @update:model-value="onUpdateModelValue"
     >
       <template v-if="prefixIcon" #prefix>
-        <CalendarIcon class="ml-3" />
+        <CalendarIcon class="ml-3 pointer-events-none" />
       </template>
     </PInput>
 
