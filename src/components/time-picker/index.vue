@@ -108,17 +108,19 @@ function updateValueList(value: Props['modelValue']) {
 }
 
 function getFormattedValue(value: Props['modelValue']) {
-  let _value = value
-  if (_value == null || _value === '') {
+  if (value == null || value === '') {
     return ''
   }
 
-  if (typeof _value === 'string') {
+  let _value: string | Date
+  if (typeof value === 'string') {
     const formatDate = dayjs(new Date()).format('YYYY-MM-DD')
 
-    _value = `${formatDate} ${_value}`
+    _value = `${formatDate} ${value}`
+  } else if (value instanceof Date) {
+    _value = value
   } else {
-    _value = new Date(_value)
+    _value = new Date(value)
   }
 
   return dayjs(_value).format('HH:mm:ss')
@@ -178,8 +180,9 @@ function onConfirmClick() {
 }
 
 function onNowBtnClick(date?: Date) {
-  modelValue.value = getFormattedValue(date)
-  modelValueList.value = modelValue.value.split(':')
+  const newValue = getFormattedValue(date ?? new Date())
+  modelValue.value = newValue
+  modelValueList.value = newValue.split(':')
 
   onConfirmClick()
 }
