@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { DateTimePreset } from '../../types/components/time-picker'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
@@ -10,7 +11,7 @@ import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
-  presets?: []
+  presets?: DateTimePreset[]
   modelValue?: Date | string | number
   prefixIcon?: boolean
   placeholder?: string
@@ -32,11 +33,12 @@ const props = withDefaults(
     modelValue: '',
     prefixIcon: true,
     closeOnPressEscape: true,
+    presets: () => [],
   },
 )
 
 const emits = defineEmits<{
-  'change': [visible: boolean]
+  'change': [boolean]
   'select': [MouseEvent]
   'update:modelValue': [string]
 }>()
@@ -172,8 +174,8 @@ function onConfirmClick() {
   hidePopover()
 }
 
-function onNowBtnClick() {
-  const now = new Date()
+function onNowBtnClick(date?: Date) {
+  const now = date || new Date()
   modelValueList.value = [
     padStringZero(now.getHours()),
     padStringZero(now.getMinutes()),
@@ -187,6 +189,29 @@ function onInputValueChange(value: string) {
   const [h, m, s] = value.split(':')
 
   modelValueList.value = [parseTimeValue(h, 23), parseTimeValue(m, 59), parseTimeValue(s, 59)]
+}
+
+function onPresetClick(ev: MouseEvent) {
+  const target = ev.target as HTMLElement
+
+  if (target.tagName !== 'BUTTON') {
+    return
+  }
+
+  hidePopover()
+  const index = Number(target.dataset.index)
+
+  if (Number.isNaN(index)) {
+    return
+  }
+
+  const presetValue = props.presets[index].getDate()
+
+  if (!presetValue) {
+    return
+  }
+
+  onNowBtnClick(presetValue)
 }
 
 watch(() => props.modelValue, updateValueList, { immediate: true })
@@ -247,17 +272,24 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
             </div>
           </div>
 
-          <ul v-if="presets?.length" class="w-24 p-2 h-44 gap-2 p-0 m-0 flex list-none flex-wrap border-l outline-none">
-            <li>123</li>
-          </ul>
+          <div v-if="presets?.length" class="w-32 p-2 h-44 gap-1 flex flex-wrap content-start border-l outline-none" @click="onPresetClick">
+            <button
+              v-for="preset, i in presets"
+              :key="preset.label"
+              :data-index="i"
+              class="h-5 px-1.5 cursor-pointer appearance-none rounded-sm bg-gray-300 text-13px whitespace-nowrap text-foreground self-focus-ring outline-none motion-safe:transition-all"
+            >
+              {{ preset.label }}
+            </button>
+          </div>
         </div>
 
         <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-          <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onNowBtnClick">
+          <PButton size="xs" variant="ghost" class="!px-0 text-13px" @click="onNowBtnClick()">
             {{ config.locale.date.now }}
           </PButton>
 
-          <PButton size="xs" variant="ghost" class="!px-0 text-xs" @click="onCancelClick">
+          <PButton size="xs" variant="ghost" class="!px-0 text-13px" @click="onCancelClick">
             {{ config.locale.confirm.cancel }}
           </PButton>
         </div>
