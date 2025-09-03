@@ -232,14 +232,17 @@ async function handleDirectionInvertIfNeed() {
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
-  if (isVisible.value || showPopoverTimer) {
+  if (showPopoverTimer) {
     return
   }
 
   getTriggerRect()
 
   await new Promise<void>((resolve) => {
-    hidePopoverTimer && clearTimeout(hidePopoverTimer)
+    if (hidePopoverTimer) {
+      clearTimeout(hidePopoverTimer)
+      hidePopoverTimer = null
+    }
 
     showPopoverTimer = setTimeout(() => {
       showPopoverTimer = null
@@ -267,12 +270,15 @@ async function handlePopoverShow(immediate: boolean = false) {
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
-  if (!isVisible.value || hidePopoverTimer) {
+  if (hidePopoverTimer) {
     return
   }
 
   await new Promise<void>((resolve) => {
-    showPopoverTimer && clearTimeout(showPopoverTimer)
+    if (showPopoverTimer) {
+      clearTimeout(showPopoverTimer)
+      showPopoverTimer = null
+    }
 
     hidePopoverTimer = setTimeout(() => {
       hidePopoverTimer = null
