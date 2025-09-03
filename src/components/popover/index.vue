@@ -259,6 +259,8 @@ async function handlePopoverShow(immediate: boolean = false) {
   emits('visible-change', true)
 
   savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
+  optimizedOff(document, 'click', onClickOutsideToHide)
+  optimizedOff(scrollContainer, 'scroll', onContainerScroll, { passive: true })
   optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
@@ -274,6 +276,10 @@ async function handlePopoverHide(immediate: boolean = false) {
     return
   }
 
+  if (!isRender.value) {
+    return
+  }
+
   await new Promise<void>((resolve) => {
     if (showPopoverTimer) {
       clearTimeout(showPopoverTimer)
@@ -286,14 +292,14 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
+  optimizedOff(document, 'click', onClickOutsideToHide)
+  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
+  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
+
   await closePopover()
 
   emits('hide')
   emits('visible-change', false)
-
-  optimizedOff(document, 'click', onClickOutsideToHide)
-  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
-  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 }
 
 async function onTriggerClick(ev: Event) {
@@ -365,6 +371,8 @@ async function onTriggerContextmenu(ev: MouseEvent) {
   }
 
   await handlePopoverShow()
+  optimizedOff(document, 'click', onClickOutsideToHide)
+  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
   optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(document, 'contextmenu', onTriggerContextmenu)
 }
@@ -679,7 +687,7 @@ defineExpose({
       :style="triggerStyle"
       @contextmenu.prevent
       @keydown="onTriggerKeydown"
-      @click.capture="onTriggerClick"
+      @click="onTriggerClick"
     >
       <slot />
     </div>
