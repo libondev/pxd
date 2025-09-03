@@ -72,9 +72,9 @@ onMounted(async () => {
   await nextTick()
 
   if (props.label) {
-    currentValue.value = `${String(props.label || '')}${(props.description || '')}`.toLowerCase()
+    currentValue.value = `${String(props.label || '')}${(props.description || '')}`.toLowerCase().replace(/\s/g, '')
   } else {
-    currentValue.value = (unrefElement(itemRef.value)?.textContent || '').toLowerCase()
+    currentValue.value = (unrefElement(itemRef.value)?.textContent || '').toLowerCase().replace(/\s/g, '')
   }
 })
 </script>
