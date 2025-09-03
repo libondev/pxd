@@ -177,6 +177,7 @@ function toggleType() {
 }
 
 function clearValue() {
+  setNativeInputValue('')
   computedModelValue.value = ''
 }
 
@@ -252,13 +253,13 @@ defineExpose({
       <div
         v-if="password || allowClear"
         v-show="computedModelValue"
-        class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
+        class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-gray-700"
       >
-        <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.prevent="toggleType">
+        <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="toggleType">
           <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
           <EyeIcon v-else class="size-3" />
         </div>
-        <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.prevent="clearValue">
+        <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="clearValue">
           <CrossIcon class="size-3" />
         </div>
       </div>

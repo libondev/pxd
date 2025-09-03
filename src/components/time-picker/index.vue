@@ -11,6 +11,7 @@ import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
+  allowClear?: boolean
   presets?: DateTimePreset[]
   modelValue?: Date | string | number
   prefixIcon?: boolean
@@ -85,7 +86,6 @@ function padStringZero(value: number | string): string {
 function showPopover() {
   popoverVisible.value = true
   setTimesScrollTop()
-  inputRef.value?.blur()
 }
 
 function hidePopover() {
@@ -99,7 +99,7 @@ function parseTimeValue(value: string, max: number) {
     return '00'
   }
 
-  return padStringZero(clampValue(numberValue, 0, max).toString())
+  return clampValue(numberValue, 0, max).toString()
 }
 
 function updateValueList(value: Props['modelValue']) {
@@ -170,25 +170,42 @@ function onCancelClick() {
 }
 
 function onConfirmClick() {
+  // 先对所有时间进行补全再转换回普通字符串
+  updateValueList(modelValueList.value.join(':'))
   modelValue.value = modelValueList.value.join(':')
   hidePopover()
 }
 
 function onNowBtnClick(date?: Date) {
-  const now = date || new Date()
-  modelValueList.value = [
-    padStringZero(now.getHours()),
-    padStringZero(now.getMinutes()),
-    padStringZero(now.getSeconds()),
-  ]
+  modelValue.value = getFormattedValue(date)
+  modelValueList.value = modelValue.value.split(':')
 
   onConfirmClick()
 }
 
 function onInputValueChange(value: string) {
-  const [h, m, s] = value.split(':')
+  if (!value) {
+    modelValue.value = ''
+    modelValueList.value = []
+    return
+  }
 
-  modelValueList.value = [parseTimeValue(h, 23), parseTimeValue(m, 59), parseTimeValue(s, 59)]
+  const [h, m, s] = value.split(':')
+  const hh = parseTimeValue(h, 23)
+  const mm = parseTimeValue(m, 59)
+  const ss = parseTimeValue(s, 59)
+
+  modelValue.value = getFormattedValue(`${hh}:${mm}:${ss}`)
+  modelValueList.value = [padStringZero(hh), padStringZero(mm), padStringZero(ss)]
+}
+
+function onUpdateModelValue(value: string) {
+  if (value) {
+    return
+  }
+
+  modelValue.value = ''
+  modelValueList.value = []
 }
 
 function onPresetClick(ev: MouseEvent) {
@@ -235,10 +252,12 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
   >
     <PInput
       ref="inputRef"
+      :allow-clear="allowClear"
       :model-value="modelValue"
       :placeholder="placeholder"
       :prefix-style="false"
       @change="onInputValueChange"
+      @update:model-value="onUpdateModelValue"
     >
       <template v-if="prefixIcon" #prefix>
         <CalendarIcon class="ml-3" />
