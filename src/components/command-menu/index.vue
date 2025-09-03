@@ -148,7 +148,7 @@ provideListFilterValue(filterKeyword)
     >
       <slot />
 
-      <p v-if="isEmptyResult" class="py-8 text-sm text-center text-foreground-secondary">
+      <p v-if="isEmptyResult" class="py-7.5 text-sm text-center text-foreground-secondary">
         {{ config.locale.empty.search }} <span class="text-foreground">"{{ filterKeyword }}"</span>
       </p>
     </PList>
