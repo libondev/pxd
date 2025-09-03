@@ -221,12 +221,16 @@ if (!isServer) {
   pre.shiki {
     max-width: 100%;
     margin-top: 1em;
-    padding: 1.25em 1.5em 1.25em 3.5em;
+    padding: 1.25em 1.5em;
     line-height: 1.25;
     border-radius: 0.5em;
     white-space: pre-wrap;
     word-break: break-all;
     border: 1px solid hsl(var(--color-gray-300-value));
+
+    &:has(.line:not(:only-child)) {
+      padding: 1.25em 1.5em 1.25em 3.5em;
+    }
   }
 
   pre code {
@@ -242,7 +246,7 @@ if (!isServer) {
     position: relative;
   }
 
-  pre.shiki code .line::before {
+  pre.shiki code .line:not(:only-child)::before {
     content: counter(section);
     position: absolute;
     top: 0;
@@ -255,8 +259,9 @@ if (!isServer) {
     counter-increment: section;
   }
 
-  pre.shiki code.language-bash .line::before {
+  pre.shiki code.language-bash .line:not(:only-child)::before {
     content: '$';
+    color: var(--color-gray-600);
   }
 }
 
