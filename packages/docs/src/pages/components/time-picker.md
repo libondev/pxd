@@ -25,7 +25,7 @@ const time = ref('18:30:00')
 
 const presets = [
   {
-    label: '12:00',
+    label: '12:00:00',
     getDate: () => {
       const date = new Date()
       date.setHours(12)

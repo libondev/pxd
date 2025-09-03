@@ -184,7 +184,7 @@ function onNowBtnClick(date?: Date) {
   modelValue.value = newValue
   modelValueList.value = newValue.split(':')
 
-  onConfirmClick()
+  hidePopover()
 }
 
 function onInputValueChange(value: string) {
@@ -219,7 +219,6 @@ function onPresetClick(ev: MouseEvent) {
     return
   }
 
-  hidePopover()
   const index = Number(target.dataset.index)
 
   if (Number.isNaN(index)) {
@@ -296,7 +295,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
             </div>
           </div>
 
-          <div v-if="presets?.length" class="w-32 p-2 h-44 gap-1 flex flex-wrap content-start border-l outline-none" @click="onPresetClick">
+          <div v-if="presets?.length" class="w-26 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
             <button
               v-for="preset, i in presets"
               :key="preset.label"
