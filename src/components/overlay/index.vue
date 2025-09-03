@@ -1,9 +1,23 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { getScrollContainer, getScrollElByContainer, hasScrollbar, isScrollable } from '../../utils/dom'
+import type { MaybeRefOrGetter } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue'
+import {
+  getScrollContainer,
+  getScrollElByContainer,
+  hasScrollbar,
+  isScrollable,
+} from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
+import { toValue } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -13,6 +27,7 @@ interface Props {
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  shownElement?: MaybeRefOrGetter<string | HTMLElement>
 }
 
 defineOptions({
@@ -24,14 +39,11 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: false,
-    appendToBody: true,
-    closeOnPressEscape: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  appendToBody: true,
+  closeOnPressEscape: true,
+})
 
 const emits = defineEmits<{
   'click': [MouseEvent]
@@ -40,9 +52,11 @@ const emits = defineEmits<{
 
 let scrollContainer: HTMLElement | null
 
+const clipPath = ref('')
 const overlayRef = shallowRef<HTMLElement>()
 const computedStyle = computed(() => ({
   '--z': props.zIndex,
+  'clip-path': clipPath.value,
 }))
 
 function onOverlayClick(ev: MouseEvent) {
@@ -93,32 +107,78 @@ function removeScrollDisabled() {
     return
   }
 
-  scrollContainer.classList.remove('scroll-disabled-x', 'scroll-disabled-y', 'scrollbar-stable')
+  scrollContainer.classList.remove(
+    'scroll-disabled-x',
+    'scroll-disabled-y',
+    'scrollbar-stable',
+  )
 }
 
-watch(() => props.modelValue, (visible) => {
-  if (isServer) {
-    return
-  }
-
-  if (!visible) {
-    removeScrollDisabled()
-    optimizedOff(document, 'keydown', onOverlayKeydown)
-
-    return
-  }
-
-  nextTick(() => {
-    if (!scrollContainer) {
-      scrollContainer = getScrollElByContainer(
-        getScrollContainer(overlayRef.value!, true),
-      )
+watch(
+  () => props.modelValue,
+  (visible) => {
+    if (isServer) {
+      return
     }
 
-    addScrollDisabled()
-    optimizedOn(document, 'keydown', onOverlayKeydown)
-  })
-}, { immediate: true })
+    if (!visible) {
+      removeScrollDisabled()
+      optimizedOff(document, 'keydown', onOverlayKeydown)
+
+      return
+    }
+
+    nextTick(() => {
+      if (!scrollContainer) {
+        scrollContainer = getScrollElByContainer(
+          getScrollContainer(overlayRef.value!, true),
+        )
+      }
+
+      addScrollDisabled()
+      optimizedOn(document, 'keydown', onOverlayKeydown)
+      tryGetNeedShownElement()
+    })
+  },
+  { immediate: true },
+)
+
+function tryGetNeedShownElement() {
+  const elOrSelector = toValue(props.shownElement)
+
+  if (!elOrSelector) {
+    return
+  }
+
+  let el: HTMLElement | null = null
+
+  if (typeof elOrSelector === 'string') {
+    el = document.querySelector<HTMLElement>(elOrSelector)
+  } else if (elOrSelector instanceof HTMLElement) {
+    el = elOrSelector
+  }
+
+  if (!el) {
+    return
+  }
+
+  const rect = el.getBoundingClientRect()
+
+  clipPath.value = `polygon(
+    0% 0%,
+    0% 100%,
+    ${rect.left}px 100%,
+    ${rect.left}px ${rect.top}px,
+    ${rect.right}px ${rect.top}px,
+    ${rect.right}px ${rect.bottom}px,
+    ${rect.left}px ${rect.bottom}px,
+    ${rect.left}px 100%,
+    100% 100%,
+    100% 0%
+  )`
+}
+
+watch(() => props.shownElement, tryGetNeedShownElement)
 
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
