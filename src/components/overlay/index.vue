@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { MaybeRefOrGetter } from 'vue'
 import {
   computed,
   nextTick,
@@ -17,7 +16,7 @@ import {
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
-import { toValue } from '../../utils/ref'
+import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -27,7 +26,7 @@ interface Props {
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  shownElement?: MaybeRefOrGetter<string | HTMLElement>
+  shownElement?: string | HTMLElement
 }
 
 defineOptions({
@@ -114,6 +113,42 @@ function removeScrollDisabled() {
   )
 }
 
+function tryGetShownElementIfNeed() {
+  const { shownElement } = props
+
+  if (!shownElement) {
+    return
+  }
+
+  const el = typeof shownElement === 'string'
+    ? document.querySelector<HTMLElement>(shownElement)
+    : unrefElement(shownElement)
+
+  if (!el) {
+    return
+  }
+
+  const rect = el.getBoundingClientRect()
+
+  clipPath.value = `polygon(
+    0% 0%,
+    0% 100%,
+    ${rect.left}px 100%,
+    ${rect.left}px ${rect.top}px,
+    ${rect.right}px ${rect.top}px,
+    ${rect.right}px ${rect.bottom}px,
+    ${rect.left}px ${rect.bottom}px,
+    ${rect.left}px 100%,
+    100% 100%,
+    100% 0%
+  )`
+}
+
+watch(
+  () => props.shownElement,
+  tryGetShownElementIfNeed,
+)
+
 watch(
   () => props.modelValue,
   (visible) => {
@@ -136,49 +171,12 @@ watch(
       }
 
       addScrollDisabled()
+      tryGetShownElementIfNeed()
       optimizedOn(document, 'keydown', onOverlayKeydown)
-      tryGetNeedShownElement()
     })
   },
   { immediate: true },
 )
-
-function tryGetNeedShownElement() {
-  const elOrSelector = toValue(props.shownElement)
-
-  if (!elOrSelector) {
-    return
-  }
-
-  let el: HTMLElement | null = null
-
-  if (typeof elOrSelector === 'string') {
-    el = document.querySelector<HTMLElement>(elOrSelector)
-  } else if (elOrSelector instanceof HTMLElement) {
-    el = elOrSelector
-  }
-
-  if (!el) {
-    return
-  }
-
-  const rect = el.getBoundingClientRect()
-
-  clipPath.value = `polygon(
-    0% 0%,
-    0% 100%,
-    ${rect.left}px 100%,
-    ${rect.left}px ${rect.top}px,
-    ${rect.right}px ${rect.top}px,
-    ${rect.right}px ${rect.bottom}px,
-    ${rect.left}px ${rect.bottom}px,
-    ${rect.left}px 100%,
-    100% 100%,
-    100% 0%
-  )`
-}
-
-watch(() => props.shownElement, tryGetNeedShownElement)
 
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
