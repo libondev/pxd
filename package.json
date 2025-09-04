@@ -94,7 +94,7 @@
     "dev:lib": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports build:core build:docs",
-    "build:lib": "run-s update-exports build:core build:style build:types",
+    "build:lib": "run-s gen-volar-dts update-exports build:core build:style build:types",
     "build:core": "unbuild",
     "build:only": "run-s build:core build:docs",
     "build:docs": "pnpm --filter docs build",
@@ -113,7 +113,7 @@
     "bump": "pnpx bumpp",
     "prepare": "node scripts/setup-scripts.js",
     "postversion": "node scripts/update-exports.js --stage",
-    "prepublishOnly": "run-s build:lib gen-volar-dts"
+    "prepublishOnly": "run-s build:lib"
   },
   "peerDependencies": {
     "vue": ">=2.7.0 || >=3.2.0"
