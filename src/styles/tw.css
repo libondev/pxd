@@ -256,6 +256,8 @@
 }
 
 @theme inline {
+  --font-sans: 'Inter','Inter Fallback','Geist',ui-sans-serif,system-ui,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+
   --color-primary: hsl(var(--primary));
   --color-primary-hover: var(--primary-hover);
   --color-primary-active: var(--primary-active);

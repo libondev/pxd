@@ -223,7 +223,7 @@ defineExpose({
       <input
         :id="uniqueId"
         ref="inputRef"
-        class="px-3 size-full appearance-none rounded-inherit border-none bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+        class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
         :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
         :type="internalInputType"
         :min="min"
