@@ -1,5 +1,9 @@
 @custom-variant dark (&:is(.dark *));
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 :root {
   --radius: .5rem;
 
@@ -119,7 +123,6 @@
   --shadow-border-modal-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
   --shadow-border-fullscreen-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
 
-  -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
