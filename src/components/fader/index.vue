@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { ComponentDirection } from '../../types/shared/props'
-import type { Nullable } from '../../types/shared/utils'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
+import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/throttle'
 
 interface Props {
   size?: number
   color?: string
-  container: Nullable<HTMLElement>
+  container?: string | HTMLElement
   direction?: ComponentDirection | 'both'
 }
 
@@ -32,16 +32,32 @@ const fader = shallowRef({
   bottom: false,
 })
 
+const DIFF_THRESHOLD = 1
+
 const computedStyle = computed(() => ({
   '--fader-color': props.color,
   '--fader-size': getCssUnitValue(props.size),
 }))
 
-const DIFF_THRESHOLD = 1
+const formattedContainer = computed(() => {
+  const { container } = props
+
+  if (typeof container === 'string') {
+    return document.querySelector<HTMLElement>(container)
+  } else {
+    return unrefElement(container)
+  }
+})
 
 const onContainerScroll = throttleByRaf(() => {
-  const { size = 16, container } = props
-  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container!
+  const container = formattedContainer.value
+
+  if (!container) {
+    return
+  }
+
+  const { size = 16 } = props
+  const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container
 
   fader.value = {
     left: scrollLeft >= size,
@@ -51,9 +67,9 @@ const onContainerScroll = throttleByRaf(() => {
   }
 })
 
-useResizeObserver(() => props.container, onContainerScroll)
+useResizeObserver(() => formattedContainer.value, onContainerScroll)
 
-watch(() => props.container, (container, oldDom) => {
+watch(() => formattedContainer.value, (container, oldDom) => {
   if (oldDom) {
     optimizedOff(oldDom, 'scroll', onContainerScroll)
 
@@ -68,7 +84,7 @@ watch(() => props.container, (container, oldDom) => {
 }, { immediate: true })
 
 onBeforeUnmount(() => {
-  optimizedOff(props.container, 'scroll', onContainerScroll)
+  optimizedOff(formattedContainer.value, 'scroll', onContainerScroll)
 })
 </script>
 
@@ -106,7 +122,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--fader-size, 1rem);
+    width: var(--fader-size, 16px);
     height: 100%;
   }
 
@@ -128,7 +144,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--fader-size, 1rem);
+    height: var(--fader-size, 16px);
   }
 
   &::before {
