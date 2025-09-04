@@ -123,7 +123,7 @@ provideListFilterValue(filterKeyword)
           spellcheck="false"
           type="text"
           name="command-menu-filter-input"
-          class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent text-foreground outline-none"
+          class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent text-foreground outline-none font-inherit"
           @input="onKeywordChange"
         >
 

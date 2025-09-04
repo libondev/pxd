@@ -434,6 +434,10 @@
   border-width: 0;
 }
 
+@utility font-inherit {
+  font: inherit;
+}
+
 @layer components {
   .pxd-input--border {
     border: 1px solid var(--border-color, var(--color-gray-alpha-300));
