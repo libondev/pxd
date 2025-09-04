@@ -530,7 +530,7 @@
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
   filter: blur(2px);
-  transform: scale(var(--scale,.9)) translateZ(0);
+  transform: scale(var(--scale,.95)) translateZ(0);
 }
 
 .line-clamp {

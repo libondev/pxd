@@ -331,10 +331,6 @@ defineExpose({
     position: absolute;
   }
 
-  .pxd-message--item {
-    --scale: .95;
-  }
-
   .pxd-message--group {
     align-items: center;
     flex-direction: column;
