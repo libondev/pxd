@@ -32,12 +32,8 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     fader: true,
-    faderSize: 16,
     scrollbar: true,
     endThreshold: 10,
-    scrollbarSize: 6,
-    scrollbarColor: 'var(--color-gray-alpha-300)',
-    scrollbarHoverColor: 'var(--color-gray-alpha-500)',
   },
 )
 
@@ -74,7 +70,7 @@ const scrollInfo = ref({
 
 const computedStyle = computed(() => {
   return {
-    '--scrollbar-size': `${props.scrollbarSize}px`,
+    '--scrollbar-size': props.scrollbarSize,
     '--scrollbar-color': props.scrollbarColor,
     '--scrollbar-hover-color': props.scrollbarHoverColor,
   }
@@ -338,7 +334,7 @@ defineExpose({
       ref="contentRef"
       :class="contentClass"
       :style="contentStyle"
-      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 shrink-0 overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
       <slot />
@@ -354,28 +350,47 @@ defineExpose({
 
     <template v-if="scrollbar">
       <div
-        v-if="scrollInfo.isScrollableY"
+        v-if="scrollInfo.isScrollableX"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute w-(--scrollbar-size) touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
       >
         <div
-          class="pxd-scrollable--thumb absolute w-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
-          :style="verticalThumbStyle"
-          @mousedown="startDragVertical"
+          class="pxd-scrollable--thumb h-inherit rounded-full hover:will-change-transform active:opacity-100 motion-safe:transition-colors"
+          :style="horizontalThumbStyle"
+          @mousedown="startDragHorizontal"
         />
       </div>
 
       <div
-        v-if="scrollInfo.isScrollableX"
+        v-if="scrollInfo.isScrollableY"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute h-(--scrollbar-size) touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
       >
         <div
-          class="pxd-scrollable--thumb absolute h-(--scrollbar-size) rounded-full bg-(--scrollbar-color) hover:bg-(--scrollbar-hover-color) hover:will-change-transform active:bg-(--scrollbar-hover-color) active:opacity-100 motion-safe:transition-colors"
-          :style="horizontalThumbStyle"
-          @mousedown="startDragHorizontal"
+          class="pxd-scrollable--thumb w-inherit rounded-full hover:will-change-transform active:opacity-100 motion-safe:transition-colors"
+          :style="verticalThumbStyle"
+          @mousedown="startDragVertical"
         />
       </div>
     </template>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-scrollable--scrollbar-x {
+  height: calc(var(--scrollbar-size, 6) * 1px);
+}
+
+.pxd-scrollable--scrollbar-y {
+  width: calc(var(--scrollbar-size, 6) * 1px);
+}
+
+.pxd-scrollable--thumb {
+  background-color: var(--scrollbar-color, var(--color-gray-alpha-300));
+
+  &:hover,
+  &:active {
+    background-color: var(--scrollbar-hover-color, var(--color-gray-alpha-500));
+  }
+}
+</style>

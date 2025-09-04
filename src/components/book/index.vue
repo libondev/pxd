@@ -66,7 +66,7 @@ const computedClass = computed(() => {
       <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200">
         <div
           v-if="variant === 'stripe'"
-          class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
+          class="translate-z-0 relative flex w-full flex-1 shrink-0 overflow-hidden"
           style="background-color: var(--bc, var(--color-amber-600))"
         >
           <div class="absolute flex w-full flex-col object-cover">
@@ -78,7 +78,7 @@ const computedClass = computed(() => {
 
         <div
           :class="{ 'pxd-book--cover-simple': variant === 'simple' }"
-          class="translate-z-0 relative flex w-full flex-1 overflow-hidden"
+          class="translate-z-0 relative flex w-full flex-1 shrink-0 overflow-hidden"
         >
           <div aria-hidden="true" class="pxd-book--spine h-full opacity-20" />
 

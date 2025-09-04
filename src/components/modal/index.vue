@@ -124,7 +124,7 @@ watch(() => isVisible.value, (visible) => {
 
         <div
           v-if="$slots.default"
-          class="pxd-modal--content group px-6 pb-5 flex-1 overflow-auto"
+          class="pxd-modal--content group px-6 pb-5 flex-1 shrink-0 overflow-auto"
           :class="[{ 'pt-5': headerStylize }, contentClass]"
         >
           <slot />

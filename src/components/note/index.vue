@@ -108,7 +108,7 @@ const computedClass = computed(() => {
         <Component :is="computedLabel" class="font-medium shrink-0" />
       </slot>
 
-      <span class="flex-1">
+      <span class="flex-1 shrink-0">
         <slot />
       </span>
     </div>

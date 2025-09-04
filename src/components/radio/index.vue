@@ -81,7 +81,7 @@ function onChangeValue() {
 
     <span aria-hidden="true" :class="computedInnerClasses" />
 
-    <span class="text-sm flex-1 empty:hidden">
+    <span class="text-sm flex-1 shrink-0 empty:hidden">
       <slot>
         {{ label }}
       </slot>

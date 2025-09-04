@@ -73,7 +73,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['pxd-progress-bar flex-1 overflow-hidden rounded-full bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
+  const classes = ['pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
 
   return classes.join(' ')
 })

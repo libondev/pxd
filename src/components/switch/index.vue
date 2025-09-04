@@ -49,7 +49,7 @@ const computedClass = computed(() => {
 <template>
   <label
     :aria-checked="isChecked"
-    class="pxd-switch flex-1 cursor-pointer"
+    class="pxd-switch flex-1 shrink-0 cursor-pointer"
     :for="uniqueId"
   >
     <input

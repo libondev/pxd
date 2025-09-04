@@ -37,7 +37,7 @@ const { isCopied, copyText } = useCopyClick()
         </div>
       </div>
 
-      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
+      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 shrink-0 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
         <div class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200">
           <LockClosedIcon class="text-sm text-foreground-secondary" />
 
