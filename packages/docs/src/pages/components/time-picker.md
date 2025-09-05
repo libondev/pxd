@@ -49,3 +49,32 @@ const presets = [
   <PTimePicker v-model="time" :presets="presets" class="!w-[220px]"></PTimePicker>
 </template>
 ```
+
+
+## Disabled
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
+<template>
+  <PTimePicker v-model="time" disabled class="!w-[220px]"></PTimePicker>
+</template>
+```
+
+## Label
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
+<template>
+  <PTimePicker v-model="time" label="My Label" class="!w-[220px]"></PTimePicker>
+</template>
+```
