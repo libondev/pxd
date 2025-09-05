@@ -108,8 +108,8 @@ watch(() => isVisible.value, (visible) => {
         :style="computedStyle"
       >
         <header
-          class="pxd-modal--header px-6 pt-4 relative shrink-0 empty:py-3"
-          :class="{ 'pb-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-modal--header px-6 pt-4 sm:pt-6 relative shrink-0 empty:py-3"
+          :class="{ 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <slot name="header">
             <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
@@ -118,7 +118,7 @@ watch(() => isVisible.value, (visible) => {
               </slot>
             </h3>
 
-            <div v-if="$slots.subtitle || subtitle" class="mt-3 text-sm text-muted-foreground">
+            <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -127,8 +127,7 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <div
-          v-if="$slots.default"
-          class="pxd-modal--content group px-6 py-4 h-full flex-1 overflow-auto"
+          class="pxd-modal--content group px-6 py-4 sm:py-6 h-full flex-1 overflow-auto empty:py-3"
           :class="contentClass"
         >
           <slot />

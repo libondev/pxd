@@ -112,7 +112,6 @@ function handleClose() {
     v-model="isVisible"
     header-stylize
     title="Create Token"
-    subtitle="This action cannot be undone."
     @outside-click="handleClose"
   >
     <PText>
