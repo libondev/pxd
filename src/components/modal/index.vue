@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentClass, ComponentLabel } from '../../types/shared'
-import { shallowRef, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
@@ -52,6 +52,10 @@ const emits = defineEmits<{
 const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
 
+const computedStyle = computed(() => {
+  return { '--w': getCssUnitValue(props.width) }
+})
+
 useFocusTrap(modalRef)
 
 function onOverlayClick(ev: MouseEvent) {
@@ -96,16 +100,16 @@ watch(() => isVisible.value, (visible) => {
       <div
         v-if="isVisible"
         ref="modalRef"
+        aria-modal="true"
         role="dialog"
         tabindex="-1"
-        aria-modal="true"
         class="pxd-modal left-0 bottom-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] fixed z-10 flex h-max max-h-[min(800px,80vh)] w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
         :class="wrapperClass"
-        :style="{ '--w': getCssUnitValue(width) }"
+        :style="computedStyle"
       >
         <header
-          class="pxd-modal--header px-6 py-4 relative shrink-0 empty:py-3"
-          :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-modal--header px-6 pt-4 relative shrink-0 empty:py-3"
+          :class="{ 'pb-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <slot name="header">
             <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
@@ -114,7 +118,7 @@ watch(() => isVisible.value, (visible) => {
               </slot>
             </h3>
 
-            <div v-if="$slots.subtitle || subtitle" class="mt-2 text-sm text-muted-foreground">
+            <div v-if="$slots.subtitle || subtitle" class="mt-3 text-sm text-muted-foreground">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -124,8 +128,8 @@ watch(() => isVisible.value, (visible) => {
 
         <div
           v-if="$slots.default"
-          class="pxd-modal--content group px-6 pb-5 h-full flex-1 overflow-auto"
-          :class="[{ 'pt-5': headerStylize }, contentClass]"
+          class="pxd-modal--content group px-6 py-4 h-full flex-1 overflow-auto"
+          :class="contentClass"
         >
           <slot />
         </div>

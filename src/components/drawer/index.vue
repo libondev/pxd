@@ -131,8 +131,8 @@ watch(() => isVisible.value, (visible) => {
         :data-position="ensurePosition"
       >
         <header
-          class="pxd-drawer--header px-6 py-4 relative shrink-0 empty:py-3"
-          :class="{ 'sm:pt-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-drawer--header px-6 pt-4 relative shrink-0 empty:py-3"
+          :class="{ 'pb-4 border-b bg-background-200 dark:bg-background-100': headerStylize }"
         >
           <slot name="header">
             <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
@@ -150,8 +150,8 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <div
-          class="pxd-drawer--content group px-6 pb-5 flex-1 overflow-auto"
-          :class="[{ 'pt-5': headerStylize }, contentClass]"
+          class="pxd-drawer--content group px-6 py-4 h-full flex-1 overflow-auto"
+          :class="contentClass"
         >
           <slot />
         </div>
