@@ -25,7 +25,7 @@ function handleClose() {
     v-model="isVisible"
     title="Create Token"
     subtitle="Enter a unique name for your token to differentiate it from other tokens and then select the scope."
-    @click-outside="handleClose"
+    @outside-click="handleClose"
   >
     <PText> Some content contained within the modal. </PText>
 
@@ -113,7 +113,7 @@ function handleClose() {
     header-stylize
     title="Create Token"
     subtitle="This action cannot be undone."
-    @click-outside="handleClose"
+    @outside-click="handleClose"
   >
     <PText>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?. Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?

@@ -26,7 +26,7 @@ function handleClose() {
     v-model="isVisible"
     title="Settings"
     subtitle="Configure your application settings"
-    @click-outside="handleClose"
+    @outside-click="handleClose"
   >
     <PText>This is the drawer content. You can put any content here.</PText>
     <PText class="mt-4">The drawer will close when you click outside or press the close button.</PText>
@@ -77,7 +77,7 @@ function handleClose() {
     subtitle="Configure your application settings"
     close-on-press-escape
     close-on-click-overlay
-    @click-outside="handleClose"
+    @outside-click="handleClose"
   >
     <template #footer>
       <PButton block :loading="isLoading" @click="handleClose">
