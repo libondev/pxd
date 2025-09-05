@@ -108,7 +108,7 @@ provideListFilterValue(filterKeyword)
     @hide="hideModal"
   >
     <template #header>
-      <label :for="uniqueId" class="py-3 px-4 -mx-6 -my-4 gap-3 flex items-center border-b bg-background-100">
+      <label :for="uniqueId" class="py-3 px-4 -mx-6 -mt-4 gap-3 flex items-center border-b bg-background-100">
         <input
           :id="uniqueId"
           :value="filterKeyword"
@@ -123,7 +123,7 @@ provideListFilterValue(filterKeyword)
           spellcheck="false"
           type="text"
           name="command-menu-filter-input"
-          class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent text-foreground outline-none font-inherit"
+          class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
           @input="onKeywordChange"
         >
 

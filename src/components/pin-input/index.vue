@@ -277,7 +277,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
           :aria-label="`pin code ${n} of ${length}`"
           :type="computedInputType"
           :data-index="i"
-          class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center outline-none font-inherit placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
+          class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
           minlength="1"
           maxlength="1"
           autocorrect="off"

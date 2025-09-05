@@ -71,7 +71,7 @@ const config = useConfigProvider()
 const computedDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
 
 const computedClass = computed(() => {
-  const classes = ['pxd-button shrink-0 cursor-pointer touch-manipulation items-center select-none font-inherit motion-safe:transition-all', ALIGNMENTS[props.align]]
+  const classes = ['pxd-button shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all', ALIGNMENTS[props.align]]
 
   const { variant, block, shape, icon } = props
 

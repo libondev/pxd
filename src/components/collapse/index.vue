@@ -92,7 +92,7 @@ onMounted(() => {
   <div class="pxd-collapse group/collapse border-b">
     <h3 class="pxd-collapse--title">
       <button
-        class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer appearance-none items-center justify-between border-none bg-transparent self-focus-ring outline-none"
+        class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer touch-manipulation appearance-none items-center justify-between border-none bg-transparent self-focus-ring outline-none"
         :data-state="isExpanded ? 'open' : 'closed'"
         @click="onTriggerClick"
       >
@@ -112,7 +112,7 @@ onMounted(() => {
       @before-leave="beforeLeave"
       @leave="leave"
     >
-      <div v-show="isExpanded" class="pxd-collapse--content group-hover/collapse:will-change-[height]">
+      <div v-show="isExpanded" class="pxd-collapse--content">
         <slot />
       </div>
     </Transition>

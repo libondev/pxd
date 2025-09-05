@@ -99,7 +99,7 @@ function onInputChange(event: Event) {
       <textarea
         :id="uniqueId"
         v-model="modelValue"
-        class="py-2.5 px-3 size-full min-h-[inherit] resize-none appearance-none rounded-inherit border-none bg-transparent outline-none font-inherit placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
+        class="py-2.5 px-3 size-full min-h-[inherit] resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
         autocorrect="off"
         autocomplete="off"
         autocapitalize="off"
