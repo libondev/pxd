@@ -244,12 +244,14 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     trigger="manual"
     :show-delay="0"
     :hide-delay="100"
+    :disabled="disabled"
     disabled-show-transition
     :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker"
     trigger-class="w-full"
-    v-bind="$attrs"
+    :class="$attrs.class"
+    :style="$attrs.style"
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"
   >
@@ -260,6 +262,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :model-value="modelValue"
       :placeholder="placeholder"
       :prefix-style="false"
+      v-bind="$attrs"
       @change="onInputValueChange"
       @update:model-value="onUpdateModelValue"
     >
