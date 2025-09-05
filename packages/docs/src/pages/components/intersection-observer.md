@@ -39,7 +39,7 @@ function onHide() {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
+  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1 border border-dashed rounded-lg">
     <PIntersectionObserver
       class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-200"
       @visible-change="onVisibleChange"
@@ -79,7 +79,7 @@ function onVisibleChange(visible) {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1">
+  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1 border border-dashed rounded-lg">
     <PIntersectionObserver
       class="mt-60 max-w-full"
       width="100%"

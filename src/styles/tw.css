@@ -435,7 +435,7 @@
 }
 
 @utility font-inherit {
-  font: inherit;
+  font-family: inherit;
 }
 
 @layer components {
