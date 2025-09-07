@@ -141,7 +141,7 @@ provideListFilterValue(filterKeyword)
     <PList
       ref="listRef"
       :loop="false"
-      class="sm:h-auto sm:max-h-110 h-[70vh]"
+      class="pxd-command-menu--list sm:h-auto sm:max-h-110"
       :item-transition="false"
       :key-listener="modelValue"
       @select="onListItemSelect"
@@ -156,3 +156,10 @@ provideListFilterValue(filterKeyword)
     <slot name="footer" />
   </PModal>
 </template>
+
+<style>
+.pxd-command-menu--list {
+  height: 60vh;
+  height: 60dvh;
+}
+</style>
