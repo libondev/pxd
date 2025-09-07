@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import ArrowRightIcon from '@gdsicon/vue/arrow-right'
-import BookOpenIcon from '@gdsicon/vue/book-open'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { version } from 'pxd'
@@ -57,40 +56,30 @@ onBeforeUnmount(() => {
         </RouterLink>
       </h2>
 
-      <nav class="sm:border-r ml-auto flex h-full items-center">
-        <ul class="flex h-full [&>*]:list-none [&>*]:border-l">
-          <li>
-            <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
-              <MagnifyingGlassIcon />
+      <nav class="sm:border-r flex h-full items-center">
+        <div class="h-full border-l">
+          <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
+            <MagnifyingGlassIcon />
 
-              <span class="sm:block ml-1.5 hidden">Search</span>
+            <span class="sm:block ml-1.5 hidden">Search</span>
 
-              <template #suffix>
-                <PKbd ctrl label="K" size="sm" class="sm:!inline-flex !hidden" />
-              </template>
-            </PButton>
-          </li>
+            <template #suffix>
+              <PKbd ctrl label="K" size="sm" class="sm:!inline-flex !hidden" />
+            </template>
+          </PButton>
+        </div>
 
-          <li class="sm:block hidden">
-            <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" href="/guide/introduction">
-              <BookOpenIcon />
+        <div class="h-full border-l">
+          <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" target="_blank" href="https://github.com/libondev/pxd">
+            <LogoGithubIcon />
 
-              <span class="sm:block ml-1.5 hidden">Docs</span>
-            </PLinkButton>
-          </li>
+            <span class="sm:block ml-1.5 hidden">Github</span>
+          </PLinkButton>
+        </div>
 
-          <li>
-            <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" target="_blank" href="https://github.com/libondev/pxd">
-              <LogoGithubIcon />
-
-              <span class="sm:block ml-1.5 hidden">Github</span>
-            </PLinkButton>
-          </li>
-
-          <li>
-            <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
-          </li>
-        </ul>
+        <div class="h-full border-l">
+          <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
+        </div>
       </nav>
 
       <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
