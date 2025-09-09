@@ -125,7 +125,7 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="pxd-drawer group/drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
+        class="pxd-drawer group/drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] pointer-events-auto fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
