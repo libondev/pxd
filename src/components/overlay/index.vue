@@ -13,9 +13,9 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { optimizedOff, optimizedOn, preventDefault } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
-import { isServer } from '../../utils/is'
+import { isIOS, isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
@@ -92,12 +92,18 @@ function addScrollDisabled() {
   const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
   const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
 
+  document.body.classList.add('pointer-events-none')
+
   if (xScrollbar && xScrollable) {
-    scrollContainer.classList.add('!pointer-events-none', 'scrollbar-stable', 'scroll-disabled-x')
+    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
   }
 
   if (yScrollbar && yScrollable) {
-    scrollContainer.classList.add('!pointer-events-none', 'scrollbar-stable', 'scroll-disabled-y')
+    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
+  }
+
+  if (isIOS) {
+    optimizedOn(document, 'touchmove', preventDefault, { passive: false })
   }
 }
 
@@ -106,12 +112,17 @@ function removeScrollDisabled() {
     return
   }
 
+  document.body.classList.remove('pointer-events-none')
   scrollContainer.classList.remove(
-    '!pointer-events-none',
+    'pointer-events-none',
     'scroll-disabled-x',
     'scroll-disabled-y',
     'scrollbar-stable',
   )
+
+  if (isIOS) {
+    optimizedOff(document, 'touchmove', preventDefault)
+  }
 }
 
 function tryGetShownElementIfNeed() {
@@ -129,6 +140,7 @@ function tryGetShownElementIfNeed() {
     return
   }
 
+  el.classList.add('pointer-events-auto')
   const { top, left, right, bottom } = el.getBoundingClientRect()
 
   clipPath.value = `polygon(

@@ -174,3 +174,23 @@ export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
 
   return { width: 0, height: 0 }
 }
+
+// export function checkOverflowScroll(ele: Element): boolean {
+//   const style = window.getComputedStyle(ele)
+//   if (
+//     style.overflowX === 'scroll'
+//     || style.overflowY === 'scroll'
+//     || (style.overflowX === 'auto' && ele.clientWidth < ele.scrollWidth)
+//     || (style.overflowY === 'auto' && ele.clientHeight < ele.scrollHeight)
+//   ) {
+//     return true
+//   }
+
+//   const parent = ele.parentNode
+
+//   if (!(parent instanceof Element) || parent.tagName === 'BODY') {
+//     return false
+//   }
+
+//   return checkOverflowScroll(parent)
+// }
