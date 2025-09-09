@@ -13,7 +13,7 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn, preventDefaultFn } from '../../utils/event'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
@@ -58,7 +58,16 @@ const computedStyle = computed(() => ({
   'clip-path': clipPath.value,
 }))
 
-const isIOS = !isServer && /iPad|iPhone|iPod/.test(navigator.userAgent)
+// const isIOS = !isServer && /iPad|iPhone|iPod/.test(navigator.userAgent)
+
+// function preventDefaultScroll(e: TouchEvent) {
+//   const target = e.target as HTMLElement | null
+//   if (target?.closest('.pxd-modal--content')) {
+//     return
+//   }
+
+//   e.preventDefault()
+// }
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
@@ -100,9 +109,9 @@ function addScrollDisabled() {
 
   if (yScrollbar && yScrollable) {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
-    if (isIOS) {
-      optimizedOn(document, 'touchmove', preventDefaultFn, { passive: false })
-    }
+    // if (isIOS) {
+    //   optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+    // }
   }
 }
 
@@ -117,9 +126,9 @@ function removeScrollDisabled() {
     'scrollbar-stable',
   )
 
-  if (isIOS) {
-    optimizedOff(document, 'touchmove', preventDefaultFn, { passive: false })
-  }
+  // if (isIOS) {
+  //   optimizedOff(document, 'touchmove', preventDefaultScroll, { passive: false })
+  // }
 }
 
 function tryGetShownElementIfNeed() {
@@ -205,6 +214,7 @@ onBeforeUnmount(() => {
         class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
+        @touchmove.prevent
         @click="onOverlayClick"
       />
     </Transition>

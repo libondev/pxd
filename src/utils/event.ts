@@ -121,6 +121,6 @@ export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export function preventDefaultFn(ev: Event) {
-  ev.preventDefault()
-}
+// export function preventDefaultFn(ev: Event) {
+//   ev.preventDefault()
+// }
