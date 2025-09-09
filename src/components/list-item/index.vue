@@ -48,7 +48,7 @@ const itemTypeMap = {
   separator: '!h-0 !w-auto px-0 m-1.5 border-b',
 }
 
-const isVisible = computed(() => filterValue?.value ? currentValue.value.includes(filterValue.value) : true)
+const isVisible = computed(() => filterValue?.value ? currentValue.value.includes(filterValue.value.toLowerCase()) : true)
 const isSelected = computed(() => activeValue.value === uniqueId)
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
