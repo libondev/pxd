@@ -93,11 +93,11 @@ function addScrollDisabled() {
   const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
 
   if (xScrollbar && xScrollable) {
-    scrollContainer.classList.add('pointer-events-none', 'scrollbar-stable', 'scroll-disabled-x')
+    scrollContainer.classList.add('!pointer-events-none', 'scrollbar-stable', 'scroll-disabled-x')
   }
 
   if (yScrollbar && yScrollable) {
-    scrollContainer.classList.add('pointer-events-none', 'scrollbar-stable', 'scroll-disabled-y')
+    scrollContainer.classList.add('!pointer-events-none', 'scrollbar-stable', 'scroll-disabled-y')
   }
 }
 
@@ -107,7 +107,7 @@ function removeScrollDisabled() {
   }
 
   scrollContainer.classList.remove(
-    'pointer-events-none',
+    '!pointer-events-none',
     'scroll-disabled-x',
     'scroll-disabled-y',
     'scrollbar-stable',
@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
         v-if="modelValue"
         ref="overlayRef"
         :data-blur="blur"
-        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
+        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
         @click="onOverlayClick"
