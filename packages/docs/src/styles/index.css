@@ -11,12 +11,6 @@
   font-feature-settings: 'liga' 1, 'calt' 1;
 }
 
-html,
-body,
-#app {
-  @apply h-full;
-}
-
 html {
   scroll-padding-top: 60px;
 }
