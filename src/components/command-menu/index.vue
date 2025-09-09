@@ -159,7 +159,7 @@ provideListFilterValue(filterKeyword)
 
 <style>
 .pxd-command-menu--list {
-  height: 60vh;
-  height: 60dvh;
+  height: 55vh;
+  height: 55dvh;
 }
 </style>
