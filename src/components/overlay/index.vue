@@ -13,7 +13,7 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { optimizedOff, optimizedOn, preventDefaultFn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
@@ -58,6 +58,8 @@ const computedStyle = computed(() => ({
   'clip-path': clipPath.value,
 }))
 
+const isIOS = !isServer && /iPad|iPhone|iPod/.test(navigator.userAgent)
+
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 
@@ -98,6 +100,9 @@ function addScrollDisabled() {
 
   if (yScrollbar && yScrollable) {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
+    if (isIOS) {
+      optimizedOn(document, 'touchmove', preventDefaultFn, { passive: false })
+    }
   }
 }
 
@@ -111,6 +116,10 @@ function removeScrollDisabled() {
     'scroll-disabled-y',
     'scrollbar-stable',
   )
+
+  if (isIOS) {
+    optimizedOff(document, 'touchmove', preventDefaultFn, { passive: false })
+  }
 }
 
 function tryGetShownElementIfNeed() {
@@ -128,17 +137,17 @@ function tryGetShownElementIfNeed() {
     return
   }
 
-  const rect = el.getBoundingClientRect()
+  const { top, left, right, bottom } = el.getBoundingClientRect()
 
   clipPath.value = `polygon(
     0% 0%,
     0% 100%,
-    ${rect.left}px 100%,
-    ${rect.left}px ${rect.top}px,
-    ${rect.right}px ${rect.top}px,
-    ${rect.right}px ${rect.bottom}px,
-    ${rect.left}px ${rect.bottom}px,
-    ${rect.left}px 100%,
+    ${left}px 100%,
+    ${left}px ${top}px,
+    ${right}px ${top}px,
+    ${right}px ${bottom}px,
+    ${left}px ${bottom}px,
+    ${left}px 100%,
     100% 100%,
     100% 0%
   )`
