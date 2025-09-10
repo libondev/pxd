@@ -11,7 +11,7 @@ import {
   getScrollPositions,
 } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/event'
-import { toArray } from '../../utils/format'
+import { getCssUnitValue, toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
 import PTeleport from '../teleport/index.vue'
@@ -92,8 +92,8 @@ const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
 const wrapperStyle = shallowRef<CSSProperties>({
   '--popover-bg': props.arrowColor,
-  '--popover-offset': `${props.offset}px`,
-  '--popover-max-width': `${props.maxWidth}px`,
+  '--popover-offset': getCssUnitValue(props.offset),
+  '--popover-max-width': getCssUnitValue(props.maxWidth),
   '--popover-arrow-offset': `${props.offset - 5}px`,
 })
 const localPosition = shallowRef(props.position)
@@ -493,8 +493,8 @@ function updateContentPosition() {
     zIndex,
     'transform': `translate3d(${translateX}, ${translateY}, 0)`,
     '--popover-bg': arrowColor,
-    '--popover-offset': `${offset}px`,
-    '--popover-max-width': `${maxWidth}px`,
+    '--popover-offset': getCssUnitValue(offset),
+    '--popover-max-width': getCssUnitValue(maxWidth),
     '--popover-arrow-offset': `${offset - 5}px`,
   }
 }
@@ -669,7 +669,7 @@ defineExpose({
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate max-w-full data-[enterable=false]:pointer-events-none"
+          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
