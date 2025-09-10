@@ -276,10 +276,6 @@ async function handlePopoverHide(immediate: boolean = false) {
     return
   }
 
-  if (!isRender.value) {
-    return
-  }
-
   await new Promise<void>((resolve) => {
     if (showPopoverTimer) {
       clearTimeout(showPopoverTimer)
