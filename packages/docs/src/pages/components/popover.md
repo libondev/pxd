@@ -9,8 +9,8 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
 </script>
 
 <template>
-  <PStack gap="2">
-    <PPopover content-class="popover-demo" position="top-start">
+  <PStack gap="2" justify="center" class="w-lg">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top-start">
       <PButton>
         Top start
       </PButton>
@@ -20,7 +20,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="top">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top">
       <PButton>
         Top
       </PButton>
@@ -30,7 +30,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="top-end">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top-end">
       <PButton>
         Top end
       </PButton>
@@ -41,8 +41,74 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PPopover>
   </PStack>
 
-  <PStack gap="2" class="mt-2">
-    <PPopover content-class="popover-demo" position="bottom-start">
+  <PStack justify="between" class="w-lg my-2">
+    <PStack gap="2" direction="vertical">
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="left-start">
+        <PButton>
+          Left start
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="left">
+        <PButton>
+          Left
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="left-end">
+        <PButton>
+          Left end
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+    </PStack>
+
+    <PStack gap="2" direction="vertical" align="end">
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="right-start">
+        <PButton>
+          Right start
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="right">
+        <PButton>
+          Right
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+
+      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="right-end">
+        <PButton>
+          Right end
+        </PButton>
+
+        <template #content>
+          {{ content }}
+        </template>
+      </PPopover>
+    </PStack>
+  </PStack>
+
+  <PStack gap="2" justify="center" class="w-lg">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="bottom-start">
       <PButton>
         Bottom start
       </PButton>
@@ -52,7 +118,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="bottom">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="bottom">
       <PButton>
         Bottom
       </PButton>
@@ -62,7 +128,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" position="bottom-end">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="bottom-end">
       <PButton>
         Bottom end
       </PButton>
@@ -72,81 +138,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </template>
     </PPopover>
   </PStack>
-
-  <PStack gap="2" class="mt-2">
-    <PPopover content-class="popover-demo" position="left-start">
-      <PButton>
-        Left start
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-
-    <PPopover content-class="popover-demo" position="left">
-      <PButton>
-        Left
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-
-    <PPopover content-class="popover-demo" position="left-end">
-      <PButton>
-        Left end
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-  </PStack>
-
-  <PStack gap="2" class="mt-2">
-    <PPopover content-class="popover-demo" position="right-start">
-      <PButton>
-        Right start
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-
-    <PPopover content-class="popover-demo" position="right">
-      <PButton>
-        Right
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-
-    <PPopover content-class="popover-demo" position="right-end">
-      <PButton>
-        Right end
-      </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-  </PStack>
 </template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
 ```
 
 ## Trigger
@@ -161,7 +153,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
 
 <template>
   <PStack gap="2">
-    <PPopover content-class="popover-demo" trigger="hover">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="hover">
       <PButton>
         Hover to active
       </PButton>
@@ -171,7 +163,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="click">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="click">
       <PButton>
         Click to active
       </PButton>
@@ -181,7 +173,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="focus">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="focus">
       <PButton>
         Focus to active
       </PButton>
@@ -191,7 +183,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="contextmenu">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="contextmenu">
       <PButton>
         Contextmenu to active
       </PButton>
@@ -201,7 +193,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" :trigger="['hover', 'click', 'focus']">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :trigger="['hover', 'click', 'focus']">
       <PButton>
         Hover/Click/Focus to active
       </PButton>
@@ -211,7 +203,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
       </template>
     </PPopover>
 
-    <PPopover content-class="popover-demo" trigger="manual" :visible="visible">
+    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="manual" :visible="visible">
       <PButton @click="visible = !visible">
         Manual to active
       </PButton>
@@ -222,16 +214,6 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
     </PPopover>
   </PStack>
 </template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
 ```
 
 ## Offset
@@ -242,7 +224,7 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :offset="30">
+  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :offset="30">
     <PButton>
       Hover to active
     </PButton>
@@ -252,16 +234,6 @@ const content = 'Two roads diverged in a wood, and I — I took the one less tra
     </template>
   </PPopover>
 </template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
 ```
 
 ## Max width
@@ -272,7 +244,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" :max-width="200">
+  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :max-width="200">
     <PButton>
       Hover to active
     </PButton>
@@ -282,16 +254,6 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
     </template>
   </PPopover>
 </template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
 ```
 
 ## Enterable
@@ -302,7 +264,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="popover-demo" enterable>
+  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" enterable>
     <PButton>
       Hover to active
     </PButton>
@@ -312,14 +274,4 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
     </template>
   </PPopover>
 </template>
-
-<style>
-.popover-demo {
-  background: var(--color-gray-1000);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-  color: var(--color-gray-100);
-}
-</style>
 ```
