@@ -48,7 +48,6 @@ The component inherits from popover and supports all the properties of popover. 
   <PStack>
     <PTooltip
       variant="primary"
-      position="left"
       content="The Evil Rabbit Jumped over the Fence"
     >
       <PButton>Hover me</PButton>
@@ -56,7 +55,6 @@ The component inherits from popover and supports all the properties of popover. 
 
     <PTooltip
       variant="success"
-      position="top"
       content="The Evil Rabbit Jumped over the Fence"
     >
       <PButton>Hover me</PButton>
@@ -64,7 +62,6 @@ The component inherits from popover and supports all the properties of popover. 
 
     <PTooltip
       variant="warning"
-      position="bottom"
       content="The Evil Rabbit Jumped over the Fence"
      >
       <PButton>Hover me</PButton>
@@ -72,7 +69,6 @@ The component inherits from popover and supports all the properties of popover. 
 
     <PTooltip
       variant="error"
-      position="right"
       content="The Evil Rabbit Jumped over the Fence"
     >
       <PButton>Hover me</PButton>
@@ -131,48 +127,13 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 ```vue demo
 <template>
-  <PStack>
-    <PTooltip
-      :delay="0"
-      position="left"
-    >
-      <PButton>Hover me</PButton>
+  <PTooltip>
+    <PButton>Hover me</PButton>
 
-      <template #content>
-        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
-      </template>
-    </PTooltip>
-
-    <PTooltip
-      :delay="0"
-      position="top"
-    >
-      <PButton>Hover me</PButton>
-      <template #content>
-        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
-      </template>
-    </PTooltip>
-
-    <PTooltip
-      :delay="0"
-      position="bottom"
-     >
-      <PButton>Hover me</PButton>
-      <template #content>
-        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
-      </template>
-    </PTooltip>
-
-    <PTooltip
-      :delay="0"
-      position="right"
-    >
-      <PButton>Hover me</PButton>
-      <template #content>
-        The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
-      </template>
-    </PTooltip>
-  </PStack>
+    <template #content>
+      The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
+    </template>
+  </PTooltip>
 </template>
 ```
 
