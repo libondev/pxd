@@ -68,7 +68,7 @@ const props = withDefaults(
     minVisibleRatio: 0.88,
     autoPositionThreshold: 30,
     scrollHiddenThreshold: 150,
-    transitionName: 'pxd-transition--fade-scale',
+    transitionName: 'pxd-transition--fade',
   },
 )
 
@@ -685,7 +685,7 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover--container {
-  &[data-position='top'] {
+  /* &[data-position='top'] {
     transform-origin: bottom center;
   }
   &[data-position='top-start'] {
@@ -723,7 +723,7 @@ defineExpose({
   }
   &[data-position='right-end'] {
     transform-origin: left right;
-  }
+  } */
 
   &[data-position^='top'] {
     padding-bottom: var(--popover-offset);
