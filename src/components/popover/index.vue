@@ -72,6 +72,7 @@ const props = withDefaults(
     closeOnPressEscape: false,
     autoPositionThreshold: 30,
     scrollHiddenThreshold: 150,
+    transitionName: 'pxd-transition--fade-scale',
   },
 )
 
@@ -94,12 +95,8 @@ let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
+const wrapperStyle = shallowRef<CSSProperties>()
 const localPosition = shallowRef(props.position)
-
-const wrapperStyle = shallowRef<CSSProperties>({
-  left: '-100%',
-  top: '-100%',
-})
 
 const {
   render: isRender,
@@ -112,10 +109,6 @@ const {
 })
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
-
-const computedTransitionName = computed(() =>
-  props.transitionName ?? 'pxd-transition--fade',
-)
 
 let savedScrollTop: number = 0
 
@@ -424,80 +417,74 @@ function updateContentPosition() {
   const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect.value!, viewportRect!)
 
   const position = localPosition.value
-  const isVertical = position.startsWith('top') || position.startsWith('bottom')
-  const isHorizontal = position.startsWith('left') || position.startsWith('right')
 
   let top = ''
   let left = ''
   let translateX = '0'
   let translateY = '0'
 
-  if (isVertical) {
-    if (position === 'top') {
-      top = `${scrollTop}px`
-      left = `${scrollLeft + width / 2}px`
+  if (position === 'top') {
+    top = `${scrollTop}px`
+    left = `${scrollLeft + width / 2}px`
 
-      translateX = '-50%'
-      translateY = '-100%'
-    } else if (position === 'bottom') {
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft + width / 2}px`
+    translateX = '-50%'
+    translateY = '-100%'
+  } else if (position === 'bottom') {
+    top = `${scrollTop + height}px`
+    left = `${scrollLeft + width / 2}px`
 
-      translateX = '-50%'
-    } else if (position === 'top-start') {
-      top = `${scrollTop}px`
-      left = `${scrollLeft}px`
+    translateX = '-50%'
+  } else if (position === 'top-start') {
+    top = `${scrollTop}px`
+    left = `${scrollLeft}px`
 
-      translateY = '-100%'
-    } else if (position === 'top-end') {
-      top = `${scrollTop}px`
-      left = `${scrollLeft + width}px`
+    translateY = '-100%'
+  } else if (position === 'top-end') {
+    top = `${scrollTop}px`
+    left = `${scrollLeft + width}px`
 
-      translateX = '-100%'
-      translateY = '-100%'
-    } else if (position === 'bottom-start') {
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft}px`
-    } else if (position === 'bottom-end') {
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft + width}px`
-      translateX = '-100%'
-    }
-  } else if (isHorizontal) {
-    if (position === 'left') {
-      top = `${scrollTop + height / 2}px`
-      left = `${scrollLeft}px`
+    translateX = '-100%'
+    translateY = '-100%'
+  } else if (position === 'bottom-start') {
+    top = `${scrollTop + height}px`
+    left = `${scrollLeft}px`
+  } else if (position === 'bottom-end') {
+    top = `${scrollTop + height}px`
+    left = `${scrollLeft + width}px`
+    translateX = '-100%'
+  } else if (position === 'left') {
+    top = `${scrollTop + height / 2}px`
+    left = `${scrollLeft}px`
 
-      translateX = '-100%'
-      translateY = '-50%'
-    } else if (position === 'right') {
-      top = `${scrollTop + height / 2}px`
-      left = `${scrollLeft + width}px`
+    translateX = '-100%'
+    translateY = '-50%'
+  } else if (position === 'right') {
+    top = `${scrollTop + height / 2}px`
+    left = `${scrollLeft + width}px`
 
-      translateX = '0'
-      translateY = '-50%'
-    } else if (position === 'left-start') {
-      top = `${scrollTop}px`
-      left = `${scrollLeft}px`
+    translateX = '0'
+    translateY = '-50%'
+  } else if (position === 'left-start') {
+    top = `${scrollTop}px`
+    left = `${scrollLeft}px`
 
-      translateX = '-100%'
-      translateY = '0'
-    } else if (position === 'left-end') {
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft}px`
+    translateX = '-100%'
+    translateY = '0'
+  } else if (position === 'left-end') {
+    top = `${scrollTop + height}px`
+    left = `${scrollLeft}px`
 
-      translateX = '-100%'
-      translateY = '-100%'
-    } else if (position === 'right-start') {
-      top = `${scrollTop}px`
-      left = `${scrollLeft + width}px`
-    } else if (position === 'right-end') {
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft + width}px`
+    translateX = '-100%'
+    translateY = '-100%'
+  } else if (position === 'right-start') {
+    top = `${scrollTop}px`
+    left = `${scrollLeft + width}px`
+  } else if (position === 'right-end') {
+    top = `${scrollTop + height}px`
+    left = `${scrollLeft + width}px`
 
-      translateX = '0'
-      translateY = '-100%'
-    }
+    translateX = '0'
+    translateY = '-100%'
   }
 
   wrapperStyle.value = {
@@ -692,7 +679,7 @@ defineExpose({
       <Transition
         appear
         mode="out-in"
-        :name="computedTransitionName"
+        :name="transitionName"
         :class="{ disabledShowTransition, disabledHideTransition }"
       >
         <div
@@ -721,18 +708,22 @@ defineExpose({
 .pxd-popover--container {
 
   &[data-position^='top'] {
+    transform-origin: bottom center;
     padding-bottom: var(--popover-offset);
   }
 
   &[data-position^='bottom'] {
+    transform-origin: top center;
     padding-top: var(--popover-offset);
   }
 
   &[data-position^='left'] {
+    transform-origin: right center;
     padding-right: var(--popover-offset);
   }
 
   &[data-position^='right'] {
+    transform-origin: left center;
     padding-left: var(--popover-offset);
   }
 
@@ -805,8 +796,8 @@ defineExpose({
   }
 }
 
-.disabledShowTransition.pxd-transition--fade-enter-active,
-.disabledHideTransition.pxd-transition--fade-leave-active {
+.disabledShowTransition[class*="-enter-active"],
+.disabledHideTransition[class*="-leave-active"] {
   --default-transition-duration: 0 !important
 }
 </style>
