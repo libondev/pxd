@@ -29,7 +29,6 @@ interface Props {
   enterable?: boolean
   showArrow?: boolean
   arrowColor?: string
-  destroyDelay?: number
   autoPosition?: boolean
   scrollHidden?: boolean
   triggerClass?: ComponentClass
@@ -60,13 +59,11 @@ const props = withDefaults(
     offset: 10,
     trigger: () => ['hover'],
     position: 'bottom',
-    maxWidth: 300,
     showDelay: 300,
     hideDelay: 300,
     showArrow: false,
     arrowColor: 'hsl(var(--primary))',
     autoPosition: true,
-    destroyDelay: 2000,
     scrollHidden: false,
     minVisibleRatio: 0.88,
     closeOnPressEscape: false,
@@ -105,7 +102,7 @@ const {
   close: closePopover,
 } = useDelayDestroy({
   default: props.visible,
-  delay: props.destroyDelay,
+  delay: 3000,
 })
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
@@ -662,7 +659,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-popover relative inline-flex max-w-full">
+  <div class="pxd-popover relative inline-flex">
     <div
       ref="triggerRef"
       class="pxd-popover--trigger max-w-full active:select-none"
@@ -706,24 +703,59 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover--container {
+  &[data-position='top'] {
+    transform-origin: bottom center;
+  }
+  &[data-position='top-start'] {
+    transform-origin: bottom left;
+  }
+  &[data-position='top-end'] {
+    transform-origin: bottom right;
+  }
+
+  &[data-position='bottom'] {
+    transform-origin: top center;
+  }
+  &[data-position='bottom-start'] {
+    transform-origin: top left;
+  }
+  &[data-position='bottom-end'] {
+    transform-origin: top right;
+  }
+
+  &[data-position='left'] {
+    transform-origin: right center;
+  }
+  &[data-position='left-start'] {
+    transform-origin: right left;
+  }
+  &[data-position='left-end'] {
+    transform-origin: right right;
+  }
+
+  &[data-position='right'] {
+    transform-origin: left center;
+  }
+  &[data-position='right-start'] {
+    transform-origin: left left;
+  }
+  &[data-position='right-end'] {
+    transform-origin: left right;
+  }
 
   &[data-position^='top'] {
-    transform-origin: bottom center;
     padding-bottom: var(--popover-offset);
   }
 
   &[data-position^='bottom'] {
-    transform-origin: top center;
     padding-top: var(--popover-offset);
   }
 
   &[data-position^='left'] {
-    transform-origin: right center;
     padding-right: var(--popover-offset);
   }
 
   &[data-position^='right'] {
-    transform-origin: left center;
     padding-left: var(--popover-offset);
   }
 
