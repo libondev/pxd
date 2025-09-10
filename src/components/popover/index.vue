@@ -56,7 +56,7 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     zIndex: 5,
-    offset: 10,
+    offset: 8,
     trigger: () => ['hover'],
     position: 'bottom',
     showDelay: 300,
@@ -92,7 +92,12 @@ let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
-const wrapperStyle = shallowRef<CSSProperties>()
+const wrapperStyle = shallowRef<CSSProperties>({
+  '--popover-bg': props.arrowColor,
+  '--popover-offset': `${props.offset}px`,
+  '--popover-max-width': `${props.maxWidth}px`,
+  '--popover-arrow-offset': `${props.offset - 5}px`,
+})
 const localPosition = shallowRef(props.position)
 
 const {
