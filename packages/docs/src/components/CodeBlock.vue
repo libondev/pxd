@@ -37,14 +37,25 @@ function onCopy(ev: MouseEvent) {
           <slot name="code" />
         </div>
 
-        <div
-          class="top-3 right-4 p-2 absolute hidden cursor-pointer rounded-md bg-background-100 shadow-border-default group-hover:block hover:bg-background-hover active:bg-background-active"
+        <PButton
+          class="top-3 right-4 absolute hidden group-hover:flex active:scale-95"
+          icon
+          size="sm"
           @click="onCopy"
         >
-          <Transition name="pxd-transition--fade-scale" mode="out-in">
-            <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
-          </Transition>
-        </div>
+          <div
+            class="inset-0 ease-in-out absolute flex items-center justify-center transition-all duration-300 will-change-[transform,opacity,filter]"
+            :class=" isCopied ? 'blur-0 scale-100 opacity-100' : 'blur-xs scale-[0.25] opacity-0' "
+          >
+            <CheckIcon />
+          </div>
+          <div
+            class="transition-[transform, opacity, filter] ease-in-out duration-300 will-change-[transform,opacity,filter]"
+            :class="isCopied ? 'blur-xs scale-[0.25] opacity-0' : 'blur-0 scale-100 opacity-100' "
+          >
+            <CopyIcon />
+          </div>
+        </PButton>
       </div>
     </details>
   </div>
