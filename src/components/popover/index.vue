@@ -66,7 +66,6 @@ const props = withDefaults(
     autoPosition: true,
     scrollHidden: false,
     minVisibleRatio: 0.88,
-    closeOnPressEscape: false,
     autoPositionThreshold: 30,
     scrollHiddenThreshold: 150,
     transitionName: 'pxd-transition--fade-scale',
@@ -79,7 +78,6 @@ const emits = defineEmits<{
   'visible-change': [boolean]
   'outside-click': [MouseEvent]
   'trigger-click': [PointerEvent]
-  'trigger-keydown': [KeyboardEvent]
 }>()
 
 const triggerRect = shallowRef<DOMRect>()
@@ -588,26 +586,6 @@ function updateTriggerEvents(
   }
 }
 
-function onTriggerKeydown(ev: KeyboardEvent) {
-  if (!isVisible.value) {
-    return
-  }
-
-  emits('trigger-keydown', ev)
-
-  if (!props.closeOnPressEscape) {
-    return
-  }
-
-  if (ev.key !== 'Escape') {
-    return
-  }
-
-  ev.stopPropagation()
-
-  handlePopoverHide()
-}
-
 function onResizeUpdatePosition() {
   if (!isVisible.value || !props.autoPosition) {
     return
@@ -671,7 +649,6 @@ defineExpose({
       :class="triggerClass"
       :style="triggerStyle"
       @contextmenu.prevent
-      @keydown="onTriggerKeydown"
       @click="onTriggerClick"
     >
       <slot />

@@ -4,7 +4,7 @@ import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
-import { sleep } from '../../utils/event'
+import { optimizedOff, optimizedOn, sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
 import { throttle } from '../../utils/throttle'
 import PInput from '../input/index.vue'
@@ -53,6 +53,7 @@ const VALUE_POSITION_MAP = {
 } as const
 
 const config = useConfigProvider()
+
 const inputRef = shallowRef<InstanceType<typeof PInput>>()
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
@@ -87,10 +88,12 @@ function padStringZero(value: number | string): string {
 function showPopover() {
   popoverVisible.value = true
   setTimesScrollTop()
+  optimizedOn(document, 'keydown', onKeystrokeClosePopover)
 }
 
 function hidePopover() {
   popoverVisible.value = false
+  optimizedOff(document, 'keydown', onKeystrokeClosePopover)
 }
 
 function parseTimeValue(value: string, max: number) {
@@ -234,6 +237,18 @@ function onPresetClick(ev: MouseEvent) {
   onNowBtnClick(presetValue)
 }
 
+function onKeystrokeClosePopover(ev: KeyboardEvent) {
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+    return
+  }
+
+  if (ev.key !== 'Escape' || !props.closeOnPressEscape) {
+    return
+  }
+
+  hidePopover()
+}
+
 watch(() => props.modelValue, updateValueList, { immediate: true })
 </script>
 
@@ -245,13 +260,12 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     :show-delay="0"
     :hide-delay="100"
     :disabled="disabled"
-    disabled-show-transition
-    :visible="popoverVisible"
-    :close-on-press-escape="closeOnPressEscape"
-    class="pxd-time-picker"
-    trigger-class="w-full"
     :class="$attrs.class"
     :style="$attrs.style"
+    trigger-class="w-full"
+    class="pxd-time-picker"
+    :visible="popoverVisible"
+    disabled-show-transition
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"
   >
@@ -263,6 +277,8 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       v-bind="$attrs"
+      @blur="hidePopover"
+      @focus="showPopover"
       @change="onInputValueChange"
       @update:model-value="onUpdateModelValue"
     >

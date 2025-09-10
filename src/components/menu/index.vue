@@ -59,7 +59,6 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     disabled-show-transition
     :visible="popoverVisible"
     transition-name="pxd-transition--fade"
-    :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     @outside-click="hidePopover"
     @trigger-click="showPopover"
@@ -71,7 +70,9 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
+        :close-on-press-escape="closeOnPressEscape"
         class="max-h-68 rounded-xl bg-background-100 shadow-border-menu"
+        @escape="hidePopover"
         @select="onOptionClick"
       >
         <slot name="items" />

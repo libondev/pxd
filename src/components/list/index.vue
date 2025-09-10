@@ -15,6 +15,7 @@ interface Props {
   options?: ListOption[]
   keyListener?: boolean
   itemTransition?: boolean
+  closeOnPressEscape?: boolean
 }
 
 defineOptions({
@@ -34,6 +35,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   toggle: []
+  escape: [KeyboardEvent]
   select: [MouseEvent, ListOptionSelected]
 }>()
 
@@ -52,6 +54,10 @@ const listItemKeys: string[] = []
 const listItemsMap = new Map<string, HTMLElement>()
 
 const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+    return
+  }
+
   const { key } = ev
 
   if (key === 'Tab') {
@@ -60,6 +66,11 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
 
   if (key === 'Enter') {
     listItemsMap.get(activeValue.value)?.click()
+    return
+  }
+
+  if (key === 'Escape' && props.closeOnPressEscape) {
+    emits('escape', ev)
     return
   }
 
