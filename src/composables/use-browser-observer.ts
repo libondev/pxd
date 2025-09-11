@@ -57,15 +57,6 @@ function createObserver(ObserverConstructor: Constructor) {
 
     const targets = computed<HTMLElement[]>(() => toArray(toValue(target)).map(unrefElement).filter(isNotNullish))
 
-    const cleanup = () => {
-      if (!observer) {
-        return
-      }
-
-      observer.disconnect()
-      observer = undefined
-    }
-
     const unwatch = watch(
       () => [targets.value],
       ([newTargets]) => {
@@ -95,7 +86,16 @@ function createObserver(ObserverConstructor: Constructor) {
       },
     )
 
-    const stop = () => {
+    function cleanup() {
+      if (!observer) {
+        return
+      }
+
+      observer.disconnect()
+      observer = undefined
+    }
+
+    function stop() {
       cleanup()
       unwatch()
     }

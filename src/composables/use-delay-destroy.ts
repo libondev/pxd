@@ -26,7 +26,7 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
 
   let delayTimeoutId: ReturnType<typeof setTimeout>
 
-  const open = async () => {
+  async function open() {
     return new Promise<boolean>((resolve) => {
       clearTimeout(delayTimeoutId)
 
@@ -38,7 +38,7 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
     })
   }
 
-  const close = () => {
+  function close() {
     return new Promise<boolean>((resolve) => {
       visible.value = false
 

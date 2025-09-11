@@ -56,7 +56,7 @@ export function useMediaQuery(
 
   matches.value = mediaQuery.query.matches
 
-  const handler = (event: MediaQueryListEvent) => {
+  function handler(event: MediaQueryListEvent) {
     callback?.(mediaQuery.query)
     matches.value = event.matches
   }

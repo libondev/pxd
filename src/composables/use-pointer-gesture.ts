@@ -620,7 +620,7 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
     { immediate: true },
   )
 
-  const stop = () => {
+  function stop() {
     unwatchContainer()
     resetInternal()
     unbind()

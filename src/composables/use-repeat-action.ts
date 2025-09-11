@@ -31,7 +31,7 @@ export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callba
   let timer: ReturnType<typeof setTimeout> | null = null
   let startTime = 0
 
-  const step = () => {
+  function step() {
     action()
 
     const elapsedTime = Date.now() - startTime
@@ -47,14 +47,14 @@ export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callba
     timer = setTimeout(step, nextInterval)
   }
 
-  const stop = () => {
+  function stop() {
     if (timer) {
       clearTimeout(timer)
       timer = null
     }
   }
 
-  const start = () => {
+  function start() {
     if (timer || toValue(disabled)) {
       return
     }
