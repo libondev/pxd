@@ -1,13 +1,15 @@
-import type { CSSProperties } from 'vue'
-import { camelize, toArray } from './format'
 import { isServer } from './is'
 
+function getWindowTop() {
+  return [window, document, document.documentElement]
+}
+
 export function getElementRectFromContainer(
-  elementOrRect: HTMLElement | DOMRect,
-  containerOrRect: HTMLElement | DOMRect,
+  elementOrRect: Element | DOMRect,
+  viewportOrRect: Element | DOMRect,
 ) {
-  const selfRect = elementOrRect instanceof HTMLElement ? elementOrRect.getBoundingClientRect() : elementOrRect
-  const wrapRect = containerOrRect instanceof HTMLElement ? containerOrRect.getBoundingClientRect() : containerOrRect
+  const selfRect = elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
+  const wrapRect = viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
 
   return {
     top: selfRect.top,
@@ -23,34 +25,28 @@ export function getElementRectFromContainer(
   }
 }
 
-export function getStyle(element: HTMLElement, styleNames: keyof CSSProperties | (keyof CSSProperties)[]): string[] {
-  if (isServer || !element || !styleNames) {
-    return []
+export function getStyle(el: HTMLElement): CSSStyleDeclaration {
+  if (isServer || !el) {
+    return {} as CSSStyleDeclaration
   }
 
-  const keys = toArray(styleNames).map((k) => {
-    return k === 'float' ? 'cssFloat' : camelize(k)
-  })
-
-  const computedStyle = document.defaultView?.getComputedStyle(element, '') || element.style
-
-  return keys.map(k => computedStyle[k as keyof CSSStyleDeclaration] as string)
+  return document.defaultView?.getComputedStyle(el, null) || el.style
 }
 
 export function isScrollable(el: HTMLElement) {
-  const [x, y] = getStyle(el, ['overflow-x', 'overflow-y'])
+  const { overflowX, overflowY } = getStyle(el)
 
   const allowValues = ['scroll', 'auto', 'overlay']
 
-  // 由于 html 是最后的滚动容器，所以当子元素高度超过 html 的高度时
-  // 即便没有设置 overflow 的为以上值时，html 依然是可以滚动的
+  // when the width and height of the content are greater than those of the html,
+  // the html element is scrollable even without actively setting an overflow
   if (el.tagName === 'HTML') {
     allowValues.push('visible')
   }
 
   return {
-    x: allowValues.includes(x),
-    y: allowValues.includes(y),
+    x: allowValues.includes(overflowX),
+    y: allowValues.includes(overflowY),
   }
 }
 
@@ -63,18 +59,17 @@ export function hasScrollbar(el: HTMLElement) {
   }
 }
 
-export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Window | HTMLElement {
-  const windowTop = [window, document, document.documentElement]
+export function getScrollContainer(el: HTMLElement, isHorizontal?: boolean): Window | HTMLElement {
+  const windowTop = getWindowTop()
   let parent: HTMLElement = el
 
-  const direction = isVertical ? 'y' : 'x'
+  const direction = isHorizontal ? 'x' : 'y'
 
   while (parent) {
     if (windowTop.includes(parent)) {
       return window
     }
 
-    // 先判断是否可滚动, 如果可滚动再判断是否是滚动元素
     if (isScrollable(parent)[direction] && hasScrollbar(parent)[direction]) {
       return parent
     }
@@ -86,30 +81,19 @@ export function getScrollContainer(el: HTMLElement, isVertical?: boolean): Windo
 }
 
 export function getScrollPositions(el: HTMLElement | Window | Document) {
-  let scrollTop = 0
-  let scrollLeft = 0
-  let scrollWidth = 0
-  let scrollHeight = 0
-
   const targetEl = el instanceof HTMLElement ? el : document.documentElement
 
-  scrollTop = targetEl.scrollTop
-  scrollLeft = targetEl.scrollLeft
-  scrollWidth = targetEl.scrollWidth
-  scrollHeight = targetEl.scrollHeight
-
   return {
-    scrollTop,
-    scrollLeft,
-    scrollWidth,
-    scrollHeight,
+    scrollTop: targetEl.scrollTop,
+    scrollLeft: targetEl.scrollLeft,
+    scrollWidth: targetEl.scrollWidth,
+    scrollHeight: targetEl.scrollHeight,
   }
 }
 
 // 获取滚动元素的 DOM 对象, 通常用户获取滚动距离
-export function getScrollElByContainer(target: any) {
-  const windowTop = [window, document, document.documentElement]
-  if (!target || windowTop.includes(target)) {
+export function getScrollElByContainer(target: any): HTMLElement {
+  if (!target || getWindowTop().includes(target)) {
     return document.documentElement
   }
 
@@ -174,23 +158,3 @@ export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
 
   return { width: 0, height: 0 }
 }
-
-// export function checkOverflowScroll(ele: Element): boolean {
-//   const style = window.getComputedStyle(ele)
-//   if (
-//     style.overflowX === 'scroll'
-//     || style.overflowY === 'scroll'
-//     || (style.overflowX === 'auto' && ele.clientWidth < ele.scrollWidth)
-//     || (style.overflowY === 'auto' && ele.clientHeight < ele.scrollHeight)
-//   ) {
-//     return true
-//   }
-
-//   const parent = ele.parentNode
-
-//   if (!(parent instanceof Element) || parent.tagName === 'BODY') {
-//     return false
-//   }
-
-//   return checkOverflowScroll(parent)
-// }

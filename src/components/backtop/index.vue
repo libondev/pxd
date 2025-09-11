@@ -25,8 +25,8 @@ const props = withDefaults(
   },
 )
 
-let scrollContainer: HTMLElement | Window | null
-let scrollContainerEl: HTMLElement | null
+let scrollContainer: ReturnType<typeof getScrollContainer> | null
+let scrollContainerEl: ReturnType<typeof getScrollElByContainer> | null
 
 const scrollTop = shallowRef(0)
 const wrapperRef = shallowRef<HTMLElement>()

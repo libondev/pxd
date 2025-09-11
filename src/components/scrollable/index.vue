@@ -3,6 +3,7 @@ import type { CSSProperties } from 'vue'
 import type { ComponentClass, ComponentDirection, Nullable } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
+import { getStyle } from '../../utils/dom'
 import { once, optimizedOff, optimizedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
@@ -92,11 +93,11 @@ function updateScrollbarMetrics() {
     return
   }
 
-  const cs = getComputedStyle(contentEl)
-  const pt = Number.parseFloat(cs.paddingTop) || 0
-  const pb = Number.parseFloat(cs.paddingBottom) || 0
-  const pl = Number.parseFloat(cs.paddingLeft) || 0
-  const pr = Number.parseFloat(cs.paddingRight) || 0
+  const { paddingTop, paddingRight, paddingBottom, paddingLeft } = getStyle(contentEl)
+  const pt = Number.parseFloat(paddingTop) || 0
+  const pb = Number.parseFloat(paddingBottom) || 0
+  const pl = Number.parseFloat(paddingLeft) || 0
+  const pr = Number.parseFloat(paddingRight) || 0
 
   const {
     clientWidth: clientW,
@@ -150,7 +151,7 @@ const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
 
 let lastScrollTop = 0
 let lastScrollLeft = 0
-let lastScrollInited = false
+let lastScrollInit = false
 
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
@@ -168,7 +169,7 @@ function onContainerScroll(ev: Event) {
     // 加载中仅更新快照，不触发 end
     lastScrollTop = el.scrollTop
     lastScrollLeft = el.scrollLeft
-    lastScrollInited = true
+    lastScrollInit = true
     return
   }
 
@@ -178,10 +179,10 @@ function onContainerScroll(ev: Event) {
   let movedY = false
   let movedX = false
 
-  if (!lastScrollInited) {
+  if (!lastScrollInit) {
     lastScrollTop = currTop
     lastScrollLeft = currLeft
-    lastScrollInited = true
+    lastScrollInit = true
   } else {
     movedY = currTop !== lastScrollTop
     movedX = currLeft !== lastScrollLeft

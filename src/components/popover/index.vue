@@ -620,7 +620,7 @@ onMounted(() => {
     return
   }
 
-  scrollContainer = getScrollContainer(triggerRef.value!, true)
+  scrollContainer = getScrollContainer(triggerRef.value!)
   optimizedOn(window, 'resize', onResizeUpdatePosition)
 })
 

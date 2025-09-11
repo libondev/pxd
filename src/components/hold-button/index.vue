@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from '../../types/components/button'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { getStyle } from '../../utils/dom'
 import { off, once } from '../../utils/event'
 import PButton from '../button/index.vue'
 
@@ -142,7 +143,7 @@ function onTransitionEnd({ target, propertyName }: TransitionEvent) {
     return
   }
 
-  const stylesValue = getComputedStyle(target as HTMLElement).getPropertyValue(propertyName)
+  const stylesValue = getStyle(target as HTMLElement).getPropertyValue(propertyName)
   const isConfirmed = stylesValue === 'inset(0px)'
 
   if (isConfirmed) {

@@ -179,7 +179,7 @@ watch(
     nextTick(() => {
       if (!scrollContainer) {
         scrollContainer = getScrollElByContainer(
-          getScrollContainer(overlayRef.value!, true),
+          getScrollContainer(overlayRef.value!),
         )
       }
 
