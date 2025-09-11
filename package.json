@@ -111,7 +111,7 @@
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
     "bump": "pnpx bumpp",
-    "prepare": "node scripts/setup-scripts.js",
+    "prepare": "husky",
     "postversion": "run-s gen-volar-dts update-exports",
     "prepublishOnly": "run-s build:lib"
   },
