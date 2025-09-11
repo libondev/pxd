@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
     <div class="pxd-carousel-group--container size-full">
       <div
         ref="sliderRef"
-        class="pxd-carousel-group--slider translate-z-0 size-full group-data-[direction=horizontal]:flex"
+        class="pxd-carousel-group--slider translate-z-0 size-full"
         :style="computedStyle"
         :class="TRANSITION_CLASSES"
         @transitionend="onTransitionsEnd"
@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
 
     <div
       v-if="indicator"
-      class="pxd-carousel-group--indicator gap-2 absolute flex w-max items-center group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col"
+      class="pxd-carousel-group--indicator gap-2 absolute flex w-max items-center"
       @click="onIndicatorClick"
     >
       <slot name="indicator" :current="correctIndex + 1" :total="carousels.length">
@@ -305,11 +305,11 @@ onBeforeUnmount(() => {
       </slot>
     </div>
 
-    <div v-if="arrow" class="pxd-carousel-group--toggle-buttons gap-2 absolute flex group-data-[indicator-position=left]:flex-col group-data-[indicator-position=right]:flex-col">
+    <div v-if="arrow" class="pxd-carousel-group--toggler gap-2 absolute flex">
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-button p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none group-data-[direction=vertical]:rotate-90 hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
@@ -354,7 +354,7 @@ onBeforeUnmount(() => {
       top: 8px;
     }
 
-    .pxd-carousel-group--toggle-buttons {
+    .pxd-carousel-group--toggler {
       right: 8px;
       top: 8px;
     }
@@ -366,7 +366,7 @@ onBeforeUnmount(() => {
       bottom: 8px;
     }
 
-    .pxd-carousel-group--toggle-buttons {
+    .pxd-carousel-group--toggler {
       right: 8px;
       bottom: 8px;
     }
@@ -378,7 +378,7 @@ onBeforeUnmount(() => {
       top: 12px;
     }
 
-    .pxd-carousel-group--toggle-buttons {
+    .pxd-carousel-group--toggler {
       left: 8px;
       bottom: 8px;
     }
@@ -390,9 +390,28 @@ onBeforeUnmount(() => {
       top: 12px;
     }
 
-    .pxd-carousel-group--toggle-buttons {
+    .pxd-carousel-group--toggler {
       right: 8px;
       bottom: 8px;
+    }
+  }
+
+  &[data-direction="horizontal"] .pxd-carousel-group--slider {
+    display: flex;
+  }
+
+  &[data-direction="vertical"] {
+    .pxd-carousel-group--prev-btn,
+    .pxd-carousel-group--next-btn {
+      transform: rotate(90deg);
+    }
+  }
+
+  &[data-indicator-position="left"],
+  &[data-indicator-position="right"] {
+    .pxd-carousel-group--indicator,
+    .pxd-carousel-group--toggler {
+      flex-direction: column;
     }
   }
 }

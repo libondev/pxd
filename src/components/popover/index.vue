@@ -663,7 +663,7 @@ defineExpose({
           :style="wrapperStyle"
           :data-enterable="enterable"
           :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full data-[enterable=false]:pointer-events-none"
+          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full"
           @pointerenter="onContentPointerEnter"
           @pointerleave="onContentPointerLeave"
         >
@@ -679,6 +679,10 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover--container {
+  &[data-enterable="false"] {
+    pointer-events: none;
+  }
+
   &[data-position='top'] {
     transform-origin: bottom center;
   }
