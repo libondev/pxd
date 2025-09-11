@@ -5,11 +5,11 @@ A pop-up box with no style, used to show some information.
 
 ```vue demo
 <script setup>
-const content = 'Hope is the thing with feathers that perches in the soul, and sings the tune without the words, and never stops at all.'
+const content = 'The hymn of humanity is the hymn of courage.'
 </script>
 
 <template>
-  <PStack gap="2" justify="center" class="w-lg">
+  <PStack justify="center" class="w-lg">
     <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top-start">
       <PButton>
         Top start
@@ -42,7 +42,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
   </PStack>
 
   <PStack justify="between" class="w-lg my-2">
-    <PStack gap="2" direction="vertical">
+    <PStack direction="vertical">
       <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="left-start">
         <PButton>
           Left start
@@ -74,7 +74,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
       </PPopover>
     </PStack>
 
-    <PStack gap="2" direction="vertical" align="end">
+    <PStack direction="vertical" align="end">
       <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="right-start">
         <PButton>
           Right start
@@ -107,7 +107,7 @@ const content = 'Hope is the thing with feathers that perches in the soul, and s
     </PStack>
   </PStack>
 
-  <PStack gap="2" justify="center" class="w-lg">
+  <PStack justify="center" class="w-lg">
     <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="bottom-start">
       <PButton>
         Bottom start
@@ -152,7 +152,7 @@ const content = 'The woods are lovely, dark and deep, but I have promises to kee
 </script>
 
 <template>
-  <PStack gap="2">
+  <PStack>
     <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="hover">
       <PButton>
         Hover to active

@@ -30,11 +30,9 @@ interface Props {
   showArrow?: boolean
   arrowColor?: string
   autoPosition?: boolean
-  scrollHidden?: boolean
-  triggerClass?: ComponentClass
+  closeOnScroll?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  triggerStyle?: CSSProperties | string
   contentStyle?: CSSProperties | string
   transitionName?: string
   /** 最小可见比例(0~1), 仅当前可见区域比例小于该阈值时才会触发滚动过程中的自适应翻转 */
@@ -43,7 +41,7 @@ interface Props {
   /** 自动调整位置的阈值, 当滚动距离超过该值时, 自动调整位置, 单位: px */
   autoPositionThreshold?: number
   /** 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗, 单位: px */
-  scrollHiddenThreshold?: number
+  closeOnScrollThreshold?: number
   disabledShowTransition?: boolean
   disabledHideTransition?: boolean
 }
@@ -61,23 +59,21 @@ const props = withDefaults(
     position: 'bottom',
     showDelay: 300,
     hideDelay: 300,
-    showArrow: false,
     arrowColor: 'hsl(var(--primary))',
     autoPosition: true,
-    scrollHidden: false,
     minVisibleRatio: 0.88,
     autoPositionThreshold: 30,
-    scrollHiddenThreshold: 150,
-    transitionName: 'pxd-transition--fade',
+    closeOnScrollThreshold: 150,
+    transitionName: 'pxd-transition--fade-scale',
   },
 )
 
 const emits = defineEmits<{
   'show': []
   'hide': []
-  'visible-change': [boolean]
   'outside-click': [MouseEvent]
   'trigger-click': [PointerEvent]
+  'visible-change': [visible: boolean]
 }>()
 
 const triggerRect = shallowRef<DOMRect>()
@@ -87,6 +83,10 @@ let scrollContainer: ReturnType<typeof getScrollContainer>
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
+
+let savedScrollPosition = 0
+// let savedScrollPosition: [number, number] | null
+// let windowScrollPosition: [number, number] | null
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
@@ -110,17 +110,15 @@ const {
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
-let savedScrollTop: number = 0
-
 const onContainerScroll = throttleByRaf(async (ev: Event) => {
   if (!isVisible.value) {
     return
   }
 
   const scrollTop = getScrollElByContainer(ev.target).scrollTop
-  const delta = Math.abs(scrollTop - savedScrollTop)
+  const delta = Math.abs(scrollTop - savedScrollPosition)
 
-  if (props.scrollHidden && delta >= props.scrollHiddenThreshold) {
+  if (props.closeOnScroll && delta >= props.closeOnScrollThreshold) {
     handlePopoverHide(true)
     return
   }
@@ -134,7 +132,7 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
   }
 
   getTriggerRect()
-  savedScrollTop = scrollTop
+  savedScrollPosition = scrollTop
 
   // 先回到初始位置
   localPosition.value = props.position
@@ -251,7 +249,7 @@ async function handlePopoverShow(immediate: boolean = false) {
   emits('show')
   emits('visible-change', true)
 
-  savedScrollTop = getScrollElByContainer(scrollContainer).scrollTop
+  savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
   optimizedOff(document, 'click', onClickOutsideToHide)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll, { passive: true })
   optimizedOn(document, 'click', onClickOutsideToHide)
@@ -642,17 +640,13 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-popover relative inline-flex">
-    <div
-      ref="triggerRef"
-      class="pxd-popover--trigger max-w-full active:select-none"
-      :class="triggerClass"
-      :style="triggerStyle"
-      @contextmenu.prevent
-      @click="onTriggerClick"
-    >
-      <slot />
-    </div>
+  <div
+    ref="triggerRef"
+    class="pxd-popover max-w-full active:select-none"
+    @contextmenu.prevent
+    @click="onTriggerClick"
+  >
+    <slot />
 
     <PTeleport>
       <Transition
@@ -685,7 +679,7 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover--container {
-  /* &[data-position='top'] {
+  &[data-position='top'] {
     transform-origin: bottom center;
   }
   &[data-position='top-start'] {
@@ -723,7 +717,7 @@ defineExpose({
   }
   &[data-position='right-end'] {
     transform-origin: left right;
-  } */
+  }
 
   &[data-position^='top'] {
     padding-bottom: var(--popover-offset);

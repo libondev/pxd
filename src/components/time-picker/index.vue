@@ -255,16 +255,15 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 <template>
   <PPopover
     enterable
-    scroll-hidden
+    close-on-scroll
     trigger="manual"
     :show-delay="0"
     :hide-delay="100"
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
-    trigger-class="w-full"
-    class="pxd-time-picker"
     :visible="popoverVisible"
+    class="pxd-time-picker w-full"
     disabled-show-transition
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"

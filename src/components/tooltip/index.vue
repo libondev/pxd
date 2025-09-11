@@ -14,9 +14,7 @@ interface Props {
   disabled?: boolean
   showArrow?: boolean
   desktopOnly?: boolean
-  triggerClass?: ComponentClass
   contentClass?: ComponentClass
-  triggerStyle?: CSSProperties | string
   contentStyle?: CSSProperties | string
 }
 
@@ -75,10 +73,8 @@ const mergedClasses = computed(() => {
     :disabled="computedDisabled"
     :show-arrow="showArrow"
     :arrow-color="computedVariant.bg"
-    :trigger-class="triggerClass"
-    :trigger-style="triggerStyle"
-    :content-style="contentStyle"
     :content-class="mergedClasses"
+    :content-style="contentStyle"
     v-bind="$attrs"
   >
     <slot />
