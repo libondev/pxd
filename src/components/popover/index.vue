@@ -4,6 +4,8 @@ import type { PopoverTrigger } from '../../types/components/popover'
 import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
+import { useOutsideClick } from '../../composables/use-outside-click'
+import { debounce } from '../../utils/debounce'
 import {
   getElementRectFromContainer,
   getScrollContainer,
@@ -95,6 +97,7 @@ const wrapperStyle = shallowRef<CSSProperties>({
   '--popover-arrow-offset': `${props.offset - 5}px`,
 })
 const localPosition = shallowRef(props.position)
+const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 const {
   render: isRender,
@@ -106,7 +109,19 @@ const {
   delay: 3000,
 })
 
-const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
+useOutsideClick(wrapperRef, {
+  isEnabled: () => {
+    return isVisible.value && (
+      triggerMethods.value.includes('click')
+      || triggerMethods.value.includes('manual')
+      || triggerMethods.value.includes('contextmenu')
+    )
+  },
+  onTrigger: debounce((ev) => {
+    emits('outside-click', ev)
+    handlePopoverHide()
+  }, 500, { edges: ['leading'] }),
+})
 
 const onContainerScroll = throttleByRaf(async (ev: Event) => {
   if (!isVisible.value) {
@@ -247,7 +262,6 @@ async function handlePopoverShow(immediate: boolean = false) {
   emits('visible-change', true)
 
   savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
-  optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
   if (!props.autoPosition) {
@@ -274,7 +288,6 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
-  optimizedOff(document, 'click', onClickOutsideToHide)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 
   await closePopover()
@@ -351,26 +364,6 @@ async function onTriggerContextmenu() {
   }
 
   await handlePopoverShow()
-}
-
-function onClickOutsideToHide(ev: MouseEvent) {
-  if (
-    !triggerMethods.value.includes('click')
-    && !triggerMethods.value.includes('manual')
-    && !triggerMethods.value.includes('contextmenu')
-  ) {
-    return
-  }
-
-  const target = ev.target as HTMLElement
-
-  if (
-    !triggerRef.value?.contains(target)
-    && !wrapperRef.value?.contains(target)
-  ) {
-    emits('outside-click', ev)
-    handlePopoverHide()
-  }
 }
 
 function onContentPointerEnter() {
@@ -614,7 +607,6 @@ onBeforeUnmount(() => {
   triggerRect = null
   viewportRect = null
 
-  optimizedOff(document, 'click', onClickOutsideToHide)
   optimizedOff(window, 'resize', onResizeUpdatePosition)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 })
@@ -628,7 +620,7 @@ defineExpose({
 <template>
   <div
     ref="triggerRef"
-    class="pxd-popover max-w-full active:select-none"
+    class="pxd-popover inline-flex max-w-full active:select-none"
     @contextmenu.prevent="onTriggerContextmenu"
     @click="onTriggerClick"
   >
