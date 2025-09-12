@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
     <div
       v-show="scrollTop >= visibleThreshold"
       ref="wrapperRef"
-      class="right-6 bottom-6 fixed z-1"
+      class="right-6 bottom-6 fixed z-10"
       :style="computedStyle"
       v-bind="$attrs"
       @click="onBacktopClick"
