@@ -117,6 +117,9 @@ useOutsideClick(wrapperRef, {
       || triggerMethods.value.includes('contextmenu')
     )
   },
+  isOutside: (ev) => {
+    return !triggerRef.value?.contains(ev.target as HTMLElement)
+  },
   onTrigger: debounce((ev) => {
     emits('outside-click', ev)
     handlePopoverHide()
