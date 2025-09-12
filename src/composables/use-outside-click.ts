@@ -24,20 +24,21 @@ export function useOutsideClick(
       return
     }
 
-    if (!toValue(container)?.contains(ev.target as HTMLElement)) {
+    if (toValue(container)?.contains(ev.target as HTMLElement)) {
       return
     }
 
     onTrigger?.(ev)
   }
 
-  const unwatch = watch(() => toValue(container), (dom, oldDom) => {
-    if (!dom && oldDom) {
-      optimizedOff(document, 'click', onClick)
-      return
+  const unwatch = watch(() => toValue(container), (dom, _, onCleanup) => {
+    if (dom) {
+      optimizedOn(document, 'click', onClick)
     }
 
-    optimizedOn(document, 'click', onClick)
+    onCleanup(() => {
+      optimizedOff(document, 'click', onClick)
+    })
   }, { immediate: true })
 
   function stop() {
