@@ -71,18 +71,18 @@ export function optimizedOn<E extends Event = Event>(
     return
   }
 
-  let cachedEventHandlers = (el as any)[`__cached_${event}`] as EventListener[]
+  let cachedEventHandlers = (el as any)[`__cached_${event}`] as EventHandler<E>[]
 
-  if (cachedEventHandlers) {
-    cachedEventHandlers.push(handler as EventListener)
+  if (cachedEventHandlers && !cachedEventHandlers.includes(handler)) {
+    cachedEventHandlers.push(handler)
     return
   }
 
-  const scheduler: EventListener = (ev: Event) => {
-    cachedEventHandlers.slice(1).forEach(handler => handler(ev))
+  const scheduler: EventHandler = (ev: Event) => {
+    cachedEventHandlers.slice(1).forEach(handler => handler(ev as E))
   }
 
-  cachedEventHandlers = [scheduler, handler as EventListener];
+  cachedEventHandlers = [scheduler, handler];
   (el as any)[`__cached_${event}`] = cachedEventHandlers
 
   el.addEventListener(event, scheduler, options)
@@ -98,13 +98,13 @@ export function optimizedOff<E extends Event = Event>(
     return
   }
 
-  const cachedEventHandlers = (el as any)[`__cached_${event}`] as EventListener[]
+  const cachedEventHandlers = (el as any)[`__cached_${event}`] as EventHandler[]
 
   if (!cachedEventHandlers) {
     return
   }
 
-  const index = cachedEventHandlers.indexOf(handler as EventListener)
+  const index = cachedEventHandlers.indexOf(handler as EventHandler)
 
   if (index === -1) {
     return

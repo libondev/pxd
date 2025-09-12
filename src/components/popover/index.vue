@@ -76,17 +76,15 @@ const emits = defineEmits<{
   'visible-change': [visible: boolean]
 }>()
 
-const triggerRect = shallowRef<DOMRect>()
-
+let triggerRect: DOMRect | null = null
 let viewportRect: DOMRect | null = null
+
 let scrollContainer: ReturnType<typeof getScrollContainer>
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 let savedScrollPosition = 0
-// let savedScrollPosition: [number, number] | null
-// let windowScrollPosition: [number, number] | null
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
@@ -131,7 +129,6 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
     return
   }
 
-  getTriggerRect()
   savedScrollPosition = scrollTop
 
   // 先回到初始位置
@@ -142,7 +139,7 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
 })
 
 function getTriggerRect() {
-  triggerRect.value = triggerRef.value!.getBoundingClientRect()
+  triggerRect = triggerRef.value!.getBoundingClientRect()
   viewportRect = document.documentElement.getBoundingClientRect()
 }
 
@@ -250,8 +247,6 @@ async function handlePopoverShow(immediate: boolean = false) {
   emits('visible-change', true)
 
   savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
-  optimizedOff(document, 'click', onClickOutsideToHide)
-  optimizedOff(scrollContainer, 'scroll', onContainerScroll, { passive: true })
   optimizedOn(document, 'click', onClickOutsideToHide)
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
@@ -280,7 +275,6 @@ async function handlePopoverHide(immediate: boolean = false) {
   })
 
   optimizedOff(document, 'click', onClickOutsideToHide)
-  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 
   await closePopover()
@@ -301,8 +295,7 @@ async function onTriggerClick(ev: Event) {
   }
 
   if (isVisible.value) {
-    optimizedOff(document, 'click', onClickOutsideToHide)
-    await handlePopoverHide()
+    handlePopoverHide()
 
     return
   }
@@ -342,26 +335,22 @@ function onTriggerFocusout() {
   handlePopoverHide()
 }
 
-async function onTriggerContextmenu(ev: MouseEvent) {
+async function onTriggerContextmenu() {
   if (props.disabled) {
     return
   }
 
-  ev.preventDefault()
+  if (!triggerMethods.value.includes('contextmenu')) {
+    return
+  }
 
   if (isVisible.value) {
     await handlePopoverHide()
-    optimizedOff(document, 'click', onClickOutsideToHide)
-    optimizedOff(document, 'contextmenu', onTriggerContextmenu)
 
     return
   }
 
   await handlePopoverShow()
-  optimizedOff(document, 'click', onClickOutsideToHide)
-  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
-  optimizedOn(document, 'click', onClickOutsideToHide)
-  optimizedOn(document, 'contextmenu', onTriggerContextmenu)
 }
 
 function onClickOutsideToHide(ev: MouseEvent) {
@@ -412,7 +401,7 @@ function onContentPointerLeave() {
 
 function updateContentPosition() {
   const { offset, maxWidth, zIndex, arrowColor } = props
-  const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect.value!, viewportRect!)
+  const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
 
   const position = localPosition.value
 
@@ -561,9 +550,6 @@ const triggerMethodEvents = {
     ['pointerenter', onTriggerPointerEnter],
     ['pointerleave', onTriggerPointerLeave],
   ],
-  contextmenu: [
-    ['contextmenu', onTriggerContextmenu],
-  ],
 } as const
 
 function updateTriggerEvents(
@@ -625,10 +611,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  triggerRect = null
   viewportRect = null
 
   optimizedOff(document, 'click', onClickOutsideToHide)
-  optimizedOff(document, 'contextmenu', onTriggerContextmenu)
   optimizedOff(window, 'resize', onResizeUpdatePosition)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 })
@@ -643,7 +629,7 @@ defineExpose({
   <div
     ref="triggerRef"
     class="pxd-popover max-w-full active:select-none"
-    @contextmenu.prevent
+    @contextmenu.prevent="onTriggerContextmenu"
     @click="onTriggerClick"
   >
     <slot />
