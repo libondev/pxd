@@ -15,7 +15,7 @@ import {
 } from '../../utils/dom'
 import { optimizedOff, optimizedOn, preventDefault } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
-import { isIOS, isServer } from '../../utils/is'
+import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
@@ -49,6 +49,7 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
+let scrollPositions: [number, number]
 let scrollContainer: HTMLElement | null
 
 const clipPath = ref('')
@@ -92,6 +93,8 @@ function addScrollDisabled() {
   const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
   const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
 
+  scrollPositions = [scrollContainer.scrollLeft, scrollContainer.scrollTop]
+
   document.body.classList.add('pointer-events-none')
 
   if (xScrollbar && xScrollable) {
@@ -102,12 +105,10 @@ function addScrollDisabled() {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
   }
 
-  if (isIOS) {
-    optimizedOn(document, 'touchmove', preventDefault, { passive: false })
-  }
+  optimizedOn(document, 'touchmove', preventDefault, { passive: false })
 }
 
-function removeScrollDisabled() {
+async function removeScrollDisabled() {
   if (!scrollContainer) {
     return
   }
@@ -120,9 +121,11 @@ function removeScrollDisabled() {
     'scrollbar-stable',
   )
 
-  if (isIOS) {
-    optimizedOff(document, 'touchmove', preventDefault)
-  }
+  optimizedOff(document, 'touchmove', preventDefault)
+
+  await nextTick()
+
+  scrollContainer?.scrollTo(...scrollPositions)
 }
 
 function tryGetShownElementIfNeed() {
