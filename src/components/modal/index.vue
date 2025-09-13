@@ -68,14 +68,6 @@ function onOverlayClick(ev: MouseEvent) {
   isVisible.value = false
 }
 
-function onUpdateModelValue(visible: boolean) {
-  if (!visible && props.loading) {
-    return
-  }
-
-  isVisible.value = visible
-}
-
 watch(() => isVisible.value, (visible) => {
   emits('visible-change', visible)
 
@@ -93,7 +85,6 @@ watch(() => isVisible.value, (visible) => {
     :model-value="isVisible"
     :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
-    @update:model-value="onUpdateModelValue"
     @click="onOverlayClick"
   >
     <Transition name="pxd-transition--modal" mode="out-in" appear>
