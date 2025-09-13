@@ -2,6 +2,7 @@ import type { MaybeElementRef } from '../types/shared/utils'
 import { nextTick, onBeforeUnmount, watch } from 'vue'
 import { on } from '../utils/event'
 import { toValue } from '../utils/ref'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 
 export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
   const FOCUSABLE_SELECTORS = [
@@ -26,7 +27,8 @@ export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
   ].join(',')
 
   let elements: HTMLElement[] = []
-  let previousFocusedElement: HTMLElement | null = null
+
+  const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
   function onContainerKeydown(ev: KeyboardEvent) {
     if (ev.key !== 'Tab' || !elements.length) {
@@ -39,38 +41,33 @@ export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
     const offset = ev.shiftKey ? -1 : 1
     const nextFocusIndex = (focusIndex + offset + elements.length) % elements.length
 
-    elements[nextFocusIndex]?.focus()
+    elements[nextFocusIndex]?.focus({ preventScroll: true })
   }
 
-  const unwatch = watch(() => toValue(container), (target, _, onCleanup) => {
+  const unwatch = watch(() => toValue(container), async (target, _, onCleanup) => {
     if (!target) {
-      previousFocusedElement?.focus()
       return
     }
 
-    previousFocusedElement = document.activeElement as HTMLElement
+    await nextTick()
 
-    nextTick(() => {
-      const unbindEvent = on(target, 'keydown', onContainerKeydown)
-      elements = Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS))
+    const unbindEvent = on(target, 'keydown', onContainerKeydown)
+    elements = [...target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)]
 
-      if (elements.length) {
-        elements[0].focus()
-      } else {
-        target.focus({ preventScroll: true })
-      }
+    // Cancel autofocus on small screen to avoid automatic page scaling
+    if (elements.length && isSmUp.value) {
+      elements[0].focus({ preventScroll: true })
+    }
 
-      onCleanup(() => {
-        unbindEvent()
-        elements = []
-      })
+    onCleanup(() => {
+      unbindEvent()
+      elements = []
     })
   })
 
   onBeforeUnmount(() => {
     unwatch()
     elements = []
-    previousFocusedElement = null
   })
 
   return {
