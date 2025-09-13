@@ -139,7 +139,7 @@ function checkOverflowScroll(ele: Element): boolean {
   return checkOverflowScroll(parent)
 }
 
-export function preventDefault(ev: TouchEvent): boolean {
+export function preventDefaultScroll(ev: Event): boolean {
   const _target = ev.target
 
   // Do not prevent if element or parentNodes have overflow: scroll set.
@@ -148,7 +148,7 @@ export function preventDefault(ev: TouchEvent): boolean {
   }
 
   // Do not prevent if the event has more than one touch (usually meaning this is a multi touch gesture like pinch to zoom).
-  if (ev.touches.length > 1) {
+  if ((ev as TouchEvent).touches?.length > 1) {
     return true
   }
 

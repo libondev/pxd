@@ -3,7 +3,6 @@ import {
   computed,
   nextTick,
   onBeforeUnmount,
-  ref,
   shallowRef,
   watch,
 } from 'vue'
@@ -13,16 +12,17 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn, preventDefault } from '../../utils/event'
+import { optimizedOff, optimizedOn, preventDefaultScroll } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
-  blur?: boolean
+  blurred?: boolean
   zIndex?: number
   modelValue?: boolean
+  transparent?: boolean
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
@@ -49,15 +49,13 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-let scrollPositions: [number, number]
-let scrollContainer: HTMLElement | null
+type ScrollContainer = HTMLElement & { lockedCounts: number }
 
-const clipPath = ref('')
+let scrollContainer: ScrollContainer | null
+
+const clipPath = shallowRef('')
 const overlayRef = shallowRef<HTMLElement>()
-const computedStyle = computed(() => ({
-  '--z': props.zIndex,
-  'clip-path': clipPath.value,
-}))
+const computedStyle = computed(() => ({ '--z': props.zIndex, 'clip-path': clipPath.value }))
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
@@ -85,17 +83,19 @@ function onOverlayKeydown(ev: KeyboardEvent) {
   emits('update:modelValue', false)
 }
 
-function addScrollDisabled() {
+function lockScrollContainer() {
   if (!scrollContainer) {
+    return
+  }
+
+  scrollContainer.lockedCounts++
+
+  if (scrollContainer.lockedCounts > 1) {
     return
   }
 
   const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
   const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
-
-  scrollPositions = [scrollContainer.scrollLeft, scrollContainer.scrollTop]
-
-  document.body.classList.add('pointer-events-none')
 
   if (xScrollbar && xScrollable) {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
@@ -105,27 +105,27 @@ function addScrollDisabled() {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
   }
 
-  optimizedOn(document, 'touchmove', preventDefault, { passive: false })
+  optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
 }
 
-async function removeScrollDisabled() {
+async function unlockScrollContainer() {
   if (!scrollContainer) {
     return
   }
 
-  document.body.classList.remove('pointer-events-none')
+  scrollContainer.lockedCounts = Math.max(scrollContainer.lockedCounts - 1, 0)
+
+  if (scrollContainer.lockedCounts) {
+    return
+  }
+
   scrollContainer.classList.remove(
-    'pointer-events-none',
+    'scrollbar-stable',
     'scroll-disabled-x',
     'scroll-disabled-y',
-    'scrollbar-stable',
   )
 
-  optimizedOff(document, 'touchmove', preventDefault)
-
-  await nextTick()
-
-  scrollContainer?.scrollTo(...scrollPositions)
+  optimizedOff(document, 'touchmove', preventDefaultScroll)
 }
 
 function tryGetShownElementIfNeed() {
@@ -143,7 +143,6 @@ function tryGetShownElementIfNeed() {
     return
   }
 
-  el.classList.add('pointer-events-auto')
   const { top, left, right, bottom } = el.getBoundingClientRect()
 
   clipPath.value = `polygon(
@@ -160,44 +159,50 @@ function tryGetShownElementIfNeed() {
   )`
 }
 
+function onOverlayVisibleChange(visible: boolean) {
+  if (isServer) {
+    return
+  }
+
+  if (!visible) {
+    unlockScrollContainer()
+    optimizedOff(document, 'keydown', onOverlayKeydown)
+
+    return
+  }
+
+  nextTick(() => {
+    if (!scrollContainer) {
+      scrollContainer = getScrollElByContainer(
+        getScrollContainer(overlayRef.value!),
+      ) as ScrollContainer
+
+      if (!scrollContainer.lockedCounts) {
+        scrollContainer.lockedCounts = 0
+      }
+    }
+
+    lockScrollContainer()
+    tryGetShownElementIfNeed()
+    optimizedOn(document, 'keydown', onOverlayKeydown)
+  })
+}
+
+watch(
+  () => props.modelValue,
+  onOverlayVisibleChange,
+  { immediate: true },
+)
+
 watch(
   () => props.shownElement,
   tryGetShownElementIfNeed,
 )
 
-watch(
-  () => props.modelValue,
-  (visible) => {
-    if (isServer) {
-      return
-    }
-
-    if (!visible) {
-      removeScrollDisabled()
-      optimizedOff(document, 'keydown', onOverlayKeydown)
-
-      return
-    }
-
-    nextTick(() => {
-      if (!scrollContainer) {
-        scrollContainer = getScrollElByContainer(
-          getScrollContainer(overlayRef.value!),
-        )
-      }
-
-      addScrollDisabled()
-      tryGetShownElementIfNeed()
-      optimizedOn(document, 'keydown', onOverlayKeydown)
-    })
-  },
-  { immediate: true },
-)
-
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
 
-  removeScrollDisabled()
+  unlockScrollContainer()
   scrollContainer = null
 })
 </script>
@@ -208,10 +213,12 @@ onBeforeUnmount(() => {
       <div
         v-if="modelValue"
         ref="overlayRef"
-        :data-blur="blur"
-        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed z-(--z,10) data-[blur=true]:backdrop-blur-xs motion-safe:transition-colors"
+        :data-blurred="blurred"
+        :data-transparent="transparent"
+        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed z-(--z,10) motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
+        @touchmove.prevent.stop
         @click="onOverlayClick"
       />
     </Transition>
@@ -219,3 +226,13 @@ onBeforeUnmount(() => {
     <slot />
   </PTeleport>
 </template>
+
+<style>
+.pxd-overlay[data-blurred="true"] {
+  backdrop-filter: blur(4px);
+}
+
+.pxd-overlay[data-transparent="true"] {
+  opacity: 0;
+}
+</style>
