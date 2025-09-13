@@ -111,10 +111,9 @@ export interface ScrollbarSize {
  * @returns 包含滚动条宽度和高度的对象
  */
 export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
-  // 如果未提供元素，则创建临时元素测量全局滚动条
   if (!element) {
     const div = document.createElement('div')
-    div.style.cssText = 'width: 100px; height: 100px; overflow: scroll; position: absolute; top: -9999px; visibility: hidden; box-sizing: content-box;'
+    div.style.cssText = 'width:50px;height:50px;overflow:scroll;position:absolute;top:-9999px;visibility:hidden;box-sizing:content-box'
     document.body.appendChild(div)
 
     const size = {
@@ -126,35 +125,15 @@ export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
     return size
   }
 
-  // 测量特定元素的滚动条
-  const { x: isXScrollable, y: isYScrollable } = isScrollable(element)
-  const { x: hasXScrollbar, y: hasYScrollbar } = hasScrollbar(element)
-  const hasVerticalScrollbar = isYScrollable && hasYScrollbar
-  const hasHorizontalScrollbar = isXScrollable && hasXScrollbar
-
-  // 创建克隆元素进行测量，避免原始元素样式干扰
-  if (hasVerticalScrollbar || hasHorizontalScrollbar) {
-    const clone = element.cloneNode(true) as HTMLElement
-    clone.style.visibility = 'hidden'
-    clone.style.position = 'absolute'
-    clone.style.top = '-9999px'
-    clone.style.overflow = 'auto' // 确保可以测量滚动条
-
-    // 将克隆元素添加到DOM并设置与原始元素相同的尺寸
-    document.body.appendChild(clone)
-    clone.style.width = `${element.offsetWidth}px`
-    clone.style.height = `${element.offsetHeight}px`
-
-    const verticalWidth = hasVerticalScrollbar ? (clone.offsetWidth - clone.clientWidth) : 0
-    const horizontalHeight = hasHorizontalScrollbar ? (clone.offsetHeight - clone.clientHeight) : 0
-
-    document.body.removeChild(clone)
-
+  if ([document.body, document.documentElement].includes(element)) {
     return {
-      width: verticalWidth,
-      height: horizontalHeight,
+      width: window.innerWidth - element.clientWidth,
+      height: window.innerHeight - element.clientHeight,
     }
   }
 
-  return { width: 0, height: 0 }
+  return {
+    width: element.offsetWidth - element.clientWidth,
+    height: element.offsetHeight - element.clientHeight,
+  }
 }
