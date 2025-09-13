@@ -99,9 +99,9 @@ provideListFilterValue(filterKeyword)
   <PModal
     v-model="modelValue"
     width="640px"
-    class="pxd-command-menu"
+    class="pxd-command-menu max-sm:h-[80vh]"
     content-class="!p-0 overflow-hidden"
-    wrapper-class="sm:top-1/6 sm:translate-y-0"
+    wrapper-class="sm:top-1/5 sm:translate-y-0"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
     @show="showModal"
@@ -141,7 +141,7 @@ provideListFilterValue(filterKeyword)
     <PList
       ref="listRef"
       :loop="false"
-      class="pxd-command-menu--list sm:h-auto sm:max-h-110"
+      class="sm:max-h-110 h-full"
       :item-transition="false"
       :key-listener="modelValue"
       @select="onListItemSelect"
@@ -156,10 +156,3 @@ provideListFilterValue(filterKeyword)
     <slot name="footer" />
   </PModal>
 </template>
-
-<style>
-.pxd-command-menu--list {
-  height: 50vh;
-  height: 50dvh;
-}
-</style>
