@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits<{
   'click': [MouseEvent]
+  'escape': [KeyboardEvent]
   'update:modelValue': [boolean]
 }>()
 
@@ -68,7 +69,7 @@ function onOverlayClick(ev: MouseEvent) {
 }
 
 function onOverlayKeydown(ev: KeyboardEvent) {
-  if (!isTruthyProp(props.closeOnPressEscape) || !props.modelValue) {
+  if (!props.modelValue || !isTruthyProp(props.closeOnPressEscape)) {
     return
   }
 
@@ -80,6 +81,7 @@ function onOverlayKeydown(ev: KeyboardEvent) {
     return
   }
 
+  emits('escape', ev)
   emits('update:modelValue', false)
 }
 

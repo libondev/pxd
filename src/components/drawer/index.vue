@@ -79,14 +79,22 @@ const computedStyle = computed(() => {
   return styles
 })
 
-function onOverlayClick(ev: MouseEvent) {
-  emits('outside-click', ev)
-
-  if (!isTruthyProp(props.closeOnClickOverlay) || isTruthyProp(props.loading)) {
+function closeOverlayIfNeed() {
+  if (isTruthyProp(props.loading)) {
     return
   }
 
   isVisible.value = false
+}
+
+function onOverlayClick(ev: MouseEvent) {
+  emits('outside-click', ev)
+
+  if (!isTruthyProp(props.closeOnClickOverlay)) {
+    return
+  }
+
+  closeOverlayIfNeed()
 }
 
 watch(() => isVisible.value, (visible) => {
@@ -106,6 +114,7 @@ watch(() => isVisible.value, (visible) => {
     :model-value="isVisible"
     :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
+    @escape="closeOverlayIfNeed"
     @click="onOverlayClick"
   >
     <Transition :name="transitionName" mode="out-in" appear>
