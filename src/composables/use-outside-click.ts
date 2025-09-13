@@ -20,11 +20,10 @@ export function useOutsideClick(
       return
     }
 
-    if (typeof isOutside === 'function' && !isOutside(ev)) {
-      return
-    }
-
-    if (toValue(container)?.contains(ev.target as HTMLElement)) {
+    if (
+      (typeof isOutside === 'function' ? !isOutside(ev) : false)
+      && (toValue(container)?.contains(ev.target as HTMLElement))
+    ) {
       return
     }
 
