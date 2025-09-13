@@ -6,7 +6,6 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { dayjs } from '../../utils/date'
 import { optimizedOff, optimizedOn, sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
-import { throttle } from '../../utils/throttle'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
@@ -72,14 +71,25 @@ const modelValue = computed<string>({
   },
 })
 
-const onTimeListScroll = throttle((ev: Event) => {
-  const target = ev.target as HTMLElement
-  const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
-  const value = Math.ceil(target.scrollTop / HEIGHT)
-  const index = VALUE_POSITION_MAP[type]
+const scrollTimers: ReturnType<typeof setTimeout>[] = []
 
-  modelValueList.value[index] = padStringZero(value)
-}, 150, { edges: ['leading', 'trailing'] })
+function onTimeListScroll(ev: Event) {
+  const target = ev.target as HTMLElement
+  const value = Math.round(target.scrollTop / HEIGHT)
+  const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
+  const index = VALUE_POSITION_MAP[type]
+  const clampedValue = clampValue(value, 0, type === 'hours' ? 23 : 59)
+
+  clearTimeout(scrollTimers[index])
+  scrollTimers[index] = setTimeout(() => {
+    target.scrollTo({
+      top: clampedValue * HEIGHT,
+      behavior: 'smooth',
+    })
+
+    modelValueList.value[index] = padStringZero(clampedValue)
+  }, 100)
+}
 
 function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
@@ -291,22 +301,22 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
         <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
           <div class="p-2 gap-1 relative flex items-center">
             <div class="pxd-time-picker--list relative">
-              <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
                   {{ padStringZero(i) }}
                 </li>
               </ul>
             </div>
             <div class="pxd-time-picker--list relative">
-              <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                   {{ padStringZero(i) }}
                 </li>
               </ul>
             </div>
             <div class="pxd-time-picker--list relative">
-              <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden snap-y snap-mandatory list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer snap-center">
+              <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                   {{ padStringZero(i) }}
                 </li>
               </ul>
@@ -340,6 +350,10 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 </template>
 
 <style>
+.pxd-time-picker--list ul {
+  -webkit-overflow-scrolling: auto;
+}
+
 .pxd-time-picker--list::before {
   content: '';
   position: fixed;
