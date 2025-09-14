@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
+import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
@@ -10,12 +11,10 @@ import {
   getElementRectFromContainer,
   getScrollContainer,
   getScrollElByContainer,
-  getScrollPositions,
 } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
-import { throttleByRaf } from '../../utils/throttle'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -67,7 +66,7 @@ const props = withDefaults(
     showTransition: true,
     hideTransition: true,
     transitionType: 'fade-scale',
-    minVisibleRatio: 0.88,
+    minVisibleRatio: 0.95,
     autoPositionThreshold: 30,
     closeOnScrollThreshold: 150,
   },
@@ -76,6 +75,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   'show': []
   'hide': []
+  'escape': [KeyboardEvent]
   'outside-click': [MouseEvent]
   'trigger-click': [PointerEvent]
   'visible-change': [visible: boolean]
@@ -108,9 +108,16 @@ const {
   visible: isVisible,
   open: openPopover,
   close: closePopover,
-} = useDelayDestroy({
-  default: props.visible,
+} = useDelayDestroy(props.visible, {
   delay: 3000,
+  visibleChange(v) {
+    if (v) {
+      emits('show')
+    } else {
+      emits('hide')
+    }
+    emits('visible-change', v)
+  },
 })
 
 useOutsideClick(wrapperRef, {
@@ -126,11 +133,39 @@ useOutsideClick(wrapperRef, {
   },
   onTrigger: debounce((ev) => {
     emits('outside-click', ev)
+
+    if (triggerMethods.value.includes('manual')) {
+      return
+    }
+
     handlePopoverHide()
   }, 500, { edges: ['leading'] }),
 })
 
-const onContainerScroll = throttleByRaf(async (ev: Event) => {
+let triggerVisible = false
+useIntersectionObserver(triggerRef, ([entry]) => {
+  if (!isVisible.value) {
+    return
+  }
+
+  triggerVisible = entry.isIntersecting
+})
+
+useIntersectionObserver(wrapperRef, ([entry]) => {
+  if (!isVisible.value || !props.autoPosition) {
+    return
+  }
+
+  if (!triggerVisible) {
+    return
+  }
+
+  if (entry.intersectionRatio <= props.minVisibleRatio) {
+    reversePosition()
+  }
+}, { threshold: [props.minVisibleRatio] })
+
+async function onContainerScroll(ev: Event) {
   if (!isVisible.value) {
     return
   }
@@ -140,108 +175,23 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
 
   if (props.closeOnScroll && delta >= props.closeOnScrollThreshold) {
     handlePopoverHide(true)
-    return
   }
 
-  if (!props.autoPosition) {
-    return
-  }
+  // if (!props.autoPosition) {
+  //   return
+  // }
 
-  if (delta < props.autoPositionThreshold) {
-    return
-  }
+  // if (delta < props.autoPositionThreshold) {
 
-  savedScrollPosition = scrollTop
-
-  // 先回到初始位置
-  localPosition.value = props.position
-  updateContentPosition()
-
-  handleDirectionInvertIfNeed()
-})
+  // }
+}
 
 function getTriggerRect() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
   viewportRect = document.documentElement.getBoundingClientRect()
 
-  if (!wrapperRect) {
-    wrapperRect = wrapperRef.value!.getBoundingClientRect()
-  }
-}
-
-// 判断元素在渲染后是否超出了屏幕之外
-function getOverlapping(
-  viewportRect: DOMRect,
-  containerRect: DOMRect,
-  scrollInfo: ReturnType<typeof getScrollPositions>,
-) {
-  const containerTop = containerRect.top - scrollInfo.scrollTop
-  const containerBottom = containerRect.bottom - scrollInfo.scrollTop
-  const containerLeft = containerRect.left - scrollInfo.scrollLeft
-  const containerRight = containerRect.right - scrollInfo.scrollLeft
-
-  const isTopOverlapping = containerTop < viewportRect.top
-  const isBottomOverlapping = containerBottom > viewportRect.bottom
-  const isLeftOverlapping = containerLeft < viewportRect.left
-  const isRightOverlapping = containerRight > viewportRect.right
-
-  return {
-    isOverlapping: isTopOverlapping || isBottomOverlapping || isLeftOverlapping || isRightOverlapping,
-    top: isTopOverlapping,
-    bottom: isBottomOverlapping,
-    left: isLeftOverlapping,
-    right: isRightOverlapping,
-  }
-}
-
-// 计算容器在视口内的可见比例(面积占比: 0~1)
-function getVisibleRatio(
-  viewportRect: DOMRect,
-  containerRect: DOMRect,
-  scrollInfo: ReturnType<typeof getScrollPositions>,
-) {
-  const containerTop = containerRect.top - scrollInfo.scrollTop
-  const containerBottom = containerRect.bottom - scrollInfo.scrollTop
-  const containerLeft = containerRect.left - scrollInfo.scrollLeft
-  const containerRight = containerRect.right - scrollInfo.scrollLeft
-
-  const visibleLeft = Math.max(containerLeft, viewportRect.left)
-  const visibleRight = Math.min(containerRight, viewportRect.right)
-  const visibleTop = Math.max(containerTop, viewportRect.top)
-  const visibleBottom = Math.min(containerBottom, viewportRect.bottom)
-
-  const visibleWidth = Math.max(0, visibleRight - visibleLeft)
-  const visibleHeight = Math.max(0, visibleBottom - visibleTop)
-
-  const visibleArea = visibleWidth * visibleHeight
-  const totalArea = Math.max(1, containerRect.width * containerRect.height)
-
-  return visibleArea / totalArea
-}
-
-// 处理是否需要翻转方向
-async function handleDirectionInvertIfNeed() {
-  await nextTick()
-
-  const scrollInfo = getScrollPositions(scrollContainer)
-  const containerRect = wrapperRef.value!.getBoundingClientRect()
-
-  // 当可见比例低于阈值时才触发翻转，避免轻微遮挡造成频繁翻转
-  const visibleRatio = getVisibleRatio(viewportRect!, containerRect, scrollInfo)
-  if (visibleRatio >= props.minVisibleRatio) {
-    return
-  }
-
-  // 渲染以后判断初始是否被遮挡, 如果被遮挡则调换位置
-  const overlapping = getOverlapping(
-    viewportRect!,
-    containerRect,
-    scrollInfo,
-  )
-
-  if (overlapping.isOverlapping) {
-    applyAutoPosition(overlapping)
-    updateContentPosition()
+  if (!wrapperRect && wrapperRef.value) {
+    wrapperRect = wrapperRef.value.getBoundingClientRect()
   }
 }
 
@@ -266,21 +216,17 @@ async function handlePopoverShow(immediate: boolean = false) {
 
   openPopover()
 
-  emits('show')
-  emits('visible-change', true)
-
   await nextTick()
+
   getTriggerRect()
   updateContentPosition()
 
   savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
-  optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 
-  if (!props.autoPosition) {
-    return
+  if (props.closeOnPressEscape) {
+    optimizedOn(document, 'keydown', onPopoverKeystroke)
   }
-
-  handleDirectionInvertIfNeed()
+  optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
@@ -300,13 +246,28 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
-  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
-
   await closePopover()
+
   wrapperRect = null
 
-  emits('hide')
-  emits('visible-change', false)
+  if (props.closeOnPressEscape) {
+    optimizedOff(document, 'keydown', onPopoverKeystroke)
+  }
+  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
+}
+
+// on press escape key
+function onPopoverKeystroke(ev: KeyboardEvent) {
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+    return
+  }
+
+  if (ev.key !== 'Escape' || !props.closeOnPressEscape) {
+    return
+  }
+
+  emits('escape', ev)
+  handlePopoverHide(true)
 }
 
 async function onTriggerClick(ev: Event) {
@@ -384,7 +345,6 @@ function onContentPointerEnter() {
     return
   }
 
-  // 如果 content 不可交互或者 content 已经关闭了但是还在 transition 的动画中
   if (!props.enterable || !isVisible.value) {
     return
   }
@@ -406,6 +366,10 @@ function onContentPointerLeave() {
 }
 
 async function updateContentPosition() {
+  if (!wrapperRect) {
+    return
+  }
+
   const { offset, maxWidth, zIndex, arrowColor } = props
   const { width: wrapperWidth, height: wrapperHeight } = wrapperRect!
   const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
@@ -486,59 +450,19 @@ async function updateContentPosition() {
   }
 }
 
-/**
- * 当屏幕可用空间不足时调整位置, 优先保证最大的内容可见度:
- * - top 被遮挡 → bottom
- * - bottom 被遮挡 → top
- * - left 被遮挡 → top（优先向上）
- * - right 被遮挡 → top（优先向上）
- * @param overlapping 是否被遮挡
- */
-function applyAutoPosition(overlapping?: ReturnType<typeof getOverlapping>) {
-  if (!overlapping) {
-    localPosition.value = props.position
-    return
-  }
-
-  const currentPosition = localPosition.value
-  const [position, modifier] = currentPosition.includes('-')
-    ? currentPosition.split('-') as [BasePosition, string]
-    : [currentPosition as BasePosition, '']
-
-  const flipTargetMap: Record<BasePosition, BasePosition> = {
+function reversePosition() {
+  const positionsMap = {
     top: 'bottom',
+    left: 'right',
+    right: 'left',
     bottom: 'top',
-    left: 'top',
-    right: 'top',
   }
 
-  let newPosition = position
-  let newModifier = modifier
+  const [position, modifier = ''] = localPosition.value.split('-') as [keyof typeof positionsMap, 'start' | 'end' | '']
 
-  if (overlapping[position]) {
-    newPosition = flipTargetMap[position]
-  }
+  localPosition.value = `${positionsMap[position]}${modifier ? '-' : ''}${modifier}` as ComponentPosition
 
-  // 根据“新方向”的轴向来计算修饰符（start/end），以保证对齐更贴边更可见
-  if (['left', 'right'].includes(newPosition)) {
-    if (overlapping.top) {
-      newModifier = 'start'
-    } else if (overlapping.bottom) {
-      newModifier = 'end'
-    }
-  } else if (['top', 'bottom'].includes(newPosition)) {
-    if (overlapping.left) {
-      newModifier = 'start'
-    } else if (overlapping.right) {
-      newModifier = 'end'
-    }
-  }
-
-  localPosition.value = (
-    newModifier
-      ? `${newPosition}-${newModifier}`
-      : newPosition
-  ) as ComponentPosition
+  updateContentPosition()
 }
 
 const triggerMethodEvents = {

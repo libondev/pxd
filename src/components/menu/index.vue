@@ -33,12 +33,16 @@ const emits = defineEmits<{
 
 const popoverVisible = shallowRef(false)
 
+function onVisibleChange(visible: boolean) {
+  popoverVisible.value = visible
+}
+
 function showPopover() {
-  popoverVisible.value = true
+  onVisibleChange(true)
 }
 
 function hidePopover() {
-  popoverVisible.value = false
+  onVisibleChange(false)
 }
 
 function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
@@ -58,10 +62,13 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     :position="position"
     :show-transition="false"
     :visible="popoverVisible"
+    :close-on-press-escape="closeOnPressEscape"
     transition-name="pxd-transition--fade"
     v-bind="$attrs"
+    @escape="hidePopover"
     @outside-click="hidePopover"
     @trigger-click="showPopover"
+    @visible-change="onVisibleChange"
   >
     <slot />
 
@@ -70,9 +77,7 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
-        :close-on-press-escape="closeOnPressEscape"
         class="max-h-68 rounded-xl bg-background-100 shadow-border-menu"
-        @escape="hidePopover"
         @select="onOptionClick"
       >
         <slot name="items" />

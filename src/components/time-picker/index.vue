@@ -4,7 +4,7 @@ import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
-import { optimizedOff, optimizedOn, sleep } from '../../utils/event'
+import { sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
@@ -95,15 +95,17 @@ function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
 }
 
+function onVisibleChange(visible: boolean) {
+  popoverVisible.value = visible
+}
+
 function showPopover() {
-  popoverVisible.value = true
+  onVisibleChange(true)
   setTimesScrollTop()
-  optimizedOn(document, 'keydown', onKeystrokeClosePopover)
 }
 
 function hidePopover() {
-  popoverVisible.value = false
-  optimizedOff(document, 'keydown', onKeystrokeClosePopover)
+  onVisibleChange(false)
 }
 
 function parseTimeValue(value: string, max: number) {
@@ -247,18 +249,6 @@ function onPresetClick(ev: MouseEvent) {
   onNowBtnClick(presetValue)
 }
 
-function onKeystrokeClosePopover(ev: KeyboardEvent) {
-  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
-    return
-  }
-
-  if (ev.key !== 'Escape' || !props.closeOnPressEscape) {
-    return
-  }
-
-  hidePopover()
-}
-
 watch(() => props.modelValue, updateValueList, { immediate: true })
 </script>
 
@@ -274,9 +264,12 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     :style="$attrs.style"
     :show-transition="false"
     :visible="popoverVisible"
+    :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker w-full"
+    @escape="onCancelClick"
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"
+    @visible-change="onVisibleChange"
   >
     <PInput
       ref="inputRef"
@@ -288,9 +281,11 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       v-bind="$attrs"
       @click.stop="showPopover"
       @change="onInputValueChange"
+      @keydown.enter="onConfirmClick"
       @update:model-value="onUpdateModelValue"
     >
       <template v-if="prefixIcon" #prefix>
+        {{ popoverVisible }}
         <CalendarIcon class="ml-3 pointer-events-none" />
       </template>
     </PInput>
