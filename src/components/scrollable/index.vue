@@ -107,8 +107,8 @@ function updateScrollbarMetrics() {
   } = contentEl
 
   // 轨道尺寸使用外层 wrapper 的 padding-box，确保外层 padding 时计算准确
-  const trackW = wrapperRef.value?.clientWidth ?? clientW
-  const trackH = wrapperRef.value?.clientHeight ?? clientH
+  const trackW = wrapperRef.value!.clientWidth ?? clientW
+  const trackH = wrapperRef.value!.clientHeight ?? clientH
 
   const effClientW = Math.max(0, clientW - pl - pr)
   const effClientH = Math.max(0, clientH - pt - pb)
@@ -258,7 +258,7 @@ function onDragMove(e: MouseEvent) {
   }
 
   if (dragState.direction === 'vertical') {
-    const trackH = wrapperRef.value?.clientHeight ?? contentEl.clientHeight
+    const trackH = wrapperRef.value!.clientHeight ?? contentEl.clientHeight
     const thumbH = scrollInfo.value.verticalThumbHeight
     const scrollableH = Math.max(0, trackH - thumbH)
     const delta = e.clientY - dragState.startClientPos
@@ -269,7 +269,7 @@ function onDragMove(e: MouseEvent) {
     return
   }
 
-  const trackW = wrapperRef.value?.clientWidth ?? contentEl.clientWidth
+  const trackW = wrapperRef.value!.clientWidth ?? contentEl.clientWidth
   const thumbW = scrollInfo.value.horizontalThumbWidth
   const scrollableW = Math.max(0, trackW - thumbW)
   const delta = e.clientX - dragState.startClientPos
@@ -296,7 +296,7 @@ function scrollTo(top: number, left: number) {
 }
 
 if (props.scrollbar) {
-  useResizeObserver([wrapperRef, contentRef], throttledUpdate)
+  useResizeObserver(contentRef, throttledUpdate)
 }
 
 onMounted(async () => {
