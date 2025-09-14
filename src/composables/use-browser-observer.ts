@@ -66,6 +66,10 @@ function createObserver(ObserverConstructor: Constructor) {
 
         cleanup()
 
+        if (!newTargets?.length) {
+          return
+        }
+
         if (ObserverConstructor.name === 'IntersectionObserver') {
           observer = new (ObserverConstructor as typeof IntersectionObserver)(
             callback as IntersectionObserverCallback,
