@@ -1,26 +1,41 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import { shallowRef } from 'vue'
+
+interface Options<T> {
+  delay?: number
+  valueChange?: (v: T) => void
+}
 
 interface UseDelayChangeReturnType<T> {
   value: Ref<T>
   setValue: (value: T, immediate?: boolean) => void
 }
 
-export function useDelayChange<T>(defaultValue: T, delayMs = 1000): UseDelayChangeReturnType<T> {
+export function useDelayChange<T>(
+  value: MaybeRefOrGetter<T>,
+  options: Options<T> = {},
+): UseDelayChangeReturnType<T> {
+  const {
+    delay = 300,
+    valueChange,
+  } = options
+
   let timerId: ReturnType<typeof setTimeout>
-  const delayValue = shallowRef(defaultValue)
+  const delayValue = shallowRef(value as T)
 
   function setValue(newValue: T, immediate = false) {
     clearTimeout(timerId)
 
     if (immediate) {
       delayValue.value = newValue
+      valueChange?.(delayValue.value)
       return
     }
 
     timerId = setTimeout(() => {
       delayValue.value = newValue
-    }, delayMs)
+      valueChange?.(delayValue.value)
+    }, delay)
   }
 
   return {

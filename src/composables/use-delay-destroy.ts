@@ -1,9 +1,11 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import { nextTick, shallowRef } from 'vue'
+import { toValue } from '../utils/ref'
 
 interface Options {
-  default?: boolean
   delay?: number
+  renderChange?: (v: boolean) => void
+  visibleChange?: (v: boolean) => void
 }
 
 interface UseDelayDestroyReturnType {
@@ -13,16 +15,18 @@ interface UseDelayDestroyReturnType {
   close: () => Promise<boolean>
 }
 
-export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDelayDestroyReturnType {
+export function useDelayDestroy(
+  value: MaybeRefOrGetter<boolean>,
+  options: Options = {},
+): UseDelayDestroyReturnType {
   const {
     delay = 300,
-    default: value = false,
-  } = typeof valueOrOptions === 'boolean'
-    ? { default: valueOrOptions, delay: 300 }
-    : valueOrOptions
+    renderChange,
+    visibleChange,
+  } = options
 
-  const render = shallowRef(value)
-  const visible = shallowRef(value)
+  const render = shallowRef(toValue(value))
+  const visible = shallowRef(value as boolean)
 
   let delayTimeoutId: ReturnType<typeof setTimeout>
 
@@ -31,9 +35,12 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
       clearTimeout(delayTimeoutId)
 
       render.value = true
+      renderChange?.(render.value)
 
       nextTick().then(() => {
-        resolve(visible.value = true)
+        visible.value = true
+        resolve(visible.value)
+        visibleChange?.(visible.value)
       })
     })
   }
@@ -41,9 +48,12 @@ export function useDelayDestroy(valueOrOptions: boolean | Options = {}): UseDela
   function close() {
     return new Promise<boolean>((resolve) => {
       visible.value = false
+      visibleChange?.(visible.value)
 
       delayTimeoutId = setTimeout(() => {
-        resolve(render.value = false)
+        render.value = false
+        resolve(render.value)
+        renderChange?.(render.value)
       }, delay)
     })
   }
