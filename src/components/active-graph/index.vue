@@ -333,11 +333,12 @@ function onCellClick(event: MouseEvent) {
 
 let tbodyRect: DOMRect
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
+const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
+
 const {
   value: showTooltip,
   setValue: setShowTooltip,
-} = useDelayChange(false, 500)
-const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
+} = useDelayChange(false, { delay: 500 })
 
 const formatTooltipText = computed(() => {
   if (props.tooltipText) {
