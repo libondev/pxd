@@ -105,11 +105,7 @@ const options = [
 
 <template>
   <PStack>
-    <PMenu :options="options" position="left-start" width="200">
-      <PButton variant="primary">Actions</PButton>
-    </PMenu>
-
-    <PMenu :options="options" position="bottom-end" width="200">
+    <PMenu :options="options" position="right-start" width="200">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
   </PStack>

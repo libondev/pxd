@@ -36,7 +36,9 @@ interface Props {
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
-  transitionName?: string
+  showTransition?: boolean
+  hideTransition?: boolean
+  transitionType?: 'fade' | 'fade-scale'
   /** 最小可见比例(0~1), 仅当前可见区域比例小于该阈值时才会触发滚动过程中的自适应翻转 */
   minVisibleRatio?: number
   closeOnPressEscape?: boolean
@@ -44,12 +46,11 @@ interface Props {
   autoPositionThreshold?: number
   /** 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗, 单位: px */
   closeOnScrollThreshold?: number
-  disabledShowTransition?: boolean
-  disabledHideTransition?: boolean
 }
 
 defineOptions({
   name: 'PPopover',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -63,10 +64,12 @@ const props = withDefaults(
     hideDelay: 300,
     arrowColor: 'hsl(var(--primary))',
     autoPosition: true,
+    showTransition: true,
+    hideTransition: true,
+    transitionType: 'fade-scale',
     minVisibleRatio: 0.88,
     autoPositionThreshold: 30,
     closeOnScrollThreshold: 150,
-    transitionName: 'pxd-transition--fade-scale',
   },
 )
 
@@ -79,6 +82,7 @@ const emits = defineEmits<{
 }>()
 
 let triggerRect: DOMRect | null = null
+let wrapperRect: DOMRect | null = null
 let viewportRect: DOMRect | null = null
 
 let scrollContainer: ReturnType<typeof getScrollContainer>
@@ -159,6 +163,10 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
 function getTriggerRect() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
   viewportRect = document.documentElement.getBoundingClientRect()
+
+  if (!wrapperRect) {
+    wrapperRect = wrapperRef.value!.getBoundingClientRect()
+  }
 }
 
 // 判断元素在渲染后是否超出了屏幕之外
@@ -242,8 +250,6 @@ async function handlePopoverShow(immediate: boolean = false) {
     return
   }
 
-  getTriggerRect()
-
   await new Promise<void>((resolve) => {
     if (hidePopoverTimer) {
       clearTimeout(hidePopoverTimer)
@@ -257,12 +263,15 @@ async function handlePopoverShow(immediate: boolean = false) {
   })
 
   localPosition.value = props.position
-  updateContentPosition()
 
-  await openPopover()
+  openPopover()
 
   emits('show')
   emits('visible-change', true)
+
+  await nextTick()
+  getTriggerRect()
+  updateContentPosition()
 
   savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
   optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
@@ -294,6 +303,7 @@ async function handlePopoverHide(immediate: boolean = false) {
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 
   await closePopover()
+  wrapperRect = null
 
   emits('hide')
   emits('visible-change', false)
@@ -395,86 +405,80 @@ function onContentPointerLeave() {
   handlePopoverHide()
 }
 
-function updateContentPosition() {
+async function updateContentPosition() {
   const { offset, maxWidth, zIndex, arrowColor } = props
+  const { width: wrapperWidth, height: wrapperHeight } = wrapperRect!
   const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
-
-  const position = localPosition.value
 
   let top = ''
   let left = ''
-  let translateX = '0'
-  let translateY = '0'
 
-  if (position === 'top') {
-    top = `${scrollTop}px`
-    left = `${scrollLeft + width / 2}px`
+  switch (localPosition.value) {
+    case 'top':
+      top = `${scrollTop - wrapperHeight}px`
+      left = `${scrollLeft + width / 2 - wrapperWidth / 2}px`
+      break
 
-    translateX = '-50%'
-    translateY = '-100%'
-  } else if (position === 'bottom') {
-    top = `${scrollTop + height}px`
-    left = `${scrollLeft + width / 2}px`
+    case 'top-start':
+      top = `${scrollTop - wrapperHeight}px`
+      left = `${scrollLeft}px`
+      break
 
-    translateX = '-50%'
-  } else if (position === 'top-start') {
-    top = `${scrollTop}px`
-    left = `${scrollLeft}px`
+    case 'top-end':
+      top = `${scrollTop - wrapperHeight}px`
+      left = `${scrollLeft + width - wrapperWidth}px`
+      break
 
-    translateY = '-100%'
-  } else if (position === 'top-end') {
-    top = `${scrollTop}px`
-    left = `${scrollLeft + width}px`
+    case 'right':
+      top = `${scrollTop + height / 2 - wrapperHeight / 2}px`
+      left = `${scrollLeft + width}px`
+      break
 
-    translateX = '-100%'
-    translateY = '-100%'
-  } else if (position === 'bottom-start') {
-    top = `${scrollTop + height}px`
-    left = `${scrollLeft}px`
-  } else if (position === 'bottom-end') {
-    top = `${scrollTop + height}px`
-    left = `${scrollLeft + width}px`
-    translateX = '-100%'
-  } else if (position === 'left') {
-    top = `${scrollTop + height / 2}px`
-    left = `${scrollLeft}px`
+    case 'right-start':
+      top = `${scrollTop}px`
+      left = `${scrollLeft + width}px`
+      break
 
-    translateX = '-100%'
-    translateY = '-50%'
-  } else if (position === 'right') {
-    top = `${scrollTop + height / 2}px`
-    left = `${scrollLeft + width}px`
+    case 'right-end':
+      top = `${scrollTop + height - wrapperHeight}px`
+      left = `${scrollLeft + width}px`
+      break
 
-    translateX = '0'
-    translateY = '-50%'
-  } else if (position === 'left-start') {
-    top = `${scrollTop}px`
-    left = `${scrollLeft}px`
+    case 'bottom':
+      top = `${scrollTop + height}px`
+      left = `${scrollLeft + width / 2 - wrapperWidth / 2}px`
+      break
 
-    translateX = '-100%'
-    translateY = '0'
-  } else if (position === 'left-end') {
-    top = `${scrollTop + height}px`
-    left = `${scrollLeft}px`
+    case 'bottom-start':
+      top = `${scrollTop + height}px`
+      left = `${scrollLeft}px`
+      break
 
-    translateX = '-100%'
-    translateY = '-100%'
-  } else if (position === 'right-start') {
-    top = `${scrollTop}px`
-    left = `${scrollLeft + width}px`
-  } else if (position === 'right-end') {
-    top = `${scrollTop + height}px`
-    left = `${scrollLeft + width}px`
+    case 'bottom-end':
+      top = `${scrollTop + height}px`
+      left = `${scrollLeft + width - wrapperWidth}px`
+      break
 
-    translateX = '0'
-    translateY = '-100%'
+    case 'left':
+      top = `${scrollTop + height / 2 - wrapperHeight / 2}px`
+      left = `${scrollLeft - wrapperWidth}px`
+      break
+
+    case 'left-start':
+      top = `${scrollTop}px`
+      left = `${scrollLeft - wrapperWidth}px`
+      break
+
+    case 'left-end':
+      top = `${scrollTop + height - wrapperHeight}px`
+      left = `${scrollLeft - wrapperWidth}px`
+      break
   }
 
   wrapperStyle.value = {
     left,
     top,
     zIndex,
-    'transform': `translate3d(${translateX}, ${translateY}, 0)`,
     '--popover-bg': arrowColor,
     '--popover-offset': getCssUnitValue(offset),
     '--popover-max-width': getCssUnitValue(maxWidth),
@@ -590,7 +594,6 @@ watch(
 watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
-    // unbind old trigger events
     updateTriggerEvents(oldMethods, oldDom, optimizedOff)
 
     updateTriggerEvents(newMethods, newDom, optimizedOn)
@@ -624,42 +627,72 @@ defineExpose({
   <div
     ref="triggerRef"
     class="pxd-popover inline-flex max-w-full active:select-none"
+    v-bind="$attrs"
     @contextmenu.prevent="onTriggerContextmenu"
     @click="onTriggerClick"
   >
     <slot />
 
     <PTeleport>
-      <Transition
-        appear
-        mode="out-in"
-        :name="transitionName"
-        :class="{ disabledShowTransition, disabledHideTransition }"
+      <div
+        v-if="isRender"
+        ref="wrapperRef"
+        :class="wrapperClass"
+        :style="wrapperStyle"
+        :data-visible="isVisible"
+        :data-enterable="enterable"
+        :data-position="localPosition"
+        :data-show-transition="showTransition"
+        :data-hide-transition="hideTransition"
+        :data-transition-type="transitionType"
+        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full motion-reduce:data-[visible=false]:hidden"
+        @pointerenter="onContentPointerEnter"
+        @pointerleave="onContentPointerLeave"
       >
-        <div
-          v-if="isRender"
-          v-show="isVisible"
-          ref="wrapperRef"
-          :class="wrapperClass"
-          :style="wrapperStyle"
-          :data-enterable="enterable"
-          :data-position="localPosition"
-          class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full"
-          @pointerenter="onContentPointerEnter"
-          @pointerleave="onContentPointerLeave"
-        >
-          <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
-          <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
-            <slot name="content" />
-          </div>
+        <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
+        <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
+          <slot name="content" />
         </div>
-      </Transition>
+      </div>
     </PTeleport>
   </div>
 </template>
 
 <style lang="postcss">
+@keyframes popover-fade-show {
+  0% { opacity: 0; pointer-events: none; }
+  100% { opacity: 1 }
+}
+@keyframes popover-fade-hide {
+  0% { opacity: 1 }
+  100% { opacity: 0; pointer-events: none; }
+}
+@keyframes popover-fade-scale-show {
+  0% { transform: scale(0.96); opacity: 0; pointer-events: none; }
+  100% { transform: scale(1); opacity: 1 }
+}
+@keyframes popover-fade-scale-hide {
+  0% { transform: scale(1); opacity: 1 }
+  100% { transform: scale(0.96); opacity: 0; pointer-events: none; }
+}
+
 .pxd-popover--container {
+  &[data-visible="true"][data-show-transition="true"][data-transition-type="fade"] {
+    animation: popover-fade-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  }
+
+  &[data-visible="false"][data-hide-transition="true"][data-transition-type="fade"] {
+    animation: popover-fade-hide var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  }
+
+  &[data-visible="true"][data-show-transition="true"][data-transition-type="fade-scale"] {
+    animation: popover-fade-scale-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  }
+
+  &[data-visible="false"][data-hide-transition="true"][data-transition-type="fade-scale"] {
+    animation: popover-fade-scale-hide var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  }
+
   &[data-enterable="false"] {
     pointer-events: none;
   }
@@ -685,23 +718,23 @@ defineExpose({
   }
 
   &[data-position='left'] {
-    transform-origin: right center;
+    transform-origin: 100% 50%;
   }
   &[data-position='left-start'] {
-    transform-origin: right left;
+    transform-origin: 100% 0;
   }
   &[data-position='left-end'] {
-    transform-origin: right right;
+    transform-origin: 100% 100%;
   }
 
   &[data-position='right'] {
-    transform-origin: left center;
+    transform-origin: 0 50%;
   }
   &[data-position='right-start'] {
-    transform-origin: left left;
+    transform-origin: 0 0;
   }
   &[data-position='right-end'] {
-    transform-origin: left right;
+    transform-origin: 0 100%;
   }
 
   &[data-position^='top'] {
@@ -787,10 +820,5 @@ defineExpose({
   &[data-position='bottom-end'] .pxd-popover--arrow {
     right: 16px;
   }
-}
-
-.disabledShowTransition[class*="-enter-active"],
-.disabledHideTransition[class*="-leave-active"] {
-  --default-transition-duration: 0 !important
 }
 </style>

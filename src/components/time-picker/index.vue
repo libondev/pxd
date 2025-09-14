@@ -152,7 +152,7 @@ async function setTimesScrollTop() {
   })
 }
 
-function onTimesContainerClick(ev: MouseEvent) {
+function onTimeListClick(ev: MouseEvent) {
   const target = ev.target as HTMLElement
 
   if (target.tagName !== 'LI') {
@@ -272,9 +272,9 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
+    :show-transition="false"
     :visible="popoverVisible"
     class="pxd-time-picker w-full"
-    disabled-show-transition
     @trigger-click="showPopover"
     @outside-click="onConfirmClick"
   >
@@ -286,8 +286,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       v-bind="$attrs"
-      @blur="hidePopover"
-      @focus="showPopover"
+      @click.stop="showPopover"
       @change="onInputValueChange"
       @update:model-value="onUpdateModelValue"
     >
@@ -298,7 +297,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 
     <template #content>
       <div class="rounded-xl bg-background-100 shadow-border-menu">
-        <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimesContainerClick">
+        <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
           <div class="p-2 gap-1 relative flex items-center">
             <div class="pxd-time-picker--list relative">
               <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
