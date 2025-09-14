@@ -246,7 +246,7 @@ async function handleDirectionInvertIfNeed() {
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
-  if (showPopoverTimer) {
+  if (showPopoverTimer || props.disabled) {
     return
   }
 
