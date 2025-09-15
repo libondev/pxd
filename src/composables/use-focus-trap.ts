@@ -52,7 +52,7 @@ export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
     await nextTick()
 
     const unbindEvent = on(target, 'keydown', onContainerKeydown)
-    elements = [...target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)]
+    elements = Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS))
 
     // Cancel autofocus on small screen to avoid automatic page scaling
     if (elements.length && isSmUp.value) {
