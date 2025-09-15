@@ -167,6 +167,7 @@ export default defineConfig(({ mode }) => {
         '@vue/shared',
         'canvas-confetti',
         '@unhead/vue',
+        '@unhead/vue/client',
         'dayjs/esm/index.js',
         'dayjs/esm/plugin/duration/index.js',
       ],
