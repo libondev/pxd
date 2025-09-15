@@ -78,7 +78,7 @@ if (!isServer) {
 
 <template>
   <div v-if="isSmUp" class="left-0 top-0 bottom-0 absolute">
-    <aside class="sidebar top-12 bottom-0 w-58 xl:border-l fixed z-0 mt-px border-r bg-background-100">
+    <aside class="sidebar top-12 bottom-0 w-60 xl:border-l fixed z-0 mt-px border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5">
         <Menus :menus="menus" />
       </PScrollable>
