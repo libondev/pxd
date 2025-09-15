@@ -46,14 +46,8 @@ const computedStyle = computed(() => {
   width: 100%;
   height: 36px;
   color: var(--color-gray-400);
-  background-image:
-    repeating-linear-gradient(
-      var(--deg),
-      currentColor 0,
-      currentColor 1px,
-      transparent 1px,
-      transparent 8px
-    );
+  background-image: repeating-linear-gradient(var(--deg),currentColor 0 1px,#0000 0 50%);
+  background-size: 10px 10px;
   background-repeat: repeat;
   background-position: 0 0;
   background-origin: padding-box;
