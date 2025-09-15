@@ -147,7 +147,9 @@ useIntersectionObserver(wrapperRef, ([entry]) => {
     return
   }
 
-  if (entry.intersectionRatio <= props.minVisibleRatio) {
+  const overlapInfo = isOverlapping(entry.boundingClientRect, entry.rootBounds!)
+
+  if (overlapInfo.overlapping && entry.intersectionRatio <= props.minVisibleRatio) {
     reversePosition()
   }
 }, { threshold: [props.minVisibleRatio] })
@@ -179,6 +181,21 @@ function getTriggerRect() {
 
   if (!wrapperRect && wrapperRef.value) {
     wrapperRect = wrapperRef.value.getBoundingClientRect()
+  }
+}
+
+function isOverlapping(intersectRect: DOMRect, viewportRect: DOMRect) {
+  const top = intersectRect.top < viewportRect.top
+  const bottom = intersectRect.bottom > viewportRect.bottom
+  const left = intersectRect.left < viewportRect.left
+  const right = intersectRect.right > viewportRect.right
+
+  return {
+    left,
+    top,
+    right,
+    bottom,
+    overlapping: left || right || top || bottom,
   }
 }
 
