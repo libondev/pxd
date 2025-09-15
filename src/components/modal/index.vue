@@ -104,7 +104,7 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] pointer-events-auto fixed z-10 flex max-h-[min(800px,80vh)] w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none max-sm:bottom-0 motion-safe:transition-all dark:bg-background-200"
+        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--w,540px)] pointer-events-auto fixed z-10 flex w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none max-sm:bottom-0 motion-safe:transition-all dark:bg-background-200"
         :class="wrapperClass"
         :style="computedStyle"
         v-bind="$attrs"
@@ -148,6 +148,11 @@ watch(() => isVisible.value, (visible) => {
 </template>
 
 <style>
+.pxd-modal {
+  max-height: min(800px, 80vh);
+  max-height: min(800px, 80dvh);
+}
+
 .pxd-transition--modal-enter-active,
 .pxd-transition--modal-leave-active {
   transition: var(--default-transition-duration) var(--default-transition-timing-function);

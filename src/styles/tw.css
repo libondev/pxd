@@ -438,6 +438,22 @@
   font-family: inherit;
 }
 
+@utility dvh-* {
+  height: calc(--value(integer) * 1vh);
+
+  @supports (height:1dvh) {
+    height: calc(--value(integer) * 1dvh);
+  }
+}
+
+@utility max-dvh-* {
+  max-height: calc(--value(integer) * 1vh);
+
+  @supports (height:1dvh) {
+    max-height: calc(--value(integer) * 1dvh);
+  }
+}
+
 @layer components {
   .pxd-input--border {
     border: 1px solid var(--border-color, var(--color-gray-alpha-300));
@@ -501,19 +517,6 @@
 .pxd-transition--fade-leave-to {
   opacity: 0;
 }
-
-/*
-.pxd-transition--fade-blur-enter-active,
-.pxd-transition--fade-blur-leave-active {
-  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
-  will-change: opacity;
-}
-
-.pxd-transition--fade-blur-enter-from,
-.pxd-transition--fade-blur-leave-to {
-  opacity: 0;
-  filter: blur(2px);
-} */
 
 .pxd-transition--fade-scale-move,
 .pxd-transition--fade-scale-enter-active,

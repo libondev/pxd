@@ -101,9 +101,9 @@ provideListFilterValue(filterKeyword)
   <PModal
     v-model="modelValue"
     width="640px"
-    class="pxd-command-menu max-sm:h-[80vh]"
+    class="pxd-command-menu max-sm:dvh-80"
     content-class="!p-0 overflow-hidden"
-    wrapper-class="sm:top-1/5 sm:translate-y-0"
+    wrapper-class="sm:top-1/8 sm:translate-y-0"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
     @show="showModal"
