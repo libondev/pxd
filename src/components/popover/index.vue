@@ -15,6 +15,7 @@ import {
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { isServer } from '../../utils/is'
+import { throttleByRaf } from '../../utils/throttle'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -109,24 +110,18 @@ const {
   open: openPopover,
   close: closePopover,
 } = useDelayDestroy(props.visible, {
-  delay: 3000,
+  delay: 2000,
   visibleChange(v) {
-    if (v) {
-      emits('show')
-    } else {
-      emits('hide')
-    }
+    v ? emits('show') : emits('hide')
     emits('visible-change', v)
   },
 })
 
+const allowedMethods = ['click', 'manual', 'contextmenu'] as const
+
 useOutsideClick(wrapperRef, {
   isEnabled: () => {
-    return isVisible.value && (
-      triggerMethods.value.includes('click')
-      || triggerMethods.value.includes('manual')
-      || triggerMethods.value.includes('contextmenu')
-    )
+    return isVisible.value && allowedMethods.some(t => triggerMethods.value.includes(t))
   },
   isOutside: (ev) => {
     return !triggerRef.value?.contains(ev.target as HTMLElement)
@@ -144,19 +139,11 @@ useOutsideClick(wrapperRef, {
 
 let triggerVisible = false
 useIntersectionObserver(triggerRef, ([entry]) => {
-  if (!isVisible.value) {
-    return
-  }
-
   triggerVisible = entry.isIntersecting
 })
 
 useIntersectionObserver(wrapperRef, ([entry]) => {
-  if (!isVisible.value || !props.autoPosition) {
-    return
-  }
-
-  if (!triggerVisible) {
+  if (!triggerVisible || !props.autoPosition || !isVisible.value) {
     return
   }
 
@@ -165,7 +152,7 @@ useIntersectionObserver(wrapperRef, ([entry]) => {
   }
 }, { threshold: [props.minVisibleRatio] })
 
-async function onContainerScroll(ev: Event) {
+const onContainerScroll = throttleByRaf(async (ev: Event) => {
   if (!isVisible.value) {
     return
   }
@@ -184,7 +171,7 @@ async function onContainerScroll(ev: Event) {
   // if (delta < props.autoPositionThreshold) {
 
   // }
-}
+})
 
 function getTriggerRect() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
@@ -211,8 +198,6 @@ async function handlePopoverShow(immediate: boolean = false) {
       resolve()
     }, immediate ? 0 : props.showDelay)
   })
-
-  localPosition.value = props.position
 
   openPopover()
 
@@ -592,12 +577,12 @@ defineExpose({
   100% { opacity: 0; pointer-events: none; }
 }
 @keyframes popover-fade-scale-show {
-  0% { transform: scale(0.96); opacity: 0; pointer-events: none; }
+  0% { transform: scale(0.95); opacity: 0; pointer-events: none; }
   100% { transform: scale(1); opacity: 1 }
 }
 @keyframes popover-fade-scale-hide {
   0% { transform: scale(1); opacity: 1 }
-  100% { transform: scale(0.96); opacity: 0; pointer-events: none; }
+  100% { transform: scale(0.95); opacity: 0; pointer-events: none; }
 }
 
 .pxd-popover--container {
