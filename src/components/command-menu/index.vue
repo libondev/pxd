@@ -4,7 +4,6 @@ import { nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideListFilterValue } from '../../contexts/list'
-import { debounce } from '../../utils/debounce'
 import { throttle } from '../../utils/throttle'
 import { getUniqueId } from '../../utils/uid'
 import PButton from '../button/index.vue'
@@ -74,21 +73,24 @@ const onKeywordChange = throttle(async (ev: Event) => {
   isEmptyResult.value = list.isNoVisibleItem()
 }, 200, { edges: ['leading', 'trailing'] })
 
-const hideModal = debounce(() => {
-  modelValue.value = false
+function hideModal() {
   filterKeyword.value = ''
   emits('hide')
-}, 500, { edges: ['leading'] })
+}
 
 function showModal() {
   emits('show')
+}
+
+function closeModal() {
+  modelValue.value = false
 }
 
 function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
   emits('select', ev, item)
 
   if (props.closeOnSelectItem) {
-    hideModal()
+    closeModal()
   }
 }
 
@@ -131,7 +133,7 @@ provideListFilterValue(filterKeyword)
           v-if="closeOnPressEscape"
           size="xs"
           class="!px-0 text-xs shrink-0"
-          @click="hideModal"
+          @click="closeModal"
         >
           Esc
         </PButton>
