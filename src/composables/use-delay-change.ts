@@ -6,7 +6,7 @@ interface Options<T> {
   valueChange?: (v: T) => void
 }
 
-interface UseDelayChangeReturnType<T> {
+interface Results<T> {
   value: Ref<T>
   setValue: (value: T, immediate?: boolean) => void
 }
@@ -14,7 +14,7 @@ interface UseDelayChangeReturnType<T> {
 export function useDelayChange<T>(
   value: MaybeRefOrGetter<T>,
   options: Options<T> = {},
-): UseDelayChangeReturnType<T> {
+): Results<T> {
   const {
     delay = 300,
     valueChange,

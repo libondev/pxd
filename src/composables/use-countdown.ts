@@ -1,4 +1,4 @@
-import type { EmitFn } from 'vue'
+import type { EmitFn, Ref } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
@@ -58,10 +58,16 @@ export interface Options {
   intuitive?: boolean
 }
 
+interface Results {
+  stop: () => void
+  reset: () => void
+  timestamp: Ref<number>
+}
+
 export function useCountdown<T extends Record<string, any>>(
   props: Options,
   emits: EmitFn<T>,
-) {
+): Results {
   let startTimestamp = -1
   let isFinished = false
   let isPaused = false

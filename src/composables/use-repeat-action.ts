@@ -4,12 +4,7 @@ import { onBeforeUnmount } from 'vue'
 import { off, once } from '../utils/event'
 import { toValue } from '../utils/ref'
 
-interface RepeatActionReturnType {
-  start: Callback
-  stop: Callback
-}
-
-interface UseRepeatActionOptions {
+interface Options {
   action: Callback
   disabled?: MaybeRefOrGetter<boolean>
   finalInterval?: number
@@ -17,9 +12,14 @@ interface UseRepeatActionOptions {
   accelerationDuration?: number
 }
 
-export function useRepeatAction(action: Callback): RepeatActionReturnType
-export function useRepeatAction(options: UseRepeatActionOptions): RepeatActionReturnType
-export function useRepeatAction(actionOrOptions: UseRepeatActionOptions | Callback): RepeatActionReturnType {
+interface Results {
+  start: Callback
+  stop: Callback
+}
+
+export function useRepeatAction(action: Callback): Results
+export function useRepeatAction(options: Options): Results
+export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   const {
     action,
     disabled,

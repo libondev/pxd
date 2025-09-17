@@ -21,7 +21,7 @@ type Observers = IntersectionObserver | ResizeObserver | MutationObserver
 type Constructor = typeof IntersectionObserver | typeof ResizeObserver | typeof MutationObserver
 type TargetRef = MaybeRefOrGetter<Nullable<HTMLElement>> | MaybeRefOrGetter<Nullable<HTMLElement>>[]
 
-interface ObserverReturnType<T extends Observers> {
+interface ObserverResults<T extends Observers> {
   observer: T | undefined
   stop: () => void
 }
@@ -32,21 +32,21 @@ function createObserver(
   target: TargetRef,
   callback: IntersectionObserverCallback,
   options?: MaybeRefOrGetter<IntersectionObserverInit>
-) => ObserverReturnType<IntersectionObserver>
+) => ObserverResults<IntersectionObserver>
 function createObserver(
   ObserverConstructor: typeof MutationObserver
 ): (
   target: TargetRef,
   callback: MutationCallback,
   options?: MaybeRefOrGetter<MutationObserverInit>
-) => ObserverReturnType<MutationObserver>
+) => ObserverResults<MutationObserver>
 function createObserver(
   ObserverConstructor: typeof ResizeObserver
 ): (
   target: TargetRef,
   callback: ResizeObserverCallback,
   options?: MaybeRefOrGetter<ResizeObserverOptions>
-) => ObserverReturnType<ResizeObserver>
+) => ObserverResults<ResizeObserver>
 function createObserver(ObserverConstructor: Constructor) {
   function observerWrapper(
     target: TargetRef,

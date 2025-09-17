@@ -8,7 +8,7 @@ interface Options {
   visibleChange?: (v: boolean) => void
 }
 
-interface UseDelayDestroyReturnType {
+interface Results {
   render: Ref<boolean>
   visible: Ref<boolean>
   open: () => Promise<boolean>
@@ -18,7 +18,7 @@ interface UseDelayDestroyReturnType {
 export function useDelayDestroy(
   value: MaybeRefOrGetter<boolean>,
   options: Options = {},
-): UseDelayDestroyReturnType {
+): Results {
   const {
     delay = 300,
     renderChange,
