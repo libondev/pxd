@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { nextTick, shallowRef } from 'vue'
+import { shallowRef } from 'vue'
 import { toValue } from '../utils/ref'
 
 interface Options {
@@ -28,33 +28,46 @@ export function useDelayDestroy(
   const render = shallowRef(toValue(value))
   const visible = shallowRef(value as boolean)
 
-  let delayTimeoutId: ReturnType<typeof setTimeout>
+  let destroyTimeoutId: ReturnType<typeof setTimeout>
+  let visibleTimeoutId: ReturnType<typeof setTimeout>
 
   async function open() {
     return new Promise<boolean>((resolve) => {
-      clearTimeout(delayTimeoutId)
+      clearTimeout(destroyTimeoutId)
 
-      render.value = true
-      renderChange?.(render.value)
+      if (!render.value) {
+        render.value = true
+        renderChange?.(render.value)
+      }
 
-      nextTick().then(() => {
-        visible.value = true
-        resolve(visible.value)
-        visibleChange?.(visible.value)
-      })
+      if (!visible.value) {
+        clearTimeout(visibleTimeoutId)
+        visibleTimeoutId = setTimeout(() => {
+          visible.value = true
+          resolve(visible.value)
+          visibleChange?.(visible.value)
+        }, 0)
+      }
     })
   }
 
   function close() {
     return new Promise<boolean>((resolve) => {
-      visible.value = false
-      visibleChange?.(visible.value)
+      clearTimeout(visibleTimeoutId)
 
-      delayTimeoutId = setTimeout(() => {
-        render.value = false
-        resolve(render.value)
-        renderChange?.(render.value)
-      }, delay)
+      if (visible.value) {
+        visible.value = false
+        visibleChange?.(visible.value)
+      }
+
+      if (render.value) {
+        clearTimeout(destroyTimeoutId)
+        destroyTimeoutId = setTimeout(() => {
+          render.value = false
+          resolve(render.value)
+          renderChange?.(render.value)
+        }, delay)
+      }
     })
   }
 
