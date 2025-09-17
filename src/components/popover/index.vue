@@ -111,6 +111,14 @@ const {
   close: closePopover,
 } = useDelayDestroy(props.visible, {
   delay: 2000,
+  renderChange(v) {
+    if (v) {
+      nextTick(getBoundingRects)
+      return
+    }
+
+    clearBoundingRect()
+  },
   visibleChange(v) {
     v ? emits('show') : emits('hide')
     emits('visible-change', v)
@@ -175,13 +183,16 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
   // }
 })
 
-function getTriggerRect() {
+function getBoundingRects() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
+  wrapperRect = wrapperRef.value!.getBoundingClientRect()
   viewportRect = document.documentElement.getBoundingClientRect()
+}
 
-  if (!wrapperRect && wrapperRef.value) {
-    wrapperRect = wrapperRef.value.getBoundingClientRect()
-  }
+function clearBoundingRect() {
+  triggerRect = null
+  wrapperRect = null
+  viewportRect = null
 }
 
 function isOverlapping(intersectRect: DOMRect, viewportRect: DOMRect) {
@@ -220,7 +231,6 @@ async function handlePopoverShow(immediate: boolean = false) {
 
   await nextTick()
 
-  getTriggerRect()
   updateContentPosition()
 
   savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
@@ -502,7 +512,7 @@ function onResizeUpdatePosition() {
   }
 
   // TODO: update arrow position with trigger rect
-  getTriggerRect()
+  getBoundingRects()
   updateContentPosition()
 }
 
@@ -536,8 +546,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  triggerRect = null
-  viewportRect = null
+  clearBoundingRect()
 
   optimizedOff(window, 'resize', onResizeUpdatePosition)
   optimizedOff(scrollContainer, 'scroll', onContainerScroll)
