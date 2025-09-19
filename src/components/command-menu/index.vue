@@ -2,9 +2,9 @@
 import type { ListOptionSelected } from '../../types/components/list'
 import { nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useDeferredValue } from '../../composables/use-deferred-value'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideListFilterValue } from '../../contexts/list'
-import { throttle } from '../../utils/throttle'
 import { getUniqueId } from '../../utils/uid'
 import PButton from '../button/index.vue'
 import PList from '../list/index.vue'
@@ -53,25 +53,23 @@ const modelValue = useModelValue(props, emits)
 
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
-const filterKeyword = shallowRef('')
 const isEmptyResult = shallowRef(false)
+const {
+  value: filterKeyword,
+  deferred: deferredFilterKeyword,
+} = useDeferredValue('', {
+  async valueChange(v) {
+    if (!v) {
+      return
+    }
 
-const onKeywordChange = throttle(async (ev: Event) => {
-  const inputValue = (ev.target as HTMLInputElement).value.trim()
+    await nextTick()
 
-  filterKeyword.value = inputValue
-
-  const list = listRef.value
-
-  if (!list) {
-    return
-  }
-
-  await nextTick()
-  list.updateListItem()
-  list.setActiveValueToFirst()
-  isEmptyResult.value = list.isNoVisibleItem()
-}, 200, { edges: ['leading', 'trailing'] })
+    listRef.value!.updateListItem()
+    listRef.value!.setActiveValueToFirst()
+    isEmptyResult.value = listRef.value!.isNoVisibleItem()
+  },
+})
 
 function hideModal() {
   filterKeyword.value = ''
@@ -94,7 +92,7 @@ function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
   }
 }
 
-provideListFilterValue(filterKeyword)
+provideListFilterValue(deferredFilterKeyword)
 </script>
 
 <template>
@@ -113,20 +111,19 @@ provideListFilterValue(filterKeyword)
       <label :for="uniqueId" class="py-3 px-4 -mx-6 -mt-4 sm:-mt-6 gap-3 flex items-center border-b bg-background-100">
         <input
           :id="uniqueId"
-          :value="filterKeyword"
+          v-model="filterKeyword"
           :placeholder="placeholder"
           aria-autocomplete="list"
           :aria-controls="uniqueId"
           :aria-labelledby="uniqueId"
+          role="combobox"
           aria-expanded="true"
           autocomplete="off"
           autocorrect="off"
-          role="combobox"
           spellcheck="false"
           type="text"
           name="command-menu-filter-input"
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
-          @input="onKeywordChange"
         >
 
         <PButton
