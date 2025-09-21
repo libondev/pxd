@@ -137,3 +137,13 @@ export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
     height: element.offsetHeight - element.clientHeight,
   }
 }
+
+// Gets the size of the window visible area
+export function getViewportRect() {
+  const rect = document.documentElement.getBoundingClientRect()
+
+  rect.width = document.documentElement.clientWidth
+  rect.height = document.documentElement.clientHeight
+
+  return rect as DOMRect
+}

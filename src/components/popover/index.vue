@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
+import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
@@ -11,6 +11,7 @@ import {
   getElementRectFromContainer,
   getScrollContainer,
   getScrollElByContainer,
+  getViewportRect,
 } from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
@@ -39,8 +40,6 @@ interface Props {
   showTransition?: boolean
   hideTransition?: boolean
   transitionType?: 'fade' | 'fade-scale'
-  /** 最小可见比例(0~1), 仅当前可见区域比例小于该阈值时才会触发滚动过程中的自适应翻转 */
-  minVisibleRatio?: number
   closeOnPressEscape?: boolean
   /** 自动调整位置的阈值, 当滚动距离超过该值时, 自动调整位置, 单位: px */
   autoPositionThreshold?: number
@@ -92,6 +91,7 @@ let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 let savedScrollPosition = 0
+const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
 const triggerRef = shallowRef<HTMLElement>()
 const wrapperRef = shallowRef<HTMLElement>()
@@ -107,25 +107,32 @@ const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const {
   render: isRender,
   visible: isVisible,
-  open: openPopover,
-  close: closePopover,
+  show: showPopover,
+  hide: hidePopover,
 } = useDelayDestroy(props.visible, {
   delay: 2000,
-  renderChange(v) {
+  async renderChange(v) {
     if (v) {
-      nextTick(getBoundingRects)
+      await nextTick()
+      getBoundingRects()
+      reversePositionIfNeed()
+
       return
     }
 
+    restorePosition()
     clearBoundingRect()
   },
   visibleChange(v) {
-    v ? emits('show') : emits('hide')
     emits('visible-change', v)
+
+    if (v) {
+      emits('show')
+    } else {
+      emits('hide')
+    }
   },
 })
-
-const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
 useOutsideClick(wrapperRef, {
   isEnabled: () => {
@@ -150,18 +157,6 @@ useIntersectionObserver(triggerRef, ([entry]) => {
   triggerVisible = entry.isIntersecting
 })
 
-useIntersectionObserver(wrapperRef, ([entry]) => {
-  if (!triggerVisible || !props.autoPosition || !isVisible.value) {
-    return
-  }
-
-  const overlapInfo = isOverlapping(entry.boundingClientRect, entry.rootBounds!)
-
-  if (overlapInfo.overlapping && entry.intersectionRatio <= props.minVisibleRatio) {
-    reversePosition()
-  }
-}, { threshold: [props.minVisibleRatio] })
-
 const onContainerScroll = throttleByRaf(async (ev: Event) => {
   if (!isVisible.value) {
     return
@@ -170,44 +165,29 @@ const onContainerScroll = throttleByRaf(async (ev: Event) => {
   const scrollTop = getScrollElByContainer(ev.target).scrollTop
   const delta = Math.abs(scrollTop - savedScrollPosition)
 
-  if (props.closeOnScroll && delta >= props.closeOnScrollThreshold) {
+  if (props.closeOnScroll && (delta >= props.closeOnScrollThreshold || !triggerVisible)) {
     handlePopoverHide(true)
   }
 
-  // if (!props.autoPosition) {
-  //   return
-  // }
+  if (!props.autoPosition) {
+    return
+  }
 
-  // if (delta < props.autoPositionThreshold) {
-
-  // }
+  if (delta < props.autoPositionThreshold) {
+    reversePositionIfNeed()
+  }
 })
 
 function getBoundingRects() {
   triggerRect = triggerRef.value!.getBoundingClientRect()
   wrapperRect = wrapperRef.value!.getBoundingClientRect()
-  viewportRect = document.documentElement.getBoundingClientRect()
+  viewportRect = getViewportRect()
 }
 
 function clearBoundingRect() {
   triggerRect = null
   wrapperRect = null
   viewportRect = null
-}
-
-function isOverlapping(intersectRect: DOMRect, viewportRect: DOMRect) {
-  const top = intersectRect.top < viewportRect.top
-  const bottom = intersectRect.bottom > viewportRect.bottom
-  const left = intersectRect.left < viewportRect.left
-  const right = intersectRect.right > viewportRect.right
-
-  return {
-    left,
-    top,
-    right,
-    bottom,
-    overlapping: left || right || top || bottom,
-  }
 }
 
 async function handlePopoverShow(immediate: boolean = false) {
@@ -227,7 +207,7 @@ async function handlePopoverShow(immediate: boolean = false) {
     }, immediate ? 0 : props.showDelay)
   })
 
-  openPopover()
+  showPopover()
 
   await nextTick()
 
@@ -258,7 +238,7 @@ async function handlePopoverHide(immediate: boolean = false) {
     }, immediate ? 0 : props.hideDelay)
   })
 
-  await closePopover()
+  await hidePopover()
 
   wrapperRect = null
 
@@ -462,7 +442,11 @@ async function updateContentPosition() {
   }
 }
 
-function reversePosition() {
+function restorePosition() {
+  localPosition.value = props.position
+}
+
+function reversePosition(position: BasePosition, modifier: 'start' | 'end' | '') {
   const positionsMap = {
     top: 'bottom',
     left: 'right',
@@ -470,11 +454,44 @@ function reversePosition() {
     bottom: 'top',
   }
 
-  const [position, modifier = ''] = localPosition.value.split('-') as [keyof typeof positionsMap, 'start' | 'end' | '']
-
   localPosition.value = `${positionsMap[position]}${modifier ? '-' : ''}${modifier}` as ComponentPosition
+}
 
-  updateContentPosition()
+function reversePositionIfNeed() {
+  if (!wrapperRect) {
+    return
+  }
+
+  const trigger = triggerRect!
+  const wrapper = wrapperRect!
+  const viewport = viewportRect!
+  const [position, modifier = ''] = localPosition.value.split('-') as [BasePosition, 'start' | 'end' | '']
+
+  if (position === 'left') {
+    if (trigger.left - wrapper.width < 0) {
+      reversePosition(position, modifier)
+    } else {
+      restorePosition()
+    }
+  } else if (position === 'top') {
+    if (trigger.top - wrapper.height < 0) {
+      reversePosition(position, modifier)
+    } else {
+      restorePosition()
+    }
+  } else if (position === 'right') {
+    if (trigger.right + wrapper.width > viewport.width) {
+      reversePosition(position, modifier)
+    } else {
+      restorePosition()
+    }
+  } else if (position === 'bottom') {
+    if (trigger.bottom + wrapper.height > viewport.height) {
+      reversePosition(position, modifier)
+    } else {
+      restorePosition()
+    }
+  }
 }
 
 const triggerMethodEvents = {

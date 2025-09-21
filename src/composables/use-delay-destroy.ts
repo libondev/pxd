@@ -11,8 +11,8 @@ interface Options {
 interface Results {
   render: Ref<boolean>
   visible: Ref<boolean>
-  open: () => Promise<boolean>
-  close: () => Promise<boolean>
+  show: () => Promise<boolean>
+  hide: () => Promise<boolean>
 }
 
 export function useDelayDestroy(
@@ -31,7 +31,7 @@ export function useDelayDestroy(
   let destroyTimeoutId: ReturnType<typeof setTimeout>
   let visibleTimeoutId: ReturnType<typeof setTimeout>
 
-  async function open() {
+  async function show() {
     return new Promise<boolean>((resolve) => {
       clearTimeout(destroyTimeoutId)
 
@@ -51,7 +51,7 @@ export function useDelayDestroy(
     })
   }
 
-  function close() {
+  function hide() {
     return new Promise<boolean>((resolve) => {
       clearTimeout(visibleTimeoutId)
 
@@ -72,8 +72,8 @@ export function useDelayDestroy(
   }
 
   return {
-    open,
-    close,
+    show,
+    hide,
     render,
     visible,
   }
