@@ -285,7 +285,6 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       @update:model-value="onUpdateModelValue"
     >
       <template v-if="prefixIcon" #prefix>
-        {{ popoverVisible }}
         <CalendarIcon class="ml-3 pointer-events-none" />
       </template>
     </PInput>
