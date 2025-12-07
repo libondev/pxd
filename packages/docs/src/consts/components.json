@@ -60,6 +60,10 @@
     "name": "countdown"
   },
   {
+    "camelized": "Dash Line",
+    "name": "dash-line"
+  },
+  {
     "camelized": "Description",
     "name": "description"
   },

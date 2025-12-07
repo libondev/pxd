@@ -85,7 +85,9 @@ if (!isServer) {
     </aside>
   </div>
 
-  <div class="md:pl-58 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
+  <div class="md:pl-60 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
+    {{ isSmUp }}
+
     <main class="prose p-6 py-12 sm:px-12 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
