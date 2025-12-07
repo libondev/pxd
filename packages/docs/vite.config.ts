@@ -12,7 +12,7 @@ import {
   container,
   noticeboard,
 } from 'markdown-it-plugins'
-import { createHighlighterCore } from 'shiki/core'
+import { createHighlighter } from 'shiki'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import autoImport from 'unplugin-auto-import/vite'
 import components from 'unplugin-vue-components/vite'
@@ -29,7 +29,7 @@ const codeThemes = {
   light: 'github-light',
 }
 
-const codeHighlighter = await createHighlighterCore({
+const codeHighlighter = await createHighlighter({
   engine: createJavaScriptRegexEngine(),
   themes: [
     import(`@shikijs/themes/${codeThemes.dark}`),

@@ -9,32 +9,32 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "canvas-confetti": "^1.9.3",
+    "canvas-confetti": "catalog:",
     "pxd": "workspace:*",
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^3.8.1",
-    "@sindresorhus/slugify": "^2.2.1",
+    "@shikijs/markdown-it": "catalog:",
+    "@sindresorhus/slugify": "catalog:",
     "@tailwindcss/vite": "catalog:",
-    "@types/markdown-it-attrs": "^4.1.3",
-    "@unhead/vue": "^2.0.13",
+    "@types/markdown-it-attrs": "catalog:",
+    "@unhead/vue": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
-    "@vitejs/plugin-vue-jsx": "^4.1.2",
+    "@vitejs/plugin-vue-jsx": "catalog:",
     "@vue/compiler-sfc": "catalog:",
     "@vue/tsconfig": "catalog:",
-    "markdown-it-anchor": "^9.2.0",
-    "markdown-it-attrs": "^4.3.1",
-    "markdown-it-plugins": "^0.4.0",
-    "shiki": "^3.3.0",
+    "markdown-it-anchor": "catalog:",
+    "markdown-it-attrs": "catalog:",
+    "markdown-it-plugins": "catalog:",
+    "shiki": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
     "unplugin-vue-router": "catalog:",
     "vite": "catalog:",
-    "vite-plugin-vue-meta-layouts": "^0.5.1",
-    "vite-vue-md": "^1.4.0",
-    "vue-router": "^4.5.0"
+    "vite-plugin-vue-meta-layouts": "catalog:",
+    "vite-vue-md": "catalog:",
+    "vue-router": "catalog:"
   }
 }
