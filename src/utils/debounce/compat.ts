@@ -105,7 +105,7 @@ export interface DebouncedFuncLeading<T extends (...args: any[]) => any> extends
 export function debounce<T extends (...args: any) => any>(
   func: T,
   debounceMs: number | undefined,
-  options: DebounceSettingsLeading
+  options: DebounceSettingsLeading,
 ): DebouncedFuncLeading<T>
 
 /**
@@ -157,7 +157,7 @@ export function debounce<T extends (...args: any) => any>(
 export function debounce<T extends (...args: any) => any>(
   func: T,
   debounceMs?: number,
-  options?: DebounceSettings
+  options?: DebounceSettings,
 ): DebouncedFunc<T>
 
 export function debounce<F extends (...args: any[]) => any>(

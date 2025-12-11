@@ -51,7 +51,7 @@ type ThrottleSettingsLeading = (ThrottleSettings & { leading: true }) | Omit<Thr
 export function throttle<T extends (...args: any) => any>(
   func: T,
   throttleMs?: number,
-  options?: ThrottleSettingsLeading
+  options?: ThrottleSettingsLeading,
 ): DebouncedFuncLeading<T>
 
 /**
@@ -87,7 +87,7 @@ export function throttle<T extends (...args: any) => any>(
 export function throttle<T extends (...args: any) => any>(
   func: T,
   throttleMs?: number,
-  options?: ThrottleSettings
+  options?: ThrottleSettings,
 ): DebouncedFunc<T>
 
 /**

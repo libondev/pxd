@@ -27,25 +27,25 @@ interface ObserverResults<T extends Observers> {
 }
 
 function createObserver(
-  ObserverConstructor: typeof IntersectionObserver
+  ObserverConstructor: typeof IntersectionObserver,
 ): (
   target: TargetRef,
   callback: IntersectionObserverCallback,
-  options?: MaybeRefOrGetter<IntersectionObserverInit>
+  options?: MaybeRefOrGetter<IntersectionObserverInit>,
 ) => ObserverResults<IntersectionObserver>
 function createObserver(
-  ObserverConstructor: typeof MutationObserver
+  ObserverConstructor: typeof MutationObserver,
 ): (
   target: TargetRef,
   callback: MutationCallback,
-  options?: MaybeRefOrGetter<MutationObserverInit>
+  options?: MaybeRefOrGetter<MutationObserverInit>,
 ) => ObserverResults<MutationObserver>
 function createObserver(
-  ObserverConstructor: typeof ResizeObserver
+  ObserverConstructor: typeof ResizeObserver,
 ): (
   target: TargetRef,
   callback: ResizeObserverCallback,
-  options?: MaybeRefOrGetter<ResizeObserverOptions>
+  options?: MaybeRefOrGetter<ResizeObserverOptions>,
 ) => ObserverResults<ResizeObserver>
 function createObserver(ObserverConstructor: Constructor) {
   function observerWrapper(

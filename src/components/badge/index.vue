@@ -58,7 +58,7 @@ const config = useConfigProvider()
 
 const computedClass = computed(() => {
   const classes = [
-    'pxd-badge font-medium font-sans gap-1 inline-flex items-center justify-center rounded-full text-nowrap whitespace-nowrap !no-underline motion-safe:transition-all',
+    'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans text-nowrap whitespace-nowrap !no-underline motion-safe:transition-all',
     getFallbackValue(props.variant, VARIANTS, 'gray'),
     getFallbackValue(props.size, SIZES, config.size),
     props.variant,
