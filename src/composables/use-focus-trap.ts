@@ -56,7 +56,7 @@ export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
 
     // Cancel autofocus on small screen to avoid automatic page scaling
     if (elements.length && isSmUp.value) {
-      elements[0].focus({ preventScroll: true })
+      elements[0]!.focus({ preventScroll: true })
     }
 
     onCleanup(() => {

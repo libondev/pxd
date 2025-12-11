@@ -135,7 +135,7 @@ function createMonthHeaders() {
   const columnsCount = Math.ceil(dates.length / 7)
   const monthHeaders = Array.from({ length: columnsCount }, () => '')
 
-  const firstDate = new Date(dates[0])
+  const firstDate = new Date(dates[0]!)
   let trackedMonth = firstDate.getMonth()
 
   for (let col = 0; col < columnsCount; col++) {
@@ -143,7 +143,7 @@ function createMonthHeaders() {
       const dateIndex = col * 7 + dayInWeek
 
       if (dateIndex < dates.length) {
-        const currentDate = new Date(dates[dateIndex])
+        const currentDate = new Date(dates[dateIndex]!)
         const currentMonth = currentDate.getMonth()
         const dayOfMonth = currentDate.getDate()
 
@@ -184,7 +184,7 @@ function createTransposedTableData(): RowData[] {
   let currentRow: CellData[] | null = null
 
   for (let i = 0; i < dateListLength; i++) {
-    const dateStr = dateList[i]
+    const dateStr = dateList[i]!
     const date = new Date(dateStr)
     const year = date.getFullYear()
     const month = date.getMonth()
@@ -252,7 +252,7 @@ function createStandardTableData(): RowData[] {
   const dataMap = dateCountMap.value
   const dateList = rangedDates.value.dates
   const dateListLength = dateList.length
-  const firstDayOfWeek = rangedDates.value.weeks[0]
+  const firstDayOfWeek = rangedDates.value.weeks[0]!
 
   // 初始化7行（代表星期几）
   const result: RowData[] = Array.from({ length: 7 }, (_, i) => {
@@ -277,11 +277,11 @@ function createStandardTableData(): RowData[] {
 
   // 填充所有日期数据
   for (let i = 0; i < dateListLength; i++) {
-    const dateStr = dateList[i]
+    const dateStr = dateList[i]!
     const count = dataMap[dateStr] || 0
     const dayOfWeek = new Date(dateStr).getDay()
 
-    result[dayOfWeek].push({
+    result[dayOfWeek]!.push({
       hidden: false,
       date: dateStr,
       count,
@@ -297,7 +297,7 @@ function markMonthRows(rows: RowData[]): RowData[] {
   const monthMap = {} as Record<string, boolean>
 
   for (let i = 0; i < rows.length; i++) {
-    const row = rows[i]
+    const row = rows[i]!
     const firstValidCell = row.find(cell => !cell.hidden && cell.date)
 
     if (firstValidCell) {

@@ -41,7 +41,7 @@ function registerPanel(config: Omit<PanelConfig, 'order'>) {
   if (existingIndex === -1) {
     panelConfigs.value.push({ ...config, order: orderCounter.value++ })
   } else {
-    panelConfigs.value[existingIndex] = { ...config, order: panelConfigs.value[existingIndex].order }
+    panelConfigs.value[existingIndex] = { ...config, order: panelConfigs.value[existingIndex]!.order }
   }
   // 重新排序并初始化面板大小
   panelConfigs.value.sort((a, b) => a.order - b.order)
@@ -63,7 +63,7 @@ function registerHandle(config: Omit<HandleConfig, 'order'>) {
   if (existingIndex === -1) {
     handleConfigs.value.push({ ...config, order: orderCounter.value++ })
   } else {
-    handleConfigs.value[existingIndex] = { ...config, order: handleConfigs.value[existingIndex].order }
+    handleConfigs.value[existingIndex] = { ...config, order: handleConfigs.value[existingIndex]!.order }
   }
   // 重新排序 handles
   handleConfigs.value.sort((a, b) => a.order - b.order)
@@ -170,7 +170,7 @@ function distributeRemainingSpace(
       sizeToAdd++
       remainder--
     }
-    updatedSizes[index] += sizeToAdd
+    updatedSizes[index]! += sizeToAdd
   })
 
   return updatedSizes
@@ -203,8 +203,8 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: num
   }
 
   const delta = props.direction === 'horizontal' ? deltaX : deltaY
-  const prevSize = panelSizes.value[index]
-  const nextSize = panelSizes.value[index + 1]
+  const prevSize = panelSizes.value[index]!
+  const nextSize = panelSizes.value[index + 1]!
 
   const prevMinSize = panelConfigs.value[index]?.minSize || 0
   const nextMinSize = panelConfigs.value[index + 1]?.minSize || 0

@@ -108,7 +108,7 @@ function hidePopover() {
   onVisibleChange(false)
 }
 
-function parseTimeValue(value: string, max: number) {
+function parseTimeValue(value: string | undefined, max: number) {
   const numberValue = value ? Number.parseInt(value.slice(0, 2)) : 0
 
   if (!numberValue) {
@@ -240,7 +240,7 @@ function onPresetClick(ev: MouseEvent) {
     return
   }
 
-  const presetValue = props.presets[index].getDate()
+  const presetValue = props.presets[index]!.getDate()
 
   if (!presetValue) {
     return

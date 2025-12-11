@@ -154,7 +154,7 @@ useOutsideClick(wrapperRef, {
 
 let triggerVisible = false
 useIntersectionObserver(triggerRef, ([entry]) => {
-  triggerVisible = entry.isIntersecting
+  triggerVisible = entry!.isIntersecting
 })
 
 const onContainerScroll = throttleByRaf(async (ev: Event) => {

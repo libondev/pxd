@@ -72,8 +72,8 @@ function onVisibleChange(isIntersecting: boolean) {
   emits('visible-change', isIntersecting)
 }
 
-useIntersectionObserver(containerRef, ([{ isIntersecting }]) => {
-  onVisibleChange(isIntersecting)
+useIntersectionObserver(containerRef, ([entry]) => {
+  onVisibleChange(entry!.isIntersecting)
 }, props)
 </script>
 

@@ -2,7 +2,7 @@ import type { ComponentResolver } from 'unplugin-vue-components'
 
 const LIBRARY_NAME = 'pxd'
 
-const NAMESPACE = LIBRARY_NAME[0].toUpperCase()
+const NAMESPACE = LIBRARY_NAME[0]!.toUpperCase()
 
 function resolver(): ComponentResolver {
   const prefixRegex = /^P[A-Z]/

@@ -211,9 +211,9 @@ export function getColorByThreshold(
 
   for (let i = 0; i < keyLength; i++) {
     if (value < Number(keys[i])) {
-      return colors[keys[i - 1]]
+      return colors[keys[i - 1]!]!
     }
   }
 
-  return colors[keys.at(-1)!]
+  return colors[keys[keyLength - 1]!]!
 }

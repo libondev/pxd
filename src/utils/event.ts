@@ -55,7 +55,7 @@ export function once<E extends Event = Event>(
     event,
     handler as EventListener,
     {
-      ...(options || {}),
+      ...options,
       once: true,
     },
   )
@@ -113,7 +113,7 @@ export function optimizedOff<E extends Event = Event>(
   cachedEventHandlers.splice(index, 1)
 
   if (cachedEventHandlers.length <= 1) {
-    el.removeEventListener(event, cachedEventHandlers[0], options)
+    el.removeEventListener(event, cachedEventHandlers[0]!, options)
     delete (el as any)[`__cached_${event}`]
   }
 }

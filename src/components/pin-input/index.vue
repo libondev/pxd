@@ -102,7 +102,7 @@ const computedClass = computed(() => {
 
 function setInputValue(value: string, index?: number) {
   if (index !== undefined) {
-    inputsRef.value[index].value = value
+    inputsRef.value[index]!.value = value
     modelValueLocal.value[index] = value
   } else {
     modelValueLocal.value = value.split('')
@@ -130,7 +130,7 @@ function focusInputField(dir: 'next' | 'prev' | 'first' | 'last', index?: number
     return
   }
 
-  inputsRef.value[correctIndex].select()
+  inputsRef.value[correctIndex]!.select()
 }
 
 function getFirstEmptyIndex() {

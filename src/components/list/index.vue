@@ -75,35 +75,36 @@ const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
   }
 
   let newActiveValue = ''
+  const listItemKeyLength = listItemKeys.length
 
   if (PREV_KEYS.includes(key)) {
     if (activeValue.value) {
       const index = listItemKeys.indexOf(activeValue.value)
       if (props.loop) {
         const prevIndex = (index - 1 + listItemKeys.length) % listItemKeys.length
-        newActiveValue = listItemKeys[prevIndex]
+        newActiveValue = listItemKeys[prevIndex]!
       } else if (index > 0) {
-        newActiveValue = listItemKeys[index - 1]
+        newActiveValue = listItemKeys[index - 1]!
       }
     } else {
-      newActiveValue = listItemKeys.at(-1)!
+      newActiveValue = listItemKeys[listItemKeyLength - 1]!
     }
   } else if (NEXT_KEYS.includes(key)) {
     if (activeValue.value) {
       const index = listItemKeys.indexOf(activeValue.value)
       if (props.loop) {
         const nextIndex = (index + 1) % listItemKeys.length
-        newActiveValue = listItemKeys[nextIndex]
+        newActiveValue = listItemKeys[nextIndex]!
       } else if (index < listItemKeys.length - 1) {
-        newActiveValue = listItemKeys[index + 1]
+        newActiveValue = listItemKeys[index + 1]!
       }
     } else {
-      newActiveValue = listItemKeys.at(0)!
+      newActiveValue = listItemKeys[0]!
     }
   } else if (key === 'Home') {
-    newActiveValue = listItemKeys.at(0)!
+    newActiveValue = listItemKeys[0]!
   } else if (key === 'End') {
-    newActiveValue = listItemKeys.at(-1)!
+    newActiveValue = listItemKeys[listItemKeyLength - 1]!
   }
 
   if (!newActiveValue) {
