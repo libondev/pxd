@@ -3,9 +3,11 @@ Indicates that it is not empty here.
 
 ## Default
 
+The color of the placeholder is controlled by the font color.
+
 ```vue demo
 <template>
-  <PPlaceholder></PPlaceholder>
+  <PPlaceholder class="text-gray-500"></PPlaceholder>
 </template>
 ```
 
@@ -14,16 +16,7 @@ Customize its size and line color.
 
 ```vue demo
 <template>
-  <PPlaceholder invert></PPlaceholder>
-</template>
-```
-
-## Border
-Customize its size and line color.
-
-```vue demo
-<template>
-  <PPlaceholder border></PPlaceholder>
+  <PPlaceholder invert class="text-gray-500"></PPlaceholder>
 </template>
 ```
 
@@ -32,6 +25,6 @@ Customize its size and line color.
 
 ```vue demo
 <template>
-  <PPlaceholder border color="#8e51ff" height="160px" width="160px" class="border-dashed border-blue-900"></PPlaceholder>
+  <PPlaceholder height="160px" width="160px" class="text-red-500 border border-dashed border-green-600"></PPlaceholder>
 </template>
 ```
