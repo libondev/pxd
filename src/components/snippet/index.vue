@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Component } from 'vue'
 import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
@@ -48,6 +49,10 @@ const VARIANTS = {
 
 const config = useConfigProvider()
 
+const { isCopied, copyText } = useCopyClick()
+
+const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIcon)
+
 const computedClass = computed(() => {
   const classes = [
     'pxd-snippet pr-12 relative flex items-center rounded-lg border motion-safe:transition-all',
@@ -63,8 +68,6 @@ const computedClass = computed(() => {
 })
 
 const computedTextArray = computed(() => toArray(props.text))
-
-const { isCopied, copyText } = useCopyClick()
 
 async function onCopyButtonClick() {
   const text = computedTextArray.value.join('\n')
@@ -87,7 +90,7 @@ async function onCopyButtonClick() {
       @click="onCopyButtonClick"
     >
       <Transition name="pxd-transition--fade-scale" mode="out-in">
-        <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm" />
+        <Component :is="renderIcon" class="text-sm" />
       </Transition>
     </div>
   </div>

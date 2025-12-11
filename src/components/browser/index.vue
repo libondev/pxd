@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import type { Component } from 'vue'
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import LockClosedIcon from '@gdsicon/vue/lock-closed'
 import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
+import { computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click'
 import PButton from '../button/index.vue'
 
@@ -18,6 +20,8 @@ defineOptions({
 defineProps<Props>()
 
 const { isCopied, copyText } = useCopyClick()
+
+const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIcon)
 </script>
 
 <template>
@@ -47,7 +51,7 @@ const { isCopied, copyText } = useCopyClick()
 
           <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="copyText(address)">
             <Transition name="pxd-transition--fade-scale" mode="out-in">
-              <Component :is="isCopied ? CheckIcon : CopyIcon" class="text-sm text-foreground-secondary" />
+              <Component :is="renderIcon" class="text-sm text-foreground-secondary" />
             </Transition>
           </PButton>
         </div>
