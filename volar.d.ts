@@ -26,6 +26,7 @@ declare module 'vue' {
     PCommandMenuItem: typeof import('pxd/components/command-menu-item')['default']
     PConfigProvider: typeof import('pxd/components/config-provider')['default']
     PCountdown: typeof import('pxd/components/countdown')['default']
+    PDashLine: typeof import('pxd/components/dash-line')['default']
     PDescription: typeof import('pxd/components/description')['default']
     PDrawer: typeof import('pxd/components/drawer')['default']
     PEmptyState: typeof import('pxd/components/empty-state')['default']
