@@ -164,6 +164,7 @@ async function onCompositionEnd(event: CompositionEvent) {
   if (isComposing.value) {
     const value = getValueFromEvent(event)
     computedModelValue.value = value
+    isComposing.value = false
   }
 
   emits('compositionend', event)
