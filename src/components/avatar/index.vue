@@ -104,7 +104,7 @@ defineExpose({
   }
 
   &::before {
-    background-image: linear-gradient(270deg, var(--color-gray-alpha-100), var(--color-gray-alpha-400), var(--color-gray-alpha-400), var(--color-gray-alpha-100));
+    background-image: linear-gradient(270deg, var(--color-gray-alpha-100), var(--color-gray-alpha-300), var(--color-gray-alpha-300), var(--color-gray-alpha-100));
     background-size: 400% 100%;
   }
 

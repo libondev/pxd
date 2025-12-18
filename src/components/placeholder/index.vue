@@ -25,7 +25,7 @@ const computedStyle = computed(() => {
 
 <template>
   <div
-    class="pxd-placeholder relative max-w-full overflow-hidden rounded-lg"
+    class="pxd-placeholder relative max-w-full overflow-hidden"
     :class="{ 'is-invert': invert }"
     :style="computedStyle"
     v-bind="$attrs"
