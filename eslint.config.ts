@@ -31,7 +31,7 @@ export default antfu(
       'better-tailwindcss/no-unnecessary-whitespace': 'error',
       'better-tailwindcss/no-deprecated-classes': 'error',
       'better-tailwindcss/enforce-consistent-variable-syntax': ['error', { syntax: 'shorthand' }],
-      'better-tailwindcss/enforce-consistent-important-position': ['error', { position: 'legacy' }],
+      'better-tailwindcss/enforce-consistent-important-position': ['error', { position: 'recommended' }],
       'better-tailwindcss/enforce-shorthand-classes': 'error',
     },
     settings: {
