@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
           :key="i"
           :data-index="i"
           class="pxd-carousel-group--indicator-item relative h-(--h) w-(--w) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
-          :class="{ '!bg-primary': i === correctIndex }"
+          :class="{ 'bg-primary!': i === correctIndex }"
         />
       </slot>
     </div>

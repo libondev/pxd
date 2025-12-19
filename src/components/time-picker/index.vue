@@ -329,11 +329,11 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
         </div>
 
         <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-          <PButton size="xs" variant="ghost" class="!px-0 text-13px" @click="onNowBtnClick()">
+          <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onNowBtnClick()">
             {{ config.locale.date.now }}
           </PButton>
 
-          <PButton size="xs" variant="ghost" class="!px-0 text-13px" @click="onCancelClick">
+          <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
             {{ config.locale.confirm.cancel }}
           </PButton>
         </div>

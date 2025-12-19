@@ -129,7 +129,7 @@ provideListFilterValue(deferredFilterKeyword)
         <PButton
           v-if="closeOnPressEscape"
           size="xs"
-          class="!px-0 text-xs shrink-0"
+          class="px-0! text-xs shrink-0"
           @click="closeModal"
         >
           Esc

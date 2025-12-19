@@ -93,11 +93,11 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     </PSwitchGroup>
   </div>
 
-  <ul class="py-4 !px-0 gap-4 md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] grid grid-cols-2" @click="onIconClick">
-    <li v-for="{ name, icon } of filteredComponents" :key="name" :data-name="name" class="icon-item align-center !m-0 p-4 flex cursor-default list-none flex-col justify-center overflow-hidden rounded-lg border text-center select-none hover:bg-background-200 active:bg-background-hover motion-safe:transition-colors">
+  <ul class="py-4 px-0! gap-4 md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] grid grid-cols-2" @click="onIconClick">
+    <li v-for="{ name, icon } of filteredComponents" :key="name" :data-name="name" class="icon-item align-center m-0! p-4 flex cursor-default list-none flex-col justify-center overflow-hidden rounded-lg border text-center select-none hover:bg-background-200 active:bg-background-hover motion-safe:transition-colors">
       <Component :is="icon" class="my-2 mx-auto" />
 
-      <p class="!m-0 pt-2 truncate text-13px text-foreground-secondary">
+      <p class="m-0! pt-2 truncate text-13px text-foreground-secondary">
         {{ name }}
       </p>
     </li>

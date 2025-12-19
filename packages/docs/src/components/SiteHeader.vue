@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
             <span class="sm:block ml-1.5 hidden">Search</span>
 
             <template #suffix>
-              <PKbd ctrl label="K" size="sm" class="sm:!inline-flex !hidden" />
+              <PKbd ctrl label="K" size="sm" class="sm:!inline-flex hidden!" />
             </template>
           </PButton>
         </div>
