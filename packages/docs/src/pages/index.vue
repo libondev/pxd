@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="px-4 max-w-screen-lg relative mx-auto w-full">
+  <main class="px-6 xl:border-x relative mx-auto w-full">
     <section class="my-28 py-12 sm:py-28 text-center">
       <div class="relative">
         <h1 class="font-bold text-6xl inline">
@@ -101,9 +101,9 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <hr class="mx-12 mb-8 sm:mb-20">
+    <hr class="mb-8 sm:mb-20 sm:max-w-screen-md mx-auto max-sm:w-3/4">
 
-    <section class="features py-20 mb-8 gap-4 relative flex cursor-default flex-wrap">
+    <section class="features max-w-screen-lg py-20 mb-8 gap-4 relative mx-auto flex cursor-default flex-wrap">
       <div
         class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
