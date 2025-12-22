@@ -211,11 +211,11 @@ defineExpose({
       <slot name="label">{{ label }}</slot>
     </div>
 
-    <div :data-disabled="disabled" :class="computedClass">
+    <div :data-disabled="disabled" :class="computedClass" tabindex="-1">
       <div
         v-if="$slots.prefix"
-        class="pxd-input--prefix text-sm flex h-full items-center text-gray-700"
-        :class="{ 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
+        class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-gray-700"
+        :class="{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
       >
         <slot name="prefix" />
       </div>
@@ -267,8 +267,8 @@ defineExpose({
 
       <div
         v-if="$slots.suffix"
-        class="pxd-input--suffix text-sm flex h-full items-center text-gray-700"
-        :class="{ 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
+        class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-gray-700"
+        :class="{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
       >
         <slot name="suffix" />
       </div>

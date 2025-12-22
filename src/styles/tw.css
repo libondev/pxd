@@ -458,9 +458,11 @@
   .pxd-input--border {
     border: 1px solid var(--border-color, var(--color-gray-alpha-300));
 
-    &:not(.is-disabled, .is-readonly):hover,
+    &:not(.is-disabled, .is-readonly):hover {
+      --border-color: hsla(var(--primary), .6);
+    }
+
     &:not(.is-disabled, .is-readonly):focus-within {
-      /* --border-color: var(--color-gray-alpha-600); */
       --border-color: var(--color-primary);
     }
 
