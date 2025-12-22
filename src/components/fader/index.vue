@@ -32,6 +32,7 @@ const fader = shallowRef({
   bottom: false,
 })
 
+const DEFAULT_SIZE = 16
 const DIFF_THRESHOLD = 1
 
 const computedStyle = computed(() => ({
@@ -56,7 +57,7 @@ const onContainerScroll = throttleByRaf(() => {
     return
   }
 
-  const { size = 16 } = props
+  const { size = DEFAULT_SIZE } = props
   const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container
 
   fader.value = {
@@ -105,8 +106,8 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--fader-color, var(--color-gray-200)));
-  mask-image: linear-gradient(var(--dir-revert), var(--fader-color, var(--color-gray-200)) 50%, transparent);
+  background: linear-gradient(var(--dir), transparent, var(--fader-color, var(--color-gray-100)));
+  mask-image: linear-gradient(var(--dir-revert), var(--fader-color, var(--color-gray-100)) 50%, transparent);
   transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
   opacity: 0;
 }
