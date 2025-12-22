@@ -5,8 +5,9 @@ import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
   position?: ComponentPosition | ComponentPosition[]
-  size?: string | number
-  dash?: string | number
+  lineSize?: string | number
+  dashSize?: string | number
+  color?: string
   gap?: string | number
 }
 
@@ -17,9 +18,10 @@ defineOptions({
 const props = defineProps<Props>()
 
 const computedStyle = computed(() => ({
-  '--dash': getCssUnitValue(props.dash),
-  '--size': getCssUnitValue(props.size),
-  '--gap': getCssUnitValue(props.gap),
+  '--dash-line-color': props.color,
+  '--dash-line-dash': getCssUnitValue(props.dashSize),
+  '--dash-line-size': getCssUnitValue(props.lineSize),
+  '--dash-line-gap': getCssUnitValue(props.gap),
 }))
 </script>
 
@@ -29,9 +31,10 @@ const computedStyle = computed(() => ({
 
 <style lang="postcss">
 .pxd-dash-line {
-  --g: var(--gap, 8px);
-  --d: var(--dash, 8px);
-  --s: var(--size, 1px);
+  --g: var(--dash-line-gap, 8px);
+  --d: var(--dash-line-dash, 8px);
+  --s: var(--dash-line-size, 1px);
+  --c: var(--dash-line-color, var(--color-gray-600));
   width: 100%;
 
   &:not([data-position])::before,
@@ -43,7 +46,7 @@ const computedStyle = computed(() => ({
     position: absolute;
     pointer-events: none;
     background-image: repeating-linear-gradient(to var(--p),
-        currentColor 0 var(--d),
+        var(--c) 0 var(--d),
         transparent var(--d) calc(var(--d) + var(--g)));
   }
 

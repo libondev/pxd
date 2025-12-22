@@ -28,9 +28,9 @@ Use controllable forms to create beautiful solid or dotted lines.
 ```vue demo
 <template>
   <PStack class="w-full h-10">
-    <PDashLine dash="10" gap="5" />
+    <PDashLine dash-size="10" gap="5" />
 
-    <PDashLine dash="5" gap="20" />
+    <PDashLine dash-size="5" gap="20" />
   </PStack>
 </template>
 ```
@@ -40,11 +40,11 @@ Use controllable forms to create beautiful solid or dotted lines.
 ```vue demo
 <template>
   <PStack class="w-full h-10">
-    <PDashLine class="text-red-600" />
+    <PDashLine color="var(--color-red-600)" />
 
-    <PDashLine class="text-blue-600" />
+    <PDashLine color="var(--color-blue-600)" />
 
-    <PDashLine class="text-gray-500" />
+    <PDashLine color="var(--color-gray-500)" />
   </PStack>
 </template>
 ```
