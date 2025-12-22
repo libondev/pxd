@@ -89,7 +89,7 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     <PSwitchGroup v-model="quoteType">
       <PSwitch label="'" value="single" />
       <PSwitch label="&quot;" value="double" />
-      <PSwitch label="&quot;" value="single-hight" />
+      <PSwitch label="`" value="single-hight" />
     </PSwitchGroup>
   </div>
 
