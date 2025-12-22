@@ -228,17 +228,23 @@ When encountering issues:
 - **revert**: Revert commit
 
 ### Rules
+- When there are destructive modifications, add ! after scope.
 - Subject: Max 50 chars, imperative mood, no period, first letter uppercase
 - Body: Optional, wrap 72 chars, explain why
-- Footer: Fixes #123, BREAKING CHANGE: ... 
+- Footer: Fixes #123, BREAKING CHANGE: ...
 
 ### Examples
+
+```
 feat(api): add user authentication
 
 Implement JWT with Alova.
 
 Fixes #45
+```
 
-fix(modal): resolve backdrop issue
+```
+fix(modal)!: resolve backdrop issue
 
 BREAKING CHANGE: onClose now receives event
+```
