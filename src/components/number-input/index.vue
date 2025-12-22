@@ -199,7 +199,7 @@ function onInputKeydown(ev: KeyboardEvent) {
   >
     <template #prefix>
       <button
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="mr-2 -ml-3 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
@@ -209,18 +209,14 @@ function onInputKeydown(ev: KeyboardEvent) {
         <MinusIcon class="pointer-events-none" />
       </button>
 
-      <span v-if="$slots.prefix" class="ml-1 text-foreground">
-        <slot name="prefix" />
-      </span>
+      <slot name="prefix" />
     </template>
 
     <template #suffix>
-      <span v-if="$slots.suffix" class="mr-1 text-foreground">
-        <slot name="suffix" />
-      </span>
+      <slot name="suffix" />
 
       <button
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center text-foreground-secondary outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="ml-2 -mr-3 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"

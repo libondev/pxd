@@ -47,6 +47,20 @@ const value = ref(0)
 </template>
 ```
 
+## Max/Min
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PNumberInput v-model="value" :min="0" :max="10" class="max-w-xs" />
+</template>
+```
+
 ## Disabled
 
 ```vue demo

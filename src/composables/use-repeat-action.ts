@@ -23,8 +23,8 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   const {
     action,
     disabled,
-    finalInterval = 1000 / 10,
-    initialInterval = 800,
+    finalInterval = 1000 / 17, // 60fps
+    initialInterval = 680,
     accelerationDuration = 2000,
   } = typeof actionOrOptions === 'function' ? { action: actionOrOptions } : actionOrOptions
 
