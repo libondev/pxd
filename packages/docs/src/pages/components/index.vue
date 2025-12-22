@@ -50,5 +50,9 @@ const handleSearch = debounce((value: string) => {
         There should be a preview here.
       </OverviewCard>
     </template>
+
+    <template v-if="filteredComponents.length === 0">
+      <PEmptyState class="col-span-full" title="No data" description="No components found" />
+    </template>
   </div>
 </template>

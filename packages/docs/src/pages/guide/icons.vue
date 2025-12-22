@@ -103,5 +103,9 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     </li>
   </ul>
 
+  <template v-if="filteredComponents.length === 0">
+    <PEmptyState class="col-span-full" title="No data" description="No icons found" />
+  </template>
+
   <PMessage />
 </template>
