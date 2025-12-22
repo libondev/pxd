@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="top-0 sm:border-t-0 max-w-screen-xl h-12 sticky z-1 mx-auto flex w-full items-center justify-between border-y bg-background-100 select-none">
+  <header class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 sticky z-1 mx-auto flex w-full max-w-full items-center justify-between border-y bg-background-100 select-none">
     <h2 class="sm:w-60 md:border-r xl:border-l h-full">
       <RouterLink to="/" class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
         <SiteLogo class="text-2xl" />
