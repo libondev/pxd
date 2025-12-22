@@ -213,7 +213,12 @@ function closeMessageByKey(key: MessageItem['key']) {
 
 function clearMessage() {
   groupMessages.value.forEach((m) => {
-    m._timerId && clearTimeout(m._timerId)
+    if (!m._timerId) {
+      return
+    }
+
+    clearTimeout(m._timerId)
+    m._timerId = undefined
   })
 
   groupMessages.value = []
@@ -301,7 +306,7 @@ defineExpose({
           :class="[ITEM_CLASSES, item.class, { 'pr-9 pointer-events-auto': item.closeable }]"
           class="py-2 px-3 text-sm relative flex w-max max-w-full rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal"
         >
-          <Component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 mt-0.5 shrink-0" :class="item.type" />
+          <Component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 h-[1lh] shrink-0" :class="item.type" />
 
           <span v-if="typeof item.message === 'string'" v-html="item.message" />
           <Component :is="item.message" v-else :key="item.key" />

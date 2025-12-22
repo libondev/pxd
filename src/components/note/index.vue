@@ -103,9 +103,9 @@ const computedClass = computed(() => {
 
 <template>
   <div :class="computedClass">
-    <div class="gap-3 flex items-center">
+    <div class="gap-3 flex">
       <slot v-if="computedLabel" name="label">
-        <Component :is="computedLabel" class="font-medium shrink-0" />
+        <Component :is="computedLabel" class="font-medium size-4 h-[1lh] shrink-0" />
       </slot>
 
       <span class="flex-1 shrink-0">
