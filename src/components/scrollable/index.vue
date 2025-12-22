@@ -353,7 +353,7 @@ defineExpose({
       <div
         v-if="scrollInfo.isScrollableX"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
       >
         <div
           class="pxd-scrollable--thumb h-inherit rounded-full hover:will-change-transform active:opacity-100 motion-safe:transition-colors"
@@ -365,7 +365,7 @@ defineExpose({
       <div
         v-if="scrollInfo.isScrollableY"
         aria-hidden="true"
-        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute touch-none opacity-(--o) select-none active:opacity-100 motion-safe:transition-opacity"
+        class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
       >
         <div
           class="pxd-scrollable--thumb w-inherit rounded-full hover:will-change-transform active:opacity-100 motion-safe:transition-colors"
