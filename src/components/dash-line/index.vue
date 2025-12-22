@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentPosition } from '../../types/shared'
+import type { BasePosition } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 
 interface Props {
-  position?: ComponentPosition | ComponentPosition[]
+  position?: BasePosition | BasePosition[]
   lineSize?: string | number
   dashSize?: string | number
   color?: string
@@ -15,7 +15,10 @@ defineOptions({
   name: 'PDashLine',
 })
 
-const props = defineProps<Props>()
+const props = withDefaults(
+  defineProps<Props>(),
+  { position: () => ['top'] },
+)
 
 const computedStyle = computed(() => ({
   '--dash-line-color': props.color,
@@ -26,7 +29,7 @@ const computedStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="pxd-dash-line relative max-w-full" :data-position="position" :style="computedStyle" />
+  <div class="pxd-dash-line relative max-w-full min-w-full" :data-position="position" :style="computedStyle" />
 </template>
 
 <style lang="postcss">
@@ -35,9 +38,7 @@ const computedStyle = computed(() => ({
   --d: var(--dash-line-dash, 8px);
   --s: var(--dash-line-size, 1px);
   --c: var(--dash-line-color, var(--color-gray-600));
-  width: 100%;
 
-  &:not([data-position])::before,
   &[data-position*="top"]::before,
   &[data-position*="bottom"]::after,
   &[data-position*="left"]::before,
@@ -50,7 +51,6 @@ const computedStyle = computed(() => ({
         transparent var(--d) calc(var(--d) + var(--g)));
   }
 
-  &:not([data-position])::before,
   &[data-position*="top"]::before {
     top: 0;
   }
@@ -67,7 +67,6 @@ const computedStyle = computed(() => ({
     right: 0;
   }
 
-  &:not([data-position])::before,
   &[data-position*="top"]::before,
   &[data-position*="bottom"]::after {
     --p: right;
