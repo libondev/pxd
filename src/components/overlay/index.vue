@@ -18,6 +18,7 @@ import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
+import { isTopOverlay, pushOverlay, removeOverlay } from './overlay-stack'
 
 interface Props {
   blurred?: boolean
@@ -57,6 +58,8 @@ const {
   unlockScroll,
 } = useLockScroll()
 
+const overlayId = Symbol('pxd-overlay')
+
 let scrollContainer: HTMLElement | null
 
 const clipPath = shallowRef('')
@@ -75,6 +78,10 @@ function onOverlayClick(ev: MouseEvent) {
 
 function onOverlayKeydown(ev: KeyboardEvent) {
   if (!props.modelValue || !isTruthyProp(props.closeOnPressEscape)) {
+    return
+  }
+
+  if (!isTopOverlay(overlayId)) {
     return
   }
 
@@ -164,12 +171,14 @@ function onOverlayVisibleChange(visible: boolean) {
   }
 
   if (!visible) {
+    removeOverlay(overlayId)
     unlockScrollContainer()
     optimizedOff(document, 'keydown', onOverlayKeydown)
 
     return
   }
 
+  pushOverlay(overlayId)
   nextTick(() => {
     if (!scrollContainer) {
       scrollContainer = getScrollElByContainer(
@@ -197,6 +206,7 @@ watch(
 onBeforeUnmount(() => {
   optimizedOff(document, 'keydown', onOverlayKeydown)
 
+  removeOverlay(overlayId)
   unlockScrollContainer()
   scrollContainer = null
 })
