@@ -6,13 +6,14 @@ import {
   shallowRef,
   watch,
 } from 'vue'
+import { useLockScroll } from '../../composables'
 import {
   getScrollContainer,
   getScrollElByContainer,
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn, preventDefaultScroll } from '../../utils/event'
+import { optimizedOff, optimizedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
@@ -50,8 +51,11 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-const SCROLL_LOCK_COUNTS = new WeakMap<HTMLElement, number>()
-let documentTouchMoveLocks = 0
+const {
+  isLocked,
+  lockScroll,
+  unlockScroll,
+} = useLockScroll()
 
 let scrollContainer: HTMLElement | null
 
@@ -91,29 +95,20 @@ function lockScrollContainer() {
     return
   }
 
-  const currentLocks = SCROLL_LOCK_COUNTS.get(scrollContainer) ?? 0
-  SCROLL_LOCK_COUNTS.set(scrollContainer, currentLocks + 1)
+  if (!isLocked(scrollContainer)) {
+    const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
+    const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
 
-  // Already locked by another overlay instance (same container)
-  if (currentLocks > 0) {
-    return
+    if (xScrollbar && xScrollable) {
+      scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
+    }
+
+    if (yScrollbar && yScrollable) {
+      scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
+    }
   }
 
-  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
-  const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
-
-  if (xScrollbar && xScrollable) {
-    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
-  }
-
-  if (yScrollbar && yScrollable) {
-    scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
-  }
-
-  documentTouchMoveLocks++
-  if (documentTouchMoveLocks === 1) {
-    optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
-  }
+  lockScroll(scrollContainer)
 }
 
 function unlockScrollContainer() {
@@ -121,28 +116,14 @@ function unlockScrollContainer() {
     return
   }
 
-  const currentLocks = SCROLL_LOCK_COUNTS.get(scrollContainer) ?? 0
-  if (!currentLocks) {
-    return
-  }
+  unlockScroll(scrollContainer)
 
-  const nextLocks = Math.max(currentLocks - 1, 0)
-  if (nextLocks) {
-    SCROLL_LOCK_COUNTS.set(scrollContainer, nextLocks)
-    return
-  }
-
-  SCROLL_LOCK_COUNTS.delete(scrollContainer)
-
-  scrollContainer.classList.remove(
-    'scrollbar-stable',
-    'scroll-disabled-x',
-    'scroll-disabled-y',
-  )
-
-  documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
-  if (!documentTouchMoveLocks) {
-    optimizedOff(document, 'touchmove', preventDefaultScroll)
+  if (!isLocked(scrollContainer)) {
+    scrollContainer.classList.remove(
+      'scrollbar-stable',
+      'scroll-disabled-x',
+      'scroll-disabled-y',
+    )
   }
 }
 
