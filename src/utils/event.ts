@@ -1,5 +1,5 @@
 import type { Nullable } from '../types/shared'
-import { hasScrollbar, isScrollable } from './dom'
+import { isOverflowScrollable } from './dom'
 
 type EventHandler<E extends Event = Event> = (event: E) => void
 
@@ -71,21 +71,27 @@ export function optimizedOn<E extends Event = Event>(
     return
   }
 
-  let cachedEventHandlers = (el as any)[`__cached_${event}`] as EventHandler<E>[]
+  const cacheKey = `__cached_${event}`
+  const cachedEventHandlers = (el as any)[cacheKey] as EventHandler<E>[] | undefined
 
-  if (cachedEventHandlers && !cachedEventHandlers.includes(handler)) {
+  // Fast path: already installed scheduler; dedupe same handler.
+  if (cachedEventHandlers) {
+    if (cachedEventHandlers.includes(handler)) {
+      return
+    }
+
     cachedEventHandlers.push(handler)
     return
   }
 
+  // Scheduler always reads from cache to avoid stale closure references.
   const scheduler: EventHandler = (ev: Event) => {
-    cachedEventHandlers.slice(1).forEach(handler => handler(ev as E))
+    const list = (el as any)[cacheKey] as EventHandler<E>[] | undefined
+    list?.slice(1).forEach(handler => handler(ev as E))
   }
 
-  cachedEventHandlers = [scheduler, handler];
-  (el as any)[`__cached_${event}`] = cachedEventHandlers
-
-  el.addEventListener(event, scheduler, options)
+  (el as any)[cacheKey] = [scheduler, handler]
+  el.addEventListener(event, scheduler as EventListener, options)
 }
 
 export function optimizedOff<E extends Event = Event>(
@@ -122,28 +128,11 @@ export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-function checkOverflowScroll(ele: Element): boolean {
-  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(ele as HTMLElement)
-  const { x: xScrollable, y: yScrollable } = isScrollable(ele as HTMLElement)
-
-  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
-    return true
-  }
-
-  const parent = ele.parentNode
-
-  if (!(parent instanceof Element) || parent.tagName === 'BODY') {
-    return false
-  }
-
-  return checkOverflowScroll(parent)
-}
-
 export function preventDefaultScroll(ev: Event): boolean {
   const _target = ev.target
 
   // Do not prevent if element or parentNodes have overflow: scroll set.
-  if (_target instanceof Element && checkOverflowScroll(_target)) {
+  if (_target instanceof Element && isOverflowScrollable(_target)) {
     return false
   }
 

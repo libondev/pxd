@@ -147,3 +147,20 @@ export function getViewportRect() {
 
   return rect as DOMRect
 }
+
+export function isOverflowScrollable(ele: Element): boolean {
+  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(ele as HTMLElement)
+  const { x: xScrollable, y: yScrollable } = isScrollable(ele as HTMLElement)
+
+  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
+    return true
+  }
+
+  const parent = ele.parentNode
+
+  if (!(parent instanceof Element) || parent.tagName === 'BODY') {
+    return false
+  }
+
+  return isOverflowScrollable(parent)
+}
