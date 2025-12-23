@@ -19,6 +19,7 @@ interface Props {
   contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  initialFocus?: string | false
 }
 
 defineOptions({
@@ -57,7 +58,11 @@ const computedStyle = computed(() => {
   return { '--w': getCssUnitValue(props.width) }
 })
 
-useFocusTrap(modalRef)
+useFocusTrap(modalRef, {
+  initialFocus: props.initialFocus,
+  escapeDeactivates: props.closeOnPressEscape,
+  clickOutsideDeactivates: props.closeOnClickOverlay,
+})
 
 function closeOverlayIfNeed() {
   if (isTruthyProp(props.loading)) {

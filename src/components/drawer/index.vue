@@ -21,6 +21,7 @@ interface Props {
   contentClass?: ComponentClass
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  initialFocus?: string | false
 }
 
 defineOptions({
@@ -56,7 +57,11 @@ const emits = defineEmits<{
 const drawerRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
 
-useFocusTrap(drawerRef)
+useFocusTrap(drawerRef, {
+  initialFocus: props.initialFocus,
+  escapeDeactivates: props.closeOnPressEscape,
+  clickOutsideDeactivates: props.closeOnClickOverlay,
+})
 
 const ensurePosition = computed(() => {
   const { position } = props

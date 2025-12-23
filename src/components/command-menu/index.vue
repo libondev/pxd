@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../../types/components/list'
-import { nextTick, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useDeferredValue } from '../../composables/use-deferred-value'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideListFilterValue } from '../../contexts/list'
 import { getUniqueId } from '../../utils/uid'
@@ -50,6 +51,9 @@ const uniqueId = getUniqueId()
 
 const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
+
+const isDesktop = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
+const modalInitialFocus = computed(() => isDesktop.value ? `#${uniqueId}` : false)
 
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
@@ -102,6 +106,7 @@ provideListFilterValue(deferredFilterKeyword)
     class="pxd-command-menu max-sm:dvh-80"
     content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/8 sm:translate-y-0"
+    :initial-focus="modalInitialFocus"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
     @show="showModal"

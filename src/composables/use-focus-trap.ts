@@ -1,73 +1,61 @@
+import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 import type { MaybeElementRef } from '../types/shared/utils'
-import { nextTick, onBeforeUnmount, watch } from 'vue'
-import { on } from '../utils/event'
+import { createFocusTrap } from 'focus-trap'
+import { onBeforeUnmount, watch } from 'vue'
 import { toValue } from '../utils/ref'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
 
-export function useFocusTrap(container: MaybeElementRef<HTMLElement>) {
-  const FOCUSABLE_SELECTORS = [
-    ':focus',
-    'a[href]:not([tabindex^="-"])',
-    'area[href]:not([tabindex^="-"])',
-    'video[controls]:not([tabindex^="-"])',
-    'audio[controls]:not([tabindex^="-"])',
-    'iframe:not([tabindex^="-"])',
-    '[tabindex]:not(slot):not([tabindex^="-"])',
-    '[contenteditable]:not([contenteditable="false"]):not([tabindex^="-"])',
-    'details > summary:first-of-type:not([tabindex^="-"])',
-    'input:not([type="hidden"]):not(fieldset[disabled] input):not([disabled]):not([tabindex^="-"])',
-    'select:not(fieldset[disabled] input):not([disabled]):not([tabindex^="-"])',
-    'textarea:not(fieldset[disabled] input):not([disabled]):not([tabindex^="-"])',
-    'button:not(fieldset[disabled] input):not([disabled]):not([tabindex^="-"])',
-    'fieldset[disabled]:not(fieldset[disabled] fieldset) > legend input:not([type="hidden"]):not([disabled]):not([tabindex^="-"])',
-    'fieldset[disabled]:not(fieldset[disabled] fieldset) > legend select:not([disabled]):not([tabindex^="-"])',
-    'fieldset[disabled]:not(fieldset[disabled] fieldset) > legend textarea:not([disabled]):not([tabindex^="-"])',
-    'fieldset[disabled]:not(fieldset[disabled] fieldset) > legend button:not([disabled]):not([tabindex^="-"])',
-    '[class*="focusable"]:not([disabled]):not([tabindex^="-"])',
-  ].join(',')
+const pxdFocusTrapStack: FocusTrap[] = []
 
-  let elements: HTMLElement[] = []
+/**
+ * Best-practice defaults for dialogs (Modal/Drawer):
+ * - Keep trap active unless component decides to close (avoid implicit deactivation).
+ * - Always provide a fallback focus target to avoid runtime errors when no tabbables exist.
+ * - Prevent scroll jumps caused by focusing.
+ * - Share a trap stack among PXD traps so nested dialogs coordinate pause/unpause.
+ */
+export function useFocusTrap(
+  container: MaybeElementRef<HTMLElement>,
+  userOptions: FocusTrapOptions = {},
+) {
+  let trapper: FocusTrap | null = null
 
-  const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
+  const unwatch = watch(
+    () => toValue(container),
+    (target, _, onCleanup) => {
+      if (!target) {
+        return
+      }
 
-  function onContainerKeydown(ev: KeyboardEvent) {
-    if (ev.key !== 'Tab' || !elements.length) {
-      return
-    }
+      const defaultOptions: FocusTrapOptions = {
+        allowOutsideClick: true,
+        escapeDeactivates: false,
+        clickOutsideDeactivates: false,
 
-    ev.preventDefault()
+        // A11y + robustness
+        returnFocusOnDeactivate: true,
+        preventScroll: true,
+        fallbackFocus: () => target,
+        initialFocus: () => target,
 
-    const focusIndex = elements.indexOf(document.activeElement as HTMLElement)
-    const offset = ev.shiftKey ? -1 : 1
-    const nextFocusIndex = (focusIndex + offset + elements.length) % elements.length
+        // Coordinate nested PXD dialogs
+        trapStack: pxdFocusTrapStack,
+      }
 
-    elements[nextFocusIndex]?.focus({ preventScroll: true })
-  }
+      trapper = createFocusTrap(target, { ...defaultOptions, ...userOptions })
+      trapper.activate()
 
-  const unwatch = watch(() => toValue(container), async (target, _, onCleanup) => {
-    if (!target) {
-      return
-    }
-
-    await nextTick()
-
-    const unbindEvent = on(target, 'keydown', onContainerKeydown)
-    elements = Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS))
-
-    // Cancel autofocus on small screen to avoid automatic page scaling
-    if (elements.length && isSmUp.value) {
-      elements[0]!.focus({ preventScroll: true })
-    }
-
-    onCleanup(() => {
-      unbindEvent()
-      elements = []
-    })
-  })
+      onCleanup(() => {
+        trapper!.deactivate()
+        trapper = null
+      })
+    },
+    {
+      flush: 'post',
+    },
+  )
 
   onBeforeUnmount(() => {
     unwatch()
-    elements = []
   })
 
   return {
