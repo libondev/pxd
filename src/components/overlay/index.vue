@@ -50,9 +50,10 @@ const emits = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-type ScrollContainer = HTMLElement & { lockedCounts: number }
+const SCROLL_LOCK_COUNTS = new WeakMap<HTMLElement, number>()
+let documentTouchMoveLocks = 0
 
-let scrollContainer: ScrollContainer | null
+let scrollContainer: HTMLElement | null
 
 const clipPath = shallowRef('')
 const overlayRef = shallowRef<HTMLElement>()
@@ -90,9 +91,11 @@ function lockScrollContainer() {
     return
   }
 
-  scrollContainer.lockedCounts++
+  const currentLocks = SCROLL_LOCK_COUNTS.get(scrollContainer) ?? 0
+  SCROLL_LOCK_COUNTS.set(scrollContainer, currentLocks + 1)
 
-  if (scrollContainer.lockedCounts > 1) {
+  // Already locked by another overlay instance (same container)
+  if (currentLocks > 0) {
     return
   }
 
@@ -107,19 +110,29 @@ function lockScrollContainer() {
     scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
   }
 
-  optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+  documentTouchMoveLocks++
+  if (documentTouchMoveLocks === 1) {
+    optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+  }
 }
 
-async function unlockScrollContainer() {
+function unlockScrollContainer() {
   if (!scrollContainer) {
     return
   }
 
-  scrollContainer.lockedCounts = Math.max(scrollContainer.lockedCounts - 1, 0)
-
-  if (scrollContainer.lockedCounts) {
+  const currentLocks = SCROLL_LOCK_COUNTS.get(scrollContainer) ?? 0
+  if (!currentLocks) {
     return
   }
+
+  const nextLocks = Math.max(currentLocks - 1, 0)
+  if (nextLocks) {
+    SCROLL_LOCK_COUNTS.set(scrollContainer, nextLocks)
+    return
+  }
+
+  SCROLL_LOCK_COUNTS.delete(scrollContainer)
 
   scrollContainer.classList.remove(
     'scrollbar-stable',
@@ -127,7 +140,10 @@ async function unlockScrollContainer() {
     'scroll-disabled-y',
   )
 
-  optimizedOff(document, 'touchmove', preventDefaultScroll)
+  documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
+  if (!documentTouchMoveLocks) {
+    optimizedOff(document, 'touchmove', preventDefaultScroll)
+  }
 }
 
 function tryGetShownElementIfNeed() {
@@ -177,11 +193,7 @@ function onOverlayVisibleChange(visible: boolean) {
     if (!scrollContainer) {
       scrollContainer = getScrollElByContainer(
         getScrollContainer(overlayRef.value!),
-      ) as ScrollContainer
-
-      if (!scrollContainer.lockedCounts) {
-        scrollContainer.lockedCounts = 0
-      }
+      ) as HTMLElement
     }
 
     lockScrollContainer()
