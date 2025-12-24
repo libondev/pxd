@@ -411,17 +411,15 @@ const longContent = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}: This is
     subtitle="This drawer contains scrollable content"
     size="350px"
   >
-    <PScrollable class="h-full">
-      <div class="space-y-3">
-        <div
-          v-for="item in longContent"
-          :key="item"
-          class="p-3 bg-background-200 rounded-md"
-        >
-          {{ item }}
-        </div>
+    <div class="space-y-3">
+      <div
+        v-for="item in longContent"
+        :key="item"
+        class="p-3 bg-background-200 rounded-md"
+      >
+        {{ item }}
       </div>
-    </PScrollable>
+    </div>
 
     <template #footer>
       <PButton block @click="isVisible = false">
