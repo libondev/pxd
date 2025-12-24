@@ -1,6 +1,15 @@
 # FAQ
 Here will record some problems encountered in the process of use. If you have no clue after finding the problems, you can come here and have a look.
 
+## Failed to resolve import "xxx" from xxx
+If you find that you encounter some errors about not being able to find dependencies after installing `pxd`, you can create a new `.npmrc` file in the root directory of the project and add: shamefully-hoist=true
+
+write to `.npmrc` file:
+
+```toml
+shamefully-hoist=true
+```
+
 ## Use camelCase style in Vue2 but the event doesn't take effect?
 
 Because the events in vue2 distinguish between camelCase and kebab-case style, but the common style in vue2 is kebab-case style, please use the form of @kebab-case when the events do not take effect.

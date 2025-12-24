@@ -52,19 +52,19 @@ function updateComposablesIndex() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'composables', 'index.ts'), fileContent)
 }
 
-function updateAppVersion() {
-  const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
-  const appIndexFileContent = fs.readFileSync(path.join(process.cwd(), 'src', 'index.ts'), 'utf-8')
+// function updateAppVersion() {
+//   const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
+//   const appIndexFileContent = fs.readFileSync(path.join(process.cwd(), 'src', 'index.ts'), 'utf-8')
 
-  // 使用正则表达式匹配 export const version = '.*?', 但替换时只替换版本号
-  const versionRegex = /(export const version = ')(\d+\.\d+\.\d+)(')/g
+//   // 使用正则表达式匹配 export const version = '.*?', 但替换时只替换版本号
+//   const versionRegex = /(export const version = ')(\d+\.\d+\.\d+)(')/g
 
-  const newVersion = appIndexFileContent.replace(versionRegex, (_, prefix, oldVersion, suffix) => {
-    return prefix + version + suffix
-  })
+//   const newVersion = appIndexFileContent.replace(versionRegex, (_, prefix, oldVersion, suffix) => {
+//     return prefix + version + suffix
+//   })
 
-  fs.writeFileSync(path.join(process.cwd(), 'src', 'index.ts'), newVersion)
-}
+//   fs.writeFileSync(path.join(process.cwd(), 'src', 'index.ts'), newVersion)
+// }
 
 function updateDocsComponents() {
   const components = globSync('packages/docs/src/pages/components/**/*.md')
@@ -84,7 +84,7 @@ function updateDocsComponents() {
   fs.writeFileSync(path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'), `${JSON.stringify(jsonContent, null, 2)}\n`)
 }
 
-updateAppVersion()
+// updateAppVersion()
 updateDocsComponents()
 updateComponentsIndex()
 updateComposablesIndex()
