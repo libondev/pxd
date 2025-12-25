@@ -127,5 +127,5 @@ function onButtonDblClick(event: MouseEvent) {
     </span>
 
     <slot name="suffix" />
-  </component>
+  </Component>
 </template>

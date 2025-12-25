@@ -87,7 +87,7 @@ const badgeAttrs = computed(() => {
 <template>
   <Component :is="as" :class="computedClass" v-bind="badgeAttrs">
     <slot />
-  </component>
+  </Component>
 </template>
 
 <style lang="postcss">

@@ -27,5 +27,5 @@ provideConfigProvider(props)
 <template>
   <Component :is="as" class="pxd-config-provider">
     <slot />
-  </component>
+  </Component>
 </template>

@@ -119,5 +119,5 @@ const computedClass = computed(() => {
     :style="formattedGap"
   >
     <slot />
-  </component>
+  </Component>
 </template>

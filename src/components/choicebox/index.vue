@@ -42,7 +42,7 @@ const computedAttrs = computed(() => {
         </slot>
       </span>
     </div>
-  </component>
+  </Component>
 </template>
 
 <style lang="postcss">

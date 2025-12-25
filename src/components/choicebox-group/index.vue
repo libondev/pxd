@@ -78,6 +78,6 @@ provideChoiceboxGroupModelValue(modelValue)
           v-bind="option"
         />
       </slot>
-    </component>
+    </Component>
   </div>
 </template>

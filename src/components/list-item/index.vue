@@ -97,5 +97,5 @@ onMounted(async () => {
       <span>{{ label }}</span>
       <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
     </slot>
-  </component>
+  </Component>
 </template>

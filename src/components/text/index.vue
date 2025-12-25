@@ -95,5 +95,5 @@ const computedClass = computed(() => {
 <template>
   <Component :is="as" :class="computedClass" :style="computedStyle">
     <slot />
-  </component>
+  </Component>
 </template>
