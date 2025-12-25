@@ -6,7 +6,7 @@ If you find that you encounter some errors about not being able to find dependen
 
 write to `.npmrc` file:
 
-```toml
+```
 shamefully-hoist=true
 ```
 

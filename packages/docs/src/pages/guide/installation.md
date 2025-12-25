@@ -15,6 +15,46 @@ The adaptation of unocss/tailwindcss@3 will be completed later.
 npm install pxd
 ```
 
+### For vue2.7+
+Since the defineOptions macro is not currently supported in vue2, you need to install an additional plugin.
+
+```bash
+npm install unplugin-vue-define-options@1.5.5
+```
+
+Then enable this plugin in vite/rsbuild
+
+`vite.config.ts`
+```js
+import { defineConfig } from 'vite'
+import defineOptions from 'unplugin-vue-define-options/vite'
+
+export default defineConfig({
+  plugins: [
+    defineOptions(),
+  ]
+})
+```
+
+`rsbuild.config.ts`
+
+```js
+import { defineConfig } from '@rsbuild/core';
+import { pluginVue } from '@rsbuild/plugin-vue';
+import defineOptions from 'unplugin-vue-define-options/rspack'
+
+export default defineConfig({
+  plugins: [pluginVue()],
+  tools: {
+    rspack: {
+      plugins: [
+        defineOptions()
+      ]
+    }
+  }
+});
+```
+
 ## Styles
 
 ### Native CSS
