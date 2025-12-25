@@ -39,7 +39,6 @@ declare module 'vue' {
     PInput: typeof import('pxd/components/input')['default']
     PIntersectionObserver: typeof import('pxd/components/intersection-observer')['default']
     PKbd: typeof import('pxd/components/kbd')['default']
-    PKeepAliveContainer: typeof import('pxd/components/keep-alive-container')['default']
     PLinkButton: typeof import('pxd/components/link-button')['default']
     PList: typeof import('pxd/components/list')['default']
     PListItem: typeof import('pxd/components/list-item')['default']
