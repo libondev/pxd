@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 sticky z-1 mx-auto flex w-full max-w-full items-center justify-between border-y bg-background-100 select-none">
+  <header class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 sticky z-1 mx-auto flex w-full items-center justify-between border-y bg-background-100 select-none max-sm:max-w-full">
     <h2 class="sm:w-60 md:border-r xl:border-l h-full">
       <RouterLink to="/" class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
         <SiteLogo class="text-2xl" />
@@ -66,6 +66,32 @@ onBeforeUnmount(() => {
             <PKbd ctrl label="K" size="sm" class="sm:!inline-flex hidden!" />
           </template>
         </PButton>
+
+        <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
+          <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
+            <PCommandMenuItem v-for="e of i.children" :key="e.path" as="RouterLink" :to="e.path">
+              <ArrowRightIcon class="text-foreground-secondary" />
+              {{ e.label }}
+            </PCommandMenuItem>
+          </PCommandMenuGroup>
+
+          <template #footer>
+            <div class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200">
+              <PText secondary class="text-13px">
+                Open
+              </PText>
+              <PKbd enter />
+
+              <div class="mx-3 h-4 border-l" />
+
+              <PText secondary class="text-13px">
+                Toggle
+              </PText>
+              <PKbd label="↑" />
+              <PKbd label="↓" />
+            </div>
+          </template>
+        </PCommandMenu>
       </div>
 
       <div class="h-full border-l">
@@ -80,31 +106,5 @@ onBeforeUnmount(() => {
         <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
       </div>
     </nav>
-
-    <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
-      <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
-        <PCommandMenuItem v-for="e of i.children" :key="e.path" as="RouterLink" :to="e.path">
-          <ArrowRightIcon class="text-foreground-secondary" />
-          {{ e.label }}
-        </PCommandMenuItem>
-      </PCommandMenuGroup>
-
-      <template #footer>
-        <div class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200">
-          <PText secondary class="text-13px">
-            Open
-          </PText>
-          <PKbd enter />
-
-          <div class="mx-3 h-4 border-l" />
-
-          <PText secondary class="text-13px">
-            Toggle
-          </PText>
-          <PKbd label="↑" />
-          <PKbd label="↓" />
-        </div>
-      </template>
-    </PCommandMenu>
   </header>
 </template>
