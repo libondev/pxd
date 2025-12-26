@@ -36,16 +36,14 @@ const computedStyle = computed(() => {
 
 <style lang="postcss">
 .pxd-placeholder {
-  --placeholder-deg: -45deg;
-
   &.is-invert {
     --placeholder-deg: 45deg;
   }
 
+  --placeholder-deg: -45deg;
   background:
-    repeating-linear-gradient(var(--placeholder-deg), var(--placeholder-color) 0 1px, #0000 0 50%)
-    repeat
-    0 0 / var(--placeholder-gap, 10px) var(--placeholder-gap, 10px)
+    linear-gradient(var(--placeholder-deg),var(--placeholder-color) 12.5%,#0000 12.5%,#0000 50%,var(--placeholder-color) 50%,var(--placeholder-color) 62.5%,#0000 62.5%,#0000 100%)
+    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px)
     padding-box fixed;
 }
 </style>
