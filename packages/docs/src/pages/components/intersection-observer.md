@@ -57,6 +57,15 @@ function onHide() {
 ## Estimated size
 Setting an estimated size can prevent large layout deviation after rendering. (After the first rendering, it will be replaced with the real size.)
 
+```vue demo=Static.vue
+<template>
+  <div class="h-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
+    This is a static component.
+  </div>
+</template>
+
+```
+
 ```vue demo
 <script setup>
 import { shallowRef, defineAsyncComponent } from 'vue'
@@ -64,7 +73,7 @@ import { shallowRef, defineAsyncComponent } from 'vue'
 // Because the component will not be rendered initially,
 // the corresponding resource file will only be loaded when it is visible.
 // (You can see when the resource is loaded in the console network panel.)
-const LazyLoadedComponent = defineAsyncComponent(() => import('@/components/demos/Static.vue'))
+const LazyLoadedComponent = defineAsyncComponent(() => import('doc:Static.vue'))
 
 const isVisible = shallowRef(false)
 
@@ -95,11 +104,28 @@ function onVisibleChange(visible) {
 ## KeepAlive
 When your component switching costs a lot, you can enable `keep-alive` to cache components.
 
+```vue demo=Counter.vue
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const count = ref(0)
+
+function increment() {
+  count.value++
+}
+</script>
+
+<template>
+  <PButton variant="primary" @click="increment">
+    Count is: {{ count }}
+  </PButton>
+</template>
+
+```
+
 ```vue demo
 <script setup>
-import { defineAsyncComponent } from 'vue'
-
-const Counter = defineAsyncComponent(() => import('@/components/demos/Counter.vue'))
+import Counter from 'doc:Counter.vue'
 </script>
 
 <template>
