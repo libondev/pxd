@@ -1,7 +1,7 @@
 # Intersection Observer
 Render only when components are visible in the viewport.
 
-> Inspiration comes from [isaact/vue-infinity - Github](https://github.com/isaact/vue-infinity){target="_blank"}
+> Inspiration comes from<PLinkButton type="text" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
 
 ## Default
 The component supports the `root/root-margin/threshold` attribute, which will be passed directly to IntersectionObserver.
