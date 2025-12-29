@@ -140,6 +140,10 @@
     "name": "more-button"
   },
   {
+    "camelized": "Noise Background",
+    "name": "noise-background"
+  },
+  {
     "camelized": "Note",
     "name": "note"
   },
