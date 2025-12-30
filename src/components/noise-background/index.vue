@@ -1,7 +1,24 @@
+<script setup lang="ts">
+import type { ComponentAs } from '../../types/shared'
+
+interface Props {
+  as?: ComponentAs
+}
+
+defineOptions({
+  name: 'PNoiseBackground',
+})
+
+withDefaults(
+  defineProps<Props>(),
+  { as: 'div' },
+)
+</script>
+
 <template>
-  <div class="pxd-noise-background relative">
+  <Component :is="as" class="pxd-noise-background relative">
     <slot />
-  </div>
+  </Component>
 </template>
 
 <style>
