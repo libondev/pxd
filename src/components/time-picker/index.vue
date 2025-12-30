@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import type { DateTimePreset } from '../../types/components/time-picker'
+import type { ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
 import { sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
+import { getFallbackValue } from '../../utils/get'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
 interface Props {
+  size?: ComponentSize
   allowClear?: boolean
   presets?: DateTimePreset[]
   disabled?: boolean
@@ -51,9 +54,15 @@ const VALUE_POSITION_MAP = {
   seconds: 2,
 } as const
 
+const SIZES = {
+  xs: 'rounded-sm',
+  sm: 'rounded-md',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+}
+
 const config = useConfigProvider()
 
-const inputRef = shallowRef<InstanceType<typeof PInput>>()
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
 const timeSecondsRef = shallowRef<HTMLElement>()
@@ -61,6 +70,14 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 const popoverVisible = shallowRef(false)
 
 const modelValueList = ref<string[]>([])
+
+const popoverClass = computed(() => {
+  const classes = ['bg-background-100 shadow-border-menu']
+
+  classes.push(getFallbackValue(props.size, SIZES, config.size))
+
+  return classes.join(' ')
+})
 
 const modelValue = computed<string>({
   get() {
@@ -264,6 +281,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     :style="$attrs.style"
     :show-transition="false"
     :visible="popoverVisible"
+    :content-class="popoverClass"
     :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
@@ -272,7 +290,6 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     @visible-change="onVisibleChange"
   >
     <PInput
-      ref="inputRef"
       :disabled="disabled"
       :allow-clear="allowClear"
       :model-value="modelValue"
@@ -285,58 +302,56 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       @update:model-value="onUpdateModelValue"
     >
       <template v-if="prefixIcon" #prefix>
-        <CalendarIcon class="ml-3 pointer-events-none" />
+        <CalendarIcon class="pointer-events-none" />
       </template>
     </PInput>
 
     <template #content>
-      <div class="rounded-xl bg-background-100 shadow-border-menu">
-        <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
-          <div class="p-2 gap-1 relative flex items-center">
-            <div class="pxd-time-picker--list relative">
-              <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
-                  {{ padStringZero(i) }}
-                </li>
-              </ul>
-            </div>
-            <div class="pxd-time-picker--list relative">
-              <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
-                  {{ padStringZero(i) }}
-                </li>
-              </ul>
-            </div>
-            <div class="pxd-time-picker--list relative">
-              <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
-                <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
-                  {{ padStringZero(i) }}
-                </li>
-              </ul>
-            </div>
+      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
+        <div class="p-2 gap-1 relative flex items-center">
+          <div class="pxd-time-picker--list relative">
+            <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+              <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ padStringZero(i) }}
+              </li>
+            </ul>
           </div>
-
-          <div v-if="presets?.length" class="w-26 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
-            <button
-              v-for="preset, i in presets"
-              :key="preset.label"
-              :data-index="i"
-              class="h-5 px-1.5 cursor-pointer appearance-none rounded-sm bg-gray-300 text-13px whitespace-nowrap text-foreground self-focus-ring outline-none motion-safe:transition-all"
-            >
-              {{ preset.label }}
-            </button>
+          <div class="pxd-time-picker--list relative">
+            <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+              <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ padStringZero(i) }}
+              </li>
+            </ul>
+          </div>
+          <div class="pxd-time-picker--list relative">
+            <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+              <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ padStringZero(i) }}
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-          <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onNowBtnClick()">
-            {{ config.locale.date.now }}
-          </PButton>
-
-          <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
-            {{ config.locale.confirm.cancel }}
-          </PButton>
+        <div v-if="presets?.length" class="w-26 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
+          <button
+            v-for="preset, i in presets"
+            :key="preset.label"
+            :data-index="i"
+            class="h-5 px-1.5 cursor-pointer appearance-none rounded-sm bg-gray-300 text-13px whitespace-nowrap text-foreground self-focus-ring outline-none motion-safe:transition-all"
+          >
+            {{ preset.label }}
+          </button>
         </div>
+      </div>
+
+      <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onNowBtnClick()">
+          {{ config.locale.date.now }}
+        </PButton>
+
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
+          {{ config.locale.confirm.cancel }}
+        </PButton>
       </div>
     </template>
   </PPopover>
