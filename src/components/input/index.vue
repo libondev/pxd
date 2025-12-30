@@ -44,10 +44,10 @@ const emits = defineEmits<{
 }>()
 
 const SIZES = {
-  xs: 'h-6 text-xs',
-  sm: 'h-7.5 text-sm',
-  md: 'h-9 text-sm',
-  lg: 'h-10 text-base',
+  xs: 'h-6 text-xs rounded-sm',
+  sm: 'h-7.5 text-sm rounded-md',
+  md: 'h-9 text-sm rounded-md',
+  lg: 'h-10 text-base rounded-lg',
 }
 
 const ALIGN = {
@@ -67,7 +67,7 @@ const isPasswordVisible = shallowRef(!props.password)
 const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border group relative flex items-center overflow-hidden rounded-md bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all']
+  const classes = ['pxd-input--border group relative flex items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all']
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
