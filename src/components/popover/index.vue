@@ -1,22 +1,15 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { BasePosition, ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
+import { computePosition, flip, shift } from '@floating-ui/dom'
+import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
-import {
-  getElementRectFromContainer,
-  getScrollContainer,
-  getScrollElByContainer,
-  getViewportRect,
-} from '../../utils/dom'
 import { optimizedOff, optimizedOn } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
-import { isServer } from '../../utils/is'
-import { throttleByRaf } from '../../utils/throttle'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -33,18 +26,12 @@ interface Props {
   showArrow?: boolean
   arrowColor?: string
   autoPosition?: boolean
-  closeOnScroll?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
-  showTransition?: boolean
-  hideTransition?: boolean
   transitionType?: 'fade' | 'fade-scale'
+  closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
-  /** 自动调整位置的阈值, 当滚动距离超过该值时, 自动调整位置, 单位: px */
-  autoPositionThreshold?: number
-  /** 滚动隐藏的阈值, 当滚动距离超过该值时, 自动隐藏弹窗, 单位: px */
-  closeOnScrollThreshold?: number
 }
 
 defineOptions({
@@ -55,7 +42,6 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    zIndex: 5,
     offset: 8,
     trigger: () => ['hover'],
     position: 'bottom',
@@ -63,12 +49,7 @@ const props = withDefaults(
     hideDelay: 300,
     arrowColor: 'hsl(var(--primary))',
     autoPosition: true,
-    showTransition: true,
-    hideTransition: true,
     transitionType: 'fade-scale',
-    minVisibleRatio: 0.95,
-    autoPositionThreshold: 30,
-    closeOnScrollThreshold: 150,
   },
 )
 
@@ -81,28 +62,24 @@ const emits = defineEmits<{
   'visible-change': [visible: boolean]
 }>()
 
-let triggerRect: DOMRect | null = null
-let wrapperRect: DOMRect | null = null
-let viewportRect: DOMRect | null = null
-
-let scrollContainer: ReturnType<typeof getScrollContainer>
-
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
-let savedScrollPosition = 0
 const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
-const triggerRef = shallowRef<HTMLElement>()
-const wrapperRef = shallowRef<HTMLElement>()
-const wrapperStyle = shallowRef<CSSProperties>({
+const triggerRef = shallowRef<HTMLElement>(null!)
+const wrapperRef = shallowRef<HTMLElement>(null!)
+const localPosition = shallowRef(props.position)
+
+const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
+
+const wrapperStyle = computed<CSSProperties>(() => ({
+  'z-index': props.zIndex,
   '--popover-bg': props.arrowColor,
   '--popover-offset': getCssUnitValue(props.offset),
   '--popover-max-width': getCssUnitValue(props.maxWidth),
   '--popover-arrow-offset': `${props.offset - 5}px`,
-})
-const localPosition = shallowRef(props.position)
-const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
+}))
 
 const {
   render: isRender,
@@ -111,18 +88,6 @@ const {
   hide: hidePopover,
 } = useDelayDestroy(props.visible, {
   delay: 2000,
-  async renderChange(v) {
-    if (v) {
-      await nextTick()
-      getBoundingRects()
-      reversePositionIfNeed()
-
-      return
-    }
-
-    restorePosition()
-    clearBoundingRect()
-  },
   visibleChange(v) {
     emits('visible-change', v)
 
@@ -152,45 +117,13 @@ useOutsideClick(wrapperRef, {
   }, 500, { edges: ['leading'] }),
 })
 
-let triggerVisible = false
 useIntersectionObserver(triggerRef, ([entry]) => {
-  triggerVisible = entry!.isIntersecting
-})
-
-const onContainerScroll = throttleByRaf(async (ev: Event) => {
-  if (!isVisible.value) {
-    return
-  }
-
-  const scrollTop = getScrollElByContainer(ev.target).scrollTop
-  const delta = Math.abs(scrollTop - savedScrollPosition)
-
-  if (props.closeOnScroll && (delta >= props.closeOnScrollThreshold || !triggerVisible)) {
+  if (props.closeOnInvisible && isVisible.value && entry!.intersectionRatio === 0) {
     handlePopoverHide(true)
   }
-
-  if (!props.autoPosition) {
-    return
-  }
-
-  if (delta < props.autoPositionThreshold) {
-    reversePositionIfNeed()
-  }
 })
 
-function getBoundingRects() {
-  triggerRect = triggerRef.value!.getBoundingClientRect()
-  wrapperRect = wrapperRef.value!.getBoundingClientRect()
-  viewportRect = getViewportRect()
-}
-
-function clearBoundingRect() {
-  triggerRect = null
-  wrapperRect = null
-  viewportRect = null
-}
-
-async function handlePopoverShow(immediate: boolean = false) {
+async function handlePopoverShow() {
   if (showPopoverTimer || props.disabled) {
     return
   }
@@ -204,21 +137,32 @@ async function handlePopoverShow(immediate: boolean = false) {
     showPopoverTimer = setTimeout(() => {
       showPopoverTimer = null
       resolve()
-    }, immediate ? 0 : props.showDelay)
+    }, props.showDelay)
   })
 
-  showPopover()
+  await showPopover()
 
-  await nextTick()
+  const { x, y, placement } = await computePosition(
+    triggerRef.value,
+    wrapperRef.value,
+    {
+      placement: localPosition.value,
+      middleware: [
+        shift(),
+        props.autoPosition && flip(),
+      ],
+    },
+  )
+  localPosition.value = placement
 
-  updateContentPosition()
-
-  savedScrollPosition = getScrollElByContainer(scrollContainer).scrollTop
+  Object.assign(wrapperRef.value.style, {
+    left: `${x}px`,
+    top: `${y}px`,
+  })
 
   if (props.closeOnPressEscape) {
     optimizedOn(document, 'keydown', onPopoverKeystroke)
   }
-  optimizedOn(scrollContainer, 'scroll', onContainerScroll, { passive: true })
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
@@ -240,21 +184,17 @@ async function handlePopoverHide(immediate: boolean = false) {
 
   await hidePopover()
 
-  wrapperRect = null
-
   if (props.closeOnPressEscape) {
     optimizedOff(document, 'keydown', onPopoverKeystroke)
   }
-  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
 }
 
-// on press escape key
 function onPopoverKeystroke(ev: KeyboardEvent) {
   if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
     return
   }
 
-  if (ev.key !== 'Escape' || !props.closeOnPressEscape) {
+  if (ev.key !== 'Escape') {
     return
   }
 
@@ -349,149 +289,11 @@ function onContentPointerLeave() {
     return
   }
 
-  // 如果 content 可交互并且触发方式中没有 hover 表示需要通过其他方式来关闭
   if (props.enterable && !triggerMethods.value.includes('hover')) {
     return
   }
 
   handlePopoverHide()
-}
-
-async function updateContentPosition() {
-  if (!wrapperRect) {
-    return
-  }
-
-  const { offset, maxWidth, zIndex, arrowColor } = props
-  const { width: wrapperWidth, height: wrapperHeight } = wrapperRect!
-  const { scrollLeft, scrollTop, width, height } = getElementRectFromContainer(triggerRect!, viewportRect!)
-
-  let top = ''
-  let left = ''
-
-  switch (localPosition.value) {
-    case 'top':
-      top = `${scrollTop - wrapperHeight}px`
-      left = `${scrollLeft + width / 2 - wrapperWidth / 2}px`
-      break
-
-    case 'top-start':
-      top = `${scrollTop - wrapperHeight}px`
-      left = `${scrollLeft}px`
-      break
-
-    case 'top-end':
-      top = `${scrollTop - wrapperHeight}px`
-      left = `${scrollLeft + width - wrapperWidth}px`
-      break
-
-    case 'right':
-      top = `${scrollTop + height / 2 - wrapperHeight / 2}px`
-      left = `${scrollLeft + width}px`
-      break
-
-    case 'right-start':
-      top = `${scrollTop}px`
-      left = `${scrollLeft + width}px`
-      break
-
-    case 'right-end':
-      top = `${scrollTop + height - wrapperHeight}px`
-      left = `${scrollLeft + width}px`
-      break
-
-    case 'bottom':
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft + width / 2 - wrapperWidth / 2}px`
-      break
-
-    case 'bottom-start':
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft}px`
-      break
-
-    case 'bottom-end':
-      top = `${scrollTop + height}px`
-      left = `${scrollLeft + width - wrapperWidth}px`
-      break
-
-    case 'left':
-      top = `${scrollTop + height / 2 - wrapperHeight / 2}px`
-      left = `${scrollLeft - wrapperWidth}px`
-      break
-
-    case 'left-start':
-      top = `${scrollTop}px`
-      left = `${scrollLeft - wrapperWidth}px`
-      break
-
-    case 'left-end':
-      top = `${scrollTop + height - wrapperHeight}px`
-      left = `${scrollLeft - wrapperWidth}px`
-      break
-  }
-
-  wrapperStyle.value = {
-    left,
-    top,
-    zIndex,
-    '--popover-bg': arrowColor,
-    '--popover-offset': getCssUnitValue(offset),
-    '--popover-max-width': getCssUnitValue(maxWidth),
-    '--popover-arrow-offset': `${offset - 5}px`,
-  }
-}
-
-function restorePosition() {
-  localPosition.value = props.position
-}
-
-function reversePosition(position: BasePosition, modifier: 'start' | 'end' | '') {
-  const positionsMap = {
-    top: 'bottom',
-    left: 'right',
-    right: 'left',
-    bottom: 'top',
-  }
-
-  localPosition.value = `${positionsMap[position]}${modifier ? '-' : ''}${modifier}` as ComponentPosition
-}
-
-function reversePositionIfNeed() {
-  if (!wrapperRect) {
-    return
-  }
-
-  const trigger = triggerRect!
-  const wrapper = wrapperRect!
-  const viewport = viewportRect!
-  const [position, modifier = ''] = localPosition.value.split('-') as [BasePosition, 'start' | 'end' | '']
-
-  if (position === 'left') {
-    if (trigger.left - wrapper.width < 0) {
-      reversePosition(position, modifier)
-    } else {
-      restorePosition()
-    }
-  } else if (position === 'top') {
-    if (trigger.top - wrapper.height < 0) {
-      reversePosition(position, modifier)
-    } else {
-      restorePosition()
-    }
-  } else if (position === 'right') {
-    if (trigger.right + wrapper.width > viewport.width) {
-      reversePosition(position, modifier)
-    } else {
-      restorePosition()
-    }
-  } else if (position === 'bottom') {
-    if (trigger.bottom + wrapper.height > viewport.height) {
-      reversePosition(position, modifier)
-    } else {
-      restorePosition()
-    }
-  }
 }
 
 const triggerMethodEvents = {
@@ -523,16 +325,6 @@ function updateTriggerEvents(
   }
 }
 
-function onResizeUpdatePosition() {
-  if (!isVisible.value || !props.autoPosition) {
-    return
-  }
-
-  // TODO: update arrow position with trigger rect
-  getBoundingRects()
-  updateContentPosition()
-}
-
 watch(
   () => props.visible,
   (visible) => {
@@ -552,22 +344,6 @@ watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
     updateTriggerEvents(newMethods, newDom, optimizedOn)
   },
 )
-
-onMounted(() => {
-  if (isServer) {
-    return
-  }
-
-  scrollContainer = getScrollContainer(triggerRef.value!)
-  optimizedOn(window, 'resize', onResizeUpdatePosition)
-})
-
-onBeforeUnmount(() => {
-  clearBoundingRect()
-
-  optimizedOff(window, 'resize', onResizeUpdatePosition)
-  optimizedOff(scrollContainer, 'scroll', onContainerScroll)
-})
 
 defineExpose({
   show: handlePopoverShow,
@@ -594,14 +370,12 @@ defineExpose({
         :data-visible="isVisible"
         :data-enterable="enterable"
         :data-position="localPosition"
-        :data-show-transition="showTransition"
-        :data-hide-transition="hideTransition"
         :data-transition-type="transitionType"
         class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
-        <i v-if="showArrow" class="pxd-popover--arrow absolute z-1" />
+        <i v-if="showArrow" class="pxd-popover--arrow absolute z-1 border-solid" />
         <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
           <slot name="content" />
         </div>
@@ -629,20 +403,23 @@ defineExpose({
 }
 
 .pxd-popover--container {
-  &[data-visible="true"][data-show-transition="true"][data-transition-type="fade"] {
-    animation: popover-fade-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  will-change: transform, opacity;
+  animation: popover-fade-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+
+  &[data-visible="true"][data-transition-type="fade"] {
+    animation-name: popover-fade-show;
   }
 
-  &[data-visible="false"][data-hide-transition="true"][data-transition-type="fade"] {
-    animation: popover-fade-hide var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  &[data-visible="false"][data-transition-type="fade"] {
+    animation-name: popover-fade-hide;
   }
 
-  &[data-visible="true"][data-show-transition="true"][data-transition-type="fade-scale"] {
-    animation: popover-fade-scale-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  &[data-visible="true"][data-transition-type="fade-scale"] {
+    animation-name: popover-fade-scale-show;
   }
 
-  &[data-visible="false"][data-hide-transition="true"][data-transition-type="fade-scale"] {
-    animation: popover-fade-scale-hide var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  &[data-visible="false"][data-transition-type="fade-scale"] {
+    animation-name: popover-fade-scale-hide;
   }
 
   &[data-enterable="false"] {
@@ -670,23 +447,23 @@ defineExpose({
   }
 
   &[data-position='left'] {
-    transform-origin: 100% 50%;
+    transform-origin: right center ;
   }
   &[data-position='left-start'] {
-    transform-origin: 100% 0;
+    transform-origin: right top;
   }
   &[data-position='left-end'] {
-    transform-origin: 100% 100%;
+    transform-origin: right bottom;
   }
 
   &[data-position='right'] {
-    transform-origin: 0 50%;
+    transform-origin: left center;
   }
   &[data-position='right-start'] {
-    transform-origin: 0 0;
+    transform-origin: left top;
   }
   &[data-position='right-end'] {
-    transform-origin: 0 100%;
+    transform-origin: left bottom;
   }
 
   &[data-position^='top'] {
@@ -703,10 +480,6 @@ defineExpose({
 
   &[data-position^='right'] {
     padding-left: var(--popover-offset);
-  }
-
-  .pxd-popover--arrow {
-    border-style: solid;
   }
 
   &[data-position="top"] .pxd-popover--arrow,
@@ -755,22 +528,22 @@ defineExpose({
 
   &[data-position='left-start'] .pxd-popover--arrow,
   &[data-position='right-start'] .pxd-popover--arrow {
-    top: 16px;
+    top: 1rem;
   }
 
   &[data-position='left-end'] .pxd-popover--arrow,
   &[data-position='right-end'] .pxd-popover--arrow {
-    bottom: 16px;
+    bottom: 1rem;
   }
 
   &[data-position='top-start'] .pxd-popover--arrow,
   &[data-position='bottom-start'] .pxd-popover--arrow {
-    left: 16px;
+    left: 1rem;
   }
 
   &[data-position='top-end'] .pxd-popover--arrow,
   &[data-position='bottom-end'] .pxd-popover--arrow {
-    right: 16px;
+    right: 1rem;
   }
 }
 </style>

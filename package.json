@@ -117,8 +117,10 @@
     "vue": ">=2.7.0 || >=3.2.0"
   },
   "dependencies": {
+    "@floating-ui/dom": "catalog:default",
     "@gdsicon/vue": "catalog:default",
     "dayjs": "catalog:default",
+    "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default"
   },
   "devDependencies": {

@@ -4,6 +4,7 @@ packages:
 catalog:
   '@antfu/eslint-config': ^4.19.0
   '@clack/prompts': ^0.11.0
+  '@floating-ui/dom': ^1.7.4
   '@gdsicon/vue': ^1.0.7
   '@shikijs/markdown-it': ^3.20.0
   '@sindresorhus/slugify': ^3.0.0
@@ -21,6 +22,7 @@ catalog:
   canvas-confetti: ^1.9.4
   cross-spawn: ^7.0.6
   dayjs: ^1.11.19
+  es-toolkit: ^1.43.0
   eslint: ^9.39.2
   eslint-plugin-better-tailwindcss: ^3.8.0
   focus-trap: ^7.7.0

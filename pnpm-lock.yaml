@@ -12,6 +12,9 @@ catalogs:
     '@clack/prompts':
       specifier: ^0.11.0
       version: 0.11.0
+    '@floating-ui/dom':
+      specifier: ^1.7.4
+      version: 1.7.4
     '@gdsicon/vue':
       specifier: ^1.0.7
       version: 1.0.7
@@ -63,6 +66,9 @@ catalogs:
     dayjs:
       specifier: ^1.11.19
       version: 1.11.19
+    es-toolkit:
+      specifier: ^1.43.0
+      version: 1.43.0
     eslint:
       specifier: ^9.39.2
       version: 9.39.2
@@ -155,12 +161,18 @@ importers:
 
   .:
     dependencies:
+      '@floating-ui/dom':
+        specifier: catalog:default
+        version: 1.7.4
       '@gdsicon/vue':
         specifier: catalog:default
         version: 1.0.7(vue@3.5.26(typescript@5.9.3))
       dayjs:
         specifier: catalog:default
         version: 1.11.19
+      es-toolkit:
+        specifier: catalog:default
+        version: 1.43.0
       focus-trap:
         specifier: catalog:default
         version: 7.7.0
@@ -792,6 +804,15 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@floating-ui/core@1.7.3':
+    resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
+
+  '@floating-ui/dom@1.7.4':
+    resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
+
+  '@floating-ui/utils@0.2.10':
+    resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
   '@gdsicon/vue@1.0.7':
     resolution: {integrity: sha512-LVpQKF7Q6G6heJ3W0ikItfXc6RPfwEqFJQZoaN593fHCUr/SP1f6Aff2GNE4fmjIL/3yyRQ8VEnBbN9DOiDlgQ==}
@@ -2033,6 +2054,9 @@ packages:
 
   es-module-lexer@1.7.0:
     resolution: {integrity: sha512-jEQoCwk8hyb2AZziIOLhDqpm5+2ww5uIE6lkO/6jcOCusfk6LhMHpXXfBLXTZ7Ydyt0j4VoUQv6uGNYbdW+kBA==}
+
+  es-toolkit@1.43.0:
+    resolution: {integrity: sha512-SKCT8AsWvYzBBuUqMk4NPwFlSdqLpJwmy6AP322ERn8W2YLIB6JBXnwMI2Qsh2gfphT3q7EKAxKb23cvFHFwKA==}
 
   esbuild@0.25.9:
     resolution: {integrity: sha512-CRbODhYyQx3qp7ZEwzxOk4JBqmD/seJrzPa/cGjY1VtIn5E09Oi9/dB4JwctnfZ8Q8iT7rioVv5k/FNT/uf54g==}
@@ -4531,6 +4555,17 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
+  '@floating-ui/core@1.7.3':
+    dependencies:
+      '@floating-ui/utils': 0.2.10
+
+  '@floating-ui/dom@1.7.4':
+    dependencies:
+      '@floating-ui/core': 1.7.3
+      '@floating-ui/utils': 0.2.10
+
+  '@floating-ui/utils@0.2.10': {}
+
   '@gdsicon/vue@1.0.7(vue@3.5.26(typescript@5.9.3))':
     dependencies:
       vue: 3.5.26(typescript@5.9.3)
@@ -5735,6 +5770,8 @@ snapshots:
   environment@1.1.0: {}
 
   es-module-lexer@1.7.0: {}
+
+  es-toolkit@1.43.0: {}
 
   esbuild@0.25.9:
     optionalDependencies:
