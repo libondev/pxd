@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
         <SiteLogo class="text-2xl" />
         <span>PXD</span>
 
-        <PTooltip content="Internal development version" desktop-only position="bottom-start">
+        <PTooltip content="Internal development version" desktop-only position="bottom-start" z-index="5">
           <PBadge size="sm" variant="gray-subtle">
             v{{ prereleaseVersion }}
           </PBadge>
