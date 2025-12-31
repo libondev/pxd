@@ -22,11 +22,10 @@ const props = withDefaults(
     autoplay: true,
     interval: 3000,
     indicator: true,
-    indicatorType: 'line',
-    indicatorPosition: 'bottom',
     direction: 'horizontal',
     pauseOnHover: true,
-    toggleOnWheel: true,
+    indicatorType: 'line',
+    indicatorPosition: 'bottom',
   },
 )
 
@@ -37,7 +36,6 @@ const emits = defineEmits<{
 const THROTTLE_INTERVALS = 550 // 比过渡事件稍长以预留给容器重置位置的时间
 const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
 
-// 使用单一会话 + rAF id，避免并发叠加
 let autoPlayRafId: number | null = null
 let autoPlaySession = 0
 let isPointerEntering = false
@@ -103,18 +101,31 @@ function onWheelToggle(ev: WheelEvent) {
     return
   }
 
+  const length = carousels.value.length
+
+  if (length <= 1) {
+    return
+  }
+
   const delta = ev.deltaY > 0 ? 1 : -1
+  const indexBefore = virtualIndex.value
+  const lastIndex = length - 1
 
-  onToggleClick(delta)
+  if (!props.loop) {
+    const isAtFirstAndGoPrev = indexBefore <= 0 && delta < 0
+    const isAtLastAndGoNext = indexBefore >= lastIndex && delta > 0
+    if (isAtFirstAndGoPrev || isAtLastAndGoNext) {
+      return
+    }
+  }
 
-  const index = virtualIndex.value
-
-  if (!props.loop && (index !== 0 && index !== carousels.value.length - 1)) {
+  if (ev.cancelable) {
     ev.preventDefault()
   }
+
+  onToggleClick(delta)
 }
 
-// 禁用过渡效果，并重置索引以复位容器
 function resetContainerPosition(resetIndex: number) {
   const containerClassList = sliderRef.value!.classList
 
@@ -166,7 +177,6 @@ function setAutoPlayTimer() {
     const elapsedTime = currentTime - startTime
 
     if (elapsedTime >= props.interval) {
-      // 触发一次切换, 随后由 onToggleClick 内的 nextTick(onPointerLeave) 负责重启自动播放
       onToggleClick(1)
       return
     }

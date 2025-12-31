@@ -80,6 +80,19 @@ const indicatorPosition = ref('bottom')
 </template>
 ```
 
+## Wheel toggle
+Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to be placed on the carousel and the page cannot be scrolled).
+
+```vue demo
+<template>
+  <PCarouselGroup toggle-on-wheel>
+    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      {{ i }}
+    </PCarousel>
+  </PCarouselGroup>
+</template>
+```
+
 ## Disable indicator and arrow
 ```vue demo
 <template>
@@ -95,19 +108,6 @@ const indicatorPosition = ref('bottom')
 ```vue demo
 <template>
   <PCarouselGroup :autoplay="false" :loop="false">
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
-      {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
-</template>
-```
-
-## Disable wheel toggle
-By default, it can be switched by the scroll wheel.
-
-```vue demo
-<template>
-  <PCarouselGroup :toggle-on-wheel="false">
     <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
     </PCarousel>
