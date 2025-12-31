@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
+import type { ComponentClass, ComponentLabel, ComponentPosition, Nullable } from '../../types/shared'
 import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
@@ -24,7 +24,7 @@ interface Props {
   hideDelay?: number
   enterable?: boolean
   showArrow?: boolean
-  withLabel?: boolean
+  withLabel?: boolean | ComponentLabel
   arrowColor?: string
   autoPosition?: boolean
   wrapperClass?: ComponentClass

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DateTimePreset } from '../../types/components/time-picker'
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentLabel, ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
@@ -13,6 +13,7 @@ import PPopover from '../popover/index.vue'
 
 interface Props {
   size?: ComponentSize
+  label?: ComponentLabel
   allowClear?: boolean
   presets?: DateTimePreset[]
   disabled?: boolean
@@ -272,14 +273,13 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 <template>
   <PPopover
     enterable
-    close-on-scroll
     trigger="manual"
     :show-delay="0"
-    :hide-delay="100"
+    :hide-delay="0"
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
-    :show-transition="false"
+    :with-label="label"
     :visible="popoverVisible"
     :content-class="popoverClass"
     :close-on-press-escape="closeOnPressEscape"
@@ -295,6 +295,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :model-value="modelValue"
       :placeholder="placeholder"
       :prefix-style="false"
+      :label="label"
       v-bind="$attrs"
       @click.stop="showPopover"
       @change="onInputValueChange"

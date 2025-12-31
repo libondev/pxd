@@ -54,7 +54,6 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
 <template>
   <PPopover
     enterable
-    close-on-scroll
     class="pxd-menu"
     trigger="manual"
     :show-delay="0"
