@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
 import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
-import { computePosition, flip, shift } from '@floating-ui/dom'
+import { computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
@@ -13,17 +13,18 @@ import { getCssUnitValue, toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
-  zIndex?: number
+  zIndex?: number | string
   offset?: number
   visible?: boolean
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
-  maxWidth?: number
+  maxWidth?: number | string
   position?: ComponentPosition
   showDelay?: number
   hideDelay?: number
   enterable?: boolean
   showArrow?: boolean
+  withLabel?: boolean
   arrowColor?: string
   autoPosition?: boolean
   wrapperClass?: ComponentClass
@@ -50,6 +51,7 @@ const props = withDefaults(
     arrowColor: 'hsl(var(--primary))',
     autoPosition: true,
     transitionType: 'fade-scale',
+    closeOnInvisible: true,
   },
 )
 
@@ -76,10 +78,13 @@ const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const wrapperStyle = computed<CSSProperties>(() => ({
   'z-index': props.zIndex,
   '--popover-bg': props.arrowColor,
-  '--popover-offset': getCssUnitValue(props.offset),
   '--popover-max-width': getCssUnitValue(props.maxWidth),
-  '--popover-arrow-offset': `${props.offset - 5}px`,
+  '--popover-arrow-offset': `${Number(props.offset) - 5}px`,
 }))
+
+const withLabelOffset = computed(() => {
+  return -(triggerRef.value?.querySelector('.pxd-form--label')?.clientHeight || 0) + props.offset
+})
 
 const {
   render: isRender,
@@ -149,6 +154,13 @@ async function handlePopoverShow() {
       placement: localPosition.value,
       middleware: [
         shift(),
+        offset(({ placement }) => {
+          if (placement.startsWith('top') && props.withLabel) {
+            return withLabelOffset.value
+          }
+
+          return props.offset
+        }),
         props.autoPosition && flip(),
       ],
     },
@@ -464,22 +476,6 @@ defineExpose({
   }
   &[data-position='right-end'] {
     transform-origin: left bottom;
-  }
-
-  &[data-position^='top'] {
-    padding-bottom: var(--popover-offset);
-  }
-
-  &[data-position^='bottom'] {
-    padding-top: var(--popover-offset);
-  }
-
-  &[data-position^='left'] {
-    padding-right: var(--popover-offset);
-  }
-
-  &[data-position^='right'] {
-    padding-left: var(--popover-offset);
   }
 
   &[data-position="top"] .pxd-popover--arrow,
