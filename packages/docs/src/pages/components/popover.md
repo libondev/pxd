@@ -255,23 +255,3 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   </PPopover>
 </template>
 ```
-
-## Enterable
-
-```vue demo
-<script setup>
-const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
-</script>
-
-<template>
-  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" enterable>
-    <PButton>
-      Hover to active
-    </PButton>
-
-    <template #content>
-      {{ content }}
-    </template>
-  </PPopover>
-</template>
-```

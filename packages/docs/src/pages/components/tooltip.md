@@ -77,6 +77,26 @@ The component inherits from popover and supports all the properties of popover. 
 </template>
 ```
 
+## Enterable
+
+```vue demo
+<script setup>
+const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
+</script>
+
+<template>
+  <PTooltip variant="success" enterable>
+    <PButton>
+      Hover me
+    </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
+  </PTooltip>
+</template>
+```
+
 ## Delay
 
 ```vue demo
@@ -97,11 +117,11 @@ The component inherits from popover and supports all the properties of popover. 
     </PTooltip>
 
     <PTooltip
-      :show-delay="100"
+      :show-delay="200"
       :hide-delay="400"
       content="The Evil Rabbit Jumped over the Fence"
     >
-      <PButton>Show: 100ms, Hide: 400ms</PButton>
+      <PButton>Show: 200ms, Hide: 400ms</PButton>
     </PTooltip>
   </PStack>
 </template>
