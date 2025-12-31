@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
 import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
-import { computePosition, flip, offset, shift } from '@floating-ui/dom'
+import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
@@ -69,6 +69,7 @@ let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 
 const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
+const arrayRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const localPosition = shallowRef(props.position)
@@ -79,7 +80,6 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   'z-index': props.zIndex,
   '--popover-bg': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
-  '--popover-arrow-offset': `${Number(props.offset) - 5}px`,
 }))
 
 const withLabelOffset = computed(() => {
@@ -147,7 +147,7 @@ async function handlePopoverShow() {
 
   await showPopover()
 
-  const { x, y, placement } = await computePosition(
+  const { x, y, placement, middlewareData } = await computePosition(
     triggerRef.value,
     wrapperRef.value,
     {
@@ -161,6 +161,7 @@ async function handlePopoverShow() {
 
           return props.offset
         }),
+        props.showArrow && arrow({ element: arrayRef.value }),
         props.autoPosition && flip(),
       ],
     },
@@ -171,6 +172,14 @@ async function handlePopoverShow() {
     left: `${x}px`,
     top: `${y}px`,
   })
+
+  if (middlewareData.arrow) {
+    const { x, y } = middlewareData.arrow
+    Object.assign(arrayRef.value.style, {
+      left: x != null ? `${x}px` : '',
+      top: y != null ? `${y}px` : '',
+    })
+  }
 
   if (props.closeOnPressEscape) {
     optimizedOn(document, 'keydown', onPopoverKeystroke)
@@ -383,11 +392,11 @@ defineExpose({
         :data-enterable="enterable"
         :data-position="localPosition"
         :data-transition-type="transitionType"
-        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate w-max max-w-full motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full max-sm:px-1 motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
-        <i v-if="showArrow" class="pxd-popover--arrow absolute z-1 border-solid" />
+        <i v-if="showArrow" ref="arrayRef" class="pxd-popover--arrow absolute z-1 border-solid" />
         <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
           <slot name="content" />
         </div>
@@ -481,7 +490,7 @@ defineExpose({
   &[data-position="top"] .pxd-popover--arrow,
   &[data-position="top-start"] .pxd-popover--arrow,
   &[data-position="top-end"] .pxd-popover--arrow {
-    bottom: var(--popover-arrow-offset);
+    bottom: -5px;
     border-width: 6px 6px 0;
     border-color: var(--popover-bg) transparent transparent;
   }
@@ -489,7 +498,7 @@ defineExpose({
   &[data-position='bottom'] .pxd-popover--arrow,
   &[data-position='bottom-start'] .pxd-popover--arrow,
   &[data-position='bottom-end'] .pxd-popover--arrow {
-    top: var(--popover-arrow-offset);
+    top: -5px;
     border-width: 0 6px 6px;
     border-color: transparent transparent var(--popover-bg);
   }
@@ -497,7 +506,7 @@ defineExpose({
   &[data-position='left'] .pxd-popover--arrow,
   &[data-position='left-start'] .pxd-popover--arrow,
   &[data-position='left-end'] .pxd-popover--arrow {
-    right: var(--popover-arrow-offset);
+    right: -5px;
     border-width: 6px 0 6px 6px;
     border-color: transparent transparent transparent var(--popover-bg);
   }
@@ -505,41 +514,9 @@ defineExpose({
   &[data-position='right'] .pxd-popover--arrow,
   &[data-position='right-start'] .pxd-popover--arrow,
   &[data-position='right-end'] .pxd-popover--arrow {
-    left: var(--popover-arrow-offset);
+    left: -5px;
     border-width: 6px 6px 6px 0;
     border-color: transparent var(--popover-bg) transparent transparent;
-  }
-
-  &[data-position='top'] .pxd-popover--arrow,
-  &[data-position='bottom'] .pxd-popover--arrow {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  &[data-position='left'] .pxd-popover--arrow,
-  &[data-position='right'] .pxd-popover--arrow {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  &[data-position='left-start'] .pxd-popover--arrow,
-  &[data-position='right-start'] .pxd-popover--arrow {
-    top: 1rem;
-  }
-
-  &[data-position='left-end'] .pxd-popover--arrow,
-  &[data-position='right-end'] .pxd-popover--arrow {
-    bottom: 1rem;
-  }
-
-  &[data-position='top-start'] .pxd-popover--arrow,
-  &[data-position='bottom-start'] .pxd-popover--arrow {
-    left: 1rem;
-  }
-
-  &[data-position='top-end'] .pxd-popover--arrow,
-  &[data-position='bottom-end'] .pxd-popover--arrow {
-    right: 1rem;
   }
 }
 </style>
