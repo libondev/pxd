@@ -14,7 +14,7 @@ export function throttleByRaf<T extends Callback>(
 ): ThrottleByRafReturnType<T> {
   let timer: number
 
-  const throttle = (...args: any[]): void => {
+  const throttle = (...args: Parameters<T>): void => {
     timer && window.cancelAnimationFrame(timer)
     timer = window.requestAnimationFrame(() => {
       callback(...args)
