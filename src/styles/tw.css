@@ -394,8 +394,8 @@
   --shadow-border-modal: var(--shadow-border-modal-value);
   --shadow-border-fullscreen: var(--shadow-border-fullscreen-value);
 
-  --default-transition-duration: .2s;
-  --default-transition-timing-function: ease-in-out;
+  /* --default-transition-duration: .2s; */
+  /* --default-transition-timing-function: ease-in-out; */
 }
 
 @utility scrollbar-hidden {
@@ -491,7 +491,8 @@
 
   .pxd-form--label {
     max-width: 100%;
-    margin-bottom: calc(var(--spacing) * 1);
+    line-height: 1;
+    padding-bottom: calc(var(--spacing) * 2);
     font-size: var(--text-sm);
     color: var(--color-foreground-secondary);
   }
