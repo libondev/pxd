@@ -61,7 +61,6 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     :hide-delay="100"
     :position="position"
     :visible="popoverVisible"
-    close-on-invisible
     :close-on-press-escape="closeOnPressEscape"
     transition-name="pxd-transition--fade"
     v-bind="$attrs"
