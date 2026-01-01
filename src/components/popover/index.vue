@@ -89,6 +89,10 @@ const {
 } = useDelayDestroy(props.visible, {
   delay: 2000,
   visibleChange(v) {
+    if (triggerMethods.value.includes('manual')) {
+      return
+    }
+
     emits('visible-change', v)
 
     if (v) {

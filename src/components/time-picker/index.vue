@@ -297,7 +297,6 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       v-bind="$attrs"
-      @click.stop="showPopover"
       @change="onInputValueChange"
       @keydown.enter="onConfirmClick"
       @update:model-value="onUpdateModelValue"
