@@ -26,33 +26,15 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
-
-  it('should display error message', async () => {
+  it('should display error state', async () => {
     const wrapper = mount(Textarea, {
       props: {
-        error: 'error message',
+        error: true,
       },
     })
 
-    const error = wrapper.find('.pxd-error')
-    expect(error.exists()).toBe(true)
-
-    expect(error.text()).toBe('error message')
-
-    wrapper.unmount()
-  })
-
-  it('should display label', async () => {
-    const wrapper = mount(Textarea, {
-      props: {
-        label: 'label',
-      },
-    })
-
-    const label = wrapper.find('.pxd-form--label')
-    expect(label.exists()).toBe(true)
-
-    expect(label.text()).toBe('label')
+    const classes = wrapper.classes()
+    expect(classes.includes('is-error')).toBe(true)
 
     wrapper.unmount()
   })

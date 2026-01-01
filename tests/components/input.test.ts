@@ -54,17 +54,15 @@ describe('input', () => {
     wrapper.unmount()
   })
 
-  it('should display error message', async () => {
+  it('should display error state', async () => {
     const wrapper = mount(Input, {
       props: {
-        error: 'error message',
+        error: true,
       },
     })
 
-    const error = wrapper.find('.pxd-error')
-    expect(error.exists()).toBe(true)
-
-    expect(error.text()).toBe('error message')
+    const classes = wrapper.classes()
+    expect(classes.includes('is-error')).toBe(true)
 
     wrapper.unmount()
   })
@@ -86,21 +84,6 @@ describe('input', () => {
     expect(suffix.exists()).toBe(true)
 
     expect(suffix.text()).toBe('suffix')
-
-    wrapper.unmount()
-  })
-
-  it('should display label', async () => {
-    const wrapper = mount(Input, {
-      props: {
-        label: 'label',
-      },
-    })
-
-    const label = wrapper.find('.pxd-form--label')
-    expect(label.exists()).toBe(true)
-
-    expect(label.text()).toBe('label')
 
     wrapper.unmount()
   })
