@@ -104,7 +104,8 @@ useOutsideClick(wrapperRef, {
     return isVisible.value && allowedMethods.some(t => triggerMethods.value.includes(t))
   },
   isOutside: (ev) => {
-    return !triggerRef.value?.contains(ev.target as HTMLElement)
+    const el = ev.target as HTMLElement
+    return !(triggerRef.value?.contains(el) || wrapperRef.value?.contains(el))
   },
   onTrigger: debounce((ev) => {
     emits('outside-click', ev)

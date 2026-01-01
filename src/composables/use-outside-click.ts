@@ -20,11 +20,14 @@ export function useOutsideClick(
       return
     }
 
-    if (
-      (typeof isOutside === 'function' ? !isOutside(ev) : false)
-      && (toValue(container)?.contains(ev.target as HTMLElement))
-    ) {
-      return
+    if (typeof isOutside === 'function') {
+      if (!isOutside(ev)) {
+        return
+      }
+    } else {
+      if (!toValue(container)!.contains(ev.target as HTMLElement)) {
+        return
+      }
     }
 
     onTrigger?.(ev)
