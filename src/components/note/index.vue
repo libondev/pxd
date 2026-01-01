@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/shared'
+import type { ComponentLabel, ComponentSize } from '../../types/shared'
 import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
@@ -13,7 +13,7 @@ interface Props {
   variant?: keyof typeof VARIANTS
   size?: ComponentSize
   fill?: boolean
-  label?: boolean | string
+  label?: boolean | ComponentLabel
 }
 
 defineOptions({

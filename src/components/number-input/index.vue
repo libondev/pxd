@@ -184,10 +184,10 @@ function onInputKeydown(ev: KeyboardEvent) {
   <PInput
     v-bind="$attrs"
     v-model="modelValue"
-    inputmode="decimal"
     :min="min"
     :max="max"
     align="center"
+    inputmode="decimal"
     input-type="number"
     :disabled="disabled"
     :readonly="readonly"

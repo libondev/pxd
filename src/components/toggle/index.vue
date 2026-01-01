@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentBeforeChange, ComponentLabel, ComponentSize } from '../../types/shared'
+import type { ComponentBeforeChange, ComponentSize } from '../../types/shared'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
@@ -11,7 +11,6 @@ type ValueType = boolean | number | string
 
 interface Props {
   size?: ComponentSize
-  label?: ComponentLabel
   loading?: boolean
   disabled?: boolean
   modelValue?: ValueType
@@ -87,57 +86,51 @@ async function onCheckboxChange(e: Event) {
 <template>
   <label
     role="switch"
-    class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation flex-col select-none"
+    :for="uniqueId"
+    class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation items-center select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     :style="{
       '--ac': activeColor,
       '--ic': inactiveColor,
     }"
-    :for="uniqueId"
   >
-    <div v-if="label || $slots.label" class="pxd-form--label">
-      <slot name="label">{{ label }}</slot>
-    </div>
+    <input
+      :id="uniqueId"
+      type="checkbox"
+      :disabled="disabled || loading"
+      :checked="isChecked"
+      class="pxd-toggle--input peer smallest"
+      @change.prevent="onCheckboxChange"
+    >
 
-    <div class="flex items-center">
-      <input
-        :id="uniqueId"
-        type="checkbox"
-        :disabled="disabled || loading"
-        :checked="isChecked"
-        class="pxd-toggle--input peer smallest"
-        @change.prevent="onCheckboxChange"
-      >
+    <span
+      v-if="inactiveLabel"
+      class="pxd-toggle--label text-sm mr-1.5 pl-0.5 opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
+    >{{ inactiveLabel }}</span>
 
-      <span
-        v-if="inactiveLabel"
-        class="pxd-toggle--label text-sm mr-1.5 pl-0.5 opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
-      >{{ inactiveLabel }}</span>
-
-      <div
-        class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
-        :class="computedSize"
-      >
-        <div class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform">
-          <div class="inset-0 absolute flex items-center justify-center">
-            <Transition name="pxd-transition--fade" mode="out-in">
-              <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
-              <slot v-else-if="modelValue" name="checked" />
-              <slot v-else name="unchecked" />
-            </Transition>
-          </div>
+    <div
+      class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
+      :class="computedSize"
+    >
+      <div class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform">
+        <div class="inset-0 absolute flex items-center justify-center">
+          <Transition name="pxd-transition--fade" mode="out-in">
+            <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
+            <slot v-else-if="modelValue" name="checked" />
+            <slot v-else name="unchecked" />
+          </Transition>
         </div>
       </div>
-
-      <span
-        v-if="activeLabel"
-        class="pxd-toggle--label text-sm ml-1.5 pr-0.5 opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
-      >{{ activeLabel }}</span>
     </div>
+
+    <span
+      v-if="activeLabel"
+      class="pxd-toggle--label text-sm ml-1.5 pr-0.5 opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
+    >{{ activeLabel }}</span>
   </label>
 </template>
 
-<style lang="postcss">
+<style>
 .pxd-toggle--input:checked:disabled + .pxd-toggle--handle {
   background-color: var(--color-gray-300)
 }

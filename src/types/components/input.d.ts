@@ -3,7 +3,7 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../shared/props'
 
 export interface InputProps {
   size?: ComponentSizeWithXs
-  error?: string
+  error?: boolean | string
   min?: number | string
   max?: number | string
   align?: 'left' | 'center' | 'right'

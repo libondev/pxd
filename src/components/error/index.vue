@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ErrorType } from '../../types/components/error'
-import type { ComponentSizeWithXs } from '../../types/shared'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
@@ -10,7 +10,7 @@ import { getFallbackValue } from '../../utils/get'
 
 interface Props {
   size?: ComponentSizeWithXs
-  label?: string
+  label?: ComponentLabel
   error?: ErrorType
 }
 

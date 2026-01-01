@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { ComponentLabel } from 'dist/index'
 import { capitalize as capitalizeText } from '../../utils/format'
 
 interface Props {
-  label?: boolean | string
+  label?: boolean | ComponentLabel
   state?: 'QUEUED' | 'BUILDING' | 'READY' | 'ERROR' | 'CANCELED'
 }
 

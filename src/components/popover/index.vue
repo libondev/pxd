@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentClass, ComponentLabel, ComponentPosition, Nullable } from '../../types/shared'
+import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
 import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
@@ -24,7 +24,6 @@ interface Props {
   hideDelay?: number
   enterable?: boolean
   showArrow?: boolean
-  withLabel?: boolean | ComponentLabel
   arrowColor?: string
   autoPosition?: boolean
   wrapperClass?: ComponentClass
@@ -81,10 +80,6 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-bg': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
-
-const withLabelOffset = computed(() => {
-  return -(triggerRef.value?.querySelector('.pxd-form--label')?.clientHeight || 0) + props.offset
-})
 
 const {
   render: isRender,
@@ -154,15 +149,9 @@ async function handlePopoverShow() {
       placement: localPosition.value,
       middleware: [
         shift(),
-        offset(({ placement }) => {
-          if (placement.startsWith('top') && props.withLabel) {
-            return withLabelOffset.value
-          }
-
-          return props.offset
-        }),
-        props.showArrow && arrow({ element: arrayRef.value }),
+        offset(props.offset),
         props.autoPosition && flip(),
+        props.showArrow && arrow({ element: arrayRef.value }),
       ],
     },
   )

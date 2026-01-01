@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue'
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
+import type { ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { getFallbackValue } from '../../utils/get'
-import PError from '../error/index.vue'
 
 interface Props {
   size?: ComponentSizeWithXs
-  error?: string
+  error?: boolean | string
   length?: number
-  label?: ComponentLabel
   readonly?: boolean
   disabled?: boolean
   required?: boolean
@@ -259,43 +257,33 @@ function onInputPastedValue(ev: ClipboardEvent) {
 </script>
 
 <template>
-  <label class="pxd-pin-input flex w-max flex-col">
-    <div v-if="label || $slots.label" class="pxd-form--label">
-      <slot name="label">{{ label }}</slot>
+  <label
+    class="pxd-pin-input gap-1.5 flex size-max items-center"
+    @keydown="onContainerKeydown"
+    @compositionend="onCompositionEnd"
+    @click="onContainerClick"
+  >
+    <div v-for="(n, i) of length" :key="n" :class="computedClass">
+      <input
+        ref="inputsRef"
+        :value="modelValueLocal[i]"
+        :aria-label="`pin code ${n} of ${length}`"
+        :type="computedInputType"
+        :data-index="i"
+        class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
+        minlength="1"
+        maxlength="1"
+        autocorrect="off"
+        autocomplete="off"
+        autocapitalize="off"
+        :readonly="readonly"
+        :disabled="disabled"
+        :required="required"
+        :placeholder="placeholder"
+        :inputmode="computedInputMode"
+        @paste="onInputPastedValue"
+        @beforeinput="onBeforeInputValue"
+      >
     </div>
-
-    <div
-      class="gap-1.5 flex w-max items-center"
-      @keydown="onContainerKeydown"
-      @compositionend="onCompositionEnd"
-      @click="onContainerClick"
-    >
-      <div v-for="(n, i) of length" :key="n" :class="computedClass">
-        <input
-          ref="inputsRef"
-          :value="modelValueLocal[i]"
-          :aria-label="`pin code ${n} of ${length}`"
-          :type="computedInputType"
-          :data-index="i"
-          class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
-          minlength="1"
-          maxlength="1"
-          autocorrect="off"
-          autocomplete="off"
-          autocapitalize="off"
-          :readonly="readonly"
-          :disabled="disabled"
-          :required="required"
-          :placeholder="placeholder"
-          :inputmode="computedInputMode"
-          @paste="onInputPastedValue"
-          @beforeinput="onBeforeInputValue"
-        >
-      </div>
-    </div>
-
-    <PError v-if="error" class="mt-2" :size="size">
-      {{ error }}
-    </PError>
   </label>
 </template>

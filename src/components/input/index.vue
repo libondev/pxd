@@ -9,7 +9,6 @@ import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
-import PError from '../error/index.vue'
 
 defineOptions({
   name: 'PInput',
@@ -22,6 +21,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<InputProps>(),
   {
+    error: false,
     align: 'left',
     modelValue: '',
     placeholder: '',
@@ -67,7 +67,7 @@ const isPasswordVisible = shallowRef(!props.password)
 const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
 const computedClass = computed(() => {
-  const classes = ['pxd-input--border group relative flex items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all']
+  const classes = []
 
   classes.push(getFallbackValue(props.size, SIZES, config.size))
 
@@ -206,77 +206,74 @@ defineExpose({
 </script>
 
 <template>
-  <label class="pxd-input block w-full max-w-full" :for="uniqueId" @click="onClick" @dragstart.prevent>
-    <div v-if="label || $slots.label" class="pxd-form--label">
-      <slot name="label">{{ label }}</slot>
+  <label
+    class="pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all"
+    :for="uniqueId"
+    :data-disabled="disabled"
+    :class="computedClass"
+    @click="onClick"
+    @dragstart.prevent
+  >
+    <div
+      v-if="$slots.prefix"
+      class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-gray-700"
+      :class="{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
+    >
+      <slot name="prefix" />
     </div>
 
-    <div :data-disabled="disabled" :class="computedClass" tabindex="-1">
-      <div
-        v-if="$slots.prefix"
-        class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-gray-700"
-        :class="{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
-      >
-        <slot name="prefix" />
+    <input
+      :id="uniqueId"
+      ref="inputRef"
+      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
+      :type="internalInputType"
+      :min="min"
+      :max="max"
+      autocorrect="off"
+      autocomplete="off"
+      autocapitalize="off"
+      :readonly="readonly"
+      :disabled="disabled"
+      :required="required"
+      :inputmode="inputmode"
+      :minlength="minlength"
+      :maxlength="maxlength"
+      :autofocus="autofocus"
+      :placeholder="placeholder"
+      :aria-disabled="disabled"
+      :data-value="computedModelValue"
+      @blur="onBlur"
+      @focus="onFocus"
+      @input="onInput"
+      @change="onChange"
+      @keydown="onKeydown"
+      @compositionstart="onCompositionStart"
+      @compositionupdate="onCompositionUpdate"
+      @compositionend="onCompositionEnd"
+    >
+
+    <div
+      v-if="password || allowClear"
+      v-show="computedModelValue"
+      class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-gray-700"
+    >
+      <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="toggleType">
+        <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
+        <EyeIcon v-else class="size-3" />
       </div>
-
-      <input
-        :id="uniqueId"
-        ref="inputRef"
-        class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
-        :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
-        :type="internalInputType"
-        :min="min"
-        :max="max"
-        autocorrect="off"
-        autocomplete="off"
-        autocapitalize="off"
-        :readonly="readonly"
-        :disabled="disabled"
-        :required="required"
-        :inputmode="inputmode"
-        :minlength="minlength"
-        :maxlength="maxlength"
-        :autofocus="autofocus"
-        :placeholder="placeholder"
-        :aria-disabled="disabled"
-        :data-value="computedModelValue"
-        @blur="onBlur"
-        @focus="onFocus"
-        @input="onInput"
-        @change="onChange"
-        @keydown="onKeydown"
-        @compositionstart="onCompositionStart"
-        @compositionupdate="onCompositionUpdate"
-        @compositionend="onCompositionEnd"
-      >
-
-      <div
-        v-if="password || allowClear"
-        v-show="computedModelValue"
-        class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-gray-700"
-      >
-        <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="toggleType">
-          <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
-          <EyeIcon v-else class="size-3" />
-        </div>
-        <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="clearValue">
-          <CrossIcon class="size-3" />
-        </div>
-      </div>
-
-      <div
-        v-if="$slots.suffix"
-        class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-gray-700"
-        :class="{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
-      >
-        <slot name="suffix" />
+      <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="clearValue">
+        <CrossIcon class="size-3" />
       </div>
     </div>
 
-    <PError v-if="error" class="mt-2" :size="size">
-      {{ error }}
-    </PError>
+    <div
+      v-if="$slots.suffix"
+      class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-gray-700"
+      :class="{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
+    >
+      <slot name="suffix" />
+    </div>
   </label>
 </template>
 
