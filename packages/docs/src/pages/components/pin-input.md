@@ -68,11 +68,3 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
   <PPinInput error="Invalid pin code" />
 </template>
 ```
-
-## Label
-
-```vue demo
-<template>
-  <PPinInput label="Pin Code" />
-</template>
-```

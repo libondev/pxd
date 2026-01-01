@@ -50,7 +50,6 @@ const presets = [
 </template>
 ```
 
-
 ## Disabled
 
 ```vue demo
@@ -65,16 +64,14 @@ const time = ref('18:30:00')
 </template>
 ```
 
-## Label
+## Error
 
 ```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const time = ref('18:30:00')
-</script>
-
 <template>
-  <PTimePicker v-model="time" label="My Label" class="!w-[220px]"></PTimePicker>
+  <PStack class="max-w-sm" gap="8" direction="vertical">
+    <PTimePicker error size="sm" placeholder="Default" />
+    <PTimePicker error placeholder="Default" />
+    <PTimePicker error size="lg" placeholder="Default" />
+  </PStack>
 </template>
 ```

@@ -75,7 +75,7 @@
 </template>
 ```
 
-## Labels
+## Label
 
 ```vue demo
 <template>

@@ -144,13 +144,3 @@ const password = ref('')
   </PStack>
 </template>
 ```
-
-## Label
-
-```vue demo
-<template>
-  <div class="max-w-sm">
-    <PInput label="My Label"/>
-  </div>
-</template>
-```
