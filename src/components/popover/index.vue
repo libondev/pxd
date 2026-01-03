@@ -170,8 +170,8 @@ async function handlePopoverShow() {
   if (middlewareData.arrow) {
     const { x, y } = middlewareData.arrow
     Object.assign(arrayRef.value.style, {
-      left: x != null ? `${x}px` : '',
-      top: y != null ? `${y}px` : '',
+      left: x != null ? `${Math.max(x, 5)}px` : '',
+      top: y != null ? `${Math.max(y, 5)}px` : '',
     })
   }
 
@@ -386,7 +386,7 @@ defineExpose({
         :data-enterable="enterable"
         :data-position="localPosition"
         :data-transition-type="transitionType"
-        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full max-sm:px-1 motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
