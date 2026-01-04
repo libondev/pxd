@@ -8,7 +8,7 @@
 
   --ring: var(--color-blue-900-value);
   --primary: var(--color-gray-1000-value);
-  --primary-hover: hsla(var(--primary), 80%);
+  --primary-hover: hsla(var(--primary), 70%);
   --primary-active: hsla(var(--primary), 90%);
 
   --color-gray-alpha-100-value: hsla(0, 0%, 0%, .05);
@@ -248,10 +248,11 @@
   color-scheme: dark;
 }
 
-@supports (color: color-mix(in hsl, red, red)) {
+/* Prefer relative colors */
+@supports (color: hsl(from #fff h s l)) {
   :root {
-    --primary-hover: color-mix(in hsl, var(--color-primary) 80%, hsl(var(--background-100-value)));
-    --primary-active: color-mix(in hsl, var(--color-primary) 90%, hsl(var(--background-100-value)));
+    --primary-hover: hsl(from var(--color-primary) h s calc(l + 10));
+    --primary-active: hsl(from var(--color-primary) h s calc(l - 10));
   }
 }
 
