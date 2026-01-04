@@ -49,6 +49,7 @@ declare module 'vue' {
     PMessage: typeof import('pxd/components/message')['default']
     PModal: typeof import('pxd/components/modal')['default']
     PMoreButton: typeof import('pxd/components/more-button')['default']
+    PNoiseBackground: typeof import('pxd/components/noise-background')['default']
     PNote: typeof import('pxd/components/note')['default']
     PNumberInput: typeof import('pxd/components/number-input')['default']
     POverlay: typeof import('pxd/components/overlay')['default']
