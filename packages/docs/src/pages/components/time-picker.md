@@ -61,7 +61,7 @@ const time = ref('18:30:00')
 
 <template>
   <PText class="mb-2">Value formatted: {{ time }}</PText>
-  <PTimePicker v-model="time" class="!w-[220px]" formatter="HH-mm-ss" valueFormatter="HH:mm:ss" />
+  <PTimePicker v-model="time" class="!w-[220px]" formatter="HH-mm" valueFormatter="HH:mm:ss" />
 </template>
 ```
 
