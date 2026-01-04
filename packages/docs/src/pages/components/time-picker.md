@@ -11,7 +11,7 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" class="!w-[220px]"></PTimePicker>
+  <PTimePicker v-model="time" class="!w-[220px]" />
 </template>
 ```
 
@@ -46,7 +46,22 @@ const presets = [
 </script>
 
 <template>
-  <PTimePicker v-model="time" :presets="presets" class="!w-[220px]"></PTimePicker>
+  <PTimePicker v-model="time" :presets="presets" class="!w-[220px]" />
+</template>
+```
+
+## Formatter
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
+<template>
+  <PText class="mb-2">Value formatted: {{ time }}</PText>
+  <PTimePicker v-model="time" class="!w-[220px]" formatter="HH-mm-ss" valueFormatter="HH:mm:ss" />
 </template>
 ```
 
@@ -60,18 +75,24 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" disabled class="!w-[220px]"></PTimePicker>
+  <PTimePicker v-model="time" disabled class="!w-[220px]" formatter="hh:mm:ss" />
 </template>
 ```
 
 ## Error
 
 ```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
 <template>
   <PStack class="max-w-sm" gap="8" direction="vertical">
-    <PTimePicker error size="sm" placeholder="Default" />
-    <PTimePicker error placeholder="Default" />
-    <PTimePicker error size="lg" placeholder="Default" />
+    <PTimePicker v-model="time" error size="sm" placeholder="sm" />
+    <PTimePicker v-model="time" error placeholder="md" />
+    <PTimePicker v-model="time" error size="lg" placeholder="lg" />
   </PStack>
 </template>
 ```

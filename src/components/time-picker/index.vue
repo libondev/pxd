@@ -2,7 +2,7 @@
 import type { DateTimePreset } from '../../types/components/time-picker'
 import type { ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
@@ -19,6 +19,8 @@ interface Props {
   prefixIcon?: boolean
   placeholder?: string
   closeOnPressEscape?: boolean
+  formatter?: string
+  valueFormatter?: string
 }
 
 defineOptions({
@@ -37,6 +39,8 @@ const props = withDefaults(
     prefixIcon: true,
     closeOnPressEscape: true,
     presets: () => [],
+    formatter: 'HH:mm:ss',
+    valueFormatter: 'HH:mm:ss',
   },
 )
 
@@ -48,9 +52,9 @@ const emits = defineEmits<{
 
 const HEIGHT = 32
 const VALUE_POSITION_MAP = {
-  hours: 0,
-  minutes: 1,
-  seconds: 2,
+  hour: 0,
+  minute: 1,
+  second: 2,
 } as const
 
 const config = useConfigProvider()
@@ -61,11 +65,11 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 
 const popoverVisible = shallowRef(false)
 
-const modelValueList = ref<string[]>([])
+const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 
 const modelValue = computed<string>({
   get() {
-    return modelValueList.value.join(':')
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.formatter) : ''
   },
   set(value: string) {
     emits('update:modelValue', value)
@@ -79,7 +83,7 @@ function onTimeListScroll(ev: Event) {
   const value = Math.round(target.scrollTop / HEIGHT)
   const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
   const index = VALUE_POSITION_MAP[type]
-  const clampedValue = clampValue(value, 0, type === 'hours' ? 23 : 59)
+  const clampedValue = clampValue(value, 0, type === 'hour' ? 23 : 59)
 
   clearTimeout(scrollTimers[index])
   scrollTimers[index] = setTimeout(() => {
@@ -88,7 +92,7 @@ function onTimeListScroll(ev: Event) {
       behavior: 'smooth',
     })
 
-    modelValueList.value[index] = padStringZero(clampedValue)
+    dayjsDateTime.value = dayjsDateTime.value ? dayjsDateTime.value.set(type, clampedValue) : null
   }, 100)
 }
 
@@ -104,23 +108,13 @@ function hidePopover() {
   onVisibleChange(false)
 }
 
-function parseTimeValue(value: string | undefined, max: number) {
-  const numberValue = value ? Number.parseInt(value.slice(0, 2)) : 0
-
-  if (!numberValue) {
-    return '00'
-  }
-
-  return clampValue(numberValue, 0, max).toString()
-}
-
 function updateValueList(value: Props['modelValue']) {
-  modelValueList.value = getFormattedValue(value).split(':')
+  dayjsDateTime.value = getFormattedValue(value)
 }
 
 function getFormattedValue(value: Props['modelValue']) {
   if (value == null || value === '') {
-    return ''
+    return dayjs()
   }
 
   let _value: string | Date
@@ -134,16 +128,19 @@ function getFormattedValue(value: Props['modelValue']) {
     _value = new Date(value)
   }
 
-  return dayjs(_value).format('HH:mm:ss')
+  return dayjs(_value)
 }
 
 async function setTimesScrollTop() {
-  // await nextTick()
+  if (!dayjsDateTime.value) {
+    return
+  }
 
   const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
+  const modelValueList = [dayjsDateTime.value.hour(), dayjsDateTime.value.minute(), dayjsDateTime.value.second()]
 
   elList.forEach((el, i) => {
-    const scrollTop = Number(modelValueList.value[i] || 0) * HEIGHT
+    const scrollTop = modelValueList[i]! * HEIGHT
 
     el?.scrollTo({ top: scrollTop })
   })
@@ -183,32 +180,24 @@ function onCancelClick() {
 }
 
 function onConfirmClick() {
-  updateValueList(modelValueList.value.join(':'))
-  modelValue.value = modelValueList.value.join(':')
+  modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormatter) : ''
 }
 
-function onNowBtnClick(date?: Date) {
-  const newValue = getFormattedValue(date ?? new Date())
-  modelValue.value = newValue
-  modelValueList.value = newValue.split(':')
+function onPresetTimeClick(date?: Date) {
+  onInputValueChange(date ?? new Date())
 
   hidePopover()
 }
 
-function onInputValueChange(value: string) {
+function onInputValueChange(value: string | Date) {
   if (!value) {
     modelValue.value = ''
-    modelValueList.value = []
+    dayjsDateTime.value = null
     return
   }
 
-  const [h, m, s] = value.split(':')
-  const hh = parseTimeValue(h, 23)
-  const mm = parseTimeValue(m, 59)
-  const ss = parseTimeValue(s, 59)
-
-  modelValue.value = getFormattedValue(`${hh}:${mm}:${ss}`)
-  modelValueList.value = [padStringZero(hh), padStringZero(mm), padStringZero(ss)]
+  dayjsDateTime.value = getFormattedValue(value)
+  modelValue.value = dayjsDateTime.value.format(props.valueFormatter)
 }
 
 function onUpdateModelValue(value: string) {
@@ -217,7 +206,7 @@ function onUpdateModelValue(value: string) {
   }
 
   modelValue.value = ''
-  modelValueList.value = []
+  dayjsDateTime.value = null
 }
 
 function onPresetClick(ev: MouseEvent) {
@@ -239,7 +228,7 @@ function onPresetClick(ev: MouseEvent) {
     return
   }
 
-  onNowBtnClick(presetValue)
+  onPresetTimeClick(presetValue)
 }
 
 watch(() => props.modelValue, updateValueList, { immediate: true })
@@ -285,21 +274,21 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
         <div class="p-2 gap-1 relative flex items-center">
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeHoursRef" data-type="hours" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeMinutesRef" data-type="minutes" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeMinutesRef" data-type="minute" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeSecondsRef" data-type="seconds" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeSecondsRef" data-type="second" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
@@ -320,7 +309,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       </div>
 
       <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onNowBtnClick()">
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onPresetTimeClick()">
           {{ config.locale.date.now }}
         </PButton>
 
