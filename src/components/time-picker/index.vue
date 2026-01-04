@@ -19,8 +19,8 @@ interface Props {
   prefixIcon?: boolean
   placeholder?: string
   closeOnPressEscape?: boolean
-  formatter?: string
-  valueFormatter?: string
+  format?: string
+  valueFormat?: string
 }
 
 defineOptions({
@@ -39,8 +39,8 @@ const props = withDefaults(
     prefixIcon: true,
     closeOnPressEscape: true,
     presets: () => [],
-    formatter: 'HH:mm:ss',
-    valueFormatter: 'HH:mm:ss',
+    format: 'HH:mm:ss',
+    valueFormat: 'HH:mm:ss',
   },
 )
 
@@ -69,7 +69,7 @@ const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 
 const modelValue = computed<string>({
   get() {
-    return dayjsDateTime.value ? dayjsDateTime.value.format(props.formatter) : ''
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.format) : ''
   },
   set(value: string) {
     emits('update:modelValue', value)
@@ -180,7 +180,7 @@ function onCancelClick() {
 }
 
 function onConfirmClick() {
-  modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormatter) : ''
+  modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormat) : ''
 }
 
 function onPresetTimeClick(date?: Date) {
@@ -197,7 +197,7 @@ function onInputValueChange(value: string | Date) {
   }
 
   dayjsDateTime.value = getFormattedValue(value)
-  modelValue.value = dayjsDateTime.value.format(props.valueFormatter)
+  onConfirmClick()
 }
 
 function onUpdateModelValue(value: string) {
