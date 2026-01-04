@@ -37,10 +37,6 @@ function onVisibleChange(visible: boolean) {
   popoverVisible.value = visible
 }
 
-function showPopover() {
-  onVisibleChange(true)
-}
-
 function hidePopover() {
   onVisibleChange(false)
 }
@@ -55,7 +51,7 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   <PPopover
     enterable
     class="pxd-menu"
-    trigger="manual"
+    trigger="click"
     :show-delay="0"
     :hide-delay="100"
     :position="position"
@@ -65,7 +61,6 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     v-bind="$attrs"
     @escape="hidePopover"
     @outside-click="hidePopover"
-    @trigger-click="showPopover"
     @visible-change="onVisibleChange"
   >
     <slot />

@@ -5,9 +5,7 @@ import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
-import { sleep } from '../../utils/event'
 import { clampValue } from '../../utils/format'
-import { getFallbackValue } from '../../utils/get'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
@@ -55,13 +53,6 @@ const VALUE_POSITION_MAP = {
   seconds: 2,
 } as const
 
-const SIZES = {
-  xs: 'rounded-sm',
-  sm: 'rounded-md',
-  md: 'rounded-md',
-  lg: 'rounded-lg',
-}
-
 const config = useConfigProvider()
 
 const timeHoursRef = shallowRef<HTMLElement>()
@@ -71,14 +62,6 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 const popoverVisible = shallowRef(false)
 
 const modelValueList = ref<string[]>([])
-
-const popoverClass = computed(() => {
-  const classes = ['bg-background-100 shadow-border-menu']
-
-  classes.push(getFallbackValue(props.size, SIZES, config.size))
-
-  return classes.join(' ')
-})
 
 const modelValue = computed<string>({
   get() {
@@ -115,11 +98,6 @@ function padStringZero(value: number | string): string {
 
 function onVisibleChange(visible: boolean) {
   popoverVisible.value = visible
-}
-
-function showPopover() {
-  onVisibleChange(true)
-  setTimesScrollTop()
 }
 
 function hidePopover() {
@@ -160,8 +138,7 @@ function getFormattedValue(value: Props['modelValue']) {
 }
 
 async function setTimesScrollTop() {
-  // Ensure that the asynchronous rendering is completed(In fact, 5ms is sufficient in most cases)
-  await sleep(10)
+  // await nextTick()
 
   const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
 
@@ -206,10 +183,8 @@ function onCancelClick() {
 }
 
 function onConfirmClick() {
-  // 先对所有时间进行补全再转换回普通字符串
   updateValueList(modelValueList.value.join(':'))
   modelValue.value = modelValueList.value.join(':')
-  hidePopover()
 }
 
 function onNowBtnClick(date?: Date) {
@@ -273,18 +248,18 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
 <template>
   <PPopover
     enterable
-    trigger="manual"
+    trigger="click"
     :show-delay="0"
     :hide-delay="0"
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
     :visible="popoverVisible"
-    :content-class="popoverClass"
     :close-on-press-escape="closeOnPressEscape"
+    content-class="bg-background-100 shadow-border-menu rounded-xl"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
-    @trigger-click="showPopover"
+    @show="setTimesScrollTop"
     @outside-click="onConfirmClick"
     @visible-change="onVisibleChange"
   >
