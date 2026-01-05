@@ -51,7 +51,8 @@ const computedClass = computed(() => {
 
   return {
     'opacity-0': hidden.value,
-    'bg-primary': _status === 'running' || _status === 'finish',
+    'bg-gray-500': _status === 'running',
+    'bg-primary': _status === 'finish',
     'bg-red-900': _status === 'error',
   }
 })
@@ -178,7 +179,7 @@ onBeforeUnmount(() => {
   <PTeleport :to="to">
     <div
       aria-hidden="true"
-      class="pxd-loading-bar top-0 left-0 right-0 h-0.5 pointer-events-none z-10 max-w-full overflow-hidden"
+      class="pxd-loading-bar top-0 left-0 right-0 h-1 pointer-events-none z-10 max-w-full overflow-hidden"
       :class="to ? 'absolute' : 'fixed'"
       v-bind="$attrs"
     >
