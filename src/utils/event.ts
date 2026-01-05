@@ -3,6 +3,8 @@ import { isOverflowScrollable } from './dom'
 
 type EventHandler<E extends Event = Event> = (event: E) => void
 
+const eventCache = new WeakMap<EventTarget, Record<string, EventHandler[]>>()
+
 export function on<E extends Event = Event>(
   el: Nullable<EventTarget>,
   event: string,
@@ -66,32 +68,42 @@ export function optimizedOn<E extends Event = Event>(
   event: string,
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
-) {
+): () => void {
   if (!el) {
-    return
+    return () => { }
   }
 
   const cacheKey = `__cached_${event}`
-  const cachedEventHandlers = (el as any)[cacheKey] as EventHandler<E>[] | undefined
+
+  let elementCache = eventCache.get(el)
+  if (!elementCache) {
+    elementCache = {}
+    eventCache.set(el, elementCache)
+  }
+
+  const cachedEventHandlers = elementCache[cacheKey] as EventHandler<E>[] | undefined
 
   // Fast path: already installed scheduler; dedupe same handler.
   if (cachedEventHandlers) {
     if (cachedEventHandlers.includes(handler)) {
-      return
+      return () => optimizedOff(el, event, handler, options)
     }
 
     cachedEventHandlers.push(handler)
-    return
+    return () => optimizedOff(el, event, handler, options)
   }
 
   // Scheduler always reads from cache to avoid stale closure references.
-  const scheduler: EventHandler = (ev: Event) => {
-    const list = (el as any)[cacheKey] as EventHandler<E>[] | undefined
-    list?.slice(1).forEach(handler => handler(ev as E))
+  const scheduler = (ev: Event) => {
+    const list = elementCache?.[cacheKey] as EventHandler<E>[] | undefined
+    list?.slice(1).forEach((h: EventHandler<E>) => h(ev as E))
   }
 
-  (el as any)[cacheKey] = [scheduler, handler]
+  const handlers: EventHandler<E>[] = [scheduler as EventHandler<E>, handler]
+  elementCache[cacheKey] = handlers as EventHandler[]
   el.addEventListener(event, scheduler as EventListener, options)
+
+  return () => optimizedOff(el, event, handler, options)
 }
 
 export function optimizedOff<E extends Event = Event>(
@@ -99,12 +111,19 @@ export function optimizedOff<E extends Event = Event>(
   event: string,
   handler: EventHandler<E>,
   options?: AddEventListenerOptions,
-) {
+): void {
   if (!el) {
     return
   }
 
-  const cachedEventHandlers = (el as any)[`__cached_${event}`] as EventHandler[]
+  const cacheKey = `__cached_${event}`
+  const elementCache = eventCache.get(el)
+
+  if (!elementCache) {
+    return
+  }
+
+  const cachedEventHandlers = elementCache[cacheKey] as EventHandler[] | undefined
 
   if (!cachedEventHandlers) {
     return
@@ -119,8 +138,15 @@ export function optimizedOff<E extends Event = Event>(
   cachedEventHandlers.splice(index, 1)
 
   if (cachedEventHandlers.length <= 1) {
-    el.removeEventListener(event, cachedEventHandlers[0]!, options)
-    delete (el as any)[`__cached_${event}`]
+    const scheduler = cachedEventHandlers[0]
+    if (scheduler) {
+      el.removeEventListener(event, scheduler as EventListener, options)
+    }
+    delete elementCache[cacheKey]
+
+    if (Object.keys(elementCache).length === 0) {
+      eventCache.delete(el)
+    }
   }
 }
 
