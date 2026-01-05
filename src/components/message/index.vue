@@ -13,7 +13,7 @@ import {
   CREATE_MESSAGE_EVENT_NAME,
   REMOVE_MESSAGE_EVENT_NAME,
 } from '../../composables/use-message'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'
@@ -257,17 +257,17 @@ onMounted(() => {
     return
   }
 
-  optimizedOn(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
-  optimizedOn(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
-  optimizedOn(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
+  cachedOn(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
+  cachedOn(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
+  cachedOn(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
 
 onBeforeUnmount(() => {
   clearMessage()
 
-  optimizedOff(window, CLEAR_MESSAGES_EVENT_NAME, onCreateMessage)
-  optimizedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
-  optimizedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
+  cachedOff(window, CLEAR_MESSAGES_EVENT_NAME, onCreateMessage)
+  cachedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
+  cachedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
 
 defineExpose({

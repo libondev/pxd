@@ -1,4 +1,4 @@
-import { optimizedOff, optimizedOn, preventDefaultScroll } from '../utils/event'
+import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
 let documentTouchMoveLocks = 0
 const scrollLockCountsMap = new WeakMap<HTMLElement, number>()
@@ -19,7 +19,7 @@ export function useLockScroll() {
 
     documentTouchMoveLocks++
     if (documentTouchMoveLocks === 1) {
-      optimizedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
     }
   }
 
@@ -40,7 +40,7 @@ export function useLockScroll() {
 
     documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
     if (!documentTouchMoveLocks) {
-      optimizedOff(document, 'touchmove', preventDefaultScroll)
+      cachedOff(document, 'touchmove', preventDefaultScroll)
     }
   }
 

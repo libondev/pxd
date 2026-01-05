@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { optimizedOff, optimizedOn } from '../../src/utils/event'
+import { cachedOff, cachedOn } from '../../src/utils/event'
 
 describe('event.ts memory leak prevention', () => {
   let container: HTMLDivElement
@@ -16,15 +16,15 @@ describe('event.ts memory leak prevention', () => {
     vi.restoreAllMocks()
   })
 
-  it('should not leak memory when optimizedOn is called multiple times', () => {
+  it('should not leak memory when cachedOn is called multiple times', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    // Call optimizedOn multiple times
-    const cleanup1 = optimizedOn(container, 'click', handler1)
-    const cleanup2 = optimizedOn(container, 'click', handler2)
-    const cleanup3 = optimizedOn(container, 'click', handler3)
+    // Call cachedOn multiple times
+    const cleanup1 = cachedOn(container, 'click', handler1)
+    const cleanup2 = cachedOn(container, 'click', handler2)
+    const cleanup3 = cachedOn(container, 'click', handler3)
 
     // Verify all handlers are registered
     container.click()
@@ -50,7 +50,7 @@ describe('event.ts memory leak prevention', () => {
     document.body.appendChild(testElement)
 
     // Add event listener
-    const cleanup = optimizedOn(testElement, 'scroll', handler)
+    const cleanup = cachedOn(testElement, 'scroll', handler)
 
     // Remove element from DOM
     document.body.removeChild(testElement)
@@ -64,7 +64,7 @@ describe('event.ts memory leak prevention', () => {
 
     // Rapid cycles
     for (let i = 0; i < 100; i++) {
-      const cleanup = optimizedOn(container, 'click', handler)
+      const cleanup = cachedOn(container, 'click', handler)
       cleanup()
     }
 
@@ -76,9 +76,9 @@ describe('event.ts memory leak prevention', () => {
   it('should deduplicate handlers correctly', () => {
     const handler = vi.fn()
 
-    const cleanup1 = optimizedOn(container, 'click', handler)
-    const cleanup2 = optimizedOn(container, 'click', handler) // Same handler
-    const cleanup3 = optimizedOn(container, 'click', handler) // Same handler again
+    const cleanup1 = cachedOn(container, 'click', handler)
+    const cleanup2 = cachedOn(container, 'click', handler) // Same handler
+    const cleanup3 = cachedOn(container, 'click', handler) // Same handler again
 
     // Should only be called once per click
     container.click()
@@ -97,8 +97,8 @@ describe('event.ts memory leak prevention', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
 
-    const cleanup1 = optimizedOn(container, 'click', handler1)
-    const cleanup2 = optimizedOn(container, 'click', handler2)
+    const cleanup1 = cachedOn(container, 'click', handler1)
+    const cleanup2 = cachedOn(container, 'click', handler2)
 
     // Both should work
     container.click()
@@ -127,7 +127,7 @@ describe('event.ts memory leak prevention', () => {
     // Add to all elements
     const cleanups = elements.map((el) => {
       document.body.appendChild(el)
-      return optimizedOn(el, 'click', handler)
+      return cachedOn(el, 'click', handler)
     })
 
     // Click all
@@ -144,28 +144,28 @@ describe('event.ts memory leak prevention', () => {
     }).not.toThrow()
   })
 
-  it('should handle optimizedOff correctly', () => {
+  it('should handle cachedOff correctly', () => {
     const handler = vi.fn()
 
-    optimizedOn(container, 'click', handler)
+    cachedOn(container, 'click', handler)
     container.click()
     expect(handler).toHaveBeenCalledTimes(1)
 
-    // Remove using optimizedOff
-    optimizedOff(container, 'click', handler)
+    // Remove using cachedOff
+    cachedOff(container, 'click', handler)
 
     container.click()
     expect(handler).toHaveBeenCalledTimes(1) // Should not be called again
   })
 
-  it('should handle optimizedOff with multiple handlers', () => {
+  it('should handle cachedOff with multiple handlers', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    optimizedOn(container, 'click', handler1)
-    optimizedOn(container, 'click', handler2)
-    optimizedOn(container, 'click', handler3)
+    cachedOn(container, 'click', handler1)
+    cachedOn(container, 'click', handler2)
+    cachedOn(container, 'click', handler3)
 
     container.click()
     expect(handler1).toHaveBeenCalledTimes(1)
@@ -173,7 +173,7 @@ describe('event.ts memory leak prevention', () => {
     expect(handler3).toHaveBeenCalledTimes(1)
 
     // Remove middle handler
-    optimizedOff(container, 'click', handler2)
+    cachedOff(container, 'click', handler2)
 
     container.click()
     expect(handler1).toHaveBeenCalledTimes(2)
@@ -181,8 +181,8 @@ describe('event.ts memory leak prevention', () => {
     expect(handler3).toHaveBeenCalledTimes(2)
 
     // Remove all remaining
-    optimizedOff(container, 'click', handler1)
-    optimizedOff(container, 'click', handler3)
+    cachedOff(container, 'click', handler1)
+    cachedOff(container, 'click', handler3)
 
     container.click()
     expect(handler1).toHaveBeenCalledTimes(2)

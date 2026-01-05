@@ -13,7 +13,7 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
@@ -173,7 +173,7 @@ function onOverlayVisibleChange(visible: boolean) {
   if (!visible) {
     removeOverlay(overlayId)
     unlockScrollContainer()
-    optimizedOff(document, 'keydown', onOverlayKeydown)
+    cachedOff(document, 'keydown', onOverlayKeydown)
 
     return
   }
@@ -188,7 +188,7 @@ function onOverlayVisibleChange(visible: boolean) {
 
     lockScrollContainer()
     tryGetShownElementIfNeed()
-    optimizedOn(document, 'keydown', onOverlayKeydown)
+    cachedOn(document, 'keydown', onOverlayKeydown)
   })
 }
 
@@ -204,7 +204,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  optimizedOff(document, 'keydown', onOverlayKeydown)
+  cachedOff(document, 'keydown', onOverlayKeydown)
 
   removeOverlay(overlayId)
   unlockScrollContainer()

@@ -63,7 +63,7 @@ export function once<E extends Event = Event>(
   )
 }
 
-export function optimizedOn<E extends Event = Event>(
+export function cachedOn<E extends Event = Event>(
   el: Nullable<EventTarget>,
   event: string,
   handler: EventHandler<E>,
@@ -83,14 +83,12 @@ export function optimizedOn<E extends Event = Event>(
 
   const cachedEventHandlers = elementCache[cacheKey] as EventHandler<E>[] | undefined
 
-  // Fast path: already installed scheduler; dedupe same handler.
   if (cachedEventHandlers) {
-    if (cachedEventHandlers.includes(handler)) {
-      return () => optimizedOff(el, event, handler, options)
+    if (!cachedEventHandlers.includes(handler)) {
+      cachedEventHandlers.push(handler)
     }
 
-    cachedEventHandlers.push(handler)
-    return () => optimizedOff(el, event, handler, options)
+    return () => cachedOff(el, event, handler, options)
   }
 
   // Scheduler always reads from cache to avoid stale closure references.
@@ -103,10 +101,10 @@ export function optimizedOn<E extends Event = Event>(
   elementCache[cacheKey] = handlers as EventHandler[]
   el.addEventListener(event, scheduler as EventListener, options)
 
-  return () => optimizedOff(el, event, handler, options)
+  return () => cachedOff(el, event, handler, options)
 }
 
-export function optimizedOff<E extends Event = Event>(
+export function cachedOff<E extends Event = Event>(
   el: Nullable<EventTarget>,
   event: string,
   handler: EventHandler<E>,

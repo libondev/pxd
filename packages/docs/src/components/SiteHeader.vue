@@ -3,7 +3,7 @@ import ArrowRightIcon from '@gdsicon/vue/arrow-right'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { version } from 'pxd'
-import { off, on } from 'pxd/utils/event'
+import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
 
@@ -32,11 +32,11 @@ onMounted(() => {
     return
   }
 
-  on(window, 'keydown', onKeydown)
+  cachedOn(window, 'keydown', onKeydown)
 })
 
 onBeforeUnmount(() => {
-  off(window, 'keydown', onKeydown)
+  cachedOff(window, 'keydown', onKeydown)
 })
 </script>
 

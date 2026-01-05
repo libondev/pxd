@@ -8,7 +8,7 @@ import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
@@ -176,7 +176,7 @@ async function handlePopoverShow() {
   }
 
   if (props.closeOnPressEscape) {
-    optimizedOn(document, 'keydown', onPopoverKeystroke)
+    cachedOn(document, 'keydown', onPopoverKeystroke)
   }
 }
 
@@ -200,7 +200,7 @@ async function handlePopoverHide(immediate: boolean = false) {
   await hidePopover()
 
   if (props.closeOnPressEscape) {
-    optimizedOff(document, 'keydown', onPopoverKeystroke)
+    cachedOff(document, 'keydown', onPopoverKeystroke)
   }
 }
 
@@ -325,7 +325,7 @@ const triggerMethodEvents = {
 function updateTriggerEvents(
   methods: PopoverTrigger[],
   dom: Nullable<EventTarget>,
-  handler: typeof optimizedOn | typeof optimizedOff,
+  handler: typeof cachedOn | typeof cachedOff,
 ) {
   for (const method of methods) {
     const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
@@ -354,9 +354,9 @@ watch(
 watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
   () => [triggerRef.value, triggerMethods.value],
   ([newDom, newMethods], [oldDom, oldMethods]) => {
-    updateTriggerEvents(oldMethods, oldDom, optimizedOff)
+    updateTriggerEvents(oldMethods, oldDom, cachedOff)
 
-    updateTriggerEvents(newMethods, newDom, optimizedOn)
+    updateTriggerEvents(newMethods, newDom, cachedOn)
   },
 )
 

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { onBeforeUnmount, shallowRef } from 'vue'
-import { on } from '../utils/event'
+import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
 interface CacheObject {
@@ -63,7 +63,7 @@ export function useMediaQuery(
     matches.value = event.matches
   }
 
-  const unbindEvent = on(mediaQuery.query, 'change', handler, { passive: true })
+  const unbindEvent = cachedOn(mediaQuery.query, 'change', handler, { passive: true })
 
   if (!mediaQuery.cleanup) {
     mediaQuery.cleanup = unbindEvent

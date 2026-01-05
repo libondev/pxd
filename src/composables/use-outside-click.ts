@@ -1,6 +1,6 @@
 import type { MaybeElementRef } from '../types/shared/utils'
 import { onBeforeUnmount, watch } from 'vue'
-import { optimizedOff, optimizedOn } from '../utils/event'
+import { cachedOff, cachedOn } from '../utils/event'
 import { toValue } from '../utils/ref'
 
 interface Options {
@@ -35,17 +35,17 @@ export function useOutsideClick(
 
   const unwatch = watch(() => toValue(container), (dom, _, onCleanup) => {
     if (dom) {
-      optimizedOn(document, 'click', onClick)
+      cachedOn(document, 'click', onClick)
     }
 
     onCleanup(() => {
-      optimizedOff(document, 'click', onClick)
+      cachedOff(document, 'click', onClick)
     })
   }, { immediate: true })
 
   function stop() {
     unwatch()
-    optimizedOff(document, 'click', onClick)
+    cachedOff(document, 'click', onClick)
   }
 
   onBeforeUnmount(() => {

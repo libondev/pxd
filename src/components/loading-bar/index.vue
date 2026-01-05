@@ -7,7 +7,7 @@ import {
   INCREASE_LOADING_BAR_EVENT_NAME,
   START_LOADING_BAR_EVENT_NAME,
 } from '../../composables/use-loading-bar'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { clampValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -160,17 +160,17 @@ onMounted(() => {
     return
   }
 
-  optimizedOn(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
-  optimizedOn(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
-  optimizedOn(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
-  optimizedOn(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
+  cachedOn(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
+  cachedOn(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
+  cachedOn(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
+  cachedOn(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
 })
 
 onBeforeUnmount(() => {
-  optimizedOff(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
-  optimizedOff(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
-  optimizedOff(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
-  optimizedOff(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
+  cachedOff(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
+  cachedOff(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
+  cachedOff(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
+  cachedOff(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
 })
 </script>
 

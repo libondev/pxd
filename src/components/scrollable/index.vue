@@ -4,7 +4,7 @@ import type { ComponentClass, ComponentDirection, Nullable } from '../../types/s
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
-import { once, optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn, once } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
 import PFader from '../fader/index.vue'
@@ -224,7 +224,7 @@ function startDragVertical(e: MouseEvent) {
     startThumbPos: scrollInfo.value.verticalThumbTop,
   }
 
-  optimizedOn(document, 'mousemove', onDragMove)
+  cachedOn(document, 'mousemove', onDragMove)
   once(document, 'mouseup', onEndDrag)
 }
 
@@ -243,7 +243,7 @@ function startDragHorizontal(e: MouseEvent) {
     startThumbPos: scrollInfo.value.horizontalThumbLeft,
   }
 
-  optimizedOn(document, 'mousemove', onDragMove)
+  cachedOn(document, 'mousemove', onDragMove)
   once(document, 'mouseup', onEndDrag)
 }
 
@@ -283,7 +283,7 @@ function onEndDrag(ev: MouseEvent) {
   ev.stopPropagation()
   dragState.isDragging = false
   dragState.direction = null
-  optimizedOff(document, 'mousemove', onDragMove)
+  cachedOff(document, 'mousemove', onDragMove)
   throttledUpdate.cancel()
   requestAnimationFrame(updateScrollbarMetrics)
 }
@@ -307,14 +307,14 @@ onMounted(async () => {
     return
   }
 
-  optimizedOn(window, 'resize', updateScrollbarMetrics, { passive: true })
+  cachedOn(window, 'resize', updateScrollbarMetrics, { passive: true })
   requestAnimationFrame(updateScrollbarMetrics)
 })
 
 onBeforeUnmount(() => {
-  optimizedOff(window, 'resize', updateScrollbarMetrics)
-  optimizedOff(document, 'mousemove', onDragMove)
-  optimizedOff(document, 'mouseup', onEndDrag)
+  cachedOff(window, 'resize', updateScrollbarMetrics)
+  cachedOff(document, 'mousemove', onDragMove)
+  cachedOff(document, 'mouseup', onEndDrag)
   throttledUpdate.cancel()
 })
 

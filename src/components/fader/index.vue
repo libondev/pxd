@@ -2,7 +2,7 @@
 import type { ComponentDirection } from '../../types/shared/props'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
-import { optimizedOff, optimizedOn } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/throttle'
@@ -72,7 +72,7 @@ useResizeObserver(() => formattedContainer.value, onContainerScroll)
 
 watch(() => formattedContainer.value, (container, oldDom) => {
   if (oldDom) {
-    optimizedOff(oldDom, 'scroll', onContainerScroll)
+    cachedOff(oldDom, 'scroll', onContainerScroll)
 
     return
   }
@@ -81,11 +81,11 @@ watch(() => formattedContainer.value, (container, oldDom) => {
     return
   }
 
-  optimizedOn(container, 'scroll', onContainerScroll)
+  cachedOn(container, 'scroll', onContainerScroll)
 }, { immediate: true })
 
 onBeforeUnmount(() => {
-  optimizedOff(formattedContainer.value, 'scroll', onContainerScroll)
+  cachedOff(formattedContainer.value, 'scroll', onContainerScroll)
 })
 </script>
 
