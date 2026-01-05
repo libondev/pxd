@@ -23,8 +23,8 @@ export function useColorScheme(options: Options = {}) {
   const colorScheme = shallowRef<ColorPreference>('auto')
   const preferredDark = useMediaQuery(PRESET_MEDIA_QUERIES.COLOR_SCHEME_DARK)
 
-  let removeStyleTimer: ReturnType<typeof setTimeout> | null
-  let disableTransitionStyleEl: HTMLStyleElement
+  let removeStyleTimer: ReturnType<typeof setTimeout> | null = null
+  let disableTransitionStyleEl: HTMLStyleElement | null = null
   const DISABLE_TRANSITION_CSS = `*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}`
 
   const isDark = computed(() => {
@@ -42,12 +42,17 @@ export function useColorScheme(options: Options = {}) {
   }
 
   function createDisableTransitionStyle() {
+    if (removeStyleTimer) {
+      clearTimeout(removeStyleTimer)
+      removeStyleTimer = null
+    }
+
     if (!disableTransitionStyleEl) {
       disableTransitionStyleEl = document.createElement('style')
       disableTransitionStyleEl.appendChild(document.createTextNode(DISABLE_TRANSITION_CSS))
     }
 
-    if (!removeStyleTimer) {
+    if (disableTransitionStyleEl.parentElement !== document.head) {
       document.head.appendChild(disableTransitionStyleEl)
     }
   }
@@ -58,9 +63,23 @@ export function useColorScheme(options: Options = {}) {
     }
 
     removeStyleTimer = setTimeout(() => {
-      document.head.removeChild(disableTransitionStyleEl)
+      if (disableTransitionStyleEl && disableTransitionStyleEl.parentElement === document.head) {
+        document.head.removeChild(disableTransitionStyleEl)
+      }
       removeStyleTimer = null
     }, 0)
+  }
+
+  function cleanupStyleElements() {
+    if (removeStyleTimer) {
+      clearTimeout(removeStyleTimer)
+      removeStyleTimer = null
+    }
+
+    if (disableTransitionStyleEl && disableTransitionStyleEl.parentElement === document.head) {
+      document.head.removeChild(disableTransitionStyleEl)
+    }
+    disableTransitionStyleEl = null
   }
 
   function toggleDarkMode() {
@@ -118,6 +137,7 @@ export function useColorScheme(options: Options = {}) {
     onBeforeUnmount(() => {
       stopEffect()
       unbindSubscriber()
+      cleanupStyleElements()
     })
   }
 

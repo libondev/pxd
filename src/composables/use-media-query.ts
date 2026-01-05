@@ -7,6 +7,7 @@ interface CacheObject {
   [key: string]: {
     count: number
     query: MediaQueryList
+    cleanup?: () => void
   }
 }
 
@@ -48,9 +49,10 @@ export function useMediaQuery(
   if (mediaQuery) {
     mediaQuery.count++
   } else {
+    const query = window.matchMedia(condition)
     mediaQuery = CACHED_QUERIES[condition] = {
       count: 1,
-      query: window.matchMedia(condition),
+      query,
     }
   }
 
@@ -63,6 +65,10 @@ export function useMediaQuery(
 
   const unbindEvent = on(mediaQuery.query, 'change', handler, { passive: true })
 
+  if (!mediaQuery.cleanup) {
+    mediaQuery.cleanup = unbindEvent
+  }
+
   function stop() {
     unbindEvent()
 
@@ -73,6 +79,9 @@ export function useMediaQuery(
     mediaQuery.count--
 
     if (mediaQuery.count <= 0) {
+      if (mediaQuery.cleanup) {
+        mediaQuery.cleanup()
+      }
       delete CACHED_QUERIES[condition]
     }
 
