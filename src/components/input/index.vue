@@ -32,6 +32,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   'click': [MouseEvent]
+  'clear': [string]
   'input': [string]
   'change': [string]
   'focus': [FocusEvent]
@@ -178,6 +179,7 @@ function toggleType() {
 }
 
 function clearValue() {
+  emits('clear', '')
   setNativeInputValue('')
   computedModelValue.value = ''
 }
