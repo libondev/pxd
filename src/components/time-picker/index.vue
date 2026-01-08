@@ -92,7 +92,7 @@ function onTimeListScroll(ev: Event) {
       behavior: 'smooth',
     })
 
-    dayjsDateTime.value = dayjsDateTime.value ? dayjsDateTime.value.set(type, clampedValue) : null
+    dayjsDateTime.value = dayjsDateTime.value!.set(type, clampedValue)
   }, 100)
 }
 
@@ -108,8 +108,14 @@ function hidePopover() {
   onVisibleChange(false)
 }
 
-function updateValueList(value: Props['modelValue']) {
-  dayjsDateTime.value = getFormattedValue(value)
+function updateDayjsDateTime(value: Props['modelValue']) {
+  if (!value) {
+    dayjsDateTime.value = null
+    return
+  }
+
+  const newDateTime = getFormattedValue(value)
+  dayjsDateTime.value = newDateTime.isValid() ? newDateTime : null
 }
 
 function getFormattedValue(value: Props['modelValue']) {
@@ -133,11 +139,11 @@ function getFormattedValue(value: Props['modelValue']) {
 
 async function setTimesScrollTop() {
   if (!dayjsDateTime.value) {
-    return
+    dayjsDateTime.value = dayjs()
   }
 
   const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
-  const modelValueList = [dayjsDateTime.value.hour(), dayjsDateTime.value.minute(), dayjsDateTime.value.second()]
+  const modelValueList = [dayjsDateTime.value!.hour(), dayjsDateTime.value!.minute(), dayjsDateTime.value!.second()]
 
   elList.forEach((el, i) => {
     const scrollTop = modelValueList[i]! * HEIGHT
@@ -174,39 +180,18 @@ function onTimeListClick(ev: MouseEvent) {
   })
 }
 
-function onCancelClick() {
-  updateValueList(props.modelValue)
-  hidePopover()
-}
-
-function onConfirmClick() {
+function updateModelValue() {
   modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormat) : ''
 }
 
-function onPresetTimeClick(date?: Date) {
-  onInputValueChange(date ?? new Date())
+function onInputValueChange(value?: string | Date) {
+  updateDayjsDateTime(value)
+  updateModelValue()
+}
 
+function onInputBlurChange() {
+  updateModelValue()
   hidePopover()
-}
-
-function onInputValueChange(value: string | Date) {
-  if (!value) {
-    modelValue.value = ''
-    dayjsDateTime.value = null
-    return
-  }
-
-  dayjsDateTime.value = getFormattedValue(value)
-  onConfirmClick()
-}
-
-function onUpdateModelValue(value: string) {
-  if (value) {
-    return
-  }
-
-  modelValue.value = ''
-  dayjsDateTime.value = null
 }
 
 function onPresetClick(ev: MouseEvent) {
@@ -228,10 +213,23 @@ function onPresetClick(ev: MouseEvent) {
     return
   }
 
-  onPresetTimeClick(presetValue)
+  onInputValueChange(presetValue)
+
+  hidePopover()
 }
 
-watch(() => props.modelValue, updateValueList, { immediate: true })
+function onConfirmClick() {
+  updateDayjsDateTime(new Date())
+  updateModelValue()
+  hidePopover()
+}
+
+function onCancelClick() {
+  updateDayjsDateTime(props.modelValue)
+  hidePopover()
+}
+
+watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 </script>
 
 <template>
@@ -249,7 +247,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
     @show="setTimesScrollTop"
-    @outside-click="onConfirmClick"
+    @outside-click="updateModelValue"
     @visible-change="onVisibleChange"
   >
     <PInput
@@ -261,9 +259,10 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       v-bind="$attrs"
+      @blur="onInputBlurChange"
+      @clear="onInputValueChange"
       @change="onInputValueChange"
-      @keydown.enter="onConfirmClick"
-      @update:model-value="onUpdateModelValue"
+      @keydown.enter="onInputBlurChange"
     >
       <template v-if="prefixIcon" #prefix>
         <CalendarIcon class="pointer-events-none" />
@@ -309,7 +308,7 @@ watch(() => props.modelValue, updateValueList, { immediate: true })
       </div>
 
       <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onPresetTimeClick()">
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onConfirmClick">
           {{ config.locale.date.now }}
         </PButton>
 

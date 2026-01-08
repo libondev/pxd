@@ -56,12 +56,12 @@ const presets = [
 <script setup>
 import { ref } from 'vue'
 
-const time = ref('18:30:00')
+const time = ref('18:30:25')
 </script>
 
 <template>
   <PText class="mb-2">Value formatted: {{ time }}</PText>
-  <PTimePicker v-model="time" class="!w-[220px]" format="HH-mm" value-format="HH:mm:ss" />
+  <PTimePicker v-model="time" class="!w-[220px]" format="HH-mm" value-format="HH:mm:00" />
 </template>
 ```
 
