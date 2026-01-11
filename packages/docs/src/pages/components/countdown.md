@@ -289,14 +289,14 @@ const active = ref(false)
 
 <template>
   <div class="h-16">
-    <PCountdown intuitive :active="active" :durations="5000000" @finish="active = false">
+    <PCountdown intuitive :active="active" :durations="5000" @finish="active = false">
       <template #default="{times}">
-        <PButton variant="primary" class="relative z-10" @click="active = !active">
+        <PButton variant="primary" class="relative z-10 font-mono" @click="active = !active">
           <template #prefix>
             <Component :is="active ? PauseCircleIcon : PlayCircleIcon" />
           </template>
 
-          {{ active ? 'Stop' : 'Start' }}
+          {{ active ? 'Pause' : 'Start' }}
         </PButton>
 
         <div
