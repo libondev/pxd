@@ -130,7 +130,7 @@ function onErrorProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
   progress.value = 1
   hideTimerId = setTimeout(() => {
     hidden.value = true
-  }, 300)
+  }, 500)
 }
 
 function onFinishProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
@@ -145,7 +145,7 @@ function onFinishProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
   progress.value = 1
   hideTimerId = setTimeout(() => {
     hidden.value = true
-  }, 300)
+  }, 500)
 }
 
 function onIncreaseProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
