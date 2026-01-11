@@ -1,4 +1,5 @@
 import type { Nullable } from '../types/shared/utils'
+import { isServer } from './is'
 
 export function getFallbackValue<
   Variants extends Record<string, any>,
@@ -28,4 +29,20 @@ export function getColorByThreshold(
   }
 
   return colors[keys[keyLength - 1]!]!
+}
+
+type DocumentDirection = 'rtl' | 'ltr' | 'auto'
+
+export function getDocumentDirection(): DocumentDirection {
+  if (isServer()) {
+    return 'ltr'
+  }
+
+  const dirAttribute = document.documentElement.getAttribute('dir')
+
+  if (dirAttribute === 'auto' || !dirAttribute) {
+    return window.getComputedStyle(document.documentElement).direction as DocumentDirection
+  }
+
+  return dirAttribute as DocumentDirection
 }
