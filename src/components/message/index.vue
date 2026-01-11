@@ -253,7 +253,7 @@ function onClearMessages({ detail: data }: CustomEvent<MessageItem>) {
 }
 
 onMounted(() => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

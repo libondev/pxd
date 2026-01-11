@@ -26,7 +26,7 @@ export function getElementRectFromContainer(
 }
 
 export function getStyle(el: HTMLElement): CSSStyleDeclaration {
-  if (isServer || !el) {
+  if (isServer() || !el) {
     return {} as CSSStyleDeclaration
   }
 

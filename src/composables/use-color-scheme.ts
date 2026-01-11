@@ -110,7 +110,7 @@ export function useColorScheme(options: Options = {}) {
     colorScheme.value = detail.mode
   }
 
-  if (!isServer) {
+  if (!isServer()) {
     const stored = localStorage.getItem(STORAGE_KEY)
 
     if (stored === 'dark' || stored === 'light' || stored === 'auto') {

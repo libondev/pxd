@@ -300,7 +300,7 @@ if (props.scrollbar) {
 }
 
 onMounted(async () => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
   if (!props.scrollbar && !props.fader) {

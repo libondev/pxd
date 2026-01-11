@@ -181,7 +181,7 @@ provideListContext({
 })
 
 onMounted(async () => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

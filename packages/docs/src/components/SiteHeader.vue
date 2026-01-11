@@ -28,7 +28,7 @@ function onKeydown(ev: KeyboardEvent) {
 }
 
 onMounted(() => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

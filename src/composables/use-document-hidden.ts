@@ -3,7 +3,7 @@ import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
 export function useDocumentHidden() {
-  const isHidden = shallowRef<boolean>(isServer ? false : document.hidden)
+  const isHidden = shallowRef<boolean>(isServer() ? false : document.hidden)
 
   function toggle() {
     isHidden.value = document.hidden

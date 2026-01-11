@@ -157,7 +157,7 @@ function onIncreaseProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
 }
 
 onMounted(() => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

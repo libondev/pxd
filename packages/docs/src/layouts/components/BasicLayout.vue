@@ -65,7 +65,7 @@ const paginationData = computed(() => {
 
 const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
 
-if (!isServer) {
+if (!isServer()) {
   watch(
     () => route.path,
     () => {

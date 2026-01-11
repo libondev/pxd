@@ -36,7 +36,7 @@ export const CREATE_MESSAGE_EVENT_NAME = '#create-message'
 export const REMOVE_MESSAGE_EVENT_NAME = '#remove-message'
 
 export const useMessage = ((msg: string | VNode, options?: Options) => {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

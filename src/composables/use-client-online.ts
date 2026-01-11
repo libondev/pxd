@@ -3,7 +3,7 @@ import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
 export function useClientOnline() {
-  const isOnline = shallowRef(isServer ? true : navigator.onLine)
+  const isOnline = shallowRef(isServer() ? true : navigator.onLine)
 
   function toggle() {
     isOnline.value = navigator.onLine

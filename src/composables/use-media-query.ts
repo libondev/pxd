@@ -40,7 +40,7 @@ export function useMediaQuery(
 ): Ref<boolean> {
   const matches = shallowRef(false)
 
-  if (isServer) {
+  if (isServer()) {
     return matches
   }
 

@@ -166,7 +166,7 @@ function tryGetShownElementIfNeed() {
 }
 
 function onOverlayVisibleChange(visible: boolean) {
-  if (isServer) {
+  if (isServer()) {
     return
   }
 

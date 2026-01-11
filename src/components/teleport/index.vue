@@ -22,12 +22,18 @@ const props = withDefaults(
   { to: 'body' },
 )
 
+const inVue3 = isVue3()
+const inServer = isServer()
+
+let isTeleported = false
+let homeLocation: Location | null
+
 const containerRef = shallowRef<HTMLElement>()
 
 const targetEl = computed(() => {
   const { disabled, to } = props
 
-  if (isServer || isVue3 || disabled || !to) {
+  if (inServer || inVue3 || disabled || !to) {
     return null
   }
 
@@ -43,11 +49,8 @@ const targetEl = computed(() => {
   return container ?? document.body
 })
 
-let isTeleported = false
-let homeLocation: Location | null
-
 onMounted(() => {
-  if (isVue3 || isServer) {
+  if (inVue3 || inServer) {
     return
   }
 
@@ -91,7 +94,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if (isVue3) {
+  if (inVue3) {
     return
   }
 
@@ -101,7 +104,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="isVue3" :disabled="disabled" :to="to" v-bind="$attrs">
+  <Teleport v-if="inVue3" :disabled="disabled" :to="to" v-bind="$attrs">
     <slot />
   </Teleport>
 
