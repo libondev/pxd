@@ -1,21 +1,22 @@
 import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event'
+import { isServer } from '../utils/is'
 
 export function useDocumentHidden() {
-  const isHidden = shallowRef<boolean>(document.hidden)
+  const isHidden = shallowRef<boolean>(isServer ? false : document.hidden)
 
   function toggle() {
     isHidden.value = document.hidden
   }
 
-  let clean: () => void
+  let cleanHidden: () => void
 
   onMounted(() => {
-    clean = cachedOn(document, 'visibilitychange', toggle)
+    cleanHidden = cachedOn(document, 'visibilitychange', toggle)
   })
 
   onBeforeUnmount(() => {
-    clean?.()
+    cleanHidden?.()
   })
 
   return isHidden

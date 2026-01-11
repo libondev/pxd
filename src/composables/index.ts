@@ -1,4 +1,5 @@
 export * from './use-browser-observer.js'
+export * from './use-client-online.js'
 export * from './use-color-scheme.js'
 export * from './use-config-provider-context.js'
 export * from './use-copy-click.js'
