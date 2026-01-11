@@ -283,24 +283,27 @@ defineExpose({
 
 <template>
   <PTeleport to="body">
-    <div
+    <section
       class="pxd-message p-4 pointer-events-none fixed z-20 w-full"
+      tabindex="-1"
+      aria-live="polite"
+      aria-label="Notifications"
       :style="{ zIndex }"
       :data-position="position"
     >
       <TransitionGroup
-        name="pxd-transition--fade-scale"
-        tag="div"
         appear
+        name="pxd-transition--fade-scale"
+        tag="ol"
+        tabindex="-1"
         class="pxd-message--group gap-3 not-empty:sm:pointer-events-auto relative flex"
         @pointerover="onPointerOver"
         @pointerout="onPointerOut"
       >
-        <output
+        <li
           v-for="item of visibleMessages"
           :key="item.key"
-          role="status"
-          aria-live="polite"
+          tabindex="0"
           :data-key="item.key"
           :data-type="item.type"
           :class="[ITEM_CLASSES, item.class, { 'pr-9 pointer-events-auto': item.closeable }]"
@@ -321,9 +324,9 @@ defineExpose({
           >
             <CloseIcon />
           </PButton>
-        </output>
+        </li>
       </TransitionGroup>
-    </div>
+    </section>
   </PTeleport>
 </template>
 
