@@ -1,0 +1,12 @@
+{
+  "formatter": {
+    "language_server": {
+      "name": "null",
+    },
+  },
+  "code_actions_on_format": {
+    "source.fixAll.oxc": false,
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false,
+  },
+}
