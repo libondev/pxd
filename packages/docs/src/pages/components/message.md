@@ -23,7 +23,8 @@ const options = [
 const loremText = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque minima, excepturi distinctio quis asperiores magnam voluptate nostrum quibusdam!'
 
 function addMessage(type) {
-  useMessage(loremText.slice(0, Math.ceil(Math.random() * 100)), { type })
+  const text = loremText.slice(0, Math.ceil(Math.random() * 100))
+  useMessage(text, { type })
 }
 </script>
 

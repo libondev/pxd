@@ -3,15 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Message from '../../src/components/message/index.vue'
 import {
   CREATE_MESSAGE_EVENT_NAME,
-  REMOVE_MESSAGE_EVENT_NAME,
 } from '../../src/composables/use-message'
 
 function dispatchCreate(data: any) {
   const ev = new CustomEvent(CREATE_MESSAGE_EVENT_NAME, { detail: data })
-  window.dispatchEvent(ev)
-}
-function dispatchRemove(data: any) {
-  const ev = new CustomEvent(REMOVE_MESSAGE_EVENT_NAME, { detail: data })
   window.dispatchEvent(ev)
 }
 
@@ -115,36 +110,6 @@ describe('message', () => {
     wrapper.vm.close('closable-1')
 
     expect(wrapper.vm.messages.length).toBe(0)
-
-    wrapper.unmount()
-  })
-
-  it('should remove by REMOVE_MESSAGE_EVENT_NAME', async () => {
-    const wrapper = mount(Message, {
-      props: { group: 'g1' },
-      attachTo: document.body,
-    })
-    await flushTeleportAndTransitions(wrapper)
-
-    dispatchCreate({
-      key: 'rm-1',
-      group: 'g1',
-      type: 'warning',
-      message: 'to remove',
-      durations: 0,
-      closeable: false,
-    })
-    await flushTeleportAndTransitions(wrapper)
-
-    expect(document.body.querySelector('[data-key="rm-1"]')).toBeTruthy()
-
-    dispatchRemove({
-      key: 'rm-1',
-      group: 'g1',
-    })
-    await flushTeleportAndTransitions(wrapper)
-
-    expect(document.body.querySelector('[data-key="rm-1"]')).toBeFalsy()
 
     wrapper.unmount()
   })

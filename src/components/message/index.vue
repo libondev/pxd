@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import type { MessageItem } from '../../composables/use-message'
+import type { MessageItemType } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
-import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
-import CloseIcon from '@gdsicon/vue/cross'
-import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
-import InformationFillIcon from '@gdsicon/vue/information-fill'
-import LoadingIcon from '@gdsicon/vue/loader-circle'
-import WarningFillIcon from '@gdsicon/vue/warning-fill'
+
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import {
   CLEAR_MESSAGES_EVENT_NAME,
@@ -14,14 +9,16 @@ import {
   REMOVE_MESSAGE_EVENT_NAME,
 } from '../../composables/use-message'
 import { cachedOff, cachedOn } from '../../utils/event'
+import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
-import PButton from '../button/index.vue'
+import PMessageItem from '../message-item/index.vue'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
   max?: number
+  width?: string | number
   group?: string
-  zIndex?: string | number
+  expand?: boolean
   position?: ComponentPosition<'top' | 'bottom'>
 }
 
@@ -38,18 +35,7 @@ const props = withDefaults(
   },
 )
 
-const TYPE_ICONS = {
-  info: InformationFillIcon,
-  success: SuccessFillIcon,
-  warning: WarningFillIcon,
-  error: ErrorFillIcon,
-  loading: LoadingIcon,
-}
-
-const ITEM_CLASSES = 'pxd-message--item'
-const ITEM_SELECTOR = `.${ITEM_CLASSES}`
-
-const groupMessages = ref<MessageItem[]>([])
+const groupMessages = ref<MessageItemType[]>([])
 
 const visibleMessages = computed(() => {
   const max = Math.max(props.max, 0)
@@ -62,7 +48,7 @@ const visibleMessages = computed(() => {
   return list.slice(-max)
 })
 
-function getMessageByKey(key: MessageItem['key']) {
+function getMessageByKey(key: MessageItemType['key']) {
   const index = groupMessages.value.findIndex(m => m.key === key)
   const message = groupMessages.value[index]
 
@@ -79,27 +65,7 @@ function getMessageByKey(key: MessageItem['key']) {
   }
 }
 
-function getItemElementFromEvent(e: PointerEvent) {
-  const target = e.target as Element | null
-
-  if (!target) {
-    return null
-  }
-
-  return target.closest<HTMLElement>(ITEM_SELECTOR)
-}
-
-function getRelatedItemElement(e: PointerEvent) {
-  const related = e.relatedTarget as Element | null
-
-  if (!related) {
-    return null
-  }
-
-  return related.closest<HTMLElement>(ITEM_SELECTOR)
-}
-
-function setAutoCloseTimer(message: MessageItem) {
+function setAutoCloseTimer(message: MessageItemType) {
   message._startedAtMs = Date.now()
 
   if (message._remainingMs == null) {
@@ -115,7 +81,7 @@ function setAutoCloseTimer(message: MessageItem) {
   }, message._remainingMs)
 }
 
-function pauseMessageByKey(key: MessageItem['key']) {
+function pauseMessageByKey(key: MessageItemType['key']) {
   if (!key) {
     return
   }
@@ -167,36 +133,7 @@ function resumeMessageByKey(key: string) {
   setAutoCloseTimer(message)
 }
 
-// 鼠标移入时，暂停自动关闭定时器
-function onPointerOver(e: PointerEvent) {
-  const currentItem = getItemElementFromEvent(e)
-  if (!currentItem) {
-    return
-  }
-
-  const relatedItem = getRelatedItemElement(e)
-  if (currentItem === relatedItem) {
-    return
-  }
-
-  pauseMessageByKey(currentItem.dataset.key!)
-}
-
-function onPointerOut(e: PointerEvent) {
-  const currentItem = getItemElementFromEvent(e)
-  if (!currentItem) {
-    return
-  }
-
-  const relatedItem = getRelatedItemElement(e)
-  if (currentItem === relatedItem) {
-    return
-  }
-
-  resumeMessageByKey(currentItem.dataset.key!)
-}
-
-function closeMessageByKey(key: MessageItem['key']) {
+function closeMessageByKey(key: MessageItemType['key']) {
   const { index, message } = getMessageByKey(key)
 
   if (!message) {
@@ -224,7 +161,7 @@ function clearMessage() {
   groupMessages.value = []
 }
 
-function onCreateMessage({ detail: data }: CustomEvent<MessageItem>) {
+function onCreateMessage({ detail: data }: CustomEvent<MessageItemType>) {
   if (!data || data.group !== props.group) {
     return
   }
@@ -233,10 +170,10 @@ function onCreateMessage({ detail: data }: CustomEvent<MessageItem>) {
     setAutoCloseTimer(data)
   }
 
-  groupMessages.value.push(data)
+  groupMessages.value.unshift(data)
 }
 
-function onRemoveMessage({ detail: data }: CustomEvent<MessageItem>) {
+function onRemoveMessage({ detail: data }: CustomEvent<MessageItemType>) {
   if (!data || !data.key || data.group !== props.group) {
     return
   }
@@ -244,7 +181,7 @@ function onRemoveMessage({ detail: data }: CustomEvent<MessageItem>) {
   closeMessageByKey(data.key)
 }
 
-function onClearMessages({ detail: data }: CustomEvent<MessageItem>) {
+function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
   if (!data || data.group !== props.group) {
     return
   }
@@ -284,68 +221,47 @@ defineExpose({
 <template>
   <PTeleport to="body">
     <section
-      class="pxd-message p-4 pointer-events-none fixed z-20 w-full"
+      class="pxd-message px-4 fixed z-20 flex w-full"
       tabindex="-1"
       aria-live="polite"
       aria-label="Notifications"
-      :style="{ zIndex }"
       :data-position="position"
     >
-      <TransitionGroup
-        appear
-        name="pxd-transition--fade-scale"
+      <ol
+        v-if="groupMessages.length"
         tag="ol"
         tabindex="-1"
-        class="pxd-message--group gap-3 not-empty:sm:pointer-events-auto relative flex"
-        @pointerover="onPointerOver"
-        @pointerout="onPointerOut"
+        class="pxd-message--group relative flex"
+        :style="{ width: getCssUnitValue(width) }"
+        :class="{ 'gap-3': expand }"
       >
-        <li
-          v-for="item of visibleMessages"
+        <PMessageItem
+          v-for="(item, index) of groupMessages"
           :key="item.key"
-          tabindex="0"
-          :data-key="item.key"
-          :data-type="item.type"
-          :class="[ITEM_CLASSES, item.class, { 'pr-9 pointer-events-auto': item.closeable }]"
-          class="py-2 px-3 text-sm relative flex w-max max-w-full rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal"
-        >
-          <Component :is="TYPE_ICONS[item.type]" v-if="item.type" class="pxd-message--icon size-4 mr-2 h-[1lh] shrink-0" :class="item.type" />
-
-          <span v-if="typeof item.message === 'string'" v-html="item.message" />
-          <Component :is="item.message" v-else :key="item.key" />
-
-          <PButton
-            v-if="item.closeable"
-            icon
-            size="xs"
-            variant="ghost"
-            class="right-1.5 top-1.5 absolute z-1 touch-none text-foreground-secondary"
-            @click="closeMessageByKey(item.key)"
-          >
-            <CloseIcon />
-          </PButton>
-        </li>
-      </TransitionGroup>
+          :max="max"
+          :type="item.type"
+          :index="index"
+          :class="item.class"
+          :message="item.message"
+        />
+      </ol>
     </section>
   </PTeleport>
 </template>
 
 <style lang="postcss">
 .pxd-message {
-  max-width: min(500px, 100vw);
-  max-height: min(800px, 50vh);
-
-  .pxd-transition--fade-scale-leave-active {
-    position: absolute;
-  }
-
   .pxd-message--group {
+    width: 356px;
+    max-width: 100vw;
     align-items: center;
     flex-direction: column;
   }
 
   &[data-position^="top"] {
-    top: 0;
+    --item-offset: 10px;
+    --starting-offset: -100%;
+    top: 1rem;
 
     .pxd-message--item {
       transform-origin: top center;
@@ -353,7 +269,9 @@ defineExpose({
   }
 
   &[data-position^="bottom"] {
-    bottom: 0;
+    --item-offset: -10px;
+    --starting-offset: 100%;
+    bottom: 1rem;
 
     .pxd-message--group {
       flex-direction: column-reverse;
@@ -367,11 +285,15 @@ defineExpose({
   &[data-position="top"],
   &[data-position="bottom"] {
     left: 50%;
+    justify-content: center;
     transform: translateX(-50%);
   }
 
   &[data-position="top-start"],
   &[data-position="bottom-start"] {
+    left: 0;
+    justify-content: flex-start;
+
     .pxd-message--group {
       align-items: flex-start;
     }
@@ -380,9 +302,21 @@ defineExpose({
   &[data-position="top-end"],
   &[data-position="bottom-end"] {
     right: 0;
+    justify-content: flex-end;
 
     .pxd-message--group {
       align-items: flex-end;
+    }
+  }
+
+  .pxd-message--item {
+    --scale: var(--index) * 0.05 + 1;
+    --transition: transform .4s, opacity .4s, height .4s, box-shadow .2s;
+    --transform: translateY(calc(var(--item-offset) * var(--index))) scale(calc(-1 * var(--scale)));
+    transition-timing-function: ease;
+
+    &[data-mount="false"] {
+      --transform: translateY(var(--starting-offset));
     }
   }
 

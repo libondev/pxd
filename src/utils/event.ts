@@ -1,5 +1,6 @@
 import type { Nullable } from '../types/shared'
 import { isOverflowScrollable } from './dom'
+import { isServer } from './is'
 
 type EventHandler<E extends Event = Event> = (event: E) => void
 
@@ -170,4 +171,12 @@ export function preventDefaultScroll(ev: Event): boolean {
   }
 
   return false
+}
+
+export function raf(fn: FrameRequestCallback): number {
+  return isServer() ? -1 : requestAnimationFrame(fn)
+}
+
+export function doubleRaf(fn: FrameRequestCallback): void {
+  raf(() => raf(fn))
 }
