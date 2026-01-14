@@ -59,7 +59,7 @@ onBeforeUnmount(() => {
   <main class="px-6 xl:border-x relative mx-auto w-full">
     <section class="my-28 py-12 sm:py-28 text-center">
       <div class="relative">
-        <h1 class="font-bold text-6xl inline">
+        <h1 class="text-6xl font-bold inline">
           PXD
         </h1>
 
@@ -68,7 +68,7 @@ onBeforeUnmount(() => {
         </span>
       </div>
 
-      <p class="leading-tight text-lg mt-8 text-balance text-foreground-secondary">
+      <p class="mt-8 text-lg leading-tight text-balance text-foreground-secondary">
         A universal UI component library for Vue2&3
       </p>
 
@@ -101,13 +101,13 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <hr class="mb-8 sm:mb-20 sm:max-w-screen-md mx-auto max-sm:w-3/4">
+    <hr class="mb-8 sm:mb-20 sm:max-w-3xl mx-auto max-sm:w-3/4">
 
-    <section class="features max-w-screen-lg py-20 mb-8 gap-4 relative mx-auto flex cursor-default flex-wrap">
+    <section class="features mb-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap">
       <div
         class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
-        <h3 class="font-medium mb-1.5">
+        <h3 class="mb-1.5 font-medium">
           Consistent experience
         </h3>
 
@@ -119,13 +119,12 @@ onBeforeUnmount(() => {
       <div
         class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
-        <h3 class="font-medium mb-1.5">
+        <h3 class="mb-1.5 font-medium">
           Full light and dark support
         </h3>
 
         <PText secondary>
-          It takes little effort to make all components natively support light
-          and dark mode. See<PLinkButton
+          Switch themes in the blink of an eye without any effort. See<PLinkButton
             href="/components/theme-switcher#premise"
             class="text-foreground underline"
             type="text"
@@ -137,7 +136,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
-        <h3 class="font-medium mb-1.5">
+        <h3 class="mb-1.5 font-medium">
           On demand Import
         </h3>
 
@@ -149,7 +148,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
-        <h3 class="font-medium mb-1.5">
+        <h3 class="mb-1.5 font-medium">
           Support for reducing animation
         </h3>
 
