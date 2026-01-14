@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MessageItemType } from '../../composables/use-message'
+import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -29,27 +29,24 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    max: 5,
+    max: 3,
     group: 'default',
     position: 'top',
   },
 )
 
 const groupMessages = ref<MessageItemType[]>([])
+const messageItemsHeight = ref<MessageItemHeightType[]>([])
 
-const visibleMessages = computed(() => {
-  const max = Math.max(props.max, 0)
-  const list = groupMessages.value
-
-  if (!max || max <= 0) {
-    return list
+const messageGroupStyle = computed(() => {
+  return {
+    '--message-item-width': getCssUnitValue(props.width),
+    '--message-item-front-height': getCssUnitValue(messageItemsHeight.value[0]?.height),
   }
-
-  return list.slice(-max)
 })
 
-function getMessageByKey(key: MessageItemType['key']) {
-  const index = groupMessages.value.findIndex(m => m.key === key)
+function getMessageByKey(key: MessageItemType['id']) {
+  const index = groupMessages.value.findIndex(m => m.id === key)
   const message = groupMessages.value[index]
 
   if (!message) {
@@ -77,11 +74,11 @@ function setAutoCloseTimer(message: MessageItemType) {
   }
 
   message._timerId = setTimeout(() => {
-    closeMessageByKey(message.key)
+    closeMessageByKey(message.id)
   }, message._remainingMs)
 }
 
-function pauseMessageByKey(key: MessageItemType['key']) {
+function pauseMessageByKey(key: MessageItemType['id']) {
   if (!key) {
     return
   }
@@ -133,7 +130,7 @@ function resumeMessageByKey(key: string) {
   setAutoCloseTimer(message)
 }
 
-function closeMessageByKey(key: MessageItemType['key']) {
+function closeMessageByKey(key: MessageItemType['id']) {
   const { index, message } = getMessageByKey(key)
 
   if (!message) {
@@ -146,6 +143,10 @@ function closeMessageByKey(key: MessageItemType['key']) {
   }
 
   groupMessages.value.splice(index, 1)
+}
+
+function onUpdateMessageItemInfo(info: MessageItemHeightType) {
+  messageItemsHeight.value.unshift(info)
 }
 
 function clearMessage() {
@@ -174,11 +175,11 @@ function onCreateMessage({ detail: data }: CustomEvent<MessageItemType>) {
 }
 
 function onRemoveMessage({ detail: data }: CustomEvent<MessageItemType>) {
-  if (!data || !data.key || data.group !== props.group) {
+  if (!data || !data.id || data.group !== props.group) {
     return
   }
 
-  closeMessageByKey(data.key)
+  closeMessageByKey(data.id)
 }
 
 function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
@@ -209,7 +210,6 @@ onBeforeUnmount(() => {
 
 defineExpose({
   messages: groupMessages,
-  visibleMessages,
   get: getMessageByKey,
   pause: pauseMessageByKey,
   resume: resumeMessageByKey,
@@ -228,25 +228,29 @@ defineExpose({
       :data-expand="expand"
       :data-position="position"
     >
-      <ol
+      <TransitionGroup
         v-if="groupMessages.length"
+        appear
         tag="ol"
         tabindex="-1"
-        class="pxd-message--group min-w-16 relative flex w-full"
-        :style="{ '--message-item-width': getCssUnitValue(width) }"
+        name="pxd-transition-message"
+        class="pxd-message--group min-w-16 flex w-full"
+        :style="messageGroupStyle"
         :class="{ 'gap-3': expand }"
       >
         <PMessageItem
           v-for="(item, index) of groupMessages"
-          :key="item.key"
+          :id="item.id"
+          :key="item.id"
           :max="max"
           :type="item.type"
           :index="index"
-          :class="item.class"
           :expand="expand"
           :message="item.message"
+          :class-names="item.class"
+          @set-item-height="onUpdateMessageItemInfo"
         />
-      </ol>
+      </TransitionGroup>
     </section>
   </PTeleport>
 </template>
@@ -311,15 +315,18 @@ defineExpose({
     }
   }
 
-  &[data-expand="false"] {
-    .pxd-message--item {
-      --scale: var(--index) * 0.05 + 1;
-      --transition: transform .4s, opacity .4s, height .4s, box-shadow .2s;
-      --transform: translateY(calc(var(--item-offset) * var(--index))) scale(calc(-1 * var(--scale)));
-      transition-timing-function: ease;
+  .pxd-message--item {
+    --message-item-scale: var(--message-item-index) * 0.05 + 1;
+    --message-item-transition: transform, opacity, height, box-shadow;
+    --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
+  }
 
-      &[data-mount="false"] {
-        --transform: translateY(var(--starting-offset));
+  &[data-expand="false"] {
+    .pxd-message--item[data-front="false"] {
+      height: var(--message-item-front-height);
+
+      & > * {
+        opacity: 0;
       }
     }
   }
@@ -341,6 +348,17 @@ defineExpose({
     &.success {
       color: var(--color-green-700)
     }
+  }
+
+  .pxd-transition-message-enter-active,
+  .pxd-transition-message-leave-active {
+    --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--scale)));
+  }
+
+  .pxd-transition-message-enter-from,
+  .pxd-transition-message-leave-to {
+    opacity: 0;
+    --message-item-transform: translateY(var(--starting-offset));
   }
 }
 </style>

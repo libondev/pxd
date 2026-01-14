@@ -1,27 +1,29 @@
 <script lang="ts" setup>
-import type { VNode } from 'vue'
+import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
+import type { ComponentClass } from '../../types/shared/props'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
 import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
-import { computed, onMounted, shallowRef } from 'vue'
-import { doubleRaf } from '../../utils/event'
+import { computed, nextTick, onMounted, shallowRef } from 'vue'
 import PButton from '../button/index.vue'
 
 interface Props {
-  id?: string
+  id: MessageItemType['id']
   max: number
-  type?: keyof typeof TYPE_ICONS | false | ''
+  type?: MessageItemType['type']
   index: number
   expand?: boolean
-  message?: string | VNode
-  closeable?: boolean
+  classNames?: ComponentClass
+  message?: MessageItemType['message']
+  closeable?: MessageItemType['closeable']
 }
 
 defineOptions({
   name: 'PMessageItem',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -32,7 +34,8 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  close: [key: Props['id']]
+  'close': [key: Props['id']]
+  'set-item-height': [info: MessageItemHeightType]
 }>()
 
 const TYPE_ICONS = {
@@ -44,18 +47,19 @@ const TYPE_ICONS = {
 }
 
 const itemRef = shallowRef<HTMLElement>()
-const isMounted = shallowRef(false)
 
 const isFront = computed(() => props.index === 0)
 
 const computedStyle = computed(() => {
   const { index, max, expand } = props
+  const isVisible = index < max
 
   return {
-    '--index': index,
+    '--message-item-index': index,
     'z-index': max - index,
-    'opacity': index < max ? 1 : 0,
+    'opacity': isVisible ? 1 : 0,
     'position': expand ? 'relative' : 'absolute',
+    'pointer-events': isVisible ? 'auto' : 'none',
   } as const
 })
 
@@ -63,11 +67,25 @@ function onItemCloseClick() {
   emits('close', props.id)
 }
 
+async function setItemHeightInfo() {
+  await nextTick()
+
+  if (!itemRef.value) {
+    return
+  }
+
+  const rect = itemRef.value.getBoundingClientRect()
+
+  const info: MessageItemHeightType = {
+    id: props.id,
+    height: rect.height,
+  }
+
+  emits('set-item-height', info)
+}
+
 onMounted(() => {
-  // ensure the element is mounted after the browser has rendered the initial state
-  doubleRaf(() => {
-    isMounted.value = true
-  })
+  setItemHeightInfo()
 })
 </script>
 
@@ -77,12 +95,11 @@ onMounted(() => {
     tabindex="0"
     :data-index="index"
     :data-front="isFront"
-    :data-mount="isMounted"
     :style="computedStyle"
-    class="pxd-message--item py-2 px-3 text-sm flex w-(--message-item-width) max-w-full transform-(--transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--transition)"
-    :class="{ 'pr-9 pointer-events-auto': closeable }"
+    class="pxd-message--item px-3 py-2 text-sm box-border flex w-(--message-item-width) max-w-full transform-(--message-item-transform) overflow-hidden rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    :class="[classNames, { 'pr-9 pointer-events-auto': closeable }]"
   >
-    <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon size-4 mr-2 h-[1lh] shrink-0" :class="type" />
+    <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon mr-2 size-4 h-[1lh] shrink-0" :class="type" />
 
     <span v-if="typeof message === 'string'" v-html="message" />
     <Component :is="message" v-else :key="id" />
@@ -92,7 +109,7 @@ onMounted(() => {
       icon
       size="xs"
       variant="ghost"
-      class="right-1.5 top-1.5 absolute z-1 touch-none text-foreground-secondary"
+      class="top-1.5 right-1.5 absolute z-1 touch-none text-foreground-secondary"
       @click="onItemCloseClick"
     >
       <CloseIcon />

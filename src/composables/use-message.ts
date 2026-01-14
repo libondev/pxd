@@ -1,10 +1,9 @@
 import type { VNode } from 'vue'
 import type { ComponentClass } from '../types/shared/props'
 import { isServer } from '../utils/is'
-import { getUniqueId } from '../utils/uid'
 
 interface Options {
-  key?: string | number
+  id?: string | number
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
   class?: ComponentClass
   group?: string
@@ -20,6 +19,11 @@ export interface MessageItemType extends RequiredOptionsExceptType {
   _timerId?: ReturnType<typeof setTimeout>
   _remainingMs?: number
   _startedAtMs?: number
+}
+
+export interface MessageItemHeightType {
+  id: MessageItemType['id']
+  height: number
 }
 
 interface UseMessage {
@@ -43,7 +47,7 @@ export const useMessage = ((msg: string | VNode, options?: Options) => {
   options ??= {} as Options
 
   const message: MessageItemType = {
-    key: options.key || getUniqueId(),
+    id: options.id || Math.random(),
     message: msg,
     type: options.type,
     class: options.class ?? '',
@@ -65,7 +69,7 @@ shortcutTypes.forEach((type) => {
   }
 })
 
-export function closeMessage(group: Options['group'], key: Options['key']) {
+export function closeMessage(group: Options['group'], key: Options['id']) {
   if (!key) {
     return
   }

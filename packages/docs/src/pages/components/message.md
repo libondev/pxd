@@ -47,7 +47,7 @@ function addMessage(type) {
 ```
 
 ## Max
-Max prop limits how many message can be displayed at the same time. (default: 5)
+Max prop limits how many message can be displayed at the same time. (default: 3)
 
 ```vue demo
 <script setup>
@@ -64,7 +64,7 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="3" width="max-content" position="bottom" />
+  <PMessage group="max" :max="5" width="max-content" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>
