@@ -1,52 +1,103 @@
 import type { PluginFunc } from 'dayjs/esm/index.js'
 
-function replaceMillisecondToken(
-  formatStr: string,
-  matcher: RegExp,
-  replacer: (match: string) => string,
-): string {
-  return formatStr.replace(matcher, replacer)
+/**
+ * Millisecond token plugin configuration options
+ */
+interface MillisecondTokenOptions {
+  /**
+   * Maximum millisecond digits (1-3)
+   * @default 3
+   */
+  maxDigits?: number
 }
 
-function padToThreeDigits(value: number): string {
-  const normalized = Math.max(0, Math.min(999, Math.trunc(value)))
+/**
+ * Normalize millisecond value to 0-999 range
+ * @param value - Original millisecond value
+ * @returns Normalized three-digit string
+ */
+function normalizeMilliseconds(value: number): string {
+  // Handle special cases like NaN, Infinity
+  if (!Number.isFinite(value)) {
+    return '000'
+  }
+
+  // Normalize to 0-999 range, handle negative numbers
+  const normalized = Math.max(0, Math.min(999, Math.floor(Math.abs(value))))
   return String(normalized).padStart(3, '0')
 }
 
-const millisecondTokenPlugin: PluginFunc = (_opts, DayjsClass, dayjsFactory) => {
-  const processFormat = (ms: number, formatStr: string) => {
-    const ms3 = padToThreeDigits(ms)
-    return replaceMillisecondToken(formatStr, /S+/g, (match) => {
-      const len = Math.min(match.length, 3)
-      return ms3.slice(0, len)
-    })
-  }
+/**
+ * Replace millisecond tokens in format string
+ * @param formatStr - Format string
+ * @param msValue - Normalized millisecond value string
+ * @param maxDigits - Maximum digit limit
+ * @returns Processed format string
+ */
+function replaceToken(formatStr: string, msValue: string, maxDigits: number): string {
+  return formatStr.replace(/S+/g, (match) => {
+    const tokenLength = match.length
+    const effectiveLength = Math.min(tokenLength, maxDigits)
+    return msValue.slice(0, effectiveLength)
+  })
+}
+
+/**
+ * Main format processing function
+ * @param ms - Millisecond value
+ * @param formatStr - Format string
+ * @param maxDigits - Maximum digits
+ * @returns Processed format string
+ */
+function processFormat(ms: number, formatStr: string, maxDigits: number): string {
+  const msValue = normalizeMilliseconds(ms)
+  return replaceToken(formatStr, msValue, maxDigits)
+}
+
+/**
+ * Day.js millisecond token plugin
+ * Supports S, SS, SSS tokens for millisecond formatting
+ */
+const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (options = {}, DayjsClass, dayjsFactory) => {
+  const maxDigits = Math.max(1, Math.min(3, options?.maxDigits ?? 3))
 
   const originalFormat = DayjsClass.prototype.format
-  DayjsClass.prototype.format = function (this: any, formatStr?: string) {
-    if (!formatStr || typeof formatStr !== 'string') {
-      return originalFormat.call(this, formatStr)
+  const originalDurationFormat = dayjsFactory.duration?.(0)?.format
+
+  // Wrap format function
+  function wrapFormat<T extends { millisecond?: () => number, milliseconds?: () => number }>(
+    original: (...args: any[]) => string,
+    getMs: (instance: T) => number,
+  ) {
+    return function (this: T, formatStr?: string, ...args: any[]): string {
+      if (!formatStr || typeof formatStr !== 'string') {
+        return original.call(this, formatStr, ...args)
+      }
+      const ms = getMs(this)
+      const processedFormat = processFormat(ms, formatStr, maxDigits)
+      return original.call(this, processedFormat, ...args)
     }
-    return originalFormat.call(this, processFormat(this.millisecond(), formatStr))
   }
 
-  try {
-    const isDurationInjected = typeof dayjsFactory.duration === 'function'
-    if (!isDurationInjected) {
-      return
-    }
+  // Extend Dayjs instance format
+  DayjsClass.prototype.format = wrapFormat(
+    originalFormat,
+    instance => instance.millisecond?.() ?? 0,
+  )
 
-    const durationProto = Object.getPrototypeOf(dayjsFactory.duration(0))
-    if (durationProto?.format) {
-      const originalDurationFormat = durationProto.format
-      durationProto.format = function (this: any, formatStr?: string) {
-        if (!formatStr || typeof formatStr !== 'string') {
-          return originalDurationFormat.call(this, formatStr)
-        }
-        return originalDurationFormat.call(this, processFormat(this.milliseconds(), formatStr))
+  // Extend Duration format (if available)
+  try {
+    if (typeof dayjsFactory.duration === 'function' && originalDurationFormat) {
+      const durationProto = Object.getPrototypeOf(dayjsFactory.duration(0))
+      if (durationProto?.format) {
+        durationProto.format = wrapFormat(
+          originalDurationFormat,
+          instance => instance.milliseconds?.() ?? 0,
+        )
       }
     }
   } catch {}
 }
 
 export default millisecondTokenPlugin
+export type { MillisecondTokenOptions }
