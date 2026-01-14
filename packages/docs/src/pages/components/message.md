@@ -56,7 +56,7 @@ import { useMessage } from 'pxd'
 function addMessage() {
   useMessage('Now it\'s:' + Date.now(), {
     group: 'max',
-    class: 'bg-blue-100 border border-blue-600',
+    class: 'bg-blue-100 border border-dashed border-blue-600',
     durations: 5000,
     closeable: true,
   })
@@ -64,7 +64,7 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="3" position="bottom" />
+  <PMessage group="max" :max="3" width="max-content" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>

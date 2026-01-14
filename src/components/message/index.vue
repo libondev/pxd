@@ -225,14 +225,15 @@ defineExpose({
       tabindex="-1"
       aria-live="polite"
       aria-label="Notifications"
+      :data-expand="expand"
       :data-position="position"
     >
       <ol
         v-if="groupMessages.length"
         tag="ol"
         tabindex="-1"
-        class="pxd-message--group relative flex"
-        :style="{ width: getCssUnitValue(width) }"
+        class="pxd-message--group min-w-16 relative flex w-full"
+        :style="{ '--message-item-width': getCssUnitValue(width) }"
         :class="{ 'gap-3': expand }"
       >
         <PMessageItem
@@ -242,6 +243,7 @@ defineExpose({
           :type="item.type"
           :index="index"
           :class="item.class"
+          :expand="expand"
           :message="item.message"
         />
       </ol>
@@ -252,7 +254,7 @@ defineExpose({
 <style lang="postcss">
 .pxd-message {
   .pxd-message--group {
-    width: 356px;
+    --message-item-width: 356px;
     max-width: 100vw;
     align-items: center;
     flex-direction: column;
@@ -309,14 +311,16 @@ defineExpose({
     }
   }
 
-  .pxd-message--item {
-    --scale: var(--index) * 0.05 + 1;
-    --transition: transform .4s, opacity .4s, height .4s, box-shadow .2s;
-    --transform: translateY(calc(var(--item-offset) * var(--index))) scale(calc(-1 * var(--scale)));
-    transition-timing-function: ease;
+  &[data-expand="false"] {
+    .pxd-message--item {
+      --scale: var(--index) * 0.05 + 1;
+      --transition: transform .4s, opacity .4s, height .4s, box-shadow .2s;
+      --transform: translateY(calc(var(--item-offset) * var(--index))) scale(calc(-1 * var(--scale)));
+      transition-timing-function: ease;
 
-    &[data-mount="false"] {
-      --transform: translateY(var(--starting-offset));
+      &[data-mount="false"] {
+        --transform: translateY(var(--starting-offset));
+      }
     }
   }
 

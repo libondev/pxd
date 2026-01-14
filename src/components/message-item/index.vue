@@ -24,7 +24,13 @@ defineOptions({
   name: 'PMessageItem',
 })
 
-const props = defineProps<Props>()
+const props = withDefaults(
+  defineProps<Props>(),
+  {
+    expand: false,
+  },
+)
+
 const emits = defineEmits<{
   close: [key: Props['id']]
 }>()
@@ -73,7 +79,7 @@ onMounted(() => {
     :data-front="isFront"
     :data-mount="isMounted"
     :style="computedStyle"
-    class="pxd-message--item py-2 px-3 text-sm flex w-full max-w-full transform-(--transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal motion-safe:transition-(--transition)"
+    class="pxd-message--item py-2 px-3 text-sm flex w-(--message-item-width) max-w-full transform-(--transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--transition)"
     :class="{ 'pr-9 pointer-events-auto': closeable }"
   >
     <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon size-4 mr-2 h-[1lh] shrink-0" :class="type" />
