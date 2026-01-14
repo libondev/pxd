@@ -57,7 +57,7 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     :position="position"
     :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
-    transition-name="pxd-transition--fade"
+    transition-type="fade"
     v-bind="$attrs"
     @escape="hidePopover"
     @outside-click="hidePopover"
