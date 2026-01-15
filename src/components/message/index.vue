@@ -2,7 +2,7 @@
 import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import {
   CLEAR_MESSAGES_EVENT_NAME,
   CREATE_MESSAGE_EVENT_NAME,
@@ -35,6 +35,7 @@ const props = withDefaults(
   },
 )
 
+const groupExpand = ref(props.expand)
 const groupMessages = ref<MessageItemType[]>([])
 const messageItemsHeight = ref<MessageItemHeightType[]>([])
 
@@ -189,6 +190,10 @@ function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
 
   clearMessage()
 }
+
+watchEffect(() => {
+  groupExpand.value = props.expand
+})
 
 onMounted(() => {
   if (isServer()) {

@@ -82,7 +82,7 @@ const messageRef = shallowRef()
 
 function addMessage() {
   useMessage('Now it\'s:' + Date.now(), {
-    key: ++lastKey,
+    id: ++lastKey,
     group: 'clear'
   })
 }

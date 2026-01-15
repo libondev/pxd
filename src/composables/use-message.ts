@@ -69,14 +69,14 @@ shortcutTypes.forEach((type) => {
   }
 })
 
-export function closeMessage(group: Options['group'], key: Options['id']) {
-  if (!key) {
+export function closeMessage(group: Options['group'], id: Options['id']) {
+  if (!id) {
     return
   }
 
   window.dispatchEvent(
     new CustomEvent(REMOVE_MESSAGE_EVENT_NAME, {
-      detail: { group: group ?? 'default', key },
+      detail: { group: group ?? 'default', id },
     }),
   )
 }
