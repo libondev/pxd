@@ -55,10 +55,10 @@ import { useMessage } from 'pxd'
 
 function addMessage() {
   useMessage('Now it\'s:' + Date.now(), {
-    group: 'max',
-    class: 'bg-blue-100 border border-dashed border-blue-600',
-    durations: 5000,
+    class: 'bg-blue-100 border border-dashed border-blue-600 font-mono',
     closeable: true,
+    durations: 5000,
+    group: 'max',
   })
 }
 </script>

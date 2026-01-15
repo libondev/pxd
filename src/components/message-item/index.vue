@@ -96,8 +96,8 @@ onMounted(() => {
     :data-index="index"
     :data-front="isFront"
     :style="computedStyle"
-    class="pxd-message--item px-3 py-2 text-sm box-border flex w-(--message-item-width) max-w-full transform-(--message-item-transform) overflow-hidden rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
-    :class="[classNames, { 'pr-9 pointer-events-auto': closeable }]"
+    class="pxd-message--item px-3 py-2 text-sm pointer-events-auto box-border flex w-(--message-item-width) max-w-full transform-(--message-item-transform) overflow-hidden rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    :class="[classNames, { 'pr-9': closeable }]"
   >
     <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon mr-2 size-4 h-[1lh] shrink-0" :class="type" />
 

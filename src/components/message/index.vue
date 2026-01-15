@@ -75,7 +75,7 @@ function setAutoCloseTimer(message: MessageItemType) {
   }
 
   message._timerId = setTimeout(() => {
-    closeMessageByKey(message.id)
+    closeMessageById(message.id)
   }, message._remainingMs)
 }
 
@@ -124,15 +124,15 @@ function resumeMessageByKey(key: string) {
   const remaining = message._remainingMs ?? 0
   // 若剩余时间非常短，直接关闭，减少一次极短定时器调度
   if (remaining <= 0 || remaining <= 100) {
-    closeMessageByKey(key)
+    closeMessageById(key)
     return
   }
 
   setAutoCloseTimer(message)
 }
 
-function closeMessageByKey(key: MessageItemType['id']) {
-  const { index, message } = getMessageByKey(key)
+function closeMessageById(id: MessageItemType['id']) {
+  const { index, message } = getMessageByKey(id)
 
   if (!message) {
     return
@@ -180,7 +180,7 @@ function onRemoveMessage({ detail: data }: CustomEvent<MessageItemType>) {
     return
   }
 
-  closeMessageByKey(data.id)
+  closeMessageById(data.id)
 }
 
 function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
@@ -218,7 +218,7 @@ defineExpose({
   get: getMessageByKey,
   pause: pauseMessageByKey,
   resume: resumeMessageByKey,
-  close: closeMessageByKey,
+  close: closeMessageById,
   clear: clearMessage,
 })
 </script>
@@ -226,18 +226,15 @@ defineExpose({
 <template>
   <PTeleport to="body">
     <section
-      class="pxd-message px-4 fixed z-20 flex w-full"
-      tabindex="-1"
+      class="pxd-message px-4 pointer-events-none fixed z-20 flex w-full"
       aria-live="polite"
       aria-label="Notifications"
       :data-expand="expand"
       :data-position="position"
     >
       <TransitionGroup
-        v-if="groupMessages.length"
         appear
         tag="ol"
-        tabindex="-1"
         name="pxd-transition-message"
         class="pxd-message--group min-w-16 flex w-full"
         :style="messageGroupStyle"
@@ -323,16 +320,32 @@ defineExpose({
   .pxd-message--item {
     --message-item-scale: var(--message-item-index) * 0.05 + 1;
     --message-item-transition: transform, opacity, height, box-shadow;
-    --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
+  }
+
+  &[data-expand="true"] .pxd-message--item {
+    --message-item-transform: none;
   }
 
   &[data-expand="false"] {
+    .pxd-message--item {
+      --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
+    }
+
     .pxd-message--item[data-front="false"] {
       height: var(--message-item-front-height);
 
       & > * {
+        transition: opacity .1s .05s;
         opacity: 0;
       }
+    }
+  }
+
+  &[data-expand] {
+    .pxd-transition-message-enter-from,
+    .pxd-transition-message-leave-to {
+      opacity: 0;
+      --message-item-transform: translateY(var(--starting-offset)) scale(0.95);
     }
   }
 
@@ -353,17 +366,6 @@ defineExpose({
     &.success {
       color: var(--color-green-700)
     }
-  }
-
-  .pxd-transition-message-enter-active,
-  .pxd-transition-message-leave-active {
-    --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--scale)));
-  }
-
-  .pxd-transition-message-enter-from,
-  .pxd-transition-message-leave-to {
-    opacity: 0;
-    --message-item-transform: translateY(var(--starting-offset));
   }
 }
 </style>
