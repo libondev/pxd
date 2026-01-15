@@ -15,7 +15,6 @@ interface Props {
   max: number
   type?: MessageItemType['type']
   index: number
-  expand?: boolean
   classNames?: ComponentClass
   message?: MessageItemType['message']
   closeable?: MessageItemType['closeable']
@@ -28,9 +27,7 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<Props>(),
-  {
-    expand: false,
-  },
+  {},
 )
 
 const emits = defineEmits<{
@@ -51,14 +48,13 @@ const itemRef = shallowRef<HTMLElement>()
 const isFront = computed(() => props.index === 0)
 
 const computedStyle = computed(() => {
-  const { index, max, expand } = props
+  const { index, max } = props
   const isVisible = index < max
 
   return {
     '--message-item-index': index,
     'z-index': max - index,
     'opacity': isVisible ? 1 : 0,
-    'position': expand ? 'relative' : 'absolute',
     'pointer-events': isVisible ? 'auto' : 'none',
   } as const
 })
@@ -96,7 +92,7 @@ onMounted(() => {
     :data-index="index"
     :data-front="isFront"
     :style="computedStyle"
-    class="pxd-message--item px-3 py-2 text-sm pointer-events-auto box-border flex w-(--message-item-width) max-w-full transform-(--message-item-transform) overflow-hidden rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    class="pxd-message--item px-3 py-2 text-sm box-border flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
     :class="[classNames, { 'pr-9': closeable }]"
   >
     <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon mr-2 size-4 h-[1lh] shrink-0" :class="type" />

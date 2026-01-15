@@ -64,7 +64,7 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="5" width="max-content" position="bottom" />
+  <PMessage group="max" :max="5" width="200" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>

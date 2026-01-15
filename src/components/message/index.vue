@@ -41,8 +41,8 @@ const messageItemsHeight = ref<MessageItemHeightType[]>([])
 
 const messageGroupStyle = computed(() => {
   return {
-    '--message-item-width': getCssUnitValue(props.width),
-    '--message-item-front-height': getCssUnitValue(messageItemsHeight.value[0]?.height),
+    '--message-width': getCssUnitValue(props.width),
+    '--message-front-height': getCssUnitValue(messageItemsHeight.value[0]?.height),
   }
 })
 
@@ -191,6 +191,14 @@ function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
   clearMessage()
 }
 
+function onMouseEnter() {
+  groupExpand.value = true
+}
+
+function onMouseLeave() {
+  groupExpand.value = false
+}
+
 watchEffect(() => {
   groupExpand.value = props.expand
 })
@@ -226,19 +234,21 @@ defineExpose({
 <template>
   <PTeleport to="body">
     <section
-      class="pxd-message px-4 pointer-events-none fixed z-20 flex w-full"
+      class="pxd-message h-0 fixed z-20 flex w-(--message-width)"
       aria-live="polite"
       aria-label="Notifications"
-      :data-expand="expand"
+      :data-expand="groupExpand"
       :data-position="position"
+      :style="messageGroupStyle"
     >
       <TransitionGroup
         appear
         tag="ol"
         name="pxd-transition-message"
-        class="pxd-message--group min-w-16 flex w-full"
-        :style="messageGroupStyle"
-        :class="{ 'gap-3': expand }"
+        class="pxd-message--group min-w-16 flex h-auto w-full"
+        :class="{ 'gap-3': groupExpand }"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
       >
         <PMessageItem
           v-for="(item, index) of groupMessages"
@@ -247,7 +257,7 @@ defineExpose({
           :max="max"
           :type="item.type"
           :index="index"
-          :expand="expand"
+          :expand="groupExpand"
           :message="item.message"
           :class-names="item.class"
           @set-item-height="onUpdateMessageItemInfo"
@@ -259,8 +269,9 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-message {
+  --message-width: 356px;
+
   .pxd-message--group {
-    --message-item-width: 356px;
     max-width: 100vw;
     align-items: center;
     flex-direction: column;
@@ -322,21 +333,34 @@ defineExpose({
     --message-item-transition: transform, opacity, height, box-shadow;
   }
 
-  &[data-expand="true"] .pxd-message--item {
-    --message-item-transform: none;
+  &[data-expand="true"] {
+    .pxd-message--item {
+      --message-item-transform: none;
+      position: relative;
+
+      &::after{
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 12px;
+      }
+    }
   }
 
   &[data-expand="false"] {
     .pxd-message--item {
       --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
-    }
+      position: absolute;
 
-    .pxd-message--item[data-front="false"] {
-      height: var(--message-item-front-height);
+      &[data-front="false"] {
+        height: var(--message-front-height);
 
-      & > * {
-        transition: opacity .1s .05s;
-        opacity: 0;
+        & > * {
+          transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+          opacity: 0;
+        }
       }
     }
   }
