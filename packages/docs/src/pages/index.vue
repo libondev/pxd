@@ -1,49 +1,60 @@
 <script setup>
 import { useHead } from '@unhead/vue'
-import { off, on, once } from 'pxd/utils/event'
+import { on } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
 useHead({
   title: 'PXD - A universal UI component library for Vue2&3',
 })
 
-const bindEvents = []
+const cleanupFns = []
 
 function setParallaxEffect() {
-  const cards = document.querySelectorAll('.feature-item')
+  const container = document.querySelector('.features')
+  if (!container) {
+    return
+  }
 
-  cards.forEach((card) => {
-    const cancelFn = on(card, 'mouseenter', (e) => {
-      const rect = e.target.getBoundingClientRect()
-      const maxTilt = 20 // 最大倾斜角度
+  const maxTilt = 20 // 最大倾斜角度
 
-      const onMouseMove = (e) => {
-        const x = (e.clientX - rect.left) / rect.width - 0.5
-        const y = (e.clientY - rect.top) / rect.height - 0.5
+  const onMouseMove = (e) => {
+    const card = e.target.closest('.feature-item')
+    if (!card) {
+      return
+    }
 
-        card.style.transform = `
-          perspective(1000px)
-          rotateX(${y * maxTilt}deg)
-          rotateY(${x * -maxTilt}deg)
-        `
-      }
+    const rect = card.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
 
-      const onMouseLeave = () => {
-        card.style.transform = `
-          perspective(1000px)
-          rotateX(0deg)
-          rotateY(0deg)
-          `
+    card.style.transform = `
+      perspective(1000px)
+      rotateX(${y * maxTilt}deg)
+      rotateY(${x * -maxTilt}deg)
+    `
+  }
 
-        off(card, 'mousemove', onMouseMove)
-      }
+  const onMouseOut = (e) => {
+    const card = e.target.closest('.feature-item')
+    if (!card) {
+      return
+    }
 
-      on(card, 'mousemove', onMouseMove)
-      once(card, 'mouseleave', onMouseLeave)
-    })
+    // 检查是否真正离开了卡片（而不是移动到子元素）
+    const relatedCard = e.relatedTarget?.closest?.('.feature-item')
+    if (card !== relatedCard) {
+      card.style.transform = `
+        perspective(1000px)
+        rotateX(0deg)
+        rotateY(0deg)
+      `
+    }
+  }
 
-    bindEvents.push(cancelFn)
-  })
+  cleanupFns.push(
+    on(container, 'mousemove', onMouseMove),
+    on(container, 'mouseout', onMouseOut),
+  )
 }
 
 onMounted(() => {
@@ -51,7 +62,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  bindEvents.forEach(fn => fn())
+  cleanupFns.forEach(fn => fn())
 })
 </script>
 
