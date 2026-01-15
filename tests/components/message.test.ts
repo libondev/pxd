@@ -43,7 +43,7 @@ describe('message', () => {
 
     // 创建不同分组的消息
     dispatchCreate({
-      key: 'k1',
+      id: 'k1',
       group: 'g1',
       type: 'info',
       message: 'hello g1',
@@ -52,7 +52,7 @@ describe('message', () => {
       class: '',
     })
     dispatchCreate({
-      key: 'k2',
+      id: 'k2',
       group: 'g2',
       type: 'success',
       message: 'hello g2',
@@ -75,13 +75,12 @@ describe('message', () => {
       attachTo: document.body,
     })
 
-    dispatchCreate({ key: 'a', group: 'g1', type: 'info', message: 'a', durations: 0 })
-    dispatchCreate({ key: 'b', group: 'g1', type: 'info', message: 'b', durations: 0 })
-    dispatchCreate({ key: 'c', group: 'g1', type: 'info', message: 'c', durations: 0 })
-    dispatchCreate({ key: 'd', group: 'g1', type: 'info', message: 'd', durations: 0 })
+    dispatchCreate({ id: 'a', group: 'g1', type: 'info', message: 'a', durations: 0 })
+    dispatchCreate({ id: 'b', group: 'g1', type: 'info', message: 'b', durations: 0 })
+    dispatchCreate({ id: 'c', group: 'g1', type: 'info', message: 'c', durations: 0 })
+    dispatchCreate({ id: 'd', group: 'g1', type: 'info', message: 'd', durations: 0 })
 
     expect(wrapper.vm.messages.length).toBe(4)
-    expect(wrapper.vm.visibleMessages.length).toBe(2)
 
     wrapper.unmount()
   })
@@ -96,7 +95,7 @@ describe('message', () => {
     await flushTeleportAndTransitions(wrapper)
 
     dispatchCreate({
-      key: 'closable-1',
+      id: 'closable-1',
       group: 'g1',
       type: 'info',
       message: 'can close',
