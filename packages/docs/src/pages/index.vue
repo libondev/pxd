@@ -169,6 +169,18 @@ onBeforeUnmount(() => {
           to disable transitions and animations in components.
         </PText>
       </div>
+
+      <div
+        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+      >
+        <h3 class="mb-1.5 font-medium">
+          Extremely customizable
+        </h3>
+
+        <PText secondary>
+          Globally overridable components transition-duration and transition-timing-function
+        </PText>
+      </div>
     </section>
   </main>
 </template>
