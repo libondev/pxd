@@ -2,17 +2,25 @@ import type { VNode } from 'vue'
 import type { ComponentClass } from '../types/shared/props'
 import { isServer } from '../utils/is'
 
+type MessageContent = string | VNode
+type PromiseMessageHandler = MessageContent | ((data: unknown) => MessageContent)
+
 interface Options {
   id?: string | number
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
   class?: ComponentClass
   group?: string
+  promise?: Promise<unknown>
   durations?: number
   closeable?: boolean
+  success?: PromiseMessageHandler
+  error?: PromiseMessageHandler
+  finally?: PromiseMessageHandler
 }
 
 type RequireAllExcept<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>
-type RequiredOptionsExceptType = RequireAllExcept<Options, 'type'>
+type PromiseOptionKeys = 'type' | 'promise' | 'success' | 'error' | 'finally'
+type RequiredOptionsExceptType = RequireAllExcept<Options, PromiseOptionKeys>
 
 export interface MessageItemType extends RequiredOptionsExceptType {
   message: string | VNode
@@ -27,19 +35,19 @@ export interface MessageItemHeightType {
 }
 
 interface UseMessage {
-  (msg: string | VNode, options?: Options): void
-  info: (msg: string | VNode, options?: Options) => void
-  success: (msg: string | VNode, options?: Options) => void
-  warning: (msg: string | VNode, options?: Options) => void
-  error: (msg: string | VNode, options?: Options) => void
-  loading: (msg: string | VNode, options?: Options) => void
+  (msg: MessageContent, options?: Options): void
+  info: (msg: MessageContent, options?: Options) => void
+  success: (msg: MessageContent, options?: Options) => void
+  warning: (msg: MessageContent, options?: Options) => void
+  error: (msg: MessageContent, options?: Options) => void
+  loading: (msg: MessageContent, options?: Options) => void
 }
 
 export const CLEAR_MESSAGES_EVENT_NAME = '#clear-messages'
 export const CREATE_MESSAGE_EVENT_NAME = '#create-message'
 export const REMOVE_MESSAGE_EVENT_NAME = '#remove-message'
 
-export const useMessage = ((msg: string | VNode, options?: Options) => {
+export const useMessage = ((msg: MessageContent, options?: Options) => {
   if (isServer()) {
     return
   }
@@ -47,11 +55,11 @@ export const useMessage = ((msg: string | VNode, options?: Options) => {
   options ??= {} as Options
 
   const message: MessageItemType = {
-    id: options.id || Math.random(),
+    ...options,
+    id: options.id ?? Math.random(),
     message: msg,
-    type: options.type,
     class: options.class ?? '',
-    group: options.group || 'default',
+    group: options.group ?? 'default',
     durations: options.durations ?? 3000,
     closeable: options.closeable ?? false,
   }
@@ -64,7 +72,7 @@ export const useMessage = ((msg: string | VNode, options?: Options) => {
 const shortcutTypes = ['info', 'error', 'loading', 'warning', 'success'] as const
 
 shortcutTypes.forEach((type) => {
-  useMessage[type] = (msg: string | VNode, options?: Options) => {
+  useMessage[type] = (msg: MessageContent, options?: Options) => {
     useMessage(msg, { ...(options ?? {}), type })
   }
 })

@@ -46,6 +46,46 @@ function addMessage(type) {
 </template>
 ```
 
+## Promise
+Sometimes it is necessary to rely on certain states to complete.
+
+```vue demo
+<script setup>
+import { useMessage } from 'pxd'
+
+const promise = () => new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const data = { id: Math.random().toString(16).slice(2) }
+    if (Math.random() > .5) {
+      resolve(data)
+    } else {
+      reject(data)
+    }
+  }, 1000)
+});
+
+function addMessage() {
+  useMessage('Loading...', {
+    type: 'loading',
+    promise: promise(),
+    group: 'promise',
+    success: (data) => {
+      return `Success: ${data.id} is latest.`
+    },
+    error: 'Error',
+    // If set, the value of success/error will be overwritten.
+    // finally: 'Operation finished.',
+  })
+}
+</script>
+
+<template>
+  <PMessage group="promise" />
+
+  <PButton @click="addMessage()">Add</PButton>
+</template>
+```
+
 ## Max
 Max prop limits how many message can be displayed at the same time. (default: 3)
 
