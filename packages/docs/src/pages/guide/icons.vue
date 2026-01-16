@@ -58,7 +58,7 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
   }
 
   await copyText(contents)
-  useMessage.success(`Copied successful:\n${contents}`)
+  useMessage.success('Copied successful')
 }, 300)
 </script>
 
@@ -107,5 +107,5 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     <PEmptyState class="col-span-full" title="No data" description="No icons found" />
   </template>
 
-  <PMessage />
+  <PMessage width="175" />
 </template>
