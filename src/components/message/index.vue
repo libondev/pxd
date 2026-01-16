@@ -80,17 +80,7 @@ function setAutoCloseTimer(message: MessageItemType) {
   }, message._remainingMs)
 }
 
-function pauseMessageById(id: MessageItemType['id']) {
-  if (!id) {
-    return
-  }
-
-  const { message } = getMessageById(id)
-
-  if (!message) {
-    return
-  }
-
+function pauseMessage(message: MessageItemType) {
   if (!message.durations || message.durations <= 0) {
     return
   }
@@ -107,17 +97,7 @@ function pauseMessageById(id: MessageItemType['id']) {
   }
 }
 
-function resumeMessageById(id: MessageItemType['id']) {
-  if (!id) {
-    return
-  }
-
-  const { message } = getMessageById(id)
-
-  if (!message) {
-    return
-  }
-
+function resumeMessage(message: MessageItemType) {
   if (!message.durations || message.durations <= 0) {
     return
   }
@@ -125,12 +105,34 @@ function resumeMessageById(id: MessageItemType['id']) {
   const remaining = message._remainingMs ?? 0
   // if remaining time is very short,
   // close directly to reduce one short timer scheduling
-  if (remaining <= 0 || remaining <= 100) {
-    closeMessageById(id)
+  if (remaining <= 100) {
+    closeMessageById(message.id)
     return
   }
 
   setAutoCloseTimer(message)
+}
+
+function pauseMessageById(id: MessageItemType['id']) {
+  if (!id) {
+    return
+  }
+
+  const { message } = getMessageById(id)
+  if (message) {
+    pauseMessage(message)
+  }
+}
+
+function resumeMessageById(id: MessageItemType['id']) {
+  if (!id) {
+    return
+  }
+
+  const { message } = getMessageById(id)
+  if (message) {
+    resumeMessage(message)
+  }
 }
 
 function closeMessageById(id: MessageItemType['id']) {
@@ -140,13 +142,18 @@ function closeMessageById(id: MessageItemType['id']) {
     return
   }
 
-  if (message && message._timerId) {
+  if (message._timerId) {
     clearTimeout(message._timerId)
     message._timerId = undefined
   }
 
   groupMessages.value.splice(index, 1)
-  messageItemsHeight.value.splice(index, 1)
+
+  // Sync remove height info by id instead of index to avoid mismatch
+  const heightIndex = messageItemsHeight.value.findIndex(h => h.id === id)
+  if (heightIndex !== -1) {
+    messageItemsHeight.value.splice(heightIndex, 1)
+  }
 
   // Avoid manually closing all data and maintaining the expanded state when creating again
   if (!props.expand && groupMessages.value.length === 0) {
@@ -160,15 +167,14 @@ function onUpdateMessageItemInfo(info: MessageItemHeightType) {
 
 function clearMessage() {
   groupMessages.value.forEach((m) => {
-    if (!m._timerId) {
-      return
+    if (m._timerId) {
+      clearTimeout(m._timerId)
+      m._timerId = undefined
     }
-
-    clearTimeout(m._timerId)
-    m._timerId = undefined
   })
 
   groupMessages.value = []
+  messageItemsHeight.value = []
 }
 
 function resolvePromiseMessage<T>(
@@ -272,15 +278,11 @@ function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
 }
 
 function pauseAllMessages() {
-  groupMessages.value.forEach((message) => {
-    pauseMessageById(message.id)
-  })
+  groupMessages.value.forEach(pauseMessage)
 }
 
 function resumeAllMessages() {
-  groupMessages.value.forEach((message) => {
-    resumeMessageById(message.id)
-  })
+  groupMessages.value.forEach(resumeMessage)
 }
 
 function onPointerEnter() {
@@ -321,7 +323,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearMessage()
 
-  cachedOff(window, CLEAR_MESSAGES_EVENT_NAME, onCreateMessage)
+  cachedOff(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
   cachedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
   cachedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
 })
