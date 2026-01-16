@@ -7,7 +7,7 @@ import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
 import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
-import { computed, nextTick, onMounted, shallowRef } from 'vue'
+import { computed, onMounted, shallowRef } from 'vue'
 import PButton from '../button/index.vue'
 
 interface Props {
@@ -60,9 +60,7 @@ function onItemCloseClick() {
   emits('close', props.id)
 }
 
-async function setItemHeightInfo() {
-  await nextTick()
-
+function setItemHeightInfo() {
   if (!itemRef.value) {
     return
   }
@@ -89,7 +87,7 @@ onMounted(() => {
     :data-index="index"
     :data-front="isFront"
     :style="computedStyle"
-    class="pxd-message--item px-3 py-2 text-sm box-border flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    class="pxd-message--item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
     :class="[classNames, { 'pr-9': closeable }]"
   >
     <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon mr-2 size-4 h-lh shrink-0" :class="type" />

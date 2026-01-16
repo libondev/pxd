@@ -399,10 +399,6 @@ defineExpose({
     --item-offset: 10px;
     --starting-offset: -100%;
     top: 1rem;
-
-    .pxd-message--item {
-      transform-origin: top center;
-    }
   }
 
   &[data-position^="bottom"] {
@@ -412,10 +408,6 @@ defineExpose({
 
     .pxd-message--group {
       flex-direction: column-reverse;
-    }
-
-    .pxd-message--item {
-      transform-origin: bottom center;
     }
   }
 
@@ -499,7 +491,7 @@ defineExpose({
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
-      --message-item-transform: translateY(var(--starting-offset)) scale(0.95);
+      --message-item-transform: translateY(var(--starting-offset)) scaleX(0.95);
     }
   }
 
