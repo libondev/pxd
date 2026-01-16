@@ -46,8 +46,8 @@ const messageGroupStyle = computed(() => {
   }
 })
 
-function getMessageByKey(key: MessageItemType['id']) {
-  const index = groupMessages.value.findIndex(m => m.id === key)
+function getMessageById(id: MessageItemType['id']) {
+  const index = groupMessages.value.findIndex(m => m.id === id)
   const message = groupMessages.value[index]
 
   if (!message) {
@@ -79,12 +79,12 @@ function setAutoCloseTimer(message: MessageItemType) {
   }, message._remainingMs)
 }
 
-function pauseMessageByKey(key: MessageItemType['id']) {
-  if (!key) {
+function pauseMessageById(id: MessageItemType['id']) {
+  if (!id) {
     return
   }
 
-  const { message } = getMessageByKey(key)
+  const { message } = getMessageById(id)
 
   if (!message) {
     return
@@ -106,12 +106,12 @@ function pauseMessageByKey(key: MessageItemType['id']) {
   }
 }
 
-function resumeMessageByKey(key: string) {
-  if (!key) {
+function resumeMessageById(id: MessageItemType['id']) {
+  if (!id) {
     return
   }
 
-  const { message } = getMessageByKey(key)
+  const { message } = getMessageById(id)
 
   if (!message) {
     return
@@ -122,9 +122,10 @@ function resumeMessageByKey(key: string) {
   }
 
   const remaining = message._remainingMs ?? 0
-  // 若剩余时间非常短，直接关闭，减少一次极短定时器调度
+  // if remaining time is very short,
+  // close directly to reduce one short timer scheduling
   if (remaining <= 0 || remaining <= 100) {
-    closeMessageById(key)
+    closeMessageById(id)
     return
   }
 
@@ -132,7 +133,7 @@ function resumeMessageByKey(key: string) {
 }
 
 function closeMessageById(id: MessageItemType['id']) {
-  const { index, message } = getMessageByKey(id)
+  const { index, message } = getMessageById(id)
 
   if (!message) {
     return
@@ -144,6 +145,7 @@ function closeMessageById(id: MessageItemType['id']) {
   }
 
   groupMessages.value.splice(index, 1)
+  messageItemsHeight.value.splice(index, 1)
 }
 
 function onUpdateMessageItemInfo(info: MessageItemHeightType) {
@@ -191,11 +193,32 @@ function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
   clearMessage()
 }
 
-function onMouseEnter() {
-  groupExpand.value = true
+function pauseAllMessages() {
+  groupMessages.value.forEach((message) => {
+    pauseMessageById(message.id)
+  })
 }
 
-function onMouseLeave() {
+function resumeAllMessages() {
+  groupMessages.value.forEach((message) => {
+    resumeMessageById(message.id)
+  })
+}
+
+function onPointerEnter() {
+  groupExpand.value = true
+  pauseAllMessages()
+}
+
+function onPointerLeave() {
+  resumeAllMessages()
+
+  // If expand is set in props,
+  // the user's default configuration cannot be modified when moving out.
+  if (props.expand) {
+    return
+  }
+
   groupExpand.value = false
 }
 
@@ -223,9 +246,9 @@ onBeforeUnmount(() => {
 
 defineExpose({
   messages: groupMessages,
-  get: getMessageByKey,
-  pause: pauseMessageByKey,
-  resume: resumeMessageByKey,
+  get: getMessageById,
+  pause: pauseMessageById,
+  resume: resumeMessageById,
   close: closeMessageById,
   clear: clearMessage,
 })
@@ -247,8 +270,8 @@ defineExpose({
         name="pxd-transition-message"
         class="pxd-message--group min-w-16 flex h-auto w-full"
         :class="{ 'gap-3': groupExpand }"
-        @mouseenter="onMouseEnter"
-        @mouseleave="onMouseLeave"
+        @pointerenter="onPointerEnter"
+        @pointerleave="onPointerLeave"
       >
         <PMessageItem
           v-for="(item, index) of groupMessages"
@@ -260,6 +283,8 @@ defineExpose({
           :expand="groupExpand"
           :message="item.message"
           :class-names="item.class"
+          :closeable="item.closeable"
+          @close="closeMessageById"
           @set-item-height="onUpdateMessageItemInfo"
         />
       </TransitionGroup>

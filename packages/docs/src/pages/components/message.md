@@ -64,13 +64,35 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="5" width="200" position="bottom" />
+  <PMessage group="max" :max="5" width="220" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>
 ```
 
-## Clear
+## Expand
+Set `expand` prop to `true` to expand the message content.
+
+```vue demo
+<script setup>
+import { useMessage } from 'pxd'
+
+function addMessage() {
+  useMessage('Now it\'s:' + Date.now(), {
+    closeable: true,
+    group: 'expand'
+  })
+}
+</script>
+
+<template>
+  <PMessage group="expand" expand position="bottom" />
+
+  <PButton @click="addMessage()">Add</PButton>
+</template>
+```
+
+## Manual Clear
 
 ```vue demo
 <script setup>
