@@ -440,13 +440,14 @@ defineExpose({
 
   .pxd-message--item {
     --message-item-scale: var(--message-item-index) * 0.05 + 1;
-    --message-item-transition: transform, opacity, height, box-shadow;
+    --message-item-transition: transform, opacity, height;
   }
 
   &[data-expand="true"] {
     .pxd-message--item {
       --message-item-transform: none;
       position: relative;
+      will-change: transform, opacity, height;
 
       &::after{
         content: '';
@@ -461,7 +462,7 @@ defineExpose({
 
   &[data-expand="false"] {
     .pxd-message--item {
-      --message-item-transform: translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
+      --message-item-transform: translateZ(0) translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
       position: absolute;
 
       &[data-front="false"] {
@@ -491,7 +492,7 @@ defineExpose({
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
-      --message-item-transform: translateY(var(--starting-offset)) scaleX(0.95);
+      --message-item-transform: translateZ(0) translateY(var(--starting-offset)) scaleX(0.95);
     }
   }
 
