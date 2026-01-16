@@ -2,7 +2,7 @@
 import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 
-import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
   CLEAR_MESSAGES_EVENT_NAME,
   CREATE_MESSAGE_EVENT_NAME,
@@ -42,6 +42,7 @@ const messageItemsHeight = ref<MessageItemHeightType[]>([])
 const messageGroupStyle = computed(() => {
   return {
     '--message-width': getCssUnitValue(props.width),
+    '--message-items': Math.min(props.max, groupMessages.value.length),
     '--message-front-height': getCssUnitValue(messageItemsHeight.value[0]?.height),
   }
 })
@@ -146,6 +147,11 @@ function closeMessageById(id: MessageItemType['id']) {
 
   groupMessages.value.splice(index, 1)
   messageItemsHeight.value.splice(index, 1)
+
+  // Avoid manually closing all data and maintaining the expanded state when creating again
+  if (!props.expand && groupMessages.value.length === 0) {
+    groupExpand.value = false
+  }
 }
 
 function onUpdateMessageItemInfo(info: MessageItemHeightType) {
@@ -222,9 +228,13 @@ function onPointerLeave() {
   groupExpand.value = false
 }
 
-watchEffect(() => {
-  groupExpand.value = props.expand
-})
+watch(
+  () => props.expand,
+  (isExpand) => {
+    groupExpand.value = isExpand
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
   if (isServer()) {
@@ -300,6 +310,15 @@ defineExpose({
     max-width: 100vw;
     align-items: center;
     flex-direction: column;
+
+    &:not(:empty)::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      z-index: 0;
+      height: calc(var(--message-front-height) + (10px * var(--message-items)));
+    }
   }
 
   &[data-position^="top"] {
