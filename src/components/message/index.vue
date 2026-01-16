@@ -392,8 +392,8 @@ defineExpose({
       content: '';
       position: absolute;
       left: -10px;
-      width: calc(100% + 20px);
       z-index: 0;
+      width: calc(100% + 20px);
       height: var(--message-placeholder-height);
     }
   }
@@ -447,26 +447,21 @@ defineExpose({
   }
 
   &[data-expand="true"] {
-    --message-placeholder-height: calc(var(--message-front-height) * (var(--message-items) + 1));
+    .pxd-message--group {
+      --message-placeholder-height: calc(var(--message-front-height) * (var(--message-items) + 1));
+    }
 
     .pxd-message--item {
       --message-item-transform: none;
       position: relative;
       will-change: transform, opacity, height;
-
-      &::after{
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        height: 12px;
-      }
     }
   }
 
   &[data-expand="false"] {
-    --message-placeholder-height: calc(var(--message-front-height) + var(--message-items) * 12px);
+    .pxd-message--group {
+      --message-placeholder-height: calc(var(--message-front-height) + var(--message-items) * 12px);
+    }
 
     .pxd-message--item {
       --message-item-transform: translateZ(0) translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
