@@ -391,6 +391,18 @@ defineExpose({
   }
 
   &[data-expand] {
+    .pxd-transition-message-move,
+    .pxd-transition-message-enter-active,
+    .pxd-transition-message-leave-active {
+      transition:
+        transform var(--default-transition-duration) var(--default-transition-timing-function),
+        opacity var(--default-transition-duration) var(--default-transition-timing-function);
+    }
+
+    .pxd-transition-message-leave-active {
+      position: absolute;
+    }
+
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
