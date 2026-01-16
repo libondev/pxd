@@ -40,10 +40,13 @@ const groupMessages = ref<MessageItemType[]>([])
 const messageItemsHeight = ref<MessageItemHeightType[]>([])
 
 const messageGroupStyle = computed(() => {
+  const frontHeight = messageItemsHeight.value[0]?.height || 0
+  const visibleItemCounts = Math.min(props.max, groupMessages.value.length)
+
   return {
     '--message-width': getCssUnitValue(props.width),
-    '--message-items': Math.min(props.max, groupMessages.value.length),
-    '--message-front-height': getCssUnitValue(messageItemsHeight.value[0]?.height),
+    '--message-items': visibleItemCounts,
+    '--message-front-height': getCssUnitValue(frontHeight),
   }
 })
 
@@ -388,10 +391,10 @@ defineExpose({
     &:not(:empty)::after {
       content: '';
       position: absolute;
-      left: 0;
-      width: 100%;
+      left: -10px;
+      width: calc(100% + 20px);
       z-index: 0;
-      height: calc(var(--message-front-height) + (10px * var(--message-items)));
+      height: var(--message-placeholder-height);
     }
   }
 
@@ -444,6 +447,8 @@ defineExpose({
   }
 
   &[data-expand="true"] {
+    --message-placeholder-height: calc(var(--message-front-height) * (var(--message-items) + 1));
+
     .pxd-message--item {
       --message-item-transform: none;
       position: relative;
@@ -461,6 +466,8 @@ defineExpose({
   }
 
   &[data-expand="false"] {
+    --message-placeholder-height: calc(var(--message-front-height) + var(--message-items) * 12px);
+
     .pxd-message--item {
       --message-item-transform: translateZ(0) translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
       position: absolute;
