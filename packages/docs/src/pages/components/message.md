@@ -104,7 +104,7 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="5" width="220" position="bottom" />
+  <PMessage group="max" :max="5" width="240" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>
@@ -118,15 +118,41 @@ Set `expand` prop to `true` to expand the message content.
 import { useMessage } from 'pxd'
 
 function addMessage() {
-  useMessage('Now it\'s:' + Date.now(), {
-    closeable: true,
-    group: 'expand'
+  useMessage('Now it\'s:' + Date.now(), { group: 'expand' })
+}
+</script>
+
+<template>
+  <PMessage group="expand" expand width="200" position="bottom" />
+
+  <PButton @click="addMessage()">Add</PButton>
+</template>
+```
+
+## Action
+Set the display content of the close button, and choose between it and the close button.
+
+```vue demo
+<script setup>
+import { useMessage } from 'pxd'
+
+function addMessage() {
+  useMessage('Event has been created', {
+    action: {
+      // Optional values are consistent with the button component.
+      variant: 'primary',
+      label: 'Undo',
+      onClick: () => {
+        console.log('Undo')
+      }
+    },
+    group: 'action'
   })
 }
 </script>
 
 <template>
-  <PMessage group="expand" expand position="bottom" />
+  <PMessage group="action" position="bottom-end" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>

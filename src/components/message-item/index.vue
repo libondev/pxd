@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
-import type { ComponentClass } from '../../types/shared/props'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
@@ -11,13 +10,9 @@ import { computed, onMounted, shallowRef } from 'vue'
 import PButton from '../button/index.vue'
 
 interface Props {
-  id: MessageItemType['id']
   max: number
-  type?: MessageItemType['type']
   index: number
-  classNames?: ComponentClass
-  message?: MessageItemType['message']
-  closeable?: MessageItemType['closeable']
+  itemData: MessageItemType
 }
 
 defineOptions({
@@ -28,8 +23,8 @@ defineOptions({
 const props = defineProps<Props>()
 
 const emits = defineEmits<{
-  'close': [key: Props['id']]
-  'set-item-height': [info: MessageItemHeightType]
+  'close': [key: MessageItemType['id']]
+  'set-height': [info: MessageItemHeightType]
 }>()
 
 const TYPE_ICONS = {
@@ -41,8 +36,6 @@ const TYPE_ICONS = {
 }
 
 const itemRef = shallowRef<HTMLElement>()
-
-const isFront = computed(() => props.index === 0)
 
 const computedStyle = computed(() => {
   const { index, max } = props
@@ -57,7 +50,11 @@ const computedStyle = computed(() => {
 })
 
 function onItemCloseClick() {
-  emits('close', props.id)
+  if (props.itemData.action?.onClick) {
+    props.itemData.action.onClick()
+  }
+
+  emits('close', props.itemData.id)
 }
 
 function setItemHeightInfo() {
@@ -68,11 +65,11 @@ function setItemHeightInfo() {
   const rect = itemRef.value.getBoundingClientRect()
 
   const info: MessageItemHeightType = {
-    id: props.id,
+    id: props.itemData.id,
     height: rect.height,
   }
 
-  emits('set-item-height', info)
+  emits('set-height', info)
 }
 
 onMounted(() => {
@@ -85,25 +82,28 @@ onMounted(() => {
     ref="itemRef"
     tabindex="0"
     :data-index="index"
-    :data-front="isFront"
+    :data-front="index === 0"
     :style="computedStyle"
     class="pxd-message--item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
-    :class="[classNames, { 'pr-9': closeable }]"
+    :class="[itemData.class, { 'pr-9': itemData.closeable }]"
   >
-    <Component :is="TYPE_ICONS[type]" v-if="type" class="pxd-message--icon mr-2 size-4 h-lh shrink-0" :class="type" />
+    <Component :is="TYPE_ICONS[itemData.type]" v-if="itemData.type" class="pxd-message--icon mr-2 size-4 h-lh shrink-0" :class="itemData.type" />
 
-    <span v-if="typeof message === 'string'" v-html="message" />
-    <Component :is="message" v-else :key="id" />
+    <span v-if="typeof itemData.message === 'string'" v-html="itemData.message" />
+    <Component :is="itemData.message" v-else :key="itemData.id" />
 
     <PButton
-      v-if="closeable"
-      icon
+      v-if="itemData.closeable || itemData.action"
       size="xs"
-      variant="ghost"
-      class="top-1.5 right-1.5 absolute z-1 touch-none text-foreground-secondary"
+      :icon="!itemData.action?.variant"
+      :variant="itemData.action?.variant ?? 'ghost'"
+      class="top-1.5 right-1.5 px-0! text-xs absolute z-1 touch-none text-foreground-secondary"
       @click="onItemCloseClick"
     >
-      <CloseIcon />
+      <template v-if="itemData.action?.label">
+        {{ itemData.action.label }}
+      </template>
+      <CloseIcon v-else />
     </PButton>
   </li>
 </template>

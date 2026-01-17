@@ -1,3 +1,4 @@
+import type { ButtonProps } from 'src/types/components/button'
 import type { VNode } from 'vue'
 import type { ComponentClass } from '../types/shared/props'
 import { isServer } from '../utils/is'
@@ -5,25 +6,28 @@ import { isServer } from '../utils/is'
 type MessageContent = string | VNode
 type PromiseMessageHandler = MessageContent | ((data: unknown) => MessageContent)
 
+interface Action {
+  label?: string
+  variant?: ButtonProps['variant']
+  onClick?: () => void
+}
+
 interface Options {
   id?: string | number
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
   class?: ComponentClass
   group?: string
+  action?: Action
+  message?: string | VNode
   promise?: Promise<unknown>
   durations?: number
   closeable?: boolean
-  success?: PromiseMessageHandler
   error?: PromiseMessageHandler
+  success?: PromiseMessageHandler
   finally?: PromiseMessageHandler
 }
 
-type RequireAllExcept<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>
-type PromiseOptionKeys = 'type' | 'promise' | 'success' | 'error' | 'finally'
-type RequiredOptionsExceptType = RequireAllExcept<Options, PromiseOptionKeys>
-
-export interface MessageItemType extends RequiredOptionsExceptType {
-  message: string | VNode
+export interface MessageItemType extends Options {
   _timerId?: ReturnType<typeof setTimeout>
   _remainingMs?: number
   _startedAtMs?: number
@@ -58,7 +62,6 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
     ...options,
     id: options.id ?? Math.random(),
     message: msg,
-    class: options.class ?? '',
     group: options.group ?? 'default',
     durations: options.durations ?? 3000,
     closeable: options.closeable ?? false,

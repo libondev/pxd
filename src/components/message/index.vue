@@ -35,6 +35,10 @@ const props = withDefaults(
   },
 )
 
+const emits = defineEmits<{
+  close: [id: MessageItemType['id']]
+}>()
+
 const groupExpand = ref(props.expand)
 const groupMessages = ref<MessageItemType[]>([])
 const messageItemsHeight = ref<MessageItemHeightType[]>([])
@@ -162,9 +166,11 @@ function closeMessageById(id: MessageItemType['id']) {
   if (!props.expand && groupMessages.value.length === 0) {
     groupExpand.value = false
   }
+
+  emits('close', id)
 }
 
-function onUpdateMessageItemInfo(info: MessageItemHeightType) {
+function setItemHeight(info: MessageItemHeightType) {
   messageItemsHeight.value.unshift(info)
 }
 
@@ -362,17 +368,12 @@ defineExpose({
       >
         <PMessageItem
           v-for="(item, index) of groupMessages"
-          :id="item.id"
           :key="item.id"
           :max="max"
-          :type="item.type"
           :index="index"
-          :expand="groupExpand"
-          :message="item.message"
-          :class-names="item.class"
-          :closeable="item.closeable"
+          :item-data="item"
           @close="closeMessageById"
-          @set-item-height="onUpdateMessageItemInfo"
+          @set-height="setItemHeight"
         />
       </TransitionGroup>
     </section>
@@ -423,7 +424,7 @@ defineExpose({
 
   &[data-position="top-start"],
   &[data-position="bottom-start"] {
-    left: 0;
+    left: 1rem;
     justify-content: flex-start;
 
     .pxd-message--group {
@@ -433,7 +434,7 @@ defineExpose({
 
   &[data-position="top-end"],
   &[data-position="bottom-end"] {
-    right: 0;
+    right: 1rem;
     justify-content: flex-end;
 
     .pxd-message--group {
