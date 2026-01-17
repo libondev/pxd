@@ -3,6 +3,7 @@ import type { MessageItemHeightType, MessageItemType } from '../../composables/u
 import type { ComponentPosition } from '../../types/shared/props'
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useDocumentHidden } from '../../composables/use-document-hidden'
 import {
   CLEAR_MESSAGES_EVENT_NAME,
   CREATE_MESSAGE_EVENT_NAME,
@@ -38,6 +39,14 @@ const props = withDefaults(
 const emits = defineEmits<{
   close: [id: MessageItemType['id']]
 }>()
+
+useDocumentHidden((isHidden) => {
+  if (isHidden) {
+    pauseAllMessages()
+  } else {
+    resumeAllMessages()
+  }
+})
 
 const groupExpand = ref(props.expand)
 const groupMessages = ref<MessageItemType[]>([])
