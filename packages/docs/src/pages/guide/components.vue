@@ -3,7 +3,6 @@ import fuzzysort from 'fuzzysort'
 import { debounce } from 'pxd/utils/debounce'
 import { useRoute } from 'vue-router'
 import allComponents from '@/consts/components.json'
-import OverviewCard from '../../components/OverviewCard.vue'
 
 const route = useRoute()
 const searchKeyword = ref(route.query.q as string)
@@ -25,6 +24,16 @@ const handleSearch = debounce((value: string) => {
 
   filteredComponents.value = getFilteredComponents(value)
 }, 300)
+
+function onTriggerTargetClick(ev: KeyboardEvent) {
+  const target = ev.target as HTMLElement
+
+  if (!target) {
+    return
+  }
+
+  target.click()
+}
 </script>
 
 <template>
@@ -40,20 +49,26 @@ const handleSearch = debounce((value: string) => {
     <PInput
       v-model="searchKeyword"
       placeholder="Search components"
-      allow-clear
+      clearable
       @update:model-value="handleSearch"
     />
   </div>
 
-  <div class="gap-4 mt-4 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))]">
-    <template v-for="{ camelized, name } in filteredComponents" :key="name">
-      <OverviewCard :name="name" :title="camelized">
-        There should be a preview here.
-      </OverviewCard>
+  <Grids :data="filteredComponents" data-key="name" class="mt-4">
+    <template #default="{ item }">
+      <RouterLink
+        :to="`/components/${item.name}`"
+        class="pxd-link-button h-28 relative flex w-full cursor-pointer flex-col overflow-hidden self-focus-ring outline-none hover:bg-background-hover focus-visible:z-10 active:bg-background-active motion-safe:transition-colors"
+        @keydown.space.prevent="onTriggerTargetClick"
+      >
+        <div class="px-4 py-3 text-sm truncate border-b border-dashed">
+          {{ item.camelized }}
+        </div>
+      </RouterLink>
     </template>
+  </Grids>
 
-    <template v-if="filteredComponents.length === 0">
-      <PEmptyState class="col-span-full" title="No data" description="No components found" />
-    </template>
-  </div>
+  <template v-if="filteredComponents.length === 0">
+    <PEmptyState title="No data" description="No components found" />
+  </template>
 </template>

@@ -5,6 +5,7 @@ import { useCopyClick, useMessage } from 'pxd'
 import { debounce } from 'pxd/utils/debounce'
 import { uncapitalize } from 'pxd/utils/format'
 import { throttle } from 'pxd/utils/throttle'
+import Grids from '@/components/Grids.vue'
 
 const iconCount = Object.keys(icons).length
 const allIcons = Object.entries(icons).map(([name, icon]) => ({ name, icon }))
@@ -41,13 +42,13 @@ const handleSearch = debounce((value: string) => {
 }, 300)
 
 const onIconClick = throttle(async (ev: MouseEvent) => {
-  const target = (ev.target as HTMLElement).closest<HTMLElement>('.icon-item')
+  const target = (ev.target as HTMLElement).closest<HTMLElement>('[data-value]')
 
   if (!target) {
     return
   }
 
-  const iconName = target.dataset.name!
+  const iconName = target.dataset.value!
   let contents = iconName
 
   if (copyType.value === 'import') {
@@ -76,12 +77,12 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     <PInput
       v-model="searchKeyword"
       placeholder="Search icons"
-      allow-clear
+      clearable
       @update:model-value="handleSearch"
     />
   </div>
 
-  <div class="mt-4 gap-4 flex">
+  <div class="my-4 gap-4 flex">
     <PSwitchGroup v-model="copyType">
       <PSwitch label="Import" value="import" />
       <PSwitch label="Element" value="element" />
@@ -94,15 +95,20 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
     </PSwitchGroup>
   </div>
 
-  <ul class="py-4 px-0! gap-4 md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] grid grid-cols-2" @click="onIconClick">
-    <li v-for="{ name, icon } of filteredComponents" :key="name" :data-name="name" class="icon-item align-center m-0! p-4 flex cursor-default list-none flex-col justify-center overflow-hidden rounded-lg border text-center select-none hover:bg-background-200 active:bg-background-hover motion-safe:transition-colors">
-      <Component :is="icon" class="my-2 mx-auto" />
+  <Grids :data="filteredComponents" data-key="name" @click="onIconClick">
+    <template #default="{ item }">
+      <button
+        role="button"
+        class="icon-item h-28 px-4 relative w-full appearance-none self-focus-ring outline-none hover:bg-background-200 focus-visible:z-10 focus-visible:bg-background-200 active:bg-background-hover motion-safe:transition-colors"
+      >
+        <Component :is="item.icon" class="my-2 mx-auto" />
 
-      <p class="m-0! pt-2 truncate text-13px text-foreground-secondary">
-        {{ name }}
-      </p>
-    </li>
-  </ul>
+        <p class="m-0! pt-2 truncate text-center text-13px text-foreground-secondary">
+          {{ item.name }}
+        </p>
+      </button>
+    </template>
+  </Grids>
 
   <template v-if="filteredComponents.length === 0">
     <PEmptyState class="col-span-full" title="No data" description="No icons found" />
