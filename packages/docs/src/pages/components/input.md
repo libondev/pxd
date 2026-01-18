@@ -37,7 +37,7 @@ const password = ref('')
 </template>
 ```
 
-## allowClear
+## Clearable
 
 ```vue demo
 <script setup>
@@ -48,7 +48,7 @@ const password = ref('')
 
 <template>
   <PStack class="max-w-sm">
-    <PInput v-model="password" allow-clear placeholder="Enter your password" />
+    <PInput v-model="password" clearable placeholder="Enter your password" />
   </PStack>
 </template>
 ```

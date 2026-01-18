@@ -12,9 +12,9 @@ import PPopover from '../popover/index.vue'
 interface Props {
   size?: ComponentSize
   error?: boolean | string
-  allowClear?: boolean
   presets?: DateTimePreset[]
   disabled?: boolean
+  clearable?: boolean
   modelValue?: Date | string | number
   prefixIcon?: boolean
   placeholder?: string
@@ -254,7 +254,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :size="size"
       :error="error"
       :disabled="disabled"
-      :allow-clear="allowClear"
+      :clearable="clearable"
       :model-value="modelValue"
       :placeholder="placeholder"
       :prefix-style="false"

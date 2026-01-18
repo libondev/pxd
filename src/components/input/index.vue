@@ -70,7 +70,7 @@ const internalInputType = computed(() => props.inputType || isPasswordVisible.va
 const computedClass = computed(() => {
   const classes = []
 
-  classes.push(getFallbackValue(props.size, SIZES, config.size))
+  classes.push(getFallbackValue(props.size, SIZES, config.size), props.align && ALIGN[props.align])
 
   if (isTruthyProp(props.disabled)) {
     classes.push('is-disabled')
@@ -218,7 +218,7 @@ defineExpose({
   >
     <div
       v-if="$slots.prefix"
-      class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-gray-700"
+      class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-foreground-secondary"
       :class="{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
     >
       <slot name="prefix" />
@@ -227,8 +227,7 @@ defineExpose({
     <input
       :id="uniqueId"
       ref="inputRef"
-      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
-      :class="{ 'pr-9': password || allowClear, [ALIGN[align]]: true }"
+      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       :type="internalInputType"
       :min="min"
       :max="max"
@@ -256,22 +255,31 @@ defineExpose({
     >
 
     <div
-      v-if="password || allowClear"
+      v-if="password || clearable"
       v-show="computedModelValue"
-      class="pxd-input--icon right-0 top-0 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-gray-700"
+      :class="{ 'pr-2': password && clearable }"
+      class="pxd-input--icon right-0 top-0 gap-1 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
     >
-      <div v-if="password" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="toggleType">
-        <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
-        <EyeIcon v-else class="size-3" />
-      </div>
-      <div v-if="allowClear" class="p-1 rounded-sm hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors" @click.stop.prevent="clearValue">
-        <CrossIcon class="size-3" />
-      </div>
+      <button
+        v-if="password"
+        class="p-1 appearance-none rounded-sm self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        @click.stop.prevent="toggleType"
+      >
+        <EyeOffIcon v-if="isPasswordVisible" class="size-3 pointer-events-none" />
+        <EyeIcon v-else class="size-3 pointer-events-none" />
+      </button>
+      <button
+        v-if="clearable"
+        class="p-1 appearance-none rounded-sm self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        @click.stop.prevent="clearValue"
+      >
+        <CrossIcon class="size-3 pointer-events-none" />
+      </button>
     </div>
 
     <div
       v-if="$slots.suffix"
-      class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-gray-700"
+      class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-foreground-secondary"
       :class="{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
     >
       <slot name="suffix" />

@@ -17,8 +17,8 @@ export interface InputProps {
   inputmode?: HTMLAttributes['inputmode']
   minlength?: number | string
   maxlength?: number | string
+  clearable?: boolean
   modelValue?: ComponentLabel
-  allowClear?: boolean
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
