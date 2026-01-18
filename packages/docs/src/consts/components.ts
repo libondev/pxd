@@ -20,6 +20,10 @@ export const asideMenus = [
         path: '/guide/installation',
       },
       {
+        label: 'Components',
+        path: '/guide/components',
+      },
+      {
         label: 'Icons',
         path: '/guide/icons',
       },
@@ -31,12 +35,6 @@ export const asideMenus = [
   },
   {
     group: 'Components',
-    children: [
-      {
-        label: 'Overview',
-        path: '/components',
-      },
-      ...componentsMenus,
-    ],
+    children: componentsMenus,
   },
 ]

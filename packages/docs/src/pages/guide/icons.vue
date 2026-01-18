@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import * as icons from '@gdsicon/vue'
+import fuzzysort from 'fuzzysort'
 import { useCopyClick, useMessage } from 'pxd'
 import { debounce } from 'pxd/utils/debounce'
 import { uncapitalize } from 'pxd/utils/format'
@@ -28,9 +29,9 @@ function getFilteredComponents(value: string) {
     return allIcons
   }
 
-  const matchRegex = new RegExp(value, 'i')
+  const results = fuzzysort.go(value, allIcons, { key: 'name' })
 
-  return allIcons.filter(({ name }) => matchRegex.test(name))
+  return results.map(result => result.obj)
 }
 
 const handleSearch = debounce((value: string) => {

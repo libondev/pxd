@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import fuzzysort from 'fuzzysort'
 import { debounce } from 'pxd/utils/debounce'
 import { useRoute } from 'vue-router'
-import components from '@/consts/components.json'
+import allComponents from '@/consts/components.json'
 import OverviewCard from '../../components/OverviewCard.vue'
 
 const route = useRoute()
@@ -11,12 +12,12 @@ const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value)
 
 function getFilteredComponents(value: string) {
   if (!value) {
-    return components
+    return allComponents
   }
 
-  const matchRegex = new RegExp(value, 'i')
+  const results = fuzzysort.go(value, allComponents, { key: 'name' })
 
-  return components.filter(({ name }) => matchRegex.test(name))
+  return results.map(result => result.obj)
 }
 
 const handleSearch = debounce((value: string) => {
@@ -32,7 +33,7 @@ const handleSearch = debounce((value: string) => {
   </h1>
 
   <PText secondary class="mt-2">
-    A total of <span class="font-medium text-foreground">{{ components.length }}</span> components
+    A total of <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
   </PText>
 
   <div class="py-4 z-10 border-b bg-background-100">
