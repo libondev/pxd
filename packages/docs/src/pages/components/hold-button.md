@@ -32,18 +32,6 @@ function onFinished(isFinished) {
 </template>
 ```
 
-## Shape
-
-```vue demo
-<template>
-  <PStack>
-    <PHoldButton> Hole me </PHoldButton>
-    <PHoldButton shape="rounded"> Hole me </PHoldButton>
-    <PHoldButton shape="square"> Hole me </PHoldButton>
-  </PStack>
-</template>
-```
-
 ## Durations
 
 Set the `durations` property to determine how long it will trigger.

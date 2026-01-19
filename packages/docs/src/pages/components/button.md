@@ -13,6 +13,18 @@ One of the most basic components, it will help you complete the interaction.
 </template>
 ```
 
+## Shape
+
+```vue demo
+<template>
+  <PStack>
+    <PButton> click me </PButton>
+    <PButton shape="rounded"> click me </PButton>
+    <PButton shape="square"> click me </PButton>
+  </PStack>
+</template>
+```
+
 ## Variants
 
 ```vue demo
