@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as icons from '@gdsicon/vue'
-import fuzzysort from 'fuzzysort'
+import fuzzySort from 'fuzzysort'
 import { useCopyClick, useMessage } from 'pxd'
 import { debounce } from 'pxd/utils/debounce'
 import { uncapitalize } from 'pxd/utils/format'
@@ -14,24 +14,26 @@ const allIcons = Object.entries(icons).map(([name, icon]) => ({ name, icon }))
 const route = useRoute()
 const { copyText } = useCopyClick()
 
-const copyType = ref<'name' | 'import' | 'element'>('import')
-const quoteType = ref<'single' | 'double' | 'single-hight'>('single')
+type CopyType = 'name' | 'import' | 'element' | 'prefix'
+
+const cachedCopyTypeKey = 'fe.icons.copyType'
+const cachedCopyType = localStorage.getItem(cachedCopyTypeKey) || 'import'
+
+const cachedCustomPrefixKey = 'fe.icons.customPrefix'
+const cachedCustomPrefix = localStorage.getItem(cachedCustomPrefixKey) || ''
+
+const copyType = ref<CopyType>(cachedCopyType as CopyType)
+const customPrefix = ref(cachedCustomPrefix as string)
+
 const searchKeyword = ref(route.query.q as string)
-
 const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
-
-const quoteTypeMap = {
-  'single': '\'',
-  'double': '"',
-  'single-hight': '`',
-}
 
 function getFilteredComponents(value: string) {
   if (!value) {
     return allIcons
   }
 
-  const results = fuzzysort.go(value, allIcons, { key: 'name' })
+  const results = fuzzySort.go(value, allIcons, { key: 'name' })
 
   return results.map(result => result.obj)
 }
@@ -42,6 +44,21 @@ const handleSearch = debounce((value: string) => {
   filteredComponents.value = getFilteredComponents(value)
 }, 300)
 
+function getCopyContents(iconName: string) {
+  let contents = iconName
+
+  if (copyType.value === 'import') {
+    const filename = uncapitalize(iconName.replace('Icon', ''))
+    contents = `import ${iconName} from '@gdsicon/vue/${filename}'`
+  } else if (copyType.value === 'element') {
+    contents = `<${iconName} />`
+  } else if (copyType.value === 'prefix') {
+    contents = `<${customPrefix.value}${iconName.replace('Icon', '')} />`
+  }
+
+  return contents
+}
+
 const onIconClick = throttle(async (ev: MouseEvent) => {
   const target = (ev.target as HTMLElement).closest<HTMLElement>('[data-value]')
 
@@ -50,19 +67,19 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
   }
 
   const iconName = target.dataset.value!
-  let contents = iconName
-
-  if (copyType.value === 'import') {
-    const filename = uncapitalize(iconName.replace('Icon', ''))
-    const quote = quoteTypeMap[quoteType.value] || '\''
-    contents = `import ${iconName} from ${quote}@gdsicon/vue/${filename}${quote}`
-  } else if (copyType.value === 'element') {
-    contents = `<${iconName} />`
-  }
+  const contents = getCopyContents(iconName)
 
   await copyText(contents)
   useMessage.success('Copied successful')
 }, 300)
+
+function handleCopyTypeChange(value: string | number) {
+  localStorage.setItem(cachedCopyTypeKey, value as string)
+}
+
+function handleCustomPrefixChange(value: string) {
+  localStorage.setItem(cachedCustomPrefixKey, value)
+}
 </script>
 
 <template>
@@ -75,24 +92,21 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
   </PText>
 
   <div class="py-4 z-10 border-b bg-background-100">
-    <PInput
-      v-model="searchKeyword"
-      placeholder="Search icons"
-      clearable
-      @update:model-value="handleSearch"
-    />
+    <PInput v-model="searchKeyword" placeholder="Search icons" clearable @update:model-value="handleSearch" />
   </div>
 
   <div class="my-4 gap-4 flex">
-    <PSwitchGroup v-model="copyType">
+    <PSwitchGroup v-model="copyType" @update:model-value="handleCopyTypeChange">
       <PSwitch label="Import" value="import" />
       <PSwitch label="Element" value="element" />
       <PSwitch label="Name" value="name" />
-    </PSwitchGroup>
-    <PSwitchGroup v-model="quoteType">
-      <PSwitch label="'" value="single" />
-      <PSwitch label="&quot;" value="double" />
-      <PSwitch label="`" value="single-hight" />
+      <PSwitch label="Prefix" value="prefix">
+        <input
+          v-model="customPrefix"
+          class="w-25 h-full outline-none" placeholder="Prefix element"
+          @update:model-value="handleCustomPrefixChange"
+        >
+      </PSwitch>
     </PSwitchGroup>
   </div>
 
@@ -104,8 +118,8 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
       >
         <Component :is="item.icon" class="my-2 mx-auto" />
 
-        <p class="m-0! pt-2 truncate text-center text-13px text-foreground-secondary">
-          {{ item.name }}
+        <p class="icon-name m-0! pt-2 relative truncate text-center text-13px text-foreground-secondary">
+          {{ getCopyContents(item.name) }}
         </p>
       </button>
     </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import fuzzysort from 'fuzzysort'
+import fuzzySort from 'fuzzysort'
 import { debounce } from 'pxd/utils/debounce'
 import { useRoute } from 'vue-router'
 import allComponents from '@/consts/components.json'
@@ -14,7 +14,7 @@ function getFilteredComponents(value: string) {
     return allComponents
   }
 
-  const results = fuzzysort.go(value, allComponents, { key: 'name' })
+  const results = fuzzySort.go(value, allComponents, { key: 'name' })
 
   return results.map(result => result.obj)
 }
