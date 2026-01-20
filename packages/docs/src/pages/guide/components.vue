@@ -61,7 +61,7 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
         class="pxd-link-button h-28 relative flex w-full cursor-pointer flex-col overflow-hidden self-focus-ring outline-none hover:bg-background-hover focus-visible:z-10 active:bg-background-active motion-safe:transition-colors"
         @keydown.space.prevent="onTriggerTargetClick"
       >
-        <div class="px-4 py-3 text-sm truncate border-b border-dashed">
+        <div class="px-4 py-3 text-sm truncate">
           {{ item.camelized }}
         </div>
       </RouterLink>

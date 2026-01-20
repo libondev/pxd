@@ -220,7 +220,7 @@ if (!isServer()) {
 
   pre.shiki {
     max-width: 100%;
-    margin-top: 1em;
+    margin-block: 1em;
     padding: 1.25em 1.5em;
     line-height: 1.25;
     border-radius: 0.5em;
