@@ -6,6 +6,7 @@ import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
+import PButton from '../button/index.vue'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
