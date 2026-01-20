@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
           v-for="(_, i) in carousels.length"
           :key="i"
           :data-index="i"
-          class="pxd-carousel-group--indicator-item relative h-(--h) w-(--w) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+          class="pxd-carousel-group--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
           :class="{ 'bg-primary!': i === correctIndex }"
         />
       </slot>
@@ -340,21 +340,21 @@ onBeforeUnmount(() => {
 <style lang="postcss">
 .pxd-carousel-group {
   &[data-indicator-type="dot"] {
-    --w: 8px;
-    --h: 8px;
+    --carousel-dot-width: 8px;
+    --carousel-dot-height: 8px;
   }
 
   &[data-indicator-type="line"] {
     &[data-indicator-position="top"],
     &[data-indicator-position="bottom"] {
-      --w: 16px;
-      --h: 4px;
+      --carousel-dot-width: 16px;
+      --carousel-dot-height: 4px;
     }
 
     &[data-indicator-position="left"],
     &[data-indicator-position="right"] {
-      --w: 4px;
-      --h: 16px;
+      --carousel-dot-width: 4px;
+      --carousel-dot-height: 16px;
     }
   }
 

@@ -89,10 +89,6 @@ async function onCheckboxChange(e: Event) {
     :for="uniqueId"
     class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation items-center select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
-    :style="{
-      '--ac': activeColor,
-      '--ic': inactiveColor,
-    }"
   >
     <input
       :id="uniqueId"
@@ -109,8 +105,12 @@ async function onCheckboxChange(e: Event) {
     >{{ inactiveLabel }}</span>
 
     <div
-      class="pxd-toggle--handle rounded-full border border-input bg-(--ic) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--ac) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
+      class="pxd-toggle--handle rounded-full border border-input bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
       :class="computedSize"
+      :style="{
+        '--toggle-active-color': activeColor,
+        '--toggle-inactive-color': inactiveColor,
+      }"
     >
       <div class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform">
         <div class="inset-0 absolute flex items-center justify-center">

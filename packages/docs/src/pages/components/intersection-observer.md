@@ -39,16 +39,16 @@ function onHide() {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1 border border-dashed rounded-lg">
+  <div class="w-100 max-w-full h-80 overflow-auto mt-2 border border-dashed rounded-lg">
     <PIntersectionObserver
-      class="w-80 max-w-full h-30 rounded-md border border-dashed mb-60 mr-100 bg-background-200"
+      class="size-40 max-w-full rounded-md border border-dashed my-100 mx-auto flex items-center justify-center bg-background-200"
       @visible-change="onVisibleChange"
       @before-show="onBeforeShow"
       @show="onShow"
       @before-hide="onBeforeHide"
       @hide="onHide"
      >
-      <div>Hello, world!</div>
+      Hello, world!
     </PIntersectionObserver>
   </div>
 </template>
@@ -59,7 +59,7 @@ Setting an estimated size can prevent large layout deviation after rendering. (A
 
 ```vue demo=Static.vue
 <template>
-  <div class="h-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
+  <div class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
     This is a static component.
   </div>
 </template>
@@ -88,9 +88,9 @@ function onVisibleChange(visible) {
     <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
   </div>
 
-  <div class="w-100 max-w-full h-60 overflow-auto mt-2 p-1 border border-dashed rounded-lg">
+  <div class="w-100 max-w-full h-60 overflow-auto mt-2 border border-dashed rounded-lg">
     <PIntersectionObserver
-      class="mt-60 max-w-full"
+      class="mt-80 max-w-full"
       width="100%"
       height="64px"
       @visible-change="onVisibleChange"
@@ -129,29 +129,22 @@ import Counter from 'doc:Counter.vue'
 </script>
 
 <template>
-  <div class="w-100 max-w-full h-60 overflow-auto p-1 flex flex-col gap-2">
-    <PIntersectionObserver
-      height="36px"
-      class="mt-60"
-    >
-      <PStack align="center">
-        <Counter />
-        <span>Without keep-alive</span>
-      </PStack>
-    </PIntersectionObserver>
+  <div class="w-100 max-w-full h-60 overflow-auto">
+    <div class="my-80 flex flex-col gap-2">
+      <PIntersectionObserver height="36px">
+        <PStack align="center">
+          <Counter />
+          <span>Without keep-alive</span>
+        </PStack>
+      </PIntersectionObserver>
 
-    <PIntersectionObserver
-      height="36px"
-      keep-alive
-    >
-      <PStack align="center">
-        <Counter />
-        <span>With keep-alive</span>
-      </PStack>
-    </PIntersectionObserver>
+      <PIntersectionObserver height="36px" keep-alive>
+        <PStack align="center">
+          <Counter />
+          <span>With keep-alive</span>
+        </PStack>
+      </PIntersectionObserver>
+    </div>
   </div>
 </template>
 ```
-
-## FAQ
-If it is found that the component is no longer visible, but the component is not destroyed, adding 1px padding on the outer layer of the component can solve the problem, the specific reason is temporarily unknown.

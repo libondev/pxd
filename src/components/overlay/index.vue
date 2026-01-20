@@ -64,7 +64,7 @@ let scrollContainer: HTMLElement | null
 
 const clipPath = shallowRef('')
 const overlayRef = shallowRef<HTMLElement>()
-const computedStyle = computed(() => ({ '--z': props.zIndex, 'clip-path': clipPath.value }))
+const computedStyle = computed(() => ({ '--overlay-z-index': props.zIndex, 'clip-path': clipPath.value }))
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
         ref="overlayRef"
         :data-blurred="blurred"
         :data-transparent="transparent"
-        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed z-(--z,10) motion-safe:transition-colors"
+        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
         @touchmove.prevent.stop
@@ -233,6 +233,10 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
+.pxd-overlay {
+  z-index: var(--overlay-z-index, 10)
+}
+
 .pxd-overlay[data-blurred="true"] {
   backdrop-filter: blur(4px);
 }

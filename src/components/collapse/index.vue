@@ -121,9 +121,9 @@ onMounted(() => {
 
 <style>
 .pxd-collapse--trigger {
-  padding-block: var(--s, 24px);
-  font-size: var(--fs, 24px);
-  font-weight: var(--fw, 600);
+  padding-block: var(--collapse-padding, 24px);
+  font-size: var(--collapse-font-size, 24px);
+  font-weight: var(--collapse-font-weight, 600);
 }
 
 .pxd-transition--collapse-enter-active,

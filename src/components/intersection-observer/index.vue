@@ -38,16 +38,16 @@ const emits = defineEmits<{
 const isVisible = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef({
-  '--w': getCssUnitValue(props.width),
-  '--h': getCssUnitValue(props.height),
+  '--slot-estimated-width': getCssUnitValue(props.width),
+  '--slot-estimated-height': getCssUnitValue(props.height),
 })
 
 function getRenderedSlotSize() {
   const rect = containerRef.value!.getBoundingClientRect()
 
   containerSize.value = {
-    '--w': `${rect.width}px`,
-    '--h': `${rect.height}px`,
+    '--slot-estimated-width': `${rect.width}px`,
+    '--slot-estimated-height': `${rect.height}px`,
   }
 }
 
@@ -93,11 +93,11 @@ useIntersectionObserver(containerRef, ([entry]) => {
 <style>
 .pxd-intersection-observer::before {
   display: block;
-  width: var(--w);
-  height: var(--h);
+  width: var(--slot-estimated-width);
+  height: var(--slot-estimated-height);
   contain: size;
   content-visibility: auto;
-  contain-intrinsic-size: var(--w) var(--h);
+  contain-intrinsic-size: var(--slot-estimated-width) var(--slot-estimated-height);
 }
 
 .pxd-intersection-observer:empty::before {

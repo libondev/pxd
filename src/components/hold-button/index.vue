@@ -61,8 +61,8 @@ const computedStyle = computed(() => {
   }
 
   return {
-    '--ds': `${_durations}ms`,
-    '--mc': maskColor,
+    '--hold-button-durations': `${_durations}ms`,
+    '--hold-button-mask-color': maskColor,
   }
 })
 
@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
     <template #suffix>
       <slot name="suffix" />
       <div
-        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--mc)"
+        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-mask-color)"
         :class="{ finished: status === 'confirmed' }"
         :style="computedStyle"
         @transitionend="onTransitionEnd"
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
 
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
-    transition: clip-path var(--ds) var(--default-transition-timing-function), opacity var(--default-transition-duration) var(--default-transition-timing-function);
+    transition: clip-path var(--hold-button-durations) var(--default-transition-timing-function), opacity var(--default-transition-duration) var(--default-transition-timing-function);
   }
 }
 </style>

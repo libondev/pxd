@@ -78,7 +78,7 @@ const computedStyle = computed(() => {
   const styles: CSSProperties = {}
 
   if (props.size) {
-    styles['--s'] = getCssUnitValue(props.size)
+    styles['--drawer-size'] = getCssUnitValue(props.size)
   }
 
   return styles
@@ -129,7 +129,7 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="pxd-drawer group/drawer translate-z-0 sm:[--w:30vw] sm:[--h:30vw] pointer-events-auto fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
+        class="pxd-drawer group/drawer translate-z-0 sm:[--drawer-width:30vw] sm:[--drawer-height:30vw] pointer-events-auto fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
@@ -201,12 +201,12 @@ watch(() => isVisible.value, (visible) => {
 
 .pxd-drawer[data-position="left"],
 .pxd-drawer[data-position="right"] {
-  width: var(--s, var(--w, 80vw));
+  width: var(--drawer-size, var(--drawer-width, 80vw));
 }
 
 .pxd-drawer[data-position="top"],
 .pxd-drawer[data-position="bottom"] {
-  height: var(--s, var(--h, 80vw));
+  height: var(--drawer-size, var(--drawer-height, 80vw));
 }
 
 .pxd-transition--drawer-right-enter-active,

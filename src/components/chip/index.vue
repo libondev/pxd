@@ -34,7 +34,7 @@ const computedClass = computed(() => {
   const { variant, inset, label } = props
 
   if (!label) {
-    classes.push('size-(--s)')
+    classes.push('size-(--chip-size)')
   }
 
   if (!inset) {
@@ -51,7 +51,7 @@ const computedClass = computed(() => {
   <div class="pxd-chip relative inline-flex shrink-0">
     <slot />
 
-    <span :data-label="label" :class="computedClass" :style="{ '--s': getCssUnitValue(size) }" />
+    <span :data-label="label" :class="computedClass" :style="{ '--chip-size': getCssUnitValue(size) }" />
   </div>
 </template>
 
