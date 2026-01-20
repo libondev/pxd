@@ -463,7 +463,7 @@
     border: 1px solid var(--border-color, var(--color-gray-alpha-300));
 
     &:not(.is-disabled, .is-readonly):hover {
-      --border-color: hsla(var(--primary), .6);
+      --border-color: hsla(var(--primary), .5);
     }
 
     &:not(.is-disabled, .is-readonly):focus-within {
