@@ -71,6 +71,7 @@
     "unref",
     "vite",
     "vitesse",
-    "vitest"
+    "vitest",
+    "rsbuild"
   ]
 }

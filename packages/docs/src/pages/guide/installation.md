@@ -8,77 +8,14 @@ The adaptation of unocss/tailwindcss@3 will be completed later.
 
 <div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">
 
-![](https://img.shields.io/npm/v/pxd.svg)
+[![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="_blank"}
 </div>
 
 ```bash
-npm install pxd
+pnpm install pxd
 ```
 
-### For vue2.7+
-Since the defineOptions macro is not currently supported in vue2, you need to install an additional plugin.
-
-```bash
-npm install unplugin-vue-define-options@1.5.5
-```
-
-Then enable this plugin in vite/rsbuild
-
-`vite.config.ts`
-```js
-import { defineConfig } from 'vite'
-import defineOptions from 'unplugin-vue-define-options/vite'
-
-export default defineConfig({
-  plugins: [
-    defineOptions(),
-  ]
-})
-```
-
-`rsbuild.config.ts`
-
-```js
-import { defineConfig } from '@rsbuild/core';
-import { pluginVue } from '@rsbuild/plugin-vue';
-import defineOptions from 'unplugin-vue-define-options/rspack'
-
-export default defineConfig({
-  plugins: [pluginVue()],
-  tools: {
-    rspack: {
-      plugins: [
-        defineOptions()
-      ]
-    }
-  }
-});
-```
-
-## Styles
-
-### Native CSS
-Just import this stylesheet globally.
-```js
-// main.js
-import 'pxd/styles.css'
-```
-
-### Tailwindcss@4
-
-```css
-/* src/styles/global.css */
-@import "tailwindcss";
-
-/* add pxd styles */
-@import "../../node_modules/pxd/dist/styles/tw.css";
-@source "../../node_modules/pxd";
-```
-
-## Usage
-You can register globally or import on demand, or import automatically.
-
-### Global Import
+## Global Import
 You can register all the components to the global at one time, but this may lead to a larger volume after your construction.
 
 ```js
@@ -96,25 +33,15 @@ app.use(PXD)
 </template>
 ```
 
-#### Volar support
-If you are using Volar, you can specify global component types by configuring `compilerOptions.types` in `tsconfig.json`, for better type hints.
+## Import on demand
 
-```json
-// tsconfig.json
-{
-  "compilerOptions": {
-    // ...
-    "types": ["pxd/volar"]
-  }
-}
-```
-
-### Import on demand
 Only use the components you need to avoid being too big after packaging.
 
 ```html
 <script setup>
 import Button from 'pxd/components/button'
+// or
+// import { Button } from 'pxd'
 </script>
 
 <template>
@@ -124,12 +51,16 @@ import Button from 'pxd/components/button'
 </template>
 ```
 
-### Import automatically
-Use `unplugin-vue-components` to simplify the import process.
+## Import automatically
+
+Use [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) to simplify the import process.
+
+```bash
+pnpm install -D unplugin-vue-components
+```
 
 ```js
-// vite.config.js
-
+// vite.config.ts
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
@@ -155,4 +86,67 @@ Then you can focus on the business logic itself.
     Click me
   </PButton>
 </template>
+```
+
+## Volar support
+
+If you are using Volar, you can specify global component types by configuring `compilerOptions.types` in `tsconfig.json`, for better type hints.
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    // ...
+    "types": ["pxd/volar"]
+  }
+}
+```
+
+If it still has no effect, you may need to disable tsgo in the current workspace:
+
+```json
+// .vscode/settings.json
+{
+  "typescript.experimental.useTsgo": false
+}
+```
+
+## For vue2.7+
+
+Since the defineOptions macro is not currently supported in vue2, you need to install an additional plugin.
+
+```bash
+pnpm install unplugin-vue-define-options@1.5.5
+```
+
+Then enable this plugin in vite/rsbuild:
+
+```js
+// vite.config.ts
+import { defineConfig } from 'vite'
+import defineOptions from 'unplugin-vue-define-options/vite'
+
+export default defineConfig({
+  plugins: [
+    defineOptions(),
+  ]
+})
+```
+
+```js
+// rsbuild.config.ts
+import { defineConfig } from '@rsbuild/core';
+import { pluginVue } from '@rsbuild/plugin-vue';
+import defineOptions from 'unplugin-vue-define-options/rspack'
+
+export default defineConfig({
+  plugins: [pluginVue()],
+  tools: {
+    rspack: {
+      plugins: [
+        defineOptions()
+      ]
+    }
+  }
+});
 ```

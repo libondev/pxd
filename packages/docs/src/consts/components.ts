@@ -1,6 +1,6 @@
-import components from './components.json'
+import componentList from './components.json'
 
-const componentsMenus = components.map(({ name, camelized }) => {
+const componentMenus = componentList.map(({ name, camelized }) => {
   return {
     label: camelized,
     path: `/components/${name}`,
@@ -20,12 +20,20 @@ export const asideMenus = [
         path: '/guide/installation',
       },
       {
+        label: 'Styled',
+        path: '/guide/styled',
+      },
+      {
+        label: 'Icon',
+        path: '/guide/icon',
+      },
+      {
         label: 'Components',
         path: '/guide/components',
       },
       {
-        label: 'Icons',
-        path: '/guide/icons',
+        label: 'Icons Overview',
+        path: '/guide/icons-overview',
       },
       {
         label: 'FAQ',
@@ -35,6 +43,6 @@ export const asideMenus = [
   },
   {
     group: 'Components',
-    children: componentsMenus,
+    children: componentMenus,
   },
 ]
