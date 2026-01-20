@@ -72,9 +72,9 @@ export function getAllDatesBetween(
   })
 
   return {
-    years: Array.from(yearsSet).sort((a, b) => a - b),
-    months: Array.from(monthsSet).sort((a, b) => a - b),
-    weeks: Array.from(weeksSet).sort((a, b) => a - b),
+    years: Array.from(yearsSet),
+    months: Array.from(monthsSet),
+    weeks: Array.from(weeksSet),
     dates: formattedDates,
   }
 }
