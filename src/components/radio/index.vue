@@ -17,6 +17,7 @@ defineOptions({
 const props = defineProps<RadioProps>()
 
 const emits = defineEmits<{
+  'change': [NonNullable<RadioProps['modelValue']>]
   'update:modelValue': [NonNullable<RadioProps['modelValue']>]
 }>()
 

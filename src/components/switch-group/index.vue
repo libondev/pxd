@@ -25,6 +25,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<SwitchGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<SwitchGroupProps['modelValue']>]
 }>()
 

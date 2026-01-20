@@ -43,6 +43,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   'update:modelValue': [boolean]
   'select': [MouseEvent, ListOptionSelected]
+  'change': [boolean]
   'show': []
   'hide': []
 }>()

@@ -46,6 +46,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   'show': []
   'hide': []
+  'change': [boolean]
   'visible-change': [boolean]
   'outside-click': [MouseEvent]
   'update:modelValue': [boolean]

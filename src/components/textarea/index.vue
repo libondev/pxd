@@ -36,9 +36,9 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
+  'change': [NonNullable<Props['modelValue']>]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
-  'change': [Event]
 }>()
 
 const uniqueId = getUniqueId()
@@ -83,7 +83,7 @@ function onInputBlur(event: FocusEvent) {
 }
 
 function onInputChange(event: Event) {
-  emits('change', event)
+  emits('change', (event.target as HTMLTextAreaElement).value)
 }
 </script>
 

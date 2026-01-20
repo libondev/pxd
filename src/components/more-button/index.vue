@@ -30,6 +30,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 

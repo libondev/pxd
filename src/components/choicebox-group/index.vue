@@ -27,6 +27,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<ChoiceboxGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<ChoiceboxGroupProps['modelValue']>]
 }>()
 

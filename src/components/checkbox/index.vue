@@ -24,6 +24,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
+  'change': [NonNullable<CheckboxProps['modelValue']>]
   'update:modelValue': [NonNullable<CheckboxProps['modelValue']>]
 }>()
 
