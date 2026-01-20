@@ -33,9 +33,11 @@ export default {
   },
   empty: {
     search: '未找到结果',
+    noData: '暂无数据',
   },
   confirm: {
     ok: '确定',
+    conform: '确认',
     cancel: '取消',
   },
 }

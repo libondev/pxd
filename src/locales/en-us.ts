@@ -33,9 +33,11 @@ export default {
   },
   empty: {
     search: 'No results found for',
+    noData: 'No data available',
   },
   confirm: {
     ok: 'OK',
+    conform: 'Confirm',
     cancel: 'Cancel',
   },
 }
