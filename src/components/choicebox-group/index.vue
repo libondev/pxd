@@ -4,6 +4,7 @@ import { computed, markRaw, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideChoiceboxGroupContext, provideChoiceboxGroupModelValue } from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
+import PLabel from '../label/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
 
 defineOptions({
@@ -59,11 +60,11 @@ provideChoiceboxGroupModelValue(modelValue)
 
 <template>
   <div class="pxd-choicebox-group w-full max-w-full">
-    <div v-if="label || $slots.label" class="pxd-form--label">
+    <PLabel v-if="label || $slots.label">
       <slot name="label">
         {{ label }}
       </slot>
-    </div>
+    </PLabel>
 
     <Component
       :is="renderComponent"
