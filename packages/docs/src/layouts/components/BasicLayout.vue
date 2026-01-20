@@ -219,17 +219,19 @@ if (!isServer()) {
   }
 
   pre.shiki {
+    position: relative;
     max-width: 100%;
     margin-block: 1em;
     padding: 1.25em 1.5em;
     line-height: 1.25;
     border-radius: 0.5em;
-    white-space: pre-wrap;
     word-break: break-all;
     border: 1px solid hsl(var(--color-gray-300-value));
+    outline: none;
+    overflow: auto;
 
     &:has(.line:not(:only-child)) {
-      padding: 1.25em 1.5em 1.25em 3.5em;
+      padding: 1.25em 0;
     }
   }
 
@@ -246,17 +248,36 @@ if (!isServer()) {
     position: relative;
   }
 
-  pre.shiki code .line:not(:only-child)::before {
-    content: counter(section);
-    position: absolute;
-    top: 0;
-    left: -3em;
-    width: 25px;
-    user-select: none;
-    text-align: right;
-    pointer-events: none;
-    color: var(--color-gray-600);
-    counter-increment: section;
+  pre.shiki code .line:not(:only-child) {
+    &::before {
+      content: counter(section);
+      display: inline-block;
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 50px;
+      padding-right: 1em;
+      user-select: none;
+      text-align: right;
+      pointer-events: none;
+      color: var(--color-gray-600);
+      counter-increment: section;
+      background: linear-gradient(to right, var(--color-background-100) 80%, transparent);
+      z-index: 10;
+    }
+
+    &::after {
+      content: ' ';
+      position: sticky;
+      right: -1px;
+      top: 0;
+      display: inline-block;
+      width: 1.5rem;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(to left,var(--color-background-100) 35%,transparent);
+      z-index: 5;
+    }
   }
 
   pre.shiki code.language-bash .line:not(:only-child)::before {

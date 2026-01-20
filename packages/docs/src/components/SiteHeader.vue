@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
         </PLinkButton>
       </div>
 
-      <div class="h-full border-l">
+      <div class="h-full border-r border-l border-r-transparent">
         <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
       </div>
     </nav>
