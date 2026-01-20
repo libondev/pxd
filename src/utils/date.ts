@@ -33,47 +33,49 @@ export function getAllDatesBetween(
   endDate: Date | string,
   format: 'string' | 'object' = 'string',
 ): Result<string | Date> {
-  let start = dayjs(startDate)
-  let end = dayjs(endDate)
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
 
   // 验证日期
   if (!start.isValid() || !end.isValid()) {
     throw new TypeError('无效的日期输入')
   }
 
-  // 如果开始日期大于结束日期，则交换它们
-  if (start.isAfter(end)) {
-    [start, end] = [end, start]
-  }
+  // 确保开始日期不晚于结束日期
+  const startDateNormalized = start.isAfter(end) ? end : start
+  const endDateNormalized = start.isAfter(end) ? start : end
 
-  const years = new Set<number>()
-  const months = new Set<number>()
-  const weeks = new Set<number>()
-  const dates = []
+  // 使用 dayjs 计算日期差（天数）
+  const startOfStart = startDateNormalized.startOf('day')
+  const startOfEnd = endDateNormalized.startOf('day')
+  const daysDiff = startOfEnd.diff(startOfStart, 'day')
 
-  let currentDate = start.startOf('day')
-  const endDateTime = end.startOf('day')
+  // 使用 dayjs 生成所有日期数组
+  const dates = Array.from({ length: daysDiff + 1 }, (_, index) => {
+    return startOfStart.add(index, 'day')
+  })
 
-  // 循环直到到达结束日期
-  while (!currentDate.isAfter(endDateTime)) {
-    years.add(currentDate.year())
-    months.add(currentDate.month() + 1)
-    weeks.add(currentDate.day())
+  // 使用 dayjs 提取年份、月份和周几信息
+  const yearsSet = new Set<number>()
+  const monthsSet = new Set<number>()
+  const weeksSet = new Set<number>()
 
-    dates.push(
-      format === 'object'
-        ? currentDate.toDate()
-        : currentDate.format('YYYY-MM-DD'),
-    )
+  dates.forEach((date) => {
+    yearsSet.add(date.year())
+    monthsSet.add(date.month() + 1)
+    weeksSet.add(date.day())
+  })
 
-    currentDate = currentDate.add(1, 'day')
-  }
+  // 格式化日期数组
+  const formattedDates = dates.map((date) => {
+    return format === 'object' ? date.toDate() : date.format('YYYY-MM-DD')
+  })
 
   return {
-    years: Array.from(years),
-    months: Array.from(months),
-    weeks: Array.from(weeks),
-    dates,
+    years: Array.from(yearsSet).sort((a, b) => a - b),
+    months: Array.from(monthsSet).sort((a, b) => a - b),
+    weeks: Array.from(weeksSet).sort((a, b) => a - b),
+    dates: formattedDates,
   }
 }
 
