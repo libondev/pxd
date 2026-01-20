@@ -103,6 +103,16 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
+  --default-transition-duration: .2s;
+  --default-transition-timing-function: ease-in-out;
+
+  --primary: var(--color-gray-1000-value);
+  --primary-hover: hsla(var(--primary), 70%);
+  --primary-active: hsla(var(--primary), 90%);
+
+  --radius: .5rem;
+  --ring: var(--color-blue-900-value);
+
   --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,.08);
   --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);
   --shadow-border-medium-value: 0 0 0 1px rgba(0,0,0,.08), 0px 2px 2px rgba(0,0,0,.04),0px 8px 8px -8px rgba(0,0,0,.04);
@@ -228,16 +238,6 @@
   --color-pink-800-value: 336, 74%, 51%;
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
-
-  --default-transition-duration: .2s;
-  --default-transition-timing-function: ease-in-out;
-
-  --primary: var(--color-gray-1000-value);
-  --primary-hover: hsla(var(--primary), 70%);
-  --primary-active: hsla(var(--primary), 90%);
-
-  --radius: .5rem;
-  --ring: var(--color-blue-900-value);
 
   --shadow-border-default-value: 0 0 0 1px rgba(255,255,255,.145);
   --shadow-border-small-value: 0 0 0 1px rgba(255,255,255,.145),0 1px 2px 0 rgba(0,0,0,.04);

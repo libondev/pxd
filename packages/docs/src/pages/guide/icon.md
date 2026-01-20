@@ -40,7 +40,6 @@ pnpm install -D unplugin-vue-components
 
 ```js
 // vite.config.ts
-
 import { defineConfig } from 'vite'
 import Components from 'unplugin-vue-components/vite'
 import GdsiResolver from '@gdsicon/vue/resolver'

@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
 
         <PText secondary>
           Set
-          <code class="text-foreground-secondary">prefers-reduced-motion: reduce</code>
+          <code>prefers-reduced-motion: reduce</code>
           to disable transitions and animations in components.
         </PText>
       </div>
