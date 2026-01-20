@@ -44,6 +44,14 @@ const computedClass = computed(() => {
 
   return classes.join(' ')
 })
+
+function onSwitchFocusIn() {
+  if (computedDisabled.value) {
+    return
+  }
+
+  switchGroupModelValue.value = props.value
+}
 </script>
 
 <template>
@@ -64,7 +72,7 @@ const computedClass = computed(() => {
       :required="computedRequired"
     >
 
-    <div :class="computedClass">
+    <div :class="computedClass" @focusin="onSwitchFocusIn">
       <slot>
         {{ label }}
       </slot>
