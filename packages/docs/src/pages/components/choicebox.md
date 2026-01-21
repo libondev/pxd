@@ -11,7 +11,7 @@ const modelValue = ref('trial')
 </script>
 
 <template>
-  <PChoiceboxGroup v-model="modelValue">
+  <PChoiceboxGroup v-model="modelValue" :direction="{ xs: 'vertical', sm: 'horizontal' }">
     <PChoicebox
       label="Pro trial"
       value="trial"
@@ -49,7 +49,7 @@ const options = [
 </script>
 
 <template>
-  <PChoiceboxGroup v-model="modelValue" :options="options" multiple />
+  <PChoiceboxGroup v-model="modelValue" :options="options" multiple :direction="{ xs: 'vertical', sm: 'horizontal' }" />
 </template>
 ```
 
@@ -96,6 +96,7 @@ const options2 = [
       v-model="modelValue1"
       :options="options1"
       label="Choicebox group disabled"
+      :direction="{ xs: 'vertical', sm: 'horizontal' }"
       disabled
     />
 
@@ -103,6 +104,7 @@ const options2 = [
       v-model="modelValue2"
       :options="options2"
       label="Single input disabled"
+      :direction="{ xs: 'vertical', sm: 'horizontal' }"
       multiple
     />
   </PStack>

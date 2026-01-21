@@ -4,7 +4,7 @@ import { computed, markRaw, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideChoiceboxGroupContext, provideChoiceboxGroupModelValue } from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
-import PLabel from '../label/index.vue'
+import PChoicebox from '../choicebox/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
 
 defineOptions({
@@ -38,19 +38,17 @@ const modelValue = useModelValue(props, emits) as any
 const renderComponent = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
 
 const computedAttrs = computed(() => {
-  const { disabled, label, multiple, required, options } = props
+  const { disabled, multiple, required, options } = props
   const { class: classes, ...rest } = attrs
 
   return {
     'role': multiple ? 'group' : 'radiogroup',
-    'aria-label': label,
     'aria-required': required,
     'aria-multiselectable': multiple,
     'gap': attrs.gap || '3',
     disabled,
     required,
     options,
-    label,
     ...rest,
   }
 })
@@ -60,26 +58,19 @@ provideChoiceboxGroupModelValue(modelValue)
 </script>
 
 <template>
-  <div class="pxd-choicebox-group w-full max-w-full">
-    <PLabel v-if="label || $slots.label">
-      <slot name="label">
-        {{ label }}
-      </slot>
-    </PLabel>
-
-    <Component
-      :is="renderComponent"
-      v-model="modelValue"
-      v-bind="computedAttrs"
-    >
-      <slot>
-        <PChoicebox
-          v-for="option in options"
-          :key="option.value"
-          v-model="modelValue"
-          v-bind="option"
-        />
-      </slot>
-    </Component>
-  </div>
+  <Component
+    :is="renderComponent"
+    v-model="modelValue"
+    class="pxd-choicebox-group w-full"
+    v-bind="computedAttrs"
+  >
+    <slot>
+      <PChoicebox
+        v-for="option in options"
+        :key="option.value"
+        v-model="modelValue"
+        v-bind="option"
+      />
+    </slot>
+  </Component>
 </template>

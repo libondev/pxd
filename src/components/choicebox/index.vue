@@ -23,7 +23,7 @@ const computedAttrs = computed(() => {
     value,
     disabled,
     required,
-    class: 'pxd-choicebox justify-between border rounded-md flex-1 p-3 flex-row-reverse hover:bg-background-hover hover:border-gray-500 motion-safe:transition-colors',
+    class: 'pxd-choicebox justify-between border rounded-md flex-1 w-full p-3 flex-row-reverse hover:bg-background-hover hover:border-gray-500 motion-safe:transition-colors',
   }
 })
 </script>
