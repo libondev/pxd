@@ -2,6 +2,8 @@ import type { Nullable } from '../types/shared'
 import { isOverflowScrollable } from './dom'
 import { isServer } from './is'
 
+export function NOOP() { }
+
 type EventHandler<E extends Event = Event> = (event: E) => void
 
 const eventCache = new WeakMap<EventTarget, Record<string, EventHandler[]>>()

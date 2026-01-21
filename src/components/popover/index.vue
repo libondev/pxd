@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentClass, ComponentPosition, Nullable } from '../../types/shared'
+import type { ComponentClass, ComponentPosition } from '../../types/shared'
 import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
-import { cachedOff, cachedOn } from '../../utils/event'
+import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
 
@@ -240,7 +240,7 @@ async function onTriggerClick(ev: Event) {
 }
 
 function onTriggerPointerEnter() {
-  if (props.disabled) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -248,7 +248,7 @@ function onTriggerPointerEnter() {
 }
 
 function onTriggerPointerLeave() {
-  if (props.disabled) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -256,15 +256,22 @@ function onTriggerPointerLeave() {
 }
 
 function onTriggerFocusin() {
-  if (props.disabled) {
+  if (props.disabled || !triggerMethods.value.includes('focus')) {
     return
   }
 
   handlePopoverShow()
 }
 
-function onTriggerFocusout() {
-  if (props.disabled) {
+async function onTriggerFocusout() {
+  if (props.disabled || !triggerMethods.value.includes('focus')) {
+    return
+  }
+
+  // Make sure the wrapperRef element has gained focus after clicking on it
+  await sleep(0)
+
+  if (wrapperRef.value.contains(document.activeElement)) {
     return
   }
 
@@ -272,11 +279,7 @@ function onTriggerFocusout() {
 }
 
 async function onTriggerContextmenu() {
-  if (props.disabled) {
-    return
-  }
-
-  if (!triggerMethods.value.includes('contextmenu')) {
+  if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
     return
   }
 
@@ -313,35 +316,6 @@ function onContentPointerLeave() {
   handlePopoverHide()
 }
 
-const triggerMethodEvents = {
-  focus: [
-    ['focusin', onTriggerFocusin],
-    ['focusout', onTriggerFocusout],
-  ],
-  hover: [
-    ['pointerenter', onTriggerPointerEnter],
-    ['pointerleave', onTriggerPointerLeave],
-  ],
-} as const
-
-function updateTriggerEvents(
-  methods: PopoverTrigger[],
-  dom: Nullable<EventTarget>,
-  handler: typeof cachedOn | typeof cachedOff,
-) {
-  for (const method of methods) {
-    const events = triggerMethodEvents[method as keyof typeof triggerMethodEvents]
-
-    if (!events) {
-      continue
-    }
-
-    for (const event of events) {
-      handler(dom, event[0], event[1])
-    }
-  }
-}
-
 watch(
   () => props.visible,
   (visible) => {
@@ -350,15 +324,6 @@ watch(
     } else {
       handlePopoverHide()
     }
-  },
-)
-
-watch<[Nullable<HTMLElement>, PopoverTrigger[]]>(
-  () => [triggerRef.value, triggerMethods.value],
-  ([newDom, newMethods], [oldDom, oldMethods]) => {
-    updateTriggerEvents(oldMethods, oldDom, cachedOff)
-
-    updateTriggerEvents(newMethods, newDom, cachedOn)
   },
 )
 
@@ -373,8 +338,12 @@ defineExpose({
     ref="triggerRef"
     class="pxd-popover inline-flex max-w-full active:select-none"
     v-bind="$attrs"
-    @contextmenu.prevent="onTriggerContextmenu"
     @click="onTriggerClick"
+    @focusin="onTriggerFocusin"
+    @focusout="onTriggerFocusout"
+    @pointerenter="onTriggerPointerEnter"
+    @pointerleave="onTriggerPointerLeave"
+    @contextmenu.prevent="onTriggerContextmenu"
   >
     <slot />
 
@@ -382,13 +351,14 @@ defineExpose({
       <div
         v-if="isRender"
         ref="wrapperRef"
+        tabindex="-1"
         :class="wrapperClass"
         :style="wrapperStyle"
         :data-visible="isVisible"
         :data-enterable="enterable"
         :data-position="localPosition"
         :data-transition-type="transitionType"
-        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full outline-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >

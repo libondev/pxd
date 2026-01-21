@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PopoverTrigger } from '../../types/components/popover'
 import type { DateTimePreset } from '../../types/components/time-picker'
 import type { ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
@@ -57,6 +58,8 @@ const VALUE_POSITION_MAP = {
   minute: 1,
   second: 2,
 } as const
+
+const popoverTrigger = ['click', 'focus'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
@@ -236,7 +239,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 <template>
   <PPopover
     enterable
-    trigger="click"
+    :trigger="popoverTrigger"
     :show-delay="0"
     :hide-delay="0"
     :disabled="disabled"
@@ -245,7 +248,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     :toggle-click="false"
     :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
-    content-class="bg-background-100 shadow-border-menu rounded-xl"
+    content-class="bg-background-100 shadow-border-menu rounded-lg"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
     @show="setTimesScrollTop"
@@ -261,18 +264,17 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       v-bind="$attrs"
-      @blur="onInputBlurChange"
       @clear="onInputValueChange"
       @change="onInputValueChange"
       @keydown.enter="onInputBlurChange"
     >
       <template v-if="prefixIcon" #prefix>
-        <CalendarIcon class="pointer-events-none" />
+        <CalendarIcon />
       </template>
     </PInput>
 
     <template #content>
-      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
+      <div class="p-1 gap-1 flex items-center justify-between border-b" @click.stop>
         <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
           {{ config.locale.confirm.cancel }}
         </PButton>
