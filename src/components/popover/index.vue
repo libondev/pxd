@@ -25,6 +25,7 @@ interface Props {
   enterable?: boolean
   showArrow?: boolean
   arrowColor?: string
+  toggleClick?: boolean
   autoPosition?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
@@ -48,6 +49,7 @@ const props = withDefaults(
     showDelay: 300,
     hideDelay: 300,
     arrowColor: 'hsl(var(--primary))',
+    toggleClick: true,
     autoPosition: true,
     transitionType: 'fade-scale',
     closeOnInvisible: true,
@@ -228,7 +230,7 @@ async function onTriggerClick(ev: Event) {
     return
   }
 
-  if (isVisible.value) {
+  if (isVisible.value && props.toggleClick) {
     handlePopoverHide()
 
     return

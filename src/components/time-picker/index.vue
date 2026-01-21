@@ -242,6 +242,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
+    :toggle-click="false"
     :visible="popoverVisible"
     :close-on-press-escape="closeOnPressEscape"
     content-class="bg-background-100 shadow-border-menu rounded-xl"
@@ -271,6 +272,16 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
+      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
+          {{ config.locale.confirm.cancel }}
+        </PButton>
+
+        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onConfirmClick">
+          {{ config.locale.date.now }}
+        </PButton>
+      </div>
+
       <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
         <div class="p-2 gap-1 relative flex items-center">
           <div class="pxd-time-picker--list relative">
@@ -306,16 +317,6 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             {{ preset.label }}
           </button>
         </div>
-      </div>
-
-      <div class="p-2 gap-1 flex items-center justify-between border-t" @click.stop>
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onConfirmClick">
-          {{ config.locale.date.now }}
-        </PButton>
-
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
-          {{ config.locale.confirm.cancel }}
-        </PButton>
       </div>
     </template>
   </PPopover>
