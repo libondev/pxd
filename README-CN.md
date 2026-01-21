@@ -1,5 +1,5 @@
 # PXD
-基于 Geist Design System（略有调整）实现的 Vue2&3 通用组件库
+适用于 Vue@2.7+ 和 Vue@3.2+ 的通用 UI 组件库
 
 - [Geist Design System](https://vercel.com/geist/introduction)
 - [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
@@ -12,7 +12,7 @@
 ## 特性
 
 - 使用 Vue 3 Composition API
-- 100% 兼容 Vue2&3
+- 100% 兼容 Vue2.7+ & Vue3.2+
 - 完整的 tree-shaking 支持
 
 ## 贡献指南

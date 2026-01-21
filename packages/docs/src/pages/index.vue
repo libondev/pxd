@@ -3,8 +3,10 @@ import { useHead } from '@unhead/vue'
 import { on } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
+const description = 'A universal UI component library for Vue2.7+ & Vue3.2+'
+
 useHead({
-  title: 'PXD - A universal UI component library for Vue2&3',
+  title: `PXD - ${description}`,
 })
 
 const cleanupFns = []
@@ -80,7 +82,7 @@ onBeforeUnmount(() => {
       </div>
 
       <p class="mt-8 text-lg leading-tight text-balance text-foreground-secondary">
-        A universal UI component library for Vue2&3
+        {{ description }}
       </p>
 
       <div class="mt-16 gap-3 flex justify-center">

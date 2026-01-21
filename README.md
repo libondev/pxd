@@ -1,5 +1,5 @@
 # PXD
-Realizing (slightly adjusting) the general component library of Vue2&3 based on Geist Design System.
+A universal UI component library for Vue@2.7+ & Vue@3.2+
 
 - [Geist Design System](https://vercel.com/geist/introduction)
 - [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
@@ -12,7 +12,7 @@ Realizing (slightly adjusting) the general component library of Vue2&3 based on 
 ## Features
 
 - Vue 3 Composition API
-- 100% compatible with Vue2&3
+- 100% compatible with Vue2.7+ & Vue3.2+
 - Complete tree-shaking support
 
 ## Contribution
