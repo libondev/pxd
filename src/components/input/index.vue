@@ -13,6 +13,7 @@ import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PInput',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -213,8 +214,8 @@ defineExpose({
     class="pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all"
     :for="uniqueId"
     :data-disabled="disabled"
-    :data-focusing="focusing"
     :class="computedClass"
+    v-bind="$attrs"
     @click="onClick"
     @dragstart.prevent="NOOP"
   >
