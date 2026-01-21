@@ -6,7 +6,7 @@ describe('config-provider', () => {
   it('should render properly', () => {
     const wrapper = mount(ConfigProvider)
 
-    expect(wrapper.html()).toMatchInlineSnapshot(`"<div class="pxd-config-provider"></div>"`)
+    expect(wrapper.html()).toMatchInlineSnapshot(`"<div class="pxd-config-provider h-inherit"></div>"`)
 
     wrapper.unmount()
   })

@@ -25,7 +25,7 @@ provideConfigProvider(props)
 </script>
 
 <template>
-  <Component :is="as" class="pxd-config-provider">
+  <Component :is="as" class="pxd-config-provider h-inherit">
     <slot />
   </Component>
 </template>
