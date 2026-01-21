@@ -95,7 +95,6 @@ const options2 = [
     <PChoiceboxGroup
       v-model="modelValue1"
       :options="options1"
-      label="Choicebox group disabled"
       :direction="{ xs: 'vertical', sm: 'horizontal' }"
       disabled
     />
@@ -103,7 +102,6 @@ const options2 = [
     <PChoiceboxGroup
       v-model="modelValue2"
       :options="options2"
-      label="Single input disabled"
       :direction="{ xs: 'vertical', sm: 'horizontal' }"
       multiple
     />
