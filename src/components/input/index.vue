@@ -6,6 +6,7 @@ import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
+import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
@@ -214,12 +215,13 @@ defineExpose({
     :data-disabled="disabled"
     :class="computedClass"
     @click="onClick"
-    @dragstart.prevent
+    @dragstart.prevent="NOOP"
   >
     <div
       v-if="$slots.prefix"
       class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-foreground-secondary"
-      :class="{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }"
+      :class="[{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }, prefixClass]"
+      @pointerdown.prevent="NOOP"
     >
       <slot name="prefix" />
     </div>
@@ -280,7 +282,8 @@ defineExpose({
     <div
       v-if="$slots.suffix"
       class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-foreground-secondary"
-      :class="{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }"
+      :class="[{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }, suffixClass]"
+      @pointerdown.prevent="NOOP"
     >
       <slot name="suffix" />
     </div>

@@ -33,7 +33,7 @@ const SIZES = {
 }
 
 const ROUNDED = {
-  xs: 'rounded-md',
+  xs: 'rounded-sm',
   sm: 'rounded-md',
   md: 'rounded-md',
   lg: 'rounded-lg',

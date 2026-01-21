@@ -86,7 +86,7 @@ const password = ref('')
       </template>
 
       <template #suffix>
-        <IconArrowCircleUp class="mr-3" />
+        <IconArrowCircleUp />
       </template>
     </PInput>
   </PStack>

@@ -22,6 +22,8 @@ export interface InputProps {
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
+  prefixClass?: ComponentClass
+  suffixClass?: ComponentClass
   parser?: (value?: any) => any
   formatter?: (value?: any) => any
 }
