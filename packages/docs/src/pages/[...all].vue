@@ -13,7 +13,7 @@ useHead({
       <span class="ml-2">Sorry, the page you are looking for does not exist.</span>
     </h1>
 
-    <PLinkButton href="/components">
+    <PLinkButton href="/guide/components">
       <template #prefix>
         <IconArrowLeft />
       </template>

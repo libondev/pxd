@@ -24,8 +24,8 @@ export const asideMenus = [
         path: '/guide/styled',
       },
       {
-        label: 'Icon',
-        path: '/guide/icon',
+        label: 'Installation Icon',
+        path: '/guide/installation-icon',
       },
       {
         label: 'Components',
@@ -33,7 +33,7 @@ export const asideMenus = [
       },
       {
         label: 'Icons Overview',
-        path: '/guide/icons-overview',
+        path: '/guide/icons',
       },
       {
         label: 'FAQ',

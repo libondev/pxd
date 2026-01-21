@@ -1,4 +1,6 @@
-# Icon
+# Installation Icon
+
+?> This is not necessary.
 
 We also maintain an unofficial icon library, which provides a lot of beautiful icons. If you want to keep it consistent throughout the project, you can use the same icon.
 
