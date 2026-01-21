@@ -13,7 +13,7 @@ import {
   hasScrollbar,
   isScrollable,
 } from '../../utils/dom'
-import { cachedOff, cachedOn } from '../../utils/event'
+import { cachedOff, cachedOn, NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
         class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
-        @touchmove.prevent.stop
+        @touchmove.prevent.stop="NOOP"
         @click="onOverlayClick"
       />
     </Transition>

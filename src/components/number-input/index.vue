@@ -5,6 +5,7 @@ import PlusIcon from '@gdsicon/vue/plus'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useRepeatAction } from '../../composables/use-repeat-action'
+import { NOOP } from '../../utils/event'
 import { FLOATING_REGEX, SCIENCE_NUMERIC_REGEX } from '../../utils/regexp'
 import PInput from '../input/index.vue'
 
@@ -205,7 +206,7 @@ function onInputKeydown(ev: KeyboardEvent) {
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
         @pointerup="stopDecrease"
-        @contextmenu.prevent
+        @contextmenu.prevent="NOOP"
       >
         <MinusIcon class="pointer-events-none" />
       </button>
@@ -222,7 +223,7 @@ function onInputKeydown(ev: KeyboardEvent) {
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"
         @pointerup="stopIncrease"
-        @contextmenu.prevent
+        @contextmenu.prevent="NOOP"
       >
         <PlusIcon class="pointer-events-none" />
       </button>
