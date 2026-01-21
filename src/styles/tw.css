@@ -472,12 +472,9 @@
       --border-color: hsla(var(--primary), .5);
     }
 
+    &:not(.is-disabled, .is-readonly)[data-focusing="true"],
     &:not(.is-disabled, .is-readonly):focus-within {
       --border-color: var(--color-primary);
-    }
-
-    &:not(.is-disabled, .is-readonly):focus-within {
-      /* box-shadow: 0 0 0 3px var(--color-gray-alpha-300); */
       box-shadow: 0 0 0 3px hsla(var(--primary), .2);
     }
 
@@ -486,12 +483,13 @@
         color: var(--color-red-900) !important;
       }
 
-      &, &:focus-within {
+      &, &:focus-within, &[data-focusing="true"] {
         --border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-300-value));
       }
 
       &:focus-within,
+      &[data-focusing="true"],
       &:not(.is-disabled, .is-readonly):hover {
         --border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-500-value));

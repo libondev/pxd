@@ -8,6 +8,7 @@ export interface InputProps {
   max?: number | string
   align?: 'left' | 'center' | 'right'
   label?: ComponentLabel
+  focusing?: boolean
   readonly?: boolean
   disabled?: boolean
   password?: boolean
