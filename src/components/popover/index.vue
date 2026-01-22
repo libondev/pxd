@@ -31,7 +31,7 @@ interface Props {
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
   unsetPosition?: boolean
-  transitionType?: 'fade' | 'fade-scale'
+  transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
 }
@@ -398,6 +398,14 @@ defineExpose({
   0% { transform: scale(1); opacity: 1 }
   100% { transform: scale(0.95); opacity: 0; pointer-events: none; }
 }
+@keyframes popover-fade-slide-show {
+  0% { transform: translateY(100%); opacity: 0; pointer-events: none; }
+  100% { transform: translateY(0); opacity: 1 }
+}
+@keyframes popover-fade-slide-hide {
+  0% { transform: translateY(0); opacity: 1 }
+  100% { transform: translateY(100%); opacity: 0; pointer-events: none; }
+}
 
 .pxd-popover--container {
   will-change: transform, opacity;
@@ -417,6 +425,14 @@ defineExpose({
 
   &[data-visible="false"][data-transition-type="fade-scale"] {
     animation-name: popover-fade-scale-hide;
+  }
+
+  &[data-visible="true"][data-transition-type="fade-slide"] {
+    animation-name: popover-fade-slide-show;
+  }
+
+  &[data-visible="false"][data-transition-type="fade-slide"] {
+    animation-name: popover-fade-slide-hide;
   }
 
   &[data-enterable="false"] {
