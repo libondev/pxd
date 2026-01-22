@@ -498,12 +498,24 @@
   }
 }
 
+.pxd-container-mask::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+  pointer-events: none;
+  will-change: opacity;
+  z-index: 0;
+}
+
 .pxd-transition--fade-enter-active,
 .pxd-transition--fade-leave-active {
   transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
   will-change: opacity;
 }
 
+.pxd-container-mask[data-visible="false"]::after,
 .pxd-transition--fade-enter-from,
 .pxd-transition--fade-leave-to {
   opacity: 0;

@@ -34,6 +34,7 @@ interface Props {
   transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
+  lockScrollOnVisible?: boolean
 }
 
 defineOptions({
@@ -366,15 +367,19 @@ defineExpose({
         :style="wrapperStyle"
         :data-visible="isVisible"
         :data-enterable="enterable"
-        :data-position="localPosition"
-        :data-transition-type="transitionType"
-        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-10 flex w-max max-w-full outline-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex w-max max-w-full outline-none data-[enterable=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
-        <i v-if="showArrow" ref="arrayRef" class="pxd-popover--arrow absolute z-1 border-solid" />
-        <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
-          <slot name="content" />
+        <div
+          class="pxd-popover--container pointer-events-auto relative z-1 w-inherit"
+          :data-position="localPosition"
+          :data-transition-type="transitionType"
+        >
+          <i v-if="showArrow" ref="arrayRef" class="pxd-popover--arrow absolute z-1 border-solid" />
+          <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
+            <slot name="content" />
+          </div>
         </div>
       </div>
     </PTeleport>
@@ -411,32 +416,28 @@ defineExpose({
   will-change: transform, opacity;
   animation: popover-fade-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
 
-  &[data-visible="true"][data-transition-type="fade"] {
+  [data-visible="true"] &[data-transition-type="fade"] {
     animation-name: popover-fade-show;
   }
 
-  &[data-visible="false"][data-transition-type="fade"] {
+  [data-visible="false"] &[data-transition-type="fade"] {
     animation-name: popover-fade-hide;
   }
 
-  &[data-visible="true"][data-transition-type="fade-scale"] {
+  [data-visible="true"] &[data-transition-type="fade-scale"] {
     animation-name: popover-fade-scale-show;
   }
 
-  &[data-visible="false"][data-transition-type="fade-scale"] {
+  [data-visible="false"] &[data-transition-type="fade-scale"] {
     animation-name: popover-fade-scale-hide;
   }
 
-  &[data-visible="true"][data-transition-type="fade-slide"] {
+  [data-visible="true"] &[data-transition-type="fade-slide"] {
     animation-name: popover-fade-slide-show;
   }
 
-  &[data-visible="false"][data-transition-type="fade-slide"] {
+  [data-visible="false"] &[data-transition-type="fade-slide"] {
     animation-name: popover-fade-slide-hide;
-  }
-
-  &[data-enterable="false"] {
-    pointer-events: none;
   }
 
   &[data-position='top'] {

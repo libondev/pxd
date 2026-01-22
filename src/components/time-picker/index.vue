@@ -5,6 +5,7 @@ import type { ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
 import PButton from '../button/index.vue'
@@ -65,6 +66,8 @@ const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
+const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
+
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
 const timeSecondsRef = shallowRef<HTMLElement>()
@@ -80,6 +83,23 @@ const modelValue = computed<string>({
   set(value: string) {
     emits('update:modelValue', value)
   },
+})
+
+const wrapperClass = computed(() => {
+  if (isSmUp.value) {
+    return ''
+  }
+
+  return 'fixed w-screen! h-screen items-end pointer-events-none pxd-container-mask'
+})
+
+const contentClass = computed(() => {
+  const basicClass = 'bg-background-100 shadow-border-menu rounded-lg'
+  if (isSmUp.value) {
+    return `${basicClass}`
+  }
+
+  return `${basicClass} w-full rounded-bl-none rounded-br-none`
 })
 
 const scrollTimers: ReturnType<typeof setTimeout>[] = []
@@ -249,8 +269,11 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     :style="$attrs.style"
     :toggle-click="false"
     :visible="popoverVisible"
+    :unset-position="!isSmUp"
     :close-on-press-escape="closeOnPressEscape"
-    content-class="bg-background-100 shadow-border-menu rounded-lg"
+    :transition-type="isSmUp ? 'fade-scale' : 'fade-slide'"
+    :wrapper-class="wrapperClass"
+    :content-class="contentClass"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
     @show="setTimesScrollTop"
@@ -278,11 +301,11 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
     <template #content>
       <div class="p-1 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onCancelClick">
+        <PButton size="sm" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
           {{ config.locale.confirm.cancel }}
         </PButton>
 
-        <PButton size="xs" variant="ghost" class="px-0! text-13px" @click="onConfirmClick">
+        <PButton size="sm" variant="ghost" class="sm:px-0! text-13px" @click="onConfirmClick">
           {{ config.locale.date.now }}
         </PButton>
       </div>
