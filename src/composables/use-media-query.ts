@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { onBeforeUnmount, shallowRef } from 'vue'
+import { customRef, onBeforeUnmount } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
@@ -10,8 +10,6 @@ interface CacheObject {
     cleanup?: () => void
   }
 }
-
-const CACHED_QUERIES: CacheObject = {}
 
 export const PRESET_MEDIA_QUERIES = {
   MOTION_NO_PREFERENCE: '(prefers-reduced-motion: no-preference)',
@@ -34,54 +32,69 @@ export const PRESET_MEDIA_QUERIES = {
   XXL_UP: '(width >= 96rem)',
 }
 
+const CACHED_QUERIES: CacheObject = {}
+
 export function useMediaQuery(
   condition: string,
   callback?: (e: MediaQueryList) => void,
 ): Ref<boolean> {
-  const matches = shallowRef(false)
+  let initialized = false
+  let mediaQuery: CacheObject[string] | undefined
 
-  if (isServer()) {
-    return matches
-  }
+  const matches = customRef<boolean>((track, trigger) => ({
+    get() {
+      track()
 
-  let mediaQuery = CACHED_QUERIES[condition]
+      if (isServer()) {
+        return false
+      }
 
-  if (mediaQuery) {
-    mediaQuery.count++
-  } else {
-    const query = window.matchMedia(condition)
-    mediaQuery = CACHED_QUERIES[condition] = {
-      count: 1,
-      query,
-    }
-  }
+      if (!initialized) {
+        mediaQuery = CACHED_QUERIES[condition]
 
-  matches.value = mediaQuery.query.matches
+        if (mediaQuery) {
+          mediaQuery.count++
+        } else {
+          const query = window.matchMedia(condition)
+          mediaQuery = CACHED_QUERIES[condition] = {
+            count: 1,
+            query,
+          }
+        }
 
-  function handler(event: MediaQueryListEvent) {
-    callback?.(mediaQuery!.query)
-    matches.value = event.matches
-  }
+        const handler = () => {
+          callback?.(mediaQuery!.query)
+          trigger()
+        }
 
-  const unbindEvent = cachedOn(mediaQuery.query, 'change', handler, { passive: true })
+        const unbindEvent = cachedOn(mediaQuery.query, 'change', handler, { passive: true })
 
-  if (!mediaQuery.cleanup) {
-    mediaQuery.cleanup = unbindEvent
-  }
+        if (!mediaQuery.cleanup) {
+          mediaQuery.cleanup = unbindEvent
+        }
+
+        initialized = true
+      }
+
+      return mediaQuery?.query.matches ?? false
+    },
+    set() {
+      trigger()
+    },
+  }))
 
   function stop() {
-    unbindEvent()
-
     if (!mediaQuery) {
       return
+    }
+
+    if (mediaQuery.cleanup) {
+      mediaQuery.cleanup()
     }
 
     mediaQuery.count--
 
     if (mediaQuery.count <= 0) {
-      if (mediaQuery.cleanup) {
-        mediaQuery.cleanup()
-      }
       delete CACHED_QUERIES[condition]
     }
 
