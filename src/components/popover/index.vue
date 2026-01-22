@@ -30,6 +30,7 @@ interface Props {
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
+  unsetPosition?: boolean
   transitionType?: 'fade' | 'fade-scale'
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
@@ -51,6 +52,7 @@ const props = withDefaults(
     arrowColor: 'hsl(var(--primary))',
     toggleClick: true,
     autoPosition: true,
+    unsetPosition: false,
     transitionType: 'fade-scale',
     closeOnInvisible: true,
   },
@@ -149,6 +151,17 @@ async function handlePopoverShow() {
 
   await showPopover()
 
+  if (props.closeOnPressEscape) {
+    cachedOn(document, 'keydown', onPopoverKeystroke)
+  }
+
+  // Some components often need to cover the screen on mobile devices,
+  // so there is no need to adjust their positions.
+  if (props.unsetPosition) {
+    Object.assign(wrapperRef.value.style, { left: '0', top: '0' })
+    return
+  }
+
   const { x, y, placement, middlewareData } = await computePosition(
     triggerRef.value,
     wrapperRef.value,
@@ -162,6 +175,7 @@ async function handlePopoverShow() {
       ],
     },
   )
+
   localPosition.value = placement
 
   Object.assign(wrapperRef.value.style, {
@@ -175,10 +189,6 @@ async function handlePopoverShow() {
       left: x != null ? `${Math.max(x, 5)}px` : '',
       top: y != null ? `${Math.max(y, 5)}px` : '',
     })
-  }
-
-  if (props.closeOnPressEscape) {
-    cachedOn(document, 'keydown', onPopoverKeystroke)
   }
 }
 
@@ -358,7 +368,7 @@ defineExpose({
         :data-enterable="enterable"
         :data-position="localPosition"
         :data-transition-type="transitionType"
-        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-1 w-max max-w-full outline-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--container sm:max-w-(--popover-max-width) absolute isolate z-10 flex w-max max-w-full outline-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
