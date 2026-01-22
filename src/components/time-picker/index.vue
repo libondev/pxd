@@ -20,6 +20,7 @@ interface Props {
   modelValue?: Date | string | number
   prefixIcon?: boolean
   placeholder?: string
+  showSeconds?: boolean
   closeOnPressEscape?: boolean
   format?: string
   valueFormat?: string
@@ -39,6 +40,7 @@ const props = withDefaults(
   {
     modelValue: '',
     prefixIcon: true,
+    showSeconds: true,
     closeOnPressEscape: true,
     presets: () => [],
     format: 'HH:mm:ss',
@@ -59,7 +61,7 @@ const VALUE_POSITION_MAP = {
   second: 2,
 } as const
 
-const popoverTrigger = ['click', 'focus'] as PopoverTrigger[]
+const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
@@ -285,8 +287,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
         </PButton>
       </div>
 
-      <div class="text-sm flex max-w-full transform-gpu tabular-nums outline-none select-none" @click.stop="onTimeListClick">
-        <div class="p-2 gap-1 relative flex items-center">
+      <div class="text-sm flex max-w-full transform-gpu items-center tabular-nums outline-none select-none" @click.stop="onTimeListClick">
+        <div class="p-2 gap-1 relative mx-auto flex items-center">
           <div class="pxd-time-picker--list relative">
             <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -301,7 +303,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
               </li>
             </ul>
           </div>
-          <div class="pxd-time-picker--list relative">
+          <div v-if="showSeconds" class="pxd-time-picker--list relative">
             <ul ref="timeSecondsRef" data-type="second" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
@@ -332,25 +334,13 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
 .pxd-time-picker--list::before {
   content: '';
-  position: fixed;
-  top: 72px;
-  width: 32px;
-  height: 32px;
+  position: absolute;
+  top: 64px;
+  width: 100%;
+  height: 20%;
   z-index: -1;
   border-radius: var(--radius-md);
   background: var(--color-gray-alpha-200);
   pointer-events: none;
-}
-
-.pxd-time-picker--list:nth-child(1)::before {
-  left: 8px;
-}
-
-.pxd-time-picker--list:nth-child(2)::before {
-  left: 44px;
-}
-
-.pxd-time-picker--list:nth-child(3)::before {
-  left: 80px;
 }
 </style>

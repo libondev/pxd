@@ -50,6 +50,20 @@ const presets = [
 </template>
 ```
 
+## Hidden seconds
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
+<template>
+  <PTimePicker v-model="time" :show-seconds="false" class="!w-[220px]" />
+</template>
+```
+
 ## Formatter
 
 ```vue demo
