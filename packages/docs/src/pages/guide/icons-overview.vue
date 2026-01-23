@@ -114,7 +114,7 @@ function handleCustomPrefixChange(value: string) {
     <template #default="{ item }">
       <button
         role="button"
-        class="icon-item h-28 px-4 relative w-full appearance-none self-focus-ring outline-none hover:bg-background-200 focus-visible:z-10 focus-visible:bg-background-200 active:bg-background-hover motion-safe:transition-colors"
+        class="icon-item h-28 px-4 relative w-full appearance-none font-inherit self-focus-ring outline-none hover:bg-background-200 focus-visible:z-10 focus-visible:bg-background-200 active:bg-background-hover motion-safe:transition-colors"
       >
         <Component :is="item.icon" class="my-2 mx-auto" />
 

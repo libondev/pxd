@@ -270,7 +270,7 @@ defineExpose({
     >
       <button
         v-if="password"
-        class="p-1 appearance-none rounded-sm self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        class="p-1 appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="toggleType"
       >
         <EyeOffIcon v-if="isPasswordVisible" class="size-3 pointer-events-none" />
@@ -278,7 +278,7 @@ defineExpose({
       </button>
       <button
         v-if="clearable"
-        class="p-1 appearance-none rounded-sm self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        class="p-1 appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="clearValue"
       >
         <CrossIcon class="size-3 pointer-events-none" />

@@ -326,7 +326,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             v-for="preset, i in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 cursor-pointer appearance-none rounded-sm border-none bg-gray-300 whitespace-nowrap text-foreground self-focus-ring outline-none max-sm:leading-5 max-sm:text-sm hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-all"
+            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none max-sm:leading-5 max-sm:text-sm hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-all"
           >
             {{ preset.label }}
           </button>

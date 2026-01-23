@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
           v-for="(_, i) in carousels.length"
           :key="i"
           :data-index="i"
-          class="pxd-carousel-group--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+          class="pxd-carousel-group--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
           :class="{ 'bg-primary!': i === correctIndex }"
         />
       </slot>
@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel-group--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel-group--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        class="pxd-carousel-group--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
