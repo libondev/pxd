@@ -118,6 +118,10 @@ function setNativeInputValue(value: any) {
 }
 
 function onFocus(event: FocusEvent) {
+  if (props.selectOnFocus) {
+    inputRef.value?.select()
+  }
+
   emits('focus', event)
 }
 
@@ -231,7 +235,7 @@ defineExpose({
     <input
       :id="uniqueId"
       ref="inputRef"
-      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       :type="internalInputType"
       :min="min"
       :max="max"

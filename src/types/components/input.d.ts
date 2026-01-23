@@ -24,6 +24,7 @@ export interface InputProps {
   suffixStyle?: boolean
   prefixClass?: ComponentClass
   suffixClass?: ComponentClass
+  selectOnFocus?: boolean
   parser?: (value?: any) => any
   formatter?: (value?: any) => any
 }

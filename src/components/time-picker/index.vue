@@ -274,6 +274,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :placeholder="placeholder"
       :prefix-style="false"
       :data-focusing="popoverVisible"
+      select-on-focus
       v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
