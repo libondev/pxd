@@ -16,6 +16,7 @@ const styles = readFileSync(
 const fileContent = `@layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source("../components/");
+@source "../composables/";
 
 ${styles}
 `
