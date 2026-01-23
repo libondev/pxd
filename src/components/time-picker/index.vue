@@ -62,7 +62,7 @@ const VALUE_POSITION_MAP = {
   second: 2,
 } as const
 
-const popoverTrigger = ['click', 'focus'] as PopoverTrigger[]
+const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
@@ -286,7 +286,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
+      <div class="max-sm:p-2 p-1 gap-1 flex items-center justify-between border-b" @click.stop>
         <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
           {{ config.locale.confirm.cancel }}
         </PButton>
