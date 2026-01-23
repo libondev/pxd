@@ -31,8 +31,8 @@ function setParallaxEffect() {
 
     card.style.transform = `
       perspective(1000px)
-      rotateX(${y * maxTilt}deg)
-      rotateY(${x * -maxTilt}deg)
+      rotateX(${y * -maxTilt}deg)
+      rotateY(${x * maxTilt}deg)
     `
   }
 
