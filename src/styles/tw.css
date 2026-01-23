@@ -400,6 +400,7 @@
   --shadow-border-fullscreen: var(--shadow-border-fullscreen-value);
 
   --text-13px: 13px;
+  --text-15px: 15px;
 }
 
 @utility scrollbar-hidden {
@@ -545,7 +546,7 @@
 }
 
 .scrollbar-stable {
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable !important;
 }
 
 .scroll-disabled-both,
