@@ -7,12 +7,6 @@ import {
   watch,
 } from 'vue'
 import { useLockScroll } from '../../composables'
-import {
-  getScrollContainer,
-  getScrollElByContainer,
-  hasScrollbar,
-  isScrollable,
-} from '../../utils/dom'
 import { cachedOff, cachedOn, NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
@@ -53,18 +47,17 @@ const emits = defineEmits<{
 }>()
 
 const {
-  isLocked,
   lockScroll,
   unlockScroll,
 } = useLockScroll()
 
 const overlayId = Symbol('pxd-overlay')
 
-let scrollContainer: HTMLElement | null
-
 const clipPath = shallowRef('')
-const overlayRef = shallowRef<HTMLElement>()
-const computedStyle = computed(() => ({ '--overlay-z-index': props.zIndex, 'clip-path': clipPath.value }))
+const computedStyle = computed(() => ({
+  '--overlay-z-index': props.zIndex,
+  'clip-path': clipPath.value,
+}))
 
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
@@ -95,43 +88,6 @@ function onOverlayKeydown(ev: KeyboardEvent) {
 
   emits('escape', ev)
   emits('update:modelValue', false)
-}
-
-function lockScrollContainer() {
-  if (!scrollContainer) {
-    return
-  }
-
-  if (!isLocked(scrollContainer)) {
-    const { x: xScrollbar, y: yScrollbar } = hasScrollbar(scrollContainer)
-    const { x: xScrollable, y: yScrollable } = isScrollable(scrollContainer)
-
-    if (xScrollbar && xScrollable) {
-      scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-x')
-    }
-
-    if (yScrollbar && yScrollable) {
-      scrollContainer.classList.add('scrollbar-stable', 'scroll-disabled-y')
-    }
-  }
-
-  lockScroll(scrollContainer)
-}
-
-function unlockScrollContainer() {
-  if (!scrollContainer) {
-    return
-  }
-
-  unlockScroll(scrollContainer)
-
-  if (!isLocked(scrollContainer)) {
-    scrollContainer.classList.remove(
-      'scrollbar-stable',
-      'scroll-disabled-x',
-      'scroll-disabled-y',
-    )
-  }
 }
 
 function tryGetShownElementIfNeed() {
@@ -171,8 +127,8 @@ function onOverlayVisibleChange(visible: boolean) {
   }
 
   if (!visible) {
+    unlockScroll()
     removeOverlay(overlayId)
-    unlockScrollContainer()
     cachedOff(document, 'keydown', onOverlayKeydown)
 
     return
@@ -180,13 +136,7 @@ function onOverlayVisibleChange(visible: boolean) {
 
   pushOverlay(overlayId)
   nextTick(() => {
-    if (!scrollContainer) {
-      scrollContainer = getScrollElByContainer(
-        getScrollContainer(overlayRef.value!),
-      ) as HTMLElement
-    }
-
-    lockScrollContainer()
+    lockScroll()
     tryGetShownElementIfNeed()
     cachedOn(document, 'keydown', onOverlayKeydown)
   })
@@ -207,8 +157,7 @@ onBeforeUnmount(() => {
   cachedOff(document, 'keydown', onOverlayKeydown)
 
   removeOverlay(overlayId)
-  unlockScrollContainer()
-  scrollContainer = null
+  unlockScroll()
 })
 </script>
 
@@ -217,7 +166,6 @@ onBeforeUnmount(() => {
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         v-if="modelValue"
-        ref="overlayRef"
         :data-blurred="blurred"
         :data-transparent="transparent"
         class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed motion-safe:transition-colors"

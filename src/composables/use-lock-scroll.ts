@@ -1,46 +1,38 @@
 import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
 let documentTouchMoveLocks = 0
-const scrollLockCountsMap = new WeakMap<HTMLElement, number>()
 
 export function useLockScroll() {
-  function isLocked(container: HTMLElement) {
-    return (scrollLockCountsMap.get(container) ?? 0) > 0
+  const rootEl = document.documentElement
+
+  function isLocked() {
+    return documentTouchMoveLocks > 0
   }
 
-  function lockScroll(container: HTMLElement) {
-    const currentLocks = scrollLockCountsMap.get(container) ?? 0
-    scrollLockCountsMap.set(container, currentLocks + 1)
-
+  function lockScroll() {
     // Already locked by another overlay instance (same container)
-    if (currentLocks > 0) {
+    if (documentTouchMoveLocks > 0) {
       return
     }
 
     documentTouchMoveLocks++
+
     if (documentTouchMoveLocks === 1) {
-      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+      cachedOn(rootEl, 'touchmove', preventDefaultScroll, { passive: false })
+      rootEl.classList.add('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
     }
   }
 
-  function unlockScroll(container: HTMLElement) {
-    const currentLocks = scrollLockCountsMap.get(container) ?? 0
-
-    if (!currentLocks) {
+  function unlockScroll() {
+    if (documentTouchMoveLocks <= 0) {
       return
     }
-
-    const nextLocks = Math.max(currentLocks - 1, 0)
-    if (nextLocks) {
-      scrollLockCountsMap.set(container, nextLocks)
-      return
-    }
-
-    scrollLockCountsMap.delete(container)
 
     documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
+
     if (!documentTouchMoveLocks) {
-      cachedOff(document, 'touchmove', preventDefaultScroll)
+      cachedOff(rootEl, 'touchmove', preventDefaultScroll)
+      rootEl.classList.remove('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
     }
   }
 
