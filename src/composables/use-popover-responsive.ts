@@ -1,0 +1,30 @@
+import { computed } from 'vue'
+
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
+
+export function usePopoverResponsive() {
+  const isXs = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
+
+  const attrs = computed(() => {
+    const basicContentClass = 'bg-background-100 shadow-border-menu'
+
+    if (isXs.value) {
+      return {
+        contentClass: `${basicContentClass} w-full rounded-tl-lg rounded-tr-lg`,
+        wrapperClass: 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask',
+        transitionType: 'fade-slide',
+      } as const
+    }
+
+    return {
+      contentClass: `${basicContentClass} rounded-lg`,
+      wrapperClass: '',
+      transitionType: 'fade-scale',
+    } as const
+  })
+
+  return {
+    isXs,
+    attrs,
+  }
+}

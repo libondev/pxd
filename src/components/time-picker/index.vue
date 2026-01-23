@@ -5,7 +5,7 @@ import type { ComponentSize } from '../../types/shared/props'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
+import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
 import PButton from '../button/index.vue'
@@ -66,7 +66,7 @@ const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
-const isXs = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
+const { isXs, attrs } = usePopoverResponsive()
 
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
@@ -83,23 +83,6 @@ const modelValue = computed<string>({
   set(value: string) {
     emits('update:modelValue', value)
   },
-})
-
-const wrapperClass = computed(() => {
-  if (isXs.value) {
-    return 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask'
-  }
-
-  return ''
-})
-
-const contentClass = computed(() => {
-  const basicClass = 'bg-background-100 shadow-border-menu'
-  if (isXs.value) {
-    return `${basicClass} w-full rounded-tl-lg rounded-tr-lg`
-  }
-
-  return `${basicClass} rounded-lg`
 })
 
 const scrollTimers: ReturnType<typeof setTimeout>[] = []
@@ -270,11 +253,11 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     :toggle-click="false"
     :visible="popoverVisible"
     :unset-position="isXs"
-    :close-on-press-escape="closeOnPressEscape"
-    :transition-type="isXs ? 'fade-slide' : 'fade-scale'"
-    :wrapper-class="wrapperClass"
-    :content-class="contentClass"
+    :wrapper-class="attrs.wrapperClass"
+    :content-class="attrs.contentClass"
+    :transition-type="attrs.transitionType"
     :lock-scroll-on-visible="isXs"
+    :close-on-press-escape="closeOnPressEscape"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
     @show="setTimesScrollTop"
