@@ -59,6 +59,8 @@ const computedStyle = computed(() => ({
   'clip-path': clipPath.value,
 }))
 
+let shownElementEl: HTMLElement | null = null
+
 function onOverlayClick(ev: MouseEvent) {
   emits('click', ev)
 
@@ -105,6 +107,8 @@ function tryGetShownElementIfNeed() {
     return
   }
 
+  shownElementEl = el
+
   const { top, left, right, bottom } = el.getBoundingClientRect()
 
   clipPath.value = `polygon(
@@ -126,20 +130,22 @@ function onOverlayVisibleChange(visible: boolean) {
     return
   }
 
-  if (!visible) {
-    unlockScroll()
-    removeOverlay(overlayId)
-    cachedOff(document, 'keydown', onOverlayKeydown)
+  if (visible) {
+    pushOverlay(overlayId)
+    nextTick(() => {
+      lockScroll()
+      tryGetShownElementIfNeed()
+      cachedOn(document, 'keydown', onOverlayKeydown)
+      shownElementEl?.classList.add('pointer-events-auto')
+    })
 
     return
   }
 
-  pushOverlay(overlayId)
-  nextTick(() => {
-    lockScroll()
-    tryGetShownElementIfNeed()
-    cachedOn(document, 'keydown', onOverlayKeydown)
-  })
+  unlockScroll()
+  removeOverlay(overlayId)
+  cachedOff(document, 'keydown', onOverlayKeydown)
+  shownElementEl?.classList.remove('pointer-events-auto')
 }
 
 watch(
