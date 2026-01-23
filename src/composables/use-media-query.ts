@@ -25,6 +25,7 @@ export const PRESET_MEDIA_QUERIES = {
   // SCROLLBAR_HEIGHT_THIN: '(scrollbar-height: thin)',
   // SCROLLBAR_HEIGHT_NONE: '(scrollbar-height: none)',
 
+  IS_XS: '(width < 40rem)',
   SM_UP: '(width >= 40rem)',
   MD_UP: '(width >= 48rem)',
   LG_UP: '(width >= 64rem)',

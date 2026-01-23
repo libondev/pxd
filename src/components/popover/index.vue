@@ -6,6 +6,7 @@ import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
+import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
@@ -87,6 +88,11 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 }))
 
 const {
+  lockScroll,
+  unlockScroll,
+} = useLockScroll()
+
+const {
   render: isRender,
   visible: isVisible,
   show: showPopover,
@@ -101,8 +107,16 @@ const {
     emits('visible-change', v)
 
     if (v) {
+      if (props.lockScrollOnVisible) {
+        lockScroll()
+      }
+
       emits('show')
     } else {
+      if (props.lockScrollOnVisible) {
+        unlockScroll()
+      }
+
       emits('hide')
     }
   },
@@ -367,7 +381,7 @@ defineExpose({
         :style="wrapperStyle"
         :data-visible="isVisible"
         :data-enterable="enterable"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex w-max max-w-full outline-none data-[enterable=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[enterable=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >

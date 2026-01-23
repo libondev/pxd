@@ -66,7 +66,7 @@ const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const config = useConfigProvider()
 
-const isSmUp = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
+const isXs = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
@@ -86,20 +86,20 @@ const modelValue = computed<string>({
 })
 
 const wrapperClass = computed(() => {
-  if (isSmUp.value) {
-    return ''
+  if (isXs.value) {
+    return 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask'
   }
 
-  return 'fixed w-screen! h-screen items-end pointer-events-none pxd-container-mask'
+  return ''
 })
 
 const contentClass = computed(() => {
-  const basicClass = 'bg-background-100 shadow-border-menu rounded-lg'
-  if (isSmUp.value) {
-    return `${basicClass}`
+  const basicClass = 'bg-background-100 shadow-border-menu'
+  if (isXs.value) {
+    return `${basicClass} w-full rounded-tl-lg rounded-tr-lg`
   }
 
-  return `${basicClass} w-full rounded-bl-none rounded-br-none`
+  return `${basicClass} rounded-lg`
 })
 
 const scrollTimers: ReturnType<typeof setTimeout>[] = []
@@ -269,11 +269,12 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     :style="$attrs.style"
     :toggle-click="false"
     :visible="popoverVisible"
-    :unset-position="!isSmUp"
+    :unset-position="isXs"
     :close-on-press-escape="closeOnPressEscape"
-    :transition-type="isSmUp ? 'fade-scale' : 'fade-slide'"
+    :transition-type="isXs ? 'fade-slide' : 'fade-scale'"
     :wrapper-class="wrapperClass"
     :content-class="contentClass"
+    :lock-scroll-on-visible="isXs"
     class="pxd-time-picker w-full"
     @escape="onCancelClick"
     @show="setTimesScrollTop"
@@ -284,6 +285,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :size="size"
       :error="error"
       :disabled="disabled"
+      :readonly="isXs"
       :clearable="clearable"
       :model-value="modelValue"
       :placeholder="placeholder"
@@ -300,17 +302,17 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="p-1 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton size="sm" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
+      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
+        <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
           {{ config.locale.confirm.cancel }}
         </PButton>
 
-        <PButton size="sm" variant="ghost" class="sm:px-0! text-13px" @click="onConfirmClick">
+        <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onConfirmClick">
           {{ config.locale.date.now }}
         </PButton>
       </div>
 
-      <div class="text-sm flex max-w-full transform-gpu items-center tabular-nums outline-none select-none" @click.stop="onTimeListClick">
+      <div class="sm:text-sm flex max-w-full transform-gpu items-center tabular-nums outline-none select-none max-sm:text-15px" @click.stop="onTimeListClick">
         <div class="p-2 gap-1 relative mx-auto flex items-center">
           <div class="pxd-time-picker--list relative">
             <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
@@ -335,12 +337,12 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
           </div>
         </div>
 
-        <div v-if="presets?.length" class="w-26 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
+        <div v-if="presets?.length" class="max-sm:w-36 sm:w-25 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
           <button
             v-for="preset, i in presets"
             :key="preset.label"
             :data-index="i"
-            class="h-5 px-1.5 cursor-pointer appearance-none rounded-sm bg-gray-300 text-13px whitespace-nowrap text-foreground self-focus-ring outline-none motion-safe:transition-all"
+            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 cursor-pointer appearance-none rounded-sm bg-gray-300 whitespace-nowrap text-foreground self-focus-ring outline-none max-sm:leading-5 max-sm:text-sm motion-safe:transition-all"
           >
             {{ preset.label }}
           </button>
