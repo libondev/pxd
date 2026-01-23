@@ -2,6 +2,7 @@
 import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
+import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 
@@ -31,6 +32,8 @@ const emits = defineEmits<{
   select: [MouseEvent, ListOptionSelected]
 }>()
 
+const { isXs, attrs } = usePopoverResponsive()
+
 const popoverVisible = shallowRef(false)
 
 function onVisibleChange(visible: boolean) {
@@ -56,8 +59,12 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
     :hide-delay="100"
     :position="position"
     :visible="popoverVisible"
+    :unset-position="isXs"
+    :wrapper-class="attrs.wrapperClass"
+    :content-class="attrs.contentClass"
+    :transition-type="attrs.transitionType"
+    :lock-scroll-on-visible="isXs"
     :close-on-press-escape="closeOnPressEscape"
-    transition-type="fade"
     v-bind="$attrs"
     @escape="hidePopover"
     @outside-click="hidePopover"
@@ -70,7 +77,7 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
-        class="max-h-68 rounded-xl bg-background-100 shadow-border-menu"
+        class="max-h-68 rounded-inherit"
         @select="onOptionClick"
       >
         <slot name="items" />
