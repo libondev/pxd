@@ -1,7 +1,7 @@
 {
   "name": "pxd",
   "type": "module",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "packageManager": "pnpm@9.15.9",
   "description": "A universal UI component library for Vue2.7+ & Vue3.2+",
   "author": "libondev <bon.li@outlook.com>",
