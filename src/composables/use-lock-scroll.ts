@@ -18,7 +18,7 @@ export function useLockScroll() {
     documentTouchMoveLocks++
 
     if (documentTouchMoveLocks === 1) {
-      cachedOn(rootEl, 'touchmove', preventDefaultScroll, { passive: false })
+      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
       rootEl.classList.add('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
     }
   }
@@ -31,7 +31,7 @@ export function useLockScroll() {
     documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
 
     if (!documentTouchMoveLocks) {
-      cachedOff(rootEl, 'touchmove', preventDefaultScroll)
+      cachedOff(document, 'touchmove', preventDefaultScroll)
       rootEl.classList.remove('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
     }
   }
