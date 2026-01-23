@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
 
     <section class="features mb-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap">
       <div
-        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="mb-1.5 font-medium">
           Consistent experience
@@ -130,7 +130,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="mb-1.5 font-medium">
           Full light and dark support
@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="mb-1.5 font-medium">
           On demand Import
@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="mb-1.5 font-medium">
           Support for reducing animation
@@ -167,20 +167,32 @@ onBeforeUnmount(() => {
 
         <PText secondary>
           Set
-          <code>prefers-reduced-motion: reduce</code>
+          <code class="text-gray-900">prefers-reduced-motion: reduce</code>
           to disable transitions and animations in components.
         </PText>
       </div>
 
       <div
-        class="feature-item p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
       >
         <h3 class="mb-1.5 font-medium">
           Extremely customizable
         </h3>
 
         <PText secondary>
-          Globally overridable components transition-duration and transition-timing-function
+          Globally overridable components <span class="font-medium">transition-duration</span> and <span class="font-medium">transition-timing-function</span>.
+        </PText>
+      </div>
+
+      <div
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:shadow-lg hover:border-primary"
+      >
+        <h3 class="mb-1.5 font-medium">
+          Responsive components
+        </h3>
+
+        <PText secondary>
+          Customized style design on desktop or mobile devices.
         </PText>
       </div>
     </section>
