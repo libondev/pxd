@@ -10,17 +10,12 @@ export function useLockScroll() {
   }
 
   function lockScroll() {
-    // Already locked by another overlay instance (same container)
-    if (documentTouchMoveLocks > 0) {
-      return
+    if (!isLocked()) {
+      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
+      rootEl.classList.add('scrollbar-stable', 'scroll-disabled-both', 'pointer-events-none!')
     }
 
     documentTouchMoveLocks++
-
-    if (documentTouchMoveLocks === 1) {
-      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
-      rootEl.classList.add('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
-    }
   }
 
   function unlockScroll() {
@@ -32,7 +27,7 @@ export function useLockScroll() {
 
     if (!documentTouchMoveLocks) {
       cachedOff(document, 'touchmove', preventDefaultScroll)
-      rootEl.classList.remove('scrollbar-stable!', 'overflow-hidden!', 'pointer-events-none!')
+      rootEl.classList.remove('scrollbar-stable', 'scroll-disabled-both', 'pointer-events-none!')
     }
   }
 
