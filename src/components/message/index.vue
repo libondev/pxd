@@ -492,9 +492,7 @@ defineExpose({
     .pxd-transition-message-move,
     .pxd-transition-message-enter-active,
     .pxd-transition-message-leave-active {
-      transition:
-        transform var(--default-transition-duration) var(--default-transition-timing-function),
-        opacity var(--default-transition-duration) var(--default-transition-timing-function);
+      transition-property: transform, opacity;
     }
 
     .pxd-transition-message-leave-active {

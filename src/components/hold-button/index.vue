@@ -219,7 +219,8 @@ onBeforeUnmount(() => {
 
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
-    transition: clip-path var(--hold-button-durations) var(--default-transition-timing-function), opacity var(--default-transition-duration) var(--default-transition-timing-function);
+    transition: clip-path var(--hold-button-durations), opacity var(--default-transition-duration);
+    transition-timing-function: var(--default-transition-timing-function);
   }
 }
 </style>

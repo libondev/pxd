@@ -128,6 +128,6 @@ onMounted(() => {
 
 .pxd-transition--collapse-enter-active,
 .pxd-transition--collapse-leave-active {
-  transition: height var(--default-transition-duration) var(--default-transition-timing-function);
+  transition-property: height;
 }
 </style>

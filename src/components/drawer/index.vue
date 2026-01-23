@@ -218,7 +218,7 @@ watch(() => isVisible.value, (visible) => {
 .pxd-transition--drawer-top-leave-active,
 .pxd-transition--drawer-bottom-enter-active,
 .pxd-transition--drawer-bottom-leave-active  {
-  transition: transform var(--default-transition-duration, 0.3s) var(--default-transition-timing-function);
+  transition-property: transform;
 }
 
 .pxd-transition--drawer-right-leave-to,

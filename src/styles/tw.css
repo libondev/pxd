@@ -104,7 +104,7 @@
   --color-pink-1000-value: 333, 74%, 15%;
 
   --default-transition-duration: .2s;
-  --default-transition-timing-function: ease-in-out;
+  --default-transition-timing-function: ease-out;
 
   --primary: var(--color-gray-1000-value);
   --primary-hover: hsla(var(--primary), 70%);
@@ -510,9 +510,14 @@
   z-index: 0;
 }
 
+[class*="pxd-transition--"] {
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
+}
+
 .pxd-transition--fade-enter-active,
 .pxd-transition--fade-leave-active {
-  transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+  transition-property: opacity;
   will-change: opacity;
 }
 
@@ -525,7 +530,6 @@
 .pxd-transition--fade-scale-move,
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
-  transition: var(--default-transition-duration) var(--default-transition-timing-function);
   transition-property: opacity, transform, filter;
   will-change: opacity, transform, filter;
 }
