@@ -27,7 +27,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  click: [MouseEvent, ListOptionSelected]
+  click: [ListOptionSelected, MouseEvent]
 }>()
 
 const {
@@ -64,8 +64,8 @@ const computedClass = computed(() => {
 })
 
 function onItemClick(ev: MouseEvent) {
-  emits('click', ev, props)
-  onOptionClick?.(ev, props)
+  emits('click', props, ev)
+  onOptionClick?.(props, ev)
 }
 
 onMounted(async () => {

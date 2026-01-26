@@ -145,7 +145,7 @@ function onPointerOver(ev: PointerEvent) {
   activeValue.value = itemValue
 }
 
-function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
+function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   const { as, onClick, ...option } = item
 
   activeValue.value = ''

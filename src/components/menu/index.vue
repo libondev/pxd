@@ -29,7 +29,7 @@ withDefaults(
 
 const emits = defineEmits<{
   change: [visible: boolean]
-  select: [MouseEvent, ListOptionSelected]
+  select: [ListOptionSelected, MouseEvent]
 }>()
 
 const { isXs, attrs } = usePopoverResponsive()
@@ -45,7 +45,7 @@ function hidePopover() {
 }
 
 function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
-  emits('select', ev, item)
+  emits('select', item, ev)
   hidePopover()
 }
 </script>

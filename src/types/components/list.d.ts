@@ -6,7 +6,7 @@ export interface ListOption extends Record<string, any> {
   label?: ComponentLabel
   disabled?: boolean
   description?: ComponentLabel
-  onClick?: (ev: MouseEvent, item: ListOptionSelected) => void
+  onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
 }
 
 export type ListOptionSelected = Omit<ListOption, 'as' | 'onClick'>
