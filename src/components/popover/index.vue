@@ -83,7 +83,7 @@ const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 const wrapperStyle = computed<CSSProperties>(() => ({
   'z-index': props.zIndex,
-  '--popover-bg': props.arrowColor,
+  '--popover-arrow-bg': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
 
@@ -499,7 +499,7 @@ defineExpose({
   &[data-position="top-end"] .pxd-popover--arrow {
     bottom: -5px;
     border-width: 6px 6px 0;
-    border-color: var(--popover-bg) transparent transparent;
+    border-color: var(--popover-arrow-bg) transparent transparent;
   }
 
   &[data-position='bottom'] .pxd-popover--arrow,
@@ -507,7 +507,7 @@ defineExpose({
   &[data-position='bottom-end'] .pxd-popover--arrow {
     top: -5px;
     border-width: 0 6px 6px;
-    border-color: transparent transparent var(--popover-bg);
+    border-color: transparent transparent var(--popover-arrow-bg);
   }
 
   &[data-position='left'] .pxd-popover--arrow,
@@ -515,7 +515,7 @@ defineExpose({
   &[data-position='left-end'] .pxd-popover--arrow {
     right: -5px;
     border-width: 6px 0 6px 6px;
-    border-color: transparent transparent transparent var(--popover-bg);
+    border-color: transparent transparent transparent var(--popover-arrow-bg);
   }
 
   &[data-position='right'] .pxd-popover--arrow,
@@ -523,7 +523,7 @@ defineExpose({
   &[data-position='right-end'] .pxd-popover--arrow {
     left: -5px;
     border-width: 6px 6px 6px 0;
-    border-color: transparent var(--popover-bg) transparent transparent;
+    border-color: transparent var(--popover-arrow-bg) transparent transparent;
   }
 }
 </style>
