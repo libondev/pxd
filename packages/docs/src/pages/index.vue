@@ -77,7 +77,11 @@ onBeforeUnmount(() => {
         </h1>
 
         <span class="top-0 ml-1 absolute select-none">
-          <img src="https://img.shields.io/npm/v/pxd.svg">
+          <PTooltip content="Released latest version">
+            <a href="https://www.npmjs.com/package/pxd" target="_blank">
+              <img src="https://img.shields.io/npm/v/pxd.svg">
+            </a>
+          </PTooltip>
         </span>
       </div>
 
