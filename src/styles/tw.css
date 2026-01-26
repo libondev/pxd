@@ -103,7 +103,7 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
-  --default-transition-duration: .2s;
+  --default-transition-duration: .15s;
   --default-transition-timing-function: ease-out;
 
   --primary: var(--color-gray-1000-value);
