@@ -303,21 +303,55 @@ function resumeAllMessages() {
   groupMessages.value.forEach(resumeMessage)
 }
 
+// Avoid repeatedly triggering enter/leave when expanding
+const TRANSITION_LOCK_MS = 250
+const LEAVE_DEBOUNCE_MS = 200
+
+let leaveTimeoutId: ReturnType<typeof setTimeout> | undefined
+let isTransitioning = false
+
 function onPointerEnter() {
-  groupExpand.value = true
-  pauseAllMessages()
-}
+  clearTimeout(leaveTimeoutId)
 
-function onPointerLeave() {
-  resumeAllMessages()
-
-  // If expand is set in props,
-  // the user's default configuration cannot be modified when moving out.
-  if (props.expand) {
+  // If already expanded or transitioning, skip to prevent layout thrashing
+  if (groupExpand.value || isTransitioning) {
     return
   }
 
-  groupExpand.value = false
+  isTransitioning = true
+  groupExpand.value = true
+  pauseAllMessages()
+
+  // Unlock after layout stabilizes
+  setTimeout(() => {
+    isTransitioning = false
+  }, TRANSITION_LOCK_MS)
+}
+
+function onPointerLeave() {
+  clearTimeout(leaveTimeoutId)
+
+  // Ignore leave events during transition
+  if (isTransitioning) {
+    return
+  }
+
+  leaveTimeoutId = setTimeout(() => {
+    resumeAllMessages()
+
+    // If expand is set in props,
+    // the user's default configuration cannot be modified when moving out.
+    if (props.expand) {
+      return
+    }
+
+    isTransitioning = true
+    groupExpand.value = false
+
+    setTimeout(() => {
+      isTransitioning = false
+    }, TRANSITION_LOCK_MS)
+  }, LEAVE_DEBOUNCE_MS)
 }
 
 watch(
@@ -397,15 +431,6 @@ defineExpose({
     max-width: 100vw;
     align-items: center;
     flex-direction: column;
-
-    &:not(:empty)::after {
-      content: '';
-      position: absolute;
-      left: -10px;
-      z-index: 0;
-      width: calc(100% + 20px);
-      height: var(--message-placeholder-height);
-    }
   }
 
   &[data-position^="top"] {
@@ -454,6 +479,16 @@ defineExpose({
   .pxd-message--item {
     --message-item-scale: var(--message-item-index) * 0.05 + 1;
     --message-item-transition: transform, opacity, height;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: -18px;
+      height: 24px;
+      z-index: -1;
+    }
   }
 
   &[data-expand="true"] {
