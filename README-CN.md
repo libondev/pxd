@@ -1,9 +1,6 @@
 # PXD
 适用于 Vue@2.7+ 和 Vue@3.2+ 的通用 UI 组件库
 
-- [Geist Design System](https://vercel.com/geist/introduction)
-- [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
-
 [Online Preview](https://pxd-ui.netlify.app/)
 
 > [!WARNING]
@@ -43,3 +40,8 @@ pnpm build:docs
 ```shell
 pnpm build
 ```
+
+## 参照
+
+- [Geist Design System](https://vercel.com/geist/introduction)
+- [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)

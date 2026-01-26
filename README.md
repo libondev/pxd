@@ -1,9 +1,6 @@
 # PXD
 A universal UI component library for Vue@2.7+ & Vue@3.2+
 
-- [Geist Design System](https://vercel.com/geist/introduction)
-- [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
-
 [Online Preview](https://pxd-ui.netlify.app/)
 
 > [!WARNING]
@@ -44,3 +41,8 @@ pnpm build:docs
 ```shell
 pnpm build
 ```
+
+## Reference
+
+- [Geist Design System](https://vercel.com/geist/introduction)
+- [Figma(Community)](https://www.figma.com/design/1234567890/PXD-UI?node-id=0-1&t=1234567890-0)
