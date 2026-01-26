@@ -152,6 +152,11 @@
     "vue-sfc-transformer": "catalog:default",
     "vue-tsc": "catalog:default"
   },
+  "pnpm": {
+    "patchedDependencies": {
+      "mkdist": "patches/mkdist.patch"
+    }
+  },
   "lint-staged": {
     "*.{ts,vue}": "eslint --fix"
   }

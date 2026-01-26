@@ -1,0 +1,680 @@
+diff --git a/dist/cli.cjs b/dist/cli.cjs
+index 87389e2e7e39577690574910f9b12a80533be890..20c07d7a82cea60fb9536aaf6f9e95d000cc8286 100644
+--- a/dist/cli.cjs
++++ b/dist/cli.cjs
+@@ -3,25 +3,25 @@
+ 
+ const citty = require('citty');
+ const pathe = require('pathe');
+-const make = require('./shared/mkdist.BiJXIYay.cjs');
+-require('node:fs/promises');
++const make = require('./shared/mkdist.D3U32oxc.cjs');
+ require('defu');
+-require('node:stream');
+-require('node:fs');
++require('node:fs/promises');
++require('tinyglobby');
+ require('esbuild');
+ require('jiti');
+-require('node:url');
+ require('cssnano');
+ require('autoprefixer');
+ require('postcss');
+ require('postcss-nested');
++require('node:url');
++require('node:fs');
+ require('mlly');
++require('node:stream');
+ require('node:module');
+ require('semver');
+-require('tinyglobby');
+ 
+ const name = "mkdist";
+-const version = "2.4.0";
++const version = "2.4.1";
+ const description = "Lightweight file-to-file transformer";
+ 
+ const main = citty.defineCommand({
+diff --git a/dist/cli.mjs b/dist/cli.mjs
+index 80837bb41bdeefd0f4644a5eb20dc039ff81115c..66bde2c284dabd59db5056d51c23f493b34ebfb1 100644
+--- a/dist/cli.mjs
++++ b/dist/cli.mjs
+@@ -1,25 +1,25 @@
+ #!/usr/bin/env node
+ import { defineCommand, runMain } from 'citty';
+ import { resolve } from 'pathe';
+-import { m as mkdist } from './shared/mkdist.C0vF8Kdr.mjs';
+-import 'node:fs/promises';
++import { m as mkdist } from './shared/mkdist.DGbISJLH.mjs';
+ import 'defu';
+-import 'node:stream';
+-import 'node:fs';
++import 'node:fs/promises';
++import 'tinyglobby';
+ import 'esbuild';
+ import 'jiti';
+-import 'node:url';
+ import 'cssnano';
+ import 'autoprefixer';
+ import 'postcss';
+ import 'postcss-nested';
++import 'node:url';
++import 'node:fs';
+ import 'mlly';
++import 'node:stream';
+ import 'node:module';
+ import 'semver';
+-import 'tinyglobby';
+ 
+ const name = "mkdist";
+-const version = "2.4.0";
++const version = "2.4.1";
+ const description = "Lightweight file-to-file transformer";
+ 
+ const main = defineCommand({
+diff --git a/dist/index.cjs b/dist/index.cjs
+index d5c3bec2879a3fff12301dd003104d83a73ec0c1..3417e089819821bb2c3de48fda6b5c002e23228b 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -1,22 +1,22 @@
+ 'use strict';
+ 
+-const make = require('./shared/mkdist.BiJXIYay.cjs');
+-require('pathe');
+-require('node:fs/promises');
++const make = require('./shared/mkdist.D3U32oxc.cjs');
+ require('defu');
+-require('node:stream');
+-require('node:fs');
++require('node:fs/promises');
++require('pathe');
++require('tinyglobby');
+ require('esbuild');
+ require('jiti');
+-require('node:url');
+ require('cssnano');
+ require('autoprefixer');
+ require('postcss');
+ require('postcss-nested');
++require('node:url');
++require('node:fs');
+ require('mlly');
++require('node:stream');
+ require('node:module');
+ require('semver');
+-require('tinyglobby');
+ 
+ 
+ 
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1f38a806c 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,10 +1,10 @@
+ import { TSConfig } from 'pkg-types';
++import { GlobOptions } from 'tinyglobby';
+ import { CommonOptions } from 'esbuild';
+ import { AcceptedPlugin, ProcessOptions } from 'postcss';
+ import { Options } from 'postcss-nested';
+ import { Options as Options$1 } from 'autoprefixer';
+ import { Options as Options$2 } from 'cssnano';
+-import { GlobOptions } from 'tinyglobby';
+ 
+ declare const loaders: {
+     js: Loader;
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1f38a806c 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,10 +1,10 @@
+ import { TSConfig } from 'pkg-types';
++import { GlobOptions } from 'tinyglobby';
+ import { CommonOptions } from 'esbuild';
+ import { AcceptedPlugin, ProcessOptions } from 'postcss';
+ import { Options } from 'postcss-nested';
+ import { Options as Options$1 } from 'autoprefixer';
+ import { Options as Options$2 } from 'cssnano';
+-import { GlobOptions } from 'tinyglobby';
+ 
+ declare const loaders: {
+     js: Loader;
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1f38a806c 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,10 +1,10 @@
+ import { TSConfig } from 'pkg-types';
++import { GlobOptions } from 'tinyglobby';
+ import { CommonOptions } from 'esbuild';
+ import { AcceptedPlugin, ProcessOptions } from 'postcss';
+ import { Options } from 'postcss-nested';
+ import { Options as Options$1 } from 'autoprefixer';
+ import { Options as Options$2 } from 'cssnano';
+-import { GlobOptions } from 'tinyglobby';
+ 
+ declare const loaders: {
+     js: Loader;
+diff --git a/dist/index.mjs b/dist/index.mjs
+index f3ba9798b476a893ed338c5d1abfc24d77206271..dd7b8116cf9ad57704e9ede29367307078e67f95 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1,17 +1,17 @@
+-export { m as mkdist } from './shared/mkdist.C0vF8Kdr.mjs';
+-import 'pathe';
+-import 'node:fs/promises';
++export { m as mkdist } from './shared/mkdist.DGbISJLH.mjs';
+ import 'defu';
+-import 'node:stream';
+-import 'node:fs';
++import 'node:fs/promises';
++import 'pathe';
++import 'tinyglobby';
+ import 'esbuild';
+ import 'jiti';
+-import 'node:url';
+ import 'cssnano';
+ import 'autoprefixer';
+ import 'postcss';
+ import 'postcss-nested';
++import 'node:url';
++import 'node:fs';
+ import 'mlly';
++import 'node:stream';
+ import 'node:module';
+ import 'semver';
+-import 'tinyglobby';
+diff --git a/dist/shared/mkdist.BiJXIYay.cjs b/dist/shared/mkdist.D3U32oxc.cjs
+similarity index 96%
+rename from dist/shared/mkdist.BiJXIYay.cjs
+rename to dist/shared/mkdist.D3U32oxc.cjs
+index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f90173088d697 100644
+--- a/dist/shared/mkdist.BiJXIYay.cjs
++++ b/dist/shared/mkdist.D3U32oxc.cjs
+@@ -1,47 +1,33 @@
+ 'use strict';
+ 
+-const pathe = require('pathe');
+-const fsp = require('node:fs/promises');
+ const defu = require('defu');
+-const node_stream = require('node:stream');
+-const node_fs = require('node:fs');
++const fsp = require('node:fs/promises');
++const pathe = require('pathe');
++const tinyglobby = require('tinyglobby');
+ const esbuild = require('esbuild');
+ const jiti = require('jiti');
+-const node_url = require('node:url');
+ const cssnano = require('cssnano');
+ const autoprefixer = require('autoprefixer');
+ const postcss = require('postcss');
+ const postcssNested = require('postcss-nested');
++const node_url = require('node:url');
++const node_fs = require('node:fs');
+ const mlly = require('mlly');
++const node_stream = require('node:stream');
+ const node_module = require('node:module');
+ const semver = require('semver');
+-const tinyglobby = require('tinyglobby');
+ 
+ var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
+ function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e.default : e; }
+ 
+-const fsp__default = /*#__PURE__*/_interopDefaultCompat(fsp);
+ const defu__default = /*#__PURE__*/_interopDefaultCompat(defu);
++const fsp__default = /*#__PURE__*/_interopDefaultCompat(fsp);
+ const jiti__default = /*#__PURE__*/_interopDefaultCompat(jiti);
+ const cssnano__default = /*#__PURE__*/_interopDefaultCompat(cssnano);
+ const autoprefixer__default = /*#__PURE__*/_interopDefaultCompat(autoprefixer);
+ const postcss__default = /*#__PURE__*/_interopDefaultCompat(postcss);
+ const postcssNested__default = /*#__PURE__*/_interopDefaultCompat(postcssNested);
+ 
+-function copyFileWithStream(sourcePath, outPath) {
+-  const sourceStream = node_fs.createReadStream(sourcePath);
+-  const outStream = node_fs.createWriteStream(outPath);
+-  return new Promise((resolve, reject) => {
+-    node_stream.pipeline(sourceStream, outStream, (error) => {
+-      if (error) {
+-        reject(error);
+-      } else {
+-        resolve();
+-      }
+-    });
+-  });
+-}
+-
+ const DECLARATION_RE = /\.d\.[cm]?ts$/;
+ const CM_LETTER_RE = /(?<=\.)(c|m)(?=[jt]s$)/;
+ const KNOWN_EXT_RE = /\.(c|m)?[jt]sx?$/;
+@@ -90,6 +76,60 @@ const jsLoader = async (input, { options }) => {
+   return output;
+ };
+ 
++const postcssLoader = async (input, ctx) => {
++  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
++    return;
++  }
++  const output = [];
++  const contents = await input.getContents();
++  const transformed = await postcss__default(
++    [
++      ctx.options.postcss?.nested !== false && postcssNested__default(ctx.options.postcss?.nested),
++      ctx.options.postcss?.autoprefixer !== false && autoprefixer__default(ctx.options.postcss?.autoprefixer),
++      ctx.options.postcss?.cssnano !== false && cssnano__default(ctx.options.postcss?.cssnano),
++      ...ctx.options.postcss?.plugins || []
++    ].filter(Boolean)
++  ).process(contents, {
++    ...ctx.options.postcss?.processOptions,
++    from: input.srcPath
++  });
++  output.push({
++    contents: transformed.content,
++    path: input.path,
++    extension: ".css"
++  });
++  return output;
++};
++
++const sassLoader = async (input) => {
++  if (![".sass", ".scss"].includes(input.extension)) {
++    return;
++  }
++  if (pathe.basename(input.srcPath).startsWith("_")) {
++    return [
++      {
++        contents: "",
++        path: input.path,
++        skip: true
++      }
++    ];
++  }
++  const compileString = await import('sass').then(
++    (r) => r.compileString || r.default.compileString
++  );
++  const output = [];
++  const contents = await input.getContents();
++  output.push({
++    contents: compileString(contents, {
++      loadPaths: ["node_modules"],
++      url: node_url.pathToFileURL(input.srcPath)
++    }).css,
++    path: input.path,
++    extension: ".css"
++  });
++  return output;
++};
++
+ let warnedTypescript = false;
+ function defineVueLoader(options) {
+   const blockLoaders = options?.blockLoaders || {};
+@@ -244,12 +284,12 @@ const fallbackVueLoader = defineVueLoader({
+     style: styleLoader
+   }
+ });
+-let cachedVueLoader$1;
++let cachedVueLoader;
+ const vueLoader = async (file, ctx) => {
+-  if (!cachedVueLoader$1) {
+-    cachedVueLoader$1 = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => fallbackVueLoader);
++  if (!cachedVueLoader) {
++    cachedVueLoader = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => fallbackVueLoader);
+   }
+-  return cachedVueLoader$1(file, ctx);
++  return cachedVueLoader(file, ctx);
+ };
+ function toOmit(record, toRemove) {
+   return Object.fromEntries(
+@@ -257,67 +297,9 @@ function toOmit(record, toRemove) {
+   );
+ }
+ 
+-const sassLoader = async (input) => {
+-  if (![".sass", ".scss"].includes(input.extension)) {
+-    return;
+-  }
+-  if (pathe.basename(input.srcPath).startsWith("_")) {
+-    return [
+-      {
+-        contents: "",
+-        path: input.path,
+-        skip: true
+-      }
+-    ];
+-  }
+-  const compileString = await import('sass').then(
+-    (r) => r.compileString || r.default.compileString
+-  );
+-  const output = [];
+-  const contents = await input.getContents();
+-  output.push({
+-    contents: compileString(contents, {
+-      loadPaths: ["node_modules"],
+-      url: node_url.pathToFileURL(input.srcPath)
+-    }).css,
+-    path: input.path,
+-    extension: ".css"
+-  });
+-  return output;
+-};
+-
+-const postcssLoader = async (input, ctx) => {
+-  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
+-    return;
+-  }
+-  const output = [];
+-  const contents = await input.getContents();
+-  const transformed = await postcss__default(
+-    [
+-      ctx.options.postcss?.nested !== false && postcssNested__default(ctx.options.postcss?.nested),
+-      ctx.options.postcss?.autoprefixer !== false && autoprefixer__default(ctx.options.postcss?.autoprefixer),
+-      ctx.options.postcss?.cssnano !== false && cssnano__default(ctx.options.postcss?.cssnano),
+-      ...ctx.options.postcss?.plugins || []
+-    ].filter(Boolean)
+-  ).process(contents, {
+-    ...ctx.options.postcss?.processOptions,
+-    from: input.srcPath
+-  });
+-  output.push({
+-    contents: transformed.content,
+-    path: input.path,
+-    extension: ".css"
+-  });
+-  return output;
+-};
+-
+-let cachedVueLoader;
+ const loaders = {
+   js: jsLoader,
+-  vue: cachedVueLoader || (async (...args) => {
+-    cachedVueLoader = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => vueLoader);
+-    return cachedVueLoader(...args);
+-  }),
++  vue: vueLoader,
+   sass: sassLoader,
+   postcss: postcssLoader
+ };
+@@ -473,7 +455,21 @@ function augmentWithDiagnostics(result, output, tsHost, ts) {
+   }
+ }
+ 
+-const require$1 = node_module.createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('shared/mkdist.BiJXIYay.cjs', document.baseURI).href)));
++function copyFileWithStream(sourcePath, outPath) {
++  const sourceStream = node_fs.createReadStream(sourcePath);
++  const outStream = node_fs.createWriteStream(outPath);
++  return new Promise((resolve, reject) => {
++    node_stream.pipeline(sourceStream, outStream, (error) => {
++      if (error) {
++        reject(error);
++      } else {
++        resolve();
++      }
++    });
++  });
++}
++
++const require$1 = node_module.createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('shared/mkdist.D3U32oxc.cjs', document.baseURI).href)));
+ async function getVueDeclarations(vfs, opts) {
+   const fileMapping = getFileMapping(vfs);
+   const srcFiles = Object.keys(fileMapping);
+@@ -737,6 +733,23 @@ async function mkdist(options = {}) {
+       }
+     }
+   }
++  const outPathSet = new Set(outputs.filter((o) => !o.skip).map((o) => o.path));
++  for (const output of outputs) {
++    if (!output.declaration || output.skip || output.extension !== ".d.ts" || !output.path.endsWith(".vue.d.ts")) {
++      continue;
++    }
++    const pairedPath = output.path.replace(/\.vue\.d\.ts$/, ".d.vue.ts");
++    const hasPaired = outPathSet.has(pairedPath);
++    if (hasPaired) {
++      output.skip = true;
++      outPathSet.delete(output.path);
++      continue;
++    }
++    outPathSet.delete(output.path);
++    outPathSet.add(pairedPath);
++    output.path = pairedPath;
++    output.extension = ".d.vue.ts";
++  }
+   const outPaths = new Set(outputs.map((o) => o.path));
+   const resolveId = (from, id = "", resolveExtensions) => {
+     if (!id.startsWith(".")) {
+diff --git a/dist/shared/mkdist.C0vF8Kdr.mjs b/dist/shared/mkdist.DGbISJLH.mjs
+similarity index 96%
+rename from dist/shared/mkdist.C0vF8Kdr.mjs
+rename to dist/shared/mkdist.DGbISJLH.mjs
+index fcae764c3516fd9a97d6b1eecc1f9534e49e1938..ef9b2a3eade6b194659e85c82353af7505486887 100644
+--- a/dist/shared/mkdist.C0vF8Kdr.mjs
++++ b/dist/shared/mkdist.DGbISJLH.mjs
+@@ -1,33 +1,19 @@
+-import { basename, resolve, normalize, extname, join, dirname } from 'pathe';
+-import fsp from 'node:fs/promises';
+ import defu from 'defu';
+-import { pipeline } from 'node:stream';
+-import { createReadStream, createWriteStream, statSync } from 'node:fs';
++import fsp from 'node:fs/promises';
++import { basename, resolve, normalize, extname, join, dirname } from 'pathe';
++import { glob } from 'tinyglobby';
+ import { transform } from 'esbuild';
+ import jiti from 'jiti';
+-import { pathToFileURL } from 'node:url';
+ import cssnano from 'cssnano';
+ import autoprefixer from 'autoprefixer';
+ import postcss from 'postcss';
+ import postcssNested from 'postcss-nested';
++import { pathToFileURL } from 'node:url';
++import { statSync, createReadStream, createWriteStream } from 'node:fs';
+ import { findStaticImports, findExports, findTypeExports, findDynamicImports } from 'mlly';
++import { pipeline } from 'node:stream';
+ import { createRequire } from 'node:module';
+ import { satisfies } from 'semver';
+-import { glob } from 'tinyglobby';
+-
+-function copyFileWithStream(sourcePath, outPath) {
+-  const sourceStream = createReadStream(sourcePath);
+-  const outStream = createWriteStream(outPath);
+-  return new Promise((resolve, reject) => {
+-    pipeline(sourceStream, outStream, (error) => {
+-      if (error) {
+-        reject(error);
+-      } else {
+-        resolve();
+-      }
+-    });
+-  });
+-}
+ 
+ const DECLARATION_RE = /\.d\.[cm]?ts$/;
+ const CM_LETTER_RE = /(?<=\.)(c|m)(?=[jt]s$)/;
+@@ -77,6 +63,60 @@ const jsLoader = async (input, { options }) => {
+   return output;
+ };
+ 
++const postcssLoader = async (input, ctx) => {
++  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
++    return;
++  }
++  const output = [];
++  const contents = await input.getContents();
++  const transformed = await postcss(
++    [
++      ctx.options.postcss?.nested !== false && postcssNested(ctx.options.postcss?.nested),
++      ctx.options.postcss?.autoprefixer !== false && autoprefixer(ctx.options.postcss?.autoprefixer),
++      ctx.options.postcss?.cssnano !== false && cssnano(ctx.options.postcss?.cssnano),
++      ...ctx.options.postcss?.plugins || []
++    ].filter(Boolean)
++  ).process(contents, {
++    ...ctx.options.postcss?.processOptions,
++    from: input.srcPath
++  });
++  output.push({
++    contents: transformed.content,
++    path: input.path,
++    extension: ".css"
++  });
++  return output;
++};
++
++const sassLoader = async (input) => {
++  if (![".sass", ".scss"].includes(input.extension)) {
++    return;
++  }
++  if (basename(input.srcPath).startsWith("_")) {
++    return [
++      {
++        contents: "",
++        path: input.path,
++        skip: true
++      }
++    ];
++  }
++  const compileString = await import('sass').then(
++    (r) => r.compileString || r.default.compileString
++  );
++  const output = [];
++  const contents = await input.getContents();
++  output.push({
++    contents: compileString(contents, {
++      loadPaths: ["node_modules"],
++      url: pathToFileURL(input.srcPath)
++    }).css,
++    path: input.path,
++    extension: ".css"
++  });
++  return output;
++};
++
+ let warnedTypescript = false;
+ function defineVueLoader(options) {
+   const blockLoaders = options?.blockLoaders || {};
+@@ -231,12 +271,12 @@ const fallbackVueLoader = defineVueLoader({
+     style: styleLoader
+   }
+ });
+-let cachedVueLoader$1;
++let cachedVueLoader;
+ const vueLoader = async (file, ctx) => {
+-  if (!cachedVueLoader$1) {
+-    cachedVueLoader$1 = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => fallbackVueLoader);
++  if (!cachedVueLoader) {
++    cachedVueLoader = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => fallbackVueLoader);
+   }
+-  return cachedVueLoader$1(file, ctx);
++  return cachedVueLoader(file, ctx);
+ };
+ function toOmit(record, toRemove) {
+   return Object.fromEntries(
+@@ -244,67 +284,9 @@ function toOmit(record, toRemove) {
+   );
+ }
+ 
+-const sassLoader = async (input) => {
+-  if (![".sass", ".scss"].includes(input.extension)) {
+-    return;
+-  }
+-  if (basename(input.srcPath).startsWith("_")) {
+-    return [
+-      {
+-        contents: "",
+-        path: input.path,
+-        skip: true
+-      }
+-    ];
+-  }
+-  const compileString = await import('sass').then(
+-    (r) => r.compileString || r.default.compileString
+-  );
+-  const output = [];
+-  const contents = await input.getContents();
+-  output.push({
+-    contents: compileString(contents, {
+-      loadPaths: ["node_modules"],
+-      url: pathToFileURL(input.srcPath)
+-    }).css,
+-    path: input.path,
+-    extension: ".css"
+-  });
+-  return output;
+-};
+-
+-const postcssLoader = async (input, ctx) => {
+-  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
+-    return;
+-  }
+-  const output = [];
+-  const contents = await input.getContents();
+-  const transformed = await postcss(
+-    [
+-      ctx.options.postcss?.nested !== false && postcssNested(ctx.options.postcss?.nested),
+-      ctx.options.postcss?.autoprefixer !== false && autoprefixer(ctx.options.postcss?.autoprefixer),
+-      ctx.options.postcss?.cssnano !== false && cssnano(ctx.options.postcss?.cssnano),
+-      ...ctx.options.postcss?.plugins || []
+-    ].filter(Boolean)
+-  ).process(contents, {
+-    ...ctx.options.postcss?.processOptions,
+-    from: input.srcPath
+-  });
+-  output.push({
+-    contents: transformed.content,
+-    path: input.path,
+-    extension: ".css"
+-  });
+-  return output;
+-};
+-
+-let cachedVueLoader;
+ const loaders = {
+   js: jsLoader,
+-  vue: cachedVueLoader || (async (...args) => {
+-    cachedVueLoader = await import('vue-sfc-transformer/mkdist').then((r) => r.vueLoader).catch(() => vueLoader);
+-    return cachedVueLoader(...args);
+-  }),
++  vue: vueLoader,
+   sass: sassLoader,
+   postcss: postcssLoader
+ };
+@@ -460,6 +442,20 @@ function augmentWithDiagnostics(result, output, tsHost, ts) {
+   }
+ }
+ 
++function copyFileWithStream(sourcePath, outPath) {
++  const sourceStream = createReadStream(sourcePath);
++  const outStream = createWriteStream(outPath);
++  return new Promise((resolve, reject) => {
++    pipeline(sourceStream, outStream, (error) => {
++      if (error) {
++        reject(error);
++      } else {
++        resolve();
++      }
++    });
++  });
++}
++
+ const require = createRequire(import.meta.url);
+ async function getVueDeclarations(vfs, opts) {
+   const fileMapping = getFileMapping(vfs);
+@@ -724,6 +720,23 @@ async function mkdist(options = {}) {
+       }
+     }
+   }
++  const outPathSet = new Set(outputs.filter((o) => !o.skip).map((o) => o.path));
++  for (const output of outputs) {
++    if (!output.declaration || output.skip || output.extension !== ".d.ts" || !output.path.endsWith(".vue.d.ts")) {
++      continue;
++    }
++    const pairedPath = output.path.replace(/\.vue\.d\.ts$/, ".d.vue.ts");
++    const hasPaired = outPathSet.has(pairedPath);
++    if (hasPaired) {
++      output.skip = true;
++      outPathSet.delete(output.path);
++      continue;
++    }
++    outPathSet.delete(output.path);
++    outPathSet.add(pairedPath);
++    output.path = pairedPath;
++    output.extension = ".d.vue.ts";
++  }
+   const outPaths = new Set(outputs.map((o) => o.path));
+   const resolveId = (from, id = "", resolveExtensions) => {
+     if (!id.startsWith(".")) {
