@@ -1,3 +1,4 @@
+import { hasScrollbar, isScrollable } from '../utils/dom'
 import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
 let documentTouchMoveLocks = 0
@@ -12,7 +13,21 @@ export function useLockScroll() {
   function lockScroll() {
     if (!isLocked()) {
       cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
-      rootEl.classList.add('scrollbar-stable', 'scroll-disabled-both', 'pointer-events-none!')
+
+      const classList = ['pointer-events-none!']
+
+      const { y: yScrollbar } = hasScrollbar(rootEl)
+      const { y: yScrollable } = isScrollable(rootEl)
+
+      if (yScrollbar) {
+        classList.push('scrollbar-stable')
+      }
+
+      if (yScrollable) {
+        classList.push('scrollbar-disabled')
+      }
+
+      rootEl.classList.add(...classList)
     }
 
     documentTouchMoveLocks++
@@ -27,7 +42,7 @@ export function useLockScroll() {
 
     if (!documentTouchMoveLocks) {
       cachedOff(document, 'touchmove', preventDefaultScroll)
-      rootEl.classList.remove('scrollbar-stable', 'scroll-disabled-both', 'pointer-events-none!')
+      rootEl.classList.remove('pointer-events-none!', 'scrollbar-stable', 'scrollbar-disabled')
     }
   }
 

@@ -553,13 +553,13 @@
   scrollbar-gutter: stable !important;
 }
 
-.scroll-disabled-both,
-.scroll-disabled-x {
+.scrollbar-disabled,
+.scrollbar-disabled-x {
   overflow-x: clip !important;
 }
 
-.scroll-disabled-both,
-.scroll-disabled-y {
+.scrollbar-disabled,
+.scrollbar-disabled-y {
   overflow-y: clip !important;
 }
 
