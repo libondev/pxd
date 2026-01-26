@@ -370,7 +370,7 @@ defineExpose({
         appear
         tag="ol"
         name="pxd-transition-message"
-        class="pxd-message--group min-w-16 flex h-auto w-full"
+        class="pxd-message--group min-w-16 p-0 m-0 flex h-auto w-full"
         :class="{ 'gap-3': groupExpand }"
         @pointerenter="onPointerEnter"
         @pointerleave="onPointerLeave"

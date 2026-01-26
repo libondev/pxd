@@ -213,7 +213,7 @@ defineExpose({
     role="list"
     tabindex="-1"
     :data-transition="itemTransition"
-    class="pxd-list group/list max-w-full list-none bg-background-100 outline-none"
+    class="pxd-list group/list m-0 p-0 max-w-full list-none bg-background-100 outline-none"
     :style="{ width: getCssUnitValue(width) }"
     v-bind="$attrs"
     @pointerover="onPointerOver"
