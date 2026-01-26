@@ -19,12 +19,8 @@ export function useLockScroll() {
       const { y: yScrollbar } = hasScrollbar(rootEl)
       const { y: yScrollable } = isScrollable(rootEl)
 
-      if (yScrollbar) {
-        classList.push('scrollbar-stable')
-      }
-
-      if (yScrollable) {
-        classList.push('scrollbar-disabled')
+      if (yScrollbar && yScrollable) {
+        classList.push('scrollbar-stable', 'scrollbar-disabled')
       }
 
       rootEl.classList.add(...classList)
