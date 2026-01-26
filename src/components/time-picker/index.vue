@@ -296,24 +296,24 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
         </PButton>
       </div>
 
-      <div class="sm:text-sm flex max-w-full transform-gpu items-center tabular-nums outline-none select-none max-sm:text-15px" @click.stop="onTimeListClick">
+      <div class="sm:text-sm flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none max-sm:text-15px" @click.stop="onTimeListClick">
         <div class="p-2 gap-1 relative mx-auto flex items-center">
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeMinutesRef" data-type="minute" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeMinutesRef" data-type="minute" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div v-if="showSeconds" class="pxd-time-picker--list relative">
-            <ul ref="timeSecondsRef" data-type="second" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none" @scroll.stop="onTimeListScroll">
+            <ul ref="timeSecondsRef" data-type="second" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
               <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
@@ -321,7 +321,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
           </div>
         </div>
 
-        <div v-if="presets?.length" class="max-sm:w-36 sm:w-25 p-2 h-44 gap-1 scrollbar-hidden flex flex-wrap content-start overflow-auto border-l outline-none" @click="onPresetClick">
+        <div v-if="presets?.length" class="max-sm:w-36 sm:w-25 p-2 gap-1 scrollbar-hidden flex flex-wrap content-start self-stretch overflow-auto border-l outline-none" @click="onPresetClick">
           <button
             v-for="preset, i in presets"
             :key="preset.label"
@@ -337,19 +337,23 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 </template>
 
 <style>
-.pxd-time-picker--list ul {
-  -webkit-overflow-scrolling: auto;
+.pxd-time-picker--list::before,
+.pxd-time-picker--list::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(var(--time-picker-list-gradient-direction), var(--color-background-100) 15%, transparent);
+  pointer-events: none;
 }
 
 .pxd-time-picker--list::before {
-  content: '';
-  position: absolute;
-  top: 64px;
-  width: 100%;
-  height: 20%;
-  z-index: -1;
-  border-radius: var(--radius-md);
-  background: var(--color-gray-alpha-200);
-  pointer-events: none;
+  --time-picker-list-gradient-direction: to bottom;
+  top: 0;
+}
+
+.pxd-time-picker--list::after {
+  --time-picker-list-gradient-direction: to top;
+  bottom: 0;
 }
 </style>
