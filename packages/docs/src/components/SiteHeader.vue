@@ -2,10 +2,12 @@
 import ArrowRightIcon from '@gdsicon/vue/arrow-right'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
+import WindowVariableIcon from '@gdsicon/vue/window-variable'
 import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
+import CustomVariables from './CustomVariables.vue'
 
 const showCommandMenu = shallowRef(false)
 const prereleaseVersion = (() => {
@@ -100,6 +102,16 @@ onBeforeUnmount(() => {
 
           <span class="sm:block ml-1.5 hidden">Github</span>
         </PLinkButton>
+      </div>
+
+      <div class="h-full border-l">
+        <CustomVariables width="200" position="bottom-end">
+          <PButton variant="ghost" shape="square" class="sm:px-3 h-full">
+            <WindowVariableIcon />
+
+            <span class="sm:block ml-1.5 hidden">Custom</span>
+          </PButton>
+        </CustomVariables>
       </div>
 
       <div class="h-full border-r border-l border-r-transparent">
