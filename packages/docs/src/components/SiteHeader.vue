@@ -2,7 +2,7 @@
 import ArrowRightIcon from '@gdsicon/vue/arrow-right'
 import LogoGithubIcon from '@gdsicon/vue/logo-github'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
-import WindowVariableIcon from '@gdsicon/vue/window-variable'
+import SparklesIcon from '@gdsicon/vue/sparkles'
 import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
@@ -107,7 +107,7 @@ onBeforeUnmount(() => {
       <div class="h-full border-l">
         <CustomVariables width="200" position="bottom-end">
           <PButton variant="ghost" shape="square" class="sm:px-3 h-full">
-            <WindowVariableIcon />
+            <SparklesIcon />
 
             <span class="sm:block ml-1.5 hidden">Custom</span>
           </PButton>

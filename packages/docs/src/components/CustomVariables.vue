@@ -36,7 +36,7 @@ watch(() => customVariables.value, (newVal) => {
     <slot />
 
     <template #content>
-      <div class="p-3 gap-3 sm:w-64 flex flex-col">
+      <div class="p-3 gap-4 sm:w-64 flex flex-col">
         <div>
           <PLabel>Radius</PLabel>
           <PSwitchGroup v-model="customVariables.radius" full-width>
