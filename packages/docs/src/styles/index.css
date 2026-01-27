@@ -19,11 +19,6 @@ html:has(:is(h1,h2,h3,h4):hover) {
   scroll-behavior: smooth;
 }
 
-html::selection {
-  background-color: var(--color-gray-1000);
-  color: var(--color-gray-100);
-}
-
 :not(pre) > code {
   font-size: 0.875rem;
   margin-right: 0.22em;
