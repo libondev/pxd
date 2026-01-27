@@ -3,7 +3,6 @@ import type { ListOption, ListOptionSelected } from '../../types/components/list
 import { nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
 import { cachedOff, cachedOn } from '../../utils/event'
-import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
 import PListItem from '../list-item/index.vue'
@@ -11,7 +10,6 @@ import PScrollable from '../scrollable/index.vue'
 
 interface Props {
   loop?: boolean
-  width?: string | number
   options?: ListOption[]
   keyListener?: boolean
   itemTransition?: boolean
@@ -214,7 +212,6 @@ defineExpose({
     tabindex="-1"
     :data-transition="itemTransition"
     class="pxd-list group/list m-0 p-0 max-w-full list-none bg-background-100 outline-none"
-    :style="{ width: getCssUnitValue(width) }"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >

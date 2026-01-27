@@ -3,6 +3,7 @@ import type { ListOption, ListOptionSelected } from '../../types/components/list
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
+import { getCssUnitValue } from '../../utils/format'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 
@@ -77,7 +78,8 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
         :width="width"
         :options="options"
         :key-listener="popoverVisible"
-        class="max-h-68 rounded-inherit"
+        :style="{ '--list-width': getCssUnitValue(width) }"
+        class="max-h-68 sm:w-(--list-width) rounded-inherit"
         @select="onOptionClick"
       >
         <slot name="items" />
