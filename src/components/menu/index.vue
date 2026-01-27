@@ -53,10 +53,8 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
 
 <template>
   <PPopover
-    enterable
     class="pxd-menu"
     trigger="click"
-    :show-delay="0"
     :hide-delay="100"
     :position="position"
     :visible="popoverVisible"

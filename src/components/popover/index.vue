@@ -23,9 +23,9 @@ interface Props {
   position?: ComponentPosition
   showDelay?: number
   hideDelay?: number
-  enterable?: boolean
   showArrow?: boolean
   arrowColor?: string
+  interactive?: boolean
   toggleClick?: boolean
   autoPosition?: boolean
   wrapperClass?: ComponentClass
@@ -49,9 +49,10 @@ const props = withDefaults(
     offset: 8,
     trigger: () => ['hover'],
     position: 'bottom',
-    showDelay: 300,
-    hideDelay: 300,
+    showDelay: 0,
+    hideDelay: 0,
     arrowColor: 'hsl(var(--primary))',
+    interactive: true,
     toggleClick: true,
     autoPosition: true,
     unsetPosition: false,
@@ -322,7 +323,7 @@ function onContentPointerEnter() {
     return
   }
 
-  if (!props.enterable || !isVisible.value) {
+  if (!props.interactive || !isVisible.value) {
     return
   }
 
@@ -334,7 +335,7 @@ function onContentPointerLeave() {
     return
   }
 
-  if (props.enterable && !triggerMethods.value.includes('hover')) {
+  if (props.interactive && !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -380,8 +381,8 @@ defineExpose({
         :class="wrapperClass"
         :style="wrapperStyle"
         :data-visible="isVisible"
-        :data-enterable="enterable"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[enterable=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        :data-interactive="interactive"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[interactive=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >

@@ -243,10 +243,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
 <template>
   <PPopover
-    enterable
     :trigger="popoverTrigger"
-    :show-delay="0"
-    :hide-delay="0"
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"

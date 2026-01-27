@@ -77,7 +77,9 @@ The component inherits from popover and supports all the properties of popover. 
 </template>
 ```
 
-## Enterable
+## Non interactive
+
+Set `interactive=false` to control the popup content to be non-interactive
 
 ```vue demo
 <script setup>
@@ -85,7 +87,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PTooltip variant="success" enterable>
+  <PTooltip variant="success" :interactive="false">
     <PButton>
       Hover me
     </PButton>
