@@ -7,7 +7,7 @@ export interface ButtonProps {
   shape?: 'square' | 'rounded'
   align?: 'left' | 'center' | 'right'
   icon?: boolean
-  block?: boolean
   loading?: boolean
   disabled?: boolean
+  fullWidth?: boolean
 }

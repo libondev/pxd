@@ -73,10 +73,10 @@ const computedDisabled = computed(() => isTruthyProp(props.disabled) || isTruthy
 const computedClass = computed(() => {
   const classes = ['pxd-button shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all', ALIGNMENTS[props.align]]
 
-  const { variant, block, shape, icon } = props
+  const { variant, fullWidth, shape, icon } = props
 
   classes.push(
-    isTruthyProp(block) ? 'flex w-full' : 'inline-flex',
+    isTruthyProp(fullWidth) ? 'flex w-full' : 'inline-flex',
     getFallbackValue(props.size, FONT_SIZES, config.size),
     shape ? ROUNDED[shape] : getFallbackValue(props.size, ROUNDED, config.size),
   )

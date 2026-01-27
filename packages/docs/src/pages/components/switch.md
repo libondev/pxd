@@ -90,7 +90,7 @@ const options = [
 </script>
 
 <template>
-  <PSwitchGroup v-model="modelValue" :options="options" block />
+  <PSwitchGroup v-model="modelValue" :options="options" full-width />
 </template>
 ```
 

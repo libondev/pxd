@@ -83,11 +83,11 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
 </template>
 ```
 
-## Block
-Set the `block` property to make the button exclusive to one line.
+## Full width
+Set the `full-width` property to make the button exclusive to one line.
 
 ```vue demo
 <template>
-  <PButton block>Block Button </PButton>
+  <PButton full-width>Block Button </PButton>
 </template>
 ```
