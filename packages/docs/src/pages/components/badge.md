@@ -75,7 +75,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ```vue demo
 <template>
-  <PBadge as="RouterLink" href="#" variant="pill">
+  <PBadge as="RouterLink" to="/components/badge" variant="pill">
     pill
   </PBadge>
 </template>
