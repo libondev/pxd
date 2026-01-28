@@ -61,7 +61,7 @@ const LINKS = [
 
       <ul class="max-h-40 gap-x-2 sm:flex-wrap flex flex-col">
         <li v-for="link in group.children" :key="link.href" class="sm:w-auto w-full">
-          <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" block>
+          <PLinkButton variant="ghost" :href="link.href" external-icon target="_blank" full-width>
             <template #prefix>
               <Component :is="link.icon" />
             </template>

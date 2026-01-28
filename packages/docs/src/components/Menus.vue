@@ -24,7 +24,7 @@ function onLinkClick(event: MouseEvent) {
           </li>
 
           <li v-for="child of menu.children" :key="child.path" class="mb-0.5">
-            <PLinkButton variant="ghost" :href="child.path" block @click="onLinkClick">
+            <PLinkButton variant="ghost" :href="child.path" full-width @click="onLinkClick">
               {{ child.label }}
             </PLinkButton>
           </li>
@@ -32,7 +32,7 @@ function onLinkClick(event: MouseEvent) {
       </template>
 
       <template v-else>
-        <PLinkButton variant="ghost" :href="menu.path" block @click="onLinkClick">
+        <PLinkButton variant="ghost" :href="menu.path" full-width @click="onLinkClick">
           {{ menu.label }}
         </PLinkButton>
       </template>
