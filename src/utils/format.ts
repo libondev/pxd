@@ -27,9 +27,10 @@ export function humanize(text: string) {
   return text.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
 }
 
-// 某些没有主动声明的二次封装组件中透传 boolean 类型的值可能会是一个空字符串
-export function isTruthyProp(value: unknown) {
-  return value || value === ''
+// Some components that do not actively declare boolean values may pass an empty string
+// This function is used to check if the value is a boolean or an empty string
+export function isTruthyProp(value: unknown): boolean {
+  return value === true || value === ''
 }
 
 export function clampValue(n: number, min: number, max: number) {

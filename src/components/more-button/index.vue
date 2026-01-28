@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { ButtonProps } from '../../types/components/button'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import PButton from '../button/index.vue'
 
-interface Props extends ButtonProps {
+interface Props {
   moreText?: string
   lessText?: string
   modelValue?: boolean
@@ -13,6 +11,7 @@ interface Props extends ButtonProps {
 
 defineOptions({
   name: 'PMoreButton',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -25,7 +24,6 @@ const props = withDefaults(
     moreText: 'Show More',
     lessText: 'Show Less',
     modelValue: false,
-    shape: 'rounded',
   },
 )
 
@@ -36,12 +34,6 @@ const emits = defineEmits<{
 
 const isExpanded = useModelValue(props, emits)
 
-const buttonProps = computed(() => {
-  const { moreText, lessText, modelValue, ...rest } = props
-
-  return rest
-})
-
 function onToggleExpand() {
   isExpanded.value = !isExpanded.value
 }
@@ -49,7 +41,7 @@ function onToggleExpand() {
 
 <template>
   <div class="pxd-more-button px-4 mt-4 flex w-full items-center">
-    <PButton class="relative z-1" v-bind="buttonProps" @click="onToggleExpand">
+    <PButton class="relative z-1" shape="rounded" v-bind="$attrs" @click="onToggleExpand">
       {{ isExpanded ? lessText : moreText }}
 
       <template #suffix>

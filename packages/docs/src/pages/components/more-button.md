@@ -2,7 +2,8 @@
 Styling component to show expanded or collapsed content.
 
 ## Default
-Based on the `button` component, props owns all buttons.
+
+MoreButton extends the [Button component](/components/button){class="font-medium underline"}.
 
 ```vue demo
 <script setup>

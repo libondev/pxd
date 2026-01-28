@@ -125,7 +125,9 @@
     "@gdsicon/vue": "catalog:default",
     "dayjs": "catalog:default",
     "es-toolkit": "catalog:default",
-    "focus-trap": "catalog:default"
+    "focus-trap": "catalog:default",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:default",

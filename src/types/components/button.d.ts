@@ -1,8 +1,10 @@
 import type { ComponentAs, ComponentSizeWithXs, ComponentVariantWithDefault } from '../shared'
 
+export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'icon' | 'link'
+
 export interface ButtonProps {
   as?: ComponentAs
-  variant?: ComponentVariantWithDefault | 'ghost' | 'simple' | 'icon'
+  variant?: ButtonVariant
   size?: ComponentSizeWithXs
   shape?: 'square' | 'rounded'
   align?: 'left' | 'center' | 'right'

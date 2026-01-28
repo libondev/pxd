@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ButtonVariant } from '../../types/components/button'
 import ExternalIcon from '@gdsicon/vue/external'
 import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
@@ -7,23 +8,11 @@ import PButton from '../button/index.vue'
 interface Props {
   href: string
   text?: string
-  type?: 'button' | 'text'
   align?: 'left' | 'center' | 'right'
   target?: '_blank' | '_self' | '_parent' | '_top'
+  variant?: ButtonVariant
   externalIcon?: boolean
 }
-
-type LinkAttrs
-  = | {
-    as: 'router-link'
-    to: string
-  }
-  | {
-    as: 'a'
-    href: string
-    target?: Props['target']
-  }
-  | null
 
 defineOptions({
   name: 'PLinkButton',
@@ -32,7 +21,6 @@ defineOptions({
 const props = withDefaults(
   defineProps<Props>(),
   {
-    type: 'button',
     align: 'left',
     target: '_self',
   },
@@ -44,40 +32,34 @@ const emits = defineEmits<{
 
 const attrs = useAttrs()
 
-const computedClass = computed(() => {
-  const classes = ['pxd-link-button']
+const computedAttrs = computed(() => {
+  const { externalIcon, text, href, ...restProps } = props
 
-  if (props.type === 'text') {
-    classes.push('font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity')
+  const baseAttrs = {
+    ...attrs,
+    ...restProps,
+    class: 'pxd-link-button',
+    rel: 'noopener noreferrer',
+    onClick: onLinkClick,
   }
-
-  return classes.join(' ')
-})
-
-const computedAttrs = computed<LinkAttrs>(() => {
-  const { href, target, type } = props
 
   if (!href) {
-    return null
+    return baseAttrs
   }
-
-  const variant = type === 'text' ? 'simple' : attrs.variant || 'default'
 
   if (isExternalLink(href)) {
     return {
+      ...baseAttrs,
       as: 'a',
       href,
-      target,
-      variant,
-      rel: 'noopener noreferrer',
-    }
+    } as const
   }
 
   return {
+    ...baseAttrs,
     as: 'router-link',
     to: href,
-    variant,
-  }
+  } as const
 })
 
 function onLinkClick(ev: MouseEvent) {
@@ -86,12 +68,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <PButton
-    :align="align"
-    :class="computedClass"
-    v-bind="computedAttrs"
-    @click="onLinkClick"
-  >
+  <PButton v-bind="computedAttrs">
     <template #prefix>
       <slot name="prefix" />
     </template>

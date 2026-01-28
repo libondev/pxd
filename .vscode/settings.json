@@ -4,7 +4,7 @@
   "typescript.preferences.importModuleSpecifierEnding": "index",
 
   // Disable the default formatter, use eslint instead
-  "prettier.enable": true,
+  "prettier.enable": false,
   "editor.formatOnSave": false,
 
   // Auto fix
@@ -17,7 +17,7 @@
     "className",
     "ngClass"
   ],
-  "tailwindCSS.classFunctions": ["tw", "clsx", "twMerge"],
+  "tailwindCSS.classFunctions": ["cn", "tv", "clsx", "twMerge"],
   "files.associations": {
     "*.css": "tailwindcss"
   },
