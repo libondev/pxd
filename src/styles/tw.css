@@ -111,7 +111,7 @@
   --primary-active: hsla(var(--primary), 90%);
 
   --radius: .5rem;
-  --ring: var(--color-blue-900-value);
+  --ring: var(--primary);
 
   --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,.08);
   --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);

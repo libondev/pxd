@@ -128,6 +128,4 @@ function handleCustomPrefixChange(value: string) {
   <template v-if="filteredComponents.length === 0">
     <PEmptyState class="col-span-full" title="No data" description="No icons found" />
   </template>
-
-  <PMessage width="175" />
 </template>
