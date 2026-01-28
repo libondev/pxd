@@ -58,7 +58,7 @@ const computedClass = computed(() => {
   }
 
   if (animated) {
-    classes.push('animated')
+    classes.push('animated after:default-animation-timing-function!')
   }
 
   return classes.join(' ')
@@ -81,7 +81,7 @@ const computedClass = computed(() => {
 }
 
 .pxd-skeleton.animated::after {
-  animation: skeleton-loading 1.5s var(--default-transition-timing-function) infinite reverse;
+  animation: skeleton-loading 1.5s infinite reverse;
 }
 
 @keyframes skeleton-loading {

@@ -387,7 +387,7 @@ defineExpose({
         @pointerleave="onContentPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-auto relative z-1 w-inherit transform-gpu"
+          class="pxd-popover--container pointer-events-auto relative z-1 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
           :data-position="localPosition"
           :data-transition-type="transitionType"
         >
@@ -428,7 +428,8 @@ defineExpose({
 }
 
 .pxd-popover--container {
-  animation: popover-fade-show var(--default-transition-duration) var(--default-transition-timing-function) forwards;
+  animation-name: popover-fade-show;
+  animation-fill-mode: forwards;
 
   &:hover {
     will-change: transform, animation;

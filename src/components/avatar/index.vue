@@ -59,7 +59,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 select-none"
+    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 select-none before:default-animation-timing-function! motion-safe:before:animate-[placeholder_8s_infinite]"
     :style="{ '--avatar-size': computedSize }"
   >
     <slot>
@@ -80,7 +80,7 @@ defineExpose({
       >
     </slot>
 
-    <div v-if="loading" class="pxd-avatar--loading inset-0 backdrop-blur-xs absolute z-1 rounded-inherit" />
+    <div v-if="loading" class="pxd-avatar--loading inset-0 backdrop-blur-xs absolute z-1 rounded-inherit motion-safe:after:animate-spin" />
 
     <div
       v-if="$slots.icon"
@@ -130,16 +130,6 @@ defineExpose({
 
   100% {
     background-position: -200% 0;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .pxd-avatar::before {
-    animation: placeholder 8s var(--default-transition-timing-function) infinite;
-  }
-
-  .pxd-avatar--loading::after {
-    animation: var(--animate-spin);
   }
 }
 </style>

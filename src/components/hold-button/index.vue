@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
     <template #suffix>
       <slot name="suffix" />
       <div
-        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-mask-color)"
+        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-mask-color) default-transition-timing-function!"
         :class="{ finished: status === 'confirmed' }"
         :style="computedStyle"
         @transitionend="onTransitionEnd"
@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
     --opacity: .45;
     opacity: var(--opacity);
     clip-path: inset(0 100% 0 0);
-    transition: clip-path .1s var(--default-transition-timing-function), opacity 0s linear;
+    transition: clip-path .1s, opacity 0s;
 
     &.finished {
       --opacity: .68;
@@ -220,7 +220,6 @@ onBeforeUnmount(() => {
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
     transition: clip-path var(--hold-button-durations), opacity var(--default-transition-duration);
-    transition-timing-function: var(--default-transition-timing-function);
   }
 }
 </style>

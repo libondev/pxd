@@ -403,6 +403,22 @@
   --text-15px: 15px;
 }
 
+@utility default-animation-duration {
+  animation-duration: var(--default-transition-duration);
+}
+
+@utility default-transition-duration {
+  transition-duration: var(--default-transition-duration);
+}
+
+@utility default-animation-timing-function {
+  animation-timing-function: var(--default-transition-timing-function);
+}
+
+@utility default-transition-timing-function {
+  transition-timing-function: var(--default-transition-timing-function);
+}
+
 @utility scrollbar-hidden {
   & {
     scrollbar-width: none;
