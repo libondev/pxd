@@ -6,6 +6,7 @@ import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useCheckboxGroupContext } from '../../contexts/checkbox'
 import { getUniqueId } from '../../utils/uid'
+import { checkboxVariant } from './cn'
 
 defineOptions({
   name: 'PCheckbox',
@@ -48,27 +49,11 @@ const isChecked = computed(() => {
 const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.disabled)
 const computedRequired = computed(() => props.required || checkboxGroupContext?.required)
 
-const computedClass = computed(() => {
-  const classes = [
-    'pxd-checkbox--inner size-4 inline-flex shrink-0 items-center justify-center peer-focus-ring',
-    'transform-gpu overflow-hidden rounded-sm border motion-safe:transition-colors',
-  ]
-
-  if (isChecked.value) {
-    classes.push(
-      computedDisabled.value
-        ? 'bg-gray-600 border-gray-600'
-        : 'bg-primary border-primary',
-    )
-  } else {
-    classes.push(
-      computedDisabled.value
-        ? 'bg-gray-100 border-gray-500'
-        : 'bg-background-100 border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
-    )
-  }
-
-  return classes.join(' ')
+const checkboxClasses = computed(() => {
+  return checkboxVariant({
+    checked: isChecked.value,
+    disabled: computedDisabled.value,
+  })
 })
 
 function toggleChecked(isChecked: boolean) {
@@ -107,8 +92,7 @@ defineExpose({
     role="checkbox"
     :aria-checked="isChecked"
     :data-disabled="computedDisabled"
-    class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
-    :class="{ 'is-disabled text-gray-500': computedDisabled }"
+    :class="checkboxClasses.wrapper"
     :for="uniqueId"
   >
     <input
@@ -122,7 +106,7 @@ defineExpose({
       @change="onInputChange"
     >
 
-    <span aria-hidden="true" :class="computedClass">
+    <span aria-hidden="true" :class="checkboxClasses.inner">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />
