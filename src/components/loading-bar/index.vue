@@ -11,6 +11,7 @@ import { cachedOff, cachedOn } from '../../utils/event'
 import { clampValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
+import { loadingBarVariant } from './cn'
 
 interface Props {
   to?: string | HTMLElement
@@ -46,15 +47,12 @@ const status = shallowRef<Status>('finish')
 const hidden = shallowRef(false)
 const progress = shallowRef(0)
 
-const computedClass = computed(() => {
-  const _status = status.value
-
-  return {
-    'opacity-0': hidden.value,
-    'bg-gray-500': _status === 'running',
-    'bg-primary': _status === 'finish',
-    'bg-red-900': _status === 'error',
-  }
+const loadingBarClasses = computed(() => {
+  return loadingBarVariant({
+    status: status.value,
+    hidden: hidden.value,
+    absolute: !!props.to,
+  })
 })
 
 function getIncreaseDelta(n: number) {
@@ -179,13 +177,11 @@ onBeforeUnmount(() => {
   <PTeleport :to="to">
     <div
       aria-hidden="true"
-      class="pxd-loading-bar top-0 left-0 right-0 h-1 pointer-events-none z-10 max-w-full overflow-hidden"
-      :class="to ? 'absolute' : 'fixed'"
+      :class="loadingBarClasses.wrapper()"
       v-bind="$attrs"
     >
       <div
-        class="pxd-loading-bar--inner size-full origin-left rounded-r-full motion-safe:transition-all"
-        :class="computedClass"
+        :class="loadingBarClasses.inner()"
         :style="{ transform: `scaleX(${progress})` }"
       />
     </div>
