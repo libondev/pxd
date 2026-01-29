@@ -5,6 +5,7 @@ import { useModelValue } from '../../composables/use-model-value'
 import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
+import { radioVariant } from './cn'
 
 defineOptions({
   name: 'PRadio',
@@ -31,27 +32,11 @@ const isChecked = computed(() => (radioGroupContext?.modelValue ?? modelValue.va
 const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
 const computedRequired = computed(() => props.required || radioGroupContext?.required)
 
-const computedInnerClasses = computed(() => {
-  const classes = [
-    'pxd-radio--inner size-4 inline-flex items-center justify-center rounded-full border peer-focus-ring motion-safe:transition-colors',
-    'after:content-empty after:size-2 after:scale-40 after:rounded-full after:bg-primary after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:after:transition-all',
-  ]
-
-  if (isChecked.value) {
-    classes.push(
-      computedDisabled.value
-        ? 'bg-gray-100 border-gray-500 peer-disabled:after:bg-gray-500'
-        : 'bg-background-100 border-primary peer-checked:after:scale-100',
-    )
-  } else {
-    classes.push(
-      computedDisabled.value
-        ? 'bg-gray-100 border-gray-500'
-        : 'bg-background-100 border-gray-alpha-400 group-hover/radio:bg-gray-200',
-    )
-  }
-
-  return classes.join(' ')
+const computedClasses = computed(() => {
+  return radioVariant({
+    checked: isChecked.value,
+    disabled: computedDisabled.value,
+  })
 })
 
 function onChangeValue() {
@@ -80,7 +65,7 @@ function onChangeValue() {
       @change="onChangeValue"
     >
 
-    <span aria-hidden="true" :class="computedInnerClasses" />
+    <span aria-hidden="true" :class="computedClasses" />
 
     <span class="text-sm flex-1 shrink-0 empty:hidden">
       <slot>
