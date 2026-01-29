@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
 import { getUniqueId } from '../../utils/uid'
+import { switchVariant } from './cn'
 
 interface Props {
   label?: ComponentLabel
@@ -32,18 +33,7 @@ const isChecked = computed(() => switchGroupModelValue.value === props.value)
 const computedDisabled = computed(() => props.disabled || switchGroupContext.disabled)
 const computedRequired = computed(() => props.required || switchGroupContext.required)
 
-const computedClass = computed(() => {
-  const classes = [
-    'pxd-switch--label px-3 text-sm flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring',
-    'font-medium select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden motion-safe:transition-all',
-  ]
-
-  if (!computedDisabled.value) {
-    classes.push('peer-checked:text-foreground')
-  }
-
-  return classes.join(' ')
-})
+const switchClasses = computed(() => switchVariant({ disabled: computedDisabled.value }))
 
 function onSwitchFocusIn() {
   if (computedDisabled.value) {
@@ -72,7 +62,7 @@ function onSwitchFocusIn() {
       :required="computedRequired"
     >
 
-    <div :class="computedClass" @focusin="onSwitchFocusIn">
+    <div :class="switchClasses" @focusin="onSwitchFocusIn">
       <slot>
         {{ label }}
       </slot>
