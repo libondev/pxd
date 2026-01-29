@@ -2,7 +2,7 @@
 import type { ComponentLabel, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-import { getFallbackValue } from '../../utils/get'
+import { chipVariant } from './cn'
 
 interface Props {
   size?: number | string
@@ -20,30 +20,12 @@ const props = withDefaults(
   },
 )
 
-const variantPresets = {
-  primary: 'bg-primary text-background-100',
-  error: 'bg-red-700 text-background-100 dark:text-gray-1000',
-  warning: 'bg-amber-700 text-gray-1000 dark:text-gray-100',
-  success: 'bg-green-700 text-background-100 dark:text-gray-1000',
-  secondary: 'bg-gray-700 text-background-100 dark:text-gray-1000',
-}
-
-const computedClass = computed(() => {
-  const classes = ['pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-all']
-
-  const { variant, inset, label } = props
-
-  if (!label) {
-    classes.push('size-(--chip-size)')
-  }
-
-  if (!inset) {
-    classes.push('translate-x-1/2 -translate-y-1/3')
-  }
-
-  classes.push(getFallbackValue(variant, variantPresets, 'primary'))
-
-  return classes.join(' ')
+const chipLabelClasses = computed(() => {
+  return chipVariant({
+    variant: props.variant,
+    inset: props.inset,
+    hasLabel: !!props.label,
+  })
 })
 </script>
 
@@ -51,7 +33,7 @@ const computedClass = computed(() => {
   <div class="pxd-chip relative inline-flex shrink-0">
     <slot />
 
-    <span :data-label="label" :class="computedClass" :style="{ '--chip-size': getCssUnitValue(size) }" />
+    <span :data-label="label" :class="chipLabelClasses" :style="{ '--chip-size': getCssUnitValue(size) }" />
   </div>
 </template>
 
