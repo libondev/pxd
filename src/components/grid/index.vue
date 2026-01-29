@@ -58,7 +58,7 @@ const formattedCols = computed(() => {
   )
 })
 
-const computedClass = computed(() => {
+const gridClasses = computed(() => {
   return [
     props.debug ? 'debug' : '',
     ...Object.keys(formattedRows.value).map(bp => presetGridRows[bp as keyof typeof presetGridRows]),
@@ -77,7 +77,7 @@ const computedStyle = computed(() => {
 <template>
   <div
     class="pxd-grid relative grid max-w-full"
-    :class="computedClass"
+    :class="gridClasses"
     :style="computedStyle"
     v-bind="$attrs"
   >
