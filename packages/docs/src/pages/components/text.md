@@ -32,7 +32,7 @@ Display text using well-defined typographic styles.
   <PStack direction="vertical" gap="7">
     <PText truncate style="max-width:200px">The Evil Rabbit jumps. The Evil Rabbit jumps.</PText>
 
-    <PText truncate="2" style="max-width: 200px">
+    <PText :truncate="2" style="max-width: 200px">
       The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
       Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
       Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { ComponentAs, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import { getCssUnitValue } from '../../utils/format'
 import { getResponsiveValue } from '../../utils/responsive'
+import { textVariant } from './cn'
 
 interface Props {
   as?: ComponentAs
@@ -22,16 +23,9 @@ const props = withDefaults(
   {
     as: 'p',
     align: 'left',
-    variant: 'default',
     truncate: false,
   },
 )
-
-const presetAlignClasses = {
-  left: 'text-left',
-  center: 'text-center',
-  right: 'text-right',
-}
 
 const presetSizeClasses = {
   '--text-xs': 'text-xs',
@@ -68,27 +62,20 @@ const computedStyle = computed(() => {
 const computedClass = computed(() => {
   const { truncate, monospace, secondary } = props
 
-  const classes = [
-    'pxd-text m-0',
-    presetAlignClasses[props.align],
-    ...Object.keys(formattedSize.value).map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses]),
-  ]
+  const baseClass = textVariant({
+    align: props.align,
+    monospace,
+    secondary,
+    truncate: truncate === true,
+    lineClamp: typeof truncate === 'number',
+  })
 
-  if (monospace) {
-    classes.push('font-mono')
-  }
+  const sizeClasses = Object.keys(formattedSize.value)
+    .map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses])
+    .filter(Boolean)
+    .join(' ')
 
-  if (secondary) {
-    classes.push('text-foreground-secondary')
-  }
-
-  if (isTruthyProp(truncate)) {
-    classes.push('truncate')
-  } else if (truncate) {
-    classes.push(`line-clamp`)
-  }
-
-  return classes.join(' ')
+  return `${baseClass} ${sizeClasses}`
 })
 </script>
 
