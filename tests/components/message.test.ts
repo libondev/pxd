@@ -1,18 +1,17 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Message from '../../src/components/message/index.vue'
-import {
-  CREATE_MESSAGE_EVENT_NAME,
-} from '../../src/composables/use-message'
+import { UPDATE_MESSAGE_EVENT_NAME } from '../../src/composables/use-message'
 
 function dispatchCreate(data: any) {
-  const ev = new CustomEvent(CREATE_MESSAGE_EVENT_NAME, { detail: data })
+  const ev = new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, {
+    detail: { type: 'create', group: data.group, data },
+  })
   window.dispatchEvent(ev)
 }
 
 describe('message', () => {
   async function flushTeleportAndTransitions(wrapper: any) {
-    // 确保 Vue 更新、Teleport 和 TransitionGroup 完成一次挂载/过渡周期
     await wrapper.vm.$nextTick()
     vi.advanceTimersByTime(0)
     await Promise.resolve()
@@ -24,7 +23,6 @@ describe('message', () => {
   })
   afterEach(() => {
     vi.useRealTimers()
-    // 清理 body 里可能残留的 Teleport 内容（保险）
     document.body.querySelectorAll('.pxd-message').forEach(n => n.remove())
   })
 
@@ -38,16 +36,14 @@ describe('message', () => {
       },
       attachTo: document.body,
     })
-    // 等待 onMounted 完成事件注册 + Teleport 初次渲染稳定
     await flushTeleportAndTransitions(wrapper)
 
-    // 创建不同分组的消息
     dispatchCreate({
       id: 'k1',
       group: 'g1',
       type: 'info',
       message: 'hello g1',
-      durations: 0, // 不自动关闭
+      durations: 0,
       closeable: true,
       class: '',
     })

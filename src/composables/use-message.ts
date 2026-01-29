@@ -47,9 +47,15 @@ interface UseMessage {
   loading: (msg: MessageContent, options?: Options) => void
 }
 
-export const CLEAR_MESSAGES_EVENT_NAME = '#clear-messages'
-export const CREATE_MESSAGE_EVENT_NAME = '#create-message'
-export const REMOVE_MESSAGE_EVENT_NAME = '#remove-message'
+export const UPDATE_MESSAGE_EVENT_NAME = '#update-message'
+
+export type MessageActionType = 'create' | 'remove' | 'clear'
+
+export interface MessageUpdateParams {
+  type: MessageActionType
+  group: string
+  data?: MessageItemType | { id: Options['id'] }
+}
 
 export const useMessage = ((msg: MessageContent, options?: Options) => {
   if (isServer()) {
@@ -68,7 +74,7 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
   }
 
   window.dispatchEvent(
-    new CustomEvent(CREATE_MESSAGE_EVENT_NAME, { detail: message }),
+    new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, { detail: { type: 'create', group: message.group, data: message } }),
   )
 }) as UseMessage
 
@@ -86,16 +92,16 @@ export function closeMessage(group: Options['group'], id: Options['id']) {
   }
 
   window.dispatchEvent(
-    new CustomEvent(REMOVE_MESSAGE_EVENT_NAME, {
-      detail: { group: group ?? 'default', id },
+    new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, {
+      detail: { type: 'remove', group: group ?? 'default', data: { id } },
     }),
   )
 }
 
 export function clearMessage(group: Options['group']) {
   window.dispatchEvent(
-    new CustomEvent(CLEAR_MESSAGES_EVENT_NAME, {
-      detail: { group: group ?? 'default' },
+    new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, {
+      detail: { type: 'clear', group: group ?? 'default' },
     }),
   )
 }

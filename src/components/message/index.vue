@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
+import type { MessageItemHeightType, MessageItemType, MessageUpdateParams } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
-import {
-  CLEAR_MESSAGES_EVENT_NAME,
-  CREATE_MESSAGE_EVENT_NAME,
-  REMOVE_MESSAGE_EVENT_NAME,
-} from '../../composables/use-message'
+import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
@@ -257,7 +253,7 @@ function handlePromiseMessage(message: MessageItemType) {
     })
 }
 
-function onCreateMessage({ detail: data }: CustomEvent<MessageItemType>) {
+function handleCreateMessage(data: MessageItemType) {
   if (!data || data.group !== props.group) {
     return
   }
@@ -279,20 +275,38 @@ function onCreateMessage({ detail: data }: CustomEvent<MessageItemType>) {
   }
 }
 
-function onRemoveMessage({ detail: data }: CustomEvent<MessageItemType>) {
-  if (!data || !data.id || data.group !== props.group) {
+function handleRemoveMessage(data: { id: MessageItemType['id'] }) {
+  if (!data || !data.id) {
     return
   }
 
   closeMessageById(data.id)
 }
 
-function onClearMessages({ detail: data }: CustomEvent<MessageItemType>) {
-  if (!data || data.group !== props.group) {
+function handleClearMessages() {
+  clearMessage()
+}
+
+function onUpdateMessage({ detail }: CustomEvent<MessageUpdateParams>) {
+  if (detail.group !== props.group) {
     return
   }
 
-  clearMessage()
+  switch (detail.type) {
+    case 'create':
+      if (detail.data) {
+        handleCreateMessage(detail.data as MessageItemType)
+      }
+      break
+    case 'remove':
+      if (detail.data) {
+        handleRemoveMessage(detail.data as { id: MessageItemType['id'] })
+      }
+      break
+    case 'clear':
+      handleClearMessages()
+      break
+  }
 }
 
 function pauseAllMessages() {
@@ -367,17 +381,13 @@ onMounted(() => {
     return
   }
 
-  cachedOn(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
-  cachedOn(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
-  cachedOn(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
+  cachedOn(window, UPDATE_MESSAGE_EVENT_NAME, onUpdateMessage)
 })
 
 onBeforeUnmount(() => {
   clearMessage()
 
-  cachedOff(window, CLEAR_MESSAGES_EVENT_NAME, onClearMessages)
-  cachedOff(window, CREATE_MESSAGE_EVENT_NAME, onCreateMessage)
-  cachedOff(window, REMOVE_MESSAGE_EVENT_NAME, onRemoveMessage)
+  cachedOff(window, UPDATE_MESSAGE_EVENT_NAME, onUpdateMessage)
 })
 
 defineExpose({
@@ -516,7 +526,7 @@ defineExpose({
         height: var(--message-front-height);
 
         & > * {
-          transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
+          transition: opacity .1s ease-out;
           opacity: 0;
         }
       }
