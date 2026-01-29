@@ -1,5 +1,7 @@
 # Note
 
+Display text that requires attention or provides additional information.
+
 ## Default
 
 ```vue demo
