@@ -129,7 +129,7 @@ async function copyCustomVariables() {
 `)
 
   popoverRef.value?.hide()
-  useMessage.success('Copied to clipboard')
+  useMessage.success('Copied to clipboard', { group: 'website' })
 }
 </script>
 

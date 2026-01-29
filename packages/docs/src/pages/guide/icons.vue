@@ -70,7 +70,7 @@ const onIconClick = throttle(async (ev: MouseEvent) => {
   const contents = getCopyContents(iconName)
 
   await copyText(contents)
-  useMessage.success('Copied successful')
+  useMessage.success('Copied successful', { group: 'website' })
 }, 300)
 
 function handleCopyTypeChange(value: string | number) {

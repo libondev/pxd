@@ -7,7 +7,7 @@
   <PConfigProvider class="flex size-full flex-col">
     <PPlaceholder invert class="h-full" color="var(--color-gray-alpha-100)">
       <SiteHeader />
-      <PMessage width="180" />
+      <PMessage width="180" group="website" />
       <PLoadingBar group="website" />
       <PBacktop :visible-threshold="100" />
 
