@@ -23,7 +23,7 @@ describe('stack', () => {
     expect(classes).toContain('flex')
     expect(classes).toContain('flex-row')
     expect(classes).toContain('gap-(--xs)')
-    expect(classes).toContain('[--xs:16px]')
+    expect(classes).toContain('[--xs:1rem]')
 
     wrapper.unmount()
   })
