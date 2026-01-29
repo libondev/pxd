@@ -4,7 +4,8 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
-import { getColorByThreshold, getFallbackValue } from '../../utils/get'
+import { getColorByThreshold } from '../../utils/get'
+import { progressVariant } from './cn'
 
 interface Props {
   min?: number
@@ -41,12 +42,6 @@ const emits = defineEmits<{
 
 const config = useConfigProvider()
 
-const SIZES = {
-  sm: 'h-2',
-  md: 'h-2.5',
-  lg: 'h-3.5',
-}
-
 const VARIANTS_COLORS = {
   primary: 'var(--color-primary)',
   success: 'hsl(var(--color-blue-700-value))',
@@ -73,10 +68,8 @@ const computedLabel = computed(() => {
   return false
 })
 
-const computedClass = computed(() => {
-  const classes = ['pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200', getFallbackValue(props.size, SIZES, config.size)]
-
-  return classes.join(' ')
+const progressClasses = computed(() => {
+  return progressVariant({ size: props.size || config.size })
 })
 
 const computedColors = computed(() => {
@@ -101,7 +94,7 @@ const computedProgressBarStyles = computed(() => {
 
 <template>
   <div role="progressbar" class="pxd-progress flex w-full items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
-    <div :class="computedClass">
+    <div :class="progressClasses">
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>
 
