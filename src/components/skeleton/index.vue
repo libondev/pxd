@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
+import type { ComponentShape } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
+import { skeletonVariant } from './cn'
 
 interface Props {
   loading?: boolean
@@ -9,7 +11,7 @@ interface Props {
   width?: string | number
   height?: string | number
   boxHeight?: string | number
-  shape?: 'default' | 'squared' | 'rounded'
+  shape?: ComponentShape
 }
 
 defineOptions({
@@ -41,32 +43,17 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const computedClass = computed(() => {
-  const { loading, shape, animated } = props
-  const classes = ['pxd-skeleton relative block shrink-0 overflow-hidden']
-
-  if (loading) {
-    classes.push('loading invisible')
-  }
-
-  if (shape === 'rounded') {
-    classes.push('rounded-full')
-  } else if (shape === 'squared') {
-    classes.push('rounded-none')
-  } else {
-    classes.push('rounded-md')
-  }
-
-  if (animated) {
-    classes.push('animated after:default-animation-timing-function!')
-  }
-
-  return classes.join(' ')
+const skeletonClasses = computed(() => {
+  return skeletonVariant({
+    shape: props.shape,
+    loading: props.loading,
+    animated: props.animated,
+  })
 })
 </script>
 
 <template>
-  <div :class="computedClass" :style="computedStyle">
+  <div :class="skeletonClasses" :style="computedStyle">
     <slot />
   </div>
 </template>

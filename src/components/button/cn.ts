@@ -12,6 +12,7 @@ export const buttonVariants = tv({
     shape: {
       square: 'rounded-none',
       rounded: 'rounded-full',
+      default: '',
     },
     align: {
       left: 'justify-start',
