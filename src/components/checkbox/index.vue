@@ -92,7 +92,7 @@ defineExpose({
     role="checkbox"
     :aria-checked="isChecked"
     :data-disabled="computedDisabled"
-    :class="checkboxClasses.wrapper"
+    :class="checkboxClasses.wrapper()"
     :for="uniqueId"
   >
     <input
@@ -106,7 +106,7 @@ defineExpose({
       @change="onInputChange"
     >
 
-    <span aria-hidden="true" :class="checkboxClasses.inner">
+    <span aria-hidden="true" :class="checkboxClasses.inner()">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />
