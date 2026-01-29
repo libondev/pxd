@@ -8,8 +8,8 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { useModelValue } from '../../composables/use-model-value'
 import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
-import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
+import { inputVariant } from './cn'
 
 defineOptions({
   name: 'PInput',
@@ -46,19 +46,6 @@ const emits = defineEmits<{
   'compositionend': [CompositionEvent]
 }>()
 
-const SIZES = {
-  xs: 'h-6 text-xs rounded-sm',
-  sm: 'h-7.5 text-sm rounded-md',
-  md: 'h-9 text-sm rounded-md',
-  lg: 'h-10 text-base rounded-lg',
-}
-
-const ALIGN = {
-  left: 'text-left',
-  center: 'text-center',
-  right: 'text-right',
-}
-
 const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
 
@@ -69,24 +56,14 @@ const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
 const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
-const computedClass = computed(() => {
-  const classes = []
-
-  classes.push(getFallbackValue(props.size, SIZES, config.size), props.align && ALIGN[props.align])
-
-  if (isTruthyProp(props.disabled)) {
-    classes.push('is-disabled')
-  }
-
-  if (isTruthyProp(props.readonly)) {
-    classes.push('is-readonly')
-  }
-
-  if (props.error) {
-    classes.push('is-error')
-  }
-
-  return classes.join(' ')
+const inputClasses = computed(() => {
+  return inputVariant({
+    size: props.size || config.size,
+    align: props.align,
+    error: isTruthyProp(props.error),
+    disabled: isTruthyProp(props.disabled),
+    readonly: isTruthyProp(props.readonly),
+  })
 })
 
 function getValueFromEvent(ev: Event) {
@@ -215,10 +192,9 @@ defineExpose({
 
 <template>
   <label
-    class="pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all"
     :for="uniqueId"
     :data-disabled="disabled"
-    :class="computedClass"
+    :class="inputClasses"
     v-bind="$attrs"
     @click="onClick"
     @dragstart.prevent="NOOP"

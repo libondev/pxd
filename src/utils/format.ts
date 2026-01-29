@@ -30,7 +30,7 @@ export function humanize(text: string) {
 // Some components that do not actively declare boolean values may pass an empty string
 // This function is used to check if the value is a boolean or an empty string
 export function isTruthyProp(value: unknown): boolean {
-  return value === true || value === ''
+  return Boolean(value) || value === ''
 }
 
 export function clampValue(n: number, min: number, max: number) {

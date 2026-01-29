@@ -48,7 +48,7 @@ const password = ref('')
 
 <template>
   <PStack class="max-w-sm">
-    <PInput v-model="password" clearable placeholder="Enter your password" />
+    <PInput v-model="password" clearable />
   </PStack>
 </template>
 ```
@@ -58,19 +58,19 @@ const password = ref('')
 ```vue demo
 <template>
   <PStack class="max-w-sm" gap="6" direction="vertical">
-    <PInput placeholder="Default">
+    <PInput>
       <template #prefix>
         <IconArrowCircleUp />
       </template>
     </PInput>
 
-    <PInput placeholder="Default">
+    <PInput>
       <template #suffix>
         <IconArrowCircleUp />
       </template>
     </PInput>
 
-    <PInput placeholder="Default">
+    <PInput>
       <template #prefix>
         https://
       </template>
@@ -80,7 +80,7 @@ const password = ref('')
       </template>
     </PInput>
 
-    <PInput placeholder="Default" :prefix-style="false" :suffix-style="false">
+    <PInput :prefix-style="false" :suffix-style="false">
       <template #prefix>
         <IconArrowCircleUp />
       </template>
@@ -98,19 +98,19 @@ const password = ref('')
 ```vue demo
 <template>
   <PStack class="max-w-sm" gap="6" direction="vertical">
-    <PInput disabled placeholder="Default">
+    <PInput disabled>
       <template #prefix>
         <IconArrowCircleUp />
       </template>
     </PInput>
 
-    <PInput disabled placeholder="Default">
+    <PInput disabled>
       <template #suffix>
         <IconArrowCircleUp />
       </template>
     </PInput>
 
-    <PInput disabled placeholder="Default">
+    <PInput disabled>
       <template #prefix>
         https://
       </template>
@@ -120,7 +120,7 @@ const password = ref('')
       </template>
     </PInput>
 
-    <PInput disabled placeholder="Default" :prefix-style="false" :suffix-style="false">
+    <PInput disabled :prefix-style="false" :suffix-style="false">
       <template #prefix>
         <IconArrowCircleUp />
       </template>
@@ -138,9 +138,9 @@ const password = ref('')
 ```vue demo
 <template>
   <PStack class="max-w-sm" gap="8" direction="vertical">
-    <PInput error="An error message." size="sm" placeholder="Default" />
-    <PInput error="An error message." placeholder="Default" />
-    <PInput error="An error message." size="lg" placeholder="Default" />
+    <PInput error="An error message." size="sm" />
+    <PInput error="An error message." />
+    <PInput error="An error message." size="lg" />
   </PStack>
 </template>
 ```
