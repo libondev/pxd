@@ -3,8 +3,9 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
-import { getFallbackValue } from '../../utils/get'
+import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
+import { textareaVariant } from './cn'
 
 interface Props {
   size?: ComponentSizeWithXs
@@ -43,35 +44,17 @@ const emits = defineEmits<{
 
 const uniqueId = getUniqueId()
 
-const SIZES = {
-  xs: 'text-xs',
-  sm: 'text-sm',
-  md: 'text-sm',
-  lg: 'text-base',
-}
-
 const modelValue = useModelValue(props, emits)
 
 const config = useConfigProvider()
 
-const computedClass = computed(() => {
-  const classes = []
-
-  classes.push(getFallbackValue(props.size, SIZES, config.size))
-
-  if (props.disabled) {
-    classes.push('is-disabled')
-  }
-
-  if (props.readonly) {
-    classes.push('is-readonly')
-  }
-
-  if (props.error) {
-    classes.push('is-error')
-  }
-
-  return classes.join(' ')
+const textareaClasses = computed(() => {
+  return textareaVariant({
+    size: props.size || config.size,
+    error: isTruthyProp(props.error),
+    disabled: isTruthyProp(props.disabled),
+    readonly: isTruthyProp(props.readonly),
+  })
 })
 
 function onInputFocus(event: FocusEvent) {
@@ -91,7 +74,7 @@ function onInputChange(event: Event) {
   <label
     :for="uniqueId"
     class="pxd-textarea pxd-input--border flex size-full min-h-[inherit] max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
-    :class="computedClass"
+    :class="textareaClasses"
   >
     <textarea
       :id="uniqueId"
