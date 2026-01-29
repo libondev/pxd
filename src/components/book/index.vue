@@ -49,7 +49,7 @@ const computedStyle = computed(() => {
   }
 })
 
-const computedClass = computed(() => {
+const bookClasses = computed(() => {
   const classes = ['pxd-book--container relative w-fit duration-300 transform-3d motion-safe:transition-transform']
 
   classes.push(
@@ -62,7 +62,7 @@ const computedClass = computed(() => {
 
 <template>
   <div class="pxd-book inline-flex w-fit">
-    <div :class="computedClass" :style="computedStyle">
+    <div :class="bookClasses" :style="computedStyle">
       <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200">
         <div
           v-if="variant === 'stripe'"

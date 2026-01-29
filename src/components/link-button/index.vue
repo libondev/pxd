@@ -32,7 +32,7 @@ const emits = defineEmits<{
 
 const attrs = useAttrs()
 
-const computedAttrs = computed(() => {
+const linkButtonAttrs = computed(() => {
   const { externalIcon, text, href, ...restProps } = props
 
   const baseAttrs = {
@@ -68,7 +68,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <PButton v-bind="computedAttrs">
+  <PButton v-bind="linkButtonAttrs">
     <template #prefix>
       <slot name="prefix" />
     </template>

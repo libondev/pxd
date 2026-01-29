@@ -27,7 +27,7 @@ const props = withDefaults(
 
 const config = useConfigProvider()
 
-const computedClass = computed(() => {
+const badgeClasses = computed(() => {
   const { variant, size = config.size } = props
 
   return badgeVariant({ variant, size })
@@ -35,7 +35,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClass" v-bind="$attrs">
+  <Component :is="as" :class="badgeClasses" v-bind="$attrs">
     <slot />
   </Component>
 </template>

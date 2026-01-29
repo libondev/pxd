@@ -48,7 +48,7 @@ const formattedCol = computed(() => {
   )
 })
 
-const computedClass = computed(() => {
+const gridItemClasses = computed(() => {
   const classes: string[] = []
 
   classes.push(
@@ -59,7 +59,7 @@ const computedClass = computed(() => {
   return classes.join(' ')
 })
 
-const computedStyle = computed(() => {
+const gridItemStyle = computed(() => {
   return {
     ...formattedRow.value,
     ...formattedCol.value,
@@ -68,7 +68,7 @@ const computedStyle = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-grid-item overflow-hidden" :class="computedClass" :style="computedStyle" v-bind="$attrs">
+  <div class="pxd-grid-item overflow-hidden" :class="gridItemClasses" :style="gridItemStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

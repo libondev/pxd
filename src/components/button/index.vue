@@ -24,7 +24,7 @@ const props = withDefaults(
 const config = useConfigProvider()
 const computedDisabled = computed<boolean>(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
 
-const computedClass = computed(() => {
+const buttonClasses = computed(() => {
   const { size = config.size, shape, align, variant, fullWidth, icon } = props
 
   return buttonVariants({
@@ -43,7 +43,7 @@ const computedClass = computed(() => {
   <Component
     :is="as"
     role="button"
-    :class="computedClass"
+    :class="buttonClasses"
     :disabled="computedDisabled"
     v-bind="$attrs"
   >
