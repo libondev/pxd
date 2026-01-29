@@ -6,7 +6,7 @@ import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isExternalLink } from '../../utils/format'
-import { getFallbackValue } from '../../utils/get'
+import { errorVariant } from './cn'
 
 interface Props {
   size?: ComponentSizeWithXs
@@ -25,24 +25,15 @@ const props = withDefaults(
   },
 )
 
-const SIZES = {
-  xs: 'text-xs [--mt:2px]',
-  sm: 'text-13px [--mt:2px]',
-  md: 'text-sm [--mt:2px]',
-  lg: 'text-base [--mt:4px]',
-}
-
 const config = useConfigProvider()
 
-const computedClass = computed(() => {
-  const classes = ['pxd-error flex text-red-900', getFallbackValue(props.size, SIZES, config.size)]
-
-  return classes.join(' ')
+const errorClasses = computed(() => {
+  return errorVariant({ size: props.size || config.size })
 })
 </script>
 
 <template>
-  <div :class="computedClass">
+  <div :class="errorClasses">
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">
