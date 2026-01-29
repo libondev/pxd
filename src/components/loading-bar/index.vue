@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
-import { cachedOff, cachedOn, sleep } from '../../utils/event'
+import { cachedOff, cachedOn } from '../../utils/event'
 import { clampValue, isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -37,14 +37,20 @@ let prevAnimationKey = 0
 
 type Status = 'running' | 'error' | 'finish'
 
+let hiddenBarTimeout: ReturnType<typeof setTimeout>
+let enableTransitionTimeout: ReturnType<typeof setTimeout>
+
+const HIDDEN_BAR_DELAY = 800
+const ENABLE_TRANSITION_DELAY = 0
+
 const status = shallowRef<Status>('finish')
-const hidden = shallowRef(false)
-const progress = shallowRef(0)
+const hiddenBar = shallowRef(false)
+const progressValue = shallowRef(0)
+const enableTransition = shallowRef(false)
 
 const computedClasses = computed(() => {
   return loadingBarVariant({
     status: status.value,
-    hidden: hidden.value,
     absolute: isTruthyProp(props.to),
   })
 })
@@ -64,7 +70,7 @@ function getIncreaseDelta(n: number) {
 }
 
 function increaseProgress(n?: number) {
-  if (progress.value >= 1) {
+  if (progressValue.value >= 1) {
     cancelAnimationFrame(prevAnimationKey)
     return
   }
@@ -79,8 +85,8 @@ function increaseProgress(n?: number) {
   }
 
   prevTimestamp = now
-  const amount = n || getIncreaseDelta(progress.value)
-  progress.value = clampValue(progress.value + amount, 0, 0.994)
+  const amount = n || getIncreaseDelta(progressValue.value)
+  progressValue.value = clampValue(progressValue.value + amount, 0, 0.994)
 
   if (amount === 0 || !props.trickle) {
     return
@@ -90,19 +96,27 @@ function increaseProgress(n?: number) {
 }
 
 async function hideAndResetProgress() {
-  await sleep(800)
-  hidden.value = true
-
-  await nextTick()
-  progress.value = 0
+  hiddenBarTimeout = setTimeout(() => {
+    hiddenBar.value = true
+  }, HIDDEN_BAR_DELAY)
 }
 
 function handleStartProgress() {
-  hidden.value = false
+  if (status.value === 'running') {
+    return
+  }
+
+  enableTransition.value = false
+  hiddenBar.value = false
   status.value = 'running'
 
-  // Set the initial value to avoid starting with nothing when manual control
-  progress.value = props.minimum
+  progressValue.value = props.minimum
+
+  clearTimeout(hiddenBarTimeout)
+  clearTimeout(enableTransitionTimeout)
+  enableTransitionTimeout = setTimeout(() => {
+    enableTransition.value = true
+  }, ENABLE_TRANSITION_DELAY)
 
   if (!props.trickle) {
     return
@@ -114,19 +128,27 @@ function handleStartProgress() {
 }
 
 async function handleErrorProgress() {
+  if (status.value !== 'running') {
+    return
+  }
+
   cancelAnimationFrame(prevAnimationKey)
   status.value = 'error'
-  hidden.value = false
-  progress.value = 1
+  hiddenBar.value = false
+  progressValue.value = 1
 
   hideAndResetProgress()
 }
 
 function handleFinishProgress() {
+  if (status.value !== 'running') {
+    return
+  }
+
   cancelAnimationFrame(prevAnimationKey)
   status.value = 'finish'
-  hidden.value = false
-  progress.value = 1
+  hiddenBar.value = false
+  progressValue.value = 1
 
   hideAndResetProgress()
 }
@@ -177,8 +199,10 @@ onBeforeUnmount(() => {
       v-bind="$attrs"
     >
       <div
+        :data-hidden="hiddenBar"
+        :data-transition="enableTransition"
         :class="computedClasses.inner()"
-        :style="{ transform: `scaleX(${progress})` }"
+        :style="{ transform: `scaleX(${progressValue})` }"
       />
     </div>
   </PTeleport>

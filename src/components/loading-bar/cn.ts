@@ -2,8 +2,8 @@ import { tv } from 'tailwind-variants'
 
 export const loadingBarVariant = tv({
   slots: {
-    wrapper: 'pxd-loading-bar top-0 left-0 right-0 h-1 pointer-events-none z-10 max-w-full overflow-hidden',
-    inner: 'pxd-loading-bar--inner size-full origin-left rounded-r-full motion-safe:transition-all',
+    wrapper: 'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
+    inner: 'pxd-loading-bar--inner h-1 origin-left data-[hidden=true]:h-0 data-[transition=false]:transition-none! motion-safe:transition-all',
   },
   variants: {
     status: {
@@ -17,14 +17,6 @@ export const loadingBarVariant = tv({
         inner: 'bg-red-900',
       },
     },
-    hidden: {
-      true: {
-        wrapper: 'opacity-0',
-      },
-      false: {
-        wrapper: '',
-      },
-    },
     absolute: {
       true: {
         wrapper: 'absolute',
@@ -36,7 +28,6 @@ export const loadingBarVariant = tv({
   },
   defaultVariants: {
     status: 'finish',
-    hidden: false,
     absolute: false,
   },
 })
