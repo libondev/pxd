@@ -9,10 +9,10 @@ defineOptions({
 const { copyText } = useCopyClick()
 
 const customVariables = ref({
-  primary: '',
-  radius: '',
-  durations: '',
-  timingFunction: '',
+  'primary': '',
+  'radius': '',
+  'duration': '',
+  'timing-function': '',
 })
 
 interface CustomProperty {
@@ -59,8 +59,8 @@ const customProperties = [
     ],
   },
   {
-    key: 'durations',
-    label: 'Durations',
+    key: 'duration',
+    label: 'Duration',
     options: [
       {
         label: 'Fast',
@@ -77,7 +77,7 @@ const customProperties = [
     ],
   },
   {
-    key: 'timingFunction',
+    key: 'timing-function',
     label: 'Timing Function',
     options: [
       {
@@ -106,31 +106,36 @@ watch(() => customVariables.value, (newVal) => {
   })
 }, { deep: true })
 
+const popoverRef = useTemplateRef<InstanceType<typeof PPopover>>('popoverRef')
+
 function resetCustomVariables() {
   customVariables.value = {
-    primary: '',
-    radius: '',
-    durations: '',
-    timingFunction: '',
+    'primary': '',
+    'radius': '',
+    'duration': '',
+    'timing-function': '',
   }
+  popoverRef.value?.hide()
 }
 
 async function copyCustomVariables() {
   await copyText(`
 :root {
-  --primary: ${customVariables.value.primary};
-  --radius: ${customVariables.value.radius.trim()};
-  --durations: ${customVariables.value.durations.trim()};
-  --timing-function: ${customVariables.value.timingFunction.trim()};
+  --radius: ${customVariables.value.radius.trim() || '.5rem'};
+  --primary: ${customVariables.value.primary || '0, 0%, 9%'};
+  --duration: ${customVariables.value.duration.trim() || '.15s'};
+  --timing-function: ${customVariables.value['timing-function'].trim() || 'ease-out'};
 }
 `)
 
+  popoverRef.value?.hide()
   useMessage.success('Copied to clipboard')
 }
 </script>
 
 <template>
   <PPopover
+    ref="popoverRef"
     trigger="click"
     class="h-inherit"
     position="bottom-end"
@@ -149,7 +154,7 @@ async function copyCustomVariables() {
           <PSwitchGroup v-model="customVariables[property.key]" :options="property.options" full-width />
         </div>
 
-        <div class="gap-2 mb-1 flex">
+        <div class="gap-2 flex">
           <PButton class="flex-1" @click="resetCustomVariables">
             Reset
           </PButton>

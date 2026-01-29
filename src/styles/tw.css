@@ -103,14 +103,13 @@
   --color-pink-900-value: 336, 65%, 45%;
   --color-pink-1000-value: 333, 74%, 15%;
 
-  --default-transition-duration: .15s;
-  --default-transition-timing-function: ease-out;
-
   --primary: var(--color-gray-1000-value);
   --primary-hover: hsla(var(--primary), 70%);
   --primary-active: hsla(var(--primary), 90%);
 
   --radius: .5rem;
+  --duration: .15s;
+  --timing-function: ease-out;
   --ring: var(--primary);
 
   --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,.08);
@@ -377,8 +376,8 @@
   --color-pink-900: hsl(var(--color-pink-900-value));
   --color-pink-1000: hsl(var(--color-pink-1000-value));
 
-  --default-transition-duration: var(--default-transition-duration);
-  --default-transition-timing-function: var(--default-transition-timing-function);
+  --default-transition-duration: var(--duration);
+  --default-transition-timing-function: var(--timing-function);
 
   --z-1: 1;
   --spacing-em: 1em;
@@ -581,6 +580,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --default-transition-duration: 0 !important;
+    --duration: 0 !important;
   }
 }
