@@ -68,7 +68,7 @@ const computedLabel = computed(() => {
   return false
 })
 
-const progressClasses = computed(() => {
+const computedClasses = computed(() => {
   return progressVariant({ size: props.size || config.size })
 })
 
@@ -94,7 +94,7 @@ const computedProgressBarStyles = computed(() => {
 
 <template>
   <div role="progressbar" class="pxd-progress flex w-full items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
-    <div :class="progressClasses">
+    <div :class="computedClasses">
       <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
     </div>
 

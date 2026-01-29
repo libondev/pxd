@@ -48,7 +48,7 @@ const modelValue = useModelValue(props, emits)
 
 const config = useConfigProvider()
 
-const textareaClasses = computed(() => {
+const computedClasses = computed(() => {
   return textareaVariant({
     size: props.size || config.size,
     error: isTruthyProp(props.error),
@@ -74,7 +74,7 @@ function onInputChange(event: Event) {
   <label
     :for="uniqueId"
     class="pxd-textarea pxd-input--border flex size-full min-h-[inherit] max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
-    :class="textareaClasses"
+    :class="computedClasses"
   >
     <textarea
       :id="uniqueId"

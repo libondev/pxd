@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentLabel, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import { chipVariant } from './cn'
 
 interface Props {
@@ -20,11 +20,11 @@ const props = withDefaults(
   },
 )
 
-const chipLabelClasses = computed(() => {
+const computedClasses = computed(() => {
   return chipVariant({
-    variant: props.variant,
     inset: props.inset,
-    hasLabel: !!props.label,
+    variant: props.variant,
+    hasLabel: isTruthyProp(props.label),
   })
 })
 </script>
@@ -33,7 +33,7 @@ const chipLabelClasses = computed(() => {
   <div class="pxd-chip relative inline-flex shrink-0">
     <slot />
 
-    <span :data-label="label" :class="chipLabelClasses" :style="{ '--chip-size': getCssUnitValue(size) }" />
+    <span :data-label="label" :class="computedClasses" :style="{ '--chip-size': getCssUnitValue(size) }" />
   </div>
 </template>
 

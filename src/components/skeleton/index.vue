@@ -16,6 +16,7 @@ interface Props {
 
 defineOptions({
   name: 'PSkeleton',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -43,7 +44,7 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const skeletonClasses = computed(() => {
+const computedClasses = computed(() => {
   return skeletonVariant({
     shape: props.shape,
     loading: props.loading,
@@ -53,7 +54,7 @@ const skeletonClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="skeletonClasses" :style="computedStyle">
+  <div :class="computedClasses" :style="computedStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

@@ -58,11 +58,12 @@ const formattedCols = computed(() => {
   )
 })
 
-const gridClasses = computed(() => {
+const computedClasses = computed(() => {
   return [
-    props.debug ? 'debug' : '',
+    'pxd-grid relative grid max-w-full',
     ...Object.keys(formattedRows.value).map(bp => presetGridRows[bp as keyof typeof presetGridRows]),
     ...Object.keys(formattedCols.value).map(bp => presetGridCols[bp as keyof typeof presetGridCols]),
+    props.debug ? 'debug' : '',
   ].join(' ')
 })
 
@@ -75,12 +76,7 @@ const computedStyle = computed(() => {
 </script>
 
 <template>
-  <div
-    class="pxd-grid relative grid max-w-full"
-    :class="gridClasses"
-    :style="computedStyle"
-    v-bind="$attrs"
-  >
+  <div :class="computedClasses" :style="computedStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

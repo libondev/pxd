@@ -48,8 +48,8 @@ const formattedCol = computed(() => {
   )
 })
 
-const gridItemClasses = computed(() => {
-  const classes: string[] = []
+const computedClasses = computed(() => {
+  const classes: string[] = ['pxd-grid-item overflow-hidden']
 
   classes.push(
     ...Object.keys(formattedRow.value).map(bp => presetGridRow[bp as keyof typeof presetGridRow]),
@@ -68,7 +68,7 @@ const gridItemStyle = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-grid-item overflow-hidden" :class="gridItemClasses" :style="gridItemStyle" v-bind="$attrs">
+  <div :class="computedClasses" :style="gridItemStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

@@ -47,7 +47,7 @@ const status = shallowRef<Status>('finish')
 const hidden = shallowRef(false)
 const progress = shallowRef(0)
 
-const loadingBarClasses = computed(() => {
+const computedClasses = computed(() => {
   return loadingBarVariant({
     status: status.value,
     hidden: hidden.value,
@@ -177,11 +177,11 @@ onBeforeUnmount(() => {
   <PTeleport :to="to">
     <div
       aria-hidden="true"
-      :class="loadingBarClasses.wrapper()"
+      :class="computedClasses.wrapper()"
       v-bind="$attrs"
     >
       <div
-        :class="loadingBarClasses.inner()"
+        :class="computedClasses.inner()"
         :style="{ transform: `scaleX(${progress})` }"
       />
     </div>

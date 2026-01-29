@@ -57,7 +57,7 @@ const computedDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
-const mergedClasses = computed(() => {
+const computedClasses = computed(() => {
   return [
     'px-2 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-border-tooltip bg-(--popover-arrow-bg)',
     computedVariant.value.text,
@@ -73,7 +73,7 @@ const mergedClasses = computed(() => {
     :disabled="computedDisabled"
     :show-arrow="showArrow"
     :arrow-color="computedVariant.bg"
-    :content-class="mergedClasses"
+    :content-class="computedClasses"
     :content-style="contentStyle"
     v-bind="$attrs"
   >

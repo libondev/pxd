@@ -20,20 +20,18 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<Props>(),
-  {
-    size: 'md',
-  },
+  { size: 'md' },
 )
 
 const config = useConfigProvider()
 
-const errorClasses = computed(() => {
+const computedClasses = computed(() => {
   return errorVariant({ size: props.size || config.size })
 })
 </script>
 
 <template>
-  <div :class="errorClasses">
+  <div :class="computedClasses">
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">

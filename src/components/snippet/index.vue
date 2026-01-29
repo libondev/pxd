@@ -19,6 +19,7 @@ interface Props {
 
 defineOptions({
   name: 'PSnippet',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -40,7 +41,7 @@ const { isCopied, copyText } = useCopyClick()
 const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIcon)
 const computedTextArray = computed(() => toArray(props.text))
 
-const snippetClasses = computed(() => {
+const computedClasses = computed(() => {
   return snippetVariant({
     size: props.size || config.size,
     variant: props.variant,
@@ -58,7 +59,7 @@ async function onCopyButtonClick() {
 </script>
 
 <template>
-  <div :class="snippetClasses" :style="{ width: getCssUnitValue(props.width) }">
+  <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="$attrs">
     <div class="pxd-snippet--container">
       <pre v-for="(t, i) of computedTextArray" :key="i" class="m-0 p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
     </div>

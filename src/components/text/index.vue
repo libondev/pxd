@@ -27,7 +27,7 @@ const props = withDefaults(
   },
 )
 
-const presetSizeClasses = {
+const presetSize = {
   '--text-xs': 'text-xs',
   '--text-sm': 'sm:text-sm',
   '--text-md': 'md:text-md',
@@ -59,7 +59,7 @@ const computedStyle = computed(() => {
   return styles
 })
 
-const computedClass = computed(() => {
+const computedClasses = computed(() => {
   const { truncate, monospace, secondary } = props
 
   const baseClass = textVariant({
@@ -72,7 +72,7 @@ const computedClass = computed(() => {
 
   const classes = [
     baseClass,
-    ...Object.keys(formattedSize.value).map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses]),
+    ...Object.keys(formattedSize.value).map(bp => presetSize[bp as keyof typeof presetSize]),
   ].filter(Boolean).join(' ')
 
   return classes
@@ -80,7 +80,7 @@ const computedClass = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClass" :style="computedStyle">
+  <Component :is="as" :class="computedClasses" :style="computedStyle">
     <slot />
   </Component>
 </template>

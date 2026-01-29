@@ -23,7 +23,7 @@ const props = withDefaults(
   },
 )
 
-const presetWidthClasses = {
+const presetWidth = {
   '--xs': '[--bw:var(--xs)]',
   '--sm': 'sm:[--bw:var(--sm)]',
   '--md': 'md:[--bw:var(--md)]',
@@ -49,11 +49,11 @@ const computedStyle = computed(() => {
   }
 })
 
-const bookClasses = computed(() => {
+const computedClasses = computed(() => {
   const classes = ['pxd-book--container relative w-fit duration-300 transform-3d motion-safe:transition-transform']
 
   classes.push(
-    ...Object.keys(formattedWidth.value).map(bp => presetWidthClasses[bp as keyof typeof presetWidthClasses]),
+    ...Object.keys(formattedWidth.value).map(bp => presetWidth[bp as keyof typeof presetWidth]),
   )
 
   return classes.join(' ')
@@ -62,7 +62,7 @@ const bookClasses = computed(() => {
 
 <template>
   <div class="pxd-book inline-flex w-fit">
-    <div :class="bookClasses" :style="computedStyle">
+    <div :class="computedClasses" :style="computedStyle">
       <div class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200">
         <div
           v-if="variant === 'stripe'"

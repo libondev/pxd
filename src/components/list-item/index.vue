@@ -46,7 +46,9 @@ const isVisible = computed(() => filterValue?.value ? currentValue.value.include
 const isSelected = computed(() => activeValue.value === uniqueId)
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
-const listItemClasses = computed(() => listItemVariant({ type: props.type }))
+const computedClasses = computed(() => {
+  return listItemVariant({ type: props.type })
+})
 
 function onItemClick(ev: MouseEvent) {
   emits('click', props, ev)
@@ -75,7 +77,7 @@ onMounted(async () => {
     :data-value="uniqueId"
     :data-selected="isSelected"
     :data-disabled="isDisabled"
-    :class="listItemClasses"
+    :class="computedClasses"
     @click.prevent.stop="onItemClick"
   >
     <slot v-if="type !== 'separator'">

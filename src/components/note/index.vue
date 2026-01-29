@@ -68,17 +68,17 @@ const computedLabel = computed(() => {
   return false
 })
 
-const noteClasses = computed(() => {
+const computedClasses = computed(() => {
   return noteVariant({
+    fill: props.fill,
     size: props.size || config.size,
     variant: props.variant,
-    fill: props.fill,
   })
 })
 </script>
 
 <template>
-  <div :class="noteClasses">
+  <div :class="computedClasses">
     <div class="gap-3 flex flex-1">
       <slot v-if="computedLabel" name="label">
         <Component :is="computedLabel" class="size-4 font-medium h-lh shrink-0" />

@@ -33,7 +33,9 @@ const isChecked = computed(() => switchGroupModelValue.value === props.value)
 const computedDisabled = computed(() => props.disabled || switchGroupContext.disabled)
 const computedRequired = computed(() => props.required || switchGroupContext.required)
 
-const switchClasses = computed(() => switchVariant({ disabled: computedDisabled.value }))
+const computedClasses = computed(() => {
+  return switchVariant({ disabled: computedDisabled.value })
+})
 
 function onSwitchFocusIn() {
   if (computedDisabled.value) {
@@ -62,7 +64,7 @@ function onSwitchFocusIn() {
       :required="computedRequired"
     >
 
-    <div :class="switchClasses" @focusin="onSwitchFocusIn">
+    <div :class="computedClasses" @focusin="onSwitchFocusIn">
       <slot>
         {{ label }}
       </slot>

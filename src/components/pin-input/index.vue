@@ -77,7 +77,7 @@ const computedInputMode = computed(() => {
   return props.type.includes('numeric') ? 'numeric' : 'text'
 })
 
-const pinInputClasses = computed(() => {
+const computedClasses = computed(() => {
   return pinInputVariant({
     size: props.size || config.size,
     error: isTruthyProp(props.error),
@@ -250,7 +250,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
     @compositionend="onCompositionEnd"
     @click="onContainerClick"
   >
-    <div v-for="(n, i) of length" :key="n" :class="pinInputClasses">
+    <div v-for="(n, i) of length" :key="n" :class="computedClasses">
       <input
         ref="inputsRef"
         :value="modelValueLocal[i]"

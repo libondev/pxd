@@ -56,7 +56,7 @@ const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
 const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
-const inputClasses = computed(() => {
+const computedClasses = computed(() => {
   return inputVariant({
     size: props.size || config.size,
     align: props.align,
@@ -194,7 +194,7 @@ defineExpose({
   <label
     :for="uniqueId"
     :data-disabled="disabled"
-    :class="inputClasses"
+    :class="computedClasses"
     v-bind="$attrs"
     @click="onClick"
     @dragstart.prevent="NOOP"

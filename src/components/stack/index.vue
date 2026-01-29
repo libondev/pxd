@@ -32,7 +32,7 @@ const props = withDefaults(
   },
 )
 
-const presetDirClasses = {
+const presetDir = {
   '--xs:vertical': 'flex-col',
   '--xs:horizontal': 'flex-row',
   '--sm:vertical': 'sm:flex-col',
@@ -45,7 +45,7 @@ const presetDirClasses = {
   '--xl:horizontal': 'xl:flex-row',
 }
 
-const presetGapClasses = {
+const presetGap = {
   '--xs': 'gap-(--xs)',
   '--sm': 'sm:gap-(--sm)',
   '--md': 'md:gap-(--md)',
@@ -70,12 +70,12 @@ const formattedDirection = computed(() => {
     props.direction,
     (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal',
     (acc, bp, value) => {
-      acc[bp] = presetDirClasses[`--${bp}:${value}` as keyof typeof presetDirClasses] as ComponentDirection
+      acc[bp] = presetDir[`--${bp}:${value}` as keyof typeof presetDir] as ComponentDirection
     },
   )
 })
 
-const computedClass = computed(() => {
+const computedClasses = computed(() => {
   const baseClass = stackVariant({
     wrap: props.wrap,
     align: props.align,
@@ -85,7 +85,7 @@ const computedClass = computed(() => {
   const classes = [
     baseClass,
     ...Object.values(formattedDirection.value),
-    ...Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]),
+    ...Object.keys(formattedGap.value).map(bp => presetGap[bp as keyof typeof presetGap]),
   ].filter(Boolean).join(' ')
 
   return classes
@@ -96,7 +96,7 @@ const computedClass = computed(() => {
   <Component
     :is="props.as"
     class="pxd-stack flex max-w-full"
-    :class="computedClass"
+    :class="computedClasses"
     v-bind="$attrs"
     :style="formattedGap"
   >
