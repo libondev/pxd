@@ -4,7 +4,8 @@ import type { ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
-import { getFallbackValue } from '../../utils/get'
+import { isTruthyProp } from '../../utils/format'
+import { pinInputVariant } from './cn'
 
 interface Props {
   size?: ComponentSizeWithXs
@@ -42,13 +43,6 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const SIZES = {
-  xs: 'w-6 text-xs',
-  sm: 'w-7.5 text-sm',
-  md: 'w-9 text-sm',
-  lg: 'w-10 text-base',
-}
-
 const config = useConfigProvider()
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
@@ -83,20 +77,12 @@ const computedInputMode = computed(() => {
   return props.type.includes('numeric') ? 'numeric' : 'text'
 })
 
-const computedClass = computed(() => {
-  const classes = ['pxd-input--border rounded-md motion-safe:transition-all']
-
-  if (props.error) {
-    classes.push('is-error')
-  }
-
-  if (props.disabled) {
-    classes.push('is-disabled')
-  }
-
-  classes.push(getFallbackValue(props.size, SIZES, config.size))
-
-  return classes.join(' ')
+const pinInputClasses = computed(() => {
+  return pinInputVariant({
+    size: props.size || config.size,
+    error: isTruthyProp(props.error),
+    disabled: isTruthyProp(props.disabled),
+  })
 })
 
 function setInputValue(value: string, index?: number) {
@@ -264,7 +250,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
     @compositionend="onCompositionEnd"
     @click="onContainerClick"
   >
-    <div v-for="(n, i) of length" :key="n" :class="computedClass">
+    <div v-for="(n, i) of length" :key="n" :class="pinInputClasses">
       <input
         ref="inputsRef"
         :value="modelValueLocal[i]"
