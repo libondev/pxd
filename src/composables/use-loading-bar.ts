@@ -1,31 +1,19 @@
 // Part of the realization comes from: https://github.com/rstacruz/nprogress
 
-export const START_LOADING_BAR_EVENT_NAME = '#start-loading-bar'
-export const ERROR_LOADING_BAR_EVENT_NAME = '#error-loading-bar'
-export const FINISH_LOADING_BAR_EVENT_NAME = '#finish-loading-bar'
-export const INCREASE_LOADING_BAR_EVENT_NAME = '#increase-loading-bar'
+export const UPDATE_LOADING_BAR_EVENT_NAME = '#update-loading-bar'
 
-const LOADING_BAR_EVENTS = {
-  start: START_LOADING_BAR_EVENT_NAME,
-  error: ERROR_LOADING_BAR_EVENT_NAME,
-  finish: FINISH_LOADING_BAR_EVENT_NAME,
-  increase: INCREASE_LOADING_BAR_EVENT_NAME,
-} as const
-
-interface Options extends Record<string, any> {
-  type?: keyof typeof LOADING_BAR_EVENTS
-}
+export type LoadingBarActionType = 'start' | 'error' | 'finish' | 'increase'
 
 export interface LoadingBarEventParams {
+  type: LoadingBarActionType
   group: string
   value?: number
 }
 
-export function useLoadingBar(options: Options = {}) {
-  const { type = 'start', ...data } = options
-  const event = LOADING_BAR_EVENTS[type]
+interface Options extends LoadingBarEventParams {}
 
-  window.dispatchEvent(new CustomEvent(event, { detail: data }))
+export function useLoadingBar(options: Options) {
+  window.dispatchEvent(new CustomEvent(UPDATE_LOADING_BAR_EVENT_NAME, { detail: options }))
 }
 
 useLoadingBar.start = function (group: string = 'default') {

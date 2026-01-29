@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import {
-  ERROR_LOADING_BAR_EVENT_NAME,
-  FINISH_LOADING_BAR_EVENT_NAME,
-  INCREASE_LOADING_BAR_EVENT_NAME,
-  START_LOADING_BAR_EVENT_NAME,
-} from '../../composables/use-loading-bar'
-import { cachedOff, cachedOn } from '../../utils/event'
-import { clampValue } from '../../utils/format'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
+import { cachedOff, cachedOn, sleep } from '../../utils/event'
+import { clampValue, isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 import { loadingBarVariant } from './cn'
@@ -37,7 +32,6 @@ const props = withDefaults(
   },
 )
 
-let hideTimerId: ReturnType<typeof setTimeout>
 let prevTimestamp = 0
 let prevAnimationKey = 0
 
@@ -51,7 +45,7 @@ const computedClasses = computed(() => {
   return loadingBarVariant({
     status: status.value,
     hidden: hidden.value,
-    absolute: !!props.to,
+    absolute: isTruthyProp(props.to),
   })
 })
 
@@ -95,14 +89,17 @@ function increaseProgress(n?: number) {
   prevAnimationKey = requestAnimationFrame(() => increaseProgress())
 }
 
-function onStartProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (detail.group !== props.group) {
-    return
-  }
+async function hideAndResetProgress() {
+  await sleep(800)
+  hidden.value = true
 
+  await nextTick()
+  progress.value = 0
+}
+
+function handleStartProgress() {
   hidden.value = false
   status.value = 'running'
-  clearTimeout(hideTimerId)
 
   // Set the initial value to avoid starting with nothing when manual control
   progress.value = props.minimum
@@ -116,42 +113,47 @@ function onStartProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
   requestAnimationFrame(() => increaseProgress())
 }
 
-function onErrorProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (detail.group !== props.group) {
-    return
-  }
-
+async function handleErrorProgress() {
   cancelAnimationFrame(prevAnimationKey)
-  clearTimeout(hideTimerId)
   status.value = 'error'
   hidden.value = false
   progress.value = 1
-  hideTimerId = setTimeout(() => {
-    hidden.value = true
-  }, 500)
+
+  hideAndResetProgress()
 }
 
-function onFinishProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
-  if (detail.group !== props.group) {
-    return
-  }
-
+function handleFinishProgress() {
   cancelAnimationFrame(prevAnimationKey)
-  clearTimeout(hideTimerId)
   status.value = 'finish'
   hidden.value = false
   progress.value = 1
-  hideTimerId = setTimeout(() => {
-    hidden.value = true
-  }, 500)
+
+  hideAndResetProgress()
 }
 
-function onIncreaseProgress({ detail }: CustomEvent<LoadingBarEventParams>) {
+function handleIncreaseProgress(value?: number) {
+  increaseProgress(value)
+}
+
+function onUpdateLoadingBar({ detail }: CustomEvent<LoadingBarEventParams>) {
   if (detail.group !== props.group) {
     return
   }
 
-  increaseProgress(detail.value)
+  switch (detail.type) {
+    case 'start':
+      handleStartProgress()
+      break
+    case 'error':
+      handleErrorProgress()
+      break
+    case 'finish':
+      handleFinishProgress()
+      break
+    case 'increase':
+      handleIncreaseProgress(detail.value)
+      break
+  }
 }
 
 onMounted(() => {
@@ -159,17 +161,11 @@ onMounted(() => {
     return
   }
 
-  cachedOn(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
-  cachedOn(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
-  cachedOn(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
-  cachedOn(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
+  cachedOn(window, UPDATE_LOADING_BAR_EVENT_NAME, onUpdateLoadingBar)
 })
 
 onBeforeUnmount(() => {
-  cachedOff(window, START_LOADING_BAR_EVENT_NAME, onStartProgress)
-  cachedOff(window, ERROR_LOADING_BAR_EVENT_NAME, onErrorProgress)
-  cachedOff(window, FINISH_LOADING_BAR_EVENT_NAME, onFinishProgress)
-  cachedOff(window, INCREASE_LOADING_BAR_EVENT_NAME, onIncreaseProgress)
+  cachedOff(window, UPDATE_LOADING_BAR_EVENT_NAME, onUpdateLoadingBar)
 })
 </script>
 
