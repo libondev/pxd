@@ -70,12 +70,12 @@ const computedClass = computed(() => {
     lineClamp: typeof truncate === 'number',
   })
 
-  const sizeClasses = Object.keys(formattedSize.value)
-    .map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses])
-    .filter(Boolean)
-    .join(' ')
+  const classes = [
+    baseClass,
+    ...Object.keys(formattedSize.value).map(bp => presetSizeClasses[bp as keyof typeof presetSizeClasses]),
+  ].filter(Boolean).join(' ')
 
-  return `${baseClass} ${sizeClasses}`
+  return classes
 })
 </script>
 

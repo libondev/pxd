@@ -2,6 +2,7 @@
 import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
+import { stackVariant } from './cn'
 
 type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
 
@@ -52,26 +53,6 @@ const presetGapClasses = {
   '--xl': 'xl:gap-(--xl)',
 }
 
-const presetAlignClasses = {
-  start: 'items-start',
-  end: 'items-end',
-  center: 'items-center',
-  between: 'items-between',
-  around: 'items-around',
-  evenly: 'items-evenly',
-  stretch: 'items-stretch',
-}
-
-const presetJustifyClasses = {
-  start: 'flex-start',
-  end: 'flex-end',
-  center: 'justify-center',
-  between: 'justify-between',
-  around: 'justify-around',
-  evenly: 'justify-evenly',
-  stretch: 'justify-stretch',
-}
-
 const formattedGap = computed(() => {
   const { gap, scale } = props
 
@@ -95,18 +76,19 @@ const formattedDirection = computed(() => {
 })
 
 const computedClass = computed(() => {
-  const classes = ['gap-(--xs) [--xs:16px]', presetAlignClasses[props.align], presetJustifyClasses[props.justify]]
+  const baseClass = stackVariant({
+    wrap: props.wrap,
+    align: props.align,
+    justify: props.justify,
+  })
 
-  if (props.wrap) {
-    classes.push('flex-wrap')
-  }
-
-  classes.push(
+  const classes = [
+    baseClass,
     ...Object.values(formattedDirection.value),
     ...Object.keys(formattedGap.value).map(bp => presetGapClasses[bp as keyof typeof presetGapClasses]),
-  )
+  ].filter(Boolean).join(' ')
 
-  return classes.filter(Boolean).join(' ')
+  return classes
 })
 </script>
 
