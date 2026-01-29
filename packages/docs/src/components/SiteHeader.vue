@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
           <PButton variant="ghost" shape="square" class="sm:px-3 h-full">
             <SparklesIcon />
 
-            <span class="sm:block ml-1.5 hidden">Custom</span>
+            <span class="sm:block ml-1.5 hidden">Customize</span>
           </PButton>
         </CustomVariables>
       </div>
