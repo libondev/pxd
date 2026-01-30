@@ -3,7 +3,7 @@ import type { InputProps } from '../../types/components/input'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
-import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { NOOP } from '../../utils/event'
@@ -34,13 +34,13 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   'click': [MouseEvent]
-  'clear': [string]
-  'input': [string]
-  'change': [string]
+  'clear': [NonNullable<InputProps['modelValue']>]
+  'input': [NonNullable<InputProps['modelValue']>, Event]
+  'change': [NonNullable<InputProps['modelValue']>, Event]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
   'keydown': [KeyboardEvent]
-  'update:modelValue': [string]
+  'update:modelValue': [NonNullable<InputProps['modelValue']>]
   'compositionstart': [CompositionEvent]
   'compositionupdate': [CompositionEvent]
   'compositionend': [CompositionEvent]
@@ -50,7 +50,7 @@ const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
 
 const config = useConfigProvider()
-const computedModelValue = useModelValue(props, emits)
+const modelValue = useModelValue(props, emits, { withChange: false })
 
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
@@ -66,32 +66,8 @@ const computedClasses = computed(() => {
   })
 })
 
-function getValueFromEvent(ev: Event) {
-  let { value } = ev.target as HTMLInputElement
-
-  if (props.parser) {
-    value = props.parser(value)
-  }
-
-  return value
-}
-
-function getFormattedValue(value: InputProps['modelValue']) {
-  return typeof props.formatter === 'function'
-    ? props.formatter(value)
-    : value
-}
-
-function setNativeInputValue(value: any) {
-  const input = inputRef.value
-
-  const formatterValue = getFormattedValue(value)
-
-  if (input == null || input.value === formatterValue) {
-    return
-  }
-
-  input.value = formatterValue
+function getInputElValue(ev: Event) {
+  return (ev.target as HTMLInputElement).value
 }
 
 function onFocus(event: FocusEvent) {
@@ -106,12 +82,13 @@ function onBlur(event: FocusEvent) {
   emits('blur', event)
 }
 
-function onChange(event: Event) {
-  emits('change', getValueFromEvent(event))
-}
-
 function onClick(event: MouseEvent) {
   emits('click', event)
+}
+
+function onChange(event: Event) {
+  const inputValue = getInputElValue(event)
+  emits('change', inputValue, event)
 }
 
 async function onInput(event: Event) {
@@ -121,13 +98,11 @@ async function onInput(event: Event) {
     return
   }
 
-  const value = getValueFromEvent(event)
-  computedModelValue.value = value
+  const inputValue = getInputElValue(event)
 
-  emits('input', value)
+  modelValue.value = inputValue
 
-  await nextTick()
-  setNativeInputValue(value)
+  emits('input', getInputElValue(event), event)
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -145,48 +120,42 @@ function onCompositionUpdate(event: CompositionEvent) {
 }
 
 async function onCompositionEnd(event: CompositionEvent) {
+  const inputValue = getInputElValue(event)
+
   if (isComposing.value) {
-    const value = getValueFromEvent(event)
-    computedModelValue.value = value
     isComposing.value = false
+    modelValue.value = inputValue
   }
 
   emits('compositionend', event)
-
-  await nextTick()
-  setNativeInputValue(getValueFromEvent(event))
 }
 
 function toggleType() {
   isPasswordVisible.value = !isPasswordVisible.value
 }
 
-function clearValue() {
-  emits('clear', '')
-  setNativeInputValue('')
-  computedModelValue.value = ''
+function blur() {
+  inputRef.value?.blur()
 }
 
-const blur = () => inputRef.value?.blur()
-const focus = () => inputRef.value?.focus()
-const select = () => inputRef.value?.select()
+function focus() {
+  inputRef.value?.focus()
+}
 
-watch(() => props.modelValue, (value) => {
-  setNativeInputValue(getFormattedValue(value))
-})
+function select() {
+  inputRef.value?.select()
+}
 
-onMounted(async () => {
-  await nextTick()
-
-  setNativeInputValue(getFormattedValue(computedModelValue.value))
-})
+function clear() {
+  emits('clear', '')
+  modelValue.value = ''
+}
 
 defineExpose({
   blur,
+  clear,
   focus,
   select,
-  clear: clearValue,
-  setInputValue: setNativeInputValue,
 })
 </script>
 
@@ -201,7 +170,7 @@ defineExpose({
   >
     <div
       v-if="$slots.prefix"
-      class="pxd-input--prefix text-sm pl-3 flex h-full items-center text-foreground-secondary"
+      class="pxd-input--prefix pl-3 text-sm flex h-full items-center text-foreground-secondary"
       :class="[{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }, prefixClass]"
       @pointerdown.prevent="NOOP"
     >
@@ -227,7 +196,7 @@ defineExpose({
       :autofocus="autofocus"
       :placeholder="placeholder"
       :aria-disabled="disabled"
-      :data-value="computedModelValue"
+      :data-value="modelValue"
       @blur="onBlur"
       @focus="onFocus"
       @input="onInput"
@@ -240,9 +209,9 @@ defineExpose({
 
     <div
       v-if="password || clearable"
-      v-show="computedModelValue"
+      v-show="modelValue"
       :class="{ 'pr-2': password && clearable }"
-      class="pxd-input--icon right-0 top-0 gap-1 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
+      class="pxd-input--icon top-0 right-0 gap-1 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
     >
       <button
         v-if="password"
@@ -255,7 +224,7 @@ defineExpose({
       <button
         v-if="clearable"
         class="p-1 appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
-        @click.stop.prevent="clearValue"
+        @click.stop.prevent="clear"
       >
         <CrossIcon class="size-3 pointer-events-none" />
       </button>
@@ -263,7 +232,7 @@ defineExpose({
 
     <div
       v-if="$slots.suffix"
-      class="pxd-input--suffix text-sm pr-3 flex h-full items-center text-foreground-secondary"
+      class="pxd-input--suffix pr-3 text-sm flex h-full items-center text-foreground-secondary"
       :class="[{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }, suffixClass]"
       @pointerdown.prevent="NOOP"
     >

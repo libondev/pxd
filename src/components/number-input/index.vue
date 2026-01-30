@@ -2,7 +2,8 @@
 import type { Nullable, Numeric } from '../../types/shared/utils'
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
-import { computed } from 'vue'
+import { isNil, isNumber, isUndefined } from 'es-toolkit'
+import { computed, reactive } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
@@ -47,7 +48,41 @@ const emits = defineEmits<{
   'update:modelValue': [number]
 }>()
 
+interface InputData {
+  currentValue: number | null | undefined
+  userInput: string | number | null
+}
+
 const modelValue = useModelValue(props, emits)
+
+const inputData = reactive<InputData>({
+  currentValue: props.modelValue,
+  userInput: null,
+})
+
+const inputValue = computed(() => {
+  if (inputData.userInput !== null) {
+    return inputData.userInput
+  }
+
+  let currentValue: number | string | undefined | null = inputData.currentValue
+
+  if (isNil(currentValue)) {
+    return ''
+  }
+
+  if (isNumber(currentValue)) {
+    if (Number.isNaN(currentValue)) {
+      return ''
+    }
+
+    if (!isUndefined(props.precision)) {
+      currentValue = currentValue.toFixed(props.precision)
+    }
+  }
+
+  return currentValue
+})
 
 const decreaseDisabled = computed(() => props.disabled || modelValue.value <= props.min)
 const increaseDisabled = computed(() => props.disabled || modelValue.value >= props.max)
@@ -74,9 +109,10 @@ function toPrecision(value: number, precision: number) {
   if (!Number.isFinite(value)) {
     return value
   }
+
   const p = Math.max(0, precision ?? 0)
   const factor = 10 ** p
-  // 避免浮点误差
+
   return Math.round(value * factor) / factor
 }
 
@@ -180,23 +216,35 @@ function onInputKeydown(ev: KeyboardEvent) {
     decreaseValue()
   }
 }
+
+function onInputBlur() { }
+
+function onInputFocus() { }
+
+function onInputInput() { }
+
+function onInputChange() { }
 </script>
 
 <template>
   <PInput
     v-bind="$attrs"
-    v-model="modelValue"
     :min="min"
     :max="max"
     align="center"
     inputmode="decimal"
     input-type="number"
+    :model-value="inputValue"
     :disabled="disabled"
     :readonly="readonly"
     :prefix-style="false"
     :suffix-style="false"
     :parser="numberParser"
     :formatter="numberFormatter"
+    @blur="onInputBlur"
+    @focus="onInputFocus"
+    @input="onInputInput"
+    @change="onInputChange"
     @keydown="onInputKeydown"
   >
     <template #prefix>
@@ -218,7 +266,7 @@ function onInputKeydown(ev: KeyboardEvent) {
       <slot name="suffix" />
 
       <button
-        class="ml-2 -mr-3 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="-mr-3 ml-2 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"

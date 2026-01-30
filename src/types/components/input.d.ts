@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'vue'
-import type { ComponentLabel, ComponentSizeWithXs } from '../shared/props'
+import type { ComponentSizeWithXs } from '../shared/props'
 
 export interface InputProps {
   size?: ComponentSizeWithXs
@@ -7,7 +7,6 @@ export interface InputProps {
   min?: number | string
   max?: number | string
   align?: 'left' | 'center' | 'right'
-  label?: ComponentLabel
   readonly?: boolean
   disabled?: boolean
   password?: boolean
@@ -18,7 +17,7 @@ export interface InputProps {
   minlength?: number | string
   maxlength?: number | string
   clearable?: boolean
-  modelValue?: ComponentLabel
+  modelValue?: string | number | null
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean
@@ -26,5 +25,5 @@ export interface InputProps {
   suffixClass?: ComponentClass
   selectOnFocus?: boolean
   parser?: (value?: any) => any
-  formatter?: (value?: any) => any
+  formatter?: (value?: any, rawValue?: string) => any
 }

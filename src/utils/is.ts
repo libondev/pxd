@@ -3,7 +3,6 @@ import { version } from 'vue'
 export const isVue3 = () => version.startsWith('3')
 export const isServer = () => typeof document === 'undefined'
 export const isTouchDevice = () => isServer() ? false : 'ontouchstart' in document
-export const isNotNullish = <T>(value: T): value is NonNullable<T> => value != null
 
 export function isIOS() {
   return !isServer() && navigator?.userAgent && (
