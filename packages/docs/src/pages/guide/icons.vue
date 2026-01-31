@@ -95,7 +95,7 @@ function handleCustomPrefixChange(value: string) {
     <PInput v-model="searchKeyword" placeholder="Search icons" clearable @update:model-value="handleSearch" />
   </div>
 
-  <div class="my-4 gap-4 flex">
+  <div class="mt-4 gap-4 flex">
     <PSwitchGroup v-model="copyType" @update:model-value="handleCopyTypeChange">
       <PSwitch label="Import" value="import" />
       <PSwitch label="Element" value="element" />
@@ -110,7 +110,7 @@ function handleCustomPrefixChange(value: string) {
     </PSwitchGroup>
   </div>
 
-  <Grids :data="filteredComponents" data-key="name" @click="onIconClick">
+  <Grids :data="filteredComponents" data-key="name" class="mt-4 border-t" @click="onIconClick">
     <template #default="{ item }">
       <button
         role="button"

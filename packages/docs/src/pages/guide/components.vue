@@ -54,7 +54,7 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
     />
   </div>
 
-  <Grids :data="filteredComponents" data-key="name" class="mt-4">
+  <Grids :data="filteredComponents" data-key="name">
     <template #default="{ item }">
       <RouterLink
         :to="`/components/${item.name}`"
