@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import type { Nullable, Numeric } from '../../types/shared/utils'
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
-import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
+import { isNil, isNumber, isUndefined } from 'es-toolkit'
+import { computed, reactive, watch } from 'vue'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
-import { FLOATING_REGEX, SCIENCE_NUMERIC_REGEX } from '../../utils/regexp'
 import PInput from '../input/index.vue'
 
 interface Props {
@@ -17,6 +15,7 @@ interface Props {
   disabled?: boolean
   precision?: number
   scientific?: boolean
+  clearValue?: number | null
   modelValue?: number | null
 }
 
@@ -33,24 +32,83 @@ const props = withDefaults(
   defineProps<Props>(),
   {
     step: 1,
+    clearValue: null,
+    scientific: true,
     min: Number.MIN_SAFE_INTEGER,
     max: Number.MAX_SAFE_INTEGER,
-    readonly: false,
-    disabled: false,
-    scientific: true,
-    precision: 0,
   },
 )
 
 const emits = defineEmits<{
-  'change': [number]
-  'update:modelValue': [number]
+  'focus': [FocusEvent]
+  'blur': [FocusEvent]
+  'input': [Props['modelValue']]
+  'change': [Props['modelValue'], Event]
+  'update:modelValue': [Props['modelValue']]
 }>()
 
-const modelValue = useModelValue(props, emits)
+const modelValue = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emits('input', value)
+    emits('update:modelValue', value)
+  },
+})
 
-const decreaseDisabled = computed(() => props.disabled || modelValue.value <= props.min)
-const increaseDisabled = computed(() => props.disabled || modelValue.value >= props.max)
+interface InputData {
+  currentValue: Props['modelValue']
+  userInput: string | null
+}
+
+const inputData = reactive<InputData>({
+  currentValue: props.modelValue,
+  userInput: null,
+})
+
+const inputValue = computed(() => {
+  if (inputData.userInput !== null) {
+    return inputData.userInput
+  }
+
+  let currentValue: number | string | undefined | null = inputData.currentValue
+
+  if (isNil(currentValue)) {
+    return ''
+  }
+
+  if (isNumber(currentValue)) {
+    if (Number.isNaN(currentValue)) {
+      return ''
+    }
+
+    if (!isUndefined(props.precision)) {
+      currentValue = currentValue.toFixed(props.precision)
+    }
+  }
+
+  return currentValue
+})
+
+const decreaseDisabled = computed(() => props.disabled || (isNumber(props.modelValue) && props.modelValue <= props.min))
+const increaseDisabled = computed(() => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max))
+
+const valuePrecision = computed(() => {
+  if (props.precision) {
+    return props.precision
+  }
+
+  const stringValue = String(props.step)
+
+  const decimalIndex = stringValue.indexOf('.')
+
+  if (decimalIndex === -1) {
+    return 0
+  }
+
+  return stringValue.length - decimalIndex - 1
+})
 
 const {
   start: startDecrease,
@@ -68,15 +126,22 @@ const {
   action: increaseValue,
 })
 
-const allowedRegex = computed(() => props.scientific ? SCIENCE_NUMERIC_REGEX : FLOATING_REGEX)
+function toPrecision(value: number | null) {
+  if (!value) {
+    return value
+  }
 
-function toPrecision(value: number, precision: number) {
+  if (Number.isNaN(value)) {
+    return 0
+  }
+
   if (!Number.isFinite(value)) {
     return value
   }
-  const p = Math.max(0, precision ?? 0)
+
+  const p = Math.max(0, valuePrecision.value ?? 0)
   const factor = 10 ** p
-  // 避免浮点误差
+
   return Math.round(value * factor) / factor
 }
 
@@ -93,81 +158,33 @@ function clampToRange(value: number) {
 }
 
 function increaseValue() {
-  if (modelValue.value >= props.max) {
+  if (props.readonly || props.disabled || increaseDisabled.value) {
     return
   }
 
-  const next = toPrecision(modelValue.value + props.step, props.precision)
-  modelValue.value = clampToRange(next)
+  const numeric = Number(inputValue.value) || 0
+  const value = toPrecision(numeric + props.step)
+
+  inputData.currentValue = value
+  modelValue.value = clampToRange(value ?? 0)
 }
 
 function decreaseValue() {
-  if (modelValue.value <= props.min) {
+  if (props.readonly || props.disabled || decreaseDisabled.value) {
     return
   }
 
-  const next = toPrecision(modelValue.value - props.step, props.precision)
-  modelValue.value = clampToRange(next)
+  const numeric = Number(inputValue.value) || 0
+  const value = toPrecision(numeric - props.step)
+
+  inputData.currentValue = value
+  modelValue.value = clampToRange(value ?? 0)
 }
-
-function numberParser(value: string) {
-  if (value === '') {
-    return ''
-  }
-
-  const parsed = Number.parseFloat(value)
-
-  if (Number.isNaN(parsed)) {
-    return 0
-  }
-
-  const rounded = toPrecision(parsed, props.precision)
-  return clampToRange(rounded)
-}
-
-// 用于原生 input 的显示格式化：保留尾随 0
-function numberFormatter(value: Nullable<Numeric>) {
-  if ([null, undefined, ''].includes(value as string)) {
-    return ''
-  }
-
-  const number = typeof value === 'number' ? value : Number.parseFloat(String(value))
-
-  if (Number.isNaN(number)) {
-    return ''
-  }
-
-  const { precision } = props
-
-  const rounded = toPrecision(number, precision)
-  return rounded.toFixed(Math.max(0, precision))
-}
-
-const ALLOWED_KEY = [
-  'Backspace',
-  'Delete',
-  'Tab',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowUp',
-  'ArrowDown',
-  'Home',
-  'End',
-]
 
 function onInputKeydown(ev: KeyboardEvent) {
-  if (props.readonly || props.disabled) {
-    return
-  }
-
   const key = ev.key
 
   if (!props.scientific && ['e', 'E'].includes(key)) {
-    ev.preventDefault()
-    return
-  }
-
-  if (!allowedRegex.value.test(key) && !ALLOWED_KEY.includes(key) && !ev.ctrlKey && !ev.metaKey) {
     ev.preventDefault()
     return
   }
@@ -180,12 +197,50 @@ function onInputKeydown(ev: KeyboardEvent) {
     decreaseValue()
   }
 }
+
+function onInputFocus(event: FocusEvent) {
+  emits('focus', event)
+}
+
+function onInputBlur(event: FocusEvent) {
+  inputData.userInput = null
+
+  if (inputData.currentValue === null) {
+    (event.target as HTMLInputElement).value = ''
+  }
+
+  emits('blur', event)
+}
+
+function onInputInput(value: string) {
+  inputData.userInput = value
+
+  const newValue = value === '' ? null : Number.parseFloat(value)
+
+  inputData.currentValue = toPrecision(newValue ?? 0)
+  modelValue.value = inputData.currentValue
+}
+
+function onInputChange(value: string, event: Event) {
+  const newValue = toPrecision(value === '' ? null : Number.parseFloat(value))
+
+  emits('change', newValue, event)
+}
+
+watch(
+  () => props.modelValue,
+  (newVal, oldVal) => {
+    if (inputData.userInput === null && newVal !== oldVal) {
+      inputData.currentValue = toPrecision(props.modelValue ?? 0)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <PInput
     v-bind="$attrs"
-    v-model="modelValue"
     :min="min"
     :max="max"
     align="center"
@@ -195,13 +250,17 @@ function onInputKeydown(ev: KeyboardEvent) {
     :readonly="readonly"
     :prefix-style="false"
     :suffix-style="false"
-    :parser="numberParser"
-    :formatter="numberFormatter"
+    :clear-value="clearValue"
+    :model-value="inputValue"
+    @blur="onInputBlur"
+    @focus="onInputFocus"
+    @input="onInputInput"
+    @change="onInputChange"
     @keydown="onInputKeydown"
   >
     <template #prefix>
       <button
-        class="mr-2 -ml-3 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
@@ -218,7 +277,7 @@ function onInputKeydown(ev: KeyboardEvent) {
       <slot name="suffix" />
 
       <button
-        class="ml-2 -mr-3 flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"

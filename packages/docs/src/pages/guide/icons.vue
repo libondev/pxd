@@ -77,7 +77,8 @@ function handleCopyTypeChange(value: string | number) {
   localStorage.setItem(cachedCopyTypeKey, value as string)
 }
 
-function handleCustomPrefixChange(value: string) {
+function handleCustomPrefixChange(event: Event) {
+  const value = (event.target as HTMLInputElement).value
   localStorage.setItem(cachedCustomPrefixKey, value)
 }
 </script>
@@ -92,11 +93,11 @@ function handleCustomPrefixChange(value: string) {
   </PText>
 
   <div class="py-4 z-10 border-b bg-background-100">
-    <PInput v-model="searchKeyword" placeholder="Search icons" clearable @update:model-value="handleSearch" />
+    <PInput v-model="searchKeyword" placeholder="Search icons" clearable @input="handleSearch" />
   </div>
 
-  <div class="mt-4 gap-4 flex">
-    <PSwitchGroup v-model="copyType" @update:model-value="handleCopyTypeChange">
+  <div class="my-4 gap-4 flex">
+    <PSwitchGroup v-model="copyType" @change="handleCopyTypeChange">
       <PSwitch label="Import" value="import" />
       <PSwitch label="Element" value="element" />
       <PSwitch label="Name" value="name" />
@@ -104,7 +105,7 @@ function handleCustomPrefixChange(value: string) {
         <input
           v-model="customPrefix"
           class="w-25 h-full outline-none" placeholder="Prefix element"
-          @update:model-value="handleCustomPrefixChange"
+          @change="handleCustomPrefixChange"
         >
       </PSwitch>
     </PSwitchGroup>

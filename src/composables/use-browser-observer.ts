@@ -1,8 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue'
 import type { Nullable } from '../types/shared/utils'
+import { isNotNil } from 'es-toolkit'
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { toArray } from '../utils/format'
-import { isNotNullish } from '../utils/is'
 import { toValue, unrefElement } from '../utils/ref'
 
 export const useIntersectionObserver = createObserver(
@@ -55,7 +55,7 @@ function createObserver(ObserverConstructor: Constructor) {
   ) {
     let observer: Observers | undefined
 
-    const targets = computed<HTMLElement[]>(() => toArray(toValue(target)).map(unrefElement).filter(isNotNullish))
+    const targets = computed<HTMLElement[]>(() => toArray(toValue(target)).map(unrefElement).filter(isNotNil))
 
     const unwatch = watch(
       () => [targets.value],

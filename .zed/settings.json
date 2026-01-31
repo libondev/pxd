@@ -1,20 +1,20 @@
 {
   "formatter": {
     "language_server": {
-      "name": "null",
-    },
+      "name": "null"
+    }
   },
   "languages": {
     "CSS": {
       "language_servers": [
         "tailwindcss-intellisense-css",
-        "!vscode-css-language-server",
+        "!vscode-css-language-server"
       ]
     }
   },
   "code_actions_on_format": {
     "source.fixAll.oxc": false,
     "source.fixAll.eslint": true,
-    "source.organizeImports": false,
-  },
+    "source.organizeImports": false
+  }
 }
