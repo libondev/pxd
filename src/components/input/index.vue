@@ -23,10 +23,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<InputProps>(),
   {
-    error: false,
     align: 'left',
-    modelValue: '',
-    placeholder: '',
     prefixStyle: true,
     suffixStyle: true,
   },
@@ -34,13 +31,13 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   'click': [MouseEvent]
-  'clear': [NonNullable<InputProps['modelValue']>]
-  'input': [NonNullable<InputProps['modelValue']>, Event]
-  'change': [NonNullable<InputProps['modelValue']>, Event]
+  'clear': [string]
+  'input': [string]
+  'change': [string, Event]
   'focus': [FocusEvent]
   'blur': [FocusEvent]
   'keydown': [KeyboardEvent]
-  'update:modelValue': [NonNullable<InputProps['modelValue']>]
+  'update:modelValue': [string]
   'compositionstart': [CompositionEvent]
   'compositionupdate': [CompositionEvent]
   'compositionend': [CompositionEvent]
@@ -54,7 +51,7 @@ const modelValue = useModelValue(props, emits, { withChange: false })
 
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
-const internalInputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
+const inputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
 
 const computedClasses = computed(() => {
   return inputVariant({
@@ -66,7 +63,7 @@ const computedClasses = computed(() => {
   })
 })
 
-function getInputElValue(ev: Event) {
+function getInputValue(ev: Event) {
   return (ev.target as HTMLInputElement).value
 }
 
@@ -87,7 +84,7 @@ function onClick(event: MouseEvent) {
 }
 
 function onChange(event: Event) {
-  const inputValue = getInputElValue(event)
+  const inputValue = getInputValue(event)
   emits('change', inputValue, event)
 }
 
@@ -98,14 +95,17 @@ async function onInput(event: Event) {
     return
   }
 
-  const inputValue = getInputElValue(event)
-
+  const inputValue = getInputValue(event)
   modelValue.value = inputValue
 
-  emits('input', getInputElValue(event), event)
+  emits('input', inputValue)
 }
 
 function onKeydown(event: KeyboardEvent) {
+  if (props.readonly) {
+    return
+  }
+
   emits('keydown', event)
 }
 
@@ -120,14 +120,13 @@ function onCompositionUpdate(event: CompositionEvent) {
 }
 
 async function onCompositionEnd(event: CompositionEvent) {
-  const inputValue = getInputElValue(event)
-
-  if (isComposing.value) {
-    isComposing.value = false
-    modelValue.value = inputValue
-  }
-
+  isComposing.value = false
   emits('compositionend', event)
+
+  const inputValue = getInputValue(event)
+  modelValue.value = inputValue
+
+  emits('input', inputValue)
 }
 
 function toggleType() {
@@ -147,8 +146,9 @@ function select() {
 }
 
 function clear() {
-  emits('clear', '')
-  modelValue.value = ''
+  const clearValue = props.clearValue ?? ''
+  emits('clear', clearValue as string)
+  modelValue.value = clearValue
 }
 
 defineExpose({
@@ -181,12 +181,13 @@ defineExpose({
       :id="uniqueId"
       ref="inputRef"
       class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
-      :type="internalInputType"
-      :min="min"
-      :max="max"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
+      :min="min"
+      :max="max"
+      :type="inputType"
+      :value="modelValue"
       :readonly="readonly"
       :disabled="disabled"
       :required="required"
@@ -194,9 +195,8 @@ defineExpose({
       :minlength="minlength"
       :maxlength="maxlength"
       :autofocus="autofocus"
-      :placeholder="placeholder"
       :aria-disabled="disabled"
-      :data-value="modelValue"
+      :placeholder="placeholder"
       @blur="onBlur"
       @focus="onFocus"
       @input="onInput"

@@ -15,6 +15,20 @@ const time = ref('18:30:00')
 </template>
 ```
 
+## Clearable
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const time = ref('18:30:00')
+</script>
+
+<template>
+  <PTimePicker v-model="time" class="!w-[220px]" clearable />
+</template>
+```
+
 ## Presets
 
 ```vue demo

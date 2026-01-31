@@ -17,7 +17,8 @@ export interface InputProps {
   minlength?: number | string
   maxlength?: number | string
   clearable?: boolean
-  modelValue?: string | number | null
+  clearValue?: string | number | null | undefined
+  modelValue?: string | number | null | undefined
   placeholder?: string
   prefixStyle?: boolean
   suffixStyle?: boolean

@@ -33,6 +33,20 @@ const value = ref(0)
 </template>
 ```
 
+## Disabled
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PNumberInput v-model="value" disabled class="max-w-xs" />
+</template>
+```
+
 ## Step
 
 ```vue demo
@@ -61,20 +75,6 @@ const value = ref(0)
 </template>
 ```
 
-## Disabled
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const value = ref(0)
-</script>
-
-<template>
-  <PNumberInput v-model="value" disabled class="max-w-xs" />
-</template>
-```
-
 ## Precision
 
 ```vue demo
@@ -100,11 +100,11 @@ const value = ref(0)
 <template>
   <PNumberInput v-model="value" class="max-w-xs">
     <template #prefix>
-      ￥
+      <span class="pl-2">￥</span>
     </template>
 
     <template #suffix>
-      RMB
+      <span class="pr-2">RMB</span>
     </template>
   </PNumberInput>
 </template>

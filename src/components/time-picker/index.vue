@@ -18,7 +18,7 @@ interface Props {
   presets?: DateTimePreset[]
   disabled?: boolean
   clearable?: boolean
-  modelValue?: Date | string | number
+  modelValue?: Date | string | number | null
   prefixIcon?: boolean
   placeholder?: string
   showSeconds?: boolean
@@ -193,7 +193,7 @@ function updateModelValue() {
   modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormat) : ''
 }
 
-function onInputValueChange(value?: string | Date) {
+function onInputValueChange(value: string) {
   updateDayjsDateTime(value)
   updateModelValue()
 }
@@ -222,7 +222,8 @@ function onPresetClick(ev: MouseEvent) {
     return
   }
 
-  onInputValueChange(presetValue)
+  updateDayjsDateTime(presetValue)
+  updateModelValue()
 
   hidePopover()
 }
