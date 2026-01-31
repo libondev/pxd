@@ -13,7 +13,7 @@ describe('input', () => {
     const input = wrapper.find('input')
     expect(input.exists()).toBe(true)
 
-    expect(input.element.getAttribute('data-value')).toBe('test')
+    expect(input.element.value).toBe('test')
 
     wrapper.setProps({
       modelValue: 'test2',
@@ -21,7 +21,7 @@ describe('input', () => {
 
     await wrapper.vm.$nextTick()
 
-    expect(input.element.getAttribute('data-value')).toBe('test2')
+    expect(input.element.value).toBe('test2')
 
     wrapper.unmount()
   })
