@@ -82,11 +82,11 @@ const password = ref('')
 
     <PInput :prefix-style="false" :suffix-style="false">
       <template #prefix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="ml-3" />
       </template>
 
       <template #suffix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="mr-3" />
       </template>
     </PInput>
   </PStack>
@@ -122,11 +122,11 @@ const password = ref('')
 
     <PInput disabled :prefix-style="false" :suffix-style="false">
       <template #prefix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="ml-3" />
       </template>
 
       <template #suffix>
-        <IconArrowCircleUp />
+        <IconArrowCircleUp class="mr-3" />
       </template>
     </PInput>
   </PStack>

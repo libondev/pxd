@@ -170,8 +170,8 @@ defineExpose({
   >
     <div
       v-if="$slots.prefix"
-      class="pxd-input--prefix pl-3 text-sm flex h-full items-center text-foreground-secondary"
-      :class="[{ 'pr-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }, prefixClass]"
+      class="pxd-input--prefix text-sm flex h-full items-center text-foreground-secondary"
+      :class="[{ 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }, prefixClass]"
       @pointerdown.prevent="NOOP"
     >
       <slot name="prefix" />
@@ -232,8 +232,8 @@ defineExpose({
 
     <div
       v-if="$slots.suffix"
-      class="pxd-input--suffix pr-3 text-sm flex h-full items-center text-foreground-secondary"
-      :class="[{ 'pl-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }, suffixClass]"
+      class="pxd-input--suffix text-sm flex h-full items-center text-foreground-secondary"
+      :class="[{ 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }, suffixClass]"
       @pointerdown.prevent="NOOP"
     >
       <slot name="suffix" />

@@ -278,7 +278,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       @keydown.enter="onInputBlurChange"
     >
       <template v-if="prefixIcon" #prefix>
-        <CalendarIcon />
+        <CalendarIcon class="ml-3" />
       </template>
     </PInput>
 
