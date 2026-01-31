@@ -50,7 +50,7 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
       v-model="searchKeyword"
       placeholder="Search components"
       clearable
-      @update:model-value="handleSearch"
+      @input="handleSearch"
     />
   </div>
 
