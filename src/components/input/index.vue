@@ -106,6 +106,10 @@ function onKeydown(event: KeyboardEvent) {
     return
   }
 
+  if (event.key === 'Enter') {
+    onChange(event)
+  }
+
   emits('keydown', event)
 }
 
