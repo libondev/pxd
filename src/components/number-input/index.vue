@@ -260,6 +260,7 @@ watch(
   >
     <template #prefix>
       <button
+        tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
         @pointerdown="startDecrease"
@@ -277,6 +278,7 @@ watch(
       <slot name="suffix" />
 
       <button
+        tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"
         @pointerdown="startIncrease"
