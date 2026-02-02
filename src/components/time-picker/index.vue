@@ -196,10 +196,6 @@ function updateModelValue() {
 function onInputValueChange(value: string) {
   updateDayjsDateTime(value)
   updateModelValue()
-}
-
-function onInputBlurChange() {
-  updateModelValue()
   hidePopover()
 }
 
@@ -276,7 +272,6 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
-      @keydown.enter="onInputBlurChange"
     >
       <template v-if="prefixIcon" #prefix>
         <CalendarIcon class="ml-3" />
