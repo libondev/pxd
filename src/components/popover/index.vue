@@ -383,7 +383,7 @@ defineExpose({
         :style="wrapperStyle"
         :data-visible="isVisible"
         :data-interactive="interactive"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[interactive=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[visible=false]:pointer-events-none data-[interactive=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
