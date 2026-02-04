@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import Note from '../../src/components/note/index.vue'
 
 describe('note', () => {

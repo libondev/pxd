@@ -18,13 +18,10 @@ defineOptions({
   name: 'PLinkButton',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    align: 'left',
-    target: '_self',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  align: 'left',
+  target: '_self',
+})
 
 const emits = defineEmits<{
   click: [MouseEvent]

@@ -1,4 +1,5 @@
 # Error
+
 Good error design is clear, useful, and friendly. Designing concise and accurate error messages unblocks users and builds trust by meeting people where they are.
 
 ## Default

@@ -35,7 +35,7 @@ const formattedRow = computed(() => {
   return getResponsiveValue(
     row,
     (typeof row === 'object' ? row.xs : row) ?? 'auto',
-    (acc, bp, value) => acc[`--${bp}-row`] = value,
+    (acc, bp, value) => (acc[`--${bp}-row`] = value),
   )
 })
 
@@ -44,7 +44,7 @@ const formattedCol = computed(() => {
   return getResponsiveValue(
     column,
     (typeof column === 'object' ? column.xs : column) ?? 'auto',
-    (acc, bp, value) => acc[`--${bp}-col`] = value,
+    (acc, bp, value) => (acc[`--${bp}-col`] = value),
   )
 })
 
@@ -52,8 +52,8 @@ const computedClasses = computed(() => {
   const classes: string[] = ['pxd-grid-item overflow-hidden']
 
   classes.push(
-    ...Object.keys(formattedRow.value).map(bp => presetGridRow[bp as keyof typeof presetGridRow]),
-    ...Object.keys(formattedCol.value).map(bp => presetGridCol[bp as keyof typeof presetGridCol]),
+    ...Object.keys(formattedRow.value).map((bp) => presetGridRow[bp as keyof typeof presetGridRow]),
+    ...Object.keys(formattedCol.value).map((bp) => presetGridCol[bp as keyof typeof presetGridCol]),
   )
 
   return classes.join(' ')

@@ -1,4 +1,5 @@
 import type { ComponentSize } from '../types/shared'
+
 import enUS from '../locales/en-us'
 import { createContext } from '../utils/context'
 
@@ -9,13 +10,9 @@ export interface ConfigProviderProps {
   locale?: Record<string, any>
 }
 
-export const [
-  provideConfigProvider,
-  useConfigProvider,
-] = createContext<Required<ConfigProviderProps>>(
-  injectionKey,
-  {
-    size: 'md',
-    locale: enUS,
-  },
-)
+export const [provideConfigProvider, useConfigProvider] = createContext<
+  Required<ConfigProviderProps>
+>(injectionKey, {
+  size: 'md',
+  locale: enUS,
+})

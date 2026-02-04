@@ -1,4 +1,5 @@
 import type { InjectionKey } from 'vue'
+
 import { inject, provide } from 'vue'
 
 type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | null)
@@ -8,17 +9,11 @@ type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | n
  */
 export function createContext<ContextValue>(
   providerComponentName: string,
-): readonly [
-  (contextValue: ContextValue) => ContextValue,
-  InjectContextStrict<ContextValue>,
-]
+): readonly [(contextValue: ContextValue) => ContextValue, InjectContextStrict<ContextValue>]
 export function createContext<ContextValue>(
   providerComponentName: string,
   fallbackValue: ContextValue,
-): readonly [
-  (contextValue: ContextValue) => ContextValue,
-  InjectContextStrict<ContextValue>,
-]
+): readonly [(contextValue: ContextValue) => ContextValue, InjectContextStrict<ContextValue>]
 export function createContext<ContextValue>(
   providerComponentName: string,
   fallbackValue: null,

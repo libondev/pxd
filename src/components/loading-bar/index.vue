@@ -21,16 +21,13 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    group: 'default',
-    speed: 300,
-    minimum: 0.08,
-    trickle: true,
-    trickleThreshold: 300,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  group: 'default',
+  speed: 300,
+  minimum: 0.08,
+  trickle: true,
+  trickleThreshold: 300,
+})
 
 let prevTimestamp = 0
 let prevAnimationKey = 0
@@ -193,11 +190,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div
-      aria-hidden="true"
-      :class="computedClasses.wrapper()"
-      v-bind="$attrs"
-    >
+    <div aria-hidden="true" :class="computedClasses.wrapper()" v-bind="$attrs">
       <div
         :data-hidden="hiddenBar"
         :data-transition="enableTransition"

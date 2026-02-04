@@ -17,13 +17,10 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'span',
-    variant: 'gray',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  as: 'span',
+  variant: 'gray',
+})
 
 const config = useConfigProvider()
 

@@ -28,22 +28,19 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    step: 1,
-    clearValue: null,
-    scientific: true,
-    min: Number.MIN_SAFE_INTEGER,
-    max: Number.MAX_SAFE_INTEGER,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  step: 1,
+  clearValue: null,
+  scientific: true,
+  min: Number.MIN_SAFE_INTEGER,
+  max: Number.MAX_SAFE_INTEGER,
+})
 
 const emits = defineEmits<{
-  'focus': [FocusEvent]
-  'blur': [FocusEvent]
-  'input': [Props['modelValue']]
-  'change': [Props['modelValue'], Event]
+  focus: [FocusEvent]
+  blur: [FocusEvent]
+  input: [Props['modelValue']]
+  change: [Props['modelValue'], Event]
   'update:modelValue': [Props['modelValue']]
 }>()
 
@@ -91,8 +88,12 @@ const inputValue = computed(() => {
   return currentValue
 })
 
-const decreaseDisabled = computed(() => props.disabled || (isNumber(props.modelValue) && props.modelValue <= props.min))
-const increaseDisabled = computed(() => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max))
+const decreaseDisabled = computed(
+  () => props.disabled || (isNumber(props.modelValue) && props.modelValue <= props.min),
+)
+const increaseDisabled = computed(
+  () => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max),
+)
 
 const valuePrecision = computed(() => {
   if (props.precision) {
@@ -110,18 +111,12 @@ const valuePrecision = computed(() => {
   return stringValue.length - decimalIndex - 1
 })
 
-const {
-  start: startDecrease,
-  stop: stopDecrease,
-} = useRepeatAction({
+const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
   disabled: decreaseDisabled,
   action: decreaseValue,
 })
 
-const {
-  start: startIncrease,
-  stop: stopIncrease,
-} = useRepeatAction({
+const { start: startIncrease, stop: stopIncrease } = useRepeatAction({
   disabled: increaseDisabled,
   action: increaseValue,
 })
@@ -206,7 +201,7 @@ function onInputBlur(event: FocusEvent) {
   inputData.userInput = null
 
   if (inputData.currentValue === null) {
-    (event.target as HTMLInputElement).value = ''
+    ;(event.target as HTMLInputElement).value = ''
   }
 
   emits('blur', event)

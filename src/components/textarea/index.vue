@@ -28,18 +28,15 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: '',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: '',
+})
 
 const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
-  'change': [NonNullable<Props['modelValue']>]
-  'focus': [FocusEvent]
-  'blur': [FocusEvent]
+  change: [NonNullable<Props['modelValue']>]
+  focus: [FocusEvent]
+  blur: [FocusEvent]
 }>()
 
 const uniqueId = getUniqueId()

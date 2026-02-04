@@ -43,16 +43,24 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 sticky z-5 mx-auto flex w-full items-center justify-between border-y bg-background-100 select-none max-sm:max-w-full">
+  <header
+    class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 max-sm:max-w-full sticky z-5 mx-auto flex w-full items-center justify-between border-y bg-background-100 select-none"
+  >
     <h2 class="sm:w-60 md:border-r xl:border-l h-full">
-      <RouterLink to="/" class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none">
+      <RouterLink
+        to="/"
+        class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none"
+      >
         <SiteLogo class="text-2xl" />
         <span>PXD</span>
 
-        <PTooltip content="Internal development version" desktop-only position="bottom-start" z-index="5">
-          <PBadge size="sm" variant="gray-subtle">
-            v{{ prereleaseVersion }}
-          </PBadge>
+        <PTooltip
+          content="Internal development version"
+          desktop-only
+          position="bottom-start"
+          z-index="5"
+        >
+          <PBadge size="sm" variant="gray-subtle"> v{{ prereleaseVersion }} </PBadge>
         </PTooltip>
       </RouterLink>
     </h2>
@@ -78,17 +86,15 @@ onBeforeUnmount(() => {
           </PCommandMenuGroup>
 
           <template #footer>
-            <div class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200">
-              <PText secondary class="text-13px">
-                Open
-              </PText>
+            <div
+              class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200"
+            >
+              <PText secondary class="text-13px"> Open </PText>
               <PKbd enter />
 
               <div class="mx-3 h-4 border-l" />
 
-              <PText secondary class="text-13px">
-                Toggle
-              </PText>
+              <PText secondary class="text-13px"> Toggle </PText>
               <PKbd label="↑" />
               <PKbd label="↓" />
             </div>
@@ -97,7 +103,13 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="h-full border-l">
-        <PLinkButton variant="ghost" shape="square" class="sm:px-3 h-full" target="_blank" href="https://github.com/libondev/pxd">
+        <PLinkButton
+          variant="ghost"
+          shape="square"
+          class="sm:px-3 h-full"
+          target="_blank"
+          href="https://github.com/libondev/pxd"
+        >
           <LogoGithubIcon />
 
           <span class="sm:block ml-1.5 hidden">Github</span>

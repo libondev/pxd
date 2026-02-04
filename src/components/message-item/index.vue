@@ -23,7 +23,7 @@ defineOptions({
 const props = defineProps<Props>()
 
 const emits = defineEmits<{
-  'close': [key: MessageItemType['id']]
+  close: [key: MessageItemType['id']]
   'set-height': [info: MessageItemHeightType]
 }>()
 
@@ -44,7 +44,7 @@ const computedStyle = computed(() => {
   return {
     '--message-item-index': index,
     'z-index': max - index,
-    'opacity': isVisible ? 1 : 0,
+    opacity: isVisible ? 1 : 0,
     'pointer-events': isVisible ? 'auto' : 'none',
   } as const
 })
@@ -87,7 +87,12 @@ onMounted(() => {
     class="pxd-message--item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
     :class="[itemData.class, { 'pr-9': itemData.closeable }]"
   >
-    <Component :is="TYPE_ICONS[itemData.type]" v-if="itemData.type" class="pxd-message--icon mr-2 size-4 h-lh shrink-0" :class="itemData.type" />
+    <Component
+      :is="TYPE_ICONS[itemData.type]"
+      v-if="itemData.type"
+      class="pxd-message--icon mr-2 size-4 h-lh shrink-0"
+      :class="itemData.type"
+    />
 
     <span v-if="typeof itemData.message === 'string'" v-html="itemData.message" />
     <Component :is="itemData.message" v-else :key="itemData.id" />

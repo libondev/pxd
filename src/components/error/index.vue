@@ -18,10 +18,7 @@ defineOptions({
   name: 'PError',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  { size: 'md' },
-)
+const props = withDefaults(defineProps<Props>(), { size: 'md' })
 
 const config = useConfigProvider()
 
@@ -35,13 +32,19 @@ const computedClasses = computed(() => {
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">
-      <b v-if="label || error?.label" class="font-medium whitespace-nowrap">{{ label || error?.label }}:</b>
+      <b v-if="label || error?.label" class="font-medium whitespace-nowrap"
+        >{{ label || error?.label }}:</b
+      >
 
       <slot>
         {{ error?.message }}
 
         <span v-if="error?.action && error?.link">
-          <a :href="error.link" class="font-medium gap-1 inline-flex items-center text-red-900 underline" :target="isExternalLink(error.link) ? '_blank' : '_self'">
+          <a
+            :href="error.link"
+            class="font-medium gap-1 inline-flex items-center text-red-900 underline"
+            :target="isExternalLink(error.link) ? '_blank' : '_self'"
+          >
             {{ error.action }}
 
             <ExternalIcon v-if="isExternalLink(error.link)" class="text-sm" />

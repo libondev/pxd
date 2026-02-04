@@ -13,10 +13,7 @@ defineOptions({
   name: 'PCollapseGroup',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  { multiple: false },
-)
+const props = withDefaults(defineProps<Props>(), { multiple: false })
 
 const SIZES = {
   sm: {
@@ -60,7 +57,7 @@ function toggleItem(id: string, expanded: boolean) {
     return
   }
 
-  expandedItems.value = expandedItems.value.filter(item => item !== id)
+  expandedItems.value = expandedItems.value.filter((item) => item !== id)
 }
 
 const isExpanded = (id: string) => expandedItems.value.includes(id)

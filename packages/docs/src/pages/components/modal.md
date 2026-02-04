@@ -1,4 +1,5 @@
 # Modal
+
 Display popup content that requires attention or provides additional information.
 
 ## Default
@@ -30,13 +31,9 @@ function handleClose() {
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
-      <PButton @click="handleClose">
-        Cancel
-      </PButton>
+      <PButton @click="handleClose"> Cancel </PButton>
 
-      <PButton variant="primary" @click="handleClose">
-        Submit
-      </PButton>
+      <PButton variant="primary" @click="handleClose"> Submit </PButton>
     </template>
   </PModal>
 </template>
@@ -80,9 +77,7 @@ function handleClose() {
     <PText>Content of the modal.</PText>
 
     <template #footer>
-      <PButton block :loading="isLoading" @click="handleClose">
-        Close (after two seconds)
-      </PButton>
+      <PButton block :loading="isLoading" @click="handleClose"> Close (after two seconds) </PButton>
     </template>
   </PModal>
 </template>
@@ -108,30 +103,54 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal
-    v-model="isVisible"
-    header-stylize
-    title="Create Token"
-    @outside-click="handleClose"
-  >
+  <PModal v-model="isVisible" header-stylize title="Create Token" @outside-click="handleClose">
     <PText>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?. Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem
+      quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?. Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Repellat aut, blanditiis dolorem quaerat exercitationem quis tenetur vero fugit? Libero
+      molestias cum, nemo repudiandae minus reiciendis amet soluta eaque dolores earum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem quaerat
+      exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
+      reiciendis amet soluta eaque dolores earum?
     </PText>
 
     <template #footer>
-      <PButton @click="handleClose">
-        Cancel
-      </PButton>
+      <PButton @click="handleClose"> Cancel </PButton>
 
-      <PButton variant="primary" @click="handleClose">
-        Submit
-      </PButton>
+      <PButton variant="primary" @click="handleClose"> Submit </PButton>
     </template>
   </PModal>
 </template>
 ```
 
 ## Close on click overlay
+
 After setting the `close-on-click-overlay` attribute, clicking on the mask will close modal.
 
 ```vue demo
@@ -152,17 +171,11 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal
-    v-model="isVisible"
-    title="Create Token"
-    close-on-click-overlay
-  >
+  <PModal v-model="isVisible" title="Create Token" close-on-click-overlay>
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
-      <PButton block @click="handleClose">
-        Cancel
-      </PButton>
+      <PButton block @click="handleClose"> Cancel </PButton>
     </template>
   </PModal>
 </template>
@@ -188,17 +201,11 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal
-    v-model="isVisible"
-    title="Create Token"
-    close-on-press-escape
-  >
+  <PModal v-model="isVisible" title="Create Token" close-on-press-escape>
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
-      <PButton block @click="handleClose">
-        Cancel
-      </PButton>
+      <PButton block @click="handleClose"> Cancel </PButton>
     </template>
   </PModal>
 </template>

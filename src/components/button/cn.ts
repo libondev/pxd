@@ -23,9 +23,12 @@ export const buttonVariants = tv({
       simple: '',
       icon: 'p-0! aspect-square',
       link: 'font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity',
-      default: 'border-input bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
-      ghost: 'border-transparent bg-transparent text-foreground hover:bg-background-hover active:bg-background-active',
-      primary: 'border-transparent bg-primary text-gray-100 hover:bg-primary-hover active:bg-primary-active',
+      default:
+        'border-input bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
+      ghost:
+        'border-transparent bg-transparent text-foreground hover:bg-background-hover active:bg-background-active',
+      primary:
+        'border-transparent bg-primary text-gray-100 hover:bg-primary-hover active:bg-primary-active',
       error: 'text-white border-transparent bg-red-800 hover:bg-red-700 active:bg-red-900',
       warning: 'text-black border-transparent bg-amber-800 hover:bg-amber-700 active:bg-amber-900',
       success: 'text-white border-transparent bg-green-800 hover:bg-green-700 active:bg-green-900',

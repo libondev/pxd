@@ -17,7 +17,9 @@ defineProps<Props>()
 
 <template>
   <dl class="pxd-description">
-    <dt class="pxd-description--title gap-1 text-sm mb-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize">
+    <dt
+      class="pxd-description--title gap-1 text-sm mb-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize"
+    >
       <slot name="title">
         {{ title }}
       </slot>

@@ -58,14 +58,18 @@ function processFormat(ms: number, formatStr: string, maxDigits: number): string
  * Day.js millisecond token plugin
  * Supports S, SS, SSS tokens for millisecond formatting
  */
-const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (options = {}, DayjsClass, dayjsFactory) => {
+const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (
+  options = {},
+  DayjsClass,
+  dayjsFactory,
+) => {
   const maxDigits = Math.max(1, Math.min(3, options?.maxDigits ?? 3))
 
   const originalFormat = DayjsClass.prototype.format
   const originalDurationFormat = dayjsFactory.duration?.(0)?.format
 
   // Wrap format function
-  function wrapFormat<T extends { millisecond?: () => number, milliseconds?: () => number }>(
+  function wrapFormat<T extends { millisecond?: () => number; milliseconds?: () => number }>(
     original: (...args: any[]) => string,
     getMs: (instance: T) => number,
   ) {
@@ -82,7 +86,7 @@ const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (options = {
   // Extend Dayjs instance format
   DayjsClass.prototype.format = wrapFormat(
     originalFormat,
-    instance => instance.millisecond?.() ?? 0,
+    (instance) => instance.millisecond?.() ?? 0,
   )
 
   // Extend Duration format (if available)
@@ -92,7 +96,7 @@ const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (options = {
       if (durationProto?.format) {
         durationProto.format = wrapFormat(
           originalDurationFormat,
-          instance => instance.milliseconds?.() ?? 0,
+          (instance) => instance.milliseconds?.() ?? 0,
         )
       }
     }

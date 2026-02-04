@@ -1,4 +1,5 @@
 import { inject, provide } from 'vue'
+
 import { getUniqueId } from '../utils/uid'
 
 export function provideUniqueId(injectionKey: string = 'uniqueId'): string {

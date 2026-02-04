@@ -31,22 +31,19 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: false,
-    appendToBody: true,
-    footerStylize: true,
-    headerStylize: false,
-    closeOnPressEscape: false,
-    closeOnClickOverlay: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  appendToBody: true,
+  footerStylize: true,
+  headerStylize: false,
+  closeOnPressEscape: false,
+  closeOnClickOverlay: false,
+})
 
 const emits = defineEmits<{
-  'show': []
-  'hide': []
-  'change': [boolean]
+  show: []
+  hide: []
+  change: [boolean]
   'visible-change': [boolean]
   'outside-click': [MouseEvent]
   'update:modelValue': [boolean]
@@ -83,16 +80,19 @@ function onOverlayClick(ev: MouseEvent) {
   closeOverlayIfNeed()
 }
 
-watch(() => isVisible.value, (visible) => {
-  emits('visible-change', visible)
+watch(
+  () => isVisible.value,
+  (visible) => {
+    emits('visible-change', visible)
 
-  if (visible) {
-    emits('show')
-    return
-  }
+    if (visible) {
+      emits('show')
+      return
+    }
 
-  emits('hide')
-})
+    emits('hide')
+  },
+)
 </script>
 
 <template>
@@ -110,17 +110,22 @@ watch(() => isVisible.value, (visible) => {
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--modal-width,540px)] pointer-events-auto fixed z-10 flex w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none max-sm:bottom-0 motion-safe:transition-all dark:bg-background-200"
+        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-[var(--modal-width,540px)] max-sm:bottom-0 pointer-events-auto fixed z-10 flex w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-all dark:bg-background-200"
         :class="wrapperClass"
         :style="computedStyle"
         v-bind="$attrs"
       >
         <header
-          class="pxd-modal--header px-6 pt-4 sm:pt-6 relative shrink-0 empty:py-3"
-          :class="{ 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-modal--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"
+          :class="{
+            'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize,
+          }"
         >
           <slot name="header">
-            <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
+            <h3
+              v-if="$slots.title || title"
+              class="text-lg sm:text-xl font-semibold tracking-tight m-0"
+            >
               <slot name="title">
                 {{ title }}
               </slot>
@@ -135,7 +140,7 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <div
-          class="pxd-modal--content px-6 py-4 sm:py-6 h-full flex-1 overflow-auto empty:py-3"
+          class="pxd-modal--content px-6 py-4 sm:py-6 empty:py-3 h-full flex-1 overflow-auto"
           :class="contentClass"
         >
           <slot />

@@ -26,6 +26,7 @@ SSR mode has a different transformation pipeline. The Vue plugin's HMR boundary 
 ## Fix
 
 **Step 1: Ensure correct SSR plugin configuration**
+
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
@@ -35,19 +36,20 @@ export default defineConfig({
   plugins: [vue()],
   ssr: {
     // Don't externalize these for HMR to work
-    noExternal: ['vue', '@vue/runtime-core', '@vue/runtime-dom']
-  }
+    noExternal: ['vue', '@vue/runtime-core', '@vue/runtime-dom'],
+  },
 })
 ```
 
 **Step 2: Configure dev server for SSR HMR**
+
 ```typescript
 // server.ts
 import { createServer } from 'vite'
 
 const vite = await createServer({
   server: { middlewareMode: true },
-  appType: 'custom'
+  appType: 'custom',
 })
 
 // Use vite.ssrLoadModule for server-side imports
@@ -66,6 +68,7 @@ vite.watcher.on('change', async (file) => {
 ```
 
 **Step 3: Add HMR acceptance in entry-server**
+
 ```typescript
 // entry-server.ts
 import { createApp } from './main'
@@ -84,7 +87,9 @@ if (import.meta.hot) {
 ## Framework-Specific Solutions
 
 ### Nuxt 3
+
 HMR should work out of the box. If not:
+
 ```bash
 rm -rf .nuxt node_modules/.vite
 npm install
@@ -92,7 +97,9 @@ npm run dev
 ```
 
 ### Vite SSR Template
+
 Ensure you're using the latest `@vitejs/plugin-vue`:
+
 ```bash
 npm install @vitejs/plugin-vue@latest
 ```
@@ -100,15 +107,16 @@ npm install @vitejs/plugin-vue@latest
 ## Debugging
 
 Enable verbose HMR logging:
+
 ```typescript
 // vite.config.ts
 export default defineConfig({
   server: {
     hmr: {
-      overlay: true
-    }
+      overlay: true,
+    },
   },
-  logLevel: 'info'  // Shows HMR updates
+  logLevel: 'info', // Shows HMR updates
 })
 ```
 

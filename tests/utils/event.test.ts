@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { cachedOff, cachedOn } from '../../src/utils/event'
 
 describe('event.ts memory leak prevention', () => {
@@ -131,16 +132,16 @@ describe('event.ts memory leak prevention', () => {
     })
 
     // Click all
-    elements.forEach(el => el.click())
+    elements.forEach((el) => el.click())
     expect(handler).toHaveBeenCalledTimes(5)
 
     // Cleanup all
-    cleanups.forEach(cleanup => cleanup())
-    elements.forEach(el => document.body.removeChild(el))
+    cleanups.forEach((cleanup) => cleanup())
+    elements.forEach((el) => document.body.removeChild(el))
 
     // Verify no leaks
     expect(() => {
-      elements.forEach(el => el.click())
+      elements.forEach((el) => el.click())
     }).not.toThrow()
   })
 

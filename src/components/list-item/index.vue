@@ -18,23 +18,17 @@ defineOptions({
   name: 'PListItem',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'li',
-    type: 'default',
-    disabled: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  as: 'li',
+  type: 'default',
+  disabled: false,
+})
 
 const emits = defineEmits<{
   click: [ListOptionSelected, MouseEvent]
 }>()
 
-const {
-  activeValue,
-  onOptionClick,
-} = useListContext()
+const { activeValue, onOptionClick } = useListContext()
 
 const uniqueId = getUniqueId()
 const filterValue = useListFilterValue()
@@ -42,7 +36,9 @@ const filterValue = useListFilterValue()
 const itemRef = shallowRef<HTMLElement>()
 const currentValue = shallowRef('')
 
-const isVisible = computed(() => filterValue?.value ? currentValue.value.includes(filterValue.value.toLowerCase()) : true)
+const isVisible = computed(() =>
+  filterValue?.value ? currentValue.value.includes(filterValue.value.toLowerCase()) : true,
+)
 const isSelected = computed(() => activeValue.value === uniqueId)
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
 
@@ -59,9 +55,13 @@ onMounted(async () => {
   await nextTick()
 
   if (props.label) {
-    currentValue.value = `${String(props.label || '')}${(props.description || '')}`.toLowerCase().replace(/\s/g, '')
+    currentValue.value = `${String(props.label || '')}${props.description || ''}`
+      .toLowerCase()
+      .replace(/\s/g, '')
   } else {
-    currentValue.value = (unrefElement(itemRef.value)?.textContent || '').toLowerCase().replace(/\s/g, '')
+    currentValue.value = (unrefElement(itemRef.value)?.textContent || '')
+      .toLowerCase()
+      .replace(/\s/g, '')
   }
 })
 </script>

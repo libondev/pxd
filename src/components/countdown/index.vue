@@ -2,11 +2,7 @@
 import type { Options } from '../../composables/use-countdown'
 import { computed, onBeforeUnmount } from 'vue'
 import { useCountdown } from '../../composables/use-countdown'
-import {
-  dayjs,
-  dayjsDurationPlugin,
-  dayjsMillisecondTokenPlugin,
-} from '../../utils/date'
+import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date'
 
 interface Props extends Options {
   format?: string
@@ -16,18 +12,15 @@ defineOptions({
   name: 'PCountDown',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    active: false,
-    endTime: 0,
-    durations: 0,
-    precision: 0,
-    autoReset: true,
-    millisecond: true,
-    format: 'HH:mm:ss',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  active: false,
+  endTime: 0,
+  durations: 0,
+  precision: 0,
+  autoReset: true,
+  millisecond: true,
+  format: 'HH:mm:ss',
+})
 
 const emits = defineEmits<{
   change: [active: boolean]
@@ -38,11 +31,7 @@ const emits = defineEmits<{
 dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)
 
-const {
-  stop,
-  reset,
-  timestamp,
-} = useCountdown<typeof emits>(props, emits)
+const { stop, reset, timestamp } = useCountdown<typeof emits>(props, emits)
 
 const times = computed(() => {
   const t = dayjs.duration(timestamp.value)
@@ -57,9 +46,7 @@ const times = computed(() => {
 })
 
 const displayTimes = computed(() => {
-  const time = dayjs
-    .duration(timestamp.value)
-    .format(props.format)
+  const time = dayjs.duration(timestamp.value).format(props.format)
 
   return time
 })

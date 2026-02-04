@@ -9,10 +9,7 @@ defineOptions({
   name: 'PNoiseBackground',
 })
 
-withDefaults(
-  defineProps<Props>(),
-  { as: 'div' },
-)
+withDefaults(defineProps<Props>(), { as: 'div' })
 </script>
 
 <template>

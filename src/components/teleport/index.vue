@@ -17,10 +17,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  { to: 'body' },
-)
+const props = withDefaults(defineProps<Props>(), { to: 'body' })
 
 const inVue3 = isVue3()
 const inServer = isServer()

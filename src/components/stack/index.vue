@@ -21,16 +21,13 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'div',
-    wrap: true,
-    scale: 4,
-    align: 'start',
-    justify: 'start',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  as: 'div',
+  wrap: true,
+  scale: 4,
+  align: 'start',
+  justify: 'start',
+})
 
 const presetDir = {
   '--xs:vertical': 'flex-col',
@@ -58,8 +55,8 @@ const formattedGap = computed(() => {
 
   return getResponsiveValue(
     gap,
-    (typeof gap === 'object' ? gap.xs : gap),
-    (acc, bp, value) => acc[`--${bp}`] = `${Number(value) * scale}px`,
+    typeof gap === 'object' ? gap.xs : gap,
+    (acc, bp, value) => (acc[`--${bp}`] = `${Number(value) * scale}px`),
   )
 })
 
@@ -85,8 +82,10 @@ const computedClasses = computed(() => {
   const classes = [
     baseClass,
     ...Object.values(formattedDirection.value),
-    ...Object.keys(formattedGap.value).map(bp => presetGap[bp as keyof typeof presetGap]),
-  ].filter(Boolean).join(' ')
+    ...Object.keys(formattedGap.value).map((bp) => presetGap[bp as keyof typeof presetGap]),
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return classes
 })

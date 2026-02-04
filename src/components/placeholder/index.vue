@@ -41,9 +41,16 @@ const computedStyle = computed(() => {
   }
 
   --placeholder-deg: -45deg;
-  background:
-    linear-gradient(var(--placeholder-deg),var(--placeholder-color) 12.5%,#0000 12.5%,#0000 50%,var(--placeholder-color) 50%,var(--placeholder-color) 62.5%,#0000 62.5%,#0000 100%)
-    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px)
-    padding-box fixed;
+  background: linear-gradient(
+      var(--placeholder-deg),
+      var(--placeholder-color) 12.5%,
+      #0000 12.5%,
+      #0000 50%,
+      var(--placeholder-color) 50%,
+      var(--placeholder-color) 62.5%,
+      #0000 62.5%,
+      #0000 100%
+    )
+    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px) padding-box fixed;
 }
 </style>

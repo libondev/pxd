@@ -16,16 +16,13 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<SwitchGroupProps>(),
-  {
-    options: () => [],
-    modelValue: '',
-  },
-)
+const props = withDefaults(defineProps<SwitchGroupProps>(), {
+  options: () => [],
+  modelValue: '',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<SwitchGroupProps['modelValue']>]
+  change: [NonNullable<SwitchGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<SwitchGroupProps['modelValue']>]
 }>()
 
@@ -45,7 +42,10 @@ provideSwitchGroupModelValue(modelValue)
 </script>
 
 <template>
-  <div class="pxd-switch-group p-1 flex touch-manipulation rounded-md border" :class="[fullWidth ? 'w-full' : 'w-max', computedSize]">
+  <div
+    class="pxd-switch-group p-1 flex touch-manipulation rounded-md border"
+    :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
+  >
     <slot>
       <PSwitch
         v-for="option in options"

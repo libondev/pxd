@@ -12,8 +12,15 @@ defineProps<Props>()
 </script>
 
 <template>
-  <ul class="grid-list pl-0! md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] grid grid-cols-2 border-l">
-    <li v-for="item, index of data" :key="item[dataKey]" class="grid-item my-0! list-none border-r" :data-value="item[dataKey]">
+  <ul
+    class="grid-list pl-0! md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] grid grid-cols-2 border-l"
+  >
+    <li
+      v-for="(item, index) of data"
+      :key="item[dataKey]"
+      class="grid-item my-0! list-none border-r"
+      :data-value="item[dataKey]"
+    >
       <slot :item="item" :index="index" />
     </li>
   </ul>
@@ -27,8 +34,8 @@ defineProps<Props>()
   }
 
   .grid-item:last-child,
-  .grid-item:has( + .grid-item) {
-    border-bottom-width: 1px
+  .grid-item:has(+ .grid-item) {
+    border-bottom-width: 1px;
   }
 }
 </style>

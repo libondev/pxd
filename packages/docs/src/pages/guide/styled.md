@@ -15,10 +15,10 @@ import 'pxd/styles.css'
 
 ```css
 /* src/styles/global.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* add pxd styles */
-@import "../../node_modules/pxd/dist/styles/tw.css";
+@import '../../node_modules/pxd/dist/styles/tw.css';
 @source "../../node_modules/pxd";
 ```
 

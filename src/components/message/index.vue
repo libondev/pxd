@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import type { MessageItemHeightType, MessageItemType, MessageUpdateParams } from '../../composables/use-message'
+import type {
+  MessageItemHeightType,
+  MessageItemType,
+  MessageUpdateParams,
+} from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared/props'
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -23,14 +27,11 @@ defineOptions({
   name: 'PMessage',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    max: 3,
-    group: 'default',
-    position: 'top',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  max: 3,
+  group: 'default',
+  position: 'top',
+})
 
 const emits = defineEmits<{
   close: [id: MessageItemType['id']]
@@ -60,7 +61,7 @@ const messageGroupStyle = computed(() => {
 })
 
 function getMessageById(id: MessageItemType['id']) {
-  const index = groupMessages.value.findIndex(m => m.id === id)
+  const index = groupMessages.value.findIndex((m) => m.id === id)
   const message = groupMessages.value[index]
 
   if (!message) {
@@ -162,7 +163,7 @@ function closeMessageById(id: MessageItemType['id']) {
   groupMessages.value.splice(index, 1)
 
   // Sync remove height info by id instead of index to avoid mismatch
-  const heightIndex = messageItemsHeight.value.findIndex(h => h.id === id)
+  const heightIndex = messageItemsHeight.value.findIndex((h) => h.id === id)
   if (heightIndex !== -1) {
     messageItemsHeight.value.splice(heightIndex, 1)
   }
@@ -443,13 +444,13 @@ defineExpose({
     flex-direction: column;
   }
 
-  &[data-position^="top"] {
+  &[data-position^='top'] {
     --item-offset: 10px;
     --starting-offset: -100%;
     top: 1rem;
   }
 
-  &[data-position^="bottom"] {
+  &[data-position^='bottom'] {
     --item-offset: -10px;
     --starting-offset: 100%;
     bottom: 1rem;
@@ -459,15 +460,15 @@ defineExpose({
     }
   }
 
-  &[data-position="top"],
-  &[data-position="bottom"] {
+  &[data-position='top'],
+  &[data-position='bottom'] {
     left: 50%;
     justify-content: center;
     transform: translateX(-50%);
   }
 
-  &[data-position="top-start"],
-  &[data-position="bottom-start"] {
+  &[data-position='top-start'],
+  &[data-position='bottom-start'] {
     left: 1rem;
     justify-content: flex-start;
 
@@ -476,8 +477,8 @@ defineExpose({
     }
   }
 
-  &[data-position="top-end"],
-  &[data-position="bottom-end"] {
+  &[data-position='top-end'],
+  &[data-position='bottom-end'] {
     right: 1rem;
     justify-content: flex-end;
 
@@ -501,7 +502,7 @@ defineExpose({
     }
   }
 
-  &[data-expand="true"] {
+  &[data-expand='true'] {
     .pxd-message--group {
       --message-placeholder-height: calc(var(--message-front-height) * (var(--message-items) + 1));
     }
@@ -513,20 +514,22 @@ defineExpose({
     }
   }
 
-  &[data-expand="false"] {
+  &[data-expand='false'] {
     .pxd-message--group {
       --message-placeholder-height: calc(var(--message-front-height) + var(--message-items) * 12px);
     }
 
     .pxd-message--item {
-      --message-item-transform: translateZ(0) translateY(calc(var(--item-offset) * var(--message-item-index))) scale(calc(-1 * var(--message-item-scale)));
+      --message-item-transform: translateZ(0)
+        translateY(calc(var(--item-offset) * var(--message-item-index)))
+        scale(calc(-1 * var(--message-item-scale)));
       position: absolute;
 
-      &[data-front="false"] {
+      &[data-front='false'] {
         height: var(--message-front-height);
 
         & > * {
-          transition: opacity .1s ease-out;
+          transition: opacity 0.1s ease-out;
           opacity: 0;
         }
       }
@@ -553,20 +556,20 @@ defineExpose({
 
   .pxd-message--icon {
     &.info {
-      color: var(--color-gray-600)
+      color: var(--color-gray-600);
     }
     &.error {
-      color: var(--color-red-700)
+      color: var(--color-red-700);
     }
     &.loading {
       animation: spin 1s linear infinite;
-      color: var(--color-blue-700)
+      color: var(--color-blue-700);
     }
     &.warning {
-      color: var(--color-amber-700)
+      color: var(--color-amber-700);
     }
     &.success {
-      color: var(--color-green-700)
+      color: var(--color-green-700);
     }
   }
 }

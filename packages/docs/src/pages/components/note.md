@@ -85,9 +85,7 @@ Display text that requires attention or provides additional information.
     <b class="text-sm font-medium">Custom Label</b>
 
     <!-- prop label -->
-    <PNote label="Note">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    </PNote>
+    <PNote label="Note"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
 
     <!-- slot label -->
     <PNote>
@@ -99,9 +97,7 @@ Display text that requires attention or provides additional information.
     </PNote>
 
     <b class="text-sm font-medium">No Label</b>
-    <PNote :label="false">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    </PNote>
+    <PNote :label="false"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
   </PStack>
 </template>
 ```

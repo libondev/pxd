@@ -1,4 +1,5 @@
 # Avatar
+
 Avatars represent a user or a team
 
 ## Default

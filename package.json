@@ -1,30 +1,47 @@
 {
   "name": "pxd",
-  "type": "module",
   "version": "0.0.52",
-  "packageManager": "pnpm@9.15.9",
   "description": "A universal UI component library for Vue2.7+ & Vue3.2+",
-  "author": "libondev <bon.li@outlook.com>",
-  "license": "MIT",
+  "keywords": [
+    "component library",
+    "components",
+    "pxd",
+    "ui",
+    "ui framework",
+    "vue",
+    "vue2",
+    "vue3"
+  ],
   "homepage": "https://github.com/libondev/pxd#readme",
+  "bugs": {
+    "url": "https://github.com/libondev/pxd/issues"
+  },
+  "license": "MIT",
+  "author": "libondev <bon.li@outlook.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/libondev/pxd.git"
   },
-  "bugs": {
-    "url": "https://github.com/libondev/pxd/issues"
-  },
-  "keywords": [
-    "ui",
-    "vue",
-    "pxd",
-    "vue2",
-    "vue3",
-    "components",
-    "ui framework",
-    "component library"
+  "style": "./dist/styles/index.css",
+  "files": [
+    "dist",
+    "volar.d.ts"
   ],
+  "type": "module",
   "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*",
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -75,24 +92,6 @@
       "default": "./dist/utils/*.js"
     }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "style": "./dist/styles/index.css",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/*.d.ts",
-        "dist/*/index.d.ts"
-      ]
-    }
-  },
-  "files": [
-    "dist",
-    "volar.d.ts"
-  ],
   "scripts": {
     "dev": "run-s dev:lib dev:docs",
     "dev:lib": "unbuild --stub",
@@ -117,9 +116,6 @@
     "prepare": "husky",
     "postversion": "run-s gen-volar-dts update-exports",
     "prepublishOnly": "run-s build:lib"
-  },
-  "peerDependencies": {
-    "vue": ">=2.7.0 || >=3.2.0"
   },
   "dependencies": {
     "@floating-ui/dom": "catalog:default",
@@ -154,12 +150,16 @@
     "vue-sfc-transformer": "catalog:default",
     "vue-tsc": "catalog:default"
   },
+  "peerDependencies": {
+    "vue": ">=2.7.0 || >=3.2.0"
+  },
+  "lint-staged": {
+    "*.{ts,vue}": "oxlint"
+  },
+  "packageManager": "pnpm@9.15.9",
   "pnpm": {
     "patchedDependencies": {
       "mkdist": "patches/mkdist.patch"
     }
-  },
-  "lint-staged": {
-    "*.{ts,vue}": "oxlint --fix"
   }
 }

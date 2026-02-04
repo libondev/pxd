@@ -14,16 +14,13 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<CheckboxGroupProps>(),
-  {
-    modelValue: () => [],
-    options: () => [],
-  },
-)
+const props = withDefaults(defineProps<CheckboxGroupProps>(), {
+  modelValue: () => [],
+  options: () => [],
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<CheckboxGroupProps['modelValue']>]
+  change: [NonNullable<CheckboxGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<CheckboxGroupProps['modelValue']>]
 }>()
 
@@ -36,7 +33,7 @@ function isCheckedAll() {
     return false
   }
 
-  return options.every(option => modelValue.value.includes(option.value))
+  return options.every((option) => modelValue.value.includes(option.value))
 }
 
 function isCheckedPartial() {

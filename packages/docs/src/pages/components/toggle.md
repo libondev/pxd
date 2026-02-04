@@ -1,13 +1,14 @@
 # Toggle
+
 Switch between two values
 
 ## Default
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const isChecked = ref(false)
+const isChecked = ref(false)
 </script>
 
 <template>
@@ -19,9 +20,9 @@ Switch between two values
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const isChecked = ref(false)
+const isChecked = ref(false)
 </script>
 
 <template>
@@ -54,6 +55,7 @@ const isChecked2 = ref(true)
 ```
 
 ## Async
+
 Set an asynchronous or synchronous function to decide whether to allow this modification.
 
 ```vue demo
@@ -76,11 +78,7 @@ function onBeforeChange(v) {
 </script>
 
 <template>
-  <PToggle
-    v-model="isChecked"
-    :loading="isLoading"
-    :before-change="onBeforeChange"
-  />
+  <PToggle v-model="isChecked" :loading="isLoading" :before-change="onBeforeChange" />
 </template>
 ```
 
@@ -88,9 +86,9 @@ function onBeforeChange(v) {
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const isChecked = ref(false)
+const isChecked = ref(false)
 </script>
 
 <template>
@@ -143,28 +141,25 @@ const isChecked2 = ref(true)
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const isChecked = ref(false)
+const isChecked = ref(false)
 </script>
 
 <template>
-  <PToggle
-    v-model="isChecked"
-    inactive-label="Uncheck"
-    active-label="Checked"
-  />
+  <PToggle v-model="isChecked" inactive-label="Uncheck" active-label="Checked" />
 </template>
 ```
 
 ## Custom checked value
+
 You can customize the selected and unselected values.
 
 ```vue demo
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
 
-  const customValue = ref(false)
+const customValue = ref(false)
 </script>
 
 <template>

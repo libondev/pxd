@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'vue'
+
 import type { ComponentSizeWithXs } from '../shared/props'
 
 export interface InputProps {

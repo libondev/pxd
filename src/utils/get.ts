@@ -1,9 +1,8 @@
 import type { Nullable } from '../types/shared/utils'
+
 import { isServer } from './is'
 
-export function getFallbackValue<
-  Variants extends Record<string, any>,
->(
+export function getFallbackValue<Variants extends Record<string, any>>(
   variant: Nullable<string>,
   variants: Variants,
   defaultVariant: keyof Variants = 'default',
@@ -11,10 +10,7 @@ export function getFallbackValue<
   return (variant ? variants[variant] : null) ?? variants[defaultVariant]
 }
 
-export function getColorByThreshold(
-  value: number,
-  colors: Record<string, string>,
-): string {
+export function getColorByThreshold(value: number, colors: Record<string, string>): string {
   const keys = Object.keys(colors)
   const keyLength = keys.length
 

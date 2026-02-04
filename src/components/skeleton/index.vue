@@ -19,15 +19,12 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    loading: true,
-    height: 24,
-    shape: 'default',
-    animated: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  loading: true,
+  height: 24,
+  shape: 'default',
+  animated: true,
+})
 
 const computedStyle = computed(() => {
   const { width, height, boxHeight } = props
@@ -61,11 +58,17 @@ const computedClasses = computed(() => {
 
 <style>
 .pxd-skeleton.loading::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0 -200% 0 0;
   visibility: visible;
-  background: linear-gradient(90deg, var(--color-gray-100), var(--color-gray-200), var(--color-gray-100)) 0 0 / 50% 100%;
+  background: linear-gradient(
+      90deg,
+      var(--color-gray-100),
+      var(--color-gray-200),
+      var(--color-gray-100)
+    )
+    0 0 / 50% 100%;
 }
 
 .pxd-skeleton.animated::after {

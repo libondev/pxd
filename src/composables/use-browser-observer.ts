@@ -1,21 +1,18 @@
 import type { MaybeRefOrGetter } from 'vue'
-import type { Nullable } from '../types/shared/utils'
+
 import { isNotNil } from 'es-toolkit'
 import { computed, onBeforeUnmount, watch } from 'vue'
+
+import type { Nullable } from '../types/shared/utils'
+
 import { toArray } from '../utils/format'
 import { toValue, unrefElement } from '../utils/ref'
 
-export const useIntersectionObserver = createObserver(
-  globalThis.IntersectionObserver,
-)
+export const useIntersectionObserver = createObserver(globalThis.IntersectionObserver)
 
-export const useMutationObserver = createObserver(
-  globalThis.MutationObserver,
-)
+export const useMutationObserver = createObserver(globalThis.MutationObserver)
 
-export const useResizeObserver = createObserver(
-  globalThis.ResizeObserver,
-)
+export const useResizeObserver = createObserver(globalThis.ResizeObserver)
 
 type Observers = IntersectionObserver | ResizeObserver | MutationObserver
 type Constructor = typeof IntersectionObserver | typeof ResizeObserver | typeof MutationObserver
@@ -51,11 +48,15 @@ function createObserver(ObserverConstructor: Constructor) {
   function observerWrapper(
     target: TargetRef,
     callback: IntersectionObserverCallback | ResizeObserverCallback | MutationCallback,
-    options?: MaybeRefOrGetter<IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit>,
+    options?: MaybeRefOrGetter<
+      IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit
+    >,
   ) {
     let observer: Observers | undefined
 
-    const targets = computed<HTMLElement[]>(() => toArray(toValue(target)).map(unrefElement).filter(isNotNil))
+    const targets = computed<HTMLElement[]>(() =>
+      toArray(toValue(target)).map(unrefElement).filter(isNotNil),
+    )
 
     const unwatch = watch(
       () => [targets.value],
@@ -75,13 +76,21 @@ function createObserver(ObserverConstructor: Constructor) {
             callback as IntersectionObserverCallback,
             options as IntersectionObserverInit,
           )
-          newTargets.forEach(el => observer!.observe(el))
+          newTargets.forEach((el) => observer!.observe(el))
         } else if (ObserverConstructor.name === 'MutationObserver') {
-          observer = new (ObserverConstructor as typeof MutationObserver)(callback as MutationCallback)
-          newTargets.forEach(el => (observer as MutationObserver).observe(el, options as MutationObserverInit))
+          observer = new (ObserverConstructor as typeof MutationObserver)(
+            callback as MutationCallback,
+          )
+          newTargets.forEach((el) =>
+            (observer as MutationObserver).observe(el, options as MutationObserverInit),
+          )
         } else {
-          observer = new (ObserverConstructor as typeof ResizeObserver)(callback as ResizeObserverCallback)
-          newTargets.forEach(el => (observer as ResizeObserver).observe(el, options as ResizeObserverOptions))
+          observer = new (ObserverConstructor as typeof ResizeObserver)(
+            callback as ResizeObserverCallback,
+          )
+          newTargets.forEach((el) =>
+            (observer as ResizeObserver).observe(el, options as ResizeObserverOptions),
+          )
         }
       },
       {

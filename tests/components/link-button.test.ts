@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import LinkButton from '../../src/components/link-button/index.vue'
 
 describe('link-button', () => {

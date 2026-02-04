@@ -17,15 +17,12 @@ defineOptions({
   name: 'PHoldButton',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    vibrate: true,
-    scalable: true,
-    durations: 2000,
-    maskColor: 'var(--color-gray-alpha-600)',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  vibrate: true,
+  scalable: true,
+  durations: 2000,
+  maskColor: 'var(--color-gray-alpha-600)',
+})
 
 const emits = defineEmits<{
   confirm: []
@@ -43,10 +40,13 @@ const computedAttrs = computed(() => {
   const { scalable, durations, maskColor, cancelable, ...rest } = props
 
   return {
-    class: ['pxd-hold-button relative motion-safe:transition-all', {
-      scalable,
-      effective: status.value !== 'canceled',
-    }],
+    class: [
+      'pxd-hold-button relative motion-safe:transition-all',
+      {
+        scalable,
+        effective: status.value !== 'canceled',
+      },
+    ],
     ...rest,
   }
 })
@@ -94,11 +94,7 @@ function onPointerEnter(e: PointerEvent) {
 }
 
 function onPointerLeave(e: PointerEvent) {
-  if (
-    props.disabled
-    || !checkIsHolding(e)
-    || !props.cancelable
-  ) {
+  if (props.disabled || !checkIsHolding(e) || !props.cancelable) {
     return
   }
 
@@ -197,7 +193,7 @@ onBeforeUnmount(() => {
 <style lang="postcss">
 .pxd-hold-button {
   &.scalable:not(.is-disabled):active {
-    transform: scale(.97);
+    transform: scale(0.97);
   }
 
   &:hover {
@@ -207,19 +203,23 @@ onBeforeUnmount(() => {
   }
 
   .pxd-hold-button--overlay {
-    --opacity: .45;
+    --opacity: 0.45;
     opacity: var(--opacity);
     clip-path: inset(0 100% 0 0);
-    transition: clip-path .1s, opacity 0s;
+    transition:
+      clip-path 0.1s,
+      opacity 0s;
 
     &.finished {
-      --opacity: .68;
+      --opacity: 0.68;
     }
   }
 
   &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
     clip-path: inset(0px);
-    transition: clip-path var(--hold-button-durations), opacity var(--default-transition-duration);
+    transition:
+      clip-path var(--hold-button-durations),
+      opacity var(--default-transition-duration);
   }
 }
 </style>

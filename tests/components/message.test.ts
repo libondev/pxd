@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import Message from '../../src/components/message/index.vue'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../src/composables/use-message'
 
@@ -23,7 +24,7 @@ describe('message', () => {
   })
   afterEach(() => {
     vi.useRealTimers()
-    document.body.querySelectorAll('.pxd-message').forEach(n => n.remove())
+    document.body.querySelectorAll('.pxd-message').forEach((n) => n.remove())
   })
 
   it('should render messages created via window event and respect group', async () => {

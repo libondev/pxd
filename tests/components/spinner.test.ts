@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import PSpinner from '../../src/components/spinner/index.vue'
 
 describe('spinner', () => {
@@ -21,7 +22,9 @@ describe('spinner', () => {
       const rotateValue = i * (360 / 12)
 
       expect(item.attributes('style')).toContain(`opacity: ${opacityValue}`)
-      expect(item.attributes('style')).toContain(`transform: rotate(${rotateValue}deg) translate(146%)`)
+      expect(item.attributes('style')).toContain(
+        `transform: rotate(${rotateValue}deg) translate(146%)`,
+      )
     })
 
     wrapper.unmount()

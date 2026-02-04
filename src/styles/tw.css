@@ -4,16 +4,16 @@
   --background-100-value: 0, 0%, 100%;
   --background-200-value: 0, 0%, 97%;
 
-  --color-gray-alpha-100-value: hsla(0, 0%, 0%, .05);
-  --color-gray-alpha-200-value: hsla(0, 0%, 0%, .082);
-  --color-gray-alpha-300-value: hsla(0, 0%, 0%, .12);
-  --color-gray-alpha-400-value: hsla(0, 0%, 0%, .17);
-  --color-gray-alpha-500-value: hsla(0, 0%, 0%, .21);
-  --color-gray-alpha-600-value: hsla(0, 0%, 0%, .34);
-  --color-gray-alpha-700-value: hsla(0, 0%, 0%, .44);
-  --color-gray-alpha-800-value: hsla(0, 0%, 0%, .51);
-  --color-gray-alpha-900-value: hsla(0, 0%, 0%, .61);
-  --color-gray-alpha-1000-value: hsla(0, 0%, 0%, .91);
+  --color-gray-alpha-100-value: hsla(0, 0%, 0%, 0.05);
+  --color-gray-alpha-200-value: hsla(0, 0%, 0%, 0.082);
+  --color-gray-alpha-300-value: hsla(0, 0%, 0%, 0.12);
+  --color-gray-alpha-400-value: hsla(0, 0%, 0%, 0.17);
+  --color-gray-alpha-500-value: hsla(0, 0%, 0%, 0.21);
+  --color-gray-alpha-600-value: hsla(0, 0%, 0%, 0.34);
+  --color-gray-alpha-700-value: hsla(0, 0%, 0%, 0.44);
+  --color-gray-alpha-800-value: hsla(0, 0%, 0%, 0.51);
+  --color-gray-alpha-900-value: hsla(0, 0%, 0%, 0.61);
+  --color-gray-alpha-1000-value: hsla(0, 0%, 0%, 0.91);
 
   --color-gray-100-value: 0, 0%, 95%;
   --color-gray-200-value: 0, 0%, 93%;
@@ -107,19 +107,30 @@
   --primary-hover: hsla(var(--primary), 70%);
   --primary-active: hsla(var(--primary), 90%);
 
-  --radius: .5rem;
-  --duration: .15s;
+  --radius: 0.5rem;
+  --duration: 0.15s;
   --timing-function: ease-out;
   --ring: var(--primary);
 
-  --shadow-border-default-value: 0 0 0 1px rgba(0,0,0,.08);
-  --shadow-border-small-value: 0 0 0 1px rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);
-  --shadow-border-medium-value: 0 0 0 1px rgba(0,0,0,.08), 0px 2px 2px rgba(0,0,0,.04),0px 8px 8px -8px rgba(0,0,0,.04);
-  --shadow-border-large-value: 0 0 0 1px rgba(0,0,0,.08), 0px 2px 2px rgba(0,0,0,.04),0px 8px 16px -4px rgba(0,0,0,.04);
-  --shadow-border-tooltip-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px rgba(0,0,0,.04);
-  --shadow-border-menu-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px -4px rgba(0,0,0,.04),0px 16px 24px -8px rgba(0,0,0,.06);
-  --shadow-border-modal-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
-  --shadow-border-fullscreen-value: 0 0 0 1px rgba(0,0,0,.08),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-border-small-value: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-border-medium-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 2px 2px rgba(0, 0, 0, 0.04),
+    0px 8px 8px -8px rgba(0, 0, 0, 0.04);
+  --shadow-border-large-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 2px 2px rgba(0, 0, 0, 0.04),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04);
+  --shadow-border-tooltip-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.02), 0px 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-border-menu-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.04), 0px 16px 24px -8px rgba(0, 0, 0, 0.06);
+  --shadow-border-modal-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04), 0px 24px 32px -8px rgba(0, 0, 0, 0.06);
+  --shadow-border-fullscreen-value:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04), 0px 24px 32px -8px rgba(0, 0, 0, 0.06);
 
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
@@ -139,16 +150,16 @@
   --background-100-value: 0, 0%, 5%;
   --background-200-value: 0, 0%, 0%;
 
-  --color-gray-alpha-100-value: hsla(0, 0%, 100%, .06);
-  --color-gray-alpha-200-value: hsla(0, 0%, 100%, .09);
-  --color-gray-alpha-300-value: hsla(0, 0%, 100%, .13);
-  --color-gray-alpha-400-value: hsla(0, 0%, 100%, .14);
-  --color-gray-alpha-500-value: hsla(0, 0%, 100%, .24);
-  --color-gray-alpha-600-value: hsla(0, 0%, 100%, .51);
-  --color-gray-alpha-700-value: hsla(0, 0%, 100%, .54);
-  --color-gray-alpha-800-value: hsla(0, 0%, 100%, .47);
-  --color-gray-alpha-900-value: hsla(0, 0%, 100%, .61);
-  --color-gray-alpha-1000-value: hsla(0, 0%, 100%, .92);
+  --color-gray-alpha-100-value: hsla(0, 0%, 100%, 0.06);
+  --color-gray-alpha-200-value: hsla(0, 0%, 100%, 0.09);
+  --color-gray-alpha-300-value: hsla(0, 0%, 100%, 0.13);
+  --color-gray-alpha-400-value: hsla(0, 0%, 100%, 0.14);
+  --color-gray-alpha-500-value: hsla(0, 0%, 100%, 0.24);
+  --color-gray-alpha-600-value: hsla(0, 0%, 100%, 0.51);
+  --color-gray-alpha-700-value: hsla(0, 0%, 100%, 0.54);
+  --color-gray-alpha-800-value: hsla(0, 0%, 100%, 0.47);
+  --color-gray-alpha-900-value: hsla(0, 0%, 100%, 0.61);
+  --color-gray-alpha-1000-value: hsla(0, 0%, 100%, 0.92);
 
   --color-gray-100-value: 0, 0%, 10%;
   --color-gray-200-value: 0, 0%, 12%;
@@ -238,14 +249,27 @@
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
 
-  --shadow-border-default-value: 0 0 0 1px rgba(255,255,255,.145);
-  --shadow-border-small-value: 0 0 0 1px rgba(255,255,255,.145),0 1px 2px 0 rgba(0,0,0,.04);
-  --shadow-border-medium-value: 0 0 0 1px rgba(255,255,255,.145),0px 2px 2px rgba(0,0,0,.32),0px 8px 8px -8px rgba(0,0,0,.16);
-  --shadow-border-large-value: 0 0 0 1px rgba(255,255,255,.145),0px 2px 2px rgba(0,0,0,.04),0px 8px 16px -4px rgba(0,0,0,.04);
-  --shadow-border-tooltip-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px rgba(0,0,0,.04);
-  --shadow-border-menu-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 4px 8px -4px rgba(0,0,0,.04),0px 16px 24px -8px rgba(0,0,0,.06);
-  --shadow-border-modal-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
-  --shadow-border-fullscreen-value: 0 0 0 1px rgba(255,255,255,.145),0px 1px 1px rgba(0,0,0,.02),0px 8px 16px -4px rgba(0,0,0,.04),0px 24px 32px -8px rgba(0,0,0,.06);
+  --shadow-border-default-value: 0 0 0 1px rgba(255, 255, 255, 0.145);
+  --shadow-border-small-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-border-medium-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 2px 2px rgba(0, 0, 0, 0.32),
+    0px 8px 8px -8px rgba(0, 0, 0, 0.16);
+  --shadow-border-large-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 2px 2px rgba(0, 0, 0, 0.04),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04);
+  --shadow-border-tooltip-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-border-menu-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.04), 0px 16px 24px -8px rgba(0, 0, 0, 0.06);
+  --shadow-border-modal-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04), 0px 24px 32px -8px rgba(0, 0, 0, 0.06);
+  --shadow-border-fullscreen-value:
+    0 0 0 1px rgba(255, 255, 255, 0.145), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.04), 0px 24px 32px -8px rgba(0, 0, 0, 0.06);
 
   color-scheme: dark;
 }
@@ -259,7 +283,9 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter','Inter Fallback','Geist',ui-sans-serif,system-ui,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  --font-sans:
+    'Inter', 'Inter Fallback', 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-primary: hsl(var(--primary));
   --color-primary-hover: var(--primary-hover);
@@ -432,13 +458,17 @@
 
 @utility peer-focus-ring {
   .peer:focus-visible ~ & {
-    box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px hsl(var(--ring));
+    box-shadow:
+      0 0 0 2px var(--color-background-100),
+      0 0 0 4px hsl(var(--ring));
   }
 }
 
 @utility self-focus-ring {
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px hsl(var(--ring));
+    box-shadow:
+      0 0 0 2px var(--color-background-100),
+      0 0 0 4px hsl(var(--ring));
   }
 }
 
@@ -461,7 +491,7 @@
 @utility dvh-* {
   height: calc(--value(integer) * 1vh);
 
-  @supports (height:1dvh) {
+  @supports (height: 1dvh) {
     height: calc(--value(integer) * 1dvh);
   }
 }
@@ -469,7 +499,7 @@
 @utility max-dvh-* {
   max-height: calc(--value(integer) * 1vh);
 
-  @supports (height:1dvh) {
+  @supports (height: 1dvh) {
     max-height: calc(--value(integer) * 1dvh);
   }
 }
@@ -485,13 +515,13 @@
     border: 1px solid var(--border-color, var(--color-gray-alpha-300));
 
     &:not(.is-disabled, .is-readonly):hover {
-      --border-color: hsla(var(--primary), .5);
+      --border-color: hsla(var(--primary), 0.5);
     }
 
-    &:not(.is-disabled, .is-readonly)[data-focusing="true"],
+    &:not(.is-disabled, .is-readonly)[data-focusing='true'],
     &:not(.is-disabled, .is-readonly):focus-within {
       --border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px hsla(var(--primary), .2);
+      box-shadow: 0 0 0 3px hsla(var(--primary), 0.2);
     }
 
     &.is-error {
@@ -499,13 +529,15 @@
         color: var(--color-red-900) !important;
       }
 
-      &, &:focus-within, &[data-focusing="true"] {
+      &,
+      &:focus-within,
+      &[data-focusing='true'] {
         --border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-300-value));
       }
 
       &:focus-within,
-      &[data-focusing="true"],
+      &[data-focusing='true'],
       &:not(.is-disabled, .is-readonly):hover {
         --border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-500-value));
@@ -518,14 +550,14 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, .4);
+  background: rgba(0, 0, 0, 0.4);
   transition: opacity var(--default-transition-duration) var(--default-transition-timing-function);
   pointer-events: none;
   will-change: opacity;
   z-index: 0;
 }
 
-[class*="pxd-transition--"] {
+[class*='pxd-transition--'] {
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
 }
@@ -536,7 +568,7 @@
   will-change: opacity;
 }
 
-.pxd-container-mask[data-visible="false"]::after,
+.pxd-container-mask[data-visible='false']::after,
 .pxd-transition--fade-enter-from,
 .pxd-transition--fade-leave-to {
   opacity: 0;
@@ -552,7 +584,7 @@
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  transform: scale(var(--scale,.95));
+  transform: scale(var(--scale, 0.95));
 }
 
 .line-clamp {

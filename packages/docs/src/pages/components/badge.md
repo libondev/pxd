@@ -47,7 +47,6 @@ A label that emphasizes an element that requires attention, or helps categorize 
 </template>
 ```
 
-
 ## With Icons
 
 ```vue demo
@@ -75,8 +74,6 @@ A label that emphasizes an element that requires attention, or helps categorize 
 
 ```vue demo
 <template>
-  <PBadge as="RouterLink" to="/components/badge" variant="pill">
-    pill
-  </PBadge>
+  <PBadge as="RouterLink" to="/components/badge" variant="pill"> pill </PBadge>
 </template>
 ```

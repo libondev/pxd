@@ -14,12 +14,7 @@
   "experimentalTailwindcss": {
     "preserveDuplicates": false,
     "preserveWhitespace": false,
-    "functions": [
-      "clsx",
-      "cn",
-      "cva",
-      "tw"
-    ],
+    "functions": ["clsx", "cn", "cva", "tw"],
     "stylesheet": "./src/styles/tw.css"
   },
   "patterns": [],

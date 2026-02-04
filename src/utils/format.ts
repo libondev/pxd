@@ -1,4 +1,5 @@
 import type { CSSValue, Nullable } from '../types/shared/utils'
+
 import { FLOATING_REGEX, INTEGER_REGEX } from './regexp'
 
 /** string -> String */
@@ -14,17 +15,26 @@ export function camelize(str: string): string {
 
 /** kabab-case -> KababCase */
 export function pascalize(text: string) {
-  return text.charAt(0).toUpperCase() + text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+  return (
+    text.charAt(0).toUpperCase() +
+    text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+  )
 }
 
 /** KababCase -> kabab-case */
 export function uncapitalize(text: string) {
-  return text.charAt(0).toLowerCase() + text.slice(1).replace(/([A-Z])/g, '-$1').toLowerCase()
+  return (
+    text.charAt(0).toLowerCase() +
+    text
+      .slice(1)
+      .replace(/([A-Z])/g, '-$1')
+      .toLowerCase()
+  )
 }
 
 /** 'kabab-case' -> 'Kabab Case' */
 export function humanize(text: string) {
-  return text.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+  return text.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
 // Some components that do not actively declare boolean values may pass an empty string
@@ -34,9 +44,7 @@ export function isTruthyProp(value: unknown): boolean {
 }
 
 export function clampValue(n: number, min: number, max: number) {
-  return min != null && max != null
-    ? Math.min(Math.max(n, min), max)
-    : n
+  return min != null && max != null ? Math.min(Math.max(n, min), max) : n
 }
 
 export function isExternalLink(href: string) {
@@ -101,7 +109,7 @@ export function increaseWithUnit(target: string | number, delta: number): string
 
   const value = String(target).match(FLOATING_REGEX)?.[0] || ''
   const unit = String(target).slice(value.length)
-  const result = (Number.parseFloat(value) + delta)
+  const result = Number.parseFloat(value) + delta
 
   if (Number.isNaN(result)) {
     return target as string

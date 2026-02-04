@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import StatusDot from '../../src/components/status-dot/index.vue'
 
 describe('status-dot', () => {

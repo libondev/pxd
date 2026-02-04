@@ -24,17 +24,18 @@ Using `withDefaults` with union types like `false | string` may produce a Vue ru
 ```typescript
 // This produces a spurious warning (but works at runtime)
 interface Props {
-  value: false | string  // Union type
+  value: false | string // Union type
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: 'default'  // Runtime value IS correct, but Vue warns about missing prop
+  value: 'default', // Runtime value IS correct, but Vue warns about missing prop
 })
 ```
 
 ## Fix
 
 **Option 1: Use Reactive Props Destructure (Vue 3.5+)**
+
 ```vue
 <script setup lang="ts">
 interface Props {
@@ -47,18 +48,20 @@ const { value = 'default' } = defineProps<Props>()
 ```
 
 **Option 2: Use runtime declaration**
+
 ```vue
 <script setup lang="ts">
 const props = defineProps({
   value: {
     type: [Boolean, String] as PropType<false | string>,
-    default: 'default'
-  }
+    default: 'default',
+  },
 })
 </script>
 ```
 
 **Option 3: Split into separate props**
+
 ```typescript
 interface Props {
   enabled: boolean
@@ -67,7 +70,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   enabled: false,
-  customValue: 'default'
+  customValue: 'default',
 })
 ```
 
@@ -83,16 +86,17 @@ const { prop = 'default' } = defineProps<{ prop?: string }>()
 ## Enable Reactive Props Destructure
 
 This is enabled by default in Vue 3.5+. For older versions:
+
 ```javascript
 // vite.config.js
 export default {
   plugins: [
     vue({
       script: {
-        propsDestructure: true
-      }
-    })
-  ]
+        propsDestructure: true,
+      },
+    }),
+  ],
 }
 ```
 

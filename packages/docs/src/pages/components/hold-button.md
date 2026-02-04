@@ -54,9 +54,7 @@ You can set the same `variant` property as the button.
     <PHoldButton>default</PHoldButton>
     <PHoldButton variant="ghost">ghost</PHoldButton>
     <PHoldButton variant="error">error</PHoldButton>
-    <PHoldButton variant="primary" mask-color="var(--color-background-100)"
-      >primary</PHoldButton
-    >
+    <PHoldButton variant="primary" mask-color="var(--color-background-100)">primary</PHoldButton>
     <PHoldButton variant="success">success</PHoldButton>
     <PHoldButton disabled>disabled</PHoldButton>
     <PHoldButton loading>loading</PHoldButton>

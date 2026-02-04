@@ -9,7 +9,9 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
 </script>
 
 <template>
-  <div class="pxd-spinner transform-origin-center pointer-events-none relative size-em overflow-hidden text-gray-700 motion-safe:animate-spin">
+  <div
+    class="pxd-spinner transform-origin-center motion-safe:animate-spin pointer-events-none relative size-em overflow-hidden text-gray-700"
+  >
     <div class="pxd-spinner-container top-0 left-0 absolute size-full">
       <div
         v-for="i of ITEMS_COUNT"

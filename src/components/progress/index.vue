@@ -25,18 +25,15 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    min: 0,
-    max: 100,
-    label: false,
-    variant: 'primary',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  min: 0,
+  max: 100,
+  label: false,
+  variant: 'primary',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
+  change: [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -93,12 +90,24 @@ const computedProgressBarStyles = computed(() => {
 </script>
 
 <template>
-  <div role="progressbar" class="pxd-progress flex w-full items-center" :aria-valuenow="progress" :aria-valuemin="min" :aria-valuemax="max">
+  <div
+    role="progressbar"
+    class="pxd-progress flex w-full items-center"
+    :aria-valuenow="progress"
+    :aria-valuemin="min"
+    :aria-valuemax="max"
+  >
     <div :class="computedClasses">
-      <div class="h-full rounded-inherit motion-safe:transition-all" :style="computedProgressBarStyles" />
+      <div
+        class="h-full rounded-inherit motion-safe:transition-all"
+        :style="computedProgressBarStyles"
+      />
     </div>
 
-    <span v-if="computedLabel || $slots.default" class="text-sm ml-3 font-mono text-foreground-secondary empty:hidden">
+    <span
+      v-if="computedLabel || $slots.default"
+      class="text-sm ml-3 font-mono text-foreground-secondary empty:hidden"
+    >
       <slot>
         {{ computedLabel }}
       </slot>

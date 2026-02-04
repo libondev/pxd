@@ -21,15 +21,12 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    loop: true,
-    options: () => [],
-    keyListener: true,
-    itemTransition: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  loop: true,
+  options: () => [],
+  keyListener: true,
+  itemTransition: true,
+})
 
 const emits = defineEmits<{
   toggle: []
@@ -51,72 +48,76 @@ const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const listItemKeys: string[] = []
 const listItemsMap = new Map<string, HTMLElement>()
 
-const containerKeydownThrottled = throttle((ev: KeyboardEvent) => {
-  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
-    return
-  }
+const containerKeydownThrottled = throttle(
+  (ev: KeyboardEvent) => {
+    if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+      return
+    }
 
-  const { key } = ev
+    const { key } = ev
 
-  if (key === 'Tab') {
-    return
-  }
+    if (key === 'Tab') {
+      return
+    }
 
-  if (key === 'Enter') {
-    listItemsMap.get(activeValue.value)?.click()
-    return
-  }
+    if (key === 'Enter') {
+      listItemsMap.get(activeValue.value)?.click()
+      return
+    }
 
-  if (key === 'Escape' && props.closeOnPressEscape) {
-    emits('escape', ev)
-    return
-  }
+    if (key === 'Escape' && props.closeOnPressEscape) {
+      emits('escape', ev)
+      return
+    }
 
-  let newActiveValue = ''
-  const listItemKeyLength = listItemKeys.length
+    let newActiveValue = ''
+    const listItemKeyLength = listItemKeys.length
 
-  if (PREV_KEYS.includes(key)) {
-    if (activeValue.value) {
-      const index = listItemKeys.indexOf(activeValue.value)
-      if (props.loop) {
-        const prevIndex = (index - 1 + listItemKeys.length) % listItemKeys.length
-        newActiveValue = listItemKeys[prevIndex]!
-      } else if (index > 0) {
-        newActiveValue = listItemKeys[index - 1]!
+    if (PREV_KEYS.includes(key)) {
+      if (activeValue.value) {
+        const index = listItemKeys.indexOf(activeValue.value)
+        if (props.loop) {
+          const prevIndex = (index - 1 + listItemKeys.length) % listItemKeys.length
+          newActiveValue = listItemKeys[prevIndex]!
+        } else if (index > 0) {
+          newActiveValue = listItemKeys[index - 1]!
+        }
+      } else {
+        newActiveValue = listItemKeys[listItemKeyLength - 1]!
       }
-    } else {
+    } else if (NEXT_KEYS.includes(key)) {
+      if (activeValue.value) {
+        const index = listItemKeys.indexOf(activeValue.value)
+        if (props.loop) {
+          const nextIndex = (index + 1) % listItemKeys.length
+          newActiveValue = listItemKeys[nextIndex]!
+        } else if (index < listItemKeys.length - 1) {
+          newActiveValue = listItemKeys[index + 1]!
+        }
+      } else {
+        newActiveValue = listItemKeys[0]!
+      }
+    } else if (key === 'Home') {
+      newActiveValue = listItemKeys[0]!
+    } else if (key === 'End') {
       newActiveValue = listItemKeys[listItemKeyLength - 1]!
     }
-  } else if (NEXT_KEYS.includes(key)) {
-    if (activeValue.value) {
-      const index = listItemKeys.indexOf(activeValue.value)
-      if (props.loop) {
-        const nextIndex = (index + 1) % listItemKeys.length
-        newActiveValue = listItemKeys[nextIndex]!
-      } else if (index < listItemKeys.length - 1) {
-        newActiveValue = listItemKeys[index + 1]!
-      }
-    } else {
-      newActiveValue = listItemKeys[0]!
+
+    if (!newActiveValue) {
+      return
     }
-  } else if (key === 'Home') {
-    newActiveValue = listItemKeys[0]!
-  } else if (key === 'End') {
-    newActiveValue = listItemKeys[listItemKeyLength - 1]!
-  }
 
-  if (!newActiveValue) {
-    return
-  }
+    if (activeValue.value !== newActiveValue) {
+      emits('toggle')
 
-  if (activeValue.value !== newActiveValue) {
-    emits('toggle')
+      activeValue.value = newActiveValue
+    }
 
-    activeValue.value = newActiveValue
-  }
-
-  listItemsMap.get(activeValue.value)?.scrollIntoView({ block: 'nearest' })
-}, 100, { edges: ['leading'] })
+    listItemsMap.get(activeValue.value)?.scrollIntoView({ block: 'nearest' })
+  },
+  100,
+  { edges: ['leading'] },
+)
 
 function onContainerKeydown(ev: KeyboardEvent) {
   if (!props.keyListener || listItemKeys.length === 0) {

@@ -11,9 +11,12 @@ export function getResponsiveValue<V extends string | number>(
     typeof prop === 'object' ? prop : {},
   )
 
-  return Object.entries(formatted).reduce((acc, [bp, value]) => {
-    valueSetter(acc, bp, value)
+  return Object.entries(formatted).reduce(
+    (acc, [bp, value]) => {
+      valueSetter(acc, bp, value)
 
-    return acc
-  }, {} as Parameters<typeof valueSetter>[0])
+      return acc
+    },
+    {} as Parameters<typeof valueSetter>[0],
+  )
 }

@@ -1,4 +1,5 @@
 # Placeholder
+
 Indicates that it is not empty here.
 
 ## Default
@@ -33,10 +34,14 @@ Customize its size and line color.
 ```
 
 ## Custom
+
 Customize its size and line color.
 
 ```vue demo
 <template>
-  <PPlaceholder color="var(--color-red-500)" class="w-40 h-40 border border-dashed border-green-600 rounded-lg"></PPlaceholder>
+  <PPlaceholder
+    color="var(--color-red-500)"
+    class="w-40 h-40 border border-dashed border-green-600 rounded-lg"
+  ></PPlaceholder>
 </template>
 ```

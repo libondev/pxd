@@ -31,7 +31,9 @@ const avatarGroupContext = useAvatarGroupContext()
 
 const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext?.size, '32px'))
 
-const hideAvatar = computed(() => !props.src || props.placeholder || loadingStatus.value === 'error')
+const hideAvatar = computed(
+  () => !props.src || props.placeholder || loadingStatus.value === 'error',
+)
 
 function onLoadError(event: Event) {
   loadingStatus.value = 'error'
@@ -77,10 +79,13 @@ defineExpose({
         @loadstart="onLoadStart"
         @abort="onLoadError"
         @error="onLoadError"
-      >
+      />
     </slot>
 
-    <div v-if="loading" class="pxd-avatar--loading inset-0 backdrop-blur-xs absolute z-1 rounded-inherit motion-safe:after:animate-spin" />
+    <div
+      v-if="loading"
+      class="pxd-avatar--loading inset-0 backdrop-blur-xs motion-safe:after:animate-spin absolute z-1 rounded-inherit"
+    />
 
     <div
       v-if="$slots.icon"
@@ -104,12 +109,18 @@ defineExpose({
   }
 
   &::before {
-    background-image: linear-gradient(270deg, var(--color-gray-alpha-100), var(--color-gray-alpha-300), var(--color-gray-alpha-300), var(--color-gray-alpha-100));
+    background-image: linear-gradient(
+      270deg,
+      var(--color-gray-alpha-100),
+      var(--color-gray-alpha-300),
+      var(--color-gray-alpha-300),
+      var(--color-gray-alpha-100)
+    );
     background-size: 400% 100%;
   }
 
   &::after {
-    border: 1px solid var(--color-gray-alpha-400)
+    border: 1px solid var(--color-gray-alpha-400);
   }
 }
 

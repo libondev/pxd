@@ -25,19 +25,16 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    min: 0,
-    max: 100,
-    step: 1,
-    modelValue: 0,
-    variant: 'primary',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  min: 0,
+  max: 100,
+  step: 1,
+  modelValue: 0,
+  variant: 'primary',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
+  change: [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -80,7 +77,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.s
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {
     return Array.isArray(modelValue.value)
-      ? modelValue.value as [number, number]
+      ? (modelValue.value as [number, number])
       : [props.min, modelValue.value as number]
   }
   return [props.min, modelValue.value as number]
@@ -96,7 +93,9 @@ const startPercentage = computed(() => getPercentage(valueArray.value[0]))
 const endPercentage = computed(() => getPercentage(valueArray.value[1]))
 
 const trackStyle = computed(() => {
-  const backgroundColor = props.disabled ? 'var(--color-gray-alpha-400)' : getFallbackValue(props.variant, VARIANTS, 'primary')
+  const backgroundColor = props.disabled
+    ? 'var(--color-gray-alpha-400)'
+    : getFallbackValue(props.variant, VARIANTS, 'primary')
   if (props.range) {
     return {
       left: `${startPercentage.value}%`,
@@ -128,10 +127,7 @@ function updateValueFromPosition(clientX: number) {
   // 应用步进值和边界约束
   const newValue = Math.max(
     props.min,
-    Math.min(
-      props.max,
-      props.step > 0 ? Math.round(rawValue / props.step) * props.step : rawValue,
-    ),
+    Math.min(props.max, props.step > 0 ? Math.round(rawValue / props.step) * props.step : rawValue),
   )
 
   if (props.range) {
@@ -144,7 +140,7 @@ function updateValueFromPosition(clientX: number) {
 
       // 处理滑块交换
       if (newValue > newValueArray[1]) {
-        [newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
+        ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
         activeThumb.value = 'end'
       }
     } else {
@@ -152,7 +148,7 @@ function updateValueFromPosition(clientX: number) {
 
       // 处理滑块交换
       if (newValue < newValueArray[0]) {
-        [newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
+        ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
         activeThumb.value = 'start'
       }
     }
@@ -238,9 +234,8 @@ function handleSliderClick(ev: PointerEvent) {
   const endPos = endPercentage.value / 100
 
   // 选择最近的滑块
-  const thumb = Math.abs(clickPosition - startPos) < Math.abs(clickPosition - endPos)
-    ? 'start'
-    : 'end'
+  const thumb =
+    Math.abs(clickPosition - startPos) < Math.abs(clickPosition - endPos) ? 'start' : 'end'
 
   startDragging(ev, thumb)
 }
@@ -288,22 +283,25 @@ onBeforeUnmount(() => {
     :class="[{ 'cursor-not-allowed': disabled }, computedSize.track]"
     @pointerdown.prevent="onWrapperPointerdown"
   >
-    <div
-      class="pxd-slider--track absolute h-full touch-none rounded-full"
-      :style="trackStyle"
-    />
+    <div class="pxd-slider--track absolute h-full touch-none rounded-full" :style="trackStyle" />
 
     <div
       v-if="props.range"
       class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background-100 hover:scale-130 active:z-1 active:scale-130 motion-safe:transition-transform"
-      :class="[{ 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled }, computedSize.thumb]"
+      :class="[
+        { 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled },
+        computedSize.thumb,
+      ]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     />
 
     <div
       class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background-100 hover:scale-130 active:z-1 active:scale-130 motion-safe:transition-transform"
-      :class="[{ 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled }, computedSize.thumb]"
+      :class="[
+        { 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled },
+        computedSize.thumb,
+      ]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     />
@@ -312,7 +310,9 @@ onBeforeUnmount(() => {
 
 <style>
 .pxd-slider--thumb {
-  box-shadow: 0 0 0 1px var(--color-gray-alpha-500), 0 1px 2px var(--color-gray-alpha-100);
+  box-shadow:
+    0 0 0 1px var(--color-gray-alpha-500),
+    0 1px 2px var(--color-gray-alpha-100);
 }
 
 .pxd-slider--thumb::after {

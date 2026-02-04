@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+
 import { createContext } from '../utils/context'
 
 interface CollapseGroupContext {
@@ -7,7 +8,5 @@ interface CollapseGroupContext {
   toggleItem: (id: string, expanded: boolean) => void
 }
 
-export const [
-  provideCollapseGroupContext,
-  useCollapseGroupContext,
-] = createContext<CollapseGroupContext>('CollapseGroup')
+export const [provideCollapseGroupContext, useCollapseGroupContext] =
+  createContext<CollapseGroupContext>('CollapseGroup')

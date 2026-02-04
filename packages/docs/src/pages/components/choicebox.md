@@ -1,4 +1,5 @@
 # Choicebox
+
 A larger form of Radio or Checkbox, where the user has a larger tap target and more details.
 
 ## Single-select
@@ -12,16 +13,8 @@ const modelValue = ref('trial')
 
 <template>
   <PChoiceboxGroup v-model="modelValue" :direction="{ xs: 'vertical', sm: 'horizontal' }">
-    <PChoicebox
-      label="Pro trial"
-      value="trial"
-      description="Free for two weeks"
-    />
-    <PChoicebox
-      label="Pro"
-      value="pro"
-      description="Get started now"
-    />
+    <PChoicebox label="Pro trial" value="trial" description="Free for two weeks" />
+    <PChoicebox label="Pro" value="pro" description="Get started now" />
   </PChoiceboxGroup>
 </template>
 ```
@@ -49,7 +42,12 @@ const options = [
 </script>
 
 <template>
-  <PChoiceboxGroup v-model="modelValue" :options="options" multiple :direction="{ xs: 'vertical', sm: 'horizontal' }" />
+  <PChoiceboxGroup
+    v-model="modelValue"
+    :options="options"
+    multiple
+    :direction="{ xs: 'vertical', sm: 'horizontal' }"
+  />
 </template>
 ```
 

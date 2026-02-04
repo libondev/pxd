@@ -19,14 +19,11 @@ defineOptions({
   inheritAttrs: false,
 })
 
-withDefaults(
-  defineProps<Props>(),
-  {
-    options: () => [],
-    position: 'bottom-start',
-    closeOnPressEscape: true,
-  },
-)
+withDefaults(defineProps<Props>(), {
+  options: () => [],
+  position: 'bottom-start',
+  closeOnPressEscape: true,
+})
 
 const emits = defineEmits<{
   change: [visible: boolean]

@@ -24,41 +24,52 @@ Vue 3.5 introduced `deep: number` for watch depth control. This allows watching 
 
 ```typescript
 // Vue 3.5+ only
-watch(items, (newVal) => {
-  // Triggered on array mutations (push, pop, splice, etc.)
-}, { deep: 1 })
+watch(
+  items,
+  (newVal) => {
+    // Triggered on array mutations (push, pop, splice, etc.)
+  },
+  { deep: 1 },
+)
 ```
 
-| deep value | Behavior |
-|------------|----------|
-| `true` | Full recursive traversal (original behavior) |
-| `false` | Only reference changes |
-| `1` | One level deep - array mutations, not nested objects |
-| `2` | Two levels deep |
-| `n` | N levels deep |
+| deep value | Behavior                                             |
+| ---------- | ---------------------------------------------------- |
+| `true`     | Full recursive traversal (original behavior)         |
+| `false`    | Only reference changes                               |
+| `1`        | One level deep - array mutations, not nested objects |
+| `2`        | Two levels deep                                      |
+| `n`        | N levels deep                                        |
 
 ## Fix
 
 **Step 1: Ensure Vue 3.5+**
+
 ```bash
 npm install vue@^3.5.0
 ```
 
 **Step 2: Update @vue/runtime-core types**
+
 ```bash
 npm install -D @vue/runtime-core@latest
 ```
 
 **Step 3: Use numeric depth**
+
 ```typescript
 import { watch, ref } from 'vue'
 
 const items = ref([{ id: 1, data: { nested: 'value' } }])
 
 // Watch array mutations only (push, pop, etc.)
-watch(items, (newItems) => {
-  console.log('Array mutated')
-}, { deep: 1 })
+watch(
+  items,
+  (newItems) => {
+    console.log('Array mutated')
+  },
+  { deep: 1 },
+)
 
 // Won't trigger on: items.value[0].data.nested = 'new'
 // Will trigger on: items.value.push(newItem)
@@ -67,7 +78,9 @@ watch(items, (newItems) => {
 ## Performance Comparison
 
 ```typescript
-const largeNestedData = ref({ /* deeply nested structure */ })
+const largeNestedData = ref({
+  /* deeply nested structure */
+})
 
 // SLOW - traverses entire structure
 watch(largeNestedData, handler, { deep: true })
@@ -92,6 +105,7 @@ watchEffect(() => {
 ## TypeScript Note
 
 If TypeScript complains about numeric deep, ensure:
+
 1. Vue version is 3.5+
 2. `@vue/runtime-core` types are updated
 3. tsconfig targets correct node_modules types

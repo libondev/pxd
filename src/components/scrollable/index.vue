@@ -29,14 +29,11 @@ defineOptions({
   name: 'PScrollable',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    fader: true,
-    scrollbar: true,
-    endThreshold: 10,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  fader: true,
+  scrollbar: true,
+  endThreshold: 10,
+})
 
 const emits = defineEmits<{
   scroll: [Event]
@@ -119,8 +116,8 @@ function updateScrollbarMetrics() {
   const isScrollableX = effScrollW > effClientW
   const isScrollableY = effScrollH > effClientH
 
-  const verticalRatio = effScrollH > 0 ? (effClientH / effScrollH) : 0
-  const horizontalRatio = effScrollW > 0 ? (effClientW / effScrollW) : 0
+  const verticalRatio = effScrollH > 0 ? effClientH / effScrollH : 0
+  const horizontalRatio = effScrollW > 0 ? effClientW / effScrollW : 0
 
   const verticalThumbHeight = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
   const horizontalThumbWidth = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)

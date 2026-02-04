@@ -2,7 +2,10 @@
 import type { ChoiceboxGroupProps } from '../../types/components/choicebox'
 import { computed, markRaw, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
-import { provideChoiceboxGroupContext, provideChoiceboxGroupModelValue } from '../../contexts/choicebox'
+import {
+  provideChoiceboxGroupContext,
+  provideChoiceboxGroupModelValue,
+} from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
 import PChoicebox from '../choicebox/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
@@ -16,18 +19,15 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<ChoiceboxGroupProps>(),
-  {
-    type: 'radio',
-    required: false,
-    disabled: false,
-    modelValue: '',
-  },
-)
+const props = withDefaults(defineProps<ChoiceboxGroupProps>(), {
+  type: 'radio',
+  required: false,
+  disabled: false,
+  modelValue: '',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<ChoiceboxGroupProps['modelValue']>]
+  change: [NonNullable<ChoiceboxGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<ChoiceboxGroupProps['modelValue']>]
 }>()
 
@@ -42,10 +42,10 @@ const computedAttrs = computed(() => {
   const { class: classes, ...rest } = attrs
 
   return {
-    'role': multiple ? 'group' : 'radiogroup',
+    role: multiple ? 'group' : 'radiogroup',
     'aria-required': required,
     'aria-multiselectable': multiple,
-    'gap': attrs.gap || '3',
+    gap: attrs.gap || '3',
     disabled,
     required,
     options,

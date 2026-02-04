@@ -1,4 +1,5 @@
 # Status Dot
+
 Display an indicator of deployment status.
 
 ## Default
@@ -16,6 +17,7 @@ Display an indicator of deployment status.
 ```
 
 ## Label
+
 Set the `label` property to show the status text.
 
 ```vue demo
@@ -31,6 +33,7 @@ Set the `label` property to show the status text.
 ```
 
 ## Custom Label Text
+
 Or pass a `string` to the `label` to customize the text.
 
 ```vue demo

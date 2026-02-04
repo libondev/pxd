@@ -43,28 +43,25 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    offset: 8,
-    trigger: () => ['hover'],
-    position: 'bottom',
-    showDelay: 0,
-    hideDelay: 0,
-    arrowColor: 'hsl(var(--primary))',
-    interactive: true,
-    toggleClick: true,
-    autoPosition: true,
-    unsetPosition: false,
-    transitionType: 'fade-scale',
-    closeOnInvisible: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  offset: 8,
+  trigger: () => ['hover'],
+  position: 'bottom',
+  showDelay: 0,
+  hideDelay: 0,
+  arrowColor: 'hsl(var(--primary))',
+  interactive: true,
+  toggleClick: true,
+  autoPosition: true,
+  unsetPosition: false,
+  transitionType: 'fade-scale',
+  closeOnInvisible: true,
+})
 
 const emits = defineEmits<{
-  'show': []
-  'hide': []
-  'escape': [KeyboardEvent]
+  show: []
+  hide: []
+  escape: [KeyboardEvent]
   'outside-click': [MouseEvent]
   'trigger-click': [PointerEvent]
   'visible-change': [visible: boolean]
@@ -88,10 +85,7 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
 
-const {
-  lockScroll,
-  unlockScroll,
-} = useLockScroll()
+const { lockScroll, unlockScroll } = useLockScroll()
 
 const {
   render: isRender,
@@ -125,21 +119,25 @@ const {
 
 useOutsideClick(wrapperRef, {
   isEnabled: () => {
-    return isVisible.value && allowedMethods.some(t => triggerMethods.value.includes(t))
+    return isVisible.value && allowedMethods.some((t) => triggerMethods.value.includes(t))
   },
   isOutside: (ev) => {
     const el = ev.target as HTMLElement
     return !(triggerRef.value?.contains(el) || wrapperRef.value?.contains(el))
   },
-  onTrigger: debounce((ev) => {
-    emits('outside-click', ev)
+  onTrigger: debounce(
+    (ev) => {
+      emits('outside-click', ev)
 
-    if (triggerMethods.value.includes('manual')) {
-      return
-    }
+      if (triggerMethods.value.includes('manual')) {
+        return
+      }
 
-    handlePopoverHide()
-  }, 500, { edges: ['leading'] }),
+      handlePopoverHide()
+    },
+    500,
+    { edges: ['leading'] },
+  ),
 })
 
 useIntersectionObserver(triggerRef, ([entry]) => {
@@ -219,10 +217,13 @@ async function handlePopoverHide(immediate: boolean = false) {
       showPopoverTimer = null
     }
 
-    hidePopoverTimer = setTimeout(() => {
-      hidePopoverTimer = null
-      resolve()
-    }, immediate ? 0 : props.hideDelay)
+    hidePopoverTimer = setTimeout(
+      () => {
+        hidePopoverTimer = null
+        resolve()
+      },
+      immediate ? 0 : props.hideDelay,
+    )
   })
 
   await hidePopover()
@@ -403,28 +404,66 @@ defineExpose({
 
 <style lang="postcss">
 @keyframes popover-fade-show {
-  0% { opacity: 0; pointer-events: none; }
-  100% { opacity: 1 }
+  0% {
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 @keyframes popover-fade-hide {
-  0% { opacity: 1 }
-  100% { opacity: 0; pointer-events: none; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 @keyframes popover-fade-scale-show {
-  0% { transform: scale(0.95); opacity: 0; pointer-events: none; }
-  100% { transform: scale(1); opacity: 1 }
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 @keyframes popover-fade-scale-hide {
-  0% { transform: scale(1); opacity: 1 }
-  100% { transform: scale(0.95); opacity: 0; pointer-events: none; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 @keyframes popover-fade-slide-show {
-  0% { transform: translateY(100%); opacity: 0; pointer-events: none; }
-  100% { transform: translateY(0); opacity: 1 }
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 @keyframes popover-fade-slide-hide {
-  0% { transform: translateY(0); opacity: 1 }
-  100% { transform: translateY(100%); opacity: 0; pointer-events: none; }
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .pxd-popover--container {
@@ -435,27 +474,27 @@ defineExpose({
     will-change: transform, animation;
   }
 
-  [data-visible="true"] &[data-transition-type="fade"] {
+  [data-visible='true'] &[data-transition-type='fade'] {
     animation-name: popover-fade-show;
   }
 
-  [data-visible="false"] &[data-transition-type="fade"] {
+  [data-visible='false'] &[data-transition-type='fade'] {
     animation-name: popover-fade-hide;
   }
 
-  [data-visible="true"] &[data-transition-type="fade-scale"] {
+  [data-visible='true'] &[data-transition-type='fade-scale'] {
     animation-name: popover-fade-scale-show;
   }
 
-  [data-visible="false"] &[data-transition-type="fade-scale"] {
+  [data-visible='false'] &[data-transition-type='fade-scale'] {
     animation-name: popover-fade-scale-hide;
   }
 
-  [data-visible="true"] &[data-transition-type="fade-slide"] {
+  [data-visible='true'] &[data-transition-type='fade-slide'] {
     animation-name: popover-fade-slide-show;
   }
 
-  [data-visible="false"] &[data-transition-type="fade-slide"] {
+  [data-visible='false'] &[data-transition-type='fade-slide'] {
     animation-name: popover-fade-slide-hide;
   }
 
@@ -480,7 +519,7 @@ defineExpose({
   }
 
   &[data-position='left'] {
-    transform-origin: right center ;
+    transform-origin: right center;
   }
   &[data-position='left-start'] {
     transform-origin: right top;
@@ -499,9 +538,9 @@ defineExpose({
     transform-origin: left bottom;
   }
 
-  &[data-position="top"] .pxd-popover--arrow,
-  &[data-position="top-start"] .pxd-popover--arrow,
-  &[data-position="top-end"] .pxd-popover--arrow {
+  &[data-position='top'] .pxd-popover--arrow,
+  &[data-position='top-start'] .pxd-popover--arrow,
+  &[data-position='top-end'] .pxd-popover--arrow {
     bottom: -5px;
     border-width: 6px 6px 0;
     border-color: var(--popover-arrow-bg) transparent transparent;

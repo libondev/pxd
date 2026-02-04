@@ -22,13 +22,10 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    prompt: '$ ',
-    variant: 'default',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  prompt: '$ ',
+  variant: 'default',
+})
 
 const emits = defineEmits<{
   copy: [string]
@@ -38,7 +35,7 @@ const config = useConfigProvider()
 
 const { isCopied, copyText } = useCopyClick()
 
-const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIcon)
+const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyIcon))
 const computedTextArray = computed(() => toArray(props.text))
 
 const computedClasses = computed(() => {
@@ -61,7 +58,14 @@ async function onCopyButtonClick() {
 <template>
   <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="$attrs">
     <div class="pxd-snippet--container">
-      <pre v-for="(t, i) of computedTextArray" :key="i" class="m-0 p-0" :data-prompt="prompt" :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }">{{ t }}</pre>
+      <pre
+        v-for="(t, i) of computedTextArray"
+        :key="i"
+        class="m-0 p-0"
+        :data-prompt="prompt"
+        :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }"
+        >{{ t }}</pre
+      >
     </div>
 
     <div

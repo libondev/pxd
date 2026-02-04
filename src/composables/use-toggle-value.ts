@@ -6,10 +6,7 @@ interface Options {
 }
 
 export function useToggleValue(initialValue: boolean = false, options: Options = {}) {
-  const {
-    truthyValue = true,
-    falsyValue = false,
-  } = options
+  const { truthyValue = true, falsyValue = false } = options
 
   const value = shallowRef(initialValue)
 

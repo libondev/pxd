@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  shallowRef,
-  watch,
-} from 'vue'
+import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables'
 import { cachedOff, cachedOn, NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
@@ -41,15 +35,12 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<{
-  'click': [MouseEvent]
-  'escape': [KeyboardEvent]
+  click: [MouseEvent]
+  escape: [KeyboardEvent]
   'update:modelValue': [boolean]
 }>()
 
-const {
-  lockScroll,
-  unlockScroll,
-} = useLockScroll()
+const { lockScroll, unlockScroll } = useLockScroll()
 
 const overlayId = Symbol('pxd-overlay')
 
@@ -99,9 +90,10 @@ function tryGetShownElementIfNeed() {
     return
   }
 
-  const el = typeof shownElement === 'string'
-    ? document.querySelector<HTMLElement>(shownElement)
-    : unrefElement(shownElement)
+  const el =
+    typeof shownElement === 'string'
+      ? document.querySelector<HTMLElement>(shownElement)
+      : unrefElement(shownElement)
 
   if (!el) {
     return
@@ -148,16 +140,9 @@ function onOverlayVisibleChange(visible: boolean) {
   shownElementEl?.classList.remove('pointer-events-auto')
 }
 
-watch(
-  () => props.modelValue,
-  onOverlayVisibleChange,
-  { immediate: true },
-)
+watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
 
-watch(
-  () => props.shownElement,
-  tryGetShownElementIfNeed,
-)
+watch(() => props.shownElement, tryGetShownElementIfNeed)
 
 onBeforeUnmount(() => {
   cachedOff(document, 'keydown', onOverlayKeydown)
@@ -188,14 +173,14 @@ onBeforeUnmount(() => {
 
 <style>
 .pxd-overlay {
-  z-index: var(--overlay-z-index, 10)
+  z-index: var(--overlay-z-index, 10);
 }
 
-.pxd-overlay[data-blurred="true"] {
+.pxd-overlay[data-blurred='true'] {
   backdrop-filter: blur(4px);
 }
 
-.pxd-overlay[data-transparent="true"] {
+.pxd-overlay[data-transparent='true'] {
   opacity: 0;
 }
 </style>

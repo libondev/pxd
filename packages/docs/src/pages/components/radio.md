@@ -1,4 +1,5 @@
 # Radio
+
 Provides single user input from a selection of options.
 
 ## Default
@@ -19,6 +20,7 @@ const modelValue = ref('one')
 ```
 
 ## Group
+
 Support all props of `stack` components
 
 ```vue demo
@@ -34,12 +36,7 @@ const options = [
 </script>
 
 <template>
-  <PRadioGroup
-    v-model="value"
-    :options="options"
-    gap="3"
-    direction="vertical"
-  />
+  <PRadioGroup v-model="value" :options="options" gap="3" direction="vertical" />
 
   <PRadioGroup
     v-model="value"
@@ -53,6 +50,7 @@ const options = [
 ```
 
 ## Radio standalone
+
 Standalone unlabelled radio input for use in custom UI.
 
 ```vue demo

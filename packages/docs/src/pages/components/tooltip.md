@@ -1,32 +1,23 @@
 # Tooltip
+
 Display prompt information for mouse hover.
 
 ## Default
+
 The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
 
 ```vue demo
 <template>
   <PStack>
-    <PTooltip
-      position="left"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip position="left" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Hover me</PButton>
     </PTooltip>
 
-    <PTooltip
-      position="top"
-      trigger="click"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip position="top" trigger="click" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Click me</PButton>
     </PTooltip>
 
-    <PTooltip
-      position="bottom"
-      trigger="focus"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip position="bottom" trigger="focus" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Focus me</PButton>
     </PTooltip>
 
@@ -46,31 +37,19 @@ The component inherits from popover and supports all the properties of popover. 
 ```vue demo
 <template>
   <PStack>
-    <PTooltip
-      variant="primary"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip variant="primary" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Hover me</PButton>
     </PTooltip>
 
-    <PTooltip
-      variant="success"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip variant="success" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Hover me</PButton>
     </PTooltip>
 
-    <PTooltip
-      variant="warning"
-      content="The Evil Rabbit Jumped over the Fence"
-     >
+    <PTooltip variant="warning" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Hover me</PButton>
     </PTooltip>
 
-    <PTooltip
-      variant="error"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip variant="error" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Hover me</PButton>
     </PTooltip>
   </PStack>
@@ -88,9 +67,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 <template>
   <PTooltip variant="success" :interactive="false">
-    <PButton>
-      Hover me
-    </PButton>
+    <PButton> Hover me </PButton>
 
     <template #content>
       {{ content }}
@@ -104,25 +81,15 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 ```vue demo
 <template>
   <PStack>
-    <PTooltip
-      :show-delay="0"
-      :hide-delay="0"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip :show-delay="0" :hide-delay="0" content="The Evil Rabbit Jumped over the Fence">
       <PButton>0ms</PButton>
     </PTooltip>
 
-    <PTooltip
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip content="The Evil Rabbit Jumped over the Fence">
       <PButton>300ms(default)</PButton>
     </PTooltip>
 
-    <PTooltip
-      :show-delay="200"
-      :hide-delay="400"
-      content="The Evil Rabbit Jumped over the Fence"
-    >
+    <PTooltip :show-delay="200" :hide-delay="400" content="The Evil Rabbit Jumped over the Fence">
       <PButton>Show: 200ms, Hide: 400ms</PButton>
     </PTooltip>
   </PStack>
@@ -138,9 +105,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 <template>
   <PTooltip :content="content" :show-arrow="false">
-    <PButton>
-      Hover to active
-    </PButton>
+    <PButton> Hover to active </PButton>
   </PTooltip>
 </template>
 ```
@@ -152,9 +117,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   <PTooltip>
     <PButton>Hover me</PButton>
 
-    <template #content>
-      The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>.
-    </template>
+    <template #content> The <b>Evil Rabbit</b> Jumped over the <i>Fence</i>. </template>
   </PTooltip>
 </template>
 ```

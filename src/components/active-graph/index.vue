@@ -49,36 +49,33 @@ defineOptions({
   name: 'PActiveGraph',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    legend: true,
-    graphOnly: false,
-    tooltip: true,
-    tooltipText: '{COUNT} on {DATE}',
-    data: () => [],
-    startDate: () => {
-      // 默认起始日期为一年前的第一个周日
-      const date = new Date()
-      date.setFullYear(date.getFullYear() - 1)
+const props = withDefaults(defineProps<Props>(), {
+  legend: true,
+  graphOnly: false,
+  tooltip: true,
+  tooltipText: '{COUNT} on {DATE}',
+  data: () => [],
+  startDate: () => {
+    // 默认起始日期为一年前的第一个周日
+    const date = new Date()
+    date.setFullYear(date.getFullYear() - 1)
 
-      // 向前找到第一个星期日
-      while (date.getDay() !== 0) {
-        date.setDate(date.getDate() - 1)
-      }
+    // 向前找到第一个星期日
+    while (date.getDay() !== 0) {
+      date.setDate(date.getDate() - 1)
+    }
 
-      return date
-    },
-    endDate: () => new Date(),
-    colors: () => ({
-      0: '',
-      5: 'var(--color-green-300)',
-      10: 'var(--color-green-500)',
-      15: 'var(--color-green-700)',
-      20: 'var(--color-green-900)',
-    }),
+    return date
   },
-)
+  endDate: () => new Date(),
+  colors: () => ({
+    0: '',
+    5: 'var(--color-green-300)',
+    10: 'var(--color-green-500)',
+    15: 'var(--color-green-700)',
+    20: 'var(--color-green-900)',
+  }),
+})
 
 const emits = defineEmits<{
   'cell-click': [MouseEvent, string]
@@ -94,10 +91,13 @@ const rangedDates = computed(() => getAllDatesBetween(props.startDate, props.end
 const dateCountMap = computed(() => {
   const { date, count } = props.fieldNames || { date: 'date', count: 'count' }
 
-  return props.data.reduce((acc, cur) => {
-    acc[cur[date]] = (acc[cur[date]] || 0) + cur[count]
-    return acc
-  }, {} as Record<string, number>)
+  return props.data.reduce(
+    (acc, cur) => {
+      acc[cur[date]] = (acc[cur[date]] || 0) + cur[count]
+      return acc
+    },
+    {} as Record<string, number>,
+  )
 })
 
 /** 根据日期索引获取本地化的星期几 */
@@ -167,9 +167,7 @@ function createMonthHeaders() {
 
 /** 计算表格主体数据 */
 const tableBodyList = computed<RowData[]>(() => {
-  return props.transpose
-    ? createTransposedTableData()
-    : createStandardTableData()
+  return props.transpose ? createTransposedTableData() : createStandardTableData()
 })
 
 /** 创建转置模式的表格数据（行为日期，列为星期） */
@@ -298,7 +296,7 @@ function markMonthRows(rows: RowData[]): RowData[] {
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]!
-    const firstValidCell = row.find(cell => !cell.hidden && cell.date)
+    const firstValidCell = row.find((cell) => !cell.hidden && cell.date)
 
     if (firstValidCell) {
       const date = new Date(firstValidCell.date!)
@@ -335,18 +333,13 @@ let tbodyRect: DOMRect
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
 const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
 
-const {
-  value: showTooltip,
-  setValue: setShowTooltip,
-} = useDelayChange(false, { delay: 500 })
+const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
 
 const formatTooltipText = computed(() => {
   if (props.tooltipText) {
     const { date = '', count = 0 } = tooltipInfo.value
 
-    return props.tooltipText
-      .replace(/\{DATE\}/g, date)
-      .replace(/\{COUNT\}/g, String(count))
+    return props.tooltipText.replace(/\{DATE\}/g, date).replace(/\{COUNT\}/g, String(count))
   }
 
   return ''
@@ -415,12 +408,12 @@ onBeforeUnmount(() => {
       role="grid"
       aria-readonly="true"
       class="border-separate"
-      style="border-spacing: 3px;"
+      style="border-spacing: 3px"
       @pointerleave="onMouseLeave"
     >
       <thead v-if="!graphOnly" class="text-xs">
         <tr class="h-3">
-          <th class="pxd-active-graph--label" style="width: 30px;min-width: 30px;" />
+          <th class="pxd-active-graph--label" style="width: 30px; min-width: 30px" />
 
           <th
             v-for="(col, i) in tableHeadList"
@@ -440,7 +433,9 @@ onBeforeUnmount(() => {
         @pointerover.capture="onMouseOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
-          <td class="pxd-active-graph--label relative overflow-hidden leading-none text-foreground-secondary">
+          <td
+            class="pxd-active-graph--label relative overflow-hidden leading-none text-foreground-secondary"
+          >
             <span class="top-0 right-1 absolute">
               {{ row.headerText }}
             </span>
@@ -460,7 +455,9 @@ onBeforeUnmount(() => {
           <tr class="pxd-active-graph--placeholder h-0.5 pointer-events-none" />
           <tr class="pxd-active-graph--legend pointer-events-none">
             <td class="h-3 relative text-foreground-secondary">
-              <span class="right-1 absolute top-1/2 -translate-y-1/2">{{ config.locale.compare.less }}</span>
+              <span class="right-1 absolute top-1/2 -translate-y-1/2">{{
+                config.locale.compare.less
+              }}</span>
             </td>
 
             <td
@@ -471,7 +468,9 @@ onBeforeUnmount(() => {
             />
 
             <td class="h-3 w-3 relative text-foreground-secondary">
-              <span class="absolute top-1/2 left-px -translate-y-1/2">{{ config.locale.compare.more }}</span>
+              <span class="absolute top-1/2 left-px -translate-y-1/2">{{
+                config.locale.compare.more
+              }}</span>
             </td>
           </tr>
         </template>

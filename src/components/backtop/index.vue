@@ -18,12 +18,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    visibleThreshold: 30,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  visibleThreshold: 30,
+})
 
 let scrollContainer: ReturnType<typeof getScrollContainer> | null
 let scrollContainerEl: ReturnType<typeof getScrollElByContainer> | null

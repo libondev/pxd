@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import MoreButton from '../../src/components/more-button/index.vue'
 
 describe('more-button', () => {
@@ -50,7 +51,7 @@ describe('more-button', () => {
   it('should toggle expanded state when clicked', async () => {
     const wrapper = mount(MoreButton, {
       props: {
-        'modelValue': false,
+        modelValue: false,
         'onUpdate:modelValue': (value) => {
           wrapper.setProps({
             modelValue: value,

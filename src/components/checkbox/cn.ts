@@ -2,8 +2,10 @@ import { tv } from 'tailwind-variants'
 
 export const checkboxVariant = tv({
   slots: {
-    wrapper: 'pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed',
-    inner: 'pxd-checkbox--inner size-4 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden rounded-sm border peer-focus-ring motion-safe:transition-colors',
+    wrapper:
+      'pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed',
+    inner:
+      'pxd-checkbox--inner size-4 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden rounded-sm border peer-focus-ring motion-safe:transition-colors',
   },
   variants: {
     checked: {

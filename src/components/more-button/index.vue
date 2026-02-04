@@ -18,17 +18,14 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    moreText: 'Show More',
-    lessText: 'Show Less',
-    modelValue: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  moreText: 'Show More',
+  lessText: 'Show Less',
+  modelValue: false,
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
+  change: [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -45,7 +42,10 @@ function onToggleExpand() {
       {{ isExpanded ? lessText : moreText }}
 
       <template #suffix>
-        <ChevronDownIcon class="-ml-0.5 motion-safe:transition-transform motion-safe:duration-200" :class="{ 'rotate-180': isExpanded }" />
+        <ChevronDownIcon
+          class="-ml-0.5 motion-safe:transition-transform motion-safe:duration-200"
+          :class="{ 'rotate-180': isExpanded }"
+        />
       </template>
     </PButton>
   </div>

@@ -14,7 +14,10 @@ defineProps<Props>()
 
 <template>
   <div class="pxd-command-menu-group" role="presentation">
-    <div aria-hidden="true" class="h-10 px-2 flex items-center text-13px text-foreground-secondary only:hidden empty:hidden">
+    <div
+      aria-hidden="true"
+      class="h-10 px-2 flex items-center text-13px text-foreground-secondary only:hidden empty:hidden"
+    >
       {{ label }}
     </div>
 

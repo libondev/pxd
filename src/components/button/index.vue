@@ -11,18 +11,17 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<ButtonProps>(),
-  {
-    icon: false,
-    as: 'button',
-    align: 'center',
-    variant: 'default',
-  },
-)
+const props = withDefaults(defineProps<ButtonProps>(), {
+  icon: false,
+  as: 'button',
+  align: 'center',
+  variant: 'default',
+})
 
 const config = useConfigProvider()
-const computedDisabled = computed<boolean>(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
+const computedDisabled = computed<boolean>(
+  () => isTruthyProp(props.disabled) || isTruthyProp(props.loading),
+)
 
 const computedClasses = computed(() => {
   const { size = config.size, shape, align, variant, fullWidth, icon } = props

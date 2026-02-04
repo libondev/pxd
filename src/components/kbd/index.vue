@@ -40,9 +40,12 @@ const config = useConfigProvider()
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
 
 const internalKey = computed(() => {
-  return Object.entries(INTERNAL_KEYS).filter(([k]) => {
-    return props[k as keyof Props]
-  }).map(([,v]) => v).join('')
+  return Object.entries(INTERNAL_KEYS)
+    .filter(([k]) => {
+      return props[k as keyof Props]
+    })
+    .map(([, v]) => v)
+    .join('')
 })
 </script>
 

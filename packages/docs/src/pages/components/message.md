@@ -1,7 +1,9 @@
 # Message
+
 Display global messages as feedback in response to user operations.
 
 ## Default
+
 useMessage needs to ensure that the Message component has been mounted before being invoked. If you need to register multiple times or want to show it in different locations, you can set the group property to isolate it.
 
 ```vue demo
@@ -20,7 +22,8 @@ const options = [
   { label: 'Bottom End', value: 'bottom-end' },
 ]
 
-const loremText = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque minima, excepturi distinctio quis asperiores magnam voluptate nostrum quibusdam!'
+const loremText =
+  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque minima, excepturi distinctio quis asperiores magnam voluptate nostrum quibusdam!'
 
 function addMessage(type) {
   const text = loremText.slice(0, Math.ceil(Math.random() * 100))
@@ -47,22 +50,24 @@ function addMessage(type) {
 ```
 
 ## Promise
+
 Sometimes it is necessary to rely on certain states to complete.
 
 ```vue demo
 <script setup>
 import { useMessage } from 'pxd'
 
-const promise = () => new Promise((resolve, reject) => {
-  setTimeout(() => {
-    const data = { id: Math.random().toString(16).slice(2) }
-    if (Math.random() > .5) {
-      resolve(data)
-    } else {
-      reject(data)
-    }
-  }, 1000)
-});
+const promise = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const data = { id: Math.random().toString(16).slice(2) }
+      if (Math.random() > 0.5) {
+        resolve(data)
+      } else {
+        reject(data)
+      }
+    }, 1000)
+  })
 
 function addMessage() {
   useMessage('Loading...', {
@@ -87,6 +92,7 @@ function addMessage() {
 ```
 
 ## Max
+
 Max prop limits how many message can be displayed at the same time. (default: 3)
 
 ```vue demo
@@ -94,7 +100,7 @@ Max prop limits how many message can be displayed at the same time. (default: 3)
 import { useMessage } from 'pxd'
 
 function addMessage() {
-  useMessage('Now it\'s:' + Date.now(), {
+  useMessage("Now it's:" + Date.now(), {
     class: 'bg-blue-100 border border-dashed border-blue-600 font-mono',
     closeable: true,
     durations: 5000,
@@ -111,6 +117,7 @@ function addMessage() {
 ```
 
 ## Expand
+
 Set `expand` prop to `true` to expand the message content.
 
 ```vue demo
@@ -118,7 +125,7 @@ Set `expand` prop to `true` to expand the message content.
 import { useMessage } from 'pxd'
 
 function addMessage() {
-  useMessage('Now it\'s:' + Date.now(), { group: 'expand' })
+  useMessage("Now it's:" + Date.now(), { group: 'expand' })
 }
 </script>
 
@@ -130,6 +137,7 @@ function addMessage() {
 ```
 
 ## Action
+
 Set the display content of the close button, and choose between it and the close button.
 
 ```vue demo
@@ -144,9 +152,9 @@ function addMessage() {
       label: 'Undo',
       onClick: () => {
         console.log('Undo')
-      }
+      },
     },
-    group: 'action'
+    group: 'action',
   })
 }
 </script>
@@ -169,9 +177,9 @@ let lastKey = 0
 const messageRef = shallowRef()
 
 function addMessage() {
-  useMessage('Now it\'s:' + Date.now(), {
+  useMessage("Now it's:" + Date.now(), {
     id: ++lastKey,
-    group: 'clear'
+    group: 'clear',
   })
 }
 

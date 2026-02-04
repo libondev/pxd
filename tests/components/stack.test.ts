@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import Stack from '../../src/components/stack/index.vue'
 
 describe('stack', () => {

@@ -1,9 +1,11 @@
 # Intersection Observer
+
 Render only when components are visible in the viewport.
 
 > Inspiration comes from<PLinkButton type="text" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
 
 ## Default
+
 The component supports the `root/root-margin/threshold` attribute, which will be passed directly to IntersectionObserver.
 
 ```vue demo
@@ -36,7 +38,9 @@ function onHide() {
 <template>
   <div>
     <span>Content is </span>
-    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
+    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{
+      isVisible ? 'visible' : 'hidden'
+    }}</span>
   </div>
 
   <div class="w-100 max-w-full h-80 overflow-auto mt-2 border border-dashed rounded-lg">
@@ -47,7 +51,7 @@ function onHide() {
       @show="onShow"
       @before-hide="onBeforeHide"
       @hide="onHide"
-     >
+    >
       Hello, world!
     </PIntersectionObserver>
   </div>
@@ -55,15 +59,17 @@ function onHide() {
 ```
 
 ## Estimated size
+
 Setting an estimated size can prevent large layout deviation after rendering. (After the first rendering, it will be replaced with the real size.)
 
 ```vue demo=Static.vue
 <template>
-  <div class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
+  <div
+    class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200"
+  >
     This is a static component.
   </div>
 </template>
-
 ```
 
 ```vue demo
@@ -85,7 +91,9 @@ function onVisibleChange(visible) {
 <template>
   <div>
     <span>Content is </span>
-    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{ isVisible ? 'visible' : 'hidden' }}</span>
+    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{
+      isVisible ? 'visible' : 'hidden'
+    }}</span>
   </div>
 
   <div class="w-100 max-w-full h-60 overflow-auto mt-2 border border-dashed rounded-lg">
@@ -94,7 +102,7 @@ function onVisibleChange(visible) {
       width="100%"
       height="64px"
       @visible-change="onVisibleChange"
-     >
+    >
       <LazyLoadedComponent />
     </PIntersectionObserver>
   </div>
@@ -102,6 +110,7 @@ function onVisibleChange(visible) {
 ```
 
 ## KeepAlive
+
 When your component switching costs a lot, you can enable `keep-alive` to cache components.
 
 ```vue demo=Counter.vue
@@ -116,11 +125,8 @@ function increment() {
 </script>
 
 <template>
-  <PButton variant="primary" @click="increment">
-    Count is: {{ count }}
-  </PButton>
+  <PButton variant="primary" @click="increment"> Count is: {{ count }} </PButton>
 </template>
-
 ```
 
 ```vue demo

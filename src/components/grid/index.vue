@@ -40,7 +40,10 @@ const formattedRows = computed(() => {
     (typeof rows === 'object' ? rows.xs : rows) ?? 0,
     (acc, bp, value) => {
       acc[`--${bp}-rows`] = `repeat(${value}, minmax(0, 1fr))`
-      debug && (acc[`--${bp}-rows-count`] = value || 1)
+
+      if (debug) {
+        acc[`--${bp}-rows-count`] = value || 1
+      }
     },
   )
 })
@@ -53,7 +56,10 @@ const formattedCols = computed(() => {
     (typeof columns === 'object' ? columns.xs : columns) ?? 1,
     (acc, bp, value) => {
       acc[`--${bp}-cols`] = `repeat(${value}, minmax(0, 1fr))`
-      debug && (acc[`--${bp}-cols-count`] = value)
+
+      if (debug) {
+        acc[`--${bp}-cols-count`] = value || 1
+      }
     },
   )
 })
@@ -61,8 +67,12 @@ const formattedCols = computed(() => {
 const computedClasses = computed(() => {
   return [
     'pxd-grid relative grid max-w-full',
-    ...Object.keys(formattedRows.value).map(bp => presetGridRows[bp as keyof typeof presetGridRows]),
-    ...Object.keys(formattedCols.value).map(bp => presetGridCols[bp as keyof typeof presetGridCols]),
+    ...Object.keys(formattedRows.value).map(
+      (bp) => presetGridRows[bp as keyof typeof presetGridRows],
+    ),
+    ...Object.keys(formattedCols.value).map(
+      (bp) => presetGridCols[bp as keyof typeof presetGridCols],
+    ),
     props.debug ? 'debug' : '',
   ].join(' ')
 })
@@ -86,36 +96,16 @@ const computedStyle = computed(() => {
   --grid-line-color: var(--color-amber-400);
 
   background-image:
-    linear-gradient(
-      to right,
-      var(--grid-line-color) 0 1px,
-      transparent 1px 100%
-    ),
-    linear-gradient(
-      to bottom,
-      var(--grid-line-color) 0 1px,
-      transparent 1px 100%
-    ),
-    linear-gradient(
-      to right,
-      transparent calc(100% - 1px),
-      var(--grid-line-color) 0
-    ),
-    linear-gradient(
-      to bottom,
-      transparent calc(100% - 1px),
-      var(--grid-line-color) 0
-    );
+    linear-gradient(to right, var(--grid-line-color) 0 1px, transparent 1px 100%),
+    linear-gradient(to bottom, var(--grid-line-color) 0 1px, transparent 1px 100%),
+    linear-gradient(to right, transparent calc(100% - 1px), var(--grid-line-color) 0),
+    linear-gradient(to bottom, transparent calc(100% - 1px), var(--grid-line-color) 0);
   background-size:
     calc(100% / var(--cols-count)) 100%,
     100% calc(100% / var(--rows-count)),
     100% 100%,
     100% 100%;
-  background-repeat:
-    repeat,
-    repeat,
-    no-repeat,
-    no-repeat;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
   background-origin: padding-box;
 }
 </style>

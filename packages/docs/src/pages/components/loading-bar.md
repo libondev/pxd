@@ -1,4 +1,5 @@
 # Loading Bar
+
 Display the progress of a page or action.
 
 ## Default
@@ -32,6 +33,7 @@ function finish() {
 ```
 
 ## Use loading bar locally
+
 You can set mount target of loading by `to` prop.
 
 ```vue demo
@@ -48,7 +50,6 @@ function start() {
 function finish() {
   useLoadingBar.finish('locally')
 }
-
 
 onMounted(() => {
   nextTick(() => {
@@ -68,6 +69,7 @@ onMounted(() => {
 ```
 
 ## Manually
+
 Like `<Message/>`, there can be multiple `<LoadingBar/>` components, but there may be different parameter configurations between different instances, and you can distinguish them by setting group
 
 ```vue demo

@@ -11,14 +11,11 @@ interface Props {
   variant?: ComponentVariant | 'secondary'
 }
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    size: 10,
-    label: '',
-    variant: 'primary',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  size: 10,
+  label: '',
+  variant: 'primary',
+})
 
 const computedClasses = computed(() => {
   return chipVariant({
@@ -33,7 +30,11 @@ const computedClasses = computed(() => {
   <div class="pxd-chip relative inline-flex shrink-0">
     <slot />
 
-    <span :data-label="label" :class="computedClasses" :style="{ '--chip-size': getCssUnitValue(size) }" />
+    <span
+      :data-label="label"
+      :class="computedClasses"
+      :style="{ '--chip-size': getCssUnitValue(size) }"
+    />
   </div>
 </template>
 

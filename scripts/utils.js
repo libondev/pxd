@@ -11,7 +11,5 @@ export function pascalize(name) {
 
 // 'kabab-case' -> 'Kabab Case'
 export function humanize(name) {
-  return name
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, char => char.toUpperCase())
+  return name.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
 }

@@ -1,7 +1,9 @@
 # Active Graph
+
 Show the activity of users, and show different levels of brightness according to the level.
 
 ## Default
+
 By default, the end date will be today, and the last Sunday of the previous year will be found as the start date.
 
 ```vue demo
@@ -47,9 +49,7 @@ function onCellClick(event, date) {
   <PStack direction="vertical">
     <PActiveGraph :data="data" @cell-click="onCellClick" />
 
-    <PButton class="ml-8" @click="refreshData()">
-      Refresh
-    </PButton>
+    <PButton class="ml-8" @click="refreshData()"> Refresh </PButton>
   </PStack>
 </template>
 ```
@@ -63,25 +63,20 @@ const data = [
   { date: '2025-05-07', count: 10 },
   { date: '2025-05-08', count: 15 },
   { date: '2025-05-09', count: 20 },
-];
+]
 </script>
 
 <template>
-  <PActiveGraph
-    transpose
-    :data="data"
-    start-date="2025-05-01"
-    end-date="2025-05-31"
-  />
+  <PActiveGraph transpose :data="data" start-date="2025-05-01" end-date="2025-05-31" />
 </template>
 ```
 
 ## Field Names
+
 Custom data field.
 
 ```vue demo
 <script setup>
-
 const fieldNames = { date: 'created_at', count: 'value' }
 
 const data = [
@@ -89,7 +84,7 @@ const data = [
   { created_at: '2025-05-07', value: 10 },
   { created_at: '2025-05-08', value: 15 },
   { created_at: '2025-05-09', value: 20 },
-];
+]
 </script>
 
 <template>
@@ -120,7 +115,7 @@ const data = [
   { date: '2025-05-15', count: 30 },
   { date: '2025-05-19', count: 10 },
   { date: '2025-05-29', count: 5 },
-];
+]
 
 const colors = {
   0: 'var(--color-gray-alpha-200)',
@@ -156,7 +151,7 @@ const data = [
   { date: '2025-05-07', count: 10 },
   { date: '2025-05-08', count: 15 },
   { date: '2025-05-09', count: 20 },
-];
+]
 </script>
 
 <template>
@@ -170,15 +165,8 @@ const data = [
     >
     </PActiveGraph>
 
-    <PActiveGraph
-      transpose
-      :data="data"
-      start-date="2025-05-01"
-      end-date="2025-05-31"
-    >
-      <template #tooltip="{ data }">
-        {{ data.count }} contributions on {{ data.date }}.
-      </template>
+    <PActiveGraph transpose :data="data" start-date="2025-05-01" end-date="2025-05-31">
+      <template #tooltip="{ data }"> {{ data.count }} contributions on {{ data.date }}. </template>
     </PActiveGraph>
   </PStack>
 </template>
@@ -193,7 +181,7 @@ const data = [
   { date: '2025-05-07', count: 10 },
   { date: '2025-05-08', count: 15 },
   { date: '2025-05-09', count: 20 },
-];
+]
 </script>
 
 <template>
@@ -227,7 +215,7 @@ const data = [
   { date: '2025-05-07', count: 10 },
   { date: '2025-05-08', count: 15 },
   { date: '2025-05-09', count: 20 },
-];
+]
 </script>
 
 <template>

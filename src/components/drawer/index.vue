@@ -33,23 +33,20 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    position: 'right',
-    modelValue: false,
-    appendToBody: true,
-    footerStylize: true,
-    headerStylize: false,
-    closeOnPressEscape: true,
-    closeOnClickOverlay: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  position: 'right',
+  modelValue: false,
+  appendToBody: true,
+  footerStylize: true,
+  headerStylize: false,
+  closeOnPressEscape: true,
+  closeOnClickOverlay: true,
+})
 
 const emits = defineEmits<{
-  'show': []
-  'hide': []
-  'change': [boolean]
+  show: []
+  hide: []
+  change: [boolean]
   'outside-click': [MouseEvent]
   'visible-change': [boolean]
   'update:modelValue': [boolean]
@@ -103,16 +100,19 @@ function onOverlayClick(ev: MouseEvent) {
   closeOverlayIfNeed()
 }
 
-watch(() => isVisible.value, (visible) => {
-  emits('visible-change', visible)
+watch(
+  () => isVisible.value,
+  (visible) => {
+    emits('visible-change', visible)
 
-  if (visible) {
-    emits('show')
-    return
-  }
+    if (visible) {
+      emits('show')
+      return
+    }
 
-  emits('hide')
-})
+    emits('hide')
+  },
+)
 </script>
 
 <template>
@@ -136,11 +136,16 @@ watch(() => isVisible.value, (visible) => {
         :data-position="ensurePosition"
       >
         <header
-          class="pxd-drawer--header px-6 pt-4 sm:pt-6 relative shrink-0 empty:py-3"
-          :class="{ 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize }"
+          class="pxd-drawer--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"
+          :class="{
+            'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize,
+          }"
         >
           <slot name="header">
-            <h3 v-if="$slots.title || title" class="text-lg sm:text-xl font-semibold tracking-tight m-0">
+            <h3
+              v-if="$slots.title || title"
+              class="text-lg sm:text-xl font-semibold tracking-tight m-0"
+            >
               <slot name="title">
                 {{ title }}
               </slot>
@@ -155,7 +160,7 @@ watch(() => isVisible.value, (visible) => {
         </header>
 
         <div
-          class="pxd-drawer--content px-6 py-4 sm:py-6 h-full flex-1 overflow-auto empty:py-3"
+          class="pxd-drawer--content px-6 py-4 sm:py-6 empty:py-3 h-full flex-1 overflow-auto"
           :class="contentClass"
         >
           <slot />
@@ -175,38 +180,38 @@ watch(() => isVisible.value, (visible) => {
 
 <style>
 .pxd-drawer {
-  &[data-position="left"] {
+  &[data-position='left'] {
     left: 0;
     top: 0;
     bottom: 0;
   }
 
-  &[data-position="top"] {
+  &[data-position='top'] {
     left: 0;
     top: 0;
     right: 0;
   }
 
-  &[data-position="right"] {
+  &[data-position='right'] {
     right: 0;
     top: 0;
     bottom: 0;
   }
 
-  &[data-position="bottom"] {
+  &[data-position='bottom'] {
     left: 0;
     bottom: 0;
     right: 0;
   }
 }
 
-.pxd-drawer[data-position="left"],
-.pxd-drawer[data-position="right"] {
+.pxd-drawer[data-position='left'],
+.pxd-drawer[data-position='right'] {
   width: var(--drawer-size, var(--drawer-width, 80vw));
 }
 
-.pxd-drawer[data-position="top"],
-.pxd-drawer[data-position="bottom"] {
+.pxd-drawer[data-position='top'],
+.pxd-drawer[data-position='bottom'] {
   height: var(--drawer-size, var(--drawer-height, 80vw));
 }
 
@@ -217,7 +222,7 @@ watch(() => isVisible.value, (visible) => {
 .pxd-transition--drawer-top-enter-active,
 .pxd-transition--drawer-top-leave-active,
 .pxd-transition--drawer-bottom-enter-active,
-.pxd-transition--drawer-bottom-leave-active  {
+.pxd-transition--drawer-bottom-leave-active {
   transition-property: transform;
 }
 

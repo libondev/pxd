@@ -1,4 +1,5 @@
 # Checkbox
+
 A control that toggles between two options, checked or unchecked.
 
 ## Default
@@ -44,7 +45,7 @@ watch(
       isCheckedPartial.value = checkboxGroupRef.value.isCheckedPartial()
     })
   },
-  { deep: 1, immediate: true }
+  { deep: 1, immediate: true },
 )
 </script>
 
@@ -88,6 +89,7 @@ const checked = ref(false)
 ```
 
 ## Checkbox standalone
+
 Standalone unlabelled checkbox input for use in custom UI.
 
 ```vue demo

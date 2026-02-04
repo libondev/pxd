@@ -1,4 +1,5 @@
 # Pagination
+
 Navigate to the previous or next page.
 
 ## Default

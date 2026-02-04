@@ -9,9 +9,9 @@ defineOptions({
 const { copyText } = useCopyClick()
 
 const customVariables = ref({
-  'primary': '',
-  'radius': '',
-  'duration': '',
+  primary: '',
+  radius: '',
+  duration: '',
   'timing-function': '',
 })
 
@@ -98,21 +98,25 @@ const customProperties = [
 
 const { isXs, attrs } = usePopoverResponsive()
 
-watch(() => customVariables.value, (newVal) => {
-  const rootElStyle = document.documentElement.style
+watch(
+  () => customVariables.value,
+  (newVal) => {
+    const rootElStyle = document.documentElement.style
 
-  customProperties.forEach((property) => {
-    rootElStyle.setProperty(`--${property.key}`, newVal[property.key])
-  })
-}, { deep: true })
+    customProperties.forEach((property) => {
+      rootElStyle.setProperty(`--${property.key}`, newVal[property.key])
+    })
+  },
+  { deep: true },
+)
 
 const popoverRef = useTemplateRef<InstanceType<typeof PPopover>>('popoverRef')
 
 function resetCustomVariables() {
   customVariables.value = {
-    'primary': '',
-    'radius': '',
-    'duration': '',
+    primary: '',
+    radius: '',
+    duration: '',
     'timing-function': '',
   }
   popoverRef.value?.hide()
@@ -151,17 +155,17 @@ async function copyCustomVariables() {
       <div class="max-sm:px-4 p-3 gap-4 sm:w-64 flex flex-col">
         <div v-for="property in customProperties" :key="property.key">
           <PLabel>{{ property.label }}</PLabel>
-          <PSwitchGroup v-model="customVariables[property.key]" :options="property.options" full-width />
+          <PSwitchGroup
+            v-model="customVariables[property.key]"
+            :options="property.options"
+            full-width
+          />
         </div>
 
         <div class="gap-2 flex">
-          <PButton class="flex-1" @click="resetCustomVariables">
-            Reset
-          </PButton>
+          <PButton class="flex-1" @click="resetCustomVariables"> Reset </PButton>
 
-          <PButton class="flex-1" variant="primary" @click="copyCustomVariables">
-            Copy
-          </PButton>
+          <PButton class="flex-1" variant="primary" @click="copyCustomVariables"> Copy </PButton>
         </div>
       </div>
     </template>

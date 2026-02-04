@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+
 import Kbd from '../../src/components/kbd/index.vue'
 
 describe('kbd', () => {

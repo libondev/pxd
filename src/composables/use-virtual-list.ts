@@ -1,4 +1,5 @@
 import type { ComponentPublicInstance } from 'vue'
+
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 
 export interface VirtualListProps {
@@ -120,7 +121,7 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     }
 
     let firstChangedIndex = -1
-    const changes: { index: number, newHeight: number }[] = []
+    const changes: { index: number; newHeight: number }[] = []
 
     renderList.value.forEach((_, i) => {
       const index = start.value + i
@@ -181,14 +182,21 @@ export function useVirtualList<Props extends VirtualListProps>(props: Props) {
     containerHeight.value = containerRef.value.clientHeight
   }
 
-  const unwatchList = watch(() => props.listData, () => {
-    clearItemRefs()
-    initPositions()
-  }, { immediate: true })
+  const unwatchList = watch(
+    () => props.listData,
+    () => {
+      clearItemRefs()
+      initPositions()
+    },
+    { immediate: true },
+  )
 
-  const unwatchRenderList = watch(() => renderList.value, () => {
-    updatePositions()
-  })
+  const unwatchRenderList = watch(
+    () => renderList.value,
+    () => {
+      updatePositions()
+    },
+  )
 
   function stop() {
     containerRef.value?.removeEventListener('scroll', handleScroll)

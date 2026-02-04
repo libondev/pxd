@@ -29,23 +29,20 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: false,
-    placeholder: '',
-    closeOnSelectItem: true,
-    closeOnPressEscape: true,
-    closeOnClickOverlay: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  placeholder: '',
+  closeOnSelectItem: true,
+  closeOnPressEscape: true,
+  closeOnClickOverlay: true,
+})
 
 const emits = defineEmits<{
   'update:modelValue': [boolean]
-  'select': [MouseEvent, ListOptionSelected]
-  'change': [boolean]
-  'show': []
-  'hide': []
+  select: [MouseEvent, ListOptionSelected]
+  change: [boolean]
+  show: []
+  hide: []
 }>()
 
 const uniqueId = getUniqueId()
@@ -54,15 +51,12 @@ const config = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const isDesktop = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
-const modalInitialFocus = computed(() => isDesktop.value ? `#${uniqueId}` : false)
+const modalInitialFocus = computed(() => (isDesktop.value ? `#${uniqueId}` : false))
 
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
 const isEmptyResult = shallowRef(false)
-const {
-  value: filterKeyword,
-  deferred: deferredFilterKeyword,
-} = useDeferredValue('', {
+const { value: filterKeyword, deferred: deferredFilterKeyword } = useDeferredValue('', {
   async valueChange(v) {
     if (!v) {
       return
@@ -114,7 +108,10 @@ provideListFilterValue(deferredFilterKeyword)
     @hide="hideModal"
   >
     <template #header>
-      <label :for="uniqueId" class="py-3 px-4 -mx-6 -mt-4 sm:-mt-6 gap-3 flex items-center border-b bg-background-100">
+      <label
+        :for="uniqueId"
+        class="py-3 px-4 -mx-6 -mt-4 sm:-mt-6 gap-3 flex items-center border-b bg-background-100"
+      >
         <input
           :id="uniqueId"
           v-model="filterKeyword"
@@ -130,7 +127,7 @@ provideListFilterValue(deferredFilterKeyword)
           type="text"
           name="command-menu-filter-input"
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
-        >
+        />
 
         <PButton
           v-if="closeOnPressEscape"

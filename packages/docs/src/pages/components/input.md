@@ -1,4 +1,5 @@
 # Input
+
 Retrieve text input from a user.
 
 ## Default
@@ -71,13 +72,9 @@ const password = ref('')
     </PInput>
 
     <PInput>
-      <template #prefix>
-        https://
-      </template>
+      <template #prefix> https:// </template>
 
-      <template #suffix>
-        .com
-      </template>
+      <template #suffix> .com </template>
     </PInput>
 
     <PInput :prefix-style="false" :suffix-style="false">
@@ -111,13 +108,9 @@ const password = ref('')
     </PInput>
 
     <PInput disabled>
-      <template #prefix>
-        https://
-      </template>
+      <template #prefix> https:// </template>
 
-      <template #suffix>
-        .com
-      </template>
+      <template #suffix> .com </template>
     </PInput>
 
     <PInput disabled :prefix-style="false" :suffix-style="false">

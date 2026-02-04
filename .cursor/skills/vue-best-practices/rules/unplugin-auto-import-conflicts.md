@@ -26,18 +26,15 @@ Both plugins generate declaration files (`components.d.ts` and `auto-imports.d.t
 ## Fix
 
 **Step 1: Ensure both .d.ts files are in tsconfig include**
+
 ```json
 {
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "components.d.ts",
-    "auto-imports.d.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.vue", "components.d.ts", "auto-imports.d.ts"]
 }
 ```
 
 **Step 2: Set explicit, different dts paths**
+
 ```typescript
 // vite.config.ts
 import Components from 'unplugin-vue-components/vite'
@@ -46,16 +43,17 @@ import AutoImport from 'unplugin-auto-import/vite'
 export default defineConfig({
   plugins: [
     Components({
-      dts: 'src/types/components.d.ts'  // Explicit unique path
+      dts: 'src/types/components.d.ts', // Explicit unique path
     }),
     AutoImport({
-      dts: 'src/types/auto-imports.d.ts'  // Explicit unique path
-    })
-  ]
+      dts: 'src/types/auto-imports.d.ts', // Explicit unique path
+    }),
+  ],
 })
 ```
 
 **Step 3: Regenerate type files**
+
 ```bash
 # Delete existing .d.ts files
 rm components.d.ts auto-imports.d.ts
@@ -71,23 +69,31 @@ Check that the same component isn't declared in both files.
 ## Plugin Order Matters
 
 Configure Components plugin AFTER AutoImport:
+
 ```typescript
 plugins: [
-  AutoImport({ /* ... */ }),
-  Components({ /* ... */ })  // Must come after AutoImport
+  AutoImport({
+    /* ... */
+  }),
+  Components({
+    /* ... */
+  }), // Must come after AutoImport
 ]
 ```
 
 ## Common Mistake: Duplicate Imports
 
 Don't configure the same import in both plugins:
+
 ```typescript
 // Wrong - Vue imported in both
 AutoImport({
-  imports: ['vue']
+  imports: ['vue'],
 })
 Components({
-  resolvers: [/* includes Vue components */]
+  resolvers: [
+    /* includes Vue components */
+  ],
 })
 ```
 

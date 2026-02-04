@@ -1,4 +1,5 @@
 # Pin Input
+
 Used to capture a pin code or otp from the user
 
 ## Default
@@ -38,6 +39,7 @@ const code = ref('12')
 ```
 
 ## Types
+
 Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 
 ```vue demo

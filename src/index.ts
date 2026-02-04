@@ -1,4 +1,5 @@
 import type { App } from 'vue'
+
 import * as components from './components/index'
 
 export { version } from '../package.json'

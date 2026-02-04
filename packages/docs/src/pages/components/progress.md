@@ -1,5 +1,3 @@
-
-
 # Progress
 
 Display progress relative to a limit or related to a task.
@@ -8,7 +6,7 @@ Display progress relative to a limit or related to a task.
 
 ```vue demo
 <script setup>
-  const value = ref(30)
+const value = ref(30)
 </script>
 
 <template>
@@ -24,7 +22,7 @@ Display progress relative to a limit or related to a task.
 
 ```vue demo
 <script setup>
-  const value = ref(30)
+const value = ref(30)
 </script>
 
 <template>
@@ -33,38 +31,37 @@ Display progress relative to a limit or related to a task.
 ```
 
 ## Dynamic colors
+
 Customize the colors of the display at different stages.
 
 ```vue demo
 <script setup>
-  const progress = ref(0)
+const progress = ref(0)
 
-  const colors = {
-    0: 'var(--color-foreground)',
-    25: 'var(--color-red-700)',
-    50: 'var(--color-amber-700)',
-    75: 'var(--color-pink-700)',
-    100: 'var(--color-blue-700)'
-  }
+const colors = {
+  0: 'var(--color-foreground)',
+  25: 'var(--color-red-700)',
+  50: 'var(--color-amber-700)',
+  75: 'var(--color-pink-700)',
+  100: 'var(--color-blue-700)',
+}
 
-  function increase() {
-    if (progress.value < 100) {
-      progress.value += 10
-    }
+function increase() {
+  if (progress.value < 100) {
+    progress.value += 10
   }
+}
 
-  function decrease() {
-    if (progress.value > 0) {
-      progress.value -= 10
-    }
+function decrease() {
+  if (progress.value > 0) {
+    progress.value -= 10
   }
+}
 </script>
 
 <template>
   <PProgress v-model="progress" :colors="colors" label />
-  <PProgress v-model="progress" :colors="colors">
-    {{ progress }} / 100
-  </PProgress>
+  <PProgress v-model="progress" :colors="colors"> {{ progress }} / 100 </PProgress>
 
   <PStack class="mt-4">
     <PButton variant="primary" @click="increase">Increase</PButton>

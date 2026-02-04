@@ -1,4 +1,5 @@
 import type { VNode } from 'vue'
+
 import type { Awaitable } from './utils'
 
 export type ComponentVariant = 'primary' | 'error' | 'warning' | 'success'
@@ -20,10 +21,10 @@ export type ComponentClass = string | any[] | Record<string, any>
 export type ComponentDirection = 'horizontal' | 'vertical'
 
 export type BasePosition = 'top' | 'bottom' | 'left' | 'right'
-export type ComponentPosition<Position extends string = BasePosition>
-  = | Position
-    | `${Position}-start`
-    | `${Position}-end`
+export type ComponentPosition<Position extends string = BasePosition> =
+  | Position
+  | `${Position}-start`
+  | `${Position}-end`
 
 export type ResponsiveValue<T> = T | Partial<ComponentBreakpoint<T>>
 

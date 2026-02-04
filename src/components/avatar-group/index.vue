@@ -8,14 +8,11 @@ defineOptions({
   name: 'PAvatarGroup',
 })
 
-const props = withDefaults(
-  defineProps<AvatarGroupProps>(),
-  {
-    max: 5,
-    size: 32,
-    options: () => [],
-  },
-)
+const props = withDefaults(defineProps<AvatarGroupProps>(), {
+  max: 5,
+  size: 32,
+  options: () => [],
+})
 
 const slicedOptions = computed(() => {
   const { max, options = [] } = props
@@ -39,7 +36,10 @@ provideAvatarGroupContext(props)
       class="[&:nth-child(n+2)]:-ml-2.5 hover:z-1"
     />
 
-    <PAvatar v-if="slicedOptions.length < options.length" class="text-xs -ml-3 bg-gray-1000 text-gray-100">
+    <PAvatar
+      v-if="slicedOptions.length < options.length"
+      class="text-xs -ml-3 bg-gray-1000 text-gray-100"
+    >
       +{{ options.length - slicedOptions.length }}
     </PAvatar>
   </div>

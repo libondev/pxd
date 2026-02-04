@@ -1,4 +1,5 @@
 # Gauge
+
 A circular visual for conveying a percentage.
 
 ## Default

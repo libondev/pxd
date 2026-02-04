@@ -10,12 +10,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-withDefaults(
-  defineProps<Props>(),
-  {
-    variant: 'default',
-  },
-)
+withDefaults(defineProps<Props>(), {
+  variant: 'default',
+})
 </script>
 
 <template>

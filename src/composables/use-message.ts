@@ -1,6 +1,8 @@
 import type { ButtonProps } from 'src/types/components/button'
 import type { VNode } from 'vue'
+
 import type { ComponentClass } from '../types/shared/props'
+
 import { isServer } from '../utils/is'
 
 type MessageContent = string | VNode
@@ -74,7 +76,9 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
   }
 
   window.dispatchEvent(
-    new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, { detail: { type: 'create', group: message.group, data: message } }),
+    new CustomEvent(UPDATE_MESSAGE_EVENT_NAME, {
+      detail: { type: 'create', group: message.group, data: message },
+    }),
   )
 }) as UseMessage
 
@@ -82,7 +86,7 @@ const shortcutTypes = ['info', 'error', 'loading', 'warning', 'success'] as cons
 
 shortcutTypes.forEach((type) => {
   useMessage[type] = (msg: MessageContent, options?: Options) => {
-    useMessage(msg, { ...(options ?? {}), type })
+    useMessage(msg, { ...options, type })
   }
 })
 

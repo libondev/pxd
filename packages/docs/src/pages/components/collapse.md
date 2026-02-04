@@ -1,4 +1,5 @@
 # Collapse
+
 A set of headings, vertically stacked, that each reveal an related section of content. Commonly referred to as an accordion.
 
 ## Default
@@ -8,13 +9,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
   <PCollapseGroup>
     <PCollapse title="Question A">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
 
     <PCollapse title="Question B">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
   </PCollapseGroup>
@@ -28,13 +33,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
   <PCollapseGroup>
     <PCollapse expand title="Question A">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
 
     <PCollapse title="Question B">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
   </PCollapseGroup>
@@ -48,13 +57,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
   <PCollapseGroup multiple>
     <PCollapse title="Question A">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
 
     <PCollapse title="Question B">
       <div class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
+        debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
+        facere ea, hic incidunt necessitatibus.
       </div>
     </PCollapse>
   </PCollapseGroup>
@@ -69,13 +82,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
     <PCollapseGroup size="sm">
       <PCollapse title="Question A">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
 
       <PCollapse title="Question B">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
     </PCollapseGroup>
@@ -83,13 +100,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
     <PCollapseGroup size="md">
       <PCollapse title="Question A">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
 
       <PCollapse title="Question B">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
     </PCollapseGroup>
@@ -97,13 +118,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
     <PCollapseGroup size="lg">
       <PCollapse title="Question A">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
 
       <PCollapse title="Question B">
         <div class="mb-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque facere ea, hic incidunt necessitatibus.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
+          doloremque facere ea, hic incidunt necessitatibus.
         </div>
       </PCollapse>
     </PCollapseGroup>

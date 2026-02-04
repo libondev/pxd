@@ -1,12 +1,9 @@
 import dayjs from 'dayjs/esm/index.js'
 import dayjsDurationPlugin from 'dayjs/esm/plugin/duration/index.js'
+
 import dayjsMillisecondTokenPlugin from '../plugins/dayjs-millisecond-token.js'
 
-export {
-  dayjs,
-  dayjsDurationPlugin,
-  dayjsMillisecondTokenPlugin,
-}
+export { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin }
 
 interface Result<T> {
   years: number[]
@@ -86,7 +83,10 @@ export function getAllDatesBetween(
  * @returns 天数、第一天是周几、最后一天是周几
  */
 export function getMonthDays(year: number, month: number) {
-  const firstDay = dayjs().year(year).month(month - 1).date(1)
+  const firstDay = dayjs()
+    .year(year)
+    .month(month - 1)
+    .date(1)
   const lastDay = firstDay.endOf('month')
 
   return {

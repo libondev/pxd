@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { useCountdown } from '../../src/composables/use-countdown'
 
 describe('useCountdown', () => {
@@ -35,10 +36,7 @@ describe('useCountdown', () => {
   })
 
   it('should start countup from 0', () => {
-    const { timestamp } = useCountdown(
-      { durations: 5000, active: false, invert: true },
-      mockEmits,
-    )
+    const { timestamp } = useCountdown({ durations: 5000, active: false, invert: true }, mockEmits)
     expect(timestamp.value).toBe(0)
   })
 
@@ -60,18 +58,12 @@ describe('useCountdown', () => {
 
   it('should calculate countup based on end time in invert mode', () => {
     mockDateNow.mockReturnValue(1005000)
-    const { timestamp } = useCountdown(
-      { endTime: 1000000, active: false, invert: true },
-      mockEmits,
-    )
+    const { timestamp } = useCountdown({ endTime: 1000000, active: false, invert: true }, mockEmits)
     expect(timestamp.value).toBe(0)
   })
 
   it('should handle durations of 0', () => {
-    const { timestamp } = useCountdown(
-      { durations: 0, active: false, invert: false },
-      mockEmits,
-    )
+    const { timestamp } = useCountdown({ durations: 0, active: false, invert: false }, mockEmits)
     expect(timestamp.value).toBe(0)
   })
 
@@ -84,18 +76,12 @@ describe('useCountdown', () => {
   })
 
   it('should handle undefined durations', () => {
-    const { timestamp } = useCountdown(
-      { active: false, invert: false },
-      mockEmits,
-    )
+    const { timestamp } = useCountdown({ active: false, invert: false }, mockEmits)
     expect(timestamp.value).toBe(0)
   })
 
   it('should emit reset event on reset', () => {
-    const { reset } = useCountdown(
-      { durations: 5000, active: false, invert: false },
-      mockEmits,
-    )
+    const { reset } = useCountdown({ durations: 5000, active: false, invert: false }, mockEmits)
     reset()
     expect(mockEmits).toHaveBeenCalledWith('reset')
   })

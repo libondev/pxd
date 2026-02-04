@@ -1,4 +1,5 @@
 # Slider
+
 Input to select a value from a given range.
 
 ## Default
@@ -69,6 +70,7 @@ const value = ref(35)
 ```
 
 ## Step
+
 Set `step` size with the step attribute
 
 ```vue demo

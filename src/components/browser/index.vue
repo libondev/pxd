@@ -21,35 +21,48 @@ defineProps<Props>()
 
 const { isCopied, copyText } = useCopyClick()
 
-const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIcon)
+const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyIcon))
 </script>
 
 <template>
   <div class="pxd-browser overflow-hidden rounded-md bg-background-200 shadow-border-small">
     <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background-100">
-      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
+      <div
+        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none flex flex-1 items-center justify-center first:justify-start last:justify-end"
+      >
         <div class="gap-2 flex items-center">
           <div class="w-3 h-3 rounded-full bg-[#FE5F57]" />
           <div class="w-3 h-3 rounded-full bg-[#FEBB2E]" />
           <div class="w-3 h-3 rounded-full bg-[#26C941]" />
         </div>
 
-        <div class="gap-4 text-sm flex items-center text-gray-900 max-md:hidden">
+        <div class="gap-4 text-sm max-md:hidden flex items-center text-gray-900">
           <ArrowLeftIcon />
           <ArrowLeftIcon class="rotate-180" />
           <RefreshClockwiseIcon />
         </div>
       </div>
 
-      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 shrink-0 items-center justify-center max-md:first:flex-none first:justify-start last:justify-end">
-        <div class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200">
+      <div
+        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none flex flex-1 shrink-0 items-center justify-center first:justify-start last:justify-end"
+      >
+        <div
+          class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200"
+        >
           <LockClosedIcon class="text-sm text-foreground-secondary" />
 
           <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-13px text-gray-1000">
             {{ address }}
           </div>
 
-          <PButton variant="ghost" size="xs" shape="rounded" class="size-6" icon @click="copyText(address)">
+          <PButton
+            variant="ghost"
+            size="xs"
+            shape="rounded"
+            class="size-6"
+            icon
+            @click="copyText(address)"
+          >
             <Transition name="pxd-transition--fade-scale" mode="out-in">
               <Component :is="renderIcon" class="text-sm text-foreground-secondary" />
             </Transition>
@@ -57,7 +70,9 @@ const renderIcon = computed<Component>(() => isCopied.value ? CheckIcon : CopyIc
         </div>
       </div>
 
-      <div class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] flex flex-1 items-center justify-center max-md:first:flex-none max-lg:hidden first:justify-start last:justify-end" />
+      <div
+        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none max-lg:hidden flex flex-1 items-center justify-center first:justify-start last:justify-end"
+      />
     </div>
 
     <slot />

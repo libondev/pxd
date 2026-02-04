@@ -1,4 +1,5 @@
 # Number Input
+
 Input box for entering numbers only.
 
 ## Default
@@ -90,6 +91,7 @@ const value = ref(0)
 ```
 
 ## Prefix and Suffix
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'

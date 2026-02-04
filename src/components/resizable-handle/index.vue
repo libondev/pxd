@@ -14,7 +14,7 @@ const uniqueId = getUniqueId()
 let isDragging = false
 let startPosition = { x: 0, y: 0 }
 
-function onDrag(delta: { deltaX: number, deltaY: number }) {
+function onDrag(delta: { deltaX: number; deltaY: number }) {
   resizableContext?.onHandleDrag(uniqueId, delta)
 }
 
@@ -41,7 +41,7 @@ function handlePointerMove(e: PointerEvent) {
 
 // 处理拖拽结束
 function handlePointerUp(e: PointerEvent) {
-  (e.target as HTMLElement).releasePointerCapture(e.pointerId)
+  ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
   isDragging = false
 }
 

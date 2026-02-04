@@ -2,6 +2,7 @@ import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { globSync } from 'tinyglobby'
+
 import { pascalize } from './utils.js'
 
 const ROOT = process.cwd()
@@ -28,7 +29,7 @@ declare module 'vue' {
 function processComponentsPath() {
   const exports = componentsPath.map((p) => {
     const path = p.replace(/src/, 'pxd').replace(/\/index\.vue/, '')
-    const [,name] = path.match(/.*\/components\/(.*)/)
+    const [, name] = path.match(/.*\/components\/(.*)/)
 
     return `P${pascalize(name)}: typeof import('${path}')['default']`
   })

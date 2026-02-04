@@ -12,22 +12,19 @@ defineOptions({
   name: 'PCarouselGroup',
 })
 
-const props = withDefaults(
-  defineProps<CarouselGroupProps>(),
-  {
-    index: 0,
-    loop: true,
-    arrow: true,
-    height: 180,
-    autoplay: true,
-    interval: 3000,
-    indicator: true,
-    direction: 'horizontal',
-    pauseOnHover: true,
-    indicatorType: 'line',
-    indicatorPosition: 'bottom',
-  },
-)
+const props = withDefaults(defineProps<CarouselGroupProps>(), {
+  index: 0,
+  loop: true,
+  arrow: true,
+  height: 180,
+  autoplay: true,
+  interval: 3000,
+  indicator: true,
+  direction: 'horizontal',
+  pauseOnHover: true,
+  indicatorType: 'line',
+  indicatorPosition: 'bottom',
+})
 
 const emits = defineEmits<{
   change: [index: number]
@@ -63,9 +60,10 @@ const computedStyle = computed(() => {
   const translateValue = virtualIndex.value * -100
 
   const styles = {
-    transform: props.direction === 'horizontal'
-      ? `translateX(${translateValue}%)`
-      : `translateY(${translateValue}%)`,
+    transform:
+      props.direction === 'horizontal'
+        ? `translateX(${translateValue}%)`
+        : `translateY(${translateValue}%)`,
   }
 
   return styles
@@ -77,24 +75,28 @@ function translateItems() {
   })
 }
 
-const onToggleClick = throttle((delta: number) => {
-  const length = carousels.value.length
+const onToggleClick = throttle(
+  (delta: number) => {
+    const length = carousels.value.length
 
-  if (length === 0) {
-    return
-  }
+    if (length === 0) {
+      return
+    }
 
-  if (props.loop) {
-    virtualIndex.value += delta
+    if (props.loop) {
+      virtualIndex.value += delta
 
-    translateItems()
-  } else {
-    virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
-  }
+      translateItems()
+    } else {
+      virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
+    }
 
-  emits('change', correctIndex.value)
-  nextTick(onPointerLeave)
-}, THROTTLE_INTERVALS, { edges: ['leading'] })
+    emits('change', correctIndex.value)
+    nextTick(onPointerLeave)
+  },
+  THROTTLE_INTERVALS,
+  { edges: ['leading'] },
+)
 
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
@@ -233,7 +235,7 @@ function unregisterCarousel(id: string) {
 }
 
 usePointerGesture(sliderRef, {
-  axis: () => props.direction === 'horizontal' ? 'x' : 'y',
+  axis: () => (props.direction === 'horizontal' ? 'x' : 'y'),
   directionGuard: (d) => {
     if (props.direction === 'horizontal') {
       return d === 'left' || d === 'right'
@@ -339,26 +341,26 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .pxd-carousel-group {
-  &[data-indicator-type="dot"] {
+  &[data-indicator-type='dot'] {
     --carousel-dot-width: 8px;
     --carousel-dot-height: 8px;
   }
 
-  &[data-indicator-type="line"] {
-    &[data-indicator-position="top"],
-    &[data-indicator-position="bottom"] {
+  &[data-indicator-type='line'] {
+    &[data-indicator-position='top'],
+    &[data-indicator-position='bottom'] {
       --carousel-dot-width: 16px;
       --carousel-dot-height: 4px;
     }
 
-    &[data-indicator-position="left"],
-    &[data-indicator-position="right"] {
+    &[data-indicator-position='left'],
+    &[data-indicator-position='right'] {
       --carousel-dot-width: 4px;
       --carousel-dot-height: 16px;
     }
   }
 
-  &[data-indicator-position="top"] {
+  &[data-indicator-position='top'] {
     .pxd-carousel-group--indicator {
       left: 12px;
       top: 8px;
@@ -370,7 +372,7 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-indicator-position="bottom"] {
+  &[data-indicator-position='bottom'] {
     .pxd-carousel-group--indicator {
       left: 12px;
       bottom: 8px;
@@ -382,7 +384,7 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-indicator-position="left"] {
+  &[data-indicator-position='left'] {
     .pxd-carousel-group--indicator {
       left: 8px;
       top: 12px;
@@ -394,7 +396,7 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-indicator-position="right"] {
+  &[data-indicator-position='right'] {
     .pxd-carousel-group--indicator {
       right: 8px;
       top: 12px;
@@ -406,19 +408,19 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-direction="horizontal"] .pxd-carousel-group--slider {
+  &[data-direction='horizontal'] .pxd-carousel-group--slider {
     display: flex;
   }
 
-  &[data-direction="vertical"] {
+  &[data-direction='vertical'] {
     .pxd-carousel-group--prev-btn,
     .pxd-carousel-group--next-btn {
       transform: rotate(90deg);
     }
   }
 
-  &[data-indicator-position="left"],
-  &[data-indicator-position="right"] {
+  &[data-indicator-position='left'],
+  &[data-indicator-position='right'] {
     .pxd-carousel-group--indicator,
     .pxd-carousel-group--toggler {
       flex-direction: column;

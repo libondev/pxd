@@ -16,16 +16,13 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<CheckboxProps>(),
-  {
-    modelValue: () => [],
-    value: true,
-  },
-)
+const props = withDefaults(defineProps<CheckboxProps>(), {
+  modelValue: () => [],
+  value: true,
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<CheckboxProps['modelValue']>]
+  change: [NonNullable<CheckboxProps['modelValue']>]
   'update:modelValue': [NonNullable<CheckboxProps['modelValue']>]
 }>()
 
@@ -60,7 +57,7 @@ function toggleChecked(isChecked: boolean) {
   if (Array.isArray(modelValue.value)) {
     modelValue.value = isChecked
       ? [...modelValue.value, props.value]
-      : modelValue.value.filter(v => v !== props.value)
+      : modelValue.value.filter((v) => v !== props.value)
 
     return
   }
@@ -104,7 +101,7 @@ defineExpose({
       :required="computedRequired"
       :disabled="computedDisabled"
       @change="onInputChange"
-    >
+    />
 
     <span aria-hidden="true" :class="computedClasses.inner()">
       <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />

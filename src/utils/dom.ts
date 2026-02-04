@@ -8,8 +8,10 @@ export function getElementRectFromContainer(
   elementOrRect: Element | DOMRect,
   viewportOrRect: Element | DOMRect,
 ) {
-  const selfRect = elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
-  const wrapRect = viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
+  const selfRect =
+    elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
+  const wrapRect =
+    viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
 
   return {
     top: selfRect.top,
@@ -113,7 +115,8 @@ export interface ScrollbarSize {
 export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
   if (!element) {
     const div = document.createElement('div')
-    div.style.cssText = 'width:50px;height:50px;overflow:scroll;position:absolute;top:-9999px;visibility:hidden;box-sizing:content-box'
+    div.style.cssText =
+      'width:50px;height:50px;overflow:scroll;position:absolute;top:-9999px;visibility:hidden;box-sizing:content-box'
     document.body.appendChild(div)
 
     const size = {

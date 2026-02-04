@@ -15,15 +15,12 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<RadioGroupProps>(),
-  {
-    options: () => [],
-  },
-)
+const props = withDefaults(defineProps<RadioGroupProps>(), {
+  options: () => [],
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<RadioGroupProps['modelValue']>]
+  change: [NonNullable<RadioGroupProps['modelValue']>]
   'update:modelValue': [NonNullable<RadioGroupProps['modelValue']>]
 }>()
 

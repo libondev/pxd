@@ -1,4 +1,5 @@
 # Menu
+
 Dropdown menu opened via button. Supports typeahead and keyboard navigation.
 
 ## Default
@@ -72,6 +73,7 @@ const options = [
 ```
 
 ## Without closeOnPressEscape
+
 Pressing esc after setting will not close.
 
 ```vue demo

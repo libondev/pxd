@@ -21,13 +21,10 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: 60,
-    showValue: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: 60,
+  showValue: false,
+})
 
 const SIZES = {
   xs: '24',

@@ -1,5 +1,7 @@
-import type { MaybeElementRef } from '../types/shared/utils'
 import { onBeforeUnmount, watch } from 'vue'
+
+import type { MaybeElementRef } from '../types/shared/utils'
+
 import { cachedOff, cachedOn } from '../utils/event'
 import { toValue } from '../utils/ref'
 
@@ -9,10 +11,7 @@ interface Options {
   onTrigger?: (ev: PointerEvent) => void
 }
 
-export function useOutsideClick(
-  container: MaybeElementRef<HTMLElement>,
-  options: Options = {},
-) {
+export function useOutsideClick(container: MaybeElementRef<HTMLElement>, options: Options = {}) {
   function onClick(ev: PointerEvent) {
     const { isEnabled, isOutside, onTrigger } = options
 
@@ -33,15 +32,19 @@ export function useOutsideClick(
     onTrigger?.(ev)
   }
 
-  const unwatch = watch(() => toValue(container), (dom, _, onCleanup) => {
-    if (dom) {
-      cachedOn(document, 'click', onClick)
-    }
+  const unwatch = watch(
+    () => toValue(container),
+    (dom, _, onCleanup) => {
+      if (dom) {
+        cachedOn(document, 'click', onClick)
+      }
 
-    onCleanup(() => {
-      cachedOff(document, 'click', onClick)
-    })
-  }, { immediate: true })
+      onCleanup(() => {
+        cachedOff(document, 'click', onClick)
+      })
+    },
+    { immediate: true },
+  )
 
   function stop() {
     unwatch()

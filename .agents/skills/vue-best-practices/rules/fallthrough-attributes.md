@@ -39,6 +39,7 @@ Enable `fallthroughAttributes` in your tsconfig:
 ## How It Works
 
 When `fallthroughAttributes: true`:
+
 - Vue Language Server analyzes which element receives `$attrs`
 - IDE autocomplete suggests valid attributes for the target element
 - Helps developers discover available attributes

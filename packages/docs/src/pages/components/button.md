@@ -1,4 +1,5 @@
 # Button
+
 One of the most basic components, it will help you complete the interaction.
 
 ## Sizes
@@ -84,6 +85,7 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
 ```
 
 ## Full width
+
 Set the `full-width` property to make the button exclusive to one line.
 
 ```vue demo

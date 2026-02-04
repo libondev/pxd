@@ -20,13 +20,10 @@ defineOptions({
   name: 'PNote',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    label: true,
-    variant: 'default',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  label: true,
+  variant: 'default',
+})
 
 const config = useConfigProvider()
 

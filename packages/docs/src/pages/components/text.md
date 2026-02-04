@@ -1,4 +1,5 @@
 # Text
+
 Display text using well-defined typographic styles.
 
 ## Default
@@ -33,17 +34,15 @@ Display text using well-defined typographic styles.
     <PText truncate style="max-width:200px">The Evil Rabbit jumps. The Evil Rabbit jumps.</PText>
 
     <PText :truncate="2" style="max-width: 200px">
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
     </PText>
 
     <PText :truncate="3" style="max-width: 200px">
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The
-      Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
+      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
     </PText>
   </PStack>
 </template>

@@ -1,4 +1,5 @@
 # PXD
+
 适用于 Vue@2.7+ 和 Vue@3.2+ 的通用 UI 组件库
 
 [Online Preview](https://pxd-ui.netlify.app/)
@@ -37,6 +38,7 @@ pnpm build:docs
 ```
 
 #### 部署
+
 ```shell
 pnpm build
 ```

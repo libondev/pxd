@@ -8,7 +8,8 @@ We also maintain an unofficial icon library, which provides a lot of beautiful i
 
 <div class="h-5 w-max min-w-20 bg-gray-100 rounded-[3px]">
 
-[![](https://img.shields.io/npm/v/@gdsicon/vue.svg)](https://www.npmjs.com/package/@gdsicon/vue){target="_blank"}
+[![](https://img.shields.io/npm/v/@gdsicon/vue.svg)](https://www.npmjs.com/package/@gdsicon/vue){target="\_blank"}
+
 </div>
 
 ```bash
@@ -21,9 +22,9 @@ For better performance, we do not recommend registering the entire icon globally
 
 ```html
 <script setup>
-import AccessibilityIcon from '@gdsicon/vue/accessibility'
-// or
-// import { AccessibilityIcon } from '@gdsicon/vue'
+  import AccessibilityIcon from '@gdsicon/vue/accessibility'
+  // or
+  // import { AccessibilityIcon } from '@gdsicon/vue'
 </script>
 
 <template>
@@ -34,7 +35,6 @@ import AccessibilityIcon from '@gdsicon/vue/accessibility'
 ## Import automatically
 
 Use [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) to simplify the import process.
-
 
 ```bash
 pnpm install -D unplugin-vue-components
@@ -53,9 +53,9 @@ export default defineConfig({
         // You can also specify other prefixes yourself,
         //  which will be used as an identification mark during automatic import.
         GdsiResolver({ prefix: 'IGds' }),
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 })
 ```
 

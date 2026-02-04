@@ -1,5 +1,7 @@
 import type { Ref } from 'vue'
+
 import type { ListOption } from '../types/components/list'
+
 import { createContext } from '../utils/context'
 
 export interface ListContext {
@@ -7,12 +9,9 @@ export interface ListContext {
   onOptionClick: ListOption['onClick']
 }
 
-export const [
-  provideListContext,
-  useListContext,
-] = createContext<ListContext>('List')
+export const [provideListContext, useListContext] = createContext<ListContext>('List')
 
-export const [
-  provideListFilterValue,
-  useListFilterValue,
-] = createContext<Ref<string>>('ListFilterValue', null)
+export const [provideListFilterValue, useListFilterValue] = createContext<Ref<string>>(
+  'ListFilterValue',
+  null,
+)

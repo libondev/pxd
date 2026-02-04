@@ -1,4 +1,5 @@
 # Chip
+
 An indicator of a numeric value or a state.
 
 ## Default
@@ -56,6 +57,7 @@ import InboxIcon from '@gdsicon/vue/inbox'
 ```
 
 ## Inset
+
 Use the inset prop to display the Chip inside the component. This is useful when dealing with rounded components.
 
 ```vue demo

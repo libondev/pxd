@@ -1,4 +1,5 @@
 # Resizable
+
 Resizable panel groups
 
 ## Default
@@ -18,13 +19,9 @@ const direction = ref('horizontal')
     </PSwitchGroup>
 
     <PResizable :direction="direction" class="w-100 h-50 max-w-full border rounded-lg">
-      <PResizablePanel class="flex items-center justify-center">
-        One
-      </PResizablePanel>
+      <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
       <PResizableHandle />
-      <PResizablePanel class="flex items-center justify-center">
-        Two
-      </PResizablePanel>
+      <PResizablePanel class="flex items-center justify-center"> Two </PResizablePanel>
     </PResizable>
   </PStack>
 </template>
@@ -35,19 +32,13 @@ const direction = ref('horizontal')
 ```vue demo
 <template>
   <PResizable class="w-100 h-100 max-w-full border rounded-lg">
-    <PResizablePanel class="flex items-center justify-center">
-      One
-    </PResizablePanel>
+    <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
     <PResizableHandle />
     <PResizablePanel class="flex items-center justify-center">
       <PResizable direction="vertical">
-        <PResizablePanel class="flex items-center justify-center">
-          One
-        </PResizablePanel>
+        <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
         <PResizableHandle />
-        <PResizablePanel class="flex items-center justify-center">
-          Two
-        </PResizablePanel>
+        <PResizablePanel class="flex items-center justify-center"> Two </PResizablePanel>
       </PResizable>
     </PResizablePanel>
   </PResizable>
@@ -59,13 +50,9 @@ const direction = ref('horizontal')
 ```vue demo
 <template>
   <PResizable class="w-100 h-100 max-w-full border rounded-lg">
-    <PResizablePanel :size="50" class="flex items-center justify-center">
-      One
-    </PResizablePanel>
+    <PResizablePanel :size="50" class="flex items-center justify-center"> One </PResizablePanel>
     <PResizableHandle />
-    <PResizablePanel :min-size="50" class="flex items-center justify-center">
-      Two
-    </PResizablePanel>
+    <PResizablePanel :min-size="50" class="flex items-center justify-center"> Two </PResizablePanel>
   </PResizable>
 </template>
 ```

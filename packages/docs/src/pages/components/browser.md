@@ -1,4 +1,5 @@
 # Browser
+
 The Browser component lets you showcase website screenshots or any other content within a realistic browser-style frame.
 
 ## Composition

@@ -19,11 +19,14 @@ const { isDark, toggleDarkMode } = useColorScheme({
   syncStatus: true,
 })
 
-const renderIcon = computed(() => isDark.value ? MoonIcon : SunIcon)
+const renderIcon = computed(() => (isDark.value ? MoonIcon : SunIcon))
 
-watch(() => isDark.value, (newVal) => {
-  emits('toggle', newVal ? 'dark' : 'light')
-})
+watch(
+  () => isDark.value,
+  (newVal) => {
+    emits('toggle', newVal ? 'dark' : 'light')
+  },
+)
 </script>
 
 <template>

@@ -1,9 +1,9 @@
-
 ## Project Overview
 
 **PXD** is a universal UI component library for Vue 2 & 3, based on the Geist Design System. This is a monorepo workspace that includes both the core library and documentation.
 
 ### Key Characteristics
+
 - **Type**: Component Library / UI Framework
 - **Target**: Vue 2.7+ and Vue 3.2+ (Universal Compatibility)
 - **Architecture**: Monorepo with pnpm workspaces
@@ -35,6 +35,7 @@ pxd/
 ## Development Workflow
 
 ### Commands
+
 - `pnpm dev` - Start both library and docs in dev mode
 - `pnpm dev:lib` - Library development with stub mode
 - `pnpm dev:docs` - Documentation development only
@@ -47,12 +48,14 @@ pxd/
 ### Code Quality Standards
 
 #### TypeScript Configuration
+
 - **Target**: ES2022+ with module system
 - **Strict mode**: Enabled with tsconfig references
 - **Volar integration**: Full Vue language support
 - **Type exports**: All public APIs have proper type definitions
 
 #### ESLint Rules
+
 - Uses **@antfu/eslint-config** (opinionated style guide)
 - **Tailwind-specific rules**: Strict class ordering, no conflicts, no duplicates
 - **Curly braces**: Always required
@@ -60,6 +63,7 @@ pxd/
 - **One True Brace Style**: 1tbs with single-line allowance
 
 #### Testing Strategy
+
 - **Framework**: Vitest + Vue Test Utils
 - **Environment**: happy-dom (browser-like)
 - **Pattern**: `**/*.test.ts` files
@@ -69,7 +73,9 @@ pxd/
 ### Build & Distribution
 
 #### Entry Points
+
 The library exposes multiple entry points:
+
 - Root: `.` (main+types)
 - `./resolver` - Unplugin resolver
 - `./components` - All components
@@ -78,6 +84,7 @@ The library exposes multiple entry points:
 - Plus granular per-item imports
 
 #### Build Process
+
 1. **DTS Generation**: `scripts/gen-component-dts.js` for Volar support
 2. **Code Compilation**: mkdist transforms `.vue` + `.ts` → `.js` + `.d.ts`
 3. **Style Generation**: Tailwind processing from `source.css`
@@ -88,9 +95,11 @@ The library exposes multiple entry points:
 ### When Modifying Code
 
 #### 1. Component Development
+
 - Use **Composition API** with `<script setup>`
 - Ensure Vue 2.7 compatibility (avoid Vue 3-only features)
 - Follow proper component structure:
+
   ```vue
   <script setup lang="ts">
   // Imports
@@ -109,12 +118,14 @@ The library exposes multiple entry points:
   ```
 
 #### 2. TypeScript Best Practices
+
 - Always use strict types
 - Export types from `./types/shared` for public API
 - Use proper JSDoc comments for complex logic
 - Leverage generics for reusable composables
 
 #### 3. Tailwind Integration
+
 - **Entry point**: `src/styles/tw.css`
 - **Rules**: Follow ESLint plugin constraints strictly
 - **Ordering**: Use "improved" order (sort by property category)
@@ -122,6 +133,7 @@ The library exposes multiple entry points:
 - **Shorthand**: Always use shorthand syntax (e.g., `m-2` not `margin: 0.5rem`)
 
 #### 4. Testing Requirements
+
 - Write tests for all critical paths
 - Edge cases should be covered
 - Use `describe`/`it` blocks for organization
@@ -131,15 +143,18 @@ The library exposes multiple entry points:
 ### Common Pitfalls to Avoid
 
 #### Vue 2.7 Compatibility
+
 - ❌ Avoid: `defineModel`, top-level `await`, reactive arrays with Map/Set
 - ✅ Use: `defineProps`, `defineEmits`, `ref`, `reactive`, `computed`
 
 #### Build Safety
+
 - Never manually edit `dist/` (it's generated)
 - Always run `pnpm build:lib` before publishing
 - Check `volar.d.ts` is updated after new components
 
 #### Git Hooks
+
 - **Husky** + **lint-staged** are active
 - Pre-commit: ESLint auto-fix on `*.{ts,vue}`
 - Pre-push: Type checking and tests recommended
@@ -147,11 +162,13 @@ The library exposes multiple entry points:
 ### Documentation Standards
 
 #### Code Comments
+
 - **Function/Class level**: Explain purpose, parameters, return values
 - **Complex logic**: Explain "why" and "how" in English
 - **Avoid**: Obvious comments (e.g., `i++ // increment i`)
 
 #### Component APIs
+
 - Use clear prop names
 - Document events with kebab-case
 - Provide JSDoc for TypeScript types
@@ -160,22 +177,26 @@ The library exposes multiple entry points:
 ## Key Dependencies
 
 ### Framework & Build
+
 - **Vue**: 3.5.25 (supporting 2.7+)
 - **Vite**: 8.0.0-beta (build tool)
 - **mkdist**: 2.4.1 (distribution builder)
 - **unbuild**: 3.6.1 (stub development)
 
 ### Code Quality
+
 - **TypeScript**: 5.9.3 (strict mode enabled)
 - **ESLint**: 9.39.1 with @antfu/config
 - **Vitest**: 4.0.15 (test runner)
 - **Happy-DOM**: 20.0.11 (test environment)
 
 ### Styling
+
 - **TailwindCSS**: 4.1.17
 - **PostCSS**: Integrated
 
 ### Related Packages
+
 - **@gdsicon/vue**: 1.0.7 (icon library)
 - **Day.js**: 1.11.19 (date utilities)
 
@@ -210,6 +231,7 @@ When encountering issues:
 ## Git Commit Conventions
 
 ### Format
+
 <type>(<scope>): <subject>
 
 <body>
@@ -217,6 +239,7 @@ When encountering issues:
 <footer>
 
 ### Types
+
 - **feat**: New feature
 - **fix**: Bug fix
 - **docs**: Documentation changes
@@ -228,6 +251,7 @@ When encountering issues:
 - **revert**: Revert commit
 
 ### Rules
+
 - When there are destructive modifications, add ! after scope.
 - Subject: Max 50 chars, imperative mood, no period, first letter uppercase
 - Body: Optional, wrap 72 chars, explain why

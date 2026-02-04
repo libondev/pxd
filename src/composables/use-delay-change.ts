@@ -1,4 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
+
 import { shallowRef } from 'vue'
 
 interface Options<T> {
@@ -15,10 +16,7 @@ export function useDelayChange<T>(
   value: MaybeRefOrGetter<T>,
   options: Options<T> = {},
 ): Results<T> {
-  const {
-    delay = 300,
-    valueChange,
-  } = options
+  const { delay = 300, valueChange } = options
 
   let timerId: ReturnType<typeof setTimeout>
   const delayValue = shallowRef(value as T)

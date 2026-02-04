@@ -19,9 +19,21 @@ export const radioVariant = tv({
     },
   },
   compoundVariants: [
-    { checked: true, disabled: false, class: 'border-primary bg-background-100 peer-checked:after:scale-100' },
-    { checked: true, disabled: true, class: 'border-gray-500 bg-gray-100 peer-disabled:after:bg-gray-500' },
-    { checked: false, disabled: false, class: 'border-gray-alpha-400 bg-background-100 group-hover/radio:bg-gray-200' },
+    {
+      checked: true,
+      disabled: false,
+      class: 'border-primary bg-background-100 peer-checked:after:scale-100',
+    },
+    {
+      checked: true,
+      disabled: true,
+      class: 'border-gray-500 bg-gray-100 peer-disabled:after:bg-gray-500',
+    },
+    {
+      checked: false,
+      disabled: false,
+      class: 'border-gray-alpha-400 bg-background-100 group-hover/radio:bg-gray-200',
+    },
     { checked: false, disabled: true, class: 'border-gray-500 bg-gray-100' },
   ],
   defaultVariants: {

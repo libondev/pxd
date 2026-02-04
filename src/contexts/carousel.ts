@@ -1,5 +1,7 @@
 import type { Ref } from 'vue'
+
 import type { CarouselGroupProps } from '../types/components/carousel'
+
 import { createContext } from '../utils/context'
 
 export interface CarouselState {
@@ -14,7 +16,5 @@ export interface CarouselGroupContext {
   unregisterCarousel: (id: string) => void
 }
 
-export const [
-  provideCarouselGroupContext,
-  useCarouselGroupContext,
-] = createContext<CarouselGroupContext>('CarouselGroup')
+export const [provideCarouselGroupContext, useCarouselGroupContext] =
+  createContext<CarouselGroupContext>('CarouselGroup')

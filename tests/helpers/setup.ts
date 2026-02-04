@@ -3,9 +3,7 @@ import { createApp, defineComponent, h } from 'vue'
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never
 type VM<V> = InstanceType<V> & { unmount: () => void }
 
-export function useSetupWrapper<TResult>(
-  setup: () => TResult,
-): TResult & { unmount: () => void } {
+export function useSetupWrapper<TResult>(setup: () => TResult): TResult & { unmount: () => void } {
   let result!: TResult
 
   const Wrapper = defineComponent({

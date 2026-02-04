@@ -13,13 +13,10 @@ defineOptions({
   name: 'PCollapse',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    title: '',
-    expand: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  expand: false,
+})
 
 const uid = getUniqueId()
 
@@ -56,29 +53,29 @@ function onTriggerClick() {
 }
 
 function beforeEnter(el: Element) {
-  (el as HTMLElement).style.height = '0';
-  (el as HTMLElement).style.overflow = 'hidden'
+  ;(el as HTMLElement).style.height = '0'
+  ;(el as HTMLElement).style.overflow = 'hidden'
 }
 
 function enter(el: Element) {
   // 强制回流，确保元素高度已经计算完成
-  void (el as HTMLElement).offsetHeight;
-  (el as HTMLElement).style.height = `${el.scrollHeight}px`
+  void (el as HTMLElement).offsetHeight
+  ;(el as HTMLElement).style.height = `${el.scrollHeight}px`
 }
 
 function afterEnter(el: Element) {
-  (el as HTMLElement).style.height = '';
-  (el as HTMLElement).style.overflow = ''
+  ;(el as HTMLElement).style.height = ''
+  ;(el as HTMLElement).style.overflow = ''
 }
 
 function beforeLeave(el: Element) {
-  (el as HTMLElement).style.height = `${el.scrollHeight}px`;
-  (el as HTMLElement).style.overflow = 'hidden'
+  ;(el as HTMLElement).style.height = `${el.scrollHeight}px`
+  ;(el as HTMLElement).style.overflow = 'hidden'
   void (el as HTMLElement).offsetHeight
 }
 
 function leave(el: Element) {
-  (el as HTMLElement).style.height = '0'
+  ;(el as HTMLElement).style.height = '0'
 }
 
 onMounted(() => {
@@ -100,7 +97,9 @@ onMounted(() => {
           {{ title }}
         </slot>
 
-        <ChevronDownIcon class="size-4 shrink-0 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform" />
+        <ChevronDownIcon
+          class="size-4 shrink-0 group-data-[state=open]/collapse:-rotate-180 motion-safe:transition-transform"
+        />
       </button>
     </h3>
 

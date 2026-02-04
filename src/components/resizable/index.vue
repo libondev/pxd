@@ -17,7 +17,7 @@ interface PanelConfig {
 interface HandleConfig {
   id: string
   order: number
-  onDrag: (delta: { deltaX: number, deltaY: number }) => void
+  onDrag: (delta: { deltaX: number; deltaY: number }) => void
 }
 
 defineOptions({
@@ -37,11 +37,14 @@ const containerRef = shallowRef<HTMLElement>()
 
 // 提供给子组件注册使用的方法
 function registerPanel(config: Omit<PanelConfig, 'order'>) {
-  const existingIndex = panelConfigs.value.findIndex(p => p.id === config.id)
+  const existingIndex = panelConfigs.value.findIndex((p) => p.id === config.id)
   if (existingIndex === -1) {
     panelConfigs.value.push({ ...config, order: orderCounter.value++ })
   } else {
-    panelConfigs.value[existingIndex] = { ...config, order: panelConfigs.value[existingIndex]!.order }
+    panelConfigs.value[existingIndex] = {
+      ...config,
+      order: panelConfigs.value[existingIndex]!.order,
+    }
   }
   // 重新排序并初始化面板大小
   panelConfigs.value.sort((a, b) => a.order - b.order)
@@ -51,7 +54,7 @@ function registerPanel(config: Omit<PanelConfig, 'order'>) {
 }
 
 function unregisterPanel(id: string) {
-  const index = panelConfigs.value.findIndex(p => p.id === id)
+  const index = panelConfigs.value.findIndex((p) => p.id === id)
   if (index !== -1) {
     panelConfigs.value.splice(index, 1)
     panelSizes.value.splice(index, 1)
@@ -59,38 +62,41 @@ function unregisterPanel(id: string) {
 }
 
 function registerHandle(config: Omit<HandleConfig, 'order'>) {
-  const existingIndex = handleConfigs.value.findIndex(h => h.id === config.id)
+  const existingIndex = handleConfigs.value.findIndex((h) => h.id === config.id)
   if (existingIndex === -1) {
     handleConfigs.value.push({ ...config, order: orderCounter.value++ })
   } else {
-    handleConfigs.value[existingIndex] = { ...config, order: handleConfigs.value[existingIndex]!.order }
+    handleConfigs.value[existingIndex] = {
+      ...config,
+      order: handleConfigs.value[existingIndex]!.order,
+    }
   }
   // 重新排序 handles
   handleConfigs.value.sort((a, b) => a.order - b.order)
 }
 
 function unregisterHandle(id: string) {
-  const index = handleConfigs.value.findIndex(h => h.id === id)
+  const index = handleConfigs.value.findIndex((h) => h.id === id)
   if (index !== -1) {
     handleConfigs.value.splice(index, 1)
   }
 }
 
 function getPanelSize(id: string): number {
-  const index = panelConfigs.value.findIndex(p => p.id === id)
+  const index = panelConfigs.value.findIndex((p) => p.id === id)
   return index !== -1 ? panelSizes.value[index] || 0 : 0
 }
 
-function onHandleDrag(handleId: string, delta: { deltaX: number, deltaY: number }) {
+function onHandleDrag(handleId: string, delta: { deltaX: number; deltaY: number }) {
   // 根据 handle 在 DOM 中的位置找到对应的面板索引
   // 每个 handle 控制其前后两个面板的大小调整
-  const handleOrder = handleConfigs.value.find(h => h.id === handleId)?.order
+  const handleOrder = handleConfigs.value.find((h) => h.id === handleId)?.order
   if (handleOrder === undefined) {
     return
   }
 
   // 找到这个 handle 前面有多少个面板
-  const panelsBeforeThisHandle = panelConfigs.value.filter(p => p.order < handleOrder).length
+  const panelsBeforeThisHandle = panelConfigs.value.filter((p) => p.order < handleOrder).length
 
   // 这个 handle 控制的是第 panelsBeforeThisHandle 和 panelsBeforeThisHandle + 1 个面板
   const panelIndex = panelsBeforeThisHandle - 1
@@ -197,7 +203,7 @@ async function initPanelSizes() {
   panelSizes.value = finalSizes
 }
 
-function onDrag(index: number, { deltaX, deltaY }: { deltaX: number, deltaY: number }) {
+function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: number }) {
   if (index < 0 || index + 1 >= panelSizes.value.length) {
     return
   }

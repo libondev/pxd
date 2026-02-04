@@ -24,6 +24,7 @@ Developers struggle to properly mock Pinia stores: `createTestingPinia` requires
 ## Fix
 
 **Pattern 1: Basic setup with createTestingPinia**
+
 ```typescript
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
@@ -36,13 +37,13 @@ test('component uses store', async () => {
     global: {
       plugins: [
         createTestingPinia({
-          createSpy: vi.fn,  // REQUIRED in @pinia/testing 1.0+
+          createSpy: vi.fn, // REQUIRED in @pinia/testing 1.0+
           initialState: {
-            counter: { count: 10 }  // Set initial state
-          }
-        })
-      ]
-    }
+            counter: { count: 10 }, // Set initial state
+          },
+        }),
+      ],
+    },
   })
 
   // Get the store instance AFTER mounting
@@ -55,6 +56,7 @@ test('component uses store', async () => {
 ```
 
 **Pattern 2: Customize action behavior**
+
 ```typescript
 test('component handles async action', async () => {
   const wrapper = mount(MyComponent, {
@@ -62,10 +64,10 @@ test('component handles async action', async () => {
       plugins: [
         createTestingPinia({
           createSpy: vi.fn,
-          stubActions: false  // Don't stub, use real actions
-        })
-      ]
-    }
+          stubActions: false, // Don't stub, use real actions
+        }),
+      ],
+    },
   })
 
   const store = useCounterStore()
@@ -79,6 +81,7 @@ test('component handles async action', async () => {
 ```
 
 **Pattern 3: Testing store directly**
+
 ```typescript
 import { setActivePinia, createPinia } from 'pinia'
 import { useCounterStore } from '@/stores/counter'
@@ -118,12 +121,12 @@ test('setup store works', async () => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     initialState: {
-      counter: { count: 5 }
-    }
+      counter: { count: 5 },
+    },
   })
 
   const wrapper = mount(MyComponent, {
-    global: { plugins: [pinia] }
+    global: { plugins: [pinia] },
   })
 
   const store = useCounterStore()
@@ -140,7 +143,7 @@ describe('Store Tests', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({
-      createSpy: vi.fn
+      createSpy: vi.fn,
     })
   })
 
@@ -148,8 +151,12 @@ describe('Store Tests', () => {
     vi.clearAllMocks()
   })
 
-  test('test 1', () => { /* ... */ })
-  test('test 2', () => { /* ... */ })
+  test('test 1', () => {
+    /* ... */
+  })
+  test('test 2', () => {
+    /* ... */
+  })
 })
 ```
 

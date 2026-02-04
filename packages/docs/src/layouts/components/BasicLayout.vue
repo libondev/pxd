@@ -21,9 +21,7 @@ interface Props {
   menus?: Menu[]
 }
 
-const {
-  menus = [],
-} = defineProps<Props>()
+const { menus = [] } = defineProps<Props>()
 
 const route = useRoute()
 
@@ -47,7 +45,7 @@ const flattenedMenus = computed(() => {
 })
 
 const paginationData = computed(() => {
-  const index = flattenedMenus.value.findIndex(menu => menu.path === route.path)
+  const index = flattenedMenus.value.findIndex((menu) => menu.path === route.path)
   const prev = flattenedMenus.value[index - 1]
   const next = flattenedMenus.value[index + 1]
 
@@ -98,10 +96,7 @@ if (!isServer()) {
       </template>
 
       <div class="mt-16 -mx-2">
-        <PPagination
-          :prev="paginationData.prev"
-          :next="paginationData.next"
-        />
+        <PPagination :prev="paginationData.prev" :next="paginationData.next" />
       </div>
     </main>
 
@@ -135,7 +130,9 @@ if (!isServer()) {
       outline: none;
 
       &:focus-visible {
-        box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px hsl(var(--ring));
+        box-shadow:
+          0 0 0 2px var(--color-background-100),
+          0 0 0 4px hsl(var(--ring));
       }
     }
 
@@ -148,7 +145,7 @@ if (!isServer()) {
     }
 
     &:hover::before {
-      content: '#'
+      content: '#';
     }
   }
 
@@ -190,12 +187,12 @@ if (!isServer()) {
     }
   }
 
-  ul:not([class*="pxd-"]) {
+  ul:not([class*='pxd-']) {
     padding-left: 2em;
     list-style-type: auto;
   }
 
-  li:not([class*="pxd-"]) {
+  li:not([class*='pxd-']) {
     margin-block: 0.5em;
   }
 
@@ -203,8 +200,8 @@ if (!isServer()) {
     margin-block: 1.68em;
   }
 
-  p:not([class*="pxd-"]) {
-    margin-block: .5em;
+  p:not([class*='pxd-']) {
+    margin-block: 0.5em;
   }
 
   .markdown-body > pre:not(.shiki) {
@@ -275,7 +272,7 @@ if (!isServer()) {
       width: 1.5rem;
       height: 100%;
       pointer-events: none;
-      background: linear-gradient(to left,var(--color-background-100) 35%,transparent);
+      background: linear-gradient(to left, var(--color-background-100) 35%, transparent);
       z-index: 5;
     }
   }

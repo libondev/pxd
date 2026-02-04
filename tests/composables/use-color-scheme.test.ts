@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
+
 import { useColorScheme } from '../../src/composables/use-color-scheme'
 
 // Helper component to test composable cleanup
@@ -31,9 +32,13 @@ describe('use-color-scheme memory leak prevention', () => {
     // Mock localStorage
     mockLocalStorage = {}
     vi.stubGlobal('localStorage', {
-      getItem: vi.fn(key => mockLocalStorage[key] || null),
-      setItem: vi.fn((key, value) => { mockLocalStorage[key] = value }),
-      removeItem: vi.fn((key) => { delete mockLocalStorage[key] }),
+      getItem: vi.fn((key) => mockLocalStorage[key] || null),
+      setItem: vi.fn((key, value) => {
+        mockLocalStorage[key] = value
+      }),
+      removeItem: vi.fn((key) => {
+        delete mockLocalStorage[key]
+      }),
     })
 
     // Mock document.head to track style elements
@@ -42,7 +47,7 @@ describe('use-color-scheme memory leak prevention', () => {
 
     // Mock matchMedia
     originalMatchMedia = window.matchMedia
-    window.matchMedia = vi.fn().mockImplementation(query => ({
+    window.matchMedia = vi.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -59,7 +64,7 @@ describe('use-color-scheme memory leak prevention', () => {
     window.matchMedia = originalMatchMedia
     // Clean up any remaining style elements
     const styleElements = document.querySelectorAll('style[data-test-mock]')
-    styleElements.forEach(el => el.remove())
+    styleElements.forEach((el) => el.remove())
   })
 
   it('should clean up style elements on component unmount', async () => {
@@ -81,7 +86,7 @@ describe('use-color-scheme memory leak prevention', () => {
     wrapper.unmount()
 
     // Wait for any async cleanup
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     // Verify style elements are cleaned up
     const styleCountAfterUnmount = document.querySelectorAll('style').length
@@ -101,13 +106,13 @@ describe('use-color-scheme memory leak prevention', () => {
     }
 
     // Wait for cleanup timers
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     const styleCount = document.querySelectorAll('style').length
 
     // Unmount
     wrapper.unmount()
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     // Should be back to original count
     const finalStyleCount = document.querySelectorAll('style').length
@@ -124,7 +129,7 @@ describe('use-color-scheme memory leak prevention', () => {
 
     // Find the specific event listener for color scheme
     const colorSchemeCalls = addEventListenerSpy.mock.calls.filter(
-      call => call[0] === '#toggle-color-scheme',
+      (call) => call[0] === '#toggle-color-scheme',
     )
 
     expect(colorSchemeCalls.length).toBe(1)
@@ -134,7 +139,7 @@ describe('use-color-scheme memory leak prevention', () => {
 
     // Should have removed the event listener
     const removeCalls = removeEventListenerSpy.mock.calls.filter(
-      call => call[0] === '#toggle-color-scheme',
+      (call) => call[0] === '#toggle-color-scheme',
     )
 
     expect(removeCalls.length).toBe(1)
@@ -154,7 +159,7 @@ describe('use-color-scheme memory leak prevention', () => {
     }
 
     // Wait for async cleanup
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     // Get initial style count
     const initialStyleCount = document.querySelectorAll('style').length
@@ -165,7 +170,7 @@ describe('use-color-scheme memory leak prevention', () => {
     }
 
     // Wait for cleanup
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     // Verify no style elements leaked
     const finalStyleCount = document.querySelectorAll('style').length
@@ -184,7 +189,7 @@ describe('use-color-scheme memory leak prevention', () => {
     wrapper.unmount()
 
     // Wait for timer to complete
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     // Should not throw errors and should be clean
     expect(() => {
@@ -212,7 +217,7 @@ describe('use-color-scheme memory leak prevention', () => {
 
     // Should not continue to call localStorage after unmount
     const callsAfterUnmount = setItemSpy.mock.calls.length
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
     expect(setItemSpy.mock.calls.length).toBe(callsAfterUnmount)
   })
 })

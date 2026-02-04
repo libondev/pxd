@@ -18,21 +18,18 @@ defineOptions({
   name: 'PIntersectionObserver',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    root: null,
-    rootMargin: '20%',
-    threshold: 0,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  root: null,
+  rootMargin: '20%',
+  threshold: 0,
+})
 
 const emits = defineEmits<{
   'visible-change': [boolean]
   'before-show': []
   'before-hide': []
-  'show': []
-  'hide': []
+  show: []
+  hide: []
 }>()
 
 const isVisible = shallowRef(false)
@@ -72,9 +69,13 @@ function onVisibleChange(isIntersecting: boolean) {
   emits('visible-change', isIntersecting)
 }
 
-useIntersectionObserver(containerRef, ([entry]) => {
-  onVisibleChange(entry!.isIntersecting)
-}, props)
+useIntersectionObserver(
+  containerRef,
+  ([entry]) => {
+    onVisibleChange(entry!.isIntersecting)
+  },
+  props,
+)
 </script>
 
 <template>

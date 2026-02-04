@@ -1,11 +1,12 @@
 # Fader
+
 Indicates that there is still something to show in a certain direction.
 
 ## Default
 
 ```vue demo
 <script setup>
-import { shallowRef } from "vue"
+import { shallowRef } from 'vue'
 
 const containerRef = shallowRef()
 const direction = shallowRef('both')
@@ -22,10 +23,7 @@ const options = [
     <PSwitchGroup v-model="direction" :options="options" />
 
     <div class="relative size-50 max-w-full rounded-lg border border-dashed">
-      <div
-        ref="containerRef"
-        class="size-full overflow-scroll"
-      >
+      <div ref="containerRef" class="size-full overflow-scroll">
         <div class="size-100"></div>
       </div>
 
@@ -39,17 +37,14 @@ const options = [
 
 ```vue demo
 <script setup>
-import { shallowRef } from "vue"
+import { shallowRef } from 'vue'
 
 const containerRef = shallowRef()
 </script>
 
 <template>
   <div class="relative size-50 max-w-full rounded-lg border border-dashed">
-    <div
-      ref="containerRef"
-      class="size-full overflow-scroll"
-    >
+    <div ref="containerRef" class="size-full overflow-scroll">
       <div class="size-100"></div>
     </div>
 

@@ -1,5 +1,7 @@
-import type { MaybeElementRef, Nullable } from '../types/shared/utils'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
+
+import type { MaybeElementRef, Nullable } from '../types/shared/utils'
+
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 import { toValue } from '../utils/ref'
 
@@ -12,7 +14,11 @@ type Dir = 'left' | 'right' | 'up' | 'down' | null
  * @property y - Y 坐标（px）
  * @property t - 时间戳（ms，来自 performance.now()）
  */
-interface Point { x: number, y: number, t: number }
+interface Point {
+  x: number
+  y: number
+  t: number
+}
 
 /**
  * 速度向量。
@@ -20,7 +26,11 @@ interface Point { x: number, y: number, t: number }
  * @property y - Y 方向速度（px/s）
  * @property v - 合速度（px/s）
  */
-interface Velocity { x: number, y: number, v: number }
+interface Velocity {
+  x: number
+  y: number
+  v: number
+}
 
 /**
  * 对外公开的手势状态。
@@ -37,7 +47,7 @@ export interface PublicState {
   isDragging: boolean
   isLongPressing: boolean
   direction: Dir
-  delta: { x: number, y: number }
+  delta: { x: number; y: number }
   velocity: Velocity
   progress: number
 }
@@ -130,7 +140,12 @@ export interface UsePointerGestureOptions {
    * @param kind - 触发类型（未命中为 null）
    * @param ctx - 当前公开状态
    */
-  onRelease?: (hit: boolean, dir: Dir, kind: null | 'threshold' | 'longpress' | 'fling', ctx: PublicState) => void
+  onRelease?: (
+    hit: boolean,
+    dir: Dir,
+    kind: null | 'threshold' | 'longpress' | 'fling',
+    ctx: PublicState,
+  ) => void
   /**
    * 指针生命周期结束时回调（在 onRelease 之前调用）。
    * @param e - PointerEvent
@@ -182,7 +197,10 @@ const OPTIONS_DEFAULTS = {
   usePointerCapture: true,
 }
 
-export function usePointerGesture(container: MaybeElementRef<HTMLElement>, options: UsePointerGestureOptions = {}) {
+export function usePointerGesture(
+  container: MaybeElementRef<HTMLElement>,
+  options: UsePointerGestureOptions = {},
+) {
   const isActive = shallowRef(false)
   const isDragging = shallowRef(false)
   const isLongPressing = shallowRef(false)
@@ -222,7 +240,7 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
     if (Math.abs(dx) >= Math.abs(dy)) {
       return dx === 0 ? null : resolveHorizontalDir(dx)
     }
-    return dy === 0 ? null : (dy > 0 ? 'down' : 'up')
+    return dy === 0 ? null : dy > 0 ? 'down' : 'up'
   }
 
   function updateVelocity(curr: Point, prev: Point | null) {
@@ -324,7 +342,7 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
 
   function startLongPress() {
     clearLongPress()
-    const lp = (options.longPressMs ?? OPTIONS_DEFAULTS.longPressMs)
+    const lp = options.longPressMs ?? OPTIONS_DEFAULTS.longPressMs
     if (lp <= 0) {
       return
     }
@@ -378,7 +396,10 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
       return
     }
 
-    if (options.directionGuard && !options.directionGuard(dir as Exclude<Dir, null>, publicState())) {
+    if (
+      options.directionGuard &&
+      !options.directionGuard(dir as Exclude<Dir, null>, publicState())
+    ) {
       return
     }
 
@@ -386,7 +407,7 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
   }
 
   function onPointerDown(e: PointerEvent) {
-    const usePointerCapture = (options.usePointerCapture ?? OPTIONS_DEFAULTS.usePointerCapture)
+    const usePointerCapture = options.usePointerCapture ?? OPTIONS_DEFAULTS.usePointerCapture
 
     if (e.button != null && e.button !== 0) {
       return
@@ -426,17 +447,23 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
 
     el.addEventListener('pointermove', onPointerMove, { passive: false, capture: true })
     el.addEventListener('pointerup', onPointerUp, { passive: true, once: true, capture: true })
-    el.addEventListener('pointercancel', onPointerCancel, { passive: true, once: true, capture: true })
+    el.addEventListener('pointercancel', onPointerCancel, {
+      passive: true,
+      once: true,
+      capture: true,
+    })
 
     // 在按下时缓存滚动容器（可根据需要在 move 中惰性初始化）
     boundScrollEl = getScrollEl()
   }
 
   function onPointerMove(e: PointerEvent) {
-    const longPressMoveTolerance = (options.longPressMoveTolerance ?? OPTIONS_DEFAULTS.longPressMoveTolerance)
-    const allowScrollUntilEdge = (options.allowScrollUntilEdge ?? OPTIONS_DEFAULTS.allowScrollUntilEdge)
-    const preventScrollOnDrag = (options.preventScrollOnDrag ?? OPTIONS_DEFAULTS.preventScrollOnDrag)
-    const velocityThreshold = (options.velocityThreshold ?? OPTIONS_DEFAULTS.velocityThreshold)
+    const longPressMoveTolerance =
+      options.longPressMoveTolerance ?? OPTIONS_DEFAULTS.longPressMoveTolerance
+    const allowScrollUntilEdge =
+      options.allowScrollUntilEdge ?? OPTIONS_DEFAULTS.allowScrollUntilEdge
+    const preventScrollOnDrag = options.preventScrollOnDrag ?? OPTIONS_DEFAULTS.preventScrollOnDrag
+    const velocityThreshold = options.velocityThreshold ?? OPTIONS_DEFAULTS.velocityThreshold
 
     if (!start) {
       return
@@ -503,8 +530,10 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
   }
 
   function onPointerUp(e: PointerEvent) {
-    const triggerThreshold = (options.triggerThreshold ?? OPTIONS_DEFAULTS.triggerThreshold)
-    const requiresMoveForLongPress = (options as any).longPressRequiresMovement ?? (OPTIONS_DEFAULTS as any).longPressRequiresMovement
+    const triggerThreshold = options.triggerThreshold ?? OPTIONS_DEFAULTS.triggerThreshold
+    const requiresMoveForLongPress =
+      (options as any).longPressRequiresMovement ??
+      (OPTIONS_DEFAULTS as any).longPressRequiresMovement
 
     const curr: Point = { x: e.clientX, y: e.clientY, t: now() }
     let hit = false
@@ -529,7 +558,12 @@ export function usePointerGesture(container: MaybeElementRef<HTMLElement>, optio
       }
 
       // 最终方向守卫
-      if (hit && direction.value && options.directionGuard && !options.directionGuard(direction.value as Exclude<Dir, null>, state)) {
+      if (
+        hit &&
+        direction.value &&
+        options.directionGuard &&
+        !options.directionGuard(direction.value as Exclude<Dir, null>, state)
+      ) {
         hit = false
         kind = null
       }

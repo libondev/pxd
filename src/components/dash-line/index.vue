@@ -15,10 +15,7 @@ defineOptions({
   name: 'PDashLine',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  { position: () => ['top'] },
-)
+const props = withDefaults(defineProps<Props>(), { position: () => ['top'] })
 
 const computedStyle = computed(() => ({
   '--dash-line-color': props.color,
@@ -29,7 +26,11 @@ const computedStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="pxd-dash-line relative max-w-full min-w-full" :data-position="position" :style="computedStyle" />
+  <div
+    class="pxd-dash-line relative max-w-full min-w-full"
+    :data-position="position"
+    :style="computedStyle"
+  />
 </template>
 
 <style lang="postcss">
@@ -39,36 +40,38 @@ const computedStyle = computed(() => ({
   --s: var(--dash-line-size, 1px);
   --c: var(--dash-line-color, var(--color-gray-600));
 
-  &[data-position*="top"]::before,
-  &[data-position*="bottom"]::after,
-  &[data-position*="left"]::before,
-  &[data-position*="right"]::after {
+  &[data-position*='top']::before,
+  &[data-position*='bottom']::after,
+  &[data-position*='left']::before,
+  &[data-position*='right']::after {
     content: '';
     position: absolute;
     pointer-events: none;
-    background-image: repeating-linear-gradient(to var(--p),
-        var(--c) 0 var(--d),
-        transparent var(--d) calc(var(--d) + var(--g)));
+    background-image: repeating-linear-gradient(
+      to var(--p),
+      var(--c) 0 var(--d),
+      transparent var(--d) calc(var(--d) + var(--g))
+    );
   }
 
-  &[data-position*="top"]::before {
+  &[data-position*='top']::before {
     top: 0;
   }
 
-  &[data-position*="bottom"]::after {
+  &[data-position*='bottom']::after {
     bottom: 0;
   }
 
-  &[data-position*="left"]::before {
+  &[data-position*='left']::before {
     left: 0;
   }
 
-  &[data-position*="right"]::after {
+  &[data-position*='right']::after {
     right: 0;
   }
 
-  &[data-position*="top"]::before,
-  &[data-position*="bottom"]::after {
+  &[data-position*='top']::before,
+  &[data-position*='bottom']::after {
     --p: right;
     left: 0;
     right: 0;
@@ -76,8 +79,8 @@ const computedStyle = computed(() => ({
     height: var(--s);
   }
 
-  &[data-position*="left"]::before,
-  &[data-position*="right"]::after {
+  &[data-position*='left']::before,
+  &[data-position*='right']::after {
     --p: bottom;
     top: 0;
     bottom: 0;

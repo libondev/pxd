@@ -35,7 +35,7 @@ function getFilteredComponents(value: string) {
 
   const results = fuzzySort.go(value, allIcons, { key: 'name' })
 
-  return results.map(result => result.obj)
+  return results.map((result) => result.obj)
 }
 
 const handleSearch = debounce((value: string) => {
@@ -84,9 +84,7 @@ function handleCustomPrefixChange(event: Event) {
 </script>
 
 <template>
-  <h1 class="text-2xl font-medium">
-    Icons
-  </h1>
+  <h1 class="text-2xl font-medium">Icons</h1>
 
   <PText secondary class="mt-2">
     A total of <span class="font-medium text-foreground">{{ iconCount }}</span> icons
@@ -104,9 +102,10 @@ function handleCustomPrefixChange(event: Event) {
       <PSwitch label="Prefix" value="prefix">
         <input
           v-model="customPrefix"
-          class="w-25 h-full outline-none" placeholder="Prefix element"
+          class="w-25 h-full outline-none"
+          placeholder="Prefix element"
           @change="handleCustomPrefixChange"
-        >
+        />
       </PSwitch>
     </PSwitchGroup>
   </div>
@@ -119,7 +118,9 @@ function handleCustomPrefixChange(event: Event) {
       >
         <Component :is="item.icon" class="my-2 mx-auto" />
 
-        <p class="icon-name m-0! pt-2 relative truncate text-center text-13px text-foreground-secondary">
+        <p
+          class="icon-name m-0! pt-2 relative truncate text-center text-13px text-foreground-secondary"
+        >
           {{ getCopyContents(item.name) }}
         </p>
       </button>

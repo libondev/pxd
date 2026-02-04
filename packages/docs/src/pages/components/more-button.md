@@ -1,4 +1,5 @@
 # More Button
+
 Styling component to show expanded or collapsed content.
 
 ## Default
@@ -19,6 +20,7 @@ const expanded = ref(false)
 ```
 
 ## Texts
+
 You can modify the button text by setting `lessText` and `moreText`.
 
 ```vue demo
@@ -29,10 +31,6 @@ const expanded = ref(false)
 </script>
 
 <template>
-  <PMoreButton
-    v-model="expanded"
-    more-text="moreee"
-    less-text="lessss"
-  />
+  <PMoreButton v-model="expanded" more-text="moreee" less-text="lessss" />
 </template>
 ```

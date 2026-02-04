@@ -23,14 +23,11 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    variant: 'primary',
-    position: 'top',
-    showArrow: true,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'primary',
+  position: 'top',
+  showArrow: true,
+})
 
 const VARIANTS = {
   primary: {

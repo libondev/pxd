@@ -7,13 +7,10 @@ interface Props {
   state?: 'QUEUED' | 'BUILDING' | 'READY' | 'ERROR' | 'CANCELED'
 }
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    label: false,
-    state: 'QUEUED',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  label: false,
+  state: 'QUEUED',
+})
 
 const stateClassNames = {
   READY: 'is-ready bg-teal-600',
@@ -40,7 +37,11 @@ function getLabelText() {
 
 <template>
   <span class="pxd-state-dot inline-flex items-center">
-    <i aria-hidden="true" class="w-2.5 h-2.5 inline-block rounded-full" :class="stateClassNames[state]" />
+    <i
+      aria-hidden="true"
+      class="w-2.5 h-2.5 inline-block rounded-full"
+      :class="stateClassNames[state]"
+    />
 
     <span v-if="label" class="pl-2 pr-1 min-w-0 text-sm truncate after:content-[attr(aria-label)]">
       {{ getLabelText() }}

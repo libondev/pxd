@@ -1,4 +1,5 @@
 # Countdown
+
 Do something when you arrive at the appointed time.
 
 ## Default
@@ -19,11 +20,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown
-      :active="active"
-      :durations="durations"
-      @finish="resetStatus"
-    />
+    <PCountdown :active="active" :durations="durations" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -78,6 +75,7 @@ function resetStatus() {
 ```
 
 ## Intuitive
+
 By default, because the time is less than one second, it will be displayed as `0.123` at the end, and it will be displayed as a time more in line with human intuition after setting.
 
 -> The millisecond will always be 0 after turning on.
@@ -133,17 +131,13 @@ function resetStatus() {
 
     <PButton @click="reset">Reset</PButton>
 
-    <PCountdown
-      ref="countdownRef"
-      :active="active"
-      :durations="10000"
-      @finish="resetStatus"
-    />
+    <PCountdown ref="countdownRef" :active="active" :durations="10000" @finish="resetStatus" />
   </PStack>
 </template>
 ```
 
 ## EndTime
+
 Passing in a target time will automatically calculate the remaining time.
 
 ```vue demo
@@ -163,16 +157,13 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown
-      :active="active"
-      :endTime="endTime"
-      @finish="resetStatus"
-    />
+    <PCountdown :active="active" :endTime="endTime" @finish="resetStatus" />
   </PStack>
 </template>
 ```
 
 ## Seconds timestamp
+
 Passing in a target time will automatically calculate the remaining time.
 
 ```vue demo
@@ -192,17 +183,13 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown
-      :active="active"
-      :millisecond="false"
-      :durations="endTime"
-      @finish="resetStatus"
-    />
+    <PCountdown :active="active" :millisecond="false" :durations="endTime" @finish="resetStatus" />
   </PStack>
 </template>
 ```
 
 ## StartAt
+
 Specifies when to start, and is often used to resume timing from an interrupted timer.
 
 ```vue demo
@@ -241,6 +228,7 @@ function resetStatus() {
 ```
 
 ## Invert
+
 Setting the `invert` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
 
 ```vue demo
@@ -258,19 +246,10 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown
-      invert
-      :active="active"
-      :durations="5000"
-      @finish="resetStatus"
-    />
+    <PCountdown invert :active="active" :durations="5000" @finish="resetStatus" />
 
     <!-- timers without durations will not stop voluntarily -->
-    <PCountdown
-      invert
-      :active="active"
-      :start-at="3000"
-    />
+    <PCountdown invert :active="active" :start-at="3000" />
   </PStack>
 </template>
 ```
@@ -290,7 +269,7 @@ const active = ref(false)
 <template>
   <div class="h-16">
     <PCountdown intuitive :active="active" :durations="5000" @finish="active = false">
-      <template #default="{times}">
+      <template #default="{ times }">
         <PButton variant="primary" class="relative z-10 font-mono" @click="active = !active">
           <template #prefix>
             <Component :is="active ? PauseCircleIcon : PlayCircleIcon" />

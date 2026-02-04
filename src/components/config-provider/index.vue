@@ -12,14 +12,11 @@ defineOptions({
   name: 'PConfigProvider',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'div',
-    size: 'md',
-    locale: () => enUS,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  as: 'div',
+  size: 'md',
+  locale: () => enUS,
+})
 
 provideConfigProvider(props)
 </script>

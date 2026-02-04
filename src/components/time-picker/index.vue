@@ -36,22 +36,19 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    modelValue: '',
-    prefixIcon: true,
-    showSeconds: true,
-    closeOnPressEscape: true,
-    presets: () => [],
-    format: 'HH:mm:ss',
-    valueFormat: 'HH:mm:ss',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: '',
+  prefixIcon: true,
+  showSeconds: true,
+  closeOnPressEscape: true,
+  presets: () => [],
+  format: 'HH:mm:ss',
+  valueFormat: 'HH:mm:ss',
+})
 
 const emits = defineEmits<{
-  'change': [boolean]
-  'select': [MouseEvent]
+  change: [boolean]
+  select: [MouseEvent]
   'update:modelValue': [string]
 }>()
 
@@ -152,7 +149,11 @@ async function setTimesScrollTop() {
   }
 
   const elList = [timeHoursRef.value, timeMinutesRef.value, timeSecondsRef.value]
-  const modelValueList = [dayjsDateTime.value!.hour(), dayjsDateTime.value!.minute(), dayjsDateTime.value!.second()]
+  const modelValueList = [
+    dayjsDateTime.value!.hour(),
+    dayjsDateTime.value!.minute(),
+    dayjsDateTime.value!.second(),
+  ]
 
   elList.forEach((el, i) => {
     const scrollTop = modelValueList[i]! * HEIGHT
@@ -289,37 +290,59 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
         </PButton>
       </div>
 
-      <div class="sm:text-sm flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none max-sm:text-15px" @click.stop="onTimeListClick">
+      <div
+        class="sm:text-sm max-sm:text-15px flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
+        @click.stop="onTimeListClick"
+      >
         <div class="p-2 gap-1 relative mx-auto flex items-center">
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeHoursRef" data-type="hour" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
-              <li v-for="_, i of 24" :key="i" class="h-8 leading-8 cursor-pointer">
+            <ul
+              ref="timeHoursRef"
+              data-type="hour"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              @scroll.stop="onTimeListScroll"
+            >
+              <li v-for="(_, i) of 24" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div class="pxd-time-picker--list relative">
-            <ul ref="timeMinutesRef" data-type="minute" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
-              <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
+            <ul
+              ref="timeMinutesRef"
+              data-type="minute"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              @scroll.stop="onTimeListScroll"
+            >
+              <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
           <div v-if="showSeconds" class="pxd-time-picker--list relative">
-            <ul ref="timeSecondsRef" data-type="second" class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]" @scroll.stop="onTimeListScroll">
-              <li v-for="_, i of 60" :key="i" class="h-8 leading-8 cursor-pointer">
+            <ul
+              ref="timeSecondsRef"
+              data-type="second"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              @scroll.stop="onTimeListScroll"
+            >
+              <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
                 {{ padStringZero(i) }}
               </li>
             </ul>
           </div>
         </div>
 
-        <div v-if="presets?.length" class="max-sm:w-36 sm:w-25 p-2 gap-1 scrollbar-hidden flex flex-wrap content-start self-stretch overflow-auto border-l outline-none" @click="onPresetClick">
+        <div
+          v-if="presets?.length"
+          class="max-sm:w-36 sm:w-25 p-2 gap-1 scrollbar-hidden flex flex-wrap content-start self-stretch overflow-auto border-l outline-none"
+          @click="onPresetClick"
+        >
           <button
-            v-for="preset, i in presets"
+            v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none max-sm:leading-5 max-sm:text-sm hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-all"
+            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-all"
           >
             {{ preset.label }}
           </button>
@@ -336,7 +359,11 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
   position: absolute;
   width: 100%;
   height: 50%;
-  background: linear-gradient(var(--time-picker-list-gradient-direction), var(--color-background-100) 15%, transparent);
+  background: linear-gradient(
+    var(--time-picker-list-gradient-direction),
+    var(--color-background-100) 15%,
+    transparent
+  );
   pointer-events: none;
 }
 

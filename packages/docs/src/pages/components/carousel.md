@@ -1,4 +1,5 @@
 # Carousel
+
 Loop a series of images or texts in a limited space.
 
 ## Default
@@ -21,10 +22,10 @@ Loop a series of images or texts in a limited space.
 
 <style>
 .pxd-carousel {
-  background: var(--color-gray-200)
+  background: var(--color-gray-200);
 }
 .pxd-carousel:nth-child(2n) {
-  background: var(--color-gray-100)
+  background: var(--color-gray-100);
 }
 </style>
 ```
@@ -59,19 +60,29 @@ const indicatorPosition = ref('bottom')
       <PSwitch label="right" value="right" />
     </PSwitchGroup>
 
-    <PCarouselGroup :direction="direction" :indicator-type="indicatorType" :indicator-position="indicatorPosition">
+    <PCarouselGroup
+      :direction="direction"
+      :indicator-type="indicatorType"
+      :indicator-position="indicatorPosition"
+    >
       <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
       </PCarousel>
     </PCarouselGroup>
 
-    <PCarouselGroup :direction="direction" :indicator-type="indicatorType" :indicator-position="indicatorPosition">
+    <PCarouselGroup
+      :direction="direction"
+      :indicator-type="indicatorType"
+      :indicator-position="indicatorPosition"
+    >
       <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
       </PCarousel>
 
       <template #indicator="{ total, current }">
-        <span class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-alpha-200">
+        <span
+          class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-alpha-200"
+        >
           {{ current }}/{{ total }}
         </span>
       </template>
@@ -81,6 +92,7 @@ const indicatorPosition = ref('bottom')
 ```
 
 ## Wheel toggle
+
 Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to be placed on the carousel and the page cannot be scrolled).
 
 ```vue demo
@@ -94,6 +106,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```
 
 ## Disable indicator and arrow
+
 ```vue demo
 <template>
   <PCarouselGroup :indicator="false" :arrow="false">
@@ -105,6 +118,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```
 
 ## Disable autoplay and loop
+
 ```vue demo
 <template>
   <PCarouselGroup :autoplay="false" :loop="false">
@@ -116,6 +130,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```
 
 ## Disable pause on hover
+
 By default, it will pause when the mouse is over the carousel.
 
 ```vue demo

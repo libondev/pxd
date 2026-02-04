@@ -18,14 +18,11 @@ defineOptions({
   name: 'PText',
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    as: 'p',
-    align: 'left',
-    truncate: false,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  as: 'p',
+  align: 'left',
+  truncate: false,
+})
 
 const presetSize = {
   '--text-xs': 'text-xs',
@@ -41,7 +38,7 @@ const formattedSize = computed(() => {
   return getResponsiveValue(
     size,
     (typeof size === 'object' ? size.xs : size) ?? '14px',
-    (acc, bp, value) => acc[bp] = acc[`--text-${bp}`] = getCssUnitValue(value),
+    (acc, bp, value) => (acc[bp] = acc[`--text-${bp}`] = getCssUnitValue(value)),
   )
 })
 
@@ -72,8 +69,10 @@ const computedClasses = computed(() => {
 
   const classes = [
     baseClass,
-    ...Object.keys(formattedSize.value).map(bp => presetSize[bp as keyof typeof presetSize]),
-  ].filter(Boolean).join(' ')
+    ...Object.keys(formattedSize.value).map((bp) => presetSize[bp as keyof typeof presetSize]),
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return classes
 })

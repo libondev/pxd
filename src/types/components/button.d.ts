@@ -1,4 +1,9 @@
-import type { ComponentAs, ComponentShape, ComponentSizeWithXs, ComponentVariantWithDefault } from '../shared'
+import type {
+  ComponentAs,
+  ComponentShape,
+  ComponentSizeWithXs,
+  ComponentVariantWithDefault,
+} from '../shared'
 
 export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'icon' | 'link'
 

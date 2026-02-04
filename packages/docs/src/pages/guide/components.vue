@@ -16,7 +16,7 @@ function getFilteredComponents(value: string) {
 
   const results = fuzzySort.go(value, allComponents, { key: 'name' })
 
-  return results.map(result => result.obj)
+  return results.map((result) => result.obj)
 }
 
 const handleSearch = debounce((value: string) => {
@@ -37,12 +37,11 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
 </script>
 
 <template>
-  <h1 class="text-2xl font-medium">
-    Overview
-  </h1>
+  <h1 class="text-2xl font-medium">Overview</h1>
 
   <PText secondary class="mt-2">
-    A total of <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
+    A total of
+    <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
   </PText>
 
   <div class="py-4 z-10 border-b bg-background-100">

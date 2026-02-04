@@ -1,4 +1,5 @@
 # Switch
+
 Choose between a set of options.
 
 ## Default

@@ -1,4 +1,5 @@
 # Kbd
+
 Display keyboard input that triggers an action.
 
 ## Modifiers
@@ -18,7 +19,7 @@ Display keyboard input that triggers an action.
 
 ```vue demo
 <template>
-  <PKbd meta shift/>
+  <PKbd meta shift />
 </template>
 ```
 

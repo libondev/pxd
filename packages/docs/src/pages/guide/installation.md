@@ -1,6 +1,6 @@
 # Installation
 
-Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){target="_blank"}, we still provide a native way to help those projects that do not use tailwindcss access.
+Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){target="\_blank"}, we still provide a native way to help those projects that do not use tailwindcss access.
 
 The adaptation of unocss/tailwindcss@3 will be completed later.
 
@@ -8,7 +8,8 @@ The adaptation of unocss/tailwindcss@3 will be completed later.
 
 <div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">
 
-[![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="_blank"}
+[![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="\_blank"}
+
 </div>
 
 ```bash
@@ -16,6 +17,7 @@ pnpm install pxd
 ```
 
 ## Global Import
+
 You can register all the components to the global at one time, but this may lead to a larger volume after your construction.
 
 ```js
@@ -39,15 +41,13 @@ Only use the components you need to avoid being too big after packaging.
 
 ```html
 <script setup>
-import Button from 'pxd/components/button'
-// or
-// import { Button } from 'pxd'
+  import Button from 'pxd/components/button'
+  // or
+  // import { Button } from 'pxd'
 </script>
 
 <template>
-  <Button>
-    Click me
-  </Button>
+  <button>Click me</button>
 </template>
 ```
 
@@ -70,9 +70,7 @@ export default defineConfig({
   plugins: [
     Vue(),
     Components({
-      resolvers: [
-        PxdResolver(),
-      ],
+      resolvers: [PxdResolver()],
     }),
   ],
 })
@@ -82,9 +80,7 @@ Then you can focus on the business logic itself.
 
 ```html
 <template>
-  <PButton>
-    Click me
-  </PButton>
+  <PButton> Click me </PButton>
 </template>
 ```
 
@@ -127,26 +123,22 @@ import { defineConfig } from 'vite'
 import defineOptions from 'unplugin-vue-define-options/vite'
 
 export default defineConfig({
-  plugins: [
-    defineOptions(),
-  ]
+  plugins: [defineOptions()],
 })
 ```
 
 ```js
 // rsbuild.config.ts
-import { defineConfig } from '@rsbuild/core';
-import { pluginVue } from '@rsbuild/plugin-vue';
+import { defineConfig } from '@rsbuild/core'
+import { pluginVue } from '@rsbuild/plugin-vue'
 import defineOptions from 'unplugin-vue-define-options/rspack'
 
 export default defineConfig({
   plugins: [pluginVue()],
   tools: {
     rspack: {
-      plugins: [
-        defineOptions()
-      ]
-    }
-  }
-});
+      plugins: [defineOptions()],
+    },
+  },
+})
 ```

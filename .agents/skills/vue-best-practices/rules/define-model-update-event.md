@@ -24,6 +24,7 @@ Components using `defineModel` may fire the `@update:model-value` event with `un
 ## Root Cause
 
 `defineModel` returns `Ref<T | undefined>` by default, even when `T` is non-nullable. The update event can fire with `undefined` when:
+
 - Component unmounts
 - Model is explicitly cleared
 - Internal state resets
@@ -31,18 +32,17 @@ Components using `defineModel` may fire the `@update:model-value` event with `un
 ## Fix
 
 **Option 1: Use required option (Vue 3.5+)**
+
 ```typescript
 // Returns Ref<Item> instead of Ref<Item | undefined>
 const model = defineModel<Item>({ required: true })
 ```
 
 **Option 2: Type parent handler to accept undefined**
+
 ```vue
 <template>
-  <MyComponent
-    v-model="item"
-    @update:model-value="handleUpdate"
-  />
+  <MyComponent v-model="item" @update:model-value="handleUpdate" />
 </template>
 
 <script setup lang="ts">
@@ -56,6 +56,7 @@ const handleUpdate = (value: Item | undefined) => {
 ```
 
 **Option 3: Use default value in defineModel**
+
 ```typescript
 const model = defineModel<string>({ default: '' })
 ```

@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { globSync } from 'tinyglobby'
+
 import { humanize, pascalize } from './utils.js'
 
 const isNeedStageChange = process.argv.includes('--stage')
@@ -12,7 +13,7 @@ function updateComponentsIndex() {
   const matchRegex = /src\/components\/(.*?)\/index\.vue/
 
   const _components = components.map((file) => {
-    const [,name] = file.match(matchRegex) || []
+    const [, name] = file.match(matchRegex) || []
 
     return {
       name: pascalize(name),
@@ -81,7 +82,10 @@ function updateDocsComponents() {
     return acc
   }, [])
 
-  fs.writeFileSync(path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'), `${JSON.stringify(jsonContent, null, 2)}\n`)
+  fs.writeFileSync(
+    path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'),
+    `${JSON.stringify(jsonContent, null, 2)}\n`,
+  )
 }
 
 // updateAppVersion()
@@ -91,7 +95,9 @@ updateComposablesIndex()
 
 if (isNeedStageChange) {
   try {
-    execSync('git add volar.d.ts src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json')
+    execSync(
+      'git add volar.d.ts src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json',
+    )
     execSync('git commit -m "chore: update pkg exports"')
   } catch {
     console.error('Stage change failed')

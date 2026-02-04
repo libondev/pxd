@@ -1,4 +1,5 @@
 # Command Menu
+
 Launch a set of actions as a full-screen overlay.
 
 ## Default
@@ -11,14 +12,9 @@ const showCommandMenu = ref(false)
 </script>
 
 <template>
-  <PButton variant="primary" @click="showCommandMenu = true">
-    Open Command Menu
-  </PButton>
+  <PButton variant="primary" @click="showCommandMenu = true"> Open Command Menu </PButton>
 
-  <PCommandMenu
-    v-model="showCommandMenu"
-    placeholder="What do you need?"
-  >
+  <PCommandMenu v-model="showCommandMenu" placeholder="What do you need?">
     <PCommandMenuGroup label="Suggestions">
       <PCommandMenuItem label="Figma Import" />
     </PCommandMenuGroup>

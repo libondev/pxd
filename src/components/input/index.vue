@@ -20,27 +20,24 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<InputProps>(),
-  {
-    align: 'left',
-    prefixStyle: true,
-    suffixStyle: true,
-  },
-)
+const props = withDefaults(defineProps<InputProps>(), {
+  align: 'left',
+  prefixStyle: true,
+  suffixStyle: true,
+})
 
 const emits = defineEmits<{
-  'click': [MouseEvent]
-  'clear': [string]
-  'input': [string]
-  'change': [string, Event]
-  'focus': [FocusEvent]
-  'blur': [FocusEvent]
-  'keydown': [KeyboardEvent]
+  click: [MouseEvent]
+  clear: [string]
+  input: [string]
+  change: [string, Event]
+  focus: [FocusEvent]
+  blur: [FocusEvent]
+  keydown: [KeyboardEvent]
   'update:modelValue': [string]
-  'compositionstart': [CompositionEvent]
-  'compositionupdate': [CompositionEvent]
-  'compositionend': [CompositionEvent]
+  compositionstart: [CompositionEvent]
+  compositionupdate: [CompositionEvent]
+  compositionend: [CompositionEvent]
 }>()
 
 const uniqueId = getUniqueId()
@@ -51,7 +48,7 @@ const modelValue = useModelValue(props, emits, { withChange: false })
 
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
-const inputType = computed(() => props.inputType || isPasswordVisible.value ? 'text' : 'password')
+const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
 
 const computedClasses = computed(() => {
   return inputVariant({
@@ -175,7 +172,10 @@ defineExpose({
     <div
       v-if="$slots.prefix"
       class="pxd-input--prefix text-sm flex h-full items-center text-foreground-secondary"
-      :class="[{ 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle }, prefixClass]"
+      :class="[
+        { 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle },
+        prefixClass,
+      ]"
       @pointerdown.prevent="NOOP"
     >
       <slot name="prefix" />
@@ -184,7 +184,7 @@ defineExpose({
     <input
       :id="uniqueId"
       ref="inputRef"
-      class="px-3 py-0 size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:font-medium file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      class="px-3 py-0 file:font-medium size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
@@ -209,7 +209,7 @@ defineExpose({
       @compositionstart="onCompositionStart"
       @compositionupdate="onCompositionUpdate"
       @compositionend="onCompositionEnd"
-    >
+    />
 
     <div
       v-if="password || clearable"
@@ -238,7 +238,10 @@ defineExpose({
     <div
       v-if="$slots.suffix"
       class="pxd-input--suffix text-sm flex h-full items-center text-foreground-secondary"
-      :class="[{ 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle }, suffixClass]"
+      :class="[
+        { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle },
+        suffixClass,
+      ]"
       @pointerdown.prevent="NOOP"
     >
       <slot name="suffix" />

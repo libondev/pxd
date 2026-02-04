@@ -4,18 +4,22 @@
 @source '../../node_modules/markdown-it-plugins';
 
 @theme {
-  --default-mono-font-family: 'Geist Mono', 'JetBrains Mono', 'MonoLisa', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --default-mono-font-family:
+    'Geist Mono', 'JetBrains Mono', 'MonoLisa', ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 :root {
-  font-feature-settings: 'liga' 1, 'calt' 1;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
 }
 
 html {
   scroll-padding-top: 60px;
 }
 
-html:has(:is(h1,h2,h3,h4):hover) {
+html:has(:is(h1, h2, h3, h4):hover) {
   scroll-behavior: smooth;
 }
 

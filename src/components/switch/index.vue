@@ -62,7 +62,7 @@ function onSwitchFocusIn() {
       :name="switchGroupName"
       :disabled="computedDisabled"
       :required="computedRequired"
-    >
+    />
 
     <div :class="computedClasses" @focusin="onSwitchFocusIn">
       <slot>

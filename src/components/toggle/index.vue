@@ -31,18 +31,15 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    activeValue: true,
-    inactiveValue: false,
-    activeColor: 'var(--color-primary)',
-    inactiveColor: 'var(--color-gray-alpha-100)',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  activeValue: true,
+  inactiveValue: false,
+  activeColor: 'var(--color-primary)',
+  inactiveColor: 'var(--color-gray-alpha-100)',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
+  change: [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -97,12 +94,13 @@ async function onCheckboxChange(e: Event) {
       :checked="isChecked"
       class="pxd-toggle--input peer smallest"
       @change.prevent="onCheckboxChange"
-    >
+    />
 
     <span
       v-if="inactiveLabel"
       class="pxd-toggle--label text-sm mr-1.5 pl-0.5 opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
-    >{{ inactiveLabel }}</span>
+      >{{ inactiveLabel }}</span
+    >
 
     <div
       class="pxd-toggle--handle rounded-full border border-input bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
@@ -112,7 +110,9 @@ async function onCheckboxChange(e: Event) {
         '--toggle-inactive-color': inactiveColor,
       }"
     >
-      <div class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform">
+      <div
+        class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform"
+      >
         <div class="inset-0 absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">
             <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
@@ -126,12 +126,13 @@ async function onCheckboxChange(e: Event) {
     <span
       v-if="activeLabel"
       class="pxd-toggle--label text-sm ml-1.5 pr-0.5 opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
-    >{{ activeLabel }}</span>
+      >{{ activeLabel }}</span
+    >
   </label>
 </template>
 
 <style>
 .pxd-toggle--input:checked:disabled + .pxd-toggle--handle {
-  background-color: var(--color-gray-300)
+  background-color: var(--color-gray-300);
 }
 </style>

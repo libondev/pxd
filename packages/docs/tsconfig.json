@@ -6,12 +6,6 @@
     },
     "types": ["vite/client", "unplugin-vue-router/client", "vite-plugin-vue-meta-layouts/client"]
   },
-  "include": [
-    "../../env.d.ts",
-    "shims/*.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
+  "include": ["../../env.d.ts", "shims/*.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules", "dist"]
 }

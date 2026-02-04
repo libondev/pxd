@@ -1,4 +1,5 @@
 # Skeleton
+
 Display a skeleton whilst another component is loading.
 
 ## Default with set width
@@ -18,6 +19,7 @@ Display a skeleton whilst another component is loading.
 ```
 
 ## Wrapping children
+
 Setting the height to `auto` automatically calculates the height.
 
 ```vue demo
@@ -35,6 +37,7 @@ Setting the height to `auto` automatically calculates the height.
 ```
 
 ## Wrapping children with fixed size
+
 The skeleton will hide when children are not null, but the size is retained.
 
 ```vue demo

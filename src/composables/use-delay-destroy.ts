@@ -1,5 +1,7 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
+
 import { shallowRef } from 'vue'
+
 import { toValue } from '../utils/ref'
 
 interface Options {
@@ -15,15 +17,8 @@ interface Results {
   hide: () => Promise<boolean>
 }
 
-export function useDelayDestroy(
-  value: MaybeRefOrGetter<boolean>,
-  options: Options = {},
-): Results {
-  const {
-    delay = 300,
-    renderChange,
-    visibleChange,
-  } = options
+export function useDelayDestroy(value: MaybeRefOrGetter<boolean>, options: Options = {}): Results {
+  const { delay = 300, renderChange, visibleChange } = options
 
   const render = shallowRef(toValue(value))
   const visible = shallowRef(value as boolean)

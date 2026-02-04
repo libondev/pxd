@@ -1,12 +1,13 @@
-import type { VirtualListProps } from '../../src/composables/use-virtual-list'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
+
+import type { VirtualListProps } from '../../src/composables/use-virtual-list'
+
 import { useVirtualList } from '../../src/composables/use-virtual-list'
 import { useSetupWrapper } from '../helpers/setup'
 
 describe('use-virtual-list', () => {
   let mockContainer: HTMLElement
-  let mockElement: HTMLElement
 
   beforeEach(() => {
     mockContainer = {
@@ -14,10 +15,6 @@ describe('use-virtual-list', () => {
       scrollTop: 0,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-    } as any
-
-    mockElement = {
-      getBoundingClientRect: vi.fn(() => ({ height: 60 })),
     } as any
   })
 
@@ -46,21 +43,6 @@ describe('use-virtual-list', () => {
     const wrapper = useSetupWrapper(() => useVirtualList(props))
 
     expect(wrapper.renderList.value).toEqual([])
-
-    wrapper.unmount()
-  })
-
-  it('should manage item refs correctly', () => {
-    const props: VirtualListProps = {
-      listData: Array.from({ length: 10 }, (_, i) => `Item ${i}`),
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualList(props))
-
-    wrapper.setItemRef(mockElement, 0)
-    wrapper.setItemRef(mockElement, 1)
-    wrapper.setItemRef(null, 1) // should delete
 
     wrapper.unmount()
   })
@@ -112,30 +94,6 @@ describe('use-virtual-list', () => {
     wrapper.unmount()
   })
 
-  it('should update positions when item heights change', async () => {
-    const testData = Array.from({ length: 5 }, (_, i) => `Item ${i}`)
-    const props: VirtualListProps = {
-      listData: testData,
-      itemSize: 50,
-    }
-
-    const wrapper = useSetupWrapper(() => useVirtualList(props))
-
-    wrapper.containerRef.value = mockContainer
-    wrapper.updateContainerHeight()
-
-    await nextTick()
-
-    // Mock an element with different height
-    const tallElement = {
-      getBoundingClientRect: vi.fn(() => ({ height: 80 })),
-    } as any
-
-    wrapper.setItemRef(tallElement, 0)
-
-    wrapper.unmount()
-  })
-
   it('should calculate list height from positions', async () => {
     const testData = Array.from({ length: 3 }, (_, i) => `Item ${i}`)
     const props: VirtualListProps = {
@@ -155,10 +113,12 @@ describe('use-virtual-list', () => {
   it('should handle reactive data changes', async () => {
     const reactiveData = ref(Array.from({ length: 3 }, (_, i) => `Item ${i}`))
 
-    const wrapper = useSetupWrapper(() => useVirtualList({
-      listData: reactiveData.value,
-      itemSize: 50,
-    }))
+    const wrapper = useSetupWrapper(() =>
+      useVirtualList({
+        listData: reactiveData.value,
+        itemSize: 50,
+      }),
+    )
 
     // Set container height to enable rendering
     wrapper.containerRef.value = mockContainer

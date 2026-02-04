@@ -1,4 +1,5 @@
 # Snippet
+
 Display a snippet of copyable code for the command line.
 
 ## Default
@@ -25,11 +26,7 @@ const onCopied = () => {
 
 ```vue demo
 <script setup>
-const text = [
-  'cd my-project',
-  'npm install pxd',
-  'npm run dev',
-]
+const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 </script>
 
 <template>

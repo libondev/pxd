@@ -1,4 +1,5 @@
 import type { EmitFn, Ref } from 'vue'
+
 import { computed, shallowRef, watch } from 'vue'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
@@ -91,9 +92,7 @@ export function useCountdown<T extends Record<string, any>>(
     return Math.max(0, formatTime(durations ?? 0))
   })
 
-  const isInfiniteCountup = computed(() =>
-    props.invert && totalDuration.value === Infinity,
-  )
+  const isInfiniteCountup = computed(() => props.invert && totalDuration.value === Infinity)
 
   function formatTime(time: number = 0): number {
     return props.millisecond ? Math.round(time) : Math.round(time * 1000)
@@ -193,9 +192,7 @@ export function useCountdown<T extends Record<string, any>>(
     }
 
     if (props.invert) {
-      timeRef.value = isInfiniteCountup.value
-        ? current
-        : Math.min(current, totalDuration.value)
+      timeRef.value = isInfiniteCountup.value ? current : Math.min(current, totalDuration.value)
     } else {
       timeRef.value = Math.max(0, current)
     }

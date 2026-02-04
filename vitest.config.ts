@@ -1,11 +1,9 @@
-import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [
-    vue(),
-  ],
+  plugins: [vue()],
   test: {
     globals: false,
     fileParallelism: true,
@@ -13,7 +11,7 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     exclude: [...configDefaults.exclude, 'e2e/**'],
     root: fileURLToPath(new URL('./', import.meta.url)),
-    setupFiles: './vitest.setup.ts',
+    // setupFiles: './vitest.setup.ts',
     server: {
       deps: {
         inline: [/@gdsicon\/vue/],

@@ -18,7 +18,7 @@ defineOptions({
 const props = defineProps<RadioProps>()
 
 const emits = defineEmits<{
-  'change': [NonNullable<RadioProps['modelValue']>]
+  change: [NonNullable<RadioProps['modelValue']>]
   'update:modelValue': [NonNullable<RadioProps['modelValue']>]
 }>()
 
@@ -28,7 +28,9 @@ const modelValue = useModelValue(props, emits)
 const radioGroupName = useUniqueId('RadioGroupName')
 const radioGroupContext = useRadioGroupContext()
 
-const isChecked = computed(() => (radioGroupContext?.modelValue ?? modelValue.value) === props.value)
+const isChecked = computed(
+  () => (radioGroupContext?.modelValue ?? modelValue.value) === props.value,
+)
 const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
 const computedRequired = computed(() => props.required || radioGroupContext?.required)
 
@@ -63,7 +65,7 @@ function onChangeValue() {
       :required="computedRequired"
       :disabled="computedDisabled"
       @change="onChangeValue"
-    >
+    />
 
     <span aria-hidden="true" :class="computedClasses" />
 

@@ -17,7 +17,13 @@ interface Props {
   modelValue?: string
   placeholder?: string
   inputMode?: HTMLAttributes['inputmode']
-  type?: 'numeric' | 'alphabetic' | 'alphanumeric' | 'numeric-password' | 'alphabetic-password' | 'alphanumeric-password'
+  type?:
+    | 'numeric'
+    | 'alphabetic'
+    | 'alphanumeric'
+    | 'numeric-password'
+    | 'alphabetic-password'
+    | 'alphanumeric-password'
 }
 
 defineOptions({
@@ -28,18 +34,15 @@ defineOptions({
   },
 })
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    length: 4,
-    modelValue: '',
-    type: 'numeric',
-    placeholder: '○',
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  length: 4,
+  modelValue: '',
+  type: 'numeric',
+  placeholder: '○',
+})
 
 const emits = defineEmits<{
-  'change': [NonNullable<Props['modelValue']>]
+  change: [NonNullable<Props['modelValue']>]
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
@@ -52,7 +55,7 @@ const modelValue = useModelValue(props, emits)
 const modelValueLocal = ref<string[]>(
   (() => {
     if (typeof props.modelValue === 'string') {
-      return (props.modelValue).split('')
+      return props.modelValue.split('')
     } else if (Array.isArray(props.modelValue)) {
       return props.modelValue
     }
@@ -122,7 +125,7 @@ function getFirstEmptyIndex() {
   const length = modelValueLocal.value.length
 
   if (length === props.length) {
-    return modelValueLocal.value.findIndex(value => !value)
+    return modelValueLocal.value.findIndex((value) => !value)
   }
 
   return length
@@ -270,7 +273,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
         :inputmode="computedInputMode"
         @paste="onInputPastedValue"
         @beforeinput="onBeforeInputValue"
-      >
+      />
     </div>
   </label>
 </template>

@@ -7,22 +7,13 @@ interface Props {
   itemSize?: number
 }
 
-const props = withDefaults(
-  defineProps<Props>(),
-  {
-    dataKey: 'id',
-    listData: () => [],
-    itemSize: 50,
-  },
-)
+const props = withDefaults(defineProps<Props>(), {
+  dataKey: 'id',
+  listData: () => [],
+  itemSize: 50,
+})
 
-const {
-  containerRef,
-  renderList,
-  listHeight,
-  listStyle,
-  setItemRef,
-} = useVirtualList(props)
+const { containerRef, renderList, listHeight, listStyle, setItemRef } = useVirtualList(props)
 </script>
 
 <template>

@@ -51,11 +51,11 @@ Now `$style.buttn` will show a type error because `buttn` doesn't exist in the C
 
 ## What Gets Checked
 
-| Access | With strictCssModules |
-|--------|----------------------|
-| `$style.validClass` | OK |
-| `$style.typo` | Error: Property 'typo' does not exist |
-| `$style['dynamic']` | OK (dynamic access not checked) |
+| Access              | With strictCssModules                 |
+| ------------------- | ------------------------------------- |
+| `$style.validClass` | OK                                    |
+| `$style.typo`       | Error: Property 'typo' does not exist |
+| `$style['dynamic']` | OK (dynamic access not checked)       |
 
 ## Limitations
 
