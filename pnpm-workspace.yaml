@@ -2,7 +2,6 @@ packages:
   - .
   - packages/*
 catalog:
-  '@antfu/eslint-config': ^4.19.0
   '@clack/prompts': ^0.11.0
   '@floating-ui/dom': ^1.7.4
   '@gdsicon/vue': ^1.0.8
@@ -23,7 +22,6 @@ catalog:
   cross-spawn: ^7.0.6
   dayjs: ^1.11.19
   es-toolkit: ^1.44.0
-  eslint: ^9.39.2
   eslint-plugin-better-tailwindcss: ^3.8.0
   focus-trap: ^7.8.0
   fs-extra: ^11.3.3
@@ -37,6 +35,8 @@ catalog:
   mkdist: ^2.4.1
   mri: ^1.2.0
   npm-run-all2: ^8.0.4
+  oxfmt: ^0.28.0
+  oxlint: ^1.43.0
   shiki: ^3.21.0
   tailwind-variants: ^3.2.2
   tailwindcss: ^4.1.18

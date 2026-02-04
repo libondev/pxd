@@ -107,8 +107,9 @@
     "gen-styles-file": "node scripts/gen-css-files.js",
     "gen-tw-css-file": "tailwindcss -i ./dist/styles/source.css -o ./dist/styles/styles.css -m",
     "gen-volar-dts": "node scripts/gen-component-dts.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
@@ -129,14 +130,12 @@
     "tailwind-variants": "catalog:default"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "catalog:default",
     "@tailwindcss/cli": "catalog:default",
     "@tsconfig/node22": "catalog:default",
     "@types/node": "catalog:default",
     "@vitejs/plugin-vue": "catalog:default",
     "@vue/test-utils": "catalog:default",
     "@vue/tsconfig": "catalog:default",
-    "eslint": "catalog:default",
     "eslint-plugin-better-tailwindcss": "catalog:default",
     "fs-extra": "catalog:default",
     "happy-dom": "catalog:default",
@@ -144,6 +143,8 @@
     "lint-staged": "catalog:default",
     "mkdist": "catalog:default",
     "npm-run-all2": "catalog:default",
+    "oxfmt": "catalog:default",
+    "oxlint": "catalog:default",
     "tinyglobby": "catalog:default",
     "typescript": "catalog:default",
     "unbuild": "catalog:default",
@@ -159,6 +160,6 @@
     }
   },
   "lint-staged": {
-    "*.{ts,vue}": "eslint --fix"
+    "*.{ts,vue}": "oxlint --fix"
   }
 }
