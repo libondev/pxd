@@ -28,6 +28,7 @@
     ".codex",
     ".cursor",
     ".gemini",
-    ".opencode"
+    ".opencode",
+    "*.md"
   ]
 }
