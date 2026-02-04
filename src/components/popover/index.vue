@@ -26,13 +26,13 @@ interface Props {
   showArrow?: boolean
   arrowColor?: string
   interactive?: boolean
-  toggleClick?: boolean
   autoPosition?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
   unsetPosition?: boolean
   transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
+  toggleOnTrigger?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   lockScrollOnVisible?: boolean
@@ -51,8 +51,8 @@ const props = withDefaults(defineProps<Props>(), {
   hideDelay: 0,
   arrowColor: 'hsl(var(--primary))',
   interactive: true,
-  toggleClick: true,
   autoPosition: true,
+  toggleOnTrigger: true,
   unsetPosition: false,
   transitionType: 'fade-scale',
   closeOnInvisible: true,
@@ -257,7 +257,7 @@ async function onTriggerClick(ev: Event) {
     return
   }
 
-  if (isVisible.value && props.toggleClick) {
+  if (isVisible.value && props.toggleOnTrigger) {
     handlePopoverHide()
 
     return

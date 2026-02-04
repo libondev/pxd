@@ -142,7 +142,6 @@ function resetContainerPosition(resetIndex: number) {
 }
 
 function onTransitionsEnd(ev: TransitionEvent) {
-  // 仅处理 slider 自身的 transform 过渡结束，避免冒泡导致的多次触发
   if (ev.propertyName !== 'transform' || ev.target !== sliderRef.value) {
     return
   }
