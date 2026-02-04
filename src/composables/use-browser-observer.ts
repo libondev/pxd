@@ -16,7 +16,7 @@ export const useResizeObserver = createObserver(globalThis.ResizeObserver)
 
 type Observers = IntersectionObserver | ResizeObserver | MutationObserver
 type Constructor = typeof IntersectionObserver | typeof ResizeObserver | typeof MutationObserver
-type TargetRef = MaybeRefOrGetter<Nullable<HTMLElement>> | MaybeRefOrGetter<Nullable<HTMLElement>>[]
+type TargetRef = MaybeRefOrGetter<Nullable<HTMLElement>> | MaybeRefOrGetter<Nullable<HTMLElement>>[] | MaybeRefOrGetter<Nullable<HTMLElement>[]>
 
 interface ObserverResults<T extends Observers> {
   observer: T | undefined
