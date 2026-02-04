@@ -13,6 +13,7 @@ interface Props {
   group?: string
   minimum?: number
   trickle?: boolean
+  hideDelay?: number
   trickleThreshold?: number
 }
 
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   speed: 300,
   minimum: 0.08,
   trickle: true,
+  hideDelay: 500,
   trickleThreshold: 300,
 })
 
@@ -37,7 +39,6 @@ type Status = 'running' | 'error' | 'finish'
 let hiddenBarTimeout: ReturnType<typeof setTimeout>
 let enableTransitionTimeout: ReturnType<typeof setTimeout>
 
-const HIDDEN_BAR_DELAY = 800
 const ENABLE_TRANSITION_DELAY = 0
 
 const status = shallowRef<Status>('finish')
@@ -95,7 +96,7 @@ function increaseProgress(n?: number) {
 async function hideAndResetProgress() {
   hiddenBarTimeout = setTimeout(() => {
     hiddenBar.value = true
-  }, HIDDEN_BAR_DELAY)
+  }, props.hideDelay)
 }
 
 function handleStartProgress() {
