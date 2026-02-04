@@ -9,7 +9,7 @@ interface Props {
   href: string
   text?: string
   align?: 'left' | 'center' | 'right'
-  target?: '_blank' | '_self' | '_parent' | '_top'
+  target?: HTMLAnchorElement['target']
   variant?: ButtonVariant
   externalIcon?: boolean
 }

@@ -1,6 +1,6 @@
 # Installation
 
-Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){target="\_blank"}, we still provide a native way to help those projects that do not use tailwindcss access.
+Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){target="_blank"}, we still provide a native way to help those projects that do not use tailwindcss access.
 
 The adaptation of unocss/tailwindcss@3 will be completed later.
 
@@ -8,7 +8,7 @@ The adaptation of unocss/tailwindcss@3 will be completed later.
 
 <div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">
 
-[![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="\_blank"}
+[![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="_blank"}
 
 </div>
 

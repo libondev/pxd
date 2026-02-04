@@ -32,3 +32,9 @@ html:has(:is(h1, h2, h3, h4):hover) {
   background-color: var(--color-gray-100);
   border: 1px solid var(--color-gray-300);
 }
+
+p a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 500;
+}

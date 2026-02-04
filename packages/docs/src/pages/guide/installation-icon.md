@@ -8,7 +8,7 @@ We also maintain an unofficial icon library, which provides a lot of beautiful i
 
 <div class="h-5 w-max min-w-20 bg-gray-100 rounded-[3px]">
 
-[![](https://img.shields.io/npm/v/@gdsicon/vue.svg)](https://www.npmjs.com/package/@gdsicon/vue){target="\_blank"}
+[![](https://img.shields.io/npm/v/@gdsicon/vue.svg)](https://www.npmjs.com/package/@gdsicon/vue){target="_blank"}
 
 </div>
 
