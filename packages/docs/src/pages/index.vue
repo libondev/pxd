@@ -105,43 +105,35 @@ onBeforeUnmount(() => {
 
     <hr class="mb-8 sm:mb-20 sm:max-w-3xl max-sm:w-3/4 mx-auto" />
 
-    <section
-      class="features mb-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap"
-    >
+    <section class="features mb-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap">
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">Consistent experience</h3>
 
         <PText secondary> It can run in 2 and 3 without modifying any syntax. </PText>
       </div>
 
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">Full light and dark support</h3>
 
         <PText secondary>
-          Switch themes in the blink of an eye without any effort. See<PLinkButton
-            href="/components/theme-switcher#premise"
-            class="text-foreground underline"
-            type="text"
-            text="here"
-          />for more information.
+          Switch themes in the blink of an eye without any effort. See
+          <RouterLink to="/components/theme-switcher#premise" class="text-foreground underline">here</RouterLink> for
+          more
+          information.
         </PText>
       </div>
 
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">On demand Import</h3>
 
         <PText secondary> Provide resolver to automatically import only used components. </PText>
       </div>
 
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">Support for reducing animation</h3>
 
         <PText secondary>
@@ -152,8 +144,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">Extremely customizable</h3>
 
         <PText secondary>
@@ -163,8 +154,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary">
         <h3 class="mb-1.5 font-medium">Responsive components</h3>
 
         <PText secondary> Customized style design on desktop or mobile devices. </PText>

@@ -4,6 +4,7 @@ import { humanize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 import Menus from '../../components/Menus.vue'
+import TocNav from '../../components/TocNav.vue'
 
 interface MenuItem {
   label: string
@@ -76,14 +77,14 @@ if (!isServer()) {
 
 <template>
   <div v-if="isMdUp" class="left-0 top-0 bottom-0 absolute">
-    <aside class="sidebar top-12 bottom-0 w-60 xl:border-l fixed z-0 border-r bg-background-100">
+    <aside class="sidebar top-12 bottom-0 w-56 xl:border-l fixed z-0 border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5" fader-direction="vertical">
         <Menus :menus="menus" />
       </PScrollable>
     </aside>
   </div>
 
-  <div class="md:pl-60 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
+  <div class="md:pl-56 lg:pr-56 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
     <main class="prose p-6 py-12 sm:px-12 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
@@ -101,6 +102,12 @@ if (!isServer()) {
     </main>
 
     <SiteFooter />
+  </div>
+
+  <div class="right-0 top-0 bottom-0 w-56 absolute hidden lg:block">
+    <aside class="toc-aside top-12 w-56 bottom-0 border-x fixed z-0 bg-background-100">
+      <TocNav />
+    </aside>
   </div>
 </template>
 
@@ -120,13 +127,13 @@ if (!isServer()) {
   --background: var(--color-background-100);
   line-height: 1.5;
 
-  & > :is(h1, h2, h3, h4) {
+  &> :is(h1, h2, h3, h4) {
     font-weight: 600;
     position: relative;
     letter-spacing: -0.03em;
     outline: none;
 
-    & > a {
+    &>a {
       outline: none;
 
       &:focus-visible {
@@ -140,7 +147,7 @@ if (!isServer()) {
       margin-top: 2em;
     }
 
-    & + p {
+    &+p {
       margin-top: 0;
     }
 
@@ -149,10 +156,10 @@ if (!isServer()) {
     }
   }
 
-  & > h1::before,
-  & > h2::before,
-  & > h3::before,
-  & > h4::before {
+  &>h1::before,
+  &>h2::before,
+  &>h3::before,
+  &>h4::before {
     position: absolute;
     left: -2px;
     transform: translateX(-100%) scale(0.75);
@@ -160,19 +167,19 @@ if (!isServer()) {
     color: hsl(var(--color-gray-800-value));
   }
 
-  & > h1 {
+  &>h1 {
     font-size: 1.875rem;
   }
 
-  & > h2 {
+  &>h2 {
     font-size: 1.5rem;
   }
 
-  & > h3 {
+  &>h3 {
     font-size: 1.25rem;
   }
 
-  & > h4 {
+  &>h4 {
     font-size: 1.125rem;
   }
 
@@ -204,7 +211,7 @@ if (!isServer()) {
     margin-block: 0.5em;
   }
 
-  .markdown-body > pre:not(.shiki) {
+  .markdown-body>pre:not(.shiki) {
     padding-left: 1.25em;
     margin-block: 1em;
     border-radius: var(--radius);
@@ -237,7 +244,7 @@ if (!isServer()) {
     font-size: 0.875rem;
   }
 
-  pre.shiki > code {
+  pre.shiki>code {
     counter-reset: section;
   }
 

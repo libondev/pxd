@@ -1,13 +1,20 @@
 {
-  "css.customData": [".vscode/tailwind.json"],
+  "css.customData": [
+    ".vscode/tailwind.json"
+  ],
   "javascript.preferences.importModuleSpecifierEnding": "index",
   "typescript.preferences.importModuleSpecifierEnding": "index",
-
   // Disable the default formatter, use eslint instead
+  "eslint.enable": false,
   "prettier.enable": false,
-  "editor.formatOnSave": false,
-
   // Auto fix
+  "oxc.typeAware": true,
+  "oxc.configPath": "oxlintrc.json",
+  "oxc.unusedDisableDirectives": "deny",
+  "oxc.fmt.configPath": "oxfmtrc.jsonc",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file", // oxfmt can only format whole files
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit",
     "source.fixAll.eslint": "explicit",
@@ -18,11 +25,15 @@
     "className",
     "ngClass"
   ],
-  "tailwindCSS.classFunctions": ["cn", "tv", "clsx", "twMerge"],
+  "tailwindCSS.classFunctions": [
+    "cn",
+    "tv",
+    "clsx",
+    "twMerge"
+  ],
   "files.associations": {
     "*.css": "tailwindcss"
   },
-
   // Enable eslint for all supported languages
   "eslint.validate": [
     "javascript",
