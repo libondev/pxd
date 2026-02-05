@@ -263,7 +263,9 @@ watch(
         @pointerup="stopDecrease"
         @contextmenu.prevent="NOOP"
       >
-        <MinusIcon class="pointer-events-none" />
+        <slot name="minusIcon">
+          <MinusIcon class="pointer-events-none" />
+        </slot>
       </button>
 
       <slot name="prefix" />
@@ -281,7 +283,9 @@ watch(
         @pointerup="stopIncrease"
         @contextmenu.prevent="NOOP"
       >
-        <PlusIcon class="pointer-events-none" />
+        <slot name="plusIcon">
+          <PlusIcon class="pointer-events-none" />
+        </slot>
       </button>
     </template>
   </PInput>

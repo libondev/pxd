@@ -22,7 +22,7 @@ const number = ref(0)
 <script setup>
 import { ref } from 'vue'
 
-const value = ref(0)
+const value = ref(1)
 </script>
 
 <template>
@@ -40,7 +40,7 @@ const value = ref(0)
 <script setup>
 import { ref } from 'vue'
 
-const value = ref(0)
+const value = ref(2)
 </script>
 
 <template>
@@ -87,6 +87,30 @@ const value = ref(0)
 
 <template>
   <PNumberInput v-model="value" :precision="2" :step="0.68" class="max-w-xs" />
+</template>
+```
+
+## Icons
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import PlusCircleIcon from '@gdsicon/vue/plus-circle'
+import MinusCircleIcon from '@gdsicon/vue/minus-circle'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PNumberInput v-model="value" class="max-w-xs">
+    <template #minusIcon>
+      <MinusCircleIcon />
+    </template>
+
+    <template #plusIcon>
+      <PlusCircleIcon />
+    </template>
+  </PNumberInput>
 </template>
 ```
 
