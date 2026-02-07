@@ -56,7 +56,6 @@ pxd/
 
 #### ESLint Rules
 
-- Uses **@antfu/eslint-config** (opinionated style guide)
 - **Tailwind-specific rules**: Strict class ordering, no conflicts, no duplicates
 - **Curly braces**: Always required
 - **Event naming**: kebab-case for custom events
