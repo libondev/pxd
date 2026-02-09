@@ -81,7 +81,7 @@ const emits = defineEmits<{
   'cell-click': [MouseEvent, string]
 }>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const CELL_GAP = 3
 const CELL_SIZE = 12
@@ -102,7 +102,7 @@ const dateCountMap = computed(() => {
 
 /** 根据日期索引获取本地化的星期几 */
 function getLocalizedDay(dayIndex: number) {
-  return config.locale.date.day[dayIndex]
+  return configProvider.locale.date.day[dayIndex]
 }
 
 /** 创建表头（月份或星期）数据 */
@@ -150,7 +150,7 @@ function createMonthHeaders() {
         // 检查是否为新月份的第一天
         if (shouldMarkAsMonthHeader(trackedMonth, currentMonth, dayOfMonth)) {
           trackedMonth = currentMonth
-          monthHeaders[col] = config.locale.date.month[currentMonth]
+          monthHeaders[col] = configProvider.locale.date.month[currentMonth]
         }
       }
     }
@@ -159,7 +159,7 @@ function createMonthHeaders() {
   // 处理边缘情况：确保第一个月份正确显示且不会和其他月份重叠
   const isFirstTwoColumnsEmpty = monthHeaders[0] === '' && monthHeaders[1] === ''
   if (isFirstTwoColumnsEmpty) {
-    monthHeaders[0] = config.locale.date.month[firstDate.getMonth()]
+    monthHeaders[0] = configProvider.locale.date.month[firstDate.getMonth()]
   }
 
   return monthHeaders
@@ -309,7 +309,7 @@ function markMonthRows(rows: RowData[]): RowData[] {
       if (!monthMap[key] || day === 1) {
         monthMap[key] = true
         row.isMonthFirstRow = true
-        row.monthName = config.locale.date.month[month]
+        row.monthName = configProvider.locale.date.month[month]
         row.headerText = row.monthName!
       }
     }
@@ -456,7 +456,7 @@ onBeforeUnmount(() => {
           <tr class="pxd-active-graph--legend pointer-events-none">
             <td class="h-3 relative text-foreground-secondary">
               <span class="right-1 absolute top-1/2 -translate-y-1/2">{{
-                config.locale.compare.less
+                configProvider.locale.compare.less
               }}</span>
             </td>
 
@@ -469,7 +469,7 @@ onBeforeUnmount(() => {
 
             <td class="h-3 w-3 relative text-foreground-secondary">
               <span class="absolute top-1/2 left-px -translate-y-1/2">{{
-                config.locale.compare.more
+                configProvider.locale.compare.more
               }}</span>
             </td>
           </tr>

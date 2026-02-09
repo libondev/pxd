@@ -20,10 +20,10 @@ defineOptions({
 
 const props = withDefaults(defineProps<Props>(), { size: 'md' })
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
-  return errorVariant({ size: props.size || config.size })
+  return errorVariant({ size: props.size || configProvider.size })
 })
 </script>
 

@@ -18,13 +18,13 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'default',
 })
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 const computedDisabled = computed<boolean>(
   () => isTruthyProp(props.disabled) || isTruthyProp(props.loading),
 )
 
 const computedClasses = computed(() => {
-  const { size = config.size, shape, align, variant, fullWidth, icon } = props
+  const { size = configProvider.size, shape, align, variant, fullWidth, icon } = props
 
   return buttonVariants({
     icon,

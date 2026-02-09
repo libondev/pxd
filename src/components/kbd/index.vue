@@ -36,8 +36,8 @@ const INTERNAL_KEYS = {
   enter: '↵',
 }
 
-const config = useConfigProvider()
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
+const configProvider = useConfigProvider()
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 const internalKey = computed(() => {
   return Object.entries(INTERNAL_KEYS)

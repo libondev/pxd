@@ -43,7 +43,7 @@ const emits = defineEmits<{
 const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits, { withChange: false })
 
 const isComposing = shallowRef(false)
@@ -52,7 +52,7 @@ const inputType = computed(() => (props.inputType || isPasswordVisible.value ? '
 
 const computedClasses = computed(() => {
   return inputVariant({
-    size: props.size || config.size,
+    size: props.size || configProvider.size,
     align: props.align,
     error: isTruthyProp(props.error),
     disabled: isTruthyProp(props.disabled),

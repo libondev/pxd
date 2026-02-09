@@ -31,7 +31,7 @@ const emits = defineEmits<{
   copy: [string]
 }>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const { isCopied, copyText } = useCopyClick()
 
@@ -40,7 +40,7 @@ const computedTextArray = computed(() => toArray(props.text))
 
 const computedClasses = computed(() => {
   return snippetVariant({
-    size: props.size || config.size,
+    size: props.size || configProvider.size,
     variant: props.variant,
     prompt: isTruthyProp(props.prompt),
   })

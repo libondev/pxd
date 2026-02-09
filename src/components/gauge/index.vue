@@ -48,9 +48,9 @@ const defaultColors: Props['colors'] = {
   60: 'var(--color-green-700)',
 }
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 const progress = computed(() => {
   if (props.indeterminate) {

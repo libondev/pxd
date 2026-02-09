@@ -61,7 +61,7 @@ const VALUE_POSITION_MAP = {
 
 const popoverTrigger = ['click'] as PopoverTrigger[]
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const { isXs, attrs } = usePopoverResponsive()
 
@@ -282,11 +282,11 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     <template #content>
       <div class="max-sm:p-2 p-1 gap-1 flex items-center justify-between border-b" @click.stop>
         <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
-          {{ config.locale.confirm.cancel }}
+          {{ configProvider.locale.confirm.cancel }}
         </PButton>
 
         <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onConfirmClick">
-          {{ config.locale.date.now }}
+          {{ configProvider.locale.date.now }}
         </PButton>
       </div>
 

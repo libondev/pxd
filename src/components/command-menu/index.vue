@@ -47,7 +47,7 @@ const emits = defineEmits<{
 
 const uniqueId = getUniqueId()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const isDesktop = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
@@ -151,7 +151,8 @@ provideListFilterValue(deferredFilterKeyword)
       <slot />
 
       <p v-if="isEmptyResult" class="py-7.5 text-sm text-center text-foreground-secondary">
-        {{ config.locale.empty.search }} <span class="text-foreground">"{{ filterKeyword }}"</span>
+        {{ configProvider.locale.empty.search }}
+        <span class="text-foreground">"{{ filterKeyword }}"</span>
       </p>
     </PList>
 

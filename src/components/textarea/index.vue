@@ -8,6 +8,8 @@ import { getUniqueId } from '../../utils/uid'
 import { textareaVariant } from './cn'
 
 interface Props {
+  rows?: string | number
+  cols?: string | number
   size?: ComponentSizeWithXs
   error?: boolean | string
   readonly?: boolean
@@ -43,11 +45,11 @@ const uniqueId = getUniqueId()
 
 const modelValue = useModelValue(props, emits)
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
   return textareaVariant({
-    size: props.size || config.size,
+    size: props.size || configProvider.size,
     error: isTruthyProp(props.error),
     disabled: isTruthyProp(props.disabled),
     readonly: isTruthyProp(props.readonly),
@@ -70,16 +72,18 @@ function onInputChange(event: Event) {
 <template>
   <label
     :for="uniqueId"
-    class="pxd-textarea pxd-input--border flex size-full min-h-[inherit] max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
+    class="pxd-textarea pxd-input--border flex size-full min-h-inherit max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
     :class="computedClasses"
   >
     <textarea
       :id="uniqueId"
       v-model="modelValue"
-      class="py-2.5 px-3 size-full min-h-[inherit] resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
+      class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
+      :rows="rows"
+      :cols="cols"
       :readonly="readonly"
       :disabled="disabled"
       :required="required"

@@ -33,11 +33,11 @@ const SIZES = {
   },
 }
 
-const config = useConfigProvider()
-const expandedItems = ref<string[]>([])
+const configProvider = useConfigProvider()
+const expandedItemIds = ref<string[]>([])
 
 const computedStyle = computed(() => {
-  const { padding, fontSize, fontWeight } = getFallbackValue(props.size, SIZES, config.size)
+  const { padding, fontSize, fontWeight } = getFallbackValue(props.size, SIZES, configProvider.size)
 
   return {
     '--collapse-padding': padding,
@@ -49,18 +49,18 @@ const computedStyle = computed(() => {
 function toggleItem(id: string, expanded: boolean) {
   if (expanded) {
     if (props.multiple) {
-      expandedItems.value.push(id)
+      expandedItemIds.value.push(id)
     } else {
-      expandedItems.value = [id]
+      expandedItemIds.value = [id]
     }
 
     return
   }
 
-  expandedItems.value = expandedItems.value.filter((item) => item !== id)
+  expandedItemIds.value = expandedItemIds.value.filter((item) => item !== id)
 }
 
-const isExpanded = (id: string) => expandedItems.value.includes(id)
+const isExpanded = (id: string) => expandedItemIds.value.includes(id)
 
 provideCollapseGroupContext({
   multiple: computed(() => props.multiple),

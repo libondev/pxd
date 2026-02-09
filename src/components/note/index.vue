@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
 })
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const VARIANTS = {
   success: {
@@ -68,7 +68,7 @@ const computedLabel = computed(() => {
 const computedClasses = computed(() => {
   return noteVariant({
     fill: props.fill,
-    size: props.size || config.size,
+    size: props.size || configProvider.size,
     variant: props.variant,
   })
 })

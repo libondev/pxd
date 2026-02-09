@@ -18,7 +18,7 @@ defineOptions({
 
 defineProps<Props>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const config = useConfigProvider()
         secondary
         class="text-13px text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
-        {{ config.locale.compare.prev }}
+        {{ configProvider.locale.compare.prev }}
       </span>
 
       <div class="pxd-pagination--label prev relative flex items-center text-foreground">
@@ -57,7 +57,7 @@ const config = useConfigProvider()
         secondary
         class="text-13px text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
-        {{ config.locale.compare.next }}
+        {{ configProvider.locale.compare.next }}
       </span>
 
       <div class="pxd-pagination--label next relative flex items-center text-foreground">

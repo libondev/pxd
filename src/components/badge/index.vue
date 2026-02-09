@@ -22,10 +22,10 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'gray',
 })
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
-  const { variant, size = config.size } = props
+  const { variant, size = configProvider.size } = props
 
   return badgeVariant({ variant, size })
 })

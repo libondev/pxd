@@ -32,9 +32,9 @@ const SIZES = {
   lg: 'h-10',
 }
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 provideUniqueId('SwitchGroupName')
 provideSwitchGroupContext(props)

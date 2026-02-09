@@ -46,7 +46,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
 
@@ -82,7 +82,7 @@ const computedInputMode = computed(() => {
 
 const computedClasses = computed(() => {
   return pinInputVariant({
-    size: props.size || config.size,
+    size: props.size || configProvider.size,
     error: isTruthyProp(props.error),
     disabled: isTruthyProp(props.disabled),
   })

@@ -51,11 +51,11 @@ const SIZES = {
 
 const uniqueId = getUniqueId()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const isChecked = computed(() => modelValue.value === props.activeValue)
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 async function onCheckboxChange(e: Event) {
   if (props.loading) {

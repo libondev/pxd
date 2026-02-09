@@ -37,7 +37,7 @@ const emits = defineEmits<{
   'update:modelValue': [NonNullable<Props['modelValue']>]
 }>()
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const VARIANTS_COLORS = {
   primary: 'var(--color-primary)',
@@ -66,7 +66,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return progressVariant({ size: props.size || config.size })
+  return progressVariant({ size: props.size || configProvider.size })
 })
 
 const computedColors = computed(() => {

@@ -65,14 +65,14 @@ let isDragging = false
 let lastClientX: number | null
 let animationFrameId: number | null
 
-const config = useConfigProvider()
+const configProvider = useConfigProvider()
 
 const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
 const activeThumb = shallowRef<'start' | 'end' | null>()
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, config.size))
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 const valueArray = computed<[number, number]>(() => {
   if (props.range) {
