@@ -131,6 +131,13 @@ function getFirstEmptyIndex() {
   return length
 }
 
+function onInputElFocus(ev: FocusEvent) {
+  ev.preventDefault()
+
+  const inputEl = ev.target as HTMLInputElement
+  inputEl.select?.()
+}
+
 function onContainerClick(ev: MouseEvent) {
   const input = ev.target as HTMLInputElement
 
@@ -251,6 +258,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
     class="pxd-pin-input gap-1.5 flex size-max items-center"
     @keydown="onContainerKeydown"
     @compositionend="onCompositionEnd"
+    @focusin="onInputElFocus"
     @click="onContainerClick"
   >
     <div v-for="(n, i) of length" :key="n" :class="computedClasses">
