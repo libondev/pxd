@@ -14,7 +14,7 @@ const options = [
   { label: 'Delete', type: 'error' },
 ]
 
-function onSelect(ev, item) {
+function onSelect(item, ev) {
   console.log(ev, item)
 }
 </script>

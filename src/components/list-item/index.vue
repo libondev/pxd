@@ -10,6 +10,7 @@ interface Props {
   as?: ListOption['as']
   type?: ListOption['type']
   label?: ListOption['label']
+  value?: ListOption['value']
   disabled?: ListOption['disabled']
   description?: ListOption['description']
 }
