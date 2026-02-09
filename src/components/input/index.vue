@@ -28,7 +28,6 @@ const props = withDefaults(defineProps<InputProps>(), {
 
 const emits = defineEmits<{
   click: [MouseEvent]
-  clear: [string]
   input: [string]
   change: [string, Event]
   focus: [FocusEvent]
@@ -146,9 +145,11 @@ function select() {
   inputRef.value?.select()
 }
 
-function clear() {
+function clear(ev: Event) {
   const clearValue = props.clearValue ?? ''
-  emits('clear', clearValue as string)
+
+  emits('input', '')
+  emits('change', '', ev)
   modelValue.value = clearValue
 }
 
