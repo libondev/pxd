@@ -8,6 +8,7 @@ export const injectionKey = 'ConfigProvider'
 export interface ConfigProviderProps {
   size?: ComponentSize
   locale?: Record<string, any>
+  popoverShowTransition?: boolean
 }
 
 export const [provideConfigProvider, useConfigProvider] = createContext<
@@ -15,4 +16,5 @@ export const [provideConfigProvider, useConfigProvider] = createContext<
 >(injectionKey, {
   size: 'md',
   locale: enUS,
+  popoverShowTransition: true,
 })

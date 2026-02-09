@@ -11,6 +11,7 @@ import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
+import { useConfigProvider } from '../../composables/use-config-provider-context'
 import PTeleport from '../teleport/index.vue'
 
 interface Props {
@@ -85,6 +86,7 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
 
+const configProvider = useConfigProvider()
 const { lockScroll, unlockScroll } = useLockScroll()
 
 const {
@@ -383,7 +385,7 @@ defineExpose({
         :style="wrapperStyle"
         :data-visible="isVisible"
         :data-interactive="interactive"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[visible=false]:pointer-events-none data-[interactive=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
@@ -391,6 +393,7 @@ defineExpose({
           class="pxd-popover--container pointer-events-auto relative z-1 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
           :data-position="localPosition"
           :data-transition-type="transitionType"
+          :data-show-transition="configProvider.popoverShowTransition"
         >
           <i v-if="showArrow" ref="arrayRef" class="pxd-popover--arrow absolute z-1 border-solid" />
           <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
@@ -472,6 +475,10 @@ defineExpose({
 
   &:hover {
     will-change: transform, animation;
+  }
+
+  [data-visible='true'] &[data-show-transition='false'] {
+    animation-name: none !important;
   }
 
   [data-visible='true'] &[data-transition-type='fade'] {

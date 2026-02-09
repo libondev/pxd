@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   as: 'div',
   size: 'md',
   locale: () => enUS,
+  popoverShowTransition: true,
 })
 
 provideConfigProvider(props)
