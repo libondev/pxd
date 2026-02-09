@@ -20,7 +20,6 @@ interface Props {
   graphOnly?: boolean
   transpose?: boolean
   tooltip?: boolean
-  tooltipText?: string
   fieldNames?: FieldNames
   itemRadius?: string | number
 }
@@ -53,7 +52,6 @@ const props = withDefaults(defineProps<Props>(), {
   legend: true,
   graphOnly: false,
   tooltip: true,
-  tooltipText: '{COUNT} on {DATE}',
   data: () => [],
   startDate: () => {
     // 默认起始日期为一年前的第一个周日
@@ -335,25 +333,15 @@ const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
 
 const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
 
-const formatTooltipText = computed(() => {
-  if (props.tooltipText) {
-    const { date = '', count = 0 } = tooltipInfo.value
-
-    return props.tooltipText.replace(/\{DATE\}/g, date).replace(/\{COUNT\}/g, String(count))
-  }
-
-  return ''
-})
-
 // 鼠标离开表格区域, 隐藏提示框
-function onMouseLeave() {
+function onPointerLeave() {
   setShowTooltip(false, true)
   tooltipInfo.value = {} as TooltipInfo
   tbodyRect = null!
 }
 
 // 鼠标悬停在单元格上, 显示提示框
-async function onMouseOver(ev: MouseEvent) {
+async function onPointerOver(ev: MouseEvent) {
   if (!props.tooltip) {
     return
   }
@@ -398,7 +386,7 @@ async function onMouseOver(ev: MouseEvent) {
 }
 
 onBeforeUnmount(() => {
-  onMouseLeave()
+  onPointerLeave()
 })
 </script>
 
@@ -407,9 +395,9 @@ onBeforeUnmount(() => {
     <table
       role="grid"
       aria-readonly="true"
-      class="border-separate"
+      class="table-auto border-separate"
       style="border-spacing: 3px"
-      @pointerleave="onMouseLeave"
+      @pointerleave="onPointerLeave"
     >
       <thead v-if="!graphOnly" class="text-xs">
         <tr class="h-3">
@@ -430,7 +418,7 @@ onBeforeUnmount(() => {
         class="text-xs"
         :style="{ '--item-radius': getCssUnitValue(itemRadius, '2px') }"
         @click="onCellClick"
-        @pointerover.capture="onMouseOver"
+        @pointerover.capture="onPointerOver"
       >
         <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
           <td
@@ -481,11 +469,11 @@ onBeforeUnmount(() => {
       <div
         v-if="showTooltip"
         class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-13px text-gray-100 duration-50 will-change-transform motion-safe:transition-transform"
-        :style="`transform: translate3d(${tooltipInfo.left}px, ${tooltipInfo.top}px, 0);`"
+        :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
       >
-        <slot name="tooltip" :data="tooltipInfo">
-          {{ formatTooltipText }}
-        </slot>
+        <slot name="tooltip" :data="tooltipInfo"
+          >{{ tooltipInfo.count }} - {{ tooltipInfo.date }}</slot
+        >
       </div>
     </Transition>
   </div>
