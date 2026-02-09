@@ -156,15 +156,6 @@ const data = [
 
 <template>
   <PStack direction="vertical" gap="12">
-    <PActiveGraph
-      transpose
-      :data="data"
-      start-date="2025-05-01"
-      end-date="2025-05-31"
-      tooltip-text="The user has {COUNT} activities on the {DATE}"
-    >
-    </PActiveGraph>
-
     <PActiveGraph transpose :data="data" start-date="2025-05-01" end-date="2025-05-31">
       <template #tooltip="{ data }"> {{ data.count }} contributions on {{ data.date }}. </template>
     </PActiveGraph>

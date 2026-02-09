@@ -20,7 +20,7 @@ const sizes = [
 <template>
   <PSwitchGroup v-model="size" :options="sizes" />
 
-  <PConfigProvider :size="size" class="mt-4">
+  <PConfigProvider :size="size" class="mt-4 max-w-xs">
     <PStack direction="vertical">
       <PToggle />
       <PBadge>Badge</PBadge>

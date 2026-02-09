@@ -288,6 +288,31 @@ if (!isServer()) {
     content: '$';
     color: var(--color-gray-600);
   }
+
+  h2#props + table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    border-color: hsl(var(--color-gray-300-value));
+    border-width: 0 0 1px 1px;
+    margin-block: 1.68em;
+    font-size: 14px;
+
+    th {
+      font-weight: 500;
+      text-align: left;
+    }
+
+    tr {
+      border-top: 1px solid hsl(var(--color-gray-300-value));
+    }
+
+    th,
+    td {
+      padding: 0.75em 1em;
+      border-right: 1px solid hsl(var(--color-gray-300-value));
+    }
+  }
 }
 
 .shiki,
