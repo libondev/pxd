@@ -101,18 +101,23 @@ onMounted(() => {
 
 <template>
   <nav v-if="tocItems.length > 0" class="text-sm">
-    <div class="p-2 font-medium border-b">
-      On this page
-    </div>
+    <div class="p-2 font-medium border-b">On this page</div>
 
     <ul class="p-2">
-      <li v-for="item in tocItems" :key="item.id" class="toc-item text-foreground-secondary border-l-2 border-transparent" :class="[
-        `toc-level-${item.level}`,
-        { 'is-active text-primary border-l-primary bg-primary/10': activeId === item.id },
-      ]">
-        <a :href="`#${item.id}`"
-          class="toc-link flex min-w-0 truncate motion-safe:transition-all items-center hover:text-foreground hover:bg-gray-alpha-100 p-2"
-          @click="scrollToHeading(item.id)">
+      <li
+        v-for="item in tocItems"
+        :key="item.id"
+        class="toc-item border-l-2 border-transparent text-foreground-secondary"
+        :class="[
+          `toc-level-${item.level}`,
+          { 'is-active border-l-primary bg-primary/10 text-primary': activeId === item.id },
+        ]"
+      >
+        <a
+          :href="`#${item.id}`"
+          class="toc-link min-w-0 p-2 flex items-center truncate hover:bg-gray-alpha-100 hover:text-foreground motion-safe:transition-all"
+          @click="scrollToHeading(item.id)"
+        >
           {{ item.text }}
         </a>
       </li>
