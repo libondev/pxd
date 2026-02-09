@@ -104,8 +104,8 @@ if (!isServer()) {
     <SiteFooter />
   </div>
 
-  <div class="right-0 top-0 bottom-0 w-56 absolute hidden lg:block">
-    <aside class="toc-aside top-12 w-56 bottom-0 border-x fixed z-0 bg-background-100">
+  <div class="right-0 top-0 bottom-0 w-56 lg:block absolute hidden">
+    <aside class="toc-aside top-12 w-56 bottom-0 fixed z-0 border-x bg-background-100">
       <TocNav />
     </aside>
   </div>
@@ -127,13 +127,13 @@ if (!isServer()) {
   --background: var(--color-background-100);
   line-height: 1.5;
 
-  &> :is(h1, h2, h3, h4) {
+  & > :is(h1, h2, h3, h4) {
     font-weight: 600;
     position: relative;
     letter-spacing: -0.03em;
     outline: none;
 
-    &>a {
+    & > a {
       outline: none;
 
       &:focus-visible {
@@ -147,7 +147,7 @@ if (!isServer()) {
       margin-top: 2em;
     }
 
-    &+p {
+    & + p {
       margin-top: 0;
     }
 
@@ -156,10 +156,10 @@ if (!isServer()) {
     }
   }
 
-  &>h1::before,
-  &>h2::before,
-  &>h3::before,
-  &>h4::before {
+  & > h1::before,
+  & > h2::before,
+  & > h3::before,
+  & > h4::before {
     position: absolute;
     left: -2px;
     transform: translateX(-100%) scale(0.75);
@@ -167,19 +167,19 @@ if (!isServer()) {
     color: hsl(var(--color-gray-800-value));
   }
 
-  &>h1 {
+  & > h1 {
     font-size: 1.875rem;
   }
 
-  &>h2 {
+  & > h2 {
     font-size: 1.5rem;
   }
 
-  &>h3 {
+  & > h3 {
     font-size: 1.25rem;
   }
 
-  &>h4 {
+  & > h4 {
     font-size: 1.125rem;
   }
 
@@ -211,7 +211,7 @@ if (!isServer()) {
     margin-block: 0.5em;
   }
 
-  .markdown-body>pre:not(.shiki) {
+  .markdown-body > pre:not(.shiki) {
     padding-left: 1.25em;
     margin-block: 1em;
     border-radius: var(--radius);
@@ -244,7 +244,7 @@ if (!isServer()) {
     font-size: 0.875rem;
   }
 
-  pre.shiki>code {
+  pre.shiki > code {
     counter-reset: section;
   }
 
@@ -267,7 +267,7 @@ if (!isServer()) {
       color: var(--color-gray-600);
       counter-increment: section;
       background: linear-gradient(to right, var(--color-background-100) 80%, transparent);
-      z-index: 10;
+      z-index: 1;
     }
 
     &::after {
@@ -280,7 +280,7 @@ if (!isServer()) {
       height: 100%;
       pointer-events: none;
       background: linear-gradient(to left, var(--color-background-100) 35%, transparent);
-      z-index: 5;
+      z-index: 1;
     }
   }
 
