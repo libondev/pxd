@@ -96,7 +96,7 @@ function setInputValue(value: string, index?: number) {
     modelValueLocal.value = value.split('')
   }
 
-  modelValue.value = value
+  modelValue.value = modelValueLocal.value.join('')
 }
 
 function focusInputField(dir: 'next' | 'prev', index: number): void
