@@ -28,7 +28,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
   <div class="pxd-browser overflow-hidden rounded-md bg-background-200 shadow-border-small">
     <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background-100">
       <div
-        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none flex flex-1 items-center justify-center first:justify-start last:justify-end"
+        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 items-center justify-center first:justify-start last:justify-end"
       >
         <div class="gap-2 flex items-center">
           <div class="w-3 h-3 rounded-full bg-[#FE5F57]" />
@@ -44,7 +44,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
       </div>
 
       <div
-        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none flex flex-1 shrink-0 items-center justify-center first:justify-start last:justify-end"
+        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 shrink-0 items-center justify-center first:justify-start last:justify-end"
       >
         <div
           class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200"
@@ -71,7 +71,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
       </div>
 
       <div
-        class="gap-4 min-w-0 md:first:max-w-[140px] md:last:max-w-[140px] max-md:first:flex-none max-lg:hidden flex flex-1 items-center justify-center first:justify-start last:justify-end"
+        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none max-lg:hidden flex flex-1 items-center justify-center first:justify-start last:justify-end"
       />
     </div>
 

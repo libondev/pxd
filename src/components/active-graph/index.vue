@@ -403,7 +403,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pxd-active-graph relative" :class="[graphOnly ? 'py-[3px] pr-[3px]' : 'pr-5']">
+  <div class="pxd-active-graph relative" :class="[graphOnly ? 'py-0.75 pr-0.75' : 'pr-5']">
     <table
       role="grid"
       aria-readonly="true"
