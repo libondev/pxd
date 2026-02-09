@@ -63,3 +63,11 @@ const locales = {
   </PConfigProvider>
 </template>
 ```
+
+## Props
+
+| Name   | Type                | Default | Description               |
+| ------ | ------------------- | ------- | ------------------------- |
+| size   | `sm` \| `md` \| `lg` | `md`    | Global size configuration |
+| locale | `object`            | `{}`    | Global locale configuration |
+| popover-show-transition | `boolean`            | `true`    | Configure whether to display animation when the global popover appears |
