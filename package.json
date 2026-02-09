@@ -1,6 +1,6 @@
 {
   "name": "pxd",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "A universal UI component library for Vue2.7+ & Vue3.2+",
   "keywords": [
     "component library",
