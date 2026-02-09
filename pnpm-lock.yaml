@@ -114,6 +114,9 @@ catalogs:
     shiki:
       specifier: ^3.21.0
       version: 3.21.0
+    tailwind-merge:
+      specifier: ^3.4.0
+      version: 3.4.0
     tailwind-variants:
       specifier: ^3.2.2
       version: 3.2.2
@@ -187,6 +190,9 @@ importers:
       focus-trap:
         specifier: catalog:default
         version: 7.8.0
+      tailwind-merge:
+        specifier: catalog:default
+        version: 3.4.0
       tailwind-variants:
         specifier: catalog:default
         version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
@@ -6239,8 +6245,7 @@ snapshots:
 
   tailwind-csstree@0.1.4: {}
 
-  tailwind-merge@3.4.0:
-    optional: true
+  tailwind-merge@3.4.0: {}
 
   tailwind-variants@3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18):
     dependencies:
