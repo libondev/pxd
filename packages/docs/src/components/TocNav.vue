@@ -103,7 +103,7 @@ onMounted(() => {
   <nav v-if="tocItems.length > 0" class="text-sm">
     <div class="p-2 font-medium border-b">On this page</div>
 
-    <ul class="p-2">
+    <ul class="-ml-px">
       <li
         v-for="item in tocItems"
         :key="item.id"

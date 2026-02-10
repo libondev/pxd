@@ -155,7 +155,7 @@
     "vue": ">=2.7.0 || >=3.2.0"
   },
   "lint-staged": {
-    "*.{ts,vue}": "oxlint"
+    "*.{ts,vue}": "oxfmt && oxlint"
   },
   "packageManager": "pnpm@9.15.9",
   "pnpm": {
