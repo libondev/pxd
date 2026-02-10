@@ -14,10 +14,9 @@ const componentsPath = globSync('./src/components/*/index.vue', { cwd: ROOT })
  * @returns {string} 模板内容
  */
 function getFileTemplate(lines) {
-  return `/* eslint-disable */
-/* prettier-ignore */
+  return `/* prettier-ignore */
 // @ts-nocheck
-export {}
+export { }
 declare module 'vue' {
   export interface GlobalComponents {
     ${lines.join('\n    ')}
@@ -31,7 +30,7 @@ function processComponentsPath() {
     const path = p.replace(/src/, 'pxd').replace(/\/index\.vue/, '')
     const [, name] = path.match(/.*\/components\/(.*)/)
 
-    return `P${pascalize(name)}: typeof import('${path}')['default']`
+    return `P${pascalize(name)}: (typeof import('${path}'))['default']`
   })
 
   return exports
