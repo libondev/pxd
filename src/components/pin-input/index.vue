@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
@@ -30,17 +30,7 @@ const inputsRef = shallowRef<HTMLInputElement[]>([])
 
 const modelValue = useModelValue(props, emits)
 
-const modelValueLocal = ref<string[]>(
-  (() => {
-    if (typeof props.modelValue === 'string') {
-      return props.modelValue.split('')
-    } else if (Array.isArray(props.modelValue)) {
-      return props.modelValue
-    }
-
-    return Array.from({ length: props.length }, () => '')
-  })(),
-)
+let localValue: string = modelValue.value
 
 const computedInputType = computed(() => {
   const { type } = props
@@ -66,15 +56,19 @@ const computedClasses = computed(() => {
   })
 })
 
+function replaceCharAt(str: string, index: number, char: string) {
+  return str.substring(0, index) + char + str.substring(index + 1)
+}
+
 function setInputValue(value: string, index?: number) {
   if (index !== undefined) {
     inputsRef.value[index]!.value = value
-    modelValueLocal.value[index] = value
+    localValue = replaceCharAt(localValue, index, value)
   } else {
-    modelValueLocal.value = value.split('')
+    localValue = value
   }
 
-  modelValue.value = modelValueLocal.value.join('')
+  modelValue.value = localValue
 }
 
 function focusInputField(dir: 'next' | 'prev', index: number): void
@@ -100,10 +94,10 @@ function focusInputField(dir: 'next' | 'prev' | 'first' | 'last', index?: number
 }
 
 function getFirstEmptyIndex() {
-  const length = modelValueLocal.value.length
+  const length = localValue.length
 
   if (length === props.length) {
-    return modelValueLocal.value.findIndex((value) => !value)
+    return localValue.split('').findIndex((value) => !value)
   }
 
   return length
@@ -238,6 +232,17 @@ function blur() {
   inputsRef.value.forEach((input) => input.blur())
 }
 
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue === localValue) {
+      return
+    }
+
+    localValue = newValue
+  },
+)
+
 defineExpose({
   focus,
   blur,
@@ -256,7 +261,7 @@ defineExpose({
     <div v-for="(n, i) of length" :key="n" :class="computedClasses">
       <input
         ref="inputsRef"
-        :value="modelValueLocal[i]"
+        :value="modelValue[i]"
         :aria-label="`pin code ${n} of ${length}`"
         :type="computedInputType"
         :data-index="i"
