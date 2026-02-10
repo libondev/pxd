@@ -8,6 +8,7 @@ import type { PinInputEmits, PinInputProps } from './types'
 
 defineOptions({
   name: 'PPinInput',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -228,10 +229,24 @@ function onInputPastedValue(ev: ClipboardEvent) {
     setInputValue(slicedText)
   }
 }
+
+function focus() {
+  focusInputField('first')
+}
+
+function blur() {
+  inputsRef.value.forEach((input) => input.blur())
+}
+
+defineExpose({
+  focus,
+  blur,
+})
 </script>
 
 <template>
   <label
+    v-bind="$attrs"
     class="pxd-pin-input gap-1.5 flex size-max items-center"
     @keydown="onContainerKeydown"
     @compositionend="onCompositionEnd"
@@ -246,6 +261,7 @@ function onInputPastedValue(ev: ClipboardEvent) {
         :type="computedInputType"
         :data-index="i"
         class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
+        name="pin-input"
         minlength="1"
         maxlength="1"
         autocorrect="off"
