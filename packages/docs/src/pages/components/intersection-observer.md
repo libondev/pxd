@@ -2,7 +2,7 @@
 
 Render only when components are visible in the viewport.
 
-> Inspiration comes from<PLinkButton type="text" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
+> Inspiration comes from<PLinkButton variant="link" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
 
 ## Default
 
@@ -38,9 +38,9 @@ function onHide() {
 <template>
   <div>
     <span>Content is </span>
-    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{
-      isVisible ? 'visible' : 'hidden'
-    }}</span>
+    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">
+      {{ isVisible ? 'visible' : 'hidden' }}
+    </span>
   </div>
 
   <div class="w-100 max-w-full h-80 overflow-auto mt-2 border border-dashed rounded-lg">
@@ -64,9 +64,7 @@ Setting an estimated size can prevent large layout deviation after rendering. (A
 
 ```vue demo=Static.vue
 <template>
-  <div
-    class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200"
-  >
+  <div class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
     This is a static component.
   </div>
 </template>
@@ -91,9 +89,9 @@ function onVisibleChange(visible) {
 <template>
   <div>
     <span>Content is </span>
-    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">{{
-      isVisible ? 'visible' : 'hidden'
-    }}</span>
+    <span class="font-semibold underline" :class="isVisible ? 'text-blue-900' : 'text-red-900'">
+      {{ isVisible ? 'visible' : 'hidden' }}
+    </span>
   </div>
 
   <div class="w-100 max-w-full h-60 overflow-auto mt-2 border border-dashed rounded-lg">
