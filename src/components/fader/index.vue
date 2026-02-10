@@ -103,7 +103,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="postcss">
-.pxd-fader--item::before {
+.pxd-fader--item::before,
+.pxd-fader--item::after {
   content: '';
   position: absolute;
   border-radius: inherit;
@@ -118,12 +119,15 @@ onBeforeUnmount(() => {
 }
 
 .pxd-fader--item.left::before,
-.pxd-fader--item.top::before {
+.pxd-fader--item.top::before,
+.pxd-fader--item.right::after,
+.pxd-fader--item.bottom::after {
   opacity: 1;
 }
 
 .pxd-fader--item.horizontal {
-  &::before {
+  &::before,
+  &::after {
     top: 0;
     width: var(--fader-size, 16px);
     height: 100%;
@@ -134,10 +138,17 @@ onBeforeUnmount(() => {
     --dir: to left;
     --dir-revert: to right;
   }
+
+  &::after {
+    right: 0;
+    --dir: to right;
+    --dir-revert: to left;
+  }
 }
 
 .pxd-fader--item.vertical {
-  &::before {
+  &::before,
+  &::after {
     left: 0;
     width: 100%;
     height: var(--fader-size, 16px);
@@ -147,6 +158,12 @@ onBeforeUnmount(() => {
     top: 0;
     --dir: to top;
     --dir-revert: to bottom;
+  }
+
+  &::after {
+    bottom: 0;
+    --dir: to bottom;
+    --dir-revert: to top;
   }
 }
 </style>
