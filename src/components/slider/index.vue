@@ -103,28 +103,23 @@ function updateValueFromPosition(clientX: number) {
 
   const rect = sliderRef.value.getBoundingClientRect()
 
-  // 计算位置百分比
+  // position percentage
   const posPercentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
 
-  // 计算实际值
   const range = props.max - props.min
   const rawValue = props.min + posPercentage * range
 
-  // 应用步进值和边界约束
   const newValue = Math.max(
     props.min,
     Math.min(props.max, props.step > 0 ? Math.round(rawValue / props.step) * props.step : rawValue),
   )
 
   if (props.range) {
-    // 创建新的值数组
     const newValueArray = [...valueArray.value] as [number, number]
 
-    // 根据活动滑块更新值
     if (activeThumb.value === 'start') {
       newValueArray[0] = newValue
 
-      // 处理滑块交换
       if (newValue > newValueArray[1]) {
         ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
         activeThumb.value = 'end'
@@ -132,14 +127,12 @@ function updateValueFromPosition(clientX: number) {
     } else {
       newValueArray[1] = newValue
 
-      // 处理滑块交换
       if (newValue < newValueArray[0]) {
         ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
         activeThumb.value = 'start'
       }
     }
 
-    // 只在值实际变化时更新
     if (valueArray.value[0] !== newValueArray[0] || valueArray.value[1] !== newValueArray[1]) {
       modelValue.value = newValueArray
     }
@@ -148,7 +141,6 @@ function updateValueFromPosition(clientX: number) {
   }
 }
 
-// 使用 requestAnimationFrame 优化视图动画更新
 function scheduleUpdate() {
   if (animationFrameId) {
     return
@@ -167,13 +159,11 @@ function scheduleUpdate() {
   })
 }
 
-// 统一的事件处理函数
 function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   isDragging = true
   activeThumb.value = thumb
   lastClientX = ev.clientX
 
-  // 立即更新一次值
   updateValueFromPosition(ev.clientX)
 
   once(document, 'pointerup', endDragging)
@@ -219,7 +209,7 @@ function handleSliderClick(ev: PointerEvent) {
   const startPos = startPercentage.value / 100
   const endPos = endPercentage.value / 100
 
-  // 选择最近的滑块
+  // use the closest thumb
   const thumb =
     Math.abs(clickPosition - startPos) < Math.abs(clickPosition - endPos) ? 'start' : 'end'
 
@@ -239,7 +229,6 @@ function onWrapperPointerdown(ev: PointerEvent) {
   startDragging(ev, 'end')
 }
 
-// 初始化modelValue类型
 function initModelValue() {
   if (props.range && !Array.isArray(modelValue.value)) {
     modelValue.value = [props.min, modelValue.value as number]
@@ -265,7 +254,7 @@ onBeforeUnmount(() => {
   <div
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    class="pxd-slider group/slider relative flex touch-none items-center rounded-full bg-gray-200 select-none"
+    class="pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none"
     :class="[{ 'cursor-not-allowed': disabled }, computedSize.track]"
     @pointerdown.prevent="onWrapperPointerdown"
   >

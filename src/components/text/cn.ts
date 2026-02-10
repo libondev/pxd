@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants'
 
 export const textVariant = tv({
-  base: 'pxd-text m-0',
+  base: 'pxd-text m-0 shrink-0',
   variants: {
     align: {
       left: 'text-left',
