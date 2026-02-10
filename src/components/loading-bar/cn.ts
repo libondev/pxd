@@ -5,7 +5,7 @@ export const loadingBarVariant = tv({
     wrapper:
       'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
     inner:
-      'pxd-loading-bar--inner h-0.5 origin-left data-[hidden=true]:h-0 data-[transition=false]:transition-none! motion-safe:transition-all',
+      'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-all',
   },
   variants: {
     status: {

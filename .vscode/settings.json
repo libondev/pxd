@@ -9,15 +9,14 @@
   "prettier.enable": false,
   // Auto fix
   "oxc.typeAware": true,
-  "oxc.configPath": "oxlintrc.json",
+  "oxc.configPath": ".oxlintrc.json",
   "oxc.unusedDisableDirectives": "deny",
-  "oxc.fmt.configPath": "oxfmtrc.jsonc",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file", // oxfmt can only format whole files
+  "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "explicit",
-    "source.fixAll.eslint": "explicit",
+    "source.fixAll.eslint": "never",
     "source.organizeImports": "never"
   },
   "tailwindCSS.classAttributes": [
@@ -33,24 +32,6 @@
   ],
   "files.associations": {
     "*.css": "tailwindcss"
-  },
-  // Enable eslint for all supported languages
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue",
-    "html",
-    "markdown",
-    "json",
-    "jsonc"
-  ],
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.patterns": {
-    "tsconfig.json": "tsconfig.*.json, env.d.ts",
-    "build.config.*": "jsconfig*, vitest.*, eslint.config.*, cypress.config.*, playwright.config.*",
-    "package.json": "package-lock.json, pnpm*, .npmrc, .yarnrc*, yarn*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
   },
   "cSpell.words": [
     "antfu",
