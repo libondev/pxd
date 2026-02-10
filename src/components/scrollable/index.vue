@@ -306,7 +306,7 @@ defineExpose({
 <template>
   <div
     ref="wrapperRef"
-    class="pxd-scrollable group/scrollable relative flex overflow-hidden hover:[--o:1] pointer-fine:[--o:0]"
+    class="pxd-scrollable group/scrollable relative overflow-hidden hover:[--o:1] pointer-fine:[--o:0]"
     :class="wrapperClass"
     :style="computedStyle"
     v-bind="$attrs"
@@ -315,7 +315,7 @@ defineExpose({
       ref="contentRef"
       :class="contentClass"
       :style="contentStyle"
-      class="pxd-scrollable--content relative scrollbar-hidden max-h-full flex-1 shrink-0 overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-hidden max-h-full max-w-full flex-1 shrink-0 overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
       <slot />
