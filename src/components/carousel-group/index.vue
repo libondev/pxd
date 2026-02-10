@@ -6,10 +6,10 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 
 import { usePointerGesture } from '../../composables/use-pointer-gesture'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { getCssUnitValue } from '../../utils/format'
-import { throttle } from '../../utils/throttle'
 
 defineOptions({
   name: 'PCarouselGroup',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<CarouselGroupProps>(), {
@@ -28,18 +28,19 @@ const props = withDefaults(defineProps<CarouselGroupProps>(), {
 
 const emits = defineEmits<CarouselGroupEmits>()
 
-const THROTTLE_INTERVALS = 550 // 比过渡事件稍长以预留给容器重置位置的时间
-const TRANSITION_CLASSES = ['transition-transform', 'duration-500']
+const TRANSITION_CLASSES = ['transition-transform', 'duration-[calc(var(--duration,200ms)+100ms)]']
 
 let autoPlayRafId: number | null = null
 let autoPlaySession = 0
 let isPointerEntering = false
+let toggleQueue: Promise<void> = Promise.resolve()
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 
-// 由于虚拟索引可能超出范围以便于实现无缝切换，需要一个处理边界的索引来指示真实索引
+// since the virtual index may exceed the range to facilitate seamless switching,
+// a boundary index is needed to indicate the real index
 const correctIndex = computed(() => {
   const index = virtualIndex.value
 
@@ -73,28 +74,43 @@ function translateItems() {
   })
 }
 
-const onToggleClick = throttle(
-  (delta: number) => {
-    const length = carousels.value.length
+// wait for the animation to end before performing the next action
+async function awaitAnimationEnd() {
+  const animations = sliderRef.value?.getAnimations() ?? []
+  await Promise.allSettled(animations.map((a) => a.finished))
+}
 
-    if (length === 0) {
-      return
-    }
+async function performToggle(delta: number) {
+  const length = carousels.value.length
 
-    if (props.loop) {
-      virtualIndex.value += delta
+  if (length === 0) {
+    return
+  }
 
-      translateItems()
-    } else {
-      virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
-    }
+  await awaitAnimationEnd()
 
-    emits('change', correctIndex.value)
-    nextTick(onPointerLeave)
-  },
-  THROTTLE_INTERVALS,
-  { edges: ['leading'] },
-)
+  if (props.loop) {
+    virtualIndex.value += delta
+
+    translateItems()
+  } else {
+    virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
+  }
+
+  emits('change', correctIndex.value)
+  nextTick(onPointerLeave)
+}
+
+function onToggleClick(delta: number) {
+  // serialize all toggle triggers to avoid concurrent execution on rapid interactions
+  toggleQueue = toggleQueue
+    .catch(() => {})
+    .then(async () => {
+      await performToggle(delta)
+    })
+
+  return toggleQueue
+}
 
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
@@ -276,7 +292,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    tabindex="-1"
+    v-bind="$attrs"
     :data-direction="direction"
     :data-indicator-type="indicatorType"
     :data-indicator-position="indicatorPosition"
@@ -339,69 +355,69 @@ onBeforeUnmount(() => {
 <style lang="postcss">
 .pxd-carousel-group {
   &[data-indicator-type='dot'] {
-    --carousel-dot-width: 8px;
-    --carousel-dot-height: 8px;
+    --carousel-dot-width: 0.5rem;
+    --carousel-dot-height: 0.5rem;
   }
 
   &[data-indicator-type='line'] {
     &[data-indicator-position='top'],
     &[data-indicator-position='bottom'] {
-      --carousel-dot-width: 16px;
-      --carousel-dot-height: 4px;
+      --carousel-dot-width: 1rem;
+      --carousel-dot-height: 0.25rem;
     }
 
     &[data-indicator-position='left'],
     &[data-indicator-position='right'] {
-      --carousel-dot-width: 4px;
-      --carousel-dot-height: 16px;
+      --carousel-dot-width: 0.25rem;
+      --carousel-dot-height: 1rem;
     }
   }
 
   &[data-indicator-position='top'] {
     .pxd-carousel-group--indicator {
       left: 12px;
-      top: 8px;
+      top: 0.5rem;
     }
 
     .pxd-carousel-group--toggler {
-      right: 8px;
-      top: 8px;
+      right: 0.5rem;
+      top: 0.5rem;
     }
   }
 
   &[data-indicator-position='bottom'] {
     .pxd-carousel-group--indicator {
       left: 12px;
-      bottom: 8px;
+      bottom: 0.5rem;
     }
 
     .pxd-carousel-group--toggler {
-      right: 8px;
-      bottom: 8px;
+      right: 0.5rem;
+      bottom: 0.5rem;
     }
   }
 
   &[data-indicator-position='left'] {
     .pxd-carousel-group--indicator {
-      left: 8px;
+      left: 0.5rem;
       top: 12px;
     }
 
     .pxd-carousel-group--toggler {
-      left: 8px;
-      bottom: 8px;
+      left: 0.5rem;
+      bottom: 0.5rem;
     }
   }
 
   &[data-indicator-position='right'] {
     .pxd-carousel-group--indicator {
-      right: 8px;
+      right: 0.5rem;
       top: 12px;
     }
 
     .pxd-carousel-group--toggler {
-      right: 8px;
-      bottom: 8px;
+      right: 0.5rem;
+      bottom: 0.5rem;
     }
   }
 
@@ -428,6 +444,6 @@ onBeforeUnmount(() => {
 .pxd-carousel-group--indicator-item::before {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -0.25rem;
 }
 </style>

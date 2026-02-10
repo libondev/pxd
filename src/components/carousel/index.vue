@@ -5,6 +5,7 @@ import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PCarousel',
+  inheritAttrs: false,
 })
 
 const carouselGroupContext = useCarouselGroupContext()
@@ -28,10 +29,10 @@ function translateItem(index: number, activeIndex: number) {
   const lastIndex = maxLength - 1
 
   if (index === 0 && activeIndex === maxLength) {
-    // 正向切换：第一个项目移到最右侧
+    // move the first item to the right
     transformStyle.value = getTranslateStyle(maxLength * 100)
   } else if (index === lastIndex && activeIndex <= 0) {
-    // 反向切换：最后一个项目移到最左侧
+    // move the last item to the left
     transformStyle.value = getTranslateStyle(-maxLength * 100)
   } else {
     resetPosition()
@@ -51,7 +52,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pxd-carousel size-full shrink-0" :style="{ transform: transformStyle }">
+  <div
+    class="pxd-carousel size-full shrink-0"
+    :style="{ transform: transformStyle }"
+    v-bind="$attrs"
+  >
     <slot />
   </div>
 </template>
