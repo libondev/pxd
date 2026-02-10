@@ -5,20 +5,14 @@ import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import PButton from '../button/index.vue'
-
-interface Props {
-  right?: string | number
-  bottom?: string | number
-  zIndex?: string | number
-  visibleThreshold?: number
-}
+import type { BacktopProps } from './types'
 
 defineOptions({
   name: 'PBacktop',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<BacktopProps>(), {
   visibleThreshold: 30,
 })
 

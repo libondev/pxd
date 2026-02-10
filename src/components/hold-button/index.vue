@@ -1,40 +1,24 @@
 <script lang="ts" setup>
-import type { ButtonProps } from '../../types/components/button'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { getStyle } from '../../utils/dom'
 import { off, once } from '../../utils/event'
 import PButton from '../button/index.vue'
-
-interface Props extends Omit<ButtonProps, 'as'> {
-  vibrate?: boolean
-  scalable?: boolean
-  durations?: number | string
-  maskColor?: string
-  cancelable?: boolean
-}
+import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
 
 defineOptions({
   name: 'PHoldButton',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<HoldButtonProps>(), {
   vibrate: true,
   scalable: true,
   durations: 2000,
   maskColor: 'var(--color-gray-alpha-600)',
 })
 
-const emits = defineEmits<{
-  confirm: []
-  canceled: []
-  finished: [boolean]
-  pointerup: [PointerEvent]
-  pointerdown: [PointerEvent]
-}>()
+const emits = defineEmits<HoldButtonEmits>()
 
-type Status = 'idle' | 'loading' | 'canceled' | 'confirmed'
-
-const status = shallowRef<Status>('idle')
+const status = shallowRef<HoldButtonStatus>('idle')
 
 const computedAttrs = computed(() => {
   const { scalable, durations, maskColor, cancelable, ...rest } = props

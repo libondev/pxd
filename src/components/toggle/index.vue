@@ -1,27 +1,11 @@
 <script setup lang="ts">
-import type { ComponentBeforeChange, ComponentSize } from '../../types/shared'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
-
-type ValueType = boolean | number | string
-
-interface Props {
-  size?: ComponentSize
-  loading?: boolean
-  disabled?: boolean
-  modelValue?: ValueType
-  activeValue?: ValueType
-  inactiveValue?: ValueType
-  beforeChange?: ComponentBeforeChange<ValueType>
-  activeColor?: string
-  inactiveColor?: string
-  activeLabel?: string
-  inactiveLabel?: string
-}
+import type { ToggleEmits, ToggleProps } from './types'
 
 defineOptions({
   name: 'PToggle',
@@ -31,17 +15,14 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ToggleProps>(), {
   activeValue: true,
   inactiveValue: false,
   activeColor: 'var(--color-primary)',
   inactiveColor: 'var(--color-gray-alpha-100)',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-}>()
+const emits = defineEmits<ToggleEmits>()
 
 const SIZES = {
   sm: 'w-7 h-4',

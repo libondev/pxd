@@ -1,25 +1,16 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ComponentShape } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
 import { skeletonVariant } from './cn'
-
-interface Props {
-  loading?: boolean
-  animated?: boolean
-  width?: string | number
-  height?: string | number
-  boxHeight?: string | number
-  shape?: ComponentShape
-}
+import type { SkeletonProps } from './types'
 
 defineOptions({
   name: 'PSkeleton',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<SkeletonProps>(), {
   loading: true,
   height: 24,
   shape: 'default',

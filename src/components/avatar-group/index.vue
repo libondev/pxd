@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { AvatarGroupProps } from '../../types/components/avatar'
+import type { AvatarGroupProps } from '../avatar/types'
 import { computed } from 'vue'
 import { provideAvatarGroupContext } from '../../contexts/avatar'
 import PAvatar from '../avatar/index.vue'
@@ -33,7 +33,7 @@ provideAvatarGroupContext(props)
       :src="option.src"
       :alt="option.alt"
       :loading="option.loading"
-      class="[&:nth-child(n+2)]:-ml-2.5 hover:z-1"
+      class="nth-[n+2]:-ml-2.5 hover:z-1"
     />
 
     <PAvatar

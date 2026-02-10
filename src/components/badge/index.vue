@@ -1,23 +1,15 @@
 <script setup lang="ts">
-import type { ComponentAs, ComponentSize } from '../../types/shared'
-import type { BadgeVariant } from './cn'
+import type { BadgeProps } from './types'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { badgeVariant } from './cn'
-
-interface Props {
-  as?: ComponentAs
-  href?: string
-  size?: ComponentSize
-  variant?: BadgeVariant
-}
 
 defineOptions({
   name: 'PBadge',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<BadgeProps>(), {
   as: 'span',
   variant: 'gray',
 })

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { ErrorType } from '../../types/components/error'
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
+import type { ErrorProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
@@ -8,17 +7,11 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { isExternalLink } from '../../utils/format'
 import { errorVariant } from './cn'
 
-interface Props {
-  size?: ComponentSizeWithXs
-  label?: ComponentLabel
-  error?: ErrorType
-}
-
 defineOptions({
   name: 'PError',
 })
 
-const props = withDefaults(defineProps<Props>(), { size: 'md' })
+const props = withDefaults(defineProps<ErrorProps>(), { size: 'md' })
 
 const configProvider = useConfigProvider()
 

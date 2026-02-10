@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RadioGroupProps } from '../../types/components/radio'
+import type { RadioGroupEmits, RadioGroupProps } from '../radio/types'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideUniqueId } from '../../composables/use-unique-id-context'
 import { provideRadioGroupContext } from '../../contexts/radio'
@@ -19,10 +19,7 @@ const props = withDefaults(defineProps<RadioGroupProps>(), {
   options: () => [],
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<RadioGroupProps['modelValue']>]
-  'update:modelValue': [NonNullable<RadioGroupProps['modelValue']>]
-}>()
+const emits = defineEmits<RadioGroupEmits>()
 
 const modelValue = useModelValue(props, emits)
 

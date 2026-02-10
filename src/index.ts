@@ -7,7 +7,6 @@ export { version } from '../package.json'
 export * from './components/index.js'
 export * from './composables/index.js'
 
-export type * from './types/components'
 export type * from './types/shared'
 
 export default function install(app: App, prefix = 'P') {

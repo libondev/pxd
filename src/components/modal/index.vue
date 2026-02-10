@@ -1,26 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentClass, ComponentLabel } from '../../types/shared'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-
-interface Props {
-  title?: ComponentLabel
-  subtitle?: ComponentLabel
-  width?: string | number
-  loading?: boolean
-  modelValue?: boolean
-  appendToBody?: boolean
-  headerStylize?: boolean
-  footerStylize?: boolean
-  wrapperClass?: ComponentClass
-  contentClass?: ComponentClass
-  closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
-  initialFocus?: string | false
-}
+import type { ModalEmits, ModalProps } from './types'
 
 defineOptions({
   name: 'PModal',
@@ -31,7 +15,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: false,
   appendToBody: true,
   footerStylize: true,
@@ -40,14 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnClickOverlay: false,
 })
 
-const emits = defineEmits<{
-  show: []
-  hide: []
-  change: [boolean]
-  'visible-change': [boolean]
-  'outside-click': [MouseEvent]
-  'update:modelValue': [boolean]
-}>()
+const emits = defineEmits<ModalEmits>()
 
 const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)

@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import type { ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
-
-interface Props {
-  row?: ResponsiveValue<string | number>
-  column?: ResponsiveValue<string | number>
-}
+import type { GridItemProps } from '../grid/types'
 
 defineOptions({
   name: 'PGridItem',
 })
 
-const props = defineProps<Props>()
+const props = defineProps<GridItemProps>()
 
 const presetGridRow = {
   '--xs-row': 'row-(--xs-row)',

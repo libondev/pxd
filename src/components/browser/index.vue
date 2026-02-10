@@ -8,16 +8,13 @@ import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
 import { computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click'
 import PButton from '../button/index.vue'
-
-interface Props {
-  address?: string
-}
+import type { BrowserProps } from './types'
 
 defineOptions({
   name: 'PBrowser',
 })
 
-defineProps<Props>()
+defineProps<BrowserProps>()
 
 const { isCopied, copyText } = useCopyClick()
 

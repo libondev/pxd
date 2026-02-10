@@ -1,26 +1,11 @@
 <script setup lang="ts">
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
 import { textareaVariant } from './cn'
-
-interface Props {
-  rows?: string | number
-  cols?: string | number
-  size?: ComponentSizeWithXs
-  error?: boolean | string
-  readonly?: boolean
-  disabled?: boolean
-  required?: boolean
-  autofocus?: boolean
-  minlength?: number | string
-  maxlength?: number | string
-  modelValue?: ComponentLabel
-  placeholder?: string
-}
+import type { TextareaEmits, TextareaProps } from './types'
 
 defineOptions({
   name: 'PTextarea',
@@ -30,16 +15,11 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TextareaProps>(), {
   modelValue: '',
 })
 
-const emits = defineEmits<{
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-  change: [NonNullable<Props['modelValue']>]
-  focus: [FocusEvent]
-  blur: [FocusEvent]
-}>()
+const emits = defineEmits<TextareaEmits>()
 
 const uniqueId = getUniqueId()
 

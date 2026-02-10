@@ -5,86 +5,68 @@ import { useDelayChange } from '../../composables/use-delay-change'
 import { getAllDatesBetween } from '../../utils/date'
 import { getCssUnitValue } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/get'
-
-interface FieldNames {
-  date: string
-  count: string
-}
-
-interface Props {
-  data?: Record<string, any>[]
-  legend?: boolean
-  startDate?: string | Date
-  endDate?: string | Date
-  colors?: Record<string, string>
-  graphOnly?: boolean
-  transpose?: boolean
-  tooltip?: boolean
-  fieldNames?: FieldNames
-  itemRadius?: string | number
-}
-
-interface CellData {
-  hidden: boolean
-  date: string | undefined
-  count: number
-  color: string | undefined
-}
-
-interface RowData extends Array<CellData> {
-  isMonthFirstRow?: boolean
-  monthName?: string
-  headerText: string
-}
-
-interface TooltipInfo {
-  date: string
-  count: number
-  left: number
-  top: number
-}
+import type {
+  ActiveGraphCellData,
+  ActiveGraphEmits,
+  ActiveGraphProps,
+  ActiveGraphRowData,
+  ActiveGraphTooltipInfo,
+} from './types'
 
 defineOptions({
   name: 'PActiveGraph',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ActiveGraphProps>(), {
   legend: true,
   graphOnly: false,
   tooltip: true,
   data: () => [],
-  startDate: () => {
-    // 默认起始日期为一年前的第一个周日
-    const date = new Date()
-    date.setFullYear(date.getFullYear() - 1)
-
-    // 向前找到第一个星期日
-    while (date.getDay() !== 0) {
-      date.setDate(date.getDate() - 1)
-    }
-
-    return date
-  },
-  endDate: () => new Date(),
-  colors: () => ({
-    0: '',
-    5: 'var(--color-green-300)',
-    10: 'var(--color-green-500)',
-    15: 'var(--color-green-700)',
-    20: 'var(--color-green-900)',
-  }),
 })
 
-const emits = defineEmits<{
-  'cell-click': [MouseEvent, string]
-}>()
+const emits = defineEmits<ActiveGraphEmits>()
 
 const configProvider = useConfigProvider()
 
 const CELL_GAP = 3
 const CELL_SIZE = 12
 
-const rangedDates = computed(() => getAllDatesBetween(props.startDate, props.endDate))
+const getDefaultStartDate = () => {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() - 1)
+
+  while (date.getDay() !== 0) {
+    date.setDate(date.getDate() - 1)
+  }
+
+  return date
+}
+
+const getDefaultEndDate = () => {
+  return new Date()
+}
+
+const computedColors = computed(() => {
+  if (props.colors) {
+    return props.colors
+  }
+
+  return {
+    0: '',
+    5: 'var(--color-green-300)',
+    10: 'var(--color-green-500)',
+    15: 'var(--color-green-700)',
+    20: 'var(--color-green-900)',
+  }
+})
+
+const rangedDates = computed(() =>
+  getAllDatesBetween(
+    props.startDate || getDefaultStartDate(),
+    props.endDate || getDefaultEndDate(),
+  ),
+)
 
 const dateCountMap = computed(() => {
   const { date, count } = props.fieldNames || { date: 'date', count: 'count' }
@@ -98,25 +80,24 @@ const dateCountMap = computed(() => {
   )
 })
 
-/** 根据日期索引获取本地化的星期几 */
+// get localized day of week
 function getLocalizedDay(dayIndex: number) {
   return configProvider.locale.date.day[dayIndex]
 }
 
-/** 创建表头（月份或星期）数据 */
 const tableHeadList = computed(() => {
-  // 转置模式：表头为星期几
+  // transpose mode: table head is day of week
   if (props.transpose) {
     return Array.from({ length: 7 }, (_, i) => {
       return [1, 3, 5].includes(i) ? getLocalizedDay(i) : ''
     })
   }
 
-  // 非转置模式：表头为月份
+  // non-transpose mode: table head is month
   return createMonthHeaders()
 })
 
-/** 检查是否需要在此位置显示月份标记 */
+// check if should mark as month header
 function shouldMarkAsMonthHeader(
   currentMonth: number,
   newMonth: number,
@@ -125,9 +106,6 @@ function shouldMarkAsMonthHeader(
   return currentMonth !== newMonth && dayOfMonth === 1
 }
 
-/**
- * 获取月份表头标记位置和名称
- */
 function createMonthHeaders() {
   const dates = rangedDates.value.dates
   const columnsCount = Math.ceil(dates.length / 7)
@@ -145,7 +123,7 @@ function createMonthHeaders() {
         const currentMonth = currentDate.getMonth()
         const dayOfMonth = currentDate.getDate()
 
-        // 检查是否为新月份的第一天
+        // check if is the first day of the new month
         if (shouldMarkAsMonthHeader(trackedMonth, currentMonth, dayOfMonth)) {
           trackedMonth = currentMonth
           monthHeaders[col] = configProvider.locale.date.month[currentMonth]
@@ -154,7 +132,7 @@ function createMonthHeaders() {
     }
   }
 
-  // 处理边缘情况：确保第一个月份正确显示且不会和其他月份重叠
+  // handle edge case: ensure the first month is correctly displayed and does not overlap with other months
   const isFirstTwoColumnsEmpty = monthHeaders[0] === '' && monthHeaders[1] === ''
   if (isFirstTwoColumnsEmpty) {
     monthHeaders[0] = configProvider.locale.date.month[firstDate.getMonth()]
@@ -163,21 +141,20 @@ function createMonthHeaders() {
   return monthHeaders
 }
 
-/** 计算表格主体数据 */
-const tableBodyList = computed<RowData[]>(() => {
+const tableBodyList = computed<ActiveGraphRowData[]>(() => {
   return props.transpose ? createTransposedTableData() : createStandardTableData()
 })
 
-/** 创建转置模式的表格数据（行为日期，列为星期） */
-function createTransposedTableData(): RowData[] {
+// create transposed table data (rows are dates, columns are days of week)
+function createTransposedTableData(): ActiveGraphRowData[] {
   const dataMap = dateCountMap.value
   const dateList = rangedDates.value.dates
   const dateListLength = dateList.length
 
-  const monthRows: RowData[] = []
+  const monthRows: ActiveGraphRowData[] = []
   let currentMonth = -1
   let currentYear = -1
-  let currentRow: CellData[] | null = null
+  let currentRow: ActiveGraphCellData[] | null = null
 
   for (let i = 0; i < dateListLength; i++) {
     const dateStr = dateList[i]!
@@ -187,11 +164,11 @@ function createTransposedTableData(): RowData[] {
     const dayOfWeek = date.getDay()
     const count = dataMap[dateStr] || 0
 
-    // 创建新行
+    // create new row
     if (currentRow === null) {
       currentRow = []
 
-      // 只有第一行需要填充空白单元格
+      // only the first row needs to fill empty cells
       if (i === 0) {
         for (let j = 0; j < dayOfWeek; j++) {
           currentRow.push({
@@ -204,15 +181,15 @@ function createTransposedTableData(): RowData[] {
       }
     }
 
-    // 添加当前日期单元格
+    // add current date cell
     currentRow.push({
       hidden: false,
       date: dateStr,
       count,
-      color: getColorByThreshold(count, props.colors),
+      color: getColorByThreshold(count, computedColors.value),
     })
 
-    // 记录月份变化
+    // record month change
     if (month !== currentMonth || year !== currentYear) {
       currentMonth = month
       currentYear = year
@@ -221,9 +198,9 @@ function createTransposedTableData(): RowData[] {
     const isLastItem = i === dateListLength - 1
     const isRowFull = currentRow.length >= 7
 
-    // 行满或是最后一项，添加到结果
+    // row is full or last item, add to result
     if (isRowFull || isLastItem) {
-      // 补齐最后一行
+      // fill the last row
       if (currentRow.length < 7 && isLastItem) {
         while (currentRow.length < 7) {
           currentRow.push({
@@ -235,7 +212,7 @@ function createTransposedTableData(): RowData[] {
         }
       }
 
-      monthRows.push([...currentRow] as RowData)
+      monthRows.push([...currentRow] as ActiveGraphRowData)
       currentRow = null
     }
   }
@@ -243,18 +220,18 @@ function createTransposedTableData(): RowData[] {
   return markMonthRows(monthRows)
 }
 
-/** 创建标准模式的表格数据（行为星期，列为日期） */
-function createStandardTableData(): RowData[] {
+// create standard table data (rows are days of week, columns are dates)
+function createStandardTableData(): ActiveGraphRowData[] {
   const dataMap = dateCountMap.value
   const dateList = rangedDates.value.dates
   const dateListLength = dateList.length
   const firstDayOfWeek = rangedDates.value.weeks[0]!
 
-  // 初始化7行（代表星期几）
-  const result: RowData[] = Array.from({ length: 7 }, (_, i) => {
-    const row: CellData[] = []
+  // initialize 7 rows (represents days of week)
+  const result: ActiveGraphRowData[] = Array.from({ length: 7 }, (_, i) => {
+    const row: ActiveGraphCellData[] = []
 
-    // 第一周不完整时填充空白单元格
+    // fill empty cells if the first week is not complete
     if (i < firstDayOfWeek) {
       row.push({
         hidden: true,
@@ -264,14 +241,14 @@ function createStandardTableData(): RowData[] {
       })
     }
 
-    // 添加headerText属性
-    const rowWithHeader = row as RowData
+    // add headerText attribute
+    const rowWithHeader = row as ActiveGraphRowData
     rowWithHeader.headerText = [1, 3, 5].includes(i) ? getLocalizedDay(i) : ' '
 
     return rowWithHeader
   })
 
-  // 填充所有日期数据
+  // fill all date data
   for (let i = 0; i < dateListLength; i++) {
     const dateStr = dateList[i]!
     const count = dataMap[dateStr] || 0
@@ -281,15 +258,15 @@ function createStandardTableData(): RowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getColorByThreshold(count, props.colors),
+      color: getColorByThreshold(count, computedColors.value),
     })
   }
 
   return result
 }
 
-/** 为行添加月份标记 */
-function markMonthRows(rows: RowData[]): RowData[] {
+// mark month rows
+function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
   const monthMap = {} as Record<string, boolean>
 
   for (let i = 0; i < rows.length; i++) {
@@ -303,7 +280,7 @@ function markMonthRows(rows: RowData[]): RowData[] {
       const day = date.getDate()
       const key = `${year}-${month}`
 
-      // 标记月份第一行
+      // mark month first row
       if (!monthMap[key] || day === 1) {
         monthMap[key] = true
         row.isMonthFirstRow = true
@@ -329,18 +306,18 @@ function onCellClick(event: MouseEvent) {
 
 let tbodyRect: DOMRect
 const tbodyRef = shallowRef<HTMLTableSectionElement>()
-const tooltipInfo = shallowRef<TooltipInfo>({} as TooltipInfo)
+const tooltipInfo = shallowRef<ActiveGraphTooltipInfo>({} as ActiveGraphTooltipInfo)
 
 const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
 
-// 鼠标离开表格区域, 隐藏提示框
+// when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {
   setShowTooltip(false, true)
-  tooltipInfo.value = {} as TooltipInfo
+  tooltipInfo.value = {} as ActiveGraphTooltipInfo
   tbodyRect = null!
 }
 
-// 鼠标悬停在单元格上, 显示提示框
+// when pointer hovers over a cell, show the tooltip
 async function onPointerOver(ev: MouseEvent) {
   if (!props.tooltip) {
     return
@@ -355,15 +332,15 @@ async function onPointerOver(ev: MouseEvent) {
 
   const date = targetEl.dataset.date
 
-  // 没有日期数据则隐藏提示
+  // if there is no date data, hide the tooltip
   if (!date) {
     setShowTooltip(false, true)
     return
   }
 
-  // 移动端 pointerover 事件比 pointerenter 事件先触发，
-  // 并且在滚动后位置信息可能会出现变化
-  // 所以放在使用前获取就能保证获取到正确的位置信息
+  // on mobile, the pointerover event is triggered before the pointerenter event,
+  // and the position information may change after scrolling
+  // so getting it before using it can ensure the correct position information
   if (!tbodyRect) {
     tbodyRect = tbodyRef.value!.getBoundingClientRect()
   }
@@ -372,7 +349,7 @@ async function onPointerOver(ev: MouseEvent) {
   const rect = targetEl.getBoundingClientRect()
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
-  // 如果只显示图表, 则提示框位置需要减去一个单元格的高度, 因为标题被隐藏了位置会偏上
+  // if only the graph is displayed, the tooltip position needs to be reduced by one cell height, because the title is hidden and the position will be above
   if (props.graphOnly) {
     top -= CELL_SIZE
   }
@@ -391,7 +368,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pxd-active-graph relative" :class="[graphOnly ? 'py-0.75 pr-0.75' : 'pr-5']">
+  <div
+    class="pxd-active-graph relative"
+    :class="[graphOnly ? 'py-0.75 pr-0.75' : 'pr-5']"
+    v-bind="$attrs"
+  >
     <table
       role="grid"
       aria-readonly="true"
@@ -439,7 +420,7 @@ onBeforeUnmount(() => {
           />
         </tr>
 
-        <template v-if="props.legend">
+        <template v-if="legend">
           <tr class="pxd-active-graph--placeholder h-0.5 pointer-events-none" />
           <tr class="pxd-active-graph--legend pointer-events-none">
             <td class="h-3 relative text-foreground-secondary">
@@ -449,7 +430,7 @@ onBeforeUnmount(() => {
             </td>
 
             <td
-              v-for="color in props.colors"
+              v-for="color in computedColors"
               :key="color"
               class="w-3 h-3 rounded-(--item-radius) bg-gray-alpha-200 motion-safe:transition-colors"
               :style="`background-color: ${color}`"

@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import type { ComponentLabel } from 'dist/index'
 import { capitalize as capitalizeText } from '../../utils/format'
+import type { StatusDotProps } from './types'
 
-interface Props {
-  label?: boolean | ComponentLabel
-  state?: 'QUEUED' | 'BUILDING' | 'READY' | 'ERROR' | 'CANCELED'
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<StatusDotProps>(), {
   label: false,
   state: 'QUEUED',
 })

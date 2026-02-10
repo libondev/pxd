@@ -1,21 +1,13 @@
 <script lang="ts" setup>
-import type { BasePosition } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-
-interface Props {
-  position?: BasePosition | BasePosition[]
-  lineSize?: string | number
-  dashSize?: string | number
-  color?: string
-  gap?: string | number
-}
+import type { DashLineProps } from './types'
 
 defineOptions({
   name: 'PDashLine',
 })
 
-const props = withDefaults(defineProps<Props>(), { position: () => ['top'] })
+const props = withDefaults(defineProps<DashLineProps>(), { position: () => ['top'] })
 
 const computedStyle = computed(() => ({
   '--dash-line-color': props.color,

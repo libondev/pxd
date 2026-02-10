@@ -2,30 +2,18 @@
 import { computed, shallowRef } from 'vue'
 import { useAvatarGroupContext } from '../../contexts/avatar'
 import { getCssUnitValue } from '../../utils/format'
-
-interface Props {
-  src?: string
-  alt?: string
-  size?: number | string
-  loading?: boolean
-  placeholder?: boolean
-}
+import type { AvatarStatus, AvatarProps, AvatarEmits } from './types'
 
 defineOptions({
   name: 'PAvatar',
+  inheritAttrs: false,
 })
 
-const props = defineProps<Props>()
+const props = defineProps<AvatarProps>()
 
-const emits = defineEmits<{
-  load: [Event]
-  error: [Event]
-  loadstart: [Event]
-}>()
+const emits = defineEmits<AvatarEmits>()
 
-type LoadingStatus = 'idle' | 'loading' | 'loaded' | 'error'
-
-const loadingStatus = shallowRef<LoadingStatus>('idle')
+const loadingStatus = shallowRef<AvatarStatus>('idle')
 
 const avatarGroupContext = useAvatarGroupContext()
 
@@ -63,6 +51,7 @@ defineExpose({
   <div
     class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 select-none before:default-animation-timing-function! motion-safe:before:animate-[placeholder_8s_infinite]"
     :style="{ '--avatar-size': computedSize }"
+    v-bind="$attrs"
   >
     <slot>
       <img

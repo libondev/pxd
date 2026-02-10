@@ -1,15 +1,9 @@
-import type { ComponentSize } from '../types/shared'
+import type { ConfigProviderProps } from '../components/config-provider/types'
 
 import enUS from '../locales/en-us'
 import { createContext } from '../utils/context'
 
 export const injectionKey = 'ConfigProvider'
-
-export interface ConfigProviderProps {
-  size?: ComponentSize
-  locale?: Record<string, any>
-  popoverShowTransition?: boolean
-}
 
 export const [provideConfigProvider, useConfigProvider] = createContext<
   Required<ConfigProviderProps>

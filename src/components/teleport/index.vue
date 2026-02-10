@@ -1,29 +1,20 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { isServer, isVue3 } from '../../utils/is'
-
-interface Props {
-  to?: string | HTMLElement
-  disabled?: boolean
-}
-
-interface Location {
-  parent: Node
-  nextSibling: Node | null
-}
+import type { TeleportLocation, TeleportProps } from './types'
 
 defineOptions({
   name: 'PTeleport',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), { to: 'body' })
+const props = withDefaults(defineProps<TeleportProps>(), { to: 'body' })
 
 const inVue3 = isVue3()
 const inServer = isServer()
 
 let isTeleported = false
-let homeLocation: Location | null
+let homeLocation: TeleportLocation | null
 
 const containerRef = shallowRef<HTMLElement>()
 

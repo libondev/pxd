@@ -3,34 +3,19 @@ import { nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { getCssUnitValue } from '../../utils/format'
 import FragmentContainer from '../_internal/fragment-container.vue'
-
-interface Props {
-  // estimated size
-  width?: number | string
-  height?: number | string
-  keepAlive?: boolean
-  root?: Element | Document | null
-  rootMargin?: string
-  threshold?: number | number[]
-}
+import type { IntersectionObserverEmits, IntersectionObserverProps } from './types'
 
 defineOptions({
   name: 'PIntersectionObserver',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<IntersectionObserverProps>(), {
   root: null,
   rootMargin: '20%',
   threshold: 0,
 })
 
-const emits = defineEmits<{
-  'visible-change': [boolean]
-  'before-show': []
-  'before-hide': []
-  show: []
-  hide: []
-}>()
+const emits = defineEmits<IntersectionObserverEmits>()
 
 const isVisible = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()

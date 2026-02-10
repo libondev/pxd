@@ -1,4 +1,4 @@
-import type { AvatarGroupProps } from '../types/components/avatar'
+import type { AvatarGroupProps } from '../components/avatar/types'
 
 import { createContext } from '../utils/context'
 

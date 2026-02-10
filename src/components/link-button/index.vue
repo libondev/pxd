@@ -1,31 +1,20 @@
 <script setup lang="ts">
-import type { ButtonVariant } from '../../types/components/button'
 import ExternalIcon from '@gdsicon/vue/external'
 import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
 import PButton from '../button/index.vue'
-
-interface Props {
-  href: string
-  text?: string
-  align?: 'left' | 'center' | 'right'
-  target?: HTMLAnchorElement['target']
-  variant?: ButtonVariant
-  externalIcon?: boolean
-}
+import type { LinkButtonEmits, LinkButtonProps } from './types'
 
 defineOptions({
   name: 'PLinkButton',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<LinkButtonProps>(), {
   align: 'left',
   target: '_self',
 })
 
-const emits = defineEmits<{
-  click: [MouseEvent]
-}>()
+const emits = defineEmits<LinkButtonEmits>()
 
 const attrs = useAttrs()
 

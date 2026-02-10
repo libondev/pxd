@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/shared/props'
-
-interface Props {
-  label?: ComponentLabel
-}
+import type { CommandMenuGroupProps } from '../command-menu/types'
 
 defineOptions({
   name: 'PCommandMenuGroup',
 })
 
-defineProps<Props>()
+defineProps<CommandMenuGroupProps>()
 </script>
 
 <template>

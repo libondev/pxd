@@ -1,41 +1,29 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/get'
 import { progressVariant } from './cn'
-
-interface Props {
-  min?: number
-  max?: number
-  size?: ComponentSize
-  label?: boolean | string | number
-  variant?: ComponentVariant | 'secondary'
-  colors?: Record<string, string>
-  modelValue?: number | null
-}
+import type { ProgressEmits, ProgressProps } from './types'
 
 defineOptions({
   name: 'PProgress',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ProgressProps>(), {
   min: 0,
   max: 100,
   label: false,
   variant: 'primary',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-}>()
+const emits = defineEmits<ProgressEmits>()
 
 const configProvider = useConfigProvider()
 
@@ -96,6 +84,7 @@ const computedProgressBarStyles = computed(() => {
     :aria-valuenow="progress"
     :aria-valuemin="min"
     :aria-valuemax="max"
+    v-bind="$attrs"
   >
     <div :class="computedClasses">
       <div

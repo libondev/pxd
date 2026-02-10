@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import type { ComponentLabel, ComponentVariant } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import { chipVariant } from './cn'
+import type { ChipProps } from './types'
 
-interface Props {
-  size?: number | string
-  inset?: boolean
-  label?: ComponentLabel
-  variant?: ComponentVariant | 'secondary'
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ChipProps>(), {
   size: 10,
   label: '',
   variant: 'primary',

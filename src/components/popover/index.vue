@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { PopoverTrigger } from '../../types/components/popover'
-import type { ComponentClass, ComponentPosition } from '../../types/shared'
 import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { computed, shallowRef, watch } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
@@ -13,38 +11,14 @@ import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import PTeleport from '../teleport/index.vue'
-
-interface Props {
-  zIndex?: number | string
-  offset?: number
-  visible?: boolean
-  trigger?: PopoverTrigger | PopoverTrigger[]
-  disabled?: boolean
-  maxWidth?: number | string
-  position?: ComponentPosition
-  showDelay?: number
-  hideDelay?: number
-  showArrow?: boolean
-  arrowColor?: string
-  interactive?: boolean
-  autoPosition?: boolean
-  wrapperClass?: ComponentClass
-  contentClass?: ComponentClass
-  contentStyle?: CSSProperties | string
-  unsetPosition?: boolean
-  transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
-  toggleOnTrigger?: boolean
-  closeOnInvisible?: boolean
-  closeOnPressEscape?: boolean
-  lockScrollOnVisible?: boolean
-}
+import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 
 defineOptions({
   name: 'PPopover',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<PopoverProps>(), {
   offset: 8,
   trigger: () => ['hover'],
   position: 'bottom',
@@ -59,14 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnInvisible: true,
 })
 
-const emits = defineEmits<{
-  show: []
-  hide: []
-  escape: [KeyboardEvent]
-  'outside-click': [MouseEvent]
-  'trigger-click': [PointerEvent]
-  'visible-change': [visible: boolean]
-}>()
+const emits = defineEmits<PopoverEmits>()
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
@@ -411,57 +378,68 @@ defineExpose({
     opacity: 0;
     pointer-events: none;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 @keyframes popover-fade-hide {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     pointer-events: none;
   }
 }
+
 @keyframes popover-fade-scale-show {
   0% {
     transform: scale(0.95);
     opacity: 0;
     pointer-events: none;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
   }
 }
+
 @keyframes popover-fade-scale-hide {
   0% {
     transform: scale(1);
     opacity: 1;
   }
+
   100% {
     transform: scale(0.95);
     opacity: 0;
     pointer-events: none;
   }
 }
+
 @keyframes popover-fade-slide-show {
   0% {
     transform: translateY(100%);
     opacity: 0;
     pointer-events: none;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
   }
 }
+
 @keyframes popover-fade-slide-hide {
   0% {
     transform: translateY(0);
     opacity: 1;
   }
+
   100% {
     transform: translateY(100%);
     opacity: 0;
@@ -508,9 +486,11 @@ defineExpose({
   &[data-position='top'] {
     transform-origin: bottom center;
   }
+
   &[data-position='top-start'] {
     transform-origin: bottom left;
   }
+
   &[data-position='top-end'] {
     transform-origin: bottom right;
   }
@@ -518,9 +498,11 @@ defineExpose({
   &[data-position='bottom'] {
     transform-origin: top center;
   }
+
   &[data-position='bottom-start'] {
     transform-origin: top left;
   }
+
   &[data-position='bottom-end'] {
     transform-origin: top right;
   }
@@ -528,9 +510,11 @@ defineExpose({
   &[data-position='left'] {
     transform-origin: right center;
   }
+
   &[data-position='left-start'] {
     transform-origin: right top;
   }
+
   &[data-position='left-end'] {
     transform-origin: right bottom;
   }
@@ -538,9 +522,11 @@ defineExpose({
   &[data-position='right'] {
     transform-origin: left center;
   }
+
   &[data-position='right-start'] {
     transform-origin: left top;
   }
+
   &[data-position='right-end'] {
     transform-origin: left bottom;
   }

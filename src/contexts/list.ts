@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import type { ListOption } from '../types/components/list'
+import type { ListOption } from '../components/list/types'
 
 import { createContext } from '../utils/context'
 

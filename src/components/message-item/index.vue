@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
+import type { MessageItemHeightType } from '../../composables/use-message'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
@@ -8,24 +8,16 @@ import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
 import { computed, onMounted, shallowRef } from 'vue'
 import PButton from '../button/index.vue'
-
-interface Props {
-  max: number
-  index: number
-  itemData: MessageItemType
-}
+import type { MessageItemEmits, MessageItemProps } from '../message/types'
 
 defineOptions({
   name: 'PMessageItem',
   inheritAttrs: false,
 })
 
-const props = defineProps<Props>()
+const props = defineProps<MessageItemProps>()
 
-const emits = defineEmits<{
-  close: [key: MessageItemType['id']]
-  'set-height': [info: MessageItemHeightType]
-}>()
+const emits = defineEmits<MessageItemEmits>()
 
 const TYPE_ICONS = {
   info: InformationFillIcon,

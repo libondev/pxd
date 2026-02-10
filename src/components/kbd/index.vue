@@ -1,26 +1,15 @@
 <script setup lang="ts">
-import type { ComponentLabel } from 'pxd'
-import type { ComponentSize } from '../../types/shared'
 import { useConfigProvider } from 'pxd'
 import { computed } from 'vue'
 import { getFallbackValue } from '../../utils/get'
-
-interface Props {
-  alt?: boolean
-  ctrl?: boolean
-  meta?: boolean
-  enter?: boolean
-  shift?: boolean
-  label?: ComponentLabel
-  size?: ComponentSize
-}
+import type { KbdProps } from './types'
 
 defineOptions({
   name: 'PKbd',
   inheritAttrs: false,
 })
 
-const props = defineProps<Props>()
+const props = defineProps<KbdProps>()
 
 const SIZES = {
   sm: 'h-5 text-xs',
@@ -42,7 +31,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
 const internalKey = computed(() => {
   return Object.entries(INTERNAL_KEYS)
     .filter(([k]) => {
-      return props[k as keyof Props]
+      return props[k as keyof KbdProps]
     })
     .map(([, v]) => v)
     .join('')

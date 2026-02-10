@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { useVirtualList } from '../../composables/use-virtual-list'
+import type { VirtualListProps } from './types'
 
-interface Props {
-  dataKey?: string
-  listData?: any[]
-  itemSize?: number
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
   listData: () => [],
   itemSize: 50,

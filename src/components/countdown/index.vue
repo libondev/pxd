@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type { Options } from '../../composables/use-countdown'
+import type { CountdownEmits, CountdownProps } from './types'
 import { computed, onBeforeUnmount } from 'vue'
 import { useCountdown } from '../../composables/use-countdown'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date'
-
-interface Props extends Options {
-  format?: string
-}
 
 defineOptions({
   name: 'PCountDown',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CountdownProps>(), {
   active: false,
   endTime: 0,
   durations: 0,
@@ -22,11 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
   format: 'HH:mm:ss',
 })
 
-const emits = defineEmits<{
-  change: [active: boolean]
-  reset: []
-  finish: []
-}>()
+const emits = defineEmits<CountdownEmits>()
 
 dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)

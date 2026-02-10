@@ -1,0 +1,27 @@
+import type { HTMLAttributes } from 'vue'
+
+import type { ComponentSizeWithXs } from '../../types/shared'
+
+export interface PinInputProps {
+  size?: ComponentSizeWithXs
+  error?: boolean | string
+  length?: number
+  readonly?: boolean
+  disabled?: boolean
+  required?: boolean
+  modelValue?: string
+  placeholder?: string
+  inputMode?: HTMLAttributes['inputmode']
+  type?:
+    | 'numeric'
+    | 'alphabetic'
+    | 'alphanumeric'
+    | 'numeric-password'
+    | 'alphabetic-password'
+    | 'alphanumeric-password'
+}
+
+export interface PinInputEmits {
+  change: [NonNullable<PinInputProps['modelValue']>]
+  'update:modelValue': [NonNullable<PinInputProps['modelValue']>]
+}

@@ -1,24 +1,17 @@
 <script setup lang="ts">
-import type { ComponentDirection } from '../../types/shared/props'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/throttle'
-
-interface Props {
-  size?: number
-  color?: string
-  container?: string | HTMLElement
-  direction?: ComponentDirection | 'both'
-}
+import type { FaderProps } from './types'
 
 defineOptions({
   name: 'PFader',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<FaderProps>(), {
   direction: 'both',
 })
 

@@ -6,18 +6,7 @@ import { computed, reactive, watch } from 'vue'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
 import PInput from '../input/index.vue'
-
-interface Props {
-  min?: number
-  max?: number
-  step?: number
-  readonly?: boolean
-  disabled?: boolean
-  precision?: number
-  scientific?: boolean
-  clearValue?: number | null
-  modelValue?: number | null
-}
+import type { NumberInputData, NumberInputEmits, NumberInputProps } from './types'
 
 defineOptions({
   name: 'PNumberInput',
@@ -28,7 +17,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<NumberInputProps>(), {
   step: 1,
   clearValue: null,
   scientific: true,
@@ -36,13 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   max: Number.MAX_SAFE_INTEGER,
 })
 
-const emits = defineEmits<{
-  focus: [FocusEvent]
-  blur: [FocusEvent]
-  input: [Props['modelValue']]
-  change: [Props['modelValue'], Event]
-  'update:modelValue': [Props['modelValue']]
-}>()
+const emits = defineEmits<NumberInputEmits>()
 
 const modelValue = computed({
   get() {
@@ -54,12 +37,7 @@ const modelValue = computed({
   },
 })
 
-interface InputData {
-  currentValue: Props['modelValue']
-  userInput: string | null
-}
-
-const inputData = reactive<InputData>({
+const inputData = reactive<NumberInputData>({
   currentValue: props.modelValue,
   userInput: null,
 })

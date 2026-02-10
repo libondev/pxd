@@ -1,17 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentLabel } from '../../types/shared'
 import { computed } from 'vue'
 import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
 import { getUniqueId } from '../../utils/uid'
 import { switchVariant } from './cn'
-
-interface Props {
-  label?: ComponentLabel
-  value: string | number
-  disabled?: boolean
-  required?: boolean
-}
+import type { SwitchProps } from './types'
 
 defineOptions({
   name: 'PSwitch',
@@ -21,7 +14,7 @@ defineOptions({
   },
 })
 
-const props = defineProps<Props>()
+const props = defineProps<SwitchProps>()
 
 const uniqueId = getUniqueId()
 

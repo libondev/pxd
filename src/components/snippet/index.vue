@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Component } from 'vue'
-import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import { computed } from 'vue'
@@ -8,28 +7,19 @@ import { useConfigProvider } from '../../composables/use-config-provider-context
 import { useCopyClick } from '../../composables/use-copy-click'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
 import { snippetVariant } from './cn'
-
-interface Props {
-  text: string | string[]
-  width?: string | number
-  size?: ComponentSize
-  prompt?: boolean | string
-  variant?: ComponentVariantWithDefault
-}
+import type { SnippetEmits, SnippetProps } from './types'
 
 defineOptions({
   name: 'PSnippet',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<SnippetProps>(), {
   prompt: '$ ',
   variant: 'default',
 })
 
-const emits = defineEmits<{
-  copy: [string]
-}>()
+const emits = defineEmits<SnippetEmits>()
 
 const configProvider = useConfigProvider()
 

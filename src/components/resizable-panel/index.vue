@@ -2,17 +2,13 @@
 import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
 import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/uid'
-
-interface Props {
-  size?: number | null
-  minSize?: number
-}
+import type { ResizablePanelProps } from '../resizable/types'
 
 defineOptions({
   name: 'PResizablePanel',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ResizablePanelProps>(), {
   size: null,
   minSize: 0,
 })

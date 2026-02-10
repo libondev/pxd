@@ -7,17 +7,7 @@ import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 import { isTopOverlay, pushOverlay, removeOverlay } from './overlay-stack'
-
-interface Props {
-  blurred?: boolean
-  zIndex?: number
-  modelValue?: boolean
-  transparent?: boolean
-  appendToBody?: boolean
-  closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
-  shownElement?: string | HTMLElement
-}
+import type { OverlayEmits, OverlayProps } from './types'
 
 defineOptions({
   name: 'POverlay',
@@ -28,17 +18,13 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<OverlayProps>(), {
   modelValue: false,
   appendToBody: true,
   closeOnPressEscape: true,
 })
 
-const emits = defineEmits<{
-  click: [MouseEvent]
-  escape: [KeyboardEvent]
-  'update:modelValue': [boolean]
-}>()
+const emits = defineEmits<OverlayEmits>()
 
 const { lockScroll, unlockScroll } = useLockScroll()
 

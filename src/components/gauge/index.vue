@@ -1,17 +1,9 @@
 <script lang="ts" setup>
-import type { ComponentSizeWithXs } from '../../types/shared'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { getColorByThreshold, getFallbackValue } from '../../utils/get'
-
-interface Props {
-  modelValue?: number | null
-  showValue?: boolean
-  indeterminate?: boolean
-  size?: ComponentSizeWithXs
-  colors?: Record<string, string>
-}
+import type { GaugeProps } from './types'
 
 defineOptions({
   name: 'PGauge',
@@ -21,7 +13,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<GaugeProps>(), {
   modelValue: 60,
   showValue: false,
 })
@@ -42,7 +34,7 @@ const RADIUS = 42
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const GAP_LENGTH = (PROGRESS_BAR_GAP / 100) * CIRCUMFERENCE
 
-const defaultColors: Props['colors'] = {
+const defaultColors: GaugeProps['colors'] = {
   0: 'var(--color-red-800)',
   30: 'var(--color-amber-800)',
   60: 'var(--color-green-700)',

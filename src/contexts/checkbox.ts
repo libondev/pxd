@@ -1,4 +1,4 @@
-import type { CheckboxGroupProps } from '../types/components/checkbox'
+import type { CheckboxGroupProps } from '../components/checkbox/types'
 
 import { createContext } from '../utils/context'
 

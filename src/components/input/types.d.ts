@@ -27,3 +27,16 @@ export interface InputProps {
   suffixClass?: ComponentClass
   selectOnFocus?: boolean
 }
+
+export interface InputEmits {
+  click: [MouseEvent]
+  input: [string]
+  change: [string, Event]
+  focus: [FocusEvent]
+  blur: [FocusEvent]
+  keydown: [KeyboardEvent]
+  'update:modelValue': [string]
+  compositionstart: [CompositionEvent]
+  compositionupdate: [CompositionEvent]
+  compositionend: [CompositionEvent]
+}

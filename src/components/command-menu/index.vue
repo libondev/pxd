@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOptionSelected } from '../../types/components/list'
+import type { ListOptionSelected } from '../list/types'
 import { computed, nextTick, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useDeferredValue } from '../../composables/use-deferred-value'
@@ -10,15 +10,7 @@ import { getUniqueId } from '../../utils/uid'
 import PButton from '../button/index.vue'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
-
-interface Props {
-  width?: string | number
-  modelValue?: boolean
-  placeholder?: string
-  closeOnSelectItem?: boolean
-  closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
-}
+import type { CommandMenuEmits, CommandMenuProps } from './types'
 
 defineOptions({
   name: 'PCommandMenu',
@@ -29,7 +21,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CommandMenuProps>(), {
   modelValue: false,
   placeholder: '',
   closeOnSelectItem: true,
@@ -37,13 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnClickOverlay: true,
 })
 
-const emits = defineEmits<{
-  'update:modelValue': [boolean]
-  select: [MouseEvent, ListOptionSelected]
-  change: [boolean]
-  show: []
-  hide: []
-}>()
+const emits = defineEmits<CommandMenuEmits>()
 
 const uniqueId = getUniqueId()
 

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ComponentSize } from '../../types/shared'
 import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
@@ -8,19 +7,13 @@ import { computed, h } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { isTruthyProp } from '../../utils/format'
 import { noteVariant } from './cn'
-
-interface Props {
-  variant?: keyof typeof noteVariant.variants.variant
-  size?: ComponentSize
-  fill?: boolean
-  label?: boolean | ComponentLabel
-}
+import type { NoteProps } from './types'
 
 defineOptions({
   name: 'PNote',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<NoteProps>(), {
   label: true,
   variant: 'default',
 })

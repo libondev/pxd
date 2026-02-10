@@ -1,21 +1,13 @@
 <script lang="ts" setup>
-import type { ComponentLabel, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
-
-interface Props {
-  color?: string
-  title?: ComponentLabel
-  width?: ResponsiveValue<string | number>
-  variant?: 'simple' | 'stripe'
-  textured?: boolean
-}
+import type { BookProps } from './types'
 
 defineOptions({
   name: 'PBook',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<BookProps>(), {
   textured: false,
   variant: 'stripe',
 })

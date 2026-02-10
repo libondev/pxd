@@ -1,27 +1,16 @@
 <script lang="ts" setup>
-import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
+import type { ComponentDirection } from '../../types/shared'
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
 import { stackVariant } from './cn'
-
-type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
-
-export interface Props {
-  as?: ComponentAs
-  wrap?: boolean
-  gap?: ResponsiveValue<string | number>
-  scale?: number
-  align?: Align
-  justify?: Align
-  direction?: ResponsiveValue<ComponentDirection>
-}
+import type { StackProps } from './types'
 
 defineOptions({
   name: 'PStack',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<StackProps>(), {
   as: 'div',
   wrap: true,
   scale: 4,

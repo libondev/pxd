@@ -1,21 +1,10 @@
 <script lang="ts" setup>
-import type { ComponentSize, ComponentVariant } from '../../types/shared'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'
-
-interface Props {
-  min?: number
-  max?: number
-  step?: number
-  range?: boolean
-  disabled?: boolean
-  size?: ComponentSize
-  variant?: ComponentVariant | 'secondary'
-  modelValue?: number | [number, number] | null
-}
+import type { SliderEmits, SliderProps } from './types'
 
 defineOptions({
   name: 'PSlider',
@@ -25,7 +14,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<SliderProps>(), {
   min: 0,
   max: 100,
   step: 1,
@@ -33,10 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-}>()
+const emits = defineEmits<SliderEmits>()
 
 const SIZES = {
   sm: {

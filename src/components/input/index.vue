@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { InputProps } from '../../types/components/input'
+import type { InputEmits, InputProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
@@ -26,18 +26,7 @@ const props = withDefaults(defineProps<InputProps>(), {
   suffixStyle: true,
 })
 
-const emits = defineEmits<{
-  click: [MouseEvent]
-  input: [string]
-  change: [string, Event]
-  focus: [FocusEvent]
-  blur: [FocusEvent]
-  keydown: [KeyboardEvent]
-  'update:modelValue': [string]
-  compositionstart: [CompositionEvent]
-  compositionupdate: [CompositionEvent]
-  compositionend: [CompositionEvent]
-}>()
+const emits = defineEmits<InputEmits>()
 
 const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CarouselState } from '../../contexts/carousel'
-import type { CarouselGroupProps } from '../../types/components/carousel'
+import type { CarouselGroupEmits, CarouselGroupProps } from '../carousel/types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { usePointerGesture } from '../../composables/use-pointer-gesture'
@@ -26,9 +26,7 @@ const props = withDefaults(defineProps<CarouselGroupProps>(), {
   indicatorPosition: 'bottom',
 })
 
-const emits = defineEmits<{
-  change: [index: number]
-}>()
+const emits = defineEmits<CarouselGroupEmits>()
 
 const THROTTLE_INTERVALS = 550 // 比过渡事件稍长以预留给容器重置位置的时间
 const TRANSITION_CLASSES = ['transition-transform', 'duration-500']

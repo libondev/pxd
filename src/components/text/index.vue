@@ -1,24 +1,15 @@
 <script lang="ts" setup>
-import type { ComponentAs, ResponsiveValue } from '../../types/shared'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 import { getResponsiveValue } from '../../utils/responsive'
 import { textVariant } from './cn'
-
-interface Props {
-  as?: ComponentAs
-  size?: ResponsiveValue<string | number>
-  align?: 'left' | 'center' | 'right'
-  truncate?: boolean | number | string
-  monospace?: boolean
-  secondary?: boolean
-}
+import type { TextProps } from './types'
 
 defineOptions({
   name: 'PText',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TextProps>(), {
   as: 'p',
   align: 'left',
   truncate: false,

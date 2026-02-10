@@ -123,8 +123,8 @@
     "dayjs": "catalog:default",
     "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default",
-    "tailwind-variants": "catalog:default",
-    "tailwind-merge": "catalog:default"
+    "tailwind-merge": "catalog:default",
+    "tailwind-variants": "catalog:default"
   },
   "devDependencies": {
     "@tailwindcss/cli": "catalog:default",

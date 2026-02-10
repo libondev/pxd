@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-interface Props {
-  title?: string
-  description?: string
-}
+import type { EmptyStateProps } from './types'
 
 defineOptions({
   name: 'PEmptyState',
 })
 
-defineProps<Props>()
+defineProps<EmptyStateProps>()
 </script>
 
 <template>

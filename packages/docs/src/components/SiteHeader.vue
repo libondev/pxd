@@ -79,10 +79,10 @@ onBeforeUnmount(() => {
 
         <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
           <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
-            <PCommandMenuItem v-for="e of i.children" :key="e.path" as="RouterLink" :to="e.path">
+            <PListItem v-for="e of i.children" :key="e.path" as="RouterLink" :to="e.path">
               <ArrowRightIcon class="text-foreground-secondary" />
               {{ e.label }}
-            </PCommandMenuItem>
+            </PListItem>
           </PCommandMenuGroup>
 
           <template #footer>

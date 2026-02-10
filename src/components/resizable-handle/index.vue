@@ -5,6 +5,7 @@ import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PResizableHandle',
+  inheritAttrs: false,
 })
 
 const resizableContext = useResizableContext()
@@ -71,6 +72,7 @@ onBeforeUnmount(() => {
     @pointerup="handlePointerUp"
     @pointercancel="handlePointerUp"
     @dblclick.prevent.stop="handleDoubleClick"
+    v-bind="$attrs"
   />
 </template>
 

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import type { ChoiceboxGroupProps } from '../types/components/choicebox'
+import type { ChoiceboxGroupProps } from '../components/choicebox/types'
 
 import { createContext } from '../utils/context'
 

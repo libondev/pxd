@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
 import { cachedOff, cachedOn } from '../../utils/event'
@@ -7,32 +6,21 @@ import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
 import PListItem from '../list-item/index.vue'
 import PScrollable from '../scrollable/index.vue'
-
-interface Props {
-  loop?: boolean
-  options?: ListOption[]
-  keyListener?: boolean
-  itemTransition?: boolean
-  closeOnPressEscape?: boolean
-}
+import type { ListProps, ListOptionSelected, ListEmits } from './types'
 
 defineOptions({
   name: 'PList',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ListProps>(), {
   loop: true,
   options: () => [],
   keyListener: true,
   itemTransition: true,
 })
 
-const emits = defineEmits<{
-  toggle: []
-  escape: [KeyboardEvent]
-  select: [MouseEvent, ListOptionSelected]
-}>()
+const emits = defineEmits<ListEmits>()
 
 const activeValue = shallowRef('')
 const containerRef = shallowRef<HTMLElement>()

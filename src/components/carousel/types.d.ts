@@ -1,4 +1,4 @@
-import type { BasePosition, ComponentDirection } from '../shared'
+import type { BasePosition, ComponentDirection } from '../../types/shared'
 
 export interface CarouselGroupProps {
   index?: number
@@ -13,4 +13,8 @@ export interface CarouselGroupProps {
   indicatorPosition?: BasePosition
   pauseOnHover?: boolean
   toggleOnWheel?: boolean
+}
+
+export interface CarouselGroupEmits {
+  change: [index: number]
 }

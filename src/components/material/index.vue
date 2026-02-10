@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 import PStack from '../stack/index.vue'
-
-interface Props {
-  variant?: 'default' | 'small' | 'medium' | 'large' | 'tooltip' | 'menu' | 'modal' | 'fullscreen'
-}
+import type { MaterialProps } from './types'
 
 defineOptions({
   name: 'PMaterial',
   inheritAttrs: false,
 })
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<MaterialProps>(), {
   variant: 'default',
 })
 </script>
@@ -27,30 +24,37 @@ withDefaults(defineProps<Props>(), {
     border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-default);
   }
+
   &.small {
     border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-small);
   }
+
   &.medium {
     border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-medium);
   }
+
   &.large {
     border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-large);
   }
+
   &.tooltip {
     border-radius: calc(var(--radius) - 2px);
     box-shadow: var(--shadow-border-tooltip);
   }
+
   &.menu {
     border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-menu);
   }
+
   &.modal {
     border-radius: calc(var(--radius) + 6px);
     box-shadow: var(--shadow-border-modal);
   }
+
   &.fullscreen {
     border-radius: calc(var(--radius) + 8px);
     box-shadow: var(--shadow-border-fullscreen);

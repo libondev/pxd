@@ -1,30 +1,10 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue'
-import type { ComponentSizeWithXs } from '../../types/shared'
 import { computed, ref, shallowRef } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { pinInputVariant } from './cn'
-
-interface Props {
-  size?: ComponentSizeWithXs
-  error?: boolean | string
-  length?: number
-  readonly?: boolean
-  disabled?: boolean
-  required?: boolean
-  modelValue?: string
-  placeholder?: string
-  inputMode?: HTMLAttributes['inputmode']
-  type?:
-    | 'numeric'
-    | 'alphabetic'
-    | 'alphanumeric'
-    | 'numeric-password'
-    | 'alphabetic-password'
-    | 'alphanumeric-password'
-}
+import type { PinInputEmits, PinInputProps } from './types'
 
 defineOptions({
   name: 'PPinInput',
@@ -34,17 +14,14 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<PinInputProps>(), {
   length: 4,
   modelValue: '',
   type: 'numeric',
   placeholder: '○',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-}>()
+const emits = defineEmits<PinInputEmits>()
 
 const configProvider = useConfigProvider()
 

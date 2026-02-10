@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue'
-import type { ComponentClass, ComponentDirection, Nullable } from '../../types/shared'
+import type { ComponentDirection, Nullable } from '../../types/shared'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
@@ -8,37 +7,20 @@ import { cachedOff, cachedOn, once } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
 import PFader from '../fader/index.vue'
-
-interface Props {
-  fader?: boolean
-  faderSize?: number
-  faderColor?: string
-  faderDirection?: ComponentDirection | 'both'
-  scrollbar?: boolean
-  wrapperClass?: ComponentClass
-  contentClass?: ComponentClass
-  contentStyle?: CSSProperties | string
-  scrollbarSize?: number
-  scrollbarColor?: string
-  scrollbarHoverColor?: string
-  loading?: boolean
-  endThreshold?: number
-}
+import type { ScrollableEmits, ScrollableProps } from './types'
 
 defineOptions({
   name: 'PScrollable',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ScrollableProps>(), {
   fader: true,
   scrollbar: true,
   endThreshold: 10,
 })
 
-const emits = defineEmits<{
-  scroll: [Event]
-  end: [Event, ComponentDirection]
-}>()
+const emits = defineEmits<ScrollableEmits>()
 
 const wrapperRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
@@ -327,6 +309,7 @@ defineExpose({
     class="pxd-scrollable group/scrollable relative flex overflow-hidden hover:[--o:1] pointer-fine:[--o:0]"
     :class="wrapperClass"
     :style="computedStyle"
+    v-bind="$attrs"
   >
     <div
       ref="contentRef"

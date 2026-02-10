@@ -6,9 +6,9 @@ Launch a set of actions as a full-screen overlay.
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const showCommandMenu = ref(false)
+const showCommandMenu = ref(false);
 </script>
 
 <template>
@@ -16,16 +16,16 @@ const showCommandMenu = ref(false)
 
   <PCommandMenu v-model="showCommandMenu" placeholder="What do you need?">
     <PCommandMenuGroup label="Suggestions">
-      <PCommandMenuItem label="Figma Import" />
+      <PListItem label="Figma Import" />
     </PCommandMenuGroup>
 
     <PCommandMenuGroup label="Commands">
-      <PCommandMenuItem label="Import Extension" />
-      <PCommandMenuItem label="Manage Extensions" />
+      <PListItem label="Import Extension" />
+      <PListItem label="Manage Extensions" />
     </PCommandMenuGroup>
 
     <PCommandMenuGroup label="Collaboration">
-      <PCommandMenuItem label="Flags Explorer" />
+      <PListItem label="Flags Explorer" />
     </PCommandMenuGroup>
   </PCommandMenu>
 </template>

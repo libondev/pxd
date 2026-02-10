@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { ComponentAs } from '../../types/shared'
-
-interface Props {
-  as?: ComponentAs
-}
+import type { NoiseBackgroundProps } from './types'
 
 defineOptions({
   name: 'PNoiseBackground',
 })
 
-withDefaults(defineProps<Props>(), { as: 'div' })
+withDefaults(defineProps<NoiseBackgroundProps>(), { as: 'div' })
 </script>
 
 <template>

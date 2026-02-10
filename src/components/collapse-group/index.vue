@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/shared'
 import { computed, ref } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { getFallbackValue } from '../../utils/get'
+import type { CollapseGroupProps } from '../collapse/types'
 
-interface Props {
-  multiple?: boolean
-  size?: ComponentSize
-}
 defineOptions({
   name: 'PCollapseGroup',
 })
 
-const props = withDefaults(defineProps<Props>(), { multiple: false })
+const props = withDefaults(defineProps<CollapseGroupProps>(), { multiple: false })
 
 const SIZES = {
   sm: {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { CheckboxProps } from '../../types/components/checkbox'
+import type { CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed } from 'vue'
@@ -10,6 +10,7 @@ import { checkboxVariant } from './cn'
 
 defineOptions({
   name: 'PCheckbox',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -21,10 +22,7 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
   value: true,
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<CheckboxProps['modelValue']>]
-  'update:modelValue': [NonNullable<CheckboxProps['modelValue']>]
-}>()
+const emits = defineEmits<CheckboxEmits>()
 
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
@@ -91,6 +89,7 @@ defineExpose({
     :data-disabled="computedDisabled"
     :class="computedClasses.wrapper()"
     :for="uniqueId"
+    v-bind="$attrs"
   >
     <input
       :id="uniqueId"

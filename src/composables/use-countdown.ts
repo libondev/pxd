@@ -4,7 +4,7 @@ import { computed, shallowRef, watch } from 'vue'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
 
-export interface Options {
+export interface UseCountdownOptions {
   /**
    * 是否启用正计时
    * Whether to enable count up mode.
@@ -66,7 +66,7 @@ interface Results {
 }
 
 export function useCountdown<T extends Record<string, any>>(
-  props: Options,
+  props: UseCountdownOptions,
   emits: EmitFn<T>,
 ): Results {
   let startTimestamp = -1

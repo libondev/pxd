@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SwitchGroupProps } from '../../types/components/switch'
+import type { SwitchGroupEmits, SwitchGroupProps } from '../switch/types'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
 import { useModelValue } from '../../composables/use-model-value'
@@ -21,10 +21,7 @@ const props = withDefaults(defineProps<SwitchGroupProps>(), {
   modelValue: '',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<SwitchGroupProps['modelValue']>]
-  'update:modelValue': [NonNullable<SwitchGroupProps['modelValue']>]
-}>()
+const emits = defineEmits<SwitchGroupEmits>()
 
 const SIZES = {
   sm: 'h-7.5',

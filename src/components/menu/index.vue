@@ -1,34 +1,24 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionSelected } from '../../types/components/list'
-import type { ComponentPosition } from '../../types/shared'
+import type { ListOptionSelected } from '../list/types'
 import { shallowRef } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
-
-interface Props {
-  width?: string | number
-  options?: ListOption[]
-  position?: ComponentPosition
-  closeOnPressEscape?: boolean
-}
+import type { MenuEmits, MenuProps } from './types'
 
 defineOptions({
   name: 'PMenu',
   inheritAttrs: false,
 })
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<MenuProps>(), {
   options: () => [],
   position: 'bottom-start',
   closeOnPressEscape: true,
 })
 
-const emits = defineEmits<{
-  change: [visible: boolean]
-  select: [ListOptionSelected, MouseEvent]
-}>()
+const emits = defineEmits<MenuEmits>()
 
 const { isXs, attrs } = usePopoverResponsive()
 

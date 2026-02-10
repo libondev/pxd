@@ -1,29 +1,16 @@
 <script lang="ts" setup>
-import type { CSSProperties } from 'vue'
-import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/shared'
+import type { TooltipProps } from './types'
 import { computed } from 'vue'
 import { getFallbackValue } from '../../utils/get'
 import { isTouchDevice } from '../../utils/is'
 import PPopover from '../popover/index.vue'
-
-interface Props {
-  offset?: number
-  content?: string
-  variant?: ComponentVariant
-  position?: ComponentPosition
-  disabled?: boolean
-  showArrow?: boolean
-  desktopOnly?: boolean
-  contentClass?: ComponentClass
-  contentStyle?: CSSProperties | string
-}
 
 defineOptions({
   name: 'PTooltip',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TooltipProps>(), {
   variant: 'primary',
   position: 'top',
   showArrow: true,

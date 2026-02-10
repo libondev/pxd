@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import type { ColorScheme } from '../../composables/use-color-scheme'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, watch } from 'vue'
 import { useColorScheme } from '../../composables/use-color-scheme'
 import PButton from '../button/index.vue'
+import type { ThemeSwitcherEmits } from './types'
 
 defineOptions({
   name: 'PThemeSwitcher',
   inheritAttrs: false,
 })
 
-const emits = defineEmits<{
-  toggle: [ColorScheme]
-}>()
+const emits = defineEmits<ThemeSwitcherEmits>()
 
 const { isDark, toggleDarkMode } = useColorScheme({
   syncStatus: true,

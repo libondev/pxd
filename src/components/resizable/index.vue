@@ -1,30 +1,14 @@
 <script lang="ts" setup>
-import type { ComponentDirection } from '../../types/shared/props'
 import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
 import { provideResizableContext } from '../../contexts/resizable'
-
-interface Props {
-  direction?: ComponentDirection
-}
-
-interface PanelConfig {
-  id: string
-  size?: number | null
-  minSize?: number
-  order: number
-}
-
-interface HandleConfig {
-  id: string
-  order: number
-  onDrag: (delta: { deltaX: number; deltaY: number }) => void
-}
+import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 
 defineOptions({
   name: 'PResizable',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ResizableProps>(), {
   direction: 'horizontal',
 })
 
@@ -266,6 +250,7 @@ onMounted(async () => {
     ref="containerRef"
     :data-direction="direction"
     class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[direction=vertical]:flex-col"
+    v-bind="$attrs"
   >
     <slot />
   </div>

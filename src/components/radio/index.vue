@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { RadioProps } from '../../types/components/radio'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
 import { radioVariant } from './cn'
+import type { RadioEmits, RadioProps } from './types'
 
 defineOptions({
   name: 'PRadio',
@@ -17,10 +17,7 @@ defineOptions({
 
 const props = defineProps<RadioProps>()
 
-const emits = defineEmits<{
-  change: [NonNullable<RadioProps['modelValue']>]
-  'update:modelValue': [NonNullable<RadioProps['modelValue']>]
-}>()
+const emits = defineEmits<RadioEmits>()
 
 const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)

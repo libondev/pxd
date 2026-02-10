@@ -1,18 +1,13 @@
 <script lang="ts" setup>
 import InformationIcon from '@gdsicon/vue/information-fill-small'
 import PTooltip from '../tooltip/index.vue'
-
-interface Props {
-  title?: string
-  content?: string
-  tooltip?: string
-}
+import type { DescriptionProps } from './types'
 
 defineOptions({
   name: 'PDescription',
 })
 
-defineProps<Props>()
+defineProps<DescriptionProps>()
 </script>
 
 <template>

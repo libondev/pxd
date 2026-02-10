@@ -4,8 +4,6 @@ import type {
   MessageItemType,
   MessageUpdateParams,
 } from '../../composables/use-message'
-import type { ComponentPosition } from '../../types/shared/props'
-
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
@@ -14,28 +12,19 @@ import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PMessageItem from '../message-item/index.vue'
 import PTeleport from '../teleport/index.vue'
-
-interface Props {
-  max?: number
-  width?: string | number
-  group?: string
-  expand?: boolean
-  position?: ComponentPosition<'top' | 'bottom'>
-}
+import type { MessageEmits, MessageProps } from './types'
 
 defineOptions({
   name: 'PMessage',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<MessageProps>(), {
   max: 3,
   group: 'default',
   position: 'top',
 })
 
-const emits = defineEmits<{
-  close: [id: MessageItemType['id']]
-}>()
+const emits = defineEmits<MessageEmits>()
 
 useDocumentHidden((isHidden) => {
   if (isHidden) {
@@ -558,16 +547,20 @@ defineExpose({
     &.info {
       color: var(--color-gray-600);
     }
+
     &.error {
       color: var(--color-red-700);
     }
+
     &.loading {
       animation: spin 1s linear infinite;
       color: var(--color-blue-700);
     }
+
     &.warning {
       color: var(--color-amber-700);
     }
+
     &.success {
       color: var(--color-green-700);
     }

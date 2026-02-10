@@ -1,28 +1,11 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-
-interface Props {
-  title?: ComponentLabel
-  subtitle?: ComponentLabel
-  size?: number | string
-  loading?: boolean
-  position?: BasePosition
-  modelValue?: boolean
-  appendToBody?: boolean
-  headerStylize?: boolean
-  footerStylize?: boolean
-  wrapperClass?: ComponentClass
-  contentClass?: ComponentClass
-  closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
-  initialFocus?: string | false
-}
+import type { DrawerEmits, DrawerProps } from './types'
 
 defineOptions({
   name: 'PDrawer',
@@ -33,7 +16,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<DrawerProps>(), {
   position: 'right',
   modelValue: false,
   appendToBody: true,
@@ -43,14 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnClickOverlay: true,
 })
 
-const emits = defineEmits<{
-  show: []
-  hide: []
-  change: [boolean]
-  'outside-click': [MouseEvent]
-  'visible-change': [boolean]
-  'update:modelValue': [boolean]
-}>()
+const emits = defineEmits<DrawerEmits>()
 
 const drawerRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)

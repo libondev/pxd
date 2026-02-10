@@ -1,19 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-
-interface Props {
-  gap?: number | string
-  color?: string
-  invert?: boolean
-}
+import type { PlaceholderProps } from './types'
 
 defineOptions({
   name: 'PPlaceholder',
   inheritAttrs: false,
 })
 
-const props = defineProps<Props>()
+const props = defineProps<PlaceholderProps>()
 
 const computedStyle = computed(() => {
   return {

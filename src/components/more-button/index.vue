@@ -2,12 +2,7 @@
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { useModelValue } from '../../composables/use-model-value'
 import PButton from '../button/index.vue'
-
-interface Props {
-  moreText?: string
-  lessText?: string
-  modelValue?: boolean
-}
+import type { MoreButtonEmits, MoreButtonProps } from './types'
 
 defineOptions({
   name: 'PMoreButton',
@@ -18,16 +13,13 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<MoreButtonProps>(), {
   moreText: 'Show More',
   lessText: 'Show Less',
   modelValue: false,
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<Props['modelValue']>]
-  'update:modelValue': [NonNullable<Props['modelValue']>]
-}>()
+const emits = defineEmits<MoreButtonEmits>()
 
 const isExpanded = useModelValue(props, emits)
 

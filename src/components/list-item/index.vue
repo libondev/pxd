@@ -1,33 +1,23 @@
 <script lang="ts" setup>
-import type { ListOption, ListOptionSelected } from '../../types/components/list'
 import { computed, nextTick, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterValue } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
 import { getUniqueId } from '../../utils/uid'
 import { listItemVariant } from './cn'
-
-interface Props {
-  as?: ListOption['as']
-  type?: ListOption['type']
-  label?: ListOption['label']
-  value?: ListOption['value']
-  disabled?: ListOption['disabled']
-  description?: ListOption['description']
-}
+import type { ListItemEmits, ListItemProps } from '../list/types'
 
 defineOptions({
   name: 'PListItem',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ListItemProps>(), {
   as: 'li',
   type: 'default',
   disabled: false,
 })
 
-const emits = defineEmits<{
-  click: [ListOptionSelected, MouseEvent]
-}>()
+const emits = defineEmits<ListItemEmits>()
 
 const { activeValue, onOptionClick } = useListContext()
 
@@ -79,6 +69,7 @@ onMounted(async () => {
     :data-selected="isSelected"
     :data-disabled="isDisabled"
     :class="computedClasses"
+    v-bind="$attrs"
     @click.prevent.stop="onItemClick"
   >
     <slot v-if="type !== 'separator'">

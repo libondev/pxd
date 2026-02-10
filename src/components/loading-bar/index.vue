@@ -7,22 +7,14 @@ import { clampValue, isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
 import { loadingBarVariant } from './cn'
-
-interface Props {
-  to?: string | HTMLElement
-  group?: string
-  minimum?: number
-  trickle?: boolean
-  hideDelay?: number
-  trickleThreshold?: number
-}
+import type { LoadingBarProps, LoadingBarStatus } from './types'
 
 defineOptions({
   name: 'PLoadingBar',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<LoadingBarProps>(), {
   group: 'default',
   speed: 300,
   minimum: 0.08,
@@ -34,14 +26,12 @@ const props = withDefaults(defineProps<Props>(), {
 let prevTimestamp = 0
 let prevAnimationKey = 0
 
-type Status = 'running' | 'error' | 'finish'
-
 let hiddenBarTimeout: ReturnType<typeof setTimeout>
 let enableTransitionTimeout: ReturnType<typeof setTimeout>
 
 const ENABLE_TRANSITION_DELAY = 0
 
-const status = shallowRef<Status>('finish')
+const status = shallowRef<LoadingBarStatus>('finish')
 const hiddenBar = shallowRef(false)
 const progressValue = shallowRef(0)
 const enableTransition = shallowRef(false)

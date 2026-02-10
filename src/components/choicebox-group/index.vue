@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ChoiceboxGroupProps } from '../../types/components/choicebox'
+import type { ChoiceboxGroupEmits, ChoiceboxGroupProps } from '../choicebox/types'
 import { computed, markRaw, useAttrs } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import {
@@ -26,10 +26,7 @@ const props = withDefaults(defineProps<ChoiceboxGroupProps>(), {
   modelValue: '',
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<ChoiceboxGroupProps['modelValue']>]
-  'update:modelValue': [NonNullable<ChoiceboxGroupProps['modelValue']>]
-}>()
+const emits = defineEmits<ChoiceboxGroupEmits>()
 
 const attrs = useAttrs()
 

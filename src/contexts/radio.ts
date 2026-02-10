@@ -1,4 +1,4 @@
-import type { RadioGroupProps } from '../types/components/radio'
+import type { RadioGroupProps } from '../components/radio/types'
 
 import { createContext } from '../utils/context'
 

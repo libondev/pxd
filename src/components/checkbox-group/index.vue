@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CheckboxGroupProps } from '../../types/components/checkbox'
+import type { CheckboxGroupEmits, CheckboxGroupProps } from '../checkbox/types'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox'
 import PCheckbox from '../checkbox/index.vue'
@@ -19,10 +19,7 @@ const props = withDefaults(defineProps<CheckboxGroupProps>(), {
   options: () => [],
 })
 
-const emits = defineEmits<{
-  change: [NonNullable<CheckboxGroupProps['modelValue']>]
-  'update:modelValue': [NonNullable<CheckboxGroupProps['modelValue']>]
-}>()
+const emits = defineEmits<CheckboxGroupEmits>()
 
 const modelValue = useModelValue(props, emits)
 

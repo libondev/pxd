@@ -1,4 +1,4 @@
-/* eslint-disable perfectionist/sort-exports */
+/**/
 export { default as ActiveGraph } from './active-graph/index.vue'
 export { default as Avatar } from './avatar/index.vue'
 export { default as AvatarGroup } from './avatar-group/index.vue'
@@ -18,7 +18,6 @@ export { default as Collapse } from './collapse/index.vue'
 export { default as CollapseGroup } from './collapse-group/index.vue'
 export { default as CommandMenu } from './command-menu/index.vue'
 export { default as CommandMenuGroup } from './command-menu-group/index.vue'
-export { default as CommandMenuItem } from './command-menu-item/index.vue'
 export { default as ConfigProvider } from './config-provider/index.vue'
 export { default as Countdown } from './countdown/index.vue'
 export { default as DashLine } from './dash-line/index.vue'

@@ -3,17 +3,13 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useCollapseGroupContext } from '../../contexts/collapse'
 import { getUniqueId } from '../../utils/uid'
-
-interface Props {
-  title?: string
-  expand?: boolean
-}
+import type { CollapseProps } from './types'
 
 defineOptions({
   name: 'PCollapse',
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CollapseProps>(), {
   title: '',
   expand: false,
 })

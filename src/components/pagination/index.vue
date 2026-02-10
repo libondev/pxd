@@ -1,22 +1,13 @@
 <script lang="ts" setup>
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
-
-interface Page {
-  label: string
-  href: string
-}
-
-interface Props {
-  prev?: Page
-  next?: Page
-}
+import type { PaginationProps } from './types'
 
 defineOptions({
   name: 'PPagination',
 })
 
-defineProps<Props>()
+defineProps<PaginationProps>()
 
 const configProvider = useConfigProvider()
 </script>

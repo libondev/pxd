@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { PopoverTrigger } from '../../types/components/popover'
-import type { DateTimePreset } from '../../types/components/time-picker'
-import type { ComponentSize } from '../../types/shared/props'
+import type { PopoverTrigger } from '../popover/types'
+import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../composables/use-config-provider-context'
@@ -12,21 +11,6 @@ import PButton from '../button/index.vue'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
 
-interface Props {
-  size?: ComponentSize
-  error?: boolean | string
-  presets?: DateTimePreset[]
-  disabled?: boolean
-  clearable?: boolean
-  modelValue?: Date | string | number | null
-  prefixIcon?: boolean
-  placeholder?: string
-  showSeconds?: boolean
-  closeOnPressEscape?: boolean
-  format?: string
-  valueFormat?: string
-}
-
 defineOptions({
   name: 'PTimePicker',
   inheritAttrs: false,
@@ -36,7 +20,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TimePickerProps>(), {
   modelValue: '',
   prefixIcon: true,
   showSeconds: true,
@@ -46,11 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
   valueFormat: 'HH:mm:ss',
 })
 
-const emits = defineEmits<{
-  change: [boolean]
-  select: [MouseEvent]
-  'update:modelValue': [string]
-}>()
+const emits = defineEmits<TimePickerEmits>()
 
 const HEIGHT = 32
 const VALUE_POSITION_MAP = {
@@ -114,7 +94,7 @@ function hidePopover() {
   onVisibleChange(false)
 }
 
-function updateDayjsDateTime(value: Props['modelValue']) {
+function updateDayjsDateTime(value: TimePickerProps['modelValue']) {
   if (!value) {
     dayjsDateTime.value = null
     return
@@ -124,7 +104,7 @@ function updateDayjsDateTime(value: Props['modelValue']) {
   dayjsDateTime.value = newDateTime.isValid() ? newDateTime : null
 }
 
-function getFormattedValue(value: Props['modelValue']) {
+function getFormattedValue(value: TimePickerProps['modelValue']) {
   if (value == null || value === '') {
     return dayjs()
   }
