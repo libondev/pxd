@@ -8,7 +8,7 @@ export interface SliderProps {
   disabled?: boolean
   size?: ComponentSize
   variant?: ComponentVariant | 'secondary'
-  modelValue?: number | [number, number] | null
+  modelValue?: number | number[] | null
 }
 
 export interface SliderEmits {

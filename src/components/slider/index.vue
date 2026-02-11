@@ -84,6 +84,7 @@ const trackStyle = computed(() => {
   const backgroundColor = props.disabled
     ? 'var(--color-gray-alpha-400)'
     : getFallbackValue(props.variant, VARIANTS, 'primary')
+
   if (props.range) {
     return {
       left: `${startPercentage.value}%`,
@@ -237,7 +238,7 @@ function initModelValue() {
   if (props.range && !Array.isArray(modelValue.value)) {
     modelValue.value = [props.min, modelValue.value as number]
   } else if (!props.range && Array.isArray(modelValue.value)) {
-    modelValue.value = modelValue.value[1]
+    modelValue.value = modelValue.value[1] ?? 0
   }
 }
 
