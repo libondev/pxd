@@ -10,6 +10,3 @@ export type CSSValue = Numeric | CSSUnitValue
 
 export type MaybeElement = Nullable<HTMLElement | SVGElement | ComponentPublicInstance>
 export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRefOrGetter<Nullable<T>>
-export type MaybeComputedElementRef<T extends MaybeElement = MaybeElement> = MaybeRefOrGetter<
-  Nullable<T>
->
