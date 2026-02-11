@@ -1,28 +1,5 @@
 import { tv } from 'tailwind-variants'
 
-export type BadgeVariant =
-  | 'pill'
-  | 'gray'
-  | 'blue'
-  | 'purple'
-  | 'amber'
-  | 'red'
-  | 'pink'
-  | 'green'
-  | 'teal'
-  | 'gray-subtle'
-  | 'blue-subtle'
-  | 'purple-subtle'
-  | 'amber-subtle'
-  | 'red-subtle'
-  | 'pink-subtle'
-  | 'green-subtle'
-  | 'teal-subtle'
-  | 'inverted'
-  | 'vue'
-  | 'trial'
-  | 'turborepo'
-
 export type BadgeSize = 'sm' | 'md' | 'lg'
 
 export const badgeVariant = tv({

@@ -1,5 +1,27 @@
 import type { ComponentAs, ComponentSize } from '../../types/shared'
-import type { BadgeVariant } from './cn'
+
+export type BadgeVariant =
+  | 'pill'
+  | 'gray'
+  | 'blue'
+  | 'purple'
+  | 'amber'
+  | 'red'
+  | 'pink'
+  | 'green'
+  | 'teal'
+  | 'gray-subtle'
+  | 'blue-subtle'
+  | 'purple-subtle'
+  | 'amber-subtle'
+  | 'red-subtle'
+  | 'pink-subtle'
+  | 'green-subtle'
+  | 'teal-subtle'
+  | 'inverted'
+  | 'vue'
+  | 'trial'
+  | 'turborepo'
 
 export interface BadgeProps {
   as?: ComponentAs
