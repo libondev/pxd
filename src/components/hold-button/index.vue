@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
     clip-path: inset(0px);
     transition:
       clip-path var(--hold-button-durations),
-      opacity var(--default-transition-duration);
+      opacity 0.1s;
   }
 }
 </style>
