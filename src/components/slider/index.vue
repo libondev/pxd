@@ -8,6 +8,7 @@ import type { SliderEmits, SliderProps } from './types'
 
 defineOptions({
   name: 'PSlider',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -181,7 +182,8 @@ function handleMove(ev: PointerEvent) {
   scheduleUpdate()
 }
 
-function endDragging() {
+function endDragging(ev: PointerEvent) {
+  console.log('endDragging', ev, ev.target)
   isDragging = false
   lastClientX = null
   activeThumb.value = null
@@ -252,6 +254,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    v-bind="$attrs"
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
     class="pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none"
@@ -262,40 +265,66 @@ onBeforeUnmount(() => {
 
     <div
       v-if="props.range"
-      class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background-100 hover:scale-130 active:z-1 active:scale-130 motion-safe:transition-transform"
-      :class="[
-        { 'scale-130': activeThumb === 'start', 'pointer-events-none': disabled },
-        computedSize.thumb,
-      ]"
+      :data-dragging="isDragging && activeThumb === 'start'"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 motion-safe:before:transition-transform motion-safe:after:transition-transform"
+      :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
-    />
+    >
+      <span
+        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+      >
+        {{ valueArray[0] }}
+      </span>
+    </div>
 
     <div
-      class="pxd-slider--thumb rounded-xs absolute -translate-x-1/2 touch-none bg-background-100 hover:scale-130 active:z-1 active:scale-130 motion-safe:transition-transform"
-      :class="[
-        { 'scale-130': activeThumb === 'end', 'pointer-events-none': disabled },
-        computedSize.thumb,
-      ]"
+      :data-dragging="isDragging && activeThumb === 'end'"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 motion-safe:before:transition-transform motion-safe:after:transition-transform"
+      :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
-    />
+    >
+      <span
+        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+      >
+        {{ valueArray[1] }}
+      </span>
+    </div>
   </div>
 </template>
 
 <style>
-.pxd-slider--thumb {
+.pxd-slider--thumb:hover,
+.pxd-slider--thumb:active {
+  --scale: 1.3;
+}
+
+.pxd-slider--thumb::before,
+.pxd-slider--thumb::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: inherit;
+  transform: translate3d(-50%, -50%, 0) scale(var(--scale, 1));
+}
+
+.pxd-slider--thumb::before {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
   box-shadow:
     0 0 0 1px var(--color-gray-alpha-500),
     0 1px 2px var(--color-gray-alpha-100);
 }
 
+.dark .pxd-slider--thumb::before {
+  box-shadow:
+    0 0 0 1px #000,
+    0 1px 2px #0000000a;
+}
+
 .pxd-slider--thumb::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 200%;
   height: 200%;
 }
