@@ -12,7 +12,7 @@ const props = defineProps<ProjectBannerProps>()
 
 const projectBannerVariant = tv({
   slots: {
-    base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm z-30 flex w-full -translate-y-px items-center justify-center border-y',
+    base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm flex w-full -translate-y-px items-center justify-center border-y',
     action:
       'ml-6 md:ml-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
   },
