@@ -49,8 +49,9 @@ const VARIANTS = {
 }
 
 let isDragging = false
-let lastClientX: number | null
-let animationFrameId: number | null
+let sliderRect: DOMRect | null = null
+let lastClientX: number | null = null
+let animationFrameId: number | null = null
 
 const configProvider = useConfigProvider()
 
@@ -102,7 +103,7 @@ function updateValueFromPosition(clientX: number) {
     return
   }
 
-  const rect = sliderRef.value.getBoundingClientRect()
+  const rect = sliderRect ?? sliderRef.value.getBoundingClientRect()
 
   // position percentage
   const posPercentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
@@ -153,14 +154,15 @@ function scheduleUpdate() {
     if (lastClientX !== null) {
       updateValueFromPosition(lastClientX)
     }
-
-    if (isDragging) {
-      scheduleUpdate()
-    }
   })
 }
 
 function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
+  if (!sliderRef.value) {
+    return
+  }
+
+  sliderRect = sliderRef.value.getBoundingClientRect()
   isDragging = true
   activeThumb.value = thumb
   lastClientX = ev.clientX
@@ -185,6 +187,7 @@ function handleMove(ev: PointerEvent) {
 function endDragging() {
   isDragging = false
   lastClientX = null
+  sliderRect = null
   activeThumb.value = null
 
   if (animationFrameId) {
