@@ -9,8 +9,8 @@ defineOptions({
 const { copyText } = useCopyClick()
 
 const customVariables = ref({
-  primary: '',
   radius: '',
+  primary: '',
   duration: '',
   'timing-function': '',
 })
@@ -38,12 +38,20 @@ const customProperties = [
         label: 'Pink',
         value: '336, 74%, 51%',
       },
+      {
+        label: 'Teal',
+        value: '173, 83%, 30%',
+      },
     ],
   },
   {
     key: 'radius',
     label: 'Radius',
     options: [
+      {
+        label: 'None',
+        value: '0',
+      },
       {
         label: 'Small',
         value: '.4rem',
@@ -54,7 +62,7 @@ const customProperties = [
       },
       {
         label: 'Large',
-        value: '.7rem',
+        value: '1rem',
       },
     ],
   },
@@ -62,6 +70,10 @@ const customProperties = [
     key: 'duration',
     label: 'Duration',
     options: [
+      {
+        label: 'None',
+        value: '0',
+      },
       {
         label: 'Fast',
         value: '',
@@ -114,8 +126,8 @@ const popoverRef = useTemplateRef<InstanceType<typeof PPopover>>('popoverRef')
 
 function resetCustomVariables() {
   customVariables.value = {
-    primary: '',
     radius: '',
+    primary: '',
     duration: '',
     'timing-function': '',
   }
@@ -152,7 +164,7 @@ async function copyCustomVariables() {
     <slot />
 
     <template #content>
-      <div class="max-sm:px-4 p-3 gap-4 sm:w-64 flex flex-col">
+      <div class="max-sm:px-4 p-3 gap-4 sm:w-72 flex flex-col">
         <div v-for="property in customProperties" :key="property.key">
           <PLabel>{{ property.label }}</PLabel>
           <PSwitchGroup

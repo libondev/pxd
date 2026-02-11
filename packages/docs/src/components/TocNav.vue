@@ -107,15 +107,15 @@ onMounted(() => {
       <li
         v-for="item in tocItems"
         :key="item.id"
-        class="toc-item border-l-2 border-transparent text-foreground-secondary"
+        class="toc-item border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900"
         :class="[
           `toc-level-${item.level}`,
-          { 'is-active border-l-primary bg-primary/10 text-primary': activeId === item.id },
+          { 'is-active border-l-primary bg-primary/10 text-primary!': activeId === item.id },
         ]"
       >
         <a
           :href="`#${item.id}`"
-          class="toc-link min-w-0 p-2 flex items-center truncate hover:bg-gray-alpha-100 hover:text-foreground motion-safe:transition-all"
+          class="toc-link min-w-0 p-2 flex items-center truncate motion-safe:transition-all"
           @click="scrollToHeading(item.id)"
         >
           {{ item.text }}
