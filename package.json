@@ -124,7 +124,8 @@
     "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default",
     "tailwind-merge": "catalog:default",
-    "tailwind-variants": "catalog:default"
+    "tailwind-variants": "catalog:default",
+    "@tanstack/virtual-core": "catalog:default"
   },
   "devDependencies": {
     "@tailwindcss/cli": "catalog:default",

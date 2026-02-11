@@ -27,6 +27,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.1.18
       version: 4.1.18
+    '@tanstack/virtual-core':
+      specifier: ^3.13.18
+      version: 3.13.18
     '@tsconfig/node22':
       specifier: ^22.0.5
       version: 22.0.5
@@ -181,6 +184,9 @@ importers:
       '@gdsicon/vue':
         specifier: catalog:default
         version: 1.0.8(vue@3.5.28(typescript@5.9.3))
+      '@tanstack/virtual-core':
+        specifier: catalog:default
+        version: 3.13.18
       dayjs:
         specifier: catalog:default
         version: 1.11.19
@@ -1384,6 +1390,9 @@ packages:
     resolution: {integrity: sha512-jVA+/UpKL1vRLg6Hkao5jldawNmRo7mQYrZtNHMIVpLfLhDml5nMRUo/8MwoX2vNXvnaXNNMedrMfMugAVX1nA==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
+
+  '@tanstack/virtual-core@3.13.18':
+    resolution: {integrity: sha512-Mx86Hqu1k39icq2Zusq+Ey2J6dDWTjDvEv43PJtRCoEYTLyfaPnxIQ6iy7YAOK0NV/qOEmZQ/uCufrppZxTgcg==}
 
   '@tsconfig/node22@22.0.5':
     resolution: {integrity: sha512-hLf2ld+sYN/BtOJjHUWOk568dvjFQkHnLNa6zce25GIH+vxKfvTgm3qpaH6ToF5tu/NN0IH66s+Bb5wElHrLcw==}
@@ -4575,6 +4584,8 @@ snapshots:
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
       vite: 8.0.0-beta.13(@types/node@25.2.2)(esbuild@0.25.9)(jiti@2.6.1)(terser@5.43.1)(yaml@2.8.2)
+
+  '@tanstack/virtual-core@3.13.18': {}
 
   '@tsconfig/node22@22.0.5': {}
 

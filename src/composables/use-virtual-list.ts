@@ -1,231 +1,111 @@
+import type { VirtualItem } from '@tanstack/virtual-core'
 import type { ComponentPublicInstance } from 'vue'
 
-import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import {
+  elementScroll,
+  observeElementOffset,
+  observeElementRect,
+  Virtualizer,
+} from '@tanstack/virtual-core'
+import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 
-export interface VirtualListProps {
+import type { MaybeElementRef } from '../types/shared'
+
+import { toValue } from '../utils/ref'
+
+export type { VirtualItem }
+
+export interface VirtualListOptions {
   dataKey?: string
-  listData: any[]
-  itemSize: number
-}
-
-interface Position {
-  index: number
-  height: number
-  top: number
-  bottom: number
+  listData?: any[]
+  itemSize?: number
+  overScan?: number
 }
 
 const DEFAULT_ITEM_SIZE = 50
-const BUFFER_SIZE = 2
+const DEFAULT_OVER_SCAN = 2
 
-export function useVirtualList<Props extends VirtualListProps>(props: Props) {
-  const containerRef = shallowRef<HTMLElement>()
-  const itemRefs = new Map<number | string, HTMLElement>()
+export function useVirtualList<Options extends VirtualListOptions>(
+  containerRef: MaybeElementRef<HTMLElement>,
+  options: Options,
+) {
+  const triggerVersion = shallowRef(0)
+  let cleanup: (() => void) | undefined
 
-  const start = ref(0)
-  const offset = ref(0)
-  const containerHeight = ref(0)
-  const positions = ref<Position[]>([])
-
-  const safeListData = computed(() => props.listData || [])
-  const safeItemSize = computed(() => props.itemSize || DEFAULT_ITEM_SIZE)
-
-  const renderCount = computed(() => {
-    if (containerHeight.value === 0 || safeItemSize.value === 0) {
-      return 0
+  function getItemKey(index: number): string | number {
+    if (options.dataKey) {
+      const item = options.listData?.[index]
+      const key = item?.[options.dataKey]
+      if (key !== undefined && key !== null) {
+        return key
+      }
     }
-    return Math.ceil(containerHeight.value / safeItemSize.value) + BUFFER_SIZE
+    return index
+  }
+
+  const virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
+    count: options.listData?.length ?? 0,
+    getScrollElement: () => toValue(containerRef) ?? null,
+    estimateSize: () => options.itemSize || DEFAULT_ITEM_SIZE,
+    getItemKey,
+    overscan: options.overScan ?? DEFAULT_OVER_SCAN,
+    observeElementRect,
+    observeElementOffset,
+    scrollToFn: elementScroll,
+    onChange: () => {
+      triggerVersion.value++
+    },
   })
 
-  const end = computed(() => Math.min(start.value + renderCount.value, safeListData.value.length))
-
-  const renderList = computed(() => safeListData.value.slice(start.value, end.value))
-
-  const listHeight = computed(() => {
-    if (positions.value.length === 0) {
-      return 0
-    }
-    return positions.value[positions.value.length - 1]?.bottom || 0
+  const virtualItems = computed<VirtualItem[]>(() => {
+    void triggerVersion.value
+    return virtualizer.getVirtualItems()
   })
 
-  const listStyle = computed(() => `transform: translate3d(0, ${offset.value}px, 0)`)
+  const totalSize = computed(() => {
+    void triggerVersion.value
+    return virtualizer.getTotalSize()
+  })
 
-  function setItemRef(el: Element | ComponentPublicInstance | null, key: number | string) {
-    if (el) {
-      itemRefs.set(key, el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el)
-    } else {
-      itemRefs.delete(key)
-    }
-  }
-
-  function clearItemRefs() {
-    itemRefs.clear()
-  }
-
-  function getStartIndex(scrollTop: number): number {
-    if (positions.value.length === 0) {
-      return 0
-    }
-
-    let low = 0
-    let high = positions.value.length - 1
-    let result = 0
-
-    while (low <= high) {
-      const mid = low + Math.floor((high - low) / 2)
-      const position = positions.value[mid]
-
-      if (!position) {
-        break
-      }
-
-      if (position.bottom <= scrollTop) {
-        low = mid + 1
-        result = low
-      } else {
-        high = mid - 1
-      }
-    }
-
-    return Math.min(result, positions.value.length - 1)
-  }
-
-  function handleScroll(ev: Event) {
-    const target = ev.target as HTMLElement
-    if (!target) {
-      return
-    }
-
-    const newStart = getStartIndex(target.scrollTop)
-    start.value = newStart
-    offset.value = newStart > 0 && positions.value[newStart] ? positions.value[newStart].top : 0
-  }
-
-  function initPositions() {
-    if (!safeListData.value.length) {
-      positions.value = []
-      return
-    }
-
-    positions.value = safeListData.value.map((_, index) => ({
-      index,
-      height: safeItemSize.value,
-      top: index * safeItemSize.value,
-      bottom: (index + 1) * safeItemSize.value,
-    }))
-  }
-
-  function updatePositions() {
-    if (!renderList.value.length || positions.value.length === 0) {
-      return
-    }
-
-    let firstChangedIndex = -1
-    const changes: { index: number; newHeight: number }[] = []
-
-    renderList.value.forEach((_, i) => {
-      const index = start.value + i
-      const itemData = props.listData[index]
-      const itemEl = itemRefs.get(itemData[props.dataKey!])
-      const position = positions.value[index]
-
-      if (!itemEl || !position) {
-        return
-      }
-
-      const rect = itemEl.getBoundingClientRect()
-      const newHeight = rect.height
-
-      if (Math.abs(position.height - newHeight) > 1) {
-        changes.push({ index, newHeight })
-        if (firstChangedIndex === -1 || index < firstChangedIndex) {
-          firstChangedIndex = index
-        }
-      }
-    })
-
-    if (changes.length === 0) {
-      return
-    }
-
-    changes.forEach(({ index, newHeight }) => {
-      if (positions.value[index]) {
-        positions.value[index].height = newHeight
-      }
-    })
-
-    if (firstChangedIndex !== -1) {
-      for (let i = firstChangedIndex; i < positions.value.length; i++) {
-        const position = positions.value[i]
-        if (!position) {
-          continue
-        }
-
-        if (i === 0) {
-          position.top = 0
-        } else {
-          const prevPosition = positions.value[i - 1]
-          if (prevPosition) {
-            position.top = prevPosition.bottom
-          }
-        }
-        position.bottom = position.top + position.height
-      }
-    }
-  }
-
-  function updateContainerHeight() {
-    if (!containerRef.value) {
-      return
-    }
-
-    containerHeight.value = containerRef.value.clientHeight
-  }
-
-  const unwatchList = watch(
-    () => props.listData,
+  watch(
+    () => [options.listData, options.itemSize, options.dataKey] as const,
     () => {
-      clearItemRefs()
-      initPositions()
-    },
-    { immediate: true },
-  )
-
-  const unwatchRenderList = watch(
-    () => renderList.value,
-    () => {
-      updatePositions()
+      virtualizer.setOptions({
+        ...virtualizer.options,
+        count: options.listData?.length ?? 0,
+        estimateSize: () => options.itemSize ?? DEFAULT_ITEM_SIZE,
+        getItemKey,
+      })
+      virtualizer._willUpdate()
     },
   )
-
-  function stop() {
-    containerRef.value?.removeEventListener('scroll', handleScroll)
-    unwatchRenderList()
-    clearItemRefs()
-    unwatchList()
-  }
 
   onMounted(() => {
-    if (!containerRef.value) {
-      return
-    }
-
-    updateContainerHeight()
-    containerRef.value.addEventListener('scroll', handleScroll, { passive: true })
+    virtualizer._willUpdate()
+    cleanup = virtualizer._didMount()
   })
 
   onUnmounted(() => {
-    stop()
+    cleanup?.()
   })
 
+  function measureElement(el: Element | ComponentPublicInstance | null) {
+    if (!el) {
+      virtualizer.measureElement(null)
+      return
+    }
+
+    const htmlEl = el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el
+    virtualizer.measureElement(htmlEl)
+  }
+
   return {
-    containerRef,
-    renderList,
-    listHeight,
-    listStyle,
-    stop,
-    setItemRef,
-    updateContainerHeight,
-    getStartIndex,
+    virtualItems,
+    totalSize,
+    measureElement,
+    scrollToIndex: virtualizer.scrollToIndex.bind(virtualizer),
+    scrollToOffset: virtualizer.scrollToOffset.bind(virtualizer),
+    scrollBy: virtualizer.scrollBy.bind(virtualizer),
+    getVirtualizer: () => virtualizer,
   }
 }

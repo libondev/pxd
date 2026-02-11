@@ -1,5 +1,3 @@
-export interface VirtualListProps {
-  dataKey?: string
-  listData?: any[]
-  itemSize?: number
-}
+import type { VirtualListOptions } from '../../composables/use-virtual-list'
+
+export interface VirtualListProps extends VirtualListOptions {}

@@ -1,29 +1,50 @@
 <script setup lang="ts">
 import { useVirtualList } from '../../composables/use-virtual-list'
 import type { VirtualListProps } from './types'
+import { shallowRef } from 'vue'
 
 const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
-  listData: () => [],
   itemSize: 50,
+  overScan: 2,
+  listData: () => [],
 })
 
-const { containerRef, renderList, listHeight, listStyle, setItemRef } = useVirtualList(props)
+const containerRef = shallowRef<HTMLElement>()
+
+const {
+  totalSize,
+  virtualItems,
+  measureElement,
+  getVirtualizer,
+  scrollToIndex,
+  scrollToOffset,
+  scrollBy,
+} = useVirtualList(containerRef, props)
+
+defineExpose({
+  totalSize,
+  virtualItems,
+  getVirtualizer,
+  scrollToIndex,
+  scrollToOffset,
+  scrollBy,
+})
 </script>
 
 <template>
   <div ref="containerRef" class="pxd-virtual-list relative overflow-auto">
-    <div class="pxd-virtual-list--content top-0 absolute z-0 w-full" :style="listStyle">
+    <div class="pxd-virtual-list--content relative w-full" :style="{ height: `${totalSize}px` }">
       <div
-        v-for="item in renderList"
-        :key="item[dataKey]"
-        :ref="(el) => setItemRef(el, item[dataKey])"
-        class="pxd-virtual-list--item w-full"
+        v-for="virtualItem in virtualItems"
+        :key="virtualItem.key as string"
+        :ref="(el) => measureElement(el)"
+        :data-index="virtualItem.index"
+        class="pxd-virtual-list--item left-0 top-0 absolute w-full"
+        :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
-        <slot :item="item" />
+        <slot :item="listData[virtualItem.index]" :virtual-item="virtualItem" />
       </div>
     </div>
-
-    <div class="pxd-virtual-list--placeholder" :style="`height:${listHeight}px`" />
   </div>
 </template>
