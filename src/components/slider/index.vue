@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'

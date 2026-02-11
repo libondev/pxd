@@ -9,7 +9,7 @@ import { useOutsideClick } from '../../composables/use-outside-click'
 import { debounce } from '../../utils/debounce'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import PTeleport from '../teleport/index.vue'
 import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 

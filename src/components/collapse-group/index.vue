@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { getFallbackValue } from '../../utils/get'
 import type { CollapseGroupProps } from '../collapse/types'

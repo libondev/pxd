@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { BadgeProps } from './types'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { badgeVariant } from './cn'
 
 defineOptions({

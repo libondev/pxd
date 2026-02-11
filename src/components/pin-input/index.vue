@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef, watch } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { computed, shallowRef, watch } from 'vue'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { pinInputVariant } from './cn'

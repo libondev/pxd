@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { SwitchGroupEmits, SwitchGroupProps } from '../switch/types'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { provideUniqueId } from '../../composables/use-unique-id-context'
 import { provideSwitchGroupContext, provideSwitchGroupModelValue } from '../../contexts/switch'

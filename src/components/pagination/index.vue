@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import type { PaginationProps } from './types'
 
 defineOptions({

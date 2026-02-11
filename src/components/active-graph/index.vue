@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useDelayChange } from '../../composables/use-delay-change'
 import { getAllDatesBetween } from '../../utils/date'
 import { getCssUnitValue } from '../../utils/format'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import PSpinner from '../spinner/index.vue'
 import { buttonVariants } from './cn'

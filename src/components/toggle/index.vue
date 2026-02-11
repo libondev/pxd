@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'

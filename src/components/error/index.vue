@@ -3,7 +3,7 @@ import type { ErrorProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { isExternalLink } from '../../utils/format'
 import { errorVariant } from './cn'
 

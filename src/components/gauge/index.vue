@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../composables/use-config-provider-context'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { getColorByThreshold, getFallbackValue } from '../../utils/get'
 import type { GaugeProps } from './types'
 
