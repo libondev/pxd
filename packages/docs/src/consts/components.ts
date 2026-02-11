@@ -32,7 +32,7 @@ export const asideMenus = [
         path: '/guide/components',
       },
       {
-        label: 'Icons Overview',
+        label: 'Icons',
         path: '/guide/icons',
       },
       {

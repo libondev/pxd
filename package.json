@@ -97,7 +97,7 @@
     "dev:lib": "unbuild --stub",
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports build:core build:docs",
-    "build:lib": "run-s gen-volar-dts update-exports build:core build:style",
+    "build:lib": "run-s update-exports build:core build:style",
     "build:core": "mkdist -d --src=src --ext=js --format=esm",
     "build:only": "run-s build:core build:docs",
     "build:docs": "pnpm --filter docs build",
@@ -120,12 +120,12 @@
   "dependencies": {
     "@floating-ui/dom": "catalog:default",
     "@gdsicon/vue": "catalog:default",
+    "@tanstack/virtual-core": "catalog:default",
     "dayjs": "catalog:default",
     "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default",
     "tailwind-merge": "catalog:default",
-    "tailwind-variants": "catalog:default",
-    "@tanstack/virtual-core": "catalog:default"
+    "tailwind-variants": "catalog:default"
   },
   "devDependencies": {
     "@tailwindcss/cli": "catalog:default",
