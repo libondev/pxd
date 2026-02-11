@@ -1,18 +1,21 @@
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 
 import { isNotNil } from 'es-toolkit'
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { computed, onBeforeUnmount, watch, shallowRef } from 'vue'
 
 import type { Nullable } from '../types/shared/utils'
 
 import { toArray } from '../utils/format'
 import { toValue, unrefElement } from '../utils/ref'
 
-export const useIntersectionObserver = createObserver(globalThis.IntersectionObserver)
+export const useIntersectionObserver = createObserver(
+  globalThis.IntersectionObserver,
+  'IntersectionObserver',
+)
 
-export const useMutationObserver = createObserver(globalThis.MutationObserver)
+export const useMutationObserver = createObserver(globalThis.MutationObserver, 'MutationObserver')
 
-export const useResizeObserver = createObserver(globalThis.ResizeObserver)
+export const useResizeObserver = createObserver(globalThis.ResizeObserver, 'ResizeObserver')
 
 type Observers = IntersectionObserver | ResizeObserver | MutationObserver
 type Constructor = typeof IntersectionObserver | typeof ResizeObserver | typeof MutationObserver
@@ -22,48 +25,52 @@ type TargetRef =
   | MaybeRefOrGetter<Nullable<HTMLElement>[]>
 
 interface ObserverResults<T extends Observers> {
-  observer: T | undefined
+  observer: Ref<T | undefined>
   stop: () => void
 }
 
 function createObserver(
   ObserverConstructor: typeof IntersectionObserver,
+  type: 'IntersectionObserver',
 ): (
   target: TargetRef,
   callback: IntersectionObserverCallback,
-  options?: MaybeRefOrGetter<IntersectionObserverInit>,
+  options?: IntersectionObserverInit,
 ) => ObserverResults<IntersectionObserver>
 function createObserver(
   ObserverConstructor: typeof MutationObserver,
+  type: 'MutationObserver',
 ): (
   target: TargetRef,
   callback: MutationCallback,
-  options?: MaybeRefOrGetter<MutationObserverInit>,
+  options?: MutationObserverInit,
 ) => ObserverResults<MutationObserver>
 function createObserver(
   ObserverConstructor: typeof ResizeObserver,
+  type: 'ResizeObserver',
 ): (
   target: TargetRef,
   callback: ResizeObserverCallback,
-  options?: MaybeRefOrGetter<ResizeObserverOptions>,
+  options?: ResizeObserverOptions,
 ) => ObserverResults<ResizeObserver>
-function createObserver(ObserverConstructor: Constructor) {
+function createObserver(
+  ObserverConstructor: Constructor,
+  type: 'IntersectionObserver' | 'MutationObserver' | 'ResizeObserver',
+) {
   function observerWrapper(
     target: TargetRef,
     callback: IntersectionObserverCallback | ResizeObserverCallback | MutationCallback,
-    options?: MaybeRefOrGetter<
-      IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit
-    >,
+    options?: IntersectionObserverInit | ResizeObserverOptions | MutationObserverInit,
   ) {
-    let observer: Observers | undefined
+    const observer = shallowRef<Observers | undefined>()
 
     const targets = computed<HTMLElement[]>(() =>
       toArray(toValue(target)).map(unrefElement).filter(isNotNil),
     )
 
     const unwatch = watch(
-      () => [targets.value],
-      ([newTargets]) => {
+      targets,
+      (newTargets) => {
         if (typeof window === 'undefined' || typeof ObserverConstructor === 'undefined') {
           return
         }
@@ -74,25 +81,25 @@ function createObserver(ObserverConstructor: Constructor) {
           return
         }
 
-        if (ObserverConstructor.name === 'IntersectionObserver') {
-          observer = new (ObserverConstructor as typeof IntersectionObserver)(
+        if (type === 'IntersectionObserver') {
+          observer.value = new (ObserverConstructor as typeof IntersectionObserver)(
             callback as IntersectionObserverCallback,
             options as IntersectionObserverInit,
           )
-          newTargets.forEach((el) => observer!.observe(el))
-        } else if (ObserverConstructor.name === 'MutationObserver') {
-          observer = new (ObserverConstructor as typeof MutationObserver)(
+          newTargets.forEach((el) => observer.value!.observe(el))
+        } else if (type === 'MutationObserver') {
+          observer.value = new (ObserverConstructor as typeof MutationObserver)(
             callback as MutationCallback,
           )
           newTargets.forEach((el) =>
-            (observer as MutationObserver).observe(el, options as MutationObserverInit),
+            (observer.value as MutationObserver).observe(el, options as MutationObserverInit),
           )
-        } else {
-          observer = new (ObserverConstructor as typeof ResizeObserver)(
+        } else if (type === 'ResizeObserver') {
+          observer.value = new (ObserverConstructor as typeof ResizeObserver)(
             callback as ResizeObserverCallback,
           )
           newTargets.forEach((el) =>
-            (observer as ResizeObserver).observe(el, options as ResizeObserverOptions),
+            (observer.value as ResizeObserver).observe(el, options as ResizeObserverOptions),
           )
         }
       },
@@ -103,12 +110,12 @@ function createObserver(ObserverConstructor: Constructor) {
     )
 
     function cleanup() {
-      if (!observer) {
+      if (!observer.value) {
         return
       }
 
-      observer.disconnect()
-      observer = undefined
+      observer.value.disconnect()
+      observer.value = undefined
     }
 
     function stop() {
