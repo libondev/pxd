@@ -10,11 +10,14 @@
   "oxc.unusedDisableDirectives": "deny",
   "oxc.fmt.configPath": ".oxfmtrc.json",
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "never",
     "source.organizeImports": "never"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "tailwindCSS.classAttributes": [
     "class",

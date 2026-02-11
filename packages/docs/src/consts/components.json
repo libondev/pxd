@@ -176,6 +176,10 @@
     "name": "progress"
   },
   {
+    "camelized": "Project Banner",
+    "name": "project-banner"
+  },
+  {
     "camelized": "Radio",
     "name": "radio"
   },
