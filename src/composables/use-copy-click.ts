@@ -1,5 +1,7 @@
 import { shallowRef } from 'vue'
 
+import { isServer } from '../utils/is'
+
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
   let copyPromise: Promise<void> | null = null
@@ -7,6 +9,10 @@ export function useCopyClick() {
   const isCopied = shallowRef(false)
 
   async function copyText(text: string | undefined = '') {
+    if (isServer()) {
+      return
+    }
+
     if (copyPromise) {
       return copyPromise
     }

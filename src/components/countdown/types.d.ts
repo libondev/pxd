@@ -1,6 +1,6 @@
-import type { UseCountdownOptions } from '../../composables/use-countdown'
+import type { CountdownOptions } from '../../composables/use-countdown'
 
-export interface CountdownProps extends UseCountdownOptions {
+export interface CountdownProps extends CountdownOptions {
   format?: string
 }
 

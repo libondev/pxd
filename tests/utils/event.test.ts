@@ -4,12 +4,10 @@ import { cachedOff, cachedOn } from '../../src/utils/event'
 
 describe('event.ts memory leak prevention', () => {
   let container: HTMLDivElement
-  // let originalDocumentHead: HTMLElement
 
   beforeEach(() => {
     container = document.createElement('div')
     document.body.appendChild(container)
-    // originalDocumentHead = document.head
   })
 
   afterEach(() => {

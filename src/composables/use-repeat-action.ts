@@ -26,9 +26,9 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   const {
     action,
     disabled,
-    finalInterval = 1000 / 17, // 60fps
+    finalInterval = 1000 / 16.6, // 60fps
     initialInterval = 680,
-    accelerationDuration = 2000,
+    accelerationDuration = 1500,
   } = typeof actionOrOptions === 'function' ? { action: actionOrOptions } : actionOrOptions
 
   let timer: ReturnType<typeof setTimeout> | null = null
