@@ -182,8 +182,7 @@ function handleMove(ev: PointerEvent) {
   scheduleUpdate()
 }
 
-function endDragging(ev: PointerEvent) {
-  console.log('endDragging', ev, ev.target)
+function endDragging() {
   isDragging = false
   lastClientX = null
   activeThumb.value = null
