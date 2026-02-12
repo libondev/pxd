@@ -15,7 +15,6 @@ defineOptions({
 })
 
 const props = defineProps<RadioProps>()
-
 const emits = defineEmits<RadioEmits>()
 
 const radioVariant = tv({
@@ -72,7 +71,7 @@ const modelValue = useModelValue(
 
 const isChecked = computed(() => modelValue.value === props.value)
 
-const computedDisabled = computed(() => radioGroupContext?.props.disabled ?? props.disabled)
+const computedDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return radioVariant({

@@ -84,7 +84,7 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => checkboxGroupContext?.props.disabled ?? props.disabled)
+const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return checkboxVariant({
