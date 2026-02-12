@@ -17,9 +17,11 @@ const loadingStatus = shallowRef<AvatarStatus>('idle')
 
 const avatarGroupContext = useAvatarGroupContext()
 
-const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext?.size, '32px'))
+const computedSize = computed(() =>
+  getCssUnitValue(props.size || avatarGroupContext?.props.size, '32px'),
+)
 
-const hideAvatar = computed(
+const isHideAvatar = computed(
   () => !props.src || props.placeholder || loadingStatus.value === 'error',
 )
 
@@ -55,7 +57,7 @@ defineExpose({
   >
     <slot>
       <img
-        v-if="!hideAvatar"
+        v-if="!isHideAvatar"
         :src="src"
         :alt="alt"
         loading="lazy"

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import type { AvatarGroupProps } from '../avatar/types'
+import type { AvatarGroupProps } from './types'
 import { computed } from 'vue'
 import { provideAvatarGroupContext } from '../../contexts/avatar'
 import PAvatar from '../avatar/index.vue'
 
 defineOptions({
   name: 'PAvatarGroup',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<AvatarGroupProps>(), {
@@ -21,11 +22,11 @@ const slicedOptions = computed(() => {
   return options.slice(0, maxCount)
 })
 
-provideAvatarGroupContext(props)
+provideAvatarGroupContext({ props })
 </script>
 
 <template>
-  <div class="pxd-avatar-group flex flex-wrap items-center">
+  <div class="pxd-avatar-group flex flex-wrap items-center" v-bind="$attrs">
     <PAvatar
       v-for="(option, index) in slicedOptions"
       :key="index"

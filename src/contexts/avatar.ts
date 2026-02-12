@@ -1,8 +1,12 @@
-import type { AvatarGroupProps } from '../components/avatar/types'
+import type { AvatarGroupProps } from '../components/avatar-group/types'
 
 import { createContext } from '../utils/context'
 
-export const [provideAvatarGroupContext, useAvatarGroupContext] = createContext<AvatarGroupProps>(
+export interface AvatarGroupContext {
+  props: AvatarGroupProps
+}
+
+export const [provideAvatarGroupContext, useAvatarGroupContext] = createContext<AvatarGroupContext>(
   'AvatarGroup',
   null,
 )

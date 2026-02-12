@@ -6,6 +6,7 @@ type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | n
 
 /**
  * @param providerComponentName - The name of the component providing the context.
+ * @param fallbackValue - If the component is allowed to be used alone, you need to pass in null manually, otherwise leave it blank.
  */
 export function createContext<ContextValue>(
   providerComponentName: string,
