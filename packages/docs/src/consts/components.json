@@ -240,6 +240,10 @@
     "name": "time-picker"
   },
   {
+    "camelized": "Toggle Button",
+    "name": "toggle-button"
+  },
+  {
     "camelized": "Toggle",
     "name": "toggle"
   },

@@ -18,6 +18,11 @@
           "configPath": "./.oxfmtrc.json"
         }
       }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "tv"],
+      }
     }
   },
   "languages": {
