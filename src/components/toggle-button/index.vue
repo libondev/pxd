@@ -4,10 +4,7 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { tv } from 'tailwind-variants'
-import {
-  useToggleButtonGroupContext,
-  useToggleButtonGroupModelValue,
-} from '../../contexts/toggle-button'
+import { useToggleButtonGroupContext } from '../../contexts/toggle-button'
 
 defineOptions({
   name: 'PToggleButton',
@@ -60,33 +57,17 @@ const toggleButtonVariant = tv({
 })
 
 const toggleButtonGroupContext = useToggleButtonGroupContext()
-const toggleButtonGroupModelValue = useToggleButtonGroupModelValue()
 
-const modelValue = useModelValue(props, emits)
+const modelValue = useModelValue(
+  toggleButtonGroupContext?.props ?? props,
+  toggleButtonGroupContext?.emits ?? emits,
+)
 
 const configProvider = useConfigProvider()
 
-const computedVariant = computed(() => props.variant || toggleButtonGroupContext?.variant)
-const computedDisabled = computed(() => props.disabled || toggleButtonGroupContext?.disabled)
-
-const computedClass = computed(() => {
-  return toggleButtonVariant({
-    size: props.size || configProvider.size,
-    checked: isChecked.value,
-    variant: computedVariant.value,
-    disabled: computedDisabled.value,
-  })
-})
+const computedDisabled = computed(() => props.disabled || toggleButtonGroupContext?.props.disabled)
 
 const isChecked = computed(() => {
-  if (toggleButtonGroupModelValue) {
-    if (Array.isArray(toggleButtonGroupModelValue.value)) {
-      return toggleButtonGroupModelValue.value.includes(props.value)
-    }
-
-    return toggleButtonGroupModelValue.value === props.value
-  }
-
   if (Array.isArray(modelValue.value)) {
     return modelValue.value.includes(props.value)
   }
@@ -98,19 +79,27 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
+const computedClass = computed(() => {
+  return toggleButtonVariant({
+    size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
+    checked: isChecked.value,
+    variant: props.variant || toggleButtonGroupContext?.props.variant,
+    disabled: computedDisabled.value,
+  })
+})
+
 function onToggleClick() {
-  const _modelValue = toggleButtonGroupModelValue || modelValue
   const newCheckedState = !isChecked.value
 
-  if (Array.isArray(_modelValue.value)) {
-    _modelValue.value = newCheckedState
-      ? [..._modelValue.value, props.value]
-      : _modelValue.value.filter((v) => v !== props.value)
+  if (Array.isArray(modelValue.value)) {
+    modelValue.value = newCheckedState
+      ? [...modelValue.value, props.value]
+      : modelValue.value.filter((v) => v !== props.value)
 
     return
   }
 
-  _modelValue.value = newCheckedState
+  modelValue.value = newCheckedState
 }
 </script>
 
@@ -121,8 +110,8 @@ function onToggleClick() {
     :data-state="isChecked ? 'on' : 'off'"
     :disabled="computedDisabled"
     :class="computedClass"
-    @click="onToggleClick"
     v-bind="$attrs"
+    @click="onToggleClick"
   >
     <slot>
       {{ label }}

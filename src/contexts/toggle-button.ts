@@ -1,13 +1,16 @@
-import type { Ref } from 'vue'
+import type { EmitFn } from 'vue'
 
-import type { ToggleButtonGroupProps } from '../components/toggle-button/types'
-import type { ComponentValue } from '../types/shared/props'
+import type {
+  ToggleButtonGroupProps,
+  ToggleButtonGroupEmits,
+} from '../components/toggle-button-group/types'
 
 import { createContext } from '../utils/context'
 
-export const [provideToggleButtonGroupContext, useToggleButtonGroupContext] =
-  createContext<ToggleButtonGroupProps>('ToggleButtonGroup', null)
+export interface ToggleButtonGroupContext {
+  props: ToggleButtonGroupProps
+  emits: EmitFn<ToggleButtonGroupEmits>
+}
 
-export const [provideToggleButtonGroupModelValue, useToggleButtonGroupModelValue] = createContext<
-  Ref<ComponentValue | ComponentValue[]>
->('ToggleButtonGroupModelValue', null)
+export const [provideToggleButtonGroupContext, useToggleButtonGroupContext] =
+  createContext<ToggleButtonGroupContext>('ToggleButtonGroup', null)

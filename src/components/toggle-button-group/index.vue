@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from '../toggle-button/types'
+import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { useModelValue } from '../../composables/use-model-value'
 import PStack from '../stack/index.vue'
 import PToggleButton from '../toggle-button/index.vue'
 import { computed } from 'vue'
 import { tv } from 'tailwind-variants'
-import {
-  provideToggleButtonGroupContext,
-  provideToggleButtonGroupModelValue,
-} from '../../contexts/toggle-button'
+import { provideToggleButtonGroupContext } from '../../contexts/toggle-button'
 
 defineOptions({
   name: 'PToggleButtonGroup',
@@ -25,7 +21,6 @@ const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {
 })
 const emits = defineEmits<ToggleButtonGroupEmits>()
 
-const modelValue = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 
 const toggleButtonGroupVariant = tv({
@@ -55,8 +50,7 @@ const computedClass = computed(() =>
   }),
 )
 
-provideToggleButtonGroupContext(props)
-provideToggleButtonGroupModelValue(modelValue)
+provideToggleButtonGroupContext({ props, emits })
 </script>
 
 <template>
@@ -65,19 +59,12 @@ provideToggleButtonGroupModelValue(modelValue)
     :class="computedClass"
     aria-label="Toggle Button Group"
     align="center"
-    :data-gap="gap"
     :gap="gap"
+    :data-gap="gap"
     v-bind="$attrs"
   >
     <slot>
-      <PToggleButton
-        v-for="option in options"
-        :key="option.value"
-        :size="computedSize"
-        :label="option.label"
-        :value="option.value"
-        :disabled="option.disabled"
-      />
+      <PToggleButton v-for="option in options" :key="option.value" v-bind="option" />
     </slot>
   </PStack>
 </template>
