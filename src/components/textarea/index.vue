@@ -96,7 +96,6 @@ function onInputChange(event: Event) {
       :cols="cols"
       :readonly="readonly"
       :disabled="disabled"
-      :required="required"
       :autofocus="autofocus"
       :minlength="minlength"
       :maxlength="maxlength"

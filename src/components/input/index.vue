@@ -220,7 +220,6 @@ defineExpose({
       :value="modelValue"
       :readonly="readonly"
       :disabled="disabled"
-      :required="required"
       :inputmode="inputmode"
       :minlength="minlength"
       :maxlength="maxlength"

@@ -4,7 +4,6 @@ export interface CheckboxProps {
   label?: ComponentLabel
   value?: ComponentValue
   disabled?: boolean
-  required?: boolean
   modelValue?: ComponentValue | ComponentValue[]
   indeterminate?: boolean
 }

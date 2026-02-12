@@ -8,7 +8,6 @@ export interface PinInputProps {
   length?: number
   readonly?: boolean
   disabled?: boolean
-  required?: boolean
   modelValue?: string
   placeholder?: string
   inputMode?: HTMLAttributes['inputmode']

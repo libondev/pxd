@@ -299,7 +299,6 @@ defineExpose({
         autocapitalize="off"
         :readonly="readonly"
         :disabled="disabled"
-        :required="required"
         :placeholder="placeholder"
         :inputmode="computedInputMode"
         @paste="onInputPastedValue"

@@ -8,14 +8,12 @@ export interface ChoiceboxProps {
   label?: ComponentLabel
   value?: ComponentValue
   disabled?: boolean
-  required?: boolean
   description?: string
 }
 
 export interface ChoiceboxGroupProps {
   label?: ComponentLabel
   multiple?: boolean
-  required?: boolean
   disabled?: boolean
   options?: Option[]
   modelValue?: ComponentValue | ComponentValue[]

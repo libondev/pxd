@@ -4,12 +4,10 @@ export interface SwitchProps {
   label?: ComponentLabel
   value: string | number
   disabled?: boolean
-  required?: boolean
 }
 
 export interface SwitchGroupProps {
   disabled?: boolean
-  required?: boolean
   fullWidth?: boolean
   size?: ComponentSize
   options?: ComponentOption[]

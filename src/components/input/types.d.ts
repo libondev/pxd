@@ -11,7 +11,6 @@ export interface InputProps {
   readonly?: boolean
   disabled?: boolean
   password?: boolean
-  required?: boolean
   autofocus?: boolean
   inputType?: HTMLInputElement['type']
   inputmode?: HTMLAttributes['inputmode']

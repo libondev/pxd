@@ -74,8 +74,7 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.disabled)
-const computedRequired = computed(() => props.required || checkboxGroupContext?.required)
+const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return checkboxVariant({
@@ -130,7 +129,6 @@ defineExpose({
       type="checkbox"
       class="peer smallest"
       :checked="isChecked"
-      :required="computedRequired"
       :disabled="computedDisabled"
       @change="onInputChange"
     />

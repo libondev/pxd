@@ -71,7 +71,6 @@ const isChecked = computed(
   () => (radioGroupContext?.modelValue ?? modelValue.value) === props.value,
 )
 const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
-const computedRequired = computed(() => props.required || radioGroupContext?.required)
 
 const computedClasses = computed(() => {
   return radioVariant({
@@ -101,7 +100,6 @@ function onChangeValue() {
       class="peer smallest"
       :checked="isChecked"
       :name="radioGroupName"
-      :required="computedRequired"
       :disabled="computedDisabled"
       @change="onChangeValue"
     />

@@ -37,7 +37,6 @@ const switchGroupModelValue = useSwitchGroupModelValue()
 
 const isChecked = computed(() => switchGroupModelValue.value === props.value)
 const computedDisabled = computed(() => props.disabled || switchGroupContext.disabled)
-const computedRequired = computed(() => props.required || switchGroupContext.required)
 
 const computedClasses = computed(() => {
   return switchVariant({ disabled: computedDisabled.value })
@@ -67,7 +66,6 @@ function onSwitchFocusIn() {
       :checked="isChecked"
       :name="switchGroupName"
       :disabled="computedDisabled"
-      :required="computedRequired"
     />
 
     <div :class="computedClasses" @focusin="onSwitchFocusIn">
