@@ -5,10 +5,13 @@ import { createContext } from '../utils/context'
 
 export const injectionKey = 'ConfigProvider'
 
-export const [provideConfigProvider, useConfigProvider] = createContext<
-  Required<ConfigProviderProps>
->(injectionKey, {
-  size: 'md',
-  locale: enUS,
-  popoverShowTransition: true,
-})
+export interface ConfigProviderContext extends Required<ConfigProviderProps> {}
+
+export const [provideConfigProvider, useConfigProvider] = createContext<ConfigProviderContext>(
+  injectionKey,
+  {
+    size: 'md',
+    locale: enUS,
+    popoverShowTransition: true,
+  },
+)
