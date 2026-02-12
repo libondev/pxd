@@ -24,36 +24,43 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 const emits = defineEmits<CheckboxEmits>()
 
 const checkboxVariant = tv({
-  slots: {
-    wrapper:
-      'pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed',
-    inner:
-      'pxd-checkbox--inner size-4 inline-flex shrink-0 transform-gpu p-0.5 items-center justify-center overflow-hidden rounded-sm border peer-focus-ring motion-safe:transition-colors',
-  },
+  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 items-center justify-center peer-focus-ring transform-gpu overflow-hidden rounded-sm border motion-safe:transition-colors',
   variants: {
     checked: {
-      true: {
-        inner: 'border-primary bg-primary',
-      },
-      false: {
-        inner: 'border-gray-alpha-400 bg-background-100 group-hover/checkbox:bg-gray-200',
-      },
+      true: '',
+      false: '',
     },
     disabled: {
-      true: {
-        wrapper: 'is-disabled text-gray-500',
-        inner: '',
-      },
-      false: {
-        wrapper: '',
-        inner: '',
-      },
+      true: '',
+      false: '',
     },
   },
   compoundVariants: [
-    { checked: true, disabled: true, inner: 'border-gray-600 bg-gray-600' },
-    { checked: false, disabled: true, inner: 'border-gray-500 bg-gray-100' },
+    {
+      checked: true,
+      disabled: false,
+      class: 'bg-primary border-primary',
+    },
+    {
+      checked: true,
+      disabled: true,
+      class: 'bg-gray-600 border-gray-600',
+    },
+    {
+      checked: false,
+      disabled: false,
+      class: 'bg-background-100 border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
+    },
+    {
+      checked: false,
+      disabled: true,
+      class: 'bg-gray-100 border-gray-500',
+    },
   ],
+  defaultVariants: {
+    checked: false,
+    disabled: false,
+  },
 })
 
 const uniqueId = getUniqueId()
@@ -106,7 +113,8 @@ function onInputChange(event: Event) {
     role="checkbox"
     :aria-checked="isChecked"
     :data-disabled="computedDisabled"
-    :class="computedClasses.wrapper()"
+    class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
+    :class="{ 'is-disabled text-gray-500': computedDisabled }"
     :for="uniqueId"
     v-bind="$attrs"
   >
@@ -120,7 +128,7 @@ function onInputChange(event: Event) {
       @change="onInputChange"
     />
 
-    <span aria-hidden="true" :class="computedClasses.inner()">
+    <span aria-hidden="true" :class="computedClasses">
       <CheckIcon v-if="isChecked" class="size-3 pointer-events-none text-gray-100" />
       <MinusIcon v-else-if="indeterminate" class="size-3 pointer-events-none" />
       <span v-else class="size-3 pointer-events-none" />
