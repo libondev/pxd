@@ -80,6 +80,7 @@ declare module 'vue' {
     PTimePicker: (typeof import('pxd/components/time-picker'))['default']
     PToggle: (typeof import('pxd/components/toggle'))['default']
     PToggleButton: (typeof import('pxd/components/toggle-button'))['default']
+    PToggleButtonGroup: (typeof import('pxd/components/toggle-button-group'))['default']
     PTooltip: (typeof import('pxd/components/tooltip'))['default']
     PVirtualList: (typeof import('pxd/components/virtual-list'))['default']
   }

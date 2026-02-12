@@ -1,3 +1,5 @@
+import { isNil } from 'es-toolkit'
+
 import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
 
@@ -7,7 +9,7 @@ export function getResponsiveValue<V extends string | number>(
   valueSetter: (acc: Record<string, V>, bp: any, v: V) => void,
 ) {
   const formatted = Object.assign(
-    xsValue ? { xs: xsValue } : {},
+    isNil(xsValue) ? {} : { xs: xsValue },
     typeof prop === 'object' ? prop : {},
   )
 

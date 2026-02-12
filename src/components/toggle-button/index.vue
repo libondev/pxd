@@ -4,6 +4,10 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { tv } from 'tailwind-variants'
+import {
+  useToggleButtonGroupContext,
+  useToggleButtonGroupModelValue,
+} from '../../contexts/toggle-button'
 
 defineOptions({
   name: 'PToggleButton',
@@ -21,7 +25,7 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 const emits = defineEmits<ToggleButtonEmits>()
 
 const toggleButtonVariant = tv({
-  base: 'pxd-toggle-button gap-2 outline-none shrink-0 border appearance-none font-medium inline-flex items-center justify-center motion-safe:transition-colors [&_svg]:pointer-events-none',
+  base: 'pxd-toggle-button gap-2 outline-none shrink-0 border bg-background-100 appearance-none font-medium inline-flex group-data-[gap=0]/toggle-button-group:first:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:border-l-transparent items-center justify-center motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
       sm: 'h-7.5 px-2 text-sm rounded-md',
@@ -29,11 +33,11 @@ const toggleButtonVariant = tv({
       lg: 'h-10 px-3 text-base rounded-lg',
     },
     variant: {
-      default: 'border-transparent',
+      ghost: 'border-transparent',
       outline: 'border-input',
     },
     disabled: {
-      true: 'cursor-not-allowed bg-gray-100',
+      true: 'cursor-not-allowed',
       false: 'hover:bg-background-hover data-[state=on]:bg-background-active',
     },
     checked: {
@@ -42,32 +46,47 @@ const toggleButtonVariant = tv({
     },
   },
   compoundVariants: [
+    { checked: true, disabled: true, class: 'bg-gray-200' },
     { checked: false, disabled: true, class: 'text-gray-400' },
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
-    { variant: 'outline', checked: true, disabled: true, class: 'border-gray-500' },
+    { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100 border-gray-500' },
   ],
   defaultVariants: {
     size: 'md',
-    variant: 'default',
+    variant: 'ghost',
     checked: false,
     disabled: false,
   },
 })
 
+const toggleButtonGroupContext = useToggleButtonGroupContext()
+const toggleButtonGroupModelValue = useToggleButtonGroupModelValue()
+
 const modelValue = useModelValue(props, emits)
 
 const configProvider = useConfigProvider()
+
+const computedVariant = computed(() => props.variant || toggleButtonGroupContext?.variant)
+const computedDisabled = computed(() => props.disabled || toggleButtonGroupContext?.disabled)
 
 const computedClass = computed(() => {
   return toggleButtonVariant({
     size: props.size || configProvider.size,
     checked: isChecked.value,
-    disabled: props.disabled,
-    variant: props.variant,
+    variant: computedVariant.value,
+    disabled: computedDisabled.value,
   })
 })
 
 const isChecked = computed(() => {
+  if (toggleButtonGroupModelValue) {
+    if (Array.isArray(toggleButtonGroupModelValue.value)) {
+      return toggleButtonGroupModelValue.value.includes(props.value)
+    }
+
+    return toggleButtonGroupModelValue.value === props.value
+  }
+
   if (Array.isArray(modelValue.value)) {
     return modelValue.value.includes(props.value)
   }
@@ -80,17 +99,18 @@ const isChecked = computed(() => {
 })
 
 function onToggleClick() {
+  const _modelValue = toggleButtonGroupModelValue || modelValue
   const newCheckedState = !isChecked.value
 
-  if (Array.isArray(modelValue.value)) {
-    modelValue.value = newCheckedState
-      ? [...modelValue.value, props.value]
-      : modelValue.value.filter((v) => v !== props.value)
+  if (Array.isArray(_modelValue.value)) {
+    _modelValue.value = newCheckedState
+      ? [..._modelValue.value, props.value]
+      : _modelValue.value.filter((v) => v !== props.value)
 
     return
   }
 
-  modelValue.value = newCheckedState
+  _modelValue.value = newCheckedState
 }
 </script>
 
@@ -99,11 +119,13 @@ function onToggleClick() {
     type="button"
     :aria-pressed="isChecked"
     :data-state="isChecked ? 'on' : 'off'"
-    :disabled="disabled"
+    :disabled="computedDisabled"
     :class="computedClass"
     @click="onToggleClick"
     v-bind="$attrs"
   >
-    <slot />
+    <slot>
+      {{ label }}
+    </slot>
   </button>
 </template>
