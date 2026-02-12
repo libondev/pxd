@@ -9,7 +9,7 @@ import { useModelValue } from '../../composables/use-model-value'
 import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
-import { inputVariant } from './cn'
+import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PInput',
@@ -27,6 +27,42 @@ const props = withDefaults(defineProps<InputProps>(), {
 })
 
 const emits = defineEmits<InputEmits>()
+
+const inputVariant = tv({
+  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all',
+  variants: {
+    size: {
+      xs: 'h-6 text-xs rounded-sm',
+      sm: 'h-7.5 text-sm rounded-md',
+      md: 'h-9 text-sm rounded-md',
+      lg: 'h-10 text-base rounded-lg',
+    },
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    },
+    disabled: {
+      true: 'is-disabled',
+      false: '',
+    },
+    readonly: {
+      true: 'is-readonly',
+      false: '',
+    },
+    error: {
+      true: 'is-error',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    align: 'left',
+    disabled: false,
+    readonly: false,
+    error: false,
+  },
+})
 
 const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
@@ -205,12 +241,12 @@ defineExpose({
       v-if="password || clearable"
       v-show="modelValue"
       :class="{ 'pr-2': password && clearable }"
-      class="pxd-input--icon top-0 right-0 gap-1 flex aspect-square h-full cursor-pointer items-center justify-center rounded-r-inherit text-foreground-secondary"
+      class="pxd-input--icon top-0 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
       @pointerdown.prevent="NOOP"
     >
       <button
         v-if="password"
-        class="p-1 appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="toggleType"
       >
         <EyeOffIcon v-if="isPasswordVisible" class="size-3 pointer-events-none" />
@@ -218,7 +254,7 @@ defineExpose({
       </button>
       <button
         v-if="clearable"
-        class="p-1 appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="clear"
       >
         <CrossIcon class="size-3 pointer-events-none" />

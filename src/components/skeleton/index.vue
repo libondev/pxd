@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
-import { skeletonVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { SkeletonProps } from './types'
 
 defineOptions({
@@ -15,6 +15,30 @@ const props = withDefaults(defineProps<SkeletonProps>(), {
   height: 24,
   shape: 'default',
   animated: true,
+})
+
+const skeletonVariant = tv({
+  base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
+  variants: {
+    loading: {
+      true: 'loading invisible',
+      false: '',
+    },
+    shape: {
+      default: 'rounded-md',
+      square: 'rounded-none',
+      rounded: 'rounded-full',
+    },
+    animated: {
+      true: 'animated after:default-animation-timing-function!',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    loading: true,
+    shape: 'default',
+    animated: true,
+  },
 })
 
 const computedStyle = computed(() => {

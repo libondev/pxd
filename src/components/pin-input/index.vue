@@ -3,7 +3,7 @@ import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
-import { pinInputVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { PinInputEmits, PinInputProps } from './types'
 
 defineOptions({
@@ -23,6 +23,31 @@ const props = withDefaults(defineProps<PinInputProps>(), {
 })
 
 const emits = defineEmits<PinInputEmits>()
+
+const pinInputVariant = tv({
+  base: 'pxd-input--border rounded-md motion-safe:transition-all',
+  variants: {
+    size: {
+      xs: 'w-6 text-xs',
+      sm: 'w-7.5 text-sm',
+      md: 'w-9 text-sm',
+      lg: 'w-10 text-base',
+    },
+    error: {
+      true: 'is-error',
+      false: '',
+    },
+    disabled: {
+      true: 'is-disabled',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    error: false,
+    disabled: false,
+  },
+})
 
 const configProvider = useConfigProvider()
 

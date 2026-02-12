@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
 import { getUniqueId } from '../../utils/uid'
-import { switchVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { SwitchProps } from './types'
 
 defineOptions({
@@ -15,6 +15,19 @@ defineOptions({
 })
 
 const props = defineProps<SwitchProps>()
+
+const switchVariant = tv({
+  base: 'pxd-switch--label px-2.5 text-sm font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-all',
+  variants: {
+    disabled: {
+      true: '',
+      false: 'peer-checked:text-foreground',
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+  },
+})
 
 const uniqueId = getUniqueId()
 

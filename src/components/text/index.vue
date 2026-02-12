@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 import { getResponsiveValue } from '../../utils/responsive'
-import { textVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { TextProps } from './types'
 
 defineOptions({
@@ -13,6 +13,40 @@ const props = withDefaults(defineProps<TextProps>(), {
   as: 'p',
   align: 'left',
   truncate: false,
+})
+
+const textVariant = tv({
+  base: 'pxd-text m-0 shrink-0',
+  variants: {
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    },
+    monospace: {
+      true: 'font-mono',
+      false: '',
+    },
+    secondary: {
+      true: 'text-foreground-secondary',
+      false: '',
+    },
+    truncate: {
+      true: 'truncate',
+      false: '',
+    },
+    lineClamp: {
+      true: 'line-clamp',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    align: 'left',
+    monospace: false,
+    secondary: false,
+    truncate: false,
+    lineClamp: false,
+  },
 })
 
 const presetSize = {

@@ -4,7 +4,7 @@ import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
-import { textareaVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { TextareaEmits, TextareaProps } from './types'
 
 defineOptions({
@@ -20,6 +20,36 @@ const props = withDefaults(defineProps<TextareaProps>(), {
 })
 
 const emits = defineEmits<TextareaEmits>()
+
+const textareaVariant = tv({
+  base: '',
+  variants: {
+    size: {
+      xs: 'text-xs',
+      sm: 'text-sm',
+      md: 'text-sm',
+      lg: 'text-base',
+    },
+    disabled: {
+      true: 'is-disabled',
+      false: '',
+    },
+    readonly: {
+      true: 'is-readonly',
+      false: '',
+    },
+    error: {
+      true: 'is-error',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    disabled: false,
+    readonly: false,
+    error: false,
+  },
+})
 
 const uniqueId = getUniqueId()
 

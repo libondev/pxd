@@ -4,7 +4,7 @@ import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { isTruthyProp } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/get'
-import { progressVariant } from './cn'
+import { tv } from 'tailwind-variants'
 import type { ProgressEmits, ProgressProps } from './types'
 
 defineOptions({
@@ -24,6 +24,20 @@ const props = withDefaults(defineProps<ProgressProps>(), {
 })
 
 const emits = defineEmits<ProgressEmits>()
+
+const progressVariant = tv({
+  base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
+  variants: {
+    size: {
+      sm: 'h-2',
+      md: 'h-2.5',
+      lg: 'h-3.5',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
 const configProvider = useConfigProvider()
 
