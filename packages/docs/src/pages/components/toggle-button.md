@@ -135,7 +135,7 @@ const toggleButtonOptions = [
 
 ## Gap
 
-ToggleButtonGroup extends the [Stack component](/components/stack){class="font-medium underline"}, But the gap attribute only supports attribute values ​​of type `string` | `number`
+ToggleButtonGroup extends the [Stack component](/components/stack){class="font-medium underline"}, However, the border will only be merged if gap is set to `0` of `string` | `number` type. (e.g. `gap="0"`)
 
 ```vue demo
 <script setup>
@@ -151,12 +151,21 @@ const toggleButtonOptions = [
 </script>
 
 <template>
-  <PToggleButtonGroup
-    v-model="functions"
-    gap="2"
-    variant="outline"
-    :options="toggleButtonOptions"
-  />
+  <PStack direction="vertical">
+    <PToggleButtonGroup
+      v-model="functions"
+      gap="2"
+      variant="outline"
+      :options="toggleButtonOptions"
+    />
+    
+    <PToggleButtonGroup
+      v-model="functions"
+      :gap="{ xs: 1, sm: 2, md: 4 }"
+      variant="outline"
+      :options="toggleButtonOptions"
+    />
+  </PStack>
 </template>
 ```
 

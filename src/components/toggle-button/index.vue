@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 const emits = defineEmits<ToggleButtonEmits>()
 
 const toggleButtonVariant = tv({
-  base: 'pxd-toggle-button gap-2 outline-none shrink-0 border bg-background-100 appearance-none font-medium inline-flex group-data-[gap=0]/toggle-button-group:first:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:border-l-transparent items-center justify-center motion-safe:transition-colors [&_svg]:pointer-events-none',
+  base: 'pxd-toggle-button gap-2 outline-none shrink-0 border bg-background-100 appearance-none font-medium inline-flex group-data-[gap=0]/toggle-button-group:first:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px items-center justify-center motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
       sm: 'h-7.5 px-2 text-sm rounded-md',
@@ -38,7 +38,7 @@ const toggleButtonVariant = tv({
     },
     disabled: {
       true: 'cursor-not-allowed',
-      false: 'hover:bg-background-hover data-[state=on]:bg-background-active',
+      false: 'hover:bg-background-hover data-[state=on]:bg-gray-300',
     },
     checked: {
       true: '',

@@ -1,4 +1,9 @@
-import type { ComponentSize, ComponentValue, ComponentOption } from '../../types/shared'
+import type {
+  ComponentSize,
+  ComponentValue,
+  ComponentOption,
+  ResponsiveValue,
+} from '../../types/shared'
 
 export interface ToggleButtonProps {
   variant?: 'ghost' | 'outline'
@@ -15,7 +20,7 @@ export interface ToggleButtonEmits {
 }
 
 export interface ToggleButtonGroupProps {
-  gap?: number | string
+  gap?: ResponsiveValue<string | number>
   size?: ComponentSize
   disabled?: boolean
   options?: ComponentOption[]
