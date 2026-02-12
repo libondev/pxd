@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
-import { useUniqueId } from '../../composables/use-unique-id-context'
 import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
 import { tv } from 'tailwind-variants'
@@ -62,15 +61,18 @@ const radioVariant = tv({
 })
 
 const uniqueId = getUniqueId()
-const modelValue = useModelValue(props, emits)
 
-const radioGroupName = useUniqueId('RadioGroupName')
 const radioGroupContext = useRadioGroupContext()
+const radioGroupName = radioGroupContext?.name ?? getUniqueId()
 
-const isChecked = computed(
-  () => (radioGroupContext?.modelValue ?? modelValue.value) === props.value,
+const modelValue = useModelValue(
+  radioGroupContext?.props ?? props,
+  radioGroupContext?.emits ?? emits,
 )
-const computedDisabled = computed(() => props.disabled || radioGroupContext?.disabled)
+
+const isChecked = computed(() => modelValue.value === props.value)
+
+const computedDisabled = computed(() => radioGroupContext?.props.disabled ?? props.disabled)
 
 const computedClasses = computed(() => {
   return radioVariant({
@@ -79,8 +81,8 @@ const computedClasses = computed(() => {
   })
 })
 
-function onChangeValue() {
-  emits('update:modelValue', props.value)
+function onInputChange() {
+  modelValue.value = props.value
 }
 </script>
 
@@ -101,7 +103,7 @@ function onChangeValue() {
       :checked="isChecked"
       :name="radioGroupName"
       :disabled="computedDisabled"
-      @change="onChangeValue"
+      @change="onInputChange"
     />
 
     <span aria-hidden="true" :class="computedClasses" />

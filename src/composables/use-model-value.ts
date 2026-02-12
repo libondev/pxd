@@ -13,7 +13,7 @@ interface BaseEmit {
   (event: 'update:modelValue', ...args: any[]): void
 }
 
-export function useModelValue<P extends { modelValue: any }, E extends BaseEmit>(
+export function useModelValue<P extends { modelValue?: any }, E extends BaseEmit>(
   props: P,
   emits: E,
   options: Options = { withChange: true },
