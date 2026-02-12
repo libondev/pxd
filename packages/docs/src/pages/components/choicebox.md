@@ -60,20 +60,7 @@ import { ref } from 'vue'
 const modelValue1 = ref('trial')
 const modelValue2 = ref(['trial'])
 
-const options1 = [
-  {
-    label: 'Pro trial',
-    value: 'trial',
-    description: 'Free for two weeks',
-  },
-  {
-    label: 'Pro',
-    value: 'pro',
-    description: 'Get started now',
-  },
-]
-
-const options2 = [
+const options = [
   {
     label: 'Pro trial',
     value: 'trial',
@@ -92,14 +79,14 @@ const options2 = [
   <PStack direction="vertical" gap="6">
     <PChoiceboxGroup
       v-model="modelValue1"
-      :options="options1"
       :direction="{ xs: 'vertical', sm: 'horizontal' }"
-      disabled
-    />
+    >
+      <PChoicebox v-for="item of options" :key="item.value" v-bind="item" />
+    </PChoiceboxGroup>
 
     <PChoiceboxGroup
       v-model="modelValue2"
-      :options="options2"
+      :options="options"
       :direction="{ xs: 'vertical', sm: 'horizontal' }"
       multiple
     />

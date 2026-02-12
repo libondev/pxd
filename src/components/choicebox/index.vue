@@ -1,36 +1,36 @@
 <script lang="ts" setup>
 import { computed, markRaw } from 'vue'
-import { useChoiceboxGroupContext, useChoiceboxGroupModelValue } from '../../contexts/choicebox'
+import { useChoiceboxGroupContext } from '../../contexts/choicebox'
 import PCheckbox from '../checkbox/index.vue'
 import PRadio from '../radio/index.vue'
 import type { ChoiceboxProps } from './types'
 
 defineOptions({
   name: 'PChoicebox',
+  inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
-const props = defineProps<ChoiceboxProps>()
+defineProps<ChoiceboxProps>()
 
-const choiceboxModelValue = useChoiceboxGroupModelValue()
 const choiceboxGroupContext = useChoiceboxGroupContext()
 
-const renderComponent = computed(() => markRaw(choiceboxGroupContext.multiple ? PCheckbox : PRadio))
-
-const computedAttrs = computed(() => {
-  const { disabled, required, value } = props
-
-  return {
-    value,
-    disabled,
-    required,
-    class:
-      'pxd-choicebox justify-between border rounded-md flex-1 w-full p-3 flex-row-reverse hover:bg-background-hover hover:border-gray-500 motion-safe:transition-colors',
-  }
-})
+const renderComponent = computed(() =>
+  markRaw(choiceboxGroupContext?.props.multiple ? PCheckbox : PRadio),
+)
 </script>
 
 <template>
-  <Component :is="renderComponent" v-model="choiceboxModelValue" v-bind="computedAttrs">
+  <Component
+    :is="renderComponent"
+    :value="value"
+    :disabled="disabled"
+    class="pxd-choicebox p-3 w-full flex-1 flex-row-reverse justify-between rounded-md border hover:border-gray-500 hover:bg-background-hover motion-safe:transition-colors"
+    v-bind="$attrs"
+  >
     <div class="gap-1 flex flex-col">
       <span class="pxd-choicebox--label font-medium">
         <slot name="label">

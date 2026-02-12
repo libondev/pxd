@@ -1,14 +1,13 @@
-import type { Ref } from 'vue'
+import type { EmitFn } from 'vue'
 
-import type { ChoiceboxGroupProps } from '../components/choicebox/types'
+import type { ChoiceboxGroupEmits, ChoiceboxGroupProps } from '../components/choicebox-group/types'
 
 import { createContext } from '../utils/context'
 
-export const [provideChoiceboxGroupContext, useChoiceboxGroupContext] =
-  createContext<ChoiceboxGroupProps>('ChoiceboxGroup', {
-    multiple: false,
-  })
+interface ChoiceboxGroupContext {
+  props: ChoiceboxGroupProps
+  emits: EmitFn<ChoiceboxGroupEmits>
+}
 
-export const [provideChoiceboxGroupModelValue, useChoiceboxGroupModelValue] = createContext<
-  Ref<ChoiceboxGroupProps['modelValue']>
->('ChoiceboxGroupModalValue')
+export const [provideChoiceboxGroupContext, useChoiceboxGroupContext] =
+  createContext<ChoiceboxGroupContext>('ChoiceboxGroup')

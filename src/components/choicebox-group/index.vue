@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import type { ChoiceboxGroupEmits, ChoiceboxGroupProps } from '../choicebox/types'
-import { computed, markRaw, useAttrs } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import {
-  provideChoiceboxGroupContext,
-  provideChoiceboxGroupModelValue,
-} from '../../contexts/choicebox'
+import type { ChoiceboxGroupEmits, ChoiceboxGroupProps } from './types'
+import { computed, markRaw } from 'vue'
 import PCheckboxGroup from '../checkbox-group/index.vue'
 import PChoicebox from '../choicebox/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
+import { provideChoiceboxGroupContext } from '../../contexts/choicebox'
 
 defineOptions({
   name: 'PChoiceboxGroup',
@@ -20,54 +16,35 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ChoiceboxGroupProps>(), {
-  type: 'radio',
-  required: false,
-  disabled: false,
-  modelValue: '',
+  gap: 3,
 })
-
 const emits = defineEmits<ChoiceboxGroupEmits>()
-
-const attrs = useAttrs()
-
-const modelValue = useModelValue(props, emits) as any
 
 const renderComponent = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
 
-const computedAttrs = computed(() => {
-  const { disabled, multiple, required, options } = props
-  const { class: classes, ...rest } = attrs
+function onUpdateModelValue(value: any) {
+  emits('change', value)
+  emits('update:modelValue', value)
+}
 
-  return {
-    role: multiple ? 'group' : 'radiogroup',
-    'aria-required': required,
-    'aria-multiselectable': multiple,
-    gap: attrs.gap || '3',
-    disabled,
-    required,
-    options,
-    ...rest,
-  }
-})
-
-provideChoiceboxGroupContext(props)
-provideChoiceboxGroupModelValue(modelValue)
+provideChoiceboxGroupContext({ props, emits })
 </script>
 
 <template>
   <Component
     :is="renderComponent"
-    v-model="modelValue"
+    :gap="gap"
+    :options="options"
+    :disabled="disabled"
+    :model-value="modelValue"
+    :aria-multiselectable="multiple"
     class="pxd-choicebox-group w-full"
-    v-bind="computedAttrs"
+    :role="multiple ? 'group' : 'radiogroup'"
+    v-bind="$attrs"
+    @update:model-value="onUpdateModelValue"
   >
     <slot>
-      <PChoicebox
-        v-for="option in options"
-        :key="option.value"
-        v-model="modelValue"
-        v-bind="option"
-      />
+      <PChoicebox v-for="option in options" :key="option.value" v-bind="option" />
     </slot>
   </Component>
 </template>
