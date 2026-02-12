@@ -6,12 +6,12 @@ A control that toggles between two options, checked or unchecked.
 
 ```vue demo
 <script setup>
-const checked = ref(false)
+const value = ref(false)
 </script>
 
 <template>
-  <div>isChecked: {{ checked }}</div>
-  <PCheckbox v-model="checked" label="Checkbox" />
+  <p>value: {{ value }}</p>
+  <PCheckbox v-model="value" label="Checkbox" />
 </template>
 ```
 
@@ -19,56 +19,37 @@ const checked = ref(false)
 
 ```vue demo
 <script setup>
-import { shallowRef, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 
-const value = shallowRef(['one'])
-const checkboxGroupRef = shallowRef()
+const value = ref(['one'])
 
 const options = [
   { label: 'Options 1', value: 'one' },
   { label: 'Options 2', value: 'two' },
   { label: 'Options 3', value: 'three' },
 ]
-
-const isCheckedAll = shallowRef(false)
-const isCheckedPartial = shallowRef(false)
-
-watch(
-  () => value.value,
-  (v) => {
-    if (!checkboxGroupRef.value) {
-      return
-    }
-
-    nextTick(() => {
-      isCheckedAll.value = checkboxGroupRef.value.isCheckedAll()
-      isCheckedPartial.value = checkboxGroupRef.value.isCheckedPartial()
-    })
-  },
-  { deep: 1, immediate: true },
-)
 </script>
 
 <template>
-  <div class="mb-2">checkedValues: {{ value }}</div>
-  <div class="mb-2">isCheckedAll: {{ isCheckedAll }}</div>
-  <div class="mb-2">isCheckedPartial: {{ isCheckedPartial }}</div>
+  <p>value: {{ value }}</p>
 
   <PCheckboxGroup
-    ref="checkboxGroupRef"
     v-model="value"
+    gap="2"
     :options="options"
-    gap="3"
     direction="vertical"
-  />
+    class="mt-2"
+  >
+    <PCheckbox v-for="item of options" :key="item.value" :label="item.label" :value="item.value" />
+  </PCheckboxGroup>
 
   <PCheckboxGroup
     v-model="value"
+    gap="2"
     :options="options"
-    gap="3"
-    disabled
     direction="vertical"
     class="mt-6"
+    disabled
   />
 </template>
 ```
@@ -84,25 +65,6 @@ const checked = ref(false)
   <PStack>
     <PCheckbox v-model="checked" label="Checkbox" indeterminate />
     <PCheckbox v-model="checked" label="Checkbox" indeterminate disabled />
-  </PStack>
-</template>
-```
-
-## Checkbox standalone
-
-Standalone unlabelled checkbox input for use in custom UI.
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const value = ref(false)
-</script>
-
-<template>
-  <PStack align="center">
-    <span>Option 1</span>
-    <PCheckbox v-model="value" />
   </PStack>
 </template>
 ```

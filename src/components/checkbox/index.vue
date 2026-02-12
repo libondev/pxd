@@ -18,7 +18,6 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<CheckboxProps>(), {
-  modelValue: () => [],
   value: true,
 })
 
@@ -29,7 +28,7 @@ const checkboxVariant = tv({
     wrapper:
       'pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed',
     inner:
-      'pxd-checkbox--inner size-4 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden rounded-sm border peer-focus-ring motion-safe:transition-colors',
+      'pxd-checkbox--inner size-4 inline-flex shrink-0 transform-gpu p-0.5 items-center justify-center overflow-hidden rounded-sm border peer-focus-ring motion-safe:transition-colors',
   },
   variants: {
     checked: {
@@ -58,9 +57,13 @@ const checkboxVariant = tv({
 })
 
 const uniqueId = getUniqueId()
-const modelValue = useModelValue(props, emits)
 
 const checkboxGroupContext = useCheckboxGroupContext()
+
+const modelValue = useModelValue(
+  checkboxGroupContext?.props ?? props,
+  checkboxGroupContext?.emits ?? emits,
+)
 
 const isChecked = computed(() => {
   if (Array.isArray(modelValue.value)) {
@@ -74,7 +77,7 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
+const computedDisabled = computed(() => checkboxGroupContext?.props.disabled ?? props.disabled)
 
 const computedClasses = computed(() => {
   return checkboxVariant({
@@ -83,7 +86,9 @@ const computedClasses = computed(() => {
   })
 })
 
-function toggleChecked(isChecked: boolean) {
+function onInputChange(event: Event) {
+  const isChecked = (event.target as HTMLInputElement).checked
+
   if (Array.isArray(modelValue.value)) {
     modelValue.value = isChecked
       ? [...modelValue.value, props.value]
@@ -94,24 +99,6 @@ function toggleChecked(isChecked: boolean) {
 
   modelValue.value = isChecked
 }
-
-function onInputChange(event: Event) {
-  const isInputChecked = (event.target as HTMLInputElement).checked
-
-  toggleChecked(isInputChecked)
-}
-
-function getCheckedState() {
-  if (props.indeterminate) {
-    return 'indeterminate'
-  }
-
-  return isChecked.value ? 'checked' : 'unchecked'
-}
-
-defineExpose({
-  getCheckedState,
-})
 </script>
 
 <template>
@@ -134,9 +121,9 @@ defineExpose({
     />
 
     <span aria-hidden="true" :class="computedClasses.inner()">
-      <CheckIcon v-if="isChecked" class="size-3 text-gray-100" />
-      <MinusIcon v-else-if="indeterminate" class="size-3" />
-      <span v-else class="size-3" />
+      <CheckIcon v-if="isChecked" class="size-3 pointer-events-none text-gray-100" />
+      <MinusIcon v-else-if="indeterminate" class="size-3 pointer-events-none" />
+      <span v-else class="size-3 pointer-events-none" />
     </span>
 
     <span class="text-sm flex-1 shrink-0 empty:hidden">
