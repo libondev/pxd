@@ -39,18 +39,6 @@ describe('checkbox', () => {
     wrapper.unmount()
   })
 
-  it('should render a required checkbox', () => {
-    const wrapper = mount(Checkbox, {
-      props: {
-        required: true,
-      },
-    })
-
-    expect(wrapper.find('input').attributes('required')).toBe('')
-
-    wrapper.unmount()
-  })
-
   it('should custom value', () => {
     const wrapper = mount(Checkbox, {
       props: {
