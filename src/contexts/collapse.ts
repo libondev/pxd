@@ -1,9 +1,6 @@
-import type { Ref } from 'vue'
-
 import { createContext } from '../utils/context'
 
 export interface CollapseGroupContext {
-  multiple: Ref<boolean>
   isExpanded: (id: string) => boolean
   toggleItem: (id: string, expanded: boolean) => void
 }

@@ -7,9 +7,10 @@ import type { CollapseGroupProps } from '../collapse/types'
 
 defineOptions({
   name: 'PCollapseGroup',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<CollapseGroupProps>(), { multiple: false })
+const props = defineProps<CollapseGroupProps>()
 
 const SIZES = {
   sm: {
@@ -59,14 +60,13 @@ function toggleItem(id: string, expanded: boolean) {
 const isExpanded = (id: string) => expandedItemIds.value.includes(id)
 
 provideCollapseGroupContext({
-  multiple: computed(() => props.multiple),
   isExpanded,
   toggleItem,
 })
 </script>
 
 <template>
-  <div class="pxd-collapse-group w-full max-w-full border-t" :style="computedStyle">
+  <div class="pxd-collapse-group w-full max-w-full border-t" :style="computedStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

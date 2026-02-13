@@ -1,33 +1,31 @@
 <script lang="ts" setup>
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, shallowRef, watch } from 'vue'
 import { useCollapseGroupContext } from '../../contexts/collapse'
 import { getUniqueId } from '../../utils/uid'
 import type { CollapseProps } from './types'
 
 defineOptions({
   name: 'PCollapse',
+  inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<CollapseProps>(), {
-  title: '',
-  expand: false,
-})
+const props = defineProps<CollapseProps>()
 
 const uid = getUniqueId()
 
-const localExpand = ref(props.expand)
-const collapseGroup = useCollapseGroupContext()
+const localExpand = shallowRef(props.expand)
+const collapseGroupContext = useCollapseGroupContext()
 
 const isExpanded = computed(() => {
-  if (collapseGroup) {
-    return collapseGroup.isExpanded(uid)
+  if (collapseGroupContext) {
+    return collapseGroupContext.isExpanded(uid)
   }
 
   return localExpand.value
 })
 
-if (!collapseGroup) {
+if (!collapseGroupContext) {
   watch(
     () => props.expand,
     (expand) => {
@@ -40,8 +38,8 @@ if (!collapseGroup) {
 function onTriggerClick() {
   const newState = !isExpanded.value
 
-  if (collapseGroup) {
-    collapseGroup.toggleItem(uid, newState)
+  if (collapseGroupContext) {
+    collapseGroupContext.toggleItem(uid, newState)
     return
   }
 
@@ -54,7 +52,6 @@ function beforeEnter(el: Element) {
 }
 
 function enter(el: Element) {
-  // 强制回流，确保元素高度已经计算完成
   void (el as HTMLElement).offsetHeight
   ;(el as HTMLElement).style.height = `${el.scrollHeight}px`
 }
@@ -75,14 +72,14 @@ function leave(el: Element) {
 }
 
 onMounted(() => {
-  if (props.expand && collapseGroup) {
-    collapseGroup.toggleItem(uid, true)
+  if (props.expand && collapseGroupContext) {
+    collapseGroupContext.toggleItem(uid, true)
   }
 })
 </script>
 
 <template>
-  <div class="pxd-collapse group/collapse border-b">
+  <div class="pxd-collapse group/collapse border-b" v-bind="$attrs">
     <h3 class="pxd-collapse--title">
       <button
         class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer touch-manipulation appearance-none items-center justify-between border-none bg-transparent font-inherit self-focus-ring outline-none"
