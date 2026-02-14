@@ -128,6 +128,7 @@ const toggleButtonOptions = [
   <PToggleButtonGroup
     v-model="functions"
     size="sm"
+    variant="outline"
     :options="toggleButtonOptions"
   />
 </template>
