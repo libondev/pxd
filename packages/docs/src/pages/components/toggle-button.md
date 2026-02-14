@@ -154,11 +154,11 @@ const toggleButtonOptions = [
   <PStack direction="vertical">
     <PToggleButtonGroup
       v-model="functions"
-      gap="2"
+      gap="0"
       variant="outline"
       :options="toggleButtonOptions"
     />
-    
+
     <PToggleButtonGroup
       v-model="functions"
       :gap="{ xs: 1, sm: 2, md: 4 }"
@@ -203,7 +203,7 @@ const functions = ref(['bold'])
 <script setup>
 import { ref } from 'vue'
 
-const functions = ref([])
+const functions = ref(['italic'])
 
 const toggleButtonOptions = [
   { label: 'Bold', value: 'bold' },
@@ -216,6 +216,7 @@ const toggleButtonOptions = [
   <PToggleButtonGroup
     v-model="functions"
     disabled
+    variant="outline"
     :options="toggleButtonOptions"
   />
 </template>
