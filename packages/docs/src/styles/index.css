@@ -9,6 +9,10 @@
     Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
+@view-transition {
+  navigation: auto;
+}
+
 :root {
   font-feature-settings:
     'liga' 1,

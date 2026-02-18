@@ -3,6 +3,8 @@ import { setupLayouts } from 'virtual:meta-layouts'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 
+import { useViewTransition } from './use-view-transition'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: setupLayouts(routes),
@@ -44,6 +46,8 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
   useLoadingBar.finish('website')
 })
+
+useViewTransition(router)
 
 if (import.meta.hot) {
   handleHotUpdate(router)
