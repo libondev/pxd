@@ -25,9 +25,9 @@ const toggleButtonVariant = tv({
   base: 'pxd-toggle-button relative gap-2 outline-none shrink-0 border bg-background-100 appearance-none font-medium inline-flex group-data-[gap=0]/toggle-button-group:first:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px items-center justify-center data-[state=on]:z-1 data-[state=off]:enabled:hover:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
-      sm: 'h-7.5 px-2 text-sm rounded-md',
-      md: 'h-9 px-2.75 text-sm rounded-md',
-      lg: 'h-10 px-3 text-base rounded-lg',
+      sm: 'h-7.5 px-1.75 text-sm rounded-md',
+      md: 'h-9 px-2.5 text-sm rounded-md',
+      lg: 'h-10 px-2.75 text-base rounded-lg',
     },
     variant: {
       ghost: 'border-transparent',
@@ -45,6 +45,7 @@ const toggleButtonVariant = tv({
   compoundVariants: [
     { checked: true, disabled: true, class: 'bg-gray-200' },
     { checked: false, disabled: true, class: 'text-gray-400' },
+    { checked: false, disabled: false, class: 'hover:text-gray-900' },
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
     { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100 border-gray-500' },
   ],
