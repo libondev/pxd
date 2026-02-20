@@ -375,6 +375,7 @@ defineExpose({
         :class="wrapperClass"
         :style="wrapperStyle"
         :data-visible="isVisible"
+        :data-position="localPosition"
         :data-interactive="interactive"
         class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
@@ -382,7 +383,6 @@ defineExpose({
       >
         <div
           class="pxd-popover--container pointer-events-auto relative z-1 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
-          :data-position="localPosition"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
@@ -507,81 +507,81 @@ defineExpose({
     animation-name: popover-fade-slide-hide;
   }
 
-  &[data-position='top'] {
+  [data-position='top'] {
     transform-origin: bottom center;
   }
 
-  &[data-position='top-start'] {
+  [data-position='top-start'] {
     transform-origin: bottom left;
   }
 
-  &[data-position='top-end'] {
+  [data-position='top-end'] {
     transform-origin: bottom right;
   }
 
-  &[data-position='bottom'] {
+  [data-position='bottom'] {
     transform-origin: top center;
   }
 
-  &[data-position='bottom-start'] {
+  [data-position='bottom-start'] {
     transform-origin: top left;
   }
 
-  &[data-position='bottom-end'] {
+  [data-position='bottom-end'] {
     transform-origin: top right;
   }
 
-  &[data-position='left'] {
+  [data-position='left'] {
     transform-origin: right center;
   }
 
-  &[data-position='left-start'] {
+  [data-position='left-start'] {
     transform-origin: right top;
   }
 
-  &[data-position='left-end'] {
+  [data-position='left-end'] {
     transform-origin: right bottom;
   }
 
-  &[data-position='right'] {
+  [data-position='right'] {
     transform-origin: left center;
   }
 
-  &[data-position='right-start'] {
+  [data-position='right-start'] {
     transform-origin: left top;
   }
 
-  &[data-position='right-end'] {
+  [data-position='right-end'] {
     transform-origin: left bottom;
   }
 
-  &[data-position='top'] .pxd-popover--arrow,
-  &[data-position='top-start'] .pxd-popover--arrow,
-  &[data-position='top-end'] .pxd-popover--arrow {
+  [data-position='top'] .pxd-popover--arrow,
+  [data-position='top-start'] .pxd-popover--arrow,
+  [data-position='top-end'] .pxd-popover--arrow {
     bottom: -5px;
     border-width: 6px 6px 0;
     border-color: var(--popover-arrow-bg) transparent transparent;
   }
 
-  &[data-position='bottom'] .pxd-popover--arrow,
-  &[data-position='bottom-start'] .pxd-popover--arrow,
-  &[data-position='bottom-end'] .pxd-popover--arrow {
+  [data-position='bottom'] .pxd-popover--arrow,
+  [data-position='bottom-start'] .pxd-popover--arrow,
+  [data-position='bottom-end'] .pxd-popover--arrow {
     top: -5px;
     border-width: 0 6px 6px;
     border-color: transparent transparent var(--popover-arrow-bg);
   }
 
-  &[data-position='left'] .pxd-popover--arrow,
-  &[data-position='left-start'] .pxd-popover--arrow,
-  &[data-position='left-end'] .pxd-popover--arrow {
+  [data-position='left'] .pxd-popover--arrow,
+  [data-position='left-start'] .pxd-popover--arrow,
+  [data-position='left-end'] .pxd-popover--arrow {
     right: -5px;
     border-width: 6px 0 6px 6px;
     border-color: transparent transparent transparent var(--popover-arrow-bg);
   }
 
-  &[data-position='right'] .pxd-popover--arrow,
-  &[data-position='right-start'] .pxd-popover--arrow,
-  &[data-position='right-end'] .pxd-popover--arrow {
+  [data-position='right'] .pxd-popover--arrow,
+  [data-position='right-start'] .pxd-popover--arrow,
+  [data-position='right-end'] .pxd-popover--arrow {
     left: -5px;
     border-width: 6px 6px 6px 0;
     border-color: transparent var(--popover-arrow-bg) transparent transparent;

@@ -43,7 +43,7 @@ const computedDisabled = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'px-2 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-border-tooltip bg-(--popover-arrow-bg)',
+    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-border-tooltip bg-(--popover-arrow-bg)',
     computedVariant.value.text,
     props.contentClass,
   ].join(' ')
@@ -56,6 +56,7 @@ const computedClasses = computed(() => {
     :position="position"
     :disabled="computedDisabled"
     :show-arrow="showArrow"
+    wrapper-class="max-sm:data-[position^=top]:px-1 max-sm:data-[position^=bottom]:px-1 max-sm:data-[position^=left]:pl-1 max-sm:data-[position^=right]:pr-1"
     :arrow-color="computedVariant.bg"
     :content-class="computedClasses"
     :content-style="contentStyle"
