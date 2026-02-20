@@ -1,3 +1,5 @@
+import { fileURLToPath, URL } from 'node:url'
+
 import gdsiResolver from '@gdsicon/vue/resolver'
 import { fromHighlighter } from '@shikijs/markdown-it/core'
 import slugify from '@sindresorhus/slugify'
@@ -7,7 +9,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import anchor from 'markdown-it-anchor'
 import attrs from 'markdown-it-attrs'
 import { container, noticeboard } from 'markdown-it-plugins'
-import { fileURLToPath, URL } from 'node:url'
 import { createHighlighter } from 'shiki'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import autoImport from 'unplugin-auto-import/vite'

@@ -1,7 +1,6 @@
 import type { Ref } from 'vue'
 
 import type { SwitchGroupProps } from '../components/switch/types'
-
 import { createContext } from '../utils/context'
 
 export const [provideSwitchGroupContext, useSwitchGroupContext] =

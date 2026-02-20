@@ -1,10 +1,8 @@
 import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
-
 import { createFocusTrap } from 'focus-trap'
 import { onBeforeUnmount, watch } from 'vue'
 
 import type { MaybeElementRef } from '../types/shared/utils'
-
 import { toValue } from '../utils/ref'
 
 const pxdFocusTrapStack: FocusTrap[] = []

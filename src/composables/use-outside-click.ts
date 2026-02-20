@@ -1,7 +1,6 @@
 import { onBeforeUnmount, watch } from 'vue'
 
 import type { MaybeElementRef } from '../types/shared/utils'
-
 import { cachedOff, cachedOn } from '../utils/event'
 import { toValue } from '../utils/ref'
 

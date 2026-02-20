@@ -3,7 +3,6 @@ import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselGroupEmits, CarouselGroupProps } from '../carousel/types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { usePointerGesture } from '../../composables/use-pointer-gesture'
 import { provideCarouselGroupContext } from '../../contexts/carousel'
 import { getCssUnitValue } from '../../utils/format'
 
@@ -247,27 +246,27 @@ function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
 }
 
-usePointerGesture(sliderRef, {
-  axis: () => (props.direction === 'horizontal' ? 'x' : 'y'),
-  directionGuard: (d) => {
-    if (props.direction === 'horizontal') {
-      return d === 'left' || d === 'right'
-    }
+// usePointerGesture(sliderRef, {
+//   axis: () => (props.direction === 'horizontal' ? 'x' : 'y'),
+//   directionGuard: (d) => {
+//     if (props.direction === 'horizontal') {
+//       return d === 'left' || d === 'right'
+//     }
 
-    return d === 'up' || d === 'down'
-  },
-  onRelease(hit, dir, kind) {
-    if (!hit || !dir || kind === 'longpress') {
-      return
-    }
+//     return d === 'up' || d === 'down'
+//   },
+//   onRelease(hit, dir, kind) {
+//     if (!hit || !dir || kind === 'longpress') {
+//       return
+//     }
 
-    if (dir === 'left' || dir === 'up') {
-      onToggleClick(1)
-    } else if (dir === 'right' || dir === 'down') {
-      onToggleClick(-1)
-    }
-  },
-})
+//     if (dir === 'left' || dir === 'up') {
+//       onToggleClick(1)
+//     } else if (dir === 'right' || dir === 'down') {
+//       onToggleClick(-1)
+//     }
+//   },
+// })
 
 provideCarouselGroupContext({
   props,

@@ -1,9 +1,9 @@
-import type { ViteDevServer } from 'vite'
-
 import { execSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import path, { sep } from 'node:path'
 import process from 'node:process'
+
+import type { ViteDevServer } from 'vite'
 
 import { humanize, pascalize } from '../../../scripts/utils.js'
 

@@ -1,7 +1,6 @@
 import type { Ref } from 'vue'
 
 import type { ComponentDirection } from '../types/shared/props'
-
 import { createContext } from '../utils/context'
 
 interface PanelConfig {

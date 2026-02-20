@@ -1,5 +1,4 @@
 import type { Ref } from 'vue'
-
 import { customRef, onBeforeUnmount } from 'vue'
 
 import { cachedOn } from '../utils/event'

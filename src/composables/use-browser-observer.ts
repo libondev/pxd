@@ -1,10 +1,8 @@
-import type { MaybeRefOrGetter, Ref } from 'vue'
-
 import { isNotNil } from 'es-toolkit'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import { computed, onBeforeUnmount, watch, shallowRef } from 'vue'
 
 import type { Nullable } from '../types/shared/utils'
-
 import { toArray } from '../utils/format'
 import { toValue, unrefElement } from '../utils/ref'
 

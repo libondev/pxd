@@ -1,5 +1,4 @@
 import type { Nullable } from '../types/shared/utils'
-
 import { isServer } from './is'
 
 export function getFallbackValue<Variants extends Record<string, any>>(
@@ -41,4 +40,22 @@ export function getDocumentDirection(): DocumentDirection {
   }
 
   return dirAttribute as DocumentDirection
+}
+
+export function getPlatform() {
+  if (isServer()) {
+    return 'linux'
+  }
+
+  const platform = navigator.platform.toLowerCase()
+  const userAgent = navigator.userAgent.toLowerCase()
+
+  if (platform.includes('mac') || userAgent.includes('mac')) {
+    return 'mac'
+  }
+  if (platform.includes('win') || userAgent.includes('win')) {
+    return 'windows'
+  }
+
+  return 'linux'
 }

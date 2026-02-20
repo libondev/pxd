@@ -1,7 +1,6 @@
 // https://github.com/vueuse/vueuse/blob/main/packages/core/unrefElement/index.ts#L16
 
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
-
 import { unref } from 'vue'
 
 import type { MaybeElement } from '../types/shared/utils'
