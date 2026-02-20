@@ -21,7 +21,7 @@
     },
     "tailwindcss-language-server": {
       "settings": {
-        "classFunctions": ["cva", "tv"],
+        "classFunctions": ["tv", "twMerge", "computed"]
       }
     }
   },

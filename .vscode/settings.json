@@ -22,13 +22,12 @@
   "tailwindCSS.classAttributes": [
     "class",
     "className",
-    "ngClass"
+    "ngClass",
   ],
   "tailwindCSS.classFunctions": [
-    "cn",
     "tv",
-    "clsx",
-    "twMerge"
+    "twMerge",
+    "computed"
   ],
   "files.associations": {
     "*.css": "tailwindcss"
@@ -36,5 +35,8 @@
   "cSpell.words": [
     "choicebox",
     "gdsicon"
-  ]
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }
