@@ -10,41 +10,20 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<CollapseProps>()
-
 const uid = getUniqueId()
+
+const props = defineProps<CollapseProps>()
 
 const localExpand = shallowRef(props.expand)
 const collapseGroupContext = useCollapseGroupContext()
 
 const isExpanded = computed(() => {
   if (collapseGroupContext) {
-    return collapseGroupContext.isExpanded(uid)
+    return collapseGroupContext.expandedIds.value.has(uid)
   }
 
   return localExpand.value
 })
-
-if (!collapseGroupContext) {
-  watch(
-    () => props.expand,
-    (expand) => {
-      localExpand.value = expand
-    },
-    { immediate: true },
-  )
-}
-
-function onTriggerClick() {
-  const newState = !isExpanded.value
-
-  if (collapseGroupContext) {
-    collapseGroupContext.toggleItem(uid, newState)
-    return
-  }
-
-  localExpand.value = newState
-}
 
 function beforeEnter(el: Element) {
   ;(el as HTMLElement).style.height = '0'
@@ -71,9 +50,47 @@ function leave(el: Element) {
   ;(el as HTMLElement).style.height = '0'
 }
 
+function onToggleClick() {
+  const newCheckedState = !isExpanded.value
+
+  if (collapseGroupContext) {
+    const ids = collapseGroupContext.expandedIds.value
+
+    if (!collapseGroupContext.props.multiple) {
+      ids.clear()
+    }
+
+    if (newCheckedState) {
+      ids.add(uid)
+    } else {
+      ids.delete(uid)
+    }
+
+    return
+  }
+
+  localExpand.value = newCheckedState
+}
+
+watch(
+  () => props.expand,
+  (expand) => {
+    if (collapseGroupContext) {
+      if (expand) {
+        collapseGroupContext.expandedIds.value.add(uid)
+      } else {
+        collapseGroupContext.expandedIds.value.delete(uid)
+      }
+    } else {
+      localExpand.value = expand
+    }
+  },
+  { immediate: true },
+)
+
 onMounted(() => {
   if (props.expand && collapseGroupContext) {
-    collapseGroupContext.toggleItem(uid, true)
+    collapseGroupContext.expandedIds.value.add(uid)
   }
 })
 </script>
@@ -84,7 +101,7 @@ onMounted(() => {
       <button
         class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer touch-manipulation appearance-none items-center justify-between border-none bg-transparent font-inherit self-focus-ring outline-none"
         :data-state="isExpanded ? 'open' : 'closed'"
-        @click="onTriggerClick"
+        @click="onToggleClick"
       >
         <slot name="title">
           {{ title }}

@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { getFallbackValue } from '../../utils/get'
-import type { CollapseGroupProps } from '../collapse/types'
+import type { CollapseGroupProps } from './types'
 
 defineOptions({
   name: 'PCollapseGroup',
@@ -31,7 +31,7 @@ const SIZES = {
 }
 
 const configProvider = useConfigProvider()
-const expandedItemIds = ref<string[]>([])
+const expandedIds = ref<Set<string>>(new Set())
 
 const computedStyle = computed(() => {
   const { padding, fontSize, fontWeight } = getFallbackValue(props.size, SIZES, configProvider.size)
@@ -43,25 +43,9 @@ const computedStyle = computed(() => {
   }
 })
 
-function toggleItem(id: string, expanded: boolean) {
-  if (expanded) {
-    if (props.multiple) {
-      expandedItemIds.value.push(id)
-    } else {
-      expandedItemIds.value = [id]
-    }
-
-    return
-  }
-
-  expandedItemIds.value = expandedItemIds.value.filter((item) => item !== id)
-}
-
-const isExpanded = (id: string) => expandedItemIds.value.includes(id)
-
 provideCollapseGroupContext({
-  isExpanded,
-  toggleItem,
+  expandedIds,
+  props,
 })
 </script>
 

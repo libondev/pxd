@@ -1,8 +1,11 @@
+import type { Ref } from 'vue'
+
+import type { CollapseGroupProps } from '../components/collapse-group/types'
 import { createContext } from '../utils/context'
 
 export interface CollapseGroupContext {
-  isExpanded: (id: string) => boolean
-  toggleItem: (id: string, expanded: boolean) => void
+  expandedIds: Ref<Set<string>>
+  props: CollapseGroupProps
 }
 
 export const [provideCollapseGroupContext, useCollapseGroupContext] =
