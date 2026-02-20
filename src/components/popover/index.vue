@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
-import { computed, shallowRef, watch } from 'vue'
-import { useIntersectionObserver } from '../../composables/use-browser-observer'
+import { arrow, autoUpdate, computePosition, flip, offset, shift, hide } from '@floating-ui/dom'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOutsideClick } from '../../composables/use-outside-click'
@@ -37,6 +36,7 @@ const emits = defineEmits<PopoverEmits>()
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
+let cleanupAutoUpdate: (() => void) | null = null
 
 const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
@@ -109,11 +109,50 @@ useOutsideClick(wrapperRef, {
   ),
 })
 
-useIntersectionObserver(triggerRef, ([entry]) => {
-  if (props.closeOnInvisible && isVisible.value && entry!.intersectionRatio === 0) {
-    handlePopoverHide(true)
+function disposeAutoUpdate() {
+  if (cleanupAutoUpdate) {
+    cleanupAutoUpdate()
+    cleanupAutoUpdate = null
   }
-})
+}
+
+async function updatePosition() {
+  const { x, y, placement, middlewareData } = await computePosition(
+    triggerRef.value,
+    wrapperRef.value,
+    {
+      placement: props.position,
+      middleware: [
+        shift(),
+        offset(props.offset),
+        props.autoPosition && flip(),
+        props.showArrow && arrow({ element: arrayRef.value }),
+        props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
+        props.closeOnInvisible && hide({ strategy: 'escaped' }),
+      ],
+    },
+  )
+
+  localPosition.value = placement
+
+  if (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped) {
+    handlePopoverHide(true)
+    return
+  }
+
+  Object.assign(wrapperRef.value.style, {
+    left: `${x}px`,
+    top: `${y}px`,
+  })
+
+  if (middlewareData.arrow) {
+    const { x: arrowX, y: arrowY } = middlewareData.arrow
+    Object.assign(arrayRef.value.style, {
+      left: arrowX != null ? `${Math.max(arrowX, 5)}px` : '',
+      top: arrowY != null ? `${Math.max(arrowY, 5)}px` : '',
+    })
+  }
+}
 
 async function handlePopoverShow() {
   if (showPopoverTimer || props.disabled) {
@@ -145,33 +184,12 @@ async function handlePopoverShow() {
     return
   }
 
-  const { x, y, placement, middlewareData } = await computePosition(
-    triggerRef.value,
-    wrapperRef.value,
-    {
-      placement: localPosition.value,
-      middleware: [
-        shift(),
-        offset(props.offset),
-        props.autoPosition && flip(),
-        props.showArrow && arrow({ element: arrayRef.value }),
-      ],
-    },
-  )
+  disposeAutoUpdate()
 
-  localPosition.value = placement
-
-  Object.assign(wrapperRef.value.style, {
-    left: `${x}px`,
-    top: `${y}px`,
-  })
-
-  if (middlewareData.arrow) {
-    const { x, y } = middlewareData.arrow
-    Object.assign(arrayRef.value.style, {
-      left: x != null ? `${Math.max(x, 5)}px` : '',
-      top: y != null ? `${Math.max(y, 5)}px` : '',
-    })
+  if (props.autoPosition) {
+    cleanupAutoUpdate = autoUpdate(triggerRef.value, wrapperRef.value, updatePosition)
+  } else {
+    await updatePosition()
   }
 }
 
@@ -194,6 +212,8 @@ async function handlePopoverHide(immediate: boolean = false) {
       immediate ? 0 : props.hideDelay,
     )
   })
+
+  disposeAutoUpdate()
 
   await hidePopover()
 
@@ -322,6 +342,10 @@ watch(
     }
   },
 )
+
+onBeforeUnmount(() => {
+  disposeAutoUpdate()
+})
 
 defineExpose({
   show: handlePopoverShow,
