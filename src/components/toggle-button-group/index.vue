@@ -18,6 +18,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {
   gap: 0,
+  multiple: true,
+  modelValue: () => [],
 })
 const emits = defineEmits<ToggleButtonGroupEmits>()
 

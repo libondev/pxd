@@ -9,6 +9,7 @@ export interface ToggleButtonGroupProps {
   gap?: ResponsiveValue<string | number>
   size?: ComponentSize
   disabled?: boolean
+  multiple?: boolean
   options?: ComponentOption[]
   variant?: 'ghost' | 'outline'
   modelValue?: ComponentValue | ComponentValue[]

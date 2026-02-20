@@ -109,6 +109,31 @@ const toggleButtonOptions = [
 </template>
 ```
 
+## Single
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const functions = ref('bold')
+
+const toggleButtonOptions = [
+  { label: 'Bold', value: 'bold' },
+  { label: 'Italic', value: 'italic' },
+  { label: 'Underline', value: 'underline' },
+]
+</script>
+
+<template>
+  <PToggleButtonGroup
+    v-model="functions"
+    variant="outline"
+    :multiple="false"
+    :options="toggleButtonOptions"
+  />
+</template>
+```
+
 ## Sizes
 
 ```vue demo

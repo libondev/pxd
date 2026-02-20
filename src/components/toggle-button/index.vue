@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { tv } from 'tailwind-variants'
+import { toArray } from '../../utils/format'
 import { useToggleButtonGroupContext } from '../../contexts/toggle-button'
 
 defineOptions({
@@ -45,7 +46,7 @@ const toggleButtonVariant = tv({
   compoundVariants: [
     { checked: true, disabled: true, class: 'bg-gray-200' },
     { checked: false, disabled: true, class: 'text-gray-400' },
-    { checked: false, disabled: false, class: 'hover:text-gray-900' },
+    { checked: false, disabled: false, class: 'hover:text-gray-800' },
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
     { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100 border-gray-500' },
   ],
@@ -69,12 +70,8 @@ const configProvider = useConfigProvider()
 const computedDisabled = computed(() => props.disabled || toggleButtonGroupContext?.props.disabled)
 
 const isChecked = computed(() => {
-  if (Array.isArray(modelValue.value)) {
-    return modelValue.value.includes(props.value)
-  }
-
-  if (typeof props.value === 'boolean') {
-    return modelValue.value as boolean
+  if (toggleButtonGroupContext?.props.multiple) {
+    return toArray(modelValue.value).includes(props.value)
   }
 
   return modelValue.value === props.value
@@ -92,10 +89,16 @@ const computedClass = computed(() => {
 function onToggleClick() {
   const newCheckedState = !isChecked.value
 
-  if (Array.isArray(modelValue.value)) {
-    modelValue.value = newCheckedState
-      ? [...modelValue.value, props.value]
-      : modelValue.value.filter((v) => v !== props.value)
+  if (toggleButtonGroupContext) {
+    if (toggleButtonGroupContext.props.multiple) {
+      const formattedValue = toArray(modelValue.value)
+
+      modelValue.value = newCheckedState
+        ? [...formattedValue, props.value]
+        : formattedValue.filter((v) => v !== props.value)
+    } else {
+      modelValue.value = props.value
+    }
 
     return
   }
