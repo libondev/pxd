@@ -51,13 +51,20 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 select-none before:default-animation-timing-function! motion-safe:before:animate-[placeholder_8s_infinite]"
+    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 bg-background-100 text-13px select-none before:default-animation-timing-function! motion-safe:before:[animation-duration:8s]"
     :style="{ '--avatar-size': computedSize }"
+    :data-placeholder="placeholder"
     v-bind="$attrs"
   >
     <slot>
+      <span
+        v-if="isHideAvatar"
+        class="font-medium px-1 relative flex size-full items-center justify-center overflow-hidden rounded-inherit"
+      >
+        {{ alt }}
+      </span>
       <img
-        v-if="!isHideAvatar"
+        v-else
         :src="src"
         :alt="alt"
         loading="lazy"
@@ -89,17 +96,15 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-avatar {
-  &::before,
+  &[data-placeholder='true']::before,
   &::after {
     content: '';
-    width: 100%;
-    height: 100%;
     position: absolute;
-    inset: 0;
+    inset: -1px;
     border-radius: inherit;
   }
 
-  &::before {
+  &[data-placeholder='true']::before {
     background-image: linear-gradient(
       270deg,
       var(--color-gray-alpha-100),
@@ -108,6 +113,8 @@ defineExpose({
       var(--color-gray-alpha-100)
     );
     background-size: 400% 100%;
+    animation-name: placeholder;
+    animation-iteration-count: infinite;
   }
 
   &::after {

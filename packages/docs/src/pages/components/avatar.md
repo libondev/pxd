@@ -59,22 +59,30 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 
 <template>
   <PStack direction="vertical">
-    <PAvatar>
+    <PAvatar placeholder>
       <template #icon>
         <ArrowCircleDownIcon class="text-gray-900" />
       </template>
     </PAvatar>
-    <PAvatar>
+    <PAvatar placeholder>
       <template #icon>
         <CheckCircleFillIcon class="text-gray-900" />
       </template>
     </PAvatar>
-    <PAvatar>
+    <PAvatar placeholder>
       <template #icon>
         <ClockDashedIcon class="text-gray-900" />
       </template>
     </PAvatar>
   </PStack>
+</template>
+```
+
+## Text Avatar
+
+```vue demo
+<template>
+  <PAvatar alt="LT" />
 </template>
 ```
 
