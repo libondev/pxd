@@ -507,51 +507,51 @@ defineExpose({
     animation-name: popover-fade-slide-hide;
   }
 
-  [data-position='top'] {
-    transform-origin: bottom center;
+  [data-position='top'] & {
+    transform-origin: 50% 100%;
   }
 
-  [data-position='top-start'] {
-    transform-origin: bottom left;
+  [data-position='top-start'] & {
+    transform-origin: 0% 100%;
   }
 
-  [data-position='top-end'] {
-    transform-origin: bottom right;
+  [data-position='top-end'] & {
+    transform-origin: 100% 100%;
   }
 
-  [data-position='bottom'] {
+  [data-position='bottom'] & {
     transform-origin: top center;
   }
 
-  [data-position='bottom-start'] {
+  [data-position='bottom-start'] & {
     transform-origin: top left;
   }
 
-  [data-position='bottom-end'] {
+  [data-position='bottom-end'] & {
     transform-origin: top right;
   }
 
-  [data-position='left'] {
+  [data-position='left'] & {
     transform-origin: right center;
   }
 
-  [data-position='left-start'] {
+  [data-position='left-start'] & {
     transform-origin: right top;
   }
 
-  [data-position='left-end'] {
+  [data-position='left-end'] & {
     transform-origin: right bottom;
   }
 
-  [data-position='right'] {
+  [data-position='right'] & {
     transform-origin: left center;
   }
 
-  [data-position='right-start'] {
+  [data-position='right-start'] & {
     transform-origin: left top;
   }
 
-  [data-position='right-end'] {
+  [data-position='right-end'] & {
     transform-origin: left bottom;
   }
 

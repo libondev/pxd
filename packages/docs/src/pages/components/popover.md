@@ -12,7 +12,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
 <template>
   <PStack justify="center" class="w-lg">
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       position="top-start"
     >
       <PButton> Top start </PButton>
@@ -22,7 +22,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </template>
     </PPopover>
 
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" position="top">
       <PButton> Top </PButton>
 
       <template #content>
@@ -30,7 +30,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </template>
     </PPopover>
 
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="top-end">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" position="top-end">
       <PButton> Top end </PButton>
 
       <template #content>
@@ -42,7 +42,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
   <PStack justify="between" class="w-lg my-2">
     <PStack direction="vertical">
       <PPopover
-        content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+        content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="left-start"
       >
         <PButton> Left start </PButton>
@@ -52,7 +52,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
         </template>
       </PPopover>
 
-      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="left">
+      <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" position="left">
         <PButton> Left </PButton>
 
         <template #content>
@@ -61,7 +61,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </PPopover>
 
       <PPopover
-        content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+        content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="left-end"
       >
         <PButton> Left end </PButton>
@@ -74,7 +74,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
 
     <PStack direction="vertical" align="end">
       <PPopover
-        content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+        content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="right-start"
       >
         <PButton> Right start </PButton>
@@ -84,7 +84,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
         </template>
       </PPopover>
 
-      <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="right">
+      <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" position="right">
         <PButton> Right </PButton>
 
         <template #content>
@@ -93,7 +93,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </PPopover>
 
       <PPopover
-        content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+        content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="right-end"
       >
         <PButton> Right end </PButton>
@@ -107,7 +107,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
 
   <PStack justify="center" class="w-lg">
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       position="bottom-start"
     >
       <PButton> Bottom start </PButton>
@@ -117,7 +117,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </template>
     </PPopover>
 
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" position="bottom">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" position="bottom">
       <PButton> Bottom </PButton>
 
       <template #content>
@@ -126,7 +126,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
     </PPopover>
 
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       position="bottom-end"
     >
       <PButton> Bottom end </PButton>
@@ -152,7 +152,7 @@ const content =
 
 <template>
   <PStack>
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="hover">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" trigger="hover">
       <PButton> Hover to active </PButton>
 
       <template #content>
@@ -160,7 +160,7 @@ const content =
       </template>
     </PPopover>
 
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="click">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" trigger="click">
       <PButton> Click to active </PButton>
 
       <template #content>
@@ -168,7 +168,7 @@ const content =
       </template>
     </PPopover>
 
-    <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" trigger="focus">
+    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" trigger="focus">
       <PButton> Focus to active </PButton>
 
       <template #content>
@@ -177,7 +177,7 @@ const content =
     </PPopover>
 
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       trigger="contextmenu"
     >
       <PButton> Contextmenu to active </PButton>
@@ -188,7 +188,7 @@ const content =
     </PPopover>
 
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       :trigger="['hover', 'click', 'focus']"
     >
       <PButton> Hover/Click/Focus to active </PButton>
@@ -199,7 +199,7 @@ const content =
     </PPopover>
 
     <PPopover
-      content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       trigger="manual"
       :visible="visible"
     >
@@ -222,7 +222,7 @@ const content =
 </script>
 
 <template>
-  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :offset="30">
+  <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" :offset="30">
     <PButton> Hover to active </PButton>
 
     <template #content>
@@ -240,7 +240,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :max-width="200">
+  <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" :max-width="200">
     <PButton> Hover to active </PButton>
 
     <template #content>
@@ -258,7 +258,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </script>
 
 <template>
-  <PPopover close-on-press-escape content-class="bg-gray-1000 rounded-md p-2 text-sm text-gray-100" :max-width="200">
+  <PPopover close-on-press-escape content-class="p-4 bg-background-100 shadow-sm border rounded-md" :max-width="200">
     <PButton> Hover to active </PButton>
 
     <template #content>
