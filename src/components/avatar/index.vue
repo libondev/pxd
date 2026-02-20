@@ -72,7 +72,7 @@ defineExpose({
         aria-hidden="true"
         fetchpriority="low"
         crossorigin="anonymous"
-        class="relative block size-full overflow-hidden rounded-inherit"
+        class="relative block size-full overflow-hidden rounded-inherit bg-gray-100"
         @load="onLoadSuccess"
         @loadstart="onLoadStart"
         @abort="onLoadError"
