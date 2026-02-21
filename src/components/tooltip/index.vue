@@ -43,7 +43,7 @@ const computedDisabled = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-border-tooltip bg-(--popover-arrow-bg)',
+    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line bg-(--popover-arrow-bg)',
     computedVariant.value.text,
     props.contentClass,
   ].join(' ')
