@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<TooltipProps>(), {
   variant: 'primary',
   position: 'top',
   showArrow: true,
+  showDelay: 300,
+  hideDelay: 100,
 })
 
 const VARIANTS = {
@@ -56,6 +58,8 @@ const computedClasses = computed(() => {
     :position="position"
     :disabled="computedDisabled"
     :show-arrow="showArrow"
+    :show-delay="showDelay"
+    :hide-delay="hideDelay"
     wrapper-class="max-sm:data-[position^=top]:px-1 max-sm:data-[position^=bottom]:px-1 max-sm:data-[position^=left]:pl-1 max-sm:data-[position^=right]:pr-1"
     :arrow-color="computedVariant.bg"
     :content-class="computedClasses"

@@ -8,6 +8,8 @@ export interface TooltipProps {
   variant?: ComponentVariant
   position?: ComponentPosition
   disabled?: boolean
+  showDelay?: number
+  hideDelay?: number
   showArrow?: boolean
   desktopOnly?: boolean
   contentClass?: ComponentClass
