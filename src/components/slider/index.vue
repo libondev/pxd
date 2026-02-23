@@ -63,7 +63,7 @@ const modelValue = useModelValue(props, emits)
 const activeThumb = shallowRef<'start' | 'end' | null>()
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
-const valueArray = computed<[number, number]>(() => {
+const valueRange = computed<[number, number]>(() => {
   if (props.range) {
     return Array.isArray(modelValue.value)
       ? (modelValue.value as [number, number])
@@ -78,8 +78,8 @@ function getPercentage(value: number) {
   return Math.max(0, Math.min(100, ((value - min) / range) * 100))
 }
 
-const startPercentage = computed(() => getPercentage(valueArray.value[0]))
-const endPercentage = computed(() => getPercentage(valueArray.value[1]))
+const startPercentage = computed(() => getPercentage(valueRange.value[0]))
+const endPercentage = computed(() => getPercentage(valueRange.value[1]))
 
 const trackStyle = computed(() => {
   const backgroundColor = props.disabled
@@ -119,7 +119,7 @@ function updateValueFromPosition(clientX: number) {
   )
 
   if (props.range) {
-    const newValueArray = [...valueArray.value] as [number, number]
+    const newValueArray = [...valueRange.value] as [number, number]
 
     if (activeThumb.value === 'start') {
       newValueArray[0] = newValue
@@ -137,7 +137,7 @@ function updateValueFromPosition(clientX: number) {
       }
     }
 
-    if (valueArray.value[0] !== newValueArray[0] || valueArray.value[1] !== newValueArray[1]) {
+    if (valueRange.value[0] !== newValueArray[0] || valueRange.value[1] !== newValueArray[1]) {
       modelValue.value = newValueArray
     }
   } else if (modelValue.value !== newValue) {
@@ -243,6 +243,47 @@ function initModelValue() {
   }
 }
 
+function onThumbKeydown(ev: KeyboardEvent) {
+  if (props.disabled) {
+    return
+  }
+
+  const { code } = ev
+  const delta = code === 'ArrowLeft' ? -props.step : code === 'ArrowRight' ? props.step : 0
+
+  if (!delta) {
+    return
+  }
+
+  ev.preventDefault()
+
+  const target = ev.target as HTMLElement
+
+  const isStart = target.dataset.rangeStart === 'true'
+
+  if (props.range) {
+    const [startVal, endVal] = valueRange.value
+    const newRange: [number, number] = [startVal, endVal]
+
+    if (isStart) {
+      newRange[0] = Math.max(props.min, Math.min(endVal, startVal + delta))
+    } else {
+      newRange[1] = Math.max(startVal, Math.min(props.max, endVal + delta))
+    }
+
+    if (newRange[0] !== startVal || newRange[1] !== endVal) {
+      modelValue.value = newRange
+    }
+  } else {
+    const current = modelValue.value as number
+    const newValue = Math.max(props.min, Math.min(props.max, current + delta))
+
+    if (newValue !== current) {
+      modelValue.value = newValue
+    }
+  }
+}
+
 initModelValue()
 
 onBeforeUnmount(() => {
@@ -269,32 +310,38 @@ onBeforeUnmount(() => {
 
     <div
       v-if="props.range"
+      tabindex="0"
       :data-dragging="isDragging && activeThumb === 'start'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-transform motion-safe:after:transition-transform pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      :data-range-start="true"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
+      @keydown="onThumbKeydown"
       @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     >
       <span
         class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
-        {{ valueArray[0] }}
+        {{ valueRange[0] }}
       </span>
     </div>
 
     <div
+      tabindex="0"
+      :data-range-start="range ? false : true"
       :data-dragging="isDragging && activeThumb === 'end'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-transform motion-safe:after:transition-transform pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
+      @keydown="onThumbKeydown"
       @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     >
       <span
         class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
-        {{ valueArray[1] }}
+        {{ valueRange[1] }}
       </span>
     </div>
   </div>
@@ -307,10 +354,12 @@ onBeforeUnmount(() => {
 
 .pxd-slider--thumb::before,
 .pxd-slider--thumb::after {
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   border-radius: inherit;
+  transition: inherit;
   transform: translate3d(-50%, -50%, 0) scale(var(--slider-thumb-scale, 1));
 }
 
