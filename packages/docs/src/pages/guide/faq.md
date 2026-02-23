@@ -20,10 +20,10 @@ Because the events in vue2 distinguish between camelCase and kebab-case style, b
 <!-- Vue2 only -->
 
 <!-- Bad (does't work) -->
-<PActiveGraph @cellClick="handleCellClick" />
+<Test @cellClick="handleCellClick" />
 
 <!-- Good (it works) -->
-<PActiveGraph @cell-click="handleCellClick" />
+<Test @cell-click="handleCellClick" />
 ```
 
 ## No loader is configured for ".vue" files
