@@ -4,6 +4,7 @@ import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'
+import { NOOP } from '../../utils/event'
 import type { SliderEmits, SliderProps } from './types'
 
 defineOptions({
@@ -269,9 +270,10 @@ onBeforeUnmount(() => {
     <div
       v-if="props.range"
       :data-dragging="isDragging && activeThumb === 'start'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 motion-safe:before:transition-transform motion-safe:after:transition-transform"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-transform motion-safe:after:transition-transform pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
+      @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     >
       <span
@@ -283,9 +285,10 @@ onBeforeUnmount(() => {
 
     <div
       :data-dragging="isDragging && activeThumb === 'end'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 motion-safe:before:transition-transform motion-safe:after:transition-transform"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-transform motion-safe:after:transition-transform pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
+      @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     >
       <span
@@ -298,9 +301,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
-.pxd-slider--thumb:hover,
-.pxd-slider--thumb:active {
-  --scale: 1.3;
+.pxd-slider--thumb[data-dragging='true'] {
+  --slider-thumb-scale: 1.3;
 }
 
 .pxd-slider--thumb::before,
@@ -309,7 +311,7 @@ onBeforeUnmount(() => {
   top: 50%;
   left: 50%;
   border-radius: inherit;
-  transform: translate3d(-50%, -50%, 0) scale(var(--scale, 1));
+  transform: translate3d(-50%, -50%, 0) scale(var(--slider-thumb-scale, 1));
 }
 
 .pxd-slider--thumb::before {
