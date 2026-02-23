@@ -3,7 +3,7 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, onMounted, shallowRef, watch } from 'vue'
 import { useCollapseGroupContext } from '../../contexts/collapse'
 import { getUniqueId } from '../../utils/uid'
-import type { CollapseProps } from './types'
+import type { CollapseEmits, CollapseProps } from './types'
 
 defineOptions({
   name: 'PCollapse',
@@ -13,6 +13,7 @@ defineOptions({
 const uid = getUniqueId()
 
 const props = defineProps<CollapseProps>()
+const emits = defineEmits<CollapseEmits>()
 
 const localExpand = shallowRef(props.expand)
 const collapseGroupContext = useCollapseGroupContext()
@@ -50,8 +51,10 @@ function leave(el: Element) {
   ;(el as HTMLElement).style.height = '0'
 }
 
-function onToggleClick() {
+function onToggleClick(ev: MouseEvent) {
   const newCheckedState = !isExpanded.value
+
+  emits('toggle', ev)
 
   if (collapseGroupContext) {
     const ids = collapseGroupContext.expandedIds.value
