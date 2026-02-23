@@ -20,7 +20,6 @@ defineOptions({
 
 const props = withDefaults(defineProps<ActiveGraphProps>(), {
   legend: true,
-  graphOnly: false,
   tooltip: true,
   data: () => [],
 })
@@ -31,6 +30,8 @@ const configProvider = useConfigProvider()
 
 const CELL_GAP = 3
 const CELL_SIZE = 12
+
+const selectedDate = shallowRef(props.defaultSelect)
 
 const getDefaultStartDate = () => {
   const date = new Date()
@@ -301,7 +302,9 @@ function onCellClick(event: MouseEvent) {
     return
   }
 
-  emits('cell-click', event, date)
+  selectedDate.value = selectedDate.value === date ? '' : date
+
+  emits('select', date, event)
 }
 
 let tbodyRect: DOMRect
@@ -413,9 +416,13 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) bg-gray-alpha-200 motion-safe:transition-colors"
+            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) bg-gray-alpha-100 motion-safe:transition-all"
             :data-date="col.date"
-            :class="{ 'pointer-events-none opacity-0': col.hidden }"
+            :class="{
+              'pointer-events-none opacity-0': col.hidden,
+              'opacity-30': selectedDate && col.date !== selectedDate,
+              'outline-1 outline-primary': selectedDate && col.date === selectedDate,
+            }"
             :style="`background: ${col.color}`"
           />
         </tr>
@@ -424,22 +431,22 @@ onBeforeUnmount(() => {
           <tr class="pxd-active-graph--placeholder h-0.5 pointer-events-none" />
           <tr class="pxd-active-graph--legend pointer-events-none">
             <td class="h-3 relative text-foreground-secondary">
-              <span class="right-1 absolute top-1/2 -translate-y-1/2">{{
-                configProvider.locale.compare.less
-              }}</span>
+              <span class="right-1 absolute top-1/2 -translate-y-1/2">
+                {{ configProvider.locale.compare.less }}
+              </span>
             </td>
 
             <td
               v-for="color in computedColors"
               :key="color"
-              class="w-3 h-3 rounded-(--item-radius) bg-gray-alpha-200 motion-safe:transition-colors"
+              class="w-3 h-3 rounded-(--item-radius) bg-gray-alpha-100 motion-safe:transition-colors"
               :style="`background-color: ${color}`"
             />
 
             <td class="h-3 w-3 relative text-foreground-secondary">
-              <span class="absolute top-1/2 left-px -translate-y-1/2">{{
-                configProvider.locale.compare.more
-              }}</span>
+              <span class="absolute top-1/2 left-px -translate-y-1/2">
+                {{ configProvider.locale.compare.more }}
+              </span>
             </td>
           </tr>
         </template>

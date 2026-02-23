@@ -6,18 +6,19 @@ interface FieldNames {
 export interface ActiveGraphProps {
   data?: Record<string, any>[]
   legend?: boolean
+  colors?: Record<string, string>
   startDate?: string | Date
   endDate?: string | Date
-  colors?: Record<string, string>
+  tooltip?: boolean
   graphOnly?: boolean
   transpose?: boolean
-  tooltip?: boolean
   fieldNames?: FieldNames
   itemRadius?: string | number
+  defaultSelect?: string
 }
 
 export interface ActiveGraphEmits {
-  'cell-click': [MouseEvent, string]
+  select: [string, MouseEvent]
 }
 
 export interface ActiveGraphCellData {

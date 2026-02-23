@@ -40,14 +40,14 @@ function refreshData() {
   data.value = genRandomData()
 }
 
-function onCellClick(event, date) {
-  console.log({ date })
+function onSelect(date, event) {
+  console.log({ date, event })
 }
 </script>
 
 <template>
   <PStack direction="vertical">
-    <PActiveGraph :data="data" @cell-click="onCellClick" />
+    <PActiveGraph :data="data" @select="onSelect" />
 
     <PButton class="ml-8" @click="refreshData()"> Refresh </PButton>
   </PStack>
@@ -68,6 +68,23 @@ const data = [
 
 <template>
   <PActiveGraph transpose :data="data" start-date="2025-05-01" end-date="2025-05-31" />
+</template>
+```
+
+## Select
+
+```vue demo
+<script setup>
+const data = [
+  { date: '2025-05-06', count: 5 },
+  { date: '2025-05-07', count: 10 },
+  { date: '2025-05-08', count: 15 },
+  { date: '2025-05-09', count: 20 },
+]
+</script>
+
+<template>
+  <PActiveGraph transpose :data="data" default-select="2025-05-06" start-date="2025-05-01" end-date="2025-05-31" />
 </template>
 ```
 
