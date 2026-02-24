@@ -68,3 +68,19 @@ const checked = ref(false)
   </PStack>
 </template>
 ```
+
+## Shape
+
+```vue demo
+<script setup>
+const checked = ref(false)
+</script>
+
+<template>
+  <PStack gap="6" :direction="{ xs: 'vertical', sm: 'horizontal' }">
+    <PCheckbox v-model="checked" label="Checkbox" shape="default" />
+    <PCheckbox v-model="checked" label="Checkbox" shape="square" />
+    <PCheckbox v-model="checked" label="Checkbox" shape="rounded" />
+  </PStack>
+</template>
+```

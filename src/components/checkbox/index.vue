@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 const emits = defineEmits<CheckboxEmits>()
 
 const checkboxVariant = tv({
-  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 items-center justify-center peer-focus-ring transform-gpu overflow-hidden rounded-sm border motion-safe:transition-colors',
+  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 items-center justify-center peer-focus-ring transform-gpu overflow-hidden border motion-safe:transition-colors',
   variants: {
     checked: {
       true: '',
@@ -33,6 +33,11 @@ const checkboxVariant = tv({
     disabled: {
       true: '',
       false: '',
+    },
+    shape: {
+      default: 'rounded-sm',
+      square: 'rounded-none',
+      rounded: 'rounded-full',
     },
   },
   compoundVariants: [
@@ -58,6 +63,7 @@ const checkboxVariant = tv({
     },
   ],
   defaultVariants: {
+    shape: 'default',
     checked: false,
     disabled: false,
   },
@@ -88,6 +94,7 @@ const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.
 
 const computedClasses = computed(() => {
   return checkboxVariant({
+    shape: props.shape,
     checked: isChecked.value,
     disabled: computedDisabled.value,
   })
