@@ -419,7 +419,7 @@ onBeforeUnmount(() => {
             class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) bg-gray-alpha-100 motion-safe:transition-all"
             :data-date="col.date"
             :class="{
-              'pointer-events-none opacity-0': col.hidden,
+              'pointer-events-none invisible': col.hidden,
               'opacity-30': selectedDate && col.date !== selectedDate,
               'outline-1 outline-primary': selectedDate && col.date === selectedDate,
             }"
