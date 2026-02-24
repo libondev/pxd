@@ -178,6 +178,14 @@ function onInputFocus(event: FocusEvent) {
 function onInputBlur(event: FocusEvent) {
   inputData.userInput = null
 
+  if (isNumber(inputData.currentValue)) {
+    const clamped = clampToRange(inputData.currentValue)
+    if (clamped !== inputData.currentValue) {
+      inputData.currentValue = clamped
+      modelValue.value = clamped
+    }
+  }
+
   if (inputData.currentValue === null) {
     ;(event.target as HTMLInputElement).value = ''
   }
@@ -195,7 +203,11 @@ function onInputInput(value: string) {
 }
 
 function onInputChange(value: string, event: Event) {
-  const newValue = toPrecision(value === '' ? null : Number.parseFloat(value))
+  let newValue = toPrecision(value === '' ? null : Number.parseFloat(value))
+
+  if (isNumber(newValue)) {
+    newValue = clampToRange(newValue)
+  }
 
   emits('change', newValue, event)
 }
