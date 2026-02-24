@@ -2,7 +2,7 @@
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { isNil, isNumber, isUndefined } from 'es-toolkit'
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
 import PInput from '../input/index.vue'
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<NumberInputProps>(), {
   scientific: true,
   min: Number.MIN_SAFE_INTEGER,
   max: Number.MAX_SAFE_INTEGER,
+  thousandsSeparator: ',',
 })
 
 const emits = defineEmits<NumberInputEmits>()
@@ -37,10 +38,20 @@ const modelValue = computed({
   },
 })
 
+const isFocused = ref(false)
+
 const inputData = reactive<NumberInputData>({
   currentValue: props.modelValue,
   userInput: null,
 })
+
+function formatWithThousands(value: string | number): string {
+  const str = String(value)
+  const dotIndex = str.indexOf('.')
+  const intPart = dotIndex === -1 ? str : str.slice(0, dotIndex)
+  const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
+  return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, props.thousandsSeparator) + decPart
+}
 
 const inputValue = computed(() => {
   if (inputData.userInput !== null) {
@@ -61,6 +72,10 @@ const inputValue = computed(() => {
     if (!isUndefined(props.precision)) {
       currentValue = currentValue.toFixed(props.precision)
     }
+  }
+
+  if (props.thousands && !isFocused.value) {
+    return formatWithThousands(currentValue)
   }
 
   return currentValue
@@ -172,10 +187,12 @@ function onInputKeydown(ev: KeyboardEvent) {
 }
 
 function onInputFocus(event: FocusEvent) {
+  isFocused.value = true
   emits('focus', event)
 }
 
 function onInputBlur(event: FocusEvent) {
+  isFocused.value = false
   inputData.userInput = null
 
   if (isNumber(inputData.currentValue)) {

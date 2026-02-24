@@ -90,6 +90,23 @@ const value = ref(0)
 </template>
 ```
 
+## Thousands format
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PStack>
+    <PNumberInput v-model="value" thousands class="max-w-xs" />
+    <PNumberInput v-model="value" thousands thousands-separator="_" class="max-w-xs" />
+  </PStack>
+</template>
+```
+
 ## Icons
 
 ```vue demo
