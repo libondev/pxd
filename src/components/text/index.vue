@@ -104,7 +104,9 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" :style="computedStyle">
-    <slot />
+  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle">
+    <slot>
+      {{ text }}
+    </slot>
   </Component>
 </template>

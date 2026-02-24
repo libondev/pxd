@@ -26,25 +26,11 @@ Display text using well-defined typographic styles.
 </template>
 ```
 
-## Truncate
+## Secondary
 
 ```vue demo
 <template>
-  <PStack direction="vertical" gap="7">
-    <PText truncate style="max-width:200px">The Evil Rabbit jumps. The Evil Rabbit jumps.</PText>
-
-    <PText :truncate="2" style="max-width: 200px">
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-    </PText>
-
-    <PText :truncate="3" style="max-width: 200px">
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-      The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.
-    </PText>
-  </PStack>
+  <PText secondary>The Evil Rabbit jumps.</PText>
 </template>
 ```
 
@@ -55,6 +41,24 @@ Display text using well-defined typographic styles.
   <PText align="left">The Evil Rabbit jumps.</PText>
   <PText align="center">The Evil Rabbit jumps.</PText>
   <PText align="right">The Evil Rabbit jumps.</PText>
+</template>
+```
+
+## Truncate
+
+```vue demo
+<script setup>
+const text = 'The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.'
+</script>
+
+<template>
+  <PStack direction="vertical" gap="6">
+    <PText :text="text" truncate style="max-width: 200px"></PText>
+
+    <PText :truncate="2" style="max-width: 200px"> {{ text }} </PText>
+
+    <PText :truncate="3" style="max-width: 200px"> {{ text }} </PText>
+  </PStack>
 </template>
 ```
 
