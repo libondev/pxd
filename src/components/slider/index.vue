@@ -313,7 +313,7 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-dragging="isDragging && activeThumb === 'start'"
       :data-range-start="true"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @keydown="onThumbKeydown"
@@ -331,7 +331,7 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-range-start="range ? false : true"
       :data-dragging="isDragging && activeThumb === 'end'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @keydown="onThumbKeydown"
@@ -359,7 +359,6 @@ onBeforeUnmount(() => {
   top: 50%;
   left: 50%;
   border-radius: inherit;
-  transition: inherit;
   transform: translate3d(-50%, -50%, 0) scale(var(--slider-thumb-scale, 1));
 }
 
