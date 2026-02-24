@@ -2,7 +2,7 @@
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { isNil, isNumber, isUndefined } from 'es-toolkit'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, shallowRef, watch } from 'vue'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
 import PInput from '../input/index.vue'
@@ -38,7 +38,12 @@ const modelValue = computed({
   },
 })
 
-const isFocused = ref(false)
+const REGEXPS = {
+  'remove-leading-zeros': /^(-?)0+(?=\d)/,
+  'thousands-separator': /\B(?=(\d{3})+(?!\d))/g,
+}
+
+const isFocused = shallowRef(false)
 
 const inputData = reactive<NumberInputData>({
   currentValue: props.modelValue,
@@ -50,7 +55,7 @@ function formatWithThousands(value: string | number): string {
   const dotIndex = str.indexOf('.')
   const intPart = dotIndex === -1 ? str : str.slice(0, dotIndex)
   const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
-  return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, props.thousandsSeparator) + decPart
+  return intPart.replace(REGEXPS['thousands-separator'], props.thousandsSeparator) + decPart
 }
 
 const inputValue = computed(() => {
@@ -211,9 +216,10 @@ function onInputBlur(event: FocusEvent) {
 }
 
 function onInputInput(value: string) {
-  inputData.userInput = value
+  const normalized = value.replace(REGEXPS['remove-leading-zeros'], '$1')
+  inputData.userInput = normalized
 
-  const newValue = value === '' ? null : Number.parseFloat(value)
+  const newValue = normalized === '' ? null : Number.parseFloat(normalized)
 
   inputData.currentValue = toPrecision(newValue ?? 0)
   modelValue.value = inputData.currentValue
