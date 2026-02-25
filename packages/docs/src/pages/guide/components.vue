@@ -44,7 +44,7 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
     <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
   </PText>
 
-  <div class="py-4 z-10 border-b bg-background-100">
+  <div class="pt-4 pb-2 z-10 bg-background-100">
     <PInput
       v-model="searchKeyword"
       placeholder="Search components"

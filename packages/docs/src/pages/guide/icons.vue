@@ -90,11 +90,11 @@ function handleCustomPrefixChange(event: Event) {
     A total of <span class="font-medium text-foreground">{{ iconCount }}</span> icons
   </PText>
 
-  <div class="py-4 z-10 border-b bg-background-100">
+  <div class="pt-4 pb-2 z-10 bg-background-100">
     <PInput v-model="searchKeyword" placeholder="Search icons" clearable @input="handleSearch" />
   </div>
 
-  <div class="my-4 gap-4 flex">
+  <div class="gap-4 flex">
     <PSwitchGroup v-model="copyType" @change="handleCopyTypeChange">
       <PSwitch label="Import" value="import" />
       <PSwitch label="Element" value="element" />
@@ -110,7 +110,7 @@ function handleCustomPrefixChange(event: Event) {
     </PSwitchGroup>
   </div>
 
-  <Grids :data="filteredComponents" data-key="name" class="mt-4 border-t" @click="onIconClick">
+  <Grids :data="filteredComponents" data-key="name" class="mt-2" @click="onIconClick">
     <template #default="{ item }">
       <button
         role="button"
