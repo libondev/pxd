@@ -8,11 +8,20 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "insertFinalNewline": true,
-  "experimentalSortImports": {
-    "sortSideEffects": true
+  "sortImports": {
+    "sortSideEffects": true,
+    "groups": [
+      "type-import",
+      ["value-builtin", "value-external"],
+      "type-internal",
+      "value-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
   },
-  "experimentalSortPackageJson": true,
-  "experimentalTailwindcss": {
+  "sortPackageJson": true,
+  "sortTailwindcss": {
     "preserveDuplicates": false,
     "preserveWhitespace": false,
     "functions": ["clsx", "cn", "cva", "tw"],

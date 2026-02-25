@@ -9,7 +9,6 @@
   "oxc.configPath": ".oxlintrc.json",
   "oxc.unusedDisableDirectives": "deny",
   "oxc.fmt.configPath": ".oxfmtrc.json",
-  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
@@ -17,6 +16,15 @@
     "source.organizeImports": "never"
   },
   "[vue]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "tailwindCSS.classAttributes": [
@@ -36,7 +44,4 @@
     "choicebox",
     "gdsicon"
   ],
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
 }
