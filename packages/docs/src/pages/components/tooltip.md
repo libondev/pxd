@@ -142,18 +142,12 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </template>
 ```
 
-## Other
+## DesktopOnly
 
 ```vue demo
 <template>
-  <PStack>
-    <PTooltip content="The Evil Rabbit Jumped over the Fence" :show-arrow="false">
-      <PButton>No arrow</PButton>
-    </PTooltip>
-
-    <PTooltip content="The Evil Rabbit Jumped over the Fence" desktop-only>
-      <PButton>Only show on desktop</PButton>
-    </PTooltip>
-  </PStack>
+  <PTooltip content="The Evil Rabbit Jumped over the Fence" desktop-only>
+    <PButton>Only show on desktop</PButton>
+  </PTooltip>
 </template>
 ```
