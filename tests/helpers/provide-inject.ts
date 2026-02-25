@@ -1,4 +1,5 @@
 import type { InjectionKey } from 'vue'
+
 import { defineComponent, h, provide } from 'vue'
 
 import { mount } from './setup'

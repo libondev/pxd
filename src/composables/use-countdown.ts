@@ -1,4 +1,5 @@
 import type { EmitFn, Ref } from 'vue'
+
 import { computed, shallowRef, watch } from 'vue'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps

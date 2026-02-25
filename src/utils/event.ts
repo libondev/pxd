@@ -1,4 +1,5 @@
 import type { Nullable } from '../types/shared'
+
 import { isOverflowScrollable } from './dom'
 import { isServer } from './is'
 

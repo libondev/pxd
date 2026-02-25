@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 
 import type { CollapseGroupProps } from '../components/collapse-group/types'
+
 import { createContext } from '../utils/context'
 
 export interface CollapseGroupContext {

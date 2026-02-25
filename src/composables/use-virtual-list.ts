@@ -1,14 +1,16 @@
 import type { VirtualItem } from '@tanstack/virtual-core'
+import type { ComponentPublicInstance } from 'vue'
+
 import {
   elementScroll,
   observeElementOffset,
   observeElementRect,
   Virtualizer,
 } from '@tanstack/virtual-core'
-import type { ComponentPublicInstance } from 'vue'
 import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 
 import type { MaybeElementRef } from '../types/shared'
+
 import { toValue } from '../utils/ref'
 
 export type { VirtualItem }

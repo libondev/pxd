@@ -1,4 +1,5 @@
 import type { InjectionKey } from 'vue'
+
 import { inject, provide } from 'vue'
 
 type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | null)

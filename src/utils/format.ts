@@ -1,4 +1,5 @@
 import type { CSSValue, Nullable } from '../types/shared/utils'
+
 import { FLOATING_REGEX, INTEGER_REGEX } from './regexp'
 
 /** string -> String */
