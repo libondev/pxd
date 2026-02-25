@@ -2,6 +2,7 @@ import type { ComponentAs, ComponentSize } from '../../types/shared'
 
 export type BadgeVariant =
   | 'pill'
+  | 'primary'
   | 'gray'
   | 'blue'
   | 'purple'

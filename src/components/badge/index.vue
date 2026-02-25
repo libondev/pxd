@@ -19,6 +19,7 @@ const badgeVariant = tv({
   variants: {
     variant: {
       pill: 'bg-background-100',
+      primary: 'bg-primary text-gray-100',
       gray: 'text-white bg-gray-600',
       blue: 'bg-blue-700 text-gray-100 dark:text-gray-1000',
       purple: 'bg-purple-700 text-gray-100 dark:text-gray-1000',

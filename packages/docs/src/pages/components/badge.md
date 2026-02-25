@@ -8,6 +8,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
 <template>
   <PStack class="capitalize" gap="2">
     <PBadge variant="pill">pill</PBadge>
+    <PBadge variant="primary">primary</PBadge>
     <PBadge variant="gray">gray</PBadge>
     <PBadge variant="blue">blue</PBadge>
     <PBadge variant="purple">purple</PBadge>
