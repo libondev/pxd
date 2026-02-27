@@ -1,9 +1,9 @@
 import type { VirtualListOptions } from '../../composables/use-virtual-list'
 
 export interface VirtualListProps extends VirtualListOptions {
-  errorMessage?: string
-  loadingMessage?: string
-  finishedMessage?: string
+  errorText?: string
+  loadingText?: string
+  finishedText?: string
 }
 
 export interface VirtualListEmits {

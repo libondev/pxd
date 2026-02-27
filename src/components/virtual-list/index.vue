@@ -2,23 +2,22 @@
 import { useVirtualList } from '../../composables/use-virtual-list'
 import type { VirtualListProps, VirtualListEmits } from './types'
 import { shallowRef } from 'vue'
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 
 const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
   itemSize: 50,
   overScan: 2,
   listData: () => [],
+  errorText: 'Request failed. Click to reload',
+  loadingText: 'Loading...',
+  finishedText: 'Finished',
   reachBottomThreshold: 50,
-  errorMessage: 'Request failed, click to try again',
-  loadingMessage: 'Data is loading, please wait...',
-  finishedMessage: 'No more data',
 })
 
 const emits = defineEmits<VirtualListEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
-
-console.log(props.status)
 
 const {
   totalSize,
@@ -53,7 +52,7 @@ defineExpose({
     <div class="pxd-virtual-list--content relative w-full" :style="{ height: `${totalSize}px` }">
       <div
         v-for="virtualItem in virtualItems"
-        :key="virtualItem.key as string"
+        :key="virtualItem.key"
         :ref="(el) => measureElement(el)"
         :data-index="virtualItem.index"
         class="pxd-virtual-list--item left-0 top-0 absolute w-full"
@@ -65,19 +64,17 @@ defineExpose({
 
     <div
       v-if="status"
-      class="group pxd-virtual-list--message py-4 text-sm left-0 right-0 text-center text-gray-600 empty:hidden"
-      :class="{ 'cursor-pointer': status === 'error' }"
+      class="pxd-virtual-list--message py-4 text-sm left-0 right-0 flex items-center justify-center text-gray-600 empty:hidden motion-safe:transition-colors"
+      :class="{ 'cursor-pointer hover:text-gray-900': status === 'error' }"
       @click="onRetryClick"
     >
       <slot name="message">
-        <span
-          v-if="status === 'error'"
-          class="group-hover:text-gray-800 motion-safe:transition-colors"
-        >
-          {{ errorMessage }}
-        </span>
-        <span v-else-if="status === 'loading'">{{ loadingMessage }}</span>
-        <span v-else-if="status === 'finished'">{{ finishedMessage }}</span>
+        <span v-if="status === 'error'">{{ errorText }}</span>
+        <span v-else-if="status === 'finished'">{{ finishedText }}</span>
+        <template v-else-if="status === 'loading'">
+          <LoaderCircleIcon class="mr-1.5 motion-safe:animate-spin" />
+          <span>{{ loadingText }}</span>
+        </template>
       </slot>
     </div>
   </div>

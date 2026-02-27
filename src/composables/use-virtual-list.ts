@@ -13,14 +13,16 @@ import type { MaybeElementRef } from '../types/shared'
 
 import { toValue } from '../utils/ref'
 
-export type VirtualListItem = VirtualItem
+export interface VirtualListItem extends VirtualItem {
+  key: string | number
+}
+
 export type VirtualListStatus = 'loading' | 'finished' | 'error' | '' | null | undefined
 
 const DEFAULTS = {
   status: '',
   itemSize: 50,
   overScan: 2,
-  reachBottomThreshold: 50,
 } as const
 
 export interface VirtualListOptions {
@@ -55,7 +57,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
   const virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
     count: options.listData?.length ?? 0,
     getScrollElement: () => toValue(containerRef) ?? null,
-    estimateSize: () => options.itemSize || DEFAULTS.itemSize,
+    estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
     getItemKey,
     overscan: options.overScan ?? DEFAULTS.overScan,
     observeElementRect,
@@ -70,7 +72,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
         return
       }
 
-      const { onReachBottom, reachBottomThreshold = DEFAULTS.reachBottomThreshold } = options
+      const { onReachBottom, itemSize = DEFAULTS.itemSize, reachBottomThreshold } = options
 
       if (!onReachBottom) {
         return
@@ -82,9 +84,10 @@ export function useVirtualList<Options extends VirtualListOptions>(
       }
 
       const totalSize = instance.getTotalSize()
+      const threshold = reachBottomThreshold ?? itemSize
       const scrollBottom = scrollOffset + scrollRect.height
 
-      if (scrollBottom >= totalSize - reachBottomThreshold) {
+      if (scrollBottom >= totalSize - threshold) {
         if (!reachBottomFired) {
           reachBottomFired = true
           onReachBottom()
@@ -95,9 +98,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
     },
   })
 
-  const virtualItems = computed<VirtualItem[]>(() => {
+  const virtualItems = computed<VirtualListItem[]>(() => {
     void triggerVersion.value
-    return virtualizer.getVirtualItems()
+    return virtualizer.getVirtualItems() as VirtualListItem[]
   })
 
   const totalSize = computed(() => {
