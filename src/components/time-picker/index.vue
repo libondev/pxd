@@ -279,7 +279,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeHoursRef"
               data-type="hour"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 24" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -291,7 +291,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeMinutesRef"
               data-type="minute"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -303,7 +303,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeSecondsRef"
               data-type="second"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-hidden list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -315,7 +315,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
         <div
           v-if="presets?.length"
-          class="max-sm:w-36 sm:w-25 p-2 gap-1 scrollbar-hidden flex flex-wrap content-start self-stretch overflow-auto border-l outline-none"
+          class="max-sm:w-36 sm:w-25 p-2 gap-1 scrollbar-none flex flex-wrap content-start self-stretch overflow-auto border-l outline-none"
           @click="onPresetClick"
         >
           <button

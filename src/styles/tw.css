@@ -444,7 +444,7 @@
   transition-timing-function: var(--default-transition-timing-function);
 }
 
-@utility scrollbar-hidden {
+@utility scrollbar-none {
   & {
     scrollbar-width: none;
     -ms-overflow-style: none;

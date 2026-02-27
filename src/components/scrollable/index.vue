@@ -315,7 +315,7 @@ defineExpose({
       ref="contentRef"
       :class="contentClass"
       :style="contentStyle"
-      class="pxd-scrollable--content relative scrollbar-hidden max-h-full max-w-full flex-1 shrink-0 overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-none max-h-full max-w-full flex-1 shrink-0 overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
       <slot />
