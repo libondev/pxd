@@ -280,7 +280,7 @@ if (!isServer()) {
       height: 100%;
       pointer-events: none;
       background: linear-gradient(to left, var(--color-background-100) 35%, transparent);
-      z-index: 1;
+      z-index: 0;
     }
   }
 
