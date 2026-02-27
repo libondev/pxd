@@ -65,7 +65,7 @@ defineExpose({
 
     <div
       v-if="status"
-      class="group pxd-virtual-list--message py-4 text-sm left-0 right-0 text-center text-gray-600"
+      class="group pxd-virtual-list--message py-4 text-sm left-0 right-0 text-center text-gray-600 empty:hidden"
       :class="{ 'cursor-pointer': status === 'error' }"
       @click="onRetryClick"
     >

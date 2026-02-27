@@ -86,7 +86,7 @@ async function onReachBottom() {
       }
 
       resolve()
-    }, 800)
+    }, 500)
   })
 
   if (listStatus.value === 'error') {
