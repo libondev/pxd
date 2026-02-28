@@ -3,7 +3,7 @@ export interface IntersectionObserverProps {
   width?: number | string
   height?: number | string
   keepAlive?: boolean
-  root?: Element | Document | null
+  root?: object
   rootMargin?: string
   threshold?: number | number[]
 }

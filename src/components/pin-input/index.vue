@@ -63,7 +63,7 @@ const computedInputType = computed(() => {
   if (type.includes('password')) {
     return 'password'
   } else if (type === 'numeric') {
-    return 'tel'
+    return 'numeric'
   }
 
   return 'text'

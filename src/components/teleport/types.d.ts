@@ -1,5 +1,5 @@
 export interface TeleportProps {
-  to?: string | HTMLElement
+  to?: string | object
   disabled?: boolean
 }
 

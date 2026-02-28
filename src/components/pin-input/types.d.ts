@@ -1,5 +1,3 @@
-import type { HTMLAttributes } from 'vue'
-
 import type { ComponentSizeWithXs } from '../../types/shared'
 
 export interface PinInputProps {
@@ -10,7 +8,6 @@ export interface PinInputProps {
   disabled?: boolean
   modelValue?: string
   placeholder?: string
-  inputMode?: HTMLAttributes['inputmode']
   type?:
     | 'numeric'
     | 'alphabetic'

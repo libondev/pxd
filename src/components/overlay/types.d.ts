@@ -6,7 +6,7 @@ export interface OverlayProps {
   appendToBody?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  shownElement?: string | HTMLElement
+  shownElement?: string | object
 }
 
 export interface OverlayEmits {

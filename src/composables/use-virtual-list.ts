@@ -17,8 +17,6 @@ export interface VirtualListItem extends VirtualItem {
   key: string | number
 }
 
-export type VirtualListStatus = 'loading' | 'finished' | 'error' | '' | null | undefined
-
 const DEFAULTS = {
   status: '',
   itemSize: 50,
@@ -26,7 +24,7 @@ const DEFAULTS = {
 } as const
 
 export interface VirtualListOptions {
-  status?: VirtualListStatus
+  status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
   listData?: any[]
   itemSize?: number

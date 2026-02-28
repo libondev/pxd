@@ -1,5 +1,3 @@
-import type { VNode } from 'vue'
-
 import type { Awaitable } from './utils'
 
 export type ComponentVariant = 'primary' | 'error' | 'warning' | 'success'
@@ -12,7 +10,7 @@ export type ComponentShape = 'default' | 'square' | 'rounded'
 export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type ComponentBreakpoint<T = string> = Record<ComponentBreakpointKeys, T>
 
-export type ComponentAs = keyof HTMLElementTagNameMap | 'router-link' | 'RouterLink' | VNode
+export type ComponentAs = string | object
 export type ComponentLabel = string | number | readonly string[] | null
 export type ComponentValue = string | number | boolean
 

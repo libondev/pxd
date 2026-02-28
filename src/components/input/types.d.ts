@@ -1,5 +1,3 @@
-import type { HTMLAttributes } from 'vue'
-
 import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared'
 
 export interface InputProps {
@@ -12,13 +10,13 @@ export interface InputProps {
   disabled?: boolean
   password?: boolean
   autofocus?: boolean
-  inputType?: HTMLInputElement['type']
-  inputmode?: HTMLAttributes['inputmode']
+  inputType?: string
+  inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   minlength?: number | string
   maxlength?: number | string
   clearable?: boolean
-  clearValue?: string | number | null | undefined
-  modelValue?: string | number | null | undefined
+  clearValue?: string | number | null
+  modelValue?: string | number | null
   placeholder?: string
   prefixClass?: ComponentClass
   suffixClass?: ComponentClass
