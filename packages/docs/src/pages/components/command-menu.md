@@ -26,6 +26,15 @@ const showCommandMenu = ref(false);
 
     <PCommandMenuGroup label="Collaboration">
       <PListItem label="Flags Explorer" />
+      <!-- When using slot to customize rendering, it is still recommended to pass in label/description or keywords attribute for content search. -->
+      <PListItem label="File Explorer">
+        <span>File Explorer</span>
+      </PListItem>
+
+      <!-- use keywords prop -->
+      <PListItem :keywords="['image', 'explorer', 'viewer', 'file', 'assets']">
+        <span>Image Explorer</span>
+      </PListItem>
     </PCommandMenuGroup>
   </PCommandMenu>
 </template>

@@ -6,6 +6,7 @@ export interface ListItemProps {
   label?: ListOption['label']
   value?: ListOption['value']
   disabled?: ListOption['disabled']
+  keywords?: string[]
   description?: ListOption['description']
 }
 

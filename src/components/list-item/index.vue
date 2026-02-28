@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useListContext, useListFilterValue } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
 import { getUniqueId } from '../../utils/uid'
@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
   as: 'li',
   type: 'default',
   disabled: false,
+  keywords: () => [],
 })
 
 const emits = defineEmits<ListItemEmits>()
@@ -43,10 +44,28 @@ const uniqueId = getUniqueId()
 const filterValue = useListFilterValue()
 
 const itemRef = shallowRef<HTMLElement>()
-const currentValue = shallowRef('')
+
+const searchableText = computed(() => {
+  const keywordsText =
+    props.keywords.length > 0 ? props.keywords.join('').toLowerCase().replace(/\s/g, '') : ''
+
+  if (props.label) {
+    const propsText = `${String(props.label || '')}${props.description || ''}`
+      .toLowerCase()
+      .replace(/\s/g, '')
+
+    return propsText + keywordsText
+  }
+
+  if (keywordsText) {
+    return keywordsText
+  }
+
+  return (unrefElement(itemRef.value)?.textContent || '').toLowerCase().replace(/\s/g, '')
+})
 
 const isVisible = computed(() =>
-  filterValue?.value ? currentValue.value.includes(filterValue.value.toLowerCase()) : true,
+  filterValue?.value ? searchableText.value.includes(filterValue.value.toLowerCase()) : true,
 )
 const isSelected = computed(() => activeValue.value === uniqueId)
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
@@ -56,25 +75,11 @@ const computedClasses = computed(() => {
 })
 
 function onItemClick(ev: MouseEvent) {
-  const { as, ...restProps } = props
+  const { as, keywords, ...restProps } = props
 
   emits('click', restProps, ev)
   onOptionClick?.(restProps, ev)
 }
-
-onMounted(async () => {
-  await nextTick()
-
-  if (props.label) {
-    currentValue.value = `${String(props.label || '')}${props.description || ''}`
-      .toLowerCase()
-      .replace(/\s/g, '')
-  } else {
-    currentValue.value = (unrefElement(itemRef.value)?.textContent || '')
-      .toLowerCase()
-      .replace(/\s/g, '')
-  }
-})
 </script>
 
 <template>
