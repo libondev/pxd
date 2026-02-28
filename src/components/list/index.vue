@@ -133,10 +133,8 @@ function onPointerOver(ev: PointerEvent) {
 }
 
 function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
-  const { as, onClick, ...option } = item
-
   activeValue.value = ''
-  emits('select', ev, option)
+  emits('select', ev, item)
 }
 
 function updateListItem() {

@@ -1,6 +1,6 @@
 import type { ComponentAs, ComponentLabel, ComponentOption } from '../../types/shared'
 
-export interface ListOption extends ComponentOption {
+export interface ListOption extends Partial<ComponentOption> {
   as?: ComponentAs
   type?: 'default' | 'error' | 'warning' | 'separator'
   description?: ComponentLabel

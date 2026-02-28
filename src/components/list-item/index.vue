@@ -4,7 +4,7 @@ import { useListContext, useListFilterValue } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
 import { getUniqueId } from '../../utils/uid'
 import { tv } from 'tailwind-variants'
-import type { ListItemEmits, ListItemProps } from '../list/types'
+import type { ListItemEmits, ListItemProps } from './types'
 
 defineOptions({
   name: 'PListItem',
@@ -56,8 +56,10 @@ const computedClasses = computed(() => {
 })
 
 function onItemClick(ev: MouseEvent) {
-  emits('click', props, ev)
-  onOptionClick?.(props, ev)
+  const { as, ...restProps } = props
+
+  emits('click', restProps, ev)
+  onOptionClick?.(restProps, ev)
 }
 
 onMounted(async () => {

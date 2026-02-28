@@ -2,7 +2,9 @@ import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
 
 export interface ErrorType {
   link?: string
+  label?: string
   action?: string
+  message: string
 }
 
 export interface ErrorProps {
