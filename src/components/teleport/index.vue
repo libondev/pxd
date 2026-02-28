@@ -31,7 +31,7 @@ const targetEl = computed(() => {
 
   let container: HTMLElement | null = null
   try {
-    container = document.querySelector<HTMLElement>(to)
+    container = document.querySelector<HTMLElement>(to as string)
   } catch {}
 
   return container ?? document.body
