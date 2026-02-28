@@ -75,7 +75,7 @@ watch(
       return
     }
 
-    cachedOn(container, 'scroll', onContainerScroll)
+    cachedOn(container, 'scroll', onContainerScroll, { passive: true })
   },
   { immediate: true },
 )

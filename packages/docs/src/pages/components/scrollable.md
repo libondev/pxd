@@ -14,7 +14,7 @@ The container can be scrolled, and the scroll bar or container effect can be cus
 </template>
 ```
 
-## End event
+## Bottom event
 
 ```vue demo
 <script setup>
@@ -24,11 +24,11 @@ import { ref } from 'vue'
 const isLoading = ref(false)
 
 // Start triggering the end event when it is far from the bottom
-const endThreshold = 50
+const bottomThreshold = 50
 
 let resetLoadingTimer = 0
 
-function onScrollToEnd(ev, dir) {
+function onScrollToEnd(dir, ev) {
   console.log('to end, direction: ' + dir)
 
   clearTimeout(resetLoadingTimer)
@@ -43,8 +43,8 @@ function onScrollToEnd(ev, dir) {
   <PScrollable
     class="w-100 max-w-full h-100 border rounded-md"
     :loading="isLoading"
-    :end-threshold="endThreshold"
-    @end="onScrollToEnd"
+    :bottom-threshold="bottomThreshold"
+    @bottom="onScrollToEnd"
   >
     <div class="p-4 w-screen h-screen bg-background-100 rounded-inherit">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias

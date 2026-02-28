@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import type { ComponentDirection, Nullable } from '../../types/shared'
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer'
+import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { useMutationObserver, useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
-import { cachedOff, cachedOn, once } from '../../utils/event'
+import { cachedOff, cachedOn, off, once } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
 import PFader from '../fader/index.vue'
-import type { ScrollableEmits, ScrollableProps } from './types'
+import type {
+  ScrollableCachedPadding,
+  ScrollableDragState,
+  ScrollableEmits,
+  ScrollableProps,
+} from './types'
 
 defineOptions({
   name: 'PScrollable',
@@ -17,7 +21,7 @@ defineOptions({
 const props = withDefaults(defineProps<ScrollableProps>(), {
   fader: true,
   scrollbar: true,
-  endThreshold: 10,
+  bottomThreshold: 10,
 })
 
 const emits = defineEmits<ScrollableEmits>()
@@ -25,28 +29,33 @@ const emits = defineEmits<ScrollableEmits>()
 const wrapperRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
+// Avoid using ref to guarantee all states to ensure that
+// computed will not cause meaningless updates when the state changes.
+const isScrollableX = shallowRef(false)
+const isScrollableY = shallowRef(false)
+const verticalThumbTop = shallowRef(0)
+const horizontalThumbLeft = shallowRef(0)
+const verticalThumbHeight = shallowRef(0)
+const horizontalThumbWidth = shallowRef(0)
+
 const MIN_THUMB = 30
 
-let dragState: {
-  isDragging: boolean
-  direction: Nullable<ComponentDirection>
-  startClientPos: number
-  startThumbPos: number
-} = {
+let triggerRightFired = false
+let triggerBottomFired = false
+
+let dragState: ScrollableDragState = {
   isDragging: false,
   direction: null,
   startClientPos: 0,
   startThumbPos: 0,
 }
 
-const scrollInfo = ref({
-  isScrollableX: false,
-  isScrollableY: false,
-  verticalThumbHeight: 0,
-  horizontalThumbWidth: 0,
-  verticalThumbTop: 0,
-  horizontalThumbLeft: 0,
-})
+let cachedPadding: ScrollableCachedPadding = {
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+}
 
 const computedStyle = computed(() => {
   return {
@@ -57,13 +66,13 @@ const computedStyle = computed(() => {
 })
 
 const verticalThumbStyle = computed(() => ({
-  height: `${scrollInfo.value.verticalThumbHeight}px`,
-  transform: `translateY(${scrollInfo.value.verticalThumbTop}px)`,
+  height: `${verticalThumbHeight.value}px`,
+  transform: `translateY(${verticalThumbTop.value}px)`,
 }))
 
 const horizontalThumbStyle = computed(() => ({
-  width: `${scrollInfo.value.horizontalThumbWidth}px`,
-  transform: `translateX(${scrollInfo.value.horizontalThumbLeft}px)`,
+  width: `${horizontalThumbWidth.value}px`,
+  transform: `translateX(${horizontalThumbLeft.value}px)`,
 }))
 
 function updateScrollbarMetrics() {
@@ -77,11 +86,7 @@ function updateScrollbarMetrics() {
     return
   }
 
-  const { paddingTop, paddingRight, paddingBottom, paddingLeft } = getStyle(contentEl)
-  const pt = Number.parseFloat(paddingTop) || 0
-  const pb = Number.parseFloat(paddingBottom) || 0
-  const pl = Number.parseFloat(paddingLeft) || 0
-  const pr = Number.parseFloat(paddingRight) || 0
+  const { top: pt, bottom: pb, left: pl, right: pr } = cachedPadding
 
   const {
     clientWidth: clientW,
@@ -100,17 +105,17 @@ function updateScrollbarMetrics() {
   const effScrollH = Math.max(effClientH, scrollH - pt - pb)
 
   // 可滚动性与比例基于有效尺寸，滑块像素基于轨道尺寸
-  const isScrollableX = effScrollW > effClientW
-  const isScrollableY = effScrollH > effClientH
+  const _isScrollableX = effScrollW > effClientW
+  const _isScrollableY = effScrollH > effClientH
 
   const verticalRatio = effScrollH > 0 ? effClientH / effScrollH : 0
   const horizontalRatio = effScrollW > 0 ? effClientW / effScrollW : 0
 
-  const verticalThumbHeight = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
-  const horizontalThumbWidth = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)
+  const _verticalThumbHeight = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
+  const _horizontalThumbWidth = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)
 
-  const scrollableWidth = Math.max(0, trackW - horizontalThumbWidth)
-  const scrollableHeight = Math.max(0, trackH - verticalThumbHeight)
+  const scrollableWidth = Math.max(0, trackW - _horizontalThumbWidth)
+  const scrollableHeight = Math.max(0, trackH - _verticalThumbHeight)
 
   const maxScrollX = Math.max(1, scrollW - clientW)
   const maxScrollY = Math.max(1, scrollH - clientH)
@@ -118,17 +123,15 @@ function updateScrollbarMetrics() {
   const verticalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollTop / maxScrollY))
   const horizontalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollLeft / maxScrollX))
 
-  const verticalThumbTop = verticalScrollPercentage * scrollableHeight
-  const horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
+  const _verticalThumbTop = verticalScrollPercentage * scrollableHeight
+  const _horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
 
-  scrollInfo.value = {
-    isScrollableX,
-    isScrollableY,
-    verticalThumbHeight,
-    horizontalThumbWidth,
-    verticalThumbTop,
-    horizontalThumbLeft,
-  }
+  isScrollableX.value = _isScrollableX
+  isScrollableY.value = _isScrollableY
+  verticalThumbHeight.value = _verticalThumbHeight
+  horizontalThumbWidth.value = _horizontalThumbWidth
+  verticalThumbTop.value = _verticalThumbTop
+  horizontalThumbLeft.value = _horizontalThumbLeft
 }
 
 const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
@@ -172,20 +175,30 @@ function onContainerScroll(ev: Event) {
     movedX = currLeft !== lastScrollLeft
   }
 
-  const endDistance = props.endThreshold ?? 0
+  const threshold = props.bottomThreshold ?? 0
 
   // 仅在对应方向发生滚动时才进行该方向的 end 判定
   if (movedY) {
-    const distanceToBottom = el.scrollHeight - (currTop + el.clientHeight)
-    if (distanceToBottom <= endDistance) {
-      emits('end', ev, 'vertical')
-    }
-  }
+    const scrollBottom = Math.floor(currTop + el.clientHeight)
 
-  if (movedX) {
-    const distanceToRight = el.scrollWidth - (currLeft + el.clientWidth)
-    if (distanceToRight <= endDistance) {
-      emits('end', ev, 'horizontal')
+    if (scrollBottom >= el.scrollHeight - threshold) {
+      if (!triggerBottomFired) {
+        triggerBottomFired = true
+        emits('bottom', 'vertical', ev)
+      }
+    } else {
+      triggerBottomFired = false
+    }
+  } else if (movedX) {
+    const scrollRight = Math.floor(currLeft + el.clientWidth)
+
+    if (scrollRight >= el.scrollWidth - threshold) {
+      if (!triggerRightFired) {
+        triggerRightFired = true
+        emits('bottom', 'horizontal', ev)
+      }
+    } else {
+      triggerRightFired = false
     }
   }
 
@@ -205,7 +218,7 @@ function startDragVertical(e: MouseEvent) {
     isDragging: true,
     direction: 'vertical',
     startClientPos: e.clientY,
-    startThumbPos: scrollInfo.value.verticalThumbTop,
+    startThumbPos: verticalThumbTop.value,
   }
 
   cachedOn(document, 'mousemove', onDragMove)
@@ -224,7 +237,7 @@ function startDragHorizontal(e: MouseEvent) {
     isDragging: true,
     direction: 'horizontal',
     startClientPos: e.clientX,
-    startThumbPos: scrollInfo.value.horizontalThumbLeft,
+    startThumbPos: horizontalThumbLeft.value,
   }
 
   cachedOn(document, 'mousemove', onDragMove)
@@ -243,24 +256,24 @@ function onDragMove(e: MouseEvent) {
 
   if (dragState.direction === 'vertical') {
     const trackH = wrapperRef.value!.clientHeight ?? contentEl.clientHeight
-    const thumbH = scrollInfo.value.verticalThumbHeight
+    const thumbH = verticalThumbHeight.value
     const scrollableH = Math.max(0, trackH - thumbH)
     const delta = e.clientY - dragState.startClientPos
     const newThumbTop = Math.max(0, Math.min(scrollableH, dragState.startThumbPos + delta))
     const maxScroll = Math.max(0, contentEl.scrollHeight - contentEl.clientHeight)
     contentEl.scrollTop = scrollableH > 0 ? (newThumbTop / scrollableH) * maxScroll : 0
-    scrollInfo.value.verticalThumbTop = newThumbTop
+    verticalThumbTop.value = newThumbTop
     return
   }
 
   const trackW = wrapperRef.value!.clientWidth ?? contentEl.clientWidth
-  const thumbW = scrollInfo.value.horizontalThumbWidth
+  const thumbW = horizontalThumbWidth.value
   const scrollableW = Math.max(0, trackW - thumbW)
   const delta = e.clientX - dragState.startClientPos
   const newThumbLeft = Math.max(0, Math.min(scrollableW, dragState.startThumbPos + delta))
   const maxScroll = Math.max(0, contentEl.scrollWidth - contentEl.clientWidth)
   contentEl.scrollLeft = scrollableW > 0 ? (newThumbLeft / scrollableW) * maxScroll : 0
-  scrollInfo.value.horizontalThumbLeft = newThumbLeft
+  horizontalThumbLeft.value = newThumbLeft
 }
 
 function onEndDrag(ev: MouseEvent) {
@@ -281,30 +294,57 @@ function scrollTo(top: number, left: number) {
 
 if (props.scrollbar) {
   useResizeObserver(contentRef, throttledUpdate)
+  useMutationObserver(contentRef, throttledUpdate, { childList: true, subtree: true })
+}
+
+function getContainerPadding() {
+  const contentEl = contentRef.value
+
+  if (!contentEl) {
+    return
+  }
+
+  const { paddingTop, paddingRight, paddingBottom, paddingLeft } = getStyle(contentEl)
+
+  cachedPadding = {
+    top: Number.parseFloat(paddingTop) || 0,
+    bottom: Number.parseFloat(paddingBottom) || 0,
+    left: Number.parseFloat(paddingLeft) || 0,
+    right: Number.parseFloat(paddingRight) || 0,
+  }
+}
+
+function forceUpdate() {
+  throttledUpdate.cancel()
+  getContainerPadding()
+  updateScrollbarMetrics()
 }
 
 onMounted(async () => {
   if (isServer()) {
     return
   }
+
   if (!props.scrollbar && !props.fader) {
     return
   }
 
+  getContainerPadding()
   cachedOn(window, 'resize', updateScrollbarMetrics, { passive: true })
   requestAnimationFrame(updateScrollbarMetrics)
 })
 
 onBeforeUnmount(() => {
+  throttledUpdate.cancel()
+
   cachedOff(window, 'resize', updateScrollbarMetrics)
   cachedOff(document, 'mousemove', onDragMove)
-  cachedOff(document, 'mouseup', onEndDrag)
-  throttledUpdate.cancel()
+  off(document, 'mouseup', onEndDrag)
 })
 
 defineExpose({
   scrollTo,
-  forceUpdate: throttledUpdate,
+  forceUpdate,
 })
 </script>
 
@@ -336,7 +376,7 @@ defineExpose({
 
     <template v-if="scrollbar">
       <div
-        v-if="scrollInfo.isScrollableX"
+        v-if="isScrollableX"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
       >
@@ -348,7 +388,7 @@ defineExpose({
       </div>
 
       <div
-        v-if="scrollInfo.isScrollableY"
+        v-if="isScrollableY"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
       >
