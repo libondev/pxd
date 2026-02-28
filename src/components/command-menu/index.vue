@@ -42,8 +42,9 @@ const modalInitialFocus = computed(() => (isDesktop.value ? `#${uniqueId}` : fal
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
 const isEmptyResult = shallowRef(false)
+
 const { value: filterKeyword, deferred: deferredFilterKeyword } = useDeferredValue('', {
-  async valueChange(v) {
+  async valueChange(v: string) {
     if (!v) {
       return
     }
@@ -51,7 +52,7 @@ const { value: filterKeyword, deferred: deferredFilterKeyword } = useDeferredVal
     await nextTick()
 
     listRef.value!.updateListItem()
-    listRef.value!.setActiveValueToFirst()
+    listRef.value!.setFirstAsActive()
     isEmptyResult.value = listRef.value!.isNoVisibleItem()
   },
 })

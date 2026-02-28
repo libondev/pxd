@@ -156,7 +156,7 @@ function setActiveValue(newValue: string = '') {
   activeValue.value = newValue
 }
 
-function setActiveValueToFirst() {
+function setFirstAsActive() {
   setActiveValue(listItemKeys[0])
 }
 
@@ -188,7 +188,7 @@ defineExpose({
   setActiveValue,
   updateListItem,
   isNoVisibleItem,
-  setActiveValueToFirst,
+  setFirstAsActive,
 })
 </script>
 
@@ -202,7 +202,11 @@ defineExpose({
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
-    <PScrollable class="p-2 h-full max-h-inherit rounded-inherit" fader-direction="vertical">
+    <PScrollable
+      class="h-full max-h-inherit rounded-inherit"
+      content-class="p-2"
+      fader-direction="vertical"
+    >
       <slot>
         <PListItem
           v-for="(option, index) in options"

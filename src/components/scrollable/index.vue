@@ -360,7 +360,7 @@ defineExpose({
       ref="contentRef"
       :class="contentClass"
       :style="contentStyle"
-      class="pxd-scrollable--content relative scrollbar-none max-h-full max-w-full flex-1 shrink-0 overflow-scroll"
+      class="pxd-scrollable--content relative scrollbar-none h-full max-h-inherit max-w-full flex-1 shrink-0 overflow-scroll"
       @scroll.passive="onContainerScroll"
     >
       <slot />
@@ -402,7 +402,7 @@ defineExpose({
   </div>
 </template>
 
-<style lang="postcss">
+<style>
 .pxd-scrollable--scrollbar-x {
   height: calc(var(--scrollbar-size, 6) * 1px);
 }
@@ -413,10 +413,10 @@ defineExpose({
 
 .pxd-scrollable--thumb {
   background-color: var(--scrollbar-color, var(--color-gray-alpha-300));
+}
 
-  &:hover,
-  &:active {
-    background-color: var(--scrollbar-hover-color, var(--color-gray-alpha-500));
-  }
+.pxd-scrollable--thumb:hover,
+.pxd-scrollable--thumb:active {
+  background-color: var(--scrollbar-hover-color, var(--color-gray-alpha-500));
 }
 </style>
