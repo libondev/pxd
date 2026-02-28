@@ -8,24 +8,25 @@ interface ThrottleByRafReturnType<T extends Callback> {
   cancel: () => void
 }
 
-// https://github.com/arco-design/arco-design-vue/blob/main/packages/web-vue/components/_utils/throttle-by-raf.ts
 export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafReturnType<T> {
-  let timer: number
+  let animationFrameId: number = 0
 
   const throttle = (...args: Parameters<T>): void => {
-    if (timer) {
-      window.cancelAnimationFrame(timer)
+    if (animationFrameId) {
+      return
     }
 
-    timer = window.requestAnimationFrame(() => {
+    animationFrameId = window.requestAnimationFrame(() => {
+      animationFrameId = 0
       callback(...args)
-      timer = -1
     })
   }
 
   throttle.cancel = () => {
-    window.cancelAnimationFrame(timer)
-    timer = 0
+    if (animationFrameId) {
+      window.cancelAnimationFrame(animationFrameId)
+      animationFrameId = 0
+    }
   }
 
   return throttle

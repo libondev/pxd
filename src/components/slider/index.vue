@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'
 import { NOOP } from '../../utils/event'
-import type { SliderEmits, SliderProps } from './types'
+import { throttleByRaf } from '../../utils/throttle'
 
 defineOptions({
   name: 'PSlider',
@@ -52,7 +53,6 @@ const VARIANTS = {
 let isDragging = false
 let sliderRect: DOMRect | null = null
 let lastClientX: number | null = null
-let animationFrameId: number | null = null
 
 const configProvider = useConfigProvider()
 
@@ -145,19 +145,11 @@ function updateValueFromPosition(clientX: number) {
   }
 }
 
-function scheduleUpdate() {
-  if (animationFrameId) {
-    return
+const scheduleUpdate = throttleByRaf(() => {
+  if (lastClientX !== null) {
+    updateValueFromPosition(lastClientX)
   }
-
-  animationFrameId = requestAnimationFrame(() => {
-    animationFrameId = null
-
-    if (lastClientX !== null) {
-      updateValueFromPosition(lastClientX)
-    }
-  })
-}
+})
 
 function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   if (!sliderRef.value) {
@@ -192,10 +184,7 @@ function endDragging() {
   sliderRect = null
   activeThumb.value = null
 
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId)
-    animationFrameId = null
-  }
+  scheduleUpdate.cancel()
 
   cachedOff(document, 'pointermove', handleMove)
   cachedOff(document, 'pointercancel', endDragging)
@@ -287,9 +276,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
 initModelValue()
 
 onBeforeUnmount(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId)
-  }
+  scheduleUpdate.cancel()
 
   cachedOff(document, 'pointermove', handleMove)
   cachedOff(document, 'pointerup', endDragging)
