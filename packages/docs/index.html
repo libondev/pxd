@@ -1,33 +1,20 @@
 <!doctype html>
-<html lang="en" class="overflow-y-scroll overscroll-none">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <link
-      rel="icon"
-      href="/favicon-light.ico"
-      type="image/x-icon"
-      media="(prefers-color-scheme: light)"
-    />
-    <link
-      rel="icon"
-      href="/favicon-dark.ico"
-      type="image/x-icon"
-      media="(prefers-color-scheme: dark)"
-    />
-    <meta
-      name="description"
-      content="PXD - A universal Vue2.7+ & Vue3.2+ UI component library based on Geist Design System. 100% compatibility, complete tree-shaking support, Composition API, TypeScript type safety components."
-    />
-    <meta
-      name="keywords"
-      content="PXD,Vue component library,Vue2,Vue3,UI components,frontend framework,Geist Design System,TypeScript,Composition API,tree-shaking,responsive design,accessibility,universal Vue library"
-    />
-    <meta name="author" content="libondev" />
-    <meta name="robots" content="index,follow" />
-    <meta name="language" content="en,zh-CN" />
+<html lang="en" class="h-full overflow-y-scroll overscroll-none">
 
-    <script type="application/ld+json">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)" />
+  <meta name="description"
+    content="PXD - A universal Vue2.7+ & Vue3.2+ UI component library based on Geist Design System. 100% compatibility, complete tree-shaking support, Composition API, TypeScript type safety components." />
+  <meta name="keywords"
+    content="PXD,Vue component library,Vue2,Vue3,UI components,frontend framework,Geist Design System,TypeScript,Composition API,tree-shaking,responsive design,accessibility,universal Vue library" />
+  <meta name="author" content="libondev" />
+  <meta name="robots" content="index,follow" />
+  <meta name="language" content="en,zh-CN" />
+
+  <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -51,62 +38,51 @@
       }
     </script>
 
-    <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="PXD UI Component Library" />
-    <meta property="og:url" content="https://pxd-ui.netlify.app" />
-    <meta
-      property="og:title"
-      content="PXD - Universal Vue2.7+ & Vue3.2+ UI Component Library | Geist Design System"
-    />
-    <meta
-      property="og:description"
-      content="Modern UI component library with 100% Vue2.7+ & Vue3.2+ compatibility. Based on Geist Design System, featuring complete tree-shaking, TypeScript type safety, Composition API, and 50+ high-quality components."
-    />
-    <!-- <meta property="og:image" content="https://pxd-ui.netlify.app/og-image.png"> -->
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="zh_CN" />
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PXD UI Component Library" />
+  <meta property="og:url" content="https://pxd-ui.netlify.app" />
+  <meta property="og:title" content="PXD - Universal Vue2.7+ & Vue3.2+ UI Component Library | Geist Design System" />
+  <meta property="og:description"
+    content="Modern UI component library with 100% Vue2.7+ & Vue3.2+ compatibility. Based on Geist Design System, featuring complete tree-shaking, TypeScript type safety, Composition API, and 50+ high-quality components." />
+  <!-- <meta property="og:image" content="https://pxd-ui.netlify.app/og-image.png"> -->
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="zh_CN" />
 
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@pxd_ui" />
-    <meta name="twitter:creator" content="@libondev" />
-    <meta
-      name="twitter:title"
-      content="PXD - Universal Vue2.7+ & Vue3.2+ UI Component Library | Geist Design System"
-    />
-    <meta
-      name="twitter:description"
-      content="Modern UI component library with 100% Vue2.7+ & Vue3.2+ compatibility. Based on Geist Design System with complete tree-shaking and TypeScript support."
-    />
-    <!-- <meta name="twitter:image" content="https://pxd-ui.netlify.app/twitter-image.png"> -->
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@pxd_ui" />
+  <meta name="twitter:creator" content="@libondev" />
+  <meta name="twitter:title" content="PXD - Universal Vue2.7+ & Vue3.2+ UI Component Library | Geist Design System" />
+  <meta name="twitter:description"
+    content="Modern UI component library with 100% Vue2.7+ & Vue3.2+ compatibility. Based on Geist Design System with complete tree-shaking and TypeScript support." />
+  <!-- <meta name="twitter:image" content="https://pxd-ui.netlify.app/twitter-image.png"> -->
 
-    <!-- Mobile Optimization -->
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="PXD UI" />
+  <!-- Mobile Optimization -->
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="PXD UI" />
 
-    <!-- Performance and Caching Optimization (8 hours) -->
-    <meta http-equiv="Cache-Control" content="max-age=28800" />
-    <link rel="preconnect" href="https://netlify.app" />
-    <link rel="dns-prefetch" href="//github.com" />
+  <!-- Performance and Caching Optimization (8 hours) -->
+  <meta http-equiv="Cache-Control" content="max-age=28800" />
+  <link rel="preconnect" href="https://netlify.app" />
+  <link rel="dns-prefetch" href="//github.com" />
 
-    <!-- Security -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="referrer" content="no-referrer-when-downgrade" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,interactive-widget=resizes-content,viewport-fit=cover"
-    />
-    <title>PXD - Universal Vue2.7+ & Vue3.2+ UI Component Library</title>
-  </head>
+  <!-- Security -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="referrer" content="no-referrer-when-downgrade" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,interactive-widget=resizes-content,viewport-fit=cover" />
+  <title>PXD - Universal Vue UI Component Library</title>
+</head>
 
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<body class="h-full" ontouchstart="">
+  <div id="app" class="h-full"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

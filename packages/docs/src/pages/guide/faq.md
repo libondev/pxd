@@ -47,3 +47,9 @@ export default defineConfig({
   },
 })
 ```
+
+## Button has no background color when pressed in safari browser
+
+The cause of the problem can be found [here](https://stackoverflow.com/questions/3885018/active-pseudo-class-doesnt-work-in-mobile-safari/33681490#33681490)
+
+The solution is: manually add `ontouchstart=""` on the `body` element.
