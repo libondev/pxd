@@ -1,11 +1,16 @@
-import type { ComponentLabel, ComponentValue } from '../../types/shared'
+import type {
+  ComponentLabel,
+  ComponentValue,
+  ComponentOption,
+  ResponsiveValue,
+} from '../../types/shared'
 
 export interface ChoiceboxGroupProps {
   gap?: ResponsiveValue<number | string>
   label?: ComponentLabel
   multiple?: boolean
   disabled?: boolean
-  options?: Option[]
+  options?: ComponentOption[]
   modelValue?: ComponentValue | ComponentValue[]
 }
 

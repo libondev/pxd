@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CarouselState } from '../../contexts/carousel'
-import type { CarouselGroupEmits, CarouselGroupProps } from '../carousel/types'
+import type { CarouselGroupEmits, CarouselGroupProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselGroupContext } from '../../contexts/carousel'

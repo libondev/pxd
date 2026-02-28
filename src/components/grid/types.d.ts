@@ -5,8 +5,3 @@ export interface GridProps {
   rows?: ResponsiveValue<string | number>
   columns?: ResponsiveValue<string | number>
 }
-
-export interface GridItemProps {
-  row?: ResponsiveValue<string | number>
-  column?: ResponsiveValue<string | number>
-}

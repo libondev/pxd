@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { CommandMenuGroupProps } from '../command-menu/types'
+import type { CommandMenuGroupProps } from './types'
 
 defineOptions({
   name: 'PCommandMenuGroup',

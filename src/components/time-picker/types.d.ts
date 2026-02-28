@@ -1,5 +1,4 @@
-import type { DateTimePreset } from '../../types/components/time-picker'
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 
 export interface DateTimePreset<T = Date> {
   label: string

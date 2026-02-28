@@ -1,4 +1,3 @@
-import type { ComponentLabel } from '../../types/shared'
 import type { ListOptionSelected } from '../list/types'
 
 export interface CommandMenuProps {
@@ -16,8 +15,4 @@ export interface CommandMenuEmits {
   change: [boolean]
   show: []
   hide: []
-}
-
-export interface CommandMenuGroupProps {
-  label?: ComponentLabel
 }

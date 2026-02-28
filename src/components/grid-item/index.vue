@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
-import type { GridItemProps } from '../grid/types'
+import type { GridItemProps } from './types'
 
 defineOptions({
   name: 'PGridItem',

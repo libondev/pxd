@@ -1,4 +1,5 @@
-import type { ComponentSize, ComponentValue } from '../../types/shared'
+import type { ComponentLabel, ComponentSize, ComponentValue } from '../../types/shared'
+import type { CheckboxProps } from '../checkbox/types'
 
 export interface ToggleButtonProps {
   variant?: 'ghost' | 'outline'

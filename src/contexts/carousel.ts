@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import type { CarouselGroupProps } from '../components/carousel/types'
+import type { CarouselGroupProps } from '../components/carousel-group/types'
 
 import { createContext } from '../utils/context'
 

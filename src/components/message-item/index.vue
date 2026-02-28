@@ -8,7 +8,7 @@ import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
 import { computed, onMounted, shallowRef } from 'vue'
 import PButton from '../button/index.vue'
-import type { MessageItemEmits, MessageItemProps } from '../message/types'
+import type { MessageItemEmits, MessageItemProps } from './types'
 
 defineOptions({
   name: 'PMessageItem',

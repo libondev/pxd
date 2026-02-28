@@ -1,4 +1,4 @@
-import type { ComponentDirection } from '../../types/shared/props'
+import type { ComponentDirection } from '../../types/shared'
 
 export interface ResizableProps {
   direction?: ComponentDirection

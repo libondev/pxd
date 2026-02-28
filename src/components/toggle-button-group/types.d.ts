@@ -4,6 +4,7 @@ import type {
   ComponentOption,
   ResponsiveValue,
 } from '../../types/shared'
+import type { CheckboxProps } from '../checkbox/types'
 
 export interface ToggleButtonGroupProps {
   gap?: ResponsiveValue<string | number>
