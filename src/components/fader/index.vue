@@ -45,7 +45,7 @@ const formattedContainer = computed(() => {
 const onContainerScroll = throttleByRaf(() => {
   const container = formattedContainer.value
 
-  if (!container) {
+  if (!container || !container.isConnected) {
     return
   }
 

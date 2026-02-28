@@ -7,10 +7,10 @@ import type { IntersectionObserverEmits, IntersectionObserverProps } from './typ
 
 defineOptions({
   name: 'PIntersectionObserver',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<IntersectionObserverProps>(), {
-  root: null,
   rootMargin: '20%',
   threshold: 0,
 })
@@ -64,12 +64,13 @@ useIntersectionObserver(
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize">
+  <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize" v-bind="$attrs">
     <KeepAlive v-if="keepAlive">
       <FragmentContainer v-if="isVisible">
         <slot />
       </FragmentContainer>
     </KeepAlive>
+
     <template v-else>
       <slot v-if="isVisible" />
     </template>

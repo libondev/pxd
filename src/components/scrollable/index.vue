@@ -67,8 +67,13 @@ const horizontalThumbStyle = computed(() => ({
 }))
 
 function updateScrollbarMetrics() {
+  if (!props.scrollbar) {
+    return
+  }
+
   const contentEl = contentRef.value
-  if (!contentEl || !props.scrollbar) {
+
+  if (!contentEl || !contentEl.isConnected) {
     return
   }
 
