@@ -8,20 +8,20 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const carouselGroupContext = useCarouselGroupContext()
-
 const uniqueId = getUniqueId()
 
 const transformStyle = shallowRef('')
+
+const carouselGroupContext = useCarouselGroupContext()
 
 function resetPosition() {
   transformStyle.value = ''
 }
 
 function getTranslateStyle(translate: number) {
-  return carouselGroupContext.props.direction === 'horizontal'
-    ? `translateX(${translate}%)`
-    : `translateY(${translate}%)`
+  const isHorizontal = carouselGroupContext.props.direction === 'horizontal'
+
+  return `translate${isHorizontal ? 'X' : 'Y'}(${translate}%)`
 }
 
 function translateItem(index: number, activeIndex: number) {

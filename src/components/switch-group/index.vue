@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SwitchGroupEmits, SwitchGroupProps } from '../switch/types'
+import type { SwitchGroupProps, SwitchGroupEmits } from './types'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'

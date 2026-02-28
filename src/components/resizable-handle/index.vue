@@ -8,9 +8,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const resizableContext = useResizableContext()
-
 const uniqueId = getUniqueId()
+
+const resizableContext = useResizableContext()
 
 let isDragging = false
 let startPosition = { x: 0, y: 0 }

@@ -1,11 +1,8 @@
-import type { ComponentAs, ComponentLabel } from '../../types/shared'
+import type { ComponentAs, ComponentLabel, ComponentOption } from '../../types/shared'
 
-export interface ListOption extends Record<string, any> {
+export interface ListOption extends ComponentOption {
   as?: ComponentAs
   type?: 'default' | 'error' | 'warning' | 'separator'
-  label?: ComponentLabel
-  value?: any
-  disabled?: boolean
   description?: ComponentLabel
   onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
 }
