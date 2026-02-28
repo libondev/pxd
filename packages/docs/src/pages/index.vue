@@ -3,7 +3,7 @@ import { useHead } from '@unhead/vue'
 import { on } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
-const description = 'A universal UI component library for Vue2.7+ & Vue3.2+'
+const description = 'Universal Vue UI Component Library'
 
 useHead({
   title: `PXD - ${description}`,
