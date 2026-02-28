@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useUniqueId } from '../../composables/use-unique-id-context'
-import { useSwitchGroupContext, useSwitchGroupModelValue } from '../../contexts/switch'
+import { useSwitchGroupContext } from '../../contexts/switch'
+import { useModelValue } from '../../composables/use-model-value'
 import { getUniqueId } from '../../utils/uid'
 import { tv } from 'tailwind-variants'
-import type { SwitchProps } from './types'
 
 defineOptions({
   name: 'PSwitch',
@@ -15,6 +15,7 @@ defineOptions({
 })
 
 const props = defineProps<SwitchProps>()
+const emits = defineEmits<SwitchEmits>()
 
 const switchVariant = tv({
   base: 'pxd-switch--label px-2.5 text-sm font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-all',
@@ -31,23 +32,28 @@ const switchVariant = tv({
 
 const uniqueId = getUniqueId()
 
-const switchGroupName = useUniqueId('SwitchGroupName')
 const switchGroupContext = useSwitchGroupContext()
-const switchGroupModelValue = useSwitchGroupModelValue()
+const switchGroupName = switchGroupContext?.name ?? getUniqueId()
 
-const isChecked = computed(() => switchGroupModelValue.value === props.value)
-const computedDisabled = computed(() => props.disabled || switchGroupContext.disabled)
+const modelValue = useModelValue(
+  switchGroupContext?.props ?? props,
+  switchGroupContext?.emits ?? emits,
+)
+
+const isChecked = computed(() => modelValue.value === props.value)
+
+const computedDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return switchVariant({ disabled: computedDisabled.value })
 })
 
-function onSwitchFocusIn() {
+function onInputChange() {
   if (computedDisabled.value) {
     return
   }
 
-  switchGroupModelValue.value = props.value
+  modelValue.value = props.value
 }
 </script>
 
@@ -59,16 +65,16 @@ function onSwitchFocusIn() {
   >
     <input
       :id="uniqueId"
-      v-model="switchGroupModelValue"
       type="radio"
       :value="value"
       class="peer smallest"
       :checked="isChecked"
       :name="switchGroupName"
       :disabled="computedDisabled"
+      @change="onInputChange"
     />
 
-    <div :class="computedClasses" @focusin="onSwitchFocusIn">
+    <div :class="computedClasses" @focusin="onInputChange">
       <slot>
         {{ label }}
       </slot>

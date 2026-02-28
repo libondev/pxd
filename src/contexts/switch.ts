@@ -1,11 +1,14 @@
-import type { Ref } from 'vue'
+import type { EmitFn } from 'vue'
 
-import type { SwitchGroupProps } from '../components/switch-group/types'
+import type { SwitchGroupEmits, SwitchGroupProps } from '../components/switch-group/types'
 
 import { createContext } from '../utils/context'
 
-export const [provideSwitchGroupContext, useSwitchGroupContext] =
-  createContext<SwitchGroupProps>('SwitchGroup')
+export interface SwitchGroupContext {
+  name: string
+  props: SwitchGroupProps
+  emits: EmitFn<SwitchGroupEmits>
+}
 
-export const [provideSwitchGroupModelValue, useSwitchGroupModelValue] =
-  createContext<Ref<SwitchGroupProps['modelValue']>>('SwitchGroupModalValue')
+export const [provideSwitchGroupContext, useSwitchGroupContext] =
+  createContext<SwitchGroupContext>('SwitchGroup')

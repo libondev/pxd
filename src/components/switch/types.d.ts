@@ -5,3 +5,5 @@ export interface SwitchProps {
   value: string | number
   disabled?: boolean
 }
+
+export interface SwitchEmits {}
