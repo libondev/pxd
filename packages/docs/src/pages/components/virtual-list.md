@@ -59,7 +59,7 @@ const listData = Array.from({ length: 100 }, (_, i) => ({
 
 ## Infinite scroll
 
-Use the `status` parameter with the `reach-bottom` / `retry` event to achieve infinite scrolling of data loading
+Use the `status` parameter with the `bottom` / `retry` event to achieve infinite scrolling of data loading
 
 ```vue demo
 <script setup>
@@ -68,7 +68,7 @@ import { ref, onMounted } from 'vue'
 const listData = ref([])
 const listStatus = ref() // 'loading' | 'finished' | 'error'
 
-async function onReachBottom() {
+async function onBottom() {
   const startIdx = listData.value.length
 
   if (startIdx >= 100) {
@@ -105,11 +105,11 @@ async function onReachBottom() {
 
 function onRetry() {
   listStatus.value = ''
-  onReachBottom()
+  onBottom()
 }
 
 onMounted(() => {
-  onReachBottom()
+  onBottom()
 })
 </script>
 
@@ -121,7 +121,7 @@ onMounted(() => {
     :status="listStatus"
     :list-data="listData"
     @retry="onRetry"
-    @reach-bottom="onReachBottom"
+    @bottom="onBottom"
   >
     <template #default="{ item }">
       <div class="px-4 h-10 py-2">

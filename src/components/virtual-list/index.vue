@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<VirtualListProps>(), {
   errorText: 'Request failed. Click to reload',
   loadingText: 'Loading...',
   finishedText: 'Finished',
-  reachBottomThreshold: 50,
+  bottomThreshold: 50,
 })
 
 const emits = defineEmits<VirtualListEmits>()

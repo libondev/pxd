@@ -29,8 +29,8 @@ export interface VirtualListOptions {
   listData?: any[]
   itemSize?: number
   overScan?: number
-  onReachBottom?: () => void | Promise<void>
-  reachBottomThreshold?: number
+  onBottom?: () => void | Promise<void>
+  bottomThreshold?: number
 }
 
 export function useVirtualList<Options extends VirtualListOptions>(
@@ -38,8 +38,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
   options: Options,
 ) {
   let reachBottomFired = false
-  const triggerVersion = shallowRef(0)
   let cleanup: (() => void) | undefined
+
+  const triggerVersion = shallowRef(0)
 
   function getItemKey(index: number): string | number {
     if (options.dataKey) {
@@ -70,9 +71,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
         return
       }
 
-      const { onReachBottom, itemSize = DEFAULTS.itemSize, reachBottomThreshold } = options
+      const { onBottom, itemSize = DEFAULTS.itemSize, bottomThreshold } = options
 
-      if (!onReachBottom) {
+      if (!onBottom) {
         return
       }
 
@@ -82,13 +83,13 @@ export function useVirtualList<Options extends VirtualListOptions>(
       }
 
       const totalSize = instance.getTotalSize()
-      const threshold = reachBottomThreshold ?? itemSize
+      const threshold = bottomThreshold ?? itemSize
       const scrollBottom = scrollOffset + scrollRect.height
 
       if (scrollBottom >= totalSize - threshold) {
         if (!reachBottomFired) {
           reachBottomFired = true
-          onReachBottom()
+          onBottom()
         }
       } else {
         reachBottomFired = false
