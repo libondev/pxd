@@ -77,7 +77,7 @@ const password = ref('')
       <template #suffix> .com </template>
     </PInput>
 
-    <PInput :prefix-style="false" :suffix-style="false">
+    <PInput :default-prefix-style="false" :default-suffix-style="false">
       <template #prefix>
         <IconArrowCircleUp class="ml-3" />
       </template>
@@ -113,7 +113,7 @@ const password = ref('')
       <template #suffix> .com </template>
     </PInput>
 
-    <PInput disabled :prefix-style="false" :suffix-style="false">
+    <PInput disabled :default-prefix-style="false" :default-suffix-style="false">
       <template #prefix>
         <IconArrowCircleUp class="ml-3" />
       </template>

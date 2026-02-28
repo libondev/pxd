@@ -22,8 +22,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<InputProps>(), {
   align: 'left',
-  prefixStyle: true,
-  suffixStyle: true,
+  defaultPrefixStyle: true,
+  defaultSuffixStyle: true,
 })
 
 const emits = defineEmits<InputEmits>()
@@ -199,7 +199,7 @@ defineExpose({
       v-if="$slots.prefix"
       class="pxd-input--prefix text-sm flex h-full items-center text-foreground-secondary"
       :class="[
-        { 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': prefixStyle },
+        { 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': defaultPrefixStyle },
         prefixClass,
       ]"
       @pointerdown.prevent="NOOP"
@@ -210,7 +210,7 @@ defineExpose({
     <input
       :id="uniqueId"
       ref="inputRef"
-      class="px-3 py-0 file:font-medium size-full appearance-none rounded-inherit border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      class="px-3 py-0 file:font-medium size-full appearance-none rounded-none border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
@@ -264,7 +264,7 @@ defineExpose({
       v-if="$slots.suffix"
       class="pxd-input--suffix text-sm flex h-full items-center text-foreground-secondary"
       :class="[
-        { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': suffixStyle },
+        { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': defaultSuffixStyle },
         suffixClass,
       ]"
       @pointerdown.prevent="NOOP"
@@ -275,13 +275,13 @@ defineExpose({
 </template>
 
 <style>
-.pxd-input:has(.pxd-input--prefix) input {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.pxd-input:has(.pxd-input--suffix) input {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  --autofill-delay: calc(infinity * 1s);
+  transition:
+    background-color var(--autofill-delay) ease-in-out 0s,
+    color var(--autofill-delay) ease-in-out 0s;
 }
 </style>

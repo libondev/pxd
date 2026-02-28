@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'vue'
 
-import type { ComponentSizeWithXs } from '../shared/props'
+import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared'
 
 export interface InputProps {
   size?: ComponentSizeWithXs
@@ -20,11 +20,11 @@ export interface InputProps {
   clearValue?: string | number | null | undefined
   modelValue?: string | number | null | undefined
   placeholder?: string
-  prefixStyle?: boolean
-  suffixStyle?: boolean
   prefixClass?: ComponentClass
   suffixClass?: ComponentClass
   selectOnFocus?: boolean
+  defaultPrefixStyle?: boolean
+  defaultSuffixStyle?: boolean
 }
 
 export interface InputEmits {
