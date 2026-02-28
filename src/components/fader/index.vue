@@ -6,9 +6,11 @@ import { getCssUnitValue } from '../../utils/format'
 import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/throttle'
 import type { FaderProps } from './types'
+import type { MaybeElementRef } from '../../types/shared/utils'
 
 defineOptions({
   name: 'PFader',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<FaderProps>(), {
@@ -36,7 +38,7 @@ const formattedContainer = computed(() => {
   if (typeof container === 'string') {
     return document.querySelector<HTMLElement>(container)
   } else {
-    return unrefElement(container)
+    return unrefElement(container as MaybeElementRef<HTMLElement>)
   }
 })
 
@@ -88,6 +90,7 @@ onBeforeUnmount(() => {
     aria-hidden="true"
     class="pxd-fader inset-0 pointer-events-none absolute size-full rounded-inherit"
     :style="computedStyle"
+    v-bind="$attrs"
   >
     <div
       v-if="['both', 'horizontal'].includes(direction)"
