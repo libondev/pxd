@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { OverlayEmits, OverlayProps } from './types'
+import type { MaybeElementRef } from '../../types/shared/utils'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables'
 import { cachedOff, cachedOn, NOOP } from '../../utils/event'
@@ -7,7 +9,6 @@ import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 import { isTopOverlay, pushOverlay, removeOverlay } from './overlay-stack'
-import type { OverlayEmits, OverlayProps } from './types'
 
 defineOptions({
   name: 'POverlay',
@@ -79,7 +80,7 @@ function tryGetShownElementIfNeed() {
   const el =
     typeof shownElement === 'string'
       ? document.querySelector<HTMLElement>(shownElement)
-      : unrefElement(shownElement)
+      : unrefElement(shownElement as MaybeElementRef<HTMLElement>)
 
   if (!el) {
     return
