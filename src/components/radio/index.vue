@@ -81,6 +81,10 @@ const computedClasses = computed(() => {
 })
 
 function onInputChange() {
+  if (computedDisabled.value) {
+    return
+  }
+
   modelValue.value = props.value
 }
 </script>
