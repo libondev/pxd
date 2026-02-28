@@ -4,8 +4,8 @@ type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'str
 
 export interface StackProps {
   as?: ComponentAs
-  wrap?: boolean
   gap?: ResponsiveValue<string | number>
+  wrap?: boolean
   scale?: number
   align?: Align
   justify?: Align
