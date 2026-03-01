@@ -25,7 +25,7 @@ const fader = shallowRef({
 })
 
 const DEFAULT_SIZE = 16
-const DIFF_THRESHOLD = 1
+const DIFF_THRESHOLD = 16
 
 const computedStyle = computed(() => ({
   '--fader-color': props.color,
