@@ -5,13 +5,14 @@ import type { DescriptionProps } from './types'
 
 defineOptions({
   name: 'PDescription',
+  inheritAttrs: false,
 })
 
 defineProps<DescriptionProps>()
 </script>
 
 <template>
-  <dl class="pxd-description">
+  <dl class="pxd-description" v-bind="$attrs">
     <dt
       class="pxd-description--title gap-1 text-sm mb-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize"
     >
@@ -23,9 +24,9 @@ defineProps<DescriptionProps>()
         <InformationIcon class="text-base scale-125" />
       </PTooltip>
     </dt>
-    <dd class="pxd-description--content text-sm font-medium leading-4 text-foreground">
-      <slot name="content">
-        {{ content }}
+    <dd class="pxd-description--description text-sm font-medium leading-4 text-foreground">
+      <slot name="description">
+        {{ description }}
       </slot>
     </dd>
   </dl>

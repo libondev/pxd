@@ -8,8 +8,8 @@ Displays a brief heading and subheading to communicate any additional informatio
 <template>
   <PDescription
     title="Section Title"
-    content="Data about this section."
     tooltip="Additional context about what this section refers to."
+    description="Data about this section."
   />
 </template>
 ```
