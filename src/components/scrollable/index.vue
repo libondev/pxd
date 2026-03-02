@@ -261,6 +261,7 @@ function onDragMove(e: MouseEvent) {
     const delta = e.clientY - dragState.startClientPos
     const newThumbTop = Math.max(0, Math.min(scrollableH, dragState.startThumbPos + delta))
     const maxScroll = Math.max(0, contentEl.scrollHeight - contentEl.clientHeight)
+
     contentEl.scrollTop = scrollableH > 0 ? (newThumbTop / scrollableH) * maxScroll : 0
     verticalThumbTop.value = newThumbTop
     return
@@ -272,6 +273,7 @@ function onDragMove(e: MouseEvent) {
   const delta = e.clientX - dragState.startClientPos
   const newThumbLeft = Math.max(0, Math.min(scrollableW, dragState.startThumbPos + delta))
   const maxScroll = Math.max(0, contentEl.scrollWidth - contentEl.clientWidth)
+
   contentEl.scrollLeft = scrollableW > 0 ? (newThumbLeft / scrollableW) * maxScroll : 0
   horizontalThumbLeft.value = newThumbLeft
 }
@@ -293,7 +295,7 @@ function scrollTo(top: number, left: number) {
 }
 
 if (props.scrollbar) {
-  useResizeObserver(contentRef, throttledUpdate)
+  useResizeObserver(wrapperRef, throttledUpdate)
   useMutationObserver(contentRef, throttledUpdate, { childList: true, subtree: true })
 }
 
@@ -330,14 +332,12 @@ onMounted(async () => {
   }
 
   getContainerPadding()
-  cachedOn(window, 'resize', updateScrollbarMetrics, { passive: true })
   requestAnimationFrame(updateScrollbarMetrics)
 })
 
 onBeforeUnmount(() => {
   throttledUpdate.cancel()
 
-  cachedOff(window, 'resize', updateScrollbarMetrics)
   cachedOff(document, 'mousemove', onDragMove)
   off(document, 'mouseup', onEndDrag)
 })
