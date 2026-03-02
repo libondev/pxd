@@ -96,11 +96,11 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-avatar {
-  &[data-placeholder='true']::before,
-  &::after {
+  &::after,
+  &[data-placeholder='true']::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: inherit;
   }
 
