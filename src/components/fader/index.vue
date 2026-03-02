@@ -94,12 +94,12 @@ onBeforeUnmount(() => {
   >
     <div
       v-if="['both', 'horizontal'].includes(direction)"
-      class="pxd-fader--item horizontal inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function"
+      class="pxd-fader--item horizontal inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
       :class="{ left: fader.left, right: fader.right }"
     />
     <div
       v-if="['both', 'vertical'].includes(direction)"
-      class="pxd-fader--item vertical inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function"
+      class="pxd-fader--item vertical inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
       :class="{ top: fader.top, bottom: fader.bottom }"
     />
   </div>
