@@ -44,24 +44,6 @@ Display text using well-defined typographic styles.
 </template>
 ```
 
-## Truncate
-
-```vue demo
-<script setup>
-const text = 'The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps. The Evil Rabbit jumps.'
-</script>
-
-<template>
-  <PStack direction="vertical" gap="6">
-    <PText :text="text" truncate style="max-width: 200px"></PText>
-
-    <PText :truncate="2" style="max-width: 200px"> {{ text }} </PText>
-
-    <PText :truncate="3" style="max-width: 200px"> {{ text }} </PText>
-  </PStack>
-</template>
-```
-
 ## Monospace
 
 ```vue demo

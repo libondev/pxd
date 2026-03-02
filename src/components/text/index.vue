@@ -7,12 +7,12 @@ import type { TextProps } from './types'
 
 defineOptions({
   name: 'PText',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<TextProps>(), {
   as: 'p',
   align: 'left',
-  truncate: false,
 })
 
 const textVariant = tv({
@@ -31,21 +31,11 @@ const textVariant = tv({
       true: 'text-foreground-secondary',
       false: '',
     },
-    truncate: {
-      true: 'truncate',
-      false: '',
-    },
-    lineClamp: {
-      true: 'line-clamp',
-      false: '',
-    },
   },
   defaultVariants: {
     align: 'left',
     monospace: false,
     secondary: false,
-    truncate: false,
-    lineClamp: false,
   },
 })
 
@@ -57,7 +47,7 @@ const presetSize = {
   '--text-xl': 'xl:text-xl',
 }
 
-const formattedSize = computed(() => {
+const computedStyle = computed(() => {
   const { size } = props
 
   return getResponsiveValue(
@@ -67,34 +57,18 @@ const formattedSize = computed(() => {
   )
 })
 
-const computedStyle = computed(() => {
-  const { truncate } = props
-
-  const styles = {
-    ...formattedSize.value,
-  }
-
-  if (truncate && typeof truncate !== 'boolean') {
-    styles['--line-clamp'] = truncate
-  }
-
-  return styles
-})
-
 const computedClasses = computed(() => {
-  const { truncate, monospace, secondary } = props
+  const { monospace, secondary } = props
 
   const baseClass = textVariant({
     align: props.align,
     monospace,
     secondary,
-    truncate: truncate === true,
-    lineClamp: typeof truncate === 'number',
   })
 
   const classes = [
     baseClass,
-    ...Object.keys(formattedSize.value).map((bp) => presetSize[bp as keyof typeof presetSize]),
+    ...Object.keys(computedStyle.value).map((bp) => presetSize[bp as keyof typeof presetSize]),
   ]
     .filter(Boolean)
     .join(' ')
@@ -104,7 +78,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle">
+  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle" v-bind="$attrs">
     <slot>
       {{ text }}
     </slot>

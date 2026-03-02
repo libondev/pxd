@@ -587,6 +587,7 @@
   transform: scale(var(--scale, 0.95));
 }
 
+/*
 .line-clamp {
   display: -webkit-box;
   overflow: hidden;
@@ -595,6 +596,7 @@
   -webkit-line-clamp: var(--line-clamp, 1);
   -webkit-box-orient: vertical;
 }
+*/
 
 .scrollbar-stable {
   scrollbar-gutter: stable !important;

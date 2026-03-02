@@ -5,7 +5,6 @@ export interface TextProps {
   text?: string
   size?: ResponsiveValue<string | number>
   align?: 'left' | 'center' | 'right'
-  truncate?: boolean | number | string
   monospace?: boolean
   secondary?: boolean
 }
