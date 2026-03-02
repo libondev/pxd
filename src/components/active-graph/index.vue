@@ -416,12 +416,12 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) bg-gray-alpha-100 motion-safe:transition-all"
+            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-all"
             :data-date="col.date"
             :class="{
               'pointer-events-none invisible': col.hidden,
               'opacity-30': selectedDate && col.date !== selectedDate,
-              'outline-1 outline-primary': selectedDate && col.date === selectedDate,
+              'border-primary!': selectedDate && col.date === selectedDate,
             }"
             :style="`background: ${col.color}`"
           />
