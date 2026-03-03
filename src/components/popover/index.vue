@@ -386,7 +386,11 @@ defineExpose({
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
-          <i v-if="showArrow" ref="arrayRef" class="pxd-popover--arrow absolute z-1 border-solid" />
+          <i
+            v-if="showArrow"
+            ref="arrayRef"
+            class="pxd-popover--arrow absolute z-1 rotate-45 border-5 border-(--popover-arrow-bg)"
+          />
           <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
             <slot name="content" />
           </div>
@@ -556,35 +560,19 @@ defineExpose({
   }
 }
 
-.pxd-popover--wrapper[data-position='top'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='top-start'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='top-end'] .pxd-popover--arrow {
-  bottom: -5px;
-  border-width: 6px 6px 0;
-  border-color: var(--popover-arrow-bg) transparent transparent;
+.pxd-popover--wrapper[data-position^='top'] .pxd-popover--arrow {
+  bottom: -4px;
 }
 
-.pxd-popover--wrapper[data-position='bottom'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='bottom-start'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='bottom-end'] .pxd-popover--arrow {
-  top: -5px;
-  border-width: 0 6px 6px;
-  border-color: transparent transparent var(--popover-arrow-bg);
+.pxd-popover--wrapper[data-position^='bottom'] .pxd-popover--arrow {
+  top: -4px;
 }
 
-.pxd-popover--wrapper[data-position='left'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='left-start'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='left-end'] .pxd-popover--arrow {
-  right: -5px;
-  border-width: 6px 0 6px 6px;
-  border-color: transparent transparent transparent var(--popover-arrow-bg);
+.pxd-popover--wrapper[data-position^='left'] .pxd-popover--arrow {
+  right: -4px;
 }
 
-.pxd-popover--wrapper[data-position='right'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='right-start'] .pxd-popover--arrow,
-.pxd-popover--wrapper[data-position='right-end'] .pxd-popover--arrow {
-  left: -5px;
-  border-width: 6px 6px 6px 0;
-  border-color: transparent var(--popover-arrow-bg) transparent transparent;
+.pxd-popover--wrapper[data-position^='right'] .pxd-popover--arrow {
+  left: -4px;
 }
 </style>
