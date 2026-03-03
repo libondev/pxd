@@ -72,6 +72,10 @@
     "name": "drawer"
   },
   {
+    "camelized": "Ellipsis Text",
+    "name": "ellipsis-text"
+  },
+  {
     "camelized": "Empty State",
     "name": "empty-state"
   },

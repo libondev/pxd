@@ -27,6 +27,7 @@ declare module 'vue' {
     PDashLine: (typeof import('pxd/components/dash-line'))['default']
     PDescription: (typeof import('pxd/components/description'))['default']
     PDrawer: (typeof import('pxd/components/drawer'))['default']
+    PEllipsisText: (typeof import('pxd/components/ellipsis-text'))['default']
     PEmptyState: (typeof import('pxd/components/empty-state'))['default']
     PError: (typeof import('pxd/components/error'))['default']
     PFader: (typeof import('pxd/components/fader'))['default']
