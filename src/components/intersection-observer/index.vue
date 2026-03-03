@@ -20,6 +20,7 @@ const emits = defineEmits<IntersectionObserverEmits>()
 const isVisible = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef({
+  'contain-intrinsic-size': `auto ${getCssUnitValue(props.height)}`,
   '--slot-estimated-width': getCssUnitValue(props.width),
   '--slot-estimated-height': getCssUnitValue(props.height),
 })
@@ -28,6 +29,7 @@ function getRenderedSlotSize() {
   const rect = containerRef.value!.getBoundingClientRect()
 
   containerSize.value = {
+    'contain-intrinsic-size': `auto ${rect.height}px`,
     '--slot-estimated-width': `${rect.width}px`,
     '--slot-estimated-height': `${rect.height}px`,
   }
@@ -64,7 +66,12 @@ useIntersectionObserver(
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-intersection-observer" :style="containerSize" v-bind="$attrs">
+  <div
+    ref="containerRef"
+    class="pxd-intersection-observer content-visibility-auto"
+    :style="containerSize"
+    v-bind="$attrs"
+  >
     <KeepAlive v-if="keepAlive">
       <FragmentContainer v-if="isVisible">
         <slot />

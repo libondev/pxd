@@ -64,7 +64,7 @@ Setting an estimated size can prevent large layout deviation after rendering. (A
 
 ```vue demo=Static.vue
 <template>
-  <div class="size-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
+  <div class="h-16 flex items-center justify-center rounded-md border border-dashed bg-background-200">
     This is a static component.
   </div>
 </template>

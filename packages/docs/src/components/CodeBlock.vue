@@ -34,7 +34,7 @@ function onCopy(ev: MouseEvent) {
       </summary>
 
       <div class="group relative overflow-auto rounded-b-lg border-t bg-(--color-bg-code-block)">
-        <div class="max-h-100 overflow-auto">
+        <div class="max-h-100 overflow-auto content-visibility-auto intrinsic-size-auto">
           <slot name="code" />
         </div>
 

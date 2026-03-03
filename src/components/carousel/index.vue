@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pxd-carousel size-full shrink-0"
+    class="pxd-carousel size-full shrink-0 content-visibility-auto intrinsic-size-auto"
     :style="{ transform: transformStyle }"
     v-bind="$attrs"
   >

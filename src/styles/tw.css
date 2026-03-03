@@ -486,6 +486,14 @@
   opacity: 0;
 }
 
+@utility content-visibility-auto {
+  content-visibility: auto;
+}
+
+@utility intrinsic-size-auto {
+  contain-intrinsic-size: auto none;
+}
+
 @utility font-inherit {
   font-family: inherit;
 }

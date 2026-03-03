@@ -49,7 +49,10 @@ defineExpose({
 
 <template>
   <div ref="containerRef" class="pxd-virtual-list relative overflow-auto">
-    <div class="pxd-virtual-list--content relative w-full" :style="{ height: `${totalSize}px` }">
+    <div
+      class="pxd-virtual-list--content relative w-full content-visibility-auto"
+      :style="{ height: `${totalSize}px`, containIntrinsicSize: `auto ${totalSize}px` }"
+    >
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"

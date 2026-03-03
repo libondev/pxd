@@ -21,7 +21,7 @@ const skeletonVariant = tv({
   base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
   variants: {
     loading: {
-      true: 'loading invisible',
+      true: 'loading invisible content-visibility-auto intrinsic-size-auto',
       false: '',
     },
     shape: {
