@@ -73,7 +73,7 @@ async function onCheckboxChange(e: Event) {
       type="checkbox"
       :disabled="disabled || loading"
       :checked="isChecked"
-      class="pxd-toggle--input peer smallest"
+      class="pxd-toggle--input peer visually-hidden"
       @change.prevent="onCheckboxChange"
     />
 

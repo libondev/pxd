@@ -67,7 +67,7 @@ function onInputChange() {
       :id="uniqueId"
       type="radio"
       :value="value"
-      class="peer smallest"
+      class="peer visually-hidden"
       :checked="isChecked"
       :name="switchGroupName"
       :disabled="computedDisabled"

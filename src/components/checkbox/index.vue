@@ -129,7 +129,7 @@ function onInputChange(event: Event) {
       :id="uniqueId"
       :value="value"
       type="checkbox"
-      class="peer smallest"
+      class="peer visually-hidden"
       :checked="isChecked"
       :disabled="computedDisabled"
       @change="onInputChange"
