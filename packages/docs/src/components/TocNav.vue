@@ -10,13 +10,7 @@ interface TocItem {
 }
 
 interface Props {
-  /**
-   * 监听的容器选择器
-   */
   containerSelector?: string
-  /**
-   * 要提取的标题级别
-   */
   levels?: number[]
 }
 
@@ -55,22 +49,28 @@ function extractHeadings() {
 }
 
 function scrollToHeading(id: string) {
+  if (activeId.value === id) {
+    return
+  }
+
   const element = document.getElementById(id)
 
-  if (element) {
-    activeId.value = id
+  if (!element) {
+    return
   }
+
+  activeId.value = id
+  element.scrollIntoView()
+  window.history.replaceState(history.state, route.path, `#${id}`)
 }
 
-// 监听标题元素的可见性
 useIntersectionObserver(
   headingElements,
   (entries) => {
-    // 找到最上方可见的标题
     const visibleEntries = entries.filter((entry) => entry.isIntersecting)
 
+    // find the topmost visible entry
     if (visibleEntries.length > 0) {
-      // 取最靠近顶部的那个
       const topEntry = visibleEntries.reduce((prev, curr) =>
         prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr,
       )
@@ -83,18 +83,15 @@ useIntersectionObserver(
   },
 )
 
-// 路由变化时重新提取标题
 watch(
   () => route.path,
   () => {
     activeId.value = ''
-    // 延迟执行等待 DOM 更新
     setTimeout(extractHeadings, 100)
   },
 )
 
 onMounted(() => {
-  // 初始化时提取标题
   setTimeout(extractHeadings, 100)
 })
 </script>
@@ -107,19 +104,14 @@ onMounted(() => {
       <li
         v-for="item in tocItems"
         :key="item.id"
-        class="toc-item border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-all"
+        class="toc-item p-2 flex cursor-pointer items-center border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-all"
         :class="[
           `toc-level-${item.level}`,
           { 'is-active border-l-primary bg-primary/10 text-primary!': activeId === item.id },
         ]"
+        @click="scrollToHeading(item.id)"
       >
-        <a
-          :href="`#${item.id}`"
-          class="toc-link min-w-0 p-2 flex items-center truncate"
-          @click="scrollToHeading(item.id)"
-        >
-          {{ item.text }}
-        </a>
+        <span class="truncate">{{ item.text }}</span>
       </li>
     </ul>
   </nav>
