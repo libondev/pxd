@@ -45,37 +45,18 @@ export default defineConfig(({ mode }) => {
     build: {
       reportCompressedSize: false,
       cssCodeSplit: false,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          entryFileNames: 'assets/[name]-[hash].js',
-          chunkFileNames: 'assets/[name]-[hash].js',
-          assetFileNames: 'assets/[name]-[hash][extname]',
-          manualChunks(id) {
-            const normalized = id.replace(/\\/g, '/')
-
-            if (normalized.includes('/node_modules/')) {
-              if (normalized.includes('/@gdsicon/')) {
-                return 'gdsi-icons'
-              }
-
-              if (/@shikijs|\bshiki\b|markdown-it/.test(normalized)) {
-                return 'md-shiki'
-              }
-
-              if (/(?:^|\/)vue(?:\/|$)|vue-router|@unhead/.test(normalized)) {
-                return 'vue-vendor'
-              }
-
-              if (normalized.includes('/dayjs/')) {
-                return 'dayjs'
-              }
-
-              if (normalized.includes('canvas-confetti')) {
-                return 'misc-vendor'
-              }
-
-              return 'vendor'
-            }
+          codeSplitting: {
+            minShareCount: 3,
+            groups: [
+              {
+                name: 'vendor',
+                test: /node_modules/,
+                entriesAware: true,
+                entriesAwareMergeThreshold: 20000,
+              },
+            ],
           },
         },
       },

@@ -7,9 +7,12 @@ import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { asideMenus } from '../consts/components'
+import { githubLink } from '../consts/link'
 import CustomVariables from './CustomVariables.vue'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 
 const showCommandMenu = shallowRef(false)
+
 const prereleaseVersion = (() => {
   const versions = version.split('.')
   versions[2] = String(Number(versions[2]) + 1)
@@ -60,7 +63,9 @@ onBeforeUnmount(() => {
           position="bottom-start"
           z-index="5"
         >
-          <PBadge size="sm" variant="gray-subtle"> v{{ prereleaseVersion }} </PBadge>
+          <PBadge size="sm" variant="gray-subtle" class="max-sm:hidden">
+            v{{ prereleaseVersion }}
+          </PBadge>
         </PTooltip>
       </RouterLink>
     </h2>
@@ -108,7 +113,7 @@ onBeforeUnmount(() => {
           shape="square"
           class="sm:px-3 h-full"
           target="_blank"
-          href="https://github.com/libondev/pxd"
+          :href="githubLink"
         >
           <LogoGithubIcon />
 
