@@ -5,6 +5,7 @@ import type { PaginationProps } from './types'
 
 defineOptions({
   name: 'PPagination',
+  inheritAttrs: false,
 })
 
 defineProps<PaginationProps>()
@@ -16,6 +17,7 @@ const configProvider = useConfigProvider()
   <nav
     aria-label="pagination"
     class="pxd-pagination relative flex w-full flex-wrap items-start justify-between"
+    v-bind="$attrs"
   >
     <RouterLink
       v-if="prev"
@@ -42,7 +44,7 @@ const configProvider = useConfigProvider()
     <RouterLink
       v-if="next"
       :to="next.href"
-      class="pxd-pagination--next min-h-13 group py-1 pl-2 pr-6 rounded-md no-underline! self-focus-ring outline-none"
+      class="pxd-pagination--next min-h-13 group py-1 pl-2 pr-6 rounded-md text-right no-underline! self-focus-ring outline-none"
     >
       <span
         secondary
