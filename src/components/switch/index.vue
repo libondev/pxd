@@ -59,7 +59,9 @@ function onInputChange() {
 
 <template>
   <label
-    :aria-checked="isChecked"
+    role="switch"
+    :aria-selected="isChecked"
+    :data-disabled="computedDisabled"
     class="pxd-switch flex-1 shrink-0 cursor-pointer"
     :for="uniqueId"
   >

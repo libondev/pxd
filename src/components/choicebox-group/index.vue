@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<ChoiceboxGroupProps>(), {
 })
 const emits = defineEmits<ChoiceboxGroupEmits>()
 
-const renderComponent = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
+const renderAs = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
 
 function onUpdateModelValue(value: any) {
   emits('change', value)
@@ -32,7 +32,7 @@ provideChoiceboxGroupContext({ props, emits })
 
 <template>
   <Component
-    :is="renderComponent"
+    :is="renderAs"
     :gap="gap"
     :options="options"
     :disabled="disabled"

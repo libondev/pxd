@@ -18,14 +18,12 @@ defineProps<ChoiceboxProps>()
 
 const choiceboxGroupContext = useChoiceboxGroupContext()
 
-const renderComponent = computed(() =>
-  markRaw(choiceboxGroupContext?.props.multiple ? PCheckbox : PRadio),
-)
+const renderAs = computed(() => markRaw(choiceboxGroupContext?.props.multiple ? PCheckbox : PRadio))
 </script>
 
 <template>
   <Component
-    :is="renderComponent"
+    :is="renderAs"
     :value="value"
     :disabled="disabled"
     class="pxd-choicebox p-3 w-full flex-1 flex-row-reverse justify-between rounded-md border hover:border-gray-500 hover:bg-background-hover motion-safe:transition-colors"
@@ -47,7 +45,7 @@ const renderComponent = computed(() =>
 </template>
 
 <style lang="postcss">
-.pxd-choicebox[aria-checked='true'] {
+.pxd-choicebox[aria-selected='true'] {
   border-color: var(--color-primary);
   background-color: hsla(var(--primary), 0.08);
 
