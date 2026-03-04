@@ -60,7 +60,6 @@ const formattedCols = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'pxd-grid relative grid max-w-full',
     ...Object.keys(formattedRows.value).map(
       (bp) => presetGridRows[bp as keyof typeof presetGridRows],
     ),
@@ -80,13 +79,19 @@ const computedStyle = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses" :style="computedStyle" v-bind="$attrs">
-    <slot />
+  <div class="pxd-grid relative w-full max-w-full" v-bind="$attrs">
+    <section
+      class="pxd-grid-section [container-type:inline-size] grid h-full max-h-inherit min-h-inherit w-full max-w-inherit min-w-inherit"
+      :class="computedClasses"
+      :style="computedStyle"
+    >
+      <slot />
+    </section>
   </div>
 </template>
 
 <style>
-.pxd-grid.debug {
+.pxd-grid-section.debug {
   --grid-line-color: var(--color-amber-400);
 
   background-image:

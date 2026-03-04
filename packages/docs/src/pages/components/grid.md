@@ -44,13 +44,25 @@ Grid component with cells that overlay another in various states.
 ```vue demo
 <template>
   <PGrid class="min-h-50" columns="12" rows="3" debug>
-    <PGridItem column="1/3" row="1/3" solid> 1 </PGridItem>
-    <PGridItem column="2/4" row="2/4"> 2 </PGridItem>
+    <PGridItem column="1/3" row="1/3">
+      1
+    </PGridItem>
+
+    <PGridItem column="2/4" row="2/4">
+      2
+    </PGridItem>
+
     <PGridItem column="3/10" row="2/4">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at felis
     </PGridItem>
-    <PGridItem column="7/12" row="1/-1" solid> 3 </PGridItem>
-    <PGridItem column="11/13" row="1/3" solid> 4 </PGridItem>
+
+    <PGridItem column="7/12" row="1/2">
+      3
+    </PGridItem>
+
+    <PGridItem column="11/13" row="1/3">
+      4
+    </PGridItem>
   </PGrid>
 </template>
 ```
@@ -62,11 +74,11 @@ Grid component with guide clipping enabled on specific cells.
 ```vue demo
 <template>
   <PGrid class="min-h-50" columns="3" rows="4" debug>
-    <PGridItem column="1/2" row="1/3" solid> 1 </PGridItem>
+    <PGridItem column="1/2" row="1/3"> 1 </PGridItem>
     <PGridItem column="3/4" row="1/2"> 2 </PGridItem>
     <PGridItem column="2/3" row="2/4"> 3 </PGridItem>
-    <PGridItem column="1/2" row="4/5" solid> 4 </PGridItem>
-    <PGridItem column="3/4" row="3/5" solid> 5 </PGridItem>
+    <PGridItem column="1/2" row="4/5"> 4 </PGridItem>
+    <PGridItem column="3/4" row="3/5"> 5 </PGridItem>
   </PGrid>
 </template>
 ```
