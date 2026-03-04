@@ -24,7 +24,13 @@ provideCheckboxGroupContext({ props, emits })
 </script>
 
 <template>
-  <PStack class="pxd-checkbox-group" role="group" aria-label="Checkbox Group" v-bind="$attrs">
+  <PStack
+    class="pxd-checkbox-group"
+    role="group"
+    aria-label="Checkbox Group"
+    aria-multiselectable="true"
+    v-bind="$attrs"
+  >
     <slot>
       <PCheckbox v-for="option in options" :key="option.value" v-bind="option" />
     </slot>

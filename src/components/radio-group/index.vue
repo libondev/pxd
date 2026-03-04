@@ -21,7 +21,13 @@ provideRadioGroupContext({ props, emits, name: getUniqueId() })
 </script>
 
 <template>
-  <PStack class="pxd-radio-group" role="radiogroup" aria-label="Radio Group" v-bind="$attrs">
+  <PStack
+    class="pxd-radio-group"
+    role="radiogroup"
+    aria-label="Radio Group"
+    aria-multiselectable="false"
+    v-bind="$attrs"
+  >
     <slot>
       <PRadio v-for="option in options" :key="option.value" v-bind="option" />
     </slot>

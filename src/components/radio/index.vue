@@ -92,7 +92,7 @@ function onInputChange() {
 <template>
   <label
     role="radio"
-    :aria-checked="isChecked"
+    :aria-selected="isChecked"
     :data-disabled="computedDisabled"
     class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
     :class="{ 'is-disabled text-gray-500': computedDisabled }"

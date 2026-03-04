@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 const emits = defineEmits<CheckboxEmits>()
 
 const checkboxVariant = tv({
-  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 items-center justify-center peer-focus-ring transform-gpu overflow-hidden border motion-safe:transition-colors',
+  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
   variants: {
     checked: {
       true: '',
@@ -44,22 +44,22 @@ const checkboxVariant = tv({
     {
       checked: true,
       disabled: false,
-      class: 'bg-primary border-primary',
+      class: 'border-primary bg-primary',
     },
     {
       checked: true,
       disabled: true,
-      class: 'bg-gray-600 border-gray-600',
+      class: 'border-gray-600 bg-gray-600',
     },
     {
       checked: false,
       disabled: false,
-      class: 'bg-background-100 border-gray-alpha-400 group-hover/checkbox:bg-gray-200',
+      class: 'border-gray-alpha-400 bg-background-100 group-hover/checkbox:bg-gray-200',
     },
     {
       checked: false,
       disabled: true,
-      class: 'bg-gray-100 border-gray-500',
+      class: 'border-gray-500 bg-gray-100',
     },
   ],
   defaultVariants: {
@@ -118,7 +118,7 @@ function onInputChange(event: Event) {
 <template>
   <label
     role="checkbox"
-    :aria-checked="isChecked"
+    :aria-selected="isChecked"
     :data-disabled="computedDisabled"
     class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
     :class="{ 'is-disabled text-gray-500': computedDisabled }"
