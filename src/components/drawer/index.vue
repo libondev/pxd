@@ -103,9 +103,10 @@ watch(
       <div
         v-if="isVisible"
         ref="drawerRef"
-        aria-modal="true"
         role="dialog"
         tabindex="-1"
+        aria-modal="true"
+        :aria-expanded="isVisible"
         class="pxd-drawer group/drawer translate-z-0 sm:[--drawer-width:30vw] sm:[--drawer-height:30vw] pointer-events-auto fixed z-10 flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
