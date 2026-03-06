@@ -17,10 +17,10 @@ const errorVariant = tv({
   base: 'pxd-error flex text-red-900',
   variants: {
     size: {
-      xs: 'text-xs [--mt:2px]',
-      sm: 'text-13px [--mt:2px]',
-      md: 'text-sm [--mt:2px]',
-      lg: 'text-base [--mt:4px]',
+      xs: 'text-xs [--mt:0.125rem]',
+      sm: 'text-13px [--mt:0.125rem]',
+      md: 'text-sm [--mt:0.125rem]',
+      lg: 'text-base [--mt:0.25rem]',
     },
   },
   defaultVariants: {

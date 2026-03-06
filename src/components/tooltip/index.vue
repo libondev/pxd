@@ -54,6 +54,7 @@ const computedClasses = computed(() => {
 
 <template>
   <PPopover
+    role="tooltip"
     class="pxd-tooltip"
     :position="position"
     :disabled="computedDisabled"
