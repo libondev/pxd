@@ -61,7 +61,7 @@ const searchableText = computed(() => {
     return keywordsText
   }
 
-  return (unrefElement(itemRef.value)?.textContent || '').toLowerCase().replace(/\s/g, '')
+  return getCachedTextContent()
 })
 
 const isVisible = computed(() =>
@@ -73,6 +73,18 @@ const isDisabled = computed(() => props.disabled || props.type === 'separator')
 const computedClasses = computed(() => {
   return listItemVariant({ type: props.type })
 })
+
+let cachedTextContent = ''
+
+function getCachedTextContent() {
+  const text = unrefElement(itemRef.value)?.textContent || ''
+
+  if (text) {
+    cachedTextContent = text.toLowerCase().replace(/\s/g, '')
+  }
+
+  return cachedTextContent
+}
 
 function onItemClick(ev: MouseEvent) {
   const { as, keywords, ...restProps } = props
