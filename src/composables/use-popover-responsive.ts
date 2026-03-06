@@ -17,7 +17,7 @@ export function usePopoverResponsive() {
     }
 
     return {
-      contentClass: `${basicContentClass} rounded-lg`,
+      contentClass: `${basicContentClass} rounded-xl`,
       wrapperClass: '',
       transitionType: 'fade-scale',
     } as const
