@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { arrow, autoUpdate, computePosition, flip, offset, shift, hide } from '@floating-ui/dom'
+import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useLockScroll } from '../../composables/use-lock-scroll'
@@ -26,9 +26,9 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   arrowColor: 'hsl(var(--primary))',
   interactive: true,
   autoPosition: true,
-  toggleOnTrigger: true,
   unsetPosition: false,
   transitionType: 'fade-scale',
+  toggleOnTrigger: true,
   closeOnInvisible: true,
 })
 
@@ -49,6 +49,7 @@ const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 
 const wrapperStyle = computed<CSSProperties>(() => ({
   'z-index': props.zIndex,
+  '--popover-offset': props.offset,
   '--popover-arrow-bg': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
@@ -124,7 +125,6 @@ async function updatePosition() {
       placement: props.position,
       middleware: [
         shift(),
-        offset(props.offset),
         props.autoPosition && flip(),
         props.showArrow && arrow({ element: arrayRef.value }),
         props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
@@ -356,7 +356,9 @@ defineExpose({
 <template>
   <div
     ref="triggerRef"
-    class="pxd-popover inline-flex max-w-full active:select-none"
+    class="pxd-popover inline-flex max-w-full active:select-none data-[disabled=true]:pointer-events-none data-[visible=true]:pointer-events-auto"
+    :data-visible="isVisible"
+    :data-disabled="disabled"
     v-bind="$attrs"
     @click="onTriggerClick"
     @focusin="onTriggerFocusin"
@@ -377,12 +379,13 @@ defineExpose({
         :data-visible="isVisible"
         :data-position="localPosition"
         :data-interactive="interactive"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        :data-unset-position="unsetPosition"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-auto relative z-1 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
+          class="pxd-popover--container pointer-events-auto relative z-1 max-h-inherit w-inherit transform-gpu default-animation-duration default-animation-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
@@ -476,6 +479,7 @@ defineExpose({
 }
 
 .pxd-popover--container {
+  --popover-padding: calc(var(--popover-offset, 8) * 1px);
   animation-name: popover-fade-show;
   animation-fill-mode: forwards;
 
@@ -557,6 +561,22 @@ defineExpose({
 
   [data-position='right-end'] & {
     transform-origin: left bottom;
+  }
+
+  [data-position^='top'][data-unset-position='false'] & {
+    padding-bottom: var(--popover-padding);
+  }
+
+  [data-position^='bottom'][data-unset-position='false'] & {
+    padding-top: var(--popover-padding);
+  }
+
+  [data-position^='left'][data-unset-position='false'] & {
+    padding-right: var(--popover-padding);
+  }
+
+  [data-position^='right'][data-unset-position='false'] & {
+    padding-left: var(--popover-padding);
   }
 }
 
