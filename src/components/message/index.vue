@@ -16,6 +16,7 @@ import type { MessageEmits, MessageProps } from './types'
 
 defineOptions({
   name: 'PMessage',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<MessageProps>(), {
@@ -399,6 +400,7 @@ defineExpose({
       :data-expand="groupExpand"
       :data-position="position"
       :style="messageGroupStyle"
+      v-bind="$attrs"
     >
       <TransitionGroup
         appear
