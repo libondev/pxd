@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 const emits = defineEmits<ToggleButtonEmits>()
 
 const toggleButtonVariant = tv({
-  base: 'pxd-toggle-button relative gap-2 outline-none shrink-0 border bg-background-100 appearance-none font-medium inline-flex group-data-[gap=0]/toggle-button-group:first:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px items-center justify-center data-[state=on]:z-1 data-[state=off]:enabled:hover:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
+  base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border bg-background-100 outline-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none group-data-[gap=0]/toggle-button-group:first:rounded-r-none data-[state=off]:enabled:hover:z-1 data-[state=on]:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
       sm: 'h-7.5 px-1.75 text-sm rounded-md',
@@ -48,7 +48,7 @@ const toggleButtonVariant = tv({
     { checked: false, disabled: true, class: 'text-gray-400' },
     { checked: false, disabled: false, class: 'hover:text-gray-800' },
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
-    { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100 border-gray-500' },
+    { variant: 'outline', checked: true, disabled: true, class: 'border-gray-500 bg-gray-100' },
   ],
   defaultVariants: {
     size: 'md',

@@ -26,7 +26,7 @@ const emits = defineEmits<ToggleButtonGroupEmits>()
 const configProvider = useConfigProvider()
 
 const toggleButtonGroupVariant = tv({
-  base: 'pxd-toggle-button-group overflow-hidden group/toggle-button-group w-max',
+  base: 'pxd-toggle-button-group group/toggle-button-group w-max overflow-hidden',
   variants: {
     size: {
       sm: 'rounded-md',

@@ -12,22 +12,11 @@
     "sortSideEffects": true,
     "groups": [
       "type-import",
-      [
-        "value-builtin",
-        "value-external"
-      ],
+      ["value-builtin", "value-external"],
       "type-internal",
       "value-internal",
-      [
-        "type-parent",
-        "type-sibling",
-        "type-index"
-      ],
-      [
-        "value-parent",
-        "value-sibling",
-        "value-index"
-      ],
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
       "unknown"
     ]
   },
@@ -35,12 +24,7 @@
   "sortTailwindcss": {
     "preserveDuplicates": false,
     "preserveWhitespace": false,
-    "functions": [
-      "cn",
-      "tv",
-      "cva",
-      "twMerge"
-    ],
+    "functions": ["cn", "tv", "cva", "twMerge"],
     "stylesheet": "./src/styles/tw.css"
   },
   "patterns": [],
