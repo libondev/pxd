@@ -29,15 +29,11 @@ interface Options {
   finally?: PromiseMessageHandler
 }
 
-export interface MessageItemType extends Options {
+export interface MessageItemConfig extends Options {
+  height?: number
   _timerId?: ReturnType<typeof setTimeout>
   _remainingMs?: number
   _startedAtMs?: number
-}
-
-export interface MessageItemHeightType {
-  id: MessageItemType['id']
-  height: number
 }
 
 interface UseMessage {
@@ -56,7 +52,7 @@ export type MessageActionType = 'create' | 'remove' | 'clear'
 export interface MessageUpdateParams {
   type: MessageActionType
   group: string
-  data?: MessageItemType | { id: Options['id'] }
+  data?: MessageItemConfig | { id: Options['id'] }
 }
 
 export const useMessage = ((msg: MessageContent, options?: Options) => {
@@ -66,7 +62,7 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
 
   options ??= {} as Options
 
-  const message: MessageItemType = {
+  const message: MessageItemConfig = {
     ...options,
     id: options.id ?? Math.random(),
     message: msg,

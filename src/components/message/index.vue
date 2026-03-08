@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import type {
-  MessageItemHeightType,
-  MessageItemType,
-  MessageUpdateParams,
-} from '../../composables/use-message'
+import type { MessageItemConfig, MessageUpdateParams } from '../../composables/use-message'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
@@ -36,11 +32,10 @@ useDocumentHidden((isHidden) => {
 })
 
 const groupExpand = ref(props.expand)
-const groupMessages = ref<MessageItemType[]>([])
-const messageItemsHeight = ref<MessageItemHeightType[]>([])
+const groupMessages = ref<MessageItemConfig[]>([])
 
 const messageGroupStyle = computed(() => {
-  const frontHeight = messageItemsHeight.value[0]?.height || 0
+  const frontHeight = groupMessages.value[0]?.height || 0
   const visibleItemCounts = Math.min(props.max, groupMessages.value.length)
 
   return {
@@ -50,7 +45,7 @@ const messageGroupStyle = computed(() => {
   }
 })
 
-function getMessageById(id: MessageItemType['id']) {
+function getMessageById(id: MessageItemConfig['id']) {
   const index = groupMessages.value.findIndex((m) => m.id === id)
   const message = groupMessages.value[index]
 
@@ -67,7 +62,7 @@ function getMessageById(id: MessageItemType['id']) {
   }
 }
 
-function setAutoCloseTimer(message: MessageItemType) {
+function setAutoCloseTimer(message: MessageItemConfig) {
   message._startedAtMs = Date.now()
 
   if (message._remainingMs == null) {
@@ -83,7 +78,7 @@ function setAutoCloseTimer(message: MessageItemType) {
   }, message._remainingMs)
 }
 
-function pauseMessage(message: MessageItemType) {
+function pauseMessage(message: MessageItemConfig) {
   if (!message.durations || message.durations <= 0) {
     return
   }
@@ -100,7 +95,7 @@ function pauseMessage(message: MessageItemType) {
   }
 }
 
-function resumeMessage(message: MessageItemType) {
+function resumeMessage(message: MessageItemConfig) {
   if (!message.durations || message.durations <= 0) {
     return
   }
@@ -116,7 +111,7 @@ function resumeMessage(message: MessageItemType) {
   setAutoCloseTimer(message)
 }
 
-function pauseMessageById(id: MessageItemType['id']) {
+function pauseMessageById(id: MessageItemConfig['id']) {
   if (!id) {
     return
   }
@@ -127,7 +122,7 @@ function pauseMessageById(id: MessageItemType['id']) {
   }
 }
 
-function resumeMessageById(id: MessageItemType['id']) {
+function resumeMessageById(id: MessageItemConfig['id']) {
   if (!id) {
     return
   }
@@ -138,7 +133,7 @@ function resumeMessageById(id: MessageItemType['id']) {
   }
 }
 
-function closeMessageById(id: MessageItemType['id']) {
+function closeMessageById(id: MessageItemConfig['id']) {
   const { index, message } = getMessageById(id)
 
   if (!message) {
@@ -152,22 +147,12 @@ function closeMessageById(id: MessageItemType['id']) {
 
   groupMessages.value.splice(index, 1)
 
-  // Sync remove height info by id instead of index to avoid mismatch
-  const heightIndex = messageItemsHeight.value.findIndex((h) => h.id === id)
-  if (heightIndex !== -1) {
-    messageItemsHeight.value.splice(heightIndex, 1)
-  }
-
   // Avoid manually closing all data and maintaining the expanded state when creating again
   if (!props.expand && groupMessages.value.length === 0) {
     groupExpand.value = false
   }
 
   emits('close', id)
-}
-
-function setItemHeight(info: MessageItemHeightType) {
-  messageItemsHeight.value.unshift(info)
 }
 
 function clearMessage() {
@@ -179,11 +164,10 @@ function clearMessage() {
   })
 
   groupMessages.value = []
-  messageItemsHeight.value = []
 }
 
 function resolvePromiseMessage<T>(
-  handler: MessageItemType['success'],
+  handler: MessageItemConfig['success'],
   data: T,
 ): string | undefined {
   if (!handler) {
@@ -199,7 +183,7 @@ function resolvePromiseMessage<T>(
   return typeof handler === 'string' ? handler : undefined
 }
 
-function handlePromiseMessage(message: MessageItemType) {
+function handlePromiseMessage(message: MessageItemConfig) {
   if (!message.promise) {
     return
   }
@@ -244,7 +228,7 @@ function handlePromiseMessage(message: MessageItemType) {
     })
 }
 
-function handleCreateMessage(data: MessageItemType) {
+function handleCreateMessage(data: MessageItemConfig) {
   if (!data || data.group !== props.group) {
     return
   }
@@ -266,7 +250,7 @@ function handleCreateMessage(data: MessageItemType) {
   }
 }
 
-function handleRemoveMessage(data: { id: MessageItemType['id'] }) {
+function handleRemoveMessage(data: { id: MessageItemConfig['id'] }) {
   if (!data || !data.id) {
     return
   }
@@ -286,12 +270,12 @@ function onUpdateMessage({ detail }: CustomEvent<MessageUpdateParams>) {
   switch (detail.type) {
     case 'create':
       if (detail.data) {
-        handleCreateMessage(detail.data as MessageItemType)
+        handleCreateMessage(detail.data as MessageItemConfig)
       }
       break
     case 'remove':
       if (detail.data) {
-        handleRemoveMessage(detail.data as { id: MessageItemType['id'] })
+        handleRemoveMessage(detail.data as { id: MessageItemConfig['id'] })
       }
       break
     case 'clear':
@@ -418,7 +402,6 @@ defineExpose({
           :index="index"
           :item-data="item"
           @close="closeMessageById"
-          @set-height="setItemHeight"
         />
       </TransitionGroup>
     </section>

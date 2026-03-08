@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { MessageItemHeightType } from '../../composables/use-message'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
 import InformationFillIcon from '@gdsicon/vue/information-fill'
 import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
-import { computed, onMounted, shallowRef } from 'vue'
+import { computed, onMounted, shallowRef, watch } from 'vue'
 import PButton from '../button/index.vue'
 import type { MessageItemEmits, MessageItemProps } from './types'
 
@@ -16,7 +15,6 @@ defineOptions({
 })
 
 const props = defineProps<MessageItemProps>()
-
 const emits = defineEmits<MessageItemEmits>()
 
 const TYPE_ICONS = {
@@ -56,13 +54,21 @@ function setItemHeightInfo() {
 
   const rect = itemRef.value.getBoundingClientRect()
 
-  const info: MessageItemHeightType = {
-    id: props.itemData.id,
-    height: rect.height,
-  }
-
-  emits('set-height', info)
+  // It is necessary to ensure the reference to the original object;
+  // otherwise, the type of the promise data cannot be updated.
+  props.itemData.height = rect.height
 }
+
+watch(
+  () => props.itemData.message,
+  () => {
+    if (!itemRef.value) {
+      return
+    }
+
+    setItemHeightInfo()
+  },
+)
 
 onMounted(() => {
   setItemHeightInfo()

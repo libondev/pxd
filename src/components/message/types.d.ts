@@ -1,4 +1,4 @@
-import type { MessageItemHeightType, MessageItemType } from '../../composables/use-message'
+import type { MessageItemType } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared'
 
 export interface MessageProps {

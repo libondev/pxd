@@ -1,12 +1,11 @@
-import type { MessageItemType, MessageItemHeightType } from "../../composables/use-message"
+import type { MessageItemConfig } from '../../composables/use-message'
 
 export interface MessageItemProps {
   max: number
   index: number
-  itemData: MessageItemType
+  itemData: MessageItemConfig
 }
 
 export interface MessageItemEmits {
-  close: [key: MessageItemType['id']]
-  'set-height': [info: MessageItemHeightType]
+  close: [key: MessageItemConfig['id']]
 }
