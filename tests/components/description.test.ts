@@ -8,12 +8,12 @@ describe('description', () => {
     const wrapper = mount(Description, {
       props: {
         title: 'Title',
-        content: 'Content',
+        description: 'Content',
       },
     })
 
     expect(wrapper.find('.pxd-description--title').text()).toBe('Title')
-    expect(wrapper.find('.pxd-description--content').text()).toBe('Content')
+    expect(wrapper.find('.pxd-description--description').text()).toBe('Content')
 
     wrapper.unmount()
   })
