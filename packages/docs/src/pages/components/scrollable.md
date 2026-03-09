@@ -2,6 +2,8 @@
 
 The container can be scrolled, and the scroll bar or container effect can be customized.
 
+## Default
+
 ```vue demo
 <template>
   <PScrollable class="w-100 max-w-full h-100 border rounded-md">
