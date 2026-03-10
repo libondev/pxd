@@ -5,6 +5,8 @@ export interface MenuProps {
   width?: string | number
   options?: ListOption[]
   position?: ComponentPosition
+  showDelay?: number
+  hideDelay?: number
   closeOnPressEscape?: boolean
 }
 

@@ -14,6 +14,8 @@ defineOptions({
 
 withDefaults(defineProps<MenuProps>(), {
   options: () => [],
+  showDelay: 0,
+  hideDelay: 100,
   position: 'bottom-start',
   closeOnPressEscape: true,
 })
@@ -42,7 +44,8 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   <PPopover
     class="pxd-menu"
     trigger="click"
-    :hide-delay="100"
+    :show-delay="isXs ? 0 : showDelay"
+    :hide-delay="isXs ? 0 : hideDelay"
     :position="position"
     :visible="popoverVisible"
     :unset-position="isXs"
