@@ -131,8 +131,7 @@ provideListFilterValue(deferredFilterKeyword)
       ref="listRef"
       :loop="false"
       class="sm:max-h-110 h-full"
-      :item-transition="false"
-      :key-listener="modelValue"
+      :toggle-on-key-press="modelValue"
       @select="onListItemSelect"
     >
       <slot />

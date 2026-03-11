@@ -16,8 +16,7 @@ defineOptions({
 const props = withDefaults(defineProps<ListProps>(), {
   loop: true,
   options: () => [],
-  keyListener: true,
-  itemTransition: true,
+  toggleOnKeyPress: true,
 })
 
 const emits = defineEmits<ListEmits>()
@@ -36,6 +35,41 @@ const PREVENT_DEFAULT_KEYS = [...FUNCTION_KEYS, ...PREV_KEYS, ...NEXT_KEYS]
 const listItemKeys: string[] = []
 const listItemsMap = new Map<string, HTMLElement>()
 
+function resolveNavigationTarget(key: string): string | undefined {
+  const len = listItemKeys.length
+
+  if (key === 'Home') {
+    return listItemKeys[0]
+  }
+
+  if (key === 'End') {
+    return listItemKeys[len - 1]
+  }
+
+  const dir = PREV_KEYS.includes(key) ? -1 : NEXT_KEYS.includes(key) ? 1 : undefined
+
+  if (dir === undefined) {
+    return undefined
+  }
+
+  if (!activeValue.value) {
+    return dir === -1 ? listItemKeys[len - 1] : listItemKeys[0]
+  }
+
+  const index = listItemKeys.indexOf(activeValue.value)
+
+  if (index === -1) {
+    return dir === -1 ? listItemKeys[len - 1] : listItemKeys[0]
+  }
+
+  if (props.loop) {
+    return listItemKeys[(index + dir + len) % len]
+  }
+
+  const nextIndex = index + dir
+  return nextIndex >= 0 && nextIndex < len ? listItemKeys[nextIndex] : undefined
+}
+
 const containerKeydownThrottled = throttle(
   (ev: KeyboardEvent) => {
     if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
@@ -43,10 +77,6 @@ const containerKeydownThrottled = throttle(
     }
 
     const { key } = ev
-
-    if (key === 'Tab') {
-      return
-    }
 
     if (key === 'Enter') {
       listItemsMap.get(activeValue.value)?.click()
@@ -58,46 +88,13 @@ const containerKeydownThrottled = throttle(
       return
     }
 
-    let newActiveValue = ''
-    const listItemKeyLength = listItemKeys.length
-
-    if (PREV_KEYS.includes(key)) {
-      if (activeValue.value) {
-        const index = listItemKeys.indexOf(activeValue.value)
-        if (props.loop) {
-          const prevIndex = (index - 1 + listItemKeys.length) % listItemKeys.length
-          newActiveValue = listItemKeys[prevIndex]!
-        } else if (index > 0) {
-          newActiveValue = listItemKeys[index - 1]!
-        }
-      } else {
-        newActiveValue = listItemKeys[listItemKeyLength - 1]!
-      }
-    } else if (NEXT_KEYS.includes(key)) {
-      if (activeValue.value) {
-        const index = listItemKeys.indexOf(activeValue.value)
-        if (props.loop) {
-          const nextIndex = (index + 1) % listItemKeys.length
-          newActiveValue = listItemKeys[nextIndex]!
-        } else if (index < listItemKeys.length - 1) {
-          newActiveValue = listItemKeys[index + 1]!
-        }
-      } else {
-        newActiveValue = listItemKeys[0]!
-      }
-    } else if (key === 'Home') {
-      newActiveValue = listItemKeys[0]!
-    } else if (key === 'End') {
-      newActiveValue = listItemKeys[listItemKeyLength - 1]!
-    }
-
-    if (!newActiveValue) {
+    const newActiveValue = resolveNavigationTarget(key)
+    if (newActiveValue === undefined) {
       return
     }
 
     if (activeValue.value !== newActiveValue) {
       emits('toggle')
-
       activeValue.value = newActiveValue
     }
 
@@ -108,7 +105,7 @@ const containerKeydownThrottled = throttle(
 )
 
 function onContainerKeydown(ev: KeyboardEvent) {
-  if (!props.keyListener || listItemKeys.length === 0) {
+  if (!props.toggleOnKeyPress || listItemKeys.length === 0) {
     return
   }
 
@@ -138,14 +135,22 @@ function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
 }
 
 function updateListItem() {
-  listItemsMap.clear()
-  listItemKeys.splice(0)
+  cleanupListItem()
 
-  Array.from(containerRef.value!.querySelectorAll<HTMLElement>(itemSelector)).forEach((el) => {
+  if (!containerRef.value) {
+    return
+  }
+
+  Array.from(containerRef.value.querySelectorAll<HTMLElement>(itemSelector)).forEach((el) => {
     const key = el.dataset.value!
     listItemsMap.set(key, el)
     listItemKeys.push(key)
   })
+}
+
+function cleanupListItem() {
+  listItemsMap.clear()
+  listItemKeys.splice(0)
 }
 
 function isNoVisibleItem() {
@@ -178,8 +183,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  listItemsMap.clear()
-  listItemKeys.splice(0)
+  cleanupListItem()
 
   cachedOff(document, 'keydown', onContainerKeydown)
 })
@@ -197,8 +201,7 @@ defineExpose({
     ref="containerRef"
     role="list"
     tabindex="-1"
-    :data-transition="itemTransition"
-    class="pxd-list group/list m-0 p-0 max-w-full list-none bg-background-100 outline-none"
+    class="pxd-list m-0 p-0 max-w-full list-none bg-background-100 outline-none"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
@@ -208,11 +211,9 @@ defineExpose({
       fader-direction="vertical"
     >
       <slot>
-        <PListItem
-          v-for="(option, index) in options"
-          :key="option.value ?? index"
-          v-bind="option"
-        />
+        <PListItem v-for="(option, index) in options" :key="option.value ?? index" v-bind="option">
+          <slot name="item" :item="option" />
+        </PListItem>
       </slot>
     </PScrollable>
   </ul>

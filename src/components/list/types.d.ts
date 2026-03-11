@@ -12,8 +12,7 @@ export type ListOptionSelected = Omit<ListOption, 'as' | 'onClick'>
 export interface ListProps {
   loop?: boolean
   options?: ListOption[]
-  keyListener?: boolean
-  itemTransition?: boolean
+  toggleOnKeyPress?: boolean
   closeOnPressEscape?: boolean
 }
 
