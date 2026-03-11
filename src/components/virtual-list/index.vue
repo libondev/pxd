@@ -61,7 +61,7 @@ defineExpose({
         class="pxd-virtual-list--item left-0 top-0 absolute w-full"
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
-        <slot :item="listData[virtualItem.index]" :virtual-item="virtualItem" />
+        <slot name="item" :item="listData[virtualItem.index]" :virtual-item="virtualItem" />
       </div>
     </div>
 
