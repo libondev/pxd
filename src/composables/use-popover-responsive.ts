@@ -6,11 +6,11 @@ export function usePopoverResponsive() {
   const isXs = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
   const attrs = computed(() => {
-    const basicContentClass = 'bg-background-100 shadow-border-menu'
+    const basicContentClass = 'bg-background-100 border'
 
     if (isXs.value) {
       return {
-        contentClass: `${basicContentClass} w-full rounded-tl-lg rounded-tr-lg`,
+        contentClass: `${basicContentClass} w-full rounded-tl-xl rounded-tr-xl`,
         wrapperClass: 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask',
         transitionType: 'fade-slide',
       } as const

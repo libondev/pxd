@@ -385,7 +385,7 @@ defineExpose({
         @pointerleave="onContentPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-auto relative z-1 max-h-inherit w-inherit transform-gpu default-animation-duration default-animation-timing-function"
+          class="pxd-popover--container pointer-events-auto relative z-1 max-h-[80dvh] max-h-[80vh] w-inherit transform-gpu default-animation-duration default-animation-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
@@ -394,7 +394,11 @@ defineExpose({
             ref="arrayRef"
             class="pxd-popover--arrow absolute z-1 rotate-45 border-5 border-(--popover-arrow-bg)"
           />
-          <div class="pxd-popover--content" :class="contentClass" :style="contentStyle">
+          <div
+            class="pxd-popover--content h-full max-h-inherit overflow-auto"
+            :class="contentClass"
+            :style="contentStyle"
+          >
             <slot name="content" />
           </div>
         </div>
