@@ -38,7 +38,7 @@ provideSwitchGroupContext({ props, emits, name: getUniqueId() })
 
 <template>
   <div
-    class="pxd-switch-group p-1 flex touch-manipulation rounded-md border"
+    class="pxd-switch-group p-1 flex touch-manipulation rounded-lg border"
     :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
   >
     <slot>
