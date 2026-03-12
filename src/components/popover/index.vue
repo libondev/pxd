@@ -585,18 +585,18 @@ defineExpose({
 }
 
 .pxd-popover--wrapper[data-position^='top'] .pxd-popover--arrow {
-  bottom: -4px;
+  bottom: 4px;
 }
 
 .pxd-popover--wrapper[data-position^='bottom'] .pxd-popover--arrow {
-  top: -4px;
+  top: 4px;
 }
 
 .pxd-popover--wrapper[data-position^='left'] .pxd-popover--arrow {
-  right: -4px;
+  right: 4px;
 }
 
 .pxd-popover--wrapper[data-position^='right'] .pxd-popover--arrow {
-  left: -4px;
+  left: 4px;
 }
 </style>
