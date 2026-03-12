@@ -49,7 +49,7 @@ const checkboxVariant = tv({
     {
       checked: true,
       disabled: true,
-      class: 'border-gray-600 bg-gray-600',
+      class: 'border-gray-500 bg-gray-500',
     },
     {
       checked: false,
