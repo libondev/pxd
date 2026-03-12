@@ -37,6 +37,7 @@ const modelValue = useModelValue(props, emits)
 
 const isChecked = computed(() => modelValue.value === props.activeValue)
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+const computedDisabled = computed(() => props.disabled || props.loading)
 
 async function onCheckboxChange(e: Event) {
   if (props.loading) {
@@ -71,7 +72,7 @@ async function onCheckboxChange(e: Event) {
     <input
       :id="uniqueId"
       type="checkbox"
-      :disabled="disabled || loading"
+      :disabled="computedDisabled"
       :checked="isChecked"
       class="pxd-toggle--input peer visually-hidden"
       @change.prevent="onCheckboxChange"
@@ -84,7 +85,7 @@ async function onCheckboxChange(e: Event) {
     >
 
     <div
-      class="pxd-toggle--handle rounded-full border border-input bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed motion-safe:transition-all"
+      class="pxd-toggle--handle rounded-full border border-input bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed peer-checked:peer-disabled:bg-gray-500 motion-safe:transition-all"
       :class="computedSize"
       :style="{
         '--toggle-active-color': activeColor,
@@ -92,9 +93,11 @@ async function onCheckboxChange(e: Event) {
       }"
     >
       <div
-        class="pxd-toggle--handle-icon text-xs shadow-sm relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-foreground-secondary motion-safe:transition-transform"
+        :data-checked="isChecked"
+        :data-disabled="computedDisabled"
+        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-all dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
       >
-        <div class="inset-0 absolute flex items-center justify-center">
+        <div class="inset-0 pointer-events-none absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">
             <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
             <slot v-else-if="modelValue" name="checked" />
@@ -111,9 +114,3 @@ async function onCheckboxChange(e: Event) {
     >
   </label>
 </template>
-
-<style>
-.pxd-toggle--input:checked:disabled + .pxd-toggle--handle {
-  background-color: var(--color-gray-300);
-}
-</style>
