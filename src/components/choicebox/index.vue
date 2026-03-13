@@ -55,7 +55,7 @@ const renderAs = computed(() => markRaw(choiceboxGroupContext?.props.multiple ? 
   }
 }
 
-.pxd-choicebox.is-disabled {
+.pxd-choicebox[data-disabled='true'] {
   background-color: var(--color-background-100);
   border-color: var(--color-border);
 

@@ -94,8 +94,7 @@ function onInputChange() {
     role="radio"
     :aria-selected="isChecked"
     :data-disabled="computedDisabled"
-    class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
-    :class="{ 'is-disabled text-gray-500': computedDisabled }"
+    class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
   >
     <input

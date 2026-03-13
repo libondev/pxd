@@ -120,8 +120,7 @@ function onInputChange(event: Event) {
     role="checkbox"
     :aria-selected="isChecked"
     :data-disabled="computedDisabled"
-    class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed"
-    :class="{ 'is-disabled text-gray-500': computedDisabled }"
+    class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
     v-bind="$attrs"
   >
