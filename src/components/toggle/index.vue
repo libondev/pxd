@@ -36,8 +36,8 @@ const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const isChecked = computed(() => modelValue.value === props.activeValue)
+const isDisabled = computed(() => props.disabled || props.loading)
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
-const computedDisabled = computed(() => props.disabled || props.loading)
 
 async function onCheckboxChange(e: Event) {
   if (props.loading) {
@@ -66,14 +66,16 @@ async function onCheckboxChange(e: Event) {
   <label
     role="switch"
     :for="uniqueId"
-    class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation items-center select-none"
+    :aria-selected="isChecked"
+    :data-disabled="isDisabled"
+    class="pxd-toggle group/toggle before:inset-0 relative inline-flex cursor-pointer touch-manipulation items-center select-none before:absolute before:scale-150"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
   >
     <input
       :id="uniqueId"
       type="checkbox"
-      :disabled="computedDisabled"
       :checked="isChecked"
+      :disabled="isDisabled"
       class="pxd-toggle--input peer visually-hidden"
       @change.prevent="onCheckboxChange"
     />
@@ -93,9 +95,7 @@ async function onCheckboxChange(e: Event) {
       }"
     >
       <div
-        :data-checked="isChecked"
-        :data-disabled="computedDisabled"
-        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-all dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
+        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-all dark:group-aria-[selected=true]/toggle:bg-background-100 dark:group-data-[disabled=true]/toggle:bg-gray-900 dark:group-data-[disabled=true]/toggle:text-gray-500"
       >
         <div class="inset-0 pointer-events-none absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">
