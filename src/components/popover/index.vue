@@ -347,6 +347,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  if (isLockedScroll) {
+    isLockedScroll = false
+    unlockScroll()
+  }
+
   disposeAutoUpdate()
 })
 
