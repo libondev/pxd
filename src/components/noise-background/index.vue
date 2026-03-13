@@ -3,13 +3,14 @@ import type { NoiseBackgroundProps } from './types'
 
 defineOptions({
   name: 'PNoiseBackground',
+  inheritAttrs: false,
 })
 
 withDefaults(defineProps<NoiseBackgroundProps>(), { as: 'div' })
 </script>
 
 <template>
-  <Component :is="as" class="pxd-noise-background relative">
+  <Component :is="as" class="pxd-noise-background relative" v-bind="$attrs">
     <slot />
   </Component>
 </template>

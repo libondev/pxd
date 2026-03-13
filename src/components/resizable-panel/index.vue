@@ -6,6 +6,7 @@ import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PResizablePanel',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<ResizablePanelProps>(), {
@@ -64,7 +65,11 @@ watch(
 </script>
 
 <template>
-  <div class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden" :style="computedStyle">
+  <div
+    class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
+    :style="computedStyle"
+    v-bind="$attrs"
+  >
     <slot />
   </div>
 </template>

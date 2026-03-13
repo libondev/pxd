@@ -12,6 +12,7 @@ import type { BrowserProps } from './types'
 
 defineOptions({
   name: 'PBrowser',
+  inheritAttrs: false,
 })
 
 defineProps<BrowserProps>()
@@ -22,7 +23,10 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
 </script>
 
 <template>
-  <div class="pxd-browser overflow-hidden rounded-md bg-background-200 shadow-border-small">
+  <div
+    class="pxd-browser overflow-hidden rounded-md bg-background-200 shadow-border-small"
+    v-bind="$attrs"
+  >
     <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between bg-background-100">
       <div
         class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 items-center justify-center first:justify-start last:justify-end"

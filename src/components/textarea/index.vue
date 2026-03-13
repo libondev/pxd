@@ -9,6 +9,7 @@ import type { TextareaEmits, TextareaProps } from './types'
 
 defineOptions({
   name: 'PTextarea',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -84,6 +85,7 @@ function onInputChange(event: Event) {
     :for="uniqueId"
     class="pxd-textarea pxd-input--border flex size-full min-h-inherit max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
     :class="computedClasses"
+    v-bind="$attrs"
   >
     <textarea
       :id="uniqueId"

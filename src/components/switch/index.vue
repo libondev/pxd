@@ -8,6 +8,7 @@ import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PSwitch',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -64,6 +65,7 @@ function onInputChange() {
     :data-disabled="isDisabled"
     class="pxd-switch flex-1 shrink-0 cursor-pointer"
     :for="uniqueId"
+    v-bind="$attrs"
   >
     <input
       :id="uniqueId"

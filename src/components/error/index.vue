@@ -9,6 +9,7 @@ import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PError',
+  inheritAttrs: false,
 })
 
 const props = defineProps<ErrorProps>()
@@ -36,7 +37,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses">
+  <div :class="computedClasses" v-bind="$attrs">
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">

@@ -7,6 +7,7 @@ import type { LinkButtonEmits, LinkButtonProps } from './types'
 
 defineOptions({
   name: 'PLinkButton',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<LinkButtonProps>(), {
@@ -18,7 +19,7 @@ const emits = defineEmits<LinkButtonEmits>()
 
 const attrs = useAttrs()
 
-const linkButtonAttrs = computed(() => {
+const computedAttrs = computed(() => {
   const { externalIcon, text, href, ...restProps } = props
 
   const baseAttrs = {
@@ -54,7 +55,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <PButton v-bind="linkButtonAttrs">
+  <PButton v-bind="computedAttrs">
     <template #prefix>
       <slot name="prefix" />
     </template>

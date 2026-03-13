@@ -3,13 +3,17 @@ import type { EmptyStateProps } from './types'
 
 defineOptions({
   name: 'PEmptyState',
+  inheritAttrs: false,
 })
 
 defineProps<EmptyStateProps>()
 </script>
 
 <template>
-  <div class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background-100">
+  <div
+    class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background-100"
+    v-bind="$attrs"
+  >
     <div class="max-w-sm space-y-6 mx-auto flex flex-col">
       <template v-if="$slots.icon">
         <div

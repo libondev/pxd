@@ -1,11 +1,12 @@
 <script setup lang="ts">
 defineOptions({
   name: 'PLoadingDots',
+  inheritAttrs: false,
 })
 </script>
 
 <template>
-  <span class="pxd-loading-dots inline-flex items-center">
+  <span class="pxd-loading-dots inline-flex items-center" v-bind="$attrs">
     <div v-if="$slots.prefix" class="pxd-loading-dots--text mr-3">
       <slot name="prefix" />
     </div>

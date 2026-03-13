@@ -5,6 +5,7 @@ import type { DashLineProps } from './types'
 
 defineOptions({
   name: 'PDashLine',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<DashLineProps>(), { position: () => ['top'] })
@@ -20,6 +21,7 @@ const computedStyle = computed(() => ({
 <template>
   <div
     class="pxd-dash-line relative max-w-full min-w-full"
+    v-bind="$attrs"
     :data-position="position"
     :style="computedStyle"
   />

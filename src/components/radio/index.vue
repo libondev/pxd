@@ -8,6 +8,7 @@ import type { RadioEmits, RadioProps } from './types'
 
 defineOptions({
   name: 'PRadio',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -96,6 +97,7 @@ function onInputChange() {
     :data-disabled="isDisabled"
     class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
+    v-bind="$attrs"
   >
     <input
       :id="uniqueId"

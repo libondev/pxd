@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({
   name: 'PSpinner',
+  inheritAttrs: false,
 })
 
 const ITEMS_COUNT = 12
@@ -11,6 +12,7 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
 <template>
   <div
     class="pxd-spinner transform-origin-center motion-safe:animate-spin pointer-events-none relative size-em overflow-hidden text-gray-700 content-visibility-auto intrinsic-size-auto"
+    v-bind="$attrs"
   >
     <div class="pxd-spinner-container top-0 left-0 absolute size-full">
       <div

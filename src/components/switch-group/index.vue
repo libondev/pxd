@@ -10,6 +10,7 @@ import PSwitch from '../switch/index.vue'
 
 defineOptions({
   name: 'PSwitchGroup',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -40,6 +41,7 @@ provideSwitchGroupContext({ props, emits, name: getUniqueId() })
   <div
     class="pxd-switch-group p-1 flex touch-manipulation rounded-lg border"
     :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
+    v-bind="$attrs"
   >
     <slot>
       <PSwitch

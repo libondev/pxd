@@ -5,6 +5,7 @@ import type { BookProps } from './types'
 
 defineOptions({
   name: 'PBook',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<BookProps>(), {
@@ -52,7 +53,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-book inline-flex w-fit">
+  <div class="pxd-book inline-flex w-fit" v-bind="$attrs">
     <div :class="computedClasses" :style="computedStyle">
       <div
         class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200"

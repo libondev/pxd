@@ -9,6 +9,7 @@ import type { ToggleEmits, ToggleProps } from './types'
 
 defineOptions({
   name: 'PToggle',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -68,6 +69,7 @@ async function onCheckboxChange(e: Event) {
     :for="uniqueId"
     class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation items-center select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
+    v-bind="$attrs"
   >
     <input
       :id="uniqueId"

@@ -6,6 +6,7 @@ import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../u
 
 defineOptions({
   name: 'PCountDown',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<CountdownProps>(), {
@@ -54,7 +55,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-countdown relative w-max max-w-full leading-none tabular-nums">
+  <div class="pxd-countdown relative w-max max-w-full leading-none tabular-nums" v-bind="$attrs">
     <slot :active="active" :times="times">
       {{ displayTimes }}
     </slot>

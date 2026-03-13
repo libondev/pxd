@@ -11,6 +11,7 @@ interface Props extends ConfigProviderProps {
 
 defineOptions({
   name: 'PConfigProvider',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,7 +25,7 @@ provideConfigProvider(props)
 </script>
 
 <template>
-  <Component :is="as" class="pxd-config-provider h-inherit" @touchstart="NOOP">
+  <Component :is="as" class="pxd-config-provider h-inherit" @touchstart="NOOP" v-bind="$attrs">
     <slot />
   </Component>
 </template>

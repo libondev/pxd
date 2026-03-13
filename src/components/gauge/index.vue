@@ -7,6 +7,7 @@ import type { GaugeProps } from './types'
 
 defineOptions({
   name: 'PGauge',
+  inheritAttrs: false,
   model: {
     prop: 'modelValue',
     event: 'update:modelValue',
@@ -133,7 +134,11 @@ const progressColors = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-gauge relative size-max" :style="`--gauge-size: ${computedSize}px`">
+  <div
+    class="pxd-gauge relative size-max"
+    :style="`--gauge-size: ${computedSize}px`"
+    v-bind="$attrs"
+  >
     <svg
       class="pxd-gauge--svg block size-(--gauge-size) -rotate-85 overflow-visible"
       aria-hidden="true"
