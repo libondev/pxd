@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 import type { PlaceholderProps } from './types'
+import { invert } from 'es-toolkit';
 
 defineOptions({
   name: 'PPlaceholder',
@@ -46,6 +47,6 @@ const computedStyle = computed(() => {
       #0000 62.5%,
       #0000 100%
     )
-    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px) padding-box fixed;
+    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px) padding-box;
 }
 </style>
