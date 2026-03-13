@@ -8,11 +8,11 @@ export interface DrawerProps {
   position?: BasePosition
   modelValue?: boolean
   appendToBody?: boolean
-  headerStylize?: boolean
-  footerStylize?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean
+  defaultHeaderStyle?: boolean
+  defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }

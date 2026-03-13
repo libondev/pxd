@@ -7,11 +7,11 @@ export interface ModalProps {
   loading?: boolean
   modelValue?: boolean
   appendToBody?: boolean
-  headerStylize?: boolean
-  footerStylize?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean
+  defaultHeaderStyle?: boolean
+  defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }

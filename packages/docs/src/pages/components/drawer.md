@@ -127,6 +127,31 @@ const leftVisible = ref(false)
 </template>
 ```
 
+
+## No default footer style
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+</script>
+
+<template>
+  <PStack>
+    <PButton @click="isVisible = true">Show</PButton>
+  </PStack>
+
+  <PDrawer v-model="isVisible" title="Drawer" :default-footer-style="false">
+    <PText>This drawer slides in from the top.</PText>
+
+    <template #footer>
+      <PButton block @click="isVisible = false"> Close Drawer </PButton>
+    </template>
+  </PDrawer>
+</template>
+```
+
 ## Custom Size
 
 You can customize the drawer size using `size` prop.

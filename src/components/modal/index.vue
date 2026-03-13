@@ -18,9 +18,9 @@ defineOptions({
 const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: false,
   appendToBody: true,
-  footerStylize: true,
-  headerStylize: false,
   autoFocusElement: false,
+  defaultFooterStyle: true,
+  defaultHeaderStyle: false,
   closeOnPressEscape: false,
   closeOnClickOverlay: false,
 })
@@ -33,6 +33,15 @@ const isVisible = useModelValue(props, emits)
 const computedStyle = computed(() => {
   return { '--modal-width': getCssUnitValue(props.width) }
 })
+
+const defaultStyles = computed(() => ({
+  headerClass: props.defaultHeaderStyle
+    ? 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100'
+    : '',
+  footerClass: props.defaultFooterStyle
+    ? 'border-t pt-4 bg-background-200 dark:bg-background-100'
+    : '',
+}))
 
 const focusTrapOptions = computed(() => ({
   autoFocusElement: props.autoFocusElement,
@@ -98,9 +107,7 @@ watch(
       >
         <header
           class="pxd-modal--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"
-          :class="{
-            'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize,
-          }"
+          :class="defaultStyles.headerClass"
         >
           <slot name="header">
             <h3
@@ -129,8 +136,8 @@ watch(
 
         <footer
           v-if="$slots.footer"
-          class="pxd-modal--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
-          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStylize }"
+          class="pxd-modal--footer px-4 pb-4 gap-2 relative flex shrink-0 items-center justify-between"
+          :class="defaultStyles.footerClass"
         >
           <slot name="footer" />
         </footer>

@@ -20,9 +20,9 @@ const props = withDefaults(defineProps<DrawerProps>(), {
   position: 'right',
   modelValue: false,
   appendToBody: true,
-  footerStylize: true,
-  headerStylize: false,
   autoFocusElement: false,
+  defaultFooterStyle: true,
+  defaultHeaderStyle: false,
   closeOnPressEscape: true,
   closeOnClickOverlay: true,
 })
@@ -40,6 +40,15 @@ const ensurePosition = computed(() => {
 
   return 'right'
 })
+
+const defaultStyles = computed(() => ({
+  headerClass: props.defaultHeaderStyle
+    ? 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100'
+    : '',
+  footerClass: props.defaultFooterStyle
+    ? 'border-t pt-4 bg-background-200 dark:bg-background-100'
+    : '',
+}))
 
 const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
 
@@ -117,9 +126,7 @@ watch(
       >
         <header
           class="pxd-drawer--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"
-          :class="{
-            'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100': headerStylize,
-          }"
+          :class="defaultStyles.headerClass"
         >
           <slot name="header">
             <h3
@@ -148,8 +155,8 @@ watch(
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer p-4 gap-2 relative flex shrink-0 items-center justify-between"
-          :class="{ 'border-t bg-background-200 dark:bg-background-100': footerStylize }"
+          class="pxd-drawer--footer px-4 pb-4 gap-2 relative flex shrink-0 items-center justify-between"
+          :class="defaultStyles.footerClass"
         >
           <slot name="footer" />
         </footer>

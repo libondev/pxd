@@ -103,7 +103,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" header-stylize title="Create Token" @outside-click="handleClose">
+  <PModal v-model="isVisible" default-header-style title="Create Token" @outside-click="handleClose">
     <PText>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem
       quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
@@ -148,6 +148,45 @@ function handleClose() {
   </PModal>
 </template>
 ```
+
+## No default footer style
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+
+function handleOpen() {
+  isVisible.value = true
+}
+
+function handleClose() {
+  isVisible.value = false
+}
+</script>
+
+<template>
+  <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
+
+  <PModal
+    v-model="isVisible"
+    title="Create Token"
+    :default-footer-style="false"
+    subtitle="Enter a unique name for your token to differentiate it from other tokens and then select the scope."
+    @outside-click="handleClose"
+  >
+    <PText> Some content contained within the modal. </PText>
+
+    <template #footer>
+      <PButton @click="handleClose"> Cancel </PButton>
+
+      <PButton variant="primary" @click="handleClose"> Submit </PButton>
+    </template>
+  </PModal>
+</template>
+```
+
 
 ## Close on click overlay
 
