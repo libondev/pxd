@@ -11,6 +11,7 @@ import type { NoteProps } from './types'
 
 defineOptions({
   name: 'PNote',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<NoteProps>(), {
@@ -19,7 +20,7 @@ const props = withDefaults(defineProps<NoteProps>(), {
 })
 
 const noteVariant = tv({
-  base: 'pxd-note gap-2 sm:flex-row sm:items-center flex max-w-full flex-col rounded-md border',
+  base: 'pxd-note gap-2 sm:items-center max-sm:flex-col flex max-w-full rounded-md border',
   variants: {
     size: {
       sm: 'px-2 py-1.5 text-xs',
@@ -121,7 +122,7 @@ const computedClasses = computed(() => {
 
 <template>
   <div :class="computedClasses">
-    <div class="gap-3 flex flex-1">
+    <div class="gap-3 flex flex-1 shrink-0">
       <slot v-if="computedLabel" name="label">
         <Component :is="computedLabel" class="size-4 font-medium h-lh shrink-0" />
       </slot>
@@ -131,7 +132,7 @@ const computedClasses = computed(() => {
       </span>
     </div>
 
-    <div v-if="$slots.action" class="pxd-note--action">
+    <div v-if="$slots.action" class="pxd-note--action max-sm:pl-7 shrink-0">
       <slot name="action" />
     </div>
   </div>
