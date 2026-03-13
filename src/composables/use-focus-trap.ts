@@ -1,16 +1,29 @@
 import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 
 import { createFocusTrap } from 'focus-trap'
-import { onBeforeUnmount, watch } from 'vue'
+import { onBeforeUnmount, watch, type MaybeRefOrGetter } from 'vue'
 
 import type { MaybeElementRef } from '../types/shared/utils'
 
 import { toValue } from '../utils/ref'
 
-const pxdFocusTrapStack: FocusTrap[] = []
+const focusTrapStack: FocusTrap[] = []
+
+// e.g.: filter input element in popover/modal/drawer components
+const AUTO_FOCUS_FIRST_SELECTOR = [
+  'input:not([type="hidden"]):not(:disabled)',
+  'button:not(:disabled)',
+  'select:not(:disabled)',
+  'textarea:not(:disabled)',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ')
+
+export interface UseFocusTrapOptions extends FocusTrapOptions {
+  autoFocusElement?: string | boolean
+}
 
 /**
- * Best-practice defaults for dialogs (Modal/Drawer):
+ * Best-practice defaults for dialogs (Modal/Drawer/Popover):
  * - Keep trap active unless component decides to close (avoid implicit deactivation).
  * - Always provide a fallback focus target to avoid runtime errors when no tabbables exist.
  * - Prevent scroll jumps caused by focusing.
@@ -18,7 +31,7 @@ const pxdFocusTrapStack: FocusTrap[] = []
  */
 export function useFocusTrap(
   container: MaybeElementRef<HTMLElement>,
-  userOptions: FocusTrapOptions = {},
+  userOptions: MaybeRefOrGetter<UseFocusTrapOptions> = {},
 ) {
   let trapper: FocusTrap | null = null
 
@@ -29,6 +42,8 @@ export function useFocusTrap(
         return
       }
 
+      const { autoFocusElement, ...restOptions } = toValue(userOptions)
+
       const defaultOptions: FocusTrapOptions = {
         allowOutsideClick: true,
         escapeDeactivates: false,
@@ -38,13 +53,24 @@ export function useFocusTrap(
         returnFocusOnDeactivate: true,
         preventScroll: true,
         fallbackFocus: () => target,
-        initialFocus: () => target,
+        initialFocus: (): HTMLElement => {
+          // auto focus first tabbable element or custom element
+
+          if (autoFocusElement) {
+            const elSelector =
+              typeof autoFocusElement === 'boolean' ? AUTO_FOCUS_FIRST_SELECTOR : autoFocusElement
+
+            return target.querySelector<HTMLElement>(elSelector) ?? target
+          }
+
+          return target
+        },
 
         // Coordinate nested PXD dialogs
-        trapStack: pxdFocusTrapStack,
+        trapStack: focusTrapStack,
       }
 
-      trapper = createFocusTrap(target, { ...defaultOptions, ...userOptions })
+      trapper = createFocusTrap(target, { ...defaultOptions, ...restOptions })
       trapper.activate()
 
       onCleanup(() => {
@@ -52,9 +78,7 @@ export function useFocusTrap(
         trapper = null
       })
     },
-    {
-      flush: 'post',
-    },
+    { flush: 'post' },
   )
 
   onBeforeUnmount(() => {
