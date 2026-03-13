@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
 
 const emits = defineEmits<PopoverEmits>()
 
+let isLockedScroll = false
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let cleanupAutoUpdate: (() => void) | null = null
@@ -73,12 +74,14 @@ const {
 
     if (v) {
       if (props.lockScrollOnVisible) {
+        isLockedScroll = true
         lockScroll()
       }
 
       emits('show')
     } else {
-      if (props.lockScrollOnVisible) {
+      if (isLockedScroll) {
+        isLockedScroll = false
         unlockScroll()
       }
 
