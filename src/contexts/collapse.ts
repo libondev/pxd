@@ -10,4 +10,4 @@ export interface CollapseGroupContext {
 }
 
 export const [provideCollapseGroupContext, useCollapseGroupContext] =
-  createContext<CollapseGroupContext>('CollapseGroup')
+  createContext<CollapseGroupContext>('CollapseGroup', null)
