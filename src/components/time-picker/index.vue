@@ -271,7 +271,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       </div>
 
       <div
-        class="sm:text-sm max-sm:text-15px flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
+        class="sm:text-sm max-sm:text-base flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
         @click.stop="onTimeListClick"
       >
         <div class="p-2 gap-1 relative mx-auto flex items-center">
@@ -279,7 +279,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeHoursRef"
               data-type="hour"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 24" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -291,7 +291,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeMinutesRef"
               data-type="minute"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -303,7 +303,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeSecondsRef"
               data-type="second"
-              class="w-8 h-40 px-0 m-0 py-16 scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none [-webkit-overflow-scrolling:auto]"
+              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -332,28 +332,40 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
   </PPopover>
 </template>
 
-<style>
-.pxd-time-picker--list::before,
-.pxd-time-picker--list::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 50%;
-  background: linear-gradient(
-    var(--time-picker-list-gradient-direction),
-    var(--color-background-100) 15%,
-    transparent
-  );
-  pointer-events: none;
-}
+<style lang="postcss">
+.pxd-time-picker--list {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    height: 64px;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-.pxd-time-picker--list::before {
-  --time-picker-list-gradient-direction: to bottom;
-  top: 0;
-}
+  &::before {
+    border-bottom: 1px solid hsl(var(--color-gray-300-value));
+    top: 0;
+  }
 
-.pxd-time-picker--list::after {
-  --time-picker-list-gradient-direction: to top;
-  bottom: 0;
+  &::after {
+    border-top: 1px solid hsl(var(--color-gray-300-value));
+    bottom: 0;
+  }
+
+  & > ul {
+    -webkit-overflow-scrolling: auto;
+    /* py-16(64px) / h-40(160px) = 40% */
+    mask-image: linear-gradient(to bottom, transparent 0%, black 50%, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 50%,
+      black 60%,
+      transparent 100%
+    );
+  }
 }
 </style>
