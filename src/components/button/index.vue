@@ -77,7 +77,7 @@ const buttonVariants = tv({
 })
 
 const configProvider = useConfigProvider()
-const computedDisabled = computed<boolean>(
+const isDisabled = computed<boolean>(
   () => isTruthyProp(props.disabled) || isTruthyProp(props.loading),
 )
 
@@ -91,19 +91,13 @@ const computedClasses = computed(() => {
     align,
     variant,
     fullWidth,
-    disabled: computedDisabled.value,
+    disabled: isDisabled.value,
   })
 })
 </script>
 
 <template>
-  <Component
-    :is="as"
-    role="button"
-    :class="computedClasses"
-    :disabled="computedDisabled"
-    v-bind="$attrs"
-  >
+  <Component :is="as" role="button" :class="computedClasses" :disabled="isDisabled" v-bind="$attrs">
     <PSpinner v-if="loading" />
 
     <slot name="prefix" />

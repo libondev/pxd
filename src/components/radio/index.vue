@@ -71,17 +71,17 @@ const modelValue = useModelValue(
 
 const isChecked = computed(() => modelValue.value === props.value)
 
-const computedDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return radioVariant({
     checked: isChecked.value,
-    disabled: computedDisabled.value,
+    disabled: isDisabled.value,
   })
 })
 
 function onInputChange() {
-  if (computedDisabled.value) {
+  if (isDisabled.value) {
     return
   }
 
@@ -93,7 +93,7 @@ function onInputChange() {
   <label
     role="radio"
     :aria-selected="isChecked"
-    :data-disabled="computedDisabled"
+    :data-disabled="isDisabled"
     class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
   >
@@ -104,7 +104,7 @@ function onInputChange() {
       class="peer visually-hidden"
       :checked="isChecked"
       :name="radioGroupName"
-      :disabled="computedDisabled"
+      :disabled="isDisabled"
       @change="onInputChange"
     />
 

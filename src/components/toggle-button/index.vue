@@ -67,7 +67,7 @@ const modelValue = useModelValue(
 
 const configProvider = useConfigProvider()
 
-const computedDisabled = computed(() => props.disabled || toggleButtonGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || toggleButtonGroupContext?.props.disabled)
 
 const isChecked = computed(() => {
   if (toggleButtonGroupContext?.props.multiple) {
@@ -77,12 +77,12 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedClass = computed(() => {
+const computedClasses = computed(() => {
   return toggleButtonVariant({
     size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
     checked: isChecked.value,
     variant: props.variant || toggleButtonGroupContext?.props.variant,
-    disabled: computedDisabled.value,
+    disabled: isDisabled.value,
   })
 })
 
@@ -112,8 +112,8 @@ function onToggleClick() {
     type="button"
     :aria-pressed="isChecked"
     :data-state="isChecked ? 'on' : 'off'"
-    :disabled="computedDisabled"
-    :class="computedClass"
+    :disabled="isDisabled"
+    :class="computedClasses"
     v-bind="$attrs"
     @click="onToggleClick"
   >

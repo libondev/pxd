@@ -42,14 +42,14 @@ const modelValue = useModelValue(
 
 const isChecked = computed(() => modelValue.value === props.value)
 
-const computedDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
-  return switchVariant({ disabled: computedDisabled.value })
+  return switchVariant({ disabled: isDisabled.value })
 })
 
 function onInputChange() {
-  if (computedDisabled.value) {
+  if (isDisabled.value) {
     return
   }
 
@@ -61,7 +61,7 @@ function onInputChange() {
   <label
     role="switch"
     :aria-selected="isChecked"
-    :data-disabled="computedDisabled"
+    :data-disabled="isDisabled"
     class="pxd-switch flex-1 shrink-0 cursor-pointer"
     :for="uniqueId"
   >
@@ -72,7 +72,7 @@ function onInputChange() {
       class="peer visually-hidden"
       :checked="isChecked"
       :name="switchGroupName"
-      :disabled="computedDisabled"
+      :disabled="isDisabled"
       @change="onInputChange"
     />
 

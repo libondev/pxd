@@ -45,7 +45,7 @@ const toggleButtonGroupVariant = tv({
 
 const computedSize = computed(() => props.size || configProvider.size)
 
-const computedClass = computed(() =>
+const computedClasses = computed(() =>
   toggleButtonGroupVariant({
     size: computedSize.value,
     variant: props.variant,
@@ -58,7 +58,7 @@ provideToggleButtonGroupContext({ props, emits })
 <template>
   <PStack
     role="group"
-    :class="computedClass"
+    :class="computedClasses"
     aria-label="Toggle Button Group"
     align="center"
     :gap="gap"

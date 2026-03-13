@@ -90,13 +90,13 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return checkboxVariant({
     shape: props.shape,
     checked: isChecked.value,
-    disabled: computedDisabled.value,
+    disabled: isDisabled.value,
   })
 })
 
@@ -119,7 +119,7 @@ function onInputChange(event: Event) {
   <label
     role="checkbox"
     :aria-selected="isChecked"
-    :data-disabled="computedDisabled"
+    :data-disabled="isDisabled"
     class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
     v-bind="$attrs"
@@ -130,7 +130,7 @@ function onInputChange(event: Event) {
       type="checkbox"
       class="peer visually-hidden"
       :checked="isChecked"
-      :disabled="computedDisabled"
+      :disabled="isDisabled"
       @change="onInputChange"
     />
 

@@ -39,7 +39,7 @@ const VARIANTS = {
 
 const computedVariant = computed(() => getFallbackValue(props.variant, VARIANTS, 'primary'))
 
-const computedDisabled = computed(() => {
+const isDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
@@ -57,7 +57,7 @@ const computedClasses = computed(() => {
     role="tooltip"
     class="pxd-tooltip"
     :position="position"
-    :disabled="computedDisabled"
+    :disabled="isDisabled"
     :show-arrow="showArrow"
     :show-delay="showDelay"
     :hide-delay="hideDelay"
