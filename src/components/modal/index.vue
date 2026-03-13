@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
   appendToBody: true,
   footerStylize: true,
   headerStylize: false,
+  autoFocusElement: false,
   closeOnPressEscape: false,
   closeOnClickOverlay: false,
 })
@@ -33,11 +34,13 @@ const computedStyle = computed(() => {
   return { '--modal-width': getCssUnitValue(props.width) }
 })
 
-useFocusTrap(modalRef, {
-  initialFocus: props.initialFocus,
+const focusTrapOptions = computed(() => ({
+  autoFocusElement: props.autoFocusElement,
   escapeDeactivates: props.closeOnPressEscape,
   clickOutsideDeactivates: props.closeOnClickOverlay,
-})
+}))
+
+useFocusTrap(modalRef, focusTrapOptions)
 
 function closeOverlayIfNeed() {
   if (isTruthyProp(props.loading)) {

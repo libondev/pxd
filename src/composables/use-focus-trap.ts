@@ -16,7 +16,7 @@ const AUTO_FOCUS_FIRST_SELECTOR = [
   'select:not(:disabled)',
   'textarea:not(:disabled)',
   '[tabindex]:not([tabindex="-1"])',
-].join(', ')
+].join(',')
 
 export interface UseFocusTrapOptions extends FocusTrapOptions {
   autoFocusElement?: string | boolean

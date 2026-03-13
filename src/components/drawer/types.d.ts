@@ -12,9 +12,9 @@ export interface DrawerProps {
   footerStylize?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
+  autoFocusElement?: string | boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  initialFocus?: string | false
 }
 
 export interface DrawerEmits {

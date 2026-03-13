@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<DrawerProps>(), {
   appendToBody: true,
   footerStylize: true,
   headerStylize: false,
+  autoFocusElement: false,
   closeOnPressEscape: true,
   closeOnClickOverlay: true,
 })
@@ -30,12 +31,6 @@ const emits = defineEmits<DrawerEmits>()
 
 const drawerRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
-
-useFocusTrap(drawerRef, {
-  initialFocus: props.initialFocus,
-  escapeDeactivates: props.closeOnPressEscape,
-  clickOutsideDeactivates: props.closeOnClickOverlay,
-})
 
 const ensurePosition = computed(() => {
   const { position } = props
@@ -57,6 +52,14 @@ const computedStyle = computed(() => {
 
   return styles
 })
+
+const focusTrapOptions = computed(() => ({
+  autoFocusElement: props.autoFocusElement,
+  escapeDeactivates: props.closeOnPressEscape,
+  clickOutsideDeactivates: props.closeOnClickOverlay,
+}))
+
+useFocusTrap(drawerRef, focusTrapOptions)
 
 function closeOverlayIfNeed() {
   if (isTruthyProp(props.loading)) {
