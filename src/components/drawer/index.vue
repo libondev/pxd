@@ -123,6 +123,7 @@ watch(
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
+        v-bind="$attrs"
       >
         <header
           class="pxd-drawer--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"

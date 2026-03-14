@@ -90,6 +90,7 @@ provideListFilterValue(deferredFilterKeyword)
     :auto-focus-element="isDesktop"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
+    v-bind="$attrs"
     @show="showModal"
     @hide="hideModal"
   >
