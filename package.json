@@ -1,6 +1,6 @@
 {
   "name": "pxd",
-  "version": "0.0.60",
+  "version": "0.0.61",
   "description": "A Vue 2.7 & 3.2 universal component library. Built-in light/dark theme. PC & mobile ready. Animation-free mode supported.",
   "keywords": [
     "component library",
