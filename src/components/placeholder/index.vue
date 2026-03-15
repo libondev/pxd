@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { invert } from 'es-toolkit'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+
 import type { PlaceholderProps } from './types'
-import { invert } from 'es-toolkit';
+
+import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
   name: 'PPlaceholder',
@@ -37,16 +39,18 @@ const computedStyle = computed(() => {
   }
 
   --placeholder-deg: -45deg;
-  background: linear-gradient(
-      var(--placeholder-deg),
-      var(--placeholder-color) 12.5%,
-      #0000 12.5%,
-      #0000 50%,
-      var(--placeholder-color) 50%,
-      var(--placeholder-color) 62.5%,
-      #0000 62.5%,
-      #0000 100%
-    )
-    0 0 / var(--placeholder-gap, 12px) var(--placeholder-gap, 12px) padding-box;
+  background-image: linear-gradient(
+    var(--placeholder-deg),
+    var(--placeholder-color) 12.5%,
+    #0000 12.5%,
+    #0000 50%,
+    var(--placeholder-color) 50%,
+    var(--placeholder-color) 62.5%,
+    #0000 62.5%,
+    #0000 100%
+  );
+  background-clip: padding-box;
+  background-position: 0 0;
+  background-size: var(--placeholder-gap, 12px) var(--placeholder-gap, 12px);
 }
 </style>
