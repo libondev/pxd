@@ -12,7 +12,7 @@ declare module 'vue' {
     PBrowser: (typeof import('pxd/components/browser'))['default']
     PButton: (typeof import('pxd/components/button'))['default']
     PCarousel: (typeof import('pxd/components/carousel'))['default']
-    PCarouselGroup: (typeof import('pxd/components/carousel-group'))['default']
+    PCarouselItem: (typeof import('pxd/components/carousel-item'))['default']
     PCheckbox: (typeof import('pxd/components/checkbox'))['default']
     PCheckboxGroup: (typeof import('pxd/components/checkbox-group'))['default']
     PChip: (typeof import('pxd/components/chip'))['default']

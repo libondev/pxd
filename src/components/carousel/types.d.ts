@@ -1,6 +1,6 @@
 import type { BasePosition, ComponentDirection } from '../../types/shared'
 
-export interface CarouselGroupProps {
+export interface CarouselProps {
   index?: number
   loop?: boolean
   arrow?: boolean
@@ -15,6 +15,6 @@ export interface CarouselGroupProps {
   toggleOnWheel?: boolean
 }
 
-export interface CarouselGroupEmits {
+export interface CarouselEmits {
   change: [index: number]
 }

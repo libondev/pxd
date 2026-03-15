@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { h } from 'vue'
 
-import CarouselGroup from '../../src/components/carousel-group/index.vue'
+import CarouselItem from '../../src/components/carousel-item/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
 
 function dispatchWheel(el: Element, deltaY: number) {
@@ -12,17 +12,17 @@ function dispatchWheel(el: Element, deltaY: number) {
   return ev
 }
 
-describe('carousel-group', () => {
+describe('carousel', () => {
   it('should not prevent page scroll by default (toggleOnWheel is off)', async () => {
-    const wrapper = mount(CarouselGroup, {
+    const wrapper = mount(Carousel, {
       props: {
         loop: true,
         autoplay: false,
       },
       slots: {
         default: [
-          h(Carousel, null, { default: () => 'A' }),
-          h(Carousel, null, { default: () => 'B' }),
+          h(CarouselItem, null, { default: () => 'A' }),
+          h(CarouselItem, null, { default: () => 'B' }),
         ],
       },
     })
@@ -34,7 +34,7 @@ describe('carousel-group', () => {
   })
 
   it('should prevent page scroll when loop is true (wheel toggles slides)', async () => {
-    const wrapper = mount(CarouselGroup, {
+    const wrapper = mount(Carousel, {
       props: {
         loop: true,
         autoplay: false,
@@ -42,8 +42,8 @@ describe('carousel-group', () => {
       },
       slots: {
         default: [
-          h(Carousel, null, { default: () => 'A' }),
-          h(Carousel, null, { default: () => 'B' }),
+          h(CarouselItem, null, { default: () => 'A' }),
+          h(CarouselItem, null, { default: () => 'B' }),
         ],
       },
     })
@@ -55,7 +55,7 @@ describe('carousel-group', () => {
   })
 
   it('should prevent page scroll when switching towards an edge in non-loop mode (length=2)', async () => {
-    const wrapper = mount(CarouselGroup, {
+    const wrapper = mount(Carousel, {
       props: {
         loop: false,
         autoplay: false,
@@ -63,8 +63,8 @@ describe('carousel-group', () => {
       },
       slots: {
         default: [
-          h(Carousel, null, { default: () => 'A' }),
-          h(Carousel, null, { default: () => 'B' }),
+          h(CarouselItem, null, { default: () => 'A' }),
+          h(CarouselItem, null, { default: () => 'B' }),
         ],
       },
     })
@@ -76,7 +76,7 @@ describe('carousel-group', () => {
   })
 
   it('should not prevent page scroll when already at an edge and trying to go further in non-loop mode', async () => {
-    const wrapper = mount(CarouselGroup, {
+    const wrapper = mount(Carousel, {
       props: {
         loop: false,
         autoplay: false,
@@ -84,8 +84,8 @@ describe('carousel-group', () => {
       },
       slots: {
         default: [
-          h(Carousel, null, { default: () => 'A' }),
-          h(Carousel, null, { default: () => 'B' }),
+          h(CarouselItem, null, { default: () => 'A' }),
+          h(CarouselItem, null, { default: () => 'B' }),
         ],
       },
     })

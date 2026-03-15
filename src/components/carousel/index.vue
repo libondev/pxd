@@ -1,62 +1,448 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useCarouselGroupContext } from '../../contexts/carousel'
-import { getUniqueId } from '../../utils/uid'
+import type { CarouselState } from '../../contexts/carousel'
+import type { CarouselEmits, CarouselProps } from './types'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { provideCarouselContext } from '../../contexts/carousel'
+import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
   name: 'PCarousel',
   inheritAttrs: false,
 })
 
-const uniqueId = getUniqueId()
+const props = withDefaults(defineProps<CarouselProps>(), {
+  index: 0,
+  loop: true,
+  arrow: true,
+  height: 180,
+  autoplay: true,
+  interval: 3000,
+  indicator: true,
+  direction: 'horizontal',
+  pauseOnHover: true,
+  indicatorType: 'line',
+  indicatorPosition: 'bottom',
+})
 
-const transformStyle = shallowRef('')
+const emits = defineEmits<CarouselEmits>()
 
-const carouselGroupContext = useCarouselGroupContext()
+const TRANSITION_CLASSES = ['transition-transform', 'duration-[calc(var(--duration,200ms)+100ms)]']
 
-function resetPosition() {
-  transformStyle.value = ''
+let autoPlayRafId: number | null = null
+let autoPlaySession = 0
+let isPointerEntering = false
+let toggleQueue: Promise<void> = Promise.resolve()
+
+const carousels = ref<CarouselState[]>([])
+const sliderRef = shallowRef<HTMLElement>()
+const virtualIndex = shallowRef(props.index)
+
+// since the virtual index may exceed the range to facilitate seamless switching,
+// a boundary index is needed to indicate the real index
+const correctIndex = computed(() => {
+  const index = virtualIndex.value
+
+  if (index >= carousels.value.length) {
+    return 0
+  }
+
+  if (index <= -1) {
+    return carousels.value.length - 1
+  }
+
+  return index
+})
+
+const computedStyle = computed(() => {
+  const translateValue = virtualIndex.value * -100
+
+  const styles = {
+    transform:
+      props.direction === 'horizontal'
+        ? `translateX(${translateValue}%)`
+        : `translateY(${translateValue}%)`,
+  }
+
+  return styles
+})
+
+function translateItems() {
+  carousels.value.forEach((carousel, index) => {
+    carousel.translateItem(index, virtualIndex.value)
+  })
 }
 
-function getTranslateStyle(translate: number) {
-  const isHorizontal = carouselGroupContext.props.direction === 'horizontal'
-
-  return `translate${isHorizontal ? 'X' : 'Y'}(${translate}%)`
+// wait for the animation to end before performing the next action
+async function awaitAnimationEnd() {
+  const animations = sliderRef.value?.getAnimations() ?? []
+  await Promise.allSettled(animations.map((a) => a.finished))
 }
 
-function translateItem(index: number, activeIndex: number) {
-  const maxLength = carouselGroupContext.carousels.value.length
-  const lastIndex = maxLength - 1
+async function performToggle(delta: number) {
+  const length = carousels.value.length
 
-  if (index === 0 && activeIndex === maxLength) {
-    // move the first item to the right
-    transformStyle.value = getTranslateStyle(maxLength * 100)
-  } else if (index === lastIndex && activeIndex <= 0) {
-    // move the last item to the left
-    transformStyle.value = getTranslateStyle(-maxLength * 100)
+  if (length === 0) {
+    return
+  }
+
+  await awaitAnimationEnd()
+
+  if (props.loop) {
+    virtualIndex.value += delta
+
+    translateItems()
   } else {
-    resetPosition()
+    virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
+  }
+
+  emits('change', correctIndex.value)
+  nextTick(onPointerLeave)
+}
+
+function onToggleClick(delta: number) {
+  // serialize all toggle triggers to avoid concurrent execution on rapid interactions
+  toggleQueue = toggleQueue
+    .catch(() => {})
+    .then(async () => {
+      await performToggle(delta)
+    })
+
+  return toggleQueue
+}
+
+function onWheelToggle(ev: WheelEvent) {
+  if (!props.toggleOnWheel) {
+    return
+  }
+
+  const length = carousels.value.length
+
+  if (length <= 1) {
+    return
+  }
+
+  const delta = ev.deltaY > 0 ? 1 : -1
+  const indexBefore = virtualIndex.value
+  const lastIndex = length - 1
+
+  if (!props.loop) {
+    const isAtFirstAndGoPrev = indexBefore <= 0 && delta < 0
+    const isAtLastAndGoNext = indexBefore >= lastIndex && delta > 0
+    if (isAtFirstAndGoPrev || isAtLastAndGoNext) {
+      return
+    }
+  }
+
+  if (ev.cancelable) {
+    ev.preventDefault()
+  }
+
+  onToggleClick(delta)
+}
+
+function resetContainerPosition(resetIndex: number) {
+  const containerClassList = sliderRef.value!.classList
+
+  containerClassList.remove(...TRANSITION_CLASSES)
+
+  virtualIndex.value = resetIndex
+  translateItems()
+
+  setTimeout(() => {
+    containerClassList.add(...TRANSITION_CLASSES)
+  }, 0)
+}
+
+function onTransitionsEnd(ev: TransitionEvent) {
+  if (ev.propertyName !== 'transform' || ev.target !== sliderRef.value) {
+    return
+  }
+
+  if (!props.loop) {
+    return
+  }
+
+  if (virtualIndex.value >= carousels.value.length) {
+    resetContainerPosition(0)
+  } else if (virtualIndex.value <= -1) {
+    resetContainerPosition(carousels.value.length - 1)
   }
 }
 
-onMounted(() => {
-  carouselGroupContext?.registerCarousel({
-    uid: uniqueId,
-    translateItem,
-  })
+function clearAutoPlayTimer() {
+  autoPlaySession++
+  if (autoPlayRafId != null) {
+    cancelAnimationFrame(autoPlayRafId)
+    autoPlayRafId = null
+  }
+}
+
+function setAutoPlayTimer() {
+  const mySession = autoPlaySession
+  const startTime = performance.now()
+
+  const onAnimationFrame = () => {
+    if (mySession !== autoPlaySession || isPointerEntering) {
+      return
+    }
+
+    const currentTime = performance.now()
+    const elapsedTime = currentTime - startTime
+
+    if (elapsedTime >= props.interval) {
+      onToggleClick(1)
+      return
+    }
+
+    autoPlayRafId = requestAnimationFrame(onAnimationFrame)
+  }
+
+  autoPlayRafId = requestAnimationFrame(onAnimationFrame)
+}
+
+function onPointerEnter() {
+  if (props.pauseOnHover) {
+    isPointerEntering = true
+    clearAutoPlayTimer()
+  }
+}
+
+function onPointerLeave() {
+  isPointerEntering = false
+
+  if (!props.autoplay) {
+    return
+  }
+
+  clearAutoPlayTimer()
+  setAutoPlayTimer()
+}
+
+function onIndicatorClick(ev: MouseEvent) {
+  clearAutoPlayTimer()
+
+  const targetEl = (ev.target as HTMLElement).closest('[data-index]') as HTMLButtonElement | null
+  const targetIndex = Number(targetEl?.dataset.index)
+
+  if (Number.isNaN(targetIndex)) {
+    return
+  }
+
+  const deltaIndex = targetIndex - virtualIndex.value
+
+  if (deltaIndex !== 0) {
+    onToggleClick(deltaIndex)
+  }
+
+  nextTick(onPointerLeave)
+}
+
+function registerCarousel(state: CarouselState) {
+  carousels.value.push(state)
+}
+
+function unregisterCarousel(id: string) {
+  carousels.value = carousels.value.filter(({ uid }) => uid !== id)
+}
+
+// usePointerGesture(sliderRef, {
+//   axis: () => (props.direction === 'horizontal' ? 'x' : 'y'),
+//   directionGuard: (d) => {
+//     if (props.direction === 'horizontal') {
+//       return d === 'left' || d === 'right'
+//     }
+
+//     return d === 'up' || d === 'down'
+//   },
+//   onRelease(hit, dir, kind) {
+//     if (!hit || !dir || kind === 'longpress') {
+//       return
+//     }
+
+//     if (dir === 'left' || dir === 'up') {
+//       onToggleClick(1)
+//     } else if (dir === 'right' || dir === 'down') {
+//       onToggleClick(-1)
+//     }
+//   },
+// })
+
+provideCarouselContext({
+  props,
+  carousels,
+  registerCarousel,
+  unregisterCarousel,
+})
+
+onMounted(async () => {
+  onPointerLeave()
+
+  await nextTick()
+
+  translateItems()
 })
 
 onBeforeUnmount(() => {
-  carouselGroupContext?.unregisterCarousel(uniqueId)
+  clearAutoPlayTimer()
+  carousels.value = []
 })
 </script>
 
 <template>
   <div
-    class="pxd-carousel size-full shrink-0 content-visibility-auto intrinsic-size-auto"
-    :style="{ transform: transformStyle }"
     v-bind="$attrs"
+    :data-direction="direction"
+    :data-indicator-type="indicatorType"
+    :data-indicator-position="indicatorPosition"
+    class="pxd-carousel group relative w-full touch-none overflow-hidden"
+    :style="{ height: getCssUnitValue(height) }"
+    @pointerenter="onPointerEnter"
+    @pointerleave="onPointerLeave"
+    @wheel="onWheelToggle"
   >
-    <slot />
+    <div class="pxd-carousel--container size-full">
+      <div
+        ref="sliderRef"
+        class="pxd-carousel--slider translate-z-0 size-full"
+        :style="computedStyle"
+        :class="TRANSITION_CLASSES"
+        @transitionend="onTransitionsEnd"
+      >
+        <slot />
+      </div>
+    </div>
+
+    <div
+      v-if="indicator"
+      class="pxd-carousel--indicator gap-2 absolute flex w-max items-center"
+      @click="onIndicatorClick"
+    >
+      <slot name="indicator" :current="correctIndex + 1" :total="carousels.length">
+        <button
+          v-for="(_, i) in carousels.length"
+          :key="i"
+          :data-index="i"
+          class="pxd-carousel--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+          :class="{ 'bg-primary!': i === correctIndex }"
+        />
+      </slot>
+    </div>
+
+    <div v-if="arrow" class="pxd-carousel--toggler gap-2 absolute flex">
+      <button
+        type="button"
+        aria-label="Carousel arrow left"
+        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        @click="onToggleClick(-1)"
+      >
+        <ChevronRightIcon class="rotate-180" />
+      </button>
+
+      <button
+        type="button"
+        aria-label="Carousel arrow right"
+        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        @click="onToggleClick(1)"
+      >
+        <ChevronRightIcon />
+      </button>
+    </div>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-carousel {
+  &[data-indicator-type='dot'] {
+    --carousel-dot-width: 0.5rem;
+    --carousel-dot-height: 0.5rem;
+  }
+
+  &[data-indicator-type='line'] {
+    &[data-indicator-position='top'],
+    &[data-indicator-position='bottom'] {
+      --carousel-dot-width: 1rem;
+      --carousel-dot-height: 0.25rem;
+    }
+
+    &[data-indicator-position='left'],
+    &[data-indicator-position='right'] {
+      --carousel-dot-width: 0.25rem;
+      --carousel-dot-height: 1rem;
+    }
+  }
+
+  &[data-indicator-position='top'] {
+    .pxd-carousel--indicator {
+      left: 12px;
+      top: 0.5rem;
+    }
+
+    .pxd-carousel--toggler {
+      right: 0.5rem;
+      top: 0.5rem;
+    }
+  }
+
+  &[data-indicator-position='bottom'] {
+    .pxd-carousel--indicator {
+      left: 12px;
+      bottom: 0.5rem;
+    }
+
+    .pxd-carousel--toggler {
+      right: 0.5rem;
+      bottom: 0.5rem;
+    }
+  }
+
+  &[data-indicator-position='left'] {
+    .pxd-carousel--indicator {
+      left: 0.5rem;
+      top: 12px;
+    }
+
+    .pxd-carousel--toggler {
+      left: 0.5rem;
+      bottom: 0.5rem;
+    }
+  }
+
+  &[data-indicator-position='right'] {
+    .pxd-carousel--indicator {
+      right: 0.5rem;
+      top: 12px;
+    }
+
+    .pxd-carousel--toggler {
+      right: 0.5rem;
+      bottom: 0.5rem;
+    }
+  }
+
+  &[data-direction='horizontal'] .pxd-carousel--slider {
+    display: flex;
+  }
+
+  &[data-direction='vertical'] {
+    .pxd-carousel--prev-btn,
+    .pxd-carousel--next-btn {
+      transform: rotate(90deg);
+    }
+  }
+
+  &[data-indicator-position='left'],
+  &[data-indicator-position='right'] {
+    .pxd-carousel--indicator,
+    .pxd-carousel--toggler {
+      flex-direction: column;
+    }
+  }
+}
+
+.pxd-carousel--indicator-item::before {
+  content: '';
+  position: absolute;
+  inset: -0.25rem;
+}
+</style>

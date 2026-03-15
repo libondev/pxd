@@ -7,16 +7,17 @@ Loop a series of images or texts in a limited space.
 ```vue demo
 <template>
   <PStack>
-    <PCarouselGroup>
-      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+    <PCarousel>
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
-      </PCarousel>
-    </PCarouselGroup>
-    <PCarouselGroup direction="vertical">
-      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      </PCarouselItem>
+    </PCarousel>
+
+    <PCarousel direction="vertical">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
-      </PCarousel>
-    </PCarouselGroup>
+      </PCarouselItem>
+    </PCarousel>
   </PStack>
 </template>
 
@@ -60,24 +61,24 @@ const indicatorPosition = ref('bottom')
       <PSwitch label="right" value="right" />
     </PSwitchGroup>
 
-    <PCarouselGroup
+    <PCarousel
       :direction="direction"
       :indicator-type="indicatorType"
       :indicator-position="indicatorPosition"
     >
-      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
-      </PCarousel>
-    </PCarouselGroup>
+      </PCarouselItem>
+    </PCarousel>
 
-    <PCarouselGroup
+    <PCarousel
       :direction="direction"
       :indicator-type="indicatorType"
       :indicator-position="indicatorPosition"
     >
-      <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
         {{ i }}
-      </PCarousel>
+      </PCarouselItem>
 
       <template #indicator="{ total, current }">
         <span
@@ -86,7 +87,7 @@ const indicatorPosition = ref('bottom')
           {{ current }}/{{ total }}
         </span>
       </template>
-    </PCarouselGroup>
+    </PCarousel>
   </PStack>
 </template>
 ```
@@ -97,11 +98,11 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 
 ```vue demo
 <template>
-  <PCarouselGroup toggle-on-wheel>
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+  <PCarousel toggle-on-wheel>
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
+    </PCarouselItem>
+  </PCarousel>
 </template>
 ```
 
@@ -109,11 +110,11 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 
 ```vue demo
 <template>
-  <PCarouselGroup :indicator="false" :arrow="false">
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+  <PCarousel :indicator="false" :arrow="false">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
+    </PCarouselItem>
+  </PCarousel>
 </template>
 ```
 
@@ -121,11 +122,11 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 
 ```vue demo
 <template>
-  <PCarouselGroup :autoplay="false" :loop="false">
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+  <PCarousel :autoplay="false" :loop="false">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
+    </PCarouselItem>
+  </PCarousel>
 </template>
 ```
 
@@ -135,10 +136,10 @@ By default, it will pause when the mouse is over the carousel.
 
 ```vue demo
 <template>
-  <PCarouselGroup :pause-on-hover="false">
-    <PCarousel v-for="i in 4" :key="i" class="flex items-center justify-center">
+  <PCarousel :pause-on-hover="false">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center">
       {{ i }}
-    </PCarousel>
-  </PCarouselGroup>
+    </PCarouselItem>
+  </PCarousel>
 </template>
 ```
