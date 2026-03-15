@@ -17,7 +17,7 @@ declare module 'vue' {
     PCheckboxGroup: (typeof import('pxd/components/checkbox-group'))['default']
     PChip: (typeof import('pxd/components/chip'))['default']
     PChoicebox: (typeof import('pxd/components/choicebox'))['default']
-    PChoiceboxGroup: (typeof import('pxd/components/choicebox-group'))['default']
+    PChoiceboxItem: (typeof import('pxd/components/choicebox-item'))['default']
     PCollapse: (typeof import('pxd/components/collapse'))['default']
     PCollapseGroup: (typeof import('pxd/components/collapse-group'))['default']
     PCommandMenu: (typeof import('pxd/components/command-menu'))['default']

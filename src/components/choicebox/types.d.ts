@@ -1,12 +1,20 @@
-import type { ComponentLabel, ComponentOption, ComponentValue } from '../../types/shared'
-
-interface Option extends ComponentOption {
-  description?: string
-}
+import type {
+  ComponentLabel,
+  ComponentValue,
+  ComponentOption,
+  ResponsiveValue,
+} from '../../types/shared'
 
 export interface ChoiceboxProps {
+  gap?: ResponsiveValue<number | string>
   label?: ComponentLabel
-  value?: ComponentValue
+  multiple?: boolean
   disabled?: boolean
-  description?: string
+  options?: ComponentOption[]
+  modelValue?: ComponentValue | ComponentValue[]
+}
+
+export interface ChoiceboxEmits {
+  change: [NonNullable<ChoiceboxProps['modelValue']>]
+  'update:modelValue': [NonNullable<ChoiceboxProps['modelValue']>]
 }

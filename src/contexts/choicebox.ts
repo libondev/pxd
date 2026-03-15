@@ -1,13 +1,13 @@
 import type { EmitFn } from 'vue'
 
-import type { ChoiceboxGroupEmits, ChoiceboxGroupProps } from '../components/choicebox-group/types'
+import type { ChoiceboxEmits, ChoiceboxProps } from '../components/choicebox/types'
 
 import { createContext } from '../utils/context'
 
-interface ChoiceboxGroupContext {
-  props: ChoiceboxGroupProps
-  emits: EmitFn<ChoiceboxGroupEmits>
+interface ChoiceboxContext {
+  props: ChoiceboxProps
+  emits: EmitFn<ChoiceboxEmits>
 }
 
-export const [provideChoiceboxGroupContext, useChoiceboxGroupContext] =
-  createContext<ChoiceboxGroupContext>('ChoiceboxGroup')
+export const [provideChoiceboxContext, useChoiceboxContext] =
+  createContext<ChoiceboxContext>('ChoiceboxGroup')

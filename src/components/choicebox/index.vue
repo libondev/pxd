@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import type { ChoiceboxEmits, ChoiceboxProps } from './types'
 import { computed, markRaw } from 'vue'
-import { useChoiceboxGroupContext } from '../../contexts/choicebox'
-import PCheckbox from '../checkbox/index.vue'
-import PRadio from '../radio/index.vue'
-import type { ChoiceboxProps } from './types'
+import PCheckboxGroup from '../checkbox-group/index.vue'
+import PChoiceboxItem from '../choicebox-item/index.vue'
+import PRadioGroup from '../radio-group/index.vue'
+import { provideChoiceboxContext } from '../../contexts/choicebox'
 
 defineOptions({
   name: 'PChoicebox',
@@ -14,54 +15,36 @@ defineOptions({
   },
 })
 
-defineProps<ChoiceboxProps>()
+const props = withDefaults(defineProps<ChoiceboxProps>(), {
+  gap: 3,
+})
+const emits = defineEmits<ChoiceboxEmits>()
 
-const choiceboxGroupContext = useChoiceboxGroupContext()
+const renderAs = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
 
-const renderAs = computed(() => markRaw(choiceboxGroupContext?.props.multiple ? PCheckbox : PRadio))
+function onUpdateModelValue(value: any) {
+  emits('change', value)
+  emits('update:modelValue', value)
+}
+
+provideChoiceboxContext({ props, emits })
 </script>
 
 <template>
   <Component
     :is="renderAs"
-    :value="value"
+    :gap="gap"
+    :options="options"
     :disabled="disabled"
-    class="pxd-choicebox p-3 w-full flex-1 flex-row-reverse justify-between rounded-md border hover:border-gray-500 hover:bg-background-hover motion-safe:transition-colors"
+    :model-value="modelValue"
+    :aria-multiselectable="multiple"
+    class="pxd-choicebox w-full"
+    :role="multiple ? 'group' : 'radiogroup'"
     v-bind="$attrs"
+    @update:model-value="onUpdateModelValue"
   >
-    <div class="gap-1 flex flex-col">
-      <span class="pxd-choicebox--label font-medium">
-        <slot name="label">
-          {{ label }}
-        </slot>
-      </span>
-      <span class="pxd-choicebox--description text-sm text-foreground-secondary">
-        <slot name="description">
-          {{ description }}
-        </slot>
-      </span>
-    </div>
+    <slot>
+      <PChoiceboxItem v-for="option in options" :key="option.value" v-bind="option" />
+    </slot>
   </Component>
 </template>
-
-<style lang="postcss">
-.pxd-choicebox[aria-selected='true'] {
-  border-color: var(--color-primary);
-  background-color: hsla(var(--primary), 0.08);
-
-  .pxd-choicebox--label,
-  .pxd-choicebox--description {
-    color: var(--color-primary);
-  }
-}
-
-.pxd-choicebox[data-disabled='true'] {
-  background-color: var(--color-background-100);
-  border-color: var(--color-border);
-
-  .pxd-choicebox--label,
-  .pxd-choicebox--description {
-    color: var(--color-gray-500);
-  }
-}
-</style>
