@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, shallowRef, useAttrs } from 'vue'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
+
+import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
+
 import { getStyle } from '../../utils/dom'
 import { off, once } from '../../utils/event'
 import PButton from '../button/index.vue'
-import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
 
 defineOptions({
   name: 'PHoldButton',
-  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<HoldButtonProps>(), {
@@ -18,8 +19,6 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
 })
 
 const emits = defineEmits<HoldButtonEmits>()
-
-const attrs = useAttrs()
 
 const status = shallowRef<HoldButtonStatus>('idle')
 
@@ -35,7 +34,6 @@ const computedAttrs = computed(() => {
       },
     ],
     ...rest,
-    ...attrs,
   }
 })
 

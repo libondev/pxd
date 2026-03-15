@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import ExternalIcon from '@gdsicon/vue/external'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
+
+import type { LinkButtonEmits, LinkButtonProps } from './types'
+
 import { isExternalLink } from '../../utils/format'
 import PButton from '../button/index.vue'
-import type { LinkButtonEmits, LinkButtonProps } from './types'
 
 defineOptions({
   name: 'PLinkButton',
-  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<LinkButtonProps>(), {
@@ -17,13 +18,10 @@ const props = withDefaults(defineProps<LinkButtonProps>(), {
 
 const emits = defineEmits<LinkButtonEmits>()
 
-const attrs = useAttrs()
-
 const computedAttrs = computed(() => {
   const { externalIcon, text, href, ...restProps } = props
 
   const baseAttrs = {
-    ...attrs,
     ...restProps,
     class: 'pxd-link-button',
     rel: 'noopener noreferrer',
