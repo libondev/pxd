@@ -4,6 +4,11 @@ import type { VirtualListProps, VirtualListEmits } from './types'
 import { shallowRef } from 'vue'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 
+defineOptions({
+  name: 'PVirtualList',
+  inheritAttrs: false,
+})
+
 const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
   itemSize: 50,
@@ -48,7 +53,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-virtual-list relative overflow-auto">
+  <div ref="containerRef" class="pxd-virtual-list relative overflow-auto" v-bind="$attrs">
     <div
       class="pxd-virtual-list--content relative w-full content-visibility-auto"
       :style="{ height: `${totalSize}px`, containIntrinsicSize: `auto ${totalSize}px` }"

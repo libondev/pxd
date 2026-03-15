@@ -4,6 +4,11 @@ import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import type { ChipProps } from './types'
 import { tv } from 'tailwind-variants'
 
+defineOptions({
+  name: 'PChip',
+  inheritAttrs: false,
+})
+
 const props = withDefaults(defineProps<ChipProps>(), {
   size: 10,
   label: '',
@@ -46,7 +51,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-chip relative inline-flex shrink-0">
+  <div class="pxd-chip relative inline-flex shrink-0" v-bind="$attrs">
     <slot />
 
     <span

@@ -2,6 +2,11 @@
 import { capitalize as capitalizeText } from '../../utils/format'
 import type { StatusDotProps } from './types'
 
+defineOptions({
+  name: 'PStatusDot',
+  inheritAttrs: false,
+})
+
 const props = withDefaults(defineProps<StatusDotProps>(), {
   label: false,
   state: 'QUEUED',
@@ -31,7 +36,7 @@ function getLabelText() {
 </script>
 
 <template>
-  <span class="pxd-state-dot inline-flex items-center">
+  <span class="pxd-state-dot inline-flex items-center" v-bind="$attrs">
     <i
       aria-hidden="true"
       class="w-2.5 h-2.5 inline-block rounded-full"
