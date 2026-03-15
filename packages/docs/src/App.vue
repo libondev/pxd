@@ -4,8 +4,8 @@
 
 <template>
   <!-- :locale="zhCN" -->
-  <PConfigProvider class="flex size-full flex-col">
-    <PPlaceholder invert class="h-full" color="var(--color-gray-alpha-100)">
+  <PConfigProvider class="flex w-full flex-col">
+    <PPlaceholder invert class="h-full bg-fixed" color="var(--color-gray-alpha-100)">
       <SiteHeader />
       <PMessage width="180" group="website" />
       <PLoadingBar group="website" />
