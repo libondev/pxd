@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useSwitchGroupContext } from '../../contexts/switch'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { provideSwitchContext } from '../../contexts/switch'
+import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'
-import { tv } from 'tailwind-variants'
+import PSwitchItem from '../switch-item/index.vue'
 
 defineOptions({
   name: 'PSwitch',
@@ -15,73 +17,41 @@ defineOptions({
   },
 })
 
-const props = defineProps<SwitchProps>()
+const props = withDefaults(defineProps<SwitchProps>(), {
+  options: () => [],
+  modelValue: '',
+})
+
 const emits = defineEmits<SwitchEmits>()
 
-const switchVariant = tv({
-  base: 'pxd-switch--label px-2.5 text-sm font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-all',
-  variants: {
-    disabled: {
-      true: '',
-      false: 'peer-checked:text-foreground',
-    },
-  },
-  defaultVariants: {
-    disabled: false,
-  },
-})
-
-const uniqueId = getUniqueId()
-
-const switchGroupContext = useSwitchGroupContext()
-const switchGroupName = switchGroupContext?.name ?? getUniqueId()
-
-const modelValue = useModelValue(
-  switchGroupContext?.props ?? props,
-  switchGroupContext?.emits ?? emits,
-)
-
-const isChecked = computed(() => modelValue.value === props.value)
-
-const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled)
-
-const computedClasses = computed(() => {
-  return switchVariant({ disabled: isDisabled.value })
-})
-
-function onInputChange() {
-  if (isDisabled.value) {
-    return
-  }
-
-  modelValue.value = props.value
+const SIZES = {
+  sm: 'h-7.5',
+  md: 'h-9',
+  lg: 'h-10',
 }
+
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+
+provideSwitchContext({ props, emits, name: getUniqueId() })
 </script>
 
 <template>
-  <label
-    role="switch"
-    :aria-selected="isChecked"
-    :data-disabled="isDisabled"
-    class="pxd-switch flex-1 shrink-0 cursor-pointer"
-    :for="uniqueId"
+  <div
+    class="pxd-switch p-1 flex touch-manipulation rounded-lg border"
+    :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
     v-bind="$attrs"
   >
-    <input
-      :id="uniqueId"
-      type="radio"
-      :value="value"
-      class="peer visually-hidden"
-      :checked="isChecked"
-      :name="switchGroupName"
-      :disabled="isDisabled"
-      @change="onInputChange"
-    />
-
-    <div :class="computedClasses" @focusin="onInputChange">
-      <slot>
-        {{ label }}
-      </slot>
-    </div>
-  </label>
+    <slot>
+      <PSwitchItem
+        v-for="option in options"
+        :key="option.value"
+        v-model="modelValue"
+        :label="option.label"
+        :value="option.value"
+        :disabled="option.disabled"
+      />
+    </slot>
+  </div>
 </template>

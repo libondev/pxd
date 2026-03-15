@@ -13,20 +13,20 @@ const modelValue = ref('1')
 
 <template>
   <PStack align="center">
-    <PSwitchGroup v-model="modelValue" size="sm">
-      <PSwitch value="1" label="Source"></PSwitch>
-      <PSwitch value="2">Output</PSwitch>
-    </PSwitchGroup>
+    <PSwitch v-model="modelValue" size="sm">
+      <PSwitchItem value="1" label="Source" />
+      <PSwitchItem value="2">Output</PSwitchItem>
+    </PSwitch>
 
-    <PSwitchGroup v-model="modelValue" size="md">
-      <PSwitch value="1" label="Source"></PSwitch>
-      <PSwitch value="2">Output</PSwitch>
-    </PSwitchGroup>
+    <PSwitch v-model="modelValue" size="md">
+      <PSwitchItem value="1" label="Source" />
+      <PSwitchItem value="2">Output</PSwitchItem>
+    </PSwitch>
 
-    <PSwitchGroup v-model="modelValue" size="lg">
-      <PSwitch value="1" label="Source"></PSwitch>
-      <PSwitch value="2">Output</PSwitch>
-    </PSwitchGroup>
+    <PSwitch v-model="modelValue" size="lg">
+      <PSwitchItem value="1" label="Source" />
+      <PSwitchItem value="2">Output</PSwitchItem>
+    </PSwitch>
   </PStack>
 </template>
 ```
@@ -46,7 +46,7 @@ const options = [
 </script>
 
 <template>
-  <PSwitchGroup v-model="modelValue" :options="options" />
+  <PSwitch v-model="modelValue" :options="options" />
 </template>
 ```
 
@@ -70,8 +70,8 @@ const options2 = [
 
 <template>
   <PStack direction="vertical">
-    <PSwitchGroup v-model="modelValue" :options="options1" disabled />
-    <PSwitchGroup v-model="modelValue" :options="options2" />
+    <PSwitch v-model="modelValue" :options="options1" disabled />
+    <PSwitch v-model="modelValue" :options="options2" />
   </PStack>
 </template>
 ```
@@ -91,7 +91,7 @@ const options = [
 </script>
 
 <template>
-  <PSwitchGroup v-model="modelValue" :options="options" full-width />
+  <PSwitch v-model="modelValue" :options="options" full-width />
 </template>
 ```
 
@@ -102,22 +102,17 @@ const options = [
 import { ref } from 'vue'
 
 const modelValue = ref('1')
-
-const options = [
-  { label: 'Source', value: '1' },
-  { label: 'Output', value: '2' },
-]
 </script>
 
 <template>
-  <PSwitchGroup v-model="modelValue">
+  <PSwitch v-model="modelValue">
     <PTooltip content="View source" desktop-only>
-      <PSwitch value="1" label="Source" />
+      <PSwitchItem value="1" label="Source" />
     </PTooltip>
 
     <PTooltip content="View output" desktop-only>
-      <PSwitch value="2" label="Output" />
+      <PSwitchItem value="2" label="Output" />
     </PTooltip>
-  </PSwitchGroup>
+  </PSwitch>
 </template>
 ```

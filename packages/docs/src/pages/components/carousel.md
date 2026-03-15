@@ -44,22 +44,22 @@ const indicatorPosition = ref('bottom')
 
 <template>
   <PStack direction="vertical">
-    <PSwitchGroup v-model="direction">
-      <PSwitch label="horizontal" value="horizontal" />
-      <PSwitch label="vertical" value="vertical" />
-    </PSwitchGroup>
+    <PSwitch v-model="direction">
+      <PSwitchItem label="horizontal" value="horizontal" />
+      <PSwitchItem label="vertical" value="vertical" />
+    </PSwitch>
 
-    <PSwitchGroup v-model="indicatorType">
-      <PSwitch label="dot" value="dot" />
-      <PSwitch label="line" value="line" />
-    </PSwitchGroup>
+    <PSwitch v-model="indicatorType">
+      <PSwitchItem label="dot" value="dot" />
+      <PSwitchItem label="line" value="line" />
+    </PSwitch>
 
-    <PSwitchGroup v-model="indicatorPosition">
-      <PSwitch label="top" value="top" />
-      <PSwitch label="bottom" value="bottom" />
-      <PSwitch label="left" value="left" />
-      <PSwitch label="right" value="right" />
-    </PSwitchGroup>
+    <PSwitch v-model="indicatorPosition">
+      <PSwitchItem label="top" value="top" />
+      <PSwitchItem label="bottom" value="bottom" />
+      <PSwitchItem label="left" value="left" />
+      <PSwitchItem label="right" value="right" />
+    </PSwitch>
 
     <PCarousel
       :direction="direction"

@@ -18,7 +18,7 @@ const sizes = [
 </script>
 
 <template>
-  <PSwitchGroup v-model="size" :options="sizes" />
+  <PSwitch v-model="size" :options="sizes" />
 
   <PConfigProvider :size="size" class="mt-4 max-w-xs">
     <PStack direction="vertical">
@@ -57,7 +57,7 @@ const locales = {
 <template>
   <PConfigProvider :locale="locales[locale]">
     <PStack direction="vertical">
-      <PSwitchGroup v-model="locale" :options="sizes" />
+      <PSwitch v-model="locale" :options="sizes" />
       <PActiveGraph start-date="2025-01-01" end-date="2025-01-31" />
     </PStack>
   </PConfigProvider>

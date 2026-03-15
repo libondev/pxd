@@ -95,19 +95,19 @@ function handleCustomPrefixChange(event: Event) {
   </div>
 
   <div class="gap-4 flex">
-    <PSwitchGroup v-model="copyType" @change="handleCopyTypeChange">
-      <PSwitch label="Import" value="import" />
-      <PSwitch label="Element" value="element" />
-      <PSwitch label="Name" value="name" />
-      <PSwitch label="Prefix" value="prefix">
+    <PSwitch v-model="copyType" @change="handleCopyTypeChange">
+      <PSwitchItem label="Import" value="import" />
+      <PSwitchItem label="Element" value="element" />
+      <PSwitchItem label="Name" value="name" />
+      <PSwitchItem label="Prefix" value="prefix">
         <input
           v-model="customPrefix"
           class="w-25 h-full outline-none"
           placeholder="Prefix element"
           @change="handleCustomPrefixChange"
         />
-      </PSwitch>
-    </PSwitchGroup>
+      </PSwitchItem>
+    </PSwitch>
   </div>
 
   <Grids :data="filteredComponents" data-key="name" class="mt-2" @click="onIconClick">

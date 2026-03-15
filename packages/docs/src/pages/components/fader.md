@@ -20,7 +20,7 @@ const options = [
 
 <template>
   <PStack direction="vertical">
-    <PSwitchGroup v-model="direction" :options="options" />
+    <PSwitch v-model="direction" :options="options" />
 
     <div class="relative size-50 max-w-full rounded-lg border border-dashed">
       <div ref="containerRef" class="size-full overflow-scroll">

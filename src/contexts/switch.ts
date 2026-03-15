@@ -1,14 +1,13 @@
 import type { EmitFn } from 'vue'
 
-import type { SwitchGroupEmits, SwitchGroupProps } from '../components/switch-group/types'
+import type { SwitchEmits, SwitchProps } from '../components/switch/types'
 
 import { createContext } from '../utils/context'
 
-export interface SwitchGroupContext {
+export interface SwitchContext {
   name: string
-  props: SwitchGroupProps
-  emits: EmitFn<SwitchGroupEmits>
+  props: SwitchProps
+  emits: EmitFn<SwitchEmits>
 }
 
-export const [provideSwitchGroupContext, useSwitchGroupContext] =
-  createContext<SwitchGroupContext>('SwitchGroup')
+export const [provideSwitchContext, useSwitchContext] = createContext<SwitchContext>('Switch')

@@ -13,10 +13,10 @@ const direction = ref('horizontal')
 
 <template>
   <PStack direction="vertical">
-    <PSwitchGroup v-model="direction">
-      <PSwitch value="horizontal">Row</PSwitch>
-      <PSwitch value="vertical">Col</PSwitch>
-    </PSwitchGroup>
+    <PSwitch v-model="direction">
+      <PSwitchItem value="horizontal">Row</PSwitchItem>
+      <PSwitchItem value="vertical">Col</PSwitchItem>
+    </PSwitch>
 
     <PResizable :direction="direction" class="w-100 h-50 max-w-full border rounded-lg">
       <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
