@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { AvatarStatus, AvatarProps, AvatarEmits } from './types'
 import { computed, shallowRef } from 'vue'
 import { useAvatarGroupContext } from '../../contexts/avatar'
 import { getCssUnitValue } from '../../utils/format'
-import type { AvatarStatus, AvatarProps, AvatarEmits } from './types'
 
 defineOptions({
   name: 'PAvatar',

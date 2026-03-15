@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { ListItemEmits, ListItemProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed, shallowRef } from 'vue'
 import { useListContext, useListFilterValue } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
 import { getUniqueId } from '../../utils/uid'
-import { tv } from 'tailwind-variants'
-import type { ListItemEmits, ListItemProps } from './types'
 
 defineOptions({
   name: 'PListItem',

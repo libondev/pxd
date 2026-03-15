@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { provideCollapseGroupContext } from '../../contexts/collapse'
-import { getFallbackValue } from '../../utils/get'
 import type { CollapseGroupProps } from './types'
+import { computed, ref } from 'vue'
+import { provideCollapseGroupContext } from '../../contexts/collapse'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { getFallbackValue } from '../../utils/get'
 
 defineOptions({
   name: 'PCollapseGroup',

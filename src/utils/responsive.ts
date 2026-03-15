@@ -1,7 +1,6 @@
-import { isNil } from 'es-toolkit'
-
 import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
+import { isNil } from 'es-toolkit'
 
 export function getResponsiveValue<V extends string | number>(
   prop: ResponsiveValue<V> | undefined,

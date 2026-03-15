@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ListProps, ListOptionSelected, ListEmits } from './types'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListContext } from '../../contexts/list'
 import { cachedOff, cachedOn } from '../../utils/event'
@@ -6,7 +7,6 @@ import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
 import PListItem from '../list-item/index.vue'
 import PScrollable from '../scrollable/index.vue'
-import type { ListProps, ListOptionSelected, ListEmits } from './types'
 
 defineOptions({
   name: 'PList',

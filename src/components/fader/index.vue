@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { MaybeElementRef } from '../../types/shared/utils'
+import type { FaderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/throttle'
-import type { FaderProps } from './types'
-import type { MaybeElementRef } from '../../types/shared/utils'
 
 defineOptions({
   name: 'PFader',

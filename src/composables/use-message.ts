@@ -1,8 +1,6 @@
-import type { VNode } from 'vue'
-
 import type { ButtonProps } from '../components/button/types'
 import type { ComponentClass } from '../types/shared/props'
-
+import type { VNode } from 'vue'
 import { isServer } from '../utils/is'
 
 type MessageContent = string | VNode

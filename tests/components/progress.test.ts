@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-
 import Progress from '../../src/components/progress/index.vue'
 
 describe('progress', () => {

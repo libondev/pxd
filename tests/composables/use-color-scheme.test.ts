@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
-
 import { useColorScheme } from '../../src/composables/use-color-scheme'
 
 // Helper component to test composable cleanup

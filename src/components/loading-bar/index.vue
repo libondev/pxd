@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
+import type { LoadingBarProps, LoadingBarStatus } from './types'
+import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { clampValue, isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
-import { tv } from 'tailwind-variants'
-import type { LoadingBarProps, LoadingBarStatus } from './types'
 
 defineOptions({
   name: 'PLoadingBar',

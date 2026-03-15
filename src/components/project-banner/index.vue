@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ProjectBannerProps } from './types'
-import { computed } from 'vue'
 import { tv } from 'tailwind-variants'
+import { computed } from 'vue'
 
 defineOptions({
   name: 'PProjectBanner',

@@ -1,7 +1,5 @@
-import type { Ref } from 'vue'
-
 import type { CarouselProps } from '../components/carousel/types'
-
+import type { Ref } from 'vue'
 import { createContext } from '../utils/context'
 
 export interface CarouselState {

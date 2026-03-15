@@ -1,7 +1,5 @@
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
-
 import type { Callback } from '../types/shared'
-
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 

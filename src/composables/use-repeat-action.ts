@@ -1,9 +1,6 @@
-import type { MaybeRefOrGetter } from 'vue'
-
-import { onBeforeUnmount } from 'vue'
-
 import type { Callback } from '../types/shared/utils'
-
+import type { MaybeRefOrGetter } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { off, once } from '../utils/event'
 import { toValue } from '../utils/ref'
 

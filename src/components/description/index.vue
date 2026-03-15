@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { DescriptionProps } from './types'
 import InformationIcon from '@gdsicon/vue/information-fill-small'
 import PTooltip from '../tooltip/index.vue'
-import type { DescriptionProps } from './types'
 
 defineOptions({
   name: 'PDescription',

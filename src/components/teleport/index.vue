@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { TeleportLocation, TeleportProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { isServer, isVue3 } from '../../utils/is'
-import type { TeleportLocation, TeleportProps } from './types'
 
 defineOptions({
   name: 'PTeleport',

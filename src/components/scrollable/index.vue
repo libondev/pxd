@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type {
+  ScrollableCachedPadding,
+  ScrollableDragState,
+  ScrollableEmits,
+  ScrollableProps,
+} from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useMutationObserver, useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
@@ -6,12 +12,6 @@ import { cachedOff, cachedOn, off, once } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/throttle'
 import PFader from '../fader/index.vue'
-import type {
-  ScrollableCachedPadding,
-  ScrollableDragState,
-  ScrollableEmits,
-  ScrollableProps,
-} from './types'
 
 defineOptions({
   name: 'PScrollable',

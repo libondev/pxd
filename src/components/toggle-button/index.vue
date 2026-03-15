@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { ToggleButtonProps, ToggleButtonEmits } from './types'
-import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { useModelValue } from '../../composables/use-model-value'
 import { tv } from 'tailwind-variants'
-import { toArray } from '../../utils/format'
+import { computed } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { useToggleButtonGroupContext } from '../../contexts/toggle-button'
+import { toArray } from '../../utils/format'
 
 defineOptions({
   name: 'PToggleButton',

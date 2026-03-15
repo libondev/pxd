@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type { SkeletonProps } from './types'
 import type { CSSProperties } from 'vue'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
-import { tv } from 'tailwind-variants'
-import type { SkeletonProps } from './types'
 
 defineOptions({
   name: 'PSkeleton',

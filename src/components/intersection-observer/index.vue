@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type { IntersectionObserverEmits, IntersectionObserverProps } from './types'
 import { nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-browser-observer'
 import { getCssUnitValue } from '../../utils/format'
 import FragmentContainer from '../_internal/fragment-container.vue'
-import type { IntersectionObserverEmits, IntersectionObserverProps } from './types'
 
 defineOptions({
   name: 'PIntersectionObserver',

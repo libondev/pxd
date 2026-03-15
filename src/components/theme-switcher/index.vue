@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { ThemeSwitcherEmits } from './types'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, watch } from 'vue'
 import { useColorScheme } from '../../composables/use-color-scheme'
 import PButton from '../button/index.vue'
-import type { ThemeSwitcherEmits } from './types'
 
 defineOptions({
   name: 'PThemeSwitcher',

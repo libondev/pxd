@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import type { NoteProps } from './types'
 import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
+import { tv } from 'tailwind-variants'
 import { computed, h } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
-import { tv } from 'tailwind-variants'
-import type { NoteProps } from './types'
 
 defineOptions({
   name: 'PNote',

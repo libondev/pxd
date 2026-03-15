@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import type { ProgressEmits, ProgressProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/get'
-import { tv } from 'tailwind-variants'
-import type { ProgressEmits, ProgressProps } from './types'
 
 defineOptions({
   name: 'PProgress',

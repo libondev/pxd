@@ -1,7 +1,5 @@
-import type { EmitFn } from 'vue'
-
 import type { CheckboxGroupProps, CheckboxGroupEmits } from '../components/checkbox-group/types'
-
+import type { EmitFn } from 'vue'
 import { createContext } from '../utils/context'
 
 export interface CheckboxGroupContext {

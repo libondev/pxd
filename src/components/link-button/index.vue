@@ -1,9 +1,7 @@
 <script setup lang="ts">
+import type { LinkButtonEmits, LinkButtonProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import { computed } from 'vue'
-
-import type { LinkButtonEmits, LinkButtonProps } from './types'
-
 import { isExternalLink } from '../../utils/format'
 import PButton from '../button/index.vue'
 

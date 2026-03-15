@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { TextareaEmits, TextareaProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
-import { tv } from 'tailwind-variants'
-import type { TextareaEmits, TextareaProps } from './types'
 
 defineOptions({
   name: 'PTextarea',

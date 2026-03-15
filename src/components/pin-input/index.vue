@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, shallowRef, watch } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { useModelValue } from '../../composables/use-model-value'
-import { isTruthyProp } from '../../utils/format'
-import { tv } from 'tailwind-variants'
 import type { PinInputEmits, PinInputProps } from './types'
+import { tv } from 'tailwind-variants'
+import { computed, shallowRef, watch } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { isTruthyProp } from '../../utils/format'
 
 defineOptions({
   name: 'PPinInput',

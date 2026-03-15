@@ -1,5 +1,4 @@
 import type { ConfigProviderProps } from '../components/config-provider/types'
-
 import enUS from '../locales/en-us'
 import { createContext } from '../utils/context'
 

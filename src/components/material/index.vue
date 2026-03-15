@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import PStack from '../stack/index.vue'
 import type { MaterialProps } from './types'
+import PStack from '../stack/index.vue'
 
 defineOptions({
   name: 'PMaterial',

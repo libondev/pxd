@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
-import { getFallbackValue } from '../../utils/get'
 import { NOOP } from '../../utils/event'
+import { getFallbackValue } from '../../utils/get'
 import { throttleByRaf } from '../../utils/throttle'
 
 defineOptions({

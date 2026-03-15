@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useVirtualList } from '../../composables/use-virtual-list'
 import type { VirtualListProps, VirtualListEmits } from './types'
-import { shallowRef } from 'vue'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
+import { shallowRef } from 'vue'
+import { useVirtualList } from '../../composables/use-virtual-list'
 
 defineOptions({
   name: 'PVirtualList',

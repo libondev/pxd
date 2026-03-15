@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { MessageItemEmits, MessageItemProps } from './types'
 import SuccessFillIcon from '@gdsicon/vue/check-circle-fill'
 import CloseIcon from '@gdsicon/vue/cross'
 import ErrorFillIcon from '@gdsicon/vue/cross-circle-fill'
@@ -7,7 +8,6 @@ import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
 import { computed, onMounted, shallowRef, watch } from 'vue'
 import PButton from '../button/index.vue'
-import type { MessageItemEmits, MessageItemProps } from './types'
 
 defineOptions({
   name: 'PMessageItem',

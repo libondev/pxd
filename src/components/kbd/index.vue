@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useConfigProvider } from '../../contexts/config-provider'
-import { computed } from 'vue'
-import { getFallbackValue } from '../../utils/get'
 import type { KbdProps } from './types'
+import { computed } from 'vue'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { getFallbackValue } from '../../utils/get'
 
 defineOptions({
   name: 'PKbd',

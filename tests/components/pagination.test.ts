@@ -1,6 +1,5 @@
 import { mount, RouterLinkStub } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-
 import Pagination from '../../src/components/pagination/index.vue'
 
 describe('pagination', () => {

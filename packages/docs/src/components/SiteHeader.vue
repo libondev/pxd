@@ -6,10 +6,10 @@ import SparklesIcon from '@gdsicon/vue/sparkles'
 import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { asideMenus } from '../consts/components'
 import { githubLink } from '../consts/link'
 import CustomVariables from './CustomVariables.vue'
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 
 const showCommandMenu = shallowRef(false)
 

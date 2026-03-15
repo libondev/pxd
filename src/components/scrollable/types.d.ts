@@ -1,6 +1,5 @@
-import type { CSSProperties } from 'vue'
-
 import type { ComponentClass, ComponentDirection, Nullable } from '../../types/shared'
+import type { CSSProperties } from 'vue'
 
 export interface ScrollableProps {
   fader?: boolean

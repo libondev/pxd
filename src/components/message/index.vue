@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { MessageItemConfig, MessageUpdateParams } from '../../composables/use-message'
+import type { MessageEmits, MessageProps } from './types'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
@@ -8,7 +9,6 @@ import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PMessageItem from '../message-item/index.vue'
 import PTeleport from '../teleport/index.vue'
-import type { MessageEmits, MessageProps } from './types'
 
 defineOptions({
   name: 'PMessage',

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { EllipsisTextProps, EllipsisTextEmits } from './types'
+import { twMerge } from 'tailwind-merge'
 import { shallowRef, computed, nextTick, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
-import { isServer } from '../../utils/is'
 import { getStyle } from '../../utils/dom'
-import { twMerge } from 'tailwind-merge'
+import { isServer } from '../../utils/is'
 
 defineOptions({
   name: 'PEllipsisText',

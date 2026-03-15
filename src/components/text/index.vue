@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type { TextProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 import { getResponsiveValue } from '../../utils/responsive'
-import { tv } from 'tailwind-variants'
-import type { TextProps } from './types'
 
 defineOptions({
   name: 'PText',

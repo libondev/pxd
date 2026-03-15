@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { PaginationProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { useConfigProvider } from '../../contexts/config-provider'
-import type { PaginationProps } from './types'
 
 defineOptions({
   name: 'PPagination',

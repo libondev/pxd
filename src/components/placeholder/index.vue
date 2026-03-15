@@ -1,9 +1,7 @@
 <script lang="ts" setup>
+import type { PlaceholderProps } from './types'
 import { invert } from 'es-toolkit'
 import { computed } from 'vue'
-
-import type { PlaceholderProps } from './types'
-
 import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({

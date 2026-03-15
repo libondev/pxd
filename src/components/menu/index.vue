@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
+import type { MenuEmits, MenuProps } from './types'
 import { shallowRef } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
-import type { MenuEmits, MenuProps } from './types'
 
 defineOptions({
   name: 'PMenu',

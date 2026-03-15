@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import type { DrawerEmits, DrawerProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import type { DrawerEmits, DrawerProps } from './types'
 
 defineOptions({
   name: 'PDrawer',

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import type { SnippetEmits, SnippetProps } from './types'
 import type { Component } from 'vue'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
-import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { useCopyClick } from '../../composables/use-copy-click'
-import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
 import { tv } from 'tailwind-variants'
-import type { SnippetEmits, SnippetProps } from './types'
+import { computed } from 'vue'
+import { useCopyClick } from '../../composables/use-copy-click'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
 
 defineOptions({
   name: 'PSnippet',

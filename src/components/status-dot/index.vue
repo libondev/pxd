@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { capitalize as capitalizeText } from '../../utils/format'
 import type { StatusDotProps } from './types'
+import { capitalize as capitalizeText } from '../../utils/format'
 
 defineOptions({
   name: 'PStatusDot',

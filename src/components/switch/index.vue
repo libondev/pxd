@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { provideSwitchContext } from '../../contexts/switch'
 import { getFallbackValue } from '../../utils/get'
 import { getUniqueId } from '../../utils/uid'

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { RadioEmits, RadioProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'
-import { tv } from 'tailwind-variants'
-import type { RadioEmits, RadioProps } from './types'
 
 defineOptions({
   name: 'PRadio',

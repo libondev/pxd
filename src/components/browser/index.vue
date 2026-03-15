@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { BrowserProps } from './types'
 import type { Component } from 'vue'
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
 import CheckIcon from '@gdsicon/vue/check'
@@ -8,7 +9,6 @@ import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
 import { computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click'
 import PButton from '../button/index.vue'
-import type { BrowserProps } from './types'
 
 defineOptions({
   name: 'PBrowser',

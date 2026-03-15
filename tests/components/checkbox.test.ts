@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-
 import Checkbox from '../../src/components/checkbox/index.vue'
 
 describe('checkbox', () => {

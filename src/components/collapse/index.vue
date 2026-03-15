@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type { CollapseEmits, CollapseProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, onMounted, shallowRef, watch } from 'vue'
 import { useCollapseGroupContext } from '../../contexts/collapse'
 import { getUniqueId } from '../../utils/uid'
-import type { CollapseEmits, CollapseProps } from './types'
 
 defineOptions({
   name: 'PCollapse',

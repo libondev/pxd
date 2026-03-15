@@ -1,7 +1,5 @@
-import { onBeforeUnmount, shallowRef, watch } from 'vue'
-
 import type { MaybeElementRef, Nullable } from '../types/shared/utils'
-
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../utils/dom'
 import { toValue } from '../utils/ref'
 

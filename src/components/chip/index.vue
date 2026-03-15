@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import type { ChipProps } from './types'
 import { tv } from 'tailwind-variants'
+import { computed } from 'vue'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 
 defineOptions({
   name: 'PChip',

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { BadgeProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PBadge',

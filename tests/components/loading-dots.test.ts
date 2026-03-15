@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-
 import PLoadingDots from '../../src/components/loading-dots/index.vue'
 
 describe('loading-dots', () => {

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { SwitchItemProps, SwitchItemEmits } from './types'
-import { computed } from 'vue'
-import { useSwitchContext } from '../../contexts/switch'
-import { useModelValue } from '../../composables/use-model-value'
-import { getUniqueId } from '../../utils/uid'
 import { tv } from 'tailwind-variants'
+import { computed } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
+import { useSwitchContext } from '../../contexts/switch'
+import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PSwitchItem',

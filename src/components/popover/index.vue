@@ -1,16 +1,16 @@
 <script lang="ts" setup>
+import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOutsideClick } from '../../composables/use-outside-click'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { debounce } from '../../utils/debounce'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
-import { useConfigProvider } from '../../contexts/config-provider'
 import PTeleport from '../teleport/index.vue'
-import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 
 defineOptions({
   name: 'PPopover',

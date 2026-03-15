@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-
 import AvatarGroup from '../../src/components/avatar-group/index.vue'
 
 const avatarSrc = 'https://example.com/avatar.jpg'

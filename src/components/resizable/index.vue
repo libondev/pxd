@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
 import { provideResizableContext } from '../../contexts/resizable'
-import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 
 defineOptions({
   name: 'PResizable',

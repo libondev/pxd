@@ -3,13 +3,13 @@ import type { InputEmits, InputProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
+import { tv } from 'tailwind-variants'
 import { computed, shallowRef } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/uid'
-import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PInput',

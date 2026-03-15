@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ChoiceboxEmits, ChoiceboxProps } from './types'
 import { computed, markRaw } from 'vue'
+import { provideChoiceboxContext } from '../../contexts/choicebox'
 import PCheckboxGroup from '../checkbox-group/index.vue'
 import PChoiceboxItem from '../choicebox-item/index.vue'
 import PRadioGroup from '../radio-group/index.vue'
-import { provideChoiceboxContext } from '../../contexts/choicebox'
 
 defineOptions({
   name: 'PChoicebox',

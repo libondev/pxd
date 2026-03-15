@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { useCountdown } from '../../src/composables/use-countdown'
 
 describe('useCountdown', () => {

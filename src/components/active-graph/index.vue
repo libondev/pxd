@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { useDelayChange } from '../../composables/use-delay-change'
-import { getAllDatesBetween } from '../../utils/date'
-import { getCssUnitValue } from '../../utils/format'
-import { getColorByThreshold } from '../../utils/get'
 import type {
   ActiveGraphCellData,
   ActiveGraphEmits,
@@ -12,6 +6,12 @@ import type {
   ActiveGraphRowData,
   ActiveGraphTooltipInfo,
 } from './types'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { useDelayChange } from '../../composables/use-delay-change'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { getAllDatesBetween } from '../../utils/date'
+import { getCssUnitValue } from '../../utils/format'
+import { getColorByThreshold } from '../../utils/get'
 
 defineOptions({
   name: 'PActiveGraph',

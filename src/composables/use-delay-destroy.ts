@@ -1,9 +1,6 @@
-import type { MaybeRefOrGetter, Ref } from 'vue'
-
-import { shallowRef } from 'vue'
-
 import type { Nullable } from '../types/shared'
-
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import { shallowRef } from 'vue'
 import { toValue } from '../utils/ref'
 
 interface Options {

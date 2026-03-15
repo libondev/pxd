@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import PSpinner from '../spinner/index.vue'
-import { tv } from 'tailwind-variants'
 
 defineOptions({
   name: 'PButton',

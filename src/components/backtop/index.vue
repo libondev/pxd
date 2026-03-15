@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import type { BacktopProps } from './types'
 import ArrowIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { getScrollContainer, getScrollElByContainer } from '../../utils/dom'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import PButton from '../button/index.vue'
-import type { BacktopProps } from './types'
 
 defineOptions({
   name: 'PBacktop',

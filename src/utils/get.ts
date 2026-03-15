@@ -1,5 +1,4 @@
 import type { Nullable } from '../types/shared/utils'
-
 import { isServer } from './is'
 
 export function getFallbackValue<Variants extends Record<string, any>>(

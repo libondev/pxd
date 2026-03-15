@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
+import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { nextTick, shallowRef } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
 import { useDeferredValue } from '../../composables/use-deferred-value'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { provideListFilterValue } from '../../contexts/list'
 import { getUniqueId } from '../../utils/uid'
 import PButton from '../button/index.vue'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
-import type { CommandMenuEmits, CommandMenuProps } from './types'
 
 defineOptions({
   name: 'PCommandMenu',

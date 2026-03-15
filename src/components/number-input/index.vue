@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { NumberInputData, NumberInputEmits, NumberInputProps } from './types'
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { isNil, isNumber, isUndefined } from 'es-toolkit'
@@ -6,7 +7,6 @@ import { computed, reactive, shallowRef, watch } from 'vue'
 import { useRepeatAction } from '../../composables/use-repeat-action'
 import { NOOP } from '../../utils/event'
 import PInput from '../input/index.vue'
-import type { NumberInputData, NumberInputEmits, NumberInputProps } from './types'
 
 defineOptions({
   name: 'PNumberInput',

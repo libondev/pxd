@@ -17,7 +17,6 @@ import router from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import layouts from 'vite-plugin-vue-meta-layouts'
 import markdown from 'vite-vue-md'
-
 import pxdResolver from '../../src/plugins/resolver'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 

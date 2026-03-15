@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
-
 import HoldButton from '../../src/components/hold-button/index.vue'
 
 describe('hold-button', () => {

@@ -1,5 +1,4 @@
 import type { AvatarGroupProps } from '../components/avatar-group/types'
-
 import { createContext } from '../utils/context'
 
 export interface AvatarGroupContext {

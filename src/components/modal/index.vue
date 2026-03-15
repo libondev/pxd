@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { ModalEmits, ModalProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
-import type { ModalEmits, ModalProps } from './types'
 
 defineOptions({
   name: 'PModal',

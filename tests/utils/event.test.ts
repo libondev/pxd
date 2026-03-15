@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { cachedOff, cachedOn } from '../../src/utils/event'
 
 describe('event.ts memory leak prevention', () => {

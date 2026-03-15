@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ComponentDirection } from '../../types/shared'
+import type { StackProps } from './types'
+import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { getResponsiveValue } from '../../utils/responsive'
-import { tv } from 'tailwind-variants'
-import type { StackProps } from './types'
 
 defineOptions({
   name: 'PStack',

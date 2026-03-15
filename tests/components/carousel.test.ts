@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { h } from 'vue'
-
 import CarouselItem from '../../src/components/carousel-item/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
 

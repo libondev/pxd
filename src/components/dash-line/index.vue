@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { DashLineProps } from './types'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-import type { DashLineProps } from './types'
 
 defineOptions({
   name: 'PDashLine',

@@ -1,5 +1,4 @@
 import { shallowRef } from 'vue'
-
 import { isServer } from '../utils/is'
 
 export function useCopyClick() {

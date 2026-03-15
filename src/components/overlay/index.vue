@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { OverlayEmits, OverlayProps } from './types'
 import type { MaybeElementRef } from '../../types/shared/utils'
+import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables'
 import { cachedOff, cachedOn, NOOP } from '../../utils/event'

@@ -1,5 +1,4 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-
 import { shallowRef } from 'vue'
 
 interface Options<T> {
