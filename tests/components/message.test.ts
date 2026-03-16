@@ -91,7 +91,7 @@ describe('message', () => {
     await flushTeleportAndTransitions(wrapper)
 
     dispatchCreate({
-      id: 'closable-1',
+      id: 'closeable-1',
       group: 'g1',
       type: 'info',
       message: 'can close',
@@ -102,7 +102,7 @@ describe('message', () => {
 
     expect(wrapper.vm.messages.length).toBe(1)
 
-    wrapper.vm.close('closable-1')
+    wrapper.vm.close('closeable-1')
 
     expect(wrapper.vm.messages.length).toBe(0)
 
