@@ -20,7 +20,7 @@ function onCopy(ev: MouseEvent) {
 
     <details class="group/code-block">
       <summary
-        class="px-4 h-12 text-sm group-open/code-block:top-12 z-2 -mx-px -mb-px flex cursor-pointer items-center rounded-b-lg border bg-background-200 text-gray-900 self-focus-ring outline-none select-none group-open/code-block:sticky group-open/code-block:rounded-none"
+        class="px-4 h-12 text-sm group-open/code-block:top-12 z-2 -mx-px -mb-px flex cursor-pointer items-center rounded-b-lg border bg-background-200 text-gray-900 self-focus-ring outline-none select-none group-open/code-block:sticky group-open/code-block:rounded-none motion-safe:transition-all"
       >
         <IconChevronRight
           class="text-xs mr-2 group-open/code-block:rotate-90 motion-safe:transition-transform"

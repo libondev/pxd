@@ -29,4 +29,9 @@ export interface BadgeProps {
   href?: string
   size?: ComponentSize
   variant?: BadgeVariant
+  closeable?: boolean
+}
+
+export interface BadgeEmits {
+  close: [Event]
 }

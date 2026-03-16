@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { BadgeProps } from './types'
+import type { BadgeEmits, BadgeProps } from './types'
+import CrossIcon from '@gdsicon/vue/cross'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
@@ -13,6 +14,8 @@ const props = withDefaults(defineProps<BadgeProps>(), {
   as: 'span',
   variant: 'gray',
 })
+
+const emits = defineEmits<BadgeEmits>()
 
 const badgeVariant = tv({
   base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans text-nowrap whitespace-nowrap no-underline! motion-safe:transition-all',
@@ -66,11 +69,23 @@ const computedClasses = computed(() => {
 
   return badgeVariant({ variant, size })
 })
+
+function onClose(ev: Event) {
+  emits('close', ev)
+}
 </script>
 
 <template>
   <Component :is="as" :class="computedClasses" v-bind="$attrs">
     <slot />
+
+    <button
+      v-if="closeable"
+      class="pxd-badge--close p-1 -mr-1 relative cursor-pointer appearance-none rounded-full text-[.75em] self-focus-ring hover:bg-gray-alpha-200 active:bg-gray-alpha-300"
+      @click.stop="onClose"
+    >
+      <CrossIcon class="pointer-events-none" />
+    </button>
   </Component>
 </template>
 

@@ -48,6 +48,24 @@ A label that emphasizes an element that requires attention, or helps categorize 
 </template>
 ```
 
+## Closeable
+
+```vue demo
+<script setup>
+function onClose() {
+  console.log('close')
+}
+</script>
+
+<template>
+  <PStack align="center">
+    <PBadge variant="pill" closeable @close="onClose" size="sm">Small</PBadge>
+    <PBadge variant="pill" closeable @close="onClose">Medium</PBadge>
+    <PBadge variant="pill" closeable @close="onClose" size="lg">Large</PBadge>
+  </PStack>
+</template>
+```
+
 ## With Icons
 
 ```vue demo
