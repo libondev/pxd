@@ -4,6 +4,7 @@ import type { CarouselEmits, CarouselProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { provideCarouselContext } from '../../contexts/carousel'
+import { doubleRaf } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
@@ -27,16 +28,15 @@ const props = withDefaults(defineProps<CarouselProps>(), {
 
 const emits = defineEmits<CarouselEmits>()
 
-const TRANSITION_CLASSES = ['transition-transform', 'duration-[calc(var(--duration,200ms)+100ms)]']
-
-let autoPlayRafId: number | null = null
-let autoPlaySession = 0
+let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
-let toggleQueue: Promise<void> = Promise.resolve()
+let isToggling = false
+let pendingDelta: number | null = null
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
+const isTransitioning = shallowRef(true)
 
 // since the virtual index may exceed the range to facilitate seamless switching,
 // a boundary index is needed to indicate the real index
@@ -54,17 +54,18 @@ const correctIndex = computed(() => {
   return index
 })
 
+const isAtFirst = computed(() => virtualIndex.value <= 0)
+const isAtLast = computed(() => virtualIndex.value >= carousels.value.length - 1)
+
 const computedStyle = computed(() => {
   const translateValue = virtualIndex.value * -100
 
-  const styles = {
+  return {
     transform:
       props.direction === 'horizontal'
         ? `translateX(${translateValue}%)`
         : `translateY(${translateValue}%)`,
   }
-
-  return styles
 })
 
 function translateItems() {
@@ -73,7 +74,6 @@ function translateItems() {
   })
 }
 
-// wait for the animation to end before performing the next action
 async function awaitAnimationEnd() {
   const animations = sliderRef.value?.getAnimations() ?? []
   await Promise.allSettled(animations.map((a) => a.finished))
@@ -92,23 +92,42 @@ async function performToggle(delta: number) {
     virtualIndex.value += delta
 
     translateItems()
+
+    await nextTick()
+    await awaitAnimationEnd()
+
+    if (virtualIndex.value >= length) {
+      await resetContainerPosition(0)
+    } else if (virtualIndex.value <= -1) {
+      await resetContainerPosition(length - 1)
+    }
   } else {
     virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
   emits('change', correctIndex.value)
-  nextTick(onPointerLeave)
+  restartAutoPlay()
 }
 
-function onToggleClick(delta: number) {
-  // serialize all toggle triggers to avoid concurrent execution on rapid interactions
-  toggleQueue = toggleQueue
-    .catch(() => {})
-    .then(async () => {
-      await performToggle(delta)
-    })
+async function onToggleClick(delta: number) {
+  if (isToggling) {
+    pendingDelta = delta
+    return
+  }
 
-  return toggleQueue
+  isToggling = true
+
+  try {
+    await performToggle(delta)
+
+    while (pendingDelta != null) {
+      const next = pendingDelta
+      pendingDelta = null
+      await performToggle(next)
+    }
+  } finally {
+    isToggling = false
+  }
 }
 
 function onWheelToggle(ev: WheelEvent) {
@@ -123,12 +142,10 @@ function onWheelToggle(ev: WheelEvent) {
   }
 
   const delta = ev.deltaY > 0 ? 1 : -1
-  const indexBefore = virtualIndex.value
-  const lastIndex = length - 1
 
   if (!props.loop) {
-    const isAtFirstAndGoPrev = indexBefore <= 0 && delta < 0
-    const isAtLastAndGoNext = indexBefore >= lastIndex && delta > 0
+    const isAtFirstAndGoPrev = isAtFirst.value && delta < 0
+    const isAtLastAndGoNext = isAtLast.value && delta > 0
     if (isAtFirstAndGoPrev || isAtLastAndGoNext) {
       return
     }
@@ -141,64 +158,36 @@ function onWheelToggle(ev: WheelEvent) {
   onToggleClick(delta)
 }
 
-function resetContainerPosition(resetIndex: number) {
-  const containerClassList = sliderRef.value!.classList
-
-  containerClassList.remove(...TRANSITION_CLASSES)
-
+async function resetContainerPosition(resetIndex: number) {
+  isTransitioning.value = false
   virtualIndex.value = resetIndex
   translateItems()
 
-  setTimeout(() => {
-    containerClassList.add(...TRANSITION_CLASSES)
-  }, 0)
-}
-
-function onTransitionsEnd(ev: TransitionEvent) {
-  if (ev.propertyName !== 'transform' || ev.target !== sliderRef.value) {
-    return
-  }
-
-  if (!props.loop) {
-    return
-  }
-
-  if (virtualIndex.value >= carousels.value.length) {
-    resetContainerPosition(0)
-  } else if (virtualIndex.value <= -1) {
-    resetContainerPosition(carousels.value.length - 1)
-  }
+  await new Promise<void>((resolve) => {
+    doubleRaf(() => {
+      isTransitioning.value = true
+      resolve()
+    })
+  })
 }
 
 function clearAutoPlayTimer() {
-  autoPlaySession++
-  if (autoPlayRafId != null) {
-    cancelAnimationFrame(autoPlayRafId)
-    autoPlayRafId = null
+  if (autoPlayTimerId != null) {
+    clearTimeout(autoPlayTimerId)
+    autoPlayTimerId = null
   }
 }
 
-function setAutoPlayTimer() {
-  const mySession = autoPlaySession
-  const startTime = performance.now()
+function restartAutoPlay() {
+  clearAutoPlayTimer()
 
-  const onAnimationFrame = () => {
-    if (mySession !== autoPlaySession || isPointerEntering) {
-      return
-    }
-
-    const currentTime = performance.now()
-    const elapsedTime = currentTime - startTime
-
-    if (elapsedTime >= props.interval) {
-      onToggleClick(1)
-      return
-    }
-
-    autoPlayRafId = requestAnimationFrame(onAnimationFrame)
+  if (!props.autoplay || isPointerEntering) {
+    return
   }
 
-  autoPlayRafId = requestAnimationFrame(onAnimationFrame)
+  autoPlayTimerId = setTimeout(() => {
+    onToggleClick(1)
+  }, props.interval)
 }
 
 function onPointerEnter() {
@@ -210,18 +199,10 @@ function onPointerEnter() {
 
 function onPointerLeave() {
   isPointerEntering = false
-
-  if (!props.autoplay) {
-    return
-  }
-
-  clearAutoPlayTimer()
-  setAutoPlayTimer()
+  restartAutoPlay()
 }
 
 function onIndicatorClick(ev: MouseEvent) {
-  clearAutoPlayTimer()
-
   const targetEl = (ev.target as HTMLElement).closest('[data-index]') as HTMLButtonElement | null
   const targetIndex = Number(targetEl?.dataset.index)
 
@@ -232,10 +213,9 @@ function onIndicatorClick(ev: MouseEvent) {
   const deltaIndex = targetIndex - virtualIndex.value
 
   if (deltaIndex !== 0) {
+    clearAutoPlayTimer()
     onToggleClick(deltaIndex)
   }
-
-  nextTick(onPointerLeave)
 }
 
 function registerCarousel(state: CarouselState) {
@@ -246,28 +226,6 @@ function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
 }
 
-// usePointerGesture(sliderRef, {
-//   axis: () => (props.direction === 'horizontal' ? 'x' : 'y'),
-//   directionGuard: (d) => {
-//     if (props.direction === 'horizontal') {
-//       return d === 'left' || d === 'right'
-//     }
-
-//     return d === 'up' || d === 'down'
-//   },
-//   onRelease(hit, dir, kind) {
-//     if (!hit || !dir || kind === 'longpress') {
-//       return
-//     }
-
-//     if (dir === 'left' || dir === 'up') {
-//       onToggleClick(1)
-//     } else if (dir === 'right' || dir === 'down') {
-//       onToggleClick(-1)
-//     }
-//   },
-// })
-
 provideCarouselContext({
   props,
   carousels,
@@ -276,11 +234,10 @@ provideCarouselContext({
 })
 
 onMounted(async () => {
-  onPointerLeave()
-
   await nextTick()
 
   translateItems()
+  restartAutoPlay()
 })
 
 onBeforeUnmount(() => {
@@ -305,9 +262,10 @@ onBeforeUnmount(() => {
       <div
         ref="sliderRef"
         class="pxd-carousel--slider translate-z-0 size-full"
+        :class="{
+          'motion-safe:transition-transform': isTransitioning,
+        }"
         :style="computedStyle"
-        :class="TRANSITION_CLASSES"
-        @transitionend="onTransitionsEnd"
       >
         <slot />
       </div>
@@ -333,7 +291,8 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow left"
-        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        :disabled="!loop && isAtFirst"
+        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none disabled:opacity-40 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -342,7 +301,8 @@ onBeforeUnmount(() => {
       <button
         type="button"
         aria-label="Carousel arrow right"
-        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none motion-safe:transition-colors"
+        :disabled="!loop && isAtLast"
+        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none disabled:opacity-40 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
