@@ -68,12 +68,6 @@ const computedStyle = computed(() => {
   }
 })
 
-function translateItems() {
-  carousels.value.forEach((carousel, index) => {
-    carousel.translateItem(index, virtualIndex.value)
-  })
-}
-
 async function awaitAnimationEnd() {
   const animations = sliderRef.value?.getAnimations() ?? []
   await Promise.allSettled(animations.map((a) => a.finished))
@@ -90,8 +84,6 @@ async function performToggle(delta: number) {
 
   if (props.loop) {
     virtualIndex.value += delta
-
-    translateItems()
 
     await nextTick()
     await awaitAnimationEnd()
@@ -161,7 +153,6 @@ function onWheelToggle(ev: WheelEvent) {
 async function resetContainerPosition(resetIndex: number) {
   isTransitioning.value = false
   virtualIndex.value = resetIndex
-  translateItems()
 
   await new Promise<void>((resolve) => {
     doubleRaf(() => {
@@ -218,17 +209,26 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 }
 
+function updateItemIndex() {
+  carousels.value.forEach((carousel, i) => {
+    carousel.updateItemIndex(i)
+  })
+}
+
 function registerCarousel(state: CarouselState) {
   carousels.value.push(state)
+  updateItemIndex()
 }
 
 function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
+  updateItemIndex()
 }
 
 provideCarouselContext({
   props,
   carousels,
+  virtualIndex,
   registerCarousel,
   unregisterCarousel,
 })
@@ -236,7 +236,6 @@ provideCarouselContext({
 onMounted(async () => {
   await nextTick()
 
-  translateItems()
   restartAutoPlay()
 })
 
@@ -292,7 +291,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
-        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -302,7 +301,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
-        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover active:bg-background-active disabled:pointer-events-none disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />

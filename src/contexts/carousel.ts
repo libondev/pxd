@@ -4,12 +4,13 @@ import { createContext } from '../utils/context'
 
 export interface CarouselState {
   uid: string
-  translateItem: (index: number, activeIndex: number) => void
+  updateItemIndex: (index: number) => void
 }
 
 export interface CarouselContext {
   props: CarouselProps
   carousels: Ref<CarouselState[]>
+  virtualIndex: Ref<number>
   registerCarousel: (state: CarouselState) => void
   unregisterCarousel: (id: string) => void
 }

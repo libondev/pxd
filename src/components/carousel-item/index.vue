@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, computed, shallowRef } from 'vue'
 import { useCarouselContext } from '../../contexts/carousel'
 import { getUniqueId } from '../../utils/uid'
 
@@ -10,39 +10,45 @@ defineOptions({
 
 const uniqueId = getUniqueId()
 
-const transformStyle = shallowRef('')
-
+const itemIndex = shallowRef(0)
 const carouselContext = useCarouselContext()
 
-function resetPosition() {
-  transformStyle.value = ''
+const transformStyle = computed(() => {
+  if (!carouselContext.props.loop) {
+    return ''
+  }
+
+  const { carousels, virtualIndex } = carouselContext
+
+  const maxLength = carousels.value.length
+  const lastIndex = maxLength - 1
+  const activeIndex = virtualIndex.value
+
+  if (itemIndex.value === 0 && activeIndex === maxLength) {
+    // move the first item to the right
+    return getTranslateValue(maxLength * 100)
+  } else if (itemIndex.value === lastIndex && activeIndex <= 0) {
+    // move the last item to the left
+    return getTranslateValue(-maxLength * 100)
+  } else {
+    return ''
+  }
+})
+
+function updateItemIndex(index: number) {
+  itemIndex.value = index
 }
 
-function getTranslateStyle(translate: number) {
+function getTranslateValue(translate: number) {
   const isHorizontal = carouselContext.props.direction === 'horizontal'
 
   return `translate${isHorizontal ? 'X' : 'Y'}(${translate}%)`
 }
 
-function translateItem(index: number, activeIndex: number) {
-  const maxLength = carouselContext.carousels.value.length
-  const lastIndex = maxLength - 1
-
-  if (index === 0 && activeIndex === maxLength) {
-    // move the first item to the right
-    transformStyle.value = getTranslateStyle(maxLength * 100)
-  } else if (index === lastIndex && activeIndex <= 0) {
-    // move the last item to the left
-    transformStyle.value = getTranslateStyle(-maxLength * 100)
-  } else {
-    resetPosition()
-  }
-}
-
 onMounted(() => {
   carouselContext?.registerCarousel({
     uid: uniqueId,
-    translateItem,
+    updateItemIndex,
   })
 })
 
