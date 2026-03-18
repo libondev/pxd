@@ -25,9 +25,9 @@ const isExpanded = shallowRef(false)
 const isTruncated = shallowRef(false)
 const ellipsisText = shallowRef(props.text)
 
-const containerRef = shallowRef<HTMLElement>()
 const textRef = shallowRef<HTMLElement>()
 const actionRef = shallowRef<HTMLElement>()
+const containerRef = shallowRef<HTMLElement>()
 
 const maxRows = computed(() => {
   const rows = Number(props.rows ?? 1)
@@ -293,6 +293,11 @@ watch(
 )
 
 useResizeObserver(containerRef, updateEllipsis)
+
+defineExpose({
+  isExpanded,
+  isTruncated,
+})
 </script>
 
 <template>

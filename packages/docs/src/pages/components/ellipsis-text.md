@@ -15,8 +15,21 @@ Display ellipsis for long text and support for expanding or collapsing text.
 ## Action
 
 ```vue demo
+<script setup>
+import { shallowRef, computed } from 'vue'
+
+const ellipsisTextRef = shallowRef()
+
+const isEllipsis = computed(() => {
+  return ellipsisTextRef.value?.isTruncated && !ellipsisTextRef.value?.isExpanded
+})
+</script>
+
 <template>
+  <PText secondary>isEllipsis: {{ isEllipsis }}</PText>
+
   <PEllipsisText
+    ref="ellipsisTextRef"
     action
     action-class="text-red-900"
     more-text="Read more"
