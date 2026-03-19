@@ -1,5 +1,6 @@
 import type {
   ComponentAs,
+  ComponentAlign,
   ComponentShape,
   ComponentSizeWithXs,
   ComponentVariantWithDefault,
@@ -12,7 +13,7 @@ export interface ButtonProps {
   variant?: ButtonVariant
   size?: ComponentSizeWithXs
   shape?: ComponentShape
-  align?: 'left' | 'center' | 'right'
+  align?: ComponentAlign
   icon?: boolean
   loading?: boolean
   disabled?: boolean

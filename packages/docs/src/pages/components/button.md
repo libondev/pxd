@@ -93,3 +93,29 @@ Set the `full-width` property to make the button exclusive to one line.
   <PButton full-width>Block Button </PButton>
 </template>
 ```
+
+## Group
+
+```vue demo
+<template>
+  <PStack direction="vertical">
+    <PButtonGroup>
+      <PButton>Previous Page</PButton>
+      <PButton>Current Page</PButton>
+      <PButton>Next Page</PButton>
+    </PButtonGroup>
+
+    <PButtonGroup variant="primary">
+      <PButton>Previous Page</PButton>
+      <PButton>Current Page</PButton>
+      <PButton>Next Page</PButton>
+    </PButtonGroup>
+
+    <PButtonGroup size="sm" disabled align="left" class="w-md">
+      <PButton full-width>Previous Page</PButton>
+      <PButton full-width>Current Page</PButton>
+      <PButton full-width>Next Page</PButton>
+    </PButtonGroup>
+  </PStack>
+</template>
+```

@@ -2,6 +2,7 @@
 import type { ButtonProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useButtonGroupContext } from '../../contexts/button'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import PSpinner from '../spinner/index.vue'
@@ -14,12 +15,10 @@ defineOptions({
 const props = withDefaults(defineProps<ButtonProps>(), {
   icon: false,
   as: 'button',
-  align: 'center',
-  variant: 'default',
 })
 
 const buttonVariants = tv({
-  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all',
+  base: 'pxd-button relative inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [.pxd-button-group_&]:flex-1 [.pxd-button-group_&]:not-first:rounded-l-none [.pxd-button-group_&]:not-last:rounded-r-none [.pxd-button-group_&]:enabled:hover:z-1 [.pxd-button-group_&+&]:-ml-px',
   variants: {
     size: {
       xs: 'h-6 px-1 text-sm rounded-sm',
@@ -77,19 +76,25 @@ const buttonVariants = tv({
 })
 
 const configProvider = useConfigProvider()
+const buttonGroupContext = useButtonGroupContext()
+
 const isDisabled = computed<boolean>(
-  () => isTruthyProp(props.disabled) || isTruthyProp(props.loading),
+  () =>
+    isTruthyProp(props.disabled) ||
+    isTruthyProp(props.loading) ||
+    buttonGroupContext?.props.disabled ||
+    false,
 )
 
 const computedClasses = computed(() => {
-  const { size = configProvider.size, shape, align, variant, fullWidth, icon } = props
+  const { size, shape, align, variant, fullWidth, icon } = props
 
   return buttonVariants({
     icon,
-    size,
-    shape,
-    align,
-    variant,
+    size: size || buttonGroupContext?.props.size || configProvider.size,
+    shape: buttonGroupContext ? 'default' : shape,
+    align: align || buttonGroupContext?.props.align || 'center',
+    variant: variant || buttonGroupContext?.props.variant || 'default',
     fullWidth,
     disabled: isDisabled.value,
   })
@@ -97,7 +102,16 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" role="button" :class="computedClasses" :disabled="isDisabled" v-bind="$attrs">
+  <Component
+    :is="as"
+    tabindex="0"
+    aria-label="Action"
+    :aria-busy="loading"
+    :aria-disabled="isDisabled"
+    :class="computedClasses"
+    :disabled="isDisabled"
+    v-bind="$attrs"
+  >
     <PSpinner v-if="loading" />
 
     <slot name="prefix" />

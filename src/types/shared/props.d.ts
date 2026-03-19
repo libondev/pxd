@@ -16,6 +16,7 @@ export type ComponentValue = string | number | boolean
 
 export type ComponentClass = string | any[] | Record<string, any>
 
+export type ComponentAlign = 'left' | 'center' | 'right'
 export type ComponentDirection = 'horizontal' | 'vertical'
 
 export type BasePosition = 'top' | 'bottom' | 'left' | 'right'
