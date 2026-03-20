@@ -47,12 +47,14 @@ const direction = ref('horizontal')
 
 ## Sizes
 
+unit: %
+
 ```vue demo
 <template>
   <PResizable class="w-100 h-100 max-w-full border rounded-lg">
-    <PResizablePanel :size="50" class="flex items-center justify-center"> One </PResizablePanel>
+    <PResizablePanel :size="30" class="flex items-center justify-center"> One (30%) </PResizablePanel>
     <PResizableHandle />
-    <PResizablePanel :min-size="50" class="flex items-center justify-center"> Two </PResizablePanel>
+    <PResizablePanel :min-size="20" class="flex items-center justify-center"> Two (min 20%) </PResizablePanel>
   </PResizable>
 </template>
 ```
