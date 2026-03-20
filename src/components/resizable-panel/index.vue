@@ -23,8 +23,7 @@ const computedStyle = computed(() => {
     return {}
   }
 
-  const panelIndex = resizableContext.panelConfigs.value.findIndex((p) => p.id === uniqueId)
-  const size = resizableContext.panelSizes.value[panelIndex] || 0
+  const size = resizableContext.panelSizes.value[uniqueId] || 0
 
   return {
     flexBasis: size > 0 ? `${size}%` : 'auto',

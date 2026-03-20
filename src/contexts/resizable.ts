@@ -1,18 +1,10 @@
-import type { ComponentDirection } from '../types/shared/props'
+import type { ResizableProps } from '../components/resizable/types'
 import type { Ref } from 'vue'
 import { createContext } from '../utils/context'
 
-interface PanelConfig {
-  id: string
-  order: number
-  size?: number | null
-  minSize?: number
-}
-
 export interface ResizableContext {
-  direction: Ref<ComponentDirection>
-  panelSizes: Ref<number[]>
-  panelConfigs: Ref<PanelConfig[]>
+  props: ResizableProps
+  panelSizes: Ref<Record<string, number>>
   getPanelSize: (id: string) => number
   onHandleDrag: (id: string, delta: { deltaX: number; deltaY: number }) => void
   resetPanels: () => void

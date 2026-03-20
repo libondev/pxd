@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ResizableProps, PanelConfig, HandleConfig } from './types'
-import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
+import { nextTick, onMounted, ref, shallowRef } from 'vue'
 import { provideResizableContext } from '../../contexts/resizable'
 
 defineOptions({
@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<ResizableProps>(), {
   direction: 'horizontal',
 })
 
-const panelSizes = ref<number[]>([])
+const panelSizes = ref<Record<string, number>>({})
 const panelConfigs = ref<PanelConfig[]>([])
 const handleConfigs = ref<HandleConfig[]>([])
 
@@ -41,7 +41,8 @@ function unregisterPanel(id: string) {
   const index = panelConfigs.value.findIndex((p) => p.id === id)
   if (index !== -1) {
     panelConfigs.value.splice(index, 1)
-    panelSizes.value.splice(index, 1)
+    const { [id]: _, ...rest } = panelSizes.value
+    panelSizes.value = rest
   }
 }
 
@@ -67,8 +68,7 @@ function unregisterHandle(id: string) {
 }
 
 function getPanelSize(id: string): number {
-  const index = panelConfigs.value.findIndex((p) => p.id === id)
-  return index !== -1 ? panelSizes.value[index] || 0 : 0
+  return panelSizes.value[id] || 0
 }
 
 function onHandleDrag(handleId: string, delta: { deltaX: number; deltaY: number }) {
@@ -104,55 +104,53 @@ function calculateContainerSize(): number {
 }
 
 /**
- * Calculate the initial percentage size of each panel (total 100),
- * and collect the indices of panels that need to be automatically distributed
+ * 计算每个面板的初始百分比大小（总计 100），以面板 ID 为键返回
  */
 function calculateInitialPanelSizes(): {
-  sizes: number[]
+  sizes: Record<string, number>
   remainingSize: number
-  autoSizedPanelIndices: number[]
+  autoSizedPanelIds: string[]
 } {
-  const sizes = Array.from({ length: panelConfigs.value.length }, () => 0)
+  const sizes: Record<string, number> = {}
   let remainingSize = 100
-  const autoSizedPanelIndices: number[] = []
+  const autoSizedPanelIds: string[] = []
 
   const sortedConfigs = [...panelConfigs.value].sort((a, b) => a.order - b.order)
 
-  sortedConfigs.forEach((config, index) => {
+  sortedConfigs.forEach((config) => {
     const minSize = config.minSize || 0
     const initialSizeNum = config.size
 
     if (initialSizeNum !== null && initialSizeNum !== undefined) {
-      const size = Math.max(initialSizeNum, minSize)
-      sizes[index] = size
-      remainingSize -= size
+      sizes[config.id] = Math.max(initialSizeNum, minSize)
+      remainingSize -= sizes[config.id]!
     } else {
-      sizes[index] = minSize
+      sizes[config.id] = minSize
       remainingSize -= minSize
-      autoSizedPanelIndices.push(index)
+      autoSizedPanelIds.push(config.id)
     }
   })
 
-  return { sizes, remainingSize, autoSizedPanelIndices }
+  return { sizes, remainingSize, autoSizedPanelIds }
 }
 
 /**
- * Distribute the remaining percentage space evenly between the automatically sized panels
+ * 在自动调整大小的面板之间均等分配剩余百分比空间
  */
 function distributeRemainingSpace(
-  sizes: number[],
+  sizes: Record<string, number>,
   remainingSize: number,
-  autoSizedPanelIndices: number[],
-): number[] {
-  if (autoSizedPanelIndices.length === 0 || remainingSize <= 0) {
+  autoSizedPanelIds: string[],
+): Record<string, number> {
+  if (autoSizedPanelIds.length === 0 || remainingSize <= 0) {
     return sizes
   }
 
-  const updatedSizes = [...sizes]
-  const avgSize = remainingSize / autoSizedPanelIndices.length
+  const updatedSizes = { ...sizes }
+  const avgSize = remainingSize / autoSizedPanelIds.length
 
-  autoSizedPanelIndices.forEach((index) => {
-    updatedSizes[index]! += avgSize
+  autoSizedPanelIds.forEach((id) => {
+    updatedSizes[id]! += avgSize
   })
 
   return updatedSizes
@@ -165,14 +163,12 @@ async function initPanelSizes() {
 
   await nextTick()
 
-  const { sizes, remainingSize, autoSizedPanelIndices } = calculateInitialPanelSizes()
-  const finalSizes = distributeRemainingSpace(sizes, remainingSize, autoSizedPanelIndices)
-
-  panelSizes.value = finalSizes
+  const { sizes, remainingSize, autoSizedPanelIds } = calculateInitialPanelSizes()
+  panelSizes.value = distributeRemainingSpace(sizes, remainingSize, autoSizedPanelIds)
 }
 
 function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: number }) {
-  if (index < 0 || index + 1 >= panelSizes.value.length) {
+  if (index < 0 || index + 1 >= panelConfigs.value.length) {
     return
   }
 
@@ -181,12 +177,14 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: num
     return
   }
 
-  // Convert pixel increment to percentage increment
+  const prevId = panelConfigs.value[index]!.id
+  const nextId = panelConfigs.value[index + 1]!.id
+
   const delta = props.direction === 'horizontal' ? deltaX : deltaY
   const deltaPercent = (delta / containerSize) * 100
 
-  const prevSize = panelSizes.value[index]!
-  const nextSize = panelSizes.value[index + 1]!
+  const prevSize = panelSizes.value[prevId] || 0
+  const nextSize = panelSizes.value[nextId] || 0
 
   const prevMinSize = panelConfigs.value[index]?.minSize || 0
   const nextMinSize = panelConfigs.value[index + 1]?.minSize || 0
@@ -211,14 +209,13 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: num
     newNextSize = nextMinSize
   }
 
-  // hack for vue2
-  // const newSizes = [...panelSizes.value]
-  panelSizes.value[index] = newPrevSize
-  panelSizes.value[index + 1] = newNextSize
-  // panelSizes.value = newSizes
+  panelSizes.value[prevId] = newPrevSize
+  panelSizes.value[nextId] = newNextSize
 }
 
 provideResizableContext({
+  props,
+  panelSizes,
   registerPanel,
   unregisterPanel,
   registerHandle,
@@ -226,9 +223,6 @@ provideResizableContext({
   getPanelSize,
   onHandleDrag,
   resetPanels: initPanelSizes,
-  direction: computed(() => props.direction),
-  panelSizes,
-  panelConfigs,
 })
 
 onMounted(async () => {
