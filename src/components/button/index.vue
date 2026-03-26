@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const buttonVariants = tv({
-  base: 'pxd-button relative inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [.pxd-button-group_&]:flex-1 [.pxd-button-group_&]:not-first:rounded-l-none [.pxd-button-group_&]:not-last:rounded-r-none [.pxd-button-group_&]:enabled:hover:z-1 [.pxd-button-group_&+&]:-ml-px',
+  base: 'pxd-button [.pxd-button-group_&]:not(.aspect-square):flex-1 relative inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [.pxd-button-group_&]:not-first:rounded-l-none [.pxd-button-group_&]:not-last:rounded-r-none [.pxd-button-group_&]:enabled:hover:z-1 [.pxd-button-group_&+&]:-ml-px',
   variants: {
     size: {
       xs: 'h-6 px-1 text-sm rounded-sm',
@@ -70,7 +70,7 @@ const buttonVariants = tv({
     },
     {
       icon: true,
-      class: 'p-0! aspect-square',
+      class: 'p-0! aspect-square justify-center!',
     },
   ],
 })

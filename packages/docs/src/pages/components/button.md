@@ -97,23 +97,30 @@ Set the `full-width` property to make the button exclusive to one line.
 ## Group
 
 ```vue demo
+<script setup>
+import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+</script>
+
 <template>
   <PStack direction="vertical">
     <PButtonGroup>
       <PButton>Previous Page</PButton>
-      <PButton>Current Page</PButton>
       <PButton>Next Page</PButton>
+      <PButton icon>
+        <ChevronDownIcon />
+      </PButton>
     </PButtonGroup>
 
     <PButtonGroup variant="primary">
       <PButton>Previous Page</PButton>
-      <PButton>Current Page</PButton>
       <PButton>Next Page</PButton>
+      <PButton icon>
+        <ChevronDownIcon />
+      </PButton>
     </PButtonGroup>
 
     <PButtonGroup size="sm" disabled align="left" class="w-md">
       <PButton full-width>Previous Page</PButton>
-      <PButton full-width>Current Page</PButton>
       <PButton full-width>Next Page</PButton>
     </PButtonGroup>
   </PStack>
