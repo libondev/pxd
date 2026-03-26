@@ -3,10 +3,8 @@ import { useHead } from '@unhead/vue'
 import { on } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
-const description = 'Universal Vue 2.7 & Vue 3.2+ UI Component Library'
-
 useHead({
-  title: `PXD - ${description}`,
+  title: `PXD - Universal Vue 2.7 & Vue 3.2+ UI Component Library`,
 })
 
 const cleanupFns = []
@@ -80,8 +78,11 @@ onBeforeUnmount(() => {
         </span>
       </div>
 
-      <p class="mt-8 text-lg leading-tight text-balance text-foreground-secondary">
-        {{ description }}
+      <p
+        class="mt-8 max-w-xl leading-relaxed! leading-tight mx-auto text-balance text-foreground-secondary"
+      >
+        Built-in light/dark theme, PC & mobile ready, animation-free mode supported. One codebase
+        for Vue 2.7+ & Vue 3.2+. Written in TypeScript.
       </p>
 
       <div class="mt-16 gap-3 flex justify-center">
