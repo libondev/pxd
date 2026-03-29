@@ -32,6 +32,8 @@ let isToggling = false
 let pendingDelta: number | null = null
 let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
+/** Cached container size (px) captured on press, used to clamp drag within one slide. */
+let maxDrag = 0
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
@@ -63,16 +65,18 @@ const computedStyle = computed(() => {
 useSwipeGesture(sliderRef, {
   direction: computed(() => props.direction),
   onPress: () => {
+    const el = sliderRef.value
+    maxDrag = el ? (props.direction === 'horizontal' ? el.offsetWidth : el.offsetHeight) : 0
+
     gestureMoveOffset.value = 0
     onPointerEnter()
   },
   onFollow: (ev) => {
-    //  if not loop and swipe to the first or last item, don't move
     if (!props.loop && ((isAtFirst.value && ev.delta > 0) || (isAtLast.value && ev.delta < 0))) {
       return
     }
 
-    gestureMoveOffset.value = ev.displacement
+    gestureMoveOffset.value = Math.max(-maxDrag, Math.min(maxDrag, ev.displacement))
   },
   onRelease: ({ swiped, direction }) => {
     gestureMoveOffset.value = 0
