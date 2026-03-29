@@ -300,7 +300,7 @@
   --color-foreground-secondary: hsl(var(--color-gray-700-value));
   --color-background-100: hsl(var(--background-100-value));
   --color-background-200: hsl(var(--background-200-value));
-  --color-background-hover: hsl(var(--color-gray-200-value));
+  --color-background-hover: hsl(var(--color-gray-300-value));
   --color-background-active: hsl(var(--color-gray-400-value));
 
   --color-gray-alpha-100: var(--color-gray-alpha-100-value);
