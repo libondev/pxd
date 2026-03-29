@@ -3,8 +3,8 @@ import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
-import { doubleRaf } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
@@ -28,34 +28,26 @@ const props = withDefaults(defineProps<CarouselProps>(), {
 
 const emits = defineEmits<CarouselEmits>()
 
-let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
-let isPointerEntering = false
 let isToggling = false
 let pendingDelta: number | null = null
+let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
+let isPointerEntering = false
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
-const isTransitioning = shallowRef(true)
+const gestureMoveOffset = shallowRef(0)
 
-// since the virtual index may exceed the range to facilitate seamless switching,
-// a boundary index is needed to indicate the real index
-const correctIndex = computed(() => {
-  const index = virtualIndex.value
-
-  if (index >= carousels.value.length) {
+const displayIndex = computed(() => {
+  const length = carousels.value.length
+  if (length === 0) {
     return 0
   }
-
-  if (index <= -1) {
-    return carousels.value.length - 1
-  }
-
-  return index
+  return ((virtualIndex.value % length) + length) % length
 })
 
-const isAtFirst = computed(() => virtualIndex.value <= 0)
-const isAtLast = computed(() => virtualIndex.value >= carousels.value.length - 1)
+const isAtFirst = computed(() => displayIndex.value === 0)
+const isAtLast = computed(() => displayIndex.value === carousels.value.length - 1)
 
 const computedStyle = computed(() => {
   const translateValue = virtualIndex.value * -100
@@ -63,13 +55,44 @@ const computedStyle = computed(() => {
   return {
     transform:
       props.direction === 'horizontal'
-        ? `translateX(${translateValue}%)`
-        : `translateY(${translateValue}%)`,
+        ? `translateX(calc(${translateValue}% + ${gestureMoveOffset.value}px))`
+        : `translateY(calc(${translateValue}% + ${gestureMoveOffset.value}px))`,
   }
 })
 
+useSwipeGesture(sliderRef, {
+  direction: computed(() => props.direction),
+  onPress: () => {
+    gestureMoveOffset.value = 0
+    onPointerEnter()
+  },
+  onFollow: (ev) => {
+    //  if not loop and swipe to the first or last item, don't move
+    if (!props.loop && ((isAtFirst.value && ev.delta > 0) || (isAtLast.value && ev.delta < 0))) {
+      return
+    }
+
+    gestureMoveOffset.value = ev.displacement
+  },
+  onRelease: ({ swiped, direction }) => {
+    gestureMoveOffset.value = 0
+    onPointerLeave()
+
+    if (!swiped || !direction) {
+      return
+    }
+
+    if (props.direction === 'horizontal') {
+      performToggle(direction === 'left' ? 1 : -1)
+    } else {
+      console.info('👑index.vue:88/(direction):\n', direction)
+      performToggle(direction === 'top' ? 1 : -1)
+    }
+  },
+})
+
 async function awaitAnimationEnd() {
-  const animations = sliderRef.value?.getAnimations() ?? []
+  const animations = sliderRef.value?.getAnimations?.() ?? []
   await Promise.allSettled(animations.map((a) => a.finished))
 }
 
@@ -89,15 +112,15 @@ async function performToggle(delta: number) {
     await awaitAnimationEnd()
 
     if (virtualIndex.value >= length) {
-      await resetContainerPosition(0)
+      await resetSliderPosition(0)
     } else if (virtualIndex.value <= -1) {
-      await resetContainerPosition(length - 1)
+      await resetSliderPosition(length - 1)
     }
   } else {
     virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
-  emits('change', correctIndex.value)
+  emits('change', virtualIndex.value)
   restartAutoPlay()
 }
 
@@ -150,16 +173,18 @@ function onWheelToggle(ev: WheelEvent) {
   onToggleClick(delta)
 }
 
-async function resetContainerPosition(resetIndex: number) {
-  isTransitioning.value = false
+async function resetSliderPosition(resetIndex: number) {
+  const el = sliderRef.value
+  if (!el) {
+    return
+  }
+
+  el.style.transition = 'none'
   virtualIndex.value = resetIndex
 
-  await new Promise<void>((resolve) => {
-    doubleRaf(() => {
-      isTransitioning.value = true
-      resolve()
-    })
-  })
+  await nextTick()
+  void el.offsetHeight
+  el.style.transition = ''
 }
 
 function clearAutoPlayTimer() {
@@ -201,7 +226,7 @@ function onIndicatorClick(ev: MouseEvent) {
     return
   }
 
-  const deltaIndex = targetIndex - virtualIndex.value
+  const deltaIndex = targetIndex - displayIndex.value
 
   if (deltaIndex !== 0) {
     clearAutoPlayTimer()
@@ -257,13 +282,10 @@ onBeforeUnmount(() => {
     @pointerleave="onPointerLeave"
     @wheel="onWheelToggle"
   >
-    <div class="pxd-carousel--container size-full">
+    <div class="pxd-carousel--container size-full overflow-clip">
       <div
         ref="sliderRef"
-        class="pxd-carousel--slider translate-z-0 size-full"
-        :class="{
-          'motion-safe:transition-transform': isTransitioning,
-        }"
+        class="pxd-carousel--slider translate-z-0 size-full active:transition-none motion-safe:transition-transform"
         :style="computedStyle"
       >
         <slot />
@@ -275,13 +297,13 @@ onBeforeUnmount(() => {
       class="pxd-carousel--indicator gap-2 absolute flex w-max items-center"
       @click="onIndicatorClick"
     >
-      <slot name="indicator" :current="correctIndex + 1" :total="carousels.length">
+      <slot name="indicator" :current="displayIndex" :total="carousels.length">
         <button
           v-for="(_, i) in carousels.length"
           :key="i"
           :data-index="i"
           class="pxd-carousel--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
-          :class="{ 'bg-primary!': i === correctIndex }"
+          :class="{ 'bg-primary!': i === displayIndex }"
         />
       </slot>
     </div>
@@ -291,7 +313,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
-        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -301,7 +323,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
-        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />

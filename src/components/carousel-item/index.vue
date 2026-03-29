@@ -24,11 +24,9 @@ const transformStyle = computed(() => {
   const lastIndex = maxLength - 1
   const activeIndex = virtualIndex.value
 
-  if (itemIndex.value === 0 && activeIndex === maxLength) {
-    // move the first item to the right
+  if (itemIndex.value === 0 && activeIndex >= lastIndex) {
     return getTranslateValue(maxLength * 100)
   } else if (itemIndex.value === lastIndex && activeIndex <= 0) {
-    // move the last item to the left
     return getTranslateValue(-maxLength * 100)
   } else {
     return ''

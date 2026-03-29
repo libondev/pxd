@@ -133,7 +133,9 @@
     "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default",
     "tailwind-merge": "catalog:default",
-    "tailwind-variants": "catalog:default"
+    "tailwind-variants": "catalog:default",
+    "@any-touch/core": "catalog:default",
+    "@any-touch/pan": "catalog:default"
   },
   "devDependencies": {
     "@tailwindcss/cli": "catalog:default",
