@@ -3,6 +3,7 @@ import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
 import { doubleRaf } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
@@ -37,6 +38,7 @@ const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const isTransitioning = shallowRef(true)
+const gestureMoveOffset = shallowRef(0)
 
 const isAtFirst = computed(() => virtualIndex.value <= 0)
 const isAtLast = computed(() => virtualIndex.value >= carousels.value.length - 1)
@@ -47,9 +49,38 @@ const computedStyle = computed(() => {
   return {
     transform:
       props.direction === 'horizontal'
-        ? `translateX(${translateValue}%)`
-        : `translateY(${translateValue}%)`,
+        ? `translateX(calc(${translateValue}% + ${gestureMoveOffset.value}px))`
+        : `translateY(calc(${translateValue}% + ${gestureMoveOffset.value}px))`,
   }
+})
+
+useSwipeGesture(sliderRef, {
+  onPress: () => {
+    gestureMoveOffset.value = 0
+    onPointerEnter()
+  },
+  onFollow: (ev) => {
+    //  if not loop and swipe to the first or last item, don't move
+    if (!props.loop && ((isAtFirst.value && ev.delta > 0) || (isAtLast.value && ev.delta < 0))) {
+      return
+    }
+
+    gestureMoveOffset.value = ev.displacement
+  },
+  onRelease: ({ swiped, direction }) => {
+    gestureMoveOffset.value = 0
+    onPointerLeave()
+
+    if (!swiped || !direction) {
+      return
+    }
+
+    if (props.direction === 'horizontal') {
+      performToggle(direction === 'left' ? 1 : -1)
+    } else {
+      performToggle(direction === 'top' ? 1 : -1)
+    }
+  },
 })
 
 async function awaitAnimationEnd() {
