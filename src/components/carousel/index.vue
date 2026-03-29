@@ -28,31 +28,15 @@ const props = withDefaults(defineProps<CarouselProps>(), {
 
 const emits = defineEmits<CarouselEmits>()
 
-let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
-let isPointerEntering = false
 let isToggling = false
 let pendingDelta: number | null = null
+let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
+let isPointerEntering = false
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const isTransitioning = shallowRef(true)
-
-// since the virtual index may exceed the range to facilitate seamless switching,
-// a boundary index is needed to indicate the real index
-const correctIndex = computed(() => {
-  const index = virtualIndex.value
-
-  if (index >= carousels.value.length) {
-    return 0
-  }
-
-  if (index <= -1) {
-    return carousels.value.length - 1
-  }
-
-  return index
-})
 
 const isAtFirst = computed(() => virtualIndex.value <= 0)
 const isAtLast = computed(() => virtualIndex.value >= carousels.value.length - 1)
@@ -97,7 +81,7 @@ async function performToggle(delta: number) {
     virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
   }
 
-  emits('change', correctIndex.value)
+  emits('change', virtualIndex.value)
   restartAutoPlay()
 }
 
@@ -257,7 +241,7 @@ onBeforeUnmount(() => {
     @pointerleave="onPointerLeave"
     @wheel="onWheelToggle"
   >
-    <div class="pxd-carousel--container size-full">
+    <div class="pxd-carousel--container size-full overflow-clip">
       <div
         ref="sliderRef"
         class="pxd-carousel--slider translate-z-0 size-full"
@@ -275,13 +259,13 @@ onBeforeUnmount(() => {
       class="pxd-carousel--indicator gap-2 absolute flex w-max items-center"
       @click="onIndicatorClick"
     >
-      <slot name="indicator" :current="correctIndex + 1" :total="carousels.length">
+      <slot name="indicator" :current="virtualIndex" :total="carousels.length">
         <button
           v-for="(_, i) in carousels.length"
           :key="i"
           :data-index="i"
           class="pxd-carousel--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
-          :class="{ 'bg-primary!': i === correctIndex }"
+          :class="{ 'bg-primary!': i === virtualIndex }"
         />
       </slot>
     </div>
