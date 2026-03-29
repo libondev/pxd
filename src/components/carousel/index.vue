@@ -61,6 +61,7 @@ const computedStyle = computed(() => {
 })
 
 useSwipeGesture(sliderRef, {
+  direction: computed(() => props.direction),
   onPress: () => {
     gestureMoveOffset.value = 0
     onPointerEnter()
@@ -84,6 +85,7 @@ useSwipeGesture(sliderRef, {
     if (props.direction === 'horizontal') {
       performToggle(direction === 'left' ? 1 : -1)
     } else {
+      console.info('👑index.vue:88/(direction):\n', direction)
       performToggle(direction === 'top' ? 1 : -1)
     }
   },
@@ -311,7 +313,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
-        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -321,7 +323,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
-        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-40 motion-safe:transition-colors"
+        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
