@@ -8,13 +8,13 @@ Loop a series of images or texts in a limited space.
 <template>
   <PStack>
     <PCarousel>
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
         {{ i }}
       </PCarouselItem>
     </PCarousel>
 
     <PCarousel direction="vertical">
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
         {{ i }}
       </PCarouselItem>
     </PCarousel>
@@ -57,7 +57,7 @@ const indicatorPosition = ref('bottom')
       :indicator-type="indicatorType"
       :indicator-position="indicatorPosition"
     >
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
         {{ i }}
       </PCarouselItem>
     </PCarousel>
@@ -67,7 +67,7 @@ const indicatorPosition = ref('bottom')
       :indicator-type="indicatorType"
       :indicator-position="indicatorPosition"
     >
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
         {{ i }}
       </PCarouselItem>
 
@@ -75,7 +75,7 @@ const indicatorPosition = ref('bottom')
         <span
           class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-alpha-200"
         >
-          {{ current }}/{{ total }}
+          {{ current + 1 }}/{{ total }}
         </span>
       </template>
     </PCarousel>
@@ -90,7 +90,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```vue demo
 <template>
   <PCarousel toggle-on-wheel>
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
       {{ i }}
     </PCarouselItem>
   </PCarousel>
@@ -102,7 +102,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```vue demo
 <template>
   <PCarousel :indicator="false" :arrow="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
       {{ i }}
     </PCarouselItem>
   </PCarousel>
@@ -114,7 +114,7 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ```vue demo
 <template>
   <PCarousel :autoplay="false" :loop="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
       {{ i }}
     </PCarouselItem>
   </PCarousel>
@@ -128,7 +128,7 @@ By default, it will pause when the mouse is over the carousel.
 ```vue demo
 <template>
   <PCarousel :pause-on-hover="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-100 nth-[2n]:bg-gray-300">
+    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
       {{ i }}
     </PCarouselItem>
   </PCarousel>
