@@ -6,6 +6,12 @@ settings:
 
 catalogs:
   default:
+    '@any-touch/core':
+      specifier: ^2.2.0
+      version: 2.2.0
+    '@any-touch/pan':
+      specifier: ^2.2.0
+      version: 2.2.0
     '@clack/prompts':
       specifier: ^1.1.0
       version: 1.1.0
@@ -13,8 +19,8 @@ catalogs:
       specifier: ^1.7.6
       version: 1.7.6
     '@gdsicon/vue':
-      specifier: ^1.0.8
-      version: 1.0.8
+      specifier: ^1.0.9
+      version: 1.0.9
     '@shikijs/markdown-it':
       specifier: ^4.0.2
       version: 4.0.2
@@ -178,12 +184,18 @@ importers:
 
   .:
     dependencies:
+      '@any-touch/core':
+        specifier: catalog:default
+        version: 2.2.0
+      '@any-touch/pan':
+        specifier: catalog:default
+        version: 2.2.0
       '@floating-ui/dom':
         specifier: catalog:default
         version: 1.7.6
       '@gdsicon/vue':
         specifier: catalog:default
-        version: 1.0.8(vue@3.5.30(typescript@5.9.3))
+        version: 1.0.9(vue@3.5.30(typescript@5.9.3))
       '@tanstack/virtual-core':
         specifier: catalog:default
         version: 3.13.22
@@ -378,6 +390,21 @@ importers:
         version: 4.6.4(vue@3.5.30(typescript@5.9.3))
 
 packages:
+
+  '@any-touch/compute@2.2.0':
+    resolution: {integrity: sha512-hrw74b/cVT8SmiKFLValmllajw+bBvTa5iUwIXFVVIJM9T3tO15zZC2QbjVz8Uwi6XjH932RDUILGMs2TNvyQg==}
+
+  '@any-touch/core@2.2.0':
+    resolution: {integrity: sha512-xMHAA5aLCatFto+4fQWyE4YAsyN/LsXS4mnYuVpqFYoNz8dl5FsB/TIyb9JrqMKLYMxxcZ9joqR8gDprH1lwBw==}
+
+  '@any-touch/pan@2.2.0':
+    resolution: {integrity: sha512-uMkCHbTm5qWji/FvhumP9n1ZCkPU7hy864g+ZhoWZ0OWAmn7s/TKRo4UqPBfqEPUMV6obGZvatrrgBLWT6J57w==}
+
+  '@any-touch/shared@2.2.0':
+    resolution: {integrity: sha512-2n1zWaATi/3osr/dkIUq5O7aSffKUsTM4DsIbPMW1VEO77v/rX2HkLoxt2Djzj5eCGh7An55Vw8NeA33kTTSRA==}
+
+  '@any-touch/vector@2.2.0':
+    resolution: {integrity: sha512-t7pGYegIDCJl+swwsohZHZKmF71ZMt+hjwVEyhaEP6nQhcx6S7zulxnRxNp1t8s+c/JdK02Q89HnzQ4Ukg4+IA==}
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
@@ -766,8 +793,8 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@gdsicon/vue@1.0.8':
-    resolution: {integrity: sha512-q3t5OJzbjrifbkUtdGLRtIYOcLbAfmiewecEVWi1VVj/g31EI3hyHGK4ysCgeMnScb4FWeDiyu2dbrzUy2T0Iw==}
+  '@gdsicon/vue@1.0.9':
+    resolution: {integrity: sha512-Zq6chKOUv3QTJYjhpiYzxaboXDcOGUcjD6Hkhlzo+eFLfMrosHztp8EQt1dpo2zgeGPtewOA2XJgio6QNsXM2w==}
     peerDependencies:
       vue: '*'
 
@@ -1827,6 +1854,9 @@ packages:
   ansi-styles@6.2.1:
     resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
     engines: {node: '>=12'}
+
+  any-event@2.2.0:
+    resolution: {integrity: sha512-PB4sEiVUjL+5mLmwlAGYdI5/1ouckapxS6+RPIvrGXv9XTMav7M3k3rR/f9fwAR+e2608CTR3FOR5HrOEYTtKA==}
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -3833,6 +3863,28 @@ packages:
 
 snapshots:
 
+  '@any-touch/compute@2.2.0':
+    dependencies:
+      '@any-touch/shared': 2.2.0
+      '@any-touch/vector': 2.2.0
+      tslib: 2.8.1
+
+  '@any-touch/core@2.2.0':
+    dependencies:
+      '@any-touch/shared': 2.2.0
+      any-event: 2.2.0
+
+  '@any-touch/pan@2.2.0':
+    dependencies:
+      '@any-touch/compute': 2.2.0
+      '@any-touch/shared': 2.2.0
+
+  '@any-touch/shared@2.2.0': {}
+
+  '@any-touch/vector@2.2.0':
+    dependencies:
+      '@any-touch/shared': 2.2.0
+
   '@asamuzakjp/css-color@3.2.0':
     dependencies:
       '@csstools/css-calc': 2.1.4(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
@@ -4227,7 +4279,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@gdsicon/vue@1.0.8(vue@3.5.30(typescript@5.9.3))':
+  '@gdsicon/vue@1.0.9(vue@3.5.30(typescript@5.9.3))':
     dependencies:
       vue: 3.5.30(typescript@5.9.3)
 
@@ -5124,6 +5176,10 @@ snapshots:
       color-convert: 2.0.1
 
   ansi-styles@6.2.1: {}
+
+  any-event@2.2.0:
+    dependencies:
+      tslib: 2.8.1
 
   argparse@2.0.1: {}
 
@@ -6883,8 +6939,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   type-check@0.4.0:
     dependencies:

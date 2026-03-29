@@ -2,9 +2,11 @@ packages:
   - .
   - packages/*
 catalog:
+  '@any-touch/core': ^2.2.0
+  '@any-touch/pan': ^2.2.0
   '@clack/prompts': ^1.1.0
   '@floating-ui/dom': ^1.7.6
-  '@gdsicon/vue': ^1.0.8
+  '@gdsicon/vue': ^1.0.9
   '@shikijs/markdown-it': ^4.0.2
   '@sindresorhus/slugify': ^3.0.0
   '@tailwindcss/cli': ^4.2.1
