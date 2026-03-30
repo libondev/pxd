@@ -50,15 +50,13 @@ const displayIndex = computed(() => {
 
 const isAtFirst = computed(() => displayIndex.value === 0)
 const isAtLast = computed(() => displayIndex.value === carousels.value.length - 1)
+const isHorizontal = computed(() => props.direction === 'horizontal')
 
 const computedStyle = computed(() => {
-  const translateValue = virtualIndex.value * -100
+  const translateValue = `calc(${virtualIndex.value * -100}% + ${gestureMoveOffset.value}px)`
 
   return {
-    transform:
-      props.direction === 'horizontal'
-        ? `translateX(calc(${translateValue}% + ${gestureMoveOffset.value}px))`
-        : `translateY(calc(${translateValue}% + ${gestureMoveOffset.value}px))`,
+    transform: `translate${isHorizontal.value ? 'X' : 'Y'}(${translateValue})`,
   }
 })
 
@@ -66,7 +64,7 @@ useSwipeGesture(sliderRef, {
   direction: computed(() => props.direction),
   onPress: () => {
     const el = sliderRef.value
-    maxDrag = el ? (props.direction === 'horizontal' ? el.offsetWidth : el.offsetHeight) : 0
+    maxDrag = el ? (isHorizontal.value ? el.offsetWidth : el.offsetHeight) : 0
 
     gestureMoveOffset.value = 0
     onPointerEnter()
@@ -86,10 +84,9 @@ useSwipeGesture(sliderRef, {
       return
     }
 
-    if (props.direction === 'horizontal') {
+    if (isHorizontal.value) {
       performToggle(direction === 'left' ? 1 : -1)
     } else {
-      console.info('👑index.vue:88/(direction):\n', direction)
       performToggle(direction === 'top' ? 1 : -1)
     }
   },
@@ -317,7 +314,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
-        class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
+        class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -327,7 +324,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
-        class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
+        class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
