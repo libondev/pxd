@@ -10,7 +10,7 @@ export interface CarouselProps {
   indicator?: boolean
   direction?: ComponentDirection
   indicatorType?: 'dot' | 'line'
-  indicatorPosition?: BasePosition
+  indicatorPosition?: BasePosition | 'center'
   pauseOnHover?: boolean
   toggleOnWheel?: boolean
 }

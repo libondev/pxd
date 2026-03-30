@@ -5,26 +5,6 @@ Loop a series of images or texts in a limited space.
 ## Default
 
 ```vue demo
-<template>
-  <PStack>
-    <PCarousel>
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-        {{ i }}
-      </PCarouselItem>
-    </PCarousel>
-
-    <PCarousel direction="vertical">
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-        {{ i }}
-      </PCarouselItem>
-    </PCarousel>
-  </PStack>
-</template>
-```
-
-## Indicator
-
-```vue demo
 <script setup>
 import { ref } from 'vue'
 
@@ -43,6 +23,7 @@ const indicatorPosition = ref('bottom')
     <PSwitch v-model="indicatorType">
       <PSwitchItem label="dot" value="dot" />
       <PSwitchItem label="line" value="line" />
+      <PSwitchItem label="custom" value="custom" />
     </PSwitch>
 
     <PSwitch v-model="indicatorPosition">
@@ -50,6 +31,7 @@ const indicatorPosition = ref('bottom')
       <PSwitchItem label="bottom" value="bottom" />
       <PSwitchItem label="left" value="left" />
       <PSwitchItem label="right" value="right" />
+      <PSwitchItem label="center" value="center" />
     </PSwitch>
 
     <PCarousel
@@ -60,20 +42,10 @@ const indicatorPosition = ref('bottom')
       <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
         {{ i }}
       </PCarouselItem>
-    </PCarousel>
 
-    <PCarousel
-      :direction="direction"
-      :indicator-type="indicatorType"
-      :indicator-position="indicatorPosition"
-    >
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-        {{ i }}
-      </PCarouselItem>
-
-      <template #indicator="{ total, current }">
+      <template v-if="indicatorType === 'custom'" #indicator="{ total, current }">
         <span
-          class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-alpha-200"
+          class="flex items-center text-xs font-mono py-0.5 px-1.5 rounded-full bg-gray-100"
         >
           {{ current + 1 }}/{{ total }}
         </span>

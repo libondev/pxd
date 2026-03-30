@@ -298,7 +298,7 @@ onBeforeUnmount(() => {
 
     <div
       v-if="indicator"
-      class="pxd-carousel--indicator gap-2 absolute flex w-max items-center"
+      class="pxd-carousel--indicator gap-2 absolute z-1 flex w-max items-center"
       @click="onIndicatorClick"
     >
       <slot name="indicator" :current="displayIndex" :total="carousels.length">
@@ -312,12 +312,12 @@ onBeforeUnmount(() => {
       </slot>
     </div>
 
-    <div v-if="arrow" class="pxd-carousel--toggler gap-2 absolute flex">
+    <div v-if="arrow" class="pxd-carousel--toggler gap-2 pointer-events-none absolute z-1 flex">
       <button
         type="button"
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
-        class="pxd-carousel--prev-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
+        class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
         <ChevronRightIcon class="rotate-180" />
@@ -327,7 +327,7 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
-        class="pxd-carousel--next-btn p-1.5 cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
+        class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-200 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-alpha-100 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
         <ChevronRightIcon />
@@ -345,7 +345,8 @@ onBeforeUnmount(() => {
 
   &[data-indicator-type='line'] {
     &[data-indicator-position='top'],
-    &[data-indicator-position='bottom'] {
+    &[data-indicator-position='bottom'],
+    &[data-indicator-position='center'] {
       --carousel-dot-width: 1rem;
       --carousel-dot-height: 0.25rem;
     }
@@ -405,14 +406,20 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-direction='horizontal'] .pxd-carousel--slider {
-    display: flex;
-  }
+  &[data-indicator-position='center'] {
+    .pxd-carousel--indicator {
+      left: 50%;
+      bottom: 0.5rem;
+      transform: translateX(-50%);
+    }
 
-  &[data-direction='vertical'] {
-    .pxd-carousel--prev-btn,
-    .pxd-carousel--next-btn {
-      transform: rotate(90deg);
+    .pxd-carousel--toggler {
+      left: 0;
+      top: 50%;
+      width: 100%;
+      padding-inline: 0.5rem;
+      justify-content: space-between;
+      transform: translateY(-50%);
     }
   }
 
@@ -421,6 +428,17 @@ onBeforeUnmount(() => {
     .pxd-carousel--indicator,
     .pxd-carousel--toggler {
       flex-direction: column;
+    }
+  }
+
+  &[data-direction='horizontal'] .pxd-carousel--slider {
+    display: flex;
+  }
+
+  &[data-direction='vertical'] {
+    .pxd-carousel--prev-btn,
+    .pxd-carousel--next-btn {
+      transform: rotate(90deg);
     }
   }
 }
