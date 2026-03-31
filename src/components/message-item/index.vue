@@ -52,11 +52,9 @@ function setItemHeightInfo() {
     return
   }
 
-  const rect = itemRef.value.getBoundingClientRect()
-
   // It is necessary to ensure the reference to the original object;
   // otherwise, the type of the promise data cannot be updated.
-  props.itemData.height = rect.height
+  props.itemData.height = itemRef.value.offsetHeight
 }
 
 watch(

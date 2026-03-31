@@ -26,12 +26,12 @@ const containerSize = shallowRef({
 })
 
 function getRenderedSlotSize() {
-  const rect = containerRef.value!.getBoundingClientRect()
+  const { offsetWidth, offsetHeight } = containerRef.value!
 
   containerSize.value = {
-    'contain-intrinsic-size': `auto ${rect.height}px`,
-    '--slot-estimated-width': `${rect.width}px`,
-    '--slot-estimated-height': `${rect.height}px`,
+    'contain-intrinsic-size': `auto ${offsetHeight}px`,
+    '--slot-estimated-width': `${offsetWidth}px`,
+    '--slot-estimated-height': `${offsetHeight}px`,
   }
 }
 

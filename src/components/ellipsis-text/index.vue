@@ -196,7 +196,7 @@ function fits(elements: MeasureElements, text: string, actionText: string, maxHe
     elements.action.style.display = 'none'
   }
 
-  const height = elements.container.getBoundingClientRect().height
+  const height = elements.container.offsetHeight
 
   return height <= maxHeight + 0.5
 }
