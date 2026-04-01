@@ -10,6 +10,8 @@ export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 export interface SwipeFollowState {
   /** Movement since the previous event along the active axis (px). */
   delta: number
+  /** Velocity (px / ms) since the previous event along the active axis. */
+  velocity: number
   /** `displacement / containerSize` — signed ratio, typically in the range of -1 to 1. */
   offset: number
   /** Signed displacement from the start point along the active axis (px). */
@@ -30,6 +32,11 @@ export interface SwipeGestureOptions {
    * @default 'horizontal'
    */
   direction?: MaybeRefOrGetter<'horizontal' | 'vertical'>
+  /**
+   * Minimum swipe distance (px) for a successful swipe.
+   * @default 10
+   */
+  swipeThreshold?: number
   /**
    * Fraction of the container size (0–1) the finger must travel
    * for a slow-drag to count as a successful swipe.
@@ -60,6 +67,7 @@ export function useSwipeGesture(
   const {
     distanceThreshold = 0.35,
     velocityThreshold = 0.3,
+    swipeThreshold = 10,
     onPress,
     onFollow,
     onRelease,
@@ -82,7 +90,8 @@ export function useSwipeGesture(
     }
 
     at = new Core(el)
-    at.use(Pan)
+
+    at.use(Pan, { threshold: swipeThreshold })
 
     at.on('panstart', () => {
       onPress?.()
@@ -93,10 +102,12 @@ export function useSwipeGesture(
       const size = h ? el.offsetWidth : el.offsetHeight
       const displacement = h ? e.displacementX : e.displacementY
       const delta = h ? e.deltaX : e.deltaY
+      const velocity = h ? e.velocityX : e.velocityY
 
       onFollow?.({
-        displacement,
         delta,
+        velocity,
+        displacement,
         offset: size > 0 ? displacement / size : 0,
       })
     })
