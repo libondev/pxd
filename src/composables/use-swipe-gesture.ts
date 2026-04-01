@@ -24,6 +24,7 @@ export interface SwipeReleaseState {
 }
 
 export interface SwipeGestureOptions {
+  disabled?: MaybeRefOrGetter<boolean>
   /**
    * Swipe axis. Reactive — accepts a ref or getter.
    * @default 'horizontal'
@@ -140,9 +141,9 @@ export function useSwipeGesture(
   }
 
   const unwatch = watch(
-    () => unrefElement(containerRef),
-    (el) => {
-      if (!el) {
+    () => [unrefElement(containerRef), toValue(options.disabled)],
+    ([el, disabled]) => {
+      if (!el || disabled) {
         unbind()
         return
       }
