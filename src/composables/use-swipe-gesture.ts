@@ -7,6 +7,10 @@ import { toValue, unrefElement } from '../utils/ref'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 
+export interface SwipePressState {
+  size: number
+}
+
 export interface SwipeFollowState {
   /** Movement since the previous event along the active axis (px). */
   delta: number
@@ -27,6 +31,12 @@ export interface SwipeReleaseState {
 
 export interface SwipeGestureOptions {
   disabled?: MaybeRefOrGetter<boolean>
+  /**
+   * CSS selector for the drag handle element within the container.
+   * When set, gesture events bind to this element instead of the container,
+   * preventing interference with scrollable content inside the container.
+   */
+  handleSelector?: string
   /**
    * Swipe axis. Reactive — accepts a ref or getter.
    * @default 'horizontal'
@@ -50,7 +60,7 @@ export interface SwipeGestureOptions {
    */
   velocityThreshold?: number
   /** Fires when the pointer touches down and the gesture begins. */
-  onPress?: () => void
+  onPress?: (state: SwipePressState) => void
   /** Fires continuously while the pointer moves. */
   onFollow?: (state: SwipeFollowState) => void
   /**
@@ -65,6 +75,7 @@ export function useSwipeGesture(
   options: SwipeGestureOptions = {},
 ) {
   const {
+    handleSelector,
     distanceThreshold = 0.35,
     velocityThreshold = 0.3,
     swipeThreshold = 10,
@@ -84,22 +95,31 @@ export function useSwipeGesture(
   }
 
   function bind() {
-    const el = unrefElement(containerRef)
-    if (!el) {
+    const container = unrefElement(containerRef)
+    if (!container) {
       return
     }
 
-    at = new Core(el)
+    const handle = handleSelector ? container.querySelector<HTMLElement>(handleSelector) : container
+    if (!handle) {
+      return
+    }
+
+    at = new Core(handle)
 
     at.use(Pan, { threshold: swipeThreshold })
 
+    let containerSize = 0
+
     at.on('panstart', () => {
-      onPress?.()
+      const h = isHorizontal()
+      containerSize = h ? container.offsetWidth : container.offsetHeight
+
+      onPress?.({ size: containerSize })
     })
 
     at.on('panmove', (e) => {
       const h = isHorizontal()
-      const size = h ? el.offsetWidth : el.offsetHeight
       const displacement = h ? e.displacementX : e.displacementY
       const delta = h ? e.deltaX : e.deltaY
       const velocity = h ? e.velocityX : e.velocityY
@@ -108,23 +128,22 @@ export function useSwipeGesture(
         delta,
         velocity,
         displacement,
-        offset: size > 0 ? displacement / size : 0,
+        offset: containerSize > 0 ? displacement / containerSize : 0,
       })
     })
 
     at.on('panend', (e) => {
       const h = isHorizontal()
-      const size = h ? el.offsetWidth : el.offsetHeight
       const displacement = h ? e.displacementX : e.displacementY
       const velocity = h ? e.velocityX : e.velocityY
 
-      if (size === 0 || displacement === 0) {
+      if (containerSize === 0 || displacement === 0) {
         onRelease?.({ swiped: false })
         return
       }
 
       const meetsVelocity = velocity >= velocityThreshold
-      const meetsDistance = Math.abs(displacement) / size >= distanceThreshold
+      const meetsDistance = Math.abs(displacement) / containerSize >= distanceThreshold
 
       if (meetsVelocity || meetsDistance) {
         onRelease?.({ swiped: true, direction: resolveDirection(displacement, h) })

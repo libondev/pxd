@@ -62,9 +62,8 @@ const computedStyle = computed(() => {
 
 useSwipeGesture(sliderRef, {
   direction: computed(() => props.direction),
-  onPress: () => {
-    const el = sliderRef.value
-    maxDrag = el ? (isHorizontal.value ? el.offsetWidth : el.offsetHeight) : 0
+  onPress: ({ size }) => {
+    maxDrag = size
 
     gestureMoveOffset.value = 0
     onPointerEnter()
