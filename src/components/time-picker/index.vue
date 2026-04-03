@@ -259,12 +259,22 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="max-sm:p-2 p-1 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onCancelClick">
+      <div class="p-1.5 gap-1 flex items-center justify-between border-b" @click.stop>
+        <PButton
+          size="xs"
+          variant="ghost"
+          class="sm:px-0! rounded-md! text-13px"
+          @click="onCancelClick"
+        >
           {{ configProvider.locale.confirm.cancel }}
         </PButton>
 
-        <PButton size="xs" variant="ghost" class="sm:px-0! text-13px" @click="onConfirmClick">
+        <PButton
+          size="xs"
+          variant="ghost"
+          class="sm:px-0! rounded-md! text-13px"
+          @click="onConfirmClick"
+        >
           {{ configProvider.locale.date.now }}
         </PButton>
       </div>
@@ -278,7 +288,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeHoursRef"
               data-type="hour"
-              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
+              class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 24" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -290,7 +300,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeMinutesRef"
               data-type="minute"
-              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
+              class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -302,7 +312,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             <ul
               ref="timeSecondsRef"
               data-type="second"
-              class="w-8 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
+              class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
               <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
@@ -337,9 +347,9 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
   &::after {
     content: '';
     position: absolute;
-    left: -2px;
-    right: -2px;
-    height: 64px;
+    left: -0.125rem;
+    right: -0.125rem;
+    height: 4rem;
     pointer-events: none;
     z-index: 1;
   }
