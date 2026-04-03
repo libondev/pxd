@@ -167,3 +167,8 @@ export function isOverflowScrollable(ele: Element): boolean {
 
   return isOverflowScrollable(parent)
 }
+
+export async function awaitAnimationEnd(element?: Element) {
+  const animations = element?.getAnimations?.() ?? []
+  await Promise.allSettled(animations.map((a) => a.finished))
+}

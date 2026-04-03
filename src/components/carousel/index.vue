@@ -5,6 +5,7 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
+import { awaitAnimationEnd } from '../../utils/dom'
 import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
@@ -91,11 +92,6 @@ useSwipeGesture(sliderRef, {
   },
 })
 
-async function awaitAnimationEnd() {
-  const animations = sliderRef.value?.getAnimations?.() ?? []
-  await Promise.allSettled(animations.map((a) => a.finished))
-}
-
 async function performToggle(delta: number) {
   const length = carousels.value.length
 
@@ -103,13 +99,13 @@ async function performToggle(delta: number) {
     return
   }
 
-  await awaitAnimationEnd()
+  await awaitAnimationEnd(sliderRef.value)
 
   if (props.loop) {
     virtualIndex.value += delta
 
     await nextTick()
-    await awaitAnimationEnd()
+    await awaitAnimationEnd(sliderRef.value)
 
     if (virtualIndex.value >= length) {
       await resetSliderPosition(0)
