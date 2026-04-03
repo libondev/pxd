@@ -6,7 +6,6 @@ import { cachedOff, cachedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttle } from '../../utils/throttle'
 import PListItem from '../list-item/index.vue'
-import PScrollable from '../scrollable/index.vue'
 
 defineOptions({
   name: 'PList',
@@ -201,20 +200,14 @@ defineExpose({
     ref="containerRef"
     role="list"
     tabindex="-1"
-    class="pxd-list m-0 p-0 max-w-full list-none bg-background-100 outline-none"
+    class="pxd-list m-0 p-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
-    <PScrollable
-      class="h-full max-h-inherit rounded-inherit"
-      content-class="p-2"
-      fader-direction="vertical"
-    >
-      <slot>
-        <PListItem v-for="(option, index) in options" :key="option.value ?? index" v-bind="option">
-          <slot name="item" :item="option" />
-        </PListItem>
-      </slot>
-    </PScrollable>
+    <slot>
+      <PListItem v-for="(option, index) in options" :key="option.value ?? index" v-bind="option">
+        <slot name="item" :item="option" />
+      </PListItem>
+    </slot>
   </ul>
 </template>
