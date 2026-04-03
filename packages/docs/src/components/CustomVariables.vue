@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage, usePopoverResponsive } from 'pxd'
+import { ref, watch } from 'vue'
 
 defineOptions({
   name: 'CustomVariables',
@@ -108,7 +109,7 @@ const customProperties = [
   },
 ] satisfies CustomProperty[]
 
-const { isXs, attrs } = usePopoverResponsive()
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 watch(
   () => customVariables.value,
@@ -155,11 +156,10 @@ async function copyCustomVariables() {
     trigger="click"
     class="h-inherit"
     position="bottom-end"
-    :unset-position="isXs"
-    :wrapper-class="attrs.wrapperClass"
-    :content-class="attrs.contentClass"
-    :transition-type="attrs.transitionType"
-    :lock-scroll-on-visible="isXs"
+    :adaptive="isAdaptive"
+    :wrapper-class="responsiveClasses.wrapperClass"
+    :content-class="responsiveClasses.contentClass"
+    :lock-scroll-on-visible="isAdaptive"
   >
     <slot />
 

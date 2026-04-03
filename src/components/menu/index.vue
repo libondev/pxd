@@ -22,7 +22,7 @@ withDefaults(defineProps<MenuProps>(), {
 
 const emits = defineEmits<MenuEmits>()
 
-const { isXs, attrs } = usePopoverResponsive()
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
 
@@ -44,15 +44,14 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
   <PPopover
     class="pxd-menu"
     trigger="click"
-    :show-delay="isXs ? 0 : showDelay"
-    :hide-delay="isXs ? 0 : hideDelay"
-    :position="position"
     :visible="popoverVisible"
-    :unset-position="isXs"
-    :wrapper-class="attrs.wrapperClass"
-    :content-class="attrs.contentClass"
-    :transition-type="attrs.transitionType"
-    :lock-scroll-on-visible="isXs"
+    :position="position"
+    :adaptive="isAdaptive"
+    :show-delay="isAdaptive ? 0 : showDelay"
+    :hide-delay="isAdaptive ? 0 : hideDelay"
+    :wrapper-class="responsiveClasses.wrapperClass"
+    :content-class="responsiveClasses.contentClass"
+    :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     @escape="hidePopover"

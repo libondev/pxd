@@ -26,8 +26,6 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   arrowColor: 'hsl(var(--primary))',
   interactive: true,
   autoPosition: true,
-  unsetPosition: false,
-  transitionType: 'fade-scale',
   toggleOnTrigger: true,
   closeOnInvisible: true,
 })
@@ -47,6 +45,9 @@ const wrapperRef = shallowRef<HTMLElement>(null!)
 const localPosition = shallowRef(props.position)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
+const transitionType = computed(() =>
+  props.transitionType || props.adaptive ? 'fade-slide' : 'fade-scale',
+)
 
 const wrapperStyle = computed<CSSProperties>(() => ({
   'z-index': props.zIndex,
@@ -182,7 +183,7 @@ async function handlePopoverShow() {
 
   // Some components often need to cover the screen on mobile devices,
   // so there is no need to adjust their positions.
-  if (props.unsetPosition) {
+  if (props.adaptive) {
     Object.assign(wrapperRef.value.style, { left: '0', top: '0' })
     return
   }
@@ -385,9 +386,9 @@ defineExpose({
         :class="wrapperClass"
         :style="wrapperStyle"
         :data-visible="isVisible"
+        :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
-        :data-unset-position="unsetPosition"
         class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
@@ -575,19 +576,19 @@ defineExpose({
     transform-origin: left bottom;
   }
 
-  [data-position^='top'][data-unset-position='false'] & {
+  [data-position^='top'][data-adaptive='false'] & {
     padding-bottom: var(--popover-padding);
   }
 
-  [data-position^='bottom'][data-unset-position='false'] & {
+  [data-position^='bottom'][data-adaptive='false'] & {
     padding-top: var(--popover-padding);
   }
 
-  [data-position^='left'][data-unset-position='false'] & {
+  [data-position^='left'][data-adaptive='false'] & {
     padding-right: var(--popover-padding);
   }
 
-  [data-position^='right'][data-unset-position='false'] & {
+  [data-position^='right'][data-adaptive='false'] & {
     padding-left: var(--popover-padding);
   }
 }

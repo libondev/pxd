@@ -9,6 +9,7 @@ export interface PopoverProps {
   visible?: boolean
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
+  adaptive?: boolean
   maxWidth?: number | string
   position?: ComponentPosition
   showDelay?: number
@@ -20,7 +21,6 @@ export interface PopoverProps {
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
-  unsetPosition?: boolean
   transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
   toggleOnTrigger?: boolean
   closeOnInvisible?: boolean
