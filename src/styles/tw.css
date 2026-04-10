@@ -498,6 +498,14 @@
   font-family: inherit;
 }
 
+@utility max-dvh-* {
+  max-height: calc(--value(integer) * 1vh);
+
+  @supports (height: 1dvh) {
+    max-height: calc(--value(integer) * 1dvh);
+  }
+}
+
 @utility dvh-* {
   height: calc(--value(integer) * 1vh);
 

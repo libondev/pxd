@@ -394,7 +394,7 @@ defineExpose({
         @pointerleave="onContentPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-auto relative z-1 max-h-[80dvh] max-h-[80vh] w-inherit transform-gpu default-animation-duration default-animation-timing-function"
+          class="pxd-popover--container pointer-events-auto relative z-1 max-dvh-80 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
