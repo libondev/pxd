@@ -2,7 +2,7 @@
 import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, toRef } from 'vue'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
 import { awaitAnimationEnd } from '../../utils/dom'
@@ -62,7 +62,7 @@ const computedStyle = computed(() => {
 })
 
 useSwipeGesture(sliderRef, {
-  direction: computed(() => props.direction),
+  direction: toRef(props, 'direction'),
   onPress: ({ size }) => {
     maxDrag = size
 

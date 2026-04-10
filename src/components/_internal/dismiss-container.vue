@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentPosition } from '../../types/shared'
-import { shallowRef, computed } from 'vue'
+import { shallowRef, computed, toRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 
@@ -68,7 +68,7 @@ function animateRelease(from: number, decayRate = 0.88) {
 useSwipeGesture(containerRef, {
   handleSelector: '.pxd-dismiss-container--handle',
   swipeThreshold: 0,
-  disabled: computed(() => props.disabled),
+  disabled: toRef(props, 'disabled'),
   direction: gestureDirection,
   onPress: ({ size }) => {
     cancelAnimationFrame(releaseAnimationId)
