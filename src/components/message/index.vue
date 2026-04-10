@@ -511,7 +511,6 @@ defineExpose({
   }
 
   &[data-expand] {
-    .pxd-transition-message-move,
     .pxd-transition-message-enter-active,
     .pxd-transition-message-leave-active {
       transition-property: transform, opacity;
@@ -524,7 +523,19 @@ defineExpose({
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
-      --message-item-transform: translateZ(0) translateY(var(--starting-offset)) scaleX(0.95);
+      --message-item-transform: translateZ(0) translateY(var(--starting-offset)) scaleX(0.97);
+    }
+  }
+
+  &[data-expand='true'] {
+    .pxd-transition-message-move {
+      transition-property: transform, opacity;
+    }
+  }
+
+  &[data-expand='false'] {
+    .pxd-transition-message-move {
+      transition-duration: 0s;
     }
   }
 
