@@ -86,7 +86,6 @@ const computedClasses = computed(() => {
   const { size, shape, align, variant, fullWidth, icon } = props
   const internalAlign = icon ? 'center' : align
 
-  console.log({ icon })
   return buttonVariants({
     icon,
     size: size || buttonGroupContext?.props.size || configProvider.size,

@@ -109,3 +109,28 @@ onMounted(() => {
     </PButton>
   </li>
 </template>
+
+<style lang="postcss">
+.pxd-message--icon {
+  &.info {
+    color: var(--color-gray-600);
+  }
+
+  &.error {
+    color: var(--color-red-700);
+  }
+
+  &.loading {
+    animation: spin 1s linear infinite;
+    color: var(--color-blue-700);
+  }
+
+  &.warning {
+    color: var(--color-amber-700);
+  }
+
+  &.success {
+    color: var(--color-green-700);
+  }
+}
+</style>

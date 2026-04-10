@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MessageItemConfig, MessageUpdateParams } from '../../composables/use-message'
 import type { MessageEmits, MessageProps } from './types'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, toRef } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
 import { cachedOff, cachedOn } from '../../utils/event'
@@ -9,6 +9,9 @@ import { getCssUnitValue } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PMessageItem from '../message-item/index.vue'
 import PTeleport from '../teleport/index.vue'
+import { useGroupExpand } from './composables/use-group-expand'
+import { useMessageTimer } from './composables/use-message-timer'
+import { usePromiseMessage } from './composables/use-promise-message'
 
 defineOptions({
   name: 'PMessage',
@@ -23,16 +26,26 @@ const props = withDefaults(defineProps<MessageProps>(), {
 
 const emits = defineEmits<MessageEmits>()
 
-useDocumentHidden((isHidden) => {
-  if (isHidden) {
-    pauseAllMessages()
-  } else {
-    resumeAllMessages()
-  }
+const groupMessages = ref<MessageItemConfig[]>([])
+
+const { setAutoCloseTimer, pauseMessage, resumeMessage, clearTimers, pauseAll, resumeAll } =
+  useMessageTimer(closeMessageById)
+
+const { handlePromiseMessage } = usePromiseMessage(setAutoCloseTimer)
+
+const { groupExpand, collapse, onPointerEnter, onPointerLeave } = useGroupExpand({
+  expand: toRef(props, 'expand'),
+  onPauseAll: () => pauseAll(groupMessages.value),
+  onResumeAll: () => resumeAll(groupMessages.value),
 })
 
-const groupExpand = ref(props.expand)
-const groupMessages = ref<MessageItemConfig[]>([])
+useDocumentHidden((isHidden) => {
+  if (isHidden) {
+    pauseAll(groupMessages.value)
+  } else {
+    resumeAll(groupMessages.value)
+  }
+})
 
 const messageGroupStyle = computed(() => {
   const frontHeight = groupMessages.value[0]?.height || 0
@@ -60,55 +73,6 @@ function getMessageById(id: MessageItemConfig['id']) {
     index,
     message,
   }
-}
-
-function setAutoCloseTimer(message: MessageItemConfig) {
-  message._startedAtMs = Date.now()
-
-  if (message._remainingMs == null) {
-    message._remainingMs = message.durations
-  }
-
-  if (message._timerId) {
-    clearTimeout(message._timerId)
-  }
-
-  message._timerId = setTimeout(() => {
-    closeMessageById(message.id)
-  }, message._remainingMs)
-}
-
-function pauseMessage(message: MessageItemConfig) {
-  if (!message.durations || message.durations <= 0) {
-    return
-  }
-
-  if (message._timerId) {
-    clearTimeout(message._timerId)
-    message._timerId = undefined
-  }
-
-  if (message._startedAtMs != null) {
-    const elapsed = Date.now() - message._startedAtMs
-    const previousRemaining = message._remainingMs ?? message.durations
-    message._remainingMs = Math.max(0, previousRemaining - elapsed)
-  }
-}
-
-function resumeMessage(message: MessageItemConfig) {
-  if (!message.durations || message.durations <= 0) {
-    return
-  }
-
-  const remaining = message._remainingMs ?? 0
-  // if remaining time is very short,
-  // close directly to reduce one short timer scheduling
-  if (remaining <= 100) {
-    closeMessageById(message.id)
-    return
-  }
-
-  setAutoCloseTimer(message)
 }
 
 function pauseMessageById(id: MessageItemConfig['id']) {
@@ -149,83 +113,15 @@ function closeMessageById(id: MessageItemConfig['id']) {
 
   // Avoid manually closing all data and maintaining the expanded state when creating again
   if (!props.expand && groupMessages.value.length === 0) {
-    groupExpand.value = false
+    collapse()
   }
 
   emits('close', id)
 }
 
 function clearMessage() {
-  groupMessages.value.forEach((m) => {
-    if (m._timerId) {
-      clearTimeout(m._timerId)
-      m._timerId = undefined
-    }
-  })
-
+  clearTimers(groupMessages.value)
   groupMessages.value = []
-}
-
-function resolvePromiseMessage<T>(
-  handler: MessageItemConfig['success'],
-  data: T,
-): string | undefined {
-  if (!handler) {
-    return undefined
-  }
-
-  if (typeof handler === 'function') {
-    const result = handler(data)
-    // VNode is not a string, so we need to check if it's a string
-    return typeof result === 'string' ? result : undefined
-  }
-
-  return typeof handler === 'string' ? handler : undefined
-}
-
-function handlePromiseMessage(message: MessageItemConfig) {
-  if (!message.promise) {
-    return
-  }
-
-  let promiseResult: unknown
-
-  message.promise
-    .then((data) => {
-      promiseResult = data
-      message.type = 'success'
-
-      const successMessage = resolvePromiseMessage(message.success, data)
-      if (successMessage) {
-        message.message = successMessage
-      }
-    })
-    .catch((err) => {
-      promiseResult = err
-      message.type = 'error'
-
-      const errorMessage = resolvePromiseMessage(message.error, err)
-      if (errorMessage) {
-        message.message = errorMessage
-      }
-    })
-    .finally(() => {
-      const finallyMessage = resolvePromiseMessage(message.finally, promiseResult)
-      if (finallyMessage) {
-        message.message = finallyMessage
-      }
-
-      // Cleanup promise-related properties
-      message.promise = undefined
-      message.success = undefined
-      message.error = undefined
-      message.finally = undefined
-
-      if (message.durations && message.durations > 0) {
-        message._remainingMs = message.durations
-        setAutoCloseTimer(message)
-      }
-    })
 }
 
 function handleCreateMessage(data: MessageItemConfig) {
@@ -250,18 +146,6 @@ function handleCreateMessage(data: MessageItemConfig) {
   }
 }
 
-function handleRemoveMessage(data: { id: MessageItemConfig['id'] }) {
-  if (!data || !data.id) {
-    return
-  }
-
-  closeMessageById(data.id)
-}
-
-function handleClearMessages() {
-  clearMessage()
-}
-
 function onUpdateMessage({ detail }: CustomEvent<MessageUpdateParams>) {
   if (detail.group !== props.group) {
     return
@@ -275,81 +159,17 @@ function onUpdateMessage({ detail }: CustomEvent<MessageUpdateParams>) {
       break
     case 'remove':
       if (detail.data) {
-        handleRemoveMessage(detail.data as { id: MessageItemConfig['id'] })
+        const { id } = detail.data as { id: MessageItemConfig['id'] }
+        if (id) {
+          closeMessageById(id)
+        }
       }
       break
     case 'clear':
-      handleClearMessages()
+      clearMessage()
       break
   }
 }
-
-function pauseAllMessages() {
-  groupMessages.value.forEach(pauseMessage)
-}
-
-function resumeAllMessages() {
-  groupMessages.value.forEach(resumeMessage)
-}
-
-// Avoid repeatedly triggering enter/leave when expanding
-const TRANSITION_LOCK_MS = 250
-const LEAVE_DEBOUNCE_MS = 200
-
-let leaveTimeoutId: ReturnType<typeof setTimeout> | undefined
-let isTransitioning = false
-
-function onPointerEnter() {
-  clearTimeout(leaveTimeoutId)
-
-  // If already expanded or transitioning, skip to prevent layout thrashing
-  if (groupExpand.value || isTransitioning) {
-    return
-  }
-
-  isTransitioning = true
-  groupExpand.value = true
-  pauseAllMessages()
-
-  // Unlock after layout stabilizes
-  setTimeout(() => {
-    isTransitioning = false
-  }, TRANSITION_LOCK_MS)
-}
-
-function onPointerLeave() {
-  clearTimeout(leaveTimeoutId)
-
-  // Ignore leave events during transition
-  if (isTransitioning) {
-    return
-  }
-
-  leaveTimeoutId = setTimeout(() => {
-    resumeAllMessages()
-
-    // If expand is set in props,
-    // the user's default configuration cannot be modified when moving out.
-    if (props.expand) {
-      return
-    }
-
-    isTransitioning = true
-    groupExpand.value = false
-
-    setTimeout(() => {
-      isTransitioning = false
-    }, TRANSITION_LOCK_MS)
-  }, LEAVE_DEBOUNCE_MS)
-}
-
-watch(
-  () => props.expand,
-  (isExpand) => {
-    groupExpand.value = isExpand
-  },
-  { immediate: true },
-)
 
 onMounted(() => {
   if (isServer()) {
@@ -486,6 +306,10 @@ defineExpose({
       position: relative;
       will-change: transform, opacity, height;
     }
+
+    .pxd-transition-message-move {
+      transition-property: transform, opacity;
+    }
   }
 
   &[data-expand='false'] {
@@ -508,6 +332,10 @@ defineExpose({
         }
       }
     }
+
+    .pxd-transition-message-move {
+      transition-duration: 0s;
+    }
   }
 
   &[data-expand] {
@@ -524,41 +352,6 @@ defineExpose({
     .pxd-transition-message-leave-to {
       opacity: 0;
       --message-item-transform: translateZ(0) translateY(var(--starting-offset)) scaleX(0.97);
-    }
-  }
-
-  &[data-expand='true'] {
-    .pxd-transition-message-move {
-      transition-property: transform, opacity;
-    }
-  }
-
-  &[data-expand='false'] {
-    .pxd-transition-message-move {
-      transition-duration: 0s;
-    }
-  }
-
-  .pxd-message--icon {
-    &.info {
-      color: var(--color-gray-600);
-    }
-
-    &.error {
-      color: var(--color-red-700);
-    }
-
-    &.loading {
-      animation: spin 1s linear infinite;
-      color: var(--color-blue-700);
-    }
-
-    &.warning {
-      color: var(--color-amber-700);
-    }
-
-    &.success {
-      color: var(--color-green-700);
     }
   }
 }
