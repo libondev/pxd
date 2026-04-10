@@ -39,7 +39,7 @@ function onCopy(ev: MouseEvent) {
         </div>
 
         <PButton
-          class="top-3 right-4 absolute hidden group-hover:flex active:scale-95"
+          class="top-3 right-4 absolute hidden group-hover:inline-flex active:scale-95"
           icon
           size="sm"
           @click="onCopy"

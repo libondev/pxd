@@ -13,7 +13,13 @@ provideButtonGroupContext({ props })
 </script>
 
 <template>
-  <div role="group" aria-label="Actions" class="pxd-button-group flex max-w-full" v-bind="$attrs">
+  <div
+    role="group"
+    aria-label="Actions"
+    data-button-group
+    class="pxd-button-group flex max-w-full"
+    v-bind="$attrs"
+  >
     <slot />
   </div>
 </template>

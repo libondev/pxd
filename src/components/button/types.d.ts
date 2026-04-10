@@ -6,7 +6,7 @@ import type {
   ComponentVariantWithDefault,
 } from '../../types/shared'
 
-export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'icon' | 'link'
+export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'link'
 
 export interface ButtonProps {
   as?: ComponentAs

@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const buttonVariants = tv({
-  base: 'pxd-button [.pxd-button-group_&]:not(.aspect-square):flex-1 relative inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [.pxd-button-group_&]:not-first:rounded-l-none [.pxd-button-group_&]:not-last:rounded-r-none [.pxd-button-group_&]:enabled:hover:z-1 [.pxd-button-group_&+&]:-ml-px',
+  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [[data-button-group]>&]:-ml-px [[data-button-group]>&]:not-first:rounded-l-none [[data-button-group]>&]:not-last:rounded-r-none [[data-button-group]>&]:enabled:hover:z-1',
   variants: {
     size: {
       xs: 'h-6 px-1 text-sm rounded-sm',
@@ -38,7 +38,6 @@ const buttonVariants = tv({
     },
     variant: {
       simple: '',
-      icon: 'p-0! aspect-square',
       link: 'font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity',
       default:
         'border-input bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
@@ -57,7 +56,8 @@ const buttonVariants = tv({
       true: 'w-full',
     },
     icon: {
-      true: 'p-0! aspect-square',
+      true: 'p-0 aspect-square',
+      false: '[[data-button-group]>&]:flex-1',
     },
     loading: {
       true: '',
@@ -67,10 +67,6 @@ const buttonVariants = tv({
     {
       variant: ['default', 'ghost', 'primary', 'error', 'warning', 'success'],
       class: 'border self-focus-ring outline-none',
-    },
-    {
-      icon: true,
-      class: 'p-0! aspect-square justify-center!',
     },
   ],
 })
@@ -88,12 +84,14 @@ const isDisabled = computed<boolean>(
 
 const computedClasses = computed(() => {
   const { size, shape, align, variant, fullWidth, icon } = props
+  const internalAlign = icon ? 'center' : align
 
+  console.log({ icon })
   return buttonVariants({
     icon,
     size: size || buttonGroupContext?.props.size || configProvider.size,
     shape: buttonGroupContext ? 'default' : shape,
-    align: align || buttonGroupContext?.props.align || 'center',
+    align: internalAlign || buttonGroupContext?.props.align || 'center',
     variant: variant || buttonGroupContext?.props.variant || 'default',
     fullWidth,
     disabled: isDisabled.value,
