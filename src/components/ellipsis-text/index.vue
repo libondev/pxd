@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import type { EllipsisTextProps, EllipsisTextEmits } from './types'
+import type { RichInlineItem } from '@chenglou/pretext/rich-inline'
+import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext'
+import { prepareRichInline, measureRichInlineStats } from '@chenglou/pretext/rich-inline'
 import { twMerge } from 'tailwind-merge'
 import { shallowRef, computed, nextTick, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
@@ -22,7 +25,7 @@ const props = withDefaults(defineProps<EllipsisTextProps>(), {
 const emits = defineEmits<EllipsisTextEmits>()
 
 const isExpanded = shallowRef(false)
-const isTruncated = shallowRef(false)
+const isOverflow = shallowRef(false)
 const ellipsisText = shallowRef(props.text)
 
 const textRef = shallowRef<HTMLElement>()
@@ -37,7 +40,7 @@ const maxRows = computed(() => {
 const computedActionClass = computed(() => {
   return twMerge(
     'pxd-ellipsis-text--action cursor-pointer whitespace-nowrap text-blue-900',
-    props.actionClass,
+    isExpanded.value ? props.lessActionClass : props.moreActionClass,
   )
 })
 
@@ -65,19 +68,6 @@ function toggleAction() {
   updateEllipsis()
 }
 
-const TEXT_STYLE_KEYS: Array<keyof CSSStyleDeclaration> = [
-  'fontFamily',
-  'fontSize',
-  'fontWeight',
-  'fontStyle',
-  'fontVariant',
-  'letterSpacing',
-  'lineHeight',
-  'textTransform',
-  'textRendering',
-  'wordSpacing',
-]
-
 function parseSize(value: string) {
   const parsed = Number.parseFloat(value)
   return Number.isFinite(parsed) ? parsed : 0
@@ -98,107 +88,51 @@ function getLineHeightPx(style: CSSStyleDeclaration) {
   return parsed
 }
 
-function applyTextStyles(style: CSSStyleDeclaration, target: HTMLElement) {
-  TEXT_STYLE_KEYS.forEach((key) => {
-    target.style.setProperty(
-      (key as string).replace(/[A-Z]/g, (m: string) => `-${m.toLowerCase()}`),
-      style[key] as string,
-    )
-  })
-  target.style.display = 'inline'
-  target.style.whiteSpace = 'pre-wrap'
-  target.style.wordBreak = 'break-word'
+function getFontShorthand(style: CSSStyleDeclaration) {
+  const fontStyle = style.fontStyle || 'normal'
+  const fontWeight = style.fontWeight || '400'
+  const fontSize = style.fontSize || '16px'
+  const fontFamily = style.fontFamily || 'sans-serif'
+  return `${fontStyle} ${fontWeight} ${fontSize} ${fontFamily}`
 }
 
-function buildCandidate(
-  chars: string[],
-  keep: number,
-  dots: string,
-  position: EllipsisTextProps['position'],
+function getAvailableWidth(container: HTMLElement) {
+  const containerStyle = getStyle(container)
+  const paddingLeft = parseSize(containerStyle.paddingLeft)
+  const paddingRight = parseSize(containerStyle.paddingRight)
+  return Math.max(0, container.clientWidth - paddingLeft - paddingRight)
+}
+
+function measureLineCount(
+  text: string,
+  textFont: string,
+  maxWidth: number,
+  actionText?: string,
+  actionFont?: string,
 ) {
+  const items: RichInlineItem[] = [{ text, font: textFont }]
+  if (actionText) {
+    items.push({ text: actionText, font: actionFont || textFont, break: 'never' })
+  }
+  return measureRichInlineStats(prepareRichInline(items), maxWidth).lineCount
+}
+
+function joinChars(chars: string[], start: number, end: number) {
+  return chars.slice(start, end).join('')
+}
+
+function buildCandidate(chars: string[], keep: number, dots: string, position: 'start' | 'middle') {
   if (keep <= 0) {
     return dots
   }
 
   if (position === 'start') {
-    return `${dots}${chars.slice(chars.length - keep).join('')}`
+    return `${dots}${joinChars(chars, chars.length - keep, chars.length)}`
   }
 
-  if (position === 'middle') {
-    const headLen = Math.ceil(keep / 2)
-    const tailLen = keep - headLen
-    const head = chars.slice(0, headLen).join('')
-    const tail = chars.slice(chars.length - tailLen).join('')
-
-    return `${head}${dots}${tail}`
-  }
-
-  return `${chars.slice(0, keep).join('')}${dots}`
-}
-
-interface MeasureElements {
-  container: HTMLSpanElement
-  text: HTMLSpanElement
-  action: HTMLSpanElement
-}
-
-function createMeasureElements(parent: HTMLElement): MeasureElements {
-  const mc = document.createElement('span')
-  const mt = document.createElement('span')
-  const ma = document.createElement('span')
-
-  mc.append(mt, ma)
-  mc.style.position = 'absolute'
-  mc.style.visibility = 'hidden'
-  mc.style.pointerEvents = 'none'
-  mc.style.zIndex = '-1'
-  mc.style.left = '0'
-  mc.style.top = '0'
-  mc.style.overflow = 'visible'
-  mc.style.whiteSpace = 'pre-wrap'
-  mc.style.wordBreak = 'break-word'
-  mc.style.display = 'block'
-  mc.style.boxSizing = 'border-box'
-
-  parent.appendChild(mc)
-
-  return { container: mc, text: mt, action: ma }
-}
-
-function syncMeasureStyles(
-  elements: MeasureElements,
-  container: HTMLElement,
-  textEl: HTMLElement | undefined,
-  actionEl: HTMLElement | undefined,
-) {
-  const containerStyle = getStyle(container)
-  const paddingLeft = parseSize(containerStyle.paddingLeft)
-  const paddingRight = parseSize(containerStyle.paddingRight)
-  const availableWidth = Math.max(0, container.clientWidth - paddingLeft - paddingRight)
-
-  elements.container.style.width = `${availableWidth}px`
-
-  const textStyle = getStyle(textEl ?? container)
-  applyTextStyles(textStyle, elements.text)
-
-  const actionStyle = actionEl ? getStyle(actionEl) : textStyle
-  applyTextStyles(actionStyle, elements.action)
-}
-
-function fits(elements: MeasureElements, text: string, actionText: string, maxHeight: number) {
-  elements.text.textContent = text
-
-  if (actionText) {
-    elements.action.textContent = actionText
-    elements.action.style.display = 'inline'
-  } else {
-    elements.action.textContent = ''
-    elements.action.style.display = 'none'
-  }
-
-  const height = elements.container.offsetHeight
-
-  return height <= maxHeight + 0.5
+  const headLen = Math.ceil(keep / 2)
+  const tailLen = keep - headLen
+  return `${joinChars(chars, 0, headLen)}${dots}${joinChars(chars, chars.length - tailLen, chars.length)}`
 }
 
 async function updateEllipsis() {
@@ -218,7 +152,7 @@ async function updateEllipsis() {
 
   if (container.clientWidth <= 0) {
     ellipsisText.value = sourceText
-    isTruncated.value = false
+    isOverflow.value = false
     return
   }
 
@@ -229,40 +163,49 @@ async function updateEllipsis() {
 
   const style = getStyle(textRef.value ?? container)
   const lineHeight = getLineHeightPx(style)
-  const maxHeight = lineHeight * maxRows.value
 
-  if (maxHeight <= 0) {
+  if (lineHeight <= 0) {
     ellipsisText.value = sourceText
-    isTruncated.value = false
+    isOverflow.value = false
     return
   }
 
-  const elements = createMeasureElements(container)
+  const availableWidth = getAvailableWidth(container)
+  const textFont = getFontShorthand(style)
 
-  try {
-    syncMeasureStyles(elements, container, textRef.value, actionRef.value)
+  if (measureLineCount(sourceText, textFont, availableWidth) <= maxRows.value) {
+    ellipsisText.value = sourceText
+    isOverflow.value = false
+    return
+  }
 
-    if (fits(elements, sourceText, '', maxHeight)) {
-      ellipsisText.value = sourceText
-      isTruncated.value = false
-      return
-    }
+  isOverflow.value = true
 
-    isTruncated.value = true
+  const actionText = props.action ? props.moreText : ''
+  const actionFont = actionRef.value ? getFontShorthand(getStyle(actionRef.value)) : textFont
+  const dots = props.dots ?? ''
 
-    const actionText = props.action ? props.moreText : ''
+  if (props.position === 'end') {
+    const prepared = prepareWithSegments(sourceText, textFont)
+    const { lines } = layoutWithLines(prepared, availableWidth, lineHeight)
+    const baseText = lines
+      .slice(0, maxRows.value)
+      .map((l) => l.text)
+      .join('')
+    const baseChars = [...baseText]
 
-    const chars = [...sourceText]
-    const dots = props.dots ?? ''
     let low = 0
-    let high = chars.length
+    let high = baseChars.length
     let best = ''
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2)
-      const candidate = buildCandidate(chars, mid, dots, props.position)
+      const candidate = `${joinChars(baseChars, 0, mid)}${dots}`
 
-      if (fits(elements, candidate, actionText, maxHeight)) {
+      if (
+        measureLineCount(candidate, textFont, availableWidth, actionText, actionFont) <=
+        maxRows.value
+      ) {
         best = candidate
         low = mid + 1
       } else {
@@ -271,9 +214,29 @@ async function updateEllipsis() {
     }
 
     ellipsisText.value = best || dots
-  } finally {
-    elements.container.remove()
+    return
   }
+
+  const chars = [...sourceText]
+  let low = 0
+  let high = chars.length
+  let best = ''
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2)
+    const candidate = buildCandidate(chars, mid, dots, props.position)
+
+    if (
+      measureLineCount(candidate, textFont, availableWidth, actionText, actionFont) <= maxRows.value
+    ) {
+      best = candidate
+      low = mid + 1
+    } else {
+      high = mid - 1
+    }
+  }
+
+  ellipsisText.value = best || dots
 }
 
 watch(
@@ -296,7 +259,7 @@ useResizeObserver(containerRef, updateEllipsis)
 
 defineExpose({
   isExpanded,
-  isTruncated,
+  isOverflow,
 })
 </script>
 
@@ -305,7 +268,7 @@ defineExpose({
     <span ref="textRef" class="pxd-ellipsis-text--text">{{ displayText.content }}</span>
 
     <span
-      v-if="action && (isTruncated || isExpanded)"
+      v-if="action && (isOverflow || isExpanded)"
       ref="actionRef"
       :class="computedActionClass"
       @click="toggleAction"

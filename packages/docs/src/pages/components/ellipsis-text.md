@@ -21,7 +21,7 @@ import { shallowRef, computed } from 'vue'
 const ellipsisTextRef = shallowRef()
 
 const isEllipsis = computed(() => {
-  return ellipsisTextRef.value?.isTruncated && !ellipsisTextRef.value?.isExpanded
+  return ellipsisTextRef.value?.isOverflow && !ellipsisTextRef.value?.isExpanded
 })
 </script>
 
@@ -31,9 +31,10 @@ const isEllipsis = computed(() => {
   <PEllipsisText
     ref="ellipsisTextRef"
     action
-    action-class="text-red-900"
     more-text="Read more"
     less-text="Read less"
+    more-action-class="text-red-900"
+    less-action-class="text-teal-900"
     text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum doloremque et debitis natus quas praesentium inventore! Numquam facilis expedita, sequi alias esse natus, modi nesciunt doloremque, optio dolorem vel et."
   />
 </template>

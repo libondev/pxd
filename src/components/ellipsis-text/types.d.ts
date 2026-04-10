@@ -6,7 +6,8 @@ export interface EllipsisTextProps {
   position?: 'start' | 'middle' | 'end'
   moreText?: string
   lessText?: string
-  actionClass?: string
+  moreActionClass?: string
+  lessActionClass?: string
 }
 
 export interface EllipsisTextEmits {
