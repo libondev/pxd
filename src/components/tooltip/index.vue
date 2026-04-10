@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<TooltipProps>(), {
   variant: 'primary',
   position: 'top',
   showArrow: true,
-  showDelay: 300,
-  hideDelay: 100,
+  showDelay: 200,
+  hideDelay: 200,
 })
 
 const VARIANTS = {
