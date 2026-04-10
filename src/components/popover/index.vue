@@ -394,14 +394,14 @@ defineExpose({
         @pointerleave="onContentPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-auto relative z-1 max-dvh-80 w-inherit transform-gpu default-animation-duration default-animation-timing-function"
+          class="pxd-popover--container relative z-1 max-dvh-80 w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
           <i
             v-if="showArrow"
             ref="arrayRef"
-            class="pxd-popover--arrow absolute z-1 rotate-45 border-5 border-(--popover-arrow-bg)"
+            class="pxd-popover--arrow w-2.5 h-2.5 rounded-xs absolute z-1 rotate-45 bg-(--popover-arrow-bg)"
           />
           <div
             class="pxd-popover--content h-full max-h-inherit overflow-auto"
@@ -417,139 +417,51 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-@keyframes popover-fade-show {
-  0% {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes popover-fade-hide {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-@keyframes popover-fade-scale-show {
-  0% {
-    transform: scale(0.95);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes popover-fade-scale-hide {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(0.95);
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-@keyframes popover-fade-slide-show {
-  0% {
-    transform: translateY(100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes popover-fade-slide-hide {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
 .pxd-popover--container {
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
-  animation-name: popover-fade-show;
-  animation-fill-mode: forwards;
+  transition-property: opacity, transform;
+  opacity: 0;
+  pointer-events: none;
 
-  &:hover {
-    will-change: transform, animation;
+  [data-visible='true'] & {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   [data-visible='true'] &[data-show-transition='false'] {
-    animation-name: none !important;
-  }
-
-  [data-visible='true'] &[data-transition-type='fade'] {
-    animation-name: popover-fade-show;
-  }
-
-  [data-visible='false'] &[data-transition-type='fade'] {
-    animation-name: popover-fade-hide;
-  }
-
-  [data-visible='true'] &[data-transition-type='fade-scale'] {
-    animation-name: popover-fade-scale-show;
+    transition-duration: 0s !important;
   }
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
-    animation-name: popover-fade-scale-hide;
-  }
-
-  [data-visible='true'] &[data-transition-type='fade-slide'] {
-    animation-name: popover-fade-slide-show;
+    transform: scale(0.95);
   }
 
   [data-visible='false'] &[data-transition-type='fade-slide'] {
-    animation-name: popover-fade-slide-hide;
+    transform: translateY(100%);
   }
 
   [data-position='top'] & {
-    transform-origin: 50% 100%;
+    transform-origin: center bottom;
   }
 
   [data-position='top-start'] & {
-    transform-origin: 0% 100%;
+    transform-origin: left bottom;
   }
 
   [data-position='top-end'] & {
-    transform-origin: 100% 100%;
+    transform-origin: right bottom;
   }
 
   [data-position='bottom'] & {
-    transform-origin: top center;
+    transform-origin: center top;
   }
 
   [data-position='bottom-start'] & {
-    transform-origin: top left;
+    transform-origin: left top;
   }
 
   [data-position='bottom-end'] & {
-    transform-origin: top right;
+    transform-origin: right top;
   }
 
   [data-position='left'] & {

@@ -167,6 +167,6 @@ export function raf(fn: FrameRequestCallback): number {
   return isServer() ? -1 : requestAnimationFrame(fn)
 }
 
-export function doubleRaf(fn: FrameRequestCallback): void {
-  raf(() => raf(fn))
+export function doubleRaf(fn: FrameRequestCallback): number {
+  return raf(() => raf(fn))
 }

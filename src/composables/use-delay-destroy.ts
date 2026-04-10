@@ -1,6 +1,7 @@
 import type { Nullable } from '../types/shared'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { shallowRef } from 'vue'
+import { doubleRaf } from '../utils/event'
 import { toValue } from '../utils/ref'
 
 interface Options {
@@ -26,7 +27,7 @@ export function useDelayDestroy(
   const visible = shallowRef(toValue(value) as boolean)
 
   let destroyTimeoutId: ReturnType<typeof setTimeout>
-  let visibleTimeoutId: ReturnType<typeof setTimeout>
+  let visibleRafId = 0
 
   async function show() {
     return new Promise<boolean>((resolve) => {
@@ -38,19 +39,21 @@ export function useDelayDestroy(
       }
 
       if (!visible.value) {
-        clearTimeout(visibleTimeoutId)
-        visibleTimeoutId = setTimeout(() => {
+        cancelAnimationFrame(visibleRafId)
+        visibleRafId = doubleRaf(() => {
+          visibleRafId = 0
           visible.value = true
           resolve(visible.value)
           visibleChange?.(visible.value)
-        }, 0)
+        })
       }
     })
   }
 
   function hide() {
     return new Promise<boolean>((resolve) => {
-      clearTimeout(visibleTimeoutId)
+      cancelAnimationFrame(visibleRafId)
+      visibleRafId = 0
 
       if (visible.value) {
         visible.value = false
