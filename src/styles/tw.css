@@ -602,7 +602,7 @@
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  transform: scale(var(--scale, 0.95));
+  transform: scale(var(--scale, 0.97));
 }
 
 /*

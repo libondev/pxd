@@ -16,7 +16,7 @@ withDefaults(defineProps<MenuProps>(), {
   options: () => [],
   showDelay: 0,
   hideDelay: 100,
-  position: 'bottom-start',
+  position: 'bottom',
   closeOnPressEscape: true,
 })
 

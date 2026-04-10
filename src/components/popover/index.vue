@@ -433,7 +433,7 @@ defineExpose({
   }
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
 
   [data-visible='false'] &[data-transition-type='fade-slide'] {
