@@ -1,4 +1,4 @@
-import type { MessageItemType } from '../../composables/use-message'
+import type { MessageItemConfig } from '../../composables/use-message'
 import type { ComponentPosition } from '../../types/shared'
 
 export interface MessageProps {
@@ -10,5 +10,5 @@ export interface MessageProps {
 }
 
 export interface MessageEmits {
-  close: [id: MessageItemType['id']]
+  close: [id: MessageItemConfig['id']]
 }
