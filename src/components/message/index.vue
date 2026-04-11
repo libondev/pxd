@@ -210,10 +210,11 @@ defineExpose({
         appear
         tag="ol"
         name="pxd-transition-message"
-        class="pxd-message--group min-w-16 p-0 m-0 flex h-auto w-full"
+        class="pxd-message--group min-w-16 p-0 m-0 flex h-auto w-full max-w-full"
         :class="{ 'gap-3': groupExpand }"
         @pointerenter="onPointerEnter"
         @pointerleave="onPointerLeave"
+        @pointercancel="onPointerLeave"
       >
         <PMessageItem
           v-for="(item, index) of groupMessages"
@@ -233,7 +234,6 @@ defineExpose({
   --message-width: 356px;
 
   .pxd-message--group {
-    max-width: 100vw;
     align-items: center;
     flex-direction: column;
   }
@@ -297,10 +297,6 @@ defineExpose({
   }
 
   &[data-expand='true'] {
-    .pxd-message--group {
-      --message-placeholder-height: calc(var(--message-front-height) * (var(--message-items) + 1));
-    }
-
     .pxd-message--item {
       --message-item-transform: none;
       position: relative;
@@ -313,10 +309,6 @@ defineExpose({
   }
 
   &[data-expand='false'] {
-    .pxd-message--group {
-      --message-placeholder-height: calc(var(--message-front-height) + var(--message-items) * 12px);
-    }
-
     .pxd-message--item {
       --message-item-transform: translateZ(0)
         translateY(calc(var(--item-offset) * var(--message-item-index)))
