@@ -27,11 +27,10 @@ const SIZES = {
 }
 
 const PROGRESS_BAR_GAP = 5
-// 轨道的最小可见长度
 const MIN_VISIBLE_TRACK = PROGRESS_BAR_GAP * 2
 
-// 圆的半径和周长
 const RADIUS = 42
+const STROKE_WIDTH = 10
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const GAP_LENGTH = (PROGRESS_BAR_GAP / 100) * CIRCUMFERENCE
 
@@ -53,17 +52,19 @@ const progress = computed(() => {
   return Math.min(Math.max(props.modelValue || 0, 0), 100)
 })
 
+/**
+ * 几何弧长按百分比截取；round linecap 会在端点外侧“多出一截”，
+ * 略短于几何长度可避免与间隙叠在一起显得过满（旧实现里写死的 8 与此同因）。
+ */
 const progressArc = computed(() => {
   if (progress.value === 0 || progress.value === 100) {
     return (progress.value / 100) * CIRCUMFERENCE
   }
 
   const baseArc = (progress.value / 100) * CIRCUMFERENCE
+  const roundCapTrim = STROKE_WIDTH
 
-  // 在 50% 的时候因为增加了额外间隙的原因，
-  // 所以视觉上看起来会多一点，所以这里手动修正一下
-  const visualCorrection = 8
-  return Math.max(0, baseArc - visualCorrection)
+  return Math.max(0, baseArc - roundCapTrim)
 })
 
 const progressStatus = computed(() => {
@@ -75,7 +76,6 @@ const progressStatus = computed(() => {
   }
 })
 
-// 判断剩余空间是否足够显示轨道
 const shouldShowTrack = computed(() => {
   if (progressStatus.value.isComplete) {
     return false
@@ -89,18 +89,15 @@ const shouldShowTrack = computed(() => {
   return remainingPercent >= MIN_VISIBLE_TRACK
 })
 
-// 计算轨道的弧长和偏移
 const trackArc = computed(() => {
   if (!shouldShowTrack.value) {
     return 0
   }
 
-  // 进度为 0 时，显示完整轨道
   if (!progressStatus.value.hasProgress) {
     return CIRCUMFERENCE
   }
 
-  // 否则显示剩余部分，减去两个间隙
   return CIRCUMFERENCE - progressArc.value - GAP_LENGTH * 2
 })
 
@@ -109,7 +106,6 @@ const trackOffset = computed(() => {
     return 0
   }
 
-  // 从进度条结束处算起，加上一个间隙
   return -progressArc.value - GAP_LENGTH
 })
 
@@ -140,38 +136,42 @@ const progressColors = computed(() => {
     v-bind="$attrs"
   >
     <svg
-      class="pxd-gauge--svg block size-(--gauge-size) -rotate-85 overflow-visible"
+      class="pxd-gauge--svg block size-(--gauge-size) overflow-visible"
       aria-hidden="true"
       fill="none"
       viewBox="0 0 100 100"
     >
-      <circle
-        v-if="progressStatus.hasProgress"
-        cx="50"
-        cy="50"
-        fill="none"
-        :r="RADIUS"
-        stroke-width="10"
-        stroke-dashoffset="0"
-        stroke-linecap="round"
-        :stroke="progressColors.primary"
-        class="pxd-gauge--bar motion-safe:transition-all"
-        :stroke-dasharray="`${progressArc} ${CIRCUMFERENCE}`"
-      />
+      <g transform="rotate(-83 50 50)">
+        <circle
+          v-if="shouldShowTrack"
+          cx="50"
+          cy="50"
+          fill="none"
+          :r="RADIUS"
+          :stroke-width="STROKE_WIDTH"
+          stroke-linecap="round"
+          :stroke-dashoffset="trackOffset"
+          :stroke="progressColors.secondary"
+          class="pxd-gauge--track motion-safe:transition-all"
+          :stroke-dasharray="
+            progressStatus.hasProgress ? `${trackArc} ${CIRCUMFERENCE}` : undefined
+          "
+        />
 
-      <circle
-        v-if="shouldShowTrack"
-        cx="50"
-        cy="50"
-        fill="none"
-        :r="RADIUS"
-        stroke-width="10"
-        stroke-linecap="round"
-        :stroke-dashoffset="trackOffset"
-        :stroke="progressColors.secondary"
-        class="pxd-gauge--track motion-safe:transition-all"
-        :stroke-dasharray="progressStatus.hasProgress ? `${trackArc} ${CIRCUMFERENCE}` : undefined"
-      />
+        <circle
+          v-if="progressStatus.hasProgress || progressStatus.isComplete"
+          cx="50"
+          cy="50"
+          fill="none"
+          :r="RADIUS"
+          :stroke-width="STROKE_WIDTH"
+          stroke-dashoffset="0"
+          stroke-linecap="round"
+          :stroke="progressColors.primary"
+          class="pxd-gauge--bar motion-safe:transition-all"
+          :stroke-dasharray="`${progressArc} ${CIRCUMFERENCE}`"
+        />
+      </g>
     </svg>
 
     <div
