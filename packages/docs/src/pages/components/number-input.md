@@ -96,14 +96,28 @@ const value = ref(0)
 <script setup>
 import { ref } from 'vue'
 
+const value = ref(10000)
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PNumberInput v-model="value" thousands class="max-w-xs" />
+    <PNumberInput v-model="value" thousands thousands-separator="_" class="max-w-xs" />
+  </PStack>
+</template>
+```
+
+## No controls
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
 const value = ref(0)
 </script>
 
 <template>
-  <PStack>
-    <PNumberInput v-model="value" thousands class="max-w-xs" />
-    <PNumberInput v-model="value" thousands thousands-separator="_" class="max-w-xs" />
-  </PStack>
+  <PNumberInput v-model="value" :controls="false" class="max-w-xs" />
 </template>
 ```
 
