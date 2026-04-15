@@ -2,28 +2,31 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCountdown } from '../../src/composables/use-countdown'
 
 describe('useCountdown', () => {
-  let mockEmits: ReturnType<typeof vi.fn>
-  let mockPerformanceNow: ReturnType<typeof vi.fn>
-  let mockDateNow: ReturnType<typeof vi.fn>
+  type EmitFn = (event: string, ...args: any[]) => void
+
+  let mockEmits: ReturnType<typeof vi.fn> & EmitFn
+  let mockPerformanceNow: ReturnType<typeof vi.fn> & (() => number)
+  let mockDateNow: ReturnType<typeof vi.spyOn> | undefined
 
   beforeEach(() => {
-    mockEmits = vi.fn()
-    mockPerformanceNow = vi.fn()
-    mockDateNow = vi.fn()
+    mockEmits = vi.fn<EmitFn>() as unknown as ReturnType<typeof vi.fn> & EmitFn
+    mockPerformanceNow = vi.fn<() => number>() as unknown as ReturnType<typeof vi.fn> &
+      (() => number)
 
     // Mock performance.now()
-    globalThis.performance = { now: mockPerformanceNow } as any
+    vi.stubGlobal('performance', { now: mockPerformanceNow } as unknown as Performance)
 
     // Mock Date.now()
-    globalThis.Date.now = mockDateNow
+    mockDateNow = vi.spyOn(Date, 'now')
 
-    // 设置默认时间
     mockPerformanceNow.mockReturnValue(1000)
     mockDateNow.mockReturnValue(1000000)
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    mockDateNow?.mockRestore()
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
   })
 
   it('should start countdown from specified durations value', () => {
@@ -90,7 +93,6 @@ describe('useCountdown', () => {
       { durations: 10000, startAt: 3000, active: false, invert: false, millisecond: true },
       mockEmits,
     )
-    // 倒计时模式：从 totalDuration - startAt 开始，即 10000 - 3000 = 7000
     expect(timestamp.value).toBe(7000)
   })
 
@@ -99,7 +101,6 @@ describe('useCountdown', () => {
       { durations: 10000, startAt: 3000, active: false, invert: true, millisecond: true },
       mockEmits,
     )
-    // 正计时模式：从 startAt 开始，即 3000
     expect(timestamp.value).toBe(3000)
   })
 
@@ -108,7 +109,6 @@ describe('useCountdown', () => {
       { durations: 10, startAt: 3, active: false, invert: false, millisecond: false },
       mockEmits,
     )
-    // 倒计时模式：从 (10*1000) - (3*1000) = 7000 开始
     expect(timestamp.value).toBe(7000)
   })
 
@@ -117,7 +117,6 @@ describe('useCountdown', () => {
       { durations: 10, startAt: 3, active: false, invert: true, millisecond: false },
       mockEmits,
     )
-    // 正计时模式：从 3*1000 = 3000 开始
     expect(timestamp.value).toBe(3000)
   })
 
@@ -126,7 +125,6 @@ describe('useCountdown', () => {
       { durations: 5000, startAt: 8000, active: false, invert: true, millisecond: true },
       mockEmits,
     )
-    // 正计时模式：startAt 超过 totalDuration，应该被限制为 totalDuration
     expect(timestamp.value).toBe(5000)
   })
 
@@ -135,7 +133,6 @@ describe('useCountdown', () => {
       { durations: 5000, startAt: 8000, active: false, invert: false, millisecond: true },
       mockEmits,
     )
-    // 倒计时模式：totalDuration - startAt = 5000 - 8000 = -3000，应该被限制为 0
     expect(timestamp.value).toBe(0)
   })
 
@@ -144,7 +141,6 @@ describe('useCountdown', () => {
       { durations: 5000, active: false, invert: false, millisecond: true },
       mockEmits,
     )
-    // 没有提供 startAt，应该默认为 0，倒计时从 totalDuration 开始
     expect(timestamp.value).toBe(5000)
   })
 
@@ -153,7 +149,6 @@ describe('useCountdown', () => {
       { durations: 5000, active: false, invert: true, millisecond: true },
       mockEmits,
     )
-    // 没有提供 startAt，应该默认为 0，正计时从 0 开始
     expect(timestamp.value).toBe(0)
   })
 
@@ -162,7 +157,6 @@ describe('useCountdown', () => {
       { invert: true, active: false, millisecond: true },
       mockEmits,
     )
-    // 正计时模式且没有设置 durations，应该从 0 开始（因为 startAt 默认为 0）
     expect(timestamp.value).toBe(0)
   })
 
@@ -171,7 +165,6 @@ describe('useCountdown', () => {
       { invert: true, startAt: 1000, active: false, millisecond: true },
       mockEmits,
     )
-    // 正计时模式且没有设置 durations，应该从 startAt 开始
     expect(timestamp.value).toBe(1000)
   })
 })

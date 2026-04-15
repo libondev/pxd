@@ -1,10 +1,10 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "jsPlugins": ["eslint-plugin-better-tailwindcss"],
+  "jsPlugins": [
+    "eslint-plugin-better-tailwindcss"
+  ],
   "rules": {
     "curly": "error",
-    "end-of-line": "off",
-    "brace-style": ["error", "1tbs"],
     "better-tailwindcss/no-deprecated-classes": "error",
     "better-tailwindcss/enforce-shorthand-classes": "error",
     "better-tailwindcss/no-unnecessary-whitespace": "error",
@@ -21,7 +21,16 @@
       }
     ]
   },
-  "plugins": ["oxc", "react", "eslint", "import", "vitest", "promise", "unicorn", "typescript"],
+  "plugins": [
+    "oxc",
+    "react",
+    "eslint",
+    "import",
+    "vitest",
+    "promise",
+    "unicorn",
+    "typescript"
+  ],
   "ignorePatterns": [
     "dist",
     "node_modules",
@@ -37,11 +46,6 @@
   "settings": {
     "better-tailwindcss": {
       "entryPoint": "./src/styles/tw.css"
-    },
-    "jsx-a11y": {
-      "polymorphicPropName": null,
-      "components": {},
-      "attributes": {}
     },
     "jsdoc": {
       "ignorePrivate": false,

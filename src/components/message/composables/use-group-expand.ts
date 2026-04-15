@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 interface UseGroupExpandOptions {
   expand: Ref<boolean | undefined>
@@ -59,9 +59,9 @@ export function useGroupExpand({ expand, onPauseAll, onResumeAll }: UseGroupExpa
     groupExpand.value = false
   }
 
-  watch(expand, (isExpand) => {
-    groupExpand.value = isExpand
-  }, { immediate: true })
+  watchEffect(() => {
+    groupExpand.value = expand.value
+  })
 
   return {
     groupExpand,
