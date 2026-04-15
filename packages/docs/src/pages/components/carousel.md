@@ -9,8 +9,8 @@ Loop a series of images or texts in a limited space.
 import { ref } from 'vue'
 
 const direction = ref('horizontal')
-const indicatorType = ref('line')
-const indicatorPosition = ref('bottom')
+const indicatorType = ref('dot')
+const indicatorPosition = ref('center')
 </script>
 
 <template>
@@ -27,11 +27,11 @@ const indicatorPosition = ref('bottom')
     </PSwitch>
 
     <PSwitch v-model="indicatorPosition">
+      <PSwitchItem label="center" value="center" />
       <PSwitchItem label="top" value="top" />
       <PSwitchItem label="bottom" value="bottom" />
       <PSwitchItem label="left" value="left" />
       <PSwitchItem label="right" value="right" />
-      <PSwitchItem label="center" value="center" />
     </PSwitch>
 
     <PCarousel

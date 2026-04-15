@@ -23,8 +23,8 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   indicator: true,
   direction: 'horizontal',
   pauseOnHover: true,
-  indicatorType: 'line',
-  indicatorPosition: 'bottom',
+  indicatorType: 'dot',
+  indicatorPosition: 'center',
 })
 
 const emits = defineEmits<CarouselEmits>()
