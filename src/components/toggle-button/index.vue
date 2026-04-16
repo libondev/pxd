@@ -32,7 +32,7 @@ const toggleButtonVariant = tv({
     },
     variant: {
       ghost: 'border-transparent',
-      outline: 'border-input',
+      outline: '',
     },
     disabled: {
       true: 'cursor-not-allowed',
@@ -46,7 +46,7 @@ const toggleButtonVariant = tv({
   compoundVariants: [
     { checked: true, disabled: true, class: 'bg-gray-200' },
     { checked: false, disabled: true, class: 'text-gray-400' },
-    { checked: false, disabled: false, class: 'hover:text-gray-800' },
+    { checked: false, disabled: false, class: 'hover:text-gray-900' },
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
     { variant: 'outline', checked: true, disabled: true, class: 'border-gray-500 bg-gray-100' },
   ],

@@ -40,7 +40,7 @@ const buttonVariants = tv({
       simple: '',
       link: 'font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity',
       default:
-        'border-input bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
+        'bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
       ghost:
         'border-transparent bg-transparent text-foreground hover:bg-background-hover active:bg-background-active',
       primary:

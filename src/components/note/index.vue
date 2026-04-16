@@ -41,7 +41,7 @@ const noteVariant = tv({
         fill: 'border-amber-100 bg-amber-200 text-amber-900',
       },
       default: {
-        base: 'border-input text-gray-900',
+        base: 'text-gray-900',
         fill: 'border-gray-100 bg-gray-200 text-gray-900',
       },
       primary: {
@@ -70,7 +70,7 @@ const noteVariant = tv({
     { variant: 'warning', fill: true, class: 'border-amber-100 bg-amber-200 text-amber-900' },
     { variant: 'warning', fill: false, class: 'border-amber-500 text-amber-900' },
     { variant: 'default', fill: true, class: 'border-gray-100 bg-gray-200 text-gray-900' },
-    { variant: 'default', fill: false, class: 'border-input text-gray-900' },
+    { variant: 'default', fill: false, class: 'text-gray-900' },
     { variant: 'primary', fill: true, class: 'border-gray-100 bg-primary text-gray-100' },
     { variant: 'primary', fill: false, class: 'border-gray-alpha-400 text-primary' },
     { variant: 'violet', fill: true, class: 'text-violet-900 bg-violet-200 border-violet-100' },

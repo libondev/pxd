@@ -25,7 +25,6 @@ describe('button', () => {
     const classes = wrapper.classes()
     expect(classes).toContain('bg-background-100')
     expect(classes).toContain('text-foreground')
-    expect(classes).toContain('border-input')
 
     wrapper.unmount()
   })

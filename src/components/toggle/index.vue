@@ -87,7 +87,7 @@ async function onCheckboxChange(e: Event) {
     >
 
     <div
-      class="pxd-toggle--handle rounded-full border border-input bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed peer-checked:peer-disabled:bg-gray-500 motion-safe:transition-all"
+      class="pxd-toggle--handle rounded-full border bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed peer-checked:peer-disabled:bg-gray-500 motion-safe:transition-all"
       :class="computedSize"
       :style="{
         '--toggle-active-color': activeColor,
