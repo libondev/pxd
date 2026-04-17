@@ -389,7 +389,7 @@ defineExpose({
         :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute isolate z-10 flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-10 flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
       >
