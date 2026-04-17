@@ -1,6 +1,13 @@
+shamefullyHoist: true
+preferFrozenLockfile: true
+sharedWorkspaceLockfile: true
+strictPeerDependencies: false
+ignoreWorkspaceRootCheck: true
+
 packages:
   - .
   - packages/*
+
 catalog:
   '@any-touch/core': ^2.2.0
   '@any-touch/pan': ^2.2.0
