@@ -2,13 +2,13 @@
 import type { MaybeElementRef } from '../../types/shared/utils'
 import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useLockScroll } from '../../composables'
-import { cachedOff, cachedOn, NOOP } from '../../utils/event'
+import { useLockScroll } from '../../composables/use-lock-scroll'
+import { useOverlayManager } from '../../composables/use-overlay-manager'
+import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
-import { isTopOverlay, pushOverlay, removeOverlay } from './overlay-stack'
 
 defineOptions({
   name: 'POverlay',
@@ -29,8 +29,6 @@ const emits = defineEmits<OverlayEmits>()
 
 const { lockScroll, unlockScroll } = useLockScroll()
 
-const overlayId = Symbol('pxd-overlay')
-
 const clipPath = shallowRef('')
 const computedStyle = computed(() => ({
   '--overlay-z-index': props.zIndex,
@@ -39,36 +37,32 @@ const computedStyle = computed(() => ({
 
 let shownElementEl: HTMLElement | null = null
 
-function onOverlayClick(ev: MouseEvent) {
-  emits('click', ev)
-
-  if (!isTruthyProp(props.closeOnClickOverlay)) {
-    return
-  }
-
-  emits('update:modelValue', false)
+function onOverlayClick(ev: PointerEvent) {
+  dispatchClickOutside(ev)
 }
 
-function onOverlayKeydown(ev: KeyboardEvent) {
-  if (!props.modelValue || !isTruthyProp(props.closeOnPressEscape)) {
-    return
-  }
-
-  if (!isTopOverlay(overlayId)) {
-    return
-  }
-
-  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
-    return
-  }
-
-  if (ev.key !== 'Escape') {
-    return
-  }
-
-  emits('escape', ev)
-  emits('update:modelValue', false)
+function onOverlayPointerdown(ev: PointerEvent) {
+  dispatchPointerDownOutside(ev)
 }
+
+const { dispatchClickOutside, dispatchPointerDownOutside } = useOverlayManager(
+  computed(() => ({
+    enabled: props.modelValue,
+    closeOnPressEscape: isTruthyProp(props.closeOnPressEscape),
+    closeOnClickOutside: isTruthyProp(props.closeOnClickOverlay),
+    onPressEscape: (ev: KeyboardEvent) => {
+      emits('escape', ev)
+    },
+    onClickOutside: (ev: PointerEvent) => {
+      emits('click', ev)
+    },
+    onClose: (reason) => {
+      if (reason === 'press-escape' || reason === 'click-outside') {
+        emits('update:modelValue', false)
+      }
+    },
+  })),
+)
 
 function tryGetShownElementIfNeed() {
   const { shownElement } = props
@@ -110,11 +104,9 @@ function onOverlayVisibleChange(visible: boolean) {
   }
 
   if (visible) {
-    pushOverlay(overlayId)
     nextTick(() => {
       lockScroll()
       tryGetShownElementIfNeed()
-      cachedOn(document, 'keydown', onOverlayKeydown)
       shownElementEl?.classList.add('pointer-events-auto')
     })
 
@@ -122,8 +114,6 @@ function onOverlayVisibleChange(visible: boolean) {
   }
 
   unlockScroll()
-  removeOverlay(overlayId)
-  cachedOff(document, 'keydown', onOverlayKeydown)
   shownElementEl?.classList.remove('pointer-events-auto')
 }
 
@@ -132,9 +122,7 @@ watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
 watch(() => props.shownElement, tryGetShownElementIfNeed)
 
 onBeforeUnmount(() => {
-  cachedOff(document, 'keydown', onOverlayKeydown)
-
-  removeOverlay(overlayId)
+  shownElementEl?.classList.remove('pointer-events-auto')
   unlockScroll()
 })
 </script>
@@ -150,6 +138,7 @@ onBeforeUnmount(() => {
         :style="computedStyle"
         v-bind="$attrs"
         @touchmove.prevent.stop="NOOP"
+        @pointerdown="onOverlayPointerdown"
         @click="onOverlayClick"
       />
     </Transition>

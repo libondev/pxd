@@ -6,8 +6,8 @@ import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOutsideClick } from '../../composables/use-outside-click'
+import { useOverlayManager } from '../../composables/use-overlay-manager'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { debounce } from '../../utils/debounce'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import PTeleport from '../teleport/index.vue'
@@ -59,6 +59,10 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 const configProvider = useConfigProvider()
 const { lockScroll, unlockScroll } = useLockScroll()
 
+const allowOutsideClick = computed(() =>
+  allowedMethods.some((method) => triggerMethods.value.includes(method)),
+)
+
 const {
   render: isRender,
   visible: isVisible,
@@ -91,27 +95,41 @@ const {
   },
 })
 
+const { dispatchClickOutside } = useOverlayManager(
+  computed(() => ({
+    enabled: isVisible.value,
+    closeOnPressEscape: !!props.closeOnPressEscape,
+    closeOnClickOutside: allowOutsideClick.value && !triggerMethods.value.includes('manual'),
+    onPressEscape: (ev: KeyboardEvent) => {
+      emits('escape', ev)
+    },
+    onClickOutside: (ev: PointerEvent) => {
+      emits('outside-click', ev)
+    },
+    onClose: (reason) => {
+      if (reason === 'press-escape') {
+        handlePopoverHide(true)
+        return
+      }
+
+      if (reason === 'click-outside') {
+        handlePopoverHide()
+      }
+    },
+  })),
+)
+
 useOutsideClick(wrapperRef, {
   isEnabled: () => {
-    return isVisible.value && allowedMethods.some((t) => triggerMethods.value.includes(t))
+    return isVisible.value && allowOutsideClick.value
   },
   isOutside: (ev) => {
     const el = ev.target as HTMLElement
     return !(triggerRef.value?.contains(el) || wrapperRef.value?.contains(el))
   },
-  onTrigger: debounce(
-    (ev) => {
-      emits('outside-click', ev)
-
-      if (triggerMethods.value.includes('manual')) {
-        return
-      }
-
-      handlePopoverHide()
-    },
-    500,
-    { edges: ['leading'] },
-  ),
+  onTrigger: (ev) => {
+    dispatchClickOutside(ev)
+  },
 })
 
 function disposeAutoUpdate() {
@@ -178,7 +196,7 @@ async function handlePopoverShow() {
   await showPopover()
 
   if (props.closeOnPressEscape) {
-    cachedOn(document, 'keydown', onPopoverKeystroke)
+    cachedOn(document, 'keydown', onPopoverKeydown)
   }
 
   // Some components often need to cover the screen on mobile devices,
@@ -222,29 +240,17 @@ async function handlePopoverHide(immediate: boolean = false) {
   hidePopover()
 
   if (props.closeOnPressEscape) {
-    cachedOff(document, 'keydown', onPopoverKeystroke)
+    cachedOff(document, 'keydown', onPopoverKeydown)
   }
 }
 
-function onPopoverKeystroke(ev: KeyboardEvent) {
-  const { key, ctrlKey, metaKey, altKey, shiftKey } = ev
+function onPopoverKeydown(ev: KeyboardEvent) {
+  const { key } = ev
 
   if (key === 'Tab') {
     ev.preventDefault()
     ev.stopPropagation()
-    return
   }
-
-  if (ctrlKey || metaKey || altKey || shiftKey) {
-    return
-  }
-
-  if (ev.key !== 'Escape') {
-    return
-  }
-
-  emits('escape', ev)
-  handlePopoverHide(true)
 }
 
 async function onTriggerClick(ev: Event) {
@@ -362,7 +368,7 @@ onBeforeUnmount(() => {
   }
 
   disposeAutoUpdate()
-  cachedOff(document, 'keydown', onPopoverKeystroke)
+  cachedOff(document, 'keydown', onPopoverKeydown)
 })
 
 defineExpose({

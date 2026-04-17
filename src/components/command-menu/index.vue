@@ -35,10 +35,9 @@ const uniqueId = getUniqueId()
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
-const isDesktop = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
-
 const filterKeyword = shallowRef('')
 const filterContext = useListFilter({ keyword: filterKeyword })
+const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
 const isEmptyResult = computed(() => filterKeyword.value && filterContext.visibleCount.value === 0)
 
@@ -73,7 +72,7 @@ provideListFilterContext(filterContext)
     class="pxd-command-menu max-sm:dvh-80"
     content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/8 sm:translate-y-0"
-    :auto-focus-element="isDesktop"
+    :auto-focus-element="!isSmallScreen"
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
     v-bind="$attrs"
