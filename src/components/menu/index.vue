@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
-import { shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
 import PList from '../list/index.vue'
@@ -12,11 +12,11 @@ defineOptions({
   inheritAttrs: false,
 })
 
-withDefaults(defineProps<MenuProps>(), {
+const props = withDefaults(defineProps<MenuProps>(), {
   options: () => [],
   showDelay: 0,
   hideDelay: 100,
-  position: 'bottom',
+  position: 'bottom-start',
   closeOnPressEscape: true,
 })
 
@@ -26,6 +26,10 @@ const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
 
+const listStyles = computed(() => ({
+  '--list-width': getCssUnitValue(props.width),
+}))
+
 function onVisibleChange(visible: boolean) {
   popoverVisible.value = visible
 }
@@ -34,7 +38,7 @@ function hidePopover() {
   onVisibleChange(false)
 }
 
-function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
+function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
   hidePopover()
 }
@@ -64,8 +68,8 @@ function onOptionClick(ev: MouseEvent, item: ListOptionSelected) {
       <PList
         :width="width"
         :options="options"
-        :key-listener="popoverVisible"
-        :style="{ '--list-width': getCssUnitValue(width) }"
+        :style="listStyles"
+        :visible="popoverVisible"
         class="max-h-68 sm:w-(--list-width) rounded-inherit"
         @select="onOptionClick"
       >

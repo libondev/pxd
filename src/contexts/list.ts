@@ -3,7 +3,9 @@ import type { Ref } from 'vue'
 import { createContext } from '../utils/context'
 
 export interface ListContext {
-  activeValue: Ref<string>
+  activeIndex: Ref<number>
+  registerItem: (el: HTMLElement, indexRef: Ref<number>) => void
+  unregisterItem: (el: HTMLElement) => void
   onOptionClick: ListOption['onClick']
 }
 

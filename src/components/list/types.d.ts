@@ -11,13 +11,13 @@ export type ListOptionSelected = Omit<ListOption, 'as' | 'onClick'>
 
 export interface ListProps {
   loop?: boolean
+  visible?: boolean
   options?: ListOption[]
   toggleOnKeyPress?: boolean
-  closeOnPressEscape?: boolean
+  defaultActiveIndex?: number
 }
 
 export interface ListEmits {
   toggle: []
-  escape: [KeyboardEvent]
-  select: [MouseEvent, ListOptionSelected]
+  select: [ListOptionSelected, MouseEvent]
 }

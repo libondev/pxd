@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import { tv } from 'tailwind-variants'
-import { computed, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterValue } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
-import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PListItem',
@@ -21,7 +20,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
-  base: 'pxd-list-item h-10 gap-3 px-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+  base: 'pxd-list-item h-10 gap-3 px-2 scroll-m-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     type: {
       error:
@@ -38,12 +37,13 @@ const listItemVariant = tv({
   },
 })
 
-const { activeValue, onOptionClick } = useListContext()
+const { activeIndex, registerItem, unregisterItem, onOptionClick } = useListContext()
 
-const uniqueId = getUniqueId()
 const filterValue = useListFilterValue()
 
 const itemRef = shallowRef<HTMLElement>()
+
+const itemIndex = shallowRef(-1)
 
 const searchableText = computed(() => {
   const keywordsText =
@@ -67,8 +67,9 @@ const searchableText = computed(() => {
 const isVisible = computed(() =>
   filterValue?.value ? searchableText.value.includes(filterValue.value.toLowerCase()) : true,
 )
-const isSelected = computed(() => activeValue.value === uniqueId)
+
 const isDisabled = computed(() => props.disabled || props.type === 'separator')
+const isSelected = computed(() => itemIndex.value !== -1 && itemIndex.value === activeIndex.value)
 
 const computedClasses = computed(() => {
   return listItemVariant({ type: props.type })
@@ -92,6 +93,20 @@ function onItemClick(ev: MouseEvent) {
   emits('click', restProps, ev)
   onOptionClick?.(restProps, ev)
 }
+
+onMounted(() => {
+  const el = unrefElement(itemRef.value)
+  if (el) {
+    registerItem(el, itemIndex)
+  }
+})
+
+onBeforeUnmount(() => {
+  const el = unrefElement(itemRef.value)
+  if (el) {
+    unregisterItem(el as HTMLElement)
+  }
+})
 </script>
 
 <template>
@@ -102,7 +117,6 @@ function onItemClick(ev: MouseEvent) {
     tabindex="-1"
     role="listitem"
     :data-type="type"
-    :data-value="uniqueId"
     :data-selected="isSelected"
     :data-disabled="isDisabled"
     :class="computedClasses"

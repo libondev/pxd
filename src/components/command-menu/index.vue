@@ -43,16 +43,18 @@ const listRef = shallowRef<InstanceType<typeof PList>>()
 const isEmptyResult = shallowRef(false)
 
 const { value: filterKeyword, deferred: deferredFilterKeyword } = useDeferredValue('', {
-  async valueChange(v: string) {
-    if (!v) {
+  async valueChange() {
+    if (!listRef.value) {
       return
     }
 
+    const { refreshItems, setFirstAsActive, isEmpty } = listRef.value
+
     await nextTick()
 
-    listRef.value!.updateListItem()
-    listRef.value!.setFirstAsActive()
-    isEmptyResult.value = listRef.value!.isNoVisibleItem()
+    refreshItems()
+    setFirstAsActive()
+    isEmptyResult.value = isEmpty()
   },
 })
 
@@ -69,8 +71,8 @@ function closeModal() {
   modelValue.value = false
 }
 
-function onListItemSelect(ev: MouseEvent, item: ListOptionSelected) {
-  emits('select', ev, item)
+function onListItemSelect(item: ListOptionSelected, ev: MouseEvent) {
+  emits('select', item, ev)
 
   if (props.closeOnSelectItem) {
     closeModal()
@@ -131,6 +133,7 @@ provideListFilterValue(deferredFilterKeyword)
       ref="listRef"
       :loop="false"
       class="sm:max-h-110 h-full"
+      :default-active-index="0"
       :toggle-on-key-press="modelValue"
       @select="onListItemSelect"
     >
