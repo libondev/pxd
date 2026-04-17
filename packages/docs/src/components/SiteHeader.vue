@@ -28,6 +28,10 @@ function onKeydown(ev: KeyboardEvent) {
     return
   }
 
+  if (showCommandMenu.value) {
+    return
+  }
+
   ev.preventDefault()
   openCommandMenu()
 }

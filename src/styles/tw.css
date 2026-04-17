@@ -456,18 +456,21 @@
 }
 
 @utility peer-focus-ring {
+  & {
+    outline-offset: 2px;
+  }
+
   .peer:focus-visible ~ & {
-    box-shadow:
-      0 0 0 2px var(--color-background-100),
-      0 0 0 4px hsl(var(--ring));
+    outline: 2px solid hsl(var(--ring));
   }
 }
 
 @utility self-focus-ring {
+  & {
+    outline-offset: 2px;
+  }
   &:focus-visible {
-    box-shadow:
-      0 0 0 2px var(--color-background-100),
-      0 0 0 4px hsl(var(--ring));
+    outline: 2px solid hsl(var(--ring));
   }
 }
 

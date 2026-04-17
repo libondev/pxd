@@ -135,11 +135,10 @@ if (!isServer()) {
 
     & > a {
       outline: none;
+      outline-offset: 2px;
 
       &:focus-visible {
-        box-shadow:
-          0 0 0 2px var(--color-background-100),
-          0 0 0 4px hsl(var(--ring));
+        outline: 2px solid hsl(var(--ring));
       }
     }
 

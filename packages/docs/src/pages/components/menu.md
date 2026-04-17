@@ -15,18 +15,18 @@ const options = [
 ]
 
 function onSelect(item, ev) {
-  console.log(ev, item)
+  console.log(item, ev)
 }
 </script>
 
 <template>
   <PStack>
-    <PMenu :options="options" @select="onSelect">
+    <PMenu width="200" :options="options" @select="onSelect">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu @select="onSelect">
+    <PMenu width="200" @select="onSelect">
       <PButton variant="primary">Actions</PButton>
 
       <template #items>
