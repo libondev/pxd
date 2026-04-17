@@ -31,13 +31,13 @@ export default {
     next: '之后',
     prev: '之前',
   },
-  empty: {
-    search: '未找到结果',
-    noData: '暂无数据',
-  },
   confirm: {
     ok: '确定',
     conform: '确认',
     cancel: '取消',
+  },
+  results: {
+    searchText: '未找到结果：',
+    noData: '暂无数据',
   },
 }

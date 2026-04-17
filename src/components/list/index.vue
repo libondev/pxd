@@ -2,7 +2,7 @@
 import type { ListProps, ListOptionSelected, ListEmits } from './types'
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/use-list-navigation'
-import { provideListContext } from '../../contexts/list'
+import { provideListContext, useListFilterContext } from '../../contexts/list'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import PListItem from '../list-item/index.vue'
@@ -39,18 +39,23 @@ const {
   setFirstAsActive,
 } = useListNavigation(containerRef, {
   loop: props.loop,
-  itemSelector: '.pxd-list-item',
+  itemSelector: `[data-list-item]:not([data-disabled="true"],[hidden])`,
   toggleOnKeyPress: props.toggleOnKeyPress,
   defaultActiveIndex: props.defaultActiveIndex,
   onToggle: () => emits('toggle'),
 })
 
-provideListContext({
-  activeIndex,
-  registerItem,
-  unregisterItem,
-  onOptionClick,
-})
+const filterCtx = useListFilterContext(null)
+
+if (filterCtx) {
+  watch(
+    () => filterCtx.searchValue.value.trim(),
+    async () => {
+      await refreshItems()
+      setFirstAsActive()
+    },
+  )
+}
 
 watch(
   () => props.visible,
@@ -64,6 +69,13 @@ watch(
     }
   },
 )
+
+provideListContext({
+  activeIndex,
+  registerItem,
+  unregisterItem,
+  onOptionClick,
+})
 
 onMounted(async () => {
   if (isServer()) {

@@ -2,8 +2,9 @@
 import type { ListItemEmits, ListItemProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useListContext, useListFilterValue } from '../../contexts/list'
+import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
 import { unrefElement } from '../../utils/ref'
+import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
   name: 'PListItem',
@@ -29,62 +30,39 @@ const listItemVariant = tv({
         'text-amber-900 pointer-coarse:active:bg-amber-100 pointer-fine:data-[selected=true]:bg-amber-100',
       default:
         'text-foreground pointer-coarse:active:bg-gray-alpha-100 pointer-fine:data-[selected=true]:bg-gray-alpha-100',
-      separator: 'h-0! px-0 m-1.5 w-auto! border-b',
     },
-  },
-  defaultVariants: {
-    type: 'default',
   },
 })
 
 const { activeIndex, registerItem, unregisterItem, onOptionClick } = useListContext()
 
-const filterValue = useListFilterValue()
+const groupId = useListFilterGroupId(null)
+const filterCtx = useListFilterContext(null)
 
+const itemId = getUniqueId('list-item')
 const itemRef = shallowRef<HTMLElement>()
-
 const itemIndex = shallowRef(-1)
 
-const searchableText = computed(() => {
-  const keywordsText =
-    props.keywords.length > 0 ? props.keywords.join('').toLowerCase().replace(/\s/g, '') : ''
-
-  if (props.label) {
-    const propsText = `${String(props.label || '')}${props.description || ''}`
-      .toLowerCase()
-      .replace(/\s/g, '')
-
-    return propsText + keywordsText
+const isVisible = computed(() => {
+  if (!filterCtx || !filterCtx.searchValue.value.trim()) {
+    return true
   }
 
-  if (keywordsText) {
-    return keywordsText
-  }
-
-  return getCachedTextContent()
+  return filterCtx.isItemVisible(itemId)
 })
 
-const isVisible = computed(() =>
-  filterValue?.value ? searchableText.value.includes(filterValue.value.toLowerCase()) : true,
-)
-
-const isDisabled = computed(() => props.disabled || props.type === 'separator')
 const isSelected = computed(() => itemIndex.value !== -1 && itemIndex.value === activeIndex.value)
 
 const computedClasses = computed(() => {
   return listItemVariant({ type: props.type })
 })
 
-let cachedTextContent = ''
+function getValue(): string {
+  return `${String(props.label ?? '')}${String(props.description ?? '')}`.trim()
+}
 
-function getCachedTextContent() {
-  const text = unrefElement(itemRef.value)?.textContent || ''
-
-  if (text) {
-    cachedTextContent = text.toLowerCase().replace(/\s/g, '')
-  }
-
-  return cachedTextContent
+function getKeywords(): string[] {
+  return props.keywords
 }
 
 function onItemClick(ev: MouseEvent) {
@@ -99,6 +77,12 @@ onMounted(() => {
   if (el) {
     registerItem(el, itemIndex)
   }
+
+  filterCtx?.registerItem(itemId, {
+    groupId,
+    getValue,
+    getKeywords,
+  })
 })
 
 onBeforeUnmount(() => {
@@ -106,24 +90,27 @@ onBeforeUnmount(() => {
   if (el) {
     unregisterItem(el as HTMLElement)
   }
+
+  filterCtx?.unregisterItem(itemId)
 })
 </script>
 
 <template>
   <Component
     :is="as"
-    v-if="isVisible"
     ref="itemRef"
     tabindex="-1"
     role="listitem"
+    data-list-item
     :data-type="type"
+    :data-disabled="disabled"
     :data-selected="isSelected"
-    :data-disabled="isDisabled"
+    :hidden="!isVisible"
     :class="computedClasses"
     v-bind="$attrs"
     @click.prevent.stop="onItemClick"
   >
-    <slot v-if="type !== 'separator'">
+    <slot>
       <span>{{ label }}</span>
       <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
     </slot>

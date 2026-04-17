@@ -219,7 +219,7 @@ async function handlePopoverHide(immediate: boolean = false) {
 
   disposeAutoUpdate()
 
-  await hidePopover()
+  hidePopover()
 
   if (props.closeOnPressEscape) {
     cachedOff(document, 'keydown', onPopoverKeystroke)
@@ -227,7 +227,15 @@ async function handlePopoverHide(immediate: boolean = false) {
 }
 
 function onPopoverKeystroke(ev: KeyboardEvent) {
-  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
+  const { key, ctrlKey, metaKey, altKey, shiftKey } = ev
+
+  if (key === 'Tab') {
+    ev.preventDefault()
+    ev.stopPropagation()
+    return
+  }
+
+  if (ctrlKey || metaKey || altKey || shiftKey) {
     return
   }
 
@@ -354,6 +362,7 @@ onBeforeUnmount(() => {
   }
 
   disposeAutoUpdate()
+  cachedOff(document, 'keydown', onPopoverKeystroke)
 })
 
 defineExpose({

@@ -31,13 +31,13 @@ export default {
     next: 'Next',
     prev: 'Previous',
   },
-  empty: {
-    search: 'No results found for',
-    noData: 'No data available',
-  },
   confirm: {
     ok: 'OK',
     conform: 'Confirm',
     cancel: 'Cancel',
+  },
+  results: {
+    searchText: 'No results found for',
+    noData: 'No data available',
   },
 }

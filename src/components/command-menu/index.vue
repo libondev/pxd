@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
-import { nextTick, shallowRef } from 'vue'
-import { useDeferredValue } from '../../composables/use-deferred-value'
+import { computed, shallowRef } from 'vue'
+import { useListFilter } from '../../composables/use-list-filter'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { provideListFilterValue } from '../../contexts/list'
+import { provideListFilterContext } from '../../contexts/list'
 import { getUniqueId } from '../../utils/uid'
-import PButton from '../button/index.vue'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
 
@@ -38,25 +37,10 @@ const modelValue = useModelValue(props, emits)
 
 const isDesktop = useMediaQuery(PRESET_MEDIA_QUERIES.SM_UP)
 
-const listRef = shallowRef<InstanceType<typeof PList>>()
+const filterKeyword = shallowRef('')
+const filterContext = useListFilter({ keyword: filterKeyword })
 
-const isEmptyResult = shallowRef(false)
-
-const { value: filterKeyword, deferred: deferredFilterKeyword } = useDeferredValue('', {
-  async valueChange() {
-    if (!listRef.value) {
-      return
-    }
-
-    const { refreshItems, setFirstAsActive, isEmpty } = listRef.value
-
-    await nextTick()
-
-    refreshItems()
-    setFirstAsActive()
-    isEmptyResult.value = isEmpty()
-  },
-})
+const isEmptyResult = computed(() => filterKeyword.value && filterContext.visibleCount.value === 0)
 
 function hideModal() {
   filterKeyword.value = ''
@@ -79,7 +63,7 @@ function onListItemSelect(item: ListOptionSelected, ev: MouseEvent) {
   }
 }
 
-provideListFilterValue(deferredFilterKeyword)
+provideListFilterContext(filterContext)
 </script>
 
 <template>
@@ -118,19 +102,17 @@ provideListFilterValue(deferredFilterKeyword)
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
         />
 
-        <PButton
-          v-if="closeOnPressEscape"
-          size="xs"
-          class="px-0! text-xs shrink-0"
+        <button
+          type="button"
+          class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
           @click="closeModal"
         >
           Esc
-        </PButton>
+        </button>
       </label>
     </template>
 
     <PList
-      ref="listRef"
       :loop="false"
       class="sm:max-h-110 h-full"
       :default-active-index="0"
@@ -139,9 +121,12 @@ provideListFilterValue(deferredFilterKeyword)
     >
       <slot />
 
-      <p v-if="isEmptyResult" class="py-7.5 text-sm text-center text-foreground-secondary">
-        {{ configProvider.locale.empty.search }}
-        <span class="text-foreground">"{{ filterKeyword }}"</span>
+      <p
+        v-if="filterKeyword && isEmptyResult"
+        class="py-7.5 text-sm text-center text-foreground-secondary"
+      >
+        {{ configProvider.locale.results.searchText }}
+        <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
       </p>
     </PList>
 

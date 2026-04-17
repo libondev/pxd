@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
-import { shallowRef } from 'vue'
+import { nextTick, shallowRef } from 'vue'
 import { toValue, unrefElement } from '../utils/ref'
 
 export interface UseListNavigationOptions {
@@ -18,10 +18,18 @@ export interface UseListNavigationReturn {
   unregisterItem: (el: HTMLElement) => void
   onKeydown: (ev: KeyboardEvent) => void
   onPointerOver: (ev: PointerEvent) => void
-  refreshItems: () => void
+  /**
+   * Request a re-query of the DOM items. Multiple calls made within the same
+   * tick coalesce into a single refresh that runs after `nextTick`. `await`
+   * the returned promise when the caller needs `items` to be up-to-date
+   * before its next action (e.g. `setFirstAsActive` after a search change).
+   */
+  refreshItems: () => Promise<void>
   setFirstAsActive: () => void
   isEmpty: () => boolean
 }
+
+const DISABLED_KEYS = ['PageUp', 'PageDown']
 
 const KEY_DIRECTION: Record<string, -1 | 1 | undefined> = {
   ArrowUp: -1,
@@ -30,29 +38,19 @@ const KEY_DIRECTION: Record<string, -1 | 1 | undefined> = {
   ArrowRight: 1,
 }
 
-const isDisabled = (el: HTMLElement): boolean => el.dataset.disabled === 'true'
-
-function findEnabledIndex(items: HTMLElement[], from: number, dir: 1 | -1, loop: boolean): number {
-  const len = items.length
+function findNextIndex(len: number, from: number, dir: 1 | -1, loop: boolean): number {
   if (len === 0) {
     return -1
   }
 
-  let i = from
-  for (let step = 0; step < len; step++) {
-    if (loop) {
-      i = (i + dir + len) % len
-    } else {
-      i += dir
-      if (i < 0 || i >= len) {
-        return -1
-      }
-    }
-    if (!isDisabled(items[i])) {
-      return i
-    }
+  const i = from + dir
+  if (loop) {
+    return ((i % len) + len) % len
   }
-  return -1
+  if (i < 0 || i >= len) {
+    return -1
+  }
+  return i
 }
 
 export function useListNavigation(
@@ -62,7 +60,7 @@ export function useListNavigation(
   const getLoop = () => toValue(options.loop) ?? true
   const getToggleOnKeyPress = () => toValue(options.toggleOnKeyPress) ?? true
   const getDefaultActiveIndex = () => toValue(options.defaultActiveIndex) ?? -1
-  const getItemSelector = () => toValue(options.itemSelector) ?? '.pxd-list-item'
+  const getItemSelector = () => toValue(options.itemSelector) ?? '[data-list-item]'
 
   const activeIndex = shallowRef(getDefaultActiveIndex())
   const itemIndexRefs = new WeakMap<HTMLElement, ShallowRef<number>>()
@@ -71,7 +69,13 @@ export function useListNavigation(
   let lastPointerX = -1
   let lastPointerY = -1
 
-  function refreshItems(): void {
+  // Coalesce bursts of `refreshItems` calls (typically N `registerItem`
+  // triggers during initial mount) into a single DOM query at the next tick.
+  // While a refresh is pending, every call returns the same promise, so the
+  // real work runs exactly once per batch regardless of how many items mount.
+  let pendingRefresh: Promise<void> | null = null
+
+  function runRefresh() {
     const container = unrefElement(containerRef)
     items = container ? Array.from(container.querySelectorAll<HTMLElement>(getItemSelector())) : []
 
@@ -82,10 +86,29 @@ export function useListNavigation(
       }
     })
 
+    // Clamp when items shrank (e.g. an item was unregistered or filtered out).
+    if (activeIndex.value >= items.length) {
+      activeIndex.value = items.length - 1
+    }
+
     const fallback = getDefaultActiveIndex()
+
     if (activeIndex.value === -1 && fallback >= 0 && fallback < items.length) {
       activeIndex.value = fallback
     }
+  }
+
+  function refreshItems(): Promise<void> {
+    if (pendingRefresh) {
+      return pendingRefresh
+    }
+
+    pendingRefresh = nextTick().then(() => {
+      pendingRefresh = null
+      runRefresh()
+    })
+
+    return pendingRefresh
   }
 
   function setActiveIndex(index: number): void {
@@ -93,7 +116,7 @@ export function useListNavigation(
   }
 
   function setFirstAsActive(): void {
-    activeIndex.value = findEnabledIndex(items, -1, 1, false)
+    activeIndex.value = findNextIndex(items.length, -1, 1, false)
   }
 
   function isEmpty(): boolean {
@@ -108,7 +131,6 @@ export function useListNavigation(
   function unregisterItem(el: HTMLElement): void {
     itemIndexRefs.delete(el)
     refreshItems()
-    activeIndex.value = Math.min(activeIndex.value, items.length - 1)
   }
 
   function onPointerOver(ev: PointerEvent): void {
@@ -119,22 +141,29 @@ export function useListNavigation(
     lastPointerY = ev.pageY
 
     const listItem = (ev.target as HTMLElement).closest<HTMLElement>(getItemSelector())
-    if (!listItem || isDisabled(listItem)) {
+    if (!listItem) {
       return
     }
 
-    const index = items.indexOf(listItem)
+    const index = itemIndexRefs.get(listItem)?.value ?? -1
     if (index !== -1) {
       activeIndex.value = index
     }
   }
 
   function onKeydown(ev: KeyboardEvent): void {
-    if (!getToggleOnKeyPress() || items.length === 0) {
+    if (!getToggleOnKeyPress() || isEmpty()) {
       return
     }
 
     const { key, ctrlKey, metaKey, altKey, shiftKey } = ev
+
+    if (DISABLED_KEYS.includes(key)) {
+      ev.preventDefault()
+      ev.stopPropagation()
+      return
+    }
+
     if (ctrlKey || metaKey || altKey || shiftKey) {
       return
     }
@@ -148,7 +177,7 @@ export function useListNavigation(
       }
 
       const el = items[current]
-      if (!el || isDisabled(el)) {
+      if (!el) {
         return
       }
 
@@ -165,9 +194,9 @@ export function useListNavigation(
 
     let next: number
     if (key === 'Home') {
-      next = findEnabledIndex(items, -1, 1, false)
+      next = findNextIndex(len, -1, 1, false)
     } else if (key === 'End') {
-      next = findEnabledIndex(items, len, -1, false)
+      next = findNextIndex(len, len, -1, false)
     } else {
       const dir = KEY_DIRECTION[key]
       if (!dir) {
@@ -176,8 +205,8 @@ export function useListNavigation(
 
       next =
         current === -1
-          ? findEnabledIndex(items, dir === 1 ? -1 : len, dir, false)
-          : findEnabledIndex(items, current, dir, getLoop())
+          ? findNextIndex(len, dir === 1 ? -1 : len, dir, false)
+          : findNextIndex(len, current, dir, getLoop())
     }
 
     if (next === -1) {
