@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MessageItemConfig, MessageUpdateParams } from '../../composables/use-message'
 import type { MessageEmits, MessageProps } from './types'
-import { computed, onBeforeUnmount, onMounted, ref, toRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useDocumentHidden } from '../../composables/use-document-hidden'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message'
 import { cachedOff, cachedOn } from '../../utils/event'
@@ -34,7 +34,7 @@ const { setAutoCloseTimer, pauseMessage, resumeMessage, clearTimers, pauseAll, r
 const { handlePromiseMessage } = usePromiseMessage(setAutoCloseTimer)
 
 const { groupExpand, collapse, onPointerEnter, onPointerLeave } = useGroupExpand({
-  expand: toRef(props, 'expand'),
+  expand: () => props.expand,
   onPauseAll: () => pauseAll(groupMessages.value),
   onResumeAll: () => resumeAll(groupMessages.value),
 })

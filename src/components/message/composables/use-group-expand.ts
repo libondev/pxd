@@ -1,8 +1,9 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import { ref, watchEffect } from 'vue'
+import { toValue } from '../../../utils/ref'
 
 interface UseGroupExpandOptions {
-  expand: Ref<boolean | undefined>
+  expand: MaybeRefOrGetter<boolean | undefined>
   onPauseAll: () => void
   onResumeAll: () => void
 }
@@ -11,7 +12,7 @@ const TRANSITION_LOCK_MS = 250
 const LEAVE_DEBOUNCE_MS = 200
 
 export function useGroupExpand({ expand, onPauseAll, onResumeAll }: UseGroupExpandOptions) {
-  const groupExpand = ref(expand.value)
+  const groupExpand = ref(toValue(expand))
 
   let leaveTimeoutId: ReturnType<typeof setTimeout> | undefined
   let isTransitioning = false
@@ -42,7 +43,7 @@ export function useGroupExpand({ expand, onPauseAll, onResumeAll }: UseGroupExpa
     leaveTimeoutId = setTimeout(() => {
       onResumeAll()
 
-      if (expand.value) {
+      if (toValue(expand)) {
         return
       }
 
@@ -60,7 +61,7 @@ export function useGroupExpand({ expand, onPauseAll, onResumeAll }: UseGroupExpa
   }
 
   watchEffect(() => {
-    groupExpand.value = expand.value
+    groupExpand.value = toValue(expand)
   })
 
   return {
