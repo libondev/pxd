@@ -13,7 +13,7 @@ export function usePopoverResponsive() {
     }
 
     return {
-      contentClass: `bg-background-100 border rounded-xl`,
+      contentClass: `bg-background-100 shadow-border-menu rounded-xl`,
       wrapperClass: '',
     } as const
   })
