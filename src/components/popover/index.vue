@@ -98,7 +98,7 @@ const {
 const { dispatchClickOutside } = useOverlayManager(
   computed(() => ({
     enabled: isVisible.value,
-    closeOnPressEscape: !!props.closeOnPressEscape,
+    closeOnPressEscape: props.closeOnPressEscape,
     closeOnClickOutside: allowOutsideClick.value && !triggerMethods.value.includes('manual'),
     onPressEscape: (ev: KeyboardEvent) => {
       emits('escape', ev)
@@ -106,15 +106,8 @@ const { dispatchClickOutside } = useOverlayManager(
     onClickOutside: (ev: PointerEvent) => {
       emits('outside-click', ev)
     },
-    onClose: (reason) => {
-      if (reason === 'press-escape') {
-        handlePopoverHide(true)
-        return
-      }
-
-      if (reason === 'click-outside') {
-        handlePopoverHide()
-      }
+    onClose: () => {
+      handlePopoverHide(props.adaptive)
     },
   })),
 )

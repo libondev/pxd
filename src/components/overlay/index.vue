@@ -41,15 +41,11 @@ function onOverlayClick(ev: PointerEvent) {
   dispatchClickOutside(ev)
 }
 
-function onOverlayPointerdown(ev: PointerEvent) {
-  dispatchPointerDownOutside(ev)
-}
-
-const { dispatchClickOutside, dispatchPointerDownOutside } = useOverlayManager(
+const { dispatchClickOutside } = useOverlayManager(
   computed(() => ({
     enabled: props.modelValue,
-    closeOnPressEscape: isTruthyProp(props.closeOnPressEscape),
-    closeOnClickOutside: isTruthyProp(props.closeOnClickOverlay),
+    closeOnPressEscape: props.closeOnPressEscape,
+    closeOnClickOutside: props.closeOnClickOverlay,
     onPressEscape: (ev: KeyboardEvent) => {
       emits('escape', ev)
     },
@@ -57,9 +53,7 @@ const { dispatchClickOutside, dispatchPointerDownOutside } = useOverlayManager(
       emits('click', ev)
     },
     onClose: (reason) => {
-      if (reason === 'press-escape' || reason === 'click-outside') {
-        emits('update:modelValue', false)
-      }
+      emits('update:modelValue', false)
     },
   })),
 )
@@ -98,17 +92,17 @@ function tryGetShownElementIfNeed() {
   )`
 }
 
-function onOverlayVisibleChange(visible: boolean) {
+async function onOverlayVisibleChange(visible: boolean) {
   if (isServer()) {
     return
   }
 
   if (visible) {
-    nextTick(() => {
-      lockScroll()
-      tryGetShownElementIfNeed()
-      shownElementEl?.classList.add('pointer-events-auto')
-    })
+    await nextTick()
+
+    lockScroll()
+    tryGetShownElementIfNeed()
+    shownElementEl?.classList.add('pointer-events-auto')
 
     return
   }
@@ -138,7 +132,6 @@ onBeforeUnmount(() => {
         :style="computedStyle"
         v-bind="$attrs"
         @touchmove.prevent.stop="NOOP"
-        @pointerdown="onOverlayPointerdown"
         @click="onOverlayClick"
       />
     </Transition>

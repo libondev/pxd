@@ -180,7 +180,7 @@ catalogs:
 
 patchedDependencies:
   mkdist:
-    hash: d3obgf4i7oyymufosmy6al6ko4
+    hash: 2415d715d8dedcdb52321644279507fcb6a47aeaaa53e7ac6ba39e072103f83d
     path: patches/mkdist.patch
 
 importers:
@@ -256,7 +256,7 @@ importers:
         version: 16.4.0
       mkdist:
         specifier: catalog:default
-        version: 2.4.1(patch_hash=d3obgf4i7oyymufosmy6al6ko4)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
+        version: 2.4.1(patch_hash=2415d715d8dedcdb52321644279507fcb6a47aeaaa53e7ac6ba39e072103f83d)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
       npm-run-all2:
         specifier: catalog:default
         version: 8.0.4
@@ -305,7 +305,7 @@ importers:
     devDependencies:
       mkdist:
         specifier: 'catalog:'
-        version: 2.4.1(patch_hash=d3obgf4i7oyymufosmy6al6ko4)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
+        version: 2.4.1(patch_hash=2415d715d8dedcdb52321644279507fcb6a47aeaaa53e7ac6ba39e072103f83d)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -6219,7 +6219,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  mkdist@2.4.1(patch_hash=d3obgf4i7oyymufosmy6al6ko4)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3)):
+  mkdist@2.4.1(patch_hash=2415d715d8dedcdb52321644279507fcb6a47aeaaa53e7ac6ba39e072103f83d)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3)):
     dependencies:
       autoprefixer: 10.4.21(postcss@8.5.6)
       citty: 0.1.6
@@ -6978,7 +6978,7 @@ snapshots:
       hookable: 5.5.3
       jiti: 2.5.1
       magic-string: 0.30.17
-      mkdist: 2.4.1(patch_hash=d3obgf4i7oyymufosmy6al6ko4)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
+      mkdist: 2.4.1(patch_hash=2415d715d8dedcdb52321644279507fcb6a47aeaaa53e7ac6ba39e072103f83d)(typescript@5.9.3)(vue-sfc-transformer@0.1.17(@vue/compiler-core@3.5.32)(esbuild@0.25.9)(vue@3.5.32(typescript@5.9.3)))(vue-tsc@3.2.6(typescript@5.9.3))(vue@3.5.32(typescript@5.9.3))
       mlly: 1.7.4
       pathe: 2.0.3
       pkg-types: 2.2.0
