@@ -7,14 +7,14 @@ export function usePopoverResponsive() {
   const responsiveClasses = computed(() => {
     if (isAdaptive.value) {
       return {
-        contentClass: `bg-background-100 w-full rounded-tl-xl rounded-tr-xl`,
-        wrapperClass: 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask',
+        content: `bg-background-100 shadow-border-menu w-full rounded-tl-xl rounded-tr-xl`,
+        wrapper: 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask',
       } as const
     }
 
     return {
-      contentClass: `bg-background-100 shadow-border-menu rounded-xl`,
-      wrapperClass: '',
+      content: `bg-background-100 shadow-border-menu rounded-xl`,
+      wrapper: '',
     } as const
   })
 

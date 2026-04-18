@@ -157,8 +157,8 @@ async function copyCustomVariables() {
     class="h-inherit"
     position="bottom-end"
     :adaptive="isAdaptive"
-    :wrapper-class="responsiveClasses.wrapperClass"
-    :content-class="responsiveClasses.contentClass"
+    :wrapper-class="responsiveClasses.wrapper"
+    :content-class="responsiveClasses.content"
     :lock-scroll-on-visible="isAdaptive"
   >
     <slot />
