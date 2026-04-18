@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
 
 <template>
   <header
-    class="top-0 sm:border-t-0 md:max-w-screen-2xl h-12 max-sm:max-w-full sticky z-5 mx-auto flex w-full items-center justify-between border-y bg-background-100 select-none"
+    class="top-0 md:max-w-screen-2xl h-12 max-sm:max-w-full sticky z-5 mx-auto flex w-full items-center justify-between border-b bg-background-100 select-none"
   >
     <h2 class="sm:w-56 md:border-r xl:border-l h-full">
       <RouterLink
