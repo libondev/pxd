@@ -224,6 +224,10 @@
     "name": "switch"
   },
   {
+    "camelized": "Tabs",
+    "name": "tabs"
+  },
+  {
     "camelized": "Teleport",
     "name": "teleport"
   },
