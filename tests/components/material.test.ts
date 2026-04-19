@@ -11,7 +11,7 @@ describe('material', () => {
     })
 
     expect(wrapper.classes()).toContain('pxd-material')
-    expect(wrapper.classes()).toContain('default')
+    expect(wrapper.classes()).toContain('shadow-border-base')
 
     wrapper.unmount()
   })
@@ -24,7 +24,7 @@ describe('material', () => {
     })
 
     expect(wrapper.classes()).toContain('pxd-material')
-    expect(wrapper.classes()).toContain('small')
+    expect(wrapper.classes()).toContain('shadow-border-small')
 
     wrapper.unmount()
   })
