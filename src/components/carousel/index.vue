@@ -269,7 +269,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     v-bind="$attrs"
-    :data-direction="direction"
+    :data-orientation="direction"
     :data-indicator-type="indicatorType"
     :data-indicator-position="indicatorPosition"
     class="pxd-carousel group relative w-full touch-none overflow-hidden"
@@ -423,11 +423,11 @@ onBeforeUnmount(() => {
     }
   }
 
-  &[data-direction='horizontal'] .pxd-carousel--slider {
+  &[data-orientation='horizontal'] .pxd-carousel--slider {
     display: flex;
   }
 
-  &[data-direction='vertical'] {
+  &[data-orientation='vertical'] {
     .pxd-carousel--prev-btn,
     .pxd-carousel--next-btn {
       transform: rotate(90deg);

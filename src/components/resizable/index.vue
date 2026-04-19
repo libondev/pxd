@@ -234,8 +234,8 @@ onMounted(async () => {
 <template>
   <div
     ref="containerRef"
-    :data-direction="direction"
-    class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[direction=vertical]:flex-col"
+    :data-orientation="direction"
+    class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[orientation=vertical]:flex-col"
     v-bind="$attrs"
   >
     <slot />
