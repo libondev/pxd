@@ -3,10 +3,16 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/uid'
 
+interface ResizableHandleProps {
+  withHandle?: boolean
+}
+
 defineOptions({
   name: 'PResizableHandle',
   inheritAttrs: false,
 })
+
+defineProps<ResizableHandleProps>()
 
 const uniqueId = getUniqueId()
 
@@ -25,7 +31,6 @@ function handlePointerDown(e: PointerEvent) {
   ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
 }
 
-// 处理拖拽移动
 function handlePointerMove(e: PointerEvent) {
   if (!isDragging) {
     return
@@ -36,11 +41,9 @@ function handlePointerMove(e: PointerEvent) {
 
   onDrag({ deltaX, deltaY })
 
-  // 更新起始位置
   startPosition = { x: e.clientX, y: e.clientY }
 }
 
-// 处理拖拽结束
 function handlePointerUp(e: PointerEvent) {
   ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
   isDragging = false
@@ -50,7 +53,6 @@ function handleDoubleClick() {
   resizableContext?.resetPanels()
 }
 
-// 注册 handle
 onMounted(() => {
   resizableContext?.registerHandle({
     id: uniqueId,
@@ -58,7 +60,6 @@ onMounted(() => {
   })
 })
 
-// 注销 handle
 onBeforeUnmount(() => {
   resizableContext?.unregisterHandle(uniqueId)
 })
@@ -66,7 +67,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pxd-resizable-handle relative shrink-0 touch-none bg-border select-none hover:z-1 hover:after:bg-primary/20 active:after:bg-primary/30 motion-safe:transition-colors after:motion-safe:transition-colors"
+    class="pxd-resizable-handle relative shrink-0 touch-none bg-border select-none hover:after:bg-primary/15 active:after:bg-primary/20 motion-safe:transition-colors after:motion-safe:transition-colors"
+    :data-handler="withHandle"
     @pointerdown.prevent="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
@@ -77,6 +79,18 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="postcss">
+.pxd-resizable-handle[data-handler='true']::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 0.5rem;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-gray-300);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .pxd-resizable-handle::after {
   content: '';
   position: absolute;
@@ -91,6 +105,11 @@ onBeforeUnmount(() => {
   height: 100%;
   cursor: ew-resize;
 
+  &::before {
+    width: 0.375rem;
+    height: 1.5rem;
+  }
+
   &::after {
     height: 100%;
   }
@@ -100,6 +119,11 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 1px;
   cursor: ns-resize;
+
+  &::before {
+    width: 1.5rem;
+    height: 0.375rem;
+  }
 
   &::after {
     width: 100%;

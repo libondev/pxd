@@ -3,8 +3,8 @@ import type { ComponentDirection } from '../../types/shared'
 export interface PanelConfig {
   id: string
   size?: number | null
-  minSize?: number
   order: number
+  minSize?: number
 }
 
 export interface HandleConfig {

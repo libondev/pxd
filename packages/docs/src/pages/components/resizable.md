@@ -20,7 +20,7 @@ const direction = ref('horizontal')
 
     <PResizable :direction="direction" class="w-100 h-50 max-w-full border rounded-lg">
       <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
-      <PResizableHandle />
+      <PResizableHandle with-handle />
       <PResizablePanel class="flex items-center justify-center"> Two </PResizablePanel>
     </PResizable>
   </PStack>
@@ -33,11 +33,11 @@ const direction = ref('horizontal')
 <template>
   <PResizable class="w-100 h-100 max-w-full border rounded-lg">
     <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
-    <PResizableHandle />
+    <PResizableHandle with-handle />
     <PResizablePanel class="flex items-center justify-center">
       <PResizable direction="vertical">
         <PResizablePanel class="flex items-center justify-center"> One </PResizablePanel>
-        <PResizableHandle />
+        <PResizableHandle with-handle />
         <PResizablePanel class="flex items-center justify-center"> Two </PResizablePanel>
       </PResizable>
     </PResizablePanel>
@@ -53,7 +53,7 @@ unit: %
 <template>
   <PResizable class="w-100 h-100 max-w-full border rounded-lg">
     <PResizablePanel :size="30" class="flex items-center justify-center"> One (30%) </PResizablePanel>
-    <PResizableHandle />
+    <PResizableHandle with-handle />
     <PResizablePanel :min-size="20" class="flex items-center justify-center"> Two (min 20%) </PResizablePanel>
   </PResizable>
 </template>
