@@ -1,0 +1,72 @@
+<script lang="ts" setup>
+import type { ColorSelectorEmits, ColorSelectorProps } from './types'
+import { tv } from 'tailwind-variants'
+import { computed } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
+import { getUniqueId } from '../../utils/uid'
+
+defineOptions({
+  name: 'PColorSelector',
+  inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
+})
+
+const props = withDefaults(defineProps<ColorSelectorProps>(), {
+  colors: () => ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF'],
+})
+const emits = defineEmits<ColorSelectorEmits>()
+
+const uniqueName = getUniqueId('color-selector')
+
+const colorSelectorVariants = tv({
+  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-all',
+  variants: {
+    size: {
+      sm: 'size-4',
+      md: 'size-5',
+      lg: 'size-6',
+    },
+  },
+})
+
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+
+const computedClasses = computed(() =>
+  colorSelectorVariants({
+    size: props.size || configProvider.size,
+  }),
+)
+
+function isActive(color: string) {
+  return modelValue.value === color
+}
+</script>
+
+<template>
+  <div role="tabpanel" class="pxd-color-selector gap-2 flex" v-bind="$attrs">
+    <template v-for="color in colors" :key="color">
+      <input
+        type="radio"
+        :name="uniqueName"
+        :value="color"
+        :style="{ color }"
+        :class="computedClasses"
+        :aria-selected="isActive(color)"
+        :checked="isActive(color)"
+        :tabindex="isActive(color) ? 0 : -1"
+        @change="modelValue = color"
+      />
+    </template>
+  </div>
+</template>
+
+<style>
+.pxd-color-selector--item:checked {
+  box-shadow: inset 0 0 0 2px var(--color-background-100);
+}
+</style>

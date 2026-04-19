@@ -48,6 +48,10 @@
     "name": "collapse"
   },
   {
+    "camelized": "Color Selector",
+    "name": "color-selector"
+  },
+  {
     "camelized": "Command Menu",
     "name": "command-menu"
   },
