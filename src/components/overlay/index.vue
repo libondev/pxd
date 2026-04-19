@@ -5,7 +5,6 @@ import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOverlayManager } from '../../composables/use-overlay-manager'
 import { NOOP } from '../../utils/event'
-import { isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
@@ -23,6 +22,8 @@ const props = withDefaults(defineProps<OverlayProps>(), {
   modelValue: false,
   appendToBody: true,
   closeOnPressEscape: true,
+  lockScrollOnVisible: true,
+  closeOnClickOverlay: false,
 })
 
 const emits = defineEmits<OverlayEmits>()
@@ -31,51 +32,25 @@ const { lockScroll, unlockScroll } = useLockScroll()
 
 const clipPath = shallowRef('')
 const computedStyle = computed(() => ({
-  '--overlay-z-index': props.zIndex,
+  '--overlay-index': props.zIndex,
   'clip-path': clipPath.value,
 }))
 
-let shownElementEl: HTMLElement | null = null
-
-function onOverlayClick(ev: PointerEvent) {
-  dispatchClickOutside(ev)
-}
+let isLockedScroll = false
+let cacheShownElement: HTMLElement | null = null
 
 const { dispatchClickOutside } = useOverlayManager(
   computed(() => ({
     enabled: props.modelValue,
     closeOnPressEscape: props.closeOnPressEscape,
     closeOnClickOutside: props.closeOnClickOverlay,
-    onPressEscape: (ev: KeyboardEvent) => {
-      emits('escape', ev)
-    },
-    onClickOutside: (ev: PointerEvent) => {
-      emits('click', ev)
-    },
-    onClose: (reason) => {
-      emits('update:modelValue', false)
-    },
+    onPressEscape: (ev: KeyboardEvent) => emits('escape', ev),
+    onClickOutside: (ev: PointerEvent) => emits('click', ev),
+    onClose: () => emits('update:modelValue', false),
   })),
 )
 
-function tryGetShownElementIfNeed() {
-  const { shownElement } = props
-
-  if (!shownElement) {
-    return
-  }
-
-  const el =
-    typeof shownElement === 'string'
-      ? document.querySelector<HTMLElement>(shownElement)
-      : unrefElement(shownElement as MaybeElementRef<HTMLElement>)
-
-  if (!el) {
-    return
-  }
-
-  shownElementEl = el
-
+function getShownElementClipPath(el: HTMLElement) {
   const { top, left, right, bottom } = el.getBoundingClientRect()
 
   clipPath.value = `polygon(
@@ -92,23 +67,67 @@ function tryGetShownElementIfNeed() {
   )`
 }
 
-async function onOverlayVisibleChange(visible: boolean) {
+function toggleViewportScroll(lock: boolean) {
+  if (!props.lockScrollOnVisible) {
+    return
+  }
+
+  if (lock && !isLockedScroll) {
+    isLockedScroll = true
+    lockScroll()
+    return
+  }
+
+  if (isLockedScroll) {
+    isLockedScroll = false
+    unlockScroll()
+    return
+  }
+}
+
+async function tryGetShownElementIfNeed() {
+  const { shownElement, modelValue } = props
+
+  if (!modelValue || !shownElement) {
+    toggleShownElementClasses()
+    clipPath.value = ''
+    return
+  }
+
+  await nextTick()
+
+  const el =
+    typeof shownElement === 'string'
+      ? document.querySelector<HTMLElement>(shownElement)
+      : unrefElement(shownElement as MaybeElementRef<HTMLElement>)
+
+  if (!el) {
+    return
+  }
+
+  cacheShownElement = el
+  getShownElementClipPath(el)
+  toggleShownElementClasses(true)
+}
+
+function toggleShownElementClasses(force: boolean = false) {
+  cacheShownElement?.classList.toggle('pointer-events-auto!', force)
+}
+
+function onOverlayVisibleChange(visible: boolean) {
   if (isServer()) {
     return
   }
 
   if (visible) {
-    await nextTick()
-
-    lockScroll()
+    toggleViewportScroll(true)
     tryGetShownElementIfNeed()
-    shownElementEl?.classList.add('pointer-events-auto')
 
     return
   }
 
-  unlockScroll()
-  shownElementEl?.classList.remove('pointer-events-auto')
+  toggleViewportScroll(false)
+  toggleShownElementClasses()
 }
 
 watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
@@ -116,8 +135,9 @@ watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
 watch(() => props.shownElement, tryGetShownElementIfNeed)
 
 onBeforeUnmount(() => {
-  shownElementEl?.classList.remove('pointer-events-auto')
-  unlockScroll()
+  toggleViewportScroll(false)
+  toggleShownElementClasses()
+  cacheShownElement = null
 })
 </script>
 
@@ -126,30 +146,17 @@ onBeforeUnmount(() => {
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         v-if="modelValue"
-        :data-blurred="blurred"
-        :data-transparent="transparent"
-        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 pointer-events-auto fixed motion-safe:transition-colors"
+        role="presentation"
+        aria-hidden="true"
+        :data-variant="variant"
+        class="pxd-overlay inset-0 bg-black/40 sm:bg-background-100/80 data-[variant='blurred']:backdrop-blur-sm pointer-events-auto fixed z-(--overlay-index) select-none data-[variant='transparent']:opacity-0 motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
+        @click="dispatchClickOutside"
         @touchmove.prevent.stop="NOOP"
-        @click="onOverlayClick"
       />
     </Transition>
 
     <slot />
   </PTeleport>
 </template>
-
-<style>
-.pxd-overlay {
-  z-index: var(--overlay-z-index, 10);
-}
-
-.pxd-overlay[data-blurred='true'] {
-  backdrop-filter: blur(4px);
-}
-
-.pxd-overlay[data-transparent='true'] {
-  opacity: 0;
-}
-</style>

@@ -1,12 +1,12 @@
 export interface OverlayProps {
-  blurred?: boolean
   zIndex?: number
+  variant?: 'default' | 'blurred' | 'transparent'
   modelValue?: boolean
-  transparent?: boolean
   appendToBody?: boolean
+  shownElement?: string | object
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
-  shownElement?: string | object
+  lockScrollOnVisible?: boolean
 }
 
 export interface OverlayEmits {
