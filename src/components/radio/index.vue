@@ -112,7 +112,7 @@ function onInputChange() {
 
     <span aria-hidden="true" :class="computedClasses" />
 
-    <span class="text-sm flex-1 shrink-0 empty:hidden">
+    <span class="text-sm flex-1 shrink-0 leading-none empty:hidden">
       <slot>
         {{ label }}
       </slot>

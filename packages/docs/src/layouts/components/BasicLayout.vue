@@ -105,7 +105,7 @@ if (!isServer()) {
   </div>
 
   <div class="right-0 top-0 bottom-0 w-56 lg:block absolute hidden">
-    <aside class="toc-aside top-12 w-56 bottom-0 fixed z-0 border-x bg-background-100">
+    <aside class="toc-aside top-12 w-56 bottom-0 fixed z-0 border-x bg-background-100 empty:hidden">
       <TocNav />
     </aside>
   </div>

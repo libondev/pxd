@@ -24,10 +24,10 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 const emits = defineEmits<CheckboxEmits>()
 
 const checkboxVariant = tv({
-  base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
+  base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
   variants: {
     checked: {
-      true: '',
+      true: 'text-gray-100',
       false: '',
     },
     disabled: {
@@ -135,12 +135,12 @@ function onInputChange(event: Event) {
     />
 
     <span aria-hidden="true" :class="computedClasses">
-      <CheckIcon v-if="isChecked" class="size-3 pointer-events-none text-gray-100" />
-      <MinusIcon v-else-if="indeterminate" class="size-3 pointer-events-none" />
-      <span v-else class="size-3 pointer-events-none" />
+      <CheckIcon v-if="isChecked" class="size-3" />
+      <MinusIcon v-else-if="indeterminate" class="size-3" />
+      <span v-else class="size-3" />
     </span>
 
-    <span class="text-sm flex-1 shrink-0 empty:hidden">
+    <span class="text-sm flex-1 shrink-0 leading-none empty:hidden">
       <slot>
         {{ label }}
       </slot>

@@ -352,7 +352,7 @@ onBeforeUnmount(() => {
 
   &[data-indicator-position='top'] {
     .pxd-carousel--indicator {
-      left: 12px;
+      left: 0.75rem;
       top: 0.5rem;
     }
 
@@ -364,7 +364,7 @@ onBeforeUnmount(() => {
 
   &[data-indicator-position='bottom'] {
     .pxd-carousel--indicator {
-      left: 12px;
+      left: 0.75rem;
       bottom: 0.5rem;
     }
 
@@ -377,7 +377,7 @@ onBeforeUnmount(() => {
   &[data-indicator-position='left'] {
     .pxd-carousel--indicator {
       left: 0.5rem;
-      top: 12px;
+      top: 0.75rem;
     }
 
     .pxd-carousel--toggler {
@@ -389,7 +389,7 @@ onBeforeUnmount(() => {
   &[data-indicator-position='right'] {
     .pxd-carousel--indicator {
       right: 0.5rem;
-      top: 12px;
+      top: 0.75rem;
     }
 
     .pxd-carousel--toggler {
@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
       left: 0;
       top: 50%;
       width: 100%;
-      padding-inline: 0.5rem;
+      padding-inline: 1rem;
       justify-content: space-between;
       transform: translateY(-50%);
     }

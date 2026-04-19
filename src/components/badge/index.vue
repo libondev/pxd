@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 const emits = defineEmits<BadgeEmits>()
 
 const badgeVariant = tv({
-  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans text-nowrap whitespace-nowrap no-underline! motion-safe:transition-all',
+  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-all',
   variants: {
     variant: {
       pill: 'bg-background-100',
