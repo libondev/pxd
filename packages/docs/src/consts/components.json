@@ -200,6 +200,10 @@
     "name": "scrollable"
   },
   {
+    "camelized": "Separator",
+    "name": "separator"
+  },
+  {
     "camelized": "Skeleton",
     "name": "skeleton"
   },
