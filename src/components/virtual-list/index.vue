@@ -10,14 +10,10 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<VirtualListProps>(), {
-  dataKey: 'id',
-  itemSize: 50,
-  overScan: 2,
   listData: () => [],
   errorText: 'Request failed. Click to reload',
   loadingText: 'Loading...',
   finishedText: 'Finished',
-  bottomThreshold: 50,
 })
 
 const emits = defineEmits<VirtualListEmits>()
@@ -56,6 +52,7 @@ defineExpose({
   <div ref="containerRef" class="pxd-virtual-list relative overflow-auto" v-bind="$attrs">
     <div
       class="pxd-virtual-list--content relative w-full content-visibility-auto"
+      :class="listClass"
       :style="{ height: `${totalSize}px`, containIntrinsicSize: `auto ${totalSize}px` }"
     >
       <div
@@ -64,6 +61,7 @@ defineExpose({
         :ref="(el) => measureElement(el)"
         :data-index="virtualItem.index"
         class="pxd-virtual-list--item left-0 top-0 absolute w-full"
+        :class="itemClass"
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
         <slot name="item" :item="listData[virtualItem.index]" :virtual-item="virtualItem" />

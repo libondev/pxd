@@ -47,6 +47,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
         return key
       }
     }
+
     return index
   }
 
