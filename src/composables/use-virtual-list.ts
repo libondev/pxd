@@ -16,6 +16,7 @@ export interface VirtualListItem extends VirtualItem {
 
 const DEFAULTS = {
   status: '',
+  dataKey: 'id',
   itemSize: 50,
   overScan: 2,
 } as const
@@ -40,13 +41,13 @@ export function useVirtualList<Options extends VirtualListOptions>(
   const triggerVersion = shallowRef(0)
 
   function getItemKey(index: number): string | number {
-    if (options.dataKey) {
-      const item = options.listData?.[index]
-      const key = item?.[options.dataKey]
-      if (key !== undefined && key !== null) {
-        return key
-      }
+    const item = options.listData?.[index]
+    const key = item?.[options.dataKey ?? DEFAULTS.dataKey]
+
+    if (key !== undefined && key !== null) {
+      return key
     }
+
     return index
   }
 
