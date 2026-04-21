@@ -18,6 +18,8 @@ const DEFAULTS = {
   status: '',
   itemSize: 50,
   overScan: 2,
+  columnGap: 0,
+  columnCount: 1,
 } as const
 
 export interface VirtualListOptions {
@@ -26,6 +28,8 @@ export interface VirtualListOptions {
   listData?: any[]
   itemSize?: number
   overScan?: number
+  columnGap?: number
+  columnCount?: number
   onBottom?: () => void | Promise<void>
   bottomThreshold?: number
 }
@@ -57,6 +61,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
     estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
     getItemKey,
     overscan: options.overScan ?? DEFAULTS.overScan,
+    lanes: options.columnCount ?? DEFAULTS.columnCount,
+    gap: options.columnGap ?? DEFAULTS.columnGap,
+    laneAssignmentMode: 'measured',
     observeElementRect,
     observeElementOffset,
     scrollToFn: elementScroll,
@@ -105,20 +112,34 @@ export function useVirtualList<Options extends VirtualListOptions>(
     return virtualizer.getTotalSize()
   })
 
+  function measureElement(el: Element | ComponentPublicInstance | null) {
+    if (!el) {
+      virtualizer.measureElement(null)
+      return
+    }
+
+    const htmlEl = el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el
+    virtualizer.measureElement(htmlEl)
+  }
+
   function updateVirtualizer() {
     virtualizer.setOptions({
       ...virtualizer.options,
       count: options.listData?.length ?? 0,
       estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
       getItemKey,
+      lanes: options.columnCount ?? DEFAULTS.columnCount,
+      gap: options.columnGap ?? DEFAULTS.columnGap,
     })
 
     virtualizer._willUpdate()
     triggerVersion.value++
   }
 
-  watch(() => [options.itemSize, options.dataKey], updateVirtualizer)
-
+  watch(
+    () => [options.itemSize, options.dataKey, options.columnCount, options.columnGap],
+    updateVirtualizer,
+  )
   watch(() => [options.listData, options.listData?.length], updateVirtualizer)
 
   onMounted(() => {
@@ -129,16 +150,6 @@ export function useVirtualList<Options extends VirtualListOptions>(
   onUnmounted(() => {
     cleanup?.()
   })
-
-  function measureElement(el: Element | ComponentPublicInstance | null) {
-    if (!el) {
-      virtualizer.measureElement(null)
-      return
-    }
-
-    const htmlEl = el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el
-    virtualizer.measureElement(htmlEl)
-  }
 
   return {
     virtualItems,

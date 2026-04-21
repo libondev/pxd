@@ -2,7 +2,7 @@
 import type { VirtualListProps, VirtualListEmits } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { shallowRef } from 'vue'
-import { useVirtualList } from '../../composables/use-virtual-list'
+import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list'
 
 defineOptions({
   name: 'PVirtualList',
@@ -10,6 +10,9 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<VirtualListProps>(), {
+  dataKey: 'id',
+  columnGap: 0,
+  columnCount: 1,
   listData: () => [],
   errorText: 'Request failed. Click to reload',
   loadingText: 'Loading...',
@@ -29,6 +32,26 @@ const {
   scrollToOffset,
   scrollBy,
 } = useVirtualList(containerRef, props)
+
+function getItemStyle(virtualItem: VirtualListItem) {
+  const lanes = Math.max(1, Math.floor(props.columnCount))
+  const gap = props.columnGap
+  const y = `translateY(${virtualItem.start}px)`
+
+  if (lanes <= 1) {
+    return { transform: y }
+  }
+
+  const lane = virtualItem.lane
+  const width = `calc((100% - ${(lanes - 1) * gap}px) / ${lanes})`
+  const left = `calc(${lane} * ((100% - ${(lanes - 1) * gap}px) / ${lanes} + ${gap}px))`
+
+  return {
+    width,
+    left,
+    transform: y,
+  }
+}
 
 function onRetryClick() {
   if (props.status !== 'error') {
@@ -62,7 +85,7 @@ defineExpose({
         :data-index="virtualItem.index"
         class="pxd-virtual-list--item left-0 top-0 absolute w-full"
         :class="itemClass"
-        :style="{ transform: `translateY(${virtualItem.start}px)` }"
+        :style="getItemStyle(virtualItem)"
       >
         <slot name="item" :item="listData[virtualItem.index]" :virtual-item="virtualItem" />
       </div>
@@ -71,7 +94,7 @@ defineExpose({
     <div
       v-if="status"
       class="pxd-virtual-list--message py-4 text-sm left-0 right-0 flex items-center justify-center text-gray-600 empty:hidden motion-safe:transition-colors"
-      :class="{ 'cursor-pointer hover:text-gray-900': status === 'error' }"
+      :class="{ 'cursor-pointer hover:text-gray-800': status === 'error' }"
       @click="onRetryClick"
     >
       <slot name="message">

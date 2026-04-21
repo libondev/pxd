@@ -57,6 +57,39 @@ const listData = Array.from({ length: 100 }, (_, i) => ({
 </template>
 ```
 
+## Masonry layout
+
+Set **`column-count`** for column count and **`column-gap`** for spacing.
+
+```vue demo
+<script setup>
+const listData = Array.from({ length: 50 }, (_, i) => ({
+  id: i,
+  title: `Card ${i}`,
+  height: Math.floor(Math.random() * 120) + 72,
+}))
+</script>
+
+<template>
+  <PVirtualList
+    class="!h-64 w-100 max-w-full border border-dashed rounded-lg"
+    :list-data="listData"
+    :column-count="3"
+    :column-gap="12"
+    :item-size="80"
+  >
+    <template #item="{ item }">
+      <div
+        class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800/60"
+        :style="{ height: `${item.height}px` }"
+      >
+        {{ item.title }}
+      </div>
+    </template>
+  </PVirtualList>
+</template>
+```
+
 ## Infinite scroll
 
 Use the `status` parameter with the `bottom` / `retry` event to achieve infinite scrolling of data loading
