@@ -54,7 +54,7 @@ You can set the same `variant` property as the button.
     <PHoldButton>default</PHoldButton>
     <PHoldButton variant="ghost">ghost</PHoldButton>
     <PHoldButton variant="error">error</PHoldButton>
-    <PHoldButton variant="primary" mask-color="var(--color-background-100)">primary</PHoldButton>
+    <PHoldButton variant="primary" progress-color="var(--color-background-100)">primary</PHoldButton>
     <PHoldButton variant="success">success</PHoldButton>
     <PHoldButton disabled>disabled</PHoldButton>
     <PHoldButton loading>loading</PHoldButton>
@@ -64,11 +64,11 @@ You can set the same `variant` property as the button.
 
 ## Colors
 
-Set `mask-color` to modify the color of the progress bar.
+Set `progress-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1000" mask-color="var(--color-red-500)"> Lasts one second </PHoldButton>
+  <PHoldButton durations="1000" progress-color="var(--color-red-500)"> Lasts one second </PHoldButton>
 </template>
 ```
 

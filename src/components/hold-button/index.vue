@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
   vibrate: true,
   scalable: true,
   durations: 2000,
-  maskColor: 'var(--color-gray-alpha-600)',
+  progressColor: 'var(--color-gray-alpha-600)',
 })
 
 const emits = defineEmits<HoldButtonEmits>()
@@ -21,7 +21,7 @@ const emits = defineEmits<HoldButtonEmits>()
 const status = shallowRef<HoldButtonStatus>('idle')
 
 const computedAttrs = computed(() => {
-  const { scalable, durations, maskColor, cancelable, ...rest } = props
+  const { scalable, durations, progressColor, cancelable, ...rest } = props
 
   return {
     class: [
@@ -36,7 +36,7 @@ const computedAttrs = computed(() => {
 })
 
 const computedStyle = computed(() => {
-  const { durations, maskColor } = props
+  const { durations, progressColor } = props
 
   let _durations = Number(durations)
   if (Number.isNaN(_durations) || _durations < 0) {
@@ -46,7 +46,7 @@ const computedStyle = computed(() => {
 
   return {
     '--hold-button-durations': `${_durations}ms`,
-    '--hold-button-mask-color': maskColor,
+    '--hold-button-progress-color': progressColor,
   }
 })
 
@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
     <template #suffix>
       <slot name="suffix" />
       <div
-        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-mask-color) default-transition-timing-function!"
+        class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-progress-color) default-transition-timing-function!"
         :class="{ finished: status === 'confirmed' }"
         :style="computedStyle"
         @transitionend="onTransitionEnd"

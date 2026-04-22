@@ -6,8 +6,8 @@ export interface HoldButtonProps extends Omit<ButtonProps, 'as'> {
   vibrate?: boolean
   scalable?: boolean
   durations?: number | string
-  maskColor?: string
   cancelable?: boolean
+  progressColor?: string
 }
 
 export interface HoldButtonEmits {
