@@ -31,7 +31,10 @@ const modalRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
 
 const computedStyle = computed(() => {
-  return { '--modal-width': getCssUnitValue(props.width) }
+  return {
+    '--modal-index': props.zIndex,
+    '--modal-width': getCssUnitValue(props.width),
+  }
 })
 
 const defaultStyles = computed(() => ({
@@ -100,7 +103,7 @@ watch(
         tabindex="-1"
         aria-modal="true"
         :aria-expanded="isVisible"
-        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-(--modal-width,540px) max-sm:bottom-0 pointer-events-auto fixed z-10 flex w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-appearance dark:bg-background-200"
+        class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-(--modal-width,540px) max-sm:bottom-0 pointer-events-auto fixed z-(--modal-index) flex w-full max-w-full flex-col overflow-hidden rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-appearance dark:bg-background-200"
         :class="wrapperClass"
         :style="computedStyle"
         v-bind="$attrs"

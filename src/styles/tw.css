@@ -126,7 +126,10 @@
     0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f;
 
   /* component variables defaults */
+  --modal-index: 20;
+  --drawer-index: 20;
   --overlay-index: 10;
+  --popover-index: 30;
 
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;

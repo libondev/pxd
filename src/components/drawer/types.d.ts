@@ -1,6 +1,7 @@
 import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared'
 
 export interface DrawerProps {
+  zIndex?: number
   title?: ComponentLabel
   subtitle?: ComponentLabel
   size?: number | string

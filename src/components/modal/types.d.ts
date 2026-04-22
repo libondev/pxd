@@ -1,6 +1,7 @@
 import type { ComponentClass, ComponentLabel } from '../../types/shared'
 
 export interface ModalProps {
+  zIndex?: number
   title?: ComponentLabel
   subtitle?: ComponentLabel
   width?: string | number
