@@ -389,6 +389,7 @@
 
   --default-transition-duration: var(--duration);
   --default-transition-timing-function: var(--timing-function);
+  --faster-transition-duration: calc(var(--duration) * 0.7);
 
   --z-1: 1;
   --spacing-em: 1em;
@@ -585,14 +586,11 @@
   z-index: 0;
 }
 
-[class*='pxd-transition--'] {
-  transition-duration: var(--default-transition-duration);
-  transition-timing-function: var(--default-transition-timing-function);
-}
-
 .pxd-transition--fade-enter-active,
 .pxd-transition--fade-leave-active {
   transition-property: opacity;
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
   will-change: opacity;
 }
 
@@ -606,6 +604,8 @@
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
   transition-property: opacity, transform, filter;
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
   will-change: opacity, transform, filter;
 }
 
@@ -613,6 +613,11 @@
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
   transform: scale(var(--scale, 0.95));
+}
+
+/* Make exit faster than enter */
+[class*='pxd-transition--'][class*='-leave-active'] {
+  transition-duration: var(--faster-transition-duration) !important;
 }
 
 /*

@@ -442,10 +442,12 @@ defineExpose({
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
     transform: scale(0.95);
+    transition-duration: var(--faster-transition-duration);
   }
 
   [data-visible='false'] &[data-transition-type='fade-slide'] {
     transform: translateY(100%);
+    transition-duration: var(--faster-transition-duration);
   }
 
   [data-position='top'] & {

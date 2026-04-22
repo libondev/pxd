@@ -111,7 +111,12 @@ watch(
     @escape="closeOverlayIfNeed"
     @click="onOverlayClick"
   >
-    <Transition :name="transitionName" mode="out-in" appear>
+    <Transition
+      appear
+      mode="out-in"
+      :name="transitionName"
+      class="default-transition-duration default-transition-timing-function"
+    >
       <div
         v-if="isVisible"
         ref="drawerRef"
