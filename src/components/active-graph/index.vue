@@ -1,4 +1,4 @@
-<script setup lang="ts">
+transition-appearance<script setup lang="ts">
 import type {
   ActiveGraphCellData,
   ActiveGraphEmits,

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { ModalEmits, ModalProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'

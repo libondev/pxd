@@ -104,7 +104,7 @@ onMounted(() => {
       <li
         v-for="item in tocItems"
         :key="item.id"
-        class="toc-item p-2 flex cursor-pointer items-center border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-all"
+        class="toc-item p-2 flex cursor-pointer items-center border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
         :class="[
           `toc-level-${item.level}`,
           { 'is-active border-l-primary bg-primary/10 text-primary!': activeId === item.id },

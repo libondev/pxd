@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed, shallowRef, watch } from 'vue'

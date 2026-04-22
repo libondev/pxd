@@ -456,6 +456,15 @@
   }
 }
 
+@utility self-focus-ring {
+  & {
+    outline-offset: 2px;
+  }
+  &:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+  }
+}
+
 @utility peer-focus-ring {
   & {
     outline-offset: 2px;
@@ -466,13 +475,11 @@
   }
 }
 
-@utility self-focus-ring {
-  & {
-    outline-offset: 2px;
-  }
-  &:focus-visible {
-    outline: 2px solid hsl(var(--ring));
-  }
+@utility transition-appearance {
+  transition-property:
+    opacity, transform, filter, background-color, box-shadow, font-size, border, color;
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
 }
 
 @utility visually-hidden {

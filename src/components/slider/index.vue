@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'

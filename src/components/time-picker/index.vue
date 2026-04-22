@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { PopoverTrigger } from '../popover/types'
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'

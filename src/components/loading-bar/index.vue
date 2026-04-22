@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
 import type { LoadingBarProps, LoadingBarStatus } from './types'
 import { tv } from 'tailwind-variants'

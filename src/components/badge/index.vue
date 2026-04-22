@@ -1,4 +1,4 @@
-<script setup lang="ts">
+transition-appearance<script setup lang="ts">
 import type { BadgeEmits, BadgeProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import { tv } from 'tailwind-variants'

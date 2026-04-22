@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { getStyle } from '../../utils/dom'

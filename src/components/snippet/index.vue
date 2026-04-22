@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+transition-appearance<script lang="ts" setup>
 import type { SnippetEmits, SnippetProps } from './types'
 import type { Component } from 'vue'
 import CheckIcon from '@gdsicon/vue/check'

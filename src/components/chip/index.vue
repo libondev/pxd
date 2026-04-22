@@ -1,4 +1,4 @@
-<script setup lang="ts">
+transition-appearance<script setup lang="ts">
 import type { ChipProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'

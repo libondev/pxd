@@ -1,4 +1,4 @@
-<script setup lang="ts">
+transition-appearance<script setup lang="ts">
 import type { ToggleEmits, ToggleProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
