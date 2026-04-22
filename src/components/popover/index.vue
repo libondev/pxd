@@ -155,10 +155,12 @@ async function updatePosition() {
     return
   }
 
-  Object.assign(wrapperRef.value.style, {
-    left: `${x}px`,
-    top: `${y}px`,
-  })
+  const wrapperPositionStyle = {
+    left: props.adaptive ? '0' : `${x}px`,
+    top: props.adaptive ? '0' : `${y}px`,
+  } as const
+
+  Object.assign(wrapperRef.value.style, wrapperPositionStyle)
 
   if (middlewareData.arrow) {
     const { x: arrowX, y: arrowY } = middlewareData.arrow
@@ -190,13 +192,6 @@ async function handlePopoverShow() {
 
   if (props.closeOnPressEscape) {
     cachedOn(document, 'keydown', onPopoverKeydown)
-  }
-
-  // Some components often need to cover the screen on mobile devices,
-  // so there is no need to adjust their positions.
-  if (props.adaptive) {
-    Object.assign(wrapperRef.value.style, { left: '0', top: '0' })
-    return
   }
 
   disposeAutoUpdate()
