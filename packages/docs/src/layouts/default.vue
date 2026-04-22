@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { asideMenus } from '@/consts/components'
 import BasicLayout from './components/BasicLayout.vue'
 </script>

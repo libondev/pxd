@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { GaugeProps } from './types'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
@@ -152,7 +152,7 @@ const progressColors = computed(() => {
           stroke-linecap="round"
           :stroke-dashoffset="trackOffset"
           :stroke="progressColors.secondary"
-          class="pxd-gauge--track motion-safe:transition-all"
+          class="pxd-gauge--track motion-safe:transition-appearance"
           :stroke-dasharray="
             progressStatus.hasProgress ? `${trackArc} ${CIRCUMFERENCE}` : undefined
           "
@@ -168,7 +168,7 @@ const progressColors = computed(() => {
           stroke-dashoffset="0"
           stroke-linecap="round"
           :stroke="progressColors.primary"
-          class="pxd-gauge--bar motion-safe:transition-all"
+          class="pxd-gauge--bar motion-safe:transition-appearance"
           :stroke-dasharray="`${progressArc} ${CIRCUMFERENCE}`"
         />
       </g>

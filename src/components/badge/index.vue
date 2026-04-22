@@ -1,4 +1,4 @@
-transition-appearance<script setup lang="ts">
+<script lang="ts" setup>
 import type { BadgeEmits, BadgeProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import { tv } from 'tailwind-variants'
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 const emits = defineEmits<BadgeEmits>()
 
 const badgeVariant = tv({
-  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-all',
+  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance',
   variants: {
     variant: {
       pill: 'bg-background-100',

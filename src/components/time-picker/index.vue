@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { PopoverTrigger } from '../popover/types'
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
@@ -331,7 +331,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-all"
+            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-appearance"
           >
             {{ preset.label }}
           </button>

@@ -1,10 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { humanize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
 import { githubLink } from '@/consts/link'
 import Menus from '../../components/Menus.vue'
 import TocNav from '../../components/TocNav.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 interface MenuItem {
   label: string

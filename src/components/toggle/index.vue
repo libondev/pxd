@@ -1,4 +1,4 @@
-transition-appearance<script setup lang="ts">
+<script lang="ts" setup>
 import type { ToggleEmits, ToggleProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
@@ -87,7 +87,7 @@ async function onCheckboxChange(e: Event) {
     >
 
     <div
-      class="pxd-toggle--handle rounded-full border bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed peer-checked:peer-disabled:bg-gray-500 motion-safe:transition-all"
+      class="pxd-toggle--handle rounded-full border bg-(--toggle-inactive-color) p-px peer-focus-ring [--tx:0] peer-checked:bg-(--toggle-active-color) peer-checked:[--tx:100%] peer-disabled:cursor-not-allowed peer-checked:peer-disabled:bg-gray-500 motion-safe:transition-appearance"
       :class="computedSize"
       :style="{
         '--toggle-active-color': activeColor,
@@ -97,7 +97,7 @@ async function onCheckboxChange(e: Event) {
       <div
         :data-checked="isChecked"
         :data-disabled="isDisabled"
-        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-all dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
+        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-appearance dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
       >
         <div class="inset-0 pointer-events-none absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">

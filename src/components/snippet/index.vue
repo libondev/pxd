@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SnippetEmits, SnippetProps } from './types'
 import type { Component } from 'vue'
 import CheckIcon from '@gdsicon/vue/check'
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 const emits = defineEmits<SnippetEmits>()
 
 const snippetVariant = tv({
-  base: 'pxd-snippet pr-12 relative flex items-center rounded-lg border motion-safe:transition-all',
+  base: 'pxd-snippet pr-12 relative flex items-center rounded-lg border motion-safe:transition-appearance',
   variants: {
     size: {
       sm: 'min-h-7.5 pl-3.5 pr-1.5 py-2 text-sm',

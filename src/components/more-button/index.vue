@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { MoreButtonEmits, MoreButtonProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { useModelValue } from '../../composables/use-model-value'

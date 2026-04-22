@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { ProgressEmits, ProgressProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -102,7 +102,7 @@ const computedProgressBarStyles = computed(() => {
   >
     <div :class="computedClasses">
       <div
-        class="h-full rounded-inherit motion-safe:transition-all"
+        class="h-full rounded-inherit motion-safe:transition-appearance"
         :style="computedProgressBarStyles"
       />
     </div>

@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { RadioEmits, RadioProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -19,7 +19,7 @@ const props = defineProps<RadioProps>()
 const emits = defineEmits<RadioEmits>()
 
 const radioVariant = tv({
-  base: 'pxd-radio--inner size-4 after:content-empty after:size-2 inline-flex items-center justify-center rounded-full border peer-focus-ring after:scale-40 after:rounded-full after:bg-primary after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:transition-colors motion-safe:after:transition-all',
+  base: 'pxd-radio--inner size-4 after:content-empty after:size-2 inline-flex items-center justify-center rounded-full border peer-focus-ring after:scale-40 after:rounded-full after:bg-primary after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:transition-colors motion-safe:after:transition-appearance',
   variants: {
     checked: {
       true: {

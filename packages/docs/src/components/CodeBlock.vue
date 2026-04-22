@@ -45,7 +45,7 @@ function onCopy(ev: MouseEvent) {
           @click="onCopy"
         >
           <div
-            class="inset-0 ease-in-out absolute flex items-center justify-center transition-appearance duration-300 will-change-[transform,opacity,filter]"
+            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 will-change-[transform,opacity,filter] motion-safe:transition-appearance"
             :class="isCopied ? 'blur-0 scale-100 opacity-100' : 'blur-xs scale-[0.25] opacity-0'"
           >
             <CheckIcon />

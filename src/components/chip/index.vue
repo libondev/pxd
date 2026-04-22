@@ -1,4 +1,4 @@
-transition-appearance<script setup lang="ts">
+<script lang="ts" setup>
 import type { ChipProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<ChipProps>(), {
 })
 
 const chipVariant = tv({
-  base: 'pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-all',
+  base: 'pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-appearance',
   variants: {
     variant: {
       primary: 'bg-primary text-background-100',

@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import type { NumberInputData, NumberInputEmits, NumberInputProps } from './types'
-import MinusIcon from '@gdsicon/vue/minus'
-import PlusIcon from '@gdsicon/vue/plus'
-import { isNil, isNumber, isUndefined } from 'es-toolkit'
-import { computed, reactive, shallowRef, watch } from 'vue'
-import { useRepeatAction } from '../../composables/use-repeat-action'
+import type { InputEmits, InputProps } from './types'
+import CrossIcon from '@gdsicon/vue/cross'
+import EyeIcon from '@gdsicon/vue/eye'
+import EyeOffIcon from '@gdsicon/vue/eye-off'
+import { tv } from 'tailwind-variants'
+import { computed, shallowRef } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { NOOP } from '../../utils/event'
-import PInput from '../input/index.vue'
+import { isTruthyProp } from '../../utils/format'
+import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
-  name: 'PNumberInput',
+  name: 'PInput',
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
@@ -17,292 +20,268 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<NumberInputProps>(), {
-  step: 1,
-  controls: true,
-  clearValue: null,
-  scientific: true,
-  min: Number.MIN_SAFE_INTEGER,
-  max: Number.MAX_SAFE_INTEGER,
-  thousandsSeparator: ',',
+const props = withDefaults(defineProps<InputProps>(), {
+  align: 'left',
+  defaultPrefixStyle: true,
+  defaultSuffixStyle: true,
 })
 
-const emits = defineEmits<NumberInputEmits>()
+const emits = defineEmits<InputEmits>()
 
-const modelValue = computed({
-  get() {
-    return props.modelValue
+const inputVariant = tv({
+  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
+  variants: {
+    size: {
+      xs: 'h-6 text-xs rounded-sm',
+      sm: 'h-7.5 text-sm rounded-md',
+      md: 'h-9 text-sm rounded-md',
+      lg: 'h-10 text-base rounded-lg',
+    },
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    },
+    disabled: {
+      true: 'is-disabled',
+      false: '',
+    },
+    readonly: {
+      true: 'is-readonly',
+      false: '',
+    },
+    error: {
+      true: 'is-error',
+      false: '',
+    },
   },
-  set(value) {
-    emits('input', value)
-    emits('update:modelValue', value)
+  defaultVariants: {
+    size: 'md',
+    align: 'left',
+    disabled: false,
+    readonly: false,
+    error: false,
   },
 })
 
-const REGEXPS = {
-  'remove-leading-zeros': /^(-?)0+(?=\d)/,
-  'thousands-separator': /\B(?=(\d{3})+(?!\d))/g,
-}
+const uniqueId = getUniqueId()
+const inputRef = shallowRef<HTMLInputElement>()
 
-const isFocused = shallowRef(false)
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits, { withChange: false })
 
-const inputData = reactive<NumberInputData>({
-  currentValue: props.modelValue,
-  userInput: null,
+const isComposing = shallowRef(false)
+const isPasswordVisible = shallowRef(!props.password)
+const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
+
+const computedClasses = computed(() => {
+  return inputVariant({
+    size: props.size || configProvider.size,
+    align: props.align,
+    error: isTruthyProp(props.error),
+    disabled: isTruthyProp(props.disabled),
+    readonly: isTruthyProp(props.readonly),
+  })
 })
 
-function formatWithThousands(value: string | number): string {
-  const str = String(value)
-  const dotIndex = str.indexOf('.')
-  const intPart = dotIndex === -1 ? str : str.slice(0, dotIndex)
-  const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
-  return intPart.replace(REGEXPS['thousands-separator'], props.thousandsSeparator) + decPart
+function getInputValue(ev: Event) {
+  return (ev.target as HTMLInputElement).value
 }
 
-const inputValue = computed(() => {
-  if (inputData.userInput !== null) {
-    return inputData.userInput
+function onFocus(event: FocusEvent) {
+  if (props.selectOnFocus) {
+    inputRef.value?.select()
   }
 
-  let currentValue: number | string | undefined | null = inputData.currentValue
-
-  if (isNil(currentValue)) {
-    return ''
-  }
-
-  if (isNumber(currentValue)) {
-    if (Number.isNaN(currentValue)) {
-      return ''
-    }
-
-    if (!isUndefined(props.precision)) {
-      currentValue = currentValue.toFixed(props.precision)
-    }
-  }
-
-  if (props.thousands && !isFocused.value) {
-    return formatWithThousands(currentValue)
-  }
-
-  return currentValue
-})
-
-const decreaseDisabled = computed(
-  () => props.disabled || (isNumber(props.modelValue) && props.modelValue <= props.min),
-)
-const increaseDisabled = computed(
-  () => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max),
-)
-
-const valuePrecision = computed(() => {
-  if (props.precision) {
-    return props.precision
-  }
-
-  const stringValue = String(props.step)
-
-  const decimalIndex = stringValue.indexOf('.')
-
-  if (decimalIndex === -1) {
-    return 0
-  }
-
-  return stringValue.length - decimalIndex - 1
-})
-
-const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
-  disabled: decreaseDisabled,
-  action: decreaseValue,
-})
-
-const { start: startIncrease, stop: stopIncrease } = useRepeatAction({
-  disabled: increaseDisabled,
-  action: increaseValue,
-})
-
-function toPrecision(value: number | null) {
-  if (!value) {
-    return value
-  }
-
-  if (Number.isNaN(value)) {
-    return 0
-  }
-
-  if (!Number.isFinite(value)) {
-    return value
-  }
-
-  const p = Math.max(0, valuePrecision.value ?? 0)
-  const factor = 10 ** p
-
-  return Math.round(value * factor) / factor
-}
-
-function clampToRange(value: number) {
-  if (value > props.max) {
-    return props.max
-  }
-
-  if (value < props.min) {
-    return props.min
-  }
-
-  return value
-}
-
-function increaseValue() {
-  if (props.readonly || props.disabled || increaseDisabled.value) {
-    return
-  }
-
-  const numeric = Number(inputValue.value) || 0
-  const value = toPrecision(numeric + props.step)
-
-  inputData.currentValue = value
-  modelValue.value = clampToRange(value ?? 0)
-}
-
-function decreaseValue() {
-  if (props.readonly || props.disabled || decreaseDisabled.value) {
-    return
-  }
-
-  const numeric = Number(inputValue.value) || 0
-  const value = toPrecision(numeric - props.step)
-
-  inputData.currentValue = value
-  modelValue.value = clampToRange(value ?? 0)
-}
-
-function onInputKeydown(ev: KeyboardEvent) {
-  const key = ev.key
-
-  if (!props.scientific && ['e', 'E'].includes(key)) {
-    ev.preventDefault()
-    return
-  }
-
-  if (ev.key === 'ArrowUp') {
-    ev.preventDefault()
-    increaseValue()
-  } else if (ev.key === 'ArrowDown') {
-    ev.preventDefault()
-    decreaseValue()
-  }
-}
-
-function onInputFocus(event: FocusEvent) {
-  isFocused.value = true
   emits('focus', event)
 }
 
-function onInputBlur(event: FocusEvent) {
-  isFocused.value = false
-  inputData.userInput = null
-
-  if (isNumber(inputData.currentValue)) {
-    const clamped = clampToRange(inputData.currentValue)
-    if (clamped !== inputData.currentValue) {
-      inputData.currentValue = clamped
-      modelValue.value = clamped
-    }
-  }
-
-  if (inputData.currentValue === null) {
-    ;(event.target as HTMLInputElement).value = ''
-  }
-
+function onBlur(event: FocusEvent) {
   emits('blur', event)
 }
 
-function onInputInput(value: string) {
-  const normalized = value.replace(REGEXPS['remove-leading-zeros'], '$1')
-  inputData.userInput = normalized
-
-  const newValue = normalized === '' ? null : Number.parseFloat(normalized)
-
-  inputData.currentValue = toPrecision(newValue ?? 0)
-  modelValue.value = inputData.currentValue
+function onClick(event: MouseEvent) {
+  emits('click', event)
 }
 
-function onInputChange(value: string, event: Event) {
-  let newValue = toPrecision(value === '' ? null : Number.parseFloat(value))
+function onChange(event: Event) {
+  const inputValue = getInputValue(event)
+  emits('change', inputValue, event)
+}
 
-  if (isNumber(newValue)) {
-    newValue = clampToRange(newValue)
+async function onInput(event: Event) {
+  const ev = event as InputEvent
+
+  if (ev.isComposing || isComposing.value) {
+    return
   }
 
-  emits('change', newValue, event)
+  const inputValue = getInputValue(event)
+  modelValue.value = inputValue
+
+  emits('input', inputValue)
 }
 
-watch(
-  () => props.modelValue,
-  (newVal, oldVal) => {
-    if (inputData.userInput === null && newVal !== oldVal) {
-      inputData.currentValue = toPrecision(props.modelValue ?? 0)
-    }
-  },
-  { immediate: true },
-)
+function onKeydown(event: KeyboardEvent) {
+  if (props.readonly) {
+    return
+  }
+
+  if (event.key === 'Enter') {
+    onChange(event)
+  }
+
+  emits('keydown', event)
+}
+
+function onCompositionStart(event: CompositionEvent) {
+  isComposing.value = true
+  emits('compositionstart', event)
+}
+
+function onCompositionUpdate(event: CompositionEvent) {
+  isComposing.value = true
+  emits('compositionupdate', event)
+}
+
+async function onCompositionEnd(event: CompositionEvent) {
+  isComposing.value = false
+  emits('compositionend', event)
+
+  const inputValue = getInputValue(event)
+  modelValue.value = inputValue
+
+  emits('input', inputValue)
+}
+
+function toggleType() {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
+
+function blur() {
+  inputRef.value?.blur()
+}
+
+function focus() {
+  inputRef.value?.focus()
+}
+
+function select() {
+  inputRef.value?.select()
+}
+
+function clear(ev: Event) {
+  const clearValue = props.clearValue ?? ''
+
+  emits('input', '')
+  emits('change', '', ev)
+  modelValue.value = clearValue
+}
+
+defineExpose({
+  blur,
+  clear,
+  focus,
+  select,
+})
 </script>
 
 <template>
-  <PInput
+  <label
+    :for="uniqueId"
+    :data-disabled="disabled"
+    :class="computedClasses"
     v-bind="$attrs"
-    :min="min"
-    :max="max"
-    align="center"
-    inputmode="decimal"
-    input-type="number"
-    :disabled="disabled"
-    :readonly="readonly"
-    :clear-value="clearValue"
-    :model-value="inputValue"
-    :default-prefix-style="false"
-    :default-suffix-style="false"
-    @blur="onInputBlur"
-    @focus="onInputFocus"
-    @input="onInputInput"
-    @change="onInputChange"
-    @keydown="onInputKeydown"
+    @click="onClick"
+    @dragstart.prevent="NOOP"
   >
-    <template #prefix>
-      <button
-        v-if="controls"
-        tabindex="-1"
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-        :disabled="decreaseDisabled"
-        @pointerdown="startDecrease"
-        @pointercancel="stopDecrease"
-        @pointerup="stopDecrease"
-        @contextmenu.prevent="NOOP"
-      >
-        <slot name="minusIcon">
-          <MinusIcon class="pointer-events-none" />
-        </slot>
-      </button>
-
+    <div
+      v-if="$slots.prefix"
+      class="pxd-input--prefix text-sm flex h-full items-center text-foreground-secondary"
+      :class="[
+        { 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': defaultPrefixStyle },
+        prefixClass,
+      ]"
+      @pointerdown.prevent="NOOP"
+    >
       <slot name="prefix" />
-    </template>
+    </div>
 
-    <template #suffix>
-      <slot name="suffix" />
+    <input
+      :id="uniqueId"
+      ref="inputRef"
+      class="px-3 py-0 file:font-medium size-full appearance-none rounded-none border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      autocorrect="off"
+      autocomplete="off"
+      autocapitalize="off"
+      :min="min"
+      :max="max"
+      :type="inputType"
+      :value="modelValue"
+      :readonly="readonly"
+      :disabled="disabled"
+      :inputmode="inputmode"
+      :minlength="minlength"
+      :maxlength="maxlength"
+      :autofocus="autofocus"
+      :aria-disabled="disabled"
+      :placeholder="placeholder"
+      @blur="onBlur"
+      @focus="onFocus"
+      @input="onInput"
+      @change="onChange"
+      @keydown="onKeydown"
+      @compositionstart="onCompositionStart"
+      @compositionupdate="onCompositionUpdate"
+      @compositionend="onCompositionEnd"
+    />
 
+    <div
+      v-if="password || clearable"
+      v-show="modelValue"
+      :class="{ 'pr-2': password && clearable }"
+      class="pxd-input--icon top-0 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
+      @pointerdown.prevent="NOOP"
+    >
       <button
-        v-if="controls"
-        tabindex="-1"
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-        :disabled="increaseDisabled"
-        @pointerdown="startIncrease"
-        @pointercancel="stopIncrease"
-        @pointerup="stopIncrease"
-        @contextmenu.prevent="NOOP"
+        v-if="password"
+        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        @click.stop.prevent="toggleType"
       >
-        <slot name="plusIcon">
-          <PlusIcon class="pointer-events-none" />
-        </slot>
+        <EyeOffIcon v-if="isPasswordVisible" class="size-3 pointer-events-none" />
+        <EyeIcon v-else class="size-3 pointer-events-none" />
       </button>
-    </template>
-  </PInput>
+      <button
+        v-if="clearable"
+        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        @click.stop.prevent="clear"
+      >
+        <CrossIcon class="size-3 pointer-events-none" />
+      </button>
+    </div>
+
+    <div
+      v-if="$slots.suffix"
+      class="pxd-input--suffix text-sm flex h-full items-center text-foreground-secondary"
+      :class="[
+        { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': defaultSuffixStyle },
+        suffixClass,
+      ]"
+      @pointerdown.prevent="NOOP"
+    >
+      <slot name="suffix" />
+    </div>
+  </label>
 </template>
+
+<style>
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  --autofill-delay: calc(infinity * 1s);
+  transition:
+    background-color var(--autofill-delay) ease-in-out 0s,
+    color var(--autofill-delay) ease-in-out 0s;
+}
+</style>

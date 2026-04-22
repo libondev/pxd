@@ -1,4 +1,4 @@
-transition-appearance<script setup lang="ts">
+<script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -83,7 +83,7 @@ function onInputChange(event: Event) {
 <template>
   <label
     :for="uniqueId"
-    class="pxd-textarea pxd-input--border flex size-full min-h-inherit max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-all"
+    class="pxd-textarea pxd-input--border flex size-full min-h-inherit max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-appearance"
     :class="computedClasses"
     v-bind="$attrs"
   >

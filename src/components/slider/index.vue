@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-dragging="isDragging && activeThumb === 'start'"
       :data-range-start="true"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${startPercentage}%` }"
       @keydown="onThumbKeydown"
@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[0] }}
       </span>
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-range-start="range ? false : true"
       :data-dragging="isDragging && activeThumb === 'end'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 touch-none appearance-auto bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-all pointer-fine:hover:[--slider-thumb-scale:1.3]"
+      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none appearance-auto bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]"
       :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
       :style="{ left: `${endPercentage}%` }"
       @keydown="onThumbKeydown"
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[1] }}
       </span>
@@ -334,43 +334,38 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style>
-.pxd-slider--thumb[data-dragging='true'] {
-  --slider-thumb-scale: 1.3;
-}
+<style lang="postcss">
+.pxd-slider--thumb {
+  &[data-dragging='true'] {
+    --slider-thumb-scale: 1.3;
+  }
 
-.pxd-slider--thumb::before,
-.pxd-slider--thumb::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: inherit;
-  transform: translate3d(-50%, -50%, 0) scale(var(--slider-thumb-scale, 1));
-}
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: inherit;
+    transform: translate3d(-50%, -50%, 0) scale(var(--slider-thumb-scale, 1));
+  }
 
-.pxd-slider--thumb::before {
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  box-shadow:
-    0 0 0 1px var(--color-gray-alpha-500),
-    0 1px 2px var(--color-gray-alpha-100);
+  &::before {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow:
+      0 0 0 1px var(--color-gray-alpha-500),
+      0 1px 2px var(--color-gray-alpha-100);
+  }
+
+  &::after {
+    width: 200%;
+    height: 200%;
+  }
 }
 
 .dark .pxd-slider--thumb::before {
-  box-shadow:
-    0 0 0 1px #000,
-    0 1px 2px #0000000a;
-}
-
-.pxd-slider--thumb::after {
-  width: 200%;
-  height: 200%;
-}
-
-.pxd-slider:active .pxd-slider--track,
-.pxd-slider:active .pxd-slider--thumb {
-  will-change: width, left;
+  box-shadow: 0 0 0 1px var(--color-background-200);
 }
 </style>

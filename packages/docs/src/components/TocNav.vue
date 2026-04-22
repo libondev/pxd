@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useIntersectionObserver } from 'pxd/composables/use-browser-observer'
 import { onMounted, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'

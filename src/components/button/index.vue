@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { ButtonProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const buttonVariants = tv({
-  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-all [[data-button-group]>&]:-ml-px [[data-button-group]>&]:not-first:rounded-l-none [[data-button-group]>&]:not-last:rounded-r-none [[data-button-group]>&]:enabled:hover:z-1',
+  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]>&]:-ml-px [[data-button-group]>&]:not-first:rounded-l-none [[data-button-group]>&]:not-last:rounded-r-none [[data-button-group]>&]:enabled:hover:z-1',
   variants: {
     size: {
       xs: 'h-6 px-1 text-sm rounded-sm',

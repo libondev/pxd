@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed, shallowRef, watch } from 'vue'
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<PinInputProps>(), {
 const emits = defineEmits<PinInputEmits>()
 
 const pinInputVariant = tv({
-  base: 'pxd-input--border rounded-md motion-safe:transition-all',
+  base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
   variants: {
     size: {
       xs: 'w-6 text-xs',
@@ -290,7 +290,7 @@ defineExpose({
         :aria-label="`pin code ${n} of ${length}`"
         :type="computedInputType"
         :data-index="i"
-        class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-all"
+        class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-appearance"
         name="pin-input"
         minlength="1"
         maxlength="1"

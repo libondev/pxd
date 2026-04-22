@@ -1,4 +1,4 @@
-transition-appearance<script setup lang="ts">
+<script lang="ts" setup>
 import type {
   ActiveGraphCellData,
   ActiveGraphEmits,
@@ -416,7 +416,7 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-all"
+            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-appearance"
             :data-date="col.date"
             :class="{
               'pointer-events-none invisible': col.hidden,

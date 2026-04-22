@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { RadioGroupEmits, RadioGroupProps } from './types'
 import { provideRadioGroupContext } from '../../contexts/radio'
 import { getUniqueId } from '../../utils/uid'

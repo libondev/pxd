@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { ColorSelectorEmits, ColorSelectorProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
@@ -23,7 +23,7 @@ const emits = defineEmits<ColorSelectorEmits>()
 const uniqueName = getUniqueId('color-selector')
 
 const colorSelectorVariants = tv({
-  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-all',
+  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-appearance',
   variants: {
     size: {
       sm: 'size-4',

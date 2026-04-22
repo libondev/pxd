@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { getStyle } from '../../utils/dom'
@@ -25,7 +25,7 @@ const computedAttrs = computed(() => {
 
   return {
     class: [
-      'pxd-hold-button relative motion-safe:transition-all',
+      'pxd-hold-button relative motion-safe:transition-appearance',
       {
         scalable,
         effective: status.value !== 'canceled',
@@ -180,10 +180,8 @@ onBeforeUnmount(() => {
     transform: scale(0.97);
   }
 
-  &:hover {
-    .pxd-hold-button--overlay {
-      will-change: clip-path;
-    }
+  &:hover .pxd-hold-button--overlay {
+    will-change: clip-path;
   }
 
   .pxd-hold-button--overlay {
