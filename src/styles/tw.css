@@ -478,7 +478,7 @@
 
 @utility transition-appearance {
   transition-property:
-    opacity, transform, filter, background-color, box-shadow, font-size, border, color;
+    opacity, transform, translate, filter, background-color, box-shadow, font-size, border, color;
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
 }
