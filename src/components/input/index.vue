@@ -1,4 +1,4 @@
-transition-appearance<script lang="ts" setup>
+<script lang="ts" setup>
 import type { InputEmits, InputProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'

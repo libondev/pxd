@@ -1,4 +1,4 @@
-transition-appearance# Countdown
+# Countdown
 
 Do something when you arrive at the appointed time.
 
