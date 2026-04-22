@@ -2,11 +2,11 @@
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { humanize } from 'pxd/utils/format'
 import { isServer } from 'pxd/utils/is'
+import { computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { githubLink } from '@/consts/link'
 import Menus from '../../components/Menus.vue'
 import TocNav from '../../components/TocNav.vue'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 
 interface MenuItem {
   label: string
@@ -87,7 +87,7 @@ if (!isServer()) {
   </div>
 
   <div class="md:pl-56 lg:pr-56 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
-    <main class="prose p-6 py-12 sm:px-12 w-full flex-1 motion-safe:transition-[padding]">
+    <main class="prose px-8 py-12 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
       <template v-if="showViewSource">

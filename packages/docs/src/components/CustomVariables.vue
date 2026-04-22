@@ -9,12 +9,18 @@ defineOptions({
 
 const { copyText } = useCopyClick()
 
-const customVariables = ref({
-  radius: '',
-  primary: '',
-  duration: '',
-  'timing-function': '',
-})
+interface CustomVariables {
+  radius: string
+  primary: string
+  duration: string
+  'timing-function': string
+}
+
+const STORAGE_KEY = 'fe.system.appearance'
+const cachedVariables = localStorage.getItem(STORAGE_KEY) || '{}'
+const parsedVariables: CustomVariables = JSON.parse(cachedVariables)
+
+const customVariables = ref(parsedVariables)
 
 interface CustomProperty {
   key: keyof typeof customVariables.value
@@ -119,6 +125,7 @@ watch(
     customProperties.forEach((property) => {
       rootElStyle.setProperty(`--${property.key}`, newVal[property.key])
     })
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal))
   },
   { deep: true },
 )
