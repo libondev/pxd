@@ -259,11 +259,14 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="p-1.5 gap-1 flex items-center justify-between border-b" @click.stop>
+      <div
+        class="sm:py-1.5 p-2 gap-1 flex items-center justify-between border-b bg-background-200"
+        @click.stop
+      >
         <PButton
           size="xs"
           variant="ghost"
-          class="sm:px-0! rounded-md! text-13px"
+          class="sm:px-0 rounded-md! text-13px"
           @click="onCancelClick"
         >
           {{ configProvider.locale.confirm.cancel }}
@@ -272,7 +275,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
         <PButton
           size="xs"
           variant="ghost"
-          class="sm:px-0! rounded-md! text-13px"
+          class="sm:px-0 rounded-md! text-13px"
           @click="onConfirmClick"
         >
           {{ configProvider.locale.date.now }}
