@@ -19,7 +19,7 @@ const props = defineProps<SwitchItemProps>()
 const emits = defineEmits<SwitchItemEmits>()
 
 const switchVariant = tv({
-  base: 'pxd-switch-item--label px-2.5 text-sm font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
+  base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
   variants: {
     disabled: {
       true: '',
