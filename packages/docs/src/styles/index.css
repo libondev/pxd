@@ -4,7 +4,7 @@
 @source '../../node_modules/markdown-it-plugins';
 
 @theme {
-  --breakpoint-xs: 30rem;
+  --breakpoint-xs: 23rem;
   --default-mono-font-family:
     'Geist Mono', 'JetBrains Mono', 'MonoLisa', ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, 'Liberation Mono', 'Courier New', monospace;
