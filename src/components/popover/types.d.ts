@@ -26,6 +26,7 @@ export interface PopoverProps {
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   lockScrollOnVisible?: boolean
+  preventDefaultOnTab?: boolean
 }
 
 export interface PopoverEmits {

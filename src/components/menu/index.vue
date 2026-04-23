@@ -57,6 +57,7 @@ function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
     :content-class="responsiveClasses.content"
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
+    prevent-default-on-tab
     v-bind="$attrs"
     @escape="hidePopover"
     @visible-change="onVisibleChange"

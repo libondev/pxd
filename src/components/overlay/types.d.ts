@@ -8,6 +8,7 @@ export interface OverlayProps {
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   lockScrollOnVisible?: boolean
+  preventDefaultOnTab?: boolean
 }
 
 export interface OverlayEmits {

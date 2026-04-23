@@ -7,6 +7,7 @@ interface OverlayManagerOptions {
   enabled?: MaybeRefOrGetter<boolean>
   closeOnPressEscape?: MaybeRefOrGetter<boolean>
   lockScrollOnVisible?: MaybeRefOrGetter<boolean>
+  preventDefaultOnTab?: MaybeRefOrGetter<boolean>
   lockScroll: () => void
   unlockScroll: () => void
   onPressEscape?: (ev: KeyboardEvent) => void
@@ -15,6 +16,7 @@ interface OverlayManagerOptions {
 interface OverlayManagerEntry {
   id: symbol
   closeOnPressEscape: OverlayManagerOptions['closeOnPressEscape']
+  preventDefaultOnTab: OverlayManagerOptions['preventDefaultOnTab']
   onPressEscape: OverlayManagerOptions['onPressEscape']
 }
 
@@ -33,16 +35,23 @@ function onEscapeKeydown(ev: KeyboardEvent) {
   }
 
   const { ctrlKey, metaKey, altKey, shiftKey, key } = ev
+  const { closeOnPressEscape, preventDefaultOnTab, onPressEscape } = entry
+
+  if (preventDefaultOnTab && key === 'Tab') {
+    ev.preventDefault()
+    ev.stopPropagation()
+    return
+  }
 
   if (ctrlKey || metaKey || altKey || shiftKey || key !== 'Escape') {
     return
   }
 
-  if (!toValue(entry.closeOnPressEscape)) {
+  if (!closeOnPressEscape) {
     return
   }
 
-  entry.onPressEscape?.(ev)
+  onPressEscape?.(ev)
 }
 
 function ensureKeydownListener() {
@@ -55,7 +64,7 @@ function ensureKeydownListener() {
 }
 
 function removeKeydownListener() {
-  if (overlayStack.length > 0 || !isKeydownListening) {
+  if (!isKeydownListening || overlayStack.length > 0) {
     return
   }
 
@@ -68,6 +77,7 @@ export function useOverlayManager(options: OverlayManagerOptions) {
     enabled,
     closeOnPressEscape,
     lockScrollOnVisible,
+    preventDefaultOnTab,
     lockScroll,
     unlockScroll,
     onPressEscape,
@@ -100,7 +110,12 @@ export function useOverlayManager(options: OverlayManagerOptions) {
       overlayStack.splice(idx, 1)
     }
 
-    overlayStack.push({ id: overlayId, closeOnPressEscape, onPressEscape })
+    overlayStack.push({
+      id: overlayId,
+      closeOnPressEscape,
+      preventDefaultOnTab,
+      onPressEscape,
+    })
 
     ensureKeydownListener()
   }

@@ -6,7 +6,6 @@ import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import POverlay from '../overlay/index.vue'
 
@@ -70,10 +69,8 @@ const {
 
     if (v) {
       emits('show')
-      cachedOn(document, 'keydown', onPreventDefaultTab)
     } else {
       emits('hide')
-      cachedOff(document, 'keydown', onPreventDefaultTab)
     }
   },
 })
@@ -191,16 +188,7 @@ async function handlePopoverHide(immediate: boolean = false) {
   hidePopover()
 }
 
-function onPreventDefaultTab(ev: KeyboardEvent) {
-  const { key } = ev
-
-  if (key === 'Tab') {
-    ev.preventDefault()
-    ev.stopPropagation()
-  }
-}
-
-async function onTriggerClick(ev: Event) {
+function onTriggerClick(ev: Event) {
   if (props.disabled) {
     return
   }
@@ -244,33 +232,32 @@ function onTriggerFocusin() {
   handlePopoverShow()
 }
 
-async function onTriggerFocusout() {
+function onTriggerFocusout(event: FocusEvent) {
   if (props.disabled || !triggerMethods.value.includes('focus')) {
     return
   }
 
-  // Make sure the wrapperRef element has gained focus after clicking on it
-  await sleep(0)
-
-  if (wrapperRef.value.contains(document.activeElement)) {
+  // Make sure that the focus is not turned off when switching from triggerRef to wrapperRef.
+  const relatedTarget = event.relatedTarget as HTMLElement
+  if (relatedTarget && wrapperRef.value?.contains(relatedTarget)) {
     return
   }
 
   handlePopoverHide()
 }
 
-async function onTriggerContextmenu() {
+function onTriggerContextmenu() {
   if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
     return
   }
 
   if (isVisible.value) {
-    await handlePopoverHide()
+    handlePopoverHide()
 
     return
   }
 
-  await handlePopoverShow()
+  handlePopoverShow()
 }
 
 function onContentPointerEnter() {
@@ -310,7 +297,6 @@ watch(
 
 onBeforeUnmount(() => {
   disposeAutoUpdate()
-  cachedOff(document, 'keydown', onPreventDefaultTab)
 })
 
 defineExpose({
@@ -340,6 +326,7 @@ defineExpose({
       :show-overlay="adaptive"
       :close-on-press-escape="closeOnPressEscape"
       :lock-scroll-on-visible="adaptive"
+      :prevent-default-on-tab="preventDefaultOnTab"
       @escape="handlePopoverHide()"
     >
       <div

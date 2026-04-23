@@ -39,7 +39,7 @@ const VALUE_POSITION_MAP = {
   second: 2,
 } as const
 
-const popoverTrigger = ['click'] as PopoverTrigger[]
+const popoverTrigger = ['click', 'focus'] as PopoverTrigger[]
 
 const configProvider = useConfigProvider()
 
@@ -259,10 +259,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div
-        class="sm:py-1.5 p-2 gap-1 flex items-center justify-between border-b bg-background-200"
-        @click.stop
-      >
+      <div class="sm:py-1.5 p-2 gap-1 flex items-center justify-between border-b" @click.stop>
         <PButton
           size="xs"
           variant="ghost"
