@@ -4,13 +4,11 @@ import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
-import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOutsideClick } from '../../composables/use-outside-click'
-import { useOverlayManager } from '../../composables/use-overlay-manager'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, sleep } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
-import PTeleport from '../teleport/index.vue'
+import POverlay from '../overlay/index.vue'
 
 defineOptions({
   name: 'PPopover',
@@ -18,26 +16,22 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<PopoverProps>(), {
-  offset: 8,
   trigger: () => ['hover'],
   position: 'bottom',
   showDelay: 0,
   hideDelay: 0,
-  arrowColor: 'hsl(var(--primary))',
   interactive: true,
   autoPosition: true,
   toggleOnTrigger: true,
   closeOnInvisible: true,
+  closeOnPressEscape: true,
 })
 
 const emits = defineEmits<PopoverEmits>()
 
-let isLockedScroll = false
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let cleanupAutoUpdate: (() => void) | null = null
-
-const allowedMethods = ['click', 'manual', 'contextmenu'] as const
 
 const arrayRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
@@ -52,16 +46,13 @@ const transitionType = computed(() =>
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
   '--popover-offset': props.offset,
-  '--popover-arrow-bg': props.arrowColor,
+  '--popover-arrow-color': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
 
 const configProvider = useConfigProvider()
-const { lockScroll, unlockScroll } = useLockScroll()
 
-const allowOutsideClick = computed(() =>
-  allowedMethods.some((method) => triggerMethods.value.includes(method)),
-)
+const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
 
 const {
   render: isRender,
@@ -71,57 +62,33 @@ const {
 } = useDelayDestroy(props.visible, {
   delay: 2000,
   visibleChange(v) {
-    if (triggerMethods.value.includes('manual')) {
+    if (!allowOutsideClick.value) {
       return
     }
 
     emits('visible-change', v)
 
     if (v) {
-      if (props.lockScrollOnVisible) {
-        isLockedScroll = true
-        lockScroll()
-      }
-
       emits('show')
+      cachedOn(document, 'keydown', onPreventDefaultTab)
     } else {
-      if (isLockedScroll) {
-        isLockedScroll = false
-        unlockScroll()
-      }
-
       emits('hide')
+      cachedOff(document, 'keydown', onPreventDefaultTab)
     }
   },
 })
 
-const { dispatchClickOutside } = useOverlayManager(
-  computed(() => ({
-    enabled: isVisible.value,
-    closeOnPressEscape: props.closeOnPressEscape,
-    closeOnClickOutside: allowOutsideClick.value && !triggerMethods.value.includes('manual'),
-    onPressEscape: (ev: KeyboardEvent) => {
-      emits('escape', ev)
-    },
-    onClickOutside: (ev: PointerEvent) => {
-      emits('outside-click', ev)
-    },
-    onClose: () => {
-      handlePopoverHide(props.adaptive)
-    },
-  })),
-)
-
 useOutsideClick(wrapperRef, {
+  allowList: [triggerRef, wrapperRef],
   isEnabled: () => {
     return isVisible.value && allowOutsideClick.value
   },
-  isOutside: (ev) => {
-    const el = ev.target as HTMLElement
-    return !(triggerRef.value?.contains(el) || wrapperRef.value?.contains(el))
-  },
   onTrigger: (ev) => {
-    dispatchClickOutside(ev)
+    emits('outside-click', ev)
+
+    if (allowOutsideClick.value) {
+      handlePopoverHide(true)
+    }
   },
 })
 
@@ -190,10 +157,6 @@ async function handlePopoverShow() {
 
   await showPopover()
 
-  if (props.closeOnPressEscape) {
-    cachedOn(document, 'keydown', onPopoverKeydown)
-  }
-
   disposeAutoUpdate()
 
   if (props.autoPosition) {
@@ -226,13 +189,9 @@ async function handlePopoverHide(immediate: boolean = false) {
   disposeAutoUpdate()
 
   hidePopover()
-
-  if (props.closeOnPressEscape) {
-    cachedOff(document, 'keydown', onPopoverKeydown)
-  }
 }
 
-function onPopoverKeydown(ev: KeyboardEvent) {
+function onPreventDefaultTab(ev: KeyboardEvent) {
   const { key } = ev
 
   if (key === 'Tab') {
@@ -344,19 +303,14 @@ watch(
     if (visible) {
       handlePopoverShow()
     } else {
-      handlePopoverHide()
+      handlePopoverHide(true)
     }
   },
 )
 
 onBeforeUnmount(() => {
-  if (isLockedScroll) {
-    isLockedScroll = false
-    unlockScroll()
-  }
-
   disposeAutoUpdate()
-  cachedOff(document, 'keydown', onPopoverKeydown)
+  cachedOff(document, 'keydown', onPreventDefaultTab)
 })
 
 defineExpose({
@@ -381,17 +335,23 @@ defineExpose({
   >
     <slot />
 
-    <PTeleport>
+    <POverlay
+      :model-value="isVisible"
+      :show-overlay="adaptive"
+      :close-on-press-escape="closeOnPressEscape"
+      :lock-scroll-on-visible="adaptive"
+      @escape="handlePopoverHide()"
+    >
       <div
         v-if="isRender"
         ref="wrapperRef"
         tabindex="-1"
-        :class="wrapperClass"
-        :style="wrapperStyle"
         :data-visible="isVisible"
         :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
+        :class="wrapperClass"
+        :style="wrapperStyle"
         class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @pointerenter="onContentPointerEnter"
         @pointerleave="onContentPointerLeave"
@@ -404,7 +364,7 @@ defineExpose({
           <i
             v-if="showArrow"
             ref="arrayRef"
-            class="pxd-popover--arrow w-2.5 h-2.5 rounded-xs absolute z-1 rotate-45 bg-(--popover-arrow-bg)"
+            class="pxd-popover--arrow w-2.5 h-2.5 rounded-xs absolute z-1 rotate-45 bg-(--popover-arrow-color)"
           />
           <div
             class="pxd-popover--content h-full max-h-inherit overflow-auto"
@@ -415,7 +375,7 @@ defineExpose({
           </div>
         </div>
       </div>
-    </PTeleport>
+    </POverlay>
   </div>
 </template>
 
@@ -511,18 +471,18 @@ defineExpose({
 }
 
 .pxd-popover--wrapper[data-position^='top'] .pxd-popover--arrow {
-  bottom: 4px;
+  bottom: 0.3rem;
 }
 
 .pxd-popover--wrapper[data-position^='bottom'] .pxd-popover--arrow {
-  top: 4px;
+  top: 0.3rem;
 }
 
 .pxd-popover--wrapper[data-position^='left'] .pxd-popover--arrow {
-  right: 4px;
+  right: 0.3rem;
 }
 
 .pxd-popover--wrapper[data-position^='right'] .pxd-popover--arrow {
-  left: 4px;
+  left: 0.3rem;
 }
 </style>

@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 
 const VARIANTS = {
   primary: {
-    bg: 'var(--color-primary)',
+    bg: 'var(--color-gray-1000)',
     text: 'text-gray-100',
   },
   error: {
@@ -45,7 +45,7 @@ const isDisabled = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-tooltip bg-(--popover-arrow-bg)',
+    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-tooltip bg-(--popover-arrow-color)',
     computedVariant.value.text,
     props.contentClass,
   ].join(' ')

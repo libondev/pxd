@@ -8,7 +8,7 @@ export function usePopoverResponsive() {
     if (isAdaptive.value) {
       return {
         content: `bg-background-100 shadow-border-menu w-full rounded-tl-xl rounded-tr-xl`,
-        wrapper: 'fixed w-screen h-screen items-end pointer-events-none pxd-container-mask',
+        wrapper: 'fixed w-full h-full items-end pointer-events-none',
       } as const
     }
 

@@ -59,7 +59,6 @@ function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     @escape="hidePopover"
-    @outside-click="hidePopover"
     @visible-change="onVisibleChange"
   >
     <slot />

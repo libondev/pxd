@@ -21,6 +21,27 @@ function onClickToClose() {
 </template>
 ```
 
+## Blurred
+
+When `variant="blurred"` is set, the overlay will be blurred.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+
+function onClickToClose() {
+  isVisible.value = false
+}
+</script>
+
+<template>
+  <PButton @click="isVisible = true">Open</PButton>
+  <POverlay v-model="isVisible" variant="blurred" @click="onClickToClose" />
+</template>
+```
+
 ## With shown element
 
 Highlight and display a certain element.

@@ -1,44 +1,43 @@
 import { hasScrollbar, isScrollable } from '../utils/dom'
 import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
-let documentTouchMoveLocks = 0
+let rootTouchMoveLocks = 0
 
 export function useLockScroll() {
-  const rootEl = document.documentElement
+  const classList = ['pointer-events-none']
 
   function isLocked() {
-    return documentTouchMoveLocks > 0
+    return rootTouchMoveLocks > 0
   }
 
   function lockScroll() {
     if (!isLocked()) {
+      const rootEl = document.documentElement
       cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
 
-      const classList = ['pointer-events-none!']
+      const { x: xScrollbar, y: yScrollbar } = hasScrollbar(rootEl)
+      const { x: xScrollable, y: yScrollable } = isScrollable(rootEl)
 
-      const { y: yScrollbar } = hasScrollbar(rootEl)
-      const { y: yScrollable } = isScrollable(rootEl)
-
-      if (yScrollbar && yScrollable) {
+      if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
         classList.push('scrollbar-stable', 'scrollbar-disabled')
       }
 
       rootEl.classList.add(...classList)
     }
 
-    documentTouchMoveLocks++
+    rootTouchMoveLocks++
   }
 
   function unlockScroll() {
-    if (documentTouchMoveLocks <= 0) {
+    if (rootTouchMoveLocks <= 0) {
       return
     }
 
-    documentTouchMoveLocks = Math.max(documentTouchMoveLocks - 1, 0)
+    rootTouchMoveLocks = Math.max(rootTouchMoveLocks - 1, 0)
 
-    if (!documentTouchMoveLocks) {
+    if (!rootTouchMoveLocks) {
       cachedOff(document, 'touchmove', preventDefaultScroll)
-      rootEl.classList.remove('pointer-events-none!', 'scrollbar-stable', 'scrollbar-disabled')
+      document.documentElement.classList.remove(...classList)
     }
   }
 

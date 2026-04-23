@@ -52,17 +52,10 @@ const defaultStyles = computed(() => ({
 
 const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
 
-const computedStyle = computed(() => {
-  const styles: CSSProperties = {
-    '--drawer-index': props.zIndex,
-  }
-
-  if (props.size) {
-    styles['--drawer-size'] = getCssUnitValue(props.size)
-  }
-
-  return styles
-})
+const computedStyle = computed(() => ({
+  '--modal-index': props.zIndex,
+  '--drawer-size': getCssUnitValue(props.size),
+}))
 
 const focusTrapOptions = computed(() => ({
   autoFocusElement: props.autoFocusElement,
@@ -126,7 +119,7 @@ watch(
         tabindex="-1"
         aria-modal="true"
         :aria-expanded="isVisible"
-        class="pxd-drawer group/drawer translate-z-0 sm:[--drawer-width:30vw] sm:[--drawer-height:30vw] pointer-events-auto fixed z-(--drawer-index) flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
+        class="pxd-drawer group/drawer translate-z-0 sm:[--drawer-width:30vw] sm:[--drawer-height:30vw] pointer-events-auto fixed z-(--modal-index) flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"

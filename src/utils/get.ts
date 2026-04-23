@@ -23,7 +23,7 @@ export function getColorByThreshold(value: number, colors: Record<string, string
     }
   }
 
-  return colors[keys[keyLength - 1]!]!
+  return colors[keys.at(-1)!]!
 }
 
 type DocumentDirection = 'rtl' | 'ltr' | 'auto'
