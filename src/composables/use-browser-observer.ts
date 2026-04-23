@@ -1,7 +1,7 @@
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { isNotNil } from 'es-toolkit'
-import { computed, onBeforeUnmount, watch, shallowRef } from 'vue'
+import { computed, onScopeDispose, watch, shallowRef } from 'vue'
 import { toArray } from '../utils/format'
 import { toValue, unrefElement } from '../utils/ref'
 
@@ -120,7 +120,7 @@ function createObserver(
       unwatch()
     }
 
-    onBeforeUnmount(() => {
+    onScopeDispose(() => {
       stop()
     })
 

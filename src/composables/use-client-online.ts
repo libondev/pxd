@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onScopeDispose, onMounted, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
@@ -17,7 +17,7 @@ export function useClientOnline() {
     cleanOffline = cachedOn(window, 'offline', toggle)
   })
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     cleanOnline?.()
     cleanOffline?.()
   })

@@ -1,5 +1,5 @@
 import type { Callback } from '../types/shared'
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onScopeDispose, onMounted, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
@@ -17,7 +17,7 @@ export function useDocumentHidden(callback?: Callback) {
     cleanHidden = cachedOn(document, 'visibilitychange', toggle)
   })
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     cleanHidden?.()
   })
 

@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, shallowRef, watchEffect } from 'vue'
+import { computed, onScopeDispose, shallowRef, watchEffect } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
@@ -134,7 +134,7 @@ export function useColorScheme(options: Options = {}) {
       unbindSubscriber = cachedOn(window, EVENT_NAME, onToggleModeType)
     }
 
-    onBeforeUnmount(() => {
+    onScopeDispose(() => {
       stopEffect()
       unbindSubscriber()
       cleanupStyleElements()

@@ -2,7 +2,7 @@ import type { MaybeElementRef } from '../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
 import Core from '@any-touch/core'
 import Pan from '@any-touch/pan'
-import { onBeforeUnmount, watch } from 'vue'
+import { onScopeDispose, watch } from 'vue'
 import { toValue, unrefElement } from '../utils/ref'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
@@ -183,7 +183,7 @@ export function useSwipeGesture(
     { immediate: true },
   )
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     stop()
   })
 

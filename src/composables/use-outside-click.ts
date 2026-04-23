@@ -1,5 +1,5 @@
 import type { MaybeElementRef } from '../types/shared/utils'
-import { onBeforeUnmount, watch } from 'vue'
+import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event'
 import { toValue } from '../utils/ref'
 
@@ -49,7 +49,7 @@ export function useOutsideClick(container: MaybeElementRef<HTMLElement>, options
     cachedOff(document, 'click', onClick)
   }
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     stop()
   })
 

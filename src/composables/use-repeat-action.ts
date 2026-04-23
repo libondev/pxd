@@ -1,6 +1,6 @@
 import type { Callback } from '../types/shared/utils'
 import type { MaybeRefOrGetter } from 'vue'
-import { onBeforeUnmount } from 'vue'
+import { onScopeDispose } from 'vue'
 import { off, once } from '../utils/event'
 import { toValue } from '../utils/ref'
 
@@ -68,7 +68,7 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
     once(document, 'pointercancel', stop)
   }
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     off(document, 'pointerup', stop)
     off(document, 'pointercancel', stop)
   })

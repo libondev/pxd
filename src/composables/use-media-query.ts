@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { customRef, onBeforeUnmount } from 'vue'
+import { customRef, onScopeDispose } from 'vue'
 import { cachedOn } from '../utils/event'
 import { isServer } from '../utils/is'
 
@@ -102,7 +102,7 @@ export function useMediaQuery(
     mediaQuery = undefined!
   }
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     stop()
   })
 

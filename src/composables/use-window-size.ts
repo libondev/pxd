@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onScopeDispose, onMounted, shallowRef } from 'vue'
 import { cachedOn, cachedOff } from '../utils/event'
 import { isServer } from '../utils/is'
 
@@ -21,7 +21,7 @@ export function useWindowSize() {
     cachedOn(window, 'orientationchange', updateSize)
   })
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     cachedOff(window, 'resize', updateSize)
     cachedOff(window, 'orientationchange', updateSize)
   })

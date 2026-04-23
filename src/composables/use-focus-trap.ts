@@ -1,7 +1,7 @@
 import type { MaybeElementRef } from '../types/shared/utils'
 import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 import { createFocusTrap } from 'focus-trap'
-import { onBeforeUnmount, watch, type MaybeRefOrGetter } from 'vue'
+import { onScopeDispose, watch, type MaybeRefOrGetter } from 'vue'
 import { toValue } from '../utils/ref'
 
 const focusTrapStack: FocusTrap[] = []
@@ -78,7 +78,7 @@ export function useFocusTrap(
     { flush: 'post' },
   )
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     unwatch()
   })
 

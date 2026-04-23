@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { onScopeDispose, ref, watch } from 'vue'
 import { toValue } from '../utils/ref'
 
 interface Options<T> {
@@ -37,7 +37,7 @@ export function useDeferredValue<T>(
     { deep },
   )
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     unwatch()
     clearTimeout(syncTimeoutId)
   })

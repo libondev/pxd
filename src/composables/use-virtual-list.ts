@@ -7,7 +7,7 @@ import {
   observeElementRect,
   Virtualizer,
 } from '@tanstack/virtual-core'
-import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
+import { computed, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
 import { toValue } from '../utils/ref'
 
 export interface VirtualListItem extends VirtualItem {
@@ -147,8 +147,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
     cleanup = virtualizer._didMount()
   })
 
-  onUnmounted(() => {
+  onScopeDispose(() => {
     cleanup?.()
+    cleanup = undefined
   })
 
   return {
