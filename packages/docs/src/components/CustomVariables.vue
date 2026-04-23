@@ -117,14 +117,18 @@ const customProperties = [
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
+function updateCustomVariables() {
+  const rootElStyle = document.documentElement.style
+
+  customProperties.forEach((property) => {
+    rootElStyle.setProperty(`--${property.key}`, customVariables.value[property.key])
+  })
+}
+
 watch(
   () => customVariables.value,
   (newVal) => {
-    const rootElStyle = document.documentElement.style
-
-    customProperties.forEach((property) => {
-      rootElStyle.setProperty(`--${property.key}`, newVal[property.key])
-    })
+    updateCustomVariables()
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal))
   },
   { deep: true },
@@ -155,6 +159,10 @@ async function copyCustomVariables() {
   popoverRef.value?.hide()
   useMessage.success('Copied to clipboard', { group: 'website' })
 }
+
+onBeforeMount(() => {
+  updateCustomVariables()
+})
 </script>
 
 <template>
