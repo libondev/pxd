@@ -87,7 +87,7 @@ if (!isServer()) {
   </div>
 
   <div class="md:pl-56 lg:pr-56 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
-    <main class="prose px-8 py-12 w-full flex-1 motion-safe:transition-[padding]">
+    <main class="prose px-6 py-12 w-full flex-1 motion-safe:transition-[padding]">
       <slot />
 
       <template v-if="showViewSource">

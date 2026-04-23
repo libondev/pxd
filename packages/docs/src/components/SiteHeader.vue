@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
         class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none"
       >
         <SiteLogo class="text-2xl" />
-        <span>PXD</span>
+        <span class="xs:block hidden">PXD</span>
 
         <PTooltip
           content="Internal development version"
@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
           <span class="sm:block ml-1.5 hidden">Search</span>
 
           <template #suffix>
-            <PKbd ctrl label="K" size="sm" class="sm:!inline-flex hidden!" />
+            <PKbd ctrl label="K" size="sm" class="sm:inline-flex! hidden!" />
           </template>
         </PButton>
 
