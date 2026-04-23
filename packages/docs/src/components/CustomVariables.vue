@@ -171,7 +171,7 @@ async function copyCustomVariables() {
     <slot />
 
     <template #content>
-      <div class="max-sm:px-4 p-3 gap-4 sm:w-72 flex flex-col">
+      <div class="max-sm:p-4 p-3 gap-4 sm:w-72 flex flex-col">
         <div v-for="property in customProperties" :key="property.key">
           <PLabel>{{ property.label }}</PLabel>
           <PSwitch v-model="customVariables[property.key]" :options="property.options" full-width />
