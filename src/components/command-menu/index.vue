@@ -69,7 +69,7 @@ provideListFilterContext(filterContext)
   <PModal
     v-model="modelValue"
     width="640px"
-    class="pxd-command-menu max-sm:dvh-80"
+    class="pxd-command-menu max-sm:h-full"
     content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/8 sm:translate-y-0"
     :auto-focus-element="!isSmallScreen"
