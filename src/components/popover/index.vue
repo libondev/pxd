@@ -363,7 +363,7 @@ defineExpose({
         @pointerleave="onWrapperPointerLeave"
       >
         <div
-          class="pxd-popover--container relative z-1 w-inherit default-transition-duration default-transition-timing-function"
+          class="pxd-popover--container sm:opacity-0 relative z-1 w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
@@ -390,8 +390,7 @@ defineExpose({
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
   transition-property: opacity, transform;
   max-height: min(800px, 80vh);
-  max-height: min(800px, 80svh);
-  opacity: 0;
+  max-height: min(800px, 80dvh);
   pointer-events: none;
 
   [data-visible='true'] & {

@@ -108,7 +108,7 @@
   --primary-active: hsla(var(--primary), 90%);
 
   --radius: 0.5rem;
-  --duration: 0.15s;
+  --duration: 0.2s;
   --timing-function: ease-out;
   --ring: var(--primary);
 

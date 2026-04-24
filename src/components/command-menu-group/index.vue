@@ -28,7 +28,7 @@ provideListFilterGroupId(groupId)
 
 <template>
   <div class="pxd-command-menu-group" role="presentation" :hidden="isHidden" v-bind="$attrs">
-    <div aria-hidden="true" class="h-10 px-2 flex items-center text-13px text-foreground-secondary">
+    <div aria-hidden="true" class="h-10 px-2 flex items-center text-13px text-gray-900">
       {{ label }}
     </div>
 

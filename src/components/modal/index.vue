@@ -152,7 +152,7 @@ watch(
 <style>
 .pxd-modal {
   max-height: min(800px, 80vh);
-  max-height: min(800px, 80svh);
+  max-height: min(800px, 80dvh);
 }
 
 .pxd-transition--modal-enter-active,
