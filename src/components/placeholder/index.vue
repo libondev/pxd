@@ -49,6 +49,6 @@ const computedStyle = computed(() => {
   );
   background-clip: padding-box;
   background-position: 0 0;
-  background-size: var(--placeholder-gap, 12px) var(--placeholder-gap, 12px);
+  background-size: var(--placeholder-gap) var(--placeholder-gap);
 }
 </style>

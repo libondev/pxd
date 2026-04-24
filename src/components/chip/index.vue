@@ -9,11 +9,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ChipProps>(), {
-  size: 10,
-  label: '',
-  variant: 'primary',
-})
+const props = defineProps<ChipProps>()
 
 const chipVariant = tv({
   base: 'pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-appearance',

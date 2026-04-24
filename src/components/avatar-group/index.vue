@@ -11,7 +11,6 @@ defineOptions({
 
 const props = withDefaults(defineProps<AvatarGroupProps>(), {
   max: 5,
-  size: 32,
   options: () => [],
 })
 

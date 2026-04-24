@@ -111,12 +111,8 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--fader-color, var(--color-gray-100)));
-  mask-image: linear-gradient(
-    var(--dir-revert),
-    var(--fader-color, var(--color-gray-100)) 50%,
-    transparent
-  );
+  background: linear-gradient(var(--dir), transparent, var(--fader-color));
+  mask-image: linear-gradient(var(--dir-revert), var(--fader-color) 50%, transparent);
   transition-property: opacity;
   opacity: 0;
 }
@@ -132,7 +128,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--fader-size, 16px);
+    width: var(--fader-size);
     height: 100%;
   }
 
@@ -154,7 +150,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--fader-size, 16px);
+    height: var(--fader-size);
   }
 
   &::before {

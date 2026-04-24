@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, useAttrs } from 'vue'
 import { getStyle } from '../../utils/dom'
 import { off, once } from '../../utils/event'
 import PButton from '../button/index.vue'
@@ -12,26 +12,24 @@ defineOptions({
 const props = withDefaults(defineProps<HoldButtonProps>(), {
   vibrate: true,
   scalable: true,
-  durations: 2000,
-  progressColor: 'var(--color-gray-alpha-600)',
 })
 
 const emits = defineEmits<HoldButtonEmits>()
 
+const attrs = useAttrs()
+
 const status = shallowRef<HoldButtonStatus>('idle')
 
 const computedAttrs = computed(() => {
-  const { scalable, durations, progressColor, cancelable, ...rest } = props
-
   return {
     class: [
       'pxd-hold-button relative motion-safe:transition-appearance',
       {
-        scalable,
+        scalable: props.scalable,
         effective: status.value !== 'canceled',
       },
     ],
-    ...rest,
+    ...attrs,
   }
 })
 
@@ -40,7 +38,6 @@ const computedStyle = computed(() => {
 
   let _durations = Number(durations)
   if (Number.isNaN(_durations) || _durations < 0) {
-    console.warn('Invalid durations value provided to PHoldButton, defaulting to 2000')
     _durations = 2000
   }
 

@@ -19,8 +19,6 @@ defineOptions({
 const props = withDefaults(defineProps<ToggleProps>(), {
   activeValue: true,
   inactiveValue: false,
-  activeColor: 'var(--color-primary)',
-  inactiveColor: 'var(--color-gray-alpha-100)',
 })
 
 const emits = defineEmits<ToggleEmits>()

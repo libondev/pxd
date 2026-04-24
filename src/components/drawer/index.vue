@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { DrawerEmits, DrawerProps } from './types'
-import type { CSSProperties } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
@@ -119,7 +118,7 @@ watch(
         tabindex="-1"
         aria-modal="true"
         :aria-expanded="isVisible"
-        class="pxd-drawer group/drawer translate-z-0 sm:[--drawer-width:30vw] sm:[--drawer-height:30vw] pointer-events-auto fixed z-(--modal-index) flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
+        class="pxd-drawer group/drawer translate-z-0 pointer-events-auto fixed z-(--modal-index) flex max-h-full max-w-full flex-col bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
@@ -195,12 +194,12 @@ watch(
 
 .pxd-drawer[data-position='left'],
 .pxd-drawer[data-position='right'] {
-  width: var(--drawer-size, var(--drawer-width, 80vw));
+  width: var(--drawer-size, 30vw);
 }
 
 .pxd-drawer[data-position='top'],
 .pxd-drawer[data-position='bottom'] {
-  height: var(--drawer-size, var(--drawer-height, 80vw));
+  height: var(--drawer-size, 30vh);
 }
 
 .pxd-transition--drawer-right-enter-active,

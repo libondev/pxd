@@ -400,7 +400,7 @@ onBeforeUnmount(() => {
       <tbody
         ref="tbodyRef"
         class="text-xs"
-        :style="{ '--item-radius': getCssUnitValue(itemRadius, '2px') }"
+        :style="{ '--active-graph-item-radius': getCssUnitValue(itemRadius) }"
         @click="onCellClick"
         @pointerover.capture="onPointerOver"
       >
@@ -416,7 +416,7 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item w-3 min-w-3 rounded-(--item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-appearance"
+            class="pxd-active-graph--item w-3 min-w-3 rounded-(--active-graph-item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-appearance"
             :data-date="col.date"
             :class="{
               'pointer-events-none invisible': col.hidden,
@@ -439,7 +439,7 @@ onBeforeUnmount(() => {
             <td
               v-for="color in computedColors"
               :key="color"
-              class="w-3 h-3 rounded-(--item-radius) bg-gray-alpha-100 motion-safe:transition-colors"
+              class="w-3 h-3 rounded-(--active-graph-item-radius) bg-gray-alpha-100 motion-safe:transition-colors"
               :style="`background-color: ${color}`"
             />
 

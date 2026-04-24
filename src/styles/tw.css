@@ -127,11 +127,22 @@
 
   /* component variables defaults */
   --pxd-initial-index: 10;
+  --active-graph-item-radius: 0.125rem;
+  --avatar-size: 2rem;
+  --chip-size: 0.75rem;
+  --fader-size: 1rem;
+  --fader-color: var(--color-gray-100);
+  --hold-button-durations: 2000ms;
+  --hold-button-progress-color: var(--color-gray-alpha-600);
   --popover-arrow-color: var(--color-gray-1000);
   --popover-offset: 8;
   --popover-index: max(var(--pxd-initial-index), 10);
   --overlay-index: calc(var(--popover-index) - 5);
   --modal-index: calc(var(--overlay-index) + 5);
+  --modal-width: 33.75rem;
+  --placeholder-gap: 0.75rem;
+  --toggle-active-color: var(--color-primary);
+  --toggle-inactive-color: var(--color-gray-alpha-100);
 
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
