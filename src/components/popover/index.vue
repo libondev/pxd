@@ -13,6 +13,10 @@ import POverlay from '../overlay/index.vue'
 defineOptions({
   name: 'PPopover',
   inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(defineProps<PopoverProps>(), {
@@ -60,7 +64,7 @@ const {
   visible: isVisible,
   show: showPopover,
   hide: hidePopover,
-} = useDelayDestroy(props.visible, {
+} = useDelayDestroy(props.modelValue, {
   delay: 2000,
   visibleChange(v) {
     if (!allowOutsideClick.value) {
@@ -71,8 +75,10 @@ const {
 
     if (v) {
       emits('show')
+      emits('update:modelValue', true)
     } else {
       emits('hide')
+      emits('update:modelValue', false)
     }
   },
 })
@@ -304,7 +310,7 @@ function onWrapperPointerLeave() {
 }
 
 watch(
-  () => props.visible,
+  () => props.modelValue,
   (visible) => {
     if (visible) {
       handlePopoverShow()

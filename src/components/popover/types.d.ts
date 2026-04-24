@@ -6,7 +6,6 @@ export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manu
 export interface PopoverProps {
   zIndex?: number | string
   offset?: number
-  visible?: boolean
   trigger?: PopoverTrigger | PopoverTrigger[]
   disabled?: boolean
   adaptive?: boolean
@@ -16,6 +15,7 @@ export interface PopoverProps {
   hideDelay?: number
   showArrow?: boolean
   arrowColor?: string
+  modelValue?: boolean
   interactive?: boolean
   autoPosition?: boolean
   wrapperClass?: ComponentClass
@@ -32,7 +32,8 @@ export interface PopoverEmits {
   show: []
   hide: []
   escape: [KeyboardEvent]
-  'outside-click': [MouseEvent]
+  'outside-click': [PointerEvent]
   'trigger-click': [PointerEvent]
   'visible-change': [visible: boolean]
+  'update:modelValue': [visible: boolean]
 }

@@ -112,7 +112,7 @@ function onOverlayVisibleChange(visible: boolean) {
   toggleShownElementClasses()
 }
 
-function onOverlayClick(ev: MouseEvent) {
+function onOverlayClick(ev: PointerEvent) {
   emits('click', ev)
 
   if (!props.closeOnClickOverlay) {

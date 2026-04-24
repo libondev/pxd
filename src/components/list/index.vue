@@ -102,7 +102,7 @@ defineExpose({
     ref="containerRef"
     role="list"
     tabindex="-1"
-    class="pxd-list m-0 p-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
+    class="pxd-list m-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >

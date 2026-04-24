@@ -199,9 +199,9 @@ const content =
     </PPopover>
 
     <PPopover
-      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
+      v-model="visible"
       trigger="manual"
-      :visible="visible"
+      content-class="p-4 bg-background-100 shadow-sm border rounded-md"
     >
       <PButton @click="visible = !visible"> Manual to active </PButton>
 

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { PopoverTrigger } from '../popover/types'
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
@@ -38,8 +37,6 @@ const VALUE_POSITION_MAP = {
   minute: 1,
   second: 2,
 } as const
-
-const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const configProvider = useConfigProvider()
 
@@ -86,12 +83,8 @@ function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
 }
 
-function onVisibleChange(visible: boolean) {
+function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
-}
-
-function hidePopover() {
-  onVisibleChange(false)
 }
 
 function updateDayjsDateTime(value: TimePickerProps['modelValue']) {
@@ -177,7 +170,7 @@ function updateModelValue() {
 function onInputValueChange(value: string) {
   updateDayjsDateTime(value)
   updateModelValue()
-  hidePopover()
+  togglePopoverVisible(false)
 }
 
 function onPresetClick(ev: MouseEvent) {
@@ -201,19 +194,18 @@ function onPresetClick(ev: MouseEvent) {
 
   updateDayjsDateTime(presetValue)
   updateModelValue()
-
-  hidePopover()
+  togglePopoverVisible(false)
 }
 
 function onConfirmClick() {
   updateDayjsDateTime(new Date())
   updateModelValue()
-  hidePopover()
+  togglePopoverVisible(false)
 }
 
 function onCancelClick() {
   updateDayjsDateTime(props.modelValue)
-  hidePopover()
+  togglePopoverVisible(false)
 }
 
 watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
@@ -221,22 +213,20 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
 <template>
   <PPopover
-    :trigger="popoverTrigger"
+    v-model="popoverVisible"
+    class="pxd-time-picker w-full"
+    trigger="click"
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
     :toggle-on-trigger="false"
-    :visible="popoverVisible"
     :adaptive="isAdaptive"
     :wrapper-class="responsiveClasses.wrapper"
     :content-class="responsiveClasses.content"
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
-    class="pxd-time-picker w-full"
-    @escape="onCancelClick"
     @show="setTimesScrollTop"
     @outside-click="updateModelValue"
-    @visible-change="onVisibleChange"
   >
     <PInput
       :size="size"
@@ -252,7 +242,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
-      @keydown.enter="onVisibleChange(true)"
+      @keydown.enter="togglePopoverVisible(true)"
     >
       <template v-if="prefixIcon" #prefix>
         <CalendarIcon class="ml-3" />

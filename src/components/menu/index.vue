@@ -14,8 +14,6 @@ defineOptions({
 
 const props = withDefaults(defineProps<MenuProps>(), {
   options: () => [],
-  showDelay: 0,
-  hideDelay: 100,
   position: 'bottom-start',
   closeOnPressEscape: true,
 })
@@ -30,37 +28,29 @@ const listStyles = computed(() => ({
   '--list-width': getCssUnitValue(props.width),
 }))
 
-function onVisibleChange(visible: boolean) {
+function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
-}
-
-function hidePopover() {
-  onVisibleChange(false)
 }
 
 function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
-  hidePopover()
+  togglePopoverVisible(false)
 }
 </script>
 
 <template>
   <PPopover
+    v-model="popoverVisible"
     class="pxd-menu"
     trigger="click"
-    :visible="popoverVisible"
+    :disabled="disabled"
     :position="position"
     :adaptive="isAdaptive"
-    :show-delay="showDelay"
-    :hide-delay="hideDelay"
     :wrapper-class="responsiveClasses.wrapper"
     :content-class="responsiveClasses.content"
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
-    prevent-default-on-tab
     v-bind="$attrs"
-    @escape="hidePopover"
-    @visible-change="onVisibleChange"
   >
     <slot />
 

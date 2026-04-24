@@ -24,7 +24,7 @@ export interface ModalEmits {
   show: []
   hide: []
   change: [boolean]
-  'visible-change': [boolean]
-  'outside-click': [MouseEvent]
-  'update:modelValue': [boolean]
+  'outside-click': [PointerEvent]
+  'visible-change': [visible: boolean]
+  'update:modelValue': [visible: boolean]
 }

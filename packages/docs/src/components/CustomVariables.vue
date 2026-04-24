@@ -140,7 +140,7 @@ watch(
   { deep: true },
 )
 
-const popoverRef = useTemplateRef<InstanceType<typeof PPopover>>('popoverRef')
+const popoverVisible = shallowRef(false)
 
 function resetCustomVariables() {
   customVariables.value = {
@@ -149,7 +149,7 @@ function resetCustomVariables() {
     duration: '',
     'timing-function': '',
   }
-  popoverRef.value?.hide()
+  popoverVisible.value = false
 }
 
 async function copyCustomVariables() {
@@ -162,7 +162,7 @@ async function copyCustomVariables() {
 }
 `)
 
-  popoverRef.value?.hide()
+  popoverVisible.value = false
   useMessage.success('Copied to clipboard', { group: 'website' })
 }
 
@@ -173,7 +173,7 @@ onBeforeMount(() => {
 
 <template>
   <PPopover
-    ref="popoverRef"
+    v-model="popoverVisible"
     trigger="click"
     class="h-inherit"
     position="bottom-end"

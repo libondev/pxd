@@ -4,9 +4,8 @@ import type { ListOption, ListOptionSelected } from '../list/types'
 export interface MenuProps {
   width?: string | number
   options?: ListOption[]
+  disabled?: boolean
   position?: ComponentPosition
-  showDelay?: number
-  hideDelay?: number
   closeOnPressEscape?: boolean
 }
 

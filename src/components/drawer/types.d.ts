@@ -22,7 +22,7 @@ export interface DrawerEmits {
   show: []
   hide: []
   change: [boolean]
-  'outside-click': [MouseEvent]
-  'visible-change': [boolean]
-  'update:modelValue': [boolean]
+  'outside-click': [PointerEvent]
+  'visible-change': [visible: boolean]
+  'update:modelValue': [visible: boolean]
 }

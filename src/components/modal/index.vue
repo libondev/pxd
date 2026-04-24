@@ -62,7 +62,7 @@ function closeOverlayIfNeed() {
   isVisible.value = false
 }
 
-function onOverlayClick(ev: MouseEvent) {
+function onOverlayClick(ev: PointerEvent) {
   emits('outside-click', ev)
 
   if (!isTruthyProp(props.closeOnClickOverlay)) {
