@@ -57,7 +57,13 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 const configProvider = useConfigProvider()
 
 const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
-const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
+const focusTrapContainer = computed(() => {
+  if (isVisible.value && !triggerMethods.value.includes('focus')) {
+    return wrapperRef.value
+  }
+
+  return null
+})
 
 const {
   render: isRender,
