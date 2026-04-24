@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage, usePopoverResponsive } from 'pxd'
-import { ref, watch } from 'vue'
+import { ref, useTemplateRef, watch } from 'vue'
 
 defineOptions({
   name: 'CustomVariables',
@@ -121,7 +121,13 @@ function updateCustomVariables() {
   const rootElStyle = document.documentElement.style
 
   customProperties.forEach((property) => {
-    rootElStyle.setProperty(`--${property.key}`, customVariables.value[property.key])
+    const newValue = customVariables.value[property.key]
+
+    if (newValue) {
+      rootElStyle.setProperty(`--${property.key}`, newValue)
+    } else {
+      rootElStyle.removeProperty(`--${property.key}`)
+    }
   })
 }
 
