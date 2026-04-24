@@ -43,9 +43,7 @@ const wrapperRef = shallowRef<HTMLElement>(null!)
 const localPosition = shallowRef(props.position)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
-const transitionType = computed(() =>
-  props.transitionType || props.adaptive ? 'fade-slide' : 'fade-scale',
-)
+const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
 
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
@@ -375,7 +373,7 @@ defineExpose({
         @pointerleave="onWrapperPointerLeave"
       >
         <div
-          class="pxd-popover--container sm:opacity-0 relative z-1 w-inherit default-transition-duration default-transition-timing-function"
+          class="pxd-popover--container relative z-1 w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
@@ -415,6 +413,7 @@ defineExpose({
   }
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
+    opacity: 0;
     transform: scale(0.95);
     transition-duration: var(--faster-transition-duration);
   }

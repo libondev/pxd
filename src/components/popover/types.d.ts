@@ -21,7 +21,6 @@ export interface PopoverProps {
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
-  transitionType?: 'fade' | 'fade-scale' | 'fade-slide'
   toggleOnTrigger?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
