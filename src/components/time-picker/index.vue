@@ -39,7 +39,7 @@ const VALUE_POSITION_MAP = {
   second: 2,
 } as const
 
-const popoverTrigger = ['click', 'focus'] as PopoverTrigger[]
+const popoverTrigger = ['click'] as PopoverTrigger[]
 
 const configProvider = useConfigProvider()
 
@@ -252,6 +252,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
+      @keydown.enter="onVisibleChange(true)"
     >
       <template v-if="prefixIcon" #prefix>
         <CalendarIcon class="ml-3" />
@@ -259,7 +260,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="sm:py-1.5 p-2 gap-1 flex items-center justify-between border-b" @click.stop>
+      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
         <PButton
           size="xs"
           variant="ghost"

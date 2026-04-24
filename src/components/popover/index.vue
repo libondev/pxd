@@ -4,6 +4,7 @@ import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
+import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, toArray } from '../../utils/format'
@@ -52,6 +53,7 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 const configProvider = useConfigProvider()
 
 const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
+const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
 
 const {
   render: isRender,
@@ -74,6 +76,8 @@ const {
     }
   },
 })
+
+useFocusTrap(focusTrapContainer)
 
 useOutsideClick(wrapperRef, {
   allowList: [triggerRef, wrapperRef],
@@ -260,7 +264,22 @@ function onTriggerContextmenu() {
   handlePopoverShow()
 }
 
-function onContentPointerEnter() {
+const PREVENT_KEYS = ['ArrowUp', 'ArrowDown', 'Home', 'End']
+
+// Prevents the page from scrolling by pressing the key when popover appears.
+function onWrapperKeydown(ev: KeyboardEvent) {
+  if (props.disabled || !isVisible.value) {
+    return
+  }
+
+  const { key } = ev
+
+  if (PREVENT_KEYS.includes(key)) {
+    ev.preventDefault()
+  }
+}
+
+function onWrapperPointerEnter() {
   if (props.disabled) {
     return
   }
@@ -272,7 +291,7 @@ function onContentPointerEnter() {
   handlePopoverShow()
 }
 
-function onContentPointerLeave() {
+function onWrapperPointerLeave() {
   if (props.disabled) {
     return
   }
@@ -326,7 +345,6 @@ defineExpose({
       :show-overlay="adaptive"
       :close-on-press-escape="closeOnPressEscape"
       :lock-scroll-on-visible="adaptive"
-      :prevent-default-on-tab="preventDefaultOnTab"
       @escape="handlePopoverHide()"
     >
       <div
@@ -340,8 +358,9 @@ defineExpose({
         :class="wrapperClass"
         :style="wrapperStyle"
         class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
-        @pointerenter="onContentPointerEnter"
-        @pointerleave="onContentPointerLeave"
+        @keydown="onWrapperKeydown"
+        @pointerenter="onWrapperPointerEnter"
+        @pointerleave="onWrapperPointerLeave"
       >
         <div
           class="pxd-popover--container relative z-1 w-inherit default-transition-duration default-transition-timing-function"

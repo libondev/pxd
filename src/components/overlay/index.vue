@@ -43,7 +43,6 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
   enabled: () => props.modelValue,
   closeOnPressEscape: () => props.closeOnPressEscape,
   lockScrollOnVisible: () => props.lockScrollOnVisible,
-  preventDefaultOnTab: () => props.preventDefaultOnTab,
   lockScroll,
   unlockScroll,
   onPressEscape: (ev: KeyboardEvent) => {
