@@ -55,13 +55,7 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 const configProvider = useConfigProvider()
 
 const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
-const focusTrapContainer = computed(() => {
-  if (isVisible.value && !triggerMethods.value.includes('focus')) {
-    return wrapperRef.value
-  }
-
-  return null
-})
+const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
 
 const {
   render: isRender,
@@ -238,28 +232,6 @@ function onTriggerPointerLeave() {
   handlePopoverHide()
 }
 
-function onTriggerFocusin() {
-  if (props.disabled || !triggerMethods.value.includes('focus')) {
-    return
-  }
-
-  handlePopoverShow()
-}
-
-function onTriggerFocusout(event: FocusEvent) {
-  if (props.disabled || !triggerMethods.value.includes('focus')) {
-    return
-  }
-
-  // Make sure that the focus is not turned off when switching from triggerRef to wrapperRef.
-  const relatedTarget = event.relatedTarget as HTMLElement
-  if (relatedTarget && wrapperRef.value?.contains(relatedTarget)) {
-    return
-  }
-
-  handlePopoverHide()
-}
-
 function onTriggerContextmenu() {
   if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
     return
@@ -342,8 +314,6 @@ defineExpose({
     :data-disabled="disabled"
     v-bind="$attrs"
     @click="onTriggerClick"
-    @focusin="onTriggerFocusin"
-    @focusout="onTriggerFocusout"
     @pointerenter="onTriggerPointerEnter"
     @pointerleave="onTriggerPointerLeave"
     @contextmenu.prevent="onTriggerContextmenu"

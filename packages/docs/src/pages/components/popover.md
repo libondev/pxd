@@ -168,14 +168,6 @@ const content =
       </template>
     </PPopover>
 
-    <PPopover content-class="p-4 bg-background-100 shadow-sm border rounded-md" trigger="focus">
-      <PButton> Focus to active </PButton>
-
-      <template #content>
-        {{ content }}
-      </template>
-    </PPopover>
-
     <PPopover
       content-class="p-4 bg-background-100 shadow-sm border rounded-md"
       trigger="contextmenu"
@@ -189,9 +181,9 @@ const content =
 
     <PPopover
       content-class="p-4 bg-background-100 shadow-sm border rounded-md"
-      :trigger="['hover', 'click', 'focus']"
+      :trigger="['hover', 'click']"
     >
-      <PButton> Hover/Click/Focus to active </PButton>
+      <PButton> Hover/Click to active </PButton>
 
       <template #content>
         {{ content }}
