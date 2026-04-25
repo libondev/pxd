@@ -72,7 +72,7 @@ const listData = Array.from({ length: 50 }, (_, i) => ({
 
 <template>
   <PVirtualList
-    class="!h-64 w-100 max-w-full border border-dashed rounded-lg"
+    class="!h-64 w-100 max-w-full rounded-lg"
     :list-data="listData"
     :column-count="3"
     :column-gap="12"
@@ -80,7 +80,7 @@ const listData = Array.from({ length: 50 }, (_, i) => ({
   >
     <template #item="{ item }">
       <div
-        class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800/60"
+        class="rounded-lg border bg-gray-100 px-3 py-2 text-sm"
         :style="{ height: `${item.height}px` }"
       >
         {{ item.title }}

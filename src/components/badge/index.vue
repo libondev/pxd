@@ -45,9 +45,9 @@ const badgeVariant = tv({
       turborepo: 'text-gray-100 dark:text-gray-1000',
     },
     size: {
-      sm: 'px-2 h-5 text-xs',
+      sm: 'px-1.5 h-5 text-xs',
       md: 'px-2.5 h-6 text-xs',
-      lg: 'px-3 h-7.5 text-sm',
+      lg: 'px-3 h-8 text-sm',
     },
   },
   compoundVariants: [

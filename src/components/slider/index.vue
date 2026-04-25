@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1.5 text-xs -top-8 pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base shadow-border-tooltip select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[0] }}
       </span>
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 shadow-sm pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1.5 text-xs -top-8 pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base shadow-border-tooltip select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[1] }}
       </span>

@@ -64,7 +64,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
             icon
             @click="copyText(address)"
           >
-            <Transition name="pxd-transition--fade-scale" mode="out-in">
+            <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
               <Component :is="renderIcon" class="text-sm text-foreground-secondary" />
             </Transition>
           </PButton>

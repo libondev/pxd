@@ -41,8 +41,8 @@ The component inherits from popover and supports all the properties of popover. 
       <PButton>invert</PButton>
     </PTooltip>
 
-    <PTooltip variant="primary" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>primary</PButton>
+    <PTooltip variant="default" content="The Evil Rabbit Jumped over the Fence">
+      <PButton>default</PButton>
     </PTooltip>
 
     <PTooltip variant="success" content="The Evil Rabbit Jumped over the Fence">

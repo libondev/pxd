@@ -414,7 +414,7 @@ defineExpose({
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(var(--popover-scale));
     transition-duration: var(--faster-transition-duration);
   }
 

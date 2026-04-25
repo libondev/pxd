@@ -22,12 +22,12 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 const emits = defineEmits<SnippetEmits>()
 
 const snippetVariant = tv({
-  base: 'pxd-snippet pr-12 relative flex items-center rounded-lg border motion-safe:transition-appearance',
+  base: 'pxd-snippet pl-3 pr-1 gap-4 relative flex items-center rounded-lg border motion-safe:transition-appearance',
   variants: {
     size: {
-      sm: 'min-h-7.5 pl-3.5 pr-1.5 py-2 text-sm',
-      md: 'min-h-9 pl-3.5 pr-2.5 py-2.5 text-sm',
-      lg: 'min-h-10 pl-3.5 pr-3.5 py-3 text-base',
+      sm: 'min-h-8 py-2 text-sm',
+      md: 'min-h-10 py-2.5 text-sm',
+      lg: 'min-h-12 py-3 text-base',
     },
     variant: {
       default: 'border-gray-alpha-300 bg-background-100',
@@ -74,7 +74,7 @@ async function onCopyButtonClick() {
 
 <template>
   <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="$attrs">
-    <div class="pxd-snippet--container">
+    <div class="pxd-snippet--container flex-1">
       <pre
         v-for="(t, i) of computedTextArray"
         :key="i"
@@ -85,14 +85,16 @@ async function onCopyButtonClick() {
       >
     </div>
 
-    <div
-      class="right-1 p-2 absolute top-1/2 -translate-y-1/2 cursor-pointer rounded-md select-none hover:bg-background-hover active:bg-background-active"
-      :class="{ copied: isCopied }"
-      @click="onCopyButtonClick"
-    >
-      <Transition name="pxd-transition--fade-scale" mode="out-in">
-        <Component :is="renderIcon" class="text-sm" />
-      </Transition>
+    <div class="min-w-5 relative shrink-0">
+      <button
+        class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 cursor-pointer appearance-none rounded-sm self-focus-ring outline-none select-none hover:bg-background-hover hover:shadow-border-base active:bg-background-active motion-safe:transition-appearance"
+        :class="{ copied: isCopied }"
+        @click="onCopyButtonClick"
+      >
+        <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
+          <Component :is="renderIcon" class="text-sm pointer-events-none" />
+        </Transition>
+      </button>
     </div>
   </div>
 </template>

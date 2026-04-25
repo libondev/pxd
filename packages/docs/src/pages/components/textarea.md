@@ -7,7 +7,7 @@ Retrieve multi-line user input.
 ```vue demo
 <template>
   <PTextarea
-    rows="2"
+    rows="4"
     placeholder="Please enter your text here..."
   />
 </template>
@@ -19,7 +19,7 @@ Retrieve multi-line user input.
 <template>
   <PTextarea
     disabled
-    rows="2"
+    rows="4"
     placeholder="Please enter your text here..."
   />
 </template>
@@ -38,10 +38,10 @@ const value = ref(
 
 <template>
   <PStack gap="12" direction="vertical">
-    <PTextarea v-model="value" size="xs" class="min-h-25" error="There has been an error." />
-    <PTextarea v-model="value" size="sm" class="min-h-25" error="There has been an error." />
-    <PTextarea v-model="value" class="min-h-25" error="There has been an error." />
-    <PTextarea v-model="value" size="lg" class="min-h-25" error="There has been an error." />
+    <PTextarea v-model="value" size="xs" error="There has been an error." />
+    <PTextarea v-model="value" size="sm" error="There has been an error." />
+    <PTextarea v-model="value" size="md" error="There has been an error." />
+    <PTextarea v-model="value" size="lg" error="There has been an error." />
   </PStack>
 </template>
 ```

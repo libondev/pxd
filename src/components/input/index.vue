@@ -33,9 +33,9 @@ const inputVariant = tv({
   variants: {
     size: {
       xs: 'h-6 text-xs rounded-sm',
-      sm: 'h-7.5 text-sm rounded-md',
-      md: 'h-9 text-sm rounded-md',
-      lg: 'h-10 text-base rounded-lg',
+      sm: 'h-8 text-sm rounded-md',
+      md: 'h-10 text-sm rounded-md',
+      lg: 'h-12 text-base rounded-lg',
     },
     align: {
       left: 'text-left',

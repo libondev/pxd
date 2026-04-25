@@ -29,9 +29,9 @@ const pinInputVariant = tv({
   variants: {
     size: {
       xs: 'w-6 text-xs',
-      sm: 'w-7.5 text-sm',
-      md: 'w-9 text-sm',
-      lg: 'w-10 text-base',
+      sm: 'w-8 text-sm',
+      md: 'w-10 text-sm',
+      lg: 'w-12 text-base',
     },
     error: {
       true: 'is-error',

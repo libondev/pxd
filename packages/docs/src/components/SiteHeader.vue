@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
     <h2 class="sm:w-56 md:border-r xl:border-l h-full">
       <RouterLink
         to="/"
-        class="px-3 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none"
+        class="px-2.5 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none"
       >
         <SiteLogo class="text-2xl" />
         <span class="xs:block hidden">PXD</span>
@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
 
     <nav class="xl:border-r flex h-full items-center">
       <div class="h-full border-l">
-        <PButton variant="ghost" shape="square" class="sm:px-3 h-full" @click="openCommandMenu">
+        <PButton variant="ghost" shape="square" class="h-full" @click="openCommandMenu">
           <MagnifyingGlassIcon />
 
           <span class="sm:block ml-1.5 hidden">Search</span>
@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
         <PLinkButton
           variant="ghost"
           shape="square"
-          class="sm:px-3 h-full"
+          class="h-full"
           target="_blank"
           :href="githubLink"
         >
@@ -129,7 +129,7 @@ onBeforeUnmount(() => {
 
       <div class="h-full border-l">
         <CustomVariables width="200" position="bottom-end">
-          <PButton variant="ghost" shape="square" class="sm:px-3 h-full">
+          <PButton variant="ghost" shape="square" class="h-full">
             <SparklesIcon />
 
             <span class="sm:block ml-1.5 hidden">Customize</span>
@@ -138,7 +138,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="h-full border-r border-l border-r-transparent">
-        <PThemeSwitcher variant="ghost" shape="square" class="sm:px-3 h-full" />
+        <PThemeSwitcher variant="ghost" shape="square" class="h-full" />
       </div>
     </nav>
   </header>

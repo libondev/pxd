@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
-  base: 'pxd-list-item h-10 gap-3 px-2 scroll-m-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+  base: 'pxd-list-item sm:h-10 h-12 gap-3 px-2 scroll-m-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     type: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',

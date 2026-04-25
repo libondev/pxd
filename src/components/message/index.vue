@@ -343,7 +343,8 @@ defineExpose({
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
-      --message-item-transform: translateZ(0) translateY(var(--starting-offset)) scaleX(0.95);
+      --message-item-transform: translateZ(0) translateY(var(--starting-offset))
+        scaleX(var(--popover-scale));
     }
   }
 }

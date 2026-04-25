@@ -26,9 +26,9 @@ const toggleButtonVariant = tv({
   base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border bg-background-100 outline-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none data-[state=off]:enabled:hover:z-1 data-[state=on]:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
-      sm: 'h-7.5 px-1.75 text-sm rounded-md',
-      md: 'h-9 px-2.5 text-sm rounded-md',
-      lg: 'h-10 px-2.75 text-base rounded-lg',
+      sm: 'h-8 px-2 text-sm rounded-md',
+      md: 'h-10 px-3 text-sm rounded-md',
+      lg: 'h-12 px-3.75 text-base rounded-lg',
     },
     variant: {
       ghost: 'border-transparent',

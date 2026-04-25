@@ -136,6 +136,7 @@
   --hold-button-progress-color: var(--color-gray-alpha-600);
   --popover-arrow-color: var(--color-gray-1000);
   --popover-offset: 8;
+  --popover-scale: 0.95;
   --popover-index: max(var(--pxd-initial-index), 10);
   --overlay-index: calc(var(--popover-index) - 5);
   --modal-index: calc(var(--overlay-index) + 5);
@@ -286,8 +287,8 @@
 
 @theme inline {
   --font-sans:
-    'Inter', 'Inter Fallback', 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    'Inter', 'Inter Fallback', 'Geist', Arial, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-primary: hsl(var(--primary));
   --color-primary-hover: var(--primary-hover);
@@ -591,7 +592,8 @@
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  transform: scale(var(--scale, 0.95));
+  filter: blur(5px);
+  transform: scale(0.75);
 }
 
 /* Make exit faster than enter */

@@ -22,9 +22,9 @@ const buttonVariants = tv({
   variants: {
     size: {
       xs: 'h-6 px-1 text-sm rounded-sm',
-      sm: 'h-7.5 px-1.5 text-sm rounded-md',
-      md: 'h-9 px-2.5 text-sm rounded-md',
-      lg: 'h-10 px-3.5 text-base rounded-lg',
+      sm: 'h-8 px-1.5 text-sm rounded-md',
+      md: 'h-10 px-2.5 text-sm rounded-md',
+      lg: 'h-12 px-3.5 text-base rounded-lg',
     },
     shape: {
       square: 'rounded-none',
