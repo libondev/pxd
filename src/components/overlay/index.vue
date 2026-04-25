@@ -41,12 +41,17 @@ const { lockScroll, unlockScroll } = useLockScroll()
 
 const { registerOverlay, unregisterOverlay } = useOverlayManager({
   enabled: () => props.modelValue,
-  closeOnPressEscape: () => props.closeOnPressEscape,
   lockScrollOnVisible: () => props.lockScrollOnVisible,
   lockScroll,
   unlockScroll,
   onPressEscape: (ev: KeyboardEvent) => {
     emits('escape', ev)
+
+    if (!props.closeOnPressEscape) {
+      return
+    }
+
+    emits('update:modelValue', false)
   },
 })
 

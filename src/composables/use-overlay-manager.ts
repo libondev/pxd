@@ -5,7 +5,6 @@ import { toValue } from '../utils/ref'
 
 interface OverlayManagerOptions {
   enabled?: MaybeRefOrGetter<boolean>
-  closeOnPressEscape?: MaybeRefOrGetter<boolean>
   lockScrollOnVisible?: MaybeRefOrGetter<boolean>
   lockScroll: () => void
   unlockScroll: () => void
@@ -14,7 +13,6 @@ interface OverlayManagerOptions {
 
 interface OverlayManagerEntry {
   id: symbol
-  closeOnPressEscape: OverlayManagerOptions['closeOnPressEscape']
   onPressEscape: OverlayManagerOptions['onPressEscape']
 }
 
@@ -33,17 +31,12 @@ function onEscapeKeydown(ev: KeyboardEvent) {
   }
 
   const { ctrlKey, metaKey, altKey, shiftKey, key } = ev
-  const { closeOnPressEscape, onPressEscape } = entry
 
   if (ctrlKey || metaKey || altKey || shiftKey || key !== 'Escape') {
     return
   }
 
-  if (!closeOnPressEscape) {
-    return
-  }
-
-  onPressEscape?.(ev)
+  entry?.onPressEscape?.(ev)
 }
 
 function ensureKeydownListener() {
@@ -65,14 +58,7 @@ function removeKeydownListener() {
 }
 
 export function useOverlayManager(options: OverlayManagerOptions) {
-  const {
-    enabled,
-    closeOnPressEscape,
-    lockScrollOnVisible,
-    lockScroll,
-    unlockScroll,
-    onPressEscape,
-  } = options
+  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape } = options
 
   let isLockedScroll = false
   const overlayId = Symbol('pxd-overlay-id')
@@ -103,7 +89,6 @@ export function useOverlayManager(options: OverlayManagerOptions) {
 
     overlayStack.push({
       id: overlayId,
-      closeOnPressEscape,
       onPressEscape,
     })
 
