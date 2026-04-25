@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { ref, watchEffect } from 'vue'
+import { shallowRef, watchEffect } from 'vue'
 import { toValue } from '../../../utils/ref'
 
 interface UseGroupExpandOptions {
@@ -12,7 +12,7 @@ const TRANSITION_LOCK_MS = 250
 const LEAVE_DEBOUNCE_MS = 200
 
 export function useGroupExpand({ expand, onPauseAll, onResumeAll }: UseGroupExpandOptions) {
-  const groupExpand = ref(toValue(expand))
+  const groupExpand = shallowRef(toValue(expand))
 
   let leaveTimeoutId: ReturnType<typeof setTimeout> | undefined
   let isTransitioning = false

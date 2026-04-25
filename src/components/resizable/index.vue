@@ -16,7 +16,7 @@ const panelSizes = ref<Record<string, number>>({})
 const panelConfigs = ref<PanelConfig[]>([])
 const handleConfigs = ref<HandleConfig[]>([])
 
-const orderCounter = ref(0)
+const orderCounter = shallowRef(0)
 const containerRef = shallowRef<HTMLElement>()
 
 // 提供给子组件注册使用的方法
