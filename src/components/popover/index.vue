@@ -377,17 +377,39 @@ defineExpose({
           :data-transition-type="transitionType"
           :data-show-transition="configProvider.popoverShowTransition"
         >
-          <i
-            v-if="showArrow"
-            ref="arrayRef"
-            class="pxd-popover--arrow w-2.5 h-2.5 rounded-xs absolute z-1 rotate-45 bg-(--popover-arrow-color)"
-          />
           <div
             class="pxd-popover--content h-full max-h-inherit overflow-auto"
             :class="contentClass"
             :style="contentStyle"
           >
             <slot name="content" />
+          </div>
+
+          <div
+            v-if="showArrow"
+            ref="arrayRef"
+            class="pxd-popover--arrow pointer-events-none absolute z-1"
+          >
+            <svg
+              width="14"
+              height="7"
+              viewBox="0 0 14 7"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#popover_arrow_clip)">
+                <path
+                  d="M15 -0.5V0.5H12.9834L12.8184 0.508789C12.4377 0.550822 12.0853 0.738056 11.8359 1.03418L8.53027 4.95996C7.73114 5.90893 6.26886 5.90892 5.46973 4.95996L2.16406 1.03418C1.87905 0.695733 1.45907 0.5 1.0166 0.5H-1V-0.5H15Z"
+                  fill="var(--popover-arrow-color)"
+                  stroke="var(--popover-arrow-border,transparent)"
+                />
+              </g>
+              <defs>
+                <clipPath id="popover_arrow_clip">
+                  <rect width="14" height="7" fill="var(--popover-arrow-color)"></rect>
+                </clipPath>
+              </defs>
+            </svg>
           </div>
         </div>
       </div>
@@ -396,8 +418,58 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-popover--container {
+.pxd-popover--wrapper {
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
+
+  .border + .pxd-popover--arrow {
+    --popover-arrow-border: var(--color-gray-300);
+  }
+
+  &[data-position^='top'] {
+    &[data-adaptive='false'] {
+      padding-bottom: var(--popover-padding);
+    }
+
+    .pxd-popover--arrow {
+      bottom: -6px;
+    }
+  }
+
+  &[data-position^='bottom'] {
+    &[data-adaptive='false'] {
+      padding-top: var(--popover-padding);
+    }
+
+    .pxd-popover--arrow {
+      top: -6px;
+      transform: rotate(180deg);
+    }
+  }
+
+  &[data-position^='left'] {
+    &[data-adaptive='false'] {
+      padding-right: var(--popover-padding);
+    }
+
+    .pxd-popover--arrow {
+      right: -9.5px;
+      transform: rotate(-90deg);
+    }
+  }
+
+  &[data-position^='right'] {
+    &[data-adaptive='false'] {
+      padding-left: var(--popover-padding);
+    }
+
+    .pxd-popover--arrow {
+      left: -9.5px;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.pxd-popover--container {
   transition-property: opacity, transform;
   max-height: min(800px, 80vh);
   max-height: min(800px, 80dvh);
@@ -470,37 +542,5 @@ defineExpose({
   [data-position='right-end'] & {
     transform-origin: left bottom;
   }
-
-  [data-position^='top'][data-adaptive='false'] & {
-    padding-bottom: var(--popover-padding);
-  }
-
-  [data-position^='bottom'][data-adaptive='false'] & {
-    padding-top: var(--popover-padding);
-  }
-
-  [data-position^='left'][data-adaptive='false'] & {
-    padding-right: var(--popover-padding);
-  }
-
-  [data-position^='right'][data-adaptive='false'] & {
-    padding-left: var(--popover-padding);
-  }
-}
-
-.pxd-popover--wrapper[data-position^='top'] .pxd-popover--arrow {
-  bottom: 0.3rem;
-}
-
-.pxd-popover--wrapper[data-position^='bottom'] .pxd-popover--arrow {
-  top: 0.3rem;
-}
-
-.pxd-popover--wrapper[data-position^='left'] .pxd-popover--arrow {
-  right: 0.3rem;
-}
-
-.pxd-popover--wrapper[data-position^='right'] .pxd-popover--arrow {
-  left: 0.3rem;
 }
 </style>

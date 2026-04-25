@@ -21,27 +21,27 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 const VARIANTS = {
   invert: {
     bg: 'var(--color-background-100)',
-    base: 'shadow-border-tooltip text-foreground',
+    base: 'text-foreground border',
   },
   default: {
     bg: 'var(--color-gray-1000)',
-    base: 'shadow-tooltip text-gray-100',
+    base: 'text-gray-100',
   },
   error: {
     bg: 'var(--color-red-700)',
-    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
+    base: 'text-gray-100 dark:text-gray-1000',
   },
   warning: {
     bg: 'var(--color-amber-700)',
-    base: 'shadow-tooltip text-gray-1000 dark:text-gray-100',
+    base: 'text-gray-1000 dark:text-gray-100',
   },
   success: {
     bg: 'var(--color-green-700)',
-    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
+    base: 'text-gray-100 dark:text-gray-1000',
   },
   violet: {
     bg: 'var(--color-purple-700)',
-    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
+    base: 'text-gray-100 dark:text-gray-1000',
   },
 }
 
@@ -53,7 +53,7 @@ const isDisabled = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line bg-(--popover-arrow-color)',
+    'px-3 py-2 rounded-md text-sm break-words shadow-tooltip whitespace-pre-line bg-(--popover-arrow-color)',
     computedVariant.value.base,
     props.contentClass,
   ].join(' ')
