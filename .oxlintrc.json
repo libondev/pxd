@@ -1,10 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "jsPlugins": [
-    "eslint-plugin-better-tailwindcss"
-  ],
+  "jsPlugins": ["eslint-plugin-better-tailwindcss"],
   "rules": {
     "curly": "error",
+    "vitest/require-mock-type-parameters": "off",
     "better-tailwindcss/no-deprecated-classes": "error",
     "better-tailwindcss/enforce-shorthand-classes": "error",
     "better-tailwindcss/no-unnecessary-whitespace": "error",
@@ -21,16 +20,7 @@
       }
     ]
   },
-  "plugins": [
-    "oxc",
-    "react",
-    "eslint",
-    "import",
-    "vitest",
-    "promise",
-    "unicorn",
-    "typescript"
-  ],
+  "plugins": ["oxc", "react", "eslint", "import", "vitest", "promise", "unicorn", "typescript"],
   "ignorePatterns": [
     "dist",
     "node_modules",
