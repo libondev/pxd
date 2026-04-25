@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TabsProps, TabsEmits } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { toArray } from '../../utils/format'
 
@@ -22,11 +22,11 @@ const emits = defineEmits<TabsEmits>()
 const slots = useSlots()
 const modelValue = useModelValue(props, emits)
 
-const scrollRef = ref<HTMLElement | null>(null)
-const innerNavRef = ref<HTMLElement | null>(null)
-const overflowing = ref(false)
-const canScrollLeft = ref(false)
-const canScrollRight = ref(false)
+const scrollRef = shallowRef<HTMLElement>()
+const innerNavRef = shallowRef<HTMLElement>()
+const overflowing = shallowRef(false)
+const canScrollLeft = shallowRef(false)
+const canScrollRight = shallowRef(false)
 
 let resizeObserver: ResizeObserver | null = null
 
@@ -176,7 +176,7 @@ watch(
       :data-variant="variant"
     >
       <button
-        v-show="overflowing"
+        v-if="overflowing"
         type="button"
         class="pxd-tabs--arrow px-1.5 inline-flex shrink-0 items-center justify-center self-stretch border-r border-border text-foreground-secondary self-focus-ring outline-none hover:text-foreground enabled:cursor-pointer disabled:pointer-events-none disabled:border-transparent disabled:opacity-35 motion-safe:transition-colors"
         :disabled="!canScrollLeft"
@@ -216,7 +216,7 @@ watch(
       </div>
 
       <button
-        v-show="overflowing"
+        v-if="overflowing"
         type="button"
         class="pxd-tabs--arrow px-1.5 inline-flex shrink-0 items-center justify-center self-stretch border-l border-border text-foreground-secondary self-focus-ring outline-none hover:text-foreground enabled:cursor-pointer disabled:pointer-events-none disabled:border-transparent disabled:opacity-35 motion-safe:transition-colors"
         :disabled="!canScrollRight"
@@ -264,7 +264,7 @@ watch(
 
     .pxd-tabs--nav-item {
       border-bottom: 2px solid transparent;
-      padding: 0.875rem 0.25rem;
+      padding: 0.875rem 0.375rem;
 
       &:not(:disabled) {
         color: var(--color-gray-900);
