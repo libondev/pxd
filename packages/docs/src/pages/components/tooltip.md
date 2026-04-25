@@ -37,20 +37,28 @@ The component inherits from popover and supports all the properties of popover. 
 ```vue demo
 <template>
   <PStack>
+    <PTooltip variant="invert" content="The Evil Rabbit Jumped over the Fence">
+      <PButton>invert</PButton>
+    </PTooltip>
+
     <PTooltip variant="primary" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>Hover me</PButton>
+      <PButton>primary</PButton>
     </PTooltip>
 
     <PTooltip variant="success" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>Hover me</PButton>
+      <PButton>success</PButton>
     </PTooltip>
 
     <PTooltip variant="warning" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>Hover me</PButton>
+      <PButton>warning</PButton>
     </PTooltip>
 
     <PTooltip variant="error" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>Hover me</PButton>
+      <PButton>error</PButton>
+    </PTooltip>
+
+    <PTooltip variant="violet" content="The Evil Rabbit Jumped over the Fence">
+      <PButton>violet</PButton>
     </PTooltip>
   </PStack>
 </template>

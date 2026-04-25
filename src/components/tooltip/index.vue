@@ -11,7 +11,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<TooltipProps>(), {
-  variant: 'primary',
+  variant: 'default',
   position: 'top',
   showArrow: true,
   showDelay: 200,
@@ -19,25 +19,33 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 })
 
 const VARIANTS = {
-  primary: {
+  invert: {
+    bg: 'var(--color-background-100)',
+    base: 'shadow-border-tooltip text-foreground',
+  },
+  default: {
     bg: 'var(--color-gray-1000)',
-    text: 'text-gray-100',
+    base: 'shadow-tooltip text-gray-100',
   },
   error: {
     bg: 'var(--color-red-700)',
-    text: 'text-gray-100 dark:text-gray-1000',
+    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
   },
   warning: {
     bg: 'var(--color-amber-700)',
-    text: 'text-gray-1000 dark:text-gray-100',
+    base: 'shadow-tooltip text-gray-1000 dark:text-gray-100',
   },
   success: {
     bg: 'var(--color-green-700)',
-    text: 'text-gray-100 dark:text-gray-1000',
+    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
+  },
+  violet: {
+    bg: 'var(--color-purple-700)',
+    base: 'shadow-tooltip text-gray-100 dark:text-gray-1000',
   },
 }
 
-const computedVariant = computed(() => getFallbackValue(props.variant, VARIANTS, 'primary'))
+const computedVariant = computed(() => getFallbackValue(props.variant, VARIANTS, 'default'))
 
 const isDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
@@ -45,8 +53,8 @@ const isDisabled = computed(() => {
 
 const computedClasses = computed(() => {
   return [
-    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line shadow-tooltip bg-(--popover-arrow-color)',
-    computedVariant.value.text,
+    'px-3 py-2 rounded-md text-sm break-words whitespace-pre-line bg-(--popover-arrow-color)',
+    computedVariant.value.base,
     props.contentClass,
   ].join(' ')
 })

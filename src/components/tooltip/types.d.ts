@@ -1,10 +1,10 @@
-import type { ComponentClass, ComponentPosition, ComponentVariant } from '../../types/shared'
+import type { ComponentClass, ComponentPosition } from '../../types/shared'
 import type { CSSProperties } from 'vue'
 
 export interface TooltipProps {
   offset?: number
   content?: string
-  variant?: ComponentVariant
+  variant?: 'default' | 'error' | 'warning' | 'success' | 'invert' | 'violet'
   position?: ComponentPosition
   disabled?: boolean
   showDelay?: number
