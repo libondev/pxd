@@ -8,6 +8,7 @@ import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, toArray } from '../../utils/format'
+import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
 
 defineOptions({
@@ -360,26 +361,11 @@ defineExpose({
             ref="arrayRef"
             class="pxd-popover--arrow pointer-events-none absolute z-1"
           >
-            <svg
-              width="14"
-              height="7"
-              viewBox="0 0 14 7"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clip-path="url(#popover_arrow_clip)">
-                <path
-                  d="M15 -0.5V0.5H12.9834L12.8184 0.508789C12.4377 0.550822 12.0853 0.738056 11.8359 1.03418L8.53027 4.95996C7.73114 5.90893 6.26886 5.90892 5.46973 4.95996L2.16406 1.03418C1.87905 0.695733 1.45907 0.5 1.0166 0.5H-1V-0.5H15Z"
-                  fill="var(--popover-arrow-color)"
-                  stroke="var(--popover-arrow-border,transparent)"
-                />
-              </g>
-              <defs>
-                <clipPath id="popover_arrow_clip">
-                  <rect width="14" height="7" fill="var(--popover-arrow-color)"></rect>
-                </clipPath>
-              </defs>
-            </svg>
+            <PPopoverArrow
+              fill="var(--popover-arrow-color,transparent)"
+              stroke="var(--popover-arrow-border,transparent)"
+              :direction="localPosition"
+            />
           </div>
         </div>
       </div>
@@ -412,7 +398,6 @@ defineExpose({
 
     .pxd-popover--arrow {
       top: -6px;
-      transform: rotate(180deg);
     }
   }
 
@@ -422,8 +407,7 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      right: -9.5px;
-      transform: rotate(-90deg);
+      right: -6px;
     }
   }
 
@@ -433,8 +417,7 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      left: -9.5px;
-      transform: rotate(90deg);
+      left: -6px;
     }
   }
 }
