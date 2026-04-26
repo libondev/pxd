@@ -17,10 +17,6 @@ The component inherits from popover and supports all the properties of popover. 
       <PButton>Click me</PButton>
     </PTooltip>
 
-    <PTooltip position="bottom" trigger="focus" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>Focus me</PButton>
-    </PTooltip>
-
     <PTooltip
       position="right"
       trigger="contextmenu"
