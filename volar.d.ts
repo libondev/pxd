@@ -67,6 +67,7 @@ declare module 'vue' {
     PResizable: (typeof import('pxd/components/resizable'))['default']
     PResizableHandle: (typeof import('pxd/components/resizable-handle'))['default']
     PResizablePanel: (typeof import('pxd/components/resizable-panel'))['default']
+    PScalableText: (typeof import('pxd/components/scalable-text'))['default']
     PScrollable: (typeof import('pxd/components/scrollable'))['default']
     PSeparator: (typeof import('pxd/components/separator'))['default']
     PSkeleton: (typeof import('pxd/components/skeleton'))['default']

@@ -196,6 +196,10 @@
     "name": "resizable"
   },
   {
+    "camelized": "Scalable Text",
+    "name": "scalable-text"
+  },
+  {
     "camelized": "Scrollable",
     "name": "scrollable"
   },
