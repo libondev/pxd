@@ -4,6 +4,8 @@ Press and hold the button to trigger some logic (such as delete).
 
 ## Default
 
+HoldButton extends the [Button component](/components/button).
+
 ```vue demo
 <script setup>
 import confetti from 'canvas-confetti'
@@ -13,22 +15,20 @@ function onConfirm() {
 }
 
 function onFinished(isFinished) {
-  if (isFinished) {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.7 },
-    })
+  if (!isFinished) {
+    return
   }
+
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.7 },
+  })
 }
 </script>
 
 <template>
-  <PStack align="center">
-    <PHoldButton size="sm" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
-    <PHoldButton size="md" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
-    <PHoldButton size="lg" @confirm="onConfirm" @finished="onFinished"> Hole me </PHoldButton>
-  </PStack>
+  <PHoldButton @confirm="onConfirm" @release="onFinished"> Hole me </PHoldButton>
 </template>
 ```
 
@@ -74,7 +74,7 @@ Set `progress-color` to modify the color of the progress bar.
 
 ## Cancelable
 
-After `cancelable` is set, the process can be cancelled while mouse is holding and leaving the button. At the same time, you can listen to the `cancelled` event to know when it has been cancelled.
+After `cancelable` is set, the process can be cancelled while mouse is holding and leaving the button. At the same time, you can listen to the `cancel` event to know when it has been cancelled.
 
 ```vue demo
 <script setup>
@@ -96,7 +96,7 @@ function onFinished(isFinished) {
 </script>
 
 <template>
-  <PHoldButton durations="1000" cancelable @canceled="onCanceled" @finished="onFinished">
+  <PHoldButton durations="1000" cancelable @cancel="onCanceled" @release="onFinished">
     Lasts one second
   </PHoldButton>
 </template>
