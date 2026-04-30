@@ -90,7 +90,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
     </PTooltip>
 
     <PTooltip content="The Evil Rabbit Jumped over the Fence">
-      <PButton>300ms(default)</PButton>
+      <PButton>Show/Hide: 300ms(default)</PButton>
     </PTooltip>
 
     <PTooltip :show-delay="200" :hide-delay="400" content="The Evil Rabbit Jumped over the Fence">
