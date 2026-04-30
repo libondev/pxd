@@ -57,9 +57,9 @@ defineExpose({
     <slot>
       <span
         v-if="isHideAvatar"
-        class="font-medium px-1 relative flex size-full items-center justify-center overflow-hidden rounded-inherit"
+        class="font-medium px-1 relative flex size-full items-center justify-center overflow-hidden rounded-inherit uppercase"
       >
-        {{ alt }}
+        {{ alt?.slice(0, 2) }}
       </span>
       <img
         v-else
