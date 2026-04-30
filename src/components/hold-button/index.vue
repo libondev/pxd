@@ -7,6 +7,7 @@ import PButton from '../button/index.vue'
 
 defineOptions({
   name: 'PHoldButton',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<HoldButtonProps>(), {
@@ -81,7 +82,7 @@ function onPointerLeave(e: PointerEvent) {
 
   if (status.value === 'loading' || status.value === 'confirmed') {
     status.value = 'canceled'
-    emits('canceled')
+    emits('cancel')
   }
 }
 
@@ -107,7 +108,7 @@ function onPointerUp(event: PointerEvent) {
 
   status.value = 'idle'
 
-  emits('finished', isConfirmed)
+  emits('release', isConfirmed)
   emits('pointerup', event)
 
   onTriggerVibrate()
@@ -163,7 +164,7 @@ onBeforeUnmount(() => {
       <slot name="suffix" />
       <div
         class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-progress-color) default-transition-timing-function!"
-        :class="{ finished: status === 'confirmed' }"
+        :class="{ confirmed: status === 'confirmed' }"
         :style="computedStyle"
         @transitionend="onTransitionEnd"
       />
@@ -189,7 +190,7 @@ onBeforeUnmount(() => {
       clip-path 0.1s,
       opacity 0s;
 
-    &.finished {
+    &.confirmed {
       --opacity: 0.68;
     }
   }

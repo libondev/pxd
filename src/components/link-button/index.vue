@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { LinkButtonEmits, LinkButtonProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format'
 import PButton from '../button/index.vue'
 
 defineOptions({
   name: 'PLinkButton',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<LinkButtonProps>(), {
@@ -16,14 +17,16 @@ const props = withDefaults(defineProps<LinkButtonProps>(), {
 
 const emits = defineEmits<LinkButtonEmits>()
 
+const attrs = useAttrs()
+
 const computedAttrs = computed(() => {
-  const { externalIcon, text, href, ...restProps } = props
+  const { align, target, href } = props
 
   const baseAttrs = {
-    ...restProps,
-    class: 'pxd-link-button',
+    align,
+    target,
     rel: 'noopener noreferrer',
-    onClick: onLinkClick,
+    ...attrs,
   }
 
   if (!href) {
@@ -51,7 +54,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <PButton v-bind="computedAttrs">
+  <PButton class="pxd-link-button" v-bind="computedAttrs" @click="onLinkClick">
     <template #prefix>
       <slot name="prefix" />
     </template>

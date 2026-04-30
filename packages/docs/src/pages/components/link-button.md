@@ -4,7 +4,7 @@ Inherit button style links.
 
 ## Default
 
-LinkButton extends the [Button component](/components/button){class="font-medium underline"}.
+LinkButton extends the [Button component](/components/button).
 
 ```vue demo
 <template>

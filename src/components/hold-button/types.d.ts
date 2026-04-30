@@ -1,9 +1,8 @@
-import type { ButtonProps } from '../button/types'
-
 export type HoldButtonStatus = 'idle' | 'loading' | 'canceled' | 'confirmed'
 
-export interface HoldButtonProps extends Omit<ButtonProps, 'as'> {
+export interface HoldButtonProps {
   vibrate?: boolean
+  disabled?: boolean
   scalable?: boolean
   durations?: number | string
   cancelable?: boolean
@@ -11,9 +10,9 @@ export interface HoldButtonProps extends Omit<ButtonProps, 'as'> {
 }
 
 export interface HoldButtonEmits {
+  cancel: []
   confirm: []
-  canceled: []
-  finished: [boolean]
+  release: [confirmed: boolean]
   pointerup: [PointerEvent]
   pointerdown: [PointerEvent]
 }
