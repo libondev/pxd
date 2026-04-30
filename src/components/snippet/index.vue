@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 const emits = defineEmits<SnippetEmits>()
 
 const snippetVariant = tv({
-  base: 'pxd-snippet pl-3 pr-1 gap-4 relative flex items-center rounded-lg border motion-safe:transition-appearance',
+  base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
   variants: {
     size: {
       sm: 'min-h-8 py-2 text-sm',
