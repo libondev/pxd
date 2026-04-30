@@ -24,6 +24,10 @@
     "name": "browser"
   },
   {
+    "camelized": "Bubble",
+    "name": "bubble"
+  },
+  {
     "camelized": "Button",
     "name": "button"
   },

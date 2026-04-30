@@ -10,6 +10,7 @@ declare module 'vue' {
     PBadge: (typeof import('pxd/components/badge'))['default']
     PBook: (typeof import('pxd/components/book'))['default']
     PBrowser: (typeof import('pxd/components/browser'))['default']
+    PBubble: (typeof import('pxd/components/bubble'))['default']
     PButton: (typeof import('pxd/components/button'))['default']
     PButtonGroup: (typeof import('pxd/components/button-group'))['default']
     PCarousel: (typeof import('pxd/components/carousel'))['default']
