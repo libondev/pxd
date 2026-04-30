@@ -93,7 +93,7 @@ useOutsideClick(wrapperRef, {
     emits('outside-click', ev)
 
     if (allowOutsideClick.value) {
-      handlePopoverHide(true)
+      handlePopoverHide()
     }
   },
 })
@@ -364,7 +364,7 @@ defineExpose({
             <PPopoverArrow
               fill="var(--popover-arrow-color,transparent)"
               stroke="var(--popover-arrow-border,transparent)"
-              :direction="localPosition"
+              :position="localPosition"
             />
           </div>
         </div>
@@ -377,7 +377,7 @@ defineExpose({
 .pxd-popover--wrapper {
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
 
-  .border + .pxd-popover--arrow {
+  .pxd-popover--content.border + .pxd-popover--arrow {
     --popover-arrow-border: var(--color-gray-300);
   }
 
