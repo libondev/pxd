@@ -312,7 +312,7 @@ onBeforeUnmount(() => {
         class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="onToggleClick(-1)"
       >
-        <ChevronRightIcon class="rotate-180" />
+        <ChevronRightIcon class="pointer-events-none rotate-180" />
       </button>
 
       <button
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
         class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="onToggleClick(1)"
       >
-        <ChevronRightIcon />
+        <ChevronRightIcon class="pointer-events-none" />
       </button>
     </div>
   </div>

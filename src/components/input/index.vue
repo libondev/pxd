@@ -6,6 +6,7 @@ import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { tv } from 'tailwind-variants'
 import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
@@ -32,10 +33,10 @@ const inputVariant = tv({
   base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all',
   variants: {
     size: {
-      xs: 'h-6 text-xs rounded-sm',
-      sm: 'h-8 text-sm rounded-md',
-      md: 'h-10 text-sm rounded-md',
-      lg: 'h-12 text-base rounded-lg',
+      xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,
+      sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md`,
+      md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
+      lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
     },
     align: {
       left: 'text-left',

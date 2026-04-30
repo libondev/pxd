@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
               as="RouterLink"
               :to="e.path"
             >
-              <ArrowRightIcon class="text-foreground-secondary" />
+              <ArrowRightIcon class="text-gray-600" />
               {{ e.label }}
             </PListItem>
           </PCommandMenuGroup>
@@ -100,12 +100,12 @@ onBeforeUnmount(() => {
             <div
               class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200"
             >
-              <PText secondary class="text-13px"> Open </PText>
+              <PText secondary class="text-13"> Open </PText>
               <PKbd enter />
 
-              <div class="mx-3 h-4 border-l" />
+              <PSeparator class="mx-1" />
 
-              <PText secondary class="text-13px"> Toggle </PText>
+              <PText secondary class="text-13"> Toggle </PText>
               <PKbd label="↑" />
               <PKbd label="↓" />
             </div>

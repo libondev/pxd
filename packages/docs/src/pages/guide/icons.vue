@@ -118,7 +118,7 @@ function handleCustomPrefixChange(event: Event) {
         <Component :is="item.icon" class="my-2 mx-auto" />
 
         <p
-          class="icon-name m-0! pt-2 relative truncate text-center text-13px text-foreground-secondary"
+          class="icon-name m-0! pt-2 relative truncate text-center text-13 text-foreground-secondary"
         >
           {{ getCopyContents(item.name) }}
         </p>

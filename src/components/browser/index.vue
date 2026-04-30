@@ -52,7 +52,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
         >
           <LockClosedIcon class="text-sm text-foreground-secondary" />
 
-          <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-13px text-gray-1000">
+          <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-13 text-gray-1000">
             {{ address }}
           </div>
 
@@ -64,7 +64,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
             icon
             @click="copyText(address)"
           >
-            <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
+            <Transition name="pxd-transition--fade-scale" mode="out-in">
               <Component :is="renderIcon" class="text-sm text-foreground-secondary" />
             </Transition>
           </PButton>

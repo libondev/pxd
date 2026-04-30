@@ -290,7 +290,7 @@ watch(
       height: 1.5rem;
       padding: 0 0.375rem;
       border-radius: var(--radius-md);
-      font-size: var(--text-13px);
+      font-size: var(--text-13);
       background-color: var(--color-gray-alpha-200);
 
       &:disabled {

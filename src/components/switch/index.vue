@@ -2,6 +2,7 @@
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideSwitchContext } from '../../contexts/switch'
 import { getFallbackValue } from '../../utils/get'
@@ -25,9 +26,9 @@ const props = withDefaults(defineProps<SwitchProps>(), {
 const emits = defineEmits<SwitchEmits>()
 
 const SIZES = {
-  sm: 'h-8 text-13px',
-  md: 'h-10 text-sm',
-  lg: 'h-12 text-base',
+  sm: `${BASIC_HEIGHTS.sm} text-13`,
+  md: `${BASIC_HEIGHTS.md} text-sm`,
+  lg: `${BASIC_HEIGHTS.lg} text-base`,
 }
 
 const configProvider = useConfigProvider()

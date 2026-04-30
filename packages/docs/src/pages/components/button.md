@@ -8,7 +8,7 @@ One of the most basic components, it will help you complete the interaction.
 <template>
   <PStack align="center">
     <PButton size="sm">Small</PButton>
-    <PButton>Medium</PButton>
+    <PButton size="md">Medium</PButton>
     <PButton size="lg">Large</PButton>
   </PStack>
 </template>
@@ -19,7 +19,7 @@ One of the most basic components, it will help you complete the interaction.
 ```vue demo
 <template>
   <PStack>
-    <PButton> click me </PButton>
+    <PButton shape="default"> click me </PButton>
     <PButton shape="rounded"> click me </PButton>
     <PButton shape="square"> click me </PButton>
   </PStack>
@@ -31,7 +31,7 @@ One of the most basic components, it will help you complete the interaction.
 ```vue demo
 <template>
   <PStack>
-    <PButton>default</PButton>
+    <PButton variant="default">default</PButton>
     <PButton variant="primary">primary</PButton>
     <PButton variant="success">success</PButton>
     <PButton variant="error">error</PButton>
@@ -68,18 +68,6 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
     <PButton icon variant="success"><HeartIcon /></PButton>
     <PButton icon variant="error"><HeartIcon /></PButton>
     <PButton icon variant="ghost"><HeartIcon /></PButton>
-  </PStack>
-</template>
-```
-
-## Shape
-
-```vue demo
-<template>
-  <PStack>
-    <PButton>default</PButton>
-    <PButton shape="square">square</PButton>
-    <PButton shape="rounded">rounded</PButton>
   </PStack>
 </template>
 ```

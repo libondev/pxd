@@ -26,7 +26,7 @@ const configProvider = useConfigProvider()
     >
       <span
         secondary
-        class="text-13px text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
+        class="text-13 text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
         {{ configProvider.locale.compare.prev }}
       </span>
@@ -48,7 +48,7 @@ const configProvider = useConfigProvider()
     >
       <span
         secondary
-        class="text-13px text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
+        class="text-13 text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
         {{ configProvider.locale.compare.next }}
       </span>

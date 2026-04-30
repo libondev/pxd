@@ -250,28 +250,18 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     </PInput>
 
     <template #content>
-      <div class="p-2 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton
-          size="xs"
-          variant="ghost"
-          class="sm:px-0 rounded-md! text-13px"
-          @click="onCancelClick"
-        >
+      <div class="p-1.5 gap-1 flex items-center justify-between border-b" @click.stop>
+        <PButton size="sm" variant="ghost" class="sm:px-0.5 text-13" @click="onCancelClick">
           {{ configProvider.locale.confirm.cancel }}
         </PButton>
 
-        <PButton
-          size="xs"
-          variant="ghost"
-          class="sm:px-0 rounded-md! text-13px"
-          @click="onConfirmClick"
-        >
+        <PButton size="sm" variant="ghost" class="sm:px-0.5 text-13" @click="onConfirmClick">
           {{ configProvider.locale.date.now }}
         </PButton>
       </div>
 
       <div
-        class="sm:text-sm max-sm:text-base flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
+        class="sm:text-15 max-sm:text-base flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
         @click.stop="onTimeListClick"
       >
         <div class="p-2 gap-1 relative mx-auto flex items-center">
@@ -322,7 +312,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
             v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-13px sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-appearance"
+            class="px-1.5 py-0.5 sm:text-13 sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-appearance"
           >
             {{ preset.label }}
           </button>

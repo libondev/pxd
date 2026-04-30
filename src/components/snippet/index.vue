@@ -6,6 +6,7 @@ import CopyIcon from '@gdsicon/vue/copy'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click'
+import { BASIC_MIN_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
 
@@ -25,9 +26,9 @@ const snippetVariant = tv({
   base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
   variants: {
     size: {
-      sm: 'min-h-8 py-2 text-sm',
-      md: 'min-h-10 py-2.5 text-sm',
-      lg: 'min-h-12 py-3 text-base',
+      sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
+      md: `${BASIC_MIN_HEIGHTS.md} py-2.5 text-sm`,
+      lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
     },
     variant: {
       default: 'border-gray-alpha-300 bg-background-100',
@@ -91,7 +92,7 @@ async function onCopyButtonClick() {
         :class="{ copied: isCopied }"
         @click="onCopyButtonClick"
       >
-        <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
+        <Transition name="pxd-transition--fade-scale" mode="out-in">
           <Component :is="renderIcon" class="text-sm pointer-events-none" />
         </Transition>
       </button>

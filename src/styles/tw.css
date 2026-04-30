@@ -442,8 +442,8 @@
   --shadow-border-fullscreen:
     var(--shadow-border-value), var(--shadow-fullscreen-value), var(--shadow-background-border);
 
-  --text-13px: 13px;
-  --text-15px: 15px;
+  --text-13: 13px;
+  --text-15: 15px;
 }
 
 @utility default-animation-duration {
@@ -533,15 +533,16 @@
 
 @layer components {
   .pxd-input--border {
-    border: 1px solid var(--color-gray-300);
+    border-width: 1px;
+    border-style: solid;
 
     &:not(.is-disabled, .is-readonly):hover {
-      --border-color: hsla(var(--primary), 0.5);
+      border-color: hsla(var(--primary), 0.5);
     }
 
     &:not(.is-disabled, .is-readonly)[data-focusing='true'],
     &:not(.is-disabled, .is-readonly):focus-within {
-      --border-color: var(--color-primary);
+      border-color: var(--color-primary);
       box-shadow: 0 0 0 3px hsla(var(--primary), 0.2);
     }
 
@@ -553,14 +554,14 @@
       &,
       &:focus-within,
       &[data-focusing='true'] {
-        --border-color: hsl(var(--color-red-900-value));
+        border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-300-value));
       }
 
       &:focus-within,
       &[data-focusing='true'],
       &:not(.is-disabled, .is-readonly):hover {
-        --border-color: hsl(var(--color-red-900-value));
+        border-color: hsl(var(--color-red-900-value));
         box-shadow: 0 0 0 3px hsl(var(--color-red-500-value));
       }
     }

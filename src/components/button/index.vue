@@ -2,6 +2,7 @@
 import type { ButtonProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { BASIC_HEIGHTS } from '../../constants/size'
 import { useButtonGroupContext } from '../../contexts/button'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
@@ -21,10 +22,10 @@ const buttonVariants = tv({
   base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]>&]:-ml-px [[data-button-group]>&]:not-first:rounded-l-none [[data-button-group]>&]:not-last:rounded-r-none [[data-button-group]>&]:enabled:hover:z-1',
   variants: {
     size: {
-      xs: 'h-6 px-1 text-sm rounded-sm',
-      sm: 'h-8 px-1.5 text-sm rounded-md',
-      md: 'h-10 px-2.5 text-sm rounded-md',
-      lg: 'h-12 px-3.5 text-base rounded-lg',
+      xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
+      sm: `${BASIC_HEIGHTS.sm} px-1.5 text-sm rounded-md`,
+      md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
+      lg: `${BASIC_HEIGHTS.lg} px-3.5 text-base rounded-lg`,
     },
     shape: {
       square: 'rounded-none',

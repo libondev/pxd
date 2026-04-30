@@ -49,7 +49,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 bg-background-100 text-13px select-none before:default-animation-timing-function! motion-safe:before:[animation-duration:8s]"
+    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 bg-background-100 text-13 select-none before:default-animation-timing-function! motion-safe:before:[animation-duration:8s]"
     :style="{ '--avatar-size': computedSize }"
     :data-placeholder="placeholder"
     v-bind="$attrs"
