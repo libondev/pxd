@@ -6,7 +6,7 @@ import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { NOOP } from '../../utils/event'
 import { getFallbackValue } from '../../utils/get'
-import { throttleByRaf } from '../../utils/throttle'
+import { throttleByRaf } from '../../utils/timing'
 
 defineOptions({
   name: 'PSlider',

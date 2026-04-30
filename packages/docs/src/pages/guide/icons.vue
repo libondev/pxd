@@ -2,9 +2,8 @@
 import * as icons from '@gdsicon/vue'
 import fuzzySort from 'fuzzysort'
 import { useCopyClick, useMessage } from 'pxd'
-import { debounce } from 'pxd/utils/debounce'
 import { uncapitalize } from 'pxd/utils/format'
-import { throttle } from 'pxd/utils/throttle'
+import { debounce, throttle } from 'pxd/utils/timing'
 import Grids from '@/components/Grids.vue'
 
 const iconCount = Object.keys(icons).length

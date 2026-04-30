@@ -3,7 +3,7 @@ import type { TextProps } from './types'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
-import { getResponsiveValue } from '../../utils/responsive'
+import { getResponsiveValue } from '../../utils/get'
 
 defineOptions({
   name: 'PText',

@@ -1,5 +1,7 @@
 import type { CSSValue, Nullable } from '../types/shared/utils'
-import { FLOATING_REGEX, INTEGER_REGEX } from './regexp'
+
+const INTEGER_REGEX = /^-?\d+$/
+const FLOATING_REGEX = /^-?\d+\.?\d*/
 
 /** string -> String */
 export function capitalize(text: string) {

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import fuzzySort from 'fuzzysort'
-import { debounce } from 'pxd/utils/debounce'
+import { debounce } from 'pxd/utils/timing'
 import { useRoute } from 'vue-router'
 import allComponents from '@/consts/components.json'
+import { shallowRef } from 'vue'
 
 const route = useRoute()
-const searchKeyword = ref(route.query.q as string)
+const searchKeyword = shallowRef(route.query.q as string)
 
 const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
 

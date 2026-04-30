@@ -1,4 +1,6 @@
+import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
+import { isNil } from 'es-toolkit'
 import { isServer } from './is'
 
 export function getFallbackValue<Variants extends Record<string, any>>(
@@ -58,4 +60,24 @@ export function getPlatform() {
   }
 
   return 'linux'
+}
+
+export function getResponsiveValue<V extends string | number>(
+  prop: ResponsiveValue<V> | undefined,
+  xsValue: Nullable<V>,
+  valueSetter: (acc: Record<string, V>, bp: any, v: V) => void,
+) {
+  const formatted = Object.assign(
+    isNil(xsValue) ? {} : { xs: xsValue },
+    typeof prop === 'object' ? prop : {},
+  )
+
+  return Object.entries(formatted).reduce(
+    (acc, [bp, value]) => {
+      valueSetter(acc, bp, value)
+
+      return acc
+    },
+    {} as Parameters<typeof valueSetter>[0],
+  )
 }

@@ -6,7 +6,7 @@ import { useResizeObserver } from '../../composables/use-browser-observer'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { unrefElement } from '../../utils/ref'
-import { throttleByRaf } from '../../utils/throttle'
+import { throttleByRaf } from '../../utils/timing'
 
 defineOptions({
   name: 'PFader',

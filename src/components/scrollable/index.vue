@@ -10,7 +10,7 @@ import { useMutationObserver, useResizeObserver } from '../../composables/use-br
 import { getStyle } from '../../utils/dom'
 import { cachedOff, cachedOn, off, once } from '../../utils/event'
 import { isServer } from '../../utils/is'
-import { throttleByRaf } from '../../utils/throttle'
+import { throttleByRaf } from '../../utils/timing'
 import PFader from '../fader/index.vue'
 
 defineOptions({
