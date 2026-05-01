@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { ScalableTextProps } from './types'
 import { prepareWithSegments, measureNaturalWidth } from '@chenglou/pretext'
-import { shallowRef, computed, watch, nextTick } from 'vue'
+import { shallowRef, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
+import { caf, raf } from '../../utils/event'
 import { isServer } from '../../utils/is'
 
 defineOptions({
@@ -142,7 +143,7 @@ function scheduleAdjust() {
   }
   pendingAdjust = true
   // Use rAF to coalesce rapid resize events into a single frame
-  rafId = requestAnimationFrame(() => {
+  rafId = raf(() => {
     pendingAdjust = false
     nextTick(adjust)
   })
@@ -160,6 +161,10 @@ const computedStyle = computed(() => {
 watch(() => [props.text, props.minFontSize], scheduleAdjust, { flush: 'post' })
 
 useResizeObserver(containerRef, scheduleAdjust)
+
+onBeforeUnmount(() => {
+  caf(rafId)
+})
 
 defineExpose({
   fittedFontSize,

@@ -1,5 +1,5 @@
 import type { Callback } from '../types/shared'
-
+import { raf, caf } from './event'
 export { debounce } from 'es-toolkit/function'
 export { throttle } from 'es-toolkit/function'
 // export { throttle as throttleCompat } from 'es-toolkit/compat'
@@ -18,7 +18,7 @@ export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafRet
       return
     }
 
-    animationFrameId = window.requestAnimationFrame(() => {
+    animationFrameId = raf(() => {
       animationFrameId = 0
       callback(...args)
     })
@@ -26,7 +26,7 @@ export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafRet
 
   throttle.cancel = () => {
     if (animationFrameId) {
-      window.cancelAnimationFrame(animationFrameId)
+      caf(animationFrameId)
       animationFrameId = 0
     }
   }

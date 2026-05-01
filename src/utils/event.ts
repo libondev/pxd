@@ -167,6 +167,14 @@ export function raf(fn: FrameRequestCallback): number {
   return isServer() ? -1 : requestAnimationFrame(fn)
 }
 
+export function caf(id: number) {
+  if (isServer()) {
+    return
+  }
+
+  cancelAnimationFrame(id)
+}
+
 export function doubleRaf(fn: FrameRequestCallback): number {
   return raf(() => raf(fn))
 }

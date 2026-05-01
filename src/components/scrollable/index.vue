@@ -9,6 +9,7 @@ import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useMutationObserver, useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
 import { cachedOff, cachedOn, off, once } from '../../utils/event'
+import { raf } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import { throttleByRaf } from '../../utils/timing'
 import PFader from '../fader/index.vue'
@@ -284,7 +285,7 @@ function onEndDrag(ev: MouseEvent) {
   dragState.direction = null
   cachedOff(document, 'mousemove', onDragMove)
   throttledUpdate.cancel()
-  requestAnimationFrame(updateScrollbarMetrics)
+  raf(updateScrollbarMetrics)
 }
 
 function scrollTo(top: number, left: number) {
@@ -332,7 +333,7 @@ onMounted(async () => {
   }
 
   getContainerPadding()
-  requestAnimationFrame(updateScrollbarMetrics)
+  raf(updateScrollbarMetrics)
 })
 
 onBeforeUnmount(() => {

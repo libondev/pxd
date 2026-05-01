@@ -1,5 +1,6 @@
 import type { EmitFn, Ref } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
+import { raf } from '../utils/event'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
 
@@ -179,7 +180,7 @@ export function useCountdown<T extends Record<string, any>>(
     }
 
     if (now - previousFrameTime < UPDATE_INTERVAL && !isLastFrame) {
-      requestAnimationFrame(frame)
+      raf(frame)
       return
     }
 
@@ -196,7 +197,7 @@ export function useCountdown<T extends Record<string, any>>(
       timeRef.value = Math.max(0, current)
     }
 
-    requestAnimationFrame(frame)
+    raf(frame)
   }
 
   const unwatchActive = watch(

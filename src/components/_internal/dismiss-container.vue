@@ -3,6 +3,7 @@ import type { ComponentPosition } from '../../types/shared'
 import { shallowRef, computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
+import { caf, raf } from '../../utils/event'
 
 interface Props {
   disabled?: boolean
@@ -49,7 +50,7 @@ let hasDraggedInDismissDirection = false
 let releaseAnimationId = 0
 
 function animateRelease(from: number, decayRate = 0.88) {
-  cancelAnimationFrame(releaseAnimationId)
+  caf(releaseAnimationId)
 
   const step = () => {
     const next = from * decayRate
@@ -59,10 +60,10 @@ function animateRelease(from: number, decayRate = 0.88) {
     }
     from = next
     gestureMoveOffset.value = from
-    releaseAnimationId = requestAnimationFrame(step)
+    releaseAnimationId = raf(step)
   }
 
-  releaseAnimationId = requestAnimationFrame(step)
+  releaseAnimationId = raf(step)
 }
 
 useSwipeGesture(containerRef, {
@@ -71,7 +72,7 @@ useSwipeGesture(containerRef, {
   disabled: () => props.disabled,
   direction: gestureDirection,
   onPress: ({ size }) => {
-    cancelAnimationFrame(releaseAnimationId)
+    caf(releaseAnimationId)
     maxSwipedDamped = size / dampingFactor
     hasDraggedInDismissDirection = false
 

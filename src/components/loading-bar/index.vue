@@ -5,6 +5,7 @@ import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
 import { cachedOff, cachedOn } from '../../utils/event'
+import { caf, raf } from '../../utils/event'
 import { clampValue, isTruthyProp } from '../../utils/format'
 import { isServer } from '../../utils/is'
 import PTeleport from '../teleport/index.vue'
@@ -93,7 +94,7 @@ function getIncreaseDelta(n: number) {
 
 function increaseProgress(n?: number) {
   if (progressValue.value >= 1) {
-    cancelAnimationFrame(prevAnimationKey)
+    caf(prevAnimationKey)
     return
   }
 
@@ -102,7 +103,7 @@ function increaseProgress(n?: number) {
   const threshold = props.trickleThreshold || 200
 
   if (delta < threshold && props.trickle) {
-    prevAnimationKey = requestAnimationFrame(() => increaseProgress())
+    prevAnimationKey = raf(increaseProgress)
     return
   }
 
@@ -114,7 +115,7 @@ function increaseProgress(n?: number) {
     return
   }
 
-  prevAnimationKey = requestAnimationFrame(() => increaseProgress())
+  prevAnimationKey = raf(increaseProgress)
 }
 
 async function hideAndResetProgress() {
@@ -146,7 +147,7 @@ function handleStartProgress() {
 
   prevTimestamp = 0
 
-  requestAnimationFrame(() => increaseProgress())
+  raf(() => increaseProgress())
 }
 
 async function handleErrorProgress() {
@@ -154,7 +155,7 @@ async function handleErrorProgress() {
     return
   }
 
-  cancelAnimationFrame(prevAnimationKey)
+  caf(prevAnimationKey)
   status.value = 'error'
   hiddenBar.value = false
   progressValue.value = 1
@@ -167,7 +168,7 @@ function handleFinishProgress() {
     return
   }
 
-  cancelAnimationFrame(prevAnimationKey)
+  caf(prevAnimationKey)
   status.value = 'finish'
   hiddenBar.value = false
   progressValue.value = 1
