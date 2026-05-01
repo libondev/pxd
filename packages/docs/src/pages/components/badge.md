@@ -73,17 +73,17 @@ function onClose() {
   <PStack align="center">
     <PBadge size="sm">
       <IconShield />
-      Gray
+      Badge
     </PBadge>
 
     <PBadge>
       <IconShield />
-      Gray
+      Badge
     </PBadge>
 
     <PBadge size="lg">
       <IconShield />
-      Gray
+      Badge
     </PBadge>
   </PStack>
 </template>
@@ -93,6 +93,6 @@ function onClose() {
 
 ```vue demo
 <template>
-  <PBadge as="RouterLink" to="/components/badge" variant="pill"> pill </PBadge>
+  <PBadge as="RouterLink" to="/components/badge"> pill </PBadge>
 </template>
 ```

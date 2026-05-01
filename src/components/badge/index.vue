@@ -12,7 +12,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<BadgeProps>(), {
   as: 'span',
-  variant: 'gray',
+  variant: 'pill',
 })
 
 const emits = defineEmits<BadgeEmits>()
@@ -81,7 +81,7 @@ function onClose(ev: Event) {
 
     <button
       v-if="closeable"
-      class="pxd-badge--close p-1 -mr-1 relative cursor-pointer appearance-none rounded-full text-[.75em] self-focus-ring hover:bg-gray-alpha-200 active:bg-gray-alpha-300"
+      class="pxd-badge--close p-1 -mr-1 relative cursor-pointer appearance-none rounded-full text-[.75em] self-focus-ring hover:bg-gray-alpha-200 active:bg-gray-alpha-300 motion-safe:transition-colors"
       @click.stop="onClose"
     >
       <CrossIcon class="pointer-events-none" />
