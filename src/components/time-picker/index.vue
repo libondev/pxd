@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { dayjs } from '../../utils/date'
 import { clampValue } from '../../utils/format'
+import { throttleByRaf } from '../../utils/timing'
 import PButton from '../button/index.vue'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
@@ -38,6 +39,12 @@ const VALUE_POSITION_MAP = {
   second: 2,
 } as const
 
+const paddedTimes = {
+  hours: Array.from({ length: 24 }, (_, i) => padStringZero(i)),
+  minutes: Array.from({ length: 60 }, (_, i) => padStringZero(i)),
+  seconds: Array.from({ length: 60 }, (_, i) => padStringZero(i)),
+}
+
 const configProvider = useConfigProvider()
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
@@ -55,13 +62,14 @@ const modelValue = computed<string>({
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.format) : ''
   },
   set(value: string) {
+    emits('change', value)
     emits('update:modelValue', value)
   },
 })
 
 const scrollTimers: ReturnType<typeof setTimeout>[] = []
 
-function onTimeListScroll(ev: Event) {
+const onTimeListScroll = throttleByRaf((ev: Event) => {
   const target = ev.target as HTMLElement
   const value = Math.round(target.scrollTop / HEIGHT)
   const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
@@ -75,9 +83,13 @@ function onTimeListScroll(ev: Event) {
       behavior: 'smooth',
     })
 
-    dayjsDateTime.value = dayjsDateTime.value!.set(type, clampedValue)
+    if (!dayjsDateTime.value) {
+      return
+    }
+
+    dayjsDateTime.value = dayjsDateTime.value.set(type, clampedValue)
   }, 100)
-}
+})
 
 function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
@@ -116,7 +128,7 @@ function getFormattedValue(value: TimePickerProps['modelValue']) {
   return dayjs(_value)
 }
 
-async function setTimesScrollTop() {
+function setTimesScrollTop() {
   if (!dayjsDateTime.value) {
     dayjsDateTime.value = dayjs()
   }
@@ -197,7 +209,7 @@ function onPresetClick(ev: MouseEvent) {
   togglePopoverVisible(false)
 }
 
-function onConfirmClick() {
+function onSetNowClick() {
   updateDayjsDateTime(new Date())
   updateModelValue()
   togglePopoverVisible(false)
@@ -209,6 +221,11 @@ function onCancelClick() {
 }
 
 watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
+
+onBeforeUnmount(() => {
+  scrollTimers.forEach((timer) => clearTimeout(timer))
+  onTimeListScroll.cancel()
+})
 </script>
 
 <template>
@@ -255,7 +272,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
           {{ configProvider.locale.confirm.cancel }}
         </PButton>
 
-        <PButton size="sm" variant="ghost" class="sm:px-0.5 text-13" @click="onConfirmClick">
+        <PButton size="sm" variant="ghost" class="sm:px-0.5 text-13" @click="onSetNowClick">
           {{ configProvider.locale.date.now }}
         </PButton>
       </div>
@@ -272,8 +289,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="(_, i) of 24" :key="i" class="h-8 leading-8 cursor-pointer">
-                {{ padStringZero(i) }}
+              <li v-for="i of paddedTimes.hours" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ i }}
               </li>
             </ul>
           </div>
@@ -284,8 +301,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
-                {{ padStringZero(i) }}
+              <li v-for="i of paddedTimes.minutes" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ i }}
               </li>
             </ul>
           </div>
@@ -296,8 +313,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="(_, i) of 60" :key="i" class="h-8 leading-8 cursor-pointer">
-                {{ padStringZero(i) }}
+              <li v-for="i of paddedTimes.seconds" :key="i" class="h-8 leading-8 cursor-pointer">
+                {{ i }}
               </li>
             </ul>
           </div>

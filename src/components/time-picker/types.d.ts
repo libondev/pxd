@@ -21,7 +21,6 @@ export interface TimePickerProps {
 }
 
 export interface TimePickerEmits {
-  change: [boolean]
-  select: [MouseEvent]
+  change: [string]
   'update:modelValue': [string]
 }
