@@ -38,7 +38,9 @@ export function useDelayDestroy(
         renderChange?.(render.value)
       }
 
-      if (!visible.value) {
+      if (visible.value) {
+        resolve(visible.value)
+      } else {
         cancelAnimationFrame(visibleRafId)
         visibleRafId = doubleRaf(() => {
           visibleRafId = 0

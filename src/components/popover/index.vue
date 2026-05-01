@@ -38,7 +38,7 @@ let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let cleanupAutoUpdate: (() => void) | null = null
 
-const arrayRef = shallowRef<HTMLElement>(null!)
+const arrowRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const localPosition = shallowRef(props.position)
@@ -57,6 +57,15 @@ const configProvider = useConfigProvider()
 
 const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
 const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
+const computePositionMiddleware = computed(() => {
+  return [
+    shift(),
+    props.autoPosition && flip(),
+    props.showArrow && arrow({ element: arrowRef.value }),
+    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
+    props.closeOnInvisible && hide({ strategy: 'escaped' }),
+  ]
+})
 
 const {
   render: isRender,
@@ -111,13 +120,7 @@ async function updatePosition() {
     wrapperRef.value,
     {
       placement: props.position,
-      middleware: [
-        shift(),
-        props.autoPosition && flip(),
-        props.showArrow && arrow({ element: arrayRef.value }),
-        props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
-        props.closeOnInvisible && hide({ strategy: 'escaped' }),
-      ],
+      middleware: computePositionMiddleware.value,
     },
   )
 
@@ -137,7 +140,7 @@ async function updatePosition() {
 
   if (middlewareData.arrow) {
     const { x: arrowX, y: arrowY } = middlewareData.arrow
-    Object.assign(arrayRef.value.style, {
+    Object.assign(arrowRef.value.style, {
       left: arrowX != null ? `${Math.max(arrowX, 5)}px` : '',
       top: arrowY != null ? `${Math.max(arrowY, 5)}px` : '',
     })
@@ -174,7 +177,12 @@ async function handlePopoverShow() {
 
 async function handlePopoverHide(immediate: boolean = false) {
   if (hidePopoverTimer) {
-    return
+    if (!immediate) {
+      return
+    }
+
+    clearTimeout(hidePopoverTimer)
+    hidePopoverTimer = null
   }
 
   await new Promise<void>((resolve) => {
@@ -247,7 +255,7 @@ function onTriggerContextmenu() {
   handlePopoverShow()
 }
 
-const PREVENT_KEYS = ['ArrowUp', 'ArrowDown', 'Home', 'End']
+const PREVENT_KEYS = new Set(['ArrowUp', 'ArrowDown', 'Home', 'End'])
 
 // Prevents the page from scrolling by pressing the key when popover appears.
 function onWrapperKeydown(ev: KeyboardEvent) {
@@ -257,7 +265,7 @@ function onWrapperKeydown(ev: KeyboardEvent) {
 
   const { key } = ev
 
-  if (PREVENT_KEYS.includes(key)) {
+  if (PREVENT_KEYS.has(key)) {
     ev.preventDefault()
   }
 }
@@ -358,7 +366,7 @@ defineExpose({
 
           <div
             v-if="showArrow"
-            ref="arrayRef"
+            ref="arrowRef"
             class="pxd-popover--arrow pointer-events-none absolute z-1"
           >
             <PPopoverArrow
