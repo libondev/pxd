@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview"
   },
   "dependencies": {
     "canvas-confetti": "catalog:",
@@ -33,8 +33,8 @@
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
     "unplugin-vue-router": "catalog:",
-    "vite": "catalog:",
     "vite-plugin-vue-meta-layouts": "catalog:",
+    "vite-plus": "catalog:",
     "vite-vue-md": "catalog:",
     "vue-router": "catalog:"
   }

@@ -1,19 +1,17 @@
 {
-  "javascript.preferences.importModuleSpecifierEnding": "index",
-  "typescript.preferences.importModuleSpecifierEnding": "index",
+  "js/ts.preferences.importModuleSpecifierEnding": "index",
   // Disable the default formatter, use eslint instead
   "eslint.enable": false,
   "prettier.enable": false,
   // Auto fix
   "oxc.typeAware": true,
-  "oxc.configPath": ".oxlintrc.json",
+  "oxc.configPath": "./vite.config.ts",
   "oxc.unusedDisableDirectives": "deny",
-  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.fmt.configPath": "./vite.config.ts",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "never",
-    "source.organizeImports": "never"
+    "source.fixAll.oxc": "explicit"
   },
   "[vue]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"

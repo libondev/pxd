@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import fuzzySort from 'fuzzysort'
 import { debounce } from 'pxd/utils/timing'
+import { shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 import allComponents from '@/consts/components.json'
-import { shallowRef } from 'vue'
 
 const route = useRoute()
 const searchKeyword = shallowRef(route.query.q as string)

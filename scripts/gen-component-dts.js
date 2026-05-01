@@ -41,4 +41,4 @@ async function run() {
   await writeFile(TYPE_PATH, fileContent, 'utf-8')
 }
 
-run()
+void run()

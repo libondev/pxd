@@ -23,7 +23,7 @@ export function useViewTransition(router: Router) {
       return promise
     })
 
-    transition.finished.then(() => {
+    void transition.finished.then(() => {
       abortTransition = undefined
       finishTransition = undefined
     })

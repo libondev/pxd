@@ -8,8 +8,9 @@
 - **Target**: Vue 2.7+ and Vue 3.2+ (Universal Compatibility)
 - **Architecture**: Monorepo with pnpm workspaces
 - **Language**: TypeScript + Vue 3 (Composition API)
-- **Build System**: mkdist + unbuild
+- **Build System**: mkdist + unbuild (dev toolchain via vite-plus)
 - **Documentation**: VitePress-based docs in `packages/docs`
+- **Package Manager**: pnpm@10.33.0 with workspace catalog
 
 ## Project Structure
 
@@ -40,10 +41,15 @@ pxd/
 - `pnpm dev:lib` - Library development with stub mode
 - `pnpm dev:docs` - Documentation development only
 - `pnpm build:lib` - Build library (includes DTS generation and styles)
-- `pnpm test` - Run unit tests
-- `pnpm lint` - Run ESLint
-- `pnpm typecheck` - TypeScript compilation check
 - `pnpm build` - Full build (library + docs)
+- `pnpm test` - Run unit tests (`vp test run`)
+- `pnpm test:watch` - Run tests in watch mode (`vp test`)
+- `pnpm lint` - Lint staged files with oxlint
+- `pnpm lint:all` - Lint all files (`vp lint`)
+- `pnpm lint:fix` - Lint and auto-fix (`vp lint --fix`)
+- `pnpm fmt` - Format staged files with oxfmt
+- `pnpm fmt:all` - Format all files (`vp fmt`)
+- `pnpm fmt:check` - Check formatting (`vp fmt --check`)
 
 ### Code Quality Standards
 
@@ -54,20 +60,25 @@ pxd/
 - **Volar integration**: Full Vue language support
 - **Type exports**: All public APIs have proper type definitions
 
-#### ESLint Rules
+#### Linting & Formatting (VitePlus / oxlint / oxfmt)
 
-- **Tailwind-specific rules**: Strict class ordering, no conflicts, no duplicates
+- **Linter**: oxlint via `vite-plus` (`vp lint`), configured in `vite.config.ts` under `lint:`
+- **Formatter**: oxfmt via `vite-plus` (`vp fmt`), configured in `vite.config.ts` under `fmt:`
+- **Tailwind-specific rules**: `eslint-plugin-better-tailwindcss` enforced via oxlint
 - **Curly braces**: Always required
 - **Event naming**: kebab-case for custom events
-- **One True Brace Style**: 1tbs with single-line allowance
+- **Import sorting**: Side effects first, internal patterns (`~/`, `@/`, `#/`), no newlines between groups
+- **Tailwind class sorting**: Enforced with `sortTailwindcss` in fmt config
 
 #### Testing Strategy
 
-- **Framework**: Vitest + Vue Test Utils
+- **Framework**: Vitest (via vite-plus)
 - **Environment**: happy-dom (browser-like)
 - **Pattern**: `**/*.test.ts` files
-- **Setup**: Custom `vitest.setup.ts`
-- **Isolation**: vmThreads pool for performance
+- **Config**: In `vite.config.ts` under `test:` block (no separate `vitest.config.ts`)
+- **TypeScript**: `tsconfig.test.json` extends `tsconfig.app.json` with `vitest/happy-dom` types
+- **Typecheck**: `vue-tsc -p tsconfig.app.json --noEmit` (configured as vite-plus task)
+- **Pool**: vmThreads for performance
 
 ### Build & Distribution
 
@@ -154,8 +165,8 @@ The library exposes multiple entry points:
 
 #### Git Hooks
 
-- **Husky** + **lint-staged** are active
-- Pre-commit: ESLint auto-fix on `*.{ts,vue}`
+- **VitePlus** staged checks are active (`vite.config.ts` → `staged` block)
+- Pre-commit: `vp check --fix` on `*.{js,ts,tsx,vue,html}`
 - Pre-push: Type checking and tests recommended
 
 ### Documentation Standards
@@ -177,34 +188,33 @@ The library exposes multiple entry points:
 
 ### Framework & Build
 
-- **Vue**: 3.5.25 (supporting 2.7+)
-- **Vite**: 8.0.0-beta (build tool)
+- **Vue**: 3.5.32 (supporting 2.7+)
+- **VitePlus**: 0.1.20 (unified dev toolchain wrapping Vite, Vitest, oxlint, oxfmt)
 - **mkdist**: 2.4.1 (distribution builder)
 - **unbuild**: 3.6.1 (stub development)
 
 ### Code Quality
 
 - **TypeScript**: 5.9.3 (strict mode enabled)
-- **ESLint**: 9.39.1 with @antfu/config
-- **Vitest**: 4.0.15 (test runner)
-- **Happy-DOM**: 20.0.11 (test environment)
+- **vue-tsc**: Vue type checking
+- **oxlint/oxfmt**: Via vite-plus (replaces ESLint/Prettier)
 
 ### Styling
 
-- **TailwindCSS**: 4.1.17
+- **TailwindCSS**: 4.2.2
 - **PostCSS**: Integrated
 
 ### Related Packages
 
-- **@gdsicon/vue**: 1.0.7 (icon library)
-- **Day.js**: 1.11.19 (date utilities)
+- **@gdsicon/vue**: 1.0.9 (icon library)
+- **Day.js**: 1.11.20 (date utilities)
 
 ## Important Files to Reference
 
 - **tsconfig.json** - Base TypeScript configuration
 - **tsconfig.app.json** - Vue application config
-- **vitest.config.ts** - Test runner configuration
-- **eslint.config.ts** - Linter rules and Tailwind settings
+- **tsconfig.test.json** - Test environment config (uses `vitest/happy-dom` types)
+- **vite.config.ts** - Unified config for test, lint (oxlint), fmt (oxfmt), and tasks
 - **pnpm-workspace.yaml** - Monorepo catalog and dependencies
 - **scripts/** - Build utilities (never modify unless necessary)
 
@@ -215,8 +225,8 @@ When encountering issues:
 1. **Type errors**: Check `tsconfig.app.json` includes and types
 2. **Tailwind issues**: Verify entry point `src/styles/tw.css`
 3. **Build fails**: Run `pnpm build:lib` in stages to isolate
-4. **Test fails**: Check test environment setup and mocks
-5. **Lint errors**: Use `pnpm lint:fix` or check ESLint config
+4. **Test fails**: Check test environment setup and mocks (config in `vite.config.ts` → `test:`)
+5. **Lint errors**: Use `pnpm lint:fix` or check rules in `vite.config.ts` → `lint:`
 
 ## Notes for AI Agents
 

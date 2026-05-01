@@ -59,13 +59,15 @@ function processFormat(ms: number, formatStr: string, maxDigits: number): string
  * Supports S, SS, SSS tokens for millisecond formatting
  */
 const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (
-  options = {},
+  options,
   DayjsClass,
   dayjsFactory,
 ) => {
   const maxDigits = Math.max(1, Math.min(3, options?.maxDigits ?? 3))
 
+  // eslint-disable-next-line typescript-eslint/unbound-method -- called with .call(this) later
   const originalFormat = DayjsClass.prototype.format
+  // eslint-disable-next-line typescript-eslint/unbound-method -- called with .call(this) later
   const originalDurationFormat = dayjsFactory.duration?.(0)?.format
 
   // Wrap format function

@@ -109,20 +109,18 @@
     "gen-styles-file": "node scripts/gen-css-files.js",
     "gen-tw-css-file": "tailwindcss -i ./dist/styles/source.css -o ./dist/styles/styles.css -m",
     "gen-volar-dts": "node scripts/gen-component-dts.js",
-    "lint": "git diff --staged --name-only --diff-filter=ACMR| xargs -r oxlint",
-    "lint:all": "oxlint",
-    "lint:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r oxlint",
-    "lint:fix": "oxlint --fix",
-    "fmt": "git diff --staged --name-only --diff-filter=ACMR| xargs -r oxfmt",
-    "fmt:all": "oxfmt",
-    "fmt:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r oxfmt",
-    "fmt:check": "oxfmt --check",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
+    "lint": "git diff --staged --name-only --diff-filter=ACMR| xargs -r vp lint",
+    "lint:all": "vp lint",
+    "lint:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r vp lint",
+    "lint:fix": "vp lint --fix",
+    "fmt": "git diff --staged --name-only --diff-filter=ACMR| xargs -r vp fmt",
+    "fmt:all": "vp fmt",
+    "fmt:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r vp fmt",
+    "fmt:check": "vp fmt --check",
+    "test": "vp test run",
+    "test:watch": "vp test",
     "bump": "pnpx bumpp",
     "preview": "pnpm --filter docs preview",
-    "prepare": "husky",
     "postversion": "run-s gen-volar-dts update-exports",
     "prepublishOnly": "run-s build:lib"
   },
@@ -149,17 +147,13 @@
     "eslint-plugin-better-tailwindcss": "catalog:default",
     "fs-extra": "catalog:default",
     "happy-dom": "catalog:default",
-    "husky": "catalog:default",
-    "lint-staged": "catalog:default",
     "mkdist": "catalog:default",
     "npm-run-all2": "catalog:default",
-    "oxfmt": "catalog:default",
-    "oxlint": "catalog:default",
     "tinyglobby": "catalog:default",
     "typescript": "catalog:default",
     "unbuild": "catalog:default",
     "unplugin-vue-components": "catalog:default",
-    "vitest": "catalog:default",
+    "vite-plus": "catalog:",
     "vue": "catalog:default",
     "vue-sfc-transformer": "catalog:default",
     "vue-tsc": "catalog:default"
@@ -167,10 +161,7 @@
   "peerDependencies": {
     "vue": ">=2.7.0 || >=3.2.0"
   },
-  "lint-staged": {
-    "*.{ts,vue}": "npm run fmt && npm run lint"
-  },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.2",
   "pnpm": {
     "patchedDependencies": {
       "mkdist": "patches/mkdist.patch"

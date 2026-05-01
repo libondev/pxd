@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { useCountdown } from '../../src/composables/use-countdown'
 
 describe('useCountdown', () => {
@@ -6,7 +6,7 @@ describe('useCountdown', () => {
 
   let mockEmits: ReturnType<typeof vi.fn> & EmitFn
   let mockPerformanceNow: ReturnType<typeof vi.fn> & (() => number)
-  let mockDateNow: ReturnType<typeof vi.spyOn> | undefined
+  let mockDateNow: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     mockEmits = vi.fn<EmitFn>() as unknown as ReturnType<typeof vi.fn> & EmitFn

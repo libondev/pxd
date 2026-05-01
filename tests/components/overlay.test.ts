@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
 import Overlay from '../../src/components/overlay/index.vue'
 

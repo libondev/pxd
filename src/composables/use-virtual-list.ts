@@ -94,7 +94,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
       if (scrollBottom >= totalSize - threshold) {
         if (!reachBottomFired) {
           reachBottomFired = true
-          onBottom()
+          void onBottom()
         }
       } else {
         reachBottomFired = false

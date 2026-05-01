@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import MoreButton from '../../src/components/more-button/index.vue'
 
 describe('more-button', () => {
@@ -51,8 +51,8 @@ describe('more-button', () => {
     const wrapper = mount(MoreButton, {
       props: {
         modelValue: false,
-        'onUpdate:modelValue': (value) => {
-          wrapper.setProps({
+        'onUpdate:modelValue': (value: boolean) => {
+          void wrapper.setProps({
             modelValue: value,
           })
         },

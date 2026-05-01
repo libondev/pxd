@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import { h } from 'vue'
 import CarouselItem from '../../src/components/carousel-item/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'

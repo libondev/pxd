@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import Message from '../../src/components/message/index.vue'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../src/composables/use-message'
 

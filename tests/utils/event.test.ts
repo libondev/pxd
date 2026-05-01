@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { cachedOff, cachedOn } from '../../src/utils/event'
 
 describe('event.ts memory leak prevention', () => {

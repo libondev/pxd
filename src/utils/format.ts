@@ -1,4 +1,4 @@
-import type { CSSValue, Nullable } from '../types/shared/utils'
+import type { Nullable } from '../types/shared/utils'
 
 const INTEGER_REGEX = /^-?\d+$/
 const FLOATING_REGEX = /^-?\d+\.?\d*/
@@ -58,7 +58,7 @@ export function isExternalLink(href: string) {
   return true
 }
 
-export function toArray(value: unknown | unknown[]) {
+export function toArray(value: unknown) {
   if (value === null || value === undefined) {
     return []
   }
@@ -78,19 +78,16 @@ export function toArray(value: unknown | unknown[]) {
   return [value]
 }
 
-export function getCssUnitValue(
-  value: Nullable<CSSValue | string>,
-  fallbackValue?: string,
-): string {
+export function getCssUnitValue(value: Nullable<string | number>, fallbackValue?: string): string {
   if (value == null || value === '') {
     return fallbackValue!
   }
 
-  if (typeof value === 'number' || INTEGER_REGEX.test(value as string)) {
-    return `${value}px`
+  if (typeof value === 'number' || INTEGER_REGEX.test(String(value))) {
+    return `${String(value)}px`
   }
 
-  return value as string
+  return String(value)
 }
 
 // https://github.com/vueuse/vueuse/blob/main/packages/shared/utils/general.ts#L71

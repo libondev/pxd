@@ -13,9 +13,6 @@
     "url": "git+https://github.com/libondev/pxd.git",
     "directory": "packages/cli"
   },
-  "bin": {
-    "pxd": "dist/index.js"
-  },
   "files": [
     "dist"
   ],

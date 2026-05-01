@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import Input from '../../src/components/input/index.vue'
 
 describe('input', () => {
@@ -15,7 +15,7 @@ describe('input', () => {
 
     expect(input.element.value).toBe('test')
 
-    wrapper.setProps({
+    await wrapper.setProps({
       modelValue: 'test2',
     })
 
@@ -33,7 +33,7 @@ describe('input', () => {
       },
     })
 
-    wrapper.find('input').setValue('test2')
+    await wrapper.find('input').setValue('test2')
 
     await wrapper.vm.$nextTick()
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()

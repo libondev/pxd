@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+/// <reference types="vite-plus/test" />
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'

@@ -125,12 +125,12 @@ export function useListNavigation(
 
   function registerItem(el: HTMLElement, indexRef: ShallowRef<number>): void {
     itemIndexRefs.set(el, indexRef)
-    refreshItems()
+    void refreshItems()
   }
 
   function unregisterItem(el: HTMLElement): void {
     itemIndexRefs.delete(el)
-    refreshItems()
+    void refreshItems()
   }
 
   function onPointerOver(ev: PointerEvent): void {

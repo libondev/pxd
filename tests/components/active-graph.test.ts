@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import ActiveGraph from '../../src/components/active-graph/index.vue'
 
 describe('active-graph', () => {

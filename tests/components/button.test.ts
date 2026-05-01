@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import Button from '../../src/components/button/index.vue'
 
 describe('button', () => {
@@ -32,7 +32,7 @@ describe('button', () => {
   it('should emit a click event when clicked', async () => {
     const wrapper = mount(Button)
 
-    wrapper.find('button').trigger('click')
+    await wrapper.find('button').trigger('click')
 
     expect(wrapper.emitted()).toHaveProperty('click')
 
