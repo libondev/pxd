@@ -3,9 +3,12 @@ preferFrozenLockfile: true
 sharedWorkspaceLockfile: true
 strictPeerDependencies: false
 ignoreWorkspaceRootCheck: true
+publishBranch: dev
+
 packages:
   - .
   - packages/*
+
 catalog:
   '@any-touch/core': ^2.2.0
   '@any-touch/pan': ^2.2.0
