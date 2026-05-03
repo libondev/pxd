@@ -32,6 +32,26 @@ export default defineConfig({
       typecheck: {
         command: 'vue-tsc -p tsconfig.app.json --noEmit',
       },
+      'update-exports': {
+        command: 'node scripts/update-exports.js',
+      },
+      'build:core': {
+        command: 'mkdist -d --src=src --ext=js --format=esm',
+        dependsOn: ['update-exports'],
+      },
+      'gen-styles-file': {
+        command: 'node scripts/gen-css-files.js',
+      },
+      'gen-tw-css-file': {
+        command: 'tailwindcss -i ./dist/styles/source.css -o ./dist/styles/styles.css -m',
+        dependsOn: ['gen-styles-file'],
+      },
+      'build:docs': {
+        command: 'pnpm --filter docs build',
+      },
+      'gen-volar-dts': {
+        command: 'node scripts/gen-component-dts.js',
+      },
     },
   },
 
