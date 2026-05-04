@@ -10,8 +10,6 @@ packages:
   - packages/*
 
 catalog:
-  '@any-touch/core': ^2.2.0
-  '@any-touch/pan': ^2.2.0
   '@chenglou/pretext': ^0.0.6
   '@clack/prompts': ^1.3.0
   '@floating-ui/dom': ^1.7.6

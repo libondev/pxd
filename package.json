@@ -125,8 +125,6 @@
     "prepublishOnly": "run-s build:lib"
   },
   "dependencies": {
-    "@any-touch/core": "catalog:default",
-    "@any-touch/pan": "catalog:default",
     "@chenglou/pretext": "catalog:default",
     "@floating-ui/dom": "catalog:default",
     "@gdsicon/vue": "catalog:default",

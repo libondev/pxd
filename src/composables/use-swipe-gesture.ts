@@ -1,8 +1,7 @@
 import type { MaybeElementRef } from '../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
-import Core from '@any-touch/core'
-import Pan from '@any-touch/pan'
 import { onScopeDispose, watch } from 'vue'
+import { Core, Pan } from '../plugins/any-touch.js'
 import { toValue, unrefElement } from '../utils/ref'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'

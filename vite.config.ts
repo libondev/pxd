@@ -3,38 +3,6 @@ import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig } from 'vite-plus'
 
 export default defineConfig({
-  plugins: [vue()],
-
-  test: {
-    globals: false,
-    fileParallelism: true,
-    environment: 'happy-dom',
-    include: ['tests/**/*.test.ts'],
-    exclude: [...configDefaults.exclude, 'e2e/**'],
-    root: fileURLToPath(new URL('./', import.meta.url)),
-    server: {
-      deps: {
-        inline: [/@gdsicon\/vue/],
-      },
-    },
-    deps: {
-      optimizer: {
-        web: {
-          enabled: false,
-        },
-      },
-    },
-    pool: 'vmThreads',
-  },
-
-  run: {
-    tasks: {
-      typecheck: {
-        command: 'vue-tsc -p tsconfig.app.json --noEmit',
-      },
-    },
-  },
-
   fmt: {
     semi: false,
     tabWidth: 2,
@@ -76,6 +44,7 @@ export default defineConfig({
       '.gemini',
       '.opencode',
       '*.md',
+      './src/plugins/*.js',
     ],
   },
 
@@ -112,6 +81,8 @@ export default defineConfig({
       '.cursor',
       '.gemini',
       '.opencode',
+      '*.md',
+      './src/plugins/*.js',
     ],
     settings: {
       'better-tailwindcss': {
@@ -141,7 +112,39 @@ export default defineConfig({
     },
   },
 
+  plugins: [vue()],
+
+  run: {
+    tasks: {
+      typecheck: {
+        command: 'vue-tsc -p tsconfig.app.json --noEmit',
+      },
+    },
+  },
+
   staged: {
     '*.{js,ts,tsx,vue,html}': 'vp check --fix',
+  },
+
+  test: {
+    globals: false,
+    fileParallelism: true,
+    environment: 'happy-dom',
+    include: ['tests/**/*.test.ts'],
+    exclude: [...configDefaults.exclude, 'e2e/**'],
+    root: fileURLToPath(new URL('./', import.meta.url)),
+    server: {
+      deps: {
+        inline: [/@gdsicon\/vue/],
+      },
+    },
+    deps: {
+      optimizer: {
+        web: {
+          enabled: false,
+        },
+      },
+    },
+    pool: 'vmThreads',
   },
 })
