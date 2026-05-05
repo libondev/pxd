@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { ChipProps } from './types'
+import { isNil } from 'es-toolkit'
 import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
   name: 'PChip',
@@ -12,7 +13,7 @@ defineOptions({
 const props = defineProps<ChipProps>()
 
 const chipVariant = tv({
-  base: 'pxd-chip--label text-xs top-0 right-0 absolute rounded-full border border-background-100 motion-safe:transition-appearance',
+  base: 'pxd-chip--label text-xs top-0 right-0 absolute z-1 rounded-full border border-background-100 motion-safe:transition-appearance',
   variants: {
     variant: {
       primary: 'bg-primary text-background-100',
@@ -41,7 +42,7 @@ const computedClasses = computed(() => {
   return chipVariant({
     inset: props.inset,
     variant: props.variant,
-    hasLabel: isTruthyProp(props.label),
+    hasLabel: !isNil(props.label),
   })
 })
 </script>
