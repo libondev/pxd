@@ -200,6 +200,10 @@
     "name": "resizable"
   },
   {
+    "camelized": "Rolling Number",
+    "name": "rolling-number"
+  },
+  {
     "camelized": "Scalable Text",
     "name": "scalable-text"
   },
