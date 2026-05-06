@@ -1,5 +1,5 @@
 export interface RollingNumberProps {
-  value?: number
+  value?: number | string
   durations?: number
   thousands?: boolean
 }

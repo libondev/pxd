@@ -2,6 +2,7 @@
 import type { RollingNumberEmits, RollingNumberProps } from './types'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { caf, raf } from '../../utils/event'
+import { parseUnitValue } from '../../utils/format'
 
 defineOptions({
   name: 'PRollingNumber',
@@ -10,7 +11,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<RollingNumberProps>(), {
   value: 0,
-  durations: 1500,
+  durations: 1000,
   separator: false,
 })
 
@@ -23,6 +24,8 @@ let targetValue = 0
 
 const displayValue = ref(0)
 
+const parsedValueWithUnit = computed(() => parseUnitValue(props.value))
+
 const decimalPlaces = computed(() => {
   const str = String(props.value)
 
@@ -30,11 +33,12 @@ const decimalPlaces = computed(() => {
   if (dotIndex === -1) {
     return 0
   }
+
   return Math.min(str.length - dotIndex - 1, 10)
 })
 
 const formattedValue = computed(() => {
-  // resolve -0
+  // avoid -0
   const d = decimalPlaces.value
   const raw = Math.abs(displayValue.value) < 5 * 10 ** -(d + 1) ? 0 : displayValue.value
   const val = raw.toFixed(d)
@@ -96,8 +100,8 @@ function startAnimation(target: number) {
 
 watch(
   () => props.value,
-  (newVal) => {
-    startAnimation(newVal ?? 0)
+  () => {
+    startAnimation(parsedValueWithUnit.value.value)
   },
   { immediate: true },
 )
@@ -119,7 +123,7 @@ defineExpose({
     v-bind="$attrs"
   >
     <span class="pxd-rolling-number--value" aria-live="polite" aria-atomic="true">
-      {{ formattedValue }}
+      {{ formattedValue }}{{ parsedValueWithUnit.unit }}
     </span>
   </div>
 </template>

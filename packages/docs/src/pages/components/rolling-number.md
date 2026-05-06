@@ -6,7 +6,7 @@ Display a number with a rolling animation effect, supporting decimals and thousa
 
 ```vue demo
 <template>
-  <PRollingNumber :value="3000" />
+  <PRollingNumber :value="999" />
 </template>
 ```
 
@@ -14,7 +14,7 @@ Display a number with a rolling animation effect, supporting decimals and thousa
 
 ```vue demo
 <template>
-  <PRollingNumber :value="3000" thousands />
+  <PRollingNumber :value="1000" thousands />
 </template>
 ```
 
@@ -22,6 +22,14 @@ Display a number with a rolling animation effect, supporting decimals and thousa
 
 ```vue demo
 <template>
-  <PRollingNumber :value="3000" :durations="5000" />
+  <PRollingNumber :value="999" :durations="5000" />
+</template>
+```
+
+## With suffix
+
+```vue demo
+<template>
+  <PRollingNumber value="999+" :durations="5000" />
 </template>
 ```

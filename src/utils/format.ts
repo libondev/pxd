@@ -90,6 +90,24 @@ export function getCssUnitValue(value: Nullable<string | number>, fallbackValue?
   return String(value)
 }
 
+export function parseUnitValue(target: string | number) {
+  if (typeof target === 'string') {
+    const string = String(target)
+    const value = string.match(FLOATING_REGEX)?.[0] || ''
+    const unit = string.slice(value.length)
+
+    return {
+      value: Number.parseFloat(value),
+      unit,
+    }
+  }
+
+  return {
+    value: target,
+    unit: '',
+  }
+}
+
 // https://github.com/vueuse/vueuse/blob/main/packages/shared/utils/general.ts#L71
 /**
  * Increase string a value with unit
@@ -105,9 +123,9 @@ export function increaseWithUnit(target: string | number, delta: number): string
     return target + delta
   }
 
-  const value = String(target).match(FLOATING_REGEX)?.[0] || ''
-  const unit = String(target).slice(value.length)
-  const result = Number.parseFloat(value) + delta
+  const { value, unit } = parseUnitValue(target)
+
+  const result = value + delta
 
   if (Number.isNaN(result)) {
     return target as string
