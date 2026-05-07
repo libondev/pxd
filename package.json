@@ -117,6 +117,7 @@
     "fmt:all": "vp fmt",
     "fmt:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r vp fmt",
     "fmt:check": "vp fmt --check",
+    "type-check": "vp run typecheck",
     "test": "vp test run",
     "test:watch": "vp test",
     "bump": "pnpx bumpp",
