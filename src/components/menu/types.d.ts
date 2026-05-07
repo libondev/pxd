@@ -6,10 +6,12 @@ export interface MenuProps {
   options?: ListOption[]
   disabled?: boolean
   position?: ComponentPosition
+  modelValue?: ListOptionSelected['value']
   closeOnPressEscape?: boolean
 }
 
 export interface MenuEmits {
-  change: [visible: boolean]
+  change: [ListOptionSelected['value']]
   select: [ListOptionSelected, MouseEvent]
+  'update:modelValue': [ListOptionSelected['value']]
 }

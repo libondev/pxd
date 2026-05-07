@@ -20,7 +20,7 @@ export function useModelValue<P extends BaseProps, E extends BaseEmits>(
   props: P,
   emits: E,
   options: ModelValueOptions = { withChange: true },
-): WritableComputedRef<NonNullable<P['modelValue']>> {
+): WritableComputedRef<P['modelValue']> {
   type V = NonNullable<P['modelValue']>
 
   const modelValue = computed<V>({

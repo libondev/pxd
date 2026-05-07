@@ -72,6 +72,45 @@ const options = [
 </template>
 ```
 
+## Checked
+
+Before enabling this feature, you must ensure that the `value` attribute is set for each list-item.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const checkedValue = ref('')
+
+const options = [
+  { label: 'One', value: 'One', },
+  { label: 'Two', value: 'two', },
+  { label: 'Three', value: 'three', disabled: true },
+  { label: 'Four', value: 'four', type: 'warning' },
+  { label: 'Delete', value: 'five', type: 'error' },
+]
+</script>
+
+<template>
+  <PStack>
+    <PMenu v-model="checkedValue" :options="options" width="200">
+      <PButton>{{ checkedValue || 'Actions' }}</PButton>
+    </PMenu>
+
+    <!-- Custom rendering menu-items -->
+    <PMenu v-model="checkedValue" width="200">
+      <PButton>{{ checkedValue || 'Actions' }}</PButton>
+
+      <template #items>
+        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
+          {{ index }} - {{ item.label }}
+        </PListItem>
+      </template>
+    </PMenu>
+  </PStack>
+</template>
+```
+
 ## Without closeOnPressEscape
 
 Pressing esc after setting will not close.
@@ -106,10 +145,8 @@ const options = [
 </script>
 
 <template>
-  <PStack>
-    <PMenu :options="options" position="right-start" width="200">
-      <PButton variant="primary">Actions</PButton>
-    </PMenu>
-  </PStack>
+  <PMenu :options="options" position="right-start" width="200">
+    <PButton variant="primary">Actions</PButton>
+  </PMenu>
 </template>
 ```

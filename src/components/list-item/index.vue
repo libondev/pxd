@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
+import { isNil } from 'es-toolkit'
 import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
@@ -33,7 +34,13 @@ const listItemVariant = tv({
   },
 })
 
-const { activeIndex, registerItem, unregisterItem, onOptionClick } = useListContext()
+const {
+  props: listProps,
+  activeIndex,
+  registerItem,
+  unregisterItem,
+  onOptionClick,
+} = useListContext()
 
 const groupId = useListFilterGroupId(null)
 const filterCtx = useListFilterContext(null)
@@ -41,6 +48,10 @@ const filterCtx = useListFilterContext(null)
 const itemId = getUniqueId('list-item')
 const itemRef = shallowRef<HTMLElement>()
 const itemIndex = shallowRef(-1)
+
+const isChecked = computed(() => {
+  return !isNil(props.value) && listProps?.value === props.value
+})
 
 const isVisible = computed(() => {
   if (!filterCtx || !filterCtx.searchValue.value.trim()) {
@@ -50,7 +61,9 @@ const isVisible = computed(() => {
   return filterCtx.isItemVisible(itemId)
 })
 
-const isSelected = computed(() => itemIndex.value !== -1 && itemIndex.value === activeIndex.value)
+const isSelected = computed(() => {
+  return itemIndex.value !== -1 && itemIndex.value === activeIndex.value
+})
 
 const computedClasses = computed(() => {
   return listItemVariant({ type: props.type })
@@ -102,7 +115,7 @@ onBeforeUnmount(() => {
     role="listitem"
     data-list-item
     :data-type="type"
-    :data-checked="checked"
+    :data-checked="isChecked"
     :data-disabled="disabled"
     :aria-selected="isSelected"
     :hidden="!isVisible"
@@ -122,7 +135,7 @@ onBeforeUnmount(() => {
     </div>
 
     <CheckIcon
-      v-if="checked"
+      v-if="isChecked"
       class="pxd-list-item--checked right-2 pointer-events-none absolute top-1/2 -translate-y-1/2"
     />
   </Component>

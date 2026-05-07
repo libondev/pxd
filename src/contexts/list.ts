@@ -1,8 +1,10 @@
 import type { ListOption } from '../components/list/types'
+import type { ListProps } from '../components/list/types'
 import type { ComputedRef, Ref } from 'vue'
 import { createContext } from '../utils/context'
 
 export interface ListContext {
+  props: ListProps
   activeIndex: Ref<number>
   registerItem: (el: HTMLElement, indexRef: Ref<number>) => void
   unregisterItem: (el: HTMLElement) => void

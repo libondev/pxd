@@ -2,6 +2,7 @@
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
 import PList from '../list/index.vue'
@@ -10,6 +11,10 @@ import PPopover from '../popover/index.vue'
 defineOptions({
   name: 'PMenu',
   inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(defineProps<MenuProps>(), {
@@ -20,6 +25,7 @@ const props = withDefaults(defineProps<MenuProps>(), {
 
 const emits = defineEmits<MenuEmits>()
 
+const modelValue = useModelValue(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
@@ -34,6 +40,7 @@ function togglePopoverVisible(visible: boolean) {
 
 function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
+  modelValue.value = item.value
   togglePopoverVisible(false)
 }
 </script>
@@ -58,6 +65,7 @@ function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
       <PList
         :width="width"
         :options="options"
+        :value="modelValue"
         :style="listStyles"
         :visible="popoverVisible"
         class="max-h-68 sm:w-(--list-width) rounded-inherit"

@@ -71,6 +71,7 @@ watch(
 )
 
 provideListContext({
+  props,
   activeIndex,
   registerItem,
   unregisterItem,
