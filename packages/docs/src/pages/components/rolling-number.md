@@ -30,6 +30,6 @@ Display a number with a rolling animation effect, supporting decimals and thousa
 
 ```vue demo
 <template>
-  <PRollingNumber value="999+" :durations="5000" />
+  <PRollingNumber value="999+ Users" :durations="5000" />
 </template>
 ```
