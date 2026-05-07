@@ -91,7 +91,10 @@ onBeforeUnmount(() => {
               as="RouterLink"
               :to="e.path"
             >
-              <ArrowRightIcon class="text-gray-600" />
+              <template #prefix>
+                <ArrowRightIcon class="text-gray-600" />
+              </template>
+
               {{ e.label }}
             </PListItem>
           </PCommandMenuGroup>

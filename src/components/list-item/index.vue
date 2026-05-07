@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
+import CheckIcon from '@gdsicon/vue/check'
 import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
@@ -21,7 +22,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
-  base: 'pxd-list-item sm:h-10 h-11 gap-3 px-2 scroll-m-2 text-sm flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-3 px-2 scroll-m-2 text-sm data-[checked=true]:pr-7 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     type: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -101,6 +102,7 @@ onBeforeUnmount(() => {
     role="listitem"
     data-list-item
     :data-type="type"
+    :data-checked="checked"
     :data-disabled="disabled"
     :aria-selected="isSelected"
     :hidden="!isVisible"
@@ -108,9 +110,20 @@ onBeforeUnmount(() => {
     v-bind="$attrs"
     @click.prevent.stop="onItemClick"
   >
-    <slot>
-      <span>{{ label }}</span>
-      <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
-    </slot>
+    <div v-if="$slots.prefix" class="pxd-list-item--prefix">
+      <slot name="prefix" />
+    </div>
+
+    <div class="pxd-list-item--content gap-1.5 flex flex-col">
+      <slot>
+        <span>{{ label }}</span>
+        <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
+      </slot>
+    </div>
+
+    <CheckIcon
+      v-if="checked"
+      class="pxd-list-item--checked right-2 pointer-events-none absolute top-1/2 -translate-y-1/2"
+    />
   </Component>
 </template>
