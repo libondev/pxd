@@ -3,7 +3,7 @@ import type { PluginFunc } from 'dayjs/esm/index.js'
 /**
  * Millisecond token plugin configuration options
  */
-interface MillisecondTokenOptions {
+export interface MillisecondTokenOptions {
   /**
    * Maximum millisecond digits (1-3)
    * @default 3
@@ -58,7 +58,7 @@ function processFormat(ms: number, formatStr: string, maxDigits: number): string
  * Day.js millisecond token plugin
  * Supports S, SS, SSS tokens for millisecond formatting
  */
-const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (
+export const dayjsMillisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (
   options,
   DayjsClass,
   dayjsFactory,
@@ -104,6 +104,3 @@ const millisecondTokenPlugin: PluginFunc<MillisecondTokenOptions> = (
     }
   } catch {}
 }
-
-export default millisecondTokenPlugin
-export type { MillisecondTokenOptions }
