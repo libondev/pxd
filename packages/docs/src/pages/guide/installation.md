@@ -4,6 +4,10 @@ Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){t
 
 The adaptation of unocss/tailwindcss@3 will be completed later.
 
+## Setup style
+
+See <RouterLink to="/guide/styled">Styled</RouterLink> for style setting.
+
 ## Install
 
 <div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">

@@ -4,7 +4,7 @@
 
 ?> While cross-version compatibility is a key feature, certain version requirements still apply: `Vue <= 2.7 || Vue >= 3.3`
 
-For Vue 2.7 implementations, [define-options@1.5.5](https://vue-macros.dev/macros/define-options.html#defineoptions){target="_blank"} is essential to provide `defineOptions()` support. Vue 3 users can optionally extend compatibility to version 3.2 through the same [vue-macros](https://vue-macros.dev/macros/define-options.html#defineoptions){target="_blank"} package.
+For Vue 2.7 implementations, [unplugin-vue-define-options@1.5.5+](https://npmx.dev/package/unplugin-vue-define-options/v/1.5.5){target="_blank"} is essential to provide `defineOptions()` support. Vue 3 users can optionally extend compatibility to version 3.2 through the same [unplugin-vue-define-options@3.1.2+](https://npmx.dev/package/unplugin-vue-define-options/v/3.1.2){target="_blank"} package.
 
 ## Why Additional Plugins Are Necessary
 

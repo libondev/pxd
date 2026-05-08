@@ -109,7 +109,9 @@ function onChange(item) {
 
     <!-- Custom rendering menu-items -->
     <PMenu v-model="checkedValue" width="200">
-      <PButton>{{ data?.label || 'Please select an option' }}</PButton>
+      <template #default="{ data }">
+        <PButton>{{ data?.label || 'Please select an option' }}</PButton>
+      </template>
 
       <template #items>
         <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
