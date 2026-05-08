@@ -1,7 +1,7 @@
 import type { ListFilterContext, ListFilterItemPayload } from '../contexts/list'
 import type { ComputedRef, Ref } from 'vue'
 import { computed, shallowRef } from 'vue'
-import { isMatch } from '../utils/fuzzy-search'
+import { isFuzzyMatch } from '../utils/fuzzy-match'
 
 export type ListFilterFn = (text: string, search: string, keywords: string[]) => boolean
 
@@ -15,7 +15,7 @@ export interface UseListFilterReturn extends ListFilterContext {
 }
 
 export function useListFilter({
-  filter = isMatch,
+  filter = isFuzzyMatch,
   keyword,
 }: UseListFilterOptions): UseListFilterReturn {
   const items = new Map<string, ListFilterItemPayload>()

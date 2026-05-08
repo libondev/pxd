@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import fuzzySort from 'fuzzysort'
+import { isFuzzyMatch } from 'pxd/utils/fuzzy-match'
 import { debounce } from 'pxd/utils/timing'
 import { shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
@@ -15,9 +15,7 @@ function getFilteredComponents(value: string) {
     return allComponents
   }
 
-  const results = fuzzySort.go(value, allComponents, { key: 'name' })
-
-  return results.map((result) => result.obj)
+  return allComponents.filter((i) => isFuzzyMatch(i.name, value))
 }
 
 const handleSearch = debounce((value: string) => {

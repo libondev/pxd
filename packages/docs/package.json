@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "canvas-confetti": "catalog:",
-    "fuzzysort": "catalog:default",
     "pxd": "workspace:*",
     "vue": "catalog:"
   },

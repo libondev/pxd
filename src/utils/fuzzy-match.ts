@@ -4,7 +4,7 @@
  * Matching is intentionally order-preserving: this helper is used only to
  * decide visibility, not ranking.
  */
-export function isMatch(text: string, search: string, keywords?: string[]): boolean {
+export function isFuzzyMatch(text: string, search: string, keywords?: string[]): boolean {
   if (!search) {
     return true
   }

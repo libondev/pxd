@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import * as icons from '@gdsicon/vue'
-import fuzzySort from 'fuzzysort'
 import { useCopyClick, useMessage } from 'pxd'
 import { uncapitalize } from 'pxd/utils/format'
+import { isFuzzyMatch } from 'pxd/utils/fuzzy-match'
 import { debounce, throttle } from 'pxd/utils/timing'
 import Grids from '@/components/Grids.vue'
 
@@ -31,9 +31,7 @@ function getFilteredComponents(value: string) {
     return allIcons
   }
 
-  const results = fuzzySort.go(value, allIcons, { key: 'name' })
-
-  return results.map((result) => result.obj)
+  return allIcons.filter((i) => isFuzzyMatch(i.name, value))
 }
 
 const handleSearch = debounce((value: string) => {
