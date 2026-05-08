@@ -97,13 +97,13 @@ export function parseUnitValue(target: string | number) {
     const unit = string.slice(value.length)
 
     return {
-      value: Number.parseFloat(value),
+      number: Number.parseFloat(value),
       unit,
     }
   }
 
   return {
-    value: target,
+    number: target,
     unit: '',
   }
 }
@@ -123,9 +123,9 @@ export function increaseWithUnit(target: string | number, delta: number): string
     return target + delta
   }
 
-  const { value, unit } = parseUnitValue(target)
+  const { number, unit } = parseUnitValue(target)
 
-  const result = value + delta
+  const result = number + delta
 
   if (Number.isNaN(result)) {
     return target as string

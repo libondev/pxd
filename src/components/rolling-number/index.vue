@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { RollingNumberEmits, RollingNumberProps } from './types'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { caf, raf } from '../../utils/event'
 import { parseUnitValue } from '../../utils/format'
+import { isServer } from '../../utils/is'
 
 defineOptions({
   name: 'PRollingNumber',
@@ -12,6 +13,7 @@ defineOptions({
 const props = withDefaults(defineProps<RollingNumberProps>(), {
   value: 0,
   durations: 1000,
+  immediate: true,
   separator: false,
 })
 
@@ -101,10 +103,23 @@ function startAnimation(target: number) {
 watch(
   () => props.value,
   () => {
-    startAnimation(parsedValueWithUnit.value.value)
+    startAnimation(parsedValueWithUnit.value.number)
   },
-  { immediate: true },
 )
+
+onMounted(() => {
+  if (isServer()) {
+    return
+  }
+
+  const numberValue = parsedValueWithUnit.value.number
+
+  if (props.immediate) {
+    startAnimation(numberValue)
+  } else {
+    displayValue.value = numberValue
+  }
+})
 
 onBeforeUnmount(() => {
   stopAnimation()
@@ -117,13 +132,13 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    class="pxd-rolling-number inline-flex w-fit items-center leading-none tabular-nums"
+  <span
+    class="pxd-rolling-number"
     role="status"
+    aria-live="polite"
+    aria-atomic="true"
     v-bind="$attrs"
   >
-    <span class="pxd-rolling-number--value" aria-live="polite" aria-atomic="true">
-      {{ formattedValue }}{{ parsedValueWithUnit.unit }}
-    </span>
-  </div>
+    {{ formattedValue }}{{ parsedValueWithUnit.unit }}
+  </span>
 </template>
