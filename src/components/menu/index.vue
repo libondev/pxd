@@ -29,6 +29,7 @@ const modelValue = useModelValue(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
+const selectedItem = shallowRef<ListOptionSelected>()
 
 const listStyles = computed(() => ({
   '--list-width': getCssUnitValue(props.width),
@@ -41,6 +42,7 @@ function togglePopoverVisible(visible: boolean) {
 function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
   modelValue.value = item.value
+  selectedItem.value = item
   togglePopoverVisible(false)
 }
 </script>
@@ -59,7 +61,7 @@ function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
   >
-    <slot />
+    <slot :data="selectedItem" />
 
     <template #content>
       <PList

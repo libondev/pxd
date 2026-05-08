@@ -10,8 +10,8 @@ const options = [
   { label: 'One' },
   { label: 'Two' },
   { label: 'Three', disabled: true },
-  { label: 'Remove', type: 'warning' },
-  { label: 'Delete', type: 'error' },
+  { label: 'Remove', variant: 'warning' },
+  { label: 'Delete', variant: 'error' },
 ]
 
 function onSelect(item, ev) {
@@ -47,8 +47,8 @@ const options = [
   { as: 'RouterLink', to: 'menu', label: 'One' },
   { as: 'RouterLink', to: 'menu', label: 'Two' },
   { as: 'RouterLink', to: 'menu', label: 'Three', disabled: true },
-  { as: 'RouterLink', to: 'menu', label: 'Four', type: 'warning' },
-  { as: 'RouterLink', to: 'menu', label: 'Delete', type: 'error' },
+  { as: 'RouterLink', to: 'menu', label: 'Four', variant: 'warning' },
+  { as: 'RouterLink', to: 'menu', label: 'Delete', variant: 'error' },
 ]
 </script>
 
@@ -83,18 +83,20 @@ import { ref } from 'vue'
 const checkedValue = ref('')
 
 const options = [
-  { label: 'One', value: 'One', },
+  { label: 'One', value: 'one', },
   { label: 'Two', value: 'two', },
   { label: 'Three', value: 'three', disabled: true },
-  { label: 'Four', value: 'four', type: 'warning' },
-  { label: 'Delete', value: 'five', type: 'error' },
+  { label: 'Four', value: 'four', variant: 'warning' },
+  { label: 'Delete', value: 'five', variant: 'error' },
 ]
 </script>
 
 <template>
   <PStack>
     <PMenu v-model="checkedValue" :options="options" width="200">
-      <PButton>{{ checkedValue || 'Actions' }}</PButton>
+      <template #default="{ data }">
+        <PButton>{{ data?.label || 'Actions' }}</PButton>
+      </template>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
@@ -121,7 +123,7 @@ const options = [
   { label: 'One' },
   { label: 'Two' },
   { label: 'Three', disabled: true },
-  { label: 'Delete', type: 'error' },
+  { label: 'Delete', variant: 'error' },
 ]
 </script>
 
@@ -140,7 +142,7 @@ const options = [
   { label: 'One' },
   { label: 'Two' },
   { label: 'Three', disabled: true },
-  { label: 'Delete', type: 'error' },
+  { label: 'Delete', variant: 'error' },
 ]
 </script>
 

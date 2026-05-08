@@ -15,7 +15,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ListItemProps>(), {
   as: 'li',
-  type: 'default',
+  variant: 'default',
   disabled: false,
   keywords: () => [],
 })
@@ -25,7 +25,7 @@ const emits = defineEmits<ListItemEmits>()
 const listItemVariant = tv({
   base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-3 px-2 scroll-m-2 text-sm data-[checked=true]:pr-7 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
-    type: {
+    variant: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
       warning: 'text-amber-900 active:bg-amber-100 pointer-fine:aria-selected:bg-amber-100',
       default:
@@ -66,7 +66,7 @@ const isSelected = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return listItemVariant({ type: props.type })
+  return listItemVariant({ variant: props.variant })
 })
 
 function getValue(): string {
@@ -114,7 +114,7 @@ onBeforeUnmount(() => {
     tabindex="-1"
     role="listitem"
     data-list-item
-    :data-type="type"
+    :data-variant="variant"
     :data-checked="isChecked"
     :data-disabled="disabled"
     :aria-selected="isSelected"

@@ -2,7 +2,7 @@ import type { ComponentAs, ComponentLabel, ComponentOption } from '../../types/s
 
 export interface ListOption extends Partial<ComponentOption> {
   as?: ComponentAs
-  type?: 'default' | 'error' | 'warning'
+  variant?: 'default' | 'error' | 'warning'
   description?: ComponentLabel
   onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
 }
