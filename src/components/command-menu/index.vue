@@ -115,7 +115,7 @@ provideListFilterContext(filterContext)
 
     <PList
       :loop="false"
-      class="sm:max-h-110"
+      class="sm:max-h-110 h-full"
       :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
       :toggle-on-key-press="modelValue"
