@@ -16,9 +16,13 @@ function parseVNode(vnode: any): ParsedVNode {
       normalizedChildren = children
     } else if (children && typeof children === 'object') {
       for (const slotFn of Object.values(children)) {
-        if (typeof slotFn !== 'function') continue
+        if (typeof slotFn !== 'function') {
+          continue
+        }
         const nodes = (slotFn as () => unknown)()
-        if (Array.isArray(nodes)) normalizedChildren.push(...nodes)
+        if (Array.isArray(nodes)) {
+          normalizedChildren.push(...nodes)
+        }
       }
     }
 
@@ -43,16 +47,22 @@ export function collectVNodeProps<T>(
   componentName: string,
   transform: (props: Record<string, any>) => T | null,
 ): T[] {
-  if (!vnodes?.length) return []
+  if (!vnodes?.length) {
+    return []
+  }
 
   const result: T[] = []
   for (const vnode of vnodes) {
-    if (!vnode) continue
+    if (!vnode) {
+      continue
+    }
     const { name, props, children } = parseVNode(vnode)
 
     if (name === componentName) {
       const transformed = transform(props)
-      if (transformed !== null) result.push(transformed)
+      if (transformed !== null) {
+        result.push(transformed)
+      }
     }
     if (children.length) {
       result.push(...collectVNodeProps(children, componentName, transform))

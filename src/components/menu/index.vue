@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
+import { isNil } from 'es-toolkit'
 import { computed, shallowRef, useSlots } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
@@ -8,7 +9,6 @@ import { getCssUnitValue } from '../../utils/format'
 import { collectVNodeProps } from '../../utils/vnode'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
-import { isNil } from 'es-toolkit'
 
 defineOptions({
   name: 'PMenu',
@@ -34,7 +34,9 @@ const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const popoverVisible = shallowRef(false)
 
 const selectedItem = computed((): ListOptionSelected | undefined => {
-  if (isNil(modelValue.value)) { return undefined }
+  if (isNil(modelValue.value)) {
+    return undefined
+  }
 
   const matchedOption = props.options.find((item) => item.value === modelValue.value)
   if (matchedOption) {
@@ -43,7 +45,13 @@ const selectedItem = computed((): ListOptionSelected | undefined => {
 
   const matchedListItem = collectVNodeProps<ListOptionSelected>(slots.items?.(), 'PListItem', (p) =>
     p.value === modelValue.value
-      ? { value: p.value, label: p.label, description: p.description, variant: p.variant, disabled: p.disabled }
+      ? {
+          value: p.value,
+          label: p.label,
+          description: p.description,
+          variant: p.variant,
+          disabled: p.disabled,
+        }
       : null,
   )[0]
 
