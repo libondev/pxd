@@ -39,7 +39,9 @@ const filterKeyword = shallowRef('')
 const filterContext = useListFilter({ keyword: filterKeyword })
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
-const isEmptyResult = computed(() => filterKeyword.value && filterContext.visibleCount.value === 0)
+const isEmptyResult = computed(
+  () => !!filterKeyword.value && filterContext.visibleCount.value === 0,
+)
 
 function hideModal() {
   filterKeyword.value = ''
@@ -113,20 +115,18 @@ provideListFilterContext(filterContext)
 
     <PList
       :loop="false"
-      class="sm:max-h-110 h-full"
+      class="sm:max-h-110"
+      :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
       :toggle-on-key-press="modelValue"
       @select="onListItemSelect"
     >
       <slot />
 
-      <p
-        v-if="filterKeyword && isEmptyResult"
-        class="py-7.5 text-sm text-center text-foreground-secondary"
-      >
+      <template #empty>
         {{ configProvider.locale.results.searchText }}
         <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
-      </p>
+      </template>
     </PList>
 
     <slot name="footer" />

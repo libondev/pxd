@@ -112,5 +112,13 @@ defineExpose({
         <slot name="item" :item="option" />
       </PListItem>
     </slot>
+
+    <p
+      v-if="empty"
+      role="presentation"
+      class="py-7.5 text-sm text-center text-foreground-secondary"
+    >
+      <slot name="empty" />
+    </p>
   </ul>
 </template>

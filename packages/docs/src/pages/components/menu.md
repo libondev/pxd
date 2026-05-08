@@ -89,13 +89,21 @@ const options = [
   { label: 'Four', value: 'four', variant: 'warning' },
   { label: 'Delete', value: 'five', variant: 'error' },
 ]
+
+function onChange(item) {
+  if (item.value === checkedValue.value) {
+    checkedValue.value = ''
+  } else {
+    checkedValue.value = item.value
+  }
+}
 </script>
 
 <template>
   <PStack>
-    <PMenu v-model="checkedValue" :options="options" width="200">
+    <PMenu :model-value="checkedValue" :options="options" width="200" @select="onChange">
       <template #default="{ data }">
-        <PButton>{{ data?.label || 'Actions' }}</PButton>
+        <PButton :class="{ 'text-foreground-secondary': !checkedValue }">{{ data?.label || 'Please select an option' }}</PButton>
       </template>
     </PMenu>
 

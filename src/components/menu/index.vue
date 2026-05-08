@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
-import { computed, shallowRef } from 'vue'
+import { computed, shallowRef, useSlots } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
+import { collectVNodeProps } from '../../utils/vnode'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
+import { isNil } from 'es-toolkit'
 
 defineOptions({
   name: 'PMenu',
@@ -25,11 +27,32 @@ const props = withDefaults(defineProps<MenuProps>(), {
 
 const emits = defineEmits<MenuEmits>()
 
+const slots = useSlots()
 const modelValue = useModelValue(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
-const selectedItem = shallowRef<ListOptionSelected>()
+
+const selectedItem = computed((): ListOptionSelected | undefined => {
+  if (isNil(modelValue.value)) { return undefined }
+
+  const matchedOption = props.options.find((item) => item.value === modelValue.value)
+  if (matchedOption) {
+    return matchedOption
+  }
+
+  const matchedListItem = collectVNodeProps<ListOptionSelected>(slots.items?.(), 'PListItem', (p) =>
+    p.value === modelValue.value
+      ? { value: p.value, label: p.label, description: p.description, variant: p.variant, disabled: p.disabled }
+      : null,
+  )[0]
+
+  if (matchedListItem) {
+    return matchedListItem
+  }
+
+  return undefined
+})
 
 const listStyles = computed(() => ({
   '--list-width': getCssUnitValue(props.width),
@@ -42,7 +65,6 @@ function togglePopoverVisible(visible: boolean) {
 function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
   modelValue.value = item.value
-  selectedItem.value = item
   togglePopoverVisible(false)
 }
 </script>
