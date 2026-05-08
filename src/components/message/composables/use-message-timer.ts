@@ -1,10 +1,11 @@
 import type { MessageItemConfig } from '../../../composables/use-message'
+import { isNil } from 'es-toolkit'
 
 export function useMessageTimer(onTimeout: (id: MessageItemConfig['id']) => void) {
   function setAutoCloseTimer(message: MessageItemConfig) {
     message._startedAtMs = Date.now()
 
-    if (message._remainingMs == null) {
+    if (isNil(message._remainingMs)) {
       message._remainingMs = message.durations
     }
 

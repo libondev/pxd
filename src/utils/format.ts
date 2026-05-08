@@ -1,4 +1,5 @@
 import type { Nullable } from '../types/shared/utils'
+import { isNil } from 'es-toolkit'
 
 const INTEGER_REGEX = /^-?\d+$/
 const FLOATING_REGEX = /^-?\d+\.?\d*/
@@ -79,7 +80,7 @@ export function toArray(value: unknown) {
 }
 
 export function getCssUnitValue(value: Nullable<string | number>, fallbackValue?: string): string {
-  if (value == null || value === '') {
+  if (isNil(value) || value === '') {
     return fallbackValue!
   }
 

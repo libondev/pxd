@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
+import { isNil } from 'es-toolkit'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { useConfigProvider } from '../../contexts/config-provider'
@@ -110,7 +111,7 @@ function updateDayjsDateTime(value: TimePickerProps['modelValue']) {
 }
 
 function getFormattedValue(value: TimePickerProps['modelValue']) {
-  if (value == null || value === '') {
+  if (isNil(value) || value === '') {
     return dayjs()
   }
 
