@@ -9,12 +9,13 @@ export function usePromiseMessage(setAutoCloseTimer: (message: MessageItemConfig
       return undefined
     }
 
-    if (typeof handler === 'function') {
-      const result = handler(data)
-      return typeof result === 'string' ? result : undefined
+    let result = handler
+
+    if (typeof result === 'function') {
+      result = result(data)
     }
 
-    return typeof handler === 'string' ? handler : undefined
+    return typeof result === 'string' ? result : undefined
   }
 
   function handlePromiseMessage(message: MessageItemConfig) {

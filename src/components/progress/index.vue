@@ -75,7 +75,7 @@ const computedColors = computed(() => {
   const { colors, variant } = props
 
   if (colors) {
-    return getColorByThreshold(progress.value, colors) || VARIANTS_COLORS[variant]
+    return getColorByThreshold(progress.value!, colors) || VARIANTS_COLORS[variant]
   }
 
   return VARIANTS_COLORS[variant]
@@ -85,7 +85,7 @@ const computedProgressBarStyles = computed(() => {
   const { min, max } = props
 
   return {
-    width: `${(progress.value / (max - min)) * 100}%`,
+    width: `${(progress.value! / (max - min)) * 100}%`,
     backgroundColor: computedColors.value || VARIANTS_COLORS.primary,
   }
 })
@@ -95,7 +95,7 @@ const computedProgressBarStyles = computed(() => {
   <div
     role="progressbar"
     class="pxd-progress flex w-full items-center"
-    :aria-valuenow="progress"
+    :aria-valuenow="progress!"
     :aria-valuemin="min"
     :aria-valuemax="max"
     v-bind="$attrs"

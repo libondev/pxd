@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { MaybeElementRef } from '../../types/shared/utils'
 import type { FaderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
+import { getElement } from '../../utils/dom'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
-import { unrefElement } from '../../utils/ref'
 import { throttleByRaf } from '../../utils/timing'
 
 defineOptions({
@@ -32,15 +31,7 @@ const computedStyle = computed(() => ({
   '--fader-size': getCssUnitValue(props.size),
 }))
 
-const formattedContainer = computed(() => {
-  const { container } = props
-
-  if (typeof container === 'string') {
-    return document.querySelector<HTMLElement>(container)
-  } else {
-    return unrefElement(container as MaybeElementRef<HTMLElement>)
-  }
-})
+const formattedContainer = computed(() => getElement(props.container))
 
 const onContainerScroll = throttleByRaf(() => {
   const container = formattedContainer.value

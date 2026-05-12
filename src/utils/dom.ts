@@ -1,7 +1,28 @@
+import type { Nullable } from '../types/shared/utils'
+import type { ComponentPublicInstance } from 'vue'
 import { isServer } from './is'
+import { unrefElement } from './ref'
 
 function getWindowTop() {
   return [window, document, document.documentElement]
+}
+
+export function getElement(
+  el?: Nullable<string | object | HTMLElement | ComponentPublicInstance>,
+): HTMLElement | null {
+  if (!el) {
+    return null
+  }
+
+  if (typeof el === 'string') {
+    return document.querySelector(el)
+  }
+
+  if (el instanceof Element) {
+    return el as HTMLElement
+  }
+
+  return unrefElement(el as ComponentPublicInstance) as HTMLElement
 }
 
 export function getElementRectFromContainer(

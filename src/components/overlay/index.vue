@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { MaybeElementRef } from '../../types/shared/utils'
 import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOverlayManager } from '../../composables/use-overlay-manager'
+import { getElement } from '../../utils/dom'
 import { NOOP } from '../../utils/event'
 import { isServer } from '../../utils/is'
-import { unrefElement } from '../../utils/ref'
 import PTeleport from '../teleport/index.vue'
 
 defineOptions({
@@ -83,10 +82,7 @@ async function getShownElementIfNeed() {
 
   await nextTick()
 
-  const el =
-    typeof shownElement === 'string'
-      ? document.querySelector<HTMLElement>(shownElement)
-      : unrefElement(shownElement as MaybeElementRef<HTMLElement>)
+  const el = getElement(shownElement)
 
   if (!el) {
     return
