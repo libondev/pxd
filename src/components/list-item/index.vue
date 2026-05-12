@@ -5,7 +5,7 @@ import { isNil } from 'es-toolkit'
 import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
-import { unrefElement } from '../../utils/ref'
+import { getElement } from '../../utils/dom'
 import { getUniqueId } from '../../utils/uid'
 
 defineOptions({
@@ -85,7 +85,7 @@ function onItemClick(ev: MouseEvent) {
 }
 
 onMounted(() => {
-  const el = unrefElement(itemRef.value)
+  const el = getElement(itemRef.value)
   if (el) {
     registerItem(el, itemIndex)
   }
@@ -98,7 +98,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  const el = unrefElement(itemRef.value)
+  const el = getElement(itemRef.value)
   if (el) {
     unregisterItem(el as HTMLElement)
   }

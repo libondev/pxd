@@ -2,8 +2,9 @@ import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { isNotNil } from 'es-toolkit'
 import { computed, onScopeDispose, watch, shallowRef } from 'vue'
+import { getElement } from '../utils/dom'
 import { toArray } from '../utils/format'
-import { toValue, unrefElement } from '../utils/ref'
+import { toValue } from '../utils/ref'
 
 export const useIntersectionObserver = createObserver(
   globalThis.IntersectionObserver,
@@ -62,7 +63,7 @@ function createObserver(
     const observer = shallowRef<Observers | undefined>()
 
     const targets = computed<HTMLElement[]>(() =>
-      toArray(toValue(target)).map(unrefElement).filter(isNotNil),
+      toArray(toValue(target)).map(getElement).filter(isNotNil),
     )
 
     const unwatch = watch(

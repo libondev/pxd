@@ -2,7 +2,8 @@ import type { MaybeElementRef } from '../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose, watch } from 'vue'
 import { Core, Pan } from '../plugins/any-touch.js'
-import { toValue, unrefElement } from '../utils/ref'
+import { getElement } from '../utils/dom'
+import { toValue } from '../utils/ref'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 
@@ -94,7 +95,8 @@ export function useSwipeGesture(
   }
 
   function bind() {
-    const container = unrefElement(containerRef)
+    const container = getElement(containerRef)
+
     if (!container) {
       return
     }
@@ -170,7 +172,7 @@ export function useSwipeGesture(
   }
 
   const unwatch = watch(
-    () => [unrefElement(containerRef), toValue(options.disabled)],
+    () => [getElement(containerRef), toValue(options.disabled)],
     ([el, disabled]) => {
       if (!el || disabled) {
         unbind()

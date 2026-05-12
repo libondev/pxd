@@ -1,6 +1,7 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { nextTick, shallowRef } from 'vue'
-import { toValue, unrefElement } from '../utils/ref'
+import { getElement } from '../utils/dom'
+import { toValue } from '../utils/ref'
 
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>
@@ -76,7 +77,7 @@ export function useListNavigation(
   let pendingRefresh: Promise<void> | null = null
 
   function runRefresh() {
-    const container = unrefElement(containerRef)
+    const container = getElement(containerRef)
     items = container ? Array.from(container.querySelectorAll<HTMLElement>(getItemSelector())) : []
 
     items.forEach((el, i) => {

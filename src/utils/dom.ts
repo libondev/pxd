@@ -1,15 +1,16 @@
-import type { Nullable } from '../types/shared/utils'
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import { isServer } from './is'
-import { unrefElement } from './ref'
+import { toValue } from './ref'
 
 function getWindowTop() {
   return [window, document, document.documentElement]
 }
 
-export function getElement(
-  el?: Nullable<string | object | HTMLElement | ComponentPublicInstance>,
-): HTMLElement | null {
+type ElementType = null | string | object | SVGElement | HTMLElement | ComponentPublicInstance
+
+export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | null {
+  el = toValue(el)
+
   if (!el) {
     return null
   }
@@ -22,7 +23,7 @@ export function getElement(
     return el as HTMLElement
   }
 
-  return unrefElement(el as ComponentPublicInstance) as HTMLElement
+  return (el as ComponentPublicInstance)?.$el ?? el
 }
 
 export function getElementRectFromContainer(
