@@ -1,4 +1,4 @@
-import type { Nullable } from '../types/shared'
+import type { Callback, Nullable } from '../types/shared'
 import { isOverflowScrollable } from './dom'
 import { isServer } from './is'
 
@@ -177,4 +177,33 @@ export function caf(id: number) {
 
 export function doubleRaf(fn: FrameRequestCallback): number {
   return raf(() => raf(fn))
+}
+
+interface ThrottleByRafReturnType<T extends Callback> {
+  (...args: Parameters<T>): void
+  cancel: () => void
+}
+
+export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafReturnType<T> {
+  let animationFrameId: number = 0
+
+  const throttle = (...args: Parameters<T>): void => {
+    if (animationFrameId) {
+      return
+    }
+
+    animationFrameId = raf(() => {
+      animationFrameId = 0
+      callback(...args)
+    })
+  }
+
+  throttle.cancel = () => {
+    if (animationFrameId) {
+      caf(animationFrameId)
+      animationFrameId = 0
+    }
+  }
+
+  return throttle
 }

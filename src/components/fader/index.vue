@@ -3,9 +3,8 @@ import type { FaderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getElement } from '../../utils/dom'
-import { cachedOff, cachedOn } from '../../utils/event'
+import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
-import { throttleByRaf } from '../../utils/timing'
 
 defineOptions({
   name: 'PFader',

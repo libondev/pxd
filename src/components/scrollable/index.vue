@@ -9,9 +9,8 @@ import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useMutationObserver, useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
 import { cachedOff, cachedOn, off, once } from '../../utils/event'
-import { raf } from '../../utils/event'
+import { raf, throttleByRaf } from '../../utils/event'
 import { isServer } from '../../utils/is'
-import { throttleByRaf } from '../../utils/timing'
 import PFader from '../fader/index.vue'
 
 defineOptions({
