@@ -31,7 +31,7 @@ const route = useRoute()
 const isMdUp = useMediaQuery(PRESET_MEDIA_QUERIES.MD_UP)
 
 const showViewSource = computed(() => {
-  const { name } = route
+  const name = String(route.name)
   return (name.startsWith('/components') || name.startsWith('/composables')) && !name.endsWith('/')
 })
 
@@ -86,30 +86,32 @@ if (!isServer()) {
     </aside>
   </div>
 
-  <div class="md:pl-56 lg:pr-56 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
-    <main class="prose px-6 py-12 w-full flex-1 motion-safe:transition-[padding]">
-      <slot />
-
-      <template v-if="showViewSource">
-        <h2 id="source" class="mb-4" tabindex="-1">
-          <a class="header-anchor" href="#source">Source</a>
-        </h2>
-
-        <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="Source" />
-      </template>
-
-      <div class="mt-16 -mx-2">
-        <PPagination :prev="paginationData.prev" :next="paginationData.next" />
+  <div class="md:pl-56 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
+    <div class="relative flex">
+      <div
+        class="top-12 toc-aside w-56 lg:block sticky z-0 order-2 hidden shrink-0 self-start bg-background-100 empty:hidden"
+      >
+        <TocNav />
       </div>
-    </main>
+
+      <main class="prose px-6 py-12 w-full flex-1">
+        <slot />
+
+        <template v-if="showViewSource">
+          <h2 id="source" class="mb-4" tabindex="-1">
+            <a class="header-anchor" href="#source">Source</a>
+          </h2>
+
+          <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="Source" />
+        </template>
+
+        <div class="mt-16 -mx-2">
+          <PPagination :prev="paginationData.prev" :next="paginationData.next" />
+        </div>
+      </main>
+    </div>
 
     <SiteFooter />
-  </div>
-
-  <div class="right-0 top-0 bottom-0 w-56 lg:block absolute hidden">
-    <aside class="toc-aside top-12 w-56 bottom-0 fixed z-0 border-x bg-background-100 empty:hidden">
-      <TocNav />
-    </aside>
   </div>
 </template>
 

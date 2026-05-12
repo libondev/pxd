@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { useIntersectionObserver } from 'pxd/composables/use-browser-observer'
-import { onMounted, ref, shallowRef, watch } from 'vue'
+import { on, off } from 'pxd/utils/event'
+import { isServer } from 'pxd/utils/is'
+import { shallowRef, watch, nextTick, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 
 interface TocItem {
@@ -20,11 +21,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const route = useRoute()
-const activeId = ref<string>('')
+const activeId = shallowRef<string>('')
 const tocItems = shallowRef<TocItem[]>([])
-const headingElements = shallowRef<HTMLElement[]>([])
 
-function extractHeadings() {
+async function extractHeadings() {
+  await nextTick()
   const container = document.querySelector(props.containerSelector)
 
   if (!container) {
@@ -40,8 +41,6 @@ function extractHeadings() {
     text: heading.textContent?.replace(/^#\s*/, '') || '',
     level: Number.parseInt(heading.tagName.substring(1), 10),
   }))
-
-  headingElements.value = Array.from(headings)
 
   if (tocItems.value.length > 0 && !activeId.value) {
     activeId.value = tocItems.value[0]?.id || ''
@@ -64,50 +63,71 @@ function scrollToHeading(id: string) {
   window.history.replaceState(history.state, route.path, `#${id}`)
 }
 
-useIntersectionObserver(
-  headingElements,
-  (entries) => {
-    const visibleEntries = entries.filter((entry) => entry.isIntersecting)
+const TOP_OFFSET = 80
 
-    // find the topmost visible entry
-    if (visibleEntries.length > 0) {
-      const topEntry = visibleEntries.reduce((prev, curr) =>
-        prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr,
-      )
-      activeId.value = topEntry.target.id
-    }
-  },
-  {
-    rootMargin: '-60px 0px -80% 0px',
-    threshold: 0,
-  },
-)
+function updateActiveHeading() {
+  const scrollTop = window.scrollY
 
-watch(
-  () => route.path,
-  () => {
+  // at the very top: user is in the h1 area, no heading should be highlighted
+  if (scrollTop <= 0) {
     activeId.value = ''
-    setTimeout(extractHeadings, 100)
-  },
-)
+    return
+  }
 
-onMounted(() => {
-  setTimeout(extractHeadings, 100)
-})
+  const items = tocItems.value
+  if (items.length === 0) {
+    return
+  }
+
+  // at the very bottom: always highlight the last heading
+  if (window.innerHeight + scrollTop >= document.documentElement.scrollHeight - 1) {
+    activeId.value = items[items.length - 1]!.id
+    return
+  }
+
+  // find the last heading that has scrolled past the top offset
+  let current = ''
+  for (const item of items) {
+    const el = document.getElementById(item.id)
+    if (el && el.getBoundingClientRect().top <= TOP_OFFSET) {
+      current = item.id
+    }
+  }
+
+  activeId.value = current
+}
+
+if (!isServer()) {
+  watch(
+    () => route.path,
+    () => {
+      activeId.value = ''
+      extractHeadings()
+    },
+    { immediate: true },
+  )
+
+  on(window, 'scroll', updateActiveHeading, { passive: true })
+  onBeforeUnmount(() => {
+    off(window, 'scroll', updateActiveHeading)
+  })
+}
 </script>
 
 <template>
-  <nav v-if="tocItems.length > 0" class="text-sm">
-    <div class="p-2 font-medium border-b">On this page</div>
+  <nav v-if="tocItems.length > 0" class="pr-2">
+    <div class="p-2 text-xs font-bold uppercase">On this page</div>
 
-    <ul class="-ml-px">
+    <ul class="pl-0! text-sm">
       <li
         v-for="item in tocItems"
         :key="item.id"
-        class="toc-item p-2 flex cursor-pointer items-center border-l-2 border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
+        class="toc-item px-2.5 py-2 mb-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
         :class="[
           `toc-level-${item.level}`,
-          { 'is-active border-l-primary bg-primary/10 text-primary!': activeId === item.id },
+          {
+            'is-active pointer-events-none bg-primary/10 text-primary!': activeId === item.id,
+          },
         ]"
         @click="scrollToHeading(item.id)"
       >

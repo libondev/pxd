@@ -31,8 +31,11 @@ import 'pxd/styles.css'
   /* Modify the primary color of the component, such as button/input */
   --primary: 211, 100%, 42%;
 
+  /* Modify border-radius for all components */
+  --radius: 0.5rem;
   /* Modify transition duration for all components */
-  --default-transition-duration: 500ms;
-  --default-transition-timing-function: ease;
+  --duration: 0.2s;
+  /* Modify transition timing-function for all components */
+  --timing-function: ease-out;
 }
 ```

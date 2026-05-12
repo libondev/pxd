@@ -52,10 +52,9 @@ onBeforeUnmount(() => {
     <h2 class="sm:w-56 md:border-r xl:border-l h-full">
       <RouterLink
         to="/"
-        class="px-2.5 gap-2 font-medium flex h-full cursor-pointer items-center self-focus-ring outline-none"
+        class="px-2.5 gap-2 flex h-full cursor-pointer items-center self-focus-ring outline-none"
       >
-        <SiteLogo class="text-2xl" />
-        <span class="xs:block hidden">PXD</span>
+        <span class="xs:block font-bold hidden">PXD</span>
 
         <PTooltip
           content="Internal development version"
@@ -64,7 +63,7 @@ onBeforeUnmount(() => {
           z-index="5"
         >
           <PBadge size="sm" variant="gray-subtle" class="max-sm:hidden">
-            v{{ prereleaseVersion }}
+            v{{ prereleaseVersion }}-dev
           </PBadge>
         </PTooltip>
       </RouterLink>

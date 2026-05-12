@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage, usePopoverResponsive } from 'pxd'
-import { ref, useTemplateRef, watch } from 'vue'
+import { ref, watch, onBeforeMount } from 'vue'
 
 defineOptions({
   name: 'CustomVariables',
@@ -140,7 +140,7 @@ watch(
   { deep: true },
 )
 
-const popoverVisible = shallowRef(false)
+const popoverVisible = ref(false)
 
 function resetCustomVariables() {
   customVariables.value = {
