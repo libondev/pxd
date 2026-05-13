@@ -83,7 +83,7 @@ export function hasScrollbar(el: HTMLElement) {
   }
 }
 
-export function getScrollContainer(el: HTMLElement, isHorizontal?: boolean): Window | HTMLElement {
+export function getScrollTarget(el: HTMLElement, isHorizontal?: boolean): Window | HTMLElement {
   const windowTop = getWindowTop()
   let parent: HTMLElement = el
 
@@ -94,7 +94,7 @@ export function getScrollContainer(el: HTMLElement, isHorizontal?: boolean): Win
       return window
     }
 
-    if (isScrollable(parent)[direction] && hasScrollbar(parent)[direction]) {
+    if (isScrollable(parent)[direction]) {
       return parent
     }
 
@@ -102,6 +102,15 @@ export function getScrollContainer(el: HTMLElement, isHorizontal?: boolean): Win
   }
 
   return parent
+}
+
+// 获取滚动元素的 DOM 对象, 通常用户获取滚动距离
+export function getScrollElement(target: any): HTMLElement {
+  if (!target || getWindowTop().includes(target)) {
+    return document.documentElement
+  }
+
+  return target as HTMLElement
 }
 
 export function getScrollPositions(el: HTMLElement | Window | Document) {
@@ -113,15 +122,6 @@ export function getScrollPositions(el: HTMLElement | Window | Document) {
     scrollWidth: targetEl.scrollWidth,
     scrollHeight: targetEl.scrollHeight,
   }
-}
-
-// 获取滚动元素的 DOM 对象, 通常用户获取滚动距离
-export function getScrollElByContainer(target: any): HTMLElement {
-  if (!target || getWindowTop().includes(target)) {
-    return document.documentElement
-  }
-
-  return target as HTMLElement
 }
 
 export interface ScrollbarSize {

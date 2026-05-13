@@ -1,6 +1,9 @@
 export interface BacktopProps {
-  right?: string | number
-  bottom?: string | number
-  zIndex?: string | number
+  appendToBody?: boolean
   visibleThreshold?: number
+  scrollTarget?: 'top' | 'bottom'
+}
+
+export interface BacktopEmits {
+  click: [PointerEvent]
 }
