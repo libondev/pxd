@@ -52,6 +52,34 @@ function updateComposablesIndex() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'composables', 'index.ts'), fileContent)
 }
 
+/**
+ * 根据组件目录生成根目录 `volar.d.ts`，供 Volar 识别全局组件类型。
+ */
+function updateVolarDts() {
+  const root = process.cwd()
+  const typePath = path.join(root, 'volar.d.ts')
+  const componentVueFiles = globSync('./src/components/*/index.vue', { cwd: root })
+
+  const lines = componentVueFiles.map((p) => {
+    const modulePath = p.replace(/src/, 'pxd').replace(/\/index\.vue/, '')
+    const [, name] = modulePath.match(/.*\/components\/(.*)/) || []
+
+    return `P${pascalize(name)}: (typeof import('${modulePath}'))['default']`
+  })
+
+  const fileContent = `/* prettier-ignore */
+// @ts-nocheck
+export { }
+declare module 'vue' {
+  export interface GlobalComponents {
+    ${lines.join('\n    ')}
+  }
+}
+`
+
+  fs.writeFileSync(typePath, fileContent, 'utf-8')
+}
+
 // function updateAppVersion() {
 //   const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
 //   const appIndexFileContent = fs.readFileSync(path.join(process.cwd(), 'src', 'index.ts'), 'utf-8')
@@ -91,6 +119,7 @@ function updateDocsComponents() {
 updateDocsComponents()
 updateComponentsIndex()
 updateComposablesIndex()
+updateVolarDts()
 
 if (isNeedStageChange) {
   try {

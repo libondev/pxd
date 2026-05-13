@@ -108,7 +108,6 @@
     "update-exports": "node scripts/update-exports.js",
     "gen-styles-file": "node scripts/gen-css-files.js",
     "gen-tw-css-file": "tailwindcss -i ./dist/styles/source.css -o ./dist/styles/styles.css -m",
-    "gen-volar-dts": "node scripts/gen-component-dts.js",
     "lint": "git diff --staged --name-only --diff-filter=ACMR| xargs -r vp lint",
     "lint:all": "vp lint",
     "lint:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main ... HEAD | xargs -r vp lint",
@@ -122,7 +121,7 @@
     "test:watch": "vp test",
     "bump": "pnpx bumpp",
     "preview": "pnpm --filter docs preview",
-    "postversion": "vp run gen-volar-dts && vp run update-exports",
+    "postversion": "vp run update-exports",
     "prepublishOnly": "run-s build:lib"
   },
   "dependencies": {

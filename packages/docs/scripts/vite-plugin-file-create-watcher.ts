@@ -18,7 +18,6 @@ export function fileCreateWatcher() {
 
       watcher.on('add', (filePath: string) => {
         execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
-        execSync(`pnpm -w gen-volar-dts`, { cwd: process.cwd() })
 
         if (filePath.endsWith('index.vue')) {
           const componentName = filePath.split(sep).at(-2) || ''

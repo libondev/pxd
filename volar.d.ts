@@ -11,6 +11,7 @@ declare module 'vue' {
     PBook: (typeof import('pxd/components/book'))['default']
     PBrowser: (typeof import('pxd/components/browser'))['default']
     PBubble: (typeof import('pxd/components/bubble'))['default']
+    PBubbleGroup: (typeof import('pxd/components/bubble-group'))['default']
     PButton: (typeof import('pxd/components/button'))['default']
     PButtonGroup: (typeof import('pxd/components/button-group'))['default']
     PCarousel: (typeof import('pxd/components/carousel'))['default']

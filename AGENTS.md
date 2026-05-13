@@ -95,10 +95,9 @@ The library exposes multiple entry points:
 
 #### Build Process
 
-1. **DTS Generation**: `scripts/gen-component-dts.js` for Volar support
+1. **Export updates & Volar**: `scripts/update-exports.js` refreshes barrel exports, docs component list, composables index, and root `volar.d.ts`
 2. **Code Compilation**: mkdist transforms `.vue` + `.ts` → `.js` + `.d.ts`
 3. **Style Generation**: Tailwind processing from `source.css`
-4. **Export Updates**: `scripts/update-exports.js` for package.json
 
 ## AI Agent Guidelines
 
