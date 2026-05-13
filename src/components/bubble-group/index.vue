@@ -80,10 +80,12 @@ onBeforeUnmount(() => {
   >
     <slot />
 
-    <PBacktop
-      class="sticky bottom-1 z-1 w-max mx-auto rounded-full shadow-sm"
-      scroll-target="bottom"
-      :append-to-body="false"
-    />
+    <div class="pxd-bubble-group--action bottom-0 h-0 sticky">
+      <PBacktop
+        class="bottom-1 shadow-sm left-1/2 z-1 w-max -translate-x-1/2 rounded-full"
+        scroll-target="bottom"
+        :append-to-body="false"
+      />
+    </div>
   </div>
 </template>
