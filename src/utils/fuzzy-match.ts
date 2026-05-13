@@ -46,7 +46,18 @@ function matchesOne(haystack: string, needle: string): boolean {
   if (haystack.includes(needle)) {
     return true
   }
-  return hasFuzzySubsequenceMatch(haystack, needle)
+  if (hasFuzzySubsequenceMatch(haystack, needle)) {
+    return true
+  }
+
+  // ignore whitespace try again
+  const compactHaystack = haystack.replace(/\s+/g, '')
+  const compactNeedle = needle.replace(/\s+/g, '')
+  if (compactHaystack !== haystack || compactNeedle !== needle) {
+    return matchesOne(compactHaystack, compactNeedle)
+  }
+
+  return false
 }
 
 function hasWordBoundaryMatch(haystack: string, needle: string): boolean {
