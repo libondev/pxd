@@ -9,10 +9,10 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<BubbleProps>(), {
-  role: 'assistant',
+  role: 'system',
 })
 
-const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Assistant message'))
+const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'System message'))
 </script>
 
 <template>
@@ -43,10 +43,10 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Assi
       </header>
 
       <div
-        class="pxd-bubble--content py-2 px-3 overflow-hidden rounded-md border border-gray-alpha-100 bg-background-100 bg-gray-100 break-all whitespace-pre-wrap group-data-[role='assistant']/bubble:rounded-tl-none group-data-[role='user']/bubble:rounded-tr-none"
+        class="pxd-bubble--content py-2 px-3 overflow-hidden rounded-md border border-gray-alpha-100 bg-background-100 bg-gray-100 break-all whitespace-pre-wrap group-data-[role='system']/bubble:rounded-tl-none group-data-[role='user']/bubble:rounded-tr-none"
       >
         <PSpinner v-if="loading" class="translate-y-0.5" />
-        <slot v-else />
+        <slot v-else>{{ text }}</slot>
       </div>
 
       <footer

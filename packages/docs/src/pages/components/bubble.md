@@ -6,7 +6,7 @@ Show the conversation.
 
 ```vue demo
 <template>
-  <PBubble role="assistant">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble role="system">The Evil Rabbit Jumped over the Fence</PBubble>
   <PBubble role="user">The Evil Rabbit Jumped over the Fence</PBubble>
 </template>
 ```
@@ -22,7 +22,7 @@ const loading = ref(true)
 
 <template>
   <PToggle v-model="loading" active-label="Loading" />
-  <PBubble role="assistant" :loading="loading">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble role="system" :loading="loading">The Evil Rabbit Jumped over the Fence</PBubble>
 </template>
 ```
 
@@ -30,7 +30,7 @@ const loading = ref(true)
 
 ```vue demo
 <template>
-  <PBubble role="assistant" avatar="https://avatars.githubusercontent.com/u/47918504?s=48&v=4">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble role="system" avatar="https://avatars.githubusercontent.com/u/47918504?s=48&v=4">The Evil Rabbit Jumped over the Fence</PBubble>
   <PBubble role="user" avatar="https://avatars.githubusercontent.com/u/47918504?s=48&v=4">The Evil Rabbit Jumped over the Fence</PBubble>
   <PBubble role="user" avatar="https://avatars.githubusercontent.com/u/47918504?s=48&v=4">The Evil Rabbit Jumped over the Fence</PBubble>
 </template>
@@ -45,7 +45,7 @@ import PencilEditIcon from '@gdsicon/vue/pencil-edit'
 </script>
 
 <template>
-  <PBubble role="assistant" header="System">
+  <PBubble role="system" header="System">
     The Evil Rabbit Jumped over the Fence
 
     <template #footer>
@@ -68,5 +68,35 @@ import PencilEditIcon from '@gdsicon/vue/pencil-edit'
       </PButton>
     </template>
   </PBubble>
+</template>
+```
+
+## Group
+
+By default, the `PBubbleGroup` component always shows the latest data at the bottom.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const messages = ref([
+  { role: 'system', message: 'The Evil Rabbit Jumped over the Fence' },
+  { role: 'user', message: 'The Evil Rabbit Jumped over the Fence' },
+])
+
+function addMessage() {
+  messages.value.push({
+    role: Math.random() > 0.5 ? 'system' : 'user',
+    message: 'The Evil Rabbit Jumped over the Fence',
+  })
+}
+</script>
+
+<template>
+  <PButton class="mb-2" @click="addMessage">Add Message</PButton>
+
+  <PBubbleGroup>
+    <PBubble v-for="m of messages" :role="m.role" :text="m.message" />
+  </PBubbleGroup>
 </template>
 ```
