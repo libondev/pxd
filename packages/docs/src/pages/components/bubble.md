@@ -87,7 +87,7 @@ const messages = ref([
 function addMessage() {
   messages.value.push({
     role: Math.random() > 0.5 ? 'system' : 'user',
-    message: 'The Evil Rabbit Jumped over the Fence',
+    message: 'The Evil Rabbit Jumped over the Fence ' + Date.now(),
   })
 }
 </script>
