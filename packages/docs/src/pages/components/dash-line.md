@@ -6,7 +6,7 @@ Use controllable forms to create beautiful solid or dotted lines.
 
 ```vue demo
 <template>
-  <PDashLine />
+  <PDashLine class="h-px" />
 </template>
 ```
 
@@ -15,11 +15,11 @@ Use controllable forms to create beautiful solid or dotted lines.
 ```vue demo
 <template>
   <div class="w-full h-10 flex flex-col">
-    <PDashLine position="top" />
+    <PDashLine class="h-px" position="top" />
 
-    <PDashLine :position="['left', 'right']" class="flex-1" />
+    <PDashLine class="h-4 flex-1" :position="['left', 'right']" />
 
-    <PDashLine position="bottom" />
+    <PDashLine class="h-px" position="bottom" />
   </div>
 </template>
 ```
@@ -29,9 +29,11 @@ Use controllable forms to create beautiful solid or dotted lines.
 ```vue demo
 <template>
   <PStack class="w-full h-10">
-    <PDashLine dash-size="10" gap="5" />
+    <PDashLine class="h-px" dash-size="10" gap="0" />
 
-    <PDashLine dash-size="5" gap="20" />
+    <PDashLine class="h-px" dash-size="10" gap="5" />
+
+    <PDashLine class="h-px" dash-size="5" gap="20" />
   </PStack>
 </template>
 ```
@@ -41,11 +43,11 @@ Use controllable forms to create beautiful solid or dotted lines.
 ```vue demo
 <template>
   <PStack class="w-full h-10">
-    <PDashLine color="var(--color-red-600)" />
+    <PDashLine class="h-px" color="var(--color-red-700)" />
 
-    <PDashLine color="var(--color-blue-600)" />
+    <PDashLine class="h-px" color="var(--color-blue-700)" />
 
-    <PDashLine color="var(--color-gray-500)" />
+    <PDashLine class="h-px" color="var(--color-gray-700)" />
   </PStack>
 </template>
 ```
