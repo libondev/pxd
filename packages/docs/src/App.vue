@@ -9,7 +9,7 @@
       <SiteHeader />
       <PMessage width="180" group="website" />
       <PLoadingBar group="website" />
-      <PBacktop :visible-threshold="100" />
+      <PBacktop class="right-6 bottom-6 shadow-sm rounded-full" :visible-threshold="100" />
 
       <div
         class="md:max-w-screen-2xl relative mx-auto flex w-full max-w-full flex-1 bg-background-100"
