@@ -113,20 +113,17 @@ export function getScrollElement(target: any): HTMLElement {
   return target as HTMLElement
 }
 
-export function getScrollPositions(el: HTMLElement | Window | Document) {
-  const targetEl = el instanceof HTMLElement ? el : document.documentElement
+export function getScrollPosition(el: HTMLElement | Window | Document) {
+  const target = el instanceof HTMLElement ? el : document.documentElement
 
   return {
-    scrollTop: targetEl.scrollTop,
-    scrollLeft: targetEl.scrollLeft,
-    scrollWidth: targetEl.scrollWidth,
-    scrollHeight: targetEl.scrollHeight,
+    scrollTop: target.scrollTop,
+    scrollLeft: target.scrollLeft,
+    scrollWidth: target.scrollWidth,
+    scrollHeight: target.scrollHeight,
+    clientWidth: target.clientWidth,
+    clientHeight: target.clientHeight,
   }
-}
-
-export interface ScrollbarSize {
-  width: number
-  height: number
 }
 
 /**
@@ -134,7 +131,7 @@ export interface ScrollbarSize {
  * @param element - 要测量的元素，默认为document.body
  * @returns 包含滚动条宽度和高度的对象
  */
-export function getScrollbarSize(element?: HTMLElement): ScrollbarSize {
+export function getScrollbarSize(element?: HTMLElement) {
   if (!element) {
     const div = document.createElement('div')
     div.style.cssText =
