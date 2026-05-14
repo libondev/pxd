@@ -38,20 +38,15 @@ function onCopy(ev: MouseEvent) {
           <slot name="code" />
         </div>
 
-        <PButton
-          class="top-3 right-4 absolute hidden group-hover:inline-flex active:scale-95"
-          icon
-          size="sm"
-          @click="onCopy"
-        >
+        <PButton class="top-3 right-4 absolute active:scale-95" icon size="sm" @click="onCopy">
           <div
-            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 will-change-[transform,opacity,filter] motion-safe:transition-appearance"
+            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 motion-safe:transition-appearance"
             :class="isCopied ? 'blur-0 scale-100 opacity-100' : 'blur-xs scale-[0.25] opacity-0'"
           >
             <CheckIcon />
           </div>
           <div
-            class="transition-[transform, opacity, filter] ease-in-out duration-300 will-change-[transform,opacity,filter]"
+            class="ease-in-out transition-[transform,opacity,filter] duration-300"
             :class="isCopied ? 'blur-xs scale-[0.25] opacity-0' : 'blur-0 scale-100 opacity-100'"
           >
             <CopyIcon />

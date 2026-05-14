@@ -141,8 +141,8 @@ async function updatePosition() {
   if (middlewareData.arrow) {
     const { x: arrowX, y: arrowY } = middlewareData.arrow
     Object.assign(arrowRef.value.style, {
-      left: arrowX != null ? `${Math.max(arrowX, 5)}px` : '',
-      top: arrowY != null ? `${Math.max(arrowY, 5)}px` : '',
+      left: arrowX != null ? `${Math.max(Math.ceil(arrowX), 5)}px` : '',
+      top: arrowY != null ? `${Math.max(Math.ceil(arrowY), 5)}px` : '',
     })
   }
 }
@@ -367,7 +367,7 @@ defineExpose({
           <div
             v-if="showArrow"
             ref="arrowRef"
-            class="pxd-popover--arrow pointer-events-none absolute z-1"
+            class="pxd-popover--arrow pointer-events-none absolute z-1 will-change-[left,top]"
           >
             <PPopoverArrow
               fill="var(--popover-arrow-color,transparent)"
