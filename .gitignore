@@ -19,7 +19,12 @@ shims/components.d.ts
 /cypress/screenshots/
 
 # Editor directories and files
-!.vscode/extensions.json
+.vscode/
+!.vscode/settings.json
+.zed
+!.zed/settings.json
+.cursor
+.github/skills
 .idea
 *.suo
 *.ntvs*
