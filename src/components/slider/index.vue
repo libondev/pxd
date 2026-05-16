@@ -5,7 +5,7 @@ import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { NOOP, throttleByRaf } from '../../utils/event'
-import { getFallbackValue } from '../../utils/get'
+import { getFallbackValue } from '../../utils/helper'
 
 defineOptions({
   name: 'PSlider',

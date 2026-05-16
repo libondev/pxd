@@ -11,7 +11,7 @@ import { useDelayChange } from '../../composables/use-delay-change'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getAllDatesBetween } from '../../utils/date'
 import { getCssUnitValue } from '../../utils/format'
-import { getColorByThreshold } from '../../utils/get'
+import { getColorByThreshold } from '../../utils/helper'
 
 defineOptions({
   name: 'PActiveGraph',

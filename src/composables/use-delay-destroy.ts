@@ -2,7 +2,7 @@ import type { Nullable } from '../types/shared'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { shallowRef } from 'vue'
 import { doubleRaf, caf } from '../utils/event'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 interface Options {
   delay?: number

@@ -10,7 +10,7 @@ import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { NOOP } from '../../utils/event'
 import { isTruthyProp } from '../../utils/format'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PInput',

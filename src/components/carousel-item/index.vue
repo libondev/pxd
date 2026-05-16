@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, computed, shallowRef } from 'vue'
 import { useCarouselContext } from '../../contexts/carousel'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PCarouselItem',

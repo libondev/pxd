@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose, watch } from 'vue'
 import { Core, Pan } from '../plugins/any-touch.js'
 import { getElement } from '../utils/dom'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 

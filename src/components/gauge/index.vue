@@ -3,7 +3,7 @@ import type { GaugeProps } from './types'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { getColorByThreshold, getFallbackValue } from '../../utils/get'
+import { getColorByThreshold, getFallbackValue } from '../../utils/helper'
 
 defineOptions({
   name: 'PGauge',

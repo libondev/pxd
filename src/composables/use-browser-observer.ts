@@ -4,7 +4,7 @@ import { isNotNil } from 'es-toolkit'
 import { computed, onScopeDispose, watch, shallowRef } from 'vue'
 import { getElement } from '../utils/dom'
 import { toArray } from '../utils/format'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 export const useIntersectionObserver = createObserver(
   globalThis.IntersectionObserver,

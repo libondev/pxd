@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 export function useForwardRefExpose<T extends object>(
   refEl: MaybeRefOrGetter<T | null | undefined>,

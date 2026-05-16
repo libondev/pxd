@@ -2,8 +2,8 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { shallowRef, onScopeDispose } from 'vue'
 import { getElementRectFromContainer, getScrollElement, getScrollPosition } from '../utils/dom'
 import { on, off } from '../utils/event'
+import { toValue } from '../utils/helper'
 import { isServer } from '../utils/is'
-import { toValue } from '../utils/ref'
 
 export interface UseScrollspyOptions {
   /** Scrollable container. @default window */

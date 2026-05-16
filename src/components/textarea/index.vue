@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PTextarea',

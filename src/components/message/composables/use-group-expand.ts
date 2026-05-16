@@ -1,6 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { shallowRef, watchEffect } from 'vue'
-import { toValue } from '../../../utils/ref'
+import { toValue } from '../../../utils/helper'
 
 interface UseGroupExpandOptions {
   expand: MaybeRefOrGetter<boolean | undefined>

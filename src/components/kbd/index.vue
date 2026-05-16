@@ -2,7 +2,7 @@
 import type { KbdProps } from './types'
 import { computed } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { getFallbackValue } from '../../utils/get'
+import { getFallbackValue } from '../../utils/helper'
 
 defineOptions({
   name: 'PKbd',

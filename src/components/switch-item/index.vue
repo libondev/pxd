@@ -4,7 +4,7 @@ import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useSwitchContext } from '../../contexts/switch'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PSwitchItem',

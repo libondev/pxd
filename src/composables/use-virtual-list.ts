@@ -8,7 +8,7 @@ import {
   Virtualizer,
 } from '@tanstack/virtual-core'
 import { computed, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 export interface VirtualListItem extends VirtualItem {
   key: string | number

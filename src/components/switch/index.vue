@@ -5,8 +5,7 @@ import { useModelValue } from '../../composables/use-model-value'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideSwitchContext } from '../../contexts/switch'
-import { getFallbackValue } from '../../utils/get'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId, getFallbackValue } from '../../utils/helper'
 import PSwitchItem from '../switch-item/index.vue'
 
 defineOptions({

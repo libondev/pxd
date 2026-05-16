@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import { toValue } from './helper'
 import { isServer } from './is'
-import { toValue } from './ref'
 
 function getWindowTop() {
   return [window, document, document.documentElement]

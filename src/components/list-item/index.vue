@@ -6,7 +6,7 @@ import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
 import { getElement } from '../../utils/dom'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PListItem',

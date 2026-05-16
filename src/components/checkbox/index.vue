@@ -6,7 +6,7 @@ import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useCheckboxGroupContext } from '../../contexts/checkbox'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PCheckbox',

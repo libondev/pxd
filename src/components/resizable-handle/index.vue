@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useResizableContext } from '../../contexts/resizable'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 interface ResizableHandleProps {
   withHandle?: boolean

@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { nextTick, shallowRef } from 'vue'
 import { getElement } from '../utils/dom'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>

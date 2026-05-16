@@ -2,7 +2,7 @@
 import type { CommandMenuGroupProps } from './types'
 import { computed } from 'vue'
 import { provideListFilterGroupId, useListFilterContext } from '../../contexts/list'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PCommandMenuGroup',

@@ -4,8 +4,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { getFallbackValue } from '../../utils/get'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId, getFallbackValue } from '../../utils/helper'
 
 defineOptions({
   name: 'PToggle',

@@ -7,7 +7,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideListFilterContext } from '../../contexts/list'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
 

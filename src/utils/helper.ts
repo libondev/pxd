@@ -1,7 +1,16 @@
 import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
+import type { MaybeElement } from '../types/shared/utils'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import { isNil } from 'es-toolkit'
+import { unref } from 'vue'
 import { isServer } from './is'
+
+let _id = 0
+
+export function getUniqueId(prefix: string = '') {
+  return `${prefix}_pid_${_id++}`
+}
 
 export function getFallbackValue<Variants extends Record<string, any>>(
   variant: Nullable<string>,
@@ -80,4 +89,11 @@ export function getResponsiveValue<V extends string | number>(
     },
     {} as Parameters<typeof valueSetter>[0],
   )
+}
+
+export type UnRefElementReturn<T extends MaybeElement = MaybeElement> =
+  T extends ComponentPublicInstance ? Exclude<MaybeElement, ComponentPublicInstance> : T | undefined
+
+export function toValue<T>(source: MaybeRefOrGetter<T>): T {
+  return typeof source === 'function' ? (source as () => T)() : unref(source)
 }

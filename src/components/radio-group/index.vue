@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { RadioGroupEmits, RadioGroupProps } from './types'
 import { provideRadioGroupContext } from '../../contexts/radio'
-import { getUniqueId } from '../../utils/uid'
+import { getUniqueId } from '../../utils/helper'
 import PRadio from '../radio/index.vue'
 import PStack from '../stack/index.vue'
 

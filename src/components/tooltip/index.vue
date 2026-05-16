@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TooltipProps } from './types'
 import { computed } from 'vue'
-import { getFallbackValue } from '../../utils/get'
+import { getFallbackValue } from '../../utils/helper'
 import { isTouchDevice } from '../../utils/is'
 import PPopover from '../popover/index.vue'
 

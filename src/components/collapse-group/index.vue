@@ -3,7 +3,7 @@ import type { CollapseGroupProps } from './types'
 import { computed, ref } from 'vue'
 import { provideCollapseGroupContext } from '../../contexts/collapse'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { getFallbackValue } from '../../utils/get'
+import { getFallbackValue } from '../../utils/helper'
 
 defineOptions({
   name: 'PCollapseGroup',

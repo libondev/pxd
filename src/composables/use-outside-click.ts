@@ -1,7 +1,7 @@
 import type { MaybeElementRef } from '../types/shared/utils'
 import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event'
-import { toValue } from '../utils/ref'
+import { toValue } from '../utils/helper'
 
 interface Options {
   allowList?: MaybeElementRef<HTMLElement>[]

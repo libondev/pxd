@@ -1,6 +1,6 @@
 import type { ComponentBeforeChange, ComponentSize } from '../../types/shared'
 
-export type ValueType = boolean | number | string
+export type ValueType = boolean | number | string | undefined
 
 export interface ToggleProps {
   size?: ComponentSize
