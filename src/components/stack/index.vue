@@ -35,8 +35,8 @@ const stackVariant = tv({
       stretch: 'items-stretch',
     },
     justify: {
-      start: 'flex-start',
-      end: 'flex-end',
+      start: 'justify-start',
+      end: 'justify-end',
       center: 'justify-center',
       between: 'justify-between',
       around: 'justify-around',

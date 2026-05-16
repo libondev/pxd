@@ -78,7 +78,7 @@ const modelValue = useModelValue(
   checkboxGroupContext?.emits ?? emits,
 )
 
-const isChecked = computed(() => {
+const isSelected = computed(() => {
   if (Array.isArray(modelValue.value)) {
     return modelValue.value.includes(props.value)
   }
@@ -95,30 +95,30 @@ const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.
 const computedClasses = computed(() => {
   return checkboxVariant({
     shape: props.shape,
-    checked: isChecked.value,
+    checked: isSelected.value,
     disabled: isDisabled.value,
   })
 })
 
 function onInputChange(event: Event) {
-  const isChecked = (event.target as HTMLInputElement).checked
+  const checked = (event.target as HTMLInputElement).checked
 
   if (Array.isArray(modelValue.value)) {
-    modelValue.value = isChecked
+    modelValue.value = checked
       ? [...modelValue.value, props.value]
       : modelValue.value.filter((v) => v !== props.value)
 
     return
   }
 
-  modelValue.value = isChecked
+  modelValue.value = checked
 }
 </script>
 
 <template>
   <label
     role="checkbox"
-    :aria-selected="isChecked"
+    :aria-selected="isSelected"
     :data-disabled="isDisabled"
     class="pxd-checkbox group/checkbox gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
@@ -129,13 +129,14 @@ function onInputChange(event: Event) {
       :value="value"
       type="checkbox"
       class="peer visually-hidden"
-      :checked="isChecked"
+      :checked="isSelected"
       :disabled="isDisabled"
+      :name="uniqueId"
       @change="onInputChange"
     />
 
     <span aria-hidden="true" :class="computedClasses">
-      <CheckIcon v-if="isChecked" class="size-3" />
+      <CheckIcon v-if="isSelected" class="size-3" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />
     </span>

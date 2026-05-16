@@ -70,13 +70,13 @@ const modelValue = useModelValue(
   radioGroupContext?.emits ?? emits,
 )
 
-const isChecked = computed(() => modelValue.value === props.value)
+const isSelected = computed(() => modelValue.value === props.value)
 
 const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
   return radioVariant({
-    checked: isChecked.value,
+    checked: isSelected.value,
     disabled: isDisabled.value,
   })
 })
@@ -93,7 +93,7 @@ function onInputChange() {
 <template>
   <label
     role="radio"
-    :aria-selected="isChecked"
+    :aria-selected="isSelected"
     :data-disabled="isDisabled"
     class="pxd-radio group/radio gap-2 inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
@@ -104,9 +104,9 @@ function onInputChange() {
       type="radio"
       :value="value"
       class="peer visually-hidden"
-      :checked="isChecked"
-      :name="radioGroupName"
+      :checked="isSelected"
       :disabled="isDisabled"
+      :name="radioGroupName"
       @change="onInputChange"
     />
 
