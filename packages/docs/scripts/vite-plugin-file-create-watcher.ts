@@ -40,6 +40,28 @@ export function fileCreateWatcher() {
 `
           writeFileSync(mdFilePath, mdFileContent)
         }
+
+        const composablesDir = path.resolve(process.cwd(), '../../src/composables')
+        if (
+          filePath.startsWith(composablesDir) &&
+          filePath.endsWith('.ts') &&
+          !filePath.endsWith('index.ts')
+        ) {
+          const composableName = path.basename(filePath, '.ts')
+          const displayName = composableName
+            .replace(/^use-/, 'use')
+            .replace(/-./g, (m) => m[1].toUpperCase())
+
+          const mdFilePath = path.resolve(
+            process.cwd(),
+            'src',
+            'pages',
+            'composables',
+            `${composableName}.md`,
+          )
+          const mdFileContent = `# ${displayName}\n\nTODO: Add description.\n\n## Exports\n\n\`\`\`ts\n// TODO: Add exports\n\`\`\`\n`
+          writeFileSync(mdFilePath, mdFileContent)
+        }
       })
     },
   }

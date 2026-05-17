@@ -115,8 +115,30 @@ function updateDocsComponents() {
   )
 }
 
+function updateDocsComposables() {
+  const composables = globSync('packages/docs/src/pages/composables/**/*.md')
+  const matchRegex = /packages\/docs\/src\/pages\/composables\/(.*?)\.md/
+
+  const jsonContent = composables.reduce((acc, cur) => {
+    const [, name] = cur.match(matchRegex) || []
+
+    acc.push({
+      camelized: humanize(name),
+      name,
+    })
+
+    return acc
+  }, [])
+
+  fs.writeFileSync(
+    path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'composables.json'),
+    `${JSON.stringify(jsonContent, null, 2)}\n`,
+  )
+}
+
 // updateAppVersion()
 updateDocsComponents()
+updateDocsComposables()
 updateComponentsIndex()
 updateComposablesIndex()
 updateVolarDts()
@@ -124,7 +146,7 @@ updateVolarDts()
 if (isNeedStageChange) {
   try {
     execSync(
-      'git add volar.d.ts src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json',
+      'git add volar.d.ts src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json packages/docs/src/consts/composables.json',
     )
     execSync('git commit -m "chore: update pkg exports"')
   } catch {
