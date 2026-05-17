@@ -1,9 +1,17 @@
 import componentList from './components.json'
+import composableList from './composables.json'
 
 const componentMenus = componentList.map(({ name, camelized }) => {
   return {
     label: camelized,
     path: `/components/${name}`,
+  }
+})
+
+const composableMenus = composableList.map(({ name, camelized }) => {
+  return {
+    label: camelized,
+    path: `/composables/${name}`,
   }
 })
 
@@ -44,5 +52,9 @@ export const asideMenus = [
   {
     group: 'Components',
     children: componentMenus,
+  },
+  {
+    group: 'Composables',
+    children: composableMenus,
   },
 ]

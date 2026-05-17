@@ -64,7 +64,15 @@ const paginationData = computed(() => {
   }
 })
 
-const componentSourcePath = computed(() => `${githubLink}/blob/dev/src${route.path}/index.vue`)
+const componentSourcePath = computed(() => {
+  const path = `${githubLink}/blob/dev/src${route.path}`
+
+  if (path.includes('/composables')) {
+    return path + '.ts'
+  }
+
+  return path + '/index.vue'
+})
 
 if (!isServer()) {
   watch(
@@ -292,7 +300,7 @@ if (!isServer()) {
     color: var(--color-gray-600);
   }
 
-  h2#props + table {
+  :where(h2#props, h2#params) + table {
     border-collapse: collapse;
     table-layout: fixed;
     width: 100%;
