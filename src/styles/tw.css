@@ -495,7 +495,7 @@
 
 @utility transition-appearance {
   transition-property:
-    opacity, transform, translate, background-color, box-shadow, font-size, border, color;
+    opacity, transform, scale, translate, background-color, box-shadow, font-size, border, color;
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
 }
@@ -530,6 +530,10 @@
   &::before,
   &::after {
     border-color: var(--color-gray-300);
+  }
+
+  .dark :is(*, *::before, *::after) {
+    border-color: var(--color-gray-400);
   }
 }
 

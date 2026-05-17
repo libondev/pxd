@@ -1,67 +1,212 @@
 <script lang="ts" setup>
-import type { ChoiceboxProps } from './types'
-import { computed, markRaw } from 'vue'
+import type { ChoiceboxItemProps } from './types'
+import CheckIcon from '@gdsicon/vue/check'
+import { tv } from 'tailwind-variants'
+import { computed } from 'vue'
+import { useModelValue } from '../../composables/use-model-value'
 import { useChoiceboxContext } from '../../contexts/choicebox'
-import PCheckbox from '../checkbox/index.vue'
-import PRadio from '../radio/index.vue'
+import { toArray } from '../../utils/format'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PChoiceboxItem',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:modelValue',
-  },
 })
 
-defineProps<ChoiceboxProps>()
+const props = defineProps<ChoiceboxItemProps>()
+
+const choiceboxVariant = tv({
+  base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-md border motion-safe:transition-colors',
+  variants: {
+    disabled: {
+      true: 'cursor-not-allowed opacity-50',
+      false: 'cursor-pointer',
+    },
+    selected: {
+      true: 'border-primary',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    {
+      disabled: false,
+      selected: false,
+      class: 'hover:border-gray-500 hover:bg-background-hover',
+    },
+  ],
+})
+
+const choiceboxInnerVariant = tv({
+  base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-gray-100 peer-focus-ring motion-safe:transition-appearance',
+  variants: {
+    disabled: {
+      true: '',
+      false: '',
+    },
+    multiple: {
+      true: 'rounded-sm',
+      false:
+        'after:content-empty after:size-2 rounded-full after:scale-40 after:rounded-full after:bg-primary after:opacity-0',
+    },
+    selected: {
+      true: 'border-primary',
+      false: 'border-gray-alpha-400',
+    },
+  },
+  compoundVariants: [
+    {
+      multiple: false,
+      selected: false,
+      class: '',
+    },
+    {
+      disabled: true,
+      multiple: true,
+      class: 'bg-gray-100',
+    },
+    {
+      multiple: true,
+      selected: true,
+      class: 'bg-primary',
+    },
+    {
+      multiple: false,
+      selected: true,
+      class: 'after:scale-100 after:opacity-100 motion-safe:after:transition-appearance',
+    },
+  ],
+})
 
 const choiceboxGroupContext = useChoiceboxContext()
 
-const renderAs = computed(() => markRaw(choiceboxGroupContext?.props.multiple ? PCheckbox : PRadio))
+const inputId = getUniqueId()
+const internalId = getUniqueId()
+const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
+
+const computedClasses = computed(() => {
+  return {
+    wrapper: choiceboxVariant({
+      disabled: isDisabled.value,
+      selected: isSelected.value,
+    }),
+    inner: choiceboxInnerVariant({
+      disabled: isDisabled.value,
+      multiple: isMultiple.value,
+      selected: isSelected.value,
+    }),
+  }
+})
+
+const isMultiple = computed(() => {
+  return !!choiceboxGroupContext?.props.multiple
+})
+
+const isDisabled = computed(() => {
+  return props.disabled || !!choiceboxGroupContext?.props.disabled
+})
+
+const isSelected = computed(() => {
+  if (isMultiple.value) {
+    return toArray(modelValue.value).includes(props.value)
+  }
+
+  return modelValue.value === props.value
+})
+
+const inputName = computed(() => {
+  if (isMultiple.value) {
+    return internalId
+  }
+
+  return choiceboxGroupContext?.name || internalId
+})
+
+function onInputChange(event: Event) {
+  if (isDisabled.value) {
+    return
+  }
+
+  const inputValue = props.value
+  const checked = (event.target as HTMLInputElement).checked
+
+  if (isMultiple.value) {
+    if (Array.isArray(modelValue.value)) {
+      modelValue.value = checked
+        ? [...modelValue.value, inputValue]
+        : modelValue.value.filter((v) => v !== inputValue)
+
+      return
+    }
+
+    modelValue.value = [inputValue]
+
+    return
+  }
+
+  modelValue.value = inputValue
+}
 </script>
 
 <template>
-  <Component
-    :is="renderAs"
-    :value="value"
-    :disabled="disabled"
-    class="pxd-choicebox-item p-3 w-full flex-1 flex-row-reverse justify-between rounded-md border hover:border-gray-500 hover:bg-background-hover motion-safe:transition-colors"
+  <label
+    :role="isMultiple ? 'checkbox' : 'radio'"
+    :data-disabled="isDisabled"
+    :aria-selected="isSelected"
+    :for="inputId"
+    :class="computedClasses.wrapper"
     v-bind="$attrs"
   >
-    <div class="gap-1 flex flex-col">
-      <span class="pxd-choicebox--label font-medium">
-        <slot name="label">
-          {{ label }}
-        </slot>
+    <div
+      class="pxd-choicebox-item--option p-3 flex items-center justify-between motion-safe:transition-colors"
+    >
+      <input
+        :id="inputId"
+        :type="isMultiple ? 'checkbox' : 'radio'"
+        :value="value"
+        class="peer visually-hidden"
+        :checked="isSelected"
+        :disabled="isDisabled"
+        :name="inputName"
+        @change="onInputChange"
+      />
+
+      <span aria-hidden="true" :class="computedClasses.inner">
+        <CheckIcon v-if="isMultiple && isSelected" />
       </span>
-      <span class="pxd-choicebox--description text-sm text-foreground-secondary">
-        <slot name="description">
-          {{ description }}
-        </slot>
-      </span>
+
+      <div class="gap-1 flex flex-col">
+        <span class="pxd-choicebox-item--label text-sm font-medium">
+          <slot name="label">
+            {{ label }}
+          </slot>
+        </span>
+        <span class="pxd-choicebox-item--description text-sm text-gray-900 empty:hidden">
+          <slot name="description">
+            {{ description }}
+          </slot>
+        </span>
+      </div>
     </div>
-  </Component>
+
+    <div
+      v-if="$slots.default"
+      v-show="isSelected"
+      class="pxd-choicebox-item--content border-t border-primary motion-safe:transition-colors"
+    >
+      <slot />
+    </div>
+  </label>
 </template>
 
 <style lang="postcss">
-.pxd-choicebox[aria-selected='true'] {
-  border-color: var(--color-primary);
-  background-color: hsla(var(--primary), 0.08);
-
-  .pxd-choicebox--label,
-  .pxd-choicebox--description {
-    color: var(--color-primary);
+.pxd-choicebox-item[aria-selected='true'] {
+  .pxd-choicebox-item--option {
+    background-color: hsla(var(--primary), 0.08);
   }
-}
 
-.pxd-choicebox[data-disabled='true'] {
-  background-color: var(--color-background-100);
-  border-color: var(--color-border);
-
-  .pxd-choicebox--label,
-  .pxd-choicebox--description {
-    color: var(--color-gray-500);
+  .pxd-choicebox-item--label,
+  .pxd-choicebox-item--description {
+    color: var(--color-primary);
   }
 }
 </style>

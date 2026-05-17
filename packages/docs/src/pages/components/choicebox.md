@@ -12,7 +12,7 @@ const modelValue = ref('trial')
 </script>
 
 <template>
-  <PChoicebox v-model="modelValue" :direction="{ xs: 'vertical', sm: 'horizontal' }">
+  <PChoicebox v-model="modelValue">
     <PChoiceboxItem label="Pro trial" value="trial" description="Free for two weeks" />
     <PChoiceboxItem label="Pro" value="pro" description="Get started now" />
   </PChoicebox>
@@ -46,7 +46,6 @@ const options = [
     v-model="modelValue"
     :options="options"
     multiple
-    :direction="{ xs: 'vertical', sm: 'horizontal' }"
   />
 </template>
 ```
@@ -62,6 +61,7 @@ const modelValue2 = ref(['trial'])
 
 const options = [
   {
+    disabled: true,
     label: 'Pro trial',
     value: 'trial',
     description: 'Free for two weeks',
@@ -79,7 +79,6 @@ const options = [
   <PStack direction="vertical" gap="6">
     <PChoicebox
       v-model="modelValue1"
-      :direction="{ xs: 'vertical', sm: 'horizontal' }"
     >
       <PChoiceboxItem v-for="item of options" :key="item.value" v-bind="item" />
     </PChoicebox>
@@ -87,9 +86,36 @@ const options = [
     <PChoicebox
       v-model="modelValue2"
       :options="options"
-      :direction="{ xs: 'vertical', sm: 'horizontal' }"
       multiple
     />
   </PStack>
+</template>
+```
+
+## Custom content
+
+Custom content is displayed when selecting the option.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const modelValue = ref('trial')
+</script>
+
+<template>
+  <PChoicebox v-model="modelValue">
+    <PChoiceboxItem label="Pro trial" value="trial" description="Free for two weeks">
+      <div className="flex justify-center p-2">
+        <PBadge variant="trial">Trial</PBadge>
+      </div>
+    </PChoiceboxItem>
+
+    <PChoiceboxItem label="Pro" value="pro" description="Get started now">
+      <div className="flex justify-center p-2">
+        <PBadge variant="blue">Pro</PBadge>
+      </div>
+    </PChoiceboxItem>
+  </PChoicebox>
 </template>
 ```

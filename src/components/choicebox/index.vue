@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import type { ChoiceboxEmits, ChoiceboxProps } from './types'
-import { computed, markRaw } from 'vue'
 import { provideChoiceboxContext } from '../../contexts/choicebox'
-import PCheckboxGroup from '../checkbox-group/index.vue'
+import { getUniqueId } from '../../utils/helper'
 import PChoiceboxItem from '../choicebox-item/index.vue'
-import PRadioGroup from '../radio-group/index.vue'
 
 defineOptions({
   name: 'PChoicebox',
@@ -20,31 +18,19 @@ const props = withDefaults(defineProps<ChoiceboxProps>(), {
 })
 const emits = defineEmits<ChoiceboxEmits>()
 
-const renderAs = computed(() => markRaw(props.multiple ? PCheckboxGroup : PRadioGroup))
-
-function onUpdateModelValue(value: any) {
-  emits('change', value)
-  emits('update:modelValue', value)
-}
-
-provideChoiceboxContext({ props, emits })
+provideChoiceboxContext({ props, emits, name: getUniqueId() })
 </script>
 
 <template>
-  <Component
-    :is="renderAs"
-    :gap="gap"
-    :options="options"
-    :disabled="disabled"
-    :model-value="modelValue"
+  <div
+    aria-label="Choicebox Group"
     :aria-multiselectable="multiple"
-    class="pxd-choicebox w-full"
     :role="multiple ? 'group' : 'radiogroup'"
+    class="pxd-choicebox gap-3 flex w-full max-w-full flex-wrap"
     v-bind="$attrs"
-    @update:model-value="onUpdateModelValue"
   >
     <slot>
       <PChoiceboxItem v-for="option in options" :key="option.value" v-bind="option" />
     </slot>
-  </Component>
+  </div>
 </template>

@@ -1,12 +1,8 @@
-import type { ComponentLabel, ComponentOption, ComponentValue } from '../../types/shared'
+import type { ComponentLabel, ComponentValue } from '../../types/shared'
 
-interface Option extends ComponentOption {
-  description?: string
-}
-
-export interface ChoiceboxProps {
+export interface ChoiceboxItemProps {
   label?: ComponentLabel
-  value?: ComponentValue
+  value: ComponentValue
   disabled?: boolean
   description?: string
 }

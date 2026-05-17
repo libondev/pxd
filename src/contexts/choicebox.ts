@@ -3,6 +3,7 @@ import type { EmitFn } from 'vue'
 import { createContext } from '../utils/context'
 
 interface ChoiceboxContext {
+  name: string
   props: ChoiceboxProps
   emits: EmitFn<ChoiceboxEmits>
 }
