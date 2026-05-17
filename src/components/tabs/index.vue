@@ -19,6 +19,8 @@ const props = withDefaults(defineProps<TabsProps>(), {
 })
 const emits = defineEmits<TabsEmits>()
 
+const BORDER_WIDTH = 2
+
 const slots = useSlots()
 const modelValue = useModelValue(props, emits)
 
@@ -52,11 +54,10 @@ function updateScrollState() {
   }
 
   const { scrollLeft, scrollWidth, clientWidth } = el
-  const edge = 2
 
-  overflowing.value = scrollWidth > clientWidth + edge
-  canScrollLeft.value = scrollLeft > edge
-  canScrollRight.value = scrollLeft + clientWidth < scrollWidth - edge
+  overflowing.value = scrollWidth > clientWidth + BORDER_WIDTH
+  canScrollLeft.value = scrollLeft > BORDER_WIDTH
+  canScrollRight.value = scrollLeft + clientWidth < scrollWidth - BORDER_WIDTH
 }
 
 function scrollTabs(direction: 'prev' | 'next') {
@@ -159,11 +160,11 @@ watch(
 
 watch(
   modelValue,
-  () => {
-    nextTick(() => {
-      updateScrollState()
-      scrollActiveTabIntoView()
-    })
+  async () => {
+    await nextTick()
+
+    updateScrollState()
+    scrollActiveTabIntoView()
   },
   { flush: 'post' },
 )
