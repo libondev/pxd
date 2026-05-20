@@ -97,7 +97,7 @@ if (!isServer()) {
   <div class="md:pl-56 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
     <div class="relative flex h-full">
       <div
-        class="top-12 toc-aside w-56 lg:block sticky z-0 order-2 hidden shrink-0 self-start bg-background-100 empty:hidden"
+        class="top-12 toc-aside w-56 xl:block sticky z-0 order-2 hidden shrink-0 self-start bg-background-100 empty:hidden"
       >
         <TocNav />
       </div>
@@ -320,7 +320,7 @@ if (!isServer()) {
 
     th,
     td {
-      padding: 0.75em 1em;
+      padding: 0.75em 0.75em;
       border-right: 1px solid hsl(var(--color-gray-300-value));
     }
   }

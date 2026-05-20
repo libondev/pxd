@@ -7,8 +7,8 @@ import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
 import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { asideMenus } from '../consts/components'
 import { githubLink } from '../consts/link'
+import { asideMenus } from '../consts/navbar'
 import CustomVariables from './CustomVariables.vue'
 
 const showCommandMenu = shallowRef(false)

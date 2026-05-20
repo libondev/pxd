@@ -1,110 +1,110 @@
 [
   {
-    "camelized": "Browser Observer",
+    "camelized": "Use Browser Observer",
     "name": "use-browser-observer"
   },
   {
-    "camelized": "Client Online",
+    "camelized": "Use Client Online",
     "name": "use-client-online"
   },
   {
-    "camelized": "Color Scheme",
+    "camelized": "Use Color Scheme",
     "name": "use-color-scheme"
   },
   {
-    "camelized": "Copy Click",
+    "camelized": "Use Copy Click",
     "name": "use-copy-click"
   },
   {
-    "camelized": "Countdown",
+    "camelized": "Use Countdown",
     "name": "use-countdown"
   },
   {
-    "camelized": "Deferred Value",
+    "camelized": "Use Deferred Value",
     "name": "use-deferred-value"
   },
   {
-    "camelized": "Delay Change",
+    "camelized": "Use Delay Change",
     "name": "use-delay-change"
   },
   {
-    "camelized": "Delay Destroy",
+    "camelized": "Use Delay Destroy",
     "name": "use-delay-destroy"
   },
   {
-    "camelized": "Document Hidden",
+    "camelized": "Use Document Hidden",
     "name": "use-document-hidden"
   },
   {
-    "camelized": "Focus Trap",
+    "camelized": "Use Focus Trap",
     "name": "use-focus-trap"
   },
   {
-    "camelized": "Forward Ref Expose",
+    "camelized": "Use Forward Ref Expose",
     "name": "use-forward-ref-expose"
   },
   {
-    "camelized": "List Filter",
+    "camelized": "Use List Filter",
     "name": "use-list-filter"
   },
   {
-    "camelized": "List Navigation",
+    "camelized": "Use List Navigation",
     "name": "use-list-navigation"
   },
   {
-    "camelized": "Loading Bar",
+    "camelized": "Use Loading Bar",
     "name": "use-loading-bar"
   },
   {
-    "camelized": "Lock Scroll",
+    "camelized": "Use Lock Scroll",
     "name": "use-lock-scroll"
   },
   {
-    "camelized": "Media Query",
+    "camelized": "Use Media Query",
     "name": "use-media-query"
   },
   {
-    "camelized": "Message",
+    "camelized": "Use Message",
     "name": "use-message"
   },
   {
-    "camelized": "Model Value",
+    "camelized": "Use Model Value",
     "name": "use-model-value"
   },
   {
-    "camelized": "Outside Click",
+    "camelized": "Use Outside Click",
     "name": "use-outside-click"
   },
   {
-    "camelized": "Overlay Manager",
+    "camelized": "Use Overlay Manager",
     "name": "use-overlay-manager"
   },
   {
-    "camelized": "Popover Responsive",
+    "camelized": "Use Popover Responsive",
     "name": "use-popover-responsive"
   },
   {
-    "camelized": "Repeat Action",
+    "camelized": "Use Repeat Action",
     "name": "use-repeat-action"
   },
   {
-    "camelized": "Scrollspy",
+    "camelized": "Use Scrollspy",
     "name": "use-scrollspy"
   },
   {
-    "camelized": "Swipe Gesture",
+    "camelized": "Use Swipe Gesture",
     "name": "use-swipe-gesture"
   },
   {
-    "camelized": "Toggle Value",
+    "camelized": "Use Toggle Value",
     "name": "use-toggle-value"
   },
   {
-    "camelized": "Virtual List",
+    "camelized": "Use Virtual List",
     "name": "use-virtual-list"
   },
   {
-    "camelized": "Window Size",
+    "camelized": "Use Window Size",
     "name": "use-window-size"
   }
 ]

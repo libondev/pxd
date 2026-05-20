@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { asideMenus } from '@/consts/components'
+import { asideMenus } from '@/consts/navbar'
 import BasicLayout from './components/BasicLayout.vue'
 </script>
 
