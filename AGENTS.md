@@ -47,6 +47,12 @@ pxd/
 - **Check** existing patterns before introducing new patterns
 - Events: kebab-case. Curly braces: always required.
 - Prefer `pnpm` commands. Never manually edit `dist/`.
+- **Minimal changes only** — implement exactly what is asked, nothing more
+- **Do NOT** add features, error handling, or abstractions not explicitly requested
+- **Do NOT** add defensive validations for empty/null/undefined fields unless asked — this is a greenfield project
+- **Do NOT** refactor working code unless asked to
+- **Do NOT** add comments, JSDoc, or README updates unless asked to
+- **Ask first** if requirements are ambiguous rather than guessing and over-building
 
 ## Knowledge Base (.agents/)
 
