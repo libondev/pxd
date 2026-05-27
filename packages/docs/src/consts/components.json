@@ -236,6 +236,10 @@
     "name": "spinner"
   },
   {
+    "camelized": "Split Button",
+    "name": "split-button"
+  },
+  {
     "camelized": "Stack",
     "name": "stack"
   },

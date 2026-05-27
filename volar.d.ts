@@ -78,6 +78,7 @@ declare module 'vue' {
     PSlider: (typeof import('pxd/components/slider'))['default']
     PSnippet: (typeof import('pxd/components/snippet'))['default']
     PSpinner: (typeof import('pxd/components/spinner'))['default']
+    PSplitButton: (typeof import('pxd/components/split-button'))['default']
     PStack: (typeof import('pxd/components/stack'))['default']
     PStatusDot: (typeof import('pxd/components/status-dot'))['default']
     PSwitch: (typeof import('pxd/components/switch'))['default']
