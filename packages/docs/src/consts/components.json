@@ -132,6 +132,10 @@
     "name": "loading-dots"
   },
   {
+    "camelized": "Marquee",
+    "name": "marquee"
+  },
+  {
     "camelized": "Material",
     "name": "material"
   },
