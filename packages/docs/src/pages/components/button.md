@@ -94,17 +94,11 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
     <PButtonGroup>
       <PButton>Previous Page</PButton>
       <PButton>Next Page</PButton>
-      <PButton icon>
-        <ChevronDownIcon />
-      </PButton>
     </PButtonGroup>
 
     <PButtonGroup variant="primary">
       <PButton>Previous Page</PButton>
       <PButton>Next Page</PButton>
-      <PButton icon>
-        <ChevronDownIcon />
-      </PButton>
     </PButtonGroup>
 
     <PButtonGroup size="sm" disabled align="left" class="w-md">
