@@ -72,57 +72,6 @@ const options = [
 </template>
 ```
 
-## Checked
-
-Before enabling this feature, you must ensure that the `value` attribute is set for each list-item.
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const checkedValue = ref('')
-
-const options = [
-  { label: 'One', value: 'one', },
-  { label: 'Two', value: 'two', },
-  { label: 'Three', value: 'three', disabled: true },
-  { label: 'Four', value: 'four', variant: 'warning' },
-  { label: 'Delete', value: 'five', variant: 'error' },
-]
-
-function onChange(item) {
-  if (item.value === checkedValue.value) {
-    checkedValue.value = ''
-  } else {
-    checkedValue.value = item.value
-  }
-}
-</script>
-
-<template>
-  <PStack>
-    <PMenu :model-value="checkedValue" :options="options" width="200" @select="onChange">
-      <template #default="{ data }">
-        <PButton :class="{ 'text-foreground-secondary': !checkedValue }">{{ data?.label || 'Please select an option' }}</PButton>
-      </template>
-    </PMenu>
-
-    <!-- Custom rendering menu-items -->
-    <PMenu v-model="checkedValue" width="200">
-      <template #default="{ data }">
-        <PButton>{{ data?.label || 'Please select an option' }}</PButton>
-      </template>
-
-      <template #items>
-        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
-          {{ index }} - {{ item.label }}
-        </PListItem>
-      </template>
-    </PMenu>
-  </PStack>
-</template>
-```
-
 ## Without closeOnPressEscape
 
 Pressing esc after setting will not close.
