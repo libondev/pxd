@@ -74,7 +74,7 @@ watch(
 </script>
 
 <template>
-  <nav v-if="tocHeaders.length > 0" class="pr-2">
+  <nav v-if="tocHeaders.length > 0" class="p-2">
     <div class="p-2 text-xs font-bold uppercase">On this page</div>
 
     <ul class="pl-0! text-sm">

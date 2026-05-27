@@ -8,6 +8,14 @@ function getWindowTop() {
 
 type ElementType = null | string | object | SVGElement | HTMLElement | ComponentPublicInstance
 
+export function getStyle(el: HTMLElement): CSSStyleDeclaration {
+  if (isServer() || !el) {
+    return {} as CSSStyleDeclaration
+  }
+
+  return document.defaultView?.getComputedStyle(el, null) || el.style
+}
+
 export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | null {
   el = toValue(el)
 
@@ -26,35 +34,47 @@ export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | nu
   return (el as ComponentPublicInstance)?.$el ?? el
 }
 
-export function getElementRectFromContainer(
-  elementOrRect: Element | DOMRect,
-  viewportOrRect: Element | DOMRect,
+// export function getElementRectFromContainer(
+//   elementOrRect: Element | DOMRect,
+//   viewportOrRect: Element | DOMRect,
+// ) {
+//   const selfRect =
+//     elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
+//   const wrapRect =
+//     viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
+
+//   return {
+//     top: selfRect.top,
+//     bottom: selfRect.bottom,
+//     left: selfRect.left,
+//     right: selfRect.right,
+//     width: selfRect.width,
+//     height: selfRect.height,
+//     scrollTop: selfRect.top - wrapRect.top,
+//     scrollBottom: selfRect.bottom - wrapRect.top,
+//     scrollLeft: selfRect.left - wrapRect.left,
+//     scrollRight: selfRect.right - wrapRect.left,
+//   }
+// }
+
+/** Viewport-relative top offset for scrollspy */
+export function getElementOffsetFromScrollContainer(
+  element: Element,
+  scrollContainer: HTMLElement,
 ) {
-  const selfRect =
-    elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
-  const wrapRect =
-    viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
+  const elementRect = element.getBoundingClientRect()
+  if (getWindowTop().includes(scrollContainer) || scrollContainer === document.body) {
+    return {
+      top: elementRect.top,
+      left: elementRect.left,
+    }
+  }
 
+  const containerRect = scrollContainer.getBoundingClientRect()
   return {
-    top: selfRect.top,
-    bottom: selfRect.bottom,
-    left: selfRect.left,
-    right: selfRect.right,
-    width: selfRect.width,
-    height: selfRect.height,
-    scrollTop: selfRect.top - wrapRect.top,
-    scrollBottom: selfRect.bottom - wrapRect.top,
-    scrollLeft: selfRect.left - wrapRect.left,
-    scrollRight: selfRect.right - wrapRect.left,
+    top: elementRect.top - containerRect.top,
+    left: elementRect.left - containerRect.left,
   }
-}
-
-export function getStyle(el: HTMLElement): CSSStyleDeclaration {
-  if (isServer() || !el) {
-    return {} as CSSStyleDeclaration
-  }
-
-  return document.defaultView?.getComputedStyle(el, null) || el.style
 }
 
 export function isScrollable(el: HTMLElement) {
@@ -104,10 +124,19 @@ export function getScrollTarget(el: HTMLElement, isHorizontal?: boolean): Window
   return parent
 }
 
-// 获取滚动元素的 DOM 对象, 通常用户获取滚动距离
-export function getScrollElement(target: any): HTMLElement {
-  if (!target || getWindowTop().includes(target)) {
+// 获取滚动元素的 DOM 对象, 通常用于获取滚动距离
+export function getScrollElement(target?: Window | Document | HTMLElement | null): HTMLElement {
+  if (!target || getWindowTop().includes(target as HTMLElement)) {
     return document.documentElement
+  }
+
+  return target as HTMLElement
+}
+
+/** Event target for scroll listeners. Document scrolling fires on `window`, not `documentElement`. */
+export function getScrollListener(target?: Window | Document | HTMLElement | null) {
+  if (!target || getWindowTop().includes(target as HTMLElement)) {
+    return window
   }
 
   return target as HTMLElement
