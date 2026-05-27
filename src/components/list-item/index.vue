@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
-  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-3 px-2 scroll-m-2 text-sm data-[checked=true]:pr-7 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-3 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     variant: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
 
     <CheckIcon
       v-if="isChecked"
-      class="pxd-list-item--checked right-2 pointer-events-none absolute top-1/2 -translate-y-1/2"
+      class="pxd-list-item--checked right-2.5 pointer-events-none absolute top-1/2 -translate-y-1/2"
     />
   </Component>
 </template>
