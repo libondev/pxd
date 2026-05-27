@@ -97,7 +97,7 @@ if (!isServer()) {
   <div
     class="md:pl-56 xl:border-r min-w-0 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col"
   >
-    <div class="min-w-0 relative flex w-full">
+    <div class="min-w-0 relative flex w-full flex-1">
       <div
         class="peer top-12 toc-aside w-56 xl:block sticky z-0 order-2 hidden shrink-0 self-start bg-background-100 empty:hidden"
       >
