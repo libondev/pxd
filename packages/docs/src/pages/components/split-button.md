@@ -8,10 +8,6 @@ SplitButton extends the [Button component](/components/button) and [Menu compone
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
-
-const value = ref('One')
-
 const options = [
   { label: 'One', value: 'One' },
   { label: 'Two', value: 'Two' },
@@ -22,10 +18,8 @@ const options = [
 </script>
 
 <template>
-  <PSplitButton v-model="value" :options="options" list-width="200">
-    <template #default="{data}">
-      {{ data?.label || 'Actions' }}
-    </template>
+  <PSplitButton :options="options" list-width="200">
+    Execute
   </PSplitButton>
 </template>
 ```
