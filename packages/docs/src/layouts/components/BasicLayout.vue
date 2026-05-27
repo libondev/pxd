@@ -94,15 +94,17 @@ if (!isServer()) {
     </aside>
   </div>
 
-  <div class="md:pl-56 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col">
-    <div class="relative flex h-full">
+  <div
+    class="md:pl-56 xl:border-r flex min-h-[calc(100vh-50px)] w-full max-w-full min-w-0 flex-1 flex-col"
+  >
+    <div class="relative flex min-w-0 w-full">
       <div
         class="top-12 toc-aside w-56 xl:block sticky z-0 order-2 hidden shrink-0 self-start bg-background-100 empty:hidden"
       >
         <TocNav />
       </div>
 
-      <main class="prose px-6 py-12 w-full flex-1">
+      <main class="prose px-6 py-12 min-w-0 flex-1 xl:border-r overflow-x-auto">
         <slot />
 
         <template v-if="showViewSource">
@@ -137,6 +139,7 @@ if (!isServer()) {
 .prose,
 .markdown-body {
   --background: var(--color-background-100);
+  max-width: 100%;
   line-height: 1.5;
 
   & > :is(h1, h2, h3, h4) {
