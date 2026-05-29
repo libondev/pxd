@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<RollingNumberProps>(), {
   value: 0,
   durations: 1000,
   immediate: true,
-  separator: false,
+  thousands: false,
 })
 
 const emits = defineEmits<RollingNumberEmits>()
