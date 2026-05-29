@@ -7,6 +7,18 @@ command = "pnpm -w run build:only"
 NODE_VERSION = "22"
 
 [[redirects]]
+from = "/DESIGN.md"
+to = "/DESIGN.md"
+status = 200
+force = true
+
+[[redirects]]
+from = "/DESIGN.html"
+to = "/DESIGN.html"
+status = 200
+force = true
+
+[[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200

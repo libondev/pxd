@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PXD Design System</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary: #171717;
+        --secondary: #737373;
+        --surface: #fff;
+        --surface-2: #f7f7f5;
+        --surface-hover: #f0f0ef;
+        --border: rgba(0, 0, 0, 0.08);
+        --border-hover: #b9b9b9;
+        --foreground: #171717;
+        --fg-secondary: #737373;
+        --accent-blue: #0062d1;
+        --accent-red: #da2f35;
+        --accent-red-hover: #a63327;
+        --accent-red-active: #8e1b15;
+        --accent-amber: #ff990a;
+        --accent-amber-hover: #dc6d28;
+        --accent-amber-active: #6b2c0b;
+        --accent-green: #287a3a;
+        --accent-green-hover: #3a8f47;
+        --accent-green-active: #1d5724;
+        --accent-teal: #05796e;
+        --accent-purple: #7820bc;
+        --accent-pink: #df2670;
+        --radius: 8px;
+        --radius-sm: 4px;
+        --radius-md: 6px;
+        --radius-lg: 8px;
+        --radius-xl: 12px;
+        --font: 'Inter', 'Inter Fallback', 'Geist', Arial, ui-sans-serif, system-ui, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --primary: #ededec;
+          --secondary: #8f8f8f;
+          --surface: #0d0d0d;
+          --surface-2: #000;
+          --surface-hover: #1c1c1c;
+          --border: rgba(255, 255, 255, 0.13);
+          --border-hover: #5c5c5c;
+          --foreground: #ededec;
+          --fg-secondary: #8f8f8f;
+          --accent-blue: #3e94ff;
+          --accent-red: #da2f35;
+          --accent-red-hover: #da2f35;
+          --accent-red-active: #ff9085;
+          --accent-amber: #ff990a;
+          --accent-amber-hover: #ff990a;
+          --accent-amber-active: #ffc573;
+          --accent-green: #287a3a;
+          --accent-green-hover: #287a3a;
+          --accent-green-active: #8bd895;
+          --accent-teal: #3dd9c8;
+          --accent-purple: #a78bfa;
+          --accent-pink: #f472b6;
+        }
+      }
+      html {
+        font-family: var(--font);
+        color: var(--foreground);
+        background: var(--surface);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px 24px 96px;
+      }
+      h1 {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+      .subtitle {
+        color: var(--fg-secondary);
+        font-size: 15px;
+        margin-bottom: 48px;
+        max-width: 640px;
+      }
+      h2 {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        margin: 48px 0 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 32px 0 12px;
+      }
+      p,
+      li {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--foreground);
+      }
+      p {
+        margin-bottom: 12px;
+      }
+      ul,
+      ol {
+        padding-left: 24px;
+        margin-bottom: 16px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      li::marker {
+        color: var(--fg-secondary);
+      }
+      strong {
+        font-weight: 600;
+      }
+      code {
+        font-size: 13px;
+        background: var(--surface-2);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        font-family: 'SF Mono', 'Fira Code', monospace;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0 24px;
+        font-size: 14px;
+      }
+      th {
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--fg-secondary);
+        padding: 8px 12px;
+        border-bottom: 2px solid var(--border);
+      }
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .section {
+        margin-bottom: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin: 16px 0 24px;
+      }
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .grid-7 {
+        grid-template-columns: repeat(7, 1fr);
+      }
+      @media (max-width: 640px) {
+        .grid-2,
+        .grid-3,
+        .grid-4,
+        .grid-7 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .swatch {
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .swatch-color {
+        height: 64px;
+        position: relative;
+      }
+      .swatch-info {
+        padding: 10px 12px;
+        background: var(--surface);
+      }
+      .swatch-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .swatch-hex {
+        font-size: 12px;
+        color: var(--fg-secondary);
+        font-family: 'SF Mono', monospace;
+      }
+      .token {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--surface-2);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-bottom: 8px;
+      }
+      .token-name {
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'SF Mono', monospace;
+        min-width: 140px;
+      }
+      .token-value {
+        font-size: 13px;
+        color: var(--fg-secondary);
+      }
+      .radius-demo {
+        display: flex;
+        gap: 12px;
+        align-items: end;
+        margin: 16px 0 24px;
+      }
+      .radius-box {
+        width: 64px;
+        height: 64px;
+        background: var(--accent-blue);
+        opacity: 0.8;
+      }
+      .radius-label {
+        font-size: 12px;
+        color: var(--fg-secondary);
+        text-align: center;
+        margin-top: 6px;
+        font-family: 'SF Mono', monospace;
+      }
+      .shadow-demo {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 16px 0 24px;
+      }
+      .shadow-box {
+        width: 140px;
+        height: 80px;
+        background: var(--surface);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--fg-secondary);
+        font-family: 'SF Mono', monospace;
+      }
+      .shadow-small {
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.04);
+      }
+      .shadow-medium {
+        box-shadow:
+          0px 2px 2px rgba(0, 0, 0, 0.04),
+          0px 8px 8px -8px rgba(0, 0, 0, 0.04);
+      }
+      .shadow-large {
+        box-shadow:
+          0px 2px 2px rgba(0, 0, 0, 0.04),
+          0px 8px 16px -4px rgba(0, 0, 0, 0.04);
+      }
+      .shadow-tooltip {
+        box-shadow:
+          0px 1px 1px rgba(0, 0, 0, 0.02),
+          0px 4px 8px rgba(0, 0, 0, 0.04);
+      }
+      .shadow-menu {
+        box-shadow:
+          0px 1px 1px rgba(0, 0, 0, 0.02),
+          0px 4px 8px -4px rgba(0, 0, 0, 0.04),
+          0px 16px 24px -8px rgba(0, 0, 0, 0.06);
+      }
+      .shadow-modal {
+        box-shadow:
+          0px 1px 1px rgba(0, 0, 0, 0.02),
+          0px 8px 16px -4px rgba(0, 0, 0, 0.04),
+          0px 24px 32px -8px rgba(0, 0, 0, 0.06);
+      }
+      .btn-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 12px 0 24px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 500;
+        height: 36px;
+        padding: 0 10px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-family: var(--font);
+        transition: all 0.15s ease-out;
+      }
+      .btn-default {
+        background: var(--surface);
+        color: var(--foreground);
+      }
+      .btn-default:hover {
+        background: var(--surface-hover);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--foreground);
+        border-color: transparent;
+      }
+      .btn-ghost:hover {
+        background: var(--surface-hover);
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: var(--surface);
+        border-color: transparent;
+      }
+      .btn-error {
+        background: var(--accent-red);
+        color: #fff;
+        border-color: transparent;
+      }
+      .btn-error:hover {
+        background: var(--accent-red-hover);
+      }
+      .btn-warning {
+        background: var(--accent-amber);
+        color: #000;
+        border-color: transparent;
+      }
+      .btn-warning:hover {
+        background: var(--accent-amber-hover);
+      }
+      .btn-success {
+        background: var(--accent-green);
+        color: #fff;
+        border-color: transparent;
+      }
+      .btn-success:hover {
+        background: var(--accent-green-hover);
+      }
+      .btn-sm {
+        height: 30px;
+        font-size: 13px;
+        padding: 0 8px;
+      }
+      .btn-lg {
+        height: 44px;
+        font-size: 16px;
+        padding: 0 14px;
+      }
+      .size-row {
+        display: flex;
+        gap: 12px;
+        align-items: end;
+        margin: 12px 0 24px;
+      }
+      .input-demo {
+        width: 240px;
+        height: 36px;
+        padding: 0 10px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--foreground);
+        font-size: 14px;
+        font-family: var(--font);
+      }
+      .input-demo:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.15);
+      }
+      .input-error {
+        border-color: var(--accent-red);
+        box-shadow: 0 0 0 3px rgba(229, 77, 46, 0.15);
+      }
+      .input-demo::placeholder {
+        color: var(--fg-secondary);
+      }
+      .do-dont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin: 16px 0 24px;
+      }
+      @media (max-width: 640px) {
+        .do-dont {
+          grid-template-columns: 1fr;
+        }
+      }
+      .do-card,
+      .dont-card {
+        padding: 20px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+      }
+      .do-card {
+        background: rgba(58, 143, 71, 0.05);
+        border-color: rgba(58, 143, 71, 0.2);
+      }
+      .dont-card {
+        background: rgba(229, 77, 46, 0.05);
+        border-color: rgba(229, 77, 46, 0.2);
+      }
+      .do-card h4,
+      .dont-card h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .do-card h4 {
+        color: var(--accent-green);
+      }
+      .dont-card h4 {
+        color: var(--accent-red);
+      }
+      .do-card li,
+      .dont-card li {
+        font-size: 14px;
+      }
+      .typo-sample {
+        margin-bottom: 16px;
+      }
+      .typo-meta {
+        font-size: 12px;
+        color: var(--fg-secondary);
+        font-family: 'SF Mono', monospace;
+        margin-top: 2px;
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 48px 0;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 500;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 9999px;
+        background: var(--surface-2);
+        color: var(--fg-secondary);
+        border: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PXD Design System</h1>
+    <p class="subtitle">
+      A Vue 2.7 & 3.2 universal component library with built-in light/dark theme. Inspired by Vercel
+      Geist Design System.
+    </p>
+
+    <!-- Overview -->
+    <h2>Overview</h2>
+    <p>
+      PXD is a <strong>minimal, utility-first component library</strong> for Vue 2.7 and Vue 3.2+,
+      inspired by the Vercel Geist Design System. The design language emphasizes
+      <strong>clarity, restraint, and developer ergonomics</strong>. It aims for a neutral,
+      professional aesthetic where content takes precedence over chrome.
+    </p>
+    <p>
+      The visual personality is <strong>monochrome-forward</strong> with a near-black primary color
+      (<code>#171717</code>) used for text and key actions. Color accents are reserved sparingly for
+      semantic feedback: blue for interactive links, red for errors, amber for warnings, and green
+      for success states.
+    </p>
+    <p>
+      PXD supports <strong>light and dark modes</strong> out of the box, toggled via a
+      <code>.dark</code> class on the root element. All components respect
+      <code>prefers-reduced-motion</code> and disable animations when the user requests it.
+    </p>
+
+    <!-- Colors -->
+    <h2>Colors</h2>
+    <p>
+      The color system is built on <strong>HSL custom properties</strong> with a two-layer
+      architecture. The neutral palette (Gray 100--1000) forms the backbone, handling text, borders,
+      backgrounds, and subtle interactive states. Semantic accent colors follow a consistent 10-step
+      scale.
+    </p>
+
+    <h3>Brand & Accent Colors</h3>
+    <div class="grid-4 grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background: #171717"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#171717</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #737373"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-hex">#737373</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #0062d1"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Blue</div>
+          <div class="swatch-hex">#0062d1</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #da2f35"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Red</div>
+          <div class="swatch-hex">#da2f35</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #ff990a"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Amber</div>
+          <div class="swatch-hex">#ff990a</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #287a3a"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green</div>
+          <div class="swatch-hex">#287a3a</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #05796e"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Teal</div>
+          <div class="swatch-hex">#05796e</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #7820bc"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Purple</div>
+          <div class="swatch-hex">#7820bc</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Gray Palette (Light Mode)</h3>
+    <div class="grid-7 grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 95%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 100</div>
+          <div class="swatch-hex">#F2F2F2</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 93%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 200</div>
+          <div class="swatch-hex">#EDEDEC</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 90%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 300</div>
+          <div class="swatch-hex">#E5E5E3</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 85%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 400</div>
+          <div class="swatch-hex">#D9D9D7</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 79%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 500</div>
+          <div class="swatch-hex">#C9C9C7</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 66%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 600</div>
+          <div class="swatch-hex">#A8A8A6</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: hsl(0, 0%, 56%)"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gray 700</div>
+          <div class="swatch-hex">#8F8F8D</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Semantic Tokens</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Light</th>
+          <th>Dark</th>
+          <th>Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>primary</code></td>
+          <td>#171717</td>
+          <td>#EDEDEC</td>
+          <td>Text, primary actions</td>
+        </tr>
+        <tr>
+          <td><code>border</code></td>
+          <td>rgba(0,0,0,.08)</td>
+          <td>rgba(255,255,255,.13)</td>
+          <td>Default borders</td>
+        </tr>
+        <tr>
+          <td><code>foreground</code></td>
+          <td>#171717</td>
+          <td>#EDEDEC</td>
+          <td>Body text</td>
+        </tr>
+        <tr>
+          <td><code>foreground-secondary</code></td>
+          <td>#737373</td>
+          <td>#8f8f8f</td>
+          <td>Secondary text</td>
+        </tr>
+        <tr>
+          <td><code>background-100</code></td>
+          <td>#FFFFFF</td>
+          <td>#0D0D0D</td>
+          <td>Primary surface</td>
+        </tr>
+        <tr>
+          <td><code>background-200</code></td>
+          <td>#F7F7F5</td>
+          <td>#000000</td>
+          <td>Secondary surface</td>
+        </tr>
+        <tr>
+          <td><code>background-hover</code></td>
+          <td>#F0F0EF</td>
+          <td>#1C1C1C</td>
+          <td>Hovered surfaces</td>
+        </tr>
+        <tr>
+          <td><code>accent-blue</code></td>
+          <td>#0062d1</td>
+          <td>#3E94FF</td>
+          <td>Links, focus states</td>
+        </tr>
+        <tr>
+          <td><code>accent-red</code></td>
+          <td>#da2f35</td>
+          <td>#da2f35</td>
+          <td>Error, destructive</td>
+        </tr>
+        <tr>
+          <td><code>accent-amber</code></td>
+          <td>#ff990a</td>
+          <td>#ff990a</td>
+          <td>Warning, caution</td>
+        </tr>
+        <tr>
+          <td><code>accent-green</code></td>
+          <td>#287a3a</td>
+          <td>#287a3a</td>
+          <td>Success, positive</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Typography -->
+    <h2>Typography</h2>
+    <p>
+      The type system uses <strong>Inter</strong> as the primary font family, with Geist as the
+      preferred alternative and Arial as the system fallback. Font rendering is optimized with
+      antialiased smoothing and <code>optimizeLegibility</code> enabled.
+    </p>
+
+    <div class="typo-sample">
+      <div style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2">
+        The quick brown fox
+      </div>
+      <div class="typo-meta">h1 -- 30px / 600 / -0.02em</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 24px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3">
+        The quick brown fox jumps
+      </div>
+      <div class="typo-meta">h2 -- 24px / 600 / -0.01em</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 20px; font-weight: 600; line-height: 1.4">
+        The quick brown fox jumps over
+      </div>
+      <div class="typo-meta">h3 -- 20px / 600 / normal</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 16px; line-height: 1.6">
+        The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+      </div>
+      <div class="typo-meta">body-lg -- 16px / 400 / 1.6</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 15px; line-height: 1.6">
+        The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+      </div>
+      <div class="typo-meta">body-md -- 15px / 400 / 1.6 (default)</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 13px; line-height: 1.6">
+        The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+      </div>
+      <div class="typo-meta">body-sm -- 13px / 400 / 1.6</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 15px; font-weight: 500; line-height: 1.4">Button Label</div>
+      <div class="typo-meta">label-lg -- 15px / 500 / 1.4</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 13px; font-weight: 500; line-height: 1.4">Form Label</div>
+      <div class="typo-meta">label-md -- 13px / 500 / 1.4</div>
+    </div>
+    <div class="typo-sample">
+      <div style="font-size: 11px; font-weight: 500; line-height: 1.4">Caption text</div>
+      <div class="typo-meta">label-sm -- 11px / 500 / 1.4</div>
+    </div>
+
+    <!-- Layout -->
+    <h2>Layout</h2>
+    <p>
+      PXD follows a <strong>content-first layout model</strong> without imposing a rigid grid. The
+      spacing system uses a <strong>4px base unit</strong> with named scales. Component padding and
+      margins follow these scales consistently.
+    </p>
+
+    <h3>Spacing Tokens</h3>
+    <div style="display: flex; align-items: end; gap: 24px; margin: 16px 0 24px">
+      <div style="text-align: center">
+        <div
+          style="width: 4px; height: 4px; background: var(--accent-blue); border-radius: 1px"
+        ></div>
+        <div class="typo-meta" style="margin-top: 4px">xs 4px</div>
+      </div>
+      <div style="text-align: center">
+        <div
+          style="width: 8px; height: 8px; background: var(--accent-blue); border-radius: 1px"
+        ></div>
+        <div class="typo-meta" style="margin-top: 4px">sm 8px</div>
+      </div>
+      <div style="text-align: center">
+        <div
+          style="width: 16px; height: 16px; background: var(--accent-blue); border-radius: 2px"
+        ></div>
+        <div class="typo-meta" style="margin-top: 4px">md 16px</div>
+      </div>
+      <div style="text-align: center">
+        <div
+          style="width: 32px; height: 32px; background: var(--accent-blue); border-radius: 4px"
+        ></div>
+        <div class="typo-meta" style="margin-top: 4px">lg 32px</div>
+      </div>
+      <div style="text-align: center">
+        <div
+          style="width: 64px; height: 64px; background: var(--accent-blue); border-radius: 6px"
+        ></div>
+        <div class="typo-meta" style="margin-top: 4px">xl 64px</div>
+      </div>
+    </div>
+
+    <!-- Elevation -->
+    <h2>Elevation & Depth</h2>
+    <p>
+      Depth is conveyed through <strong>layered shadows</strong> rather than heavy borders. The
+      system defines seven shadow tiers calibrated for specific UI layers.
+    </p>
+
+    <div class="shadow-demo">
+      <div class="shadow-box shadow-small">small</div>
+      <div class="shadow-box shadow-medium">medium</div>
+      <div class="shadow-box shadow-large">large</div>
+      <div class="shadow-box shadow-tooltip">tooltip</div>
+      <div class="shadow-box shadow-menu">menu</div>
+      <div class="shadow-box shadow-modal">modal</div>
+    </div>
+
+    <!-- Shapes -->
+    <h2>Shapes</h2>
+    <p>
+      The shape language is <strong>softly rounded</strong> with a consistent 8px base radius.
+      Components support three shape variants: default, square, and rounded (pill).
+    </p>
+
+    <div class="radius-demo">
+      <div style="text-align: center">
+        <div class="radius-box" style="border-radius: 4px"></div>
+        <div class="radius-label">sm 4px</div>
+      </div>
+      <div style="text-align: center">
+        <div class="radius-box" style="border-radius: 6px"></div>
+        <div class="radius-label">md 6px</div>
+      </div>
+      <div style="text-align: center">
+        <div class="radius-box" style="border-radius: 8px"></div>
+        <div class="radius-label">lg 8px</div>
+      </div>
+      <div style="text-align: center">
+        <div class="radius-box" style="border-radius: 12px"></div>
+        <div class="radius-label">xl 12px</div>
+      </div>
+      <div style="text-align: center">
+        <div class="radius-box" style="border-radius: 9999px"></div>
+        <div class="radius-label">full</div>
+      </div>
+    </div>
+
+    <!-- Components -->
+    <h2>Components</h2>
+    <p>
+      PXD provides <strong>92 components</strong> organized into functional categories. All
+      components follow consistent patterns for sizing, variants, and theming.
+    </p>
+
+    <h3>Component Sizes</h3>
+    <p>All interactive components share a unified 4-tier size system:</p>
+    <div class="size-row">
+      <div style="text-align: center">
+        <button class="btn btn-default" style="height: 24px; font-size: 12px; padding: 0 6px">
+          xs
+        </button>
+        <div class="typo-meta" style="margin-top: 4px">24px</div>
+      </div>
+      <div style="text-align: center">
+        <button class="btn btn-default btn-sm">sm</button>
+        <div class="typo-meta" style="margin-top: 4px">30px</div>
+      </div>
+      <div style="text-align: center">
+        <button class="btn btn-default">md</button>
+        <div class="typo-meta" style="margin-top: 4px">36px</div>
+      </div>
+      <div style="text-align: center">
+        <button class="btn btn-default btn-lg">lg</button>
+        <div class="typo-meta" style="margin-top: 4px">44px</div>
+      </div>
+    </div>
+
+    <h3>Button Variants</h3>
+    <div class="btn-row">
+      <button class="btn btn-default">Default</button>
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-error">Error</button>
+      <button class="btn btn-warning">Warning</button>
+      <button class="btn btn-success">Success</button>
+    </div>
+
+    <h3>Input States</h3>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 24px">
+      <input class="input-demo" placeholder="Default input" />
+      <input
+        class="input-demo"
+        placeholder="Focused"
+        style="border-color: var(--primary); box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.15)"
+      />
+      <input class="input-demo input-error" placeholder="Error state" value="Invalid entry" />
+    </div>
+
+    <!-- Do's and Don'ts -->
+    <h2>Do's and Don'ts</h2>
+    <div class="do-dont">
+      <div class="do-card">
+        <h4>Do</h4>
+        <ul>
+          <li>
+            Use the <code>primary</code> variant only for the single most important action per
+            screen
+          </li>
+          <li>Maintain the 4-tier size system across all interactive components</li>
+          <li>Use semantic color tokens instead of raw palette values</li>
+          <li>Respect <code>prefers-reduced-motion</code> with <code>motion-safe:</code> prefix</li>
+          <li>Use a size provider context for consistent size inheritance</li>
+        </ul>
+      </div>
+      <div class="dont-card">
+        <h4>Don't</h4>
+        <ul>
+          <li>Mix rounded and square shapes in the same view</li>
+          <li>Use raw hex colors when a semantic token exists</li>
+          <li>Set explicit font families on components</li>
+          <li>Use z-index values directly -- use the overlay manager</li>
+          <li>Create animations longer than 200ms for UI transitions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-size: 13px; color: var(--fg-secondary); text-align: center">PXD Design System</p>
+  </body>
+</html>
