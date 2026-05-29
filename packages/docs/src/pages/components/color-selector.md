@@ -37,3 +37,11 @@ const color = ref(colors[0])
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| colors | `string[]` | `() => ['#000000'` | - |
+| model-value | `string` | - | - |

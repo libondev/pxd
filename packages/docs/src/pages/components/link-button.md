@@ -26,3 +26,13 @@ Set `variant="text"` to convert it into a link in normal text form.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| href | `string` | - | - |
+| text | `string` | - | - |
+| align | `'left' \| 'center' \| 'right'` | `left` | - |
+| target | `'_blank' \| '_self' \| '_parent' \| '_top'` | `_self` | - |
+| external-icon | `boolean` | - | - |

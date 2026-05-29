@@ -78,3 +78,17 @@ function onClickToClose() {
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| z-index | `number` | - | - |
+| variant | `'default' \| 'blurred' \| 'transparent'` | - | - |
+| model-value | `boolean` | `false` | - |
+| show-overlay | `boolean` | `true` | - |
+| append-to-body | `boolean` | `true` | - |
+| shown-element | `string \| object` | - | - |
+| close-on-press-escape | `boolean` | `true` | - |
+| close-on-click-overlay | `boolean` | `false` | - |
+| lock-scroll-on-visible | `boolean` | `true` | - |

@@ -48,3 +48,11 @@ const error = ref({
   <PError :error="error" />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| label | `string \| number \| null` | - | - |
+| error | `ErrorType` | - | - |

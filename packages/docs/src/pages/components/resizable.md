@@ -58,3 +58,16 @@ unit: %
   </PResizable>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| direction | `'horizontal' \| 'vertical'` | `horizontal` | - |
+
+## ResizablePanel Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `number \| null` | `null` | - |
+| min-size | `number` | `0` | - |

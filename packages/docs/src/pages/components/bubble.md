@@ -100,3 +100,13 @@ function addMessage() {
   </PBubbleGroup>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| role | `'user' \| 'system'` | `system` | - |
+| text | `string` | - | - |
+| header | `string` | - | - |
+| avatar | `string` | - | - |
+| loading | `boolean` | - | - |

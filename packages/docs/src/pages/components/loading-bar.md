@@ -99,3 +99,14 @@ function increase() {
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| to | `string \| object` | - | - |
+| group | `string` | `default` | - |
+| minimum | `number` | `0.08` | - |
+| trickle | `boolean` | `true` | - |
+| hide-delay | `number` | `500` | - |
+| trickle-threshold | `number` | `300` | - |

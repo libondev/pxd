@@ -60,3 +60,20 @@ const options = [
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| value | `string \| number \| boolean` | - | - |
+| disabled | `boolean` | - | - |
+| model-value | `string \| number \| boolean` | - | - |
+
+## RadioGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| disabled | `boolean` | - | - |
+| model-value | `string \| number \| boolean` | - | - |
+| options | `{ label, value, disabled? }[]` | - | - |

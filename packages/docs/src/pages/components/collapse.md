@@ -135,3 +135,17 @@ A set of headings, vertically stacked, that each reveal an related section of co
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | `string` | - | - |
+| expand | `boolean` | - | - |
+
+## CollapseGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| multiple | `boolean` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |

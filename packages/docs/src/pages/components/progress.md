@@ -82,3 +82,15 @@ function decrease() {
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| min | `number` | `0` | - |
+| max | `number` | `100` | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| label | `boolean \| string \| number` | `false` | - |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | - |
+| colors | `Record<string, string>` | - | - |
+| model-value | `number \| null` | - | - |

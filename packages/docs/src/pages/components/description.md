@@ -13,3 +13,11 @@ Displays a brief heading and subheading to communicate any additional informatio
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | `string` | - | - |
+| tooltip | `string` | - | - |
+| description | `string` | - | - |

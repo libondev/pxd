@@ -51,3 +51,13 @@ Use controllable forms to create beautiful solid or dotted lines.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| position | `BasePosition \| BasePosition[]` | `() => ['top']` | - |
+| line-size | `string \| number` | - | - |
+| dash-size | `string \| number` | - | - |
+| color | `string` | - | - |
+| gap | `string \| number` | - | - |

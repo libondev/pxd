@@ -13,3 +13,9 @@ Use a textured background with subtle noise to add visual depth to the text cont
   </PNoiseBackground>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| as | `string \| object` | `div` | - |

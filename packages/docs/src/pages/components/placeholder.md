@@ -45,3 +45,11 @@ Customize its size and line color.
   ></PPlaceholder>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| gap | `number \| string` | - | - |
+| color | `string` | - | - |
+| invert | `boolean` | - | - |

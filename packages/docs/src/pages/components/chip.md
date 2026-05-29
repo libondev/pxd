@@ -67,3 +67,12 @@ Use the inset prop to display the Chip inside the component. This is useful when
   </PChip>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `number \| string` | - | - |
+| inset | `boolean` | - | - |
+| label | `string \| number \| null` | - | - |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | - | - |

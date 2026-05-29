@@ -34,3 +34,9 @@ Various surfaces with shadows, built on top of `<Stack>`.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| variant | `'default' \| 'small' \| 'medium' \| 'large' \| 'tooltip' \| 'menu' \| 'modal' \| 'fullscreen'` | `default` | - |

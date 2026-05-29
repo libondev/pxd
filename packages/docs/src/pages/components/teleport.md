@@ -34,3 +34,10 @@ onMounted(() => {
   </PTeleport>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| to | `string \| object` | `body` | - |
+| disabled | `boolean` | - | - |

@@ -177,3 +177,16 @@ const marqueeRef = shallowRef()
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| as | `string \| object` | `div` | - |
+| text | `string` | `` | - |
+| color | `string` | `var(--color-amber-900)` | - |
+| background | `string` | `var(--color-amber-100)` | - |
+| delay | `number \| string` | `1` | - |
+| speed | `number \| string` | `60` | - |
+| scrollable | `boolean` | `true` | - |
+| wrapable | `boolean` | `false` | - |

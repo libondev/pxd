@@ -259,3 +259,29 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   </PPopover>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| z-index | `number \| string` | - | - |
+| offset | `number` | - | - |
+| trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| 'click' \| 'hover' \| 'contextmenu' \| 'manual'[]` | `() => ['hover']` | - |
+| disabled | `boolean` | - | - |
+| adaptive | `boolean` | - | - |
+| max-width | `number \| string` | - | - |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | - |
+| show-delay | `number` | `0` | - |
+| hide-delay | `number` | `0` | - |
+| show-arrow | `boolean` | - | - |
+| arrow-color | `string` | - | - |
+| model-value | `boolean` | - | - |
+| interactive | `boolean` | `true` | - |
+| auto-position | `boolean` | `true` | - |
+| wrapper-class | `string \| any[] \| object` | - | - |
+| content-class | `string \| any[] \| object` | - | - |
+| content-style | `CSSProperties \| string` | - | - |
+| toggle-on-trigger | `boolean` | `true` | - |
+| close-on-invisible | `boolean` | `true` | - |
+| close-on-press-escape | `boolean` | `true` | - |
+| lock-scroll-on-visible | `boolean` | - | - |

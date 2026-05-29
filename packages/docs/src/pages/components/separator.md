@@ -26,3 +26,9 @@ const direction = ref('horizontal')
   </div>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| direction | `'horizontal' \| 'vertical'` | `vertical` | - |

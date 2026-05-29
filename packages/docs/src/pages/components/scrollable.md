@@ -92,3 +92,21 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
   </PScrollable>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| fader | `boolean` | `true` | - |
+| loading | `boolean` | - | - |
+| scrollbar | `boolean` | `true` | - |
+| fader-size | `number` | - | - |
+| fader-color | `string` | - | - |
+| fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | - |
+| wrapper-class | `string \| any[] \| object` | - | - |
+| content-class | `string \| any[] \| object` | - | - |
+| content-style | `CSSProperties \| string` | - | - |
+| scrollbar-size | `number` | - | - |
+| scrollbar-color | `string` | - | - |
+| scrollbar-hover-color | `string` | - | - |
+| bottom-threshold | `number` | `10` | - |

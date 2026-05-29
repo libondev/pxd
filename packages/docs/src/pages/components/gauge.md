@@ -135,3 +135,13 @@ const progress = ref(50)
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| model-value | `number \| null` | `60` | - |
+| show-value | `boolean` | `false` | - |
+| indeterminate | `boolean` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| colors | `Record<string, string>` | - | - |

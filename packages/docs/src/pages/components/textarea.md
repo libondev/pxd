@@ -45,3 +45,19 @@ const value = ref(
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| rows | `string \| number` | - | - |
+| cols | `string \| number` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| error | `boolean \| string` | - | - |
+| readonly | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| autofocus | `boolean` | - | - |
+| minlength | `number \| string` | - | - |
+| maxlength | `number \| string` | - | - |
+| model-value | `string \| number \| null` | `` | - |
+| placeholder | `string` | - | - |

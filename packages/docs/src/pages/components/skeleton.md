@@ -81,3 +81,14 @@ The skeleton will hide when children are not null, but the size is retained.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| loading | `boolean` | `true` | - |
+| animated | `boolean` | `true` | - |
+| width | `string \| number` | - | - |
+| height | `string \| number` | `24` | - |
+| box-height | `string \| number` | - | - |
+| shape | `'default' \| 'square' \| 'rounded'` | `default` | - |

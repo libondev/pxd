@@ -34,3 +34,15 @@ Display keyboard input that triggers an action.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| alt | `boolean` | - | - |
+| ctrl | `boolean` | - | - |
+| meta | `boolean` | - | - |
+| enter | `boolean` | - | - |
+| shift | `boolean` | - | - |
+| label | `string \| number \| null` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |

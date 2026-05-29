@@ -52,3 +52,12 @@ const containerRef = shallowRef()
   </div>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `number` | - | - |
+| color | `string` | - | - |
+| container | `string \| object` | - | - |
+| direction | `'horizontal' \| 'vertical' \| 'both'` | `both` | - |

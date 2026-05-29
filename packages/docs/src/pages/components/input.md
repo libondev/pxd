@@ -137,3 +137,30 @@ const password = ref('')
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| error | `boolean \| string` | - | - |
+| min | `number \| string` | - | - |
+| max | `number \| string` | - | - |
+| align | `'left' \| 'center' \| 'right'` | `left` | - |
+| readonly | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| password | `boolean` | - | - |
+| autofocus | `boolean` | - | - |
+| input-type | `string` | - | - |
+| inputmode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
+| minlength | `number \| string` | - | - |
+| maxlength | `number \| string` | - | - |
+| clearable | `boolean` | - | - |
+| clear-value | `string \| number \| null` | - | - |
+| model-value | `string \| number \| null` | - | - |
+| placeholder | `string` | - | - |
+| prefix-class | `string \| any[] \| object` | - | - |
+| suffix-class | `string \| any[] \| object` | - | - |
+| select-on-focus | `boolean` | - | - |
+| default-prefix-style | `boolean` | `true` | - |
+| default-suffix-style | `boolean` | `true` | - |

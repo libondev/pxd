@@ -206,3 +206,21 @@ function clearAll() {
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| max | `number` | `3` | - |
+| width | `string \| number` | - | - |
+| group | `string` | `default` | - |
+| expand | `boolean` | - | - |
+| position | `ComponentPosition<'top' \| 'bottom'>` | `top` | - |
+
+## MessageItem Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| max | `number` | - | - |
+| index | `number` | - | - |
+| item-data | `MessageItemConfig` | - | - |

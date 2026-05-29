@@ -11,3 +11,9 @@ The Browser component lets you showcase website screenshots or any other content
   </PBrowser>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| address | `string` | - | - |

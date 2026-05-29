@@ -121,3 +121,16 @@ const value = ref([30, 60])
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| min | `number` | `0` | - |
+| max | `number` | `100` | - |
+| step | `number` | `1` | - |
+| range | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | - |
+| model-value | `number \| number[] \| null` | `0` | - |

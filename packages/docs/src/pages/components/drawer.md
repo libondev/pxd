@@ -497,3 +497,23 @@ function handleClose() {
   </PDrawer>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| z-index | `number` | - | - |
+| title | `string \| number \| null` | - | - |
+| subtitle | `string \| number \| null` | - | - |
+| size | `number \| string` | - | - |
+| loading | `boolean` | - | - |
+| position | `BasePosition` | `right` | - |
+| model-value | `boolean` | `false` | - |
+| append-to-body | `boolean` | `true` | - |
+| wrapper-class | `string \| any[] \| object` | - | - |
+| content-class | `string \| any[] \| object` | - | - |
+| auto-focus-element | `string \| boolean` | `false` | - |
+| default-header-style | `boolean` | `false` | - |
+| default-footer-style | `boolean` | `true` | - |
+| close-on-press-escape | `boolean` | `true` | - |
+| close-on-click-overlay | `boolean` | `true` | - |

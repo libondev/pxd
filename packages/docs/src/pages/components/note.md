@@ -101,3 +101,12 @@ Display text that requires attention or provides additional information.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| variant | `'success' \| 'error' \| 'warning' \| 'default' \| 'primary' \| 'violet' \| 'cyan'` | `default` | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| fill | `boolean` | - | - |
+| label | `boolean \| string \| number \| null` | `true` | - |

@@ -116,3 +116,13 @@ import Alpha from '@gdsicon/vue/alpha'
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| color | `string` | - | - |
+| title | `string \| number \| null` | - | - |
+| width | `strin \| Responsive \| number>` | - | - |
+| variant | `'simple' \| 'stripe'` | `stripe` | - |
+| textured | `boolean` | `false` | - |

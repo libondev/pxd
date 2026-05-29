@@ -101,3 +101,21 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
   <PAvatar placeholder />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| src | `string` | - | - |
+| alt | `string` | - | - |
+| size | `number \| string` | - | - |
+| loading | `boolean` | - | - |
+| placeholder | `boolean` | - | - |
+
+## AvatarGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| max | `number` | `5` | - |
+| size | `number \| string` | - | - |
+| options | `AvatarOptions[]` | `() => []` | - |

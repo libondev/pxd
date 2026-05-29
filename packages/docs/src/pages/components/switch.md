@@ -116,3 +116,21 @@ const modelValue = ref('1')
   </PSwitch>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| disabled | `boolean` | - | - |
+| full-width | `boolean` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| options | `{ label, value, disabled? }[]` | `() => []` | - |
+| model-value | `string \| number` | `` | - |
+
+## SwitchItem Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| value | `string \| number` | - | - |
+| disabled | `boolean` | - | - |

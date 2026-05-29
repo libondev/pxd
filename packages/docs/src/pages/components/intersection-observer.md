@@ -152,3 +152,14 @@ import Counter from 'doc:Counter.vue'
   </div>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| width | `number \| string` | - | - |
+| height | `number \| string` | - | - |
+| keep-alive | `boolean` | - | - |
+| root | `Element \| Document \| null` | - | - |
+| root-margin | `string` | `20%` | - |
+| threshold | `number \| number[]` | `0` | - |

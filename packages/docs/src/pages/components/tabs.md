@@ -80,3 +80,19 @@ const securityCode = ref('')
   </PTabs>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| variant | `'default' \| 'secondary'` | `default` | - |
+| keep-alive | `boolean` | - | - |
+| model-value | `string \| number` | - | - |
+
+## TabsItem Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| value | `TabsValue` | - | - |
+| disabled | `boolean` | - | - |

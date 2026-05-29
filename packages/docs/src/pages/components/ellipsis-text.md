@@ -91,3 +91,17 @@ const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum dol
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | `string` | - | - |
+| dots | `string` | `...` | - |
+| rows | `number` | `1` | - |
+| action | `boolean` | - | - |
+| position | `'start' \| 'middle' \| 'end'` | `end` | - |
+| more-text | `string` | `Expand` | - |
+| less-text | `string` | `Collapse` | - |
+| more-action-class | `string` | - | - |
+| less-action-class | `string` | - | - |

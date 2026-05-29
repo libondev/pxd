@@ -84,3 +84,22 @@ const checked = ref(false)
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| value | `string \| number \| boolean` | `true` | - |
+| shape | `'default' \| 'square' \| 'rounded'` | - | - |
+| disabled | `boolean` | - | - |
+| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | - | - |
+| indeterminate | `boolean` | - | - |
+
+## CheckboxGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| disabled | `boolean` | - | - |
+| options | `{ label, value, disabled? }[]` | `() => []` | - |
+| model-value | `string \| number \| boolean[]` | `() => []` | - |

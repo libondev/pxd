@@ -70,3 +70,16 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
   <PPinInput error="Invalid pin code" />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| error | `boolean \| string` | - | - |
+| length | `number` | `4` | - |
+| readonly | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| model-value | `string` | `` | - |
+| placeholder | `string` | `○` | - |
+| type | `'numeric'` | `numeric` | - |

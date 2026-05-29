@@ -82,3 +82,18 @@ Grid component with guide clipping enabled on specific cells.
   </PGrid>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| debug | `boolean` | - | - |
+| rows | `strin \| Responsive \| number>` | - | - |
+| columns | `strin \| Responsive \| number>` | - | - |
+
+## GridItem Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| row | `ResponsiveValue<string \| number>` | - | - |
+| column | `ResponsiveValue<string \| number>` | - | - |

@@ -236,3 +236,19 @@ const data = [
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | `Record<string, any>[]` | `() => []` | - |
+| legend | `boolean` | `true` | - |
+| colors | `Record<string, string>` | - | - |
+| start-date | `string \| Date` | - | - |
+| end-date | `string \| Date` | - | - |
+| tooltip | `boolean` | `true` | - |
+| graph-only | `boolean` | - | - |
+| transpose | `boolean` | - | - |
+| field-names | `FieldNames` | - | - |
+| item-radius | `string \| number` | - | - |
+| default-select | `string` | - | - |

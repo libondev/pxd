@@ -43,3 +43,10 @@ import ChartBarPeak from '@gdsicon/vue/chart-bar-peak'
   </PEmptyState>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | `string` | - | - |
+| description | `string` | - | - |

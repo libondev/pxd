@@ -106,3 +106,20 @@ By default, it will pause when the mouse is over the carousel.
   </PCarousel>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| index | `number` | `0` | - |
+| loop | `boolean` | `true` | - |
+| arrow | `boolean` | `true` | - |
+| height | `number \| string` | `180` | - |
+| autoplay | `boolean` | `true` | - |
+| interval | `number` | `3000` | - |
+| indicator | `boolean` | `true` | - |
+| direction | `'horizontal' \| 'vertical'` | `horizontal` | - |
+| indicator-type | `'dot' \| 'line'` | `dot` | - |
+| indicator-position | `BasePosition \| 'center'` | `center` | - |
+| pause-on-hover | `boolean` | `true` | - |
+| toggle-on-wheel | `boolean` | - | - |

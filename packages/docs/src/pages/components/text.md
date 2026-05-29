@@ -52,3 +52,14 @@ Display text using well-defined typographic styles.
   <PText monospace>This is a monospace font.</PText>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| as | `string \| object` | `p` | - |
+| text | `string` | - | - |
+| size | `strin \| Responsive \| number>` | - | - |
+| align | `'left' \| 'center' \| 'right'` | `left` | - |
+| monospace | `boolean` | - | - |
+| secondary | `boolean` | - | - |

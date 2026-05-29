@@ -21,3 +21,10 @@ const next = {
   <PPagination :prev="prev" :next="next" />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| prev | `Page` | - | - |
+| next | `Page` | - | - |

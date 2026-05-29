@@ -119,3 +119,23 @@ const modelValue = ref('trial')
   </PChoicebox>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| gap | `numbe \| Responsive \| string>` | `3` | - |
+| label | `string \| number \| null` | - | - |
+| multiple | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| options | `{ label, value, disabled? }[]` | - | - |
+| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | - | - |
+
+## ChoiceboxItem Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| value | `string \| number \| boolean` | - | - |
+| disabled | `boolean` | - | - |
+| description | `string` | - | - |

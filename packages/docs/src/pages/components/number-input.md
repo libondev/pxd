@@ -166,3 +166,20 @@ const value = ref(0)
   </PNumberInput>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| min | `number` | `Number.MIN_SAFE_INTEGER` | - |
+| max | `number` | `Number.MAX_SAFE_INTEGER` | - |
+| step | `number` | `1` | - |
+| readonly | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| controls | `boolean` | `true` | - |
+| precision | `number` | - | - |
+| thousands | `boolean` | - | - |
+| thousands-separator | `string` | `'` | - |
+| scientific | `boolean` | `true` | - |
+| clear-value | `number \| null` | `null` | - |
+| model-value | `number \| null` | - | - |

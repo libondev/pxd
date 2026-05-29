@@ -247,3 +247,26 @@ const toggleButtonOptions = [
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| variant | `'ghost' \| 'outline'` | - | - |
+| disabled | `boolean` | - | - |
+| label | `string \| number \| null` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| value | `string \| number \| boolean` | `true` | - |
+| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | - | - |
+
+## ToggleButtonGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| gap | `ResponsiveValue<string \| number>` | `0` | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| disabled | `boolean` | - | - |
+| multiple | `boolean` | `true` | - |
+| options | `{ label, value, disabled? }[]` | - | - |
+| variant | `'ghost' \| 'outline'` | - | - |
+| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | `() => []` | - |

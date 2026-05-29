@@ -56,3 +56,15 @@ Resize the window to observe changes to the layout.
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| as | `string \| object` | `div` | - |
+| gap | `strin \| Responsive \| number>` | - | - |
+| wrap | `boolean` | `true` | - |
+| scale | `number` | `4` | - |
+| align | `Align` | `start` | - |
+| justify | `Align` | `start` | - |
+| direction | `'horizontal' \| 'vertical' \| Responsive` | - | - |

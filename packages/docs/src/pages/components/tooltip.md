@@ -155,3 +155,19 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
   </PTooltip>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| offset | `number` | - | - |
+| content | `string` | - | - |
+| variant | `'default' \| 'error' \| 'warning' \| 'success' \| 'invert' \| 'violet'` | `default` | - |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | - |
+| disabled | `boolean` | - | - |
+| show-delay | `number` | `300` | - |
+| hide-delay | `number` | `300` | - |
+| show-arrow | `boolean` | `true` | - |
+| desktop-only | `boolean` | - | - |
+| content-class | `string \| any[] \| object` | - | - |
+| content-style | `CSSProperties \| string` | - | - |

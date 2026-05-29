@@ -111,3 +111,14 @@ Set `scalable="false"` to disable zooming when pressed.
   <PHoldButton durations="1000" :scalable="false"> Lasts one second </PHoldButton>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| vibrate | `boolean` | `true` | - |
+| disabled | `boolean` | - | - |
+| scalable | `boolean` | `true` | - |
+| durations | `number \| string` | - | - |
+| cancelable | `boolean` | - | - |
+| progress-color | `string` | - | - |

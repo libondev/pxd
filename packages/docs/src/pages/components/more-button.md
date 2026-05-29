@@ -34,3 +34,11 @@ const expanded = ref(false)
   <PMoreButton v-model="expanded" more-text="moreee" less-text="lessss" />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| more-text | `string` | `Show More` | - |
+| less-text | `string` | `Show Less` | - |
+| model-value | `boolean` | `false` | - |

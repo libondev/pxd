@@ -108,3 +108,26 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| as | `string \| object` | `button` | - |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'simple' \| 'link'` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| shape | `'default' \| 'square' \| 'rounded'` | - | - |
+| align | `'left' \| 'center' \| 'right'` | - | - |
+| icon | `boolean` | `false` | - |
+| loading | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| full-width | `boolean` | - | - |
+
+## ButtonGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| align | `'left' \| 'center' \| 'right'` | - | - |
+| variant | `ButtonVariant` | - | - |
+| disabled | `boolean` | - | - |

@@ -303,7 +303,7 @@ if (!isServer()) {
     color: var(--color-gray-600);
   }
 
-  :where(h2#props, h2#params) + table {
+  h2 + table {
     border-collapse: collapse;
     table-layout: fixed;
     width: 100%;

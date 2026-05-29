@@ -74,3 +74,16 @@ function onChange(item) {
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| variant | `ButtonVariant` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
+| shape | `'default' \| 'square' \| 'rounded'` | - | - |
+| options | `ListOption[]` | - | - |
+| disabled | `boolean` | - | - |
+| list-width | `string \| number` | - | - |
+| model-value | `ListOptionSelected['value']` | - | - |
+| close-on-press-escape | `boolean` | - | - |

@@ -39,3 +39,20 @@ const showCommandMenu = ref(false);
   </PCommandMenu>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| width | `string \| number` | - | - |
+| model-value | `boolean` | `false` | - |
+| placeholder | `string` | `` | - |
+| close-on-select-item | `boolean` | `true` | - |
+| close-on-press-escape | `boolean` | `true` | - |
+| close-on-click-overlay | `boolean` | `true` | - |
+
+## CommandMenuGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |

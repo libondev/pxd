@@ -55,3 +55,12 @@ function changeValue() {
   <PRollingNumber :value="number" :immediate="false" class="block" />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| value | `number \| string` | `0` | - |
+| durations | `number` | `1000` | - |
+| immediate | `boolean` | `true` | - |
+| thousands | `boolean` | - | - |

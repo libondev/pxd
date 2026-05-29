@@ -66,8 +66,8 @@ const locales = {
 
 ## Props
 
-| Name   | Type                | Default | Description               |
-| ------ | ------------------- | ------- | ------------------------- |
-| size   | `sm` \| `md` \| `lg` | `md`    | Global size configuration |
-| locale | `object`            | `{}`    | Global locale configuration |
-| popover-show-transition | `boolean`            | `true`    | Configure whether to display animation when the global popover appears |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'sm' \| 'md' \| 'lg'` | `md` | - |
+| locale | `Record<string, any>` | `() => enUS` | - |
+| popover-show-transition | `boolean` | `true` | - |

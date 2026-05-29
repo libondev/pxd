@@ -29,3 +29,10 @@ Set a minimum font size below which the text will be allowed to wrap instead of 
   </div>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | `string` | - | - |
+| min-font-size | `number` | `12` | - |

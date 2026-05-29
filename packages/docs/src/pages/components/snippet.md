@@ -58,3 +58,13 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | `string \| string[]` | - | - |
+| width | `string \| number` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| prompt | `boolean \| string` | `$ ` | - |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` | - |

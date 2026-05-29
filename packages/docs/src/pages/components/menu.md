@@ -111,3 +111,14 @@ const options = [
   </PMenu>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | `ListOption[]` | `() => []` | - |
+| disabled | `boolean` | - | - |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom-start` | - |
+| list-width | `string \| number` | - | - |
+| model-value | `ListOptionSelected['value']` | - | - |
+| close-on-press-escape | `boolean` | `true` | - |

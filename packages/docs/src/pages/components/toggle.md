@@ -172,3 +172,19 @@ const customValue = ref(false)
   />
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| loading | `boolean` | - | - |
+| disabled | `boolean` | - | - |
+| model-value | `boolean \| number \| string \| undefined` | - | - |
+| active-value | `boolean \| number \| string \| undefined` | `true` | - |
+| inactive-value | `boolean \| number \| string \| undefined` | `false` | - |
+| before-change | `ComponentBeforeChange<ValueType>` | - | - |
+| active-color | `string` | - | - |
+| inactive-color | `string` | - | - |
+| active-label | `string` | - | - |
+| inactive-label | `string` | - | - |

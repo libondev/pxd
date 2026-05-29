@@ -125,3 +125,20 @@ const time = ref('18:30:00')
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| error | `boolean \| string` | - | - |
+| presets | `DateTimePreset[]` | `() => []` | - |
+| disabled | `boolean` | - | - |
+| clearable | `boolean` | - | - |
+| model-value | `Date \| string \| number \| null` | `` | - |
+| prefix-icon | `boolean` | `true` | - |
+| placeholder | `string` | - | - |
+| show-seconds | `boolean` | `true` | - |
+| close-on-press-escape | `boolean` | `true` | - |
+| format | `string` | `HH:mm:ss` | - |
+| value-format | `string` | `HH:mm:ss` | - |

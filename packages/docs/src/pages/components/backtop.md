@@ -37,3 +37,11 @@ A button to back to top.
   </PBacktop>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| append-to-body | `boolean` | `true` | - |
+| visible-threshold | `number` | `30` | - |
+| scroll-target | `'top' \| 'bottom'` | `top` | - |

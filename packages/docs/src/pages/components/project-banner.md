@@ -53,3 +53,10 @@ import ShieldIcon from '@gdsicon/vue/shield'
   </PStack>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string \| number \| null` | - | - |
+| variant | `'warning' \| 'error' \| 'success' \| 'info'` | - | - |
