@@ -48,7 +48,7 @@ const buttonVariants = tv({
         'border-transparent bg-primary text-gray-100 hover:bg-primary-hover active:bg-primary-active',
       error: 'text-white border-transparent bg-red-800 hover:bg-red-700 active:bg-red-900',
       warning: 'text-black border-transparent bg-amber-800 hover:bg-amber-700 active:bg-amber-900',
-      success: 'text-white border-transparent bg-green-800 hover:bg-green-700 active:bg-green-900',
+      success: 'text-white border-transparent bg-green-900 hover:bg-green-700 active:bg-green-800',
     },
     disabled: {
       true: 'is-disabled hover:bg-gray-100 active:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700',

@@ -34,6 +34,7 @@ One of the most basic components, it will help you complete the interaction.
     <PButton variant="default">default</PButton>
     <PButton variant="primary">primary</PButton>
     <PButton variant="success">success</PButton>
+    <PButton variant="warning">warning</PButton>
     <PButton variant="error">error</PButton>
     <PButton variant="ghost">ghost</PButton>
   </PStack>
