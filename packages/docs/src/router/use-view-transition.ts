@@ -1,7 +1,7 @@
 import type { Router } from 'vue-router'
 
 export function useViewTransition(router: Router) {
-  if (!document.startViewTransition) {
+  if (typeof document === 'undefined' || !document.startViewTransition) {
     return
   }
 
