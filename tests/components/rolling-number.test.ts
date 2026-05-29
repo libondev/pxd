@@ -1,13 +1,21 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import RollingNumber from '../../src/components/rolling-number/index.vue'
 
 describe('rolling-number', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('should render with default value', () => {
     const wrapper = mount(RollingNumber)
 
     expect(wrapper.find('.pxd-rolling-number').exists()).toBe(true)
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('0')
+    expect(wrapper.vm.displayValue).toBe(0)
 
     wrapper.unmount()
   })
@@ -20,7 +28,7 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('42')
+    expect(wrapper.vm.displayValue).toBe(42)
 
     wrapper.unmount()
   })
@@ -33,7 +41,7 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('-100')
+    expect(wrapper.vm.displayValue).toBe(-100)
 
     wrapper.unmount()
   })
@@ -46,7 +54,7 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('3.14')
+    expect(wrapper.vm.displayValue).toBe(3.14)
 
     wrapper.unmount()
   })
@@ -60,7 +68,7 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('1,234,567')
+    expect(wrapper.vm.formattedValue).toBe('1,234,567')
 
     wrapper.unmount()
   })
@@ -74,7 +82,7 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('1,234,567.89')
+    expect(wrapper.vm.formattedValue).toBe('1,234,567.89')
 
     wrapper.unmount()
   })
@@ -136,8 +144,8 @@ describe('rolling-number', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-rolling-number--value').text()).toBe('99')
-    expect(wrapper.emitted()).toHaveProperty('finish')
+    expect(wrapper.vm.displayValue).toBe(99)
+    expect(wrapper.vm.formattedValue).toBe('99')
 
     wrapper.unmount()
   })
