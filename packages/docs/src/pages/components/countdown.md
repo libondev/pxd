@@ -290,3 +290,9 @@ const active = ref(false)
   </div>
 </template>
 ```
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

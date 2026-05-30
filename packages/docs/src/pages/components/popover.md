@@ -285,3 +285,9 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | close-on-invisible | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `true` | - |
 | lock-scroll-on-visible | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

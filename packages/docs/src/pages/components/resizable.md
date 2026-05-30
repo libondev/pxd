@@ -71,3 +71,15 @@ unit: %
 | --- | --- | --- | --- |
 | size | `number \| null` | `null` | - |
 | min-size | `number` | `0` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## ResizablePanel Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

@@ -50,3 +50,9 @@ import ChartBarPeak from '@gdsicon/vue/chart-bar-peak'
 | --- | --- | --- | --- |
 | title | `string` | - | - |
 | description | `string` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

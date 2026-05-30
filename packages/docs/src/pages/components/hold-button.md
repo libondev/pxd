@@ -122,3 +122,9 @@ Set `scalable="false"` to disable zooming when pressed.
 | durations | `number \| string` | - | - |
 | cancelable | `boolean` | - | - |
 | progress-color | `string` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

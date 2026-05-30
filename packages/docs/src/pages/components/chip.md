@@ -76,3 +76,9 @@ Use the inset prop to display the Chip inside the component. This is useful when
 | inset | `boolean` | - | - |
 | label | `string \| number \| null` | - | - |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

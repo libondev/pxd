@@ -46,3 +46,9 @@ Display keyboard input that triggers an action.
 | shift | `boolean` | - | - |
 | label | `string \| number \| null` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

@@ -149,3 +149,15 @@ A set of headings, vertically stacked, that each reveal an related section of co
 | --- | --- | --- | --- |
 | multiple | `boolean` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## CollapseGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

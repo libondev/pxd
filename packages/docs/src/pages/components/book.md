@@ -126,3 +126,10 @@ import Alpha from '@gdsicon/vue/alpha'
 | width | `strin \| Responsive \| number>` | - | - |
 | variant | `'simple' \| 'stripe'` | `stripe` | - |
 | textured | `boolean` | `false` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| icon | Icon slot |
+| title | Title slot |

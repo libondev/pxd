@@ -123,3 +123,15 @@ By default, it will pause when the mouse is over the carousel.
 | indicator-position | `BasePosition \| 'center'` | `center` | - |
 | pause-on-hover | `boolean` | `true` | - |
 | toggle-on-wheel | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## CarouselItem Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

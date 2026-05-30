@@ -139,3 +139,11 @@ const modelValue = ref('trial')
 | value | `string \| number \| boolean` | - | - |
 | disabled | `boolean` | - | - |
 | description | `string` | - | - |
+
+## ChoiceboxItem Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+| description | Description slot |
+| label | label slot |

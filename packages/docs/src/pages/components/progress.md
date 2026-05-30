@@ -94,3 +94,9 @@ function decrease() {
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | - |
 | colors | `Record<string, string>` | - | - |
 | model-value | `number \| null` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

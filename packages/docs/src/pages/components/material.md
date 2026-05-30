@@ -40,3 +40,9 @@ Various surfaces with shadows, built on top of `<Stack>`.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | variant | `'default' \| 'small' \| 'medium' \| 'large' \| 'tooltip' \| 'menu' \| 'modal' \| 'fullscreen'` | `default` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

@@ -164,3 +164,10 @@ onMounted(() => {
   </PVirtualList>
 </template>
 ```
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| item | item slot |
+| message | message slot |

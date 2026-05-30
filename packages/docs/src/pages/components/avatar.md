@@ -119,3 +119,9 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 | max | `number` | `5` | - |
 | size | `number \| string` | - | - |
 | options | `AvatarOptions[]` | `() => []` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

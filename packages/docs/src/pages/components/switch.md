@@ -134,3 +134,9 @@ const modelValue = ref('1')
 | label | `string \| number \| null` | - | - |
 | value | `string \| number` | - | - |
 | disabled | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

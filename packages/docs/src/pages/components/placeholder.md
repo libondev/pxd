@@ -53,3 +53,9 @@ Customize its size and line color.
 | gap | `number \| string` | - | - |
 | color | `string` | - | - |
 | invert | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

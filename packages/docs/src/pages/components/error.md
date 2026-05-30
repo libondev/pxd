@@ -56,3 +56,9 @@ const error = ref({
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
 | label | `string \| number \| null` | - | - |
 | error | `ErrorType` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

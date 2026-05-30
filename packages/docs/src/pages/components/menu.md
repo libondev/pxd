@@ -122,3 +122,9 @@ const options = [
 | list-width | `string \| number` | - | - |
 | model-value | `ListOptionSelected['value']` | - | - |
 | close-on-press-escape | `boolean` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

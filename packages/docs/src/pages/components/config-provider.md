@@ -71,3 +71,9 @@ const locales = {
 | size | `'sm' \| 'md' \| 'lg'` | `md` | - |
 | locale | `Record<string, any>` | `() => enUS` | - |
 | popover-show-transition | `boolean` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

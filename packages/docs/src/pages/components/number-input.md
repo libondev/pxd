@@ -183,3 +183,12 @@ const value = ref(0)
 | scientific | `boolean` | `true` | - |
 | clear-value | `number \| null` | `null` | - |
 | model-value | `number \| null` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| minusIcon | minusIcon slot |
+| plusIcon | plusIcon slot |
+| prefix | Prefix slot |
+| suffix | Suffix slot |

@@ -110,3 +110,15 @@ function addMessage() {
 | header | `string` | - | - |
 | avatar | `string` | - | - |
 | loading | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## BubbleGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

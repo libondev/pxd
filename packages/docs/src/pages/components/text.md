@@ -63,3 +63,9 @@ Display text using well-defined typographic styles.
 | align | `'left' \| 'center' \| 'right'` | `left` | - |
 | monospace | `boolean` | - | - |
 | secondary | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

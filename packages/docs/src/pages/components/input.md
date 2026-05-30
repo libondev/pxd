@@ -164,3 +164,10 @@ const password = ref('')
 | select-on-focus | `boolean` | - | - |
 | default-prefix-style | `boolean` | `true` | - |
 | default-suffix-style | `boolean` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| prefix | Prefix slot |
+| suffix | Suffix slot |

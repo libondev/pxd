@@ -87,3 +87,9 @@ function onChange(item) {
 | list-width | `string \| number` | - | - |
 | model-value | `ListOptionSelected['value']` | - | - |
 | close-on-press-escape | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

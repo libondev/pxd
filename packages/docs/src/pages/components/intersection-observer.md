@@ -163,3 +163,9 @@ import Counter from 'doc:Counter.vue'
 | root | `Element \| Document \| null` | - | - |
 | root-margin | `string` | `20%` | - |
 | threshold | `number \| number[]` | `0` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

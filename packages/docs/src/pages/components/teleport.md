@@ -41,3 +41,9 @@ onMounted(() => {
 | --- | --- | --- | --- |
 | to | `string \| object` | `body` | - |
 | disabled | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

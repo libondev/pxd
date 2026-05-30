@@ -19,3 +19,9 @@ Use a textured background with subtle noise to add visual depth to the text cont
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | as | `string \| object` | `div` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

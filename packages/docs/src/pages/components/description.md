@@ -21,3 +21,10 @@ Displays a brief heading and subheading to communicate any additional informatio
 | title | `string` | - | - |
 | tooltip | `string` | - | - |
 | description | `string` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| description | Description slot |
+| title | Title slot |

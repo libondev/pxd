@@ -110,3 +110,9 @@ Display text that requires attention or provides additional information.
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
 | fill | `boolean` | - | - |
 | label | `boolean \| string \| number \| null` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

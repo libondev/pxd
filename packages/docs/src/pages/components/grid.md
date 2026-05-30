@@ -97,3 +97,15 @@ Grid component with guide clipping enabled on specific cells.
 | --- | --- | --- | --- |
 | row | `ResponsiveValue<string \| number>` | - | - |
 | column | `ResponsiveValue<string \| number>` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## GridItem Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

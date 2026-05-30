@@ -56,3 +56,15 @@ const showCommandMenu = ref(false);
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | label | `string \| number \| null` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## CommandMenuGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

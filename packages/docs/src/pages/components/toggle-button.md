@@ -270,3 +270,15 @@ const toggleButtonOptions = [
 | options | `{ label, value, disabled? }[]` | - | - |
 | variant | `'ghost' \| 'outline'` | - | - |
 | model-value | `string \| number \| boolean \| string \| number \| boolean[]` | `() => []` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
+
+## ToggleButtonGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

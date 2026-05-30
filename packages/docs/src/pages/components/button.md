@@ -132,3 +132,9 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 | align | `'left' \| 'center' \| 'right'` | - | - |
 | variant | `ButtonVariant` | - | - |
 | disabled | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

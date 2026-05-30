@@ -36,3 +36,9 @@ Set `variant="text"` to convert it into a link in normal text form.
 | align | `'left' \| 'center' \| 'right'` | `left` | - |
 | target | `'_blank' \| '_self' \| '_parent' \| '_top'` | `_self` | - |
 | external-icon | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

@@ -92,3 +92,9 @@ function onClickToClose() {
 | close-on-press-escape | `boolean` | `true` | - |
 | close-on-click-overlay | `boolean` | `false` | - |
 | lock-scroll-on-visible | `boolean` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

@@ -68,3 +68,9 @@ Resize the window to observe changes to the layout.
 | align | `Align` | `start` | - |
 | justify | `Align` | `start` | - |
 | direction | `'horizontal' \| 'vertical' \| Responsive` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

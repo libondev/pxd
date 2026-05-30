@@ -252,3 +252,9 @@ const data = [
 | field-names | `FieldNames` | - | - |
 | item-radius | `string \| number` | - | - |
 | default-select | `string` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| tooltip | tooltip slot |

@@ -268,3 +268,9 @@ function handleClose() {
 | default-footer-style | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `false` | - |
 | close-on-click-overlay | `boolean` | `false` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

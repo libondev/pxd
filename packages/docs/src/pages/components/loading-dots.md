@@ -27,3 +27,10 @@ Indicate an action running in the background.
   </PLoadingDots>
 </template>
 ```
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| prefix | Prefix slot |
+| suffix | Suffix slot |

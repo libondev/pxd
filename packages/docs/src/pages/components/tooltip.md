@@ -171,3 +171,9 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | desktop-only | `boolean` | - | - |
 | content-class | `string \| any[] \| object` | - | - |
 | content-style | `CSSProperties \| string` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

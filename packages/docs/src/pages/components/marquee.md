@@ -190,3 +190,9 @@ const marqueeRef = shallowRef()
 | speed | `number \| string` | `60` | - |
 | scrollable | `boolean` | `true` | - |
 | wrapable | `boolean` | `false` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

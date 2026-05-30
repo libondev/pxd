@@ -110,3 +110,9 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | scrollbar-color | `string` | - | - |
 | scrollbar-hover-color | `string` | - | - |
 | bottom-threshold | `number` | `10` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

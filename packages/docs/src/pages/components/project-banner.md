@@ -60,3 +60,9 @@ import ShieldIcon from '@gdsicon/vue/shield'
 | --- | --- | --- | --- |
 | label | `string \| number \| null` | - | - |
 | variant | `'warning' \| 'error' \| 'success' \| 'info'` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

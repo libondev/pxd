@@ -92,3 +92,9 @@ The skeleton will hide when children are not null, but the size is retained.
 | height | `string \| number` | `24` | - |
 | box-height | `string \| number` | - | - |
 | shape | `'default' \| 'square' \| 'rounded'` | `default` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |

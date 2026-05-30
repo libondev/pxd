@@ -106,3 +106,9 @@ function onClose() {
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
 | variant | `'pill' \| 'primary' \| 'gray' \| 'blue' \| 'purple' \| 'amber' \| 'red' \| 'pink' \| 'green' \| 'teal' \| 'gray-subtle' \| 'blue-subtle' \| 'purple-subtle' \| 'amber-subtle' \| 'red-subtle' \| 'pink-subtle' \| 'green-subtle' \| 'teal-subtle' \| 'inverted' \| 'vue' \| 'trial' \| 'turborepo'` | `pill` | - |
 | closeable | `boolean` | - | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Default slot |
