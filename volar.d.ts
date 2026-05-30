@@ -14,6 +14,7 @@ declare module 'vue' {
     PBubbleGroup: (typeof import('pxd/components/bubble-group'))['default']
     PButton: (typeof import('pxd/components/button'))['default']
     PButtonGroup: (typeof import('pxd/components/button-group'))['default']
+    PCard: (typeof import('pxd/components/card'))['default']
     PCarousel: (typeof import('pxd/components/carousel'))['default']
     PCarouselItem: (typeof import('pxd/components/carousel-item'))['default']
     PCheckbox: (typeof import('pxd/components/checkbox'))['default']
