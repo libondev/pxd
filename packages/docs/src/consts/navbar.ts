@@ -8,9 +8,9 @@ const componentMenus = componentList.map(({ name, camelized }) => {
   }
 })
 
-const composableMenus = composableList.map(({ name, camelized }) => {
+const composableMenus = composableList.map(({ name }) => {
   return {
-    label: camelized,
+    label: name,
     path: `/composables/${name}`,
   }
 })
