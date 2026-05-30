@@ -71,6 +71,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  onContainerScroll.cancel()
   cachedOff(formattedContainer.value, 'scroll', onContainerScroll)
 })
 </script>

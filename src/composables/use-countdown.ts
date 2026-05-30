@@ -1,6 +1,6 @@
 import type { EmitFn, Ref } from 'vue'
-import { computed, shallowRef, watch } from 'vue'
-import { raf } from '../utils/event'
+import { computed, onScopeDispose, shallowRef, watch } from 'vue'
+import { caf, raf } from '../utils/event'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
 
@@ -73,6 +73,7 @@ export function useCountdown<T extends Record<string, any>>(
   let isFinished = false
   let isPaused = false
   let previousFrameTime = 0
+  let rafId = 0
 
   const timeRef = shallowRef<number>(0)
 
@@ -180,7 +181,8 @@ export function useCountdown<T extends Record<string, any>>(
     }
 
     if (now - previousFrameTime < UPDATE_INTERVAL && !isLastFrame) {
-      raf(frame)
+      caf(rafId)
+      rafId = raf(frame)
       return
     }
 
@@ -197,7 +199,8 @@ export function useCountdown<T extends Record<string, any>>(
       timeRef.value = Math.max(0, current)
     }
 
-    raf(frame)
+    caf(rafId)
+    rafId = raf(frame)
   }
 
   const unwatchActive = watch(
@@ -241,9 +244,15 @@ export function useCountdown<T extends Record<string, any>>(
   )
 
   function stop(): void {
+    caf(rafId)
+    rafId = 0
     unwatchTimes()
     unwatchActive()
   }
+
+  onScopeDispose(() => {
+    stop()
+  })
 
   return {
     stop,

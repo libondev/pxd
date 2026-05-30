@@ -1,4 +1,4 @@
-import { shallowRef } from 'vue'
+import { onScopeDispose, shallowRef } from 'vue'
 import { isServer } from '../utils/is'
 
 export function useCopyClick() {
@@ -36,6 +36,11 @@ export function useCopyClick() {
 
     return copyPromise
   }
+
+  onScopeDispose(() => {
+    clearTimeout(copiedTimer)
+    copyPromise = null
+  })
 
   return {
     isCopied,

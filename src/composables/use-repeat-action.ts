@@ -69,6 +69,7 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   }
 
   onScopeDispose(() => {
+    stop()
     off(document, 'pointerup', stop)
     off(document, 'pointercancel', stop)
   })

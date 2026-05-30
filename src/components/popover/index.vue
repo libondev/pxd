@@ -306,6 +306,8 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  clearTimeout(showPopoverTimer!)
+  clearTimeout(hidePopoverTimer!)
   disposeAutoUpdate()
 })
 

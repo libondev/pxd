@@ -1,6 +1,6 @@
 import type { Nullable } from '../types/shared'
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { shallowRef } from 'vue'
+import { onScopeDispose, shallowRef } from 'vue'
 import { doubleRaf, caf } from '../utils/event'
 import { toValue } from '../utils/helper'
 
@@ -72,6 +72,11 @@ export function useDelayDestroy(
       }
     })
   }
+
+  onScopeDispose(() => {
+    clearTimeout(destroyTimeoutId)
+    caf(visibleRafId)
+  })
 
   return {
     show,

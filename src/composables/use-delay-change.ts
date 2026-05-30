@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { shallowRef } from 'vue'
+import { onScopeDispose, shallowRef } from 'vue'
 
 interface Options<T> {
   delay?: number
@@ -34,6 +34,10 @@ export function useDelayChange<T>(
       valueChange?.(delayValue.value)
     }, delay)
   }
+
+  onScopeDispose(() => {
+    clearTimeout(timerId)
+  })
 
   return {
     value: delayValue,

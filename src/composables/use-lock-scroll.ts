@@ -1,3 +1,4 @@
+import { onScopeDispose } from 'vue'
 import { hasScrollbar, isScrollable } from '../utils/dom'
 import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
@@ -40,6 +41,10 @@ export function useLockScroll() {
       document.documentElement.classList.remove(...classList)
     }
   }
+
+  onScopeDispose(() => {
+    unlockScroll()
+  })
 
   return {
     isLocked,

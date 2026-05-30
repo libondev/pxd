@@ -210,6 +210,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  caf(prevAnimationKey)
+  clearTimeout(hiddenBarTimeout)
+  clearTimeout(enableTransitionTimeout)
   cachedOff(window, UPDATE_LOADING_BAR_EVENT_NAME, onUpdateLoadingBar)
 })
 </script>
