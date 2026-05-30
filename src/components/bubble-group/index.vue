@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, onUpdated, shallowRef } from 'vue'
+import type { VirtualListOptions } from '../../composables/use-virtual-list'
+import type { BubbleGroupProps } from './types'
+import { nextTick, onBeforeUnmount, onMounted, onUpdated, shallowRef, watch } from 'vue'
+import { useVirtualList } from '../../composables/use-virtual-list'
 import { on, off } from '../../utils/event'
 import { isServer } from '../../utils/is'
 import PBacktop from '../backtop/index.vue'
@@ -9,10 +12,17 @@ defineOptions({
   inheritAttrs: false,
 })
 
+const props = defineProps<BubbleGroupProps>()
+
 const isAtBottom = shallowRef(true)
 const containerRef = shallowRef<HTMLElement>()
 
 const BOTTOM_THRESHOLD = 8
+
+const { totalSize, virtualItems, measureElement } = useVirtualList(
+  containerRef,
+  props as unknown as VirtualListOptions,
+)
 
 function updateIsAtBottom() {
   const el = containerRef.value
@@ -41,6 +51,19 @@ async function scrollToBottom() {
   el.scrollTo(0, el.scrollHeight)
 }
 
+watch(
+  () => props.listData?.length,
+  (newLen, oldLen) => {
+    if (!props.listData || !newLen || !oldLen) {
+      return
+    }
+
+    if (newLen > oldLen && isAtBottom.value) {
+      scrollToBottom()
+    }
+  },
+)
+
 onMounted(() => {
   if (isServer()) {
     return
@@ -55,12 +78,14 @@ onMounted(() => {
   scrollToBottom()
 })
 
-onUpdated(async () => {
+onUpdated(() => {
   if (isServer()) {
     return
   }
 
-  scrollToBottom()
+  if (!props.listData) {
+    scrollToBottom()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -75,10 +100,28 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="containerRef"
-    class="pxd-bubble-group max-h-40 relative overflow-x-hidden overflow-y-auto"
+    class="pxd-bubble-group relative overflow-x-hidden overflow-y-auto"
     v-bind="$attrs"
   >
-    <slot />
+    <template v-if="listData">
+      <div
+        class="pxd-bubble-group--content relative w-full content-visibility-auto"
+        :style="{ height: `${totalSize}px`, containIntrinsicSize: `auto ${totalSize}px` }"
+      >
+        <div
+          v-for="virtualItem in virtualItems"
+          :key="virtualItem.key"
+          :ref="(el: any) => measureElement(el)"
+          :data-index="virtualItem.index"
+          class="pxd-bubble-group--item [&+&]:pt-2 left-0 top-0 absolute w-full"
+          :style="{ transform: `translateY(${virtualItem.start}px)` }"
+        >
+          <slot name="item" :item="listData[virtualItem.index]" :index="virtualItem.index" />
+        </div>
+      </div>
+    </template>
+
+    <slot v-else />
 
     <div class="pxd-bubble-group--action bottom-0 h-0 sticky">
       <PBacktop

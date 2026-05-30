@@ -95,8 +95,44 @@ function addMessage() {
 <template>
   <PButton class="mb-2" @click="addMessage">Add Message</PButton>
 
-  <PBubbleGroup>
+  <PBubbleGroup class="max-h-40">
     <PBubble v-for="m of messages" :role="m.role" :text="m.message" />
+  </PBubbleGroup>
+</template>
+```
+
+## Group With Virtual Scroll
+
+Pass `listData` to enable virtual scrolling for large message lists.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const messages = ref(
+  Array.from({ length: 50 }, (_, i) => ({
+    id: i,
+    role: i % 2 === 0 ? 'system' : 'user',
+    message: `The Evil Rabbit Jumped over the Fence ${i}`,
+  })),
+)
+
+function addMessage() {
+  messages.value.push({
+    id: messages.value.length,
+    role: Math.random() > 0.5 ? 'system' : 'user',
+    message: 'The Evil Rabbit Jumped over the Fence ' + Date.now(),
+  })
+}
+</script>
+
+<template>
+  <PButton class="mb-2" @click="addMessage">Add Message</PButton>
+
+  <PBubbleGroup class="max-h-80" :list-data="messages" data-key="id">
+    <template #item="{ item }">
+      <PBubble :role="item.role" :text="item.message" />
+    </template>
   </PBubbleGroup>
 </template>
 ```
@@ -117,8 +153,18 @@ function addMessage() {
 | --- | --- |
 | default | Default slot |
 
+## BubbleGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| listData | `any[]` | - | Data array, enables virtual scrolling when provided |
+| dataKey | `string` | - | Unique key field name for list items |
+| itemSize | `number` | `80` | Estimated item height in pixels |
+| overScan | `number` | `3` | Number of items to render beyond the visible area |
+
 ## BubbleGroup Slots
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Default slot (used when `listData` is not provided) |
+| item | Scoped slot for virtual scroll mode: `{ item, index }` |
