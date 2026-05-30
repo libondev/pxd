@@ -31,3 +31,18 @@ Integrate information in a card container.
   </PCard>
 </template>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| shape | `'square' \| 'rounded'` | `'rounded'` | - |
+| border | `boolean` | `true` | - |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Card content |
+| header | Card header |
+| footer | Card footer |
