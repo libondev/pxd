@@ -500,11 +500,6 @@
   transition-timing-function: var(--default-transition-timing-function);
 }
 
-@utility text-trim {
-  text-box-trim: trim-both;
-  text-box-edge: cap alphabetic;
-}
-
 @utility visually-hidden {
   position: absolute;
   width: 1px;
@@ -528,6 +523,11 @@
 
 @utility font-inherit {
   font-family: inherit;
+}
+
+@utility text-trim-both {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 @layer base {

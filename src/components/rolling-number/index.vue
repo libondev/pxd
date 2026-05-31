@@ -133,7 +133,7 @@ defineExpose({
 
 <template>
   <span
-    class="pxd-rolling-number"
+    class="pxd-rolling-number text-trim-both"
     role="status"
     aria-live="polite"
     aria-atomic="true"

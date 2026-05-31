@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<CardProps>(), {
 })
 
 const card = tv({
-  base: 'pxd-card bg-background-100 text-trim',
+  base: 'pxd-card bg-background-100',
   variants: {
     shape: {
       square: 'rounded-none',
@@ -36,13 +36,13 @@ const computedClasses = computed(() => {
 
 <template>
   <div :class="computedClasses" v-bind="$attrs">
-    <div v-if="$slots.header" class="pxd-card--header text-trim">
+    <div v-if="$slots.header" class="pxd-card--header text-trim-both">
       <slot name="header" />
     </div>
-    <div class="pxd-card--content p-4 text-trim">
+    <div class="pxd-card--content p-4 text-trim-both">
       <slot />
     </div>
-    <div v-if="$slots.footer" class="pxd-card--footer text-trim">
+    <div v-if="$slots.footer" class="pxd-card--footer text-trim-both">
       <slot name="footer" />
     </div>
   </div>

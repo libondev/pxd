@@ -55,7 +55,10 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-countdown relative w-max max-w-full leading-none tabular-nums" v-bind="$attrs">
+  <div
+    class="pxd-countdown relative w-max max-w-full leading-none tabular-nums text-trim-both"
+    v-bind="$attrs"
+  >
     <slot :active="active" :times="times">
       {{ displayTimes }}
     </slot>
