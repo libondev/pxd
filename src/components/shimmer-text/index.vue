@@ -117,11 +117,11 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
   --shimmer-text-spread-mid: calc(var(--shimmer-text-spread) * 0.72);
   background-size: 300% 100%;
   -webkit-text-fill-color: transparent;
-  animation: pxd-shimmer-sweep var(--shimmer-total-duration, 2.5s) cubic-bezier(0.3, 0, 0.2, 1)
-    infinite;
+  animation: pxd-animation-shimmer-sweep var(--shimmer-total-duration, 2.5s)
+    cubic-bezier(0.3, 0, 0.2, 1) infinite;
 }
 
-@keyframes pxd-shimmer-sweep {
+@keyframes pxd-animation-shimmer-sweep {
   0% {
     background-position: 100% center;
   }

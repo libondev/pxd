@@ -49,7 +49,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 bg-background-100 text-13 select-none before:default-animation-timing-function! motion-safe:before:[animation-duration:8s]"
+    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full border border-background-100 bg-background-100 text-13 select-none before:default-animation-timing-function! motion-reduce:before:animate-none!"
     :style="{ '--avatar-size': computedSize }"
     :data-placeholder="placeholder"
     v-bind="$attrs"
@@ -111,8 +111,7 @@ defineExpose({
       var(--color-gray-alpha-100)
     );
     background-size: 400% 100%;
-    animation-name: placeholder;
-    animation-iteration-count: infinite;
+    animation: pxd-animation-placeholder 8s infinite;
   }
 
   &::after {
@@ -130,7 +129,7 @@ defineExpose({
   border-color: var(--color-primary) var(--color-primary) transparent transparent;
 }
 
-@keyframes placeholder {
+@keyframes pxd-animation-placeholder {
   0% {
     background-position: 200% 0;
   }

@@ -87,10 +87,10 @@ const computedClasses = computed(() => {
 }
 
 .pxd-skeleton.animated::after {
-  animation: skeleton-loading 1.5s infinite reverse;
+  animation: pxd-animation-skeleton-loading 1.5s infinite reverse;
 }
 
-@keyframes skeleton-loading {
+@keyframes pxd-animation-skeleton-loading {
   100% {
     transform: translate3d(-50%, 0, 0);
   }

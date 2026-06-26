@@ -12,14 +12,14 @@ defineOptions({
     </div>
 
     <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 default-animation-timing-function! motion-safe:animate-[fade-loading_1.4s_infinite] motion-reduce:opacity-20"
+      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 opacity-20 default-animation-timing-function! motion-reduce:animate-none!"
     />
     <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 default-animation-timing-function! motion-safe:animate-[fade-loading_1.4s_infinite] motion-reduce:opacity-50"
+      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 opacity-50 default-animation-timing-function! motion-reduce:animate-none!"
       style="animation-delay: 0.2s"
     />
     <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 default-animation-timing-function! motion-safe:animate-[fade-loading_1.4s_infinite] motion-reduce:opacity-80"
+      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 opacity-80 default-animation-timing-function! motion-reduce:animate-none!"
       style="animation-delay: 0.4s"
     />
 
@@ -30,7 +30,11 @@ defineOptions({
 </template>
 
 <style>
-@keyframes fade-loading {
+.pxd-loading--dot {
+  animation: pxd-animation-fade-loading 1.4s infinite;
+}
+
+@keyframes pxd-animation-fade-loading {
   0%,
   100% {
     opacity: 0.2;
