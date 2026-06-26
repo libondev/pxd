@@ -75,6 +75,7 @@ declare module 'vue' {
     PScalableText: (typeof import('pxd/components/scalable-text'))['default']
     PScrollable: (typeof import('pxd/components/scrollable'))['default']
     PSeparator: (typeof import('pxd/components/separator'))['default']
+    PShimmerText: (typeof import('pxd/components/shimmer-text'))['default']
     PSkeleton: (typeof import('pxd/components/skeleton'))['default']
     PSlider: (typeof import('pxd/components/slider'))['default']
     PSnippet: (typeof import('pxd/components/snippet'))['default']

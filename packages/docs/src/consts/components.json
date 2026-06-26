@@ -224,6 +224,10 @@
     "name": "separator"
   },
   {
+    "camelized": "Shimmer Text",
+    "name": "shimmer-text"
+  },
+  {
     "camelized": "Skeleton",
     "name": "skeleton"
   },
