@@ -34,7 +34,7 @@ const containerStyle = computed<CSSProperties>(() => {
       :style="containerStyle"
     ></div>
 
-    <div class="pxd-radial-burst--content relative z-10 w-max">
+    <div class="pxd-radial-burst--content relative z-1 w-max">
       <slot />
     </div>
   </div>
