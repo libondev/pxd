@@ -44,7 +44,7 @@ const containerStyle = computed<CSSProperties>(() => {
 .pxd-radial-burst--container {
   --radial-burst-color-accent: var(--color-yellow-400);
   inset: 50% auto auto 50%;
-  inline-size: 125%;
+  inline-size: 150%;
   animation-duration: 30s;
   background-image:
     repeating-conic-gradient(
