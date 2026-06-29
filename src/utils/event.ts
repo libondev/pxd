@@ -181,23 +181,43 @@ export function doubleRaf(fn: FrameRequestCallback): number {
   return raf(() => raf(fn))
 }
 
+type ThrottledResult<T extends Callback> = Awaited<ReturnType<T>> | undefined
+
 interface ThrottleByRafReturnType<T extends Callback> {
-  (...args: Parameters<T>): void
+  (...args: Parameters<T>): Promise<ThrottledResult<T>>
   cancel: () => void
 }
 
 export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafReturnType<T> {
   let animationFrameId: number = 0
+  // Calls coalesced within the same frame window share this pending promise.
+  let pendingPromise: Promise<ThrottledResult<T>> | null = null
+  let resolvePending: ((value: ThrottledResult<T>) => void) | null = null
 
-  const throttle = (...args: Parameters<T>): void => {
+  const throttle = (...args: Parameters<T>): Promise<ThrottledResult<T>> => {
     if (animationFrameId) {
-      return
+      return pendingPromise!
     }
 
-    animationFrameId = raf(() => {
-      animationFrameId = 0
-      callback(...args)
+    pendingPromise = new Promise<ThrottledResult<T>>((resolve, reject) => {
+      resolvePending = resolve
+
+      animationFrameId = raf(() => {
+        animationFrameId = 0
+        pendingPromise = null
+        resolvePending = null
+
+        try {
+          // Adopts the callback's promise when it returns one, so async
+          // callbacks settle the shared promise with their resolved value.
+          resolve(callback(...args))
+        } catch (err) {
+          reject(err)
+        }
+      })
     })
+
+    return pendingPromise
   }
 
   throttle.cancel = () => {
@@ -205,6 +225,11 @@ export function throttleByRaf<T extends Callback>(callback: T): ThrottleByRafRet
       caf(animationFrameId)
       animationFrameId = 0
     }
+
+    // Settle any awaiter instead of leaving it hanging forever.
+    resolvePending?.(undefined)
+    pendingPromise = null
+    resolvePending = null
   }
 
   return throttle
