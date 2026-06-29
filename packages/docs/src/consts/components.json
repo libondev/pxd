@@ -200,6 +200,10 @@
     "name": "project-banner"
   },
   {
+    "camelized": "Radial Burst",
+    "name": "radial-burst"
+  },
+  {
     "camelized": "Radio",
     "name": "radio"
   },
