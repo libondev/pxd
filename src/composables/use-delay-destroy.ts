@@ -21,7 +21,7 @@ export function useDelayDestroy(
   value: MaybeRefOrGetter<Nullable<boolean>>,
   options: Options = {},
 ): Results {
-  const { delay = 300, renderChange, visibleChange } = options
+  const { delay = 1000, renderChange, visibleChange } = options
 
   const render = shallowRef(toValue(value) as boolean)
   const visible = shallowRef(toValue(value) as boolean)

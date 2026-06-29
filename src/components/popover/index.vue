@@ -7,6 +7,7 @@ import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { useConfigProvider } from '../../contexts/config-provider'
+import { throttleByRaf } from '../../utils/event'
 import { getCssUnitValue, toArray } from '../../utils/format'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
@@ -62,8 +63,8 @@ const computePositionMiddleware = computed(() => {
     shift(),
     props.autoPosition && flip(),
     props.showArrow && arrow({ element: arrowRef.value }),
-    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
     props.closeOnInvisible && hide({ strategy: 'escaped' }),
+    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
   ]
 })
 
@@ -73,7 +74,6 @@ const {
   show: showPopover,
   hide: hidePopover,
 } = useDelayDestroy(props.modelValue, {
-  delay: 2000,
   visibleChange(v) {
     if (!allowOutsideClick.value) {
       return
@@ -112,6 +112,8 @@ function disposeAutoUpdate() {
     cleanupAutoUpdate()
     cleanupAutoUpdate = null
   }
+
+  throttledUpdatePosition.cancel()
 }
 
 async function updatePosition() {
@@ -147,6 +149,8 @@ async function updatePosition() {
   }
 }
 
+const throttledUpdatePosition = throttleByRaf(updatePosition)
+
 async function handlePopoverShow() {
   if (showPopoverTimer || props.disabled) {
     return
@@ -168,10 +172,10 @@ async function handlePopoverShow() {
 
   disposeAutoUpdate()
 
+  await updatePosition()
+
   if (props.autoPosition) {
-    cleanupAutoUpdate = autoUpdate(triggerRef.value, wrapperRef.value, updatePosition)
-  } else {
-    await updatePosition()
+    cleanupAutoUpdate = autoUpdate(triggerRef.value, wrapperRef.value, throttledUpdatePosition)
   }
 }
 
@@ -241,10 +245,12 @@ function onTriggerPointerLeave() {
   handlePopoverHide()
 }
 
-function onTriggerContextmenu() {
+function onTriggerContextmenu(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
     return
   }
+
+  ev.preventDefault()
 
   if (isVisible.value) {
     handlePopoverHide()
@@ -327,7 +333,7 @@ defineExpose({
     @click="onTriggerClick"
     @pointerenter="onTriggerPointerEnter"
     @pointerleave="onTriggerPointerLeave"
-    @contextmenu.prevent="onTriggerContextmenu"
+    @contextmenu="onTriggerContextmenu"
   >
     <slot />
 

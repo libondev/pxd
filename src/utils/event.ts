@@ -6,7 +6,16 @@ export function NOOP() {}
 
 type EventHandler<E extends Event = Event> = (event: E) => void
 
-const eventCache = new WeakMap<EventTarget, Record<string, EventHandler[]>>()
+interface CachedEntry {
+  scheduler: EventListener
+  handlers: Set<EventHandler>
+}
+
+const eventCache = new WeakMap<EventTarget, Map<string, CachedEntry>>()
+
+function getCacheKey(event: string, options?: AddEventListenerOptions): string {
+  return `${event}__${options?.capture ? 'capture' : 'bubble'}`
+}
 
 export function on<E extends Event = Event>(
   el: Nullable<EventTarget>,
@@ -64,33 +73,33 @@ export function cachedOn<E extends Event = Event>(
     return () => {}
   }
 
-  const cacheKey = `__cached_${event}`
+  const cacheKey = getCacheKey(event, options)
 
   let elementCache = eventCache.get(el)
   if (!elementCache) {
-    elementCache = {}
+    elementCache = new Map()
     eventCache.set(el, elementCache)
   }
 
-  const cachedEventHandlers = elementCache[cacheKey] as EventHandler<E>[] | undefined
+  let entry = elementCache.get(cacheKey)
 
-  if (cachedEventHandlers) {
-    if (!cachedEventHandlers.includes(handler)) {
-      cachedEventHandlers.push(handler)
-    }
+  if (entry) {
+    entry.handlers.add(handler as EventHandler)
 
     return () => cachedOff(el, event, handler, options)
   }
 
-  // Scheduler always reads from cache to avoid stale closure references.
-  const scheduler = (ev: Event) => {
-    const list = elementCache?.[cacheKey] as EventHandler<E>[] | undefined
-    list?.slice(1).forEach((h: EventHandler<E>) => h(ev as E))
+  const handlers = new Set<EventHandler>([handler as EventHandler])
+
+  // Scheduler reads from the shared handler set to avoid stale closures and
+  // per-dispatch array allocations.
+  const scheduler: EventListener = (ev) => {
+    handlers.forEach((h) => h(ev))
   }
 
-  const handlers: EventHandler<E>[] = [scheduler as EventHandler<E>, handler]
-  elementCache[cacheKey] = handlers as EventHandler[]
-  el.addEventListener(event, scheduler as EventListener, options)
+  entry = { scheduler, handlers }
+  elementCache.set(cacheKey, entry)
+  el.addEventListener(event, scheduler, options)
 
   return () => cachedOff(el, event, handler, options)
 }
@@ -105,35 +114,28 @@ export function cachedOff<E extends Event = Event>(
     return
   }
 
-  const cacheKey = `__cached_${event}`
   const elementCache = eventCache.get(el)
 
   if (!elementCache) {
     return
   }
 
-  const cachedEventHandlers = elementCache[cacheKey] as EventHandler[] | undefined
+  const cacheKey = getCacheKey(event, options)
+  const entry = elementCache.get(cacheKey)
 
-  if (!cachedEventHandlers) {
+  if (!entry) {
     return
   }
 
-  const index = cachedEventHandlers.indexOf(handler as EventHandler)
-
-  if (index === -1) {
+  if (!entry.handlers.delete(handler as EventHandler)) {
     return
   }
 
-  cachedEventHandlers.splice(index, 1)
+  if (entry.handlers.size === 0) {
+    el.removeEventListener(event, entry.scheduler, options)
+    elementCache.delete(cacheKey)
 
-  if (cachedEventHandlers.length <= 1) {
-    const scheduler = cachedEventHandlers[0]
-    if (scheduler) {
-      el.removeEventListener(event, scheduler as EventListener, options)
-    }
-    delete elementCache[cacheKey]
-
-    if (Object.keys(elementCache).length === 0) {
+    if (elementCache.size === 0) {
       eventCache.delete(el)
     }
   }
