@@ -7,10 +7,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<RadialBurstProps>(), {
-  primaryColor: 'var(--color-yellow-400)',
-  backgroundColor: 'var(--color-yellow-300)',
-})
+const props = defineProps<RadialBurstProps>()
 
 const wrapperStyle = computed<CSSProperties>(() => {
   return {
@@ -28,7 +25,7 @@ const containerStyle = computed<CSSProperties>(() => {
 
 <template>
   <div
-    class="pxd-radial-burst min-h-40 relative flex w-full max-w-full items-center justify-center overflow-hidden"
+    class="pxd-radial-burst min-h-40 relative flex w-full bg-yellow-300 max-w-full items-center justify-center overflow-hidden"
     :style="wrapperStyle"
     v-bind="$attrs"
   >
@@ -45,6 +42,7 @@ const containerStyle = computed<CSSProperties>(() => {
 
 <style>
 .pxd-radial-burst--container {
+  --radial-burst-color-accent: var(--color-yellow-400);
   inset: 50% auto auto 50%;
   inline-size: 125%;
   animation-duration: 30s;

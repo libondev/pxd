@@ -6,7 +6,7 @@ A comic-style sunburst background with slowly rotating radial rays. Use it to dr
 
 ```vue demo
 <template>
-  <PRadialBurst class="h-100">
+  <PRadialBurst class="h-80">
     Radial Burst
   </PRadialBurst>
 </template>
@@ -21,18 +21,18 @@ Use `primary-color` for the ray color and `background-color` for the base fill.
   <PStack direction="vertical" gap="8">
     <PRadialBurst
       class="h-80"
-      primary-color="var(--color-orange-400)"
-      background-color="var(--color-orange-200)"
+      primary-color="var(--color-teal-500)"
+      background-color="var(--color-teal-400)"
     >
-      <PText class="font-semibold">Orange burst</PText>
+      <PText class="font-semibold">Teal burst</PText>
     </PRadialBurst>
 
     <PRadialBurst
       class="h-80"
-      primary-color="var(--color-blue-500)"
-      background-color="var(--color-blue-200)"
+      primary-color="var(--color-gray-300)"
+      background-color="var(--color-gray-100)"
     >
-      <PText class="font-semibold">Blue burst</PText>
+      <PText class="font-semibold">Gray burst</PText>
     </PRadialBurst>
   </PStack>
 </template>
