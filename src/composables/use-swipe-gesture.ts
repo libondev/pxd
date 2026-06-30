@@ -1,6 +1,6 @@
 import type { MaybeElementRef } from '../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
-import { onScopeDispose, watch } from 'vue'
+import { nextTick, onScopeDispose, watch } from 'vue'
 import { Core, Pan } from '../plugins/any-touch.js'
 import { getElement } from '../utils/dom'
 import { toValue } from '../utils/helper'
@@ -70,6 +70,11 @@ export interface SwipeGestureOptions {
   onRelease?: (state: SwipeReleaseState) => void
 }
 
+type SwipePanAxisEvent = {
+  displacementX: number
+  displacementY: number
+}
+
 export function useSwipeGesture(
   containerRef: MaybeElementRef<HTMLElement>,
   options: SwipeGestureOptions = {},
@@ -85,6 +90,7 @@ export function useSwipeGesture(
   } = options
 
   let at: Core | null = null
+  let stopped = false
 
   function isHorizontal() {
     return (toValue(options.direction) ?? 'horizontal') === 'horizontal'
@@ -94,12 +100,20 @@ export function useSwipeGesture(
     return horizontal ? (displacement > 0 ? 'right' : 'left') : displacement > 0 ? 'bottom' : 'top'
   }
 
+  function isPrimaryAxis(e: SwipePanAxisEvent, horizontal: boolean) {
+    return horizontal
+      ? Math.abs(e.displacementX) >= Math.abs(e.displacementY)
+      : Math.abs(e.displacementY) >= Math.abs(e.displacementX)
+  }
+
   function bind() {
     const container = getElement(containerRef)
 
     if (!container) {
       return
     }
+
+    unbind()
 
     const handle = handleSelector ? container.querySelector<HTMLElement>(handleSelector) : container
     if (!handle) {
@@ -121,6 +135,11 @@ export function useSwipeGesture(
 
     at.on('panmove', (e) => {
       const h = isHorizontal()
+
+      if (!isPrimaryAxis(e, h)) {
+        return
+      }
+
       const displacement = h ? e.displacementX : e.displacementY
       const delta = h ? e.deltaX : e.deltaY
       const velocity = h ? e.velocityX : e.velocityY
@@ -135,6 +154,12 @@ export function useSwipeGesture(
 
     at.on('panend', (e) => {
       const h = isHorizontal()
+
+      if (!isPrimaryAxis(e, h)) {
+        onRelease?.({ swiped: false })
+        return
+      }
+
       const displacement = h ? e.displacementX : e.displacementY
       const velocity = h ? e.velocityX : e.velocityY
 
@@ -167,21 +192,28 @@ export function useSwipeGesture(
   }
 
   function stop() {
+    stopped = true
     unwatch()
     unbind()
   }
 
   const unwatch = watch(
-    () => [getElement(containerRef), toValue(options.disabled)],
-    ([el, disabled]) => {
+    () => [getElement(containerRef), toValue(options.disabled)] as const,
+    async ([el, disabled]) => {
       if (!el || disabled) {
         unbind()
         return
       }
 
+      await nextTick()
+
+      if (stopped || getElement(containerRef) !== el || toValue(options.disabled)) {
+        return
+      }
+
       bind()
     },
-    { immediate: true },
+    { immediate: true, flush: 'post' },
   )
 
   onScopeDispose(() => {
