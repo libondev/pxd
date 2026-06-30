@@ -208,6 +208,10 @@
     "name": "radio"
   },
   {
+    "camelized": "Rate",
+    "name": "rate"
+  },
+  {
     "camelized": "Resizable",
     "name": "resizable"
   },
