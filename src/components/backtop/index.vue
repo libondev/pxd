@@ -4,7 +4,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { getScrollTarget, getScrollElement } from '../../utils/dom'
-import { cachedOff, cachedOn } from '../../utils/event'
+import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'
 
@@ -53,14 +53,14 @@ const isVisible = computed(() => {
   return maxScrollTop.value - scrollTop.value >= props.visibleThreshold
 })
 
-function updateScrollTop() {
+const updateScrollTop = throttleByRaf(() => {
   if (!scrollContainerEl) {
     return
   }
 
   scrollTop.value = scrollContainerEl.scrollTop
   maxScrollTop.value = Math.max(0, scrollContainerEl.scrollHeight - scrollContainerEl.clientHeight)
-}
+})
 
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)
@@ -91,6 +91,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   cachedOff(scrollContainer, 'scroll', updateScrollTop, { passive: true })
+  updateScrollTop.cancel()
 
   scrollContainer = null
   scrollContainerEl = null

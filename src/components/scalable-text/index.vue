@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ScalableTextProps } from './types'
 import { prepareWithSegments, measureNaturalWidth } from '@chenglou/pretext'
-import { shallowRef, computed, watch, nextTick, onBeforeUnmount } from 'vue'
+import { shallowRef, computed, watch, onBeforeUnmount } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
-import { caf, raf } from '../../utils/event'
+import { scheduleByRaf } from '../../utils/event'
 import { isServer } from '../../utils/is'
 
 defineOptions({
@@ -21,8 +21,6 @@ const PRECISION = 0.5
 const needsWrap = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const fittedFontSize = shallowRef<number | null>(null)
-let rafId = 0
-let pendingAdjust = false
 
 function parseSize(value: string): number {
   return Number.parseFloat(value) || 0
@@ -137,17 +135,7 @@ function adjust() {
   needsWrap.value = false
 }
 
-function scheduleAdjust() {
-  if (pendingAdjust) {
-    return
-  }
-  pendingAdjust = true
-  // Use rAF to coalesce rapid resize events into a single frame
-  rafId = raf(() => {
-    pendingAdjust = false
-    nextTick(adjust)
-  })
-}
+const scheduleAdjust = scheduleByRaf(adjust, { defer: true })
 
 const computedStyle = computed(() => {
   const size = fittedFontSize.value
@@ -163,7 +151,7 @@ watch(() => [props.text, props.minFontSize], scheduleAdjust, { flush: 'post' })
 useResizeObserver(containerRef, scheduleAdjust)
 
 onBeforeUnmount(() => {
-  caf(rafId)
+  scheduleAdjust.cancel()
 })
 
 defineExpose({

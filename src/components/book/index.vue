@@ -40,21 +40,21 @@ const computedStyle = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const classes = [
-    'pxd-book--container group-hover/book:will-change-transform relative w-fit duration-300 transform-3d motion-safe:transition-transform',
-  ]
-
-  classes.push(
-    ...Object.keys(formattedWidth.value).map((bp) => presetWidth[bp as keyof typeof presetWidth]),
+  const classes = Object.keys(formattedWidth.value).map(
+    (bp) => presetWidth[bp as keyof typeof presetWidth],
   )
 
-  return classes.join(' ')
+  return classes
 })
 </script>
 
 <template>
   <div class="pxd-book group/book inline-flex w-fit" v-bind="$attrs">
-    <div :class="computedClasses" :style="computedStyle">
+    <div
+      class="pxd-book--container relative w-fit duration-300 transform-3d group-hover/book:will-change-transform motion-safe:transition-transform"
+      :class="computedClasses"
+      :style="computedStyle"
+    >
       <div
         class="pxd-book--content translate-z-0 absolute flex size-full min-w-full flex-col overflow-hidden bg-background-200"
       >

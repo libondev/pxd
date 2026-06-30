@@ -59,7 +59,7 @@ const formattedCols = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return [
+  const classes = [
     ...Object.keys(formattedRows.value).map(
       (bp) => presetGridRows[bp as keyof typeof presetGridRows],
     ),
@@ -67,7 +67,9 @@ const computedClasses = computed(() => {
       (bp) => presetGridCols[bp as keyof typeof presetGridCols],
     ),
     props.debug ? 'debug' : '',
-  ].join(' ')
+  ]
+
+  return classes
 })
 
 const computedStyle = computed(() => {

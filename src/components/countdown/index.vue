@@ -26,8 +26,12 @@ dayjs.extend(dayjsMillisecondTokenPlugin)
 
 const { stop, reset, timestamp } = useCountdown<typeof emits>(props, emits)
 
+const timestampDuration = computed(() => {
+  return dayjs.duration(timestamp.value)
+})
+
 const times = computed(() => {
-  const t = dayjs.duration(timestamp.value)
+  const t = timestampDuration.value
 
   return {
     dd: t.format('DD'),
@@ -39,7 +43,7 @@ const times = computed(() => {
 })
 
 const displayTimes = computed(() => {
-  const time = dayjs.duration(timestamp.value).format(props.format)
+  const time = timestampDuration.value.format(props.format)
 
   return time
 })

@@ -51,12 +51,14 @@ const isDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
 })
 
-const computedClasses = computed(() => {
-  return [
+const contentClassComputed = computed(() => {
+  const classes = [
     'px-3 py-2 rounded-md text-13 break-words shadow-tooltip whitespace-pre-line bg-(--popover-arrow-color)',
     computedVariant.value.base,
     props.contentClass,
-  ].join(' ')
+  ]
+
+  return classes
 })
 </script>
 
@@ -71,7 +73,7 @@ const computedClasses = computed(() => {
     :hide-delay="hideDelay"
     wrapper-class="max-sm:data-[position^=top]:px-1 max-sm:data-[position^=bottom]:px-1 max-sm:data-[position^=left]:pl-1 max-sm:data-[position^=right]:pr-1"
     :arrow-color="computedVariant.bg"
-    :content-class="computedClasses"
+    :content-class="contentClassComputed"
     :content-style="contentStyle"
     v-bind="$attrs"
   >

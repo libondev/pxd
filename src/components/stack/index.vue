@@ -105,9 +105,7 @@ const computedClasses = computed(() => {
     baseClass,
     ...Object.values(formattedDirection.value),
     ...Object.keys(formattedGap.value).map((bp) => presetGap[bp as keyof typeof presetGap]),
-  ]
-    .filter(Boolean)
-    .join(' ')
+  ].filter(Boolean)
 
   return classes
 })

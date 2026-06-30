@@ -4,9 +4,10 @@ import type { RichInlineItem } from '@chenglou/pretext/rich-inline'
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext'
 import { prepareRichInline, measureRichInlineStats } from '@chenglou/pretext/rich-inline'
 import { twMerge } from 'tailwind-merge'
-import { shallowRef, computed, nextTick, watch } from 'vue'
+import { shallowRef, computed, nextTick, watch, onBeforeUnmount } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
+import { scheduleByRaf } from '../../utils/event'
 import { isServer } from '../../utils/is'
 
 defineOptions({
@@ -135,7 +136,7 @@ function buildCandidate(chars: string[], keep: number, dots: string, position: '
   return `${joinChars(chars, 0, headLen)}${dots}${joinChars(chars, chars.length - tailLen, chars.length)}`
 }
 
-async function updateEllipsis() {
+const updateEllipsis = scheduleByRaf(async () => {
   if (isServer()) {
     return
   }
@@ -237,10 +238,18 @@ async function updateEllipsis() {
   }
 
   ellipsisText.value = best || dots
-}
+})
 
 watch(
-  () => props,
+  () => [
+    props.text,
+    props.rows,
+    props.dots,
+    props.position,
+    props.action,
+    props.moreText,
+    props.moreActionClass,
+  ],
   () => {
     if (!props.action && isExpanded.value) {
       isExpanded.value = false
@@ -251,11 +260,14 @@ watch(
   {
     immediate: true,
     flush: 'post',
-    deep: true,
   },
 )
 
 useResizeObserver(containerRef, updateEllipsis)
+
+onBeforeUnmount(() => {
+  updateEllipsis.cancel()
+})
 
 defineExpose({
   isExpanded,

@@ -41,10 +41,6 @@ const computedClasses = computed(() =>
     size: props.size || configProvider.size,
   }),
 )
-
-function isActive(color: string) {
-  return modelValue.value === color
-}
 </script>
 
 <template>
@@ -56,9 +52,9 @@ function isActive(color: string) {
         :value="color"
         :style="{ color }"
         :class="computedClasses"
-        :aria-selected="isActive(color)"
-        :checked="isActive(color)"
-        :tabindex="isActive(color) ? 0 : -1"
+        :aria-selected="modelValue === color"
+        :checked="modelValue === color"
+        :tabindex="modelValue === color ? 0 : -1"
         @change="modelValue = color"
       />
     </template>

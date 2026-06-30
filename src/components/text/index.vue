@@ -69,9 +69,7 @@ const computedClasses = computed(() => {
   const classes = [
     baseClass,
     ...Object.keys(computedStyle.value).map((bp) => presetSize[bp as keyof typeof presetSize]),
-  ]
-    .filter(Boolean)
-    .join(' ')
+  ].filter(Boolean)
 
   return classes
 })

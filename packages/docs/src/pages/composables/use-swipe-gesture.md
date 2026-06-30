@@ -38,7 +38,7 @@ interface SwipeGestureOptions {
 | `options.handleSelector` | `string` | CSS selector for the swipe handle element |
 | `options.direction` | `MaybeRefOrGetter<'horizontal' \| 'vertical'>` | Swipe direction to detect |
 | `options.swipeThreshold` | `number` | Threshold for swipe activation |
-| `options.distanceThreshold` | `number` | Minimum distance in pixels to qualify as a swipe |
+| `options.distanceThreshold` | `number` | Minimum sliding size ratio |
 | `options.velocityThreshold` | `number` | Minimum velocity to qualify as a swipe |
 | `options.onPress` | `(state: SwipePressState) => void` | Callback fired on pointer press |
 | `options.onFollow` | `(state: SwipeFollowState) => void` | Callback fired on pointer move |

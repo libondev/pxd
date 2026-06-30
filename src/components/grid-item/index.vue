@@ -49,10 +49,12 @@ const formattedCol = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return [
+  const classes = [
     ...Object.keys(formattedRow.value).map((bp) => presetGridRow[bp as keyof typeof presetGridRow]),
     ...Object.keys(formattedCol.value).map((bp) => presetGridCol[bp as keyof typeof presetGridCol]),
-  ].join(' ')
+  ]
+
+  return classes
 })
 
 const gridItemStyle = computed(() => {

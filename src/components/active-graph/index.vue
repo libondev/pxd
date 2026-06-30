@@ -6,10 +6,11 @@ import type {
   ActiveGraphRowData,
   ActiveGraphTooltipInfo,
 } from './types'
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDelayChange } from '../../composables/use-delay-change'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getAllDatesBetween } from '../../utils/date'
+import { scheduleByRaf } from '../../utils/event'
 import { getCssUnitValue } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/helper'
 
@@ -142,9 +143,11 @@ function createMonthHeaders() {
   return monthHeaders
 }
 
-const tableBodyList = computed<ActiveGraphRowData[]>(() => {
-  return props.transpose ? createTransposedTableData() : createStandardTableData()
-})
+const tableBodyList = shallowRef<ActiveGraphRowData[]>([])
+
+function refreshTableBodyList() {
+  tableBodyList.value = props.transpose ? createTransposedTableData() : createStandardTableData()
+}
 
 // create transposed table data (rows are dates, columns are days of week)
 function createTransposedTableData(): ActiveGraphRowData[] {
@@ -294,6 +297,23 @@ function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
   return rows
 }
 
+const scheduleRefreshTableBodyList = scheduleByRaf(refreshTableBodyList)
+
+refreshTableBodyList()
+
+watch(
+  () => [
+    dateCountMap.value,
+    rangedDates.value,
+    props.transpose,
+    computedColors.value,
+    configProvider.locale.date.day,
+    configProvider.locale.date.month,
+  ],
+  scheduleRefreshTableBodyList,
+  { flush: 'post' },
+)
+
 function onCellClick(event: MouseEvent) {
   const target = event.target as HTMLElement
   const date = target.dataset.date
@@ -366,6 +386,7 @@ async function onPointerOver(ev: MouseEvent) {
 }
 
 onBeforeUnmount(() => {
+  scheduleRefreshTableBodyList.cancel()
   onPointerLeave()
 })
 </script>
