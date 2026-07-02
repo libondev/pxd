@@ -498,6 +498,7 @@
     opacity, transform, scale, translate, background-color, box-shadow, font-size, border, color;
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
+  will-change: transform;
 }
 
 @utility visually-hidden {
@@ -623,10 +624,6 @@
   -webkit-box-orient: vertical;
 }
 */
-
-.scrollbar-stable {
-  scrollbar-gutter: stable !important;
-}
 
 .scrollbar-disabled,
 .scrollbar-disabled-x {
