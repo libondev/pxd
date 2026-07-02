@@ -48,7 +48,7 @@ const shimmerPresets: Record<ShimmerTextVariant, ShimmerGradientStop[]> = {
 const props = withDefaults(defineProps<ShimmerTextProps>(), {
   variant: 'default',
   durations: 1500,
-  interval: 1000,
+  interval: 500,
 })
 
 defineOptions({

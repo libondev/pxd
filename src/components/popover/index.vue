@@ -463,7 +463,7 @@ defineExpose({
 <template>
   <div
     ref="triggerRef"
-    class="pxd-popover inline-flex max-w-full active:select-none data-[disabled=true]:pointer-events-none data-[visible=true]:pointer-events-auto"
+    class="pxd-popover inline-flex max-w-full touch-manipulation active:select-none data-[disabled=true]:pointer-events-none data-[visible=true]:pointer-events-auto"
     :data-visible="isVisible"
     :data-disabled="disabled"
     v-bind="$attrs"

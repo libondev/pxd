@@ -111,7 +111,7 @@ function updateDocsComponents() {
 
   fs.writeFileSync(
     path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'),
-    `${JSON.stringify(jsonContent, null, 2)}\n`,
+    `${JSON.stringify(jsonContent, null, 2)}\n\n`,
   )
 }
 
