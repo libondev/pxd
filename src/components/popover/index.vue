@@ -2,7 +2,7 @@
 import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
-import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useDelayDestroy } from '../../composables/use-delay-destroy'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useOutsideClick } from '../../composables/use-outside-click'
@@ -42,6 +42,8 @@ let cleanupAutoUpdate: (() => void) | null = null
 const arrowRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
+const activeTriggerRef = shallowRef<HTMLElement | null>(null)
+const activeTriggerIndex = shallowRef(-1)
 const localPosition = shallowRef(props.position)
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
@@ -107,6 +109,114 @@ useOutsideClick(wrapperRef, {
   },
 })
 
+function clearShowTimer() {
+  if (showPopoverTimer) {
+    clearTimeout(showPopoverTimer)
+    showPopoverTimer = null
+  }
+}
+
+function clearHideTimer() {
+  if (hidePopoverTimer) {
+    clearTimeout(hidePopoverTimer)
+    hidePopoverTimer = null
+  }
+}
+
+function getTriggerElements() {
+  if (!props.triggerSelector) {
+    return []
+  }
+
+  return Array.from(triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector))
+}
+
+function resolveTriggerElement(target: EventTarget | null) {
+  if (!props.triggerSelector) {
+    return triggerRef.value
+  }
+
+  if (!(target instanceof Element)) {
+    return null
+  }
+
+  const matched = target.closest<HTMLElement>(props.triggerSelector)
+
+  if (!matched || !triggerRef.value.contains(matched)) {
+    return null
+  }
+
+  return matched
+}
+
+function setActiveTrigger(trigger: HTMLElement | null) {
+  activeTriggerRef.value = trigger
+
+  if (!props.triggerSelector) {
+    activeTriggerIndex.value = 0
+    return
+  }
+
+  activeTriggerIndex.value = trigger ? getTriggerElements().indexOf(trigger) : -1
+}
+
+function ensureActiveTrigger() {
+  if (!props.triggerSelector) {
+    if (!activeTriggerRef.value) {
+      setActiveTrigger(triggerRef.value)
+    }
+
+    return
+  }
+
+  if (!activeTriggerRef.value || !triggerRef.value.contains(activeTriggerRef.value)) {
+    setActiveTrigger(getTriggerElements()[0] ?? null)
+  }
+}
+
+function getReferenceElement() {
+  ensureActiveTrigger()
+
+  return activeTriggerRef.value || triggerRef.value
+}
+
+function startAutoUpdate() {
+  if (!props.autoPosition || !wrapperRef.value) {
+    return
+  }
+
+  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, throttledUpdatePosition)
+}
+
+async function syncPosition(waitForDom: boolean = false) {
+  disposeAutoUpdate()
+
+  if (waitForDom) {
+    await nextTick()
+  }
+
+  await updatePosition()
+  startAutoUpdate()
+}
+
+async function updateActiveTrigger(trigger: HTMLElement | null) {
+  if (!trigger) {
+    return
+  }
+
+  clearHideTimer()
+
+  if (trigger === activeTriggerRef.value) {
+    return
+  }
+
+  setActiveTrigger(trigger)
+
+  if (isVisible.value) {
+    await syncPosition(true)
+  }
+}
+
 function disposeAutoUpdate() {
   if (cleanupAutoUpdate) {
     cleanupAutoUpdate()
@@ -117,8 +227,12 @@ function disposeAutoUpdate() {
 }
 
 async function updatePosition() {
+  if (!wrapperRef.value) {
+    return
+  }
+
   const { x, y, placement, middlewareData } = await computePosition(
-    triggerRef.value,
+    getReferenceElement(),
     wrapperRef.value,
     {
       placement: props.position,
@@ -157,10 +271,7 @@ async function handlePopoverShow() {
   }
 
   await new Promise<void>((resolve) => {
-    if (hidePopoverTimer) {
-      clearTimeout(hidePopoverTimer)
-      hidePopoverTimer = null
-    }
+    clearHideTimer()
 
     showPopoverTimer = setTimeout(() => {
       showPopoverTimer = null
@@ -169,14 +280,7 @@ async function handlePopoverShow() {
   })
 
   await showPopover()
-
-  disposeAutoUpdate()
-
-  await updatePosition()
-
-  if (props.autoPosition) {
-    cleanupAutoUpdate = autoUpdate(triggerRef.value, wrapperRef.value, throttledUpdatePosition)
-  }
+  await syncPosition()
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
@@ -185,15 +289,11 @@ async function handlePopoverHide(immediate: boolean = false) {
       return
     }
 
-    clearTimeout(hidePopoverTimer)
-    hidePopoverTimer = null
+    clearHideTimer()
   }
 
   await new Promise<void>((resolve) => {
-    if (showPopoverTimer) {
-      clearTimeout(showPopoverTimer)
-      showPopoverTimer = null
-    }
+    clearShowTimer()
 
     hidePopoverTimer = setTimeout(
       () => {
@@ -209,31 +309,63 @@ async function handlePopoverHide(immediate: boolean = false) {
   hidePopover()
 }
 
+function activateTrigger(trigger: HTMLElement, toggleSameTrigger: boolean = true) {
+  const isSameTrigger = trigger === activeTriggerRef.value || !props.triggerSelector
+
+  if (isVisible.value && isSameTrigger && toggleSameTrigger) {
+    handlePopoverHide()
+    return
+  }
+
+  if (isVisible.value) {
+    updateActiveTrigger(trigger)
+    return
+  }
+
+  setActiveTrigger(trigger)
+  handlePopoverShow()
+}
+
 function onTriggerClick(ev: Event) {
   if (props.disabled) {
     return
   }
 
+  const trigger = resolveTriggerElement(ev.target)
+
+  if (!trigger) {
+    return
+  }
+
   emits('trigger-click', ev as PointerEvent)
 
-  if (!triggerMethods.value.includes('click')) {
+  if (triggerMethods.value.includes('click')) {
+    activateTrigger(trigger, props.toggleOnTrigger)
+  }
+}
+
+function onTriggerPointerOver(ev: PointerEvent) {
+  if (!props.triggerSelector || props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
-  if (isVisible.value && props.toggleOnTrigger) {
-    handlePopoverHide()
+  const trigger = resolveTriggerElement(ev.target)
 
-    return
+  if (trigger) {
+    activateTrigger(trigger, false)
   }
-
-  handlePopoverShow()
 }
 
 function onTriggerPointerEnter() {
+  if (props.triggerSelector) {
+    return
+  }
+
   if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
+  setActiveTrigger(triggerRef.value)
   handlePopoverShow()
 }
 
@@ -250,15 +382,14 @@ function onTriggerContextmenu(ev: PointerEvent) {
     return
   }
 
-  ev.preventDefault()
+  const trigger = resolveTriggerElement(ev.target)
 
-  if (isVisible.value) {
-    handlePopoverHide()
-
+  if (!trigger) {
     return
   }
 
-  handlePopoverShow()
+  ev.preventDefault()
+  activateTrigger(trigger)
 }
 
 const PREVENT_KEYS = new Set(['ArrowUp', 'ArrowDown', 'Home', 'End'])
@@ -311,9 +442,15 @@ watch(
   },
 )
 
+onMounted(() => {
+  if (props.modelValue) {
+    handlePopoverShow()
+  }
+})
+
 onBeforeUnmount(() => {
-  clearTimeout(showPopoverTimer!)
-  clearTimeout(hidePopoverTimer!)
+  clearShowTimer()
+  clearHideTimer()
   disposeAutoUpdate()
 })
 
@@ -332,6 +469,7 @@ defineExpose({
     v-bind="$attrs"
     @click="onTriggerClick"
     @pointerenter="onTriggerPointerEnter"
+    @pointerover="onTriggerPointerOver"
     @pointerleave="onTriggerPointerLeave"
     @contextmenu="onTriggerContextmenu"
   >
@@ -369,7 +507,11 @@ defineExpose({
             :class="contentClass"
             :style="contentStyle"
           >
-            <slot name="content" />
+            <slot
+              name="content"
+              :active-trigger="activeTriggerRef"
+              :active-trigger-index="activeTriggerIndex"
+            />
           </div>
 
           <div

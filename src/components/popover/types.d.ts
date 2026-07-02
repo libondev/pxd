@@ -7,6 +7,7 @@ export interface PopoverProps {
   zIndex?: number | string
   offset?: number
   trigger?: PopoverTrigger | PopoverTrigger[]
+  triggerSelector?: string
   disabled?: boolean
   adaptive?: boolean
   maxWidth?: number | string

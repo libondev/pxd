@@ -205,6 +205,48 @@ const content =
 </template>
 ```
 
+## Multiple triggers
+
+Use `trigger-selector` when several DOM elements should share one popover instance. The popover keeps the same floating element open and updates its position to the active matched trigger.
+
+```vue demo
+<script setup>
+const actions = [
+  { key: 'bold', label: 'B', description: 'Make selected text bold.' },
+  { key: 'italic', label: 'I', description: 'Make selected text italic.' },
+  { key: 'underline', label: 'U', description: 'Underline selected text.' },
+]
+</script>
+
+<template>
+  <PPopover
+    trigger="hover"
+    trigger-selector="[data-popover-trigger]"
+    content-class="p-3 bg-background-100 shadow-sm border rounded-md text-sm"
+  >
+    <PStack>
+      <button
+        v-for="action in actions"
+        :key="action.key"
+        type="button"
+        data-popover-trigger
+        :data-popover-key="action.key"
+        :data-popover-description="action.description"
+        class="h-8 w-8 rounded-md border bg-background-100 font-medium"
+      >
+        {{ action.label }}
+      </button>
+    </PStack>
+
+    <template #content="{ activeTrigger, activeTriggerIndex }">
+      {{ activeTrigger.dataset.popoverDescription + activeTriggerIndex }}
+    </template>
+  </PPopover>
+</template>
+```
+
+`trigger-selector` matches the final DOM elements inside the default slot. When using it on a Vue component, make sure the component forwards the matching attribute or class to a real DOM element. The `activeTrigger` slot prop is the matched DOM element, not the Vue component instance.
+
 ## Offset
 
 ```vue demo
@@ -267,6 +309,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | z-index | `number \| string` | - | - |
 | offset | `number` | - | - |
 | trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| 'click' \| 'hover' \| 'contextmenu' \| 'manual'[]` | `() => ['hover']` | - |
+| trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
 | disabled | `boolean` | - | - |
 | adaptive | `boolean` | - | - |
 | max-width | `number \| string` | - | - |
@@ -290,4 +333,5 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Trigger content |
+| content | Popover content. Slot props: `activeTrigger: HTMLElement \| null`, `activeTriggerIndex: number`. |
