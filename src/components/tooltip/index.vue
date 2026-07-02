@@ -71,6 +71,7 @@ const contentClassComputed = computed(() => {
     :show-arrow="showArrow"
     :show-delay="showDelay"
     :hide-delay="hideDelay"
+    :trigger-selector="triggerSelector"
     wrapper-class="max-sm:data-[position^=top]:px-1 max-sm:data-[position^=bottom]:px-1 max-sm:data-[position^=left]:pl-1 max-sm:data-[position^=right]:pr-1"
     :arrow-color="computedVariant.bg"
     :content-class="contentClassComputed"
@@ -79,8 +80,12 @@ const contentClassComputed = computed(() => {
   >
     <slot />
 
-    <template #content>
-      <slot name="content">
+    <template #content="{ activeTrigger, activeTriggerIndex }">
+      <slot
+        name="content"
+        :active-trigger="activeTrigger"
+        :active-trigger-index="activeTriggerIndex"
+      >
         {{ content }}
       </slot>
     </template>

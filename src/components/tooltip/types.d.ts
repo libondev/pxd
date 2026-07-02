@@ -9,6 +9,7 @@ export interface TooltipProps {
   disabled?: boolean
   showDelay?: number
   hideDelay?: number
+  triggerSelector?: string
   showArrow?: boolean
   desktopOnly?: boolean
   contentClass?: ComponentClass
