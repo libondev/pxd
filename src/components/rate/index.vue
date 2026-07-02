@@ -2,11 +2,11 @@
 import type { RateEmits, RateProps } from './types'
 import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { tv } from 'tailwind-variants'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { throttleByRaf } from '../../utils/event'
-import { getFallbackValue } from '../../utils/helper'
+import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 
 defineOptions({
   name: 'PRate',
@@ -28,21 +28,72 @@ const props = withDefaults(defineProps<RateProps>(), {
 
 const emits = defineEmits<RateEmits>()
 
-const SIZES: Record<string, string> = {
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-xl',
-}
+const rateVariants = tv({
+  variants: {
+    size: {
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-xl',
+    },
+    disabled: {
+      true: 'pointer-events-none opacity-50',
+    },
+    readonly: {
+      true: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    disabled: false,
+    readonly: false,
+  },
+  compoundVariants: [
+    {
+      disabled: true,
+      readonly: false,
+      class: 'cursor-not-allowed',
+    },
+    {
+      disabled: false,
+      readonly: true,
+      class: 'cursor-default',
+    },
+    {
+      disabled: true,
+      readonly: true,
+      class: 'cursor-not-allowed',
+    },
+    {
+      disabled: false,
+      readonly: false,
+      class: 'cursor-pointer',
+    },
+  ],
+})
 
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
-const hoverValue = ref(0)
 
-const computedSize = computed(() =>
-  getFallbackValue(props.size as string, SIZES, configProvider.size),
-)
+const computedClasses = computed(() => {
+  const { size, disabled, readonly } = props
 
-const displayValue = computed(() => hoverValue.value || modelValue.value)
+  return rateVariants({
+    size: size || configProvider.size,
+    disabled,
+    readonly,
+  })
+})
+
+const rateRef = shallowRef<HTMLElement>()
+const hoverValue = shallowRef<number | null>(null)
+const dragValue = shallowRef<number | null>(null)
+const isDragging = shallowRef(false)
+
+let activePointerId: number | null = null
+let rateRect: DOMRect | null = null
+let lastClientX: number | null = null
+
+const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
 
 const starCount = computed(() => Math.max(1, props.count))
 
@@ -61,47 +112,112 @@ const fills = computed(() => {
   return result
 })
 
-const scheduleHover = throttleByRaf((index: number, percent: number) => {
-  if (props.allowHalf) {
-    hoverValue.value = percent <= 0.5 ? index + 0.5 : index + 1
+function getValueFromPosition(clientX: number): number {
+  if (!rateRef.value) {
+    return 0
+  }
+
+  const rect = rateRect ?? rateRef.value.getBoundingClientRect()
+  if (!rect.width) {
+    return 0
+  }
+
+  const position = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+  const rawValue = position * starCount.value
+  const step = props.allowHalf ? 0.5 : 1
+
+  return Math.max(step, Math.ceil(rawValue / step) * step)
+}
+
+function commitValue(value: number) {
+  if (props.clearable && value === modelValue.value) {
+    modelValue.value = 0
   } else {
-    hoverValue.value = index + 1
+    modelValue.value = value
+  }
+}
+
+function resetDragging() {
+  isDragging.value = false
+  activePointerId = null
+  rateRect = null
+  lastClientX = null
+  dragValue.value = null
+
+  scheduleDragUpdate.cancel()
+
+  cachedOff(document, 'pointermove', handleDocumentPointerMove, { passive: false })
+  cachedOff(document, 'pointerup', handleDocumentPointerUp)
+  cachedOff(document, 'pointercancel', handleDocumentPointerCancel)
+}
+
+function isActivePointer(event: PointerEvent) {
+  return isDragging.value && event.pointerId === activePointerId
+}
+
+const scheduleDragUpdate = throttleByRaf(() => {
+  if (lastClientX !== null) {
+    dragValue.value = getValueFromPosition(lastClientX)
   }
 })
 
-function handleMouseMove(index: number, event: MouseEvent) {
-  if (props.readonly || props.disabled) {
+function handlePointerDown(event: PointerEvent) {
+  if (props.readonly || props.disabled || !rateRef.value) {
     return
   }
-  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  const percent = (event.clientX - rect.left) / rect.width
-  scheduleHover(index, percent)
+
+  isDragging.value = true
+  activePointerId = event.pointerId
+  rateRect = rateRef.value.getBoundingClientRect()
+  lastClientX = event.clientX
+  hoverValue.value = null
+  dragValue.value = getValueFromPosition(event.clientX)
+
+  cachedOn(document, 'pointermove', handleDocumentPointerMove, { passive: false })
+  cachedOn(document, 'pointerup', handleDocumentPointerUp)
+  cachedOn(document, 'pointercancel', handleDocumentPointerCancel)
 }
 
-function handleMouseLeave() {
-  if (props.readonly || props.disabled) {
+function handleDocumentPointerMove(event: PointerEvent) {
+  if (!isActivePointer(event)) {
     return
   }
-  hoverValue.value = 0
+
+  event.preventDefault()
+  lastClientX = event.clientX
+  scheduleDragUpdate()
 }
 
-function handleClick(index: number, event: MouseEvent) {
-  if (props.readonly || props.disabled) {
+function handleDocumentPointerUp(event: PointerEvent) {
+  if (!isActivePointer(event)) {
     return
   }
-  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  const percent = (event.clientX - rect.left) / rect.width
-  let newValue: number
-  if (props.allowHalf) {
-    newValue = percent <= 0.5 ? index + 0.5 : index + 1
-  } else {
-    newValue = index + 1
+
+  commitValue(getValueFromPosition(event.clientX))
+  resetDragging()
+}
+
+function handleDocumentPointerCancel(event: PointerEvent) {
+  if (!isActivePointer(event)) {
+    return
   }
-  if (props.clearable && newValue === modelValue.value) {
-    modelValue.value = 0
-  } else {
-    modelValue.value = newValue
+
+  resetDragging()
+}
+
+function handlePointerMove(event: PointerEvent) {
+  if (props.readonly || props.disabled || isDragging.value || event.pointerType !== 'mouse') {
+    return
   }
+
+  hoverValue.value = getValueFromPosition(event.clientX)
+}
+
+function handlePointerLeave() {
+  if (isDragging.value) {
+    return
+  }
+  hoverValue.value = null
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -120,7 +236,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 onBeforeUnmount(() => {
-  scheduleHover.cancel()
+  resetDragging()
 })
 </script>
 
@@ -129,38 +245,35 @@ onBeforeUnmount(() => {
     ref="rateRef"
     role="radiogroup"
     tabindex="0"
-    class="pxd-rate inline-flex items-center select-none"
-    :class="[
-      computedSize,
-      {
-        'pointer-events-none opacity-50': disabled,
-        'cursor-default': readonly,
-      },
-    ]"
+    class="pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none"
+    :class="computedClasses"
     v-bind="$attrs"
     @keydown="handleKeydown"
-    @mouseleave="handleMouseLeave"
+    @pointerdown.prevent="handlePointerDown"
+    @pointermove="handlePointerMove"
+    @pointerleave="handlePointerLeave"
   >
     <span
       v-for="i in starCount"
       :key="i"
-      class="pxd-rate--item relative inline-flex cursor-pointer"
-      :class="{ 'cursor-default': readonly || disabled }"
+      class="pxd-rate--item relative inline-flex"
       role="radio"
       :aria-checked="i <= modelValue"
       :aria-posinset="i"
       :aria-setsize="starCount"
       tabindex="-1"
-      @mousemove="handleMouseMove(i - 1, $event)"
-      @click="handleClick(i - 1, $event)"
     >
-      <span class="pxd-rate--star-empty inline-flex text-gray-400" :style="{ color: voidColor }">
+      <span
+        class="pxd-rate--star-empty inline-flex text-gray-400 text-trim-both"
+        :style="{ color: voidColor }"
+      >
         <StarIcon />
       </span>
+
       <span
-        class="pxd-rate--star-filled inset-0 absolute inline-flex overflow-hidden text-primary"
+        class="pxd-rate--star-filled inset-0 absolute inline-flex text-primary text-trim-both"
         :style="{
-          width: fills[i - 1] * 100 + '%',
+          clipPath: `inset(0 ${(1 - fills[i - 1]) * 100}% 0 0)`,
           color: color,
         }"
       >
