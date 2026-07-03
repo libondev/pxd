@@ -3,8 +3,20 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "rootDir": "./",
-    "types": ["vite/client"]
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
-  "exclude": ["tests/**/*.test.ts"]
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "tests/**/*.test.ts"
+  ]
 }
