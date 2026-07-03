@@ -44,4 +44,26 @@ describe('useCopyClick', () => {
     vi.advanceTimersByTime(1500)
     expect(isCopied.value).toBe(false)
   })
+
+  it('should keep isCopied true while clicking repeatedly', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+    })
+
+    const { isCopied, copyText } = useCopyClick()
+
+    await copyText('test')
+    expect(isCopied.value).toBe(true)
+
+    vi.advanceTimersByTime(1000)
+    await copyText('test')
+    expect(isCopied.value).toBe(true)
+
+    vi.advanceTimersByTime(1000)
+    expect(isCopied.value).toBe(true)
+
+    vi.advanceTimersByTime(1500)
+    expect(isCopied.value).toBe(false)
+  })
 })

@@ -1,9 +1,10 @@
 import { onScopeDispose, shallowRef } from 'vue'
+import { withResolvers } from '../utils/helper'
 import { isServer } from '../utils/is'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
-  let copyPromise: Promise<void> | null = null
+  let copyResolvers: ReturnType<typeof withResolvers<void>> | null = null
 
   const isCopied = shallowRef(false)
 
@@ -12,34 +13,30 @@ export function useCopyClick() {
       return
     }
 
-    if (copyPromise) {
-      return copyPromise
-    }
-
     try {
       await navigator.clipboard.writeText(text)
     } catch {
-      legacyCopyText(text)
+      copyTextCompat(text)
     }
 
-    copyPromise = new Promise<void>((resolve) => {
-      isCopied.value = true
+    if (!copyResolvers) {
+      copyResolvers = withResolvers<void>()
+      copyResolvers.resolve()
+    }
 
-      resolve()
-      clearTimeout(copiedTimer)
+    isCopied.value = true
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => {
+      isCopied.value = false
+      copyResolvers = null
+    }, 1500)
 
-      copiedTimer = setTimeout(() => {
-        isCopied.value = false
-        copyPromise = null
-      }, 1500)
-    })
-
-    return copyPromise
+    return copyResolvers.promise
   }
 
   onScopeDispose(() => {
     clearTimeout(copiedTimer)
-    copyPromise = null
+    copyResolvers = null
   })
 
   return {
@@ -48,7 +45,7 @@ export function useCopyClick() {
   }
 }
 
-function legacyCopyText(text: string) {
+function copyTextCompat(text: string) {
   const textarea = document.createElement('textarea')
   textarea.value = text
   document.body.appendChild(textarea)
