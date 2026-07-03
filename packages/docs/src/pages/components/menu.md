@@ -26,13 +26,11 @@ function onSelect(item, ev) {
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu width="200" @select="onSelect">
+    <PMenu width="200" :options="options" @select="onSelect">
       <PButton variant="primary">Actions</PButton>
 
-      <template #items>
-        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
-          {{ index }} - {{ item.label }}
-        </PListItem>
+      <template #item="{ item }">
+        {{ item.label }} - {{ item.value }}
       </template>
     </PMenu>
   </PStack>
@@ -59,13 +57,11 @@ const options = [
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu width="200">
+    <PMenu width="200" :options="options">
       <PButton variant="primary">Actions</PButton>
 
-      <template #items>
-        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
-          {{ index }} - {{ item.label }}
-        </PListItem>
+      <template #item="{ item }">
+        {{ item.label }}
       </template>
     </PMenu>
   </PStack>
@@ -128,3 +124,4 @@ const options = [
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| item | Custom item content: `{ item, index }` |

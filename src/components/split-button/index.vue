@@ -3,9 +3,8 @@ import type { ListOptionSelected } from '../list/types'
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { isNil } from 'es-toolkit'
-import { useSlots, computed } from 'vue'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
-import { collectVNodeProps } from '../../utils/vnode'
 import PButton from '../button/index.vue'
 import PMenu from '../menu/index.vue'
 
@@ -17,7 +16,6 @@ defineOptions({
 const props = defineProps<SplitButtonProps>()
 const emits = defineEmits<SplitButtonEmits>()
 
-const slots = useSlots()
 const modelValue = useModelValue(props, emits)
 
 const selectedItem = computed((): ListOptionSelected | undefined => {
@@ -25,29 +23,7 @@ const selectedItem = computed((): ListOptionSelected | undefined => {
     return undefined
   }
 
-  const matchedOption = props.options?.find((item) => item.value === modelValue.value)
-
-  if (matchedOption) {
-    return matchedOption
-  }
-
-  const matchedListItem = collectVNodeProps<ListOptionSelected>(slots.items?.(), 'PListItem', (p) =>
-    p.value === modelValue.value
-      ? {
-          value: p.value,
-          label: p.label,
-          description: p.description,
-          variant: p.variant,
-          disabled: p.disabled,
-        }
-      : null,
-  )[0]
-
-  if (matchedListItem) {
-    return matchedListItem
-  }
-
-  return undefined
+  return props.options?.find((item) => item.value === modelValue.value)
 })
 
 function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
@@ -89,8 +65,8 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
         </slot>
       </PButton>
 
-      <template #items>
-        <slot name="items" />
+      <template v-if="$slots.item" #item="{ item, index }">
+        <slot name="item" :item="item" :index="index" />
       </template>
     </PMenu>
   </div>

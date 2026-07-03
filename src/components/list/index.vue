@@ -109,7 +109,7 @@ defineExpose({
   >
     <slot>
       <PListItem v-for="(option, index) in options" :key="option.value ?? index" v-bind="option">
-        <slot name="item" :item="option" />
+        <slot name="item" :item="option" :index="index" />
       </PListItem>
     </slot>
 

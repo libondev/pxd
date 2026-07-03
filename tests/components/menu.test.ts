@@ -44,4 +44,27 @@ describe('menu', () => {
 
     wrapper.unmount()
   })
+
+  it('should render custom item slot from options', async () => {
+    const wrapper = mount(Menu, {
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+      slots: {
+        default: '<button>Open</button>',
+        item: `<template #item="{ item }">Custom {{ item.label }}</template>`,
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(document.body.textContent).toContain('Custom Option 1')
+    expect(document.body.textContent).toContain('Custom Option 2')
+
+    wrapper.unmount()
+  })
 })

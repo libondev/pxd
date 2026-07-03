@@ -60,15 +60,13 @@ function onChange(item) {
     </PSplitButton>
 
     <!-- Custom rendering menu-items -->
-    <PSplitButton v-model="checkedValue" width="200">
+    <PSplitButton v-model="checkedValue" :options="options" width="200">
       <template #default="{ data }">
         {{ data?.label || 'Actions' }}
       </template>
 
-      <template #items>
-        <PListItem v-for="(item, index) of options" :key="item.label" v-bind="item">
-          {{ index }} - {{ item.label }}
-        </PListItem>
+      <template #item="{ item }">
+        {{ item.label }}
       </template>
     </PSplitButton>
   </PStack>
@@ -92,4 +90,6 @@ function onChange(item) {
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Default slot: `{ data }` |
+| icon | Custom dropdown icon |
+| item | Custom menu item content: `{ item, index }` |
