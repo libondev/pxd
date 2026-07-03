@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<InputProps>(), {
 const emits = defineEmits<InputEmits>()
 
 const inputVariant = tv({
-  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-all',
+  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
   variants: {
     size: {
       xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,

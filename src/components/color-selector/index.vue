@@ -23,7 +23,7 @@ const emits = defineEmits<ColorSelectorEmits>()
 const uniqueName = getUniqueId('color-selector')
 
 const colorSelectorVariants = tv({
-  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-appearance',
+  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-appearance',
   variants: {
     size: {
       sm: 'size-4',
@@ -60,9 +60,3 @@ const computedClasses = computed(() =>
     </template>
   </div>
 </template>
-
-<style>
-.pxd-color-selector--item:checked {
-  box-shadow: inset 0 0 0 2px var(--color-background-100);
-}
-</style>
