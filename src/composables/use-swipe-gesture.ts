@@ -1,7 +1,6 @@
 import type { MaybeElementRef } from '../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
 import { nextTick, onScopeDispose, watch } from 'vue'
-import { Core, Pan } from '../plugins/any-touch.js'
 import { getElement } from '../utils/dom'
 import { toValue } from '../utils/helper'
 
@@ -14,9 +13,9 @@ export interface SwipePressState {
 export interface SwipeFollowState {
   /** Movement since the previous event along the active axis (px). */
   delta: number
-  /** Velocity (px / ms) since the previous event along the active axis. */
+  /** Signed velocity (px / ms) since the previous event along the active axis. */
   velocity: number
-  /** `displacement / containerSize` — signed ratio, typically in the range of -1 to 1. */
+  /** `displacement / containerSize` signed ratio, typically in the range of -1 to 1. */
   offset: number
   /** Signed displacement from the start point along the active axis (px). */
   displacement: number
@@ -31,48 +30,32 @@ export interface SwipeReleaseState {
 
 export interface SwipeGestureOptions {
   disabled?: MaybeRefOrGetter<boolean>
-  /**
-   * CSS selector for the drag handle element within the container.
-   * When set, gesture events bind to this element instead of the container,
-   * preventing interference with scrollable content inside the container.
-   */
+  /** CSS selector for the drag handle element within the container. */
   handleSelector?: string
-  /**
-   * Swipe axis. Reactive — accepts a ref or getter.
-   * @default 'horizontal'
-   */
+  /** Swipe axis. Reactive; accepts a ref or getter. */
   direction?: MaybeRefOrGetter<'horizontal' | 'vertical'>
-  /**
-   * Minimum swipe distance (px) for a successful swipe.
-   * @default 10
-   */
+  /** Minimum movement (px) before locking the gesture axis. */
+  axisLockThreshold?: number
+  /** Main-axis movement must be at least this multiple of cross-axis movement. */
+  axisLockRatio?: number
+  /** Minimum swipe distance (px) before movement events start. */
   swipeThreshold?: number
-  /**
-   * Fraction of the container size (0–1) the finger must travel
-   * for a slow-drag to count as a successful swipe.
-   * @default 0.35
-   */
+  /** Fraction of the container size the finger must travel for a slow-drag swipe. */
   distanceThreshold?: number
-  /**
-   * Minimum velocity (px / ms) for a quick-flick to count as a swipe,
-   * regardless of distance traveled.
-   * @default 0.3
-   */
+  /** Minimum absolute velocity (px / ms) for a quick-flick swipe. */
   velocityThreshold?: number
-  /** Fires when the pointer touches down and the gesture begins. */
   onPress?: (state: SwipePressState) => void
-  /** Fires continuously while the pointer moves. */
   onFollow?: (state: SwipeFollowState) => void
-  /**
-   * Fires on pointer-up or pointer-cancel.
-   * Check `state.swiped` to decide whether to commit the transition or snap back.
-   */
   onRelease?: (state: SwipeReleaseState) => void
 }
 
-type SwipePanAxisEvent = {
+interface SwipePanEvent {
   displacementX: number
   displacementY: number
+  deltaX: number
+  deltaY: number
+  velocityX: number
+  velocityY: number
 }
 
 export function useSwipeGesture(
@@ -81,6 +64,8 @@ export function useSwipeGesture(
 ) {
   const {
     handleSelector,
+    axisLockThreshold = 0,
+    axisLockRatio = 1,
     distanceThreshold = 0.35,
     velocityThreshold = 0.3,
     swipeThreshold = 10,
@@ -89,21 +74,49 @@ export function useSwipeGesture(
     onRelease,
   } = options
 
-  let at: Core | null = null
+  let recognizer: PointerSwipeRecognizer | null = null
   let stopped = false
+
+  type AxisLockState = 'pending' | 'accepted' | 'rejected'
 
   function isHorizontal() {
     return (toValue(options.direction) ?? 'horizontal') === 'horizontal'
+  }
+
+  function getAxisValue(event: SwipePanEvent, horizontal: boolean) {
+    return horizontal
+      ? {
+          displacement: event.displacementX,
+          crossDisplacement: event.displacementY,
+          delta: event.deltaX,
+          velocity: event.velocityX,
+        }
+      : {
+          displacement: event.displacementY,
+          crossDisplacement: event.displacementX,
+          delta: event.deltaY,
+          velocity: event.velocityY,
+        }
   }
 
   function resolveDirection(displacement: number, horizontal: boolean): SwipeDirection {
     return horizontal ? (displacement > 0 ? 'right' : 'left') : displacement > 0 ? 'bottom' : 'top'
   }
 
-  function isPrimaryAxis(e: SwipePanAxisEvent, horizontal: boolean) {
-    return horizontal
-      ? Math.abs(e.displacementX) >= Math.abs(e.displacementY)
-      : Math.abs(e.displacementY) >= Math.abs(e.displacementX)
+  function resolveAxisLock(event: SwipePanEvent, horizontal: boolean): AxisLockState {
+    const { displacement, crossDisplacement } = getAxisValue(event, horizontal)
+    const mainDistance = Math.abs(displacement)
+    const crossDistance = Math.abs(crossDisplacement)
+
+    if (Math.hypot(mainDistance, crossDistance) < axisLockThreshold) {
+      return 'pending'
+    }
+
+    return mainDistance >= crossDistance * axisLockRatio ? 'accepted' : 'rejected'
+  }
+
+  function getTouchAction() {
+    return isHorizontal() ? 'pan-y' : 'pan-x'
   }
 
   function bind() {
@@ -120,75 +133,75 @@ export function useSwipeGesture(
       return
     }
 
-    at = new Core(handle)
-
-    at.use(Pan, { threshold: swipeThreshold })
-
     let containerSize = 0
+    let axisLockState: AxisLockState = 'pending'
 
-    at.on('panstart', () => {
-      const h = isHorizontal()
-      containerSize = h ? container.offsetWidth : container.offsetHeight
+    recognizer = new PointerSwipeRecognizer(handle, {
+      threshold: swipeThreshold,
+      touchAction: getTouchAction(),
+      onStart: () => {
+        const h = isHorizontal()
+        axisLockState = 'pending'
+        containerSize = h ? container.offsetWidth : container.offsetHeight
+        onPress?.({ size: containerSize })
+      },
+      onMove: (event) => {
+        const h = isHorizontal()
 
-      onPress?.({ size: containerSize })
-    })
+        if (axisLockState === 'pending') {
+          axisLockState = resolveAxisLock(event, h)
+        }
 
-    at.on('panmove', (e) => {
-      const h = isHorizontal()
+        if (axisLockState !== 'accepted') {
+          return
+        }
 
-      if (!isPrimaryAxis(e, h)) {
-        return
-      }
+        const { displacement, delta, velocity } = getAxisValue(event, h)
 
-      const displacement = h ? e.displacementX : e.displacementY
-      const delta = h ? e.deltaX : e.deltaY
-      const velocity = h ? e.velocityX : e.velocityY
+        onFollow?.({
+          delta,
+          velocity,
+          displacement,
+          offset: containerSize > 0 ? displacement / containerSize : 0,
+        })
+      },
+      onEnd: (event) => {
+        const h = isHorizontal()
 
-      onFollow?.({
-        delta,
-        velocity,
-        displacement,
-        offset: containerSize > 0 ? displacement / containerSize : 0,
-      })
-    })
+        if (axisLockState === 'pending') {
+          axisLockState = resolveAxisLock(event, h)
+        }
 
-    at.on('panend', (e) => {
-      const h = isHorizontal()
+        if (axisLockState !== 'accepted') {
+          onRelease?.({ swiped: false })
+          return
+        }
 
-      if (!isPrimaryAxis(e, h)) {
+        const { displacement, velocity } = getAxisValue(event, h)
+
+        if (containerSize === 0 || displacement === 0) {
+          onRelease?.({ swiped: false })
+          return
+        }
+
+        const meetsVelocity = Math.abs(velocity) >= velocityThreshold
+        const meetsDistance = Math.abs(displacement) / containerSize >= distanceThreshold
+
+        onRelease?.(
+          meetsVelocity || meetsDistance
+            ? { swiped: true, direction: resolveDirection(displacement, h) }
+            : { swiped: false },
+        )
+      },
+      onCancel: () => {
         onRelease?.({ swiped: false })
-        return
-      }
-
-      const displacement = h ? e.displacementX : e.displacementY
-      const velocity = h ? e.velocityX : e.velocityY
-
-      if (containerSize === 0 || displacement === 0) {
-        onRelease?.({ swiped: false })
-        return
-      }
-
-      const meetsVelocity = velocity >= velocityThreshold
-      const meetsDistance = Math.abs(displacement) / containerSize >= distanceThreshold
-
-      if (meetsVelocity || meetsDistance) {
-        onRelease?.({ swiped: true, direction: resolveDirection(displacement, h) })
-      } else {
-        onRelease?.({ swiped: false })
-      }
-    })
-
-    at.on('pancancel', () => {
-      onRelease?.({ swiped: false })
+      },
     })
   }
 
   function unbind() {
-    if (!at) {
-      return
-    }
-    at.destroy()
-    at = null
+    recognizer?.destroy()
+    recognizer = null
   }
 
   function stop() {
@@ -198,7 +211,7 @@ export function useSwipeGesture(
   }
 
   const unwatch = watch(
-    () => [getElement(containerRef), toValue(options.disabled)] as const,
+    () => [getElement(containerRef), toValue(options.disabled), toValue(options.direction)] as const,
     async ([el, disabled]) => {
       if (!el || disabled) {
         unbind()
@@ -222,5 +235,188 @@ export function useSwipeGesture(
 
   return {
     stop,
+  }
+}
+
+interface PointerSwipeRecognizerOptions {
+  threshold?: number
+  touchAction?: string
+  onStart?: (event: PointerPanEvent) => void
+  onMove?: (event: PointerPanEvent) => void
+  onEnd?: (event: PointerPanEvent) => void
+  onCancel?: (event: PointerPanEvent) => void
+}
+
+interface PointerPoint {
+  x: number
+  y: number
+}
+
+interface PointerVelocity {
+  x: number
+  y: number
+}
+
+interface PointerPanEvent {
+  displacementX: number
+  displacementY: number
+  deltaX: number
+  deltaY: number
+  velocityX: number
+  velocityY: number
+}
+
+function getPointerPoint(event: PointerEvent): PointerPoint {
+  return { x: event.clientX, y: event.clientY }
+}
+
+class PointerSwipeRecognizer {
+  private cleanup: (() => void) | null = null
+  private startPoint: PointerPoint | null = null
+  private previousPoint: PointerPoint | null = null
+  private previousTime = 0
+  private lastVelocity: PointerVelocity = { x: 0, y: 0 }
+  private activePointerId: number | null = null
+  private hasRecognizedPan = false
+  private originalTouchAction = ''
+
+  constructor(
+    private el: HTMLElement | SVGElement,
+    private options: PointerSwipeRecognizerOptions = {},
+  ) {
+    ;(el.style as any).webkitTapHighlightColor = 'rgba(0,0,0,0)'
+    this.originalTouchAction = el.style.touchAction
+    el.style.touchAction = options.touchAction ?? 'none'
+    this.cleanup = this.bindEvents(el)
+  }
+
+  destroy(): void {
+    this.cleanup?.()
+    this.cleanup = null
+    this.el.style.touchAction = this.originalTouchAction
+  }
+
+  private bindEvents(el: HTMLElement | SVGElement): () => void {
+    const onPointerDown = (event: PointerEvent) => {
+      if (!event.isPrimary || event.button !== 0) {
+        return
+      }
+
+      this.activePointerId = event.pointerId
+      this.startPoint = getPointerPoint(event)
+      this.previousPoint = this.startPoint
+      this.previousTime = Date.now()
+      this.lastVelocity = { x: 0, y: 0 }
+      this.hasRecognizedPan = (this.options.threshold ?? 10) <= 0
+      el.setPointerCapture?.(event.pointerId)
+
+      if (this.hasRecognizedPan) {
+        this.emitPan(this.options.onStart, this.startPoint, 0, 0)
+      }
+    }
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerId !== this.activePointerId || !this.startPoint || !this.previousPoint) {
+        return
+      }
+
+      const point = getPointerPoint(event)
+      const displacementX = point.x - this.startPoint.x
+      const displacementY = point.y - this.startPoint.y
+      const distance = Math.hypot(displacementX, displacementY)
+
+      if (!this.hasRecognizedPan) {
+        if (distance < (this.options.threshold ?? 10)) {
+          return
+        }
+
+        this.hasRecognizedPan = true
+        this.emitPan(this.options.onStart, point, displacementX, displacementY)
+      }
+
+      this.emitPan(this.options.onMove, point, displacementX, displacementY)
+    }
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerId !== this.activePointerId || !this.startPoint) {
+        return
+      }
+
+      const point = getPointerPoint(event)
+
+      if (this.hasRecognizedPan) {
+        this.emitPan(this.options.onEnd, point, point.x - this.startPoint.x, point.y - this.startPoint.y)
+      }
+
+      el.releasePointerCapture?.(event.pointerId)
+      this.reset()
+    }
+
+    const onPointerCancel = (event: PointerEvent) => {
+      if (event.pointerId !== this.activePointerId) {
+        return
+      }
+
+      const point = getPointerPoint(event)
+      this.emitPan(
+        this.options.onCancel,
+        point,
+        this.startPoint ? point.x - this.startPoint.x : 0,
+        this.startPoint ? point.y - this.startPoint.y : 0,
+      )
+      el.releasePointerCapture?.(event.pointerId)
+      this.reset()
+    }
+
+    el.addEventListener('pointerdown', onPointerDown as EventListener)
+    window.addEventListener('pointermove', onPointerMove as EventListener)
+    window.addEventListener('pointerup', onPointerUp as EventListener)
+    window.addEventListener('pointercancel', onPointerCancel as EventListener)
+
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown as EventListener)
+      window.removeEventListener('pointermove', onPointerMove as EventListener)
+      window.removeEventListener('pointerup', onPointerUp as EventListener)
+      window.removeEventListener('pointercancel', onPointerCancel as EventListener)
+    }
+  }
+
+  private emitPan(
+    callback: ((event: PointerPanEvent) => void) | undefined,
+    point: PointerPoint,
+    displacementX: number,
+    displacementY: number,
+  ): void {
+    const now = Date.now()
+    const elapsed = Math.max(1, now - this.previousTime)
+    const deltaX = point.x - (this.previousPoint?.x ?? point.x)
+    const deltaY = point.y - (this.previousPoint?.y ?? point.y)
+    const velocityX = deltaX === 0 ? this.lastVelocity.x : deltaX / elapsed
+    const velocityY = deltaY === 0 ? this.lastVelocity.y : deltaY / elapsed
+
+    if (deltaX !== 0 || deltaY !== 0) {
+      this.lastVelocity = { x: velocityX, y: velocityY }
+    }
+
+    this.previousPoint = point
+    this.previousTime = now
+
+    callback?.({
+      displacementX,
+      displacementY,
+      deltaX,
+      deltaY,
+      velocityX,
+      velocityY,
+    })
+  }
+
+  private reset(): void {
+    this.startPoint = null
+    this.previousPoint = null
+    this.previousTime = 0
+    this.lastVelocity = { x: 0, y: 0 }
+    this.activePointerId = null
+    this.hasRecognizedPan = false
   }
 }
