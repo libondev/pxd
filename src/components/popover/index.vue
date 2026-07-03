@@ -279,8 +279,12 @@ async function handlePopoverShow() {
     }, props.showDelay)
   })
 
-  await showPopover()
-  await syncPosition()
+  // Render first, then position the wrapper while it is still invisible
+  // (transitions are disabled via CSS when data-visible is false), so the
+  // enter animation always starts from the correct position.
+  const visiblePromise = showPopover()
+  await syncPosition(true)
+  await visiblePromise
 }
 
 async function handlePopoverHide(immediate: boolean = false) {
@@ -492,7 +496,7 @@ defineExpose({
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) motion-safe:transition-[left,top] absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:transition-none! data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"

@@ -139,7 +139,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
 </template>
 ```
 
-## Trigger
+## Trigger Methods
 
 ```vue demo
 <script setup>
@@ -205,7 +205,7 @@ const content =
 </template>
 ```
 
-## Multiple triggers
+## Multiple trigger elements
 
 Use `trigger-selector` when several DOM elements should share one popover instance. The popover keeps the same floating element open and updates its position to the active matched trigger.
 
