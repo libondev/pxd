@@ -2,8 +2,18 @@
 import type { ShimmerGradientStop, ShimmerTextProps, ShimmerTextVariant } from './types'
 import { computed } from 'vue'
 
+defineOptions({
+  name: 'PShimmerText',
+  inheritAttrs: false,
+})
+
+const props = withDefaults(defineProps<ShimmerTextProps>(), {
+  durations: 1500,
+  interval: 500,
+  color: 'var(--color-gray-100)',
+})
+
 const shimmerPresets: Record<ShimmerTextVariant, ShimmerGradientStop[]> = {
-  default: [{ color: 'var(--color-background-200)', position: 0 }],
   sunrise: [
     { color: '#B6D3EF', position: 0 },
     { color: '#CAD1D7', position: 0.153 },
@@ -45,26 +55,15 @@ const shimmerPresets: Record<ShimmerTextVariant, ShimmerGradientStop[]> = {
   ],
 }
 
-const props = withDefaults(defineProps<ShimmerTextProps>(), {
-  variant: 'default',
-  durations: 1500,
-  interval: 500,
-})
-
-defineOptions({
-  name: 'PShimmerText',
-  inheritAttrs: false,
-})
-
 const shimmerStyle = computed(() => {
-  let backgroundImage = buildBandGradient(shimmerPresets.default)
+  let backgroundImage: string
 
   if (Array.isArray(props.color) && props.color.length > 0) {
     backgroundImage = buildBandGradient(props.color)
-  } else if (typeof props.color === 'string') {
-    backgroundImage = buildDefaultBandGradient(props.color)
-  } else if (props.variant !== 'default') {
+  } else if (props.variant && props.variant in shimmerPresets) {
     backgroundImage = buildBandGradient(shimmerPresets[props.variant])
+  } else {
+    backgroundImage = buildDefaultBandGradient(props.color as string)
   }
 
   return {
@@ -73,17 +72,17 @@ const shimmerStyle = computed(() => {
   }
 })
 
-function buildDefaultBandGradient(color: string) {
-  return `linear-gradient(120deg, currentColor calc(50% - var(--shimmer-text-spread)), ${color} 50%, currentColor calc(50% + var(--shimmer-text-spread)))`
+function buildDefaultBandGradient(color: string = 'var(--color-gray-100)') {
+  return buildBandGradient([{ color, position: 0.5 }])
 }
 
 function buildBandGradient(stops: ShimmerGradientStop[]) {
   const sorted = [...stops].sort((a, b) => a.position - b.position)
-  const first = sorted[0]?.color ?? 'white'
-  const last = sorted[sorted.length - 1]?.color ?? 'white'
+  const first = sorted[0]?.color ?? 'currentColor'
+  const last = sorted[sorted.length - 1]?.color ?? 'currentColor'
   const core = sorted
     .map((stop) => {
-      const factor = (stop.position - 0.5) * 2 * 0.44
+      const factor = (stop.position - 0.5) * 2 * 0.55
       return `${stop.color} calc(50% + var(--shimmer-text-spread-mid) * ${factor.toFixed(4)})`
     })
     .join(', ')
@@ -91,9 +90,9 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
   return [
     `linear-gradient(120deg`,
     `currentColor calc(50% - var(--shimmer-text-spread))`,
-    `color-mix(in oklab, currentColor 42%, ${first}) calc(50% - var(--shimmer-text-spread-mid))`,
+    `color-mix(in oklab, currentColor 20%, ${first}) calc(50% - var(--shimmer-text-spread-mid))`,
     core,
-    `color-mix(in oklab, currentColor 42%, ${last}) calc(50% + var(--shimmer-text-spread-mid))`,
+    `color-mix(in oklab, currentColor 20%, ${last}) calc(50% + var(--shimmer-text-spread-mid))`,
     `currentColor calc(50% + var(--shimmer-text-spread)))`,
   ].join(', ')
 }
@@ -101,7 +100,7 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 
 <template>
   <span
-    class="pxd-shimmer-text relative inline-flex max-w-full items-center overflow-hidden bg-transparent bg-clip-text bg-no-repeat motion-reduce:animate-none!"
+    class="pxd-shimmer-text inline-flex max-w-full bg-transparent bg-clip-text bg-no-repeat motion-reduce:animate-none!"
     :style="shimmerStyle"
     v-bind="$attrs"
   >
@@ -113,11 +112,11 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 
 <style>
 .pxd-shimmer-text {
-  --shimmer-text-spread: 1em;
-  --shimmer-text-spread-mid: calc(var(--shimmer-text-spread) * 0.72);
+  --shimmer-text-spread: 1.5em;
+  --shimmer-text-spread-mid: calc(var(--shimmer-text-spread) * 0.68);
   background-size: 300% 100%;
   -webkit-text-fill-color: transparent;
-  animation: pxd-animation-shimmer-sweep var(--shimmer-total-duration, 2.5s)
+  animation: pxd-animation-shimmer-sweep var(--shimmer-total-duration, 2s)
     cubic-bezier(0.3, 0, 0.2, 1) infinite;
 }
 

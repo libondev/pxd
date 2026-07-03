@@ -1,4 +1,4 @@
-export type ShimmerTextVariant = 'default' | 'sunrise' | 'bubble' | 'tonic' | 'spring' | 'twilight'
+export type ShimmerTextVariant = 'sunrise' | 'bubble' | 'tonic' | 'spring' | 'twilight'
 
 export interface ShimmerGradientStop {
   color: string

@@ -2,7 +2,7 @@
 
 Give your text a shimmer sweep effect.
 
-> Inspiration comes from <PLinkButton variant="link" target="_blank" text="BIAsia/gradient-shimmer" href="https://github.com/BIAsia/gradient-shimmer" external-icon />
+> Inspiration comes from <PLinkButton class="!px-0" variant="link" target="_blank" text="BIAsia/gradient-shimmer" href="https://github.com/BIAsia/gradient-shimmer" external-icon />
 
 ## Default
 
@@ -21,7 +21,7 @@ Use `variant` to apply built-in gradient presets. When `color` is not set, the p
 ```vue demo
 <template>
   <PStack direction="vertical" :gap="4">
-    <PShimmerText variant="default" class="font-medium">default</PShimmerText>
+    <PShimmerText class="font-medium">default</PShimmerText>
     <PShimmerText variant="sunrise" class="font-medium">sunrise</PShimmerText>
     <PShimmerText variant="bubble" class="font-medium">bubble</PShimmerText>
     <PShimmerText variant="tonic" class="font-medium">tonic</PShimmerText>
@@ -98,7 +98,7 @@ Use `durations` to control the sweep duration and `interval` to control the paus
 | --- | --- | --- | --- |
 | text | `string` | - | Text content. Used when the default slot is empty. |
 | color | `string \| { color: string; position: number }[]` | - | Highlight color. A string uses a single-color band; a non-empty array uses a custom multi-stop gradient. When omitted, `variant` is used. |
-| variant | `'default' \| 'sunrise' \| 'bubble' \| 'tonic' \| 'spring' \| 'twilight'` | `default` | Built-in gradient preset. Used when `color` is not set. |
+| variant | `'sunrise' \| 'bubble' \| 'tonic' \| 'spring' \| 'twilight'` | - | Built-in gradient preset. Used when `color` is not set. |
 | durations | `number` | `1500` | Sweep duration in milliseconds. |
 | interval | `number` | `1000` | Pause between sweeps in milliseconds. |
 
