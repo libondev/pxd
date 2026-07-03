@@ -1,8 +1,8 @@
 import type { ComponentPosition } from '../../types/shared'
-import type { ListOption, ListOptionSelected } from '../list/types'
+import type { ListOptions, ListOptionSelected } from '../list/types'
 
 export interface MenuProps {
-  options?: ListOption[]
+  options?: ListOptions
   disabled?: boolean
   position?: ComponentPosition
   listWidth?: string | number

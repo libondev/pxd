@@ -31,6 +31,24 @@ describe('command-menu', () => {
     wrapper.unmount()
   })
 
+  it('should accept options prop', () => {
+    const wrapper = mount(CommandMenu, {
+      props: {
+        options: [
+          {
+            type: 'group',
+            label: 'Group',
+            options: [{ label: 'Item 1', value: '1' }],
+          },
+        ],
+      },
+    })
+
+    expect(wrapper.props('options')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
   it('should default closeOnSelectItem to true', () => {
     const wrapper = mount(CommandMenu)
 

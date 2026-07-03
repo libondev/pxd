@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOptionSelected } from '../list/types'
+import type { ListOptionEntry, ListOptionGroup, ListOptionSelected } from '../list/types'
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { isNil } from 'es-toolkit'
@@ -18,12 +18,30 @@ const emits = defineEmits<SplitButtonEmits>()
 
 const modelValue = useModelValue(props, emits)
 
+function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
+  return option.type === 'group'
+}
+
 const selectedItem = computed((): ListOptionSelected | undefined => {
   if (isNil(modelValue.value)) {
     return undefined
   }
 
-  return props.options?.find((item) => item.value === modelValue.value)
+  for (const entry of props.options ?? []) {
+    if (isListOptionGroup(entry)) {
+      const matchedOption = entry.options.find((item) => item.value === modelValue.value)
+
+      if (matchedOption) {
+        return matchedOption
+      }
+
+      continue
+    }
+
+    if (entry.value === modelValue.value) {
+      return entry
+    }
+  }
 })
 
 function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {

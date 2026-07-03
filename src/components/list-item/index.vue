@@ -23,7 +23,6 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
-  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-3 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     variant: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -39,7 +38,7 @@ const {
   activeIndex,
   registerItem,
   unregisterItem,
-  onOptionClick,
+  onItemSelect,
 } = useListContext()
 
 const groupId = useListFilterGroupId(null)
@@ -78,10 +77,14 @@ function getKeywords(): string[] {
 }
 
 function onItemClick(ev: MouseEvent) {
-  const { as, keywords, ...restProps } = props
+  const value = props.value
 
-  emits('click', restProps, ev)
-  onOptionClick?.(restProps, ev)
+  if (isNil(value)) {
+    return
+  }
+
+  emits('click', value, ev)
+  onItemSelect?.(value, ev)
 }
 
 onMounted(() => {
@@ -114,6 +117,7 @@ onBeforeUnmount(() => {
     tabindex="-1"
     role="listitem"
     data-list-item
+    class="pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700"
     :data-variant="variant"
     :data-checked="isChecked"
     :data-disabled="disabled"
@@ -123,16 +127,12 @@ onBeforeUnmount(() => {
     v-bind="$attrs"
     @click.prevent.stop="onItemClick"
   >
-    <div v-if="$slots.prefix" class="pxd-list-item--prefix">
-      <slot name="prefix" />
-    </div>
-
-    <div class="pxd-list-item--content gap-1.5 flex flex-col">
-      <slot>
+    <slot>
+      <div class="pxd-list-item--content gap-1.5 flex flex-col">
         <span>{{ label }}</span>
         <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
-      </slot>
-    </div>
+      </div>
+    </slot>
 
     <CheckIcon
       v-if="isChecked"

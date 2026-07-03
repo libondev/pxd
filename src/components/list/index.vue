@@ -1,10 +1,18 @@
 <script lang="ts" setup>
-import type { ListProps, ListOptionSelected, ListEmits } from './types'
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import type {
+  ListProps,
+  ListOption,
+  ListOptionEntry,
+  ListOptionGroup,
+  ListOptionSelected,
+  ListEmits,
+} from './types'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/use-list-navigation'
 import { provideListContext, useListFilterContext } from '../../contexts/list'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { isServer } from '../../utils/is'
+import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
 
 defineOptions({
@@ -23,8 +31,55 @@ const emits = defineEmits<ListEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
 
-function onOptionClick(item: ListOptionSelected, ev: MouseEvent) {
-  emits('select', item, ev)
+function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
+  return option.type === 'group'
+}
+
+function resolveOptionByValue(value: ListOptionSelected['value']): ListOption | undefined {
+  for (const entry of props.options) {
+    if (isListOptionGroup(entry)) {
+      const matchedOption = entry.options.find((option) => option.value === value)
+
+      if (matchedOption) {
+        return matchedOption
+      }
+
+      continue
+    }
+
+    if (entry.value === value) {
+      return entry
+    }
+  }
+}
+
+function toSelectedOption(option: ListOption): ListOptionSelected {
+  const { as, keywords, onClick, ...selectedOption } = option
+
+  return selectedOption
+}
+
+function toListItemProps(option: ListOption): Record<string, any> {
+  const { onClick, ...itemProps } = option
+
+  return itemProps
+}
+
+const renderOptions = computed(() => {
+  return props.options.map((entry, index) => ({
+    entry,
+    index,
+    key: isListOptionGroup(entry) ? `group-${index}-${entry.label ?? ''}` : String(entry.value),
+  }))
+})
+
+function onItemSelect(value: ListOptionSelected['value'], ev: MouseEvent) {
+  const option = resolveOptionByValue(value)
+
+  if (option) {
+    option.onClick?.(toSelectedOption(option), ev)
+    emits('select', toSelectedOption(option), ev)
+  }
 }
 
 const {
@@ -75,7 +130,7 @@ provideListContext({
   activeIndex,
   registerItem,
   unregisterItem,
-  onOptionClick,
+  onItemSelect,
 })
 
 onMounted(async () => {
@@ -107,11 +162,31 @@ defineExpose({
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
-    <slot>
-      <PListItem v-for="(option, index) in options" :key="option.value ?? index" v-bind="option">
-        <slot name="item" :item="option" :index="index" />
+    <template v-for="option in renderOptions" :key="option.key">
+      <PListGroup v-if="isListOptionGroup(option.entry)" :label="option.entry.label">
+        <template v-if="$slots.group" #label>
+          <slot name="group" :group="option.entry" :index="option.index" />
+        </template>
+
+        <PListItem
+          v-for="(item, itemIndex) in option.entry.options"
+          :key="itemIndex"
+          v-bind="toListItemProps(item)"
+        >
+          <slot
+            name="item"
+            :item="item"
+            :index="itemIndex"
+            :group="option.entry"
+            :group-index="option.index"
+          />
+        </PListItem>
+      </PListGroup>
+
+      <PListItem v-else v-bind="toListItemProps(option.entry)">
+        <slot name="item" :item="option.entry" :index="option.index" />
       </PListItem>
-    </slot>
+    </template>
 
     <p
       v-if="empty"

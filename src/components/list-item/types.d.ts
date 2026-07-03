@@ -1,4 +1,4 @@
-import type { ListOption, ListOptionSelected } from '../list/types'
+import type { ListOption } from '../list/types'
 
 export interface ListItemProps {
   as?: ListOption['as']
@@ -8,8 +8,9 @@ export interface ListItemProps {
   disabled?: ListOption['disabled']
   keywords?: string[]
   description?: ListOption['description']
+  onClick?: never
 }
 
 export interface ListItemEmits {
-  click: [ListOptionSelected, MouseEvent]
+  click: [ListOption['value'], MouseEvent]
 }

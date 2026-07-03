@@ -6,36 +6,47 @@ Launch a set of actions as a full-screen overlay.
 
 ```vue demo
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
 
-const showCommandMenu = ref(false);
+const showCommandMenu = ref(false)
+
+const options = [
+  {
+    type: 'group',
+    label: 'Suggestions',
+    options: [{ label: 'Figma Import', value: 'figma-import' }],
+  },
+  {
+    type: 'group',
+    label: 'Commands',
+    options: [
+      { label: 'Import Extension', value: 'import-extension' },
+      { label: 'Manage Extensions', value: 'manage-extensions' },
+    ],
+  },
+  {
+    type: 'group',
+    label: 'Collaboration',
+    options: [
+      { label: 'Flags Explorer', value: 'flags-explorer' },
+      { label: 'File Explorer', value: 'file-explorer' },
+      {
+        label: 'Image Explorer',
+        value: 'image-explorer',
+        keywords: ['image', 'explorer', 'viewer', 'file', 'assets'],
+      },
+    ],
+  },
+]
 </script>
 
 <template>
   <PButton variant="primary" @click="showCommandMenu = true"> Open Command Menu </PButton>
 
-  <PCommandMenu v-model="showCommandMenu" placeholder="What do you need?">
-    <PCommandMenuGroup label="Suggestions">
-      <PListItem label="Figma Import" />
-    </PCommandMenuGroup>
-
-    <PCommandMenuGroup label="Commands">
-      <PListItem label="Import Extension" />
-      <PListItem label="Manage Extensions" />
-    </PCommandMenuGroup>
-
-    <PCommandMenuGroup label="Collaboration">
-      <PListItem label="Flags Explorer" />
-      <!-- When using slot to customize rendering, it is still recommended to pass in label/description or keywords attribute for content search. -->
-      <PListItem label="File Explorer">
-        <span>File Explorer</span>
-      </PListItem>
-
-      <!-- use keywords prop -->
-      <PListItem :keywords="['image', 'explorer', 'viewer', 'file', 'assets']">
-        <span>Image Explorer</span>
-      </PListItem>
-    </PCommandMenuGroup>
+  <PCommandMenu v-model="showCommandMenu" :options="options" placeholder="What do you need?">
+    <template #item="{ item }">
+      {{ item.label }}
+    </template>
   </PCommandMenu>
 </template>
 ```
@@ -46,25 +57,16 @@ const showCommandMenu = ref(false);
 | --- | --- | --- | --- |
 | width | `string \| number` | - | - |
 | model-value | `boolean` | `false` | - |
+| options | `ListOptions` | - | - |
 | placeholder | `string` | `` | - |
 | close-on-select-item | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `true` | - |
 | close-on-click-overlay | `boolean` | `true` | - |
 
-## CommandMenuGroup Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-
 ## Slots
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
-
-## CommandMenuGroup Slots
-
-| Name | Description |
-| --- | --- |
-| default | Default slot |
+| item | Custom item content: `{ item, index, group, groupIndex }` |
+| group | Custom group label: `{ group, index }` |
+| footer | Footer slot |

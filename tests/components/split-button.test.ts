@@ -57,6 +57,31 @@ describe('split-button', () => {
     wrapper.unmount()
   })
 
+  it('should render selected data from grouped options', () => {
+    const wrapper = mount(SplitButton, {
+      props: {
+        modelValue: '2',
+        options: [
+          {
+            type: 'group',
+            label: 'Group',
+            options: [
+              { label: 'Option 1', value: '1' },
+              { label: 'Option 2', value: '2' },
+            ],
+          },
+        ],
+      },
+      slots: {
+        default: `<template #default="{ data }">{{ data?.label }}</template>`,
+      },
+    })
+
+    expect(wrapper.text()).toContain('Option 2')
+
+    wrapper.unmount()
+  })
+
   it('should render custom item slot from options', async () => {
     const wrapper = mount(SplitButton, {
       props: {

@@ -7,11 +7,11 @@ Dropdown menu opened via button. Supports typeahead and keyboard navigation.
 ```vue demo
 <script setup>
 const options = [
-  { label: 'One' },
-  { label: 'Two' },
-  { label: 'Three', disabled: true },
-  { label: 'Remove', variant: 'warning' },
-  { label: 'Delete', variant: 'error' },
+  { label: 'One', value: 'one' },
+  { label: 'Two', value: 'two' },
+  { label: 'Three', value: 'three', disabled: true },
+  { label: 'Remove', value: 'remove', variant: 'warning' },
+  { label: 'Delete', value: 'delete', variant: 'error' },
 ]
 
 function onSelect(item, ev) {
@@ -42,11 +42,11 @@ function onSelect(item, ev) {
 ```vue demo
 <script setup>
 const options = [
-  { as: 'RouterLink', to: 'menu', label: 'One' },
-  { as: 'RouterLink', to: 'menu', label: 'Two' },
-  { as: 'RouterLink', to: 'menu', label: 'Three', disabled: true },
-  { as: 'RouterLink', to: 'menu', label: 'Four', variant: 'warning' },
-  { as: 'RouterLink', to: 'menu', label: 'Delete', variant: 'error' },
+  { as: 'RouterLink', to: 'menu', label: 'One', value: 'one' },
+  { as: 'RouterLink', to: 'menu', label: 'Two', value: 'two' },
+  { as: 'RouterLink', to: 'menu', label: 'Three', value: 'three', disabled: true },
+  { as: 'RouterLink', to: 'menu', label: 'Four', value: 'four', variant: 'warning' },
+  { as: 'RouterLink', to: 'menu', label: 'Delete', value: 'delete', variant: 'error' },
 ]
 </script>
 
@@ -75,10 +75,10 @@ Pressing esc after setting will not close.
 ```vue demo
 <script setup>
 const options = [
-  { label: 'One' },
-  { label: 'Two' },
-  { label: 'Three', disabled: true },
-  { label: 'Delete', variant: 'error' },
+  { label: 'One', value: 'one' },
+  { label: 'Two', value: 'two' },
+  { label: 'Three', value: 'three', disabled: true },
+  { label: 'Delete', value: 'delete', variant: 'error' },
 ]
 </script>
 
@@ -94,10 +94,10 @@ const options = [
 ```vue demo
 <script setup>
 const options = [
-  { label: 'One' },
-  { label: 'Two' },
-  { label: 'Three', disabled: true },
-  { label: 'Delete', variant: 'error' },
+  { label: 'One', value: 'one' },
+  { label: 'Two', value: 'two' },
+  { label: 'Three', value: 'three', disabled: true },
+  { label: 'Delete', value: 'delete', variant: 'error' },
 ]
 </script>
 

@@ -1,8 +1,9 @@
-import type { ListOptionSelected } from '../list/types'
+import type { ListOptions, ListOptionSelected } from '../list/types'
 
 export interface CommandMenuProps {
   width?: string | number
   modelValue?: boolean
+  options?: ListOptions
   placeholder?: string
   closeOnSelectItem?: boolean
   closeOnPressEscape?: boolean

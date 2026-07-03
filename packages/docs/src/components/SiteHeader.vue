@@ -6,12 +6,25 @@ import SparklesIcon from '@gdsicon/vue/sparkles'
 import { version } from 'pxd'
 import { cachedOff, cachedOn } from 'pxd/utils/event'
 import { isServer } from 'pxd/utils/is'
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef, computed } from 'vue'
 import { githubLink } from '../consts/link'
 import { asideMenus } from '../consts/navbar'
 import CustomVariables from './CustomVariables.vue'
 
 const showCommandMenu = shallowRef(false)
+
+const commandMenuOptions = computed(() => {
+  return asideMenus.map((menu) => ({
+    type: 'group' as const,
+    label: menu.group,
+    options: menu.children.map((item) => ({
+      label: item.label,
+      value: item.path,
+      as: 'RouterLink',
+      to: item.path,
+    })),
+  }))
+})
 
 const prereleaseVersion = (() => {
   const versions = version.split('.')
@@ -81,22 +94,15 @@ onBeforeUnmount(() => {
           </template>
         </PButton>
 
-        <PCommandMenu v-model="showCommandMenu" placeholder="Search...">
-          <PCommandMenuGroup v-for="i of asideMenus" :key="i.group" :label="i.group">
-            <PListItem
-              v-for="e of i.children"
-              :key="e.path"
-              :label="e.label"
-              as="RouterLink"
-              :to="e.path"
-            >
-              <template #prefix>
-                <ArrowRightIcon class="text-gray-600" />
-              </template>
-
-              {{ e.label }}
-            </PListItem>
-          </PCommandMenuGroup>
+        <PCommandMenu
+          v-model="showCommandMenu"
+          :options="commandMenuOptions"
+          placeholder="Search..."
+        >
+          <template #item="{ item }">
+            <ArrowRightIcon class="text-gray-600" />
+            <span>{{ item.label }}</span>
+          </template>
 
           <template #footer>
             <div

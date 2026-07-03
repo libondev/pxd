@@ -115,13 +115,20 @@ provideListFilterContext(filterContext)
 
     <PList
       :loop="false"
+      :options="options"
       class="sm:max-h-110 h-full"
       :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
       :toggle-on-key-press="modelValue"
       @select="onListItemSelect"
     >
-      <slot />
+      <template v-if="$slots.group" #group="{ group, index }">
+        <slot name="group" :group="group" :index="index" />
+      </template>
+
+      <template v-if="$slots.item" #item="slotProps">
+        <slot name="item" v-bind="slotProps" />
+      </template>
 
       <template #empty>
         {{ configProvider.locale.results.searchText }}
