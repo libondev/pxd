@@ -46,6 +46,37 @@ const value = ref(
 </template>
 ```
 
+## Word Limit
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const insideValue = ref('Hello')
+const outsideValue = ref('Hello')
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PTextarea
+      v-model="insideValue"
+      rows="4"
+      maxlength="100"
+      show-word-limit
+      placeholder="Word limit inside"
+    />
+    <PTextarea
+      v-model="outsideValue"
+      rows="4"
+      maxlength="100"
+      show-word-limit
+      word-limit-position="outside"
+      placeholder="Word limit outside"
+    />
+  </PStack>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -61,3 +92,5 @@ const value = ref(
 | maxlength | `number \| string` | - | - |
 | model-value | `string \| number \| null` | `` | - |
 | placeholder | `string` | - | - |
+| show-word-limit | `boolean \| string` | - | - |
+| word-limit-position | `'inside' \| 'outside'` | `inside` | - |

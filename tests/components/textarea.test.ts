@@ -38,4 +38,50 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
+  it('should display word limit with maxlength', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        modelValue: 'test',
+        maxlength: 100,
+        showWordLimit: true,
+      },
+    })
+
+    const wordLimit = wrapper.find('.pxd-textarea--word-limit')
+    expect(wordLimit.exists()).toBe(true)
+    expect(wordLimit.text()).toBe('4 / 100')
+
+    wrapper.unmount()
+  })
+  it('should display word count without maxlength', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        modelValue: 'test',
+        showWordLimit: true,
+      },
+    })
+
+    const wordLimit = wrapper.find('.pxd-textarea--word-limit')
+    expect(wordLimit.exists()).toBe(true)
+    expect(wordLimit.text()).toBe('4')
+
+    wrapper.unmount()
+  })
+  it('should update word count on input', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        modelValue: 'test',
+        maxlength: 100,
+        showWordLimit: true,
+      },
+    })
+
+    await wrapper.setProps({ modelValue: 'hello world' })
+    await wrapper.vm.$nextTick()
+
+    const wordLimit = wrapper.find('.pxd-textarea--word-limit')
+    expect(wordLimit.text()).toBe('11 / 100')
+
+    wrapper.unmount()
+  })
 })

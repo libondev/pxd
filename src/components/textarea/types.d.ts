@@ -12,6 +12,8 @@ export interface TextareaProps {
   maxlength?: number | string
   modelValue?: ComponentLabel
   placeholder?: string
+  showWordLimit?: boolean | string
+  wordLimitPosition?: 'inside' | 'outside'
 }
 
 export interface TextareaEmits {

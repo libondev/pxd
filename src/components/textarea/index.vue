@@ -18,12 +18,12 @@ defineOptions({
 
 const props = withDefaults(defineProps<TextareaProps>(), {
   modelValue: '',
+  wordLimitPosition: 'inside',
 })
 
 const emits = defineEmits<TextareaEmits>()
 
 const textareaVariant = tv({
-  base: '',
   variants: {
     size: {
       xs: 'text-xs',
@@ -44,12 +44,6 @@ const textareaVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-    disabled: false,
-    readonly: false,
-    error: false,
-  },
 })
 
 const uniqueId = getUniqueId()
@@ -65,6 +59,28 @@ const computedClasses = computed(() => {
     disabled: isTruthyProp(props.disabled),
     readonly: isTruthyProp(props.readonly),
   })
+})
+
+const wordCount = computed(() => String(modelValue.value ?? '').length)
+
+const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
+const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
+const isWordLimitInside = computed(() => props.wordLimitPosition === 'inside')
+
+const textareaClasses = computed(() => ({
+  'pb-7': isWordLimitShown.value && isWordLimitInside.value,
+}))
+
+const wordLimitClasses = computed(() => {
+  return isWordLimitInside.value ? 'bottom-1.5 right-3' : 'top-full right-0 mt-1'
+})
+
+const wordLimitText = computed(() => {
+  if (hasMaxlength.value) {
+    return `${wordCount.value} / ${props.maxlength}`
+  }
+
+  return `${wordCount.value}`
 })
 
 function onInputFocus(event: FocusEvent) {
@@ -83,7 +99,7 @@ function onInputChange(event: Event) {
 <template>
   <label
     :for="uniqueId"
-    class="pxd-textarea pxd-input--border flex size-full min-h-inherit max-w-full items-center justify-center overflow-hidden rounded-md bg-background-100 motion-safe:transition-appearance"
+    class="pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance"
     :class="computedClasses"
     v-bind="$attrs"
   >
@@ -91,6 +107,7 @@ function onInputChange(event: Event) {
       :id="uniqueId"
       v-model="modelValue"
       class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
+      :class="textareaClasses"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
@@ -106,5 +123,12 @@ function onInputChange(event: Event) {
       @focus="onInputFocus"
       @blur="onInputBlur"
     />
+    <span
+      v-if="isWordLimitShown"
+      class="pxd-textarea--word-limit text-xs pointer-events-none absolute text-foreground-secondary select-none"
+      :class="wordLimitClasses"
+    >
+      {{ wordLimitText }}
+    </span>
   </label>
 </template>

@@ -2,7 +2,7 @@
 
 Render only when components are visible in the viewport.
 
-> Inspiration comes from<PLinkButton variant="link" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
+> Inspiration comes from<PLinkButton class="!px-0" variant="link" target="_blank" text="isaact/vue-infinity" href="https://github.com/isaact/vue-infinity" external-icon />
 
 ## Default
 
