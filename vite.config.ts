@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue'
+import type { PluginOption } from '@voidzero-dev/vite-plus-core'
 import { fileURLToPath } from 'node:url'
-import { configDefaults, defineConfig } from 'vite-plus'
+import { configDefaults, defineConfig, lazyPlugins } from 'vite-plus'
 
 export default defineConfig({
   fmt: {
@@ -112,7 +113,7 @@ export default defineConfig({
     },
   },
 
-  plugins: [vue()],
+  plugins: lazyPlugins(() => [vue() as PluginOption]),
 
   run: {
     tasks: {

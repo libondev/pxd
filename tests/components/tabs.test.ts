@@ -31,11 +31,11 @@ describe('tabs', () => {
     const wrapper = mount(Tabs, {
       props: {
         modelValue: '1',
-        variant: 'enclosed',
+        variant: 'secondary',
       },
     })
 
-    expect(wrapper.props('variant')).toBe('enclosed')
+    expect(wrapper.props('variant')).toBe('secondary')
 
     wrapper.unmount()
   })

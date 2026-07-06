@@ -4,7 +4,11 @@ import Snippet from '../../src/components/snippet/index.vue'
 
 describe('snippet', () => {
   it('renders properly', () => {
-    const wrapper = mount(Snippet)
+    const wrapper = mount(Snippet, {
+      props: {
+        text: 'npm install pxd',
+      },
+    })
 
     expect(wrapper.exists()).toBe(true)
 
@@ -24,7 +28,11 @@ describe('snippet', () => {
   })
 
   it('should default prompt to "$ "', () => {
-    const wrapper = mount(Snippet)
+    const wrapper = mount(Snippet, {
+      props: {
+        text: 'npm install pxd',
+      },
+    })
 
     expect(wrapper.props('prompt')).toBe('$ ')
 
@@ -34,6 +42,7 @@ describe('snippet', () => {
   it('should accept custom prompt', () => {
     const wrapper = mount(Snippet, {
       props: {
+        text: 'npm install pxd',
         prompt: '> ',
       },
     })
@@ -44,7 +53,11 @@ describe('snippet', () => {
   })
 
   it('should default variant to default', () => {
-    const wrapper = mount(Snippet)
+    const wrapper = mount(Snippet, {
+      props: {
+        text: 'npm install pxd',
+      },
+    })
 
     expect(wrapper.props('variant')).toBe('default')
 

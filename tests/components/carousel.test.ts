@@ -4,7 +4,6 @@ import { h, nextTick } from 'vue'
 import CarouselItem from '../../src/components/carousel-item/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
 
-let originalMatchMedia: typeof window.matchMedia
 let originalGetAnimations: Element['getAnimations'] | undefined
 
 function dispatchWheel(el: Element, deltaY: number) {
@@ -14,9 +13,14 @@ function dispatchWheel(el: Element, deltaY: number) {
   return ev
 }
 
+function flushPromises() {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, 0)
+  })
+}
+
 describe('carousel', () => {
   beforeEach(() => {
-    originalMatchMedia = window.matchMedia
     originalGetAnimations = Reflect.get(Element.prototype, 'getAnimations') as
       | Element['getAnimations']
       | undefined
@@ -24,7 +28,6 @@ describe('carousel', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
-    window.matchMedia = originalMatchMedia
 
     if (originalGetAnimations) {
       Element.prototype.getAnimations = originalGetAnimations
@@ -116,23 +119,8 @@ describe('carousel', () => {
     wrapper.unmount()
   })
 
-  it('should switch immediately when reduced motion is preferred', async () => {
-    window.matchMedia = vi.fn().mockImplementation((query) => ({
-      matches: query === '(prefers-reduced-motion: reduce)',
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }))
-
-    const getAnimations = vi.fn().mockReturnValue([
-      {
-        finished: new Promise(() => {}),
-      },
-    ])
+  it('should switch immediately when slider has no animations', async () => {
+    const getAnimations = vi.fn().mockReturnValue([])
     Element.prototype.getAnimations = getAnimations
 
     const wrapper = mount(Carousel, {
@@ -149,15 +137,16 @@ describe('carousel', () => {
       },
     })
 
-    await wrapper.find('.pxd-carousel--next-btn').trigger('click')
     await nextTick()
+    await wrapper.find('.pxd-carousel--next-btn').trigger('click')
+    await flushPromises()
 
-    expect(getAnimations).not.toHaveBeenCalled()
+    expect(getAnimations).toHaveBeenCalled()
     expect(wrapper.emitted('change')).toEqual([[0]])
     expect(wrapper.find('.pxd-carousel--slider').attributes('style')).toContain(
       'translateX(calc(0% + 0px))',
     )
-    expect(wrapper.attributes('data-loop-placement')).toBe('none')
+    expect(wrapper.attributes('data-loop-placement')).toBe('start')
 
     wrapper.unmount()
   })

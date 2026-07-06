@@ -5,6 +5,9 @@ import ScalableText from '../../src/components/scalable-text/index.vue'
 describe('scalable-text', () => {
   it('renders properly', () => {
     const wrapper = mount(ScalableText, {
+      props: {
+        text: 'Scalable text',
+      },
       slots: {
         default: 'Scalable text',
       },
@@ -18,6 +21,7 @@ describe('scalable-text', () => {
   it('should accept minFontSize prop', () => {
     const wrapper = mount(ScalableText, {
       props: {
+        text: 'Text',
         minFontSize: 14,
       },
       slots: {
@@ -32,6 +36,9 @@ describe('scalable-text', () => {
 
   it('should default minFontSize to 12', () => {
     const wrapper = mount(ScalableText, {
+      props: {
+        text: 'Text',
+      },
       slots: {
         default: 'Text',
       },

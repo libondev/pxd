@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import MessageItem from '../../src/components/message-item/index.vue'
+import type { MessageItemConfig } from '../../src/composables/use-message'
 
 describe('message-item', () => {
   const defaultItemData = {
@@ -8,7 +9,7 @@ describe('message-item', () => {
     type: 'info',
     message: 'Test message',
     durations: 3000,
-  }
+  } satisfies MessageItemConfig
 
   it('renders properly', () => {
     const wrapper = mount(MessageItem, {

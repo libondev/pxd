@@ -2,12 +2,14 @@ import { mount } from '@vue/test-utils'
 import { h } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import Popover from '../../src/components/popover/index.vue'
+import type { computePosition as computePositionType } from '@floating-ui/dom'
 
 const mocks = vi.hoisted(() => ({
-  computePosition: vi.fn(async () => ({
+  computePosition: vi.fn<typeof computePositionType>(async () => ({
     x: 0,
     y: 0,
     placement: 'bottom',
+    strategy: 'absolute',
     middlewareData: {},
   })),
 }))
@@ -114,7 +116,7 @@ describe('popover', () => {
           <button data-popover-trigger data-title="First">First</button>
           <button data-popover-trigger data-title="Second">Second</button>
         `,
-        content: (params: { activeTrigger: HTMLElement; activeTriggerIndex: number }) =>
+        content: (params: { activeTrigger: HTMLElement | null; activeTriggerIndex: number }) =>
           h('span', { class: 'content' }, `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`),
       },
     })
@@ -139,7 +141,7 @@ describe('popover', () => {
           <button data-popover-trigger data-title="First">First</button>
           <button data-popover-trigger data-title="Second">Second</button>
         `,
-        content: (params: { activeTrigger: HTMLElement }) =>
+        content: (params: { activeTrigger: HTMLElement | null }) =>
           h('span', { class: 'content' }, params.activeTrigger?.dataset.title),
       },
     })
@@ -198,7 +200,7 @@ describe('popover', () => {
           <button data-popover-trigger data-title="First">First</button>
           <button data-popover-trigger data-title="Second">Second</button>
         `,
-        content: (params: { activeTrigger: HTMLElement; activeTriggerIndex: number }) =>
+        content: (params: { activeTrigger: HTMLElement | null; activeTriggerIndex: number }) =>
           h('span', { class: 'content' }, `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`),
       },
     })
