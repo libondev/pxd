@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
+import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
 import { awaitAnimationEnd } from '../../utils/dom'
@@ -33,13 +35,13 @@ let isToggling = false
 let pendingDelta: number | null = null
 let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
-/** Cached container size (px) captured on press, used to clamp drag within one slide. */
 let maxDrag = 0
 
 const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
+const isReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
 
 const displayIndex = computed(() => {
   const length = carousels.value.length
@@ -52,6 +54,7 @@ const displayIndex = computed(() => {
 const isAtFirst = computed(() => displayIndex.value === 0)
 const isAtLast = computed(() => displayIndex.value === carousels.value.length - 1)
 const isHorizontal = computed(() => props.direction === 'horizontal')
+const isLooping = computed(() => props.loop && carousels.value.length > 1)
 
 const computedStyle = computed(() => {
   const translateValue = `calc(${virtualIndex.value * -100}% + ${gestureMoveOffset.value}px)`
@@ -60,6 +63,44 @@ const computedStyle = computed(() => {
     transform: `translate${isHorizontal.value ? 'X' : 'Y'}(${translateValue})`,
   }
 })
+
+const rootStyle = computed<CSSProperties>(() => {
+  return {
+    height: getCssUnitValue(props.height),
+    '--carousel-item-count': carousels.value.length,
+  }
+})
+
+const loopPlacement = computed(() => {
+  const length = carousels.value.length
+  const lastIndex = length - 1
+
+  if (!isLooping.value || isReducedMotion.value) {
+    return 'none'
+  }
+
+  if (virtualIndex.value <= 0) {
+    return 'start'
+  }
+
+  if (virtualIndex.value >= lastIndex) {
+    return 'end'
+  }
+
+  return 'none'
+})
+
+function normalizeIndex(index: number, length: number) {
+  return ((index % length) + length) % length
+}
+
+function getNextIndex(delta: number, length: number) {
+  if (isLooping.value) {
+    return normalizeIndex(virtualIndex.value + delta, length)
+  }
+
+  return Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
+}
 
 useSwipeGesture(sliderRef, {
   axis: () => props.direction,
@@ -99,9 +140,16 @@ async function performToggle(delta: number) {
     return
   }
 
+  if (isReducedMotion.value) {
+    virtualIndex.value = getNextIndex(delta, length)
+    emits('change', virtualIndex.value)
+    restartAutoPlay()
+    return
+  }
+
   await awaitAnimationEnd(sliderRef.value)
 
-  if (props.loop) {
+  if (isLooping.value) {
     virtualIndex.value += delta
 
     await nextTick()
@@ -230,26 +278,15 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 }
 
-function updateItemIndex() {
-  carousels.value.forEach((carousel, i) => {
-    carousel.updateItemIndex(i)
-  })
-}
-
 function registerCarousel(state: CarouselState) {
   carousels.value.push(state)
-  updateItemIndex()
 }
 
 function unregisterCarousel(id: string) {
   carousels.value = carousels.value.filter(({ uid }) => uid !== id)
-  updateItemIndex()
 }
 
 provideCarouselContext({
-  props,
-  carousels,
-  virtualIndex,
   registerCarousel,
   unregisterCarousel,
 })
@@ -272,8 +309,9 @@ onBeforeUnmount(() => {
     :data-orientation="direction"
     :data-indicator-type="indicatorType"
     :data-indicator-position="indicatorPosition"
+    :data-loop-placement="loopPlacement"
     class="pxd-carousel group relative w-full touch-none overflow-hidden"
-    :style="{ height: getCssUnitValue(height) }"
+    :style="rootStyle"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
     @wheel="onWheelToggle"
@@ -427,7 +465,23 @@ onBeforeUnmount(() => {
     display: flex;
   }
 
+  &[data-loop-placement='end'] .pxd-carousel-item:first-child {
+    transform: translateX(calc(var(--carousel-item-count) * 100%));
+  }
+
+  &[data-loop-placement='start'] .pxd-carousel-item:last-child {
+    transform: translateX(calc(var(--carousel-item-count) * -100%));
+  }
+
   &[data-orientation='vertical'] {
+    &[data-loop-placement='end'] .pxd-carousel-item:first-child {
+      transform: translateY(calc(var(--carousel-item-count) * 100%));
+    }
+
+    &[data-loop-placement='start'] .pxd-carousel-item:last-child {
+      transform: translateY(calc(var(--carousel-item-count) * -100%));
+    }
+
     .pxd-carousel--prev-btn,
     .pxd-carousel--next-btn {
       transform: rotate(90deg);
