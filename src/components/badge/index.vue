@@ -22,7 +22,7 @@ const badgeVariant = tv({
     variant: {
       pill: 'bg-background-100 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
       primary: 'bg-primary text-gray-100',
-      secondary: 'bg-gray-100 text-gray-1000 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
+      secondary: 'bg-gray-200 text-gray-1000 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
       gray: 'text-white bg-gray-900',
       blue: 'bg-blue-800 text-gray-100 dark:text-gray-1000',
       purple: 'bg-purple-900 text-gray-100 dark:text-gray-1000',
@@ -94,18 +94,16 @@ function onClose(ev: Event) {
   </Component>
 </template>
 
-<style lang="postcss">
-.pxd-badge {
-  &.vue {
-    background: linear-gradient(315deg, #42d392 25%, #647eff);
-  }
+<style>
+.pxd-badge.vue {
+  background: linear-gradient(315deg, #42d392 25%, #647eff);
+}
 
-  &.trial {
-    background: linear-gradient(135deg, #0070f3, #f81ce5);
-  }
+.pxd-badge.trial {
+  background: linear-gradient(135deg, #0070f3, #f81ce5);
+}
 
-  &.turborepo {
-    background: linear-gradient(135deg, #ff1e56, #0096ff);
-  }
+.pxd-badge.turborepo {
+  background: linear-gradient(135deg, #ff1e56, #0096ff);
 }
 </style>
