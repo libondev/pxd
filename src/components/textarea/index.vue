@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<TextareaProps>(), {
 const emits = defineEmits<TextareaEmits>()
 
 const textareaVariant = tv({
+  base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
   variants: {
     size: {
       xs: 'text-xs',
@@ -99,7 +100,6 @@ function onInputChange(event: Event) {
 <template>
   <label
     :for="uniqueId"
-    class="pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance"
     :class="computedClasses"
     v-bind="$attrs"
   >

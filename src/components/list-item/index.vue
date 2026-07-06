@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 const emits = defineEmits<ListItemEmits>()
 
 const listItemVariant = tv({
+  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     variant: {
       error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -117,7 +118,6 @@ onBeforeUnmount(() => {
     tabindex="-1"
     role="listitem"
     data-list-item
-    class="pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700"
     :data-variant="variant"
     :data-checked="isChecked"
     :data-disabled="disabled"

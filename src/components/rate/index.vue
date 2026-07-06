@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<RateProps>(), {
 const emits = defineEmits<RateEmits>()
 
 const rateVariants = tv({
+  base: 'pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none',
   variants: {
     size: {
       sm: 'text-sm',
@@ -245,7 +246,6 @@ onBeforeUnmount(() => {
     ref="rateRef"
     role="radiogroup"
     tabindex="0"
-    class="pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none"
     :class="computedClasses"
     v-bind="$attrs"
     @keydown="handleKeydown"

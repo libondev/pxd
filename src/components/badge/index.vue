@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 const emits = defineEmits<BadgeEmits>()
 
 const badgeVariant = tv({
+  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance',
   variants: {
     variant: {
       pill: 'bg-background-100 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
@@ -78,7 +79,6 @@ function onClose(ev: Event) {
 <template>
   <Component
     :is="as"
-    class="pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance"
     :class="computedClasses"
     v-bind="$attrs"
   >
