@@ -304,9 +304,13 @@ if (!isServer()) {
   }
 
   h2 + table {
+    display: block;
     border-collapse: collapse;
-    table-layout: fixed;
-    width: 100%;
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
     border-color: hsl(var(--color-gray-300-value));
     border-width: 0 0 1px 1px;
     margin-block: 1.68em;
@@ -325,6 +329,11 @@ if (!isServer()) {
     td {
       padding: 0.75em 0.75em;
       border-right: 1px solid hsl(var(--color-gray-300-value));
+    }
+
+    :not(pre) > code {
+      white-space: nowrap;
+      word-break: normal;
     }
   }
 }

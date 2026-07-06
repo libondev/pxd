@@ -105,7 +105,7 @@ function onClose() {
 | as | `string \| object` | `span` | - |
 | href | `string` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
-| variant | `'pill' \| 'primary' \| 'secondary' \| 'gray' \| 'blue' \| 'purple' \| 'amber' \| 'red' \| 'pink' \| 'green' \| 'teal' \| 'gray-subtle' \| 'blue-subtle' \| 'purple-subtle' \| 'amber-subtle' \| 'red-subtle' \| 'pink-subtle' \| 'green-subtle' \| 'teal-subtle' \| 'inverted' \| 'vue' \| 'trial' \| 'turborepo'` | `pill` | - |
+| variant | `BadgeVariant` | `pill` | - |
 | closeable | `boolean` | - | - |
 
 ## Slots
