@@ -24,37 +24,24 @@ const props = withDefaults(defineProps<LoadingBarProps>(), {
   trickleThreshold: 300,
 })
 
-const loadingBarVariant = tv({
-  slots: {
-    wrapper:
-      'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
-    inner:
-      'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
+const loadingBarWrapperVariant = tv({
+  base: 'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
+  variants: {
+    locally: {
+      true: 'absolute',
+      false: 'fixed',
+    },
   },
+})
+
+const loadingBarInnerVariant = tv({
+  base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
   variants: {
     status: {
-      running: {
-        inner: 'bg-gray-500',
-      },
-      finish: {
-        inner: 'bg-primary',
-      },
-      error: {
-        inner: 'bg-red-900',
-      },
+      running: 'bg-gray-500',
+      finish: 'bg-primary',
+      error: 'bg-red-900',
     },
-    absolute: {
-      true: {
-        wrapper: 'absolute',
-      },
-      false: {
-        wrapper: 'fixed',
-      },
-    },
-  },
-  defaultVariants: {
-    status: 'finish',
-    absolute: false,
   },
 })
 
@@ -71,10 +58,15 @@ const hiddenBar = shallowRef(false)
 const progressValue = shallowRef(0)
 const enableTransition = shallowRef(false)
 
-const computedClasses = computed(() => {
-  return loadingBarVariant({
+const computedWrapperClasses = computed(() => {
+  return loadingBarWrapperVariant({
+    locally: isTruthyProp(props.to),
+  })
+})
+
+const computedInnerClasses = computed(() => {
+  return loadingBarInnerVariant({
     status: status.value,
-    absolute: isTruthyProp(props.to),
   })
 })
 
@@ -219,11 +211,11 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div aria-hidden="true" :class="computedClasses.wrapper()" v-bind="$attrs">
+    <div aria-hidden="true" :class="computedWrapperClasses" v-bind="$attrs">
       <div
         :data-hidden="hiddenBar"
         :data-transition="enableTransition"
-        :class="computedClasses.inner()"
+        :class="computedInnerClasses"
         :style="{ transform: `scaleX(${progressValue})` }"
       />
     </div>
