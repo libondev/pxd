@@ -4,7 +4,6 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
 import { awaitAnimationEnd } from '../../utils/dom'
@@ -41,7 +40,6 @@ const carousels = ref<CarouselState[]>([])
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
-const isReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
 
 const displayIndex = computed(() => {
   const length = carousels.value.length
@@ -75,7 +73,7 @@ const loopPlacement = computed(() => {
   const length = carousels.value.length
   const lastIndex = length - 1
 
-  if (!isLooping.value || isReducedMotion.value) {
+  if (!isLooping.value) {
     return 'none'
   }
 
@@ -89,18 +87,6 @@ const loopPlacement = computed(() => {
 
   return 'none'
 })
-
-function normalizeIndex(index: number, length: number) {
-  return ((index % length) + length) % length
-}
-
-function getNextIndex(delta: number, length: number) {
-  if (isLooping.value) {
-    return normalizeIndex(virtualIndex.value + delta, length)
-  }
-
-  return Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
-}
 
 useSwipeGesture(sliderRef, {
   axis: () => props.direction,
@@ -137,13 +123,6 @@ async function performToggle(delta: number) {
   const length = carousels.value.length
 
   if (length === 0) {
-    return
-  }
-
-  if (isReducedMotion.value) {
-    virtualIndex.value = getNextIndex(delta, length)
-    emits('change', virtualIndex.value)
-    restartAutoPlay()
     return
   }
 
