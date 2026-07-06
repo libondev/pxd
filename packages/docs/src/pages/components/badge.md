@@ -9,6 +9,7 @@ A label that emphasizes an element that requires attention, or helps categorize 
   <PStack class="capitalize" gap="2">
     <PBadge variant="pill">pill</PBadge>
     <PBadge variant="primary">primary</PBadge>
+    <PBadge variant="secondary">secondary</PBadge>
     <PBadge variant="gray">gray</PBadge>
     <PBadge variant="blue">blue</PBadge>
     <PBadge variant="purple">purple</PBadge>
@@ -104,7 +105,7 @@ function onClose() {
 | as | `string \| object` | `span` | - |
 | href | `string` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
-| variant | `'pill' \| 'primary' \| 'gray' \| 'blue' \| 'purple' \| 'amber' \| 'red' \| 'pink' \| 'green' \| 'teal' \| 'gray-subtle' \| 'blue-subtle' \| 'purple-subtle' \| 'amber-subtle' \| 'red-subtle' \| 'pink-subtle' \| 'green-subtle' \| 'teal-subtle' \| 'inverted' \| 'vue' \| 'trial' \| 'turborepo'` | `pill` | - |
+| variant | `'pill' \| 'primary' \| 'secondary' \| 'gray' \| 'blue' \| 'purple' \| 'amber' \| 'red' \| 'pink' \| 'green' \| 'teal' \| 'gray-subtle' \| 'blue-subtle' \| 'purple-subtle' \| 'amber-subtle' \| 'red-subtle' \| 'pink-subtle' \| 'green-subtle' \| 'teal-subtle' \| 'inverted' \| 'vue' \| 'trial' \| 'turborepo'` | `pill` | - |
 | closeable | `boolean` | - | - |
 
 ## Slots

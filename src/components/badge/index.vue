@@ -18,11 +18,11 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 const emits = defineEmits<BadgeEmits>()
 
 const badgeVariant = tv({
-  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance',
   variants: {
     variant: {
-      pill: 'bg-background-100',
+      pill: 'bg-background-100 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
       primary: 'bg-primary text-gray-100',
+      secondary: 'bg-gray-100 text-gray-1000 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
       gray: 'text-white bg-gray-900',
       blue: 'bg-blue-800 text-gray-100 dark:text-gray-1000',
       purple: 'bg-purple-900 text-gray-100 dark:text-gray-1000',
@@ -76,7 +76,12 @@ function onClose(ev: Event) {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" v-bind="$attrs">
+  <Component
+    :is="as"
+    class="pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance"
+    :class="computedClasses"
+    v-bind="$attrs"
+  >
     <slot />
 
     <button
@@ -91,10 +96,6 @@ function onClose(ev: Event) {
 
 <style lang="postcss">
 .pxd-badge {
-  &.pill {
-    box-shadow: 0 0 0 1px var(--color-gray-300);
-  }
-
   &.vue {
     background: linear-gradient(315deg, #42d392 25%, #647eff);
   }
