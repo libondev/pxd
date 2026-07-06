@@ -244,7 +244,7 @@ if (!isServer()) {
     line-height: 1.25;
     border-radius: 0.5em;
     word-break: break-all;
-    border: 1px solid hsl(var(--color-gray-300-value));
+    border: 1px solid var(--color-gray-300);
     outline: none;
     overflow: auto;
 
@@ -307,28 +307,34 @@ if (!isServer()) {
     display: block;
     border-collapse: collapse;
     table-layout: auto;
-    width: max-content;
-    min-width: 100%;
+    width: 100%;
     max-width: 100%;
     overflow-x: auto;
-    border-color: hsl(var(--color-gray-300-value));
-    border-width: 0 0 1px 1px;
+    border-inline: 1px solid var(--color-gray-300);
     margin-block: 1.68em;
     font-size: 14px;
+
+    thead {
+      border-top: 1px solid var(--color-gray-300);
+    }
+
+    tbody {
+      border-bottom: 1px solid var(--color-gray-300);
+    }
 
     th {
       font-weight: 500;
       text-align: left;
     }
 
-    tr {
-      border-top: 1px solid hsl(var(--color-gray-300-value));
+    tr + tr {
+      border-top: 1px solid var(--color-gray-300);
     }
 
     th,
     td {
       padding: 0.75em 0.75em;
-      border-right: 1px solid hsl(var(--color-gray-300-value));
+      border-right: 1px solid var(--color-gray-300);
     }
 
     :not(pre) > code {
