@@ -33,7 +33,7 @@ export interface SwipeGestureOptions {
   /** CSS selector for the drag handle element within the container. */
   handleSelector?: string
   /** Swipe axis. Reactive; accepts a ref or getter. */
-  direction?: MaybeRefOrGetter<'horizontal' | 'vertical'>
+  axis?: MaybeRefOrGetter<'horizontal' | 'vertical'>
   /** Minimum movement (px) before locking the gesture axis. */
   axisLockThreshold?: number
   /** Main-axis movement must be at least this multiple of cross-axis movement. */
@@ -80,7 +80,7 @@ export function useSwipeGesture(
   type AxisLockState = 'pending' | 'accepted' | 'rejected'
 
   function isHorizontal() {
-    return (toValue(options.direction) ?? 'horizontal') === 'horizontal'
+    return (toValue(options.axis) ?? 'horizontal') === 'horizontal'
   }
 
   function getAxisValue(event: SwipePanEvent, horizontal: boolean) {
@@ -211,7 +211,7 @@ export function useSwipeGesture(
   }
 
   const unwatch = watch(
-    () => [getElement(containerRef), toValue(options.disabled), toValue(options.direction)] as const,
+    () => [getElement(containerRef), toValue(options.disabled), toValue(options.axis)] as const,
     async ([el, disabled]) => {
       if (!el || disabled) {
         unbind()

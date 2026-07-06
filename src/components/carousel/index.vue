@@ -62,7 +62,7 @@ const computedStyle = computed(() => {
 })
 
 useSwipeGesture(sliderRef, {
-  direction: () => props.direction,
+  axis: () => props.direction,
   onPress: ({ size }) => {
     maxDrag = size
 

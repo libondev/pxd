@@ -19,7 +19,9 @@ function useSwipeGesture(
 interface SwipeGestureOptions {
   disabled?: MaybeRefOrGetter<boolean>
   handleSelector?: string
-  direction?: MaybeRefOrGetter<'horizontal' | 'vertical'>
+  axis?: MaybeRefOrGetter<'horizontal' | 'vertical'>
+  axisLockThreshold?: number
+  axisLockRatio?: number
   swipeThreshold?: number
   distanceThreshold?: number
   velocityThreshold?: number
@@ -36,7 +38,9 @@ interface SwipeGestureOptions {
 | `containerRef` | `MaybeElementRef<HTMLElement>` | The container element to detect swipe gestures on |
 | `options.disabled` | `MaybeRefOrGetter<boolean>` | Whether swipe detection is disabled |
 | `options.handleSelector` | `string` | CSS selector for the swipe handle element |
-| `options.direction` | `MaybeRefOrGetter<'horizontal' \| 'vertical'>` | Swipe direction to detect |
+| `options.axis` | `MaybeRefOrGetter<'horizontal' \| 'vertical'>` | Swipe axis to detect |
+| `options.axisLockThreshold` | `number` | Minimum movement before locking the gesture axis |
+| `options.axisLockRatio` | `number` | Main-axis movement ratio required to accept the gesture |
 | `options.swipeThreshold` | `number` | Threshold for swipe activation |
 | `options.distanceThreshold` | `number` | Minimum sliding size ratio |
 | `options.velocityThreshold` | `number` | Minimum velocity to qualify as a swipe |

@@ -34,7 +34,7 @@ const containerRef = shallowRef<HTMLElement>()
 const gestureMoveOffset = shallowRef(0)
 
 const isHorizontal = computed(() => ['left', 'right'].find((d) => props.position.startsWith(d)))
-const gestureDirection = computed(() => (isHorizontal.value ? 'horizontal' : 'vertical'))
+const gestureAxis = computed(() => (isHorizontal.value ? 'horizontal' : 'vertical'))
 
 const computedStyle = computed(() => {
   return {
@@ -70,7 +70,7 @@ useSwipeGesture(containerRef, {
   handleSelector: '.pxd-dismiss-container--handle',
   swipeThreshold: 0,
   disabled: () => props.disabled,
-  direction: gestureDirection,
+  axis: gestureAxis,
   onPress: ({ size }) => {
     caf(releaseAnimationId)
     maxSwipedDamped = size / dampingFactor
