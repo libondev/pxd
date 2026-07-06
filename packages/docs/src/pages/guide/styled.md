@@ -16,10 +16,7 @@ import 'pxd/styles.css'
 ```css
 /* src/styles/global.css */
 @import 'tailwindcss';
-
-/* add pxd styles */
-@import '../../node_modules/pxd/dist/styles/tw.css';
-@source "../../node_modules/pxd";
+@import 'pxd/tw.css';
 ```
 
 ## Custom

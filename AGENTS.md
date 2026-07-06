@@ -20,7 +20,7 @@ pxd/
 │   ├── contexts/            # Vue context providers
 │   ├── locales/             # i18n
 │   ├── plugins/             # Plugin system
-│   ├── styles/              # CSS/Tailwind (entry: tw.css)
+│   ├── styles/              # CSS/Tailwind
 │   ├── types/               # Shared TypeScript types
 │   └── utils/               # Utility functions
 ├── packages/
