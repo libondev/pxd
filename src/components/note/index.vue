@@ -78,11 +78,6 @@ const noteVariant = tv({
     { variant: 'cyan', fill: true, class: 'border-teal-100 bg-teal-200 text-teal-900' },
     { variant: 'cyan', fill: false, class: 'border-teal-400 text-teal-900' },
   ],
-  defaultVariants: {
-    size: 'md',
-    variant: 'default',
-    fill: false,
-  },
 })
 
 const configProvider = useConfigProvider()

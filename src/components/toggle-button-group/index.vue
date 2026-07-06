@@ -38,9 +38,6 @@ const toggleButtonGroupVariant = tv({
       ghost: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-  },
 })
 
 const computedSize = computed(() => props.size || configProvider.size)

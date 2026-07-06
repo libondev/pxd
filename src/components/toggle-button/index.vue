@@ -52,12 +52,6 @@ const toggleButtonVariant = tv({
     { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
     { variant: 'outline', checked: true, disabled: true, class: 'border-gray-500 bg-gray-100' },
   ],
-  defaultVariants: {
-    size: 'md',
-    variant: 'ghost',
-    checked: false,
-    disabled: false,
-  },
 })
 
 const toggleButtonGroupContext = useToggleButtonGroupContext()

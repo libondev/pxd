@@ -56,13 +56,6 @@ const inputVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-    align: 'left',
-    disabled: false,
-    readonly: false,
-    error: false,
-  },
 })
 
 const uniqueId = getUniqueId()

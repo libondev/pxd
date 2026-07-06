@@ -62,11 +62,6 @@ const checkboxVariant = tv({
       class: 'border-gray-500 bg-gray-100',
     },
   ],
-  defaultVariants: {
-    shape: 'default',
-    checked: false,
-    disabled: false,
-  },
 })
 
 const uniqueId = getUniqueId()

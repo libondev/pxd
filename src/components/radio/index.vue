@@ -54,10 +54,6 @@ const radioVariant = tv({
     },
     { checked: false, disabled: true, class: 'border-gray-500 bg-gray-100' },
   ],
-  defaultVariants: {
-    checked: false,
-    disabled: false,
-  },
 })
 
 const uniqueId = getUniqueId()

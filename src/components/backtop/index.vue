@@ -32,9 +32,6 @@ const backtopVariants = tv({
       false: 'absolute',
     },
   },
-  defaultVariants: {
-    appendToBody: true,
-  },
 })
 
 const scrollTop = shallowRef(0)

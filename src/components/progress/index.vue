@@ -34,9 +34,6 @@ const progressVariant = tv({
       lg: 'h-3.5',
     },
   },
-  defaultVariants: {
-    size: 'md',
-  },
 })
 
 const configProvider = useConfigProvider()

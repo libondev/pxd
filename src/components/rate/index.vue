@@ -43,11 +43,6 @@ const rateVariants = tv({
       true: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-    disabled: false,
-    readonly: false,
-  },
   compoundVariants: [
     {
       disabled: true,

@@ -43,11 +43,6 @@ const pinInputVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-    error: false,
-    disabled: false,
-  },
 })
 
 const configProvider = useConfigProvider()

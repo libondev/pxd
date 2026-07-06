@@ -31,11 +31,6 @@ const chipVariant = tv({
       false: 'size-(--chip-size)',
     },
   },
-  defaultVariants: {
-    variant: 'primary',
-    inset: false,
-    hasLabel: false,
-  },
 })
 
 const computedClasses = computed(() => {

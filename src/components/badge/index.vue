@@ -57,10 +57,6 @@ const badgeVariant = tv({
     { variant: 'trial', class: 'trial' },
     { variant: 'turborepo', class: 'turborepo' },
   ],
-  defaultVariants: {
-    variant: 'gray',
-    size: 'md',
-  },
 })
 
 const configProvider = useConfigProvider()

@@ -42,11 +42,6 @@ const snippetVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    size: 'md',
-    variant: 'default',
-    prompt: false,
-  },
 })
 
 const configProvider = useConfigProvider()

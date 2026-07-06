@@ -24,9 +24,6 @@ const errorVariant = tv({
       lg: 'text-base [--mt:0.25rem]',
     },
   },
-  defaultVariants: {
-    size: 'md',
-  },
 })
 
 const configProvider = useConfigProvider()

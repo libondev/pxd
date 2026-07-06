@@ -26,9 +26,6 @@ const switchVariant = tv({
       false: 'peer-checked:text-foreground',
     },
   },
-  defaultVariants: {
-    disabled: false,
-  },
 })
 
 const uniqueId = getUniqueId()

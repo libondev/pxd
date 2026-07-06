@@ -32,11 +32,6 @@ const textVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    align: 'left',
-    monospace: false,
-    secondary: false,
-  },
 })
 
 const presetSize = {

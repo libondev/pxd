@@ -34,11 +34,6 @@ const skeletonVariant = tv({
       false: '',
     },
   },
-  defaultVariants: {
-    loading: true,
-    shape: 'default',
-    animated: true,
-  },
 })
 
 const computedStyle = computed(() => {

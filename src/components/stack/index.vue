@@ -44,11 +44,6 @@ const stackVariant = tv({
       stretch: 'justify-stretch',
     },
   },
-  defaultVariants: {
-    wrap: true,
-    align: 'start',
-    justify: 'start',
-  },
 })
 
 const presetDir = {
