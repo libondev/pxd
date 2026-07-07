@@ -3,7 +3,7 @@ import type { EllipsisTextProps, EllipsisTextEmits } from './types'
 import type { RichInlineItem } from '@chenglou/pretext/rich-inline'
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext'
 import { prepareRichInline, measureRichInlineStats } from '@chenglou/pretext/rich-inline'
-import { twMerge } from 'tailwind-merge'
+import { cn } from 'cnfast'
 import { shallowRef, computed, nextTick, watch, onBeforeUnmount } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { getStyle } from '../../utils/dom'
@@ -39,7 +39,7 @@ const maxRows = computed(() => {
 })
 
 const computedActionClass = computed(() => {
-  return twMerge(
+  return cn(
     'pxd-ellipsis-text--action cursor-pointer whitespace-nowrap text-blue-900',
     isExpanded.value ? props.lessActionClass : props.moreActionClass,
   )

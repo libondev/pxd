@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { SkeletonProps } from './types'
 import type { CSSProperties } from 'vue'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
 
 defineOptions({
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<SkeletonProps>(), {
   animated: true,
 })
 
-const skeletonVariant = tv({
+const { attrs, classes: skeletonClasses } = useTailwindVariant({
   base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
   variants: {
     loading: {
@@ -52,7 +52,7 @@ const computedStyle = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return skeletonVariant({
+  return skeletonClasses({
     shape: props.shape,
     loading: props.loading,
     animated: props.animated,
@@ -61,7 +61,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses" :style="computedStyle" v-bind="$attrs">
+  <div :class="computedClasses" :style="computedStyle" v-bind="attrs">
     <slot />
   </div>
 </template>

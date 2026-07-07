@@ -2,9 +2,9 @@
 import type { CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useCheckboxGroupContext } from '../../contexts/checkbox'
 import { getUniqueId } from '../../utils/helper'
 
@@ -23,46 +23,49 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 
 const emits = defineEmits<CheckboxEmits>()
 
-const checkboxVariant = tv({
-  base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
-  variants: {
-    checked: {
-      true: 'text-gray-100',
-      false: '',
+const { classes: checkboxClasses } = useTailwindVariant(
+  {
+    base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
+    variants: {
+      checked: {
+        true: 'text-gray-100',
+        false: '',
+      },
+      disabled: {
+        true: '',
+        false: '',
+      },
+      shape: {
+        default: 'rounded-sm',
+        square: 'rounded-none',
+        rounded: 'rounded-full',
+      },
     },
-    disabled: {
-      true: '',
-      false: '',
-    },
-    shape: {
-      default: 'rounded-sm',
-      square: 'rounded-none',
-      rounded: 'rounded-full',
-    },
+    compoundVariants: [
+      {
+        checked: true,
+        disabled: false,
+        class: 'border-primary bg-primary',
+      },
+      {
+        checked: true,
+        disabled: true,
+        class: 'border-gray-500 bg-gray-500',
+      },
+      {
+        checked: false,
+        disabled: false,
+        class: 'border-gray-alpha-400 bg-background-100 group-hover/checkbox:bg-gray-200',
+      },
+      {
+        checked: false,
+        disabled: true,
+        class: 'border-gray-500 bg-gray-100',
+      },
+    ],
   },
-  compoundVariants: [
-    {
-      checked: true,
-      disabled: false,
-      class: 'border-primary bg-primary',
-    },
-    {
-      checked: true,
-      disabled: true,
-      class: 'border-gray-500 bg-gray-500',
-    },
-    {
-      checked: false,
-      disabled: false,
-      class: 'border-gray-alpha-400 bg-background-100 group-hover/checkbox:bg-gray-200',
-    },
-    {
-      checked: false,
-      disabled: true,
-      class: 'border-gray-500 bg-gray-100',
-    },
-  ],
-})
+  { mergeAttrsClass: false },
+)
 
 const uniqueId = getUniqueId()
 
@@ -88,7 +91,7 @@ const isSelected = computed(() => {
 const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
 
 const computedClasses = computed(() => {
-  return checkboxVariant({
+  return checkboxClasses({
     shape: props.shape,
     checked: isSelected.value,
     disabled: isDisabled.value,

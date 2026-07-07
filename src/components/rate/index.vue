@@ -2,9 +2,9 @@
 import type { RateEmits, RateProps } from './types'
 import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
-import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<RateProps>(), {
 
 const emits = defineEmits<RateEmits>()
 
-const rateVariants = tv({
+const { attrs, classes: rateClasses } = useTailwindVariant({
   base: 'pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none',
   variants: {
     size: {
@@ -73,7 +73,7 @@ const modelValue = useModelValue(props, emits)
 const computedClasses = computed(() => {
   const { size, disabled, readonly } = props
 
-  return rateVariants({
+  return rateClasses({
     size: size || configProvider.size,
     disabled,
     readonly,
@@ -242,7 +242,7 @@ onBeforeUnmount(() => {
     role="radiogroup"
     tabindex="0"
     :class="computedClasses"
-    v-bind="$attrs"
+    v-bind="attrs"
     @keydown="handleKeydown"
     @pointerdown.prevent="handlePointerDown"
     @pointermove="handlePointerMove"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ProjectBannerProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 
 defineOptions({
   name: 'PProjectBanner',
@@ -10,7 +10,7 @@ defineOptions({
 
 const props = defineProps<ProjectBannerProps>()
 
-const projectBannerVariant = tv({
+const { attrs, classes: projectBannerClasses } = useTailwindVariant({
   base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm flex w-full -translate-y-px items-center justify-center border-y',
   variants: {
     variant: {
@@ -22,24 +22,27 @@ const projectBannerVariant = tv({
   },
 })
 
-const projectBannerActionVariant = tv({
-  base: 'ml-6 md:ml-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
-  variants: {
-    variant: {
-      warning: 'text-amber-1000 decoration-amber-400 hover:border-amber-500 hover:text-amber-900',
-      success: 'text-green-1000 decoration-green-400 hover:border-green-500 hover:text-green-900',
-      error: 'text-red-1000 decoration-red-400 hover:border-red-500 hover:text-red-900',
-      info: 'text-blue-1000 decoration-blue-400 hover:border-blue-500 hover:text-blue-900',
+const { classes: projectBannerActionClasses } = useTailwindVariant(
+  {
+    base: 'ml-6 md:ml-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
+    variants: {
+      variant: {
+        warning: 'text-amber-1000 decoration-amber-400 hover:border-amber-500 hover:text-amber-900',
+        success: 'text-green-1000 decoration-green-400 hover:border-green-500 hover:text-green-900',
+        error: 'text-red-1000 decoration-red-400 hover:border-red-500 hover:text-red-900',
+        info: 'text-blue-1000 decoration-blue-400 hover:border-blue-500 hover:text-blue-900',
+      },
     },
   },
-})
+  { mergeAttrsClass: false },
+)
 
-const computedClasses = computed(() => projectBannerVariant({ variant: props.variant }))
-const computedActionClasses = computed(() => projectBannerActionVariant({ variant: props.variant }))
+const computedClasses = computed(() => projectBannerClasses({ variant: props.variant }))
+const computedActionClasses = computed(() => projectBannerActionClasses({ variant: props.variant }))
 </script>
 
 <template>
-  <aside :class="computedClasses" v-bind="$attrs">
+  <aside :class="computedClasses" v-bind="attrs">
     <div class="gap-2 px-6 md:justify-center md:flex-row md:items-center flex w-full flex-col">
       <div class="gap-2 flex items-center">
         <div v-if="$slots.icon" aria-hidden="true" class="shrink-0">

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TextProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { getCssUnitValue } from '../../utils/format'
 import { getResponsiveValue } from '../../utils/helper'
 
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<TextProps>(), {
   align: 'left',
 })
 
-const textVariant = tv({
+const { attrs, classes: textClasses } = useTailwindVariant({
   base: 'pxd-text m-0 shrink-0',
   variants: {
     align: {
@@ -55,7 +55,7 @@ const computedStyle = computed(() => {
 const computedClasses = computed(() => {
   const { monospace, secondary } = props
 
-  const baseClass = textVariant({
+  const baseClass = textClasses({
     align: props.align,
     monospace,
     secondary,
@@ -71,7 +71,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle" v-bind="$attrs">
+  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle" v-bind="attrs">
     <slot>
       {{ text }}
     </slot>

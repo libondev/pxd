@@ -4,8 +4,8 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
-import { tv } from 'tailwind-variants'
 import { computed, h } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<NoteProps>(), {
   variant: 'default',
 })
 
-const noteVariant = tv({
+const { attrs, classes: noteClasses } = useTailwindVariant({
   base: 'pxd-note gap-2 sm:items-center max-sm:flex-col flex max-w-full rounded-md border',
   variants: {
     size: {
@@ -107,7 +107,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return noteVariant({
+  return noteClasses({
     fill: props.fill,
     size: props.size || configProvider.size,
     variant: props.variant,
@@ -116,7 +116,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses" v-bind="$attrs">
+  <div :class="computedClasses" v-bind="attrs">
     <div class="gap-3 flex flex-1 shrink-0">
       <slot v-if="computedLabel" name="label">
         <Component :is="computedLabel" class="size-4 font-medium h-lh shrink-0" />

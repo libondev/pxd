@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideToggleButtonGroupContext } from '../../contexts/toggle-button'
 import PStack from '../stack/index.vue'
@@ -25,7 +25,7 @@ const emits = defineEmits<ToggleButtonGroupEmits>()
 
 const configProvider = useConfigProvider()
 
-const toggleButtonGroupVariant = tv({
+const { attrs, classes: toggleButtonGroupClasses } = useTailwindVariant({
   base: 'pxd-toggle-button-group group/toggle-button-group w-max overflow-hidden',
   variants: {
     size: {
@@ -43,7 +43,7 @@ const toggleButtonGroupVariant = tv({
 const computedSize = computed(() => props.size || configProvider.size)
 
 const computedClasses = computed(() =>
-  toggleButtonGroupVariant({
+  toggleButtonGroupClasses({
     size: computedSize.value,
     variant: props.variant,
   }),
@@ -60,7 +60,7 @@ provideToggleButtonGroupContext({ props, emits })
     align="center"
     :gap="gap"
     :data-gap="gap"
-    v-bind="$attrs"
+    v-bind="attrs"
   >
     <slot>
       <PToggleButton v-for="option in options" :key="option.value" v-bind="option" />

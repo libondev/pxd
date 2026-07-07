@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ChoiceboxItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useChoiceboxContext } from '../../contexts/choicebox'
 import { toArray } from '../../utils/format'
 import { getUniqueId } from '../../utils/helper'
@@ -15,7 +15,7 @@ defineOptions({
 
 const props = defineProps<ChoiceboxItemProps>()
 
-const choiceboxVariant = tv({
+const { attrs, classes: choiceboxClasses } = useTailwindVariant({
   base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-md border motion-safe:transition-colors',
   variants: {
     disabled: {
@@ -36,46 +36,49 @@ const choiceboxVariant = tv({
   ],
 })
 
-const choiceboxInnerVariant = tv({
-  base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-gray-100 peer-focus-ring motion-safe:transition-appearance',
-  variants: {
-    disabled: {
-      true: '',
-      false: '',
+const { classes: choiceboxInnerClasses } = useTailwindVariant(
+  {
+    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-gray-100 peer-focus-ring motion-safe:transition-appearance',
+    variants: {
+      disabled: {
+        true: '',
+        false: '',
+      },
+      multiple: {
+        true: 'rounded-sm',
+        false:
+          'after:content-empty after:size-2 rounded-full after:scale-40 after:rounded-full after:bg-primary after:opacity-0',
+      },
+      selected: {
+        true: 'border-primary',
+        false: 'border-gray-alpha-400',
+      },
     },
-    multiple: {
-      true: 'rounded-sm',
-      false:
-        'after:content-empty after:size-2 rounded-full after:scale-40 after:rounded-full after:bg-primary after:opacity-0',
-    },
-    selected: {
-      true: 'border-primary',
-      false: 'border-gray-alpha-400',
-    },
+    compoundVariants: [
+      {
+        multiple: false,
+        selected: false,
+        class: '',
+      },
+      {
+        disabled: true,
+        multiple: true,
+        class: 'bg-gray-100',
+      },
+      {
+        multiple: true,
+        selected: true,
+        class: 'bg-primary',
+      },
+      {
+        multiple: false,
+        selected: true,
+        class: 'after:scale-100 after:opacity-100 motion-safe:after:transition-appearance',
+      },
+    ],
   },
-  compoundVariants: [
-    {
-      multiple: false,
-      selected: false,
-      class: '',
-    },
-    {
-      disabled: true,
-      multiple: true,
-      class: 'bg-gray-100',
-    },
-    {
-      multiple: true,
-      selected: true,
-      class: 'bg-primary',
-    },
-    {
-      multiple: false,
-      selected: true,
-      class: 'after:scale-100 after:opacity-100 motion-safe:after:transition-appearance',
-    },
-  ],
-})
+  { mergeAttrsClass: false },
+)
 
 const choiceboxGroupContext = useChoiceboxContext()
 
@@ -85,11 +88,11 @@ const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupCon
 
 const computedClasses = computed(() => {
   return {
-    wrapper: choiceboxVariant({
+    wrapper: choiceboxClasses({
       disabled: isDisabled.value,
       selected: isSelected.value,
     }),
-    inner: choiceboxInnerVariant({
+    inner: choiceboxInnerClasses({
       disabled: isDisabled.value,
       multiple: isMultiple.value,
       selected: isSelected.value,
@@ -154,7 +157,7 @@ function onInputChange(event: Event) {
     :aria-selected="isSelected"
     :for="inputId"
     :class="computedClasses.wrapper"
-    v-bind="$attrs"
+    v-bind="attrs"
   >
     <div
       class="pxd-choicebox-item--option p-3 flex items-center justify-between motion-safe:transition-colors"

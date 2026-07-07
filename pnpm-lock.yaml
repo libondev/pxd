@@ -9,25 +9,13 @@ catalogs:
     '@chenglou/pretext':
       specifier: ^0.0.6
       version: 0.0.6
-    '@clack/prompts':
-      specifier: ^1.6.0
-      version: 1.6.0
     '@floating-ui/dom':
       specifier: ^1.7.6
       version: 1.7.6
     '@gdsicon/vue':
       specifier: ^1.0.9
       version: 1.0.9
-    '@shikijs/markdown-it':
-      specifier: ^4.3.0
-      version: 4.3.0
-    '@sindresorhus/slugify':
-      specifier: ^3.0.0
-      version: 3.0.0
     '@tailwindcss/cli':
-      specifier: ^4.3.2
-      version: 4.3.2
-    '@tailwindcss/vite':
       specifier: ^4.3.2
       version: 4.3.2
     '@tanstack/virtual-core':
@@ -36,36 +24,21 @@ catalogs:
     '@tsconfig/node22':
       specifier: ^22.0.5
       version: 22.0.5
-    '@types/markdown-it-attrs':
-      specifier: ^4.1.3
-      version: 4.1.3
     '@types/node':
       specifier: ^25.9.4
       version: 25.9.4
-    '@unhead/vue':
-      specifier: ^3.1.7
-      version: 3.1.7
     '@vitejs/plugin-vue':
       specifier: ^6.0.7
       version: 6.0.7
-    '@vitejs/plugin-vue-jsx':
-      specifier: ^5.1.6
-      version: 5.1.6
-    '@vue/compiler-sfc':
-      specifier: ^3.5.39
-      version: 3.5.39
     '@vue/test-utils':
       specifier: ^2.4.11
       version: 2.4.11
     '@vue/tsconfig':
       specifier: ^0.9.1
       version: 0.9.1
-    canvas-confetti:
-      specifier: ^1.9.4
-      version: 1.9.4
-    cross-spawn:
-      specifier: ^7.0.6
-      version: 7.0.6
+    cnfast:
+      specifier: ^0.0.8
+      version: 0.0.8
     dayjs:
       specifier: ^1.11.21
       version: 1.11.21
@@ -84,36 +57,12 @@ catalogs:
     happy-dom:
       specifier: ^20.10.6
       version: 20.10.6
-    markdown-it-anchor:
-      specifier: ^9.2.0
-      version: 9.2.0
-    markdown-it-attrs:
-      specifier: ^4.5.0
-      version: 4.5.0
-    markdown-it-plugins:
-      specifier: ^0.4.0
-      version: 0.4.0
     mkdist:
       specifier: ^2.4.1
       version: 2.4.1
-    mri:
-      specifier: ^1.2.0
-      version: 1.2.0
     npm-run-all2:
       specifier: ^8.0.4
       version: 8.0.4
-    shiki:
-      specifier: ^4.3.0
-      version: 4.3.0
-    tailwind-merge:
-      specifier: ^3.6.0
-      version: 3.6.0
-    tailwind-variants:
-      specifier: ^3.2.2
-      version: 3.2.2
-    tailwindcss:
-      specifier: ^4.3.2
-      version: 4.3.2
     tinyglobby:
       specifier: ^0.2.17
       version: 0.2.17
@@ -123,30 +72,15 @@ catalogs:
     unbuild:
       specifier: ^3.6.1
       version: 3.6.1
-    unplugin-auto-import:
-      specifier: ^21.0.0
-      version: 21.0.0
     unplugin-vue-components:
       specifier: ^32.1.0
       version: 32.1.0
-    unplugin-vue-router:
-      specifier: 0.15.0
-      version: 0.15.0
-    vite-plugin-vue-meta-layouts:
-      specifier: ^0.6.1
-      version: 0.6.1
     vite-plus:
       specifier: ^0.2.2
       version: 0.2.2
-    vite-vue-md:
-      specifier: ^1.4.1
-      version: 1.4.1
     vue:
       specifier: ^3.5.39
       version: 3.5.39
-    vue-router:
-      specifier: 4.6.4
-      version: 4.6.4
     vue-sfc-transformer:
       specifier: ^0.2.3
       version: 0.2.3
@@ -175,6 +109,9 @@ importers:
       '@tanstack/virtual-core':
         specifier: catalog:default
         version: 3.17.3
+      cnfast:
+        specifier: catalog:default
+        version: 0.0.8
       dayjs:
         specifier: catalog:default
         version: 1.11.21
@@ -184,12 +121,6 @@ importers:
       focus-trap:
         specifier: catalog:default
         version: 8.2.2
-      tailwind-merge:
-        specifier: catalog:default
-        version: 3.6.0
-      tailwind-variants:
-        specifier: catalog:default
-        version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.2)
     devDependencies:
       '@tailwindcss/cli':
         specifier: catalog:default
@@ -2498,6 +2429,10 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
+  cnfast@0.0.8:
+    resolution: {integrity: sha512-EjXKMfGfdwtV4AcNSQ6AwQaVzpC1B7IxeiwA3FlhTXz+YFlMKVi4c1JX9tgD2QOlahQXjB8KUXrBaYG+3v871Q==}
+    hasBin: true
+
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
@@ -3947,19 +3882,6 @@ packages:
       '@eslint/css': '>=1.0.0'
     peerDependenciesMeta:
       '@eslint/css':
-        optional: true
-
-  tailwind-merge@3.6.0:
-    resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
-
-  tailwind-variants@3.2.2:
-    resolution: {integrity: sha512-Mi4kHeMTLvKlM98XPnK+7HoBPmf4gygdFmqQPaDivc3DpYS6aIY6KiG/PgThrGvii5YZJqRsPz0aPyhoFzmZgg==}
-    engines: {node: '>=16.x', pnpm: '>=7.x'}
-    peerDependencies:
-      tailwind-merge: '>=3.0.0'
-      tailwindcss: '*'
-    peerDependenciesMeta:
-      tailwind-merge:
         optional: true
 
   tailwindcss@4.3.2:
@@ -5882,7 +5804,7 @@ snapshots:
       '@testing-library/dom': 10.4.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
       '@vitest/browser': 4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(vitest@4.1.9)
-      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(vitest@4.1.9))(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
+      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9)(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -5898,7 +5820,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(vitest@4.1.9))(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
+      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9)(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
       ws: 8.21.0
     transitivePeerDependencies:
       - bufferutil
@@ -6299,6 +6221,8 @@ snapshots:
   citty@0.1.6:
     dependencies:
       consola: 3.4.2
+
+  cnfast@0.0.8: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -7983,14 +7907,6 @@ snapshots:
 
   tailwind-csstree@0.3.3: {}
 
-  tailwind-merge@3.6.0: {}
-
-  tailwind-variants@3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.2):
-    dependencies:
-      tailwindcss: 4.3.2
-    optionalDependencies:
-      tailwind-merge: 3.6.0
-
   tailwindcss@4.3.2: {}
 
   tapable@2.3.0: {}
@@ -8360,7 +8276,7 @@ snapshots:
       oxfmt: 0.57.0(vite-plus@0.2.2(@types/node@25.9.4)(esbuild@0.25.9)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@26.1.0)(terser@5.43.1)(typescript@6.0.3)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(yaml@2.8.2))
       oxlint: 1.72.0(oxlint-tsgolint@0.24.0)(vite-plus@0.2.2(@types/node@25.9.4)(esbuild@0.25.9)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@26.1.0)(terser@5.43.1)(typescript@6.0.3)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(yaml@2.8.2))
       oxlint-tsgolint: 0.24.0
-      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(vitest@4.1.9))(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
+      vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9)(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))
     optionalDependencies:
       '@voidzero-dev/vite-plus-darwin-arm64': 0.2.2
       '@voidzero-dev/vite-plus-darwin-x64': 0.2.2
@@ -8421,7 +8337,7 @@ snapshots:
       terser: 5.43.1
       yaml: 2.8.2
 
-  vitest@4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))(vitest@4.1.9))(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2)):
+  vitest@4.1.9(@types/node@25.9.4)(@vitest/browser-preview@4.1.9)(happy-dom@20.10.6)(jsdom@26.1.0)(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2)):
     dependencies:
       '@vitest/expect': 4.1.9
       '@vitest/mocker': 4.1.9(vite@8.0.8(@types/node@25.9.4)(esbuild@0.25.9)(jiti@2.7.0)(terser@5.43.1)(yaml@2.8.2))

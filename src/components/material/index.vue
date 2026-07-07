@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MaterialProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import PStack from '../stack/index.vue'
 
 defineOptions({
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<MaterialProps>(), {
   variant: 'default',
 })
 
-const materialVariants = tv({
+const { attrs, classes: materialClasses } = useTailwindVariant({
   base: 'pxd-material w-full bg-background-100',
   variants: {
     variant: {
@@ -30,14 +30,14 @@ const materialVariants = tv({
 })
 
 const computedClasses = computed(() => {
-  return materialVariants({
+  return materialClasses({
     variant: props.variant,
   })
 })
 </script>
 
 <template>
-  <PStack :class="computedClasses" v-bind="$attrs">
+  <PStack :class="computedClasses" v-bind="attrs">
     <slot />
   </PStack>
 </template>

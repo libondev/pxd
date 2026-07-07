@@ -3,9 +3,9 @@ import type { SnippetEmits, SnippetProps } from './types'
 import type { Component } from 'vue'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 
 const emits = defineEmits<SnippetEmits>()
 
-const snippetVariant = tv({
+const { attrs, classes: snippetClasses } = useTailwindVariant({
   base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
   variants: {
     size: {
@@ -52,7 +52,7 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
 const computedTextArray = computed(() => toArray(props.text))
 
 const computedClasses = computed(() => {
-  return snippetVariant({
+  return snippetClasses({
     size: props.size || configProvider.size,
     variant: props.variant,
     prompt: isTruthyProp(props.prompt),
@@ -69,7 +69,7 @@ async function onCopyButtonClick() {
 </script>
 
 <template>
-  <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="$attrs">
+  <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="attrs">
     <div class="pxd-snippet--container flex-1">
       <pre
         v-for="(t, i) of computedTextArray"

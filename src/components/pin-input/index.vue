@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
@@ -25,25 +25,28 @@ const props = withDefaults(defineProps<PinInputProps>(), {
 
 const emits = defineEmits<PinInputEmits>()
 
-const pinInputVariant = tv({
-  base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
-  variants: {
-    size: {
-      xs: `${BASIC_HEIGHTS.xs} text-xs`,
-      sm: `${BASIC_HEIGHTS.sm} text-sm`,
-      md: `${BASIC_HEIGHTS.md} text-sm`,
-      lg: `${BASIC_HEIGHTS.lg} text-base`,
-    },
-    error: {
-      true: 'is-error',
-      false: '',
-    },
-    disabled: {
-      true: 'is-disabled',
-      false: '',
+const { classes: pinInputClasses } = useTailwindVariant(
+  {
+    base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
+    variants: {
+      size: {
+        xs: `${BASIC_HEIGHTS.xs} text-xs`,
+        sm: `${BASIC_HEIGHTS.sm} text-sm`,
+        md: `${BASIC_HEIGHTS.md} text-sm`,
+        lg: `${BASIC_HEIGHTS.lg} text-base`,
+      },
+      error: {
+        true: 'is-error',
+        false: '',
+      },
+      disabled: {
+        true: 'is-disabled',
+        false: '',
+      },
     },
   },
-})
+  { mergeAttrsClass: false },
+)
 
 const configProvider = useConfigProvider()
 
@@ -70,7 +73,7 @@ const computedInputMode = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return pinInputVariant({
+  return pinInputClasses({
     size: props.size || configProvider.size,
     error: isTruthyProp(props.error),
     disabled: isTruthyProp(props.disabled),

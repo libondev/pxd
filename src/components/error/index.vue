@@ -2,8 +2,8 @@
 import type { ErrorProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isExternalLink } from '../../utils/format'
 
@@ -14,7 +14,7 @@ defineOptions({
 
 const props = defineProps<ErrorProps>()
 
-const errorVariant = tv({
+const { attrs, classes: errorClasses } = useTailwindVariant({
   base: 'pxd-error flex text-red-900',
   variants: {
     size: {
@@ -29,12 +29,12 @@ const errorVariant = tv({
 const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
-  return errorVariant({ size: props.size || configProvider.size })
+  return errorClasses({ size: props.size || configProvider.size })
 })
 </script>
 
 <template>
-  <div :class="computedClasses" v-bind="$attrs">
+  <div :class="computedClasses" v-bind="attrs">
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">

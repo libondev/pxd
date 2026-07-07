@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useButtonGroupContext } from '../../contexts/button'
 import { useConfigProvider } from '../../contexts/config-provider'
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   as: 'button',
 })
 
-const buttonVariants = tv({
+const { attrs, classes: buttonClasses } = useTailwindVariant({
   base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]_&]:-ml-px [[data-button-group]_&]:not-first:rounded-l-none [[data-button-group]_&]:not-last:rounded-r-none [[data-button-group]_&]:enabled:hover:z-1',
   variants: {
     size: {
@@ -87,7 +87,7 @@ const computedClasses = computed(() => {
   const { size, shape, align, variant, fullWidth, icon } = props
   const internalAlign = icon ? 'center' : align
 
-  return buttonVariants({
+  return buttonClasses({
     icon,
     size: size || buttonGroupContext?.props.size || configProvider.size,
     shape: buttonGroupContext ? 'default' : shape,
@@ -108,7 +108,7 @@ const computedClasses = computed(() => {
     :aria-disabled="isDisabled"
     :class="computedClasses"
     :disabled="isDisabled"
-    v-bind="$attrs"
+    v-bind="attrs"
   >
     <PSpinner v-if="loading" />
 

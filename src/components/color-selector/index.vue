@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ColorSelectorEmits, ColorSelectorProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getUniqueId } from '../../utils/helper'
 
@@ -22,22 +22,25 @@ const emits = defineEmits<ColorSelectorEmits>()
 
 const uniqueName = getUniqueId('color-selector')
 
-const colorSelectorVariants = tv({
-  base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] border-2 border-transparent bg-current self-focus-ring checked:border-current active:scale-85 motion-safe:transition-appearance',
-  variants: {
-    size: {
-      sm: 'size-4',
-      md: 'size-5',
-      lg: 'size-6',
+const { classes: colorSelectorClasses } = useTailwindVariant(
+  {
+    base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] active:scale-85 motion-safe:transition-appearance',
+    variants: {
+      size: {
+        sm: 'size-4',
+        md: 'size-5',
+        lg: 'size-6',
+      },
     },
   },
-})
+  { mergeAttrsClass: false },
+)
 
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const computedClasses = computed(() =>
-  colorSelectorVariants({
+  colorSelectorClasses({
     size: props.size || configProvider.size,
   }),
 )

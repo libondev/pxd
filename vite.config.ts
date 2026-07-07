@@ -1,5 +1,5 @@
-import vue from '@vitejs/plugin-vue'
 import type { PluginOption } from '@voidzero-dev/vite-plus-core'
+import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig, lazyPlugins } from 'vite-plus'
 
@@ -29,7 +29,7 @@ export default defineConfig({
     sortTailwindcss: {
       preserveDuplicates: false,
       preserveWhitespace: false,
-      functions: ['cn', 'tv', 'cva', 'twMerge'],
+      functions: ['cn', 'useTailwindVariant'],
       stylesheet: './src/styles/tw.css',
     },
     patterns: [],

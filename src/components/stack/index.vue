@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentDirection } from '../../types/shared'
 import type { StackProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { getResponsiveValue } from '../../utils/helper'
 
 defineOptions({
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<StackProps>(), {
   justify: 'start',
 })
 
-const stackVariant = tv({
+const { attrs, classes: stackClasses } = useTailwindVariant({
   base: 'pxd-stack flex max-w-full gap-(--xs) [--xs:1rem]',
   variants: {
     wrap: {
@@ -90,7 +90,7 @@ const formattedDirection = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const baseClass = stackVariant({
+  const baseClass = stackClasses({
     wrap: props.wrap,
     align: props.align,
     justify: props.justify,
@@ -111,7 +111,7 @@ const computedClasses = computed(() => {
     :is="props.as"
     class="pxd-stack flex max-w-full"
     :class="computedClasses"
-    v-bind="$attrs"
+    v-bind="attrs"
     :style="formattedGap"
   >
     <slot />

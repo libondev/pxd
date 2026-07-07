@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import { getUniqueId } from '../../utils/helper'
@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<TextareaProps>(), {
 
 const emits = defineEmits<TextareaEmits>()
 
-const textareaVariant = tv({
+const { attrs, classes: textareaClasses } = useTailwindVariant({
   base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
   variants: {
     size: {
@@ -54,7 +54,7 @@ const modelValue = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
-  return textareaVariant({
+  return textareaClasses({
     size: props.size || configProvider.size,
     error: isTruthyProp(props.error),
     disabled: isTruthyProp(props.disabled),
@@ -68,7 +68,7 @@ const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
 const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
 const isWordLimitInside = computed(() => props.wordLimitPosition === 'inside')
 
-const textareaClasses = computed(() => ({
+const nativeTextareaClasses = computed(() => ({
   'pb-7': isWordLimitShown.value && isWordLimitInside.value,
 }))
 
@@ -98,16 +98,12 @@ function onInputChange(event: Event) {
 </script>
 
 <template>
-  <label
-    :for="uniqueId"
-    :class="computedClasses"
-    v-bind="$attrs"
-  >
+  <label :for="uniqueId" :class="computedClasses" v-bind="attrs">
     <textarea
       :id="uniqueId"
       v-model="modelValue"
       class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
-      :class="textareaClasses"
+      :class="nativeTextareaClasses"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"

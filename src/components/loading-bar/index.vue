@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
 import type { LoadingBarProps, LoadingBarStatus } from './types'
-import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { cachedOff, cachedOn } from '../../utils/event'
 import { caf, raf } from '../../utils/event'
 import { clampValue, isTruthyProp } from '../../utils/format'
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<LoadingBarProps>(), {
   trickleThreshold: 300,
 })
 
-const loadingBarWrapperVariant = tv({
+const { attrs, classes: loadingBarWrapperClasses } = useTailwindVariant({
   base: 'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
   variants: {
     locally: {
@@ -34,16 +34,19 @@ const loadingBarWrapperVariant = tv({
   },
 })
 
-const loadingBarInnerVariant = tv({
-  base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
-  variants: {
-    status: {
-      running: 'bg-gray-500',
-      finish: 'bg-primary',
-      error: 'bg-red-900',
+const { classes: loadingBarInnerClasses } = useTailwindVariant(
+  {
+    base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
+    variants: {
+      status: {
+        running: 'bg-gray-500',
+        finish: 'bg-primary',
+        error: 'bg-red-900',
+      },
     },
   },
-})
+  { mergeAttrsClass: false },
+)
 
 let prevTimestamp = 0
 let prevAnimationKey = 0
@@ -59,13 +62,13 @@ const progressValue = shallowRef(0)
 const enableTransition = shallowRef(false)
 
 const computedWrapperClasses = computed(() => {
-  return loadingBarWrapperVariant({
+  return loadingBarWrapperClasses({
     locally: isTruthyProp(props.to),
   })
 })
 
 const computedInnerClasses = computed(() => {
-  return loadingBarInnerVariant({
+  return loadingBarInnerClasses({
     status: status.value,
   })
 })
@@ -211,7 +214,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div aria-hidden="true" :class="computedWrapperClasses" v-bind="$attrs">
+    <div aria-hidden="true" :class="computedWrapperClasses" v-bind="attrs">
       <div
         :data-hidden="hiddenBar"
         :data-transition="enableTransition"

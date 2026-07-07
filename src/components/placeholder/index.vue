@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { PlaceholderProps } from './types'
-import { invert } from 'es-toolkit'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format'
 
@@ -30,12 +29,8 @@ const computedStyle = computed(() => {
   </div>
 </template>
 
-<style lang="postcss">
+<style>
 .pxd-placeholder {
-  &.is-invert {
-    --placeholder-deg: 45deg;
-  }
-
   --placeholder-deg: -45deg;
   background-image: linear-gradient(
     var(--placeholder-deg),
@@ -50,5 +45,9 @@ const computedStyle = computed(() => {
   background-clip: padding-box;
   background-position: 0 0;
   background-size: var(--placeholder-gap) var(--placeholder-gap);
+}
+
+.pxd-placeholder.is-invert {
+  --placeholder-deg: 45deg;
 }
 </style>

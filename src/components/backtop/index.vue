@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { BacktopProps, BacktopEmits } from './types'
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
-import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { getScrollTarget, getScrollElement } from '../../utils/dom'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 import PButton from '../button/index.vue'
@@ -24,7 +24,7 @@ const emits = defineEmits<BacktopEmits>()
 let scrollContainer: ReturnType<typeof getScrollTarget> | null
 let scrollContainerEl: ReturnType<typeof getScrollElement> | null
 
-const backtopVariants = tv({
+const { attrs, classes: backtopClasses } = useTailwindVariant({
   base: 'pxd-backtop will-change-transform',
   variants: {
     appendToBody: {
@@ -39,7 +39,7 @@ const maxScrollTop = shallowRef(0)
 const wrapperRef = shallowRef<HTMLElement>()
 
 const computedClasses = computed(() => {
-  return backtopVariants({ appendToBody: props.appendToBody })
+  return backtopClasses({ appendToBody: props.appendToBody })
 })
 
 const isVisible = computed(() => {
@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
         v-show="isVisible"
         ref="wrapperRef"
         :class="computedClasses"
-        v-bind="$attrs"
+        v-bind="attrs"
         @click="onActionClick"
       >
         <slot>

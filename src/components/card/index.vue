@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CardProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 
 defineOptions({
   name: 'PCard',
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<CardProps>(), {
   border: true,
 })
 
-const card = tv({
+const { attrs, classes: cardClasses } = useTailwindVariant({
   base: 'pxd-card bg-background-100',
   variants: {
     shape: {
@@ -27,7 +27,7 @@ const card = tv({
 })
 
 const computedClasses = computed(() => {
-  return card({
+  return cardClasses({
     shape: props.shape,
     border: props.border,
   })
@@ -35,7 +35,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="computedClasses" v-bind="$attrs">
+  <div :class="computedClasses" v-bind="attrs">
     <div v-if="$slots.header" class="pxd-card--header text-trim-both">
       <slot name="header" />
     </div>

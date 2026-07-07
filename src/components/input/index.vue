@@ -3,9 +3,9 @@ import type { InputEmits, InputProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
-import { tv } from 'tailwind-variants'
 import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { NOOP } from '../../utils/event'
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<InputProps>(), {
 
 const emits = defineEmits<InputEmits>()
 
-const inputVariant = tv({
+const { attrs, classes: inputClasses } = useTailwindVariant({
   base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
   variants: {
     size: {
@@ -69,7 +69,7 @@ const isPasswordVisible = shallowRef(!props.password)
 const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
 
 const computedClasses = computed(() => {
-  return inputVariant({
+  return inputClasses({
     size: props.size || configProvider.size,
     align: props.align,
     error: isTruthyProp(props.error),
@@ -185,7 +185,7 @@ defineExpose({
     :for="uniqueId"
     :data-disabled="disabled"
     :class="computedClasses"
-    v-bind="$attrs"
+    v-bind="attrs"
     @click="onClick"
     @dragstart.prevent="NOOP"
   >

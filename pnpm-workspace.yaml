@@ -29,6 +29,7 @@ catalog:
   '@vue/test-utils': ^2.4.11
   '@vue/tsconfig': ^0.9.1
   canvas-confetti: ^1.9.4
+  cnfast: ^0.0.8
   cross-spawn: ^7.0.6
   dayjs: ^1.11.21
   es-toolkit: ^1.49.0
@@ -43,8 +44,6 @@ catalog:
   mri: ^1.2.0
   npm-run-all2: ^8.0.4
   shiki: ^4.3.0
-  tailwind-merge: ^3.6.0
-  tailwind-variants: ^3.2.2
   tailwindcss: ^4.3.2
   tinyglobby: ^0.2.17
   typescript: ^6.0.3

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { BadgeEmits, BadgeProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 
 defineOptions({
@@ -17,13 +17,13 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 
 const emits = defineEmits<BadgeEmits>()
 
-const badgeVariant = tv({
+const { attrs, classes: badgeClasses } = useTailwindVariant({
   base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance',
   variants: {
     variant: {
-      pill: 'bg-background-100 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
+      pill: 'bg-background-100 shadow-border-base',
       primary: 'bg-primary text-gray-100',
-      secondary: 'bg-gray-200 text-gray-1000 shadow-[inset_0_0_0_1px_var(--color-gray-alpha-300)]',
+      secondary: 'bg-gray-200 text-gray-1000 shadow-border-base',
       gray: 'text-white bg-gray-900',
       blue: 'bg-blue-800 text-gray-100 dark:text-gray-1000',
       purple: 'bg-purple-900 text-gray-100 dark:text-gray-1000',
@@ -64,7 +64,7 @@ const configProvider = useConfigProvider()
 const computedClasses = computed(() => {
   const { variant, size = configProvider.size } = props
 
-  return badgeVariant({ variant, size })
+  return badgeClasses({ variant, size })
 })
 
 function onClose(ev: Event) {
@@ -73,11 +73,7 @@ function onClose(ev: Event) {
 </script>
 
 <template>
-  <Component
-    :is="as"
-    :class="computedClasses"
-    v-bind="$attrs"
-  >
+  <Component :is="as" :class="computedClasses" v-bind="attrs">
     <slot />
 
     <button

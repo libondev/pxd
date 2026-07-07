@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ToggleButtonProps, ToggleButtonEmits } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useToggleButtonGroupContext } from '../../contexts/toggle-button'
@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 
 const emits = defineEmits<ToggleButtonEmits>()
 
-const toggleButtonVariant = tv({
+const { attrs, classes: toggleButtonClasses } = useTailwindVariant({
   base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border bg-background-100 outline-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none data-[state=off]:enabled:hover:z-1 data-[state=on]:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
   variants: {
     size: {
@@ -74,7 +74,7 @@ const isChecked = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return toggleButtonVariant({
+  return toggleButtonClasses({
     size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
     checked: isChecked.value,
     variant: props.variant || toggleButtonGroupContext?.props.variant,
@@ -110,7 +110,7 @@ function onToggleClick() {
     :data-state="isChecked ? 'on' : 'off'"
     :disabled="isDisabled"
     :class="computedClasses"
-    v-bind="$attrs"
+    v-bind="attrs"
     @click="onToggleClick"
   >
     <slot>

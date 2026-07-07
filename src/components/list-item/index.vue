@@ -2,8 +2,8 @@
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import { isNil } from 'es-toolkit'
-import { tv } from 'tailwind-variants'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
 import { getElement } from '../../utils/dom'
 import { getUniqueId } from '../../utils/helper'
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 
 const emits = defineEmits<ListItemEmits>()
 
-const listItemVariant = tv({
+const { attrs, classes: listItemClasses } = useTailwindVariant({
   base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
   variants: {
     variant: {
@@ -66,7 +66,7 @@ const isSelected = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return listItemVariant({ variant: props.variant })
+  return listItemClasses({ variant: props.variant })
 })
 
 function getValue(): string {
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
     :aria-selected="isSelected"
     :hidden="!isVisible"
     :class="computedClasses"
-    v-bind="$attrs"
+    v-bind="attrs"
     @click.prevent.stop="onItemClick"
   >
     <slot>

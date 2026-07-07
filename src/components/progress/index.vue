@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ProgressEmits, ProgressProps } from './types'
-import { tv } from 'tailwind-variants'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 import { getColorByThreshold } from '../../utils/helper'
@@ -25,16 +25,19 @@ const props = withDefaults(defineProps<ProgressProps>(), {
 
 const emits = defineEmits<ProgressEmits>()
 
-const progressVariant = tv({
-  base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
-  variants: {
-    size: {
-      sm: 'h-2',
-      md: 'h-2.5',
-      lg: 'h-3.5',
+const { classes: progressClasses } = useTailwindVariant(
+  {
+    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
     },
   },
-})
+  { mergeAttrsClass: false },
+)
 
 const configProvider = useConfigProvider()
 
@@ -65,7 +68,7 @@ const computedLabel = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  return progressVariant({ size: props.size || configProvider.size })
+  return progressClasses({ size: props.size || configProvider.size })
 })
 
 const computedColors = computed(() => {

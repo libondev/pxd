@@ -2,6 +2,7 @@
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { NOOP, throttleByRaf } from '../../utils/event'
@@ -26,20 +27,42 @@ const props = withDefaults(defineProps<SliderProps>(), {
 
 const emits = defineEmits<SliderEmits>()
 
-const SIZES = {
-  sm: {
-    track: 'h-2',
-    thumb: 'w-1.5 h-3.5',
+const { attrs, classes: sliderClasses } = useTailwindVariant({
+  base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+  variants: {
+    size: {
+      sm: 'h-2',
+      md: 'h-2.5',
+      lg: 'h-3.5',
+    },
+    disabled: {
+      true: 'cursor-not-allowed',
+      false: '',
+    },
   },
-  md: {
-    track: 'h-2.5',
-    thumb: 'w-2 h-4.5',
+})
+
+const { classes: sliderThumbClasses } = useTailwindVariant(
+  {
+    base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]',
+    variants: {
+      size: {
+        sm: 'w-1.5 h-3.5',
+        md: 'w-2 h-4.5',
+        lg: 'w-2.5 h-5',
+      },
+      disabled: {
+        true: 'pointer-events-none',
+        false: '',
+      },
+      appearance: {
+        none: 'appearance-none',
+        auto: 'appearance-auto',
+      },
+    },
   },
-  lg: {
-    track: 'h-3.5',
-    thumb: 'w-2.5 h-5',
-  },
-}
+  { mergeAttrsClass: false },
+)
 
 const VARIANTS = {
   primary: 'var(--color-primary)',
@@ -60,7 +83,24 @@ const sliderRef = shallowRef<HTMLElement>()
 const modelValue = useModelValue(props, emits)
 
 const activeThumb = shallowRef<'start' | 'end' | null>()
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+const computedClasses = computed(() =>
+  sliderClasses({
+    size: props.size || configProvider.size,
+    disabled: props.disabled,
+  }),
+)
+
+const computedThumbClasses = computed(() => {
+  const base = {
+    size: props.size || configProvider.size,
+    disabled: props.disabled,
+  }
+
+  return {
+    start: sliderThumbClasses({ ...base, appearance: 'none' }),
+    end: sliderThumbClasses({ ...base, appearance: 'auto' }),
+  }
+})
 
 const valueRange = computed<[number, number]>(() => {
   if (props.range) {
@@ -285,11 +325,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    v-bind="$attrs"
+    v-bind="attrs"
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    class="pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none"
-    :class="[{ 'cursor-not-allowed': disabled }, computedSize.track]"
+    :class="computedClasses"
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div class="pxd-slider--track absolute h-full touch-none rounded-full" :style="trackStyle" />
@@ -299,15 +338,14 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-dragging="isDragging && activeThumb === 'start'"
       :data-range-start="true"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none appearance-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]"
-      :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
+      :class="computedThumbClasses.start"
       :style="{ left: `${startPercentage}%` }"
       @keydown="onThumbKeydown"
       @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'start')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base shadow-border-tooltip select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1 text-xs -top-6 shadow-lg pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md border border-gray-900 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[0] }}
       </span>
@@ -317,15 +355,14 @@ onBeforeUnmount(() => {
       tabindex="0"
       :data-range-start="range ? false : true"
       :data-dragging="isDragging && activeThumb === 'end'"
-      class="pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none appearance-auto bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]"
-      :class="[{ 'pointer-events-none': disabled }, computedSize.thumb]"
+      :class="computedThumbClasses.end"
       :style="{ left: `${endPercentage}%` }"
       @keydown="onThumbKeydown"
       @contextmenu.prevent="NOOP"
       @pointerdown.prevent.stop="startDragging($event, 'end')"
     >
       <span
-        class="py-1 px-1.5 text-xs -top-8 pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md bg-gray-1000 whitespace-nowrap text-gray-100 opacity-0 shadow-border-base shadow-border-tooltip select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        class="py-1 px-1 text-xs -top-6 shadow-lg pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md border border-gray-900 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
       >
         {{ valueRange[1] }}
       </span>
