@@ -37,6 +37,7 @@ const emits = defineEmits<PopoverEmits>()
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
+let triggerElementsCache: HTMLElement[] | null = null
 let cleanupAutoUpdate: (() => void) | null = null
 
 const arrowRef = shallowRef<HTMLElement>(null!)
@@ -128,7 +129,17 @@ function getTriggerElements() {
     return []
   }
 
-  return Array.from(triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector))
+  if (!triggerElementsCache) {
+    triggerElementsCache = Array.from(
+      triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector),
+    )
+  }
+
+  return triggerElementsCache
+}
+
+function clearTriggerElementsCache() {
+  triggerElementsCache = null
 }
 
 function resolveTriggerElement(target: EventTarget | null) {
@@ -185,7 +196,7 @@ function startAutoUpdate() {
     return
   }
 
-  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, throttledUpdatePosition)
+  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, updatePosition)
 }
 
 async function syncPosition(waitForDom: boolean = false) {
@@ -308,6 +319,7 @@ async function handlePopoverHide(immediate: boolean = false) {
     )
   })
 
+  clearTriggerElementsCache()
   disposeAutoUpdate()
 
   hidePopover()
@@ -456,11 +468,13 @@ onBeforeUnmount(() => {
   clearShowTimer()
   clearHideTimer()
   disposeAutoUpdate()
+  clearTriggerElementsCache()
 })
 
 defineExpose({
   show: handlePopoverShow,
   hide: handlePopoverHide,
+  update: throttledUpdatePosition,
 })
 </script>
 
@@ -496,7 +510,7 @@ defineExpose({
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) motion-safe:transition-[left,top] absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:transition-none! data-[visible=false]:pointer-events-none motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-safe:transition-[left,top] motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"
