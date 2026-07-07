@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import { useMediaQuery } from '../../src/composables/use-media-query'
+import { runWithScope } from '../helpers/setup'
 
 describe('useMediaQuery', () => {
   beforeEach(() => {
@@ -11,16 +12,18 @@ describe('useMediaQuery', () => {
   })
 
   it('should return a ref', () => {
-    const result = useMediaQuery('(min-width: 768px)')
+    const { result, stop } = runWithScope(() => useMediaQuery('(min-width: 768px)'))
 
     expect(result).toBeDefined()
     expect(typeof result.value).toBe('boolean')
+    stop()
   })
 
   it('should return boolean based on matchMedia', () => {
-    const result = useMediaQuery('(min-width: 768px)')
+    const { result, stop } = runWithScope(() => useMediaQuery('(min-width: 768px)'))
 
     expect(typeof result.value).toBe('boolean')
+    stop()
   })
 
   it('should export PRESET_MEDIA_QUERIES', async () => {

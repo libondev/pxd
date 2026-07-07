@@ -1,7 +1,13 @@
-import { createApp, defineComponent, h } from 'vue'
+import { createApp, defineComponent, effectScope, h } from 'vue'
 
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never
 type VM<V> = InstanceType<V> & { unmount: () => void }
+
+export function runWithScope<T>(fn: () => T): { result: T; stop: () => void } {
+  const scope = effectScope()
+  const result = scope.run(fn)!
+  return { result, stop: () => scope.stop() }
+}
 
 export function useSetupWrapper<TResult>(setup: () => TResult): TResult & { unmount: () => void } {
   let result!: TResult

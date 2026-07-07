@@ -4,6 +4,7 @@ import {
   useMutationObserver,
   useResizeObserver,
 } from '../../src/composables/use-browser-observer'
+import { runWithScope } from '../helpers/setup'
 
 describe('use-browser-observer', () => {
   it('should export useIntersectionObserver', () => {
@@ -19,16 +20,18 @@ describe('use-browser-observer', () => {
   })
 
   it('should return observer and stop function from useResizeObserver', () => {
-    const result = useResizeObserver(null, () => {})
+    const { result, stop } = runWithScope(() => useResizeObserver(null, () => {}))
 
     expect(result).toHaveProperty('stop')
     expect(typeof result.stop).toBe('function')
+    stop()
   })
 
   it('should return observer and stop function from useIntersectionObserver', () => {
-    const result = useIntersectionObserver(null, () => {})
+    const { result, stop } = runWithScope(() => useIntersectionObserver(null, () => {}))
 
     expect(result).toHaveProperty('stop')
     expect(typeof result.stop).toBe('function')
+    stop()
   })
 })
