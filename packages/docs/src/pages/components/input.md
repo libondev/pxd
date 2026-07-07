@@ -32,9 +32,7 @@ const password = ref('')
 </script>
 
 <template>
-  <PStack class="max-w-sm">
-    <PInput v-model="password" password placeholder="Enter your password" />
-  </PStack>
+  <PInput class="max-w-sm" v-model="password" password placeholder="Enter your password" />
 </template>
 ```
 
@@ -48,9 +46,21 @@ const password = ref('')
 </script>
 
 <template>
-  <PStack class="max-w-sm">
-    <PInput v-model="password" clearable />
-  </PStack>
+  <PInput class="max-w-sm" v-model="password" clearable />
+</template>
+```
+
+## Min/Max length
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+</script>
+
+<template>
+  <PInput class="max-w-sm" v-model="value" minlength="2" maxlength="10" clearable show-word-limit />
 </template>
 ```
 
@@ -164,6 +174,8 @@ const password = ref('')
 | select-on-focus | `boolean` | - | - |
 | default-prefix-style | `boolean` | `true` | - |
 | default-suffix-style | `boolean` | `true` | - |
+| show-word-limit | `boolean \| string` | - | - |
+| word-limit-position | `'inside' \| 'outside'` | `inside` | - |
 
 ## Slots
 

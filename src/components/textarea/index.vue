@@ -53,28 +53,21 @@ const modelValue = useModelValue(props, emits)
 
 const configProvider = useConfigProvider()
 
-const computedClasses = computed(() => {
-  return textareaClasses({
-    size: props.size || configProvider.size,
-    error: isTruthyProp(props.error),
-    disabled: isTruthyProp(props.disabled),
-    readonly: isTruthyProp(props.readonly),
-  })
-})
-
 const wordCount = computed(() => String(modelValue.value ?? '').length)
 
 const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
 const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
-const isWordLimitInside = computed(() => props.wordLimitPosition === 'inside')
+const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
 
 const nativeTextareaClasses = computed(() => ({
-  'pb-7': isWordLimitShown.value && isWordLimitInside.value,
+  'pb-7': isWordLimitShown.value && isWordLimitOutside.value,
 }))
 
-const wordLimitClasses = computed(() => {
-  return isWordLimitInside.value ? 'bottom-1.5 right-3' : 'top-full right-0 mt-1'
-})
+const wordLimitClasses = computed(() => ({
+  'top-full right-0 mt-1': isWordLimitOutside.value,
+  'bottom-1.5 right-3': !isWordLimitOutside.value,
+  'text-red-900': isWordLimitExceeded.value,
+}))
 
 const wordLimitText = computed(() => {
   if (hasMaxlength.value) {
@@ -82,6 +75,19 @@ const wordLimitText = computed(() => {
   }
 
   return `${wordCount.value}`
+})
+
+const isWordLimitExceeded = computed(
+  () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
+)
+
+const computedClasses = computed(() => {
+  return textareaClasses({
+    size: props.size || configProvider.size,
+    error: isTruthyProp(props.error) || isWordLimitExceeded.value,
+    disabled: isTruthyProp(props.disabled),
+    readonly: isTruthyProp(props.readonly),
+  })
 })
 
 function onInputFocus(event: FocusEvent) {

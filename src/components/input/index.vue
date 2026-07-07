@@ -23,6 +23,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<InputProps>(), {
   align: 'left',
+  wordLimitPosition: 'inside',
   defaultPrefixStyle: true,
   defaultSuffixStyle: true,
 })
@@ -30,7 +31,7 @@ const props = withDefaults(defineProps<InputProps>(), {
 const emits = defineEmits<InputEmits>()
 
 const { attrs, classes: inputClasses } = useTailwindVariant({
-  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center overflow-hidden bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
+  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
   variants: {
     size: {
       xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,
@@ -68,11 +69,28 @@ const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
 const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
 
+const wordCount = computed(() => String(modelValue.value ?? '').length)
+const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
+const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
+const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
+
+const wordLimitText = computed(() => {
+  if (hasMaxlength.value) {
+    return `${wordCount.value} / ${props.maxlength}`
+  }
+
+  return `${wordCount.value}`
+})
+
+const isWordLimitExceeded = computed(
+  () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
+)
+
 const computedClasses = computed(() => {
   return inputClasses({
     size: props.size || configProvider.size,
     align: props.align,
-    error: isTruthyProp(props.error),
+    error: isTruthyProp(props.error) || isWordLimitExceeded.value,
     disabled: isTruthyProp(props.disabled),
     readonly: isTruthyProp(props.readonly),
   })
@@ -234,7 +252,7 @@ defineExpose({
       v-if="password || clearable"
       v-show="modelValue"
       :class="{ 'pr-2': password && clearable }"
-      class="pxd-input--icon top-0 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
+      class="pxd-input--icon top-0 -ml-1.5 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
       @pointerdown.prevent="NOOP"
     >
       <button
@@ -253,6 +271,17 @@ defineExpose({
         <CrossIcon class="size-3 pointer-events-none" />
       </button>
     </div>
+
+    <span
+      v-if="isWordLimitShown"
+      class="pxd-input--word-limit text-xs px-1.5 -ml-1.5 pointer-events-none shrink-0 text-nowrap text-foreground-secondary"
+      :class="{
+        'right-0 pr-0 mt-1 absolute top-full': isWordLimitOutside,
+        'text-red-900': isWordLimitExceeded,
+      }"
+    >
+      {{ wordLimitText }}
+    </span>
 
     <div
       v-if="$slots.suffix"

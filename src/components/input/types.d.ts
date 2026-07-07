@@ -21,6 +21,8 @@ export interface InputProps {
   prefixClass?: ComponentClass
   suffixClass?: ComponentClass
   selectOnFocus?: boolean
+  showWordLimit?: boolean
+  wordLimitPosition?: 'inside' | 'outside'
   defaultPrefixStyle?: boolean
   defaultSuffixStyle?: boolean
 }
