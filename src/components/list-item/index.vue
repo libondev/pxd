@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
-import { isNil } from 'es-toolkit'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
 import { getElement } from '../../utils/dom'
 import { getUniqueId } from '../../utils/helper'
+import { isNil } from '../../utils/is'
 
 defineOptions({
   name: 'PListItem',

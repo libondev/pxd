@@ -2,9 +2,9 @@
 import type { ListOptionEntry, ListOptionGroup, ListOptionSelected } from '../list/types'
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { isNil } from 'es-toolkit'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
+import { isNil } from '../../utils/is'
 import PButton from '../button/index.vue'
 import PMenu from '../menu/index.vue'
 
@@ -51,41 +51,37 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
 </script>
 
 <template>
-  <div class="pxd-split-button inline-flex items-center" v-bind="$attrs">
+  <PMenu
+    v-model="modelValue"
+    :options="options"
+    :list-width="listWidth"
+    position="bottom-end"
+    data-button-group
+    class="pxd-split-button items-center"
+    triggerSelector="[data-split-button-trigger]"
+    :close-on-press-escape="closeOnPressEscape"
+    @select="onOptionSelect"
+    v-bind="$attrs"
+  >
+    <PButton :disabled="disabled" :variant="variant" :shape="shape" :size="size">
+      <slot :data="selectedItem" />
+    </PButton>
+
     <PButton
+      data-split-button-trigger
       :disabled="disabled"
       :variant="variant"
       :shape="shape"
       :size="size"
-      class="rounded-r-none"
+      icon
     >
-      <slot :data="selectedItem" />
+      <slot name="icon">
+        <ChevronDownIcon />
+      </slot>
     </PButton>
 
-    <PMenu
-      v-model="modelValue"
-      :options="options"
-      position="bottom-end"
-      :list-width="listWidth"
-      :close-on-press-escape="closeOnPressEscape"
-      @select="onOptionSelect"
-    >
-      <PButton
-        :disabled="disabled"
-        :variant="variant"
-        :shape="shape"
-        :size="size"
-        icon
-        class="rounded-l-none border-l-0"
-      >
-        <slot name="icon">
-          <ChevronDownIcon />
-        </slot>
-      </PButton>
-
-      <template v-if="$slots.item" #item="{ item, index }">
-        <slot name="item" :item="item" :index="index" />
-      </template>
-    </PMenu>
-  </div>
+    <template v-if="$slots.item" #item="{ item, index }">
+      <slot name="item" :item="item" :index="index" />
+    </template>
+  </PMenu>
 </template>

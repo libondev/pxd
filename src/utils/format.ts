@@ -1,5 +1,5 @@
 import type { Nullable } from '../types/shared/utils'
-import { isNil } from 'es-toolkit'
+import { isNil } from '../utils/is'
 
 const INTEGER_REGEX = /^-?\d+$/
 const FLOATING_REGEX = /^-?\d+\.?\d*/

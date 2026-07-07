@@ -133,7 +133,6 @@
     "@tanstack/virtual-core": "catalog:default",
     "cnfast": "catalog:default",
     "dayjs": "catalog:default",
-    "es-toolkit": "catalog:default",
     "focus-trap": "catalog:default"
   },
   "devDependencies": {

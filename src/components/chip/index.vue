@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ChipProps } from './types'
-import { isNil } from 'es-toolkit'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { getCssUnitValue } from '../../utils/format'
+import { isNil } from '../../utils/is'
 
 defineOptions({
   name: 'PChip',

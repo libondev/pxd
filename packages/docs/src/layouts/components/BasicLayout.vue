@@ -319,7 +319,7 @@ if (!isServer()) {
     }
 
     tbody {
-      border-bottom: 1px solid var(--color-gray-300);
+      border-block: 1px solid var(--color-gray-300);
     }
 
     th {

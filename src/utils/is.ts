@@ -14,3 +14,8 @@ export function isIOS() {
       (navigator?.maxTouchPoints > 2 && /iPad|Macintosh/.test(navigator.userAgent)))
   )
 }
+
+export const isNil = (value: unknown): value is null | undefined => value == null
+export const isNotNil = <T>(value: T | null | undefined): value is T => value != null
+export const isUndefined = (value: unknown): value is undefined => value === undefined
+export const isNumber = (value: unknown): value is number => typeof value === 'number'

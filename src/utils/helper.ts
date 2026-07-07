@@ -2,9 +2,8 @@ import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeElement } from '../types/shared/utils'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
-import { isNil } from 'es-toolkit'
 import { unref } from 'vue'
-import { isServer } from './is'
+import { isNil, isServer } from './is'
 
 let _id = 0
 

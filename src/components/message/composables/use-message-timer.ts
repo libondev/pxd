@@ -1,5 +1,5 @@
 import type { MessageItemConfig } from '../../../composables/use-message'
-import { isNil } from 'es-toolkit'
+import { isNil } from '../../../utils/is'
 
 export function useMessageTimer(onTimeout: (id: MessageItemConfig['id']) => void) {
   function setAutoCloseTimer(message: MessageItemConfig) {
