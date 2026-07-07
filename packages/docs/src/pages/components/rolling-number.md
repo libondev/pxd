@@ -50,9 +50,11 @@ function changeValue() {
 </script>
 
 <template>
-  <PButton @click="changeValue">Change</PButton>
+  <PStack direction="vertical">
+    <PButton @click="changeValue">Change</PButton>
 
-  <PRollingNumber :value="number" :immediate="false" class="block" />
+    <PRollingNumber :value="number" :immediate="false" class="block" />
+  </PStack>
 </template>
 ```
 

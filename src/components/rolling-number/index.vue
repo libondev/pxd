@@ -12,7 +12,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<RollingNumberProps>(), {
   value: 0,
-  durations: 1000,
+  durations: 2000,
   immediate: true,
   thousands: false,
 })
@@ -56,7 +56,7 @@ const formattedValue = computed(() => {
 })
 
 function easeOutCubic(t: number): number {
-  return 1 - (1 - t) ** 3
+  return t === 1 ? 1 : 1 - 2 ** (-10 * t)
 }
 
 function stopAnimation() {
