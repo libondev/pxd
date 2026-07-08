@@ -32,14 +32,14 @@ provideAvatarGroupContext({ props })
         :src="option.src"
         :alt="option.alt"
         :loading="option.loading"
-        class="group-hover:-translate-y-1 group-hover:shadow-lg group-hover:z-1 group-hover:scale-110 motion-safe:transition-appearance"
+        class="group-hover:-translate-y-1 group-hover:shadow-lg ring-2 ring-background-100 group-hover:z-1 group-hover:scale-110 motion-safe:transition-appearance"
       />
     </div>
 
     <div class="group -ml-3">
       <PAvatar
         v-if="slicedOptions.length < options.length"
-        class="text-xs group-hover:-translate-y-1 group-hover:shadow-lg bg-gray-1000 text-gray-100 group-hover:z-1 group-hover:scale-110 motion-safe:transition-appearance"
+        class="text-xs group-hover:-translate-y-1 group-hover:shadow-lg bg-gray-1000 text-gray-100 ring-2 ring-background-100 group-hover:z-1 group-hover:scale-110 motion-safe:transition-appearance"
       >
         +{{ options.length - slicedOptions.length }}
       </PAvatar>
