@@ -36,7 +36,7 @@ Integrate information in a card container.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| shape | `'square' \| 'rounded'` | `'rounded'` | - |
+| shape | `'square' \| 'default'` | `'default'` | - |
 | border | `boolean` | `true` | - |
 
 ## Slots

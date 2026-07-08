@@ -1,4 +1,4 @@
 export interface CardProps {
-  shape?: 'square' | 'rounded'
+  shape?: 'default' | 'square'
   border?: boolean
 }

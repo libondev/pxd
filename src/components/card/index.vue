@@ -9,19 +9,19 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<CardProps>(), {
-  shape: 'rounded',
+  shape: 'default',
   border: true,
 })
 
 const { attrs, classes: cardClasses } = useTailwindVariant({
-  base: 'pxd-card bg-background-100',
+  base: 'pxd-card border bg-background-100',
   variants: {
     shape: {
+      default: 'rounded-lg',
       square: 'rounded-none',
-      rounded: 'rounded-lg',
     },
     border: {
-      true: 'border',
+      false: 'border-transparent',
     },
   },
 })
