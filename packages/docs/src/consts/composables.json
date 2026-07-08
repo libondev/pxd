@@ -96,6 +96,10 @@
     "name": "use-swipe-gesture"
   },
   {
+    "camelized": "Use Tailwind Variant",
+    "name": "use-tailwind-variant"
+  },
+  {
     "camelized": "Use Toggle Value",
     "name": "use-toggle-value"
   },
