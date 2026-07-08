@@ -429,7 +429,7 @@
   --shadow-modal: var(--shadow-modal-value);
   --shadow-fullscreen: var(--shadow-fullscreen-value);
 
-  --shadow-border-base: var(--shadow-border-value);
+  --shadow-border-base: inset var(--shadow-border-value);
   --shadow-border-small:
     var(--shadow-border-value), var(--shadow-small-value), var(--shadow-background-border);
   --shadow-border-medium:

@@ -40,7 +40,7 @@ const internalKey = computed(() => {
 
 <template>
   <kbd
-    class="pxd-keyboard px-1.5 ml-1 inline-flex items-center rounded-md border bg-background-100 text-center font-sans leading-none text-nowrap whitespace-nowrap text-gray-1000"
+    class="pxd-keyboard px-1.5 ml-1 inline-flex items-center rounded-md border bg-background-100 text-center font-sans leading-none text-nowrap whitespace-nowrap text-gray-1000 text-trim-both"
     :class="computedSize"
     v-bind="$attrs"
   >
