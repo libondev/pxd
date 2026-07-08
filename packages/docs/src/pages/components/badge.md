@@ -105,6 +105,7 @@ function onClose() {
 | as | `string \| object` | `span` | - |
 | href | `string` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
+| shape | `ComponentShape` | `rounded` | - |
 | variant | `BadgeVariant` | `pill` | - |
 | closeable | `boolean` | - | - |
 

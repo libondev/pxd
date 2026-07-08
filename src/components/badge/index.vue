@@ -12,13 +12,14 @@ defineOptions({
 
 const props = withDefaults(defineProps<BadgeProps>(), {
   as: 'span',
+  shape: 'rounded',
   variant: 'pill',
 })
 
 const emits = defineEmits<BadgeEmits>()
 
 const { attrs, classes: badgeClasses } = useTailwindVariant({
-  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center rounded-full font-sans leading-none text-nowrap whitespace-nowrap no-underline! motion-safe:transition-appearance',
+  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center font-sans leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
   variants: {
     variant: {
       pill: 'bg-background-100 shadow-border-base',
@@ -41,9 +42,14 @@ const { attrs, classes: badgeClasses } = useTailwindVariant({
       'green-subtle': 'bg-green-200 text-green-900',
       'teal-subtle': 'bg-teal-200 text-teal-900',
       inverted: 'bg-gray-1000 text-gray-100',
-      vue: 'text-gray-100 dark:text-gray-1000',
-      trial: 'text-gray-100 dark:text-gray-1000',
-      turborepo: 'text-gray-100 dark:text-gray-1000',
+      vue: 'bg-[linear-gradient(315deg,#42d392_25%,#647eff)] text-gray-100 dark:text-gray-1000',
+      trial: 'bg-[linear-gradient(135deg,#0070f3,#f81ce5)] text-gray-100 dark:text-gray-1000',
+      turborepo: 'bg-[linear-gradient(135deg,#ff1e56,#0096ff)] text-gray-100 dark:text-gray-1000',
+    },
+    shape: {
+      default: 'rounded-md',
+      square: 'rounded-none',
+      rounded: 'rounded-full',
     },
     size: {
       sm: 'px-1.5 h-5 text-xs',
@@ -51,20 +57,14 @@ const { attrs, classes: badgeClasses } = useTailwindVariant({
       lg: 'px-3 h-8 text-sm',
     },
   },
-  compoundVariants: [
-    { variant: 'pill', class: 'pill' },
-    { variant: 'vue', class: 'vue' },
-    { variant: 'trial', class: 'trial' },
-    { variant: 'turborepo', class: 'turborepo' },
-  ],
 })
 
 const configProvider = useConfigProvider()
 
 const computedClasses = computed(() => {
-  const { variant, size = configProvider.size } = props
+  const { variant, size = configProvider.size, shape } = props
 
-  return badgeClasses({ variant, size })
+  return badgeClasses({ variant, shape, size })
 })
 
 function onClose(ev: Event) {
@@ -73,7 +73,7 @@ function onClose(ev: Event) {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" v-bind="attrs">
+  <Component :is="as" :class="computedClasses" :data-variant="variant" v-bind="attrs">
     <slot />
 
     <button
@@ -85,17 +85,3 @@ function onClose(ev: Event) {
     </button>
   </Component>
 </template>
-
-<style>
-.pxd-badge.vue {
-  background: linear-gradient(315deg, #42d392 25%, #647eff);
-}
-
-.pxd-badge.trial {
-  background: linear-gradient(135deg, #0070f3, #f81ce5);
-}
-
-.pxd-badge.turborepo {
-  background: linear-gradient(135deg, #ff1e56, #0096ff);
-}
-</style>
