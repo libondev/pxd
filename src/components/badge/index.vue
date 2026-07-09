@@ -19,11 +19,11 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 const emits = defineEmits<BadgeEmits>()
 
 const { attrs, classes: badgeClasses } = useTailwindVariant({
-  base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center font-sans leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
+  base: 'pxd-badge font-medium gap-1.5 inline-flex items-center justify-center font-sans leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
   variants: {
     variant: {
       pill: 'bg-background-100 shadow-border-base',
-      primary: 'bg-primary text-gray-100',
+      primary: 'text-primary-foreground bg-primary',
       secondary: 'bg-gray-200 text-gray-1000 shadow-border-base',
       gray: 'text-white bg-gray-900',
       blue: 'bg-blue-800 text-gray-100 dark:text-gray-1000',
@@ -59,12 +59,60 @@ const { attrs, classes: badgeClasses } = useTailwindVariant({
   },
 })
 
+const { classes: iconSlotClasses } = useTailwindVariant({
+  base: 'inline-flex shrink-0 items-center justify-center',
+  variants: {
+    size: {
+      sm: 'w-3 h-3 -mr-0.5 text-11',
+      md: 'w-4 h-4 text-xs -mr-1.25',
+      lg: 'w-5 h-5 text-sm -mr-1.5',
+    },
+    slot: {
+      prefix: '',
+      suffix: '',
+    },
+  },
+  compoundVariants: [
+    {
+      size: 'sm',
+      slot: 'prefix',
+      class: '-ml-0.5',
+    },
+    {
+      size: 'md',
+      slot: 'prefix',
+      class: '-ml-1',
+    },
+    {
+      size: 'lg',
+      slot: 'prefix',
+      class: '-ml-1.5',
+    },
+    {
+      size: 'sm',
+      slot: 'suffix',
+      class: '-mr-0.5',
+    },
+    {
+      size: 'md',
+      slot: 'suffix',
+      class: '-mr-1',
+    },
+    {
+      size: 'lg',
+      slot: 'suffix',
+      class: '-mr-1.5',
+    },
+  ],
+})
+
 const configProvider = useConfigProvider()
+const computedSize = computed(() => props.size || configProvider.size)
 
 const computedClasses = computed(() => {
-  const { variant, size = configProvider.size, shape } = props
+  const { variant, shape } = props
 
-  return badgeClasses({ variant, shape, size })
+  return badgeClasses({ variant, shape, size: computedSize.value })
 })
 
 function onClose(ev: Event) {
@@ -74,11 +122,20 @@ function onClose(ev: Event) {
 
 <template>
   <Component :is="as" :class="computedClasses" :data-variant="variant" v-bind="attrs">
+    <span
+      v-if="$slots.prefix"
+      class="pxd-badge--prefix"
+      :class="iconSlotClasses({ size: computedSize, slot: 'prefix' })"
+    >
+      <slot name="prefix" />
+    </span>
+
     <slot />
 
     <button
       v-if="closeable"
-      class="pxd-badge--close p-1 -mr-1 relative cursor-pointer appearance-none rounded-full text-[.75em] self-focus-ring hover:bg-gray-alpha-200 active:bg-gray-alpha-300 motion-safe:transition-colors"
+      class="pxd-badge--close relative cursor-pointer appearance-none rounded-sm text-foreground-secondary self-focus-ring hover:bg-gray-alpha-200 hover:text-foreground active:bg-gray-alpha-300 motion-safe:transition-colors"
+      :class="iconSlotClasses({ size: computedSize, slot: 'suffix' })"
       @click.stop="onClose"
     >
       <CrossIcon class="pointer-events-none" />

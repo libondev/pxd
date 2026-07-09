@@ -24,7 +24,6 @@ const { attrs, classes: choiceboxClasses } = useTailwindVariant({
     },
     selected: {
       true: 'border-primary',
-      false: '',
     },
   },
   compoundVariants: [
@@ -38,12 +37,9 @@ const { attrs, classes: choiceboxClasses } = useTailwindVariant({
 
 const { classes: choiceboxInnerClasses } = useTailwindVariant(
   {
-    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-gray-100 peer-focus-ring motion-safe:transition-appearance',
+    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-appearance',
     variants: {
-      disabled: {
-        true: '',
-        false: '',
-      },
+      disabled: {},
       multiple: {
         true: 'rounded-sm',
         false:
@@ -105,7 +101,7 @@ const isMultiple = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  return props.disabled || !!choiceboxGroupContext?.props.disabled
+  return props.disabled || !!choiceboxGroupContext?.props.disabled || false
 })
 
 const isSelected = computed(() => {

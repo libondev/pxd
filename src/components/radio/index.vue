@@ -32,10 +32,7 @@ const { classes: radioClasses } = useTailwindVariant(
           disabled: 'border-gray-500 bg-gray-100',
         },
       },
-      disabled: {
-        true: '',
-        false: '',
-      },
+      disabled: {},
     },
     compoundVariants: [
       {
@@ -71,7 +68,7 @@ const modelValue = useModelValue(
 
 const isSelected = computed(() => modelValue.value === props.value)
 
-const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
 const computedClasses = computed(() => {
   return radioClasses({

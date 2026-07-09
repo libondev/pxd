@@ -31,15 +31,14 @@ const { attrs, classes: snippetClasses } = useTailwindVariant({
       lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
     },
     variant: {
-      default: 'border-gray-alpha-300 bg-background-100',
-      primary: 'border-gray-alpha-300 bg-primary text-gray-100',
+      default: 'border-gray-alpha-300 bg-gray-100',
+      primary: 'border-gray-alpha-300 bg-primary text-primary-foreground',
       success: 'border-gray-alpha-300 bg-blue-200 text-blue-900',
       error: 'border-gray-alpha-300 bg-red-200 text-red-900',
       warning: 'border-gray-alpha-300 bg-amber-200 text-amber-900',
     },
     prompt: {
       true: 'pxd-snippet--prompt',
-      false: '',
     },
   },
 })

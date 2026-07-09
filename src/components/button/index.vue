@@ -15,6 +15,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ButtonProps>(), {
   icon: false,
+  shape: 'default',
   as: 'button',
 })
 
@@ -45,7 +46,7 @@ const { attrs, classes: buttonClasses } = useTailwindVariant({
       ghost:
         'border-transparent bg-transparent text-foreground hover:bg-background-hover active:bg-background-active',
       primary:
-        'border-transparent bg-primary text-gray-100 hover:bg-primary-hover active:bg-primary-active',
+        'border-transparent bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-active',
       error: 'text-white border-transparent bg-red-800 hover:bg-red-700 active:bg-red-900',
       warning: 'text-black border-transparent bg-amber-800 hover:bg-amber-700 active:bg-amber-900',
       success: 'text-white border-transparent bg-green-900 hover:bg-green-700 active:bg-green-800',
@@ -59,9 +60,6 @@ const { attrs, classes: buttonClasses } = useTailwindVariant({
     icon: {
       true: 'p-0 aspect-square',
       false: '[[data-button-group]_&]:flex-1',
-    },
-    loading: {
-      true: '',
     },
   },
   compoundVariants: [

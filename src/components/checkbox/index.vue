@@ -18,6 +18,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<CheckboxProps>(), {
+  shape: 'default',
   value: true,
 })
 
@@ -25,16 +26,10 @@ const emits = defineEmits<CheckboxEmits>()
 
 const { classes: checkboxClasses } = useTailwindVariant(
   {
-    base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border peer-focus-ring motion-safe:transition-colors',
+    base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
     variants: {
-      checked: {
-        true: 'text-gray-100',
-        false: '',
-      },
-      disabled: {
-        true: '',
-        false: '',
-      },
+      checked: {},
+      disabled: {},
       shape: {
         default: 'rounded-sm',
         square: 'rounded-none',
@@ -88,7 +83,7 @@ const isSelected = computed(() => {
   return modelValue.value === props.value
 })
 
-const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
 
 const computedClasses = computed(() => {
   return checkboxClasses({

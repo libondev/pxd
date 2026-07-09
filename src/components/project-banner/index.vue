@@ -8,7 +8,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<ProjectBannerProps>()
+const props = withDefaults(defineProps<ProjectBannerProps>(), { variant: 'info' })
 
 const { attrs, classes: projectBannerClasses } = useTailwindVariant({
   base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm flex w-full -translate-y-px items-center justify-center border-y',

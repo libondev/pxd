@@ -107,6 +107,7 @@
   --color-pink-1000-value: 333, 74%, 15%;
 
   --primary: var(--color-gray-1000-value);
+  --primary-foreground: var(--color-gray-100-value);
   --primary-hover: hsla(var(--primary), 70%);
   --primary-active: hsla(var(--primary), 90%);
 
@@ -296,6 +297,7 @@
   --color-primary: hsl(var(--primary));
   --color-primary-hover: var(--primary-hover);
   --color-primary-active: var(--primary-active);
+  --color-primary-foreground: hsl(var(--primary-foreground));
 
   --color-border: var(--color-gray-alpha-300-value);
   --color-border-hover: hsl(var(--color-gray-500-value));
@@ -445,6 +447,7 @@
   --shadow-border-fullscreen:
     var(--shadow-border-value), var(--shadow-fullscreen-value), var(--shadow-background-border);
 
+  --text-11: 11px;
   --text-13: 13px;
   --text-15: 15px;
 }

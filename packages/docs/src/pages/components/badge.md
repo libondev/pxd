@@ -85,17 +85,23 @@ function onClose() {
 <template>
   <PStack align="center">
     <PBadge size="sm">
-      <IconShield />
+      <template #prefix>
+        <IconShield />
+      </template>
       Badge
     </PBadge>
 
     <PBadge>
-      <IconShield />
+      <template #prefix>
+        <IconShield />
+      </template>
       Badge
     </PBadge>
 
     <PBadge size="lg">
-      <IconShield />
+      <template #prefix>
+        <IconShield />
+      </template>
       Badge
     </PBadge>
   </PStack>
