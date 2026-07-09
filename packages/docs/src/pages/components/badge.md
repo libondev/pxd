@@ -37,6 +37,18 @@ A label that emphasizes an element that requires attention, or helps categorize 
 </template>
 ```
 
+## Shape
+
+```vue demo
+<template>
+  <PStack align="center">
+    <PBadge shape="default">Default</PBadge>
+    <PBadge shape="square">Square</PBadge>
+    <PBadge shape="rounded">Rounded</PBadge>
+  </PStack>
+</template>
+```
+
 ## Sizes
 
 ```vue demo

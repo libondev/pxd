@@ -12,7 +12,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<BadgeProps>(), {
   as: 'span',
-  shape: 'rounded',
+  shape: 'default',
   variant: 'pill',
 })
 
