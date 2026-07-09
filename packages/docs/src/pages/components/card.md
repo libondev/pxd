@@ -16,9 +16,19 @@ Integrate information in a card container.
 
 ```vue demo
 <template>
-  <PCard shape="square">
-    lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, sed efficitur nisl. Donec a nunc ac nisi efficitur convallis. Donec a nunc ac nisi efficitur convallis.
-  </PCard>
+  <PStack>
+    <PCard shape="default">
+      lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, sed efficitur nisl. Donec a nunc ac nisi efficitur convallis. Donec a nunc ac nisi efficitur convallis.
+    </PCard>
+
+    <PCard shape="square">
+      lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, sed efficitur nisl. Donec a nunc ac nisi efficitur convallis. Donec a nunc ac nisi efficitur convallis.
+    </PCard>
+
+    <PCard shape="rounded">
+      lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, sed efficitur nisl. Donec a nunc ac nisi efficitur convallis. Donec a nunc ac nisi efficitur convallis.
+    </PCard>
+  </PStack>
 </template>
 ```
 
