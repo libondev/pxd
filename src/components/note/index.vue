@@ -46,7 +46,7 @@ const { attrs, classes: noteClasses } = useTailwindVariant({
       },
       primary: {
         base: 'border-gray-alpha-400 text-primary',
-        fill: 'border-gray-100 bg-primary text-gray-100',
+        fill: 'border-gray-100 bg-primary text-primary-foreground',
       },
       violet: {
         base: 'text-violet-900 border-violet-400',
@@ -57,10 +57,7 @@ const { attrs, classes: noteClasses } = useTailwindVariant({
         fill: 'border-teal-100 bg-teal-200 text-teal-900',
       },
     },
-    fill: {
-      true: {},
-      false: {},
-    },
+    fill: {},
   },
   compoundVariants: [
     { variant: 'success', fill: true, class: 'border-blue-100 bg-blue-200 text-blue-900' },
@@ -71,7 +68,7 @@ const { attrs, classes: noteClasses } = useTailwindVariant({
     { variant: 'warning', fill: false, class: 'border-amber-500 text-amber-900' },
     { variant: 'default', fill: true, class: 'border-gray-100 bg-gray-200 text-gray-900' },
     { variant: 'default', fill: false, class: 'text-gray-900' },
-    { variant: 'primary', fill: true, class: 'border-gray-100 bg-primary text-gray-100' },
+    { variant: 'primary', fill: true, class: 'border-gray-100 bg-primary text-primary-foreground' },
     { variant: 'primary', fill: false, class: 'border-gray-alpha-400 text-primary' },
     { variant: 'violet', fill: true, class: 'text-violet-900 bg-violet-200 border-violet-100' },
     { variant: 'violet', fill: false, class: 'text-violet-900 border-violet-400' },
@@ -90,13 +87,13 @@ const VARIANTS_ICON = {
   primary: InformationIcon,
   violet: InformationIcon,
   cyan: InformationIcon,
-}
+} as const
 
 const computedLabel = computed(() => {
   const { label } = props
 
   if (isTruthyProp(label)) {
-    return VARIANTS_ICON[props.variant] || InformationIcon
+    return VARIANTS_ICON[props.variant as keyof typeof VARIANTS_ICON] || InformationIcon
   }
 
   if (typeof label === 'string' && label) {
