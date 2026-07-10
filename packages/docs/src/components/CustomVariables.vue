@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage, usePopoverResponsive } from 'pxd'
-import { ref, watch, onBeforeMount } from 'vue'
+import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue'
 
 defineOptions({
   name: 'CustomVariables',
@@ -14,6 +14,7 @@ interface CustomVariables {
   primary: string
   duration: string
   'timing-function': string
+  'primary-foreground': string
 }
 
 const STORAGE_KEY = 'fe.system.appearance'
@@ -117,6 +118,27 @@ const customProperties = [
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
+function updatePrimaryForeground() {
+  const rootEl = document.documentElement
+  const rootElStyle = rootEl.style
+
+  if (customVariables.value.primary) {
+    const primaryForeground = `var(--color-gray-${rootEl.classList.contains('dark') ? '1000' : '100'}-value)`
+
+    if (customVariables.value['primary-foreground'] !== primaryForeground) {
+      customVariables.value['primary-foreground'] = primaryForeground
+    }
+
+    rootElStyle.setProperty('--primary-foreground', primaryForeground)
+  } else {
+    if (customVariables.value['primary-foreground']) {
+      customVariables.value['primary-foreground'] = ''
+    }
+
+    rootElStyle.removeProperty('--primary-foreground')
+  }
+}
+
 function updateCustomVariables() {
   const rootElStyle = document.documentElement.style
 
@@ -129,7 +151,13 @@ function updateCustomVariables() {
       rootElStyle.removeProperty(`--${property.key}`)
     }
   })
+
+  updatePrimaryForeground()
 }
+
+const rootClassObserver = new MutationObserver(() => {
+  updatePrimaryForeground()
+})
 
 watch(
   () => customVariables.value,
@@ -148,6 +176,7 @@ function resetCustomVariables() {
     primary: '',
     duration: '',
     'timing-function': '',
+    'primary-foreground': '',
   }
   popoverVisible.value = false
 }
@@ -157,7 +186,7 @@ async function copyCustomVariables() {
 :root {
   --radius: ${customVariables.value.radius.trim() || '.5rem'};
   --primary: ${customVariables.value.primary || '0, 0%, 9%'};
-  --duration: ${customVariables.value.duration.trim() || '.15s'};
+${customVariables.value.primary ? `  --primary-foreground: ${customVariables.value['primary-foreground']};\n` : ''}  --duration: ${customVariables.value.duration.trim() || '.15s'};
   --timing-function: ${customVariables.value['timing-function'].trim() || 'ease-out'};
 }
 `)
@@ -168,6 +197,14 @@ async function copyCustomVariables() {
 
 onBeforeMount(() => {
   updateCustomVariables()
+  rootClassObserver.observe(document.documentElement, {
+    attributeFilter: ['class'],
+    attributes: true,
+  })
+})
+
+onBeforeUnmount(() => {
+  rootClassObserver.disconnect()
 })
 </script>
 
