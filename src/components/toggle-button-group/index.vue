@@ -18,6 +18,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {
   gap: 0,
+  variant: 'ghost',
   multiple: true,
   modelValue: () => [],
 })
@@ -33,10 +34,6 @@ const { attrs, classes: toggleButtonGroupClasses } = useTailwindVariant({
       md: 'rounded-md',
       lg: 'rounded-lg',
     },
-    variant: {
-      outline: '',
-      ghost: '',
-    },
   },
 })
 
@@ -45,7 +42,6 @@ const computedSize = computed(() => props.size || configProvider.size)
 const computedClasses = computed(() =>
   toggleButtonGroupClasses({
     size: computedSize.value,
-    variant: props.variant,
   }),
 )
 

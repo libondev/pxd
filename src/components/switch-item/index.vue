@@ -23,7 +23,6 @@ const { classes: switchClasses } = useTailwindVariant(
     base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
     variants: {
       disabled: {
-        true: '',
         false: 'peer-checked:text-foreground',
       },
     },
@@ -43,7 +42,7 @@ const modelValue = useModelValue(
 
 const isChecked = computed(() => modelValue.value === props.value)
 
-const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled)
+const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
 const computedClasses = computed(() => {
   return switchClasses({ disabled: isDisabled.value })

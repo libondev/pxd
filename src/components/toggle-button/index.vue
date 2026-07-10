@@ -34,16 +34,12 @@ const { attrs, classes: toggleButtonClasses } = useTailwindVariant({
     },
     variant: {
       ghost: 'border-transparent',
-      outline: '',
     },
     disabled: {
       true: 'cursor-not-allowed',
       false: 'hover:bg-background-hover data-[state=on]:bg-gray-300',
     },
-    checked: {
-      true: '',
-      false: '',
-    },
+    checked: {},
   },
   compoundVariants: [
     { checked: true, disabled: true, class: 'bg-gray-200' },
@@ -63,7 +59,9 @@ const modelValue = useModelValue(
 
 const configProvider = useConfigProvider()
 
-const isDisabled = computed(() => props.disabled || toggleButtonGroupContext?.props.disabled)
+const isDisabled = computed(
+  () => props.disabled || toggleButtonGroupContext?.props.disabled || false,
+)
 
 const isChecked = computed(() => {
   if (toggleButtonGroupContext?.props.multiple) {
@@ -77,7 +75,7 @@ const computedClasses = computed(() => {
   return toggleButtonClasses({
     size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
     checked: isChecked.value,
-    variant: props.variant || toggleButtonGroupContext?.props.variant,
+    variant: props.variant || toggleButtonGroupContext?.props.variant || 'ghost',
     disabled: isDisabled.value,
   })
 })

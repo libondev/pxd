@@ -46,15 +46,12 @@ const { attrs, classes: inputClasses } = useTailwindVariant({
     },
     disabled: {
       true: 'is-disabled',
-      false: '',
     },
     readonly: {
       true: 'is-readonly',
-      false: '',
     },
     error: {
       true: 'is-error',
-      false: '',
     },
   },
 })

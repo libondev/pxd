@@ -39,9 +39,7 @@ const { attrs, classes: rateClasses } = useTailwindVariant({
     disabled: {
       true: 'pointer-events-none opacity-50',
     },
-    readonly: {
-      true: '',
-    },
+    readonly: {},
   },
   compoundVariants: [
     {

@@ -37,7 +37,6 @@ const { attrs, classes: sliderClasses } = useTailwindVariant({
     },
     disabled: {
       true: 'cursor-not-allowed',
-      false: '',
     },
   },
 })
@@ -53,7 +52,6 @@ const { classes: sliderThumbClasses } = useTailwindVariant(
       },
       disabled: {
         true: 'pointer-events-none',
-        false: '',
       },
       appearance: {
         none: 'appearance-none',

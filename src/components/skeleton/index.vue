@@ -22,7 +22,6 @@ const { attrs, classes: skeletonClasses } = useTailwindVariant({
   variants: {
     loading: {
       true: 'loading invisible content-visibility-auto intrinsic-size-auto',
-      false: '',
     },
     shape: {
       default: 'rounded-md',
@@ -31,7 +30,6 @@ const { attrs, classes: skeletonClasses } = useTailwindVariant({
     },
     animated: {
       true: 'animated after:default-animation-timing-function!',
-      false: '',
     },
   },
 })

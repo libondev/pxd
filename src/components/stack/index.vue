@@ -23,7 +23,6 @@ const { attrs, classes: stackClasses } = useTailwindVariant({
   variants: {
     wrap: {
       true: 'flex-wrap',
-      false: '',
     },
     align: {
       start: 'items-start',

@@ -37,11 +37,9 @@ const { classes: pinInputClasses } = useTailwindVariant(
       },
       error: {
         true: 'is-error',
-        false: '',
       },
       disabled: {
         true: 'is-disabled',
-        false: '',
       },
     },
   },

@@ -25,11 +25,9 @@ const { attrs, classes: textClasses } = useTailwindVariant({
     },
     monospace: {
       true: 'font-mono',
-      false: '',
     },
     secondary: {
       true: 'text-foreground-secondary',
-      false: '',
     },
   },
 })
