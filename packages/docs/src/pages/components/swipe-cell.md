@@ -132,7 +132,7 @@ function onOverSwipe(event) {
             class="inset-0 absolute flex h-full items-center bg-green-900 px-4 text-white transition-opacity"
             :class="overSwipe ? 'opacity-100' : 'pointer-events-none opacity-0'"
           >
-            Release to Done
+            Done
           </div>
         </div>
       </template>
@@ -152,7 +152,7 @@ function onOverSwipe(event) {
             class="inset-0 absolute flex h-full items-center justify-end bg-red-900 px-4 text-white transition-opacity"
             :class="overSwipe ? 'opacity-100' : 'pointer-events-none opacity-0'"
           >
-            Release to Delete
+            Delete
           </div>
         </div>
       </template>
