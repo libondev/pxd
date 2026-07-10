@@ -4,8 +4,7 @@ import { computed, useAttrs } from 'vue'
 
 type TailwindVariantValue = string | number | boolean | null | undefined
 type TailwindVariantValues = TailwindVariantValue | TailwindVariantValue[]
-type TailwindVariantClassValue = ClassValue | Record<string, ClassValue>
-type TailwindVariantSchema = Record<string, Record<string, TailwindVariantClassValue>>
+type TailwindVariantSchema = Record<string, Record<string, ClassValue>>
 type TailwindVariantSelection<T extends TailwindVariantSchema> = Partial<
   Record<keyof T, TailwindVariantValue>
 >
@@ -48,14 +47,6 @@ function isCompoundVariantMatched<T extends TailwindVariantSchema>(
   })
 }
 
-function getVariantClasses(value: TailwindVariantClassValue) {
-  if (value && typeof value === 'object') {
-    return cn(value)
-  }
-
-  return value
-}
-
 export function useTailwindVariant<T extends TailwindVariantSchema>(
   config: UseTailwindVariantConfig<T>,
   options: UseTailwindVariantOptions = {},
@@ -85,7 +76,7 @@ export function useTailwindVariant<T extends TailwindVariantSchema>(
         return undefined
       }
 
-      return getVariantClasses(valueClasses)
+      return valueClasses
     })
 
     const compoundVariantClasses = config.compoundVariants
