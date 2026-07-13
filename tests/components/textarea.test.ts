@@ -84,4 +84,57 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
+  it('should not apply maxlength while composing', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        maxlength: 3,
+      },
+    })
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.attributes('maxlength')).toBe('3')
+
+    await textarea.trigger('compositionstart')
+    expect(textarea.attributes('maxlength')).toBeUndefined()
+
+    await textarea.trigger('compositionend')
+    expect(textarea.attributes('maxlength')).toBe('3')
+
+    wrapper.unmount()
+  })
+  it('should keep overflow value after composing by default', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        maxlength: 3,
+      },
+    })
+
+    const textarea = wrapper.find('textarea')
+    textarea.element.value = 'test'
+
+    await textarea.trigger('compositionend')
+
+    expect(textarea.element.value).toBe('test')
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+  it('should trim overflow value after composing when trimOverflow is true', async () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        maxlength: 3,
+        trimOverflow: true,
+      },
+    })
+
+    const textarea = wrapper.find('textarea')
+    textarea.element.value = 'test'
+
+    await textarea.trigger('compositionend')
+
+    expect(textarea.element.value).toBe('tes')
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['tes'])
+
+    wrapper.unmount()
+  })
 })

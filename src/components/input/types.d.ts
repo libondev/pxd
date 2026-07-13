@@ -14,6 +14,7 @@ export interface InputProps {
   inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   minlength?: number | string
   maxlength?: number | string
+  trimOverflow?: boolean
   clearable?: boolean
   clearValue?: string | number | null
   modelValue?: string | number | null

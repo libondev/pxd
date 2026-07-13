@@ -87,4 +87,61 @@ describe('input', () => {
 
     wrapper.unmount()
   })
+
+  it('should not apply maxlength while composing', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        maxlength: 3,
+      },
+    })
+
+    const input = wrapper.find('input')
+    expect(input.attributes('maxlength')).toBe('3')
+
+    await input.trigger('compositionstart')
+    expect(input.attributes('maxlength')).toBeUndefined()
+
+    await input.trigger('compositionend')
+    expect(input.attributes('maxlength')).toBe('3')
+
+    wrapper.unmount()
+  })
+
+  it('should keep overflow value after composing by default', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        maxlength: 3,
+      },
+    })
+
+    const input = wrapper.find('input')
+    input.element.value = 'test'
+
+    await input.trigger('compositionend')
+
+    expect(input.element.value).toBe('test')
+    expect(wrapper.emitted('input')![0]).toEqual(['test'])
+
+    wrapper.unmount()
+  })
+
+  it('should trim overflow value after composing when trimOverflow is true', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        maxlength: 3,
+        trimOverflow: true,
+      },
+    })
+
+    const input = wrapper.find('input')
+    input.element.value = 'test'
+
+    await input.trigger('compositionend')
+
+    expect(input.element.value).toBe('tes')
+    expect(wrapper.emitted('input')![0]).toEqual(['tes'])
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['tes'])
+
+    wrapper.unmount()
+  })
 })

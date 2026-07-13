@@ -10,6 +10,7 @@ export interface TextareaProps {
   autofocus?: boolean
   minlength?: number | string
   maxlength?: number | string
+  trimOverflow?: boolean
   modelValue?: ComponentLabel
   placeholder?: string
   showWordLimit?: boolean | string

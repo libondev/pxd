@@ -165,6 +165,7 @@ const value = ref('')
 | inputmode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
 | minlength | `number \| string` | - | - |
 | maxlength | `number \| string` | - | - |
+| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `maxlength` is set. |
 | clearable | `boolean` | - | - |
 | clear-value | `string \| number \| null` | - | - |
 | model-value | `string \| number \| null` | - | - |

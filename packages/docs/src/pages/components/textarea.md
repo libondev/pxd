@@ -90,6 +90,7 @@ const outsideValue = ref('Hello')
 | autofocus | `boolean` | - | - |
 | minlength | `number \| string` | - | - |
 | maxlength | `number \| string` | - | - |
+| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `maxlength` is set. |
 | model-value | `string \| number \| null` | `` | - |
 | placeholder | `string` | - | - |
 | show-word-limit | `boolean \| string` | - | - |

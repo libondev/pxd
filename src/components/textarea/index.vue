@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
@@ -19,6 +19,7 @@ defineOptions({
 const props = withDefaults(defineProps<TextareaProps>(), {
   modelValue: '',
   wordLimitPosition: 'inside',
+  trimOverflow: false,
 })
 
 const emits = defineEmits<TextareaEmits>()
@@ -49,12 +50,14 @@ const uniqueId = getUniqueId()
 const modelValue = useModelValue(props, emits)
 
 const configProvider = useConfigProvider()
+const isComposing = shallowRef(false)
 
 const wordCount = computed(() => String(modelValue.value ?? '').length)
 
 const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
 const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
 const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
+const nativeMaxlength = computed(() => (isComposing.value ? undefined : props.maxlength))
 
 const nativeTextareaClasses = computed(() => ({
   'pb-7': isWordLimitShown.value && isWordLimitOutside.value,
@@ -98,6 +101,34 @@ function onInputBlur(event: FocusEvent) {
 function onInputChange(event: Event) {
   emits('change', (event.target as HTMLTextAreaElement).value)
 }
+
+function trimTextareaValue(textareaValue: string) {
+  if (props.trimOverflow && hasMaxlength.value) {
+    return textareaValue.slice(0, Number(props.maxlength))
+  }
+
+  return textareaValue
+}
+
+function onCompositionStart() {
+  isComposing.value = true
+}
+
+function onCompositionUpdate() {
+  isComposing.value = true
+}
+
+function onCompositionEnd(event: CompositionEvent) {
+  isComposing.value = false
+
+  const target = event.target as HTMLTextAreaElement
+  const textareaValue = trimTextareaValue(target.value)
+
+  if (textareaValue !== target.value) {
+    target.value = textareaValue
+    modelValue.value = textareaValue
+  }
+}
 </script>
 
 <template>
@@ -116,11 +147,14 @@ function onInputChange(event: Event) {
       :disabled="disabled"
       :autofocus="autofocus"
       :minlength="minlength"
-      :maxlength="maxlength"
+      :maxlength="nativeMaxlength"
       :placeholder="placeholder"
       @change="onInputChange"
       @focus="onInputFocus"
       @blur="onInputBlur"
+      @compositionstart="onCompositionStart"
+      @compositionupdate="onCompositionUpdate"
+      @compositionend="onCompositionEnd"
     />
     <span
       v-if="isWordLimitShown"

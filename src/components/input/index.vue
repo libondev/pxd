@@ -26,6 +26,7 @@ const props = withDefaults(defineProps<InputProps>(), {
   wordLimitPosition: 'inside',
   defaultPrefixStyle: true,
   defaultSuffixStyle: true,
+  trimOverflow: false,
 })
 
 const emits = defineEmits<InputEmits>()
@@ -70,6 +71,7 @@ const wordCount = computed(() => String(modelValue.value ?? '').length)
 const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
 const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
 const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
+const nativeMaxlength = computed(() => (isComposing.value ? undefined : props.maxlength))
 
 const wordLimitText = computed(() => {
   if (hasMaxlength.value) {
@@ -95,6 +97,14 @@ const computedClasses = computed(() => {
 
 function getInputValue(ev: Event) {
   return (ev.target as HTMLInputElement).value
+}
+
+function trimInputValue(inputValue: string) {
+  if (props.trimOverflow && hasMaxlength.value) {
+    return inputValue.slice(0, Number(props.maxlength))
+  }
+
+  return inputValue
 }
 
 function onFocus(event: FocusEvent) {
@@ -157,7 +167,9 @@ async function onCompositionEnd(event: CompositionEvent) {
   isComposing.value = false
   emits('compositionend', event)
 
-  const inputValue = getInputValue(event)
+  const target = event.target as HTMLInputElement
+  const inputValue = trimInputValue(getInputValue(event))
+  target.value = inputValue
   modelValue.value = inputValue
 
   emits('input', inputValue)
@@ -231,7 +243,7 @@ defineExpose({
       :disabled="disabled"
       :inputmode="inputmode"
       :minlength="minlength"
-      :maxlength="maxlength"
+      :maxlength="nativeMaxlength"
       :autofocus="autofocus"
       :aria-disabled="disabled"
       :placeholder="placeholder"
