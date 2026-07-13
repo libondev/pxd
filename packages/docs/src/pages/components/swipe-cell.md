@@ -90,7 +90,7 @@ const open = ref(false)
 
 ## Over Swipe
 
-Use `over-swipe-threshold` and the `over-swipe` event to trigger a default action when the release distance is far beyond the action slot width. The event is only emitted after the gesture ends. Set `limit-swipe` to `false` when the content should keep following the finger beyond the action slot width. Set `close-on-over-swipe` to clear the swipe state after the event is emitted.
+Use `over-swipe-threshold` and the `over-swipe` event to trigger a default action when the release distance is far beyond the action slot width. The event is only emitted after the gesture ends. Set `close-on-over-swipe` to clear the swipe state after the event is emitted.
 
 ```vue demo
 <script setup>
@@ -208,7 +208,6 @@ async function beforeClose() {
 | model-value | `'prefix' \| 'suffix' \| false` | `false` | Controlled open side. |
 | threshold | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |
 | over-swipe-threshold | `number` | `1.5` | Ratio of action slot width needed to emit `over-swipe`. |
-| limit-swipe | `boolean` | `true` | Limit the content slide distance to the action slot width. |
 | close-on-over-swipe | `boolean` | `false` | Close the cell after `over-swipe` is emitted. |
 | close-on-click | `boolean` | `true` | Close the cell when clicking the content while it is open. |
 | before-close | `(trigger: 'left' \| 'right' \| 'content' \| 'outside') => boolean \| PromiseLike<boolean>` | - | Return `false` to prevent the cell from closing. |

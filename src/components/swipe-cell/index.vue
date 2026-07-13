@@ -8,9 +8,8 @@ import type {
   SwipeCellCloseTrigger,
 } from './types'
 import type { CSSProperties } from 'vue'
-import { computed, onMounted, shallowRef, watch } from 'vue'
+import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
 import { useOutsideClick } from '../../composables/use-outside-click'
-import { useSwipeGesture } from '../../composables/use-swipe-gesture'
 
 defineOptions({
   name: 'PSwipeCell',
@@ -26,7 +25,6 @@ const props = withDefaults(defineProps<SwipeCellProps>(), {
   modelValue: false,
   threshold: 0.5,
   overSwipeThreshold: 1.5,
-  limitSwipe: true,
   closeOnOverSwipe: false,
   closeOnClick: true,
 })
@@ -44,10 +42,16 @@ const openedSide = shallowRef<SwipeCellSide | false>(props.modelValue)
 const prefixWidth = shallowRef(0)
 const suffixWidth = shallowRef(0)
 
-let startOffset = 0
-let startSide: SwipeCellSide | false = false
-let gestureOffset = 0
-let shouldIgnoreClick = false
+let pointerState: {
+  id: number
+  startX: number
+  startY: number
+  startOffset: number
+  startSide: SwipeCellSide | false
+  axis: 'pending' | 'accepted' | 'rejected'
+  moved: boolean
+  target: Node
+} | null = null
 
 const hasPrefix = computed(() => prefixWidth.value > 0)
 const hasSuffix = computed(() => suffixWidth.value > 0)
@@ -158,10 +162,6 @@ function limitOffset(value: number) {
     return 0
   }
 
-  if (!props.limitSwipe) {
-    return value
-  }
-
   if (value > 0) {
     return Math.min(value, prefixWidth.value)
   }
@@ -186,14 +186,14 @@ function resolveReleaseSide() {
 }
 
 function resolveOverSwipeState(): SwipeCellOverSwipeState | null {
-  const side = resolveSide(gestureOffset)
+  const side = resolveSide(rawOffset.value)
 
   if (!side) {
     return null
   }
 
   const width = getSideWidth(side)
-  const distance = Math.abs(gestureOffset)
+  const distance = Math.abs(rawOffset.value)
 
   if (width === 0 || distance < width * props.overSwipeThreshold) {
     return null
@@ -225,17 +225,10 @@ function close(trigger: SwipeCellCloseTrigger) {
   setOpen(false, trigger)
 }
 
-function onWrapperClick(ev: MouseEvent) {
-  if (shouldIgnoreClick) {
-    shouldIgnoreClick = false
-    return
-  }
-
+function closeByTarget(target: Node) {
   if (!currentSide.value) {
     return
   }
-
-  const target = ev.target as Node
 
   if (prefixRef.value?.contains(target)) {
     close('left')
@@ -252,50 +245,158 @@ function onWrapperClick(ev: MouseEvent) {
   }
 }
 
+function onWrapperClick(ev: MouseEvent) {
+  if (ev.detail !== 0) {
+    return
+  }
+
+  closeByTarget(ev.target as Node)
+}
+
+function bindPointerEvents() {
+  window.addEventListener('pointermove', onPointerMove as EventListener)
+  window.addEventListener('pointerup', onPointerUp as EventListener)
+  window.addEventListener('pointercancel', onPointerCancel as EventListener)
+}
+
+function unbindPointerEvents() {
+  window.removeEventListener('pointermove', onPointerMove as EventListener)
+  window.removeEventListener('pointerup', onPointerUp as EventListener)
+  window.removeEventListener('pointercancel', onPointerCancel as EventListener)
+}
+
+function resetPointerState() {
+  unbindPointerEvents()
+  pointerState = null
+  dragging.value = false
+}
+
+function resolveAxisState(dx: number, dy: number) {
+  if (Math.hypot(dx, dy) < 10) {
+    return 'pending'
+  }
+
+  return Math.abs(dx) >= Math.abs(dy) ? 'accepted' : 'rejected'
+}
+
+function onPointerDown(ev: PointerEvent) {
+  if (props.disabled || !ev.isPrimary || ev.button !== 0) {
+    return
+  }
+
+  const target = ev.target
+
+  if (!(target instanceof Node)) {
+    return
+  }
+
+  updateSlotWidth()
+  pointerState = {
+    id: ev.pointerId,
+    startX: ev.clientX,
+    startY: ev.clientY,
+    startOffset: offset.value,
+    startSide: currentSide.value,
+    axis: 'pending',
+    moved: false,
+    target,
+  }
+  rawOffset.value = offset.value
+
+  wrapperRef.value?.setPointerCapture?.(ev.pointerId)
+  bindPointerEvents()
+}
+
+function onPointerMove(ev: PointerEvent) {
+  const state = pointerState
+
+  if (!state || ev.pointerId !== state.id) {
+    return
+  }
+
+  const dx = ev.clientX - state.startX
+  const dy = ev.clientY - state.startY
+
+  if (state.axis === 'pending') {
+    state.axis = resolveAxisState(dx, dy)
+  }
+
+  if (state.axis === 'pending') {
+    return
+  }
+
+  state.moved = true
+
+  if (state.axis === 'rejected') {
+    return
+  }
+
+  dragging.value = true
+  rawOffset.value = state.startOffset + dx
+  offset.value = limitOffset(rawOffset.value)
+}
+
+async function releaseSwipe() {
+  const state = pointerState
+
+  if (!state) {
+    return
+  }
+
+  const overSwipeState = resolveOverSwipeState()
+
+  dragging.value = false
+
+  if (overSwipeState) {
+    emits('over-swipe', overSwipeState)
+
+    if (props.closeOnOverSwipe) {
+      await setOpen(false, overSwipeState.side === 'prefix' ? 'left' : 'right')
+      return
+    }
+  }
+
+  if (state.startSide && resolveSide(rawOffset.value) !== state.startSide) {
+    await setOpen(false, state.startSide === 'prefix' ? 'left' : 'right')
+    return
+  }
+
+  await setOpen(resolveReleaseSide())
+}
+
+function onPointerUp(ev: PointerEvent) {
+  const state = pointerState
+
+  if (!state || ev.pointerId !== state.id) {
+    return
+  }
+
+  if (state.axis === 'accepted') {
+    void releaseSwipe()
+  } else if (!state.moved) {
+    closeByTarget(state.target)
+  }
+
+  wrapperRef.value?.releasePointerCapture?.(ev.pointerId)
+  resetPointerState()
+}
+
+function onPointerCancel(ev: PointerEvent) {
+  const state = pointerState
+
+  if (!state || ev.pointerId !== state.id) {
+    return
+  }
+
+  syncOpenOffset()
+  wrapperRef.value?.releasePointerCapture?.(ev.pointerId)
+  resetPointerState()
+}
+
 useOutsideClick(wrapperRef, {
   isEnabled: () => Boolean(openedSide.value),
   onTrigger: () => {
     close('outside')
-  },
-})
-
-useSwipeGesture(wrapperRef, {
-  disabled: () => props.disabled,
-  axis: 'horizontal',
-  onPress: () => {
-    updateSlotWidth()
-    dragging.value = true
-    startOffset = offset.value
-    startSide = currentSide.value
-    gestureOffset = 0
-    rawOffset.value = offset.value
-  },
-  onFollow: ({ displacement }) => {
-    gestureOffset = startOffset + displacement
-    rawOffset.value = gestureOffset
-    offset.value = limitOffset(gestureOffset)
-  },
-  onRelease: async () => {
-    const overSwipeState = resolveOverSwipeState()
-
-    dragging.value = false
-    shouldIgnoreClick = Math.abs(gestureOffset - startOffset) > 2
-
-    if (overSwipeState) {
-      emits('over-swipe', overSwipeState)
-
-      if (props.closeOnOverSwipe) {
-        await setOpen(false, overSwipeState.side === 'prefix' ? 'left' : 'right')
-        return
-      }
-    }
-
-    if (startSide && resolveSide(gestureOffset) !== startSide) {
-      await setOpen(false, startSide === 'prefix' ? 'left' : 'right')
-      return
-    }
-
-    await setOpen(resolveReleaseSide())
   },
 })
 
@@ -318,6 +419,10 @@ onMounted(() => {
     syncOpenOffset()
   }
 })
+
+onScopeDispose(() => {
+  resetPointerState()
+})
 </script>
 
 <template>
@@ -331,6 +436,7 @@ onMounted(() => {
       class="pxd-swipe-cell--wrapper relative motion-safe:transition-transform"
       :class="{ 'transition-none! select-none': dragging }"
       :style="wrapperStyle"
+      @pointerdown="onPointerDown"
       @click="onWrapperClick"
     >
       <div

@@ -26,7 +26,6 @@ export interface SwipeCellProps {
   modelValue?: SwipeCellSide | false
   threshold?: number
   overSwipeThreshold?: number
-  limitSwipe?: boolean
   closeOnOverSwipe?: boolean
   closeOnClick?: boolean
   beforeClose?: SwipeCellBeforeClose

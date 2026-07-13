@@ -49,6 +49,7 @@ describe('swipe-cell', () => {
   })
 
   afterEach(() => {
+    vi.useRealTimers()
     vi.restoreAllMocks()
   })
 
@@ -119,31 +120,6 @@ describe('swipe-cell', () => {
 
     expect(wrapper.find('.pxd-swipe-cell--wrapper').attributes('style')).toContain(
       'translate3d(-80px, 0, 0)',
-    )
-
-    wrapper.unmount()
-  })
-
-  it('should allow sliding beyond slot width when limitSwipe is disabled', async () => {
-    prefixWidth = 100
-    const wrapper = mount(SwipeCell, {
-      props: {
-        limitSwipe: false,
-      },
-      slots: {
-        default: 'Content',
-        prefix: '<button>Done</button>',
-      },
-    })
-    await nextTick()
-    await nextTick()
-
-    swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
-    window.dispatchEvent(pointer('pointermove', 180))
-    await nextTick()
-
-    expect(wrapper.find('.pxd-swipe-cell--wrapper').attributes('style')).toContain(
-      'translate3d(180px, 0, 0)',
     )
 
     wrapper.unmount()
@@ -333,6 +309,42 @@ describe('swipe-cell', () => {
     await wrapper.find('.pxd-swipe-cell--suffix').trigger('click')
 
     expect(wrapper.emitted('close')).toHaveLength(2)
+    expect(wrapper.find('.pxd-swipe-cell--wrapper').attributes('style')).toContain(
+      'translate3d(0px, 0, 0)',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('should ignore synthetic click after swipe release and close on next tap', async () => {
+    prefixWidth = 100
+    const wrapper = mount(SwipeCell, {
+      slots: {
+        default: 'Content',
+        prefix: '<button>Done</button>',
+      },
+    })
+    await nextTick()
+    await nextTick()
+
+    swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
+    window.dispatchEvent(pointer('pointermove', 60))
+    window.dispatchEvent(pointer('pointerup', 60))
+    await nextTick()
+
+    expect(wrapper.emitted('open')).toEqual([['prefix']])
+
+    wrapper
+      .find('.pxd-swipe-cell--content')
+      .element.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }))
+    await nextTick()
+    expect(wrapper.emitted('close')).toBeUndefined()
+
+    wrapper.find('.pxd-swipe-cell--content').element.dispatchEvent(pointer('pointerdown', 0))
+    window.dispatchEvent(pointer('pointerup', 0))
+    await nextTick()
+
+    expect(wrapper.emitted('close')).toHaveLength(1)
     expect(wrapper.find('.pxd-swipe-cell--wrapper').attributes('style')).toContain(
       'translate3d(0px, 0, 0)',
     )
