@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 const emits = defineEmits<ToggleButtonEmits>()
 
 const { attrs, classes: toggleButtonClasses } = useTailwindVariant({
-  base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border bg-background-100 outline-none group-data-[gap=0]/toggle-button-group:not-first:-ml-px group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none data-[state=off]:enabled:hover:z-1 data-[state=on]:z-1 motion-safe:transition-colors [&_svg]:pointer-events-none',
+  base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none motion-safe:transition-colors',
   variants: {
     size: {
       xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
@@ -33,20 +33,18 @@ const { attrs, classes: toggleButtonClasses } = useTailwindVariant({
       lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
     },
     variant: {
-      ghost: 'border-transparent',
+      outline: 'border-gray-400 bg-background-100',
+      ghost: 'border-transparent bg-transparent',
     },
-    disabled: {
-      true: 'cursor-not-allowed',
-      false: 'hover:bg-background-hover data-[state=on]:bg-gray-300',
-    },
+    disabled: {},
     checked: {},
   },
   compoundVariants: [
+    { checked: true, disabled: false, class: 'bg-gray-300' },
     { checked: true, disabled: true, class: 'bg-gray-200' },
-    { checked: false, disabled: true, class: 'text-gray-400' },
-    { checked: false, disabled: false, class: 'hover:text-gray-900' },
-    { variant: 'outline', checked: false, disabled: true, class: 'border-gray-400' },
-    { variant: 'outline', checked: true, disabled: true, class: 'border-gray-500 bg-gray-100' },
+    { checked: false, disabled: true, class: 'cursor-not-allowed text-gray-400' },
+    { checked: false, disabled: false, class: 'hover:bg-background-hover hover:text-gray-900' },
+    { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100' },
   ],
 })
 
@@ -109,7 +107,7 @@ function onToggleClick() {
     :disabled="isDisabled"
     :class="computedClasses"
     v-bind="attrs"
-    @click="onToggleClick"
+    @click.stop="onToggleClick"
   >
     <slot>
       {{ label }}

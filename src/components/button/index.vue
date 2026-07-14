@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const { attrs, classes: buttonClasses } = useTailwindVariant({
-  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]_&]:-ml-px [[data-button-group]_&]:not-first:rounded-l-none [[data-button-group]_&]:not-last:rounded-r-none [[data-button-group]_&]:enabled:hover:z-1',
+  base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]_&]:not-first:rounded-l-none [[data-button-group]_&]:not-first:border-l-0 [[data-button-group]_&]:not-last:rounded-r-none',
   variants: {
     size: {
       xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
