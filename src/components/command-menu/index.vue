@@ -64,6 +64,11 @@ function onListItemSelect(item: ListOptionSelected, ev: MouseEvent) {
   }
 }
 
+function onInputKeyword(event: Event) {
+  const input = event.target as HTMLInputElement
+  filterKeyword.value = input.value.replaceAll('\'', '')
+}
+
 provideListFilterContext(filterContext)
 </script>
 
@@ -88,7 +93,7 @@ provideListFilterContext(filterContext)
       >
         <input
           :id="uniqueId"
-          v-model="filterKeyword"
+          :value="filterKeyword"
           :placeholder="placeholder"
           aria-autocomplete="list"
           :aria-controls="uniqueId"
@@ -101,6 +106,7 @@ provideListFilterContext(filterContext)
           type="text"
           name="command-menu-filter-input"
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
+          @input="onInputKeyword"
         />
 
         <button
