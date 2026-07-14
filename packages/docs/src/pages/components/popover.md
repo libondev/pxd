@@ -267,9 +267,7 @@ const toggleButtonOptions = [
 
 <template>
   <PStack direction="vertical" align="start" class="w-full gap-3">
-    <label class="flex items-center gap-2 text-sm">
-      <PToggleButtonGroup v-model="trigger" size="sm" variant="outline" :multiple="false" :options="toggleButtonOptions" />
-    </label>
+    <PToggleButtonGroup v-model="trigger" size="sm" variant="outline" :multiple="false" :options="toggleButtonOptions" />
 
     <PPopover
       align-point

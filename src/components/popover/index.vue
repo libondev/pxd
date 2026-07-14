@@ -46,6 +46,7 @@ const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const activeTriggerRef = shallowRef<HTMLElement | null>(null)
 const activeTriggerIndex = shallowRef(-1)
+const hasMultipleTriggers = shallowRef(false)
 const pointerPosition = shallowRef<{ x: number; y: number } | null>(null)
 const localPosition = shallowRef(props.position)
 const pointReference: VirtualElement = {
@@ -152,6 +153,8 @@ function getTriggerElements() {
     triggerElementsCache = Array.from(
       triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector),
     )
+
+    hasMultipleTriggers.value = triggerElementsCache.length > 0
   }
 
   return triggerElementsCache
@@ -159,6 +162,7 @@ function getTriggerElements() {
 
 function clearTriggerElementsCache() {
   triggerElementsCache = null
+  hasMultipleTriggers.value = false
 }
 
 function resolveTriggerElement(target: EventTarget | null) {
@@ -593,9 +597,10 @@ defineExpose({
         :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
+        :data-multiple-triggers="hasMultipleTriggers"
         :class="wrapperClass"
         :style="wrapperStyle"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[multiple-triggers=true]:transition-[left,top] data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"
