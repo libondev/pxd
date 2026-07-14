@@ -45,7 +45,7 @@ function handleClose() {
 
 ## Loading
 
-When `pending=true` is set, drawer cannot be closed temporarily.
+When `loading=true` is set, drawer cannot be closed temporarily.
 
 ```vue demo
 <script setup>
@@ -81,7 +81,7 @@ function handleClose() {
     @outside-click="handleClose"
   >
     <template #footer>
-      <PButton block :loading="isLoading" @click="handleClose"> Cancel </PButton>
+      <PButton full-width @click="handleClose"> Cancel </PButton>
     </template>
   </PDrawer>
 </template>
@@ -146,7 +146,7 @@ const isVisible = ref(false)
     <PText>This drawer slides in from the top.</PText>
 
     <template #footer>
-      <PButton block @click="isVisible = false"> Close Drawer </PButton>
+      <PButton full-width @click="isVisible = false"> Close Drawer </PButton>
     </template>
   </PDrawer>
 </template>
@@ -176,7 +176,7 @@ const fullVisible = ref(false)
     <PText>This is a small drawer with 240px width.</PText>
 
     <template #footer>
-      <PButton block @click="smallVisible = false">Close</PButton>
+      <PButton full-width @click="smallVisible = false">Close</PButton>
     </template>
   </PDrawer>
 
@@ -185,7 +185,7 @@ const fullVisible = ref(false)
     <PText class="mt-4">More content can fit in this larger drawer.</PText>
 
     <template #footer>
-      <PButton block @click="largeVisible = false">Close</PButton>
+      <PButton full-width @click="largeVisible = false">Close</PButton>
     </template>
   </PDrawer>
 
@@ -193,7 +193,7 @@ const fullVisible = ref(false)
     <PText>This drawer takes the full width of the viewport.</PText>
 
     <template #footer>
-      <PButton block @click="fullVisible = false">Close</PButton>
+      <PButton full-width @click="fullVisible = false">Close</PButton>
     </template>
   </PDrawer>
 </template>
@@ -222,7 +222,7 @@ const isVisible = ref(false)
     <PText>This drawer will only close when you use the footer buttons.</PText>
 
     <template #footer>
-      <PButton block @click="isVisible = false"> Close Drawer </PButton>
+      <PButton full-width @click="isVisible = false"> Close Drawer </PButton>
     </template>
   </PDrawer>
 </template>
@@ -344,7 +344,7 @@ function openMenu() {
     </nav>
 
     <template #footer>
-      <PButton block @click="isVisible = false"> Close Menu </PButton>
+      <PButton full-width @click="isVisible = false"> Close Menu </PButton>
     </template>
   </PDrawer>
 </template>
@@ -373,7 +373,7 @@ const isVisible = ref(false)
     <PText class="mt-4">This gives you complete control over the drawer's appearance.</PText>
 
     <template #footer>
-      <PButton block @click="isVisible = false"> Close </PButton>
+      <PButton full-width @click="isVisible = false"> Close </PButton>
     </template>
   </PDrawer>
 </template>
@@ -411,7 +411,7 @@ const longContent = Array.from(
     </div>
 
     <template #footer>
-      <PButton block @click="isVisible = false"> Close </PButton>
+      <PButton full-width @click="isVisible = false"> Close </PButton>
     </template>
   </PDrawer>
 </template>
@@ -445,7 +445,7 @@ const secondDrawer = ref(false)
     </PButton>
 
     <template #footer>
-      <PButton block @click="firstDrawer = false"> Close First </PButton>
+      <PButton full-width @click="firstDrawer = false"> Close First </PButton>
     </template>
   </PDrawer>
 
@@ -462,7 +462,7 @@ const secondDrawer = ref(false)
     >
 
     <template #footer>
-      <PButton block @click="secondDrawer = false"> Close Second </PButton>
+      <PButton full-width @click="secondDrawer = false"> Close Second </PButton>
     </template>
   </PDrawer>
 </template>
@@ -492,7 +492,7 @@ function handleClose() {
     <PText>Press the escape key to close this drawer.</PText>
 
     <template #footer>
-      <PButton block @click="handleClose"> Close </PButton>
+      <PButton full-width @click="handleClose"> Close </PButton>
     </template>
   </PDrawer>
 </template>
@@ -509,6 +509,7 @@ function handleClose() {
 | loading | `boolean` | - | - |
 | position | `BasePosition` | `right` | - |
 | model-value | `boolean` | `false` | - |
+| loading-text | `string` | `'Loading...'` | - |
 | append-to-body | `boolean` | `true` | - |
 | wrapper-class | `string \| any[] \| object` | - | - |
 | content-class | `string \| any[] \| object` | - | - |

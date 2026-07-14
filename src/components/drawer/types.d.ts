@@ -8,6 +8,7 @@ export interface DrawerProps {
   loading?: boolean
   position?: BasePosition
   modelValue?: boolean
+  loadingText?: string
   appendToBody?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass

@@ -4,6 +4,7 @@ import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import PLoadingMask from '../_internal/loading-mask.vue'
 import POverlay from '../overlay/index.vue'
 
 defineOptions({
@@ -144,6 +145,8 @@ watch(
         >
           <slot name="footer" />
         </footer>
+
+        <PLoadingMask v-if="loading" :text="loadingText" />
       </div>
     </Transition>
   </POverlay>

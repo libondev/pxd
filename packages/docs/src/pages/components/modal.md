@@ -41,7 +41,7 @@ function handleClose() {
 
 ## Loading
 
-When `pending=true` is set, modal cannot be closed temporarily.
+When `loading=true` is set, modal cannot be closed temporarily.
 
 ```vue demo
 <script setup>
@@ -77,7 +77,7 @@ function handleClose() {
     <PText>Content of the modal.</PText>
 
     <template #footer>
-      <PButton block :loading="isLoading" @click="handleClose"> Close (after two seconds) </PButton>
+      <PButton full-width @click="handleClose"> Close (after two seconds) </PButton>
     </template>
   </PModal>
 </template>
@@ -214,7 +214,7 @@ function handleClose() {
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
-      <PButton block @click="handleClose"> Cancel </PButton>
+      <PButton full-width @click="handleClose"> Cancel </PButton>
     </template>
   </PModal>
 </template>
@@ -244,7 +244,7 @@ function handleClose() {
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
-      <PButton block @click="handleClose"> Cancel </PButton>
+      <PButton full-width @click="handleClose"> Cancel </PButton>
     </template>
   </PModal>
 </template>
@@ -260,6 +260,7 @@ function handleClose() {
 | width | `string \| number` | - | - |
 | loading | `boolean` | - | - |
 | model-value | `boolean` | `false` | - |
+| loading-text | `string` | `'Loading...'` | - |
 | append-to-body | `boolean` | `true` | - |
 | wrapper-class | `string \| any[] \| object` | - | - |
 | content-class | `string \| any[] \| object` | - | - |

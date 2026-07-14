@@ -7,12 +7,10 @@ export interface ModalProps {
   width?: string | number
   loading?: boolean
   modelValue?: boolean
+  loadingText?: string
   appendToBody?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  /**
-   * Whether to automatically focus on the first or specified element.
-   */
   autoFocusElement?: string | boolean
   defaultHeaderStyle?: boolean
   defaultFooterStyle?: boolean
