@@ -41,8 +41,8 @@ Display a checkerboard pattern background, commonly used to indicate transparenc
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `string \| number` | `20` | Size of each checkerboard cell |
-| primary-color | `string` | `var(--color-background-200)` | Primary (lighter) color |
-| background-color | `string` | `var(--color-background-100)` | Background (darker) color |
+| primary-color | `string` | `var(--color-gray-200)` | Primary (darker) color |
+| background-color | `string` | `var(--color-background-100)` | Background (lighter) color |
 
 ## Slots
 
