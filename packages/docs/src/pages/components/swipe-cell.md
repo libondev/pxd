@@ -9,12 +9,12 @@ Configure the `suffix` slot to enable left swipe.
 ```vue demo
 <template>
   <PSwipeCell class="border">
-    <div class="h-12 px-3 flex items-center bg-background">
+    <div class="h-10 px-3 flex items-center bg-background text-sm">
       Swipe left to show actions
     </div>
 
     <template #suffix>
-      <button class="h-full px-4 bg-red-900 text-white">
+      <button class="h-full px-4 bg-red-900 text-sm text-white">
         Delete
       </button>
     </template>
@@ -29,18 +29,18 @@ The cell only allows swiping toward the side that has a configured slot.
 ```vue demo
 <template>
   <PSwipeCell class="border">
-    <div class="h-12 px-3 flex items-center bg-background">
+    <div class="h-10 px-3 flex items-center bg-background text-sm">
       Swipe right to complete, swipe left to delete
     </div>
 
     <template #prefix>
-      <button class="h-full px-4 bg-green-900 text-white">
+      <button class="h-full px-4 bg-green-900 text-sm text-white">
         Done
       </button>
     </template>
 
     <template #suffix>
-      <button class="h-full px-4 bg-red-900 text-white">
+      <button class="h-full px-4 bg-red-900 text-sm text-white">
         Delete
       </button>
     </template>
@@ -62,18 +62,18 @@ const open = ref(false)
 <template>
   <PStack direction="vertical">
     <PSwipeCell v-model="open" class="border">
-      <div class="h-12 px-3 flex items-center bg-background">
+      <div class="h-10 px-3 flex items-center bg-background text-sm">
         Current open side: {{ open || 'closed' }}
       </div>
 
       <template #prefix>
-        <button class="h-full px-4 bg-green-900 text-white">
+        <button class="h-full px-4 bg-green-900 text-sm text-white">
           Done
         </button>
       </template>
 
       <template #suffix>
-        <button class="h-full px-4 bg-red-900 text-white">
+        <button class="h-full px-4 bg-red-900 text-sm text-white">
           Delete
         </button>
       </template>
@@ -97,7 +97,7 @@ Use `over-swipe-threshold` and the `over-swipe` event to trigger a default actio
 import { ref } from 'vue'
 import { useMessage } from 'pxd'
 
-const message = ref('Swipe far enough to trigger over-swipe')
+const message = ref('Over-swipe')
 
 function onOverSwipe(event) {
   console.log('Over swipe event:', event)
@@ -113,23 +113,23 @@ function onOverSwipe(event) {
       close-on-over-swipe
       @over-swipe="onOverSwipe"
     >
-      <div class="h-12 px-3 flex items-center bg-background">
+      <div class="h-10 px-3 flex items-center bg-background text-sm">
         {{ message }}
       </div>
 
       <template #prefix="{ overSwipe }">
         <div class="relative flex h-full">
           <div class="flex h-full">
-            <button class="h-full px-4 bg-green-800 text-white">
+            <button class="h-full px-4 bg-green-800 text-sm text-white">
               Done
             </button>
-            <button class="h-full px-4 bg-blue-800 text-white">
+            <button class="h-full px-4 bg-blue-800 text-sm text-white">
               Later
             </button>
           </div>
 
           <div
-            class="inset-0 absolute flex h-full items-center bg-green-900 px-4 text-white transition-opacity"
+            class="inset-0 absolute flex h-full items-center bg-green-900 px-4 text-sm text-white transition-opacity"
             :class="overSwipe ? 'opacity-100' : 'pointer-events-none opacity-0'"
           >
             Done
@@ -140,16 +140,16 @@ function onOverSwipe(event) {
       <template #suffix="{ overSwipe }">
         <div class="relative flex h-full">
           <div class="flex h-full">
-            <button class="h-full px-4 bg-amber-800 text-white">
+            <button class="h-full px-4 bg-amber-800 text-sm text-white">
               Mark
             </button>
-            <button class="h-full px-4 bg-red-800 text-white">
+            <button class="h-full px-4 bg-red-800 text-sm text-white">
               Delete
             </button>
           </div>
 
           <div
-            class="inset-0 absolute flex h-full items-center justify-end bg-red-900 px-4 text-white transition-opacity"
+            class="inset-0 absolute flex h-full items-center justify-end bg-red-900 px-4 text-sm text-white transition-opacity"
             :class="overSwipe ? 'opacity-100' : 'pointer-events-none opacity-0'"
           >
             Delete
@@ -183,12 +183,12 @@ async function beforeClose() {
       model-value="suffix"
       :before-close="beforeClose"
     >
-      <div class="h-12 px-3 flex items-center bg-background">
+      <div class="h-10 px-3 flex items-center bg-background text-sm">
         Turn off locked before closing
       </div>
 
       <template #suffix>
-        <button class="h-full px-4 bg-red-900 text-white">
+        <button class="h-full px-4 bg-red-900 text-sm text-white">
           Delete
         </button>
       </template>
