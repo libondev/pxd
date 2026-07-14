@@ -8,7 +8,7 @@ import type {
   SwipeCellCloseTrigger,
 } from './types'
 import type { CSSProperties } from 'vue'
-import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
+import { computed, onMounted, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useOutsideClick } from '../../composables/use-outside-click'
 
 defineOptions({
@@ -394,6 +394,8 @@ function onPointerCancel(ev: PointerEvent) {
 }
 
 useOutsideClick(wrapperRef, {
+  eventName: 'pointerdown',
+  listenerOptions: { capture: true },
   isEnabled: () => Boolean(openedSide.value),
   onTrigger: () => {
     close('outside')
@@ -420,7 +422,7 @@ onMounted(() => {
   }
 })
 
-onScopeDispose(() => {
+onBeforeUnmount(() => {
   resetPointerState()
 })
 </script>

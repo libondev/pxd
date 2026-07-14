@@ -282,6 +282,37 @@ describe('swipe-cell', () => {
     wrapper.unmount()
   })
 
+  it('should not let outside click close an external controller update in the same event', async () => {
+    prefixWidth = 64
+    suffixWidth = 80
+    const wrapper = mount({
+      components: { SwipeCell },
+      data: () => ({ open: 'prefix' as 'prefix' | 'suffix' | false }),
+      template: `
+        <div>
+          <SwipeCell v-model="open">
+            <div>Content</div>
+            <template #prefix><button>Done</button></template>
+            <template #suffix><button>Delete</button></template>
+          </SwipeCell>
+          <button class="open-suffix" @click="open = 'suffix'">Open suffix</button>
+        </div>
+      `,
+    }, { attachTo: document.body })
+    await nextTick()
+    await nextTick()
+
+    await wrapper.find('.open-suffix').trigger('click')
+    await nextTick()
+
+    expect(wrapper.vm.open).toBe('suffix')
+    expect(wrapper.find('.pxd-swipe-cell--wrapper').attributes('style')).toContain(
+      'translate3d(-80px, 0, 0)',
+    )
+
+    wrapper.unmount()
+  })
+
   it('should close when clicking prefix or suffix action area', async () => {
     prefixWidth = 100
     suffixWidth = 80
@@ -367,7 +398,7 @@ describe('swipe-cell', () => {
     await nextTick()
     await nextTick()
 
-    document.body.dispatchEvent(new Event('click', { bubbles: true }))
+    document.body.dispatchEvent(pointer('pointerdown', 0))
     await nextTick()
 
     expect(wrapper.emitted('close')).toHaveLength(1)
@@ -399,7 +430,7 @@ describe('swipe-cell', () => {
     await flushPromises()
     expect(beforeClose).toHaveBeenLastCalledWith('content')
 
-    document.body.dispatchEvent(new Event('click', { bubbles: true }))
+    document.body.dispatchEvent(pointer('pointerdown', 0))
     await flushPromises()
     expect(beforeClose).toHaveBeenLastCalledWith('outside')
 

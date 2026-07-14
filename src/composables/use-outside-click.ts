@@ -3,17 +3,22 @@ import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event'
 import { toValue } from '../utils/helper'
 
-interface Options {
+interface Options<E extends Event = PointerEvent> {
   allowList?: MaybeElementRef<HTMLElement>[]
-  isEnabled?: (ev: PointerEvent) => boolean
-  onTrigger?: (ev: PointerEvent) => void
+  eventName?: string
+  listenerOptions?: AddEventListenerOptions
+  isEnabled?: (ev: E) => boolean
+  onTrigger?: (ev: E) => void
 }
 
-export function useOutsideClick(container: MaybeElementRef<HTMLElement>, options: Options = {}) {
-  function onClick(ev: PointerEvent) {
+export function useOutsideClick<E extends Event = PointerEvent>(
+  container: MaybeElementRef<HTMLElement>,
+  options: Options<E> = {},
+) {
+  function onClick(ev: Event) {
     const { isEnabled } = options
 
-    if (typeof isEnabled === 'function' && !isEnabled(ev)) {
+    if (typeof isEnabled === 'function' && !isEnabled(ev as E)) {
       return
     }
 
@@ -27,26 +32,32 @@ export function useOutsideClick(container: MaybeElementRef<HTMLElement>, options
       return
     }
 
-    onTrigger?.(ev)
+    onTrigger?.(ev as E)
   }
 
   const unwatch = watch(
     () => toValue(container),
     (dom, _, onCleanup) => {
+      const event = options.eventName ?? 'click'
+      const listenerOptions = options.listenerOptions
+
       if (dom) {
-        cachedOn(document, 'click', onClick)
+        cachedOn(document, event, onClick, listenerOptions)
       }
 
       onCleanup(() => {
-        cachedOff(document, 'click', onClick)
+        cachedOff(document, event, onClick, listenerOptions)
       })
     },
     { immediate: true },
   )
 
   function stop() {
+    const event = options.eventName ?? 'click'
+    const listenerOptions = options.listenerOptions
+
     unwatch()
-    cachedOff(document, 'click', onClick)
+    cachedOff(document, event, onClick, listenerOptions)
   }
 
   onScopeDispose(() => {

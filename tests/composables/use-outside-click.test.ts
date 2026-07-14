@@ -18,4 +18,21 @@ describe('useOutsideClick', () => {
     expect(typeof stop).toBe('function')
     unmount()
   })
+
+  it('should support custom event and listener options', () => {
+    const container = document.createElement('div')
+    const onTrigger = vi.fn()
+    const { unmount } = useSetupWrapper(() =>
+      useOutsideClick(() => container, {
+        eventName: 'pointerdown',
+        listenerOptions: { capture: true },
+        onTrigger,
+      }),
+    )
+
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+    expect(onTrigger).toHaveBeenCalledTimes(1)
+    unmount()
+  })
 })
