@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { RadialBurstProps } from './types'
 import { computed, type CSSProperties } from 'vue'
+import { getCssUnitValue } from '../../utils/format'
 
 defineOptions({
   name: 'PRadialBurst',
@@ -17,7 +18,7 @@ const wrapperStyle = computed<CSSProperties>(() => {
 
 const containerStyle = computed<CSSProperties>(() => {
   return {
-    'inline-size': props.size,
+    'inline-size': getCssUnitValue(props.size),
     '--radial-burst-color-accent': props.primaryColor,
   }
 })
@@ -25,7 +26,7 @@ const containerStyle = computed<CSSProperties>(() => {
 
 <template>
   <div
-    class="pxd-radial-burst min-h-40 relative flex w-full bg-yellow-300 max-w-full items-center justify-center overflow-hidden"
+    class="pxd-radial-burst min-h-40 bg-yellow-300 relative flex w-full max-w-full items-center justify-center overflow-hidden"
     :style="wrapperStyle"
     v-bind="$attrs"
   >
