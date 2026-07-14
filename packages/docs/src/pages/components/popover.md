@@ -247,6 +247,49 @@ const actions = [
 
 `trigger-selector` matches the final DOM elements inside the default slot. When using it on a Vue component, make sure the component forwards the matching attribute or class to a real DOM element. The `activeTrigger` slot prop is the matched DOM element, not the Vue component instance.
 
+## Align to point
+
+Set `align-point` to position the Popover at the pointer position. With `hover`, the Popover follows the pointer while it is inside the trigger. With `click`, it toggles at the clicked point. With `contextmenu`, each right-click updates the position and a click hides the Popover.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const content = 'The Popover follows the pointer position.'
+const trigger = ref('hover')
+
+const toggleButtonOptions = [
+  { label: 'Hover', value: 'hover' },
+  { label: 'Click', value: 'click' },
+  { label: 'Context Menu', value: 'contextmenu' },
+]
+</script>
+
+<template>
+  <PStack direction="vertical" align="start" class="w-full gap-3">
+    <label class="flex items-center gap-2 text-sm">
+      <PToggleButtonGroup v-model="trigger" size="sm" variant="outline" :multiple="false" :options="toggleButtonOptions" />
+    </label>
+
+    <PPopover
+      align-point
+      :trigger="trigger"
+      class="w-full"
+      :interactive="false"
+      content-class="p-3 bg-background-100 shadow-sm border rounded-md text-sm"
+    >
+      <div class="flex h-48 w-full items-center justify-center rounded-md border border-dashed text-sm">
+        Move, click, or right-click in this area
+      </div>
+
+      <template #content>
+        {{ content }}
+      </template>
+    </PPopover>
+  </PStack>
+</template>
+```
+
 ## Offset
 
 ```vue demo
@@ -310,6 +353,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | offset | `number` | - | - |
 | trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| 'click' \| 'hover' \| 'contextmenu' \| 'manual'[]` | `() => ['hover']` | - |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
+| align-point | `boolean` | - | Align the Popover to the pointer position. |
 | disabled | `boolean` | - | - |
 | adaptive | `boolean` | - | - |
 | max-width | `number \| string` | - | - |

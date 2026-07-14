@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
+import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
@@ -45,7 +46,25 @@ const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const activeTriggerRef = shallowRef<HTMLElement | null>(null)
 const activeTriggerIndex = shallowRef(-1)
+const pointerPosition = shallowRef<{ x: number; y: number } | null>(null)
 const localPosition = shallowRef(props.position)
+const pointReference: VirtualElement = {
+  getBoundingClientRect() {
+    const { x = 0, y = 0 } = pointerPosition.value ?? {}
+
+    return {
+      x,
+      y,
+      top: y,
+      left: x,
+      right: x,
+      bottom: y,
+      width: 0,
+      height: 0,
+      toJSON: () => ({}),
+    }
+  },
+}
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
@@ -186,6 +205,10 @@ function ensureActiveTrigger() {
 }
 
 function getReferenceElement() {
+  if (props.alignPoint && pointerPosition.value) {
+    return pointReference
+  }
+
   ensureActiveTrigger()
 
   return activeTriggerRef.value || triggerRef.value
@@ -342,6 +365,13 @@ function activateTrigger(trigger: HTMLElement, toggleSameTrigger: boolean = true
   handlePopoverShow()
 }
 
+function updatePointerPosition(ev: PointerEvent) {
+  pointerPosition.value = {
+    x: ev.clientX,
+    y: ev.clientY,
+  }
+}
+
 function onTriggerClick(ev: Event) {
   if (props.disabled) {
     return
@@ -356,7 +386,22 @@ function onTriggerClick(ev: Event) {
   emits('trigger-click', ev as PointerEvent)
 
   if (triggerMethods.value.includes('click')) {
+    if (triggerMethods.value.includes('hover') && isVisible.value) {
+      return
+    }
+
+    if (props.alignPoint && !isVisible.value) {
+      updatePointerPosition(ev as PointerEvent)
+    }
+
     activateTrigger(trigger, props.toggleOnTrigger)
+  } else if (
+    props.alignPoint &&
+    isVisible.value &&
+    triggerMethods.value.includes('contextmenu') &&
+    !triggerMethods.value.includes('hover')
+  ) {
+    handlePopoverHide()
   }
 }
 
@@ -368,11 +413,15 @@ function onTriggerPointerOver(ev: PointerEvent) {
   const trigger = resolveTriggerElement(ev.target)
 
   if (trigger) {
+    if (props.alignPoint) {
+      updatePointerPosition(ev)
+    }
+
     activateTrigger(trigger, false)
   }
 }
 
-function onTriggerPointerEnter() {
+function onTriggerPointerEnter(ev: PointerEvent) {
   if (props.triggerSelector) {
     return
   }
@@ -382,7 +431,28 @@ function onTriggerPointerEnter() {
   }
 
   setActiveTrigger(triggerRef.value)
+
+  if (props.alignPoint) {
+    updatePointerPosition(ev)
+  }
+
   handlePopoverShow()
+}
+
+function onTriggerPointerMove(ev: PointerEvent) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
+    return
+  }
+
+  if (!props.alignPoint) {
+    return
+  }
+
+  updatePointerPosition(ev)
+
+  if (isVisible.value) {
+    throttledUpdatePosition()
+  }
 }
 
 function onTriggerPointerLeave() {
@@ -405,6 +475,20 @@ function onTriggerContextmenu(ev: PointerEvent) {
   }
 
   ev.preventDefault()
+
+  if (props.alignPoint) {
+    setActiveTrigger(trigger)
+    updatePointerPosition(ev)
+
+    if (isVisible.value) {
+      throttledUpdatePosition()
+    } else {
+      handlePopoverShow()
+    }
+
+    return
+  }
+
   activateTrigger(trigger)
 }
 
@@ -440,7 +524,7 @@ function onWrapperPointerLeave() {
     return
   }
 
-  if (props.interactive && !triggerMethods.value.includes('hover')) {
+  if (!triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -488,6 +572,7 @@ defineExpose({
     @click="onTriggerClick"
     @pointerenter="onTriggerPointerEnter"
     @pointerover="onTriggerPointerOver"
+    @pointermove="onTriggerPointerMove"
     @pointerleave="onTriggerPointerLeave"
     @contextmenu="onTriggerContextmenu"
   >
@@ -510,7 +595,7 @@ defineExpose({
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-safe:transition-[left,top] motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"

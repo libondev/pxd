@@ -104,6 +104,137 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should position click trigger at the clicked point and toggle visibility', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        alignPoint: true,
+        trigger: 'click',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = wrapper.find('.pxd-popover')
+
+    await trigger.trigger('click', { clientX: 120, clientY: 240 })
+    await flush()
+
+    const firstReference = mocks.computePosition.mock.calls.at(-1)?.[0]
+    expect(firstReference?.getBoundingClientRect()).toMatchObject({
+      x: 120,
+      y: 240,
+    })
+
+    await trigger.trigger('click', { clientX: 160, clientY: 280 })
+    await flush()
+
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should update the point on every contextmenu and hide on click', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        alignPoint: true,
+        trigger: 'contextmenu',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = wrapper.find('button')
+
+    await trigger.trigger('contextmenu', { clientX: 80, clientY: 100 })
+    await flush()
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0].getBoundingClientRect()).toMatchObject({
+      x: 80,
+      y: 100,
+    })
+
+    await trigger.trigger('contextmenu', { clientX: 180, clientY: 200 })
+    await flush()
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0].getBoundingClientRect()).toMatchObject({
+      x: 180,
+      y: 200,
+    })
+    expect(wrapper.emitted('show')).toHaveLength(1)
+
+    await trigger.trigger('click')
+    await flush()
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should follow the pointer while hovering with alignPoint', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        alignPoint: true,
+        trigger: 'hover',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = wrapper.find('.pxd-popover')
+
+    await trigger.trigger('pointerenter', { clientX: 20, clientY: 30 })
+    await flush()
+    await trigger.trigger('pointermove', { clientX: 220, clientY: 330 })
+    await flush()
+
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0].getBoundingClientRect()).toMatchObject({
+      x: 220,
+      y: 330,
+    })
+
+    await trigger.trigger('pointerleave')
+    await flush()
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should not close a hover popover from click or contextmenu', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        alignPoint: true,
+        trigger: ['hover', 'click', 'contextmenu'],
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = wrapper.find('button')
+
+    await trigger.trigger('pointerenter', { clientX: 20, clientY: 30 })
+    await flush()
+    await trigger.trigger('click', { clientX: 40, clientY: 50 })
+    await trigger.trigger('contextmenu', { clientX: 60, clientY: 70 })
+    await flush()
+
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0].getBoundingClientRect()).toMatchObject({
+      x: 60,
+      y: 70,
+    })
+    expect(wrapper.emitted('hide')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('should update content slot props for matched trigger', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
