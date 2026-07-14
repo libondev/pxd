@@ -44,6 +44,10 @@
     "name": "checkbox"
   },
   {
+    "camelized": "Checkerboard",
+    "name": "checkerboard"
+  },
+  {
     "camelized": "Chip",
     "name": "chip"
   },

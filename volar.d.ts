@@ -19,6 +19,7 @@ declare module 'vue' {
     PCarouselItem: (typeof import('pxd/components/carousel-item'))['default']
     PCheckbox: (typeof import('pxd/components/checkbox'))['default']
     PCheckboxGroup: (typeof import('pxd/components/checkbox-group'))['default']
+    PCheckerboard: (typeof import('pxd/components/checkerboard'))['default']
     PChip: (typeof import('pxd/components/chip'))['default']
     PChoicebox: (typeof import('pxd/components/choicebox'))['default']
     PChoiceboxItem: (typeof import('pxd/components/choicebox-item'))['default']
