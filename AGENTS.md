@@ -54,6 +54,22 @@ pxd/
 - **Do NOT** add comments, JSDoc, or README updates unless asked to
 - **Ask first** if requirements are ambiguous rather than guessing and over-building
 
+## Thinking Principles
+
+### First Principles Thinking
+When solving complex problems, fixing bugs, or designing architecture,
+always reason from first principles:
+1. Identify the fundamental facts and constraints
+2. Strip away assumptions and conventions
+3. Re-derive the solution from what is actually true
+4. Validate that the solution addresses the root cause, not symptoms
+
+### Adversarial Review
+After completing a feature, proactively challenge the implementation:
+- Assume the code has bugs — find them
+- Check all edge cases, security vectors, and hidden assumptions
+- Rate issues by severity: Critical / High / Medium / Low
+
 ## Knowledge Base (.agents/)
 
 **Before every task, read `.agents/guides/architecture.md`.**
