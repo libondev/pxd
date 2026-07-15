@@ -1,14 +1,23 @@
+import type { TabsItemProps } from '../../src/components/tabs-item/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { h } from 'vue'
 import TabsItem from '../../src/components/tabs-item/index.vue'
+import Tabs from '../../src/components/tabs/index.vue'
+
+function mountTabsItem(props: TabsItemProps) {
+  return mount(Tabs, {
+    slots: {
+      default: () => h(TabsItem, props),
+    },
+  })
+}
 
 describe('tabs-item', () => {
   it('renders properly', () => {
-    const wrapper = mount(TabsItem, {
-      props: {
-        label: 'Tab 1',
-        value: '1',
-      },
+    const wrapper = mountTabsItem({
+      label: 'Tab 1',
+      value: '1',
     })
 
     expect(wrapper.exists()).toBe(true)
@@ -17,41 +26,35 @@ describe('tabs-item', () => {
   })
 
   it('should accept label prop', () => {
-    const wrapper = mount(TabsItem, {
-      props: {
-        label: 'My Tab',
-        value: '1',
-      },
+    const wrapper = mountTabsItem({
+      label: 'My Tab',
+      value: '1',
     })
 
-    expect(wrapper.props('label')).toBe('My Tab')
+    expect(wrapper.findComponent(TabsItem).props('label')).toBe('My Tab')
 
     wrapper.unmount()
   })
 
   it('should accept value prop', () => {
-    const wrapper = mount(TabsItem, {
-      props: {
-        label: 'Tab',
-        value: 'tab-value',
-      },
+    const wrapper = mountTabsItem({
+      label: 'Tab',
+      value: 'tab-value',
     })
 
-    expect(wrapper.props('value')).toBe('tab-value')
+    expect(wrapper.findComponent(TabsItem).props('value')).toBe('tab-value')
 
     wrapper.unmount()
   })
 
   it('should accept disabled prop', () => {
-    const wrapper = mount(TabsItem, {
-      props: {
-        label: 'Tab',
-        value: '1',
-        disabled: true,
-      },
+    const wrapper = mountTabsItem({
+      label: 'Tab',
+      value: '1',
+      disabled: true,
     })
 
-    expect(wrapper.props('disabled')).toBe(true)
+    expect(wrapper.findComponent(TabsItem).props('disabled')).toBe(true)
 
     wrapper.unmount()
   })

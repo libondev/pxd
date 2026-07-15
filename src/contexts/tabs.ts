@@ -14,6 +14,9 @@ export interface TabsItemState {
 export interface TabsContext {
   props: TabsProps
   emits: EmitFn<TabsEmits>
+  registerItem: (item: TabsItemState) => void
+  unregisterItem: (id: string) => void
+  updateItem: (item: TabsItemState) => void
 }
 
 export const [provideTabsContext, useTabsContext] = createContext<TabsContext>('Tabs')

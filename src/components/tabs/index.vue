@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import type { TabsItemState } from '../../contexts/tabs'
 import type { TabsProps, TabsEmits } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
-import { toArray } from '../../utils/format'
+import { provideTabsContext } from '../../contexts/tabs'
 
 defineOptions({
   name: 'PTabs',
@@ -21,8 +22,8 @@ const emits = defineEmits<TabsEmits>()
 
 const BORDER_WIDTH = 2
 
-const slots = useSlots()
 const modelValue = useModelValue(props, emits)
+const items = shallowRef<TabsItemState[]>([])
 
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
@@ -32,14 +33,28 @@ const canScrollRight = shallowRef(false)
 
 let resizeObserver: ResizeObserver | null = null
 
-const renderSlots = computed(() => {
-  const renders = slots.default?.()
+function registerItem(item: TabsItemState) {
+  items.value = [...items.value, item]
+}
 
-  return toArray(renders)
+function unregisterItem(id: string) {
+  items.value = items.value.filter((item) => item.id !== id)
+}
+
+function updateItem(item: TabsItemState) {
+  items.value = items.value.map((current) => (current.id === item.id ? item : current))
+}
+
+provideTabsContext({
+  props,
+  emits,
+  registerItem,
+  unregisterItem,
+  updateItem,
 })
 
-function isActiveTab(value: string | number) {
-  return modelValue.value === value
+function isActiveTab(item: TabsItemState) {
+  return modelValue.value === item.value
 }
 
 function updateScrollState() {
@@ -130,26 +145,17 @@ function setupScrollObservers() {
   updateScrollState()
 }
 
-function onTabClick(ev: PointerEvent) {
-  const target = ev.currentTarget as HTMLButtonElement
-
-  if (target.disabled) {
+function onTabClick(item: TabsItemState) {
+  if (item.disabled) {
     return
   }
 
-  modelValue.value = target.value
+  modelValue.value = item.value
+  emits('change', item.value)
 }
 
-onMounted(() => {
-  nextTick(setupScrollObservers)
-})
-
-onBeforeUnmount(() => {
-  teardownScrollObservers()
-})
-
 watch(
-  renderSlots,
+  items,
   () => {
     nextTick(() => {
       setupScrollObservers()
@@ -168,10 +174,20 @@ watch(
   },
   { flush: 'post' },
 )
+
+onMounted(() => {
+  nextTick(setupScrollObservers)
+})
+
+onBeforeUnmount(() => {
+  teardownScrollObservers()
+})
 </script>
 
 <template>
   <div class="pxd-tabs" v-bind="$attrs">
+    <slot />
+
     <div
       class="pxd-tabs--header min-w-0 text-sm relative flex items-stretch"
       :data-variant="variant"
@@ -193,23 +209,23 @@ watch(
         @scroll.passive="updateScrollState"
       >
         <div ref="innerNavRef" role="tablist" class="pxd-tabs--nav inline-flex flex-nowrap">
-          <template v-for="(slot, index) in renderSlots" :key="slot.props.value ?? index">
+          <template v-for="item in items" :key="item.id">
             <button
               role="tab"
-              :id="`tab-${slot.props.value}`"
-              :value="slot.props.value"
-              :disabled="slot.props.disabled"
-              :tabindex="isActiveTab(slot.props.value) ? 0 : -1"
-              :aria-controls="`tab-panel-${slot.props.value}`"
-              :aria-selected="isActiveTab(slot.props.value)"
+              :id="`tab-${item.value}`"
+              :value="item.value"
+              :disabled="item.disabled"
+              :tabindex="isActiveTab(item) ? 0 : -1"
+              :aria-controls="`tab-panel-${item.value}`"
+              :aria-selected="isActiveTab(item)"
               class="pxd-tabs--nav-item flex cursor-pointer items-center justify-center self-focus-ring outline-none enabled:hover:text-foreground disabled:cursor-not-allowed disabled:text-foreground-secondary motion-safe:transition-colors"
-              @click="onTabClick"
+              @click="onTabClick(item)"
             >
-              <template v-if="slot.children?.label">
-                <Component :is="slot.children.label" />
+              <template v-if="item.slots.label">
+                <Component :is="item.slots.label" />
               </template>
               <template v-else>
-                {{ slot.props.label }}
+                {{ item.label }}
               </template>
             </button>
           </template>
@@ -229,16 +245,16 @@ watch(
     </div>
 
     <div role="tabpanel" class="pxd-tabs--content">
-      <template v-for="(slot, index) in renderSlots" :key="slot.props.value ?? index">
+      <template v-for="item in items" :key="item.id">
         <div
           class="pxd-tabs--panel"
-          :id="`tab-panel-${slot.props.value}`"
-          :aria-labelledby="`tab-${slot.props.value}`"
+          :id="`tab-panel-${item.value}`"
+          :aria-labelledby="`tab-${item.value}`"
         >
           <KeepAlive v-if="keepAlive">
-            <Component v-if="isActiveTab(slot.props.value)" :is="slot.children?.default" />
+            <Component v-if="isActiveTab(item)" :is="item.slots.default" />
           </KeepAlive>
-          <Component :is="slot.children?.default" v-else-if="isActiveTab(slot.props.value)" />
+          <Component :is="item.slots.default" v-else-if="isActiveTab(item)" />
         </div>
       </template>
     </div>
