@@ -45,6 +45,7 @@ A button to back to top.
 | append-to-body | `boolean` | `true` | - |
 | visible-threshold | `number` | `30` | - |
 | scroll-target | `'top' \| 'bottom'` | `top` | - |
+| scroll-behavior | `'smooth' \| 'instant'` | `smooth` | - |
 
 ## Slots
 

@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<BacktopProps>(), {
   visibleThreshold: 30,
   appendToBody: true,
   scrollTarget: 'top',
+  scrollBehavior: 'smooth',
 })
 
 const emits = defineEmits<BacktopEmits>()
@@ -74,7 +75,7 @@ function onActionClick(ev: PointerEvent) {
   scrollContainer.scrollTo({
     top,
     left: 0,
-    behavior: 'smooth',
+    behavior: props.scrollBehavior,
   })
 }
 
