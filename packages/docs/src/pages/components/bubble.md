@@ -11,6 +11,15 @@ Show the conversation.
 </template>
 ```
 
+## Variant
+
+```vue demo
+<template>
+  <PBubble variant="ghost" role="system">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble variant="ghost" role="user">The Evil Rabbit Jumped over the Fence</PBubble>
+</template>
+```
+
 ## Loading
 
 ```vue demo
@@ -146,6 +155,7 @@ function addMessage() {
 | header | `string` | - | - |
 | avatar | `string` | - | - |
 | loading | `boolean` | - | - |
+| variant | `default` \| `ghost` | `default` | - |
 
 ## Slots
 
