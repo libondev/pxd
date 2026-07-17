@@ -26,7 +26,7 @@ const { attrs, classes: bubbleClasses } = useTailwindVariant({
 
 const { classes: bubbleContentClasses } = useTailwindVariant(
   {
-    base: 'pxd-bubble--content py-2 px-3 overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap',
+    base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap',
     variants: {
       role: {
         user: 'rounded-tr-none bg-primary text-primary-foreground',

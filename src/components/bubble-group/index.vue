@@ -36,8 +36,6 @@ function updateIsAtBottom() {
 }
 
 async function scrollToBottom() {
-  await nextTick()
-
   const el = containerRef.value
 
   if (!el) {
@@ -47,6 +45,8 @@ async function scrollToBottom() {
   if (!isAtBottom.value) {
     return
   }
+
+  await nextTick()
 
   el.scrollTo(0, el.scrollHeight)
 }
