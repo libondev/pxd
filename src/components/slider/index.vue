@@ -327,6 +327,7 @@ onBeforeUnmount(() => {
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
     :class="computedClasses"
+    :data-variant="variant"
     @pointerdown.prevent="onWrapperPointerdown"
   >
     <div class="pxd-slider--track absolute h-full touch-none rounded-full" :style="trackStyle" />

@@ -81,6 +81,10 @@ const isDisabled = computed<boolean>(
     false,
 )
 
+const computedVariant = computed(() => {
+  return props.variant || buttonGroupContext?.props.variant || 'default'
+})
+
 const computedClasses = computed(() => {
   const { size, shape, align, variant, fullWidth, icon } = props
   const internalAlign = icon ? 'center' : align
@@ -90,7 +94,7 @@ const computedClasses = computed(() => {
     size: size || buttonGroupContext?.props.size || configProvider.size,
     shape: buttonGroupContext ? 'default' : shape,
     align: internalAlign || buttonGroupContext?.props.align || 'center',
-    variant: variant || buttonGroupContext?.props.variant || 'default',
+    variant: computedVariant.value,
     fullWidth,
     disabled: isDisabled.value,
   })
@@ -105,6 +109,7 @@ const computedClasses = computed(() => {
     :aria-busy="loading"
     :aria-disabled="isDisabled"
     :class="computedClasses"
+    :data-variant="computedVariant"
     :disabled="isDisabled"
     v-bind="attrs"
   >

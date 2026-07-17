@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pxd-tabs" v-bind="$attrs">
+  <div class="pxd-tabs" :data-variant="variant" v-bind="$attrs">
     <slot />
 
     <div

@@ -72,6 +72,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
     :aria-busy="loading"
     :aria-label="ariaLabel"
     :data-role="role"
+    :data-variant="variant"
     role="article"
     v-bind="attrs"
   >

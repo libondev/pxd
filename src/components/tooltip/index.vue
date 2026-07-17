@@ -66,6 +66,7 @@ const contentClassComputed = computed(() => {
   <PPopover
     role="tooltip"
     class="pxd-tooltip"
+    :data-variant="variant"
     :position="position"
     :disabled="isDisabled"
     :show-arrow="showArrow"

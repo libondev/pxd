@@ -58,6 +58,7 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
     position="bottom-end"
     data-button-group
     class="pxd-split-button items-center"
+    :data-variant="variant"
     triggerSelector="[data-split-button-trigger]"
     :close-on-press-escape="closeOnPressEscape"
     @select="onOptionSelect"

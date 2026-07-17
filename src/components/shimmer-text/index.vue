@@ -101,6 +101,7 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 <template>
   <span
     class="pxd-shimmer-text inline-flex max-w-full bg-transparent bg-clip-text bg-no-repeat motion-reduce:animate-none!"
+    :data-variant="variant"
     :style="shimmerStyle"
     v-bind="$attrs"
   >

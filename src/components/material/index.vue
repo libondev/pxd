@@ -37,7 +37,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <PStack :class="computedClasses" v-bind="attrs">
+  <PStack :class="computedClasses" :data-variant="variant" v-bind="attrs">
     <slot />
   </PStack>
 </template>

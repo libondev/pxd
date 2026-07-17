@@ -42,7 +42,7 @@ const computedActionClasses = computed(() => projectBannerActionClasses({ varian
 </script>
 
 <template>
-  <aside :class="computedClasses" v-bind="attrs">
+  <aside :class="computedClasses" :data-variant="variant" v-bind="attrs">
     <div class="gap-2 px-6 md:justify-center md:flex-row md:items-center flex w-full flex-col">
       <div class="gap-2 flex items-center">
         <div v-if="$slots.icon" aria-hidden="true" class="shrink-0">

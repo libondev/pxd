@@ -98,6 +98,7 @@ const computedProgressBarStyles = computed(() => {
     :aria-valuenow="progress!"
     :aria-valuemin="min"
     :aria-valuemax="max"
+    :data-variant="variant"
     v-bind="$attrs"
   >
     <div :class="computedClasses">

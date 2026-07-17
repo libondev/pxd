@@ -46,7 +46,7 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-chip relative inline-flex shrink-0" v-bind="$attrs">
+  <div class="pxd-chip relative inline-flex shrink-0" :data-variant="variant" v-bind="$attrs">
     <slot />
 
     <span
