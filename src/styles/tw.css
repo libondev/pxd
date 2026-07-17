@@ -620,6 +620,13 @@
   transition-duration: var(--faster-transition-duration) !important;
 }
 
+[data-enter-motion='false'][class*='-enter-active'],
+[data-leave-motion='false'][class*='-leave-active'],
+[data-visible='true'] [data-enter-motion='false'],
+[data-visible='false'] [data-leave-motion='false'] {
+  transition-duration: 0s !important;
+}
+
 /*
 .line-clamp {
   display: -webkit-box;

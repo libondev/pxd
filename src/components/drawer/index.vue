@@ -3,6 +3,7 @@ import type { DrawerEmits, DrawerProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/use-focus-trap'
 import { useModelValue } from '../../composables/use-model-value'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import PLoadingMask from '../_internal/loading-mask.vue'
 import POverlay from '../overlay/index.vue'
@@ -31,6 +32,7 @@ const emits = defineEmits<DrawerEmits>()
 
 const drawerRef = shallowRef<HTMLElement>()
 const isVisible = useModelValue(props, emits)
+const configProvider = useConfigProvider()
 
 const ensurePosition = computed(() => {
   const { position } = props
@@ -123,6 +125,8 @@ watch(
         :class="wrapperClass"
         :style="computedStyle"
         :data-position="ensurePosition"
+        :data-enter-motion="configProvider.enterMotion"
+        :data-leave-motion="configProvider.leaveMotion"
         v-bind="$attrs"
       >
         <header
@@ -168,7 +172,7 @@ watch(
   </POverlay>
 </template>
 
-<style>
+<style lang="postcss">
 .pxd-drawer {
   &[data-position='left'] {
     left: 0;

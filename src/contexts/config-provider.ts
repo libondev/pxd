@@ -11,6 +11,7 @@ export const [provideConfigProvider, useConfigProvider] = createContext<ConfigPr
   {
     size: 'md',
     locale: enUS,
-    popoverShowTransition: true,
+    enterMotion: true,
+    leaveMotion: true,
   },
 )

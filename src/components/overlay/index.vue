@@ -3,6 +3,7 @@ import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useLockScroll } from '../../composables/use-lock-scroll'
 import { useOverlayManager } from '../../composables/use-overlay-manager'
+import { useConfigProvider } from '../../contexts/config-provider'
 import { getElement } from '../../utils/dom'
 import { NOOP } from '../../utils/event'
 import { isServer } from '../../utils/is'
@@ -27,6 +28,8 @@ const props = withDefaults(defineProps<OverlayProps>(), {
 })
 
 const emits = defineEmits<OverlayEmits>()
+
+const configProvider = useConfigProvider()
 
 const clipPath = shallowRef('')
 const computedStyle = computed(() => ({
@@ -141,6 +144,8 @@ onBeforeUnmount(() => {
         role="presentation"
         aria-hidden="true"
         :data-variant="variant"
+        :data-enter-motion="configProvider.enterMotion"
+        :data-leave-motion="configProvider.leaveMotion"
         class="pxd-overlay inset-0 bg-black/60 sm:bg-background-100/80 data-[variant='blurred']:backdrop-blur-sm pointer-events-auto fixed z-(--overlay-index) select-none data-[variant='transparent']:opacity-0 motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"

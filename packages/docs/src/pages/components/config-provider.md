@@ -70,7 +70,8 @@ const locales = {
 | --- | --- | --- | --- |
 | size | `'sm' \| 'md' \| 'lg'` | `md` | - |
 | locale | `Record<string, any>` | `() => enUS` | - |
-| popover-show-transition | `boolean` | `true` | - |
+| enter-motion | `boolean` | `true` | - |
+| leave-motion | `boolean` | `true` | - |
 
 ## Slots
 

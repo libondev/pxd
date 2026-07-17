@@ -608,7 +608,8 @@ defineExpose({
         <div
           class="pxd-popover--container relative z-1 w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
-          :data-show-transition="configProvider.popoverShowTransition"
+          :data-enter-motion="configProvider.enterMotion"
+          :data-leave-motion="configProvider.leaveMotion"
         >
           <div
             class="pxd-popover--content h-full max-h-inherit overflow-auto"
@@ -697,10 +698,6 @@ defineExpose({
   [data-visible='true'] & {
     opacity: 1;
     pointer-events: auto;
-  }
-
-  [data-visible='true'] &[data-show-transition='false'] {
-    transition-duration: 0s !important;
   }
 
   [data-visible='false'] &[data-transition-type='fade-scale'] {
