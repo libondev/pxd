@@ -30,7 +30,7 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 </script>
 
 <template>
-  <PSnippet :text="text" width="300px" />
+  <PSnippet :text="text" class="w-[300px]" />
 </template>
 ```
 
@@ -39,9 +39,9 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PSnippet text="npm install pxd" width="300px" :prompt="false" />
-    <PSnippet text="npm install pxd" width="300px" prompt="# " />
-    <PSnippet text="npm install pxd" width="300px" prompt="\ " />
+    <PSnippet text="npm install pxd" class="w-[300px]" :prompt="false" />
+    <PSnippet text="npm install pxd" class="w-[300px]" prompt="# " />
+    <PSnippet text="npm install pxd" class="w-[300px]" prompt="\ " />
   </PStack>
 </template>
 ```
@@ -51,10 +51,11 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PSnippet text="npm install pxd" width="300px" variant="primary" />
-    <PSnippet text="npm install pxd" width="300px" variant="success" />
-    <PSnippet text="npm install pxd" width="300px" variant="error" />
-    <PSnippet text="npm install pxd" width="300px" variant="warning" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="primary" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="inverted" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="success" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="error" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="warning" />
   </PStack>
 </template>
 ```
@@ -64,7 +65,6 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | text | `string \| string[]` | - | - |
-| width | `string \| number` | - | - |
 | size | `'sm' \| 'md' \| 'lg'` | - | - |
 | prompt | `boolean \| string` | `$ ` | - |
-| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` | - |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` \| `inverted` | - |

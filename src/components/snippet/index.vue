@@ -8,7 +8,7 @@ import { useCopyClick } from '../../composables/use-copy-click'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
-import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format'
+import { isTruthyProp, toArray } from '../../utils/format'
 
 defineOptions({
   name: 'PSnippet',
@@ -31,11 +31,12 @@ const { attrs, classes: snippetClasses } = useTailwindVariant({
       lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
     },
     variant: {
-      default: 'border-gray-alpha-300 bg-gray-100',
+      default: 'border-gray-alpha-300 bg-background-100',
+      inverted: 'border-transparent bg-gray-1000 text-gray-100',
       primary: 'border-gray-alpha-300 bg-primary text-primary-foreground',
-      success: 'border-gray-alpha-300 bg-blue-200 text-blue-900',
-      error: 'border-gray-alpha-300 bg-red-200 text-red-900',
-      warning: 'border-gray-alpha-300 bg-amber-200 text-amber-900',
+      success: 'border-blue-400 bg-blue-200 text-blue-900',
+      error: 'border-red-400 bg-red-200 text-red-900',
+      warning: 'border-amber-400 bg-amber-200 text-amber-900',
     },
     prompt: {
       true: 'pxd-snippet--prompt',
@@ -68,7 +69,7 @@ async function onCopyButtonClick() {
 </script>
 
 <template>
-  <div :class="computedClasses" :style="{ width: getCssUnitValue(props.width) }" v-bind="attrs">
+  <div :class="computedClasses" :data-variant="variant" v-bind="attrs">
     <div class="pxd-snippet--container flex-1">
       <pre
         v-for="(t, i) of computedTextArray"

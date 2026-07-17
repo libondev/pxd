@@ -16,15 +16,15 @@ describe('badge', () => {
     wrapper.unmount()
   })
 
-  it('should variant equal vue', () => {
+  it('should render the vue variant', () => {
     const wrapper = mount(Badge, {
       props: {
         variant: 'vue',
       },
     })
 
-    const classes = wrapper.classes()
-    expect(classes).toContain('vue')
+    expect(wrapper.attributes('data-variant')).toBe('vue')
+    expect(wrapper.classes()).toContain('pxd-badge')
 
     wrapper.unmount()
   })

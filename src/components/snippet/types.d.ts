@@ -2,10 +2,9 @@ import type { ComponentSize, ComponentVariantWithDefault } from '../../types/sha
 
 export interface SnippetProps {
   text: string | string[]
-  width?: string | number
   size?: ComponentSize
   prompt?: boolean | string
-  variant?: ComponentVariantWithDefault
+  variant?: ComponentVariantWithDefault | 'inverted'
 }
 
 export interface SnippetEmits {
