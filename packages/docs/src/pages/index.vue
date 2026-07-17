@@ -112,18 +112,18 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Consistent experience</h3>
+        <h3 class="mb-1.5 font-medium">Vue 2 & 3 compatibility</h3>
 
-        <PText secondary> It can run in 2 and 3 without modifying any syntax. </PText>
+        <PText secondary> Use the same syntax across Vue 2.7+ and Vue 3.2+.</PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Full light and dark support</h3>
+        <h3 class="mb-1.5 font-medium">Light and dark themes</h3>
 
         <PText secondary>
-          Switch themes in the blink of an eye without any effort. See
+          Switch between light and dark themes with ease. See
           <RouterLink to="/components/theme-switcher#premise" class="text-foreground underline"
             >here</RouterLink
           >
@@ -134,40 +134,52 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">On demand Import</h3>
+        <h3 class="mb-1.5 font-medium">On-demand imports</h3>
 
-        <PText secondary> Provide resolver to automatically import only used components. </PText>
+        <PText secondary> Import only the components you use with a resolver.</PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Support for reducing animation</h3>
+        <h3 class="mb-1.5 font-medium">Reduced-motion support</h3>
 
         <PText secondary>
-          Set
+          Respect
           <code class="text-gray-900">prefers-reduced-motion: reduce</code>
-          to disable transitions and animations in components.
+          to automatically reduce transitions and animations.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Extremely customizable</h3>
+        <h3 class="mb-1.5 font-medium">Configurable motion</h3>
 
         <PText secondary>
-          Globally overridable components <span class="font-medium">transition-duration</span> and
-          <span class="font-medium">transition-timing-function</span>.
+          Control enter and leave motion independently with
+          <code class="text-gray-900">enterMotion</code> and
+          <code class="text-gray-900">leaveMotion</code>.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Responsive components</h3>
+        <h3 class="mb-1.5 font-medium">Deep customization</h3>
 
-        <PText secondary> Customized style design on desktop or mobile devices. </PText>
+        <PText secondary>
+          Customize component <span class="font-medium">transition-duration</span> and
+          <span class="font-medium">transition-timing-function</span> globally.
+        </PText>
+      </div>
+
+      <div
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
+      >
+        <h3 class="mb-1.5 font-medium">Responsive by design</h3>
+
+        <PText secondary> Build polished interfaces for desktop and mobile devices.</PText>
       </div>
     </section>
   </main>
