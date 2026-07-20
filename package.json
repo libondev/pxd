@@ -66,10 +66,6 @@
       "types": "./dist/locales/index.d.ts",
       "default": "./dist/locales/index.js"
     },
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "default": "./dist/utils/index.js"
-    },
     "./volar": "./volar.d.ts",
     "./tw.css": "./dist/styles/tw.css",
     "./styles.css": "./dist/styles/styles.css",
