@@ -22,4 +22,17 @@ describe('noise-background', () => {
 
     wrapper.unmount()
   })
+
+  it('should blend noise with the component contents', () => {
+    const wrapper = mount(NoiseBackground, {
+      props: {
+        blendMode: 'soft-light',
+      },
+    })
+
+    expect(wrapper.classes()).toContain('isolate')
+    expect(wrapper.find('svg').attributes('style')).toContain('mix-blend-mode: soft-light')
+
+    wrapper.unmount()
+  })
 })

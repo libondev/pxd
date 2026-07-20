@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NoiseBackgroundProps } from './types'
 import { computed } from 'vue'
-import { getUniqueId } from '../../utils'
+import { getUniqueId } from '../../utils/helper'
 
 defineOptions({
   name: 'PNoiseBackground',
@@ -10,19 +10,21 @@ defineOptions({
 
 const props = withDefaults(defineProps<NoiseBackgroundProps>(), {
   as: 'div',
+  blendMode: 'normal',
   color: 'currentColor',
-  opacity: 0.035,
+  opacity: 0.05,
 })
 
 const filterId = getUniqueId()
 
 const noiseStyle = computed(() => ({
+  mixBlendMode: props.blendMode,
   opacity: props.opacity,
 }))
 </script>
 
 <template>
-  <Component :is="as" class="pxd-noise-background relative" v-bind="$attrs">
+  <Component :is="as" class="pxd-noise-background relative isolate" v-bind="$attrs">
     <slot />
 
     <svg
