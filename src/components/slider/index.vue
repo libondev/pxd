@@ -2,7 +2,7 @@
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { createTailwindVariant, useTailwindVariant } from '../../composables/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { NOOP, throttleByRaf } from '../../utils/event'
@@ -27,40 +27,47 @@ const props = withDefaults(defineProps<SliderProps>(), {
 
 const emits = defineEmits<SliderEmits>()
 
-const { attrs, classes: sliderClasses } = useTailwindVariant({
-  base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+const configProvider = useConfigProvider()
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
+      disabled: {
+        true: 'cursor-not-allowed',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      disabled: props.disabled,
+    }),
+  },
+)
+
+const sliderThumbClasses = createTailwindVariant({
+  base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]',
   variants: {
     size: {
-      sm: 'h-2',
-      md: 'h-2.5',
-      lg: 'h-3.5',
+      sm: 'w-1.5 h-3.5',
+      md: 'w-2 h-4.5',
+      lg: 'w-2.5 h-5',
     },
     disabled: {
-      true: 'cursor-not-allowed',
+      true: 'pointer-events-none',
+    },
+    appearance: {
+      none: 'appearance-none',
+      auto: 'appearance-auto',
     },
   },
 })
-
-const { classes: sliderThumbClasses } = useTailwindVariant(
-  {
-    base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]',
-    variants: {
-      size: {
-        sm: 'w-1.5 h-3.5',
-        md: 'w-2 h-4.5',
-        lg: 'w-2.5 h-5',
-      },
-      disabled: {
-        true: 'pointer-events-none',
-      },
-      appearance: {
-        none: 'appearance-none',
-        auto: 'appearance-auto',
-      },
-    },
-  },
-  { mergeAttrsClass: false },
-)
 
 const VARIANTS = {
   primary: 'var(--color-primary)',
@@ -74,19 +81,11 @@ let isDragging = false
 let sliderRect: DOMRect | null = null
 let lastClientX: number | null = null
 
-const configProvider = useConfigProvider()
-
 const sliderRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits)
 
 const activeThumb = shallowRef<'start' | 'end' | null>()
-const computedClasses = computed(() =>
-  sliderClasses({
-    size: props.size || configProvider.size,
-    disabled: props.disabled,
-  }),
-)
 
 const computedThumbClasses = computed(() => {
   const base = {
@@ -326,7 +325,7 @@ onBeforeUnmount(() => {
     v-bind="attrs"
     ref="sliderRef"
     :role="range ? 'group' : 'slider'"
-    :class="computedClasses"
+    :class="classes"
     :data-variant="variant"
     @pointerdown.prevent="onWrapperPointerdown"
   >

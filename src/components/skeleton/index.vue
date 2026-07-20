@@ -17,22 +17,31 @@ const props = withDefaults(defineProps<SkeletonProps>(), {
   animated: true,
 })
 
-const { attrs, classes: skeletonClasses } = useTailwindVariant({
-  base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
-  variants: {
-    loading: {
-      true: 'loading invisible content-visibility-auto intrinsic-size-auto',
-    },
-    shape: {
-      default: 'rounded-md',
-      square: 'rounded-none',
-      rounded: 'rounded-full',
-    },
-    animated: {
-      true: 'animated after:default-animation-timing-function!',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
+    variants: {
+      loading: {
+        true: 'loading invisible content-visibility-auto intrinsic-size-auto',
+      },
+      shape: {
+        default: 'rounded-md',
+        square: 'rounded-none',
+        rounded: 'rounded-full',
+      },
+      animated: {
+        true: 'animated after:default-animation-timing-function!',
+      },
     },
   },
-})
+  {
+    selection: () => ({
+      shape: props.shape,
+      loading: props.loading,
+      animated: props.animated,
+    }),
+  },
+)
 
 const computedStyle = computed(() => {
   const { width, height, boxHeight } = props
@@ -48,18 +57,10 @@ const computedStyle = computed(() => {
 
   return styles
 })
-
-const computedClasses = computed(() => {
-  return skeletonClasses({
-    shape: props.shape,
-    loading: props.loading,
-    animated: props.animated,
-  })
-})
 </script>
 
 <template>
-  <div :class="computedClasses" :style="computedStyle" v-bind="attrs">
+  <div :class="classes" :style="computedStyle" v-bind="attrs">
     <slot />
   </div>
 </template>

@@ -13,30 +13,31 @@ const props = withDefaults(defineProps<CardProps>(), {
   border: true,
 })
 
-const { attrs, classes: cardClasses } = useTailwindVariant({
-  base: 'pxd-card border bg-background-100',
-  variants: {
-    shape: {
-      default: 'rounded-md',
-      square: 'rounded-none',
-      rounded: 'rounded-xl',
-    },
-    border: {
-      false: 'border-transparent',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-card border bg-background-100',
+    variants: {
+      shape: {
+        default: 'rounded-md',
+        square: 'rounded-none',
+        rounded: 'rounded-xl',
+      },
+      border: {
+        false: 'border-transparent',
+      },
     },
   },
-})
-
-const computedClasses = computed(() => {
-  return cardClasses({
-    shape: props.shape,
-    border: props.border,
-  })
-})
+  {
+    selection: () => ({
+      shape: props.shape,
+      border: props.border,
+    }),
+  },
+)
 </script>
 
 <template>
-  <div :class="computedClasses" v-bind="attrs">
+  <div :class="classes" v-bind="attrs">
     <div v-if="$slots.header" class="pxd-card--header text-trim-both">
       <slot name="header" />
     </div>

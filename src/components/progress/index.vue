@@ -25,20 +25,6 @@ const props = withDefaults(defineProps<ProgressProps>(), {
 
 const emits = defineEmits<ProgressEmits>()
 
-const { classes: progressClasses } = useTailwindVariant(
-  {
-    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
-    variants: {
-      size: {
-        sm: 'h-2',
-        md: 'h-2.5',
-        lg: 'h-3.5',
-      },
-    },
-  },
-  { mergeAttrsClass: false },
-)
-
 const configProvider = useConfigProvider()
 
 const VARIANTS_COLORS = {
@@ -67,9 +53,22 @@ const computedLabel = computed(() => {
   return false
 })
 
-const computedClasses = computed(() => {
-  return progressClasses({ size: props.size || configProvider.size })
-})
+const { classes } = useTailwindVariant(
+  {
+    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
+    },
+  },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({ size: props.size || configProvider.size }),
+  },
+)
 
 const computedColors = computed(() => {
   const { colors, variant } = props
@@ -101,7 +100,7 @@ const computedProgressBarStyles = computed(() => {
     :data-variant="variant"
     v-bind="$attrs"
   >
-    <div :class="computedClasses">
+    <div :class="classes">
       <div
         class="h-full rounded-inherit motion-safe:transition-appearance"
         :style="computedProgressBarStyles"

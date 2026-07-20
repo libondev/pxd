@@ -18,23 +18,6 @@ defineOptions({
 const props = defineProps<RadioProps>()
 const emits = defineEmits<RadioEmits>()
 
-const { classes: radioClasses } = useTailwindVariant(
-  {
-    base: 'pxd-radio--inner size-4 after:content-empty after:size-2 inline-flex items-center justify-center rounded-full border peer-focus-ring after:scale-40 after:rounded-full after:bg-primary after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:transition-colors motion-safe:after:transition-appearance',
-    variants: {
-      checked: {
-        true: 'border-primary bg-background-100',
-        false: 'border-gray-alpha-400 bg-background-100',
-      },
-      disabled: {
-        true: 'border-gray-500 bg-gray-100 group-hover/radio:bg-gray-100 after:bg-gray-500',
-        false: 'group-hover/radio:bg-gray-200',
-      },
-    },
-  },
-  { mergeAttrsClass: false },
-)
-
 const uniqueId = getUniqueId()
 
 const radioGroupContext = useRadioGroupContext()
@@ -49,12 +32,28 @@ const isSelected = computed(() => modelValue.value === props.value)
 
 const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
-const computedClasses = computed(() => {
-  return radioClasses({
-    checked: isSelected.value,
-    disabled: isDisabled.value,
-  })
-})
+const { classes } = useTailwindVariant(
+  {
+    base: 'pxd-radio--inner size-4 after:content-empty after:size-2 inline-flex items-center justify-center rounded-full border peer-focus-ring after:scale-40 after:rounded-full after:bg-primary after:opacity-0 peer-checked:after:scale-100 peer-checked:after:opacity-100 motion-safe:transition-colors motion-safe:after:transition-appearance',
+    variants: {
+      checked: {
+        true: 'border-primary bg-background-100',
+        false: 'border-gray-alpha-400 bg-background-100',
+      },
+      disabled: {
+        true: 'border-gray-500 bg-gray-100 group-hover/radio:bg-gray-100 after:bg-gray-500',
+        false: 'group-hover/radio:bg-gray-200',
+      },
+    },
+  },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      checked: isSelected.value,
+      disabled: isDisabled.value,
+    }),
+  },
+)
 
 function onInputChange() {
   if (isDisabled.value) {
@@ -85,7 +84,7 @@ function onInputChange() {
       @change="onInputChange"
     />
 
-    <span aria-hidden="true" :class="computedClasses" />
+    <span aria-hidden="true" :class="classes" />
 
     <span class="text-sm flex-1 shrink-0 leading-none empty:hidden">
       <slot>

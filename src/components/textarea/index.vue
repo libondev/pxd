@@ -24,27 +24,6 @@ const props = withDefaults(defineProps<TextareaProps>(), {
 
 const emits = defineEmits<TextareaEmits>()
 
-const { attrs, classes: textareaClasses } = useTailwindVariant({
-  base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
-  variants: {
-    size: {
-      xs: 'text-xs',
-      sm: 'text-sm',
-      md: 'text-sm',
-      lg: 'text-base',
-    },
-    disabled: {
-      true: 'is-disabled',
-    },
-    readonly: {
-      true: 'is-readonly',
-    },
-    error: {
-      true: 'is-error',
-    },
-  },
-})
-
 const uniqueId = getUniqueId()
 
 const modelValue = useModelValue(props, emits)
@@ -81,14 +60,36 @@ const isWordLimitExceeded = computed(
   () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
 )
 
-const computedClasses = computed(() => {
-  return textareaClasses({
-    size: props.size || configProvider.size,
-    error: isTruthyProp(props.error) || isWordLimitExceeded.value,
-    disabled: isTruthyProp(props.disabled),
-    readonly: isTruthyProp(props.readonly),
-  })
-})
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
+    variants: {
+      size: {
+        xs: 'text-xs',
+        sm: 'text-sm',
+        md: 'text-sm',
+        lg: 'text-base',
+      },
+      disabled: {
+        true: 'is-disabled',
+      },
+      readonly: {
+        true: 'is-readonly',
+      },
+      error: {
+        true: 'is-error',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      error: isTruthyProp(props.error) || isWordLimitExceeded.value,
+      disabled: isTruthyProp(props.disabled),
+      readonly: isTruthyProp(props.readonly),
+    }),
+  },
+)
 
 function onInputFocus(event: FocusEvent) {
   emits('focus', event)
@@ -132,7 +133,7 @@ function onCompositionEnd(event: CompositionEvent) {
 </script>
 
 <template>
-  <label :for="uniqueId" :class="computedClasses" v-bind="attrs">
+  <label :for="uniqueId" :class="classes" v-bind="attrs">
     <textarea
       :id="uniqueId"
       v-model="modelValue"

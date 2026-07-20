@@ -25,27 +25,6 @@ const props = withDefaults(defineProps<PinInputProps>(), {
 
 const emits = defineEmits<PinInputEmits>()
 
-const { classes: pinInputClasses } = useTailwindVariant(
-  {
-    base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
-    variants: {
-      size: {
-        xs: `${BASIC_HEIGHTS.xs} text-xs`,
-        sm: `${BASIC_HEIGHTS.sm} text-sm`,
-        md: `${BASIC_HEIGHTS.md} text-sm`,
-        lg: `${BASIC_HEIGHTS.lg} text-base`,
-      },
-      error: {
-        true: 'is-error',
-      },
-      disabled: {
-        true: 'is-disabled',
-      },
-    },
-  },
-  { mergeAttrsClass: false },
-)
-
 const configProvider = useConfigProvider()
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
@@ -70,13 +49,33 @@ const computedInputMode = computed(() => {
   return props.type.includes('numeric') ? 'numeric' : 'text'
 })
 
-const computedClasses = computed(() => {
-  return pinInputClasses({
-    size: props.size || configProvider.size,
-    error: isTruthyProp(props.error),
-    disabled: isTruthyProp(props.disabled),
-  })
-})
+const { classes } = useTailwindVariant(
+  {
+    base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
+    variants: {
+      size: {
+        xs: `${BASIC_HEIGHTS.xs} text-xs`,
+        sm: `${BASIC_HEIGHTS.sm} text-sm`,
+        md: `${BASIC_HEIGHTS.md} text-sm`,
+        lg: `${BASIC_HEIGHTS.lg} text-base`,
+      },
+      error: {
+        true: 'is-error',
+      },
+      disabled: {
+        true: 'is-disabled',
+      },
+    },
+  },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      size: props.size || configProvider.size,
+      error: isTruthyProp(props.error),
+      disabled: isTruthyProp(props.disabled),
+    }),
+  },
+)
 
 function replaceCharAt(str: string, index: number, char: string) {
   return str.substring(0, index) + char + str.substring(index + 1)
@@ -280,7 +279,7 @@ defineExpose({
     @focusin="onInputElFocus"
     @click="onContainerClick"
   >
-    <div v-for="(n, i) of length" :key="n" :class="computedClasses">
+    <div v-for="(n, i) of length" :key="n" :class="classes">
       <input
         ref="inputsRef"
         :value="modelValue[i]"

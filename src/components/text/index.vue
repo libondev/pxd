@@ -15,22 +15,31 @@ const props = withDefaults(defineProps<TextProps>(), {
   align: 'left',
 })
 
-const { attrs, classes: textClasses } = useTailwindVariant({
-  base: 'pxd-text m-0 shrink-0',
-  variants: {
-    align: {
-      left: 'text-left',
-      center: 'text-center',
-      right: 'text-right',
-    },
-    monospace: {
-      true: 'font-mono',
-    },
-    secondary: {
-      true: 'text-foreground-secondary',
+const { attrs, classes: variantClasses } = useTailwindVariant(
+  {
+    base: 'pxd-text m-0 shrink-0',
+    variants: {
+      align: {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right',
+      },
+      monospace: {
+        true: 'font-mono',
+      },
+      secondary: {
+        true: 'text-foreground-secondary',
+      },
     },
   },
-})
+  {
+    selection: () => ({
+      align: props.align,
+      monospace: props.monospace,
+      secondary: props.secondary,
+    }),
+  },
+)
 
 const presetSize = {
   '--text-xs': 'text-xs',
@@ -51,16 +60,8 @@ const computedStyle = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const { monospace, secondary } = props
-
-  const baseClass = textClasses({
-    align: props.align,
-    monospace,
-    secondary,
-  })
-
   const classes = [
-    baseClass,
+    variantClasses.value,
     ...Object.keys(computedStyle.value).map((bp) => presetSize[bp as keyof typeof presetSize]),
   ].filter(Boolean)
 

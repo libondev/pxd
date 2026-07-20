@@ -15,27 +15,57 @@ defineOptions({
 
 const props = defineProps<ChoiceboxItemProps>()
 
-const { attrs, classes: choiceboxClasses } = useTailwindVariant({
-  base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-md border motion-safe:transition-colors',
-  variants: {
-    disabled: {
-      true: 'cursor-not-allowed opacity-50',
-      false: 'cursor-pointer',
-    },
-    selected: {
-      true: 'border-primary',
-    },
-  },
-  compoundVariants: [
-    {
-      disabled: false,
-      selected: false,
-      class: 'hover:border-gray-500 hover:bg-background-hover',
-    },
-  ],
+const choiceboxGroupContext = useChoiceboxContext()
+
+const inputId = getUniqueId()
+const internalId = getUniqueId()
+const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
+
+const isMultiple = computed(() => {
+  return !!choiceboxGroupContext?.props.multiple
 })
 
-const { classes: choiceboxInnerClasses } = useTailwindVariant(
+const isDisabled = computed(() => {
+  return props.disabled || !!choiceboxGroupContext?.props.disabled || false
+})
+
+const isSelected = computed(() => {
+  if (isMultiple.value) {
+    return toArray(modelValue.value).includes(props.value)
+  }
+
+  return modelValue.value === props.value
+})
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-md border motion-safe:transition-colors',
+    variants: {
+      disabled: {
+        true: 'cursor-not-allowed opacity-50',
+        false: 'cursor-pointer',
+      },
+      selected: {
+        true: 'border-primary',
+      },
+    },
+    compoundVariants: [
+      {
+        disabled: false,
+        selected: false,
+        class: 'hover:border-gray-500 hover:bg-background-hover',
+      },
+    ],
+  },
+  {
+    selection: () => ({
+      disabled: isDisabled.value,
+      selected: isSelected.value,
+    }),
+  },
+)
+
+const { classes: innerClasses } = useTailwindVariant(
   {
     base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-appearance',
     variants: {
@@ -73,44 +103,15 @@ const { classes: choiceboxInnerClasses } = useTailwindVariant(
       },
     ],
   },
-  { mergeAttrsClass: false },
-)
-
-const choiceboxGroupContext = useChoiceboxContext()
-
-const inputId = getUniqueId()
-const internalId = getUniqueId()
-const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
-
-const computedClasses = computed(() => {
-  return {
-    wrapper: choiceboxClasses({
-      disabled: isDisabled.value,
-      selected: isSelected.value,
-    }),
-    inner: choiceboxInnerClasses({
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
       disabled: isDisabled.value,
       multiple: isMultiple.value,
       selected: isSelected.value,
     }),
-  }
-})
-
-const isMultiple = computed(() => {
-  return !!choiceboxGroupContext?.props.multiple
-})
-
-const isDisabled = computed(() => {
-  return props.disabled || !!choiceboxGroupContext?.props.disabled || false
-})
-
-const isSelected = computed(() => {
-  if (isMultiple.value) {
-    return toArray(modelValue.value).includes(props.value)
-  }
-
-  return modelValue.value === props.value
-})
+  },
+)
 
 const inputName = computed(() => {
   if (isMultiple.value) {
@@ -152,7 +153,7 @@ function onInputChange(event: Event) {
     :data-disabled="isDisabled"
     :aria-selected="isSelected"
     :for="inputId"
-    :class="computedClasses.wrapper"
+    :class="classes"
     v-bind="attrs"
   >
     <div
@@ -169,7 +170,7 @@ function onInputChange(event: Event) {
         @change="onInputChange"
       />
 
-      <span aria-hidden="true" :class="computedClasses.inner">
+      <span aria-hidden="true" :class="innerClasses">
         <CheckIcon v-if="isMultiple && isSelected" />
       </span>
 

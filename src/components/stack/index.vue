@@ -18,32 +18,41 @@ const props = withDefaults(defineProps<StackProps>(), {
   justify: 'start',
 })
 
-const { attrs, classes: stackClasses } = useTailwindVariant({
-  base: 'pxd-stack flex max-w-full gap-(--xs) [--xs:1rem]',
-  variants: {
-    wrap: {
-      true: 'flex-wrap',
-    },
-    align: {
-      start: 'items-start',
-      end: 'items-end',
-      center: 'items-center',
-      between: 'items-between',
-      around: 'items-around',
-      evenly: 'items-evenly',
-      stretch: 'items-stretch',
-    },
-    justify: {
-      start: 'justify-start',
-      end: 'justify-end',
-      center: 'justify-center',
-      between: 'justify-between',
-      around: 'justify-around',
-      evenly: 'justify-evenly',
-      stretch: 'justify-stretch',
+const { attrs, classes: variantClasses } = useTailwindVariant(
+  {
+    base: 'pxd-stack flex max-w-full gap-(--xs) [--xs:1rem]',
+    variants: {
+      wrap: {
+        true: 'flex-wrap',
+      },
+      align: {
+        start: 'items-start',
+        end: 'items-end',
+        center: 'items-center',
+        between: 'items-between',
+        around: 'items-around',
+        evenly: 'items-evenly',
+        stretch: 'items-stretch',
+      },
+      justify: {
+        start: 'justify-start',
+        end: 'justify-end',
+        center: 'justify-center',
+        between: 'justify-between',
+        around: 'justify-around',
+        evenly: 'justify-evenly',
+        stretch: 'justify-stretch',
+      },
     },
   },
-})
+  {
+    selection: () => ({
+      wrap: props.wrap,
+      align: props.align,
+      justify: props.justify,
+    }),
+  },
+)
 
 const presetDir = {
   '--xs:vertical': 'flex-col',
@@ -89,14 +98,8 @@ const formattedDirection = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const baseClass = stackClasses({
-    wrap: props.wrap,
-    align: props.align,
-    justify: props.justify,
-  })
-
   const classes = [
-    baseClass,
+    variantClasses.value,
     ...Object.values(formattedDirection.value),
     ...Object.keys(formattedGap.value).map((bp) => presetGap[bp as keyof typeof presetGap]),
   ].filter(Boolean)

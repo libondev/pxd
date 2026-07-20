@@ -31,32 +31,6 @@ const props = withDefaults(defineProps<InputProps>(), {
 
 const emits = defineEmits<InputEmits>()
 
-const { attrs, classes: inputClasses } = useTailwindVariant({
-  base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
-  variants: {
-    size: {
-      xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,
-      sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md`,
-      md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
-      lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
-    },
-    align: {
-      left: 'text-left',
-      center: 'text-center',
-      right: 'text-right',
-    },
-    disabled: {
-      true: 'is-disabled',
-    },
-    readonly: {
-      true: 'is-readonly',
-    },
-    error: {
-      true: 'is-error',
-    },
-  },
-})
-
 const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
 
@@ -85,15 +59,42 @@ const isWordLimitExceeded = computed(
   () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
 )
 
-const computedClasses = computed(() => {
-  return inputClasses({
-    size: props.size || configProvider.size,
-    align: props.align,
-    error: isTruthyProp(props.error) || isWordLimitExceeded.value,
-    disabled: isTruthyProp(props.disabled),
-    readonly: isTruthyProp(props.readonly),
-  })
-})
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
+    variants: {
+      size: {
+        xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,
+        sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md`,
+        md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
+        lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
+      },
+      align: {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right',
+      },
+      disabled: {
+        true: 'is-disabled',
+      },
+      readonly: {
+        true: 'is-readonly',
+      },
+      error: {
+        true: 'is-error',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      align: props.align,
+      error: isTruthyProp(props.error) || isWordLimitExceeded.value,
+      disabled: isTruthyProp(props.disabled),
+      readonly: isTruthyProp(props.readonly),
+    }),
+  },
+)
 
 function getInputValue(ev: Event) {
   return (ev.target as HTMLInputElement).value
@@ -211,7 +212,7 @@ defineExpose({
   <label
     :for="uniqueId"
     :data-disabled="disabled"
-    :class="computedClasses"
+    :class="classes"
     v-bind="attrs"
     @click="onClick"
     @dragstart.prevent="NOOP"

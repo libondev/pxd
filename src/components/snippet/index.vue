@@ -22,28 +22,6 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 
 const emits = defineEmits<SnippetEmits>()
 
-const { attrs, classes: snippetClasses } = useTailwindVariant({
-  base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
-  variants: {
-    size: {
-      sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
-      md: `${BASIC_MIN_HEIGHTS.md} py-2.5 text-sm`,
-      lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
-    },
-    variant: {
-      default: 'border-gray-alpha-300 bg-background-100',
-      inverted: 'border-transparent bg-gray-1000 text-gray-100',
-      primary: 'border-gray-alpha-300 bg-primary text-primary-foreground',
-      success: 'border-blue-400 bg-blue-200 text-blue-900',
-      error: 'border-red-400 bg-red-200 text-red-900',
-      warning: 'border-amber-400 bg-amber-200 text-amber-900',
-    },
-    prompt: {
-      true: 'pxd-snippet--prompt',
-    },
-  },
-})
-
 const configProvider = useConfigProvider()
 
 const { isCopied, copyText } = useCopyClick()
@@ -51,13 +29,36 @@ const { isCopied, copyText } = useCopyClick()
 const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyIcon))
 const computedTextArray = computed(() => toArray(props.text))
 
-const computedClasses = computed(() => {
-  return snippetClasses({
-    size: props.size || configProvider.size,
-    variant: props.variant,
-    prompt: isTruthyProp(props.prompt),
-  })
-})
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
+    variants: {
+      size: {
+        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
+        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 text-sm`,
+        lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
+      },
+      variant: {
+        default: 'border-gray-alpha-300 bg-background-100',
+        inverted: 'border-transparent bg-gray-1000 text-gray-100',
+        primary: 'border-gray-alpha-300 bg-primary text-primary-foreground',
+        success: 'border-blue-400 bg-blue-200 text-blue-900',
+        error: 'border-red-400 bg-red-200 text-red-900',
+        warning: 'border-amber-400 bg-amber-200 text-amber-900',
+      },
+      prompt: {
+        true: 'pxd-snippet--prompt',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      variant: props.variant,
+      prompt: isTruthyProp(props.prompt),
+    }),
+  },
+)
 
 async function onCopyButtonClick() {
   const text = computedTextArray.value.join('\n')
@@ -69,7 +70,7 @@ async function onCopyButtonClick() {
 </script>
 
 <template>
-  <div :class="computedClasses" :data-variant="variant" v-bind="attrs">
+  <div :class="classes" :data-variant="variant" v-bind="attrs">
     <div class="pxd-snippet--container flex-1">
       <pre
         v-for="(t, i) of computedTextArray"

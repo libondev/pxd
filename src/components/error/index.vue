@@ -14,27 +14,28 @@ defineOptions({
 
 const props = defineProps<ErrorProps>()
 
-const { attrs, classes: errorClasses } = useTailwindVariant({
-  base: 'pxd-error flex text-red-900',
-  variants: {
-    size: {
-      xs: 'text-xs [--mt:0.125rem]',
-      sm: 'text-13 [--mt:0.125rem]',
-      md: 'text-sm [--mt:0.125rem]',
-      lg: 'text-base [--mt:0.25rem]',
-    },
-  },
-})
-
 const configProvider = useConfigProvider()
 
-const computedClasses = computed(() => {
-  return errorClasses({ size: props.size || configProvider.size })
-})
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-error flex text-red-900',
+    variants: {
+      size: {
+        xs: 'text-xs [--mt:0.125rem]',
+        sm: 'text-13 [--mt:0.125rem]',
+        md: 'text-sm [--mt:0.125rem]',
+        lg: 'text-base [--mt:0.25rem]',
+      },
+    },
+  },
+  {
+    selection: () => ({ size: props.size || configProvider.size }),
+  },
+)
 </script>
 
 <template>
-  <div :class="computedClasses" v-bind="attrs">
+  <div :class="classes" v-bind="attrs">
     <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">

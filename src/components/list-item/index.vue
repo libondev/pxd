@@ -22,17 +22,22 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 
 const emits = defineEmits<ListItemEmits>()
 
-const { attrs, classes: listItemClasses } = useTailwindVariant({
-  base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
-  variants: {
-    variant: {
-      error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
-      warning: 'text-amber-900 active:bg-amber-100 pointer-fine:aria-selected:bg-amber-100',
-      default:
-        'text-foreground active:bg-gray-alpha-100 pointer-fine:aria-selected:bg-gray-alpha-100',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    variants: {
+      variant: {
+        error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
+        warning: 'text-amber-900 active:bg-amber-100 pointer-fine:aria-selected:bg-amber-100',
+        default:
+          'text-foreground active:bg-gray-alpha-100 pointer-fine:aria-selected:bg-gray-alpha-100',
+      },
     },
   },
-})
+  {
+    selection: () => ({ variant: props.variant }),
+  },
+)
 
 const {
   props: listProps,
@@ -63,10 +68,6 @@ const isVisible = computed(() => {
 
 const isSelected = computed(() => {
   return itemIndex.value !== -1 && itemIndex.value === activeIndex.value
-})
-
-const computedClasses = computed(() => {
-  return listItemClasses({ variant: props.variant })
 })
 
 function getValue(): string {
@@ -123,7 +124,7 @@ onBeforeUnmount(() => {
     :data-disabled="disabled"
     :aria-selected="isSelected"
     :hidden="!isVisible"
-    :class="computedClasses"
+    :class="classes"
     v-bind="attrs"
     @click.prevent.stop="onItemClick"
   >

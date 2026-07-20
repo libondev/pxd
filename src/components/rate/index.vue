@@ -28,55 +28,58 @@ const props = withDefaults(defineProps<RateProps>(), {
 
 const emits = defineEmits<RateEmits>()
 
-const { attrs, classes: rateClasses } = useTailwindVariant({
-  base: 'pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none',
-  variants: {
-    size: {
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'text-xl',
-    },
-    disabled: {
-      true: 'pointer-events-none opacity-50',
-    },
-    readonly: {},
-  },
-  compoundVariants: [
-    {
-      disabled: true,
-      readonly: false,
-      class: 'cursor-not-allowed',
-    },
-    {
-      disabled: false,
-      readonly: true,
-      class: 'cursor-default',
-    },
-    {
-      disabled: true,
-      readonly: true,
-      class: 'cursor-not-allowed',
-    },
-    {
-      disabled: false,
-      readonly: false,
-      class: 'cursor-pointer',
-    },
-  ],
-})
-
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
-const computedClasses = computed(() => {
-  const { size, disabled, readonly } = props
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none',
+    variants: {
+      size: {
+        sm: 'text-sm',
+        md: 'text-base',
+        lg: 'text-xl',
+      },
+      disabled: {
+        true: 'pointer-events-none opacity-50',
+      },
+      readonly: {},
+    },
+    compoundVariants: [
+      {
+        disabled: true,
+        readonly: false,
+        class: 'cursor-not-allowed',
+      },
+      {
+        disabled: false,
+        readonly: true,
+        class: 'cursor-default',
+      },
+      {
+        disabled: true,
+        readonly: true,
+        class: 'cursor-not-allowed',
+      },
+      {
+        disabled: false,
+        readonly: false,
+        class: 'cursor-pointer',
+      },
+    ],
+  },
+  {
+    selection: () => {
+      const { size, disabled, readonly } = props
 
-  return rateClasses({
-    size: size || configProvider.size,
-    disabled,
-    readonly,
-  })
-})
+      return {
+        size: size || configProvider.size,
+        disabled,
+        readonly,
+      }
+    },
+  },
+)
 
 const rateRef = shallowRef<HTMLElement>()
 const hoverValue = shallowRef<number | null>(null)
@@ -239,7 +242,7 @@ onBeforeUnmount(() => {
     ref="rateRef"
     role="radiogroup"
     tabindex="0"
-    :class="computedClasses"
+    :class="classes"
     v-bind="attrs"
     @keydown="handleKeydown"
     @pointerdown.prevent="handlePointerDown"

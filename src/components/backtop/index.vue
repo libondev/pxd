@@ -25,23 +25,24 @@ const emits = defineEmits<BacktopEmits>()
 let scrollContainer: ReturnType<typeof getScrollTarget> | null
 let scrollContainerEl: ReturnType<typeof getScrollElement> | null
 
-const { attrs, classes: backtopClasses } = useTailwindVariant({
-  base: 'pxd-backtop will-change-transform',
-  variants: {
-    appendToBody: {
-      true: 'fixed',
-      false: 'absolute',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-backtop will-change-transform',
+    variants: {
+      appendToBody: {
+        true: 'fixed',
+        false: 'absolute',
+      },
     },
   },
-})
+  {
+    selection: () => ({ appendToBody: props.appendToBody }),
+  },
+)
 
 const scrollTop = shallowRef(0)
 const maxScrollTop = shallowRef(0)
 const wrapperRef = shallowRef<HTMLElement>()
-
-const computedClasses = computed(() => {
-  return backtopClasses({ appendToBody: props.appendToBody })
-})
 
 const isVisible = computed(() => {
   if (props.scrollTarget === 'top') {
@@ -102,7 +103,7 @@ onBeforeUnmount(() => {
       <div
         v-show="isVisible"
         ref="wrapperRef"
-        :class="computedClasses"
+        :class="classes"
         v-bind="attrs"
         @click="onActionClick"
       >

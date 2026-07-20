@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<ChipProps>(), {
   variant: 'primary',
 })
 
-const { classes: chipClasses } = useTailwindVariant(
+const { classes } = useTailwindVariant(
   {
     base: 'pxd-chip--label text-xs top-0 right-0 absolute z-1 rounded-full border border-background-100 motion-safe:transition-appearance',
     variants: {
@@ -33,27 +33,22 @@ const { classes: chipClasses } = useTailwindVariant(
       },
     },
   },
-  { mergeAttrsClass: false },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      inset: props.inset,
+      variant: props.variant,
+      hasLabel: !isNil(props.label),
+    }),
+  },
 )
-
-const computedClasses = computed(() => {
-  return chipClasses({
-    inset: props.inset,
-    variant: props.variant,
-    hasLabel: !isNil(props.label),
-  })
-})
 </script>
 
 <template>
   <div class="pxd-chip relative inline-flex shrink-0" :data-variant="variant" v-bind="$attrs">
     <slot />
 
-    <span
-      :data-label="label"
-      :class="computedClasses"
-      :style="{ '--chip-size': getCssUnitValue(size) }"
-    />
+    <span :data-label="label" :class="classes" :style="{ '--chip-size': getCssUnitValue(size) }" />
   </div>
 </template>
 

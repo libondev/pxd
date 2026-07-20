@@ -18,18 +18,6 @@ defineOptions({
 const props = defineProps<SwitchItemProps>()
 const emits = defineEmits<SwitchItemEmits>()
 
-const { classes: switchClasses } = useTailwindVariant(
-  {
-    base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
-    variants: {
-      disabled: {
-        false: 'peer-checked:text-foreground',
-      },
-    },
-  },
-  { mergeAttrsClass: false },
-)
-
 const uniqueId = getUniqueId()
 
 const switchGroupContext = useSwitchContext()
@@ -44,9 +32,20 @@ const isChecked = computed(() => modelValue.value === props.value)
 
 const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
-const computedClasses = computed(() => {
-  return switchClasses({ disabled: isDisabled.value })
-})
+const { classes } = useTailwindVariant(
+  {
+    base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
+    variants: {
+      disabled: {
+        false: 'peer-checked:text-foreground',
+      },
+    },
+  },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({ disabled: isDisabled.value }),
+  },
+)
 
 function onInputChange() {
   if (isDisabled.value) {
@@ -77,7 +76,7 @@ function onInputChange() {
       @change="onInputChange"
     />
 
-    <div :class="computedClasses" @focusin="onInputChange">
+    <div :class="classes" @focusin="onInputChange">
       <slot>
         {{ label }}
       </slot>

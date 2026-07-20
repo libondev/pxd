@@ -26,23 +26,20 @@ const emits = defineEmits<ToggleButtonGroupEmits>()
 
 const configProvider = useConfigProvider()
 
-const { attrs, classes: toggleButtonGroupClasses } = useTailwindVariant({
-  base: 'pxd-toggle-button-group group/toggle-button-group w-max overflow-hidden',
-  variants: {
-    size: {
-      sm: 'rounded-md',
-      md: 'rounded-md',
-      lg: 'rounded-lg',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-toggle-button-group group/toggle-button-group w-max overflow-hidden',
+    variants: {
+      size: {
+        sm: 'rounded-md',
+        md: 'rounded-md',
+        lg: 'rounded-lg',
+      },
     },
   },
-})
-
-const computedSize = computed(() => props.size || configProvider.size)
-
-const computedClasses = computed(() =>
-  toggleButtonGroupClasses({
-    size: computedSize.value,
-  }),
+  {
+    selection: () => ({ size: props.size || configProvider.size }),
+  },
 )
 
 provideToggleButtonGroupContext({ props, emits })
@@ -51,7 +48,7 @@ provideToggleButtonGroupContext({ props, emits })
 <template>
   <PStack
     role="group"
-    :class="computedClasses"
+    :class="classes"
     aria-label="Toggle Button Group"
     align="center"
     :gap="gap"

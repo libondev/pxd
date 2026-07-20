@@ -22,7 +22,10 @@ const emits = defineEmits<ColorSelectorEmits>()
 
 const uniqueName = getUniqueId('color-selector')
 
-const { classes: colorSelectorClasses } = useTailwindVariant(
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+
+const { classes } = useTailwindVariant(
   {
     base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] active:scale-85 motion-safe:transition-appearance',
     variants: {
@@ -33,16 +36,12 @@ const { classes: colorSelectorClasses } = useTailwindVariant(
       },
     },
   },
-  { mergeAttrsClass: false },
-)
-
-const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
-
-const computedClasses = computed(() =>
-  colorSelectorClasses({
-    size: props.size || configProvider.size,
-  }),
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      size: props.size || configProvider.size,
+    }),
+  },
 )
 </script>
 
@@ -54,7 +53,7 @@ const computedClasses = computed(() =>
         :name="uniqueName"
         :value="color"
         :style="{ color }"
-        :class="computedClasses"
+        :class="classes"
         :aria-selected="modelValue === color"
         :checked="modelValue === color"
         :tabindex="modelValue === color ? 0 : -1"

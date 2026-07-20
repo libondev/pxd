@@ -24,17 +24,27 @@ const props = withDefaults(defineProps<LoadingBarProps>(), {
   trickleThreshold: 300,
 })
 
-const { attrs, classes: loadingBarWrapperClasses } = useTailwindVariant({
-  base: 'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
-  variants: {
-    locally: {
-      true: 'absolute',
-      false: 'fixed',
+const status = shallowRef<LoadingBarStatus>('finish')
+const hiddenBar = shallowRef(false)
+const progressValue = shallowRef(0)
+const enableTransition = shallowRef(false)
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-loading-bar top-0 left-0 right-0 pointer-events-none z-10 max-w-full overflow-hidden',
+    variants: {
+      locally: {
+        true: 'absolute',
+        false: 'fixed',
+      },
     },
   },
-})
+  {
+    selection: () => ({ locally: isTruthyProp(props.to) }),
+  },
+)
 
-const { classes: loadingBarInnerClasses } = useTailwindVariant(
+const { classes: innerClasses } = useTailwindVariant(
   {
     base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
     variants: {
@@ -45,7 +55,10 @@ const { classes: loadingBarInnerClasses } = useTailwindVariant(
       },
     },
   },
-  { mergeAttrsClass: false },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({ status: status.value }),
+  },
 )
 
 let prevTimestamp = 0
@@ -55,23 +68,6 @@ let hiddenBarTimeout: ReturnType<typeof setTimeout>
 let enableTransitionTimeout: ReturnType<typeof setTimeout>
 
 const ENABLE_TRANSITION_DELAY = 0
-
-const status = shallowRef<LoadingBarStatus>('finish')
-const hiddenBar = shallowRef(false)
-const progressValue = shallowRef(0)
-const enableTransition = shallowRef(false)
-
-const computedWrapperClasses = computed(() => {
-  return loadingBarWrapperClasses({
-    locally: isTruthyProp(props.to),
-  })
-})
-
-const computedInnerClasses = computed(() => {
-  return loadingBarInnerClasses({
-    status: status.value,
-  })
-})
 
 function getIncreaseDelta(n: number) {
   if (n >= 0 && n < 0.2) {
@@ -214,11 +210,11 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div aria-hidden="true" :class="computedWrapperClasses" v-bind="attrs">
+    <div aria-hidden="true" :class="classes" v-bind="attrs">
       <div
         :data-hidden="hiddenBar"
         :data-transition="enableTransition"
-        :class="computedInnerClasses"
+        :class="innerClasses"
         :style="{ transform: `scaleX(${progressValue})` }"
       />
     </div>

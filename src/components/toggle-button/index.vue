@@ -23,31 +23,6 @@ const props = withDefaults(defineProps<ToggleButtonProps>(), {
 
 const emits = defineEmits<ToggleButtonEmits>()
 
-const { attrs, classes: toggleButtonClasses } = useTailwindVariant({
-  base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none motion-safe:transition-colors',
-  variants: {
-    size: {
-      xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
-      sm: `${BASIC_HEIGHTS.sm} px-1.75 text-sm rounded-md`,
-      md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
-      lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
-    },
-    variant: {
-      outline: 'border-gray-400 bg-background-100',
-      ghost: 'border-transparent bg-transparent',
-    },
-    disabled: {},
-    checked: {},
-  },
-  compoundVariants: [
-    { checked: true, disabled: false, class: 'bg-gray-300' },
-    { checked: true, disabled: true, class: 'bg-gray-200' },
-    { checked: false, disabled: true, class: 'cursor-not-allowed text-gray-400' },
-    { checked: false, disabled: false, class: 'hover:bg-background-hover hover:text-gray-900' },
-    { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100' },
-  ],
-})
-
 const toggleButtonGroupContext = useToggleButtonGroupContext()
 
 const modelValue = useModelValue(
@@ -73,14 +48,40 @@ const computedVariant = computed(() => {
   return props.variant || toggleButtonGroupContext?.props.variant || 'ghost'
 })
 
-const computedClasses = computed(() => {
-  return toggleButtonClasses({
-    size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
-    checked: isChecked.value,
-    variant: computedVariant.value,
-    disabled: isDisabled.value,
-  })
-})
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none motion-safe:transition-colors',
+    variants: {
+      size: {
+        xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
+        sm: `${BASIC_HEIGHTS.sm} px-1.75 text-sm rounded-md`,
+        md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
+        lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
+      },
+      variant: {
+        outline: 'border-gray-400 bg-background-100',
+        ghost: 'border-transparent bg-transparent',
+      },
+      disabled: {},
+      checked: {},
+    },
+    compoundVariants: [
+      { checked: true, disabled: false, class: 'bg-gray-300' },
+      { checked: true, disabled: true, class: 'bg-gray-200' },
+      { checked: false, disabled: true, class: 'cursor-not-allowed text-gray-400' },
+      { checked: false, disabled: false, class: 'hover:bg-background-hover hover:text-gray-900' },
+      { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100' },
+    ],
+  },
+  {
+    selection: () => ({
+      size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
+      checked: isChecked.value,
+      variant: computedVariant.value,
+      disabled: isDisabled.value,
+    }),
+  },
+)
 
 function onToggleClick() {
   const newCheckedState = !isChecked.value
@@ -110,7 +111,7 @@ function onToggleClick() {
     :data-state="isChecked ? 'on' : 'off'"
     :data-variant="computedVariant"
     :disabled="isDisabled"
-    :class="computedClasses"
+    :class="classes"
     v-bind="attrs"
     @click.stop="onToggleClick"
   >

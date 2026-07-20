@@ -24,7 +24,30 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 
 const emits = defineEmits<CheckboxEmits>()
 
-const { classes: checkboxClasses } = useTailwindVariant(
+const uniqueId = getUniqueId()
+
+const checkboxGroupContext = useCheckboxGroupContext()
+
+const modelValue = useModelValue(
+  checkboxGroupContext?.props ?? props,
+  checkboxGroupContext?.emits ?? emits,
+)
+
+const isSelected = computed(() => {
+  if (Array.isArray(modelValue.value)) {
+    return modelValue.value.includes(props.value)
+  }
+
+  if (typeof props.value === 'boolean') {
+    return modelValue.value as boolean
+  }
+
+  return modelValue.value === props.value
+})
+
+const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
+
+const { classes } = useTailwindVariant(
   {
     base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
     variants: {
@@ -59,39 +82,15 @@ const { classes: checkboxClasses } = useTailwindVariant(
       },
     ],
   },
-  { mergeAttrsClass: false },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      shape: props.shape,
+      checked: isSelected.value,
+      disabled: isDisabled.value,
+    }),
+  },
 )
-
-const uniqueId = getUniqueId()
-
-const checkboxGroupContext = useCheckboxGroupContext()
-
-const modelValue = useModelValue(
-  checkboxGroupContext?.props ?? props,
-  checkboxGroupContext?.emits ?? emits,
-)
-
-const isSelected = computed(() => {
-  if (Array.isArray(modelValue.value)) {
-    return modelValue.value.includes(props.value)
-  }
-
-  if (typeof props.value === 'boolean') {
-    return modelValue.value as boolean
-  }
-
-  return modelValue.value === props.value
-})
-
-const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
-
-const computedClasses = computed(() => {
-  return checkboxClasses({
-    shape: props.shape,
-    checked: isSelected.value,
-    disabled: isDisabled.value,
-  })
-})
 
 function onInputChange(event: Event) {
   const checked = (event.target as HTMLInputElement).checked
@@ -128,7 +127,7 @@ function onInputChange(event: Event) {
       @change="onInputChange"
     />
 
-    <span aria-hidden="true" :class="computedClasses">
+    <span aria-hidden="true" :class="classes">
       <CheckIcon v-if="isSelected" class="size-3" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
       <span v-else class="size-3" />

@@ -14,17 +14,22 @@ const props = withDefaults(defineProps<BubbleProps>(), {
   variant: 'default',
 })
 
-const { attrs, classes: bubbleClasses } = useTailwindVariant({
-  base: 'pxd-bubble group/bubble [&+&]:mt-2 gap-2 flex max-w-full',
-  variants: {
-    role: {
-      user: 'pl-10 flex-row-reverse',
-      system: 'pr-10',
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-bubble group/bubble [&+&]:mt-2 gap-2 flex max-w-full',
+    variants: {
+      role: {
+        user: 'pl-10 flex-row-reverse',
+        system: 'pr-10',
+      },
     },
   },
-})
+  {
+    selection: () => ({ role: props.role }),
+  },
+)
 
-const { classes: bubbleContentClasses } = useTailwindVariant(
+const { classes: contentClasses } = useTailwindVariant(
   {
     base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap',
     variants: {
@@ -43,32 +48,19 @@ const { classes: bubbleContentClasses } = useTailwindVariant(
   },
   {
     mergeAttrsClass: false,
+    selection: () => ({
+      role: props.role,
+      variant: props.variant,
+    }),
   },
 )
-
-const computedClasses = computed(() => {
-  const { role } = props
-
-  return bubbleClasses({
-    role,
-  })
-})
-
-const computedContentClasses = computed(() => {
-  const { role, variant } = props
-
-  return bubbleContentClasses({
-    role,
-    variant,
-  })
-})
 
 const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'System message'))
 </script>
 
 <template>
   <article
-    :class="computedClasses"
+    :class="classes"
     :aria-busy="loading"
     :aria-label="ariaLabel"
     :data-role="role"
@@ -92,7 +84,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
         </slot>
       </header>
 
-      <div :class="computedContentClasses">
+      <div :class="contentClasses">
         <PSpinner v-if="loading" class="translate-y-0.5" />
         <slot v-else>{{ text }}</slot>
       </div>
