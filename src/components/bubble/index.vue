@@ -86,7 +86,12 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
 
       <div :class="contentClasses">
         <PSpinner v-if="loading" class="translate-y-0.5" />
-        <slot v-else>{{ text }}</slot>
+        <template v-else>
+          <slot>{{ text }}</slot>
+          <div v-if="$slots.reactions" class="pxd-bubble--reactions">
+            <slot name="reactions" />
+          </div>
+        </template>
       </div>
 
       <footer

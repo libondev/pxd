@@ -162,6 +162,7 @@ function addMessage() {
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| reactions | Reactions slot |
 
 ## BubbleGroup Props
 
