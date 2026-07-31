@@ -80,10 +80,11 @@ const VARIANTS = {
 let isDragging = false
 let sliderRect: DOMRect | null = null
 let lastClientX: number | null = null
+let lastUpdatedValue: number | [number, number] | null = null
 
 const sliderRef = shallowRef<HTMLElement>()
 
-const modelValue = useModelValue(props, emits)
+const modelValue = useModelValue(props, emits, { withChange: false })
 
 const activeThumb = shallowRef<'start' | 'end' | null>()
 
@@ -174,9 +175,11 @@ function updateValueFromPosition(clientX: number) {
     }
 
     if (valueRange.value[0] !== newValueArray[0] || valueRange.value[1] !== newValueArray[1]) {
+      lastUpdatedValue = newValueArray
       modelValue.value = newValueArray
     }
   } else if (modelValue.value !== newValue) {
+    lastUpdatedValue = newValue
     modelValue.value = newValue
   }
 }
@@ -200,7 +203,7 @@ function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
   updateValueFromPosition(ev.clientX)
 
   once(document, 'pointerup', endDragging)
-  once(document, 'pointercancel', endDragging)
+  once(document, 'pointercancel', cancelDragging)
   cachedOn(document, 'pointermove', handleMove, { passive: false })
 }
 
@@ -214,16 +217,32 @@ function handleMove(ev: PointerEvent) {
   scheduleUpdate()
 }
 
-function endDragging() {
+function resetDragging() {
   isDragging = false
   lastClientX = null
   sliderRect = null
   activeThumb.value = null
+  lastUpdatedValue = null
 
   scheduleUpdate.cancel()
 
   cachedOff(document, 'pointermove', handleMove)
-  cachedOff(document, 'pointercancel', endDragging)
+  document.removeEventListener('pointerup', endDragging)
+  document.removeEventListener('pointercancel', cancelDragging)
+}
+
+function endDragging(ev: PointerEvent) {
+  updateValueFromPosition(ev.clientX)
+
+  if (lastUpdatedValue !== null) {
+    emits('change', lastUpdatedValue)
+  }
+
+  resetDragging()
+}
+
+function cancelDragging() {
+  resetDragging()
 }
 
 function handleSliderClick(ev: PointerEvent) {
@@ -298,6 +317,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
 
     if (newRange[0] !== startVal || newRange[1] !== endVal) {
       modelValue.value = newRange
+      emits('change', newRange)
     }
   } else {
     const current = modelValue.value as number
@@ -305,6 +325,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
 
     if (newValue !== current) {
       modelValue.value = newValue
+      emits('change', newValue)
     }
   }
 }
@@ -315,8 +336,8 @@ onBeforeUnmount(() => {
   scheduleUpdate.cancel()
 
   cachedOff(document, 'pointermove', handleMove)
-  cachedOff(document, 'pointerup', endDragging)
-  cachedOff(document, 'pointercancel', endDragging)
+  document.removeEventListener('pointerup', endDragging)
+  document.removeEventListener('pointercancel', cancelDragging)
 })
 </script>
 

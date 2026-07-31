@@ -76,4 +76,23 @@ describe('slider', () => {
 
     wrapper.unmount()
   })
+
+  it('should emit change once with the final pointer position', async () => {
+    const wrapper = mount(Slider)
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 10 })
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[10]])
+    expect(wrapper.emitted('change')).toBeUndefined()
+
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 80 }))
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[10], [80]])
+    expect(wrapper.emitted('change')).toEqual([[80]])
+
+    wrapper.unmount()
+  })
 })
