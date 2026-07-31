@@ -9,6 +9,8 @@ declare module 'vue' {
     PBacktop: (typeof import('pxd/components/backtop'))['default']
     PBadge: (typeof import('pxd/components/badge'))['default']
     PBook: (typeof import('pxd/components/book'))['default']
+    PBreadcrumb: (typeof import('pxd/components/breadcrumb'))['default']
+    PBreadcrumbItem: (typeof import('pxd/components/breadcrumb-item'))['default']
     PBrowser: (typeof import('pxd/components/browser'))['default']
     PBubble: (typeof import('pxd/components/bubble'))['default']
     PBubbleGroup: (typeof import('pxd/components/bubble-group'))['default']

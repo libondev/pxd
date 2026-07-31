@@ -20,6 +20,10 @@
     "name": "book"
   },
   {
+    "camelized": "Breadcrumb",
+    "name": "breadcrumb"
+  },
+  {
     "camelized": "Browser",
     "name": "browser"
   },
