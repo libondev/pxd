@@ -98,6 +98,8 @@ declare module 'vue' {
     PTextarea: (typeof import('pxd/components/textarea'))['default']
     PThemeSwitcher: (typeof import('pxd/components/theme-switcher'))['default']
     PTimePicker: (typeof import('pxd/components/time-picker'))['default']
+    PTimeline: (typeof import('pxd/components/timeline'))['default']
+    PTimelineItem: (typeof import('pxd/components/timeline-item'))['default']
     PToggle: (typeof import('pxd/components/toggle'))['default']
     PToggleButton: (typeof import('pxd/components/toggle-button'))['default']
     PToggleButtonGroup: (typeof import('pxd/components/toggle-button-group'))['default']

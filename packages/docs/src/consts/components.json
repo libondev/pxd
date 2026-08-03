@@ -304,6 +304,10 @@
     "name": "time-picker"
   },
   {
+    "camelized": "Timeline",
+    "name": "timeline"
+  },
+  {
     "camelized": "Toggle Button",
     "name": "toggle-button"
   },

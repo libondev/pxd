@@ -1,0 +1,108 @@
+<script lang="ts" setup>
+import type { TimelineItemProps } from './types'
+import { computed } from 'vue'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+
+defineOptions({
+  name: 'PTimelineItem',
+  inheritAttrs: false,
+})
+
+const props = withDefaults(defineProps<TimelineItemProps>(), {
+  timestamp: '',
+  placement: 'bottom',
+  type: '',
+  color: '',
+  size: 'normal',
+})
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-timeline-item pb-5 last:pb-0 relative last:[&>.pxd-timeline-item--tail]:hidden',
+    variants: {
+      center: {
+        true: 'is-center flex items-center [&>.pxd-timeline-item--wrapper]:w-full',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      center: props.center,
+    }),
+  },
+)
+
+const nodeClasses = computed(() => [
+  `is-${props.size}`,
+  props.type && `is-${props.type}`,
+  { 'is-hollow': props.hollow },
+  props.size === 'large' ? '-left-0.5 size-3.5' : 'left-0 size-2.5',
+  {
+    'bg-primary border-primary': props.type === 'primary',
+    'bg-blue-700 border-blue-700': props.type === 'success',
+    'bg-amber-700 border-amber-700': props.type === 'warning',
+    'bg-red-700 border-red-700': props.type === 'danger',
+    'bg-gray-600 border-gray-600': props.type === 'info',
+    'bg-gray-400 border-gray-400': !props.type,
+    'border-2 border-solid bg-background-100': props.hollow,
+  },
+])
+</script>
+
+<template>
+  <li :class="classes" v-bind="attrs">
+    <div
+      aria-hidden="true"
+      class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l-2 border-gray-300"
+    />
+
+    <div
+      v-if="!$slots.dot"
+      aria-hidden="true"
+      class="pxd-timeline-item--node absolute flex items-center justify-center rounded-full text-primary-foreground"
+      :class="nodeClasses"
+      :style="color ? { backgroundColor: color, borderColor: color } : undefined"
+    >
+      <Component :is="icon" v-if="icon" class="pxd-timeline-item--icon size-3" />
+    </div>
+    <div
+      v-else
+      aria-hidden="true"
+      class="pxd-timeline-item--dot left-1.25 absolute flex -translate-x-1/2 items-center justify-center"
+    >
+      <slot name="dot" />
+    </div>
+
+    <div class="pxd-timeline-item--wrapper px-5 relative -top-[0.325rem]">
+      <div
+        v-if="!hideTimestamp && placement === 'top'"
+        class="pxd-timeline-item--timestamp is-top mb-1 pt-1 text-xs leading-none text-foreground-secondary"
+      >
+        {{ timestamp }}
+      </div>
+
+      <div class="pxd-timeline-item--content text-foreground">
+        <slot />
+      </div>
+
+      <div
+        v-if="!hideTimestamp && placement === 'bottom'"
+        class="pxd-timeline-item--timestamp is-bottom mt-1 text-xs leading-none text-foreground-secondary"
+      >
+        {{ timestamp }}
+      </div>
+    </div>
+  </li>
+</template>
+
+<style>
+.pxd-timeline-item.is-center:first-child > .pxd-timeline-item--tail {
+  top: calc(50% - 0.625rem);
+  height: calc(50% + 0.625rem);
+}
+
+.pxd-timeline-item.is-center:last-child > .pxd-timeline-item--tail {
+  display: block;
+  height: calc(50% - 0.625rem);
+}
+</style>
