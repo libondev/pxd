@@ -64,6 +64,7 @@ declare module 'vue' {
     PNote: (typeof import('pxd/components/note'))['default']
     PNumberInput: (typeof import('pxd/components/number-input'))['default']
     POverlay: (typeof import('pxd/components/overlay'))['default']
+    PPageNumber: (typeof import('pxd/components/page-number'))['default']
     PPagination: (typeof import('pxd/components/pagination'))['default']
     PPinInput: (typeof import('pxd/components/pin-input'))['default']
     PPlaceholder: (typeof import('pxd/components/placeholder'))['default']
