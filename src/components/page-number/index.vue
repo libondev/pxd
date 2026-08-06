@@ -92,7 +92,7 @@ watch(
 
 <template>
   <nav
-    class="pxd-page-number gap-1 inline-flex items-center"
+    class="pxd-page-number gap-1 inline-flex items-center w-full max-w-full"
     aria-label="Pagination"
     :aria-disabled="disabled"
     v-bind="$attrs"
