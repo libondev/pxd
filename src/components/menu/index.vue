@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
-import { computed, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/use-model-value'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive'
 import { getCssUnitValue } from '../../utils/format'
@@ -28,6 +28,7 @@ const modelValue = useModelValue(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
+const listRef = shallowRef<{ focus: () => void }>()
 
 const listStyles = computed(() => ({
   '--list-width': getCssUnitValue(props.listWidth),
@@ -36,6 +37,15 @@ const listStyles = computed(() => ({
 function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
 }
+
+watch(popoverVisible, async (visible) => {
+  if (!visible) {
+    return
+  }
+
+  await nextTick()
+  listRef.value?.focus()
+})
 
 function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
@@ -62,6 +72,7 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
 
     <template #content>
       <PList
+        ref="listRef"
         :value="modelValue"
         :style="listStyles"
         :options="options"

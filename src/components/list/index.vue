@@ -8,6 +8,7 @@ import type {
   ListEmits,
 } from './types'
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useListKeyboardController } from '../../composables/use-list-keyboard-controller'
 import { useListNavigation } from '../../composables/use-list-navigation'
 import {
   type ListContext,
@@ -16,8 +17,6 @@ import {
   useListFilterContext,
   useListNestedContext,
 } from '../../contexts/list'
-import { cachedOff, cachedOn } from '../../utils/event'
-import { isServer } from '../../utils/is'
 import PListNested from '../_internal/list-nested.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
@@ -178,13 +177,28 @@ const {
   itemSelector: `[data-list-item]:not([data-disabled="true"],[hidden])`,
   itemFilter: (item, container) =>
     item.closest<HTMLElement>('[data-list-container]') === container && !item.closest('[hidden]'),
-  toggleOnKeyPress: rootProps.toggleOnKeyPress,
+  toggleOnKeyPress: () => rootProps.toggleOnKeyPress ?? true,
   defaultActiveIndex: isRootList ? rootProps.defaultActiveIndex : -1,
   onToggle,
   onEnter: enterItem,
   onLeft: parentListContext ? leaveToParent : undefined,
   onRight: enterChild,
   onActivate: activate,
+})
+
+const { onKeydown: onListKeydown } = useListKeyboardController({
+  list: { onKeydown },
+  keys: [
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'End',
+    'Enter',
+    'Home',
+    'PageDown',
+    'PageUp',
+  ],
 })
 
 const filterCtx = useListFilterContext(null)
@@ -223,14 +237,10 @@ if (isRootList) {
   watch(
     () => props.visible,
     (visible) => {
-      if (visible) {
-        cachedOff(document, 'keydown', onRootKeydown)
-        cachedOn(document, 'keydown', onRootKeydown)
-      } else {
+      if (!visible) {
         activeList.value?.setActiveIndex(-1)
         activeList.value = listContext
         setActiveIndex(-1)
-        cachedOff(document, 'keydown', onRootKeydown)
       }
     },
   )
@@ -243,37 +253,30 @@ function onRootKeydown(ev: KeyboardEvent): void {
   activeList.value?.onKeydown(ev)
 }
 
-onMounted(async () => {
-  if (parentListContext) {
-    parentItem =
-      parentNestedContext?.parentItem?.value ??
-      containerRef.value?.closest<HTMLElement>('[data-list-item]') ??
-      undefined
-    if (parentItem) {
-      parentListContext.registerChildList(parentItem, listContext)
-    }
+onMounted(() => {
+  if (!parentListContext) {
     return
   }
 
-  if (isServer()) {
-    return
+  parentItem =
+    parentNestedContext?.parentItem?.value ??
+    containerRef.value?.closest<HTMLElement>('[data-list-item]') ??
+    undefined
+  if (parentItem) {
+    parentListContext.registerChildList(parentItem, listContext)
   }
-
-  cachedOn(document, 'keydown', onRootKeydown)
 })
 
 onBeforeUnmount(() => {
   if (parentItem && parentListContext) {
     parentListContext.unregisterChildList(parentItem)
   }
-
-  if (isRootList) {
-    cachedOff(document, 'keydown', onRootKeydown)
-  }
 })
 
 defineExpose({
   isEmpty,
+  focus: () => containerRef.value?.focus(),
+  onKeydown: onRootKeydown,
   refreshItems,
   setActiveIndex,
   setFirstAsActive,
@@ -288,6 +291,8 @@ defineExpose({
     data-list-container
     class="pxd-list m-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
     v-bind="$attrs"
+    @focusin="activate"
+    @keydown="onListKeydown"
     @pointerover="onPointerOver"
   >
     <template v-for="option in renderOptions" :key="option.key">

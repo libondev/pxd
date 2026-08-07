@@ -48,6 +48,10 @@
     "name": "use-list-filter"
   },
   {
+    "camelized": "Use List Keyboard Controller",
+    "name": "use-list-keyboard-controller"
+  },
+  {
     "camelized": "Use List Navigation",
     "name": "use-list-navigation"
   },

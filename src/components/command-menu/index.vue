@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { ListKeyboardTarget } from '../../composables/use-list-keyboard-controller'
 import type { ListOptionSelected } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { computed, shallowRef } from 'vue'
 import { useListFilter } from '../../composables/use-list-filter'
+import { useListKeyboardController } from '../../composables/use-list-keyboard-controller'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
 import { useModelValue } from '../../composables/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
@@ -37,6 +39,11 @@ const modelValue = useModelValue(props, emits)
 
 const filterKeyword = shallowRef('')
 const filterContext = useListFilter({ keyword: filterKeyword })
+const listRef = shallowRef<ListKeyboardTarget>()
+const { onKeydown: onListKeydown } = useListKeyboardController({
+  list: listRef,
+  enabled: () => modelValue.value,
+})
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
 const isEmptyResult = computed(
@@ -66,7 +73,7 @@ function onListItemSelect(item: ListOptionSelected, ev: MouseEvent) {
 
 function onInputKeyword(event: Event) {
   const input = event.target as HTMLInputElement
-  filterKeyword.value = input.value.replaceAll('\'', '')
+  filterKeyword.value = input.value.replaceAll("'", '')
 }
 
 provideListFilterContext(filterContext)
@@ -107,6 +114,7 @@ provideListFilterContext(filterContext)
           name="command-menu-filter-input"
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
           @input="onInputKeyword"
+          @keydown="onListKeydown"
         />
 
         <button
@@ -120,6 +128,7 @@ provideListFilterContext(filterContext)
     </template>
 
     <PList
+      ref="listRef"
       :loop="false"
       :options="options"
       class="sm:max-h-110 h-full"
