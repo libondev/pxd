@@ -322,7 +322,7 @@ defineExpose({
               :component="listComponent"
               :options="item.children ?? []"
               :slots="$slots"
-              class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed z-50 max-h-[min(80dvh,800px)] rounded-lg border"
+              class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
               @click.stop
             />
           </template>
@@ -343,7 +343,7 @@ defineExpose({
             :component="listComponent"
             :options="option.entry.children ?? []"
             :slots="$slots"
-            class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed z-50 max-h-[min(80dvh,800px)] rounded-lg border"
+            class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
             @click.stop
           />
         </template>
