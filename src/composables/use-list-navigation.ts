@@ -6,10 +6,14 @@ import { toValue } from '../utils/helper'
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>
   itemSelector?: MaybeRefOrGetter<string>
+  itemFilter?: (el: HTMLElement, container: HTMLElement) => boolean
   defaultActiveIndex?: MaybeRefOrGetter<number>
   toggleOnKeyPress?: MaybeRefOrGetter<boolean>
   onToggle?: (index: number) => void
   onEnter?: (el: HTMLElement) => void
+  onLeft?: () => void
+  onRight?: (el: HTMLElement) => void
+  onActivate?: () => void
 }
 
 export interface UseListNavigationReturn {
@@ -34,9 +38,7 @@ const DISABLED_KEYS = ['PageUp', 'PageDown']
 
 const KEY_DIRECTION: Record<string, -1 | 1 | undefined> = {
   ArrowUp: -1,
-  ArrowLeft: -1,
   ArrowDown: 1,
-  ArrowRight: 1,
 }
 
 function findNextIndex(len: number, from: number, dir: 1 | -1, loop: boolean): number {
@@ -78,7 +80,12 @@ export function useListNavigation(
 
   function runRefresh() {
     const container = getElement(containerRef)
-    items = container ? Array.from(container.querySelectorAll<HTMLElement>(getItemSelector())) : []
+    const itemFilter = options.itemFilter
+    items = container
+      ? Array.from(container.querySelectorAll<HTMLElement>(getItemSelector())).filter(
+          (el) => !itemFilter || itemFilter(el, container),
+        )
+      : []
 
     items.forEach((el, i) => {
       const ref = itemIndexRefs.get(el)
@@ -148,6 +155,7 @@ export function useListNavigation(
 
     const index = itemIndexRefs.get(listItem)?.value ?? -1
     if (index !== -1) {
+      options.onActivate?.()
       activeIndex.value = index
     }
   }
@@ -190,6 +198,33 @@ export function useListNavigation(
       } else {
         el.click()
       }
+      return
+    }
+
+    if (key === 'ArrowLeft') {
+      if (typeof options.onLeft !== 'function') {
+        return
+      }
+
+      ev.preventDefault()
+      ev.stopPropagation()
+      options.onLeft()
+      return
+    }
+
+    if (key === 'ArrowRight') {
+      if (current < 0 || current >= len) {
+        return
+      }
+
+      const el = items[current]
+      if (!el) {
+        return
+      }
+
+      ev.preventDefault()
+      ev.stopPropagation()
+      options.onRight?.(el)
       return
     }
 

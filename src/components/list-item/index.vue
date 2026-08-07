@@ -1,9 +1,16 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list'
+import {
+  provideListFilterParentItemId,
+  useListContext,
+  useListFilterContext,
+  useListFilterGroupId,
+  useListFilterParentItemId,
+} from '../../contexts/list'
 import { getElement } from '../../utils/dom'
 import { getUniqueId } from '../../utils/helper'
 import { isNil } from '../../utils/is'
@@ -17,6 +24,7 @@ const props = withDefaults(defineProps<ListItemProps>(), {
   as: 'li',
   variant: 'default',
   disabled: false,
+  hasChildren: false,
   keywords: () => [],
 })
 
@@ -24,7 +32,7 @@ const emits = defineEmits<ListItemEmits>()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item sm:min-h-10 min-h-11 py-1 gap-1.5 px-2 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item sm:min-h-10 min-h-11 p-2 gap-1.5 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -49,6 +57,7 @@ const {
 
 const groupId = useListFilterGroupId(null)
 const filterCtx = useListFilterContext(null)
+const parentItemId = useListFilterParentItemId(null)
 
 const itemId = getUniqueId('list-item')
 const itemRef = shallowRef<HTMLElement>()
@@ -97,6 +106,7 @@ onMounted(() => {
 
   filterCtx?.registerItem(itemId, {
     groupId,
+    parentItemId,
     getValue,
     getKeywords,
   })
@@ -110,6 +120,8 @@ onBeforeUnmount(() => {
 
   filterCtx?.unregisterItem(itemId)
 })
+
+provideListFilterParentItemId(itemId)
 </script>
 
 <template>
@@ -121,6 +133,7 @@ onBeforeUnmount(() => {
     data-list-item
     :data-variant="variant"
     :data-checked="isChecked"
+    :data-has-children="hasChildren"
     :data-disabled="disabled"
     :aria-selected="isSelected"
     :hidden="!isVisible"
@@ -135,9 +148,17 @@ onBeforeUnmount(() => {
       </div>
     </slot>
 
+    <slot v-if="isSelected" name="children" />
+
+    <ChevronRightIcon
+      v-if="hasChildren"
+      class="size-4 ml-auto shrink-0 text-foreground-secondary"
+    />
+
     <CheckIcon
       v-if="isChecked"
-      class="pxd-list-item--checked right-2.5 pointer-events-none absolute top-1/2 -translate-y-1/2"
+      class="pxd-list-item--checked pointer-events-none absolute top-1/2 -translate-y-1/2"
+      :class="hasChildren ? 'right-7' : 'right-2.5'"
     />
   </Component>
 </template>

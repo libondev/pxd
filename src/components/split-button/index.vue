@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import type { ListOptionEntry, ListOptionGroup, ListOptionSelected } from '../list/types'
+import type {
+  ListOption,
+  ListOptionEntry,
+  ListOptionGroup,
+  ListOptionSelected,
+} from '../list/types'
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
@@ -22,31 +27,37 @@ function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
   return option.type === 'group'
 }
 
+function resolveOptionByValue(
+  options: ListOptionEntry[],
+  value: ListOptionSelected['value'],
+): ListOption | undefined {
+  for (const entry of options) {
+    if (isListOptionGroup(entry)) {
+      const matchedOption = resolveOptionByValue(entry.options, value)
+      if (matchedOption) {
+        return matchedOption
+      }
+    } else if (entry.value === value) {
+      return entry
+    } else if (entry.children?.length) {
+      const matchedOption = resolveOptionByValue(entry.children, value)
+      if (matchedOption) {
+        return matchedOption
+      }
+    }
+  }
+}
+
 const selectedItem = computed((): ListOptionSelected | undefined => {
   if (isNil(modelValue.value)) {
     return undefined
   }
 
-  for (const entry of props.options ?? []) {
-    if (isListOptionGroup(entry)) {
-      const matchedOption = entry.options.find((item) => item.value === modelValue.value)
-
-      if (matchedOption) {
-        return matchedOption
-      }
-
-      continue
-    }
-
-    if (entry.value === modelValue.value) {
-      return entry
-    }
-  }
+  return resolveOptionByValue(props.options ?? [], modelValue.value)
 })
 
 function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
   emits('select', item, ev)
-  modelValue.value = item.value
 }
 </script>
 

@@ -30,14 +30,31 @@ export function useListFilter({
     const visibleItems = new Set<string>()
     const visibleGroupIds = new Set<string>()
 
+    function markItemVisible(id: string): void {
+      if (visibleItems.has(id)) {
+        return
+      }
+
+      visibleItems.add(id)
+
+      const item = items.get(id)
+      if (!item) {
+        return
+      }
+
+      if (item.groupId) {
+        visibleGroupIds.add(item.groupId)
+      }
+
+      if (item.parentItemId) {
+        markItemVisible(item.parentItemId)
+      }
+    }
+
     for (const [id, item] of items) {
       if (filter(item.getValue(), search, item.getKeywords())) {
-        visibleItems.add(id)
+        markItemVisible(id)
         visibleCount++
-
-        if (item.groupId) {
-          visibleGroupIds.add(item.groupId)
-        }
       }
     }
 

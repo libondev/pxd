@@ -82,6 +82,34 @@ describe('split-button', () => {
     wrapper.unmount()
   })
 
+  it('should render selected data from nested options', () => {
+    const wrapper = mount(SplitButton, {
+      props: {
+        modelValue: 'grandchild',
+        options: [
+          {
+            label: 'Parent',
+            value: 'parent',
+            children: [
+              {
+                label: 'Child',
+                value: 'child',
+                children: [{ label: 'Grandchild', value: 'grandchild' }],
+              },
+            ],
+          },
+        ],
+      },
+      slots: {
+        default: `<template #default="{ data }">{{ data?.label }}</template>`,
+      },
+    })
+
+    expect(wrapper.text()).toContain('Grandchild')
+
+    wrapper.unmount()
+  })
+
   it('should render custom item slot from options', async () => {
     const wrapper = mount(SplitButton, {
       props: {
@@ -100,6 +128,25 @@ describe('split-button', () => {
 
     expect(document.body.textContent).toContain('Custom Option 1')
     expect(document.body.textContent).toContain('Custom Option 2')
+
+    wrapper.unmount()
+  })
+
+  it('should update model only once when selecting an option', async () => {
+    const wrapper = mount(SplitButton, {
+      props: {
+        options: [{ label: 'Option 1', value: '1' }],
+      },
+    })
+
+    await wrapper.findAll('button')[1]?.trigger('click')
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    document.body.querySelector<HTMLElement>('[data-list-item]')?.click()
+
+    expect(wrapper.emitted('change')).toHaveLength(1)
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
+    expect(wrapper.emitted('select')).toHaveLength(1)
 
     wrapper.unmount()
   })

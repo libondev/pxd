@@ -8,6 +8,7 @@ export interface ListOption {
   variant?: 'default' | 'error' | 'warning'
   description?: ComponentLabel
   keywords?: string[]
+  children?: ListOptionEntry[]
   onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
   [key: string]: any
 }
@@ -20,7 +21,7 @@ export interface ListOptionGroup {
 
 export type ListOptionEntry = ListOption | ListOptionGroup
 
-export type ListOptionSelected = Omit<ListOption, 'as' | 'keywords' | 'onClick'>
+export type ListOptionSelected = Omit<ListOption, 'as' | 'children' | 'keywords' | 'onClick'>
 export type ListOptions = ListOptionEntry[]
 
 export interface ListProps {

@@ -44,4 +44,25 @@ describe('useListFilter', () => {
 
     expect(visibleCount.value).toBe(2)
   })
+
+  it('should keep parent items visible when a descendant matches', () => {
+    const keyword = ref('child')
+    const { isItemVisible, registerItem, visibleCount } = useListFilter({ keyword })
+
+    registerItem('parent', {
+      groupId: null,
+      getValue: () => 'parent',
+      getKeywords: () => [],
+    })
+    registerItem('child', {
+      groupId: null,
+      parentItemId: 'parent',
+      getValue: () => 'child',
+      getKeywords: () => [],
+    })
+
+    expect(isItemVisible('parent')).toBe(true)
+    expect(isItemVisible('child')).toBe(true)
+    expect(visibleCount.value).toBe(1)
+  })
 })

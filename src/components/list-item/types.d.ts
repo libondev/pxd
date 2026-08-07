@@ -7,6 +7,7 @@ export interface ListItemProps {
   variant?: ListOption['variant']
   disabled?: ListOption['disabled']
   keywords?: string[]
+  hasChildren?: boolean
   description?: ListOption['description']
   onClick?: never
 }
