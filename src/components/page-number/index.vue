@@ -2,6 +2,7 @@
 import type { PageNumberEmits, PageNumberProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, ref, watch } from 'vue'
+import { useConfigProvider } from '../../contexts/config-provider'
 
 defineOptions({
   name: 'PPageNumber',
@@ -21,9 +22,17 @@ const props = withDefaults(defineProps<PageNumberProps>(), {
 })
 
 const emits = defineEmits<PageNumberEmits>()
+const configProvider = useConfigProvider()
 
 const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
 const pageInput = ref(String(props.modelValue))
+const pageItemSizeClass = computed(() => {
+  return {
+    sm: 'size-6',
+    md: 'size-8',
+    lg: 'size-10',
+  }[props.size || configProvider.size]
+})
 
 const pageItems = computed<(number | 'ellipsis-left' | 'ellipsis-right')[]>(() => {
   if (pageCount.value <= 7) {
@@ -92,14 +101,15 @@ watch(
 
 <template>
   <nav
-    class="pxd-page-number gap-1 inline-flex items-center w-full max-w-full"
+    class="pxd-page-number gap-1 inline-flex w-full max-w-full items-center"
     aria-label="Pagination"
     :aria-disabled="disabled"
     v-bind="$attrs"
   >
     <button
       type="button"
-      class="pxd-page-number--prev size-8 inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      class="pxd-page-number--prev inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      :class="pageItemSizeClass"
       :disabled="disabled || modelValue <= 1"
       aria-label="Previous page"
       @click="setPage(modelValue - 1)"
@@ -110,7 +120,8 @@ watch(
     <template v-for="item in pageItems" :key="item">
       <span
         v-if="typeof item === 'string'"
-        class="pxd-page-number--ellipsis size-8 inline-flex cursor-default items-center justify-center"
+        class="pxd-page-number--ellipsis inline-flex shrink-0 cursor-default items-center justify-center"
+        :class="pageItemSizeClass"
         aria-hidden="true"
       >
         …
@@ -119,12 +130,13 @@ watch(
       <button
         v-else
         type="button"
-        class="pxd-page-number--item size-8 text-sm inline-flex items-center justify-center rounded-md border self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
-        :class="
+        class="pxd-page-number--item text-sm inline-flex shrink-0 items-center justify-center rounded-md border self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+        :class="[
+          pageItemSizeClass,
           item === modelValue
             ? 'font-medium border-primary bg-background-100 text-primary'
-            : 'border-transparent hover:bg-background-hover hover:text-foreground'
-        "
+            : 'border-transparent hover:bg-background-hover hover:text-foreground',
+        ]"
         :aria-current="item === modelValue ? 'page' : undefined"
         :aria-label="`Page ${item}`"
         :disabled="disabled"
@@ -136,7 +148,8 @@ watch(
 
     <button
       type="button"
-      class="pxd-page-number--next size-8 inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      class="pxd-page-number--next inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      :class="pageItemSizeClass"
       :disabled="disabled || modelValue >= pageCount"
       aria-label="Next page"
       @click="setPage(modelValue + 1)"

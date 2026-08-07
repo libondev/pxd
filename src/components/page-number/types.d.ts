@@ -1,3 +1,5 @@
+import type { ComponentSize } from '../../types/shared'
+
 export interface PageNumberProps {
   /** page */
   modelValue?: number
@@ -5,6 +7,7 @@ export interface PageNumberProps {
   total?: number
   disabled?: boolean
   showQuickJumper?: boolean
+  size?: ComponentSize
 }
 
 export interface PageNumberEmits {

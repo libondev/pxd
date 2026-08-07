@@ -16,6 +16,18 @@ const page = ref(1)
 </template>
 ```
 
+## Sizes
+
+```vue demo
+<template>
+  <PStack direction="vertical">
+    <PPageNumber size="sm" :total="200" />
+    <PPageNumber size="md" :total="200" />
+    <PPageNumber size="lg" :total="200" />
+  </PStack>
+</template>
+```
+
 ## Quick Jumper
 
 Use `show-quick-jumper` to let users enter a page number. The value is submitted on Enter or blur.
@@ -49,6 +61,7 @@ const page = ref(1)
 | total | `number` | `0` | Total number of items |
 | disabled | `boolean` | `false` | Disables all page controls |
 | show-quick-jumper | `boolean` | `false` | Shows an input for jumping to a page |
+| size | `'sm' \| 'md' \| 'lg'` | `configProvider.size` | Size of page controls |
 
 ## Events
 

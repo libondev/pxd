@@ -1,8 +1,60 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { h } from 'vue'
+import ConfigProvider from '../../src/components/config-provider/index.vue'
 import PageNumber from '../../src/components/page-number/index.vue'
 
 describe('page-number', () => {
+  it('inherits size from config provider and allows prop overrides', () => {
+    const wrapper = mount(ConfigProvider, {
+      props: {
+        size: 'lg',
+      },
+      slots: {
+        default: () => h(PageNumber, { size: 'sm', total: 100, pageSize: 20 }),
+      },
+    })
+
+    expect(wrapper.find('[aria-label="Page 1"]').classes()).toContain('size-6')
+
+    wrapper.unmount()
+
+    const providerWrapper = mount(ConfigProvider, {
+      props: {
+        size: 'lg',
+      },
+      slots: {
+        default: () => h(PageNumber, { total: 100, pageSize: 20 }),
+      },
+    })
+
+    expect(providerWrapper.find('[aria-label="Page 1"]').classes()).toContain('size-10')
+
+    providerWrapper.unmount()
+  })
+
+  it('applies the requested size to page controls', () => {
+    for (const [size, sizeClass] of [
+      ['sm', 'size-6'],
+      ['md', 'size-8'],
+      ['lg', 'size-10'],
+    ] as const) {
+      const wrapper = mount(PageNumber, {
+        props: {
+          size,
+          total: 100,
+          pageSize: 20,
+        },
+      })
+
+      expect(wrapper.find('[aria-label="Previous page"]').classes()).toContain(sizeClass)
+      expect(wrapper.find('[aria-label="Page 1"]').classes()).toContain(sizeClass)
+      expect(wrapper.find('[aria-label="Next page"]').classes()).toContain(sizeClass)
+
+      wrapper.unmount()
+    }
+  })
+
   it('renders pages calculated from total and pageSize', () => {
     const wrapper = mount(PageNumber, {
       props: {
