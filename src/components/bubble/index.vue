@@ -21,6 +21,7 @@ const { attrs, classes } = useTailwindVariant(
       role: {
         user: 'pl-10 flex-row-reverse',
         system: 'pr-10',
+        assistant: 'pr-10',
       },
     },
   },
@@ -31,18 +32,19 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: contentClasses } = useTailwindVariant(
   {
-    base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap',
+    base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
     variants: {
       role: {
-        user: 'rounded-tr-none bg-primary text-primary-foreground',
-        system: 'rounded-tl-none bg-gray-100',
+        user: 'bg-primary text-primary-foreground hover:brightness-85 motion-safe:transition-[filter]',
+        system: 'bg-gray-100 hover:bg-gray-300',
+        assistant: 'bg-gray-100 hover:bg-gray-300',
       },
       variant: {},
     },
     compoundVariants: [
       {
         variant: 'ghost',
-        class: 'bg-background border-transparent text-foreground',
+        class: 'bg-background border-transparent text-foreground hover:bg-gray-200',
       },
     ],
   },
@@ -103,3 +105,25 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
     </div>
   </article>
 </template>
+
+<style lang="postcss">
+.pxd-bubble:is([data-role='system'], [data-role='assistant']) {
+  & + & .pxd-bubble--content {
+    border-top-left-radius: 0;
+  }
+
+  &:has(+ &) .pxd-bubble--content {
+    border-bottom-left-radius: 0;
+  }
+}
+
+.pxd-bubble[data-role='user'] {
+  & + & .pxd-bubble--content {
+    border-top-right-radius: 0;
+  }
+
+  &:has(+ &) .pxd-bubble--content {
+    border-bottom-right-radius: 0;
+  }
+}
+</style>

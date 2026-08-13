@@ -1,5 +1,5 @@
 export interface BubbleProps {
-  role?: 'user' | 'system'
+  role?: 'user' | 'system' | 'assistant'
   text?: string
   header?: string
   avatar?: string
