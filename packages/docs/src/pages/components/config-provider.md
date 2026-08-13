@@ -64,12 +64,20 @@ const locales = {
 </template>
 ```
 
+You can also provide only the locale values you need to override. Missing values are merged from `enUS`:
+
+```vue
+<PConfigProvider :locale="{ confirm: { cancel: 'Close' } }">
+  <PTimePicker />
+</PConfigProvider>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'sm' \| 'md' \| 'lg'` | `md` | - |
-| locale | `Record<string, any>` | `() => enUS` | - |
+| locale | `LocalePatch` | `() => enUS` | Merged with `enUS` |
 | enter-motion | `boolean` | `true` | - |
 | leave-motion | `boolean` | `true` | - |
 

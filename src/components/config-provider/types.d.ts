@@ -1,9 +1,9 @@
 import type { Locale } from '../../locales'
-import type { ComponentSize } from '../../types/shared'
+import type { ComponentSize, DeepPartial } from '../../types/shared'
 
 export interface ConfigProviderProps {
   size?: ComponentSize
-  locale?: Locale
+  locale?: DeepPartial<Locale>
   enterMotion?: boolean
   leaveMotion?: boolean
 }

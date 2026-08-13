@@ -7,3 +7,10 @@ export type Nullable<T> = T | null | undefined
 
 export type MaybeElement = Nullable<HTMLElement | SVGElement | ComponentPublicInstance>
 export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRefOrGetter<Nullable<T>>
+export type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends readonly unknown[]
+    ? T[K]
+    : T[K] extends object
+      ? DeepPartial<T[K]>
+      : T[K]
+}
