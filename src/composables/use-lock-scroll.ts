@@ -2,48 +2,67 @@ import { onScopeDispose } from 'vue'
 import { hasScrollbar, isScrollable } from '../utils/dom'
 import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
 
+const rootLockClassNames = ['pointer-events-none']
+const touchMoveOptions = { passive: false }
+
 let rootTouchMoveLocks = 0
+let rootAddedClassNames: string[] = []
+
+function lockRootScroll() {
+  const rootEl = document.documentElement
+  const classNames = [...rootLockClassNames]
+  cachedOn(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
+
+  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(rootEl)
+  const { x: xScrollable, y: yScrollable } = isScrollable(rootEl)
+
+  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
+    classNames.push('scrollbar-gutter-stable', 'scrollbar-disabled')
+  }
+
+  rootAddedClassNames = classNames.filter((className) => !rootEl.classList.contains(className))
+  rootEl.classList.add(...classNames)
+}
+
+function unlockRootScroll() {
+  cachedOff(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
+  document.documentElement.classList.remove(...rootAddedClassNames)
+  rootAddedClassNames = []
+}
 
 export function useLockScroll() {
-  const classList = ['pointer-events-none']
+  let instanceTouchMoveLocks = 0
 
   function isLocked() {
     return rootTouchMoveLocks > 0
   }
 
   function lockScroll() {
-    if (!isLocked()) {
-      const rootEl = document.documentElement
-      cachedOn(document, 'touchmove', preventDefaultScroll, { passive: false })
-
-      const { x: xScrollbar, y: yScrollbar } = hasScrollbar(rootEl)
-      const { x: xScrollable, y: yScrollable } = isScrollable(rootEl)
-
-      if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
-        classList.push('scrollbar-gutter-stable', 'scrollbar-disabled')
-      }
-
-      rootEl.classList.add(...classList)
+    if (rootTouchMoveLocks === 0) {
+      lockRootScroll()
     }
 
     rootTouchMoveLocks++
+    instanceTouchMoveLocks++
   }
 
   function unlockScroll() {
-    if (rootTouchMoveLocks <= 0) {
+    if (instanceTouchMoveLocks <= 0) {
       return
     }
 
-    rootTouchMoveLocks = Math.max(rootTouchMoveLocks - 1, 0)
+    instanceTouchMoveLocks--
+    rootTouchMoveLocks--
 
     if (!rootTouchMoveLocks) {
-      cachedOff(document, 'touchmove', preventDefaultScroll)
-      document.documentElement.classList.remove(...classList)
+      unlockRootScroll()
     }
   }
 
   onScopeDispose(() => {
-    unlockScroll()
+    while (instanceTouchMoveLocks > 0) {
+      unlockScroll()
+    }
   })
 
   return {
