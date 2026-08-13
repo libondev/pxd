@@ -97,7 +97,7 @@
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s update-exports build:core build:docs",
     "build:lib": "run-s update-exports build:core build:style",
-    "build:core": "mkdist -d --src=src --ext=js --format=esm",
+    "build:core": "node scripts/build-core.js",
     "build:only": "run-s build:core build:docs",
     "build:docs": "pnpm --filter docs build",
     "build:style": "run-s gen-styles-file gen-tw-css-file",

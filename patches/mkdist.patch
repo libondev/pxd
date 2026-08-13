@@ -3,7 +3,7 @@ index 87389e2e7e39577690574910f9b12a80533be890..20c07d7a82cea60fb9536aaf6f9e95d0
 --- a/dist/cli.cjs
 +++ b/dist/cli.cjs
 @@ -3,25 +3,25 @@
- 
+
  const citty = require('citty');
  const pathe = require('pathe');
 -const make = require('./shared/mkdist.BiJXIYay.cjs');
@@ -28,12 +28,12 @@ index 87389e2e7e39577690574910f9b12a80533be890..20c07d7a82cea60fb9536aaf6f9e95d0
  require('node:module');
  require('semver');
 -require('tinyglobby');
- 
+
  const name = "mkdist";
 -const version = "2.4.0";
 +const version = "2.4.1";
  const description = "Lightweight file-to-file transformer";
- 
+
  const main = citty.defineCommand({
 diff --git a/dist/cli.mjs b/dist/cli.mjs
 index 80837bb41bdeefd0f4644a5eb20dc039ff81115c..66bde2c284dabd59db5056d51c23f493b34ebfb1 100644
@@ -65,12 +65,12 @@ index 80837bb41bdeefd0f4644a5eb20dc039ff81115c..66bde2c284dabd59db5056d51c23f493
  import 'node:module';
  import 'semver';
 -import 'tinyglobby';
- 
+
  const name = "mkdist";
 -const version = "2.4.0";
 +const version = "2.4.1";
  const description = "Lightweight file-to-file transformer";
- 
+
  const main = defineCommand({
 diff --git a/dist/index.cjs b/dist/index.cjs
 index d5c3bec2879a3fff12301dd003104d83a73ec0c1..3417e089819821bb2c3de48fda6b5c002e23228b 100644
@@ -78,7 +78,7 @@ index d5c3bec2879a3fff12301dd003104d83a73ec0c1..3417e089819821bb2c3de48fda6b5c00
 +++ b/dist/index.cjs
 @@ -1,22 +1,22 @@
  'use strict';
- 
+
 -const make = require('./shared/mkdist.BiJXIYay.cjs');
 -require('pathe');
 -require('node:fs/promises');
@@ -103,9 +103,9 @@ index d5c3bec2879a3fff12301dd003104d83a73ec0c1..3417e089819821bb2c3de48fda6b5c00
  require('node:module');
  require('semver');
 -require('tinyglobby');
- 
- 
- 
+
+
+
 diff --git a/dist/index.d.cts b/dist/index.d.cts
 index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1f38a806c 100644
 --- a/dist/index.d.cts
@@ -119,7 +119,7 @@ index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1
  import { Options as Options$1 } from 'autoprefixer';
  import { Options as Options$2 } from 'cssnano';
 -import { GlobOptions } from 'tinyglobby';
- 
+
  declare const loaders: {
      js: Loader;
 diff --git a/dist/index.d.mts b/dist/index.d.mts
@@ -135,7 +135,7 @@ index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1
  import { Options as Options$1 } from 'autoprefixer';
  import { Options as Options$2 } from 'cssnano';
 -import { GlobOptions } from 'tinyglobby';
- 
+
  declare const loaders: {
      js: Loader;
 diff --git a/dist/index.d.ts b/dist/index.d.ts
@@ -151,7 +151,7 @@ index 128fea62bec4c6e8a73435822e66a5255abc8839..1884591e1bf63599da1fec19bce06fc1
  import { Options as Options$1 } from 'autoprefixer';
  import { Options as Options$2 } from 'cssnano';
 -import { GlobOptions } from 'tinyglobby';
- 
+
  declare const loaders: {
      js: Loader;
 diff --git a/dist/index.mjs b/dist/index.mjs
@@ -192,7 +192,7 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
 +++ b/dist/shared/mkdist.D3U32oxc.cjs
 @@ -1,47 +1,33 @@
  'use strict';
- 
+
 -const pathe = require('pathe');
 -const fsp = require('node:fs/promises');
  const defu = require('defu');
@@ -215,10 +215,10 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
  const node_module = require('node:module');
  const semver = require('semver');
 -const tinyglobby = require('tinyglobby');
- 
+
  var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
  function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e.default : e; }
- 
+
 -const fsp__default = /*#__PURE__*/_interopDefaultCompat(fsp);
  const defu__default = /*#__PURE__*/_interopDefaultCompat(defu);
 +const fsp__default = /*#__PURE__*/_interopDefaultCompat(fsp);
@@ -227,7 +227,7 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
  const autoprefixer__default = /*#__PURE__*/_interopDefaultCompat(autoprefixer);
  const postcss__default = /*#__PURE__*/_interopDefaultCompat(postcss);
  const postcssNested__default = /*#__PURE__*/_interopDefaultCompat(postcssNested);
- 
+
 -function copyFileWithStream(sourcePath, outPath) {
 -  const sourceStream = node_fs.createReadStream(sourcePath);
 -  const outStream = node_fs.createWriteStream(outPath);
@@ -248,9 +248,9 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
 @@ -90,6 +76,60 @@ const jsLoader = async (input, { options }) => {
    return output;
  };
- 
+
 +const postcssLoader = async (input, ctx) => {
-+  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
++  if (ctx.options.postcss === false || ![".css", ".postcss"].includes(input.extension)) {
 +    return;
 +  }
 +  const output = [];
@@ -326,7 +326,7 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
 @@ -257,67 +297,9 @@ function toOmit(record, toRemove) {
    );
  }
- 
+
 -const sassLoader = async (input) => {
 -  if (![".sass", ".scss"].includes(input.extension)) {
 -    return;
@@ -395,7 +395,7 @@ index 326daf4739e0fdd08872e52e27bef0c1f3e136b1..d76cd6366af437c81c48de29f15f9017
 @@ -473,7 +455,21 @@ function augmentWithDiagnostics(result, output, tsHost, ts) {
    }
  }
- 
+
 -const require$1 = node_module.createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('shared/mkdist.BiJXIYay.cjs', document.baseURI).href)));
 +function copyFileWithStream(sourcePath, outPath) {
 +  const sourceStream = node_fs.createReadStream(sourcePath);
@@ -483,15 +483,15 @@ index fcae764c3516fd9a97d6b1eecc1f9534e49e1938..ef9b2a3eade6b194659e85c82353af75
 -    });
 -  });
 -}
- 
+
  const DECLARATION_RE = /\.d\.[cm]?ts$/;
  const CM_LETTER_RE = /(?<=\.)(c|m)(?=[jt]s$)/;
 @@ -77,6 +63,60 @@ const jsLoader = async (input, { options }) => {
    return output;
  };
- 
+
 +const postcssLoader = async (input, ctx) => {
-+  if (ctx.options.postcss === false || ![".css"].includes(input.extension)) {
++  if (ctx.options.postcss === false || ![".css", ".postcss"].includes(input.extension)) {
 +    return;
 +  }
 +  const output = [];
@@ -567,7 +567,7 @@ index fcae764c3516fd9a97d6b1eecc1f9534e49e1938..ef9b2a3eade6b194659e85c82353af75
 @@ -244,67 +284,9 @@ function toOmit(record, toRemove) {
    );
  }
- 
+
 -const sassLoader = async (input) => {
 -  if (![".sass", ".scss"].includes(input.extension)) {
 -    return;
@@ -636,7 +636,7 @@ index fcae764c3516fd9a97d6b1eecc1f9534e49e1938..ef9b2a3eade6b194659e85c82353af75
 @@ -460,6 +442,20 @@ function augmentWithDiagnostics(result, output, tsHost, ts) {
    }
  }
- 
+
 +function copyFileWithStream(sourcePath, outPath) {
 +  const sourceStream = createReadStream(sourcePath);
 +  const outStream = createWriteStream(outPath);
