@@ -3,6 +3,7 @@ import type { Locale } from './index.js'
 const zhCN = {
   date: {
     now: '此刻',
+    today: '今天',
     day: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
     month: [
       '一月',

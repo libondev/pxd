@@ -36,6 +36,10 @@
     "name": "button"
   },
   {
+    "camelized": "Calendar",
+    "name": "calendar"
+  },
+  {
     "camelized": "Card",
     "name": "card"
   },
