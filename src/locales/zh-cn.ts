@@ -1,29 +1,23 @@
-export default {
+import type { Locale } from './index.js'
+
+const zhCN = {
   date: {
     now: '此刻',
-    day: {
-      0: '周日',
-      1: '周一',
-      2: '周二',
-      3: '周三',
-      4: '周四',
-      5: '周五',
-      6: '周六',
-    },
-    month: {
-      0: '一月',
-      1: '二月',
-      2: '三月',
-      3: '四月',
-      4: '五月',
-      5: '六月',
-      6: '七月',
-      7: '八月',
-      8: '九月',
-      9: '十月',
-      10: '十一月',
-      11: '十二月',
-    },
+    day: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    month: [
+      '一月',
+      '二月',
+      '三月',
+      '四月',
+      '五月',
+      '六月',
+      '七月',
+      '八月',
+      '九月',
+      '十月',
+      '十一月',
+      '十二月',
+    ],
   },
   compare: {
     less: '少',
@@ -32,12 +26,12 @@ export default {
     prev: '之前',
   },
   confirm: {
-    ok: '确定',
-    conform: '确认',
     cancel: '取消',
   },
   results: {
     searchText: '未找到结果：',
     noData: '暂无数据',
   },
-}
+} satisfies Locale
+
+export default zhCN
