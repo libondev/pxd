@@ -3,6 +3,7 @@ import type { BubbleProps } from './types'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 import PAvatar from '../avatar/index.vue'
+import PSpinner from '../spinner/index.vue'
 
 defineOptions({
   name: 'PBubble',
