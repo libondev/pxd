@@ -54,6 +54,24 @@ function isDateDisabled(timestamp) {
 </template>
 ```
 
+## Compact
+
+Use a compact layout for narrow containers or picker panels.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(Date.now())
+</script>
+
+<template>
+  <div class="max-w-72">
+    <PCalendar v-model="value" compact />
+  </div>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -61,6 +79,7 @@ function isDateDisabled(timestamp) {
 | default-value | `number \| null` | `null` | Default selected date timestamp |
 | model-value | `number \| null` | - | Selected date timestamp |
 | is-date-disabled | `(timestamp: number) => boolean` | - | Date disabled validator |
+| compact | `boolean` | `false` | Use a compact layout for narrow containers |
 
 ## Events
 

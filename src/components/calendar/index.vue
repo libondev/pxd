@@ -7,7 +7,7 @@ import type {
   CalendarProps,
 } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { dayjs } from '../../utils/date'
 import PButton from '../button/index.vue'
@@ -24,10 +24,16 @@ defineOptions({
 
 const props = withDefaults(defineProps<CalendarProps>(), {
   defaultValue: null,
+  compact: false,
 })
 
 const emits = defineEmits<CalendarEmits>()
 const configProvider = useConfigProvider()
+
+const slots = useSlots()
+if (!Object.keys(slots).some((key) => key !== '_')) {
+  ;(slots as { _?: number })._ = 1
+}
 
 const today = dayjs()
 const todayKey = today.format('YYYY-MM-DD')
@@ -136,47 +142,61 @@ watch(
 
 <template>
   <div class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
-    <div class="mb-4 gap-2 flex items-center justify-between">
-      <div class="min-w-0 font-medium flex-1 truncate">
+    <div class="gap-1 flex items-center" :class="compact ? 'mb-2' : 'mb-4'">
+      <div
+        class="min-w-0 truncate"
+        :class="compact ? 'order-2 ml-auto' : 'font-medium mr-1 flex-1'"
+      >
         <slot name="header" v-bind="panelInfo">
           {{ panelInfo.year }} {{ configProvider.locale.date.month[panelInfo.month - 1] }}
         </slot>
       </div>
 
-      <div class="gap-1 flex shrink-0 items-center">
-        <PButton
-          icon
-          size="sm"
-          variant="ghost"
-          class="text-foreground-secondary"
-          aria-label="Previous month"
-          @click="changeMonth(-1)"
-        >
-          <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
-        </PButton>
+      <PButton
+        icon
+        size="sm"
+        variant="ghost"
+        class="shrink-0 text-foreground-secondary"
+        :class="compact ? 'order-1' : ''"
+        aria-label="Previous month"
+        @click="changeMonth(-1)"
+      >
+        <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
+      </PButton>
 
-        <PButton size="sm" variant="ghost" @click="selectToday">
-          {{ configProvider.locale.date.today }}
-        </PButton>
+      <PButton
+        size="sm"
+        variant="ghost"
+        class="shrink-0"
+        :class="compact ? 'px-0 order-3 mr-auto' : ''"
+        @click="selectToday"
+      >
+        {{ configProvider.locale.date.today }}
+      </PButton>
 
-        <PButton
-          icon
-          size="sm"
-          variant="ghost"
-          class="text-foreground-secondary"
-          aria-label="Next month"
-          @click="changeMonth(1)"
-        >
-          <ChevronRightIcon class="size-4" aria-hidden="true" />
-        </PButton>
-      </div>
+      <PButton
+        icon
+        size="sm"
+        variant="ghost"
+        class="shrink-0 text-foreground-secondary"
+        :class="compact ? 'order-4' : ''"
+        aria-label="Next month"
+        @click="changeMonth(1)"
+      >
+        <ChevronRightIcon class="size-4" aria-hidden="true" />
+      </PButton>
     </div>
 
-    <div class="grid grid-cols-7 border-t border-l" role="grid">
+    <div class="grid grid-cols-7" :class="compact ? 'gap-1' : 'border-t border-l'" role="grid">
       <div
         v-for="weekDay in weekDays"
         :key="weekDay"
-        class="min-h-8 p-2 font-medium text-xs border-r border-b text-right text-foreground-secondary"
+        class="text-xs text-foreground-secondary"
+        :class="
+          compact
+            ? 'min-h-6 py-1 text-center'
+            : 'min-h-8 p-2 font-medium border-r border-b text-right'
+        "
         role="columnheader"
       >
         {{ weekDay }}
@@ -186,11 +206,12 @@ watch(
         v-for="day in calendarDays"
         :key="day.key"
         :day="day"
+        :compact="compact"
         :selected="day.key === selectedDateKey"
         @select="selectDate"
       >
-        <template v-if="$slots.default" #default="slotProps">
-          <slot v-bind="slotProps" />
+        <template #default="slotProps">
+          <slot v-bind="slotProps">{{ slotProps.date }}</slot>
         </template>
       </PCalendarDay>
     </div>

@@ -39,3 +39,9 @@ Known issues and lessons learned during development.
 - **Symptom**: A parent state class updates, but descendant component layout rules never take effect.
 - **Cause**: Vue's `:deep()` transform only applies to scoped style blocks; in a regular `<style>` block the browser receives an unsupported selector.
 - **Fix**: Use ordinary descendant selectors in global component styles, or add `scoped` when the rules require `:deep()`.
+
+### Forwarding slots in v-for re-renders every child on each parent update
+
+- **Symptom**: Selecting a date in PCalendar felt slow; profiling showed all 42 day cells re-rendered per click while only 2 changed in the DOM.
+- **Cause**: A component vnode with `patchFlag & 1024` (DYNAMIC_SLOTS) makes `shouldUpdateComponent` return `true` unconditionally. Slot children get this flag when the compiler marks them dynamic (slot content references parent scope such as `$slots`) or when `normalizeChildren` sees a forwarded slot (`_: 3`) whose owning component's own slots are unstable (no slots passed -> `instance.slots._` undefined; or dynamic slots).
+- **Fix**: Avoid forwarding user slots inside `v-for` children. Render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else` branch), so unchanged cells skip via the props path. Alternative (internal-only): set `useSlots()._ = 1` when the component receives no slots, which relies on Vue's undocumented SlotFlags and is fragile. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat.

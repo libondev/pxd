@@ -8,6 +8,7 @@ defineOptions({
 const props = defineProps<{
   day: CalendarDay
   selected: boolean
+  compact: boolean
 }>()
 
 const emits = defineEmits<{
@@ -25,8 +26,11 @@ function selectDate() {
   <button
     type="button"
     role="gridcell"
-    class="min-h-14 p-2 border-r border-b text-left self-focus-ring outline-none motion-safe:transition-colors"
+    class="self-focus-ring outline-none motion-safe:transition-colors"
     :class="[
+      compact
+        ? 'h-8 flex aspect-square items-center justify-center justify-self-center rounded-md'
+        : 'min-h-14 p-2 border-r border-b text-left',
       selected
         ? 'bg-primary text-primary-foreground'
         : 'hover:bg-background-hover active:bg-background-active',
@@ -40,7 +44,7 @@ function selectDate() {
   >
     <span
       class="size-8 inline-flex items-center justify-center rounded-md"
-      :class="day.isToday && !selected ? 'bg-background-active' : ''"
+      :class="[day.isToday && !selected ? 'bg-background-active' : '']"
     >
       <slot v-bind="day" :is-selected="selected">{{ day.date }}</slot>
     </span>

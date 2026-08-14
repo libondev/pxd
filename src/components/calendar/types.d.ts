@@ -21,6 +21,7 @@ export interface CalendarDay {
 }
 
 export interface CalendarProps {
+  compact?: boolean
   modelValue?: number | null
   defaultValue?: number | null
   isDateDisabled?: (timestamp: number) => boolean
