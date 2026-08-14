@@ -122,7 +122,7 @@ describe('calendar', () => {
         modelValue: august15,
       },
       slots: {
-        default: ({ date, isSelected }: { date: number; isSelected: boolean }) =>
+        item: ({ date, isSelected }: { date: number; isSelected: boolean }) =>
           h('span', { class: 'custom-date', 'data-selected': isSelected }, String(date)),
         header: ({ year, month }: { year: number; month: number }) =>
           h('span', { class: 'custom-header' }, `${year}-${month}`),

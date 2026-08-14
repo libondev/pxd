@@ -27,7 +27,7 @@ const value = ref(Date.now())
 
 <template>
   <PCalendar v-model="value">
-    <template #default="{ date }">
+    <template #item="{ date }">
       <span>{{ date }}</span>
 
       <span v-if="date === 1" class="ml-1 text-xs font-medium text-red-900">New</span>
@@ -92,5 +92,5 @@ const value = ref(Date.now())
 
 | Name | Parameters | Description |
 | --- | --- | --- |
-| default | `{ year, month, date, timestamp }` | Content rendered inside each date |
+| item | `{ year, month, date, timestamp }` | Content rendered inside each date |
 | header | `{ year, month }` | Calendar header |

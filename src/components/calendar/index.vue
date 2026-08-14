@@ -7,7 +7,7 @@ import type {
   CalendarProps,
 } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, shallowRef, useSlots, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
 import { isNil, isUndefined } from '../../utils/is.js'
@@ -30,11 +30,6 @@ const props = withDefaults(defineProps<CalendarProps>(), {
 
 const emits = defineEmits<CalendarEmits>()
 const configProvider = useConfigProvider()
-
-const slots = useSlots()
-if (!Object.keys(slots).some((key) => key !== '_')) {
-  ;(slots as { _?: number })._ = 1
-}
 
 const today = dayjs()
 const todayKey = today.format('YYYY-MM-DD')
@@ -144,10 +139,7 @@ watch(
 <template>
   <div class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
     <div class="gap-1 mb-2 flex items-center">
-      <div
-        class="pxd-calendar--date min-w-0 flex-1 truncate"
-        :class="compact ? 'pl-1.5' : 'font-medium'"
-      >
+      <div class="pxd-calendar--date min-w-0 flex-1 truncate" :class="{ 'font-medium': !compact }">
         <slot name="header" v-bind="panelInfo">
           {{ panelInfo.year }} {{ configProvider.locale.date.month[panelInfo.month - 1] }}
         </slot>
@@ -195,18 +187,30 @@ watch(
         {{ weekDay }}
       </div>
 
-      <PCalendarDay
-        v-for="day in calendarDays"
-        :key="day.key"
-        :day="day"
-        :compact="compact"
-        :selected="day.key === selectedDateKey"
-        @select="selectDate"
-      >
-        <template #default="slotProps">
-          <slot v-bind="slotProps">{{ slotProps.date }}</slot>
-        </template>
-      </PCalendarDay>
+      <template v-if="$slots.item">
+        <PCalendarDay
+          v-for="day in calendarDays"
+          :key="day.key"
+          :day="day"
+          :compact="compact"
+          :selected="day.key === selectedDateKey"
+          @select="selectDate"
+        >
+          <template #default="slotProps">
+            <slot name="item" v-bind="slotProps" />
+          </template>
+        </PCalendarDay>
+      </template>
+      <template v-else>
+        <PCalendarDay
+          v-for="day in calendarDays"
+          :key="day.key"
+          :day="day"
+          :compact="compact"
+          :selected="day.key === selectedDateKey"
+          @select="selectDate"
+        />
+      </template>
     </div>
   </div>
 </template>
