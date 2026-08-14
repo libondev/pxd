@@ -1,6 +1,6 @@
 import { mount, RouterLinkStub } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, markRaw } from 'vue'
 import BreadcrumbItem from '../../src/components/breadcrumb-item/index.vue'
 import Breadcrumb from '../../src/components/breadcrumb/index.vue'
 
@@ -44,6 +44,11 @@ describe('breadcrumb', () => {
       slots: {
         default: createItems,
       },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
+        },
+      },
     })
 
     expect(wrapper.findAll('.pxd-breadcrumb-item--separator')[0]?.text()).toBe('>')
@@ -60,10 +65,15 @@ describe('breadcrumb', () => {
     const wrapper = mount(Breadcrumb, {
       props: {
         separator: '>',
-        separatorIcon: SeparatorIcon,
+        separatorIcon: markRaw(SeparatorIcon),
       },
       slots: {
         default: createItems,
+      },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
+        },
       },
     })
 

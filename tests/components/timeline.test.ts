@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import { defineComponent, Fragment, h } from 'vue'
+import { defineComponent, Fragment, h, markRaw } from 'vue'
 import TimelineItem from '../../src/components/timeline-item/index.vue'
 import Timeline from '../../src/components/timeline/index.vue'
 
@@ -140,7 +140,7 @@ describe('timeline-item', () => {
       render: () => h('span', { class: 'custom-icon' }),
     })
     const iconWrapper = mount(TimelineItem, {
-      props: { icon: Icon },
+      props: { icon: markRaw(Icon) },
     })
 
     expect(iconWrapper.find('.custom-icon').exists()).toBe(true)

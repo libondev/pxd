@@ -45,3 +45,15 @@ Known issues and lessons learned during development.
 - **Symptom**: Selecting a date in PCalendar felt slow; profiling showed all 42 day cells re-rendered per click while only 2 changed in the DOM.
 - **Cause**: A component vnode with `patchFlag & 1024` (DYNAMIC_SLOTS) makes `shouldUpdateComponent` return `true` unconditionally. Slot children get this flag when the compiler marks them dynamic (slot content references parent scope such as `$slots`) or when `normalizeChildren` sees a forwarded slot (`_: 3`) whose owning component's own slots are unstable (no slots passed -> `instance.slots._` undefined; or dynamic slots).
 - **Fix**: Avoid forwarding user slots inside `v-for` children. Render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else` branch), so unchanged cells skip via the props path. Alternative (internal-only): set `useSlots()._ = 1` when the component receives no slots, which relies on Vue's undocumented SlotFlags and is fragile. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat.
+
+### Vue test warnings: unresolved components and reactive component props
+
+- **Symptom**: `pnpm test` prints `[Vue warn]: Failed to resolve component: PSpinner` / `RouterLink` even when the `v-if` branch that renders them is never taken.
+- **Cause**: `resolveComponent()` calls are hoisted out of the `v-if` branch at compile time, so the lookup (and warning) happens on every render. Library-internal components must be imported statically; host-provided ones (`RouterLink`) must be stubbed in tests via `global.stubs`.
+- **Fix**: Import library sub-components in the SFC (e.g. `import PSpinner from '../spinner/index.vue'`), and add `RouterLink: RouterLinkStub` to the `mount` `global.stubs` for tests rendering `to` links.
+
+### Vue test warnings: component object props made reactive by VTU
+
+- **Symptom**: `[Vue warn]: Vue received a Component that was made a reactive object` when a test passes a component object (`defineComponent`, SFC) through `mount` props (`icon`, `separatorIcon`).
+- **Cause**: Vue Test Utils' `baseMount` stores all mount props in `Vue.reactive({})` so `setProps` triggers re-renders; component objects passed as prop values get deep-wrapped in reactive proxies, which Vue's `createVNode` flags as a performance hazard.
+- **Fix**: Pass component objects as `markRaw(Component)` in test mount props, matching what real consumers should do when storing components in reactive state.
