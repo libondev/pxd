@@ -60,7 +60,7 @@ export function isExternalLink(href: string) {
 }
 
 export function toArray(value: unknown) {
-  if (value === null || value === undefined) {
+  if (isNil(value)) {
     return []
   }
 

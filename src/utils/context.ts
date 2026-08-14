@@ -1,5 +1,6 @@
 import type { InjectionKey } from 'vue'
 import { inject, provide } from 'vue'
+import { isUndefined } from './is.js'
 
 type InjectContextStrict<T> = ((fallback?: T) => T) & ((fallback: null) => T | null)
 
@@ -42,7 +43,7 @@ export function createContext<ContextValue>(
   const injectContext = (fallback?: ContextValue | null) => {
     const context = inject(injectionKey, fallback ?? fallbackValue)
 
-    if (context === undefined) {
+    if (isUndefined(context)) {
       throw new Error(
         `Injection \`${injectionKey.toString()}\` not found. Component must be used within \`${providerComponentName}\``,
       )

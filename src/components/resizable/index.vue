@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
-import { provideResizableContext } from '../../contexts/resizable'
+import { provideResizableContext } from '../../contexts/resizable.js'
+import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PResizable',
@@ -75,7 +76,7 @@ function onHandleDrag(handleId: string, delta: { deltaX: number; deltaY: number 
   // 根据 handle 在 DOM 中的位置找到对应的面板索引
   // 每个 handle 控制其前后两个面板的大小调整
   const handleOrder = handleConfigs.value.find((h) => h.id === handleId)?.order
-  if (handleOrder === undefined) {
+  if (isUndefined(handleOrder)) {
     return
   }
 

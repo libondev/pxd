@@ -1,3 +1,5 @@
+import { isUndefined } from './is.js'
+
 type Mergeable = Record<string, unknown>
 
 function isMergeable(value: unknown): value is Mergeable {
@@ -10,7 +12,7 @@ function mergeObjects(target: Mergeable, source: Mergeable): Mergeable {
   for (const key of Object.keys(source)) {
     const sourceValue = source[key]
 
-    if (sourceValue === undefined) {
+    if (isUndefined(sourceValue)) {
       continue
     }
 
