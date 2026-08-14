@@ -31,7 +31,9 @@
     "volar.d.ts"
   ],
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -153,7 +155,7 @@
     "vue-tsc": "catalog:default"
   },
   "peerDependencies": {
-    "vue": ">=2.7.0 || >=3.0.0"
+    "vue": ">=2.7.0 <3.0.0 || >=3.3.0"
   },
   "packageManager": "pnpm@10.34.5",
   "pnpm": {
