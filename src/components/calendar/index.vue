@@ -8,8 +8,9 @@ import type {
 } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, shallowRef, useSlots, watch } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { dayjs } from '../../utils/date'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { dayjs } from '../../utils/date.js'
+import { isNil, isUndefined } from '../../utils/is.js'
 import PButton from '../button/index.vue'
 import PCalendarDay from './calendar-day.vue'
 
@@ -41,13 +42,11 @@ const uncontrolledValue = shallowRef<number | null>(props.defaultValue)
 const panelDate = shallowRef(dayjs(props.modelValue ?? props.defaultValue ?? today.valueOf()))
 
 const selectedValue = computed(() => {
-  return props.modelValue === undefined ? uncontrolledValue.value : props.modelValue
+  return isUndefined(props.modelValue) ? uncontrolledValue.value : props.modelValue
 })
 
 const selectedDateKey = computed(() => {
-  return selectedValue.value === null || selectedValue.value === undefined
-    ? null
-    : dayjs(selectedValue.value).format('YYYY-MM-DD')
+  return isNil(selectedValue.value) ? null : dayjs(selectedValue.value).format('YYYY-MM-DD')
 })
 
 const weekDays = computed(() => {
@@ -112,7 +111,7 @@ function selectDate(day: CalendarDay) {
     date: day.date,
   }
 
-  if (props.modelValue === undefined) {
+  if (isUndefined(props.modelValue)) {
     uncontrolledValue.value = day.timestamp
   }
 
@@ -133,19 +132,21 @@ function selectToday() {
 watch(
   () => props.modelValue,
   (value) => {
-    if (value !== undefined && value !== null) {
-      setPanelDate(dayjs(value))
+    if (isNil(value)) {
+      return
     }
+
+    setPanelDate(dayjs(value))
   },
 )
 </script>
 
 <template>
   <div class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
-    <div class="gap-1 flex items-center" :class="compact ? 'mb-2' : 'mb-4'">
+    <div class="gap-1 mb-2 flex items-center">
       <div
-        class="min-w-0 truncate"
-        :class="compact ? 'order-2 ml-auto' : 'font-medium mr-1 flex-1'"
+        class="pxd-calendar--date min-w-0 flex-1 truncate"
+        :class="compact ? 'pl-1.5' : 'font-medium'"
       >
         <slot name="header" v-bind="panelInfo">
           {{ panelInfo.year }} {{ configProvider.locale.date.month[panelInfo.month - 1] }}
@@ -156,21 +157,14 @@ watch(
         icon
         size="sm"
         variant="ghost"
-        class="shrink-0 text-foreground-secondary"
-        :class="compact ? 'order-1' : ''"
+        class="text-foreground-secondary"
         aria-label="Previous month"
         @click="changeMonth(-1)"
       >
         <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
       </PButton>
 
-      <PButton
-        size="sm"
-        variant="ghost"
-        class="shrink-0"
-        :class="compact ? 'px-0 order-3 mr-auto' : ''"
-        @click="selectToday"
-      >
+      <PButton size="sm" @click="selectToday">
         {{ configProvider.locale.date.today }}
       </PButton>
 
@@ -178,8 +172,7 @@ watch(
         icon
         size="sm"
         variant="ghost"
-        class="shrink-0 text-foreground-secondary"
-        :class="compact ? 'order-4' : ''"
+        class="text-foreground-secondary"
         aria-label="Next month"
         @click="changeMonth(1)"
       >
@@ -187,16 +180,16 @@ watch(
       </PButton>
     </div>
 
-    <div class="grid grid-cols-7" :class="compact ? 'gap-1' : 'border-t border-l'" role="grid">
+    <div
+      class="pxd-calendar--grid grid grid-cols-7"
+      :class="compact ? 'gap-1' : 'border-t border-l'"
+      role="grid"
+    >
       <div
         v-for="weekDay in weekDays"
         :key="weekDay"
-        class="text-xs text-foreground-secondary"
-        :class="
-          compact
-            ? 'min-h-6 py-1 text-center'
-            : 'min-h-8 p-2 font-medium border-r border-b text-right'
-        "
+        class="pxd-calendar--grid-head text-xs font-medium text-gray-800"
+        :class="compact ? 'min-h-6 py-1 text-center' : 'p-2 border-r border-b text-right'"
         role="columnheader"
       >
         {{ weekDay }}

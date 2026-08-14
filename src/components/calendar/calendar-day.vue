@@ -16,9 +16,11 @@ const emits = defineEmits<{
 }>()
 
 function selectDate() {
-  if (!props.day.isDisabled) {
-    emits('select', props.day)
+  if (props.day.isDisabled) {
+    return
   }
+
+  emits('select', props.day)
 }
 </script>
 
@@ -26,7 +28,7 @@ function selectDate() {
   <button
     type="button"
     role="gridcell"
-    class="self-focus-ring outline-none motion-safe:transition-colors"
+    class="pxd-calendar--grid-cell self-focus-ring outline-none motion-safe:transition-colors"
     :class="[
       compact
         ? 'h-8 flex aspect-square items-center justify-center justify-self-center rounded-md'
