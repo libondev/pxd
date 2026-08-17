@@ -468,6 +468,11 @@
   transition-timing-function: var(--default-transition-timing-function);
 }
 
+@utility underline {
+  text-underline-position: from-font;
+  text-decoration-skip-ink: auto;
+}
+
 @utility scrollbar-none {
   & {
     scrollbar-width: none;
