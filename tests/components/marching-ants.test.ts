@@ -1,6 +1,6 @@
-import { nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { nextTick } from 'vue'
 import MarchingAnts from '../../src/components/marching-ants/index.vue'
 
 describe('marching-ants', () => {

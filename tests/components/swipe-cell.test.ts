@@ -285,10 +285,11 @@ describe('swipe-cell', () => {
   it('should not let outside click close an external controller update in the same event', async () => {
     prefixWidth = 64
     suffixWidth = 80
-    const wrapper = mount({
-      components: { SwipeCell },
-      data: () => ({ open: 'prefix' as 'prefix' | 'suffix' | false }),
-      template: `
+    const wrapper = mount(
+      {
+        components: { SwipeCell },
+        data: () => ({ open: 'prefix' as 'prefix' | 'suffix' | false }),
+        template: `
         <div>
           <SwipeCell v-model="open">
             <div>Content</div>
@@ -298,7 +299,9 @@ describe('swipe-cell', () => {
           <button class="open-suffix" @click="open = 'suffix'">Open suffix</button>
         </div>
       `,
-    }, { attachTo: document.body })
+      },
+      { attachTo: document.body },
+    )
     await nextTick()
     await nextTick()
 
