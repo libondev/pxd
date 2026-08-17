@@ -3,7 +3,7 @@ import type { Nullable } from '../types/shared/utils'
 import type { MaybeElement } from '../types/shared/utils'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import { unref } from 'vue'
-import { isNil, isServer } from './is'
+import { isNil, isServer } from './is.js'
 
 let _id = 0
 
@@ -20,7 +20,7 @@ export function getFallbackValue<Variants extends Record<string, any>>(
 }
 
 export function getColorByThreshold(value: number, colors: Record<string, string>): string {
-  const keys = Object.keys(colors)
+  const keys = Object.keys(colors).sort((a, b) => Number(a) - Number(b))
   const keyLength = keys.length
 
   if (keyLength === 0) {

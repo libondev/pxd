@@ -32,6 +32,7 @@ export interface ActiveGraphRowData extends Array<ActiveGraphCellData> {
   isMonthFirstRow?: boolean
   monthName?: string
   headerText: string
+  rowKey?: string
 }
 
 export interface ActiveGraphTooltipInfo {

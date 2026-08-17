@@ -7,12 +7,12 @@ import type {
   ActiveGraphTooltipInfo,
 } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useDelayChange } from '../../composables/use-delay-change'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getAllDatesBetween } from '../../utils/date'
-import { scheduleByRaf } from '../../utils/event'
-import { getCssUnitValue } from '../../utils/format'
-import { getColorByThreshold } from '../../utils/helper'
+import { useDelayChange } from '../../composables/use-delay-change.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getAllDatesBetween } from '../../utils/date.js'
+import { scheduleByRaf } from '../../utils/event.js'
+import { getCssUnitValue } from '../../utils/format.js'
+import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PActiveGraph',
@@ -32,6 +32,12 @@ const configProvider = useConfigProvider()
 const CELL_GAP = 3
 const CELL_SIZE = 12
 
+const itemRadiusStyle = computed(() => {
+  return {
+    '--active-graph-item-radius': getCssUnitValue(props.itemRadius),
+  }
+})
+
 const selectedDate = shallowRef(props.defaultSelect)
 
 const getDefaultStartDate = () => {
@@ -49,10 +55,38 @@ const getDefaultEndDate = () => {
   return new Date()
 }
 
+function isShallowEqualObject(a: object, b: object): boolean {
+  const keys = Object.keys(a)
+
+  if (keys.length !== Object.keys(b).length) {
+    return false
+  }
+
+  return keys.every(
+    (key) => (a as Record<string, unknown>)[key] === (b as Record<string, unknown>)[key],
+  )
+}
+
+let colorsSource: Record<string, string> | undefined
+let colorsCache: Record<string, string> | undefined
+
 const computedColors = computed(() => {
   if (props.colors) {
-    return props.colors
+    if (
+      !isUndefined(colorsCache) &&
+      !isUndefined(colorsSource) &&
+      isShallowEqualObject(props.colors, colorsSource)
+    ) {
+      return colorsCache
+    }
+
+    colorsSource = props.colors
+    colorsCache = { ...props.colors }
+    return colorsCache
   }
+
+  colorsSource = undefined
+  colorsCache = undefined
 
   return {
     0: '',
@@ -63,6 +97,30 @@ const computedColors = computed(() => {
   }
 })
 
+const colorThresholds = computed(() =>
+  Object.keys(computedColors.value)
+    .map(Number)
+    .sort((a, b) => a - b),
+)
+
+function getColor(count: number): string {
+  const colors = computedColors.value
+  const thresholds = colorThresholds.value
+  const length = thresholds.length
+
+  if (length === 0) {
+    return ''
+  }
+
+  for (let i = 0; i < length; i++) {
+    if (count < thresholds[i]!) {
+      return colors[thresholds[i - 1]!]!
+    }
+  }
+
+  return colors[thresholds[length - 1]!]!
+}
+
 const rangedDates = computed(() =>
   getAllDatesBetween(
     props.startDate || getDefaultStartDate(),
@@ -70,16 +128,50 @@ const rangedDates = computed(() =>
   ),
 )
 
-const dateCountMap = computed(() => {
-  const { date, count } = props.fieldNames || { date: 'date', count: 'count' }
+interface DateInfo {
+  year: number
+  month: number
+  day: number
+  weekday: number
+}
 
-  return props.data.reduce(
-    (acc, cur) => {
-      acc[cur[date]] = (acc[cur[date]] || 0) + cur[count]
-      return acc
-    },
-    {} as Record<string, number>,
-  )
+const dateInfoList = computed<DateInfo[]>(() =>
+  rangedDates.value.dates.map((dateStr) => {
+    const date = new Date(dateStr)
+
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate(),
+      weekday: date.getDay(),
+    }
+  }),
+)
+
+let dateCountData: readonly Record<string, any>[] | undefined
+let dateCountNames: { date: string; count: string } | undefined
+let dateCountMapCache: Record<string, number> | undefined
+
+const dateCountMap = computed(() => {
+  const fieldNames = props.fieldNames || { date: 'date', count: 'count' }
+
+  const namesUnchanged =
+    fieldNames === dateCountNames ||
+    (!isUndefined(dateCountNames) && isShallowEqualObject(fieldNames, dateCountNames))
+
+  if (isUndefined(dateCountMapCache) || props.data !== dateCountData || !namesUnchanged) {
+    dateCountData = props.data
+    dateCountNames = fieldNames
+    dateCountMapCache = props.data.reduce(
+      (acc, cur) => {
+        acc[cur[fieldNames.date]] = (acc[cur[fieldNames.date]] || 0) + cur[fieldNames.count]
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+  }
+
+  return dateCountMapCache
 })
 
 // get localized day of week
@@ -113,22 +205,20 @@ function createMonthHeaders() {
   const columnsCount = Math.ceil(dates.length / 7)
   const monthHeaders = Array.from({ length: columnsCount }, () => '')
 
-  const firstDate = new Date(dates[0]!)
-  let trackedMonth = firstDate.getMonth()
+  const firstInfo = dateInfoList.value[0]!
+  let trackedMonth = firstInfo.month
 
   for (let col = 0; col < columnsCount; col++) {
     for (let dayInWeek = 0; dayInWeek < 7; dayInWeek++) {
       const dateIndex = col * 7 + dayInWeek
 
       if (dateIndex < dates.length) {
-        const currentDate = new Date(dates[dateIndex]!)
-        const currentMonth = currentDate.getMonth()
-        const dayOfMonth = currentDate.getDate()
+        const currentInfo = dateInfoList.value[dateIndex]!
 
         // check if is the first day of the new month
-        if (shouldMarkAsMonthHeader(trackedMonth, currentMonth, dayOfMonth)) {
-          trackedMonth = currentMonth
-          monthHeaders[col] = configProvider.locale.date.month[currentMonth]
+        if (shouldMarkAsMonthHeader(trackedMonth, currentInfo.month, currentInfo.day)) {
+          trackedMonth = currentInfo.month
+          monthHeaders[col] = configProvider.locale.date.month[currentInfo.month]
         }
       }
     }
@@ -137,7 +227,7 @@ function createMonthHeaders() {
   // handle edge case: ensure the first month is correctly displayed and does not overlap with other months
   const isFirstTwoColumnsEmpty = monthHeaders[0] === '' && monthHeaders[1] === ''
   if (isFirstTwoColumnsEmpty) {
-    monthHeaders[0] = configProvider.locale.date.month[firstDate.getMonth()]
+    monthHeaders[0] = configProvider.locale.date.month[firstInfo.month]
   }
 
   return monthHeaders
@@ -156,16 +246,11 @@ function createTransposedTableData(): ActiveGraphRowData[] {
   const dateListLength = dateList.length
 
   const monthRows: ActiveGraphRowData[] = []
-  let currentMonth = -1
-  let currentYear = -1
   let currentRow: ActiveGraphCellData[] | null = null
 
   for (let i = 0; i < dateListLength; i++) {
     const dateStr = dateList[i]!
-    const date = new Date(dateStr)
-    const year = date.getFullYear()
-    const month = date.getMonth()
-    const dayOfWeek = date.getDay()
+    const dateInfo = dateInfoList.value[i]!
     const count = dataMap[dateStr] || 0
 
     // create new row
@@ -174,7 +259,7 @@ function createTransposedTableData(): ActiveGraphRowData[] {
 
       // only the first row needs to fill empty cells
       if (i === 0) {
-        for (let j = 0; j < dayOfWeek; j++) {
+        for (let j = 0; j < dateInfo.weekday; j++) {
           currentRow.push({
             hidden: true,
             date: undefined,
@@ -190,14 +275,8 @@ function createTransposedTableData(): ActiveGraphRowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getColorByThreshold(count, computedColors.value),
+      color: getColor(count),
     })
-
-    // record month change
-    if (month !== currentMonth || year !== currentYear) {
-      currentMonth = month
-      currentYear = year
-    }
 
     const isLastItem = i === dateListLength - 1
     const isRowFull = currentRow.length >= 7
@@ -216,7 +295,9 @@ function createTransposedTableData(): ActiveGraphRowData[] {
         }
       }
 
-      monthRows.push([...currentRow] as ActiveGraphRowData)
+      const row = [...currentRow] as ActiveGraphRowData
+      row.rowKey = currentRow.find((cell) => cell.date)?.date
+      monthRows.push(row)
       currentRow = null
     }
   }
@@ -256,13 +337,13 @@ function createStandardTableData(): ActiveGraphRowData[] {
   for (let i = 0; i < dateListLength; i++) {
     const dateStr = dateList[i]!
     const count = dataMap[dateStr] || 0
-    const dayOfWeek = new Date(dateStr).getDay()
+    const dayOfWeek = dateInfoList.value[i]!.weekday
 
     result[dayOfWeek]!.push({
       hidden: false,
       date: dateStr,
       count,
-      color: getColorByThreshold(count, computedColors.value),
+      color: getColor(count),
     })
   }
 
@@ -333,31 +414,15 @@ const tooltipInfo = shallowRef<ActiveGraphTooltipInfo>({} as ActiveGraphTooltipI
 
 const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
 
-// when pointer leaves the table area, hide the tooltip
-function onPointerLeave() {
-  setShowTooltip(false, true)
-  tooltipInfo.value = {} as ActiveGraphTooltipInfo
-  tbodyRect = null!
+const pendingTooltip = {
+  target: null as HTMLTableCellElement | null,
+  date: '',
 }
 
-// when pointer hovers over a cell, show the tooltip
-async function onPointerOver(ev: MouseEvent) {
-  if (!props.tooltip) {
-    return
-  }
+const scheduleTooltipUpdate = scheduleByRaf(() => {
+  const { target, date } = pendingTooltip
 
-  const targetEl = ev.target as HTMLTableCellElement
-
-  if (targetEl.tagName !== 'TD') {
-    setShowTooltip(false)
-    return
-  }
-
-  const date = targetEl.dataset.date
-
-  // if there is no date data, hide the tooltip
-  if (!date) {
-    setShowTooltip(false, true)
+  if (!target || !date) {
     return
   }
 
@@ -369,7 +434,7 @@ async function onPointerOver(ev: MouseEvent) {
   }
 
   setShowTooltip(true, true)
-  const rect = targetEl.getBoundingClientRect()
+  const rect = target.getBoundingClientRect()
   let top = rect.top - tbodyRect.top - CELL_SIZE
 
   // if only the graph is displayed, the tooltip position needs to be reduced by one cell height, because the title is hidden and the position will be above
@@ -383,6 +448,44 @@ async function onPointerOver(ev: MouseEvent) {
     left: rect.left - tbodyRect.left + CELL_GAP,
     top,
   }
+})
+
+// when pointer leaves the table area, hide the tooltip
+function onPointerLeave() {
+  pendingTooltip.target = null
+  pendingTooltip.date = ''
+  scheduleTooltipUpdate.cancel()
+  setShowTooltip(false, true)
+  tooltipInfo.value = {} as ActiveGraphTooltipInfo
+  tbodyRect = null!
+}
+
+// when pointer hovers over a cell, show the tooltip
+function onPointerOver(ev: MouseEvent) {
+  if (!props.tooltip) {
+    return
+  }
+
+  const targetEl = ev.target as HTMLTableCellElement
+
+  if (targetEl.tagName !== 'TD') {
+    if (showTooltip.value) {
+      setShowTooltip(false)
+    }
+    return
+  }
+
+  const date = targetEl.dataset.date
+
+  // if there is no date data, hide the tooltip
+  if (!date) {
+    setShowTooltip(false, true)
+    return
+  }
+
+  pendingTooltip.target = targetEl
+  pendingTooltip.date = date
+  scheduleTooltipUpdate()
 }
 
 onBeforeUnmount(() => {
@@ -400,7 +503,7 @@ onBeforeUnmount(() => {
     <table
       role="grid"
       aria-readonly="true"
-      class="table-auto border-separate"
+      class="table-fixed border-separate"
       style="border-spacing: 3px"
       @pointerleave="onPointerLeave"
     >
@@ -421,11 +524,11 @@ onBeforeUnmount(() => {
       <tbody
         ref="tbodyRef"
         class="text-xs"
-        :style="{ '--active-graph-item-radius': getCssUnitValue(itemRadius) }"
+        :style="itemRadiusStyle"
         @click="onCellClick"
         @pointerover.capture="onPointerOver"
       >
-        <tr v-for="(row, i) of tableBodyList" :key="i" class="h-3">
+        <tr v-for="(row, i) of tableBodyList" :key="row.rowKey || i" class="h-3">
           <td
             class="pxd-active-graph--label relative overflow-hidden leading-none text-foreground-secondary"
           >
@@ -437,14 +540,14 @@ onBeforeUnmount(() => {
           <td
             v-for="col of row"
             :key="col.date"
-            class="pxd-active-graph--item w-3 min-w-3 rounded-(--active-graph-item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-appearance"
+            class="pxd-active-graph--item max-w-3 min-w-3 rounded-(--active-graph-item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-colors"
             :data-date="col.date"
             :class="{
               'pointer-events-none invisible': col.hidden,
               'opacity-30': selectedDate && col.date !== selectedDate,
               'border-primary!': selectedDate && col.date === selectedDate,
             }"
-            :style="`background: ${col.color}`"
+            :style="{ background: col.color }"
           />
         </tr>
 
@@ -458,8 +561,8 @@ onBeforeUnmount(() => {
             </td>
 
             <td
-              v-for="color in computedColors"
-              :key="color"
+              v-for="(color, colorIndex) in computedColors"
+              :key="colorIndex"
               class="w-3 h-3 rounded-(--active-graph-item-radius) bg-gray-alpha-100 motion-safe:transition-colors"
               :style="`background-color: ${color}`"
             />
