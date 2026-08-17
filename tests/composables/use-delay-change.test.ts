@@ -40,9 +40,7 @@ describe('useDelayChange', () => {
 
   it('should call valueChange callback on immediate set', () => {
     const valueChange = vi.fn()
-    const { result, stop } = runWithScope(() =>
-      useDelayChange<string>('initial', { valueChange }),
-    )
+    const { result, stop } = runWithScope(() => useDelayChange<string>('initial', { valueChange }))
     const { setValue } = result
 
     setValue('changed', true)

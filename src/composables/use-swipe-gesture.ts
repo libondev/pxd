@@ -345,7 +345,12 @@ class PointerSwipeRecognizer {
       const point = getPointerPoint(event)
 
       if (this.hasRecognizedPan) {
-        this.emitPan(this.options.onEnd, point, point.x - this.startPoint.x, point.y - this.startPoint.y)
+        this.emitPan(
+          this.options.onEnd,
+          point,
+          point.x - this.startPoint.x,
+          point.y - this.startPoint.y,
+        )
       }
 
       el.releasePointerCapture?.(event.pointerId)

@@ -1,11 +1,11 @@
+import type { computePosition } from '@floating-ui/dom'
 import { mount } from '@vue/test-utils'
-import { h } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
+import { h } from 'vue'
 import Popover from '../../src/components/popover/index.vue'
-import type { computePosition as computePositionType } from '@floating-ui/dom'
 
 const mocks = vi.hoisted(() => ({
-  computePosition: vi.fn<typeof computePositionType>(async () => ({
+  computePosition: vi.fn<typeof computePosition>(async () => ({
     x: 0,
     y: 0,
     placement: 'bottom',
@@ -248,7 +248,11 @@ describe('popover', () => {
           <button data-popover-trigger data-title="Second">Second</button>
         `,
         content: (params: { activeTrigger: HTMLElement | null; activeTriggerIndex: number }) =>
-          h('span', { class: 'content' }, `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`),
+          h(
+            'span',
+            { class: 'content' },
+            `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`,
+          ),
       },
     })
 
@@ -332,7 +336,11 @@ describe('popover', () => {
           <button data-popover-trigger data-title="Second">Second</button>
         `,
         content: (params: { activeTrigger: HTMLElement | null; activeTriggerIndex: number }) =>
-          h('span', { class: 'content' }, `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`),
+          h(
+            'span',
+            { class: 'content' },
+            `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`,
+          ),
       },
     })
 

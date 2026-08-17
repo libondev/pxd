@@ -141,10 +141,7 @@ function reset() {
   startTimer = setTimeout(startScroll, delayMs.value)
 }
 
-watch(
-  () => [props.scrollable, props.wrapable, props.text, delayMs.value, speed.value],
-  reset,
-)
+watch(() => [props.scrollable, props.wrapable, props.text, delayMs.value, speed.value], reset)
 
 useResizeObserver(wrapRef, reset)
 
