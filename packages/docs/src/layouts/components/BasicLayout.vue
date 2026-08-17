@@ -95,7 +95,7 @@ if (!isServer()) {
   </div>
 
   <div
-    class="md:pl-56 xl:border-r min-w-0 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col"
+    class="md:ps-56 xl:border-r min-w-0 flex min-h-[calc(100vh-50px)] w-full max-w-full flex-1 flex-col"
   >
     <div class="min-w-0 relative flex w-full flex-1">
       <div
@@ -108,14 +108,14 @@ if (!isServer()) {
         <slot />
 
         <template v-if="showViewSource">
-          <h2 id="source" class="mb-4" tabindex="-1">
+          <h2 id="source" class="mbe-4" tabindex="-1">
             <a class="header-anchor" href="#source">Source</a>
           </h2>
 
           <PLinkButton :href="componentSourcePath" external-icon target="_blank" text="Source" />
         </template>
 
-        <div class="mt-16 -mx-2">
+        <div class="mbs-16 -mx-2">
           <PPagination :prev="paginationData.prev" :next="paginationData.next" />
         </div>
       </main>
@@ -304,13 +304,11 @@ if (!isServer()) {
   }
 
   h2 + table {
-    display: block;
-    border-collapse: collapse;
     table-layout: auto;
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
-    border-inline: 1px solid var(--color-gray-300);
+    border-left: 1px solid var(--color-gray-300);
     margin-block: 1.68em;
     font-size: 14px;
 
