@@ -1,5 +1,6 @@
 {
   "js/ts.preferences.importModuleSpecifierEnding": "js",
+  "js/ts.preferences.importModuleSpecifier": "relative",
   // Disable the default formatter, use eslint instead
   "eslint.enable": false,
   "prettier.enable": false,
