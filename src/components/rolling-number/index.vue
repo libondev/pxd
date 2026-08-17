@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { RollingNumberEmits, RollingNumberProps } from './types'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { caf, raf } from '../../utils/event'
-import { parseUnitValue } from '../../utils/format'
-import { isServer } from '../../utils/is'
+import { caf, raf } from '../../utils/event.js'
+import { parseUnitValue } from '../../utils/format.js'
+import { isServer, isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PRollingNumber',
@@ -52,7 +52,7 @@ const formattedValue = computed(() => {
   const [intPart, decPart] = val.split('.')
   const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-  return decPart !== undefined ? `${formatted}.${decPart}` : formatted
+  return isUndefined(decPart) ? formatted : `${formatted}.${decPart}`
 })
 
 function easeOutCubic(t: number): number {

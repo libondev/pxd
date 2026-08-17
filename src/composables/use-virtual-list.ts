@@ -8,7 +8,8 @@ import {
   Virtualizer,
 } from '@tanstack/virtual-core'
 import { computed, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
-import { toValue } from '../utils/helper'
+import { toValue } from '../utils/helper.js'
+import { isNil } from '../utils/is.js'
 
 export interface VirtualListItem extends VirtualItem {
   key: string | number
@@ -47,7 +48,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
     if (options.dataKey) {
       const item = options.listData?.[index]
       const key = item?.[options.dataKey]
-      if (key !== undefined && key !== null) {
+      if (!isNil(key)) {
         return key
       }
     }

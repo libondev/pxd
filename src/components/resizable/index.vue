@@ -2,7 +2,7 @@
 import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
 import { provideResizableContext } from '../../contexts/resizable.js'
-import { isUndefined } from '../../utils/is.js'
+import { isNil, isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PResizable',
@@ -122,7 +122,7 @@ function calculateInitialPanelSizes(): {
     const minSize = config.minSize || 0
     const initialSizeNum = config.size
 
-    if (initialSizeNum !== null && initialSizeNum !== undefined) {
+    if (!isNil(initialSizeNum)) {
       sizes[config.id] = Math.max(initialSizeNum, minSize)
       remainingSize -= sizes[config.id]!
     } else {

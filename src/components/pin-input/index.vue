@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { BASIC_HEIGHTS } from '../../constants/size'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { isTruthyProp } from '../../utils/format'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isTruthyProp } from '../../utils/format.js'
+import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PPinInput',
@@ -82,11 +83,11 @@ function replaceCharAt(str: string, index: number, char: string) {
 }
 
 function setInputValue(value: string, index?: number) {
-  if (index !== undefined) {
+  if (isUndefined(index)) {
+    localValue = value
+  } else {
     inputsRef.value[index]!.value = value
     localValue = replaceCharAt(localValue, index, value)
-  } else {
-    localValue = value
   }
 
   modelValue.value = localValue
