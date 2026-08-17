@@ -32,7 +32,7 @@ const emits = defineEmits<ListItemEmits>()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item sm:min-h-10 min-h-11 p-2 gap-1.5 scroll-m-2 text-sm data-[checked=true]:pr-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item sm:min-h-10 min-h-11 p-2 gap-1.5 scroll-m-2 text-sm data-[checked=true]:pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -152,7 +152,7 @@ provideListFilterParentItemId(itemId)
 
     <ChevronRightIcon
       v-if="hasChildren"
-      class="size-4 ml-auto shrink-0 text-foreground-secondary"
+      class="size-4 ms-auto shrink-0 text-foreground-secondary"
     />
 
     <CheckIcon

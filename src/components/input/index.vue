@@ -261,8 +261,8 @@ defineExpose({
     <div
       v-if="password || clearable"
       v-show="modelValue"
-      :class="{ 'pr-2': password && clearable }"
-      class="pxd-input--icon top-0 -ml-1.5 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
+      :class="{ 'pe-2': password && clearable }"
+      class="pxd-input--icon top-0 -ms-1.5 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
       @pointerdown.prevent="NOOP"
     >
       <button
@@ -284,9 +284,9 @@ defineExpose({
 
     <span
       v-if="isWordLimitShown"
-      class="pxd-input--word-limit text-xs px-1.5 -ml-1.5 pointer-events-none shrink-0 text-nowrap text-foreground-secondary"
+      class="pxd-input--word-limit text-xs px-1.5 -ms-1.5 pointer-events-none shrink-0 text-nowrap text-foreground-secondary"
       :class="{
-        'right-0 pr-0 mt-1 absolute top-full': isWordLimitOutside,
+        'right-0 pe-0 mbs-1 absolute top-full': isWordLimitOutside,
         'text-red-900': isWordLimitExceeded,
       }"
     >

@@ -77,11 +77,11 @@ watch(
   <nav v-if="tocHeaders.length > 0" class="p-2">
     <div class="p-2 text-xs font-bold uppercase">On this page</div>
 
-    <ul class="pl-0! text-sm">
+    <ul class="ps-0! text-sm">
       <li
         v-for="item in tocHeaders"
         :key="item.id"
-        class="toc-item px-2.5 py-2 mb-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
+        class="toc-item px-2.5 py-2 mbe-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
         :class="[
           `toc-level-${item.level}`,
           {

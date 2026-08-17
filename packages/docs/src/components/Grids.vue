@@ -13,7 +13,7 @@ defineProps<Props>()
 
 <template>
   <ul
-    class="grid-list pl-0! md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 grid grid-cols-2"
+    class="grid-list ps-0! md:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 grid grid-cols-2"
   >
     <li
       v-for="(item, index) of data"

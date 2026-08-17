@@ -16,14 +16,14 @@ function onLinkClick(event: MouseEvent) {
 
 <template>
   <ul>
-    <li v-for="menu of menus" :key="menu.label" class="mb-0.5">
+    <li v-for="menu of menus" :key="menu.label" class="mbe-0.5">
       <template v-if="'children' in menu">
         <ul>
           <li class="sm:text-sm my-1 px-0.5 text-13 text-foreground-secondary">
             {{ menu.group }}
           </li>
 
-          <li v-for="child of menu.children" :key="child.path" class="mb-0.5">
+          <li v-for="child of menu.children" :key="child.path" class="mbe-0.5">
             <PLinkButton variant="ghost" :href="child.path" full-width @click="onLinkClick">
               {{ child.label }}
             </PLinkButton>

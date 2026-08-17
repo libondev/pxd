@@ -101,7 +101,7 @@ const { attrs, classes } = useTailwindVariant(
       </span>
     </div>
 
-    <div v-if="$slots.action" class="pxd-note--action max-sm:pl-7 shrink-0">
+    <div v-if="$slots.action" class="pxd-note--action max-sm:ps-7 shrink-0">
       <slot name="action" />
     </div>
   </div>

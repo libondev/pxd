@@ -45,10 +45,10 @@ const ensurePosition = computed(() => {
 
 const defaultStyles = computed(() => ({
   headerClass: props.defaultHeaderStyle
-    ? 'pb-4 sm:pb-6 border-b bg-background-200 dark:bg-background-100'
+    ? 'pbe-4 sm:pbe-6 border-b bg-background-200 dark:bg-background-100'
     : '',
   footerClass: props.defaultFooterStyle
-    ? 'border-t pt-4 bg-background-200 dark:bg-background-100'
+    ? 'border-t pbs-4 bg-background-200 dark:bg-background-100'
     : '',
 }))
 
@@ -130,7 +130,7 @@ watch(
         v-bind="$attrs"
       >
         <header
-          class="pxd-drawer--header px-6 pt-4 sm:pt-6 empty:py-3 relative shrink-0"
+          class="pxd-drawer--header px-6 pbs-4 sm:pbs-6 empty:py-3 relative shrink-0"
           :class="defaultStyles.headerClass"
         >
           <slot name="header">
@@ -143,7 +143,7 @@ watch(
               </slot>
             </h3>
 
-            <div v-if="$slots.subtitle || subtitle" class="mt-4 text-sm text-muted-foreground">
+            <div v-if="$slots.subtitle || subtitle" class="mbs-4 text-sm text-muted-foreground">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -160,7 +160,7 @@ watch(
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer px-4 pb-4 gap-2 relative flex shrink-0 items-center justify-between"
+          class="pxd-drawer--footer px-4 pbe-4 gap-2 relative flex shrink-0 items-center justify-between"
           :class="defaultStyles.footerClass"
         >
           <slot name="footer" />

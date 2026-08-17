@@ -31,7 +31,7 @@ const computedTextArray = computed(() => toArray(props.text))
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-snippet pl-3 pr-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
+    base: 'pxd-snippet ps-3 pe-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
     variants: {
       size: {
         sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
@@ -78,8 +78,7 @@ async function onCopyButtonClick() {
         class="m-0 p-0"
         :data-prompt="prompt"
         :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }"
-        >{{ t }}</pre
-      >
+        >{{ t }}</pre>
     </div>
 
     <div class="min-w-5 relative shrink-0">

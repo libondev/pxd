@@ -82,11 +82,11 @@ function handleCustomPrefixChange(event: Event) {
 <template>
   <h1 class="text-2xl font-medium">Icons</h1>
 
-  <PText secondary class="mt-2">
+  <PText secondary class="mbs-2">
     A total of <span class="font-medium text-foreground">{{ iconCount }}</span> icons
   </PText>
 
-  <div class="pt-4 pb-2 z-10 bg-background-100">
+  <div class="pbs-4 pbe-2 z-10 bg-background-100">
     <PInput v-model="searchKeyword" placeholder="Search icons" clearable @input="handleSearch" />
   </div>
 
@@ -106,7 +106,7 @@ function handleCustomPrefixChange(event: Event) {
     </PSwitch>
   </div>
 
-  <Grids :data="filteredComponents" data-key="name" class="mt-2" @click="onIconClick">
+  <Grids :data="filteredComponents" data-key="name" class="mbs-2" @click="onIconClick">
     <template #default="{ item }">
       <button
         role="button"
@@ -115,7 +115,7 @@ function handleCustomPrefixChange(event: Event) {
         <Component :is="item.icon" class="my-2 mx-auto" />
 
         <p
-          class="icon-name m-0! pt-2 relative truncate text-center text-13 text-foreground-secondary"
+          class="icon-name m-0! pbs-2 relative truncate text-center text-13 text-foreground-secondary"
         >
           {{ getCopyContents(item.name) }}
         </p>

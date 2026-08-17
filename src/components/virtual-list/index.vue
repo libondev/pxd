@@ -101,7 +101,7 @@ defineExpose({
         <span v-if="status === 'error'">{{ errorText }}</span>
         <span v-else-if="status === 'finished'">{{ finishedText }}</span>
         <template v-else-if="status === 'loading'">
-          <LoaderCircleIcon class="mr-1.5 motion-safe:animate-spin" />
+          <LoaderCircleIcon class="me-1.5 motion-safe:animate-spin" />
           <span>{{ loadingText }}</span>
         </template>
       </slot>

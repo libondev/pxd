@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
         <PButton variant="ghost" shape="square" class="h-full" @click="openCommandMenu">
           <MagnifyingGlassIcon />
 
-          <span class="sm:block ml-1.5 hidden">Search</span>
+          <span class="sm:block ms-1.5 hidden">Search</span>
 
           <template #suffix>
             <PKbd ctrl label="K" size="sm" class="sm:inline-flex! hidden!" />
@@ -131,7 +131,7 @@ onBeforeUnmount(() => {
         >
           <LogoGithubIcon />
 
-          <span class="sm:block ml-1.5 hidden">Github</span>
+          <span class="sm:block ms-1.5 hidden">Github</span>
         </PLinkButton>
       </div>
 
@@ -140,7 +140,7 @@ onBeforeUnmount(() => {
           <PButton variant="ghost" shape="square" class="h-full">
             <SparklesIcon />
 
-            <span class="sm:block ml-1.5 hidden">Customize</span>
+            <span class="sm:block ms-1.5 hidden">Customize</span>
           </PButton>
         </CustomVariables>
       </div>

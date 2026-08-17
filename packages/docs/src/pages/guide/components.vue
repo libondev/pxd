@@ -38,12 +38,12 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
 <template>
   <h1 class="text-2xl font-medium">Overview</h1>
 
-  <PText secondary class="mt-2">
+  <PText secondary class="mbs-2">
     A total of
     <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
   </PText>
 
-  <div class="pt-4 pb-2 z-10 bg-background-100">
+  <div class="pbs-4 pbe-2 z-10 bg-background-100">
     <PInput
       v-model="searchKeyword"
       placeholder="Search components"

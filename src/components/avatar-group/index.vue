@@ -26,7 +26,7 @@ provideAvatarGroupContext({ props })
 
 <template>
   <div class="pxd-avatar-group flex flex-wrap items-center" v-bind="$attrs">
-    <div v-for="(option, index) in slicedOptions" :key="index" class="group nth-[n+2]:-ml-2.5">
+    <div v-for="(option, index) in slicedOptions" :key="index" class="group nth-[n+2]:-ms-2.5">
       <PAvatar
         :size="size"
         :src="option.src"
@@ -36,7 +36,7 @@ provideAvatarGroupContext({ props })
       />
     </div>
 
-    <div class="group -ml-3">
+    <div class="group -ms-3">
       <PAvatar
         v-if="slicedOptions.length < options.length"
         class="text-xs group-hover:-translate-y-1 group-hover:shadow-lg bg-gray-1000 text-gray-100 ring-2 ring-background-100 group-hover:z-1 group-hover:scale-110 motion-safe:transition-appearance"

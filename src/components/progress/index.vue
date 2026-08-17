@@ -109,7 +109,7 @@ const computedProgressBarStyles = computed(() => {
 
     <span
       v-if="computedLabel || $slots.default"
-      class="text-sm ml-3 font-mono text-foreground-secondary empty:hidden"
+      class="text-sm ms-3 font-mono text-foreground-secondary empty:hidden"
     >
       <slot>
         {{ computedLabel }}

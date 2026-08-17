@@ -138,7 +138,7 @@ watch(
 
 <template>
   <div class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
-    <div class="gap-1 mb-2 flex items-center">
+    <div class="gap-1 mbe-2 flex items-center">
       <div class="pxd-calendar--date min-w-0 flex-1 truncate" :class="{ 'font-medium': !compact }">
         <slot name="header" v-bind="panelInfo">
           {{ panelInfo.year }} {{ configProvider.locale.date.month[panelInfo.month - 1] }}

@@ -22,7 +22,7 @@ const configProvider = useConfigProvider()
     <RouterLink
       v-if="prev"
       :to="prev.href"
-      class="pxd-pagination--prev min-h-13 group py-1 pr-2 pl-6 rounded-md no-underline! self-focus-ring outline-none"
+      class="pxd-pagination--prev min-h-13 group py-1 pe-2 ps-6 rounded-md no-underline! self-focus-ring outline-none"
     >
       <span
         secondary
@@ -44,7 +44,7 @@ const configProvider = useConfigProvider()
     <RouterLink
       v-if="next"
       :to="next.href"
-      class="pxd-pagination--next min-h-13 group py-1 pl-2 pr-6 rounded-md text-right no-underline! self-focus-ring outline-none"
+      class="pxd-pagination--next min-h-13 group py-1 ps-2 pe-6 rounded-md text-right no-underline! self-focus-ring outline-none"
     >
       <span
         secondary

@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
           :key="virtualItem.key"
           :ref="(el: any) => measureElement(el)"
           :data-index="virtualItem.index"
-          class="pxd-bubble-group--item sibling:pt-2 left-0 top-0 absolute w-full"
+          class="pxd-bubble-group--item sibling:pbs-2 left-0 top-0 absolute w-full"
           :style="{ transform: `translateY(${virtualItem.start}px)` }"
         >
           <slot name="item" :item="listData[virtualItem.index]" :index="virtualItem.index" />

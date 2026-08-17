@@ -48,11 +48,11 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
         class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 shrink-0 items-center justify-center first:justify-start last:justify-end"
       >
         <div
-          class="lg:max-w-xs pl-2.5 pr-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200"
+          class="lg:max-w-xs ps-2.5 pe-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200"
         >
           <LockClosedIcon class="text-sm text-foreground-secondary" />
 
-          <div class="pl-1.5 min-w-0 flex-1 truncate text-center text-13 text-gray-1000">
+          <div class="ps-1.5 min-w-0 flex-1 truncate text-center text-13 text-gray-1000">
             {{ address }}
           </div>
 

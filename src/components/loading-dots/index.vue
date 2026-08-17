@@ -7,7 +7,7 @@ defineOptions({
 
 <template>
   <span class="pxd-loading-dots inline-flex items-center" v-bind="$attrs">
-    <div v-if="$slots.prefix" class="pxd-loading-dots--text mr-3">
+    <div v-if="$slots.prefix" class="pxd-loading-dots--text me-3">
       <slot name="prefix" />
     </div>
 
@@ -23,7 +23,7 @@ defineOptions({
       style="animation-delay: 0.4s"
     />
 
-    <div v-if="$slots.suffix" class="pxd-loading-dots--text ml-3">
+    <div v-if="$slots.suffix" class="pxd-loading-dots--text ms-3">
       <slot name="suffix" />
     </div>
   </span>

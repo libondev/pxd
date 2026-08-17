@@ -43,7 +43,7 @@ function getLabelText() {
       :class="stateClassNames[state]"
     />
 
-    <span v-if="label" class="pl-2 pr-1 min-w-0 text-sm truncate after:content-[attr(aria-label)]">
+    <span v-if="label" class="ps-2 pe-1 min-w-0 text-sm truncate after:content-[attr(aria-label)]">
       {{ getLabelText() }}
     </span>
   </span>

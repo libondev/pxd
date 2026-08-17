@@ -79,7 +79,7 @@ async function onCheckboxChange(e: Event) {
 
     <span
       v-if="inactiveLabel"
-      class="pxd-toggle--label text-sm mr-1.5 pl-0.5 leading-none opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
+      class="pxd-toggle--label text-sm me-1.5 ps-0.5 leading-none opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
       >{{ inactiveLabel }}</span
     >
 
@@ -108,7 +108,7 @@ async function onCheckboxChange(e: Event) {
 
     <span
       v-if="activeLabel"
-      class="pxd-toggle--label text-sm ml-1.5 pr-0.5 leading-none opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
+      class="pxd-toggle--label text-sm ms-1.5 pe-0.5 leading-none opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
       >{{ activeLabel }}</span
     >
   </label>

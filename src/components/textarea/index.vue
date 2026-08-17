@@ -39,11 +39,11 @@ const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
 const nativeMaxlength = computed(() => (isComposing.value ? undefined : props.maxlength))
 
 const nativeTextareaClasses = computed(() => ({
-  'pb-7': isWordLimitShown.value && isWordLimitOutside.value,
+  'pbe-7': isWordLimitShown.value && isWordLimitOutside.value,
 }))
 
 const wordLimitClasses = computed(() => ({
-  'top-full right-0 mt-1': isWordLimitOutside.value,
+  'top-full right-0 mbs-1': isWordLimitOutside.value,
   'bottom-1.5 right-3': !isWordLimitOutside.value,
   'text-red-900': isWordLimitExceeded.value,
 }))

@@ -102,7 +102,7 @@ onMounted(() => {
   <div class="pxd-collapse group/collapse border-b" v-bind="$attrs">
     <h3 class="pxd-collapse--title">
       <button
-        class="pxd-collapse--trigger pr-1 group/collapse flex w-full cursor-pointer touch-manipulation appearance-none items-center justify-between border-none bg-transparent font-inherit self-focus-ring outline-none"
+        class="pxd-collapse--trigger pe-1 group/collapse flex w-full cursor-pointer touch-manipulation appearance-none items-center justify-between border-none bg-transparent font-inherit self-focus-ring outline-none"
         :data-state="isExpanded ? 'open' : 'closed'"
         @click="onToggleClick"
       >

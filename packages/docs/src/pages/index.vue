@@ -69,7 +69,7 @@ onBeforeUnmount(() => {
       <div class="relative">
         <h1 class="text-6xl font-bold inline">PXD</h1>
 
-        <span class="top-0 ml-1 absolute select-none">
+        <span class="top-0 ms-1 absolute select-none">
           <PTooltip content="Released latest version">
             <a href="https://www.npmjs.com/package/pxd" target="_blank">
               <img src="https://img.shields.io/npm/v/pxd.svg" />
@@ -79,13 +79,13 @@ onBeforeUnmount(() => {
       </div>
 
       <p
-        class="mt-8 max-w-xl leading-relaxed! leading-tight mx-auto text-balance text-foreground-secondary"
+        class="mbs-8 max-w-xl leading-relaxed! leading-tight mx-auto text-balance text-foreground-secondary"
       >
         Built-in light/dark theme, PC & mobile ready, animation-free mode supported. One codebase
         for Vue 2.7+ & Vue 3.2+. Written in TypeScript.
       </p>
 
-      <div class="mt-16 gap-3 flex justify-center">
+      <div class="mbs-16 gap-3 flex justify-center">
         <PLinkButton :scale="false" shape="rounded" variant="primary" href="/guide/introduction">
           Get Started
 
@@ -104,15 +104,15 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <hr class="mb-8 sm:mb-20 sm:max-w-3xl max-sm:w-3/4 mx-auto" />
+    <hr class="mbe-8 sm:mbe-20 sm:max-w-3xl max-sm:w-3/4 mx-auto" />
 
     <section
-      class="features mb-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap"
+      class="features mbe-8 max-w-5xl gap-4 py-20 relative mx-auto flex cursor-default flex-wrap"
     >
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Vue 2 & 3 compatibility</h3>
+        <h3 class="mbe-1.5 font-medium">Vue 2 & 3 compatibility</h3>
 
         <PText secondary> Use the same syntax across Vue 2.7+ and Vue 3.2+.</PText>
       </div>
@@ -120,7 +120,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Light and dark themes</h3>
+        <h3 class="mbe-1.5 font-medium">Light and dark themes</h3>
 
         <PText secondary>
           Switch between light and dark themes with ease. See
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">On-demand imports</h3>
+        <h3 class="mbe-1.5 font-medium">On-demand imports</h3>
 
         <PText secondary> Import only the components you use with a resolver.</PText>
       </div>
@@ -142,7 +142,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Reduced-motion support</h3>
+        <h3 class="mbe-1.5 font-medium">Reduced-motion support</h3>
 
         <PText secondary>
           Respect
@@ -154,7 +154,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Configurable motion</h3>
+        <h3 class="mbe-1.5 font-medium">Configurable motion</h3>
 
         <PText secondary>
           Control enter and leave motion independently with
@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Deep customization</h3>
+        <h3 class="mbe-1.5 font-medium">Deep customization</h3>
 
         <PText secondary>
           Customize component <span class="font-medium">transition-duration</span> and
@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mb-1.5 font-medium">Responsive by design</h3>
+        <h3 class="mbe-1.5 font-medium">Responsive by design</h3>
 
         <PText secondary> Build polished interfaces for desktop and mobile devices.</PText>
       </div>

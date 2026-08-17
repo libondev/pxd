@@ -29,7 +29,7 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: actionClasses } = useTailwindVariant(
   {
-    base: 'ml-6 md:ml-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
+    base: 'ms-6 md:ms-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
     variants: {
       variant: {
         warning: 'text-amber-1000 decoration-amber-400 hover:border-amber-500 hover:text-amber-900',

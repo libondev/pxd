@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
       @keydown.enter="togglePopoverVisible(true)"
     >
       <template v-if="prefixIcon" #prefix>
-        <CalendarIcon class="ml-3" />
+        <CalendarIcon class="ms-3" />
       </template>
     </PInput>
 

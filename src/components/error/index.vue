@@ -36,7 +36,7 @@ const { attrs, classes } = useTailwindVariant(
 
 <template>
   <div :class="classes" v-bind="attrs">
-    <StopIcon class="size-4 mr-2 mt-(--mt) shrink-0" />
+    <StopIcon class="size-4 me-2 mbs-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">
       <b v-if="label || error?.label" class="font-medium whitespace-nowrap"

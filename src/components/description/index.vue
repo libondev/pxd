@@ -14,7 +14,7 @@ defineProps<DescriptionProps>()
 <template>
   <dl class="pxd-description" v-bind="$attrs">
     <dt
-      class="pxd-description--title gap-1 text-sm mb-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize"
+      class="pxd-description--title gap-1 text-sm mbe-2 min-h-3.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize"
     >
       <slot name="title">
         {{ title }}

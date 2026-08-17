@@ -33,7 +33,7 @@ const nodeClasses = computed(() => [
 </script>
 
 <template>
-  <li class="pxd-timeline-item group/timeline-item pb-5 last:pb-0 relative" v-bind="$attrs">
+  <li class="pxd-timeline-item group/timeline-item pbe-5 last:pbe-0 relative" v-bind="$attrs">
     <div
       aria-hidden="true"
       class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l-2 border-gray-300 group-last/timeline-item:hidden"
@@ -59,7 +59,7 @@ const nodeClasses = computed(() => [
     <div class="pxd-timeline-item--wrapper px-5 relative -top-[0.325rem]">
       <div
         v-if="!hideTimestamp && placement === 'top'"
-        class="pxd-timeline-item--timestamp is-top mb-1 pt-1 text-xs leading-none text-foreground-secondary"
+        class="pxd-timeline-item--timestamp is-top mbe-1 pbs-1 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}
       </div>
@@ -70,7 +70,7 @@ const nodeClasses = computed(() => [
 
       <div
         v-if="!hideTimestamp && placement === 'bottom'"
-        class="pxd-timeline-item--timestamp is-bottom mt-1 text-xs leading-none text-foreground-secondary"
+        class="pxd-timeline-item--timestamp is-bottom mbs-1 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}
       </div>

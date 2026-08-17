@@ -85,32 +85,32 @@ const iconSlotClasses = createTailwindVariant({
     {
       size: 'sm',
       slot: 'prefix',
-      class: '-ml-0.5',
+      class: '-ms-0.5',
     },
     {
       size: 'md',
       slot: 'prefix',
-      class: '-ml-1',
+      class: '-ms-1',
     },
     {
       size: 'lg',
       slot: 'prefix',
-      class: '-ml-1.5',
+      class: '-ms-1.5',
     },
     {
       size: 'sm',
       slot: 'suffix',
-      class: '-mr-0.5',
+      class: '-me-0.5',
     },
     {
       size: 'md',
       slot: 'suffix',
-      class: '-mr-1',
+      class: '-me-1',
     },
     {
       size: 'lg',
       slot: 'suffix',
-      class: '-mr-1.5',
+      class: '-me-1.5',
     },
   ],
 })

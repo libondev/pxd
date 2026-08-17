@@ -17,12 +17,12 @@ const props = withDefaults(defineProps<BubbleProps>(), {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-bubble group/bubble sibling:mt-2 gap-2 flex max-w-full',
+    base: 'pxd-bubble group/bubble sibling:mbs-2 gap-2 flex max-w-full',
     variants: {
       role: {
-        user: 'pl-10 flex-row-reverse',
-        system: 'pr-10',
-        assistant: 'pr-10',
+        user: 'ps-10 flex-row-reverse',
+        system: 'pe-10',
+        assistant: 'pe-10',
       },
     },
   },
