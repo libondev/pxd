@@ -119,7 +119,6 @@ describe('timeline-item', () => {
   it('styles the default node with its props', () => {
     const wrapper = mount(TimelineItem, {
       props: {
-        center: true,
         color: 'rgb(1, 2, 3)',
         hollow: true,
         size: 'large',
@@ -128,7 +127,6 @@ describe('timeline-item', () => {
     })
     const node = wrapper.find('.pxd-timeline-item--node')
 
-    expect(wrapper.classes()).toContain('is-center')
     expect(node.classes()).toEqual(expect.arrayContaining(['is-large', 'is-success', 'is-hollow']))
     expect(node.attributes('style')).toContain('rgb(1, 2, 3)')
 

@@ -112,7 +112,6 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 | --- | --- | --- | --- |
 | timestamp | `string` | `''` | Timestamp content |
 | hide-timestamp | `boolean` | `false` | Hide the timestamp |
-| center | `boolean` | `false` | Vertically center the timeline item |
 | placement | `'top' \| 'bottom'` | `bottom` | Timestamp position |
 | type | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''` | Node type |
 | color | `string` | `''` | Custom node color |

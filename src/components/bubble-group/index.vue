@@ -2,9 +2,9 @@
 import type { VirtualListOptions } from '../../composables/use-virtual-list'
 import type { BubbleGroupProps } from './types'
 import { nextTick, onBeforeUnmount, onMounted, onUpdated, shallowRef, watch } from 'vue'
-import { useVirtualList } from '../../composables/use-virtual-list'
-import { on, off } from '../../utils/event'
-import { isServer } from '../../utils/is'
+import { useVirtualList } from '../../composables/use-virtual-list.js'
+import { on, off } from '../../utils/event.js'
+import { isServer } from '../../utils/is.js'
 import PBacktop from '../backtop/index.vue'
 
 defineOptions({
@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
           :key="virtualItem.key"
           :ref="(el: any) => measureElement(el)"
           :data-index="virtualItem.index"
-          class="pxd-bubble-group--item [&+&]:pt-2 left-0 top-0 absolute w-full"
+          class="pxd-bubble-group--item sibling:pt-2 left-0 top-0 absolute w-full"
           :style="{ transform: `translateY(${virtualItem.start}px)` }"
         >
           <slot name="item" :item="listData[virtualItem.index]" :index="virtualItem.index" />

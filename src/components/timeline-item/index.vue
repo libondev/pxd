@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { TimelineItemProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
 
 defineOptions({
   name: 'PTimelineItem',
@@ -15,22 +14,6 @@ const props = withDefaults(defineProps<TimelineItemProps>(), {
   color: '',
   size: 'normal',
 })
-
-const { attrs, classes } = useTailwindVariant(
-  {
-    base: 'pxd-timeline-item pb-5 last:pb-0 relative last:[&>.pxd-timeline-item--tail]:hidden',
-    variants: {
-      center: {
-        true: 'is-center flex items-center [&>.pxd-timeline-item--wrapper]:w-full',
-      },
-    },
-  },
-  {
-    selection: () => ({
-      center: props.center,
-    }),
-  },
-)
 
 const nodeClasses = computed(() => [
   `is-${props.size}`,
@@ -50,10 +33,10 @@ const nodeClasses = computed(() => [
 </script>
 
 <template>
-  <li :class="classes" v-bind="attrs">
+  <li class="pxd-timeline-item group/timeline-item pb-5 last:pb-0 relative" v-bind="$attrs">
     <div
       aria-hidden="true"
-      class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l-2 border-gray-300"
+      class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l-2 border-gray-300 group-last/timeline-item:hidden"
     />
 
     <div

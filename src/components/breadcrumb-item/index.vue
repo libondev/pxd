@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { BreadcrumbItemProps } from './types'
-import { useBreadcrumbContext } from '../../contexts/breadcrumb'
+import { useBreadcrumbContext } from '../../contexts/breadcrumb.js'
 
 defineOptions({
   name: 'PBreadcrumbItem',
@@ -14,7 +14,7 @@ const breadcrumbContext = useBreadcrumbContext()
 
 <template>
   <li
-    class="pxd-breadcrumb-item flex list-none items-center text-foreground-secondary last:text-foreground hover:text-foreground last:[&_.pxd-breadcrumb-item--separator]:hidden"
+    class="pxd-breadcrumb-item group/breadcrumb-item flex list-none items-center text-foreground-secondary last:text-foreground hover:text-foreground"
     v-bind="$attrs"
   >
     <RouterLink
@@ -30,7 +30,7 @@ const breadcrumbContext = useBreadcrumbContext()
     </span>
 
     <span
-      class="pxd-breadcrumb-item--separator mx-2 inline-flex items-center text-foreground-secondary"
+      class="pxd-breadcrumb-item--separator mx-2 inline-flex items-center text-foreground-secondary group-last/breadcrumb-item:hidden"
       aria-hidden="true"
     >
       <Component

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { BubbleProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
 import PAvatar from '../avatar/index.vue'
 import PSpinner from '../spinner/index.vue'
 
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<BubbleProps>(), {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-bubble group/bubble [&+&]:mt-2 gap-2 flex max-w-full',
+    base: 'pxd-bubble group/bubble sibling:mt-2 gap-2 flex max-w-full',
     variants: {
       role: {
         user: 'pl-10 flex-row-reverse',

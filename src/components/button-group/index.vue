@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ButtonGroupProps } from './types'
-import { provideButtonGroupContext } from '../../contexts/button'
+import { provideButtonGroupContext } from '../../contexts/button.js'
 
 defineOptions({
   name: 'PButtonGroup',
@@ -16,6 +16,7 @@ provideButtonGroupContext({ props })
   <div
     role="group"
     aria-label="Actions"
+    data-group
     data-button-group
     class="pxd-button-group flex max-w-full"
     v-bind="$attrs"

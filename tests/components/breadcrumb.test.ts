@@ -29,9 +29,6 @@ describe('breadcrumb', () => {
     expect(wrapper.findAll('.pxd-breadcrumb-item')).toHaveLength(3)
     expect(wrapper.findAll('.pxd-breadcrumb-item--separator')).toHaveLength(3)
     expect(wrapper.find('.pxd-breadcrumb-item--separator').text()).toBe('/')
-    expect(wrapper.find('.pxd-breadcrumb-item').classes()).toContain(
-      'last:[&_.pxd-breadcrumb-item--separator]:hidden',
-    )
 
     wrapper.unmount()
   })

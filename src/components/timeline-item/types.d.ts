@@ -7,7 +7,6 @@ export type TimelineItemSize = 'normal' | 'large'
 export interface TimelineItemProps {
   timestamp?: string
   hideTimestamp?: boolean
-  center?: boolean
   placement?: TimelineItemPlacement
   type?: TimelineItemType
   color?: string

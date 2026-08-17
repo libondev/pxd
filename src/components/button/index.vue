@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { BASIC_HEIGHTS } from '../../constants/size'
-import { useButtonGroupContext } from '../../contexts/button'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { isTruthyProp } from '../../utils/format'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { useButtonGroupContext } from '../../contexts/button.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isTruthyProp } from '../../utils/format.js'
 import PSpinner from '../spinner/index.vue'
 
 defineOptions({
@@ -36,7 +36,7 @@ const computedVariant = computed(() => {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance [[data-button-group]_&]:not-first:rounded-l-none [[data-button-group]_&]:not-first:border-l-0 [[data-button-group]_&]:not-last:rounded-r-none',
+    base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
@@ -77,7 +77,7 @@ const { attrs, classes } = useTailwindVariant(
       },
       icon: {
         true: 'p-0 aspect-square',
-        false: '[[data-button-group]_&]:flex-1',
+        false: 'within-group:flex-1',
       },
     },
     compoundVariants: [
