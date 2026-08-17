@@ -3,7 +3,7 @@ import type { ComponentOption, ComponentValue } from '../../types/shared'
 export interface CheckboxGroupProps {
   disabled?: boolean
   options?: ComponentOption[]
-  modelValue: ComponentValue[]
+  modelValue?: ComponentValue[]
 }
 
 export interface CheckboxGroupEmits {

@@ -57,3 +57,15 @@ Known issues and lessons learned during development.
 - **Symptom**: `[Vue warn]: Vue received a Component that was made a reactive object` when a test passes a component object (`defineComponent`, SFC) through `mount` props (`icon`, `separatorIcon`).
 - **Cause**: Vue Test Utils' `baseMount` stores all mount props in `Vue.reactive({})` so `setProps` triggers re-renders; component objects passed as prop values get deep-wrapped in reactive proxies, which Vue's `createVNode` flags as a performance hazard.
 - **Fix**: Pass component objects as `markRaw(Component)` in test mount props, matching what real consumers should do when storing components in reactive state.
+
+### happy-dom drops unparsable style declarations and never appends px to custom properties
+
+- **Symptom**: Asserting `wrapper.attributes('style')` for a computed style that contains `color-mix()` (e.g. PShimmerText's `backgroundImage`) returns only the custom-property declarations — `background-image` is missing. Numeric custom-property values also serialize without a `px` suffix (`--xs: 196;`, not `--xs: 196px`).
+- **Cause**: happy-dom's `CSSStyleDeclaration.setProperty` silently ignores values its CSS parser cannot handle (`color-mix(in oklab, ...)`), and custom properties always serialize as raw strings, so Vue never appends `px` for them (it only does for known CSS properties).
+- **Fix**: Do not assert `color-mix` gradient content through the style attribute; read the component's computed instead (`wrapper.vm.shimmerStyle.backgroundImage` — script-setup bindings are exposed on `vm` in the dev build). For numeric custom properties, assert the unitless form (`--xs: 196;`).
+
+### Test assertions on `<script setup>` internals need a vm cast, not DOM style reads
+
+- **Symptom**: `wrapper.vm.shimmerStyle` in tests errors with TS2339 (`Property 'shimmerStyle' does not exist on type 'ComponentPublicInstance<...>'`); switching to `wrapper.attributes('style')` then fails at runtime because the serialized attribute contains only `--shimmer-total-duration` and drops the `background-image` gradient.
+- **Cause**: vue-tsc types `wrapper.vm` from the component's props/emits only — `<script setup>` bindings are not part of the public instance type, although the render proxy exposes them at runtime. The DOM fallback fails because happy-dom's CSS parser rejects the `color-mix(...)`/`calc(...)` gradient value and silently omits that declaration from the style attribute.
+- **Fix**: Cast the vm like the existing overlay.test.ts pattern: `expect((wrapper.vm as any).shimmerStyle.backgroundImage).toContain('#F5EBD9')` — or `defineExpose` the state when it should be public API.
