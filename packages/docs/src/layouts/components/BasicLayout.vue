@@ -336,11 +336,6 @@ if (!isServer()) {
       padding: 0.75em 0.75em;
       border-right: 1px solid var(--color-gray-300);
     }
-
-    :not(pre) > code {
-      white-space: nowrap;
-      word-break: normal;
-    }
   }
 }
 

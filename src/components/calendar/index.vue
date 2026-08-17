@@ -11,8 +11,8 @@ import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
 import { isNil, isUndefined } from '../../utils/is.js'
+import PCalendarDay from '../_internal/calendar-day.vue'
 import PButton from '../button/index.vue'
-import PCalendarDay from './calendar-day.vue'
 
 defineOptions({
   name: 'PCalendar',

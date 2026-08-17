@@ -66,7 +66,7 @@ const value = ref(Date.now())
 </script>
 
 <template>
-  <div class="max-w-72">
+  <div class="max-w-max max-sm:mx-auto">
     <PCalendar v-model="value" compact />
   </div>
 </template>
