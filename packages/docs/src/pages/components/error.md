@@ -49,6 +49,25 @@ const error = ref({
 </template>
 ```
 
+## Card
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const error = ref({
+  message: 'The request failed.',
+  action: 'Contact Us',
+  label: 'Error',
+  link: 'https://vercel.com/contact',
+})
+</script>
+
+<template>
+  <PError variant="card" :error="error" />
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -56,6 +75,7 @@ const error = ref({
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
 | label | `string \| number \| null` | - | - |
 | error | `ErrorType` | - | - |
+| variant | `default`\|`card` | `default` | - |
 
 ## Slots
 

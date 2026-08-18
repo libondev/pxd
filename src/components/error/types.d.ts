@@ -11,4 +11,5 @@ export interface ErrorProps {
   size?: ComponentSizeWithXs
   label?: ComponentLabel
   error?: ErrorType
+  variant?: 'default' | 'card'
 }
