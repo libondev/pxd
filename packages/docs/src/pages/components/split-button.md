@@ -24,6 +24,32 @@ const options = [
 </template>
 ```
 
+## Icon
+
+```vue demo
+<script setup>
+import SettingsGearIcon from '@gdsicon/vue/settings-gear'
+
+const options = [
+  { label: 'One', value: 'One' },
+  { label: 'Two', value: 'Two' },
+  { label: 'Three', value: 'Three', disabled: true },
+  { label: 'Remove', value: 'Remove', variant: 'warning' },
+  { label: 'Delete', value: 'Delete', variant: 'error' },
+]
+</script>
+
+<template>
+  <PSplitButton :options="options">
+    Execute
+
+    <template #icon>
+      <SettingsGearIcon />
+    </template>
+  </PSplitButton>
+</template>
+```
+
 ## Checked
 
 Before enabling this feature, you must ensure that the `value` attribute is set for each list-item.
