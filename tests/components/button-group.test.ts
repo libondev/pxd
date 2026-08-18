@@ -10,7 +10,7 @@ describe('button-group', () => {
       },
     })
 
-    expect(wrapper.find('[data-button-group]').exists()).toBe(true)
+    expect(wrapper.find('[data-group]').exists()).toBe(true)
     expect(wrapper.find('[role="group"]').exists()).toBe(true)
 
     wrapper.unmount()

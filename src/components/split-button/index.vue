@@ -67,7 +67,7 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
     :options="options"
     :list-width="listWidth"
     position="bottom-end"
-    data-button-group
+    data-group
     class="pxd-split-button items-center"
     :data-variant="variant"
     triggerSelector="[data-split-button-trigger]"

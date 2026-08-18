@@ -17,7 +17,6 @@ provideButtonGroupContext({ props })
     role="group"
     aria-label="Actions"
     data-group
-    data-button-group
     class="pxd-button-group flex max-w-full"
     v-bind="$attrs"
   >
