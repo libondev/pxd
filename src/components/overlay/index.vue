@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useLockScroll } from '../../composables/use-lock-scroll'
-import { useOverlayManager } from '../../composables/use-overlay-manager'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getElement } from '../../utils/dom'
-import { NOOP } from '../../utils/event'
-import { isServer } from '../../utils/is'
+import { useLockScroll } from '../../composables/use-lock-scroll.js'
+import { useOverlayManager } from '../../composables/use-overlay-manager.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getElement } from '../../utils/dom.js'
+import { NOOP } from '../../utils/event.js'
+import { isServer } from '../../utils/is.js'
 import PTeleport from '../teleport/index.vue'
 
 defineOptions({
@@ -47,12 +47,11 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
   lockScroll,
   unlockScroll,
   onPressEscape: (ev: KeyboardEvent) => {
-    emits('escape', ev)
-
     if (!props.closeOnPressEscape) {
       return
     }
 
+    emits('escape', ev)
     emits('update:modelValue', false)
   },
 })
