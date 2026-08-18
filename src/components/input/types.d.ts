@@ -24,6 +24,7 @@ export interface InputProps {
   selectOnFocus?: boolean
   showWordLimit?: boolean
   wordLimitPosition?: 'inside' | 'outside'
+  clearOnPressEscape?: boolean
   defaultPrefixStyle?: boolean
   defaultSuffixStyle?: boolean
 }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { InputEmits, InputProps } from './types'
+import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
@@ -22,10 +23,11 @@ defineOptions({
 
 const props = withDefaults(defineProps<InputProps>(), {
   align: 'left',
+  trimOverflow: false,
   wordLimitPosition: 'inside',
+  clearOnPressEscape: true,
   defaultPrefixStyle: true,
   defaultSuffixStyle: true,
-  trimOverflow: false,
 })
 
 const emits = defineEmits<InputEmits>()
@@ -148,7 +150,7 @@ function onKeydown(event: KeyboardEvent) {
 
   if (event.key === 'Enter') {
     onChange(event)
-  } else if (event.key === 'Escape') {
+  } else if (event.key === 'Escape' && props.clearOnPressEscape) {
     clear(event)
   }
 
@@ -268,6 +270,7 @@ defineExpose({
     >
       <button
         v-if="password"
+        type="button"
         class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="toggleType"
       >
@@ -277,10 +280,10 @@ defineExpose({
       <button
         v-if="clearable"
         type="button"
-        class="px-1 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 text-foreground self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
-        @click="clear"
+        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        @click.stop.prevent="clear"
       >
-        <kbd class="appearance-none font-sans">Esc</kbd>
+        <CrossIcon class="size-3 pointer-events-none" />
       </button>
     </div>
 
