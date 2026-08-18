@@ -128,7 +128,7 @@ function onChange(event: Event) {
   emits('change', inputValue, event)
 }
 
-async function onInput(event: Event) {
+function onInput(event: Event) {
   const ev = event as InputEvent
 
   if (ev.isComposing || isComposing.value) {
@@ -165,7 +165,7 @@ function onCompositionUpdate(event: CompositionEvent) {
   emits('compositionupdate', event)
 }
 
-async function onCompositionEnd(event: CompositionEvent) {
+function onCompositionEnd(event: CompositionEvent) {
   isComposing.value = false
   emits('compositionend', event)
 
