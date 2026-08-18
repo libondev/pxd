@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
 
           <template #footer>
             <div
-              class="sm:flex py-2 gap-1 px-3 hidden items-center justify-end border-t bg-background-200"
+              class="sm:flex p-2 gap-1 hidden items-center justify-end border-t bg-background-200"
             >
               <PText secondary class="text-13"> Open </PText>
               <PKbd enter />

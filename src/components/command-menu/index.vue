@@ -127,7 +127,7 @@ provideListFilterContext(filterContext)
           class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
           @click="closeModal"
         >
-          Esc
+          <kbd class="appearance-none font-sans">Esc</kbd>
         </button>
       </label>
     </template>
