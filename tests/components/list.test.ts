@@ -116,9 +116,7 @@ describe('list', () => {
     })
 
     await nextTick()
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }))
+    wrapper.vm.dispatch('next')
     await nextTick()
     await nextTick()
     await nextTick()
@@ -155,9 +153,7 @@ describe('list', () => {
     })
 
     await nextTick()
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }))
+    wrapper.vm.dispatch('next')
     await nextTick()
     await nextTick()
     await nextTick()
@@ -219,14 +215,10 @@ describe('list', () => {
     })
 
     await nextTick()
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }))
+    wrapper.vm.dispatch('next')
     await nextTick()
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }))
+    wrapper.vm.dispatch('enter-child')
 
     expect(wrapper.emitted('select')).toBeUndefined()
 
@@ -257,9 +249,7 @@ describe('list', () => {
 
     const parentItem = wrapper.find('[data-list-item]')
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }))
+    wrapper.vm.dispatch('next')
     await nextTick()
     await nextTick()
     await nextTick()
@@ -269,9 +259,7 @@ describe('list', () => {
     await parentItem.trigger('click')
     expect(wrapper.emitted('select')).toBeUndefined()
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }))
+    wrapper.vm.dispatch('enter-child')
     await nextTick()
     await nextTick()
 
@@ -282,9 +270,7 @@ describe('list', () => {
     nestedItems[1]?.click()
     expect(wrapper.emitted('select')).toBeUndefined()
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }))
+    wrapper.vm.dispatch('enter-child')
     await nextTick()
     await nextTick()
     await nextTick()
@@ -299,15 +285,11 @@ describe('list', () => {
       value: 'grandchild',
     })
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', cancelable: true }))
+    wrapper.vm.dispatch('leave-parent')
     await nextTick()
     expect(nestedGrandchildItems[1]?.getAttribute('aria-selected')).toBe('true')
 
-    wrapper
-      .find('.pxd-list')
-      .element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', cancelable: true }))
+    wrapper.vm.dispatch('leave-parent')
     await nextTick()
     expect(parentItem.attributes('aria-selected')).toBe('true')
 

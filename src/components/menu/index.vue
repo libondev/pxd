@@ -2,6 +2,7 @@
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
+import { useListKeyboardController } from '../../composables/use-list-keyboard-controller.js'
 import { useModelValue } from '../../composables/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/use-popover-responsive.js'
 import PList from '../list/index.vue'
@@ -27,7 +28,22 @@ const modelValue = useModelValue(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
-const listRef = shallowRef<{ focus: () => void }>()
+const listRef = shallowRef<InstanceType<typeof PList>>()
+
+const { onKeydown } = useListKeyboardController({
+  enabled: () => popoverVisible.value,
+  onCommand: (command) => listRef.value?.dispatch(command) ?? false,
+  keymap: {
+    ArrowDown: 'next',
+    ArrowLeft: 'leave-parent',
+    ArrowRight: 'enter-child',
+    ArrowUp: 'previous',
+    End: 'last',
+    Enter: 'activate',
+    Home: 'first',
+    ' ': 'activate',
+  },
+})
 
 function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
@@ -62,6 +78,7 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
+    @wrapper-keydown="onKeydown"
   >
     <slot />
 

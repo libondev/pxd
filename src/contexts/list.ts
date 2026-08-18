@@ -1,7 +1,8 @@
 import type { ListOptionSelected } from '../components/list/types'
 import type { ListProps } from '../components/list/types'
+import type { ListNavigationCommand } from '../composables/use-list-navigation.js'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface ListContext {
   props: ListProps
@@ -15,7 +16,7 @@ export interface ListContext {
   activeList: ShallowRef<ListContext | null>
   activate: () => void
   activateFirst: () => void
-  onKeydown: (ev: KeyboardEvent) => void
+  dispatch: (command: ListNavigationCommand) => boolean
   registerChildList: (item: HTMLElement, childList: ListContext) => void
   unregisterChildList: (item: HTMLElement) => void
   getChildList: (item: HTMLElement) => ListContext | undefined

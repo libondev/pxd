@@ -36,5 +36,6 @@ export interface PopoverEmits {
   'outside-click': [PointerEvent]
   'trigger-click': [PointerEvent]
   'visible-change': [visible: boolean]
+  'wrapper-keydown': [KeyboardEvent]
   'update:modelValue': [visible: boolean]
 }

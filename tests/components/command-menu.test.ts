@@ -98,6 +98,12 @@ describe('command-menu', () => {
     expect(items[1]?.getAttribute('aria-selected')).toBe('true')
     expect(document.activeElement).toBe(input)
 
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
+    await nextTick()
+
+    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(wrapper.emitted('select')).toBeUndefined()
+
     wrapper.unmount()
   })
 })

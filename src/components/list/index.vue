@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ListNavigationCommand } from '../../composables/use-list-navigation.js'
 import type {
   ListProps,
   ListOption,
@@ -8,7 +9,6 @@ import type {
   ListEmits,
 } from './types'
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useListKeyboardController } from '../../composables/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/use-list-navigation.js'
 import {
   type ListContext,
@@ -29,7 +29,6 @@ defineOptions({
 const props = withDefaults(defineProps<ListProps>(), {
   loop: true,
   options: () => [],
-  toggleOnKeyPress: true,
   defaultActiveIndex: -1,
 })
 
@@ -165,7 +164,7 @@ function onItemSelect(value: ListOptionSelected['value'], ev: MouseEvent): void 
 const {
   activeIndex,
   isEmpty,
-  onKeydown,
+  dispatch,
   setActiveIndex,
   registerItem,
   unregisterItem,
@@ -175,30 +174,17 @@ const {
 } = useListNavigation(containerRef, {
   loop: rootProps.loop,
   itemSelector: `[data-list-item]:not([data-disabled="true"],[hidden])`,
-  itemFilter: (item, container) =>
-    item.closest<HTMLElement>('[data-list-container]') === container && !item.closest('[hidden]'),
-  toggleOnKeyPress: () => rootProps.toggleOnKeyPress ?? true,
   defaultActiveIndex: isRootList ? rootProps.defaultActiveIndex : -1,
+  itemFilter: (item, container) => {
+    return (
+      item.closest<HTMLElement>('[data-list-container]') === container && !item.closest('[hidden]')
+    )
+  },
   onToggle,
-  onEnter: enterItem,
+  onActivateItem: enterItem,
   onLeft: parentListContext ? leaveToParent : undefined,
   onRight: enterChild,
   onActivate: activate,
-})
-
-const { onKeydown: onListKeydown } = useListKeyboardController({
-  list: { onKeydown },
-  keys: [
-    'ArrowDown',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'End',
-    'Enter',
-    'Home',
-    'PageDown',
-    'PageUp',
-  ],
 })
 
 const filterCtx = useListFilterContext(null)
@@ -225,7 +211,7 @@ listContext = {
   activeList,
   activate,
   activateFirst,
-  onKeydown,
+  dispatch,
   registerChildList,
   unregisterChildList,
   getChildList,
@@ -249,8 +235,8 @@ if (isRootList) {
 provideListContext(listContext)
 provideListNestedContext({ list: listContext, hidden: parentPanelHidden })
 
-function onRootKeydown(ev: KeyboardEvent): void {
-  activeList.value?.onKeydown(ev)
+function dispatchRoot(command: ListNavigationCommand): boolean {
+  return activeList.value?.dispatch(command) ?? false
 }
 
 onMounted(() => {
@@ -276,7 +262,7 @@ onBeforeUnmount(() => {
 defineExpose({
   isEmpty,
   focus: () => containerRef.value?.focus(),
-  onKeydown: onRootKeydown,
+  dispatch: dispatchRoot,
   refreshItems,
   setActiveIndex,
   setFirstAsActive,
@@ -292,7 +278,6 @@ defineExpose({
     class="pxd-list m-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
     v-bind="$attrs"
     @focusin="activate"
-    @keydown="onListKeydown"
     @pointerover="onPointerOver"
   >
     <template v-for="option in renderOptions" :key="option.key">

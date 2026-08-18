@@ -188,7 +188,7 @@ describe('popover', () => {
 
     const trigger = wrapper.find('.pxd-popover')
 
-    await trigger.trigger('pointerenter', { clientX: 20, clientY: 30 })
+    await trigger.trigger('pointerover', { clientX: 20, clientY: 30 })
     await flush()
     await trigger.trigger('pointermove', { clientX: 220, clientY: 330 })
     await flush()
@@ -220,7 +220,7 @@ describe('popover', () => {
 
     const trigger = wrapper.find('button')
 
-    await trigger.trigger('pointerenter', { clientX: 20, clientY: 30 })
+    await trigger.trigger('pointerover', { clientX: 20, clientY: 30 })
     await flush()
     await trigger.trigger('click', { clientX: 40, clientY: 50 })
     await trigger.trigger('contextmenu', { clientX: 60, clientY: 70 })
@@ -260,6 +260,38 @@ describe('popover', () => {
     await flush()
 
     expect(getBodyText('.content')).toBe('Second:1')
+
+    wrapper.unmount()
+  })
+
+  it('should move between matched triggers while hovering without hiding', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'hover',
+        triggerSelector: '[data-popover-trigger]',
+      },
+      slots: {
+        default: `
+          <button data-popover-trigger data-title="First">First</button>
+          <button data-popover-trigger data-title="Second">Second</button>
+        `,
+        content: (params: { activeTrigger: HTMLElement | null }) =>
+          h('span', { class: 'content' }, params.activeTrigger?.dataset.title),
+      },
+    })
+
+    const triggers = wrapper.findAll('[data-popover-trigger]')
+
+    await triggers[0].trigger('pointerover')
+    await flush()
+    await triggers[1].trigger('pointerover')
+    await flush()
+
+    expect(wrapper.emitted('show')).toHaveLength(1)
+    expect(wrapper.emitted('hide')).toBeUndefined()
+    expect(getBodyText('.content')).toBe('Second')
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0]).toBe(triggers[1].element)
 
     wrapper.unmount()
   })

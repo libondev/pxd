@@ -1,6 +1,6 @@
 # useListNavigation
 
-Manages keyboard/pointer navigation through DOM list items with active-index tracking.
+Manages pointer navigation and semantic keyboard navigation through DOM list items with active-index tracking.
 
 ## Exports
 
@@ -18,9 +18,8 @@ interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>
   itemSelector?: MaybeRefOrGetter<string>
   defaultActiveIndex?: MaybeRefOrGetter<number>
-  toggleOnKeyPress?: MaybeRefOrGetter<boolean>
   onToggle?: (index: number) => void
-  onEnter?: (el: HTMLElement) => void
+  onActivateItem?: (el: HTMLElement) => void
 }
 
 interface UseListNavigationReturn {
@@ -28,12 +27,21 @@ interface UseListNavigationReturn {
   setActiveIndex: (index: number) => void
   registerItem: (el: HTMLElement, indexRef: ShallowRef<number>) => void
   unregisterItem: (el: HTMLElement) => void
-  onKeydown: (ev: KeyboardEvent) => void
+  dispatch: (command: ListNavigationCommand) => boolean
   onPointerOver: (ev: PointerEvent) => void
   refreshItems: () => Promise<void>
   setFirstAsActive: () => void
   isEmpty: () => boolean
 }
+
+type ListNavigationCommand =
+  | 'next'
+  | 'previous'
+  | 'first'
+  | 'last'
+  | 'activate'
+  | 'enter-child'
+  | 'leave-parent'
 ```
 
 ## Params
@@ -44,6 +52,8 @@ interface UseListNavigationReturn {
 | `options.loop` | `MaybeRefOrGetter<boolean>` | Whether navigation loops from last to first and vice versa |
 | `options.itemSelector` | `MaybeRefOrGetter<string>` | CSS selector for navigable items |
 | `options.defaultActiveIndex` | `MaybeRefOrGetter<number>` | Initial active item index |
-| `options.toggleOnKeyPress` | `MaybeRefOrGetter<boolean>` | Whether to toggle on key press |
 | `options.onToggle` | `(index: number) => void` | Callback fired when an item is toggled |
-| `options.onEnter` | `(el: HTMLElement) => void` | Callback fired when Enter key is pressed on an item |
+| `options.onActivateItem` | `(el: HTMLElement) => void` | Callback fired when the active item is activated |
+
+`dispatch(command)` returns `true` when the command was handled. It does not receive or mutate a
+`KeyboardEvent`; key mapping and browser event consumption belong to the component that owns focus.

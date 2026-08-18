@@ -30,7 +30,6 @@ export interface ListProps {
   value?: ComponentValue
   visible?: boolean
   options?: ListOptionEntry[]
-  toggleOnKeyPress?: boolean
   defaultActiveIndex?: number
 }
 

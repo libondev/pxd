@@ -21,7 +21,7 @@ describe('useListNavigation', () => {
     expect(typeof result.setActiveIndex).toBe('function')
     expect(typeof result.registerItem).toBe('function')
     expect(typeof result.unregisterItem).toBe('function')
-    expect(typeof result.onKeydown).toBe('function')
+    expect(typeof result.dispatch).toBe('function')
     expect(typeof result.onPointerOver).toBe('function')
     expect(typeof result.refreshItems).toBe('function')
     expect(typeof result.setFirstAsActive).toBe('function')
@@ -55,7 +55,7 @@ describe('useListNavigation', () => {
 
     const onLeft = vi.fn()
     const onRight = vi.fn()
-    const { onKeydown, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {
+    const { dispatch, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {
       onLeft,
       onRight,
     })
@@ -63,17 +63,30 @@ describe('useListNavigation', () => {
     await refreshItems()
     setActiveIndex(0)
 
-    const rightEvent = new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true })
-    onKeydown(rightEvent)
+    expect(dispatch('enter-child')).toBe(true)
 
     expect(onRight).toHaveBeenCalledWith(item)
-    expect(rightEvent.defaultPrevented).toBe(true)
 
-    const leftEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft', cancelable: true })
-    onKeydown(leftEvent)
+    expect(dispatch('leave-parent')).toBe(true)
 
     expect(onLeft).toHaveBeenCalledOnce()
-    expect(leftEvent.defaultPrevented).toBe(true)
+
+    container.remove()
+  })
+
+  it('should report enter-child as unhandled without a child handler', async () => {
+    const container = document.createElement('ul')
+    const item = document.createElement('li')
+    item.dataset.listItem = ''
+    container.append(item)
+    document.body.append(container)
+
+    const { dispatch, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {})
+
+    await refreshItems()
+    setActiveIndex(0)
+
+    expect(dispatch('enter-child')).toBe(false)
 
     container.remove()
   })

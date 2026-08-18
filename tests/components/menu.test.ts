@@ -94,4 +94,156 @@ describe('menu', () => {
 
     wrapper.unmount()
   })
+
+  it('should navigate list items with ArrowDown after opening', async () => {
+    const wrapper = mount(Menu, {
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+      slots: {
+        default: '<button>Open</button>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const popoverWrapper = document.body.querySelector<HTMLElement>(
+      '.pxd-popover--wrapper[data-visible="true"]',
+    )!
+    const items = popoverWrapper.querySelectorAll<HTMLElement>('[data-list-item]')
+
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+
+    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should navigate from the active menu without list focus', async () => {
+    const wrapper = mount(Menu, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+      slots: {
+        default: '<button>Open</button>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+    const popoverWrapper = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should activate the current item with Space', async () => {
+    const wrapper = mount(Menu, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+      slots: {
+        default: '<button>Open</button>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const popoverWrapper = document.body.querySelector<HTMLElement>(
+      '.pxd-popover--wrapper[data-visible="true"]',
+    )!
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+    popoverWrapper.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
+    await nextTick()
+
+    expect(wrapper.emitted('select')?.[0]?.[0]).toEqual({ label: 'Option 2', value: '2' })
+
+    wrapper.unmount()
+  })
+
+  it('should scope keyboard navigation to the active popover wrapper', async () => {
+    const firstMenu = mount(Menu, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'First 1', value: 'first-1' },
+          { label: 'First 2', value: 'first-2' },
+        ],
+      },
+      slots: {
+        default: '<button>First</button>',
+      },
+    })
+    const secondMenu = mount(Menu, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'Second 1', value: 'second-1' },
+          { label: 'Second 2', value: 'second-2' },
+        ],
+      },
+      slots: {
+        default: '<button>Second</button>',
+      },
+    })
+
+    await firstMenu.find('button').trigger('click')
+    await secondMenu.find('button').trigger('click')
+    await flushPopover()
+
+    const popoverWrappers = document.body.querySelectorAll<HTMLElement>(
+      '.pxd-popover--wrapper[data-visible="true"]',
+    )
+    const firstItems = popoverWrappers[0]?.querySelectorAll<HTMLElement>('[data-list-item]')
+    const secondItems = popoverWrappers[1]?.querySelectorAll<HTMLElement>('[data-list-item]')
+
+    popoverWrappers[0]?.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+
+    expect(firstItems?.[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(firstItems?.[1]?.getAttribute('aria-selected')).toBe('false')
+    expect(secondItems?.[0]?.getAttribute('aria-selected')).toBe('false')
+    expect(secondItems?.[1]?.getAttribute('aria-selected')).toBe('false')
+
+    firstMenu.unmount()
+    secondMenu.unmount()
+  })
 })

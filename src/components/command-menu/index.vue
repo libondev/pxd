@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { ListKeyboardTarget } from '../../composables/use-list-keyboard-controller'
+import type { ListNavigationCommand } from '../../composables/use-list-navigation'
 import type { ListOptionSelected } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { computed, shallowRef } from 'vue'
-import { useListFilter } from '../../composables/use-list-filter'
-import { useListKeyboardController } from '../../composables/use-list-keyboard-controller'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query'
-import { useModelValue } from '../../composables/use-model-value'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { provideListFilterContext } from '../../contexts/list'
-import { getUniqueId } from '../../utils/helper'
+import { useListFilter } from '../../composables/use-list-filter.js'
+import { useListKeyboardController } from '../../composables/use-list-keyboard-controller.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { provideListFilterContext } from '../../contexts/list.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
 
@@ -39,10 +39,15 @@ const modelValue = useModelValue(props, emits)
 
 const filterKeyword = shallowRef('')
 const filterContext = useListFilter({ keyword: filterKeyword })
-const listRef = shallowRef<ListKeyboardTarget>()
+const listRef = shallowRef<InstanceType<typeof PList>>()
 const { onKeydown: onListKeydown } = useListKeyboardController({
-  list: listRef,
   enabled: () => modelValue.value,
+  onCommand: (command) => listRef.value?.dispatch(command) ?? false,
+  keymap: {
+    ArrowDown: 'next',
+    ArrowUp: 'previous',
+    Enter: 'activate',
+  },
 })
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
@@ -134,7 +139,6 @@ provideListFilterContext(filterContext)
       class="sm:max-h-110 h-full"
       :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
-      :toggle-on-key-press="modelValue"
       @select="onListItemSelect"
     >
       <template v-if="$slots.group" #group="{ group, index }">

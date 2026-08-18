@@ -1,27 +1,35 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { nextTick, shallowRef } from 'vue'
-import { getElement } from '../utils/dom'
-import { toValue } from '../utils/helper'
+import { getElement } from '../utils/dom.js'
+import { toValue } from '../utils/helper.js'
 
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>
   itemSelector?: MaybeRefOrGetter<string>
-  itemFilter?: (el: HTMLElement, container: HTMLElement) => boolean
   defaultActiveIndex?: MaybeRefOrGetter<number>
-  toggleOnKeyPress?: MaybeRefOrGetter<boolean>
+  itemFilter?: (el: HTMLElement, container: HTMLElement) => boolean
+  onActivateItem?: (el: HTMLElement) => void
   onToggle?: (index: number) => void
-  onEnter?: (el: HTMLElement) => void
   onLeft?: () => void
   onRight?: (el: HTMLElement) => void
   onActivate?: () => void
 }
+
+export type ListNavigationCommand =
+  | 'first'
+  | 'last'
+  | 'next'
+  | 'previous'
+  | 'activate'
+  | 'enter-child'
+  | 'leave-parent'
 
 export interface UseListNavigationReturn {
   activeIndex: ShallowRef<number>
   setActiveIndex: (index: number) => void
   registerItem: (el: HTMLElement, indexRef: ShallowRef<number>) => void
   unregisterItem: (el: HTMLElement) => void
-  onKeydown: (ev: KeyboardEvent) => void
+  dispatch: (command: ListNavigationCommand) => boolean
   onPointerOver: (ev: PointerEvent) => void
   /**
    * Request a re-query of the DOM items. Multiple calls made within the same
@@ -32,13 +40,6 @@ export interface UseListNavigationReturn {
   refreshItems: () => Promise<void>
   setFirstAsActive: () => void
   isEmpty: () => boolean
-}
-
-const DISABLED_KEYS = ['PageUp', 'PageDown']
-
-const KEY_DIRECTION: Record<string, -1 | 1 | undefined> = {
-  ArrowUp: -1,
-  ArrowDown: 1,
 }
 
 function findNextIndex(len: number, from: number, dir: 1 | -1, loop: boolean): number {
@@ -61,7 +62,6 @@ export function useListNavigation(
   options: UseListNavigationOptions,
 ): UseListNavigationReturn {
   const getLoop = () => toValue(options.loop) ?? true
-  const getToggleOnKeyPress = () => toValue(options.toggleOnKeyPress) ?? true
   const getDefaultActiveIndex = () => toValue(options.defaultActiveIndex) ?? -1
   const getItemSelector = () => toValue(options.itemSelector) ?? '[data-list-item]'
 
@@ -160,84 +160,59 @@ export function useListNavigation(
     }
   }
 
-  function onKeydown(ev: KeyboardEvent): void {
-    if (!getToggleOnKeyPress() || isEmpty()) {
-      return
-    }
+  function getActiveItem(): HTMLElement | undefined {
+    const index = activeIndex.value
+    return index >= 0 && index < items.length ? items[index] : undefined
+  }
 
-    const { key, ctrlKey, metaKey, altKey, shiftKey } = ev
-
-    if (DISABLED_KEYS.includes(key)) {
-      ev.preventDefault()
-      ev.stopPropagation()
-      return
-    }
-
-    if (ctrlKey || metaKey || altKey || shiftKey) {
-      return
+  function dispatch(command: ListNavigationCommand): boolean {
+    if (isEmpty()) {
+      return false
     }
 
     const len = items.length
     const current = activeIndex.value
 
-    if (key === 'Enter') {
-      if (current < 0 || current >= len) {
-        return
-      }
-
-      const el = items[current]
+    if (command === 'activate') {
+      const el = getActiveItem()
       if (!el) {
-        return
+        return false
       }
 
-      ev.preventDefault()
-      ev.stopPropagation()
-
-      if (typeof options.onEnter === 'function') {
-        options.onEnter(el)
+      if (typeof options.onActivateItem === 'function') {
+        options.onActivateItem(el)
       } else {
         el.click()
       }
-      return
+      return true
     }
 
-    if (key === 'ArrowLeft') {
+    if (command === 'leave-parent') {
       if (typeof options.onLeft !== 'function') {
-        return
+        return false
       }
 
-      ev.preventDefault()
-      ev.stopPropagation()
       options.onLeft()
-      return
+      return true
     }
 
-    if (key === 'ArrowRight') {
-      if (current < 0 || current >= len) {
-        return
+    if (command === 'enter-child') {
+      const el = getActiveItem()
+      if (!el || !options.onRight) {
+        return false
       }
 
-      const el = items[current]
-      if (!el) {
-        return
-      }
-
-      ev.preventDefault()
-      ev.stopPropagation()
-      options.onRight?.(el)
-      return
+      options.onRight(el)
+      return true
     }
 
     let next: number
-    if (key === 'Home') {
+    if (command === 'first') {
       next = findNextIndex(len, -1, 1, false)
-    } else if (key === 'End') {
+    } else if (command === 'last') {
       next = findNextIndex(len, len, -1, false)
     } else {
-      const dir = KEY_DIRECTION[key]
-      if (!dir) {
-        return
-      }
+      const dir = command === 'next' ? 1 : -1
 
       next =
         current === -1
@@ -246,17 +221,16 @@ export function useListNavigation(
     }
 
     if (next === -1) {
-      return
+      return false
     }
-
-    ev.preventDefault()
-    ev.stopPropagation()
 
     if (next !== current) {
       options.onToggle?.(next)
       activeIndex.value = next
       items[next]?.scrollIntoView({ block: 'nearest' })
     }
+
+    return true
   }
 
   return {
@@ -264,7 +238,7 @@ export function useListNavigation(
     setActiveIndex,
     registerItem,
     unregisterItem,
-    onKeydown,
+    dispatch,
     onPointerOver,
     refreshItems,
     setFirstAsActive,

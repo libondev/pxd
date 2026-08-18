@@ -1,6 +1,15 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { nextTick } from 'vue'
 import SplitButton from '../../src/components/split-button/index.vue'
+
+async function flushPopover() {
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  await nextTick()
+  await new Promise(requestAnimationFrame)
+  await new Promise(requestAnimationFrame)
+  await Promise.resolve()
+}
 
 describe('split-button', () => {
   it('renders properly', () => {
@@ -147,6 +156,40 @@ describe('split-button', () => {
     expect(wrapper.emitted('change')).toHaveLength(1)
     expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
     expect(wrapper.emitted('select')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should navigate menu items with ArrowDown from the open wrapper', async () => {
+    const wrapper = mount(SplitButton, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+    })
+
+    await wrapper.get('[data-split-button-trigger]').trigger('click')
+    await flushPopover()
+
+    const popoverWrapper = document.body.querySelector<HTMLElement>(
+      '.pxd-popover--wrapper[data-visible="true"]',
+    )!
+    const items = popoverWrapper.querySelectorAll<HTMLElement>('[data-list-item]')
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+
+    popoverWrapper.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
+    )
+    await nextTick()
+
+    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
 
     wrapper.unmount()
   })

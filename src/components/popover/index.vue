@@ -81,6 +81,7 @@ const configProvider = useConfigProvider()
 
 const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
 const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
+const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
   return [
     shift(),
@@ -265,7 +266,7 @@ function disposeAutoUpdate() {
 }
 
 function updatePopoverMinWidth() {
-  if (!wrapperRef.value) {
+  if (!wrapperRef.value || props.alignPoint) {
     return
   }
 
@@ -427,7 +428,7 @@ function onTriggerClick(ev: Event) {
 }
 
 function onTriggerPointerOver(ev: PointerEvent) {
-  if (!props.triggerSelector || props.disabled || !triggerMethods.value.includes('hover')) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -442,24 +443,6 @@ function onTriggerPointerOver(ev: PointerEvent) {
   }
 }
 
-function onTriggerPointerEnter(ev: PointerEvent) {
-  if (props.triggerSelector) {
-    return
-  }
-
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
-    return
-  }
-
-  setActiveTrigger(triggerRef.value)
-
-  if (props.alignPoint) {
-    updatePointerPosition(ev)
-  }
-
-  handlePopoverShow()
-}
-
 function onTriggerPointerMove(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
@@ -472,7 +455,7 @@ function onTriggerPointerMove(ev: PointerEvent) {
   updatePointerPosition(ev)
 
   if (isVisible.value) {
-    throttledUpdatePosition()
+    updatePosition()
   }
 }
 
@@ -513,19 +496,12 @@ function onTriggerContextmenu(ev: PointerEvent) {
   activateTrigger(trigger)
 }
 
-const PREVENT_KEYS = new Set(['ArrowUp', 'ArrowDown', 'Home', 'End'])
-
-// Prevents the page from scrolling by pressing the key when popover appears.
 function onWrapperKeydown(ev: KeyboardEvent) {
   if (props.disabled || !isVisible.value) {
     return
   }
 
-  const { key } = ev
-
-  if (PREVENT_KEYS.has(key)) {
-    ev.preventDefault()
-  }
+  emits('wrapper-keydown', ev)
 }
 
 function onWrapperPointerEnter() {
@@ -591,11 +567,10 @@ defineExpose({
     :data-disabled="disabled"
     v-bind="$attrs"
     @click="onTriggerClick"
-    @pointerenter="onTriggerPointerEnter"
-    @pointerover="onTriggerPointerOver"
-    @pointermove="onTriggerPointerMove"
-    @pointerleave="onTriggerPointerLeave"
     @contextmenu="onTriggerContextmenu"
+    @pointerover="onTriggerPointerOver"
+    @pointermove="triggerPointerMoveFn"
+    @pointerleave="onTriggerPointerLeave"
   >
     <slot />
 
