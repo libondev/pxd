@@ -296,6 +296,47 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should sync the min width with the active trigger and respect max width', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+        triggerSelector: '[data-popover-trigger]',
+        maxWidth: 200,
+      },
+      slots: {
+        default: `
+          <button data-popover-trigger data-title="First">First</button>
+          <button data-popover-trigger data-title="Second">Second</button>
+        `,
+        content: '<span>Content</span>',
+      },
+    })
+
+    const firstTrigger = wrapper.find('[data-title="First"]')
+    const secondTrigger = wrapper.find('[data-title="Second"]')
+
+    vi.spyOn(firstTrigger.element, 'getBoundingClientRect').mockReturnValue({
+      width: 120,
+    } as DOMRect)
+    vi.spyOn(secondTrigger.element, 'getBoundingClientRect').mockReturnValue({
+      width: 280,
+    } as DOMRect)
+
+    await firstTrigger.trigger('click')
+    await flush()
+
+    const popover = document.body.querySelector('.pxd-popover--wrapper') as HTMLElement
+    expect(popover.style.minWidth).toBe('min(120px, 200px)')
+
+    await secondTrigger.trigger('click')
+    await flush()
+
+    expect(popover.style.minWidth).toBe('min(280px, 200px)')
+
+    wrapper.unmount()
+  })
+
   it('should keep toggle behavior for same matched trigger', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,

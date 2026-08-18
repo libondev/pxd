@@ -4,12 +4,12 @@ import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useDelayDestroy } from '../../composables/use-delay-destroy'
-import { useFocusTrap } from '../../composables/use-focus-trap'
-import { useOutsideClick } from '../../composables/use-outside-click'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { throttleByRaf } from '../../utils/event'
-import { getCssUnitValue, toArray } from '../../utils/format'
+import { useDelayDestroy } from '../../composables/use-delay-destroy.js'
+import { useFocusTrap } from '../../composables/use-focus-trap.js'
+import { useOutsideClick } from '../../composables/use-outside-click.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { throttleByRaf } from '../../utils/event.js'
+import { getCssUnitValue, toArray } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
 
@@ -69,12 +69,12 @@ const pointReference: VirtualElement = {
 
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
-
+const popoverMaxWidth = computed(() => getCssUnitValue(props.maxWidth))
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
   '--popover-offset': props.offset,
   '--popover-arrow-color': props.arrowColor,
-  '--popover-max-width': getCssUnitValue(props.maxWidth),
+  '--popover-max-width': popoverMaxWidth.value,
 }))
 
 const configProvider = useConfigProvider()
@@ -264,13 +264,30 @@ function disposeAutoUpdate() {
   throttledUpdatePosition.cancel()
 }
 
+function updatePopoverMinWidth() {
+  if (!wrapperRef.value) {
+    return
+  }
+
+  const trigger = activeTriggerRef.value || triggerRef.value
+  const triggerWidth = trigger.getBoundingClientRect().width
+  const maxWidth = popoverMaxWidth.value
+
+  wrapperRef.value.style.minWidth = maxWidth
+    ? `min(${triggerWidth}px, ${maxWidth})`
+    : `${triggerWidth}px`
+}
+
 async function updatePosition() {
   if (!wrapperRef.value) {
     return
   }
 
+  const referenceElement = getReferenceElement()
+  updatePopoverMinWidth()
+
   const { x, y, placement, middlewareData } = await computePosition(
-    getReferenceElement(),
+    referenceElement,
     wrapperRef.value,
     {
       placement: props.position,
@@ -606,7 +623,7 @@ defineExpose({
         @pointerleave="onWrapperPointerLeave"
       >
         <div
-          class="pxd-popover--container relative z-1 w-inherit default-transition-duration default-transition-timing-function"
+          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
@@ -693,7 +710,6 @@ defineExpose({
   transition-property: opacity, transform;
   max-height: min(800px, 80vh);
   max-height: min(800px, 80dvh);
-  pointer-events: none;
 
   [data-visible='true'] & {
     opacity: 1;
