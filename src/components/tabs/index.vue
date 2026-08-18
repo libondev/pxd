@@ -320,5 +320,45 @@ onBeforeUnmount(() => {
       }
     }
   }
+
+  &[data-variant='segmented'] {
+    padding: 0.25rem;
+    width: max-content;
+    border-radius: var(--radius-md);
+    background-color: var(--color-gray-alpha-200);
+    color: var(--color-gray-800);
+
+    & + .pxd-tabs--content {
+      padding-top: 0.75rem;
+    }
+
+    .pxd-tabs--arrow {
+      border-width: 0;
+    }
+
+    .pxd-tabs--nav {
+      gap: 0.25rem;
+    }
+
+    .pxd-tabs--nav-item {
+      height: 1.5rem;
+      padding: 0 0.5rem;
+      border-radius: var(--radius-sm);
+
+      &:hover {
+        color: var(--color-foreground);
+      }
+
+      &:disabled {
+        color: var(--color-gray-500);
+      }
+
+      &[aria-selected='true'] {
+        background-color: var(--color-background-100);
+        color: var(--color-foreground);
+        box-shadow: var(--shadow-small);
+      }
+    }
+  }
 }
 </style>

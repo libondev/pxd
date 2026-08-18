@@ -1,7 +1,7 @@
 export type TabsValue = string | number
 
 export interface TabsProps {
-  variant?: 'default' | 'secondary'
+  variant?: 'default' | 'secondary' | 'segmented'
   keepAlive?: boolean
   modelValue?: TabsValue
 }
