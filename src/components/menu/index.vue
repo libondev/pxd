@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
-import { computed, nextTick, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { usePopoverResponsive } from '../../composables/use-popover-responsive'
-import { getCssUnitValue } from '../../utils/format'
+import { nextTick, shallowRef, watch } from 'vue'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { usePopoverResponsive } from '../../composables/use-popover-responsive.js'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 
@@ -29,10 +28,6 @@ const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
 const listRef = shallowRef<{ focus: () => void }>()
-
-const listStyles = computed(() => ({
-  '--list-width': getCssUnitValue(props.listWidth),
-}))
 
 function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
@@ -74,10 +69,9 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
       <PList
         ref="listRef"
         :value="modelValue"
-        :style="listStyles"
         :options="options"
         :visible="popoverVisible"
-        class="max-h-68 sm:w-(--list-width) rounded-inherit"
+        class="max-h-68 rounded-inherit"
         @select="onOptionSelect"
       >
         <template v-if="$slots.item" #item="{ item, index }">

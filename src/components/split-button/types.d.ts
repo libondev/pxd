@@ -8,7 +8,6 @@ export interface SplitButtonProps {
   shape?: ComponentShape
   options?: ListOptions
   disabled?: boolean
-  listWidth?: string | number
   modelValue?: ListOptionSelected['value']
   closeOnPressEscape?: boolean
 }

@@ -18,7 +18,7 @@ const options = [
 </script>
 
 <template>
-  <PSplitButton :options="options" list-width="200">
+  <PSplitButton :options="options">
     Execute
   </PSplitButton>
 </template>
@@ -82,7 +82,6 @@ function onChange(item) {
 | shape | `'default' \| 'square' \| 'rounded'` | - | - |
 | options | `ListOption[]` | - | - |
 | disabled | `boolean` | - | - |
-| list-width | `string \| number` | - | - |
 | model-value | `ListOptionSelected['value']` | - | - |
 | close-on-press-escape | `boolean` | - | - |
 

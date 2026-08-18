@@ -8,15 +8,15 @@ import type {
   ListEmits,
 } from './types'
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useListKeyboardController } from '../../composables/use-list-keyboard-controller'
-import { useListNavigation } from '../../composables/use-list-navigation'
+import { useListKeyboardController } from '../../composables/use-list-keyboard-controller.js'
+import { useListNavigation } from '../../composables/use-list-navigation.js'
 import {
   type ListContext,
   provideListContext,
   provideListNestedContext,
   useListFilterContext,
   useListNestedContext,
-} from '../../contexts/list'
+} from '../../contexts/list.js'
 import PListNested from '../_internal/list-nested.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'

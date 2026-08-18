@@ -8,8 +8,8 @@ import type {
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { isNil } from '../../utils/is'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { isNil } from '../../utils/is.js'
 import PButton from '../button/index.vue'
 import PMenu from '../menu/index.vue'
 
@@ -64,13 +64,12 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
 <template>
   <PMenu
     v-model="modelValue"
-    :options="options"
-    :list-width="listWidth"
-    position="bottom-end"
     data-group
+    position="bottom-end"
     class="pxd-split-button items-center"
-    :data-variant="variant"
     triggerSelector="[data-split-button-trigger]"
+    :options="options"
+    :data-variant="variant"
     :close-on-press-escape="closeOnPressEscape"
     @select="onOptionSelect"
     v-bind="$attrs"

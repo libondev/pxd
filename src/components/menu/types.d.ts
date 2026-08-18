@@ -5,7 +5,6 @@ export interface MenuProps {
   options?: ListOptions
   disabled?: boolean
   position?: ComponentPosition
-  listWidth?: string | number
   modelValue?: ListOptionSelected['value']
   closeOnPressEscape?: boolean
 }

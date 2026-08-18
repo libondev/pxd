@@ -3,17 +3,17 @@ import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
 import {
   provideListFilterParentItemId,
   useListContext,
   useListFilterContext,
   useListFilterGroupId,
   useListFilterParentItemId,
-} from '../../contexts/list'
-import { getElement } from '../../utils/dom'
-import { getUniqueId } from '../../utils/helper'
-import { isNil } from '../../utils/is'
+} from '../../contexts/list.js'
+import { getElement } from '../../utils/dom.js'
+import { getUniqueId } from '../../utils/helper.js'
+import { isNil } from '../../utils/is.js'
 
 defineOptions({
   name: 'PListItem',
@@ -32,7 +32,7 @@ const emits = defineEmits<ListItemEmits>()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item sm:min-h-10 min-h-11 p-2 gap-1.5 scroll-m-2 text-sm data-[checked=true]:pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -158,7 +158,7 @@ provideListFilterParentItemId(itemId)
     <CheckIcon
       v-if="isChecked"
       class="pxd-list-item--checked pointer-events-none absolute top-1/2 -translate-y-1/2"
-      :class="hasChildren ? 'right-7' : 'right-2.5'"
+      :class="hasChildren ? 'right-7' : 'right-2'"
     />
   </Component>
 </template>
