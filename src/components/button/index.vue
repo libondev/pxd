@@ -36,7 +36,7 @@ const computedVariant = computed(() => {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
+    base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none focus-visible:z-1 motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
