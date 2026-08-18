@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import type { InputEmits, InputProps } from './types'
-import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { BASIC_HEIGHTS } from '../../constants/size'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { NOOP } from '../../utils/event'
-import { isTruthyProp } from '../../utils/format'
-import { getUniqueId } from '../../utils/helper'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { NOOP } from '../../utils/event.js'
+import { isTruthyProp } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PInput',
@@ -143,12 +142,14 @@ async function onInput(event: Event) {
 }
 
 function onKeydown(event: KeyboardEvent) {
-  if (props.readonly) {
+  if (props.readonly || props.disabled) {
     return
   }
 
   if (event.key === 'Enter') {
     onChange(event)
+  } else if (event.key === 'Escape') {
+    clear(event)
   }
 
   emits('keydown', event)
@@ -262,7 +263,7 @@ defineExpose({
       v-if="password || clearable"
       v-show="modelValue"
       :class="{ 'pe-2': password && clearable }"
-      class="pxd-input--icon top-0 -ms-1.5 right-0 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
+      class="pxd-input--icon top-0 right-0 pe-2 gap-1 flex aspect-square h-full items-center justify-center rounded-r-inherit text-foreground-secondary"
       @pointerdown.prevent="NOOP"
     >
       <button
@@ -275,10 +276,11 @@ defineExpose({
       </button>
       <button
         v-if="clearable"
-        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
-        @click.stop.prevent="clear"
+        type="button"
+        class="px-1 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 text-foreground self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
+        @click="clear"
       >
-        <CrossIcon class="size-3 pointer-events-none" />
+        <kbd class="appearance-none font-sans">Esc</kbd>
       </button>
     </div>
 
