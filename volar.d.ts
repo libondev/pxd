@@ -83,6 +83,7 @@ declare module 'vue' {
     PRollingNumber: (typeof import('pxd/components/rolling-number'))['default']
     PScalableText: (typeof import('pxd/components/scalable-text'))['default']
     PScrollable: (typeof import('pxd/components/scrollable'))['default']
+    PSearchInput: (typeof import('pxd/components/search-input'))['default']
     PSeparator: (typeof import('pxd/components/separator'))['default']
     PShimmerText: (typeof import('pxd/components/shimmer-text'))['default']
     PSkeleton: (typeof import('pxd/components/skeleton'))['default']

@@ -252,6 +252,10 @@
     "name": "scrollable"
   },
   {
+    "camelized": "Search Input",
+    "name": "search-input"
+  },
+  {
     "camelized": "Separator",
     "name": "separator"
   },
