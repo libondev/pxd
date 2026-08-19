@@ -303,7 +303,7 @@ if (!isServer()) {
     color: var(--color-gray-600);
   }
 
-  h2 + table {
+  h2 ~ table {
     table-layout: auto;
     width: 100%;
     max-width: 100%;
