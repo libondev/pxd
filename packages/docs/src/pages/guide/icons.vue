@@ -2,7 +2,7 @@
 import * as icons from '@gdsicon/vue'
 import { useCopyClick, useMessage } from 'pxd'
 import { uncapitalize } from 'pxd/utils/format'
-import { isFuzzyMatch } from 'pxd/utils/fuzzy-match'
+import { getFuzzyMatchScore, isFuzzyMatch } from 'pxd/utils/fuzzy-match'
 import { debounce, throttle } from 'pxd/utils/timing'
 import Grids from '@/components/Grids.vue'
 
@@ -27,11 +27,15 @@ const searchKeyword = ref(route.query.q as string)
 const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
 
 function getFilteredComponents(value: string) {
-  if (!value) {
+  if (!value || !value.trim()) {
     return allIcons
   }
 
-  return allIcons.filter((i) => isFuzzyMatch(i.name, value))
+  return allIcons
+    .filter((item) => isFuzzyMatch(item.name, value))
+    .map((item, index) => ({ item, index, score: getFuzzyMatchScore(item.name, value) }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(({ item }) => item)
 }
 
 const handleSearch = debounce((value: string) => {

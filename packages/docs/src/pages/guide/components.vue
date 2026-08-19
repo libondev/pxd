@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { isFuzzyMatch } from 'pxd/utils/fuzzy-match'
+import { getFuzzyMatchScore, isFuzzyMatch } from 'pxd/utils/fuzzy-match'
 import { debounce } from 'pxd/utils/timing'
 import { shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
@@ -11,11 +11,15 @@ const searchKeyword = shallowRef(route.query.q as string)
 const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
 
 function getFilteredComponents(value: string) {
-  if (!value) {
+  if (!value || !value.trim()) {
     return allComponents
   }
 
-  return allComponents.filter((i) => isFuzzyMatch(i.name, value))
+  return allComponents
+    .filter((item) => isFuzzyMatch(item.name, value))
+    .map((item, index) => ({ item, index, score: getFuzzyMatchScore(item.name, value) }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(({ item }) => item)
 }
 
 const handleSearch = debounce((value: string) => {
