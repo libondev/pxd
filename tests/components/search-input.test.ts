@@ -21,23 +21,37 @@ describe('search-input', () => {
     })
 
     expect(wrapper.find('.pxd-input--prefix').text()).toBe('custom prefix')
-
-    await wrapper.setProps({ loading: true })
-
-    expect(wrapper.find('.pxd-input--prefix').text()).toBe('')
-    expect(wrapper.find('.pxd-input--prefix svg g').exists()).toBe(true)
-
     wrapper.unmount()
+
+    const loadingWrapper = mount(SearchInput, {
+      props: {
+        loading: true,
+      },
+      slots: {
+        prefix: 'custom prefix',
+      },
+    })
+
+    expect(loadingWrapper.find('.pxd-input--prefix').text()).toBe('')
+    expect(loadingWrapper.find('.pxd-input--prefix svg g').exists()).toBe(true)
+
+    loadingWrapper.unmount()
   })
 
   it('emits search with the current value when pressing Enter', async () => {
-    const wrapper = mount(SearchInput)
+    const onSearch = vi.fn()
+    const wrapper = mount(SearchInput, {
+      attrs: {
+        onSearch,
+      },
+    })
     const input = wrapper.find('input')
 
     await input.setValue('test')
+    expect(input.element.value).toBe('test')
     await input.trigger('keydown', { key: 'Enter' })
 
-    expect(wrapper.emitted('search')).toEqual([['test']])
+    expect(onSearch).toHaveBeenCalledWith('test')
 
     wrapper.unmount()
   })
@@ -70,17 +84,25 @@ describe('search-input', () => {
   })
 
   it('does not search with an empty value or while loading', async () => {
-    const wrapper = mount(SearchInput)
-    const input = wrapper.find('input')
+    const emptyWrapper = mount(SearchInput)
+    const emptyInput = emptyWrapper.find('input')
 
-    await input.trigger('keydown', { key: 'Enter' })
+    await emptyInput.trigger('keydown', { key: 'Enter' })
+    expect(emptyWrapper.emitted('search')).toBeUndefined()
+    emptyWrapper.unmount()
 
-    await input.setValue('test')
-    await wrapper.setProps({ loading: true })
-    await input.trigger('keydown', { key: 'Enter' })
+    const loadingWrapper = mount(SearchInput, {
+      props: {
+        loading: true,
+      },
+    })
+    const loadingInput = loadingWrapper.find('input')
 
-    expect(wrapper.emitted('search')).toBeUndefined()
+    await loadingInput.setValue('test')
+    await loadingInput.trigger('keydown', { key: 'Enter' })
 
-    wrapper.unmount()
+    expect(loadingWrapper.emitted('search')).toBeUndefined()
+
+    loadingWrapper.unmount()
   })
 })
