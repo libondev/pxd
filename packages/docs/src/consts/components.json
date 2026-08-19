@@ -80,6 +80,10 @@
     "name": "config-provider"
   },
   {
+    "camelized": "Copy Button",
+    "name": "copy-button"
+  },
+  {
     "camelized": "Countdown",
     "name": "countdown"
   },

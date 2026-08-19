@@ -1,3 +1,4 @@
+import type { Nullable } from '../types/shared/utils'
 import { onScopeDispose, shallowRef } from 'vue'
 import { withResolvers } from '../utils/helper'
 import { isServer } from '../utils/is'
@@ -8,8 +9,8 @@ export function useCopyClick() {
 
   const isCopied = shallowRef(false)
 
-  async function copyText(text: string | undefined = '') {
-    if (isServer()) {
+  async function copyText(text: Nullable<string> = '') {
+    if (isServer() || !text) {
       return
     }
 

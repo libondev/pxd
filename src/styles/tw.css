@@ -627,8 +627,8 @@
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  filter: blur(5px);
-  transform: scale(0.95);
+  filter: blur(4px);
+  transform: scale(0.8);
 }
 
 /* Make exit faster than enter */
