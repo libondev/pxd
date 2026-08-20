@@ -28,6 +28,11 @@ const zhCN = {
   },
   confirm: {
     cancel: '取消',
+    submit: '提交',
+  },
+  interactive: {
+    q: '问',
+    a: '答',
   },
   results: {
     searchText: '未找到结果：',

@@ -13,6 +13,11 @@ const enUS = {
   },
   confirm: {
     cancel: 'Cancel',
+    submit: 'Submit',
+  },
+  interactive: {
+    q: 'Q',
+    a: 'A',
   },
   results: {
     searchText: 'No results found for',

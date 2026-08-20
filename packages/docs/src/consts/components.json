@@ -224,6 +224,10 @@
     "name": "project-banner"
   },
   {
+    "camelized": "Questionnaire",
+    "name": "questionnaire"
+  },
+  {
     "camelized": "Radial Burst",
     "name": "radial-burst"
   },

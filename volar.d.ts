@@ -73,6 +73,7 @@ declare module 'vue' {
     PPopover: (typeof import('pxd/components/popover'))['default']
     PProgress: (typeof import('pxd/components/progress'))['default']
     PProjectBanner: (typeof import('pxd/components/project-banner'))['default']
+    PQuestionnaire: (typeof import('pxd/components/questionnaire'))['default']
     PRadialBurst: (typeof import('pxd/components/radial-burst'))['default']
     PRadio: (typeof import('pxd/components/radio'))['default']
     PRadioGroup: (typeof import('pxd/components/radio-group'))['default']
