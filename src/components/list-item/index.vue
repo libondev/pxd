@@ -12,6 +12,7 @@ import {
   useListFilterParentItemId,
 } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
+import { toArray } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 
@@ -32,7 +33,7 @@ const emits = defineEmits<ListItemEmits>()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -64,7 +65,7 @@ const itemRef = shallowRef<HTMLElement>()
 const itemIndex = shallowRef(-1)
 
 const isChecked = computed(() => {
-  return !isNil(props.value) && listProps?.value === props.value
+  return !isNil(props.value) && toArray(listProps?.value).includes(props.value)
 })
 
 const isVisible = computed(() => {

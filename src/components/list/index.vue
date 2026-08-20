@@ -275,7 +275,7 @@ defineExpose({
     role="list"
     tabindex="-1"
     data-list-container
-    class="pxd-list m-0 p-2 max-w-full list-none overflow-auto bg-background-100 outline-none"
+    class="pxd-list m-0 p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none"
     v-bind="$attrs"
     @focusin="activate"
     @pointerover="onPointerOver"

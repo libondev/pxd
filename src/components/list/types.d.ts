@@ -6,7 +6,7 @@ export interface ListOption {
   value: ComponentValue
   disabled?: boolean
   variant?: 'default' | 'error' | 'warning'
-  description?: ComponentLabel
+  description?: string
   keywords?: string[]
   children?: ListOptionEntry[]
   onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
@@ -27,7 +27,7 @@ export type ListOptions = ListOptionEntry[]
 export interface ListProps {
   loop?: boolean
   empty?: boolean
-  value?: ComponentValue
+  value?: any
   visible?: boolean
   options?: ListOptionEntry[]
   defaultActiveIndex?: number
