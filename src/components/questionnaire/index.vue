@@ -269,11 +269,15 @@ watch(
           </template>
         </PList>
 
-        <div v-if="showSubmitButton" class="p-2 flex items-center justify-between border-t">
+        <div
+          v-if="questions.length > 1 || showSubmitButton"
+          class="p-2 flex items-center justify-between border-t"
+        >
           <div v-if="questions.length > 1" class="gap-1 flex items-center">
             <PButton
               variant="ghost"
               :size="configProvider.size"
+              :class="{ 'pointer-events-none opacity-50': !currentIndex }"
               icon
               @click="toggleCurrentIndex(-1)"
             >
@@ -283,13 +287,14 @@ watch(
             <PButton
               variant="ghost"
               :size="configProvider.size"
+              :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
               icon
               @click="toggleCurrentIndex(1)"
             >
               <ChevronDownIcon class="-rotate-90" />
             </PButton>
 
-            <span class="text-sm ms-2 text-foreground-secondary tabular-nums">
+            <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
               {{ currentIndex + 1 }}/{{ questions.length }}
             </span>
           </div>
