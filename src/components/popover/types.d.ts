@@ -24,6 +24,7 @@ export interface PopoverProps {
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
   toggleOnTrigger?: boolean
+  fillTriggerWidth?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   lockScrollOnVisible?: boolean

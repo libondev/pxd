@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   hideDelay: 0,
   interactive: true,
   autoPosition: true,
+  fillTriggerWidth: true,
   toggleOnTrigger: true,
   closeOnInvisible: true,
   closeOnPressEscape: true,
@@ -267,6 +268,11 @@ function disposeAutoUpdate() {
 
 function updatePopoverMinWidth() {
   if (!wrapperRef.value || props.alignPoint) {
+    return
+  }
+
+  if (!props.fillTriggerWidth) {
+    wrapperRef.value.style.minWidth = ''
     return
   }
 
@@ -592,7 +598,7 @@ defineExpose({
         :data-multiple-triggers="hasMultipleTriggers"
         :class="wrapperClass"
         :style="wrapperStyle"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full outline-none data-[interactive=false]:pointer-events-none data-[multiple-triggers=true]:transition-[left,top] data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[multiple-triggers=true]:transition-[left,top] data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"

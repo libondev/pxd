@@ -325,6 +325,28 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </template>
 ```
 
+## Fill trigger width
+
+```vue demo
+<script setup>
+const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'
+</script>
+
+<template>
+  <PPopover
+    :fill-trigger-width="false"
+    content-class="p-4 bg-background-100 shadow-sm border rounded-md"
+    :max-width="200"
+  >
+    <PButton> Hover to active </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
+  </PPopover>
+</template>
+```
+
 ## closeOnPressEscape
 
 ```vue demo
@@ -355,6 +377,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | disabled | `boolean` | - | - |
 | adaptive | `boolean` | - | - |
 | max-width | `number \| string` | - | - |
+| match-trigger-width | `boolean` | `true` | Match the Popover min width to the trigger width. |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | - |
 | show-delay | `number` | `0` | - |
 | hide-delay | `number` | `0` | - |
