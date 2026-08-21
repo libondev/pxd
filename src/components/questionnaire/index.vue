@@ -231,7 +231,7 @@ watch(
 
 <template>
   <div
-    class="pxd-questionnaire w-full max-w-full rounded-lg border bg-background-100"
+    class="pxd-questionnaire w-full max-w-full rounded-lg border bg-background-100 empty:hidden"
     v-bind="$attrs"
   >
     <template v-if="currentState === 'choosing' && currentQuestion && currentAnswer">
@@ -323,7 +323,9 @@ watch(
     </template>
 
     <template v-else-if="currentState === 'skipped'">
-      <p class="pxd-questionnaire--skipped text-sm py-2 px-3 cursor-default text-foreground-secondary">
+      <p
+        class="pxd-questionnaire--skipped text-sm py-2 px-3 cursor-default text-foreground-secondary"
+      >
         Skipped questions
       </p>
     </template>
