@@ -12,7 +12,7 @@ export interface TimePickerProps {
   disabled?: boolean
   clearable?: boolean
   modelValue?: Date | string | number | null
-  prefixIcon?: boolean
+  suffixIcon?: boolean
   placeholder?: string
   showSeconds?: boolean
   closeOnPressEscape?: boolean

@@ -136,7 +136,7 @@ const time = ref('18:30:00')
 | disabled | `boolean` | - | - |
 | clearable | `boolean` | - | - |
 | model-value | `Date \| string \| number \| null` | `` | - |
-| prefix-icon | `boolean` | `true` | - |
+| suffix-icon | `boolean` | `true` | - |
 | placeholder | `string` | - | - |
 | show-seconds | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `true` | - |

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { TimePickerEmits, TimePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
-import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { usePopoverResponsive } from '../../composables/use-popover-responsive'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { dayjs } from '../../utils/date'
-import { throttleByRaf } from '../../utils/event'
-import { clampValue } from '../../utils/format'
-import { isNil } from '../../utils/is'
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { usePopoverResponsive } from '../../composables/use-popover-responsive.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { dayjs } from '../../utils/date.js'
+import { throttleByRaf } from '../../utils/event.js'
+import { clampValue } from '../../utils/format.js'
+import { isNil } from '../../utils/is.js'
 import PButton from '../button/index.vue'
 import PInput from '../input/index.vue'
 import PPopover from '../popover/index.vue'
@@ -23,7 +24,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<TimePickerProps>(), {
   modelValue: '',
-  prefixIcon: true,
+  suffixIcon: true,
   showSeconds: true,
   closeOnPressEscape: true,
   presets: () => [],
@@ -58,13 +59,9 @@ const popoverVisible = shallowRef(false)
 
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 
-const modelValue = computed<string>({
+const modelValue = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.format) : ''
-  },
-  set(value: string) {
-    emits('change', value)
-    emits('update:modelValue', value)
   },
 })
 
@@ -254,7 +251,7 @@ onBeforeUnmount(() => {
       :clearable="clearable"
       :model-value="modelValue"
       :placeholder="placeholder"
-      :default-prefix-style="false"
+      :default-suffix-style="false"
       :data-focusing="popoverVisible"
       :select-on-focus="!isAdaptive"
       v-bind="$attrs"
@@ -262,8 +259,8 @@ onBeforeUnmount(() => {
       @change="onInputValueChange"
       @keydown.enter="togglePopoverVisible(true)"
     >
-      <template v-if="prefixIcon" #prefix>
-        <CalendarIcon class="ms-3" />
+      <template v-if="suffixIcon" #suffix>
+        <CalendarIcon class="me-3" />
       </template>
     </PInput>
 
