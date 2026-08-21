@@ -4,11 +4,11 @@ import type { Component } from 'vue'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
 import { computed } from 'vue'
-import { useCopyClick } from '../../composables/use-copy-click'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { BASIC_MIN_HEIGHTS } from '../../constants/size'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { isTruthyProp, toArray } from '../../utils/format'
+import { useCopyClick } from '../../composables/use-copy-click.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isTruthyProp, toArray } from '../../utils/format.js'
 
 defineOptions({
   name: 'PSnippet',
@@ -31,12 +31,12 @@ const computedTextArray = computed(() => toArray(props.text))
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-snippet ps-3 pe-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums motion-safe:transition-appearance',
+    base: 'pxd-snippet ps-3 pe-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums',
     variants: {
       size: {
         sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
-        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 text-sm`,
-        lg: `${BASIC_MIN_HEIGHTS.lg} py-3 text-base`,
+        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-2 text-sm`,
+        lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2.5 text-base`,
       },
       variant: {
         default: 'border-gray-alpha-300 bg-background-100',
@@ -83,8 +83,8 @@ async function onCopyButtonClick() {
 
     <div class="min-w-5 relative shrink-0">
       <button
-        class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 cursor-pointer appearance-none rounded-sm self-focus-ring outline-none select-none hover:bg-background-hover hover:shadow-border-base active:bg-background-active motion-safe:transition-appearance"
-        :class="{ copied: isCopied }"
+        type="button"
+        class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 cursor-pointer appearance-none rounded-sm self-focus-ring outline-none select-none hover:bg-gray-alpha-200 active:bg-gray-alpha-300 motion-safe:transition-colors"
         @click="onCopyButtonClick"
       >
         <Transition name="pxd-transition--fade-scale" mode="out-in">

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { ChipProps } from './types'
-import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { getCssUnitValue } from '../../utils/format'
-import { isNil } from '../../utils/is'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { getCssUnitValue } from '../../utils/format.js'
+import { isNil } from '../../utils/is.js'
 
 defineOptions({
   name: 'PChip',
@@ -16,7 +15,7 @@ const props = withDefaults(defineProps<ChipProps>(), {
 
 const { classes } = useTailwindVariant(
   {
-    base: 'pxd-chip--label text-xs top-0 right-0 absolute z-1 rounded-full border border-background-100 motion-safe:transition-appearance',
+    base: 'pxd-chip--label text-xs top-0 right-0 absolute z-1 rounded-full border border-background-100 motion-safe:transition-colors',
     variants: {
       variant: {
         primary: 'bg-primary text-primary-foreground',

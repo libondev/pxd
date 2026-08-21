@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ModalEmits, ModalProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useFocusTrap } from '../../composables/use-focus-trap'
-import { useModelValue } from '../../composables/use-model-value'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import { useFocusTrap } from '../../composables/use-focus-trap.js'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getCssUnitValue, isTruthyProp } from '../../utils/format.js'
 import PLoadingMask from '../_internal/loading-mask.vue'
 import POverlay from '../overlay/index.vue'
 

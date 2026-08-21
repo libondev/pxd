@@ -20,7 +20,7 @@ function onCopy(ev: MouseEvent) {
 
     <details class="group/code-block">
       <summary
-        class="px-4 h-12 text-sm group-open/code-block:top-12 z-2 -mx-px -mbe-px flex cursor-pointer items-center rounded-b-lg border bg-background-200 text-gray-900 self-focus-ring outline-none select-none group-open/code-block:sticky group-open/code-block:rounded-none motion-safe:transition-appearance"
+        class="px-4 h-12 text-sm group-open/code-block:top-12 z-2 -mx-px -mbe-px flex cursor-pointer items-center rounded-b-lg border bg-background-200 text-gray-900 self-focus-ring outline-none select-none group-open/code-block:sticky group-open/code-block:rounded-none"
       >
         <IconChevronRight
           class="text-xs me-2 group-open/code-block:rotate-90 motion-safe:transition-transform"
@@ -40,13 +40,13 @@ function onCopy(ev: MouseEvent) {
 
         <PButton class="top-3 right-4 absolute active:scale-95" icon size="sm" @click="onCopy">
           <div
-            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 motion-safe:transition-appearance"
+            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 motion-safe:transition-all"
             :class="isCopied ? 'blur-0 scale-100 opacity-100' : 'blur-xs scale-[0.25] opacity-0'"
           >
             <CheckIcon />
           </div>
           <div
-            class="ease-in-out transition-[transform,opacity,filter] duration-300"
+            class="ease-in-out duration-300 motion-safe:transition-all"
             :class="isCopied ? 'blur-xs scale-[0.25] opacity-0' : 'blur-0 scale-100 opacity-100'"
           >
             <CopyIcon />

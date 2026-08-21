@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { SwitchItemProps, SwitchItemEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { useSwitchContext } from '../../contexts/switch'
-import { getUniqueId } from '../../utils/helper'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useSwitchContext } from '../../contexts/switch.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PSwitchItem',
@@ -34,7 +34,7 @@ const isDisabled = computed(() => props.disabled || switchGroupContext?.props.di
 
 const { classes } = useTailwindVariant(
   {
-    base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-appearance',
+    base: 'pxd-switch-item--label px-2.5 font-medium flex size-full items-center justify-center truncate rounded-sm text-foreground-secondary peer-focus-ring outline-none select-none peer-checked:bg-gray-100 peer-disabled:cursor-not-allowed peer-disabled:text-gray-800 empty:hidden hover:text-foreground motion-safe:transition-colors',
     variants: {
       disabled: {
         false: 'peer-checked:text-foreground',

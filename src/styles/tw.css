@@ -517,10 +517,9 @@
 
 @utility transition-appearance {
   transition-property:
-    opacity, transform, scale, translate, background-color, box-shadow, font-size, border, color;
+    opacity, transform, scale, translate, background-color, box-shadow, border-color, color;
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
-  will-change: transform;
 }
 
 @utility visually-hidden {

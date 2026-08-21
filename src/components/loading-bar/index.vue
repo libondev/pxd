@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { LoadingBarEventParams } from '../../composables/use-loading-bar'
 import type { LoadingBarProps, LoadingBarStatus } from './types'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { cachedOff, cachedOn } from '../../utils/event'
-import { caf, raf } from '../../utils/event'
-import { clampValue, isTruthyProp } from '../../utils/format'
-import { isServer } from '../../utils/is'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { cachedOff, cachedOn } from '../../utils/event.js'
+import { caf, raf } from '../../utils/event.js'
+import { clampValue, isTruthyProp } from '../../utils/format.js'
+import { isServer } from '../../utils/is.js'
 import PTeleport from '../teleport/index.vue'
 
 defineOptions({
@@ -46,7 +46,7 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: innerClasses } = useTailwindVariant(
   {
-    base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance',
+    base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance motion-safe:will-change-transform',
     variants: {
       status: {
         running: 'bg-gray-500',

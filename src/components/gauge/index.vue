@@ -2,8 +2,8 @@
 import type { GaugeProps } from './types'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getColorByThreshold, getFallbackValue } from '../../utils/helper'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getColorByThreshold, getFallbackValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PGauge',
@@ -152,7 +152,7 @@ const progressColors = computed(() => {
           stroke-linecap="round"
           :stroke-dashoffset="trackOffset"
           :stroke="progressColors.secondary"
-          class="pxd-gauge--track motion-safe:transition-appearance"
+          class="pxd-gauge--track motion-safe:transition-[stroke,stroke-dasharray,stroke-dashoffset]"
           :stroke-dasharray="
             progressStatus.hasProgress ? `${trackArc} ${CIRCUMFERENCE}` : undefined
           "
@@ -168,7 +168,7 @@ const progressColors = computed(() => {
           stroke-dashoffset="0"
           stroke-linecap="round"
           :stroke="progressColors.primary"
-          class="pxd-gauge--bar motion-safe:transition-appearance"
+          class="pxd-gauge--bar motion-safe:transition-[stroke,stroke-dasharray,stroke-dashoffset]"
           :stroke-dasharray="`${progressArc} ${CIRCUMFERENCE}`"
         />
       </g>

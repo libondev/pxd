@@ -327,7 +327,7 @@ onBeforeUnmount(() => {
             v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-13 sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-appearance"
+            class="px-1.5 py-0.5 sm:text-13 sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-colors"
           >
             {{ preset.label }}
           </button>

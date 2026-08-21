@@ -81,7 +81,7 @@ watch(
       <li
         v-for="item in tocHeaders"
         :key="item.id"
-        class="toc-item px-2.5 py-2 mbe-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-appearance"
+        class="toc-item px-2.5 py-2 mbe-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-colors"
         :class="[
           `toc-level-${item.level}`,
           {

@@ -2,11 +2,11 @@
 import type { ChoiceboxItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
-import { useChoiceboxContext } from '../../contexts/choicebox'
-import { toArray } from '../../utils/format'
-import { getUniqueId } from '../../utils/helper'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useChoiceboxContext } from '../../contexts/choicebox.js'
+import { toArray } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PChoiceboxItem',
@@ -67,7 +67,7 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: innerClasses } = useTailwindVariant(
   {
-    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-appearance',
+    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
     variants: {
       disabled: {},
       multiple: {
