@@ -91,7 +91,12 @@ function handleCustomPrefixChange(event: Event) {
   </PText>
 
   <div class="pbs-4 pbe-2 z-10 bg-background-100">
-    <PInput v-model="searchKeyword" placeholder="Search icons" clearable @input="handleSearch" />
+    <PInput
+      v-model="searchKeyword"
+      placeholder="Search icons"
+      clearable
+      @update:model-value="handleSearch"
+    />
   </div>
 
   <div class="gap-4 flex">

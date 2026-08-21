@@ -16,8 +16,8 @@ export interface InputProps {
   maxlength?: number | string
   trimOverflow?: boolean
   clearable?: boolean
-  clearValue?: string | number | null
-  modelValue?: string | number | null
+  clearValue?: any
+  modelValue?: any
   placeholder?: string
   prefixClass?: ComponentClass
   suffixClass?: ComponentClass
@@ -31,7 +31,6 @@ export interface InputProps {
 
 export interface InputEmits {
   click: [MouseEvent]
-  input: [string]
   change: [string, Event]
   focus: [FocusEvent]
   blur: [FocusEvent]

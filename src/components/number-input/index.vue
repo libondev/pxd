@@ -3,9 +3,10 @@ import type { NumberInputData, NumberInputEmits, NumberInputProps } from './type
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
-import { useRepeatAction } from '../../composables/use-repeat-action'
-import { NOOP } from '../../utils/event'
-import { isNil, isNumber, isUndefined } from '../../utils/is'
+import { useModelValue } from '../../composables/use-model-value.js'
+import { useRepeatAction } from '../../composables/use-repeat-action.js'
+import { NOOP } from '../../utils/event.js'
+import { isNil, isNumber, isUndefined } from '../../utils/is.js'
 import PInput from '../input/index.vue'
 
 defineOptions({
@@ -29,15 +30,7 @@ const props = withDefaults(defineProps<NumberInputProps>(), {
 
 const emits = defineEmits<NumberInputEmits>()
 
-const modelValue = computed({
-  get() {
-    return props.modelValue
-  },
-  set(value) {
-    emits('input', value)
-    emits('update:modelValue', value)
-  },
-})
+const modelValue = useModelValue(props, emits, { withChange: false })
 
 const REGEXPS = {
   'remove-leading-zeros': /^(-?)0+(?=\d)/,
@@ -263,9 +256,9 @@ watch(
     :default-suffix-style="false"
     @blur="onInputBlur"
     @focus="onInputFocus"
-    @input="onInputInput"
     @change="onInputChange"
     @keydown="onInputKeydown"
+    @update:model-value="onInputInput"
   >
     <template #prefix>
       <button

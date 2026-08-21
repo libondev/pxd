@@ -139,8 +139,6 @@ function onInput(event: Event) {
 
   const inputValue = getInputValue(event)
   modelValue.value = inputValue
-
-  emits('input', inputValue)
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -175,8 +173,6 @@ function onCompositionEnd(event: CompositionEvent) {
   const inputValue = trimInputValue(getInputValue(event))
   target.value = inputValue
   modelValue.value = inputValue
-
-  emits('input', inputValue)
 }
 
 function toggleType() {
@@ -198,7 +194,6 @@ function select() {
 function clear(ev: Event) {
   const clearValue = props.clearValue ?? ''
 
-  emits('input', '')
   emits('change', '', ev)
   modelValue.value = clearValue
 }
