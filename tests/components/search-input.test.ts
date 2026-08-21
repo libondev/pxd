@@ -66,7 +66,10 @@ describe('search-input', () => {
 
     await wrapper.find('input').setValue('test')
 
-    expect(onInput).toHaveBeenCalledWith('test')
+    expect(onInput).toHaveBeenCalledTimes(1)
+    const event = onInput.mock.calls[0]![0] as Event
+    expect(event.type).toBe('input')
+    expect((event.target as HTMLInputElement).value).toBe('test')
 
     wrapper.unmount()
   })

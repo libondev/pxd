@@ -369,6 +369,34 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should not sync the min width when fill-trigger-width is disabled', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+        fillTriggerWidth: false,
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = wrapper.find('button')
+
+    vi.spyOn(trigger.element, 'getBoundingClientRect').mockReturnValue({
+      width: 120,
+    } as DOMRect)
+
+    await trigger.trigger('click')
+    await flush()
+
+    const popover = document.body.querySelector('.pxd-popover--wrapper') as HTMLElement
+    expect(popover.style.minWidth).toBe('')
+
+    wrapper.unmount()
+  })
+
   it('should keep toggle behavior for same matched trigger', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,

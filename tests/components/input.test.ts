@@ -120,7 +120,7 @@ describe('input', () => {
     await input.trigger('compositionend')
 
     expect(input.element.value).toBe('test')
-    expect(wrapper.emitted('input')![0]).toEqual(['test'])
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['test'])
 
     wrapper.unmount()
   })
@@ -139,7 +139,6 @@ describe('input', () => {
     await input.trigger('compositionend')
 
     expect(input.element.value).toBe('tes')
-    expect(wrapper.emitted('input')![0]).toEqual(['tes'])
     expect(wrapper.emitted('update:modelValue')![0]).toEqual(['tes'])
 
     wrapper.unmount()
