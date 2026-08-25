@@ -143,7 +143,7 @@ provideListFilterParentItemId(itemId)
     @click.prevent.stop="onItemClick"
   >
     <slot>
-      <div class="pxd-list-item--content gap-1.5 flex flex-col">
+      <div class="pxd-list-item--content gap-1 flex flex-col">
         <span>{{ label }}</span>
         <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
       </div>
