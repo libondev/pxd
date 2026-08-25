@@ -13,7 +13,7 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
   <div
     aria-hidden="true"
     aria-label="Loading"
-    class="pxd-spinner leading-0 transform-origin-center motion-safe:animate-spin pointer-events-none relative inline-block size-em overflow-hidden text-gray-700 content-visibility-auto intrinsic-size-auto"
+    class="pxd-spinner leading-0 transform-origin-center motion-safe:animate-spin pointer-events-none relative inline-block size-em shrink-0 overflow-hidden text-gray-700 content-visibility-auto intrinsic-size-auto"
     v-bind="$attrs"
   >
     <div class="pxd-spinner-container top-0 left-0 absolute size-full">

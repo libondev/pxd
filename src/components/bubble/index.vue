@@ -33,7 +33,7 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: contentClasses } = useTailwindVariant(
   {
-    base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-md border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
+    base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-lg border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
     variants: {
       role: {
         user: 'bg-primary text-primary-foreground hover:brightness-85 motion-safe:transition-[filter]',
