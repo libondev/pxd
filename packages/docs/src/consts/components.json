@@ -20,6 +20,10 @@
     "name": "book"
   },
   {
+    "camelized": "Border Beam",
+    "name": "border-beam"
+  },
+  {
     "camelized": "Breadcrumb",
     "name": "breadcrumb"
   },
