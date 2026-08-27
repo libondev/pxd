@@ -30,7 +30,7 @@ const computedStyle = computed(() => {
 
       style[`--border-beam-stroke-color-${index + 1}`] = color
       style[`--border-beam-glow-color-${index + 1}`] =
-        `color-mix(in srgb, ${color}, transparent 30%)`
+        `color-mix(in srgb, ${color}, transparent 60%)`
     }
   }
 
@@ -40,7 +40,7 @@ const computedStyle = computed(() => {
 
 <template>
   <div
-    class="pxd-border-beam after:content-empty after:inset-0 before:content-empty before:inset-0 relative overflow-hidden before:pointer-events-none before:absolute before:z-1 before:rounded-inherit after:pointer-events-none after:absolute after:z-2 after:rounded-inherit after:p-px motion-reduce:animate-none! motion-reduce:before:animate-none! motion-reduce:after:animate-none!"
+    class="pxd-border-beam after:content-empty after:inset-0 before:content-empty before:inset-0 relative overflow-hidden before:pointer-events-none before:absolute before:z-1 before:rounded-inherit after:pointer-events-none after:absolute after:z-2 after:rounded-inherit motion-reduce:animate-none! motion-reduce:before:animate-none! motion-reduce:after:animate-none!"
     :data-variant="variant"
     :data-disabled="disabled"
     :style="computedStyle"
@@ -62,19 +62,20 @@ const computedStyle = computed(() => {
 }
 
 .pxd-border-beam {
-  --border-beam-strength: 1;
-  --pxd-border-beam-angle: 0deg;
+  --pxd-border-beam-mask-conic: conic-gradient(
+    from var(--pxd-border-beam-angle),
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 36%,
+    rgba(255, 255, 255, 0.35) 44%,
+    white 52%,
+    white 80%,
+    rgba(255, 255, 255, 0.35) 86%,
+    rgba(255, 255, 255, 0.1) 92%,
+    transparent 95%,
+    transparent 100%
+  );
   animation: pxd-animation-border-beam-spin 1.96s linear infinite;
-}
-
-.pxd-border-beam[data-disabled='true'] {
-  animation-play-state: paused;
-}
-
-.pxd-border-beam[data-disabled='true']::after,
-.pxd-border-beam[data-disabled='true']::before,
-.pxd-border-beam[data-disabled='true'] .pxd-border-beam--bloom {
-  animation: pxd-animation-border-beam-fade-out 0.5s ease forwards;
 }
 
 .pxd-border-beam::after {
@@ -139,37 +140,8 @@ const computedStyle = computed(() => {
       var(--border-beam-stroke-color-9, var(--color-purple-700)),
       transparent
     );
-  -webkit-mask:
-    conic-gradient(
-      from var(--pxd-border-beam-angle),
-      transparent 0%,
-      transparent 30%,
-      rgba(255, 255, 255, 0.1) 36%,
-      rgba(255, 255, 255, 0.35) 44%,
-      white 52%,
-      white 80%,
-      rgba(255, 255, 255, 0.35) 86%,
-      rgba(255, 255, 255, 0.1) 92%,
-      transparent 95%,
-      transparent 100%
-    ),
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: source-in, xor;
   mask:
-    conic-gradient(
-      from var(--pxd-border-beam-angle),
-      transparent 0%,
-      transparent 30%,
-      rgba(255, 255, 255, 0.1) 36%,
-      rgba(255, 255, 255, 0.35) 44%,
-      white 52%,
-      white 80%,
-      rgba(255, 255, 255, 0.35) 86%,
-      rgba(255, 255, 255, 0.1) 92%,
-      transparent 95%,
-      transparent 100%
-    ),
+    var(--pxd-border-beam-mask-conic),
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: intersect, exclude;
@@ -181,81 +153,52 @@ const computedStyle = computed(() => {
   background:
     radial-gradient(
       ellipse 63px 36px at 33% -7.4%,
-      var(--border-beam-glow-color-1, hsla(var(--color-pink-700-value), 30%)),
+      var(--border-beam-glow-color-1, hsla(var(--color-pink-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 54px 32px at 12% -5%,
-      var(--border-beam-glow-color-2, hsla(var(--color-blue-700-value), 30%)),
+      var(--border-beam-glow-color-2, hsla(var(--color-blue-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 36px 63px at 2.1% 68.3%,
-      var(--border-beam-glow-color-3, hsla(var(--color-green-700-value), 30%)),
+      var(--border-beam-glow-color-3, hsla(var(--color-green-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 18px 32px at 2.1% 68.3%,
-      var(--border-beam-glow-color-4, hsla(var(--color-teal-700-value), 30%)),
+      var(--border-beam-glow-color-4, hsla(var(--color-teal-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 162px 29px at 74.4% 100%,
-      var(--border-beam-glow-color-5, hsla(var(--color-purple-700-value), 30%)),
+      var(--border-beam-glow-color-5, hsla(var(--color-purple-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 77px 23px at 55% 100%,
-      var(--border-beam-glow-color-6, hsla(var(--color-blue-700-value), 30%)),
+      var(--border-beam-glow-color-6, hsla(var(--color-blue-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 67px 29px at 93.9% 0%,
-      var(--border-beam-glow-color-7, hsla(var(--color-amber-700-value), 30%)),
+      var(--border-beam-glow-color-7, hsla(var(--color-amber-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 23px 38px at 100% 27.1%,
-      var(--border-beam-glow-color-8, hsla(var(--color-pink-700-value), 30%)),
+      var(--border-beam-glow-color-8, hsla(var(--color-pink-700-value), 40%)),
       transparent
     ),
     radial-gradient(
       ellipse 47px 43px at 100% 27.1%,
-      var(--border-beam-glow-color-9, hsla(var(--color-purple-700-value), 30%)),
+      var(--border-beam-glow-color-9, hsla(var(--color-purple-700-value), 40%)),
       transparent
     );
   box-shadow: inset 0 0 9px 1px rgba(255, 255, 255, 0.27);
-  -webkit-mask-image:
-    conic-gradient(
-      from var(--pxd-border-beam-angle),
-      transparent 0%,
-      transparent 30%,
-      rgba(255, 255, 255, 0.1) 36%,
-      rgba(255, 255, 255, 0.35) 44%,
-      white 52%,
-      white 80%,
-      rgba(255, 255, 255, 0.35) 86%,
-      rgba(255, 255, 255, 0.1) 92%,
-      transparent 95%,
-      transparent 100%
-    ),
-    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
-    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
-  -webkit-mask-composite: source-in, source-over;
   mask-image:
-    conic-gradient(
-      from var(--pxd-border-beam-angle),
-      transparent 0%,
-      transparent 30%,
-      rgba(255, 255, 255, 0.1) 36%,
-      rgba(255, 255, 255, 0.35) 44%,
-      white 52%,
-      white 80%,
-      rgba(255, 255, 255, 0.35) 86%,
-      rgba(255, 255, 255, 0.1) 92%,
-      transparent 95%,
-      transparent 100%
-    ),
+    var(--pxd-border-beam-mask-conic),
     linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
     linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
   mask-composite: intersect, add;
@@ -280,15 +223,11 @@ const computedStyle = computed(() => {
     rgba(255, 255, 255, 0.03) 78%,
     transparent 82%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
   mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  filter: blur(4px) brightness(1.3) saturate(1.2);
+  filter: blur(10px) brightness(1.3) saturate(1.2);
 }
 
 .pxd-border-beam[data-variant='line']::before,
@@ -297,7 +236,7 @@ const computedStyle = computed(() => {
 }
 
 .pxd-border-beam[data-variant='line']::after {
-  opacity: var(--border-beam-strength);
+  padding: 1px;
   background: conic-gradient(
     from var(--pxd-border-beam-angle),
     transparent 0%,
@@ -309,19 +248,20 @@ const computedStyle = computed(() => {
     transparent 97%,
     transparent 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
   mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
   animation: none;
-  filter: none;
 }
 
-.pxd-border-beam[data-variant='line'][data-disabled='true']::after {
+.pxd-border-beam[data-disabled='true'] {
+  animation-play-state: paused;
+}
+
+.pxd-border-beam[data-disabled='true']::after,
+.pxd-border-beam[data-disabled='true']::before,
+.pxd-border-beam[data-disabled='true'] .pxd-border-beam--bloom {
   animation: pxd-animation-border-beam-fade-out 0.5s ease forwards;
 }
 

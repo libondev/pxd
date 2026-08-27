@@ -124,7 +124,7 @@ describe('border-beam', () => {
     for (let index = 1; index <= 9; index++) {
       expect(style).toContain(`--border-beam-stroke-color-${index}: #ff0000`)
       expect(style).toContain(
-        `--border-beam-glow-color-${index}: color-mix(in srgb, #ff0000, transparent 30%)`,
+        `--border-beam-glow-color-${index}: color-mix(in srgb, #ff0000, transparent 60%)`,
       )
     }
 
