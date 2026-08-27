@@ -78,7 +78,7 @@ const computedStyle = computed(() => {
 }
 
 .pxd-border-beam::after {
-  opacity: calc(30% * var(--border-beam-strength));
+  opacity: var(--border-beam-strength);
   background:
     conic-gradient(
       from var(--pxd-border-beam-angle),
@@ -177,7 +177,7 @@ const computedStyle = computed(() => {
 }
 
 .pxd-border-beam::before {
-  opacity: calc(30% * var(--border-beam-strength));
+  opacity: var(--border-beam-strength);
   background:
     radial-gradient(
       ellipse 63px 36px at 33% -7.4%,
@@ -263,7 +263,7 @@ const computedStyle = computed(() => {
 }
 
 .pxd-border-beam--bloom {
-  opacity: calc(24% * var(--border-beam-strength));
+  opacity: var(--border-beam-strength);
   background: conic-gradient(
     from var(--pxd-border-beam-angle),
     transparent 0%,
