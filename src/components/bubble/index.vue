@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<BubbleProps>(), {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-bubble group/bubble sibling:mbs-2 gap-2 flex max-w-full',
+    base: 'pxd-bubble group/bubble sibling:mbs-2 gap-2 flex max-w-full cursor-default',
     variants: {
       role: {
         user: 'ps-10 flex-row-reverse',
@@ -80,7 +80,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
     <div class="pxd-bubble--wrapper text-sm gap-1 flex w-max flex-col">
       <header
         v-if="header || $slots.header"
-        class="pxd-bubble--header flex cursor-default items-center text-13 text-foreground-secondary group-data-[role=user]/bubble:justify-end"
+        class="pxd-bubble--header flex items-center text-13 text-foreground-secondary group-data-[role=user]/bubble:justify-end"
       >
         <slot name="header">
           {{ header }}
