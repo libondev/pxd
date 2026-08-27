@@ -106,7 +106,7 @@ const spinnerStyle = computed(() => {
 
 <template>
   <span
-    class="pxd-spinner-dots inline-block h-lh overflow-hidden align-baseline"
+    class="pxd-spinner-dots inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline"
     :style="spinnerStyle"
     v-bind="$attrs"
   >
