@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { AvatarStatus, AvatarProps, AvatarEmits } from './types'
 import { computed, shallowRef } from 'vue'
-import { useAvatarGroupContext } from '../../contexts/avatar'
-import { getCssUnitValue } from '../../utils/format'
+import { useAvatarGroupContext } from '../../contexts/avatar.js'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PAvatar',
@@ -49,7 +49,7 @@ defineExpose({
 
 <template>
   <div
-    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full bg-background-100 text-13 select-none before:default-animation-timing-function! motion-reduce:before:animate-none!"
+    class="pxd-avatar relative inline-flex size-(--avatar-size) items-center justify-center rounded-full bg-background-100 text-13 select-none before:default-animation-timing-function! after:shadow-border-base motion-reduce:before:animate-none!"
     :style="{ '--avatar-size': computedSize }"
     :data-placeholder="placeholder"
     v-bind="$attrs"
@@ -112,10 +112,6 @@ defineExpose({
     );
     background-size: 400% 100%;
     animation: pxd-animation-placeholder 8s infinite;
-  }
-
-  &::after {
-    border: 1px solid var(--color-gray-alpha-300);
   }
 }
 
