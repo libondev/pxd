@@ -284,6 +284,10 @@
     "name": "snippet"
   },
   {
+    "camelized": "Spinner Dots",
+    "name": "spinner-dots"
+  },
+  {
     "camelized": "Spinner",
     "name": "spinner"
   },

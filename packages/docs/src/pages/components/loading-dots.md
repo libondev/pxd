@@ -12,25 +12,3 @@ Indicate an action running in the background.
   </PStack>
 </template>
 ```
-
-## With prefix and suffix
-
-```vue demo
-<template>
-  <PLoadingDots>
-    <template #prefix>
-      <PText secondary>Loading Left</PText>
-    </template>
-    <template #suffix>
-      <PText secondary>Loading Right</PText>
-    </template>
-  </PLoadingDots>
-</template>
-```
-
-## Slots
-
-| Name | Description |
-| --- | --- |
-| prefix | Prefix slot |
-| suffix | Suffix slot |
