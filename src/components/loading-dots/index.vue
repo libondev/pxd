@@ -7,10 +7,6 @@ defineOptions({
 
 <template>
   <span class="pxd-loading-dots inline-flex items-center" v-bind="$attrs">
-    <div v-if="$slots.prefix" class="pxd-loading-dots--text me-3">
-      <slot name="prefix" />
-    </div>
-
     <span
       class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 opacity-20 default-animation-timing-function! motion-reduce:animate-none!"
     />
@@ -22,10 +18,6 @@ defineOptions({
       class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-gray-900 opacity-80 default-animation-timing-function! motion-reduce:animate-none!"
       style="animation-delay: 0.4s"
     />
-
-    <div v-if="$slots.suffix" class="pxd-loading-dots--text ms-3">
-      <slot name="suffix" />
-    </div>
   </span>
 </template>
 
