@@ -11,7 +11,7 @@ export interface InputProps {
   password?: boolean
   autofocus?: boolean
   inputType?: string
-  inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
+  inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   minlength?: number | string
   maxlength?: number | string
   trimOverflow?: boolean

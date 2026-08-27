@@ -162,7 +162,7 @@ const value = ref('')
 | password | `boolean` | - | - |
 | autofocus | `boolean` | - | - |
 | input-type | `string` | - | - |
-| inputmode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
+| input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
 | minlength | `number \| string` | - | - |
 | maxlength | `number \| string` | - | - |
 | trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `maxlength` is set. |
