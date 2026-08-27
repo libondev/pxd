@@ -32,8 +32,20 @@ describe('border-beam', () => {
   it('should set the default variant and disabled state', () => {
     const wrapper = mount(BorderBeam)
 
-    expect(wrapper.attributes('data-variant')).toBe('colorful')
+    expect(wrapper.attributes('data-variant')).toBe('glow')
     expect(wrapper.attributes('data-disabled')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should reflect the line variant on data-variant', () => {
+    const wrapper = mount(BorderBeam, {
+      props: {
+        variant: 'line',
+      },
+    })
+
+    expect(wrapper.attributes('data-variant')).toBe('line')
 
     wrapper.unmount()
   })
@@ -119,14 +131,10 @@ describe('border-beam', () => {
     wrapper.unmount()
   })
 
-  it('should distribute color stops sorted by position', () => {
+  it('should distribute colors in array order', () => {
     const wrapper = mount(BorderBeam, {
       props: {
-        color: [
-          { color: '#0000ff', position: 1 },
-          { color: '#ff0000', position: 0 },
-          { color: '#00ff00', position: 0.5 },
-        ],
+        color: ['#ff0000', '#00ff00', '#0000ff'],
       },
     })
 
@@ -136,21 +144,6 @@ describe('border-beam', () => {
     expect(style).toContain('--border-beam-stroke-color-2: #00ff00')
     expect(style).toContain('--border-beam-stroke-color-3: #0000ff')
     expect(style).toContain('--border-beam-stroke-color-4: #ff0000')
-
-    wrapper.unmount()
-  })
-
-  it('should default stop position to 0.5 when sorting', () => {
-    const wrapper = mount(BorderBeam, {
-      props: {
-        color: [{ color: '#0000ff' }, { color: '#ff0000', position: 0 }],
-      },
-    })
-
-    const style = wrapper.attributes('style') ?? ''
-
-    expect(style).toContain('--border-beam-stroke-color-1: #ff0000')
-    expect(style).toContain('--border-beam-stroke-color-2: #0000ff')
 
     wrapper.unmount()
   })

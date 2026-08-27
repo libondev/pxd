@@ -1,13 +1,8 @@
-export type BorderBeamVariant = 'colorful'
-
-export interface BorderBeamColorStop {
-  color: string
-  position?: number
-}
+export type BorderBeamVariant = 'glow' | 'line'
 
 export interface BorderBeamProps {
   variant?: BorderBeamVariant
-  color?: string | BorderBeamColorStop[]
+  color?: string | string[]
   strength?: number
   disabled?: boolean
 }

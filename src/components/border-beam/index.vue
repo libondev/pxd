@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import type { BorderBeamColorStop, BorderBeamProps } from './types'
+import type { BorderBeamProps } from './types'
 import { computed } from 'vue'
+import { toArray } from '../../utils/format.js'
 
 defineOptions({
   name: 'PBorderBeam',
@@ -8,7 +9,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<BorderBeamProps>(), {
-  variant: 'colorful',
+  variant: 'glow',
   strength: 1,
   disabled: false,
 })
@@ -21,7 +22,7 @@ const computedStyle = computed(() => {
     '--border-beam-strength': Math.max(0, Math.min(1, props.strength)),
   }
 
-  const colors = resolveColors(props.color)
+  const colors = toArray(props.color)
 
   if (colors.length > 0) {
     for (let index = 0; index < COLOR_SPOT_COUNT; index++) {
@@ -35,24 +36,6 @@ const computedStyle = computed(() => {
 
   return style
 })
-
-function resolveColors(color: string | BorderBeamColorStop[] | undefined): string[] {
-  if (!color) {
-    return []
-  }
-
-  if (typeof color === 'string') {
-    return [color]
-  }
-
-  if (color.length === 0) {
-    return []
-  }
-
-  const sorted = [...color].sort((a, b) => (a.position ?? 0.5) - (b.position ?? 0.5))
-
-  return sorted.map((stop) => stop.color)
-}
 </script>
 
 <template>
@@ -95,7 +78,7 @@ function resolveColors(color: string | BorderBeamColorStop[] | undefined): strin
 }
 
 .pxd-border-beam::after {
-  opacity: calc(26% * var(--border-beam-strength));
+  opacity: calc(30% * var(--border-beam-strength));
   background:
     conic-gradient(
       from var(--pxd-border-beam-angle),
@@ -194,51 +177,51 @@ function resolveColors(color: string | BorderBeamColorStop[] | undefined): strin
 }
 
 .pxd-border-beam::before {
-  opacity: calc(42% * var(--border-beam-strength));
+  opacity: calc(30% * var(--border-beam-strength));
   background:
     radial-gradient(
       ellipse 63px 36px at 33% -7.4%,
-      var(--border-beam-glow-color-1, hsla(var(--color-pink-700-value), 45%)),
+      var(--border-beam-glow-color-1, hsla(var(--color-pink-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 54px 32px at 12% -5%,
-      var(--border-beam-glow-color-2, hsla(var(--color-blue-700-value), 45%)),
+      var(--border-beam-glow-color-2, hsla(var(--color-blue-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 36px 63px at 2.1% 68.3%,
-      var(--border-beam-glow-color-3, hsla(var(--color-green-700-value), 45%)),
+      var(--border-beam-glow-color-3, hsla(var(--color-green-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 18px 32px at 2.1% 68.3%,
-      var(--border-beam-glow-color-4, hsla(var(--color-teal-700-value), 45%)),
+      var(--border-beam-glow-color-4, hsla(var(--color-teal-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 162px 29px at 74.4% 100%,
-      var(--border-beam-glow-color-5, hsla(var(--color-purple-700-value), 45%)),
+      var(--border-beam-glow-color-5, hsla(var(--color-purple-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 77px 23px at 55% 100%,
-      var(--border-beam-glow-color-6, hsla(var(--color-blue-700-value), 45%)),
+      var(--border-beam-glow-color-6, hsla(var(--color-blue-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 67px 29px at 93.9% 0%,
-      var(--border-beam-glow-color-7, hsla(var(--color-amber-700-value), 45%)),
+      var(--border-beam-glow-color-7, hsla(var(--color-amber-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 23px 38px at 100% 27.1%,
-      var(--border-beam-glow-color-8, hsla(var(--color-pink-700-value), 45%)),
+      var(--border-beam-glow-color-8, hsla(var(--color-pink-700-value), 30%)),
       transparent
     ),
     radial-gradient(
       ellipse 47px 43px at 100% 27.1%,
-      var(--border-beam-glow-color-9, hsla(var(--color-purple-700-value), 45%)),
+      var(--border-beam-glow-color-9, hsla(var(--color-purple-700-value), 30%)),
       transparent
     );
   box-shadow: inset 0 0 9px 1px rgba(255, 255, 255, 0.27);
@@ -305,7 +288,41 @@ function resolveColors(color: string | BorderBeamColorStop[] | undefined): strin
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  filter: blur(8px) brightness(1.3) saturate(1.2);
+  filter: blur(4px) brightness(1.3) saturate(1.2);
+}
+
+.pxd-border-beam[data-variant='line']::before,
+.pxd-border-beam[data-variant='line'] .pxd-border-beam--bloom {
+  display: none;
+}
+
+.pxd-border-beam[data-variant='line']::after {
+  opacity: var(--border-beam-strength);
+  background: conic-gradient(
+    from var(--pxd-border-beam-angle),
+    transparent 0%,
+    transparent 68%,
+    var(--border-beam-stroke-color-1, var(--color-blue-600)) 74%,
+    var(--border-beam-stroke-color-2, var(--color-purple-600)) 80%,
+    var(--border-beam-stroke-color-3, var(--color-pink-700)) 86%,
+    var(--border-beam-stroke-color-4, var(--color-amber-600)) 92%,
+    transparent 97%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: none;
+  filter: none;
+}
+
+.pxd-border-beam[data-variant='line'][data-disabled='true']::after {
+  animation: pxd-animation-border-beam-fade-out 0.5s ease forwards;
 }
 
 @keyframes pxd-animation-border-beam-spin {

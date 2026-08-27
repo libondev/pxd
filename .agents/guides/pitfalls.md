@@ -69,3 +69,9 @@ Known issues and lessons learned during development.
 - **Symptom**: `wrapper.vm.shimmerStyle` in tests errors with TS2339 (`Property 'shimmerStyle' does not exist on type 'ComponentPublicInstance<...>'`); switching to `wrapper.attributes('style')` then fails at runtime because the serialized attribute contains only `--shimmer-total-duration` and drops the `background-image` gradient.
 - **Cause**: vue-tsc types `wrapper.vm` from the component's props/emits only — `<script setup>` bindings are not part of the public instance type, although the render proxy exposes them at runtime. The DOM fallback fails because happy-dom's CSS parser rejects the `color-mix(...)`/`calc(...)` gradient value and silently omits that declaration from the style attribute.
 - **Fix**: Cast the vm like the existing overlay.test.ts pattern: `expect((wrapper.vm as any).shimmerStyle.backgroundImage).toContain('#F5EBD9')` — or `defineExpose` the state when it should be public API.
+
+### Physical borders misalign masked BorderBeam layers
+
+- **Symptom**: The BorderBeam stroke sits just inside the rounded physical border, in both `glow` and `line` variants.
+- **Cause**: A physical root border moves the absolutely positioned masked layers to the padding box, while the beam ring is drawn with `inset: 0` and `p-px`.
+- **Fix**: Use the library's inset `shadow-border-base` edge on the BorderBeam host instead of a physical `border`, keeping the static edge and beam in the same box.
