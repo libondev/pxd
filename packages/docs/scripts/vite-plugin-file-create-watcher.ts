@@ -21,7 +21,6 @@ export function fileCreateWatcher() {
       watcher.on('add', (filePath: string) => {
         execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
 
-        console.info('🍀vite-plugin-file-create-watcher.ts:25/(filePath):\n', filePath)
         if (filePath.endsWith('index.vue') && !ignorePattern.test(filePath)) {
           const componentName = filePath.split(sep).at(-2) || ''
           const componentNamePascal = pascalize(componentName)
