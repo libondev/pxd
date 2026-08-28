@@ -10,14 +10,14 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
 </script>
 
 <template>
-  <div
+  <span
     aria-hidden="true"
     aria-label="Loading"
-    class="pxd-spinner leading-0 transform-origin-center motion-safe:animate-spin pointer-events-none relative inline-block size-em shrink-0 overflow-hidden text-gray-700 content-visibility-auto intrinsic-size-auto"
+    class="pxd-spinner leading-0 transform-origin-center motion-safe:animate-spin pointer-events-none relative inline-block size-em shrink-0 overflow-hidden text-foreground-secondary content-visibility-auto intrinsic-size-auto"
     v-bind="$attrs"
   >
-    <div class="pxd-spinner-container top-0 left-0 absolute size-full">
-      <div
+    <span class="pxd-spinner-container top-0 left-0 absolute size-full">
+      <span
         v-for="i of ITEMS_COUNT"
         :key="i"
         class="pxd-spinner-item absolute rounded-sm bg-current"
@@ -30,6 +30,6 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
           transform: `rotate(${i * ROTATE_STEP}deg) translate(146%)`,
         }"
       />
-    </div>
-  </div>
+    </span>
+  </span>
 </template>

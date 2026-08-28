@@ -106,11 +106,13 @@ const spinnerStyle = computed(() => {
 
 <template>
   <span
-    class="pxd-spinner-dots inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline"
+    class="pxd-spinner-dots font-mono inline-block h-lh w-max max-w-full shrink-0 overflow-hidden text-left align-baseline text-foreground-secondary"
     :style="spinnerStyle"
+    aria-hidden="true"
+    aria-label="Loading"
     v-bind="$attrs"
   >
-    <span class="pxd-spinner-dots--track block motion-reduce:animate-none!" aria-hidden="true">
+    <span class="pxd-spinner-dots--track block motion-reduce:animate-none!">
       <span v-for="(char, index) in spinners" :key="index" class="pxd-spinner-dots--frame block">
         {{ char }}
       </span>
