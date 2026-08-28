@@ -6,6 +6,8 @@ import process from 'node:process'
 import { humanize, pascalize } from '../../../scripts/utils.js'
 
 export function fileCreateWatcher() {
+  const ignorePattern = /(-item|-group)/
+
   return {
     name: 'file-create-watcher',
     configureServer(server: ViteDevServer) {
@@ -19,7 +21,8 @@ export function fileCreateWatcher() {
       watcher.on('add', (filePath: string) => {
         execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
 
-        if (filePath.endsWith('index.vue')) {
+        console.info('🍀vite-plugin-file-create-watcher.ts:25/(filePath):\n', filePath)
+        if (filePath.endsWith('index.vue') && !ignorePattern.test(filePath)) {
           const componentName = filePath.split(sep).at(-2) || ''
           const componentNamePascal = pascalize(componentName)
 
@@ -31,7 +34,7 @@ export function fileCreateWatcher() {
             `${componentName}.md`,
           )
           const mdFileContent = `# ${humanize(componentName)}\n\n
-## Default\n
+## Default\nNew component description.\n
 \`\`\`vue demo
 <template>
   <P${componentNamePascal}></P${componentNamePascal}>
