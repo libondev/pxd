@@ -16,10 +16,9 @@ const props = withDefaults(defineProps<TimelineItemProps>(), {
 })
 
 const nodeClasses = computed(() => [
-  `is-${props.size}`,
+  `is-${props.size} min-w-2 min-h-2 p-px left-[0.28125rem] -translate-x-1/2 leading-none`,
   props.type && `is-${props.type}`,
   { 'is-hollow': props.hollow },
-  props.size === 'large' ? '-left-0.5 size-3.5' : 'left-0 size-2.5',
   {
     'bg-primary border-primary': props.type === 'primary',
     'bg-blue-700 border-blue-700': props.type === 'success',
@@ -33,10 +32,10 @@ const nodeClasses = computed(() => [
 </script>
 
 <template>
-  <li class="pxd-timeline-item group/timeline-item pbe-5 last:pbe-0 relative" v-bind="$attrs">
+  <li class="pxd-timeline-item group/timeline-item pbe-4 last:pbe-0 relative" v-bind="$attrs">
     <div
       aria-hidden="true"
-      class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l-2 border-gray-300 group-last/timeline-item:hidden"
+      class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l border-gray-300 group-last/timeline-item:hidden"
     />
 
     <div
@@ -44,7 +43,7 @@ const nodeClasses = computed(() => [
       aria-hidden="true"
       class="pxd-timeline-item--node absolute flex items-center justify-center rounded-full text-primary-foreground"
       :class="nodeClasses"
-      :style="color ? { backgroundColor: color, borderColor: color } : undefined"
+      :style="{ backgroundColor: color, borderColor: color }"
     >
       <Component :is="icon" v-if="icon" class="pxd-timeline-item--icon size-3" />
     </div>
@@ -56,7 +55,7 @@ const nodeClasses = computed(() => [
       <slot name="dot" />
     </div>
 
-    <div class="pxd-timeline-item--wrapper px-5 relative -top-[0.325rem]">
+    <div class="pxd-timeline-item--wrapper px-5 -top-1.5 relative">
       <div
         v-if="!hideTimestamp && placement === 'top'"
         class="pxd-timeline-item--timestamp is-top mbe-1 pbs-1 text-xs leading-none text-foreground-secondary"
@@ -70,22 +69,10 @@ const nodeClasses = computed(() => [
 
       <div
         v-if="!hideTimestamp && placement === 'bottom'"
-        class="pxd-timeline-item--timestamp is-bottom mbs-1 text-xs leading-none text-foreground-secondary"
+        class="pxd-timeline-item--timestamp is-bottom mbs-0.5 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}
       </div>
     </div>
   </li>
 </template>
-
-<style>
-.pxd-timeline-item.is-center:first-child > .pxd-timeline-item--tail {
-  top: calc(50% - 0.625rem);
-  height: calc(50% + 0.625rem);
-}
-
-.pxd-timeline-item.is-center:last-child > .pxd-timeline-item--tail {
-  display: block;
-  height: calc(50% - 0.625rem);
-}
-</style>

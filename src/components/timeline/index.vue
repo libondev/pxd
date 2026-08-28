@@ -2,7 +2,7 @@
 import type { TimelineProps } from './types'
 import type { VNode } from 'vue'
 import { Fragment, useSlots } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
 
 defineOptions({
   name: 'PTimeline',
@@ -20,10 +20,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-timeline m-0 w-full max-w-full list-none',
     variants: {
       mode: {
-        start: 'is-start ps-10',
-        end: 'is-end pe-10',
-        alternate: 'is-alternate px-5',
-        'alternate-reverse': 'is-alternate-reverse px-5',
+        start: 'is-start ps-8',
+        end: 'is-end pe-8',
+        alternate: 'is-alternate px-4',
+        'alternate-reverse': 'is-alternate-reverse px-4',
         horizontal: 'is-horizontal p-0 flex overflow-x-auto overflow-y-hidden',
       },
     },
@@ -63,38 +63,40 @@ function TimelineItems() {
 }
 
 .pxd-timeline.is-end .pxd-timeline-item--tail {
-  right: 0.25rem;
+  right: 0.2rem;
   left: auto;
 }
 
 .pxd-timeline.is-end .pxd-timeline-item--node {
   right: 0;
   left: auto;
+  transform: translateX(50%);
 }
 
 .pxd-timeline:is(.is-alternate, .is-alternate-reverse) .pxd-timeline-item--tail,
 .pxd-timeline:is(.is-alternate, .is-alternate-reverse) .pxd-timeline-item--node,
 .pxd-timeline:is(.is-alternate, .is-alternate-reverse) .pxd-timeline-item--dot {
   left: 50%;
-  transform: translateX(-50%);
 }
 
 .pxd-timeline.is-alternate .pxd-timeline-item:nth-child(odd) .pxd-timeline-item--wrapper,
 .pxd-timeline.is-alternate-reverse .pxd-timeline-item:nth-child(even) .pxd-timeline-item--wrapper {
   left: 50%;
   width: 50%;
+  padding-inline-end: 0;
 }
 
 .pxd-timeline.is-alternate .pxd-timeline-item:nth-child(even) .pxd-timeline-item--wrapper,
 .pxd-timeline.is-alternate-reverse .pxd-timeline-item:nth-child(odd) .pxd-timeline-item--wrapper {
   width: 50%;
   text-align: right;
+  padding-inline-start: 0;
 }
 
 .pxd-timeline.is-horizontal .pxd-timeline-item {
   display: grid;
-  grid-template-columns: 0.625rem minmax(0, 1fr);
-  grid-template-rows: 0.625rem auto;
+  grid-template-columns: 0.5rem minmax(0, 1fr);
+  grid-template-rows: 0.5rem auto;
   flex: 1 0 12rem;
   min-width: 0;
   padding: 0;
@@ -102,15 +104,12 @@ function TimelineItems() {
 
 .pxd-timeline.is-horizontal .pxd-timeline-item--tail {
   position: relative;
-  top: 0.25rem;
-  right: auto;
-  left: auto;
+  top: 0.2rem;
+  left: 0.5px;
   grid-row: 1;
   grid-column: 2;
-  width: auto;
   height: 0;
-  margin-left: 0;
-  border-top: 2px solid var(--color-gray-300);
+  border-top: 1px solid var(--color-gray-300);
   border-left: 0;
 }
 
@@ -132,9 +131,8 @@ function TimelineItems() {
   top: 0;
   grid-row: 2;
   grid-column: 1 / -1;
-  max-width: none;
-  padding: 0;
   margin-top: 0.75rem;
+  padding: 0;
 }
 
 .pxd-timeline.is-horizontal .pxd-timeline-item--content {
