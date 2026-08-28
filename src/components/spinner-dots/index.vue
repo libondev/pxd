@@ -13,15 +13,14 @@ const props = withDefaults(defineProps<SpinnerDotsProps>(), {
 })
 
 const spinnerPresets = {
-  dots0: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
-  dots1: ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'],
-  dots2: ['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'],
-  dots3: ['⠄', '⠆', '⠇', '⠋', '⠙', '⠸', '⠰', '⠠', '⠰', '⠸', '⠙', '⠋', '⠇', '⠆'],
-  dots4: ['⠋', '⠙', '⠚', '⠒', '⠂', '⠂', '⠒', '⠲', '⠴', '⠦', '⠖', '⠒', '⠐', '⠐', '⠒', '⠓', '⠋'],
-  dots5: ['⢹', '⢺', '⢼', '⣸', '⣇', '⡧', '⡗', '⡏'],
-  dots6: ['⢄', '⢂', '⢁', '⡁', '⡈', '⡐', '⡠'],
-  dots7: ['⣼', '⣹', '⢻', '⠿', '⡟', '⣏', '⣧', '⣶'],
-  dots8: [
+  dots0: ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'],
+  dots1: ['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'],
+  dots2: ['⠋', '⠙', '⠚', '⠒', '⠂', '⠂', '⠒', '⠲', '⠴', '⠦', '⠖', '⠒', '⠐', '⠐', '⠒', '⠓', '⠋'],
+  dots3: ['⢹', '⢺', '⢼', '⣸', '⣇', '⡧', '⡗', '⡏'],
+  dots4: ['⢄', '⢂', '⢁', '⡁', '⡈', '⡐', '⡠'],
+  dots5: ['⣼', '⣹', '⢻', '⠿', '⡟', '⣏', '⣧', '⣶'],
+  dots6: ['.', '..', '...'],
+  dots7: [
     '⠁',
     '⠉',
     '⠙',
@@ -47,7 +46,7 @@ const spinnerPresets = {
     '⠉',
     '⠁',
   ],
-  dots9: [
+  dots8: [
     '⠁',
     '⠂',
     '⠄',
@@ -84,6 +83,37 @@ const spinnerPresets = {
     '⠡',
     '⢁',
   ],
+  dots9: [
+    '⠁',
+    '⠁',
+    '⠉',
+    '⠙',
+    '⠚',
+    '⠒',
+    '⠂',
+    '⠂',
+    '⠒',
+    '⠲',
+    '⠴',
+    '⠤',
+    '⠄',
+    '⠄',
+    '⠤',
+    '⠠',
+    '⠠',
+    '⠤',
+    '⠦',
+    '⠖',
+    '⠒',
+    '⠐',
+    '⠐',
+    '⠒',
+    '⠓',
+    '⠋',
+    '⠉',
+    '⠈',
+    '⠈',
+  ],
 }
 
 const spinners = computed(() => {
@@ -106,7 +136,7 @@ const spinnerStyle = computed(() => {
 
 <template>
   <span
-    class="pxd-spinner-dots font-mono inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline text-foreground-secondary"
+    class="pxd-spinner-dots inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline text-foreground-secondary"
     :style="spinnerStyle"
     aria-hidden="true"
     aria-label="Loading"
@@ -126,7 +156,6 @@ const spinnerStyle = computed(() => {
 
 <style>
 .pxd-spinner-dots--track {
-  font-family: ui-monospace, monospace;
   animation: pxd-animation-spinner-dots var(--spinner-dots-duration, 1s)
     steps(var(--spinner-dots-frames, 10)) infinite;
 }
