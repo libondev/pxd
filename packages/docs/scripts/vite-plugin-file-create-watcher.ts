@@ -32,8 +32,9 @@ export function fileCreateWatcher() {
             'components',
             `${componentName}.md`,
           )
-          const mdFileContent = `# ${humanize(componentName)}\n\n
-## Default\nNew component description.\n
+          const mdFileContent = `# ${humanize(componentName)}\n
+New component description.\n
+## Default\n\n
 \`\`\`vue demo
 <template>
   <P${componentNamePascal}></P${componentNamePascal}>
