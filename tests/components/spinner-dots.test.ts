@@ -1,14 +1,14 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import DotsSpinner from '../../src/components/dots-spinner/index.vue'
+import DotsSpinner from '../../src/components/spinner-dots/index.vue'
 
-describe('dots-spinner', () => {
+describe('spinner-dots', () => {
   it('renders the default variant frames', () => {
     const wrapper = mount(DotsSpinner)
 
-    expect(wrapper.classes()).toContain('pxd-dots-spinner')
-    expect(wrapper.classes()).toContain('h-[1lh]')
-    expect(wrapper.findAll('.pxd-dots-spinner--frame')).toHaveLength(10)
+    expect(wrapper.classes()).toContain('pxd-spinner-dots')
+    expect(wrapper.classes()).toContain('h-lh')
+    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(10)
     expect(wrapper.text()).toContain('⠋')
 
     wrapper.unmount()
@@ -21,7 +21,7 @@ describe('dots-spinner', () => {
       },
     })
 
-    expect(wrapper.findAll('.pxd-dots-spinner--frame')).toHaveLength(3)
+    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(3)
     expect(wrapper.text()).toBe('abc')
 
     wrapper.unmount()
@@ -35,7 +35,7 @@ describe('dots-spinner', () => {
       },
     })
 
-    expect(wrapper.findAll('.pxd-dots-spinner--frame')).toHaveLength(8)
+    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(8)
     expect(wrapper.text()).toContain('⣾')
 
     wrapper.unmount()
@@ -48,7 +48,7 @@ describe('dots-spinner', () => {
       },
     })
 
-    expect(wrapper.findAll('.pxd-dots-spinner--frame')).toHaveLength(8)
+    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(8)
     expect(wrapper.text()).toContain('⢹')
 
     wrapper.unmount()
@@ -62,8 +62,8 @@ describe('dots-spinner', () => {
       },
     })
 
-    expect(wrapper.attributes('style')).toContain('--dots-spinner-frames: 4')
-    expect(wrapper.attributes('style')).toContain('--dots-spinner-duration: 1000ms')
+    expect(wrapper.attributes('style')).toContain('--spinner-dots-frames: 4')
+    expect(wrapper.attributes('style')).toContain('--spinner-dots-duration: 1000ms')
 
     wrapper.unmount()
   })
@@ -71,7 +71,7 @@ describe('dots-spinner', () => {
   it('marks the animated track as aria-hidden', () => {
     const wrapper = mount(DotsSpinner)
 
-    expect(wrapper.find('.pxd-dots-spinner--track').attributes('aria-hidden')).toBe('true')
+    expect(wrapper.find('.pxd-spinner-dots').attributes('aria-hidden')).toBe('true')
 
     wrapper.unmount()
   })
