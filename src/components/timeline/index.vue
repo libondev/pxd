@@ -20,10 +20,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-timeline m-0 w-full max-w-full list-none',
     variants: {
       mode: {
-        start: 'is-start ps-8',
-        end: 'is-end pe-8',
-        alternate: 'is-alternate px-4',
-        'alternate-reverse': 'is-alternate-reverse px-4',
+        start: 'is-start ps-2',
+        end: 'is-end pe-2',
+        alternate: 'is-alternate px-2',
+        'alternate-reverse': 'is-alternate-reverse px-2',
         horizontal: 'is-horizontal p-0 flex overflow-x-auto overflow-y-hidden',
       },
     },
