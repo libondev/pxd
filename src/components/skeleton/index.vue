@@ -2,7 +2,7 @@
 import type { SkeletonProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
 
 defineOptions({

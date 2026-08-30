@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { ref } from 'vue'
-import { useListFilter } from '../../src/composables/use-list-filter'
+import { useListFilter } from '../../src/composables/_internal/use-list-filter'
 
 describe('useListFilter', () => {
   it('should return expected API', () => {

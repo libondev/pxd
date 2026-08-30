@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useButtonGroupContext } from '../../contexts/button.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'

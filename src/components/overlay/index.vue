@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { OverlayEmits, OverlayProps } from './types'
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useLockScroll } from '../../composables/use-lock-scroll.js'
-import { useOverlayManager } from '../../composables/use-overlay-manager.js'
+import { useLockScroll } from '../../composables/_internal/use-lock-scroll.js'
+import { useOverlayManager } from '../../composables/_internal/use-overlay-manager.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getElement } from '../../utils/dom.js'
 import { NOOP } from '../../utils/event.js'

@@ -5,7 +5,7 @@ import InformationIcon from '@gdsicon/vue/information'
 import StopIcon from '@gdsicon/vue/stop'
 import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { isTruthyProp } from '../../utils/format'
 

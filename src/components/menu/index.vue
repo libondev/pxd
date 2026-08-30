@@ -2,9 +2,9 @@
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
-import { useListKeyboardController } from '../../composables/use-list-keyboard-controller.js'
-import { useModelValue } from '../../composables/use-model-value.js'
-import { usePopoverResponsive } from '../../composables/use-popover-responsive.js'
+import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MaterialProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import PStack from '../stack/index.vue'
 
 defineOptions({

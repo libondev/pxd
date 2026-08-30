@@ -2,7 +2,7 @@
 import type { ComponentDirection } from '../../types/shared'
 import type { StackProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import { getResponsiveValue } from '../../utils/helper'
 
 defineOptions({

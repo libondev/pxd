@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { BubbleProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import PAvatar from '../avatar/index.vue'
 import PSpinner from '../spinner/index.vue'
 

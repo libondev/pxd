@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
-import { useLockScroll } from '../../src/composables/use-lock-scroll'
+import { useLockScroll } from '../../src/composables/_internal/use-lock-scroll'
 import * as dom from '../../src/utils/dom'
 import { runWithScope } from '../helpers/setup'
 

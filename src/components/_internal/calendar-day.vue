@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CalendarDay } from '../calendar/types'
-import { createTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { createTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 const cellClasses = createTailwindVariant({
   base: 'pxd-calendar--grid-cell self-focus-ring outline-none motion-safe:transition-colors',

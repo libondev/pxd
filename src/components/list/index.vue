@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListNavigationCommand } from '../../composables/use-list-navigation.js'
+import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
 import type {
   ListProps,
   ListOption,
@@ -9,7 +9,7 @@ import type {
   ListEmits,
 } from './types'
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useListNavigation } from '../../composables/use-list-navigation.js'
+import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
   type ListContext,
   provideListContext,

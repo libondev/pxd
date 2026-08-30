@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import { shallowRef } from 'vue'
-import { useListNavigation } from '../../src/composables/use-list-navigation'
+import { useListNavigation } from '../../src/composables/_internal/use-list-navigation'
 
 describe('useListNavigation', () => {
   beforeEach(() => {

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { createTailwindVariant, useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useModelValue } from '../../composables/_internal/use-model-value'
+import {
+  createTailwindVariant,
+  useTailwindVariant,
+} from '../../composables/_internal/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, once } from '../../utils/event'
 import { NOOP, throttleByRaf } from '../../utils/event'

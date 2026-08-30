@@ -1,6 +1,6 @@
 import { onScopeDispose } from 'vue'
-import { hasScrollbar, isScrollable } from '../utils/dom'
-import { cachedOff, cachedOn, preventDefaultScroll } from '../utils/event'
+import { hasScrollbar, isScrollable } from '../../utils/dom.js'
+import { cachedOff, cachedOn, preventDefaultScroll } from '../../utils/event.js'
 
 const rootLockClassNames = ['pointer-events-none']
 const touchMoveOptions = { passive: false }

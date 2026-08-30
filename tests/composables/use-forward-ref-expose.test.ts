@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { shallowRef } from 'vue'
-import { useForwardRefExpose } from '../../src/composables/use-forward-ref-expose'
+import { useForwardRefExpose } from '../../src/composables/_internal/use-forward-ref-expose'
 
 describe('useForwardRefExpose', () => {
   it('should proxy property access to target', () => {

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, h, nextTick, shallowRef } from 'vue'
-import { useSwipeGesture } from '../../src/composables/use-swipe-gesture'
+import { useSwipeGesture } from '../../src/composables/_internal/use-swipe-gesture'
 
 describe('useSwipeGesture', () => {
   afterEach(() => {

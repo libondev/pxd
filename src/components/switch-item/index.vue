@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { SwitchItemProps, SwitchItemEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value.js'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useSwitchContext } from '../../contexts/switch.js'
 import { getUniqueId } from '../../utils/helper.js'
 

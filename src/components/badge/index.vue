@@ -2,7 +2,10 @@
 import type { BadgeEmits, BadgeProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import { computed } from 'vue'
-import { createTailwindVariant, useTailwindVariant } from '../../composables/use-tailwind-variant'
+import {
+  createTailwindVariant,
+  useTailwindVariant,
+} from '../../composables/_internal/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 
 defineOptions({

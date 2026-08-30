@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose } from 'vue'
-import { cachedOff, cachedOn } from '../utils/event'
-import { toValue } from '../utils/helper'
+import { cachedOff, cachedOn } from '../../utils/event'
+import { toValue } from '../../utils/helper'
 
 interface OverlayManagerOptions {
   enabled?: MaybeRefOrGetter<boolean>

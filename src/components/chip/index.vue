@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ChipProps } from './types'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
 

@@ -36,32 +36,8 @@
     "name": "use-document-hidden"
   },
   {
-    "camelized": "Use Focus Trap",
-    "name": "use-focus-trap"
-  },
-  {
-    "camelized": "Use Forward Ref Expose",
-    "name": "use-forward-ref-expose"
-  },
-  {
-    "camelized": "Use List Filter",
-    "name": "use-list-filter"
-  },
-  {
-    "camelized": "Use List Keyboard Controller",
-    "name": "use-list-keyboard-controller"
-  },
-  {
-    "camelized": "Use List Navigation",
-    "name": "use-list-navigation"
-  },
-  {
     "camelized": "Use Loading Bar",
     "name": "use-loading-bar"
-  },
-  {
-    "camelized": "Use Lock Scroll",
-    "name": "use-lock-scroll"
   },
   {
     "camelized": "Use Media Query",
@@ -72,20 +48,8 @@
     "name": "use-message"
   },
   {
-    "camelized": "Use Model Value",
-    "name": "use-model-value"
-  },
-  {
     "camelized": "Use Outside Click",
     "name": "use-outside-click"
-  },
-  {
-    "camelized": "Use Overlay Manager",
-    "name": "use-overlay-manager"
-  },
-  {
-    "camelized": "Use Popover Responsive",
-    "name": "use-popover-responsive"
   },
   {
     "camelized": "Use Repeat Action",
@@ -94,14 +58,6 @@
   {
     "camelized": "Use Scrollspy",
     "name": "use-scrollspy"
-  },
-  {
-    "camelized": "Use Swipe Gesture",
-    "name": "use-swipe-gesture"
-  },
-  {
-    "camelized": "Use Tailwind Variant",
-    "name": "use-tailwind-variant"
   },
   {
     "camelized": "Use Toggle Value",

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ColorSelectorEmits, ColorSelectorProps } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useModelValue } from '../../composables/_internal/use-model-value'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getUniqueId } from '../../utils/helper'
 

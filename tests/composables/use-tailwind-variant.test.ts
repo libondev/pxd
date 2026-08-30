@@ -4,7 +4,7 @@ import { defineComponent, nextTick, ref } from 'vue'
 import {
   createTailwindVariant,
   useTailwindVariant,
-} from '../../src/composables/use-tailwind-variant'
+} from '../../src/composables/_internal/use-tailwind-variant'
 
 const variantConfig = {
   base: 'inline-flex px-2',

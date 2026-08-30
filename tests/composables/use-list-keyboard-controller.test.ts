@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
-import { useListKeyboardController } from '../../src/composables/use-list-keyboard-controller'
+import { useListKeyboardController } from '../../src/composables/_internal/use-list-keyboard-controller'
 
 describe('useListKeyboardController', () => {
   it('should delegate configured navigation keys', () => {

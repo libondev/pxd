@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { DrawerEmits, DrawerProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useFocusTrap } from '../../composables/use-focus-trap'
-import { useModelValue } from '../../composables/use-model-value'
+import { useFocusTrap } from '../../composables/_internal/use-focus-trap'
+import { useModelValue } from '../../composables/_internal/use-model-value'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { getCssUnitValue, isTruthyProp } from '../../utils/format'
 import PLoadingMask from '../_internal/loading-mask.vue'

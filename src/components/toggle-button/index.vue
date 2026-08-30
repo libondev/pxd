@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ToggleButtonProps, ToggleButtonEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant'
+import { useModelValue } from '../../composables/_internal/use-model-value'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { useToggleButtonGroupContext } from '../../contexts/toggle-button'

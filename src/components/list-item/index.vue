@@ -3,7 +3,7 @@ import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import {
   provideListFilterParentItemId,
   useListContext,

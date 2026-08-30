@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
+import { useModelValue } from '../../composables/_internal/use-model-value'
 import { BASIC_HEIGHTS } from '../../constants/size'
 import { useConfigProvider } from '../../contexts/config-provider'
 import { provideSwitchContext } from '../../contexts/switch'

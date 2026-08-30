@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ComponentPosition } from '../../types/shared'
 import { shallowRef, computed } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
-import { useSwipeGesture } from '../../composables/use-swipe-gesture'
+import { useModelValue } from '../../composables/_internal/use-model-value'
+import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture'
 import { caf, raf } from '../../utils/event'
 
 interface Props {

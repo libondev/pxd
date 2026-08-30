@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { useOverlayManager } from '../../src/composables/use-overlay-manager'
+import { useOverlayManager } from '../../src/composables/_internal/use-overlay-manager'
 import { useSetupWrapper } from '../helpers/setup'
 
 describe('useOverlayManager', () => {

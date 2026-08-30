@@ -2,7 +2,7 @@
 import type { TimelineProps } from './types'
 import type { VNode } from 'vue'
 import { Fragment, useSlots } from 'vue'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 defineOptions({
   name: 'PTimeline',

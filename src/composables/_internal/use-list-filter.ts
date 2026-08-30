@@ -1,7 +1,7 @@
-import type { ListFilterContext, ListFilterItemPayload } from '../contexts/list'
+import type { ListFilterContext, ListFilterItemPayload } from '../../contexts/list'
 import type { ComputedRef, Ref } from 'vue'
 import { computed, shallowRef } from 'vue'
-import { isFuzzyMatch } from '../utils/fuzzy-match'
+import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 
 export type ListFilterFn = (text: string, search: string, keywords: string[]) => boolean
 

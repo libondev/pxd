@@ -1,6 +1,6 @@
 import type { ListNavigationCommand } from './use-list-navigation'
 import type { MaybeRefOrGetter } from 'vue'
-import { toValue } from '../utils/helper.js'
+import { toValue } from '../../utils/helper.js'
 
 export type ListKeyboardMap = Readonly<Record<string, ListNavigationCommand>>
 

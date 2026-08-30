@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { usePopoverResponsive } from '../../src/composables/use-popover-responsive'
+import { usePopoverResponsive } from '../../src/composables/_internal/use-popover-responsive'
 import { useSetupWrapper } from '../helpers/setup'
 
 describe('usePopoverResponsive', () => {

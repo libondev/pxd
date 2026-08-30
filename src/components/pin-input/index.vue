@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/use-model-value.js'
-import { useTailwindVariant } from '../../composables/use-tailwind-variant.js'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'

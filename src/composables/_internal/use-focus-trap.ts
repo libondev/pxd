@@ -1,8 +1,8 @@
-import type { MaybeElementRef } from '../types/shared/utils'
+import type { MaybeElementRef } from '../../types/shared/utils'
 import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 import { createFocusTrap } from 'focus-trap'
 import { onScopeDispose, watch, type MaybeRefOrGetter } from 'vue'
-import { toValue } from '../utils/helper'
+import { toValue } from '../../utils/helper.js'
 
 const focusTrapStack: FocusTrap[] = []
 

@@ -3,7 +3,7 @@ import type { TabsItemState } from '../../contexts/tabs'
 import type { TabsProps, TabsEmits } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/use-model-value'
+import { useModelValue } from '../../composables/_internal/use-model-value'
 import { provideTabsContext } from '../../contexts/tabs'
 
 defineOptions({

@@ -3,7 +3,7 @@ import type { NumberInputData, NumberInputEmits, NumberInputProps } from './type
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/use-model-value.js'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
 import { NOOP } from '../../utils/event.js'
 import { isNil, isNumber, isUndefined } from '../../utils/is.js'

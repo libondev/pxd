@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../use-media-query'
 
 export function usePopoverResponsive() {
   const isAdaptive = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)

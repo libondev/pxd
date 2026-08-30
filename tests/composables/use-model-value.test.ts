@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
-import { useModelValue } from '../../src/composables/use-model-value'
+import { useModelValue } from '../../src/composables/_internal/use-model-value'
 
 describe('useModelValue', () => {
   it('should return a writable computed ref', () => {

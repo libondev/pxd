@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
-import { useCopyClick, useMessage, usePopoverResponsive } from 'pxd'
+import { useCopyClick, useMessage } from 'pxd'
+import { usePopoverResponsive } from 'pxd/composables/_internal/use-popover-responsive'
 import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue'
 
 defineOptions({

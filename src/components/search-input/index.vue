@@ -3,7 +3,7 @@ import type { SearchInputEmits, SearchInputProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { shallowRef } from 'vue'
-import { useForwardRefExpose } from '../../composables/use-forward-ref-expose.js'
+import { useForwardRefExpose } from '../../composables/_internal/use-forward-ref-expose.js'
 import PInput from '../input/index.vue'
 
 defineOptions({
