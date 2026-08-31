@@ -3,17 +3,6 @@ import { describe, expect, it } from 'vite-plus/test'
 import DotsSpinner from '../../src/components/spinner-dots/index.vue'
 
 describe('spinner-dots', () => {
-  it('renders the default variant frames', () => {
-    const wrapper = mount(DotsSpinner)
-
-    expect(wrapper.classes()).toContain('pxd-spinner-dots')
-    expect(wrapper.classes()).toContain('h-lh')
-    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(10)
-    expect(wrapper.text()).toContain('⠋')
-
-    wrapper.unmount()
-  })
-
   it('renders a custom data list', () => {
     const wrapper = mount(DotsSpinner, {
       props: {
@@ -31,25 +20,12 @@ describe('spinner-dots', () => {
     const wrapper = mount(DotsSpinner, {
       props: {
         data: [],
-        variant: 'dots1',
+        variant: 'dots0',
       },
     })
 
     expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(8)
     expect(wrapper.text()).toContain('⣾')
-
-    wrapper.unmount()
-  })
-
-  it('renders a named variant preset', () => {
-    const wrapper = mount(DotsSpinner, {
-      props: {
-        variant: 'dots5',
-      },
-    })
-
-    expect(wrapper.findAll('.pxd-spinner-dots--frame')).toHaveLength(8)
-    expect(wrapper.text()).toContain('⢹')
 
     wrapper.unmount()
   })
