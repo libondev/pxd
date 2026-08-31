@@ -4,6 +4,7 @@ import type { Component, ComponentPublicInstance, PropType, Slot, Slots } from '
 import { autoUpdate, computePosition, flip, hide, offset, shift } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { provideListNestedContext, useListNestedContext } from '../../contexts/list'
+import PList from '../list/index.vue'
 import PTeleport from '../teleport/index.vue'
 
 defineOptions({
@@ -12,10 +13,6 @@ defineOptions({
 })
 
 const props = defineProps({
-  component: {
-    type: Object as PropType<Component>,
-    required: true,
-  },
   options: {
     type: Array as PropType<ListOptionEntry[]>,
     required: true,
@@ -117,7 +114,7 @@ onBeforeUnmount(() => {
       <Component
         v-if="triggerItem"
         ref="listRef"
-        :is="component"
+        :is="PList"
         v-bind="$attrs"
         :options="options"
         :aria-hidden="isPanelHidden || undefined"

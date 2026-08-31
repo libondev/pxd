@@ -8,7 +8,7 @@ import type {
   ListOptionSelected,
   ListEmits,
 } from './types'
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
   type ListContext,
@@ -42,7 +42,6 @@ const isRootList = !parentListContext
 const rootProps = parentListContext?.props ?? props
 const activeList = parentListContext?.activeList ?? shallowRef<ListContext | null>(null)
 const childLists = new WeakMap<HTMLElement, ListContext>()
-const listComponent = getCurrentInstance()!.type
 
 let parentItem: HTMLElement | undefined
 let listContext: ListContext
@@ -304,7 +303,6 @@ defineExpose({
 
           <template v-if="hasChildren(item)" #children>
             <PListNested
-              :component="listComponent"
               :options="item.children ?? []"
               :slots="$slots"
               class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
@@ -325,7 +323,6 @@ defineExpose({
 
         <template v-if="hasChildren(option.entry)" #children>
           <PListNested
-            :component="listComponent"
             :options="option.entry.children ?? []"
             :slots="$slots"
             class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
