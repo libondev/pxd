@@ -96,6 +96,8 @@ declare module 'vue' {
     PSplitButton: (typeof import('pxd/components/split-button'))['default']
     PStack: (typeof import('pxd/components/stack'))['default']
     PStatusDot: (typeof import('pxd/components/status-dot'))['default']
+    PSteps: (typeof import('pxd/components/steps'))['default']
+    PStepsItem: (typeof import('pxd/components/steps-item'))['default']
     PSwipeCell: (typeof import('pxd/components/swipe-cell'))['default']
     PSwitch: (typeof import('pxd/components/switch'))['default']
     PSwitchItem: (typeof import('pxd/components/switch-item'))['default']

@@ -304,6 +304,10 @@
     "name": "status-dot"
   },
   {
+    "camelized": "Steps",
+    "name": "steps"
+  },
+  {
     "camelized": "Swipe Cell",
     "name": "swipe-cell"
   },
