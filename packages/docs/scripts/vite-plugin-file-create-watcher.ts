@@ -6,7 +6,7 @@ import process from 'node:process'
 import { humanize, pascalize } from '../../../scripts/utils.js'
 
 export function fileCreateWatcher() {
-  const ignorePattern = /(-item|-group)/
+  const ignorePattern = /(-item|-group|_internal)/
 
   return {
     name: 'file-create-watcher',
