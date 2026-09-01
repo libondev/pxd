@@ -264,6 +264,10 @@
     "name": "search-input"
   },
   {
+    "camelized": "Select",
+    "name": "select"
+  },
+  {
     "camelized": "Separator",
     "name": "separator"
   },
