@@ -1,15 +1,16 @@
 import type { ComponentPosition } from '../../types/shared'
-import type { ListOptions, ListOptionSelected } from '../list/types'
+import type { ListModelValue, ListOptions } from '../list/types'
 
 export interface MenuProps {
   options?: ListOptions
   disabled?: boolean
+  multiple?: boolean
   position?: ComponentPosition
-  modelValue?: ListOptionSelected['value']
+  modelValue?: ListModelValue
   closeOnPressEscape?: boolean
 }
 
 export interface MenuEmits {
-  change: [ListOptionSelected['value']]
-  'update:modelValue': [ListOptionSelected['value']]
+  change: [NonNullable<ListModelValue>]
+  'update:modelValue': [NonNullable<ListModelValue>]
 }

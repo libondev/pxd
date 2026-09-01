@@ -23,10 +23,13 @@ export type ListOptionEntry = ListOption | ListOptionGroup
 
 export type ListOptionSelected = Omit<ListOption, 'as' | 'children' | 'keywords' | 'onClick'>
 export type ListOptions = ListOptionEntry[]
+export type ListValue = string | number
+export type ListModelValue = ListValue | ListValue[] | null
 
 export interface ListProps {
   loop?: boolean
   empty?: boolean
+  multiple?: boolean
   value?: any
   visible?: boolean
   options?: ListOptionEntry[]

@@ -5,10 +5,10 @@ import type {
   ListOptions,
   ListOptionSelected,
 } from '../../components/list/types'
-import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import { computed } from 'vue'
+import { toArray } from '../../utils/format.js'
 import { toValue } from '../../utils/helper.js'
-import { isNil } from '../../utils/is.js'
 
 function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
   return option.type === 'group'
@@ -39,14 +39,32 @@ function resolveOptionByValue(
   return null
 }
 
-export function useSelectedListItem(options: MaybeRefOrGetter<ListOptions>, modelValue: Ref<any>) {
-  const selectedItem = computed<ReturnType<typeof resolveOptionByValue>>(() => {
-    if (isNil(toValue(modelValue))) {
-      return null
+function resolveSelectedListItems(options: ListOptions, modelValue: unknown): ListOption[] {
+  const selectedOptions: ListOption[] = []
+
+  for (const value of toArray(modelValue)) {
+    const matchedOption = resolveOptionByValue(options, value)
+
+    if (matchedOption) {
+      selectedOptions.push(matchedOption)
     }
+  }
 
-    return resolveOptionByValue(toValue(options ?? []), toValue(modelValue))
-  })
+  return selectedOptions
+}
 
-  return selectedItem
+export function useSelectedListItems(
+  options: MaybeRefOrGetter<ListOptions>,
+  modelValue: MaybeRefOrGetter<unknown>,
+) {
+  return computed(() => resolveSelectedListItems(toValue(options) ?? [], toValue(modelValue)))
+}
+
+export function useSelectedListItem(
+  options: MaybeRefOrGetter<ListOptions>,
+  modelValue: MaybeRefOrGetter<unknown>,
+) {
+  const selectedItems = useSelectedListItems(options, modelValue)
+
+  return computed(() => selectedItems.value[0] ?? null)
 }

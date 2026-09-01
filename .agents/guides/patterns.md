@@ -20,7 +20,7 @@ Reusable code patterns and examples discovered during development.
 - **Use case**: DOM `id`/`for` and registry keys that must be unique within an app, SSR-stable, and not forked by Vue 2.7 vs 3 APIs.
 - **Example**: `getUniqueId` — count on `getCurrentInstance().proxy.$root` (exists on both 2.7 and 3); each `createApp` / `new Vue()` starts at 0. No `useId` / `appContext`.
 
-### Ordered child registry via document position
+### List selection session
 
-- **Use case**: A parent (Steps, Tabs, Carousel, Resizable) needs an ordered list of self-registering children, including after HMR, without walking Vue 2/3 VNodes.
-- **Example**: `useOrderedChildren` — `register(key, payload, el?)` / `unregister(key)`. Setup registers without `el` (SSR / first paint uses Map insertion order); `onMounted` registers again with the root element so items sort by `compareDocumentPosition`.
+- **Use case**: A popover or menu that updates `v-model` immediately but should only emit `change` when the interaction commits (menu close in multiple mode).
+- **Example**: `useListSelection` — local `selected` is the source of truth while open; `select()` returns whether the overlay should close; `commit()` emits `change` only if multiple selection actually changed.

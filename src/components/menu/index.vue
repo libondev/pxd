@@ -3,7 +3,7 @@ import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<MenuProps>(), {
 })
 
 const emits = defineEmits<MenuEmits>()
-const modelValue = useModelValue(props, emits)
+const { selected, select, reset, commit } = useListSelection(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
@@ -45,22 +45,21 @@ const { onKeydown } = useListKeyboardController({
   },
 })
 
-function togglePopoverVisible(visible: boolean) {
-  popoverVisible.value = visible
-}
-
 watch(popoverVisible, async (visible) => {
-  if (!visible) {
+  if (visible) {
+    reset()
+    await nextTick()
+    listRef.value?.focus()
     return
   }
 
-  await nextTick()
-  listRef.value?.focus()
+  commit()
 })
 
-function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
-  togglePopoverVisible(false)
-  modelValue.value = item.value
+function onOptionSelect(item: ListOptionSelected) {
+  if (select(item.value as string | number)) {
+    popoverVisible.value = false
+  }
 }
 </script>
 
@@ -84,9 +83,10 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
     <template #content>
       <PList
         ref="listRef"
-        :value="modelValue"
+        :value="selected"
         :options="options"
         :visible="popoverVisible"
+        :multiple="multiple"
         class="max-h-68 rounded-inherit"
         @change="onOptionSelect"
       >

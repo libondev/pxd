@@ -115,7 +115,8 @@ const options = [
 | options | `ListOption[]` | `() => []` | - |
 | disabled | `boolean` | - | - |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom-start` | - |
-| model-value | `ListOptionSelected['value']` | - | - |
+| model-value | `ListOptionSelected['value'] \| ListOptionSelected['value'][]` | - | - |
+| multiple | `boolean` | - | - |
 | close-on-press-escape | `boolean` | `true` | - |
 
 ## Slots

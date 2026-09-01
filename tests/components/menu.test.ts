@@ -246,4 +246,51 @@ describe('menu', () => {
     firstMenu.unmount()
     secondMenu.unmount()
   })
+
+  it('should toggle values when multiple', async () => {
+    const wrapper = mount(Menu, {
+      attachTo: document.body,
+      props: {
+        multiple: true,
+        modelValue: [],
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+      slots: {
+        default: '<button>Open</button>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+    items[0]?.click()
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1'])
+    expect(items[0]?.getAttribute('data-checked')).toBe('true')
+
+    items[1]?.click()
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')?.[1]?.[0]).toEqual(['1', '2'])
+
+    items[0]?.click()
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')?.[2]?.[0]).toEqual(['2'])
+    expect(wrapper.emitted('change')).toBeUndefined()
+    expect(items[0]?.getAttribute('data-checked')).toBe('false')
+    expect(items[1]?.getAttribute('data-checked')).toBe('true')
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual(['2'])
+
+    wrapper.unmount()
+  })
 })
