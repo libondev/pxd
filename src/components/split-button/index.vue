@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { ListOptionSelected } from '../list/types'
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useSelectedListItem } from '../../composables/_internal/use-selected-list-item.js'
-import { useConfigProvider } from '../../contexts/config-provider.ts'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import PButton from '../button/index.vue'
 import PMenu from '../menu/index.vue'
 
