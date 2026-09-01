@@ -253,7 +253,7 @@ watch(
         <PList
           :value="currentAnswer.selected"
           :options="currentQuestion.options"
-          @select="onAnswerItemSelect"
+          @change="onAnswerItemSelect"
         >
           <template #item="{ item }">
             <PInput
@@ -324,7 +324,7 @@ watch(
 
     <template v-else-if="currentState === 'skipped'">
       <p
-        class="pxd-questionnaire--skipped text-sm py-2 px-3 cursor-default text-foreground-secondary"
+        class="pxd-questionnaire--skipped text-sm py-2 px-3 cursor-default text-foreground-secondary italic"
       >
         Skipped questions
       </p>

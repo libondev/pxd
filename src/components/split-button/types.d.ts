@@ -14,6 +14,5 @@ export interface SplitButtonProps {
 
 export interface SplitButtonEmits {
   change: [ListOptionSelected['value']]
-  select: [ListOptionSelected, MouseEvent]
   'update:modelValue': [ListOptionSelected['value']]
 }

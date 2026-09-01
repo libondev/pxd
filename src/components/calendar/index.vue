@@ -194,7 +194,7 @@ watch(
           :day="day"
           :compact="compact"
           :selected="day.key === selectedDateKey"
-          @select="selectDate"
+          @change="selectDate"
         >
           <template #default="slotProps">
             <slot name="item" v-bind="slotProps" />
@@ -208,7 +208,7 @@ watch(
           :day="day"
           :compact="compact"
           :selected="day.key === selectedDateKey"
-          @select="selectDate"
+          @change="selectDate"
         />
       </template>
     </div>

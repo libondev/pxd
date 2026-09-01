@@ -14,19 +14,19 @@ const options = [
   { label: 'Delete', value: 'delete', variant: 'error' },
 ]
 
-function onSelect(item, ev) {
-  console.log(item, ev)
+function onChange(item) {
+  console.log(item)
 }
 </script>
 
 <template>
   <PStack>
-    <PMenu width="200" :options="options" @select="onSelect">
+    <PMenu width="200" :options="options" @change="onChange">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu width="200" :options="options" @select="onSelect">
+    <PMenu width="200" :options="options" @change="onChange">
       <PButton variant="primary">Actions</PButton>
 
       <template #item="{ item }">

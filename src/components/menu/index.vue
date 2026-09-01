@@ -59,9 +59,8 @@ watch(popoverVisible, async (visible) => {
 })
 
 function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
-  emits('select', item, ev)
-  modelValue.value = item.value
   togglePopoverVisible(false)
+  modelValue.value = item.value
 }
 </script>
 
@@ -89,7 +88,7 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
         :options="options"
         :visible="popoverVisible"
         class="max-h-68 rounded-inherit"
-        @select="onOptionSelect"
+        @change="onOptionSelect"
       >
         <template v-if="$slots.item" #item="itemSlotProps">
           <slot name="item" v-bind="itemSlotProps" />

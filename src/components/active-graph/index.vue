@@ -405,7 +405,7 @@ function onCellClick(event: MouseEvent) {
 
   selectedDate.value = selectedDate.value === date ? '' : date
 
-  emits('select', date, event)
+  emits('change', date, event)
 }
 
 let tbodyRect: DOMRect

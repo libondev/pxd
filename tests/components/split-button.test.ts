@@ -155,7 +155,6 @@ describe('split-button', () => {
 
     expect(wrapper.emitted('change')).toHaveLength(1)
     expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
-    expect(wrapper.emitted('select')).toHaveLength(1)
 
     wrapper.unmount()
   })

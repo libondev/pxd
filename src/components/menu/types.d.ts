@@ -11,6 +11,5 @@ export interface MenuProps {
 
 export interface MenuEmits {
   change: [ListOptionSelected['value']]
-  select: [ListOptionSelected, MouseEvent]
   'update:modelValue': [ListOptionSelected['value']]
 }

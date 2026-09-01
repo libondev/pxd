@@ -35,5 +35,5 @@ export interface ListProps {
 
 export interface ListEmits {
   toggle: []
-  select: [ListOptionSelected, MouseEvent]
+  change: [ListOptionSelected, MouseEvent]
 }

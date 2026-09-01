@@ -47,7 +47,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  select: [day: CalendarDay]
+  change: [day: CalendarDay]
 }>()
 
 function selectDate() {
@@ -55,7 +55,7 @@ function selectDate() {
     return
   }
 
-  emits('select', props.day)
+  emits('change', props.day)
 }
 </script>
 

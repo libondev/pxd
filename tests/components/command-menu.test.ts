@@ -102,7 +102,6 @@ describe('command-menu', () => {
     await nextTick()
 
     expect(items[1]?.getAttribute('aria-selected')).toBe('true')
-    expect(wrapper.emitted('select')).toBeUndefined()
 
     wrapper.unmount()
   })

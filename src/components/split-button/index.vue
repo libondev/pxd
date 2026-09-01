@@ -26,10 +26,6 @@ const selectedItem = useSelectedListItem(() => props.options || [], modelValue)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
-
-function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
-  emits('select', item, ev)
-}
 </script>
 
 <template>
@@ -42,7 +38,6 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
     :options="options"
     :data-variant="variant"
     :close-on-press-escape="closeOnPressEscape"
-    @select="onOptionSelect"
     v-bind="$attrs"
   >
     <PButton :disabled="disabled" :variant="variant" :shape="shape" :size="computedSize">

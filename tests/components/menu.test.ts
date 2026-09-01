@@ -192,7 +192,7 @@ describe('menu', () => {
     popoverWrapper.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
     await nextTick()
 
-    expect(wrapper.emitted('select')?.[0]?.[0]).toEqual({ label: 'Option 2', value: '2' })
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual('2')
 
     wrapper.unmount()
   })

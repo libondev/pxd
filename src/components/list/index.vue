@@ -100,7 +100,7 @@ function emitRootSelect(value: ListOptionSelected['value'], ev: MouseEvent) {
 
   if (option) {
     option.onClick?.(toSelectedOption(option), ev)
-    emits('select', toSelectedOption(option), ev)
+    emits('change', toSelectedOption(option), ev)
   }
 }
 

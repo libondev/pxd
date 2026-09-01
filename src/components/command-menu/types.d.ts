@@ -12,7 +12,6 @@ export interface CommandMenuProps {
 
 export interface CommandMenuEmits {
   'update:modelValue': [boolean]
-  select: [ListOptionSelected, MouseEvent]
   change: [boolean]
   show: []
   hide: []

@@ -18,7 +18,7 @@ export interface ActiveGraphProps {
 }
 
 export interface ActiveGraphEmits {
-  select: [string, MouseEvent]
+  change: [string, MouseEvent]
 }
 
 export interface ActiveGraphCellData {

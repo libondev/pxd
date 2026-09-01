@@ -69,6 +69,8 @@ const options = [
 ]
 
 function onChange(item) {
+  console.log(item)
+
   if (item.value === checkedValue.value) {
     checkedValue.value = ''
   } else {
@@ -79,7 +81,7 @@ function onChange(item) {
 
 <template>
   <PStack>
-    <PSplitButton :model-value="checkedValue" :options="options" width="200" @select="onChange">
+    <PSplitButton :model-value="checkedValue" :options="options" width="200" @change="onChange">
       <template #default="{ data }">
         {{ data?.label || 'Actions' }}
       </template>

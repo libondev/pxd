@@ -201,7 +201,7 @@ describe('list', () => {
     expect(items.length).toBeGreaterThan(0)
 
     await items[0].trigger('click')
-    expect(wrapper.emitted('select')?.[0]?.[0]).toEqual({ label: 'Item 1', value: '1' })
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({ label: 'Item 1', value: '1' })
 
     wrapper.unmount()
   })
@@ -220,7 +220,7 @@ describe('list', () => {
 
     wrapper.vm.dispatch('enter-child')
 
-    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -257,7 +257,7 @@ describe('list', () => {
     expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(2)
 
     await parentItem.trigger('click')
-    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.vm.dispatch('enter-child')
     await nextTick()
@@ -268,7 +268,7 @@ describe('list', () => {
     expect(nestedItems[1]?.getAttribute('aria-selected')).toBe('true')
 
     nestedItems[1]?.click()
-    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.vm.dispatch('enter-child')
     await nextTick()
@@ -280,7 +280,7 @@ describe('list', () => {
     expect(nestedGrandchildItems[2]?.getAttribute('aria-selected')).toBe('true')
 
     nestedGrandchildItems[2]?.click()
-    expect(wrapper.emitted('select')?.[0]?.[0]).toEqual({
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({
       label: 'Grandchild',
       value: 'grandchild',
     })

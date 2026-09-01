@@ -68,9 +68,7 @@ function closeModal() {
   modelValue.value = false
 }
 
-function onListItemSelect(item: ListOptionSelected, ev: MouseEvent) {
-  emits('select', item, ev)
-
+function onListItemSelect(item: ListOptionSelected) {
   if (props.closeOnSelectItem) {
     closeModal()
   }
@@ -139,7 +137,7 @@ provideListFilterContext(filterContext)
       class="sm:max-h-110 h-full"
       :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
-      @select="onListItemSelect"
+      @change="onListItemSelect"
     >
       <template v-if="$slots.group" #group="{ group, index }">
         <slot name="group" :group="group" :index="index" />

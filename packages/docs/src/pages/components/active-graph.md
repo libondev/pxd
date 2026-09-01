@@ -40,14 +40,14 @@ function refreshData() {
   data.value = genRandomData()
 }
 
-function onSelect(date, event) {
+function onChange(date, event) {
   console.log({ date, event })
 }
 </script>
 
 <template>
   <PStack direction="vertical">
-    <PActiveGraph :data="data" @select="onSelect" />
+    <PActiveGraph :data="data" @change="onChange" />
 
     <PButton class="ml-8" @click="refreshData()"> Refresh </PButton>
   </PStack>
