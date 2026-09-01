@@ -61,7 +61,7 @@ const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 
 const modelValue = useModelValue(props, emits, {
   get() {
-    return dayjsDateTime.value ? dayjsDateTime.value.format(props.format) : ''
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat) : ''
   },
 })
 

@@ -94,8 +94,8 @@ const time2 = ref('18:30:25')
     <PText class="mb-2">Value1 formatted: {{ time1 }}</PText>
     <PText class="mb-2">Value2 formatted: {{ time2 }}</PText>
 
-    <PTimePicker v-model="time1" class="!w-[220px]" format="HH-mm" value-format="timestamp" />
-    <PTimePicker v-model="time2" class="!w-[220px]" format="HH-mm" value-format="HH:mm:00" />
+    <PTimePicker v-model="time1" class="!w-[220px]" label-format="HH-mm" value-format="timestamp" />
+    <PTimePicker v-model="time2" class="!w-[220px]" label-format="HH-mm" value-format="HH:mm:00" />
   </PStack>
 </template>
 ```
@@ -146,5 +146,5 @@ const time = ref('18:30:00')
 | placeholder | `string` | - | - |
 | show-seconds | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `true` | - |
-| format | `string` | `HH:mm:ss` | - |
+| label-format | `string` | `HH:mm:ss` | - |
 | value-format | `string` | `HH:mm:ss` | - |
