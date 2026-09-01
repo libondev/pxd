@@ -1,5 +1,5 @@
 import type { ComponentPosition } from '../../types/shared'
-import type { ListModelValue, ListOptions } from '../list/types'
+import type { ListModelValue, ListOptions, ListValue } from '../list/types'
 
 export interface MenuProps {
   options?: ListOptions
@@ -11,6 +11,6 @@ export interface MenuProps {
 }
 
 export interface MenuEmits {
-  change: [NonNullable<ListModelValue>]
-  'update:modelValue': [NonNullable<ListModelValue>]
+  change: [ListModelValue]
+  'update:modelValue': [ListModelValue]
 }

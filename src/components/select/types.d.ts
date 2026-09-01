@@ -12,11 +12,11 @@ export interface SelectProps {
   disabled?: boolean
   multiple?: boolean
   placeholder?: string
-  labelFormat?: (items: ListOption[]) => string
+  labelFormat?: (items: ListOptions) => string
   closeOnPressEscape?: boolean
 }
 
 export interface SelectEmits {
-  change: [NonNullable<ListModelValue>]
-  'update:modelValue': [NonNullable<ListModelValue>]
+  change: [ListModelValue]
+  'update:modelValue': [ListModelValue]
 }

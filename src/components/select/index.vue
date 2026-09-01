@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -19,7 +20,7 @@ defineOptions({
 const props = defineProps<SelectProps>()
 const emits = defineEmits<SelectEmits>()
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+const modelValue = useModelValue(props, emits)
 const selectedItems = useSelectedListItems(() => props.options || [], modelValue)
 const configProvider = useConfigProvider()
 
@@ -37,16 +38,17 @@ const translatedLabel = computed(() => {
 <template>
   <PMenu
     v-model="modelValue"
-    class="pxd-select w-full"
+    class="pxd-select"
     :options="options"
     :disabled="disabled"
     :multiple="multiple"
+    v-bind="$attrs"
     :close-on-press-escape="closeOnPressEscape"
-    @change="emits('change', $event)"
   >
     <PButton
-      class="px-1.5 w-full"
+      class="px-1.5"
       align="left"
+      full-width
       :class="{ 'text-gray-600': !translatedLabel }"
       :variant="variant"
       :shape="shape"

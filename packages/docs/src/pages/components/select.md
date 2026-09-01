@@ -18,7 +18,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" :options="options" placeholder="Please select"></PSelect>
+  <PSelect v-model="value" class="w-full" :options="options" placeholder="Please select"></PSelect>
 </template>
 ```
 
@@ -38,7 +38,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" :options="options" multiple />
+  <PSelect v-model="value" class="w-full" :options="options" multiple />
 </template>
 ```
 
@@ -62,7 +62,7 @@ function labelFormatter(valueList) {
 </script>
 
 <template>
-  <PSelect v-model="value" :options="options" multiple :label-format="labelFormatter" />
+  <PSelect v-model="value" class="w-full" :options="options" multiple :label-format="labelFormatter" />
 </template>
 ```
 
