@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TimePickerEmits, TimePickerProps } from './types'
-import ClockIcon from '@gdsicon/vue/clock'
+import CalendarIcon from '@gdsicon/vue/calendar'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
@@ -174,7 +174,15 @@ function onTimeListClick(ev: MouseEvent) {
 }
 
 function updateModelValue() {
-  modelValue.value = dayjsDateTime.value ? dayjsDateTime.value.format(props.valueFormat) : ''
+  if (!dayjsDateTime.value) {
+    modelValue.value = ''
+    return
+  }
+
+  modelValue.value =
+    props.valueFormat === 'timestamp'
+      ? dayjsDateTime.value.valueOf()
+      : dayjsDateTime.value.format(props.valueFormat)
 }
 
 function onInputValueChange(value: string) {
@@ -261,7 +269,7 @@ onBeforeUnmount(() => {
       @keydown.enter="togglePopoverVisible(true)"
     >
       <template v-if="suffixIcon" #suffix>
-        <ClockIcon class="me-3" />
+        <CalendarIcon class="me-3" />
       </template>
     </PInput>
 

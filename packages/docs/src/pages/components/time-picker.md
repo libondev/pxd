@@ -85,12 +85,18 @@ const time = ref('18:30:00')
 <script setup>
 import { ref } from 'vue'
 
-const time = ref('18:30:25')
+const time1 = ref(Date.now())
+const time2 = ref('18:30:25')
 </script>
 
 <template>
-  <PText class="mb-2">Value formatted: {{ time }}</PText>
-  <PTimePicker v-model="time" class="!w-[220px]" format="HH-mm" value-format="HH:mm:00" />
+  <PStack direction="vertical" gap="2">
+    <PText class="mb-2">Value1 formatted: {{ time1 }}</PText>
+    <PText class="mb-2">Value2 formatted: {{ time2 }}</PText>
+
+    <PTimePicker v-model="time1" class="!w-[220px]" format="HH-mm" value-format="timestamp" />
+    <PTimePicker v-model="time2" class="!w-[220px]" format="HH-mm" value-format="HH:mm:00" />
+  </PStack>
 </template>
 ```
 
