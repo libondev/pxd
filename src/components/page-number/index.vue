@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import type { ComponentSize } from '../../types/shared/props'
+import type { ListModelValue, ListOptions } from '../list/types'
 import type { PageNumberEmits, PageNumberProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, ref, watch } from 'vue'
-import { useConfigProvider } from '../../contexts/config-provider'
+import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import PSelect from '../select/index.vue'
 
 defineOptions({
   name: 'PPageNumber',
@@ -15,24 +19,37 @@ defineOptions({
 
 const props = withDefaults(defineProps<PageNumberProps>(), {
   modelValue: 1,
-  pageSize: 20,
+  pageSize: 10,
   total: 0,
   disabled: false,
+  showPageSize: true,
   showQuickJumper: false,
+  pageSizeOptions: () => [10, 25, 50, 100],
+})
+
+const mappedPageSizeOptions = computed<ListOptions>(() => {
+  return props.pageSizeOptions.map((size) => ({
+    label: String(size) + '/page',
+    value: size,
+  }))
 })
 
 const emits = defineEmits<PageNumberEmits>()
 const configProvider = useConfigProvider()
 
-const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
 const pageInput = ref(String(props.modelValue))
-const pageItemSizeClass = computed(() => {
+const internalPageSize = ref(props.pageSize)
+const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
+const pagesBtnSize = computed(() => {
+  const inheritSize = props.size || configProvider.size
+
   return {
-    sm: 'size-6',
-    md: 'size-8',
-    lg: 'size-10',
-  }[props.size || configProvider.size]
+    sm: 'xs',
+    md: 'sm',
+    lg: 'md',
+  }[inheritSize] as ComponentSize
 })
+const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
 
 const pageItems = computed<(number | 'ellipsis-left' | 'ellipsis-right')[]>(() => {
   if (pageCount.value <= 7) {
@@ -91,10 +108,25 @@ function onPageInputKeydown(event: KeyboardEvent) {
   }
 }
 
+function pageSizeLabelFormat(value: ListOptions) {
+  return value[0].label + '/page'
+}
+
+function onPageSizeChange(value: ListModelValue) {
+  emits('update:pageSize', Number(value))
+}
+
 watch(
   () => props.modelValue,
   (page) => {
     pageInput.value = String(page)
+  },
+)
+
+watch(
+  () => props.pageSize,
+  (value) => {
+    internalPageSize.value = value
   },
 )
 </script>
@@ -108,7 +140,7 @@ watch(
   >
     <button
       type="button"
-      class="pxd-page-number--prev inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      class="pxd-page-number--prev inline-flex aspect-square items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue <= 1"
       aria-label="Previous page"
@@ -120,7 +152,7 @@ watch(
     <template v-for="item in pageItems" :key="item">
       <span
         v-if="typeof item === 'string'"
-        class="pxd-page-number--ellipsis inline-flex shrink-0 cursor-default items-center justify-center"
+        class="pxd-page-number--ellipsis inline-flex aspect-square shrink-0 cursor-default items-center justify-center"
         :class="pageItemSizeClass"
         aria-hidden="true"
       >
@@ -130,12 +162,12 @@ watch(
       <button
         v-else
         type="button"
-        class="pxd-page-number--item text-sm inline-flex shrink-0 items-center justify-center rounded-md border self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+        class="pxd-page-number--item text-sm inline-flex aspect-square shrink-0 items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :class="[
           pageItemSizeClass,
           item === modelValue
-            ? 'font-medium border-primary bg-background-100 text-primary'
-            : 'border-transparent hover:bg-background-hover hover:text-foreground',
+            ? 'font-medium bg-primary text-primary-foreground'
+            : 'hover:bg-background-hover hover:text-foreground',
         ]"
         :aria-current="item === modelValue ? 'page' : undefined"
         :aria-label="`Page ${item}`"
@@ -148,7 +180,7 @@ watch(
 
     <button
       type="button"
-      class="pxd-page-number--next inline-flex items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-35 motion-safe:transition-colors"
+      class="pxd-page-number--next inline-flex aspect-square items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue >= pageCount"
       aria-label="Next page"
@@ -157,11 +189,21 @@ watch(
       <ChevronRightIcon class="size-4" aria-hidden="true" />
     </button>
 
+    <PSelect
+      v-if="showPageSize"
+      v-model="internalPageSize"
+      :disabled="disabled"
+      :size="pagesBtnSize"
+      :options="mappedPageSizeOptions"
+      @change="onPageSizeChange"
+    />
+
     <input
       v-if="showQuickJumper"
       v-model="pageInput"
       type="number"
-      class="pxd-page-number--jumper h-8 w-16 px-2 text-sm appearance-none rounded-md border border-border bg-background-100 text-center text-foreground self-focus-ring outline-none disabled:cursor-not-allowed disabled:opacity-35"
+      :class="pageItemSizeClass"
+      class="pxd-page-number--jumper w-16 px-3 text-sm appearance-none rounded-md border border-border bg-background-100 text-center text-left text-foreground self-focus-ring outline-none disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700"
       :min="1"
       :max="pageCount"
       step="1"

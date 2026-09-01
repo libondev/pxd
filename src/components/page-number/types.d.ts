@@ -1,15 +1,18 @@
-import type { ComponentSize } from '../../types/shared'
+import type { ComponentSize, ComponentOption } from '../../types/shared'
 
 export interface PageNumberProps {
   /** page */
   modelValue?: number
   pageSize?: number
+  size?: ComponentSize
   total?: number
   disabled?: boolean
+  showPageSize?: boolean
   showQuickJumper?: boolean
-  size?: ComponentSize
+  pageSizeOptions?: number[]
 }
 
 export interface PageNumberEmits {
+  'update:pageSize': [page: number]
   'update:modelValue': [page: number]
 }

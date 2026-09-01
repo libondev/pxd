@@ -60,6 +60,7 @@ const page = ref(1)
 | page-size | `number` | `20` | Number of items per page |
 | total | `number` | `0` | Total number of items |
 | disabled | `boolean` | `false` | Disables all page controls |
+| show-page-size | `boolean` | `true` | Shows a select for selecting page size |
 | show-quick-jumper | `boolean` | `false` | Shows an input for jumping to a page |
 | size | `'sm' \| 'md' \| 'lg'` | `configProvider.size` | Size of page controls |
 
@@ -68,3 +69,4 @@ const page = ref(1)
 | Name | Parameters | Description |
 | --- | --- | --- |
 | update:model-value | `(page: number)` | Emitted when the page changes |
+| update:page-size | `(pageSize: number)` | Emitted when the page size changes |
