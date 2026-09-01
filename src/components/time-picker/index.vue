@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TimePickerEmits, TimePickerProps } from './types'
-import CalendarIcon from '@gdsicon/vue/calendar'
+import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
@@ -261,7 +261,7 @@ onBeforeUnmount(() => {
       @keydown.enter="togglePopoverVisible(true)"
     >
       <template v-if="suffixIcon" #suffix>
-        <CalendarIcon class="me-3" />
+        <ClockIcon class="me-3" />
       </template>
     </PInput>
 
