@@ -604,7 +604,7 @@ defineExpose({
         @pointerleave="onWrapperPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-inherit default-transition-duration default-transition-timing-function"
+          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full default-transition-duration default-transition-timing-function"
           :data-transition-type="transitionType"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
