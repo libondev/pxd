@@ -16,6 +16,12 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Collapse `v-show` hides content from Find in page
+
+- **Symptom**: Browser Find in page cannot match text inside a collapsed PCollapse panel, and unlike native `<details>` the panel does not auto-expand on a match.
+- **Cause**: `v-show` sets `display: none`. Find in page skips that subtree. `hidden="until-found"` is the HTML primitive for this, but Vue 2.7 / 3.2 coerce `hidden` to a boolean attribute, so the string value cannot be bound reliably.
+- **Fix**: Use native `<details>`/`<summary>` (Find in page opens them). Keep `open` true during the leave height animation, then remove it. Skip enter motion when `toggle` opens the element without a click (find / fragment navigation).
+
 ### Child registerItem order reverses after HMR
 
 - **Symptom**: Steps numbers, tab labels, carousel slides, or Resizable panels flip after hot-reloading a child SFC.
