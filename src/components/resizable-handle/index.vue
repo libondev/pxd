@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/helper'
 
@@ -14,7 +14,8 @@ defineOptions({
 
 defineProps<ResizableHandleProps>()
 
-const uniqueId = getUniqueId()
+const handleKey = getUniqueId()
+const handleEl = shallowRef<HTMLElement>()
 
 const resizableContext = useResizableContext()
 
@@ -22,7 +23,7 @@ let isDragging = false
 let startPosition = { x: 0, y: 0 }
 
 function onDrag(delta: { deltaX: number; deltaY: number }) {
-  resizableContext?.onHandleDrag(uniqueId, delta)
+  resizableContext?.onHandleDrag(handleKey, delta)
 }
 
 function handlePointerDown(e: PointerEvent) {
@@ -54,19 +55,23 @@ function handleDoubleClick() {
 }
 
 onMounted(() => {
-  resizableContext?.registerHandle({
-    id: uniqueId,
-    onDrag,
-  })
+  resizableContext?.registerHandle(
+    handleKey,
+    {
+      onDrag,
+    },
+    handleEl.value,
+  )
 })
 
 onBeforeUnmount(() => {
-  resizableContext?.unregisterHandle(uniqueId)
+  resizableContext?.unregisterHandle(handleKey)
 })
 </script>
 
 <template>
   <div
+    ref="handleEl"
     class="pxd-resizable-handle relative shrink-0 touch-none bg-border select-none hover:after:bg-primary/15 active:after:bg-primary/20 motion-safe:transition-colors after:motion-safe:transition-colors"
     :data-handler="withHandle"
     @pointerdown.prevent="handlePointerDown"

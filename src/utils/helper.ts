@@ -2,13 +2,23 @@ import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeElement } from '../types/shared/utils'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
-import { unref } from 'vue'
+import { getCurrentInstance, unref } from 'vue'
 import { isNil, isServer } from './is.js'
 
-let _id = 0
+let fallbackId = 0
+const uniqueIdMap = new WeakMap<object, number>()
 
 export function getUniqueId(prefix: string = '') {
-  return `${prefix}_pid_${_id++}`
+  const root = getCurrentInstance()?.proxy?.$root
+
+  if (!root) {
+    return `${prefix}_pid_${fallbackId++}`
+  }
+
+  const id = uniqueIdMap.get(root) ?? 0
+  uniqueIdMap.set(root, id + 1)
+
+  return `${prefix}_pid_${id}`
 }
 
 export function getFallbackValue<Variants extends Record<string, any>>(

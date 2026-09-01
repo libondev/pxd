@@ -1,12 +1,12 @@
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface CarouselState {
   uid: string
 }
 
 export interface CarouselContext {
-  registerCarousel: (state: CarouselState) => void
-  unregisterCarousel: (id: string) => void
+  registerItem: (key: string, state: CarouselState, el?: HTMLElement | null) => void
+  unregisterItem: (key: string) => void
 }
 
 export const [provideCarouselContext, useCarouselContext] =

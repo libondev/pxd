@@ -16,6 +16,13 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Child registerItem order reverses after HMR
+
+- **Symptom**: Steps numbers, tab labels, carousel slides, or Resizable panels flip after hot-reloading a child SFC.
+- **Cause**: Vue HMR remounts sibling instances with unregister/register interleaved last-to-first, so `push()` order is the reverse of the DOM.
+- **Fix**: `useOrderedChildren` — Map keyed by instance id; once each child has an element, sort with `compareDocumentPosition`. Register once in `setup` (no el, SSR-safe) and again in `onMounted` (with el). Do not walk VNodes.
+
+
 ### Scheduled shallowRef refresh misses in-place prop mutations
 
 - **Symptom**: A heavy computed result moved to `shallowRef` stops updating when callers mutate array/object props in place.

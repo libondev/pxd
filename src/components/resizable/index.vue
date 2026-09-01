@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { ResizableProps, PanelConfig, HandleConfig } from './types'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
 import { provideResizableContext } from '../../contexts/resizable.js'
-import { isNil, isUndefined } from '../../utils/is.js'
+import { isNil } from '../../utils/is.js'
 
 defineOptions({
   name: 'PResizable',
@@ -14,81 +15,49 @@ const props = withDefaults(defineProps<ResizableProps>(), {
 })
 
 const panelSizes = ref<Record<string, number>>({})
-const panelConfigs = ref<PanelConfig[]>([])
-const handleConfigs = ref<HandleConfig[]>([])
-
-const orderCounter = shallowRef(0)
 const containerRef = shallowRef<HTMLElement>()
 
-// 提供给子组件注册使用的方法
-function registerPanel(config: Omit<PanelConfig, 'order'>) {
-  const existingIndex = panelConfigs.value.findIndex((p) => p.id === config.id)
-  if (existingIndex === -1) {
-    panelConfigs.value.push({ ...config, order: orderCounter.value++ })
-  } else {
-    panelConfigs.value[existingIndex] = {
-      ...config,
-      order: panelConfigs.value[existingIndex]!.order,
-    }
-  }
-  // 重新排序并初始化面板大小
-  panelConfigs.value.sort((a, b) => a.order - b.order)
-  nextTick(() => {
-    initPanelSizes()
-  })
+const panelRegistry = useOrderedChildren<PanelConfig>()
+const handleRegistry = useOrderedChildren<HandleConfig>()
+
+function registerPanel(key: string, config: Omit<PanelConfig, 'id'>, el?: HTMLElement | null) {
+  panelRegistry.register(key, { ...config, id: key }, el)
+  void nextTick(initPanelSizes)
 }
 
-function unregisterPanel(id: string) {
-  const index = panelConfigs.value.findIndex((p) => p.id === id)
-  if (index !== -1) {
-    panelConfigs.value.splice(index, 1)
-    const { [id]: _, ...rest } = panelSizes.value
+function unregisterPanel(key: string) {
+  const payload = panelRegistry.unregister(key)
+
+  if (payload) {
+    const { [payload.id]: _, ...rest } = panelSizes.value
     panelSizes.value = rest
   }
+
+  void nextTick(initPanelSizes)
 }
 
-function registerHandle(config: Omit<HandleConfig, 'order'>) {
-  const existingIndex = handleConfigs.value.findIndex((h) => h.id === config.id)
-  if (existingIndex === -1) {
-    handleConfigs.value.push({ ...config, order: orderCounter.value++ })
-  } else {
-    handleConfigs.value[existingIndex] = {
-      ...config,
-      order: handleConfigs.value[existingIndex]!.order,
-    }
-  }
-  // 重新排序 handles
-  handleConfigs.value.sort((a, b) => a.order - b.order)
+function registerHandle(key: string, config: HandleConfig, el?: HTMLElement | null) {
+  handleRegistry.register(key, config, el)
 }
 
-function unregisterHandle(id: string) {
-  const index = handleConfigs.value.findIndex((h) => h.id === id)
-  if (index !== -1) {
-    handleConfigs.value.splice(index, 1)
-  }
+function unregisterHandle(key: string) {
+  handleRegistry.unregister(key)
 }
 
 function getPanelSize(id: string): number {
   return panelSizes.value[id] || 0
 }
 
-function onHandleDrag(handleId: string, delta: { deltaX: number; deltaY: number }) {
-  // 根据 handle 在 DOM 中的位置找到对应的面板索引
-  // 每个 handle 控制其前后两个面板的大小调整
-  const handleOrder = handleConfigs.value.find((h) => h.id === handleId)?.order
-  if (isUndefined(handleOrder)) {
+function onHandleDrag(key: string, delta: { deltaX: number; deltaY: number }) {
+  // panels and handles are interleaved in the DOM (panel, handle, panel, ...),
+  // so the i-th handle controls the i-th and (i+1)-th panels.
+  const handleIndex = handleRegistry.items.value.findIndex((item) => item.key === key)
+
+  if (handleIndex === -1) {
     return
   }
 
-  // 找到这个 handle 前面有多少个面板
-  const panelsBeforeThisHandle = panelConfigs.value.filter((p) => p.order < handleOrder).length
-
-  // 这个 handle 控制的是第 panelsBeforeThisHandle 和 panelsBeforeThisHandle + 1 个面板
-  const panelIndex = panelsBeforeThisHandle - 1
-
-  if (panelIndex >= 0 && panelIndex + 1 < panelConfigs.value.length) {
-    onDrag(panelIndex, delta)
-  }
+  onDrag(handleIndex, delta)
 }
 
 /**
@@ -107,7 +76,7 @@ function calculateContainerSize(): number {
 /**
  * 计算每个面板的初始百分比大小（总计 100），以面板 ID 为键返回
  */
-function calculateInitialPanelSizes(): {
+function calculateInitialPanelSizes(configs: PanelConfig[]): {
   sizes: Record<string, number>
   remainingSize: number
   autoSizedPanelIds: string[]
@@ -116,9 +85,7 @@ function calculateInitialPanelSizes(): {
   let remainingSize = 100
   const autoSizedPanelIds: string[] = []
 
-  const sortedConfigs = [...panelConfigs.value].sort((a, b) => a.order - b.order)
-
-  sortedConfigs.forEach((config) => {
+  configs.forEach((config) => {
     const minSize = config.minSize || 0
     const initialSizeNum = config.size
 
@@ -158,18 +125,22 @@ function distributeRemainingSpace(
 }
 
 async function initPanelSizes() {
-  if (panelConfigs.value.length === 0) {
+  const configs = panelRegistry.items.value.map((item) => item.payload)
+
+  if (configs.length === 0) {
     return
   }
 
   await nextTick()
 
-  const { sizes, remainingSize, autoSizedPanelIds } = calculateInitialPanelSizes()
+  const { sizes, remainingSize, autoSizedPanelIds } = calculateInitialPanelSizes(configs)
   panelSizes.value = distributeRemainingSpace(sizes, remainingSize, autoSizedPanelIds)
 }
 
 function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: number }) {
-  if (index < 0 || index + 1 >= panelConfigs.value.length) {
+  const panels = panelRegistry.items.value
+
+  if (index < 0 || index + 1 >= panels.length) {
     return
   }
 
@@ -178,8 +149,8 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: num
     return
   }
 
-  const prevId = panelConfigs.value[index]!.id
-  const nextId = panelConfigs.value[index + 1]!.id
+  const prevId = panels[index]!.payload.id
+  const nextId = panels[index + 1]!.payload.id
 
   const delta = props.direction === 'horizontal' ? deltaX : deltaY
   const deltaPercent = (delta / containerSize) * 100
@@ -187,8 +158,8 @@ function onDrag(index: number, { deltaX, deltaY }: { deltaX: number; deltaY: num
   const prevSize = panelSizes.value[prevId] || 0
   const nextSize = panelSizes.value[nextId] || 0
 
-  const prevMinSize = panelConfigs.value[index]?.minSize || 0
-  const nextMinSize = panelConfigs.value[index + 1]?.minSize || 0
+  const prevMinSize = panels[index]!.payload.minSize || 0
+  const nextMinSize = panels[index + 1]!.payload.minSize || 0
 
   let newPrevSize = prevSize + deltaPercent
   let newNextSize = nextSize - deltaPercent

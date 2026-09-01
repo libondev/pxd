@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { StepsItemState } from '../../contexts/steps'
 import type { StepsEmits, StepsProps } from './types'
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideStepsContext } from '../../contexts/steps.js'
 import { getFallbackValue } from '../../utils/helper.js'
@@ -25,7 +26,9 @@ const emits = defineEmits<StepsEmits>()
 const configProvider = useConfigProvider()
 
 const modelValue = useModelValue(props, emits)
-const items = shallowRef<StepsItemState[]>([])
+
+const itemRegistry = useOrderedChildren<StepsItemState>()
+const items = itemRegistry.items
 
 const SIZES = {
   sm: {
@@ -34,7 +37,7 @@ const SIZES = {
     iconSize: '0.75rem',
     titleFontSize: '0.8125rem',
     descriptionFontSize: '0.75rem',
-    gap: '0.375rem',
+    gap: '0.5rem',
   },
   md: {
     indicatorSize: '1.75rem',
@@ -42,7 +45,7 @@ const SIZES = {
     iconSize: '0.875rem',
     titleFontSize: '0.875rem',
     descriptionFontSize: '0.75rem',
-    gap: '0.375rem',
+    gap: '0.5rem',
   },
   lg: {
     indicatorSize: '2.25rem',
@@ -50,7 +53,7 @@ const SIZES = {
     iconSize: '1rem',
     titleFontSize: '1rem',
     descriptionFontSize: '0.8125rem',
-    gap: '0.375rem',
+    gap: '0.5rem',
   },
 }
 
@@ -69,16 +72,12 @@ const computedStyle = computed(() => {
   }
 })
 
-function registerItem(item: StepsItemState) {
-  items.value = [...items.value, item]
+function registerItem(key: string, item: StepsItemState, el?: HTMLElement | null) {
+  itemRegistry.register(key, item, el)
 }
 
-function unregisterItem(id: string) {
-  items.value = items.value.filter((item) => item.id !== id)
-}
-
-function updateItem(item: StepsItemState) {
-  items.value = items.value.map((current) => (current.id === item.id ? item : current))
+function unregisterItem(key: string) {
+  itemRegistry.unregister(key)
 }
 
 function select(index: number) {
@@ -88,7 +87,7 @@ function select(index: number) {
 
   const item = items.value[index]
 
-  if (!item || item.disabled) {
+  if (!item || item.payload.disabled) {
     return
   }
 
@@ -100,7 +99,6 @@ provideStepsContext({
   items,
   registerItem,
   unregisterItem,
-  updateItem,
   select,
 })
 </script>

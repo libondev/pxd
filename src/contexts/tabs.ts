@@ -1,7 +1,7 @@
 import type { TabsEmits, TabsProps, TabsValue } from '../components/tabs/types'
 import type { ComponentLabel } from '../types/shared'
 import type { EmitFn, Slots } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface TabsItemState {
   id: string
@@ -14,9 +14,8 @@ export interface TabsItemState {
 export interface TabsContext {
   props: TabsProps
   emits: EmitFn<TabsEmits>
-  registerItem: (item: TabsItemState) => void
-  unregisterItem: (id: string) => void
-  updateItem: (item: TabsItemState) => void
+  registerItem: (key: string, item: TabsItemState, el?: HTMLElement | null) => void
+  unregisterItem: (key: string) => void
 }
 
 export const [provideTabsContext, useTabsContext] = createContext<TabsContext>('Tabs')

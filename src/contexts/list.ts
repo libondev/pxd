@@ -1,6 +1,6 @@
 import type { ListOptionSelected } from '../components/list/types'
 import type { ListProps } from '../components/list/types'
-import type { ListNavigationCommand } from '../composables/use-list-navigation.js'
+import type { ListNavigationCommand } from '../composables/_internal/use-list-navigation'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { createContext } from '../utils/context.js'
 

@@ -6,15 +6,20 @@ export interface ResizableContext {
   props: ResizableProps
   panelSizes: Ref<Record<string, number>>
   getPanelSize: (id: string) => number
-  onHandleDrag: (id: string, delta: { deltaX: number; deltaY: number }) => void
+  onHandleDrag: (key: string, delta: { deltaX: number; deltaY: number }) => void
   resetPanels: () => void
-  registerPanel: (config: { id: string; size?: number | null; minSize?: number }) => void
-  registerHandle: (config: {
-    id: string
-    onDrag: (delta: { deltaX: number; deltaY: number }) => void
-  }) => void
-  unregisterPanel: (id: string) => void
-  unregisterHandle: (id: string) => void
+  registerPanel: (
+    key: string,
+    config: { size?: number | null; minSize?: number },
+    el?: HTMLElement | null,
+  ) => void
+  registerHandle: (
+    key: string,
+    config: { onDrag: (delta: { deltaX: number; deltaY: number }) => void },
+    el?: HTMLElement | null,
+  ) => void
+  unregisterPanel: (key: string) => void
+  unregisterHandle: (key: string) => void
 }
 
 export const [provideResizableContext, useResizableContext] =

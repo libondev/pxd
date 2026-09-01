@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TabsItemProps, TabsItemEmits } from './types'
-import { onBeforeUnmount, onMounted, useSlots, watch } from 'vue'
-import { useTabsContext } from '../../contexts/tabs'
-import { getUniqueId } from '../../utils/helper'
+import { onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { useTabsContext } from '../../contexts/tabs.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PTabsItem',
@@ -14,11 +14,12 @@ defineEmits<TabsItemEmits>()
 
 const slots = useSlots()
 const tabsContext = useTabsContext()
-const id = getUniqueId('tabs-item')
+const key = getUniqueId('tabs-item')
+const elRef = shallowRef<HTMLElement>()
 
 function getItemState() {
   return {
-    id,
+    id: key,
     value: props.value,
     label: props.label,
     disabled: props.disabled,
@@ -26,21 +27,29 @@ function getItemState() {
   }
 }
 
+function sync(node?: HTMLElement | null) {
+  tabsContext.registerItem(key, getItemState(), node)
+}
+
+sync()
+
+onMounted(() => {
+  sync(elRef.value ?? null)
+})
+
 watch(
   () => [props.value, props.label, props.disabled],
   () => {
-    tabsContext.updateItem(getItemState())
+    sync(elRef.value)
   },
   { flush: 'post' },
 )
 
-onMounted(() => {
-  tabsContext.registerItem(getItemState())
-})
-
 onBeforeUnmount(() => {
-  tabsContext.unregisterItem(id)
+  tabsContext.unregisterItem(key)
 })
 </script>
 
-<template></template>
+<template>
+  <span ref="elRef" hidden />
+</template>

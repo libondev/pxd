@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ResizablePanelProps } from './types'
-import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizableContext } from '../../contexts/resizable'
 import { getUniqueId } from '../../utils/helper'
 
@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<ResizablePanelProps>(), {
 })
 
 const uniqueId = getUniqueId()
+const panelEl = shallowRef<HTMLElement>()
 
 const resizableContext = useResizableContext()
 
@@ -32,33 +33,31 @@ const computedStyle = computed(() => {
   }
 })
 
+function register() {
+  resizableContext?.registerPanel(
+    uniqueId,
+    {
+      size: props.size,
+      minSize: props.minSize,
+    },
+    panelEl.value,
+  )
+}
+
 onMounted(() => {
-  resizableContext?.registerPanel({
-    id: uniqueId,
-    size: props.size,
-    minSize: props.minSize,
-  })
+  register()
 })
 
 onBeforeUnmount(() => {
   resizableContext?.unregisterPanel(uniqueId)
 })
 
-watch(
-  () => [props.size, props.minSize],
-  () => {
-    resizableContext?.registerPanel({
-      id: uniqueId,
-      size: props.size,
-      minSize: props.minSize,
-    })
-  },
-  { deep: true },
-)
+watch(() => [props.size, props.minSize], register, { deep: true })
 </script>
 
 <template>
   <div
+    ref="panelEl"
     class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
     :style="computedStyle"
     v-bind="$attrs"

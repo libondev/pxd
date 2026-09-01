@@ -2,7 +2,7 @@
 import type { StepsItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import CrossIcon from '@gdsicon/vue/cross'
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useStepsContext } from '../../contexts/steps.js'
 import { getUniqueId } from '../../utils/helper.js'
 
@@ -13,11 +13,12 @@ defineOptions({
 
 const props = defineProps<StepsItemProps>()
 
+const key = getUniqueId('steps-item')
 const stepsContext = useStepsContext()
-const id = getUniqueId('steps-item')
+const elRef = shallowRef<HTMLElement>()
 
 const itemIndex = computed(() => {
-  const index = stepsContext.items.value.findIndex((item) => item.id === id)
+  const index = stepsContext.items.value.findIndex((item) => item.key === key)
 
   return index === -1 ? 0 : index
 })
@@ -44,7 +45,6 @@ const isClickable = computed(() => stepsContext.props.clickable && !props.disabl
 
 function getItemState() {
   return {
-    id,
     title: props.title,
     description: props.description,
     status: props.status,
@@ -52,20 +52,26 @@ function getItemState() {
   }
 }
 
+function sync(node?: HTMLElement | null) {
+  stepsContext.registerItem(key, getItemState(), node)
+}
+
+sync()
+
+onMounted(() => {
+  sync(elRef.value ?? null)
+})
+
 watch(
   () => [props.title, props.description, props.status, props.disabled],
   () => {
-    stepsContext.updateItem(getItemState())
+    sync(elRef.value)
   },
   { flush: 'post' },
 )
 
-// Register synchronously during setup so the first render (and SSR) already
-// sees the correct index; children set up in document order before rendering.
-stepsContext.registerItem(getItemState())
-
 onBeforeUnmount(() => {
-  stepsContext.unregisterItem(id)
+  stepsContext.unregisterItem(key)
 })
 
 function onClick() {
@@ -79,7 +85,8 @@ function onClick() {
 
 <template>
   <div
-    class="pxd-steps-item group/steps-item relative flex gap-(--steps-gap) data-[disabled=true]:opacity-50"
+    ref="elRef"
+    class="pxd-steps-item px-1 group/steps-item relative flex gap-(--steps-gap) group-data-[direction=horizontal]/steps:flex-1 group-data-[direction=horizontal]/steps:flex-col group-data-[direction=horizontal]/steps:items-center data-[disabled=true]:opacity-50"
     :data-status="resolvedStatus"
     :data-disabled="disabled"
     :class="isClickable ? 'cursor-pointer' : 'cursor-default'"
@@ -108,7 +115,7 @@ function onClick() {
     </div>
 
     <div
-      class="pxd-steps-item--content group-data-[direction=horizontal]/steps:min-w-0 flex flex-col group-data-[direction=horizontal]/steps:flex-1 group-data-[direction=horizontal]/steps:flex-col group-data-[direction=horizontal]/steps:items-center group-data-[direction=horizontal]/steps:text-center"
+      class="pxd-steps-item--content group-data-[direction=horizontal]/steps:min-w-0 flex flex-col group-data-[direction=horizontal]/steps:items-center group-data-[direction=horizontal]/steps:text-center"
     >
       <div
         class="pxd-steps-item--title font-medium text-(length:--steps-title-font-size) leading-(--steps-indicator-size) text-foreground-secondary group-data-[status=error]/steps-item:text-red-700 group-data-[status=process]/steps-item:text-foreground motion-safe:transition-colors"
@@ -117,7 +124,7 @@ function onClick() {
       </div>
       <div
         v-if="description || $slots.description"
-        class="pxd-steps-item--description px-1 text-(length:--steps-description-font-size) text-foreground-secondary opacity-80"
+        class="pxd-steps-item--description text-(length:--steps-description-font-size) text-foreground-secondary opacity-80"
       >
         <slot name="description">{{ description }}</slot>
       </div>
@@ -127,11 +134,7 @@ function onClick() {
 
 <style lang="postcss">
 .pxd-steps-item {
-  /* horizontal connector */
   .pxd-steps[data-direction='horizontal'] & {
-    flex-direction: column;
-    align-items: center;
-
     &:not(:last-child)::after {
       content: '';
       position: absolute;
@@ -147,7 +150,6 @@ function onClick() {
     }
   }
 
-  /* vertical connector */
   .pxd-steps[data-direction='vertical'] & {
     &:not(:last-child) {
       padding-bottom: var(--steps-gap);
@@ -158,7 +160,7 @@ function onClick() {
       position: absolute;
       top: calc(var(--steps-indicator-size) + var(--steps-gap) / 2);
       bottom: calc(var(--steps-gap) / 2);
-      left: calc(var(--steps-indicator-size) / 2);
+      left: calc(var(--steps-indicator-size) / 2 + var(--spacing));
       width: 1px;
       background-color: var(--color-border);
     }

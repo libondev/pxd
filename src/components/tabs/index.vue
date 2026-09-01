@@ -2,8 +2,9 @@
 import type { TabsItemState } from '../../contexts/tabs'
 import type { TabsProps, TabsEmits } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children'
 import { provideTabsContext } from '../../contexts/tabs'
 
 defineOptions({
@@ -23,7 +24,8 @@ const emits = defineEmits<TabsEmits>()
 const BORDER_WIDTH = 2
 
 const modelValue = useModelValue(props, emits)
-const items = shallowRef<TabsItemState[]>([])
+const itemRegistry = useOrderedChildren<TabsItemState>()
+const items = computed(() => itemRegistry.items.value.map((item) => item.payload))
 
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
@@ -33,16 +35,12 @@ const canScrollRight = shallowRef(false)
 
 let resizeObserver: ResizeObserver | null = null
 
-function registerItem(item: TabsItemState) {
-  items.value = [...items.value, item]
+function registerItem(key: string, item: TabsItemState, el?: HTMLElement | null) {
+  itemRegistry.register(key, item, el)
 }
 
-function unregisterItem(id: string) {
-  items.value = items.value.filter((item) => item.id !== id)
-}
-
-function updateItem(item: TabsItemState) {
-  items.value = items.value.map((current) => (current.id === item.id ? item : current))
+function unregisterItem(key: string) {
+  itemRegistry.unregister(key)
 }
 
 provideTabsContext({
@@ -50,7 +48,6 @@ provideTabsContext({
   emits,
   registerItem,
   unregisterItem,
-  updateItem,
 })
 
 function isActiveTab(item: TabsItemState) {

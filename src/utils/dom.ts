@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
-import { toValue } from './helper'
-import { isServer } from './is'
+import { toValue } from './helper.js'
+import { isServer } from './is.js'
 
 function getWindowTop() {
   return [window, document, document.documentElement]
@@ -19,7 +19,7 @@ export function getStyle(el: HTMLElement): CSSStyleDeclaration {
 export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | null {
   el = toValue(el)
 
-  if (!el) {
+  if (!el || isServer()) {
     return null
   }
 

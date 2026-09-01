@@ -3,7 +3,8 @@ import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture'
 import { provideCarouselContext } from '../../contexts/carousel'
 import { awaitAnimationEnd } from '../../utils/dom'
@@ -36,7 +37,8 @@ let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
 let maxDrag = 0
 
-const carousels = ref<CarouselState[]>([])
+const itemRegistry = useOrderedChildren<CarouselState>()
+const carousels = computed(() => itemRegistry.items.value.map((item) => item.payload))
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
@@ -257,17 +259,17 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 }
 
-function registerCarousel(state: CarouselState) {
-  carousels.value.push(state)
+function registerItem(key: string, state: CarouselState, el?: HTMLElement | null) {
+  itemRegistry.register(key, state, el)
 }
 
-function unregisterCarousel(id: string) {
-  carousels.value = carousels.value.filter(({ uid }) => uid !== id)
+function unregisterItem(key: string) {
+  itemRegistry.unregister(key)
 }
 
 provideCarouselContext({
-  registerCarousel,
-  unregisterCarousel,
+  registerItem,
+  unregisterItem,
 })
 
 onMounted(async () => {
@@ -278,7 +280,6 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   clearAutoPlayTimer()
-  carousels.value = []
 })
 </script>
 

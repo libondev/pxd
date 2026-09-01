@@ -1,9 +1,9 @@
 import type { StepsProps, StepsStatus } from '../components/steps/types'
+import type { OrderedChild } from '../composables/_internal/use-ordered-children'
 import type { ShallowRef } from 'vue'
 import { createContext } from '../utils/context.js'
 
 export interface StepsItemState {
-  id: string
   title?: string
   description?: string
   status?: StepsStatus
@@ -12,10 +12,9 @@ export interface StepsItemState {
 
 export interface StepsContext {
   props: StepsProps
-  items: ShallowRef<StepsItemState[]>
-  registerItem: (item: StepsItemState) => void
-  unregisterItem: (id: string) => void
-  updateItem: (item: StepsItemState) => void
+  items: ShallowRef<OrderedChild<StepsItemState>[]>
+  registerItem: (key: string, item: StepsItemState, el?: HTMLElement | null) => void
+  unregisterItem: (key: string) => void
   select: (index: number) => void
 }
 
