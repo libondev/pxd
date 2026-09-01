@@ -145,8 +145,8 @@ provideListFilterContext(filterContext)
         <slot name="group" :group="group" :index="index" />
       </template>
 
-      <template v-if="$slots.item" #item="slotProps">
-        <slot name="item" v-bind="slotProps" />
+      <template v-if="$slots.item" #item="itemSlotProps">
+        <slot name="item" v-bind="itemSlotProps" />
       </template>
 
       <template #empty>

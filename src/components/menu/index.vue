@@ -91,8 +91,8 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
         class="max-h-68 rounded-inherit"
         @select="onOptionSelect"
       >
-        <template v-if="$slots.item" #item="{ item, index }">
-          <slot name="item" :item="item" :index="index" />
+        <template v-if="$slots.item" #item="itemSlotProps">
+          <slot name="item" v-bind="itemSlotProps" />
         </template>
       </PList>
     </template>

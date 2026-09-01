@@ -62,8 +62,8 @@ function onOptionSelect(item: ListOptionSelected, ev: MouseEvent) {
       </slot>
     </PButton>
 
-    <template v-if="$slots.item" #item="{ item, index }">
-      <slot name="item" :item="item" :index="index" />
+    <template v-if="$slots.item" #item="itemSlotProps">
+      <slot name="item" v-bind="itemSlotProps" />
     </template>
   </PMenu>
 </template>
