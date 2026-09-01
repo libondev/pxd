@@ -28,13 +28,16 @@ const props = withDefaults(defineProps<PageNumberProps>(), {
 })
 
 const mappedPageSizeOptions = computed<ListOptions>(() => {
+  const label = configProvider.locale.pagination.perPage
+
   return props.pageSizeOptions.map((size) => ({
-    label: String(size) + '/page',
+    label: String(size) + label,
     value: size,
   }))
 })
 
 const emits = defineEmits<PageNumberEmits>()
+
 const configProvider = useConfigProvider()
 
 const pageInput = ref(String(props.modelValue))
@@ -108,10 +111,6 @@ function onPageInputKeydown(event: KeyboardEvent) {
   }
 }
 
-function pageSizeLabelFormat(value: ListOptions) {
-  return value[0].label + '/page'
-}
-
 function onPageSizeChange(value: ListModelValue) {
   emits('update:pageSize', Number(value))
 }
@@ -140,29 +139,30 @@ watch(
   >
     <button
       type="button"
-      class="pxd-page-number--prev inline-flex aspect-square items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+      class="pxd-page-number--prev inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue <= 1"
-      aria-label="Previous page"
+      :aria-label="configProvider.locale.compare.prev"
       @click="setPage(modelValue - 1)"
     >
       <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
     </button>
 
     <template v-for="item in pageItems" :key="item">
-      <span
+      <button
         v-if="typeof item === 'string'"
-        class="pxd-page-number--ellipsis inline-flex aspect-square shrink-0 cursor-default items-center justify-center"
+        class="pxd-page-number--ellipsis text-sm inline-flex aspect-square shrink-0 cursor-default items-center justify-center rounded-md disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :class="pageItemSizeClass"
+        :disabled="disabled"
         aria-hidden="true"
       >
         …
-      </span>
+      </button>
 
       <button
         v-else
         type="button"
-        class="pxd-page-number--item text-sm inline-flex aspect-square shrink-0 items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="pxd-page-number--item text-sm inline-flex aspect-square shrink-0 items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :class="[
           pageItemSizeClass,
           item === modelValue
@@ -180,10 +180,10 @@ watch(
 
     <button
       type="button"
-      class="pxd-page-number--next inline-flex aspect-square items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+      class="pxd-page-number--next inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue >= pageCount"
-      aria-label="Next page"
+      :aria-label="configProvider.locale.compare.next"
       @click="setPage(modelValue + 1)"
     >
       <ChevronRightIcon class="size-4" aria-hidden="true" />

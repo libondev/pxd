@@ -23,6 +23,9 @@ const enUS = {
     searchText: 'No results found for',
     noData: 'No data available',
   },
+  pagination: {
+    perPage: '/page',
+  },
 }
 
 export type Locale = typeof enUS

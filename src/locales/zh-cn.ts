@@ -38,6 +38,9 @@ const zhCN = {
     searchText: '未找到结果：',
     noData: '暂无数据',
   },
+  pagination: {
+    perPage: '条/页',
+  },
 } satisfies Locale
 
 export default zhCN
