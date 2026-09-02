@@ -23,6 +23,48 @@ interface QuestionnaireOption {
   description: string
 }
 
+defineOptions({
+  name: 'PQuestionnaire',
+  inheritAttrs: false,
+})
+
+const props = withDefaults(defineProps<QuestionnaireProps>(), {
+  questions: () => [],
+})
+const emits = defineEmits<QuestionnaireEmits>()
+
+const configProvider = useConfigProvider()
+const { value: isCollapsed, toggle: toggleCollapse } = useToggleValue(false)
+
+const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
+const currentState = shallowRef<QuestionnaireState>('choosing')
+const currentIndex = shallowRef(0)
+const currentQuestion = computed(() => {
+  const question = props.questions[currentIndex.value]
+
+  return question ? getQuestionOptions(question) : null
+})
+const currentAnswer = computed(() => {
+  const question = currentQuestion.value
+
+  return question ? totalAnswers[question.header] : null
+})
+
+const showSubmitButton = computed(() => {
+  const questionsCount = props.questions.length
+  const question = currentQuestion.value
+
+  if (!question) {
+    return false
+  }
+
+  if (question.multiSelect) {
+    return true
+  }
+
+  return currentIndex.value === questionsCount - 1 && question.allowFreeformInput
+})
+
 type QuestionnaireRenderQuestion = Omit<QuestionnaireQuestion, 'options'> & {
   options: QuestionnaireOption[]
 }
@@ -78,48 +120,6 @@ function getSelectedAnswerText(question: QuestionnaireQuestion, answer: Question
 
   return answer.freeText || answer.selected.join(', ')
 }
-
-defineOptions({
-  name: 'PQuestionnaire',
-  inheritAttrs: false,
-})
-
-const props = withDefaults(defineProps<QuestionnaireProps>(), {
-  questions: () => [],
-})
-const emits = defineEmits<QuestionnaireEmits>()
-
-const configProvider = useConfigProvider()
-const { value: isCollapsed, toggle: toggleCollapse } = useToggleValue(false)
-
-const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
-const currentState = shallowRef<QuestionnaireState>('choosing')
-const currentIndex = shallowRef(0)
-const currentQuestion = computed(() => {
-  const question = props.questions[currentIndex.value]
-
-  return question ? getQuestionOptions(question) : null
-})
-const currentAnswer = computed(() => {
-  const question = currentQuestion.value
-
-  return question ? totalAnswers[question.header] : null
-})
-
-const showSubmitButton = computed(() => {
-  const questionsCount = props.questions.length
-  const question = currentQuestion.value
-
-  if (!question) {
-    return false
-  }
-
-  if (question.multiSelect) {
-    return true
-  }
-
-  return currentIndex.value === questionsCount - 1 && question.allowFreeformInput
-})
 
 function buildInitAnswers() {
   Object.keys(totalAnswers).forEach((header) => {
@@ -208,6 +208,23 @@ function onFreeformInputChange() {
   updateCurrentAnswer((answer) => ({ ...answer, selected: [] }))
 }
 
+function getFinalAnswers() {
+  return Object.entries(totalAnswers).reduce((answers, [header, answer]) => {
+    if (answer.selected.length || answer.freeText?.trim().length) {
+      answer.skipped = false
+    } else {
+      answer.skipped = true
+    }
+
+    answers[header] = {
+      ...answer,
+      skipped: !answer.selected.length && !answer.freeText?.trim().length,
+    }
+
+    return answers
+  }, {} as QuestionnaireAnswers)
+}
+
 function skipAllQuestions() {
   Object.assign(totalAnswers, createSkippedAnswers(totalAnswers))
   currentState.value = 'skipped'
@@ -215,7 +232,7 @@ function skipAllQuestions() {
 
 function onSubmitAnswers() {
   currentState.value = 'submitted'
-  emits('submit', { ...totalAnswers })
+  emits('submit', getFinalAnswers())
 }
 
 watch(
