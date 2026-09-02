@@ -18,7 +18,7 @@ Reusable code patterns and examples discovered during development.
 ### Searchable collapse via native `details`
 
 - **Use case**: An accordion that must animate height and still participate in Find in page / fragment navigation.
-- **Example**: Render `<details :open="detailsOpen">` with `@click.prevent` on `<summary>`. Keep `open` true during leave height animation. On `@toggle`, if the browser set `open` while Vue state is collapsed, sync expanded state and skip enter motion.
+- **Example**: `useCollapseMotion(isExpanded)` — delay clearing `detailsOpen` until leave height animation finishes; call `skipEnterMotion()` before expanding when the browser already opened `<details>` (find / fragment navigation).
 
 ### Per-app unique id via `$root` + WeakMap
 
