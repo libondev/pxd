@@ -41,10 +41,13 @@ const { attrs, classes } = useTailwindVariant(
         default:
           'text-foreground active:bg-gray-alpha-100 pointer-fine:aria-selected:bg-gray-alpha-100',
       },
+      checked: {
+        true: 'font-medium text-primary',
+      },
     },
   },
   {
-    selection: () => ({ variant: props.variant }),
+    selection: () => ({ variant: props.variant, checked: isChecked.value }),
   },
 )
 
