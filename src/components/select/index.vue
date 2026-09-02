@@ -40,6 +40,7 @@ const translatedLabel = computed(() => {
     v-model="modelValue"
     class="pxd-select"
     :options="options"
+    position="bottom"
     :disabled="disabled"
     :multiple="multiple"
     v-bind="$attrs"
