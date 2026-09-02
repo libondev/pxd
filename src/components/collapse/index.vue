@@ -89,7 +89,7 @@ watch(
       ref="contentRef"
       class="pxd-collapse--content"
       :class="{
-        'transition-[height]': isExpanded || isLeaving,
+        'motion-safe:transition-[height]': isExpanded || isLeaving,
       }"
     >
       <slot />

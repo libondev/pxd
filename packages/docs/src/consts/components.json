@@ -244,6 +244,10 @@
     "name": "rate"
   },
   {
+    "camelized": "Reasoning",
+    "name": "reasoning"
+  },
+  {
     "camelized": "Resizable",
     "name": "resizable"
   },
