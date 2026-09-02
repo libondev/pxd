@@ -15,7 +15,7 @@ describe('page-number', () => {
       },
     })
 
-    expect(wrapper.find('[aria-label="Page 1"]').classes()).toContain('size-6')
+    expect(wrapper.find('[aria-label="Page 1"]').classes()).toContain('h-6')
 
     wrapper.unmount()
 
@@ -28,16 +28,16 @@ describe('page-number', () => {
       },
     })
 
-    expect(providerWrapper.find('[aria-label="Page 1"]').classes()).toContain('size-10')
+    expect(providerWrapper.find('[aria-label="Page 1"]').classes()).toContain('h-9')
 
     providerWrapper.unmount()
   })
 
   it('applies the requested size to page controls', () => {
     for (const [size, sizeClass] of [
-      ['sm', 'size-6'],
-      ['md', 'size-8'],
-      ['lg', 'size-10'],
+      ['sm', 'h-6'],
+      ['md', 'h-7.5'],
+      ['lg', 'h-9'],
     ] as const) {
       const wrapper = mount(PageNumber, {
         props: {

@@ -25,6 +25,8 @@ const enUS = {
   },
   pagination: {
     perPage: '/page',
+    prev: 'Previous page',
+    next: 'Next page',
   },
 }
 

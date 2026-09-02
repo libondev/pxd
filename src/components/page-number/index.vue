@@ -142,7 +142,7 @@ watch(
       class="pxd-page-number--prev inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue <= 1"
-      :aria-label="configProvider.locale.compare.prev"
+      :aria-label="configProvider.locale.pagination.prev"
       @click="setPage(modelValue - 1)"
     >
       <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
@@ -183,7 +183,7 @@ watch(
       class="pxd-page-number--next inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
       :class="pageItemSizeClass"
       :disabled="disabled || modelValue >= pageCount"
-      :aria-label="configProvider.locale.compare.next"
+      :aria-label="configProvider.locale.pagination.next"
       @click="setPage(modelValue + 1)"
     >
       <ChevronRightIcon class="size-4" aria-hidden="true" />

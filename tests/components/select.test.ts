@@ -72,7 +72,7 @@ describe('select', () => {
     wrapper.unmount()
   })
 
-  it('should toggle values when multiple and emit change on close', async () => {
+  it('should toggle values when multiple and emit change on each selection', async () => {
     const Host = defineComponent({
       components: { Select },
       setup() {
@@ -103,23 +103,19 @@ describe('select', () => {
     expect(wrapper.vm.value).toEqual([1])
     expect(wrapper.text()).toContain('One')
     expect(items[0]?.getAttribute('data-checked')).toBe('true')
-    expect(wrapper.vm.changed).toBeUndefined()
+    expect(wrapper.vm.changed).toEqual([1])
 
     items[2]?.click()
     await nextTick()
 
     expect(wrapper.vm.value).toEqual([1, 3])
     expect(wrapper.text()).toContain('One, Three')
+    expect(wrapper.vm.changed).toEqual([1, 3])
 
     items[0]?.click()
     await nextTick()
 
     expect(wrapper.vm.value).toEqual([3])
-    expect(wrapper.vm.changed).toBeUndefined()
-
-    await wrapper.find('button').trigger('click')
-    await flushPopover()
-
     expect(wrapper.vm.changed).toEqual([3])
 
     wrapper.unmount()

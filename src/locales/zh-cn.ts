@@ -40,6 +40,8 @@ const zhCN = {
   },
   pagination: {
     perPage: '条/页',
+    prev: '上一页',
+    next: '下一页',
   },
 } satisfies Locale
 
