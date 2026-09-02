@@ -255,13 +255,24 @@ watch(
           :options="currentQuestion.options"
           @change="onAnswerItemSelect"
         >
-          <template #item="{ item }">
+          <template #item="{ item, index }">
+            <span
+              class="size-7 relative inline-flex shrink-0 items-center justify-center rounded-sm bg-gray-alpha-200"
+            >
+              {{ index + 1 }}
+            </span>
+
+            <div v-if="item.label" class="flex flex-col">
+              <span>{{ item.label }}</span>
+              <span class="text-foreground-secondary">{{ item.description }}</span>
+            </div>
+
             <PInput
-              v-if="!item.label"
+              v-else
               :model-value="currentAnswer.freeText"
               :size="configProvider.size"
               :placeholder="item.description"
-              class="-me-6 w-[calc(100%+1.5rem)] max-w-none"
+              class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
               @update:model-value="onFreeformInput"
               @change="onFreeformInputChange"
               @click.stop
