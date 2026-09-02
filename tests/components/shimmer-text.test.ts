@@ -28,19 +28,6 @@ describe('shimmer-text', () => {
     wrapper.unmount()
   })
 
-  it('should set the total duration from durations and interval', () => {
-    const wrapper = mount(ShimmerText, {
-      props: {
-        durations: 1000,
-        interval: 200,
-      },
-    })
-
-    expect(wrapper.attributes('style')).toContain('--shimmer-total-duration: 1200ms')
-
-    wrapper.unmount()
-  })
-
   it('should build the gradient from a variant preset', () => {
     const wrapper = mount(ShimmerText, {
       props: {

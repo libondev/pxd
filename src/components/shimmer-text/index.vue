@@ -8,8 +8,8 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ShimmerTextProps>(), {
+  disabled: false,
   durations: 1500,
-  interval: 500,
   color: 'var(--color-gray-100)',
 })
 
@@ -68,7 +68,7 @@ const shimmerStyle = computed(() => {
 
   return {
     backgroundImage,
-    '--shimmer-total-duration': `${props.durations + props.interval}ms`,
+    '--shimmer-total-duration': `${props.durations}ms`,
   }
 })
 
@@ -100,7 +100,8 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 
 <template>
   <span
-    class="pxd-shimmer-text inline-flex max-w-full bg-transparent bg-clip-text bg-no-repeat motion-reduce:animate-none!"
+    class="pxd-shimmer-text inline-flex max-w-full bg-transparent bg-no-repeat motion-reduce:animate-none!"
+    :data-disabled="disabled"
     :data-variant="variant"
     :style="shimmerStyle"
     v-bind="$attrs"
@@ -112,10 +113,11 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 </template>
 
 <style>
-.pxd-shimmer-text {
+.pxd-shimmer-text[data-disabled='false'] {
   --shimmer-text-spread: 1.5em;
   --shimmer-text-spread-mid: calc(var(--shimmer-text-spread) * 0.68);
   background-size: 350% 100%;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: pxd-animation-shimmer-sweep var(--shimmer-total-duration, 2s)
     cubic-bezier(0.3, 0, 0.2, 1) infinite;
@@ -125,12 +127,9 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
   0% {
     background-position: 100% center;
   }
-  70% {
-    background-position: 0% center;
-    animation-timing-function: step-start;
-  }
   100% {
     background-position: 0% center;
+    animation-timing-function: step-start;
   }
 }
 </style>
