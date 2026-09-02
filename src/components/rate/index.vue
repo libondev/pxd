@@ -33,7 +33,7 @@ const modelValue = useModelValue(props, emits)
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-rate inline-flex touch-none items-center rounded-sm self-focus-ring select-none',
+    base: 'pxd-rate inline-flex cursor-pointer touch-none items-center rounded-sm self-focus-ring select-none',
     variants: {
       size: {
         sm: 'text-sm',
@@ -41,32 +41,12 @@ const { attrs, classes } = useTailwindVariant(
         lg: 'text-xl',
       },
       disabled: {
-        true: 'pointer-events-none opacity-50',
+        true: 'cursor-not-allowed',
       },
-      readonly: {},
+      readonly: {
+        true: 'cursor-default',
+      },
     },
-    compoundVariants: [
-      {
-        disabled: true,
-        readonly: false,
-        class: 'cursor-not-allowed',
-      },
-      {
-        disabled: false,
-        readonly: true,
-        class: 'cursor-default',
-      },
-      {
-        disabled: true,
-        readonly: true,
-        class: 'cursor-not-allowed',
-      },
-      {
-        disabled: false,
-        readonly: false,
-        class: 'cursor-pointer',
-      },
-    ],
   },
   {
     selection: () => {
@@ -267,7 +247,8 @@ onBeforeUnmount(() => {
       </span>
 
       <span
-        class="pxd-rate--star-filled inset-0 absolute inline-flex text-primary text-trim-both"
+        class="pxd-rate--star-filled inset-0 absolute inline-flex text-trim-both"
+        :class="disabled ? 'text-gray-500' : 'text-primary'"
         :style="{
           clipPath: `inset(0 ${(1 - fills[i - 1]) * 100}% 0 0)`,
           color: color,
