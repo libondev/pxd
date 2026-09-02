@@ -65,7 +65,7 @@ watch(
 
     <div
       ref="contentRef"
-      class="pxd-reasoning--content mbs-1.5 ms-1.5 ps-3 overflow-hidden border-l"
+      class="pxd-reasoning--content mbs-1.5 text-sm ms-1.5 ps-3 overflow-hidden border-l text-foreground-secondary"
       :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
     >
       <slot />
