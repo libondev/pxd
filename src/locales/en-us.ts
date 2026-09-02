@@ -28,6 +28,10 @@ const enUS = {
     prev: 'Previous page',
     next: 'Next page',
   },
+  reasoning: {
+    thinking: 'Thinking...',
+    thought: 'Thought',
+  },
 }
 
 export type Locale = typeof enUS

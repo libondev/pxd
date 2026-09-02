@@ -43,6 +43,10 @@ const zhCN = {
     prev: '上一页',
     next: '下一页',
   },
+  reasoning: {
+    thinking: '正在思考...',
+    thought: '思考',
+  },
 } satisfies Locale
 
 export default zhCN

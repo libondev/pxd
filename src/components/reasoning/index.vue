@@ -4,6 +4,7 @@ import BrainIcon from '@gdsicon/vue/brain'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { shallowRef, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import PShimmerText from '../shimmer-text/index.vue'
 
 defineOptions({
@@ -14,6 +15,8 @@ defineOptions({
 const props = defineProps<ReasoningProps>()
 
 const isOpen = shallowRef(!!props.streaming)
+
+const configProvider = useConfigProvider()
 const { contentRef, detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(isOpen)
 
 function onToggleClick() {
@@ -51,7 +54,7 @@ watch(
       <BrainIcon class="text-xs shrink-0" />
 
       <PShimmerText class="pxd-reasoning--title" :disabled="!streaming">
-        {{ title }}
+        {{ configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
       <ChevronRightIcon
