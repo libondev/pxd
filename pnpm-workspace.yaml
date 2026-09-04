@@ -29,7 +29,7 @@ catalog:
   '@vue/test-utils': ^2.4.11
   '@vue/tsconfig': ^0.9.1
   canvas-confetti: ^1.9.4
-  cnfast: ^0.0.8
+  cn: ^0.2.4
   cross-spawn: ^7.0.6
   dayjs: ^1.11.21
   eslint-plugin-better-tailwindcss: ^4.6.1

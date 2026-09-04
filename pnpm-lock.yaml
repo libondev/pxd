@@ -63,9 +63,9 @@ catalogs:
     canvas-confetti:
       specifier: ^1.9.4
       version: 1.9.4
-    cnfast:
-      specifier: ^0.0.8
-      version: 0.0.8
+    cn:
+      specifier: ^0.2.4
+      version: 0.2.4
     cross-spawn:
       specifier: ^7.0.6
       version: 7.0.6
@@ -169,9 +169,9 @@ importers:
       '@tanstack/virtual-core':
         specifier: catalog:default
         version: 3.17.7
-      cnfast:
+      cn:
         specifier: catalog:default
-        version: 0.0.8
+        version: 0.2.4
       dayjs:
         specifier: catalog:default
         version: 1.11.21
@@ -2412,8 +2412,9 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
-  cnfast@0.0.8:
-    resolution: {integrity: sha512-EjXKMfGfdwtV4AcNSQ6AwQaVzpC1B7IxeiwA3FlhTXz+YFlMKVi4c1JX9tgD2QOlahQXjB8KUXrBaYG+3v871Q==}
+  cn@0.2.4:
+    resolution: {integrity: sha512-SzQvoh5FwizWtQg9+JueKdjWhlfCZMdu5DqNHm9q1wUlRVmKb9WXlepR9bTTbPwzEOyX1ujJ6lcCppmn3bNUCg==}
+    engines: {node: '>=20'}
     hasBin: true
 
   color-convert@2.0.1:
@@ -6108,7 +6109,7 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
-  cnfast@0.0.8: {}
+  cn@0.2.4: {}
 
   color-convert@2.0.1:
     dependencies:

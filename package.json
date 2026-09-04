@@ -133,7 +133,7 @@
     "@floating-ui/dom": "catalog:default",
     "@gdsicon/vue": "catalog:default",
     "@tanstack/virtual-core": "catalog:default",
-    "cnfast": "catalog:default",
+    "cn": "catalog:default",
     "dayjs": "catalog:default",
     "focus-trap": "catalog:default"
   },

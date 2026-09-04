@@ -1,5 +1,5 @@
-import type { ClassValue } from 'cnfast'
-import { cn } from 'cnfast'
+import type { ClassValue } from 'cn'
+import { cn } from 'cn'
 import { computed, useAttrs } from 'vue'
 
 type TailwindVariantSchema = Record<string, Record<string, ClassValue>>
