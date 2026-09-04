@@ -35,6 +35,7 @@ declare module 'vue' {
     PCopyButton: (typeof import('pxd/components/copy-button'))['default']
     PCountdown: (typeof import('pxd/components/countdown'))['default']
     PDashLine: (typeof import('pxd/components/dash-line'))['default']
+    PDatePicker: (typeof import('pxd/components/date-picker'))['default']
     PDescription: (typeof import('pxd/components/description'))['default']
     PDrawer: (typeof import('pxd/components/drawer'))['default']
     PEllipsisText: (typeof import('pxd/components/ellipsis-text'))['default']

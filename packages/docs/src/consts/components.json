@@ -96,6 +96,10 @@
     "name": "dash-line"
   },
   {
+    "camelized": "Date Picker",
+    "name": "date-picker"
+  },
+  {
     "camelized": "Description",
     "name": "description"
   },
