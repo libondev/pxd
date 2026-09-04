@@ -19,16 +19,16 @@ interface ModelValueOptions {
 export function useModelValue<P extends BaseProps, E extends BaseEmits>(
   props: P,
   emits: E,
-  options: ModelValueOptions = { withChange: true },
+  { withChange = true, get, set }: ModelValueOptions = {},
 ): WritableComputedRef<P['modelValue']> {
   type V = NonNullable<P['modelValue']>
 
   const modelValue = computed<V>({
-    get: options.get || (() => props.modelValue),
+    get: get || (() => props.modelValue),
     set:
-      options.set ||
+      set ||
       ((value: V) => {
-        if (options.withChange) {
+        if (withChange) {
           emits('change', value)
         }
         emits('update:modelValue', value)
