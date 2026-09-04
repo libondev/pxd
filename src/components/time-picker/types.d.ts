@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types/shared'
+import type { ComponentSize, ComponentDateTimeValue } from '../../types/shared'
 
 export interface DateTimePreset<T = Date> {
   label: string
@@ -11,16 +11,16 @@ export interface TimePickerProps {
   presets?: DateTimePreset[]
   disabled?: boolean
   clearable?: boolean
-  modelValue?: Date | string | number | null
+  modelValue?: ComponentDateTimeValue
   suffixIcon?: boolean
   placeholder?: string
   showSeconds?: boolean
-  closeOnPressEscape?: boolean
   labelFormat?: string
   valueFormat?: string
+  closeOnPressEscape?: boolean
 }
 
 export interface TimePickerEmits {
-  change: [string]
-  'update:modelValue': [string]
+  change: [ComponentDateTimeValue]
+  'update:modelValue': [ComponentDateTimeValue]
 }
