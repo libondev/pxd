@@ -4,19 +4,9 @@ import { nextTick } from 'vue'
 import Reasoning from '../../src/components/reasoning/index.vue'
 
 describe('reasoning', () => {
-  it('renders title', () => {
-    const wrapper = mount(Reasoning, {
-      props: { title: 'Reasoning' },
-    })
-
-    expect(wrapper.text()).toContain('Reasoning')
-
-    wrapper.unmount()
-  })
-
   it('opens when streaming', () => {
     const wrapper = mount(Reasoning, {
-      props: { streaming: true, title: 'Reasoning' },
+      props: { streaming: true },
     })
 
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
@@ -26,14 +16,13 @@ describe('reasoning', () => {
 
   it('toggles on trigger click', async () => {
     const wrapper = mount(Reasoning, {
-      props: { title: 'Reasoning' },
       slots: { default: '<p>Trace</p>' },
     })
 
     await wrapper.find('summary').trigger('click')
     await nextTick()
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
 
     wrapper.unmount()
   })

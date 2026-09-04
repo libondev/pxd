@@ -12,7 +12,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<ReasoningProps>()
+const props = withDefaults(defineProps<ReasoningProps>(), { streaming: true })
 
 const isOpen = shallowRef(!!props.streaming)
 

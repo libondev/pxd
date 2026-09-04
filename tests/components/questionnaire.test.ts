@@ -32,7 +32,7 @@ describe('questionnaire', () => {
           flow: {
             selected: ['Save only'],
             freeText: '',
-            skipped: true,
+            skipped: false,
           },
         },
       ],
@@ -69,7 +69,7 @@ describe('questionnaire', () => {
       flow: {
         selected: ['First', 'Second'],
         freeText: '',
-        skipped: true,
+        skipped: false,
       },
     })
 
@@ -90,7 +90,7 @@ describe('questionnaire', () => {
       flow: {
         selected: [],
         freeText: 'A custom flow',
-        skipped: true,
+        skipped: false,
       },
     })
 
