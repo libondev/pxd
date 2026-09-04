@@ -1,3 +1,5 @@
+import type { ComponentDateTimeValue } from '../../types/shared'
+
 export interface CalendarDateInfo {
   year: number
   month: number
@@ -22,13 +24,14 @@ export interface CalendarDay {
 
 export interface CalendarProps {
   compact?: boolean
-  modelValue?: number | null
-  defaultValue?: number | null
+  modelValue?: ComponentDateTimeValue
+  defaultValue?: ComponentDateTimeValue
+  valueFormat?: string
   isDateDisabled?: (timestamp: number) => boolean
 }
 
 export interface CalendarEmits {
   'panel-change': [info: CalendarPanelInfo]
-  change: [timestamp: number, info: CalendarDateInfo]
-  'update:modelValue': [timestamp: number, info: CalendarDateInfo]
+  change: [ComponentDateTimeValue]
+  'update:modelValue': [ComponentDateTimeValue]
 }

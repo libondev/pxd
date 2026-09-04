@@ -54,6 +54,32 @@ function isDateDisabled(timestamp) {
 </template>
 ```
 
+## Formatter
+
+Use `value-format` to control the data written back to `v-model`. Pass `'timestamp'` to emit a number, or any Day.js format string.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value1 = ref(Date.now())
+const value2 = ref('2024-08-15')
+</script>
+
+<template>
+  <PStack direction="vertical" gap="4">
+    <div>
+      <PText class="mb-2">Value formatted: {{ value1 }}</PText>
+      <PCalendar v-model="value1" value-format="timestamp" />
+    </div>
+    <div>
+      <PText class="mb-2">Value formatted: {{ value2 }}</PText>
+      <PCalendar v-model="value2" value-format="YYYY-MM-DD" />
+    </div>
+  </PStack>
+</template>
+```
+
 ## Compact
 
 Use a compact layout for narrow containers or picker panels.
@@ -76,8 +102,9 @@ const value = ref(Date.now())
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| default-value | `number \| null` | `null` | Default selected date timestamp |
-| model-value | `number \| null` | - | Selected date timestamp |
+| default-value | `number \| string \| Date \| null` | `null` | Default selected date |
+| model-value | `number \| string \| Date \| null` | - | Selected date |
+| value-format | `string` | `'timestamp'` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
 | is-date-disabled | `(timestamp: number) => boolean` | - | Date disabled validator |
 | compact | `boolean` | `false` | Use a compact layout for narrow containers |
 
@@ -85,7 +112,8 @@ const value = ref(Date.now())
 
 | Name | Type | Description |
 | --- | --- | --- |
-| update:modelValue | `(timestamp: number, info: CalendarDateInfo) => void` | Emitted when a date is selected |
+| update:modelValue | `(value: number \| string \| Date \| null) => void` | Emitted when a date is selected |
+| change | `(value: number \| string \| Date \| null) => void` | Emitted when a date is selected |
 | panel-change | `(info: CalendarPanelInfo) => void` | Emitted when the visible month changes |
 
 ## Slots

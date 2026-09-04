@@ -34,3 +34,5 @@ export interface ComponentOption {
 }
 
 export type ComponentBeforeChange<T> = (value: T) => Awaitable<T>
+
+export type ComponentDateTimeValue = number | string | Date | null

@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import type {
-  CalendarDateInfo,
-  CalendarDay,
-  CalendarEmits,
-  CalendarPanelInfo,
-  CalendarProps,
-} from './types'
+import type { CalendarDay, CalendarEmits, CalendarPanelInfo, CalendarProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -26,6 +20,7 @@ defineOptions({
 const props = withDefaults(defineProps<CalendarProps>(), {
   defaultValue: null,
   compact: false,
+  valueFormat: 'timestamp',
 })
 
 const emits = defineEmits<CalendarEmits>()
@@ -33,7 +28,7 @@ const configProvider = useConfigProvider()
 
 const today = dayjs()
 const todayKey = today.format('YYYY-MM-DD')
-const uncontrolledValue = shallowRef<number | null>(props.defaultValue)
+const uncontrolledValue = shallowRef(props.defaultValue)
 const panelDate = shallowRef(dayjs(props.modelValue ?? props.defaultValue ?? today.valueOf()))
 
 const selectedValue = computed(() => {
@@ -95,23 +90,27 @@ function changeMonth(offset: number) {
   setPanelDate(panelDate.value.add(offset, 'month'))
 }
 
+function formatModelValue(timestamp: number) {
+  if (props.valueFormat === 'timestamp') {
+    return timestamp
+  }
+
+  return dayjs(timestamp).format(props.valueFormat)
+}
+
 function selectDate(day: CalendarDay) {
   if (day.isDisabled) {
     return
   }
 
-  const info: CalendarDateInfo = {
-    year: day.year,
-    month: day.month,
-    date: day.date,
-  }
+  const value = formatModelValue(day.timestamp)
 
   if (isUndefined(props.modelValue)) {
-    uncontrolledValue.value = day.timestamp
+    uncontrolledValue.value = value
   }
 
-  emits('change', day.timestamp, info)
-  emits('update:modelValue', day.timestamp, info)
+  emits('change', value)
+  emits('update:modelValue', value)
 }
 
 function selectToday() {

@@ -6,7 +6,6 @@ import { dayjs } from '../../src/utils/date'
 
 const august15 = new Date(2024, 7, 15).getTime()
 const august20 = new Date(2024, 7, 20).getTime()
-const august20Info = { year: 2024, month: 8, date: 20 }
 
 function findDateCell(wrapper: ReturnType<typeof mount>, date: number) {
   const cell = wrapper
@@ -49,8 +48,25 @@ describe('calendar', () => {
     await findDateCell(wrapper, 20).trigger('click')
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
-    expect(wrapper.emitted('change')).toEqual([[august20, august20Info]])
-    expect(wrapper.emitted('update:modelValue')).toEqual([[august20, august20Info]])
+    expect(wrapper.emitted('change')).toEqual([[august20]])
+    expect(wrapper.emitted('update:modelValue')).toEqual([[august20]])
+
+    wrapper.unmount()
+  })
+
+  it('emits formatted values when value-format is a dayjs pattern', async () => {
+    const wrapper = mount(Calendar, {
+      props: {
+        defaultValue: august15,
+        valueFormat: 'YYYY-MM-DD',
+      },
+    })
+
+    await findDateCell(wrapper, 20).trigger('click')
+
+    expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
+    expect(wrapper.emitted('change')).toEqual([['2024-08-20']])
+    expect(wrapper.emitted('update:modelValue')).toEqual([['2024-08-20']])
 
     wrapper.unmount()
   })
@@ -217,7 +233,7 @@ describe('calendar', () => {
     await findDateCell(wrapper, 20).trigger('click')
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
-    expect(wrapper.emitted('change')).toEqual([[august20, august20Info]])
+    expect(wrapper.emitted('change')).toEqual([[august20]])
 
     wrapper.unmount()
   })
