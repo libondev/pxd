@@ -5,7 +5,7 @@ import Calendar from '../../src/components/calendar/index.vue'
 import { dayjs } from '../../src/utils/date'
 
 const august15 = new Date(2024, 7, 15).getTime()
-const august20 = new Date(2024, 7, 20).getTime()
+const august20 = '2024-08-20'
 
 function findDateCell(wrapper: ReturnType<typeof mount>, date: number) {
   const cell = wrapper
