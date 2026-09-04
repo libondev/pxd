@@ -58,10 +58,11 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 const popoverVisible = shallowRef(false)
 
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
+const committedValue = shallowRef<string | number>('')
 
 const modelValue = useModelValue(props, emits, {
   get() {
-    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat) : ''
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
   },
 })
 
@@ -173,21 +174,48 @@ function onTimeListClick(ev: MouseEvent) {
   })
 }
 
-function updateModelValue() {
+function formatEmittedValue() {
   if (!dayjsDateTime.value) {
-    modelValue.value = ''
+    return ''
+  }
+
+  if (props.valueFormat === 'timestamp') {
+    return dayjsDateTime.value.valueOf()
+  }
+
+  return dayjsDateTime.value.format(props.valueFormat)
+}
+
+function updateModelValue() {
+  const nextValue = formatEmittedValue()
+
+  if (committedValue.value === nextValue) {
     return
   }
 
-  modelValue.value =
-    props.valueFormat === 'timestamp'
-      ? dayjsDateTime.value.valueOf()
-      : dayjsDateTime.value.format(props.valueFormat)
+  committedValue.value = nextValue
+  modelValue.value = nextValue
+}
+
+function syncFromModelValue(value: TimePickerProps['modelValue']) {
+  updateDayjsDateTime(value)
+  committedValue.value = formatEmittedValue()
 }
 
 function onInputValueChange(value: string) {
-  updateDayjsDateTime(value)
-  updateModelValue()
+  if (value === '') {
+    updateDayjsDateTime('')
+    updateModelValue()
+    togglePopoverVisible(false)
+    return
+  }
+
+  const newDateTime = getFormattedValue(value)
+  if (newDateTime.isValid()) {
+    dayjsDateTime.value = newDateTime
+    updateModelValue()
+  }
+
   togglePopoverVisible(false)
 }
 
@@ -226,7 +254,7 @@ function onCancelClick() {
   togglePopoverVisible(false)
 }
 
-watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
+watch(() => props.modelValue, syncFromModelValue, { immediate: true })
 
 onBeforeUnmount(() => {
   scrollTimers.forEach((timer) => clearTimeout(timer))
