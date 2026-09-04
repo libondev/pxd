@@ -104,7 +104,7 @@ const value = ref(Date.now())
 | --- | --- | --- | --- |
 | default-value | `number \| string \| Date \| null` | `null` | Default selected date |
 | model-value | `number \| string \| Date \| null` | - | Selected date |
-| value-format | `string` | `'timestamp'` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
+| value-format | `string` | `'YYYY-MM-DD'` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
 | is-date-disabled | `(timestamp: number) => boolean` | - | Date disabled validator |
 | compact | `boolean` | `false` | Use a compact layout for narrow containers |
 

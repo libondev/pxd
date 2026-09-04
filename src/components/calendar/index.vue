@@ -20,7 +20,7 @@ defineOptions({
 const props = withDefaults(defineProps<CalendarProps>(), {
   defaultValue: null,
   compact: false,
-  valueFormat: 'timestamp',
+  valueFormat: 'YYYY-MM-DD',
 })
 
 const emits = defineEmits<CalendarEmits>()
@@ -138,7 +138,10 @@ watch(
 <template>
   <div class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
     <div class="gap-1 mbe-2 flex items-center">
-      <div class="pxd-calendar--date min-w-0 flex-1 truncate" :class="{ 'font-medium': !compact }">
+      <div
+        class="pxd-calendar--date min-w-0 ps-1 flex-1 truncate"
+        :class="{ 'font-medium': !compact }"
+      >
         <slot name="header" v-bind="panelInfo">
           {{ panelInfo.year }} {{ configProvider.locale.date.month[panelInfo.month - 1] }}
         </slot>
@@ -172,7 +175,7 @@ watch(
     </div>
 
     <div
-      class="pxd-calendar--grid grid grid-cols-7"
+      class="pxd-calendar--grid grid grid-cols-7 select-none"
       :class="compact ? 'gap-1' : 'border-t border-l'"
       role="grid"
     >
