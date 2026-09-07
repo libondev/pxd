@@ -9,7 +9,7 @@ const LocaleConsumer = defineComponent({
     const configProvider = useConfigProvider()
 
     return () =>
-      h('span', `${configProvider.locale.confirm.cancel}|${configProvider.locale.date.now}`)
+      h('span', `${configProvider.locale.interaction.cancel}|${configProvider.locale.date.now}`)
   },
 })
 
@@ -28,7 +28,7 @@ describe('config-provider', () => {
     const wrapper = mount(ConfigProvider, {
       props: {
         locale: {
-          confirm: {
+          interaction: {
             cancel: 'Close',
           },
         },

@@ -11,13 +11,15 @@ const enUS = {
     next: 'Next',
     prev: 'Previous',
   },
-  confirm: {
+  interaction: {
     cancel: 'Cancel',
+    confirm: 'Confirm',
+    skip: 'Skip',
     submit: 'Submit',
   },
-  interactive: {
-    q: 'Q',
-    a: 'A',
+  questionnaire: {
+    question: 'Q',
+    answer: 'A',
   },
   results: {
     searchText: 'No results found for',

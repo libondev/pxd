@@ -329,7 +329,7 @@ watch(
 
           <div v-show="showSubmitButton" class="ms-auto">
             <PButton :size="configProvider.size" variant="primary" @click="onSubmitAnswers">
-              {{ configProvider.locale.confirm.submit }}
+              {{ configProvider.locale.interaction.submit }}
             </PButton>
           </div>
         </div>
@@ -340,10 +340,10 @@ watch(
       <ul class="!px-4 !py-3 !m-0 pxd-questionnaire--answers gap-2 flex list-none flex-col">
         <li v-for="(question, index) of questions" :key="index" class="!m-0 text-sm">
           <p class="!m-0 text-foreground-secondary">
-            {{ configProvider.locale.interactive.q }}: {{ question.question }}
+            {{ configProvider.locale.questionnaire.question }}: {{ question.question }}
           </p>
           <p class="!m-0 font-medium">
-            {{ configProvider.locale.interactive.a }}:
+            {{ configProvider.locale.questionnaire.answer }}:
             {{ getSelectedAnswerText(question, totalAnswers[question.header]) }}
           </p>
         </li>

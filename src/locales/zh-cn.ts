@@ -26,13 +26,15 @@ const zhCN = {
     next: '之后',
     prev: '之前',
   },
-  confirm: {
+  interaction: {
     cancel: '取消',
+    confirm: '确认',
+    skip: '跳过',
     submit: '提交',
   },
-  interactive: {
-    q: '问',
-    a: '答',
+  questionnaire: {
+    question: '问',
+    answer: '答',
   },
   results: {
     searchText: '未找到结果：',
