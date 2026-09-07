@@ -20,6 +20,11 @@ const enUS = {
   questionnaire: {
     question: 'Q',
     answer: 'A',
+    skipAll: 'Skip all questions',
+    collapse: 'Collapse',
+    expand: 'Expand',
+    prev: 'Previous question',
+    next: 'Next question',
   },
   results: {
     searchText: 'No results found for',

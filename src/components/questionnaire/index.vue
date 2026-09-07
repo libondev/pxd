@@ -35,6 +35,11 @@ const emits = defineEmits<QuestionnaireEmits>()
 
 const configProvider = useConfigProvider()
 const { value: isCollapsed, toggle: toggleCollapse } = useToggleValue(false)
+const collapseLabel = computed(() =>
+  isCollapsed.value
+    ? configProvider.locale.questionnaire.expand
+    : configProvider.locale.questionnaire.collapse,
+)
 
 const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
 const currentState = shallowRef<QuestionnaireState>('choosing')
@@ -230,6 +235,21 @@ function skipAllQuestions() {
   currentState.value = 'skipped'
 }
 
+function skipCurrentQuestion() {
+  updateCurrentAnswer(() => ({
+    selected: [],
+    freeText: null,
+    skipped: true,
+  }))
+
+  if (currentIndex.value >= props.questions.length - 1) {
+    onSubmitAnswers()
+    return
+  }
+
+  toggleCurrentIndex(1)
+}
+
 function onSubmitAnswers() {
   currentState.value = 'submitted'
   emits('submit', getFinalAnswers())
@@ -248,7 +268,7 @@ watch(
 
 <template>
   <div
-    class="pxd-questionnaire w-full max-w-full rounded-lg border bg-background-100 empty:hidden"
+    class="pxd-questionnaire w-full max-w-full rounded-xl border bg-background-100 empty:hidden"
     v-bind="$attrs"
   >
     <template v-if="currentState === 'choosing' && currentQuestion && currentAnswer">
@@ -258,11 +278,26 @@ watch(
       >
         <span class="font-medium flex-1">{{ currentQuestion.question }}</span>
 
-        <PButton variant="ghost" size="sm" icon @click="skipAllQuestions">
-          <CrossIcon />
+        <PButton
+          variant="ghost"
+          size="sm"
+          icon
+          :title="configProvider.locale.questionnaire.skipAll"
+          :aria-label="configProvider.locale.questionnaire.skipAll"
+          @click="skipAllQuestions"
+        >
+          <CrossIcon aria-hidden="true" />
         </PButton>
-        <PButton variant="ghost" size="sm" icon @click="toggleCollapse()">
-          <ChevronDownIcon />
+        <PButton
+          variant="ghost"
+          size="sm"
+          icon
+          :title="collapseLabel"
+          :aria-label="collapseLabel"
+          :aria-expanded="!isCollapsed"
+          @click="toggleCollapse()"
+        >
+          <ChevronDownIcon aria-hidden="true" />
         </PButton>
       </div>
 
@@ -307,9 +342,12 @@ watch(
               :size="configProvider.size"
               :class="{ 'pointer-events-none opacity-50': !currentIndex }"
               icon
+              :title="configProvider.locale.questionnaire.prev"
+              :aria-label="configProvider.locale.questionnaire.prev"
+              :aria-disabled="!currentIndex"
               @click="toggleCurrentIndex(-1)"
             >
-              <ChevronDownIcon class="rotate-90" />
+              <ChevronDownIcon class="rotate-90" aria-hidden="true" />
             </PButton>
 
             <PButton
@@ -317,9 +355,12 @@ watch(
               :size="configProvider.size"
               :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
               icon
+              :title="configProvider.locale.questionnaire.next"
+              :aria-label="configProvider.locale.questionnaire.next"
+              :aria-disabled="currentIndex >= questions.length - 1"
               @click="toggleCurrentIndex(1)"
             >
-              <ChevronDownIcon class="-rotate-90" />
+              <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
             </PButton>
 
             <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
@@ -327,8 +368,17 @@ watch(
             </span>
           </div>
 
-          <div v-show="showSubmitButton" class="ms-auto">
-            <PButton :size="configProvider.size" variant="primary" @click="onSubmitAnswers">
+          <div class="gap-2 ms-auto flex items-center">
+            <PButton :size="configProvider.size" variant="ghost" @click="skipCurrentQuestion">
+              {{ configProvider.locale.interaction.skip }}
+            </PButton>
+
+            <PButton
+              v-show="showSubmitButton"
+              :size="configProvider.size"
+              variant="primary"
+              @click="onSubmitAnswers"
+            >
               {{ configProvider.locale.interaction.submit }}
             </PButton>
           </div>

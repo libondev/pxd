@@ -162,7 +162,7 @@ For example:
   '按钮流程': {
     selected: ['1. 仅保存文档'],
     freeText: '',
-    skipped: true,
+    skipped: false,
   },
 }
 ```

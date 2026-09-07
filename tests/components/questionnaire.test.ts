@@ -97,6 +97,74 @@ describe('questionnaire', () => {
     wrapper.unmount()
   })
 
+  it('skips the current question and advances to the next one', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [
+          createQuestion(),
+          createQuestion({
+            header: 'mode',
+            question: 'Which mode should run?',
+            options: [{ label: 'Run safely', description: 'Use the safe mode' }],
+          }),
+        ],
+      },
+    })
+
+    const skipButton = wrapper.findAll('button').find((button) => button.text() === 'Skip')
+
+    await skipButton!.trigger('click')
+
+    expect(wrapper.text()).toContain('Which mode should run?')
+    expect(wrapper.emitted('submit')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('submits the last question as skipped', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion({ multiSelect: true })],
+      },
+    })
+
+    const buttons = wrapper.findAll('button')
+    const skipButton = buttons.find((button) => button.text() === 'Skip')
+
+    await skipButton!.trigger('click')
+
+    expect(wrapper.emitted('submit')?.[0]?.[0]).toEqual({
+      flow: {
+        selected: [],
+        freeText: null,
+        skipped: true,
+      },
+    })
+
+    wrapper.unmount()
+  })
+
+  it('labels icon buttons with a title and accessible name', () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+    })
+
+    const skipAll = wrapper.get('button[title="Skip all questions"]')
+    const collapse = wrapper.get('button[title="Collapse"]')
+    const prev = wrapper.get('button[title="Previous question"]')
+    const next = wrapper.get('button[title="Next question"]')
+
+    expect(skipAll.attributes('aria-label')).toBe('Skip all questions')
+    expect(collapse.attributes('aria-label')).toBe('Collapse')
+    expect(collapse.attributes('aria-expanded')).toBe('true')
+    expect(prev.attributes('aria-label')).toBe('Previous question')
+    expect(next.attributes('aria-label')).toBe('Next question')
+
+    wrapper.unmount()
+  })
+
   it('clears answers and enters the skipped state', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
