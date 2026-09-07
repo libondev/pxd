@@ -6,7 +6,7 @@ const cellClasses = createTailwindVariant({
   base: 'pxd-calendar--grid-cell shrink-0 self-focus-ring outline-none motion-safe:transition-colors',
   variants: {
     compact: {
-      true: 'h-8 text-sm flex aspect-square items-center justify-center justify-self-center rounded-md',
+      true: 'min-h-8 sm:text-sm flex aspect-square items-center justify-center justify-self-center rounded-md',
       false: 'min-h-14 p-2 border-r border-b text-left',
     },
     selected: {
