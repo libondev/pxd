@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
         to="/"
         class="px-2.5 gap-2 flex h-full cursor-pointer items-center self-focus-ring outline-none"
       >
-        <span class="xs:block font-bold hidden">PXD</span>
+        <span class="sm:font-bold font-medium">PXD</span>
 
         <PTooltip
           content="Internal development version"
