@@ -12,7 +12,7 @@ const date = ref('2024-08-15')
 </script>
 
 <template>
-  <PDatePicker v-model="date" class="!w-[220px]" clearable />
+  <PDatePicker v-model="date" class="max-w-xs" clearable />
 </template>
 ```
 
@@ -35,13 +35,13 @@ const date2 = ref('2024-08-15')
 
     <PDatePicker
       v-model="date1"
-      class="!w-[220px]"
+      class="max-w-xs"
       label-format="YYYY/MM/DD"
       value-format="timestamp"
     />
     <PDatePicker
       v-model="date2"
-      class="!w-[220px]"
+      class="max-w-xs"
       label-format="YYYY/MM/DD"
       value-format="YYYY-MM-DD"
     />

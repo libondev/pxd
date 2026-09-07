@@ -12,7 +12,7 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" class="!w-[220px]" />
+  <PTimePicker v-model="time" class="max-w-xs" />
 </template>
 ```
 
@@ -26,7 +26,7 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" class="!w-[220px]" clearable />
+  <PTimePicker v-model="time" class="max-w-xs" clearable />
 </template>
 ```
 
@@ -61,7 +61,7 @@ const presets = [
 </script>
 
 <template>
-  <PTimePicker v-model="time" :presets="presets" class="!w-[220px]" />
+  <PTimePicker v-model="time" :presets="presets" class="max-w-xs" />
 </template>
 ```
 
@@ -75,7 +75,7 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" :show-seconds="false" class="!w-[220px]" />
+  <PTimePicker v-model="time" :show-seconds="false" class="max-w-xs" />
 </template>
 ```
 
@@ -94,8 +94,8 @@ const time2 = ref('18:30:25')
     <PText class="mb-2">Value1 formatted: {{ time1 }}</PText>
     <PText class="mb-2">Value2 formatted: {{ time2 }}</PText>
 
-    <PTimePicker v-model="time1" class="!w-[220px]" label-format="HH-mm" value-format="timestamp" />
-    <PTimePicker v-model="time2" class="!w-[220px]" label-format="HH-mm" value-format="HH:mm:00" />
+    <PTimePicker v-model="time1" class="max-w-xs" label-format="HH-mm" value-format="timestamp" />
+    <PTimePicker v-model="time2" class="max-w-xs" label-format="HH-mm" value-format="HH:mm:00" />
   </PStack>
 </template>
 ```
@@ -110,7 +110,7 @@ const time = ref('18:30:00')
 </script>
 
 <template>
-  <PTimePicker v-model="time" disabled class="!w-[220px]" />
+  <PTimePicker v-model="time" disabled class="max-w-xs" />
 </template>
 ```
 
