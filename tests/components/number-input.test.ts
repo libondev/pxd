@@ -64,4 +64,20 @@ describe('number-input', () => {
 
     wrapper.unmount()
   })
+
+  it('should increment the numeric value when thousands formatting is on', async () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        modelValue: 1000,
+        thousands: true,
+      },
+    })
+
+    const buttons = wrapper.findAll('button')
+    await buttons[1].trigger('pointerdown')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1001])
+
+    wrapper.unmount()
+  })
 })

@@ -43,4 +43,48 @@ describe('useRepeatAction', () => {
     expect(typeof stop).toBe('function')
     unmount()
   })
+
+  it('should accelerate from scheduled intervals, not wall-clock drift', () => {
+    const action = vi.fn()
+    const { start, stop, unmount } = useSetupWrapper(() =>
+      useRepeatAction({
+        action,
+        initialInterval: 500,
+        finalInterval: 30,
+        accelerationDuration: 1000,
+      }),
+    )
+
+    start()
+    expect(action).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(500)
+    expect(action).toHaveBeenCalledTimes(2)
+
+    vi.advanceTimersByTime(264)
+    expect(action).toHaveBeenCalledTimes(2)
+
+    vi.advanceTimersByTime(1)
+    expect(action).toHaveBeenCalledTimes(3)
+
+    stop()
+    unmount()
+  })
+
+  it('should stop repeating after stop()', () => {
+    const action = vi.fn()
+    const { start, stop, unmount } = useSetupWrapper(() =>
+      useRepeatAction({
+        action,
+        initialInterval: 100,
+        finalInterval: 50,
+      }),
+    )
+
+    start()
+    stop()
+    vi.advanceTimersByTime(1000)
+    expect(action).toHaveBeenCalledTimes(1)
+    unmount()
+  })
 })

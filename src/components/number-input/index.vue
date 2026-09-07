@@ -6,6 +6,7 @@ import { computed, reactive, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
 import { NOOP } from '../../utils/event.js'
+import { toNumber } from '../../utils/format.js'
 import { isNil, isNumber, isUndefined } from '../../utils/is.js'
 import PInput from '../input/index.vue'
 
@@ -149,7 +150,7 @@ function increaseValue() {
     return
   }
 
-  const numeric = Number(inputValue.value) || 0
+  const numeric = toNumber(inputData.currentValue)
   const value = toPrecision(numeric + props.step)
 
   inputData.currentValue = value
@@ -161,7 +162,7 @@ function decreaseValue() {
     return
   }
 
-  const numeric = Number(inputValue.value) || 0
+  const numeric = toNumber(inputData.currentValue)
   const value = toPrecision(numeric - props.step)
 
   inputData.currentValue = value

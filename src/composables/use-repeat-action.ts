@@ -23,56 +23,71 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   const {
     action,
     disabled,
-    finalInterval = 1000 / 16.6, // 60fps
-    initialInterval = 680,
-    accelerationDuration = 1500,
+    finalInterval = 30,
+    initialInterval = 500,
+    accelerationDuration = 1000,
   } = typeof actionOrOptions === 'function' ? { action: actionOrOptions } : actionOrOptions
 
+  let running = false
   let timer: ReturnType<typeof setTimeout> | null = null
-  let startTime = 0
+  let elapsedTime = 0
+  let nextInterval = initialInterval
 
-  function step() {
-    action()
-
-    const elapsedTime = Date.now() - startTime
-    let nextInterval: number
-
-    if (elapsedTime >= accelerationDuration) {
-      nextInterval = finalInterval
-    } else {
-      const progress = elapsedTime / accelerationDuration
-      nextInterval = initialInterval - (initialInterval - finalInterval) * progress
+  function intervalAt(elapsed: number) {
+    if (elapsed >= accelerationDuration) {
+      return finalInterval
     }
 
+    const progress = elapsed / accelerationDuration
+    return initialInterval - (initialInterval - finalInterval) * progress
+  }
+
+  function step() {
+    if (!running || toValue(disabled)) {
+      stop()
+      return
+    }
+
+    action()
+
+    if (!running) {
+      return
+    }
+
+    elapsedTime += nextInterval
+    nextInterval = intervalAt(elapsedTime)
     timer = setTimeout(step, nextInterval)
   }
 
   function stop() {
+    running = false
+
     if (timer) {
       clearTimeout(timer)
       timer = null
     }
+
+    off(document, 'pointerup', stop)
+    off(document, 'pointercancel', stop)
   }
 
   function start() {
-    if (timer || toValue(disabled)) {
+    if (running || toValue(disabled)) {
       return
     }
 
-    startTime = Date.now()
+    running = true
+    elapsedTime = 0
+    nextInterval = initialInterval
     action()
 
-    timer = setTimeout(step, initialInterval)
+    timer = setTimeout(step, nextInterval)
 
     once(document, 'pointerup', stop)
     once(document, 'pointercancel', stop)
   }
 
-  onScopeDispose(() => {
-    stop()
-    off(document, 'pointerup', stop)
-    off(document, 'pointercancel', stop)
-  })
+  onScopeDispose(stop)
 
   return {
     start,

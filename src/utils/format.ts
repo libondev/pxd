@@ -79,6 +79,18 @@ export function toArray(value: unknown) {
   return [value]
 }
 
+export function toNumber(value: unknown) {
+  if (isNil(value)) {
+    return 0
+  }
+
+  if (typeof value === 'number') {
+    return value
+  }
+
+  return Number(value)
+}
+
 export function getCssUnitValue(value: Nullable<string | number>, fallbackValue?: string): string {
   if (isNil(value) || value === '') {
     return fallbackValue!
