@@ -217,7 +217,7 @@ defineExpose({
   >
     <div
       v-if="$slots.prefix"
-      class="pxd-input--prefix text-sm flex h-full shrink-0 items-center text-foreground-secondary"
+      class="pxd-input--prefix text-sm flex h-full shrink-0 items-center rounded-inherit text-foreground-secondary"
       :class="[
         { 'px-3 rounded-l-inherit border-r border-gray-300 bg-background-200': defaultPrefixStyle },
         prefixClass,
@@ -295,7 +295,7 @@ defineExpose({
 
     <div
       v-if="$slots.suffix"
-      class="pxd-input--suffix text-sm flex h-full shrink-0 items-center text-foreground-secondary"
+      class="pxd-input--suffix text-sm flex h-full shrink-0 items-center rounded-inherit text-foreground-secondary"
       :class="[
         { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': defaultSuffixStyle },
         suffixClass,

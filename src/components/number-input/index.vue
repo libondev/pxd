@@ -264,7 +264,7 @@ watch(
       <button
         v-if="controls"
         tabindex="-1"
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-l-inherit border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
         @pointerdown="startDecrease"
         @pointercancel="stopDecrease"
@@ -285,7 +285,7 @@ watch(
       <button
         v-if="controls"
         tabindex="-1"
-        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-r-inherit border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"
         @pointerdown="startIncrease"
         @pointercancel="stopIncrease"
