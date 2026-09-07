@@ -3,7 +3,7 @@ import type { CalendarDay } from '../calendar/types'
 import { createTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 const cellClasses = createTailwindVariant({
-  base: 'pxd-calendar--grid-cell self-focus-ring outline-none motion-safe:transition-colors',
+  base: 'pxd-calendar--grid-cell shrink-0 self-focus-ring outline-none motion-safe:transition-colors',
   variants: {
     compact: {
       true: 'h-8 text-sm flex aspect-square items-center justify-center justify-self-center rounded-md',

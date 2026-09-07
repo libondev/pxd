@@ -280,7 +280,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
     <template #content>
       <PCalendar
-        class="p-2"
+        class="sm:p-2 p-4"
         compact
         :value-format="valueFormat"
         :model-value="calendarModelValue"
