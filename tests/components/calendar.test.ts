@@ -222,7 +222,7 @@ describe('calendar', () => {
     const firstCellClasses = cells[0]!.classes()
 
     expect(cells).toHaveLength(42)
-    expect(firstCellClasses).toEqual(expect.arrayContaining(['h-8', 'justify-self-center']))
+    expect(firstCellClasses).toEqual(expect.arrayContaining(['min-h-8', 'justify-self-center']))
     expect(firstCellClasses).not.toEqual(expect.arrayContaining(['border-r', 'min-h-14']))
 
     const buttons = wrapper.findAll('button')

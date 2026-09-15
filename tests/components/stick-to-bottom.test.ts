@@ -130,7 +130,7 @@ describe('PStickToBottom', () => {
   it('applies default props', () => {
     const wrapper = mount(StickToBottom)
 
-    expect(wrapper.props('threshold')).toBe(8)
+    expect(wrapper.props('threshold')).toBe(16)
     expect(wrapper.props('enabled')).toBe(true)
   })
 })

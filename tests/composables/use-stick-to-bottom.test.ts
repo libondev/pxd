@@ -148,13 +148,13 @@ describe('PStickToBottom', () => {
     expect(content.attributes('style')).toContain('height: 120px')
   })
 
-  it('exposes containerEl for external scroll consumers', () => {
+  it('exposes containerRef for external scroll consumers', () => {
     const wrapper = mount(StickToBottom, {
       slots: { default: '<div>content</div>' },
     })
 
-    const vm = wrapper.vm as unknown as { containerEl?: HTMLElement }
-    expect(vm.containerEl).toBe(wrapper.find('.pxd-stick-to-bottom').element)
+    const vm = wrapper.vm as unknown as { containerRef?: HTMLElement }
+    expect(vm.containerRef).toBe(wrapper.find('.pxd-stick-to-bottom').element)
   })
 
   it('renders action slot with stick-to-bottom scope', async () => {
