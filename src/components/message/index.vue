@@ -282,7 +282,7 @@ defineExpose({
   }
 
   .pxd-message--item {
-    --message-item-scale: var(--message-item-index) * 0.05 + 1;
+    --message-item-scale: calc(1 - var(--message-item-index) * 0.05);
     --message-item-transition: transform, opacity, height;
 
     &::after {
@@ -312,7 +312,7 @@ defineExpose({
     .pxd-message--item {
       --message-item-transform: translateZ(0)
         translateY(calc(var(--item-offset) * var(--message-item-index)))
-        scale(calc(-1 * var(--message-item-scale)));
+        scale(var(--message-item-scale));
       position: absolute;
 
       &[data-front='false'] {
