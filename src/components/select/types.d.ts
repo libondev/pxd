@@ -3,14 +3,15 @@ import type { ButtonVariant } from '../button/types'
 import type { ListModelValue, ListOption, ListOptions } from '../list/types'
 
 export interface SelectProps {
-  modelValue?: ListModelValue
-  variant?: ButtonVariant
   size?: ComponentSize
   shape?: ComponentShape
   error?: boolean | string
+  variant?: ButtonVariant
   options?: ListOptions
   disabled?: boolean
   multiple?: boolean
+  modelValue?: ListModelValue
+  suffixIcon?: boolean
   placeholder?: string
   labelFormat?: (items: ListOptions) => string
   closeOnPressEscape?: boolean

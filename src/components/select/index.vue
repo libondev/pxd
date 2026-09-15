@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
+import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useSelectedListItems } from '../../composables/_internal/use-selected-list-item.js'
@@ -17,7 +17,9 @@ defineOptions({
   },
 })
 
-const props = defineProps<SelectProps>()
+const props = withDefaults(defineProps<SelectProps>(), {
+  suffixIcon: true,
+})
 const emits = defineEmits<SelectEmits>()
 
 const modelValue = useModelValue(props, emits)
@@ -46,18 +48,27 @@ const translatedLabel = computed(() => {
     v-bind="$attrs"
     :close-on-press-escape="closeOnPressEscape"
   >
-    <PButton
-      class="px-1.5"
-      align="left"
-      full-width
-      :class="{ 'text-gray-600': !translatedLabel }"
-      :variant="variant"
-      :shape="shape"
-      :size="computedSize"
-      :disabled="disabled"
-    >
-      {{ translatedLabel || placeholder }}
-    </PButton>
+    <template #default="{ popoverVisible }">
+      <PButton
+        class="px-1.5 justify-between"
+        align="left"
+        full-width
+        :class="{ 'text-gray-600': !translatedLabel }"
+        :variant="variant"
+        :shape="shape"
+        :size="computedSize"
+        :disabled="disabled"
+      >
+        {{ translatedLabel || placeholder }}
+
+        <template v-if="suffixIcon" #suffix>
+          <ChevronDownIcon
+            class="text-sm mr-1.5 text-foreground-secondary motion-safe:transition-transform"
+            :class="{ 'rotate-180': popoverVisible }"
+          />
+        </template>
+      </PButton>
+    </template>
 
     <template v-if="$slots.item" #item="scope">
       <slot name="item" v-bind="scope" />

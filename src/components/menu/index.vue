@@ -78,7 +78,7 @@ function onOptionSelect(item: ListOptionSelected) {
     v-bind="$attrs"
     @wrapper-keydown="onKeydown"
   >
-    <slot />
+    <slot :popover-visible="popoverVisible" />
 
     <template #content>
       <PList
