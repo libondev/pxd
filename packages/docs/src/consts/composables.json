@@ -60,6 +60,10 @@
     "name": "use-scrollspy"
   },
   {
+    "camelized": "Use Stick To Bottom",
+    "name": "use-stick-to-bottom"
+  },
+  {
     "camelized": "Use Toggle Value",
     "name": "use-toggle-value"
   },

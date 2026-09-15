@@ -94,3 +94,9 @@ Known issues and lessons learned during development.
 - **Symptom**: Multi-select `v-model` starts as `[false, selectedValue]` instead of `[selectedValue]` when the parent omitted `modelValue` or passed `undefined`.
 - **Cause**: Vue infers a `Boolean` runtime prop whenever the TypeScript union contains `boolean`. An omitted Boolean prop is cast to `false`, and `toArray(false)` becomes `[false]`.
 - **Fix**: Keep `modelValue` typed as `string | number | (string | number)[] | null` (no `boolean`) unless a real boolean value is required. When aggregating multiple values, treat only `string`/`number` scalars and arrays as selections—not `false`.
+
+### happy-dom does not fire Mutation/ResizeObserver for mocked scroll metrics
+
+- **Symptom**: Composable tests that change only `scrollHeight`/`scrollTop` via `Object.defineProperties` never trigger auto-stick, even after `appendChild`.
+- **Cause**: happy-dom's MutationObserver/ResizeObserver either do not deliver callbacks for these synthetic mutations, or cannot re-measure properties that were replaced with getters.
+- **Fix**: Keep observer wiring for production, but assert the follow path through a deterministic public API (`stickIfNeeded` / `forceStickToBottom`). Drive scroll state with a local `scrollTo` mock + synthetic `scroll` events instead of relying on observers in unit tests.

@@ -320,6 +320,10 @@
     "name": "steps"
   },
   {
+    "camelized": "Stick To Bottom",
+    "name": "stick-to-bottom"
+  },
+  {
     "camelized": "Swipe Cell",
     "name": "swipe-cell"
   },
