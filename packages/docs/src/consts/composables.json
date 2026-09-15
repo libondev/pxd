@@ -1,5 +1,9 @@
 [
   {
+    "camelized": "Use Backoff Retry",
+    "name": "use-backoff-retry"
+  },
+  {
     "camelized": "Use Browser Observer",
     "name": "use-browser-observer"
   },
