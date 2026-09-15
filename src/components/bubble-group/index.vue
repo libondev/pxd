@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { VirtualListOptions } from '../../composables/use-virtual-list'
 import type { BubbleGroupProps } from './types'
-import { nextTick, onBeforeUnmount, onMounted, onUpdated, shallowRef, watch } from 'vue'
+import { nextTick, onMounted, shallowRef, watch } from 'vue'
+import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
-import { on, off } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
 import PBacktop from '../backtop/index.vue'
 
 defineOptions({
@@ -14,86 +13,33 @@ defineOptions({
 
 const props = defineProps<BubbleGroupProps>()
 
-const isAtBottom = shallowRef(true)
 const containerRef = shallowRef<HTMLElement>()
-
-const BOTTOM_THRESHOLD = 8
+const contentRef = shallowRef<HTMLElement>()
 
 const { totalSize, virtualItems, measureElement } = useVirtualList(
   containerRef,
   props as unknown as VirtualListOptions,
 )
 
-function updateIsAtBottom() {
-  const el = containerRef.value
-
-  if (!el) {
-    return
-  }
-
-  const distanceToBottom = el.scrollHeight - (el.scrollTop + el.clientHeight)
-  isAtBottom.value = distanceToBottom <= BOTTOM_THRESHOLD
-}
-
-async function scrollToBottom() {
-  const el = containerRef.value
-
-  if (!el) {
-    return
-  }
-
-  if (!isAtBottom.value) {
-    return
-  }
-
-  await nextTick()
-
-  el.scrollTo(0, el.scrollHeight)
-}
+const { stickIfNeeded, forceStickToBottom } = useStickToBottom(containerRef, contentRef, {
+  threshold: 8,
+})
 
 watch(
   () => props.listData?.length,
   (newLen, oldLen) => {
-    if (!props.listData || !newLen || !oldLen) {
+    if (!props.listData || !newLen || !oldLen || newLen <= oldLen) {
       return
     }
 
-    if (newLen > oldLen && isAtBottom.value) {
-      scrollToBottom()
-    }
+    void nextTick(() => {
+      stickIfNeeded()
+    })
   },
 )
 
 onMounted(() => {
-  if (isServer()) {
-    return
-  }
-
-  if (!containerRef.value) {
-    return
-  }
-
-  on(containerRef.value, 'scroll', updateIsAtBottom, { passive: true })
-
-  scrollToBottom()
-})
-
-onUpdated(() => {
-  if (isServer()) {
-    return
-  }
-
-  if (!props.listData) {
-    scrollToBottom()
-  }
-})
-
-onBeforeUnmount(() => {
-  if (!containerRef.value) {
-    return
-  }
-
-  off(containerRef.value, 'scroll', updateIsAtBottom, { passive: true })
+  forceStickToBottom()
 })
 </script>
 
@@ -105,6 +51,7 @@ onBeforeUnmount(() => {
   >
     <template v-if="listData">
       <div
+        ref="contentRef"
         class="pxd-bubble-group--content relative w-full content-visibility-auto"
         :style="{ height: `${totalSize}px`, containIntrinsicSize: `auto ${totalSize}px` }"
       >
