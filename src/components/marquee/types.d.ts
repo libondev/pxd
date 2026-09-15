@@ -9,6 +9,7 @@ export interface MarqueeProps {
   speed?: number | string
   scrollable?: boolean
   wrapable?: boolean
+  pauseOnHover?: boolean
 }
 
 export interface MarqueeEmits {

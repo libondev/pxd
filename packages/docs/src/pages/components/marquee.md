@@ -121,6 +121,23 @@ Control the scrolling speed with `speed` (px/s) and the initial delay with `dela
 </template>
 ```
 
+## Pause on Hover
+
+Hovering the marquee pauses the scrolling animation. Set `pauseOnHover` to `false` to keep scrolling while hovered.
+
+```vue demo
+<template>
+  <PStack direction="vertical">
+    <PMarquee text="Hover me to pause the scrolling animation, move away to resume." />
+
+    <PMarquee
+      text="This one keeps scrolling even when you hover over it."
+      :pause-on-hover="false"
+    />
+  </PStack>
+</template>
+```
+
 ## Disable Scrolling
 
 Set `scrollable` to `false` to disable the scrolling animation.
@@ -190,6 +207,7 @@ const marqueeRef = shallowRef()
 | speed | `number \| string` | `60` | - |
 | scrollable | `boolean` | `true` | - |
 | wrapable | `boolean` | `false` | - |
+| pause-on-hover | `boolean` | `true` | - |
 
 ## Slots
 
