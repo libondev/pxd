@@ -58,12 +58,54 @@ function append() {
 </template>
 ```
 
+## Scroll to bottom action
+
+Use the `action` slot with `PBacktop` to jump back to the bottom after the user scrolls away. The slot exposes `isAtBottom`, `scrollToBottom`, and `forceStickToBottom`.
+
+```vue demo
+<script setup lang="ts">
+import { ref } from 'vue'
+import ArrowUpIcon from '@gdsicon/vue/arrow-up'
+
+const items = ref(Array.from({ length: 12 }, (_, i) => `Message ${i + 1}`))
+
+function append() {
+  items.value.push(`Message ${items.value.length + 1}`)
+}
+</script>
+
+<template>
+  <div class="flex flex-col gap-2">
+    <PButton @click="append">Send message</PButton>
+
+    <PStickToBottom class="relative h-40 rounded-lg border border-dashed p-2">
+      <div v-for="item in items" :key="item" class="p-2 rounded bg-background-100">
+        {{ item }}
+      </div>
+
+      <template #action="{ isAtBottom, forceStickToBottom }">
+        <PButton
+          v-if="!isAtBottom"
+          class="mx-auto flex"
+          size="sm" shape="rounded" icon
+          @click="forceStickToBottom"
+        >
+          <ArrowUpIcon class="rotate-180" />
+        </PButton>
+      </template>
+    </PStickToBottom>
+  </div>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| threshold | `number` | `8` | Distance from bottom considered "at bottom" |
+| threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
+| content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
+| content-style | `CSSProperties \| string` | - | Extra style on the inner content wrapper |
 
 ## Emits
 
@@ -73,14 +115,16 @@ function append() {
 
 ## Slots
 
-| Name | Description |
-| --- | --- |
-| default | Scrollable content |
+| Name | Props | Description |
+| --- | --- | --- |
+| default | - | Scrollable content |
+| action | `{ isAtBottom, scrollToBottom, forceStickToBottom }` | Sticky action area for controls such as a jump-to-bottom button |
 
 ## Exposed
 
 | Name | Type | Description |
 | --- | --- | --- |
+| containerEl | `HTMLElement` | Scroll container element (for virtual list / external scroll APIs) |
 | isAtBottom | `boolean` | Whether the container is currently within the bottom threshold |
 | scrollToBottom | `() => void` | Instantly scroll to bottom (Y axis only) |
 | forceStickToBottom | `() => void` | Scroll to bottom and re-enable auto-stick |

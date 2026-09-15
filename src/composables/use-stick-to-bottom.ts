@@ -10,7 +10,7 @@ import { useMutationObserver, useResizeObserver } from './use-browser-observer.j
 export interface UseStickToBottomOptions {
   /**
    * Pixel distance from the bottom considered "at bottom".
-   * @default 8
+   * @default 16
    */
   threshold?: MaybeRefOrGetter<number>
   /**
@@ -43,7 +43,7 @@ export function useStickToBottom(
   content?: MaybeRefOrGetter<Nullable<HTMLElement>>,
   options: UseStickToBottomOptions = {},
 ): UseStickToBottomReturn {
-  const { threshold = 8, enabled = true } = options
+  const { threshold = 16, enabled = true } = options
 
   const isAtBottom = shallowRef(true)
 

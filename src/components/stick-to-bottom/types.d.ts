@@ -1,14 +1,11 @@
+import type { ComponentClass } from '../../types/shared'
+import type { CSSProperties } from 'vue'
+
 export interface StickToBottomProps {
-  /**
-   * Pixel distance from the bottom considered "at bottom".
-   * @default 8
-   */
-  threshold?: number
-  /**
-   * Whether content updates should auto-scroll while at bottom.
-   * @default true
-   */
   enabled?: boolean
+  threshold?: number
+  contentClass?: ComponentClass
+  contentStyle?: CSSProperties | string
 }
 
 export interface StickToBottomEmits {

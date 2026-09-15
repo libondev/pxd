@@ -9,8 +9,8 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<StickToBottomProps>(), {
-  threshold: 8,
   enabled: true,
+  threshold: 16,
 })
 
 const emits = defineEmits<StickToBottomEmits>()
@@ -32,6 +32,8 @@ watch(isAtBottom, (value) => {
 })
 
 defineExpose({
+  containerRef,
+  contentRef,
   isAtBottom,
   scrollToBottom,
   forceStickToBottom,
@@ -41,9 +43,27 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-stick-to-bottom min-h-0 overflow-y-auto" v-bind="$attrs">
-    <div ref="contentRef" class="pxd-stick-to-bottom--content">
+  <div
+    ref="containerRef"
+    class="pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto"
+    v-bind="$attrs"
+  >
+    <div
+      ref="contentRef"
+      class="pxd-stick-to-bottom--content"
+      :class="contentClass"
+      :style="contentStyle"
+    >
       <slot />
+    </div>
+
+    <div v-if="$slots.action" class="pxd-stick-to-bottom--action bottom-0 sticky w-full">
+      <slot
+        name="action"
+        :is-at-bottom="isAtBottom"
+        :scroll-to-bottom="scrollToBottom"
+        :force-stick-to-bottom="forceStickToBottom"
+      />
     </div>
   </div>
 </template>
