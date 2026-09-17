@@ -66,6 +66,35 @@ function labelFormatter(valueList) {
 </template>
 ```
 
+## Custom
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+
+const value = ref('')
+
+const options = [
+  { label: 'One', value: 1 },
+  { label: 'Two', value: 2 },
+  { label: 'Three', value: 3 },
+]
+</script>
+
+<template>
+  <PSelect v-model="value" class="w-full" :suffix-icon="false" :options="options" placeholder="Please select">
+    <template #prefix>
+      <span class="inline-flex ms-1.5 size-3 bg-primary rounded-full"></span>
+    </template>
+
+    <template #default="{ label }">
+      {{ label }} - {{ value }}
+    </template>
+  </PSelect>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |

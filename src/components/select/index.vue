@@ -59,7 +59,16 @@ const translatedLabel = computed(() => {
         :size="computedSize"
         :disabled="disabled"
       >
-        {{ translatedLabel || placeholder }}
+        <template #prefix>
+          <slot name="prefix" />
+        </template>
+
+        <template v-if="translatedLabel">
+          <slot :label="translatedLabel">{{ translatedLabel }}</slot>
+        </template>
+        <template v-else>
+          {{ placeholder }}
+        </template>
 
         <template v-if="suffixIcon" #suffix>
           <ChevronDownIcon
