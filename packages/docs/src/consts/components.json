@@ -244,8 +244,8 @@
     "name": "radio"
   },
   {
-    "camelized": "Rate",
-    "name": "rate"
+    "camelized": "Rating",
+    "name": "rating"
   },
   {
     "camelized": "Reasoning",

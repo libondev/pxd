@@ -79,7 +79,7 @@ declare module 'vue' {
     PRadialBurst: (typeof import('pxd/components/radial-burst'))['default']
     PRadio: (typeof import('pxd/components/radio'))['default']
     PRadioGroup: (typeof import('pxd/components/radio-group'))['default']
-    PRate: (typeof import('pxd/components/rate'))['default']
+    PRating: (typeof import('pxd/components/rating'))['default']
     PReasoning: (typeof import('pxd/components/reasoning'))['default']
     PResizable: (typeof import('pxd/components/resizable'))['default']
     PResizableHandle: (typeof import('pxd/components/resizable-handle'))['default']

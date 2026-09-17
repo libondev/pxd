@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
-import Rate from '../../src/components/rate/index.vue'
+import Rating from '../../src/components/rating/index.vue'
 
-function mountRate(props = {}) {
-  const wrapper = mount(Rate, { props })
+function mountRating(props = {}) {
+  const wrapper = mount(Rating, { props })
   vi.spyOn(wrapper.element, 'getBoundingClientRect').mockReturnValue({
     width: 100,
     height: 20,
@@ -28,30 +28,30 @@ function pointerEvent(type: string, clientX: number, pointerId = 1, pointerType 
   })
 }
 
-describe('rate', () => {
+describe('rating', () => {
   it('renders properly', () => {
-    const wrapper = mount(Rate)
-    expect(wrapper.find('.pxd-rate').exists()).toBe(true)
-    expect(wrapper.findAll('.pxd-rate--item').length).toBe(5)
+    const wrapper = mount(Rating)
+    expect(wrapper.find('.pxd-rating').exists()).toBe(true)
+    expect(wrapper.findAll('.pxd-rating--item').length).toBe(5)
     wrapper.unmount()
   })
 
   it('renders custom count', () => {
-    const wrapper = mount(Rate, {
+    const wrapper = mount(Rating, {
       props: { count: 10 },
     })
-    expect(wrapper.findAll('.pxd-rate--item').length).toBe(10)
+    expect(wrapper.findAll('.pxd-rating--item').length).toBe(10)
     wrapper.unmount()
   })
 
   it('should default modelValue to 0', () => {
-    const wrapper = mount(Rate)
+    const wrapper = mount(Rating)
     expect(wrapper.props('modelValue')).toBe(0)
     wrapper.unmount()
   })
 
   it('should emit update:modelValue on pointer tap', async () => {
-    const wrapper = mountRate()
+    const wrapper = mountRating()
 
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
@@ -62,7 +62,7 @@ describe('rate', () => {
   })
 
   it('should update value from document pointer drag', async () => {
-    const wrapper = mountRate()
+    const wrapper = mountRating()
 
     await wrapper.trigger('pointerdown', { clientX: 10, pointerId: 1, pointerType: 'touch' })
     document.dispatchEvent(pointerEvent('pointermove', 80, 1, 'touch'))
@@ -73,7 +73,7 @@ describe('rate', () => {
   })
 
   it('should support half value from pointer position', async () => {
-    const wrapper = mountRate({ allowHalf: true })
+    const wrapper = mountRating({ allowHalf: true })
 
     await wrapper.trigger('pointerdown', { clientX: 10, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 10))
@@ -83,7 +83,7 @@ describe('rate', () => {
   })
 
   it('should clear value when clearable and committing same value', async () => {
-    const wrapper = mountRate({ modelValue: 3, clearable: true })
+    const wrapper = mountRating({ modelValue: 3, clearable: true })
 
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
@@ -93,7 +93,7 @@ describe('rate', () => {
   })
 
   it('should not emit when pointer interaction is canceled', async () => {
-    const wrapper = mountRate()
+    const wrapper = mountRating()
 
     await wrapper.trigger('pointerdown', { clientX: 10, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointermove', 80))
@@ -104,7 +104,7 @@ describe('rate', () => {
   })
 
   it('should not emit when readonly', async () => {
-    const wrapper = mountRate({ readonly: true })
+    const wrapper = mountRating({ readonly: true })
 
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
@@ -114,7 +114,7 @@ describe('rate', () => {
   })
 
   it('should not emit when disabled', async () => {
-    const wrapper = mountRate({ disabled: true })
+    const wrapper = mountRating({ disabled: true })
 
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
@@ -124,10 +124,10 @@ describe('rate', () => {
   })
 
   it('should display filled stars based on value', () => {
-    const wrapper = mount(Rate, {
+    const wrapper = mount(Rating, {
       props: { modelValue: 3 },
     })
-    const filledOverlays = wrapper.findAll('.pxd-rate--star-filled')
+    const filledOverlays = wrapper.findAll('.pxd-rating--star-filled')
     expect(filledOverlays[0].attributes('style')).toContain('clip-path: inset(0 0% 0 0)')
     expect(filledOverlays[1].attributes('style')).toContain('clip-path: inset(0 0% 0 0)')
     expect(filledOverlays[2].attributes('style')).toContain('clip-path: inset(0 0% 0 0)')
@@ -137,7 +137,7 @@ describe('rate', () => {
   })
 
   it('should apply size class', () => {
-    const wrapper = mount(Rate, {
+    const wrapper = mount(Rating, {
       props: { size: 'lg' },
     })
     expect(wrapper.classes()).toContain('text-xl')

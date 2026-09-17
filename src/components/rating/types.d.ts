@@ -1,6 +1,6 @@
 import type { ComponentSize } from '../../types/shared'
 
-export interface RateProps {
+export interface RatingProps {
   modelValue?: number
   count?: number
   size?: ComponentSize
@@ -12,7 +12,7 @@ export interface RateProps {
   clearable?: boolean
 }
 
-export interface RateEmits {
-  change: [NonNullable<RateProps['modelValue']>]
-  'update:modelValue': [NonNullable<RateProps['modelValue']>]
+export interface RatingEmits {
+  change: [NonNullable<RatingProps['modelValue']>]
+  'update:modelValue': [NonNullable<RatingProps['modelValue']>]
 }

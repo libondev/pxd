@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { RateEmits, RateProps } from './types'
+import type { RatingEmits, RatingProps } from './types'
 import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
@@ -9,7 +9,7 @@ import { useConfigProvider } from '../../contexts/config-provider'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
 
 defineOptions({
-  name: 'PRate',
+  name: 'PRating',
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
@@ -17,7 +17,7 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<RateProps>(), {
+const props = withDefaults(defineProps<RatingProps>(), {
   count: 5,
   modelValue: 0,
   allowHalf: false,
@@ -26,14 +26,14 @@ const props = withDefaults(defineProps<RateProps>(), {
   clearable: false,
 })
 
-const emits = defineEmits<RateEmits>()
+const emits = defineEmits<RatingEmits>()
 
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-rate inline-flex cursor-pointer touch-none items-center rounded-sm self-focus-ring select-none',
+    base: 'pxd-rating inline-flex cursor-pointer touch-none items-center rounded-sm self-focus-ring select-none',
     variants: {
       size: {
         sm: 'text-sm',
@@ -61,13 +61,13 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-const rateRef = shallowRef<HTMLElement>()
+const ratingRef = shallowRef<HTMLElement>()
 const hoverValue = shallowRef<number | null>(null)
 const dragValue = shallowRef<number | null>(null)
 const isDragging = shallowRef(false)
 
 let activePointerId: number | null = null
-let rateRect: DOMRect | null = null
+let ratingRect: DOMRect | null = null
 let lastClientX: number | null = null
 
 const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
@@ -90,11 +90,11 @@ const fills = computed(() => {
 })
 
 function getValueFromPosition(clientX: number): number {
-  if (!rateRef.value) {
+  if (!ratingRef.value) {
     return 0
   }
 
-  const rect = rateRect ?? rateRef.value.getBoundingClientRect()
+  const rect = ratingRect ?? ratingRef.value.getBoundingClientRect()
   if (!rect.width) {
     return 0
   }
@@ -117,7 +117,7 @@ function commitValue(value: number) {
 function resetDragging() {
   isDragging.value = false
   activePointerId = null
-  rateRect = null
+  ratingRect = null
   lastClientX = null
   dragValue.value = null
 
@@ -139,13 +139,13 @@ const scheduleDragUpdate = throttleByRaf(() => {
 })
 
 function handlePointerDown(event: PointerEvent) {
-  if (props.readonly || props.disabled || !rateRef.value) {
+  if (props.readonly || props.disabled || !ratingRef.value) {
     return
   }
 
   isDragging.value = true
   activePointerId = event.pointerId
-  rateRect = rateRef.value.getBoundingClientRect()
+  ratingRect = ratingRef.value.getBoundingClientRect()
   lastClientX = event.clientX
   hoverValue.value = null
   dragValue.value = getValueFromPosition(event.clientX)
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    ref="rateRef"
+    ref="ratingRef"
     role="radiogroup"
     tabindex="0"
     :class="classes"
@@ -232,7 +232,7 @@ onBeforeUnmount(() => {
     <span
       v-for="i in starCount"
       :key="i"
-      class="pxd-rate--item relative inline-flex"
+      class="pxd-rating--item relative inline-flex"
       role="radio"
       :aria-checked="i <= modelValue"
       :aria-posinset="i"
@@ -240,14 +240,14 @@ onBeforeUnmount(() => {
       tabindex="-1"
     >
       <span
-        class="pxd-rate--star-empty inline-flex text-gray-400 text-trim-both"
+        class="pxd-rating--star-empty inline-flex text-gray-400 text-trim-both"
         :style="{ color: voidColor }"
       >
         <StarIcon />
       </span>
 
       <span
-        class="pxd-rate--star-filled inset-0 absolute inline-flex text-trim-both"
+        class="pxd-rating--star-filled inset-0 absolute inline-flex text-trim-both"
         :class="disabled ? 'text-gray-500' : 'text-primary'"
         :style="{
           clipPath: `inset(0 ${(1 - fills[i - 1]) * 100}% 0 0)`,

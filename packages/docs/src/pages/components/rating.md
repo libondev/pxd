@@ -1,4 +1,4 @@
-# Rate
+# Rating
 
 Rating component for user feedback
 
@@ -12,7 +12,7 @@ const value = ref(0)
 </script>
 
 <template>
-  <PRate v-model="value" />
+  <PRating v-model="value" />
 </template>
 ```
 
@@ -27,9 +27,9 @@ const value = ref(0)
 
 <template>
   <PStack align="center">
-    <PRate v-model="value" size="sm" />
-    <PRate v-model="value" />
-    <PRate v-model="value" size="lg" />
+    <PRating v-model="value" size="sm" />
+    <PRating v-model="value" />
+    <PRating v-model="value" size="lg" />
   </PStack>
 </template>
 ```
@@ -46,7 +46,7 @@ const value = ref(0)
 </script>
 
 <template>
-  <PRate v-model="value" allow-half />
+  <PRating v-model="value" allow-half />
 </template>
 ```
 
@@ -62,7 +62,7 @@ const value = ref(3)
 </script>
 
 <template>
-  <PRate v-model="value" clearable />
+  <PRating v-model="value" clearable />
 </template>
 ```
 
@@ -70,7 +70,7 @@ const value = ref(3)
 
 ```vue demo
 <template>
-  <PRate :model-value="3" readonly />
+  <PRating :model-value="3" readonly />
 </template>
 ```
 
@@ -78,7 +78,7 @@ const value = ref(3)
 
 ```vue demo
 <template>
-  <PRate :model-value="3" disabled />
+  <PRating :model-value="3" disabled />
 </template>
 ```
 
@@ -93,8 +93,8 @@ const value = ref(0)
 
 <template>
   <PStack direction="vertical">
-    <PRate v-model="value" color="var(--color-amber-600)" />
-    <PRate v-model="value" color="var(--color-red-700)" void-color="var(--color-gray-alpha-200)" />
+    <PRating v-model="value" color="var(--color-amber-600)" />
+    <PRating v-model="value" color="var(--color-red-700)" void-color="var(--color-gray-alpha-200)" />
   </PStack>
 </template>
 ```
@@ -109,7 +109,7 @@ const value = ref(0)
 </script>
 
 <template>
-  <PRate v-model="value" :count="10" />
+  <PRating v-model="value" :count="10" />
 </template>
 ```
 
