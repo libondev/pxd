@@ -59,7 +59,7 @@ const translatedLabel = computed(() => {
         :size="computedSize"
         :disabled="disabled"
       >
-        <template #prefix>
+        <template v-if="$slots.prefix" #prefix>
           <slot name="prefix" />
         </template>
 
