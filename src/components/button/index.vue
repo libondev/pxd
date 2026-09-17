@@ -49,11 +49,6 @@ const { attrs, classes } = useTailwindVariant(
         rounded: 'rounded-full',
         default: '',
       },
-      align: {
-        left: 'justify-start',
-        center: 'justify-center',
-        right: 'justify-end',
-      },
       variant: {
         simple: '',
         link: 'font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity',
@@ -89,14 +84,12 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => {
-      const { size, shape, align, fullWidth, icon } = props
-      const internalAlign = icon ? 'center' : align
+      const { size, shape, fullWidth, icon } = props
 
       return {
         icon,
         size: size || buttonGroupContext?.props.size || configProvider.size,
         shape: buttonGroupContext ? 'default' : shape,
-        align: internalAlign || buttonGroupContext?.props.align || 'center',
         variant: computedVariant.value,
         fullWidth,
         disabled: isDisabled.value,
@@ -104,25 +97,31 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
 )
+
+const btnContentClasses = computed(() => {
+  const { icon, align } = props
+  const internalAlign = icon ? 'center' : align
+  const alignClasses = {
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
+  }[internalAlign || buttonGroupContext?.props.align || 'center']
+
+  return {
+    'px-1.5': !icon,
+    [alignClasses]: true,
+  }
+})
 </script>
 
 <template>
-  <Component
-    :is="as"
-    tabindex="0"
-    aria-label="Action"
-    :aria-busy="loading"
-    :aria-disabled="isDisabled"
-    :class="classes"
-    :data-variant="computedVariant"
-    :disabled="isDisabled"
-    v-bind="attrs"
-  >
+  <Component :is="as" tabindex="0" aria-label="Action" :aria-busy="loading" :aria-disabled="isDisabled" :class="classes"
+    :data-variant="computedVariant" :disabled="isDisabled" v-bind="attrs">
     <PSpinner v-if="loading" />
 
     <slot name="prefix" />
 
-    <span class="inline-flex flex-1 shrink-0 items-center truncate" :class="{ 'px-1.5': !icon }">
+    <span class="inline-flex flex-1 shrink-0 items-center truncate" :class="btnContentClasses">
       <slot />
     </span>
 
