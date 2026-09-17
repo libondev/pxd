@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   hideDelay: 0,
   interactive: true,
   autoPosition: true,
+  destroyDelay: 3000,
   fillTriggerWidth: true,
   toggleOnTrigger: true,
   closeOnInvisible: true,
@@ -99,6 +100,7 @@ const {
   show: showPopover,
   hide: hidePopover,
 } = useDelayDestroy(props.modelValue, {
+  delay: () => props.destroyDelay,
   visibleChange(v) {
     if (!allowOutsideClick.value) {
       return

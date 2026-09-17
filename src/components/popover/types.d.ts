@@ -20,6 +20,7 @@ export interface PopoverProps {
   modelValue?: boolean
   interactive?: boolean
   autoPosition?: boolean
+  destroyDelay?: number
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string

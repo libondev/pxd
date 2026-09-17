@@ -381,6 +381,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | - |
 | show-delay | `number` | `0` | - |
 | hide-delay | `number` | `0` | - |
+| destroy-delay | `number` | `3000` | Delay before unmounting content after hide. |
 | show-arrow | `boolean` | - | - |
 | arrow-color | `string` | - | - |
 | model-value | `boolean` | - | - |

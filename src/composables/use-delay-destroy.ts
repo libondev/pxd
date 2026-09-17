@@ -5,7 +5,7 @@ import { doubleRaf, caf } from '../utils/event'
 import { toValue } from '../utils/helper'
 
 interface Options {
-  delay?: number
+  delay?: MaybeRefOrGetter<number>
   renderChange?: (v: boolean) => void
   visibleChange?: (v: boolean) => void
 }
@@ -21,13 +21,17 @@ export function useDelayDestroy(
   value: MaybeRefOrGetter<Nullable<boolean>>,
   options: Options = {},
 ): Results {
-  const { delay = 1000, renderChange, visibleChange } = options
+  const { delay, renderChange, visibleChange } = options
 
   const render = shallowRef(toValue(value) as boolean)
   const visible = shallowRef(toValue(value) as boolean)
 
   let destroyTimeoutId: ReturnType<typeof setTimeout>
   let visibleRafId = 0
+
+  function getDelay() {
+    return toValue(delay) ?? 1000
+  }
 
   async function show() {
     return new Promise<boolean>((resolve) => {
@@ -68,7 +72,7 @@ export function useDelayDestroy(
           render.value = false
           resolve(render.value)
           renderChange?.(render.value)
-        }, delay)
+        }, getDelay())
       }
     })
   }
