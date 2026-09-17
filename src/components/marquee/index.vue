@@ -2,7 +2,7 @@
 import type { MarqueeEmits, MarqueeProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
-import { caf, doubleRaf, raf } from '../../utils/event'
+import { caf, raf, throttleByRaf } from '../../utils/event'
 import { isServer } from '../../utils/is'
 
 defineOptions({
@@ -27,17 +27,14 @@ const emits = defineEmits<MarqueeEmits>()
 const wrapRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
-const offset = shallowRef(0)
-const duration = shallowRef(0)
-const isScrolling = shallowRef(false)
-const isPaused = shallowRef(false)
-const pausedOffset = shallowRef(0)
+const phase = shallowRef<'idle' | 'first' | 'loop'>('idle')
+const contentStyle = shallowRef<Record<string, string>>()
 
 let wrapWidth = 0
 let contentWidth = 0
-let pausedRemaining = 0
-let startTimer: ReturnType<typeof setTimeout>
-let loopRafId = 0
+let appliedSpeed = 0
+let appliedDelay = 0
+let restartRafId = 0
 
 function toDelay(value: number | string | undefined) {
   const n = Number(value)
@@ -49,52 +46,75 @@ function toSpeed(value: number | string | undefined) {
   return Number.isFinite(n) && n > 0 ? n : 60
 }
 
-const delayMs = computed(() => toDelay(props.delay) * 1000)
+const delaySec = computed(() => toDelay(props.delay))
 const speed = computed(() => toSpeed(props.speed))
 
 const isWrapMode = computed(() => props.wrapable && props.scrollable === false)
+const isActive = computed(() => phase.value !== 'idle')
 
 const rootStyle = computed(() => ({
   '--marquee-color': props.color,
   '--marquee-background': props.background,
 }))
 
-const contentStyle = computed(() => {
-  if (isPaused.value) {
-    return {
-      transform: `translateX(${pausedOffset.value}px)`,
-      transitionDuration: '0s',
-    }
-  }
-
-  return {
-    transform: offset.value ? `translateX(${offset.value}px)` : '',
-    transitionDuration: `${duration.value}s`,
-  }
-})
-
 const contentClass = computed(() => {
   if (isWrapMode.value) {
     return 'block w-full whitespace-normal break-words'
   }
 
-  if (isScrolling.value || isPaused.value || props.scrollable !== false) {
+  if (isActive.value || props.scrollable !== false) {
     return 'inline-block w-max whitespace-nowrap'
   }
 
   return 'block max-w-full truncate'
 })
 
-function clearTimers() {
-  clearTimeout(startTimer)
-
-  if (loopRafId) {
-    caf(loopRafId)
-    loopRafId = 0
+function clearRestart() {
+  if (restartRafId) {
+    caf(restartRafId)
+    restartRafId = 0
   }
 }
 
-function startScroll() {
+function stopScroll() {
+  clearRestart()
+  phase.value = 'idle'
+  contentStyle.value = undefined
+  wrapWidth = 0
+  contentWidth = 0
+  appliedSpeed = 0
+  appliedDelay = 0
+}
+
+function buildStyle(nextWrap: number, nextContent: number, nextSpeed: number, nextDelay: number) {
+  return {
+    '--marquee-from': `${nextWrap}px`,
+    '--marquee-to': `${-nextContent}px`,
+    '--marquee-first-duration': `${nextContent / nextSpeed}s`,
+    '--marquee-duration': `${(nextContent + nextWrap) / nextSpeed}s`,
+    '--marquee-delay': `${nextDelay}s`,
+  }
+}
+
+function armFirst() {
+  clearRestart()
+  phase.value = 'idle'
+  restartRafId = raf(() => {
+    restartRafId = 0
+    phase.value = 'first'
+  })
+}
+
+function syncScroll(force = false) {
+  if (isServer()) {
+    return
+  }
+
+  if (props.scrollable === false || isWrapMode.value) {
+    stopScroll()
+    return
+  }
+
   const wrap = wrapRef.value
   const content = contentRef.value
 
@@ -102,149 +122,89 @@ function startScroll() {
     return
   }
 
-  const measuredWrapWidth = wrap.clientWidth
-  const measuredContentWidth = content.scrollWidth
+  const nextWrap = wrap.clientWidth
+  const nextContent = content.scrollWidth
+  const nextSpeed = speed.value
+  const nextDelay = delaySec.value
 
-  if (!props.scrollable && measuredContentWidth <= measuredWrapWidth) {
+  if (!nextWrap || !nextContent) {
     return
   }
 
-  doubleRaf(() => {
-    wrapWidth = measuredWrapWidth
-    contentWidth = measuredContentWidth
-    isScrolling.value = true
-    offset.value = -contentWidth
-    duration.value = contentWidth / speed.value
-  })
-}
+  const active = phase.value !== 'idle'
+  const unchanged =
+    !force
+    && active
+    && nextWrap === wrapWidth
+    && nextContent === contentWidth
+    && nextSpeed === appliedSpeed
+    && nextDelay === appliedDelay
 
-function parseTranslateX(transform: string) {
-  if (!transform || transform === 'none') {
-    return 0
-  }
-
-  if (transform.startsWith('matrix3d(')) {
-    const values = transform.slice(9, -1).split(',').map((v) => Number.parseFloat(v.trim()))
-    return values[12] ?? 0
-  }
-
-  if (transform.startsWith('matrix(')) {
-    const values = transform.slice(7, -1).split(',').map((v) => Number.parseFloat(v.trim()))
-    return values[4] ?? 0
-  }
-
-  return 0
-}
-
-function onTransitionEnd(event: TransitionEvent) {
-  if (event.propertyName !== 'transform' || !isScrolling.value || isPaused.value || !contentWidth) {
+  if (unchanged) {
     return
   }
 
-  offset.value = wrapWidth
-  duration.value = 0
+  const sizeChanged = nextWrap !== wrapWidth || nextContent !== contentWidth
+  const shouldRestart = force || (active && sizeChanged)
 
-  loopRafId = raf(() => {
-    loopRafId = doubleRaf(() => {
-      offset.value = -contentWidth
-      duration.value = (contentWidth + wrapWidth) / speed.value
-      emits('replay')
-    })
-  })
-}
+  wrapWidth = nextWrap
+  contentWidth = nextContent
+  appliedSpeed = nextSpeed
+  appliedDelay = nextDelay
+  contentStyle.value = buildStyle(nextWrap, nextContent, nextSpeed, nextDelay)
 
-function pauseScroll() {
-  if (!isScrolling.value || isPaused.value) {
+  if (!active) {
+    phase.value = 'first'
     return
   }
 
-  const content = contentRef.value
-  if (!content) {
+  if (!shouldRestart) {
     return
   }
 
-  const currentX = parseTranslateX(getComputedStyle(content).transform)
-  const targetX = -contentWidth
-
-  pausedOffset.value = currentX
-  pausedRemaining = Math.max((currentX - targetX) / speed.value * 1000, 0)
-  isPaused.value = true
+  armFirst()
 }
 
-function resumeScroll() {
-  if (!isPaused.value) {
-    return
-  }
-
-  isPaused.value = false
-
-  if (!isScrolling.value || !contentWidth) {
-    return
-  }
-
-  if (pausedRemaining <= 0) {
-    offset.value = wrapWidth
-    duration.value = 0
-
-    loopRafId = doubleRaf(() => {
-      offset.value = -contentWidth
-      duration.value = (contentWidth + wrapWidth) / speed.value
-      emits('replay')
-    })
-    return
-  }
-
-  offset.value = pausedOffset.value
-  duration.value = pausedRemaining / 1000
-
-  loopRafId = doubleRaf(() => {
-    if (isPaused.value || !isScrolling.value) {
-      return
-    }
-
-    offset.value = -contentWidth
-    duration.value = pausedRemaining / 1000
-  })
-}
-
-function onPointerEnter() {
-  if (props.pauseOnHover) {
-    pauseScroll()
-  }
-}
-
-function onPointerLeave() {
-  resumeScroll()
-}
+const scheduleSync = throttleByRaf(() => {
+  syncScroll(false)
+})
 
 function reset() {
   if (isServer()) {
     return
   }
 
-  clearTimers()
-  wrapWidth = 0
-  contentWidth = 0
-  offset.value = 0
-  duration.value = 0
-  isScrolling.value = false
-  isPaused.value = false
-  pausedOffset.value = 0
-  pausedRemaining = 0
+  scheduleSync.cancel()
+  clearRestart()
+  syncScroll(true)
+}
 
-  if (props.scrollable === false) {
+function onAnimationEnd(event: AnimationEvent) {
+  if (event.target !== contentRef.value || phase.value !== 'first') {
     return
   }
 
-  startTimer = setTimeout(startScroll, delayMs.value)
+  phase.value = 'loop'
+  emits('replay')
 }
 
-watch(() => [props.scrollable, props.wrapable, props.text, delayMs.value, speed.value], reset)
+function onAnimationIteration(event: AnimationEvent) {
+  if (event.target !== contentRef.value || phase.value !== 'loop') {
+    return
+  }
 
-useResizeObserver(wrapRef, reset)
+  emits('replay')
+}
+
+watch(() => [props.scrollable, props.wrapable, props.text, delaySec.value, speed.value], reset)
+
+useResizeObserver(wrapRef, scheduleSync)
 
 onMounted(reset)
-onBeforeUnmount(clearTimers)
+onBeforeUnmount(() => {
+  scheduleSync.cancel()
+  clearRestart()
+})
 
 defineExpose({
   reset,
@@ -256,11 +216,10 @@ defineExpose({
     :is="as"
     class="pxd-marquee text-sm min-h-10 py-2 px-3 gap-2 relative flex w-full max-w-full overflow-hidden bg-(--marquee-background) text-(--marquee-color)"
     :class="isWrapMode ? 'items-start' : 'items-center'"
+    :data-pause-on-hover="pauseOnHover ? 'true' : 'false'"
     :style="rootStyle"
     v-bind="$attrs"
     @click="emits('click', $event)"
-    @pointerenter="onPointerEnter"
-    @pointerleave="onPointerLeave"
   >
     <div v-if="$slots.prefix" class="pxd-marquee--prefix flex shrink-0 items-center">
       <slot name="prefix" />
@@ -269,10 +228,12 @@ defineExpose({
     <div ref="wrapRef" class="pxd-marquee--wrap min-w-0 flex-1 overflow-hidden">
       <div
         ref="contentRef"
-        class="pxd-marquee--content transition-transform ease-linear"
+        class="pxd-marquee--content motion-reduce:animate-none!"
         :class="contentClass"
+        :data-phase="phase"
         :style="contentStyle"
-        @transitionend="onTransitionEnd"
+        @animationend="onAnimationEnd"
+        @animationiteration="onAnimationIteration"
       >
         <slot>{{ text }}</slot>
       </div>
@@ -283,3 +244,39 @@ defineExpose({
     </div>
   </Component>
 </template>
+
+<style>
+.pxd-marquee--content[data-phase='first'] {
+  animation: pxd-marquee-scroll-first var(--marquee-first-duration) linear var(--marquee-delay)
+    forwards;
+}
+
+.pxd-marquee--content[data-phase='loop'] {
+  animation: pxd-marquee-scroll-loop var(--marquee-duration) linear infinite;
+}
+
+.pxd-marquee[data-pause-on-hover='true']:hover .pxd-marquee--content[data-phase='first'],
+.pxd-marquee[data-pause-on-hover='true']:hover .pxd-marquee--content[data-phase='loop'] {
+  animation-play-state: paused;
+}
+
+@keyframes pxd-marquee-scroll-first {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(var(--marquee-to));
+  }
+}
+
+@keyframes pxd-marquee-scroll-loop {
+  from {
+    transform: translateX(var(--marquee-from));
+  }
+
+  to {
+    transform: translateX(var(--marquee-to));
+  }
+}
+</style>
