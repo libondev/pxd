@@ -264,6 +264,10 @@
     "name": "scalable-text"
   },
   {
+    "camelized": "Scroll Text",
+    "name": "scroll-text"
+  },
+  {
     "camelized": "Scrollable",
     "name": "scrollable"
   },
