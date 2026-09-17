@@ -6,9 +6,6 @@
 
 @theme {
   --breakpoint-xs: 23rem;
-  --default-mono-font-family:
-    'Geist Mono', 'JetBrains Mono', 'MonoLisa', ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 @view-transition {
