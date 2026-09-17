@@ -372,6 +372,10 @@
     "name": "toggle"
   },
   {
+    "camelized": "Tool Call",
+    "name": "tool-call"
+  },
+  {
     "camelized": "Tooltip",
     "name": "tooltip"
   },

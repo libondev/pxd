@@ -54,6 +54,14 @@ const zhCN = {
     thinking: '正在思考...',
     thought: '思考',
   },
+  toolCall: {
+    pending: '等待中',
+    running: '运行中',
+    completed: '已完成',
+    error: '错误',
+    input: '输入',
+    output: '输出',
+  },
 } satisfies Locale
 
 export default zhCN

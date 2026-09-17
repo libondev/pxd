@@ -39,6 +39,14 @@ const enUS = {
     thinking: 'Thinking...',
     thought: 'Thought',
   },
+  toolCall: {
+    pending: 'Pending',
+    running: 'Running',
+    completed: 'Completed',
+    error: 'Error',
+    input: 'Input',
+    output: 'Output',
+  },
 }
 
 export type Locale = typeof enUS

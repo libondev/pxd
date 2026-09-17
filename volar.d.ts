@@ -118,6 +118,7 @@ declare module 'vue' {
     PToggle: (typeof import('pxd/components/toggle'))['default']
     PToggleButton: (typeof import('pxd/components/toggle-button'))['default']
     PToggleButtonGroup: (typeof import('pxd/components/toggle-button-group'))['default']
+    PToolCall: (typeof import('pxd/components/tool-call'))['default']
     PTooltip: (typeof import('pxd/components/tooltip'))['default']
     PVirtualList: (typeof import('pxd/components/virtual-list'))['default']
   }
