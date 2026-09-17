@@ -78,6 +78,32 @@ export function useListNavigation(
   // real work runs exactly once per batch regardless of how many items mount.
   let pendingRefresh: Promise<void> | null = null
 
+  function setItemSelected(el: HTMLElement | undefined, selected: boolean) {
+    el?.setAttribute('aria-selected', selected ? 'true' : 'false')
+  }
+
+  function syncHighlightAttributes() {
+    const active = activeIndex.value
+
+    for (let i = 0; i < items.length; i++) {
+      setItemSelected(items[i], i === active)
+    }
+  }
+
+  function applyActiveHighlight(from: number, to: number) {
+    if (from === to) {
+      return
+    }
+
+    if (from >= 0 && from < items.length) {
+      setItemSelected(items[from], false)
+    }
+
+    if (to >= 0 && to < items.length) {
+      setItemSelected(items[to], true)
+    }
+  }
+
   function runRefresh() {
     const container = getElement(containerRef)
     const itemFilter = options.itemFilter
@@ -104,6 +130,8 @@ export function useListNavigation(
     if (activeIndex.value === -1 && fallback >= 0 && fallback < items.length) {
       activeIndex.value = fallback
     }
+
+    syncHighlightAttributes()
   }
 
   function refreshItems(): Promise<void> {
@@ -120,11 +148,21 @@ export function useListNavigation(
   }
 
   function setActiveIndex(index: number): void {
+    const prev = activeIndex.value
+
+    if (prev === index) {
+      if (index >= 0 && index < items.length) {
+        setItemSelected(items[index], true)
+      }
+      return
+    }
+
+    applyActiveHighlight(prev, index)
     activeIndex.value = index
   }
 
   function setFirstAsActive(): void {
-    activeIndex.value = findNextIndex(items.length, -1, 1, false)
+    setActiveIndex(findNextIndex(items.length, -1, 1, false))
   }
 
   function isEmpty(): boolean {
@@ -156,7 +194,7 @@ export function useListNavigation(
     const index = itemIndexRefs.get(listItem)?.value ?? -1
     if (index !== -1) {
       options.onActivate?.()
-      activeIndex.value = index
+      setActiveIndex(index)
     }
   }
 
@@ -226,7 +264,7 @@ export function useListNavigation(
 
     if (next !== current) {
       options.onToggle?.(next)
-      activeIndex.value = next
+      setActiveIndex(next)
       items[next]?.scrollIntoView({ block: 'nearest' })
     }
 

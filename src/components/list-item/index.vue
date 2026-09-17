@@ -60,7 +60,7 @@ const groupId = useListFilterGroupId(null)
 const filterCtx = useListFilterContext(null)
 const parentItemId = useListFilterParentItemId(null)
 
-const itemId = getUniqueId('list-item')
+const itemId = filterCtx ? getUniqueId('list-item') : ''
 const itemRef = shallowRef<HTMLElement>()
 const itemIndex = shallowRef(-1)
 
@@ -76,7 +76,11 @@ const isVisible = computed(() => {
   return filterCtx.isItemVisible(itemId)
 })
 
-const isSelected = computed(() => {
+const showChildren = computed(() => {
+  if (!props.hasChildren) {
+    return false
+  }
+
   return itemIndex.value !== -1 && itemIndex.value === activeIndex.value
 })
 
@@ -97,6 +101,10 @@ function onItemClick(ev: MouseEvent) {
 
   emits('click', value, ev)
   onItemSelect?.(value, ev)
+}
+
+if (filterCtx) {
+  provideListFilterParentItemId(itemId)
 }
 
 onMounted(() => {
@@ -121,8 +129,6 @@ onBeforeUnmount(() => {
 
   filterCtx?.unregisterItem(itemId)
 })
-
-provideListFilterParentItemId(itemId)
 </script>
 
 <template>
@@ -136,7 +142,6 @@ provideListFilterParentItemId(itemId)
     :data-checked="isChecked"
     :data-has-children="hasChildren"
     :data-disabled="disabled"
-    :aria-selected="isSelected"
     :hidden="!isVisible"
     :class="classes"
     v-bind="attrs"
@@ -149,7 +154,7 @@ provideListFilterParentItemId(itemId)
       </div>
     </slot>
 
-    <slot v-if="isSelected" name="children" />
+    <slot v-if="showChildren" name="children" />
 
     <ChevronRightIcon
       v-if="hasChildren"
