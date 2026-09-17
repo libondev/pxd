@@ -122,7 +122,7 @@ const { attrs, classes } = useTailwindVariant(
 
     <slot name="prefix" />
 
-    <span class="inline-flex items-center truncate" :class="{ 'px-1.5': !icon }">
+    <span class="inline-flex flex-1 shrink-0 items-center truncate" :class="{ 'px-1.5': !icon }">
       <slot />
     </span>
 
