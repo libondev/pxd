@@ -276,62 +276,60 @@ export function useMentionEditor({
   }
 
   function deleteMentionElement(mention: HTMLElement) {
-    const parent = mention.parentNode as Node | null
-    const before = mention.previousSibling
-    const pad = mention.nextSibling
+    const editor = editorRef.value
 
-    mention.remove()
-
-    if (pad?.nodeType === Node.TEXT_NODE) {
-      const text = pad.textContent ?? ''
-      const stripped = stripMentionCaretPads(text)
-
-      if (!stripped) {
-        pad.parentNode?.removeChild(pad)
-      } else if (stripped !== text) {
-        pad.textContent = stripped
-      }
-    }
-
-    retainEditorFocus()
-
-    if (!editorRef.value) {
-      emitHTML()
+    if (!editor || !mention.parentNode) {
       return
     }
 
-    ensureMentionCaretPads(editorRef.value)
+    const before = mention.previousSibling
+    const next = mention.nextSibling
 
-    const selection = window.getSelection()
-    const range = document.createRange()
+    // Park the caret in a text node that will survive the remove. Mobile browsers
+    // (Android Chrome included) blur the contenteditable host if selection is still
+    // anchored to the node being deleted — which dismisses the virtual keyboard.
+    let landing: Text
 
-    if (before && editorRef.value.contains(before)) {
-      if (before.nodeType === Node.TEXT_NODE) {
-        range.setStart(before, before.textContent?.length ?? 0)
-      } else {
-        range.setStartAfter(before)
-      }
-    } else if (parent && editorRef.value.contains(parent)) {
-      if (!parent.childNodes.length) {
-        const br = document.createElement('br')
-        parent.appendChild(br)
-        range.setStart(parent, 0)
-      } else {
-        range.setStart(parent, 0)
-      }
+    if (next?.nodeType === Node.TEXT_NODE) {
+      landing = next as Text
     } else {
-      range.setStart(editorRef.value, 0)
+      landing = document.createTextNode(MENTION_CARET_PAD)
+      mention.after(landing)
     }
 
-    range.collapse(true)
-    selection?.removeAllRanges()
-    selection?.addRange(range)
+    if (!(landing.textContent ?? '').length) {
+      landing.textContent = MENTION_CARET_PAD
+    }
+
+    retainEditorFocus()
+    placeCaret(landing, landing.textContent?.length ?? 0)
+
+    mention.remove()
+
+    const visible = stripMentionCaretPads(landing.textContent ?? '')
+
+    if (visible) {
+      landing.textContent = visible
+      retainEditorFocus()
+      placeCaret(landing, 0)
+    } else if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
+      landing.remove()
+      retainEditorFocus()
+      placeCaret(before, before.textContent?.length ?? 0)
+    } else {
+      // Sole chip / non-text sibling before: keep ZWSP so the host stays focused on mobile.
+      landing.textContent = MENTION_CARET_PAD
+      retainEditorFocus()
+      placeCaret(landing, 1)
+    }
+
+    ensureMentionCaretPads(editor)
     emitHTML()
   }
 
   /**
    * Own backward-delete next to / inside mention chips.
-   * Mobile WebKit otherwise selects into `contenteditable=false` text or blurs the host.
+   * Mobile browsers otherwise select into `contenteditable=false` text or blur the host.
    */
   function tryDeleteBackward(): boolean {
     if (owningBackwardDelete) {
