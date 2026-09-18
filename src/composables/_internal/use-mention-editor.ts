@@ -172,21 +172,97 @@ export function useMentionEditor({
     }
 
     const caret = selection.getRangeAt(0)
-    const range = caret.cloneRange()
+    const atRange = caret.cloneRange()
 
     try {
-      range.setStart(range.startContainer, Math.max(0, range.startOffset - 1))
+      atRange.setStart(atRange.startContainer, Math.max(0, atRange.startOffset - 1))
     } catch {
       return false
     }
 
-    if (range.toString() !== '@') {
+    if (atRange.toString() !== '@') {
+      return false
+    }
+
+    // Only trigger when `@` is at content start or preceded by whitespace (not mid-word).
+    if (!isAtTriggerBoundary(atRange)) {
       return false
     }
 
     restoreRange = caret.cloneRange()
-    triggerRange = range
+    triggerRange = atRange
     return true
+  }
+
+  /**
+   * `@` must sit at editor/line start or after whitespace — not mid-word (`hello@`).
+   */
+  function isAtTriggerBoundary(atRange: Range): boolean {
+    const prev = charImmediatelyBefore(atRange.startContainer, atRange.startOffset)
+
+    if (prev === null) {
+      return true
+    }
+
+    return /\s/.test(prev)
+  }
+
+  /** Preceding character, or `null` when at the start of the editor content. */
+  function charImmediatelyBefore(container: Node, offset: number): string | null {
+    if (container.nodeType === Node.TEXT_NODE) {
+      const text = container.textContent ?? ''
+
+      if (offset > 0) {
+        const ch = text.charAt(offset - 1)
+        return ch === MENTION_CARET_PAD ? charImmediatelyBefore(container, offset - 1) : ch
+      }
+
+      return charFromPreviousSibling(container.previousSibling)
+    }
+
+    if (container.nodeType === Node.ELEMENT_NODE) {
+      if (offset === 0) {
+        return charFromPreviousSibling(container.previousSibling)
+      }
+
+      return charFromPreviousSibling(container.childNodes[offset - 1])
+    }
+
+    return null
+  }
+
+  function charFromPreviousSibling(node: Node | null): string | null {
+    let prev = node
+
+    while (prev) {
+      if (isMentionElement(prev)) {
+        return '\0'
+      }
+
+      if ((prev as Element).nodeName === 'BR') {
+        return '\n'
+      }
+
+      if (prev.nodeType === Node.TEXT_NODE) {
+        const text = stripMentionCaretPads(prev.textContent ?? '')
+
+        if (!text.length) {
+          prev = prev.previousSibling
+          continue
+        }
+
+        return text.charAt(text.length - 1)
+      }
+
+      if (prev.nodeType === Node.ELEMENT_NODE && prev.lastChild) {
+        prev = prev.lastChild
+        continue
+      }
+
+      return '\0'
+    }
+
+    return null
   }
 
   function detectTriggerAfterInput() {
@@ -235,10 +311,12 @@ export function useMentionEditor({
     const tail = document.createTextNode(` ${MENTION_CARET_PAD}`)
     mention.after(tail)
 
-    placeCaret(tail, tail.textContent?.length ?? 0)
+    const caret = document.createRange()
+    caret.setStart(tail, tail.textContent?.length ?? 0)
+    caret.collapse(true)
 
     triggerRange = null
-    restoreRange = window.getSelection()?.getRangeAt(0)?.cloneRange() ?? null
+    restoreRange = caret
     emitHTML()
     return true
   }
@@ -350,8 +428,7 @@ export function useMentionEditor({
     let handled = false
 
     if (!selection.isCollapsed) {
-      const mention =
-        closestMention(range.startContainer) || closestMention(range.endContainer)
+      const mention = closestMention(range.startContainer) || closestMention(range.endContainer)
 
       if (mention) {
         deleteMentionElement(mention)

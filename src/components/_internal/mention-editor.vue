@@ -36,7 +36,7 @@ const editorRef = shallowRef<HTMLElement>()
 const inputHeightClasses = computed(() => {
   return {
     sm: `${BASIC_MIN_HEIGHTS.sm} py-1`,
-    md: `${BASIC_MIN_HEIGHTS.md} py-1.75`,
+    md: `${BASIC_MIN_HEIGHTS.md} py-[.46875rem]`,
     lg: `${BASIC_MIN_HEIGHTS.lg} py-2.75`,
   }
 })
@@ -97,7 +97,7 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor break-all pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit text-foreground outline-none"
+      class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none"
       :class="inputHeightClasses[size]"
       role="textbox"
       aria-multiline="true"

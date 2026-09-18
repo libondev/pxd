@@ -8,6 +8,7 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { raf } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PMentionEditor from '../_internal/mention-editor.vue'
 import PList from '../list/index.vue'
@@ -77,8 +78,26 @@ const { onKeydown: onSearchKeydown } = useListKeyboardController({
 
 async function focusSearchInput() {
   await nextTick()
-  searchInputRef.value?.focus({ preventScroll: true })
+
+  const input = searchInputRef.value
+
+  if (!input) {
+    listRef.value?.setFirstAsActive()
+    return
+  }
+
+  // Drop any cached query so the field starts empty for this open.
+  setKeyword('')
+
+  // Mobile virtual keyboards may deliver the triggering `@` into the newly focused
+  // search field; readonly during focus blocks that ghost character.
+  input.readOnly = true
+  input.focus({ preventScroll: true })
   listRef.value?.setFirstAsActive()
+
+  raf(() => {
+    input.readOnly = false
+  })
 }
 
 function onPopoverShow() {

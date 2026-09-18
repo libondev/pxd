@@ -95,7 +95,7 @@ function capOptions(options: ListOptions): ListOptions {
 }
 
 /**
- * Suggestion popover state: keyword, list options, async filter races, and reopen cache.
+ * Suggestion popover state: keyword, list options, and async filter races.
  */
 export function useMentionSuggest({
   getOptions,
@@ -109,9 +109,6 @@ export function useMentionSuggest({
   const isPending = shallowRef(false)
 
   let filterRequestId = 0
-  let cachedQuery = ''
-  let cachedResults: ListOptions | null = null
-  let hasOpened = false
 
   const isEmptyResult = computed(
     () => !!filterKeyword.value.trim() && !isPending.value && isOptionsEmpty(listOptions.value),
@@ -138,8 +135,6 @@ export function useMentionSuggest({
     if (!filterMethod) {
       isPending.value = false
       listOptions.value = capOptions(filterStaticOptions(getOptions(), trimmed))
-      cachedQuery = trimmed
-      cachedResults = listOptions.value
       return
     }
 
@@ -161,8 +156,6 @@ export function useMentionSuggest({
     } finally {
       if (requestId === filterRequestId) {
         isPending.value = false
-        cachedQuery = trimmed
-        cachedResults = listOptions.value
       }
     }
   }
@@ -172,15 +165,8 @@ export function useMentionSuggest({
       return
     }
 
-    if (hasOpened && cachedResults) {
-      filterKeyword.value = cachedQuery
-      listOptions.value = cachedResults
-    } else {
-      filterKeyword.value = ''
-      listOptions.value = capOptions(getOptions())
-    }
-
-    hasOpened = true
+    filterKeyword.value = ''
+    listOptions.value = capOptions(getOptions())
     setVisible(true)
   }
 
