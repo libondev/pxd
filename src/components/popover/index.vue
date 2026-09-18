@@ -33,7 +33,9 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   fillTriggerWidth: true,
   toggleOnTrigger: true,
   closeOnInvisible: true,
+  autoFocusElement: false,
   closeOnPressEscape: true,
+  returnFocusOnDeactivate: true,
 })
 
 const emits = defineEmits<PopoverEmits>()
@@ -118,7 +120,10 @@ const {
   },
 })
 
-useFocusTrap(focusTrapContainer)
+useFocusTrap(focusTrapContainer, () => ({
+  autoFocusElement: props.autoFocusElement,
+  returnFocusOnDeactivate: props.returnFocusOnDeactivate,
+}))
 
 useOutsideClick(wrapperRef, {
   allowList: [triggerRef, wrapperRef],

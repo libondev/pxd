@@ -25,10 +25,12 @@ export interface PopoverProps {
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
   toggleOnTrigger?: boolean
+  autoFocusElement?: string | boolean
   fillTriggerWidth?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   lockScrollOnVisible?: boolean
+  returnFocusOnDeactivate?: boolean
 }
 
 export interface PopoverEmits {
