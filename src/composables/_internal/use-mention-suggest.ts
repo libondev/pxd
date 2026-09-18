@@ -3,6 +3,7 @@ import type { MentionFilterMethod } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
+import { debounce } from '../../utils/timing.js'
 
 export interface UseMentionSuggestOptions {
   getOptions: () => ListOptions
@@ -21,6 +22,9 @@ export interface UseMentionSuggestReturn {
   close: () => void
   setKeyword: (query: string) => void
 }
+
+const MAX_RENDERED_OPTIONS = 50
+const ASYNC_FILTER_DEBOUNCE = 200
 
 function isListOptionGroup(
   option: ListOptionEntry,
@@ -68,6 +72,28 @@ function filterStaticOptions(options: ListOptions, query: string): ListOptions {
   return result
 }
 
+function capOptions(options: ListOptions): ListOptions {
+  const result: ListOptions = []
+  let count = 0
+
+  for (const entry of options) {
+    if (count >= MAX_RENDERED_OPTIONS) {
+      break
+    }
+
+    if (isListOptionGroup(entry)) {
+      const matched = entry.options.slice(0, MAX_RENDERED_OPTIONS - count)
+      result.push(matched.length === entry.options.length ? entry : { ...entry, options: matched })
+      count += matched.length
+    } else {
+      result.push(entry)
+      count += 1
+    }
+  }
+
+  return result
+}
+
 /**
  * Suggestion popover state: keyword, list options, async filter races, and reopen cache.
  */
@@ -94,6 +120,7 @@ export function useMentionSuggest({
   function cancelPendingFilter() {
     isPending.value = false
     filterRequestId += 1
+    runFilterDebounced.cancel()
   }
 
   async function runFilter(query: string) {
@@ -102,7 +129,7 @@ export function useMentionSuggest({
 
     if (!trimmed) {
       isPending.value = false
-      listOptions.value = getOptions()
+      listOptions.value = capOptions(getOptions())
       return
     }
 
@@ -110,7 +137,7 @@ export function useMentionSuggest({
 
     if (!filterMethod) {
       isPending.value = false
-      listOptions.value = filterStaticOptions(getOptions(), trimmed)
+      listOptions.value = capOptions(filterStaticOptions(getOptions(), trimmed))
       cachedQuery = trimmed
       cachedResults = listOptions.value
       return
@@ -124,7 +151,7 @@ export function useMentionSuggest({
         return
       }
 
-      listOptions.value = Array.isArray(result) ? result : []
+      listOptions.value = capOptions(Array.isArray(result) ? result : [])
     } catch {
       if (requestId !== filterRequestId) {
         return
@@ -150,7 +177,7 @@ export function useMentionSuggest({
       listOptions.value = cachedResults
     } else {
       filterKeyword.value = ''
-      listOptions.value = getOptions()
+      listOptions.value = capOptions(getOptions())
     }
 
     hasOpened = true
@@ -165,9 +192,20 @@ export function useMentionSuggest({
     }
   }
 
+  const runFilterDebounced = debounce((query: string) => {
+    void runFilter(query)
+  }, ASYNC_FILTER_DEBOUNCE)
+
   function setKeyword(query: string) {
     filterKeyword.value = query
-    void runFilter(query)
+
+    if (!query.trim() || !getFilterMethod()) {
+      runFilterDebounced.cancel()
+      void runFilter(query)
+      return
+    }
+
+    runFilterDebounced(query)
   }
 
   // Any hide path (Esc, outside click, select) must drop in-flight filter results.

@@ -4,7 +4,6 @@ import {
   createMentionElement,
   escapePlainTextAsHtml,
   getMentionLabel,
-  isMentionEditorEmpty,
   isMentionElement,
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
@@ -67,12 +66,8 @@ export function useMentionEditor({
     return serializeMentionHtml(editorRef.value)
   }
 
-  function syncEmptyState() {
-    if (!editorRef.value) {
-      return
-    }
-
-    isEmpty.value = isMentionEditorEmpty(editorRef.value)
+  function syncEmptyState(html: string) {
+    isEmpty.value = html.trim() === ''
   }
 
   function emitHTML() {
@@ -81,7 +76,7 @@ export function useMentionEditor({
     }
 
     const html = serializeMentionHtml(editorRef.value)
-    syncEmptyState()
+    syncEmptyState(html)
     lastEmittedHtml = html
     onUpdate(html)
   }
@@ -97,8 +92,9 @@ export function useMentionEditor({
 
     applyingExternal = true
     setMentionEditorContent(editorRef.value, html)
-    syncEmptyState()
-    lastEmittedHtml = serializeMentionHtml(editorRef.value)
+    const serialized = serializeMentionHtml(editorRef.value)
+    syncEmptyState(serialized)
+    lastEmittedHtml = serialized
 
     await nextTick()
     applyingExternal = false

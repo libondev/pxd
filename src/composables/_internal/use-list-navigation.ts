@@ -79,7 +79,11 @@ export function useListNavigation(
   let pendingRefresh: Promise<void> | null = null
 
   function setItemSelected(el: HTMLElement | undefined, selected: boolean) {
-    el?.setAttribute('aria-selected', selected ? 'true' : 'false')
+    const next = selected ? 'true' : 'false'
+
+    if (el && el.getAttribute('aria-selected') !== next) {
+      el.setAttribute('aria-selected', next)
+    }
   }
 
   function syncHighlightAttributes() {

@@ -168,8 +168,3 @@ export function setMentionEditorContent(root: HTMLElement, html: string) {
     root.appendChild(document.createElement('br'))
   }
 }
-
-export function isMentionEditorEmpty(root: HTMLElement): boolean {
-  const html = serializeMentionHtml(root)
-  return html.trim() === ''
-}

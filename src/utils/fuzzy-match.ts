@@ -12,8 +12,45 @@ interface PreparedSearch {
   compactNeedle: string
 }
 
+interface PreparedHaystack {
+  lower: string
+  compact: string
+}
+
 let cachedSearch: string | null = null
 let cachedPreparedSearch: PreparedSearch | null = null
+
+// Bounded normalization cache: keys are immutable strings and the values are pure
+// transforms, so entries can never go stale. The bound must exceed the typical
+// option-set size — a window smaller than the working set thrashes (clear-on-full
+// mid-pass) and turns the cache into a net loss; oversized strings skip the cache.
+const HAYSTACK_CACHE_MAX = 4096
+const HAYSTACK_CACHE_MAX_LENGTH = 128
+const haystackCache = new Map<string, PreparedHaystack>()
+
+function getPreparedHaystack(text: string): PreparedHaystack {
+  const cached = haystackCache.get(text)
+
+  if (cached) {
+    return cached
+  }
+
+  const lower = text.toLowerCase()
+  const prepared: PreparedHaystack = {
+    lower,
+    compact: whitespacePattern.test(lower) ? lower.replace(whitespaceReplacePattern, '') : lower,
+  }
+
+  if (text.length <= HAYSTACK_CACHE_MAX_LENGTH) {
+    if (haystackCache.size >= HAYSTACK_CACHE_MAX) {
+      haystackCache.clear()
+    }
+
+    haystackCache.set(text, prepared)
+  }
+
+  return prepared
+}
 
 export function isFuzzyMatch(text: string, search: string, keywords?: string[]): boolean {
   if (!search) {
@@ -26,13 +63,13 @@ export function isFuzzyMatch(text: string, search: string, keywords?: string[]):
     return true
   }
 
-  if (text && matchesOne(text.toLowerCase(), needle, compactNeedle)) {
+  if (text && matchesOne(getPreparedHaystack(text), needle, compactNeedle)) {
     return true
   }
 
   if (keywords && keywords.length > 0) {
     for (const kw of keywords) {
-      if (kw && matchesOne(kw.toLowerCase(), needle, compactNeedle)) {
+      if (kw && matchesOne(getPreparedHaystack(kw), needle, compactNeedle)) {
         return true
       }
     }
@@ -52,7 +89,7 @@ export function getFuzzyMatchScore(text: string, search: string, keywords?: stri
     return 0
   }
 
-  let score = getMatchScore(text.toLowerCase(), needle, compactNeedle)
+  let score = getMatchScore(getPreparedHaystack(text), needle, compactNeedle)
 
   if (score === 1000) {
     return score
@@ -60,7 +97,7 @@ export function getFuzzyMatchScore(text: string, search: string, keywords?: stri
 
   if (keywords && keywords.length > 0) {
     for (const keyword of keywords) {
-      score = Math.max(score, getMatchScore(keyword.toLowerCase(), needle, compactNeedle))
+      score = Math.max(score, getMatchScore(getPreparedHaystack(keyword), needle, compactNeedle))
 
       if (score === 1000) {
         return score
@@ -71,7 +108,7 @@ export function getFuzzyMatchScore(text: string, search: string, keywords?: stri
   return score
 }
 
-function getMatchScore(haystack: string, needle: string, compactNeedle: string): number {
+function scoreBase(haystack: string, needle: string): number {
   if (!haystack) {
     return 0
   }
@@ -89,22 +126,20 @@ function getMatchScore(haystack: string, needle: string, compactNeedle: string):
     return getSubsequenceMatchScore(haystack, needle, subsequence)
   }
 
-  // ignore whitespace try again
-  const hasWhitespace = whitespacePattern.test(haystack)
-  if (compactNeedle !== needle || hasWhitespace) {
-    const compactHaystack = hasWhitespace
-      ? haystack.replace(whitespaceReplacePattern, '')
-      : haystack
-
-    if (compactHaystack !== haystack || compactNeedle !== needle) {
-      return getMatchScore(compactHaystack, compactNeedle, compactNeedle)
-    }
-  }
-
   return 0
 }
 
-function matchesOne(haystack: string, needle: string, compactNeedle: string): boolean {
+function getMatchScore(prepared: PreparedHaystack, needle: string, compactNeedle: string): number {
+  const score = scoreBase(prepared.lower, needle)
+
+  if (score > 0 || (prepared.compact === prepared.lower && compactNeedle === needle)) {
+    return score
+  }
+
+  return scoreBase(prepared.compact, compactNeedle)
+}
+
+function matchesBase(haystack: string, needle: string): boolean {
   if (!haystack) {
     return false
   }
@@ -117,19 +152,16 @@ function matchesOne(haystack: string, needle: string, compactNeedle: string): bo
   if (haystack.includes(needle)) {
     return true
   }
-  if (hasFuzzySubsequenceMatch(haystack, needle)) {
+  return hasFuzzySubsequenceMatch(haystack, needle)
+}
+
+function matchesOne(prepared: PreparedHaystack, needle: string, compactNeedle: string): boolean {
+  if (matchesBase(prepared.lower, needle)) {
     return true
   }
 
-  const hasWhitespace = whitespacePattern.test(haystack)
-  if (compactNeedle !== needle || hasWhitespace) {
-    const compactHaystack = hasWhitespace
-      ? haystack.replace(whitespaceReplacePattern, '')
-      : haystack
-
-    if (compactHaystack !== haystack || compactNeedle !== needle) {
-      return matchesOne(compactHaystack, compactNeedle, compactNeedle)
-    }
+  if (prepared.compact !== prepared.lower || compactNeedle !== needle) {
+    return matchesBase(prepared.compact, compactNeedle)
   }
 
   return false
