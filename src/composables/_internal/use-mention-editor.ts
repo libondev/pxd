@@ -309,12 +309,8 @@ export function useMentionEditor({
     const mention = createMentionElement(key, label)
     range.insertNode(mention)
 
-    // NBSP: contenteditable collapses a trailing normal space, which blocks the next `@`.
-    const space = document.createTextNode('\u00A0')
-    mention.after(space)
-
     const caret = document.createRange()
-    caret.setStart(space, 1)
+    caret.setStartAfter(mention)
     caret.collapse(true)
 
     triggerRange = null
