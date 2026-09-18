@@ -307,12 +307,14 @@ export function useMentionEditor({
     const mention = createMentionElement(key, label)
     range.insertNode(mention)
 
-    // Visible space for typing + ZWSP so mobile can keep a caret after the atomic chip.
-    const tail = document.createTextNode(` ${MENTION_CARET_PAD}`)
+    // Same shape as chips loaded via modelValue / ensureMentionCaretPads: ZWSP only.
+    // A leading visible space (` ${ZWSP}`) put the caret after both chars and required
+    // 2–3 Backspaces before the chip was removed — unlike the default Alice chip.
+    const tail = document.createTextNode(MENTION_CARET_PAD)
     mention.after(tail)
 
     const caret = document.createRange()
-    caret.setStart(tail, tail.textContent?.length ?? 0)
+    caret.setStart(tail, 1)
     caret.collapse(true)
 
     triggerRange = null

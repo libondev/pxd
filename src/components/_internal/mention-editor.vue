@@ -128,10 +128,7 @@ defineExpose({
   padding-inline: 0.125rem;
   border-radius: 0.25rem;
   color: var(--color-blue-900);
-  vertical-align: baseline;
   cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
 
   &:hover {
     background: var(--color-blue-200);

@@ -12,8 +12,9 @@ export function stripMentionCaretPads(text: string): string {
 }
 
 /**
- * Ensure every mention has a following text node so mobile carets can sit after
- * `contenteditable=false` chips without blurring the host.
+ * Ensure every mention is followed by a text node that begins with
+ * `MENTION_CARET_PAD`, so Backspace after a chip matches the loaded-from-model path
+ * (one delete removes the chip) and the pad survives serialize → re-apply.
  */
 export function ensureMentionCaretPads(root: HTMLElement) {
   for (const child of Array.from(root.childNodes)) {
@@ -24,9 +25,15 @@ export function ensureMentionCaretPads(root: HTMLElement) {
     const next = child.nextSibling
 
     if (next?.nodeType === Node.TEXT_NODE) {
-      if (!(next.textContent ?? '').length) {
+      const text = next.textContent ?? ''
+
+      if (!text.length) {
         next.textContent = MENTION_CARET_PAD
+      } else if (!text.startsWith(MENTION_CARET_PAD)) {
+        // Keep visible text in the same node so previousSibling of the caret stays the mention.
+        next.textContent = MENTION_CARET_PAD + text
       }
+
       continue
     }
 
