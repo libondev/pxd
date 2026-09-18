@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
         @click="onActionClick"
       >
         <slot>
-          <PButton size="sm" shape="rounded" icon>
+          <PButton :size="size" shape="rounded" icon>
             <ArrowUpIcon :class="{ 'rotate-180': scrollTarget === 'bottom' }" />
           </PButton>
         </slot>
