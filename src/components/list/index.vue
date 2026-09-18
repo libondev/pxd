@@ -275,7 +275,7 @@ defineExpose({
     tabindex="-1"
     data-list-container
     :aria-multiselectable="multiple || undefined"
-    class="pxd-list m-0 p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none"
+    class="pxd-list m-0 p-2 max-w-full empty:hidden list-none overflow-auto rounded-inherit bg-background-100 outline-none"
     v-bind="$attrs"
     @focusin="activate"
     @pointerover="onPointerOver"
