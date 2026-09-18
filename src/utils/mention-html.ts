@@ -1,46 +1,7 @@
 const MENTION_TAG = 'AT'
 
-/** Invisible caret landing pad after atomic `<at>` chips (stripped on serialize). */
-export const MENTION_CARET_PAD = '\u200B'
-
 export function isMentionElement(node: Node | null | undefined): boolean {
   return !!node && node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === MENTION_TAG
-}
-
-export function stripMentionCaretPads(text: string): string {
-  return text.replaceAll(MENTION_CARET_PAD, '')
-}
-
-/**
- * Ensure every mention is followed by a text node that begins with
- * `MENTION_CARET_PAD`, so Backspace after a chip matches the loaded-from-model path
- * (one delete removes the chip) and the pad survives serialize → re-apply.
- */
-export function ensureMentionCaretPads(root: HTMLElement) {
-  for (const child of Array.from(root.childNodes)) {
-    if (!isMentionElement(child)) {
-      continue
-    }
-
-    const next = child.nextSibling
-
-    if (next?.nodeType === Node.TEXT_NODE) {
-      const text = next.textContent ?? ''
-
-      if (!text.length) {
-        next.textContent = MENTION_CARET_PAD
-      } else if (!text.startsWith(MENTION_CARET_PAD)) {
-        // Keep visible text in the same node so previousSibling of the caret stays the mention.
-        next.textContent = MENTION_CARET_PAD + text
-      }
-
-      continue
-    }
-
-    if (!next || isMentionElement(next) || (next as Element).nodeName === 'BR') {
-      child.after(document.createTextNode(MENTION_CARET_PAD))
-    }
-  }
 }
 
 export function getMentionLabel(el: HTMLElement): string {
@@ -79,7 +40,8 @@ export function serializeMentionHtml(root: HTMLElement): string {
 
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      result += stripMentionCaretPads(node.textContent ?? '')
+      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces.
+      result += (node.textContent ?? '').replace(/\u00A0/g, ' ')
       return
     }
 
@@ -202,7 +164,6 @@ function appendPlainText(target: Node, text: string) {
 export function setMentionEditorContent(root: HTMLElement, html: string) {
   root.replaceChildren()
   root.appendChild(parseMentionHtml(html))
-  ensureMentionCaretPads(root)
 
   if (!root.childNodes.length) {
     root.appendChild(document.createElement('br'))

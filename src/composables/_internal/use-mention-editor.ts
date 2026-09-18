@@ -2,15 +2,12 @@ import type { Ref, ShallowRef } from 'vue'
 import { nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
   createMentionElement,
-  ensureMentionCaretPads,
   escapePlainTextAsHtml,
   getMentionLabel,
   isMentionElement,
-  MENTION_CARET_PAD,
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
-  stripMentionCaretPads,
 } from '../../utils/mention-html.js'
 
 export interface UseMentionEditorOptions {
@@ -210,11 +207,8 @@ export function useMentionEditor({
   /** Preceding character, or `null` when at the start of the editor content. */
   function charImmediatelyBefore(container: Node, offset: number): string | null {
     if (container.nodeType === Node.TEXT_NODE) {
-      const text = container.textContent ?? ''
-
       if (offset > 0) {
-        const ch = text.charAt(offset - 1)
-        return ch === MENTION_CARET_PAD ? charImmediatelyBefore(container, offset - 1) : ch
+        return (container.textContent ?? '').charAt(offset - 1)
       }
 
       return charFromPreviousSibling(container.previousSibling)
@@ -244,7 +238,7 @@ export function useMentionEditor({
       }
 
       if (prev.nodeType === Node.TEXT_NODE) {
-        const text = stripMentionCaretPads(prev.textContent ?? '')
+        const text = prev.textContent ?? ''
 
         if (!text.length) {
           prev = prev.previousSibling
@@ -307,14 +301,12 @@ export function useMentionEditor({
     const mention = createMentionElement(key, label)
     range.insertNode(mention)
 
-    // Same shape as chips loaded via modelValue / ensureMentionCaretPads: ZWSP only.
-    // A leading visible space (` ${ZWSP}`) put the caret after both chars and required
-    // 2–3 Backspaces before the chip was removed — unlike the default Alice chip.
-    const tail = document.createTextNode(MENTION_CARET_PAD)
-    mention.after(tail)
+    // NBSP: contenteditable collapses a trailing normal space, which blocks the next `@`.
+    const space = document.createTextNode('\u00A0')
+    mention.after(space)
 
     const caret = document.createRange()
-    caret.setStart(tail, 1)
+    caret.setStart(space, 1)
     caret.collapse(true)
 
     triggerRange = null
@@ -355,6 +347,15 @@ export function useMentionEditor({
     selection?.addRange(range)
   }
 
+  function placeCaretAfter(node: Node) {
+    const selection = window.getSelection()
+    const range = document.createRange()
+    range.setStartAfter(node)
+    range.collapse(true)
+    selection?.removeAllRanges()
+    selection?.addRange(range)
+  }
+
   function deleteMentionElement(mention: HTMLElement) {
     const editor = editorRef.value
 
@@ -365,51 +366,59 @@ export function useMentionEditor({
     const before = mention.previousSibling
     const next = mention.nextSibling
 
-    // Park the caret in a text node that will survive the remove. Mobile browsers
-    // (Android Chrome included) blur the contenteditable host if selection is still
-    // anchored to the node being deleted — which dismisses the virtual keyboard.
-    let landing: Text
+    // Move selection off the chip before removing it (mobile otherwise blurs the host).
+    retainEditorFocus()
 
     if (next?.nodeType === Node.TEXT_NODE) {
-      landing = next as Text
+      placeCaret(next, 0)
+    } else if (before?.nodeType === Node.TEXT_NODE) {
+      placeCaret(before, before.textContent?.length ?? 0)
+    } else if (before) {
+      placeCaretAfter(before)
     } else {
-      landing = document.createTextNode(MENTION_CARET_PAD)
-      mention.after(landing)
+      const probe = document.createTextNode('')
+      mention.after(probe)
+      placeCaret(probe, 0)
     }
 
-    if (!(landing.textContent ?? '').length) {
-      landing.textContent = MENTION_CARET_PAD
+    const trailing = mention.nextSibling
+    mention.remove()
+
+    // Drop lone trailing glue space that belonged to the chip.
+    if (
+      trailing?.nodeType === Node.TEXT_NODE &&
+      (trailing.textContent === ' ' ||
+        trailing.textContent === '\u00A0' ||
+        trailing.textContent === '')
+    ) {
+      trailing.parentNode?.removeChild(trailing)
     }
 
     retainEditorFocus()
-    placeCaret(landing, landing.textContent?.length ?? 0)
 
-    mention.remove()
-
-    const visible = stripMentionCaretPads(landing.textContent ?? '')
-
-    if (visible) {
-      landing.textContent = visible
-      retainEditorFocus()
-      placeCaret(landing, 0)
-    } else if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
-      landing.remove()
-      retainEditorFocus()
+    if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
       placeCaret(before, before.textContent?.length ?? 0)
+    } else if (before && editor.contains(before)) {
+      placeCaretAfter(before)
+    } else if (!editor.childNodes.length) {
+      const br = document.createElement('br')
+      editor.appendChild(br)
+      placeCaret(editor, 0)
     } else {
-      // Sole chip / non-text sibling before: keep ZWSP so the host stays focused on mobile.
-      landing.textContent = MENTION_CARET_PAD
-      retainEditorFocus()
-      placeCaret(landing, 1)
+      const selection = window.getSelection()
+      const range = document.createRange()
+      range.setStart(editor, 0)
+      range.collapse(true)
+      selection?.removeAllRanges()
+      selection?.addRange(range)
     }
 
-    ensureMentionCaretPads(editor)
     emitHTML()
   }
 
   /**
-   * Own backward-delete next to / inside mention chips.
-   * Mobile browsers otherwise select into `contenteditable=false` text or blur the host.
+   * Own backward-delete next to / inside mention chips so the browser does not
+   * select into `contenteditable=false` text.
    */
   function tryDeleteBackward(): boolean {
     if (owningBackwardDelete) {
@@ -451,31 +460,33 @@ export function useMentionEditor({
         const prev = textNode.previousSibling
 
         if (isMentionElement(prev)) {
-          if (startOffset > 0) {
-            const content = textNode.textContent ?? ''
-            const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
-            const hadVisible = stripMentionCaretPads(content) !== ''
-
-            if (stripMentionCaretPads(nextContent) === '') {
-              if (!hadVisible) {
-                deleteMentionElement(prev as HTMLElement)
-              } else {
-                textNode.textContent = MENTION_CARET_PAD
-                retainEditorFocus()
-                placeCaret(textNode, 1)
-                emitHTML()
-              }
-            } else {
-              textNode.textContent = nextContent
-              retainEditorFocus()
-              placeCaret(textNode, startOffset - 1)
-              emitHTML()
-            }
-
-            handled = true
-          } else {
+          if (startOffset === 0) {
             deleteMentionElement(prev as HTMLElement)
             handled = true
+          } else {
+            const content = textNode.textContent ?? ''
+
+            // Glue space (or whitespace-only) right after a chip → remove the chip in one stroke.
+            if (content.trim() === '') {
+              deleteMentionElement(prev as HTMLElement)
+              handled = true
+            } else {
+              const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
+
+              if (nextContent === '') {
+                textNode.remove()
+                retainEditorFocus()
+                placeCaretAfter(prev as HTMLElement)
+                emitHTML()
+              } else {
+                textNode.textContent = nextContent
+                retainEditorFocus()
+                placeCaret(textNode, startOffset - 1)
+                emitHTML()
+              }
+
+              handled = true
+            }
           }
         }
       } else if (startContainer.nodeType === Node.ELEMENT_NODE) {
@@ -484,13 +495,6 @@ export function useMentionEditor({
         if (isMentionElement(prev)) {
           deleteMentionElement(prev as HTMLElement)
           handled = true
-        } else if (prev?.nodeType === Node.TEXT_NODE) {
-          const text = prev.textContent ?? ''
-
-          if (stripMentionCaretPads(text) === '' && isMentionElement(prev.previousSibling)) {
-            deleteMentionElement(prev.previousSibling as HTMLElement)
-            handled = true
-          }
         }
       }
     }
@@ -531,10 +535,6 @@ export function useMentionEditor({
     range.collapse(false)
     selection.removeAllRanges()
     selection.addRange(range)
-
-    if (editorRef.value) {
-      ensureMentionCaretPads(editorRef.value)
-    }
 
     emitHTML()
   }
