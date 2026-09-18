@@ -35,9 +35,9 @@ const editorRef = shallowRef<HTMLElement>()
 
 const inputHeightClasses = computed(() => {
   return {
-    sm: `${BASIC_MIN_HEIGHTS.sm} pbs-1`,
-    md: `${BASIC_MIN_HEIGHTS.md} pbs-[7.5px]`,
-    lg: `${BASIC_MIN_HEIGHTS.lg} pbs-2.75`,
+    sm: `${BASIC_MIN_HEIGHTS.sm} py-1`,
+    md: `${BASIC_MIN_HEIGHTS.md} py-1.75`,
+    lg: `${BASIC_MIN_HEIGHTS.lg} py-2.75`,
   }
 })
 
@@ -97,7 +97,7 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit text-foreground outline-none"
+      class="pxd-mention-editor break-all pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit text-foreground outline-none"
       :class="inputHeightClasses[size]"
       role="textbox"
       aria-multiline="true"
@@ -118,11 +118,9 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-mention-editor {
-  &[data-disabled='true'] {
-    cursor: not-allowed;
-    color: var(--color-gray-700);
-  }
+.pxd-mention-editor[data-disabled='true'] {
+  cursor: not-allowed;
+  color: var(--color-gray-700);
 }
 
 .pxd-mention--at {
@@ -132,6 +130,8 @@ defineExpose({
   color: var(--color-blue-900);
   vertical-align: baseline;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 
   &:hover {
     background: var(--color-blue-200);

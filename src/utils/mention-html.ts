@@ -1,7 +1,39 @@
 const MENTION_TAG = 'AT'
 
+/** Invisible caret landing pad after atomic `<at>` chips (stripped on serialize). */
+export const MENTION_CARET_PAD = '\u200B'
+
 export function isMentionElement(node: Node | null | undefined): boolean {
   return !!node && node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === MENTION_TAG
+}
+
+export function stripMentionCaretPads(text: string): string {
+  return text.replaceAll(MENTION_CARET_PAD, '')
+}
+
+/**
+ * Ensure every mention has a following text node so mobile carets can sit after
+ * `contenteditable=false` chips without blurring the host.
+ */
+export function ensureMentionCaretPads(root: HTMLElement) {
+  for (const child of Array.from(root.childNodes)) {
+    if (!isMentionElement(child)) {
+      continue
+    }
+
+    const next = child.nextSibling
+
+    if (next?.nodeType === Node.TEXT_NODE) {
+      if (!(next.textContent ?? '').length) {
+        next.textContent = MENTION_CARET_PAD
+      }
+      continue
+    }
+
+    if (!next || isMentionElement(next) || (next as Element).nodeName === 'BR') {
+      child.after(document.createTextNode(MENTION_CARET_PAD))
+    }
+  }
 }
 
 export function getMentionLabel(el: HTMLElement): string {
@@ -40,7 +72,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
 
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      result += node.textContent ?? ''
+      result += stripMentionCaretPads(node.textContent ?? '')
       return
     }
 
@@ -163,6 +195,7 @@ function appendPlainText(target: Node, text: string) {
 export function setMentionEditorContent(root: HTMLElement, html: string) {
   root.replaceChildren()
   root.appendChild(parseMentionHtml(html))
+  ensureMentionCaretPads(root)
 
   if (!root.childNodes.length) {
     root.appendChild(document.createElement('br'))

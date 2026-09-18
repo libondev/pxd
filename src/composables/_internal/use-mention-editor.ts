@@ -2,12 +2,15 @@ import type { Ref, ShallowRef } from 'vue'
 import { nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
   createMentionElement,
+  ensureMentionCaretPads,
   escapePlainTextAsHtml,
   getMentionLabel,
   isMentionElement,
+  MENTION_CARET_PAD,
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
+  stripMentionCaretPads,
 } from '../../utils/mention-html.js'
 
 export interface UseMentionEditorOptions {
@@ -57,6 +60,8 @@ export function useMentionEditor({
   let lastEmittedHtml = ''
   // Only open suggest when `@` was inserted — not when delete/undo leaves `@` before the caret.
   let pendingAtInsert = false
+  // keydown + beforeinput can both fire; ignore the second pass in the same turn.
+  let owningBackwardDelete = false
 
   function getHTML(): string {
     if (!editorRef.value) {
@@ -226,59 +231,201 @@ export function useMentionEditor({
     const mention = createMentionElement(key, label)
     range.insertNode(mention)
 
-    const space = document.createTextNode(' ')
-    mention.after(space)
+    // Visible space for typing + ZWSP so mobile can keep a caret after the atomic chip.
+    const tail = document.createTextNode(` ${MENTION_CARET_PAD}`)
+    mention.after(tail)
 
-    const selection = window.getSelection()
-    const after = document.createRange()
-    after.setStartAfter(space)
-    after.collapse(true)
-    selection?.removeAllRanges()
-    selection?.addRange(after)
+    placeCaret(tail, tail.textContent?.length ?? 0)
 
     triggerRange = null
-    restoreRange = after.cloneRange()
+    restoreRange = window.getSelection()?.getRangeAt(0)?.cloneRange() ?? null
     emitHTML()
     return true
   }
 
-  function getMentionBeforeCaret(): HTMLElement | null {
-    const selection = window.getSelection()
-
-    if (!selection || !selection.isCollapsed || selection.rangeCount === 0) {
+  function closestMention(node: Node | null | undefined): HTMLElement | null {
+    if (!node || !editorRef.value) {
       return null
     }
 
-    const range = selection.getRangeAt(0)
-    const { startContainer, startOffset } = range
-
-    if (startContainer.nodeType === Node.TEXT_NODE) {
-      if (startOffset > 0) {
-        return null
-      }
-
-      const prev = startContainer.previousSibling
-      return isMentionElement(prev) ? (prev as HTMLElement) : null
+    if (isMentionElement(node)) {
+      return node as HTMLElement
     }
 
-    if (startContainer.nodeType === Node.ELEMENT_NODE) {
-      const prev = startContainer.childNodes[startOffset - 1]
-      return isMentionElement(prev) ? (prev as HTMLElement) : null
+    const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+    const mention = el?.closest?.('at')
+
+    if (!mention || !editorRef.value.contains(mention) || !isMentionElement(mention)) {
+      return null
     }
 
-    return null
+    return mention as HTMLElement
+  }
+
+  function retainEditorFocus() {
+    editorRef.value?.focus({ preventScroll: true })
+  }
+
+  function placeCaret(node: Node, offset: number) {
+    const selection = window.getSelection()
+    const range = document.createRange()
+    range.setStart(node, offset)
+    range.collapse(true)
+    selection?.removeAllRanges()
+    selection?.addRange(range)
   }
 
   function deleteMentionElement(mention: HTMLElement) {
-    const selection = window.getSelection()
-    const range = document.createRange()
-    range.setStartBefore(mention)
-    range.collapse(true)
+    const parent = mention.parentNode as Node | null
+    const before = mention.previousSibling
+    const pad = mention.nextSibling
 
     mention.remove()
+
+    if (pad?.nodeType === Node.TEXT_NODE) {
+      const text = pad.textContent ?? ''
+      const stripped = stripMentionCaretPads(text)
+
+      if (!stripped) {
+        pad.parentNode?.removeChild(pad)
+      } else if (stripped !== text) {
+        pad.textContent = stripped
+      }
+    }
+
+    retainEditorFocus()
+
+    if (!editorRef.value) {
+      emitHTML()
+      return
+    }
+
+    ensureMentionCaretPads(editorRef.value)
+
+    const selection = window.getSelection()
+    const range = document.createRange()
+
+    if (before && editorRef.value.contains(before)) {
+      if (before.nodeType === Node.TEXT_NODE) {
+        range.setStart(before, before.textContent?.length ?? 0)
+      } else {
+        range.setStartAfter(before)
+      }
+    } else if (parent && editorRef.value.contains(parent)) {
+      if (!parent.childNodes.length) {
+        const br = document.createElement('br')
+        parent.appendChild(br)
+        range.setStart(parent, 0)
+      } else {
+        range.setStart(parent, 0)
+      }
+    } else {
+      range.setStart(editorRef.value, 0)
+    }
+
+    range.collapse(true)
     selection?.removeAllRanges()
     selection?.addRange(range)
     emitHTML()
+  }
+
+  /**
+   * Own backward-delete next to / inside mention chips.
+   * Mobile WebKit otherwise selects into `contenteditable=false` text or blurs the host.
+   */
+  function tryDeleteBackward(): boolean {
+    if (owningBackwardDelete) {
+      return true
+    }
+
+    if (!editorRef.value) {
+      return false
+    }
+
+    const selection = window.getSelection()
+
+    if (!selection || selection.rangeCount === 0) {
+      return false
+    }
+
+    const range = selection.getRangeAt(0)
+    let handled = false
+
+    if (!selection.isCollapsed) {
+      const mention =
+        closestMention(range.startContainer) || closestMention(range.endContainer)
+
+      if (mention) {
+        deleteMentionElement(mention)
+        handled = true
+      }
+    } else {
+      const { startContainer, startOffset } = range
+      const insideMention = closestMention(startContainer)
+
+      if (
+        insideMention &&
+        (insideMention === startContainer || insideMention.contains(startContainer))
+      ) {
+        deleteMentionElement(insideMention)
+        handled = true
+      } else if (startContainer.nodeType === Node.TEXT_NODE) {
+        const textNode = startContainer as Text
+        const prev = textNode.previousSibling
+
+        if (isMentionElement(prev)) {
+          if (startOffset > 0) {
+            const content = textNode.textContent ?? ''
+            const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
+            const hadVisible = stripMentionCaretPads(content) !== ''
+
+            if (stripMentionCaretPads(nextContent) === '') {
+              if (!hadVisible) {
+                deleteMentionElement(prev as HTMLElement)
+              } else {
+                textNode.textContent = MENTION_CARET_PAD
+                retainEditorFocus()
+                placeCaret(textNode, 1)
+                emitHTML()
+              }
+            } else {
+              textNode.textContent = nextContent
+              retainEditorFocus()
+              placeCaret(textNode, startOffset - 1)
+              emitHTML()
+            }
+
+            handled = true
+          } else {
+            deleteMentionElement(prev as HTMLElement)
+            handled = true
+          }
+        }
+      } else if (startContainer.nodeType === Node.ELEMENT_NODE) {
+        const prev = startContainer.childNodes[startOffset - 1]
+
+        if (isMentionElement(prev)) {
+          deleteMentionElement(prev as HTMLElement)
+          handled = true
+        } else if (prev?.nodeType === Node.TEXT_NODE) {
+          const text = prev.textContent ?? ''
+
+          if (stripMentionCaretPads(text) === '' && isMentionElement(prev.previousSibling)) {
+            deleteMentionElement(prev.previousSibling as HTMLElement)
+            handled = true
+          }
+        }
+      }
+    }
+
+    if (handled) {
+      owningBackwardDelete = true
+      queueMicrotask(() => {
+        owningBackwardDelete = false
+      })
+    }
+
+    return handled
   }
 
   function onPaste(ev: ClipboardEvent) {
@@ -308,6 +455,10 @@ export function useMentionEditor({
     selection.removeAllRanges()
     selection.addRange(range)
 
+    if (editorRef.value) {
+      ensureMentionCaretPads(editorRef.value)
+    }
+
     emitHTML()
   }
 
@@ -321,11 +472,8 @@ export function useMentionEditor({
 
     // Let the browser own historyUndo / historyRedo.
     if (ev.inputType === 'deleteContentBackward') {
-      const mention = getMentionBeforeCaret()
-
-      if (mention) {
+      if (tryDeleteBackward()) {
         ev.preventDefault()
-        deleteMentionElement(mention)
       }
     }
   }
@@ -343,11 +491,8 @@ export function useMentionEditor({
     }
 
     if (ev.key === 'Backspace' && !ev.isComposing) {
-      const mention = getMentionBeforeCaret()
-
-      if (mention) {
+      if (tryDeleteBackward()) {
         ev.preventDefault()
-        deleteMentionElement(mention)
       }
     }
   }
