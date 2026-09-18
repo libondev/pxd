@@ -48,6 +48,7 @@ New component description.\n
         if (
           filePath.startsWith(composablesDir) &&
           filePath.endsWith('.ts') &&
+          !ignorePattern.test(filePath) &&
           !filePath.endsWith('index.ts')
         ) {
           const composableName = path.basename(filePath, '.ts')
