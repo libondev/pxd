@@ -172,6 +172,10 @@
     "name": "material"
   },
   {
+    "camelized": "Mention",
+    "name": "mention"
+  },
+  {
     "camelized": "Menu",
     "name": "menu"
   },

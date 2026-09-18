@@ -59,6 +59,7 @@ declare module 'vue' {
     PMarchingAnts: (typeof import('pxd/components/marching-ants'))['default']
     PMarquee: (typeof import('pxd/components/marquee'))['default']
     PMaterial: (typeof import('pxd/components/material'))['default']
+    PMention: (typeof import('pxd/components/mention'))['default']
     PMenu: (typeof import('pxd/components/menu'))['default']
     PMessage: (typeof import('pxd/components/message'))['default']
     PMessageItem: (typeof import('pxd/components/message-item'))['default']

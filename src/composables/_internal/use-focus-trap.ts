@@ -3,6 +3,7 @@ import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 import { createFocusTrap } from 'focus-trap'
 import { onScopeDispose, watch, type MaybeRefOrGetter } from 'vue'
 import { toValue } from '../../utils/helper.js'
+import { isTruthyProp } from '../../utils/format.js'
 
 const focusTrapStack: FocusTrap[] = []
 
@@ -47,15 +48,16 @@ export function useFocusTrap(
         clickOutsideDeactivates: false,
 
         // A11y + robustness
+        // If set and is or returns true, a click outside the focus trap will not be prevented
         returnFocusOnDeactivate: true,
         preventScroll: true,
         fallbackFocus: () => target,
         initialFocus: (): HTMLElement => {
           // auto focus first tabbable element or custom element
-
-          if (autoFocusElement) {
-            const elSelector =
-              typeof autoFocusElement === 'boolean' ? AUTO_FOCUS_FIRST_SELECTOR : autoFocusElement
+          if (isTruthyProp(autoFocusElement)) {
+            const elSelector = (typeof autoFocusElement === 'string' && autoFocusElement)
+              ? autoFocusElement
+              : AUTO_FOCUS_FIRST_SELECTOR
 
             return target.querySelector<HTMLElement>(elSelector) ?? target
           }
