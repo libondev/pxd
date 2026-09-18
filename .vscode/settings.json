@@ -15,13 +15,13 @@
     "source.fixAll.oxc": "explicit"
   },
   "[vue]": {
-    "editor.defaultFormatter": "johnsoncodehk.vscode-typescript-web"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "johnsoncodehk.vscode-typescript-web"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
