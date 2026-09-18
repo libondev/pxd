@@ -57,7 +57,6 @@ export function useMentionEditor({
   let lastEmittedHtml = ''
   // Only open suggest when `@` was inserted — not when delete/undo leaves `@` before the caret.
   let pendingAtInsert = false
-  // keydown + beforeinput can both fire; ignore the second pass in the same turn.
   let owningBackwardDelete = false
 
   function getHTML(): string {
@@ -192,45 +191,50 @@ export function useMentionEditor({
   }
 
   /**
-   * `@` must sit at editor/line start or after whitespace — not mid-word (`hello@`).
+   * `@` triggers at content start, after whitespace, or immediately after a mention chip.
    */
   function isAtTriggerBoundary(atRange: Range): boolean {
-    const prev = charImmediatelyBefore(atRange.startContainer, atRange.startOffset)
+    const before = boundaryBefore(atRange.startContainer, atRange.startOffset)
 
-    if (prev === null) {
+    if (before === 'start' || before === 'mention') {
       return true
     }
 
-    return /\s/.test(prev)
+    return /\s/.test(before)
   }
 
-  /** Preceding character, or `null` when at the start of the editor content. */
-  function charImmediatelyBefore(container: Node, offset: number): string | null {
+  /**
+   * What sits immediately before `(container, offset)`:
+   * - `'start'` — beginning of the editor
+   * - `'mention'` — an `<at>` chip
+   * - otherwise the preceding character
+   */
+  function boundaryBefore(container: Node, offset: number): string {
     if (container.nodeType === Node.TEXT_NODE) {
       if (offset > 0) {
         return (container.textContent ?? '').charAt(offset - 1)
       }
 
-      return charFromPreviousSibling(container.previousSibling)
+      return boundaryFromPreviousSibling(container.previousSibling)
     }
 
     if (container.nodeType === Node.ELEMENT_NODE) {
       if (offset === 0) {
-        return charFromPreviousSibling(container.previousSibling)
+        return boundaryFromPreviousSibling(container.previousSibling)
       }
 
-      return charFromPreviousSibling(container.childNodes[offset - 1])
+      return boundaryFromPreviousSibling(container.childNodes[offset - 1] ?? null)
     }
 
-    return null
+    return 'start'
   }
 
-  function charFromPreviousSibling(node: Node | null): string | null {
+  function boundaryFromPreviousSibling(node: Node | null): string {
     let prev = node
 
     while (prev) {
       if (isMentionElement(prev)) {
-        return '\0'
+        return 'mention'
       }
 
       if ((prev as Element).nodeName === 'BR') {
@@ -253,10 +257,10 @@ export function useMentionEditor({
         continue
       }
 
-      return '\0'
+      return 'start'
     }
 
-    return null
+    return 'start'
   }
 
   function detectTriggerAfterInput() {
@@ -283,6 +287,10 @@ export function useMentionEditor({
     }
 
     pendingAtInsert = false
+  }
+
+  function isBackwardDeleteInputType(inputType: string): boolean {
+    return inputType === 'deleteEntireSoftLine' || inputType.endsWith('Backward')
   }
 
   function insertMention(key: string, label: string): boolean {
@@ -358,39 +366,37 @@ export function useMentionEditor({
 
   function deleteMentionElement(mention: HTMLElement) {
     const editor = editorRef.value
+    const parent = mention.parentNode
 
-    if (!editor || !mention.parentNode) {
+    if (!editor || !parent || !editor.contains(mention)) {
       return
     }
 
     const before = mention.previousSibling
     const next = mention.nextSibling
+    const mentionOffset = Array.from(parent.childNodes).indexOf(mention)
 
-    // Move selection off the chip before removing it (mobile otherwise blurs the host).
-    retainEditorFocus()
-
-    if (next?.nodeType === Node.TEXT_NODE) {
-      placeCaret(next, 0)
-    } else if (before?.nodeType === Node.TEXT_NODE) {
-      placeCaret(before, before.textContent?.length ?? 0)
-    } else if (before) {
-      placeCaretAfter(before)
-    } else {
-      const probe = document.createTextNode('')
-      mention.after(probe)
-      placeCaret(probe, 0)
+    if (mentionOffset < 0) {
+      return
     }
 
-    const trailing = mention.nextSibling
+    const trailing =
+      next?.nodeType === Node.TEXT_NODE &&
+      (next.textContent === ' ' ||
+        next.textContent === '\u00A0' ||
+        next.textContent === '')
+        ? next
+        : null
+
+    cancelScheduledRestore()
+    clearTriggerRange()
+
+    retainEditorFocus()
+    placeCaret(parent, mentionOffset)
     mention.remove()
 
     // Drop lone trailing glue space that belonged to the chip.
-    if (
-      trailing?.nodeType === Node.TEXT_NODE &&
-      (trailing.textContent === ' ' ||
-        trailing.textContent === '\u00A0' ||
-        trailing.textContent === '')
-    ) {
+    if (trailing) {
       trailing.parentNode?.removeChild(trailing)
     }
 
@@ -400,6 +406,8 @@ export function useMentionEditor({
       placeCaret(before, before.textContent?.length ?? 0)
     } else if (before && editor.contains(before)) {
       placeCaretAfter(before)
+    } else if (next && next !== trailing && editor.contains(next)) {
+      placeCaret(next, 0)
     } else if (!editor.childNodes.length) {
       const br = document.createElement('br')
       editor.appendChild(br)
@@ -421,10 +429,6 @@ export function useMentionEditor({
    * select into `contenteditable=false` text.
    */
   function tryDeleteBackward(): boolean {
-    if (owningBackwardDelete) {
-      return true
-    }
-
     if (!editorRef.value) {
       return false
     }
@@ -474,7 +478,7 @@ export function useMentionEditor({
               const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
 
               if (nextContent === '') {
-                textNode.remove()
+                textNode.textContent = ''
                 retainEditorFocus()
                 placeCaretAfter(prev as HTMLElement)
                 emitHTML()
@@ -495,15 +499,15 @@ export function useMentionEditor({
         if (isMentionElement(prev)) {
           deleteMentionElement(prev as HTMLElement)
           handled = true
+        } else if (
+          prev?.nodeType === Node.TEXT_NODE &&
+          prev.textContent?.trim() === '' &&
+          isMentionElement(prev.previousSibling)
+        ) {
+          deleteMentionElement(prev.previousSibling as HTMLElement)
+          handled = true
         }
       }
-    }
-
-    if (handled) {
-      owningBackwardDelete = true
-      queueMicrotask(() => {
-        owningBackwardDelete = false
-      })
     }
 
     return handled
@@ -547,11 +551,19 @@ export function useMentionEditor({
 
     notePendingAtInsert(ev)
 
-    // Let the browser own historyUndo / historyRedo.
-    if (ev.inputType === 'deleteContentBackward') {
-      if (tryDeleteBackward()) {
-        ev.preventDefault()
-      }
+    if (!isBackwardDeleteInputType(ev.inputType)) {
+      owningBackwardDelete = false
+      return
+    }
+
+    if (owningBackwardDelete) {
+      owningBackwardDelete = false
+      ev.preventDefault()
+      return
+    }
+
+    if (!isComposing.value && tryDeleteBackward()) {
+      ev.preventDefault()
     }
   }
 
@@ -567,8 +579,13 @@ export function useMentionEditor({
       pendingAtInsert = true
     }
 
+    if (ev.key === 'Backspace') {
+      owningBackwardDelete = false
+    }
+
     if (ev.key === 'Backspace' && !ev.isComposing) {
       if (tryDeleteBackward()) {
+        owningBackwardDelete = true
         ev.preventDefault()
       }
     }

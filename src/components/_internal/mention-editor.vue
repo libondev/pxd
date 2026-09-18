@@ -125,8 +125,6 @@ defineExpose({
 
 .pxd-mention--at {
   display: inline;
-  padding-inline: 0.125rem;
-  border-radius: 0.25rem;
   color: var(--color-blue-900);
   cursor: pointer;
 
