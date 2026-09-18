@@ -376,14 +376,6 @@ export function useMentionEditor({
       return
     }
 
-    const trailing =
-      next?.nodeType === Node.TEXT_NODE &&
-      (next.textContent === ' ' ||
-        next.textContent === '\u00A0' ||
-        next.textContent === '')
-        ? next
-        : null
-
     cancelScheduledRestore()
     clearTriggerRange()
 
@@ -391,18 +383,13 @@ export function useMentionEditor({
     placeCaret(parent, mentionOffset)
     mention.remove()
 
-    // Drop lone trailing glue space that belonged to the chip.
-    if (trailing) {
-      trailing.parentNode?.removeChild(trailing)
-    }
-
     retainEditorFocus()
 
     if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
       placeCaret(before, before.textContent?.length ?? 0)
     } else if (before && editor.contains(before)) {
       placeCaretAfter(before)
-    } else if (next && next !== trailing && editor.contains(next)) {
+    } else if (next && editor.contains(next)) {
       placeCaret(next, 0)
     } else if (!editor.childNodes.length) {
       const br = document.createElement('br')
@@ -466,27 +453,21 @@ export function useMentionEditor({
           } else {
             const content = textNode.textContent ?? ''
 
-            // Glue space (or whitespace-only) right after a chip → remove the chip in one stroke.
-            if (content.trim() === '') {
-              deleteMentionElement(prev as HTMLElement)
-              handled = true
+            const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
+
+            if (nextContent === '') {
+              textNode.textContent = ''
+              retainEditorFocus()
+              placeCaretAfter(prev as HTMLElement)
+              emitHTML()
             } else {
-              const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
-
-              if (nextContent === '') {
-                textNode.textContent = ''
-                retainEditorFocus()
-                placeCaretAfter(prev as HTMLElement)
-                emitHTML()
-              } else {
-                textNode.textContent = nextContent
-                retainEditorFocus()
-                placeCaret(textNode, startOffset - 1)
-                emitHTML()
-              }
-
-              handled = true
+              textNode.textContent = nextContent
+              retainEditorFocus()
+              placeCaret(textNode, startOffset - 1)
+              emitHTML()
             }
+
+            handled = true
           }
         }
       } else if (startContainer.nodeType === Node.ELEMENT_NODE) {
@@ -494,13 +475,6 @@ export function useMentionEditor({
 
         if (isMentionElement(prev)) {
           deleteMentionElement(prev as HTMLElement)
-          handled = true
-        } else if (
-          prev?.nodeType === Node.TEXT_NODE &&
-          prev.textContent?.trim() === '' &&
-          isMentionElement(prev.previousSibling)
-        ) {
-          deleteMentionElement(prev.previousSibling as HTMLElement)
           handled = true
         }
       }
