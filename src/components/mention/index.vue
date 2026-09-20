@@ -79,25 +79,7 @@ const { onKeydown: onSearchKeydown } = useListKeyboardController({
 async function focusSearchInput() {
   await nextTick()
 
-  const input = searchInputRef.value
-
-  if (!input) {
-    listRef.value?.setFirstAsActive()
-    return
-  }
-
-  // Drop any cached query so the field starts empty for this open.
-  setKeyword('')
-
-  // Mobile virtual keyboards may deliver the triggering `@` into the newly focused
-  // search field; readonly during focus blocks that ghost character.
-  input.readOnly = true
-  input.focus({ preventScroll: true })
-  listRef.value?.setFirstAsActive()
-
-  raf(() => {
-    input.readOnly = false
-  })
+  searchInputRef.value?.focus({ preventScroll: true })
 }
 
 function onPopoverShow() {
