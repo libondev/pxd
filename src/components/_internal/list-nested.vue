@@ -121,10 +121,6 @@ onBeforeUnmount(() => {
         :data-reference-hidden="isPanelHidden"
         :class="{ 'pointer-events-none invisible': isPanelHidden }"
       >
-        <template v-if="slots.group" #group="groupSlotProps">
-          <Component :is="toComponent(slots.group)" v-bind="groupSlotProps" />
-        </template>
-
         <template v-if="slots.item" #item="itemSlotProps">
           <Component :is="toComponent(slots.item)" v-bind="itemSlotProps" />
         </template>

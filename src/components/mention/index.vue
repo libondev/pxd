@@ -216,10 +216,6 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
             <slot name="item" v-bind="itemSlotProps" />
           </template>
 
-          <template v-if="$slots.group" #group="groupSlotProps">
-            <slot name="group" v-bind="groupSlotProps" />
-          </template>
-
           <template #empty>
             <slot name="empty">
               {{ configProvider.locale.results.searchText }}

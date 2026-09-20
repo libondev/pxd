@@ -139,10 +139,6 @@ provideListFilterContext(filterContext)
       :default-active-index="0"
       @change="onListItemSelect"
     >
-      <template v-if="$slots.group" #group="{ group, index }">
-        <slot name="group" :group="group" :index="index" />
-      </template>
-
       <template v-if="$slots.item" #item="itemSlotProps">
         <slot name="item" v-bind="itemSlotProps" />
       </template>

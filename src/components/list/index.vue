@@ -282,10 +282,6 @@ defineExpose({
   >
     <template v-for="option in renderOptions" :key="option.key">
       <PListGroup v-if="isListOptionGroup(option.entry)" :label="option.entry.label">
-        <template v-if="$slots.group" #label>
-          <slot name="group" :group="option.entry" :index="option.index" />
-        </template>
-
         <PListItem
           v-for="(item, itemIndex) in option.entry.options"
           :key="itemIndex"

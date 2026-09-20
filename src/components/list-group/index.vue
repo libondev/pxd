@@ -28,7 +28,7 @@ provideListFilterGroupId(groupId)
 <template>
   <div class="pxd-list-group" role="presentation" :hidden="isHidden" v-bind="$attrs">
     <div aria-hidden="true" class="h-10 px-2 py-1 flex items-center text-13 text-gray-900">
-      <slot name="label">{{ label }}</slot>
+      {{ label }}
     </div>
 
     <slot />
