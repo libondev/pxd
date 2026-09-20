@@ -6,7 +6,7 @@ Display unlimited data lists and maintain page performance
 
 ```vue demo
 <script setup>
-const listData = Array.from({ length: 100 }, (_, i) => ({
+const items = Array.from({ length: 100 }, (_, i) => ({
   id: i,
   name: `Item ${i}`,
 }))
@@ -15,7 +15,7 @@ const listData = Array.from({ length: 100 }, (_, i) => ({
 <template>
   <PVirtualList
     class="!h-32 w-100 max-w-full border border-dashed rounded-lg"
-    :list-data="listData"
+    :items="items"
     data-key="id"
     :item-size="40"
   >
@@ -34,7 +34,7 @@ Set an approximate height for each item.
 
 ```vue demo
 <script setup>
-const listData = Array.from({ length: 100 }, (_, i) => ({
+const items = Array.from({ length: 100 }, (_, i) => ({
   key: i,
   name: `Item ${i}`,
   height: Math.random() * 100 + 40,
@@ -44,7 +44,7 @@ const listData = Array.from({ length: 100 }, (_, i) => ({
 <template>
   <PVirtualList
     class="!h-32 w-100 max-w-full border border-dashed rounded-lg"
-    :list-data="listData"
+    :items="items"
     data-key="key"
     :item-size="40"
   >
@@ -63,7 +63,7 @@ Set **`column-count`** for column count and **`column-gap`** for spacing.
 
 ```vue demo
 <script setup>
-const listData = Array.from({ length: 50 }, (_, i) => ({
+const items = Array.from({ length: 50 }, (_, i) => ({
   id: i,
   title: `Card ${i}`,
   height: Math.floor(Math.random() * 120) + 72,
@@ -73,7 +73,7 @@ const listData = Array.from({ length: 50 }, (_, i) => ({
 <template>
   <PVirtualList
     class="!h-64 w-100 max-w-full rounded-lg"
-    :list-data="listData"
+    :items="items"
     :column-count="3"
     :column-gap="12"
     :item-size="80"
@@ -98,11 +98,11 @@ Use the `status` parameter with the `bottom` / `retry` event to achieve infinite
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const listData = ref([])
+const items = ref([])
 const listStatus = ref() // 'loading' | 'finished' | 'error'
 
 async function onBottom() {
-  const startIdx = listData.value.length
+  const startIdx = items.value.length
 
   if (startIdx >= 100) {
     listStatus.value = 'finished'
@@ -126,7 +126,7 @@ async function onBottom() {
     return
   }
 
-  listData.value.push(
+  items.value.push(
     ...Array.from({ length: 10 }, (_, i) => ({
       id: i,
       name: `Item ${startIdx + i}`,
@@ -152,7 +152,7 @@ onMounted(() => {
     data-key="id"
     :item-size="40"
     :status="listStatus"
-    :list-data="listData"
+    :items="items"
     @retry="onRetry"
     @bottom="onBottom"
   >

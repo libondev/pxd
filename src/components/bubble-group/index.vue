@@ -21,7 +21,7 @@ const { totalSize, virtualItems, measureElement } = useVirtualList(
 )
 
 const contentStyle = computed(() => {
-  if (!props.listData) {
+  if (!props.items) {
     return undefined
   }
 
@@ -32,9 +32,9 @@ const contentStyle = computed(() => {
 })
 
 watch(
-  () => props.listData?.length,
+  () => props.items?.length,
   (newLen, oldLen) => {
-    if (!props.listData || !newLen || !oldLen || newLen <= oldLen) {
+    if (!props.items || !newLen || !oldLen || newLen <= oldLen) {
       return
     }
 
@@ -58,7 +58,7 @@ onMounted(() => {
     :content-style="contentStyle"
     v-bind="$attrs"
   >
-    <template v-if="listData">
+    <template v-if="items">
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"
@@ -67,7 +67,7 @@ onMounted(() => {
         class="pxd-bubble-group--item sibling:pbs-2 left-0 top-0 absolute w-full"
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
-        <slot name="item" :item="listData[virtualItem.index]" :index="virtualItem.index" />
+        <slot name="item" :item="items[virtualItem.index]" :index="virtualItem.index" />
       </div>
     </template>
 

@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
   columnGap: 0,
   columnCount: 1,
-  listData: () => [],
+  items: () => [],
   errorText: 'Request failed. Click to reload',
   loadingText: 'Loading...',
   finishedText: 'Finished',
@@ -87,7 +87,7 @@ defineExpose({
         :class="itemClass"
         :style="getItemStyle(virtualItem)"
       >
-        <slot name="item" :item="listData[virtualItem.index]" :virtual-item="virtualItem" />
+        <slot name="item" :item="items[virtualItem.index]" :virtual-item="virtualItem" />
       </div>
     </div>
 

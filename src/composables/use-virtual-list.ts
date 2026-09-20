@@ -26,7 +26,7 @@ const DEFAULTS = {
 export interface VirtualListOptions {
   status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
-  listData?: any[]
+  items?: any[]
   itemSize?: number
   overScan?: number
   columnGap?: number
@@ -46,7 +46,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
 
   function getItemKey(index: number): string | number {
     if (options.dataKey) {
-      const item = options.listData?.[index]
+      const item = options.items?.[index]
       const key = item?.[options.dataKey]
       if (!isNil(key)) {
         return key
@@ -57,7 +57,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
   }
 
   const virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
-    count: options.listData?.length ?? 0,
+    count: options.items?.length ?? 0,
     getScrollElement: () => toValue(containerRef) ?? null,
     estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
     getItemKey,
@@ -71,9 +71,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
     onChange: (instance) => {
       triggerVersion.value++
 
-      const { status = DEFAULTS.status, listData } = options
+      const { status = DEFAULTS.status, items } = options
 
-      if (status || listData?.length === 0) {
+      if (status || items?.length === 0) {
         return
       }
 
@@ -126,7 +126,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
   function updateVirtualizer() {
     virtualizer.setOptions({
       ...virtualizer.options,
-      count: options.listData?.length ?? 0,
+      count: options.items?.length ?? 0,
       estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
       getItemKey,
       lanes: options.columnCount ?? DEFAULTS.columnCount,
@@ -141,7 +141,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
     () => [options.itemSize, options.dataKey, options.columnCount, options.columnGap],
     updateVirtualizer,
   )
-  watch(() => [options.listData, options.listData?.length], updateVirtualizer)
+  watch(() => [options.items, options.items?.length], updateVirtualizer)
 
   onMounted(() => {
     virtualizer._willUpdate()

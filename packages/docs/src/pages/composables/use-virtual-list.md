@@ -29,7 +29,7 @@ interface VirtualListItem extends VirtualItem {
 interface VirtualListOptions {
   status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
-  listData?: any[]
+  items?: any[]
   itemSize?: number
   overScan?: number
   columnGap?: number
@@ -46,7 +46,7 @@ interface VirtualListOptions {
 | `containerRef` | `MaybeElementRef<HTMLElement>` | The scrollable container element |
 | `options.status` | `'loading' \| 'finished' \| 'error' \| ''` | Current list status |
 | `options.dataKey` | `string` | Key field name for item identification |
-| `options.listData` | `any[]` | The full list data array |
+| `options.items` | `any[]` | The full list data array |
 | `options.itemSize` | `number` | Default item size in pixels |
 | `options.overScan` | `number` | Number of extra items to render outside viewport |
 | `options.columnGap` | `number` | Gap between columns in pixels |
