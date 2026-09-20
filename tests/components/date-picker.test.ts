@@ -2,20 +2,13 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
+import { flushPopover } from '../helpers/flush-popover'
 
 async function typeAndChange(wrapper: ReturnType<typeof mount>, value: string) {
   const input = wrapper.find('input')
   await input.setValue(value)
   await input.trigger('change')
   return input
-}
-
-async function flushPopover() {
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await nextTick()
-  await new Promise(requestAnimationFrame)
-  await new Promise(requestAnimationFrame)
-  await Promise.resolve()
 }
 
 describe('date-picker', () => {
