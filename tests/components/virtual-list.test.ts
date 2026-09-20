@@ -23,15 +23,15 @@ describe('virtual-list', () => {
     wrapper.unmount()
   })
 
-  it('should accept listData prop', () => {
+  it('should accept items prop', () => {
     const wrapper = mount(VirtualList, {
       props: {
-        listData: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
         dataKey: 'id',
       },
     })
 
-    expect(wrapper.props('listData')).toHaveLength(3)
+    expect(wrapper.props('items')).toHaveLength(3)
 
     wrapper.unmount()
   })
