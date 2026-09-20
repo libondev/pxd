@@ -22,7 +22,7 @@ describe('useVirtualList', () => {
       scrollBy,
       unmount,
     } = useSetupWrapper(() =>
-      useVirtualList(() => container, { dataKey: 'id', listData: [], itemSize: 50 }),
+      useVirtualList(() => container, { dataKey: 'id', items: [], itemSize: 50 }),
     )
 
     expect(virtualItems).toBeDefined()
@@ -37,7 +37,7 @@ describe('useVirtualList', () => {
   it('should compute totalSize for empty list', () => {
     const container = document.createElement('div')
     const { totalSize, unmount } = useSetupWrapper(() =>
-      useVirtualList(() => container, { dataKey: 'id', listData: [], itemSize: 50 }),
+      useVirtualList(() => container, { dataKey: 'id', items: [], itemSize: 50 }),
     )
 
     expect(totalSize.value).toBe(0)
@@ -48,7 +48,7 @@ describe('useVirtualList', () => {
     const container = document.createElement('div')
     const data = Array.from({ length: 10 }, (_, i) => ({ id: i }))
     const { totalSize, unmount } = useSetupWrapper(() =>
-      useVirtualList(() => container, { dataKey: 'id', listData: data, itemSize: 50 }),
+      useVirtualList(() => container, { dataKey: 'id', items: data, itemSize: 50 }),
     )
 
     expect(totalSize.value).toBeGreaterThanOrEqual(0)
@@ -58,7 +58,7 @@ describe('useVirtualList', () => {
   it('should accept custom itemSize', () => {
     const container = document.createElement('div')
     const { totalSize, unmount } = useSetupWrapper(() =>
-      useVirtualList(() => container, { dataKey: 'id', listData: [], itemSize: 80 }),
+      useVirtualList(() => container, { dataKey: 'id', items: [], itemSize: 80 }),
     )
 
     expect(totalSize).toBeDefined()
@@ -70,7 +70,7 @@ describe('useVirtualList', () => {
     const { totalSize, unmount } = useSetupWrapper(() =>
       useVirtualList(() => container, {
         dataKey: 'id',
-        listData: [],
+        items: [],
         itemSize: 50,
         columnCount: 2,
       }),
