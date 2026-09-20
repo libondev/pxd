@@ -75,8 +75,7 @@ onMounted(() => {
 
     <template #action>
       <PBacktop
-        class="bottom-1 shadow-sm left-1/2 z-1 w-max -translate-x-1/2 rounded-full"
-        size="sm"
+        class="bottom-1 shadow-sm right-1 z-1 w-max rounded-full"
         scroll-target="bottom"
         :append-to-body="false"
         scroll-behavior="instant"

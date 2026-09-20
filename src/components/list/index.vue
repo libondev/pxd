@@ -333,11 +333,7 @@ defineExpose({
       </PListItem>
     </template>
 
-    <p
-      v-if="empty"
-      role="presentation"
-      class="py-7.5 text-sm text-center text-foreground-secondary"
-    >
+    <p v-if="empty" role="presentation" class="py-7 text-sm text-center text-foreground-secondary">
       <slot name="empty" />
     </p>
   </ul>
