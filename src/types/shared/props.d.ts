@@ -12,7 +12,7 @@ export type ComponentBreakpoint<T = string> = Record<ComponentBreakpointKeys, T>
 
 export type ComponentAs = string | object
 export type ComponentLabel = string | number | readonly string[] | null
-export type ComponentValue = string | number | boolean
+export type ComponentValue = string | number
 
 export type ComponentClass = string | any[] | Record<string, any>
 

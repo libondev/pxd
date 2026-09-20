@@ -1,12 +1,12 @@
-export type TabsValue = string | number
+import type { ComponentValue } from '../../types/shared'
 
 export interface TabsProps {
   variant?: 'default' | 'secondary' | 'segmented'
   keepAlive?: boolean
-  modelValue?: TabsValue
+  modelValue?: ComponentValue
 }
 
 export interface TabsEmits {
-  change: [TabsValue]
-  'update:modelValue': [TabsValue]
+  change: [NonNullable<ComponentValue>]
+  'update:modelValue': [NonNullable<ComponentValue>]
 }

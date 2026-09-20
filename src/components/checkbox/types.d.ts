@@ -1,15 +1,17 @@
 import type { ComponentLabel, ComponentValue, ComponentShape } from '../../types/shared'
 
+type CheckboxModelValue = ComponentValue | boolean
+
 export interface CheckboxProps {
   label?: ComponentLabel
-  value?: ComponentValue
+  value?: CheckboxModelValue
   shape?: ComponentShape
   disabled?: boolean
-  modelValue?: ComponentValue | ComponentValue[]
+  modelValue?: CheckboxModelValue | CheckboxModelValue[]
   indeterminate?: boolean
 }
 
 export interface CheckboxEmits {
-  change: [NonNullable<CheckboxProps['modelValue']>]
-  'update:modelValue': [NonNullable<CheckboxProps['modelValue']>]
+  change: [NonNullable<CheckboxModelValue>]
+  'update:modelValue': [NonNullable<CheckboxModelValue>]
 }

@@ -1,9 +1,11 @@
 import type { ComponentOption, ComponentValue } from '../../types/shared'
 
+type CheckboxGroupModelValue = ComponentValue | boolean
+
 export interface CheckboxGroupProps {
   disabled?: boolean
   options?: ComponentOption[]
-  modelValue?: ComponentValue[]
+  modelValue?: CheckboxGroupModelValue[]
 }
 
 export interface CheckboxGroupEmits {
