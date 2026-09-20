@@ -1,23 +1,12 @@
 <script lang="ts" setup>
-import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
-import type {
-  ListProps,
-  ListOption,
-  ListOptionEntry,
-  ListOptionGroup,
-  ListOptionSelected,
-  ListEmits,
-} from './types'
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
+import { computed, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
-  type ListContext,
-  provideListContext,
-  provideListNestedContext,
-  useListFilterContext,
-  useListNestedContext,
-} from '../../contexts/list.js'
-import PListNested from '../_internal/list-nested.vue'
+  isListOptionGroup,
+  resolveOptionByValue,
+} from '../../composables/_internal/use-selected-list-item.js'
+import { provideListContext, useListFilterContext } from '../../contexts/list.js'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
 
@@ -35,134 +24,8 @@ const props = withDefaults(defineProps<ListProps>(), {
 const emits = defineEmits<ListEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
-const parentNestedContext = useListNestedContext(null)
-const parentListContext = parentNestedContext?.list ?? null
-const parentPanelHidden = parentNestedContext?.hidden ?? shallowRef(false)
-const isRootList = !parentListContext
-const rootProps = parentListContext?.props ?? props
-const activeList = parentListContext?.activeList ?? shallowRef<ListContext | null>(null)
-const childLists = new WeakMap<HTMLElement, ListContext>()
-
-let parentItem: HTMLElement | undefined
-let listContext: ListContext
-
-function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
-  return option.type === 'group'
-}
-
-function resolveOptionByValue(
-  value: ListOptionSelected['value'],
-  options: ListOptionEntry[] = rootProps.options ?? [],
-): ListOption | undefined {
-  for (const entry of options) {
-    if (isListOptionGroup(entry)) {
-      const matchedOption = resolveOptionByValue(value, entry.options)
-      if (matchedOption) {
-        return matchedOption
-      }
-    } else if (entry.value === value) {
-      return entry
-    } else if (entry.children?.length) {
-      const matchedOption = resolveOptionByValue(value, entry.children)
-      if (matchedOption) {
-        return matchedOption
-      }
-    }
-  }
-}
-
-function toSelectedOption(option: ListOption): ListOptionSelected {
-  const { as, children, keywords, onClick, ...selectedOption } = option
-
-  return selectedOption
-}
-
-function toListItemProps(option: ListOption): Record<string, any> {
-  const { children, onClick, ...itemProps } = option
-
-  return itemProps
-}
-
-function hasChildren(option: ListOption): boolean {
-  return !!option.children?.length
-}
-
-const renderOptions = computed(() => {
-  return props.options.map((entry, index) => ({
-    entry,
-    index,
-    key: isListOptionGroup(entry) ? `group-${entry.label ?? index}` : String(entry.value),
-  }))
-})
-
-function emitRootSelect(value: ListOptionSelected['value'], ev: MouseEvent) {
-  const option = resolveOptionByValue(value)
-
-  if (option) {
-    option.onClick?.(toSelectedOption(option), ev)
-    emits('change', toSelectedOption(option), ev)
-  }
-}
-
-const onRootSelect = parentListContext?.onRootSelect ?? emitRootSelect
-const onToggle = parentListContext?.onToggle ?? (() => emits('toggle'))
-
-function getChildList(item: HTMLElement): ListContext | undefined {
-  return childLists.get(item)
-}
-
-function registerChildList(item: HTMLElement, childList: ListContext): void {
-  childLists.set(item, childList)
-}
-
-function unregisterChildList(item: HTMLElement): void {
-  childLists.delete(item)
-}
-
-function activate(): void {
-  activeList.value = listContext
-}
-
-function activateFirst(): void {
-  setFirstAsActive()
-  activate()
-}
-
-function enterItem(item: HTMLElement): void {
-  const childList = getChildList(item)
-
-  if (childList) {
-    childList.activateFirst()
-    return
-  }
-
-  item.click()
-}
-
-function enterChild(item: HTMLElement): void {
-  getChildList(item)?.activateFirst()
-}
-
-function leaveToParent(): void {
-  setActiveIndex(-1)
-  parentListContext?.activate()
-}
-
-function onItemSelect(value: ListOptionSelected['value'], ev: MouseEvent): void {
-  const item = ev.currentTarget as HTMLElement | null
-  const childList = item ? getChildList(item) : undefined
-
-  if (childList) {
-    childList.activateFirst()
-    return
-  }
-
-  onRootSelect(value, ev)
-}
 
 const {
-  activeIndex,
-  isEmpty,
   dispatch,
   setActiveIndex,
   registerItem,
@@ -171,19 +34,11 @@ const {
   refreshItems,
   setFirstAsActive,
 } = useListNavigation(containerRef, {
-  loop: rootProps.loop,
+  loop: () => props.loop,
   itemSelector: `[data-list-item]:not([data-disabled="true"],[hidden])`,
-  defaultActiveIndex: isRootList ? rootProps.defaultActiveIndex : -1,
-  itemFilter: (item, container) => {
-    return (
-      item.closest<HTMLElement>('[data-list-container]') === container && !item.closest('[hidden]')
-    )
-  },
-  onToggle,
-  onActivateItem: enterItem,
-  onLeft: parentListContext ? leaveToParent : undefined,
-  onRight: enterChild,
-  onActivate: activate,
+  defaultActiveIndex: () => props.defaultActiveIndex,
+  itemFilter: (item) => !item.closest('[hidden]'),
+  onToggle: (currentIndex) => emits('toggle', currentIndex),
 })
 
 const filterCtx = useListFilterContext(null)
@@ -198,70 +53,40 @@ if (filterCtx) {
   )
 }
 
-listContext = {
-  props: rootProps,
-  activeIndex,
-  setActiveIndex,
-  registerItem,
-  unregisterItem,
-  onItemSelect,
-  onRootSelect,
-  onToggle,
-  activeList,
-  activate,
-  activateFirst,
-  dispatch,
-  registerChildList,
-  unregisterChildList,
-  getChildList,
+function toSelectedOption(option: ListOption): ListOptionSelected {
+  const { as, keywords, ...selectedOption } = option
+
+  return selectedOption
 }
 
-if (isRootList) {
-  activeList.value = listContext
+const renderOptions = computed(() => {
+  return props.options.map((entry, index) => ({
+    entry,
+    index,
+    key: isListOptionGroup(entry) ? `group-${entry.label ?? index}` : String(entry.value),
+  }))
+})
 
-  watch(
-    () => props.visible,
-    (visible) => {
-      if (!visible) {
-        activeList.value?.setActiveIndex(-1)
-        activeList.value = listContext
-        setActiveIndex(-1)
-      }
-    },
-  )
-}
+function onItemSelect(value: ListOptionSelected['value'], ev: MouseEvent): void {
+  const option = resolveOptionByValue(props.options, value)
 
-provideListContext(listContext)
-provideListNestedContext({ list: listContext, hidden: parentPanelHidden })
-
-function dispatchRoot(command: ListNavigationCommand): boolean {
-  return activeList.value?.dispatch(command) ?? false
-}
-
-onMounted(() => {
-  if (!parentListContext) {
+  if (!option) {
     return
   }
 
-  parentItem =
-    parentNestedContext?.parentItem?.value ??
-    containerRef.value?.closest<HTMLElement>('[data-list-item]') ??
-    undefined
-  if (parentItem) {
-    parentListContext.registerChildList(parentItem, listContext)
-  }
-})
+  emits('change', toSelectedOption(option), ev)
+}
 
-onBeforeUnmount(() => {
-  if (parentItem && parentListContext) {
-    parentListContext.unregisterChildList(parentItem)
-  }
+provideListContext({
+  value: computed(() => props.value),
+  registerItem,
+  unregisterItem,
+  onItemSelect,
 })
 
 defineExpose({
-  isEmpty,
   focus: () => containerRef.value?.focus(),
-  dispatch: dispatchRoot,
+  dispatch,
   refreshItems,
   setActiveIndex,
   setFirstAsActive,
@@ -271,23 +96,17 @@ defineExpose({
 <template>
   <ul
     ref="containerRef"
-    role="list"
+    role="listbox"
     tabindex="-1"
-    data-list-container
-    :aria-multiselectable="multiple || undefined"
+    data-list
+    :aria-multiselectable="multiple"
     class="pxd-list m-0 p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none empty:hidden"
     v-bind="$attrs"
-    @focusin="activate"
     @pointerover="onPointerOver"
   >
     <template v-for="option in renderOptions" :key="option.key">
       <PListGroup v-if="isListOptionGroup(option.entry)" :label="option.entry.label">
-        <PListItem
-          v-for="(item, itemIndex) in option.entry.options"
-          :key="itemIndex"
-          :has-children="hasChildren(item)"
-          v-bind="toListItemProps(item)"
-        >
+        <PListItem v-for="(item, itemIndex) in option.entry.options" :key="itemIndex" v-bind="item">
           <template v-if="$slots.item">
             <slot
               name="item"
@@ -297,34 +116,12 @@ defineExpose({
               :group-index="option.index"
             />
           </template>
-
-          <template v-if="hasChildren(item)" #children>
-            <PListNested
-              :options="item.children ?? []"
-              :slots="$slots"
-              class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
-              @click.stop
-            />
-          </template>
         </PListItem>
       </PListGroup>
 
-      <PListItem
-        v-else
-        :has-children="hasChildren(option.entry)"
-        v-bind="toListItemProps(option.entry)"
-      >
+      <PListItem v-else v-bind="option.entry">
         <template v-if="$slots.item">
           <slot name="item" :item="option.entry" :index="option.index" />
-        </template>
-
-        <template v-if="hasChildren(option.entry)" #children>
-          <PListNested
-            :options="option.entry.children ?? []"
-            :slots="$slots"
-            class="pxd-list--nested min-w-48 max-w-80 shadow-lg fixed max-h-[min(80dvh,800px)] rounded-lg border"
-            @click.stop
-          />
         </template>
       </PListItem>
     </template>

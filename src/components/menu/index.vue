@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
-import { nextTick, shallowRef, watch } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
@@ -24,19 +24,21 @@ const props = withDefaults(defineProps<MenuProps>(), {
 })
 
 const emits = defineEmits<MenuEmits>()
+const listRef = shallowRef<InstanceType<typeof PList>>()
+
 const { selected, select, reset, commit } = useListSelection(props, emits)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 const popoverVisible = shallowRef(false)
-const listRef = shallowRef<InstanceType<typeof PList>>()
+const selectedListValue = computed(() =>
+  props.modelValue === undefined ? undefined : selected.value,
+)
 
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
   keymap: {
     ArrowDown: 'next',
-    ArrowLeft: 'leave-parent',
-    ArrowRight: 'enter-child',
     ArrowUp: 'previous',
     End: 'last',
     Enter: 'activate',
@@ -83,9 +85,8 @@ function onOptionSelect(item: ListOptionSelected) {
     <template #content>
       <PList
         ref="listRef"
-        :value="selected"
+        :value="selectedListValue"
         :options="options"
-        :visible="popoverVisible"
         :multiple="multiple"
         class="max-h-68 rounded-inherit"
         @change="onOptionSelect"

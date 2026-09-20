@@ -2,14 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import SplitButton from '../../src/components/split-button/index.vue'
-
-async function flushPopover() {
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await nextTick()
-  await new Promise(requestAnimationFrame)
-  await new Promise(requestAnimationFrame)
-  await Promise.resolve()
-}
+import { flushPopover } from '../helpers/flush-popover'
 
 describe('split-button', () => {
   it('renders properly', () => {
@@ -87,34 +80,6 @@ describe('split-button', () => {
     })
 
     expect(wrapper.text()).toContain('Option 2')
-
-    wrapper.unmount()
-  })
-
-  it('should render selected data from nested options', () => {
-    const wrapper = mount(SplitButton, {
-      props: {
-        modelValue: 'grandchild',
-        options: [
-          {
-            label: 'Parent',
-            value: 'parent',
-            children: [
-              {
-                label: 'Child',
-                value: 'child',
-                children: [{ label: 'Grandchild', value: 'grandchild' }],
-              },
-            ],
-          },
-        ],
-      },
-      slots: {
-        default: `<template #default="{ data }">{{ data?.label }}</template>`,
-      },
-    })
-
-    expect(wrapper.text()).toContain('Grandchild')
 
     wrapper.unmount()
   })

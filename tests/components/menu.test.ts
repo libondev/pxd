@@ -2,14 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import Menu from '../../src/components/menu/index.vue'
-
-async function flushPopover() {
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await nextTick()
-  await new Promise(requestAnimationFrame)
-  await new Promise(requestAnimationFrame)
-  await Promise.resolve()
-}
+import { flushPopover } from '../helpers/flush-popover'
 
 describe('menu', () => {
   it('renders properly', () => {
@@ -271,7 +264,7 @@ describe('menu', () => {
     await nextTick()
 
     expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1'])
-    expect(items[0]?.getAttribute('data-checked')).toBe('true')
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
 
     items[1]?.click()
     await nextTick()
@@ -283,8 +276,8 @@ describe('menu', () => {
 
     expect(wrapper.emitted('update:modelValue')?.[2]?.[0]).toEqual(['2'])
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(items[0]?.getAttribute('data-checked')).toBe('false')
-    expect(items[1]?.getAttribute('data-checked')).toBe('true')
+    expect(items[0]?.getAttribute('aria-selected')).toBe('false')
+    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
 
     await wrapper.find('button').trigger('click')
     await flushPopover()

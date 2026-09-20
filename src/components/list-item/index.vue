@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
-import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import {
-  provideListFilterParentItemId,
-  useListContext,
-  useListFilterContext,
-  useListFilterGroupId,
-  useListFilterParentItemId,
-} from '../../contexts/list.js'
+import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
 import { toArray } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -25,7 +18,6 @@ const props = withDefaults(defineProps<ListItemProps>(), {
   as: 'li',
   variant: 'default',
   disabled: false,
-  hasChildren: false,
   keywords: () => [],
 })
 
@@ -33,7 +25,7 @@ const emits = defineEmits<ListItemEmits>()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center data-[checked=true]:text-primary rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -48,24 +40,17 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-const {
-  props: listProps,
-  activeIndex,
-  registerItem,
-  unregisterItem,
-  onItemSelect,
-} = useListContext()
+const { value: selectedValue, registerItem, unregisterItem, onItemSelect } = useListContext()
 
 const groupId = useListFilterGroupId(null)
 const filterCtx = useListFilterContext(null)
-const parentItemId = useListFilterParentItemId(null)
 
 const itemId = filterCtx ? getUniqueId('list-item') : ''
 const itemRef = shallowRef<HTMLElement>()
 const itemIndex = shallowRef(-1)
 
 const isChecked = computed(() => {
-  return !isNil(props.value) && toArray(listProps?.value).includes(props.value)
+  return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
 })
 
 const isVisible = computed(() => {
@@ -74,14 +59,6 @@ const isVisible = computed(() => {
   }
 
   return filterCtx.isItemVisible(itemId)
-})
-
-const showChildren = computed(() => {
-  if (!props.hasChildren) {
-    return false
-  }
-
-  return itemIndex.value !== -1 && itemIndex.value === activeIndex.value
 })
 
 function getValue(): string {
@@ -103,10 +80,6 @@ function onItemClick(ev: MouseEvent) {
   onItemSelect?.(value, ev)
 }
 
-if (filterCtx) {
-  provideListFilterParentItemId(itemId)
-}
-
 onMounted(() => {
   const el = getElement(itemRef.value)
   if (el) {
@@ -115,7 +88,6 @@ onMounted(() => {
 
   filterCtx?.registerItem(itemId, {
     groupId,
-    parentItemId,
     getValue,
     getKeywords,
   })
@@ -136,12 +108,11 @@ onBeforeUnmount(() => {
     :is="as"
     ref="itemRef"
     tabindex="-1"
-    role="listitem"
+    role="option"
     data-list-item
     :data-variant="variant"
-    :data-checked="isChecked"
-    :data-has-children="hasChildren"
     :data-disabled="disabled"
+    :aria-selected="isChecked"
     :hidden="!isVisible"
     :class="classes"
     v-bind="attrs"
@@ -154,17 +125,9 @@ onBeforeUnmount(() => {
       </div>
     </slot>
 
-    <slot v-if="showChildren" name="children" />
-
-    <ChevronRightIcon
-      v-if="hasChildren"
-      class="size-4 ms-auto shrink-0 text-foreground-secondary"
-    />
-
     <CheckIcon
       v-if="isChecked"
-      class="pxd-list-item--checked pointer-events-none absolute top-1/2 -translate-y-1/2"
-      :class="hasChildren ? 'right-7' : 'right-2'"
+      class="pxd-list-item--checked right-2 pointer-events-none absolute top-1/2 -translate-y-1/2 text-primary"
     />
   </Component>
 </template>

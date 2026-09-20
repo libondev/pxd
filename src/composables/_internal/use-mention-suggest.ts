@@ -1,9 +1,10 @@
-import type { ListOptionEntry, ListOptions } from '../../components/list/types'
+import type { ListOptions } from '../../components/list/types'
 import type { MentionFilterMethod } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { debounce } from '../../utils/timing.js'
+import { isListOptionGroup } from './use-selected-list-item.js'
 
 export interface UseMentionSuggestOptions {
   getOptions: () => ListOptions
@@ -25,12 +26,6 @@ export interface UseMentionSuggestReturn {
 
 const MAX_RENDERED_OPTIONS = 50
 const ASYNC_FILTER_DEBOUNCE = 200
-
-function isListOptionGroup(
-  option: ListOptionEntry,
-): option is Extract<ListOptionEntry, { type: 'group' }> {
-  return option.type === 'group'
-}
 
 function isOptionsEmpty(options: ListOptions): boolean {
   if (!options.length) {

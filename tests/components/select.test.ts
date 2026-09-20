@@ -2,14 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
 import Select from '../../src/components/select/index.vue'
-
-async function flushPopover() {
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await nextTick()
-  await new Promise(requestAnimationFrame)
-  await new Promise(requestAnimationFrame)
-  await Promise.resolve()
-}
+import { flushPopover } from '../helpers/flush-popover'
 
 const options = [
   { label: 'One', value: 1 },
@@ -102,7 +95,7 @@ describe('select', () => {
 
     expect(wrapper.vm.value).toEqual([1])
     expect(wrapper.text()).toContain('One')
-    expect(items[0]?.getAttribute('data-checked')).toBe('true')
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
     expect(wrapper.vm.changed).toEqual([1])
 
     items[2]?.click()

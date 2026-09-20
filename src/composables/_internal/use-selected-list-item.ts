@@ -10,11 +10,11 @@ import { computed } from 'vue'
 import { toArray } from '../../utils/format.js'
 import { toValue } from '../../utils/helper.js'
 
-function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
+export function isListOptionGroup(option: ListOptionEntry): option is ListOptionGroup {
   return option.type === 'group'
 }
 
-function resolveOptionByValue(
+export function resolveOptionByValue(
   options: ListOptionEntry[],
   value: ListOptionSelected['value'],
 ): ListOption | null {
@@ -27,12 +27,6 @@ function resolveOptionByValue(
       }
     } else if (entry.value === value) {
       return entry
-    } else if (entry.children?.length) {
-      const matchedOption = resolveOptionByValue(entry.children, value)
-
-      if (matchedOption) {
-        return matchedOption
-      }
     }
   }
 

@@ -1,5 +1,5 @@
 import type { ComponentShape, ComponentSizeWithXs } from '../../types/shared'
-import type { ListOptions, ListOptionSelected } from '../list/types'
+import type { ListModelValue, ListOptions } from '../list/types'
 import { ButtonVariant } from '../button/types'
 
 export interface SplitButtonProps {
@@ -8,11 +8,11 @@ export interface SplitButtonProps {
   shape?: ComponentShape
   options?: ListOptions
   disabled?: boolean
-  modelValue?: ListOptionSelected['value']
+  modelValue?: ListModelValue
   closeOnPressEscape?: boolean
 }
 
 export interface SplitButtonEmits {
-  change: [ListOptionSelected['value']]
-  'update:modelValue': [ListOptionSelected['value']]
+  change: [ListModelValue]
+  'update:modelValue': [ListModelValue]
 }

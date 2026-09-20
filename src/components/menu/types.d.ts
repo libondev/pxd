@@ -1,5 +1,5 @@
 import type { ComponentPosition } from '../../types/shared'
-import type { ListModelValue, ListOptions, ListValue } from '../list/types'
+import type { ListModelValue, ListOptions } from '../list/types'
 
 export interface MenuProps {
   options?: ListOptions

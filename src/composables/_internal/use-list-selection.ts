@@ -1,4 +1,5 @@
-import type { ListModelValue, ListValue } from '../../components/list/types'
+import type { ListModelValue } from '../../components/list/types'
+import type { ComponentValue } from '../../types/shared'
 import { shallowRef } from 'vue'
 import { toArray } from '../../utils/format.js'
 
@@ -13,13 +14,13 @@ interface ListSelectionEmits {
 }
 
 function readSelection(props: ListSelectionProps): ListModelValue {
-  return props.multiple ? (toArray(props.modelValue) as ListValue[]) : (props.modelValue ?? null)
+  return props.multiple
+    ? (toArray(props.modelValue) as ComponentValue[])
+    : (props.modelValue ?? null)
 }
 
-function toggleSelected(selected: ListValue[], value: ListValue): ListValue[] {
-  return selected.includes(value)
-    ? selected.filter((item) => item !== value)
-    : [...selected, value]
+function toggleSelected(selected: ComponentValue[], value: ComponentValue): ComponentValue[] {
+  return selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value]
 }
 
 export function useListSelection(props: ListSelectionProps, emits: ListSelectionEmits) {
@@ -31,9 +32,9 @@ export function useListSelection(props: ListSelectionProps, emits: ListSelection
     selected.value = readSelection(props)
   }
 
-  function select(value: ListValue): boolean {
+  function select(value: ComponentValue): boolean {
     if (props.multiple) {
-      const nextValue = toggleSelected(toArray(selected.value) as ListValue[], value)
+      const nextValue = toggleSelected(toArray(selected.value) as ComponentValue[], value)
       selected.value = nextValue
       dirty = true
       emits('update:modelValue', nextValue)

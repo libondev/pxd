@@ -1,43 +1,18 @@
 import type { ListOptionSelected } from '../components/list/types'
-import type { ListProps } from '../components/list/types'
-import type { ListNavigationCommand } from '../composables/_internal/use-list-navigation'
-import type { ComputedRef, Ref, ShallowRef } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 import { createContext } from '../utils/context.js'
 
 export interface ListContext {
-  props: ListProps
-  activeIndex: Ref<number>
-  setActiveIndex: (index: number) => void
+  value: Ref<unknown>
   registerItem: (el: HTMLElement, indexRef: Ref<number>) => void
   unregisterItem: (el: HTMLElement) => void
   onItemSelect: (value: ListOptionSelected['value'], ev: MouseEvent) => void
-  onRootSelect: (value: ListOptionSelected['value'], ev: MouseEvent) => void
-  onToggle: () => void
-  activeList: ShallowRef<ListContext | null>
-  activate: () => void
-  activateFirst: () => void
-  dispatch: (command: ListNavigationCommand) => boolean
-  registerChildList: (item: HTMLElement, childList: ListContext) => void
-  unregisterChildList: (item: HTMLElement) => void
-  getChildList: (item: HTMLElement) => ListContext | undefined
 }
 
 export const [provideListContext, useListContext] = createContext<ListContext>('List')
 
-export interface ListNestedContext {
-  list: ListContext
-  parentItem?: ShallowRef<HTMLElement | undefined>
-  hidden: Readonly<Ref<boolean>>
-}
-
-export const [provideListNestedContext, useListNestedContext] = createContext<ListNestedContext>(
-  'ListNested',
-  null,
-)
-
 export interface ListFilterItemPayload {
   groupId: string | null
-  parentItemId?: string | null
   getValue: () => string
   getKeywords: () => string[]
 }
@@ -57,15 +32,9 @@ export const [provideListFilterContext, useListFilterContext] = createContext<Li
 )
 
 /**
- * Provided by group containers so nested list items know which group to
- * register into.
+ * Provided by group containers so list items know which group to register into.
  */
 export const [provideListFilterGroupId, useListFilterGroupId] = createContext<string>(
   'ListFilterGroupId',
-  null,
-)
-
-export const [provideListFilterParentItemId, useListFilterParentItemId] = createContext<string>(
-  'ListFilterParentItemId',
   null,
 )

@@ -8,8 +8,6 @@ export interface ListOption {
   variant?: 'default' | 'error' | 'warning'
   description?: string
   keywords?: string[]
-  children?: ListOptionEntry[]
-  onClick?: (item: ListOptionSelected, ev: MouseEvent) => void
   [key: string]: any
 }
 
@@ -21,22 +19,20 @@ export interface ListOptionGroup {
 
 export type ListOptionEntry = ListOption | ListOptionGroup
 
-export type ListOptionSelected = Omit<ListOption, 'as' | 'children' | 'keywords' | 'onClick'>
+export type ListOptionSelected = Omit<ListOption, 'as' | 'keywords'>
 export type ListOptions = ListOptionEntry[]
-export type ListValue = string | number
-export type ListModelValue = ListValue | ListValue[] | null
+export type ListModelValue = ComponentValue | ComponentValue[] | null
 
 export interface ListProps {
   loop?: boolean
   empty?: boolean
   multiple?: boolean
   value?: any
-  visible?: boolean
   options?: ListOptionEntry[]
   defaultActiveIndex?: number
 }
 
 export interface ListEmits {
-  toggle: []
+  toggle: [number]
   change: [ListOptionSelected, MouseEvent]
 }

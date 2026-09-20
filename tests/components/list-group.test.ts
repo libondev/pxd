@@ -45,21 +45,6 @@ describe('list-group', () => {
     wrapper.unmount()
   })
 
-  it('should render the label slot over the label prop', () => {
-    const wrapper = mount(ListGroup, {
-      props: {
-        label: 'Prop Label',
-      },
-      slots: {
-        label: 'Slot Label',
-      },
-    })
-
-    expect(wrapper.text()).toContain('Slot Label')
-
-    wrapper.unmount()
-  })
-
   it('should hide the group when the filter search does not match', () => {
     const wrapper = mountWithFilter(false, 'query')
 

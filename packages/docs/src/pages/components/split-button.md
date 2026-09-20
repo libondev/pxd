@@ -67,37 +67,18 @@ const options = [
   { label: 'Four', value: 'four', variant: 'warning' },
   { label: 'Delete', value: 'five', variant: 'error' },
 ]
-
-function onChange(item) {
-  console.log(item)
-
-  if (item.value === checkedValue.value) {
-    checkedValue.value = ''
-  } else {
-    checkedValue.value = item.value
-  }
-}
 </script>
 
 <template>
-  <PStack>
-    <PSplitButton :model-value="checkedValue" :options="options" width="200" @change="onChange">
-      <template #default="{ data }">
-        {{ data?.label || 'Actions' }}
-      </template>
-    </PSplitButton>
+  <PSplitButton v-model="checkedValue" :options="options">
+    <template #default="{ data }">
+      {{ data?.label || 'Actions' }}
+    </template>
 
-    <!-- Custom rendering menu-items -->
-    <PSplitButton v-model="checkedValue" :options="options" width="200">
-      <template #default="{ data }">
-        {{ data?.label || 'Actions' }}
-      </template>
-
-      <template #item="{ item }">
-        {{ item.label }}
-      </template>
-    </PSplitButton>
-  </PStack>
+    <template #item="{ item }">
+      {{ item.label }}
+    </template>
+  </PSplitButton>
 </template>
 ```
 

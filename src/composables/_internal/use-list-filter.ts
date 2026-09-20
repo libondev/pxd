@@ -45,10 +45,6 @@ export function useListFilter({
       if (item.groupId) {
         visibleGroupIds.add(item.groupId)
       }
-
-      if (item.parentItemId) {
-        markItemVisible(item.parentItemId)
-      }
     }
 
     for (const [id, item] of items) {
