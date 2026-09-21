@@ -88,9 +88,33 @@ const open = ref(false)
 </template>
 ```
 
+## Exclusive Open
+
+By default, opening one cell closes other cells in the same `group` (default `"default"`). Set `exclusive` to `false` or use different `group` values when multiple cells should stay open.
+
+```vue demo
+<template>
+  <PStack direction="vertical" class="gap-2">
+    <PSwipeCell class="border">
+      <div class="h-10 px-3 flex items-center bg-background text-sm">Row A</div>
+      <template #suffix>
+        <button class="h-full px-4 bg-red-900 text-sm text-white">Delete</button>
+      </template>
+    </PSwipeCell>
+
+    <PSwipeCell class="border">
+      <div class="h-10 px-3 flex items-center bg-background text-sm">Row B</div>
+      <template #suffix>
+        <button class="h-full px-4 bg-red-900 text-sm text-white">Delete</button>
+      </template>
+    </PSwipeCell>
+  </PStack>
+</template>
+```
+
 ## Over Swipe
 
-Use `over-swipe-threshold` and the `over-swipe` event to trigger a default action when the release distance is far beyond the action slot width. The event is only emitted after the gesture ends. Set `close-on-over-swipe` to clear the swipe state after the event is emitted.
+Offset is hard-clamped to the action width. Releasing at full open (`over-swipe-threshold`, default `1`) emits `over-swipe`. Slot props `progress` / `overSwipe` follow the same ratio.
 
 ```vue demo
 <script setup>
@@ -109,7 +133,6 @@ function onOverSwipe(event) {
   <PStack direction="vertical">
     <PSwipeCell
       class="border"
-      :over-swipe-threshold="1.8"
       close-on-over-swipe
       @over-swipe="onOverSwipe"
     >
@@ -118,7 +141,7 @@ function onOverSwipe(event) {
       </div>
 
       <template #prefix="{ overSwipe }">
-        <div class="relative flex h-full">
+        <div class="relative flex h-full w-full">
           <div class="flex h-full">
             <button class="h-full px-4 bg-green-800 text-sm text-white">
               Done
@@ -138,7 +161,7 @@ function onOverSwipe(event) {
       </template>
 
       <template #suffix="{ overSwipe }">
-        <div class="relative flex h-full">
+        <div class="relative flex h-full w-full">
           <div class="flex h-full">
             <button class="h-full px-4 bg-amber-800 text-sm text-white">
               Mark
@@ -163,7 +186,7 @@ function onOverSwipe(event) {
 
 ## Before Close
 
-Use `before-close` to control whether the cell can close. The callback receives the close trigger: `left`, `right`, `content`, or `outside`.
+Use `before-close` to control whether the cell can close. While open, a rejected close also blocks starting a new swipe (locked-open). The callback receives the close trigger: `prefix`, `suffix`, `content`, or `outside`.
 
 ```vue demo
 <script setup>
@@ -184,7 +207,7 @@ async function beforeClose() {
       :before-close="beforeClose"
     >
       <div class="h-10 px-3 flex items-center bg-background text-sm">
-        Turn off locked before closing
+        Turn off locked before closing or swiping
       </div>
 
       <template #suffix>
@@ -204,14 +227,15 @@ async function beforeClose() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | as | `string \| object` | `div` | - |
-| disabled | `boolean` | - | Disable swipe gestures. |
+| disabled | `boolean` | - | Disable swipe gestures and click-to-close. |
 | model-value | `'prefix' \| 'suffix' \| false` | `false` | Controlled open side. |
 | threshold | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |
-| over-swipe-threshold | `number` | `1.5` | Ratio of action slot width needed to emit `over-swipe`. |
+| over-swipe-threshold | `number` | `1` | Ratio of action slot width needed to emit `over-swipe` (offset is clamped to width, so values above `1` never trigger). |
 | close-on-over-swipe | `boolean` | `false` | Close the cell after `over-swipe` is emitted. |
 | close-on-click | `boolean` | `true` | Close the cell when clicking the content while it is open. |
-| before-close | `(trigger: 'left' \| 'right' \| 'content' \| 'outside') => boolean \| PromiseLike<boolean>` | - | Return `false` to prevent the cell from closing. |
-| root-class | `ComponentClass` | - | Class applied to the root element. |
+| exclusive | `boolean` | `true` | Close other cells in the same `group` when this one opens. |
+| group | `string` | `'default'` | Exclusive group id. |
+| before-close | `(trigger: 'prefix' \| 'suffix' \| 'content' \| 'outside') => boolean \| PromiseLike<boolean>` | - | Return `false` to prevent closing and to block swipe while open. |
 | content-class | `ComponentClass` | - | Class applied to the content element. |
 | prefix-class | `ComponentClass` | - | Class applied to the prefix action wrapper. |
 | suffix-class | `ComponentClass` | - | Class applied to the suffix action wrapper. |
@@ -222,7 +246,7 @@ async function beforeClose() {
 | --- | --- | --- |
 | open | `(side: 'prefix' \| 'suffix') => void` | Emitted when the cell opens. |
 | close | `() => void` | Emitted when the cell closes. |
-| over-swipe | `(state: SwipeCellOverSwipeState) => void` | Emitted after release when the final drag distance reaches the over-swipe threshold. |
+| over-swipe | `(state: SwipeCellOverSwipeState) => void` | Emitted after release when drag distance reaches the over-swipe threshold. |
 | update:modelValue | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
 
 ## Slots
@@ -232,3 +256,10 @@ async function beforeClose() {
 | default | Cell content. |
 | prefix | Left action area. Enables right swipe when configured. Slot props: `side`, `active`, `distance`, `progress`, `overSwipe`. |
 | suffix | Right action area. Enables left swipe when configured. Slot props: `side`, `active`, `distance`, `progress`, `overSwipe`. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| open | `(side: 'prefix' \| 'suffix') => Promise<boolean>` | Open a side imperatively. |
+| close | `(trigger?: SwipeCellCloseTrigger) => Promise<boolean>` | Close imperatively. |

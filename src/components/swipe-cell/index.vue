@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import type {
+  SwipeCellCloseTrigger,
   SwipeCellEmits,
-  SwipeCellOverSwipeState,
   SwipeCellProps,
   SwipeCellSide,
   SwipeCellSlotState,
-  SwipeCellCloseTrigger,
 } from './types'
-import type { CSSProperties } from 'vue'
-import { computed, onMounted, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
+import { useResizeObserver } from '../../composables/use-browser-observer'
 import { useOutsideClick } from '../../composables/use-outside-click'
+import { getElement } from '../../utils/dom'
+import { exclusiveOpen, registerSwipeCell } from './instances'
+import type { SwipeCellEntry } from './instances'
 
 defineOptions({
   name: 'PSwipeCell',
@@ -24,119 +26,189 @@ const props = withDefaults(defineProps<SwipeCellProps>(), {
   as: 'div',
   modelValue: false,
   threshold: 0.5,
-  overSwipeThreshold: 1.5,
+  overSwipeThreshold: 1,
   closeOnOverSwipe: false,
   closeOnClick: true,
+  exclusive: true,
+  group: 'default',
 })
 
 const emits = defineEmits<SwipeCellEmits>()
 
-const wrapperRef = shallowRef<HTMLElement>()
+const rootRef = shallowRef()
+const contentRef = shallowRef<HTMLElement>()
 const prefixRef = shallowRef<HTMLElement>()
 const suffixRef = shallowRef<HTMLElement>()
 
-const offset = shallowRef(0)
-const rawOffset = shallowRef(0)
+let offset = 0
+let openToken = 0
+let alive = true
+
 const dragging = shallowRef(false)
 const openedSide = shallowRef<SwipeCellSide | false>(props.modelValue)
 const prefixWidth = shallowRef(0)
 const suffixWidth = shallowRef(0)
+
+const prefixSlotState = shallowReactive<SwipeCellSlotState>({
+  side: 'prefix',
+  active: false,
+  distance: 0,
+  progress: 0,
+  overSwipe: false,
+})
+
+const suffixSlotState = shallowReactive<SwipeCellSlotState>({
+  side: 'suffix',
+  active: false,
+  distance: 0,
+  progress: 0,
+  overSwipe: false,
+})
 
 let pointerState: {
   id: number
   startX: number
   startY: number
   startOffset: number
-  startSide: SwipeCellSide | false
   axis: 'pending' | 'accepted' | 'rejected'
   moved: boolean
   target: Node
 } | null = null
 
-const hasPrefix = computed(() => prefixWidth.value > 0)
-const hasSuffix = computed(() => suffixWidth.value > 0)
-const currentSide = computed<SwipeCellSide | false>(() => {
-  if (offset.value > 0) {
-    return 'prefix'
-  }
+const cellEntry: SwipeCellEntry = {
+  getGroup: () => props.group,
+  close: (trigger) => {
+    void setOpen(false, trigger)
+  },
+}
 
-  if (offset.value < 0) {
-    return 'suffix'
-  }
+const unregisterCell = registerSwipeCell(cellEntry)
 
-  return false
-})
+function getRootEl() {
+  return getElement(rootRef)
+}
 
-const maxPrefixOffset = computed(() => (hasPrefix.value ? prefixWidth.value : 0))
-const maxSuffixOffset = computed(() => (hasSuffix.value ? suffixWidth.value : 0))
+function applyOffset(next: number) {
+  offset = next
 
-const wrapperStyle = computed<CSSProperties>(() => ({
-  transform: `translate3d(${offset.value}px, 0, 0)`,
-}))
-
-const prefixSlotState = computed(() => getSlotState('prefix'))
-const suffixSlotState = computed(() => getSlotState('suffix'))
-
-function getSlotState(side: SwipeCellSide): SwipeCellSlotState {
-  const width = getSideWidth(side)
-  const sideOffset = side === 'prefix' ? rawOffset.value : -rawOffset.value
-  const distance = Math.max(0, sideOffset)
-  const triggerDistance = width * props.overSwipeThreshold
-
-  return {
-    side,
-    active: distance > 0,
-    distance,
-    progress: triggerDistance > 0 ? Math.min(distance / triggerDistance, 1) : 0,
-    overSwipe: triggerDistance > 0 && distance >= triggerDistance,
+  if (contentRef.value) {
+    contentRef.value.style.transform = `translate3d(${next}px, 0, 0)`
   }
 }
 
-function resolveSide(value: number): SwipeCellSide | false {
-  if (value > 0 && hasPrefix.value) {
-    return 'prefix'
+function clampOffset(raw: number) {
+  if (raw > 0) {
+    return prefixWidth.value > 0 ? Math.min(raw, prefixWidth.value) : 0
   }
 
-  if (value < 0 && hasSuffix.value) {
-    return 'suffix'
-  }
-
-  return false
-}
-
-function getSideWidth(side: SwipeCellSide) {
-  return side === 'prefix' ? prefixWidth.value : suffixWidth.value
-}
-
-function getOpenOffset(side: SwipeCellSide | false) {
-  if (side === 'prefix') {
-    return maxPrefixOffset.value
-  }
-
-  if (side === 'suffix') {
-    return -maxSuffixOffset.value
+  if (raw < 0) {
+    return suffixWidth.value > 0 ? Math.max(raw, -suffixWidth.value) : 0
   }
 
   return 0
 }
 
-async function setOpen(side: SwipeCellSide | false, trigger?: SwipeCellCloseTrigger) {
-  if (side) {
-    updateSlotWidth()
+function openOffset(side: SwipeCellSide | false) {
+  if (side === 'prefix') {
+    return prefixWidth.value
   }
 
-  const oldSide = openedSide.value || currentSide.value
+  if (side === 'suffix') {
+    return -suffixWidth.value
+  }
 
-  if (!side && !oldSide) {
+  return 0
+}
+
+function sideOf(value: number): SwipeCellSide | false {
+  if (value > 0 && prefixWidth.value > 0) {
+    return 'prefix'
+  }
+
+  if (value < 0 && suffixWidth.value > 0) {
+    return 'suffix'
+  }
+
+  return false
+}
+
+function syncSlots() {
+  for (const side of ['prefix', 'suffix'] as const) {
+    const state = side === 'prefix' ? prefixSlotState : suffixSlotState
+    const width = side === 'prefix' ? prefixWidth.value : suffixWidth.value
+    const distance = Math.max(0, Math.round(side === 'prefix' ? offset : -offset))
+    const trigger = width * props.overSwipeThreshold
+    const progress = trigger > 0 ? Math.round(Math.min(distance / trigger, 1) * 100) / 100 : 0
+    const overSwipe = trigger > 0 && distance >= trigger
+    const active = distance > 0
+
+    if (
+      state.active === active &&
+      state.distance === distance &&
+      state.progress === progress &&
+      state.overSwipe === overSwipe
+    ) {
+      continue
+    }
+
+    state.active = active
+    state.distance = distance
+    state.progress = progress
+    state.overSwipe = overSwipe
+  }
+}
+
+function syncOpenOffset() {
+  applyOffset(openOffset(openedSide.value))
+  syncSlots()
+}
+
+function measureWidths() {
+  if (dragging.value) {
+    return
+  }
+
+  prefixWidth.value = prefixRef.value?.offsetWidth ?? 0
+  suffixWidth.value = suffixRef.value?.offsetWidth ?? 0
+
+  if (openedSide.value) {
+    syncOpenOffset()
+  }
+}
+
+async function setOpen(side: SwipeCellSide | false, trigger?: SwipeCellCloseTrigger) {
+  const token = ++openToken
+  const prev = openedSide.value || sideOf(offset)
+
+  if (!side && !prev) {
     return true
   }
 
-  if (!side && trigger && typeof props.beforeClose === 'function') {
-    const isAllowed = await props.beforeClose(trigger)
+  if (side && side === openedSide.value) {
+    syncOpenOffset()
+    return true
+  }
 
-    if (!isAllowed) {
+  if (!side && trigger && props.beforeClose) {
+    const allowed = await props.beforeClose(trigger)
+
+    if (!alive || token !== openToken) {
+      return false
+    }
+
+    if (!allowed) {
       syncOpenOffset()
       return false
+    }
+  } else if (!alive || token !== openToken) {
+    return false
+  }
+
+  if (side) {
+    measureWidths()
+
+    if (props.exclusive) {
+      exclusiveOpen(cellEntry)
     }
   }
 
@@ -146,102 +218,34 @@ async function setOpen(side: SwipeCellSide | false, trigger?: SwipeCellCloseTrig
 
   if (side) {
     emits('open', side)
-    return true
+  } else {
+    emits('close')
   }
 
-  emits('close')
   return true
 }
 
-function limitOffset(value: number) {
-  if (value > 0 && !hasPrefix.value) {
-    return 0
-  }
-
-  if (value < 0 && !hasSuffix.value) {
-    return 0
-  }
-
-  if (value > 0) {
-    return Math.min(value, prefixWidth.value)
-  }
-
-  if (value < 0) {
-    return Math.max(value, -suffixWidth.value)
-  }
-
-  return 0
-}
-
-function resolveReleaseSide() {
-  if (offset.value > 0 && hasPrefix.value) {
-    return offset.value >= prefixWidth.value * props.threshold ? 'prefix' : false
-  }
-
-  if (offset.value < 0 && hasSuffix.value) {
-    return Math.abs(offset.value) >= suffixWidth.value * props.threshold ? 'suffix' : false
-  }
-
-  return false
-}
-
-function resolveOverSwipeState(): SwipeCellOverSwipeState | null {
-  const side = resolveSide(rawOffset.value)
-
-  if (!side) {
-    return null
-  }
-
-  const width = getSideWidth(side)
-  const distance = Math.abs(rawOffset.value)
-
-  if (width === 0 || distance < width * props.overSwipeThreshold) {
-    return null
-  }
-
-  return {
-    side,
-    distance,
-    width,
-    direction: side === 'prefix' ? 'right' : 'left',
-  }
-}
-
-function updateSlotWidth() {
-  if (dragging.value) {
-    return
-  }
-
-  prefixWidth.value = prefixRef.value?.offsetWidth ?? 0
-  suffixWidth.value = suffixRef.value?.offsetWidth ?? 0
-}
-
-function syncOpenOffset() {
-  offset.value = getOpenOffset(openedSide.value)
-  rawOffset.value = offset.value
-}
-
-function close(trigger: SwipeCellCloseTrigger) {
-  setOpen(false, trigger)
+function close(trigger: SwipeCellCloseTrigger = 'outside') {
+  return setOpen(false, trigger)
 }
 
 function closeByTarget(target: Node) {
-  if (!currentSide.value) {
+  if (props.disabled || !openedSide.value) {
     return
   }
 
   if (prefixRef.value?.contains(target)) {
-    close('left')
+    void close('prefix')
     return
   }
 
   if (suffixRef.value?.contains(target)) {
-    close('right')
+    void close('suffix')
     return
   }
 
   if (props.closeOnClick) {
-    close('content')
+    void close('content')
   }
 }
 
@@ -253,14 +257,16 @@ function onWrapperClick(ev: MouseEvent) {
   closeByTarget(ev.target as Node)
 }
 
+const moveOpts: AddEventListenerOptions = { passive: false }
+
 function bindPointerEvents() {
-  window.addEventListener('pointermove', onPointerMove as EventListener)
+  window.addEventListener('pointermove', onPointerMove as EventListener, moveOpts)
   window.addEventListener('pointerup', onPointerUp as EventListener)
   window.addEventListener('pointercancel', onPointerCancel as EventListener)
 }
 
 function unbindPointerEvents() {
-  window.removeEventListener('pointermove', onPointerMove as EventListener)
+  window.removeEventListener('pointermove', onPointerMove as EventListener, moveOpts)
   window.removeEventListener('pointerup', onPointerUp as EventListener)
   window.removeEventListener('pointercancel', onPointerCancel as EventListener)
 }
@@ -269,14 +275,6 @@ function resetPointerState() {
   unbindPointerEvents()
   pointerState = null
   dragging.value = false
-}
-
-function resolveAxisState(dx: number, dy: number) {
-  if (Math.hypot(dx, dy) < 10) {
-    return 'pending'
-  }
-
-  return Math.abs(dx) >= Math.abs(dy) ? 'accepted' : 'rejected'
 }
 
 function onPointerDown(ev: PointerEvent) {
@@ -290,20 +288,55 @@ function onPointerDown(ev: PointerEvent) {
     return
   }
 
-  updateSlotWidth()
+  void beginGesture(ev, target)
+}
+
+async function beginGesture(ev: PointerEvent, target: Node) {
+  if (openedSide.value && props.beforeClose) {
+    const pointerId = ev.pointerId
+    let earlyUp = false
+
+    const onEarlyRelease = (releaseEv: PointerEvent) => {
+      if (releaseEv.pointerId === pointerId) {
+        earlyUp = true
+      }
+    }
+
+    window.addEventListener('pointerup', onEarlyRelease, true)
+    window.addEventListener('pointercancel', onEarlyRelease, true)
+
+    let allowed = false
+
+    try {
+      allowed = await props.beforeClose(openedSide.value)
+    } finally {
+      window.removeEventListener('pointerup', onEarlyRelease, true)
+      window.removeEventListener('pointercancel', onEarlyRelease, true)
+    }
+
+    if (!alive || props.disabled || !allowed) {
+      return
+    }
+
+    if (earlyUp) {
+      closeByTarget(target)
+      return
+    }
+  }
+
+  openToken += 1
+  measureWidths()
   pointerState = {
     id: ev.pointerId,
     startX: ev.clientX,
     startY: ev.clientY,
-    startOffset: offset.value,
-    startSide: currentSide.value,
+    startOffset: offset,
     axis: 'pending',
     moved: false,
     target,
   }
-  rawOffset.value = offset.value
 
-  wrapperRef.value?.setPointerCapture?.(ev.pointerId)
+  getRootEl()?.setPointerCapture?.(ev.pointerId)
   bindPointerEvents()
 }
 
@@ -318,11 +351,11 @@ function onPointerMove(ev: PointerEvent) {
   const dy = ev.clientY - state.startY
 
   if (state.axis === 'pending') {
-    state.axis = resolveAxisState(dx, dy)
-  }
+    if (Math.hypot(dx, dy) < 10) {
+      return
+    }
 
-  if (state.axis === 'pending') {
-    return
+    state.axis = Math.abs(dx) >= Math.abs(dy) ? 'accepted' : 'rejected'
   }
 
   state.moved = true
@@ -331,37 +364,48 @@ function onPointerMove(ev: PointerEvent) {
     return
   }
 
-  dragging.value = true
-  rawOffset.value = state.startOffset + dx
-  offset.value = limitOffset(rawOffset.value)
+  if (ev.cancelable) {
+    ev.preventDefault()
+  }
+
+  if (!dragging.value) {
+    dragging.value = true
+  }
+
+  applyOffset(clampOffset(state.startOffset + dx))
+  syncSlots()
 }
 
 async function releaseSwipe() {
-  const state = pointerState
-
-  if (!state) {
-    return
-  }
-
-  const overSwipeState = resolveOverSwipeState()
-
   dragging.value = false
 
-  if (overSwipeState) {
-    emits('over-swipe', overSwipeState)
+  const side = sideOf(offset)
+  const width = side === 'prefix' ? prefixWidth.value : side === 'suffix' ? suffixWidth.value : 0
+  const distance = Math.abs(offset)
+
+  if (side && width > 0 && distance >= width * props.overSwipeThreshold) {
+    emits('over-swipe', {
+      side,
+      distance,
+      width,
+      direction: side === 'prefix' ? 'right' : 'left',
+    })
 
     if (props.closeOnOverSwipe) {
-      await setOpen(false, overSwipeState.side === 'prefix' ? 'left' : 'right')
+      await setOpen(false, side)
       return
     }
   }
 
-  if (state.startSide && resolveSide(rawOffset.value) !== state.startSide) {
-    await setOpen(false, state.startSide === 'prefix' ? 'left' : 'right')
+  const next =
+    side && width > 0 && Math.min(distance, width) >= width * props.threshold ? side : false
+
+  if (!next && openedSide.value) {
+    await setOpen(false, openedSide.value)
     return
   }
 
-  await setOpen(resolveReleaseSide())
+  await setOpen(next)
 }
 
 function onPointerUp(ev: PointerEvent) {
@@ -371,14 +415,20 @@ function onPointerUp(ev: PointerEvent) {
     return
   }
 
-  if (state.axis === 'accepted') {
+  const shouldRelease = state.axis === 'accepted'
+  const shouldTapClose = !state.moved
+
+  getRootEl()?.releasePointerCapture?.(ev.pointerId)
+  resetPointerState()
+
+  if (shouldRelease) {
     void releaseSwipe()
-  } else if (!state.moved) {
-    closeByTarget(state.target)
+    return
   }
 
-  wrapperRef.value?.releasePointerCapture?.(ev.pointerId)
-  resetPointerState()
+  if (shouldTapClose) {
+    closeByTarget(state.target)
+  }
 }
 
 function onPointerCancel(ev: PointerEvent) {
@@ -388,27 +438,41 @@ function onPointerCancel(ev: PointerEvent) {
     return
   }
 
+  openToken += 1
   syncOpenOffset()
-  wrapperRef.value?.releasePointerCapture?.(ev.pointerId)
+  getRootEl()?.releasePointerCapture?.(ev.pointerId)
   resetPointerState()
 }
 
-useOutsideClick(wrapperRef, {
+useOutsideClick(getRootEl, {
   eventName: 'pointerdown',
   listenerOptions: { capture: true },
-  enabled: () => Boolean(openedSide.value),
+  enabled: () => Boolean(openedSide.value) && !props.disabled,
   onTrigger: () => {
-    close('outside')
+    void close('outside')
   },
 })
+
+useResizeObserver([prefixRef, suffixRef], measureWidths)
 
 watch(
   () => props.modelValue,
   (value) => {
+    openToken += 1
+
+    if (value === openedSide.value) {
+      syncOpenOffset()
+      return
+    }
+
     openedSide.value = value
 
     if (value) {
-      updateSlotWidth()
+      measureWidths()
+
+      if (props.exclusive) {
+        exclusiveOpen(cellEntry)
+      }
     }
 
     syncOpenOffset()
@@ -416,52 +480,63 @@ watch(
 )
 
 onMounted(() => {
+  measureWidths()
+
   if (props.modelValue) {
-    updateSlotWidth()
     syncOpenOffset()
+
+    if (props.exclusive) {
+      exclusiveOpen(cellEntry)
+    }
   }
 })
 
 onBeforeUnmount(() => {
+  alive = false
+  openToken += 1
+  unregisterCell()
   resetPointerState()
+})
+
+defineExpose({
+  close,
+  open: (side: SwipeCellSide) => setOpen(side),
 })
 </script>
 
 <template>
   <Component
     :is="as"
-    class="pxd-swipe-cell w-full max-w-full touch-pan-y overflow-hidden"
+    ref="rootRef"
+    class="pxd-swipe-cell relative w-full max-w-full touch-pan-y overflow-hidden"
     v-bind="$attrs"
+    @pointerdown="onPointerDown"
+    @click="onWrapperClick"
   >
     <div
-      ref="wrapperRef"
-      class="pxd-swipe-cell--wrapper relative motion-safe:transition-transform"
-      :class="{ 'transition-none! select-none': dragging }"
-      :style="wrapperStyle"
-      @pointerdown="onPointerDown"
-      @click="onWrapperClick"
+      v-if="$slots.prefix"
+      ref="prefixRef"
+      class="pxd-swipe-cell--prefix inset-y-0 left-0 absolute z-0 flex h-full items-center"
+      :class="prefixClass"
     >
-      <div
-        v-if="$slots.prefix"
-        ref="prefixRef"
-        class="pxd-swipe-cell--prefix inset-y-0 left-0 absolute z-0 flex h-full w-(--swipe-cell-slow-width) -translate-x-full items-center"
-        :class="prefixClass"
-      >
-        <slot name="prefix" v-bind="prefixSlotState" />
-      </div>
+      <slot name="prefix" v-bind="prefixSlotState" />
+    </div>
 
-      <div
-        v-if="$slots.suffix"
-        ref="suffixRef"
-        class="pxd-swipe-cell--suffix inset-y-0 right-0 absolute z-0 flex h-full w-(--swipe-cell-slow-width) translate-x-full items-center"
-        :class="suffixClass"
-      >
-        <slot name="suffix" v-bind="suffixSlotState" />
-      </div>
+    <div
+      ref="contentRef"
+      class="pxd-swipe-cell--content relative z-1 bg-background-100 motion-safe:transition-transform"
+      :class="[{ 'transition-none! select-none': dragging }, contentClass]"
+    >
+      <slot />
+    </div>
 
-      <div class="pxd-swipe-cell--content relative z-1 bg-background-100" :class="contentClass">
-        <slot />
-      </div>
+    <div
+      v-if="$slots.suffix"
+      ref="suffixRef"
+      class="pxd-swipe-cell--suffix inset-y-0 right-0 absolute z-0 flex h-full items-center"
+      :class="suffixClass"
+    >
+      <slot name="suffix" v-bind="suffixSlotState" />
     </div>
   </Component>
 </template>

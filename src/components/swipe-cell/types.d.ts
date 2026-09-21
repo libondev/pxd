@@ -2,7 +2,7 @@ import type { Awaitable, ComponentAs, ComponentClass } from '../../types/shared'
 
 export type SwipeCellSide = 'prefix' | 'suffix'
 export type SwipeCellDirection = 'left' | 'right'
-export type SwipeCellCloseTrigger = 'left' | 'right' | 'content' | 'outside'
+export type SwipeCellCloseTrigger = SwipeCellSide | 'content' | 'outside'
 export type SwipeCellBeforeClose = (trigger: SwipeCellCloseTrigger) => Awaitable<boolean>
 
 export interface SwipeCellOverSwipeState {
@@ -25,9 +25,18 @@ export interface SwipeCellProps {
   disabled?: boolean
   modelValue?: SwipeCellSide | false
   threshold?: number
+  /**
+   * Ratio of action width for over-swipe. Clamped offset makes values > 1 unreachable.
+   * @default 1
+   */
   overSwipeThreshold?: number
   closeOnOverSwipe?: boolean
   closeOnClick?: boolean
+  /** @default true */
+  exclusive?: boolean
+  /** @default 'default' */
+  group?: string
+  /** Return false to prevent close; while open also blocks starting a swipe. */
   beforeClose?: SwipeCellBeforeClose
   contentClass?: ComponentClass
   prefixClass?: ComponentClass
