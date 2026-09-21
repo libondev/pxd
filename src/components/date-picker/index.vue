@@ -267,7 +267,6 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :placeholder="placeholder"
       :default-suffix-style="false"
       :data-focusing="popoverVisible"
-      :select-on-focus="!isAdaptive"
       v-bind="$attrs"
       @update:model-value="onDraftInput"
       @clear="onInputValueChange"

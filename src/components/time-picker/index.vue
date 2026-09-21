@@ -290,7 +290,6 @@ onBeforeUnmount(() => {
       :placeholder="placeholder"
       :default-suffix-style="false"
       :data-focusing="popoverVisible"
-      :select-on-focus="!isAdaptive"
       v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
