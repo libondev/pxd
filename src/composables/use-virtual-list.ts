@@ -1,6 +1,6 @@
 import type { MaybeElementRef } from '../types/shared'
 import type { VirtualItem } from '@tanstack/virtual-core'
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import {
   elementScroll,
   observeElementOffset,
@@ -24,6 +24,7 @@ const DEFAULTS = {
 } as const
 
 export interface VirtualListOptions {
+  enabled?: MaybeRefOrGetter<boolean>
   status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
   items?: any[]
@@ -44,6 +45,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
 
   const triggerVersion = shallowRef(0)
 
+  const getEnabled = () => toValue(options.enabled) !== false
+
   function getItemKey(index: number): string | number {
     if (options.dataKey) {
       const item = options.items?.[index]
@@ -57,8 +60,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
   }
 
   const virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
-    count: options.items?.length ?? 0,
-    getScrollElement: () => toValue(containerRef) ?? null,
+    count: 0,
+    getScrollElement: () => (getEnabled() ? (toValue(containerRef) ?? null) : null),
     estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
     getItemKey,
     overscan: options.overScan ?? DEFAULTS.overScan,
@@ -69,6 +72,10 @@ export function useVirtualList<Options extends VirtualListOptions>(
     observeElementOffset,
     scrollToFn: elementScroll,
     onChange: (instance) => {
+      if (!getEnabled()) {
+        return
+      }
+
       triggerVersion.value++
 
       const { status = DEFAULTS.status, items } = options
@@ -105,15 +112,25 @@ export function useVirtualList<Options extends VirtualListOptions>(
 
   const virtualItems = computed<VirtualListItem[]>(() => {
     void triggerVersion.value
+    if (!getEnabled()) {
+      return []
+    }
     return virtualizer.getVirtualItems() as VirtualListItem[]
   })
 
   const totalSize = computed(() => {
     void triggerVersion.value
+    if (!getEnabled()) {
+      return 0
+    }
     return virtualizer.getTotalSize()
   })
 
   function measureElement(el: Element | ComponentPublicInstance | null) {
+    if (!getEnabled()) {
+      return
+    }
+
     if (!el) {
       virtualizer.measureElement(null)
       return
@@ -124,42 +141,101 @@ export function useVirtualList<Options extends VirtualListOptions>(
   }
 
   function updateVirtualizer() {
+    const enabled = getEnabled()
+
     virtualizer.setOptions({
       ...virtualizer.options,
-      count: options.items?.length ?? 0,
+      count: enabled ? (options.items?.length ?? 0) : 0,
       estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
       getItemKey,
+      overscan: options.overScan ?? DEFAULTS.overScan,
       lanes: options.columnCount ?? DEFAULTS.columnCount,
       gap: options.columnGap ?? DEFAULTS.columnGap,
+      getScrollElement: () => (enabled ? (toValue(containerRef) ?? null) : null),
     })
 
+    if (enabled) {
+      virtualizer._willUpdate()
+    }
+
+    triggerVersion.value++
+  }
+
+  function mountObservers() {
+    if (cleanup || !getEnabled()) {
+      return
+    }
+
     virtualizer._willUpdate()
+    cleanup = virtualizer._didMount()
+  }
+
+  function unmountObservers() {
+    cleanup?.()
+    cleanup = undefined
     triggerVersion.value++
   }
 
   watch(
-    () => [options.itemSize, options.dataKey, options.columnCount, options.columnGap],
-    updateVirtualizer,
+    () => [
+      getEnabled(),
+      options.itemSize,
+      options.dataKey,
+      options.columnCount,
+      options.columnGap,
+      options.overScan,
+    ],
+    () => {
+      if (getEnabled()) {
+        updateVirtualizer()
+        mountObservers()
+      } else {
+        unmountObservers()
+        updateVirtualizer()
+      }
+    },
   )
   watch(() => [options.items, options.items?.length], updateVirtualizer)
 
   onMounted(() => {
-    virtualizer._willUpdate()
-    cleanup = virtualizer._didMount()
+    if (getEnabled()) {
+      mountObservers()
+      updateVirtualizer()
+    }
   })
 
   onScopeDispose(() => {
-    cleanup?.()
-    cleanup = undefined
+    unmountObservers()
   })
+
+  function scrollToIndex(...args: Parameters<typeof virtualizer.scrollToIndex>) {
+    if (!getEnabled()) {
+      return
+    }
+    virtualizer.scrollToIndex(...args)
+  }
+
+  function scrollToOffset(...args: Parameters<typeof virtualizer.scrollToOffset>) {
+    if (!getEnabled()) {
+      return
+    }
+    virtualizer.scrollToOffset(...args)
+  }
+
+  function scrollBy(...args: Parameters<typeof virtualizer.scrollBy>) {
+    if (!getEnabled()) {
+      return
+    }
+    virtualizer.scrollBy(...args)
+  }
 
   return {
     virtualItems,
     totalSize,
     measureElement,
-    scrollToIndex: virtualizer.scrollToIndex.bind(virtualizer),
-    scrollToOffset: virtualizer.scrollToOffset.bind(virtualizer),
-    scrollBy: virtualizer.scrollBy.bind(virtualizer),
+    scrollToIndex,
+    scrollToOffset,
+    scrollBy,
     getVirtualizer: () => virtualizer,
   }
 }
