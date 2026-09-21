@@ -230,7 +230,7 @@ async function beforeClose() {
 | disabled | `boolean` | - | Disable swipe gestures and click-to-close. |
 | model-value | `'prefix' \| 'suffix' \| false` | `false` | Controlled open side. |
 | threshold | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |
-| over-swipe-threshold | `number` | `1` | Ratio of action slot width needed to emit `over-swipe` (offset is clamped to width, so values above `1` never trigger). |
+| over-swipe-threshold | `number` | `1.5` | Finger-travel ratio of action width needed to emit `over-swipe` (visual offset stays clamped). |
 | close-on-over-swipe | `boolean` | `false` | Close the cell after `over-swipe` is emitted. |
 | close-on-click | `boolean` | `true` | Close the cell when clicking the content while it is open. |
 | exclusive | `boolean` | `true` | Close other cells in the same `group` when this one opens. |
