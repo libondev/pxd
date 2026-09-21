@@ -6,7 +6,7 @@ import type {
   SwipeCellSide,
   SwipeCellSlotState,
 } from './types'
-import { onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { getElement } from '../../utils/dom'
@@ -378,6 +378,7 @@ function onPointerMove(ev: PointerEvent) {
 
 async function releaseSwipe() {
   dragging.value = false
+  await nextTick()
 
   const side = sideOf(offset)
   const width = side === 'prefix' ? prefixWidth.value : side === 'suffix' ? suffixWidth.value : 0

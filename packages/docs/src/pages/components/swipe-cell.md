@@ -30,7 +30,7 @@ The cell only allows swiping toward the side that has a configured slot.
 <template>
   <PSwipeCell class="border">
     <div class="h-10 px-3 flex items-center bg-background text-sm">
-      Swipe right to complete, swipe left to delete
+      Swipe left or swipe right
     </div>
 
     <template #prefix>
