@@ -26,8 +26,9 @@ export interface SwipeCellProps {
   modelValue?: SwipeCellSide | false
   threshold?: number
   /**
-   * Ratio of action width for over-swipe. Clamped offset makes values > 1 unreachable.
-   * @default 1
+   * Finger-travel ratio of action width needed to emit `over-swipe`.
+   * Visual offset stays clamped to the action width.
+   * @default 1.8
    */
   overSwipeThreshold?: number
   closeOnOverSwipe?: boolean

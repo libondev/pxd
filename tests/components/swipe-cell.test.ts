@@ -131,12 +131,12 @@ describe('swipe-cell', () => {
     wrapper.unmount()
   })
 
-  it('should emit over-swipe on release when final drag distance reaches full open', async () => {
+  it('should emit over-swipe on release when finger travel exceeds threshold', async () => {
     prefixWidth = 100
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1,
+        overSwipeThreshold: 1.5,
       },
       slots: {
         default: 'Content',
@@ -147,12 +147,15 @@ describe('swipe-cell', () => {
     await nextTick()
 
     swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
-    window.dispatchEvent(pointer('pointermove', 100))
+    window.dispatchEvent(pointer('pointermove', 160))
     await nextTick()
 
     expect(wrapper.emitted('over-swipe')).toBeUndefined()
+    expect(wrapper.find('.pxd-swipe-cell--content').attributes('style')).toContain(
+      'translate3d(100px, 0, 0)',
+    )
 
-    window.dispatchEvent(pointer('pointerup', 100))
+    window.dispatchEvent(pointer('pointerup', 160))
     await nextTick()
 
     expect(wrapper.emitted('over-swipe')).toEqual([
@@ -160,7 +163,7 @@ describe('swipe-cell', () => {
         {
           side: 'prefix',
           direction: 'right',
-          distance: 100,
+          distance: 160,
           width: 100,
         },
       ],
@@ -175,7 +178,7 @@ describe('swipe-cell', () => {
       props: {
         exclusive: false,
         closeOnOverSwipe: true,
-        overSwipeThreshold: 1,
+        overSwipeThreshold: 1.5,
       },
       slots: {
         default: 'Content',
@@ -186,8 +189,8 @@ describe('swipe-cell', () => {
     await nextTick()
 
     swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
-    window.dispatchEvent(pointer('pointermove', 100))
-    window.dispatchEvent(pointer('pointerup', 100))
+    window.dispatchEvent(pointer('pointermove', 160))
+    window.dispatchEvent(pointer('pointerup', 160))
     await nextTick()
 
     expect(wrapper.emitted('over-swipe')).toBeTruthy()
@@ -205,7 +208,7 @@ describe('swipe-cell', () => {
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1,
+        overSwipeThreshold: 1.5,
       },
       slots: {
         default: 'Content',
@@ -216,14 +219,14 @@ describe('swipe-cell', () => {
     await nextTick()
 
     swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
-    window.dispatchEvent(pointer('pointermove', 100))
+    window.dispatchEvent(pointer('pointermove', 160))
     await nextTick()
 
     expect(prefix).toHaveBeenLastCalledWith(
       expect.objectContaining({
         side: 'prefix',
         active: true,
-        distance: 100,
+        distance: 160,
         progress: 1,
         overSwipe: true,
       }),
@@ -235,12 +238,12 @@ describe('swipe-cell', () => {
     wrapper.unmount()
   })
 
-  it('should not emit over-swipe when final drag distance falls below threshold', async () => {
+  it('should not emit over-swipe when only revealing action buttons', async () => {
     prefixWidth = 100
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1,
+        overSwipeThreshold: 1.5,
       },
       slots: {
         default: 'Content',
@@ -252,15 +255,11 @@ describe('swipe-cell', () => {
 
     swipeTarget(wrapper).dispatchEvent(pointer('pointerdown', 0))
     window.dispatchEvent(pointer('pointermove', 100))
+    window.dispatchEvent(pointer('pointerup', 100))
     await nextTick()
 
     expect(wrapper.emitted('over-swipe')).toBeUndefined()
-
-    window.dispatchEvent(pointer('pointermove', 40))
-    window.dispatchEvent(pointer('pointerup', 40))
-    await nextTick()
-
-    expect(wrapper.emitted('over-swipe')).toBeUndefined()
+    expect(wrapper.emitted('open')).toEqual([['prefix']])
 
     wrapper.unmount()
   })

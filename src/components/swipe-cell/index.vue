@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { SwipeCellEntry } from './instances'
 import type {
   SwipeCellCloseTrigger,
   SwipeCellEmits,
@@ -11,7 +12,6 @@ import { useResizeObserver } from '../../composables/use-browser-observer'
 import { useOutsideClick } from '../../composables/use-outside-click'
 import { getElement } from '../../utils/dom'
 import { exclusiveOpen, registerSwipeCell } from './instances'
-import type { SwipeCellEntry } from './instances'
 
 defineOptions({
   name: 'PSwipeCell',
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<SwipeCellProps>(), {
   as: 'div',
   modelValue: false,
   threshold: 0.5,
-  overSwipeThreshold: 1,
+  overSwipeThreshold: 1.8,
   closeOnOverSwipe: false,
   closeOnClick: true,
   exclusive: true,
@@ -40,9 +40,10 @@ const contentRef = shallowRef<HTMLElement>()
 const prefixRef = shallowRef<HTMLElement>()
 const suffixRef = shallowRef<HTMLElement>()
 
+let alive = true
 let offset = 0
 let openToken = 0
-let alive = true
+let trackOffset = 0
 
 const dragging = shallowRef(false)
 const openedSide = shallowRef<SwipeCellSide | false>(props.modelValue)
@@ -136,7 +137,7 @@ function syncSlots() {
   for (const side of ['prefix', 'suffix'] as const) {
     const state = side === 'prefix' ? prefixSlotState : suffixSlotState
     const width = side === 'prefix' ? prefixWidth.value : suffixWidth.value
-    const distance = Math.max(0, Math.round(side === 'prefix' ? offset : -offset))
+    const distance = Math.max(0, Math.round(side === 'prefix' ? trackOffset : -trackOffset))
     const trigger = width * props.overSwipeThreshold
     const progress = trigger > 0 ? Math.round(Math.min(distance / trigger, 1) * 100) / 100 : 0
     const overSwipe = trigger > 0 && distance >= trigger
@@ -159,7 +160,8 @@ function syncSlots() {
 }
 
 function syncOpenOffset() {
-  applyOffset(openOffset(openedSide.value))
+  trackOffset = openOffset(openedSide.value)
+  applyOffset(trackOffset)
   syncSlots()
 }
 
@@ -330,7 +332,7 @@ async function beginGesture(ev: PointerEvent, target: Node) {
     id: ev.pointerId,
     startX: ev.clientX,
     startY: ev.clientY,
-    startOffset: offset,
+    startOffset: trackOffset,
     axis: 'pending',
     moved: false,
     target,
@@ -372,17 +374,19 @@ function onPointerMove(ev: PointerEvent) {
     dragging.value = true
   }
 
-  applyOffset(clampOffset(state.startOffset + dx))
+  trackOffset = state.startOffset + dx
+  applyOffset(clampOffset(trackOffset))
   syncSlots()
 }
 
 async function releaseSwipe() {
+  // Drop `transition-none` before settling, otherwise transform snaps with no transition.
   dragging.value = false
   await nextTick()
 
-  const side = sideOf(offset)
+  const side = sideOf(trackOffset)
   const width = side === 'prefix' ? prefixWidth.value : side === 'suffix' ? suffixWidth.value : 0
-  const distance = Math.abs(offset)
+  const distance = Math.abs(trackOffset)
 
   if (side && width > 0 && distance >= width * props.overSwipeThreshold) {
     emits('over-swipe', {
@@ -398,8 +402,8 @@ async function releaseSwipe() {
     }
   }
 
-  const next =
-    side && width > 0 && Math.min(distance, width) >= width * props.threshold ? side : false
+  const reveal = Math.min(Math.abs(offset), width)
+  const next = side && width > 0 && reveal >= width * props.threshold ? side : false
 
   if (!next && openedSide.value) {
     await setOpen(false, openedSide.value)
