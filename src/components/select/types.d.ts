@@ -8,6 +8,7 @@ export interface SelectProps {
   error?: boolean | string
   variant?: ButtonVariant
   options?: ListOptions
+  virtual?: boolean
   disabled?: boolean
   multiple?: boolean
   modelValue?: ListModelValue

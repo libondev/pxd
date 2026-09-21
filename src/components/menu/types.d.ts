@@ -3,6 +3,7 @@ import type { ListModelValue, ListOptions } from '../list/types'
 
 export interface MenuProps {
   options?: ListOptions
+  virtual?: boolean
   disabled?: boolean
   multiple?: boolean
   position?: ComponentPosition

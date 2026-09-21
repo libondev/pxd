@@ -45,6 +45,7 @@ const translatedLabel = computed(() => {
     position="bottom"
     :disabled="disabled"
     :multiple="multiple"
+    :virtual="virtual"
     v-bind="$attrs"
     :close-on-press-escape="closeOnPressEscape"
   >

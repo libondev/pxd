@@ -106,6 +106,7 @@ const options = [
 | options | `ListOptions` | - | - |
 | disabled | `boolean` | - | - |
 | multiple | `boolean` | - | - |
+| virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | placeholder | `string` | - | - |
 | label-format | `(items: ListOption[]) => string` | - | - |
 | close-on-press-escape | `boolean` | - | - |

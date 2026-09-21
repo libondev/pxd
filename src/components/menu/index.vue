@@ -88,6 +88,7 @@ function onOptionSelect(item: ListOptionSelected) {
         :value="selectedListValue"
         :options="options"
         :multiple="multiple"
+        :virtual="virtual"
         class="max-h-68 rounded-inherit"
         @change="onOptionSelect"
       >

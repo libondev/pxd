@@ -90,6 +90,7 @@ const options = [
 | --- | --- | --- | --- |
 | model-value | `string` | `''` | Mention HTML: text + `<at key="...">label</at>` |
 | options | `ListOptions` | `[]` | Default options when the popover opens with an empty query |
+| virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | filter-method | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; errors fall back to an empty list |
 | placeholder | `string` | `''` | Editor placeholder |
 | search-placeholder | `string` | `''` | Suggestion search input placeholder |

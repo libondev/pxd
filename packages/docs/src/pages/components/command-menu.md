@@ -58,6 +58,7 @@ const options = [
 | width | `string \| number` | - | - |
 | model-value | `boolean` | `false` | - |
 | options | `ListOptions` | - | - |
+| virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | placeholder | `string` | `` | - |
 | close-on-select-item | `boolean` | `true` | - |
 | close-on-press-escape | `boolean` | `true` | - |

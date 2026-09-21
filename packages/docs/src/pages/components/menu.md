@@ -117,6 +117,7 @@ const options = [
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom-start` | - |
 | model-value | `ListOptionSelected['value'] \| ListOptionSelected['value'][]` | - | - |
 | multiple | `boolean` | - | - |
+| virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | close-on-press-escape | `boolean` | `true` | - |
 
 ## Slots
