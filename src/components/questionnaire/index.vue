@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListOptionSelected } from '../list/types'
+import type { ListModelValue, ListOptionSelected } from '../list/types'
 import type {
   QuestionnaireAnswer,
   QuestionnaireEmits,
@@ -13,6 +13,7 @@ import CrossIcon from '@gdsicon/vue/cross'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { toArray } from '../../utils/format.js'
 import PButton from '../button/index.vue'
 import PInput from '../input/index.vue'
 import PList from '../list/index.vue'
@@ -163,24 +164,14 @@ function onAnswerItemSelect(item: ListOptionSelected) {
     return
   }
 
-  // ignore custom answer option
+  // Freeform row is not a real answer — undo the model update above.
   if (!item.label) {
+    updateCurrentAnswer((answer) => ({
+      ...answer,
+      selected: answer.selected.filter((itemValue) => itemValue !== String(item.value)),
+    }))
     return
   }
-
-  const value = String(item.value)
-
-  updateCurrentAnswer((answer) => {
-    if (question.multiSelect) {
-      const selected = answer.selected.includes(value)
-        ? answer.selected.filter((itemValue) => itemValue !== value)
-        : [...answer.selected, value]
-
-      return { ...answer, selected }
-    }
-
-    return { ...answer, freeText: '', selected: [value] }
-  })
 
   if (
     currentIndex.value === props.questions.length - 1 &&
@@ -192,6 +183,26 @@ function onAnswerItemSelect(item: ListOptionSelected) {
   }
 
   toggleCurrentIndex(1)
+}
+
+function onListModelUpdate(next: ListModelValue) {
+  const question = currentQuestion.value
+
+  if (!question) {
+    return
+  }
+
+  const selected = question.multiSelect
+    ? toArray(next).map(String)
+    : next == null || next === ''
+      ? []
+      : [String(next)]
+
+  updateCurrentAnswer((answer) => ({
+    ...answer,
+    selected,
+    freeText: question.multiSelect ? answer.freeText : '',
+  }))
 }
 
 function onFreeformInput(value: string) {
@@ -303,8 +314,10 @@ watch(
 
       <template v-if="!isCollapsed">
         <PList
-          :value="currentAnswer.selected"
+          :model-value="currentAnswer.selected"
+          :multiple="currentQuestion.multiSelect"
           :options="currentQuestion.options"
+          @update:model-value="onListModelUpdate"
           @change="onAnswerItemSelect"
         >
           <template #item="{ item, index }">

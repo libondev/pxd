@@ -31,7 +31,7 @@ describe('list', () => {
   it('should mark matching values as checked', () => {
     const wrapper = mount(List, {
       props: {
-        value: ['1', '3'],
+        modelValue: ['1', '3'],
         options: [
           { label: 'Item 1', value: '1' },
           { label: 'Item 2', value: '2' },
@@ -118,6 +118,29 @@ describe('list', () => {
 
     await items[0].trigger('click')
     expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({ label: 'Item 1', value: '1' })
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('1')
+
+    wrapper.unmount()
+  })
+
+  it('should toggle modelValue in multiple mode', async () => {
+    const wrapper = mount(List, {
+      props: {
+        multiple: true,
+        modelValue: ['1'],
+        options: [
+          { label: 'Item 1', value: '1' },
+          { label: 'Item 2', value: '2' },
+        ],
+      },
+    })
+
+    await wrapper.findAll('[data-list-item]')[1].trigger('click')
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1', '2'])
+
+    await wrapper.setProps({ modelValue: ['1', '2'] })
+    await wrapper.findAll('[data-list-item]')[0].trigger('click')
+    expect(wrapper.emitted('update:modelValue')?.[1]?.[0]).toEqual(['2'])
 
     wrapper.unmount()
   })

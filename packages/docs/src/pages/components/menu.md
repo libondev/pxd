@@ -21,12 +21,12 @@ function onChange(item) {
 
 <template>
   <PStack>
-    <PMenu width="200" :options="options" @change="onChange">
+    <PMenu :options="options" @change="onChange">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu width="200" :options="options" @change="onChange">
+    <PMenu :options="options" @change="onChange">
       <PButton variant="primary">Actions</PButton>
 
       <template #item="{ item }">
@@ -52,12 +52,12 @@ const options = [
 
 <template>
   <PStack>
-    <PMenu :options="options" width="200">
+    <PMenu :options="options">
       <PButton variant="primary">Actions</PButton>
     </PMenu>
 
     <!-- Custom rendering menu-items -->
-    <PMenu width="200" :options="options">
+    <PMenu :options="options">
       <PButton variant="primary">Actions</PButton>
 
       <template #item="{ item }">
@@ -102,7 +102,7 @@ const options = [
 </script>
 
 <template>
-  <PMenu :options="options" position="right-start" width="200">
+  <PMenu :options="options" position="right-start">
     <PButton variant="primary">Actions</PButton>
   </PMenu>
 </template>

@@ -27,7 +27,7 @@ export interface ListProps {
   loop?: boolean
   empty?: boolean
   multiple?: boolean
-  value?: any
+  modelValue?: ListModelValue
   options?: ListOptionEntry[]
   defaultActiveIndex?: number
   /** Enable virtualized rendering for large option sets. */
@@ -40,4 +40,5 @@ export interface ListProps {
 
 export interface ListEmits {
   change: [ListOptionSelected]
+  'update:modelValue': [ListModelValue]
 }

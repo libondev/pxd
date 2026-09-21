@@ -4,9 +4,9 @@ import { useListSelection } from '../../src/composables/_internal/use-list-selec
 describe('useListSelection', () => {
   it('should emit change immediately in single mode and ask to close', () => {
     const emits = vi.fn()
-    const { select, selected } = useListSelection({ modelValue: null }, emits)
+    const { apply, selected } = useListSelection({ modelValue: null }, emits)
 
-    expect(select(2)).toBe(true)
+    expect(apply(2)).toBe(true)
     expect(selected.value).toBe(2)
     expect(emits).toHaveBeenCalledWith('update:modelValue', 2)
     expect(emits).toHaveBeenCalledWith('change', 2)
@@ -14,14 +14,14 @@ describe('useListSelection', () => {
 
   it('should keep local multiple state without waiting for props', () => {
     const emits = vi.fn()
-    const { select, selected, commit } = useListSelection(
+    const { apply, selected, commit } = useListSelection(
       { multiple: true, modelValue: [] },
       emits,
     )
 
-    expect(select(1)).toBe(false)
-    expect(select(3)).toBe(false)
-    expect(select(1)).toBe(false)
+    expect(apply([1])).toBe(false)
+    expect(apply([1, 3])).toBe(false)
+    expect(apply([3])).toBe(false)
     expect(selected.value).toEqual([3])
     expect(emits).toHaveBeenCalledTimes(3)
     expect(emits).not.toHaveBeenCalledWith('change', expect.anything())

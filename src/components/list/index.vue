@@ -8,6 +8,7 @@ import {
   resolveNavigableOption,
   resolveRowIndexByNavIndex,
 } from '../../composables/_internal/use-list-rows.js'
+import { resolveNextListValue } from '../../composables/_internal/use-list-selection.js'
 import { resolveOptionByValue } from '../../composables/_internal/use-selected-list-item.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { provideListContext } from '../../contexts/list.js'
@@ -18,6 +19,10 @@ import PListItem from '../list-item/index.vue'
 defineOptions({
   name: 'PList',
   inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(defineProps<ListProps>(), {
@@ -89,6 +94,9 @@ function onItemSelect(value: ListOptionSelected['value']): void {
     return
   }
 
+  const nextValue = resolveNextListValue(props.modelValue, value, props.multiple)
+
+  emits('update:modelValue', nextValue)
   emits('change', toSelectedOption(option))
 }
 
@@ -163,7 +171,7 @@ const contentStyle = computed(() => {
 })
 
 provideListContext({
-  value: computed(() => props.value),
+  value: computed(() => props.modelValue),
   onItemSelect,
 })
 

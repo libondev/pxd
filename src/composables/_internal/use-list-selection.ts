@@ -23,6 +23,23 @@ function toggleSelected(selected: ComponentValue[], value: ComponentValue): Comp
   return selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value]
 }
 
+/** Next model value after an option click. Used by List; Menu only applies the result. */
+export function resolveNextListValue(
+  current: ListModelValue | undefined,
+  clicked: ComponentValue,
+  multiple?: boolean,
+): ListModelValue {
+  if (multiple) {
+    return toggleSelected(toArray(current) as ComponentValue[], clicked)
+  }
+
+  return clicked
+}
+
+/**
+ * Menu selection session. `apply(next)` accepts the value already computed by List —
+ * do not toggle again here.
+ */
 export function useListSelection(props: ListSelectionProps, emits: ListSelectionEmits) {
   const selected = shallowRef<ListModelValue>(readSelection(props))
   let dirty = false
@@ -32,18 +49,17 @@ export function useListSelection(props: ListSelectionProps, emits: ListSelection
     selected.value = readSelection(props)
   }
 
-  function select(value: ComponentValue): boolean {
+  function apply(nextValue: NonNullable<ListModelValue>): boolean {
+    selected.value = nextValue
+
     if (props.multiple) {
-      const nextValue = toggleSelected(toArray(selected.value) as ComponentValue[], value)
-      selected.value = nextValue
       dirty = true
       emits('update:modelValue', nextValue)
       return false
     }
 
-    selected.value = value
-    emits('update:modelValue', value)
-    emits('change', value)
+    emits('update:modelValue', nextValue)
+    emits('change', nextValue)
     return true
   }
 
@@ -56,5 +72,5 @@ export function useListSelection(props: ListSelectionProps, emits: ListSelection
     emits('change', selected.value ?? [])
   }
 
-  return { selected, select, reset, commit }
+  return { selected, apply, reset, commit }
 }
