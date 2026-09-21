@@ -96,6 +96,7 @@ onBeforeUnmount(() => {
 
         <PCommandMenu
           v-model="showCommandMenu"
+          virtual
           :options="commandMenuOptions"
           placeholder="Search..."
         >
