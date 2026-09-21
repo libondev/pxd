@@ -6,8 +6,11 @@ export interface ListItemProps {
   value?: ListOption['value']
   variant?: ListOption['variant']
   disabled?: ListOption['disabled']
-  keywords?: string[]
   description?: ListOption['description']
+  /** Navigable index within the list (for keyboard / pointer). */
+  index?: number
+  /** Whether this item is the keyboard/pointer active item. */
+  active?: boolean
 }
 
 export interface ListItemEmits {

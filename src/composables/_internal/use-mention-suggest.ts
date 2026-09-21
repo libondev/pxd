@@ -2,8 +2,8 @@ import type { ListOptions } from '../../components/list/types'
 import type { MentionFilterMethod } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
-import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { debounce } from '../../utils/timing.js'
+import { filterListOptions } from './use-list-filter.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
 export interface UseMentionSuggestOptions {
@@ -24,7 +24,6 @@ export interface UseMentionSuggestReturn {
   setKeyword: (query: string) => void
 }
 
-const MAX_RENDERED_OPTIONS = 50
 const ASYNC_FILTER_DEBOUNCE = 200
 
 function isOptionsEmpty(options: ListOptions): boolean {
@@ -39,54 +38,6 @@ function isOptionsEmpty(options: ListOptions): boolean {
 
     return false
   })
-}
-
-function filterStaticOptions(options: ListOptions, query: string): ListOptions {
-  const needle = query.trim()
-
-  if (!needle) {
-    return options
-  }
-
-  const result: ListOptions = []
-
-  for (const entry of options) {
-    if (isListOptionGroup(entry)) {
-      const matched = entry.options.filter((item) =>
-        isFuzzyMatch(String(item.label ?? ''), needle, item.keywords),
-      )
-
-      if (matched.length) {
-        result.push({ ...entry, options: matched })
-      }
-    } else if (isFuzzyMatch(String(entry.label ?? ''), needle, entry.keywords)) {
-      result.push(entry)
-    }
-  }
-
-  return result
-}
-
-function capOptions(options: ListOptions): ListOptions {
-  const result: ListOptions = []
-  let count = 0
-
-  for (const entry of options) {
-    if (count >= MAX_RENDERED_OPTIONS) {
-      break
-    }
-
-    if (isListOptionGroup(entry)) {
-      const matched = entry.options.slice(0, MAX_RENDERED_OPTIONS - count)
-      result.push(matched.length === entry.options.length ? entry : { ...entry, options: matched })
-      count += matched.length
-    } else {
-      result.push(entry)
-      count += 1
-    }
-  }
-
-  return result
 }
 
 /**
@@ -121,7 +72,7 @@ export function useMentionSuggest({
 
     if (!trimmed) {
       isPending.value = false
-      listOptions.value = capOptions(getOptions())
+      listOptions.value = getOptions()
       return
     }
 
@@ -129,7 +80,7 @@ export function useMentionSuggest({
 
     if (!filterMethod) {
       isPending.value = false
-      listOptions.value = capOptions(filterStaticOptions(getOptions(), trimmed))
+      listOptions.value = filterListOptions(getOptions(), trimmed)
       return
     }
 
@@ -141,7 +92,7 @@ export function useMentionSuggest({
         return
       }
 
-      listOptions.value = capOptions(Array.isArray(result) ? result : [])
+      listOptions.value = Array.isArray(result) ? result : []
     } catch {
       if (requestId !== filterRequestId) {
         return
@@ -161,7 +112,7 @@ export function useMentionSuggest({
     }
 
     filterKeyword.value = ''
-    listOptions.value = capOptions(getOptions())
+    listOptions.value = getOptions()
     setVisible(true)
   }
 

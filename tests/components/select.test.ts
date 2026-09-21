@@ -95,7 +95,7 @@ describe('select', () => {
 
     expect(wrapper.vm.value).toEqual([1])
     expect(wrapper.text()).toContain('One')
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-checked')).toBe('true')
     expect(wrapper.vm.changed).toEqual([1])
 
     items[2]?.click()

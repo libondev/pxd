@@ -2,8 +2,9 @@ import type { ListOptions, ListOptionSelected } from '../list/types'
 
 export interface CommandMenuProps {
   width?: string | number
-  modelValue?: boolean
+  virtual?: boolean
   options?: ListOptions
+  modelValue?: boolean
   placeholder?: string
   closeOnSelectItem?: boolean
   closeOnPressEscape?: boolean

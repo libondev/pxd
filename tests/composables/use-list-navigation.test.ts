@@ -1,121 +1,103 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { shallowRef } from 'vue'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { useListNavigation } from '../../src/composables/_internal/use-list-navigation'
 
 describe('useListNavigation', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
   it('should return expected API', () => {
-    const containerRef = shallowRef<HTMLElement | undefined>(undefined)
-    const result = useListNavigation(containerRef, {
+    const result = useListNavigation({
       loop: true,
+      count: 3,
     })
 
     expect(result.activeIndex).toBeDefined()
     expect(typeof result.setActiveIndex).toBe('function')
-    expect(typeof result.registerItem).toBe('function')
-    expect(typeof result.unregisterItem).toBe('function')
     expect(typeof result.dispatch).toBe('function')
     expect(typeof result.onPointerOver).toBe('function')
-    expect(typeof result.refreshItems).toBe('function')
     expect(typeof result.setFirstAsActive).toBe('function')
   })
 
   it('should default activeIndex to -1', () => {
-    const containerRef = shallowRef<HTMLElement | undefined>(undefined)
-    const { activeIndex } = useListNavigation(containerRef, {
+    const { activeIndex } = useListNavigation({
       loop: true,
+      count: 3,
     })
 
     expect(activeIndex.value).toBe(-1)
   })
 
   it('should accept custom defaultActiveIndex', () => {
-    const containerRef = shallowRef<HTMLElement | undefined>(undefined)
-    const { activeIndex } = useListNavigation(containerRef, {
+    const { activeIndex } = useListNavigation({
       loop: true,
+      count: 5,
       defaultActiveIndex: 2,
     })
 
     expect(activeIndex.value).toBe(2)
   })
 
-  it('should delegate horizontal navigation to hierarchy handlers', async () => {
-    const container = document.createElement('ul')
-    const item = document.createElement('li')
-    item.dataset.listItem = ''
-    container.append(item)
-    document.body.append(container)
+  it('should move to next and previous indexes', () => {
+    const { activeIndex, dispatch, setFirstAsActive } = useListNavigation({
+      count: 3,
+      loop: false,
+    })
 
+    setFirstAsActive()
+    expect(activeIndex.value).toBe(0)
+    expect(dispatch('next')).toBe(true)
+    expect(activeIndex.value).toBe(1)
+    expect(dispatch('previous')).toBe(true)
+    expect(activeIndex.value).toBe(0)
+  })
+
+  it('should skip disabled indexes', () => {
+    const { activeIndex, dispatch, setFirstAsActive } = useListNavigation({
+      count: 3,
+      loop: false,
+      isDisabled: (index) => index === 1,
+    })
+
+    setFirstAsActive()
+    expect(activeIndex.value).toBe(0)
+    expect(dispatch('next')).toBe(true)
+    expect(activeIndex.value).toBe(2)
+  })
+
+  it('should delegate horizontal navigation to hierarchy handlers', () => {
     const onLeft = vi.fn()
     const onRight = vi.fn()
-    const { dispatch, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {
+    const { dispatch, setActiveIndex } = useListNavigation({
+      count: 1,
       onLeft,
       onRight,
     })
 
-    await refreshItems()
     setActiveIndex(0)
 
     expect(dispatch('enter-child')).toBe(true)
-
-    expect(onRight).toHaveBeenCalledWith(item)
+    expect(onRight).toHaveBeenCalledWith(0)
 
     expect(dispatch('leave-parent')).toBe(true)
-
     expect(onLeft).toHaveBeenCalledOnce()
-
-    container.remove()
   })
 
-  it('should report enter-child as unhandled without a child handler', async () => {
-    const container = document.createElement('ul')
-    const item = document.createElement('li')
-    item.dataset.listItem = ''
-    container.append(item)
-    document.body.append(container)
+  it('should report enter-child as unhandled without a child handler', () => {
+    const { dispatch, setActiveIndex } = useListNavigation({
+      count: 1,
+    })
 
-    const { dispatch, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {})
-
-    await refreshItems()
     setActiveIndex(0)
 
     expect(dispatch('enter-child')).toBe(false)
-
-    container.remove()
   })
 
-  it('should filter nested list items from the current level', async () => {
-    const container = document.createElement('ul')
-    container.dataset.listContainer = ''
-    const item = document.createElement('li')
-    item.dataset.listItem = ''
-    const nestedContainer = document.createElement('ul')
-    nestedContainer.dataset.listContainer = ''
-    const nestedItem = document.createElement('li')
-    nestedItem.dataset.listItem = ''
-    nestedContainer.append(nestedItem)
-    item.append(nestedContainer)
-    container.append(item)
-    document.body.append(container)
-
-    const { activeIndex, refreshItems, setActiveIndex } = useListNavigation(shallowRef(container), {
-      itemFilter: (el, currentContainer) =>
-        el.closest<HTMLElement>('[data-list-container]') === currentContainer,
+  it('should activate the current index via callback', () => {
+    const onActivateItem = vi.fn()
+    const { dispatch, setActiveIndex } = useListNavigation({
+      count: 2,
+      onActivateItem,
     })
 
-    await refreshItems()
     setActiveIndex(1)
-    await refreshItems()
-
-    expect(activeIndex.value).toBe(0)
-
-    container.remove()
+    expect(dispatch('activate')).toBe(true)
+    expect(onActivateItem).toHaveBeenCalledWith(1)
   })
 })

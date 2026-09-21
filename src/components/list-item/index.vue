@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { useListContext, useListFilterContext, useListFilterGroupId } from '../../contexts/list.js'
-import { getElement } from '../../utils/dom.js'
+import { useListContext } from '../../contexts/list.js'
 import { toArray } from '../../utils/format.js'
-import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 
 defineOptions({
@@ -15,17 +13,19 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ListItemProps>(), {
-  as: 'li',
+  as: 'div',
   variant: 'default',
   disabled: false,
-  keywords: () => [],
+  active: false,
 })
 
 const emits = defineEmits<ListItemEmits>()
 
+const { value: selectedValue, onItemSelect } = useListContext()
+
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item min-h-10 sm:min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item min-h-9 p-2 gap-1.5 scroll-m-2 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -40,34 +40,9 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-const { value: selectedValue, registerItem, unregisterItem, onItemSelect } = useListContext()
-
-const groupId = useListFilterGroupId(null)
-const filterCtx = useListFilterContext(null)
-
-const itemId = filterCtx ? getUniqueId('list-item') : ''
-const itemRef = shallowRef<HTMLElement>()
-const itemIndex = shallowRef(-1)
-
 const isChecked = computed(() => {
   return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
 })
-
-const isVisible = computed(() => {
-  if (!filterCtx || !filterCtx.searchValue.value.trim()) {
-    return true
-  }
-
-  return filterCtx.isItemVisible(itemId)
-})
-
-function getValue(): string {
-  return `${String(props.label ?? '')}${String(props.description ?? '')}`.trim()
-}
-
-function getKeywords(): string[] {
-  return props.keywords
-}
 
 function onItemClick(ev: MouseEvent) {
   const value = props.value
@@ -77,46 +52,24 @@ function onItemClick(ev: MouseEvent) {
   }
 
   emits('click', value, ev)
-  onItemSelect?.(value, ev)
+  onItemSelect?.(value)
 }
-
-onMounted(() => {
-  const el = getElement(itemRef.value)
-  if (el) {
-    registerItem(el, itemIndex)
-  }
-
-  filterCtx?.registerItem(itemId, {
-    groupId,
-    getValue,
-    getKeywords,
-  })
-})
-
-onBeforeUnmount(() => {
-  const el = getElement(itemRef.value)
-  if (el) {
-    unregisterItem(el as HTMLElement)
-  }
-
-  filterCtx?.unregisterItem(itemId)
-})
 </script>
 
 <template>
   <Component
     :is="as"
-    ref="itemRef"
     tabindex="-1"
     role="option"
     data-list-item
+    :data-index="index"
     :data-variant="variant"
+    :data-checked="isChecked"
     :data-disabled="disabled"
-    :aria-selected="isChecked"
-    :hidden="!isVisible"
+    :aria-selected="active"
     :class="classes"
     v-bind="attrs"
-    @click.prevent.stop="onItemClick"
+    @click.stop="onItemClick"
   >
     <slot>
       <div class="pxd-list-item--content gap-1.5 flex flex-col">

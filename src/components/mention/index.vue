@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { ListOptionSelected } from '../list/types'
 import type { MentionEmits, MentionProps } from './types'
-import { computed, nextTick, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { raf } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PMentionEditor from '../_internal/mention-editor.vue'
 import PList from '../list/index.vue'
@@ -63,6 +62,11 @@ const {
 })
 
 const computedSize = computed(() => props.size || configProvider.size)
+
+watch(listOptions, async () => {
+  await nextTick()
+  listRef.value?.setFirstAsActive()
+})
 
 const { onKeydown: onSearchKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value && !isPending.value,
@@ -203,6 +207,7 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
           :id="listId"
           ref="listRef"
           :loop="false"
+          :virtual="virtual"
           :options="listOptions"
           :empty="isEmptyResult"
           :default-active-index="0"

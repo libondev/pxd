@@ -16,7 +16,10 @@ export function getStyle(el: HTMLElement): CSSStyleDeclaration {
   return document.defaultView?.getComputedStyle(el, null) || el.style
 }
 
-export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | null {
+export function getElement(
+  el?: MaybeRefOrGetter<ElementType>,
+  from?: MaybeRefOrGetter<HTMLElement>,
+): HTMLElement | null {
   el = toValue(el)
 
   if (!el || isServer()) {
@@ -24,7 +27,7 @@ export function getElement(el?: MaybeRefOrGetter<ElementType>): HTMLElement | nu
   }
 
   if (typeof el === 'string') {
-    return document.querySelector(el)
+    return (toValue(from) || document).querySelector(el)
   }
 
   if (el instanceof Element) {

@@ -1,40 +1,10 @@
 import type { ListOptionSelected } from '../components/list/types'
-import type { ComputedRef, Ref } from 'vue'
+import type { Ref } from 'vue'
 import { createContext } from '../utils/context.js'
 
 export interface ListContext {
   value: Ref<unknown>
-  registerItem: (el: HTMLElement, indexRef: Ref<number>) => void
-  unregisterItem: (el: HTMLElement) => void
-  onItemSelect: (value: ListOptionSelected['value'], ev: MouseEvent) => void
+  onItemSelect: (value: ListOptionSelected['value']) => void
 }
 
 export const [provideListContext, useListContext] = createContext<ListContext>('List')
-
-export interface ListFilterItemPayload {
-  groupId: string | null
-  getValue: () => string
-  getKeywords: () => string[]
-}
-
-export interface ListFilterContext {
-  searchValue: Ref<string>
-  visibleCount: ComputedRef<number>
-  isItemVisible: (id: string) => boolean
-  isGroupVisible: (id: string) => boolean
-  registerItem: (id: string, payload: ListFilterItemPayload) => void
-  unregisterItem: (id: string) => void
-}
-
-export const [provideListFilterContext, useListFilterContext] = createContext<ListFilterContext>(
-  'ListFilter',
-  null,
-)
-
-/**
- * Provided by group containers so list items know which group to register into.
- */
-export const [provideListFilterGroupId, useListFilterGroupId] = createContext<string>(
-  'ListFilterGroupId',
-  null,
-)

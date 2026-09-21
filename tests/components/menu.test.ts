@@ -264,7 +264,7 @@ describe('menu', () => {
     await nextTick()
 
     expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1'])
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-checked')).toBe('true')
 
     items[1]?.click()
     await nextTick()
@@ -276,8 +276,8 @@ describe('menu', () => {
 
     expect(wrapper.emitted('update:modelValue')?.[2]?.[0]).toEqual(['2'])
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(items[0]?.getAttribute('aria-selected')).toBe('false')
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-checked')).toBe('false')
+    expect(items[1]?.getAttribute('data-checked')).toBe('true')
 
     await wrapper.find('button').trigger('click')
     await flushPopover()

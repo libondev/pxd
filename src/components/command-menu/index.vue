@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation'
-import type { ListOptionSelected } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
-import { computed, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { provideListFilterContext } from '../../contexts/list.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PList from '../list/index.vue'
 import PModal from '../modal/index.vue'
@@ -38,8 +35,10 @@ const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 
 const filterKeyword = shallowRef('')
-const filterContext = useListFilter({ keyword: filterKeyword })
 const listRef = shallowRef<InstanceType<typeof PList>>()
+
+const { filteredOptions, visibleCount } = useListFilter(() => props.options ?? [], filterKeyword)
+
 const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => modelValue.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -51,9 +50,7 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
 })
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
-const isEmptyResult = computed(
-  () => !!filterKeyword.value && filterContext.visibleCount.value === 0,
-)
+const isEmptyResult = computed(() => !!filterKeyword.value.trim() && visibleCount.value === 0)
 
 function hideModal() {
   filterKeyword.value = ''
@@ -68,7 +65,7 @@ function closeModal() {
   modelValue.value = false
 }
 
-function onListItemSelect(item: ListOptionSelected) {
+function onListItemSelect() {
   if (props.closeOnSelectItem) {
     closeModal()
   }
@@ -79,7 +76,10 @@ function onInputKeyword(event: Event) {
   filterKeyword.value = input.value.replaceAll("'", '')
 }
 
-provideListFilterContext(filterContext)
+watch(filteredOptions, async () => {
+  await nextTick()
+  listRef.value?.setFirstAsActive()
+})
 </script>
 
 <template>
@@ -133,10 +133,11 @@ provideListFilterContext(filterContext)
     <PList
       ref="listRef"
       :loop="false"
-      :options="options"
-      class="sm:max-h-110 h-full"
+      :virtual="virtual"
+      :options="filteredOptions"
       :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
+      class="sm:max-h-110 h-full"
       @change="onListItemSelect"
     >
       <template v-if="$slots.item" #item="itemSlotProps">

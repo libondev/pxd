@@ -41,9 +41,9 @@ describe('list', () => {
     })
 
     const items = wrapper.findAll('[data-list-item]')
-    expect(items[0]?.attributes('aria-selected')).toBe('true')
-    expect(items[1]?.attributes('aria-selected')).toBe('false')
-    expect(items[2]?.attributes('aria-selected')).toBe('true')
+    expect(items[0]?.attributes('data-checked')).toBe('true')
+    expect(items[1]?.attributes('data-checked')).toBe('false')
+    expect(items[2]?.attributes('data-checked')).toBe('true')
 
     wrapper.unmount()
   })

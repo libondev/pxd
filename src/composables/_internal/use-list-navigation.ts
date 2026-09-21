@@ -1,18 +1,20 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
-import { nextTick, shallowRef } from 'vue'
-import { getElement } from '../../utils/dom.js'
+import { shallowRef, watch } from 'vue'
 import { toValue } from '../../utils/helper.js'
 
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>
-  itemSelector?: MaybeRefOrGetter<string>
   defaultActiveIndex?: MaybeRefOrGetter<number>
-  itemFilter?: (el: HTMLElement, container: HTMLElement) => boolean
-  onActivateItem?: (el: HTMLElement) => void
-  onToggle?: (index: number) => void
+  /** Number of navigable items (headers excluded). */
+  count: MaybeRefOrGetter<number>
+  isDisabled?: (index: number) => boolean
+  onActivateItem?: (index: number) => void
   onLeft?: () => void
-  onRight?: (el: HTMLElement) => void
+  onRight?: (index: number) => void
   onActivate?: () => void
+  scrollToIndex?: (index: number) => void
+  /** Selector used by pointerover to find a list item. */
+  itemSelector?: MaybeRefOrGetter<string>
 }
 
 export type ListNavigationCommand =
@@ -27,184 +29,126 @@ export type ListNavigationCommand =
 export interface UseListNavigationReturn {
   activeIndex: ShallowRef<number>
   setActiveIndex: (index: number) => void
-  registerItem: (el: HTMLElement, indexRef: ShallowRef<number>) => void
-  unregisterItem: (el: HTMLElement) => void
   dispatch: (command: ListNavigationCommand) => boolean
-  onPointerOver: (ev: PointerEvent) => void
-  /**
-   * Request a re-query of the DOM items. Multiple calls made within the same
-   * tick coalesce into a single refresh that runs after `nextTick`. `await`
-   * the returned promise when the caller needs `items` to be up-to-date
-   * before its next action (e.g. `setFirstAsActive` after a search change).
-   */
-  refreshItems: () => Promise<void>
+  onPointerOver: (ev: PointerEvent) => boolean
   setFirstAsActive: () => void
   isEmpty: () => boolean
 }
 
-function findNextIndex(len: number, from: number, dir: 1 | -1, loop: boolean): number {
+function findNextIndex(
+  len: number,
+  from: number,
+  dir: 1 | -1,
+  loop: boolean,
+  isDisabled?: (index: number) => boolean,
+): number {
   if (len === 0) {
     return -1
   }
 
-  const i = from + dir
-  if (loop) {
-    return ((i % len) + len) % len
+  let i = from
+  for (let step = 0; step < len; step++) {
+    i = i + dir
+
+    if (loop) {
+      i = ((i % len) + len) % len
+    } else if (i < 0 || i >= len) {
+      return -1
+    }
+
+    if (!isDisabled?.(i)) {
+      return i
+    }
   }
-  if (i < 0 || i >= len) {
-    return -1
-  }
-  return i
+
+  return -1
 }
 
-export function useListNavigation(
-  containerRef: MaybeRefOrGetter<HTMLElement | undefined>,
-  options: UseListNavigationOptions,
-): UseListNavigationReturn {
+export function useListNavigation(options: UseListNavigationOptions): UseListNavigationReturn {
   const getLoop = () => toValue(options.loop) ?? true
   const getDefaultActiveIndex = () => toValue(options.defaultActiveIndex) ?? -1
+  const getCount = () => toValue(options.count) ?? 0
   const getItemSelector = () => toValue(options.itemSelector) ?? '[data-list-item]'
 
   const activeIndex = shallowRef(getDefaultActiveIndex())
-  const itemIndexRefs = new WeakMap<HTMLElement, ShallowRef<number>>()
 
-  let items: HTMLElement[] = []
   let lastPointerX = -1
   let lastPointerY = -1
 
-  // Coalesce bursts of `refreshItems` calls (typically N `registerItem`
-  // triggers during initial mount) into a single DOM query at the next tick.
-  // While a refresh is pending, every call returns the same promise, so the
-  // real work runs exactly once per batch regardless of how many items mount.
-  let pendingRefresh: Promise<void> | null = null
-
-  function setItemSelected(el: HTMLElement | undefined, selected: boolean) {
-    const next = selected ? 'true' : 'false'
-
-    if (el && el.getAttribute('aria-selected') !== next) {
-      el.setAttribute('aria-selected', next)
-    }
-  }
-
-  function syncHighlightAttributes() {
-    const active = activeIndex.value
-
-    for (let i = 0; i < items.length; i++) {
-      setItemSelected(items[i], i === active)
-    }
-  }
-
-  function applyActiveHighlight(from: number, to: number) {
-    if (from === to) {
-      return
-    }
-
-    if (from >= 0 && from < items.length) {
-      setItemSelected(items[from], false)
-    }
-
-    if (to >= 0 && to < items.length) {
-      setItemSelected(items[to], true)
-    }
-  }
-
-  function runRefresh() {
-    const container = getElement(containerRef)
-    const itemFilter = options.itemFilter
-    items = container
-      ? Array.from(container.querySelectorAll<HTMLElement>(getItemSelector())).filter(
-          (el) => !itemFilter || itemFilter(el, container),
-        )
-      : []
-
-    items.forEach((el, i) => {
-      const ref = itemIndexRefs.get(el)
-      if (ref) {
-        ref.value = i
-      }
-    })
-
-    // Clamp when items shrank (e.g. an item was unregistered or filtered out).
-    if (activeIndex.value >= items.length) {
-      activeIndex.value = items.length - 1
-    }
-
+  function clampActiveIndex() {
+    const len = getCount()
     const fallback = getDefaultActiveIndex()
 
-    if (activeIndex.value === -1 && fallback >= 0 && fallback < items.length) {
-      activeIndex.value = fallback
-    }
-
-    syncHighlightAttributes()
-  }
-
-  function refreshItems(): Promise<void> {
-    if (pendingRefresh) {
-      return pendingRefresh
-    }
-
-    pendingRefresh = nextTick().then(() => {
-      pendingRefresh = null
-      runRefresh()
-    })
-
-    return pendingRefresh
-  }
-
-  function setActiveIndex(index: number): void {
-    const prev = activeIndex.value
-
-    if (prev === index) {
-      if (index >= 0 && index < items.length) {
-        setItemSelected(items[index], true)
-      }
+    if (len === 0) {
+      activeIndex.value = -1
       return
     }
 
-    applyActiveHighlight(prev, index)
+    if (activeIndex.value >= len) {
+      activeIndex.value = len - 1
+    }
+
+    if (activeIndex.value === -1 && fallback >= 0 && fallback < len) {
+      if (!options.isDisabled?.(fallback)) {
+        activeIndex.value = fallback
+      }
+    }
+
+    if (activeIndex.value >= 0 && options.isDisabled?.(activeIndex.value)) {
+      const next = findNextIndex(len, activeIndex.value - 1, 1, false, options.isDisabled)
+      activeIndex.value = next
+    }
+  }
+
+  watch(() => getCount(), clampActiveIndex, { immediate: true })
+
+  function setActiveIndex(index: number): void {
+    const len = getCount()
+
+    if (index < -1 || index >= len) {
+      return
+    }
+
+    if (index >= 0 && options.isDisabled?.(index)) {
+      return
+    }
+
     activeIndex.value = index
   }
 
   function setFirstAsActive(): void {
-    setActiveIndex(findNextIndex(items.length, -1, 1, false))
+    setActiveIndex(findNextIndex(getCount(), -1, 1, false, options.isDisabled))
   }
 
   function isEmpty(): boolean {
-    return items.length === 0
+    return getCount() === 0
   }
 
-  function registerItem(el: HTMLElement, indexRef: ShallowRef<number>): void {
-    itemIndexRefs.set(el, indexRef)
-    void refreshItems()
-  }
-
-  function unregisterItem(el: HTMLElement): void {
-    itemIndexRefs.delete(el)
-    void refreshItems()
-  }
-
-  function onPointerOver(ev: PointerEvent): void {
+  function onPointerOver(ev: PointerEvent): boolean {
     if (ev.pageX === lastPointerX && ev.pageY === lastPointerY) {
-      return
+      return false
     }
     lastPointerX = ev.pageX
     lastPointerY = ev.pageY
 
     const listItem = (ev.target as HTMLElement).closest<HTMLElement>(getItemSelector())
-    if (!listItem) {
-      return
+    if (!listItem || listItem.dataset.disabled === 'true') {
+      return false
     }
 
-    const index = itemIndexRefs.get(listItem)?.value ?? -1
-    if (index !== -1) {
-      options.onActivate?.()
-      setActiveIndex(index)
+    const raw = listItem.dataset.index
+    if (raw === undefined) {
+      return false
     }
-  }
 
-  function getActiveItem(): HTMLElement | undefined {
-    const index = activeIndex.value
-    return index >= 0 && index < items.length ? items[index] : undefined
+    const index = Number(raw)
+    if (!Number.isFinite(index) || index < 0 || index >= getCount()) {
+      return false
+    }
+
+    options.onActivate?.()
+    setActiveIndex(index)
+    return true
   }
 
   function dispatch(command: ListNavigationCommand): boolean {
@@ -212,20 +156,15 @@ export function useListNavigation(
       return false
     }
 
-    const len = items.length
+    const len = getCount()
     const current = activeIndex.value
 
     if (command === 'activate') {
-      const el = getActiveItem()
-      if (!el) {
+      if (current < 0 || current >= len || options.isDisabled?.(current)) {
         return false
       }
 
-      if (typeof options.onActivateItem === 'function') {
-        options.onActivateItem(el)
-      } else {
-        el.click()
-      }
+      options.onActivateItem?.(current)
       return true
     }
 
@@ -239,27 +178,26 @@ export function useListNavigation(
     }
 
     if (command === 'enter-child') {
-      const el = getActiveItem()
-      if (!el || !options.onRight) {
+      if (current < 0 || current >= len || !options.onRight) {
         return false
       }
 
-      options.onRight(el)
+      options.onRight(current)
       return true
     }
 
     let next: number
     if (command === 'first') {
-      next = findNextIndex(len, -1, 1, false)
+      next = findNextIndex(len, -1, 1, false, options.isDisabled)
     } else if (command === 'last') {
-      next = findNextIndex(len, len, -1, false)
+      next = findNextIndex(len, len, -1, false, options.isDisabled)
     } else {
       const dir = command === 'next' ? 1 : -1
 
       next =
         current === -1
-          ? findNextIndex(len, dir === 1 ? -1 : len, dir, false)
-          : findNextIndex(len, current, dir, getLoop())
+          ? findNextIndex(len, dir === 1 ? -1 : len, dir, false, options.isDisabled)
+          : findNextIndex(len, current, dir, getLoop(), options.isDisabled)
     }
 
     if (next === -1) {
@@ -267,9 +205,8 @@ export function useListNavigation(
     }
 
     if (next !== current) {
-      options.onToggle?.(next)
       setActiveIndex(next)
-      items[next]?.scrollIntoView({ block: 'nearest' })
+      options.scrollToIndex?.(next)
     }
 
     return true
@@ -278,11 +215,8 @@ export function useListNavigation(
   return {
     activeIndex,
     setActiveIndex,
-    registerItem,
-    unregisterItem,
     dispatch,
     onPointerOver,
-    refreshItems,
     setFirstAsActive,
     isEmpty,
   }

@@ -9,6 +9,7 @@ export interface MentionProps {
   modelValue?: string
   options?: ListOptions
   size?: ComponentSize
+  virtual?: boolean
   filterMethod?: MentionFilterMethod
   placeholder?: string
   searchPlaceholder?: string

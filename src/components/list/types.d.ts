@@ -13,7 +13,7 @@ export interface ListOption {
 
 export interface ListOptionGroup {
   type: 'group'
-  label?: ComponentLabel
+  label?: string
   options: ListOption[]
 }
 
@@ -30,9 +30,14 @@ export interface ListProps {
   value?: any
   options?: ListOptionEntry[]
   defaultActiveIndex?: number
+  /** Enable virtualized rendering for large option sets. */
+  virtual?: boolean
+  /** Estimated row height in px when `virtual` is enabled. */
+  itemSize?: number
+  /** Extra rows rendered outside the viewport when `virtual` is enabled. */
+  overScan?: number
 }
 
 export interface ListEmits {
-  toggle: [number]
-  change: [ListOptionSelected, MouseEvent]
+  change: [ListOptionSelected]
 }
