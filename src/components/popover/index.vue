@@ -127,7 +127,7 @@ useFocusTrap(focusTrapContainer, () => ({
 
 useOutsideClick(wrapperRef, {
   allowList: [triggerRef, wrapperRef],
-  isEnabled: () => {
+  enabled: () => {
     return isVisible.value && allowOutsideClick.value
   },
   onTrigger: (ev) => {

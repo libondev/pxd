@@ -7,7 +7,7 @@ interface Options<E extends Event = PointerEvent> {
   allowList?: MaybeElementRef<HTMLElement>[]
   eventName?: string
   listenerOptions?: AddEventListenerOptions
-  isEnabled?: (ev: E) => boolean
+  enabled?: (ev: E) => boolean
   onTrigger?: (ev: E) => void
 }
 
@@ -16,9 +16,9 @@ export function useOutsideClick<E extends Event = PointerEvent>(
   options: Options<E> = {},
 ) {
   function onClick(ev: Event) {
-    const { isEnabled } = options
+    const { enabled } = options
 
-    if (typeof isEnabled === 'function' && !isEnabled(ev as E)) {
+    if (typeof enabled === 'function' && !enabled(ev as E)) {
       return
     }
 

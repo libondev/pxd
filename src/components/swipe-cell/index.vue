@@ -396,7 +396,7 @@ function onPointerCancel(ev: PointerEvent) {
 useOutsideClick(wrapperRef, {
   eventName: 'pointerdown',
   listenerOptions: { capture: true },
-  isEnabled: () => Boolean(openedSide.value),
+  enabled: () => Boolean(openedSide.value),
   onTrigger: () => {
     close('outside')
   },
