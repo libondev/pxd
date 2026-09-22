@@ -28,7 +28,7 @@ export interface SwipeCellProps {
   /**
    * Finger-travel ratio of action width needed to emit `over-swipe`.
    * Visual offset stays clamped to the action width.
-   * @default 1.8
+   * @default 1.68
    */
   overSwipeThreshold?: number
   closeOnOverSwipe?: boolean

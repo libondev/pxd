@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<SwipeCellProps>(), {
   as: 'div',
   modelValue: false,
   threshold: 0.5,
-  overSwipeThreshold: 1.8,
+  overSwipeThreshold: 1.68,
   closeOnOverSwipe: false,
   closeOnClick: true,
   exclusive: true,
