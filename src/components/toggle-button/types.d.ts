@@ -1,13 +1,15 @@
 import type { ComponentLabel, ComponentSize, ComponentValue } from '../../types/shared'
 import type { CheckboxProps } from '../checkbox/types'
 
+type ToggleButtonModelValue = ComponentValue | boolean
+
 export interface ToggleButtonProps {
+  size?: ComponentSize
+  label?: ComponentLabel
+  value?: ToggleButtonModelValue
   variant?: 'ghost' | 'outline'
   disabled?: boolean
-  label?: ComponentLabel
-  size?: ComponentSize
-  value?: ComponentValue
-  modelValue?: ComponentValue | ComponentValue[]
+  modelValue?: ToggleButtonModelValue | ToggleButtonModelValue[]
 }
 
 export interface ToggleButtonEmits {
