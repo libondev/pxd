@@ -21,7 +21,7 @@ const cellClasses = createTailwindVariant({
 })
 
 const dateClasses = createTailwindVariant({
-  base: 'size-8 inline-flex items-center justify-center rounded-md',
+  base: 'min-w-8 min-h-8 inline-flex items-center justify-center rounded-md',
   variants: {
     today: {
       true: 'bg-background-active',

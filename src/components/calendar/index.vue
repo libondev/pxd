@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { CalendarDay, CalendarEmits, CalendarPanelInfo, CalendarProps } from './types'
+import ChevronDoubleLeftIcon from '@gdsicon/vue/chevron-double-left'
+import ChevronDoubleRightIcon from '@gdsicon/vue/chevron-double-right'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -90,6 +92,10 @@ function changeMonth(offset: number) {
   setPanelDate(panelDate.value.add(offset, 'month'))
 }
 
+function changeYear(offset: number) {
+  setPanelDate(panelDate.value.add(offset, 'year'))
+}
+
 function formatModelValue(timestamp: number) {
   if (props.valueFormat === 'timestamp') {
     return timestamp
@@ -153,6 +159,16 @@ watch(
         variant="ghost"
         class="text-foreground-secondary"
         aria-label="Previous month"
+        @click="changeYear(-1)"
+      >
+        <ChevronDoubleLeftIcon class="size-4" aria-hidden="true" />
+      </PButton>
+      <PButton
+        icon
+        size="sm"
+        variant="ghost"
+        class="text-foreground-secondary"
+        aria-label="Previous month"
         @click="changeMonth(-1)"
       >
         <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
@@ -171,6 +187,16 @@ watch(
         @click="changeMonth(1)"
       >
         <ChevronRightIcon class="size-4" aria-hidden="true" />
+      </PButton>
+      <PButton
+        icon
+        size="sm"
+        variant="ghost"
+        class="text-foreground-secondary"
+        aria-label="Next month"
+        @click="changeYear(1)"
+      >
+        <ChevronDoubleRightIcon class="size-4" aria-hidden="true" />
       </PButton>
     </div>
 
