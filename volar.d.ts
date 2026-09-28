@@ -42,6 +42,7 @@ declare module 'vue' {
     PEmptyState: (typeof import('pxd/components/empty-state'))['default']
     PError: (typeof import('pxd/components/error'))['default']
     PFader: (typeof import('pxd/components/fader'))['default']
+    PFeedbackBar: (typeof import('pxd/components/feedback-bar'))['default']
     PGauge: (typeof import('pxd/components/gauge'))['default']
     PGrid: (typeof import('pxd/components/grid'))['default']
     PGridItem: (typeof import('pxd/components/grid-item'))['default']

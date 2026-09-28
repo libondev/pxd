@@ -124,6 +124,10 @@
     "name": "fader"
   },
   {
+    "camelized": "Feedback Bar",
+    "name": "feedback-bar"
+  },
+  {
     "camelized": "Gauge",
     "name": "gauge"
   },
