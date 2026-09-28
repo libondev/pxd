@@ -225,10 +225,9 @@ describe('calendar', () => {
     expect(firstCellClasses).toEqual(expect.arrayContaining(['min-h-8', 'justify-self-center']))
     expect(firstCellClasses).not.toEqual(expect.arrayContaining(['border-r', 'min-h-14']))
 
-    const buttons = wrapper.findAll('button')
-    expect(buttons).toHaveLength(45)
-
-    expect(buttons.some((button) => button.text() === 'Today')).toBe(true)
+    expect(wrapper.find('[aria-label="Previous year"]').exists()).toBe(true)
+    expect(wrapper.find('[aria-label="Next year"]').exists()).toBe(true)
+    expect(wrapper.findAll('button').some((button) => button.text() === 'Today')).toBe(true)
 
     await findDateCell(wrapper, 20).trigger('click')
 

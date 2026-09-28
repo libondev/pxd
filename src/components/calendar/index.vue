@@ -158,7 +158,7 @@ watch(
         size="sm"
         variant="ghost"
         class="text-foreground-secondary"
-        aria-label="Previous month"
+        aria-label="Previous year"
         @click="changeYear(-1)"
       >
         <ChevronDoubleLeftIcon class="size-4" aria-hidden="true" />
@@ -193,7 +193,7 @@ watch(
         size="sm"
         variant="ghost"
         class="text-foreground-secondary"
-        aria-label="Next month"
+        aria-label="Next year"
         @click="changeYear(1)"
       >
         <ChevronDoubleRightIcon class="size-4" aria-hidden="true" />
