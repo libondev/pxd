@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import type { BrowserProps } from './types'
-import type { Component } from 'vue'
 import ArrowLeftIcon from '@gdsicon/vue/arrow-left'
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
 import LockClosedIcon from '@gdsicon/vue/lock-closed'
 import RefreshClockwiseIcon from '@gdsicon/vue/refresh-clockwise'
-import { computed } from 'vue'
-import { useCopyClick } from '../../composables/use-copy-click'
-import PButton from '../button/index.vue'
+import PCopyButton from '../copy-button/index.vue'
 
 defineOptions({
   name: 'PBrowser',
@@ -16,10 +11,6 @@ defineOptions({
 })
 
 defineProps<BrowserProps>()
-
-const { isCopied, copyText } = useCopyClick()
-
-const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyIcon))
 </script>
 
 <template>
@@ -56,18 +47,14 @@ const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyI
             {{ address }}
           </div>
 
-          <PButton
+          <PCopyButton
             variant="ghost"
             size="xs"
             shape="rounded"
             class="size-6"
+            :text="address"
             icon
-            @click="copyText(address)"
-          >
-            <Transition name="pxd-transition--fade-scale" mode="out-in">
-              <Component :is="renderIcon" class="text-sm text-foreground-secondary" />
-            </Transition>
-          </PButton>
+          />
         </div>
       </div>
 

@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import type { SnippetEmits, SnippetProps } from './types'
-import type { Component } from 'vue'
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { useCopyClick } from '../../composables/use-copy-click.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp, toArray } from '../../utils/format.js'
+import PCopyButton from '../copy-button/index.vue'
 
 defineOptions({
   name: 'PSnippet',
@@ -24,19 +21,17 @@ const emits = defineEmits<SnippetEmits>()
 
 const configProvider = useConfigProvider()
 
-const { isCopied, copyText } = useCopyClick()
-
-const renderIcon = computed<Component>(() => (isCopied.value ? CheckIcon : CopyIcon))
-const computedTextArray = computed(() => toArray(props.text))
+const computedTextList = computed(() => toArray(props.text))
+const copyText = computed(() => computedTextList.value.join('\n'))
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-snippet ps-3 pe-1.5 gap-4 relative flex items-center rounded-lg border tabular-nums',
+    base: 'pxd-snippet ps-3 pe-1 gap-4 relative flex items-center rounded-lg border tabular-nums',
     variants: {
       size: {
-        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 text-sm`,
-        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-2 text-sm`,
-        lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2.5 text-base`,
+        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 pe-0.75 text-sm`,
+        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-1 text-sm`,
+        lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2 text-base`,
       },
       variant: {
         default: 'border-gray-alpha-300 bg-background-100',
@@ -60,11 +55,7 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-async function onCopyButtonClick() {
-  const text = computedTextArray.value.join('\n')
-
-  await copyText(text)
-
+function onCopy(text: string) {
   emits('copy', text)
 }
 </script>
@@ -73,7 +64,7 @@ async function onCopyButtonClick() {
   <div :class="classes" :data-variant="variant" v-bind="attrs">
     <div class="pxd-snippet--container flex-1">
       <pre
-        v-for="(t, i) of computedTextArray"
+        v-for="(t, i) of computedTextList"
         :key="i"
         class="m-0 p-0"
         :data-prompt="prompt"
@@ -82,15 +73,14 @@ async function onCopyButtonClick() {
     </div>
 
     <div class="min-w-5 relative shrink-0">
-      <button
-        type="button"
-        class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 cursor-pointer appearance-none rounded-sm self-focus-ring outline-none select-none hover:bg-gray-alpha-200 active:bg-gray-alpha-300 motion-safe:transition-colors"
-        @click="onCopyButtonClick"
-      >
-        <Transition name="pxd-transition--fade-scale" mode="out-in">
-          <Component :is="renderIcon" class="text-sm pointer-events-none" />
-        </Transition>
-      </button>
+      <PCopyButton
+        size="sm"
+        icon
+        variant="ghost"
+        :text="copyText"
+        class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 text-inherit"
+        @copy="onCopy"
+      />
     </div>
   </div>
 </template>

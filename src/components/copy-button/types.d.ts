@@ -1,7 +1,7 @@
 export interface CopyButtonProps {
-  text?: string | null
+  text?: string | ((ev: PointerEvent) => string)
 }
 
 export interface CopyButtonEmits {
-  copy: [CopyButtonProps['text'], PointerEvent]
+  copy: [string, PointerEvent]
 }

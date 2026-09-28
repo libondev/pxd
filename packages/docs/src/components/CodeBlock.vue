@@ -1,14 +1,8 @@
 <script lang="ts" setup>
-import CheckIcon from '@gdsicon/vue/check'
-import CopyIcon from '@gdsicon/vue/copy'
-import { useCopyClick } from 'pxd/composables/use-copy-click'
-
-const { isCopied, copyText } = useCopyClick()
-
-function onCopy(ev: MouseEvent) {
+function getCopyText(ev: PointerEvent) {
   const code = (ev.target as HTMLElement).parentNode?.textContent
 
-  copyText(code ?? '')
+  return code!
 }
 </script>
 
@@ -38,20 +32,12 @@ function onCopy(ev: MouseEvent) {
           <slot name="code" />
         </div>
 
-        <PButton class="top-3 right-4 absolute active:scale-95" icon size="sm" @click="onCopy">
-          <div
-            class="inset-0 ease-in-out absolute flex items-center justify-center duration-300 motion-safe:transition-all"
-            :class="isCopied ? 'blur-0 scale-100 opacity-100' : 'blur-xs scale-[0.25] opacity-0'"
-          >
-            <CheckIcon />
-          </div>
-          <div
-            class="ease-in-out duration-300 motion-safe:transition-all"
-            :class="isCopied ? 'blur-xs scale-[0.25] opacity-0' : 'blur-0 scale-100 opacity-100'"
-          >
-            <CopyIcon />
-          </div>
-        </PButton>
+        <PCopyButton
+          class="top-3 right-4 absolute active:scale-95"
+          icon
+          size="sm"
+          :text="getCopyText"
+        />
       </div>
     </details>
   </div>

@@ -2,7 +2,7 @@
 import type { CopyButtonProps, CopyButtonEmits } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
-import { useCopyClick } from '../../composables/use-copy-click'
+import { useCopyClick } from '../../composables/use-copy-click.js'
 import PButton from '../button/index.vue'
 
 defineOptions({
@@ -15,10 +15,11 @@ const emits = defineEmits<CopyButtonEmits>()
 
 const { isCopied, copyText } = useCopyClick()
 
-function onCopyClick(ev: PointerEvent) {
-  copyText(props.text)
+async function onCopyClick(ev: PointerEvent) {
+  const text = (typeof props.text === 'function' ? props.text(ev) : props.text) || ''
 
-  emits('copy', props.text, ev)
+  await copyText(text)
+  emits('copy', text, ev)
 }
 </script>
 
