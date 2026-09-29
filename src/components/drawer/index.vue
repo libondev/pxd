@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { DrawerEmits, DrawerProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useFocusTrap } from '../../composables/_internal/use-focus-trap'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getCssUnitValue } from '../../utils/format.js'
 import PLoadingMask from '../_internal/loading-mask.vue'
 import POverlay from '../overlay/index.vue'
 
@@ -52,38 +52,21 @@ const defaultStyles = computed(() => ({
     : '',
 }))
 
+const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
+  props,
+  emits,
+  elementRef: drawerRef,
+  onClose: () => {
+    isVisible.value = false
+  },
+})
+
 const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
 
 const computedStyle = computed(() => ({
   '--modal-index': props.zIndex,
   '--drawer-size': getCssUnitValue(props.size),
 }))
-
-const focusTrapOptions = computed(() => ({
-  autoFocusElement: props.autoFocusElement,
-  escapeDeactivates: props.closeOnPressEscape,
-  clickOutsideDeactivates: props.closeOnClickOverlay,
-}))
-
-useFocusTrap(drawerRef, focusTrapOptions)
-
-function closeOverlayIfNeed() {
-  if (isTruthyProp(props.loading)) {
-    return
-  }
-
-  isVisible.value = false
-}
-
-function onOverlayClick(ev: PointerEvent) {
-  emits('outside-click', ev)
-
-  if (!isTruthyProp(props.closeOnClickOverlay)) {
-    return
-  }
-
-  closeOverlayIfNeed()
-}
 
 watch(
   () => isVisible.value,

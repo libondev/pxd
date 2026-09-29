@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ModalEmits, ModalProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { getCssUnitValue, isTruthyProp } from '../../utils/format.js'
+import { getCssUnitValue } from '../../utils/format.js'
 import PLoadingMask from '../_internal/loading-mask.vue'
 import POverlay from '../overlay/index.vue'
 
@@ -49,31 +49,14 @@ const defaultStyles = computed(() => ({
     : '',
 }))
 
-const focusTrapOptions = computed(() => ({
-  autoFocusElement: props.autoFocusElement,
-  escapeDeactivates: props.closeOnPressEscape,
-  clickOutsideDeactivates: props.closeOnClickOverlay,
-}))
-
-useFocusTrap(modalRef, focusTrapOptions)
-
-function closeOverlayIfNeed() {
-  if (isTruthyProp(props.loading)) {
-    return
-  }
-
-  isVisible.value = false
-}
-
-function onOverlayClick(ev: PointerEvent) {
-  emits('outside-click', ev)
-
-  if (!isTruthyProp(props.closeOnClickOverlay)) {
-    return
-  }
-
-  closeOverlayIfNeed()
-}
+const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
+  props,
+  emits,
+  elementRef: modalRef,
+  onClose: () => {
+    isVisible.value = false
+  },
+})
 
 watch(
   () => isVisible.value,
