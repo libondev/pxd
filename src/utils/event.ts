@@ -142,10 +142,6 @@ export function cachedOff<E extends Event = Event>(
   }
 }
 
-export function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 export function preventDefaultScroll(ev: Event): boolean {
   const _target = ev.target
 

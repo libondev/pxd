@@ -72,18 +72,3 @@ export function getAllDatesBetween(
     dates: formattedDates,
   }
 }
-
-// Get the days in the given month, the first weekday and the last weekday.
-export function getMonthDays(year: number, month: number) {
-  const firstDay = dayjs()
-    .year(year)
-    .month(month - 1)
-    .date(1)
-  const lastDay = firstDay.endOf('month')
-
-  return {
-    days: lastDay.date(),
-    firstDay: firstDay.day(),
-    lastDay: lastDay.day(),
-  }
-}

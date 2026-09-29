@@ -20,7 +20,7 @@ function getOptionText(option: ListOption): string {
   return `${String(option.label ?? '')}${String(option.description ?? '')}`.trim()
 }
 
-export function countListOptions(options: ListOptions): number {
+function countListOptions(options: ListOptions): number {
   let count = 0
 
   for (const entry of options) {

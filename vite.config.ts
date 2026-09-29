@@ -1,4 +1,3 @@
-import type { PluginOption } from '@voidzero-dev/vite-plus-core'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig, lazyPlugins } from 'vite-plus'
@@ -113,7 +112,7 @@ export default defineConfig({
     },
   },
 
-  plugins: lazyPlugins(() => [vue() as PluginOption]),
+  plugins: lazyPlugins(() => [vue()]),
 
   run: {
     tasks: {
@@ -141,7 +140,7 @@ export default defineConfig({
     },
     deps: {
       optimizer: {
-        web: {
+        client: {
           enabled: false,
         },
       },

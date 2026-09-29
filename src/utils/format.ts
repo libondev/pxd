@@ -9,19 +9,19 @@ export function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
 
-const camelizeRE = /-(\w)/g
-/** kabab-case -> kababCase */
-export function camelize(str: string): string {
-  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
-}
+// const camelizeRE = /-(\w)/g
+// /** kabab-case -> kababCase */
+// export function camelize(str: string): string {
+//   return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+// }
 
-/** kabab-case -> KababCase */
-export function pascalize(text: string) {
-  return (
-    text.charAt(0).toUpperCase() +
-    text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
-  )
-}
+// /** kabab-case -> KababCase */
+// export function pascalize(text: string) {
+//   return (
+//     text.charAt(0).toUpperCase() +
+//     text.slice(1).replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+//   )
+// }
 
 /** KababCase -> kabab-case */
 export function uncapitalize(text: string) {

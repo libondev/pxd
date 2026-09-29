@@ -18,7 +18,7 @@ export function createMentionElement(key: string, label: string): HTMLElement {
   return el
 }
 
-export function escapeMentionText(text: string): string {
+function escapeMentionText(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
@@ -92,7 +92,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
 /**
  * Build a DocumentFragment from public mention HTML (text + legal `<at>` only).
  */
-export function parseMentionHtml(html: string): DocumentFragment {
+function parseMentionHtml(html: string): DocumentFragment {
   const fragment = document.createDocumentFragment()
 
   if (!html) {

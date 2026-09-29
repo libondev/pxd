@@ -3,7 +3,7 @@ import type { Nullable } from '../types/shared/utils'
 import type { MaybeElement } from '../types/shared/utils'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import { getCurrentInstance, unref } from 'vue'
-import { isNil, isServer } from './is.js'
+import { isNil } from './is.js'
 
 let fallbackId = 0
 const uniqueIdMap = new WeakMap<object, number>()
@@ -46,39 +46,39 @@ export function getColorByThreshold(value: number, colors: Record<string, string
   return colors[keys.at(-1)!]!
 }
 
-type DocumentDirection = 'rtl' | 'ltr' | 'auto'
+// type DocumentDirection = 'rtl' | 'ltr' | 'auto'
 
-export function getDocumentDirection(): DocumentDirection {
-  if (isServer()) {
-    return 'ltr'
-  }
+// export function getDocumentDirection(): DocumentDirection {
+//   if (isServer()) {
+//     return 'ltr'
+//   }
 
-  const dirAttribute = document.documentElement.getAttribute('dir')
+//   const dirAttribute = document.documentElement.getAttribute('dir')
 
-  if (dirAttribute === 'auto' || !dirAttribute) {
-    return window.getComputedStyle(document.documentElement).direction as DocumentDirection
-  }
+//   if (dirAttribute === 'auto' || !dirAttribute) {
+//     return window.getComputedStyle(document.documentElement).direction as DocumentDirection
+//   }
 
-  return dirAttribute as DocumentDirection
-}
+//   return dirAttribute as DocumentDirection
+// }
 
-export function getPlatform() {
-  if (isServer()) {
-    return 'linux'
-  }
+// export function getPlatform() {
+//   if (isServer()) {
+//     return 'linux'
+//   }
 
-  const platform = navigator.platform.toLowerCase()
-  const userAgent = navigator.userAgent.toLowerCase()
+//   const platform = navigator.platform.toLowerCase()
+//   const userAgent = navigator.userAgent.toLowerCase()
 
-  if (platform.includes('mac') || userAgent.includes('mac')) {
-    return 'mac'
-  }
-  if (platform.includes('win') || userAgent.includes('win')) {
-    return 'windows'
-  }
+//   if (platform.includes('mac') || userAgent.includes('mac')) {
+//     return 'mac'
+//   }
+//   if (platform.includes('win') || userAgent.includes('win')) {
+//     return 'windows'
+//   }
 
-  return 'linux'
-}
+//   return 'linux'
+// }
 
 export function getResponsiveValue<V extends string | number>(
   prop: ResponsiveValue<V> | undefined,
