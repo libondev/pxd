@@ -88,10 +88,10 @@ describe('input', () => {
     wrapper.unmount()
   })
 
-  it('should not apply maxlength while composing', async () => {
+  it('should not apply maxLength while composing', async () => {
     const wrapper = mount(Input, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
       },
     })
 
@@ -110,7 +110,7 @@ describe('input', () => {
   it('should keep overflow value after composing by default', async () => {
     const wrapper = mount(Input, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
       },
     })
 
@@ -128,7 +128,7 @@ describe('input', () => {
   it('should trim overflow value after composing when trimOverflow is true', async () => {
     const wrapper = mount(Input, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
         trimOverflow: true,
       },
     })

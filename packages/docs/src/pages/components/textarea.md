@@ -61,14 +61,14 @@ const outsideValue = ref('Hello')
     <PTextarea
       v-model="insideValue"
       rows="4"
-      maxlength="100"
+      max-length="100"
       show-word-limit
       placeholder="Word limit inside"
     />
     <PTextarea
       v-model="outsideValue"
       rows="4"
-      maxlength="100"
+      max-length="100"
       show-word-limit
       word-limit-position="outside"
       placeholder="Word limit outside"
@@ -88,9 +88,9 @@ const outsideValue = ref('Hello')
 | readonly | `boolean` | - | - |
 | disabled | `boolean` | - | - |
 | autofocus | `boolean` | - | - |
-| minlength | `number \| string` | - | - |
-| maxlength | `number \| string` | - | - |
-| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `maxlength` is set. |
+| min-length | `number \| string` | - | - |
+| max-length | `number \| string` | - | - |
+| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |
 | model-value | `string \| number \| null` | `` | - |
 | placeholder | `string` | - | - |
 | show-word-limit | `boolean \| string` | - | - |

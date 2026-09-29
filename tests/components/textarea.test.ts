@@ -38,11 +38,11 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
-  it('should display word limit with maxlength', async () => {
+  it('should display word limit with maxLength', async () => {
     const wrapper = mount(Textarea, {
       props: {
         modelValue: 'test',
-        maxlength: 100,
+        maxLength: 100,
         showWordLimit: true,
       },
     })
@@ -53,7 +53,7 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
-  it('should display word count without maxlength', async () => {
+  it('should display word count without maxLength', async () => {
     const wrapper = mount(Textarea, {
       props: {
         modelValue: 'test',
@@ -71,7 +71,7 @@ describe('textarea', () => {
     const wrapper = mount(Textarea, {
       props: {
         modelValue: 'test',
-        maxlength: 100,
+        maxLength: 100,
         showWordLimit: true,
       },
     })
@@ -84,10 +84,10 @@ describe('textarea', () => {
 
     wrapper.unmount()
   })
-  it('should not apply maxlength while composing', async () => {
+  it('should not apply maxLength while composing', async () => {
     const wrapper = mount(Textarea, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
       },
     })
 
@@ -105,7 +105,7 @@ describe('textarea', () => {
   it('should keep overflow value after composing by default', async () => {
     const wrapper = mount(Textarea, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
       },
     })
 
@@ -122,7 +122,7 @@ describe('textarea', () => {
   it('should trim overflow value after composing when trimOverflow is true', async () => {
     const wrapper = mount(Textarea, {
       props: {
-        maxlength: 3,
+        maxLength: 3,
         trimOverflow: true,
       },
     })

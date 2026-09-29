@@ -12,8 +12,8 @@ export interface InputProps {
   autofocus?: boolean
   inputType?: string
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
-  minlength?: number | string
-  maxlength?: number | string
+  minLength?: number | string
+  maxLength?: number | string
   trimOverflow?: boolean
   clearable?: boolean
   clearValue?: any

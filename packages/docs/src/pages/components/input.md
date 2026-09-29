@@ -60,7 +60,7 @@ const value = ref('')
 </script>
 
 <template>
-  <PInput class="max-w-sm" v-model="value" minlength="2" maxlength="10" clearable show-word-limit />
+  <PInput class="max-w-sm" v-model="value" min-length="2" max-length="10" clearable show-word-limit />
 </template>
 ```
 
@@ -163,9 +163,9 @@ const value = ref('')
 | autofocus | `boolean` | - | - |
 | input-type | `string` | - | - |
 | input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
-| minlength | `number \| string` | - | - |
-| maxlength | `number \| string` | - | - |
-| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `maxlength` is set. |
+| min-length | `number \| string` | - | - |
+| max-length | `number \| string` | - | - |
+| trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |
 | clearable | `boolean` | - | - |
 | clear-value | `string \| number \| null` | - | - |
 | model-value | `string \| number \| null` | - | - |

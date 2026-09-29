@@ -16,6 +16,12 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Volar error cache shows deleted identifiers
+
+- **Symptom**: After removing an unused variable from an SFC, the Problems panel still reports "'xxx' is declared but its value is never read" at the old line, even though grep shows the identifier is gone.
+- **Cause**: Volar keeps a stale diagnostics snapshot when the file is edited through an external process (e.g. multiple edit tool calls in one session); the error text references a symbol the current source no longer contains.
+- **Fix**: Trust `pnpm type-check` (vue-tsc) and `pnpm test` as the source of truth; a re-open/reindex of the file clears the stale entry.
+
 ### Collapse `v-show` hides content from Find in page
 
 - **Symptom**: Browser Find in page cannot match text inside a collapsed PCollapse panel, and unlike native `<details>` the panel does not auto-expand on a match.

@@ -6,6 +6,7 @@ import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP } from '../../utils/event.js'
@@ -42,23 +43,20 @@ const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
 const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
 
-const wordCount = computed(() => String(modelValue.value ?? '').length)
-const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
-const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
-const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
-const nativeMaxlength = computed(() => (isComposing.value ? undefined : props.maxlength))
-
-const wordLimitText = computed(() => {
-  if (hasMaxlength.value) {
-    return `${wordCount.value} / ${props.maxlength}`
-  }
-
-  return `${wordCount.value}`
+const {
+  isWordLimitShown,
+  hasMaxLength,
+  isWordLimitOutside,
+  nativeMaxLength,
+  wordLimitText,
+  isWordLimitExceeded,
+} = useWordLimit({
+  modelValue,
+  showWordLimit: () => props.showWordLimit,
+  maxLength: () => props.maxLength,
+  wordLimitPosition: () => props.wordLimitPosition,
+  isComposing,
 })
-
-const isWordLimitExceeded = computed(
-  () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
-)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -102,8 +100,8 @@ function getInputValue(ev: Event) {
 }
 
 function trimInputValue(inputValue: string) {
-  if (props.trimOverflow && hasMaxlength.value) {
-    return inputValue.slice(0, Number(props.maxlength))
+  if (props.trimOverflow && hasMaxLength.value) {
+    return inputValue.slice(0, Number(props.maxLength))
   }
 
   return inputValue
@@ -241,8 +239,8 @@ defineExpose({
       :readonly="readonly"
       :disabled="disabled"
       :inputmode="inputMode"
-      :minlength="minlength"
-      :maxlength="nativeMaxlength"
+      :minlength="minLength"
+      :maxlength="nativeMaxLength"
       :autofocus="autofocus"
       :aria-disabled="disabled"
       :placeholder="placeholder"

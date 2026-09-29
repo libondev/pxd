@@ -8,8 +8,8 @@ export interface TextareaProps {
   readonly?: boolean
   disabled?: boolean
   autofocus?: boolean
-  minlength?: number | string
-  maxlength?: number | string
+  minLength?: number | string
+  maxLength?: number | string
   trimOverflow?: boolean
   modelValue?: ComponentLabel
   placeholder?: string

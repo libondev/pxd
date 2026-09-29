@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
 import { computed, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { isTruthyProp } from '../../utils/format'
-import { getUniqueId } from '../../utils/helper'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isTruthyProp } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PTextarea',
@@ -31,12 +32,20 @@ const modelValue = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 const isComposing = shallowRef(false)
 
-const wordCount = computed(() => String(modelValue.value ?? '').length)
-
-const isWordLimitShown = computed(() => isTruthyProp(props.showWordLimit))
-const hasMaxlength = computed(() => props.maxlength != null && props.maxlength !== '')
-const isWordLimitOutside = computed(() => props.wordLimitPosition === 'outside')
-const nativeMaxlength = computed(() => (isComposing.value ? undefined : props.maxlength))
+const {
+  isWordLimitShown,
+  hasMaxLength,
+  isWordLimitOutside,
+  isWordLimitExceeded,
+  wordLimitText,
+  nativeMaxLength,
+} = useWordLimit({
+  modelValue,
+  showWordLimit: () => props.showWordLimit,
+  maxLength: () => props.maxLength,
+  wordLimitPosition: () => props.wordLimitPosition,
+  isComposing,
+})
 
 const nativeTextareaClasses = computed(() => ({
   'pbe-7': isWordLimitShown.value && isWordLimitOutside.value,
@@ -47,18 +56,6 @@ const wordLimitClasses = computed(() => ({
   'bottom-1.5 right-3': !isWordLimitOutside.value,
   'text-red-900': isWordLimitExceeded.value,
 }))
-
-const wordLimitText = computed(() => {
-  if (hasMaxlength.value) {
-    return `${wordCount.value} / ${props.maxlength}`
-  }
-
-  return `${wordCount.value}`
-})
-
-const isWordLimitExceeded = computed(
-  () => hasMaxlength.value && wordCount.value > Number(props.maxlength),
-)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -104,8 +101,8 @@ function onInputChange(event: Event) {
 }
 
 function trimTextareaValue(textareaValue: string) {
-  if (props.trimOverflow && hasMaxlength.value) {
-    return textareaValue.slice(0, Number(props.maxlength))
+  if (props.trimOverflow && hasMaxLength.value) {
+    return textareaValue.slice(0, Number(props.maxLength))
   }
 
   return textareaValue
@@ -147,8 +144,8 @@ function onCompositionEnd(event: CompositionEvent) {
       :readonly="readonly"
       :disabled="disabled"
       :autofocus="autofocus"
-      :minlength="minlength"
-      :maxlength="nativeMaxlength"
+      :minlength="minLength"
+      :maxlength="nativeMaxLength"
       :placeholder="placeholder"
       @change="onInputChange"
       @focus="onInputFocus"

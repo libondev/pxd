@@ -90,9 +90,9 @@ const val = ref('')
 | autofocus | `boolean` | - | Focuses the input automatically. |
 | input-type | `string` | - | Native input type. |
 | inputmode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Preferred virtual keyboard. |
-| minlength | `number \| string` | - | Minimum input length. |
-| maxlength | `number \| string` | - | Maximum input length. |
-| trim-overflow | `boolean` | `false` | Trims overflow after composition ends when `maxlength` is set. |
+| min-length | `number \| string` | - | Minimum input length. |
+| max-length | `number \| string` | - | Maximum input length. |
+| trim-overflow | `boolean` | `false` | Trims overflow after composition ends when `max-length` is set. |
 | clearable | `boolean` | - | Shows a clear button when the input has a value. |
 | clear-value | `string \| number \| null` | - | Value used after clearing. |
 | model-value | `string \| number \| null` | - | Current input value. Use `v-model` for two-way binding. |
