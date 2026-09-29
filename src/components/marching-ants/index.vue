@@ -2,8 +2,8 @@
 import type { MarchingAntsProps } from './types'
 import type { ComponentPublicInstance } from 'vue'
 import { computed, shallowRef } from 'vue'
-import { getElement } from '../../utils/dom'
-import { getCssUnitValue } from '../../utils/format'
+import { getElement } from '../../utils/dom.js'
+import { getCssUnitValue } from '../../utils/format.js'
 
 interface EllipseOutline {
   type: 'ellipse'

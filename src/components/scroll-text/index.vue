@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ScrollTextProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer'
-import { throttleByRaf } from '../../utils/event'
-import { getElement } from '../../utils/dom'
-import { isServer } from '../../utils/is'
+import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { throttleByRaf } from '../../utils/event.js'
+import { getElement } from '../../utils/dom.js'
+import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PScrollText',

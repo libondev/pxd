@@ -1,7 +1,7 @@
 import type { Nullable } from '../types/shared/utils'
 import { onScopeDispose, shallowRef } from 'vue'
-import { withResolvers } from '../utils/helper'
-import { isServer } from '../utils/is'
+import { withResolvers } from '../utils/helper.js'
+import { isServer } from '../utils/is.js'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>

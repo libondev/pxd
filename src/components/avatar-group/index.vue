@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AvatarGroupProps } from './types'
 import { computed } from 'vue'
-import { provideAvatarGroupContext } from '../../contexts/avatar'
+import { provideAvatarGroupContext } from '../../contexts/avatar.js'
 import PAvatar from '../avatar/index.vue'
 
 defineOptions({

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CheckboxGroupEmits, CheckboxGroupProps } from './types'
-import { provideCheckboxGroupContext } from '../../contexts/checkbox'
+import { provideCheckboxGroupContext } from '../../contexts/checkbox.js'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
 

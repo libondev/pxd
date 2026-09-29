@@ -1,6 +1,6 @@
 import type { EmitFn, Ref } from 'vue'
 import { computed, onScopeDispose, shallowRef, watch } from 'vue'
-import { caf, raf } from '../utils/event'
+import { caf, raf } from '../utils/event.js'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
 

@@ -5,10 +5,10 @@ import {
   getScrollElement,
   getScrollListener,
   getScrollPosition,
-} from '../utils/dom'
-import { on, off } from '../utils/event'
-import { toValue } from '../utils/helper'
-import { isServer } from '../utils/is'
+} from '../utils/dom.js'
+import { on, off } from '../utils/event.js'
+import { toValue } from '../utils/helper.js'
+import { isServer } from '../utils/is.js'
 
 export interface UseScrollspyOptions {
   /** Scrollable container. @default window */

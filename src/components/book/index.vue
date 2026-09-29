@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { BookProps } from './types'
 import { computed } from 'vue'
-import { getResponsiveValue } from '../../utils/helper'
+import { getResponsiveValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PBook',

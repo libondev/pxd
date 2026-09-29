@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NoiseBackgroundProps } from './types'
 import { computed } from 'vue'
-import { getUniqueId } from '../../utils/helper'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PNoiseBackground',

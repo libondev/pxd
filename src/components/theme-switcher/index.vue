@@ -3,7 +3,7 @@ import type { ThemeSwitcherEmits } from './types'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, watch } from 'vue'
-import { useColorScheme } from '../../composables/use-color-scheme'
+import { useColorScheme } from '../../composables/use-color-scheme.js'
 import PButton from '../button/index.vue'
 
 defineOptions({

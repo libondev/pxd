@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ResizablePanelProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useResizableContext } from '../../contexts/resizable'
-import { getUniqueId } from '../../utils/helper'
+import { useResizableContext } from '../../contexts/resizable.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PResizablePanel',

@@ -1,7 +1,7 @@
 import type { Callback, Nullable } from '../types/shared'
 import { nextTick } from 'vue'
-import { isOverflowScrollable } from './dom'
-import { isServer } from './is'
+import { isOverflowScrollable } from './dom.js'
+import { isServer } from './is.js'
 
 export function NOOP() {}
 

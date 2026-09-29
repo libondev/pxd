@@ -1,6 +1,6 @@
 import { onScopeDispose, onMounted, shallowRef } from 'vue'
-import { cachedOn } from '../utils/event'
-import { isServer } from '../utils/is'
+import { cachedOn } from '../utils/event.js'
+import { isServer } from '../utils/is.js'
 
 export function useClientOnline() {
   const isOnline = shallowRef(isServer() ? true : navigator.onLine)

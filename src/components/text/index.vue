@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { TextProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { getCssUnitValue } from '../../utils/format'
-import { getResponsiveValue } from '../../utils/helper'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { getCssUnitValue } from '../../utils/format.js'
+import { getResponsiveValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PText',

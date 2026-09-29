@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { BASIC_HEIGHTS } from '../../constants/size'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { provideSwitchContext } from '../../contexts/switch'
-import { getUniqueId, getFallbackValue } from '../../utils/helper'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { provideSwitchContext } from '../../contexts/switch.js'
+import { getUniqueId, getFallbackValue } from '../../utils/helper.js'
 import PSwitchItem from '../switch-item/index.vue'
 
 defineOptions({

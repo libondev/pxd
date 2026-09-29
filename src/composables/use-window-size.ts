@@ -1,6 +1,6 @@
 import { onScopeDispose, onMounted, shallowRef } from 'vue'
-import { cachedOn, cachedOff } from '../utils/event'
-import { isServer } from '../utils/is'
+import { cachedOn, cachedOff } from '../utils/event.js'
+import { isServer } from '../utils/is.js'
 
 export function useWindowSize() {
   const width = shallowRef(0)

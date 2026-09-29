@@ -8,10 +8,10 @@ import type {
   SwipeCellSlotState,
 } from './types'
 import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer'
-import { useOutsideClick } from '../../composables/use-outside-click'
-import { getElement } from '../../utils/dom'
-import { exclusiveOpen, registerSwipeCell } from './instances'
+import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { useOutsideClick } from '../../composables/use-outside-click.js'
+import { getElement } from '../../utils/dom.js'
+import { exclusiveOpen, registerSwipeCell } from './instances.js'
 
 defineOptions({
   name: 'PSwipeCell',

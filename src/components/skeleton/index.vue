@@ -2,8 +2,8 @@
 import type { SkeletonProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { getCssUnitValue, increaseWithUnit } from '../../utils/format'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { getCssUnitValue, increaseWithUnit } from '../../utils/format.js'
 
 defineOptions({
   name: 'PSkeleton',

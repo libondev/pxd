@@ -2,10 +2,10 @@
 import type { ComponentAs } from '../../types/shared'
 import type { ConfigProviderProps } from './types'
 import { computed } from 'vue'
-import { provideConfigProvider } from '../../contexts/config-provider'
-import enUS from '../../locales/en-us'
-import { NOOP } from '../../utils/event'
-import { mergeDeep } from '../../utils/merge'
+import { provideConfigProvider } from '../../contexts/config-provider.js'
+import enUS from '../../locales/en-us.js'
+import { NOOP } from '../../utils/event.js'
+import { mergeDeep } from '../../utils/merge.js'
 
 interface Props {
   as?: ComponentAs

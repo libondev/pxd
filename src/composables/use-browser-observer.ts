@@ -1,10 +1,10 @@
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { computed, onScopeDispose, watch, shallowRef } from 'vue'
-import { getElement } from '../utils/dom'
-import { toArray } from '../utils/format'
-import { toValue } from '../utils/helper'
-import { isNotNil } from '../utils/is'
+import { getElement } from '../utils/dom.js'
+import { toArray } from '../utils/format.js'
+import { toValue } from '../utils/helper.js'
+import { isNotNil } from '../utils/is.js'
 
 export const useIntersectionObserver = createObserver(
   globalThis.IntersectionObserver,

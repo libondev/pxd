@@ -1,6 +1,6 @@
 import type { ResizableProps } from '../components/resizable/types'
 import type { Ref } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface ResizableContext {
   props: ResizableProps

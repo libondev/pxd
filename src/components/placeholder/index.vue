@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PlaceholderProps } from './types'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PPlaceholder',

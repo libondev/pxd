@@ -3,10 +3,10 @@ import type { RatingEmits, RatingProps } from './types'
 import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 
 defineOptions({
   name: 'PRating',

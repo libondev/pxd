@@ -3,7 +3,7 @@ import type {
   ToggleButtonGroupEmits,
 } from '../components/toggle-button-group/types'
 import type { EmitFn } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface ToggleButtonGroupContext {
   props: ToggleButtonGroupProps

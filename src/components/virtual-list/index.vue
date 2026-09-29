@@ -2,7 +2,7 @@
 import type { VirtualListProps, VirtualListEmits } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { shallowRef } from 'vue'
-import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list'
+import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list.js'
 
 defineOptions({
   name: 'PVirtualList',

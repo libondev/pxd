@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MoreButtonEmits, MoreButtonProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { useModelValue } from '../../composables/_internal/use-model-value'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import PButton from '../button/index.vue'
 
 defineOptions({

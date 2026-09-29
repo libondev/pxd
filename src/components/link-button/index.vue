@@ -2,7 +2,7 @@
 import type { LinkButtonEmits, LinkButtonProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import { computed, useAttrs } from 'vue'
-import { isExternalLink } from '../../utils/format'
+import { isExternalLink } from '../../utils/format.js'
 import PButton from '../button/index.vue'
 
 defineOptions({

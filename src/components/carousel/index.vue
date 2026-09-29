@@ -4,11 +4,11 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children'
-import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture'
-import { provideCarouselContext } from '../../contexts/carousel'
-import { awaitAnimationEnd } from '../../utils/dom'
-import { getCssUnitValue } from '../../utils/format'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
+import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
+import { provideCarouselContext } from '../../contexts/carousel.js'
+import { awaitAnimationEnd } from '../../utils/dom.js'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PCarousel',

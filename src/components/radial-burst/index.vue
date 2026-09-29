@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RadialBurstProps } from './types'
 import { computed, type CSSProperties } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PRadialBurst',

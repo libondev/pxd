@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { customRef, onScopeDispose } from 'vue'
-import { cachedOn } from '../utils/event'
-import { isServer } from '../utils/is'
+import { cachedOn } from '../utils/event.js'
+import { isServer } from '../utils/is.js'
 
 interface CacheObject {
   [key: string]: {

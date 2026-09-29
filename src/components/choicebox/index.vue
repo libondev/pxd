@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ChoiceboxEmits, ChoiceboxProps } from './types'
-import { provideChoiceboxContext } from '../../contexts/choicebox'
-import { getUniqueId } from '../../utils/helper'
+import { provideChoiceboxContext } from '../../contexts/choicebox.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PChoiceboxItem from '../choicebox-item/index.vue'
 import PStack from '../stack/index.vue'
 

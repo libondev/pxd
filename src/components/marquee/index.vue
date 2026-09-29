@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { MarqueeEmits, MarqueeProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer'
-import { caf, raf, throttleByRaf } from '../../utils/event'
-import { isServer } from '../../utils/is'
+import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { caf, raf, throttleByRaf } from '../../utils/event.js'
+import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PMarquee',

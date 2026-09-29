@@ -1,6 +1,6 @@
 import type { RadioGroupEmits, RadioGroupProps } from '../components/radio-group/types'
 import type { EmitFn } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface RadioGroupContext {
   name: string

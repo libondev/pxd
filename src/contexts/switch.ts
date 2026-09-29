@@ -1,6 +1,6 @@
 import type { SwitchEmits, SwitchProps } from '../components/switch/types'
 import type { EmitFn } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 export interface SwitchContext {
   name: string

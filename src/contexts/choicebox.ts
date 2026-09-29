@@ -1,6 +1,6 @@
 import type { ChoiceboxEmits, ChoiceboxProps } from '../components/choicebox/types'
 import type { EmitFn } from 'vue'
-import { createContext } from '../utils/context'
+import { createContext } from '../utils/context.js'
 
 interface ChoiceboxContext {
   name: string

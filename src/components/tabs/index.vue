@@ -3,9 +3,9 @@ import type { TabsItemState } from '../../contexts/tabs'
 import type { TabsProps, TabsEmits } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children'
-import { provideTabsContext } from '../../contexts/tabs'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
+import { provideTabsContext } from '../../contexts/tabs.js'
 
 defineOptions({
   name: 'PTabs',

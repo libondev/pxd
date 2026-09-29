@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { BreadcrumbProps } from './types'
-import { provideBreadcrumbContext } from '../../contexts/breadcrumb'
+import { provideBreadcrumbContext } from '../../contexts/breadcrumb.js'
 
 defineOptions({
   name: 'PBreadcrumb',

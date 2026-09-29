@@ -1,8 +1,8 @@
 import type { Nullable } from '../types/shared'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { onScopeDispose, shallowRef } from 'vue'
-import { doubleRaf, caf } from '../utils/event'
-import { toValue } from '../utils/helper'
+import { doubleRaf, caf } from '../utils/event.js'
+import { toValue } from '../utils/helper.js'
 
 interface Options {
   delay?: MaybeRefOrGetter<number>

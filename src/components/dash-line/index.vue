@@ -2,7 +2,7 @@
 import type { BasePosition } from '../../types/shared'
 import type { DashLineProps } from './types'
 import { computed } from 'vue'
-import { getCssUnitValue } from '../../utils/format'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PDashLine',

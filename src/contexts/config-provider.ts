@@ -1,7 +1,7 @@
 import type { ConfigProviderProps } from '../components/config-provider/types'
 import type { Locale } from '../locales'
-import enUS from '../locales/en-us'
-import { createContext } from '../utils/context'
+import enUS from '../locales/en-us.js'
+import { createContext } from '../utils/context.js'
 
 const configProviderKey = 'ConfigProvider'
 

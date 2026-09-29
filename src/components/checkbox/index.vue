@@ -3,10 +3,10 @@ import type { CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { useCheckboxGroupContext } from '../../contexts/checkbox'
-import { getUniqueId } from '../../utils/helper'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useCheckboxGroupContext } from '../../contexts/checkbox.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PCheckbox',

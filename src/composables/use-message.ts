@@ -1,7 +1,7 @@
 import type { ButtonProps } from '../components/button/types'
 import type { ComponentClass } from '../types/shared/props'
 import type { VNode } from 'vue'
-import { isServer } from '../utils/is'
+import { isServer } from '../utils/is.js'
 
 type MessageContent = string | VNode
 type PromiseMessageHandler = MessageContent | ((data: unknown) => MessageContent)

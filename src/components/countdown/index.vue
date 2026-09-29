@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { CountdownEmits, CountdownProps } from './types'
 import { computed, onBeforeUnmount } from 'vue'
-import { useCountdown } from '../../composables/use-countdown'
-import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date'
+import { useCountdown } from '../../composables/use-countdown.js'
+import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
 
 defineOptions({
   name: 'PCountDown',

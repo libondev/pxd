@@ -5,10 +5,10 @@ import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext'
 import { prepareRichInline, measureRichInlineStats } from '@chenglou/pretext/rich-inline'
 import { cn } from 'cn'
 import { shallowRef, computed, nextTick, watch, onBeforeUnmount } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer'
-import { getStyle } from '../../utils/dom'
-import { scheduleByRaf } from '../../utils/event'
-import { isServer } from '../../utils/is'
+import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { getStyle } from '../../utils/dom.js'
+import { scheduleByRaf } from '../../utils/event.js'
+import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PEllipsisText',

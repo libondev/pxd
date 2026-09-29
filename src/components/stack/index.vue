@@ -2,8 +2,8 @@
 import type { ComponentDirection } from '../../types/shared'
 import type { StackProps } from './types'
 import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { getResponsiveValue } from '../../utils/helper'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { getResponsiveValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PStack',

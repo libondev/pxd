@@ -2,9 +2,9 @@
 import type { ToggleEmits, ToggleProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { getUniqueId, getFallbackValue } from '../../utils/helper'
+import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getUniqueId, getFallbackValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PToggle',

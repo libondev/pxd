@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
 import { computed, onBeforeUnmount, shallowRef, useAttrs } from 'vue'
-import { getStyle } from '../../utils/dom'
-import { off, once } from '../../utils/event'
+import { getStyle } from '../../utils/dom.js'
+import { off, once } from '../../utils/event.js'
 import PButton from '../button/index.vue'
 
 defineOptions({

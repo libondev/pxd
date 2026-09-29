@@ -1,6 +1,6 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { onScopeDispose, ref, watch } from 'vue'
-import { toValue } from '../utils/helper'
+import { toValue } from '../utils/helper.js'
 
 interface Options<T> {
   deep?: boolean
