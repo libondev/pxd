@@ -21,7 +21,8 @@ const props = withDefaults(defineProps<ToolCallProps>(), {
 
 const isOpen = shallowRef(true)
 const configProvider = useConfigProvider()
-const { contentRef, detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(isOpen)
+const contentRef = shallowRef<HTMLElement>()
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
 
 const STATUS_META: Record<
   ToolCallStatus,
@@ -196,7 +197,7 @@ function onDetailsToggle(ev: Event) {
             {{ configProvider.locale.toolCall.input }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 font-mono text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of inputTokens"
               :key="`input-${index}`"
@@ -211,7 +212,7 @@ function onDetailsToggle(ev: Event) {
             {{ configProvider.locale.toolCall.output }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 font-mono text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of outputTokens"
               :key="`output-${index}`"

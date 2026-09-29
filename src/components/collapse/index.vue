@@ -17,11 +17,12 @@ const emits = defineEmits<CollapseEmits>()
 
 const collapseGroup = useCollapseGroupContext()
 const internalExpand = shallowRef(props.expand)
+const contentRef = shallowRef<HTMLElement>()
 
 const isExpanded = computed(() =>
   collapseGroup ? collapseGroup.expandedIds.value.has(uid) : internalExpand.value,
 )
-const { contentRef, detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(isExpanded)
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
 
 function setExpanded(expanded: boolean, exclusive = false) {
   if (collapseGroup) {

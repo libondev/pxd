@@ -1,9 +1,8 @@
-import type { ComponentLabel } from '../../types/shared'
-import type { TabsValue } from '../tabs/types'
+import type { ComponentLabel, ComponentValue } from '../../types/shared'
 
 export interface TabsItemProps {
   label?: ComponentLabel
-  value: TabsValue
+  value: ComponentValue
   disabled?: boolean
 }
 

@@ -15,9 +15,10 @@ defineOptions({
 const props = withDefaults(defineProps<ReasoningProps>(), { streaming: true })
 
 const isOpen = shallowRef(!!props.streaming)
+const contentRef = shallowRef<HTMLElement>()
 
 const configProvider = useConfigProvider()
-const { contentRef, detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(isOpen)
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
 
 function onToggleClick() {
   isOpen.value = !isOpen.value

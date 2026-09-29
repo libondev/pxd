@@ -1,11 +1,11 @@
-import type { TabsEmits, TabsProps, TabsValue } from '../components/tabs/types'
-import type { ComponentLabel } from '../types/shared'
+import type { TabsEmits, TabsProps } from '../components/tabs/types'
+import type { ComponentLabel, ComponentValue } from '../types/shared'
 import type { EmitFn, Slots } from 'vue'
 import { createContext } from '../utils/context.js'
 
 export interface TabsItemState {
   id: string
-  value: TabsValue
+  value: ComponentValue
   label?: ComponentLabel
   disabled?: boolean
   slots: Slots

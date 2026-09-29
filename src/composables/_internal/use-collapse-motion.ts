@@ -1,10 +1,12 @@
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
 import { getStyle } from '../../utils/dom.js'
 import { toValue } from '../../utils/helper.js'
 
-export function useCollapseMotion(expanded: MaybeRefOrGetter<boolean | undefined>) {
-  const contentRef = shallowRef<HTMLElement | null>(null)
+export function useCollapseMotion(
+  contentRef: Ref<HTMLElement | undefined>,
+  expanded: MaybeRefOrGetter<boolean | undefined>,
+) {
   // Stays true during leave so height can animate before `open` is removed.
   const detailsOpen = shallowRef(false)
 
