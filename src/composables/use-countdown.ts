@@ -6,53 +6,44 @@ const UPDATE_INTERVAL = 100 // 100ms = 10fps
 
 export interface CountdownOptions {
   /**
-   * 是否启用正计时
    * Whether to enable count up mode.
    * @default false
    */
   invert?: boolean
   /**
-   * 是否激活
    * Whether the countdown is active.
    * @default false
    */
   active?: boolean
   /**
-   * 开始时间于
    * The start time of the countdown.
    */
   startAt?: number
   /**
-   * 结束时间
    * The end time of the countdown.
    */
   endTime?: number
   /**
-   * 是否自动重置
    * Whether to automatically reset.
    * @default true
    */
   autoReset?: boolean
   /**
-   * 倒计时时间
    * The duration of the countdown.
    * @default 0
    */
   durations?: number
   /**
-   * 精度
    * The precision of the countdown.
    * @default 0
    */
   precision?: number
   /**
-   * 是否使用毫秒
    * Whether the time stamp is in milliseconds.
    * @default true
    */
   millisecond?: boolean
   /**
-   * 是否启用人性化时间显示（向上取整到秒）
    * Whether to enable human-friendly time display (ceil to seconds).
    * @default false
    */
@@ -85,7 +76,7 @@ export function useCountdown<T extends Record<string, any>>(
       return Math.max(0, end)
     }
 
-    // 如果是正计时模式且没有设置 durations，支持无限计时
+    // In count-up mode with no durations, count up indefinitely.
     if (props.invert && [undefined, 0].includes(durations)) {
       return Infinity
     }
@@ -99,13 +90,13 @@ export function useCountdown<T extends Record<string, any>>(
     return props.millisecond ? Math.round(time) : Math.round(time * 1000)
   }
 
-  // 获取当前计时值
+  // Get the current elapsed time.
   function getCurrent(now: DOMHighResTimeStamp): number {
     const rawCurrent = props.invert
       ? now - startTimestamp
       : totalDuration.value + startTimestamp - now
 
-    // 将毫秒转换为秒，向上取整，然后转回毫秒
+    // Convert milliseconds to seconds, round up, then back to milliseconds.
     if (props.intuitive && !props.invert && rawCurrent > 0) {
       const seconds = Math.ceil(rawCurrent / 1000)
       return Math.max(0, seconds * 1000)
@@ -118,15 +109,15 @@ export function useCountdown<T extends Record<string, any>>(
     const startAtValue = formatTime(props.startAt)
 
     if (props.invert) {
-      // 正计时模式：从 startAt 开始计时
+      // Count-up mode: start counting from startAt.
       timeRef.value = isInfiniteCountup.value
         ? startAtValue
         : Math.min(startAtValue, totalDuration.value)
     } else {
-      // 倒计时模式：从 totalDuration - startAt 开始倒计时
+      // Count-down mode: start from totalDuration - startAt.
       const rawTime = Math.max(0, totalDuration.value - startAtValue)
 
-      // 如果设置了 intuitive 则对初始值也进行向上取整处理
+      // Round the initial value up as well when intuitive is set.
       if (props.intuitive && rawTime > 0) {
         const seconds = Math.ceil(rawTime / 1000)
         timeRef.value = Math.max(0, seconds * 1000)

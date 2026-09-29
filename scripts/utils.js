@@ -2,7 +2,7 @@ import { camelize } from '@vue/shared'
 
 /**
  * @param {string} name
- * @returns {string} 转换后的字符串
+ * @returns {string} The converted string.
  */
 export function pascalize(name) {
   const camelized = camelize(name)

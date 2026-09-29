@@ -15,7 +15,7 @@ function setParallaxEffect() {
     return
   }
 
-  const maxTilt = 20 // 最大倾斜角度
+  const maxTilt = 20 // Maximum tilt angle.
 
   const onMouseMove = (e) => {
     const card = e.target.closest('.feature-item')
@@ -40,7 +40,7 @@ function setParallaxEffect() {
       return
     }
 
-    // 检查是否真正离开了卡片（而不是移动到子元素）
+    // Check whether the pointer really left the card (rather than moving to a child).
     const relatedCard = e.relatedTarget?.closest?.('.feature-item')
     if (card !== relatedCard) {
       card.style.transform = `

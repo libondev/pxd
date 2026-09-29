@@ -1,7 +1,8 @@
 import { computed, onScopeDispose, shallowRef, watchEffect } from 'vue'
-import { cachedOn } from '../utils/event'
-import { isServer } from '../utils/is'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query'
+import { cachedOn } from '../utils/event.js'
+import { getUniqueId } from '../utils/helper.js'
+import { isServer } from '../utils/is.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query.js'
 
 export type ColorScheme = 'light' | 'dark'
 export type ColorPreference = ColorScheme | 'auto'
@@ -16,7 +17,7 @@ interface Subscriber {
 }
 
 export function useColorScheme(options: Options = {}) {
-  const RANDOM_KEY = Math.random()
+  const uniqueId = getUniqueId()
   const EVENT_NAME = '#toggle-color-scheme'
   const STORAGE_KEY = 'fe.system.color-scheme'
 
@@ -94,16 +95,16 @@ export function useColorScheme(options: Options = {}) {
     updateStorages()
     removeDisableTransitionStyle()
 
-    // 同步所有 theme-switcher 组件内部状态
+    // Keep all theme-switcher components internally in sync.
     if (options.syncStatus) {
-      const payload = { id: RANDOM_KEY, mode: colorScheme.value }
+      const payload = { id: uniqueId, mode: colorScheme.value }
 
       window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: payload }))
     }
   }
 
   function onToggleModeType({ detail }: CustomEvent<Subscriber>) {
-    if (detail.id === RANDOM_KEY) {
+    if (detail.id === uniqueId) {
       return
     }
 

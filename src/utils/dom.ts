@@ -127,7 +127,7 @@ export function getScrollTarget(el: HTMLElement, isHorizontal?: boolean): Window
   return parent
 }
 
-// 获取滚动元素的 DOM 对象, 通常用于获取滚动距离
+// Get the scrollable element's DOM object, usually used for reading scroll offsets.
 export function getScrollElement(target?: Window | Document | HTMLElement | null): HTMLElement {
   if (!target || getWindowTop().includes(target as HTMLElement)) {
     return document.documentElement
@@ -158,11 +158,7 @@ export function getScrollPosition(el: HTMLElement | Window | Document) {
   }
 }
 
-/**
- * 获取滚动条尺寸（宽度和高度）
- * @param element - 要测量的元素，默认为document.body
- * @returns 包含滚动条宽度和高度的对象
- */
+// Get the scrollbar size (width and height).
 export function getScrollbarSize(element?: HTMLElement) {
   if (!element) {
     const div = document.createElement('div')

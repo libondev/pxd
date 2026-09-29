@@ -95,7 +95,7 @@ function updateScrollbarMetrics() {
     scrollHeight: scrollH,
   } = contentEl
 
-  // 轨道尺寸使用外层 wrapper 的 padding-box，确保外层 padding 时计算准确
+  // Track size uses the wrapper's padding-box so outer padding is accounted for.
   const trackW = wrapperRef.value!.clientWidth ?? clientW
   const trackH = wrapperRef.value!.clientHeight ?? clientH
 
@@ -104,7 +104,7 @@ function updateScrollbarMetrics() {
   const effScrollW = Math.max(effClientW, scrollW - pl - pr)
   const effScrollH = Math.max(effClientH, scrollH - pt - pb)
 
-  // 可滚动性与比例基于有效尺寸，滑块像素基于轨道尺寸
+  // Scrollability and ratios use effective sizes, while thumb pixels use track size.
   const _isScrollableX = effScrollW > effClientW
   const _isScrollableY = effScrollH > effClientH
 
@@ -153,7 +153,7 @@ function onContainerScroll(ev: Event) {
   }
 
   if (props.loading) {
-    // 加载中仅更新快照，不触发 end
+    // While loading, only snapshot the position without firing end events.
     lastScrollTop = el.scrollTop
     lastScrollLeft = el.scrollLeft
     lastScrollInit = true
@@ -177,7 +177,7 @@ function onContainerScroll(ev: Event) {
 
   const threshold = props.bottomThreshold ?? 0
 
-  // 仅在对应方向发生滚动时才进行该方向的 end 判定
+  // Only run the end check for the direction that actually scrolled.
   if (movedY) {
     const scrollBottom = Math.floor(currTop + el.clientHeight)
 

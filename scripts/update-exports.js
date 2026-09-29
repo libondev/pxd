@@ -52,9 +52,7 @@ function updateComposablesIndex() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'composables', 'index.ts'), fileContent)
 }
 
-/**
- * 根据组件目录生成根目录 `volar.d.ts`，供 Volar 识别全局组件类型。
- */
+// Generate the root `volar.d.ts` from component dirs so Volar picks up global component types.
 function updateVolarDts() {
   const root = process.cwd()
   const typePath = path.join(root, 'volar.d.ts')

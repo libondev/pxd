@@ -149,7 +149,7 @@ function onContainerClick(ev: MouseEvent) {
   inputsRef.value[firstEmptyIndex]?.select()
 }
 
-// 使用输入法输入完成后触发 compositionend
+// Triggered when the IME composition finishes.
 function onCompositionEnd(ev: CompositionEvent) {
   const input = ev.target as HTMLInputElement
   const index = Number(input.dataset.index)
@@ -186,7 +186,7 @@ function validateInputValue(value: string) {
   return false
 }
 
-// 按下方向键的时候切换输入框的焦点
+// Move focus between inputs when arrow keys are pressed.
 function onContainerKeydown(ev: KeyboardEvent) {
   const index = Number((ev.target as HTMLInputElement).dataset.index)
   const key = ev.key

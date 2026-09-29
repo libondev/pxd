@@ -60,9 +60,7 @@ function onHandleDrag(key: string, delta: { deltaX: number; deltaY: number }) {
   onDrag(handleIndex, delta)
 }
 
-/**
- * 计算容器的总尺寸（宽度或高度，取决于方向）
- */
+// Calculate the container's total size (width or height, depending on direction).
 function calculateContainerSize(): number {
   if (!containerRef.value) {
     return 0
@@ -73,9 +71,7 @@ function calculateContainerSize(): number {
     : containerRef.value.offsetHeight
 }
 
-/**
- * 计算每个面板的初始百分比大小（总计 100），以面板 ID 为键返回
- */
+// Compute each panel's initial percentage size (totaling 100), keyed by panel ID.
 function calculateInitialPanelSizes(configs: PanelConfig[]): {
   sizes: Record<string, number>
   remainingSize: number
@@ -102,9 +98,7 @@ function calculateInitialPanelSizes(configs: PanelConfig[]): {
   return { sizes, remainingSize, autoSizedPanelIds }
 }
 
-/**
- * 在自动调整大小的面板之间均等分配剩余百分比空间
- */
+// Distribute the remaining space evenly among auto-sized panels.
 function distributeRemainingSpace(
   sizes: Record<string, number>,
   remainingSize: number,

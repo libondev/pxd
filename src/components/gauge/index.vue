@@ -52,10 +52,8 @@ const progress = computed(() => {
   return Math.min(Math.max(props.modelValue || 0, 0), 100)
 })
 
-/**
- * 几何弧长按百分比截取；round linecap 会在端点外侧“多出一截”，
- * 略短于几何长度可避免与间隙叠在一起显得过满（旧实现里写死的 8 与此同因）。
- */
+// Arc length is taken as a percentage of the geometric arc; round linecap overhangs
+// past the endpoints, so trimming slightly keeps gaps from looking too full.
 const progressArc = computed(() => {
   if (progress.value === 0 || progress.value === 100) {
     return (progress.value / 100) * CIRCUMFERENCE
