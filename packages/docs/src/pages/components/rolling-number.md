@@ -36,7 +36,31 @@ Numbers between different fonts may shake when they change, and `tabular-nums` c
 </template>
 ```
 
-## No immediate
+## Scroll mode
+
+Per-digit reel that rolls from bottom to top.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const number = ref(1234)
+
+function changeValue() {
+  number.value += Math.floor(Math.random() * 900) + 100
+}
+</script>
+
+<template>
+  <PStack direction="vertical">
+    <PButton @click="changeValue">Change</PButton>
+
+    <PRollingNumber :value="number" mode="scroll" thousands class="text-2xl tabular-nums" />
+  </PStack>
+</template>
+```
+
+## Without mount animation
 
 ```vue demo
 <script setup>
@@ -53,7 +77,7 @@ function changeValue() {
   <PStack direction="vertical">
     <PButton @click="changeValue">Change</PButton>
 
-    <PRollingNumber :value="number" :immediate="false" class="block" />
+    <PRollingNumber :value="number" :animate-on-mount="false" class="block" />
   </PStack>
 </template>
 ```
@@ -62,7 +86,8 @@ function changeValue() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| value | `number \| string` | `0` | - |
-| durations | `number` | `1000` | - |
-| immediate | `boolean` | `true` | - |
-| thousands | `boolean` | - | - |
+| value | `number \| string` | `0` | Target number. A string may include a numeric prefix plus unit/suffix (e.g. `"999+ Users"`). |
+| durations | `number` | `2000` | Animation duration in milliseconds. |
+| animateOnMount | `boolean` | `true` | Whether to play the animation on first mount. When `false`, the initial value is shown as-is; later value changes still animate. |
+| thousands | `boolean` | `false` | Format the integer part with thousand separators. |
+| mode | `'tween' \| 'scroll'` | `'tween'` | `tween` interpolates the value; `scroll` rolls each digit |
