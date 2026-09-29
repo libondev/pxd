@@ -27,7 +27,6 @@ export type BadgeVariant =
 
 export interface BadgeProps {
   as?: ComponentAs
-  href?: string
   size?: ComponentSize
   shape?: ComponentShape
   variant?: BadgeVariant

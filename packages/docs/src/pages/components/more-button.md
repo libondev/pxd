@@ -39,6 +39,6 @@ const expanded = ref(false)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| more-text | `string` | `Show More` | - |
-| less-text | `string` | `Show Less` | - |
-| model-value | `boolean` | `false` | - |
+| more-text | `string` | `Show More` | Label rendered while the content is collapsed |
+| less-text | `string` | `Show Less` | Label rendered while the content is expanded |
+| model-value | `boolean` | `false` | Expanded state, toggled on every click |

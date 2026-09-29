@@ -72,10 +72,10 @@ const error = ref({
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| label | `string \| number \| null` | - | - |
-| error | `ErrorType` | - | - |
-| variant | `default`\|`card` | `default` | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Font size of the message; falls back to the config provider size |
+| label | `string \| number \| null` | - | Bold prefix rendered before the message |
+| error | `ErrorType` | - | Object with `message` plus an optional `label`, `action` and `link` |
+| variant | `default`\|`card` | `default` | `card` centres the message in a bordered red panel |
 
 ## Slots
 

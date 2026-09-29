@@ -18,9 +18,9 @@ Displays a brief heading and subheading to communicate any additional informatio
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | - |
-| tooltip | `string` | - | - |
-| description | `string` | - | - |
+| title | `string` | - | Heading text, overridable by the `title` slot |
+| tooltip | `string` | - | Content of the info tooltip next to the title |
+| description | `string` | - | Body text, overridable by the `description` slot |
 
 ## Slots
 

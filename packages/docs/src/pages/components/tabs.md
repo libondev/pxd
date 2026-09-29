@@ -112,14 +112,14 @@ const securityCode = ref('')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| variant | `'default' \| 'secondary'` | `default` | - |
-| keep-alive | `boolean` | - | - |
-| model-value | `string \| number` | - | - |
+| variant | `'default' \| 'secondary'` | `default` | Visual style of the tab bar; `secondary` draws it without the underline |
+| keep-alive | `boolean` | - | Keep inactive panels mounted so their state survives switching |
+| model-value | `string \| number` | - | Value of the active tab |
 
 ## TabsItem Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-| value | `TabsValue` | - | - |
-| disabled | `boolean` | - | - |
+| label | `string \| number \| null` | - | Text of the tab trigger, overridable by the `label` slot |
+| value | `TabsValue` | - | Value identifying this tab in the `v-model` |
+| disabled | `boolean` | - | Grey out the tab and ignore clicks on it |

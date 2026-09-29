@@ -5,7 +5,6 @@ import type { ListModelValue, ListOption, ListOptions } from '../list/types'
 export interface SelectProps {
   size?: ComponentSize
   shape?: ComponentShape
-  error?: boolean | string
   variant?: ButtonVariant
   options?: ListOptions
   virtual?: boolean

@@ -99,17 +99,18 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| model-value | `string \| number \| (string \| number)[] \| null` | - | - |
-| variant | `ButtonVariant` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| shape | `'default' \| 'square' \| 'rounded'` | - | - |
-| options | `ListOptions` | - | - |
-| disabled | `boolean` | - | - |
-| multiple | `boolean` | - | - |
+| model-value | `string \| number \| (string \| number)[] \| null` | - | Selected value, or an array of values in `multiple` mode |
+| variant | `ButtonVariant` | - | Visual style of the trigger button, e.g. `primary` or `ghost` |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size of the trigger button, falls back to the config provider size |
+| shape | `'default' \| 'square' \| 'rounded'` | - | Trigger button shape: `default`, `square` or `rounded` |
+| options | `ListOptions` | - | Options to display, entries with `type: 'group'` render as groups |
+| disabled | `boolean` | - | Disable the trigger and stop the menu from opening |
+| multiple | `boolean` | - | Allow several options to be selected, value becomes an array |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| placeholder | `string` | - | - |
-| label-format | `(items: ListOption[]) => string` | - | - |
-| close-on-press-escape | `boolean` | - | - |
+| suffix-icon | `boolean` | `true` | Show the chevron icon in the trigger suffix |
+| placeholder | `string` | - | Text shown in the trigger while nothing is selected |
+| label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
+| close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
 
 ## Events
 

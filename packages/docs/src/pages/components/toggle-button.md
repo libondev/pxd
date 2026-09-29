@@ -252,24 +252,24 @@ const toggleButtonOptions = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| variant | `'ghost' \| 'outline'` | - | - |
-| disabled | `boolean` | - | - |
-| label | `string \| number \| null` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| value | `string \| number \| boolean` | `true` | - |
-| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | - | - |
+| variant | `'ghost' \| 'outline'` | - | Visual style: `ghost` is transparent, `outline` adds a border |
+| disabled | `boolean` | - | Disable the button, also forced on by the parent group |
+| label | `string \| number \| null` | - | Text rendered in the default slot when no slot content is given |
+| size | `'sm' \| 'md' \| 'lg'` | - | Button size, inherited from the group or config provider when unset |
+| value | `string \| number \| boolean` | `true` | Value this button contributes to the group model |
+| model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Checked state, an array of values inside a group |
 
 ## ToggleButtonGroup Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| gap | `ResponsiveValue<string \| number>` | `0` | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| disabled | `boolean` | - | - |
-| multiple | `boolean` | `true` | - |
-| options | `{ label, value, disabled? }[]` | - | - |
-| variant | `'ghost' \| 'outline'` | - | - |
-| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | `() => []` | - |
+| gap | `ResponsiveValue<string \| number>` | `0` | Space between buttons, use `0` to merge the borders |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size applied to every button in the group |
+| disabled | `boolean` | - | Disable every button in the group |
+| multiple | `boolean` | `true` | Allow several buttons to stay active at the same time |
+| options | `{ label, value, disabled? }[]` | - | Buttons rendered from the default slot, one per option |
+| variant | `'ghost' \| 'outline'` | `ghost` | Default variant for every button, overridable per button |
+| model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | `() => []` | Active value, or an array of values when `multiple` |
 
 ## Slots
 

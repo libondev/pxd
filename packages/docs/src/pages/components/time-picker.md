@@ -136,15 +136,15 @@ const time = ref('18:30:00')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| error | `boolean \| string` | - | - |
-| presets | `DateTimePreset[]` | `() => []` | - |
-| disabled | `boolean` | - | - |
-| clearable | `boolean` | - | - |
-| model-value | `Date \| string \| number \| null` | `` | - |
-| suffix-icon | `boolean` | `true` | - |
-| placeholder | `string` | - | - |
-| show-seconds | `boolean` | `true` | - |
-| close-on-press-escape | `boolean` | `true` | - |
-| label-format | `string` | `HH:mm:ss` | - |
-| value-format | `string` | `HH:mm:ss` | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size of the text input |
+| error | `boolean \| string` | - | Render the input in its error state |
+| presets | `DateTimePreset[]` | `() => []` | Quick picks beside the lists, each with a `label` and a `getDate` callback |
+| disabled | `boolean` | - | Disable the input and block the time panel from opening |
+| clearable | `boolean` | - | Show a clear button that empties the value |
+| model-value | `Date \| string \| number \| null` | `` | Selected time, parsed with `value-format` and shown with `label-format` |
+| suffix-icon | `boolean` | `true` | Show the clock icon in the input suffix |
+| placeholder | `string` | - | Placeholder text of the input |
+| show-seconds | `boolean` | `true` | Show the seconds column in the time panel |
+| close-on-press-escape | `boolean` | `true` | Close the time panel when pressing `Escape` |
+| label-format | `string` | `HH:mm:ss` | Day.js format used to display the time in the input |
+| value-format | `string` | `HH:mm:ss` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |

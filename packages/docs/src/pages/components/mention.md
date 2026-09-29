@@ -89,13 +89,14 @@ const options = [
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | model-value | `string` | `''` | Mention HTML: text + `<at key="...">label</at>` |
-| options | `ListOptions` | `[]` | Default options when the popover opens with an empty query |
+| options | `ListOptions` | `() => []` | Default options when the popover opens with an empty query |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size of the editor, falls back to the config provider size |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | filter-method | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; errors fall back to an empty list |
 | placeholder | `string` | `''` | Editor placeholder |
 | search-placeholder | `string` | `''` | Suggestion search input placeholder |
-| disabled | `boolean` | `false` | - |
-| close-on-press-escape | `boolean` | `true` | - |
+| disabled | `boolean` | `false` | Make the editor read-only and stop the suggestion popover from opening |
+| close-on-press-escape | `boolean` | `true` | Close the suggestion popover when pressing `Escape` |
 
 ## Events
 

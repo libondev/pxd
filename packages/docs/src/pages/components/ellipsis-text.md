@@ -96,12 +96,12 @@ const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum dol
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| text | `string` | - | - |
-| dots | `string` | `...` | - |
-| rows | `number` | `1` | - |
-| action | `boolean` | - | - |
-| position | `'start' \| 'middle' \| 'end'` | `end` | - |
-| more-text | `string` | `Expand` | - |
-| less-text | `string` | `Collapse` | - |
-| more-action-class | `string` | - | - |
-| less-action-class | `string` | - | - |
+| text | `string` | - | Text to truncate when it overflows its container |
+| dots | `string` | `...` | String that marks where the text was cut |
+| rows | `number` | `1` | Maximum number of lines shown before truncating |
+| action | `boolean` | - | Render a link that expands and collapses the full text |
+| position | `'start' \| 'middle' \| 'end'` | `end` | Where `dots` are placed in the truncated text |
+| more-text | `string` | `Expand` | Label of the action while the text is collapsed |
+| less-text | `string` | `Collapse` | Label of the action while the text is expanded |
+| more-action-class | `string` | - | Extra class for the action in the collapsed state |
+| less-action-class | `string` | - | Extra class for the action in the expanded state |

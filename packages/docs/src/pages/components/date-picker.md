@@ -53,13 +53,14 @@ const date2 = ref('2024-08-15')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| error | `boolean \| string` | - | - |
-| disabled | `boolean` | - | - |
-| clearable | `boolean` | - | - |
-| model-value | `Date \| string \| number \| null` | - | - |
-| suffix-icon | `boolean` | `true` | - |
-| placeholder | `string` | - | - |
-| close-on-press-escape | `boolean` | `true` | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size of the text input |
+| error | `boolean \| string` | - | Render the input in its error state |
+| disabled | `boolean` | - | Disable the input and block the calendar popover |
+| clearable | `boolean` | - | Show a clear button that empties the value |
+| model-value | `Date \| string \| number \| null` | - | Selected date, parsed with `value-format` then `label-format` |
+| suffix-icon | `boolean` | `true` | Show the calendar icon in the input suffix |
+| placeholder | `string` | - | Placeholder text of the input |
+| is-date-disabled | `(timestamp: number) => boolean` | - | Validator forwarded to the calendar to grey out days |
+| close-on-press-escape | `boolean` | `true` | Close the calendar popover when pressing `Escape` |
 | label-format | `string` | `YYYY-MM-DD` | Input display format |
 | value-format | `string` | `YYYY-MM-DD` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |

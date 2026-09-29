@@ -31,4 +31,4 @@ const direction = ref('horizontal')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| direction | `'horizontal' \| 'vertical'` | `vertical` | - |
+| direction | `'horizontal' \| 'vertical'` | `vertical` | Axis of the dividing line; vertical matches the text flow |

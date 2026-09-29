@@ -111,18 +111,18 @@ By default, it will pause when the mouse is over the carousel.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| index | `number` | `0` | - |
-| loop | `boolean` | `true` | - |
-| arrow | `boolean` | `true` | - |
-| height | `number \| string` | `180` | - |
-| autoplay | `boolean` | `true` | - |
-| interval | `number` | `3000` | - |
-| indicator | `boolean` | `true` | - |
-| direction | `'horizontal' \| 'vertical'` | `horizontal` | - |
-| indicator-type | `'dot' \| 'line'` | `dot` | - |
-| indicator-position | `BasePosition \| 'center'` | `center` | - |
-| pause-on-hover | `boolean` | `true` | - |
-| toggle-on-wheel | `boolean` | - | - |
+| index | `number` | `0` | Index of the initially displayed item |
+| loop | `boolean` | `true` | Wrap around when reaching either end |
+| arrow | `boolean` | `true` | Show the previous and next arrows |
+| height | `number \| string` | `180` | Height of the viewport; numbers are treated as `px` |
+| autoplay | `boolean` | `true` | Advance to the next item automatically |
+| interval | `number` | `3000` | Delay between autoplay transitions, in milliseconds |
+| indicator | `boolean` | `true` | Show the indicator dots or lines |
+| direction | `'horizontal' \| 'vertical'` | `horizontal` | Axis along which the items slide and swipe |
+| indicator-type | `'dot' \| 'line'` | `dot` | Indicator appearance |
+| indicator-position | `BasePosition \| 'center'` | `center` | Placement of the indicator relative to the viewport |
+| pause-on-hover | `boolean` | `true` | Suspend autoplay while the pointer is over the carousel |
+| toggle-on-wheel | `boolean` | - | Switch items on mouse wheel instead of scrolling the page |
 
 ## Slots
 

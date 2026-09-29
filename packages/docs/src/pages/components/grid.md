@@ -87,16 +87,16 @@ Grid component with guide clipping enabled on specific cells.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| debug | `boolean` | - | - |
-| rows | `strin \| Responsive \| number>` | - | - |
-| columns | `strin \| Responsive \| number>` | - | - |
+| debug | `boolean` | - | Draw amber lines showing the row and column tracks |
+| rows | `string \| Responsive \| number` | `0` | Number of rows, or a per-breakpoint map like `{ sm: 6, md: 3 }` |
+| columns | `string \| Responsive \| number` | `1` | Number of columns, or a per-breakpoint map like `{ sm: 1, md: 2 }` |
 
 ## GridItem Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| row | `ResponsiveValue<string \| number>` | - | - |
-| column | `ResponsiveValue<string \| number>` | - | - |
+| row | `ResponsiveValue<string \| number>` | - | Row placement, e.g. `1` or `1/3` to span lines 1 to 3 |
+| column | `ResponsiveValue<string \| number>` | - | Column placement, e.g. `2` or `2/4` to span lines 2 to 4 |
 
 ## Slots
 

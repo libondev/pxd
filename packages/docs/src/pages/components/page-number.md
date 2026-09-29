@@ -57,7 +57,8 @@ const page = ref(1)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | model-value | `number` | `1` | Current page, supports `v-model` |
-| page-size | `number` | `20` | Number of items per page |
+| page-size | `number` | `10` | Number of items per page |
+| page-size-options | `number[]` | `() => [10, 25, 50, 100]` | Page sizes offered by the size selector |
 | total | `number` | `0` | Total number of items |
 | disabled | `boolean` | `false` | Disables all page controls |
 | show-page-size | `boolean` | `true` | Shows a select for selecting page size |

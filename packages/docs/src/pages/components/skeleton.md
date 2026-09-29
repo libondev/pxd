@@ -86,12 +86,12 @@ The skeleton will hide when children are not null, but the size is retained.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| loading | `boolean` | `true` | - |
-| animated | `boolean` | `true` | - |
-| width | `string \| number` | - | - |
-| height | `string \| number` | `24` | - |
-| box-height | `string \| number` | - | - |
-| shape | `'default' \| 'square' \| 'rounded'` | `default` | - |
+| loading | `boolean` | `true` | Render the placeholder; `false` reveals the slotted children |
+| animated | `boolean` | `true` | Animate the shimmering gradient across the block |
+| width | `string \| number` | - | Width of the block; numbers are treated as `px` |
+| height | `string \| number` | `24` | Height of the block; numbers are treated as `px` |
+| box-height | `string \| number` | - | Total height including `margin-bottom`, for aligning wrapped children |
+| shape | `'default' \| 'square' \| 'rounded'` | `default` | Corner rounding of the block |
 
 ## Slots
 

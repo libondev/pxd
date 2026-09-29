@@ -16,4 +16,4 @@ The Browser component lets you showcase website screenshots or any other content
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| address | `string` | - | - |
+| address | `string` | - | Text shown in the address bar, also copied by the copy button |

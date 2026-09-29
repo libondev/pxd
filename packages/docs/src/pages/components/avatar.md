@@ -106,19 +106,19 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| src | `string` | - | - |
-| alt | `string` | - | - |
-| size | `number \| string` | - | - |
-| loading | `boolean` | - | - |
-| placeholder | `boolean` | - | - |
+| src | `string` | - | URL of the image to display |
+| alt | `string` | - | Image alt text, also used as the initials fallback |
+| size | `number \| string` | - | Diameter in `px`, inherits the group size when nested |
+| loading | `boolean` | - | Show a spinning ring over the avatar |
+| placeholder | `boolean` | - | Render the shimmering placeholder instead of the image |
 
 ## AvatarGroup Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | `5` | - |
-| size | `number \| string` | - | - |
-| options | `AvatarOptions[]` | `() => []` | - |
+| max | `number` | `5` | Avatars shown before the `+N` counter appears |
+| size | `number \| string` | - | Diameter in `px` applied to every avatar in the group |
+| options | `AvatarOptions[]` | `() => []` | Avatars to render, each with `src`, `alt` and `loading` |
 
 ## Slots
 

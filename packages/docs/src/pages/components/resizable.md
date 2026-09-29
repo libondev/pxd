@@ -63,14 +63,14 @@ unit: %
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| direction | `'horizontal' \| 'vertical'` | `horizontal` | - |
+| direction | `'horizontal' \| 'vertical'` | `horizontal` | Axis along which the panels are laid out and resized |
 
 ## ResizablePanel Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number \| null` | `null` | - |
-| min-size | `number` | `0` | - |
+| size | `number \| null` | `null` | Initial width or height as a percentage; `null` shares the remaining space |
+| min-size | `number` | `0` | Smallest allowed size as a percentage of the container |
 
 ## Slots
 

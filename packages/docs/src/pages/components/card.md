@@ -46,8 +46,8 @@ Integrate information in a card container.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| shape | `'square' \| 'default'` | `'default'` | - |
-| border | `boolean` | `true` | - |
+| shape | `'square' \| 'default'` | `'default'` | Corner rounding of the card |
+| border | `boolean` | `true` | Draw the outline; `false` keeps the background only |
 
 ## Slots
 

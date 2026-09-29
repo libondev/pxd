@@ -121,19 +121,19 @@ const modelValue = ref('1')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| disabled | `boolean` | - | - |
-| full-width | `boolean` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| options | `{ label, value, disabled? }[]` | `() => []` | - |
-| model-value | `string \| number` | `` | - |
+| disabled | `boolean` | - | Disable every item in the group |
+| full-width | `boolean` | - | Stretch the group to the full width of its container |
+| size | `'sm' \| 'md' \| 'lg'` | - | Height of the group, falls back to the config provider size |
+| options | `{ label, value, disabled? }[]` | `() => []` | Rendered as `SwitchItem` when the default slot is empty |
+| model-value | `string \| number` | `` | Value of the currently selected item |
 
 ## SwitchItem Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-| value | `string \| number` | - | - |
-| disabled | `boolean` | - | - |
+| label | `string \| number \| null` | - | Item text, overridable by the default slot |
+| value | `string \| number` | - | Value written to the model when the item is selected |
+| disabled | `boolean` | - | Disable this item only, the group `disabled` also applies |
 
 ## Slots
 

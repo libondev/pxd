@@ -50,9 +50,9 @@ Customize its size and line color.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| gap | `number \| string` | - | - |
-| color | `string` | - | - |
-| invert | `boolean` | - | - |
+| gap | `number \| string` | - | Size of the stripe tile, bare numbers are treated as `px` |
+| color | `string` | - | Stripe color, defaults to the current text color |
+| invert | `boolean` | - | Flip the stripe angle from `-45deg` to `45deg` |
 
 ## Slots
 

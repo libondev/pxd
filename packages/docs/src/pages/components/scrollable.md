@@ -97,19 +97,19 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| fader | `boolean` | `true` | - |
-| loading | `boolean` | - | - |
-| scrollbar | `boolean` | `true` | - |
-| fader-size | `number` | - | - |
-| fader-color | `string` | - | - |
-| fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | - |
-| wrapper-class | `string \| any[] \| object` | - | - |
-| content-class | `string \| any[] \| object` | - | - |
-| content-style | `CSSProperties \| string` | - | - |
-| scrollbar-size | `number` | - | - |
-| scrollbar-color | `string` | - | - |
-| scrollbar-hover-color | `string` | - | - |
-| bottom-threshold | `number` | `10` | - |
+| fader | `boolean` | `true` | Show gradient faders at the scrollable edges |
+| loading | `boolean` | - | Suppress the `bottom` event while loading more content |
+| scrollbar | `boolean` | `true` | Render the custom draggable scrollbar instead of the native one |
+| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `16` |
+| fader-color | `string` | - | Fader gradient color, any CSS color value |
+| fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
+| wrapper-class | `string \| any[] \| object` | - | Class applied to the outer wrapper element |
+| content-class | `string \| any[] \| object` | - | Class applied to the scrolling content element |
+| content-style | `CSSProperties \| string` | - | Inline style applied to the scrolling content element |
+| scrollbar-size | `number` | - | Scrollbar thickness in `px`, defaulting to `6` |
+| scrollbar-color | `string` | - | Thumb color, defaulting to `--color-gray-alpha-300` |
+| scrollbar-hover-color | `string` | - | Thumb color on hover or active, defaulting to `--color-gray-alpha-500` |
+| bottom-threshold | `number` | `10` | Distance in `px` from the end that triggers the `bottom` event |
 
 ## Slots
 

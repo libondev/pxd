@@ -52,5 +52,5 @@ Or pass a `string` to the `label` to customize the text.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `boolean \| string \| number \| null` | `false` | - |
-| state | `'QUEUED' \| 'BUILDING' \| 'READY' \| 'ERROR' \| 'CANCELED'` | `QUEUED` | - |
+| label | `boolean \| string \| number \| null` | `false` | `true` shows the capitalized `state`, a value shows custom text |
+| state | `'QUEUED' \| 'BUILDING' \| 'READY' \| 'ERROR' \| 'CANCELED'` | `QUEUED` | Deployment status driving the dot color and default label |

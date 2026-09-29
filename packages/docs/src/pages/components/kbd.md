@@ -39,13 +39,13 @@ Display keyboard input that triggers an action.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| alt | `boolean` | - | - |
-| ctrl | `boolean` | - | - |
-| meta | `boolean` | - | - |
-| enter | `boolean` | - | - |
-| shift | `boolean` | - | - |
-| label | `string \| number \| null` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| alt | `boolean` | - | Render the `⌥` symbol for the Option key |
+| ctrl | `boolean` | - | Render the `Ctrl` text for the Control key |
+| meta | `boolean` | - | Render the `⌘` symbol for the Command key |
+| enter | `boolean` | - | Render the `↵` symbol for the Enter key |
+| shift | `boolean` | - | Render the `⇧` symbol for the Shift key |
+| label | `string \| number \| null` | - | Content rendered after the key symbols |
+| size | `'sm' \| 'md' \| 'lg'` | - | Key size, falls back to the global config provider size |
 
 ## Slots
 

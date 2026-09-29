@@ -48,8 +48,8 @@ import ChartBarPeak from '@gdsicon/vue/chart-bar-peak'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | - |
-| description | `string` | - | - |
+| title | `string` | - | Heading text, overridable by the `title` slot |
+| description | `string` | - | Body text, overridable by the `description` slot |
 
 ## Slots
 

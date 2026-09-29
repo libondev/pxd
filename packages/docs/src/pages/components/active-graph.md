@@ -241,17 +241,17 @@ const data = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| data | `Record<string, any>[]` | `() => []` | - |
-| legend | `boolean` | `true` | - |
-| colors | `Record<string, string>` | - | - |
-| start-date | `string \| Date` | - | - |
-| end-date | `string \| Date` | - | - |
-| tooltip | `boolean` | `true` | - |
-| graph-only | `boolean` | - | - |
-| transpose | `boolean` | - | - |
-| field-names | `FieldNames` | - | - |
-| item-radius | `string \| number` | - | - |
-| default-select | `string` | - | - |
+| data | `Record<string, any>[]` | `() => []` | Activity records; counts sharing a date are summed |
+| legend | `boolean` | `true` | Render the `Less` / `More` color legend below the graph |
+| colors | `Record<string, string>` | - | Map of count thresholds to colors; keys also drive the legend swatches |
+| start-date | `string \| Date` | - | First date of the range, defaults to the Sunday closest to one year ago |
+| end-date | `string \| Date` | - | Last date of the range, defaults to today |
+| tooltip | `boolean` | `true` | Show a tooltip with the count when a cell is hovered |
+| graph-only | `boolean` | - | Hide the header row and render only the cells |
+| transpose | `boolean` | - | Swap the axes so dates run down rows and weekdays across columns |
+| field-names | `FieldNames` | - | Data field names, e.g. `{ date: 'created_at', count: 'value' }` |
+| item-radius | `string \| number` | - | Corner radius of each cell; a number is treated as `px` |
+| default-select | `string` | - | Date pre-selected on mount, drawn with a primary border |
 
 ## Slots
 

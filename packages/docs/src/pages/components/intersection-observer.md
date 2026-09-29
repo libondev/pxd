@@ -157,12 +157,12 @@ import Counter from 'doc:Counter.vue'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| width | `number \| string` | - | - |
-| height | `number \| string` | - | - |
-| keep-alive | `boolean` | - | - |
-| root | `Element \| Document \| null` | - | - |
-| root-margin | `string` | `20%` | - |
-| threshold | `number \| number[]` | `0` | - |
+| width | `number \| string` | - | Estimated width, plain numbers are read as `px` |
+| height | `number \| string` | - | Estimated height, plain numbers are read as `px` |
+| keep-alive | `boolean` | - | Keep the slot alive instead of unmounting it when hidden |
+| root | `Element \| Document \| null` | - | Root element passed to `IntersectionObserver` |
+| root-margin | `string` | `20%` | Margin that grows or shrinks the root bounds |
+| threshold | `number \| number[]` | `0` | Visibility ratio that triggers the observer, `0` to `1` |
 
 ## Slots
 

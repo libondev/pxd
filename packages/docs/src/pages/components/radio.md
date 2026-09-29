@@ -65,15 +65,15 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-| value | `string \| number \| boolean` | - | - |
-| disabled | `boolean` | - | - |
-| model-value | `string \| number \| boolean` | - | - |
+| label | `string \| number \| null` | - | Text shown next to the dot, overridable by the default slot |
+| value | `string \| number \| boolean` | - | Value this radio writes into the group model |
+| disabled | `boolean` | - | Block selection of this single radio |
+| model-value | `string \| number \| boolean` | - | Selected value, read from the group when nested |
 
 ## RadioGroup Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| disabled | `boolean` | - | - |
-| model-value | `string \| number \| boolean` | - | - |
-| options | `{ label, value, disabled? }[]` | - | - |
+| disabled | `boolean` | - | Disable every radio in the group |
+| model-value | `string \| number \| boolean` | - | Value of the selected radio |
+| options | `{ label, value, disabled? }[]` | - | Options rendered as radios when the default slot is empty |

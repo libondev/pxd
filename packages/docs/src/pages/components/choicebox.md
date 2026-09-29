@@ -124,21 +124,21 @@ const modelValue = ref('trial')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| gap | `numbe \| Responsive \| string>` | `3` | - |
-| label | `string \| number \| null` | - | - |
-| multiple | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| options | `{ label, value, disabled? }[]` | - | - |
-| model-value | `string \| number \| boolean \| string \| number \| boolean[]` | - | - |
+| gap | `number \| Responsive \| string` | `3` | Spacing between items, forwarded to the inner `PStack` |
+| label | `string \| number \| null` | - | Group label passed through context, the root keeps a fixed `aria-label` |
+| multiple | `boolean` | - | Allow multiple selections and bind an array `v-model` |
+| disabled | `boolean` | - | Disable every item in the group |
+| options | `{ label, value, disabled? }[]` | - | Items rendered when no default slot is given |
+| model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Selected value, an array when `multiple` is set |
 
 ## ChoiceboxItem Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-| value | `string \| number \| boolean` | - | - |
-| disabled | `boolean` | - | - |
-| description | `string` | - | - |
+| label | `string \| number \| null` | - | Text rendered as the item title |
+| value | `string \| number \| boolean` | - | Value written to `v-model` when this item is selected |
+| disabled | `boolean` | - | Disable this item, also implied by a disabled group |
+| description | `string` | - | Secondary text rendered under the label |
 
 ## ChoiceboxItem Slots
 

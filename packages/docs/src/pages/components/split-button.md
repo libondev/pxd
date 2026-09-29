@@ -86,13 +86,13 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| variant | `ButtonVariant` | - | - |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| shape | `'default' \| 'square' \| 'rounded'` | - | - |
-| options | `ListOption[]` | - | - |
-| disabled | `boolean` | - | - |
-| model-value | `ListOptionSelected['value']` | - | - |
-| close-on-press-escape | `boolean` | - | - |
+| variant | `ButtonVariant` | - | Colour scheme shared by both buttons, e.g. `primary` or `ghost` |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Size of both buttons, falling back to the config provider size |
+| shape | `'default' \| 'square' \| 'rounded'` | - | Corner radius of both buttons: `default`, `square` or `rounded` |
+| options | `ListOption[]` | - | Menu items, each needing a `value` for the checked state |
+| disabled | `boolean` | - | Disable the primary button and the dropdown trigger |
+| model-value | `ListOptionSelected['value']` | - | Value of the selected option, exposed to the default slot as `data` |
+| close-on-press-escape | `boolean` | - | Close the dropdown when pressing `Escape` |
 
 ## Slots
 

@@ -127,7 +127,7 @@ function onSubmit(answers) {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| questions | `QuestionnaireQuestion[]` | `[]` | Questions to display. |
+| questions | `QuestionnaireQuestion[]` | `() => []` | Questions to display. |
 
 ### QuestionnaireQuestion
 

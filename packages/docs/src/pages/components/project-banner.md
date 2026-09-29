@@ -58,8 +58,8 @@ import ShieldIcon from '@gdsicon/vue/shield'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `string \| number \| null` | - | - |
-| variant | `'warning' \| 'error' \| 'success' \| 'info'` | - | - |
+| label | `string \| number \| null` | - | Banner text, the default slot overrides it |
+| variant | `'warning' \| 'error' \| 'success' \| 'info'` | `info` | Border, background and text colors: `warning`, `error`, `success` or `info` |
 
 ## Slots
 

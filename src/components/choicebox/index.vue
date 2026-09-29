@@ -3,6 +3,7 @@ import type { ChoiceboxEmits, ChoiceboxProps } from './types'
 import { provideChoiceboxContext } from '../../contexts/choicebox'
 import { getUniqueId } from '../../utils/helper'
 import PChoiceboxItem from '../choicebox-item/index.vue'
+import PStack from '../stack/index.vue'
 
 defineOptions({
   name: 'PChoicebox',
@@ -13,24 +14,23 @@ defineOptions({
   },
 })
 
-const props = withDefaults(defineProps<ChoiceboxProps>(), {
-  gap: 3,
-})
+const props = withDefaults(defineProps<ChoiceboxProps>(), { gap: 3 })
 const emits = defineEmits<ChoiceboxEmits>()
 
 provideChoiceboxContext({ props, emits, name: getUniqueId() })
 </script>
 
 <template>
-  <div
+  <PStack
     aria-label="Choicebox Group"
+    :gap="gap"
     :aria-multiselectable="multiple"
     :role="multiple ? 'group' : 'radiogroup'"
-    class="pxd-choicebox gap-3 flex w-full max-w-full flex-wrap"
+    class="pxd-choicebox"
     v-bind="$attrs"
   >
     <slot>
       <PChoiceboxItem v-for="option in options" :key="option.value" v-bind="option" />
     </slot>
-  </div>
+  </PStack>
 </template>

@@ -57,7 +57,7 @@ const containerRef = shallowRef()
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number` | - | - |
-| color | `string` | - | - |
-| container | `string \| object` | - | - |
-| direction | `'horizontal' \| 'vertical' \| 'both'` | `both` | - |
+| size | `number` | - | Gradient width in `px`, `16` by default |
+| color | `string` | - | CSS color the gradient fades into |
+| container | `string \| object` | - | Scrollable element to watch: a ref, an element or a CSS selector |
+| direction | `'horizontal' \| 'vertical' \| 'both'` | `both` | Edges that can show a fader: `horizontal`, `vertical` or `both` |

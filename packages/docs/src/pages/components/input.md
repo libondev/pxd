@@ -152,31 +152,32 @@ const value = ref('')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| error | `boolean \| string` | - | - |
-| min | `number \| string` | - | - |
-| max | `number \| string` | - | - |
-| align | `'left' \| 'center' \| 'right'` | `left` | - |
-| readonly | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| password | `boolean` | - | - |
-| autofocus | `boolean` | - | - |
-| input-type | `string` | - | - |
-| input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | - |
-| min-length | `number \| string` | - | - |
-| max-length | `number \| string` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Height, padding and font size, falling back to the config provider size |
+| error | `boolean \| string` | - | Show the error style, also applied when the word limit is exceeded |
+| min | `number \| string` | - | Native `min` attribute of the underlying `input` |
+| max | `number \| string` | - | Native `max` attribute of the underlying `input` |
+| align | `'left' \| 'center' \| 'right'` | `left` | Horizontal text alignment inside the field |
+| readonly | `boolean` | - | Native `readonly` attribute, the value stays selectable |
+| disabled | `boolean` | - | Native `disabled` attribute, blocks editing and focus |
+| password | `boolean` | - | Mask the value and add a button to reveal it |
+| autofocus | `boolean` | - | Focus the input as soon as it is mounted |
+| input-type | `string` | - | Native `type` attribute, when set it wins over `password` masking |
+| input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Native `inputmode` attribute, drives the virtual keyboard |
+| min-length | `number \| string` | - | Native `minlength` attribute, validated by the browser |
+| max-length | `number \| string` | - | Native `maxlength`, lifted while composing and shown by the word limit |
 | trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |
-| clearable | `boolean` | - | - |
-| clear-value | `string \| number \| null` | - | - |
-| model-value | `string \| number \| null` | - | - |
-| placeholder | `string` | - | - |
-| prefix-class | `string \| any[] \| object` | - | - |
-| suffix-class | `string \| any[] \| object` | - | - |
-| select-on-focus | `boolean` | - | - |
-| default-prefix-style | `boolean` | `true` | - |
-| default-suffix-style | `boolean` | `true` | - |
-| show-word-limit | `boolean \| string` | - | - |
-| word-limit-position | `'inside' \| 'outside'` | `inside` | - |
+| clearable | `boolean` | - | Show a clear button once the field holds a value |
+| clear-value | `string \| number \| null` | - | Value written back when clearing, an empty string by default |
+| clear-on-press-escape | `boolean` | `true` | Clear the field when the `Escape` key is pressed |
+| model-value | `string \| number \| null` | - | Current input value, use `v-model` for two-way binding |
+| placeholder | `string` | - | Placeholder text shown while the value is empty |
+| prefix-class | `string \| any[] \| object` | - | Additional classes merged onto the prefix container |
+| suffix-class | `string \| any[] \| object` | - | Additional classes merged onto the suffix container |
+| select-on-focus | `boolean` | - | Select the whole value when the field gains focus |
+| default-prefix-style | `boolean` | `true` | Apply the default padding, background and divider to the prefix container |
+| default-suffix-style | `boolean` | `true` | Apply the default padding, background and divider to the suffix container |
+| show-word-limit | `boolean \| string` | - | Show the character counter, `count / max` when `max-length` is set |
+| word-limit-position | `'inside' \| 'outside'` | `inside` | Place the counter inside the field or below it |
 
 ## Slots
 

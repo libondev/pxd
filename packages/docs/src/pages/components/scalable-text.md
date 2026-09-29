@@ -34,5 +34,5 @@ Set a minimum font size below which the text will be allowed to wrap instead of 
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| text | `string` | - | - |
-| min-font-size | `number` | `12` | - |
+| text | `string` | - | Text to shrink until it fits the container width |
+| min-font-size | `number` | `12` | Smallest allowed size in `px` before the text wraps |

@@ -89,7 +89,7 @@ const val = ref('')
 | password | `boolean` | - | Enables password input mode. |
 | autofocus | `boolean` | - | Focuses the input automatically. |
 | input-type | `string` | - | Native input type. |
-| inputmode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Preferred virtual keyboard. |
+| input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Preferred virtual keyboard. |
 | min-length | `number \| string` | - | Minimum input length. |
 | max-length | `number \| string` | - | Maximum input length. |
 | trim-overflow | `boolean` | `false` | Trims overflow after composition ends when `max-length` is set. |

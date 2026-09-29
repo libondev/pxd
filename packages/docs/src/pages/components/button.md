@@ -114,24 +114,24 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| as | `string \| object` | `button` | - |
-| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'simple' \| 'link'` | - | - |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| shape | `'default' \| 'square' \| 'rounded'` | - | - |
-| align | `'left' \| 'center' \| 'right'` | - | - |
-| icon | `boolean` | `false` | - |
-| loading | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| full-width | `boolean` | - | - |
+| as | `string \| object` | `button` | Element or component rendered instead of a native `button` |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'simple' \| 'link'` | - | Colour scheme, one of `primary`, `error`, `warning`, `success`, `ghost`, `simple` or `link` |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Size preset controlling height, padding and font size |
+| shape | `'default' \| 'square' \| 'rounded'` | `default` | Corner radius, `square` removes it and `rounded` makes it fully round |
+| align | `'left' \| 'center' \| 'right'` | - | Content alignment, forced to `center` when `icon` is set |
+| icon | `boolean` | `false` | Render as a square icon-only button with centered content |
+| loading | `boolean` | - | Show a spinner and treat the button as disabled |
+| disabled | `boolean` | - | Disable the button, also implied by `loading` or a disabled group |
+| full-width | `boolean` | - | Stretch the button to fill the whole line |
 
 ## ButtonGroup Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| align | `'left' \| 'center' \| 'right'` | - | - |
-| variant | `ButtonVariant` | - | - |
-| disabled | `boolean` | - | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Default size applied to child buttons |
+| align | `'left' \| 'center' \| 'right'` | - | Default content alignment for child buttons |
+| variant | `ButtonVariant` | - | Default variant applied to child buttons |
+| disabled | `boolean` | - | Disable every child button at once |
 
 ## Slots
 

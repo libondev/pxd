@@ -126,11 +126,11 @@ const value = ref([30, 60])
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| min | `number` | `0` | - |
-| max | `number` | `100` | - |
-| step | `number` | `1` | - |
-| range | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | - |
-| model-value | `number \| number[] \| null` | `0` | - |
+| min | `number` | `0` | Lower bound of the value range |
+| max | `number` | `100` | Upper bound of the value range |
+| step | `number` | `1` | Increment applied on drag and arrow keys |
+| range | `boolean` | - | Render two thumbs and bind a `[start, end]` array |
+| disabled | `boolean` | - | Disable dragging, pointer and keyboard interaction |
+| size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Track colour, e.g. `primary`, `success`, `secondary` |
+| model-value | `number \| number[] \| null` | `0` | Current value, an array when `range` is enabled |

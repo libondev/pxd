@@ -42,6 +42,6 @@ const color = ref(colors[0])
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| colors | `string[]` | `() => ['#000000'` | - |
-| model-value | `string` | - | - |
+| size | `'sm' \| 'md' \| 'lg'` | - | Swatch diameter in `px`: `16`, `20` or `24`, falling back to the config size |
+| colors | `string[]` | `() => ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF']` | Selectable swatches offered by the selector |
+| model-value | `string` | - | Currently selected color, expected to match one of `colors` |

@@ -211,16 +211,16 @@ function clearAll() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | `3` | - |
-| width | `string \| number` | - | - |
-| group | `string` | `default` | - |
-| expand | `boolean` | - | - |
-| position | `ComponentPosition<'top' \| 'bottom'>` | `top` | - |
+| max | `number` | `3` | How many messages stay visible, the rest stack behind |
+| width | `string \| number` | - | Width of the message container, defaults to `356px` |
+| group | `string` | `default` | Group name, only messages created with the same group are handled |
+| expand | `boolean` | - | Expand the stack so every message is fully shown |
+| position | `ComponentPosition<'top' \| 'bottom'>` | `top` | Where the stack is anchored, `top` or `bottom` with `-start` or `-end` |
 
 ## MessageItem Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | - | - |
-| index | `number` | - | - |
-| item-data | `MessageItemConfig` | - | - |
+| max | `number` | - | Visible item limit, items beyond it are hidden |
+| index | `number` | - | Position in the stack, driving the scale offset and `z-index` |
+| item-data | `MessageItemConfig` | - | Message configuration created by `useMessage` |

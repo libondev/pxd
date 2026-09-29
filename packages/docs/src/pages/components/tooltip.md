@@ -160,17 +160,18 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| offset | `number` | - | - |
-| content | `string` | - | - |
-| variant | `'default' \| 'error' \| 'warning' \| 'success' \| 'invert' \| 'violet'` | `default` | - |
-| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | - |
-| disabled | `boolean` | - | - |
-| show-delay | `number` | `300` | - |
-| hide-delay | `number` | `300` | - |
-| show-arrow | `boolean` | `true` | - |
-| desktop-only | `boolean` | - | - |
-| content-class | `string \| any[] \| object` | - | - |
-| content-style | `CSSProperties \| string` | - | - |
+| offset | `number` | - | Distance in `px` between the trigger and the tooltip, defaulting to `8` |
+| content | `string` | - | Plain text content, overridable by the `content` slot |
+| variant | `'default' \| 'error' \| 'warning' \| 'success' \| 'invert' \| 'violet'` | `default` | Color scheme: `default`, `invert`, `success`, `warning`, `error` or `violet` |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | Preferred placement, flipped when there is no room; `-start` and `-end` align to the edge |
+| disabled | `boolean` | - | Prevent the tooltip from opening on any trigger |
+| show-delay | `number` | `300` | Delay in `ms` before the tooltip appears |
+| hide-delay | `number` | `300` | Delay in `ms` before the tooltip disappears |
+| show-arrow | `boolean` | `true` | Render the arrow pointing back at the trigger |
+| trigger-selector | `string` | - | Selector matching extra triggers inside the default slot, forwarded to the Popover |
+| desktop-only | `boolean` | - | Never open the tooltip on touch devices |
+| content-class | `string \| any[] \| object` | - | Extra class merged into the tooltip content element |
+| content-style | `CSSProperties \| string` | - | Inline style applied to the tooltip content element |
 
 ## Slots
 

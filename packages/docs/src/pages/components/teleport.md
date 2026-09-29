@@ -39,8 +39,8 @@ onMounted(() => {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| to | `string \| object` | `body` | - |
-| disabled | `boolean` | - | - |
+| to | `string \| object` | `body` | Target selector or element, falls back to `body` when unmatched |
+| disabled | `boolean` | - | Render in place instead of moving the content to `to` |
 
 ## Slots
 

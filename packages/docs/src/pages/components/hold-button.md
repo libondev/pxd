@@ -116,12 +116,12 @@ Set `scalable="false"` to disable zooming when pressed.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| vibrate | `boolean` | `true` | - |
-| disabled | `boolean` | - | - |
-| scalable | `boolean` | `true` | - |
-| durations | `number \| string` | - | - |
-| cancelable | `boolean` | - | - |
-| progress-color | `string` | - | - |
+| vibrate | `boolean` | `true` | Vibrate the device for 100 ms after release |
+| disabled | `boolean` | - | Disable the button and ignore pointer interaction |
+| scalable | `boolean` | `true` | Scale the button down while it is pressed |
+| durations | `number \| string` | - | Hold time in `ms` before confirm, defaults to `2000` |
+| cancelable | `boolean` | - | Allow cancelling by moving the pointer off the button |
+| progress-color | `string` | - | CSS colour used for the filling progress overlay |
 
 ## Slots
 

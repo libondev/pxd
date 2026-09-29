@@ -55,14 +55,14 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| width | `string \| number` | - | - |
-| model-value | `boolean` | `false` | - |
-| options | `ListOptions` | - | - |
+| width | `string \| number` | `640px` | Width of the inner dialog, forwarded to `PModal` |
+| model-value | `boolean` | `false` | Whether the full-screen command menu is open |
+| options | `ListOptions` | - | Items or `group` entries, fuzzy-matched against the typed keyword |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| placeholder | `string` | `` | - |
-| close-on-select-item | `boolean` | `true` | - |
-| close-on-press-escape | `boolean` | `true` | - |
-| close-on-click-overlay | `boolean` | `true` | - |
+| placeholder | `string` | `` | Placeholder for the filter input |
+| close-on-select-item | `boolean` | `true` | Close the menu after an item is selected |
+| close-on-press-escape | `boolean` | `true` | Close the menu when `Esc` is pressed |
+| close-on-click-overlay | `boolean` | `true` | Close the menu when the overlay is clicked |
 
 ## Slots
 

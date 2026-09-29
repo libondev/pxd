@@ -502,22 +502,22 @@ function handleClose() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number` | - | - |
-| title | `string \| number \| null` | - | - |
-| subtitle | `string \| number \| null` | - | - |
-| size | `number \| string` | - | - |
-| loading | `boolean` | - | - |
-| position | `BasePosition` | `right` | - |
-| model-value | `boolean` | `false` | - |
-| loading-text | `string` | `'Loading...'` | - |
-| append-to-body | `boolean` | `true` | - |
-| wrapper-class | `string \| any[] \| object` | - | - |
-| content-class | `string \| any[] \| object` | - | - |
-| auto-focus-element | `string \| boolean` | `false` | - |
-| default-header-style | `boolean` | `false` | - |
-| default-footer-style | `boolean` | `true` | - |
-| close-on-press-escape | `boolean` | `true` | - |
-| close-on-click-overlay | `boolean` | `true` | - |
+| z-index | `number` | - | Sets the `z-index` of the drawer panel |
+| title | `string \| number \| null` | - | Heading text rendered in the built-in header |
+| subtitle | `string \| number \| null` | - | Secondary text rendered under the `title` |
+| size | `number \| string` | - | Width for `left`/`right` and height for `top`/`bottom`, any CSS length, defaults to `30vw`/`30vh` |
+| loading | `boolean` | - | Show a loading mask and block closing the drawer |
+| position | `BasePosition` | `right` | Edge the drawer slides in from: `top`, `right`, `bottom` or `left` |
+| model-value | `boolean` | `false` | Whether the drawer is open, use with `v-model` |
+| loading-text | `string` | `'Loading...'` | Text shown by the loading mask while `loading` |
+| append-to-body | `boolean` | `true` | Teleport the drawer overlay into `document.body` |
+| wrapper-class | `string \| any[] \| object` | - | Class applied to the drawer panel |
+| content-class | `string \| any[] \| object` | - | Class applied to the scrollable content area |
+| auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the element matching a CSS selector |
+| default-header-style | `boolean` | `false` | Apply the default header padding, border and background |
+| default-footer-style | `boolean` | `true` | Apply the default footer padding, border and background |
+| close-on-press-escape | `boolean` | `true` | Close the drawer when the `Esc` key is pressed |
+| close-on-click-overlay | `boolean` | `true` | Close the drawer when the overlay is clicked |
 
 ## Slots
 

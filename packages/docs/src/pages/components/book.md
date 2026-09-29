@@ -121,11 +121,11 @@ import Alpha from '@gdsicon/vue/alpha'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| color | `string` | - | - |
-| title | `string \| number \| null` | - | - |
-| width | `strin \| Responsive \| number>` | - | - |
-| variant | `'simple' \| 'stripe'` | `stripe` | - |
-| textured | `boolean` | `false` | - |
+| color | `string` | - | Accent color of the spine and cover, any CSS color value |
+| title | `string \| number \| null` | - | Title text rendered on the cover |
+| width | `string \| Responsive \| number` | - | Book width in `px`, accepts a responsive object, defaults to `196` |
+| variant | `'simple' \| 'stripe'` | `stripe` | `stripe` adds the colored icon band, `simple` a flat cover |
+| textured | `boolean` | `false` | Overlay a paper texture on the cover |
 
 ## Slots
 

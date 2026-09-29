@@ -72,10 +72,10 @@ Use the inset prop to display the Chip inside the component. This is useful when
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number \| string` | - | - |
-| inset | `boolean` | - | - |
-| label | `string \| number \| null` | - | - |
-| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | - | - |
+| size | `number \| string` | - | Diameter of the dot shown when no `label` is set |
+| inset | `boolean` | - | Display the chip inside the wrapped component |
+| label | `string \| number \| null` | - | Text rendered inside the chip, such as `99+` |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Chip color |
 
 ## Slots
 

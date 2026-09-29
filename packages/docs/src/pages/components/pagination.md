@@ -26,5 +26,5 @@ const next = {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| prev | `Page` | - | - |
-| next | `Page` | - | - |
+| prev | `Page` | - | Previous page link on the left, built from `label` and `href` |
+| next | `Page` | - | Next page link on the right, built from `label` and `href` |

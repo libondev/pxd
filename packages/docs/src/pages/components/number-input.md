@@ -171,18 +171,18 @@ const value = ref(0)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| min | `number` | `Number.MIN_SAFE_INTEGER` | - |
-| max | `number` | `Number.MAX_SAFE_INTEGER` | - |
-| step | `number` | `1` | - |
-| readonly | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| controls | `boolean` | `true` | - |
-| precision | `number` | - | - |
-| thousands | `boolean` | - | - |
-| thousands-separator | `string` | `'` | - |
-| scientific | `boolean` | `true` | - |
-| clear-value | `number \| null` | `null` | - |
-| model-value | `number \| null` | - | - |
+| min | `number` | `Number.MIN_SAFE_INTEGER` | Lowest value the control accepts |
+| max | `number` | `Number.MAX_SAFE_INTEGER` | Highest value the control accepts |
+| step | `number` | `1` | Amount added or removed per step, also drives `ArrowUp` and `ArrowDown` |
+| readonly | `boolean` | - | Accept focus but block editing and the step controls |
+| disabled | `boolean` | - | Block all interaction and grey out the control |
+| controls | `boolean` | `true` | Show the plus and minus buttons |
+| precision | `number` | - | Fixed number of decimal places, inferred from `step` when omitted |
+| thousands | `boolean` | - | Group the integer part with the separator while the input is not focused |
+| thousands-separator | `string` | `','` | Character placed between each group of three digits |
+| scientific | `boolean` | `true` | Allow `e` and `E` so users can type scientific notation |
+| clear-value | `number \| null` | `null` | Value restored by the built-in clear button |
+| model-value | `number \| null` | - | Current value, `null` when the field is empty |
 
 ## Slots
 

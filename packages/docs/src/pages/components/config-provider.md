@@ -76,10 +76,10 @@ You can also provide only the locale values you need to override. Missing values
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'sm' \| 'md' \| 'lg'` | `md` | - |
+| size | `'sm' \| 'md' \| 'lg'` | `md` | Default size inherited by all descendant components |
 | locale | `LocalePatch` | `() => enUS` | Merged with `enUS` |
-| enter-motion | `boolean` | `true` | - |
-| leave-motion | `boolean` | `true` | - |
+| enter-motion | `boolean` | `true` | Set to `false` to drop overlay enter transitions |
+| leave-motion | `boolean` | `true` | Set to `false` to drop overlay leave transitions |
 
 ## Slots
 

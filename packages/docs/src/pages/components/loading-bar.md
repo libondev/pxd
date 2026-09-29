@@ -104,9 +104,9 @@ function increase() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| to | `string \| object` | - | - |
-| group | `string` | `default` | - |
-| minimum | `number` | `0.08` | - |
-| trickle | `boolean` | `true` | - |
-| hide-delay | `number` | `500` | - |
-| trickle-threshold | `number` | `300` | - |
+| to | `string \| object` | - | Teleport target selector or element, switches the bar to `absolute` |
+| group | `string` | `default` | Listens only to `useLoadingBar` calls with the same group |
+| minimum | `number` | `0.08` | Progress ratio the bar starts from, `0.08` means 8% |
+| trickle | `boolean` | `true` | Auto-increase progress with a shrinking step, capped at 99.4% |
+| hide-delay | `number` | `500` | Delay in `ms` before hiding after `finish` or `error` |
+| trickle-threshold | `number` | `300` | Minimum `ms` between two automatic progress steps |

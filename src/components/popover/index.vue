@@ -591,7 +591,7 @@ defineExpose({
       :model-value="isVisible"
       :show-overlay="adaptive"
       :close-on-press-escape="closeOnPressEscape"
-      :lock-scroll-on-visible="adaptive"
+      :lock-scroll-on-visible="lockScrollOnVisible"
       @escape="handlePopoverHide()"
     >
       <div

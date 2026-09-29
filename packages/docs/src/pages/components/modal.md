@@ -254,21 +254,21 @@ function handleClose() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number` | - | - |
-| title | `string \| number \| null` | - | - |
-| subtitle | `string \| number \| null` | - | - |
-| width | `string \| number` | - | - |
-| loading | `boolean` | - | - |
-| model-value | `boolean` | `false` | - |
-| loading-text | `string` | `'Loading...'` | - |
-| append-to-body | `boolean` | `true` | - |
-| wrapper-class | `string \| any[] \| object` | - | - |
-| content-class | `string \| any[] \| object` | - | - |
-| auto-focus-element | `string \| boolean` | `false` | - |
-| default-header-style | `boolean` | `false` | - |
-| default-footer-style | `boolean` | `true` | - |
-| close-on-press-escape | `boolean` | `false` | - |
-| close-on-click-overlay | `boolean` | `false` | - |
+| z-index | `number` | - | Stacking order of the modal, applied through the `--modal-index` variable |
+| title | `string \| number \| null` | - | Header title text, overridable by the `title` slot |
+| subtitle | `string \| number \| null` | - | Secondary text below the title, overridable by the `subtitle` slot |
+| width | `string \| number` | - | Panel width, numbers become `px`, defaulting to `33.75rem` from `sm` up |
+| loading | `boolean` | - | Cover the modal with a loading mask and block closing |
+| model-value | `boolean` | `false` | Whether the modal is open |
+| loading-text | `string` | `'Loading...'` | Text shown inside the loading mask |
+| append-to-body | `boolean` | `true` | Teleport the modal to `body` to escape overflow containers |
+| wrapper-class | `string \| any[] \| object` | - | Class applied to the modal panel element |
+| content-class | `string \| any[] \| object` | - | Class applied to the scrollable content element |
+| auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
+| default-header-style | `boolean` | `false` | Apply the default header background and bottom border |
+| default-footer-style | `boolean` | `true` | Apply the default footer background and top border |
+| close-on-press-escape | `boolean` | `false` | Close the modal when `Esc` is pressed |
+| close-on-click-overlay | `boolean` | `false` | Close the modal when the overlay mask is clicked |
 
 ## Slots
 

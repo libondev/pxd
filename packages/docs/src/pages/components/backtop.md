@@ -42,10 +42,11 @@ A button to back to top.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| append-to-body | `boolean` | `true` | - |
-| visible-threshold | `number` | `30` | - |
-| scroll-target | `'top' \| 'bottom'` | `top` | - |
-| scroll-behavior | `'smooth' \| 'instant'` | `smooth` | - |
+| append-to-body | `boolean` | `true` | Render into `body` as `fixed`, or in place as `absolute` when `false` |
+| visible-threshold | `number` | `30` | Distance in `px` from the target edge before it shows |
+| size | `'sm' \| 'md' \| 'lg'` | - | Size of the built-in trigger button, overridable by the default slot |
+| scroll-target | `'top' \| 'bottom'` | `top` | Scroll to the `top` or `bottom` on click |
+| scroll-behavior | `'smooth' \| 'instant'` | `smooth` | `smooth` animates the scroll, `instant` jumps at once |
 
 ## Slots
 

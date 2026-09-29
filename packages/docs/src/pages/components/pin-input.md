@@ -75,11 +75,11 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| error | `boolean \| string` | - | - |
-| length | `number` | `4` | - |
-| readonly | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| model-value | `string` | `` | - |
-| placeholder | `string` | `○` | - |
-| type | `'numeric'` | `numeric` | - |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Box side length in `px`: `24`, `30`, `36` or `44`, falling back to the config size |
+| error | `boolean \| string` | - | Any truthy value turns on the error border and focus ring |
+| length | `number` | `4` | Number of single-character boxes to render |
+| readonly | `boolean` | - | Allow focus and selection but block typing |
+| disabled | `boolean` | - | Disable all boxes and ignore typed or pasted input |
+| model-value | `string` | `` | Current pin code, one character per box |
+| placeholder | `string` | `○` | Character shown in each empty box |
+| type | `'numeric' \| 'alphabetic' \| 'alphanumeric' \| 'numeric-password' \| 'alphabetic-password' \| 'alphanumeric-password'` | `numeric` | Restrict input to the given character set, the `-password` variants also mask it |

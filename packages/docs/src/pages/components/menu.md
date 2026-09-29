@@ -112,13 +112,13 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| options | `ListOption[]` | `() => []` | - |
-| disabled | `boolean` | - | - |
-| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom-start` | - |
-| model-value | `ListOptionSelected['value'] \| ListOptionSelected['value'][]` | - | - |
-| multiple | `boolean` | - | - |
+| options | `ListOption[]` | `() => []` | Items to render, each may be a single option or a group |
+| disabled | `boolean` | - | Disable the trigger so the menu cannot be opened |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom-start` | Placement of the menu relative to the trigger |
+| model-value | `ListOptionSelected['value'] \| ListOptionSelected['value'][]` | - | Selected value, an array when `multiple` is set |
+| multiple | `boolean` | - | Keep the menu open and let several options be selected |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| close-on-press-escape | `boolean` | `true` | - |
+| close-on-press-escape | `boolean` | `true` | Close the menu when the `Escape` key is pressed |
 
 ## Slots
 

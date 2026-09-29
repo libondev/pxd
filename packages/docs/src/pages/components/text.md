@@ -57,12 +57,12 @@ Display text using well-defined typographic styles.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| as | `string \| object` | `p` | - |
-| text | `string` | - | - |
-| size | `strin \| Responsive \| number>` | - | - |
-| align | `'left' \| 'center' \| 'right'` | `left` | - |
-| monospace | `boolean` | - | - |
-| secondary | `boolean` | - | - |
+| as | `string \| object` | `p` | Tag or component rendered as the root element |
+| text | `string` | - | Text content, also used as the `title` attribute |
+| size | `string \| Responsive \| number` | - | Font size in `px`, or a responsive object keyed by breakpoint |
+| align | `'left' \| 'center' \| 'right'` | `left` | Horizontal text alignment |
+| monospace | `boolean` | - | Render with the monospace font |
+| secondary | `boolean` | - | Render with the secondary foreground color |
 
 ## Slots
 

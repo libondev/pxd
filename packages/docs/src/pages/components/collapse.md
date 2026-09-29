@@ -140,15 +140,15 @@ A set of headings, vertically stacked, that each reveal an related section of co
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | - |
-| expand | `boolean` | - | - |
+| title | `string` | - | Heading rendered in the trigger, overridable by the `title` slot |
+| expand | `boolean` | - | Expand the panel; inside a group this is the initial state only |
 
 ## CollapseGroup Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| multiple | `boolean` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
+| multiple | `boolean` | - | Allow several panels to stay expanded at the same time |
+| size | `'sm' \| 'md' \| 'lg'` | - | Padding and font size of every panel; falls back to the config provider size |
 
 ## Slots
 

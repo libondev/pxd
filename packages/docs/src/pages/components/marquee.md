@@ -199,15 +199,15 @@ const marqueeRef = shallowRef()
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| as | `string \| object` | `div` | - |
-| text | `string` | `` | - |
-| color | `string` | `var(--color-amber-900)` | - |
-| background | `string` | `var(--color-amber-100)` | - |
-| delay | `number \| string` | `1` | - |
-| speed | `number \| string` | `60` | - |
-| scrollable | `boolean` | `true` | - |
-| wrapable | `boolean` | `false` | - |
-| pause-on-hover | `boolean` | `true` | - |
+| as | `string \| object` | `div` | Element or component rendered as the root |
+| text | `string` | `` | Text to scroll, used when the default slot is empty |
+| color | `string` | `var(--color-amber-900)` | Any CSS color applied to the text |
+| background | `string` | `var(--color-amber-100)` | Any CSS color applied to the background |
+| delay | `number \| string` | `1` | Seconds to wait before the first scroll starts |
+| speed | `number \| string` | `60` | Scrolling speed in pixels per second |
+| scrollable | `boolean` | `true` | Animate the content; `false` truncates it with an ellipsis |
+| wrapable | `boolean` | `false` | Let the text wrap onto multiple lines, requires `scrollable` to be `false` |
+| pause-on-hover | `boolean` | `true` | Pause the animation while the pointer is over the marquee |
 
 ## Slots
 

@@ -83,15 +83,15 @@ function onClickToClose() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number` | - | - |
-| variant | `'default' \| 'blurred' \| 'transparent'` | - | - |
-| model-value | `boolean` | `false` | - |
-| show-overlay | `boolean` | `true` | - |
-| append-to-body | `boolean` | `true` | - |
-| shown-element | `string \| object` | - | - |
-| close-on-press-escape | `boolean` | `true` | - |
-| close-on-click-overlay | `boolean` | `false` | - |
-| lock-scroll-on-visible | `boolean` | `true` | - |
+| z-index | `number` | - | Stacking order of the overlay, applied through the `--overlay-index` variable |
+| variant | `'default' \| 'blurred' \| 'transparent'` | - | Backdrop treatment; `blurred` adds a backdrop blur, `transparent` fades out |
+| model-value | `boolean` | `false` | Whether the overlay is visible |
+| show-overlay | `boolean` | `true` | Render the backdrop; `false` keeps only the slotted content |
+| append-to-body | `boolean` | `true` | Teleport the content to `body` to escape overflow containers |
+| shown-element | `string \| object` | - | Element or selector kept above the overlay, cut out with a `clip-path` |
+| close-on-press-escape | `boolean` | `true` | Close the overlay when `Esc` is pressed |
+| close-on-click-overlay | `boolean` | `false` | Close the overlay when the backdrop is clicked |
+| lock-scroll-on-visible | `boolean` | `true` | Prevent the page behind the overlay from scrolling |
 
 ## Slots
 

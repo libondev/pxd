@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<StackProps>(), {
 
 const { attrs, classes: variantClasses } = useTailwindVariant(
   {
-    base: 'pxd-stack flex max-w-full gap-(--xs) [--xs:1rem]',
+    base: 'pxd-stack flex w-full max-w-full gap-(--xs) [--xs:1rem]',
     variants: {
       wrap: {
         true: 'flex-wrap',

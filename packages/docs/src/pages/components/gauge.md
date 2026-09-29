@@ -140,8 +140,8 @@ const progress = ref(50)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| model-value | `number \| null` | `60` | - |
-| show-value | `boolean` | `false` | - |
-| indeterminate | `boolean` | - | - |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| colors | `Record<string, string>` | - | - |
+| model-value | `number \| null` | `60` | Progress percentage, clamped between `0` and `100` |
+| show-value | `boolean` | `false` | Show the percentage in the center, always hidden at `xs` size |
+| indeterminate | `boolean` | - | Ignore the value and show an activity icon over a gray track |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Diameter in `px`: `24`, `32`, `64` or `128`, falling back to the config size |
+| colors | `Record<string, string>` | - | Color stops keyed by threshold, with `primary` and `secondary` overrides |

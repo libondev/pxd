@@ -56,8 +56,8 @@ Use controllable forms to create beautiful solid or dotted lines.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| position | `BasePosition \| BasePosition[]` | `() => ['top']` | - |
-| line-size | `string \| number` | - | - |
-| dash-size | `string \| number` | - | - |
-| color | `string` | - | - |
-| gap | `string \| number` | - | - |
+| position | `BasePosition \| BasePosition[]` | `() => ['top']` | Edge(s) to draw on: `top`, `bottom`, `left`, `right` or an array of them |
+| line-size | `string \| number` | - | Stroke width of the line, defaults to `1px` |
+| dash-size | `string \| number` | - | Length of each dash, defaults to `8px` |
+| color | `string` | - | Stroke color, defaults to `var(--color-gray-600)` |
+| gap | `string \| number` | - | Gap between dashes, defaults to `8px` |

@@ -31,11 +31,11 @@ Set `variant="text"` to convert it into a link in normal text form.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| href | `string` | - | - |
-| text | `string` | - | - |
-| align | `'left' \| 'center' \| 'right'` | `left` | - |
-| target | `'_blank' \| '_self' \| '_parent' \| '_top'` | `_self` | - |
-| external-icon | `boolean` | - | - |
+| href | `string` | - | Paths starting with `/` or `#` render as `router-link`, others as `a` |
+| text | `string` | - | Text rendered when the default slot is empty |
+| align | `'left' \| 'center' \| 'right'` | `left` | Horizontal alignment of the button content |
+| target | `'_blank' \| '_self' \| '_parent' \| '_top'` | `_self` | Browsing context of the link, e.g. `_blank` opens a new tab |
+| external-icon | `boolean` | - | Show an external link icon in the suffix |
 
 ## Slots
 

@@ -120,12 +120,11 @@ function onClose() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| as | `string \| object` | `span` | - |
-| href | `string` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| shape | `ComponentShape` | `rounded` | - |
-| variant | `BadgeVariant` | `pill` | - |
-| closeable | `boolean` | - | - |
+| as | `string \| object` | `span` | Element or component rendered as the badge |
+| size | `'sm' \| 'md' \| 'lg'` | - | Badge size, falls back to the config provider size |
+| shape | `ComponentShape` | `default` | Corner shape: `default`, `square` or `rounded` |
+| variant | `BadgeVariant` | `pill` | Visual style, `pill`, solid or `-subtle` colors, `inverted` and branded gradients |
+| closeable | `boolean` | - | Render a close button that emits the `close` event |
 
 ## Slots
 

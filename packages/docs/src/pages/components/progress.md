@@ -87,13 +87,13 @@ function decrease() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| min | `number` | `0` | - |
-| max | `number` | `100` | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| label | `boolean \| string \| number` | `false` | - |
-| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | - |
-| colors | `Record<string, string>` | - | - |
-| model-value | `number \| null` | - | - |
+| min | `number` | `0` | Lower bound of the progress range |
+| max | `number` | `100` | Upper bound of the progress range |
+| size | `'sm' \| 'md' \| 'lg'` | - | Thickness of the track; falls back to the config provider size |
+| label | `boolean \| string \| number` | `false` | Show the value as text, or replace it with a custom string |
+| variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Color of the filled bar |
+| colors | `Record<string, string>` | - | Threshold-to-color map; the highest key below the value wins |
+| model-value | `number \| null` | - | Current progress value, clamped between `min` and `max` |
 
 ## Slots
 

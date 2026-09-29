@@ -95,9 +95,10 @@ Use the `text` prop or the default slot to set the content.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | text | `string` | - | Text content. Used when the default slot is empty. |
-| color | `string \| { color: string; position: number }[]` | - | Highlight color. A string uses a single-color band; a non-empty array uses a custom multi-stop gradient. When omitted, `variant` is used. |
+| color | `string \| { color: string; position: number }[]` | `var(--color-gray-100)` | Highlight color. A string uses a single-color band; a non-empty array uses a custom multi-stop gradient. When omitted, `variant` is used. |
 | variant | `'sunrise' \| 'bubble' \| 'tonic' \| 'spring' \| 'twilight'` | - | Built-in gradient preset. Used when `color` is not set. |
 | durations | `number` | `1500` | Sweep duration in milliseconds. |
+| disabled | `boolean` | `false` | Stop the sweeping animation and keep the static gradient. |
 
 ## Slots
 

@@ -369,31 +369,33 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number \| string` | - | - |
-| offset | `number` | - | - |
-| trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| 'click' \| 'hover' \| 'contextmenu' \| 'manual'[]` | `() => ['hover']` | - |
+| z-index | `number \| string` | - | Custom `z-index` for the Popover wrapper |
+| offset | `number` | - | Gap in `px` between the Popover and its trigger |
+| trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| ('click' \| 'hover' \| 'contextmenu' \| 'manual')[]` | `() => ['hover']` | Trigger methods; takes one or an array of `hover`, `click`, `contextmenu`, `manual` |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
 | align-point | `boolean` | - | Align the Popover to the pointer position. |
-| disabled | `boolean` | - | - |
-| adaptive | `boolean` | - | - |
-| max-width | `number \| string` | - | - |
-| match-trigger-width | `boolean` | `true` | Match the Popover min width to the trigger width. |
-| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | - |
-| show-delay | `number` | `0` | - |
-| hide-delay | `number` | `0` | - |
+| disabled | `boolean` | - | Ignore every trigger event so the Popover cannot be shown |
+| adaptive | `boolean` | - | Render as a fullscreen overlay with dimmed backdrop, locked scroll and slide motion |
+| max-width | `number \| string` | - | Max width of the content; a number is treated as `px` |
+| fill-trigger-width | `boolean` | `true` | Match the Popover min width to the trigger width. |
+| position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | Preferred placement: `top`, `right`, `bottom` or `left`, each with optional `-start` / `-end` |
+| show-delay | `number` | `0` | Delay in `ms` before the Popover is shown |
+| hide-delay | `number` | `0` | Delay in `ms` before the Popover is hidden |
 | destroy-delay | `number` | `3000` | Delay before unmounting content after hide. |
-| show-arrow | `boolean` | - | - |
-| arrow-color | `string` | - | - |
-| model-value | `boolean` | - | - |
-| interactive | `boolean` | `true` | - |
-| auto-position | `boolean` | `true` | - |
-| wrapper-class | `string \| any[] \| object` | - | - |
-| content-class | `string \| any[] \| object` | - | - |
-| content-style | `CSSProperties \| string` | - | - |
-| toggle-on-trigger | `boolean` | `true` | - |
-| close-on-invisible | `boolean` | `true` | - |
-| close-on-press-escape | `boolean` | `true` | - |
-| lock-scroll-on-visible | `boolean` | - | - |
+| show-arrow | `boolean` | - | Render the arrow pointing back to the trigger |
+| arrow-color | `string` | - | Fill color of the arrow, any CSS color value |
+| model-value | `boolean` | - | Controlled visibility, normally used with the `manual` trigger |
+| interactive | `boolean` | `true` | Keep the Popover open while the pointer moves over it |
+| auto-position | `boolean` | `true` | Reposition on scroll and resize, and flip when it would be clipped |
+| wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
+| content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
+| content-style | `CSSProperties \| string` | - | Inline style bound to the Popover content |
+| toggle-on-trigger | `boolean` | `true` | Hide the Popover when the trigger is activated again |
+| auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
+| return-focus-on-deactivate | `boolean` | `true` | Return focus to the trigger when the Popover closes |
+| close-on-invisible | `boolean` | `true` | Hide the Popover when the trigger is clipped or scrolled out of view |
+| close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
+| lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
 
 ## Slots
 

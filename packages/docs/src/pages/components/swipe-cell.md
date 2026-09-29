@@ -226,7 +226,7 @@ async function beforeClose() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| as | `string \| object` | `div` | - |
+| as | `string \| object` | `div` | Tag or component rendered as the root element |
 | disabled | `boolean` | - | Disable swipe gestures and click-to-close. |
 | model-value | `'prefix' \| 'suffix' \| false` | `false` | Controlled open side. |
 | threshold | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |

@@ -64,7 +64,7 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| text | `string \| string[]` | - | - |
-| size | `'sm' \| 'md' \| 'lg'` | - | - |
-| prompt | `boolean \| string` | `$ ` | - |
-| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` \| `inverted` | - |
+| text | `string \| string[]` | - | Command text to display, one line per array item |
+| size | `'sm' \| 'md' \| 'lg'` | - | Snippet size, falls back to the config provider size |
+| prompt | `boolean \| string` | `$ ` | Shell prompt prefix, `false` hides it and a string sets the text |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` | Color scheme: `default`, `primary`, `error`, `warning` or `success` |

@@ -81,17 +81,17 @@ const outsideValue = ref('Hello')
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| rows | `string \| number` | - | - |
-| cols | `string \| number` | - | - |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | - |
-| error | `boolean \| string` | - | - |
-| readonly | `boolean` | - | - |
-| disabled | `boolean` | - | - |
-| autofocus | `boolean` | - | - |
-| min-length | `number \| string` | - | - |
-| max-length | `number \| string` | - | - |
+| rows | `string \| number` | - | Visible height in text rows |
+| cols | `string \| number` | - | Visible width in characters |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Font size, falls back to the `ConfigProvider` size |
+| error | `boolean \| string` | - | Show the error style, also applied when the word limit is exceeded |
+| readonly | `boolean` | - | Native `readonly` attribute, the value stays selectable |
+| disabled | `boolean` | - | Native `disabled` attribute, blocks editing and focus |
+| autofocus | `boolean` | - | Focus the field as soon as it is mounted |
+| min-length | `number \| string` | - | Native `minlength` attribute, validated by the browser |
+| max-length | `number \| string` | - | Native `maxlength`, lifted while composing and shown by the word limit |
 | trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |
-| model-value | `string \| number \| null` | `` | - |
-| placeholder | `string` | - | - |
-| show-word-limit | `boolean \| string` | - | - |
-| word-limit-position | `'inside' \| 'outside'` | `inside` | - |
+| model-value | `string \| number \| null` | `` | Bound value, emitted on every keystroke |
+| placeholder | `string` | - | Placeholder text shown while the value is empty |
+| show-word-limit | `boolean \| string` | - | Show the character counter, `count / max` when `max-length` is set |
+| word-limit-position | `'inside' \| 'outside'` | `inside` | Place the counter inside the field or below it |

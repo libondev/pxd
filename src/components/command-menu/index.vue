@@ -20,6 +20,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<CommandMenuProps>(), {
+  width: '640px',
   modelValue: false,
   placeholder: '',
   closeOnSelectItem: true,
@@ -85,7 +86,7 @@ watch(filteredOptions, async () => {
 <template>
   <PModal
     v-model="modelValue"
-    width="640px"
+    :width="width"
     class="pxd-command-menu max-sm:h-full"
     content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/8 sm:translate-y-0"

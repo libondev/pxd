@@ -150,12 +150,12 @@ function addMessage() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| role | `'user' \| 'system'` | `system` | - |
-| text | `string` | - | - |
-| header | `string` | - | - |
-| avatar | `string` | - | - |
-| loading | `boolean` | - | - |
-| variant | `default` \| `ghost` | `default` | - |
+| role | `'user' \| 'system' \| 'assistant'` | `system` | Message author, `user` is right-aligned, `system` and `assistant` are left-aligned |
+| text | `string` | - | Message content rendered when the default slot is empty |
+| header | `string` | - | Text shown above the bubble |
+| avatar | `string` | - | Avatar image URL rendered before the bubble, the `avatar` slot overrides it |
+| loading | `boolean` | - | Replace the message content with a spinner |
+| variant | `default` \| `ghost` | `default` | Render a transparent bubble without border |
 
 ## Slots
 
@@ -169,9 +169,9 @@ function addMessage() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | items | `any[]` | - | Data array, enables virtual scrolling when provided |
-| dataKey | `string` | - | Unique key field name for list items |
-| itemSize | `number` | `80` | Estimated item height in pixels |
-| overScan | `number` | `3` | Number of items to render beyond the visible area |
+| data-key | `string` | - | Unique key field name for list items |
+| item-size | `number` | `80` | Estimated item height in pixels |
+| over-scan | `number` | `3` | Number of items to render beyond the visible area |
 
 ## BubbleGroup Slots
 
