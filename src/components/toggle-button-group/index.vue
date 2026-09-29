@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
-import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
-import { useConfigProvider } from '../../contexts/config-provider'
-import { provideToggleButtonGroupContext } from '../../contexts/toggle-button'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { provideToggleButtonGroupContext } from '../../contexts/toggle-button.js'
 import PStack from '../stack/index.vue'
 import PToggleButton from '../toggle-button/index.vue'
 
