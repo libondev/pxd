@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { CardProps } from './types'
-import { computed } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 defineOptions({
   name: 'PCard',

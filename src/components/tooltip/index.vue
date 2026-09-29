@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TooltipProps } from './types'
 import { computed } from 'vue'
-import { getFallbackValue } from '../../utils/helper'
-import { isTouchDevice } from '../../utils/is'
+import { getFallbackValue } from '../../utils/helper.js'
+import { isTouchDevice } from '../../utils/is.js'
 import PPopover from '../popover/index.vue'
 
 defineOptions({
@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 const VARIANTS = {
   invert: {
     bg: 'var(--color-background-100)',
-    base: 'text-foreground border',
+    base: 'text-foreground border variant-invert',
   },
   default: {
     bg: 'var(--color-gray-1000)',
@@ -53,7 +53,7 @@ const isDisabled = computed(() => {
 
 const contentClassComputed = computed(() => {
   const classes = [
-    'px-3 py-2 rounded-md text-13 break-words shadow-tooltip whitespace-pre-line bg-(--popover-arrow-color)',
+    'px-3 py-2 rounded-md text-13 break-words whitespace-pre-line bg-(--popover-arrow-color)',
     computedVariant.value.base,
     props.contentClass,
   ]

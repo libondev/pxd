@@ -5,8 +5,8 @@ import { computed } from 'vue'
 import {
   createTailwindVariant,
   useTailwindVariant,
-} from '../../composables/_internal/use-tailwind-variant'
-import { useConfigProvider } from '../../contexts/config-provider'
+} from '../../composables/_internal/use-tailwind-variant.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
   name: 'PBadge',
@@ -29,9 +29,9 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center font-sans leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
     variants: {
       variant: {
-        pill: 'bg-background-100 shadow-border-base',
+        pill: 'border bg-background-100',
         primary: 'bg-primary text-primary-foreground',
-        secondary: 'bg-gray-200 text-gray-1000 shadow-border-base',
+        secondary: 'border border-gray-alpha-300 bg-gray-200 text-gray-1000',
         gray: 'text-white bg-gray-900',
         blue: 'bg-blue-800 text-gray-100 dark:text-gray-1000',
         purple: 'bg-purple-900 text-gray-100 dark:text-gray-1000',
@@ -93,7 +93,7 @@ const iconSlotClasses = createTailwindVariant({
     {
       size: 'md',
       slot: 'prefix',
-      class: '-ms-1',
+      class: '-ms-01',
     },
     {
       size: 'lg',
@@ -108,7 +108,7 @@ const iconSlotClasses = createTailwindVariant({
     {
       size: 'md',
       slot: 'suffix',
-      class: '-me-1',
+      class: '-me-1.5',
     },
     {
       size: 'lg',

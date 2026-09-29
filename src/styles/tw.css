@@ -119,7 +119,7 @@
   --ring: var(--primary);
 
   --shadow-background-border: 0 0 0 1px hsl(var(--background-200-value));
-  --shadow-border-value: 0 0 0 1px #00000014;
+  --shadow-border-value: 0 0 0 1px hsl(var(--color-gray-300-value));
   --shadow-small-value: 0px 2px 2px #0000000a;
   --shadow-medium-value: 0px 2px 2px #0000000a, 0px 8px 8px -8px #0000000a;
   --shadow-large-value: 0px 2px 2px #0000000a, 0px 8px 16px -4px #0000000a;
@@ -268,7 +268,6 @@
   --color-pink-900-value: 341, 90%, 67%;
   --color-pink-1000-value: 333, 90%, 96%;
 
-  --shadow-border-value: 0 0 0 1px #ffffff25;
   --shadow-small-value: 0px 1px 2px #00000029;
   --shadow-medium-value: 0px 2px 2px #00000052, 0px 8px 8px -8px #00000029;
   --shadow-large-value: 0px 2px 2px #0000000a, 0px 8px 16px -4px #0000000a;

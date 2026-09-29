@@ -649,7 +649,7 @@ defineExpose({
 .pxd-popover--wrapper {
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
 
-  .pxd-popover--content.border + .pxd-popover--arrow {
+  .pxd-popover--content.variant-invert + .pxd-popover--arrow {
     --popover-arrow-border: var(--color-gray-300);
   }
 
