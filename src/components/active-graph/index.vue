@@ -137,7 +137,9 @@ interface DateInfo {
 
 const dateInfoList = computed<DateInfo[]>(() =>
   rangedDates.value.dates.map((dateStr) => {
-    const date = new Date(dateStr)
+    // a bare 'YYYY-MM-DD' string is parsed as UTC by `new Date()`, so the local
+    // getters below would return the previous day in negative-offset timezones
+    const date = new Date(`${dateStr}T00:00:00`)
 
     return {
       year: date.getFullYear(),
@@ -359,7 +361,7 @@ function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
     const firstValidCell = row.find((cell) => !cell.hidden && cell.date)
 
     if (firstValidCell) {
-      const date = new Date(firstValidCell.date!)
+      const date = new Date(`${firstValidCell.date}T00:00:00`)
       const month = date.getMonth()
       const year = date.getFullYear()
       const day = date.getDate()
