@@ -47,6 +47,8 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
     ArrowDown: 'next',
     ArrowUp: 'previous',
     Enter: 'activate',
+    Home: 'first',
+    End: 'last',
   },
 })
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
@@ -100,7 +102,7 @@ watch(filteredOptions, async () => {
     <template #header>
       <label
         :for="uniqueId"
-        class="py-3 px-4 -mx-6 -mbs-4 sm:-mbs-6 gap-3 flex items-center border-b bg-background-100"
+        class="p-3 -mx-6 -mbs-4 sm:-mbs-6 gap-3 flex items-center border-b bg-background-100"
       >
         <input
           :id="uniqueId"
