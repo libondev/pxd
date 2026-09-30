@@ -1,6 +1,8 @@
 import type { Ref, ShallowRef } from 'vue'
 import { nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
+  CARET_ANCHOR,
+  createCaretAnchor,
   createMentionElement,
   escapePlainTextAsHtml,
   getMentionLabel,
@@ -200,7 +202,7 @@ export function useMentionEditor({
       return true
     }
 
-    return /\s/.test(before)
+    return /\s/.test(before) || before === CARET_ANCHOR
   }
 
   /**
@@ -309,8 +311,21 @@ export function useMentionEditor({
     const mention = createMentionElement(key, label)
     range.insertNode(mention)
 
+    // Keep an editable text node right after the chip so the caret can land there.
+    const sibling = mention.nextSibling
+    let anchor: Text
+
+    if (sibling?.nodeType === Node.TEXT_NODE) {
+      const text = sibling as Text
+      text.textContent = CARET_ANCHOR + (text.textContent ?? '')
+      anchor = text
+    } else {
+      anchor = createCaretAnchor()
+      mention.parentNode?.insertBefore(anchor, sibling ?? null)
+    }
+
     const caret = document.createRange()
-    caret.setStartAfter(mention)
+    caret.setStart(anchor, 1)
     caret.collapse(true)
 
     triggerRange = null
@@ -426,7 +441,10 @@ export function useMentionEditor({
     let handled = false
 
     if (!selection.isCollapsed) {
-      const mention = closestMention(range.startContainer) || closestMention(range.endContainer)
+      const mention =
+        closestMention(range.startContainer) ||
+        closestMention(range.endContainer) ||
+        mentionAtChipRightEdge(range.startContainer, range.startOffset)
 
       if (mention) {
         deleteMentionElement(mention)
@@ -446,29 +464,13 @@ export function useMentionEditor({
         const textNode = startContainer as Text
         const prev = textNode.previousSibling
 
-        if (isMentionElement(prev)) {
-          if (startOffset === 0) {
-            deleteMentionElement(prev as HTMLElement)
-            handled = true
-          } else {
-            const content = textNode.textContent ?? ''
-
-            const nextContent = content.slice(0, startOffset - 1) + content.slice(startOffset)
-
-            if (nextContent === '') {
-              textNode.textContent = ''
-              retainEditorFocus()
-              placeCaretAfter(prev as HTMLElement)
-              emitHTML()
-            } else {
-              textNode.textContent = nextContent
-              retainEditorFocus()
-              placeCaret(textNode, startOffset - 1)
-              emitHTML()
-            }
-
-            handled = true
-          }
+        // Only the caret sitting right on the chip is owned here. Deleting a
+        // plain character next to a chip stays native: rewriting the text node
+        // and cancelling `beforeinput` desyncs the IME from the DOM, and Android
+        // drops the keyboard once the two models disagree.
+        if (isMentionElement(prev) && startOffset === 0) {
+          deleteMentionElement(prev as HTMLElement)
+          handled = true
         }
       } else if (startContainer.nodeType === Node.ELEMENT_NODE) {
         const prev = startContainer.childNodes[startOffset - 1]
@@ -481,6 +483,28 @@ export function useMentionEditor({
     }
 
     return handled
+  }
+
+  /**
+   * The chip directly left of the caret when the caret is on the chip's right
+   * edge. Android pre-selects the character to delete before dispatching
+   * `beforeinput`, so the caret anchor arrives here as a range covering it —
+   * deleting the chip is the only sensible answer, the anchor is not a character.
+   */
+  function mentionAtChipRightEdge(container: Node, offset: number): HTMLElement | null {
+    if (container.nodeType !== Node.TEXT_NODE || offset !== 0) {
+      return null
+    }
+
+    const text = container as Text
+
+    if (!text.data.startsWith(CARET_ANCHOR)) {
+      return null
+    }
+
+    const prev = text.previousSibling
+
+    return isMentionElement(prev) ? (prev as HTMLElement) : null
   }
 
   function onPaste(ev: ClipboardEvent) {

@@ -1,5 +1,18 @@
 const MENTION_TAG = 'AT'
 
+/**
+ * A collapsed selection sitting right after a `contenteditable=false` element is
+ * not representable; Android resolves it *into* the element, the IME then finds
+ * no editable context and hides the keyboard. A zero-width space after every chip
+ * gives the caret a real text node to live in. It is stripped on serialize, so it
+ * never reaches the public HTML, the v-model or the server.
+ */
+export const CARET_ANCHOR = '\u200B'
+
+export function createCaretAnchor(): Text {
+  return document.createTextNode(CARET_ANCHOR)
+}
+
 export function isMentionElement(node: Node | null | undefined): boolean {
   return !!node && node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === MENTION_TAG
 }
@@ -40,8 +53,9 @@ export function serializeMentionHtml(root: HTMLElement): string {
 
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces.
-      result += (node.textContent ?? '').replace(/\u00A0/g, ' ')
+      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces,
+      // and drop the caret anchor so it never reaches the public HTML.
+      result += (node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, '')
       return
     }
 
@@ -134,6 +148,9 @@ function appendSanitizedChildren(source: Node, target: Node) {
       const key = el.getAttribute('key')
       if (key != null && key !== '') {
         target.appendChild(createMentionElement(key, getMentionLabel(el)))
+        // The anchor merges into the text node that follows, so the chip keeps an
+        // editable node on its right without splitting the surrounding text.
+        target.appendChild(createCaretAnchor())
         continue
       }
     }
@@ -152,7 +169,13 @@ function appendPlainText(target: Node, text: string) {
 
   for (let i = 0; i < parts.length; i++) {
     if (parts[i]) {
-      target.appendChild(document.createTextNode(parts[i]))
+      const last = target.lastChild
+
+      if (last?.nodeType === Node.TEXT_NODE) {
+        last.textContent = (last.textContent ?? '') + parts[i]
+      } else {
+        target.appendChild(document.createTextNode(parts[i]))
+      }
     }
 
     if (i < parts.length - 1) {
