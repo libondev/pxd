@@ -66,14 +66,15 @@ export function useDelayDestroy(
         visibleChange?.(visible.value)
       }
 
-      if (render.value) {
-        clearTimeout(destroyTimeoutId)
-        destroyTimeoutId = setTimeout(() => {
+      clearTimeout(destroyTimeoutId)
+      destroyTimeoutId = setTimeout(() => {
+        if (render.value) {
           render.value = false
-          resolve(render.value)
           renderChange?.(render.value)
-        }, getDelay())
-      }
+        }
+
+        resolve(render.value)
+      }, getDelay())
     })
   }
 

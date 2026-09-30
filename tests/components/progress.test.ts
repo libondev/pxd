@@ -38,9 +38,78 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain('width: 50%')
+    // (30 - 20) / (80 - 20) = 1/6
+    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'width: 16.666666666666664%',
+    )
 
     wrapper.unmount()
+  })
+
+  it('should render an empty bar at the min value', () => {
+    const wrapper = mount(Progress, {
+      props: {
+        modelValue: 20,
+        min: 20,
+        max: 80,
+      },
+    })
+
+    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain('width: 0%')
+
+    wrapper.unmount()
+  })
+
+  it('should fill the whole bar at the max value', () => {
+    const wrapper = mount(Progress, {
+      props: {
+        modelValue: 80,
+        min: 20,
+        max: 80,
+      },
+    })
+
+    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain('width: 100%')
+
+    wrapper.unmount()
+  })
+
+  it('should pick the color threshold from the default 0-100 range', () => {
+    const colors = { 0: 'rgb(1, 1, 1)', 50: 'rgb(2, 2, 2)', 100: 'rgb(3, 3, 3)' }
+
+    const at50 = mount(Progress, { props: { modelValue: 50, colors } })
+    expect(at50.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'background-color: rgb(2, 2, 2)',
+    )
+    at50.unmount()
+
+    const at100 = mount(Progress, { props: { modelValue: 100, colors } })
+    expect(at100.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'background-color: rgb(3, 3, 3)',
+    )
+    at100.unmount()
+  })
+
+  it('should resolve color thresholds against the range, not the absolute value', () => {
+    const colors = { 0: 'rgb(1, 1, 1)', 50: 'rgb(2, 2, 2)', 100: 'rgb(3, 3, 3)' }
+
+    const atMin = mount(Progress, { props: { modelValue: 20, min: 20, max: 100, colors } })
+    expect(atMin.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'background-color: rgb(1, 1, 1)',
+    )
+    atMin.unmount()
+
+    const atMid = mount(Progress, { props: { modelValue: 60, min: 20, max: 100, colors } })
+    expect(atMid.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'background-color: rgb(2, 2, 2)',
+    )
+    atMid.unmount()
+
+    const atMax = mount(Progress, { props: { modelValue: 100, min: 20, max: 100, colors } })
+    expect(atMax.find('.pxd-progress-bar div').attributes('style')).toContain(
+      'background-color: rgb(3, 3, 3)',
+    )
+    atMax.unmount()
   })
 
   it('should update aria-valuenow when modelValue changes', async () => {

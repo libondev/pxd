@@ -39,7 +39,7 @@ export function getColorByThreshold(value: number, colors: Record<string, string
 
   for (let i = 0; i < keyLength; i++) {
     if (value < Number(keys[i])) {
-      return colors[keys[i - 1]!]!
+      return colors[keys[Math.max(0, i - 1)]!]!
     }
   }
 

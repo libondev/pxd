@@ -35,29 +35,32 @@ export function useOutsideClick<E extends Event = PointerEvent>(
     onTrigger?.(ev as E)
   }
 
+  const event = options.eventName ?? 'click'
+  const listenerOptions = options.listenerOptions
+
+  function bind() {
+    cachedOn(document, event, onClick, listenerOptions)
+  }
+
+  function unbind() {
+    cachedOff(document, event, onClick, listenerOptions)
+  }
+
   const unwatch = watch(
     () => toValue(container),
-    (dom, _, onCleanup) => {
-      const event = options.eventName ?? 'click'
-      const listenerOptions = options.listenerOptions
+    (dom) => {
+      unbind()
 
       if (dom) {
-        cachedOn(document, event, onClick, listenerOptions)
+        bind()
       }
-
-      onCleanup(() => {
-        cachedOff(document, event, onClick, listenerOptions)
-      })
     },
-    { immediate: true },
+    { immediate: true, flush: 'post' },
   )
 
   function stop() {
-    const event = options.eventName ?? 'click'
-    const listenerOptions = options.listenerOptions
-
     unwatch()
-    cachedOff(document, event, onClick, listenerOptions)
+    unbind()
   }
 
   onScopeDispose(() => {

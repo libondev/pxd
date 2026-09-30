@@ -70,21 +70,26 @@ const { classes } = useTailwindVariant(
   },
 )
 
+const relativeProgress = computed(() => progress.value! - props.min)
+
+const percentage = computed(() => {
+  const range = props.max - props.min
+  return range > 0 ? (relativeProgress.value / range) * 100 : 0
+})
+
 const computedColors = computed(() => {
   const { colors, variant } = props
 
   if (colors) {
-    return getColorByThreshold(progress.value!, colors) || VARIANTS_COLORS[variant]
+    return getColorByThreshold(percentage.value, colors) || VARIANTS_COLORS[variant]
   }
 
   return VARIANTS_COLORS[variant]
 })
 
 const computedProgressBarStyles = computed(() => {
-  const { min, max } = props
-
   return {
-    width: `${(progress.value! / (max - min)) * 100}%`,
+    width: `${percentage.value}%`,
     backgroundColor: computedColors.value || VARIANTS_COLORS.primary,
   }
 })

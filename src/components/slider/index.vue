@@ -153,9 +153,13 @@ function updateValueFromPosition(clientX: number) {
   const range = props.max - props.min
   const rawValue = props.min + posPercentage * range
 
+  const offset = rawValue - props.min
   const newValue = Math.max(
     props.min,
-    Math.min(props.max, props.step > 0 ? Math.round(rawValue / props.step) * props.step : rawValue),
+    Math.min(
+      props.max,
+      props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : rawValue,
+    ),
   )
 
   if (props.range) {

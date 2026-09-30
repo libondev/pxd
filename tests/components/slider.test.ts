@@ -95,4 +95,36 @@ describe('slider', () => {
 
     wrapper.unmount()
   })
+
+  it('should reach exactly min when min is not a multiple of step', async () => {
+    const wrapper = mount(Slider, {
+      props: { min: 5, max: 105, step: 10, modelValue: 55 },
+    })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    // Drag to the far left: the value must land on `min`, not on a multiple of step.
+    await slider.trigger('pointerdown', { clientX: 0 })
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[5]])
+
+    wrapper.unmount()
+  })
+
+  it('should snap positions relative to min', async () => {
+    const wrapper = mount(Slider, {
+      props: { min: 5, max: 105, step: 10, modelValue: 5 },
+    })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    // 50% of a 100-wide track over [5, 105] is 55, an exact step offset from min.
+    await slider.trigger('pointerdown', { clientX: 50 })
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[55]])
+
+    wrapper.unmount()
+  })
 })

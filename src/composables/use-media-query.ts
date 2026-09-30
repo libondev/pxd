@@ -7,7 +7,7 @@ interface CacheObject {
   [key: string]: {
     count: number
     query: MediaQueryList
-    cleanup?: () => void
+    cleanups: Array<() => void>
   }
 }
 
@@ -41,6 +41,7 @@ export function useMediaQuery(
 ): Ref<boolean> {
   let initialized = false
   let mediaQuery: CacheObject[string] | undefined
+  let unbindChange: (() => void) | undefined
 
   const matches = customRef<boolean>((track, trigger) => ({
     get() {
@@ -51,29 +52,32 @@ export function useMediaQuery(
       }
 
       if (!initialized) {
-        mediaQuery = CACHED_QUERIES[condition]
+        let cached = CACHED_QUERIES[condition]
 
-        if (mediaQuery) {
-          mediaQuery.count++
+        if (cached) {
+          cached.count++
         } else {
-          const query = window.matchMedia(condition)
-          mediaQuery = CACHED_QUERIES[condition] = {
+          cached = CACHED_QUERIES[condition] = {
             count: 1,
-            query,
+            query: window.matchMedia(condition),
+            cleanups: [],
           }
         }
 
+        // Close over the immutable `entry` snapshot, never over the mutable
+        // `mediaQuery` slot: that slot is cleared on dispose, so reading it here
+        // would throw for any consumer disposed before the last one.
+        const entry = cached
         const handler = () => {
-          callback?.(mediaQuery!.query)
+          callback?.(entry.query)
           trigger()
         }
 
-        const unbindEvent = cachedOn(mediaQuery.query, 'change', handler, { passive: true })
+        unbindChange = cachedOn(entry.query, 'change', handler, { passive: true })
 
-        if (!mediaQuery.cleanup) {
-          mediaQuery.cleanup = unbindEvent
-        }
+        entry.cleanups.push(unbindChange)
 
+        mediaQuery = entry
         initialized = true
       }
 
@@ -89,17 +93,20 @@ export function useMediaQuery(
       return
     }
 
-    if (mediaQuery.cleanup) {
-      mediaQuery.cleanup()
-    }
+    const entry = mediaQuery
 
-    mediaQuery.count--
+    unbindChange?.()
+    unbindChange = undefined
 
-    if (mediaQuery.count <= 0) {
+    entry.count--
+
+    if (entry.count <= 0) {
+      entry.cleanups.forEach((unbind) => unbind())
+      entry.cleanups = []
       delete CACHED_QUERIES[condition]
     }
 
-    mediaQuery = undefined!
+    mediaQuery = undefined
   }
 
   onScopeDispose(() => {

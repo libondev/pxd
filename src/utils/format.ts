@@ -46,10 +46,14 @@ export function isTruthyProp(value: unknown): boolean {
 }
 
 export function clampValue(n: number, min: number, max: number) {
-  return min != null && max != null ? Math.min(Math.max(n, min), max) : n
+  return Math.min(Math.max(n, min), max)
 }
 
 export function isExternalLink(href: string) {
+  if (href.startsWith('//')) {
+    return true
+  }
+
   const firstChar = href.slice(0, 1)
 
   if (['#', '/'].includes(firstChar)) {

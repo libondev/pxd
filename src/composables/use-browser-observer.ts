@@ -62,11 +62,13 @@ function createObserver(
   ) {
     const observer = shallowRef<Observers | undefined>()
 
-    const targets = computed<HTMLElement[]>(() =>
-      toArray(toValue(target))
+    const targets = computed<HTMLElement[]>(() => {
+      const els = toArray(toValue(target))
         .map((i) => getElement(i))
-        .filter(isNotNil),
-    )
+        .filter(isNotNil)
+
+      return els.length > 1 ? Array.from(new Set(els)) : els
+    })
 
     const unwatch = watch(
       targets,

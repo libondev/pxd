@@ -32,7 +32,7 @@ const value = ref(30)
 
 ## Dynamic colors
 
-Customize the colors of the display at different stages.
+Customize the colors of the display at different stages. Keys are completion percentages, so they stay meaningful when `min` / `max` change. A value below the next key falls back to the previous tier.
 
 ```vue demo
 <script setup>

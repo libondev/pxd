@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
+import { ref } from 'vue'
 import { useDelayChange } from '../../src/composables/use-delay-change'
 import { runWithScope } from '../helpers/setup'
 
@@ -70,6 +71,23 @@ describe('useDelayChange', () => {
     setValue('second')
     vi.advanceTimersByTime(300)
     expect(value.value).toBe('second')
+    stop()
+  })
+
+  it('should unwrap a ref initial value', () => {
+    const source = ref('from-ref')
+    const { result, stop } = runWithScope(() => useDelayChange(source))
+    const { value } = result
+
+    expect(value.value).toBe('from-ref')
+    stop()
+  })
+
+  it('should unwrap a getter initial value', () => {
+    const { result, stop } = runWithScope(() => useDelayChange(() => 'from-getter'))
+    const { value } = result
+
+    expect(value.value).toBe('from-getter')
     stop()
   })
 })

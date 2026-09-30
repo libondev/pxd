@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, it, vi } from 'vite-plus/test'
+import { nextTick } from 'vue'
 import {
   useIntersectionObserver,
   useMutationObserver,
@@ -33,5 +34,50 @@ describe('use-browser-observer', () => {
     expect(result).toHaveProperty('stop')
     expect(typeof result.stop).toBe('function')
     stop()
+  })
+
+  it('should observe a duplicated target only once', async () => {
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+
+    const observe = vi.spyOn(ResizeObserver.prototype, 'observe')
+    const { stop } = runWithScope(() =>
+      // The same element passed for two slots (content + container).
+      useResizeObserver(
+        () => [el, el],
+        () => {},
+      ),
+    )
+
+    await nextTick()
+
+    expect(observe).toHaveBeenCalledTimes(1)
+
+    observe.mockRestore()
+    stop()
+    el.remove()
+  })
+
+  it('should still observe two distinct targets', async () => {
+    const a = document.createElement('div')
+    const b = document.createElement('div')
+    document.body.append(a, b)
+
+    const observe = vi.spyOn(ResizeObserver.prototype, 'observe')
+    const { stop } = runWithScope(() =>
+      useResizeObserver(
+        () => [a, b],
+        () => {},
+      ),
+    )
+
+    await nextTick()
+
+    expect(observe).toHaveBeenCalledTimes(2)
+
+    observe.mockRestore()
+    stop()
+    a.remove()
+    b.remove()
   })
 })
