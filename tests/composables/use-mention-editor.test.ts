@@ -342,6 +342,24 @@ describe('useMentionEditor', () => {
     expect(h.model.value).toBe('<at key="1">Alice</at>tail')
   })
 
+  it('restores the anchor after an undo puts a chip back', () => {
+    const h = createHarness('<at key="1">Alice</at>tail')
+    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+
+    // Chromium's undo stack stores a DOM snapshot, so the anchor normally comes
+    // back with the chip. Simulate the case where it does not, which is exactly
+    // what ensureCaretAnchors exists for: the state is "a chip with no editable
+    // node on its right", and it is the one Android turns into a lost keyboard.
+    anchor.data = 'tail'
+    h.editor.dispatchEvent(
+      new InputEvent('input', { inputType: 'historyUndo', bubbles: true }),
+    )
+
+    const next = h.editor.querySelector('at')!.nextSibling as Text
+    expect(next.data.startsWith(ZWSP)).toBe(true)
+    expectAnchorInvariant(h.editor)
+  })
+
   it('removes the whole chip when the caret sits inside it', () => {
     const h = createHarness('Hi <at key="1">Alice</at>')
     caretInsideChip(h.editor, 2)
