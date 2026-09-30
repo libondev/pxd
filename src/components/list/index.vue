@@ -49,6 +49,8 @@ function isNavDisabled(index: number): boolean {
 const virtualOptions = reactive({
   dataKey: 'key',
   enabled: () => props.virtual,
+  scrollPaddingStart: 16,
+  scrollPaddingEnd: 16,
   get items() {
     return rows.value
   },
@@ -191,7 +193,7 @@ defineExpose({
     tabindex="-1"
     data-list
     :aria-multiselectable="multiple"
-    class="pxd-list m-0 p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none empty:hidden"
+    class="pxd-list m-0 p-2 scroll-p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none empty:hidden"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >

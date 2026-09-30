@@ -34,6 +34,8 @@ interface VirtualListOptions {
   overScan?: number
   columnGap?: number
   columnCount?: number
+  scrollPaddingStart?: number
+  scrollPaddingEnd?: number
   onBottom?: () => void | Promise<void>
   bottomThreshold?: number
 }
@@ -51,5 +53,7 @@ interface VirtualListOptions {
 | `options.overScan` | `number` | Number of extra items to render outside viewport |
 | `options.columnGap` | `number` | Gap between columns in pixels |
 | `options.columnCount` | `number` | Number of columns for grid layout |
+| `options.scrollPaddingStart` | `number` | Pixels kept free at the start edge when scrolling an item into view |
+| `options.scrollPaddingEnd` | `number` | Pixels kept free at the end edge when scrolling an item into view |
 | `options.onBottom` | `() => void \| Promise<void>` | Callback fired when scrolled to bottom |
 | `options.bottomThreshold` | `number` | Threshold in pixels for triggering `onBottom` |

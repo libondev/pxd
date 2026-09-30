@@ -32,6 +32,8 @@ export interface VirtualListOptions {
   overScan?: number
   columnGap?: number
   columnCount?: number
+  scrollPaddingStart?: number
+  scrollPaddingEnd?: number
   onBottom?: () => void | Promise<void>
   bottomThreshold?: number
 }
@@ -67,6 +69,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
     overscan: options.overScan ?? DEFAULTS.overScan,
     lanes: options.columnCount ?? DEFAULTS.columnCount,
     gap: options.columnGap ?? DEFAULTS.columnGap,
+    scrollPaddingStart: options.scrollPaddingStart,
+    scrollPaddingEnd: options.scrollPaddingEnd,
     laneAssignmentMode: 'measured',
     observeElementRect,
     observeElementOffset,
