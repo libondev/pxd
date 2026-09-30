@@ -1,5 +1,5 @@
 import type { Ref, ShallowRef } from 'vue'
-import { nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
   CARET_ANCHOR,
   createCaretAnchor,
@@ -7,6 +7,7 @@ import {
   escapePlainTextAsHtml,
   getMentionLabel,
   isMentionElement,
+  queryMentionElements,
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
@@ -24,15 +25,14 @@ export interface UseMentionEditorOptions {
 export interface UseMentionEditorReturn {
   isEmpty: ShallowRef<boolean>
   isComposing: ShallowRef<boolean>
-  getHTML: () => string
   insertMention: (key: string, label: string) => boolean
-  restoreCaret: (deferred?: boolean) => void
-  clearTriggerRange: () => void
+  restoreCaret: () => void
   onBeforeInput: (ev: InputEvent) => void
   onInput: () => void
   onKeydown: (ev: KeyboardEvent) => void
   onPaste: (ev: ClipboardEvent) => void
   onClick: (ev: MouseEvent) => void
+  onCopyOrCut: (ev: ClipboardEvent) => void
   onCompositionStart: () => void
   onCompositionEnd: () => void
   mount: () => void
@@ -55,26 +55,47 @@ export function useMentionEditor({
   let triggerRange: Range | null = null
   let restoreRange: Range | null = null
   let restoreTimer: ReturnType<typeof setTimeout> | null = null
-  let applyingExternal = false
   let lastEmittedHtml = ''
   // Only open suggest when `@` was inserted — not when delete/undo leaves `@` before the caret.
   let pendingAtInsert = false
-  let owningBackwardDelete = false
-
-  function getHTML(): string {
-    if (!editorRef.value) {
-      return ''
-    }
-
-    return serializeMentionHtml(editorRef.value)
-  }
 
   function syncEmptyState(html: string) {
     isEmpty.value = html.trim() === ''
   }
 
+  /**
+   * Every chip needs an editable text node to its right, otherwise the caret has
+   * nowhere representable to sit and Android dismisses the keyboard. The
+   * backward-delete path already refuses to eat the anchor, but a wide selection
+   * replace or a paste can still take it out, so the invariant is re-asserted
+   * after every input rather than guarded path by path.
+   */
+  function ensureCaretAnchors() {
+    const editor = editorRef.value
+
+    if (!editor) {
+      return
+    }
+
+    // Pressing Enter nests content in block elements, so walk the whole subtree
+    // rather than just the editor's direct children.
+    for (const node of queryMentionElements(editor)) {
+      const next = node.nextSibling
+
+      if (next?.nodeType === Node.TEXT_NODE) {
+        const text = next as Text
+
+        if (!text.data.includes(CARET_ANCHOR)) {
+          text.data = CARET_ANCHOR + text.data
+        }
+      } else {
+        node.parentNode?.insertBefore(createCaretAnchor(), next ?? null)
+      }
+    }
+  }
+
   function emitHTML() {
-    if (!editorRef.value || applyingExternal) {
+    if (!editorRef.value) {
       return
     }
 
@@ -84,7 +105,7 @@ export function useMentionEditor({
     onUpdate(html)
   }
 
-  async function applyHTML(html: string) {
+  function applyHTML(html: string) {
     if (!editorRef.value) {
       return
     }
@@ -93,14 +114,11 @@ export function useMentionEditor({
     clearTriggerRange()
     cancelScheduledRestore()
 
-    applyingExternal = true
     setMentionEditorContent(editorRef.value, html)
     const serialized = serializeMentionHtml(editorRef.value)
     syncEmptyState(serialized)
+    // Recorded before returning, so the model watcher never re-applies our own write.
     lastEmittedHtml = serialized
-
-    await nextTick()
-    applyingExternal = false
   }
 
   function clearTriggerRange() {
@@ -146,16 +164,11 @@ export function useMentionEditor({
   }
 
   /**
-   * Restore caret after the popover focus-trap deactivates.
-   * Sync focus while the trap is still active gets pulled back into the popover.
+   * Restore caret after the popover focus-trap deactivates. Always deferred:
+   * focusing while the trap is still active gets pulled back into the popover.
    */
-  function restoreCaret(deferred: boolean = false) {
+  function restoreCaret() {
     cancelScheduledRestore()
-
-    if (!deferred) {
-      applyRestoreCaret()
-      return
-    }
 
     restoreTimer = setTimeout(() => {
       applyRestoreCaret()
@@ -210,6 +223,9 @@ export function useMentionEditor({
    * - `'start'` — beginning of the editor
    * - `'mention'` — an `<at>` chip
    * - otherwise the preceding character
+   *
+   * The editor only ever holds text nodes, `<at>` chips and `<br>`, so stepping
+   * back one node is enough — no tree walk needed.
    */
   function boundaryBefore(container: Node, offset: number): string {
     if (container.nodeType === Node.TEXT_NODE) {
@@ -217,52 +233,30 @@ export function useMentionEditor({
         return (container.textContent ?? '').charAt(offset - 1)
       }
 
-      return boundaryFromPreviousSibling(container.previousSibling)
+      container = container.previousSibling as Node
+    } else if (container.nodeType === Node.ELEMENT_NODE) {
+      container = (offset > 0 ? container.childNodes[offset - 1] : container.previousSibling) as Node
     }
 
-    if (container.nodeType === Node.ELEMENT_NODE) {
-      if (offset === 0) {
-        return boundaryFromPreviousSibling(container.previousSibling)
-      }
+    while (container?.nodeType === Node.TEXT_NODE) {
+      const text = container.textContent ?? ''
 
-      return boundaryFromPreviousSibling(container.childNodes[offset - 1] ?? null)
-    }
-
-    return 'start'
-  }
-
-  function boundaryFromPreviousSibling(node: Node | null): string {
-    let prev = node
-
-    while (prev) {
-      if (isMentionElement(prev)) {
-        return 'mention'
-      }
-
-      if ((prev as Element).nodeName === 'BR') {
-        return '\n'
-      }
-
-      if (prev.nodeType === Node.TEXT_NODE) {
-        const text = prev.textContent ?? ''
-
-        if (!text.length) {
-          prev = prev.previousSibling
-          continue
-        }
-
+      if (text.length) {
         return text.charAt(text.length - 1)
       }
 
-      if (prev.nodeType === Node.ELEMENT_NODE && prev.lastChild) {
-        prev = prev.lastChild
-        continue
-      }
+      container = container.previousSibling as Node
+    }
 
+    if (!container) {
       return 'start'
     }
 
-    return 'start'
+    if (isMentionElement(container)) {
+      return 'mention'
+    }
+
+    return container.nodeName === 'BR' ? '\n' : 'start'
   }
 
   function detectTriggerAfterInput() {
@@ -384,20 +378,14 @@ export function useMentionEditor({
     }
 
     const before = mention.previousSibling
+    // The caret anchor always follows a chip, so `next` is the text node the caret
+    // belongs in once the chip is gone.
     const next = mention.nextSibling
-    const mentionOffset = Array.from(parent.childNodes).indexOf(mention)
-
-    if (mentionOffset < 0) {
-      return
-    }
 
     cancelScheduledRestore()
     clearTriggerRange()
 
-    retainEditorFocus()
-    placeCaret(parent, mentionOffset)
     mention.remove()
-
     retainEditorFocus()
 
     if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
@@ -406,17 +394,6 @@ export function useMentionEditor({
       placeCaretAfter(before)
     } else if (next && editor.contains(next)) {
       placeCaret(next, 0)
-    } else if (!editor.childNodes.length) {
-      const br = document.createElement('br')
-      editor.appendChild(br)
-      placeCaret(editor, 0)
-    } else {
-      const selection = window.getSelection()
-      const range = document.createRange()
-      range.setStart(editor, 0)
-      range.collapse(true)
-      selection?.removeAllRanges()
-      selection?.addRange(range)
     }
 
     emitHTML()
@@ -444,7 +421,7 @@ export function useMentionEditor({
       const mention =
         closestMention(range.startContainer) ||
         closestMention(range.endContainer) ||
-        mentionAtChipRightEdge(range.startContainer, range.startOffset)
+        mentionOwningAnchorDelete(range)
 
       if (mention) {
         deleteMentionElement(mention)
@@ -490,21 +467,51 @@ export function useMentionEditor({
    * edge. Android pre-selects the character to delete before dispatching
    * `beforeinput`, so the caret anchor arrives here as a range covering it —
    * deleting the chip is the only sensible answer, the anchor is not a character.
+   *
+   * The anchor is not necessarily the FIRST character of that text node: typing
+   * right after a chip pushes it along, so its position is looked up rather than
+   * assumed. Assuming otherwise lets a plain backspace eat the anchor, and an
+   * emptied text node after a chip is the state that makes Android drop the
+   * keyboard.
    */
-  function mentionAtChipRightEdge(container: Node, offset: number): HTMLElement | null {
-    if (container.nodeType !== Node.TEXT_NODE || offset !== 0) {
+  function mentionOwningAnchorDelete(range: Range): HTMLElement | null {
+    const { startContainer, endContainer, startOffset } = range
+
+    if (startContainer.nodeType !== Node.TEXT_NODE) {
       return null
     }
 
-    const text = container as Text
+    const text = startContainer as Text
+    const anchorIndex = text.data.indexOf(CARET_ANCHOR)
 
-    if (!text.data.startsWith(CARET_ANCHOR)) {
+    if (anchorIndex < 0 || anchorIndex < startOffset) {
+      return null
+    }
+
+    const to = endContainer === startContainer ? range.endOffset : text.data.length
+
+    if (anchorIndex >= to) {
       return null
     }
 
     const prev = text.previousSibling
 
     return isMentionElement(prev) ? (prev as HTMLElement) : null
+  }
+
+  /**
+   * The paste is cancelled before this runs, so it has to land somewhere. With no
+   * selection yet, fall back to the end of the editor rather than dropping the
+   * content or letting unsanitized HTML in.
+   */
+  function resolvePasteRange(selection: Selection): Range {
+    if (selection.rangeCount > 0) {
+      return selection.getRangeAt(0)
+    }
+
+    const range = document.createRange()
+    range.selectNodeContents(editorRef.value as HTMLElement)
+    return range
   }
 
   function onPaste(ev: ClipboardEvent) {
@@ -520,11 +527,11 @@ export function useMentionEditor({
 
     const selection = window.getSelection()
 
-    if (!selection || selection.rangeCount === 0) {
+    if (!selection) {
       return
     }
 
-    const range = selection.getRangeAt(0)
+    const range = resolvePasteRange(selection)
     range.deleteContents()
 
     const fragment = sanitizeMentionClipboardHtml(html || escapePlainTextAsHtml(plain))
@@ -534,6 +541,7 @@ export function useMentionEditor({
     selection.removeAllRanges()
     selection.addRange(range)
 
+    ensureCaretAnchors()
     emitHTML()
   }
 
@@ -546,16 +554,11 @@ export function useMentionEditor({
     notePendingAtInsert(ev)
 
     if (!isBackwardDeleteInputType(ev.inputType)) {
-      owningBackwardDelete = false
       return
     }
 
-    if (owningBackwardDelete) {
-      owningBackwardDelete = false
-      ev.preventDefault()
-      return
-    }
-
+    // Cancelling keydown stops the editing command, so no `beforeinput` follows
+    // and there is nothing to re-catch here.
     if (!isComposing.value && tryDeleteBackward()) {
       ev.preventDefault()
     }
@@ -573,23 +576,19 @@ export function useMentionEditor({
       pendingAtInsert = true
     }
 
-    if (ev.key === 'Backspace') {
-      owningBackwardDelete = false
-    }
-
     if (ev.key === 'Backspace' && !ev.isComposing) {
       if (tryDeleteBackward()) {
-        owningBackwardDelete = true
         ev.preventDefault()
       }
     }
   }
 
   function onInput() {
-    if (isComposing.value || applyingExternal) {
+    if (isComposing.value) {
       return
     }
 
+    ensureCaretAnchors()
     emitHTML()
     detectTriggerAfterInput()
   }
@@ -600,8 +599,49 @@ export function useMentionEditor({
 
   function onCompositionEnd() {
     isComposing.value = false
+    ensureCaretAnchors()
     emitHTML()
     detectTriggerAfterInput()
+  }
+
+  /**
+   * Copy the public contract, not the DOM: the DOM carries the caret anchor, an
+   * invisible character that would otherwise travel into whatever the user pastes
+   * into. The plain-text flavour keeps the chip's visible "@Label" form.
+   */
+  function onCopyOrCut(ev: ClipboardEvent) {
+    const editor = editorRef.value
+    const clipboard = ev.clipboardData
+    const selection = window.getSelection()
+
+    if (!editor || !clipboard || !selection || selection.rangeCount === 0) {
+      return
+    }
+
+    const range = selection.getRangeAt(0)
+    const source = document.createElement('div')
+
+    if (range.collapsed) {
+      for (const child of Array.from(editor.childNodes)) {
+        source.appendChild(child.cloneNode(true))
+      }
+    } else {
+      source.appendChild(range.cloneContents())
+    }
+
+    clipboard.setData('text/html', `<meta charset="utf-8">${serializeMentionHtml(source)}`)
+    clipboard.setData('text/plain', (source.textContent ?? '').replace(/\u200B/g, ''))
+    ev.preventDefault()
+
+    if (ev.type === 'cut') {
+      const selection = window.getSelection()
+
+      if (selection && selection.rangeCount > 0) {
+        selection.getRangeAt(0).deleteContents()
+        ensureCaretAnchors()
+        emitHTML()
+      }
+    }
   }
 
   function onClick(ev: MouseEvent) {
@@ -620,7 +660,7 @@ export function useMentionEditor({
   }
 
   function mount() {
-    void applyHTML(getModelValue() ?? '')
+    applyHTML(getModelValue() ?? '')
   }
 
   watch(
@@ -643,7 +683,7 @@ export function useMentionEditor({
         return
       }
 
-      void applyHTML(next)
+      applyHTML(next)
     },
   )
 
@@ -655,15 +695,14 @@ export function useMentionEditor({
   return {
     isEmpty,
     isComposing,
-    getHTML,
     insertMention,
     restoreCaret,
-    clearTriggerRange,
     onBeforeInput,
     onInput,
     onKeydown,
     onPaste,
     onClick,
+    onCopyOrCut,
     onCompositionStart,
     onCompositionEnd,
     mount,

@@ -44,15 +44,14 @@ const inputHeightClasses = computed(() => {
 const {
   isEmpty,
   isComposing,
-  getHTML,
   insertMention,
   restoreCaret,
-  clearTriggerRange,
   onBeforeInput,
   onInput,
   onKeydown,
   onPaste,
   onClick,
+  onCopyOrCut,
   onCompositionStart,
   onCompositionEnd,
   mount,
@@ -73,12 +72,8 @@ onMounted(() => {
 })
 
 defineExpose({
-  focus: () => editorRef.value?.focus(),
-  getHTML,
   insertMention,
   restoreCaret,
-  clearTriggerRange,
-  blur: () => editorRef.value?.blur(),
 })
 </script>
 
@@ -111,6 +106,8 @@ defineExpose({
       @keydown="onKeydown"
       @paste="onPaste"
       @click="onClick"
+      @copy="onCopyOrCut"
+      @cut="onCopyOrCut"
       @compositionstart="onCompositionStart"
       @compositionend="onCompositionEnd"
     />

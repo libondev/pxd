@@ -1,4 +1,5 @@
 const MENTION_TAG = 'AT'
+const BLOCK_TAGS = new Set(['DIV', 'P', 'LI', 'PRE'])
 
 /**
  * A collapsed selection sitting right after a `contenteditable=false` element is
@@ -15,6 +16,14 @@ export function createCaretAnchor(): Text {
 
 export function isMentionElement(node: Node | null | undefined): boolean {
   return !!node && node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === MENTION_TAG
+}
+
+/**
+ * Every chip in `root`. Pressing Enter nests content in block elements, so the
+ * editor's direct children are not enough.
+ */
+export function queryMentionElements(root: ParentNode): HTMLElement[] {
+  return Array.from(root.querySelectorAll(MENTION_TAG)) as HTMLElement[]
 }
 
 export function getMentionLabel(el: HTMLElement): string {
@@ -51,6 +60,13 @@ export function escapePlainTextAsHtml(text: string): string {
 export function serializeMentionHtml(root: HTMLElement): string {
   let result = ''
 
+  /** Start a block's content on its own line, unless it already is on one. */
+  function startLine() {
+    if (result && !result.endsWith('\n')) {
+      result += '\n'
+    }
+  }
+
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
       // Normalize insert glue NBSP so the public HTML keeps ordinary spaces,
@@ -77,22 +93,15 @@ export function serializeMentionHtml(root: HTMLElement): string {
       return
     }
 
-    const isBlock =
-      el.tagName === 'DIV' || el.tagName === 'P' || el.tagName === 'LI' || el.tagName === 'PRE'
-
-    if (isBlock && result && !result.endsWith('\n')) {
-      result += '\n'
+    // Pressing Enter makes the browser wrap content in its own block elements;
+    // nothing in this component creates them. A block only needs a line of its
+    // own when it carries content — an empty one is already just its <br>.
+    if (BLOCK_TAGS.has(el.tagName) && (el.textContent || el.querySelector(MENTION_TAG))) {
+      startLine()
     }
 
     for (const child of Array.from(el.childNodes)) {
       walk(child)
-    }
-
-    if (isBlock && result && !result.endsWith('\n')) {
-      const isLast = el === root.lastElementChild || el.nextSibling == null
-      if (!isLast) {
-        result += '\n'
-      }
     }
   }
 
@@ -100,7 +109,9 @@ export function serializeMentionHtml(root: HTMLElement): string {
     walk(child)
   }
 
-  return result.replace(/\n$/, '')
+  // The editor keeps a single <br> so an empty field still has a line box. That
+  // placeholder is not a line break, so an empty value stays empty.
+  return result === '\n' ? '' : result
 }
 
 /**

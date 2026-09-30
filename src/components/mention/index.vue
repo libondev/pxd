@@ -92,7 +92,7 @@ function onPopoverShow() {
 
 function onPopoverHide() {
   // Must wait until focus-trap finishes deactivating; sync focus is pulled back into the trap.
-  editorRef.value?.restoreCaret(true)
+  editorRef.value?.restoreCaret()
 }
 
 function onSearchInput(ev: Event) {
