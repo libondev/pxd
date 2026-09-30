@@ -51,7 +51,7 @@ const computedClasses = computed(() => {
 <template>
   <div class="pxd-book group/book inline-flex w-fit" :data-variant="variant" v-bind="$attrs">
     <div
-      class="pxd-book--container relative w-fit duration-300 transform-3d group-hover/book:will-change-transform motion-safe:transition-transform"
+      class="pxd-book--container relative w-fit transform-3d group-hover/book:will-change-transform motion-safe:transition-transform"
       :class="computedClasses"
       :style="computedStyle"
     >

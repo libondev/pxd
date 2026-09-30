@@ -35,7 +35,7 @@ function onToggleExpand() {
 
       <template #suffix>
         <ChevronDownIcon
-          class="-ms-0.5 motion-safe:transition-transform motion-safe:duration-200"
+          class="-ms-0.5 motion-safe:transition-transform"
           :class="{ 'rotate-180': isExpanded }"
         />
       </template>
