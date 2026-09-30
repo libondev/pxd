@@ -97,7 +97,7 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none"
+      class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
       :class="inputHeightClasses[size]"
       role="textbox"
       aria-multiline="true"
