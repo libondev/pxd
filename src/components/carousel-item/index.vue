@@ -1,35 +1,23 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useCarouselContext } from '../../contexts/carousel.js'
-import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PCarouselItem',
   inheritAttrs: false,
 })
 
-const uniqueId = getUniqueId()
-const elRef = shallowRef<HTMLElement>()
 const carouselContext = useCarouselContext()
 
-function sync(node?: HTMLElement | null) {
-  carouselContext?.registerItem(uniqueId, { uid: uniqueId }, node)
-}
-
-sync()
-
-onMounted(() => {
-  sync(elRef.value ?? null)
-})
+carouselContext?.registerItem()
 
 onBeforeUnmount(() => {
-  carouselContext?.unregisterItem(uniqueId)
+  carouselContext?.unregisterItem()
 })
 </script>
 
 <template>
   <div
-    ref="elRef"
     class="pxd-carousel-item size-full shrink-0 content-visibility-auto intrinsic-size-auto"
     v-bind="$attrs"
   >

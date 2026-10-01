@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import type { CarouselState } from '../../contexts/carousel'
 import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { provideCarouselContext } from '../../contexts/carousel.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
@@ -37,14 +35,13 @@ let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
 let maxDrag = 0
 
-const itemRegistry = useOrderedChildren<CarouselState>()
-const carousels = computed(() => itemRegistry.items.value.map((item) => item.payload))
+const slideCount = shallowRef(0)
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
 
 const displayIndex = computed(() => {
-  const length = carousels.value.length
+  const length = slideCount.value
   if (length === 0) {
     return 0
   }
@@ -52,9 +49,9 @@ const displayIndex = computed(() => {
 })
 
 const isAtFirst = computed(() => displayIndex.value === 0)
-const isAtLast = computed(() => displayIndex.value === carousels.value.length - 1)
+const isAtLast = computed(() => displayIndex.value === slideCount.value - 1)
 const isHorizontal = computed(() => props.direction === 'horizontal')
-const isLooping = computed(() => props.loop && carousels.value.length > 1)
+const isLooping = computed(() => props.loop && slideCount.value > 1)
 
 const computedStyle = computed(() => {
   const translateValue = `calc(${virtualIndex.value * -100}% + ${gestureMoveOffset.value}px)`
@@ -67,12 +64,12 @@ const computedStyle = computed(() => {
 const rootStyle = computed<CSSProperties>(() => {
   return {
     height: getCssUnitValue(props.height),
-    '--carousel-item-count': carousels.value.length,
+    '--carousel-item-count': slideCount.value,
   }
 })
 
 const loopPlacement = computed(() => {
-  const length = carousels.value.length
+  const length = slideCount.value
   const lastIndex = length - 1
 
   if (!isLooping.value) {
@@ -122,7 +119,7 @@ useSwipeGesture(sliderRef, {
 })
 
 async function performToggle(delta: number) {
-  const length = carousels.value.length
+  const length = slideCount.value
 
   if (length === 0) {
     return
@@ -175,7 +172,7 @@ function onWheelToggle(ev: WheelEvent) {
     return
   }
 
-  const length = carousels.value.length
+  const length = slideCount.value
 
   if (length <= 1) {
     return
@@ -259,12 +256,12 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 }
 
-function registerItem(key: string, state: CarouselState, el?: HTMLElement | null) {
-  itemRegistry.register(key, state, el)
+function registerItem() {
+  slideCount.value += 1
 }
 
-function unregisterItem(key: string) {
-  itemRegistry.unregister(key)
+function unregisterItem() {
+  slideCount.value = Math.max(slideCount.value - 1, 0)
 }
 
 provideCarouselContext({
@@ -311,9 +308,9 @@ onBeforeUnmount(() => {
       class="pxd-carousel--indicator gap-2 absolute z-1 flex w-max items-center"
       @click="onIndicatorClick"
     >
-      <slot name="indicator" :current="displayIndex" :total="carousels.length">
+      <slot name="indicator" :current="displayIndex" :total="slideCount">
         <button
-          v-for="(_, i) in carousels.length"
+          v-for="(_, i) in slideCount"
           :key="i"
           :data-index="i"
           class="pxd-carousel--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
