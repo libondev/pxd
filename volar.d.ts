@@ -103,7 +103,6 @@ declare module 'vue' {
     PStack: (typeof import('pxd/components/stack'))['default']
     PStatusDot: (typeof import('pxd/components/status-dot'))['default']
     PSteps: (typeof import('pxd/components/steps'))['default']
-    PStepsItem: (typeof import('pxd/components/steps-item'))['default']
     PStickToBottom: (typeof import('pxd/components/stick-to-bottom'))['default']
     PSwipeCell: (typeof import('pxd/components/swipe-cell'))['default']
     PSwitch: (typeof import('pxd/components/switch'))['default']

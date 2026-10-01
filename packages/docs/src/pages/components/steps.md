@@ -2,7 +2,8 @@
 
 Guide the user to complete tasks in accordance with the process.
 
-## Default
+Steps are driven by the `options` prop; the indicators and labels are rendered by
+`PSteps` itself, so the markup also exists in server-rendered HTML.
 
 Use `v-model` to control the current step index (starting from `0`).
 
@@ -11,14 +12,16 @@ Use `v-model` to control the current step index (starting from `0`).
 import { ref } from 'vue'
 
 const current = ref(1)
+
+const options = [
+  { description: 'Review items in your cart', title: 'Cart' },
+  { description: 'Choose a payment method', title: 'Payment' },
+  { description: 'Order confirmed', title: 'Done' },
+]
 </script>
 
 <template>
-  <PSteps v-model="current">
-    <PStepsItem title="Cart" description="Review items in your cart" />
-    <PStepsItem title="Payment" description="Choose a payment method" />
-    <PStepsItem title="Done" description="Order confirmed" />
-  </PSteps>
+  <PSteps v-model="current" :options="options" />
 </template>
 ```
 
@@ -31,14 +34,36 @@ Set `clickable` to allow switching steps by clicking.
 import { ref } from 'vue'
 
 const current = ref(1)
+
+const options = [
+  { description: 'Review items in your cart', title: 'Cart' },
+  { description: 'Choose a payment method', title: 'Payment' },
+  { description: 'Order confirmed', title: 'Done' },
+]
 </script>
 
 <template>
-  <PSteps v-model="current" clickable>
-    <PStepsItem title="Cart" description="Review items in your cart" />
-    <PStepsItem title="Payment" description="Choose a payment method" />
-    <PStepsItem title="Done" description="Order confirmed" />
-  </PSteps>
+  <PSteps v-model="current" clickable :options="options" />
+</template>
+```
+
+## Uncontrolled
+
+Without `v-model` the steps keep their own state, and `default-value` picks the current step.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const options = [
+  { title: 'Cart' },
+  { title: 'Payment' },
+  { title: 'Done' },
+]
+</script>
+
+<template>
+  <PSteps clickable default-value="1" :options="options" />
 </template>
 ```
 
@@ -51,34 +76,39 @@ Set `direction` to `vertical` to lay steps out vertically.
 import { ref } from 'vue'
 
 const current = ref(1)
+
+const options = [
+  { description: 'Review items in your cart', title: 'Cart' },
+  { description: 'Choose a payment method', title: 'Payment' },
+  { description: 'Order confirmed', title: 'Done' },
+]
 </script>
 
 <template>
-  <PSteps v-model="current" direction="vertical" clickable>
-    <PStepsItem title="Cart" description="Review items in your cart" />
-    <PStepsItem title="Payment" description="Choose a payment method" />
-    <PStepsItem title="Done" description="Order confirmed" />
-  </PSteps>
+  <PSteps v-model="current" direction="vertical" clickable :options="options" />
 </template>
 ```
 
 ## Status
 
-Set `status` on `PSteps` to control the current step's status. Set `status` on a `PStepsItem` to override the derived status.
+Set `status` on `PSteps` to control the current step's status. Set `status` on an option to
+override the derived status.
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
 const current = ref(1)
+
+const options = [
+  { description: 'Review items in your cart', title: 'Cart' },
+  { description: 'Payment failed, please retry', title: 'Payment' },
+  { description: 'Order confirmed', title: 'Done' },
+]
 </script>
 
 <template>
-  <PSteps v-model="current" status="error">
-    <PStepsItem title="Cart" description="Review items in your cart" />
-    <PStepsItem title="Payment" description="Payment failed, please retry" />
-    <PStepsItem title="Done" description="Order confirmed" />
-  </PSteps>
+  <PSteps v-model="current" status="error" :options="options" />
 </template>
 ```
 
@@ -89,47 +119,61 @@ const current = ref(1)
 import { ref } from 'vue'
 
 const current = ref(1)
+
+const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 </script>
 
 <template>
   <div class="flex flex-col gap-8">
-    <PSteps v-model="current" size="sm">
-      <PStepsItem title="Cart" />
-      <PStepsItem title="Payment" />
-      <PStepsItem title="Done" />
-    </PSteps>
-
-    <PSteps v-model="current" size="md">
-      <PStepsItem title="Cart" />
-      <PStepsItem title="Payment" />
-      <PStepsItem title="Done" />
-    </PSteps>
-
-    <PSteps v-model="current" size="lg">
-      <PStepsItem title="Cart" />
-      <PStepsItem title="Payment" />
-      <PStepsItem title="Done" />
-    </PSteps>
+    <PSteps v-model="current" size="sm" :options="options" />
+    <PSteps v-model="current" size="md" :options="options" />
+    <PSteps v-model="current" size="lg" :options="options" />
   </div>
 </template>
 ```
 
 ## Disabled
 
-Set `disabled` on a `PStepsItem` to make it unclickable.
+Set `disabled` on an option to make it unclickable.
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
 const current = ref(0)
+
+const options = [
+  { title: 'Cart' },
+  { disabled: true, title: 'Payment' },
+  { disabled: true, title: 'Done' },
+]
 </script>
 
 <template>
-  <PSteps v-model="current">
-    <PStepsItem title="Cart" />
-    <PStepsItem title="Payment" disabled />
-    <PStepsItem title="Done" disabled />
+  <PSteps v-model="current" clickable :options="options" />
+</template>
+```
+
+## Custom step
+
+The `item` slot replaces the default indicator and labels. It receives the option, its index
+and the resolved status.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const current = ref(1)
+
+const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
+</script>
+
+<template>
+  <PSteps v-model="current" clickable :options="options">
+    <template #item="{ option, status }">
+      <strong>{{ option.title }}</strong>
+      <span class="text-gray-600">({{ status }})</span>
+    </template>
   </PSteps>
 </template>
 ```
@@ -139,30 +183,22 @@ const current = ref(0)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | model-value | `number` | - | Index of the current step, starting from `0`. |
+| default-value | `number` | `0` | Step selected before the consumer binds `v-model`. |
 | direction | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction of steps. |
 | status | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | Status of the current step. |
 | size | `'sm' \| 'md' \| 'lg'` | `configProvider.size` | Size of indicators and text. |
 | clickable | `boolean` | `false` | Allow switching steps by clicking. |
-
-## StepsItem Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| title | `string` | - | Step title. |
-| description | `string` | - | Step description. |
-| status | `'process' \| 'finish' \| 'error' \| 'wait'` | - | Overrides the derived status. |
-| disabled | `boolean` | `false` | Makes the step unclickable. |
+| options | `StepsOption[]` | `[]` | Steps to render; each entry is `{ title?, description?, status?, disabled? }`. |
 
 ## Events
 
 | Name | Payload | Description |
 | --- | --- | --- |
 | change | `number` | Emitted when the current step changes. |
-| update:model-value | `number` | Emitted when the current step changes. |
+| update:modelValue | `number` | Emitted together with `change`. |
 
-## StepsItem Slots
+## Slots
 
-| Name | Description |
-| --- | --- |
-| title | Custom title content. |
-| description | Custom description content. |
+| Name | Scope | Description |
+| --- | --- | --- |
+| item | `{ option, index, status }` | Replaces the indicator and labels of a step. |

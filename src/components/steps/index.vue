@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import type { StepsItemState } from '../../contexts/steps'
-import type { StepsEmits, StepsProps } from './types'
-import { computed } from 'vue'
+import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
+import { computed, shallowRef, useSlots } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { provideStepsContext } from '../../contexts/steps.js'
 import { getFallbackValue } from '../../utils/helper.js'
+import PStepsItem from './step-item.vue'
 
 defineOptions({
   name: 'PSteps',
@@ -20,15 +18,17 @@ defineOptions({
 const props = withDefaults(defineProps<StepsProps>(), {
   status: 'process',
   direction: 'horizontal',
+  options: () => [],
 })
 const emits = defineEmits<StepsEmits>()
 
 const configProvider = useConfigProvider()
+const slots = useSlots()
 
 const modelValue = useModelValue(props, emits)
-
-const itemRegistry = useOrderedChildren<StepsItemState>()
-const items = itemRegistry.items
+/** Uncontrolled fallback: a bound `modelValue` always wins. */
+const innerValue = shallowRef<number | undefined>(props.defaultValue)
+const activeIndex = computed(() => props.modelValue ?? innerValue.value ?? 0)
 
 const SIZES = {
   sm: {
@@ -72,35 +72,32 @@ const computedStyle = computed(() => {
   }
 })
 
-function registerItem(key: string, item: StepsItemState, el?: HTMLElement | null) {
-  itemRegistry.register(key, item, el)
-}
+function resolveStatus(option: StepsOption, index: number): StepsStatus {
+  if (option.status) {
+    return option.status
+  }
 
-function unregisterItem(key: string) {
-  itemRegistry.unregister(key)
+  if (index < activeIndex.value) {
+    return 'finish'
+  }
+
+  if (index === activeIndex.value) {
+    return props.status ?? 'process'
+  }
+
+  return 'wait'
 }
 
 function select(index: number) {
-  if (!props.clickable) {
+  const option = props.options[index]
+
+  if (!props.clickable || !option || option.disabled || index === activeIndex.value) {
     return
   }
 
-  const item = items.value[index]
-
-  if (!item || item.payload.disabled) {
-    return
-  }
-
+  innerValue.value = index
   modelValue.value = index
 }
-
-provideStepsContext({
-  props,
-  items,
-  registerItem,
-  unregisterItem,
-  select,
-})
 </script>
 
 <template>
@@ -110,6 +107,25 @@ provideStepsContext({
     :style="computedStyle"
     v-bind="$attrs"
   >
-    <slot />
+    <template v-for="(option, index) in options" :key="index">
+      <PStepsItem
+        v-if="slots.item"
+        :clickable="clickable"
+        :index="index"
+        :option="option"
+        :status="resolveStatus(option, index)"
+        @select="select"
+      >
+        <slot name="item" :index="index" :option="option" :status="resolveStatus(option, index)" />
+      </PStepsItem>
+      <PStepsItem
+        v-else
+        :clickable="clickable"
+        :index="index"
+        :option="option"
+        :status="resolveStatus(option, index)"
+        @select="select"
+      />
+    </template>
   </div>
 </template>
