@@ -36,16 +36,20 @@ const { classes: contentClasses } = useTailwindVariant(
     base: 'pxd-bubble--content p-2 relative overflow-hidden rounded-lg border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
     variants: {
       role: {
-        user: 'bg-primary text-primary-foreground hover:brightness-85 motion-safe:transition-[filter]',
-        system: 'bg-gray-100 hover:bg-gray-300',
-        assistant: 'bg-gray-100 hover:bg-gray-300',
+        user: 'bg-primary text-primary-foreground motion-safe:transition-[filter]',
+        system: 'bg-gray-100',
+        assistant: 'bg-gray-100',
       },
-      variant: {},
+      variant: {
+        ghost: 'bg-background border-transparent text-foreground hover:bg-gray-200',
+        default: 'hover:bg-gray-300',
+      },
     },
     compoundVariants: [
       {
-        variant: 'ghost',
-        class: 'bg-background border-transparent text-foreground hover:bg-gray-200',
+        role: 'user',
+        variant: 'default',
+        class: 'hover:bg-primary hover:brightness-90',
       },
     ],
   },
