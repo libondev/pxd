@@ -30,7 +30,7 @@ Known issues and lessons learned during development.
 
 ### Child registerItem order reverses after HMR
 
-- **Symptom**: Steps numbers, tab labels, carousel slides, or Resizable panels flip after hot-reloading a child SFC.
+- **Symptom**: Resizable panels flip after hot-reloading a child SFC.
 - **Cause**: Vue HMR remounts sibling instances with unregister/register interleaved last-to-first, so `push()` order is the reverse of the DOM.
 - **Fix**: `useOrderedChildren` — Map keyed by instance id; once each child has an element, sort with `compareDocumentPosition`. Register once in `setup` (no el, SSR-safe) and again in `onMounted` (with el). Do not walk VNodes.
 
@@ -106,3 +106,42 @@ Known issues and lessons learned during development.
 - **Symptom**: Composable tests that change only `scrollHeight`/`scrollTop` via `Object.defineProperties` never trigger auto-stick, even after `appendChild`.
 - **Cause**: happy-dom's MutationObserver/ResizeObserver either do not deliver callbacks for these synthetic mutations, or cannot re-measure properties that were replaced with getters.
 - **Fix**: Keep observer wiring for production, but assert the follow path through a deterministic public API (`stickIfNeeded` / `forceStickToBottom`). Drive scroll state with a local `scrollTo` mock + synthetic `scroll` events instead of relying on observers in unit tests.
+
+### `cn` drops custom `text-*` utilities from variant class lists
+
+- **Symptom**: A utility such as `text-trim-both` vanishes from the DOM when the same element also carries a font-size class built through `createTailwindVariant`, while it survives in a plain static `class` attribute.
+- **Cause**: `cn` merges with tailwind-merge, which groups every `text-*` utility it recognises. An unknown/custom `text-*` class in the base is treated as a conflicting member of that group and is removed when a later `text-*` class (e.g. `text-xs`, or a colour variant) is appended.
+- **Fix**: Keep a custom `text-*` utility out of a variant base when the variants themselves add `text-*` classes, or wrap it in a non-`text-*` form (e.g. an `[@media]`/arbitrary variant or a dedicated CSS rule). Static class attributes are unaffected because they never pass through `cn`.
+
+### KeepAlive only caches stateful component vnodes
+
+- **Symptom**: `keep-alive` looks wired up but switching away and back resets the panel state anyway.
+- **Cause**: `<KeepAlive><Component :is="slotFn" /></KeepAlive>` makes the child a function component (shapeFlag `FUNCTIONAL_COMPONENT`), and KeepAlive's cache branch only accepts `STATEFUL_COMPONENT` (`shapeFlag & 4`) or suspense (`& 128`) children. Everything else falls through `current = null; return rawVNode` and is re-created on every activation. A bare function is also not a valid component type on Vue 2.7 — `h(slotFn)` renders an empty comment.
+- **Fix**: Put a real component in between. `src/components/tabs/tab-slot.ts` renders slot content inside `defineComponent`; KeepAlive then caches it, and the same wrapper keeps the Vue 2.7 path working. Never hand a slot function to `<component :is>`.
+
+### Self-registering children never reach the first render pass
+
+- **Symptom**: A container whose header is built from registered children renders an empty header during SSR and on the first client frame; the items only show up after mount.
+- **Cause**: A child registers in its `setup`, which runs while the parent`s own subtree is being patched — after the parent`s render function already read the (empty) registry. In SSR nothing re-renders afterwards, so the markup is simply absent from the HTML.
+- **Fix**: If the container only needs the *data*, take an `options` prop and render from it — PTabs and PSteps both moved this way, and their `contexts/*.ts` files went with them. Keep the self-registering pattern (`useOrderedChildren`) only where children are really measured or ordered in the DOM, which today means PResizable. PCarousel only ever needed a count, so it registers items into a plain counter instead of a Map.
+
+### Slot content rendered in a `v-for` loses its own render effect
+
+- **Symptom**: Every panel re-renders whenever any reactive value used inside one of them changes.
+- **Cause**: Slot content inlined into the parent`s `v-for` is evaluated inside the parent`s render effect, so all panels share one dependency set.
+- **Fix**: Route repeated slot content through a real component (PTabs uses `PTabSlot` for both the panel body and the label). Each instance then owns an effect and updates only when its own dependencies change.
+
+### Roving tabindex without a key handler locks keyboard users out
+
+- **Symptom**: Only the selected tab is reachable with the Tab key, and arrow keys do nothing.
+- **Cause**: `:tabindex="active ? 0 : -1"` implements half of the APG tabs pattern; the arrow/Home/End handler is the other half. Without it the inactive tabs are unreachable.
+- **Fix**: Drive the handler from `useListNavigation` + `useListKeyboardController`, keep the navigation index in sync with the active value, and move focus with `scrollToIndex` so the selected tab stays visible.
+
+### `git checkout-index -f -a` skips files that only differ in line endings
+
+- **Symptom**: `pnpm fmt:eol` rewrote `src/` files but left `.md` and other documents on CRLF.
+- **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`; only files whose size/mtime changed were written back.
+- **Fix**: `scripts/fmt-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
+
+
+

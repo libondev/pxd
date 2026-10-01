@@ -118,7 +118,7 @@
     "lint:fix": "vp lint --fix",
     "fmt": "git diff --staged --name-only --diff-filter=ACMR| xargs -r vp fmt",
     "fmt:all": "vp fmt",
-    "fmt:eol": "git checkout-index -f -a",
+    "fmt:eol": "node scripts/fmt-eol.js",
     "fmt:changed": "git diff --name-only --relative --diff-filter=ACMR origin/main...HEAD | xargs -r vp fmt",
     "fmt:check": "vp fmt --check",
     "type-check": "vp run typecheck",
