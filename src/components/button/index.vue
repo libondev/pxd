@@ -115,8 +115,17 @@ const btnContentClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" tabindex="0" aria-label="Action" :aria-busy="loading" :aria-disabled="isDisabled" :class="classes"
-    :data-variant="computedVariant" :disabled="isDisabled" v-bind="attrs">
+  <Component
+    :is="as"
+    tabindex="0"
+    aria-label="Action"
+    :aria-busy="loading"
+    :aria-disabled="isDisabled"
+    :class="classes"
+    :data-variant="computedVariant"
+    :disabled="isDisabled"
+    v-bind="attrs"
+  >
     <PSpinner v-if="loading" />
 
     <slot name="prefix" />

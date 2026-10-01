@@ -235,7 +235,9 @@ export function useMentionEditor({
 
       container = container.previousSibling as Node
     } else if (container.nodeType === Node.ELEMENT_NODE) {
-      container = (offset > 0 ? container.childNodes[offset - 1] : container.previousSibling) as Node
+      container = (
+        offset > 0 ? container.childNodes[offset - 1] : container.previousSibling
+      ) as Node
     }
 
     while (container?.nodeType === Node.TEXT_NODE) {

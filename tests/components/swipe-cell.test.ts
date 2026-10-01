@@ -33,19 +33,19 @@ describe('swipe-cell', () => {
   beforeEach(() => {
     prefixWidth = 0
     suffixWidth = 0
-    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(
-      function (this: HTMLElement) {
-        if (this.classList.contains('pxd-swipe-cell--prefix')) {
-          return prefixWidth
-        }
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      if (this.classList.contains('pxd-swipe-cell--prefix')) {
+        return prefixWidth
+      }
 
-        if (this.classList.contains('pxd-swipe-cell--suffix')) {
-          return suffixWidth
-        }
+      if (this.classList.contains('pxd-swipe-cell--suffix')) {
+        return suffixWidth
+      }
 
-        return 0
-      },
-    )
+      return 0
+    })
   })
 
   afterEach(() => {

@@ -2,8 +2,8 @@
 import type { ScrollTextProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer.js'
-import { throttleByRaf } from '../../utils/event.js'
 import { getElement } from '../../utils/dom.js'
+import { throttleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
 defineOptions({
@@ -72,11 +72,11 @@ function syncOverflow(force = false) {
   }
 
   const unchanged =
-    !force
-    && overflowing.value
-    && nextWrap === wrapWidth
-    && nextContent === contentWidth
-    && nextSpeed === appliedSpeed
+    !force &&
+    overflowing.value &&
+    nextWrap === wrapWidth &&
+    nextContent === contentWidth &&
+    nextSpeed === appliedSpeed
 
   if (unchanged) {
     return
@@ -96,10 +96,13 @@ const scheduleSync = throttleByRaf(() => {
   syncOverflow(false)
 })
 
-watch(() => [props.text, speed.value], () => {
-  scheduleSync.cancel()
-  syncOverflow(true)
-})
+watch(
+  () => [props.text, speed.value],
+  () => {
+    scheduleSync.cancel()
+    syncOverflow(true)
+  },
+)
 
 useResizeObserver(wrapRef, scheduleSync)
 
@@ -116,7 +119,7 @@ onBeforeUnmount(() => {
   <Component
     :is="as"
     ref="wrapRef"
-    class="pxd-scroll-text block min-w-0 max-w-full overflow-hidden"
+    class="pxd-scroll-text min-w-0 block max-w-full overflow-hidden"
     :data-overflow="overflowing ? 'true' : 'false'"
     :style="contentStyle"
     v-bind="$attrs"

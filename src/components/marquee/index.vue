@@ -133,12 +133,12 @@ function syncScroll(force = false) {
 
   const active = phase.value !== 'idle'
   const unchanged =
-    !force
-    && active
-    && nextWrap === wrapWidth
-    && nextContent === contentWidth
-    && nextSpeed === appliedSpeed
-    && nextDelay === appliedDelay
+    !force &&
+    active &&
+    nextWrap === wrapWidth &&
+    nextContent === contentWidth &&
+    nextSpeed === appliedSpeed &&
+    nextDelay === appliedDelay
 
   if (unchanged) {
     return

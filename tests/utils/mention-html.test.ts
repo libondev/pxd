@@ -206,18 +206,14 @@ describe('chip element and clipboard sanitizing', () => {
 
   it('drops a chip that has no key', () => {
     const host = document.createElement('div')
-    host.appendChild(
-      sanitizeMentionClipboardHtml('<at>Alice</at><at key="2">Bob</at>'),
-    )
+    host.appendChild(sanitizeMentionClipboardHtml('<at>Alice</at><at key="2">Bob</at>'))
     expect(host.querySelectorAll('at')).toHaveLength(1)
     expect(host.querySelector('at')!.getAttribute('key')).toBe('2')
   })
 
   it('turns pasted newlines into <br> and keeps the invariant', () => {
     const host = document.createElement('div')
-    host.appendChild(
-      sanitizeMentionClipboardHtml('one\ntwo <at key="1">A</at>'),
-    )
+    host.appendChild(sanitizeMentionClipboardHtml('one\ntwo <at key="1">A</at>'))
     expect(host.querySelector('br')).not.toBeNull()
     expectAnchorInvariant(host)
   })

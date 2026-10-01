@@ -1,9 +1,7 @@
 import type { ComponentSize } from '../../types/shared/props'
 import type { ListOptions } from '../list/types'
 
-export type MentionFilterMethod = (
-  query: string,
-) => ListOptions | Promise<ListOptions>
+export type MentionFilterMethod = (query: string) => ListOptions | Promise<ListOptions>
 
 export interface MentionProps {
   modelValue?: string

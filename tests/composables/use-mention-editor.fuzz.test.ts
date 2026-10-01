@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
-import { useSetupWrapper } from '../helpers/setup'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
 import {
   CARET_ANCHOR,
@@ -8,6 +7,7 @@ import {
   serializeMentionHtml,
   setMentionEditorContent,
 } from '../../src/utils/mention-html'
+import { useSetupWrapper } from '../helpers/setup'
 
 /**
  * Random operation sequences over the editor, with the invariants re-checked after
@@ -249,7 +249,9 @@ function collectViolations(
       !!next && next.nodeType === Node.TEXT_NODE && (next.textContent ?? '').includes(ZWSP)
 
     if (!anchored) {
-      problems.push(where + ' — chip lost its anchor: ' + chip.outerHTML + ' in ' + h.editor.innerHTML)
+      problems.push(
+        where + ' — chip lost its anchor: ' + chip.outerHTML + ' in ' + h.editor.innerHTML,
+      )
     }
   }
 
@@ -274,8 +276,11 @@ function collectViolations(
 
   if (serializeMentionHtml(reparsed) !== model) {
     problems.push(
-      where + ' — public value is not a fixed point: ' + JSON.stringify(model) +
-        ' -> ' + JSON.stringify(serializeMentionHtml(reparsed)),
+      where +
+        ' — public value is not a fixed point: ' +
+        JSON.stringify(model) +
+        ' -> ' +
+        JSON.stringify(serializeMentionHtml(reparsed)),
     )
   }
 }

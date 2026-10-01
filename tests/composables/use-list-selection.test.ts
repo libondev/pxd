@@ -14,10 +14,7 @@ describe('useListSelection', () => {
 
   it('should keep local multiple state without waiting for props', () => {
     const emits = vi.fn()
-    const { apply, selected, commit } = useListSelection(
-      { multiple: true, modelValue: [] },
-      emits,
-    )
+    const { apply, selected, commit } = useListSelection({ multiple: true, modelValue: [] }, emits)
 
     expect(apply([1])).toBe(false)
     expect(apply([1, 3])).toBe(false)

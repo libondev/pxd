@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
-import { useSetupWrapper } from '../helpers/setup'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
 import { CARET_ANCHOR, queryMentionElements } from '../../src/utils/mention-html'
+import { useSetupWrapper } from '../helpers/setup'
 
 /**
  * happy-dom has no native editing and, more importantly, no Blink. It will never
@@ -136,7 +136,9 @@ function caretInsideChip(editor: HTMLElement, offset: number) {
 }
 
 function lastText(editor: HTMLElement): Text {
-  return textNodes(editor).filter((t) => t.data.length > 0).pop() as Text
+  return textNodes(editor)
+    .filter((t) => t.data.length > 0)
+    .pop() as Text
 }
 
 /** Simulates a plain character landing at the caret, the way a browser would. */
@@ -351,9 +353,7 @@ describe('useMentionEditor', () => {
     // what ensureCaretAnchors exists for: the state is "a chip with no editable
     // node on its right", and it is the one Android turns into a lost keyboard.
     anchor.data = 'tail'
-    h.editor.dispatchEvent(
-      new InputEvent('input', { inputType: 'historyUndo', bubbles: true }),
-    )
+    h.editor.dispatchEvent(new InputEvent('input', { inputType: 'historyUndo', bubbles: true }))
 
     const next = h.editor.querySelector('at')!.nextSibling as Text
     expect(next.data.startsWith(ZWSP)).toBe(true)
@@ -445,8 +445,7 @@ describe('useMentionEditor', () => {
     const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
     Object.defineProperty(ev, 'clipboardData', {
       value: {
-        getData: (type: string) =>
-          type === 'text/html' ? '<b>x</b><at key="7">Bob</at>' : 'xBob',
+        getData: (type: string) => (type === 'text/html' ? '<b>x</b><at key="7">Bob</at>' : 'xBob'),
       },
     })
     h.editor.dispatchEvent(ev)
