@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import type { TabsItemState } from '../../contexts/tabs'
-import type { TabsProps, TabsEmits } from './types'
+import type { ComponentOption, ComponentValue } from '../../types/shared'
+import type { TabsEmits, TabsProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
+import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
-import { provideTabsContext } from '../../contexts/tabs.js'
+import { getUniqueId } from '../../utils/helper.js'
+import { PTabSlot } from './tab-slot.js'
 
 defineOptions({
   name: 'PTabs',
@@ -18,14 +20,22 @@ defineOptions({
 
 const props = withDefaults(defineProps<TabsProps>(), {
   variant: 'default',
+  options: () => [],
 })
 const emits = defineEmits<TabsEmits>()
 
 const BORDER_WIDTH = 2
+const SCROLL_EPSILON = 2
 
-const modelValue = useModelValue(props, emits)
-const itemRegistry = useOrderedChildren<TabsItemState>()
-const items = computed(() => itemRegistry.items.value.map((item) => item.payload))
+const modelValue = useModelValue(props, emits, { withChange: false })
+/** Uncontrolled fallback: a bound `modelValue` always wins. */
+const innerValue = shallowRef<ComponentValue | undefined>(props.defaultValue)
+const activeValue = computed(() =>
+  props.modelValue === undefined ? innerValue.value : props.modelValue,
+)
+
+const slots = useSlots()
+const uid = getUniqueId('pxd-tabs')
 
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
@@ -35,23 +45,68 @@ const canScrollRight = shallowRef(false)
 
 let resizeObserver: ResizeObserver | null = null
 
-function registerItem(key: string, item: TabsItemState, el?: HTMLElement | null) {
-  itemRegistry.register(key, item, el)
+function tabId(index: number) {
+  return `${uid}-tab-${index}`
 }
 
-function unregisterItem(key: string) {
-  itemRegistry.unregister(key)
+function panelId(index: number) {
+  return `${uid}-panel-${index}`
 }
 
-provideTabsContext({
-  props,
-  emits,
-  registerItem,
-  unregisterItem,
-})
+function isActiveOption(option: ComponentOption) {
+  return activeValue.value === option.value
+}
 
-function isActiveTab(item: TabsItemState) {
-  return modelValue.value === item.value
+function select(value: ComponentValue) {
+  const option = props.options.find((entry) => entry.value === value)
+
+  if (!option || option.disabled || isActiveOption(option)) {
+    return
+  }
+
+  innerValue.value = value
+  modelValue.value = value
+  emits('change', value)
+}
+
+/**
+ * Values whose panel was already activated. Kept as a plain array because
+ * reactive collections are banned here, and pruned so dynamic option lists
+ * cannot grow it without bound.
+ */
+const activatedValues = shallowRef<ComponentValue[]>([])
+
+watch(
+  activeValue,
+  (value) => {
+    if (value !== undefined && !activatedValues.value.includes(value)) {
+      activatedValues.value = [...activatedValues.value, value]
+    }
+  },
+  { immediate: true, flush: 'sync' },
+)
+
+watch(
+  () => props.options.map((option) => option.value),
+  (values) => {
+    const kept = activatedValues.value.filter((value) => values.includes(value))
+
+    if (kept.length !== activatedValues.value.length) {
+      activatedValues.value = kept
+    }
+  },
+)
+
+function isActivated(option: ComponentOption) {
+  return isActiveOption(option) || activatedValues.value.includes(option.value)
+}
+
+function renderLabel(option: ComponentOption) {
+  return slots.label?.({ active: isActiveOption(option), option })
+}
+
+function renderItem(option: ComponentOption) {
+  return slots.item?.({ active: isActiveOption(option), option })
 }
 
 function updateScrollState() {
@@ -68,8 +123,8 @@ function updateScrollState() {
   const { scrollLeft, scrollWidth, clientWidth } = el
 
   overflowing.value = scrollWidth > clientWidth + BORDER_WIDTH
-  canScrollLeft.value = scrollLeft > BORDER_WIDTH
-  canScrollRight.value = scrollLeft + clientWidth < scrollWidth - BORDER_WIDTH
+  canScrollLeft.value = scrollLeft > SCROLL_EPSILON
+  canScrollRight.value = scrollLeft + clientWidth < scrollWidth - SCROLL_EPSILON
 }
 
 function scrollTabs(direction: 'prev' | 'next') {
@@ -101,17 +156,57 @@ function scrollActiveTabIntoView() {
     return
   }
 
-  const tabLeft = active.offsetLeft
-  const tabRight = tabLeft + active.offsetWidth
-  const viewLeft = wrap.scrollLeft
-  const viewRight = viewLeft + wrap.clientWidth
+  const wrapRect = wrap.getBoundingClientRect()
+  const tabRect = active.getBoundingClientRect()
 
-  if (tabLeft < viewLeft) {
-    wrap.scrollTo({ left: tabLeft, behavior: 'smooth' })
-  } else if (tabRight > viewRight) {
-    wrap.scrollTo({ left: tabRight - wrap.clientWidth, behavior: 'smooth' })
+  if (tabRect.left < wrapRect.left) {
+    wrap.scrollBy({
+      left: tabRect.left - wrapRect.left - SCROLL_EPSILON,
+      behavior: 'smooth',
+    })
+  } else if (tabRect.right > wrapRect.right) {
+    wrap.scrollBy({
+      left: tabRect.right - wrapRect.right + SCROLL_EPSILON,
+      behavior: 'smooth',
+    })
   }
 }
+
+function focusTab(index: number) {
+  const tab = innerNavRef.value?.querySelectorAll<HTMLElement>('[role="tab"]')[index]
+
+  tab?.focus()
+  scrollActiveTabIntoView()
+}
+
+/** Roving tabindex: arrow keys move focus and activate, matching the APG tabs pattern. */
+const navigation = useListNavigation({
+  count: () => props.options.length,
+  isDisabled: (index) => !!props.options[index]?.disabled,
+  scrollToIndex: (index) => focusTab(index),
+})
+
+const { onKeydown: onNavKeydown } = useListKeyboardController({
+  keymap: {
+    ArrowRight: 'next',
+    ArrowLeft: 'previous',
+    Home: 'first',
+    End: 'last',
+  },
+  onCommand: (command) => {
+    if (!navigation.dispatch(command)) {
+      return false
+    }
+
+    const option = props.options[navigation.activeIndex.value]
+
+    if (option) {
+      select(option.value)
+    }
+
+    return true
+  },
+})
 
 function teardownScrollObservers() {
   resizeObserver?.disconnect()
@@ -142,27 +237,16 @@ function setupScrollObservers() {
   updateScrollState()
 }
 
-function onTabClick(item: TabsItemState) {
-  if (item.disabled) {
-    return
-  }
-
-  modelValue.value = item.value
-  emits('change', item.value)
-}
-
 watch(
-  items,
+  () => props.options.length,
   () => {
-    nextTick(() => {
-      setupScrollObservers()
-    })
+    nextTick(setupScrollObservers)
   },
   { flush: 'post' },
 )
 
 watch(
-  modelValue,
+  activeValue,
   async () => {
     await nextTick()
 
@@ -170,6 +254,22 @@ watch(
     scrollActiveTabIntoView()
   },
   { flush: 'post' },
+)
+
+watch(
+  () => [activeValue.value, props.options.length],
+  () => {
+    const index = props.options.findIndex((option) => isActiveOption(option))
+
+    if (index >= 0) {
+      navigation.setActiveIndex(index)
+    }
+
+    if (import.meta.env?.DEV && activeValue.value !== undefined && index < 0) {
+      console.warn(`[pxd] PTabs: active value "${String(activeValue.value)}" matches no option.`)
+    }
+  },
+  { immediate: true, flush: 'post' },
 )
 
 onMounted(() => {
@@ -183,8 +283,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="pxd-tabs" :data-variant="variant" v-bind="$attrs">
-    <slot />
-
     <div
       class="pxd-tabs--header min-w-0 text-sm relative flex items-stretch"
       :data-variant="variant"
@@ -205,27 +303,29 @@ onBeforeUnmount(() => {
         class="pxd-tabs--scroll min-h-0 min-w-0 scrollbar-none flex-1 overflow-x-auto overscroll-x-contain has-focus-visible:overflow-x-visible"
         @scroll.passive="updateScrollState"
       >
-        <div ref="innerNavRef" role="tablist" class="pxd-tabs--nav inline-flex flex-nowrap">
-          <template v-for="item in items" :key="item.id">
-            <button
-              role="tab"
-              :id="`tab-${item.value}`"
-              :value="item.value"
-              :disabled="item.disabled"
-              :tabindex="isActiveTab(item) ? 0 : -1"
-              :aria-controls="`tab-panel-${item.value}`"
-              :aria-selected="isActiveTab(item)"
-              class="pxd-tabs--nav-item flex cursor-pointer items-center justify-center self-focus-ring outline-none enabled:hover:text-foreground disabled:cursor-not-allowed disabled:text-foreground-secondary motion-safe:transition-colors"
-              @click="onTabClick(item)"
-            >
-              <template v-if="item.slots.label">
-                <Component :is="item.slots.label" />
-              </template>
-              <template v-else>
-                {{ item.label }}
-              </template>
-            </button>
-          </template>
+        <div
+          ref="innerNavRef"
+          role="tablist"
+          class="pxd-tabs--nav inline-flex flex-nowrap"
+          @keydown="onNavKeydown"
+        >
+          <button
+            v-for="(option, index) in options"
+            :key="option.value"
+            role="tab"
+            :id="tabId(index)"
+            :disabled="option.disabled"
+            :tabindex="isActiveOption(option) ? 0 : -1"
+            :aria-controls="panelId(index)"
+            :aria-selected="isActiveOption(option)"
+            class="pxd-tabs--nav-item flex cursor-pointer items-center justify-center self-focus-ring outline-none enabled:hover:text-foreground disabled:cursor-not-allowed disabled:text-foreground-secondary motion-safe:transition-colors"
+            @click="select(option.value)"
+          >
+            <PTabSlot v-if="slots.label" :render="() => renderLabel(option)" />
+            <template v-else>
+              {{ option.label }}
+            </template>
+          </button>
         </div>
       </div>
 
@@ -241,23 +341,24 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div role="tabpanel" class="pxd-tabs--content">
-      <template v-for="item in items" :key="item.id">
-        <div
-          class="pxd-tabs--panel"
-          :id="`tab-panel-${item.value}`"
-          :aria-labelledby="`tab-${item.value}`"
-        >
-          <KeepAlive v-if="keepAlive">
-            <Component v-if="isActiveTab(item)" :is="item.slots.default" />
-          </KeepAlive>
-          <Component :is="item.slots.default" v-else-if="isActiveTab(item)" />
-        </div>
-      </template>
+    <div class="pxd-tabs--content">
+      <div
+        v-for="(option, index) in options"
+        :key="option.value"
+        :id="panelId(index)"
+        role="tabpanel"
+        :aria-labelledby="tabId(index)"
+        :hidden="!isActiveOption(option)"
+        class="pxd-tabs--panel"
+      >
+        <KeepAlive v-if="keepAlive">
+          <PTabSlot v-if="isActivated(option)" :render="() => renderItem(option)" />
+        </KeepAlive>
+        <PTabSlot v-else-if="isActiveOption(option)" :render="() => renderItem(option)" />
+      </div>
     </div>
   </div>
 </template>
-
 <style lang="postcss">
 .pxd-tabs--header {
   &[data-variant='default'] {
