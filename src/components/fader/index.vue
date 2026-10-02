@@ -57,8 +57,6 @@ watch(
   (container, oldDom) => {
     if (oldDom) {
       cachedOff(oldDom, 'scroll', onContainerScroll)
-
-      return
     }
 
     if (!container) {
