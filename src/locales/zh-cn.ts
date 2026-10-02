@@ -62,6 +62,15 @@ const zhCN = {
     input: '输入',
     output: '输出',
   },
+  todo: {
+    title: '任务',
+    inProgress: '进行中',
+    pending: '待处理',
+    completed: '已完成',
+    canceled: '已取消',
+    expand: '展开任务列表',
+    collapse: '收起任务列表',
+  },
 } satisfies Locale
 
 export default zhCN

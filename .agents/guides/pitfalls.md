@@ -16,6 +16,12 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Property access cannot reach a kebab-case slot name
+
+- **Symptom**: `<slot name="item-content">` never renders even though the consumer passes the slot, so the component silently falls back to its default markup; a sibling `<slot name="header">` in the same file works fine.
+- **Cause**: `useSlots()` hands back the raw slot map, so `slots.itemContent` looks up the key `itemContent`, which never equals `item-content`. The template compiler does not normalise the two spellings, and a `v-if="slots.itemContent"` guard therefore gates a branch that can never be taken.
+- **Fix**: Look the slot up under its exact name — `slots['item-content']` — usually hoisted into a `computed` boolean the template branches on, since the kebab-case name is not expressible as an identifier.
+
 ### Volar error cache shows deleted identifiers
 
 - **Symptom**: After removing an unused variable from an SFC, the Problems panel still reports "'xxx' is declared but its value is never read" at the old line, even though grep shows the identifier is gone.

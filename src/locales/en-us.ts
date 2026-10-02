@@ -47,6 +47,15 @@ const enUS = {
     input: 'Input',
     output: 'Output',
   },
+  todo: {
+    title: 'Tasks',
+    inProgress: 'in progress',
+    pending: 'pending',
+    completed: 'completed',
+    canceled: 'canceled',
+    expand: 'Expand tasks',
+    collapse: 'Collapse tasks',
+  },
 }
 
 export type Locale = typeof enUS
