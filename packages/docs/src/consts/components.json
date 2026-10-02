@@ -156,6 +156,10 @@
     "name": "link-button"
   },
   {
+    "camelized": "List",
+    "name": "list"
+  },
+  {
     "camelized": "Loading Bar",
     "name": "loading-bar"
   },
