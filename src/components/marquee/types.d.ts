@@ -14,6 +14,5 @@ export interface MarqueeProps {
 
 export interface MarqueeEmits {
   click: [MouseEvent]
-  close: [MouseEvent]
   replay: []
 }
