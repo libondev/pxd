@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { ProgressEmits, ProgressProps } from './types'
+import type { ProgressProps } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
@@ -10,10 +9,6 @@ import { getColorByThreshold } from '../../utils/helper.js'
 defineOptions({
   name: 'PProgress',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:modelValue',
-  },
 })
 
 const props = withDefaults(defineProps<ProgressProps>(), {
@@ -22,8 +17,6 @@ const props = withDefaults(defineProps<ProgressProps>(), {
   label: false,
   variant: 'primary',
 })
-
-const emits = defineEmits<ProgressEmits>()
 
 const configProvider = useConfigProvider()
 
@@ -35,9 +28,7 @@ const VARIANTS_COLORS = {
   error: 'hsl(var(--color-red-700-value))',
 }
 
-const progress = useModelValue(props, emits, {
-  get: () => props.modelValue || 0,
-})
+const progress = computed(() => props.modelValue || 0)
 
 const computedLabel = computed(() => {
   const { label } = props
@@ -70,7 +61,7 @@ const { classes } = useTailwindVariant(
   },
 )
 
-const relativeProgress = computed(() => progress.value! - props.min)
+const relativeProgress = computed(() => progress.value - props.min)
 
 const percentage = computed(() => {
   const range = props.max - props.min

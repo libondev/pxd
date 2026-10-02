@@ -9,8 +9,3 @@ export interface ProgressProps {
   colors?: Record<string, string>
   modelValue?: number | null
 }
-
-export interface ProgressEmits {
-  change: [NonNullable<ProgressProps['modelValue']>]
-  'update:modelValue': [NonNullable<ProgressProps['modelValue']>]
-}
