@@ -454,4 +454,29 @@ describe('popover', () => {
 
     wrapper.unmount()
   })
-})
+
+  it('should emit escape and hide when the overlay reports Escape', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+      },
+    })
+
+    await flush()
+
+    const overlay = wrapper.findComponent({ name: 'POverlay' })
+    expect(overlay.exists()).toBe(true)
+
+    await overlay.vm.$emit('escape')
+    await flush()
+
+    expect(wrapper.emitted('escape')).toHaveLength(1)
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+});
