@@ -13,7 +13,7 @@ defineProps<ListGroupProps>()
   <div
     role="group"
     :aria-label="label"
-    class="pxd-list-group min-h-9 px-2 py-1 flex items-center text-13 text-gray-900"
+    class="pxd-list-group min-h-9 px-2 py-1 flex items-center text-13 text-foreground-secondary"
     v-bind="$attrs"
   >
     {{ label }}
