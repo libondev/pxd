@@ -21,8 +21,6 @@ const enUS = {
     question: 'Q',
     answer: 'A',
     skipAll: 'Skip all questions',
-    collapse: 'Collapse',
-    expand: 'Expand',
     prev: 'Previous question',
     next: 'Next question',
   },

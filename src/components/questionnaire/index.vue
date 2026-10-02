@@ -36,11 +36,6 @@ const emits = defineEmits<QuestionnaireEmits>()
 
 const configProvider = useConfigProvider()
 const { value: isCollapsed, toggle: toggleCollapse } = useToggleValue(false)
-const collapseLabel = computed(() =>
-  isCollapsed.value
-    ? configProvider.locale.questionnaire.expand
-    : configProvider.locale.questionnaire.collapse,
-)
 
 const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
 const currentState = shallowRef<QuestionnaireState>('choosing')
@@ -284,8 +279,9 @@ watch(
   >
     <template v-if="currentState === 'choosing' && currentQuestion && currentAnswer">
       <div
-        class="pxd-questionnaire--title py-2 ps-4 pe-2 gap-1 text-sm flex items-center justify-between"
+        class="pxd-questionnaire--title py-2 ps-4 pe-2 gap-1 cursor-pointer text-sm flex items-center justify-between"
         :class="{ 'border-b': !isCollapsed }"
+        @click="toggleCollapse()""
       >
         <span class="font-medium flex-1">{{ currentQuestion.question }}</span>
 
@@ -295,20 +291,9 @@ watch(
           icon
           :title="configProvider.locale.questionnaire.skipAll"
           :aria-label="configProvider.locale.questionnaire.skipAll"
-          @click="skipAllQuestions"
+          @click.stop="skipAllQuestions"
         >
           <CrossIcon aria-hidden="true" />
-        </PButton>
-        <PButton
-          variant="ghost"
-          size="sm"
-          icon
-          :title="collapseLabel"
-          :aria-label="collapseLabel"
-          :aria-expanded="!isCollapsed"
-          @click="toggleCollapse()"
-        >
-          <ChevronDownIcon aria-hidden="true" />
         </PButton>
       </div>
 
@@ -400,12 +385,12 @@ watch(
     </template>
 
     <template v-else-if="currentState === 'submitted'">
-      <ul class="!px-4 !py-3 !m-0 pxd-questionnaire--answers gap-2 flex list-none flex-col">
-        <li v-for="(question, index) of questions" :key="index" class="!m-0 text-sm">
-          <p class="!m-0 text-foreground-secondary">
+      <ul class="px-4! py-3! m-0! pxd-questionnaire--answers gap-2 flex list-none flex-col">
+        <li v-for="(question, index) of questions" :key="index" class="m-0! text-sm">
+          <p class="m-0! text-foreground-secondary">
             {{ configProvider.locale.questionnaire.question }}: {{ question.question }}
           </p>
-          <p class="!m-0 font-medium">
+          <p class="m-0! font-medium">
             {{ configProvider.locale.questionnaire.answer }}:
             {{ getSelectedAnswerText(question, totalAnswers[question.header]) }}
           </p>

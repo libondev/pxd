@@ -36,8 +36,6 @@ const zhCN = {
     question: '问',
     answer: '答',
     skipAll: '跳过全部问题',
-    collapse: '收起',
-    expand: '展开',
     prev: '上一题',
     next: '下一题',
   },
