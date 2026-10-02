@@ -154,13 +154,13 @@ function onDetailsToggle(ev: Event) {
 
 <template>
   <details
-    class="pxd-tool-call w-full max-w-full overflow-hidden rounded-xl border bg-background-100"
+    class="pxd-tool-call w-full max-w-full rounded-xl border bg-background-100"
     v-bind="$attrs"
     :open="detailsOpen"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-tool-call--trigger gap-2 px-4 py-3 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      class="pxd-tool-call--trigger gap-2 p-3 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
       @click.prevent="onToggleClick"
     >
       <Component :is="statusMeta.icon" class="size-4 shrink-0" :class="statusMeta.iconClass" />
@@ -186,10 +186,10 @@ function onDetailsToggle(ev: Event) {
 
     <div
       ref="contentRef"
-      class="pxd-tool-call--content overflow-hidden"
+      class="pxd-tool-call--content overflow-hidden border-t"
       :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
     >
-      <div class="gap-4 px-4 pb-4 flex flex-col">
+      <div class="gap-4 p-3 flex flex-col">
         <div v-if="inputText" class="pxd-tool-call--section gap-2 flex flex-col">
           <div
             class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
