@@ -11,5 +11,4 @@ export interface VirtualListProps extends VirtualListOptions {
 
 export interface VirtualListEmits {
   retry: []
-  bottom: []
 }
