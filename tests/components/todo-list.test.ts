@@ -106,16 +106,6 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('uses a dedicated row gap so rows stay tighter than the icon gap', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
-    const style = wrapper.attributes('style') ?? ''
-
-    expect(style).toContain('--todo-row-gap')
-    expect(style).not.toContain('--todo-row-gap: var(--todo-gap)')
-
-    wrapper.unmount()
-  })
-
   it('summarises active counts in the header', async () => {
     const wrapper = await mountTodoList()
 

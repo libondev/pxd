@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSize } from '../../types/shared'
+import type { ComponentLabel } from '../../types/shared'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
 
@@ -42,7 +42,6 @@ export interface TodoProps {
   defaultExpanded?: boolean
   /** Header title; falls back to `locale.todo.title`. */
   title?: ComponentLabel
-  size?: ComponentSize
   /** Empty-state text; falls back to `locale.results.noData`. */
   empty?: ComponentLabel
 }

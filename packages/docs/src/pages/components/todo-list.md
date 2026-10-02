@@ -169,7 +169,6 @@ const options = ref([
 | collapsible | `boolean` | `true` | Allow folding the list away behind the header. |
 | default-expanded | `boolean` | `false` | Whether the list starts open. |
 | title | `ComponentLabel` | `locale.todo.title` | Header title. |
-| size | `'sm' \| 'md' \| 'lg'` | `configProvider.size` | Size of the status buttons and text. |
 | empty | `ComponentLabel` | `locale.results.noData` | Text shown when there is no item. |
 
 ## Events

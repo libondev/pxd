@@ -15,7 +15,6 @@ import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { getFallbackValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PTodoList',
@@ -41,30 +40,6 @@ const slots = useSlots()
 const hasItemSlot = computed(() => !!slots.item)
 const hasItemContentSlot = computed(() => !!slots['item-content'])
 const hasEmptySlot = computed(() => !!slots.empty)
-
-const SIZES = {
-  sm: {
-    indicatorSize: '1rem',
-    fontSize: '0.8125rem',
-    descriptionFontSize: '0.75rem',
-    gap: '0.375rem',
-    rowGap: '0.25rem',
-  },
-  md: {
-    indicatorSize: '1.125rem',
-    fontSize: '0.875rem',
-    descriptionFontSize: '0.8125rem',
-    gap: '0.5rem',
-    rowGap: '0.375rem',
-  },
-  lg: {
-    indicatorSize: '1.375rem',
-    fontSize: '1rem',
-    descriptionFontSize: '0.875rem',
-    gap: '0.625rem',
-    rowGap: '0.5rem',
-  },
-}
 
 /** Marker chrome per status; the running state needs none beyond the spinner itself. */
 const MARKER_CLASSES: Record<TodoStatus, string> = {
@@ -100,20 +75,6 @@ watch(
 
 const expanded = computed(() => !props.collapsible || isExpanded.value)
 const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, expanded)
-
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
-
-const computedStyle = computed(() => {
-  const size = computedSize.value
-
-  return {
-    '--todo-indicator-size': size.indicatorSize,
-    '--todo-font-size': size.fontSize,
-    '--todo-description-font-size': size.descriptionFontSize,
-    '--todo-gap': size.gap,
-    '--todo-row-gap': size.rowGap,
-  }
-})
 
 function resolveStatus(item: TodoOption): TodoStatus {
   return item.status ?? 'pending'
@@ -295,7 +256,6 @@ defineExpose({
 <template>
   <details
     class="pxd-todo-list group/todo w-full max-w-full rounded-xl border bg-background-100 text-foreground"
-    :style="computedStyle"
     :open="detailsOpen"
     v-bind="$attrs"
     @toggle="onDetailsToggle"
