@@ -356,6 +356,11 @@ async function handlePopoverShow() {
   await visiblePromise
 }
 
+function handlePopoverEscape(ev: KeyboardEvent) {
+  emits('escape', ev)
+  handlePopoverHide()
+}
+
 async function handlePopoverHide(immediate: boolean = false) {
   if (hidePopoverTimer) {
     if (!immediate) {
@@ -592,7 +597,7 @@ defineExpose({
       :show-overlay="adaptive"
       :close-on-press-escape="closeOnPressEscape"
       :lock-scroll-on-visible="lockScrollOnVisible"
-      @escape="handlePopoverHide()"
+      @escape="handlePopoverEscape"
     >
       <div
         v-if="isRender"
