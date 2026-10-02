@@ -119,15 +119,13 @@ const options = [
 
 ## Empty
 
-Set `empty` to render the `empty` slot below the rows.
-
 ```vue demo
 <script setup>
 const options = []
 </script>
 
 <template>
-  <PList class="w-64" empty :options="options">
+  <PList class="w-64" :options="options">
     <template #empty>No results found.</template>
   </PList>
 </template>
@@ -210,7 +208,6 @@ function onKeydown(ev) {
 | multiple | `boolean` | - | Let several options be selected at the same time |
 | default-active-index | `number` | `-1` | Option active before the user navigates |
 | loop | `boolean` | `true` | Wrap keyboard navigation around both ends |
-| empty | `boolean` | - | Render the `empty` slot below the rows |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | item-size | `number` | `36` | Estimated row height in px when `virtual` is enabled |
 | over-scan | `number` | `4` | Extra rows rendered outside the viewport when `virtual` is enabled |
@@ -287,7 +284,7 @@ interface ListOptionSelected {
 | Name | Description |
 | --- | --- |
 | item | Item content: `{ item, index, group, groupIndex }` |
-| empty | Content rendered below the rows when `empty` is set |
+| empty | Enable when there is no data to display |
 
 ## Methods
 

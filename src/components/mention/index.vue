@@ -49,7 +49,6 @@ const {
   filterKeyword,
   listOptions,
   isPending,
-  isEmptyResult,
   open: openSuggest,
   close: closeSuggest,
   setKeyword,
@@ -209,7 +208,6 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
           :loop="false"
           :virtual="virtual"
           :options="listOptions"
-          :empty="isEmptyResult"
           :default-active-index="0"
           class="max-h-68 min-h-0 flex-1 rounded-none border-t"
           :class="{ 'pointer-events-none opacity-60': isPending }"

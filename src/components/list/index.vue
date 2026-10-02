@@ -232,7 +232,11 @@ defineExpose({
       </div>
     </div>
 
-    <p v-if="empty" role="presentation" class="py-7 text-sm text-center text-foreground-secondary">
+    <p
+      v-if="!rows.length"
+      role="presentation"
+      class="py-7 text-sm text-center text-foreground-secondary empty:hidden"
+    >
       <slot name="empty" />
     </p>
   </div>

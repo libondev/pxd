@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CommandMenuEmits, CommandMenuProps } from './types'
-import { computed, nextTick, shallowRef, watch } from 'vue'
+import { nextTick, shallowRef, watch } from 'vue'
 import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -38,7 +38,7 @@ const modelValue = useModelValue(props, emits)
 const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
-const { filteredOptions, visibleCount } = useListFilter(() => props.options ?? [], filterKeyword)
+const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
 
 const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => modelValue.value,
@@ -52,8 +52,6 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
   },
 })
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
-
-const isEmptyResult = computed(() => !!filterKeyword.value.trim() && visibleCount.value === 0)
 
 function hideModal() {
   filterKeyword.value = ''
@@ -138,7 +136,6 @@ watch(filteredOptions, async () => {
       :loop="false"
       :virtual="virtual"
       :options="filteredOptions"
-      :empty="!!filterKeyword && isEmptyResult"
       :default-active-index="0"
       class="sm:max-h-110 h-full"
       @change="onListItemSelect"

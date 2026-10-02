@@ -25,7 +25,6 @@ export type ListModelValue = ComponentValue | ComponentValue[] | null
 
 export interface ListProps {
   loop?: boolean
-  empty?: boolean
   multiple?: boolean
   modelValue?: ListModelValue
   options?: ListOptionEntry[]
