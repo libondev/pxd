@@ -11,6 +11,7 @@ import type {
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import CrossIcon from '@gdsicon/vue/cross'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
+import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { toArray } from '../../utils/format.js'
@@ -35,7 +36,23 @@ const props = withDefaults(defineProps<QuestionnaireProps>(), {
 const emits = defineEmits<QuestionnaireEmits>()
 
 const configProvider = useConfigProvider()
-const { value: isCollapsed, toggle: toggleCollapse } = useToggleValue(false)
+const contentRef = shallowRef<HTMLElement>()
+const { value: isExpanded, toggle: toggleExpand } = useToggleValue(true)
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
+
+function onToggleClick() {
+  toggleExpand()
+}
+
+function onDetailsToggle(ev: Event) {
+  const details = ev.currentTarget as HTMLDetailsElement
+
+  // Find-in-page / fragment navigation opens <details> natively.
+  if (details.open && !isExpanded.value) {
+    skipEnterMotion()
+    isExpanded.value = true
+  }
+}
 
 const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
 const currentState = shallowRef<QuestionnaireState>('choosing')
@@ -278,110 +295,120 @@ watch(
     v-bind="$attrs"
   >
     <template v-if="currentState === 'choosing' && currentQuestion && currentAnswer">
-      <div
-        class="pxd-questionnaire--title py-2 ps-4 pe-2 gap-1 cursor-pointer text-sm flex items-center justify-between"
-        :class="{ 'border-b': !isCollapsed }"
-        @click="toggleCollapse()"
-      >
-        <span class="font-medium flex-1">{{ currentQuestion.question }}</span>
-
-        <PButton
-          variant="ghost"
-          size="sm"
-          icon
-          :title="configProvider.locale.questionnaire.skipAll"
-          :aria-label="configProvider.locale.questionnaire.skipAll"
-          @click.stop="skipAllQuestions"
+      <details class="pxd-questionnaire--details" :open="detailsOpen" @toggle="onDetailsToggle">
+        <summary
+          class="pxd-questionnaire--title py-2 ps-3 pe-2 gap-1 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
+          :class="{ 'border-b': detailsOpen }"
+          @click.prevent="onToggleClick"
         >
-          <CrossIcon aria-hidden="true" />
-        </PButton>
-      </div>
+          <span class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate">
+            {{ currentQuestion.question }}
+          </span>
 
-      <template v-if="!isCollapsed">
-        <PList
-          :model-value="currentAnswer.selected"
-          :multiple="currentQuestion.multiSelect"
-          :options="currentQuestion.options"
-          @update:model-value="onListModelUpdate"
-          @change="onAnswerItemSelect"
-        >
-          <template #item="{ item, index }">
-            <span
-              class="size-7 relative inline-flex shrink-0 items-center justify-center rounded-sm bg-gray-alpha-200"
-            >
-              {{ index + 1 }}
-            </span>
-
-            <div v-if="item.label" class="flex flex-col">
-              <span>{{ item.label }}</span>
-              <span class="text-foreground-secondary">{{ item.description }}</span>
-            </div>
-
-            <PInput
-              v-else
-              :model-value="currentAnswer.freeText"
-              :size="configProvider.size"
-              :placeholder="item.description"
-              class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
-              @update:model-value="onFreeformInput"
-              @change="onFreeformInputChange"
-              @click.stop
-            />
-          </template>
-        </PList>
+          <!-- preventDefault is load-bearing: stopping propagation alone would leave
+               the summary's native disclosure default action free to run. -->
+          <PButton
+            variant="ghost"
+            size="sm"
+            icon
+            :title="configProvider.locale.questionnaire.skipAll"
+            :aria-label="configProvider.locale.questionnaire.skipAll"
+            @click.prevent.stop="skipAllQuestions"
+          >
+            <CrossIcon aria-hidden="true" />
+          </PButton>
+        </summary>
 
         <div
-          v-if="questions.length > 1 || showSubmitButton"
-          class="p-2 flex items-center justify-between border-t"
+          ref="contentRef"
+          class="pxd-questionnaire--content overflow-hidden border-t"
+          :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
         >
-          <div v-if="questions.length > 1" class="gap-1 flex items-center">
-            <PButton
-              variant="ghost"
-              :size="configProvider.size"
-              :class="{ 'pointer-events-none opacity-50': !currentIndex }"
-              icon
-              :title="configProvider.locale.questionnaire.prev"
-              :aria-label="configProvider.locale.questionnaire.prev"
-              :aria-disabled="!currentIndex"
-              @click="toggleCurrentIndex(-1)"
-            >
-              <ChevronDownIcon class="rotate-90" aria-hidden="true" />
-            </PButton>
+          <PList
+            :model-value="currentAnswer.selected"
+            :multiple="currentQuestion.multiSelect"
+            :options="currentQuestion.options"
+            @update:model-value="onListModelUpdate"
+            @change="onAnswerItemSelect"
+          >
+            <template #item="{ item, index }">
+              <span
+                class="size-7 relative inline-flex shrink-0 items-center justify-center rounded-sm bg-gray-alpha-200"
+              >
+                {{ index + 1 }}
+              </span>
 
-            <PButton
-              variant="ghost"
-              :size="configProvider.size"
-              :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
-              icon
-              :title="configProvider.locale.questionnaire.next"
-              :aria-label="configProvider.locale.questionnaire.next"
-              :aria-disabled="currentIndex >= questions.length - 1"
-              @click="toggleCurrentIndex(1)"
-            >
-              <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
-            </PButton>
+              <div v-if="item.label" class="flex flex-col">
+                <span>{{ item.label }}</span>
+                <span class="text-foreground-secondary">{{ item.description }}</span>
+              </div>
 
-            <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
-              {{ currentIndex + 1 }}/{{ questions.length }}
-            </span>
-          </div>
+              <PInput
+                v-else
+                :model-value="currentAnswer.freeText"
+                :size="configProvider.size"
+                :placeholder="item.description"
+                class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
+                @update:model-value="onFreeformInput"
+                @change="onFreeformInputChange"
+                @click.stop
+              />
+            </template>
+          </PList>
 
-          <div class="gap-2 ms-auto flex items-center">
-            <PButton :size="configProvider.size" variant="ghost" @click="skipCurrentQuestion">
-              {{ configProvider.locale.interaction.skip }}
-            </PButton>
+          <div
+            v-if="questions.length > 1 || showSubmitButton"
+            class="p-2 flex items-center justify-between border-t"
+          >
+            <div v-if="questions.length > 1" class="gap-1 flex items-center">
+              <PButton
+                variant="ghost"
+                :size="configProvider.size"
+                :class="{ 'pointer-events-none opacity-50': !currentIndex }"
+                icon
+                :title="configProvider.locale.questionnaire.prev"
+                :aria-label="configProvider.locale.questionnaire.prev"
+                :aria-disabled="!currentIndex"
+                @click="toggleCurrentIndex(-1)"
+              >
+                <ChevronDownIcon class="rotate-90" aria-hidden="true" />
+              </PButton>
 
-            <PButton
-              v-show="showSubmitButton"
-              :size="configProvider.size"
-              variant="primary"
-              @click="onSubmitAnswers"
-            >
-              {{ configProvider.locale.interaction.submit }}
-            </PButton>
+              <PButton
+                variant="ghost"
+                :size="configProvider.size"
+                :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
+                icon
+                :title="configProvider.locale.questionnaire.next"
+                :aria-label="configProvider.locale.questionnaire.next"
+                :aria-disabled="currentIndex >= questions.length - 1"
+                @click="toggleCurrentIndex(1)"
+              >
+                <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
+              </PButton>
+
+              <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
+                {{ currentIndex + 1 }}/{{ questions.length }}
+              </span>
+            </div>
+
+            <div class="gap-2 ms-auto flex items-center">
+              <PButton :size="configProvider.size" variant="ghost" @click="skipCurrentQuestion">
+                {{ configProvider.locale.interaction.skip }}
+              </PButton>
+
+              <PButton
+                v-show="showSubmitButton"
+                :size="configProvider.size"
+                variant="primary"
+                @click="onSubmitAnswers"
+              >
+                {{ configProvider.locale.interaction.submit }}
+              </PButton>
+            </div>
           </div>
         </div>
-      </template>
+      </details>
     </template>
 
     <template v-else-if="currentState === 'submitted'">
@@ -400,7 +427,7 @@ watch(
 
     <template v-else-if="currentState === 'skipped'">
       <p
-        class="pxd-questionnaire--skipped text-sm py-2 px-3 cursor-default text-foreground-secondary italic"
+        class="pxd-questionnaire--skipped text-sm h-11.5 px-3 flex cursor-default items-center text-foreground-secondary italic"
       >
         Skipped questions
       </p>

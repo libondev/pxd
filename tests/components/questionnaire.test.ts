@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { nextTick } from 'vue'
 import Questionnaire from '../../src/components/questionnaire/index.vue'
 
 function createQuestion(overrides: Record<string, unknown> = {}) {
@@ -169,21 +170,77 @@ describe('questionnaire', () => {
       },
     })
 
-    const title = wrapper.get('.pxd-questionnaire--title')
-
-    expect(title.text()).toContain('Which flow should run?')
-    expect(title.classes()).toContain('border-b')
-
-    await title.trigger('click')
-
-    expect(wrapper.get('.pxd-questionnaire--title').classes()).not.toContain('border-b')
-    expect(wrapper.find('[data-list-item]').exists()).toBe(false)
-    expect(wrapper.find('button[title="Previous question"]').exists()).toBe(false)
-
-    await wrapper.get('.pxd-questionnaire--title').trigger('click')
-
+    expect(wrapper.get('.pxd-questionnaire--question').text()).toContain('Which flow should run?')
+    expect(wrapper.get('details').attributes('open')).toBeDefined()
     expect(wrapper.get('.pxd-questionnaire--title').classes()).toContain('border-b')
+
+    await wrapper.get('summary').trigger('click')
+
+    expect(wrapper.get('details').attributes('open')).toBeUndefined()
+    expect(wrapper.get('.pxd-questionnaire--title').classes()).not.toContain('border-b')
+
+    await wrapper.get('summary').trigger('click')
+
+    expect(wrapper.get('details').attributes('open')).toBeDefined()
+    expect(wrapper.get('.pxd-questionnaire--title').classes()).toContain('border-b')
+
+    wrapper.unmount()
+  })
+
+  it('keeps the folded questions in the DOM for find-in-page', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+    })
+
+    await wrapper.get('summary').trigger('click')
+
+    expect(wrapper.get('details').attributes('open')).toBeUndefined()
     expect(wrapper.find('[data-list-item]').exists()).toBe(true)
+    expect(wrapper.find('button[title="Previous question"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('folds the questions from a natively focusable summary', () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+      attachTo: document.body,
+    })
+
+    const summary = wrapper.get<HTMLElement>('summary')
+
+    // A summary is Tab-reachable and responds to Enter/Space without a key handler.
+    expect(summary.element.tagName).toBe('SUMMARY')
+    expect(summary.attributes('role')).toBeUndefined()
+
+    summary.element.focus()
+
+    expect(document.activeElement).toBe(summary.element)
+
+    wrapper.unmount()
+  })
+
+  it('cancels the summary default action when skip-all is pressed', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+      attachTo: document.body,
+    })
+
+    const skipAll = wrapper.get<HTMLButtonElement>('button[title="Skip all questions"]').element
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true })
+
+    skipAll.dispatchEvent(event)
+    await nextTick()
+
+    // stopPropagation alone would leave the summary free to open/close natively.
+    expect(event.defaultPrevented).toBe(true)
+    expect(wrapper.text()).toContain('Skipped questions')
 
     wrapper.unmount()
   })
@@ -195,7 +252,7 @@ describe('questionnaire', () => {
       },
     })
 
-    await wrapper.findAll('button')[0].trigger('click')
+    await wrapper.get('button[title="Skip all questions"]').trigger('click')
 
     expect(wrapper.text()).toContain('Skipped questions')
     expect(wrapper.emitted('submit')).toBeUndefined()
