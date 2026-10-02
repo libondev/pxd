@@ -20,7 +20,6 @@ declare module 'vue' {
     PCalendar: (typeof import('pxd/components/calendar'))['default']
     PCard: (typeof import('pxd/components/card'))['default']
     PCarousel: (typeof import('pxd/components/carousel'))['default']
-    PCarouselItem: (typeof import('pxd/components/carousel-item'))['default']
     PCheckbox: (typeof import('pxd/components/checkbox'))['default']
     PCheckboxGroup: (typeof import('pxd/components/checkbox-group'))['default']
     PCheckerboard: (typeof import('pxd/components/checkerboard'))['default']

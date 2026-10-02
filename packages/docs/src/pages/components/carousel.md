@@ -4,9 +4,18 @@ Loop a series of images or texts in a limited space.
 
 ## Default
 
+Slides are declared with the `options` prop; the `item` slot provides their content. Without it each slide renders its `label`.
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'
+
+const slides = [
+  { value: 1, label: 'Slide 1' },
+  { value: 2, label: 'Slide 2' },
+  { value: 3, label: 'Slide 3' },
+  { value: 4, label: 'Slide 4' },
+]
 
 const direction = ref('horizontal')
 const indicatorType = ref('dot')
@@ -35,13 +44,16 @@ const indicatorPosition = ref('center')
     </PSwitch>
 
     <PCarousel
+      :options="slides"
       :direction="direction"
       :indicator-type="indicatorType"
       :indicator-position="indicatorPosition"
     >
-      <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-        {{ i }}
-      </PCarouselItem>
+      <template #item="{ item }">
+        <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
+          {{ item.label }}
+        </div>
+      </template>
 
       <template v-if="indicatorType === 'custom'" #indicator="{ total, current }">
         <span
@@ -60,11 +72,17 @@ const indicatorPosition = ref('center')
 Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to be placed on the carousel and the page cannot be scrolled).
 
 ```vue demo
+<script setup>
+const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, { value: 3, label: 'Slide 3' }, { value: 4, label: 'Slide 4' }]
+</script>
+
 <template>
-  <PCarousel toggle-on-wheel>
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-      {{ i }}
-    </PCarouselItem>
+  <PCarousel toggle-on-wheel :options="slides">
+    <template #item="{ item }">
+      <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
+        {{ item.label }}
+      </div>
+    </template>
   </PCarousel>
 </template>
 ```
@@ -72,11 +90,17 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ## Disable indicator and arrow
 
 ```vue demo
+<script setup>
+const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, { value: 3, label: 'Slide 3' }, { value: 4, label: 'Slide 4' }]
+</script>
+
 <template>
-  <PCarousel :indicator="false" :arrow="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-      {{ i }}
-    </PCarouselItem>
+  <PCarousel :indicator="false" :arrow="false" :options="slides">
+    <template #item="{ item }">
+      <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
+        {{ item.label }}
+      </div>
+    </template>
   </PCarousel>
 </template>
 ```
@@ -84,11 +108,17 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 ## Disable autoplay and loop
 
 ```vue demo
+<script setup>
+const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, { value: 3, label: 'Slide 3' }, { value: 4, label: 'Slide 4' }]
+</script>
+
 <template>
-  <PCarousel :autoplay="false" :loop="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-      {{ i }}
-    </PCarouselItem>
+  <PCarousel :autoplay="false" :loop="false" :options="slides">
+    <template #item="{ item }">
+      <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
+        {{ item.label }}
+      </div>
+    </template>
   </PCarousel>
 </template>
 ```
@@ -98,11 +128,17 @@ Use the mouse wheel to switch (if `loop=true` is set, it may cause the cursor to
 By default, it will pause when the mouse is over the carousel.
 
 ```vue demo
+<script setup>
+const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, { value: 3, label: 'Slide 3' }, { value: 4, label: 'Slide 4' }]
+</script>
+
 <template>
-  <PCarousel :pause-on-hover="false">
-    <PCarouselItem v-for="i in 4" :key="i" class="flex items-center justify-center bg-gray-200 nth-[2n]:bg-gray-300">
-      {{ i }}
-    </PCarouselItem>
+  <PCarousel :pause-on-hover="false" :options="slides">
+    <template #item="{ item }">
+      <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
+        {{ item.label }}
+      </div>
+    </template>
   </PCarousel>
 </template>
 ```
@@ -111,6 +147,7 @@ By default, it will pause when the mouse is over the carousel.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
+| options | `CarouselOption[]` | `[]` | Slides to loop over; `label` is rendered when no `item` slot is given |
 | index | `number` | `0` | Index of the initially displayed item |
 | loop | `boolean` | `true` | Wrap around when reaching either end |
 | arrow | `boolean` | `true` | Show the previous and next arrows |
@@ -128,10 +165,5 @@ By default, it will pause when the mouse is over the carousel.
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
-
-## CarouselItem Slots
-
-| Name | Description |
-| --- | --- |
-| default | Default slot |
+| item | Content of one slide, receives `{ item, index }` |
+| indicator | Indicator content, receives `{ current, total }` |

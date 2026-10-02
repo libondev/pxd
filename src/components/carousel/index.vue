@@ -2,9 +2,8 @@
 import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots } from 'vue'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
-import { provideCarouselContext } from '../../contexts/carousel.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
 import { getCssUnitValue } from '../../utils/format.js'
 
@@ -25,6 +24,7 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   pauseOnHover: true,
   indicatorType: 'dot',
   indicatorPosition: 'center',
+  options: () => [],
 })
 
 const emits = defineEmits<CarouselEmits>()
@@ -35,10 +35,13 @@ let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
 let maxDrag = 0
 
-const slideCount = shallowRef(0)
+const slots = useSlots()
+
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
+
+const slideCount = computed(() => props.options.length)
 
 const displayIndex = computed(() => {
   const length = slideCount.value
@@ -256,19 +259,6 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 }
 
-function registerItem() {
-  slideCount.value += 1
-}
-
-function unregisterItem() {
-  slideCount.value = Math.max(slideCount.value - 1, 0)
-}
-
-provideCarouselContext({
-  registerItem,
-  unregisterItem,
-})
-
 onMounted(async () => {
   await nextTick()
 
@@ -299,7 +289,14 @@ onBeforeUnmount(() => {
         class="pxd-carousel--slider translate-z-0 size-full active:transition-none motion-safe:transition-transform"
         :style="computedStyle"
       >
-        <slot />
+        <template v-for="(option, index) in options" :key="option.value || index">
+          <div
+            class="pxd-carousel-item size-full shrink-0 content-visibility-auto intrinsic-size-auto"
+          >
+            <slot v-if="slots.item" name="item" :item="option" :index="index" />
+            <template v-else>{{ option.label }}</template>
+          </div>
+        </template>
       </div>
     </div>
 

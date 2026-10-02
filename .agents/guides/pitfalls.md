@@ -123,13 +123,16 @@ Known issues and lessons learned during development.
 
 - **Symptom**: A container whose header is built from registered children renders an empty header during SSR and on the first client frame; the items only show up after mount.
 - **Cause**: A child registers in its `setup`, which runs while the parent`s own subtree is being patched — after the parent`s render function already read the (empty) registry. In SSR nothing re-renders afterwards, so the markup is simply absent from the HTML.
-- **Fix**: If the container only needs the *data*, take an `options` prop and render from it — PTabs and PSteps both moved this way, and their `contexts/*.ts` files went with them. Keep the self-registering pattern (`useOrderedChildren`) only where children are really measured or ordered in the DOM, which today means PResizable. PCarousel only ever needed a count, so it registers items into a plain counter instead of a Map.
+- **Fix**: If the container only needs the *data*, take an `options` prop and render from it — PTabs and PSteps both moved this way, and their `contexts/*.ts` files went with them. Keep the self-registering pattern (`useOrderedChildren`) only where children are really measured or ordered in the DOM, which today means PResizable. PCarousel only ever needed a count, so it moved to an `options` prop too: `PCarouselItem` and `contexts/carousel.ts` went with it.
 
-### Slot content rendered in a `v-for` loses its own render effect
+### Isolating repeated slot content behind a wrapper component does not pay for itself
 
-- **Symptom**: Every panel re-renders whenever any reactive value used inside one of them changes.
-- **Cause**: Slot content inlined into the parent`s `v-for` is evaluated inside the parent`s render effect, so all panels share one dependency set.
-- **Fix**: Route repeated slot content through a real component (PTabs uses `PTabSlot` for both the panel body and the label). Each instance then owns an effect and updates only when its own dependencies change.
+- **Symptom**: Every row/slide re-renders whenever the container re-renders — hovering one row of a 200-row PList invoked the `item` slot 40200 times per sweep; a carousel swipe frame rebuilds all slide content.
+- **Cause**: Children declared inside a `v-for` with slot content get `patchFlag & 1024` (`DYNAMIC_SLOTS`), so `shouldUpdateComponent` returns `true` for all of them whenever the container re-renders. Note the content is *not* the shared-render-effect problem it looks like: a scoped slot function is invoked by the child that renders it, so reactive reads inside it already land in that child`s effect.
+- **Tried**: A stateful wrapper that takes the slot function as a `render` prop plus stable scope props (`PCarouselItemSlot` / `PListItemSlot`), so unchanged content is skipped. It works — counters prove the wrappers were created once and rendered once while the container re-rendered hundreds of times — but it is slower in wall clock:
+  - PList, 200-row hover sweep: no-slot floor 1.35s both ways, rich row 1.72s -> 1.71s, trivial row 1.38s -> 1.70s (23% slower).
+  - PCarousel, 20 slides x 200 swipe frames: no-slot floor 14.7ms both ways, light 23.0ms -> 57.6ms, rich 23.2ms -> 53.6ms (~2.4x slower).
+- **Fix**: Keep the inline `<slot>`. Rebuilding a slide/row vnode tree is cheap compared with the per-item component vnode + `shouldUpdateComponent` path the wrapper adds to every container render. Both wrappers were measured and reverted.
 
 ### Roving tabindex without a key handler locks keyboard users out
 
@@ -142,6 +145,3 @@ Known issues and lessons learned during development.
 - **Symptom**: `pnpm fmt:eol` rewrote `src/` files but left `.md` and other documents on CRLF.
 - **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`; only files whose size/mtime changed were written back.
 - **Fix**: `scripts/fmt-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
-
-
-

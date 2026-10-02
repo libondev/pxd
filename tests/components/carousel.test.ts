@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { h, nextTick } from 'vue'
-import CarouselItem from '../../src/components/carousel-item/index.vue'
+import { nextTick } from 'vue'
 import Carousel from '../../src/components/carousel/index.vue'
 
 let originalGetAnimations: Element['getAnimations'] | undefined
@@ -18,6 +17,8 @@ function flushPromises() {
     setTimeout(resolve, 0)
   })
 }
+
+const slides = [{ label: 'A' }, { label: 'B' }]
 
 describe('carousel', () => {
   beforeEach(() => {
@@ -41,12 +42,7 @@ describe('carousel', () => {
       props: {
         loop: true,
         autoplay: false,
-      },
-      slots: {
-        default: [
-          h(CarouselItem, null, { default: () => 'A' }),
-          h(CarouselItem, null, { default: () => 'B' }),
-        ],
+        options: slides,
       },
     })
 
@@ -62,12 +58,7 @@ describe('carousel', () => {
         loop: true,
         autoplay: false,
         toggleOnWheel: true,
-      },
-      slots: {
-        default: [
-          h(CarouselItem, null, { default: () => 'A' }),
-          h(CarouselItem, null, { default: () => 'B' }),
-        ],
+        options: slides,
       },
     })
 
@@ -83,12 +74,7 @@ describe('carousel', () => {
         loop: false,
         autoplay: false,
         toggleOnWheel: true,
-      },
-      slots: {
-        default: [
-          h(CarouselItem, null, { default: () => 'A' }),
-          h(CarouselItem, null, { default: () => 'B' }),
-        ],
+        options: slides,
       },
     })
 
@@ -104,12 +90,7 @@ describe('carousel', () => {
         loop: false,
         autoplay: false,
         toggleOnWheel: true,
-      },
-      slots: {
-        default: [
-          h(CarouselItem, null, { default: () => 'A' }),
-          h(CarouselItem, null, { default: () => 'B' }),
-        ],
+        options: slides,
       },
     })
 
@@ -128,12 +109,7 @@ describe('carousel', () => {
         index: 1,
         loop: true,
         autoplay: false,
-      },
-      slots: {
-        default: [
-          h(CarouselItem, null, { default: () => 'A' }),
-          h(CarouselItem, null, { default: () => 'B' }),
-        ],
+        options: slides,
       },
     })
 
@@ -147,6 +123,50 @@ describe('carousel', () => {
       'translateX(calc(0% + 0px))',
     )
     expect(wrapper.attributes('data-loop-placement')).toBe('start')
+
+    wrapper.unmount()
+  })
+
+  it('should render one item per option and count them on the first frame', () => {
+    const wrapper = mount(Carousel, {
+      props: {
+        autoplay: false,
+        options: [{ label: 'A' }, { label: 'B' }, { label: 'C' }],
+      },
+    })
+
+    const slides = wrapper.findAll('.pxd-carousel-item')
+    expect(slides).toHaveLength(3)
+    expect(slides.map((slide) => slide.text())).toEqual(['A', 'B', 'C'])
+    /**
+     * Children that register themselves only reach the counter after they mount,
+     * which used to leave the first frame without indicators and a zeroed
+     * `--carousel-item-count`.
+     */
+    expect(wrapper.findAll('.pxd-carousel--indicator-item')).toHaveLength(3)
+    expect(wrapper.attributes('style')).toContain('--carousel-item-count: 3')
+
+    wrapper.unmount()
+  })
+
+  it('should pass the option and its index to the item slot', () => {
+    const wrapper = mount(Carousel, {
+      props: {
+        autoplay: false,
+        options: [
+          { value: 'a', label: 'A' },
+          { value: 'b', label: 'B' },
+        ],
+      },
+      slots: {
+        item: ({ item, index }: any) => `${index}-${item.value}`,
+      },
+    })
+
+    expect(wrapper.findAll('.pxd-carousel-item').map((slide) => slide.text())).toEqual([
+      '0-a',
+      '1-b',
+    ])
 
     wrapper.unmount()
   })
