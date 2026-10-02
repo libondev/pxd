@@ -7,8 +7,7 @@ import {
   useTailwindVariant,
 } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { cachedOff, cachedOn, once } from '../../utils/event.js'
-import { NOOP, throttleByRaf } from '../../utils/event.js'
+import { cachedOn, once, throttleByRaf } from '../../utils/event.js'
 import { getFallbackValue } from '../../utils/helper.js'
 
 defineOptions({
@@ -19,6 +18,12 @@ defineOptions({
     event: 'update:modelValue',
   },
 })
+
+type ThumbIndex = 0 | 1
+
+function clamp(value: number, lower: number, upper: number) {
+  return Math.min(Math.max(value, lower), upper)
+}
 
 const props = withDefaults(defineProps<SliderProps>(), {
   min: 0,
@@ -72,6 +77,34 @@ const sliderThumbClasses = createTailwindVariant({
   },
 })
 
+const sliderStopClasses = createTailwindVariant({
+  base: 'pxd-slider--stop pointer-events-none absolute top-1/2 size-1 -translate-x-1/2 -translate-y-1/2 rounded-full',
+  variants: {
+    filled: {
+      true: 'bg-background-100/70',
+      false: 'bg-gray-600/50',
+    },
+  },
+})
+
+const sliderMarkClasses = createTailwindVariant({
+  base: 'pxd-slider--mark cursor-pointer absolute top-0 appearance-none rounded-xs bg-none p-0 font-inherit text-xs whitespace-nowrap leading-none select-none outline-none self-focus-ring motion-safe:transition-colors',
+  variants: {
+    align: {
+      start: 'translate-x-0',
+      center: '-translate-x-1/2',
+      end: '-translate-x-full',
+    },
+    active: {
+      true: 'text-primary',
+      false: 'text-foreground-secondary enabled:hover:text-foreground',
+    },
+    disabled: {
+      true: 'cursor-not-allowed',
+    },
+  },
+})
+
 const VARIANTS = {
   primary: 'var(--color-primary)',
   success: 'hsl(var(--color-blue-700-value))',
@@ -80,114 +113,228 @@ const VARIANTS = {
   error: 'hsl(var(--color-red-700-value))',
 }
 
-let isDragging = false
+const filledStopClasses = sliderStopClasses({ filled: true })
+const unfilledStopClasses = sliderStopClasses({ filled: false })
+const activeMarkClasses = sliderMarkClasses({ active: true })
+const inactiveMarkClasses = sliderMarkClasses({ active: false })
+
 let sliderRect: DOMRect | null = null
 let lastClientX: number | null = null
 let lastUpdatedValue: number | [number, number] | null = null
+let stopMoveListener: (() => void) | null = null
 
 const sliderRef = shallowRef<HTMLElement>()
+const activeThumb = shallowRef<ThumbIndex | null>(null)
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 
-const activeThumb = shallowRef<'start' | 'end' | null>()
-
-const computedThumbClasses = computed(() => {
-  const base = {
-    size: props.size || configProvider.size,
-    disabled: props.disabled,
-  }
-
-  return {
-    start: sliderThumbClasses({ ...base, appearance: 'none' }),
-    end: sliderThumbClasses({ ...base, appearance: 'auto' }),
-  }
-})
-
+// Outside range mode the start slot is pinned to `min`, so both modes share one pair and
+// only the emitted payload differs.
 const valueRange = computed<[number, number]>(() => {
+  const value = modelValue.value
+
   if (props.range) {
-    return Array.isArray(modelValue.value)
-      ? (modelValue.value as [number, number])
-      : [props.min, modelValue.value as number]
+    return Array.isArray(value) ? (value as [number, number]) : [props.min, value as number]
   }
-  return [props.min, modelValue.value as number]
+
+  return [props.min, Array.isArray(value) ? (value[1] ?? 0) : (value as number)]
 })
+
+function setValue(range: [number, number]) {
+  const value = props.range ? range : range[1]
+
+  modelValue.value = value
+
+  return value
+}
 
 function getPercentage(value: number) {
-  const { min, max } = props
-  const range = max - min
-  return Math.max(0, Math.min(100, ((value - min) / range) * 100))
+  return clamp(((value - props.min) / (props.max - props.min)) * 100, 0, 100)
+}
+
+function getNumericStepValues(min: number, max: number, step: number) {
+  if (step <= 0) {
+    return []
+  }
+
+  // Only the values the drag/keyboard snapping can actually reach are stoppable.
+  const count = Math.floor((max - min) / step)
+
+  return Array.from({ length: count + 1 }, (_, index) => min + index * step)
+}
+
+const stepValues = computed<number[]>(() => {
+  const { step, min, max } = props
+
+  if (!Array.isArray(step)) {
+    return []
+  }
+
+  return [...step].sort((a, b) => a - b).filter((value) => value >= min && value <= max)
+})
+
+function toValidValue(value: number) {
+  if (!Array.isArray(props.step)) {
+    const offset = value - props.min
+
+    return clamp(
+      props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : value,
+      props.min,
+      props.max,
+    )
+  }
+
+  if (!stepValues.value.length) {
+    return props.min
+  }
+
+  // Ties resolve to the lower value because the list is sorted ascending.
+  return stepValues.value.reduce((closest, stepValue) =>
+    Math.abs(stepValue - value) < Math.abs(closest - value) ? stepValue : closest,
+  )
+}
+
+function toKeyboardValue(current: number, isNegative: boolean) {
+  if (!Array.isArray(props.step)) {
+    return isNegative ? current - props.step : current + props.step
+  }
+
+  const values = stepValues.value
+
+  if (!values.length) {
+    return props.min
+  }
+
+  const index = values.indexOf(current)
+
+  if (index !== -1) {
+    return values[Math.min(Math.max(index + (isNegative ? -1 : 1), 0), values.length - 1)]
+  }
+
+  // The current value is off-grid: jump to the closest allowed value in the pressed direction.
+  const candidates = isNegative ? values.slice().reverse() : values
+
+  return candidates.find((value) => (isNegative ? value < current : value > current)) ?? current
 }
 
 const startPercentage = computed(() => getPercentage(valueRange.value[0]))
 const endPercentage = computed(() => getPercentage(valueRange.value[1]))
 
-const trackStyle = computed(() => {
-  const backgroundColor = props.disabled
-    ? 'var(--color-gray-alpha-400)'
-    : getFallbackValue(props.variant, VARIANTS, 'primary')
+const stopList = computed(() => {
+  const { stops, min, max, step } = props
 
-  if (props.range) {
-    return {
-      left: `${startPercentage.value}%`,
-      width: `${endPercentage.value - startPercentage.value}%`,
-      backgroundColor,
-    }
+  if (!stops || max <= min) {
+    return []
   }
 
-  return {
-    width: `${endPercentage.value}%`,
-    backgroundColor,
-  }
+  const values = Array.isArray(step) ? stepValues.value : getNumericStepValues(min, max, step)
+
+  // Only the interior steps get a dot: the track edges already say where min
+  // and max are, and a dot there has nowhere to sit without hanging off the track.
+  return values
+    .map((value) => ({ value, percentage: getPercentage(value) }))
+    .filter((stop) => stop.percentage > 0 && stop.percentage < 100)
 })
 
+const markList = computed(() => {
+  const { marks, min, max, disabled } = props
+
+  if (!marks) {
+    return []
+  }
+
+  const entries = Object.keys(marks)
+    .map((key) => {
+      const value = Number(key)
+
+      return { value, label: marks[value] }
+    })
+    .filter((mark) => mark.value >= min && mark.value <= max)
+
+  return entries.map((mark, index) => ({
+    value: mark.value,
+    label: mark.label,
+    percentage: getPercentage(mark.value),
+    // The outermost labels are pinned to the track edges. Anchoring on
+    // value === min/max instead left every other mark centred, so a label near
+    // an end hung off the track.
+    classes: sliderMarkClasses({
+      align:
+        entries.length < 2
+          ? 'center'
+          : index === 0
+            ? 'start'
+            : index === entries.length - 1
+              ? 'end'
+              : 'center',
+      disabled,
+    }),
+  }))
+})
+
+const thumbList = computed(() => {
+  const base = {
+    size: props.size || configProvider.size,
+    disabled: props.disabled,
+  }
+  const [start, end] = valueRange.value
+  const endThumb = {
+    index: 1 as const,
+    value: end,
+    percentage: endPercentage.value,
+    appearance: 'auto' as const,
+  }
+  const thumbs = props.range
+    ? [
+        {
+          index: 0 as const,
+          value: start,
+          percentage: startPercentage.value,
+          appearance: 'none' as const,
+        },
+        endThumb,
+      ]
+    : [endThumb]
+
+  return thumbs.map((thumb) => ({
+    ...thumb,
+    classes: sliderThumbClasses({ ...base, appearance: thumb.appearance }),
+  }))
+})
+
+const trackStyle = computed(() => ({
+  left: `${startPercentage.value}%`,
+  width: `${endPercentage.value - startPercentage.value}%`,
+  backgroundColor: props.disabled
+    ? 'var(--color-gray-alpha-400)'
+    : getFallbackValue(props.variant, VARIANTS, 'primary'),
+}))
+
+function isStopFilled(percentage: number) {
+  return percentage >= startPercentage.value && percentage <= endPercentage.value
+}
+
 function updateValueFromPosition(clientX: number) {
-  if (!sliderRef.value || !activeThumb.value) {
+  const index = activeThumb.value
+
+  if (!sliderRef.value || index === null) {
     return
   }
 
   const rect = sliderRect ?? sliderRef.value.getBoundingClientRect()
+  const position = clamp((clientX - rect.left) / rect.width, 0, 1)
+  const next = [...valueRange.value] as [number, number]
 
-  // position percentage
-  const posPercentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+  next[index] = toValidValue(props.min + position * (props.max - props.min))
 
-  const range = props.max - props.min
-  const rawValue = props.min + posPercentage * range
+  // Dragging a thumb past its neighbour hands the drag over instead of clamping.
+  if (next[0] > next[1]) {
+    next.reverse()
+    activeThumb.value = index === 0 ? 1 : 0
+  }
 
-  const offset = rawValue - props.min
-  const newValue = Math.max(
-    props.min,
-    Math.min(
-      props.max,
-      props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : rawValue,
-    ),
-  )
-
-  if (props.range) {
-    const newValueArray = [...valueRange.value] as [number, number]
-
-    if (activeThumb.value === 'start') {
-      newValueArray[0] = newValue
-
-      if (newValue > newValueArray[1]) {
-        ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
-        activeThumb.value = 'end'
-      }
-    } else {
-      newValueArray[1] = newValue
-
-      if (newValue < newValueArray[0]) {
-        ;[newValueArray[0], newValueArray[1]] = [newValueArray[1], newValueArray[0]]
-        activeThumb.value = 'start'
-      }
-    }
-
-    if (valueRange.value[0] !== newValueArray[0] || valueRange.value[1] !== newValueArray[1]) {
-      lastUpdatedValue = newValueArray
-      modelValue.value = newValueArray
-    }
-  } else if (modelValue.value !== newValue) {
-    lastUpdatedValue = newValue
-    modelValue.value = newValue
+  if (next[0] !== valueRange.value[0] || next[1] !== valueRange.value[1]) {
+    lastUpdatedValue = setValue(next)
   }
 }
 
@@ -197,25 +344,8 @@ const scheduleUpdate = throttleByRaf(() => {
   }
 })
 
-function startDragging(ev: PointerEvent, thumb: 'start' | 'end') {
-  if (!sliderRef.value) {
-    return
-  }
-
-  sliderRect = sliderRef.value.getBoundingClientRect()
-  isDragging = true
-  activeThumb.value = thumb
-  lastClientX = ev.clientX
-
-  updateValueFromPosition(ev.clientX)
-
-  once(document, 'pointerup', endDragging)
-  once(document, 'pointercancel', cancelDragging)
-  cachedOn(document, 'pointermove', handleMove, { passive: false })
-}
-
 function handleMove(ev: PointerEvent) {
-  if (!isDragging || props.disabled) {
+  if (activeThumb.value === null || props.disabled) {
     return
   }
 
@@ -224,18 +354,33 @@ function handleMove(ev: PointerEvent) {
   scheduleUpdate()
 }
 
-function resetDragging() {
-  isDragging = false
-  lastClientX = null
-  sliderRect = null
+function startDragging(ev: PointerEvent, index: ThumbIndex) {
+  if (!sliderRef.value || props.disabled || activeThumb.value !== null) {
+    return
+  }
+
+  sliderRect = sliderRef.value.getBoundingClientRect()
+  activeThumb.value = index
+  lastClientX = ev.clientX
+
+  updateValueFromPosition(ev.clientX)
+
+  once(document, 'pointerup', endDragging)
+  once(document, 'pointercancel', stopDragging)
+  stopMoveListener = cachedOn(document, 'pointermove', handleMove, { passive: false })
+}
+
+function stopDragging() {
   activeThumb.value = null
+  sliderRect = null
+  lastClientX = null
   lastUpdatedValue = null
 
   scheduleUpdate.cancel()
-
-  cachedOff(document, 'pointermove', handleMove)
+  stopMoveListener?.()
+  stopMoveListener = null
   document.removeEventListener('pointerup', endDragging)
-  document.removeEventListener('pointercancel', cancelDragging)
+  document.removeEventListener('pointercancel', stopDragging)
 }
 
 function endDragging(ev: PointerEvent) {
@@ -245,153 +390,154 @@ function endDragging(ev: PointerEvent) {
     emits('change', lastUpdatedValue)
   }
 
-  resetDragging()
+  stopDragging()
 }
 
-function cancelDragging() {
-  resetDragging()
-}
-
-function handleSliderClick(ev: PointerEvent) {
-  if (isDragging || !props.range || props.disabled) {
-    return
-  }
-
+function nearestThumbIndex(clientX: number): ThumbIndex {
   const rect = sliderRef.value?.getBoundingClientRect()
-  if (!rect) {
-    return
-  }
+  const position = rect ? (clientX - rect.left) / rect.width : 0
 
-  const clickPosition = (ev.clientX - rect.left) / rect.width
-  const startPos = startPercentage.value / 100
-  const endPos = endPercentage.value / 100
-
-  // use the closest thumb
-  const thumb =
-    Math.abs(clickPosition - startPos) < Math.abs(clickPosition - endPos) ? 'start' : 'end'
-
-  startDragging(ev, thumb)
+  return Math.abs(position - startPercentage.value / 100) <
+    Math.abs(position - endPercentage.value / 100)
+    ? 0
+    : 1
 }
 
-function onWrapperPointerdown(ev: PointerEvent) {
-  if (props.disabled) {
-    return
-  }
+function onTrackPointerdown(ev: PointerEvent) {
+  startDragging(ev, props.range ? nearestThumbIndex(ev.clientX) : 1)
+}
 
-  if (props.range) {
-    handleSliderClick(ev)
-    return
-  }
-
-  startDragging(ev, 'end')
+function isSameValue(a: unknown, b: unknown) {
+  return Array.isArray(a) && Array.isArray(b)
+    ? a.length === b.length && a.every((value, index) => value === b[index])
+    : a === b
 }
 
 function initModelValue() {
-  if (props.range && !Array.isArray(modelValue.value)) {
-    modelValue.value = [props.min, modelValue.value as number]
-  } else if (!props.range && Array.isArray(modelValue.value)) {
-    modelValue.value = modelValue.value[1] ?? 0
+  const [start, end] = valueRange.value
+  // An array step spells out the allowed values, so an off-list value is corrected on mount
+  // instead of lingering until the first interaction.
+  const snapped = (
+    Array.isArray(props.step)
+      ? [toValidValue(start), toValidValue(end)].sort((a, b) => a - b)
+      : [start, end]
+  ) as [number, number]
+  const value = props.range ? snapped : snapped[1]
+
+  if (!isSameValue(modelValue.value, value)) {
+    modelValue.value = value
   }
 }
 
-function onThumbKeydown(ev: KeyboardEvent) {
+function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
   if (props.disabled) {
     return
   }
 
   const { code } = ev
-  const delta = code === 'ArrowLeft' ? -props.step : code === 'ArrowRight' ? props.step : 0
+  const isNegative = code === 'ArrowLeft'
 
-  if (!delta) {
+  if (!isNegative && code !== 'ArrowRight') {
     return
   }
 
   ev.preventDefault()
 
-  const target = ev.target as HTMLElement
+  const next = [...valueRange.value] as [number, number]
+  // A thumb never crosses the other one; outside range mode the start slot is pinned to
+  // `min`, which leaves the full [min, max] span.
+  next[index] = clamp(
+    toKeyboardValue(next[index], isNegative),
+    index === 0 ? props.min : next[0],
+    index === 0 ? next[1] : props.max,
+  )
 
-  const isStart = target.dataset.rangeStart === 'true'
-
-  if (props.range) {
-    const [startVal, endVal] = valueRange.value
-    const newRange: [number, number] = [startVal, endVal]
-
-    if (isStart) {
-      newRange[0] = Math.max(props.min, Math.min(endVal, startVal + delta))
-    } else {
-      newRange[1] = Math.max(startVal, Math.min(props.max, endVal + delta))
-    }
-
-    if (newRange[0] !== startVal || newRange[1] !== endVal) {
-      modelValue.value = newRange
-      emits('change', newRange)
-    }
-  } else {
-    const current = modelValue.value as number
-    const newValue = Math.max(props.min, Math.min(props.max, current + delta))
-
-    if (newValue !== current) {
-      modelValue.value = newValue
-      emits('change', newValue)
-    }
+  if (next[index] === valueRange.value[index]) {
+    return
   }
+
+  emits('change', setValue(next))
+}
+
+function selectMark(value: number) {
+  if (props.disabled) {
+    return
+  }
+
+  const next = [...valueRange.value] as [number, number]
+  // Move the thumb the mark sits closest to, matching a click on the track.
+  const index = props.range && Math.abs(value - next[0]) < Math.abs(value - next[1]) ? 0 : 1
+
+  next[index] = value
+
+  if (next[index] === valueRange.value[index]) {
+    return
+  }
+
+  emits('change', setValue(next))
 }
 
 initModelValue()
 
-onBeforeUnmount(() => {
-  scheduleUpdate.cancel()
-
-  cachedOff(document, 'pointermove', handleMove)
-  document.removeEventListener('pointerup', endDragging)
-  document.removeEventListener('pointercancel', cancelDragging)
-})
+onBeforeUnmount(stopDragging)
 </script>
 
 <template>
   <div
     v-bind="attrs"
-    ref="sliderRef"
-    :role="range ? 'group' : 'slider'"
-    :class="classes"
     :data-variant="variant"
-    @pointerdown.prevent="onWrapperPointerdown"
+    class="pxd-slider--container w-full max-w-full shrink-0"
   >
-    <div class="pxd-slider--track absolute h-full touch-none rounded-full" :style="trackStyle" />
-
     <div
-      v-if="props.range"
-      tabindex="0"
-      :data-dragging="isDragging && activeThumb === 'start'"
-      :data-range-start="true"
-      :class="computedThumbClasses.start"
-      :style="{ left: `${startPercentage}%` }"
-      @keydown="onThumbKeydown"
-      @contextmenu.prevent="NOOP"
-      @pointerdown.prevent.stop="startDragging($event, 'start')"
+      ref="sliderRef"
+      :role="range ? 'group' : 'slider'"
+      :class="classes"
+      @pointerdown.prevent="onTrackPointerdown"
     >
+      <div class="pxd-slider--track absolute h-full touch-none rounded-full" :style="trackStyle" />
+
       <span
-        class="py-1 px-1 text-xs -top-6 shadow-lg pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md border border-gray-900 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        v-for="stop in stopList"
+        :key="stop.value"
+        :class="isStopFilled(stop.percentage) ? filledStopClasses : unfilledStopClasses"
+        :style="{ left: `${stop.percentage}%` }"
+      />
+
+      <div
+        v-for="thumb in thumbList"
+        :key="thumb.index"
+        tabindex="0"
+        :data-dragging="activeThumb === thumb.index"
+        :class="thumb.classes"
+        :style="{ left: `${thumb.percentage}%` }"
+        @keydown="onThumbKeydown($event, thumb.index)"
+        @contextmenu.prevent
+        @pointerdown.prevent.stop="startDragging($event, thumb.index)"
       >
-        {{ valueRange[0] }}
-      </span>
+        <span
+          class="py-1 px-1 text-xs -top-6 shadow-lg pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md border border-gray-900 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+        >
+          {{ thumb.value }}
+        </span>
+      </div>
     </div>
 
-    <div
-      tabindex="0"
-      :data-range-start="range ? false : true"
-      :data-dragging="isDragging && activeThumb === 'end'"
-      :class="computedThumbClasses.end"
-      :style="{ left: `${endPercentage}%` }"
-      @keydown="onThumbKeydown"
-      @contextmenu.prevent="NOOP"
-      @pointerdown.prevent.stop="startDragging($event, 'end')"
-    >
-      <span
-        class="py-1 px-1 text-xs -top-6 shadow-lg pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-md border border-gray-900 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+    <div v-if="markList.length" class="mt-2 h-3 relative">
+      <button
+        v-for="mark in markList"
+        :key="mark.value"
+        type="button"
+        tabindex="-1"
+        :disabled="disabled"
+        :class="[
+          mark.classes,
+          mark.value <= valueRange[1] ? activeMarkClasses : inactiveMarkClasses,
+        ]"
+        :style="{ left: `${mark.percentage}%` }"
+        @click="selectMark(mark.value)"
       >
-        {{ valueRange[1] }}
-      </span>
+        {{ mark.label }}
+      </button>
     </div>
   </div>
 </template>
