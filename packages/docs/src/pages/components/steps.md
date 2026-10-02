@@ -192,10 +192,10 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 
 ## Events
 
-| Name | Payload | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| change | `number` | Emitted when the current step changes. |
-| update:modelValue | `number` | Emitted together with `change`. |
+| change | `(value: number) => void` | Emitted when the current step changes. |
+| update:modelValue | `(value: number) => void` | Emitted together with `change`. |
 
 ## Slots
 

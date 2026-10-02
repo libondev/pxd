@@ -123,6 +123,16 @@ Set `scalable="false"` to disable zooming when pressed.
 | cancelable | `boolean` | - | Allow cancelling by moving the pointer off the button |
 | progress-color | `string` | - | CSS colour used for the filling progress overlay |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| cancel | `() => void` | Emitted when a holding pointer leaves the button while `cancelable` is set. |
+| confirm | `() => void` | Emitted when the progress overlay has fully filled up. |
+| release | `(confirmed: boolean) => void` | Emitted when the pointer is released or cancelled after a press. |
+| pointerup | `(ev: PointerEvent) => void` | Emitted together with `release` when the document receives a pointer release after a press. |
+| pointerdown | `(ev: PointerEvent) => void` | Emitted when the button is pressed. |
+
 ## Slots
 
 | Name | Description |

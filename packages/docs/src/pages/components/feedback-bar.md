@@ -18,8 +18,8 @@ Quick feedback bar.
 
 ## Events
 
-| Name | Description |
-| --- | --- |
-| thumb-up | Fired when the thumb-up button is clicked |
-| thumb-down | Fired when the thumb-down button is clicked |
-| close | Fired when the close button is clicked |
+| Name | Type | Description |
+| --- | --- | --- |
+| close | `() => void` | Emitted when the close button is clicked. |
+| thumbUp | `() => void` | Emitted when the thumb-up button is clicked. |
+| thumbDown | `() => void` | Emitted when the thumb-down button is clicked. |

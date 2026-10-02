@@ -143,6 +143,12 @@ A set of headings, vertically stacked, that each reveal an related section of co
 | title | `string` | - | Heading rendered in the trigger, overridable by the `title` slot |
 | expand | `boolean` | - | Expand the panel; inside a group this is the initial state only |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| toggle | `(event: MouseEvent) => void` | Emitted when the trigger is clicked. |
+
 ## CollapseGroup Props
 
 | Name | Type | Default | Description |

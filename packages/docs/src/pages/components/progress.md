@@ -11,9 +11,9 @@ const value = ref(30)
 
 <template>
   <PStack>
-    <PProgress v-model="value" size="sm" />
-    <PProgress v-model="value" />
-    <PProgress v-model="value" size="lg" />
+    <PProgress :model-value="value" size="sm" />
+    <PProgress :model-value="value" />
+    <PProgress :model-value="value" size="lg" />
   </PStack>
 </template>
 ```
@@ -26,7 +26,7 @@ const value = ref(30)
 </script>
 
 <template>
-  <PProgress v-model="value" :min="20" :max="40" />
+  <PProgress :model-value="value" :min="20" :max="40" />
 </template>
 ```
 
@@ -60,8 +60,8 @@ function decrease() {
 </script>
 
 <template>
-  <PProgress v-model="progress" :colors="colors" label />
-  <PProgress v-model="progress" :colors="colors"> {{ progress }} / 100 </PProgress>
+  <PProgress :model-value="progress" :colors="colors" label />
+  <PProgress :model-value="progress" :colors="colors"> {{ progress }} / 100 </PProgress>
 
   <PStack class="mt-4">
     <PButton variant="primary" @click="increase">Increase</PButton>
@@ -94,6 +94,7 @@ function decrease() {
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Color of the filled bar |
 | colors | `Record<string, string>` | - | Threshold-to-color map; the highest key below the value wins |
 | model-value | `number \| null` | - | Current progress value, clamped between `min` and `max` |
+
 
 ## Slots
 

@@ -209,8 +209,21 @@ const marqueeRef = shallowRef()
 | wrapable | `boolean` | `false` | Let the text wrap onto multiple lines, requires `scrollable` to be `false` |
 | pause-on-hover | `boolean` | `true` | Pause the animation while the pointer is over the marquee |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| click | `(event: MouseEvent) => void` | Emitted when the marquee root is clicked. |
+| replay | `() => void` | Emitted on every completed scroll pass, both the first run and each loop iteration. |
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| reset | `() => void` | Re-measure the wrapper and the content, then restart the scroll animation. |

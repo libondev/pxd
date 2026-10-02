@@ -47,6 +47,6 @@ CopyButton extends the [Button component](/components/button).
 
 ## Events
 
-| Name | Parameters | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| copy | `(text: string \| null \| undefined, event: PointerEvent)` | Emitted when the copy action is triggered |
+| copy | `(text: string \| null \| undefined, event: PointerEvent) => void` | Emitted when the copy action is triggered. |

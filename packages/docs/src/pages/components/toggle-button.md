@@ -259,6 +259,13 @@ const toggleButtonOptions = [
 | value | `string \| number \| boolean` | `true` | Value this button contributes to the group model |
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Checked state, an array of values inside a group |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the button is clicked. |
+| update:modelValue | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the button writes its new checked state to the model. |
+
 ## ToggleButtonGroup Props
 
 | Name | Type | Default | Description |
@@ -270,6 +277,13 @@ const toggleButtonOptions = [
 | options | `{ label, value, disabled? }[]` | - | Buttons rendered from the default slot, one per option |
 | variant | `'ghost' \| 'outline'` | `ghost` | Default variant for every button, overridable per button |
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | `() => []` | Active value, or an array of values when `multiple` |
+
+## ToggleButtonGroup Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when a button inside the group is clicked. |
+| update:modelValue | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the group writes the new selection to the model. |
 
 ## Slots
 

@@ -164,6 +164,16 @@ import Counter from 'doc:Counter.vue'
 | root-margin | `string` | `20%` | Margin that grows or shrinks the root bounds |
 | threshold | `number \| number[]` | `0` | Visibility ratio that triggers the observer, `0` to `1` |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| visible-change | `(visible: boolean) => void` | Emitted after every intersection callback with whether the container is now intersecting. |
+| before-show | `() => void` | Emitted before the slot content is rendered when the container enters the viewport. |
+| before-hide | `() => void` | Emitted before the slot content is removed when the container leaves the viewport. |
+| show | `() => void` | Emitted on the next tick after the slot content has been rendered. |
+| hide | `() => void` | Emitted on the next tick after the slot content has been removed. |
+
 ## Slots
 
 | Name | Description |

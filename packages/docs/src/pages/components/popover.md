@@ -397,9 +397,30 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
 | lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| show | `() => void` | Emitted when the popover becomes visible. |
+| hide | `() => void` | Emitted when the popover becomes hidden. |
+| escape | `(event: KeyboardEvent) => void` | Emitted when `Escape` is pressed while the popover is open, before it hides. |
+| outside-click | `(event: PointerEvent) => void` | Emitted when a click lands outside both the trigger and the popover while it is open. |
+| trigger-click | `(event: PointerEvent) => void` | Emitted when one of the resolved trigger elements is clicked. |
+| visible-change | `(visible: boolean) => void` | Emitted when the visible state changes. |
+| wrapper-keydown | `(event: KeyboardEvent) => void` | Emitted when a key is pressed inside the popover while it is open. |
+| update:modelValue | `(visible: boolean) => void` | Emitted right after `show` or `hide` with the new visibility. |
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Trigger content |
 | content | Popover content. Slot props: `activeTrigger: HTMLElement \| null`, `activeTriggerIndex: number`. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| show | `() => Promise<void>` | Show the popover after the configured `show-delay`. |
+| hide | `(immediate?: boolean) => Promise<void>` | Hide the popover, skipping the `hide-delay` when `immediate` is `true`. |
+| update | `() => void` | Recompute the popover position on the next animation frame. |

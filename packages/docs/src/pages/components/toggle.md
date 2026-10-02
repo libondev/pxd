@@ -188,3 +188,10 @@ const customValue = ref(false)
 | inactive-color | `string` | - | Track color when unchecked, accepts any CSS color |
 | active-label | `string` | - | Text shown beside the switch when it is on |
 | inactive-label | `string` | - | Text shown beside the switch when it is off |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: boolean \| number \| string) => void` | Emitted when the switch is toggled and the `before-change` guard allows it. |
+| update:modelValue | `(value: boolean \| number \| string) => void` | Emitted when the active or inactive value is written to the model. |

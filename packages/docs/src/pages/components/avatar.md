@@ -112,6 +112,14 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 | loading | `boolean` | - | Show a spinning ring over the avatar |
 | placeholder | `boolean` | - | Render the shimmering placeholder instead of the image |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| load | `(event: Event) => void` | Emitted when the avatar image has finished loading. |
+| error | `(event: Event) => void` | Emitted when the avatar image fails to load or its request is aborted. |
+| loadstart | `(event: Event) => void` | Emitted when the avatar image starts loading. |
+
 ## AvatarGroup Props
 
 | Name | Type | Default | Description |
@@ -125,3 +133,9 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| getLoadingStatus | `() => AvatarStatus` | Return the current image loading status. |

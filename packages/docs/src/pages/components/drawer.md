@@ -519,6 +519,17 @@ function handleClose() {
 | close-on-press-escape | `boolean` | `true` | Close the drawer when the `Esc` key is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the drawer when the overlay is clicked |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| show | `() => void` | Emitted when the drawer becomes visible. |
+| hide | `() => void` | Emitted when the drawer stops being visible. |
+| change | `(visible: boolean) => void` | Emitted together with `update:modelValue` when the open state of the drawer changes. |
+| outside-click | `(ev: PointerEvent) => void` | Emitted when the overlay behind the drawer is clicked. |
+| visible-change | `(visible: boolean) => void` | Emitted after every change of the drawer's open state. |
+| update:modelValue | `(visible: boolean) => void` | Emitted when the open state of the drawer changes. |
+
 ## Slots
 
 | Name | Description |

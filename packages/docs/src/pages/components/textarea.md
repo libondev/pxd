@@ -95,3 +95,12 @@ const outsideValue = ref('Hello')
 | placeholder | `string` | - | Placeholder text shown while the value is empty |
 | show-word-limit | `boolean \| string` | - | Show the character counter, `count / max` when `max-length` is set |
 | word-limit-position | `'inside' \| 'outside'` | `inside` | Place the counter inside the field or below it |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| update:modelValue | `(value: string \| number) => void` | Emitted on every keystroke that changes the text. |
+| change | `(value: string \| number) => void` | Emitted when the field is committed, as the browser fires its native `change` event. |
+| focus | `(event: FocusEvent) => void` | Emitted when the textarea gains focus. |
+| blur | `(event: FocusEvent) => void` | Emitted when the textarea loses focus. |

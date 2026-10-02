@@ -127,6 +127,13 @@ const modelValue = ref('1')
 | options | `{ label, value, disabled? }[]` | `() => []` | Rendered as `SwitchItem` when the default slot is empty |
 | model-value | `string \| number` | `` | Value of the currently selected item |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string \| number) => void` | Emitted when the user selects a different item. |
+| update:modelValue | `(value: string \| number) => void` | Emitted when the selected value changes. |
+
 ## SwitchItem Props
 
 | Name | Type | Default | Description |

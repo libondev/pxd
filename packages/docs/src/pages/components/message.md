@@ -217,6 +217,12 @@ function clearAll() {
 | expand | `boolean` | - | Expand the stack so every message is fully shown |
 | position | `ComponentPosition<'top' \| 'bottom'>` | `top` | Where the stack is anchored, `top` or `bottom` with `-start` or `-end` |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| close | `(id: MessageItemConfig['id']) => void` | Emitted when a message leaves the stack, whether its timer expired, its action button was used, or it was removed through the message API. |
+
 ## MessageItem Props
 
 | Name | Type | Default | Description |
@@ -224,3 +230,20 @@ function clearAll() {
 | max | `number` | - | Visible item limit, items beyond it are hidden |
 | index | `number` | - | Position in the stack, driving the scale offset and `z-index` |
 | item-data | `MessageItemConfig` | - | Message configuration created by `useMessage` |
+
+## MessageItem Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| close | `(key: MessageItemConfig['id']) => void` | Emitted when the close or action button of the item is clicked. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| messages | `MessageItemConfig[]` | The messages currently held in the group, newest first. |
+| get | `(id: MessageItemConfig['id']) => { index: number, message: MessageItemConfig \| null }` | Look up a message by id and get back its index in the group together with its configuration. |
+| pause | `(id: MessageItemConfig['id']) => void` | Pause the auto-close timer of the message with the given id, keeping the time that is left. |
+| resume | `(id: MessageItemConfig['id']) => void` | Restart the auto-close timer of the message with the given id, closing it right away when 100 ms or less is left. |
+| close | `(id: MessageItemConfig['id']) => void` | Close the message with the given id, clearing its timer and emitting `close`. |
+| clear | `() => void` | Clear every pending timer and drop all messages without emitting `close`. |

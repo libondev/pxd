@@ -111,8 +111,22 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | scrollbar-hover-color | `string` | - | Thumb color on hover or active, defaulting to `--color-gray-alpha-500` |
 | bottom-threshold | `number` | `10` | Distance in `px` from the end that triggers the `bottom` event |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| scroll | `(event: Event) => void` | Emitted when the scrollable content is scrolled. |
+| bottom | `(direction: ComponentDirection, event: Event) => void` | Emitted when a vertical or horizontal scroll reaches the end of the content within `bottom-threshold`. |
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| scrollTo | `(top: number, left: number) => void` | Scroll the content to the given offsets. |
+| forceUpdate | `() => void` | Recalculate the cached padding and scrollbar metrics immediately. |

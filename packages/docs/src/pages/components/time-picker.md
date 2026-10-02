@@ -148,3 +148,10 @@ const time = ref('18:30:00')
 | close-on-press-escape | `boolean` | `true` | Close the time panel when pressing `Escape` |
 | label-format | `string` | `HH:mm:ss` | Day.js format used to display the time in the input |
 | value-format | `string` | `HH:mm:ss` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ComponentDateTimeValue) => void` | Emitted when a new time is committed by the input, a preset, the `Now` button, or an outside click. |
+| update:modelValue | `(value: ComponentDateTimeValue) => void` | Emitted when the committed time is written to the model. |

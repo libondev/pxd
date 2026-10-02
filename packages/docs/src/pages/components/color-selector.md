@@ -45,3 +45,10 @@ const color = ref(colors[0])
 | size | `'sm' \| 'md' \| 'lg'` | - | Swatch diameter in `px`: `16`, `20` or `24`, falling back to the config size |
 | colors | `string[]` | `() => ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF']` | Selectable swatches offered by the selector |
 | model-value | `string` | - | Currently selected color, expected to match one of `colors` |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string) => void` | Emitted when another color swatch is selected. |
+| update:modelValue | `(value: string) => void` | Emitted right after `change` with the selected color. |

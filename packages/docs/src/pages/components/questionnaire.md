@@ -141,9 +141,9 @@ function onSubmit(answers) {
 
 ## Events
 
-| Name | Parameters | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| submit | `(answers: QuestionnaireAnswers)` | Emitted when the questionnaire is submitted. |
+| submit | `(answers: QuestionnaireAnswers) => void` | Emitted when the questionnaire is submitted. |
 
 `answers` is keyed by each question's `header`:
 

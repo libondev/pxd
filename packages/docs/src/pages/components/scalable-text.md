@@ -36,3 +36,10 @@ Set a minimum font size below which the text will be allowed to wrap instead of 
 | --- | --- | --- | --- |
 | text | `string` | - | Text to shrink until it fits the container width |
 | min-font-size | `number` | `12` | Smallest allowed size in `px` before the text wraps |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| fittedFontSize | `number \| null` | The font size in `px` that fits the container, or `null` when the text already fits at its computed size. |
+| needsWrap | `boolean` | Whether the text still overflows at `min-font-size` and is allowed to wrap. |

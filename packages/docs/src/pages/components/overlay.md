@@ -93,6 +93,14 @@ function onClickToClose() {
 | close-on-click-overlay | `boolean` | `false` | Close the overlay when the backdrop is clicked |
 | lock-scroll-on-visible | `boolean` | `true` | Prevent the page behind the overlay from scrolling |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| click | `(event: PointerEvent) => void` | Emitted when the backdrop is clicked. |
+| escape | `(event: KeyboardEvent) => void` | Emitted when the Escape key is pressed while this overlay is the topmost open one and `close-on-press-escape` is set. |
+| update:modelValue | `(value: boolean) => void` | Emitted with `false` after Escape, or after a backdrop click when `close-on-click-overlay` is set. |
+
 ## Slots
 
 | Name | Description |

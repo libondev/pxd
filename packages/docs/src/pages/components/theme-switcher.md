@@ -30,3 +30,9 @@ Support all attributes of the [button](/components/button) component (except slo
   </PStack>
 </template>
 ```
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| toggle | `(scheme: ColorScheme) => void` | Emitted when the resolved colour scheme changes. |

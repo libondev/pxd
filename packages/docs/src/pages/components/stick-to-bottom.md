@@ -107,11 +107,11 @@ function append() {
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | content-style | `CSSProperties \| string` | - | Extra style on the inner content wrapper |
 
-## Emits
+## Events
 
-| Name | Payload | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| change | `[isAtBottom: boolean]` | Fired when at-bottom state changes |
+| change | `(isAtBottom: boolean) => void` | Emitted when the at-bottom state changes. |
 
 ## Slots
 
@@ -120,13 +120,14 @@ function append() {
 | default | - | Scrollable content |
 | action | `{ isAtBottom, scrollToBottom, forceStickToBottom }` | Sticky action area for controls such as a jump-to-bottom button |
 
-## Exposed
+## Methods
 
 | Name | Type | Description |
 | --- | --- | --- |
-| containerEl | `HTMLElement` | Scroll container element (for virtual list / external scroll APIs) |
-| isAtBottom | `boolean` | Whether the container is currently within the bottom threshold |
-| scrollToBottom | `() => void` | Instantly scroll to bottom (Y axis only) |
-| forceStickToBottom | `() => void` | Scroll to bottom and re-enable auto-stick |
-| stickIfNeeded | `() => void` | Scroll to bottom only when currently at bottom and enabled |
-| update | `() => void` | Re-measure whether the container is at the bottom |
+| containerRef | `HTMLElement` | Scroll container element exposed for external scroll APIs. |
+| contentRef | `HTMLElement` | Inner content wrapper element exposed for external measurement. |
+| isAtBottom | `boolean` | Whether the container is currently within the bottom threshold. |
+| scrollToBottom | `() => void` | Scroll instantly to the bottom, leaving horizontal scroll untouched. |
+| forceStickToBottom | `() => void` | Scroll to the bottom and re-enable auto-stick. |
+| stickIfNeeded | `() => void` | Scroll to the bottom only when already at the bottom and `enabled` is true. |
+| update | `() => void` | Re-measure whether the container is at the bottom. |

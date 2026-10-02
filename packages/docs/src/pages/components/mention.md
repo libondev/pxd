@@ -100,11 +100,11 @@ const options = [
 
 ## Events
 
-| Name | Description |
-| --- | --- |
-| update:modelValue | Fired when editor HTML changes |
-| change | Fired with the same HTML as `update:modelValue` |
-| mention-click | Fired when a mention chip is clicked: `{ key, label, event }` |
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string) => void` | Emitted when the editor HTML changes. |
+| mention-click | `(payload: MentionClickPayload) => void` | Emitted when a mention chip is clicked. |
+| update:modelValue | `(value: string) => void` | Emitted when the editor HTML changes. |
 
 ## Slots
 

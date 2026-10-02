@@ -153,18 +153,11 @@ Double clicking a handle collapses the panel before it, see [Collapse](#collapse
 
 ## Events
 
-| Name | Parameters | Description |
-| --- | --- | --- |
-| update:modelValue | `(sizes: number[])` | Emitted whenever a panel size changes |
-| change | `(sizes: number[])` | Emitted once when a drag or a key press ends, with the committed sizes |
-| reset | `(sizes: number[])` | Emitted when a double click puts a pair of panels back to their configured sizes |
-
-## Exposed
-
 | Name | Type | Description |
 | --- | --- | --- |
-| getPanelSizes | `() => number[]` | Current panel sizes as percentages |
-| reset | `(handleKey?: string) => void` | Puts panels back to their configured sizes and expands collapsed pairs; without an argument it does the whole group |
+| change | `(sizes: number[]) => void` | Emitted when a drag, a key press, or a double click commits new panel sizes. |
+| reset | `(sizes: number[]) => void` | Emitted when the panels are put back to their configured sizes. |
+| update:modelValue | `(sizes: number[]) => void` | Emitted whenever a panel size changes. |
 
 ## ResizablePanel Props
 
@@ -192,3 +185,10 @@ Double clicking a handle collapses the panel before it, see [Collapse](#collapse
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| getPanelSizes | `() => number[]` | Read the current panel sizes as percentages in DOM order. |
+| reset | `(handleKey?: string) => void` | Restore the configured sizes and expand collapsed pairs, for one handle's pair or for the whole group when no key is given. |

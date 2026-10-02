@@ -291,8 +291,23 @@ const active = ref(false)
 </template>
 ```
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(active: boolean) => void` | Emitted when the `active` prop changes. |
+| reset | `() => void` | Emitted when the countdown is restarted from its initial time. |
+| finish | `() => void` | Emitted when the countdown reaches its end. |
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| reset | `() => void` | Restart the countdown from its initial time. |
+| times | `{ dd: string, hh: string, mm: string, ss: string, ms: string }` | Read the remaining time broken down into days, hours, minutes, seconds and milliseconds. |

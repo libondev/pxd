@@ -48,6 +48,12 @@ A button to back to top.
 | scroll-target | `'top' \| 'bottom'` | `top` | Scroll to the `top` or `bottom` on click |
 | scroll-behavior | `'smooth' \| 'instant'` | `smooth` | `smooth` animates the scroll, `instant` jumps at once |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| click | `(event: PointerEvent) => void` | Emitted when the back-to-top button is clicked. |
+
 ## Slots
 
 | Name | Description |

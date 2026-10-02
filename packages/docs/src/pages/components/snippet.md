@@ -68,3 +68,9 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 | size | `'sm' \| 'md' \| 'lg'` | - | Snippet size, falls back to the config provider size |
 | prompt | `boolean \| string` | `$ ` | Shell prompt prefix, `false` hides it and a string sets the text |
 | variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` | Color scheme: `default`, `primary`, `error`, `warning` or `success` |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| copy | `(text: string) => void` | Emitted after the copy button has written the snippet text to the clipboard. |

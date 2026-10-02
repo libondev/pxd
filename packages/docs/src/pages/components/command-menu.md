@@ -64,6 +64,15 @@ const options = [
 | close-on-press-escape | `boolean` | `true` | Close the menu when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the menu when the overlay is clicked |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| update:modelValue | `(value: boolean) => void` | Emitted when the open state of the menu changes. |
+| change | `(value: boolean) => void` | Emitted together with `update:modelValue` when the open state of the menu changes. |
+| show | `() => void` | Emitted when the menu opens. |
+| hide | `() => void` | Emitted when the menu closes. |
+
 ## Slots
 
 | Name | Description |

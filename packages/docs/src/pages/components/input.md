@@ -179,9 +179,32 @@ const value = ref('')
 | show-word-limit | `boolean \| string` | - | Show the character counter, `count / max` when `max-length` is set |
 | word-limit-position | `'inside' \| 'outside'` | `inside` | Place the counter inside the field or below it |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| click | `(ev: MouseEvent) => void` | Emitted when the field is clicked. |
+| change | `(value: string, ev: Event) => void` | Emitted when the value is committed by pressing `Enter`, by the native change event, or by clearing the field. |
+| focus | `(ev: FocusEvent) => void` | Emitted when the field gains focus. |
+| blur | `(ev: FocusEvent) => void` | Emitted when the field loses focus. |
+| keydown | `(ev: KeyboardEvent) => void` | Emitted when a key is pressed while the field is neither readonly nor disabled. |
+| update:modelValue | `(value: string) => void` | Emitted on every input that is not part of an IME composition, and when a composition ends. |
+| compositionstart | `(ev: CompositionEvent) => void` | Emitted when an IME composition starts. |
+| compositionupdate | `(ev: CompositionEvent) => void` | Emitted while an IME composition is in progress. |
+| compositionend | `(ev: CompositionEvent) => void` | Emitted when an IME composition ends. |
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | prefix | Prefix slot |
 | suffix | Suffix slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| blur | `() => void` | Remove focus from the input element. |
+| clear | `(ev: Event) => void` | Reset the value to `clear-value` and emit `change` with an empty string. |
+| focus | `() => void` | Move focus to the input element. |
+| select | `() => void` | Select the whole value of the input element. |

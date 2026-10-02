@@ -92,7 +92,7 @@ const items = Array.from({ length: 50 }, (_, i) => ({
 
 ## Infinite scroll
 
-Use the `status` parameter with the `bottom` / `retry` event to achieve infinite scrolling of data loading
+Use the `status` parameter together with the `on-bottom` callback and the `retry` event to achieve infinite scrolling of data loading
 
 ```vue demo
 <script setup>
@@ -165,9 +165,28 @@ onMounted(() => {
 </template>
 ```
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| retry | `() => void` | Emitted when the message row is clicked while `status` is `error`. |
+
+Reaching the bottom is reported through the `on-bottom` prop, not an event.
+
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | item | item slot |
 | message | message slot |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| totalSize | `number` | Total scrollable size of the list in pixels, `0` while the list is disabled. |
+| virtualItems | `VirtualListItem[]` | Items the virtualizer currently renders, empty while the list is disabled. |
+| getVirtualizer | `() => Virtualizer<HTMLElement, HTMLElement>` | Get the underlying TanStack virtualizer instance. |
+| scrollToIndex | `(index: number, options?: ScrollToIndexOptions) => void` | Scroll to the item at the given index. |
+| scrollToOffset | `(toOffset: number, options?: ScrollToOffsetOptions) => void` | Scroll to an absolute pixel offset. |
+| scrollBy | `(delta: number, options?: ScrollToOffsetOptions) => void` | Scroll by a pixel delta. |

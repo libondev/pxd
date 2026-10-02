@@ -67,7 +67,7 @@ const page = ref(1)
 
 ## Events
 
-| Name | Parameters | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| update:model-value | `(page: number)` | Emitted when the page changes |
-| update:page-size | `(pageSize: number)` | Emitted when the page size changes |
+| update:pageSize | `(page: number) => void` | Emitted when the page size changes. |
+| update:modelValue | `(page: number) => void` | Emitted when the page changes. |

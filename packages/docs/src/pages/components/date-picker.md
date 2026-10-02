@@ -64,3 +64,10 @@ const date2 = ref('2024-08-15')
 | close-on-press-escape | `boolean` | `true` | Close the calendar popover when pressing `Escape` |
 | label-format | `string` | `YYYY-MM-DD` | Input display format |
 | value-format | `string` | `YYYY-MM-DD` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ComponentDateTimeValue) => void` | Emitted when a date different from the current one is committed, by picking it in the calendar, typing it into the field or clearing the field. |
+| update:modelValue | `(value: ComponentDateTimeValue) => void` | Emitted together with `change` when a date different from the current one is committed. |

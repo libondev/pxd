@@ -91,3 +91,16 @@ function changeValue() {
 | animateOnMount | `boolean` | `true` | Whether to play the animation on first mount. When `false`, the initial value is shown as-is; later value changes still animate. |
 | thousands | `boolean` | `false` | Format the integer part with thousand separators. |
 | mode | `'tween' \| 'scroll'` | `'tween'` | `tween` interpolates the value; `scroll` rolls each digit |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| finish | `() => void` | Emitted when the animation finishes on the target value. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| displayValue | `number` | The value the running animation is currently displaying. |
+| formattedValue | `string` | `displayValue` formatted with the current decimal places and thousands setting. |

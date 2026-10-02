@@ -120,6 +120,13 @@ const options = [
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | close-on-press-escape | `boolean` | `true` | Close the menu when the `Escape` key is pressed |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ListModelValue) => void` | Emitted once the option selection is committed, right away for a single-select menu and on close for a multiple one. |
+| update:modelValue | `(value: ListModelValue) => void` | Emitted on every option toggle, while the menu stays open in a multiple menu. |
+
 ## Slots
 
 | Name | Description |

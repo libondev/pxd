@@ -42,3 +42,10 @@ const expanded = ref(false)
 | more-text | `string` | `Show More` | Label rendered while the content is collapsed |
 | less-text | `string` | `Show Less` | Label rendered while the content is expanded |
 | model-value | `boolean` | `false` | Expanded state, toggled on every click |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: boolean) => void` | Emitted when the button toggles the expanded state. |
+| update:modelValue | `(value: boolean) => void` | Emitted with the new expanded state on every toggle. |

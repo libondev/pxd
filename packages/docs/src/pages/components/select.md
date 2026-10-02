@@ -114,7 +114,7 @@ const options = [
 
 ## Events
 
-| Name | Description |
-| --- | --- |
-| update:modelValue | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |
-| change | Single: after an option is chosen. Multiple: when the menu closes after the selection changed. |
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ListModelValue) => void` | Emitted when the selection changes, right after an option is chosen in single mode and when the menu closes in multiple mode. |
+| update:modelValue | `(value: ListModelValue) => void` | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |

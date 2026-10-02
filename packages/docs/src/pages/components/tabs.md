@@ -179,10 +179,10 @@ const options = [
 
 ## Events
 
-| Name | Payload | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| change | `string \| number` | Fired once when a tab becomes active through a click or a keyboard command |
-| update:modelValue | `string \| number` | Fired together with `change` in controlled mode |
+| change | `(value: string \| number) => void` | Emitted once when a tab becomes active through a click or a keyboard command. |
+| update:modelValue | `(value: string \| number) => void` | Emitted together with `change` in controlled mode. |
 
 ## Slots
 

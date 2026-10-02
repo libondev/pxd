@@ -105,3 +105,16 @@ const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum dol
 | less-text | `string` | `Collapse` | Label of the action while the text is expanded |
 | more-action-class | `string` | - | Extra class for the action in the collapsed state |
 | less-action-class | `string` | - | Extra class for the action in the expanded state |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| toggle | `(expanded: boolean) => void` | Emitted when the action link is clicked to expand or collapse the text. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| isExpanded | `boolean` | Read whether the full text is currently expanded. |
+| isOverflow | `boolean` | Read whether the text overflows its container and is being truncated. |

@@ -96,6 +96,13 @@ const checked = ref(false)
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Checked state, or the array of values inside a group |
 | indeterminate | `boolean` | - | Render a minus icon while the checkbox is unchecked |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string \| number \| boolean) => void` | Emitted when the checkbox is toggled by a click. |
+| update:modelValue | `(value: string \| number \| boolean) => void` | Emitted right after `change` with the same value. |
+
 ## CheckboxGroup Props
 
 | Name | Type | Default | Description |
@@ -103,3 +110,10 @@ const checked = ref(false)
 | disabled | `boolean` | - | Disable every checkbox inside the group |
 | options | `{ label, value, disabled? }[]` | `() => []` | Renders one `PCheckbox` per item when the default slot is empty |
 | model-value | `string \| number \| boolean[]` | `() => []` | Values of the checked boxes, toggled on change |
+
+## CheckboxGroup Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: (string \| number \| boolean)[]) => void` | Emitted when a checkbox inside the group is checked or unchecked. |
+| update:modelValue | `(value: (string \| number \| boolean)[]) => void` | Emitted right after `change` with the new list of checked values. |

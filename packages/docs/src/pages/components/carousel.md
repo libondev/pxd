@@ -161,6 +161,12 @@ const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, 
 | pause-on-hover | `boolean` | `true` | Suspend autoplay while the pointer is over the carousel |
 | toggle-on-wheel | `boolean` | - | Switch items on mouse wheel instead of scrolling the page |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(index: number) => void` | Emitted after the carousel has moved to another slide. |
+
 ## Slots
 
 | Name | Description |

@@ -253,6 +253,12 @@ const data = [
 | item-radius | `string \| number` | - | Corner radius of each cell; a number is treated as `px` |
 | default-select | `string` | - | Date pre-selected on mount, drawn with a primary border |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(date: string, event: MouseEvent) => void` | Emitted when a date cell is clicked. |
+
 ## Slots
 
 | Name | Description |

@@ -270,6 +270,17 @@ function handleClose() {
 | close-on-press-escape | `boolean` | `false` | Close the modal when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `false` | Close the modal when the overlay mask is clicked |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| show | `() => void` | Emitted right after the modal becomes visible. |
+| hide | `() => void` | Emitted right after the modal becomes hidden. |
+| change | `(value: boolean) => void` | Emitted when the modal closes itself, either through the Escape key or an overlay click. |
+| outside-click | `(event: PointerEvent) => void` | Emitted when the overlay mask is clicked. |
+| visible-change | `(visible: boolean) => void` | Emitted on every change of the visible state, whether it comes from the parent or from the modal itself. |
+| update:modelValue | `(visible: boolean) => void` | Emitted when the modal closes itself, so a `v-model` binding stays in sync. |
+
 ## Slots
 
 | Name | Description |

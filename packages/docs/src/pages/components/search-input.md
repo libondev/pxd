@@ -108,19 +108,19 @@ const val = ref('')
 
 ## Events
 
-| Name | Payload | Description |
+| Name | Type | Description |
 | --- | --- | --- |
-| search | `value: string` | Emitted when Enter is pressed with a non-empty value while not loading. |
-| update:model-value | `value: string` | Emitted when the input value changes. Used by `v-model`. |
-| input | `value: string` | Emitted when the input value changes. |
-| change | `value: string, event: Event` | Emitted when the input value changes. |
-| focus | `event: FocusEvent` | Emitted when the input gains focus. |
-| blur | `event: FocusEvent` | Emitted when the input loses focus. |
-| click | `event: MouseEvent` | Emitted when the input container is clicked. |
-| keydown | `event: KeyboardEvent` | Emitted when a key is pressed. |
-| compositionstart | `event: CompositionEvent` | Emitted when text composition starts. |
-| compositionupdate | `event: CompositionEvent` | Emitted when text composition updates. |
-| compositionend | `event: CompositionEvent` | Emitted when text composition ends. |
+| search | `(value: string) => void` | Emitted when Enter is pressed with a non-empty value while not loading. |
+| click | `(event: MouseEvent) => void` | Emitted when the input container is clicked. |
+| change | `(value: string, event: Event) => void` | Emitted when the input value changes. |
+| focus | `(event: FocusEvent) => void` | Emitted when the input gains focus. |
+| blur | `(event: FocusEvent) => void` | Emitted when the input loses focus. |
+| keydown | `(event: KeyboardEvent) => void` | Emitted when a key is pressed. |
+| update:modelValue | `(value: string) => void` | Emitted when the input value changes. Used by `v-model`. |
+| compositionstart | `(event: CompositionEvent) => void` | Emitted when text composition starts. |
+| compositionupdate | `(event: CompositionEvent) => void` | Emitted when text composition updates. |
+| compositionend | `(event: CompositionEvent) => void` | Emitted when text composition ends. |
+| input | `(event: Event) => void` | Native DOM input event from the inner `<input>`, forwarded through attribute fallthrough rather than declared by this component. |
 
 ## Slots
 
@@ -128,3 +128,12 @@ const val = ref('')
 | --- | --- |
 | prefix | Custom prefix content. The loading icon replaces this slot while `loading` is `true`. |
 | suffix | Custom suffix content, forwarded to `PInput`. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| blur | `() => void` | Blur the underlying input. |
+| clear | `(event?: Event) => void` | Clear the underlying input and emit `change`. |
+| focus | `() => void` | Focus the underlying input. |
+| select | `() => void` | Select the text of the underlying input. |

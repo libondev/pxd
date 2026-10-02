@@ -131,6 +131,13 @@ const modelValue = ref('trial')
 | options | `{ label, value, disabled? }[]` | - | Items rendered when no default slot is given |
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Selected value, an array when `multiple` is set |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string \| number \| (string \| number)[]) => void` | Emitted when an item in the group is selected or deselected. |
+| update:modelValue | `(value: string \| number \| (string \| number)[]) => void` | Emitted right after `change` with the new selection. |
+
 ## ChoiceboxItem Props
 
 | Name | Type | Default | Description |

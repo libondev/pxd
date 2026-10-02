@@ -94,6 +94,13 @@ const options = [
 | model-value | `ListOptionSelected['value']` | - | Value of the selected option, exposed to the default slot as `data` |
 | close-on-press-escape | `boolean` | - | Close the dropdown when pressing `Escape` |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ListModelValue) => void` | Emitted when an option is selected from the dropdown. |
+| update:modelValue | `(value: ListModelValue) => void` | Emitted right after `change` with the selected value. |
+
 ## Slots
 
 | Name | Description |

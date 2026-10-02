@@ -96,15 +96,15 @@ const marchingAnts = shallowRef()
 | dash-size | `string \| number` | `8` | Length of each dash. |
 | gap | `string \| number` | `4` | Distance between dashes. |
 
-## Methods
-
-| Name | Description |
-| --- | --- |
-| select | Draws the outline using the target's current shape. |
-| deselect | Removes the active outline. |
-
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Content rendered inside the target element. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| select | `() => void` | Draw the outline using the target's current shape. |
+| deselect | `() => void` | Remove the active outline. |

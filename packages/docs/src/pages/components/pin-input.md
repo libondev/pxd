@@ -83,3 +83,17 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 | model-value | `string` | `` | Current pin code, one character per box |
 | placeholder | `string` | `○` | Character shown in each empty box |
 | type | `'numeric' \| 'alphabetic' \| 'alphanumeric' \| 'numeric-password' \| 'alphabetic-password' \| 'alphanumeric-password'` | `numeric` | Restrict input to the given character set, the `-password` variants also mask it |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: string) => void` | Emitted when a box is filled or cleared, when the whole code is pasted, or when an IME composition ends. |
+| update:modelValue | `(value: string) => void` | Emitted alongside `change` on every value update. |
+
+## Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| focus | `() => void` | Select the first box so the next keystroke starts from the beginning. |
+| blur | `() => void` | Blur every box at once. |

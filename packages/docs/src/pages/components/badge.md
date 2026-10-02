@@ -126,6 +126,12 @@ function onClose() {
 | variant | `BadgeVariant` | `pill` | Visual style, `pill`, solid or `-subtle` colors, `inverted` and branded gradients |
 | closeable | `boolean` | - | Render a close button that emits the `close` event |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| close | `(event: Event) => void` | Emitted when the close button is clicked. |
+
 ## Slots
 
 | Name | Description |

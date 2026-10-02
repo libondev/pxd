@@ -70,6 +70,13 @@ const options = [
 | disabled | `boolean` | - | Block selection of this single radio |
 | model-value | `string \| number \| boolean` | - | Selected value, read from the group when nested |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ComponentValue) => void` | Emitted when the radio is selected. |
+| update:modelValue | `(value: ComponentValue) => void` | Emitted right after `change` with the selected value. |
+
 ## RadioGroup Props
 
 | Name | Type | Default | Description |
@@ -77,3 +84,10 @@ const options = [
 | disabled | `boolean` | - | Disable every radio in the group |
 | model-value | `string \| number \| boolean` | - | Value of the selected radio |
 | options | `{ label, value, disabled? }[]` | - | Options rendered as radios when the default slot is empty |
+
+## RadioGroup Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(value: ComponentValue) => void` | Emitted when one of the radios in the group is selected. |
+| update:modelValue | `(value: ComponentValue) => void` | Emitted right after `change` with the selected value. |
