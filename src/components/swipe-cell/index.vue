@@ -8,6 +8,7 @@ import type {
   SwipeCellSlotState,
 } from './types'
 import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
+import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useResizeObserver } from '../../composables/use-browser-observer.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { getElement } from '../../utils/dom.js'
@@ -44,6 +45,7 @@ let alive = true
 let offset = 0
 let openToken = 0
 let trackOffset = 0
+let gestureStartOffset = 0
 
 const dragging = shallowRef(false)
 const openedSide = shallowRef<SwipeCellSide | false>(props.modelValue)
@@ -65,16 +67,6 @@ const suffixSlotState = shallowReactive<SwipeCellSlotState>({
   progress: 0,
   overSwipe: false,
 })
-
-let pointerState: {
-  id: number
-  startX: number
-  startY: number
-  startOffset: number
-  axis: 'pending' | 'accepted' | 'rejected'
-  moved: boolean
-  target: Node
-} | null = null
 
 const cellEntry: SwipeCellEntry = {
   getGroup: () => props.group,
@@ -259,126 +251,6 @@ function onWrapperClick(ev: MouseEvent) {
   closeByTarget(ev.target as Node)
 }
 
-const moveOpts: AddEventListenerOptions = { passive: false }
-
-function bindPointerEvents() {
-  window.addEventListener('pointermove', onPointerMove as EventListener, moveOpts)
-  window.addEventListener('pointerup', onPointerUp as EventListener)
-  window.addEventListener('pointercancel', onPointerCancel as EventListener)
-}
-
-function unbindPointerEvents() {
-  window.removeEventListener('pointermove', onPointerMove as EventListener, moveOpts)
-  window.removeEventListener('pointerup', onPointerUp as EventListener)
-  window.removeEventListener('pointercancel', onPointerCancel as EventListener)
-}
-
-function resetPointerState() {
-  unbindPointerEvents()
-  pointerState = null
-  dragging.value = false
-}
-
-function onPointerDown(ev: PointerEvent) {
-  if (props.disabled || !ev.isPrimary || ev.button !== 0) {
-    return
-  }
-
-  const target = ev.target
-
-  if (!(target instanceof Node)) {
-    return
-  }
-
-  void beginGesture(ev, target)
-}
-
-async function beginGesture(ev: PointerEvent, target: Node) {
-  if (openedSide.value && props.beforeClose) {
-    const pointerId = ev.pointerId
-    let earlyUp = false
-
-    const onEarlyRelease = (releaseEv: PointerEvent) => {
-      if (releaseEv.pointerId === pointerId) {
-        earlyUp = true
-      }
-    }
-
-    window.addEventListener('pointerup', onEarlyRelease, true)
-    window.addEventListener('pointercancel', onEarlyRelease, true)
-
-    let allowed = false
-
-    try {
-      allowed = await props.beforeClose(openedSide.value)
-    } finally {
-      window.removeEventListener('pointerup', onEarlyRelease, true)
-      window.removeEventListener('pointercancel', onEarlyRelease, true)
-    }
-
-    if (!alive || props.disabled || !allowed) {
-      return
-    }
-
-    if (earlyUp) {
-      closeByTarget(target)
-      return
-    }
-  }
-
-  openToken += 1
-  measureWidths()
-  pointerState = {
-    id: ev.pointerId,
-    startX: ev.clientX,
-    startY: ev.clientY,
-    startOffset: trackOffset,
-    axis: 'pending',
-    moved: false,
-    target,
-  }
-
-  getRootEl()?.setPointerCapture?.(ev.pointerId)
-  bindPointerEvents()
-}
-
-function onPointerMove(ev: PointerEvent) {
-  const state = pointerState
-
-  if (!state || ev.pointerId !== state.id) {
-    return
-  }
-
-  const dx = ev.clientX - state.startX
-  const dy = ev.clientY - state.startY
-
-  if (state.axis === 'pending') {
-    if (Math.hypot(dx, dy) < 10) {
-      return
-    }
-
-    state.axis = Math.abs(dx) >= Math.abs(dy) ? 'accepted' : 'rejected'
-  }
-
-  state.moved = true
-
-  if (state.axis === 'rejected') {
-    return
-  }
-
-  if (ev.cancelable) {
-    ev.preventDefault()
-  }
-
-  if (!dragging.value) {
-    dragging.value = true
-  }
-
-  trackOffset = state.startOffset + dx
-  applyOffset(clampOffset(trackOffset))
-  syncSlots()
-}
-
 async function releaseSwipe() {
   // Drop `transition-none` before settling, otherwise transform snaps with no transition.
   dragging.value = false
@@ -413,41 +285,59 @@ async function releaseSwipe() {
   await setOpen(next)
 }
 
-function onPointerUp(ev: PointerEvent) {
-  const state = pointerState
+useSwipeGesture(rootRef, {
+  disabled: () => props.disabled,
+  beforeStart: () => {
+    const side = openedSide.value
 
-  if (!state || ev.pointerId !== state.id) {
-    return
-  }
+    if (!side || !props.beforeClose) {
+      return true
+    }
 
-  const shouldRelease = state.axis === 'accepted'
-  const shouldTapClose = !state.moved
+    return Promise.resolve(props.beforeClose(side)).then(
+      (allowed) => allowed && alive && !props.disabled,
+    )
+  },
+  onPress: () => {
+    openToken += 1
+    measureWidths()
+    gestureStartOffset = trackOffset
+  },
+  onFollow: ({ displacement }) => {
+    if (!dragging.value) {
+      dragging.value = true
+    }
 
-  getRootEl()?.releasePointerCapture?.(ev.pointerId)
-  resetPointerState()
+    trackOffset = gestureStartOffset + displacement
+    applyOffset(clampOffset(trackOffset))
+    syncSlots()
+  },
+  onRelease: ({ displacement, axisLocked, event }) => {
+    if (event.type === 'pointercancel') {
+      openToken += 1
+      syncOpenOffset()
+      return
+    }
 
-  if (shouldRelease) {
+    if (!axisLocked) {
+      return
+    }
+
+    trackOffset = gestureStartOffset + displacement
     void releaseSwipe()
-    return
-  }
+  },
+  onTap: ({ startEvent, vetoed }) => {
+    if (vetoed || !startEvent) {
+      return
+    }
 
-  if (shouldTapClose) {
-    closeByTarget(state.target)
-  }
-}
+    const target = startEvent.target
 
-function onPointerCancel(ev: PointerEvent) {
-  const state = pointerState
-
-  if (!state || ev.pointerId !== state.id) {
-    return
-  }
-
-  openToken += 1
-  syncOpenOffset()
-  getRootEl()?.releasePointerCapture?.(ev.pointerId)
-  resetPointerState()
-}
+    if (target instanceof Node) {
+      closeByTarget(target)
+    }
+  },
+})
 
 useOutsideClick(getRootEl, {
   eventName: 'pointerdown',
@@ -500,7 +390,6 @@ onBeforeUnmount(() => {
   alive = false
   openToken += 1
   unregisterCell()
-  resetPointerState()
 })
 
 defineExpose({
@@ -515,7 +404,6 @@ defineExpose({
     ref="rootRef"
     class="pxd-swipe-cell relative w-full max-w-full touch-pan-y overflow-hidden"
     v-bind="$attrs"
-    @pointerdown="onPointerDown"
     @click="onWrapperClick"
   >
     <div

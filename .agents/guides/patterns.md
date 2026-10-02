@@ -29,3 +29,14 @@ Reusable code patterns and examples discovered during development.
 
 - **Use case**: A popover or menu that updates `v-model` immediately but should only emit `change` when the interaction commits (menu close in multiple mode).
 - **Example**: `List` owns toggle via `resolveNextListValue` and emits `update:modelValue` with the next value; `useListSelection.apply(next)` stores that value for the open session (no second toggle); returns whether the overlay should close; `commit()` emits `change` only if multiple selection actually changed. Action menus leave List uncontrolled (`modelValue` unbound) so checkmarks never show.
+
+### Shared pointer-gesture composable with an async start gate
+
+- **Use case**: Several components need the same pointer plumbing — axis lock with a deadzone, pointer capture, window-level move/up/cancel, live signed displacement — but each decides differently what counts as a successful gesture (container size vs. a measured action width, flick velocity vs. travel ratio).
+- **Example**: `useSwipeGesture` (`src/composables/_internal/use-swipe-gesture.ts`), consumed by `PCarousel`, `PDismissContainer` and `PSwipeCell`. The recognizer owns the mechanics and reports `onPress` / `onFollow` / `onRelease` / `onTap`; consumers supply only policy.
+  - Keep the built-in decision optional. `swiped` and `direction` follow `distanceThreshold` / `velocityThreshold` against the container size, and `onRelease` additionally exposes `displacement`, `velocity`, `axisLocked` and the raw event so a consumer measuring something else (PSwipeCell compares against its measured prefix/suffix width) can decide for itself.
+  - Gate the start instead of the gesture: `beforeStart` returning `boolean | Promise<boolean>`. Returning `false` discards the gesture — no `onFollow`, no `onRelease`, and the release surfaces through `onTap({ vetoed: true })`. This is what lets PSwipeCell await its async `beforeClose` without re-implementing a pointer recognizer.
+  - A synchronous `boolean` verdict must short-circuit synchronously. Only a thenable defers, so consumers without an async gate keep a fully synchronous pointerdown -> pointermove -> pointerup sequence.
+  - Movement arriving while the gate is pending is dropped, and a release inside that window waits for the verdict. That replaces the ad-hoc `earlyUp` probe a hand-written recognizer needs for the same race.
+  - `axisLocked` is separate from `swiped`, because a cross-axis rejection and an unmoved tap both report `swiped: false` but must not be treated the same: the first is a cancelled swipe, the second is a tap.
+  - `onTap` carries `startEvent` (the pointerdown) as well as the release event. Hit-test what the user pressed, not where the pointer happened to be released.

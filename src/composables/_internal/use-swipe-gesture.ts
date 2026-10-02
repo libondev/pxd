@@ -8,6 +8,8 @@ export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 
 export interface SwipePressState {
   size: number
+  /** The pointerdown event that opened the gesture. */
+  event: PointerEvent
 }
 
 export interface SwipeFollowState {
@@ -19,6 +21,8 @@ export interface SwipeFollowState {
   offset: number
   /** Signed displacement from the start point along the active axis (px). */
   displacement: number
+  /** The pointermove event that produced this sample. */
+  event: PointerEvent
 }
 
 export interface SwipeReleaseState {
@@ -26,6 +30,29 @@ export interface SwipeReleaseState {
   swiped: boolean
   /** Physical swipe direction. `undefined` when `swiped` is `false`. */
   direction?: SwipeDirection
+  /** Signed displacement at release along the active axis (px). */
+  displacement: number
+  /** Signed velocity at release (px / ms). */
+  velocity: number
+  /** Whether the gesture stayed on the target axis from the moment it was locked. */
+  axisLocked: boolean
+  /** The pointerup or pointercancel event that ended the gesture. */
+  event: PointerEvent
+}
+
+export interface SwipeTapState {
+  /** The pointerup event that ended the interaction. */
+  event: PointerEvent
+  /**
+   * The pointerdown event that started it. A release that never became a pan can
+   * land on a different element, so hit-testing should use what the user pressed.
+   */
+  startEvent: PointerEvent | null
+  /**
+   * `true` when `beforeStart` discarded the gesture, `false` when the pointer
+   * simply never travelled far enough to be recognized.
+   */
+  vetoed: boolean
 }
 
 export interface SwipeGestureOptions {
@@ -44,9 +71,26 @@ export interface SwipeGestureOptions {
   distanceThreshold?: number
   /** Minimum absolute velocity (px / ms) for a quick-flick swipe. */
   velocityThreshold?: number
+  /**
+   * Gate evaluated once the gesture is recognized. Resolving `false` discards the
+   * gesture: `onFollow` never fires and the release is reported through `onTap`
+   * with `vetoed: true`. Movement arriving while a promise is pending is dropped,
+   * and a release inside that window waits for the verdict.
+   */
+  beforeStart?: (state: SwipePressState) => boolean | Promise<boolean>
   onPress?: (state: SwipePressState) => void
   onFollow?: (state: SwipeFollowState) => void
+  /**
+   * Receives the raw release metrics. `swiped` and `direction` follow
+   * `distanceThreshold` / `velocityThreshold` against the container size; consumers
+   * that measure against something else decide from `displacement` themselves.
+   */
   onRelease?: (state: SwipeReleaseState) => void
+  /**
+   * Called on release when no swipe was ever recognized: the pointer travelled less
+   * than `swipeThreshold`, or `beforeStart` discarded it.
+   */
+  onTap?: (state: SwipeTapState) => void
 }
 
 interface SwipePanEvent {
@@ -56,6 +100,15 @@ interface SwipePanEvent {
   deltaY: number
   velocityX: number
   velocityY: number
+  event: PointerEvent
+}
+
+function isThenable(value: unknown): value is Promise<boolean> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Promise<boolean>).then === 'function'
+  )
 }
 
 export function useSwipeGesture(
@@ -69,15 +122,18 @@ export function useSwipeGesture(
     distanceThreshold = 0.35,
     velocityThreshold = 0.3,
     swipeThreshold = 10,
+    beforeStart,
     onPress,
     onFollow,
     onRelease,
+    onTap,
   } = options
 
   let recognizer: PointerSwipeRecognizer | null = null
   let stopped = false
 
   type AxisLockState = 'pending' | 'accepted' | 'rejected'
+  type StartVerdict = 'pending' | 'allowed' | 'vetoed'
 
   function isHorizontal() {
     return (toValue(options.axis) ?? 'horizontal') === 'horizontal'
@@ -135,17 +191,84 @@ export function useSwipeGesture(
 
     let containerSize = 0
     let axisLockState: AxisLockState = 'pending'
+    let startVerdict: StartVerdict = 'pending'
+    let startGate: Promise<boolean> | null = null
+    let released = false
+
+    // A tap never reaches `onStart`, so per-gesture state has to be cleared by
+    // whichever handler ends the interaction instead of on the next gesture.
+    function resetGesture() {
+      axisLockState = 'pending'
+      startVerdict = 'pending'
+      startGate = null
+    }
+
+    // A release landing while the start gate is still pending cannot be classified
+    // yet: it only counts as a tap when the gate allowed the gesture.
+    function emitTap(event: PointerEvent, startEvent: PointerEvent | null) {
+      const verdict = startVerdict
+      const gate = startGate
+
+      if (!onTap) {
+        return
+      }
+
+      if (verdict === 'pending' && gate) {
+        void gate.then((allowed) => onTap?.({ event, startEvent, vetoed: !allowed }))
+        return
+      }
+
+      onTap({ event, startEvent, vetoed: verdict === 'vetoed' })
+    }
+
+    function resolveStart(event: PointerEvent) {
+      const state: SwipePressState = { size: containerSize, event }
+
+      if (!beforeStart) {
+        startVerdict = 'allowed'
+        onPress?.(state)
+        return
+      }
+
+      const verdict = beforeStart(state)
+
+      if (isThenable(verdict)) {
+        startGate = verdict
+        void verdict.then((allowed) => {
+          if (released) {
+            return
+          }
+
+          startVerdict = allowed ? 'allowed' : 'vetoed'
+
+          if (startVerdict === 'allowed') {
+            onPress?.(state)
+          }
+        })
+        return
+      }
+
+      startVerdict = verdict ? 'allowed' : 'vetoed'
+
+      if (startVerdict === 'allowed') {
+        onPress?.(state)
+      }
+    }
 
     recognizer = new PointerSwipeRecognizer(handle, {
       threshold: swipeThreshold,
       touchAction: getTouchAction(),
-      onStart: () => {
-        const h = isHorizontal()
+      onStart: (event) => {
         axisLockState = 'pending'
-        containerSize = h ? container.offsetWidth : container.offsetHeight
-        onPress?.({ size: containerSize })
+        released = false
+        containerSize = isHorizontal() ? container.offsetWidth : container.offsetHeight
+        resolveStart(event.event)
       },
       onMove: (event) => {
+        if (startVerdict !== 'allowed') {
+          return
+        }
+
         const h = isHorizontal()
 
         if (axisLockState === 'pending') {
@@ -163,38 +286,59 @@ export function useSwipeGesture(
           velocity,
           displacement,
           offset: containerSize > 0 ? displacement / containerSize : 0,
+          event: event.event,
         })
       },
       onEnd: (event) => {
+        released = true
+
+        if (startVerdict !== 'allowed') {
+          emitTap(event.event, event.startEvent)
+          resetGesture()
+          return
+        }
+
         const h = isHorizontal()
 
         if (axisLockState === 'pending') {
           axisLockState = resolveAxisLock(event, h)
         }
 
-        if (axisLockState !== 'accepted') {
-          onRelease?.({ swiped: false })
-          return
-        }
-
         const { displacement, velocity } = getAxisValue(event, h)
+        const axisLocked = axisLockState === 'accepted'
+        const swiped =
+          axisLocked &&
+          containerSize > 0 &&
+          displacement !== 0 &&
+          (Math.abs(velocity) >= velocityThreshold ||
+            Math.abs(displacement) / containerSize >= distanceThreshold)
 
-        if (containerSize === 0 || displacement === 0) {
-          onRelease?.({ swiped: false })
-          return
-        }
-
-        const meetsVelocity = Math.abs(velocity) >= velocityThreshold
-        const meetsDistance = Math.abs(displacement) / containerSize >= distanceThreshold
-
-        onRelease?.(
-          meetsVelocity || meetsDistance
-            ? { swiped: true, direction: resolveDirection(displacement, h) }
-            : { swiped: false },
-        )
+        onRelease?.({
+          swiped,
+          direction: swiped ? resolveDirection(displacement, h) : undefined,
+          displacement,
+          velocity,
+          axisLocked,
+          event: event.event,
+        })
+        resetGesture()
       },
-      onCancel: () => {
-        onRelease?.({ swiped: false })
+      onIdle: (event, startEvent) => {
+        released = true
+        emitTap(event, startEvent)
+        resetGesture()
+      },
+      onCancel: (event) => {
+        released = true
+
+        onRelease?.({
+          swiped: false,
+          displacement: 0,
+          velocity: 0,
+          axisLocked: false,
+          event,
+        })
+        resetGesture()
       },
     })
   }
@@ -244,7 +388,8 @@ interface PointerSwipeRecognizerOptions {
   onStart?: (event: PointerPanEvent) => void
   onMove?: (event: PointerPanEvent) => void
   onEnd?: (event: PointerPanEvent) => void
-  onCancel?: (event: PointerPanEvent) => void
+  onCancel?: (event: PointerEvent) => void
+  onIdle?: (event: PointerEvent, startEvent: PointerEvent | null) => void
 }
 
 interface PointerPoint {
@@ -264,6 +409,8 @@ interface PointerPanEvent {
   deltaY: number
   velocityX: number
   velocityY: number
+  event: PointerEvent
+  startEvent: PointerEvent | null
 }
 
 function getPointerPoint(event: PointerEvent): PointerPoint {
@@ -278,6 +425,7 @@ class PointerSwipeRecognizer {
   private lastVelocity: PointerVelocity = { x: 0, y: 0 }
   private activePointerId: number | null = null
   private hasRecognizedPan = false
+  private startEvent: PointerEvent | null = null
   private originalTouchAction = ''
 
   constructor(
@@ -303,6 +451,7 @@ class PointerSwipeRecognizer {
       }
 
       this.activePointerId = event.pointerId
+      this.startEvent = event
       this.startPoint = getPointerPoint(event)
       this.previousPoint = this.startPoint
       this.previousTime = Date.now()
@@ -311,7 +460,7 @@ class PointerSwipeRecognizer {
       el.setPointerCapture?.(event.pointerId)
 
       if (this.hasRecognizedPan) {
-        this.emitPan(this.options.onStart, this.startPoint, 0, 0)
+        this.emitPan(this.options.onStart, event, this.startPoint, 0, 0)
       }
     }
 
@@ -331,10 +480,10 @@ class PointerSwipeRecognizer {
         }
 
         this.hasRecognizedPan = true
-        this.emitPan(this.options.onStart, point, displacementX, displacementY)
+        this.emitPan(this.options.onStart, event, point, displacementX, displacementY)
       }
 
-      this.emitPan(this.options.onMove, point, displacementX, displacementY)
+      this.emitPan(this.options.onMove, event, point, displacementX, displacementY)
     }
 
     const onPointerUp = (event: PointerEvent) => {
@@ -347,10 +496,13 @@ class PointerSwipeRecognizer {
       if (this.hasRecognizedPan) {
         this.emitPan(
           this.options.onEnd,
+          event,
           point,
           point.x - this.startPoint.x,
           point.y - this.startPoint.y,
         )
+      } else {
+        this.options.onIdle?.(event, this.startEvent)
       }
 
       el.releasePointerCapture?.(event.pointerId)
@@ -362,13 +514,7 @@ class PointerSwipeRecognizer {
         return
       }
 
-      const point = getPointerPoint(event)
-      this.emitPan(
-        this.options.onCancel,
-        point,
-        this.startPoint ? point.x - this.startPoint.x : 0,
-        this.startPoint ? point.y - this.startPoint.y : 0,
-      )
+      this.options.onCancel?.(event)
       el.releasePointerCapture?.(event.pointerId)
       this.reset()
     }
@@ -388,6 +534,7 @@ class PointerSwipeRecognizer {
 
   private emitPan(
     callback: ((event: PointerPanEvent) => void) | undefined,
+    source: PointerEvent,
     point: PointerPoint,
     displacementX: number,
     displacementY: number,
@@ -413,6 +560,8 @@ class PointerSwipeRecognizer {
       deltaY,
       velocityX,
       velocityY,
+      event: source,
+      startEvent: this.startEvent,
     })
   }
 
@@ -423,5 +572,6 @@ class PointerSwipeRecognizer {
     this.lastVelocity = { x: 0, y: 0 }
     this.activePointerId = null
     this.hasRecognizedPan = false
+    this.startEvent = null
   }
 }
