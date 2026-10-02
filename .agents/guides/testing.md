@@ -40,6 +40,10 @@ describe('MyComponent', () => {
 
 ## Rules
 
+- **A test cannot prove an event exists, but it can prove one fires.** An event that never fires
+  has nothing to assert, so no test will catch a dead declaration on its own. Conversely a test that
+  asserts `emitted('<name>')` *is* proof the event dispatches. Use that grep as the corroborating
+  signal when auditing `XxxEmits` (`.agents/guides/docs.md` → *Dead event declarations*).
 - Write tests for all critical paths
 - Edge cases should be covered
 - Use `describe`/`it` blocks for organization

@@ -46,6 +46,7 @@ pxd/
 - **Avoid** Vue 3-only features: `defineModel`, top-level `await`, reactive Map/Set
 - **Check** existing patterns before introducing new patterns
 - Events: kebab-case. Curly braces: always required.
+- **Docs**: a component page must document `## Events` (every `XxxEmits` entry) and `## Methods` (every `defineExpose()` entry). Omit a section only when it is genuinely empty. Follow `.agents/guides/docs.md` exactly — headings, column names, and section order are fixed there.
 - Prefer `pnpm` commands. Never manually edit `dist/`.
 - **Minimal changes only** — implement exactly what is asked, nothing more
 - **Do NOT** add features, error handling, or abstractions not explicitly requested
@@ -80,6 +81,7 @@ Then consult the relevant file:
 - Testing → `.agents/guides/testing.md`
 - Styling / Tailwind → `.agents/guides/styling.md`
 - Build / release / CI → `.agents/guides/build.md`
+- Documentation / docs pages → `.agents/guides/docs.md`
 - Encountering issues → `.agents/guides/pitfalls.md`
 - Need code examples → `.agents/guides/patterns.md`
 

@@ -52,6 +52,9 @@ src/components/{component-name}/
 
 ## Documentation Standards
 
+The component page format (`## Props` / `## Events` / `## Slots` / `## Methods` tables) is defined
+in `.agents/guides/docs.md`. Read it before writing or updating any doc page.
+
 - Use clear prop names
 - Document events with kebab-case
 - Provide JSDoc for TypeScript types
@@ -65,6 +68,9 @@ src/components/{component-name}/
 - [ ] No `defineModel`, no top-level `await`
 - [ ] Types exported to `types/shared`
 - [ ] Events in kebab-case
+- [ ] Every `XxxEmits` entry has a real dispatch path (component / composable / context) — no dead declarations
+- [ ] Doc page lists every `XxxEmits` entry under `## Events` (see `.agents/guides/docs.md`)
+- [ ] Doc page lists every `defineExpose()` entry under `## Methods` (see `.agents/guides/docs.md`)
 - [ ] Exported from `src/components/index.ts`
 - [ ] Tests written in `tests/components/`
 - [ ] `volar.d.ts` updated
