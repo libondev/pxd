@@ -66,8 +66,6 @@ const zhCN = {
     pending: '待处理',
     completed: '已完成',
     canceled: '已取消',
-    expand: '展开任务列表',
-    collapse: '收起任务列表',
   },
 } satisfies Locale
 

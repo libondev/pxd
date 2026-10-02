@@ -51,8 +51,6 @@ const enUS = {
     pending: 'pending',
     completed: 'completed',
     canceled: 'canceled',
-    expand: 'Expand tasks',
-    collapse: 'Collapse tasks',
   },
 }
 
