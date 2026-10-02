@@ -145,3 +145,9 @@ Known issues and lessons learned during development.
 - **Symptom**: `pnpm fmt:eol` rewrote `src/` files but left `.md` and other documents on CRLF.
 - **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`; only files whose size/mtime changed were written back.
 - **Fix**: `scripts/fmt-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
+
+### Per-gesture recognizer state must be reset by the terminal handler
+
+- **Symptom**: In a pointer recognizer, a tap is treated as vetoed after the previous gesture was vetoed — the next tap silently stops working.
+- **Cause**: Per-gesture state (`startVerdict`, the start gate, axis lock) was initialised in the `onStart` callback, which only fires once movement passes `swipeThreshold`. A tap never reaches `onStart`, so it reads whatever the *previous* gesture left behind.
+- **Fix**: Clear the state in whichever handler ends the interaction (`onEnd`, `onTap`/`onIdle`, `onCancel`) instead of at the start of the next one. If a terminal handler must await something before it can classify the gesture, capture what it needs in locals first — the deferred callback must not read fields that have already been reset.
