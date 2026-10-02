@@ -281,7 +281,7 @@ watch(
       <div
         class="pxd-questionnaire--title py-2 ps-4 pe-2 gap-1 cursor-pointer text-sm flex items-center justify-between"
         :class="{ 'border-b': !isCollapsed }"
-        @click="toggleCollapse()""
+        @click="toggleCollapse()"
       >
         <span class="font-medium flex-1">{{ currentQuestion.question }}</span>
 

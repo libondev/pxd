@@ -152,15 +152,38 @@ describe('questionnaire', () => {
     })
 
     const skipAll = wrapper.get('button[title="Skip all questions"]')
-    const collapse = wrapper.get('button[title="Collapse"]')
     const prev = wrapper.get('button[title="Previous question"]')
     const next = wrapper.get('button[title="Next question"]')
 
     expect(skipAll.attributes('aria-label')).toBe('Skip all questions')
-    expect(collapse.attributes('aria-label')).toBe('Collapse')
-    expect(collapse.attributes('aria-expanded')).toBe('true')
     expect(prev.attributes('aria-label')).toBe('Previous question')
     expect(next.attributes('aria-label')).toBe('Next question')
+
+    wrapper.unmount()
+  })
+
+  it('folds the question from the title row', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+    })
+
+    const title = wrapper.get('.pxd-questionnaire--title')
+
+    expect(title.text()).toContain('Which flow should run?')
+    expect(title.classes()).toContain('border-b')
+
+    await title.trigger('click')
+
+    expect(wrapper.get('.pxd-questionnaire--title').classes()).not.toContain('border-b')
+    expect(wrapper.find('[data-list-item]').exists()).toBe(false)
+    expect(wrapper.find('button[title="Previous question"]').exists()).toBe(false)
+
+    await wrapper.get('.pxd-questionnaire--title').trigger('click')
+
+    expect(wrapper.get('.pxd-questionnaire--title').classes()).toContain('border-b')
+    expect(wrapper.find('[data-list-item]').exists()).toBe(true)
 
     wrapper.unmount()
   })
