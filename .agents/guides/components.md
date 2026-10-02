@@ -37,7 +37,7 @@ src/components/{component-name}/
 - Export public types from `./types/shared`
 - Events: kebab-case
 - Curly braces: always required
-- Container components take an `options` prop unless they must measure or order their children in the DOM; only those use `useOrderedChildren`
+- Container components take an `options` prop and render their children from it. There is no self-registering pattern left in the library — see pitfalls.md
 
 ## Vue 2.7 Compatibility
 

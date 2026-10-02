@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import type { OrderedChild } from '../../composables/_internal/use-ordered-children.js'
-import type { PanelBounds, PanelRange } from '../../contexts/resizable.js'
-import type { PanelConfig, ResizableEmits, ResizableProps } from './types'
-import { computed, nextTick, shallowRef } from 'vue'
+import type { ResizableEmits, ResizableProps } from './types'
+import { computed, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { useOrderedChildren } from '../../composables/_internal/use-ordered-children.js'
-import { provideResizableContext } from '../../contexts/resizable.js'
+import { throttleByRaf } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
-import { clamp, isAutoSize, PERCENT_TOTAL, roundSize } from './utils'
+import { clamp, PERCENT_TOTAL, roundSize, toPair } from './utils'
 
 defineOptions({
   name: 'PResizable',
@@ -19,141 +16,72 @@ defineOptions({
   },
 })
 
-interface PanelChild extends PanelConfig {
-  kind: 'panel'
-}
-
-interface HandleChild {
-  kind: 'handle'
-}
-
-type ChildConfig = PanelChild | HandleChild
-
-function isPanelChild(item: OrderedChild<ChildConfig>): item is OrderedChild<PanelChild> {
-  return item.payload.kind === 'panel'
-}
+type Pair = [number, number]
 
 const props = withDefaults(defineProps<ResizableProps>(), {
   direction: 'horizontal',
   modelValue: null,
+  minSize: () => [0, 0],
+  defaultValue: () => [PERCENT_TOTAL / 2, PERCENT_TOTAL / 2],
+  handle: false,
+  disabled: false,
 })
 
 const emits = defineEmits<ResizableEmits>()
 
-const name = getUniqueId('pxd-resizable')
+const uid = getUniqueId('pxd-resizable')
 const containerRef = shallowRef<HTMLElement>()
-const registry = useOrderedChildren<ChildConfig>()
+const handleRef = shallowRef<HTMLElement>()
 
 const modelValue = useModelValue(props, emits, { withChange: false })
+
 const isControlled = computed(() => !isNil(props.modelValue))
-const internalSizes = shallowRef<number[]>([])
-const sizes = computed<number[]>(() =>
-  isControlled.value ? (props.modelValue ?? []) : internalSizes.value,
+const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
+const sizes = computed<Pair>(() =>
+  isControlled.value ? toPair(props.modelValue) : innerSizes.value,
 )
 
-const seeded = shallowRef(false)
-const knownKeys = shallowRef<string[]>([])
-// Size every panel started from. Kept so a reset restores one pair without
-// recomputing - and discarding - the sizes the user dragged.
-const initialSizes = new Map<string, number>()
-const collapsedHandles = shallowRef<Record<string, boolean>>({})
-// Sizes a pair had before it was collapsed, so expanding gives back what the
-// user was working with rather than the configured starting point.
-const expandedSizes = new Map<string, number[]>()
+/**
+ * The range the leading panel may travel through. The trailing panel needs no
+ * bounds of its own: the pair always sums to 100, so the leading panel's floor
+ * already is the trailing panel's ceiling and the other way round.
+ */
+const bounds = computed<{ min: number; max: number }>(() => {
+  const [leading, trailing] = toPair(props.minSize)
 
-const panelChildren = computed(() => registry.items.value.filter(isPanelChild))
-const panelKeys = computed(() => panelChildren.value.map((item) => item.key))
-
-const panelIndexByKey = computed(() => {
-  const index = new Map<string, number>()
-
-  panelChildren.value.forEach((item, position) => index.set(item.key, position))
-
-  return index
-})
-
-// A handle resizes the panels right around it. Reading DOM order instead of
-// counting handles keeps a stray or conditionally rendered handle from
-// silently shifting every pairing after it.
-const rangesByHandle = computed(() => {
-  const children = registry.items.value
-  const ranges = new Map<string, PanelRange | null>()
-
-  children.forEach((item, position) => {
-    if (item.payload.kind !== 'handle') {
-      return
-    }
-
-    let prevIndex = -1
-
-    for (let i = position - 1; i >= 0; i--) {
-      const prev = children[i]!
-
-      if (isPanelChild(prev)) {
-        prevIndex = panelIndexByKey.value.get(prev.key) ?? -1
-        break
-      }
-    }
-
-    ranges.set(
-      item.key,
-      prevIndex >= 0 && prevIndex + 1 < panelKeys.value.length
-        ? { prevIndex, nextIndex: prevIndex + 1 }
-        : null,
-    )
-  })
-
-  return ranges
-})
-
-function getPanelIndex(key: string) {
-  return panelIndexByKey.value.get(key) ?? -1
-}
-
-function getPanelId(index: number) {
-  return panelChildren.value[index]?.payload.id ?? `${name}-panel-${index}`
-}
-
-function getPanelSize(index: number) {
-  return sizes.value[index] ?? 0
-}
-
-function getPanelBounds(index: number): PanelBounds {
-  const payload = panelChildren.value[index]?.payload
-  const min = clamp(payload?.minSize ?? 0, 0, PERCENT_TOTAL)
-
-  return { min, max: clamp(payload?.maxSize ?? PERCENT_TOTAL, min, PERCENT_TOTAL) }
-}
-
-function getContainerSize() {
-  if (!containerRef.value) {
-    return 0
+  if (leading + trailing > PERCENT_TOTAL) {
+    return { min: 0, max: PERCENT_TOTAL }
   }
 
-  return props.direction === 'horizontal'
-    ? containerRef.value.offsetWidth
-    : containerRef.value.offsetHeight
-}
+  return { min: leading, max: PERCENT_TOTAL - trailing }
+})
 
-function panelSizeOf(key: string) {
-  const index = knownKeys.value.indexOf(key)
+const leadingId = `${uid}-leading`
+const trailingId = `${uid}-trailing`
+const collapsed = shallowRef(false)
+// The pair as it was before folding, so expanding gives back what the user was
+// working with rather than the configured starting point.
+let expandedPair: Pair | null = null
+let initialPair: Pair | null = null
 
-  return index === -1 ? 0 : (sizes.value[index] ?? 0)
-}
+watch(
+  sizes,
+  ([leading, trailing]) => {
+    initialPair ??= [leading, trailing]
+  },
+  { immediate: true, flush: 'sync' },
+)
 
-function setSizes(next: number[]) {
+function setSizes(next: Pair) {
   const current = sizes.value
-  const rounded = next.map(roundSize)
+  const rounded: Pair = [roundSize(next[0]), roundSize(next[1])]
 
-  if (
-    rounded.length === current.length &&
-    rounded.every((size, index) => size === current[index])
-  ) {
+  if (rounded[0] === current[0] && rounded[1] === current[1]) {
     return false
   }
 
   if (!isControlled.value) {
-    internalSizes.value = rounded
+    innerSizes.value = rounded
   }
 
   modelValue.value = rounded
@@ -161,361 +89,353 @@ function setSizes(next: number[]) {
   return true
 }
 
-function resize(range: PanelRange, deltaPercent: number) {
-  const current = sizes.value
-  const prev = current[range.prevIndex] ?? 0
-  const next = current[range.nextIndex] ?? 0
-  const prevBounds = getPanelBounds(range.prevIndex)
-  const nextBounds = getPanelBounds(range.nextIndex)
+function resize(deltaPercent: number) {
+  const [leading, trailing] = sizes.value
+  const { min, max } = bounds.value
 
-  // Clamp the movement so both panels stay inside their own bounds, then hand
-  // the neighbour the same delta so the group keeps summing to 100%.
-  const applied = clamp(
-    deltaPercent,
-    Math.max(prevBounds.min - prev, next - nextBounds.max),
-    Math.min(prevBounds.max - prev, next - nextBounds.min),
-  )
+  // Clamp the movement so the leading panel stays inside its own range, then
+  // hand the trailing panel the same delta so the pair keeps summing to 100%.
+  const applied = clamp(deltaPercent, min - leading, max - leading)
 
   if (applied === 0) {
     return false
   }
 
-  // The neighbour is derived from the already rounded value, so the pair keeps
-  // the exact sum it had and repeated drags cannot drift.
-  const newPrev = roundSize(prev + applied)
-  const result = current.slice()
-  result[range.prevIndex] = newPrev
-  result[range.nextIndex] = roundSize(prev + next - newPrev)
+  // The trailing panel is derived from the already rounded value, so the pair
+  // keeps the exact sum it had and repeated drags cannot drift.
+  const newLeading = roundSize(leading + applied)
 
-  return setSizes(result)
+  return setSizes([newLeading, roundSize(leading + trailing - newLeading)])
 }
 
-function resizeByHandle(handleKey: string, deltaPercent: number) {
-  const range = rangesByHandle.value.get(handleKey)
+/**
+ * Moving the divider brings a folded pair back, so a collapsed panel is never a
+ * dead end. The remembered sizes go with it: they described a pair that no
+ * longer exists once it has been moved somewhere else.
+ */
+function applyDelta(deltaPercent: number) {
+  const changed = resize(deltaPercent)
 
-  if (!range) {
-    return false
-  }
-
-  const changed = resize(range, deltaPercent)
-
-  if (changed) {
-    setCollapsed(handleKey, false)
+  if (changed && collapsed.value) {
+    collapsed.value = false
+    expandedPair = null
   }
 
   return changed
 }
 
-function isCollapsed(handleKey: string) {
-  return collapsedHandles.value[handleKey] === true
-}
+function resizeByPixels(delta: number) {
+  const container = containerRef.value
 
-function setCollapsed(handleKey: string, collapsed: boolean) {
-  if (isCollapsed(handleKey) === collapsed) {
-    return
+  if (!container) {
+    return false
   }
 
-  collapsedHandles.value = { ...collapsedHandles.value, [handleKey]: collapsed }
-}
+  const containerSize =
+    props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
 
-function toggleCollapse(handleKey: string) {
-  const range = rangesByHandle.value.get(handleKey)
-
-  if (!range) {
-    return
+  if (containerSize <= 0) {
+    return false
   }
 
-  const current = sizes.value
-  const prev = current[range.prevIndex] ?? 0
-  const next = current[range.nextIndex] ?? 0
-  const result = current.slice()
-
-  if (isCollapsed(handleKey)) {
-    const remembered = expandedSizes.get(handleKey)
-
-    result[range.prevIndex] =
-      remembered?.[0] ?? initialSizes.get(panelKeys.value[range.prevIndex]!) ?? 0
-    result[range.nextIndex] =
-      remembered?.[1] ?? initialSizes.get(panelKeys.value[range.nextIndex]!) ?? 0
-
-    expandedSizes.delete(handleKey)
-  } else {
-    expandedSizes.set(handleKey, [prev, next])
-
-    const { min } = getPanelBounds(range.prevIndex)
-    // Whatever the panel gives up goes to its neighbour, so the group keeps
-    // summing to 100% while collapsed.
-    result[range.prevIndex] = min
-    result[range.nextIndex] = next + (prev - min)
-  }
-
-  setCollapsed(handleKey, !isCollapsed(handleKey))
-
-  if (setSizes(result)) {
-    commitChange()
-  }
+  return applyDelta((delta / containerSize) * PERCENT_TOTAL)
 }
 
 function commitChange() {
   emits('change', sizes.value.slice())
 }
 
-function reset(handleKey?: string) {
-  const initial = panelKeys.value.map((key) => initialSizes.get(key) ?? 0)
-
-  if (!handleKey) {
-    expandedSizes.clear()
-    collapsedHandles.value = {}
+function toggleCollapse() {
+  if (props.disabled) {
+    return
   }
 
-  if (handleKey) {
-    expandedSizes.delete(handleKey)
-    setCollapsed(handleKey, false)
+  const [leading, trailing] = sizes.value
 
-    const range = rangesByHandle.value.get(handleKey)
+  if (collapsed.value) {
+    const restore = expandedPair ?? initialPair ?? ([leading, trailing] as Pair)
 
-    if (!range) {
-      return
-    }
+    expandedPair = null
+    collapsed.value = false
 
-    const result = sizes.value.slice()
-    result[range.prevIndex] = initial[range.prevIndex]!
-    result[range.nextIndex] = initial[range.nextIndex]!
-
-    if (setSizes(result)) {
-      emits('reset', result)
+    if (setSizes([restore[0], restore[1]])) {
+      commitChange()
     }
 
     return
   }
 
-  if (setSizes(initial)) {
-    emits('reset', initial)
+  expandedPair = [leading, trailing]
+  collapsed.value = true
+
+  const { min } = bounds.value
+  // Whatever the leading panel gives up goes to its neighbour, so the pair keeps
+  // summing to 100% while folded.
+  if (setSizes([min, PERCENT_TOTAL - min])) {
+    commitChange()
   }
 }
 
-function computeInitialSizes() {
-  const autoIndexes: number[] = []
+function reset() {
+  const restore = initialPair ?? toPair(props.defaultValue)
 
-  const result = panelChildren.value.map((item, index) => {
-    const { min, max } = getPanelBounds(index)
+  expandedPair = null
+  collapsed.value = false
 
-    if (isAutoSize(item.payload.size)) {
-      autoIndexes.push(index)
-      return min
-    }
+  if (setSizes([restore[0], restore[1]])) {
+    emits('reset', sizes.value.slice())
+  }
+}
 
-    return clamp(item.payload.size!, min, max)
-  })
+let activePointerId: number | null = null
+let startPosition = 0
+let accumulated = 0
+let resized = false
 
-  const fixedTotal = result.reduce(
-    (total, size, index) => (autoIndexes.includes(index) ? total : total + size),
-    0,
+function axisOf(event: PointerEvent) {
+  return props.direction === 'horizontal' ? event.clientX : event.clientY
+}
+
+const flushResize = throttleByRaf(() => {
+  if (accumulated === 0) {
+    return
+  }
+
+  const delta = accumulated
+  accumulated = 0
+  resized = resizeByPixels(delta) || resized
+})
+
+// The capture target is the handle itself, never `event.target`: a child element
+// can be swapped mid-drag, which would both throw on release and strand the drag.
+// Holding the capture also keeps the drag alive when the pointer leaves the window.
+function releaseCapture() {
+  const id = activePointerId
+  const el = handleRef.value
+
+  activePointerId = null
+
+  if (!el || id === null) {
+    return
+  }
+
+  try {
+    el.releasePointerCapture(id)
+  } catch {
+    // Already released: the pointer was cancelled or the element went away.
+  }
+}
+
+function resetDragging() {
+  startPosition = 0
+  accumulated = 0
+  resized = false
+
+  flushResize.cancel()
+  releaseCapture()
+}
+
+function handlePointerDown(event: PointerEvent) {
+  if (props.disabled) {
+    return
+  }
+
+  activePointerId = event.pointerId
+  startPosition = axisOf(event)
+  accumulated = 0
+  resized = false
+
+  try {
+    handleRef.value?.setPointerCapture(event.pointerId)
+  } catch {
+    // Capture is an optimisation; the drag still works through plain bubbling.
+  }
+}
+
+function handlePointerMove(event: PointerEvent) {
+  if (event.pointerId !== activePointerId) {
+    return
+  }
+
+  event.preventDefault()
+
+  const position = axisOf(event)
+  accumulated += position - startPosition
+  startPosition = position
+
+  flushResize()
+}
+
+function handlePointerUp(event: PointerEvent) {
+  if (event.pointerId !== activePointerId) {
+    return
+  }
+
+  flushResize.cancel()
+
+  if (accumulated !== 0) {
+    const delta = accumulated
+    accumulated = 0
+    resized = resizeByPixels(delta) || resized
+  }
+
+  const didResize = resized
+  resetDragging()
+
+  if (didResize) {
+    commitChange()
+  }
+}
+
+function handlePointerCancel(event: PointerEvent) {
+  if (event.pointerId !== activePointerId) {
+    return
+  }
+
+  resetDragging()
+}
+
+function handleLostCapture() {
+  if (activePointerId === null) {
+    return
+  }
+
+  resetDragging()
+}
+
+const KEYBOARD_STEP = 1
+const KEYBOARD_STEP_LARGE = 10
+
+function handleKeydown(event: KeyboardEvent) {
+  if (props.disabled) {
+    return
+  }
+
+  const step = event.shiftKey ? KEYBOARD_STEP_LARGE : KEYBOARD_STEP
+  const horizontal = props.direction === 'horizontal'
+  let delta: number | null = null
+
+  if (event.key === (horizontal ? 'ArrowLeft' : 'ArrowUp')) {
+    delta = -step
+  } else if (event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')) {
+    delta = step
+  } else if (event.key === 'Home') {
+    delta = bounds.value.min - position.value
+  } else if (event.key === 'End') {
+    delta = bounds.value.max - position.value
+  }
+
+  if (delta === null) {
+    return
+  }
+
+  event.preventDefault()
+
+  if (applyDelta(delta)) {
+    commitChange()
+  }
+}
+
+function isPercent(value: number) {
+  return value >= 0 && value <= PERCENT_TOTAL
+}
+
+function warnLength(name: string, value: number[]) {
+  warn(
+    `${name} holds ${value.length} value${value.length === 1 ? '' : 's'} but the group has 2 panels; only the first two are used.`,
   )
-
-  // Auto panels take their min-size first, then share what is left over.
-  if (autoIndexes.length > 0) {
-    const minTotal = autoIndexes.reduce((total, index) => total + result[index]!, 0)
-    const remaining = Math.max(PERCENT_TOTAL - fixedTotal, 0)
-
-    if (remaining < minTotal) {
-      const scale = minTotal > 0 ? remaining / minTotal : 0
-      autoIndexes.forEach((index) => (result[index] = result[index]! * scale))
-    } else {
-      const share = (remaining - minTotal) / autoIndexes.length
-      autoIndexes.forEach((index) => (result[index] = result[index]! + share))
-    }
-  }
-
-  const total = result.reduce((sum, size) => sum + size, 0)
-
-  if (total > PERCENT_TOTAL) {
-    if (import.meta.env?.DEV) {
-      console.warn(
-        `[pxd] PResizable: the configured sizes add up to ${Math.round(total * 100) / 100}%, they are scaled down to fit.`,
-      )
-    }
-
-    const scale = PERCENT_TOTAL / total
-    return result.map((size) => size * scale)
-  }
-
-  return result
 }
 
-function rememberInitialSizes(initial: number[]) {
-  initialSizes.clear()
-  panelKeys.value.forEach((key, index) => initialSizes.set(key, initial[index] ?? 0))
+function warn(message: string) {
+  if (import.meta.env?.DEV) {
+    console.warn(`[pxd] PResizable: ${message}`)
+  }
 }
 
-function reconcileSizes() {
-  const children = panelChildren.value
-  const nextKeys = children.map((item) => item.key)
-  const previous = knownKeys.value
-  const addedKeys = new Set(
-    children.filter((item) => !previous.includes(item.key)).map((item) => item.key),
-  )
-  const removedCount = previous.filter((key) => !nextKeys.includes(key)).length
+function warnSum(name: string, value: Pair) {
+  const total = roundSize(value[0] + value[1])
 
-  knownKeys.value = nextKeys
-
-  if (isControlled.value || (addedKeys.size === 0 && removedCount === 0)) {
-    return
-  }
-
-  const keptTotal = nextKeys.reduce(
-    (total, key) => (addedKeys.has(key) ? total : total + panelSizeOf(key)),
-    0,
-  )
-
-  // Added panels take the size they were configured with; panels the user
-  // already resized keep their proportions inside whatever space is left.
-  const addedTargets = new Map<string, number>()
-  const autoKeys: string[] = []
-  let fixedTotal = 0
-
-  children.forEach((item, index) => {
-    if (!addedKeys.has(item.key)) {
-      return
-    }
-
-    const { min, max } = getPanelBounds(index)
-
-    if (isAutoSize(item.payload.size)) {
-      autoKeys.push(item.key)
-      return
-    }
-
-    const target = clamp(item.payload.size!, min, max)
-    fixedTotal += target
-    addedTargets.set(item.key, target)
-  })
-
-  if (autoKeys.length > 0) {
-    const share = (PERCENT_TOTAL - fixedTotal) / autoKeys.length
-    autoKeys.forEach((key) => addedTargets.set(key, share))
-  }
-
-  const addedTotal = [...addedTargets.values()].reduce((sum, size) => sum + size, 0)
-  const keptCount = nextKeys.length - addedKeys.size
-  const keptTarget = Math.max(PERCENT_TOTAL - addedTotal, 0)
-  const scale = keptTotal > 0 ? keptTarget / keptTotal : keptCount > 0 ? keptTarget / keptCount : 0
-
-  const result = nextKeys.map((key) =>
-    addedTargets.has(key)
-      ? addedTargets.get(key)!
-      : keptTotal > 0
-        ? panelSizeOf(key) * scale
-        : scale,
-  )
-
-  nextKeys.forEach((key, index) => {
-    if (!initialSizes.has(key)) {
-      initialSizes.set(key, result[index]!)
-    }
-  })
-
-  setSizes(result)
-}
-
-function syncSizes() {
-  if (panelChildren.value.length === 0) {
-    return
-  }
-
-  if (!seeded.value) {
-    seeded.value = true
-    knownKeys.value = panelKeys.value
-
-    if (isControlled.value) {
-      warnModelLength()
-      return
-    }
-
-    const initial = computeInitialSizes().map(roundSize)
-    rememberInitialSizes(initial)
-    internalSizes.value = initial
-
-    return
-  }
-
-  reconcileSizes()
-}
-
-function warnModelLength() {
-  if (!import.meta.env?.DEV) {
-    return
-  }
-
-  const provided = props.modelValue?.length ?? 0
-
-  if (provided !== panelKeys.value.length) {
-    console.warn(
-      `[pxd] PResizable: v-model holds ${provided} size${provided === 1 ? '' : 's'} but the group has ${panelKeys.value.length} panels.`,
+  if (Math.abs(total - PERCENT_TOTAL) > 0.01) {
+    warn(
+      `${name} adds up to ${total}% instead of ${PERCENT_TOTAL}%; the panels keep the sizes they were given.`,
     )
   }
 }
 
-let syncScheduled = false
+// The model is the caller's truth, so a value the group would rather correct is
+// reported rather than rewritten: silently rewriting it would fight whatever
+// writes it back.
+watch(
+  () => [props.modelValue, props.minSize, props.defaultValue],
+  () => {
+    if (!import.meta.env?.DEV) {
+      return
+    }
 
-function scheduleSync() {
-  if (syncScheduled) {
-    return
-  }
+    const mins = toPair(props.minSize)
 
-  syncScheduled = true
-  void nextTick(() => {
-    syncScheduled = false
-    syncSizes()
-  })
-}
+    if (props.minSize.length !== 2) {
+      warnLength('min-size', props.minSize)
+    }
 
-function registerPanel(key: string, config: PanelConfig, el?: HTMLElement | null) {
-  registry.register(key, { kind: 'panel', ...config }, el)
-  scheduleSync()
-}
+    if (!isPercent(mins[0]) || !isPercent(mins[1])) {
+      warn(`min-size values must be between 0 and ${PERCENT_TOTAL}, got [${mins.join(', ')}].`)
+    } else if (mins[0] + mins[1] > PERCENT_TOTAL) {
+      warn(
+        `min-size [${mins.join(', ')}] adds up to more than ${PERCENT_TOTAL}%, so no split fits and the constraint is ignored.`,
+      )
+    }
 
-function unregisterPanel(key: string) {
-  registry.unregister(key)
-  scheduleSync()
-}
+    for (const [name, value] of [
+      ['model-value', props.modelValue],
+      ['default-value', props.defaultValue],
+    ] as const) {
+      if (isNil(value)) {
+        continue
+      }
 
-function registerHandle(key: string, el?: HTMLElement | null) {
-  registry.register(key, { kind: 'handle' }, el)
-}
+      if (value.length !== 2) {
+        warnLength(name, value)
+        continue
+      }
 
-function unregisterHandle(key: string) {
-  registry.unregister(key)
-  expandedSizes.delete(key)
+      warnSum(name, [value[0], value[1]])
+    }
 
-  if (isCollapsed(key)) {
-    setCollapsed(key, false)
+    const { min, max } = bounds.value
+    const leading = sizes.value[0]
+
+    if (leading < min || leading > max) {
+      warn(
+        `the leading panel sits at ${leading}%, outside its ${min}-${max}% range; it keeps that size until it is dragged.`,
+      )
+    }
+  },
+  { immediate: true, flush: 'post' },
+)
+
+const position = computed(() => sizes.value[0])
+const ariaValueNow = computed(() => roundSize(position.value))
+// A bare number is announced as "30" - no unit, and nothing about the fold.
+// valuetext is the only place a separator can put either, since it has no
+// aria-expanded to lean on.
+const ariaValueText = computed(() =>
+  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
+)
+
+function panelStyle(index: number) {
+  return {
+    flexBasis: `${sizes.value[index]}%`,
+    flexGrow: 0,
+    // The handle takes layout space of its own, so the row is always a little
+    // wider than the panels. Shrinking spreads that remainder instead of
+    // letting the container clip the last panel.
+    flexShrink: 1,
   }
 }
 
 defineExpose({
-  getPanelSizes: () => sizes.value,
-  reset,
-})
-
-provideResizableContext({
-  name,
-  props,
-  sizes,
-  getPanelIndex,
-  getPanelId,
-  getPanelSize,
-  getPanelBounds,
-  getContainerSize,
-  getPanelRange: (handleKey) => rangesByHandle.value.get(handleKey) ?? null,
-  registerPanel,
-  unregisterPanel,
-  registerHandle,
-  unregisterHandle,
-  resizeByHandle,
-  isCollapsed,
-  toggleCollapse,
-  commitChange,
+  getPanelSizes: () => sizes.value.slice(),
   reset,
 })
 </script>
@@ -527,6 +447,112 @@ provideResizableContext({
     class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[orientation=vertical]:flex-col"
     v-bind="$attrs"
   >
-    <slot />
+    <div
+      :id="leadingId"
+      class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
+      :style="panelStyle(0)"
+    >
+      <slot name="leading" :size="sizes[0]" />
+    </div>
+
+    <!--
+      A *focusable* separator is a widget, and only that flavour may carry
+      aria-valuenow / aria-valuemin / aria-valuemax - which is why it takes a
+      tabindex and the key handler below, not just a pointer drag. aria-expanded
+      is not a separator state at any focusability: it marks control over
+      visibility, and folding a panel never hides it. The fold therefore rides
+      on aria-valuetext.
+    -->
+    <div
+      ref="handleRef"
+      role="separator"
+      :tabindex="disabled ? -1 : 0"
+      aria-label="Resize the panels"
+      :aria-orientation="direction"
+      :aria-valuenow="ariaValueNow"
+      :aria-valuemin="bounds.min"
+      :aria-valuemax="bounds.max"
+      :aria-valuetext="ariaValueText"
+      :aria-controls="`${leadingId} ${trailingId}`"
+      :aria-disabled="disabled || undefined"
+      :data-collapsed="collapsed || undefined"
+      :data-handler="handle"
+      :data-orientation="direction"
+      class="pxd-resizable-handle relative shrink-0 touch-none bg-border self-focus-ring select-none hover:after:bg-primary/15 active:after:bg-primary/20 aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
+      @pointerdown.prevent="handlePointerDown"
+      @pointermove="handlePointerMove"
+      @pointerup="handlePointerUp"
+      @pointercancel="handlePointerCancel"
+      @lostpointercapture="handleLostCapture"
+      @keydown="handleKeydown"
+      @dblclick.prevent.stop="toggleCollapse"
+    />
+
+    <div
+      :id="trailingId"
+      class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
+      :style="panelStyle(1)"
+    >
+      <slot name="trailing" :size="sizes[1]" />
+    </div>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-resizable-handle[data-handler='true']::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 0.5rem;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-gray-300);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pxd-resizable-handle[data-collapsed='true']::before {
+  opacity: 0.4;
+}
+
+.pxd-resizable-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 4px;
+  transform: translate(-50%, -50%);
+}
+
+/* Scoped to the handle's own direction: nesting a resizable must not let the
+   outer group restyle the inner group's handles. */
+.pxd-resizable-handle[data-orientation='horizontal'] {
+  width: 1px;
+  height: 100%;
+  cursor: ew-resize;
+
+  &::before {
+    width: 0.375rem;
+    height: 1.5rem;
+  }
+
+  &::after {
+    height: 100%;
+  }
+}
+
+.pxd-resizable-handle[data-orientation='vertical'] {
+  width: 100%;
+  height: 1px;
+  cursor: ns-resize;
+
+  &::before {
+    width: 1.5rem;
+    height: 0.375rem;
+  }
+
+  &::after {
+    width: 100%;
+  }
+}
+</style>

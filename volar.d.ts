@@ -83,8 +83,6 @@ declare module 'vue' {
     PRating: (typeof import('pxd/components/rating'))['default']
     PReasoning: (typeof import('pxd/components/reasoning'))['default']
     PResizable: (typeof import('pxd/components/resizable'))['default']
-    PResizableHandle: (typeof import('pxd/components/resizable-handle'))['default']
-    PResizablePanel: (typeof import('pxd/components/resizable-panel'))['default']
     PRollingNumber: (typeof import('pxd/components/rolling-number'))['default']
     PScalableText: (typeof import('pxd/components/scalable-text'))['default']
     PScrollText: (typeof import('pxd/components/scroll-text'))['default']
