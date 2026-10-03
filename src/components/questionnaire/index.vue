@@ -334,13 +334,7 @@ watch(
             @update:model-value="onListModelUpdate"
             @change="onAnswerItemSelect"
           >
-            <template #item="{ item, index }">
-              <span
-                class="size-7 relative inline-flex shrink-0 items-center justify-center rounded-sm bg-gray-alpha-200"
-              >
-                {{ index + 1 }}
-              </span>
-
+            <template #item="{ item }">
               <div v-if="item.label" class="flex flex-col">
                 <span>{{ item.label }}</span>
                 <span class="text-foreground-secondary">{{ item.description }}</span>
