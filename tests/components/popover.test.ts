@@ -479,4 +479,4 @@ describe('popover', () => {
 
     wrapper.unmount()
   })
-});
+})

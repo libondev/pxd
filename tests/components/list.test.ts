@@ -363,7 +363,15 @@ describe('list', () => {
   it('should refuse every command when there are no options', () => {
     const wrapper = mount(List, { props: { options: [] } })
     const vm = wrapper.vm as any
-    const commands = ['first', 'last', 'next', 'previous', 'activate', 'enter-child', 'leave-parent']
+    const commands = [
+      'first',
+      'last',
+      'next',
+      'previous',
+      'activate',
+      'enter-child',
+      'leave-parent',
+    ]
 
     for (const command of commands) {
       expect(vm.dispatch(command)).toBe(false)

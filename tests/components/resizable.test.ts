@@ -86,10 +86,13 @@ describe('resizable', () => {
   })
 
   it('passes each panel size to its slot', () => {
-    const wrapper = mountResizable({ defaultValue: [30, 70] }, {
-      leading: ({ size }: { size: number }) => `L${size}`,
-      trailing: ({ size }: { size: number }) => `T${size}`,
-    })
+    const wrapper = mountResizable(
+      { defaultValue: [30, 70] },
+      {
+        leading: ({ size }: { size: number }) => `L${size}`,
+        trailing: ({ size }: { size: number }) => `T${size}`,
+      },
+    )
 
     expect(wrapper.text()).toContain('L30')
     expect(wrapper.text()).toContain('T70')
