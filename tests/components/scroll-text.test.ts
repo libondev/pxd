@@ -152,6 +152,36 @@ describe('scroll-text', () => {
     wrapper.unmount()
   })
 
+  it('should detect overflow on the first frame without ResizeObserver delivery', async () => {
+    const wrapper = mount(ScrollText, {
+      props: {
+        text: 'Sidebar label',
+      },
+    })
+
+    const root = wrapper.element as HTMLElement
+    const content = wrapper.find('.pxd-scroll-text--content').element as HTMLElement
+
+    Object.defineProperty(root, 'clientWidth', {
+      configurable: true,
+      get: () => 100,
+    })
+    Object.defineProperty(content, 'scrollWidth', {
+      configurable: true,
+      get() {
+        return this.textContent!.length * 10
+      },
+    })
+
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.attributes('data-overflow')).toBe('true')
+    expect(wrapper.attributes('style') ?? '').toContain('--scroll-text-distance: 30px')
+
+    wrapper.unmount()
+  })
+
   it('should fall back to default speed for invalid values', async () => {
     const wrapper = mount(ScrollText, {
       props: {

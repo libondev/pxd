@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { ScrollTextProps } from './types'
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-browser-observer.js'
 import { getElement } from '../../utils/dom.js'
-import { throttleByRaf } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
+import { caf, raf } from '../../utils/event.js'
 
 defineOptions({
   name: 'PScrollText',
@@ -20,22 +19,19 @@ const props = withDefaults(defineProps<ScrollTextProps>(), {
 const wrapRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
-const overflowing = shallowRef(false)
 const contentStyle = shallowRef<Record<string, string>>()
 
 let wrapWidth = 0
 let contentWidth = 0
 let appliedSpeed = 0
+let initialRafId = 0
 
 function toSpeed(value: number | string | undefined) {
   const n = Number(value)
   return Number.isFinite(n) && n > 0 ? n : 40
 }
 
-const speed = computed(() => toSpeed(props.speed))
-
 function clearOverflow() {
-  overflowing.value = false
   contentStyle.value = undefined
   wrapWidth = 0
   contentWidth = 0
@@ -43,10 +39,6 @@ function clearOverflow() {
 }
 
 function syncOverflow(force = false) {
-  if (isServer()) {
-    return
-  }
-
   const wrap = getElement(wrapRef.value)
   const content = contentRef.value
 
@@ -56,7 +48,7 @@ function syncOverflow(force = false) {
 
   const nextWrap = wrap.clientWidth
   const nextContent = content.scrollWidth
-  const nextSpeed = speed.value
+  const nextSpeed = toSpeed(props.speed)
 
   if (!nextWrap || !nextContent) {
     clearOverflow()
@@ -73,7 +65,7 @@ function syncOverflow(force = false) {
 
   const unchanged =
     !force &&
-    overflowing.value &&
+    contentStyle.value &&
     nextWrap === wrapWidth &&
     nextContent === contentWidth &&
     nextSpeed === appliedSpeed
@@ -85,33 +77,44 @@ function syncOverflow(force = false) {
   wrapWidth = nextWrap
   contentWidth = nextContent
   appliedSpeed = nextSpeed
-  overflowing.value = true
   contentStyle.value = {
     '--scroll-text-distance': `${distance}px`,
     '--scroll-text-duration': `${distance / nextSpeed}s`,
   }
 }
 
-const scheduleSync = throttleByRaf(() => {
+watch(
+  () => [props.text, toSpeed(props.speed)],
+  () => {
+    syncOverflow(true)
+  },
+  { flush: 'post' },
+)
+
+useResizeObserver(wrapRef, () => {
   syncOverflow(false)
 })
 
-watch(
-  () => [props.text, speed.value],
-  () => {
-    scheduleSync.cancel()
-    syncOverflow(true)
-  },
-)
-
-useResizeObserver(wrapRef, scheduleSync)
-
+// The first measurement is deferred to a rAF instead of running synchronously in
+// the mounted queue, where a batch of instances reading layout forces one reflow
+// per item. Inside a single rAF the browser resolves layout once and serves every
+// instance's read from that pass, so a list costs one reflow instead of N.
+// ResizeObserver's initial delivery is not relied on here: it is not guaranteed to
+// land before first paint in every rendering context.
 onMounted(() => {
-  syncOverflow(true)
+  initialRafId = raf(() => {
+    initialRafId = 0
+    syncOverflow(true)
+  })
 })
 
 onBeforeUnmount(() => {
-  scheduleSync.cancel()
+  if (!initialRafId) {
+    return
+  }
+
+  caf(initialRafId)
+  initialRafId = 0
 })
 </script>
 
@@ -120,13 +123,13 @@ onBeforeUnmount(() => {
     :is="as"
     ref="wrapRef"
     class="pxd-scroll-text min-w-0 block max-w-full overflow-hidden"
-    :data-overflow="overflowing ? 'true' : 'false'"
+    :data-overflow="contentStyle ? 'true' : 'false'"
     :style="contentStyle"
     v-bind="$attrs"
   >
     <span
       ref="contentRef"
-      class="pxd-scroll-text--content block max-w-full truncate whitespace-nowrap motion-reduce:animate-none!"
+      class="pxd-scroll-text--content block max-w-full truncate whitespace-nowrap"
     >
       <slot>{{ text }}</slot>
     </span>
