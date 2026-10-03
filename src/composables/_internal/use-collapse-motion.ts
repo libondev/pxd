@@ -5,14 +5,13 @@ import { toValue } from '../../utils/helper.js'
 
 export function useCollapseMotion(
   contentRef: Ref<HTMLElement | undefined>,
-  expanded: MaybeRefOrGetter<boolean | undefined>,
+  expanded: MaybeRefOrGetter<boolean>,
 ) {
   // Stays true during leave so height can animate before `open` is removed.
   const detailsOpen = shallowRef(false)
 
   let ready = false
   let skipEnter = false
-  let motionId = 0
   let stopWait: (() => void) | undefined
 
   const isLeaving = computed(() => detailsOpen.value && !toValue(expanded))
@@ -26,11 +25,7 @@ export function useCollapseMotion(
     stopWait = undefined
   }
 
-  function finish(id: number) {
-    if (id !== motionId) {
-      return
-    }
-
+  function finish() {
     clearWait()
 
     const el = contentRef.value
@@ -50,7 +45,6 @@ export function useCollapseMotion(
       return
     }
 
-    const id = ++motionId
     clearWait()
 
     el.style.overflow = 'hidden'
@@ -62,7 +56,7 @@ export function useCollapseMotion(
       if (event && ((event as TransitionEvent).propertyName !== 'height' || event.target !== el)) {
         return
       }
-      finish(id)
+      finish()
     }
 
     const ms = (Number.parseFloat(getStyle(el).transitionDuration) || 0) * 1000
@@ -80,7 +74,7 @@ export function useCollapseMotion(
   }
 
   watch(
-    () => !!toValue(expanded),
+    () => toValue(expanded),
     (isExpanded) => {
       if (isExpanded) {
         detailsOpen.value = true
@@ -106,12 +100,10 @@ export function useCollapseMotion(
   })
 
   onScopeDispose(() => {
-    motionId += 1
     clearWait()
   })
 
   return {
-    contentRef,
     detailsOpen,
     isLeaving,
     skipEnterMotion,
