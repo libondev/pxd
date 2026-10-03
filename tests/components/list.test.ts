@@ -444,4 +444,23 @@ describe('list', () => {
 
     wrapper.unmount()
   })
+
+  it('should merge itemClass into every rendered item', () => {
+    const wrapper = mount(List, {
+      props: {
+        itemClass: 'custom-item',
+        options: [
+          { label: 'Item 1', value: '1' },
+          { label: 'Item 2', value: '2' },
+        ],
+      },
+    })
+
+    const items = wrapper.findAll('[data-list-item]')
+    expect(items[0]?.classes()).toContain('custom-item')
+    expect(items[0]?.classes()).toContain('pxd-list-item')
+    expect(items[1]?.classes()).toContain('custom-item')
+
+    wrapper.unmount()
+  })
 })

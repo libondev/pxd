@@ -218,6 +218,7 @@ defineExpose({
           v-bind="entry.itemRow.option"
           :index="entry.itemRow.navIndex"
           :active="isItemActive(entry.itemRow)"
+          :class="itemClass"
         >
           <template v-if="$slots.item">
             <slot

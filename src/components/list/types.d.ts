@@ -1,4 +1,9 @@
-import type { ComponentAs, ComponentLabel, ComponentValue } from '../../types/shared'
+import type {
+  ComponentAs,
+  ComponentClass,
+  ComponentLabel,
+  ComponentValue,
+} from '../../types/shared'
 
 export interface ListOption {
   as?: ComponentAs
@@ -28,6 +33,8 @@ export interface ListProps {
   multiple?: boolean
   modelValue?: ListModelValue
   options?: ListOptionEntry[]
+  /** Class merged into every internally rendered list item. */
+  itemClass?: ComponentClass
   defaultActiveIndex?: number
   /** Enable virtualized rendering for large option sets. */
   virtual?: boolean

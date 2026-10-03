@@ -25,7 +25,7 @@ const { value: selectedValue, onItemSelect } = useListContext()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item min-h-9 p-2 gap-1.5 text-sm pe-8 flex w-full cursor-pointer items-center rounded-md outline-none [contain-intrinsic-size:auto_2.5rem] content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item min-h-9 p-2 text-sm pe-8 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
@@ -72,9 +72,9 @@ function onItemClick(ev: MouseEvent) {
     @click.stop="onItemClick"
   >
     <slot>
-      <div class="pxd-list-item--content gap-1.5 flex flex-col">
+      <div class="pxd-list-item--content">
         <span>{{ label }}</span>
-        <span v-if="description" class="text-foreground-secondary">{{ description }}</span>
+        <div v-if="description" class="mt-0.5 text-foreground-secondary">{{ description }}</div>
       </div>
     </slot>
 

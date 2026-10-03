@@ -14,9 +14,9 @@ import { ref } from 'vue'
 const value = ref('manage-extensions')
 
 const options = [
-  { label: 'Figma Import', value: 'figma-import' },
-  { label: 'Import Extension', value: 'import-extension' },
-  { label: 'Manage Extensions', value: 'manage-extensions' },
+  { label: 'Figma Import', value: 'figma-import', description: 'Jump to figma import' },
+  { label: 'Import Extension', value: 'import-extension', description: 'Jump to import extension' },
+  { label: 'Manage Extensions', value: 'manage-extensions', description: 'Jump to manage extensions' },
 ]
 </script>
 
@@ -205,6 +205,7 @@ function onKeydown(ev) {
 | --- | --- | --- | --- |
 | model-value | `ListModelValue` | - | Selected value, an array when `multiple` is set |
 | options | `ListOptions` | `() => []` | Options and `group` entries to render |
+| item-class | `ComponentClass` | - | Class merged into every internally rendered list item |
 | multiple | `boolean` | - | Let several options be selected at the same time |
 | default-active-index | `number` | `-1` | Option active before the user navigates |
 | loop | `boolean` | `true` | Wrap keyboard navigation around both ends |
