@@ -2,13 +2,6 @@
 
 Render a checklist that walks items through a workflow.
 
-`options` drives the list, so the markup also exists in server-rendered HTML. Binding
-`v-model` makes the list controlled and takes precedence over `options`; leaving it unbound
-keeps the change inside the component until `options` is replaced.
-
-Clicking a status button (or a row) moves an item one step forward — `pending` to
-`in_progress` to `completed` — and a finished or canceled item reopens as `pending`.
-
 ## Default
 
 ```vue demo

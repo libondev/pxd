@@ -10,6 +10,7 @@ import type {
 } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ListOrderedIcon from '@gdsicon/vue/list-ordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
@@ -265,6 +266,7 @@ defineExpose({
       :class="{ 'cursor-default': !collapsible }"
       @click.prevent="onToggleClick"
     >
+      <ListOrderedIcon class="size-4 font-medium shrink-0" />
       <slot
         name="header"
         :expanded="expanded"
