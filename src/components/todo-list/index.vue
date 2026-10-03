@@ -294,92 +294,99 @@ defineExpose({
       />
     </summary>
 
-    <ul
+    <div
       ref="contentRef"
-      class="pxd-todo-list--content m-0 p-3 gap-1.5 flex list-none flex-col overflow-hidden border-t"
+      class="pxd-todo-list--content overflow-hidden"
       :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
     >
-      <li
-        v-if="currentOptions.length === 0"
-        class="pxd-todo-list--empty text-sm text-foreground-secondary"
-      >
-        <slot v-if="hasEmptySlot" name="empty" />
-        <template v-else>{{ emptyText }}</template>
-      </li>
-
-      <template v-for="(item, index) in currentOptions" :key="item.id ?? index">
+      <ul class="pxd-todo-list--list m-0 p-3 gap-1.5 flex list-none flex-col border-t">
         <li
-          v-if="hasItemSlot"
-          class="pxd-todo-list--item gap-1.5 flex items-center"
-          :data-status="resolveStatus(item)"
-          @click="onItemClick(index, item)"
+          v-if="currentOptions.length === 0"
+          class="pxd-todo-list--empty text-sm text-foreground-secondary"
         >
-          <slot
-            name="item"
-            :item="item"
-            :index="index"
-            :status="resolveStatus(item)"
-            :toggle="() => onItemClick(index, item)"
-          />
+          <slot v-if="hasEmptySlot" name="empty" />
+          <template v-else>{{ emptyText }}</template>
         </li>
 
-        <li
-          v-else
-          class="pxd-todo-list--item gap-1.5 flex items-center"
-          :class="{
-            'cursor-pointer': !readonly && !item.disabled,
-            'opacity-50': item.disabled,
-          }"
-          :data-status="resolveStatus(item)"
-          @click="onItemClick(index, item)"
-        >
-          <button
-            class="pxd-todo-list--indicator p-0 size-4 block shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
-            type="button"
-            :disabled="readonly || item.disabled"
-            :aria-label="item.content == null ? undefined : String(item.content)"
-            @click.stop="onItemClick(index, item)"
+        <template v-for="(item, index) in currentOptions" :key="item.id ?? index">
+          <li
+            v-if="hasItemSlot"
+            class="pxd-todo-list--item gap-1.5 flex items-center"
+            :data-status="resolveStatus(item)"
+            @click="onItemClick(index, item)"
           >
-            <LoaderCircleIcon
-              v-if="resolveStatus(item) === 'in_progress'"
-              class="motion-safe:animate-spin block size-full text-blue-900"
+            <slot
+              name="item"
+              :item="item"
+              :index="index"
+              :status="resolveStatus(item)"
+              :toggle="() => onItemClick(index, item)"
             />
+          </li>
 
-            <span
-              v-else
-              class="pxd-todo-list--marker block size-full rounded-full"
-              :class="MARKER_CLASSES[resolveStatus(item)]"
+          <li
+            v-else
+            class="pxd-todo-list--item gap-1.5 flex items-center"
+            :class="{
+              'cursor-pointer': !readonly && !item.disabled,
+              'opacity-50': item.disabled,
+            }"
+            :data-status="resolveStatus(item)"
+            @click="onItemClick(index, item)"
+          >
+            <button
+              class="pxd-todo-list--indicator p-0 size-4 block shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
+              type="button"
+              :disabled="readonly || item.disabled"
+              :aria-label="item.content == null ? undefined : String(item.content)"
+              @click.stop="onItemClick(index, item)"
             >
-              <CheckIcon v-if="resolveStatus(item) === 'completed'" class="block size-full" />
-              <MinusIcon v-else-if="resolveStatus(item) === 'canceled'" class="block size-full" />
-            </span>
-          </button>
+              <LoaderCircleIcon
+                v-if="resolveStatus(item) === 'in_progress'"
+                class="motion-safe:animate-spin block size-full text-blue-900"
+              />
 
-          <div class="pxd-todo-list--body min-w-0 flex-1">
-            <div v-if="hasItemContentSlot" class="pxd-todo-list--text min-w-0">
-              <slot name="item-content" :item="item" :index="index" :status="resolveStatus(item)" />
+              <span
+                v-else
+                class="pxd-todo-list--marker block size-full rounded-full"
+                :class="MARKER_CLASSES[resolveStatus(item)]"
+              >
+                <CheckIcon v-if="resolveStatus(item) === 'completed'" class="block size-full" />
+                <MinusIcon v-else-if="resolveStatus(item) === 'canceled'" class="block size-full" />
+              </span>
+            </button>
+
+            <div class="pxd-todo-list--body min-w-0 flex-1">
+              <div v-if="hasItemContentSlot" class="pxd-todo-list--text min-w-0">
+                <slot
+                  name="item-content"
+                  :item="item"
+                  :index="index"
+                  :status="resolveStatus(item)"
+                />
+              </div>
+
+              <template v-else>
+                <div
+                  class="pxd-todo-list--text min-w-0 text-sm"
+                  :class="{
+                    'text-foreground-secondary line-through': resolveStatus(item) === 'completed',
+                  }"
+                >
+                  {{ item.content }}
+                </div>
+
+                <div
+                  v-if="item.description"
+                  class="pxd-todo-list--description mt-0.5 text-sm text-foreground-secondary"
+                >
+                  {{ item.description }}
+                </div>
+              </template>
             </div>
-
-            <template v-else>
-              <div
-                class="pxd-todo-list--text min-w-0 text-sm"
-                :class="{
-                  'text-foreground-secondary line-through': resolveStatus(item) === 'completed',
-                }"
-              >
-                {{ item.content }}
-              </div>
-
-              <div
-                v-if="item.description"
-                class="pxd-todo-list--description mt-0.5 text-sm text-foreground-secondary"
-              >
-                {{ item.description }}
-              </div>
-            </template>
-          </div>
-        </li>
-      </template>
-    </ul>
+          </li>
+        </template>
+      </ul>
+    </div>
   </details>
 </template>
