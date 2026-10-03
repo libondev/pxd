@@ -127,8 +127,7 @@ const btnContentClasses = computed(() => {
     v-bind="attrs"
   >
     <PSpinner v-if="loading" />
-
-    <slot name="prefix" />
+    <slot v-else name="prefix" />
 
     <span class="inline-flex flex-1 shrink-0 items-center truncate" :class="btnContentClasses">
       <slot />
