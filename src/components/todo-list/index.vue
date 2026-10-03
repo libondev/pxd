@@ -243,7 +243,7 @@ defineExpose({
       :class="{ 'cursor-default': !collapsible }"
       @click.prevent="onToggleClick"
     >
-      <ListUnorderedIcon class="size-4 font-medium shrink-0" />
+      <ListUnorderedIcon class="size-3 font-medium shrink-0" />
       <slot
         name="header"
         :expanded="expanded"
