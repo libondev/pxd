@@ -1,12 +1,25 @@
 import componentList from './components.json'
 import composableList from './composables.json'
 
-const componentMenus = componentList.map(({ name, camelized }) => {
-  return {
-    label: camelized,
-    path: `/components/${name}`,
-  }
-})
+const componentMenus = Object.entries(
+  componentList.reduce<Record<string, { label: string; path: string }[]>>(
+    (acc, { name, camelized, category }) => {
+      acc[category] = acc[category] || []
+      acc[category].push({
+        label: camelized,
+        path: `/components/${name}`,
+      })
+
+      return acc
+    },
+    {},
+  ),
+)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([group, children]) => ({
+    group,
+    children,
+  }))
 
 const composableMenus = composableList.map(({ name }) => {
   return {
@@ -49,10 +62,7 @@ export const asideMenus = [
       },
     ],
   },
-  {
-    group: 'Components',
-    children: componentMenus,
-  },
+  ...componentMenus,
   {
     group: 'Composables',
     children: composableMenus,

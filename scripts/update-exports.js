@@ -78,25 +78,55 @@ declare module 'vue' {
   fs.writeFileSync(typePath, fileContent, 'utf-8')
 }
 
+const DEFAULT_COMPONENT_CATEGORY = 'Uncategorized'
+
+function readExistingCategories(jsonPath) {
+  if (!fs.existsSync(jsonPath)) {
+    return new Map()
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'))
+
+    return new Map(
+      parsed
+        .filter((item) => item && typeof item.name === 'string')
+        .map((item) => [item.name, item.category ?? DEFAULT_COMPONENT_CATEGORY]),
+    )
+  } catch {
+    console.error(
+      `Failed to parse ${jsonPath}, every component falls back to "${DEFAULT_COMPONENT_CATEGORY}"`,
+    )
+
+    return new Map()
+  }
+}
+
 function updateDocsComponents() {
+  const jsonPath = path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json')
   const components = globSync('packages/docs/src/pages/components/**/*.md')
   const matchRegex = /packages\/docs\/src\/pages\/components\/(.*?)\.md/
+  const categories = readExistingCategories(jsonPath)
 
-  const jsonContent = components.reduce((acc, cur) => {
+  const jsonContent = components.map((cur) => {
     const [, name] = cur.match(matchRegex) || []
 
-    acc.push({
+    return {
       camelized: humanize(name),
       name,
-    })
+      category: categories.get(name) ?? DEFAULT_COMPONENT_CATEGORY,
+    }
+  })
 
-    return acc
-  }, [])
+  const uncategorized = jsonContent.filter((item) => item.category === DEFAULT_COMPONENT_CATEGORY)
 
-  fs.writeFileSync(
-    path.join(process.cwd(), 'packages', 'docs', 'src', 'consts', 'components.json'),
-    `${JSON.stringify(jsonContent, null, 2)}\n`,
-  )
+  if (uncategorized.length > 0) {
+    console.warn(
+      `New components need a category in ${jsonPath}: ${uncategorized.map((item) => item.name).join(', ')}`,
+    )
+  }
+
+  fs.writeFileSync(jsonPath, `${JSON.stringify(jsonContent, null, 2)}\n`)
 }
 
 function updateDocsComposables() {

@@ -1,402 +1,502 @@
 [
   {
     "camelized": "Active Graph",
-    "name": "active-graph"
+    "name": "active-graph",
+    "category": "Decoration"
   },
   {
     "camelized": "Avatar",
-    "name": "avatar"
+    "name": "avatar",
+    "category": "Data Display"
   },
   {
     "camelized": "Backtop",
-    "name": "backtop"
+    "name": "backtop",
+    "category": "Button"
   },
   {
     "camelized": "Badge",
-    "name": "badge"
+    "name": "badge",
+    "category": "Data Display"
   },
   {
     "camelized": "Book",
-    "name": "book"
+    "name": "book",
+    "category": "Layout"
   },
   {
     "camelized": "Border Beam",
-    "name": "border-beam"
+    "name": "border-beam",
+    "category": "Decoration"
   },
   {
     "camelized": "Breadcrumb",
-    "name": "breadcrumb"
+    "name": "breadcrumb",
+    "category": "Navigation"
   },
   {
     "camelized": "Browser",
-    "name": "browser"
+    "name": "browser",
+    "category": "Layout"
   },
   {
     "camelized": "Bubble",
-    "name": "bubble"
+    "name": "bubble",
+    "category": "AI"
   },
   {
     "camelized": "Button",
-    "name": "button"
+    "name": "button",
+    "category": "Button"
   },
   {
     "camelized": "Calendar",
-    "name": "calendar"
+    "name": "calendar",
+    "category": "Form"
   },
   {
     "camelized": "Card",
-    "name": "card"
+    "name": "card",
+    "category": "Data Display"
   },
   {
     "camelized": "Carousel",
-    "name": "carousel"
+    "name": "carousel",
+    "category": "Layout"
   },
   {
     "camelized": "Checkbox",
-    "name": "checkbox"
+    "name": "checkbox",
+    "category": "Form"
   },
   {
     "camelized": "Checkerboard",
-    "name": "checkerboard"
+    "name": "checkerboard",
+    "category": "Decoration"
   },
   {
     "camelized": "Chip",
-    "name": "chip"
+    "name": "chip",
+    "category": "Data Display"
   },
   {
     "camelized": "Choicebox",
-    "name": "choicebox"
+    "name": "choicebox",
+    "category": "Form"
   },
   {
     "camelized": "Collapse",
-    "name": "collapse"
+    "name": "collapse",
+    "category": "Overlay"
   },
   {
     "camelized": "Color Selector",
-    "name": "color-selector"
+    "name": "color-selector",
+    "category": "Form"
   },
   {
     "camelized": "Command Menu",
-    "name": "command-menu"
+    "name": "command-menu",
+    "category": "Navigation"
   },
   {
     "camelized": "Config Provider",
-    "name": "config-provider"
+    "name": "config-provider",
+    "category": "Utilities"
   },
   {
     "camelized": "Copy Button",
-    "name": "copy-button"
+    "name": "copy-button",
+    "category": "Button"
   },
   {
     "camelized": "Countdown",
-    "name": "countdown"
+    "name": "countdown",
+    "category": "Utilities"
   },
   {
     "camelized": "Dash Line",
-    "name": "dash-line"
+    "name": "dash-line",
+    "category": "Decoration"
   },
   {
     "camelized": "Date Picker",
-    "name": "date-picker"
+    "name": "date-picker",
+    "category": "Form"
   },
   {
     "camelized": "Description",
-    "name": "description"
+    "name": "description",
+    "category": "Data Display"
   },
   {
     "camelized": "Drawer",
-    "name": "drawer"
+    "name": "drawer",
+    "category": "Overlay"
   },
   {
     "camelized": "Ellipsis Text",
-    "name": "ellipsis-text"
+    "name": "ellipsis-text",
+    "category": "Typography"
   },
   {
     "camelized": "Empty State",
-    "name": "empty-state"
+    "name": "empty-state",
+    "category": "Feedback"
   },
   {
     "camelized": "Error",
-    "name": "error"
+    "name": "error",
+    "category": "Feedback"
   },
   {
     "camelized": "Fader",
-    "name": "fader"
+    "name": "fader",
+    "category": "Navigation"
   },
   {
     "camelized": "Feedback Bar",
-    "name": "feedback-bar"
+    "name": "feedback-bar",
+    "category": "Feedback"
   },
   {
     "camelized": "Gauge",
-    "name": "gauge"
+    "name": "gauge",
+    "category": "Data Display"
   },
   {
     "camelized": "Grid",
-    "name": "grid"
+    "name": "grid",
+    "category": "Layout"
   },
   {
     "camelized": "Hold Button",
-    "name": "hold-button"
+    "name": "hold-button",
+    "category": "Button"
   },
   {
     "camelized": "Input",
-    "name": "input"
+    "name": "input",
+    "category": "Form"
   },
   {
     "camelized": "Intersection Observer",
-    "name": "intersection-observer"
+    "name": "intersection-observer",
+    "category": "Utilities"
   },
   {
     "camelized": "Kbd",
-    "name": "kbd"
+    "name": "kbd",
+    "category": "Typography"
   },
   {
     "camelized": "Link Button",
-    "name": "link-button"
+    "name": "link-button",
+    "category": "Button"
   },
   {
     "camelized": "List",
-    "name": "list"
+    "name": "list",
+    "category": "Form"
   },
   {
     "camelized": "Loading Bar",
-    "name": "loading-bar"
+    "name": "loading-bar",
+    "category": "Feedback"
   },
   {
     "camelized": "Loading Dots",
-    "name": "loading-dots"
+    "name": "loading-dots",
+    "category": "Feedback"
   },
   {
     "camelized": "Marching Ants",
-    "name": "marching-ants"
+    "name": "marching-ants",
+    "category": "Decoration"
   },
   {
     "camelized": "Marquee",
-    "name": "marquee"
+    "name": "marquee",
+    "category": "Typography"
   },
   {
     "camelized": "Material",
-    "name": "material"
+    "name": "material",
+    "category": "Layout"
   },
   {
     "camelized": "Mention",
-    "name": "mention"
+    "name": "mention",
+    "category": "AI"
   },
   {
     "camelized": "Menu",
-    "name": "menu"
+    "name": "menu",
+    "category": "Navigation"
   },
   {
     "camelized": "Message",
-    "name": "message"
+    "name": "message",
+    "category": "Feedback"
   },
   {
     "camelized": "Modal",
-    "name": "modal"
+    "name": "modal",
+    "category": "Overlay"
   },
   {
     "camelized": "More Button",
-    "name": "more-button"
+    "name": "more-button",
+    "category": "Button"
   },
   {
     "camelized": "Noise Background",
-    "name": "noise-background"
+    "name": "noise-background",
+    "category": "Decoration"
   },
   {
     "camelized": "Note",
-    "name": "note"
+    "name": "note",
+    "category": "Feedback"
   },
   {
     "camelized": "Number Input",
-    "name": "number-input"
+    "name": "number-input",
+    "category": "Form"
   },
   {
     "camelized": "Overlay",
-    "name": "overlay"
+    "name": "overlay",
+    "category": "Overlay"
   },
   {
     "camelized": "Page Number",
-    "name": "page-number"
+    "name": "page-number",
+    "category": "Navigation"
   },
   {
     "camelized": "Pagination",
-    "name": "pagination"
+    "name": "pagination",
+    "category": "Navigation"
   },
   {
     "camelized": "Pin Input",
-    "name": "pin-input"
+    "name": "pin-input",
+    "category": "Form"
   },
   {
     "camelized": "Placeholder",
-    "name": "placeholder"
+    "name": "placeholder",
+    "category": "Feedback"
   },
   {
     "camelized": "Popover",
-    "name": "popover"
+    "name": "popover",
+    "category": "Overlay"
   },
   {
     "camelized": "Progress",
-    "name": "progress"
+    "name": "progress",
+    "category": "Feedback"
   },
   {
     "camelized": "Project Banner",
-    "name": "project-banner"
+    "name": "project-banner",
+    "category": "Feedback"
   },
   {
     "camelized": "Questionnaire",
-    "name": "questionnaire"
+    "name": "questionnaire",
+    "category": "Form"
   },
   {
     "camelized": "Radial Burst",
-    "name": "radial-burst"
+    "name": "radial-burst",
+    "category": "Decoration"
   },
   {
     "camelized": "Radio",
-    "name": "radio"
+    "name": "radio",
+    "category": "Form"
   },
   {
     "camelized": "Rating",
-    "name": "rating"
+    "name": "rating",
+    "category": "Form"
   },
   {
     "camelized": "Reasoning",
-    "name": "reasoning"
+    "name": "reasoning",
+    "category": "AI"
   },
   {
     "camelized": "Resizable",
-    "name": "resizable"
+    "name": "resizable",
+    "category": "Layout"
   },
   {
     "camelized": "Rolling Number",
-    "name": "rolling-number"
+    "name": "rolling-number",
+    "category": "Typography"
   },
   {
     "camelized": "Scalable Text",
-    "name": "scalable-text"
+    "name": "scalable-text",
+    "category": "Typography"
   },
   {
     "camelized": "Scroll Text",
-    "name": "scroll-text"
+    "name": "scroll-text",
+    "category": "Typography"
   },
   {
     "camelized": "Scrollable",
-    "name": "scrollable"
+    "name": "scrollable",
+    "category": "Layout"
   },
   {
     "camelized": "Search Input",
-    "name": "search-input"
+    "name": "search-input",
+    "category": "Form"
   },
   {
     "camelized": "Select",
-    "name": "select"
+    "name": "select",
+    "category": "Form"
   },
   {
     "camelized": "Separator",
-    "name": "separator"
+    "name": "separator",
+    "category": "Layout"
   },
   {
     "camelized": "Shimmer Text",
-    "name": "shimmer-text"
+    "name": "shimmer-text",
+    "category": "Typography"
   },
   {
     "camelized": "Skeleton",
-    "name": "skeleton"
+    "name": "skeleton",
+    "category": "Feedback"
   },
   {
     "camelized": "Slider",
-    "name": "slider"
+    "name": "slider",
+    "category": "Form"
   },
   {
     "camelized": "Snippet",
-    "name": "snippet"
+    "name": "snippet",
+    "category": "Typography"
   },
   {
     "camelized": "Spinner Dots",
-    "name": "spinner-dots"
+    "name": "spinner-dots",
+    "category": "Feedback"
   },
   {
     "camelized": "Spinner",
-    "name": "spinner"
+    "name": "spinner",
+    "category": "Feedback"
   },
   {
     "camelized": "Split Button",
-    "name": "split-button"
+    "name": "split-button",
+    "category": "Button"
   },
   {
     "camelized": "Stack",
-    "name": "stack"
+    "name": "stack",
+    "category": "Layout"
   },
   {
     "camelized": "Status Dot",
-    "name": "status-dot"
+    "name": "status-dot",
+    "category": "Feedback"
   },
   {
     "camelized": "Steps",
-    "name": "steps"
+    "name": "steps",
+    "category": "Navigation"
   },
   {
     "camelized": "Stick To Bottom",
-    "name": "stick-to-bottom"
+    "name": "stick-to-bottom",
+    "category": "AI"
   },
   {
     "camelized": "Swipe Cell",
-    "name": "swipe-cell"
+    "name": "swipe-cell",
+    "category": "Overlay"
   },
   {
     "camelized": "Switch",
-    "name": "switch"
+    "name": "switch",
+    "category": "Form"
   },
   {
     "camelized": "Tabs",
-    "name": "tabs"
+    "name": "tabs",
+    "category": "Navigation"
   },
   {
     "camelized": "Teleport",
-    "name": "teleport"
+    "name": "teleport",
+    "category": "Utilities"
   },
   {
     "camelized": "Text",
-    "name": "text"
+    "name": "text",
+    "category": "Typography"
   },
   {
     "camelized": "Textarea",
-    "name": "textarea"
+    "name": "textarea",
+    "category": "Form"
   },
   {
     "camelized": "Theme Switcher",
-    "name": "theme-switcher"
+    "name": "theme-switcher",
+    "category": "Utilities"
   },
   {
     "camelized": "Time Picker",
-    "name": "time-picker"
+    "name": "time-picker",
+    "category": "Form"
   },
   {
     "camelized": "Timeline",
-    "name": "timeline"
+    "name": "timeline",
+    "category": "Data Display"
   },
   {
     "camelized": "Todo List",
-    "name": "todo-list"
+    "name": "todo-list",
+    "category": "Form"
   },
   {
     "camelized": "Toggle Button",
-    "name": "toggle-button"
+    "name": "toggle-button",
+    "category": "Button"
   },
   {
     "camelized": "Toggle",
-    "name": "toggle"
+    "name": "toggle",
+    "category": "Form"
   },
   {
     "camelized": "Tool Call",
-    "name": "tool-call"
+    "name": "tool-call",
+    "category": "AI"
   },
   {
     "camelized": "Tooltip",
-    "name": "tooltip"
+    "name": "tooltip",
+    "category": "Overlay"
   },
   {
     "camelized": "Virtual List",
-    "name": "virtual-list"
+    "name": "virtual-list",
+    "category": "Layout"
   }
 ]
