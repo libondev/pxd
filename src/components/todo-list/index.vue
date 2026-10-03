@@ -10,7 +10,7 @@ import type {
 } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import ListOrderedIcon from '@gdsicon/vue/list-ordered'
+import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
@@ -111,30 +111,11 @@ const stats = computed<TodoStats>(() => {
 const headerTitle = computed(() => props.title ?? configProvider.locale.todo.title)
 
 const summaryText = computed(() => {
-  const locale = configProvider.locale.todo
-  const { inProgress, pending, completed, canceled } = stats.value
-  const parts: string[] = []
+  const { inProgress, pending, total, canceled } = stats.value
+  const totalCount = total - canceled
+  const currentCount = inProgress + pending
 
-  if (inProgress > 0) {
-    parts.push(`${inProgress} ${locale.inProgress}`)
-  }
-
-  if (pending > 0) {
-    parts.push(`${pending} ${locale.pending}`)
-  }
-
-  // Everything is done: report the closed items instead of an empty header.
-  if (parts.length === 0) {
-    if (completed > 0) {
-      parts.push(`${completed} ${locale.completed}`)
-    }
-
-    if (canceled > 0) {
-      parts.push(`${canceled} ${locale.canceled}`)
-    }
-  }
-
-  return parts.join(' · ')
+  return totalCount > 0 ? `${currentCount}/${totalCount}` : ''
 })
 
 const emptyText = computed(() => props.empty ?? configProvider.locale.results.noData)
@@ -266,7 +247,7 @@ defineExpose({
       :class="{ 'cursor-default': !collapsible }"
       @click.prevent="onToggleClick"
     >
-      <ListOrderedIcon class="size-4 font-medium shrink-0" />
+      <ListUnorderedIcon class="size-4 font-medium shrink-0" />
       <slot
         name="header"
         :expanded="expanded"
@@ -378,7 +359,7 @@ defineExpose({
 
                 <div
                   v-if="item.description"
-                  class="pxd-todo-list--description mt-0.5 text-sm text-foreground-secondary"
+                  class="pxd-todo-list--description text-sm text-foreground-secondary"
                 >
                   {{ item.description }}
                 </div>

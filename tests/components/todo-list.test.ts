@@ -106,24 +106,25 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('summarises active counts in the header', async () => {
+  it('summarises progress in the header', async () => {
     const wrapper = await mountTodoList()
 
     expect(wrapper.find('.pxd-todo-list--title').text()).toBe('Tasks')
-    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1 in progress · 1 pending')
+    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('2/3')
 
     wrapper.unmount()
   })
 
-  it('summarises finished counts once nothing is active', async () => {
+  it('excludes canceled items from the progress summary', async () => {
     const wrapper = await mountTodoList({
       options: [
-        { content: 'A', status: 'completed' },
-        { content: 'B', status: 'canceled' },
+        { content: 'A', status: 'pending' },
+        { content: 'B', status: 'completed' },
+        { content: 'C', status: 'canceled' },
       ],
     })
 
-    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1 completed · 1 canceled')
+    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1/2')
 
     wrapper.unmount()
   })
@@ -436,7 +437,7 @@ describe('todo-list', () => {
       { header: (params: any) => h('p', { class: 'custom-header' }, params.summary) },
     )
 
-    expect(wrapper.find('.custom-header').text()).toBe('1 in progress · 1 pending')
+    expect(wrapper.find('.custom-header').text()).toBe('2/3')
     expect(wrapper.find('.pxd-todo-list--summary').exists()).toBe(false)
 
     wrapper.unmount()
