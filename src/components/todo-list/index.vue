@@ -37,12 +37,10 @@ const emits = defineEmits<TodoEmits>()
 const configProvider = useConfigProvider()
 const slots = useSlots()
 
-// Slot names are kebab-case; property access would never match them.
 const hasItemSlot = computed(() => !!slots.item)
-const hasItemContentSlot = computed(() => !!slots['item-content'])
 const hasEmptySlot = computed(() => !!slots.empty)
+const hasItemContentSlot = computed(() => !!slots['item-content'])
 
-/** Marker chrome per status; the running state needs none beyond the spinner itself. */
 const MARKER_CLASSES: Record<TodoStatus, string> = {
   pending: 'border-2 border-gray-alpha-400',
   in_progress: '',
@@ -50,7 +48,6 @@ const MARKER_CLASSES: Record<TodoStatus, string> = {
   canceled: 'p-1 bg-gray-alpha-400 text-white',
 }
 
-/** One click walks an item forward through the workflow; done items reopen. */
 const NEXT_STATUS: Record<TodoStatus, TodoStatus> = {
   pending: 'in_progress',
   in_progress: 'completed',
@@ -62,7 +59,6 @@ const innerValue = shallowRef<TodoOption[] | undefined>(props.defaultValue)
 const isExpanded = shallowRef(props.defaultExpanded)
 const contentRef = shallowRef<HTMLElement>()
 
-/** A bound `modelValue` always wins; otherwise internal state, then `options`. */
 const currentOptions = computed(() => props.modelValue ?? innerValue.value ?? props.options)
 
 watch(
@@ -113,7 +109,7 @@ const headerTitle = computed(() => props.title ?? configProvider.locale.todo.tit
 const summaryText = computed(() => {
   const { inProgress, pending, total, canceled } = stats.value
   const totalCount = total - canceled
-  const currentCount = inProgress + pending
+  const currentCount = totalCount - inProgress - pending
 
   return totalCount > 0 ? `${currentCount}/${totalCount}` : ''
 })
