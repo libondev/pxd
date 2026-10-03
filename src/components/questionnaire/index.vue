@@ -10,6 +10,7 @@ import type {
 } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import CrossIcon from '@gdsicon/vue/cross'
+import QuestionIcon from '@gdsicon/vue/question'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
@@ -297,10 +298,12 @@ watch(
     <template v-if="currentState === 'choosing' && currentQuestion && currentAnswer">
       <details class="pxd-questionnaire--details" :open="detailsOpen" @toggle="onDetailsToggle">
         <summary
-          class="pxd-questionnaire--title py-2 ps-3 pe-2 gap-1 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
+          class="pxd-questionnaire--title py-2 ps-3 pe-2 gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
           :class="{ 'border-b': detailsOpen }"
           @click.prevent="onToggleClick"
         >
+          <QuestionIcon class="size-4 font-medium shrink-0" />
+
           <span class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate">
             {{ currentQuestion.question }}
           </span>
@@ -321,7 +324,7 @@ watch(
 
         <div
           ref="contentRef"
-          class="pxd-questionnaire--content overflow-hidden border-t"
+          class="pxd-questionnaire--content overflow-hidden rounded-b-xl border-t"
           :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
         >
           <PList
