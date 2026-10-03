@@ -66,17 +66,17 @@ const { attrs, classes } = useTailwindVariant(
       fill: {},
     },
     compoundVariants: [
-      { variant: 'success', fill: true, class: 'border-blue-100 bg-blue-200' },
-      { variant: 'error', fill: true, class: 'border-red-100 bg-red-200' },
-      { variant: 'warning', fill: true, class: 'border-amber-100 bg-amber-200' },
-      { variant: 'default', fill: true, class: 'border-gray-100 bg-gray-200' },
+      { variant: 'success', fill: true, class: 'border-blue-400 bg-blue-200' },
+      { variant: 'error', fill: true, class: 'border-red-400 bg-red-200' },
+      { variant: 'warning', fill: true, class: 'border-amber-400 bg-amber-200' },
+      { variant: 'default', fill: true, class: 'border-gray-400 bg-gray-200' },
       {
         variant: 'primary',
         fill: true,
         class: 'border-gray-100 bg-primary text-primary-foreground',
       },
-      { variant: 'violet', fill: true, class: 'bg-violet-200 border-violet-100' },
-      { variant: 'cyan', fill: true, class: 'border-teal-100 bg-teal-200' },
+      { variant: 'violet', fill: true, class: 'border-violet-300 bg-violet-200' },
+      { variant: 'cyan', fill: true, class: 'border-teal-400 bg-teal-200' },
     ],
   },
   {
