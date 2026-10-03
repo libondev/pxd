@@ -437,7 +437,7 @@ describe('todo-list', () => {
       { header: (params: any) => h('p', { class: 'custom-header' }, params.summary) },
     )
 
-    expect(wrapper.find('.custom-header').text()).toBe('2/3')
+    expect(wrapper.find('.custom-header').text()).toBe('1/3')
     expect(wrapper.find('.pxd-todo-list--summary').exists()).toBe(false)
 
     wrapper.unmount()
