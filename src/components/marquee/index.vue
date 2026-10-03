@@ -228,7 +228,7 @@ defineExpose({
     <div ref="wrapRef" class="pxd-marquee--wrap min-w-0 flex-1 overflow-hidden">
       <div
         ref="contentRef"
-        class="pxd-marquee--content motion-reduce:animate-none!"
+        class="pxd-marquee--content"
         :class="contentClass"
         :data-phase="phase"
         :style="contentStyle"
