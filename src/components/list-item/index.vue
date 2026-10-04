@@ -74,7 +74,7 @@ function onItemClick(ev: MouseEvent) {
     <slot>
       <div class="pxd-list-item--content">
         <span>{{ label }}</span>
-        <div v-if="description" class="mt-0.5 text-foreground-secondary">{{ description }}</div>
+        <div v-if="description" class="mbs-0.5 text-foreground-secondary">{{ description }}</div>
       </div>
     </slot>
 

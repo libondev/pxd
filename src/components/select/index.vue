@@ -73,7 +73,7 @@ const translatedLabel = computed(() => {
 
         <template v-if="suffixIcon" #suffix>
           <ChevronDownIcon
-            class="text-sm mr-1.5 text-foreground-secondary motion-safe:transition-transform"
+            class="text-sm me-1.5 text-foreground-secondary motion-safe:transition-transform"
             :class="{ 'rotate-180': popoverVisible }"
           />
         </template>

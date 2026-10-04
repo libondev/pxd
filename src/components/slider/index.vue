@@ -522,7 +522,7 @@ onBeforeUnmount(stopDragging)
       </div>
     </div>
 
-    <div v-if="markList.length" class="mt-2 h-3 relative">
+    <div v-if="markList.length" class="mbs-2 h-3 relative">
       <button
         v-for="mark in markList"
         :key="mark.value"
