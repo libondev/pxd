@@ -6,7 +6,7 @@ Inline confirmation card for agent workflows. It shows the command an agent want
 
 ```vue demo
 <template>
-  <PApprovalCard command="pnpm db:migrate && pnpm build" @decide="onDecide" />
+  <PApprovalCard command="pnpm db:migrate && pnpm build" description="commands" @decide="onDecide" />
 </template>
 
 <script setup>
