@@ -343,7 +343,6 @@ watch(
               <PInput
                 v-else
                 :model-value="currentAnswer.freeText"
-                :size="configProvider.size"
                 :placeholder="item.description"
                 class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
                 @update:model-value="onFreeformInput"
@@ -360,7 +359,6 @@ watch(
             <div v-if="questions.length > 1" class="gap-1 flex items-center">
               <PButton
                 variant="ghost"
-                :size="configProvider.size"
                 :class="{ 'pointer-events-none opacity-50': !currentIndex }"
                 icon
                 :title="configProvider.locale.questionnaire.prev"
@@ -373,7 +371,6 @@ watch(
 
               <PButton
                 variant="ghost"
-                :size="configProvider.size"
                 :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
                 icon
                 :title="configProvider.locale.questionnaire.next"
@@ -390,16 +387,11 @@ watch(
             </div>
 
             <div class="gap-2 ms-auto flex items-center">
-              <PButton :size="configProvider.size" variant="ghost" @click="skipCurrentQuestion">
+              <PButton variant="ghost" @click="skipCurrentQuestion">
                 {{ configProvider.locale.interaction.skip }}
               </PButton>
 
-              <PButton
-                v-show="showSubmitButton"
-                :size="configProvider.size"
-                variant="primary"
-                @click="onSubmitAnswers"
-              >
+              <PButton v-show="showSubmitButton" variant="primary" @click="onSubmitAnswers">
                 {{ configProvider.locale.interaction.submit }}
               </PButton>
             </div>
