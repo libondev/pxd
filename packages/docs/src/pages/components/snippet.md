@@ -69,6 +69,7 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 | text | `string \| string[]` | - | Command text to display, one line per array item |
 | size | `'sm' \| 'md' \| 'lg'` | - | Snippet size, falls back to the config provider size |
 | prompt | `boolean \| string` | `$ ` | Shell prompt prefix, `false` hides it and a string sets the text |
+| copy-btn | `'always' \| 'hover' \| 'hidden'` | `always` | Display copy button appropriately |
 | variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'secondary'` | `default` | Color scheme |
 
 ## Events

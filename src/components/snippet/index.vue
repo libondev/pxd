@@ -14,6 +14,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<SnippetProps>(), {
   prompt: '$ ',
+  copyBtn: 'always',
   variant: 'default',
 })
 
@@ -26,7 +27,7 @@ const copyText = computed(() => computedTextList.value.join('\n'))
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-snippet ps-3 pe-1 gap-4 relative flex items-center rounded-lg border tabular-nums',
+    base: 'pxd-snippet ps-3 pe-1 gap-4 group/snippet relative flex items-center rounded-lg border tabular-nums',
     variants: {
       size: {
         sm: `${BASIC_MIN_HEIGHTS.sm} py-2 pe-0.75 text-sm`,
@@ -68,13 +69,17 @@ function onCopy(text: string) {
       <pre
         v-for="(t, i) of computedTextList"
         :key="i"
-        class="m-0 p-0"
+        class="m-0 p-0 leading-tight"
         :data-prompt="prompt"
         :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }"
         >{{ t }}</pre>
     </div>
 
-    <div class="min-w-5 relative shrink-0">
+    <div
+      v-if="copyBtn !== 'hidden'"
+      class="min-w-5 relative shrink-0 motion-safe:transition-opacity"
+      :class="{ 'opacity-0 group-hover/snippet:opacity-100': copyBtn === 'hover' }"
+    >
       <PCopyButton
         size="sm"
         icon
