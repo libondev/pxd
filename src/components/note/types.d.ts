@@ -8,6 +8,7 @@ export type NoteVariant =
   | 'primary'
   | 'violet'
   | 'cyan'
+  | 'ghost'
 
 export interface NoteProps {
   variant?: NoteVariant
