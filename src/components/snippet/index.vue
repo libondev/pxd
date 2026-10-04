@@ -34,12 +34,14 @@ const { attrs, classes } = useTailwindVariant(
         lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2 text-base`,
       },
       variant: {
-        default: 'border-gray-alpha-300 bg-background-100',
+        default: 'border-gray-alpha-300 bg-background-100 text-gray-1000',
         inverted: 'border-transparent bg-gray-1000 text-gray-100',
         primary: 'border-gray-alpha-300 bg-primary text-primary-foreground',
         success: 'border-blue-400 bg-blue-200 text-blue-900',
         error: 'border-red-400 bg-red-200 text-red-900',
         warning: 'border-amber-400 bg-amber-200 text-amber-900',
+        secondary: 'border-gray-alpha-300 bg-gray-200 text-gray-1000',
+        ghost: 'border-transparent text-gray-1000',
       },
       prompt: {
         true: 'pxd-snippet--prompt',

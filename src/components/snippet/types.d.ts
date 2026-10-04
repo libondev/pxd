@@ -4,7 +4,7 @@ export interface SnippetProps {
   text?: string | string[] | null
   size?: ComponentSize
   prompt?: boolean | string
-  variant?: ComponentVariantWithDefault | 'inverted'
+  variant?: ComponentVariantWithDefault | 'inverted' | 'ghost' | 'secondary'
 }
 
 export interface SnippetEmits {

@@ -56,6 +56,8 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
     <PSnippet text="npm install pxd" class="w-[300px]" variant="success" />
     <PSnippet text="npm install pxd" class="w-[300px]" variant="error" />
     <PSnippet text="npm install pxd" class="w-[300px]" variant="warning" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="ghost" />
+    <PSnippet text="npm install pxd" class="w-[300px]" variant="secondary" />
   </PStack>
 </template>
 ```
@@ -67,7 +69,7 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 | text | `string \| string[]` | - | Command text to display, one line per array item |
 | size | `'sm' \| 'md' \| 'lg'` | - | Snippet size, falls back to the config provider size |
 | prompt | `boolean \| string` | `$ ` | Shell prompt prefix, `false` hides it and a string sets the text |
-| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success'` | `default` | Color scheme: `default`, `primary`, `error`, `warning` or `success` |
+| variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'secondary'` | `default` | Color scheme |
 
 ## Events
 
