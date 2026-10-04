@@ -276,7 +276,9 @@ defineExpose({
       class="pxd-todo-list--content overflow-hidden"
       :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
     >
-      <ul class="pxd-todo-list--list m-0 p-3 gap-1.5 flex list-none flex-col border-t">
+      <ul
+        class="pxd-todo-list--list max-h-40 m-0 p-3 gap-1.5 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto border-t"
+      >
         <li
           v-if="currentOptions.length === 0"
           class="pxd-todo-list--empty text-sm text-foreground-secondary"

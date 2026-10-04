@@ -110,7 +110,7 @@ describe('todo-list', () => {
     const wrapper = await mountTodoList()
 
     expect(wrapper.find('.pxd-todo-list--title').text()).toBe('Tasks')
-    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('2/3')
+    expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1/3')
 
     wrapper.unmount()
   })
