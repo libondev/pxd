@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ScrollTextProps } from './types'
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getElement } from '../../utils/dom.js'
 import { caf, raf } from '../../utils/event.js'
 

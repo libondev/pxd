@@ -6,7 +6,8 @@ import type {
   ScrollableProps,
 } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useMutationObserver, useResizeObserver } from '../../composables/use-browser-observer.js'
+import { useMutationObserver } from '../../composables/use-mutation-observer.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getStyle } from '../../utils/dom.js'
 import { cachedOff, cachedOn, off, once } from '../../utils/event.js'
 import { raf, throttleByRaf } from '../../utils/event.js'

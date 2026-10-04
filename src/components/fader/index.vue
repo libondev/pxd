@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FaderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getElement } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'

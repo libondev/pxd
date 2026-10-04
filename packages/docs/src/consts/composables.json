@@ -4,10 +4,6 @@
     "name": "use-backoff-retry"
   },
   {
-    "camelized": "Use Browser Observer",
-    "name": "use-browser-observer"
-  },
-  {
     "camelized": "Use Client Online",
     "name": "use-client-online"
   },
@@ -40,6 +36,10 @@
     "name": "use-document-hidden"
   },
   {
+    "camelized": "Use Intersection Observer",
+    "name": "use-intersection-observer"
+  },
+  {
     "camelized": "Use Loading Bar",
     "name": "use-loading-bar"
   },
@@ -52,12 +52,20 @@
     "name": "use-message"
   },
   {
+    "camelized": "Use Mutation Observer",
+    "name": "use-mutation-observer"
+  },
+  {
     "camelized": "Use Outside Click",
     "name": "use-outside-click"
   },
   {
     "camelized": "Use Repeat Action",
     "name": "use-repeat-action"
+  },
+  {
+    "camelized": "Use Resize Observer",
+    "name": "use-resize-observer"
   },
   {
     "camelized": "Use Scrollspy",

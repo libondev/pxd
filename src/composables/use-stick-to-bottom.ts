@@ -5,7 +5,8 @@ import { getElement } from '../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
-import { useMutationObserver, useResizeObserver } from './use-browser-observer.js'
+import { useMutationObserver } from './use-mutation-observer.js'
+import { useResizeObserver } from './use-resize-observer.js'
 
 export interface UseStickToBottomOptions {
   /**
@@ -103,15 +104,10 @@ export function useStickToBottom(
   const scheduleUpdate = throttleByRaf(update)
   const scheduleStick = throttleByRaf(stickIfNeeded)
 
+  // `getContentEl()` falls back to the container, so both slots are passed at once
+  // and deduplicated instead of registering the same element twice.
   useResizeObserver(
-    () => getContentEl(),
-    () => {
-      scheduleStick()
-    },
-  )
-
-  useResizeObserver(
-    () => getContainerEl(),
+    () => [getContentEl(), getContainerEl()],
     () => {
       scheduleStick()
     },

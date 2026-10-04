@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MarqueeEmits, MarqueeProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useResizeObserver } from '../../composables/use-browser-observer.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
