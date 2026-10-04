@@ -60,6 +60,16 @@ const zhCN = {
     input: '输入',
     output: '输出',
   },
+  approval: {
+    title: '执行这条命令?',
+    approve: '运行',
+    reject: '跳过',
+    remember: '总是允许',
+    pending: '待确认',
+    approved: '已允许',
+    rejected: '已拒绝',
+    dismissed: '已跳过',
+  },
   todo: {
     title: '任务',
     inProgress: '进行中',

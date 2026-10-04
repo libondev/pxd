@@ -45,6 +45,16 @@ const enUS = {
     input: 'Input',
     output: 'Output',
   },
+  approval: {
+    title: 'Run this command?',
+    approve: 'Run',
+    reject: 'Skip',
+    remember: 'Always allow',
+    pending: 'Pending',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    dismissed: 'Skipped',
+  },
   todo: {
     title: 'Tasks',
     inProgress: 'in progress',

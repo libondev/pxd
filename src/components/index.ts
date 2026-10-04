@@ -1,4 +1,5 @@
 export { default as ActiveGraph } from './active-graph/index.vue'
+export { default as ApprovalCard } from './approval-card/index.vue'
 export { default as Avatar } from './avatar/index.vue'
 export { default as AvatarGroup } from './avatar-group/index.vue'
 export { default as Backtop } from './backtop/index.vue'

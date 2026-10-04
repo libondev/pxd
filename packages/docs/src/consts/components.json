@@ -5,6 +5,11 @@
     "category": "Decoration"
   },
   {
+    "camelized": "Approval Card",
+    "name": "approval-card",
+    "category": "AI"
+  },
+  {
     "camelized": "Avatar",
     "name": "avatar",
     "category": "Data Display"

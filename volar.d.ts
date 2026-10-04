@@ -4,6 +4,7 @@ export { }
 declare module 'vue' {
   export interface GlobalComponents {
     PActiveGraph: (typeof import('pxd/components/active-graph'))['default']
+    PApprovalCard: (typeof import('pxd/components/approval-card'))['default']
     PAvatar: (typeof import('pxd/components/avatar'))['default']
     PAvatarGroup: (typeof import('pxd/components/avatar-group'))['default']
     PBacktop: (typeof import('pxd/components/backtop'))['default']
