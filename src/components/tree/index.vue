@@ -1,10 +1,20 @@
 <script lang="ts" setup>
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
 import type { ComponentValue } from '../../types/shared'
-import type { TreeEmits, TreeFlatNode, TreeModelValue, TreeOption, TreeProps } from './types'
+import type {
+  TreeDropPosition,
+  TreeDropTarget,
+  TreeEmits,
+  TreeFlatNode,
+  TreeModelValue,
+  TreeOption,
+  TreeProps,
+} from './types'
 import { computed, reactive, shallowRef, useSlots } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
+import { useTreeDrag } from '../../composables/_internal/use-tree-drag.js'
+import { isTreeDescendant, moveTreeNode } from '../../composables/_internal/use-tree-move.js'
 import {
   useTreeIndex,
   useTreeMatched,
@@ -30,8 +40,11 @@ defineOptions({
 const props = withDefaults(defineProps<TreeProps>(), {
   data: () => [],
   multiple: false,
+  checkStrictly: false,
   disabled: false,
   expandOnClick: true,
+  draggable: false,
+  showIcon: true,
   virtual: false,
   itemSize: 32,
   overScan: 4,
@@ -64,6 +77,7 @@ const { checked, indeterminate, toggle } = useTreeSelection({
   index,
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
+  checkStrictly: () => props.checkStrictly,
 })
 
 const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
@@ -72,7 +86,9 @@ const expanded = computed(() => new Set(expandedKeys.value))
 const rows = useTreeRows(index, {
   query: () => searchValue.value,
   expanded,
-  matched,
+  matched: () => matched.value.visible,
+  exactMatched: () => matched.value.exact,
+  matchesOnly: () => props.searchMatchesOnly,
   checked,
   indeterminate,
 })
@@ -145,14 +161,15 @@ function onCheck(row: TreeFlatNode): void {
   }
 
   const next = toggle(row.key)
-  const checkedValues = toValues(next)
+  const checkedValues = toValues(next.value)
 
-  emits('update:modelValue', next)
+  emits('update:modelValue', next.value)
   emits('change', {
     value: row.key,
     node: row.node,
     checked: checkedValues.includes(row.key),
     checkedValues,
+    halfCheckedValues: next.halfCheckedValues,
   })
 }
 
@@ -329,8 +346,12 @@ const slots = useSlots()
  * with every tree update no matter which row changed. Without a node slot the flag stays
  * off and each row is skipped unless one of its own props moved.
  */
+const hasDragHandle = computed(() => !!slots['node-drag-handle'])
+
+/** A drag handle is a node slot too: forwarding it puts every row back on the dynamic path. */
 const hasNodeSlot = computed(
   () =>
+    hasDragHandle.value ||
     !!slots.node ||
     !!slots['node-switcher'] ||
     !!slots['node-icon'] ||
@@ -420,9 +441,84 @@ function getVisibleKeys(): ComponentValue[] {
   return rows.value.map((row) => row.key)
 }
 
+/**
+ * A search hides whole subtrees, so a row only tells you where it sits among what is left.
+ * Dragging while a query is active would drop a node relative to an incomplete neighbourhood.
+ */
+const dragEnabled = computed(
+  () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
+)
+
+function canDrop(
+  value: ComponentValue,
+  targetValue: ComponentValue,
+  position: TreeDropPosition,
+): boolean {
+  const meta = index.value.byValue.get(targetValue)
+  const dragNode = index.value.byValue.get(value)?.node
+
+  // Structural: a node can never land on itself or inside its own subtree.
+  if (
+    !meta ||
+    !dragNode ||
+    targetValue === value ||
+    isTreeDescendant(index.value, value, targetValue)
+  ) {
+    return false
+  }
+
+  // Policy: `allow-drop` takes it over, so a consumer can allow what the tree forbids by
+  // default (a disabled target) and forbid what it would otherwise allow.
+  if (props.allowDrop) {
+    return props.allowDrop({
+      dragValue: value,
+      dragNode,
+      targetValue,
+      targetNode: meta.node,
+      position,
+    })
+  }
+
+  return meta.node.disabled !== true
+}
+
+const {
+  value: dragValue,
+  target: dropTarget,
+  x: dragX,
+  y: dragY,
+  onPointerDown: onDragPointerdown,
+} = useTreeDrag({
+  container: containerRef,
+  rows: () => rows.value,
+  enabled: () => dragEnabled.value,
+  canDrop,
+  onExpand: (value) => setExpandedByValue(value, true),
+  onCommit,
+})
+
+const dragNode = computed(() =>
+  dragValue.value === undefined ? undefined : index.value.byValue.get(dragValue.value)?.node,
+)
+
 /** The source node behind a key, collapsed subtree included, so callers never lose data the tree hides. */
 function getData(value: ComponentValue): TreeOption | undefined {
   return index.value.byValue.get(value)?.node
+}
+
+/**
+ * The tree never writes `data` itself: the caller owns it, so a drop only proposes the next
+ * tree through `update:data`. A move that resolves to the current shape emits nothing.
+ */
+function onCommit(value: ComponentValue, target: TreeDropTarget): void {
+  const result = moveTreeNode(props.data, props.childrenField, value, target)
+
+  if (!result) {
+    return
+  }
+
+  emits('update:data', result.data)
+  emits('move', result.detail)
 }
 
 defineExpose({
@@ -489,8 +585,14 @@ defineExpose({
           :set-size="rows.length"
           :indent="indent"
           :highlight-query="highlightQuery"
+          :show-icon="showIcon"
           :item-class="itemClass"
+          :draggable="dragEnabled"
+          :drag-handle="hasDragHandle"
+          :dragging="entry.key === dragValue"
+          :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
           @row-click="onRowClick"
+          @drag-pointerdown="onDragPointerdown"
           @check="onCheckboxClick"
           @toggle="onSwitcherClick"
         />
@@ -512,8 +614,14 @@ defineExpose({
           :set-size="rows.length"
           :indent="indent"
           :highlight-query="highlightQuery"
+          :show-icon="showIcon"
           :item-class="itemClass"
+          :draggable="dragEnabled"
+          :drag-handle="hasDragHandle"
+          :dragging="entry.key === dragValue"
+          :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
           @row-click="onRowClick"
+          @drag-pointerdown="onDragPointerdown"
           @check="onCheckboxClick"
           @toggle="onSwitcherClick"
         >
@@ -536,6 +644,10 @@ defineExpose({
           <template #node-suffix="scope">
             <slot name="node-suffix" v-bind="scope" />
           </template>
+
+          <template #node-drag-handle="scope">
+            <slot name="node-drag-handle" v-bind="scope" />
+          </template>
         </PTreeNode>
       </div>
     </div>
@@ -546,5 +658,21 @@ defineExpose({
     >
       <slot name="empty" />
     </div>
+
+    <!--
+      Teleported out of the row: in the virtual layout a row is positioned with a transform,
+      which would turn any fixed descendant into a positioning context.
+    -->
+    <Teleport to="body">
+      <div
+        v-if="dragValue !== undefined"
+        class="pxd-tree--drag-preview px-2 py-1 text-sm shadow-lg pointer-events-none fixed z-50 rounded-md border border-gray-300 bg-background-100 text-foreground"
+        :style="{ left: dragX + 'px', top: dragY + 'px' }"
+      >
+        <slot name="node-drag-preview" :node="dragNode">
+          {{ dragNode?.label }}
+        </slot>
+      </div>
+    </Teleport>
   </div>
 </template>

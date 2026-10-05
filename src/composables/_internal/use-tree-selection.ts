@@ -9,12 +9,20 @@ export interface UseTreeSelectionOptions {
   index: MaybeRefOrGetter<TreeIndex>
   modelValue: MaybeRefOrGetter<TreeModelValue | undefined>
   multiple: MaybeRefOrGetter<boolean>
+  /** Keep every node on its own: no cascade, and no parent lit up by its children. */
+  checkStrictly?: MaybeRefOrGetter<boolean | undefined>
+}
+
+export interface TreeToggleResult {
+  value: TreeModelValue
+  /** Parents left partially checked by the new selection, empty without the cascade. */
+  halfCheckedValues: ComponentValue[]
 }
 
 export interface UseTreeSelectionReturn {
   checked: ComputedRef<Set<ComponentValue>>
   indeterminate: ComputedRef<Set<ComponentValue>>
-  toggle: (value: ComponentValue) => TreeModelValue
+  toggle: (value: ComponentValue) => TreeToggleResult
 }
 
 interface DerivedState {
@@ -72,28 +80,51 @@ function derive(list: TreeNodeMeta[], selected: ReadonlySet<ComponentValue>): De
 export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelectionReturn {
   const selected = computed(() => collect(toValue(options.modelValue)))
 
+  /** Without the cascade there is no partial parent either: the model *is* the checked set. */
   const state = computed<DerivedState>(() => {
-    if (!toValue(options.multiple)) {
+    if (!toValue(options.multiple) || toValue(options.checkStrictly)) {
       return { checked: selected.value, indeterminate: new Set<ComponentValue>() }
     }
 
     return derive(toValue(options.index).list, selected.value)
   })
 
-  function toggle(value: ComponentValue): TreeModelValue {
+  /** Document order, so the emitted array never depends on the order the user clicked. */
+  function toToggleResult(list: TreeNodeMeta[], result: DerivedState): TreeToggleResult {
+    return {
+      value: list
+        .filter((item) => result.checked.has(item.node.value))
+        .map((item) => item.node.value),
+      halfCheckedValues: list
+        .filter((item) => result.indeterminate.has(item.node.value))
+        .map((item) => item.node.value),
+    }
+  }
+
+  function toggle(value: ComponentValue): TreeToggleResult {
     if (!toValue(options.multiple)) {
-      return selected.value.has(value) ? null : value
+      return { value: selected.value.has(value) ? null : value, halfCheckedValues: [] }
     }
 
     const { list, byValue } = toValue(options.index)
     const meta = byValue.get(value)
 
-    if (!meta) {
-      return toValue(options.modelValue) ?? null
+    if (!meta || (toValue(options.checkStrictly) && meta.node.disabled)) {
+      return toToggleResult(list, state.value)
     }
 
     const next = new Set(selected.value)
     const willCheck = !state.value.checked.has(value)
+
+    if (toValue(options.checkStrictly)) {
+      if (willCheck) {
+        next.add(value)
+      } else {
+        next.delete(value)
+      }
+
+      return toToggleResult(list, { checked: next, indeterminate: new Set() })
+    }
 
     for (let i = list.indexOf(meta); i < meta.end; i++) {
       const item = list[i]
@@ -109,9 +140,7 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
       }
     }
 
-    const result = derive(list, next)
-
-    return list.filter((item) => result.checked.has(item.node.value)).map((item) => item.node.value)
+    return toToggleResult(list, derive(list, next))
   }
 
   return {

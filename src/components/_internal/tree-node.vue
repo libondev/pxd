@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { ComponentClass, ComponentValue } from '../../types/shared'
-import type { TreeHighlightPart, TreeOption } from '../tree/types'
+import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import FolderClosedIcon from '@gdsicon/vue/folder-closed'
 import FolderOpenIcon from '@gdsicon/vue/folder-open'
 import MinusIcon from '@gdsicon/vue/minus'
+import MoreVerticalIcon from '@gdsicon/vue/more-vertical'
 import { computed } from 'vue'
 
 defineOptions({
@@ -33,6 +34,11 @@ const props = defineProps<{
   indent: number
   id: string
   highlightQuery: string
+  showIcon: boolean
+  draggable: boolean
+  dragHandle: boolean
+  dragging: boolean
+  dropPosition?: TreeDropPosition
   itemClass?: ComponentClass
 }>()
 
@@ -40,7 +46,17 @@ const emits = defineEmits<{
   'row-click': [value: ComponentValue]
   check: [value: ComponentValue]
   toggle: [value: ComponentValue]
+  'drag-pointerdown': [value: ComponentValue, event: PointerEvent]
 }>()
+
+function onPointerdown(event: PointerEvent): void {
+  // A handle owns the gesture on touch, where a vertical drag is indistinguishable from a scroll.
+  if (!props.draggable || props.dragHandle) {
+    return
+  }
+
+  emits('drag-pointerdown', props.value, event)
+}
 
 const disabled = computed(() => props.disabled || props.node.disabled === true)
 
@@ -85,6 +101,8 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     :data-active="active"
     :data-indeterminate="indeterminate"
     :data-disabled="disabled"
+    :data-dragging="dragging"
+    :data-drop="dropPosition"
     :aria-level="depth + 1"
     :aria-expanded="hasChildren ? expanded : undefined"
     :aria-selected="multiple ? undefined : checked"
@@ -93,15 +111,22 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     :aria-posinset="index + 1"
     :style="{ paddingInlineStart: depth * indent + 8 + 'px' }"
     :class="[
-      'pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none active:bg-gray-alpha-100 pointer-fine:hover:bg-gray-alpha-100',
+      'pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none active:bg-gray-alpha-100 pointer-fine:hover:bg-gray-alpha-100',
       itemClass,
       {
         'bg-primary! text-primary-foreground!': checked,
         'ring-primary data-[active=true]:ring-1': active,
         'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500': disabled,
+        'opacity-40': dragging,
+        'before:inset-x-0 before:h-0.5 before:absolute before:bg-primary':
+          dropPosition === 'before' || dropPosition === 'after',
+        'before:-top-px': dropPosition === 'before',
+        'before:bottom-px': dropPosition === 'after',
       },
     ]"
     @click="emits('row-click', value)"
+    @pointerdown="onPointerdown"
+    @dragstart.prevent
   >
     <slot
       name="node"
@@ -111,6 +136,17 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
       :checked="checked"
       :indeterminate="indeterminate"
     >
+      <span
+        v-if="dragHandle"
+        data-tree-drag-handle
+        class="pxd-tree--drag-handle size-4 me-0.5 inline-flex shrink-0 cursor-grab items-center justify-center opacity-0 group-hover/row:opacity-60 group-data-[dragging=true]/row:opacity-60 motion-safe:transition-opacity"
+        @pointerdown.stop="emits('drag-pointerdown', value, $event)"
+      >
+        <slot name="node-drag-handle" :node="node" :depth="depth">
+          <MoreVerticalIcon class="size-3" />
+        </slot>
+      </span>
+
       <span
         v-if="multiple"
         aria-hidden="true"
@@ -139,6 +175,7 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
       <span v-else aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0 empty:hidden" />
 
       <span
+        v-if="showIcon"
         aria-hidden="true"
         class="pxd-tree--icon size-4 mr-0.5 inline-flex shrink-0 items-center justify-center opacity-60"
       >

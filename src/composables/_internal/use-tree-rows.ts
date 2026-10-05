@@ -63,21 +63,29 @@ function defaultFilter(node: TreeOptions[number], query: string): boolean {
   return isFuzzyMatch(String(node.label ?? ''), query, node.keywords)
 }
 
+export interface TreeMatched {
+  /** Every hit plus its ancestor chain: ancestor-closed, so the row walk can prune subtrees. */
+  visible: ReadonlySet<ComponentValue>
+  /** The hits alone, without the ancestors kept only for context. */
+  exact: ReadonlySet<ComponentValue>
+}
+
 /**
- * Values that must stay visible for the current query: every hit plus its ancestor
- * chain. Ancestor-closed by construction, so the row walk can prune whole subtrees.
+ * Splits the current query into the two sets the row walk needs: the ancestor-closed one that
+ * prunes whole subtrees, and the hits on their own.
  */
 export function useTreeMatched(
   index: MaybeRefOrGetter<TreeIndex>,
   query: MaybeRefOrGetter<string>,
   filter: MaybeRefOrGetter<TreeFilterFn | undefined>,
-): ComputedRef<Set<ComponentValue>> {
+): ComputedRef<TreeMatched> {
   return computed(() => {
-    const result = new Set<ComponentValue>()
+    const visible = new Set<ComponentValue>()
+    const exact = new Set<ComponentValue>()
     const needle = (toValue(query) ?? '').trim()
 
     if (!needle) {
-      return result
+      return { visible, exact }
     }
 
     const match = toValue(filter) ?? defaultFilter
@@ -88,16 +96,17 @@ export function useTreeMatched(
         continue
       }
 
-      result.add(meta.node.value)
+      exact.add(meta.node.value)
+      visible.add(meta.node.value)
 
       let parentValue = meta.parentValue
-      while (parentValue !== undefined && !result.has(parentValue)) {
-        result.add(parentValue)
+      while (parentValue !== undefined && !visible.has(parentValue)) {
+        visible.add(parentValue)
         parentValue = byValue.get(parentValue)?.parentValue
       }
     }
 
-    return result
+    return { visible, exact }
   })
 }
 
@@ -105,6 +114,10 @@ export interface UseTreeRowsOptions {
   query: MaybeRefOrGetter<string>
   expanded: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
   matched: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
+  /** The hits without their ancestors; only read when `matchesOnly` is on. */
+  exactMatched?: MaybeRefOrGetter<ReadonlySet<ComponentValue> | undefined>
+  /** Drop the ancestors that only stayed visible for context, and flatten what is left. */
+  matchesOnly?: MaybeRefOrGetter<boolean | undefined>
   checked: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
   indeterminate: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
 }
@@ -124,6 +137,8 @@ export function useTreeRows(
     const checked = toValue(options.checked)
     const indeterminate = toValue(options.indeterminate)
     const searching = (toValue(options.query) ?? '').trim().length > 0
+    const matchesOnly = searching && toValue(options.matchesOnly) === true
+    const exact = toValue(options.exactMatched) ?? matched
     const rows: TreeFlatNode[] = []
 
     let cursor = 0
@@ -137,12 +152,19 @@ export function useTreeRows(
 
       const value = meta.node.value
 
+      // An ancestor kept alive only for context is skipped, but its subtree still walks: a hit
+      // can sit below a parent that did not match on its own.
+      if (matchesOnly && !exact.has(value)) {
+        cursor++
+        continue
+      }
+
       rows.push({
         key: value,
         node: meta.node,
-        depth: meta.depth,
+        depth: matchesOnly ? 0 : meta.depth,
         index: rows.length,
-        parentValue: meta.parentValue,
+        parentValue: matchesOnly ? undefined : meta.parentValue,
         hasChildren: meta.children.length > 0,
         expanded: expanded.has(value),
         checked: checked.has(value),

@@ -1,5 +1,6 @@
+import type { TreeDropInfo } from '../../src/components/tree/types'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import Tree from '../../src/components/tree/index.vue'
 
 const data = [
@@ -92,6 +93,7 @@ describe('tree', () => {
       node: { value: 'list', label: 'list' },
       checked: true,
       checkedValues: ['list'],
+      halfCheckedValues: [],
     })
 
     wrapper.unmount()
@@ -109,6 +111,72 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
+  it('should check a parent without its subtree when checkStrictly is set', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, checkStrictly: true, defaultExpandedKeys: ['src'] },
+    })
+
+    await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['src'])
+
+    // Controlled: the parent feeds the model back before any row changes.
+    await wrapper.setProps({ modelValue: ['src'] })
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-checked')).toBe('true')
+    expect(wrapper.find('[data-key="composables"]').attributes('data-checked')).toBe('false')
+    expect(wrapper.find('[data-key="src"]').attributes('data-indeterminate')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should keep a parent unchecked when only its children are picked', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        multiple: true,
+        checkStrictly: true,
+        modelValue: ['tree', 'list'],
+        defaultExpandedKeys: ['src', 'components'],
+      },
+    })
+
+    expect(wrapper.find('[data-key="components"]').attributes('data-checked')).toBe('false')
+    expect(wrapper.find('[data-key="components"]').attributes('data-indeterminate')).toBe('false')
+    expect(wrapper.find('[data-key="src"]').attributes('aria-checked')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should uncheck a single node and keep the rest when checkStrictly is set', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        multiple: true,
+        checkStrictly: true,
+        modelValue: ['tree', 'list'],
+        defaultExpandedKeys: ['src', 'components'],
+      },
+    })
+
+    await wrapper.find('[data-key="list"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['tree'])
+
+    wrapper.unmount()
+  })
+
+  it('should ignore a disabled node when checkStrictly is set', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, checkStrictly: true },
+    })
+
+    await wrapper.find('[data-key="docs"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
   it('should keep a partially checked parent out of the model', async () => {
     const wrapper = mount(Tree, {
       props: { data, multiple: true, modelValue: ['tree'], defaultExpandedKeys: ['src'] },
@@ -316,6 +384,349 @@ describe('tree', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    wrapper.unmount()
+  })
+
+  const ROW_HEIGHT = 32
+
+  function pointer(type: string, x: number, y: number) {
+    const event = new Event(type, { bubbles: true, cancelable: true }) as PointerEvent
+
+    Object.defineProperties(event, {
+      button: { value: 0 },
+      clientX: { value: x },
+      clientY: { value: y },
+      pointerId: { value: 1 },
+      pointerType: { value: 'mouse' },
+    })
+
+    return event
+  }
+
+  /** happy-dom has no layout, so the rows are measured by hand. */
+  function stubRows(wrapper: any) {
+    const items = wrapper.findAll('[data-tree-item]')
+
+    items.forEach((item: any, index: number) => {
+      const top = index * ROW_HEIGHT
+
+      Object.defineProperty(item.element, 'getBoundingClientRect', {
+        configurable: true,
+        value: () => ({
+          top,
+          bottom: top + ROW_HEIGHT,
+          height: ROW_HEIGHT,
+          left: 0,
+          right: 200,
+          width: 200,
+        }),
+      })
+    })
+
+    const height = items.length * ROW_HEIGHT
+
+    Object.defineProperty(wrapper.element, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({ top: 0, bottom: height, height, left: 0, right: 200, width: 200 }),
+    })
+  }
+
+  function startDrag(wrapper: any, from: string, fromY: number, toY: number) {
+    const row = wrapper.find(`[data-key="${from}"]`)
+
+    row.element.dispatchEvent(pointer('pointerdown', 0, fromY))
+    row.element.dispatchEvent(pointer('pointermove', 0, toY))
+
+    return row
+  }
+
+  it('should let allow-drop overrule the tree and reject a drop', async () => {
+    const seen: string[] = []
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data,
+        draggable: true,
+        allowDrop: ({ targetValue, position }: TreeDropInfo) => {
+          seen.push(targetValue + ':' + position)
+
+          // `docs` is disabled in the fixture, so the tree refuses it on its own.
+          return targetValue === 'docs'
+        },
+      },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'src', 16, 60)
+
+    await wrapper.vm.$nextTick()
+
+    expect(seen).toEqual(['docs:after'])
+    expect(wrapper.find('[data-key="docs"]').attributes('data-drop')).toBe('after')
+
+    window.dispatchEvent(pointer('pointerup', 0, 60))
+
+    const moved = wrapper.emitted('update:data')?.[0]?.[0] as { value: string }[]
+
+    expect(moved.map((node) => node.value)).toEqual(['docs', 'src', 'readme'])
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'readme', 80, 16)
+
+    await wrapper.vm.$nextTick()
+
+    expect(seen).toEqual(['docs:after', 'src:inside'])
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBeUndefined()
+
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    expect(wrapper.emitted('update:data')?.length).toBe(1)
+
+    wrapper.unmount()
+  })
+  it('should keep the structural rule when allow-drop returns true', async () => {
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data,
+        draggable: true,
+        defaultExpandedKeys: ['src'],
+        allowDrop: () => true,
+      },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'src', 16, 48)
+
+    await wrapper.vm.$nextTick()
+
+    window.dispatchEvent(pointer('pointerup', 0, 48))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should render the drag preview through its slot', async () => {
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data, draggable: true },
+      slots: { 'node-drag-preview': '<span class="preview">{{ params.node.label }}!</span>' },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, 16)
+
+    await wrapper.vm.$nextTick()
+
+    expect(document.querySelector('.preview')?.textContent).toBe('docs!')
+
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    wrapper.unmount()
+  })
+  it('should emit the next data and the move detail on drop', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBe('inside')
+
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+
+    const next = wrapper.emitted('update:data')?.[0]?.[0] as any[]
+
+    expect(next.map((node) => node.value)).toEqual(['src', 'readme'])
+    expect(next[0].children.map((node: any) => node.value)).toEqual([
+      'components',
+      'composables',
+      'docs',
+    ])
+
+    expect(wrapper.emitted('move')?.[0]?.[0]).toEqual({
+      value: 'docs',
+      node: { value: 'docs', label: 'docs', disabled: true },
+      from: { parentValue: undefined, index: 1 },
+      to: {
+        parentValue: 'src',
+        index: 2,
+        targetValue: 'src',
+        position: 'inside',
+      },
+    })
+
+    wrapper.unmount()
+  })
+
+  it('should keep the tree untouched when the drop lands nowhere valid', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'readme', 80, 60)
+
+    await wrapper.vm.$nextTick()
+
+    // `docs` is disabled in the fixture, so it is not a destination.
+    expect(wrapper.find('[data-key="docs"]').attributes('data-drop')).toBeUndefined()
+
+    window.dispatchEvent(pointer('pointerup', 0, 60))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+    expect(wrapper.emitted('move')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should open a collapsed parent hovered during a drag', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
+
+    vi.advanceTimersByTime(500)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.emitted('expand')?.[0]?.[0]).toMatchObject({ value: 'src' })
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(5)
+
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+    vi.useRealTimers()
+
+    wrapper.unmount()
+  })
+
+  it('should report the half-checked parents in the change event', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, defaultExpandedKeys: ['src'] },
+    })
+
+    await wrapper.find('[data-key="components"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({
+      value: 'components',
+      node: data[0]?.children?.[0],
+      checked: true,
+      checkedValues: ['components', 'tree', 'list'],
+      halfCheckedValues: ['src'],
+    })
+
+    wrapper.unmount()
+  })
+
+  it('should report no half-checked value without the cascade', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, checkStrictly: true, defaultExpandedKeys: ['src'] },
+    })
+
+    await wrapper.find('[data-key="composables"] .pxd-tree--checkbox').trigger('click')
+
+    const detail = wrapper.emitted('change')?.[0]?.[0] as { halfCheckedValues: string[] }
+
+    expect(detail?.halfCheckedValues).toEqual([])
+
+    wrapper.unmount()
+  })
+
+  it('should hide the node icon when show-icon is off', () => {
+    const on = mount(Tree, { props: { data } })
+
+    expect(on.findAll('.pxd-tree--icon').length).toBe(3)
+
+    on.unmount()
+
+    const off = mount(Tree, { props: { data, showIcon: false } })
+
+    expect(off.findAll('.pxd-tree--icon').length).toBe(0)
+
+    off.unmount()
+  })
+
+  it('should show only the matched rows when search-matches-only is set', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, filterable: true, searchMatchesOnly: true },
+    })
+
+    await wrapper.find('input').setValue('tree')
+
+    const keys = wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))
+
+    expect(keys).toEqual(['tree'])
+
+    wrapper.unmount()
+  })
+
+  it('should keep the ancestor chain without search-matches-only', async () => {
+    const wrapper = mount(Tree, { props: { data, filterable: true } })
+
+    await wrapper.find('input').setValue('tree')
+
+    const keys = wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))
+
+    expect(keys).toEqual(['src', 'components', 'tree'])
+
+    wrapper.unmount()
+  })
+
+  it('should cancel a drag on Escape', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should ignore the pointer while a search hides part of the tree', async () => {
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data, draggable: true, filterable: true },
+    })
+
+    await wrapper.find('input').setValue('docs')
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should drag from the handle alone when a handle slot is given', async () => {
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data, draggable: true },
+      slots: { 'node-drag-handle': '<span class="grip">..</span>' },
+    })
+
+    expect(wrapper.findAll('[data-tree-drag-handle]').length).toBe(3)
+
+    stubRows(wrapper)
+
+    const row = startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+
+    const handle = row.find('[data-tree-drag-handle]')
+
+    handle.element.dispatchEvent(pointer('pointerdown', 0, 48))
+    handle.element.dispatchEvent(pointer('pointermove', 0, ROW_HEIGHT / 2))
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+
+    expect(wrapper.emitted('update:data')?.length).toBe(1)
 
     wrapper.unmount()
   })
