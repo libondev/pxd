@@ -109,6 +109,7 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     :aria-checked="multiple ? (indeterminate ? 'mixed' : checked) : undefined"
     :aria-setsize="setSize"
     :aria-posinset="index + 1"
+    :aria-disabled="disabled || undefined"
     :style="{ paddingInlineStart: depth * indent + 8 + 'px' }"
     :class="[
       'pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none active:bg-gray-alpha-100 pointer-fine:hover:bg-gray-alpha-100',

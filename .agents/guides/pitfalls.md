@@ -16,6 +16,24 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Per-frame DOM measurement inside a pointer handler
+
+- **Symptom**: Dragging or scrolling a long list stutters hard; the profile is dominated by `getBoundingClientRect` calls, and the cost grows with the number of rendered rows instead of staying flat.
+- **Cause**: `getBoundingClientRect` forces a synchronous layout, and a hit test that walks every row to find the one under the pointer pays that flush once per row, per event. Measured on the tree drag at 8000 rows: 8001 forced reads for a single `pointermove`, against 1 for a pointer near the top.
+- **Fix**: Measure once into a cache keyed to something that survives the event, then do arithmetic. Storing `rect.top + container.scrollTop` makes the cache scroll-invariant, so only a changed row count or a changed `data-index` at the window start invalidates it — plain scrolling is absorbed for free. The row under the pointer is then found with a scan over cached numbers, no layout. Re-measure with a counter rather than trusting the shape of the loop.
+
+### happy-dom renders zero rows for a virtual list
+
+- **Symptom**: A `useVirtualList` based component mounts with a correct `totalSize` style but an empty content box, and `findAll()` for the row selector returns 0. Every virtual assertion of the form "fewer than N rows" passes regardless of whether virtualization works at all.
+- **Cause**: happy-dom's `getBoundingClientRect` returns zeroes and cannot be overridden from the prototype chain the way it can in a browser, so the virtualizer's `scrollRect` stays `{ width: 0, height: 0 }` and `getVirtualItems()` returns an empty window. Injecting synthetic rects per element (see the `stubRows` helper in `tests/components/tree.test.ts`) only covers elements the test already holds, so it does not reach the virtualizer either.
+- **Fix**: Treat virtualization as unverified under this environment. Assert on what does work — the spacer height, the option wiring — rather than on a row count. A real assertion about the window needs an environment with layout, or a browser-mode test run.
+
+### Flat row lists must not depend on volatile per-row state
+
+- **Symptom**: Every selection click costs time proportional to the whole visible list, even though two rows changed.
+- **Cause**: The flat list carried `checked` / `indeterminate` per row, so a selection change invalidated it and every row object was rebuilt. Keeping them out gives the rows a stable identity, but that is not where the time went: measured at 5000 rows the flat-list rebuild was 0.89 ms of a 157 ms click, and 87% was the template render walking the visible rows.
+- **Fix**: Keep volatile state out of the row object and read it at render time. But budget for the parent still re-rendering every visible row, so this only pays off fully under `virtual`, and the cascade `derive()` stays O(total) regardless. Measure the split before promising a speedup.
+
 ### Property access cannot reach a kebab-case slot name
 
 - **Symptom**: `<slot name="item-content">` never renders even though the consumer passes the slot, so the component silently falls back to its default markup; a sibling `<slot name="header">` in the same file works fine.

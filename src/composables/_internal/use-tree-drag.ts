@@ -33,6 +33,16 @@ export interface UseTreeDragOptions {
   onCommit: (value: ComponentValue, target: TreeDropTarget) => void
 }
 
+/**
+ * One row measured once, in content coordinates rather than viewport ones: the numbers stay the
+ * same while the container scrolls, so a cached rect survives an auto-scroll.
+ */
+interface RowRect {
+  row: TreeFlatNode
+  top: number
+  height: number
+}
+
 export function useTreeDrag(options: UseTreeDragOptions) {
   const value = shallowRef<ComponentValue>()
   const target = shallowRef<TreeDropTarget>()
@@ -44,16 +54,14 @@ export function useTreeDrag(options: UseTreeDragOptions) {
   let autoScroll = 0
   let expandTimer: ReturnType<typeof setTimeout> | undefined
   let expandValue: ComponentValue | undefined
+  let cachedRects: RowRect[] = []
+  let contentOrigin = 0
 
-  function resolveTarget(clientY: number): TreeDropTarget | undefined {
-    const container = getElement(options.container)
-    if (!container) {
-      return undefined
-    }
-
+  function measureRows(container: HTMLElement, items: NodeListOf<HTMLElement>): void {
     const rows = toValue(options.rows)
-    const items = container.querySelectorAll<HTMLElement>('[data-tree-item]')
-    let nearest: { row: TreeFlatNode; rect: DOMRect } | undefined
+    // Where the container's content begins, in viewport coordinates.
+    const origin = container.getBoundingClientRect().top - container.scrollTop
+    const list: RowRect[] = []
 
     for (const item of Array.from(items)) {
       const row = rows[Number(item.dataset.index)]
@@ -64,26 +72,69 @@ export function useTreeDrag(options: UseTreeDragOptions) {
 
       const rect = item.getBoundingClientRect()
 
-      if (clientY >= rect.top && clientY <= rect.bottom) {
-        return toTarget(row, rect, clientY)
+      list.push({ row, top: rect.top - origin, height: rect.height })
+    }
+
+    cachedRects = list
+    contentOrigin = origin
+  }
+
+  /**
+   * The cache is stale only when the rendered window itself moved. `data-index` is the row's
+   * position in the whole list, so a row count change (a hover expand) and a window sliding
+   * under a virtual list both land here, while plain scrolling does not — and plain scrolling
+   * is exactly what the content coordinates already absorb.
+   */
+  function isCacheStale(items: NodeListOf<HTMLElement>): boolean {
+    if (items.length !== cachedRects.length) {
+      return true
+    }
+
+    // The window is contiguous, so a matching length and start pin down every row inside it.
+    return Number(items[0]?.dataset.index) !== cachedRects[0]?.row.index
+  }
+
+  function resolveTarget(clientY: number): TreeDropTarget | undefined {
+    const container = getElement(options.container)
+    if (!container) {
+      return undefined
+    }
+
+    const items = container.querySelectorAll<HTMLElement>('[data-tree-item]')
+
+    if (isCacheStale(items)) {
+      measureRows(container, items)
+    }
+
+    if (cachedRects.length === 0) {
+      return undefined
+    }
+
+    const y = clientY - contentOrigin
+    let nearest: RowRect | undefined
+
+    for (const entry of cachedRects) {
+      if (y >= entry.top && y <= entry.top + entry.height) {
+        return toTarget(entry, y)
       }
 
-      if (!nearest || Math.abs(rect.top - clientY) < Math.abs(nearest.rect.top - clientY)) {
-        nearest = { row, rect }
+      if (!nearest || Math.abs(entry.top - y) < Math.abs(nearest.top - y)) {
+        nearest = entry
       }
     }
 
-    return nearest ? toTarget(nearest.row, nearest.rect, clientY) : undefined
+    return nearest ? toTarget(nearest, y) : undefined
   }
 
-  function toTarget(row: TreeFlatNode, rect: DOMRect, clientY: number): TreeDropTarget | undefined {
+  function toTarget(entry: RowRect, y: number): TreeDropTarget | undefined {
     const dragged = value.value
 
     if (dragged === undefined) {
       return undefined
     }
 
-    const ratio = (clientY - rect.top) / (rect.height || 1)
+    const row = entry.row
+    const ratio = (y - entry.top) / (entry.height || 1)
     const position: TreeDropPosition =
       row.hasChildren && ratio > 0.25 && ratio < 0.75 ? 'inside' : ratio < 0.5 ? 'before' : 'after'
 
@@ -174,6 +225,7 @@ export function useTreeDrag(options: UseTreeDragOptions) {
     window.removeEventListener('pointercancel', onPointerCancel)
     window.removeEventListener('keydown', onKeydown)
     armed = undefined
+    cachedRects = []
     stopAutoScroll()
     clearExpand()
   }

@@ -10,7 +10,7 @@ import type {
   TreeOption,
   TreeProps,
 } from './types'
-import { computed, reactive, shallowRef, useSlots } from 'vue'
+import { computed, shallowRef, useSlots } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { useTreeDrag } from '../../composables/_internal/use-tree-drag.js'
@@ -53,13 +53,16 @@ const props = withDefaults(defineProps<TreeProps>(), {
   filterable: false,
   highlightMatch: false,
   searchPlaceholder: 'Search',
+  defaultSearchValue: '',
 })
 
 const emits = defineEmits<TreeEmits>()
 
 const uid = getUniqueId()
 const containerRef = shallowRef<HTMLElement>()
-const searchValue = shallowRef('')
+const internalSearchValue = shallowRef(props.defaultSearchValue ?? '')
+// Controlled when `searchValue` is given, the internal copy otherwise, exactly like expandedKeys.
+const searchValue = computed(() => props.searchValue ?? internalSearchValue.value)
 const internalExpandedKeys = shallowRef<ComponentValue[]>([...(props.defaultExpandedKeys ?? [])])
 
 const index = useTreeIndex(
@@ -89,8 +92,6 @@ const rows = useTreeRows(index, {
   matched: () => matched.value.visible,
   exactMatched: () => matched.value.exact,
   matchesOnly: () => props.searchMatchesOnly,
-  checked,
-  indeterminate,
 })
 
 const rowByKey = computed(() => {
@@ -174,12 +175,19 @@ function onCheck(row: TreeFlatNode): void {
 }
 
 function onSearchInput(value: string): void {
-  searchValue.value = value
+  internalSearchValue.value = value
   emits('update:searchValue', value)
 }
-const virtualOptions = reactive({
+/**
+ * A plain getter object, not `reactive()`: `useVirtualList` reads these inside computeds and
+ * watchers, which track the getter just the same, while a reactive wrapper would hand the
+ * virtualizer a deep proxy of the rows instead of the rows themselves.
+ */
+const virtualOptions = {
   dataKey: 'key',
-  enabled: () => props.virtual,
+  get enabled() {
+    return props.virtual
+  },
   get items() {
     return rows.value
   },
@@ -189,7 +197,7 @@ const virtualOptions = reactive({
   get overScan() {
     return props.overScan
   },
-})
+}
 
 const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
@@ -318,6 +326,25 @@ interface RenderEntry extends TreeFlatNode {
 }
 
 const renderEntries = computed<RenderEntry[]>(() => {
+  if (props.virtual) {
+    // Only the window is ever built here: materialising an entry per row would cost more than
+    // the rows the virtual layout shows, and it would redo that on every scroll frame.
+    return virtualItems.value.flatMap((virtualItem) => {
+      const row = rows.value[virtualItem.index]
+
+      return row
+        ? [
+            {
+              ...row,
+              id: uid + '-' + row.index,
+              start: virtualItem.start,
+              active: focused.value && activeIndex.value === row.index,
+            },
+          ]
+        : []
+    })
+  }
+
   const entries: RenderEntry[] = []
 
   for (const row of rows.value) {
@@ -325,14 +352,6 @@ const renderEntries = computed<RenderEntry[]>(() => {
       ...row,
       id: uid + '-' + row.index,
       active: focused.value && activeIndex.value === row.index,
-    })
-  }
-
-  if (props.virtual) {
-    return virtualItems.value.flatMap((virtualItem) => {
-      const entry = entries[virtualItem.index]
-
-      return entry ? [{ ...entry, start: virtualItem.start }] : []
     })
   }
 
@@ -366,17 +385,13 @@ function onRowClick(value: ComponentValue): void {
     return
   }
 
-  if (!row.hasChildren || !props.expandOnClick) {
-    onCheck(row)
-    return
-  }
+  // The row always selects, in both modes: with a checkbox the row is still the bigger target,
+  // and the keyboard path already selects on Enter/Space, so this keeps the two in step.
+  onCheck(row)
 
-  // Single selection has no checkbox, so the row is the only way to pick a parent.
-  if (!props.multiple) {
-    onCheck(row)
+  if (row.hasChildren && props.expandOnClick) {
+    toggleNode(row)
   }
-
-  toggleNode(row)
 }
 
 function onSwitcherClick(value: ComponentValue): void {
@@ -403,16 +418,6 @@ function onContainerBlur() {
   focused.value = false
 }
 
-function onContainerKeydown(event: KeyboardEvent): void {
-  const target = event.target as HTMLElement | null
-
-  if (target?.closest('[data-tree-search]')) {
-    return
-  }
-
-  onKeydown(event)
-}
-
 function scrollToKey(value: ComponentValue): void {
   const index = getRow(value)?.index
 
@@ -422,15 +427,30 @@ function scrollToKey(value: ComponentValue): void {
 }
 
 function setActiveKey(value: ComponentValue): void {
-  setActiveIndex(getRow(value)?.index ?? -1)
+  const at = getRow(value)?.index
+
+  // Without the scroll the row can sit outside the virtual window, and aria-activedescendant
+  // would then point at an id nothing in the document carries.
+  if (at === undefined) {
+    return
+  }
+
+  setActiveIndex(at)
+  scrollRowIntoView(at)
 }
 
+/**
+ * Reads the whole index rather than the rendered rows: a collapsed subtree still holds checked
+ * nodes, and this is the same set, in the same document order, that `change` reports.
+ */
 function getCheckedKeys(includeIndeterminate = false): ComponentValue[] {
   const result: ComponentValue[] = []
 
-  for (const row of rows.value) {
-    if (row.checked || (includeIndeterminate && row.indeterminate)) {
-      result.push(row.key)
+  for (const meta of index.value.list) {
+    const value = meta.node.value
+
+    if (checked.value.has(value) || (includeIndeterminate && indeterminate.value.has(value))) {
+      result.push(value)
     }
   }
 
@@ -537,19 +557,12 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    ref="containerRef"
-    role="tree"
-    tabindex="0"
-    class="pxd-tree m-0 p-1 scroll-p-1 w-full max-w-full overflow-auto rounded-inherit bg-background-100 outline-none"
-    :style="containerStyle"
-    :aria-multiselectable="multiple || undefined"
-    :aria-activedescendant="focused ? activeDescendant : undefined"
-    v-bind="$attrs"
-    @keydown="onContainerKeydown"
-    @focus="onContainerFocus"
-    @blur="onContainerBlur"
-  >
+  <!--
+    The filter sits outside the tree on purpose: a text field is not a node, and `role="tree"`
+    owns only `treeitem` content. Keeping it a sibling also leaves it on screen while the tree
+    scrolls.
+  -->
+  <div class="pxd-tree-root w-full max-w-full">
     <div v-if="filterable" data-tree-search class="pxd-tree--search mbe-1">
       <slot name="search">
         <PSearchInput
@@ -560,103 +573,117 @@ defineExpose({
       </slot>
     </div>
 
-    <div class="pxd-tree--content w-full" :class="{ relative: virtual }" :style="contentStyle">
-      <div
-        v-for="entry in renderEntries"
-        :key="entry.key"
-        class="pxd-tree--row w-full"
-        :class="{ 'left-0 top-0 absolute': virtual }"
-        :style="virtual ? { transform: 'translateY(' + entry.start + 'px)' } : undefined"
-      >
-        <PTreeNode
-          v-if="!hasNodeSlot"
-          :id="entry.id"
-          :node="entry.node"
-          :value="entry.key"
-          :depth="entry.depth"
-          :index="entry.index"
-          :has-children="entry.hasChildren"
-          :expanded="entry.expanded"
-          :checked="entry.checked"
-          :indeterminate="entry.indeterminate"
-          :active="entry.active"
-          :multiple="multiple"
-          :disabled="disabled"
-          :set-size="rows.length"
-          :indent="indent"
-          :highlight-query="highlightQuery"
-          :show-icon="showIcon"
-          :item-class="itemClass"
-          :draggable="dragEnabled"
-          :drag-handle="hasDragHandle"
-          :dragging="entry.key === dragValue"
-          :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
-          @row-click="onRowClick"
-          @drag-pointerdown="onDragPointerdown"
-          @check="onCheckboxClick"
-          @toggle="onSwitcherClick"
-        />
-
-        <PTreeNode
-          v-else
-          :id="entry.id"
-          :node="entry.node"
-          :value="entry.key"
-          :depth="entry.depth"
-          :index="entry.index"
-          :has-children="entry.hasChildren"
-          :expanded="entry.expanded"
-          :checked="entry.checked"
-          :indeterminate="entry.indeterminate"
-          :active="entry.active"
-          :multiple="multiple"
-          :disabled="disabled"
-          :set-size="rows.length"
-          :indent="indent"
-          :highlight-query="highlightQuery"
-          :show-icon="showIcon"
-          :item-class="itemClass"
-          :draggable="dragEnabled"
-          :drag-handle="hasDragHandle"
-          :dragging="entry.key === dragValue"
-          :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
-          @row-click="onRowClick"
-          @drag-pointerdown="onDragPointerdown"
-          @check="onCheckboxClick"
-          @toggle="onSwitcherClick"
-        >
-          <template #node="scope">
-            <slot name="node" v-bind="scope" />
-          </template>
-
-          <template #node-switcher="scope">
-            <slot name="node-switcher" v-bind="scope" />
-          </template>
-
-          <template #node-icon="scope">
-            <slot name="node-icon" v-bind="scope" />
-          </template>
-
-          <template #node-content="scope">
-            <slot name="node-content" v-bind="scope" />
-          </template>
-
-          <template #node-suffix="scope">
-            <slot name="node-suffix" v-bind="scope" />
-          </template>
-
-          <template #node-drag-handle="scope">
-            <slot name="node-drag-handle" v-bind="scope" />
-          </template>
-        </PTreeNode>
-      </div>
-    </div>
-
     <div
-      v-if="!rows.length"
-      class="pxd-tree--empty py-7 text-sm text-center text-foreground-secondary"
+      ref="containerRef"
+      role="tree"
+      tabindex="0"
+      class="pxd-tree m-0 p-1 scroll-p-1 w-full max-w-full overflow-auto rounded-inherit bg-background-100 outline-none"
+      :style="containerStyle"
+      :aria-multiselectable="multiple || undefined"
+      :aria-activedescendant="focused ? activeDescendant : undefined"
+      v-bind="$attrs"
+      @keydown="onKeydown"
+      @focus="onContainerFocus"
+      @blur="onContainerBlur"
     >
-      <slot name="empty" />
+      <div class="pxd-tree--content w-full" :class="{ relative: virtual }" :style="contentStyle">
+        <div
+          v-for="entry in renderEntries"
+          :key="entry.key"
+          class="pxd-tree--row w-full"
+          :class="{ 'left-0 top-0 absolute': virtual }"
+          :style="virtual ? { transform: 'translateY(' + entry.start + 'px)' } : undefined"
+        >
+          <PTreeNode
+            v-if="!hasNodeSlot"
+            :id="entry.id"
+            :node="entry.node"
+            :value="entry.key"
+            :depth="entry.depth"
+            :index="entry.index"
+            :has-children="entry.hasChildren"
+            :expanded="entry.expanded"
+            :checked="checked.has(entry.key)"
+            :indeterminate="indeterminate.has(entry.key)"
+            :active="entry.active"
+            :multiple="multiple"
+            :disabled="disabled"
+            :set-size="rows.length"
+            :indent="indent"
+            :highlight-query="highlightQuery"
+            :show-icon="showIcon"
+            :item-class="itemClass"
+            :draggable="dragEnabled"
+            :drag-handle="hasDragHandle"
+            :dragging="entry.key === dragValue"
+            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
+            @row-click="onRowClick"
+            @drag-pointerdown="onDragPointerdown"
+            @check="onCheckboxClick"
+            @toggle="onSwitcherClick"
+          />
+
+          <PTreeNode
+            v-else
+            :id="entry.id"
+            :node="entry.node"
+            :value="entry.key"
+            :depth="entry.depth"
+            :index="entry.index"
+            :has-children="entry.hasChildren"
+            :expanded="entry.expanded"
+            :checked="checked.has(entry.key)"
+            :indeterminate="indeterminate.has(entry.key)"
+            :active="entry.active"
+            :multiple="multiple"
+            :disabled="disabled"
+            :set-size="rows.length"
+            :indent="indent"
+            :highlight-query="highlightQuery"
+            :show-icon="showIcon"
+            :item-class="itemClass"
+            :draggable="dragEnabled"
+            :drag-handle="hasDragHandle"
+            :dragging="entry.key === dragValue"
+            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
+            @row-click="onRowClick"
+            @drag-pointerdown="onDragPointerdown"
+            @check="onCheckboxClick"
+            @toggle="onSwitcherClick"
+          >
+            <template #node="scope">
+              <slot name="node" v-bind="scope" />
+            </template>
+
+            <template #node-switcher="scope">
+              <slot name="node-switcher" v-bind="scope" />
+            </template>
+
+            <template #node-icon="scope">
+              <slot name="node-icon" v-bind="scope" />
+            </template>
+
+            <template #node-content="scope">
+              <slot name="node-content" v-bind="scope" />
+            </template>
+
+            <template #node-suffix="scope">
+              <slot name="node-suffix" v-bind="scope" />
+            </template>
+
+            <template #node-drag-handle="scope">
+              <slot name="node-drag-handle" v-bind="scope" />
+            </template>
+          </PTreeNode>
+        </div>
+      </div>
+
+      <div
+        v-if="!rows.length"
+        class="pxd-tree--empty py-7 text-sm text-center text-foreground-secondary"
+      >
+        <slot name="empty" />
+      </div>
     </div>
 
     <!--

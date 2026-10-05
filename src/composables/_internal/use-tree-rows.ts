@@ -118,13 +118,14 @@ export interface UseTreeRowsOptions {
   exactMatched?: MaybeRefOrGetter<ReadonlySet<ComponentValue> | undefined>
   /** Drop the ancestors that only stayed visible for context, and flatten what is left. */
   matchesOnly?: MaybeRefOrGetter<boolean | undefined>
-  checked: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
-  indeterminate: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
 }
 
 /**
  * Visible rows in document order. Collapsed subtrees and, while searching,
  * everything outside the matched ancestor chains are pruned.
+ *
+ * Selection state is deliberately absent: it changes on every click, and putting it here would
+ * rebuild all N rows for a change that touches two of them. Read the sets at render time instead.
  */
 export function useTreeRows(
   index: MaybeRefOrGetter<TreeIndex>,
@@ -134,8 +135,6 @@ export function useTreeRows(
     const { list } = toValue(index)
     const expanded = toValue(options.expanded)
     const matched = toValue(options.matched)
-    const checked = toValue(options.checked)
-    const indeterminate = toValue(options.indeterminate)
     const searching = (toValue(options.query) ?? '').trim().length > 0
     const matchesOnly = searching && toValue(options.matchesOnly) === true
     const exact = toValue(options.exactMatched) ?? matched
@@ -167,8 +166,6 @@ export function useTreeRows(
         parentValue: matchesOnly ? undefined : meta.parentValue,
         hasChildren: meta.children.length > 0,
         expanded: expanded.has(value),
-        checked: checked.has(value),
-        indeterminate: indeterminate.has(value),
         matched: matched.has(value),
       })
 
@@ -176,6 +173,17 @@ export function useTreeRows(
 
       if (meta.children.length > 0 && !searching && !expanded.has(value)) {
         cursor = meta.end
+      }
+    }
+
+    // A search shows a collapsed node's matches below it, so `expanded` cannot keep claiming
+    // otherwise. In document order the next row is the first child exactly when it sits deeper.
+    // `matchesOnly` flattens every row to depth 0, where this settles back to false.
+    if (searching) {
+      for (let i = 0; i < rows.length - 1; i++) {
+        if (rows[i].hasChildren) {
+          rows[i].expanded = rows[i + 1].depth > rows[i].depth
+        }
       }
     }
 

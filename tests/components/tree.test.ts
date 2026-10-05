@@ -60,13 +60,30 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
-  it('should keep a parent row expansion-only in multiple mode', async () => {
+  it('should select and expand a parent row in multiple mode', async () => {
     const wrapper = mount(Tree, { props: { data, multiple: true } })
 
     await wrapper.find('[data-key=src]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+      'src',
+      'components',
+      'tree',
+      'list',
+      'composables',
+    ])
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
+
+    wrapper.unmount()
+  })
+
+  it('should not select a row when expandOnClick is off and it has no checkbox hit', async () => {
+    const wrapper = mount(Tree, { props: { data, multiple: true, expandOnClick: false } })
+
+    await wrapper.find('[data-key="readme"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['readme'])
+    expect(wrapper.emitted('update:expandedKeys')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -661,6 +678,142 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
+  it('should keep the filter field out of the tree role', async () => {
+    const wrapper = mount(Tree, { props: { data, filterable: true } })
+    const tree = wrapper.find('[role=tree]').element
+
+    expect(tree.querySelector('[data-tree-search]')).toBeNull()
+    expect(tree.querySelector('input')).toBeNull()
+    expect(wrapper.find('[data-tree-search]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should report a parent as expanded while a search shows its children', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [{ value: 'r', label: 'r', children: [{ value: 'aa', label: 'aa' }] }],
+        filterable: true,
+      },
+    })
+
+    expect(wrapper.find('[data-key="r"]').attributes('aria-expanded')).toBe('false')
+
+    await wrapper.find('input').setValue('aa')
+
+    expect(wrapper.findAll('[data-tree-item]').map((i) => i.attributes('data-key'))).toEqual([
+      'r',
+      'aa',
+    ])
+    expect(wrapper.find('[data-key="r"]').attributes('aria-expanded')).toBe('true')
+
+    await wrapper.find('input').setValue('')
+
+    expect(wrapper.find('[data-key="r"]').attributes('aria-expanded')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should take the search value from the prop when one is given', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, filterable: true, searchValue: 'tree' },
+    })
+
+    expect(wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+
+    // A controlled field ignores the input: the owner writes it back.
+    await wrapper.find('input').setValue('docs')
+
+    expect(wrapper.emitted('update:searchValue')?.[0]?.[0]).toBe('docs')
+    expect(wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+
+    await wrapper.setProps({ searchValue: '' })
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    wrapper.unmount()
+  })
+
+  it('should start from default-search-value', () => {
+    const wrapper = mount(Tree, {
+      props: { data, filterable: true, defaultSearchValue: 'tree' },
+    })
+
+    expect(wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+
+    wrapper.unmount()
+  })
+
+  it('should mark a disabled node with aria-disabled', () => {
+    const wrapper = mount(Tree, { props: { data } })
+
+    expect(wrapper.find('[data-key="docs"]').attributes('aria-disabled')).toBe('true')
+    expect(wrapper.find('[data-key="readme"]').attributes('aria-disabled')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should report checked keys that sit inside a collapsed subtree', async () => {
+    const nested = [
+      {
+        value: 'src',
+        label: 'src',
+        children: [
+          { value: 'a', label: 'a' },
+          { value: 'b', label: 'b' },
+        ],
+      },
+    ]
+    const wrapper = mount(Tree, {
+      props: {
+        data: nested,
+        multiple: true,
+        defaultExpandedKeys: ['src'],
+        modelValue: ['a'],
+      },
+    })
+    const vm = wrapper.vm as unknown as { getCheckedKeys: (i?: boolean) => string[] }
+
+    expect(vm.getCheckedKeys()).toEqual(['a'])
+
+    await wrapper.setProps({ expandedKeys: [] })
+
+    expect(wrapper.findAll('[data-tree-item]').map((i) => i.attributes('data-key'))).toEqual([
+      'src',
+    ])
+    expect(vm.getCheckedKeys()).toEqual(['a'])
+    expect(vm.getCheckedKeys(true)).toEqual(['src', 'a'])
+
+    wrapper.unmount()
+  })
+
+  it('should keep the flat rows untouched when only the selection moves', async () => {
+    const many = Array.from({ length: 50 }, (_, i) => ({ value: 'n' + i, label: 'n' + i }))
+    const wrapper = mount(Tree, {
+      props: { data: many, multiple: true, defaultExpandedKeys: [], modelValue: [] },
+    })
+
+    await wrapper.find('[data-key="n1"] .pxd-tree--checkbox').trigger('click')
+    await wrapper.setProps({ modelValue: ['n1'] })
+
+    expect(wrapper.find('[data-key="n1"]').attributes('data-checked')).toBe('true')
+    expect(wrapper.find('[data-key="n0"]').attributes('data-checked')).toBe('false')
+
+    wrapper.unmount()
+  })
+
   it('should keep the ancestor chain without search-matches-only', async () => {
     const wrapper = mount(Tree, { props: { data, filterable: true } })
 
@@ -669,6 +822,60 @@ describe('tree', () => {
     const keys = wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))
 
     expect(keys).toEqual(['src', 'components', 'tree'])
+
+    wrapper.unmount()
+  })
+
+  it('should measure each row once while the pointer moves', async () => {
+    const many = Array.from({ length: 600 }, (_, index) => ({
+      value: 'node-' + index,
+      label: 'Node ' + index,
+    }))
+
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data: many, draggable: true },
+    })
+
+    stubRows(wrapper)
+
+    // The rows own their rect stub, so counting only sees what the tree asks for.
+    const items = wrapper.findAll('[data-tree-item]')
+    let reads = 0
+
+    items.forEach((item: any, index: number) => {
+      const top = index * ROW_HEIGHT
+
+      Object.defineProperty(item.element, 'getBoundingClientRect', {
+        configurable: true,
+        value: () => {
+          reads++
+          return {
+            top,
+            bottom: top + ROW_HEIGHT,
+            height: ROW_HEIGHT,
+            left: 0,
+            right: 200,
+            width: 200,
+          }
+        },
+      })
+    })
+
+    const row = wrapper.find('[data-key="node-0"]')
+
+    row.element.dispatchEvent(pointer('pointerdown', 0, 4))
+    // The first move past the threshold pays for the one-off measurement of the whole list.
+    row.element.dispatchEvent(pointer('pointermove', 0, 100))
+    expect(reads).toBeGreaterThanOrEqual(many.length)
+
+    for (const y of [160, 240, 400, 1200, 5000, 1000]) {
+      reads = 0
+      row.element.dispatchEvent(pointer('pointermove', 0, y))
+      expect(reads).toBeLessThanOrEqual(1)
+    }
+
+    window.dispatchEvent(pointer('pointerup', 0, 1000))
 
     wrapper.unmount()
   })

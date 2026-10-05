@@ -141,7 +141,11 @@ const data = [
 ## Search
 
 Set `filterable` to render a search field. Matching is fuzzy, every matched node keeps its
-ancestor chain visible, `highlight-match` marks the matched substring.
+ancestor chain visible, `highlight-match` marks the matched substring. A fuzzy hit that is not one
+unbroken run of characters still shows its row, just without the highlight.
+
+Bind `v-model:search-value` to clear the query from the outside; left unbound the field keeps its
+own state.
 
 ```vue demo
 <script setup>
@@ -434,7 +438,7 @@ const data = [
 | multiple | `boolean` | `false` | Show a checkbox and cascade the selection through the parents |
 | check-strictly | `boolean` | `false` | Keep every node independently selectable, without cascading and without the partial state |
 | disabled | `boolean` | `false` | Disable the selection and the keyboard of the whole tree |
-| expand-on-click | `boolean` | `true` | Expand a parent when its row is clicked and select it too in single mode, set it to `false` to select instead |
+| expand-on-click | `boolean` | `true` | Expand a parent when its row is clicked, set it to `false` to select instead |
 | draggable | `boolean` | `false` | Allow a row to be dragged to another position, off while searching or when `disabled` is set |
 | allow-drop | `(info: TreeDropInfo) => boolean` | disabled nodes | Decide whether a drop may land, overriding the built-in policy |
 | show-icon | `boolean` | `true` | Show the built-in folder icon on every row |
@@ -449,8 +453,10 @@ const data = [
 | children-field | `string` | `'children'` | Field of a node holding its children |
 | filterable | `boolean` | `false` | Render the search field |
 | filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
-| highlight-match | `boolean` | `false` | Mark the matched substring of the label |
+| highlight-match | `boolean` | `false` | Mark the matched substring of the label. Only a contiguous run of characters is marked: a fuzzy hit that is not one still shows its row, just without the highlight |
 | search-placeholder | `string` | `'Search'` | Placeholder of the search field |
+| search-value | `string` | - | Controlled search query |
+| default-search-value | `string` | `''` | Search query before the user types |
 | item-class | `ComponentClass` | - | Class merged into every rendered row |
 
 ### TreeOption
@@ -474,7 +480,7 @@ const data = [
 | update:expandedKeys | `(keys: ComponentValue[]) => void` | Emitted when a node is expanded or collapsed. |
 | expand | `(detail: TreeNodeDetail) => void` | Emitted when a node is expanded. |
 | collapse | `(detail: TreeNodeDetail) => void` | Emitted when a node is collapsed. |
-| update:searchValue | `(query: string) => void` | Emitted when the search field changes. |
+| update:searchValue | `(query: string) => void` | Emitted when the search field changes. Write it back through `search-value` to control the field. |
 
 ```ts
 interface TreeNodeDetail {
@@ -529,7 +535,7 @@ interface TreeMoveDetail {
 | collapseKey | `(value: ComponentValue) => void` | Collapse the node. |
 | expandAll | `() => void` | Expand every parent node. |
 | collapseAll | `() => void` | Collapse every node. |
-| getCheckedKeys | `(includeIndeterminate?: boolean) => ComponentValue[]` | Return the checked values, optionally including the partially checked ones. |
+| getCheckedKeys | `(includeIndeterminate?: boolean) => ComponentValue[]` | Return the checked values in document order, optionally including the partially checked ones. Covers collapsed subtrees, the same set `change` reports. |
 | getVisibleKeys | `() => ComponentValue[]` | Return the values of the rendered rows. |
 | getData | `(value: ComponentValue) => TreeOption \| undefined` | Return the source node of a key, collapsed rows included. |
 | activeIndex | `number` | Index of the active row, `-1` when there is none. |

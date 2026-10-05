@@ -80,8 +80,6 @@ export interface TreeFlatNode {
   parentValue?: ComponentValue
   hasChildren: boolean
   expanded: boolean
-  checked: boolean
-  indeterminate: boolean
   matched: boolean
 }
 
@@ -107,8 +105,12 @@ export interface TreeProps {
   filter?: TreeFilterFn
   /** Render only the nodes the filter matched, instead of the hits plus their ancestors. */
   searchMatchesOnly?: boolean
+  /** Highlights the query inside a label. Only a contiguous run of characters is marked: a
+   *  fuzzy hit that is not one still shows its row, just without the highlight. */
   highlightMatch?: boolean
   searchPlaceholder?: string
+  searchValue?: string
+  defaultSearchValue?: string
   itemClass?: ComponentClass
 }
 
