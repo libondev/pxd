@@ -107,6 +107,8 @@ export default defineConfig(({ mode }) => {
               themes: codeThemes,
             }),
           )
+          md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n'
+          md.renderer.rules.table_close = () => '</table></div>\n'
         },
         onDemo(component, code) {
           this.registerComponent('CodeBlock', '@/components/CodeBlock.vue')

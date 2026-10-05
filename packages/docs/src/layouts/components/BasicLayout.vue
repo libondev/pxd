@@ -303,11 +303,16 @@ if (!isServer()) {
     color: var(--color-gray-600);
   }
 
-  h2 ~ table {
+  .table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  h2 ~ .table-wrap > table {
     table-layout: auto;
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
     border-left: 1px solid var(--color-gray-300);
     margin-block: 1.68em;
     font-size: 14px;
@@ -333,6 +338,23 @@ if (!isServer()) {
     td {
       padding: 0.75em 0.75em;
       border-right: 1px solid var(--color-gray-300);
+    }
+
+    th:first-child,
+    td:first-child {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 48rem) {
+      th,
+      td {
+        padding: 0.6em 0.5em;
+      }
+
+      & :not(pre) > code {
+        margin-right: 0.1em;
+        padding-inline: 0.35em;
+      }
     }
   }
 }
