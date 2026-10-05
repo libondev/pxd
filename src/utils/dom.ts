@@ -60,13 +60,18 @@ export function getElement(
 //   }
 // }
 
+/** Whether the element scrolls with the viewport instead of scrolling on its own. */
+export function isViewportScroll(el: HTMLElement) {
+  return getWindowTop().includes(el) || el === document.body
+}
+
 /** Viewport-relative top offset for scrollspy */
 export function getElementOffsetFromScrollContainer(
   element: Element,
   scrollContainer: HTMLElement,
 ) {
   const elementRect = element.getBoundingClientRect()
-  if (getWindowTop().includes(scrollContainer) || scrollContainer === document.body) {
+  if (isViewportScroll(scrollContainer)) {
     return {
       top: elementRect.top,
       left: elementRect.left,

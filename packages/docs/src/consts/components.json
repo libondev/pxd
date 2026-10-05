@@ -157,7 +157,7 @@
   {
     "camelized": "Fader",
     "name": "fader",
-    "category": "Navigation"
+    "category": "Decoration"
   },
   {
     "camelized": "Feedback Bar",
@@ -237,7 +237,7 @@
   {
     "camelized": "Menu",
     "name": "menu",
-    "category": "Navigation"
+    "category": "Button"
   },
   {
     "camelized": "Message",
@@ -473,6 +473,11 @@
     "camelized": "Timeline",
     "name": "timeline",
     "category": "Data Display"
+  },
+  {
+    "camelized": "Toc",
+    "name": "toc",
+    "category": "Navigation"
   },
   {
     "camelized": "Todo List",

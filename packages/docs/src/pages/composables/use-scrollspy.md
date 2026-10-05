@@ -2,6 +2,9 @@
 
 Tracks which target element is currently in the viewport during scroll.
 
+Scroll callbacks are collapsed into one animation frame, and the active target is recomputed whenever the
+target list, the probe line, or the size of the scroll container changes.
+
 ## Exports
 
 ```ts
@@ -16,7 +19,7 @@ function useScrollspy(
 ```ts
 interface UseScrollspyOptions {
   scrollTarget?: MaybeRefOrGetter<Window | HTMLElement | null>
-  topOffset?: number
+  topOffset?: MaybeRefOrGetter<number>
 }
 
 interface UseScrollspyReturn {
@@ -32,4 +35,4 @@ interface UseScrollspyReturn {
 | --- | --- | --- |
 | `targets` | `MaybeRefOrGetter<HTMLElement[]>` | The list of target elements to track |
 | `options.scrollTarget` | `MaybeRefOrGetter<Window \| HTMLElement \| null>` | The scrollable container (defaults to window) |
-| `options.topOffset` | `number` | Top offset in pixels for intersection calculation |
+| `options.topOffset` | `MaybeRefOrGetter<number>` | Probe line measured from the top of the scroll viewport |

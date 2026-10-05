@@ -1,107 +1,47 @@
 <script lang="ts" setup>
-import { useScrollspy } from 'pxd/composables/use-scrollspy'
-import { shallowRef, watch, nextTick, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-interface TocItem {
-  id: string
-  text: string
-  level: number
-}
-
 interface Props {
-  containerSelector?: string
-  levels?: number[]
+  /**
+   * Headings that make up the page outline, as a CSS selector.
+   *
+   * `vite-vue-md` wraps a page's markdown in `<div class="markdown-body">`, so the
+   * `>` combinator is what keeps demo headings out: a `vue demo` block renders
+   * inside `.code-block`, one level deeper. `BasicLayout` draws the same boundary
+   * with `.markdown-body > :is(h1, h2, h3, h4)`.
+   */
+  selector?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  containerSelector: '.prose',
-  levels: () => [2, 3],
+withDefaults(defineProps<Props>(), {
+  selector: '.markdown-body > h2[id], .markdown-body > h3[id]',
 })
 
 const route = useRoute()
-const headingEls = shallowRef<HTMLElement[]>([])
-const tocHeaders = computed<TocItem[]>(
-  () =>
-    headingEls.value?.map((h) => {
-      return {
-        id: h.id,
-        text: h.textContent?.replace(/^#\s*/, '') || '',
-        level: Number.parseInt(h.tagName.substring(1), 10),
-      }
-    }) ?? [],
-)
+const toc = ref<{ items?: unknown[] }>()
 
-const { activeEl, update } = useScrollspy(headingEls)
+// The outline is read by the component, so whether there is one to show is read
+// back off it. The header is hidden rather than left stranded above nothing.
+const hasOutline = computed(() => (toc.value?.items?.length ?? 0) > 0)
 
-const activeId = computed(() => activeEl.value?.id)
-
-async function extractHeadings() {
-  await nextTick()
-  const container = document.querySelector(props.containerSelector)
-
-  if (!container) {
-    headingEls.value = []
-    return
-  }
-
-  const selector = props.levels.map((l) => `h${l}[id]`).join(', ')
-  const headings = Array.from(container.querySelectorAll<HTMLElement>(selector))
-
-  headingEls.value = headings
-
-  update()
+function onItemClick(item: { id: string }) {
+  // `PToc` owns the scroll; keeping the fragment in the URL is the router's job.
+  window.history.replaceState(window.history.state, route.path, `#${item.id}`)
 }
-
-function scrollToHeading(id: string) {
-  const element = document.getElementById(id)
-
-  if (!element) {
-    return
-  }
-
-  element.scrollIntoView()
-  window.history.replaceState(history.state, route.path, `#${id}`)
-}
-
-watch(
-  () => route.path,
-  () => {
-    extractHeadings()
-  },
-  { immediate: true },
-)
 </script>
 
 <template>
-  <nav v-if="tocHeaders.length > 0" class="p-2">
-    <div class="p-2 text-xs font-bold uppercase">On this page</div>
+  <div class="p-2">
+    <div v-if="hasOutline" id="docs-toc-title" class="p-2 text-xs font-bold uppercase">
+      On this page
+    </div>
 
-    <ul class="ps-0! text-sm">
-      <li
-        v-for="item in tocHeaders"
-        :key="item.id"
-        class="toc-item px-2.5 py-2 mbe-0.5 flex cursor-pointer items-center rounded-md border-transparent text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900 motion-safe:transition-colors"
-        :class="[
-          `toc-level-${item.level}`,
-          {
-            'is-active pointer-events-none bg-primary/10 text-primary!': activeId === item.id,
-          },
-        ]"
-        @click="scrollToHeading(item.id)"
-      >
-        <span class="truncate">{{ item.text }}</span>
-      </li>
-    </ul>
-  </nav>
+    <PToc
+      ref="toc"
+      :selector="selector"
+      :aria-labelledby="hasOutline ? 'docs-toc-title' : undefined"
+      @item-click="onItemClick"
+    />
+  </div>
 </template>
-
-<style lang="postcss">
-.toc-level-3 {
-  padding-left: 0.75rem;
-}
-
-.toc-level-4 {
-  padding-left: 1.5rem;
-}
-</style>

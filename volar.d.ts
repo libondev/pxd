@@ -113,6 +113,7 @@ declare module 'vue' {
     PTimePicker: (typeof import('pxd/components/time-picker'))['default']
     PTimeline: (typeof import('pxd/components/timeline'))['default']
     PTimelineItem: (typeof import('pxd/components/timeline-item'))['default']
+    PToc: (typeof import('pxd/components/toc'))['default']
     PTodoList: (typeof import('pxd/components/todo-list'))['default']
     PToggle: (typeof import('pxd/components/toggle'))['default']
     PToggleButton: (typeof import('pxd/components/toggle-button'))['default']

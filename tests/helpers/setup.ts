@@ -1,3 +1,4 @@
+import { vi } from 'vite-plus/test'
 import { createApp, defineComponent, effectScope, h } from 'vue'
 
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never
@@ -39,3 +40,57 @@ export function mount<V>(Comp: V) {
 
 // Export types for reuse
 export type { InstanceType, VM }
+
+/**
+ * happy-dom does not deliver a resize for synthetic changes, so `ResizeObserver`
+ * is replaced with a mock whose recorded callback can be fired on demand.
+ */
+export function installResizeObserverMock() {
+  const instances: { callback: ResizeObserverCallback; targets: Set<Element> }[] = []
+
+  vi.stubGlobal(
+    'ResizeObserver',
+    class MockResizeObserver {
+      targets = new Set<Element>()
+      callback: ResizeObserverCallback
+
+      constructor(callback: ResizeObserverCallback) {
+        this.callback = callback
+        instances.push(this)
+      }
+
+      observe(el: Element) {
+        this.targets.add(el)
+      }
+
+      unobserve(el: Element) {
+        this.targets.delete(el)
+      }
+
+      disconnect() {
+        this.targets.clear()
+      }
+    },
+  )
+
+  return {
+    get count() {
+      return instances.length
+    },
+    observed() {
+      return Array.from(instances).flatMap(({ targets }) => Array.from(targets))
+    },
+    fireAll() {
+      for (const { callback, targets } of instances) {
+        if (!targets.size) {
+          continue
+        }
+
+        callback(
+          Array.from(targets).map((target) => ({ target }) as ResizeObserverEntry),
+          {} as ResizeObserver,
+        )
+      }
+    },
+  }
+}
