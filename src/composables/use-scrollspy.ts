@@ -42,7 +42,7 @@ export function useScrollspy(
   options: UseScrollspyOptions = {},
 ): UseScrollspyReturn {
   const { scrollTarget } = options
-  const topOffset = computed(() => toValue(options.topOffset ?? 80))
+  const topOffset = computed(() => toValue(options.topOffset ?? 0))
 
   const activeIndex = shallowRef(-1)
   const activeEl = shallowRef<HTMLElement | null>(null)
