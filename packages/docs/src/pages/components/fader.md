@@ -27,7 +27,7 @@ const options = [
         <div class="size-100"></div>
       </div>
 
-      <PFader :direction="direction" :container="containerRef" />
+      <PFader :direction="direction" :scroll-target="containerRef" />
     </div>
   </PStack>
 </template>
@@ -48,7 +48,7 @@ const containerRef = shallowRef()
       <div class="size-100"></div>
     </div>
 
-    <PFader :size="50" color="var(--color-blue-300)" :container="containerRef" />
+    <PFader :size="50" color="var(--color-blue-300)" :scroll-target="containerRef" />
   </div>
 </template>
 ```
@@ -59,5 +59,5 @@ const containerRef = shallowRef()
 | --- | --- | --- | --- |
 | size | `number` | - | Gradient width in `px`, `16` by default |
 | color | `string` | - | CSS color the gradient fades into |
-| container | `string \| object` | - | Scrollable element to watch: a ref, an element or a CSS selector |
+| scroll-target | `string \| HTMLElement \| ComponentPublicInstance \| null` | - | Scrollable container to watch: a CSS selector, an element, or a component instance |
 | direction | `'horizontal' \| 'vertical' \| 'both'` | `both` | Edges that can show a fader: `horizontal`, `vertical` or `both` |

@@ -30,7 +30,7 @@ const computedStyle = computed(() => ({
   '--fader-size': getCssUnitValue(props.size),
 }))
 
-const formattedContainer = computed(() => getElement(props.container))
+const formattedContainer = computed(() => getElement(props.scrollTarget))
 
 const onContainerScroll = throttleByRaf(() => {
   const container = formattedContainer.value

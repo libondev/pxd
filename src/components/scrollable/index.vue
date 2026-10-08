@@ -371,7 +371,7 @@ defineExpose({
       v-if="fader"
       :size="faderSize"
       :color="faderColor"
-      :container="contentRef"
+      :scroll-target="contentRef"
       :direction="faderDirection"
     />
 

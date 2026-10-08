@@ -87,7 +87,7 @@ describe('fader', () => {
 
   it('should bind scroll to the container passed on mount', async () => {
     const container = createScrollContainer()
-    const wrapper = mount(Fader, { props: { container: container.el } })
+    const wrapper = mount(Fader, { props: { scrollTarget: container.el } })
 
     await nextTick()
     await scrollTo(container, 100)
@@ -100,14 +100,14 @@ describe('fader', () => {
   it('should rebind scroll when the container is swapped directly', async () => {
     const first = createScrollContainer()
     const second = createScrollContainer()
-    const wrapper = mount(Fader, { props: { container: first.el } })
+    const wrapper = mount(Fader, { props: { scrollTarget: first.el } })
 
     await nextTick()
     await scrollTo(first, 0)
 
     expect(horizontalFlags(wrapper).left).toBe(false)
 
-    await wrapper.setProps({ container: second.el })
+    await wrapper.setProps({ scrollTarget: second.el })
     await nextTick()
     await flushRaf()
     await scrollTo(second, 100)
@@ -120,16 +120,16 @@ describe('fader', () => {
   it('should rebind scroll when the container passes through null', async () => {
     const first = createScrollContainer()
     const second = createScrollContainer()
-    const wrapper = mount(Fader, { props: { container: first.el } })
+    const wrapper = mount(Fader, { props: { scrollTarget: first.el } })
 
     await nextTick()
     await scrollTo(first, 0)
 
     expect(horizontalFlags(wrapper).left).toBe(false)
 
-    await wrapper.setProps({ container: null })
+    await wrapper.setProps({ scrollTarget: null })
     await nextTick()
-    await wrapper.setProps({ container: second.el })
+    await wrapper.setProps({ scrollTarget: second.el })
     await nextTick()
     await flushRaf()
     await scrollTo(second, 100)
@@ -142,14 +142,14 @@ describe('fader', () => {
   it('should stop listening to the container it was replaced with', async () => {
     const first = createScrollContainer()
     const second = createScrollContainer()
-    const wrapper = mount(Fader, { props: { container: first.el } })
+    const wrapper = mount(Fader, { props: { scrollTarget: first.el } })
 
     await nextTick()
     await scrollTo(first, 100)
 
     expect(horizontalFlags(wrapper).left).toBe(true)
 
-    await wrapper.setProps({ container: second.el })
+    await wrapper.setProps({ scrollTarget: second.el })
     await nextTick()
     await flushRaf()
     await scrollTo(first, 0)

@@ -1,8 +1,9 @@
 import type { ComponentDirection } from '../../types/shared'
+import type { ComponentPublicInstance } from 'vue'
 
 export interface FaderProps {
   size?: number
   color?: string
-  container?: string | object
+  scrollTarget?: string | HTMLElement | ComponentPublicInstance | null
   direction?: ComponentDirection | 'both'
 }
