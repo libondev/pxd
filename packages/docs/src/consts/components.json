@@ -350,6 +350,11 @@
     "category": "Typography"
   },
   {
+    "camelized": "Scroll Progress",
+    "name": "scroll-progress",
+    "category": "Feedback"
+  },
+  {
     "camelized": "Scroll Text",
     "name": "scroll-text",
     "category": "Typography"

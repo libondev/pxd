@@ -201,3 +201,8 @@ Known issues and lessons learned during development.
 - **Fix**: Convert to a DOM index only through the rendered array (`rows.findIndex(r => r.active)`), never through the spy's index. The rule generalises: any "data index -> `children[n]`" lookup has to go through the array that produced the children.
 - **Testing note**: happy-dom has no layout, so stub `getBoundingClientRect` on the container and on each row, and assert on the `scrollTop` the component writes. A wrong-row bug shows up as a `scrollTop` of `0` where the correct value is the measured overflow. Confirm the test can fail — reverting the fix moved the assertion from 120 to 0.
 
+### The docs dev server scaffold overwrites a newly created component page
+
+- **Symptom**: A freshly written `packages/docs/src/pages/components/<name>.md` reverts to a one-section stub ("New component description.") shortly after being saved.
+- **Cause**: `packages/docs/scripts/vite-plugin-file-create-watcher.ts` hooks `watcher.on('add')` on `src/components` while the docs dev server is running. Creating the component's `index.vue` makes it run `update-exports` and then unconditionally `writeFileSync` a scaffold page over `<name>.md` — including one that already has full content.
+- **Fix**: Create `index.vue` first, let the scaffold write the page, then write the real docs content afterwards (the watcher only fires on `add`, not `change`). Or write the docs page after the component files when a dev server may be running. Same applies to composable pages for new `src/composables/*.ts` files.

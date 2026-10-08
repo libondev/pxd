@@ -40,3 +40,8 @@ Reusable code patterns and examples discovered during development.
   - Movement arriving while the gate is pending is dropped, and a release inside that window waits for the verdict. That replaces the ad-hoc `earlyUp` probe a hand-written recognizer needs for the same race.
   - `axisLocked` is separate from `swiped`, because a cross-axis rejection and an unmoved tap both report `swiped: false` but must not be treated the same: the first is a cancelled swipe, the second is a tap.
   - `onTap` carries `startEvent` (the pointerdown) as well as the release event. Hit-test what the user pressed, not where the pointer happened to be released.
+
+### Testing scroll-driven components with patched scroll metrics
+
+- **Use case**: Components that read `scrollTop` / `scrollHeight` / `clientHeight` (Backtop, StickToBottom, ScrollProgress). happy-dom performs no layout, so these properties must be stubbed on the element under test.
+- **Example**: `patchScrollMetrics(el, { scrollHeight, clientHeight, scrollTop })` defines the three properties as getters/setters over a plain metrics object. Mutate `metrics.scrollTop`, dispatch `new Event('scroll')`, then await one raf plus `nextTick` (`flushRaf`) because listeners are raf-throttled via `scheduleByRaf` / `throttleByRaf`.

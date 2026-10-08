@@ -86,6 +86,7 @@ declare module 'vue' {
     PResizable: (typeof import('pxd/components/resizable'))['default']
     PRollingNumber: (typeof import('pxd/components/rolling-number'))['default']
     PScalableText: (typeof import('pxd/components/scalable-text'))['default']
+    PScrollProgress: (typeof import('pxd/components/scroll-progress'))['default']
     PScrollText: (typeof import('pxd/components/scroll-text'))['default']
     PScrollable: (typeof import('pxd/components/scrollable'))['default']
     PSearchInput: (typeof import('pxd/components/search-input'))['default']
