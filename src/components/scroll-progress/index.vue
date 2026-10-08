@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ScrollProgressEmits, ScrollProgressProps } from './types'
-import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import {
   getElement,
@@ -34,12 +34,16 @@ const percentage = computed(() => {
 })
 
 if (!isServer()) {
-  const scrollElement = computed(() => {
-    return getScrollElement(getElement(props.scrollTarget))
-  })
+  const scrollElement = shallowRef<HTMLElement | null>(null)
 
   function update() {
-    const { scrollTop: top, scrollHeight, clientHeight } = getScrollPosition(scrollElement.value)
+    const el = scrollElement.value
+
+    if (!el) {
+      return
+    }
+
+    const { scrollTop: top, scrollHeight, clientHeight } = getScrollPosition(el)
 
     scrollTop.value = top
     maxScrollTop.value = Math.max(0, scrollHeight - clientHeight)
@@ -47,28 +51,28 @@ if (!isServer()) {
 
   const scheduleUpdate = scheduleByRaf(update)
 
-  useResizeObserver(scrollElement, scheduleUpdate)
+  useResizeObserver(() => scrollElement.value, scheduleUpdate)
 
   let currentListener: EventTarget | null = null
 
-  const stopListener = watch(
-    () => props.scrollTarget,
-    () => {
-      const listener = getScrollListener(getElement(props.scrollTarget))
+  function bindListener() {
+    const el = getElement(props.scrollTarget)
+    const listener = getScrollListener(el)
 
-      if (listener === currentListener) {
-        return
-      }
+    scrollElement.value = getScrollElement(el)
 
+    if (listener !== currentListener) {
       off(currentListener, 'scroll', scheduleUpdate)
 
       currentListener = listener
 
       on(listener, 'scroll', scheduleUpdate, { passive: true })
-      scheduleUpdate()
-    },
-    { immediate: true, flush: 'post' },
-  )
+    }
+
+    scheduleUpdate()
+  }
+
+  const stopListener = watch(() => props.scrollTarget, bindListener, { flush: 'post' })
 
   watch(
     () => percentage.value,
@@ -76,6 +80,8 @@ if (!isServer()) {
       emits('change', value)
     },
   )
+
+  onMounted(bindListener)
 
   onBeforeUnmount(() => {
     scheduleUpdate.cancel()

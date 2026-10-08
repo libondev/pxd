@@ -101,62 +101,63 @@ export function useStickToBottom(
     scrollToBottom()
   }
 
-  const scheduleUpdate = throttleByRaf(update)
-  const scheduleStick = throttleByRaf(stickIfNeeded)
+  if (!isServer()) {
+    const scheduleUpdate = throttleByRaf(update)
+    const scheduleStick = throttleByRaf(stickIfNeeded)
 
-  // `getContentEl()` falls back to the container, so both slots are passed at once
-  // and deduplicated instead of registering the same element twice.
-  useResizeObserver(
-    () => [getContentEl(), getContainerEl()],
-    () => {
-      scheduleStick()
-    },
-  )
+    useResizeObserver(
+      () => [getContentEl(), getContainerEl()],
+      () => {
+        scheduleStick()
+      },
+    )
 
-  useMutationObserver(
-    () => getContainerEl(),
-    () => {
-      scheduleStick()
-    },
-    {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    },
-  )
+    useMutationObserver(
+      () => getContainerEl(),
+      () => {
+        scheduleStick()
+      },
+      {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      },
+    )
 
-  watch(
-    () => getContainerEl(),
-    (el, oldEl) => {
-      if (oldEl && !isServer()) {
-        cachedOff(oldEl, 'scroll', scheduleUpdate, { passive: true })
-        scheduleUpdate.cancel()
-        scheduleStick.cancel()
+    const stopWatch = watch(
+      () => getContainerEl(),
+      (el, oldEl) => {
+        if (oldEl) {
+          cachedOff(oldEl, 'scroll', scheduleUpdate, { passive: true })
+          scheduleUpdate.cancel()
+          scheduleStick.cancel()
+        }
+
+        if (!el) {
+          return
+        }
+
+        cachedOn(el, 'scroll', scheduleUpdate, { passive: true })
+        update()
+      },
+      {
+        immediate: true,
+        flush: 'post',
+      },
+    )
+
+    onScopeDispose(() => {
+      const el = getContainerEl()
+
+      if (el) {
+        cachedOff(el, 'scroll', scheduleUpdate, { passive: true })
       }
 
-      if (isServer() || !el) {
-        return
-      }
-
-      cachedOn(el, 'scroll', scheduleUpdate, { passive: true })
-      update()
-    },
-    {
-      immediate: true,
-      flush: 'post',
-    },
-  )
-
-  onScopeDispose(() => {
-    const el = getContainerEl()
-
-    if (el && !isServer()) {
-      cachedOff(el, 'scroll', scheduleUpdate, { passive: true })
-    }
-
-    scheduleUpdate.cancel()
-    scheduleStick.cancel()
-  })
+      scheduleUpdate.cancel()
+      scheduleStick.cancel()
+      stopWatch()
+    })
+  }
 
   return {
     isAtBottom,

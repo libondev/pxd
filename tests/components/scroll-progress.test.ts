@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import { nextTick } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import ScrollProgress from '../../src/components/scroll-progress/index.vue'
 
 function patchScrollMetrics(
@@ -109,6 +109,38 @@ describe('scroll-progress', () => {
 
     wrapper.unmount()
     container.remove()
+  })
+
+  it('binds to a target rendered after the component', async () => {
+    const Parent = defineComponent({
+      components: { PScrollProgress: ScrollProgress },
+      template: `
+        <PScrollProgress scroll-target="#scroll-progress-late" />
+        <div id="scroll-progress-late"></div>
+      `,
+    })
+
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+
+    const wrapper = mount(Parent, { attachTo: host })
+    await flushRaf()
+
+    const container = document.getElementById('scroll-progress-late') as HTMLElement
+    const metrics = patchScrollMetrics(container, {
+      scrollHeight: 300,
+      clientHeight: 100,
+      scrollTop: 0,
+    })
+
+    metrics.scrollTop = 100
+    container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
+
+    expect(wrapper.find('.pxd-scroll-progress').text()).toBe('50%')
+
+    wrapper.unmount()
+    host.remove()
   })
 
   it('clamps the percentage to 0-100', async () => {
