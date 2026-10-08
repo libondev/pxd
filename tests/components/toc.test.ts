@@ -177,7 +177,7 @@ describe('toc', () => {
     stubHeadings([{ top: 500 }])
     stubMetrics(window, { scrollY: 200 })
 
-    const wrapper = mount(Toc, { props: { selector: SELECTOR } })
+    const wrapper = mount(Toc, { props: { selector: SELECTOR, offset: 80 } })
 
     const event = click(wrapper.find('a').element)
 
@@ -230,7 +230,7 @@ describe('toc', () => {
 
     stubHeadings([{ top: 300 }])
 
-    const wrapper = mount(Toc, { props: { selector: SELECTOR, scrollTarget: container } })
+    const wrapper = mount(Toc, { props: { selector: SELECTOR, scrollTarget: container, offset: 80 } })
 
     click(wrapper.find('a').element)
 
@@ -244,7 +244,7 @@ describe('toc', () => {
     const headings = stubHeadings([{ top: -200 }, { top: -50 }, { top: 300 }])
     stubMetrics(document.documentElement, { scrollTop: 250, scrollHeight: 2000, clientHeight: 800 })
 
-    const wrapper = mount(Toc, { props: { selector: SELECTOR } })
+    const wrapper = mount(Toc, { props: { selector: SELECTOR, offset: 80 } })
     await settle()
 
     expect(wrapper.findAll('a')[1]!.attributes('aria-current')).toBe('location')
@@ -266,7 +266,7 @@ describe('toc', () => {
     stubHeadings([{ top: -200 }, { top: -50 }, { top: 300 }])
     stubMetrics(document.documentElement, { scrollTop: 250, scrollHeight: 2000, clientHeight: 800 })
 
-    const wrapper = mount(Toc, { props: { selector: SELECTOR } })
+    const wrapper = mount(Toc, { props: { selector: SELECTOR, offset: 80 } })
     await settle()
 
     const vm = wrapper.vm as unknown as {
@@ -453,7 +453,7 @@ describe('toc', () => {
     stubMetrics(window, { scrollY: 200 })
 
     const wrapper = mount(Toc, {
-      props: { selector: SELECTOR },
+      props: { selector: SELECTOR, offset: 80 },
       slots: {
         item: (props: {
           item: TocItem
