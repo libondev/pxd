@@ -49,7 +49,7 @@ watch(
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-reasoning--trigger group gap-1.5 text-sm flex w-max cursor-pointer touch-manipulation list-none appearance-none items-center text-foreground-secondary self-focus-ring outline-none select-none hover:text-foreground motion-safe:transition-colors"
+      class="pxd-reasoning--trigger group gap-1.5 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center text-foreground-secondary self-focus-ring outline-none select-none hover:text-foreground motion-safe:transition-colors"
       @click.prevent="onToggleClick"
     >
       <BrainIcon class="text-xs shrink-0" />
