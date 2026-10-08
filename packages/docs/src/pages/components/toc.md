@@ -2,8 +2,6 @@
 
 Renders an outline of the headings in your page, tracks which one the reader is currently on, and scrolls to a heading on activation.
 
-Pass a CSS `selector` and the component reads the outline itself. It re-reads when the selector changes and when the document grows, so a heading that arrives late — an async block, an image that settles — joins the outline on its own.
-
 ## Default
 
 Point `selector` at the container that holds your content. The `>` combinator matters: a heading nested one level deeper, inside a demo or a callout, is not part of the outline and a descendant selector would list it anyway.
@@ -190,7 +188,7 @@ const viewport = ref(null)
 | --- | --- | --- | --- |
 | selector | `string` | - | Headings that make up the outline, as a CSS selector. Re-read when it changes and when the document grows. |
 | scroll-target | `HTMLElement \| null` | `null` | Scrollable container holding the headings. Leave empty to follow the window. |
-| offset | `number` | `80` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. |
+| offset | `number` | `0` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. |
 | scroll-behavior | `'auto' \| 'instant' \| 'smooth'` | `'smooth'` | Scroll animation used when an entry is activated. |
 | scroll-active-into-view | `boolean` | `true` | Scroll the active entry back into view when it leaves the list. |
 

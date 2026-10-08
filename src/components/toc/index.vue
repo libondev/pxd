@@ -13,12 +13,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-/** Pixels added per heading level, plus the base inset. */
 const INDENT_BASE = 8
 const INDENT_STEP = 14
 
-const ITEM_CLASS =
-  'pxd-toc-item py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-colors'
 const ITEM_ACTIVE_CLASS = 'bg-gray-alpha-100 font-medium text-primary'
 const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900'
 
@@ -30,7 +27,7 @@ interface TocEntry {
 
 const props = withDefaults(defineProps<TocProps>(), {
   scrollTarget: null,
-  offset: 80,
+  offset: 0,
   scrollBehavior: 'smooth',
   scrollActiveIntoView: true,
 })
@@ -42,8 +39,6 @@ const { attrs, classes } = useTailwindVariant({
 })
 
 const listEl = ref<HTMLElement | null>(null)
-
-// --- Read the outline from the document -----------------------------------
 
 const entries = shallowRef<TocEntry[]>([])
 
@@ -232,7 +227,8 @@ defineExpose({
         >
           <a
             :href="`#${row.item.id}`"
-            :class="[ITEM_CLASS, row.item.id === activeId ? ITEM_ACTIVE_CLASS : ITEM_IDLE_CLASS]"
+            class="pxd-toc-item py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-colors"
+            :class="row.item.id === activeId ? ITEM_ACTIVE_CLASS : ITEM_IDLE_CLASS"
             :style="{ paddingInlineStart: `${row.depth * INDENT_STEP + INDENT_BASE}px` }"
             :aria-current="row.item.id === activeId ? 'location' : undefined"
             @click="onItemClick(row.item, $event)"
