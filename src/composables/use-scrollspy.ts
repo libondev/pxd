@@ -21,7 +21,7 @@ export interface UseScrollspyOptions {
    * Pixel offset from the top of the viewport used to determine whether a
    * target has scrolled past the fold. Set this to match the height of any
    * sticky header / toolbar.
-   * @default 80
+   * @default 0
    */
   topOffset?: MaybeRefOrGetter<number>
 }

@@ -245,7 +245,9 @@ describe('useScrollspy', () => {
       clientHeight: 800,
     })
 
-    const { update, unmount } = useSetupWrapper(() => useScrollspy(targets))
+    // The probe line has to sit below the first two targets for the pass to
+    // reach the third before it stops.
+    const { update, unmount } = useSetupWrapper(() => useScrollspy(targets, { topOffset: 80 }))
 
     // The composable measures once on mount; only count the explicit pass.
     measure.mockClear()
