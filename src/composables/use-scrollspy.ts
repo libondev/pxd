@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch, watchPostEffect } from 'vue'
+import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
 import {
   getScrollElement,
   getScrollListener,
@@ -89,14 +89,11 @@ export function useScrollspy(
   }
 
   if (!isServer()) {
-    // Scroll events are not frame aligned, and each pass measures every target.
     const scheduleUpdate = scheduleByRaf(update)
 
     let currentListener: EventTarget | null = null
 
-    // A template ref is still null while setup runs, so the listener follows the
-    // resolved element instead of binding once to whatever it happened to be.
-    const stopListener = watchPostEffect(() => {
+    function bindListener() {
       const listener = getScrollListener(toValue(scrollTarget))
 
       if (listener === currentListener) {
@@ -108,20 +105,19 @@ export function useScrollspy(
       currentListener = listener
 
       on(listener, 'scroll', scheduleUpdate, { passive: true })
-      // The container may only resolve after the first render, and the initial
-      // state has to reflect wherever the page was restored to.
       scheduleUpdate()
-    })
+    }
+    const stopListener = watch(() => toValue(scrollTarget), bindListener, { flush: 'post' })
 
     const { stop: stopResizeObserver } = useResizeObserver(
       () => getScrollElement(toValue(scrollTarget)),
       scheduleUpdate,
     )
 
-    // `targetItems` is a computed and hands back the same array unless the
-    // source was replaced, so the copy is what makes the watch fire.
-    const stopTargets = watch(() => targetItems.value.slice(), scheduleUpdate)
     const stopOffset = watch(topOffset, scheduleUpdate)
+    const stopTargets = watch(() => targetItems.value, scheduleUpdate)
+
+    onMounted(bindListener)
 
     onScopeDispose(() => {
       scheduleUpdate.cancel()
