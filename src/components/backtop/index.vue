@@ -2,8 +2,8 @@
 import type { BacktopProps, BacktopEmits } from './types'
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { getScrollTarget, getScrollElement, resolveScrollBehavior } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
@@ -41,7 +41,7 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-const prefersReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
+const motionReduce = useMotionReduced()
 
 const scrollTop = shallowRef(0)
 const maxScrollTop = shallowRef(0)
@@ -79,7 +79,7 @@ function onActionClick(ev: PointerEvent) {
   scrollContainer.scrollTo({
     top,
     left: 0,
-    behavior: resolveScrollBehavior(props.scrollBehavior, prefersReducedMotion),
+    behavior: resolveScrollBehavior(props.scrollBehavior, motionReduce),
   })
 }
 

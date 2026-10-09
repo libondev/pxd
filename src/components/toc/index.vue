@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TocEmits, TocItem, TocProps } from './types'
 import { computed, ref, shallowRef, watch } from 'vue'
+import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useScrollspy } from '../../composables/use-scrollspy.js'
 import { getScrollElement, isViewportScroll, resolveScrollBehavior } from '../../utils/dom.js'
@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<TocProps>(), {
 
 const emit = defineEmits<TocEmits>()
 
-const prefersReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
+const motionReduce = useMotionReduced()
 
 const { attrs, classes } = useTailwindVariant({
   base: 'pxd-toc text-sm w-full max-w-full',
@@ -154,7 +154,7 @@ function scrollTo(id: string): boolean {
 
   scroller.scrollTo({
     top: Math.max(getScrollTop(target, container), 0),
-    behavior: resolveScrollBehavior(props.scrollBehavior, prefersReducedMotion),
+    behavior: resolveScrollBehavior(props.scrollBehavior, motionReduce),
   })
 
   return true

@@ -12,10 +12,6 @@ interface CacheObject {
 }
 
 export const PRESET_MEDIA_QUERIES = {
-  MOTION_NO_PREFERENCE: '(prefers-reduced-motion: no-preference)',
-  MOTION_NO_REDUCE: '(prefers-reduced-motion: no-reduce)',
-  MOTION_REDUCE: '(prefers-reduced-motion: reduce)',
-
   COLOR_SCHEME_DARK: '(prefers-color-scheme: dark)',
   COLOR_SCHEME_LIGHT: '(prefers-color-scheme: light)',
   COLOR_SCHEME_NO_PREFERENCE: '(prefers-color-scheme: no-preference)',
