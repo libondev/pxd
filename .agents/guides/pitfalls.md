@@ -16,48 +16,48 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### A resize observer is a proxy for content change, and a blind one inside a scrolled container
+
+- **Symptom**: PToc's outline goes stale — headings that arrive late are never listed — while the `ResizeObserver` on `document.body` that is meant to notice looks like it fires.
+- **Cause**: The body box moves on reflows that cannot change an outline (fonts, images), and never moves when content grows inside a height-capped scroll container (a `height: 400px; overflow: auto` pane stayed 402px while its `scrollHeight` went 24 -> 2024). The scroll element is no better: with `html { height: 100% }` its box is pinned to the viewport (484 against a `scrollHeight` of 2416), and a viewport resize fires it in neither case.
+- **Fix**: Observe what the reader reads. `readOutline` derives entries from element identity, text and `id` alone, so PToc watches through `useMutationObserver` (`childList`, `subtree`, `characterData`, `attributeFilter: ['id']`) scoped to `scrollTarget ?? document.body`, and `useScrollspy` binds a `resize` listener whenever the scroll listener is `window`.
+- **Testing note**: happy-dom delivers neither callback; `tests/helpers/setup.ts` mocks both constructors (`installResizeObserverMock` / `installMutationObserverMock`) and `fireAll()` replays the recorded targets. A synthesized record resolves through `ObserverSpec.resolveTarget` when its `target` is the observed element — the non-pooled path looks descendants up with `contains`, which is why mutation observers must not be pooled.
+
 ### Per-frame DOM measurement inside a pointer handler
 
-- **Symptom**: Dragging or scrolling a long list stutters hard; the profile is dominated by `getBoundingClientRect` calls, and the cost grows with the number of rendered rows instead of staying flat.
-- **Cause**: `getBoundingClientRect` forces a synchronous layout, and a hit test that walks every row to find the one under the pointer pays that flush once per row, per event. Measured on the tree drag at 8000 rows: 8001 forced reads for a single `pointermove`, against 1 for a pointer near the top.
-- **Fix**: Measure once into a cache keyed to something that survives the event, then do arithmetic. Storing `rect.top + container.scrollTop` makes the cache scroll-invariant, so only a changed row count or a changed `data-index` at the window start invalidates it — plain scrolling is absorbed for free. The row under the pointer is then found with a scan over cached numbers, no layout. Re-measure with a counter rather than trusting the shape of the loop.
+- **Symptom**: Dragging or scrolling a long list stutters hard, with `getBoundingClientRect` dominating the profile and cost growing with rendered rows instead of staying flat.
+- **Cause**: `getBoundingClientRect` forces synchronous layout, and a hit test that walks every row pays that flush per row per event. At 8000 rows: 8001 forced reads for one `pointermove`, against 1 for a pointer near the top.
+- **Fix**: Measure once into a cache keyed to something that survives the event, then do arithmetic. `rect.top + container.scrollTop` is scroll-invariant, so only a changed row count or a changed `data-index` at the window start invalidates it. Re-measure with a counter rather than trusting the shape of the loop.
 
 ### happy-dom renders zero rows for a virtual list
 
-- **Symptom**: A `useVirtualList` based component mounts with a correct `totalSize` style but an empty content box, and `findAll()` for the row selector returns 0. Every virtual assertion of the form "fewer than N rows" passes regardless of whether virtualization works at all.
-- **Cause**: happy-dom's `getBoundingClientRect` returns zeroes and cannot be overridden from the prototype chain the way it can in a browser, so the virtualizer's `scrollRect` stays `{ width: 0, height: 0 }` and `getVirtualItems()` returns an empty window. Injecting synthetic rects per element (see the `stubRows` helper in `tests/components/tree.test.ts`) only covers elements the test already holds, so it does not reach the virtualizer either.
-- **Fix**: Treat virtualization as unverified under this environment. Assert on what does work — the spacer height, the option wiring — rather than on a row count. A real assertion about the window needs an environment with layout, or a browser-mode test run.
+- **Symptom**: A `useVirtualList` component mounts with the correct `totalSize` style and an empty content box; `findAll()` for the row selector returns 0, so every "fewer than N rows" assertion passes regardless.
+- **Cause**: happy-dom's `getBoundingClientRect` returns zeroes and cannot be overridden from the prototype chain, so `scrollRect` stays `{ width: 0, height: 0 }` and `getVirtualItems()` returns an empty window. Injecting rects per element (`stubRows` in `tests/components/tree.test.ts`) only covers elements the test already holds.
+- **Fix**: Treat virtualization as unverified here: assert the spacer height and the option wiring, not row counts. A real assertion about the window needs a browser-mode run.
 
 ### Flat row lists must not depend on volatile per-row state
 
 - **Symptom**: Every selection click costs time proportional to the whole visible list, even though two rows changed.
-- **Cause**: The flat list carried `checked` / `indeterminate` per row, so a selection change invalidated it and every row object was rebuilt. Keeping them out gives the rows a stable identity, but that is not where the time went: measured at 5000 rows the flat-list rebuild was 0.89 ms of a 157 ms click, and 87% was the template render walking the visible rows.
-- **Fix**: Keep volatile state out of the row object and read it at render time. But budget for the parent still re-rendering every visible row, so this only pays off fully under `virtual`, and the cascade `derive()` stays O(total) regardless. Measure the split before promising a speedup.
+- **Cause**: `checked` / `indeterminate` lived per row, so a selection change rebuilt every row object. Keeping them out gives rows a stable identity, but that was not the cost: at 5000 rows the rebuild was 0.89 ms of a 157 ms click — 87% was the template render walking the visible rows.
+- **Fix**: Keep volatile state out of the row object and read it at render time, and budget for the parent still re-rendering every visible row: this pays off only under `virtual`, and `derive()` stays O(total) regardless. Measure the split before promising a speedup.
 
 ### Property access cannot reach a kebab-case slot name
 
-- **Symptom**: `<slot name="item-content">` never renders even though the consumer passes the slot, so the component silently falls back to its default markup; a sibling `<slot name="header">` in the same file works fine.
-- **Cause**: `useSlots()` hands back the raw slot map, so `slots.itemContent` looks up the key `itemContent`, which never equals `item-content`. The template compiler does not normalise the two spellings, and a `v-if="slots.itemContent"` guard therefore gates a branch that can never be taken.
-- **Fix**: Look the slot up under its exact name — `slots['item-content']` — usually hoisted into a `computed` boolean the template branches on, since the kebab-case name is not expressible as an identifier.
+- **Symptom**: `<slot name="item-content">` never renders even though the consumer passes it, while a sibling `<slot name="header">` works; the component silently falls back to its default markup.
+- **Cause**: `useSlots()` returns the raw slot map, so `slots.itemContent` looks up `itemContent` and never matches `item-content`; the compiler does not normalise the two spellings.
+- **Fix**: Look the slot up by its exact name — `slots['item-content']` — hoisted into a `computed` boolean the template branches on.
 
 ### Volar error cache shows deleted identifiers
 
-- **Symptom**: After removing an unused variable from an SFC, the Problems panel still reports "'xxx' is declared but its value is never read" at the old line, even though grep shows the identifier is gone.
-- **Cause**: Volar keeps a stale diagnostics snapshot when the file is edited through an external process (e.g. multiple edit tool calls in one session); the error text references a symbol the current source no longer contains.
-- **Fix**: Trust `pnpm type-check` (vue-tsc) and `pnpm test` as the source of truth; a re-open/reindex of the file clears the stale entry.
+- **Symptom**: After removing an unused variable from an SFC, the Problems panel still reports it at the old line while grep shows it is gone.
+- **Cause**: Volar keeps a stale diagnostics snapshot when the file is edited by an external process (several edit tool calls in one session).
+- **Fix**: Trust `pnpm type-check` and `pnpm test`; re-open or reindex the file to clear the entry.
 
 ### Collapse `v-show` hides content from Find in page
 
-- **Symptom**: Browser Find in page cannot match text inside a collapsed PCollapse panel, and unlike native `<details>` the panel does not auto-expand on a match.
-- **Cause**: `v-show` sets `display: none`. Find in page skips that subtree. `hidden="until-found"` is the HTML primitive for this, but Vue 2.7 / 3.2 coerce `hidden` to a boolean attribute, so the string value cannot be bound reliably.
-- **Fix**: Use native `<details>`/`<summary>` (Find in page opens them). Keep `open` true during the leave height animation, then remove it. Skip enter motion when `toggle` opens the element without a click (find / fragment navigation).
-
-### Child registerItem order reverses after HMR
-
-- **Symptom**: Resizable panels flip after hot-reloading a child SFC.
-- **Cause**: Vue HMR remounts sibling instances with unregister/register interleaved last-to-first, so `push()` order is the reverse of the DOM.
-- **Fix**: `useOrderedChildren` — Map keyed by instance id; once each child has an element, sort with `compareDocumentPosition`. Register once in `setup` (no el, SSR-safe) and again in `onMounted` (with el). Do not walk VNodes.
-
+- **Symptom**: Find in page cannot match text inside a collapsed PCollapse panel, and unlike native `<details>` the panel does not auto-expand on a match.
+- **Cause**: `v-show` sets `display: none` and Find in page skips that subtree. `hidden="until-found"` is the HTML primitive for it, but Vue 2.7 / 3.2 coerce `hidden` to a boolean attribute, so the string cannot be bound reliably.
+- **Fix**: Use native `<details>`/`<summary>`. Keep `open` true during the leave height animation, then remove it; skip enter motion when `toggle` opens the element without a click (find / fragment navigation).
 
 ### Scheduled shallowRef refresh misses in-place prop mutations
 
@@ -81,37 +81,25 @@ Known issues and lessons learned during development.
 
 - **Symptom**: A parent state class updates, but descendant component layout rules never take effect.
 - **Cause**: Vue's `:deep()` transform only applies to scoped style blocks; in a regular `<style>` block the browser receives an unsupported selector.
-- **Fix**: Use ordinary descendant selectors in global component styles, or add `scoped` when the rules require `:deep()`.
+- **Fix**: Use ordinary descendant selectors in global component styles, or add `scoped` when the rules require `:deep()`. The library itself uses no scoped styles.
 
 ### Forwarding slots in v-for re-renders every child on each parent update
 
-- **Symptom**: Selecting a date in PCalendar felt slow; profiling showed all 42 day cells re-rendered per click while only 2 changed in the DOM.
-- **Cause**: A component vnode with `patchFlag & 1024` (DYNAMIC_SLOTS) makes `shouldUpdateComponent` return `true` unconditionally. Slot children get this flag when the compiler marks them dynamic (slot content references parent scope such as `$slots`) or when `normalizeChildren` sees a forwarded slot (`_: 3`) whose owning component's own slots are unstable (no slots passed -> `instance.slots._` undefined; or dynamic slots).
-- **Fix**: Avoid forwarding user slots inside `v-for` children. Render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else` branch), so unchanged cells skip via the props path. Alternative (internal-only): set `useSlots()._ = 1` when the component receives no slots, which relies on Vue's undocumented SlotFlags and is fragile. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat.
+- **Symptom**: Selecting a date in PCalendar re-rendered all 42 day cells per click while only 2 changed in the DOM.
+- **Cause**: `patchFlag & 1024` (`DYNAMIC_SLOTS`) makes `shouldUpdateComponent` return `true` unconditionally, and forwarded slot children (`_: 3`) get that flag whenever the owning component's own slots are unstable.
+- **Fix**: Do not forward user slots inside `v-for` children — render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else`), so unchanged cells skip via the props path. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat; setting `useSlots()._ = 1` works but rides on undocumented SlotFlags.
 
 ### Vue test warnings: unresolved components and reactive component props
 
-- **Symptom**: `pnpm test` prints `[Vue warn]: Failed to resolve component: PSpinner` / `RouterLink` even when the `v-if` branch that renders them is never taken.
-- **Cause**: `resolveComponent()` calls are hoisted out of the `v-if` branch at compile time, so the lookup (and warning) happens on every render. Library-internal components must be imported statically; host-provided ones (`RouterLink`) must be stubbed in tests via `global.stubs`.
-- **Fix**: Import library sub-components in the SFC (e.g. `import PSpinner from '../spinner/index.vue'`), and add `RouterLink: RouterLinkStub` to the `mount` `global.stubs` for tests rendering `to` links.
+- **Symptom**: `pnpm test` prints `[Vue warn]: Failed to resolve component: PSpinner` / `RouterLink` even when the `v-if` branch rendering them is never taken; and `Vue received a Component that was made a reactive object` when a test passes a component object (`icon`, `separatorIcon`) through mount props.
+- **Cause**: Two mechanisms. `resolveComponent()` calls hoist out of `v-if` at compile time, so the lookup warns on every render. And Vue Test Utils' `baseMount` stores props in `Vue.reactive({})` so `setProps` re-renders, deep-wrapping component objects in proxies — which `createVNode` flags as a performance hazard.
+- **Fix**: Import library sub-components in the SFC (`import PSpinner from '../spinner/index.vue'`), stub host-provided ones (`RouterLink: RouterLinkStub` in `global.stubs`), and pass component objects as `markRaw(Component)` in mount props — matching what consumers should do when storing components in reactive state.
 
-### Vue test warnings: component object props made reactive by VTU
+### happy-dom drops `color-mix` declarations, and `wrapper.vm` is typed from props only
 
-- **Symptom**: `[Vue warn]: Vue received a Component that was made a reactive object` when a test passes a component object (`defineComponent`, SFC) through `mount` props (`icon`, `separatorIcon`).
-- **Cause**: Vue Test Utils' `baseMount` stores all mount props in `Vue.reactive({})` so `setProps` triggers re-renders; component objects passed as prop values get deep-wrapped in reactive proxies, which Vue's `createVNode` flags as a performance hazard.
-- **Fix**: Pass component objects as `markRaw(Component)` in test mount props, matching what real consumers should do when storing components in reactive state.
-
-### happy-dom drops unparsable style declarations and never appends px to custom properties
-
-- **Symptom**: Asserting `wrapper.attributes('style')` for a computed style that contains `color-mix()` (e.g. PShimmerText's `backgroundImage`) returns only the custom-property declarations — `background-image` is missing. Numeric custom-property values also serialize without a `px` suffix (`--xs: 196;`, not `--xs: 196px`).
-- **Cause**: happy-dom's `CSSStyleDeclaration.setProperty` silently ignores values its CSS parser cannot handle (`color-mix(in oklab, ...)`), and custom properties always serialize as raw strings, so Vue never appends `px` for them (it only does for known CSS properties).
-- **Fix**: Do not assert `color-mix` gradient content through the style attribute; read the component's computed instead (`wrapper.vm.shimmerStyle.backgroundImage` — script-setup bindings are exposed on `vm` in the dev build). For numeric custom properties, assert the unitless form (`--xs: 196;`).
-
-### Test assertions on `<script setup>` internals need a vm cast, not DOM style reads
-
-- **Symptom**: `wrapper.vm.shimmerStyle` in tests errors with TS2339 (`Property 'shimmerStyle' does not exist on type 'ComponentPublicInstance<...>'`); switching to `wrapper.attributes('style')` then fails at runtime because the serialized attribute contains only `--shimmer-total-duration` and drops the `background-image` gradient.
-- **Cause**: vue-tsc types `wrapper.vm` from the component's props/emits only — `<script setup>` bindings are not part of the public instance type, although the render proxy exposes them at runtime. The DOM fallback fails because happy-dom's CSS parser rejects the `color-mix(...)`/`calc(...)` gradient value and silently omits that declaration from the style attribute.
-- **Fix**: Cast the vm like the existing overlay.test.ts pattern: `expect((wrapper.vm as any).shimmerStyle.backgroundImage).toContain('#F5EBD9')` — or `defineExpose` the state when it should be public API.
+- **Symptom**: Asserting `wrapper.attributes('style')` for PShimmerText's `backgroundImage` returns only the custom-property declarations, and numeric ones lose their unit (`--xs: 196;`). Casting `wrapper.vm.shimmerStyle` instead fails type-check with TS2339.
+- **Cause**: happy-dom's CSS parser silently drops values it cannot parse (`color-mix(in oklab, ...)`), and custom properties always serialize as raw strings, so Vue never appends `px`. Separately, vue-tsc types `wrapper.vm` from props/emits only — `<script setup>` bindings exist on the render proxy at runtime but not on the public instance type.
+- **Fix**: Assert through the vm with a cast — `expect((wrapper.vm as any).shimmerStyle.backgroundImage).toContain('#F5EBD9')` — or `defineExpose` the state when it should be public API. For numeric custom properties, assert the unitless form.
 
 ### Physical borders misalign masked BorderBeam layers
 
@@ -145,18 +133,16 @@ Known issues and lessons learned during development.
 
 ### Self-registering children never reach the first render pass
 
-- **Symptom**: A container whose header is built from registered children renders an empty header during SSR and on the first client frame; the items only show up after mount.
-- **Cause**: A child registers in its `setup`, which runs while the parent`s own subtree is being patched — after the parent`s render function already read the (empty) registry. In SSR nothing re-renders afterwards, so the markup is simply absent from the HTML.
-- **Fix**: Take a data prop (`options`) and render from it. PTabs and PSteps moved first, PCarousel only ever needed a count so it followed, and PResizable was the last holdout: it kept `useOrderedChildren` on the grounds that it "orders children in the DOM", but its registry only ever read the registered element to run `compareDocumentPosition` — nothing measured it, and the order came from the array it was about to render anyway. Registering an element purely to sort it is not measuring it. With the children gone, `useOrderedChildren`, `contexts/resizable.ts`, `PResizablePanel` and `PResizableHandle` all went with them, and the group renders two panels from its own markup.
+- **Symptom**: A container whose header is built from registered children renders an empty header during SSR and on the first client frame; items appear only after mount.
+- **Cause**: A child registers in its `setup`, which runs while the parent's subtree is being patched — after the parent's render already read the empty registry. SSR never re-renders, so the markup is absent from the HTML.
+- **Fix**: Take a data prop (`options`) and render from it. PResizable was the last holdout: its registry only ever read the element to run `compareDocumentPosition`, and the order came from the array it was about to render anyway — registering an element purely to sort it is not measuring it. `useOrderedChildren`, `contexts/resizable.ts`, `PResizablePanel` and `PResizableHandle` went with it.
 
 ### Isolating repeated slot content behind a wrapper component does not pay for itself
 
-- **Symptom**: Every row/slide re-renders whenever the container re-renders — hovering one row of a 200-row PList invoked the `item` slot 40200 times per sweep; a carousel swipe frame rebuilds all slide content.
-- **Cause**: Children declared inside a `v-for` with slot content get `patchFlag & 1024` (`DYNAMIC_SLOTS`), so `shouldUpdateComponent` returns `true` for all of them whenever the container re-renders. Note the content is *not* the shared-render-effect problem it looks like: a scoped slot function is invoked by the child that renders it, so reactive reads inside it already land in that child`s effect.
-- **Tried**: A stateful wrapper that takes the slot function as a `render` prop plus stable scope props (`PCarouselItemSlot` / `PListItemSlot`), so unchanged content is skipped. It works — counters prove the wrappers were created once and rendered once while the container re-rendered hundreds of times — but it is slower in wall clock:
-  - PList, 200-row hover sweep: no-slot floor 1.35s both ways, rich row 1.72s -> 1.71s, trivial row 1.38s -> 1.70s (23% slower).
-  - PCarousel, 20 slides x 200 swipe frames: no-slot floor 14.7ms both ways, light 23.0ms -> 57.6ms, rich 23.2ms -> 53.6ms (~2.4x slower).
-- **Fix**: Keep the inline `<slot>`. Rebuilding a slide/row vnode tree is cheap compared with the per-item component vnode + `shouldUpdateComponent` path the wrapper adds to every container render. Both wrappers were measured and reverted.
+- **Symptom**: Every row/slide re-renders whenever the container re-renders — hovering one row of a 200-row PList invoked the `item` slot 40200 times per sweep.
+- **Cause**: Children declared in a `v-for` with slot content get `DYNAMIC_SLOTS`, so `shouldUpdateComponent` returns `true` for all of them. The content is *not* the shared-render-effect problem it looks like: a scoped slot function is invoked by the child that renders it, so reactive reads inside it already land in that child's effect.
+- **Tried**: A stateful wrapper taking the slot function as a `render` prop plus stable scope props (`PCarouselItemSlot` / `PListItemSlot`). It does skip unchanged content — counters prove the wrappers rendered once while the container re-rendered hundreds of times — but it is slower: PList 200-row hover sweep 1.38s -> 1.70s; PCarousel 20 slides x 200 swipe frames 23.0ms -> 57.6ms.
+- **Fix**: Keep the inline `<slot>`; rebuilding a row/slide vnode tree is cheaper than the per-item component vnode + `shouldUpdateComponent` path the wrapper adds to every container render. Both wrappers were measured and reverted.
 
 ### Roving tabindex without a key handler locks keyboard users out
 
@@ -167,7 +153,7 @@ Known issues and lessons learned during development.
 ### `git checkout-index -f -a` skips files that only differ in line endings
 
 - **Symptom**: `pnpm fmt:eol` rewrote `src/` files but left `.md` and other documents on CRLF.
-- **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`; only files whose size/mtime changed were written back.
+- **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`.
 - **Fix**: `scripts/fmt-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
 
 ### Per-gesture recognizer state must be reset by the terminal handler
@@ -178,31 +164,31 @@ Known issues and lessons learned during development.
 
 ### ARIA role states are gated on interactivity, not just whitelisted
 
-- **Symptom**: A pointer-only splitter carried `aria-valuenow` / `aria-valuemin` / `aria-valuemax` / `aria-expanded`, none of which the accessibility tree is allowed to expose.
-- **Cause**: Two separate mistakes. `aria-expanded` is simply not a `separator` state — MDN documents it for button, menu, combobox, treeitem and row only, and it marks control over *visibility*, which folding a panel never does. The three `aria-value*` properties `are` listed for `separator`, but conditionally: "If the separator is **focusable** and has a known value … if not focusable or the value is unknown, **do not include this attribute**." Dropping `tabindex` and the key handler silently voided them as well, so a single interactive decision invalidated four attributes.
-- **Fix**: A splitter is binary. Either a focusable separator that is operable by keyboard — `tabindex="0"`, the value properties and a key handler arrive together — or a non-focusable structural divider carrying only `aria-orientation`, `aria-controls` and `aria-disabled`. Never leave a focusable separator without a key handler, and never leave a non-focusable one advertising a value. `aria-valuetext` is the only free-form field the role allows, so it is where extra state goes — a folded panel announces through it rather than through `aria-expanded`. Read the role's *conditional* wording before adding its states; a role's supported-state list is not the whole rule.
+- **Symptom**: A pointer-only splitter carried `aria-valuenow` / `aria-valuemin` / `aria-valuemax` / `aria-expanded`, none of which the accessibility tree may expose.
+- **Cause**: `aria-expanded` is not a `separator` state at all — it marks control over *visibility*, which folding a panel never does. The `aria-value*` trio is listed for `separator` only while the element is focusable *and* its value is known, so dropping `tabindex` and the key handler silently voided all four.
+- **Fix**: A splitter is binary — either a focusable separator (`tabindex="0"`, the value properties and a key handler arrive together) or a non-focusable structural divider carrying only `aria-orientation`, `aria-controls` and `aria-disabled`. Extra state goes in `aria-valuetext`, the role's only free-form field. Read a role's *conditional* wording before adding its states; the supported-state list is not the whole rule.
 
 ### A row component only skips updates on flat props and a slot-less branch
 
 - **Symptom**: Moving PTree row markup into `PTreeNode` changed nothing measurable — every row still re-rendered on every tree update — and passing the flattened row as one `row: TreeFlatNode` prop kept it that way.
-- **Cause**: Two rules stacked. (1) A component vnode carrying slot children gets `patchFlag & 1024` (`DYNAMIC_SLOTS`), and `shouldUpdateComponent` then returns `true` unconditionally, so forwarding `node-content` to every row puts every row back on the update path. (2) `shouldUpdateComponent` compares prop *values*, and `useTreeRows` rebuilds every `TreeFlatNode` whenever any single node changes — an object prop hands a new identity to every row on every selection.
-- **Fix**: Pass the row field by field (scalars plus the `node` reference, which survives because it comes straight from the data prop), and render the child twice: a slot-less `<PTreeNode v-if="!hasNodeSlot" />` fast path and a `<PTreeNode v-else>` that forwards the slots. Keep the virtual-positioning wrapper div in the parent, or every scroll step re-renders the row content it positions. Measured on a 200-row tree: focus 0 rows, ArrowDown 1 row, selection 1 row (200 each before). Count renders by `instance.subTree` identity — `instance.vnode` is replaced on the skip path too and cannot tell the two apart.
+- **Cause**: Two rules stacked. Slot children give the vnode `DYNAMIC_SLOTS`, so `shouldUpdateComponent` returns `true` unconditionally — forwarding `node-content` to every row puts every row back on the update path. And `shouldUpdateComponent` compares prop *values*, while `useTreeRows` rebuilds every `TreeFlatNode` on any change, so an object prop hands every row a new identity on every selection.
+- **Fix**: Pass the row field by field (scalars plus the `node` reference, which survives because it comes straight from the data prop) and render the child twice: a slot-less `<PTreeNode v-if="!hasNodeSlot" />` fast path and a `<PTreeNode v-else>` forwarding the slots. Keep the virtual-positioning wrapper div in the parent, or every scroll step re-renders the row content it positions. Measured on a 200-row tree: focus 0 rows, ArrowDown 1 row, selection 1 row (200 each before). Count renders by `instance.subTree` identity — `instance.vnode` is replaced on the skip path too and cannot tell the two apart.
 
 ### Detach before you look up a drop target, and measure drag rows by hand in tests
 
-- **Symptom**: A `moveTreeNode` test asserted that dropping `a` onto its own child `b` relocated `a` under `b`, and got `undefined` instead.
-- **Cause**: The walk resolved the drop target in the *original* list while the moved node was still in it, so a target inside the subtree that was about to be removed still looked reachable. That is the bug the assertion caught, not a broken implementation: dropping a parent into its own subtree has to be refused.
-- **Fix**: Detach first, then look the target up. Once the node is out of the tree, the node itself and every descendant are unreachable, so the whole family of invalid drops — self, descendant, and any move whose removal changed the target's parent — is rejected without a single extra check, and the one comparison left (`from.parent === to.parent && from.index === to.index`) is what catches a move that would land exactly where it started. When driving the drag in tests, hand-write `getBoundingClientRect` on each row and on the container (happy-dom has no layout), and remember that a press and a release at the same `clientY` never crosses the drag threshold at all — every case looks like the drag was ignored.
+- **Symptom**: A `moveTreeNode` test asserted that dropping `a` onto its own child `b` relocated `a` under `b`, and got `undefined`.
+- **Cause**: The walk resolved the target in the original list while the moved node was still in it, so a target inside the subtree about to be removed still looked reachable — refusing that drop is the correct behaviour, so the assertion caught the bug, not a broken implementation.
+- **Fix**: Detach first, then resolve. Once the node is out of the tree, itself and every descendant are unreachable, so self / descendant / parent-changed drops are rejected with no extra checks, and `from.parent === to.parent && from.index === to.index` catches a move landing exactly where it started. In tests, hand-write `getBoundingClientRect` on each row and on the container (happy-dom has no layout), and note that a press and a release at the same `clientY` never cross the drag threshold — every case then looks like the drag was ignored.
 
 ### A spy index is not a render index
 
-- **Symptom**: A list highlights the right row but scrolls the wrong one into view, and only when some rows have no matching DOM element. Skipping a resolved target is invisible in every id-based binding.
-- **Cause**: `useScrollspy` indexes the elements it resolved (`options.map(getElementById).filter(Boolean)`), while the template renders the `options` array. One `options` entry whose id is not in the document — async content, a typo'd id — shortens the resolved list, and every index after it now points one row early. Reading `list.children[activeIndex]` then measures the wrong `<li>`. Nothing in the highlight breaks, because the highlight matches on id.
-- **Fix**: Convert to a DOM index only through the rendered array (`rows.findIndex(r => r.active)`), never through the spy's index. The rule generalises: any "data index -> `children[n]`" lookup has to go through the array that produced the children.
-- **Testing note**: happy-dom has no layout, so stub `getBoundingClientRect` on the container and on each row, and assert on the `scrollTop` the component writes. A wrong-row bug shows up as a `scrollTop` of `0` where the correct value is the measured overflow. Confirm the test can fail — reverting the fix moved the assertion from 120 to 0.
+- **Symptom**: A list highlights the right row but scrolls the wrong one into view, and only when some rows have no matching DOM element.
+- **Cause**: `useScrollspy` indexes the elements it resolved (`options.map(getElementById).filter(Boolean)`) while the template renders the `options` array, so one entry whose id is missing from the document shortens the resolved list and every later index points one row early. The highlight keeps working because it matches on id.
+- **Fix**: Convert to a DOM index only through the rendered array (`rows.findIndex(r => r.active)`) — any "data index -> `children[n]`" lookup has to go through the array that produced the children.
+- **Testing note**: Stub `getBoundingClientRect` on the container and on each row, then assert the `scrollTop` the component writes; the wrong-row bug shows up as `0` where the measured overflow is expected. Confirm the test can fail — reverting the fix moved the assertion from 120 to 0.
 
 ### The docs dev server scaffold overwrites a newly created component page
 
 - **Symptom**: A freshly written `packages/docs/src/pages/components/<name>.md` reverts to a one-section stub ("New component description.") shortly after being saved.
 - **Cause**: `packages/docs/scripts/vite-plugin-file-create-watcher.ts` hooks `watcher.on('add')` on `src/components` while the docs dev server is running. Creating the component's `index.vue` makes it run `update-exports` and then unconditionally `writeFileSync` a scaffold page over `<name>.md` — including one that already has full content.
-- **Fix**: Create `index.vue` first, let the scaffold write the page, then write the real docs content afterwards (the watcher only fires on `add`, not `change`). Or write the docs page after the component files when a dev server may be running. Same applies to composable pages for new `src/composables/*.ts` files.
+- **Fix**: Create `index.vue` first, let the scaffold write the page, then write the real docs content afterwards (the watcher only fires on `add`, not `change`). Same applies to composable pages for new `src/composables/*.ts` files.

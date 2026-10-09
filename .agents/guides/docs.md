@@ -94,34 +94,22 @@ Rules:
 
 ### Dead event declarations
 
-A declared event that nothing dispatches is a dead declaration — documenting it produces a table
-that lies to the reader, because a handler bound to it never runs.
+An event that nothing dispatches must not get a row — a handler bound to it never runs.
 
-**Dispatch is often indirect, so a missing `emits()` call in one file proves nothing.** Check all
-three carriers before concluding anything:
+Dispatch is usually indirect, so a missing `emits()` call in one file proves nothing. Check the
+three carriers:
 
-1. The component itself — `emits('<name>', …)` in `index.vue`.
-2. A composable it calls — `useModelValue` dispatches `change` and `update:modelValue`;
-   `use-countdown` dispatches `change`, `reset` and `finish`. Note that calling a composable for its
-   **getter only** (`useModelValue(props, emits, { get })`, never assigning the result) dispatches
-   nothing.
-3. A child component, through an injected context — `checkbox-group` hands its `emits` to
-   `provideCheckboxGroupContext({ props, emits })` and the dispatch happens in the child.
+1. The component — `emits('<name>', …)` in `index.vue`.
+2. A composable it calls — `useModelValue` dispatches `change` / `update:modelValue`,
+   `use-countdown` dispatches `change` / `reset` / `finish`. Calling one for its **getter only**
+   (`useModelValue(props, emits, { get })`, result never assigned) dispatches nothing.
+3. A child through an injected context — `checkbox-group` passes `emits` into
+   `provideCheckboxGroupContext({ props, emits })` and the child dispatches.
 
-Corroborate with the test suite: `grep -rn "emitted('<name>')" tests/`. A test that asserts the
-event is proof it fires; silence is a reason to trace, not proof of death.
-
-Only when no carrier dispatches it is it dead. Then fix the source before writing the row:
-
-1. The event *should* fire → add the dispatch, and cover it with a test.
-2. It can never fire (no trigger exists, or a prop already covers it) → delete it from `XxxEmits`.
-   Do not invent a feature to justify keeping it.
-
-Then document what the component really does. Never write a row that papers over the mismatch
-("declared but never dispatched") — that only records the bug in prose.
-
-Runtime tests cannot prove an event *exists* (an event that never fires has nothing to assert), so
-this cross-check is the only line of defence.
+Corroborate with `grep -rn "emitted('<name>')" tests/`: an assertion proves the event fires,
+silence only means trace further. When no carrier dispatches it, fix the source before writing the
+row — add the dispatch plus a test if it should fire, delete it from `XxxEmits` if it cannot.
+Never ship a row that papers over the mismatch ("declared but never dispatched").
 
 ## Methods
 

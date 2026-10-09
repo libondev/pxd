@@ -1,76 +1,61 @@
 # Component Development
 
-## File Structure
+## File layout
 
 ```
-src/components/{component-name}/
-├── index.ts          # Export barrel
-├── {name}.vue        # Main component
-└── types.ts          # Types (optional)
+src/components/{name}/
+├── index.vue      # 实现
+├── types.d.ts     # XxxProps / XxxEmits 及组件自有类型
+└── …              # 仅内部使用的模块（如 instances.ts）
 ```
 
-## Template
+目录名 = 组件名（kebab-case）= 文档页名（`packages/docs/src/pages/components/{name}.md`）。
+
+## Skeleton
 
 ```vue
-<script setup lang="ts">
-// Imports
-// Props with defineProps
-// Emits with defineEmits
-// Logic
+<script lang="ts" setup>
+import type { CardProps } from './types'
+
+defineOptions({
+  name: 'PCard',
+  inheritAttrs: false,
+})
+
+withDefaults(defineProps<CardProps>(), { shape: 'default' })
 </script>
 
 <template>
-  <!-- Template -->
+  <div class="flex items-center bg-background-100">
+    <slot />
+  </div>
 </template>
-
-<style scoped>
-/* Scoped styles */
-</style>
 ```
+
+样式优先用 Tailwind 工具类；需要真实 CSS 时写全局 `<style lang="postcss">`。仓库不用 `<style scoped>`（`:deep()` 只在 scoped 下生效，见 pitfalls.md）。
 
 ## Rules (MUST follow)
 
-- `<script setup lang="ts">` always
-- Use `defineProps` and `defineEmits` (not `defineModel`)
-- No top-level `await`
-- No reactive Map/Set
-- Export public types from `./types/shared`
-- Events: kebab-case
-- Curly braces: always required
-- Container components take an `options` prop and render their children from it. There is no self-registering pattern left in the library — see pitfalls.md
+- `<script lang="ts" setup>`（`lang` 在前）+ Composition API，不用 Options API
+- `defineOptions({ name: 'P<Name>', inheritAttrs: false })`
+- `defineProps` / `defineEmits` / `withDefaults`，不用 `defineModel`；类型名是 `CardProps` / `CardEmits`（不加 `P` 前缀），从 `./types` 导入
+- 无顶层 `await`，无 reactive `Map` / `Set`
+- 事件 kebab-case；分支必须带花括号
+- 组件自有类型放同目录 `types.d.ts`，跨组件共享类型放 `src/types/shared`
+- 容器组件通过数据 prop（`options` 之类）渲染子项 —— 仓库已无自注册模式，原因见 pitfalls.md
+- 每个 `XxxEmits` 条目都要有真实派发路径（组件自身 / 它调用的 composable / 经 context 的子组件），不留死声明
 
-## Vue 2.7 Compatibility
+## After creating a component
 
-- ❌ Avoid: `defineModel`, top-level `await`, reactive arrays with Map/Set
-- ✅ Use: `defineProps`, `defineEmits`, `ref`, `reactive`, `computed`
-
-## After Creating a Component
-
-1. Export from `src/components/index.ts`
-2. Run `node scripts/update-exports.js` to update barrel exports, docs list, and `volar.d.ts`
-3. Write tests in `tests/components/{name}.test.ts`
-
-## Documentation Standards
-
-The component page format (`## Props` / `## Events` / `## Slots` / `## Methods` tables) is defined
-in `.agents/guides/docs.md`. Read it before writing or updating any doc page.
-
-- Use clear prop names
-- Document events with kebab-case
-- Provide JSDoc for TypeScript types
-- Use consistent naming conventions
-- Complex logic: explain "why" and "how" in English
-- Avoid obvious comments (e.g., `i++ // increment i`)
+1. 从 `src/components/index.ts` 导出
+2. 跑 `node scripts/update-exports.js`，刷新 barrel、docs 列表与 `volar.d.ts`
+3. 测试按 `.agents/guides/testing.md`，文档页按 `.agents/guides/docs.md`
 
 ## Checklist
 
-- [ ] `<script setup lang="ts">`
-- [ ] No `defineModel`, no top-level `await`
-- [ ] Types exported to `types/shared`
-- [ ] Events in kebab-case
-- [ ] Every `XxxEmits` entry has a real dispatch path (component / composable / context) — no dead declarations
-- [ ] Doc page lists every `XxxEmits` entry under `## Events` (see `.agents/guides/docs.md`)
-- [ ] Doc page lists every `defineExpose()` entry under `## Methods` (see `.agents/guides/docs.md`)
-- [ ] Exported from `src/components/index.ts`
-- [ ] Tests written in `tests/components/`
-- [ ] `volar.d.ts` updated
+- [ ] `<script lang="ts" setup>`、`defineOptions({ name, inheritAttrs: false })`
+- [ ] 无 `defineModel`、无顶层 `await`、无 reactive Map/Set
+- [ ] 类型在 `types.d.ts` 或 `src/types/shared`，命名无 `P` 前缀
+- [ ] 事件 kebab-case，且每条 `XxxEmits` 都有派发路径
+- [ ] 已从 `src/components/index.ts` 导出并跑过 `update-exports.js`
+- [ ] 测试与文档页按对应 guide 完成

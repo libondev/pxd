@@ -1,88 +1,36 @@
 # Project Architecture
 
-## Overview
+产品定位、目录结构、硬性规则见 `AGENTS.md` —— 这里只放 AGENTS.md 没有的事实，避免同一份内容两处维护。
 
-PXD is a universal UI component library for Vue 2.7+ and Vue 3.2+, based on the Geist Design System. Monorepo with pnpm workspaces.
+## Toolchain
 
-## Key Characteristics
+- **包管理**: pnpm@10.34.5，依赖版本集中在 `pnpm-workspace.yaml` 的 `catalog:`；不要在本文件抄版本号，它们会过期。
+- **开发态**: `pnpm dev:lib` 走 `unbuild --stub`，此时 `dist` 是指向 `src` 的 symlink，内容不是构建产物。
+- **构建**: `scripts/build-core.js` 调 mkdist（`src` → `dist`，`format: esm`、`declaration: true`、loaders 含 vue/postcss）。
+- **工具链**: vite-plus 包住 Vite / Vitest / oxlint / oxfmt，配置全在根 `vite.config.ts`；仓库没有 `eslint.config.*`、`vitest.config.*`、Prettier 配置。
+- **Vue**: peer `>=2.7.0 <3.0.0 || >=3.3.0`，开发态使用 3.x。
+- **样式**: 入口 `src/styles/tw.css`（主题变量 + `@source`）；`src/styles/styles.css` 是发布时自动替换的占位文件，不要手改。
 
-- **Type**: Component Library / UI Framework
-- **Target**: Vue 2.7+ and Vue 3.2+ (Universal Compatibility)
-- **Architecture**: Monorepo with pnpm workspaces
-- **Language**: TypeScript + Vue 3 (Composition API)
-- **Build System**: mkdist + unbuild (dev toolchain via vite-plus)
-- **Documentation**: VitePress-based docs in `packages/docs`
-- **Package Manager**: pnpm@10.33.0 with workspace catalog
+## TypeScript
 
-## Directory Structure
+- `tsconfig.json` 只做 project references：`app` / `node` / `test`。
+- `tsconfig.app.json` — 继承 `@vue/tsconfig/tsconfig.dom.json`，收 `src/**`，开 `noUnusedLocals` / `noUnusedParameters`，`types: ["vite/client"]`。
+- `tsconfig.node.json` — 构建与工具配置，`@tsconfig/node22` + `moduleResolution: Bundler`。
+- `tsconfig.test.json` — 继承 app，收 `tests/**/*.test.ts`，`types: ["node"]`；DOM 由 happy-dom 在运行时提供，不是类型来源。
+- 类型检查：`pnpm type-check` → `vue-tsc -p tsconfig.app.json --noEmit`（定义在 `vite.config.ts` 的 `run.tasks`）。
+- 没有 `vueCompilerOptions` / `strictTemplates` 配置。
+- 库源码与测试都不用路径别名，一律相对路径（`../../src/components/...`）；`fmt` 的 internalPattern 只是排序分组，别据此写别名。
 
-```
-pxd/
-├── src/
-│   ├── components/          # Vue components (one directory each)
-│   ├── composables/         # Vue composables
-│   ├── contexts/            # Vue context providers
-│   ├── locales/             # i18n
-│   ├── plugins/             # Plugin system
-│   ├── styles/              # CSS/Tailwind styles (entry: tw.css)
-│   ├── types/               # TypeScript definitions
-│   └── utils/               # Utility functions
-├── packages/
-│   ├── cli/                 # CLI tools (future)
-│   └── docs/                # VitePress documentation site
-├── tests/                   # Unit tests (mirrors src/ structure)
-├── dist/                    # Build output (never edit)
-└── scripts/                 # Build utilities
-```
+## Entry points
 
-## TypeScript Configuration
+发布入口由 `package.json` → `exports` 唯一定义，不要在此复制清单：
 
-- **Target**: ES2022+ with module system
-- **Strict mode**: Enabled with tsconfig references
-- **Volar integration**: Full Vue language support
-- **Type exports**: All public APIs have proper type definitions
-- **tsconfig.json** — Base configuration
-- **tsconfig.app.json** — Vue application config
-- **tsconfig.test.json** — Test environment (uses `vitest/happy-dom` types)
+- `.` 主入口、`./resolver` unplugin resolver、`./components` / `./composables` / `./locales` 分组 barrel
+- `./components/*`、`./composables/*`、`./contexts/*`、`./locales/*`、`./types/*`、`./utils/*` 逐项导入
+- `./volar`、`./tw.css`、`./styles.css`
 
-## Key Dependencies
+## Key files
 
-### Framework & Build
-
-- **Vue**: 3.5.32 (supporting 2.7+)
-- **VitePlus**: 0.1.20 (unified dev toolchain wrapping Vite, Vitest, oxlint, oxfmt)
-- **mkdist**: 2.4.1 (distribution builder)
-- **unbuild**: 3.6.1 (stub development)
-
-### Code Quality
-
-- **TypeScript**: 5.9.3 (strict mode enabled)
-- **vue-tsc**: Vue type checking
-- **oxlint/oxfmt**: Via vite-plus (replaces ESLint/Prettier)
-
-### Styling
-
-- **TailwindCSS**: 4.2.2
-- **PostCSS**: Integrated
-
-### Related Packages
-
-- **@gdsicon/vue**: 1.0.9 (icon library)
-- **Day.js**: 1.11.20 (date utilities)
-
-## Important Files
-
-- **vite.config.ts** — Unified config for test, lint (oxlint), fmt (oxfmt), and tasks
-- **pnpm-workspace.yaml** — Monorepo catalog and dependencies
-- **scripts/** — Build utilities (never modify unless necessary)
-
-## Entry Points
-
-The library exposes multiple entry points:
-
-- Root: `.` (main+types)
-- `./resolver` — Unplugin resolver
-- `./components` — All components
-- `./composables` — All composables
-- `./locales` — i18n files
-- Plus granular per-item imports
+- `vite.config.ts` — 唯一配置点：`fmt` / `lint` / `test` / `run.tasks` / `staged`
+- `scripts/update-exports.js` — barrel、docs 列表、`volar.d.ts` 的生成器
+- `scripts/build-core.js`、`scripts/gen-css-files.js`、`scripts/fmt-eol.js`
