@@ -91,8 +91,8 @@ const data = [
   class="w-72 max-h-64"
   multiple
   check-strictly
-  default-expanded-keys="['src']"
   :data="data"
+  :default-expanded-keys="['src']"
 />
 </template>
 ```
@@ -111,7 +111,7 @@ const data = [
 </script>
 
 <template>
-  <PTree class="w-72 max-h-64" :data="data" :expand-on-click="false" />
+  <PTree class="w-72 max-h-64" :data="data" expand-on-click />
 </template>
 ```
 
@@ -514,7 +514,6 @@ interface TreeMoveDetail {
 
 | Name | Description |
 | --- | --- |
-| node | Replaces the whole row content. Slot props: `node`, `depth`, `expanded`, `checked`, `indeterminate`. |
 | node-switcher | Expand arrow. Slot props: `node`, `depth`, `expanded`. |
 | node-icon | Node icon. Slot props: `node`, `depth`, `expanded`. |
 | node-content | Node text. Slot props: `node`, `depth`. |

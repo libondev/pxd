@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   multiple: false,
   checkStrictly: false,
   disabled: false,
-  expandOnClick: true,
+  expandOnClick: false,
   draggable: false,
   showIcon: true,
   virtual: false,
@@ -590,41 +590,13 @@ defineExpose({
         <div
           v-for="entry in renderEntries"
           :key="entry.key"
+          :data-checked="checked.has(entry.key)"
           class="pxd-tree--row w-full"
           :class="{ 'left-0 top-0 absolute': virtual }"
           :style="virtual ? { transform: 'translateY(' + entry.start + 'px)' } : undefined"
         >
           <PTreeNode
-            v-if="!hasNodeSlot"
-            :id="entry.id"
-            :node="entry.node"
-            :value="entry.key"
-            :depth="entry.depth"
-            :index="entry.index"
-            :has-children="entry.hasChildren"
-            :expanded="entry.expanded"
-            :checked="checked.has(entry.key)"
-            :indeterminate="indeterminate.has(entry.key)"
-            :active="entry.active"
-            :multiple="multiple"
-            :disabled="disabled"
-            :set-size="rows.length"
-            :indent="indent"
-            :highlight-query="highlightQuery"
-            :show-icon="showIcon"
-            :item-class="itemClass"
-            :draggable="dragEnabled"
-            :drag-handle="hasDragHandle"
-            :dragging="entry.key === dragValue"
-            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
-            @row-click="onRowClick"
-            @drag-pointerdown="onDragPointerdown"
-            @check="onCheckboxClick"
-            @toggle="onSwitcherClick"
-          />
-
-          <PTreeNode
-            v-else
+            v-if="hasNodeSlot"
             :id="entry.id"
             :node="entry.node"
             :value="entry.key"
@@ -675,6 +647,35 @@ defineExpose({
               <slot name="node-drag-handle" v-bind="scope" />
             </template>
           </PTreeNode>
+
+          <PTreeNode
+            v-else
+            :id="entry.id"
+            :node="entry.node"
+            :value="entry.key"
+            :depth="entry.depth"
+            :index="entry.index"
+            :has-children="entry.hasChildren"
+            :expanded="entry.expanded"
+            :checked="checked.has(entry.key)"
+            :indeterminate="indeterminate.has(entry.key)"
+            :active="entry.active"
+            :multiple="multiple"
+            :disabled="disabled"
+            :set-size="rows.length"
+            :indent="indent"
+            :highlight-query="highlightQuery"
+            :show-icon="showIcon"
+            :item-class="itemClass"
+            :draggable="dragEnabled"
+            :drag-handle="hasDragHandle"
+            :dragging="entry.key === dragValue"
+            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
+            @row-click="onRowClick"
+            @drag-pointerdown="onDragPointerdown"
+            @check="onCheckboxClick"
+            @toggle="onSwitcherClick"
+          />
         </div>
       </div>
 
@@ -703,3 +704,17 @@ defineExpose({
     </Teleport>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-tree--row[data-checked='true'] {
+  & + & > .pxd-tree--node {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &:has(+ &) > .pxd-tree--node {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+</style>

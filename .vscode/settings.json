@@ -13,7 +13,8 @@
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit",
-    "source.removeUnusedImports": "explicit"
+    "source.fixAll.eslint": "never",
+    // "source.removeUnusedImports": "explicit"
   },
   "[vue]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"

@@ -11,13 +11,9 @@ import { computed } from 'vue'
 
 defineOptions({
   name: 'PTreeNode',
+  inheritAttrs: false,
 })
 
-/**
- * The row state is passed field by field instead of as the flat node it was flattened from:
- * `useTreeRows` rebuilds every row object whenever any node changes, so an object prop would
- * carry a new identity to every row on every selection, and no row could ever be skipped.
- */
 const props = defineProps<{
   node: TreeOption
   value: ComponentValue
@@ -111,12 +107,12 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
     :style="{ paddingInlineStart: depth * indent + 8 + 'px' }"
+    class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1.5 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none pointer-fine:hover:bg-gray-100"
     :class="[
-      'pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none active:bg-gray-alpha-100 pointer-fine:hover:bg-gray-alpha-100',
       itemClass,
       {
-        'bg-primary! text-primary-foreground!': checked,
-        'ring-primary data-[active=true]:ring-1': active,
+        'bg-gray-200!': checked,
+        'z-1 ring-primary data-[active=true]:ring-1': active,
         'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500': disabled,
         'opacity-40': dragging,
         'before:inset-x-0 before:h-0.5 before:absolute before:bg-primary':
@@ -125,83 +121,94 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
         'before:bottom-px': dropPosition === 'after',
       },
     ]"
+    v-bind="$attrs"
     @click="emits('row-click', value)"
     @pointerdown="onPointerdown"
     @dragstart.prevent
   >
-    <slot
-      name="node"
-      :node="node"
-      :depth="depth"
-      :expanded="expanded"
-      :checked="checked"
-      :indeterminate="indeterminate"
+    <span
+      v-if="dragHandle"
+      data-tree-drag-handle
+      class="pxd-tree--drag-handle size-4 me-0.5 inline-flex shrink-0 cursor-grab items-center justify-center opacity-0 group-hover/row:opacity-60 group-data-[dragging=true]/row:opacity-60 motion-safe:transition-opacity"
+      @pointerdown.stop="emits('drag-pointerdown', value, $event)"
     >
-      <span
-        v-if="dragHandle"
-        data-tree-drag-handle
-        class="pxd-tree--drag-handle size-4 me-0.5 inline-flex shrink-0 cursor-grab items-center justify-center opacity-0 group-hover/row:opacity-60 group-data-[dragging=true]/row:opacity-60 motion-safe:transition-opacity"
-        @pointerdown.stop="emits('drag-pointerdown', value, $event)"
-      >
-        <slot name="node-drag-handle" :node="node" :depth="depth">
-          <MoreVerticalIcon class="size-3" />
-        </slot>
-      </span>
+      <slot name="node-drag-handle" :node="node" :depth="depth">
+        <MoreVerticalIcon class="size-3" />
+      </slot>
+    </span>
 
-      <span
-        v-if="multiple"
-        aria-hidden="true"
-        class="pxd-tree--checkbox size-4 p-0.5 inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm border text-primary-foreground"
-        :class="checkboxClass"
-        @click.stop="emits('check', value)"
-      >
-        <CheckIcon v-if="checked" class="size-3" />
-        <MinusIcon v-else-if="indeterminate" class="size-3" />
-        <span v-else class="size-3" />
-      </span>
+    <span
+      v-if="hasChildren"
+      data-tree-switcher
+      class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
+      @click.stop="emits('toggle', value)"
+    >
+      <slot name="node-switcher" :node="node" :depth="depth" :expanded="expanded">
+        <ChevronRightIcon
+          class="size-3 motion-safe:transition-transform"
+          :class="{ 'rotate-90': expanded }"
+        />
+      </slot>
+    </span>
+    <span v-else aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0" />
 
-      <span
-        v-if="hasChildren"
-        data-tree-switcher
-        class="pxd-tree--switcher size-4 inline-flex shrink-0 items-center justify-center rounded-sm opacity-60"
-        @click.stop="emits('toggle', value)"
-      >
-        <slot name="node-switcher" :node="node" :depth="depth" :expanded="expanded">
-          <ChevronRightIcon
-            class="size-4 motion-safe:transition-transform"
-            :class="{ 'rotate-90': expanded }"
-          />
-        </slot>
-      </span>
-      <span v-else aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0 empty:hidden" />
+    <span
+      v-if="multiple"
+      aria-hidden="true"
+      class="pxd-tree--checkbox size-4 p-0.5 inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm border text-primary-foreground"
+      :class="checkboxClass"
+      @click.stop="emits('check', value)"
+    >
+      <CheckIcon v-if="checked" class="size-3" />
+      <MinusIcon v-else-if="indeterminate" class="size-3" />
+      <span v-else class="size-3" />
+    </span>
 
-      <span
-        v-if="showIcon"
-        aria-hidden="true"
-        class="pxd-tree--icon size-4 mr-0.5 inline-flex shrink-0 items-center justify-center opacity-60"
-      >
-        <slot name="node-icon" :node="node" :depth="depth" :expanded="expanded">
-          <FolderOpenIcon v-if="expanded" class="size-4" />
-          <FolderClosedIcon v-else-if="hasChildren" class="size-4" />
-        </slot>
-      </span>
+    <span
+      v-if="showIcon && $slots['node-icon']"
+      aria-hidden="true"
+      class="pxd-tree--icon size-4 inline-flex shrink-0 items-center justify-center"
+    >
+      <slot name="node-icon" :node="node" :depth="depth" :expanded="expanded">
+        <FolderOpenIcon v-if="expanded" class="size-4" />
+        <FolderClosedIcon v-else-if="hasChildren" class="size-4" />
+      </slot>
+    </span>
 
-      <span class="pxd-tree--content min-w-0 flex-1 truncate">
-        <slot name="node-content" :node="node" :depth="depth">
-          <template v-if="parts">
-            <mark
-              v-for="(part, partIndex) in parts"
-              :key="partIndex"
-              class="pxd-tree--match bg-transparent text-inherit"
-              :class="{ 'bg-yellow-200 text-yellow-900': part.matched }"
-              >{{ part.text }}</mark
-            >
-          </template>
-          <template v-else>{{ node.label }}</template>
-        </slot>
-      </span>
+    <span class="pxd-tree--content min-w-0 flex-1 truncate">
+      <slot name="node-content" :node="node" :depth="depth">
+        <template v-if="parts">
+          <mark
+            v-for="(part, partIndex) in parts"
+            :key="partIndex"
+            class="pxd-tree--match bg-transparent text-inherit"
+            :class="{ 'bg-yellow-200 text-yellow-900': part.matched }"
+            >{{ part.text }}</mark
+          >
+        </template>
+        <template v-else>{{ node.label }}</template>
+      </slot>
+    </span>
 
-      <slot name="node-suffix" :node="node" />
-    </slot>
+    <slot name="node-suffix" :node="node" />
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-tree--switcher.relative {
+  &::after {
+    content: '';
+    width: 150%;
+    height: 150%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: inherit;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover::after {
+    background-color: var(--color-gray-alpha-100);
+  }
+}
+</style>
