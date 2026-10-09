@@ -12,6 +12,7 @@ defineProps<ListGroupProps>()
 <template>
   <div
     role="group"
+    data-list-group
     :aria-label="label"
     class="pxd-list-group min-h-9 px-2 py-1 flex items-center text-13 text-foreground-secondary"
     v-bind="$attrs"

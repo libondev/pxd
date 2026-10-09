@@ -25,6 +25,7 @@ provideCheckboxGroupContext({ props, emits })
 
 <template>
   <PStack
+    data-checkbox-group
     class="pxd-checkbox-group"
     role="group"
     aria-label="Checkbox Group"

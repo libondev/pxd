@@ -32,7 +32,7 @@ const nodeClasses = computed(() => [
 </script>
 
 <template>
-  <li class="pxd-timeline-item group/timeline-item pbe-4 last:pbe-0 relative" v-bind="$attrs">
+  <li data-timeline-item class="pxd-timeline-item group/timeline-item pbe-4 last:pbe-0 relative" v-bind="$attrs">
     <div
       aria-hidden="true"
       class="pxd-timeline-item--tail left-1 top-0 absolute h-full border-l border-gray-300 group-last/timeline-item:hidden"

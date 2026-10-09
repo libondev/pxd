@@ -47,6 +47,7 @@ provideToggleButtonGroupContext({ props, emits })
 <template>
   <PStack
     role="group"
+    data-toggle-button-group
     :class="classes"
     aria-label="Toggle Button Group"
     align="center"

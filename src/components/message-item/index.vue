@@ -77,6 +77,7 @@ onMounted(() => {
   <li
     ref="itemRef"
     tabindex="0"
+    data-message-item
     :data-index="index"
     :data-front="index === 0"
     :style="computedStyle"

@@ -67,6 +67,7 @@ const gridItemStyle = computed(() => {
 
 <template>
   <div
+    data-grid-item
     class="pxd-grid-item overflow-hidden"
     :class="computedClasses"
     :style="gridItemStyle"

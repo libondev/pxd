@@ -149,6 +149,7 @@ function onInputChange(event: Event) {
 
 <template>
   <label
+    data-choicebox-item
     :role="isMultiple ? 'checkbox' : 'radio'"
     :data-disabled="isDisabled"
     :aria-selected="isSelected"

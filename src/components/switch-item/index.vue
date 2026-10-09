@@ -58,6 +58,7 @@ function onInputChange() {
 
 <template>
   <label
+    data-switch-item
     role="switch"
     :aria-selected="isChecked"
     :data-disabled="isDisabled"

@@ -22,6 +22,7 @@ provideRadioGroupContext({ props, emits, name: getUniqueId() })
 
 <template>
   <PStack
+    data-radio-group
     class="pxd-radio-group"
     role="radiogroup"
     aria-label="Radio Group"

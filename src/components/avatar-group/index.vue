@@ -25,7 +25,7 @@ provideAvatarGroupContext({ props })
 </script>
 
 <template>
-  <div class="pxd-avatar-group flex flex-wrap items-center" v-bind="$attrs">
+  <div data-avatar-group class="pxd-avatar-group flex flex-wrap items-center" v-bind="$attrs">
     <div v-for="(option, index) in slicedOptions" :key="index" class="group nth-[n+2]:-ms-2.5">
       <PAvatar
         :size="size"

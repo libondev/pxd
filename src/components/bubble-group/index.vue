@@ -52,6 +52,7 @@ onMounted(() => {
 <template>
   <PStickToBottom
     ref="stickRef"
+    data-bubble-group
     class="pxd-bubble-group relative overflow-x-hidden"
     :threshold="8"
     content-class="pxd-bubble-group--content relative w-full content-visibility-auto"

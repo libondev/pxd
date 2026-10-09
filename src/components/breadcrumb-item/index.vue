@@ -14,6 +14,7 @@ const breadcrumbContext = useBreadcrumbContext()
 
 <template>
   <li
+    data-breadcrumb-item
     class="pxd-breadcrumb-item group/breadcrumb-item flex list-none items-center text-foreground-secondary last:text-foreground hover:text-foreground"
     v-bind="$attrs"
   >
