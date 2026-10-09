@@ -38,7 +38,7 @@ function onItemClick(item: { id: string }) {
     </div>
 
     <PToc
-      ref="toc"
+      :offset="50"
       :selector="selector"
       :aria-labelledby="hasOutline ? 'docs-toc-title' : undefined"
       @item-click="onItemClick"
