@@ -17,7 +17,7 @@ defineOptions({
 const INDENT_BASE = 8
 const INDENT_STEP = 14
 
-const ITEM_ACTIVE_CLASS = 'bg-gray-200 text-primary'
+const ITEM_ACTIVE_CLASS = 'pxd-toc--item_active bg-gray-200 text-primary'
 const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-gray-900'
 
 interface TocEntry {
@@ -219,25 +219,45 @@ defineExpose({
 <template>
   <nav v-if="rows.length" :class="classes" v-bind="attrs">
     <ol ref="listEl" class="m-0 p-0 list-none">
-      <li v-for="row in rows" :key="row.item.id" class="m-0 list-none">
+      <li v-for="row in rows" :key="row.item.id" data-toc-item class="pxd-toc--item m-0 list-none">
         <slot
+          v-if="$slots.item"
           name="item"
-          v-bind="row"
+          :item="row"
           :active="row.item.id === activeId"
-          :select="(event: MouseEvent) => onItemClick(row.item, event)"
+          :select="(event: PointerEvent) => onItemClick(row.item, event)"
         >
-          <a
-            :href="`#${row.item.id}`"
-            class="pxd-toc-item py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-colors"
-            :class="row.item.id === activeId ? ITEM_ACTIVE_CLASS : ITEM_IDLE_CLASS"
-            :style="{ paddingInlineStart: `${row.depth * INDENT_STEP + INDENT_BASE}px` }"
-            :aria-current="row.item.id === activeId ? 'location' : undefined"
-            @click="onItemClick(row.item, $event)"
-          >
-            {{ row.item.label }}
-          </a>
         </slot>
+        <a
+          v-else
+          :href="`#${row.item.id}`"
+          class="pxd-toc--item-label py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-colors"
+          :class="row.item.id === activeId ? ITEM_ACTIVE_CLASS : ITEM_IDLE_CLASS"
+          :style="{ paddingInlineStart: `${row.depth * INDENT_STEP + INDENT_BASE}px` }"
+          :aria-current="row.item.id === activeId ? 'location' : undefined"
+          @click="onItemClick(row.item, $event)"
+        >
+          {{ row.item.label }}
+        </a>
       </li>
     </ol>
   </nav>
 </template>
+
+<style lang="postcss">
+@media (hover: hover) {
+  [data-toc-item]:has(> .pxd-toc--item_active):has(+ [data-toc-item] > .pxd-toc--item-label:hover)
+    > .pxd-toc--item_active,
+  [data-toc-item]:has(> .pxd-toc--item-label:hover):has(+ [data-toc-item] > .pxd-toc--item_active)
+    > .pxd-toc--item-label:hover {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  [data-toc-item]:has(> .pxd-toc--item_active) + [data-toc-item] > .pxd-toc--item-label:hover,
+  [data-toc-item]:has(> .pxd-toc--item-label:hover) + [data-toc-item] > .pxd-toc--item_active {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+</style>
