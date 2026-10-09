@@ -2,9 +2,9 @@
 import type { TocEmits, TocItem, TocProps, TocScrollBehavior } from './types'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { useResizeObserver } from '../../composables/use-resize-observer.js'
+import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useScrollspy } from '../../composables/use-scrollspy.js'
-import { getScrollElement } from '../../utils/dom.js'
+import { getScrollElement, isViewportScroll } from '../../utils/dom.js'
 import { scheduleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
@@ -19,7 +19,6 @@ const INDENT_STEP = 14
 const ITEM_ACTIVE_CLASS = 'bg-gray-alpha-100 font-medium text-primary'
 const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900'
 
-/** A heading that is resolved once, so tracking it never re-queries the DOM. */
 interface TocEntry {
   el: HTMLElement
   item: TocItem
@@ -42,54 +41,64 @@ const listEl = ref<HTMLElement | null>(null)
 
 const entries = shallowRef<TocEntry[]>([])
 
-function readOutline(selector: string): void {
-  const next = Array.from(document.querySelectorAll<HTMLElement>(selector))
-    // Without an id there is nothing to link to or to scroll to.
-    .filter((el) => el.id)
-    .map<TocEntry>((el) => ({
-      el,
-      item: {
-        id: el.id,
-        // Heading plugins append a `#` permalink to the text content.
-        label: el.textContent?.trim().replace(/^#\s*/, '') || '',
-        // A selector may match something that is not a heading; `h1` keeps the
-        // indent arithmetic finite instead of writing `NaNpx`.
-        level: Number.parseInt(el.tagName.slice(1), 10) || 1,
-      },
-    }))
+function outlineRoot(): HTMLElement {
+  return props.scrollTarget ?? document.body
+}
 
-  // Content settles constantly — images, fonts, async blocks — and a fresh
-  // array would hand the spy a new target list every time for nothing.
-  if (
-    next.length === entries.value.length &&
+function isSameOutline(next: TocEntry[], current: TocEntry[]): boolean {
+  return (
+    next.length === current.length &&
     next.every((entry, index) => {
-      const previous = entries.value[index]!
+      const previous = current[index]!
+
       return (
         entry.el === previous.el &&
         entry.item.label === previous.item.label &&
         entry.item.level === previous.item.level
       )
     })
-  ) {
+  )
+}
+
+function readOutline(): void {
+  const next = Array.from(outlineRoot().querySelectorAll<HTMLElement>(props.selector))
+    .filter((el) => el.id)
+    .map<TocEntry>((el) => ({
+      el,
+      item: {
+        id: el.id,
+        // Heading plugins append a `#` permalink.
+        label: el.textContent?.trim().replace(/^#\s*/, '') || '',
+        // A non-heading match would make the indent `NaNpx`; level 1 keeps it finite.
+        level: Number.parseInt(el.tagName.slice(1), 10) || 1,
+      },
+    }))
+
+  // An identical outline would hand the spy a new target list for nothing.
+  if (isSameOutline(next, entries.value)) {
     return
   }
 
   entries.value = next
 }
 
-const scheduleRead = scheduleByRaf(() => readOutline(props.selector))
+const scheduleRead = scheduleByRaf(readOutline)
 
 if (!isServer()) {
-  // Content can change without any reactive input changing. Growth of the
-  // document is the one cheap signal that covers images settling, async blocks
-  // arriving and fonts swapping, which is what a stale outline actually is.
-  useResizeObserver(() => document.body, scheduleRead)
+  // Watch structure, text and ids — what the outline reads — not reflow geometry.
+  useMutationObserver(outlineRoot, scheduleRead, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['id'],
+  })
 
-  // `post` so the first pass runs against a rendered document.
-  watch(() => props.selector, scheduleRead, { immediate: true, flush: 'post' })
+  watch([() => props.selector, () => props.scrollTarget], scheduleRead, {
+    immediate: true,
+    flush: 'post',
+  })
 }
-
-// --- Track the reader -----------------------------------------------------
 
 const { activeEl, update } = useScrollspy(
   computed(() => entries.value.map((entry) => entry.el)),
@@ -102,15 +111,13 @@ const { activeEl, update } = useScrollspy(
 const items = computed(() => entries.value.map((entry) => entry.item))
 const activeId = computed(() => activeEl.value?.id ?? null)
 
-// Deliberately free of `activeId`: a row's identity is its heading, and folding
-// the highlight in would hand the whole list new objects on every scroll step.
+// Kept free of `activeId`, so the list keeps stable identities across scroll steps.
 const rows = computed(() => {
   if (!items.value.length) {
     return []
   }
 
-  // A toc that only collects `h3`+ has no top level entry to sit under, so the
-  // depth is measured against the shallowest heading that is actually present.
+  // Depth is measured against the shallowest heading present, not `h1`.
   const minLevel = items.value.reduce((min, item) => Math.min(min, item.level), Infinity)
 
   return items.value.map((item, index) => ({
@@ -120,11 +127,18 @@ const rows = computed(() => {
   }))
 })
 
-// Indexed by the outline, not by the spy's target list: an entry can lose its
-// element between passes, which would shift every later row.
+// Indexed by the outline, not the spy's targets, so a dropped element can't shift later rows.
 const activeRowIndex = computed(() => items.value.findIndex((item) => item.id === activeId.value))
 
-// --- Behaviours -----------------------------------------------------------
+function getScrollTop(target: HTMLElement, container: HTMLElement): number {
+  const top = target.getBoundingClientRect().top
+
+  if (isViewportScroll(container)) {
+    return top + window.scrollY - props.offset
+  }
+
+  return top - container.getBoundingClientRect().top + container.scrollTop - props.offset
+}
 
 function scrollTo(id: string, behavior: TocScrollBehavior = props.scrollBehavior): boolean {
   const target = document.getElementById(id)
@@ -133,31 +147,19 @@ function scrollTo(id: string, behavior: TocScrollBehavior = props.scrollBehavior
     return false
   }
 
-  // `scrollIntoView` has no offset argument, so a sticky header would swallow
-  // the heading. The offset is computed here instead, and the same number is
-  // what the spy uses as its probe line.
-  const metricsEl = getScrollElement(props.scrollTarget)
-  const isWindowScroll = metricsEl === document.documentElement
-  const scroller = isWindowScroll ? window : metricsEl
+  // `scrollIntoView` takes no offset; the same offset doubles as the spy's probe line.
+  const container = getScrollElement(props.scrollTarget)
+  const scroller = isViewportScroll(container) ? window : container
 
-  const top = isWindowScroll
-    ? target.getBoundingClientRect().top + window.scrollY - props.offset
-    : target.getBoundingClientRect().top -
-      metricsEl.getBoundingClientRect().top +
-      metricsEl.scrollTop -
-      props.offset
-
-  scroller.scrollTo({ top: Math.max(top, 0), behavior })
+  scroller.scrollTo({ top: Math.max(getScrollTop(target, container), 0), behavior })
 
   return true
 }
 
-function onItemClick(item: TocItem, event: MouseEvent) {
+function onItemClick(item: TocItem, event: MouseEvent): void {
   emit('item-click', item, event)
 
-  // Modified and non-primary clicks belong to the browser — new tab, download,
-  // copy link — and the native fragment jump already honours the page's own
-  // `scroll-margin-top` rules.
+  // Modified and non-primary clicks keep the browser's native jump (scroll-margin-top).
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return
   }
@@ -167,18 +169,15 @@ function onItemClick(item: TocItem, event: MouseEvent) {
   scrollTo(item.id)
 }
 
-function keepActiveVisible() {
-  if (!props.scrollActiveIntoView) {
-    return
-  }
-
+function keepActiveVisible(): void {
   const list = listEl.value
+  const index = activeRowIndex.value
 
-  if (!list || activeRowIndex.value < 0) {
+  if (!props.scrollActiveIntoView || !list || index < 0) {
     return
   }
 
-  const row = list.children[activeRowIndex.value] as HTMLElement | undefined
+  const row = list.children[index] as HTMLElement | undefined
 
   if (!row) {
     return
@@ -194,11 +193,8 @@ function keepActiveVisible() {
   }
 }
 
-// Watching the id rather than the item keeps a re-read outline from
-// re-announcing an active heading the reader did not move away from. `post` runs
-// once the list is patched, so the row is already measurable here.
 watch(
-  activeId,
+  () => activeId.value,
   (id) => {
     emit('active-change', items.value.find((item) => item.id === id) ?? null)
 

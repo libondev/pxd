@@ -12,7 +12,7 @@ export type TocScrollBehavior = 'auto' | 'instant' | 'smooth'
 export interface TocProps {
   /** Headings that make up the outline, as a CSS selector. */
   selector: string
-  /** Scrollable container holding the headings. Leave empty for the window. */
+  /** Scrollable container holding the headings; leave empty to read the document. */
   scrollTarget?: HTMLElement | null
   /** Pixels kept above the heading when scrolling to it, and the spy probe line. */
   offset?: number

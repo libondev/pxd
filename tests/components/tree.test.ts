@@ -49,7 +49,7 @@ describe('tree', () => {
   })
 
   it('should select and expand a parent row in single mode', async () => {
-    const wrapper = mount(Tree, { props: { data } })
+    const wrapper = mount(Tree, { props: { data, expandOnClick: true } })
 
     await wrapper.find('[data-key=src]').trigger('click')
 
@@ -61,7 +61,7 @@ describe('tree', () => {
   })
 
   it('should select and expand a parent row in multiple mode', async () => {
-    const wrapper = mount(Tree, { props: { data, multiple: true } })
+    const wrapper = mount(Tree, { props: { data, multiple: true, expandOnClick: true } })
 
     await wrapper.find('[data-key=src]').trigger('click')
 
@@ -651,13 +651,21 @@ describe('tree', () => {
   })
 
   it('should hide the node icon when show-icon is off', () => {
-    const on = mount(Tree, { props: { data } })
+    // The glyph belongs to the `node-icon` slot, so there is nothing to hide without one.
+    const slots = { 'node-icon': '<i data-test="icon" />' }
+    const withoutSlot = mount(Tree, { props: { data } })
+
+    expect(withoutSlot.findAll('.pxd-tree--icon').length).toBe(0)
+
+    withoutSlot.unmount()
+
+    const on = mount(Tree, { props: { data }, slots })
 
     expect(on.findAll('.pxd-tree--icon').length).toBe(3)
 
     on.unmount()
 
-    const off = mount(Tree, { props: { data, showIcon: false } })
+    const off = mount(Tree, { props: { data, showIcon: false }, slots })
 
     expect(off.findAll('.pxd-tree--icon').length).toBe(0)
 

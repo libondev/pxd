@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { computed, defineComponent, h, nextTick, ref } from 'vue'
 import Toc from '../../src/components/toc/index.vue'
-import { installResizeObserverMock } from '../helpers/setup'
+import { installMutationObserverMock } from '../helpers/setup'
 
 const SELECTOR = '.prose > h2[id], .prose > h3[id]'
 
@@ -21,15 +21,15 @@ function stubRect(el: Element, top: number, bottom: number) {
   })
 }
 
-/**
- * Headings go inside a `.prose` container, which is the boundary the selector
- * scopes to — the same shape the docs site has.
- */
-function stubHeadings(entries: { top: number; tag?: 'h2' | 'h3' }[]) {
+/** Headings live in a `.prose` container; `parent` stands in for a scrolled container. */
+function stubHeadings(
+  entries: { top: number; tag?: 'h2' | 'h3' }[],
+  parent: HTMLElement = document.body,
+) {
   const prose = document.createElement('div')
 
   prose.className = 'prose'
-  document.body.appendChild(prose)
+  parent.appendChild(prose)
 
   return entries.map((entry, index) => {
     const el = document.createElement(entry.tag ?? 'h2')
@@ -52,10 +52,7 @@ function click(el: Element, init: MouseEventInit = {}) {
   return event
 }
 
-/**
- * The outline is read on mount and whenever the document resizes, both of which
- * go through a rAF-scheduled pass.
- */
+/** The outline is read on mount and on mutation, both through a rAF-scheduled pass. */
 async function settle() {
   await nextTick()
   await nextTick()
@@ -125,8 +122,7 @@ describe('toc', () => {
   })
 
   it('indents nested levels relative to the shallowest heading', () => {
-    // Shallowest is `h3`, not `h1`: a toc that only collects deeper levels has no
-    // top level entry to sit under.
+    // Shallowest is `h3`, not `h1`: an outline of only deep levels has no top level.
     const prose = document.createElement('div')
 
     prose.className = 'prose'
@@ -228,9 +224,11 @@ describe('toc', () => {
     })
     Object.defineProperty(container, 'scrollTo', { configurable: true, value: containerScrollTo })
 
-    stubHeadings([{ top: 300 }])
+    stubHeadings([{ top: 300 }], container)
 
-    const wrapper = mount(Toc, { props: { selector: SELECTOR, scrollTarget: container, offset: 80 } })
+    const wrapper = mount(Toc, {
+      props: { selector: SELECTOR, scrollTarget: container, offset: 80 },
+    })
 
     click(wrapper.find('a').element)
 
@@ -304,8 +302,8 @@ describe('toc', () => {
     wrapper.unmount()
   })
 
-  it('re-reads the outline when the document grows', async () => {
-    const observers = installResizeObserverMock()
+  it('re-reads the outline when a heading arrives', async () => {
+    const observers = installMutationObserverMock()
 
     stubHeadings([{ top: 0 }, { top: 0 }])
 
@@ -313,6 +311,7 @@ describe('toc', () => {
     await settle()
 
     expect(wrapper.findAll('a')).toHaveLength(2)
+    expect(observers.observed()).toEqual([document.body])
 
     const prose = document.querySelector('.prose')!
     const added = document.createElement('h2')
@@ -330,8 +329,36 @@ describe('toc', () => {
     wrapper.unmount()
   })
 
+  it('watches the scrolled container instead of the document', async () => {
+    const observers = installMutationObserverMock()
+    const container = document.createElement('div')
+
+    document.body.appendChild(container)
+    stubHeadings([{ top: 0 }, { top: 0 }], container)
+
+    const wrapper = mount(Toc, { props: { selector: SELECTOR, scrollTarget: container } })
+    await settle()
+
+    expect(wrapper.findAll('a')).toHaveLength(2)
+    expect(observers.observed()).toEqual([container])
+
+    const prose = document.querySelector('.prose')!
+    const added = document.createElement('h2')
+
+    added.id = 'heading-late'
+    added.textContent = 'Arrived late'
+    prose.appendChild(added)
+
+    observers.fireAll()
+    await settle()
+
+    expect(wrapper.findAll('a')).toHaveLength(3)
+
+    wrapper.unmount()
+  })
+
   it('keeps the same outline object when a re-read finds no change', async () => {
-    const observers = installResizeObserverMock()
+    const observers = installMutationObserverMock()
 
     stubHeadings([{ top: 0 }, { top: 0 }])
 
@@ -363,7 +390,7 @@ describe('toc', () => {
   })
 
   it('does not re-announce the active heading when the outline is re-read', async () => {
-    const observers = installResizeObserverMock()
+    const observers = installMutationObserverMock()
 
     const headings = stubHeadings([{ top: -200 }, { top: -50 }, { top: 300 }])
     stubMetrics(document.documentElement, { scrollTop: 250, scrollHeight: 2000, clientHeight: 800 })
@@ -384,7 +411,7 @@ describe('toc', () => {
   })
 
   it('scrolls the matching row into view when the outline shrinks', async () => {
-    const observers = installResizeObserverMock()
+    const observers = installMutationObserverMock()
 
     const prose = document.createElement('div')
 
@@ -410,7 +437,7 @@ describe('toc', () => {
   })
 
   it('exposes a reactive outline through a template ref', async () => {
-    const observers = installResizeObserverMock()
+    const observers = installMutationObserverMock()
 
     stubHeadings([{ top: 0 }, { top: 0 }])
 

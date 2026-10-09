@@ -186,8 +186,8 @@ const viewport = ref(null)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| selector | `string` | - | Headings that make up the outline, as a CSS selector. Re-read when it changes and when the document grows. |
-| scroll-target | `HTMLElement \| null` | `null` | Scrollable container holding the headings. Leave empty to follow the window. |
+| selector | `string` | - | Headings that make up the outline, as a CSS selector matched inside `scroll-target` (or the document). Re-read when it changes, and when that subtree mutates. |
+| scroll-target | `HTMLElement \| null` | `null` | Scrollable container holding the headings; the outline is read and watched inside it. Leave empty to read the document. |
 | offset | `number` | `0` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. |
 | scroll-behavior | `'auto' \| 'instant' \| 'smooth'` | `'smooth'` | Scroll animation used when an entry is activated. |
 | scroll-active-into-view | `boolean` | `true` | Scroll the active entry back into view when it leaves the list. |
@@ -221,6 +221,6 @@ interface TocItem {
 | Name | Type | Description |
 | --- | --- | --- |
 | activeId | `string \| null` | The id of the entry that is currently highlighted. |
-| items | `TocItem[]` | The outline the component read from the document. |
+| items | `TocItem[]` | The outline the component read from `scroll-target` (or the document). |
 | scrollTo | `(id: string, behavior?: TocScrollBehavior) => boolean` | Scroll to the entry with the given id, returning whether it was found. |
 | update | `() => void` | Recompute the highlighted entry from the current layout. |

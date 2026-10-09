@@ -17,26 +17,18 @@ const BOTTOM_TOLERANCE = 2
 export interface UseScrollspyOptions {
   /** Scrollable container. @default window */
   scrollTarget?: MaybeRefOrGetter<Window | HTMLElement | null>
-  /**
-   * Pixel offset from the top of the viewport used to determine whether a
-   * target has scrolled past the fold. Set this to match the height of any
-   * sticky header / toolbar.
-   * @default 0
-   */
+  /** Pixels above the fold that count as passed; match a sticky header's height. @default 0 */
   topOffset?: MaybeRefOrGetter<number>
 }
 
 export interface UseScrollspyReturn {
   activeIndex: ShallowRef<number>
   activeEl: ShallowRef<HTMLElement | null>
-  /**
-   * Recompute the active target. Call this after layout-affecting changes
-   * (route switches, async content loads) so the active state reflects the
-   * latest DOM without waiting for a scroll event.
-   */
+  /** Recompute from the current layout, e.g. after a route switch or async content. */
   update: () => void
 }
 
+/** `targets` must be in document order: the probe line is bisected against their offsets. */
 export function useScrollspy(
   targets: MaybeRefOrGetter<HTMLElement[]>,
   options: UseScrollspyOptions = {},
@@ -48,66 +40,102 @@ export function useScrollspy(
   const activeEl = shallowRef<HTMLElement | null>(null)
   const targetItems = computed(() => toValue<HTMLElement[]>(targets))
 
-  function update(): void {
-    const items = targetItems.value
-    const metricsEl = getScrollElement(toValue(scrollTarget))
-    const { scrollTop, scrollHeight, clientHeight } = getScrollPosition(metricsEl)
-    const offset = topOffset.value
+  function setActive(items: HTMLElement[], index: number): void {
+    activeIndex.value = index
+    activeEl.value = index >= 0 ? items[index]! : null
+  }
 
-    let idx = -1
+  /** -1 when no target is at or above the line. */
+  function locateProbe(items: HTMLElement[], origin: number): number {
+    const probe = topOffset.value
+    let low = 0
+    let high = items.length
 
-    // Nothing is being read above the first target, and a container without a
-    // scroll range has no last target to fall back on either.
-    if (items.length > 0 && scrollTop > 0) {
-      // A short trailing section can never be scrolled up to the probe line,
-      // so the tail is pinned once the container is exhausted.
-      if (
-        scrollHeight - clientHeight > 1 &&
-        clientHeight + scrollTop >= scrollHeight - BOTTOM_TOLERANCE
-      ) {
-        idx = items.length - 1
+    while (low < high) {
+      const mid = (low + high) >> 1
+
+      if (items[mid]!.getBoundingClientRect().top - origin > probe) {
+        high = mid
       } else {
-        // The container origin is resolved once for the whole scan. Measuring it
-        // per target would double the forced layout reads on the per-frame path,
-        // which is the cost this pass exists to avoid.
-        const origin = isViewportScroll(metricsEl) ? 0 : metricsEl.getBoundingClientRect().top
-
-        for (let i = 0; i < items.length; i++) {
-          // Targets are in document order, so the first one still below the
-          // probe line ends the scan.
-          if (items[i]!.getBoundingClientRect().top - origin > offset) {
-            break
-          }
-
-          idx = i
-        }
+        low = mid + 1
       }
     }
 
-    activeIndex.value = idx
-    activeEl.value = idx >= 0 ? items[idx]! : null
+    return low - 1
+  }
+
+  /** A short trailing section can never be scrolled up to the probe line. */
+  function isExhausted(scrollTop: number, scrollHeight: number, clientHeight: number): boolean {
+    return (
+      scrollHeight - clientHeight > 1 && clientHeight + scrollTop >= scrollHeight - BOTTOM_TOLERANCE
+    )
+  }
+
+  function update(): void {
+    const items = targetItems.value
+
+    // Nothing has been read above the first target.
+    if (!items.length) {
+      setActive(items, -1)
+
+      return
+    }
+
+    const metricsEl = getScrollElement(toValue(scrollTarget))
+    const { scrollTop, scrollHeight, clientHeight } = getScrollPosition(metricsEl)
+
+    if (scrollTop <= 0) {
+      setActive(items, -1)
+
+      return
+    }
+
+    if (isExhausted(scrollTop, scrollHeight, clientHeight)) {
+      setActive(items, items.length - 1)
+
+      return
+    }
+
+    // Resolved once per pass: measuring it per target would repeat the layout read.
+    const origin = isViewportScroll(metricsEl) ? 0 : metricsEl.getBoundingClientRect().top
+
+    setActive(items, locateProbe(items, origin))
   }
 
   if (!isServer()) {
     const scheduleUpdate = scheduleByRaf(update)
 
-    let currentListener: EventTarget | null = null
+    let scrollListener: EventTarget | null = null
+    let windowListener: Window | null = null
 
-    function bindListener() {
+    function bindListeners(): void {
       const listener = getScrollListener(toValue(scrollTarget))
 
-      if (listener === currentListener) {
+      if (listener === scrollListener) {
         return
       }
 
-      off(currentListener, 'scroll', scheduleUpdate)
+      off(scrollListener, 'scroll', scheduleUpdate)
 
-      currentListener = listener
+      scrollListener = listener
 
-      on(listener, 'scroll', scheduleUpdate, { passive: true })
+      on(scrollListener, 'scroll', scheduleUpdate, { passive: true })
+
+      // The root box tracks content, not the viewport, so the observer misses a window resize.
+      const onWindow = listener === window ? window : null
+
+      if (onWindow !== windowListener) {
+        off(windowListener, 'resize', scheduleUpdate)
+
+        windowListener = onWindow
+
+        on(windowListener, 'resize', scheduleUpdate, { passive: true })
+      }
+
       scheduleUpdate()
     }
-    const stopListener = watch(() => toValue(scrollTarget), bindListener, { flush: 'post' })
+
+    const stopListener = watch(() => toValue(scrollTarget), bindListeners, { flush: 'post' })
 
     const { stop: stopResizeObserver } = useResizeObserver(
       () => getScrollElement(toValue(scrollTarget)),
@@ -117,11 +145,12 @@ export function useScrollspy(
     const stopOffset = watch(topOffset, scheduleUpdate)
     const stopTargets = watch(() => targetItems.value, scheduleUpdate)
 
-    onMounted(bindListener)
+    onMounted(bindListeners)
 
     onScopeDispose(() => {
       scheduleUpdate.cancel()
-      off(currentListener, 'scroll', scheduleUpdate)
+      off(scrollListener, 'scroll', scheduleUpdate)
+      off(windowListener, 'resize', scheduleUpdate)
       stopListener()
       stopResizeObserver()
       stopTargets()

@@ -41,20 +41,19 @@ export function mount<V>(Comp: V) {
 // Export types for reuse
 export type { InstanceType, VM }
 
-/**
- * happy-dom does not deliver a resize for synthetic changes, so `ResizeObserver`
- * is replaced with a mock whose recorded callback can be fired on demand.
- */
-export function installResizeObserverMock() {
-  const instances: { callback: ResizeObserverCallback; targets: Set<Element> }[] = []
+/** happy-dom delivers neither observer callback; the recorded callback is fired by hand. */
+function installObserverMock(name: 'ResizeObserver' | 'MutationObserver') {
+  type Callback = (entries: unknown[], observer: unknown) => void
+
+  const instances: { callback: Callback; targets: Set<Element> }[] = []
 
   vi.stubGlobal(
-    'ResizeObserver',
-    class MockResizeObserver {
+    name,
+    class MockObserver {
       targets = new Set<Element>()
-      callback: ResizeObserverCallback
+      callback: Callback
 
-      constructor(callback: ResizeObserverCallback) {
+      constructor(callback: Callback) {
         this.callback = callback
         instances.push(this)
       }
@@ -87,10 +86,18 @@ export function installResizeObserverMock() {
         }
 
         callback(
-          Array.from(targets).map((target) => ({ target }) as ResizeObserverEntry),
-          {} as ResizeObserver,
+          Array.from(targets).map((target) => ({ target })),
+          {},
         )
       }
     },
   }
+}
+
+export function installResizeObserverMock() {
+  return installObserverMock('ResizeObserver')
+}
+
+export function installMutationObserverMock() {
+  return installObserverMock('MutationObserver')
 }

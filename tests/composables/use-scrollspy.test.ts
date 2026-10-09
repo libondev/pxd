@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import { nextTick, ref } from 'vue'
 import { useScrollspy } from '../../src/composables/use-scrollspy'
-import { useSetupWrapper } from '../helpers/setup'
+import { installResizeObserverMock, useSetupWrapper } from '../helpers/setup'
 
 interface ScrollMetrics {
   scrollTop: number
@@ -35,60 +35,6 @@ function setHeadingTop(el: HTMLElement, top: number) {
     configurable: true,
     value: () => ({ top, bottom: top + 20, height: 20, left: 0, right: 0, width: 0 }),
   })
-}
-
-/**
- * happy-dom does not deliver a resize for synthetic changes, so `ResizeObserver`
- * is replaced with a mock whose recorded callback can be fired on demand.
- */
-function installResizeObserverMock() {
-  const instances: { callback: ResizeObserverCallback; targets: Set<Element> }[] = []
-
-  vi.stubGlobal(
-    'ResizeObserver',
-    class MockResizeObserver {
-      targets = new Set<Element>()
-      callback: ResizeObserverCallback
-
-      constructor(callback: ResizeObserverCallback) {
-        this.callback = callback
-        instances.push(this)
-      }
-
-      observe(el: Element) {
-        this.targets.add(el)
-      }
-
-      unobserve(el: Element) {
-        this.targets.delete(el)
-      }
-
-      disconnect() {
-        this.targets.clear()
-      }
-    },
-  )
-
-  return {
-    get count() {
-      return instances.length
-    },
-    observed() {
-      return Array.from(instances).flatMap(({ targets }) => Array.from(targets))
-    },
-    fireAll() {
-      for (const { callback, targets } of instances) {
-        if (!targets.size) {
-          continue
-        }
-
-        callback(
-          Array.from(targets).map((target) => ({ target }) as ResizeObserverEntry),
-          {} as ResizeObserver,
-        )
-      }
-    },
-  }
 }
 
 function useImmediateRaf() {
@@ -225,9 +171,10 @@ describe('useScrollspy', () => {
     unmount()
   })
 
-  it('should stop measuring at the first target below the probe line', () => {
+  it('should locate the probe line with a bisection, not one read per target', () => {
     const measure = vi.fn((top: number) => ({ top, bottom: top + 20 }))
-    const targets = [0, 10, 500, 600, 700].map((top, index) => {
+    const tops = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
+    const targets = tops.map((top, index) => {
       const el = document.createElement('h2')
 
       el.id = `heading-${index}`
@@ -245,15 +192,17 @@ describe('useScrollspy', () => {
       clientHeight: 800,
     })
 
-    // The probe line has to sit below the first two targets for the pass to
-    // reach the third before it stops.
-    const { update, unmount } = useSetupWrapper(() => useScrollspy(targets, { topOffset: 80 }))
+    // The probe line sits below every target but the last, so a full scan reads all of them.
+    const { activeIndex, update, unmount } = useSetupWrapper(() =>
+      useScrollspy(targets, { topOffset: 200 }),
+    )
 
     // The composable measures once on mount; only count the explicit pass.
     measure.mockClear()
     update()
 
-    expect(measure).toHaveBeenCalledTimes(3)
+    expect(activeIndex.value).toBe(10)
+    expect(measure.mock.calls.length).toBeLessThanOrEqual(Math.ceil(Math.log2(tops.length)) + 1)
 
     unmount()
   })
@@ -302,8 +251,7 @@ describe('useScrollspy', () => {
       value: measureContainer,
     })
 
-    // Every target is above the probe line, so the scan cannot break early and
-    // would measure the container for each one.
+    // Every target is above the probe line, so a full scan measures the container for each.
     const targets = createTargets([-50, -40, -30, -20])
 
     const { activeIndex, update, unmount } = useSetupWrapper(() =>
@@ -335,6 +283,45 @@ describe('useScrollspy', () => {
     expect(activeIndex.value).toBe(1)
 
     unmount()
+  })
+
+  it('should update from a window resize', () => {
+    const targets = createTargets([-200, 300])
+
+    stubScrollMetrics(document.documentElement, {
+      scrollTop: 250,
+      scrollHeight: 2000,
+      clientHeight: 800,
+    })
+
+    const { activeIndex, unmount } = useSetupWrapper(() => useScrollspy(targets))
+
+    // The viewport shrank, so the second heading now sits above the probe line.
+    setHeadingTop(targets[1]!, -50)
+    window.dispatchEvent(new Event('resize'))
+
+    expect(activeIndex.value).toBe(1)
+
+    unmount()
+  })
+
+  it('should release the window resize listener on unmount', () => {
+    const targets = createTargets([-200, 300])
+
+    stubScrollMetrics(document.documentElement, {
+      scrollTop: 250,
+      scrollHeight: 2000,
+      clientHeight: 800,
+    })
+
+    const { activeIndex, unmount } = useSetupWrapper(() => useScrollspy(targets))
+
+    unmount()
+
+    setHeadingTop(targets[1]!, -50)
+    window.dispatchEvent(new Event('resize'))
+
+    expect(activeIndex.value).toBe(0)
   })
 
   it('should rebind to a container that only resolves after mount', async () => {
@@ -374,8 +361,7 @@ describe('useScrollspy', () => {
     // Container-relative: 0 is the last heading at or above the probe line.
     expect(activeIndex.value).toBe(1)
 
-    // The window listener must have been released. If it had not, these window
-    // metrics would pin the last target and the answer would become 3.
+    // A leaked window listener would pin the last target here, giving 3 instead of 1.
     stubScrollMetrics(document.documentElement, {
       scrollTop: 1200,
       scrollHeight: 2000,
@@ -414,8 +400,7 @@ describe('useScrollspy', () => {
   })
 
   it('should recompute when the scroll container is resized', async () => {
-    // happy-dom never delivers a native resize, so the observer is replaced with
-    // one whose callback can be fired by hand.
+    // happy-dom never delivers a native resize; the mock fires the callback by hand.
     const observers = installResizeObserverMock()
 
     const targets = createTargets([-200, 300])
