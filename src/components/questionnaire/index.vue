@@ -402,7 +402,11 @@ watch(
 
     <template v-else-if="currentState === 'submitted'">
       <ul class="px-4! py-3! m-0! pxd-questionnaire--answers gap-2 flex list-none flex-col">
-        <li v-for="(question, index) of questions" :key="index" class="m-0! text-sm">
+        <li
+          v-for="(question, index) of questions"
+          :key="index"
+          class="pxd-questionnaire--item m-0! text-sm"
+        >
           <p class="m-0! text-foreground-secondary">
             {{ configProvider.locale.questionnaire.question }}: {{ question.question }}
           </p>

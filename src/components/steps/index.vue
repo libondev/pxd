@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
-import { computed, shallowRef, useSlots } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getFallbackValue } from '../../utils/helper.js'
@@ -23,7 +23,6 @@ const props = withDefaults(defineProps<StepsProps>(), {
 const emits = defineEmits<StepsEmits>()
 
 const configProvider = useConfigProvider()
-const slots = useSlots()
 
 const modelValue = useModelValue(props, emits)
 /** Uncontrolled fallback: a bound `modelValue` always wins. */
@@ -109,14 +108,14 @@ function select(index: number) {
   >
     <template v-for="(option, index) in options" :key="index">
       <PStepsItem
-        v-if="slots.item"
+        v-if="$slots.item"
         :clickable="clickable"
         :index="index"
         :option="option"
         :status="resolveStatus(option, index)"
         @select="select"
       >
-        <slot name="item" :index="index" :option="option" :status="resolveStatus(option, index)" />
+        <slot name="item" :index="index" :item="option" :status="resolveStatus(option, index)" />
       </PStepsItem>
       <PStepsItem
         v-else

@@ -328,7 +328,11 @@ onBeforeUnmount(() => {
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="i of paddedTimes.hours" :key="i" class="h-8 leading-8 cursor-pointer">
+              <li
+                v-for="i of paddedTimes.hours"
+                :key="i"
+                class="pxd-time-picker--item h-8 leading-8 cursor-pointer"
+              >
                 {{ i }}
               </li>
             </ul>
@@ -340,7 +344,11 @@ onBeforeUnmount(() => {
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="i of paddedTimes.minutes" :key="i" class="h-8 leading-8 cursor-pointer">
+              <li
+                v-for="i of paddedTimes.minutes"
+                :key="i"
+                class="pxd-time-picker--item h-8 leading-8 cursor-pointer"
+              >
                 {{ i }}
               </li>
             </ul>
@@ -352,7 +360,11 @@ onBeforeUnmount(() => {
               class="w-16 sm:w-12 h-40 px-0 m-0 py-16 relative scrollbar-none list-none overflow-x-hidden overflow-y-scroll overscroll-contain text-center outline-none motion-safe:transition-colors"
               @scroll.stop="onTimeListScroll"
             >
-              <li v-for="i of paddedTimes.seconds" :key="i" class="h-8 leading-8 cursor-pointer">
+              <li
+                v-for="i of paddedTimes.seconds"
+                :key="i"
+                class="pxd-time-picker--item h-8 leading-8 cursor-pointer"
+              >
                 {{ i }}
               </li>
             </ul>
