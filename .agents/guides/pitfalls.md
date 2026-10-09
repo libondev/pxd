@@ -16,6 +16,19 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### Non-pooled observers are never disconnected, so a target keeps waking dead scopes
+
+- **Symptom**: Unmounting a component that called `useMutationObserver` leaves its observer running — callbacks reach a disposed scope — and every mount/unmount cycle adds another permanent one. `useMotionReduced` inherited it once per caller, each instance also repeating the same root `getComputedStyle` read per mutation batch.
+- **Cause**: In `src/utils/observer.ts`, `cleanup()` reached `disconnect()` only inside `if (pool)`. `pool` is assigned solely for pooled specs, and mutation observers cannot be pooled, so their instances were released by clearing the ref and never stopped. Clearing the ref is not enough: the DOM keeps an observer alive for as long as the node it observes is reachable.
+- **Fix**: Branch inside `cleanup()` — `observer.value?.disconnect()` when `pool` is unset. Never disconnect unconditionally: for a pooled spec `observer.value` is the *shared* instance, and stopping it while `count > 0` silences every remaining subscriber.
+- **Testing note**: `vi.spyOn(MutationObserver.prototype, 'disconnect')` with `stop()` from `runWithScope` pins it. happy-dom delivers neither callback, so "no further callbacks arrive" cannot be asserted directly.
+
+### Per-caller shared state belongs in the module, not in a scope
+
+- **Symptom**: One `<html>` attribute change made every subscriber repeat the same forced style recalc; on Vue 2.7 / 3.3 each one also re-rendered although the value never changed.
+- **Cause**: N subscribers each owned a copy of the derived state. Vue 3.4 compares a computed's old and new value before triggering, but 2.7 and 3.3 trigger on any recompute, so moving the value into a ref that nothing owns is not enough — the recompute itself has to be deduplicated.
+- **Fix**: `useMotionReduced` keeps one module-level `MutationObserver` behind a subscriber count, held only while someone listens, and assigns the new value through a shared `shallowRef`: assigning an unchanged value already skips the notify step, so subscribers never wake for the mutations that do not reach `--duration`. The cost stays at one read per batch regardless of subscriber count.
+
 ### A resize observer is a proxy for content change, and a blind one inside a scrolled container
 
 - **Symptom**: PToc's outline goes stale — headings that arrive late are never listed — while the `ResizeObserver` on `document.body` that is meant to notice looks like it fires.

@@ -124,6 +124,24 @@ describe('use-mutation-observer', () => {
     b.remove()
   })
 
+  it('should disconnect its own observer when the scope stops', async () => {
+    const el = document.createElement('div')
+    document.body.append(el)
+
+    const disconnect = vi.spyOn(MutationObserver.prototype, 'disconnect')
+    const { stop } = runWithScope(() => useMutationObserver(el, () => {}, OPTIONS))
+    await nextTick()
+
+    expect(disconnect).toHaveBeenCalledTimes(0)
+
+    stop()
+
+    expect(disconnect).toHaveBeenCalledTimes(1)
+
+    disconnect.mockRestore()
+    el.remove()
+  })
+
   it('should attribute subtree records to the registered element', async () => {
     const parent = document.createElement('div')
     const child = document.createElement('span')

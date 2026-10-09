@@ -188,6 +188,9 @@ export function createObserver<
           pool.observer.disconnect()
           pools.delete(activeKey!)
         }
+      } else {
+        // Non-pooled specs own their instance outright, so nothing else will disconnect it.
+        observer.value?.disconnect()
       }
 
       pool = undefined
