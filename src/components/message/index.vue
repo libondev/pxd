@@ -281,7 +281,7 @@ defineExpose({
     }
   }
 
-  .pxd-message--item {
+  .pxd-message-item {
     --message-item-scale: calc(1 - var(--message-item-index) * 0.05);
     --message-item-transition: transform, opacity, height;
 
@@ -297,7 +297,7 @@ defineExpose({
   }
 
   &[data-expand='true'] {
-    .pxd-message--item {
+    .pxd-message-item {
       --message-item-transform: none;
       position: relative;
       will-change: transform, opacity, height;
@@ -309,7 +309,7 @@ defineExpose({
   }
 
   &[data-expand='false'] {
-    .pxd-message--item {
+    .pxd-message-item {
       --message-item-transform: translateZ(0)
         translateY(calc(var(--item-offset) * var(--message-item-index)))
         scale(var(--message-item-scale));

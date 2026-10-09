@@ -80,7 +80,7 @@ onMounted(() => {
     :data-index="index"
     :data-front="index === 0"
     :style="computedStyle"
-    class="pxd-message--item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    class="pxd-message-item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
     :class="[itemData.class, { 'pe-9': itemData.closeable }]"
     v-bind="$attrs"
   >
