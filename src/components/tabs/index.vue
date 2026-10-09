@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ComponentOption, ComponentValue } from '../../types/shared'
-import type { TabsEmits, TabsProps } from './types'
+import type { ComponentValue } from '../../types/shared'
+import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
@@ -53,7 +53,7 @@ function panelId(index: number) {
   return `${uid}-panel-${index}`
 }
 
-function isActiveOption(option: ComponentOption) {
+function isActiveOption(option: TabsOptions) {
   return activeValue.value === option.value
 }
 
@@ -97,15 +97,15 @@ watch(
   },
 )
 
-function isActivated(option: ComponentOption) {
+function isActivated(option: TabsOptions) {
   return isActiveOption(option) || activatedValues.value.includes(option.value)
 }
 
-function renderLabel(option: ComponentOption) {
+function renderLabel(option: TabsOptions) {
   return slots.label?.({ active: isActiveOption(option), option })
 }
 
-function renderItem(option: ComponentOption) {
+function renderItem(option: TabsOptions) {
   return slots.item?.({ active: isActiveOption(option), option })
 }
 

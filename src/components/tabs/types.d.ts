@@ -1,11 +1,15 @@
 import type { ComponentOption, ComponentValue } from '../../types/shared'
 
+export interface TabsOptions extends ComponentOption {
+  label?: ComponentOption['label']
+}
+
 export interface TabsProps {
   variant?: 'default' | 'secondary' | 'segmented'
   keepAlive?: boolean
   modelValue?: ComponentValue
   defaultValue?: ComponentValue
-  options: ComponentOption[]
+  options: TabsOptions[]
 }
 
 export interface TabsEmits {
