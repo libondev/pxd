@@ -3,7 +3,8 @@ import type { BacktopProps, BacktopEmits } from './types'
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { getScrollTarget, getScrollElement } from '../../utils/dom.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
+import { getScrollTarget, getScrollElement, resolveScrollBehavior } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'
@@ -17,7 +18,7 @@ const props = withDefaults(defineProps<BacktopProps>(), {
   visibleThreshold: 30,
   appendToBody: true,
   scrollTarget: 'top',
-  scrollBehavior: 'smooth',
+  scrollBehavior: 'auto',
 })
 
 const emits = defineEmits<BacktopEmits>()
@@ -39,6 +40,8 @@ const { attrs, classes } = useTailwindVariant(
     selection: () => ({ appendToBody: props.appendToBody }),
   },
 )
+
+const prefersReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
 
 const scrollTop = shallowRef(0)
 const maxScrollTop = shallowRef(0)
@@ -76,7 +79,7 @@ function onActionClick(ev: PointerEvent) {
   scrollContainer.scrollTo({
     top,
     left: 0,
-    behavior: props.scrollBehavior,
+    behavior: resolveScrollBehavior(props.scrollBehavior, prefersReducedMotion),
   })
 }
 

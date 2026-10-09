@@ -7,8 +7,6 @@ export interface TocItem {
   level: number
 }
 
-export type TocScrollBehavior = 'auto' | 'instant' | 'smooth'
-
 export interface TocProps {
   /** Headings that make up the outline, as a CSS selector. */
   selector: string
@@ -16,8 +14,8 @@ export interface TocProps {
   scrollTarget?: HTMLElement | null
   /** Pixels kept above the heading when scrolling to it, and the spy probe line. */
   offset?: number
-  /** Scroll animation used when an entry is activated. */
-  scrollBehavior?: TocScrollBehavior
+  /** Scroll animation when an entry is activated; `auto` follows the system motion preference. */
+  scrollBehavior?: ScrollBehavior
   /** Scroll the active entry back into view when it leaves the list. */
   scrollActiveIntoView?: boolean
 }

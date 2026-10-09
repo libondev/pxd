@@ -1,11 +1,11 @@
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 
 export interface BacktopProps {
   size?: ComponentSize
   appendToBody?: boolean
   visibleThreshold?: number
   scrollTarget?: 'top' | 'bottom'
-  scrollBehavior?: 'smooth' | 'instant'
+  scrollBehavior?: ScrollBehavior
 }
 
 export interface BacktopEmits {

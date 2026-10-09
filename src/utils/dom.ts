@@ -224,3 +224,14 @@ export async function awaitAnimationEnd(element?: Element) {
   const animations = element?.getAnimations?.() ?? []
   await Promise.allSettled(animations.map((a) => a.finished))
 }
+
+export function resolveScrollBehavior(
+  behavior: ScrollBehavior,
+  prefersMotionReduce?: MaybeRefOrGetter<boolean>,
+): ScrollBehavior {
+  if (behavior === 'auto') {
+    return toValue(prefersMotionReduce) ? 'instant' : 'smooth'
+  }
+
+  return behavior
+}

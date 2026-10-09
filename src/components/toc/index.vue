@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { TocEmits, TocItem, TocProps, TocScrollBehavior } from './types'
+import type { TocEmits, TocItem, TocProps } from './types'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useScrollspy } from '../../composables/use-scrollspy.js'
-import { getScrollElement, isViewportScroll } from '../../utils/dom.js'
+import { getScrollElement, isViewportScroll, resolveScrollBehavior } from '../../utils/dom.js'
 import { scheduleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
@@ -16,8 +17,8 @@ defineOptions({
 const INDENT_BASE = 8
 const INDENT_STEP = 14
 
-const ITEM_ACTIVE_CLASS = 'bg-gray-alpha-100 font-medium text-primary'
-const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-alpha-100 hover:text-gray-900'
+const ITEM_ACTIVE_CLASS = 'bg-gray-200 text-primary'
+const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-gray-900'
 
 interface TocEntry {
   el: HTMLElement
@@ -25,13 +26,15 @@ interface TocEntry {
 }
 
 const props = withDefaults(defineProps<TocProps>(), {
-  scrollTarget: null,
   offset: 0,
-  scrollBehavior: 'smooth',
+  scrollBehavior: 'auto',
+  scrollTarget: null,
   scrollActiveIntoView: true,
 })
 
 const emit = defineEmits<TocEmits>()
+
+const prefersReducedMotion = useMediaQuery(PRESET_MEDIA_QUERIES.MOTION_REDUCE)
 
 const { attrs, classes } = useTailwindVariant({
   base: 'pxd-toc text-sm w-full max-w-full',
@@ -140,18 +143,20 @@ function getScrollTop(target: HTMLElement, container: HTMLElement): number {
   return top - container.getBoundingClientRect().top + container.scrollTop - props.offset
 }
 
-function scrollTo(id: string, behavior: TocScrollBehavior = props.scrollBehavior): boolean {
+function scrollTo(id: string): boolean {
   const target = document.getElementById(id)
 
   if (!target) {
     return false
   }
 
-  // `scrollIntoView` takes no offset; the same offset doubles as the spy's probe line.
   const container = getScrollElement(props.scrollTarget)
   const scroller = isViewportScroll(container) ? window : container
 
-  scroller.scrollTo({ top: Math.max(getScrollTop(target, container), 0), behavior })
+  scroller.scrollTo({
+    top: Math.max(getScrollTop(target, container), 0),
+    behavior: resolveScrollBehavior(props.scrollBehavior, prefersReducedMotion),
+  })
 
   return true
 }

@@ -46,7 +46,7 @@ A button to back to top.
 | visible-threshold | `number` | `30` | Distance in `px` from the target edge before it shows |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the built-in trigger button, overridable by the default slot |
 | scroll-target | `'top' \| 'bottom'` | `top` | Scroll to the `top` or `bottom` on click |
-| scroll-behavior | `'smooth' \| 'instant'` | `smooth` | `smooth` animates the scroll, `instant` jumps at once |
+| scroll-behavior | `'smooth' \| 'instant' \| 'auto'` | `auto` | Scroll animation on click; `auto` follows the system motion preference. |
 
 ## Events
 
