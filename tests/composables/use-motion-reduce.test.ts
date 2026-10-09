@@ -1,6 +1,6 @@
-import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
-import { useMotionReduced } from '../../src/composables/use-motion-reduce'
+import { nextTick } from 'vue'
+import { useMotionReduced } from '../../src/composables/_internal/use-motion-reduce'
 import { installMutationObserverMock, runWithScope } from '../helpers/setup'
 
 function stubComputedStyle(duration: string) {

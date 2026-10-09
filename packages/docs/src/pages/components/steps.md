@@ -170,8 +170,8 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 
 <template>
   <PSteps v-model="current" clickable :options="options">
-    <template #item="{ option, status }">
-      <strong>{{ option.title }}</strong>
+    <template #item="{ item, status }">
+      <strong>{{ item.title }}</strong>
       <span class="text-gray-600">({{ status }})</span>
     </template>
   </PSteps>
@@ -201,4 +201,4 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 
 | Name | Scope | Description |
 | --- | --- | --- |
-| item | `{ option, index, status }` | Replaces the indicator and labels of a step. |
+| item | `{ item, index, status }` | Replaces the indicator and labels of a step. |

@@ -160,9 +160,10 @@ describe('toc', () => {
     stubHeadings([{ top: 0 }])
 
     const wrapper = mount(Toc, { props: { selector: SELECTOR } })
+    const item = wrapper.find('[data-toc-item]')
     const link = wrapper.find('a')
 
-    expect(link.classes()).toContain('pxd-toc--item')
+    expect(item.classes()).toContain('pxd-toc--item')
     expect(link.classes()).toContain('rounded-md')
     expect(link.classes()).toContain('text-foreground-secondary')
 
@@ -270,7 +271,7 @@ describe('toc', () => {
     const vm = wrapper.vm as unknown as {
       activeId: string | null
       items: TocItem[]
-      scrollTo: (id: string, behavior?: string) => boolean
+      scrollTo: (id: string) => boolean
     }
 
     expect(vm.activeId).toBe('heading-1')
@@ -279,8 +280,8 @@ describe('toc', () => {
     expect(vm.scrollTo('nope')).toBe(false)
 
     stubMetrics(window, { scrollY: 0 })
-    expect(vm.scrollTo('heading-2', 'instant')).toBe(true)
-    expect(scrollTo).toHaveBeenCalledWith({ top: 220, behavior: 'instant' })
+    expect(vm.scrollTo('heading-2')).toBe(true)
+    expect(scrollTo).toHaveBeenCalledWith({ top: 220, behavior: 'smooth' })
 
     wrapper.unmount()
   })
@@ -311,7 +312,7 @@ describe('toc', () => {
     await settle()
 
     expect(wrapper.findAll('a')).toHaveLength(2)
-    expect(observers.observed()).toEqual([document.body])
+    expect(observers.observed()).toEqual([document.documentElement, document.body])
 
     const prose = document.querySelector('.prose')!
     const added = document.createElement('h2')
@@ -340,7 +341,7 @@ describe('toc', () => {
     await settle()
 
     expect(wrapper.findAll('a')).toHaveLength(2)
-    expect(observers.observed()).toEqual([container])
+    expect(observers.observed()).toEqual([document.documentElement, container])
 
     const prose = document.querySelector('.prose')!
     const added = document.createElement('h2')
@@ -487,13 +488,13 @@ describe('toc', () => {
           index: number
           depth: number
           active: boolean
-          select: (event: MouseEvent) => void
+          select: (event: PointerEvent) => void
         }) =>
           h(
             'button',
             {
               'data-test': 'custom',
-              onClick: (event: MouseEvent) => props.select(event),
+              onClick: (event: PointerEvent) => props.select(event),
             },
             `${props.index}:${props.depth}:${props.active}`,
           ),

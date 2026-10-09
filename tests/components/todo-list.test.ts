@@ -1,15 +1,16 @@
+import type { TodoOption } from '../../src/components/todo-list/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { h, nextTick, ref } from 'vue'
 import TodoList from '../../src/components/todo-list/index.vue'
 
-const OPTIONS = [
+const OPTIONS: TodoOption[] = [
   { content: 'Rewrite types.d.ts', status: 'in_progress' },
   { content: 'Delete legacy components', status: 'pending' },
   { content: 'Sync docs', status: 'completed' },
 ]
 
-async function mountTodoList(props: Record<string, unknown> = {}, slots?: Record<string, unknown>) {
+async function mountTodoList(props: Record<string, unknown> = {}, slots?: Record<string, any>) {
   const wrapper = mount(TodoList, {
     props: { options: OPTIONS, ...props },
     slots,

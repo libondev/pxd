@@ -10,7 +10,7 @@ const OPTIONS = [
   { description: 'Order confirmed', title: 'Done' },
 ]
 
-async function mountSteps(props: Record<string, unknown> = {}, slots?: Record<string, unknown>) {
+async function mountSteps(props: Record<string, unknown> = {}, slots?: Record<string, any>) {
   const wrapper = mount(Steps, {
     props: { modelValue: 0, options: OPTIONS, ...props },
     slots,
@@ -222,7 +222,7 @@ describe('steps', () => {
         modelValue: 0,
         options: [{ title: 'Cart' }, { disabled: true, title: 'Payment' }],
       },
-      { item: ({ option }: any) => h('span', option.title) },
+      { item: ({ item }: any) => h('span', item.title) },
     )
 
     const items = wrapper.findAll('.pxd-steps-item')
@@ -237,8 +237,8 @@ describe('steps', () => {
     const wrapper = await mountSteps(
       { modelValue: 1 },
       {
-        item: ({ index, option, status }: any) =>
-          h('div', { class: 'custom-step' }, [index, ':', option.title, ':', status]),
+        item: ({ index, item, status }: any) =>
+          h('div', { class: 'custom-step' }, [index, ':', item.title, ':', status]),
       },
     )
 
