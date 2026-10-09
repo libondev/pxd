@@ -14,7 +14,7 @@ function onItemClick(item: { id: string }) {
 
     <PToc
       :offset="50"
-      selector=".markdown-body > h2[id], .markdown-body > h3[id]"
+      selector=".markdown-body > h2[id], .markdown-body > h3[id], .markdown-body + h2[id]"
       @item-click="onItemClick"
     />
   </div>
