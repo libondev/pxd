@@ -83,8 +83,8 @@ export function useStickToBottom(
     }
 
     const top = Math.max(0, el.scrollHeight - el.clientHeight)
-    // Only control the vertical axis so horizontal scroll stays intact.
-    el.scrollTo({ top })
+
+    el.scrollTo({ top, behavior: 'instant' })
     isAtBottom.value = true
   }
 

@@ -27,9 +27,12 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
   },
 )
 
-watch(isAtBottom, (value) => {
-  emits('change', value)
-})
+watch(
+  () => isAtBottom.value,
+  (value) => {
+    emits('change', value)
+  },
+)
 
 defineExpose({
   containerRef,

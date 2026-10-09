@@ -223,12 +223,15 @@ function isNodeDisabled(row: TreeFlatNode): boolean {
 
 function scrollRowIntoView(index: number): void {
   if (props.virtual) {
-    scrollToIndex(index, { align: 'auto' })
+    scrollToIndex(index, { align: 'auto', behavior: 'instant' })
     return
   }
 
-  const selector = '[data-tree-item][data-index="' + index + '"]'
-  getElement(selector, containerRef.value)?.scrollIntoView({ block: 'nearest' })
+  const selector = `[data-tree-item][data-index="${index}"]`
+  getElement(selector, containerRef.value)?.scrollIntoView({
+    block: 'nearest',
+    behavior: 'instant',
+  })
 }
 
 function isNavDisabled(index: number): boolean {

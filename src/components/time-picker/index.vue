@@ -142,7 +142,7 @@ function setTimesScrollTop() {
   elList.forEach((el, i) => {
     const scrollTop = modelValueList[i]! * HEIGHT
 
-    el?.scrollTo({ top: scrollTop })
+    el?.scrollTo({ top: scrollTop, behavior: 'instant' })
   })
 }
 

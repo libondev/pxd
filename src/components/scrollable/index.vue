@@ -292,7 +292,7 @@ function scrollTo(top: number, left: number) {
   if (!contentRef.value) {
     return
   }
-  contentRef.value.scrollTo({ top, left })
+  contentRef.value.scrollTo({ top, left, behavior: 'instant' })
 }
 
 if (props.scrollbar) {

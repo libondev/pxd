@@ -64,10 +64,6 @@ const virtualOptions = reactive({
 
 const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
-/**
- * Non-virtual keeps DOM `scrollIntoView`: group headers are not `itemSize`, so
- * arithmetic/`scrollToIndex` would drift. Virtual path uses the virtualizer.
- */
 function scrollNavIndexIntoView(navIndex: number) {
   const rowIndex = resolveRowIndexByNavIndex(rows.value, navIndex)
   if (rowIndex < 0) {
@@ -75,12 +71,15 @@ function scrollNavIndexIntoView(navIndex: number) {
   }
 
   if (props.virtual) {
-    scrollToIndex(rowIndex, { align: 'auto' })
+    scrollToIndex(rowIndex, { align: 'auto', behavior: 'instant' })
     return
   }
 
-  const el = getElement(`[data-list-item][data-index="${navIndex}"]`, containerRef.value)
-  el?.scrollIntoView({ block: 'nearest' })
+  const selector = `[data-list-item][data-index="${navIndex}"]`
+  getElement(selector, containerRef.value)?.scrollIntoView({
+    block: 'nearest',
+    behavior: 'instant',
+  })
 }
 
 function toSelectedOption(option: ListOption): ListOptionSelected {
