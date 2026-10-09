@@ -8,16 +8,16 @@ Point `selector` at the container that holds your content. The `>` combinator ma
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const viewport = ref(null)
+const viewport = shallowRef(null)
 </script>
 
 <template>
-  <div class="flex items-start gap-6">
-    <PToc :selector="'.demo-basic > :is(h2, h3)[id]'" :scroll-target="viewport" class="w-40 shrink-0" />
+  <div class="flex items-start max-sm:flex-col gap-6">
+    <PToc selector=".demo-basic > :is(h2, h3)[id]" :scroll-target="viewport" class="w-40 shrink-0" />
 
-    <div ref="viewport" class="max-h-72 flex-1 overflow-y-auto rounded-lg border p-4">
+    <div ref="viewport" class="max-h-40 flex-1 overflow-y-auto rounded-lg border p-4">
       <div class="demo-basic">
         <h2 id="basic-install">Install</h2>
         <p class="text-foreground-secondary">
@@ -51,22 +51,22 @@ const viewport = ref(null)
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const viewport = ref(null)
+const viewport = shallowRef(null)
 </script>
 
 <template>
-  <div class="flex items-start gap-6">
+  <div class="flex items-start max-sm:flex-col gap-6">
     <PToc
-      :selector="'.demo-offset > h2[id]'"
+      selector=".demo-offset > h2[id]"
       :scroll-target="viewport"
       :offset="24"
       label="Sections"
       class="w-40 shrink-0"
     />
 
-    <div ref="viewport" class="max-h-56 flex-1 overflow-y-auto rounded-lg border p-4">
+    <div ref="viewport" class="max-h-40 flex-1 overflow-y-auto rounded-lg border p-4">
       <div class="demo-offset">
         <h2 id="offset-a">Section A</h2>
         <p class="text-foreground-secondary">Filler so that the headings can travel across the probe line.</p>
@@ -88,14 +88,14 @@ Use the `item` slot to render an entry yourself. The slot receives the entry, it
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const viewport = ref(null)
+const viewport = shallowRef(null)
 </script>
 
 <template>
-  <div class="flex items-start gap-6">
-    <PToc :selector="'.demo-slot > :is(h2, h3)[id]'" :scroll-target="viewport" class="w-40 shrink-0">
+  <div class="flex items-start max-sm:flex-col gap-6">
+    <PToc selector=".demo-slot > :is(h2, h3)[id]" :scroll-target="viewport" class="w-40 shrink-0">
       <template #item="{ item, depth, active, select }">
         <a
           :href="`#${item.id}`"
@@ -114,7 +114,7 @@ const viewport = ref(null)
       </template>
     </PToc>
 
-    <div ref="viewport" class="max-h-56 flex-1 overflow-y-auto rounded-lg border p-4">
+    <div ref="viewport" class="max-h-40 flex-1 overflow-y-auto rounded-lg border p-4">
       <div class="demo-slot">
         <h2 id="slot-alpha">Alpha</h2>
         <p class="text-foreground-secondary">Filler so that the headings can travel across the probe line.</p>
@@ -133,14 +133,14 @@ A slot replaces the whole entry, so it also owns the indent. Render nothing but 
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const viewport = ref(null)
+const viewport = shallowRef(null)
 </script>
 
 <template>
-  <div class="flex items-start gap-6">
-    <PToc :selector="'.demo-rail > :is(h2, h3)[id]'" :scroll-target="viewport" class="w-6 shrink-0">
+  <div class="flex items-start max-sm:flex-col gap-6">
+    <PToc selector=".demo-rail > :is(h2, h3)[id]" :scroll-target="viewport" class="w-6 shrink-0">
       <template #item="{ item, active, select }">
         <a
           :href="`#${item.id}`"
@@ -163,7 +163,7 @@ const viewport = ref(null)
       </template>
     </PToc>
 
-    <div ref="viewport" class="max-h-56 flex-1 overflow-y-auto rounded-lg border p-4">
+    <div ref="viewport" class="max-h-40 flex-1 overflow-y-auto rounded-lg border p-4">
       <div class="demo-rail">
         <h2 id="rail-start">Getting started</h2>
         <p class="text-foreground-secondary">Filler so that the headings can travel across the probe line.</p>

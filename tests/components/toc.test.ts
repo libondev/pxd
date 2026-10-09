@@ -162,7 +162,7 @@ describe('toc', () => {
     const wrapper = mount(Toc, { props: { selector: SELECTOR } })
     const link = wrapper.find('a')
 
-    expect(link.classes()).toContain('pxd-toc-item')
+    expect(link.classes()).toContain('pxd-toc--item')
     expect(link.classes()).toContain('rounded-md')
     expect(link.classes()).toContain('text-foreground-secondary')
 

@@ -100,7 +100,7 @@ describe('useScrollspy', () => {
     unmount()
   })
 
-  it('should activate nothing above the first target', () => {
+  it('should keep the first target active above it', () => {
     const targets = createTargets([100, 300])
 
     stubScrollMetrics(document.documentElement, {
@@ -113,7 +113,7 @@ describe('useScrollspy', () => {
 
     update()
 
-    expect(activeIndex.value).toBe(-1)
+    expect(activeIndex.value).toBe(0)
 
     unmount()
   })
@@ -166,7 +166,7 @@ describe('useScrollspy', () => {
 
     update()
 
-    expect(activeIndex.value).toBe(-1)
+    expect(activeIndex.value).toBe(0)
 
     unmount()
   })

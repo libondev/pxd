@@ -74,7 +74,6 @@ export function useScrollspy(
   function update(): void {
     const items = targetItems.value
 
-    // Nothing has been read above the first target.
     if (!items.length) {
       setActive(items, -1)
 
@@ -83,12 +82,6 @@ export function useScrollspy(
 
     const metricsEl = getScrollElement(toValue(scrollTarget))
     const { scrollTop, scrollHeight, clientHeight } = getScrollPosition(metricsEl)
-
-    if (scrollTop <= 0) {
-      setActive(items, -1)
-
-      return
-    }
 
     if (isExhausted(scrollTop, scrollHeight, clientHeight)) {
       setActive(items, items.length - 1)
@@ -99,7 +92,7 @@ export function useScrollspy(
     // Resolved once per pass: measuring it per target would repeat the layout read.
     const origin = isViewportScroll(metricsEl) ? 0 : metricsEl.getBoundingClientRect().top
 
-    setActive(items, locateProbe(items, origin))
+    setActive(items, Math.max(locateProbe(items, origin), 0))
   }
 
   if (!isServer()) {

@@ -114,8 +114,7 @@ const { activeEl, update } = useScrollspy(
 const items = computed(() => entries.value.map((entry) => entry.item))
 const activeId = computed(() => activeEl.value?.id ?? null)
 
-// Kept free of `activeId`, so the list keeps stable identities across scroll steps.
-const rows = computed(() => {
+const tocItems = computed(() => {
   if (!items.value.length) {
     return []
   }
@@ -217,17 +216,21 @@ defineExpose({
 </script>
 
 <template>
-  <nav v-if="rows.length" :class="classes" v-bind="attrs">
+  <nav v-if="tocItems.length" :class="classes" v-bind="attrs">
     <ol ref="listEl" class="m-0 p-0 list-none">
-      <li v-for="row in rows" :key="row.item.id" data-toc-item class="pxd-toc--item m-0 list-none">
+      <li
+        v-for="row in tocItems"
+        :key="row.item.id"
+        data-toc-item
+        class="pxd-toc--item m-0 list-none"
+      >
         <slot
           v-if="$slots.item"
           name="item"
-          :item="row"
+          v-bind="row"
           :active="row.item.id === activeId"
           :select="(event: PointerEvent) => onItemClick(row.item, event)"
-        >
-        </slot>
+        />
         <a
           v-else
           :href="`#${row.item.id}`"
@@ -244,7 +247,7 @@ defineExpose({
   </nav>
 </template>
 
-<style lang="postcss">
+<style>
 @media (hover: hover) {
   [data-toc-item]:has(> .pxd-toc--item_active):has(+ [data-toc-item] > .pxd-toc--item-label:hover)
     > .pxd-toc--item_active,
