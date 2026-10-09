@@ -77,7 +77,6 @@ function readOutline(): void {
       },
     }))
 
-  // An identical outline would hand the spy a new target list for nothing.
   if (isSameOutline(next, entries.value)) {
     return
   }
@@ -86,22 +85,6 @@ function readOutline(): void {
 }
 
 const scheduleRead = scheduleByRaf(readOutline)
-
-if (!isServer()) {
-  // Watch structure, text and ids — what the outline reads — not reflow geometry.
-  useMutationObserver(outlineRoot, scheduleRead, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-    attributes: true,
-    attributeFilter: ['id'],
-  })
-
-  watch([() => props.selector, () => props.scrollTarget], scheduleRead, {
-    immediate: true,
-    flush: 'post',
-  })
-}
 
 const { activeEl, update } = useScrollspy(
   computed(() => entries.value.map((entry) => entry.el)),
@@ -197,15 +180,30 @@ function keepActiveVisible(): void {
   }
 }
 
-watch(
-  () => activeId.value,
-  (id) => {
-    emit('active-change', items.value.find((item) => item.id === id) ?? null)
+if (!isServer()) {
+  useMutationObserver(outlineRoot, scheduleRead, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['id'],
+  })
 
-    keepActiveVisible()
-  },
-  { flush: 'post' },
-)
+  watch(() => [props.selector, props.scrollTarget], scheduleRead, {
+    immediate: true,
+    flush: 'post',
+  })
+
+  watch(
+    () => activeId.value,
+    (id) => {
+      emit('active-change', items.value.find((item) => item.id === id) ?? null)
+
+      keepActiveVisible()
+    },
+    { flush: 'post' },
+  )
+}
 
 defineExpose({
   activeId,

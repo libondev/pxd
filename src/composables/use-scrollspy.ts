@@ -11,7 +11,6 @@ import { toValue } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
 import { useResizeObserver } from './use-resize-observer.js'
 
-/** Slack for "the container sits at its maximum scroll offset". */
 const BOTTOM_TOLERANCE = 2
 
 export interface UseScrollspyOptions {
@@ -47,7 +46,7 @@ export function useScrollspy(
 
   /** -1 when no target is at or above the line. */
   function locateProbe(items: HTMLElement[], origin: number): number {
-    const probe = topOffset.value
+    const probe = topOffset.value + BOTTOM_TOLERANCE
     let low = 0
     let high = items.length
 
