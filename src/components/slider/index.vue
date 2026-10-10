@@ -499,7 +499,7 @@ onBeforeUnmount(stopDragging)
         @pointerdown.prevent.stop="startDragging($event, thumb.index)"
       >
         <span
-          class="py-1 px-1 text-xs -top-6 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none text-trim-both group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+          class="pxd-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
         >
           {{ thumb.value }}
         </span>
