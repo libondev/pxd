@@ -528,7 +528,6 @@ onBeforeUnmount(stopDragging)
 
 <style lang="postcss">
 .pxd-slider--thumb {
-  &:hover,
   &:active,
   &[data-dragging='true'] {
     --slider-thumb-scale: 1.3;

@@ -167,7 +167,7 @@
   {
     "camelized": "Feedback Bar",
     "name": "feedback-bar",
-    "category": "Feedback"
+    "category": "AI"
   },
   {
     "camelized": "Gauge",
@@ -317,7 +317,7 @@
   {
     "camelized": "Questionnaire",
     "name": "questionnaire",
-    "category": "Form"
+    "category": "AI"
   },
   {
     "camelized": "Radial Burst",
