@@ -60,7 +60,7 @@ const { attrs, classes } = useTailwindVariant(
 )
 
 const sliderThumbClasses = createTailwindVariant({
-  base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none hover:z-1 active:[--slider-thumb-scale:1.3] motion-safe:before:transition-appearance pointer-fine:hover:[--slider-thumb-scale:1.3]',
+  base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
   variants: {
     size: {
       sm: 'w-1.5 h-3.5',
@@ -544,8 +544,11 @@ onBeforeUnmount(stopDragging)
 
 <style lang="postcss">
 .pxd-slider--thumb {
+  &:hover,
+  &:active,
   &[data-dragging='true'] {
     --slider-thumb-scale: 1.3;
+    z-index: 1;
   }
 
   &::before,
