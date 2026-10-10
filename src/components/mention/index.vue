@@ -166,23 +166,18 @@ function onMentionClick(payload: MentionClickPayload) {
     @show="onPopoverShow"
     @hide="onPopoverHide"
   >
-    <div
-      class="pxd-mention relative w-full max-w-full rounded-md bg-background-100"
-      :class="{ 'is-disabled': disabled }"
+    <PMentionEditor
+      ref="editorRef"
+      v-model="modelValue"
+      :size="computedSize"
       :data-disabled="disabled"
-    >
-      <PMentionEditor
-        ref="editorRef"
-        v-model="modelValue"
-        :size="computedSize"
-        class="rounded-inherit"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :triggers="triggers"
-        @trigger="openSuggest"
-        @mention-click="onMentionClick"
-      />
-    </div>
+      :class="{ 'is-disabled': disabled }"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :triggers="triggers"
+      @trigger="openSuggest"
+      @mention-click="onMentionClick"
+    />
 
     <template #content>
       <div

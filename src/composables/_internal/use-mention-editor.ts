@@ -22,6 +22,7 @@ export interface UseMentionEditorOptions {
   isDisabled: () => boolean
   onUpdate: (html: string) => void
   onTrigger: (trigger: string) => void
+  onSubmit: (html: string) => void
   onMentionClick: (payload: {
     key: string
     label: string
@@ -56,6 +57,7 @@ export function useMentionEditor({
   isDisabled,
   onUpdate,
   onTrigger,
+  onSubmit,
   onMentionClick,
 }: UseMentionEditorOptions): UseMentionEditorReturn {
   const isComposing = shallowRef(false)
@@ -623,6 +625,18 @@ export function useMentionEditor({
 
   function onKeydown(ev: KeyboardEvent) {
     if (isDisabled()) {
+      return
+    }
+
+    // Enter submits instead of splitting the line; Shift+Enter still breaks, and
+    // `isComposing` keeps IME candidate confirmation native.
+    if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
+      ev.preventDefault()
+
+      if (editorRef.value) {
+        onSubmit(serializeMentionHtml(editorRef.value))
+      }
+
       return
     }
 

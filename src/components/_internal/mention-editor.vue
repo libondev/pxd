@@ -30,6 +30,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   trigger: [string]
   change: [string]
+  submit: [string]
   'update:modelValue': [string]
   'mention-click': [{ key: string; label: string; trigger: string; event: MouseEvent }]
 }>()
@@ -67,6 +68,7 @@ const {
     emits('update:modelValue', html)
     emits('change', html)
   },
+  onSubmit: (html) => emits('submit', html),
   onTrigger: (trigger) => emits('trigger', trigger),
   onMentionClick: (payload) => emits('mention-click', payload),
 })
@@ -82,10 +84,7 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    class="pxd-mention-editor--wrap relative w-full max-w-full bg-background-100"
-    v-bind="$attrs"
-  >
+  <div class="pxd-mention relative w-full max-w-full rounded-md bg-background-100" v-bind="$attrs">
     <span
       v-if="isEmpty && !isComposing && placeholder"
       class="pxd-mention-editor--placeholder text-sm inset-0 px-3 py-2 pointer-events-none absolute text-gray-600 select-none"
