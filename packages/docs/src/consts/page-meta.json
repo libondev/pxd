@@ -13,7 +13,7 @@
   },
   "/components/backtop": {
     "title": "Backtop",
-    "description": "A button to back to top."
+    "description": "A back-to-top button that appears once the page or its container scrolls past a threshold."
   },
   "/components/badge": {
     "title": "Badge",

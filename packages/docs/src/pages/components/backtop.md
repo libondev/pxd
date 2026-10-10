@@ -1,6 +1,6 @@
 # Backtop
 
-A button to back to top.
+A back-to-top button that appears once the page or its container scrolls past a threshold.
 
 ## Default
 
