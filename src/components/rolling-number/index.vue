@@ -235,7 +235,7 @@ defineExpose({
 
 <template>
   <span
-    class="pxd-rolling-number text-trim-both"
+    class="pxd-rolling-number tabular-nums text-trim-both"
     role="status"
     aria-live="polite"
     aria-atomic="true"
@@ -243,10 +243,7 @@ defineExpose({
     v-bind="$attrs"
   >
     <template v-if="isScrollMode">
-      <span
-        class="pxd-rolling-number--scroll inline-flex items-baseline tabular-nums"
-        aria-hidden="true"
-      >
+      <span class="pxd-rolling-number--scroll inline-flex items-baseline" aria-hidden="true">
         <template v-for="item in scrollChars" :key="item.key">
           <span
             v-if="item.isDigit"
