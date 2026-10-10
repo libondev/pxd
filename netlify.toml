@@ -22,3 +22,9 @@ force = true
 from = "/*"
 to = "/index.html"
 status = 200
+
+[[redirects]]
+from = "/llm.txt"
+to = "/llms.txt"
+status = 301
+force = true
