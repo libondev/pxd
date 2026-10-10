@@ -77,7 +77,7 @@ function onCopy(text: string) {
 
     <div
       v-if="copyBtn !== 'hidden'"
-      class="min-w-5 relative shrink-0 motion-safe:transition-opacity"
+      class="min-w-5 ms-2 max-sm:opacity-100 relative shrink-0 motion-safe:transition-opacity"
       :class="{ 'opacity-0 group-hover/snippet:opacity-100': copyBtn === 'hover' }"
     >
       <PCopyButton

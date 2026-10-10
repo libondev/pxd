@@ -16,48 +16,40 @@ const CAPABILITIES = [
   {
     title: 'One codebase, both versions',
     detail: 'The same source runs on Vue 2.7+ and Vue 3.2+ — nothing is maintained twice.',
-    key: 'vue-demi',
   },
   {
     title: 'Light and dark themes',
     detail: 'Plain CSS variables behind a single class, with no runtime style injection.',
-    key: '.dark',
   },
   {
     title: 'Motion you can switch off',
     detail:
       'Disable every animation with one variable, or let the OS preference decide. Your JavaScript knows about it too.',
-    key: '--duration: 0',
   },
   {
     title: 'Responsive beyond breakpoints',
     detail:
       'Popovers turn into bottom sheets on small screens, and a swipe gesture engine is built in.',
-    key: '',
   },
   {
     title: 'AI and conversation primitives',
     detail:
       'Bubble, Reasoning, Tool Call, Mention, Command Menu and Stick To Bottom for chat interfaces.',
-    key: '',
   },
   {
     title: 'Import only what you use',
     detail:
       'ESM-only with 7 runtime dependencies, a resolver for auto imports and full tree-shaking.',
-    key: '',
   },
   {
     title: 'Accessible by default',
     detail:
       'Focus trap with nested-dialog coordination, keyboard navigation and ARIA roles throughout.',
-    key: '',
   },
   {
     title: 'TypeScript, end to end',
     detail:
       'Full type definitions for every component and composable, plus a resolver and Volar global component types.',
-    key: '',
   },
 ]
 
@@ -146,23 +138,12 @@ useIntersectionObserver(
       </div>
 
       <div class="bar-cell">
-        <span class="command">
-          <span class="prompt">$</span>
-          <span class="command-text">{{ INSTALL_COMMAND }}</span>
-
-          <PCopyButton
-            :text="INSTALL_COMMAND"
-            variant="ghost"
-            shape="square"
-            size="sm"
-            aria-label="Copy install command"
-          />
-        </span>
+        <PSnippet aria-label="Copy install command" variant="secondary" :text="INSTALL_COMMAND" />
       </div>
     </section>
 
     <section ref="indexEl" class="index" :data-drawn="isIndexDrawn || undefined">
-      <header class="sec-head">
+      <header class="sec-head max-sm:flex-col">
         <h2>Components</h2>
         <span class="tally">{{ inventory }}</span>
       </header>
@@ -171,7 +152,7 @@ useIntersectionObserver(
         <div
           v-for="(group, i) in indexGroups"
           :key="group.label"
-          class="group"
+          class="group-item"
           :style="{ '--i': i }"
         >
           <h3 class="group-label">{{ group.label }}</h3>
@@ -186,7 +167,7 @@ useIntersectionObserver(
     </section>
 
     <section class="spec">
-      <header class="sec-head">
+      <header class="sec-head max-sm:flex-col">
         <h2>What you get</h2>
         <span class="tally">{{ CAPABILITIES.length }} capabilities</span>
       </header>
@@ -197,8 +178,6 @@ useIntersectionObserver(
             <th scope="row">{{ capability.title }}</th>
             <td>
               {{ capability.detail }}
-
-              <code v-if="capability.key">{{ capability.key }}</code>
             </td>
           </tr>
         </tbody>
@@ -209,9 +188,6 @@ useIntersectionObserver(
 
 <style lang="postcss">
 .home {
-  /* Type scales with the measure rather than the viewport, so a line always fills the measure.
-     The explicit width is required: inline-size containment otherwise drops the flex item's
-     intrinsic width and collapses the page. */
   container-type: inline-size;
   width: 100%;
 
@@ -236,26 +212,23 @@ useIntersectionObserver(
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  padding: 16px 24px 24px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline: 0;
-    height: 1px;
-    background-color: var(--color-gray-300);
-    transform-origin: left;
-    animation: rule-draw calc(var(--duration) * 2) var(--timing-function) both;
-  }
-
-  &:first-child::before {
-    display: none;
-  }
+  padding: 20px 24px;
 
   &:nth-child(2)::before {
     animation-delay: calc(var(--duration) * 0.35);
   }
+}
+
+.ruled + .ruled::before,
+.lede::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background-color: var(--color-gray-300);
+  transform-origin: left;
+  animation: rule-draw calc(var(--duration) * 2) var(--timing-function) both;
 }
 
 .dark .ruled::before {
@@ -291,7 +264,7 @@ useIntersectionObserver(
 }
 
 .lede {
-  padding: 20px 24px 26px 176px;
+  padding: 20px 24px 20px 200px;
   animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
   animation-delay: calc(var(--duration) * 0.7);
 
@@ -331,43 +304,11 @@ useIntersectionObserver(
   border-color: var(--color-gray-400);
 }
 
-.command {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 4px 4px 4px 12px;
-  background-color: var(--color-background-200);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  color: var(--home-fg);
-}
-
-.dark .command {
-  border-color: var(--color-gray-400);
-}
-
-.prompt {
-  color: var(--home-muted);
-}
-
-.command-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.command .pxd-button {
-  flex-shrink: 0;
-}
-
 .sec-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
+  gap: 4px;
   padding-block-end: 16px;
   border-block-end: 1px solid var(--color-gray-300);
 
@@ -396,7 +337,7 @@ useIntersectionObserver(
   column-gap: 28px;
 }
 
-.group {
+.group-item {
   break-inside: avoid;
   padding-block: 14px 15px;
 
@@ -428,7 +369,7 @@ useIntersectionObserver(
   }
 }
 
-.dark .group::after {
+.dark .group-item::after {
   background-color: var(--color-gray-400);
 }
 
@@ -443,7 +384,11 @@ useIntersectionObserver(
   transition: color var(--duration) var(--timing-function);
 }
 
-.index[data-drawn] .group {
+.group-label + ul {
+  margin-inline-start: -0.375rem;
+}
+
+.index[data-drawn] .group-item {
   .group-label {
     color: var(--color-gray-1000);
     animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
