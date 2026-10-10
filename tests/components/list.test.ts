@@ -471,4 +471,60 @@ describe('list', () => {
 
     wrapper.unmount()
   })
+
+  it('should show the loading mask and hide the empty slot when loading', async () => {
+    const wrapper = mount(List, {
+      props: { loading: true, options: [] },
+      slots: { empty: 'No results found.' },
+    })
+
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('No results found.')
+    expect(wrapper.find('.pxd-list').attributes('aria-busy')).toBe('true')
+
+    await wrapper.setProps({ loading: false })
+
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(false)
+    expect(wrapper.text()).toContain('No results found.')
+
+    wrapper.unmount()
+  })
+
+  it('should keep the options visible while loading', () => {
+    const wrapper = mount(List, {
+      props: {
+        loading: true,
+        options: [{ label: 'Item 1', value: '1' }],
+      },
+    })
+
+    expect(wrapper.text()).toContain('Item 1')
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should ignore selection and navigation while loading', async () => {
+    const wrapper = mount(List, {
+      props: {
+        loading: true,
+        options: [
+          { label: 'Item 1', value: '1' },
+          { label: 'Item 2', value: '2' },
+        ],
+      },
+    })
+    const vm = wrapper.vm as any
+
+    vm.setActiveIndex(0)
+    expect(vm.dispatch('next')).toBe(false)
+    expect(vm.dispatch('activate')).toBe(false)
+    expect(vm.activeIndex).toBe(0)
+
+    await wrapper.findAll('[data-list-item]')[1].trigger('click')
+    expect(wrapper.emitted('change')).toBeUndefined()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
 })

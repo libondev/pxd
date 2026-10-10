@@ -36,6 +36,7 @@ export interface ListProps {
   /** Class merged into every internally rendered list item. */
   itemClass?: ComponentClass
   defaultActiveIndex?: number
+  loading?: boolean
   /** Enable virtualized rendering for large option sets. */
   virtual?: boolean
   /** Estimated row height in px when `virtual` is enabled. */

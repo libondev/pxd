@@ -131,6 +131,30 @@ const options = []
 </template>
 ```
 
+## Loading
+
+Set `loading` to cover the list with a loading mask, the `empty` slot stays hidden and selection is
+disabled until it is set back to `false`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const loading = ref(true)
+const options = []
+</script>
+
+<template>
+  <PStack align="center">
+    <PList class="w-64" :loading="loading" :options="options">
+      <template #empty>No results found.</template>
+    </PList>
+
+    <PButton size="sm" @click="loading = !loading"> Toggle </PButton>
+  </PStack>
+</template>
+```
+
 ## Virtual
 
 Set `virtual` to render only the visible rows, `item-size` is the estimated row height in pixels.
@@ -206,6 +230,7 @@ function onKeydown(ev) {
 | model-value | `ListModelValue` | - | Selected value, an array when `multiple` is set |
 | options | `ListOptions` | `() => []` | Options and `group` entries to render |
 | item-class | `ComponentClass` | - | Class merged into every internally rendered list item |
+| loading | `boolean` | - | Cover the list with a loading mask, hide the `empty` slot and block selection |
 | multiple | `boolean` | - | Let several options be selected at the same time |
 | default-active-index | `number` | `-1` | Option active before the user navigates |
 | loop | `boolean` | `true` | Wrap keyboard navigation around both ends |
@@ -292,7 +317,7 @@ interface ListOptionSelected {
 | Name | Type | Description |
 | --- | --- | --- |
 | focus | `() => void` | Focus the list container. |
-| dispatch | `(command: ListNavigationCommand) => boolean` | Run a navigation command, returns `false` when it cannot be applied. |
+| dispatch | `(command: ListNavigationCommand) => boolean` | Run a navigation command, returns `false` when it cannot be applied or `loading` is set. |
 | setActiveIndex | `(index: number) => void` | Make the option at the given navigable index active. |
 | setFirstAsActive | `() => void` | Make the first enabled option active. |
 | activeIndex | `number` | Navigable index of the active option, `-1` when none is active. |

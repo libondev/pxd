@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
 import type { ListItemRow, ListHeaderRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, reactive, shallowRef } from 'vue'
@@ -13,6 +14,7 @@ import { resolveOptionByValue } from '../../composables/_internal/use-selected-l
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { provideListContext } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
+import PLoadingMask from '../_internal/loading-mask.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
 
@@ -89,6 +91,10 @@ function toSelectedOption(option: ListOption): ListOptionSelected {
 }
 
 function onItemSelect(value: ListOptionSelected['value']): void {
+  if (props.loading) {
+    return
+  }
+
   const option = resolveOptionByValue(props.options, value)
 
   if (!option) {
@@ -129,6 +135,14 @@ const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive }
 
 function isItemActive(row: ListItemRow): boolean {
   return activeIndex.value === row.navIndex
+}
+
+function dispatchCommand(command: ListNavigationCommand): boolean {
+  if (props.loading) {
+    return false
+  }
+
+  return dispatch(command)
 }
 
 interface RenderEntry {
@@ -178,7 +192,7 @@ provideListContext({
 
 defineExpose({
   focus: () => containerRef.value?.focus(),
-  dispatch,
+  dispatch: dispatchCommand,
   setActiveIndex,
   setFirstAsActive,
   activeIndex,
@@ -191,8 +205,10 @@ defineExpose({
     role="listbox"
     tabindex="-1"
     data-list
+    :aria-busy="loading"
     :aria-multiselectable="multiple"
-    class="pxd-list m-0 p-2 scroll-p-2 max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none"
+    class="pxd-list m-0 p-2 scroll-p-2 relative max-w-full list-none overflow-auto rounded-inherit bg-background-100 outline-none empty:hidden"
+    :class="{ 'min-h-22': loading && !rows.length }"
     v-bind="$attrs"
     @pointerover="onPointerOver"
   >
@@ -232,10 +248,11 @@ defineExpose({
       </div>
     </div>
 
+    <PLoadingMask v-if="loading" />
     <p
-      v-if="!rows.length"
+      v-else-if="!rows.length"
       role="presentation"
-      class="py-7 text-sm text-center text-foreground-secondary empty:hidden"
+      class="pxd-list--empty py-6.5 m-0 text-sm text-center text-foreground-secondary empty:hidden"
     >
       <slot name="empty" />
     </p>
