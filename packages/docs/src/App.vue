@@ -11,9 +11,9 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
     <PLoadingBar group="website" />
     <PBacktop class="right-6 bottom-6 shadow-lg rounded-full" :visible-threshold="100">
       <PButton size="sm" class="group px-2">
-        <ArrowUpIcon class="opacity-0 transition-opacity group-hover:opacity-100" />
+        <ArrowUpIcon class="opacity-0 group-hover:opacity-100 motion-safe:transition-opacity" />
         <PScrollProgress
-          class="text-xs max-sm:hidden absolute opacity-100 transition-opacity group-hover:opacity-0"
+          class="text-xs max-sm:hidden absolute opacity-100 group-hover:opacity-0 motion-safe:transition-opacity"
         />
       </PButton>
     </PBacktop>
