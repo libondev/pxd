@@ -107,7 +107,7 @@ useIntersectionObserver(
         <h1 class="display">Vue 2.7+ <span class="amp">&amp;</span> Vue 3.2+.</h1>
       </div>
 
-      <div class="lede">
+      <div class="lede relative">
         <p>
           A universal UI component library: {{ componentList.length }} components and
           {{ composableList.length }} composables, built-in light/dark theme, PC &amp; mobile ready,
@@ -155,11 +155,13 @@ useIntersectionObserver(
           class="group-item"
           :style="{ '--i': i }"
         >
-          <h3 class="group-label">{{ group.label }}</h3>
+          <h3 class="group-label motion-safe:transition-colors">{{ group.label }}</h3>
 
           <ul>
             <li v-for="item in group.children" :key="item.path">
-              <RouterLink :to="item.path">{{ item.label }}</RouterLink>
+              <RouterLink :to="item.path" class="motion-safe:transition-colors">{{
+                item.label
+              }}</RouterLink>
             </li>
           </ul>
         </div>
@@ -192,16 +194,6 @@ useIntersectionObserver(
 .home {
   container-type: inline-size;
   width: 100%;
-
-  --home-fg: var(--color-gray-900);
-  --home-muted: var(--color-gray-900);
-  --home-accent: var(--color-gray-700);
-}
-
-.dark .home {
-  --home-fg: var(--color-gray-1000);
-  --home-muted: var(--color-gray-800);
-  --home-accent: var(--color-gray-800);
 }
 
 .hero {
@@ -215,10 +207,6 @@ useIntersectionObserver(
   align-items: flex-start;
   gap: 20px;
   padding: 20px 24px;
-
-  &:nth-child(2)::before {
-    animation-delay: calc(var(--duration) * 0.35);
-  }
 }
 
 .ruled + .ruled::before,
@@ -230,7 +218,6 @@ useIntersectionObserver(
   height: 1px;
   background-color: var(--color-gray-300);
   transform-origin: left;
-  animation: rule-draw calc(var(--duration) * 2) var(--timing-function) both;
 }
 
 .dark .ruled::before {
@@ -244,7 +231,7 @@ useIntersectionObserver(
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--home-muted);
+  color: var(--docs-muted);
   white-space: nowrap;
 }
 
@@ -254,27 +241,20 @@ useIntersectionObserver(
   letter-spacing: -0.045em;
   line-height: 0.94;
   white-space: nowrap;
-  animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
-}
-
-.dark .display {
-  animation-delay: calc(var(--duration) * 0.35);
 }
 
 .display .amp {
-  color: var(--home-accent);
+  color: var(--docs-accent);
 }
 
 .lede {
   padding: 20px 24px 20px 200px;
-  animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
-  animation-delay: calc(var(--duration) * 0.7);
 
   p {
     max-width: 62ch;
     font-size: 15px;
     line-height: 1.55;
-    color: var(--home-muted);
+    color: var(--docs-muted);
   }
 }
 
@@ -282,8 +262,6 @@ useIntersectionObserver(
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   border-block: 1px solid var(--color-gray-300);
-  animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
-  animation-delay: calc(var(--duration) * 1.05);
 }
 
 .dark .bar {
@@ -327,7 +305,7 @@ useIntersectionObserver(
 .tally {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--home-muted);
+  color: var(--docs-muted);
 }
 
 .index {
@@ -358,11 +336,8 @@ useIntersectionObserver(
     padding: 1px 6px;
     border-radius: var(--radius-sm);
     font-size: 13px;
-    color: var(--home-fg);
+    color: var(--docs-fg);
     text-decoration: none;
-    transition:
-      background-color var(--duration) var(--timing-function),
-      color var(--duration) var(--timing-function);
 
     &:hover,
     &:focus-visible {
@@ -383,20 +358,15 @@ useIntersectionObserver(
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--home-muted);
-  transition: color var(--duration) var(--timing-function);
+  color: var(--docs-muted);
 }
 
 .group-label + ul {
   margin-inline-start: -0.375rem;
 }
 
-.index[data-drawn] .group-item {
-  .group-label {
-    color: var(--color-gray-1000);
-    animation: display-rise calc(var(--duration) * 2) var(--timing-function) both;
-    animation-delay: calc(var(--i, 0) * var(--duration) * 0.3 + var(--duration) * 0.8);
-  }
+.index[data-drawn] .group-item .group-label {
+  color: var(--color-gray-1000);
 }
 
 .spec {
@@ -422,7 +392,7 @@ useIntersectionObserver(
     vertical-align: top;
     padding-block: 14px;
     font-size: 13px;
-    color: var(--home-muted);
+    color: var(--docs-muted);
     max-width: 68ch;
   }
 
@@ -434,13 +404,6 @@ useIntersectionObserver(
 
 .dark .spec tr {
   border-color: var(--color-gray-400);
-}
-
-@keyframes display-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
 }
 
 @media (max-width: 64rem) {
