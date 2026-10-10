@@ -28,16 +28,19 @@ let scrollContainerEl: ReturnType<typeof getScrollElement> | null
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-backtop will-change-transform',
+    base: 'pxd-backtop',
     variants: {
       appendToBody: {
         true: 'fixed',
         false: 'absolute',
       },
+      visible: {
+        true: 'will-change-transform',
+      },
     },
   },
   {
-    selection: () => ({ appendToBody: props.appendToBody }),
+    selection: () => ({ appendToBody: props.appendToBody, visible: isVisible.value }),
   },
 )
 
