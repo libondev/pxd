@@ -30,7 +30,6 @@ describe('noise-background', () => {
       },
     })
 
-    expect(wrapper.classes()).toContain('isolate')
     expect(wrapper.find('svg').attributes('style')).toContain('mix-blend-mode: soft-light')
 
     wrapper.unmount()

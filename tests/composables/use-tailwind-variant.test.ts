@@ -78,6 +78,7 @@ describe('createTailwindVariant', () => {
 })
 
 describe('useTailwindVariant', () => {
+  // The composable's entire output is a class string, so the classes are the contract.
   it('reacts to selection and attrs class changes', async () => {
     const size = ref<'sm' | 'md'>('sm')
     const attrsClass = ref('px-4')

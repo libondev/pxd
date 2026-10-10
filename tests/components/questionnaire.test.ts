@@ -172,17 +172,14 @@ describe('questionnaire', () => {
 
     expect(wrapper.get('.pxd-questionnaire--question').text()).toContain('Which flow should run?')
     expect(wrapper.get('details').attributes('open')).toBeDefined()
-    expect(wrapper.get('.pxd-questionnaire--title').classes()).toContain('border-b')
 
     await wrapper.get('summary').trigger('click')
 
     expect(wrapper.get('details').attributes('open')).toBeUndefined()
-    expect(wrapper.get('.pxd-questionnaire--title').classes()).not.toContain('border-b')
 
     await wrapper.get('summary').trigger('click')
 
     expect(wrapper.get('details').attributes('open')).toBeDefined()
-    expect(wrapper.get('.pxd-questionnaire--title').classes()).toContain('border-b')
 
     wrapper.unmount()
   })

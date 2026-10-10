@@ -126,6 +126,7 @@ describe('progress', () => {
     wrapper.unmount()
   })
 
+  // `size` has no DOM or attribute output, so the class is the only thing to assert.
   it('should render the size variants', () => {
     const sm = mount(Progress, {
       props: {

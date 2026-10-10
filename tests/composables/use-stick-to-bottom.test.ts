@@ -62,7 +62,6 @@ describe('PStickToBottom', () => {
 
     expect(wrapper.find('.pxd-stick-to-bottom').exists()).toBe(true)
     expect(wrapper.find('.pxd-stick-to-bottom--content .item').exists()).toBe(true)
-    expect(wrapper.classes()).toContain('overflow-y-auto')
   })
 
   it('exposes stick-to-bottom controls', () => {

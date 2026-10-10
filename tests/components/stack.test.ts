@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vite-plus/test'
 import Stack from '../../src/components/stack/index.vue'
 
 describe('stack', () => {
+  // Every prop here resolves to a layout class; there is no other observable output.
   it('should render component and its children', () => {
     const wrapper = mount(Stack, {
       slots: {

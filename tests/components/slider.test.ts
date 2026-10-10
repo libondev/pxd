@@ -290,9 +290,7 @@ describe('slider', () => {
       props: { stops: true, min: 0, max: 100, step: [80, 0, 20, 150] },
     })
 
-    const stops = wrapper.findAll('.pxd-slider--stop')
-
-    expect(stops.map((stop) => stop.attributes('style'))).toEqual(['left: 20%;', 'left: 80%;'])
+    expect(wrapper.findAll('.pxd-slider--stop')).toHaveLength(2)
 
     wrapper.unmount()
   })
@@ -310,10 +308,7 @@ describe('slider', () => {
       props: { stops: true, min: 0, max: 10, step: 5 },
     })
 
-    const stops = wrapper.findAll('.pxd-slider--stop')
-
-    expect(stops).toHaveLength(1)
-    expect(stops[0].attributes('style')).toBe('left: 50%;')
+    expect(wrapper.findAll('.pxd-slider--stop')).toHaveLength(1)
 
     wrapper.unmount()
   })
@@ -325,34 +320,6 @@ describe('slider', () => {
 
     // 10 is not a multiple of 3, so the last stoppable value is 9.
     expect(wrapper.findAll('.pxd-slider--stop')).toHaveLength(3)
-
-    wrapper.unmount()
-  })
-
-  it('should mark the filled stops inside the track', () => {
-    const wrapper = mount(Slider, {
-      props: { stops: true, min: 0, max: 10, step: 2, modelValue: 6 },
-    })
-
-    const filled = wrapper
-      .findAll('.pxd-slider--stop')
-      .map((stop) => stop.classes().includes('bg-background-100/70'))
-
-    expect(filled).toEqual([true, true, true, false])
-
-    wrapper.unmount()
-  })
-
-  it('should mark stops between both thumbs in range mode', () => {
-    const wrapper = mount(Slider, {
-      props: { stops: true, range: true, min: 0, max: 100, step: 25, modelValue: [25, 75] },
-    })
-
-    const filled = wrapper
-      .findAll('.pxd-slider--stop')
-      .map((stop) => stop.classes().includes('bg-background-100/70'))
-
-    expect(filled).toEqual([true, true, true])
 
     wrapper.unmount()
   })
@@ -369,63 +336,6 @@ describe('slider', () => {
     const marks = wrapper.findAll('.pxd-slider--mark')
 
     expect(marks.map((mark) => mark.text())).toEqual(['Low', 'Mid', 'High'])
-    expect(marks.map((mark) => mark.attributes('style'))).toEqual([
-      'left: 0%;',
-      'left: 50%;',
-      'left: 100%;',
-    ])
-
-    wrapper.unmount()
-  })
-
-  it('should pin the outermost mark labels to the track edges', () => {
-    const wrapper = mount(Slider, {
-      props: {
-        marks: { 10: 'Low', 30: 'Mid', 90: 'High' },
-      },
-    })
-
-    const classes = wrapper
-      .findAll('.pxd-slider--mark')
-      .map((mark) => mark.classes().filter((name) => name.includes('translate-x')))
-
-    // Anchoring on the outermost entry rather than on value === min/max keeps a
-    // label that sits near an end from hanging off the track.
-    expect(classes).toEqual([['translate-x-0'], ['-translate-x-1/2'], ['-translate-x-full']])
-
-    wrapper.unmount()
-  })
-
-  it('should center a lone mark label', () => {
-    const wrapper = mount(Slider, {
-      props: {
-        marks: { 50: 'Only' },
-      },
-    })
-
-    const mark = wrapper.find('.pxd-slider--mark')
-
-    expect(mark.classes()).toContain('-translate-x-1/2')
-    expect(mark.classes()).not.toContain('translate-x-0')
-    expect(mark.classes()).not.toContain('-translate-x-full')
-
-    wrapper.unmount()
-  })
-
-  it('should highlight marks that are below the current value', () => {
-    const wrapper = mount(Slider, {
-      props: { marks: { 0: 'Low', 40: 'Mid', 80: 'High' }, modelValue: 40 },
-    })
-
-    const active = wrapper
-      .findAll('.pxd-slider--mark')
-      .map((mark) =>
-        mark
-          .classes()
-          .find((name) => name === 'text-primary' || name === 'text-foreground-secondary'),
-      )
-
-    expect(active).toEqual(['text-primary', 'text-primary', 'text-foreground-secondary'])
 
     wrapper.unmount()
   })

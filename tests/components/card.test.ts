@@ -41,6 +41,7 @@ describe('card', () => {
     wrapper.unmount()
   })
 
+  // `shape` and `border` have no DOM or attribute output, so the class is the only thing to assert.
   it('should apply shape variants', () => {
     const defaultWrapper = mount(Card)
     expect(defaultWrapper.classes()).toContain('rounded-md')

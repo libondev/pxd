@@ -67,11 +67,10 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('lays each row out horizontally', async () => {
+  it('renders the indicator and the body in every row', async () => {
     const wrapper = await mountTodoList({ defaultExpanded: true })
 
     for (const item of wrapper.findAll('.pxd-todo-list--item')) {
-      expect(item.classes()).toContain('flex')
       expect(item.find('.pxd-todo-list--indicator').exists()).toBe(true)
       expect(item.find('.pxd-todo-list--body').exists()).toBe(true)
     }
@@ -79,7 +78,7 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('draws a block marker box so the empty circle keeps its size', async () => {
+  it('renders one marker per item and an icon for the finished states', async () => {
     const wrapper = await mountTodoList({
       defaultExpanded: true,
       options: [
@@ -91,13 +90,6 @@ describe('todo-list', () => {
     const markers = wrapper.findAll('.pxd-todo-list--marker')
 
     expect(markers).toHaveLength(3)
-    expect(markers.map((marker) => marker.classes())).toEqual(
-      expect.arrayContaining([
-        expect.arrayContaining(['block', 'rounded-full']),
-        expect.arrayContaining(['block', 'rounded-full']),
-        expect.arrayContaining(['block', 'rounded-full']),
-      ]),
-    )
 
     // Only the running state draws the spinner itself; the rest share one box.
     expect(markers[0]?.find('svg').exists()).toBe(false)

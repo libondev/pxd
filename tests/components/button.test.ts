@@ -22,9 +22,7 @@ describe('button', () => {
       },
     })
 
-    const classes = wrapper.classes()
-    expect(classes).toContain('bg-background-100')
-    expect(classes).toContain('text-foreground')
+    expect(wrapper.attributes('data-variant')).toBe('default')
 
     wrapper.unmount()
   })

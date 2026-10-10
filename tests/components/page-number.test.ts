@@ -5,6 +5,7 @@ import ConfigProvider from '../../src/components/config-provider/index.vue'
 import PageNumber from '../../src/components/page-number/index.vue'
 
 describe('page-number', () => {
+  // `size` has no DOM or attribute output, so the class is the only thing to assert.
   it('inherits size from config provider and allows prop overrides', () => {
     const wrapper = mount(ConfigProvider, {
       props: {

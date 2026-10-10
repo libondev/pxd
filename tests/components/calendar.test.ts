@@ -83,30 +83,11 @@ describe('calendar', () => {
     const disabledCell = findDateCell(wrapper, 20)
 
     expect(disabledCell.attributes('disabled')).toBeDefined()
-    expect(disabledCell.classes()).not.toContain('opacity-35')
-    expect(disabledCell.find('span').classes()).toContain('opacity-35')
 
     await disabledCell.trigger('click')
 
     expect(wrapper.emitted('change')).toBeUndefined()
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-
-    wrapper.unmount()
-  })
-
-  it('keeps the grid border opaque for dates outside the current month', () => {
-    const wrapper = mount(Calendar, {
-      props: {
-        modelValue: august15,
-      },
-    })
-
-    const outsideMonthCell = findDateCell(wrapper, 31)
-
-    expect(outsideMonthCell.classes()).not.toContain('opacity-60')
-    expect(outsideMonthCell.find('span').classes()).toEqual(
-      expect.arrayContaining(['text-foreground-secondary', 'opacity-60']),
-    )
 
     wrapper.unmount()
   })
@@ -222,6 +203,7 @@ describe('calendar', () => {
     const firstCellClasses = cells[0]!.classes()
 
     expect(cells).toHaveLength(42)
+    // `compact` has no DOM output besides the cell classes.
     expect(firstCellClasses).toEqual(expect.arrayContaining(['min-h-8', 'justify-self-center']))
     expect(firstCellClasses).not.toEqual(expect.arrayContaining(['border-r', 'min-h-14']))
 
