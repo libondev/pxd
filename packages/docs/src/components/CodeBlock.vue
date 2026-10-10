@@ -8,7 +8,7 @@ function getCopyText(ev: PointerEvent) {
 
 <template>
   <div class="code-block mbs-4 w-full max-w-full rounded-lg border">
-    <div class="p-6 overflow-x-auto">
+    <div class="px-6 py-8 overflow-x-auto">
       <slot />
     </div>
 
