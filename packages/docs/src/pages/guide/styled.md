@@ -1,6 +1,6 @@
 # Styled
 
-Completely customize your app on a visual level
+Customize every CSS variable the components are built on, from colors and radius to motion.
 
 ## No CSS Framework
 
@@ -19,7 +19,7 @@ import 'pxd/styles.css'
 @import 'pxd/tw.css';
 ```
 
-## Custom
+## Custom variables
 
 ```css
 /* src/styles/global.css */

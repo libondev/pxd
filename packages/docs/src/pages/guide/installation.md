@@ -1,8 +1,8 @@
 # Installation
 
-Although pxd projects are written in [tailwindcss@4](https://tailwindcss.com/){target="_blank"}, we still provide a native way to help those projects that do not use tailwindcss access.
+PXD itself is styled with [Tailwind CSS 4](https://tailwindcss.com/){target="_blank"}, but the compiled stylesheet also works in projects without any CSS framework.
 
-The adaptation of unocss/tailwindcss@3 will be completed later.
+?> Presets for Tailwind CSS 3 and UnoCSS are not available yet.
 
 ## Setup style
 
@@ -22,15 +22,15 @@ pnpm install pxd
 
 ## Global Import
 
-You can register all the components to the global at one time, but this may lead to a larger volume after your construction.
+Registering the whole library in your entry file is the shortest setup, at the cost of pulling every component into the bundle.
 
 ```js
-import PXD from 'pxd'
+// main.js
 import { createApp } from 'vue'
+import PXD from 'pxd'
+import App from './App.vue'
 
-const app = createApp()
-
-app.use(PXD)
+createApp(App).use(PXD).mount('#app')
 ```
 
 ```html
@@ -41,7 +41,7 @@ app.use(PXD)
 
 ## Import on demand
 
-Only use the components you need to avoid being too big after packaging.
+Importing components one by one keeps the bundle tree-shakeable.
 
 ```html
 <script setup>
@@ -51,13 +51,13 @@ Only use the components you need to avoid being too big after packaging.
 </script>
 
 <template>
-  <button>Click me</button>
+  <Button>Click me</Button>
 </template>
 ```
 
 ## Import automatically
 
-Use [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) to simplify the import process.
+Let [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) resolve components for you with the bundled resolver.
 
 ```bash
 pnpm install -D unplugin-vue-components
@@ -80,8 +80,6 @@ export default defineConfig({
 })
 ```
 
-Then you can focus on the business logic itself.
-
 ```html
 <template>
   <PButton> Click me </PButton>
@@ -90,7 +88,7 @@ Then you can focus on the business logic itself.
 
 ## Volar support
 
-If you are using Volar, you can specify global component types by configuring `compilerOptions.types` in `tsconfig.json`, for better type hints.
+Register the global component types in `tsconfig.json` to get completions for `P`-prefixed components without importing them.
 
 ```json
 // tsconfig.json
@@ -102,7 +100,7 @@ If you are using Volar, you can specify global component types by configuring `c
 }
 ```
 
-If it still has no effect, you may need to disable tsgo in the current workspace:
+If the types still do not apply, disable tsgo in the workspace:
 
 ```json
 // .vscode/settings.json
@@ -111,15 +109,15 @@ If it still has no effect, you may need to disable tsgo in the current workspace
 }
 ```
 
-## For vue2.7+
+## Vue 2.7
 
-Since the defineOptions macro is not currently supported in vue2, you need to install an additional plugin.
+Vue 2.7 cannot compile the `defineOptions()` macro, so it needs the transform plugin.
 
 ```bash
-pnpm install unplugin-vue-define-options@1.5.5
+pnpm install -D unplugin-vue-define-options@1.5.5
 ```
 
-Then enable this plugin in vite/rsbuild:
+Then enable it in Vite or Rsbuild:
 
 ```js
 // vite.config.ts

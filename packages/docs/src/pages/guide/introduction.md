@@ -1,21 +1,27 @@
 # PXD
 
-`pxd` is a versatile component library designed to bridge the compatibility gap between Vue 2 and Vue 3, enabling shared UI components across versions. This library proves remarkably effective for implementing universal applications.
+PXD is a universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase: no `vue-demi`, no duplicated source.
 
-?> While cross-version compatibility is a key feature, certain version requirements still apply: `Vue <= 2.7 || Vue >= 3.3`
+?> Cross-version compatibility comes with a version floor: `Vue >= 2.7` or `Vue >= 3.3`.
 
-For Vue 2.7 implementations, [unplugin-vue-define-options@1.5.5+](https://npmx.dev/package/unplugin-vue-define-options/v/1.5.5){target="_blank"} is essential to provide `defineOptions()` support. Vue 3 users can optionally extend compatibility to version 3.2 through the same [unplugin-vue-define-options@3.1.2+](https://npmx.dev/package/unplugin-vue-define-options/v/3.1.2){target="_blank"} package.
+Every component ships with built-in light and dark themes, adapts to desktop and mobile, and lets every animation be turned off. Start with <RouterLink to="/guide/installation">Installation</RouterLink>.
 
-## Why Additional Plugins Are Necessary
+## Requirements
 
-Each component utilizes `defineOptions()` to define component names and other critical properties. However, this macro functionality isn't included by default in all Vue versions.
+| Vue version | Extra setup |
+| --- | --- |
+| 2.7 | [unplugin-vue-define-options@1.5.5+](https://npmx.dev/package/unplugin-vue-define-options/v/1.5.5){target="_blank"} |
+| 3.2 | Same plugin, [unplugin-vue-define-options@3.1.2+](https://npmx.dev/package/unplugin-vue-define-options/v/3.1.2){target="_blank"} |
+| 3.3+ | None |
 
-Native support for this feature is absent in Vue 2.7 and Vue 3.2. Only Vue 3.3 and newer versions provide built-in support without requiring supplementary plugins.
+## Why the extra plugin
 
-## Implementation Guide
+Every component declares its name and options through `defineOptions()`. Vue 2.7 and Vue 3.2 do not compile this macro natively — it only landed in Vue 3.3 — so those versions need the plugin to transform it.
 
-For practical examples of utilizing compiled macros with various bundling tools, explore the [pxd-vue-examples](https://github.com/libondev/pxd-vue-examples){target="_blank"} repository. This resource offers several implementation examples demonstrating how to effectively integrate this component library into your projects.
+## Examples
+
+Working setups for Vite, Rsbuild, Webpack and other bundlers are kept in the [pxd-vue-examples](https://github.com/libondev/pxd-vue-examples){target="_blank"} repository.
 
 ## Acknowledgements
 
-The implementation of many components and methods largely refers to some open source works and projects, and you can always find links to these projects in the footer. (In no particular order, thanks to these open source projects 🙏🏻)
+Many components and utilities were shaped by prior open source work; the site footer links to those projects (in no particular order, thank you 🙏🏻).

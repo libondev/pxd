@@ -20,6 +20,7 @@ import markdown from 'vite-vue-md'
 import pxdResolver from '../../src/plugins/resolver'
 import pageMeta from './scripts/vite-plugin-page-meta.js'
 import seoFiles from './scripts/vite-plugin-seo-files.js'
+import { siteUrl } from './scripts/site-url.js'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
 
 const codeThemes = {
@@ -43,6 +44,10 @@ const codeHighlighter = await createHighlighter({
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   return {
+    define: {
+      __SITE_URL__: JSON.stringify(siteUrl),
+    },
+
     build: {
       reportCompressedSize: false,
       cssCodeSplit: false,

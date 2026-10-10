@@ -2,7 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 
-const SITE_URL = (process.env.SITE_URL || 'https://pxd-ui.netlify.app').replace(/\/$/, '')
+import { siteUrl as SITE_URL } from './site-url.js'
+
 const PAGES_DIR = fileURLToPath(new URL('../src/pages', import.meta.url))
 const PAGE_META_FILE = fileURLToPath(new URL('../src/consts/page-meta.json', import.meta.url))
 
@@ -41,7 +42,8 @@ function toLastModified(filePath) {
 }
 
 function readTitle(content, routePath) {
-  const matched = content.match(/^#\s+(.+)$/m)
+  // Markdown uses an h1 heading, vue pages render their own.
+  const matched = content.match(/^#\s+(.+)$/m) || content.match(/<h1[^>]*>\s*([^<\s][^<]*?)\s*<\/h1>/)
 
   if (matched) {
     return matched[1].trim()
@@ -132,6 +134,10 @@ export default function seoFilesPlugin() {
 
     configResolved(config) {
       outputDir = path.resolve(config.root, config.build.outDir)
+    },
+
+    transformIndexHtml(html) {
+      return html.replaceAll('__SITE_URL__', SITE_URL)
     },
 
     closeBundle() {

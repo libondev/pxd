@@ -94,7 +94,11 @@ const pageTitle = computed(() => {
     return `${label} - Vue Composable | PXD`
   }
 
-  return route.path === '/' ? HOME_TITLE : `${label} - PXD`
+  if (route.path === '/' || label === 'PXD') {
+    return HOME_TITLE
+  }
+
+  return `${label} - PXD`
 })
 
 const pageDescription = computed(

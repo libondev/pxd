@@ -3,3 +3,5 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, unknown>
   export default component
 }
+
+declare const __SITE_URL__: string

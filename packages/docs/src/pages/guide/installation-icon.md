@@ -1,8 +1,8 @@
 # Installation Icon
 
-?> This is not necessary.
+?> Icons are optional — PXD itself does not depend on an icon set.
 
-We also maintain an unofficial icon library, which provides a lot of beautiful icons. If you want to keep it consistent throughout the project, you can use the same icon.
+[@gdsicon/vue](https://www.npmjs.com/package/@gdsicon/vue){target="_blank"} is maintained alongside PXD and shares its visual language; install it if you want consistent iconography.
 
 ## Install
 
@@ -16,7 +16,7 @@ We also maintain an unofficial icon library, which provides a lot of beautiful i
 pnpm install @gdsicon/vue
 ```
 
-For better performance, we do not recommend registering the entire icon globally, so we do not provide the option of global registration.
+There is deliberately no global registration option: it would pull every icon into the bundle.
 
 ## Import on demand
 
@@ -59,7 +59,7 @@ export default defineConfig({
 })
 ```
 
-Use it directly without having to import it manually
+Icons then resolve on first use
 
 ```html
 <template>

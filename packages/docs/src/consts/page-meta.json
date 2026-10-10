@@ -509,30 +509,30 @@
   },
   "/guide/faq": {
     "title": "FAQ",
-    "description": "Here will record some problems encountered in the process of use. If you have no clue after finding the problems, you can come here and have a look."
+    "description": "Common problems when using PXD across Vue versions, bundlers and style setups, with their fixes."
   },
   "/guide/installation-icon": {
     "title": "Installation Icon",
-    "description": "We also maintain an unofficial icon library, which provides a lot of beautiful icons. If you want to keep it consistent throughout the project, you can use the…"
+    "description": "@gdsicon/vue is maintained alongside PXD and shares its visual language; install it if you want consistent iconography."
   },
   "/guide/installation": {
     "title": "Installation",
-    "description": "Although pxd projects are written in tailwindcss@4, we still provide a native way to help those projects that do not use tailwindcss access."
+    "description": "PXD itself is styled with Tailwind CSS 4, but the compiled stylesheet also works in projects without any CSS framework."
   },
   "/guide/introduction": {
     "title": "PXD",
-    "description": "pxd is a versatile component library designed to bridge the compatibility gap between Vue 2 and Vue 3, enabling shared UI components across versions. This libr…"
+    "description": "PXD is a universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase: no vue-demi, no duplicated source."
   },
   "/guide/problems": {
     "title": "问题记录",
-    "description": "这里记录了实现过程中遇到的一些问题及解决方法，这些问题仅出现在使用当前组件库相同实现方案中，不代表其他方案是否也存在，所以仅供参考"
+    "description": "这里记录实现过程中遇到的问题与解决方法。这些问题只在与本项目相同的实现方案下出现，不代表其他方案同样存在，仅供参考。"
   },
   "/guide/styled": {
     "title": "Styled",
-    "description": "Completely customize your app on a visual level"
+    "description": "Customize every CSS variable the components are built on, from colors and radius to motion."
   },
   "/guide/why": {
-    "title": "README",
-    "description": "需要注意的是，pxd 并非兼容 Vue 的所有版本。为了抹平 Vue2 和 Vue3 之间的差异，项目的 Vue 版本要求不低于 2.7+，或在 Vue3 版本不低于 3.3。这是因为 <script setup> 语法在 2.7 和 3.2 版本才被正式使用，而 defineOptions() 宏则是在 3.3 版…"
+    "title": "为什么做 PXD",
+    "description": "pxd 是一个同时兼容 Vue 2 与 Vue 3 的 UI 组件库，同一套代码无需切换依赖版本即可用在两个大版本的项目里。"
   }
 }

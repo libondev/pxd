@@ -1,44 +1,41 @@
 # FAQ
 
-Here will record some problems encountered in the process of use. If you have no clue after finding the problems, you can come here and have a look.
+Common problems when using PXD across Vue versions, bundlers and style setups, with their fixes.
 
 ## Failed to resolve import "xxx" from xxx
 
-If you find that you encounter some errors about not being able to find dependencies after installing `pxd`, you can create a new `.npmrc` file in the root directory of the project and add: shamefully-hoist=true
-
-write to `.npmrc` file:
+Strict package managers such as pnpm do not hoist dependencies of `pxd`. Add a `.npmrc` to the project root and reinstall:
 
 ```
 shamefully-hoist=true
 ```
 
-## Use camelCase style in Vue2 but the event doesn't take effect?
+## camelCase events do not fire in Vue 2
 
-Because the events in vue2 distinguish between camelCase and kebab-case style, but the common style in vue2 is kebab-case style, please use the form of @kebab-case when the events do not take effect.
+Vue 2 treats `camelCase` and `kebab-case` listeners as different events, and emits are conventionally written in kebab-case. Switch to the kebab-case form when a listener does not fire:
 
 ```html
-<!-- Vue2 only -->
+<!-- Vue 2 only -->
 
-<!-- Bad (does't work) -->
+<!-- Bad (doesn't work) -->
 <Test @cellClick="handleCellClick" />
 
-<!-- Good (it works) -->
+<!-- Good (works) -->
 <Test @cell-click="handleCellClick" />
 ```
 
 ## No loader is configured for ".vue" files
 
-e.g.:
+Triggered by imports such as:
 
 ```js
-import XxxIcon from '@gdsicon/vue/xxx'
+import AccessibilityIcon from '@gdsicon/vue/accessibility'
 ```
 
-This is because the source file provided by the logo library has a suffix of `.vue`, and vite will not read the `.vue` file imported by js in the child dependency by default.
-
-The solution is to set `optimizeDeps.exclude` in vite.config:
+`@gdsicon/vue` publishes raw `.vue` sources, and Vite does not pre-bundle `.vue` files imported from JavaScript inside a dependency. Exclude it from dependency optimization:
 
 ```js
+// vite.config.js
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -48,8 +45,10 @@ export default defineConfig({
 })
 ```
 
-## Button has no background color when pressed in safari browser
+## :active styles do not apply in mobile Safari
 
-The cause of the problem can be found [here](https://stackoverflow.com/questions/3885018/active-pseudo-class-doesnt-work-in-mobile-safari/33681490#33681490)
+Mobile Safari skips `:active` until the document has handled a touch event — see [this explanation](https://stackoverflow.com/questions/3885018/active-pseudo-class-doesnt-work-in-mobile-safari/33681490#33681490){target="_blank"}. Attach an empty handler on `body`:
 
-The solution is: manually add `ontouchstart=""` on the `body` element.
+```html
+<body ontouchstart=""></body>
+```
