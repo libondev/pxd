@@ -364,8 +364,8 @@ onBeforeUnmount(() => {
       @pointerdown.prevent="onTrackPointerdown"
     >
       <div
-        class="pxd-effort-slider--fill inset-y-0 left-0 pointer-events-none absolute rounded-full motion-safe:transition-[width,background]"
-        :class="{ 'motion-safe:transition-colors': dragging || focused }"
+        class="pxd-effort-slider--fill inset-y-0 left-0 pointer-events-none absolute rounded-full motion-safe:transition-[width]"
+        :class="{ 'motion-safe:transition-none': dragging || focused }"
         :style="fillStyle"
       />
 
