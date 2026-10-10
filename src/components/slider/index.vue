@@ -77,16 +77,6 @@ const sliderThumbClasses = createTailwindVariant({
   },
 })
 
-const sliderStopClasses = createTailwindVariant({
-  base: 'pxd-slider--stop pointer-events-none absolute top-1/2 size-1 -translate-x-1/2 -translate-y-1/2 rounded-full',
-  variants: {
-    filled: {
-      true: 'bg-transparent',
-      false: 'bg-gray-500',
-    },
-  },
-})
-
 const sliderMarkClasses = createTailwindVariant({
   base: 'pxd-slider--mark cursor-pointer absolute top-0 appearance-none rounded-xs bg-none p-0 font-inherit text-xs whitespace-nowrap leading-none select-none outline-none self-focus-ring motion-safe:transition-colors',
   variants: {
@@ -113,8 +103,6 @@ const VARIANTS = {
   error: 'hsl(var(--color-red-700-value))',
 }
 
-const filledStopClasses = sliderStopClasses({ filled: true })
-const unfilledStopClasses = sliderStopClasses({ filled: false })
 const activeMarkClasses = sliderMarkClasses({ active: true })
 const inactiveMarkClasses = sliderMarkClasses({ active: false })
 
@@ -310,10 +298,6 @@ const trackStyle = computed(() => ({
     : getFallbackValue(props.variant, VARIANTS, 'primary'),
 }))
 
-function isStopFilled(percentage: number) {
-  return percentage >= startPercentage.value && percentage <= endPercentage.value
-}
-
 function updateValueFromPosition(clientX: number) {
   const index = activeThumb.value
 
@@ -499,7 +483,7 @@ onBeforeUnmount(stopDragging)
       <span
         v-for="stop in stopList"
         :key="stop.value"
-        :class="isStopFilled(stop.percentage) ? filledStopClasses : unfilledStopClasses"
+        class="pxd-slider--stop size-1 pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
         :style="{ left: `${stop.percentage}%` }"
       />
 
