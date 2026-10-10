@@ -10,9 +10,9 @@ Every component ships with built-in light and dark themes, adapts to desktop and
 
 | Vue version | Extra setup |
 | --- | --- |
-| 2.7 | [unplugin-vue-define-options@1.5.5+](https://npmx.dev/package/unplugin-vue-define-options/v/1.5.5){target="_blank"} |
-| 3.2 | Same plugin, [unplugin-vue-define-options@3.1.2+](https://npmx.dev/package/unplugin-vue-define-options/v/3.1.2){target="_blank"} |
-| 3.3+ | None |
+| >=2.7 | [unplugin-vue-define-options@1.5.5+](https://npmx.dev/package/unplugin-vue-define-options/v/1.5.5){target="_blank"} |
+| <=3.2 | [unplugin-vue-define-options@3.1.2+](https://npmx.dev/package/unplugin-vue-define-options/v/3.1.2){target="_blank"} |
+| >=3.3 | None |
 
 ## Why the extra plugin
 
