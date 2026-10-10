@@ -1,6 +1,6 @@
 # PXD
 
-兼容 Vue 2.7 & 3.2 的通用 UI 组件库。内置亮暗色主题，自适应 PC 与移动端，支持完全禁用动画。
+一套代码同时兼容 Vue 2.7 & 3.2 的通用 UI 组件库。内置亮暗色主题，自适应 PC 与移动端，支持完全禁用动画。
 
 [English](README.md) | [Online Preview](https://pxd-ui.netlify.app/)
 
@@ -9,13 +9,14 @@
 
 ## 特性
 
-- 通用兼容：一套代码，同时支持 Vue 2.7+ 和 Vue 3.2+
-- 响应式：无缝适配 PC 与移动端
-- 内置亮色/暗色主题，开箱即用
-- 动画无障碍：支持全局完全禁用动画
-- 使用 TypeScript 编写，提供完整类型定义
-- 基于 Vue 3 Composition API 与 `<script setup>`
-- 完整的 tree-shaking 支持
+- 通用兼容：一套代码同时支持 Vue 2.7+ 和 Vue 3.2+，不依赖 `vue-demi`，没有两份源码
+- 主题系统：亮色/暗色主题即纯 CSS 变量，切换只是一次 class 增删，无运行时样式注入
+- 动效可控：`--duration: 0` 即可全局关闭动画，也自动尊重 `prefers-reduced-motion`
+- 响应式：小屏下浮层自动变为底部抽屉，内置基于 Pointer Events 的手势引擎
+- 面向 AI 场景：Bubble、Reasoning、ToolCall、Mention、CommandMenu、StickToBottom 等对话组件
+- 轻量：运行时依赖仅 7 个，ESM-only，完整 tree-shaking
+- 无障碍：支持嵌套弹层的焦点陷阱、键盘导航与 ARIA 语义
+- TypeScript：完整类型定义，配套 resolver 自动按需引入与 Volar 全局组件类型
 - 设计风格灵感来源于 [Geist Design System](https://vercel.com/geist/introduction)
 
 ## 贡献指南

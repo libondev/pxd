@@ -1,0 +1,538 @@
+{
+  "/components/active-graph": {
+    "title": "Active Graph",
+    "description": "Show the activity of users, and show different levels of brightness according to the level."
+  },
+  "/components/approval-card": {
+    "title": "Approval Card",
+    "description": "Inline confirmation card for agent workflows. It shows the command an agent wants to run and waits for the user to allow or skip it, reporting the decision bac…"
+  },
+  "/components/avatar": {
+    "title": "Avatar",
+    "description": "Avatars represent a user or a team"
+  },
+  "/components/backtop": {
+    "title": "Backtop",
+    "description": "A button to back to top."
+  },
+  "/components/badge": {
+    "title": "Badge",
+    "description": "A label that emphasizes an element that requires attention, or helps categorize with other similar elements."
+  },
+  "/components/book": {
+    "title": "Book",
+    "description": "A responsive book component."
+  },
+  "/components/border-beam": {
+    "title": "Border Beam",
+    "description": "Animated border beam component. The beam follows the border-radius of the outermost element."
+  },
+  "/components/breadcrumb": {
+    "title": "Breadcrumb",
+    "description": "Displays the current page hierarchy and lets users navigate to parent routes."
+  },
+  "/components/browser": {
+    "title": "Browser",
+    "description": "The Browser component lets you showcase website screenshots or any other content within a realistic browser-style frame."
+  },
+  "/components/bubble": {
+    "title": "Bubble",
+    "description": "Show the conversation."
+  },
+  "/components/button": {
+    "title": "Button",
+    "description": "One of the most basic components, it will help you complete the interaction."
+  },
+  "/components/calendar": {
+    "title": "Calendar",
+    "description": "Display and select a date."
+  },
+  "/components/card": {
+    "title": "Card",
+    "description": "Integrate information in a card container."
+  },
+  "/components/carousel": {
+    "title": "Carousel",
+    "description": "Loop a series of images or texts in a limited space."
+  },
+  "/components/checkbox": {
+    "title": "Checkbox",
+    "description": "A control that toggles between two options, checked or unchecked."
+  },
+  "/components/checkerboard": {
+    "title": "Checkerboard",
+    "description": "Display a checkerboard pattern background, commonly used to indicate transparency."
+  },
+  "/components/chip": {
+    "title": "Chip",
+    "description": "An indicator of a numeric value or a state."
+  },
+  "/components/choicebox": {
+    "title": "Choicebox",
+    "description": "A larger form of Radio or Checkbox, where the user has a larger tap target and more details."
+  },
+  "/components/collapse": {
+    "title": "Collapse",
+    "description": "A set of headings, vertically stacked, that each reveal an related section of content. Commonly referred to as an accordion."
+  },
+  "/components/color-selector": {
+    "title": "Color Selector",
+    "description": "Interactive color picker component."
+  },
+  "/components/command-menu": {
+    "title": "Command Menu",
+    "description": "Launch a set of actions as a full-screen overlay."
+  },
+  "/components/config-provider": {
+    "title": "Config Provider",
+    "description": "Config Provider is used for providing global configurations,"
+  },
+  "/components/copy-button": {
+    "title": "Copy Button",
+    "description": "A button that copies a given string to the clipboard and provides feedback when copied."
+  },
+  "/components/countdown": {
+    "title": "Countdown",
+    "description": "Do something when you arrive at the appointed time."
+  },
+  "/components/dash-line": {
+    "title": "Dash Line",
+    "description": "Use controllable forms to create beautiful solid or dotted lines."
+  },
+  "/components/date-picker": {
+    "title": "Date Picker",
+    "description": "Select a calendar date from an input."
+  },
+  "/components/description": {
+    "title": "Description",
+    "description": "Displays a brief heading and subheading to communicate any additional information or context a user needs to continue."
+  },
+  "/components/drawer": {
+    "title": "Drawer",
+    "description": "A sliding panel that appears from the edge of the screen, typically used for navigation, forms, or additional content."
+  },
+  "/components/effort-slider": {
+    "title": "Effort Slider",
+    "description": "Input to pick one level out of a configurable list, e.g. the reasoning effort of a model. Press anywhere on the track to jump to a level, or keep the pointer d…"
+  },
+  "/components/ellipsis-text": {
+    "title": "Ellipsis Text",
+    "description": "Display ellipsis for long text and support for expanding or collapsing text."
+  },
+  "/components/empty-state": {
+    "title": "Empty State",
+    "description": "Fill spaces when no content has been added yet, or is temporarily empty due to the nature of the feature and should be designed to prevent confusion."
+  },
+  "/components/error": {
+    "title": "Error",
+    "description": "Good error design is clear, useful, and friendly. Designing concise and accurate error messages unblocks users and builds trust by meeting people where they ar…"
+  },
+  "/components/fader": {
+    "title": "Fader",
+    "description": "Indicates that there is still something to show in a certain direction."
+  },
+  "/components/feedback-bar": {
+    "title": "Feedback Bar",
+    "description": "Quick feedback bar."
+  },
+  "/components/gauge": {
+    "title": "Gauge",
+    "description": "A circular visual for conveying a percentage."
+  },
+  "/components/grid": {
+    "title": "Grid",
+    "description": "Display elements in a grid layout."
+  },
+  "/components/hold-button": {
+    "title": "Hold Button",
+    "description": "Press and hold the button to trigger some logic (such as delete)."
+  },
+  "/components/input": {
+    "title": "Input",
+    "description": "Retrieve text input from a user."
+  },
+  "/components/intersection-observer": {
+    "title": "Intersection Observer",
+    "description": "Render only when components are visible in the viewport."
+  },
+  "/components/kbd": {
+    "title": "Kbd",
+    "description": "Display keyboard input that triggers an action."
+  },
+  "/components/link-button": {
+    "title": "Link Button",
+    "description": "Inherit button style links."
+  },
+  "/components/list": {
+    "title": "List",
+    "description": "Scrollable listbox driven by the options prop, with groups, single or multiple selection, keyboard navigation and virtualized rows for large option sets."
+  },
+  "/components/loading-bar": {
+    "title": "Loading Bar",
+    "description": "Display the progress of a page or action."
+  },
+  "/components/loading-dots": {
+    "title": "Loading Dots",
+    "description": "Indicate an action running in the background."
+  },
+  "/components/marching-ants": {
+    "title": "Marching Ants",
+    "description": "Click a target to draw an animated dashed outline around its visible shape. The target supports border-radius, clip-path, and radial-gradient mask-image."
+  },
+  "/components/marquee": {
+    "title": "Marquee",
+    "description": "Scrolling text notification bar for displaying long messages."
+  },
+  "/components/material": {
+    "title": "Material",
+    "description": "Various surfaces with shadows, built on top of <Stack>."
+  },
+  "/components/mention": {
+    "title": "Mention",
+    "description": "Mention people or entities inside rich text with @, backed by a searchable suggestion list."
+  },
+  "/components/menu": {
+    "title": "Menu",
+    "description": "Dropdown menu opened via button. Supports typeahead and keyboard navigation."
+  },
+  "/components/message": {
+    "title": "Message",
+    "description": "Display global messages as feedback in response to user operations."
+  },
+  "/components/modal": {
+    "title": "Modal",
+    "description": "Display popup content that requires attention or provides additional information."
+  },
+  "/components/more-button": {
+    "title": "More Button",
+    "description": "Styling component to show expanded or collapsed content."
+  },
+  "/components/noise-background": {
+    "title": "Noise Background",
+    "description": "Overlay a noise texture on a container to add visual depth to its background and contents."
+  },
+  "/components/note": {
+    "title": "Note",
+    "description": "Display text that requires attention or provides additional information."
+  },
+  "/components/number-input": {
+    "title": "Number Input",
+    "description": "Input box for entering numbers only."
+  },
+  "/components/overlay": {
+    "title": "Overlay",
+    "description": "Highlight certain contents."
+  },
+  "/components/page-number": {
+    "title": "Page Number",
+    "description": "Navigate data that spans multiple pages."
+  },
+  "/components/pagination": {
+    "title": "Pagination",
+    "description": "Navigate to the previous or next page."
+  },
+  "/components/pin-input": {
+    "title": "Pin Input",
+    "description": "Used to capture a pin code or otp from the user"
+  },
+  "/components/placeholder": {
+    "title": "Placeholder",
+    "description": "Indicates that it is not empty here."
+  },
+  "/components/popover": {
+    "title": "Popover",
+    "description": "A pop-up box with no style, used to show some information."
+  },
+  "/components/progress": {
+    "title": "Progress",
+    "description": "Display progress relative to a limit or related to a task."
+  },
+  "/components/project-banner": {
+    "title": "Project Banner",
+    "description": "Used for temporary, project-wide notifications that require resolution"
+  },
+  "/components/questionnaire": {
+    "title": "Questionnaire",
+    "description": "An interactive questionnaire component for collecting structured user input through single-select, multi-select, and free-text questions."
+  },
+  "/components/radial-burst": {
+    "title": "Radial Burst",
+    "description": "A comic-style sunburst background with slowly rotating radial rays. Use it to draw attention to centered content such as badges, icons, or call-to-action text."
+  },
+  "/components/radio": {
+    "title": "Radio",
+    "description": "Provides single user input from a selection of options."
+  },
+  "/components/rating": {
+    "title": "Rating",
+    "description": "Rating component for user feedback"
+  },
+  "/components/reasoning": {
+    "title": "Reasoning",
+    "description": "Collapsible reasoning UI for assistant \"thinking\" traces."
+  },
+  "/components/resizable": {
+    "title": "Resizable",
+    "description": "Two panels side by side, separated by a draggable divider that keeps their sizes as percentages of the group."
+  },
+  "/components/rolling-number": {
+    "title": "Rolling Number",
+    "description": "Display a number with a rolling animation effect, supporting decimals and thousands separators."
+  },
+  "/components/scalable-text": {
+    "title": "Scalable Text",
+    "description": "Adaptive text size according to the maximum width, common in internationalized text."
+  },
+  "/components/scroll-progress": {
+    "title": "Scroll Progress",
+    "description": "Track the scroll position of a container and display it as a percentage."
+  },
+  "/components/scroll-text": {
+    "title": "Scroll Text",
+    "description": "Inline text that scrolls on hover only when content overflows. Leaves idle truncated; mouse leave resets to the start. Built for dense lists (e.g. sidebar item…"
+  },
+  "/components/scrollable": {
+    "title": "Scrollable",
+    "description": "The container can be scrolled, and the scroll bar or container effect can be customized."
+  },
+  "/components/search-input": {
+    "title": "Search Input",
+    "description": "Pre-configured search input with a magnifying glass icon and clear button."
+  },
+  "/components/select": {
+    "title": "Select",
+    "description": "Displays a list of options for the user to pick from—triggered by a button."
+  },
+  "/components/separator": {
+    "title": "Separator",
+    "description": "Visually or semantically separates content."
+  },
+  "/components/shimmer-text": {
+    "title": "Shimmer Text",
+    "description": "Give your text a shimmer sweep effect."
+  },
+  "/components/skeleton": {
+    "title": "Skeleton",
+    "description": "Display a skeleton whilst another component is loading."
+  },
+  "/components/slider": {
+    "title": "Slider",
+    "description": "Input to select a value from a given range."
+  },
+  "/components/snippet": {
+    "title": "Snippet",
+    "description": "Display a snippet of copyable code for the command line."
+  },
+  "/components/spinner-dots": {
+    "title": "Dots Spinner",
+    "description": "Braille-style spinner that cycles through dot-matrix characters to indicate a running process."
+  },
+  "/components/spinner": {
+    "title": "Spinner",
+    "description": "Indicate an action running in the background. Unlike the loading dots, this should generally be used to indicate loading feedback in response to a user action,…"
+  },
+  "/components/split-button": {
+    "title": "Split Button",
+    "description": "A button that offers a primary interaction coupled with a dropdown menu offering additional actions."
+  },
+  "/components/stack": {
+    "title": "Stack",
+    "description": "Display elements vertically or horizontally on the page."
+  },
+  "/components/status-dot": {
+    "title": "Status Dot",
+    "description": "Display an indicator of deployment status."
+  },
+  "/components/steps": {
+    "title": "Steps",
+    "description": "Guide the user to complete tasks in accordance with the process."
+  },
+  "/components/stick-to-bottom": {
+    "title": "Stick To Bottom",
+    "description": "Keep a scroll container pinned to the bottom while content updates, until the user scrolls away. Scrolling back to the bottom restores auto-follow."
+  },
+  "/components/swipe-cell": {
+    "title": "Swipe Cell",
+    "description": "Swipeable container for exposing contextual actions on the left or right side."
+  },
+  "/components/switch": {
+    "title": "Switch",
+    "description": "Choose between a set of options."
+  },
+  "/components/tabs": {
+    "title": "Tabs",
+    "description": "Display tab content."
+  },
+  "/components/teleport": {
+    "title": "Teleport",
+    "description": "Provide 2.7 with behavior similar to the <Teleport> component built in 3."
+  },
+  "/components/text": {
+    "title": "Text",
+    "description": "Display text using well-defined typographic styles."
+  },
+  "/components/textarea": {
+    "title": "Textarea",
+    "description": "Retrieve multi-line user input."
+  },
+  "/components/theme-switcher": {
+    "title": "Theme Switcher",
+    "description": "Component that allows users to switch between light and dark themes."
+  },
+  "/components/time-picker": {
+    "title": "Time Picker",
+    "description": "Select specific time only."
+  },
+  "/components/timeline": {
+    "title": "Timeline",
+    "description": "Display a series of events in chronological order."
+  },
+  "/components/toc": {
+    "title": "Toc",
+    "description": "Renders an outline of the headings in your page, tracks which one the reader is currently on, and scrolls to a heading on activation."
+  },
+  "/components/todo-list": {
+    "title": "Todo List",
+    "description": "Render a checklist that walks items through a workflow."
+  },
+  "/components/toggle-button": {
+    "title": "Toggle Button",
+    "description": "A two-state button that can be either on or off."
+  },
+  "/components/toggle": {
+    "title": "Toggle",
+    "description": "Switch between two values"
+  },
+  "/components/tool-call": {
+    "title": "Tool Call",
+    "description": "Collapsible card for tool / function call traces with input and output payloads."
+  },
+  "/components/tooltip": {
+    "title": "Tooltip",
+    "description": "Display prompt information for mouse hover."
+  },
+  "/components/tree": {
+    "title": "Tree",
+    "description": "Tree view driven by the data prop, with expandable parents, single or cascading multiple selection, disabled nodes, built-in search and virtualized rows for la…"
+  },
+  "/components/virtual-list": {
+    "title": "Virtual List",
+    "description": "Display unlimited data lists and maintain page performance"
+  },
+  "/composables/use-backoff-retry": {
+    "title": "useBackoffRetry",
+    "description": "Runs an async task with exponential backoff and full jitter. Cancels in-flight work and pending waits when the effect scope is disposed, or when you call abort…"
+  },
+  "/composables/use-client-online": {
+    "title": "useClientOnline",
+    "description": "Tracks browser network connectivity status (online/offline)."
+  },
+  "/composables/use-color-scheme": {
+    "title": "useColorScheme",
+    "description": "Manages dark/light color scheme with localStorage persistence and multi-instance synchronization."
+  },
+  "/composables/use-copy-click": {
+    "title": "useCopyClick",
+    "description": "Provides clipboard text copying with copy-state tracking and visual feedback."
+  },
+  "/composables/use-countdown": {
+    "title": "useCountdown",
+    "description": "Manages countdown/count-up timers with configurable precision and event emission."
+  },
+  "/composables/use-deferred-value": {
+    "title": "useDeferredValue",
+    "description": "Defers value updates by a configurable delay, useful for debouncing reactive changes."
+  },
+  "/composables/use-delay-change": {
+    "title": "useDelayChange",
+    "description": "Updates a value with optional delay, supporting immediate or deferred changes."
+  },
+  "/composables/use-delay-destroy": {
+    "title": "useDelayDestroy",
+    "description": "Manages two-phase visibility transitions (render + visible) with configurable delay on unmount."
+  },
+  "/composables/use-document-hidden": {
+    "title": "useDocumentHidden",
+    "description": "Tracks document visibility state and fires callback on visibility changes."
+  },
+  "/composables/use-intersection-observer": {
+    "title": "useIntersectionObserver",
+    "description": "Creates and manages a browser IntersectionObserver for one or more target elements. The observer is built once the targets resolve and is released when the own…"
+  },
+  "/composables/use-loading-bar": {
+    "title": "useLoadingBar",
+    "description": "Dispatches loading bar state changes (start/finish/error/increase) via custom events."
+  },
+  "/composables/use-media-query": {
+    "title": "useMediaQuery",
+    "description": "Tracks media query matches with caching and reactive updates."
+  },
+  "/composables/use-message": {
+    "title": "useMessage",
+    "description": "Creates and dispatches toast/message notifications via custom events."
+  },
+  "/composables/use-mutation-observer": {
+    "title": "useMutationObserver",
+    "description": "Creates and manages a browser MutationObserver for one or more target elements. The observer is built once the targets resolve and is released when the owning …"
+  },
+  "/composables/use-outside-click": {
+    "title": "useOutsideClick",
+    "description": "Detects clicks outside a container with allowlist support and optional enable/disable logic."
+  },
+  "/composables/use-repeat-action": {
+    "title": "useRepeatAction",
+    "description": "Repeats an action while pointer is pressed, with acceleration from initial interval to final interval."
+  },
+  "/composables/use-resize-observer": {
+    "title": "useResizeObserver",
+    "description": "Creates and manages a browser ResizeObserver for one or more target elements. The observer is built once the targets resolve and is released when the owning sc…"
+  },
+  "/composables/use-scrollspy": {
+    "title": "useScrollspy",
+    "description": "Tracks which target element is currently in the viewport during scroll."
+  },
+  "/composables/use-stick-to-bottom": {
+    "title": "useStickToBottom",
+    "description": "Keep a scroll container pinned to the bottom while content changes, until the user scrolls away. Returning to the bottom re-enables auto-follow."
+  },
+  "/composables/use-toggle-value": {
+    "title": "useToggleValue",
+    "description": "Toggles between truthy/falsy values with optional custom values."
+  },
+  "/composables/use-virtual-list": {
+    "title": "useVirtualList",
+    "description": "Manages virtualized rendering of large lists with scroll-to support."
+  },
+  "/composables/use-window-size": {
+    "title": "useWindowSize",
+    "description": "Tracks window dimensions reactively, updating on resize and orientation change."
+  },
+  "/guide/faq": {
+    "title": "FAQ",
+    "description": "Here will record some problems encountered in the process of use. If you have no clue after finding the problems, you can come here and have a look."
+  },
+  "/guide/installation-icon": {
+    "title": "Installation Icon",
+    "description": "We also maintain an unofficial icon library, which provides a lot of beautiful icons. If you want to keep it consistent throughout the project, you can use the…"
+  },
+  "/guide/installation": {
+    "title": "Installation",
+    "description": "Although pxd projects are written in tailwindcss@4, we still provide a native way to help those projects that do not use tailwindcss access."
+  },
+  "/guide/introduction": {
+    "title": "PXD",
+    "description": "pxd is a versatile component library designed to bridge the compatibility gap between Vue 2 and Vue 3, enabling shared UI components across versions. This libr…"
+  },
+  "/guide/problems": {
+    "title": "问题记录",
+    "description": "这里记录了实现过程中遇到的一些问题及解决方法，这些问题仅出现在使用当前组件库相同实现方案中，不代表其他方案是否也存在，所以仅供参考"
+  },
+  "/guide/styled": {
+    "title": "Styled",
+    "description": "Completely customize your app on a visual level"
+  },
+  "/guide/why": {
+    "title": "README",
+    "description": "需要注意的是，pxd 并非兼容 Vue 的所有版本。为了抹平 Vue2 和 Vue3 之间的差异，项目的 Vue 版本要求不低于 2.7+，或在 Vue3 版本不低于 3.3。这是因为 <script setup> 语法在 2.7 和 3.2 版本才被正式使用，而 defineOptions() 宏则是在 3.3 版…"
+  }
+}

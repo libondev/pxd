@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="PXD - One codebase for Vue 2.7+ and Vue 3.2+">
+  <rect width="1200" height="630" fill="#0a0a0a" />
+
+  <circle cx="980" cy="120" r="220" fill="#ffffff" opacity="0.04" />
+  <circle cx="200" cy="560" r="260" fill="#ffffff" opacity="0.03" />
+
+  <text x="80" y="300" fill="#fafafa" font-family="Helvetica, Arial, sans-serif" font-size="140" font-weight="700" letter-spacing="-6">PXD</text>
+
+  <text x="80" y="380" fill="#fafafa" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="500">One codebase for Vue 2.7+ &amp; Vue 3.2+</text>
+
+  <text x="80" y="450" fill="#a1a1a1" font-family="Helvetica, Arial, sans-serif" font-size="30">Universal UI component library</text>
+
+  <text x="80" y="500" fill="#a1a1a1" font-family="Helvetica, Arial, sans-serif" font-size="30">Built-in light/dark theme - PC &amp; mobile ready - animation-free mode</text>
+
+  <rect x="80" y="546" width="120" height="4" rx="2" fill="#fafafa" />
+</svg>

@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: PXD
-description: A Vue 2.7 & 3.2 universal component library with built-in light/dark theme, PC & mobile ready, animation-free mode supported. Inspired by Vercel Geist Design System.
+description: A universal Vue 2.7 & 3.2 component library built from one codebase. Built-in light/dark theme, PC & mobile ready, animation-free mode supported. Inspired by Vercel Geist Design System.
 colors:
   primary: "#171717"
   primary-hover: "#3d3d3d"

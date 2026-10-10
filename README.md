@@ -1,6 +1,6 @@
 # PXD
 
-A Vue 2.7 & 3.2 universal component library. Built-in light/dark theme. PC & mobile ready. Animation-free mode supported.
+A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.
 
 [简体中文](README-CN.md) | [Online Preview](https://pxd-ui.netlify.app/)
 
@@ -10,13 +10,14 @@ A Vue 2.7 & 3.2 universal component library. Built-in light/dark theme. PC & mob
 
 ## Features
 
-- Universal: One codebase for Vue 2.7+ and Vue 3.2+
-- Responsive: Seamlessly works on both PC and mobile devices
-- Built-in light & dark theme, no extra configuration needed
-- Motion-safe: Supports fully disabling all animations
-- Written in TypeScript with full type definitions
-- Vue 3 Composition API with `<script setup>`
-- Complete tree-shaking support
+- Universal: One codebase for Vue 2.7+ and Vue 3.2+, no `vue-demi` and no duplicated source
+- Theming: Light & dark themes as plain CSS variables, switching is a single class toggle
+- Motion-safe: Turn off every animation with `--duration: 0`, or follow `prefers-reduced-motion`
+- Responsive: Popovers become bottom sheets on small screens, with a built-in swipe gesture engine
+- AI-ready: Bubble, Reasoning, ToolCall, Mention, CommandMenu and StickToBottom for chat UIs
+- Lean: Only 7 runtime dependencies, ESM-only, full tree-shaking
+- Accessible: Focus trap with nested-dialog coordination, keyboard navigation and ARIA roles
+- TypeScript: Full type definitions, resolver for auto imports and Volar global component types
 - Inspired by the [Geist Design System](https://vercel.com/geist/introduction)
 
 ## Contribution

@@ -1,12 +1,19 @@
 <script lang="ts" setup>
+import { useHead } from '@unhead/vue'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { humanize } from 'pxd/utils/format'
-import { isServer } from 'pxd/utils/is'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { githubLink } from '@/consts/link'
+import { githubLink, siteUrl } from '@/consts/link'
+import pageMeta from '@/consts/page-meta.json'
 import Menus from '../../components/Menus.vue'
 import TocNav from '../../components/TocNav.vue'
+
+const HOME_TITLE = 'PXD - One Codebase for Vue 2.7+ & Vue 3.2+'
+const DEFAULT_DESCRIPTION =
+  'A universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.'
+
+const pageMetaMap = pageMeta as Record<string, { title: string; description: string } | undefined>
 
 interface MenuItem {
   label: string
@@ -74,15 +81,38 @@ const componentSourcePath = computed(() => {
   return path + '/index.vue'
 })
 
-if (!isServer()) {
-  watch(
-    () => route.path,
-    () => {
-      document.title = `${humanize(route.path.split('/').pop()!)} - PXD`
-    },
-    { immediate: true },
-  )
-}
+const metaOfCurrentPage = computed(() => pageMetaMap[route.path])
+
+const pageTitle = computed(() => {
+  const label = metaOfCurrentPage.value?.title || humanize(route.path.split('/').pop() || 'PXD')
+
+  if (route.path.startsWith('/components/')) {
+    return `${label} - Vue Component | PXD`
+  }
+
+  if (route.path.startsWith('/composables/')) {
+    return `${label} - Vue Composable | PXD`
+  }
+
+  return route.path === '/' ? HOME_TITLE : `${label} - PXD`
+})
+
+const pageDescription = computed(
+  () => metaOfCurrentPage.value?.description || DEFAULT_DESCRIPTION,
+)
+
+const pageUrl = computed(() => (route.path === '/' ? `${siteUrl}/` : `${siteUrl}${route.path}`))
+
+useHead({
+  title: () => pageTitle.value,
+  meta: [
+    { name: 'description', content: () => pageDescription.value },
+    { property: 'og:title', content: () => pageTitle.value },
+    { property: 'og:description', content: () => pageDescription.value },
+    { property: 'og:url', content: () => pageUrl.value },
+  ],
+  link: [{ rel: 'canonical', href: () => pageUrl.value }],
+})
 </script>
 
 <template>

@@ -52,9 +52,6 @@ New component description.\n
           !filePath.endsWith('index.ts')
         ) {
           const composableName = path.basename(filePath, '.ts')
-          const displayName = composableName
-            .replace(/^use-/, 'use')
-            .replace(/-./g, (m) => m[1].toUpperCase())
 
           const mdFilePath = path.resolve(
             process.cwd(),
@@ -63,7 +60,7 @@ New component description.\n
             'composables',
             `${composableName}.md`,
           )
-          const mdFileContent = `# ${displayName}\n\nTODO: Add description.\n\n## Exports\n\n\`\`\`ts\n// TODO: Add exports\n\`\`\`\n`
+          const mdFileContent = `# ${humanize(composableName)}\n\nTODO: Add description.\n\n## Exports\n\n\`\`\`ts\n// TODO: Add exports\n\`\`\`\n`
           writeFileSync(mdFilePath, mdFileContent)
         }
       })

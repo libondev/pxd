@@ -4,7 +4,7 @@ import { on } from 'pxd/utils/event'
 import { githubLink } from '@/consts/link'
 
 useHead({
-  title: `PXD - Universal Vue 2.7 & Vue 3.2+ UI Component Library`,
+  title: `PXD - One Codebase for Vue 2.7+ & Vue 3.2+`,
 })
 
 const cleanupFns = []
@@ -81,8 +81,8 @@ onBeforeUnmount(() => {
       <p
         class="mbs-8 max-w-xl leading-relaxed! leading-tight mx-auto text-balance text-foreground-secondary"
       >
-        Built-in light/dark theme, PC & mobile ready, animation-free mode supported. One codebase
-        for Vue 2.7+ & Vue 3.2+. Written in TypeScript.
+        A universal UI component library: one codebase for Vue 2.7+ and Vue 3.2+. Built-in
+        light/dark theme, PC & mobile ready, and every animation can be turned off.
       </p>
 
       <div class="mbs-16 gap-3 flex justify-center">
@@ -112,9 +112,12 @@ onBeforeUnmount(() => {
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mbe-1.5 font-medium">Vue 2 & 3 compatibility</h3>
+        <h3 class="mbe-1.5 font-medium">One codebase, both versions</h3>
 
-        <PText secondary> Use the same syntax across Vue 2.7+ and Vue 3.2+.</PText>
+        <PText secondary>
+          The same source runs on Vue 2.7+ and Vue 3.2+ — no <code>vue-demi</code>, no duplicated
+          code.
+        </PText>
       </div>
 
       <div
@@ -123,63 +126,71 @@ onBeforeUnmount(() => {
         <h3 class="mbe-1.5 font-medium">Light and dark themes</h3>
 
         <PText secondary>
-          Switch between light and dark themes with ease. See
-          <RouterLink to="/components/theme-switcher#premise" class="text-foreground underline"
-            >here</RouterLink
-          >
-          for more information.
+          Theming is plain CSS variables behind a <code>.dark</code> class. Switching costs one
+          class toggle, with no runtime style injection.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mbe-1.5 font-medium">On-demand imports</h3>
-
-        <PText secondary> Import only the components you use with a resolver.</PText>
-      </div>
-
-      <div
-        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
-      >
-        <h3 class="mbe-1.5 font-medium">Reduced-motion support</h3>
+        <h3 class="mbe-1.5 font-medium">Motion you can switch off</h3>
 
         <PText secondary>
-          Respect
-          <code class="text-gray-900">prefers-reduced-motion: reduce</code>
-          to automatically reduce transitions and animations.
+          Set <code>--duration: 0</code> to disable every animation, or let
+          <code>prefers-reduced-motion</code> decide. Your JavaScript knows about it too.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mbe-1.5 font-medium">Configurable motion</h3>
+        <h3 class="mbe-1.5 font-medium">Responsive beyond breakpoints</h3>
 
         <PText secondary>
-          Control enter and leave motion independently with
-          <code class="text-gray-900">enterMotion</code> and
-          <code class="text-gray-900">leaveMotion</code>.
+          Popovers turn into bottom sheets on small screens, and a swipe gesture engine is built in.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mbe-1.5 font-medium">Deep customization</h3>
+        <h3 class="mbe-1.5 font-medium">AI and conversation primitives</h3>
 
         <PText secondary>
-          Customize component <span class="font-medium">transition-duration</span> and
-          <span class="font-medium">transition-timing-function</span> globally.
+          Bubble, Reasoning, ToolCall, Mention, CommandMenu and StickToBottom for chat interfaces.
         </PText>
       </div>
 
       <div
         class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
       >
-        <h3 class="mbe-1.5 font-medium">Responsive by design</h3>
+        <h3 class="mbe-1.5 font-medium">Import only what you use</h3>
 
-        <PText secondary> Build polished interfaces for desktop and mobile devices.</PText>
+        <PText secondary>
+          ESM-only with 7 runtime dependencies, a resolver for auto imports and full tree-shaking.
+        </PText>
+      </div>
+
+      <div
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
+      >
+        <h3 class="mbe-1.5 font-medium">Accessible by default</h3>
+
+        <PText secondary>
+          Focus trap with nested-dialog coordination, keyboard navigation and ARIA roles throughout.
+        </PText>
+      </div>
+
+      <div
+        class="feature-item min-h-28 p-5 sm:w-[calc(50%-0.5rem)] hover:shadow-lg relative z-2 w-full overflow-hidden rounded-lg border duration-180 hover:border-primary"
+      >
+        <h3 class="mbe-1.5 font-medium">TypeScript, end to end</h3>
+
+        <PText secondary>
+          Full type definitions for every component and composable, plus a resolver and Volar global
+          component types.
+        </PText>
       </div>
     </section>
   </main>
