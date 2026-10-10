@@ -10,5 +10,4 @@
 *.ico binary
 *.pdf binary
 *.zip binary
-*.svg text eol=lf
 pnpm-lock.yaml text eol=lf merge=binary linguist-generated=true
