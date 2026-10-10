@@ -189,7 +189,7 @@
   },
   "/components/mention": {
     "title": "Mention",
-    "description": "Mention people or entities inside rich text with @, backed by a searchable suggestion list."
+    "description": "Mention people or entities inside rich text with @ or any other configured trigger, backed by a searchable suggestion list."
   },
   "/components/menu": {
     "title": "Menu",

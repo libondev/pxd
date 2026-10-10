@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ListOptionSelected } from '../list/types'
-import type { MentionEmits, MentionProps } from './types'
+import type { ListOptionSelected, ListOptions } from '../list/types'
+import type { MentionClickPayload, MentionEmits, MentionProps } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
@@ -9,6 +9,7 @@ import { usePopoverResponsive } from '../../composables/_internal/use-popover-re
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId } from '../../utils/helper.js'
+import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
 import PMentionEditor from '../_internal/mention-editor.vue'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
@@ -25,6 +26,7 @@ defineOptions({
 const props = withDefaults(defineProps<MentionProps>(), {
   modelValue: '',
   options: () => [],
+  triggers: () => [DEFAULT_TRIGGER],
   placeholder: '',
   searchPlaceholder: '',
   disabled: false,
@@ -45,20 +47,32 @@ const editorRef = shallowRef<InstanceType<typeof PMentionEditor>>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const searchInputRef = shallowRef<HTMLInputElement>()
 
+function resolveOptions(trigger: string): ListOptions {
+  return typeof props.options === 'function' ? props.options(trigger) : props.options
+}
+
 const {
   filterKeyword,
   listOptions,
+  isEmptyResult,
   isPending,
   open: openSuggest,
   close: closeSuggest,
   setKeyword,
 } = useMentionSuggest({
-  getOptions: () => props.options,
+  getOptions: resolveOptions,
   getFilterMethod: () => props.filterMethod,
   isDisabled: () => props.disabled,
   visible: popoverVisible,
   setVisible: (visible) => togglePopoverVisible(visible),
 })
+
+// PList covers its own loading state and hides its empty slot while loading, so the
+// list only has to stay out of the way before anything has been asked: an unfiltered
+// empty list reads as "no results for ''" the moment the popover opens.
+const shouldRenderList = computed(
+  () => listOptions.value.length > 0 || isPending.value || isEmptyResult.value,
+)
 
 const computedSize = computed(() => props.size || configProvider.size)
 
@@ -128,7 +142,7 @@ function onOptionSelect(item: ListOptionSelected) {
   }
 }
 
-function onMentionClick(payload: { key: string; label: string; event: MouseEvent }) {
+function onMentionClick(payload: MentionClickPayload) {
   emits('mention-click', payload)
 }
 </script>
@@ -136,7 +150,7 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
 <template>
   <PPopover
     v-model="popoverVisible"
-    class="pxd-mention w-full max-w-full"
+    class="w-full"
     position="bottom-start"
     :trigger="[]"
     :auto-focus-element="true"
@@ -153,7 +167,7 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
     @hide="onPopoverHide"
   >
     <div
-      class="pxd-mention--field relative w-full max-w-full rounded-md bg-background-100"
+      class="pxd-mention relative w-full max-w-full rounded-md bg-background-100"
       :class="{ 'is-disabled': disabled }"
       :data-disabled="disabled"
     >
@@ -164,6 +178,7 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
         class="rounded-inherit"
         :placeholder="placeholder"
         :disabled="disabled"
+        :triggers="triggers"
         @trigger="openSuggest"
         @mention-click="onMentionClick"
       />
@@ -178,17 +193,19 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
             :id="searchInputId"
             ref="searchInputRef"
             :value="filterKeyword"
-            type="search"
+            type="text"
             autocomplete="off"
             autocorrect="off"
             spellcheck="false"
             role="combobox"
+            inputmode="search"
             aria-autocomplete="list"
             :aria-controls="listId"
             :aria-expanded="popoverVisible"
-            :aria-disabled="isPending"
+            :aria-busy="isPending"
+            :aria-disabled="disabled"
             :placeholder="searchPlaceholder"
-            class="h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
+            class="pxd-mention--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
             @input="onSearchInput"
             @keydown="onSearchKeydownWithEscape"
           />
@@ -203,14 +220,15 @@ function onMentionClick(payload: { key: string; label: string; event: MouseEvent
         </label>
 
         <PList
+          v-show="shouldRenderList"
           :id="listId"
           ref="listRef"
           :loop="false"
           :virtual="virtual"
+          :loading="isPending"
           :options="listOptions"
           :default-active-index="0"
           class="max-h-68 min-h-0 flex-1 rounded-none border-t"
-          :class="{ 'pointer-events-none opacity-60': isPending }"
           @change="onOptionSelect"
         >
           <template v-if="$slots.item" #item="itemSlotProps">

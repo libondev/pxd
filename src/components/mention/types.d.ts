@@ -1,11 +1,17 @@
 import type { ComponentSize } from '../../types/shared/props'
 import type { ListOptions } from '../list/types'
 
-export type MentionFilterMethod = (query: string) => ListOptions | Promise<ListOptions>
+export type MentionFilterMethod = (
+  query: string,
+  trigger: string,
+) => ListOptions | Promise<ListOptions>
+
+export type MentionOptionsResolver = (trigger: string) => ListOptions
 
 export interface MentionProps {
   modelValue?: string
-  options?: ListOptions
+  options?: ListOptions | MentionOptionsResolver
+  triggers?: string[]
   size?: ComponentSize
   virtual?: boolean
   filterMethod?: MentionFilterMethod
@@ -18,6 +24,7 @@ export interface MentionProps {
 export interface MentionClickPayload {
   key: string
   label: string
+  trigger: string
   event: MouseEvent
 }
 

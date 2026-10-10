@@ -1,6 +1,6 @@
 # Mention
 
-Mention people or entities inside rich text with `@`, backed by a searchable suggestion list.
+Mention people or entities inside rich text with `@` or any other configured trigger, backed by a searchable suggestion list.
 
 ## Default
 
@@ -8,7 +8,7 @@ Mention people or entities inside rich text with `@`, backed by a searchable sug
 <script setup>
 import { ref } from 'vue'
 
-const value = ref('Hello <at key="1">Alice</at>')
+const value = ref('Hello <mention key="1">Alice</mention>')
 
 const options = [
   { label: 'Alice', value: '1' },
@@ -55,13 +55,87 @@ async function filterMethod(query) {
 </template>
 ```
 
+## Multiple triggers
+
+`triggers` lists every keyword that opens the popover. When `options` is a function it receives the
+keyword that was typed, so one editor can offer files on `@` and commands on `/`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const files = [
+  { label: 'App.vue', value: 'src/App.vue' },
+  { label: 'router.ts', value: 'src/router.ts' },
+  { label: 'mention-html.ts', value: 'src/utils/mention-html.ts' },
+]
+
+const commands = [
+  { label: 'review', value: 'review' },
+  { label: 'test', value: 'test' },
+]
+
+function optionsFor(trigger) {
+  return trigger === '/' ? commands : files
+}
+</script>
+
+<template>
+  <PMention
+    v-model="value"
+    class="max-w-md"
+    :triggers="['@', '/']"
+    :options="optionsFor"
+    placeholder="Type @ for a file or / for a command"
+  />
+</template>
+```
+
+## Per-trigger search
+
+`filter-method` receives the keyword as its second argument, so one search can serve every trigger.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const files = ['src/App.vue', 'src/router.ts', 'src/utils/mention-html.ts']
+const commands = ['review', 'test', 'lint']
+
+async function filterMethod(query, trigger) {
+  await new Promise((resolve) => setTimeout(resolve, 200))
+  const source = trigger === '/' ? commands : files
+  const needle = query.toLowerCase()
+
+  return source
+    .filter((entry) => entry.toLowerCase().includes(needle))
+    .map((entry) => ({ label: entry, value: entry }))
+}
+</script>
+
+<template>
+  <PMention
+    v-model="value"
+    class="max-w-md"
+    :triggers="['@', '/']"
+    :filter-method="filterMethod"
+    placeholder="Type @ for a file or / for a command"
+    search-placeholder="Filter..."
+  />
+</template>
+```
+
 ## Mention click
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
-const value = ref('Ping <at key="1">Alice</at>')
+const value = ref('Ping <mention key="1">Alice</mention>')
 const last = ref('')
 
 const options = [
@@ -88,11 +162,12 @@ const options = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| model-value | `string` | `''` | Mention HTML: text + `<at key="...">label</at>` |
-| options | `ListOptions` | `() => []` | Default options when the popover opens with an empty query |
+| model-value | `string` | `''` | Mention HTML: text + `<mention key="...">label</mention>` |
+| options | `ListOptions \| ((trigger: string) => ListOptions)` | `() => []` | Options shown when the popover opens; a function receives the trigger that opened it |
+| triggers | `string[]` | `() => ['@']` | Keywords that open the popover, in the order they are matched |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the editor, falls back to the config provider size |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| filter-method | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; errors fall back to an empty list |
+| filter-method | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; `trigger` is the keyword that opened the popover |
 | placeholder | `string` | `''` | Editor placeholder |
 | search-placeholder | `string` | `''` | Suggestion search input placeholder |
 | disabled | `boolean` | `false` | Make the editor read-only and stop the suggestion popover from opening |
@@ -106,6 +181,15 @@ const options = [
 | mention-click | `(payload: MentionClickPayload) => void` | Emitted when a mention chip is clicked. |
 | update:modelValue | `(value: string) => void` | Emitted when the editor HTML changes. |
 
+```ts
+interface MentionClickPayload {
+  key: string
+  label: string
+  trigger: string
+  event: MouseEvent
+}
+```
+
 ## Slots
 
 | Name | Description |
@@ -116,7 +200,9 @@ const options = [
 
 ## Notes
 
-- Type `@` in the editor to open suggestions. The `@` stays until you pick an item (so typing a literal `@` remains possible if you dismiss the popover).
+- Type a configured trigger in the editor to open suggestions. It stays until you pick an item (so typing a literal `@` remains possible if you dismiss the popover).
+- A trigger only fires at content start, after whitespace, or right after a chip — never mid-word.
+- Chips carry the trigger that created them in a `trigger` attribute, omitted for the default `@`: `<mention key="review" trigger="/">review</mention>`.
 - Mentions are read-only chips (`contenteditable="false"`). Backspace removes a whole chip.
-- Paste keeps only legal `<at key>` nodes; everything else becomes plain text.
+- Paste keeps only legal `<mention key>` nodes; everything else becomes plain text.
 - Undo/redo uses the browser's native contenteditable history (`Ctrl/Cmd+Z`, etc.).

@@ -1,5 +1,10 @@
-const MENTION_TAG = 'AT'
+export const MENTION_TAG = 'MENTION'
+export const MENTION_TAG_LOWER = MENTION_TAG.toLowerCase()
+
 const BLOCK_TAGS = new Set(['DIV', 'P', 'LI', 'PRE'])
+
+/** The trigger a chip falls back to when its markup carries no `trigger` attribute. */
+export const DEFAULT_TRIGGER = '@'
 
 /**
  * A collapsed selection sitting right after a `contenteditable=false` element is
@@ -23,20 +28,30 @@ export function isMentionElement(node: Node | null | undefined): boolean {
  * editor's direct children are not enough.
  */
 export function queryMentionElements(root: ParentNode): HTMLElement[] {
-  return Array.from(root.querySelectorAll(MENTION_TAG)) as HTMLElement[]
+  return Array.from(root.querySelectorAll(MENTION_TAG_LOWER)) as HTMLElement[]
 }
 
 export function getMentionLabel(el: HTMLElement): string {
+  const trigger = el.getAttribute('trigger') || DEFAULT_TRIGGER
   const text = el.textContent ?? ''
-  return text.startsWith('@') ? text.slice(1) : text
+  return text.startsWith(trigger) ? text.slice(trigger.length) : text
 }
 
-export function createMentionElement(key: string, label: string): HTMLElement {
-  const el = document.createElement('at')
+export function createMentionElement(
+  key: string,
+  label: string,
+  trigger: string = DEFAULT_TRIGGER,
+): HTMLElement {
+  const el = document.createElement(MENTION_TAG_LOWER)
   el.setAttribute('key', key)
+
+  if (trigger !== DEFAULT_TRIGGER) {
+    el.setAttribute('trigger', trigger)
+  }
+
   el.setAttribute('contenteditable', 'false')
-  el.className = 'pxd-mention--at'
-  el.textContent = `@${label}`
+  el.className = 'pxd-mention--chip'
+  el.textContent = `${trigger}${label}`
   return el
 }
 
@@ -55,7 +70,7 @@ export function escapePlainTextAsHtml(text: string): string {
 
 /**
  * Serialize an editor DOM tree into the public HTML contract:
- * plain text + `<at key="...">label</at>` only.
+ * plain text + `<mention key="...">label</mention>` only.
  */
 export function serializeMentionHtml(root: HTMLElement): string {
   let result = ''
@@ -84,7 +99,9 @@ export function serializeMentionHtml(root: HTMLElement): string {
     if (isMentionElement(el)) {
       const key = el.getAttribute('key') ?? ''
       const label = getMentionLabel(el)
-      result += `<at key="${escapeMentionAttr(key)}">${escapeMentionText(label)}</at>`
+      const trigger = el.getAttribute('trigger')
+      const triggerAttr = trigger ? ` trigger="${escapeMentionAttr(trigger)}"` : ''
+      result += `<${MENTION_TAG_LOWER} key="${escapeMentionAttr(key)}"${triggerAttr}>${escapeMentionText(label)}</${MENTION_TAG_LOWER}>`
       return
     }
 
@@ -96,7 +113,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
     // Pressing Enter makes the browser wrap content in its own block elements;
     // nothing in this component creates them. A block only needs a line of its
     // own when it carries content — an empty one is already just its <br>.
-    if (BLOCK_TAGS.has(el.tagName) && (el.textContent || el.querySelector(MENTION_TAG))) {
+    if (BLOCK_TAGS.has(el.tagName) && (el.textContent || el.querySelector(MENTION_TAG_LOWER))) {
       startLine()
     }
 
@@ -115,7 +132,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
 }
 
 /**
- * Build a DocumentFragment from public mention HTML (text + legal `<at>` only).
+ * Build a DocumentFragment from public mention HTML (text + legal `<mention>` only).
  */
 function parseMentionHtml(html: string): DocumentFragment {
   const fragment = document.createDocumentFragment()
@@ -130,7 +147,7 @@ function parseMentionHtml(html: string): DocumentFragment {
 }
 
 /**
- * Paste sanitizer: keep legal `<at key>` nodes; everything else becomes text.
+ * Paste sanitizer: keep legal `<mention key>` nodes; everything else becomes text.
  */
 export function sanitizeMentionClipboardHtml(html: string): DocumentFragment {
   const fragment = document.createDocumentFragment()
@@ -158,7 +175,8 @@ function appendSanitizedChildren(source: Node, target: Node) {
     if (isMentionElement(el)) {
       const key = el.getAttribute('key')
       if (key != null && key !== '') {
-        target.appendChild(createMentionElement(key, getMentionLabel(el)))
+        const trigger = el.getAttribute('trigger') || DEFAULT_TRIGGER
+        target.appendChild(createMentionElement(key, getMentionLabel(el), trigger))
         // The anchor merges into the text node that follows, so the chip keeps an
         // editable node on its right without splitting the surrounding text.
         target.appendChild(createCaretAnchor())

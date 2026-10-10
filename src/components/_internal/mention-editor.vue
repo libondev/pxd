@@ -3,6 +3,7 @@ import type { ComponentSize } from '../../types/shared/props'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
 
 defineOptions({
   name: 'PMentionEditor',
@@ -15,20 +16,22 @@ const props = withDefaults(
     placeholder?: string
     disabled?: boolean
     size?: ComponentSize
+    triggers?: string[]
   }>(),
   {
     size: 'md',
     modelValue: '',
     placeholder: '',
     disabled: false,
+    triggers: () => [DEFAULT_TRIGGER],
   },
 )
 
 const emits = defineEmits<{
-  trigger: []
+  trigger: [string]
   change: [string]
   'update:modelValue': [string]
-  'mention-click': [{ key: string; label: string; event: MouseEvent }]
+  'mention-click': [{ key: string; label: string; trigger: string; event: MouseEvent }]
 }>()
 
 const editorRef = shallowRef<HTMLElement>()
@@ -58,12 +61,13 @@ const {
 } = useMentionEditor({
   editorRef,
   getModelValue: () => props.modelValue ?? '',
+  getTriggers: () => props.triggers,
   isDisabled: () => props.disabled,
   onUpdate: (html) => {
     emits('update:modelValue', html)
     emits('change', html)
   },
-  onTrigger: () => emits('trigger'),
+  onTrigger: (trigger) => emits('trigger', trigger),
   onMentionClick: (payload) => emits('mention-click', payload),
 })
 
@@ -120,7 +124,7 @@ defineExpose({
   color: var(--color-gray-700);
 }
 
-.pxd-mention--at {
+.pxd-mention--chip {
   display: inline;
   margin-inline-end: 0.25rem;
   color: var(--color-blue-900);

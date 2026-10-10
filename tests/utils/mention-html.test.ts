@@ -46,12 +46,13 @@ function build(html: string): HTMLElement {
 
 describe('mention-html public contract', () => {
   const roundTrips = [
-    'Hello <at key="1">Alice</at>',
-    'Hello <at key="1">Alice</at>tail',
-    'head <at key="1">A</at>mid <at key="2">B</at>tail',
-    '<at key="1">A</at><at key="2">B</at>',
+    'Hello <mention key="1">Alice</mention>',
+    'Hello <mention key="1">Alice</mention>tail',
+    'head <mention key="1">A</mention>mid <mention key="2">B</mention>tail',
+    '<mention key="1">A</mention><mention key="2">B</mention>',
     'first\nsecond',
-    'first<at key="1">A</at>\nsecond',
+    'first<mention key="1">A</mention>\nsecond',
+    'first<mention key="review" trigger="/">review</mention>\nsecond',
     'plain text only',
   ]
 
@@ -80,14 +81,14 @@ describe('mention-html public contract', () => {
   it('escapes label and key text', () => {
     const root = document.createElement('div')
     root.setAttribute('contenteditable', 'true')
-    const chip = document.createElement('at')
+    const chip = document.createElement('mention')
     chip.setAttribute('key', 'a"b&c')
     chip.setAttribute('contenteditable', 'false')
     chip.textContent = '@<script>'
     root.appendChild(chip)
 
     const out = serializeMentionHtml(root)
-    expect(out).toBe('<at key="a&quot;b&amp;c">&lt;script&gt;</at>')
+    expect(out).toBe('<mention key="a&quot;b&amp;c">&lt;script&gt;</mention>')
   })
 
   it('gives an empty editor a <br> so it keeps a line box', () => {
@@ -100,28 +101,28 @@ describe('mention-html public contract', () => {
 
 describe('caret anchor invariant', () => {
   it('anchors a chip at the end of the content', () => {
-    const root = build('Hello <at key="1">A</at>')
+    const root = build('Hello <mention key="1">A</mention>')
     expectAnchorInvariant(root)
-    const next = root.querySelector('at')!.nextSibling as Text
+    const next = root.querySelector('mention')!.nextSibling as Text
     expect(next.textContent).toBe(ZWSP)
   })
 
   it('merges the anchor into the following text instead of splitting it', () => {
-    const root = build('Hello <at key="1">A</at>tail')
+    const root = build('Hello <mention key="1">A</mention>tail')
     const textNodes = Array.from(root.childNodes).filter((n) => n.nodeType === Node.TEXT_NODE)
     expect(textNodes).toHaveLength(2)
     expect(textNodes[1].textContent).toBe(ZWSP + 'tail')
   })
 
   it('anchors adjacent chips so a caret can sit between them', () => {
-    const root = build('<at key="1">A</at><at key="2">B</at>')
+    const root = build('<mention key="1">A</mention><mention key="2">B</mention>')
     expectAnchorInvariant(root)
-    const between = root.querySelector('at')!.nextSibling as Text
+    const between = root.querySelector('mention')!.nextSibling as Text
     expect(between.textContent).toBe(ZWSP)
   })
 
   it('keeps text on both sides of a chip in one node each', () => {
-    const root = build('head <at key="1">A</at> tail')
+    const root = build('head <mention key="1">A</mention> tail')
     const textNodes = Array.from(root.childNodes).filter((n) => n.nodeType === Node.TEXT_NODE)
     expect(textNodes.map((n) => n.textContent)).toEqual(['head ', ZWSP + ' tail'])
   })
@@ -168,14 +169,15 @@ describe('block content created by pressing Enter', () => {
   it('serializes a chip that Enter pushed into a block', () => {
     const root = document.createElement('div')
     root.setAttribute('contenteditable', 'true')
-    root.innerHTML = 'a<div>z<at contenteditable="false" class="pxd-mention--at">@Alice</at></div>'
-    expect(serializeMentionHtml(root)).toBe('a\nz<at key="">Alice</at>')
+    root.innerHTML =
+      'a<div>z<mention contenteditable="false" class="pxd-mention--chip">@Alice</mention></div>'
+    expect(serializeMentionHtml(root)).toBe('a\nz<mention key="">Alice</mention>')
   })
 
   it('finds chips nested inside blocks, not only direct children', () => {
     const root = document.createElement('div')
     root.setAttribute('contenteditable', 'true')
-    root.innerHTML = '<div><at contenteditable="false">@Alice</at>\u200Btail</div>'
+    root.innerHTML = '<div><mention contenteditable="false">@Alice</mention>\u200Btail</div>'
     expect(queryMentionElements(root)).toHaveLength(1)
   })
 })
@@ -183,15 +185,42 @@ describe('block content created by pressing Enter', () => {
 describe('chip element and clipboard sanitizing', () => {
   it('creates a non-editable chip carrying its key', () => {
     const chip = createMentionElement('u1', 'Alice')
-    expect(chip.tagName).toBe('AT')
+    expect(chip.tagName).toBe('MENTION')
     expect(chip.getAttribute('key')).toBe('u1')
     expect(chip.getAttribute('contenteditable')).toBe('false')
     expect(getMentionLabel(chip)).toBe('Alice')
   })
 
+  it('keeps a non-default trigger out of the attributes only when it is @', () => {
+    const at = createMentionElement('u1', 'Alice', '@')
+    expect(at.getAttribute('trigger')).toBeNull()
+    expect(at.textContent).toBe('@Alice')
+
+    const slash = createMentionElement('review', 'review', '/')
+    expect(slash.getAttribute('trigger')).toBe('/')
+    expect(slash.textContent).toBe('/review')
+    expect(getMentionLabel(slash)).toBe('review')
+  })
+
+  it('serializes a non-default trigger into the public value', () => {
+    const root = document.createElement('div')
+    root.appendChild(createMentionElement('review', 'review', '/'))
+    expect(serializeMentionHtml(root)).toBe('<mention key="review" trigger="/">review</mention>')
+  })
+
+  it('keeps the trigger of a pasted chip', () => {
+    const host = document.createElement('div')
+    host.appendChild(
+      sanitizeMentionClipboardHtml('<mention key="review" trigger="/">review</mention>'),
+    )
+
+    expect(host.querySelector('mention')!.getAttribute('trigger')).toBe('/')
+    expect(host.querySelector('mention')!.textContent).toBe('/review')
+  })
+
   it('keeps legal chips and strips everything else from pasted html', () => {
     const fragment = sanitizeMentionClipboardHtml(
-      '<b onclick="x()">bold</b><at key="1">Alice</at><script>bad()</' +
+      '<b onclick="x()">bold</b><mention key="1">Alice</mention><script>bad()</' +
         'script><img src=x onerror=1>',
     )
     const host = document.createElement('div')
@@ -200,20 +229,22 @@ describe('chip element and clipboard sanitizing', () => {
     expect(host.querySelector('b')).toBeNull()
     expect(host.querySelector('img')).toBeNull()
     expect(host.querySelector('script')).toBeNull()
-    expect(host.querySelectorAll('at')).toHaveLength(1)
+    expect(host.querySelectorAll('mention')).toHaveLength(1)
     expectAnchorInvariant(host)
   })
 
   it('drops a chip that has no key', () => {
     const host = document.createElement('div')
-    host.appendChild(sanitizeMentionClipboardHtml('<at>Alice</at><at key="2">Bob</at>'))
-    expect(host.querySelectorAll('at')).toHaveLength(1)
-    expect(host.querySelector('at')!.getAttribute('key')).toBe('2')
+    host.appendChild(
+      sanitizeMentionClipboardHtml('<mention>Alice</mention><mention key="2">Bob</mention>'),
+    )
+    expect(host.querySelectorAll('mention')).toHaveLength(1)
+    expect(host.querySelector('mention')!.getAttribute('key')).toBe('2')
   })
 
   it('turns pasted newlines into <br> and keeps the invariant', () => {
     const host = document.createElement('div')
-    host.appendChild(sanitizeMentionClipboardHtml('one\ntwo <at key="1">A</at>'))
+    host.appendChild(sanitizeMentionClipboardHtml('one\ntwo <mention key="1">A</mention>'))
     expect(host.querySelector('br')).not.toBeNull()
     expectAnchorInvariant(host)
   })

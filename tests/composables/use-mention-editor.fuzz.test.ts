@@ -3,6 +3,8 @@ import { ref, shallowRef } from 'vue'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
 import {
   CARET_ANCHOR,
+  DEFAULT_TRIGGER,
+  MENTION_TAG_LOWER,
   queryMentionElements,
   serializeMentionHtml,
   setMentionEditorContent,
@@ -52,6 +54,7 @@ function createHarness(initialHtml: string) {
     useMentionEditor({
       editorRef: shallowRef<HTMLElement | undefined>(editor),
       getModelValue: () => model.value,
+      getTriggers: () => [DEFAULT_TRIGGER],
       isDisabled: () => false,
       onUpdate: (html) => {
         model.value = html
@@ -263,8 +266,8 @@ function collectViolations(
   const inChip = !!(
     anchor &&
     (anchor.nodeType === 1
-      ? (anchor as Element).closest('at')
-      : anchor.parentElement && anchor.parentElement.closest('at'))
+      ? (anchor as Element).closest(MENTION_TAG_LOWER)
+      : anchor.parentElement && anchor.parentElement.closest(MENTION_TAG_LOWER))
   )
 
   if (inChip) {
@@ -301,7 +304,7 @@ describe('useMentionEditor invariants under random operation sequences', () => {
   for (const seed of seeds) {
     it('holds every invariant through ' + steps + ' random operations', () => {
       const rng = makeRng(seed)
-      const h = createHarness('Hello <at key="1">Alice</at>tail')
+      const h = createHarness('Hello <mention key="1">Alice</mention>tail')
       const problems: string[] = []
       open.push(h)
 
@@ -327,7 +330,8 @@ describe('useMentionEditor invariants under random operation sequences', () => {
           insertMentionLikeUser(h)
           action = 'insert mention'
         } else {
-          const html = rng() < 0.5 ? '<b>bold</b> text' : 'plain <at key="2">Bob</at> tail'
+          const html =
+            rng() < 0.5 ? '<b>bold</b> text' : 'plain <mention key="2">Bob</mention> tail'
           pasteInto(h.editor, html)
           action = 'paste'
         }
@@ -336,7 +340,7 @@ describe('useMentionEditor invariants under random operation sequences', () => {
       }
 
       expect(problems).toEqual([])
-      expect(h.editor.querySelector('at')).not.toBeNull()
+      expect(h.editor.querySelector('mention')).not.toBeNull()
     })
   }
 })

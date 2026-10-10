@@ -7,7 +7,7 @@ import { filterListOptions } from './use-list-filter.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
 export interface UseMentionSuggestOptions {
-  getOptions: () => ListOptions
+  getOptions: (trigger: string) => ListOptions
   getFilterMethod: () => MentionFilterMethod | undefined
   isDisabled: () => boolean
   visible: Ref<boolean>
@@ -19,7 +19,7 @@ export interface UseMentionSuggestReturn {
   listOptions: ShallowRef<ListOptions>
   isPending: ShallowRef<boolean>
   isEmptyResult: ComputedRef<boolean>
-  open: () => void
+  open: (trigger: string) => void
   close: () => void
   setKeyword: (query: string) => void
 }
@@ -51,6 +51,7 @@ export function useMentionSuggest({
   setVisible,
 }: UseMentionSuggestOptions): UseMentionSuggestReturn {
   const filterKeyword = shallowRef('')
+  const activeTrigger = shallowRef('')
   const listOptions = shallowRef<ListOptions>([])
   const isPending = shallowRef(false)
 
@@ -66,13 +67,13 @@ export function useMentionSuggest({
     runFilterDebounced.cancel()
   }
 
-  async function runFilter(query: string) {
+  async function runFilter(query: string, trigger: string) {
     const requestId = ++filterRequestId
     const trimmed = query.trim()
 
     if (!trimmed) {
       isPending.value = false
-      listOptions.value = getOptions()
+      listOptions.value = getOptions(trigger)
       return
     }
 
@@ -80,14 +81,14 @@ export function useMentionSuggest({
 
     if (!filterMethod) {
       isPending.value = false
-      listOptions.value = filterListOptions(getOptions(), trimmed)
+      listOptions.value = filterListOptions(getOptions(trigger), trimmed)
       return
     }
 
     isPending.value = true
 
     try {
-      const result = await filterMethod(trimmed)
+      const result = await filterMethod(trimmed, trigger)
       if (requestId !== filterRequestId) {
         return
       }
@@ -106,13 +107,14 @@ export function useMentionSuggest({
     }
   }
 
-  function open() {
+  function open(trigger: string) {
     if (isDisabled() || visible.value) {
       return
     }
 
+    activeTrigger.value = trigger
     filterKeyword.value = ''
-    listOptions.value = getOptions()
+    listOptions.value = getOptions(trigger)
     setVisible(true)
   }
 
@@ -124,20 +126,22 @@ export function useMentionSuggest({
     }
   }
 
-  const runFilterDebounced = debounce((query: string) => {
-    void runFilter(query)
+  const runFilterDebounced = debounce((query: string, trigger: string) => {
+    void runFilter(query, trigger)
   }, ASYNC_FILTER_DEBOUNCE)
 
   function setKeyword(query: string) {
+    const trigger = activeTrigger.value
     filterKeyword.value = query
 
     if (!query.trim() || !getFilterMethod()) {
       runFilterDebounced.cancel()
-      void runFilter(query)
+      void runFilter(query, trigger)
       return
     }
 
-    runFilterDebounced(query)
+    isPending.value = true
+    runFilterDebounced(query, trigger)
   }
 
   // Any hide path (Esc, outside click, select) must drop in-flight filter results.

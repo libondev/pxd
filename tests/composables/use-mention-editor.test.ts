@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
-import { CARET_ANCHOR, queryMentionElements } from '../../src/utils/mention-html'
+import { CARET_ANCHOR, DEFAULT_TRIGGER, queryMentionElements } from '../../src/utils/mention-html'
 import { useSetupWrapper } from '../helpers/setup'
 
 /**
@@ -24,14 +24,14 @@ interface Harness {
   api: ReturnType<typeof useMentionEditor>
   model: ReturnType<typeof ref<string>>
   updates: string[]
-  triggers: { n: number }
-  clicks: { key: string; label: string }[]
+  triggers: { n: number; keywords: string[] }
+  clicks: { key: string; label: string; trigger: string }[]
   destroy: () => void
 }
 
 const open: Harness[] = []
 
-function createHarness(initialHtml = ''): Harness {
+function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER]): Harness {
   const editor = document.createElement('div')
   editor.className = 'pxd-mention-editor'
   editor.setAttribute('contenteditable', 'true')
@@ -40,8 +40,8 @@ function createHarness(initialHtml = ''): Harness {
 
   const model = ref(initialHtml)
   const updates: string[] = []
-  const clicks: { key: string; label: string }[] = []
-  const triggers = { n: 0 }
+  const clicks: { key: string; label: string; trigger: string }[] = []
+  const triggers = { n: 0, keywords: [] as string[] }
 
   const wrapper = useSetupWrapper(() => {
     const editorRef = shallowRef<HTMLElement | undefined>(editor)
@@ -49,16 +49,18 @@ function createHarness(initialHtml = ''): Harness {
     return useMentionEditor({
       editorRef,
       getModelValue: () => model.value,
+      getTriggers: () => keywords,
       isDisabled: () => false,
       onUpdate: (html) => {
         model.value = html
         updates.push(html)
       },
-      onTrigger: () => {
+      onTrigger: (trigger) => {
         triggers.n += 1
+        triggers.keywords.push(trigger)
       },
       onMentionClick: (payload) => {
-        clicks.push({ key: payload.key, label: payload.label })
+        clicks.push({ key: payload.key, label: payload.label, trigger: payload.trigger })
       },
     })
   })
@@ -206,8 +208,8 @@ function androidBackspace(h: Harness): boolean {
   return false
 }
 
-/** Types `@` the way a browser reports it, so the trigger detection runs. */
-function typeMentionTrigger(h: Harness) {
+/** Types a trigger the way a browser reports it, so the trigger detection runs. */
+function typeTrigger(h: Harness, keyword: string = DEFAULT_TRIGGER) {
   const sel = getSelection()!
   const range = sel.getRangeAt(0)
   const text = range.startContainer as Text
@@ -216,22 +218,24 @@ function typeMentionTrigger(h: Harness) {
   h.editor.dispatchEvent(
     new InputEvent('beforeinput', {
       inputType: 'insertText',
-      data: '@',
+      data: keyword,
       bubbles: true,
       cancelable: true,
     }),
   )
 
-  text.textContent = text.data.slice(0, offset) + '@' + text.data.slice(offset)
-  caretIn(text, offset + 1)
+  text.textContent = text.data.slice(0, offset) + keyword + text.data.slice(offset)
+  caretIn(text, offset + keyword.length)
   h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
   void sel
 }
 
+const typeMentionTrigger = (h: Harness) => typeTrigger(h)
+
 describe('useMentionEditor', () => {
   it('renders the model into the DOM and keeps the anchor invariant', () => {
-    const h = createHarness('Hello <at key="1">Alice</at>tail')
-    expect(h.editor.querySelector('at')?.getAttribute('key')).toBe('1')
+    const h = createHarness('Hello <mention key="1">Alice</mention>tail')
+    expect(h.editor.querySelector('mention')?.getAttribute('key')).toBe('1')
     expectAnchorInvariant(h.editor)
   })
 
@@ -254,10 +258,10 @@ describe('useMentionEditor', () => {
     expect(h.api.insertMention('u1', 'Alice')).toBe(true)
     expectAnchorInvariant(h.editor)
 
-    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
     expect(anchor.textContent).toBe(ZWSP)
     // The public value never carries the anchor.
-    expect(h.model.value).toBe('Hello <at key="u1">Alice</at>')
+    expect(h.model.value).toBe('Hello <mention key="u1">Alice</mention>')
 
     // The caret moves only once the suggest popover has released its focus trap.
     h.api.restoreCaret()
@@ -278,23 +282,52 @@ describe('useMentionEditor', () => {
     typeMentionTrigger(afterSpace)
     expect(afterSpace.triggers.n).toBe(1)
 
-    const afterChip = createHarness('<at key="1">Alice</at>')
-    caretIn(afterChip.editor.querySelector('at')!.nextSibling as Text, 1)
+    const afterChip = createHarness('<mention key="1">Alice</mention>')
+    caretIn(afterChip.editor.querySelector('mention')!.nextSibling as Text, 1)
     typeMentionTrigger(afterChip)
     expect(afterChip.triggers.n).toBe(1)
   })
 
+  it('keeps several triggers live at the same time', () => {
+    const h = createHarness('Hi ', ['@', '/'])
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h, '@')
+    typeAtCaret(' ')
+    typeTrigger(h, '/')
+
+    expect(h.triggers.keywords).toEqual(['@', '/'])
+  })
+
+  it('records the trigger that opened the popover on the inserted chip', () => {
+    const h = createHarness('Hi ', ['@', '/'])
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h, '/')
+
+    expect(h.triggers.keywords).toEqual(['/'])
+    expect(h.api.insertMention('review', 'review')).toBe(true)
+    expect(h.model.value).toBe('Hi <mention key="review" trigger="/">review</mention>')
+    expectAnchorInvariant(h.editor)
+  })
+
+  it('prefers the longer trigger when one starts with the other', () => {
+    const h = createHarness('Hi ', ['[', '[['])
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h, '[[')
+
+    expect(h.triggers.keywords).toEqual(['[['])
+  })
+
   it('leaves an ordinary character delete to the browser', () => {
-    const h = createHarness('<at key="1">Alice</at>tail')
+    const h = createHarness('<mention key="1">Alice</mention>tail')
     caretIn(lastText(h.editor), 4)
     expect(androidBackspace(h)).toBe(false)
-    expect(h.model.value).toBe('<at key="1">Alice</at>tai')
+    expect(h.model.value).toBe('<mention key="1">Alice</mention>tai')
     expectAnchorInvariant(h.editor)
   })
 
   it('takes over the delete that would eat the anchor and removes the whole chip', () => {
-    const h = createHarness('<at key="1">Alice</at>tail')
-    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+    const h = createHarness('<mention key="1">Alice</mention>tail')
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
 
     // Delete the tail down to the anchor, then backspace once more.
     for (let i = 0; i < 4; i++) {
@@ -306,13 +339,13 @@ describe('useMentionEditor', () => {
 
     caretIn(anchor, anchor.data.length)
     expect(androidBackspace(h)).toBe(true)
-    expect(h.editor.querySelector('at')).toBeNull()
+    expect(h.editor.querySelector('mention')).toBeNull()
     expect(h.model.value).toBe('')
   })
 
   it('keeps the anchor when text is typed right after a chip', () => {
-    const h = createHarness('<at key="1">Alice</at>')
-    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+    const h = createHarness('<mention key="1">Alice</mention>')
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
 
     // Typing between the chip and the anchor pushes the anchor along: it is no
     // longer the first character of that text node.
@@ -326,27 +359,27 @@ describe('useMentionEditor', () => {
     // node, so the chip goes instead.
     caretIn(anchor, anchor.data.length)
     expect(androidBackspace(h)).toBe(true)
-    expect(h.editor.querySelector('at')).toBeNull()
+    expect(h.editor.querySelector('mention')).toBeNull()
   })
 
   it('re-asserts the anchor when a selection replace removes it', () => {
-    const h = createHarness('<at key="1">Alice</at>tail')
-    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+    const h = createHarness('<mention key="1">Alice</mention>tail')
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
 
     // A wide select-and-delete can swallow the invisible anchor even though the
     // backward-delete path refuses to; the invariant has to be restored anyway.
     anchor.data = 'tail'
     h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
 
-    const next = h.editor.querySelector('at')!.nextSibling as Text
+    const next = h.editor.querySelector('mention')!.nextSibling as Text
     expect(next.data.startsWith(ZWSP)).toBe(true)
     expectAnchorInvariant(h.editor)
-    expect(h.model.value).toBe('<at key="1">Alice</at>tail')
+    expect(h.model.value).toBe('<mention key="1">Alice</mention>tail')
   })
 
   it('restores the anchor after an undo puts a chip back', () => {
-    const h = createHarness('<at key="1">Alice</at>tail')
-    const anchor = h.editor.querySelector('at')!.nextSibling as Text
+    const h = createHarness('<mention key="1">Alice</mention>tail')
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
 
     // Chromium's undo stack stores a DOM snapshot, so the anchor normally comes
     // back with the chip. Simulate the case where it does not, which is exactly
@@ -355,13 +388,13 @@ describe('useMentionEditor', () => {
     anchor.data = 'tail'
     h.editor.dispatchEvent(new InputEvent('input', { inputType: 'historyUndo', bubbles: true }))
 
-    const next = h.editor.querySelector('at')!.nextSibling as Text
+    const next = h.editor.querySelector('mention')!.nextSibling as Text
     expect(next.data.startsWith(ZWSP)).toBe(true)
     expectAnchorInvariant(h.editor)
   })
 
   it('removes the whole chip when the caret sits inside it', () => {
-    const h = createHarness('Hi <at key="1">Alice</at>')
+    const h = createHarness('Hi <mention key="1">Alice</mention>')
     caretInsideChip(h.editor, 2)
 
     const ev = new InputEvent('beforeinput', {
@@ -372,14 +405,14 @@ describe('useMentionEditor', () => {
     h.editor.dispatchEvent(ev)
 
     expect(ev.defaultPrevented).toBe(true)
-    expect(h.editor.querySelector('at')).toBeNull()
+    expect(h.editor.querySelector('mention')).toBeNull()
     expect(h.model.value).toBe('Hi ')
     expectAnchorInvariant(h.editor)
   })
 
   it('takes over a delete whose selection sits inside a chip', () => {
-    const h = createHarness('Hi <at key="1">Alice</at> there')
-    const chip = h.editor.querySelector('at')!
+    const h = createHarness('Hi <mention key="1">Alice</mention> there')
+    const chip = h.editor.querySelector('mention')!
     const label = chip.firstChild as Text
     const range = document.createRange()
     range.setStart(label, 1)
@@ -396,13 +429,13 @@ describe('useMentionEditor', () => {
     h.editor.dispatchEvent(ev)
 
     expect(ev.defaultPrevented).toBe(true)
-    expect(h.editor.querySelector('at')).toBeNull()
+    expect(h.editor.querySelector('mention')).toBeNull()
     expect(h.model.value).toBe('Hi  there')
     expectAnchorInvariant(h.editor)
   })
 
   it('never emits the caret anchor in an update', () => {
-    const h = createHarness('Hello <at key="1">Alice</at>tail')
+    const h = createHarness('Hello <mention key="1">Alice</mention>tail')
     for (const html of h.updates) {
       expect(html).not.toContain(ZWSP)
     }
@@ -416,9 +449,9 @@ describe('useMentionEditor', () => {
   })
 
   it('does not rebuild the DOM when the model echoes its own output', async () => {
-    const h = createHarness('Hello <at key="1">Alice</at>tail')
+    const h = createHarness('Hello <mention key="1">Alice</mention>tail')
     const editorBefore = h.editor
-    const chipBefore = h.editor.querySelector('at')
+    const chipBefore = h.editor.querySelector('mention')
 
     // Re-assigning the same value is what a parent does when it writes back the
     // value we just emitted; the editor must not tear its own DOM down for it.
@@ -426,15 +459,15 @@ describe('useMentionEditor', () => {
     await Promise.resolve()
 
     expect(h.editor).toBe(editorBefore)
-    expect(h.editor.querySelector('at')).toBe(chipBefore)
+    expect(h.editor.querySelector('mention')).toBe(chipBefore)
   })
 
   it('applies an external model change', async () => {
     const h = createHarness('Hello')
-    h.model.value = 'Replaced <at key="9">Zoe</at>'
+    h.model.value = 'Replaced <mention key="9">Zoe</mention>'
     await Promise.resolve()
 
-    expect(h.editor.querySelector('at')?.getAttribute('key')).toBe('9')
+    expect(h.editor.querySelector('mention')?.getAttribute('key')).toBe('9')
     expectAnchorInvariant(h.editor)
   })
 
@@ -445,22 +478,23 @@ describe('useMentionEditor', () => {
     const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
     Object.defineProperty(ev, 'clipboardData', {
       value: {
-        getData: (type: string) => (type === 'text/html' ? '<b>x</b><at key="7">Bob</at>' : 'xBob'),
+        getData: (type: string) =>
+          type === 'text/html' ? '<b>x</b><mention key="7">Bob</mention>' : 'xBob',
       },
     })
     h.editor.dispatchEvent(ev)
 
     expect(ev.defaultPrevented).toBe(true)
     expect(h.editor.querySelector('b')).toBeNull()
-    expect(h.editor.querySelector('at')?.getAttribute('key')).toBe('7')
+    expect(h.editor.querySelector('mention')?.getAttribute('key')).toBe('7')
     expectAnchorInvariant(h.editor)
     // The sanitizer unwraps <b> to its text, so the pasted "x" survives as text.
-    expect(h.model.value).toBe('Hello x<at key="7">Bob</at>')
+    expect(h.model.value).toBe('Hello x<mention key="7">Bob</mention>')
     expect(h.model.value).not.toContain(ZWSP)
   })
 
   it('copies the public contract instead of the DOM, so no anchor leaks', () => {
-    const h = createHarness('Hello <at key="1">Alice</at>tail')
+    const h = createHarness('Hello <mention key="1">Alice</mention>tail')
     const store: Record<string, string> = {}
     const ev = new ClipboardEvent('copy', { bubbles: true, cancelable: true })
     Object.defineProperty(ev, 'clipboardData', {
@@ -473,13 +507,15 @@ describe('useMentionEditor', () => {
     h.editor.dispatchEvent(ev)
 
     expect(ev.defaultPrevented).toBe(true)
-    expect(store['text/html']).toContain('<at key="1">Alice</at>')
+    expect(store['text/html']).toContain('<mention key="1">Alice</mention>')
     expect(store['text/html']).not.toContain(ZWSP)
     expect(store['text/plain']).toBe('Hello @Alicetail')
   })
 
   it('cuts the selection and leaves the remaining chips anchored', () => {
-    const h = createHarness('<at key="1">Alice</at>keep <at key="2">Bob</at>drop')
+    const h = createHarness(
+      '<mention key="1">Alice</mention>keep <mention key="2">Bob</mention>drop',
+    )
     const chip = chips(h.editor)[1]
     const range = document.createRange()
     range.setStartBefore(chip)
@@ -503,15 +539,15 @@ describe('useMentionEditor', () => {
     expect(store['text/plain']).toBe('@Bob')
     expect(store['text/html']).not.toContain(ZWSP)
     // Only the selected chip goes; the text around it stays.
-    expect(h.model.value).toBe('<at key="1">Alice</at>keep drop')
+    expect(h.model.value).toBe('<mention key="1">Alice</mention>keep drop')
     expectAnchorInvariant(h.editor)
   })
 
   it('reports a chip click with its key and label', () => {
-    const h = createHarness('<at key="1">Alice</at>')
-    h.editor.querySelector('at')!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    const h = createHarness('<mention key="1">Alice</mention>')
+    h.editor.querySelector('mention')!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
-    expect(h.clicks).toEqual([{ key: '1', label: 'Alice' }])
+    expect(h.clicks).toEqual([{ key: '1', label: 'Alice', trigger: DEFAULT_TRIGGER }])
   })
 
   it('does not emit while the user is composing', () => {

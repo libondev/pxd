@@ -2,6 +2,8 @@ import type { Ref, ShallowRef } from 'vue'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
   CARET_ANCHOR,
+  DEFAULT_TRIGGER,
+  MENTION_TAG_LOWER,
   createCaretAnchor,
   createMentionElement,
   escapePlainTextAsHtml,
@@ -16,10 +18,16 @@ import {
 export interface UseMentionEditorOptions {
   editorRef: Ref<HTMLElement | undefined>
   getModelValue: () => string
+  getTriggers: () => string[]
   isDisabled: () => boolean
   onUpdate: (html: string) => void
-  onTrigger: () => void
-  onMentionClick: (payload: { key: string; label: string; event: MouseEvent }) => void
+  onTrigger: (trigger: string) => void
+  onMentionClick: (payload: {
+    key: string
+    label: string
+    trigger: string
+    event: MouseEvent
+  }) => void
 }
 
 export interface UseMentionEditorReturn {
@@ -39,11 +47,12 @@ export interface UseMentionEditorReturn {
 }
 
 /**
- * Contenteditable mention editor: HTML sync, @ trigger ranges, insert/delete chips, paste.
+ * Contenteditable mention editor: HTML sync, trigger ranges, insert/delete chips, paste.
  */
 export function useMentionEditor({
   editorRef,
   getModelValue,
+  getTriggers,
   isDisabled,
   onUpdate,
   onTrigger,
@@ -53,6 +62,7 @@ export function useMentionEditor({
   const isEmpty = shallowRef(true)
 
   let triggerRange: Range | null = null
+  let triggerKeyword = DEFAULT_TRIGGER
   let restoreRange: Range | null = null
   let restoreTimer: ReturnType<typeof setTimeout> | null = null
   let lastEmittedHtml = ''
@@ -123,6 +133,7 @@ export function useMentionEditor({
 
   function clearTriggerRange() {
     triggerRange = null
+    triggerKeyword = DEFAULT_TRIGGER
     restoreRange = null
   }
 
@@ -175,6 +186,52 @@ export function useMentionEditor({
     }, 0)
   }
 
+  /**
+   * Longest first, so a multi-character trigger wins over a shorter one it starts
+   * with (`[[` over `[`).
+   */
+  function sortedTriggers(): string[] {
+    return getTriggers()
+      .slice()
+      .sort((a, b) => b.length - a.length)
+  }
+
+  /**
+   * The trigger sitting immediately before the caret, or `null`. A candidate only
+   * counts when it covers exactly the characters preceding the caret — ending on
+   * one is not enough, otherwise typing a word that merely contains the sequence
+   * would open the popover.
+   */
+  function findTriggerBeforeCaret(caret: Range): { keyword: string; range: Range } | null {
+    for (const keyword of sortedTriggers()) {
+      const start = caret.startOffset - keyword.length
+
+      if (start < 0) {
+        continue
+      }
+
+      const range = caret.cloneRange()
+
+      try {
+        range.setStart(range.startContainer, start)
+      } catch {
+        continue
+      }
+
+      const candidate = { keyword, range }
+
+      if (range.toString() !== keyword) {
+        continue
+      }
+
+      if (isTriggerBoundary(range)) {
+        return candidate
+      }
+    }
+
+    return null
+  }
+
   function saveTriggerRangeFromSelection() {
     const selection = window.getSelection()
 
@@ -183,33 +240,24 @@ export function useMentionEditor({
     }
 
     const caret = selection.getRangeAt(0)
-    const atRange = caret.cloneRange()
+    const found = findTriggerBeforeCaret(caret)
 
-    try {
-      atRange.setStart(atRange.startContainer, Math.max(0, atRange.startOffset - 1))
-    } catch {
-      return false
-    }
-
-    if (atRange.toString() !== '@') {
-      return false
-    }
-
-    // Only trigger when `@` is at content start or preceded by whitespace (not mid-word).
-    if (!isAtTriggerBoundary(atRange)) {
+    if (!found) {
       return false
     }
 
     restoreRange = caret.cloneRange()
-    triggerRange = atRange
+    triggerRange = found.range
+    triggerKeyword = found.keyword
     return true
   }
 
   /**
-   * `@` triggers at content start, after whitespace, or immediately after a mention chip.
+   * A trigger counts at content start, after whitespace, or immediately after a
+   * mention chip — never mid-word.
    */
-  function isAtTriggerBoundary(atRange: Range): boolean {
-    const before = boundaryBefore(atRange.startContainer, atRange.startOffset)
+  function isTriggerBoundary(keywordRange: Range): boolean {
+    const before = boundaryBefore(keywordRange.startContainer, keywordRange.startOffset)
 
     if (before === 'start' || before === 'mention') {
       return true
@@ -221,10 +269,10 @@ export function useMentionEditor({
   /**
    * What sits immediately before `(container, offset)`:
    * - `'start'` — beginning of the editor
-   * - `'mention'` — an `<at>` chip
+   * - `'mention'` — an `<mention>` chip
    * - otherwise the preceding character
    *
-   * The editor only ever holds text nodes, `<at>` chips and `<br>`, so stepping
+   * The editor only ever holds text nodes, `<mention>` chips and `<br>`, so stepping
    * back one node is enough — no tree walk needed.
    */
   function boundaryBefore(container: Node, offset: number): string {
@@ -269,16 +317,23 @@ export function useMentionEditor({
     pendingAtInsert = false
 
     if (saveTriggerRangeFromSelection()) {
-      onTrigger()
+      onTrigger(triggerKeyword)
     }
+  }
+
+  function isInsertInputType(inputType: string): boolean {
+    return (
+      inputType === 'insertText' ||
+      inputType === 'insertCompositionText' ||
+      inputType === 'insertReplacementText'
+    )
   }
 
   function notePendingAtInsert(ev: InputEvent) {
     if (
-      (ev.inputType === 'insertText' ||
-        ev.inputType === 'insertCompositionText' ||
-        ev.inputType === 'insertReplacementText') &&
-      (ev.data?.includes('@') ?? false)
+      isInsertInputType(ev.inputType) &&
+      ev.data != null &&
+      getTriggers().some((keyword) => ev.data?.includes(keyword))
     ) {
       pendingAtInsert = true
       return
@@ -304,7 +359,7 @@ export function useMentionEditor({
 
     range.deleteContents()
 
-    const mention = createMentionElement(key, label)
+    const mention = createMentionElement(key, label, triggerKeyword)
     range.insertNode(mention)
 
     // Keep an editable text node right after the chip so the caret can land there.
@@ -340,7 +395,7 @@ export function useMentionEditor({
     }
 
     const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
-    const mention = el?.closest?.('at')
+    const mention = el?.closest?.(MENTION_TAG_LOWER)
 
     if (!mention || !editorRef.value.contains(mention) || !isMentionElement(mention)) {
       return null
@@ -573,7 +628,7 @@ export function useMentionEditor({
 
     if (ev.key === 'Backspace' || ev.key === 'Delete') {
       pendingAtInsert = false
-    } else if (!ev.isComposing && ev.key === '@') {
+    } else if (!ev.isComposing && getTriggers().includes(ev.key)) {
       // Fallback when beforeinput is missing / omits data.
       pendingAtInsert = true
     }
@@ -648,7 +703,7 @@ export function useMentionEditor({
 
   function onClick(ev: MouseEvent) {
     const target = ev.target as Element | null
-    const mention = target?.closest?.('at')
+    const mention = target?.closest?.(MENTION_TAG_LOWER)
 
     if (!mention || !editorRef.value?.contains(mention) || !isMentionElement(mention)) {
       return
@@ -657,6 +712,7 @@ export function useMentionEditor({
     onMentionClick({
       key: mention.getAttribute('key') ?? '',
       label: getMentionLabel(mention as HTMLElement),
+      trigger: mention.getAttribute('trigger') || DEFAULT_TRIGGER,
       event: ev,
     })
   }
