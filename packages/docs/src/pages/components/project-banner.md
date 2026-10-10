@@ -11,6 +11,16 @@ import ShieldIcon from '@gdsicon/vue/shield'
 
 <template>
   <PStack direction="vertical" class="w-full">
+    <PProjectBanner variant="default" label="Attack Challenge Mode is enabled for this project">
+      <template #icon>
+        <ShieldIcon />
+      </template>
+
+      <template #action>
+        <RouterLink to="/components/project-banner">Disable</RouterLink>
+      </template>
+    </PProjectBanner>
+
     <PProjectBanner variant="info" label="Attack Challenge Mode is enabled for this project">
       <template #icon>
         <ShieldIcon />

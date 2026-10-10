@@ -7,13 +7,14 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ProjectBannerProps>(), { variant: 'info' })
+const props = withDefaults(defineProps<ProjectBannerProps>(), { variant: 'default' })
 
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm flex w-full -translate-y-px items-center justify-center border-y',
     variants: {
       variant: {
+        default: 'border-gray-400 bg-gray-100 text-gray-900',
         warning: 'border-amber-400 bg-amber-100 text-amber-900',
         success: 'border-green-400 bg-green-100 text-green-900',
         error: 'border-red-400 bg-red-100 text-red-900',
@@ -31,6 +32,7 @@ const { classes: actionClasses } = useTailwindVariant(
     base: 'ms-6 md:ms-0 font-medium cursor-pointer underline underline-offset-3 motion-safe:transition-colors',
     variants: {
       variant: {
+        default: 'text-gray-1000 decoration-gray-500',
         warning: 'text-amber-1000 decoration-amber-400 hover:border-amber-500 hover:text-amber-900',
         success: 'text-green-1000 decoration-green-400 hover:border-green-500 hover:text-green-900',
         error: 'text-red-1000 decoration-red-400 hover:border-red-500 hover:text-red-900',
