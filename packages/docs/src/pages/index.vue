@@ -172,16 +172,18 @@ useIntersectionObserver(
         <span class="tally">{{ CAPABILITIES.length }} capabilities</span>
       </header>
 
-      <table>
-        <tbody>
-          <tr v-for="capability in CAPABILITIES" :key="capability.title">
-            <th scope="row">{{ capability.title }}</th>
-            <td>
-              {{ capability.detail }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="px-4">
+        <table>
+          <tbody>
+            <tr v-for="capability in CAPABILITIES" :key="capability.title">
+              <th scope="row">{{ capability.title }}</th>
+              <td>
+                {{ capability.detail }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
 </template>
@@ -309,7 +311,7 @@ useIntersectionObserver(
   align-items: baseline;
   justify-content: space-between;
   gap: 4px;
-  padding-block-end: 16px;
+  padding: 16px;
   border-block-end: 1px solid var(--color-gray-300);
 
   h2 {
@@ -329,10 +331,11 @@ useIntersectionObserver(
 }
 
 .index {
-  padding: 76px 24px 0;
+  border-block-end: 1px solid var(--color-gray-300);
 }
 
 .index-cols {
+  padding-inline: 16px;
   columns: 5;
   column-gap: 28px;
 }
@@ -397,8 +400,6 @@ useIntersectionObserver(
 }
 
 .spec {
-  padding: 76px 24px 0;
-
   table {
     width: 100%;
     border-collapse: collapse;
@@ -422,7 +423,6 @@ useIntersectionObserver(
     padding-block: 14px;
     font-size: 13px;
     color: var(--home-muted);
-    /* Keeps the description readable once the viewport outgrows the container. */
     max-width: 68ch;
   }
 
@@ -487,11 +487,6 @@ useIntersectionObserver(
 
   .lede {
     padding-inline: 24px;
-  }
-
-  .index,
-  .spec {
-    padding-block-start: 56px;
   }
 }
 </style>
