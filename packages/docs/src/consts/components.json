@@ -140,6 +140,11 @@
     "category": "Overlay"
   },
   {
+    "camelized": "Effort Slider",
+    "name": "effort-slider",
+    "category": "AI"
+  },
+  {
     "camelized": "Ellipsis Text",
     "name": "ellipsis-text",
     "category": "Typography"

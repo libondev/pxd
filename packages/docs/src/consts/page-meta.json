@@ -113,7 +113,7 @@
   },
   "/components/effort-slider": {
     "title": "Effort Slider",
-    "description": "Input to pick one level out of a configurable list, e.g. the reasoning effort of a model. Press anywhere on the track to jump to a level, or keep the pointer d…"
+    "description": "Input to pick one level out of a configurable list, e.g. the reasoning effort of a model. Drag the thumb freely, it snaps to the closest level once the pointer…"
   },
   "/components/ellipsis-text": {
     "title": "Ellipsis Text",

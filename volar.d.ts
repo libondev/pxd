@@ -38,6 +38,7 @@ declare module 'vue' {
     PDatePicker: (typeof import('pxd/components/date-picker'))['default']
     PDescription: (typeof import('pxd/components/description'))['default']
     PDrawer: (typeof import('pxd/components/drawer'))['default']
+    PEffortSlider: (typeof import('pxd/components/effort-slider'))['default']
     PEllipsisText: (typeof import('pxd/components/ellipsis-text'))['default']
     PEmptyState: (typeof import('pxd/components/empty-state'))['default']
     PError: (typeof import('pxd/components/error'))['default']
