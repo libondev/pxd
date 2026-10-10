@@ -81,8 +81,8 @@ const sliderStopClasses = createTailwindVariant({
   base: 'pxd-slider--stop pointer-events-none absolute top-1/2 size-1 -translate-x-1/2 -translate-y-1/2 rounded-full',
   variants: {
     filled: {
-      true: 'bg-background-100/70',
-      false: 'bg-gray-600/50',
+      true: 'bg-transparent',
+      false: 'bg-gray-500',
     },
   },
 })
