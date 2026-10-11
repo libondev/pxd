@@ -43,51 +43,54 @@ describe('hue-text', () => {
     wrapper.unmount()
   })
 
-  it('should derive a stable color from the text', () => {
+  it('should derive a stable hue from the text', () => {
     const first = mount(HueText, { props: { text: 'Libon' } })
     const second = mount(HueText, { props: { text: 'Libon' } })
     const other = mount(HueText, { props: { text: 'Geist' } })
 
-    const colorOf = (wrapper: ReturnType<typeof mount>) =>
-      (wrapper.vm as any).hueStyle.color as string
+    const hueOf = (wrapper: ReturnType<typeof mount>) =>
+      (wrapper.vm as any).hueStyle['--pxd-hue-h'] as number
 
-    expect(colorOf(first)).toMatch(/^#[0-9a-f]{6}$/)
-    expect(colorOf(second)).toBe(colorOf(first))
-    expect(colorOf(other)).not.toBe(colorOf(first))
+    for (const hue of [hueOf(first), hueOf(second), hueOf(other)]) {
+      expect(Number.isInteger(hue)).toBe(true)
+      expect(hue).toBeGreaterThanOrEqual(0)
+      expect(hue).toBeLessThan(360)
+    }
+
+    expect(hueOf(second)).toBe(hueOf(first))
+    expect(hueOf(other)).not.toBe(hueOf(first))
 
     first.unmount()
     second.unmount()
     other.unmount()
   })
 
-  it('should update the color when the text changes', async () => {
+  it('should update the hue when the text changes', async () => {
     const wrapper = mount(HueText, { props: { text: 'Libon' } })
 
-    const before = (wrapper.vm as any).hueStyle.color as string
+    const before = (wrapper.vm as any).hueStyle['--pxd-hue-h'] as number
 
     await wrapper.setProps({ text: 'Geist' })
 
-    expect((wrapper.vm as any).hueStyle.color).not.toBe(before)
+    expect((wrapper.vm as any).hueStyle['--pxd-hue-h']).not.toBe(before)
 
     wrapper.unmount()
   })
 
-  it('should not paint a background unless tinted', () => {
-    const wrapper = mount(HueText, { props: { text: 'Libon' } })
+  it('should default the hue to zero without text', () => {
+    const wrapper = mount(HueText)
 
-    expect((wrapper.vm as any).hueStyle.backgroundColor).toBeUndefined()
+    expect((wrapper.vm as any).hueStyle['--pxd-hue-h']).toBe(0)
+    expect(wrapper.attributes('data-tinted')).toBe('false')
 
     wrapper.unmount()
   })
 
-  it('should paint a tinted background', () => {
+  it('should expose the tinted state for styling', () => {
     const wrapper = mount(HueText, { props: { text: 'Libon', tinted: true } })
-    const color = (wrapper.vm as any).hueStyle.color as string
 
-    expect(wrapper.classes()).toContain('px-1.5')
-    expect((wrapper.vm as any).hueStyle.backgroundColor).toBe(
-      `color-mix(in srgb, ${color} 12%, transparent)`,
-    )
+    expect(wrapper.attributes('data-tinted')).toBe('true')
+    expect(wrapper.attributes('style')).toContain('--pxd-hue-h')
 
     wrapper.unmount()
   })

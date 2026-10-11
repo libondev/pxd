@@ -3,6 +3,9 @@
 Colors text deterministically from its own content. The same string always resolves to the same
 color, so a name, an ID or a tag keeps a stable identity across renders and across pages.
 
+Only the hue is derived from the text. Saturation and lightness are fixed and adapt to the active
+theme, so every hue keeps at least a 4.76:1 contrast ratio against its background.
+
 ## Default
 
 ```vue demo
@@ -18,7 +21,8 @@ color, so a name, an ID or a tag keeps a stable identity across renders and acro
 
 ## Tinted
 
-Add `tinted` to place the text on a soft background derived from the same color.
+Add `tinted` to place the text on a soft background derived from the same color. Padding and radius
+are left to you, so the shape suits the context.
 
 ```vue demo
 <template>
@@ -64,7 +68,6 @@ import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
 | --- | --- | --- | --- |
 | text | `string` | - | Text content, and the source of the color. |
 | tinted | `boolean` | `false` | Paint a soft background derived from the text color. |
-
 ## Slots
 
 | Name | Description |
