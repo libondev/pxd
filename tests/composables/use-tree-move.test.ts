@@ -119,9 +119,7 @@ describe('moveTreeNode', () => {
       position: 'inside',
     })
 
-    expect(result?.data).toEqual([
-      { value: 'a', items: [{ value: 'b', items: [{ value: 'c' }] }] },
-    ])
+    expect(result?.data).toEqual([{ value: 'a', items: [{ value: 'b', items: [{ value: 'c' }] }] }])
   })
 
   it('should keep untouched subtrees identical by reference', () => {

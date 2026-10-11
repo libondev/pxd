@@ -25,10 +25,7 @@ function listMarkdownFiles(dir) {
 }
 
 function toRoutePath(filePath) {
-  const route = path
-    .relative(PAGES_DIR, filePath)
-    .replace(/\\/g, '/')
-    .replace(/\.md$/, '')
+  const route = path.relative(PAGES_DIR, filePath).replace(/\\/g, '/').replace(/\.md$/, '')
 
   return route === 'index' ? '/' : `/${route}`
 }

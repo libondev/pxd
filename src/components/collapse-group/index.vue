@@ -50,7 +50,12 @@ provideCollapseGroupContext({
 </script>
 
 <template>
-  <div data-collapse-group class="pxd-collapse-group w-full max-w-full border-t" :style="computedStyle" v-bind="$attrs">
+  <div
+    data-collapse-group
+    class="pxd-collapse-group w-full max-w-full border-t"
+    :style="computedStyle"
+    v-bind="$attrs"
+  >
     <slot />
   </div>
 </template>

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import FeedbackBar from '../../src/components/feedback-bar/index.vue'
 import ConfigProvider from '../../src/components/config-provider/index.vue'
+import FeedbackBar from '../../src/components/feedback-bar/index.vue'
 import zhCN from '../../src/locales/zh-cn.js'
 
 describe('feedback-bar', () => {

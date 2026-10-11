@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
-
 import { siteUrl as SITE_URL } from './site-url.js'
 
 const PAGES_DIR = fileURLToPath(new URL('../src/pages', import.meta.url))
@@ -43,7 +42,8 @@ function toLastModified(filePath) {
 
 function readTitle(content, routePath) {
   // Markdown uses an h1 heading, vue pages render their own.
-  const matched = content.match(/^#\s+(.+)$/m) || content.match(/<h1[^>]*>\s*([^<\s][^<]*?)\s*<\/h1>/)
+  const matched =
+    content.match(/^#\s+(.+)$/m) || content.match(/<h1[^>]*>\s*([^<\s][^<]*?)\s*<\/h1>/)
 
   if (matched) {
     return matched[1].trim()
@@ -99,7 +99,10 @@ function renderLlms(pages) {
   })
 
   const sections = [...grouped.entries()]
-    .map(([group, links]) => `## ${group.charAt(0).toUpperCase() + group.slice(1)}\n\n${links.join('\n')}`)
+    .map(
+      ([group, links]) =>
+        `## ${group.charAt(0).toUpperCase() + group.slice(1)}\n\n${links.join('\n')}`,
+    )
     .join('\n\n')
 
   return `# PXD

@@ -9,8 +9,8 @@ import type {
 } from './types'
 import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
-import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getElement } from '../../utils/dom.js'
 import { exclusiveOpen, registerSwipeCell } from './instances.js'
 

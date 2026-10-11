@@ -101,9 +101,7 @@ const pageTitle = computed(() => {
   return `${label} - PXD`
 })
 
-const pageDescription = computed(
-  () => metaOfCurrentPage.value?.description || DEFAULT_DESCRIPTION,
-)
+const pageDescription = computed(() => metaOfCurrentPage.value?.description || DEFAULT_DESCRIPTION)
 
 const pageUrl = computed(() => (route.path === '/' ? `${siteUrl}/` : `${siteUrl}${route.path}`))
 

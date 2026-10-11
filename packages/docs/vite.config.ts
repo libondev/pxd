@@ -18,10 +18,10 @@ import layouts from 'vite-plugin-vue-meta-layouts'
 import { defineConfig } from 'vite-plus'
 import markdown from 'vite-vue-md'
 import pxdResolver from '../../src/plugins/resolver'
-import pageMeta from './scripts/vite-plugin-page-meta.js'
-import seoFiles from './scripts/vite-plugin-seo-files.js'
 import { siteUrl } from './scripts/site-url.js'
 import { fileCreateWatcher } from './scripts/vite-plugin-file-create-watcher.js'
+import pageMeta from './scripts/vite-plugin-page-meta.js'
+import seoFiles from './scripts/vite-plugin-seo-files.js'
 
 const codeThemes = {
   dark: 'github-dark',
