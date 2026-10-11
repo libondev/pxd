@@ -1,7 +1,6 @@
 <script setup>
 import { useHead } from '@unhead/vue'
-import { useIntersectionObserver } from 'pxd/composables/use-intersection-observer'
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import componentList from '@/consts/components.json'
 import composableList from '@/consts/composables.json'
 import { githubLink } from '@/consts/link'
@@ -79,19 +78,6 @@ const inventory = computed(
   () =>
     `${componentList.length} components · ${composableList.length} composables · ${componentGroups.value.length} categories`,
 )
-
-const indexEl = shallowRef(null)
-const isIndexDrawn = shallowRef(false)
-
-useIntersectionObserver(
-  indexEl,
-  ([item]) => {
-    if (item?.entry.isIntersecting) {
-      isIndexDrawn.value = true
-    }
-  },
-  { rootMargin: '0px 0px -10% 0px' },
-)
 </script>
 
 <template>
@@ -142,20 +128,15 @@ useIntersectionObserver(
       </div>
     </section>
 
-    <section ref="indexEl" class="index" :data-drawn="isIndexDrawn || undefined">
+    <section class="index">
       <header class="sec-head max-sm:flex-col">
         <h2>Components</h2>
         <span class="tally">{{ inventory }}</span>
       </header>
 
       <div class="index-cols">
-        <div
-          v-for="(group, i) in indexGroups"
-          :key="group.label"
-          class="group-item"
-          :style="{ '--i': i }"
-        >
-          <h3 class="group-label motion-safe:transition-colors">{{ group.label }}</h3>
+        <div v-for="group in indexGroups" :key="group.label" class="group-item">
+          <h3 class="group-label">{{ group.label }}</h3>
 
           <ul>
             <li v-for="item in group.children" :key="item.path">
@@ -217,7 +198,6 @@ useIntersectionObserver(
   inset-inline: 0;
   height: 1px;
   background-color: var(--color-gray-300);
-  transform-origin: left;
 }
 
 .dark .ruled::before {
@@ -363,10 +343,6 @@ useIntersectionObserver(
 
 .group-label + ul {
   margin-inline-start: -0.375rem;
-}
-
-.index[data-drawn] .group-item .group-label {
-  color: var(--color-gray-1000);
 }
 
 .spec {
