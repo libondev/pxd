@@ -62,6 +62,11 @@ const enUS = {
     completed: 'completed',
     canceled: 'canceled',
   },
+  feedback: {
+    thumbUp: 'Thumb up',
+    thumbDown: 'Thumb down',
+    close: 'Dismiss',
+  },
 }
 
 export type Locale = typeof enUS

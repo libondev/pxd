@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import FeedbackBar from '../../src/components/feedback-bar/index.vue'
+import ConfigProvider from '../../src/components/config-provider/index.vue'
+import zhCN from '../../src/locales/zh-cn.js'
 
 describe('feedback-bar', () => {
   it('renders properly', () => {
@@ -84,6 +86,50 @@ describe('feedback-bar', () => {
 
     expect(wrapper.attributes('id')).toBe('my-feedback-bar')
     expect(wrapper.classes()).toContain('extra-class')
+
+    wrapper.unmount()
+  })
+
+  it('should give each action button a distinct accessible name', () => {
+    const wrapper = mount(FeedbackBar, {
+      props: {
+        label: 'Feedback',
+      },
+    })
+
+    const labels = wrapper.findAll('button').map((button) => button.attributes('aria-label'))
+
+    expect(labels).toEqual(['Thumb up', 'Thumb down', 'Dismiss'])
+    expect(new Set(labels).size).toBe(3)
+
+    wrapper.unmount()
+  })
+
+  it('should use the configured locale for action button labels', () => {
+    const wrapper = mount({
+      components: { FeedbackBar, ConfigProvider },
+      setup: () => ({ locale: zhCN }),
+      template: `
+        <ConfigProvider :locale="locale">
+          <FeedbackBar label="反馈" />
+        </ConfigProvider>
+      `,
+    })
+
+    const labels = wrapper.findAll('button').map((button) => button.attributes('aria-label'))
+
+    expect(labels).toEqual(['点赞', '点踩', '关闭'])
+
+    wrapper.unmount()
+  })
+  it('should hide the decorative info icon from assistive technology', () => {
+    const wrapper = mount(FeedbackBar, {
+      props: {
+        label: 'Feedback',
+      },
+    })
+
+    expect(wrapper.find('.pxd-feedback-bar > svg').attributes('aria-hidden')).toBe('true')
 
     wrapper.unmount()
   })

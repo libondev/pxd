@@ -77,6 +77,11 @@ const zhCN = {
     completed: '已完成',
     canceled: '已取消',
   },
+  feedback: {
+    thumbUp: '点赞',
+    thumbDown: '点踩',
+    close: '关闭',
+  },
 } satisfies Locale
 
 export default zhCN
