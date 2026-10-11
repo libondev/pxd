@@ -90,4 +90,39 @@ describe('bubble', () => {
 
     wrapper.unmount()
   })
+
+  it('should render reactions slot', () => {
+    const wrapper = mount(Bubble, {
+      slots: {
+        reactions: 'Reaction content',
+      },
+    })
+
+    expect(wrapper.find('.pxd-bubble--reactions').text()).toContain('Reaction content')
+
+    wrapper.unmount()
+  })
+
+  it('should not render reactions wrapper without the slot', () => {
+    const wrapper = mount(Bubble)
+
+    expect(wrapper.find('.pxd-bubble--reactions').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should not render reactions slot when loading', () => {
+    const wrapper = mount(Bubble, {
+      props: {
+        loading: true,
+      },
+      slots: {
+        reactions: 'Reaction content',
+      },
+    })
+
+    expect(wrapper.find('.pxd-bubble--reactions').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
 })

@@ -80,6 +80,32 @@ import PencilEditIcon from '@gdsicon/vue/pencil-edit'
 </template>
 ```
 
+## Reactions
+
+Use the `reactions` slot to render anything below the message body — vote buttons, counts, reply hints.
+
+```vue demo
+<script setup>
+import ThumbDownIcon from '@gdsicon/vue/thumb-down'
+import ThumbUpIcon from '@gdsicon/vue/thumb-up'
+</script>
+
+<template>
+  <PBubble role="assistant" text="The Evil Rabbit Jumped over the Fence">
+    <template #reactions>
+      <PFeedbackBar label="Helpful?" />
+    </template>
+  </PBubble>
+
+  <PBubble role="user" text="The Evil Rabbit Jumped over the Fence">
+    <template #reactions>
+      <span class="rounded-full bg-gray-900 pl-1.5 pr-2 py-0.5">👍12</span>
+      <span class="rounded-full bg-gray-900 pl-1.5 pr-2 py-0.5">👎3</span>
+    </template>
+  </PBubble>
+</template>
+```
+
 ## Group
 
 By default, the `PBubbleGroup` component always shows the latest data at the bottom.
@@ -161,8 +187,11 @@ function addMessage() {
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
-| reactions | Reactions slot |
+| default | Message body, falls back to the `text` prop. |
+| avatar | Avatar image, falls back to the `avatar` prop. |
+| header | Text shown above the bubble, falls back to the `header` prop. |
+| reactions | Content rendered below the message body, such as vote buttons or counts. |
+| footer | Action area rendered below the bubble. |
 
 ## BubbleGroup Props
 
