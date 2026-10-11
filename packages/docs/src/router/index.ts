@@ -8,9 +8,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: setupLayouts(routes),
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
+    // if (savedPosition) {
+    //   return savedPosition
+    // }
 
     if (to.hash) {
       return new Promise((resolve) => {
@@ -25,7 +25,7 @@ const router = createRouter({
           const offset = header?.offsetHeight ?? 0
           const top = el.getBoundingClientRect().top + window.scrollY - offset - 10
 
-          resolve({ top, behavior: 'smooth' })
+          resolve({ top })
         })
       })
     }
