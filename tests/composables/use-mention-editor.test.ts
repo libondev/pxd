@@ -59,6 +59,7 @@ function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER])
         triggers.n += 1
         triggers.keywords.push(trigger)
       },
+      onSubmit: () => {},
       onMentionClick: (payload) => {
         clicks.push({ key: payload.key, label: payload.label, trigger: payload.trigger })
       },

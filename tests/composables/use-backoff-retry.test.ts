@@ -78,10 +78,9 @@ describe('useBackoffRetry', () => {
       useBackoffRetry({ maxRetries: 2, baseDelay: 10, maxDelay: 10 }),
     )
 
-    const promise = retry(fn)
-    const assertion = expect(promise).rejects.toMatchObject({ attempts: 3 })
+    const promise = retry(fn).catch((error) => error)
     await vi.runAllTimersAsync()
-    await assertion
+    await expect(promise).resolves.toMatchObject({ attempts: 3 })
     expect(fn).toHaveBeenCalledTimes(3)
     unmount()
   })

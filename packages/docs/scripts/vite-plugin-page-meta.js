@@ -50,7 +50,7 @@ function toProseCandidates(content) {
   content.split(/\r?\n/).forEach((rawLine) => {
     const line = rawLine.trim()
 
-    if (/^```/.test(line)) {
+    if (line.startsWith('```')) {
       inFence = !inFence
       current = []
 

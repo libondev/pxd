@@ -5,10 +5,7 @@ import process from 'node:process'
 
 const cwd = process.cwd()
 
-const styles = readFileSync(resolve('src', 'styles', 'tw.css'), {
-  encoding: 'utf-8',
-  cwd,
-})
+const styles = readFileSync(resolve('src', 'styles', 'tw.css'), 'utf-8')
 
 const fileContent = `@layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);

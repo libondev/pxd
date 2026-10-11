@@ -60,6 +60,7 @@ function createHarness(initialHtml: string) {
         model.value = html
       },
       onTrigger: () => {},
+      onSubmit: () => {},
       onMentionClick: () => {},
     }),
   )

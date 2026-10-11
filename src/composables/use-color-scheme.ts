@@ -24,8 +24,10 @@ export function useColorScheme(options: Options = {}) {
   const colorScheme = shallowRef<ColorPreference>('auto')
   const preferredDark = useMediaQuery(PRESET_MEDIA_QUERIES.COLOR_SCHEME_DARK)
 
-  let removeStyleTimer: ReturnType<typeof setTimeout> | null = null
-  let disableTransitionStyleEl: HTMLStyleElement | null = null
+  const styleHandles: {
+    removeStyleTimer: ReturnType<typeof setTimeout> | null
+    disableTransitionStyleEl: HTMLStyleElement | null
+  } = { removeStyleTimer: null, disableTransitionStyleEl: null }
   const DISABLE_TRANSITION_CSS = `*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}`
 
   const isDark = computed(() => {
@@ -43,44 +45,49 @@ export function useColorScheme(options: Options = {}) {
   }
 
   function createDisableTransitionStyle() {
-    if (removeStyleTimer) {
-      clearTimeout(removeStyleTimer)
-      removeStyleTimer = null
+    if (styleHandles.removeStyleTimer) {
+      clearTimeout(styleHandles.removeStyleTimer)
+      styleHandles.removeStyleTimer = null
     }
 
-    if (!disableTransitionStyleEl) {
-      disableTransitionStyleEl = document.createElement('style')
-      disableTransitionStyleEl.appendChild(document.createTextNode(DISABLE_TRANSITION_CSS))
+    if (!styleHandles.disableTransitionStyleEl) {
+      const styleEl = document.createElement('style')
+      styleEl.appendChild(document.createTextNode(DISABLE_TRANSITION_CSS))
+      styleHandles.disableTransitionStyleEl = styleEl
     }
 
-    if (disableTransitionStyleEl.parentElement !== document.head) {
-      document.head.appendChild(disableTransitionStyleEl)
+    if (styleHandles.disableTransitionStyleEl.parentElement !== document.head) {
+      document.head.appendChild(styleHandles.disableTransitionStyleEl)
     }
   }
 
   function removeDisableTransitionStyle() {
-    if (removeStyleTimer) {
-      clearTimeout(removeStyleTimer)
+    if (styleHandles.removeStyleTimer) {
+      clearTimeout(styleHandles.removeStyleTimer)
     }
 
-    removeStyleTimer = setTimeout(() => {
-      if (disableTransitionStyleEl && disableTransitionStyleEl.parentElement === document.head) {
-        document.head.removeChild(disableTransitionStyleEl)
+    styleHandles.removeStyleTimer = setTimeout(() => {
+      const styleEl = styleHandles.disableTransitionStyleEl
+
+      if (styleEl && styleEl.parentElement === document.head) {
+        document.head.removeChild(styleEl)
       }
-      removeStyleTimer = null
+      styleHandles.removeStyleTimer = null
     }, 0)
   }
 
   function cleanupStyleElements() {
-    if (removeStyleTimer) {
-      clearTimeout(removeStyleTimer)
-      removeStyleTimer = null
+    if (styleHandles.removeStyleTimer) {
+      clearTimeout(styleHandles.removeStyleTimer)
+      styleHandles.removeStyleTimer = null
     }
 
-    if (disableTransitionStyleEl && disableTransitionStyleEl.parentElement === document.head) {
-      document.head.removeChild(disableTransitionStyleEl)
+    const styleEl = styleHandles.disableTransitionStyleEl
+
+    if (styleEl && styleEl.parentElement === document.head) {
+      document.head.removeChild(styleEl)
     }
-    disableTransitionStyleEl = null
+    styleHandles.disableTransitionStyleEl = null
   }
 
   function toggleDarkMode() {
