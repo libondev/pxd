@@ -1,17 +1,28 @@
-import type { RouteLocationNormalized, Router } from 'vue-router'
+import type { Router } from 'vue-router'
 import { nextTick } from 'vue'
+import { isServer } from '../utils/is.js'
 
+/**
+ * Wraps router navigations in the View Transitions API so route changes animate
+ * between the old and new view.
+ *
+ * Requires a browser with `document.startViewTransition` support and a router
+ * that supports the View Transitions lifecycle. Returns a disposer that removes
+ * the registered guards; it is a no-op when the API is unavailable.
+ *
+ * @param router The vue-router instance to attach the guards to.
+ * @returns A function that removes the guards.
+ */
 export function useViewTransition(router: Router): () => void {
-  if (typeof document === 'undefined' || !document.startViewTransition) {
+  if (isServer() || !document.startViewTransition) {
     return () => {}
   }
 
   const startViewTransition = document.startViewTransition.bind(document)
 
-  let pendingTo: RouteLocationNormalized | undefined
   let settle: (() => void) | undefined
 
-  const stopBeforeResolve = router.beforeResolve((to) => {
+  const stopBeforeResolve = router.beforeResolve(() => {
     // Release a still-pending previous navigation so it cannot block forever
     settle?.()
 
@@ -28,21 +39,11 @@ export function useViewTransition(router: Router): () => void {
       finish = resolve
     })
 
-    pendingTo = to
-
     settle = () => {
-      // Settle only the transition owned by this navigation. When navigations
-      // happen in quick succession, a cancelled one's afterEach may fire after
-      // the next beforeResolve has already installed its own `settle`.
-      if (pendingTo !== to) {
-        return
-      }
-
       settle = undefined
-      pendingTo = undefined
 
       unblock()
-      nextTick(finish)
+      void nextTick(finish)
     }
 
     const transition = startViewTransition(() => {
@@ -58,21 +59,16 @@ export function useViewTransition(router: Router): () => void {
     return blocked
   })
 
-  const stopAfterEach = router.afterEach((to) => {
-    if (to === pendingTo) {
-      settle?.()
-    }
+  const stopAfterEach = router.afterEach(() => {
+    settle?.()
   })
 
-  const stopOnError = router.onError((_error, to) => {
-    if (to === pendingTo) {
-      settle?.()
-    }
+  const stopOnError = router.onError(() => {
+    settle?.()
   })
 
   return () => {
     settle = undefined
-    pendingTo = undefined
 
     stopBeforeResolve()
     stopAfterEach()

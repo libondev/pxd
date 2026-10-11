@@ -80,6 +80,10 @@
     "name": "use-toggle-value"
   },
   {
+    "camelized": "Use View Transition",
+    "name": "use-view-transition"
+  },
+  {
     "camelized": "Use Virtual List",
     "name": "use-virtual-list"
   },

@@ -1,8 +1,7 @@
-import { useLoadingBar } from 'pxd'
+import { useLoadingBar, useViewTransition } from 'pxd'
 import { setupLayouts } from 'virtual:meta-layouts'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
-import { useViewTransition } from './use-view-transition'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
