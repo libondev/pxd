@@ -106,6 +106,7 @@ function onToggleClick() {
 
 <template>
   <button
+    data-toggle-button
     type="button"
     :aria-pressed="isChecked"
     :data-state="isChecked ? 'on' : 'off'"

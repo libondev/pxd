@@ -24,7 +24,12 @@ const noiseStyle = computed(() => ({
 </script>
 
 <template>
-  <Component :is="as" class="pxd-noise-background relative isolate" v-bind="$attrs">
+  <Component
+    data-noise-background
+    :is="as"
+    class="pxd-noise-background relative isolate"
+    v-bind="$attrs"
+  >
     <slot />
 
     <svg

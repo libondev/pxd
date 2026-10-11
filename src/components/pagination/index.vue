@@ -15,6 +15,7 @@ const configProvider = useConfigProvider()
 
 <template>
   <nav
+    data-pagination
     aria-label="pagination"
     class="pxd-pagination relative flex w-full flex-wrap items-start justify-between"
     v-bind="$attrs"

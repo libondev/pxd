@@ -35,7 +35,7 @@ const { attrs, classes } = useTailwindVariant(
 </script>
 
 <template>
-  <PStack :class="classes" :data-variant="variant" v-bind="attrs">
+  <PStack data-material :class="classes" :data-variant="variant" v-bind="attrs">
     <slot />
   </PStack>
 </template>

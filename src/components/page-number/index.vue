@@ -132,6 +132,7 @@ watch(
 
 <template>
   <nav
+    data-page-number
     class="pxd-page-number gap-1 inline-flex w-full max-w-full items-center"
     aria-label="Pagination"
     :aria-disabled="disabled"

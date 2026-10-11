@@ -66,6 +66,7 @@ function onInputChange() {
 
 <template>
   <label
+    data-radio
     role="radio"
     :aria-selected="isSelected"
     :data-disabled="isDisabled"

@@ -29,6 +29,7 @@ watch(
 
 <template>
   <PButton
+    data-theme-switcher
     aria-label="Toggle color mode"
     class="pxd-theme-switcher"
     v-bind="$attrs"

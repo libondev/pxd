@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<LoadingMaskProps>(), {
 <template>
   <Transition name="pxd-transition--fade" mode="out-in" appear>
     <div
+      data-loading-mask
       class="pxd-loading-mask inset-0 gap-2 backdrop-blur-sm absolute flex items-center justify-center text-foreground-secondary"
       v-bind="$attrs"
     >

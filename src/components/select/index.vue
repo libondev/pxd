@@ -39,6 +39,7 @@ const translatedLabel = computed(() => {
 
 <template>
   <PMenu
+    data-select
     v-model="modelValue"
     class="pxd-select"
     :options="options"

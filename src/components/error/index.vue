@@ -43,7 +43,7 @@ const { attrs, classes } = useTailwindVariant(
 </script>
 
 <template>
-  <div :class="classes" :data-variant="variant" v-bind="attrs">
+  <div data-error :class="classes" :data-variant="variant" v-bind="attrs">
     <StopIcon class="size-4 me-2 mbs-(--mt) shrink-0" />
 
     <div class="flex-1 shrink-0">

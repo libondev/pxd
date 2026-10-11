@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
     <slot />
   </Teleport>
 
-  <div v-else ref="containerRef" class="pxd-teleport" v-bind="$attrs">
+  <div v-else data-teleport ref="containerRef" class="pxd-teleport" v-bind="$attrs">
     <slot />
   </div>
 </template>

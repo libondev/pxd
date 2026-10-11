@@ -139,6 +139,7 @@ onBeforeUnmount(() => {
   <PTeleport :disabled="!appendToBody">
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
+        data-overlay
         v-if="showOverlay && modelValue"
         role="presentation"
         aria-hidden="true"

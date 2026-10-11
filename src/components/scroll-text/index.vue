@@ -120,6 +120,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Component
+    data-scroll-text
     :is="as"
     ref="wrapRef"
     class="pxd-scroll-text min-w-0 block max-w-full overflow-hidden"

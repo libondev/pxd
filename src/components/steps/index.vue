@@ -101,6 +101,7 @@ function select(index: number) {
 
 <template>
   <div
+    data-steps
     class="pxd-steps group/steps flex w-full max-w-full data-[direction=vertical]:flex-col"
     :data-direction="direction"
     :style="computedStyle"

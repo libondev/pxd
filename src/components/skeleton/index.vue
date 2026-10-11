@@ -60,7 +60,7 @@ const computedStyle = computed(() => {
 </script>
 
 <template>
-  <div :class="classes" :style="computedStyle" v-bind="attrs">
+  <div data-skeleton :class="classes" :style="computedStyle" v-bind="attrs">
     <slot />
   </div>
 </template>

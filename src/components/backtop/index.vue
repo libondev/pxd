@@ -107,6 +107,7 @@ onBeforeUnmount(() => {
   <PTeleport :disabled="!appendToBody">
     <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
       <div
+        data-backtop
         v-show="isVisible"
         ref="wrapperRef"
         :class="classes"

@@ -273,6 +273,7 @@ defineExpose({
 
 <template>
   <label
+    data-pin-input
     v-bind="$attrs"
     class="pxd-pin-input gap-1.5 flex size-max items-center"
     @keydown="onContainerKeydown"

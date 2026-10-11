@@ -47,7 +47,13 @@ provideConfigProvider({
 </script>
 
 <template>
-  <Component :is="as" class="pxd-config-provider h-inherit" @touchstart="NOOP" v-bind="$attrs">
+  <Component
+    data-config-provider
+    :is="as"
+    class="pxd-config-provider h-inherit"
+    @touchstart="NOOP"
+    v-bind="$attrs"
+  >
     <slot />
   </Component>
 </template>

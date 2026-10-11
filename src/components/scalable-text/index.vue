@@ -162,6 +162,7 @@ defineExpose({
 
 <template>
   <div
+    data-scalable-text
     ref="containerRef"
     class="pxd-scalable-text max-w-full"
     :style="computedStyle"

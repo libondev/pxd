@@ -36,7 +36,7 @@ const { attrs, classes } = useTailwindVariant(
 </script>
 
 <template>
-  <div :class="classes" v-bind="attrs">
+  <div data-card :class="classes" v-bind="attrs">
     <div v-if="$slots.header" class="pxd-card--header text-trim-both">
       <slot name="header" />
     </div>

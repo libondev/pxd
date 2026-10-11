@@ -124,7 +124,7 @@ function onClose(ev: Event) {
 </script>
 
 <template>
-  <Component :is="as" :class="classes" :data-variant="variant" v-bind="attrs">
+  <Component data-badge :is="as" :class="classes" :data-variant="variant" v-bind="attrs">
     <span
       v-if="$slots.prefix"
       class="pxd-badge--prefix"

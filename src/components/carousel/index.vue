@@ -272,6 +272,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    data-carousel
     v-bind="$attrs"
     :data-orientation="direction"
     :data-indicator-type="indicatorType"

@@ -44,7 +44,12 @@ const { classes } = useTailwindVariant(
 </script>
 
 <template>
-  <div class="pxd-chip relative inline-flex shrink-0" :data-variant="variant" v-bind="$attrs">
+  <div
+    data-chip
+    class="pxd-chip relative inline-flex shrink-0"
+    :data-variant="variant"
+    v-bind="$attrs"
+  >
     <slot />
 
     <span :data-label="label" :class="classes" :style="{ '--chip-size': getCssUnitValue(size) }" />

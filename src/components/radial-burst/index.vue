@@ -26,6 +26,7 @@ const containerStyle = computed<CSSProperties>(() => {
 
 <template>
   <div
+    data-radial-burst
     class="pxd-radial-burst min-h-40 bg-yellow-300 relative flex w-full max-w-full items-center justify-center overflow-hidden"
     :style="wrapperStyle"
     v-bind="$attrs"

@@ -32,6 +32,7 @@ function handleThumbDown() {
 
 <template>
   <div
+    data-feedback-bar
     class="pxd-feedback-bar p-1.5 gap-1 flex w-full max-w-full items-center overflow-hidden rounded-xl border bg-background-100"
     v-bind="$attrs"
   >

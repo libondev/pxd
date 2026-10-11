@@ -20,6 +20,7 @@ const computedStyle = computed(() => {
 
 <template>
   <div
+    data-placeholder
     class="pxd-placeholder max-w-full min-w-full"
     :class="{ 'is-invert': invert }"
     :style="computedStyle"

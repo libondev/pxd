@@ -98,6 +98,7 @@ watch(
       class="default-transition-duration default-transition-timing-function"
     >
       <div
+        data-drawer
         v-if="isVisible"
         ref="drawerRef"
         role="dialog"

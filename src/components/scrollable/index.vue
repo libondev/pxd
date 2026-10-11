@@ -351,6 +351,7 @@ defineExpose({
 
 <template>
   <div
+    data-scrollable
     ref="wrapperRef"
     class="pxd-scrollable group/scrollable relative flex flex-col overflow-hidden hover:[--o:1] pointer-fine:[--o:0]"
     :class="wrapperClass"

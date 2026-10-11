@@ -11,6 +11,7 @@ defineProps<EmptyStateProps>()
 
 <template>
   <div
+    data-empty-state
     class="pxd-empty-state py-12 px-18 w-full rounded-lg border bg-background-100"
     v-bind="$attrs"
   >

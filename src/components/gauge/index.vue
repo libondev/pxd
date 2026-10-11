@@ -129,6 +129,7 @@ const progressColors = computed(() => {
 
 <template>
   <div
+    data-gauge
     class="pxd-gauge relative size-max"
     :style="`--gauge-size: ${computedSize}px`"
     v-bind="$attrs"

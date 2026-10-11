@@ -43,7 +43,7 @@ const lines = computed(() => positions.value.map((pos) => lineMap[pos]))
 </script>
 
 <template>
-  <div class="pxd-dash-line relative max-w-full min-w-full" v-bind="$attrs">
+  <div data-dash-line class="pxd-dash-line relative max-w-full min-w-full" v-bind="$attrs">
     <svg
       class="inset-0 pointer-events-none absolute size-full overflow-visible"
       preserveAspectRatio="none"

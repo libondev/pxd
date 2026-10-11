@@ -60,6 +60,7 @@ defineExpose({
 
 <template>
   <div
+    data-countdown
     class="pxd-countdown relative w-max max-w-full leading-none tabular-nums text-trim-both"
     v-bind="$attrs"
   >

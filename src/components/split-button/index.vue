@@ -29,6 +29,7 @@ const computedSize = computed(() => props.size || configProvider.size)
 
 <template>
   <PMenu
+    data-split-button
     v-model="modelValue"
     data-group
     position="bottom-end"

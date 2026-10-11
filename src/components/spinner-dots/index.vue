@@ -136,6 +136,7 @@ const spinnerStyle = computed(() => {
 
 <template>
   <span
+    data-spinner-dots
     class="pxd-spinner-dots inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline text-foreground-secondary"
     :style="spinnerStyle"
     aria-hidden="true"

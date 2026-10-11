@@ -67,6 +67,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
 
 <template>
   <article
+    data-bubble
     :class="classes"
     :aria-busy="loading"
     :aria-label="ariaLabel"

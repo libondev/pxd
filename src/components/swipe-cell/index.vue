@@ -400,6 +400,7 @@ defineExpose({
 
 <template>
   <Component
+    data-swipe-cell
     :is="as"
     ref="rootRef"
     class="pxd-swipe-cell relative w-full max-w-full touch-pan-y overflow-hidden"

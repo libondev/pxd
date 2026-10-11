@@ -29,7 +29,7 @@ function onToggleExpand() {
 </script>
 
 <template>
-  <div class="pxd-more-button px-4 mbs-4 flex w-full items-center">
+  <div data-more-button class="pxd-more-button px-4 mbs-4 flex w-full items-center">
     <PButton class="relative z-1" shape="rounded" v-bind="$attrs" @click="onToggleExpand">
       {{ isExpanded ? lessText : moreText }}
 

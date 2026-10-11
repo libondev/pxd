@@ -17,6 +17,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <svg
+    data-popover-arrow
     width="14"
     height="7"
     viewBox="0 0 14 7"

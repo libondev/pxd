@@ -110,6 +110,7 @@ const computedClasses = computed(() => {
 
 <template>
   <Component
+    data-stack
     :is="props.as"
     class="pxd-stack flex max-w-full"
     :class="computedClasses"

@@ -468,6 +468,7 @@ onBeforeUnmount(stopDragging)
 
 <template>
   <div
+    data-slider
     v-bind="attrs"
     :data-variant="variant"
     class="pxd-slider--container w-full max-w-full shrink-0"

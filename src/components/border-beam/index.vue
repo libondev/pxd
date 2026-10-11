@@ -40,6 +40,7 @@ const computedStyle = computed(() => {
 
 <template>
   <div
+    data-border-beam
     class="pxd-border-beam after:content-empty after:inset-0 before:content-empty before:inset-0 relative overflow-hidden before:pointer-events-none before:absolute before:z-1 before:rounded-inherit after:pointer-events-none after:absolute after:z-2 after:rounded-inherit motion-reduce:animate-none! motion-reduce:before:animate-none! motion-reduce:after:animate-none!"
     :data-variant="variant"
     :data-disabled="disabled"

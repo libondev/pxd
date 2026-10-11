@@ -130,7 +130,7 @@ function onCompositionEnd(event: CompositionEvent) {
 </script>
 
 <template>
-  <label :for="uniqueId" :class="classes" v-bind="attrs">
+  <label data-textarea :for="uniqueId" :class="classes" v-bind="attrs">
     <textarea
       :id="uniqueId"
       v-model="modelValue"

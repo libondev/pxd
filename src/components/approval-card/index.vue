@@ -169,6 +169,7 @@ defineExpose({
 
 <template>
   <div
+    data-approval-card
     class="pxd-approval-card bg-background p-3 gap-2 flex w-full max-w-full flex-col rounded-xl border"
     :data-status="status"
     :data-variant="variant"

@@ -442,6 +442,7 @@ defineExpose({
 
 <template>
   <div
+    data-resizable
     ref="containerRef"
     :data-orientation="direction"
     class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[orientation=vertical]:flex-col"

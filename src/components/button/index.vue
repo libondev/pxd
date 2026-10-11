@@ -116,6 +116,7 @@ const btnContentClasses = computed(() => {
 
 <template>
   <Component
+    data-button
     :is="as"
     tabindex="0"
     aria-label="Action"

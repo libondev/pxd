@@ -30,6 +30,7 @@ function onClick() {
 
 <template>
   <div
+    data-step-item
     class="pxd-steps-item px-1 group/steps-item relative flex gap-(--steps-gap) group-data-[direction=horizontal]/steps:flex-1 group-data-[direction=horizontal]/steps:flex-col group-data-[direction=horizontal]/steps:items-center data-[disabled=true]:opacity-50"
     :data-status="status"
     :data-disabled="disabled"

@@ -106,6 +106,7 @@ useSwipeGesture(containerRef, {
 
 <template>
   <div
+    data-dismiss-container
     ref="containerRef"
     class="pxd-dismiss-container relative"
     :data-disabled="disabled"

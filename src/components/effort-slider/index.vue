@@ -356,7 +356,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-bind="attrs" class="pxd-effort-slider w-full max-w-full shrink-0">
+  <div data-effort-slider v-bind="attrs" class="pxd-effort-slider w-full max-w-full shrink-0">
     <div
       ref="trackRef"
       :class="classes"

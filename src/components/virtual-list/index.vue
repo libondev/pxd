@@ -72,7 +72,12 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="containerRef" class="pxd-virtual-list relative overflow-auto" v-bind="$attrs">
+  <div
+    data-virtual-list
+    ref="containerRef"
+    class="pxd-virtual-list relative overflow-auto"
+    v-bind="$attrs"
+  >
     <div
       class="pxd-virtual-list--content relative w-full content-visibility-auto"
       :class="listClass"

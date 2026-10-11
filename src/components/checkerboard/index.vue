@@ -18,7 +18,7 @@ const computedStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="pxd-checkerboard bg-center" :style="computedStyle" v-bind="$attrs">
+  <div data-checkerboard class="pxd-checkerboard bg-center" :style="computedStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>

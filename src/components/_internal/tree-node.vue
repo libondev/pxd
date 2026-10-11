@@ -88,6 +88,7 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
 
 <template>
   <div
+    data-tree-node
     :id="id"
     role="treeitem"
     data-tree-item

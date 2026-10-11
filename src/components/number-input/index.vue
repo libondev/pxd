@@ -243,6 +243,7 @@ watch(
 
 <template>
   <PInput
+    data-number-input
     v-bind="$attrs"
     :min="min"
     :max="max"

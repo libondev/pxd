@@ -242,6 +242,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 
 <template>
   <PPopover
+    data-date-picker
     v-model="popoverVisible"
     class="pxd-date-picker w-full"
     trigger="click"

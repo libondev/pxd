@@ -36,7 +36,7 @@ function getLabelText() {
 </script>
 
 <template>
-  <span class="pxd-state-dot inline-flex items-center" v-bind="$attrs">
+  <span data-status-dot class="pxd-state-dot inline-flex items-center" v-bind="$attrs">
     <i
       aria-hidden="true"
       class="w-2.5 h-2.5 inline-block rounded-full"

@@ -565,7 +565,7 @@ defineExpose({
     owns only `treeitem` content. Keeping it a sibling also leaves it on screen while the tree
     scrolls.
   -->
-  <div class="pxd-tree-root w-full max-w-full">
+  <div data-tree class="pxd-tree-root w-full max-w-full">
     <div v-if="filterable" data-tree-search class="pxd-tree--search mbe-1">
       <slot name="search">
         <PSearchInput

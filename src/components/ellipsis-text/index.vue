@@ -276,7 +276,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-ellipsis-text" ref="containerRef" v-bind="$attrs">
+  <div data-ellipsis-text class="pxd-ellipsis-text" ref="containerRef" v-bind="$attrs">
     <span ref="textRef" class="pxd-ellipsis-text--text">{{ displayText.content }}</span>
 
     <span

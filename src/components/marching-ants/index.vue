@@ -554,7 +554,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-marching-ants relative">
+  <div data-marching-ants class="pxd-marching-ants relative">
     <Component
       :is="as"
       ref="targetRef"

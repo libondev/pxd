@@ -61,6 +61,7 @@ function selectDate() {
 
 <template>
   <button
+    data-calendar-day
     type="button"
     role="gridcell"
     :class="

@@ -65,6 +65,7 @@ watch(
 
 <template>
   <details
+    data-collapse
     class="pxd-collapse group/collapse border-b"
     v-bind="$attrs"
     :open="detailsOpen"

@@ -219,6 +219,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    data-rating
     ref="ratingRef"
     role="radiogroup"
     tabindex="0"

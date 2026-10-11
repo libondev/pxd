@@ -64,7 +64,7 @@ function onCopy(text: string) {
 </script>
 
 <template>
-  <div :class="classes" :data-variant="variant" v-bind="attrs">
+  <div data-snippet :class="classes" :data-variant="variant" v-bind="attrs">
     <div class="pxd-snippet--container flex-1">
       <pre
         v-for="(t, i) of computedTextList"

@@ -6,7 +6,11 @@ defineOptions({
 </script>
 
 <template>
-  <label class="pxd-label mbe-1 text-sm flex w-full max-w-full text-gray-900" v-bind="$attrs">
+  <label
+    data-label
+    class="pxd-label mbe-1 text-sm flex w-full max-w-full text-gray-900"
+    v-bind="$attrs"
+  >
     <slot />
   </label>
 </template>

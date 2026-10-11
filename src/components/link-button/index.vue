@@ -54,7 +54,7 @@ function onLinkClick(ev: MouseEvent) {
 </script>
 
 <template>
-  <PButton class="pxd-link-button" v-bind="computedAttrs" @click="onLinkClick">
+  <PButton data-link-button class="pxd-link-button" v-bind="computedAttrs" @click="onLinkClick">
     <template #prefix>
       <slot name="prefix" />
     </template>

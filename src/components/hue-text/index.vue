@@ -27,6 +27,7 @@ const hueStyle = computed(() => ({
 
 <template>
   <span
+    data-hue-text
     class="pxd-hue-text gap-1 inline-flex max-w-full items-center"
     :style="hueStyle"
     :data-tinted="tinted"

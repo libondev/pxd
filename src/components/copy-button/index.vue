@@ -24,7 +24,7 @@ async function onCopyClick(ev: PointerEvent) {
 </script>
 
 <template>
-  <PButton class="pxd-copy-button" v-bind="$attrs" @click="onCopyClick">
+  <PButton data-copy-button class="pxd-copy-button" v-bind="$attrs" @click="onCopyClick">
     <span v-if="$slots.default" class="pxd-copy-button--text">
       <slot :copied="isCopied" />
     </span>

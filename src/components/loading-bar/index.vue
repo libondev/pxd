@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PTeleport :to="to">
-    <div aria-hidden="true" :class="classes" v-bind="attrs">
+    <div data-loading-bar aria-hidden="true" :class="classes" v-bind="attrs">
       <div
         :data-hidden="hiddenBar"
         :data-transition="enableTransition"

@@ -206,6 +206,7 @@ defineExpose({
 
 <template>
   <label
+    data-input
     :for="uniqueId"
     :data-disabled="disabled"
     :class="classes"

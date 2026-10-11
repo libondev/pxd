@@ -15,7 +15,12 @@ provideBreadcrumbContext(props)
 </script>
 
 <template>
-  <nav aria-label="breadcrumb" class="pxd-breadcrumb w-full max-w-full" v-bind="$attrs">
+  <nav
+    data-breadcrumb
+    aria-label="breadcrumb"
+    class="pxd-breadcrumb w-full max-w-full"
+    v-bind="$attrs"
+  >
     <ol class="gap-y-1 text-sm flex list-none flex-wrap items-center">
       <slot />
     </ol>

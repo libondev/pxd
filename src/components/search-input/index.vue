@@ -38,7 +38,13 @@ defineExpose(useForwardRefExpose(inputRef))
 </script>
 
 <template>
-  <PInput ref="inputRef" :default-prefix-style="false" v-bind="$attrs" @keydown="onKeydown">
+  <PInput
+    data-search-input
+    ref="inputRef"
+    :default-prefix-style="false"
+    v-bind="$attrs"
+    @keydown="onKeydown"
+  >
     <template #prefix>
       <div class="pxd-search-input--prefix-icon ps-3">
         <LoaderCircleIcon v-if="loading" class="size-4 motion-safe:animate-spin" />

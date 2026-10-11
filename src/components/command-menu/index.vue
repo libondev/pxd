@@ -85,6 +85,7 @@ watch(filteredOptions, async () => {
 
 <template>
   <PModal
+    data-command-menu
     v-model="modelValue"
     :width="width"
     class="pxd-command-menu max-sm:h-full"

@@ -84,7 +84,11 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pxd-mention relative w-full max-w-full rounded-md bg-background-100" v-bind="$attrs">
+  <div
+    data-mention-editor
+    class="pxd-mention relative w-full max-w-full rounded-md bg-background-100"
+    v-bind="$attrs"
+  >
     <span
       v-if="isEmpty && !isComposing && placeholder"
       class="pxd-mention-editor--placeholder text-sm inset-0 px-3 py-2 pointer-events-none absolute text-gray-600 select-none"

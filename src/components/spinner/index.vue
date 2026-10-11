@@ -11,6 +11,7 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
 
 <template>
   <span
+    data-spinner
     aria-hidden="true"
     aria-label="Loading"
     class="pxd-spinner leading-0 transform-origin-center motion-safe:animate-spin pointer-events-none relative inline-block size-em shrink-0 overflow-hidden text-foreground-secondary content-visibility-auto intrinsic-size-auto"

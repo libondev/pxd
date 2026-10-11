@@ -64,6 +64,7 @@ const contentClassComputed = computed(() => {
 
 <template>
   <PPopover
+    data-tooltip
     role="tooltip"
     class="pxd-tooltip"
     :data-variant="variant"

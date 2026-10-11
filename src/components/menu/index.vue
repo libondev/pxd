@@ -79,6 +79,7 @@ function onListModelUpdate(value: ListModelValue) {
 
 <template>
   <PPopover
+    data-menu
     v-model="popoverVisible"
     class="pxd-menu"
     trigger="click"

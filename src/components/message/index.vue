@@ -198,6 +198,7 @@ defineExpose({
 <template>
   <PTeleport to="body">
     <section
+      data-message
       class="pxd-message h-0 fixed z-20 flex w-(--message-width)"
       aria-live="polite"
       aria-label="Notifications"

@@ -67,6 +67,7 @@ const gated = computed(() => props.trigger === 'viewport' && !!observer.value)
 
 <template>
   <div
+    data-reveal
     ref="containerRef"
     class="pxd-reveal motion-reduce:animate-none!"
     :data-direction="direction"

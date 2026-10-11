@@ -6,7 +6,7 @@ defineOptions({
 </script>
 
 <template>
-  <div class="pxd-fragment-container" v-bind="$attrs">
+  <div data-fragment-container class="pxd-fragment-container" v-bind="$attrs">
     <slot />
   </div>
 </template>

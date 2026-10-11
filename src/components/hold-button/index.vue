@@ -149,6 +149,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PButton
+    data-hold-button
     v-bind="computedAttrs"
     @pointerdown="onPointerDown"
     @pointerenter="onPointerEnter"

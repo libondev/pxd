@@ -48,7 +48,7 @@ const { classes: actionClasses } = useTailwindVariant(
 </script>
 
 <template>
-  <aside :class="classes" :data-variant="variant" v-bind="attrs">
+  <aside data-project-banner :class="classes" :data-variant="variant" v-bind="attrs">
     <div class="gap-2 px-6 md:justify-center md:flex-row md:items-center flex w-full flex-col">
       <div class="gap-2 flex items-center">
         <div v-if="$slots.icon" aria-hidden="true" class="shrink-0">

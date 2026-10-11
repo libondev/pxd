@@ -52,7 +52,7 @@ function TimelineItems() {
 </script>
 
 <template>
-  <ul :class="classes" v-bind="attrs">
+  <ul data-timeline :class="classes" v-bind="attrs">
     <TimelineItems />
   </ul>
 </template>

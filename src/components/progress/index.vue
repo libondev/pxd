@@ -88,6 +88,7 @@ const computedProgressBarStyles = computed(() => {
 
 <template>
   <div
+    data-progress
     role="progressbar"
     class="pxd-progress flex w-full items-center"
     :aria-valuenow="progress!"

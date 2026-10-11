@@ -264,6 +264,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PPopover
+    data-time-picker
     v-model="popoverVisible"
     class="pxd-time-picker w-full"
     trigger="click"

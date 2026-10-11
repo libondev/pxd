@@ -62,6 +62,7 @@ async function onCheckboxChange(e: Event) {
 
 <template>
   <label
+    data-toggle
     role="switch"
     :for="uniqueId"
     :aria-checked="isChecked"

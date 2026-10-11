@@ -154,6 +154,7 @@ function onDetailsToggle(ev: Event) {
 
 <template>
   <details
+    data-tool-call
     class="pxd-tool-call w-full max-w-full rounded-xl border bg-background-100"
     v-bind="$attrs"
     :open="detailsOpen"

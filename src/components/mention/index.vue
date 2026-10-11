@@ -149,6 +149,7 @@ function onMentionClick(payload: MentionClickPayload) {
 
 <template>
   <PPopover
+    data-mention
     v-model="popoverVisible"
     class="w-full"
     position="bottom-start"

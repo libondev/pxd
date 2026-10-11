@@ -7,6 +7,7 @@ defineOptions({
 
 <template>
   <span
+    data-loading-dots
     aria-hidden="true"
     aria-label="Loading"
     class="pxd-loading-dots inline-flex items-center text-foreground-secondary"

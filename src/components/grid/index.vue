@@ -81,7 +81,7 @@ const computedStyle = computed(() => {
 </script>
 
 <template>
-  <div class="pxd-grid relative w-full max-w-full" v-bind="$attrs">
+  <div data-grid class="pxd-grid relative w-full max-w-full" v-bind="$attrs">
     <section
       class="pxd-grid-section [container-type:inline-size] grid h-full max-h-inherit min-h-inherit w-full max-w-inherit min-w-inherit"
       :class="computedClasses"

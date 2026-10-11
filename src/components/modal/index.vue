@@ -83,6 +83,7 @@ watch(
   >
     <Transition name="pxd-transition--modal" mode="out-in" appear>
       <div
+        data-modal
         v-if="isVisible"
         ref="modalRef"
         role="dialog"

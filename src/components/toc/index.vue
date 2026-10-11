@@ -214,7 +214,7 @@ defineExpose({
 </script>
 
 <template>
-  <nav v-if="tocItems.length" :class="classes" v-bind="attrs">
+  <nav data-toc v-if="tocItems.length" :class="classes" v-bind="attrs">
     <ol ref="listEl" class="m-0 p-0 list-none">
       <li
         v-for="row in tocItems"

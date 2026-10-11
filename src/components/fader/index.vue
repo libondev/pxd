@@ -76,6 +76,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    data-fader
     aria-hidden="true"
     class="pxd-fader inset-0 pointer-events-none absolute size-full rounded-inherit"
     :style="computedStyle"

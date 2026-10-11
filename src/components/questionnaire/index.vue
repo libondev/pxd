@@ -292,6 +292,7 @@ watch(
 
 <template>
   <div
+    data-questionnaire
     class="pxd-questionnaire w-full max-w-full rounded-xl border bg-background-100 empty:hidden"
     v-bind="$attrs"
   >

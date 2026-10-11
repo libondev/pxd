@@ -93,6 +93,7 @@ if (!isServer()) {
 
 <template>
   <span
+    data-scroll-progress
     role="progressbar"
     class="pxd-scroll-progress tabular-nums"
     :aria-valuenow="percentage"

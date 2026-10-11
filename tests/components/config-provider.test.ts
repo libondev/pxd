@@ -18,7 +18,7 @@ describe('config-provider', () => {
     const wrapper = mount(ConfigProvider)
 
     expect(wrapper.html()).toMatchInlineSnapshot(
-      `"<div class="pxd-config-provider h-inherit"></div>"`,
+      `"<div data-config-provider="" class="pxd-config-provider h-inherit"></div>"`,
     )
 
     wrapper.unmount()

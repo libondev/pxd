@@ -43,6 +43,7 @@ watch(
 
 <template>
   <details
+    data-reasoning
     class="pxd-reasoning w-full max-w-full"
     v-bind="$attrs"
     :open="detailsOpen"

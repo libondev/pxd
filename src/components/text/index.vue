@@ -70,7 +70,14 @@ const computedClasses = computed(() => {
 </script>
 
 <template>
-  <Component :is="as" :class="computedClasses" :title="text" :style="computedStyle" v-bind="attrs">
+  <Component
+    data-text
+    :is="as"
+    :class="computedClasses"
+    :title="text"
+    :style="computedStyle"
+    v-bind="attrs"
+  >
     <slot>
       {{ text }}
     </slot>

@@ -498,6 +498,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    data-active-graph
     class="pxd-active-graph relative"
     :class="[graphOnly ? 'py-0.75 pe-0.75' : 'pe-5']"
     v-bind="$attrs"

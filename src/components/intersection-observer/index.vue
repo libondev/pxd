@@ -67,6 +67,7 @@ useIntersectionObserver(
 
 <template>
   <div
+    data-intersection-observer
     ref="containerRef"
     class="pxd-intersection-observer content-visibility-auto"
     :style="containerSize"

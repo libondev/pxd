@@ -109,6 +109,7 @@ function onInputChange(event: Event) {
 
 <template>
   <label
+    data-checkbox
     role="checkbox"
     :aria-selected="isSelected"
     :data-disabled="isDisabled"

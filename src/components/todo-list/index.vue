@@ -233,6 +233,7 @@ defineExpose({
 
 <template>
   <details
+    data-todo-list
     class="pxd-todo-list group/todo w-full max-w-full rounded-xl border bg-background-100 text-foreground"
     :open="detailsOpen"
     v-bind="$attrs"
