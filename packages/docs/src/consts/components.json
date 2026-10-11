@@ -185,6 +185,11 @@
     "category": "Button"
   },
   {
+    "camelized": "Hue Text",
+    "name": "hue-text",
+    "category": "Typography"
+  },
+  {
     "camelized": "Input",
     "name": "input",
     "category": "Form"

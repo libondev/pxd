@@ -48,6 +48,7 @@ declare module 'vue' {
     PGrid: (typeof import('pxd/components/grid'))['default']
     PGridItem: (typeof import('pxd/components/grid-item'))['default']
     PHoldButton: (typeof import('pxd/components/hold-button'))['default']
+    PHueText: (typeof import('pxd/components/hue-text'))['default']
     PInput: (typeof import('pxd/components/input'))['default']
     PIntersectionObserver: (typeof import('pxd/components/intersection-observer'))['default']
     PKbd: (typeof import('pxd/components/kbd'))['default']
