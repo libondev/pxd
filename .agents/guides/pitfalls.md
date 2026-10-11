@@ -16,6 +16,20 @@ Known issues and lessons learned during development.
 
 <!-- Add new entries below this line -->
 
+### `animation-fill-mode: both` pins animated values and pins a stacking context with them
+
+- **Symptom**: A page of one-shot entry animations (PReveal, 16 instances) ran fine on load but stayed sluggish while scrolling — the compositor never reclaimed the layers. Dropping `forwards` fixed it with no visible behaviour change.
+- **Cause**: Per CSSOM, an element that animated a stacking-context property (`opacity`, `transform`, `filter`) through `@keyframes` **keeps that stacking context when `fill-mode` includes `forwards`**. Holding the *start* frame needs only `backwards`, so `both` bought a permanent context per instance for free — the browser can no longer merge those layers, and every scroll frame re-composites them. `backwards` only covers the delay / before phase, which is the whole reason the paused state was written as `animation-play-state: paused` + `fill-mode` in the first place.
+- **Fix**: Declare `animation-fill-mode: backwards`, never `both`, when no end state needs pinning. The implicit `to` frame already resolves to the element's own value, so nothing has to be pinned after the animation ends.
+- **Related**: the same rule makes `will-change` on a long-lived selector a liability rather than a hint — the repo's `.pxd-transition--fade-*-active` classes carry `will-change` only because Vue removes them when the transition ends.
+
+### A missing observer API must degrade to the visible state, never to an invisible one
+
+- **Symptom**: An element that fades in on scroll stayed at `opacity: 0` forever when `IntersectionObserver` was unavailable — server rendering, or a browser without the API. Nothing threw; the content was simply gone.
+- **Cause**: `useIntersectionObserver`'s pooled spec returns `undefined` from `create()` when the API is missing, so no observer is acquired and the callback that would clear the paused state never runs. The paused state came from CSS (`animation-play-state: paused` + a fill mode holding the `from` frame), which applies during SSR and hydration just as it does on the client.
+- **Fix**: Arm the gating only once an observer instance actually exists (`const gated = computed(() => trigger === 'viewport' && !!observer.value)`) and leave the element running otherwise.
+- **Testing note**: `vi.stubGlobal('IntersectionObserver', undefined)` reproduces it — `createObserver` checks `typeof globalThis.IntersectionObserver === 'undefined'`. The stubbed global must be restored afterwards, since the pool is module state that outlives the test.
+
 ### Non-pooled observers are never disconnected, so a target keeps waking dead scopes
 
 - **Symptom**: Unmounting a component that called `useMutationObserver` leaves its observer running — callbacks reach a disposed scope — and every mount/unmount cycle adds another permanent one. `useMotionReduced` inherited it once per caller, each instance also repeating the same root `getComputedStyle` read per mutation batch.

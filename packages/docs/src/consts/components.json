@@ -345,6 +345,11 @@
     "category": "Layout"
   },
   {
+    "camelized": "Reveal",
+    "name": "reveal",
+    "category": "Decoration"
+  },
+  {
     "camelized": "Rolling Number",
     "name": "rolling-number",
     "category": "Typography"

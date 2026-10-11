@@ -275,6 +275,10 @@
     "title": "Resizable",
     "description": "Two panels side by side, separated by a draggable divider that keeps their sizes as percentages of the group."
   },
+  "/components/reveal": {
+    "title": "Reveal",
+    "description": "Fade an element in while it moves from an offset and optional blur into place. By default the animation runs on mount with no JavaScript observer involved; set…"
+  },
   "/components/rolling-number": {
     "title": "Rolling Number",
     "description": "Display a number with a rolling animation effect, supporting decimals and thousands separators."
