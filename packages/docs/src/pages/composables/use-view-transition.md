@@ -49,5 +49,3 @@ useViewTransition(router)
   animation-duration: 0.25s;
 }
 ```
-
-- A navigation interrupted by a newer one does not leak a pending transition.
