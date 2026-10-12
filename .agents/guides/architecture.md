@@ -8,7 +8,7 @@
 - **开发态**: `pnpm dev:lib` 走 `unbuild --stub`，此时 `dist` 是指向 `src` 的 symlink，内容不是构建产物。
 - **构建**: `scripts/build-core.js` 调 mkdist（`src` → `dist`，`format: esm`、`declaration: true`、loaders 含 vue/postcss）。
 - **工具链**: vite-plus 包住 Vite / Vitest / oxlint / oxfmt，配置全在根 `vite.config.ts`；仓库没有 `eslint.config.*`、`vitest.config.*`、Prettier 配置。
-- **Vue**: peer `>=2.7.0 <3.0.0 || >=3.3.0`，开发态使用 3.x。
+- **Vue**: peer `>=2.7.0 <3.0.0 || >=3.2.0`，开发态使用 3.x。
 - **样式**: 入口 `src/styles/tw.css`（主题变量 + `@source`）；`src/styles/styles.css` 是发布时自动替换的占位文件，不要手改。
 
 ## TypeScript
