@@ -3,13 +3,15 @@ import { useHead } from '@unhead/vue'
 import { computed } from 'vue'
 import componentList from '@/consts/components.json'
 import composableList from '@/consts/composables.json'
-import { githubLink } from '@/consts/link'
+import { githubLink, siteUrl } from '@/consts/link'
 
 useHead({
   title: `PXD - One Codebase for Vue 2.7+ & Vue 3.2+`,
 })
 
 const INSTALL_COMMAND = 'pnpm install pxd'
+
+const AGENT_INSTALL_PROMPT = `Read ${siteUrl}/agent-install.md and follow it to install the PXD component library in this project.`
 
 const CAPABILITIES = [
   {
@@ -126,6 +128,22 @@ const inventory = computed(
       <div class="bar-cell">
         <PSnippet aria-label="Copy install command" variant="secondary" :text="INSTALL_COMMAND" />
       </div>
+
+      <div class="bar-cell bar-cell--agent">
+        <span class="agent-hint text-sm text-foreground-secondary"
+          >Want an agent to install it?</span
+        >
+
+        <PCopyButton
+          aria-label="Copy AI prompt"
+          size="sm"
+          class="-ml-2 px-0.5"
+          variant="ghost"
+          :text="AGENT_INSTALL_PROMPT"
+        >
+          Copy AI prompt
+        </PCopyButton>
+      </div>
     </section>
 
     <section class="index">
@@ -211,7 +229,7 @@ const inventory = computed(
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--docs-muted);
+  color: var(--color-foreground-secondary);
   white-space: nowrap;
 }
 
@@ -234,13 +252,13 @@ const inventory = computed(
     max-width: 62ch;
     font-size: 15px;
     line-height: 1.55;
-    color: var(--docs-muted);
+    color: var(--color-foreground-secondary);
   }
 }
 
 .bar {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-block: 1px solid var(--color-gray-300);
 }
 
@@ -264,6 +282,14 @@ const inventory = computed(
   border-color: var(--color-gray-400);
 }
 
+.bar-cell--agent {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  padding-block: 8px;
+}
+
 .sec-head {
   display: flex;
   align-items: baseline;
@@ -285,7 +311,7 @@ const inventory = computed(
 .tally {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--docs-muted);
+  color: var(--color-foreground-secondary);
 }
 
 .index {
@@ -321,7 +347,7 @@ const inventory = computed(
 
     &:hover,
     &:focus-visible {
-      background-color: var(--color-background-200);
+      background-color: var(--color-gray-alpha-200);
       color: var(--color-foreground);
     }
   }
@@ -332,13 +358,12 @@ const inventory = computed(
 }
 
 .group-label {
-  margin-block-end: 7px;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--docs-muted);
+  color: var(--color-foreground-secondary);
 }
 
 .group-label + ul {
@@ -368,7 +393,7 @@ const inventory = computed(
     vertical-align: top;
     padding-block: 14px;
     font-size: 13px;
-    color: var(--docs-muted);
+    color: var(--color-foreground-secondary);
     max-width: 68ch;
   }
 
@@ -385,6 +410,24 @@ const inventory = computed(
 @media (max-width: 64rem) {
   .index-cols {
     columns: 3;
+  }
+
+  .bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bar-cell {
+    &:nth-child(odd) {
+      border-inline-start: 0;
+    }
+
+    &:nth-child(n + 3) {
+      border-block-start: 1px solid var(--color-gray-300);
+    }
+  }
+
+  .dark .bar-cell {
+    border-color: var(--color-gray-400);
   }
 }
 

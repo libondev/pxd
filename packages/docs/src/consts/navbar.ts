@@ -41,16 +41,16 @@ export const asideMenus = [
         path: '/guide/installation',
       },
       {
-        label: 'Styled',
-        path: '/guide/styled',
-      },
-      {
         label: 'Installation Icon',
         path: '/guide/installation-icon',
       },
       {
         label: 'Components',
         path: '/guide/components',
+      },
+      {
+        label: 'Styled',
+        path: '/guide/styled',
       },
       {
         label: 'Icons',

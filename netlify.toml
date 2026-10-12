@@ -19,6 +19,12 @@ status = 200
 force = true
 
 [[redirects]]
+from = "/agent-install.md"
+to = "/agent-install.md"
+status = 200
+force = true
+
+[[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
