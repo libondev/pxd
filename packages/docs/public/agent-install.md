@@ -1,25 +1,19 @@
 # Install PXD
 
-You are a coding agent. This guide tells you how to install the PXD component library into the user's project. Work through the steps in order, adapt every command to the project's package manager and bundler, and ask the user a question only where a step below explicitly says so.
+You are a coding agent. This guide tells you how to set up the PXD component library in a project. Work through the steps in order, ask the questions of step 3 — all of them, in one message — and then finish without further interruptions.
 
 PXD is a universal UI component library for Vue 2.7+ & Vue 3.2+: one codebase, no `vue-demi`, built-in light/dark themes, and components that resolve automatically through `unplugin-vue-components`.
 
+The project exists and runs — typically a Vite Vue template. Do not study or adapt to what it already contains, and do not skip a step because something similar looks present: every step below is written out as the complete form PXD needs, so write it as shown, starting from installing `pxd`.
+
+Two things depend on the setup rather than on inspection:
+
+- The package manager and bundler: examples use pnpm and Vite with a Vite + Vue entry (`src/main.js`, `src/App.vue`, `index.html`). Rsbuild and webpack variants are called out where the entry point differs.
+- The Vue version. PXD declares `>=2.7.0 <3.0.0 || >=3.2.0` as its peer range — Vue 2.6, 3.0 and 3.1 are unsupported, so stop and tell the user if that is what the project runs. On Vue 2.7 the Vite plugin is the Vue 2 one (`@vitejs/plugin-vue2`), not `@vitejs/plugin-vue`.
+
 One rule applies across every step: any package you install or import must be declared in the project's `package.json` — runtime packages under `dependencies`, build-time tools under `devDependencies`. Install through the package manager, never with `--no-save`, and do not rely on a package that is only present in `node_modules`. In this guide, `pxd` and `@gdsicon/vue` are runtime `dependencies`, while `unplugin-vue-components`, `unplugin-vue-define-options`, `tailwindcss` and `@tailwindcss/vite` are `devDependencies`.
 
-Every snippet below shows only what PXD needs. Merge it into the config file the project already has; never replace that file with the snippet.
-
-## 1. Inspect the project
-
-Before installing anything, check:
-
-- The Vue version in `package.json`. PXD declares `>=2.7.0 <3.0.0 || >=3.2.0` as its peer range — if the project runs Vue 2.6, 3.0 or 3.1, stop and tell the user PXD does not support it.
-- The package manager: pnpm, npm, yarn or bun (look at the lockfile)
-- The bundler: Vite, Rsbuild, webpack or something else
-- The CSS setup: Tailwind CSS 4, no CSS framework, and whether the project brings its own CSS reset
-
-Skip any step that is already configured. All examples below use pnpm and Vite. On Vue 2.7 the Vite plugin is the Vue 2 one (`@vitejs/plugin-vue2`), not `@vitejs/plugin-vue`.
-
-## 2. Install pxd
+## 1. Install pxd
 
 ```bash
 pnpm install pxd
@@ -27,11 +21,11 @@ pnpm install pxd
 
 Use the project's own package manager (`npm install pxd`, `yarn add pxd`, `bun add pxd`).
 
-If the bundler later fails with `Failed to resolve import` for a package that does exist in `node_modules`, the project runs a strict package manager: add `shamefully-hoist=true` to a `.npmrc` in the project root and reinstall.
+If the bundler later fails with `Failed to resolve import` for a package that does exist in `node_modules`, the package manager is a strict one: add `shamefully-hoist=true` to a `.npmrc` in the project root and reinstall.
 
-## 3. Vue 2.7 / Vue 3.2 only: enable the defineOptions transform
+## 2. Vue 2.7 / Vue 3.2 only: enable the defineOptions transform
 
-PXD components declare their name and options with the `defineOptions()` macro, which Vue only compiles natively from 3.3. If the project runs Vue 2.7 or 3.2, install the transform plugin and register it in the bundler config, next to the plugins already there. Vue 3.3+ needs nothing here.
+PXD components declare their name and options with the `defineOptions()` macro, which Vue only compiles natively from 3.3. On Vue 2.7 or 3.2, install the transform plugin and register it in the bundler config. Vue 3.3+ needs nothing here.
 
 ```bash
 # Vue 2.7
@@ -48,7 +42,6 @@ import defineOptions from 'unplugin-vue-define-options/vite'
 
 export default defineConfig({
   plugins: [
-    // ...keep the existing plugins
     defineOptions(),
   ],
 })
@@ -56,20 +49,31 @@ export default defineConfig({
 
 For Rsbuild, import from `unplugin-vue-define-options/rspack` and register it under `tools.rspack.plugins` instead. Webpack uses `unplugin-vue-define-options/webpack`.
 
-## 4. Choose the style setup
+## 3. Ask the three questions
 
-**Ask the user which style setup they want**, unless the project already dictates one: a project already on Tailwind CSS 4 takes the Tailwind route, and a project with no CSS framework takes the plain route. Tailwind CSS 3 and UnoCSS have no PXD preset — those projects take the plain route and keep their own framework for their own classes.
+**Ask the user once, in a single message**, then act on the answers for the rest of the guide. The defaults in brackets stand when the user has no preference, so a single reply covers every case:
 
-**Option A — No CSS framework (default).** The compiled stylesheet carries PXD's components and its theme variables only: no Tailwind preflight and no reset, so it neither replaces nor expects anything from the project's base styles. Import it once in the entry file:
+1. **Style setup** — plain stylesheet [default], or Tailwind CSS 4?
+2. **Icons** — will their own code use icons from `@gdsicon/vue`? Default no; PXD's own components already bring the package and need nothing here.
+3. **View transitions** — should page navigations animate? Default no.
+
+Nothing else in this guide needs asking.
+
+## 4. Style setup
+
+Both routes end the same way: one project stylesheet, `src/styles/global.css`, imported once from the entry file. Later steps add to it.
+
+**Option A — No CSS framework (default).** The compiled stylesheet carries PXD's components and its theme variables only: no Tailwind preflight and no reset, so the project's own base styles still have to be written in `global.css`. Import both once in the entry file:
 
 ```js
 // main.js
 import 'pxd/styles.css'
+import './styles/global.css'
 ```
 
-The project still needs its own reset (box sizing, default margins, form element styling). If it has none, say so in the final report instead of adding one silently.
+Leave `global.css` with the reset the project needs — box sizing, default margins, form element styling.
 
-**Option B — Tailwind CSS 4.** Import PXD's Tailwind entry next to Tailwind itself:
+**Option B — Tailwind CSS 4.** Import PXD's Tailwind entry next to Tailwind itself; that is the whole stylesheet:
 
 ```css
 /* src/styles/global.css */
@@ -77,9 +81,7 @@ The project still needs its own reset (box sizing, default margins, form element
 @import 'pxd/tw.css';
 ```
 
-`pxd/tw.css` registers PXD's own sources itself — do not add `@source` rules pointing at `node_modules/pxd`.
-
-Import that global stylesheet once in the entry file as well. If the project has no Tailwind CSS 4 yet, install it first:
+`pxd/tw.css` registers PXD's own sources itself — do not add `@source` rules pointing at `node_modules/pxd`. Import `global.css` once in the entry file, and install Tailwind CSS 4:
 
 ```bash
 pnpm install -D tailwindcss @tailwindcss/vite
@@ -87,19 +89,19 @@ pnpm install -D tailwindcss @tailwindcss/vite
 
 ```js
 // vite.config.ts
+import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    // ...keep the existing plugins
     tailwindcss(),
   ],
 })
 ```
 
-## 5. Auto-import components with unplugin-vue-components
+## 5. Auto-import components
 
-This is the recommended setup: components resolve straight from templates, no imports needed.
+Components resolve straight from templates, no imports needed.
 
 ```bash
 pnpm install -D unplugin-vue-components
@@ -114,7 +116,6 @@ import PxdResolver from 'pxd/resolver'
 
 export default defineConfig({
   plugins: [
-    // ...keep the existing plugins
     Vue(),
     Components({
       dts: 'src/types/components.d.ts',
@@ -126,11 +127,67 @@ export default defineConfig({
 
 Components are used with the `P` prefix: `<PButton>`, `<PInput>`, `<PSelect>`. The resolver covers components only; composables, locales and utils come from their own entry points — `import { useMessage } from 'pxd'` (or `pxd/composables/*`), `pxd/locales/*`, `pxd/utils/*`.
 
-`dts` makes `unplugin-vue-components` write `src/types/components.d.ts` the first time the dev server or a build runs. Type checking before that first run will report unresolved components.
+`dts` makes `unplugin-vue-components` write `src/types/components.d.ts` the first time the dev server or a build runs. Type checking before that first run will report unresolved components. **If the project has no `tsconfig.json`, drop the `dts` option — and with it step 8**, which has nothing to register.
 
 Do not register the whole library globally unless the user asks for it — `app.use(PXD)` pulls every component into the bundle.
 
-## 6. Configure code splitting
+**If the user asked for icons**, install the package and add its resolver to the same config:
+
+```bash
+pnpm install @gdsicon/vue
+```
+
+```js
+// vite.config.ts
+import GdsiResolver from '@gdsicon/vue/resolver'
+
+Components({
+  dts: 'src/types/components.d.ts',
+  resolvers: [
+    PxdResolver(),
+    GdsiResolver({ prefix: 'IGds' }),
+  ],
+})
+```
+
+The prefix is arbitrary — pick one that cannot collide with the project's own components (`IGds` and `Icon` are both in use in PXD's own code). Icons then resolve on first use as `<IGdsAccessibility />`. Do not register icons globally — it would pull every icon into the bundle.
+
+## 6. View transitions
+
+Skip this step unless the user asked for animated navigations.
+
+Route down two facts before writing anything:
+
+- **Has the project got a router?** Without one there is nothing for `useViewTransition()` to hook into, so write the stylesheet form and stop — do not add a router for this.
+- **Does anything navigate as a full page load?** Only then add the stylesheet form; the SPA form alone covers route changes.
+
+The SPA form needs a router — vue-router **4** on Vue 3, **3.5+** on Vue 2.7 — PXD's optional peer. `useViewTransition()` takes the router instance and calls `router.beforeResolve`, `afterEach` and `onError`, all of which both lines provide. Call it once, right after the router is created:
+
+```ts
+// src/router/index.ts
+import { useViewTransition } from 'pxd'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+})
+
+useViewTransition(router)
+```
+
+The stylesheet form covers navigation that reloads the document. Add it to the stylesheet written in step 4 when the app has any:
+
+```css
+/* src/styles/global.css */
+@view-transition {
+  navigation: auto;
+}
+```
+
+For the SPA form, it registers navigation guards and returns a disposer; repeat calls for the same router share that one registration, which is torn down once every caller has disposed. Pass `shouldTransition` to keep some navigations unanimated — the first one after load (`from.matched.length === 0`) is the common case. Browsers without `document.startViewTransition` are detected internally and navigate unchanged. Leave the default cross-fade alone unless the user asks for something else — restyling it means overriding the `::view-transition-old(root)` and `::view-transition-new(root)` pseudo-elements.
+
+## 7. Configure code splitting
 
 While you are in the bundler config, give third-party code a stable home. On Rolldown (`vite-plus`, or Vite 7+):
 
@@ -161,16 +218,17 @@ Two rules matter as much as the config:
 - **Never import a whole icon set, icon barrel or locale barrel statically from a module that the layout also imports.** A namespace import such as `import * as icons from '@gdsicon/vue'` binds every icon into one chunk, and any layout-level module that imports a single icon from the same package is then bundled to reference that chunk — putting the entire set on every page without anything in the page's own code saying so. Load the set with a dynamic `import()` from the page that needs it, and keep that import dynamic.
 - **Leave `cssCodeSplit` alone unless every route draws on one shared design system.** In that case a single stylesheet (`cssCodeSplit: false`) beats per-route CSS that repeats the same custom properties.
 
-## 7. Global component types for the editor
+## 8. Global component types for the editor
 
-Once the dev server or a build has run, step 5 already types every component the project uses. To get completions for `P`-prefixed components before they are used anywhere, register PXD's own list instead, appending to whatever the project already has:
+**Skip this step when the project has no `tsconfig.json`** — step 5 already dropped `dts`, and there is nothing to register here.
+
+Once the dev server or a build has run, step 5 already types every component the project uses. To get completions for `P`-prefixed components before they are used anywhere, register PXD's own list:
 
 ```json
 // tsconfig.json
 {
   "compilerOptions": {
     "types": [
-      // ...keep the entries already there, e.g. "vite/client"
       "pxd/volar"
     ]
   }
@@ -186,112 +244,72 @@ If the types still do not apply, disable tsgo in the workspace:
 }
 ```
 
-## 8. App root: shell height, dark mode, locale and runtime mounts
+## 9. App shell
 
-Give `<html>`, `<body>` and the app's root element a full height, so PXD's full-height components (`PScrollable`, `PBacktop`) have something to fill. `<html>` also carries the font-smoothing and overscroll classes, `<body>` an empty touch handler, and the viewport meta the two flags PXD relies on:
+Nothing here needs asking. This is the baseline PXD expects.
+
+Give `<html>`, `<body>` and the app's root element a full height, so anything that fills the viewport has something to fill:
+
+```css
+/* src/styles/global.css */
+html,
+body,
+#app {
+  height: 100%;
+}
+```
+
+Then add the viewport meta, the empty touch handler, the overscroll guard and the theme check to `index.html`, keeping whatever else is already in that file:
 
 ```html
 <!-- index.html -->
-<html class="h-full overscroll-none">
+<html class="overscroll-none">
   <head>
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1.0,interactive-widget=resizes-content,viewport-fit=cover"
     />
+    <script>(()=>{if(typeof window==='undefined')return;let p=matchMedia('(prefers-color-scheme:dark)').matches;let s=localStorage.getItem('fe.system.color-scheme')||'auto';if(s==='dark'||(p&&s==='auto'))document.documentElement.classList.toggle('dark',true)})()</script>
   </head>
-  <body class="h-full" ontouchstart="">
-    <div id="app" class="h-full"></div>
+  <body ontouchstart="">
+    <div id="app"></div>
   </body>
 </html>
 ```
 
-Three parts of that snippet are deliberate rather than decorative: `ontouchstart=""`, because mobile Safari skips `:active` until the document has handled a touch event; `interactive-widget=resizes-content`, so the on-screen keyboard resizes the layout viewport instead of overlaying the inputs; and `viewport-fit=cover`, so the layout extends under the notch and home indicator.
+Each of those lines earns its place: `height: 100%` on the three root elements for anything sized against the viewport; `interactive-widget=resizes-content` so the on-screen keyboard resizes the layout viewport instead of overlaying inputs; `viewport-fit=cover` so the layout extends under the notch and home indicator; `ontouchstart=""` because mobile Safari skips `:active` until the document has handled a touch event; `overscroll-none` (`overscroll-behavior: none` without Tailwind) against rubber-band scrolling; and the inline script applies the stored colour scheme before the app bundle runs, so there is no light flash on load.
 
-On a project without Tailwind, `h-full` means `height: 100%` on those same three elements.
-
-PXD's theme switches on the `.dark` class on `<html>`, and nothing flips it on its own. Use `<PThemeSwitcher />` or the `useColorScheme()` composable — both set `document.documentElement.classList` and persist the choice in `localStorage`. A project that sees a light flash before hydration can inline the same check in `index.html`, ahead of the app bundle:
-
-```html
-<script>(()=>{if(typeof window==='undefined')return;let p=matchMedia('(prefers-color-scheme:dark)').matches;let s=localStorage.getItem('fe.system.color-scheme')||'auto';if(s==='dark'||(p&&s==='auto'))document.documentElement.classList.toggle('dark',true)})()</script>
-```
-
-Locale, size and the animation switches are read from an injected config that has defaults, so `<PConfigProvider>` is optional. Wrap the app root in it when the user needs a non-English locale or wants motion off:
+Finally, wrap the content of `src/App.vue` in a config provider, keeping whatever the file already renders inside it:
 
 ```vue
-<script setup>
-import zhCN from 'pxd/locales/zh-cn'
-</script>
-
+<!-- src/App.vue -->
 <template>
-  <PConfigProvider :locale="zhCN" :enter-motion="false" :leave-motion="false">
+  <PConfigProvider>
     <RouterView />
   </PConfigProvider>
 </template>
 ```
 
-Two APIs render nothing until their component is mounted somewhere in the tree: `useMessage()` needs a `<PMessage group="..." />`, and `useLoadingBar()` needs a `<PLoadingBar group="..." />`. Mount them at the app root when the user asks for toasts or a top loading bar.
+Nothing forces this — PXD reads its defaults without it — but it is the injection point for locale, component size and the motion switches, and later steps and features expect a place to hang those. It renders one wrapper element (`as` changes the tag), so give it `class="h-full"` too when anything inside is sized against the viewport.
 
-## 9. Ask about view transitions
+## 10. Verify and report
 
-**Ask the user whether page navigations should animate.** Nothing in PXD requires it, so skip this step when they decline. The two setups below are independent: take the one that matches the project.
+Run the dev server or a build once, so `components.d.ts` is generated, then run the type check and confirm a component renders.
 
-Multi-page navigations need no JavaScript and no router. Add this to the stylesheet the entry file imports from step 4 — create one and import it in the entry file if the project has none:
+Render a `<PButton>Click me</PButton>` and check it comes out with PXD's own height, radius and colours rather than the browser defaults — that also proves the stylesheet is loaded.
 
-```css
-/* src/styles/global.css */
-@view-transition {
-  navigation: auto;
-}
-```
+Report what was installed, which files were written and which options were skipped, then list what was applied silently and how to undo each — none of it is load-bearing, every item is one edit to remove:
 
-SPA route changes need a router — vue-router **4** on Vue 3, **3.5+** on Vue 2.7 — PXD's optional peer. `useViewTransition()` takes the router instance and calls `router.beforeResolve`, `afterEach` and `onError`, all of which both lines provide; a project without a router only has the stylesheet form above. Do not add a router for this. When a router is installed, call it once, right after the router is created:
+- **`<PConfigProvider>`** around `src/App.vue` — unwrap the template; components fall back to built-in defaults.
+- **Full-height rules on `html`, `body`, `#app` and the additions to `index.html`** — drop the lines; only components sized against the viewport lose something.
+- **The reset written into `src/styles/global.css`** on the plain stylesheet route — delete it and supply your own.
+- **The code splitting group** — remove the `output` block to go back to the bundler's default chunks.
+- **The `components.d.ts` generation and the `types` entry in `tsconfig.json`** — drop the `dts` option and the `"pxd/volar"` entry; explicit imports still work.
+- **Auto-import through the resolver** — swap it for explicit `import { Button } from 'pxd'`, or for `app.use(PXD)` if bundle size stops mattering.
+- **`.npmrc` with `shamefully-hoist`**, if a strict package manager made it necessary — remove it and hoist `pxd`'s deps some other way.
 
-```ts
-// src/router/index.ts
-import { useViewTransition } from 'pxd'
-import { createRouter, createWebHistory } from 'vue-router'
+Close with what PXD still offers beyond that. **Set none of it up unless asked:**
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
-})
-
-useViewTransition(router)
-```
-
-It registers navigation guards and returns a disposer; repeat calls for the same router share that one registration, which is torn down once every caller has disposed. Pass `shouldTransition` to keep some navigations unanimated — the first one after load (`from.matched.length === 0`) is the common case. Browsers without `document.startViewTransition` are detected internally and navigate unchanged. Leave the default cross-fade alone unless the user asks for something else — restyling it means overriding the `::view-transition-old(root)` and `::view-transition-new(root)` pseudo-elements.
-
-## 10. Ask about the icon library
-
-PXD's own components draw their icons from `@gdsicon/vue`, which PXD declares as a runtime dependency — installing `pxd` brings it along, and those icons need no extra step. **Ask the user whether their own code needs icons**; that is the case in which the project has to declare the package itself.
-
-If the user says yes:
-
-```bash
-pnpm install @gdsicon/vue
-```
-
-Add its resolver to the existing `unplugin-vue-components` config:
-
-```js
-// vite.config.ts
-import GdsiResolver from '@gdsicon/vue/resolver'
-
-Components({
-  dts: 'src/types/components.d.ts',
-  resolvers: [
-    PxdResolver(),
-    GdsiResolver({ prefix: 'IGds' }),
-  ],
-})
-```
-
-The prefix is arbitrary — pick one that cannot collide with the project's own components (`IGds` and `Icon` are both in use in PXD's own code). Icons then resolve on first use as `<IGdsAccessibility />`. Do not register icons globally — it would pull every icon into the bundle.
-
-## 11. Verify
-
-Run the project's dev server or build once, so `components.d.ts` is generated, then run its type check and confirm a component renders.
-
-Render a `<PButton>Click me</PButton>` and check it comes out with PXD's own height, radius and colours rather than the browser defaults — that also proves the stylesheet is loaded. Toggle `.dark` on `<html>` to check the dark theme.
-
-Report what was installed, which files were changed, which steps were skipped, and anything the project still lacks (a reset, for instance).
+- **Dark theme**: PXD switches theme on a `.dark` class on `<html>` — `<PThemeSwitcher />` or the `useColorScheme()` composable flips it and persists the choice in `localStorage`. Step 9 already applies the stored choice early enough to avoid a flash.
+- **Locale**: the provider from step 9 is already mounted, so switching language is one prop away — `<PConfigProvider :locale="zhCN">` with any locale from `pxd/locales/*`.
+- **Runtime APIs**: `useMessage()` renders nothing until a `<PMessage group="..." />` is mounted in the tree, and `useLoadingBar()` likewise needs a `<PLoadingBar group="..." />`.
