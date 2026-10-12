@@ -2,6 +2,7 @@
 @custom-variant sibling (& + &);
 @custom-variant within-group (&:is([data-group] *));
 
+@source '../constants';
 @source '../components';
 @source '../composables';
 
