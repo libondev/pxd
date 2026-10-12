@@ -27,6 +27,7 @@ import { getUniqueId } from '../../utils/helper.js'
 import { isNumber } from '../../utils/is.js'
 import PTreeNode from '../_internal/tree-node.vue'
 import PSearchInput from '../search-input/index.vue'
+import PTeleport from '../teleport/index.vue'
 
 defineOptions({
   name: 'PTree',
@@ -690,11 +691,7 @@ defineExpose({
       </div>
     </div>
 
-    <!--
-      Teleported out of the row: in the virtual layout a row is positioned with a transform,
-      which would turn any fixed descendant into a positioning context.
-    -->
-    <Teleport to="body">
+    <PTeleport to="body">
       <div
         v-if="dragValue !== undefined"
         class="pxd-tree--drag-preview px-2 py-1 text-sm shadow-lg pointer-events-none fixed z-50 rounded-md border border-gray-300 bg-background-100 text-foreground"
@@ -704,7 +701,7 @@ defineExpose({
           {{ dragNode?.label }}
         </slot>
       </div>
-    </Teleport>
+    </PTeleport>
   </div>
 </template>
 
