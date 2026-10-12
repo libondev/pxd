@@ -9,7 +9,7 @@ interface MockTransition {
 }
 
 function createRouter() {
-  const beforeResolveHooks: ((to: unknown) => unknown)[] = []
+  const beforeResolveHooks: ((to: unknown, from?: unknown) => unknown)[] = []
   const afterEachHooks: ((to: unknown) => unknown)[] = []
   const onErrorHooks: ((error: unknown, to: unknown) => unknown)[] = []
 
@@ -29,10 +29,11 @@ function createRouter() {
       afterEach: () => afterEachHooks.length,
       onError: () => onErrorHooks.length,
     },
-    beforeResolve: (fn: (to: unknown) => unknown) => add(beforeResolveHooks, fn),
+    beforeResolve: (fn: (to: unknown, from?: unknown) => unknown) => add(beforeResolveHooks, fn),
     afterEach: (fn: (to: unknown) => unknown) => add(afterEachHooks, fn),
     onError: (fn: (error: unknown, to: unknown) => unknown) => add(onErrorHooks, fn),
-    runBeforeResolve: (to: unknown) => beforeResolveHooks.map((fn) => fn(to)),
+    runBeforeResolve: (to: unknown, from?: unknown) =>
+      beforeResolveHooks.map((fn) => fn(to, from)),
     runAfterEach: (to: unknown) => afterEachHooks.forEach((fn) => fn(to)),
     runOnError: (error: unknown, to: unknown) => onErrorHooks.forEach((fn) => fn(error, to)),
   }
@@ -229,5 +230,117 @@ describe('useViewTransition', () => {
     router.runBeforeResolve({ fullPath: '/guide' })
 
     expect(transitions).toHaveLength(0)
+  })
+
+  it('should share one registration per router across calls', () => {
+    const router = createRouter()
+    const typed = router as unknown as Router
+
+    const stopFirst = useViewTransition(typed)
+    const stopSecond = useViewTransition(typed)
+
+    expect(router.counts.beforeResolve()).toBe(1)
+    expect(router.counts.afterEach()).toBe(1)
+    expect(router.counts.onError()).toBe(1)
+
+    stopFirst()
+
+    expect(router.counts.beforeResolve()).toBe(1)
+
+    stopSecond()
+
+    expect(router.counts.beforeResolve()).toBe(0)
+    expect(router.counts.afterEach()).toBe(0)
+    expect(router.counts.onError()).toBe(0)
+  })
+
+  it('should keep one registration per router', () => {
+    const first = createRouter()
+    const second = createRouter()
+
+    useViewTransition(first as unknown as Router)
+    useViewTransition(second as unknown as Router)
+
+    expect(first.counts.beforeResolve()).toBe(1)
+    expect(second.counts.beforeResolve()).toBe(1)
+  })
+
+  it('should register again once every caller has disposed', () => {
+    const router = createRouter()
+    const typed = router as unknown as Router
+
+    useViewTransition(typed)()
+
+    expect(router.counts.beforeResolve()).toBe(0)
+
+    useViewTransition(typed)
+
+    expect(router.counts.beforeResolve()).toBe(1)
+  })
+
+  it('should navigate without a transition when the predicate declines', () => {
+    const transitions = mockStartViewTransition()
+    const router = createRouter()
+
+    useViewTransition(router as unknown as Router, { shouldTransition: () => false })
+
+    const [result] = router.runBeforeResolve({ fullPath: '/guide' })
+
+    expect(result).toBeUndefined()
+    expect(transitions).toHaveLength(0)
+  })
+
+  it('should pass both locations to the predicate', () => {
+    const router = createRouter()
+    const seen: unknown[][] = []
+
+    useViewTransition(router as unknown as Router, {
+      shouldTransition: (to, from) => {
+        seen.push([to, from])
+        return true
+      },
+    })
+
+    const to = { fullPath: '/guide' }
+    const from = { fullPath: '/' }
+
+    router.runBeforeResolve(to, from)
+
+    expect(seen).toEqual([[to, from]])
+  })
+
+  it('should let any caller veto the transition', () => {
+    const transitions = mockStartViewTransition()
+    const router = createRouter()
+    const typed = router as unknown as Router
+
+    useViewTransition(typed)
+    const stopSecond = useViewTransition(typed, { shouldTransition: () => false })
+
+    expect(router.runBeforeResolve({ fullPath: '/guide' })[0]).toBeUndefined()
+    expect(transitions).toHaveLength(0)
+
+    stopSecond()
+
+    expect(router.runBeforeResolve({ fullPath: '/guide' })[0]).toBeInstanceOf(Promise)
+    expect(transitions).toHaveLength(1)
+  })
+
+  it('should release a pending navigation when disposed', async () => {
+    mockStartViewTransition()
+    const router = createRouter()
+
+    const stop = useViewTransition(router as unknown as Router)
+    const [blocked] = router.runBeforeResolve({ fullPath: '/guide' }) as [Promise<void>]
+
+    let settled = false
+    void blocked.then(() => {
+      settled = true
+    })
+
+    stop()
+    await tick()
+
+    expect(settled).toBe(true)
   })
 })
