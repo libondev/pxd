@@ -13,6 +13,13 @@ const props = withDefaults(defineProps<TeleportProps>(), { to: 'body' })
 const inVue3 = isVue3()
 const inServer = isServer()
 
+// A teleported subtree cannot be prerendered: the content never reaches the HTML, so
+// hydration would rebuild it elsewhere and leave the server copy orphaned. Render it
+// in place for the server pass and for the first client render, then move it.
+const mounted = shallowRef(false)
+
+const isDisabled = computed(() => props.disabled || !mounted.value)
+
 let isTeleported = false
 let homeLocation: TeleportLocation | null
 
@@ -38,6 +45,8 @@ const targetEl = computed(() => {
 })
 
 onMounted(() => {
+  mounted.value = true
+
   if (inVue3 || inServer) {
     return
   }
@@ -92,7 +101,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport v-if="inVue3" :disabled="disabled" :to="to" v-bind="$attrs">
+  <Teleport v-if="inVue3" :disabled="isDisabled" :to="to" v-bind="$attrs">
     <slot />
   </Teleport>
 
