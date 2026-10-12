@@ -186,7 +186,28 @@ If the types still do not apply, disable tsgo in the workspace:
 }
 ```
 
-## 8. Dark mode, locale and runtime mounts
+## 8. App root: shell height, dark mode, locale and runtime mounts
+
+Give `<html>`, `<body>` and the app's root element a full height, so PXD's full-height components (`PScrollable`, `PBacktop`) have something to fill. `<html>` also carries the font-smoothing and overscroll classes, `<body>` an empty touch handler, and the viewport meta the two flags PXD relies on:
+
+```html
+<!-- index.html -->
+<html class="h-full overscroll-none">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,interactive-widget=resizes-content,viewport-fit=cover"
+    />
+  </head>
+  <body class="h-full" ontouchstart="">
+    <div id="app" class="h-full"></div>
+  </body>
+</html>
+```
+
+Three parts of that snippet are deliberate rather than decorative: `ontouchstart=""`, because mobile Safari skips `:active` until the document has handled a touch event; `interactive-widget=resizes-content`, so the on-screen keyboard resizes the layout viewport instead of overlaying the inputs; and `viewport-fit=cover`, so the layout extends under the notch and home indicator.
+
+On a project without Tailwind, `h-full` means `height: 100%` on those same three elements.
 
 PXD's theme switches on the `.dark` class on `<html>`, and nothing flips it on its own. Use `<PThemeSwitcher />` or the `useColorScheme()` composable — both set `document.documentElement.classList` and persist the choice in `localStorage`. A project that sees a light flash before hydration can inline the same check in `index.html`, ahead of the app bundle:
 
