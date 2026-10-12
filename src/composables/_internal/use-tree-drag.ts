@@ -2,8 +2,9 @@ import type { TreeDropPosition, TreeDropTarget, TreeFlatNode } from '../../compo
 import type { MaybeElementRef } from '../../types/shared'
 import type { ComponentValue } from '../../types/shared'
 import type { MaybeRefOrGetter } from 'vue'
-import { onScopeDispose, shallowRef, toValue } from 'vue'
+import { onScopeDispose, shallowRef } from 'vue'
 import { getElement } from '../../utils/dom.js'
+import { toValue } from '../../utils/helper.js'
 
 /** Movement before the pointer is treated as a drag, so a plain click never arms it. */
 const DRAG_THRESHOLD = 5
