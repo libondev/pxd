@@ -3,9 +3,6 @@
 Colors text deterministically from its own content. The same string always resolves to the same
 color, so a name, an ID or a tag keeps a stable identity across renders and across pages.
 
-Only the hue is derived from the text. Saturation and lightness are fixed and adapt to the active
-theme, so every hue keeps at least a 4.76:1 contrast ratio against its background.
-
 ## Default
 
 ```vue demo

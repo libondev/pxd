@@ -507,6 +507,10 @@
     "title": "useToggleValue",
     "description": "Toggles between truthy/falsy values with optional custom values."
   },
+  "/composables/use-view-transition": {
+    "title": "useViewTransition",
+    "description": "Animates route navigations using the View Transitions API, cross-fading the old view into the new one."
+  },
   "/composables/use-virtual-list": {
     "title": "useVirtualList",
     "description": "Manages virtualized rendering of large lists with scroll-to support."

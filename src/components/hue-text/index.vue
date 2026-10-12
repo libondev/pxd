@@ -45,7 +45,7 @@ const hueStyle = computed(() => ({
 
 <style>
 .pxd-hue-text {
-  --pxd-hue-l: 36%;
+  --pxd-hue-l: 40%;
   color: hsl(var(--pxd-hue-h) 45% var(--pxd-hue-l));
 }
 
