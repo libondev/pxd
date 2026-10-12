@@ -8,6 +8,8 @@
 - **开发态**: `pnpm dev:lib` 走 `unbuild --stub`，此时 `dist` 是指向 `src` 的 symlink，内容不是构建产物。
 - **构建**: `scripts/build-core.js` 调 mkdist（`src` → `dist`，`format: esm`、`declaration: true`、loaders 含 vue/postcss）。
 - **工具链**: vite-plus 包住 Vite / Vitest / oxlint / oxfmt，配置全在根 `vite.config.ts`；仓库没有 `eslint.config.*`、`vitest.config.*`、Prettier 配置。
+- **SSR**: `PTeleport` 在服务端和客户端首帧都保持 disabled，`onMounted` 之后才真正 teleport。这样预渲染 HTML 里 teleport 的内容是就地的，hydration 能逐节点对上；直接用原生 `<Teleport>` 的组件会绕过这个保护。
+- **文档站**: `packages/docs` 用 `vite-ssg build` 做 SSG（`dev` 仍是 `vp dev`），产物是每路由一个扁平 `*.html`。head 实例由 vite-ssg 创建并安装，页面只调 `useHead()`；`catalog` 里的 `@unhead/vue` 必须和 vite-ssg 的依赖同属一个大版本 —— 一旦分成两份实例，`useHead()` 就写不进 vite-ssg 渲染的 head，每页 title/description 会静默退化成首页的。
 - **Vue**: peer `>=2.7.0 <3.0.0 || >=3.2.0`，开发态使用 3.x。
 - **样式**: 入口 `src/styles/tw.css`（主题变量 + `@source`）；`src/styles/styles.css` 是发布时自动替换的占位文件，不要手改。
 

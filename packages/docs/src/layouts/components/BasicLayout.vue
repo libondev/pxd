@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useHead } from '@unhead/vue'
-import { PRESET_MEDIA_QUERIES, useMediaQuery } from 'pxd/composables/use-media-query'
 import { humanize } from 'pxd/utils/format'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -34,8 +33,6 @@ interface Props {
 const { menus = [] } = defineProps<Props>()
 
 const route = useRoute()
-
-const isMdUp = useMediaQuery(PRESET_MEDIA_QUERIES.MD_UP)
 
 const showViewSource = computed(() => {
   const name = String(route.name)
@@ -118,7 +115,7 @@ useHead({
 </script>
 
 <template>
-  <div v-if="isMdUp" class="left-0 top-0 bottom-0 absolute">
+  <div class="left-0 top-0 bottom-0 max-md:hidden absolute">
     <aside class="sidebar top-12 bottom-0 w-56 xl:border-l fixed z-0 border-r bg-background-100">
       <PScrollable class="h-full" content-class="p-2.5" fader-direction="vertical">
         <Menus :menus="menus" />

@@ -2,6 +2,7 @@
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage } from 'pxd'
 import { usePopoverResponsive } from 'pxd/composables/_internal/use-popover-responsive'
+import { isServer } from 'pxd/utils/is'
 import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue'
 
 defineOptions({
@@ -19,7 +20,8 @@ interface CustomVariables {
 }
 
 const STORAGE_KEY = 'fe.system.appearance'
-const cachedVariables = localStorage.getItem(STORAGE_KEY) || '{}'
+
+const cachedVariables = isServer() ? '{}' : localStorage.getItem(STORAGE_KEY) || '{}'
 const parsedVariables: CustomVariables = JSON.parse(cachedVariables)
 
 const customVariables = ref(parsedVariables)
@@ -156,9 +158,11 @@ function updateCustomVariables() {
   updatePrimaryForeground()
 }
 
-const rootClassObserver = new MutationObserver(() => {
-  updatePrimaryForeground()
-})
+const rootClassObserver = isServer()
+  ? null
+  : new MutationObserver(() => {
+      updatePrimaryForeground()
+    })
 
 watch(
   () => customVariables.value,
@@ -198,14 +202,15 @@ ${customVariables.value.primary ? `  --primary-foreground: ${customVariables.val
 
 onBeforeMount(() => {
   updateCustomVariables()
-  rootClassObserver.observe(document.documentElement, {
+
+  rootClassObserver?.observe(document.documentElement, {
     attributeFilter: ['class'],
     attributes: true,
   })
 })
 
 onBeforeUnmount(() => {
-  rootClassObserver.disconnect()
+  rootClassObserver?.disconnect()
 })
 </script>
 

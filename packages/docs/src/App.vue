@@ -7,6 +7,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
   <!-- :locale="zhCN" -->
   <PConfigProvider class="min-w-0 flex w-full flex-col">
     <SiteHeader />
+
     <PMessage width="180" group="website" />
     <PLoadingBar group="website" />
     <PBacktop class="right-6 bottom-6 shadow-lg rounded-full" :visible-threshold="100">

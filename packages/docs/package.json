@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "build": "vp build",
+    "build": "vite-ssg build",
     "preview": "vp preview"
   },
   "dependencies": {
@@ -34,6 +34,7 @@
     "unplugin-vue-router": "catalog:",
     "vite-plugin-vue-meta-layouts": "catalog:",
     "vite-plus": "catalog:",
+    "vite-ssg": "catalog:",
     "vite-vue-md": "catalog:",
     "vue-router": "catalog:"
   }

@@ -5,6 +5,19 @@
 >
   <head>
     <meta charset="UTF-8" />
+    <script>
+      ;(() => {
+        try {
+          const stored = localStorage.getItem('fe.system.color-scheme') || 'auto'
+          const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches
+
+          if (stored === 'dark' || (stored === 'auto' && prefersDark)) {
+            document.documentElement.classList.add('dark')
+          }
+        } catch {}
+      })()
+    </script>
+
     <link rel="icon" href="/favicon.ico" />
     <link
       rel="icon"
@@ -105,6 +118,6 @@
 
   <body ontouchstart="">
     <div id="app" class="h-full"></div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

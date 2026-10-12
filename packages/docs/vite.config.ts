@@ -152,6 +152,31 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    ssr: {
+      // `pxd` ships source-level `.vue` files through the unbuild stub, and the icon
+      // set is raw SFCs — both have to go through Vite instead of being externalized.
+      noExternal: ['pxd', '@gdsicon/vue', 'dayjs'],
+    },
+
+    ssgOptions: {
+      entry: 'src/main.ts',
+      // vite-ssg only injects the main render buffer, never `ctx.teleports`, and Vue starts
+      onPageRendered: (_route: string, html: string) =>
+        html.replace(/(<body[^>]*>)\s+/, '$1').replace(/\s+(?=<\/body>)/, ''),
+      includedRoutes: (paths: string[]) => {
+        const pages = paths.filter((path) => !path.includes(':') && !path.includes('*'))
+
+        // Meta layouts turn every directory into a parent route, and those render an
+        // empty shell. A path that only prefixes other paths is one of them.
+        const isSectionRoot = (path: string) =>
+          pages.some((other: string) => other.startsWith(`${path}/`))
+
+        // The catch-all renders the 404 page, so it is filtered out above; render it
+        // once here so the host can serve `404.html` for unknown paths.
+        return [...pages.filter((path: string) => !isSectionRoot(path)), '/404']
+      },
+    },
+
     optimizeDeps: {
       include: [
         '@gdsicon/vue',

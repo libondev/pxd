@@ -3,6 +3,7 @@ import type { Component } from 'vue'
 import { useCopyClick, useMessage } from 'pxd'
 import { uncapitalize } from 'pxd/utils/format'
 import { getFuzzyMatchScore, isFuzzyMatch } from 'pxd/utils/fuzzy-match'
+import { isServer } from 'pxd/utils/is'
 import { debounce, throttle } from 'pxd/utils/timing'
 import Grids from '@/components/Grids.vue'
 
@@ -20,10 +21,10 @@ const { copyText } = useCopyClick()
 type CopyType = 'name' | 'import' | 'element' | 'prefix'
 
 const cachedCopyTypeKey = 'fe.icons.copyType'
-const cachedCopyType = localStorage.getItem(cachedCopyTypeKey) || 'import'
+const cachedCopyType = isServer() ? '' : localStorage.getItem(cachedCopyTypeKey) || 'import'
 
 const cachedCustomPrefixKey = 'fe.icons.customPrefix'
-const cachedCustomPrefix = localStorage.getItem(cachedCustomPrefixKey) || ''
+const cachedCustomPrefix = isServer() ? '' : localStorage.getItem(cachedCustomPrefixKey) || ''
 
 const copyType = ref<CopyType>(cachedCopyType as CopyType)
 const customPrefix = ref(cachedCustomPrefix as string)
