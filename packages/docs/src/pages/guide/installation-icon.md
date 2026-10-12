@@ -1,6 +1,6 @@
 # Installation Icon
 
-?> Icons are optional — PXD itself does not depend on an icon set.
+?> PXD's own components draw their icons from `@gdsicon/vue`, which PXD declares as a runtime dependency, so those icons work without installing anything. Your own code has to declare the package before importing from it.
 
 [@gdsicon/vue](https://www.npmjs.com/package/@gdsicon/vue){target="_blank"} is maintained alongside PXD and shares its visual language; install it if you want consistent iconography.
 

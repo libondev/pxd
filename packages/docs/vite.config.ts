@@ -43,6 +43,8 @@ const codeHighlighter = await createHighlighter({
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
+  const assetsDir = 'assets'
+
   return {
     define: {
       __SITE_URL__: JSON.stringify(siteUrl),
@@ -51,16 +53,21 @@ export default defineConfig(({ mode }) => {
     build: {
       reportCompressedSize: false,
       cssCodeSplit: false,
+      chunkSizeWarningLimit: 700,
+      assetsDir,
       rolldownOptions: {
         output: {
+          chunkFileNames: (chunk) => {
+            const isIconSet = chunk.facadeModuleId?.replace(/\\/g, '/').includes('@gdsicon/vue')
+
+            return `${assetsDir}/${isIconSet ? 'icon-set' : '[name]'}-[hash].js`
+          },
           codeSplitting: {
             minShareCount: 3,
             groups: [
               {
                 name: 'vendor',
                 test: /node_modules/,
-                entriesAware: true,
-                entriesAwareMergeThreshold: 20000,
               },
             ],
           },

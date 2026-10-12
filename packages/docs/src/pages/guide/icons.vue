@@ -1,13 +1,18 @@
 <script lang="ts" setup>
-import * as icons from '@gdsicon/vue'
+import type { Component } from 'vue'
 import { useCopyClick, useMessage } from 'pxd'
 import { uncapitalize } from 'pxd/utils/format'
 import { getFuzzyMatchScore, isFuzzyMatch } from 'pxd/utils/fuzzy-match'
 import { debounce, throttle } from 'pxd/utils/timing'
 import Grids from '@/components/Grids.vue'
 
-const iconCount = Object.keys(icons).length
-const allIcons = Object.entries(icons).map(([name, icon]) => ({ name, icon }))
+interface IconItem {
+  name: string
+  icon: Component
+}
+
+const allIcons = shallowRef<IconItem[]>([])
+const iconCount = ref(0)
 
 const route = useRoute()
 const { copyText } = useCopyClick()
@@ -24,14 +29,22 @@ const copyType = ref<CopyType>(cachedCopyType as CopyType)
 const customPrefix = ref(cachedCustomPrefix as string)
 
 const searchKeyword = ref(route.query.q as string)
-const filteredComponents = shallowRef(getFilteredComponents(searchKeyword.value))
+const filteredComponents = shallowRef<IconItem[]>([])
+
+onMounted(async () => {
+  const icons = await import('@gdsicon/vue')
+
+  allIcons.value = Object.entries(icons).map(([name, icon]) => ({ name, icon: icon as Component }))
+  iconCount.value = allIcons.value.length
+  filteredComponents.value = getFilteredComponents(searchKeyword.value)
+})
 
 function getFilteredComponents(value: string) {
   if (!value || !value.trim()) {
-    return allIcons
+    return allIcons.value
   }
 
-  return allIcons
+  return allIcons.value
     .filter((item) => isFuzzyMatch(item.name, value))
     .map((item, index) => ({ item, index, score: getFuzzyMatchScore(item.name, value) }))
     .sort((a, b) => b.score - a.score || a.index - b.index)
@@ -132,7 +145,7 @@ function handleCustomPrefixChange(event: Event) {
     </template>
   </Grids>
 
-  <template v-if="filteredComponents.length === 0">
+  <template v-if="iconCount > 0 && filteredComponents.length === 0">
     <PEmptyState class="col-span-full" title="No data" description="No icons found" />
   </template>
 </template>
