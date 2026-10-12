@@ -2,6 +2,7 @@ import type { MaybeElementRef } from '../types/shared/utils'
 import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
+import { isServer } from '../utils/is.js'
 
 interface Options<E extends Event = PointerEvent> {
   allowList?: MaybeElementRef<HTMLElement>[]
@@ -38,12 +39,14 @@ export function useOutsideClick<E extends Event = PointerEvent>(
   const event = options.eventName ?? 'click'
   const listenerOptions = options.listenerOptions
 
+  const target = isServer() ? null : document
+
   function bind() {
-    cachedOn(document, event, onClick, listenerOptions)
+    cachedOn(target, event, onClick, listenerOptions)
   }
 
   function unbind() {
-    cachedOff(document, event, onClick, listenerOptions)
+    cachedOff(target, event, onClick, listenerOptions)
   }
 
   const unwatch = watch(
