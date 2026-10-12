@@ -109,12 +109,16 @@ If the types still do not apply, disable tsgo in the workspace:
 }
 ```
 
-## Vue 2.7
+## Vue 2.7 / Vue 3.2
 
-Vue 2.7 cannot compile the `defineOptions()` macro, so it needs the transform plugin.
+Vue 2.7 and Vue 3.2 cannot compile the `defineOptions()` macro, so they need the transform plugin. Vue 3.3+ works without it.
 
 ```bash
+# Vue 2.7
 pnpm install -D unplugin-vue-define-options@1.5.5
+
+# Vue 3.2
+pnpm install -D unplugin-vue-define-options@3.1.2
 ```
 
 Then enable it in Vite or Rsbuild:

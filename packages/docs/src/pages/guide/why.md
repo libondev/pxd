@@ -6,7 +6,7 @@
 Vue2 需要额外安装 [`unplugin-vue-define-options`](https://vue-macros.dev/macros/define-options.html) 以支持 `defineOptions()`。
 ::::
 
-需要注意的是，`pxd` 并非兼容 Vue 的所有版本。为了抹平 Vue2 与 Vue3 的差异，Vue2 侧要求不低于 `2.7`，Vue3 侧要求不低于 `3.3`：`<script setup>` 到 `2.7` 才进入 Vue2，而 `defineOptions()` 宏要到 `3.3` 才被官方支持（Vue3.2 可通过上面的插件兼容）。
+需要注意的是，`pxd` 并非兼容 Vue 的所有版本。为了抹平 Vue2 与 Vue3 的差异，Vue2 侧要求不低于 `2.7`，Vue3 侧要求不低于 `3.2`：`<script setup>` 到 `2.7` 才进入 Vue2，而 `defineOptions()` 宏要到 `3.3` 才被官方支持（Vue2.7 与 Vue3.2 均可通过上面的插件兼容，Vue3.3+ 开箱即用）。
 
 ## 为什么?
 

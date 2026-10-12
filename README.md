@@ -8,6 +8,16 @@ A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in
 > [!WARNING]
 > The project is under active development and is not ready for production.
 
+## Requirements
+
+| Vue version | Extra setup |
+| --- | --- |
+| 2.7.x | `unplugin-vue-define-options@1.5.5+` |
+| 3.2.x | `unplugin-vue-define-options@3.1.2+` |
+| >=3.3 | None |
+
+Components declare their options through `defineOptions()`, a macro that only landed in Vue 3.3, so Vue 2.7 and Vue 3.2 need the transform plugin. See [Installation](https://pxd-ui.netlify.app/guide/installation) for the setup.
+
 ## Features
 
 - Universal: One codebase for Vue 2.7+ and Vue 3.2+, no `vue-demi` and no duplicated source
@@ -54,7 +64,7 @@ pnpm build
 
 ### Component Naming Rules
 
-- Components that can be used independently do not need to add -group/-item suffix, such as: `Checkbox`, `Radio`, `Toggle`, `ToggleButton`
+- Components that can be used independently do not need to add -group/-item suffix, such as: `Checkbox`, `Avatar`, `Toggle`, `ToggleButton`
 - Components that are used to manage a group of sub-components need to add -group suffix, such as: `CheckboxGroup`, `RadioGroup`, `ToggleGroup`, `ToggleButtonGroup`
 - Components that can only be used as a sub-component of another component need to add -item suffix, such as: `ListItem`, `GridItem`, `MessageItem`
 

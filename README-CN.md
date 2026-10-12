@@ -7,6 +7,16 @@
 > [!WARNING]
 > 项目正在积极开发中，尚未做好投入生产的准备
 
+## 环境要求
+
+| Vue 版本 | 额外配置 |
+| --- | --- |
+| 2.7.x | `unplugin-vue-define-options@1.5.5+` |
+| 3.2.x | `unplugin-vue-define-options@3.1.2+` |
+| >=3.3 | 无需配置 |
+
+组件通过 `defineOptions()` 宏声明名称与选项，该宏到 Vue 3.3 才被官方支持，因此 Vue 2.7 与 Vue 3.2 需要额外安装转换插件，详见[安装文档](https://pxd-ui.netlify.app/guide/installation)。
+
 ## 特性
 
 - 通用兼容：一套代码同时支持 Vue 2.7+ 和 Vue 3.2+，不依赖 `vue-demi`，没有两份源码
@@ -53,7 +63,7 @@ pnpm build
 
 ### 组件命名规则
 
-- 可以单独使用的组件名称不需要添加 -group/-item 后缀，例如：`Checkbox`、`Radio`、`Toggle`、`ToggleButton`
+- 可以单独使用的组件名称不需要添加 -group/-item 后缀，例如：`Checkbox`、`Avatar`、`Toggle`、`ToggleButton`
 - 用于批量管理某些子组件的组件名称需要添加 -group 后缀，例如：`CheckboxGroup`、`RadioGroup`、`ToggleGroup`、`ToggleButtonGroup`
 - 而只能作为某个组件的子组件的组件名称需要添加 -item 后缀，例如：`ListItem`、`GridItem`、`MessageItem`
 
