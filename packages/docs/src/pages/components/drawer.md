@@ -199,6 +199,26 @@ const fullVisible = ref(false)
 </template>
 ```
 
+## Closeable
+
+Set `closeable` to render a close button on the right of the header.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+</script>
+
+<template>
+  <PButton variant="primary" @click="isVisible = true">Open Drawer</PButton>
+
+  <PDrawer v-model="isVisible" title="Closeable Drawer" closeable>
+    <PText>This drawer shows a close button in the header.</PText>
+  </PDrawer>
+</template>
+```
+
 ## Without Close on Click Overlay
 
 Disable closing the drawer when clicking on the overlay.
@@ -518,6 +538,7 @@ function handleClose() {
 | default-footer-style | `boolean` | `true` | Apply the default footer padding, border and background |
 | close-on-press-escape | `boolean` | `true` | Close the drawer when the `Esc` key is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the drawer when the overlay is clicked |
+| closeable | `boolean` | `false` | Show a close button on the right of the header |
 
 ## Events
 

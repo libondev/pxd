@@ -188,9 +188,29 @@ function handleClose() {
 ```
 
 
-## Close on click overlay
+## Closeable
 
-After setting the `close-on-click-overlay` attribute, clicking on the mask will close modal.
+Set `closeable` to render a close button on the right of the header.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+</script>
+
+<template>
+  <PButton variant="primary" @click="isVisible = true">Open Modal</PButton>
+
+  <PModal v-model="isVisible" title="Closeable Modal" closeable>
+    <PText>This modal shows a close button in the header.</PText>
+  </PModal>
+</template>
+```
+
+## Without Close on Click Overlay
+
+Disable closing the modal when clicking on the overlay mask.
 
 ```vue demo
 <script setup>
@@ -210,7 +230,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" title="Create Token" close-on-click-overlay>
+  <PModal v-model="isVisible" title="Create Token" :close-on-click-overlay="false">
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
@@ -220,7 +240,9 @@ function handleClose() {
 </template>
 ```
 
-## Close on press escape
+## Without Close on Press Escape
+
+Disable closing the modal when the `Esc` key is pressed.
 
 ```vue demo
 <script setup>
@@ -240,7 +262,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" title="Create Token" close-on-press-escape>
+  <PModal v-model="isVisible" title="Create Token" :close-on-press-escape="false">
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
@@ -267,8 +289,9 @@ function handleClose() {
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | default-header-style | `boolean` | `false` | Apply the default header background and bottom border |
 | default-footer-style | `boolean` | `true` | Apply the default footer background and top border |
-| close-on-press-escape | `boolean` | `false` | Close the modal when `Esc` is pressed |
-| close-on-click-overlay | `boolean` | `false` | Close the modal when the overlay mask is clicked |
+| close-on-press-escape | `boolean` | `true` | Close the modal when `Esc` is pressed |
+| close-on-click-overlay | `boolean` | `true` | Close the modal when the overlay mask is clicked |
+| closeable | `boolean` | `false` | Show a close button on the right of the header |
 
 ## Events
 

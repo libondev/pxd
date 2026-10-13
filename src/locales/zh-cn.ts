@@ -28,6 +28,7 @@ const zhCN = {
   },
   interaction: {
     cancel: '取消',
+    close: '关闭',
     confirm: '确认',
     skip: '跳过',
     submit: '提交',

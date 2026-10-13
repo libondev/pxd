@@ -17,6 +17,7 @@ export interface DrawerProps {
   defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  closeable?: boolean
 }
 
 export interface DrawerEmits {

@@ -16,6 +16,7 @@ export interface ModalProps {
   defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  closeable?: boolean
 }
 
 export interface ModalEmits {

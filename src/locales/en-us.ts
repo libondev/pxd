@@ -13,6 +13,7 @@ const enUS = {
   },
   interaction: {
     cancel: 'Cancel',
+    close: 'Close',
     confirm: 'Confirm',
     skip: 'Skip',
     submit: 'Submit',

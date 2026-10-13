@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import type { ModalEmits, ModalProps } from './types'
+import CrossIcon from '@gdsicon/vue/cross'
 import { computed, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import PLoadingMask from '../_internal/loading-mask.vue'
+import PButton from '../button/index.vue'
 import POverlay from '../overlay/index.vue'
 
 defineOptions({
@@ -23,8 +25,9 @@ const props = withDefaults(defineProps<ModalProps>(), {
   autoFocusElement: false,
   defaultFooterStyle: true,
   defaultHeaderStyle: false,
-  closeOnPressEscape: false,
-  closeOnClickOverlay: false,
+  closeOnPressEscape: true,
+  closeOnClickOverlay: true,
+  closeable: false,
 })
 
 const emits = defineEmits<ModalEmits>()
@@ -99,7 +102,7 @@ watch(
       >
         <header
           class="pxd-modal--header px-6 pbs-4 sm:pbs-6 relative shrink-0 empty:hidden"
-          :class="defaultStyles.headerClass"
+          :class="[defaultStyles.headerClass, { 'pe-15': closeable }]"
         >
           <slot name="header">
             <h3
@@ -117,6 +120,19 @@ watch(
               </slot>
             </div>
           </slot>
+
+          <PButton
+            v-if="closeable"
+            variant="ghost"
+            size="sm"
+            icon
+            class="top-4 right-6 sm:top-6 size-7 absolute"
+            :aria-label="configProvider.locale.interaction.close"
+            :title="configProvider.locale.interaction.close"
+            @click="closeOverlayIfNeed"
+          >
+            <CrossIcon class="size-3" aria-hidden="true" />
+          </PButton>
         </header>
 
         <div

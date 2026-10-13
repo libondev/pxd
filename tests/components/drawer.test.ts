@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { nextTick } from 'vue'
 import Drawer from '../../src/components/drawer/index.vue'
 
 describe('drawer', () => {
@@ -75,6 +76,66 @@ describe('drawer', () => {
     const wrapper = mount(Drawer)
 
     expect(wrapper.props('closeOnClickOverlay')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should default closeable to false', () => {
+    const wrapper = mount(Drawer)
+
+    expect(wrapper.props('closeable')).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should render no header close button by default', async () => {
+    const wrapper = mount(Drawer, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+        title: 'Drawer Title',
+      },
+    })
+    await nextTick()
+
+    expect(document.body.querySelector('.pxd-drawer--header button')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should keep the header childless without title, subtitle or close button', async () => {
+    const wrapper = mount(Drawer, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+      },
+    })
+    await nextTick()
+
+    expect(document.body.querySelector('.pxd-drawer--header')?.childElementCount).toBe(0)
+
+    wrapper.unmount()
+  })
+
+  it('should close the drawer when the header close button is clicked', async () => {
+    const wrapper = mount(Drawer, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+        closeable: true,
+      },
+    })
+    await nextTick()
+
+    const closeButton = document.body.querySelector<HTMLButtonElement>('.pxd-drawer--header button')
+
+    expect(closeButton).not.toBeNull()
+    expect(closeButton?.getAttribute('aria-label')).toBe('Close')
+
+    closeButton?.click()
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
 
     wrapper.unmount()
   })
