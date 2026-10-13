@@ -604,6 +604,8 @@ defineExpose({
         v-if="isRender"
         ref="wrapperRef"
         tabindex="-1"
+        role="dialog"
+        aria-modal="true"
         :data-visible="isVisible"
         :data-adaptive="adaptive"
         :data-position="localPosition"
