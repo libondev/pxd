@@ -30,10 +30,9 @@ export function useOverlayDialog({ props, emits, elementRef, onClose }: OverlayD
   closeOverlayIfNeed: () => void
   onOverlayClick: (ev: PointerEvent) => void
 } {
+  // Esc and outside clicks only request a close (vetoed while loading) — never deactivate the trap.
   const focusTrapOptions = computed<UseFocusTrapOptions>(() => ({
     autoFocusElement: props.autoFocusElement,
-    escapeDeactivates: props.closeOnPressEscape,
-    clickOutsideDeactivates: props.closeOnClickOverlay,
   }))
 
   useFocusTrap(elementRef, focusTrapOptions)
