@@ -30,7 +30,7 @@ async function flush() {
 }
 
 function getContentElement() {
-  return document.body.querySelector('.pxd-confirm-popover--content')
+  return document.body.querySelector('.pxd-popover--content')
 }
 
 function isVisible() {
