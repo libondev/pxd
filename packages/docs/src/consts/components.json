@@ -110,6 +110,11 @@
     "category": "Utilities"
   },
   {
+    "camelized": "Confirm Popover",
+    "name": "confirm-popover",
+    "category": "Overlay"
+  },
+  {
     "camelized": "Copy Button",
     "name": "copy-button",
     "category": "Button"

@@ -87,6 +87,10 @@
     "title": "Config Provider",
     "description": "Config Provider is used for providing global configurations,"
   },
+  "/components/confirm-popover": {
+    "title": "Confirm Popover",
+    "description": "A popover that asks for a second confirmation before running an action. The trigger is whatever you put in the default slot, and the popover opens above it wit…"
+  },
   "/components/copy-button": {
     "title": "Copy Button",
     "description": "A button that copies a given string to the clipboard and provides feedback when copied."
