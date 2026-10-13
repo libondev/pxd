@@ -151,6 +151,7 @@
     "mkdist": "catalog:default",
     "npm-run-all2": "catalog:default",
     "tinyglobby": "catalog:default",
+    "tslib": "catalog:default",
     "typescript": "catalog:default",
     "unbuild": "catalog:default",
     "unplugin-vue-components": "catalog:default",
