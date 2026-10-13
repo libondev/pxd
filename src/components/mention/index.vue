@@ -181,64 +181,63 @@ function onMentionClick(payload: MentionClickPayload) {
     />
 
     <template #content>
-      <div
-        class="pxd-mention--suggest max-h-80 min-w-56 flex flex-col overflow-hidden rounded-inherit"
+      <label
+        :for="searchInputId"
+        class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
       >
-        <label :for="searchInputId" class="px-3 py-2 gap-2 flex items-center bg-background-100">
-          <input
-            :id="searchInputId"
-            ref="searchInputRef"
-            :value="filterKeyword"
-            type="text"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            role="combobox"
-            inputmode="search"
-            aria-autocomplete="list"
-            :aria-controls="listId"
-            :aria-expanded="popoverVisible"
-            :aria-busy="isPending"
-            :aria-disabled="disabled"
-            :placeholder="searchPlaceholder"
-            class="pxd-mention--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
-            @input="onSearchInput"
-            @keydown="onSearchKeydownWithEscape"
-          />
+        <input
+          :id="searchInputId"
+          ref="searchInputRef"
+          :value="filterKeyword"
+          type="text"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          role="combobox"
+          inputmode="search"
+          aria-autocomplete="list"
+          :aria-controls="listId"
+          :aria-expanded="popoverVisible"
+          :aria-busy="isPending"
+          :aria-disabled="disabled"
+          :placeholder="searchPlaceholder"
+          class="pxd-mention--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
+          @input="onSearchInput"
+          @keydown="onSearchKeydownWithEscape"
+        />
 
-          <button
-            type="button"
-            class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
-            @click="closeSuggest"
-          >
-            <kbd class="appearance-none font-sans">Esc</kbd>
-          </button>
-        </label>
-
-        <PList
-          v-show="shouldRenderList"
-          :id="listId"
-          ref="listRef"
-          :loop="false"
-          :virtual="virtual"
-          :loading="isPending"
-          :options="listOptions"
-          :default-active-index="0"
-          class="max-h-68 min-h-0 flex-1 rounded-none border-t"
-          @change="onOptionSelect"
+        <button
+          type="button"
+          class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
+          @click="closeSuggest"
         >
-          <template v-if="$slots.item" #item="itemSlotProps">
-            <slot name="item" v-bind="itemSlotProps" />
-          </template>
+          <kbd class="appearance-none font-sans">Esc</kbd>
+        </button>
+      </label>
 
-          <template #empty>
-            <slot name="empty">
-              {{ configProvider.locale.results.searchText }}
-              <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
-            </slot>
-          </template>
-        </PList>
-      </div>
+      <PList
+        v-show="shouldRenderList"
+        :id="listId"
+        ref="listRef"
+        :loop="false"
+        :virtual="virtual"
+        :loading="isPending"
+        :options="listOptions"
+        :default-active-index="0"
+        class="max-h-68 min-h-0 flex-1"
+        @change="onOptionSelect"
+      >
+        <template v-if="$slots.item" #item="itemSlotProps">
+          <slot name="item" v-bind="itemSlotProps" />
+        </template>
+
+        <template #empty>
+          <slot name="empty">
+            {{ configProvider.locale.results.searchText }}
+            <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
+          </slot>
+        </template>
+      </PList>
     </template>
   </PPopover>
 </template>
