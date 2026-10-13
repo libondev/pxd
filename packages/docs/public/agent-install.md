@@ -11,7 +11,7 @@ Two things depend on the setup rather than on inspection:
 - The package manager and bundler: examples use pnpm and Vite with a Vite + Vue entry (`src/main.js`, `src/App.vue`, `index.html`). Rsbuild and webpack variants are called out where the entry point differs.
 - The Vue version. PXD declares `>=2.7.0 <3.0.0 || >=3.2.0` as its peer range — Vue 2.6, 3.0 and 3.1 are unsupported, so stop and tell the user if that is what the project runs. On Vue 2.7 the Vite plugin is the Vue 2 one (`@vitejs/plugin-vue2`), not `@vitejs/plugin-vue`.
 
-One rule applies across every step: any package you install or import must be declared in the project's `package.json` — runtime packages under `dependencies`, build-time tools under `devDependencies`. Install through the package manager, never with `--no-save`, and do not rely on a package that is only present in `node_modules`. In this guide, `pxd` and `@gdsicon/vue` are runtime `dependencies`, while `unplugin-vue-components`, `unplugin-vue-define-options`, `tailwindcss` and `@tailwindcss/vite` are `devDependencies`.
+One rule applies across every step: any package you install or import must be declared in the project's `package.json` — runtime packages under `dependencies`, build-time tools under `devDependencies`. Install through the package manager, never with `--no-save`, and do not rely on a package that is only present in `node_modules`. In this guide, `pxd` and `@gdsicon/vue` are runtime `dependencies`, while `unplugin-auto-import`, `unplugin-vue-components`, `unplugin-vue-define-options`, `tailwindcss` and `@tailwindcss/vite` are `devDependencies`.
 
 ## 1. Install pxd
 
@@ -49,13 +49,14 @@ export default defineConfig({
 
 For Rsbuild, import from `unplugin-vue-define-options/rspack` and register it under `tools.rspack.plugins` instead. Webpack uses `unplugin-vue-define-options/webpack`.
 
-## 3. Ask the three questions
+## 3. Ask the four questions
 
 **Ask the user once, in a single message**, then act on the answers for the rest of the guide. The defaults in brackets stand when the user has no preference, so a single reply covers every case:
 
 1. **Style setup** — plain stylesheet [default], or Tailwind CSS 4?
 2. **Icons** — will their own code use icons from `@gdsicon/vue`? Default no; PXD's own components already bring the package and need nothing here.
 3. **View transitions** — should page navigations animate? Default no.
+4. **Auto-imports** — should `ref`, `computed` and the rest of Vue's API, plus vue-router's `useRoute` and `useRouter`, work without an import line? Default no; step 5 sets the plugin up.
 
 Nothing else in this guide needs asking.
 
@@ -130,6 +131,26 @@ Components are used with the `P` prefix: `<PButton>`, `<PInput>`, `<PSelect>`. T
 `dts` makes `unplugin-vue-components` write `src/types/components.d.ts` the first time the dev server or a build runs. Type checking before that first run will report unresolved components. **If the project has no `tsconfig.json`, drop the `dts` option — and with it step 8**, which has nothing to register.
 
 Do not register the whole library globally unless the user asks for it — `app.use(PXD)` pulls every component into the bundle.
+
+**If the user asked for auto-imports**, install the plugin and add it to the same config:
+
+```bash
+pnpm install -D unplugin-auto-import
+```
+
+```js
+// vite.config.ts
+import AutoImport from 'unplugin-auto-import/vite'
+
+AutoImport({
+  dts: 'src/types/auto-imports.d.ts',
+  imports: ['vue', 'vue-router'],
+})
+```
+
+`imports` takes presets, not names: `vue` covers `ref`, `computed`, `watch`, the lifecycle hooks and the rest of the composition API, `vue-router` covers `useRouter`, `useRoute`, `useLink` and the in-component route guards — on Vue 2.7 those names sit at `vue-router/composables`, so `'vue-router/composables'` is the preset to list there. **Drop the vue-router entry when the project has no router** — the question in step 6 decides that — or the generated `auto-imports.d.ts` imports a package the project does not have. The file lands inside `src/types`, which the project's `tsconfig.json` already covers, so unlike step 8 it needs no `types` entry; with no `tsconfig.json`, drop `dts` as in the components config above.
+
+Nothing marks an auto-imported name as auto-imported, so a file no longer shows where `ref` or `useRoute` comes from. That is the whole trade-off, and it is why this one is asked about rather than defaulted on.
 
 **If the user asked for icons**, install the package and add its resolver to the same config:
 
@@ -308,7 +329,7 @@ This is the one step that outlives the session. Everything above is already done
 
 ## 11. Verify and report
 
-Run the dev server or a build once, so `components.d.ts` is generated, then run the type check and confirm a component renders.
+Run the dev server or a build once, so `components.d.ts` — and `auto-imports.d.ts`, when step 5 set that up — is generated, then run the type check and confirm a component renders.
 
 Render a `<PButton>Click me</PButton>` and check it comes out with PXD's own height, radius and colours rather than the browser defaults — that also proves the stylesheet is loaded.
 
@@ -320,6 +341,7 @@ Report what was installed, which files were written and which options were skipp
 - **The code splitting group** — remove the `output` block to go back to the bundler's default chunks.
 - **The `components.d.ts` generation and the `types` entry in `tsconfig.json`** — drop the `dts` option and the `"pxd/volar"` entry; explicit imports still work.
 - **Auto-import through the resolver** — swap it for explicit `import { Button } from 'pxd'`, or for `app.use(PXD)` if bundle size stops mattering.
+- **`unplugin-auto-import` and the `auto-imports.d.ts` it writes** — remove the plugin from the config; the names it covered become explicit imports again.
 - **`.npmrc` with `shamefully-hoist`**, if a strict package manager made it necessary — remove it and hoist `pxd`'s deps some other way.
 - **The block written into the project's agent file in step 10** — delete it; the build does not care, the next agent simply stops knowing where the docs are.
 
