@@ -222,16 +222,17 @@ export default function seoFilesPlugin() {
     },
 
     transformIndexHtml(html) {
-      return html
-        .replaceAll('__SITE_URL__', SITE_URL)
-        .replaceAll('__VERSION__', LIBRARY_VERSION)
+      return html.replaceAll('__SITE_URL__', SITE_URL).replaceAll('__VERSION__', LIBRARY_VERSION)
     },
 
     closeBundle() {
       const pages = collectPages()
 
       fs.mkdirSync(outputDir, { recursive: true })
-      fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), renderSitemap(pages, collectCommitDates()))
+      fs.writeFileSync(
+        path.join(outputDir, 'sitemap.xml'),
+        renderSitemap(pages, collectCommitDates()),
+      )
       fs.writeFileSync(path.join(outputDir, 'llms.txt'), renderLlms(pages, collectAgentGuides()))
       writeMarkdownSources(pages, outputDir)
       replaceSiteUrlPlaceholders(outputDir)

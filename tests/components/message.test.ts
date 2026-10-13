@@ -16,7 +16,8 @@ function messageSection() {
 }
 
 function dispatchPointerEnter() {
-  const group = document.body.querySelector('transition-group-stub') ?? document.body.querySelector('ol')
+  const group =
+    document.body.querySelector('transition-group-stub') ?? document.body.querySelector('ol')
 
   group?.dispatchEvent(new Event('pointerenter', { bubbles: true }))
 }
@@ -326,7 +327,10 @@ describe('message', () => {
   })
 
   it('should stay expanded after clear() when expand is enabled', async () => {
-    const wrapper = mount(Message, { props: { group: 'g1', expand: true }, attachTo: document.body })
+    const wrapper = mount(Message, {
+      props: { group: 'g1', expand: true },
+      attachTo: document.body,
+    })
 
     dispatchCreate({ id: 'expanded', group: 'g1', type: 'info', message: 'c', durations: 0 })
     await wrapper.vm.$nextTick()

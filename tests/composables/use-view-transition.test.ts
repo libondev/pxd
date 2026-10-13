@@ -32,8 +32,7 @@ function createRouter() {
     beforeResolve: (fn: (to: unknown, from?: unknown) => unknown) => add(beforeResolveHooks, fn),
     afterEach: (fn: (to: unknown) => unknown) => add(afterEachHooks, fn),
     onError: (fn: (error: unknown, to: unknown) => unknown) => add(onErrorHooks, fn),
-    runBeforeResolve: (to: unknown, from?: unknown) =>
-      beforeResolveHooks.map((fn) => fn(to, from)),
+    runBeforeResolve: (to: unknown, from?: unknown) => beforeResolveHooks.map((fn) => fn(to, from)),
     runAfterEach: (to: unknown) => afterEachHooks.forEach((fn) => fn(to)),
     runOnError: (error: unknown, to: unknown) => onErrorHooks.forEach((fn) => fn(error, to)),
   }
