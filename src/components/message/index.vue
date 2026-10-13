@@ -2,6 +2,7 @@
 import type { MessageItemConfig, MessageUpdateParams } from '../../composables/use-message'
 import type { MessageEmits, MessageProps } from './types'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useMessageGroup } from '../../composables/_internal/use-message-group.js'
 import { useDocumentHidden } from '../../composables/use-document-hidden.js'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
@@ -9,9 +10,6 @@ import { getCssUnitValue } from '../../utils/format.js'
 import { isServer } from '../../utils/is.js'
 import PMessageItem from '../message-item/index.vue'
 import PTeleport from '../teleport/index.vue'
-import { useGroupExpand } from './composables/use-group-expand.js'
-import { useMessageTimer } from './composables/use-message-timer.js'
-import { usePromiseMessage } from './composables/use-promise-message.js'
 
 defineOptions({
   name: 'PMessage',
@@ -28,32 +26,38 @@ const emits = defineEmits<MessageEmits>()
 
 const groupMessages = ref<MessageItemConfig[]>([])
 
-const { setAutoCloseTimer, pauseMessage, resumeMessage, clearTimers, pauseAll, resumeAll } =
-  useMessageTimer(closeMessageById)
-
-const { handlePromiseMessage } = usePromiseMessage(setAutoCloseTimer)
-
-const { groupExpand, collapse, onPointerEnter, onPointerLeave } = useGroupExpand({
+const {
+  groupExpand,
+  collapse,
+  onPointerEnter,
+  onPointerLeave,
+  startTimer,
+  clearTimer,
+  clearTimers,
+  pauseMessage,
+  resumeMessage,
+  pauseAll,
+  resumeAll,
+  handlePromiseMessage,
+} = useMessageGroup({
+  messages: groupMessages,
   expand: () => props.expand,
-  onPauseAll: () => pauseAll(groupMessages.value),
-  onResumeAll: () => resumeAll(groupMessages.value),
+  onTimeout: closeMessageById,
 })
 
 useDocumentHidden((isHidden) => {
   if (isHidden) {
-    pauseAll(groupMessages.value)
+    pauseAll()
   } else {
-    resumeAll(groupMessages.value)
+    resumeAll()
   }
 })
 
 const messageGroupStyle = computed(() => {
   const frontHeight = groupMessages.value[0]?.height || 0
-  const visibleItemCounts = Math.min(props.max, groupMessages.value.length)
 
   return {
     '--message-width': getCssUnitValue(props.width),
-    '--message-items': visibleItemCounts,
     '--message-front-height': getCssUnitValue(frontHeight),
   }
 })
@@ -104,10 +108,7 @@ function closeMessageById(id: MessageItemConfig['id']) {
     return
   }
 
-  if (message._timerId) {
-    clearTimeout(message._timerId)
-    message._timerId = undefined
-  }
+  clearTimer(message)
 
   groupMessages.value.splice(index, 1)
 
@@ -120,8 +121,12 @@ function closeMessageById(id: MessageItemConfig['id']) {
 }
 
 function clearMessage() {
-  clearTimers(groupMessages.value)
+  clearTimers()
   groupMessages.value = []
+
+  if (!props.expand) {
+    collapse()
+  }
 }
 
 function handleCreateMessage(data: MessageItemConfig) {
@@ -142,7 +147,7 @@ function handleCreateMessage(data: MessageItemConfig) {
   if (isPromiseLoading) {
     handlePromiseMessage(message)
   } else if (message.durations) {
-    setAutoCloseTimer(message)
+    startTimer(message)
   }
 }
 

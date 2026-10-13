@@ -35,6 +35,8 @@ const computedStyle = computed(() => {
     '--message-item-index': index,
     'z-index': max - index,
     opacity: isVisible ? 1 : 0,
+    // hidden items must stay out of flow, otherwise they stretch the expanded list
+    position: isVisible ? undefined : 'absolute',
     'pointer-events': isVisible ? 'auto' : 'none',
   } as const
 })
@@ -57,16 +59,7 @@ function setItemHeightInfo() {
   props.itemData.height = itemRef.value.offsetHeight
 }
 
-watch(
-  () => props.itemData.message,
-  () => {
-    if (!itemRef.value) {
-      return
-    }
-
-    setItemHeightInfo()
-  },
-)
+watch(() => props.itemData.message, setItemHeightInfo, { flush: 'post' })
 
 onMounted(() => {
   setItemHeightInfo()
