@@ -89,7 +89,8 @@ Then consult the relevant file:
 - Encountering issues → `.agents/guides/pitfalls.md`
 - Need code examples → `.agents/guides/patterns.md`
 
-After resolving a new issue, append the lesson to `.agents/guides/pitfalls.md`.
+After resolving a new issue, append the lesson to `.agents/guides/pitfalls.md` — only when the lesson
+transfers, per the criteria in that file.
 After discovering a reusable pattern, append to `.agents/guides/patterns.md`.
 
 ## Skills (.agents/skills/)

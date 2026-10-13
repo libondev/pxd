@@ -114,6 +114,11 @@ export function useViewTransition(router: Router, options: Options = {}): () => 
       return rendered
     })
 
+    // The browser rejects `ready` whenever it skips the transition — hidden
+    // document, a newer transition superseding this one, a failed capture. With
+    // nobody observing it that becomes an unhandled rejection in the console.
+    void transition.ready.catch(NOOP)
+
     // When the document is already hidden the spec skips the transition without
     // scheduling the update callback. `finished` still fulfills in that case, so
     // use it to release the navigation instead of letting it hang.

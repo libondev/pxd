@@ -60,6 +60,9 @@ function mockStartViewTransition(options: { runsCallback?: boolean } = {}) {
       markSettled = resolve
     })
 
+    const ready = runsCallback
+      ? Promise.resolve()
+      : Promise.reject(new DOMException('transition skipped', 'InvalidStateError'))
     const finished = runsCallback ? settledPromise : Promise.resolve()
     finished.catch(() => {})
 
@@ -82,7 +85,7 @@ function mockStartViewTransition(options: { runsCallback?: boolean } = {}) {
       finished,
     })
 
-    return { finished }
+    return { finished, ready }
   }) as unknown as typeof document.startViewTransition
 
   return transitions

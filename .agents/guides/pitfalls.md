@@ -2,6 +2,16 @@
 
 Known issues and lessons learned during development.
 
+## When to add an entry
+
+Only when the lesson transfers. An entry earns its place when the same class of problem can reach
+**other** files, components or features — a shared API, a browser behaviour, a pattern several call
+sites are going to repeat.
+
+Skip anything confined to one file, component or feature and hit once: the fix is already in the
+code, and the entry only grows this list. That kind of one-off belongs in the commit message or in
+a comment beside the fix.
+
 ## Format
 
 ### {Problem title}
@@ -48,7 +58,7 @@ Known issues and lessons learned during development.
 - **Symptom**: PToc's outline goes stale — headings that arrive late are never listed — while the `ResizeObserver` on `document.body` that is meant to notice looks like it fires.
 - **Cause**: The body box moves on reflows that cannot change an outline (fonts, images), and never moves when content grows inside a height-capped scroll container (a `height: 400px; overflow: auto` pane stayed 402px while its `scrollHeight` went 24 -> 2024). The scroll element is no better: with `html { height: 100% }` its box is pinned to the viewport (484 against a `scrollHeight` of 2416), and a viewport resize fires it in neither case.
 - **Fix**: Observe what the reader reads. `readOutline` derives entries from element identity, text and `id` alone, so PToc watches through `useMutationObserver` (`childList`, `subtree`, `characterData`, `attributeFilter: ['id']`) scoped to `scrollTarget ?? document.body`, and `useScrollspy` binds a `resize` listener whenever the scroll listener is `window`.
-- **Testing note**: happy-dom delivers neither callback; `tests/helpers/setup.ts` mocks both constructors (`installResizeObserverMock` / `installMutationObserverMock`) and `fireAll()` replays the recorded targets. A synthesized record resolves through `ObserverSpec.resolveTarget` when its `target` is the observed element — the non-pooled path looks descendants up with `contains`, which is why mutation observers must not be pooled.
+- **Testing note**: happy-dom delivers neither callback; `tests/helpers/setup.ts` mocks both constructors (`installResizeObserverMock` / `installMutationObserverMock`) and `fireAll()` replays the recorded targets. A synthesized record resolves through `ObserverSpec.resolveTarget` when its `target` is the observed element — the non-pooled path looks descendants up with `contains`, which is why mutation observers must not be pooled. Replacing `scrollHeight` / `scrollTop` with getters is not a way around it either: the mocks cannot re-measure a replaced property, so drive scroll state with a local `scrollTo` mock plus synthetic `scroll` events and assert the follow path through a deterministic public API (`stickIfNeeded` / `forceStickToBottom`) rather than through an observer.
 
 ### Per-frame DOM measurement inside a pointer handler
 
@@ -115,6 +125,7 @@ Known issues and lessons learned during development.
 - **Symptom**: Selecting a date in PCalendar re-rendered all 42 day cells per click while only 2 changed in the DOM.
 - **Cause**: `patchFlag & 1024` (`DYNAMIC_SLOTS`) makes `shouldUpdateComponent` return `true` unconditionally, and forwarded slot children (`_: 3`) get that flag whenever the owning component's own slots are unstable.
 - **Fix**: Do not forward user slots inside `v-for` children — render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else`), so unchanged cells skip via the props path. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat; setting `useSlots()._ = 1` works but rides on undocumented SlotFlags.
+- **Related**: the props path fails the same way when a rebuilt object prop gives the child a new identity — `shouldUpdateComponent` compares prop *values*, so pass the fields that matter instead of the whole row object. Count renders by `instance.subTree` identity: `instance.vnode` is replaced on the skip path too and cannot tell the two apart.
 
 ### Vue test warnings: unresolved components and reactive component props
 
@@ -128,23 +139,11 @@ Known issues and lessons learned during development.
 - **Cause**: happy-dom's CSS parser silently drops values it cannot parse (`color-mix(in oklab, ...)`), and custom properties always serialize as raw strings, so Vue never appends `px`. Separately, vue-tsc types `wrapper.vm` from props/emits only — `<script setup>` bindings exist on the render proxy at runtime but not on the public instance type.
 - **Fix**: Assert through the vm with a cast — `expect((wrapper.vm as any).shimmerStyle.backgroundImage).toContain('#F5EBD9')` — or `defineExpose` the state when it should be public API. For numeric custom properties, assert the unitless form.
 
-### Physical borders misalign masked BorderBeam layers
-
-- **Symptom**: The BorderBeam stroke sits just inside the rounded physical border, in both `glow` and `line` variants.
-- **Cause**: A physical root border moves the absolutely positioned masked layers to the padding box, while the beam ring is drawn with `inset: 0` and `p-px`.
-- **Fix**: Use the library's inset `shadow-border-base` edge on the BorderBeam host instead of a physical `border`, keeping the static edge and beam in the same box.
-
 ### Optional modelValue unions that include boolean default to false
 
 - **Symptom**: Multi-select `v-model` starts as `[false, selectedValue]` instead of `[selectedValue]` when the parent omitted `modelValue` or passed `undefined`.
 - **Cause**: Vue infers a `Boolean` runtime prop whenever the TypeScript union contains `boolean`. An omitted Boolean prop is cast to `false`, and `toArray(false)` becomes `[false]`.
 - **Fix**: Keep `modelValue` typed as `string | number | (string | number)[] | null` (no `boolean`) unless a real boolean value is required. When aggregating multiple values, treat only `string`/`number` scalars and arrays as selections—not `false`.
-
-### happy-dom does not fire Mutation/ResizeObserver for mocked scroll metrics
-
-- **Symptom**: Composable tests that change only `scrollHeight`/`scrollTop` via `Object.defineProperties` never trigger auto-stick, even after `appendChild`.
-- **Cause**: happy-dom's MutationObserver/ResizeObserver either do not deliver callbacks for these synthetic mutations, or cannot re-measure properties that were replaced with getters.
-- **Fix**: Keep observer wiring for production, but assert the follow path through a deterministic public API (`stickIfNeeded` / `forceStickToBottom`). Drive scroll state with a local `scrollTo` mock + synthetic `scroll` events instead of relying on observers in unit tests.
 
 ### `cn` drops custom `text-*` utilities from variant class lists
 
@@ -188,31 +187,13 @@ Known issues and lessons learned during development.
 - **Symptom**: In a pointer recognizer, a tap is treated as vetoed after the previous gesture was vetoed — the next tap silently stops working.
 - **Cause**: Per-gesture state (`startVerdict`, the start gate, axis lock) was initialised in the `onStart` callback, which only fires once movement passes `swipeThreshold`. A tap never reaches `onStart`, so it reads whatever the *previous* gesture left behind.
 - **Fix**: Clear the state in whichever handler ends the interaction (`onEnd`, `onTap`/`onIdle`, `onCancel`) instead of at the start of the next one. If a terminal handler must await something before it can classify the gesture, capture what it needs in locals first — the deferred callback must not read fields that have already been reset.
+- **Testing note**: a hand-built drag that presses and releases at the same `clientY` never crosses the drag threshold, so it reads as ignored — move between the two events.
 
 ### ARIA role states are gated on interactivity, not just whitelisted
 
 - **Symptom**: A pointer-only splitter carried `aria-valuenow` / `aria-valuemin` / `aria-valuemax` / `aria-expanded`, none of which the accessibility tree may expose.
 - **Cause**: `aria-expanded` is not a `separator` state at all — it marks control over *visibility*, which folding a panel never does. The `aria-value*` trio is listed for `separator` only while the element is focusable *and* its value is known, so dropping `tabindex` and the key handler silently voided all four.
 - **Fix**: A splitter is binary — either a focusable separator (`tabindex="0"`, the value properties and a key handler arrive together) or a non-focusable structural divider carrying only `aria-orientation`, `aria-controls` and `aria-disabled`. Extra state goes in `aria-valuetext`, the role's only free-form field. Read a role's *conditional* wording before adding its states; the supported-state list is not the whole rule.
-
-### A row component only skips updates on flat props and a slot-less branch
-
-- **Symptom**: Moving PTree row markup into `PTreeNode` changed nothing measurable — every row still re-rendered on every tree update — and passing the flattened row as one `row: TreeFlatNode` prop kept it that way.
-- **Cause**: Two rules stacked. Slot children give the vnode `DYNAMIC_SLOTS`, so `shouldUpdateComponent` returns `true` unconditionally — forwarding `node-content` to every row puts every row back on the update path. And `shouldUpdateComponent` compares prop *values*, while `useTreeRows` rebuilds every `TreeFlatNode` on any change, so an object prop hands every row a new identity on every selection.
-- **Fix**: Pass the row field by field (scalars plus the `node` reference, which survives because it comes straight from the data prop) and render the child twice: a slot-less `<PTreeNode v-if="!hasNodeSlot" />` fast path and a `<PTreeNode v-else>` forwarding the slots. Keep the virtual-positioning wrapper div in the parent, or every scroll step re-renders the row content it positions. Measured on a 200-row tree: focus 0 rows, ArrowDown 1 row, selection 1 row (200 each before). Count renders by `instance.subTree` identity — `instance.vnode` is replaced on the skip path too and cannot tell the two apart.
-
-### Detach before you look up a drop target, and measure drag rows by hand in tests
-
-- **Symptom**: A `moveTreeNode` test asserted that dropping `a` onto its own child `b` relocated `a` under `b`, and got `undefined`.
-- **Cause**: The walk resolved the target in the original list while the moved node was still in it, so a target inside the subtree about to be removed still looked reachable — refusing that drop is the correct behaviour, so the assertion caught the bug, not a broken implementation.
-- **Fix**: Detach first, then resolve. Once the node is out of the tree, itself and every descendant are unreachable, so self / descendant / parent-changed drops are rejected with no extra checks, and `from.parent === to.parent && from.index === to.index` catches a move landing exactly where it started. In tests, hand-write `getBoundingClientRect` on each row and on the container (happy-dom has no layout), and note that a press and a release at the same `clientY` never cross the drag threshold — every case then looks like the drag was ignored.
-
-### A spy index is not a render index
-
-- **Symptom**: A list highlights the right row but scrolls the wrong one into view, and only when some rows have no matching DOM element.
-- **Cause**: `useScrollspy` indexes the elements it resolved (`options.map(getElementById).filter(Boolean)`) while the template renders the `options` array, so one entry whose id is missing from the document shortens the resolved list and every later index points one row early. The highlight keeps working because it matches on id.
-- **Fix**: Convert to a DOM index only through the rendered array (`rows.findIndex(r => r.active)`) — any "data index -> `children[n]`" lookup has to go through the array that produced the children.
-- **Testing note**: Stub `getBoundingClientRect` on the container and on each row, then assert the `scrollTop` the component writes; the wrong-row bug shows up as `0` where the measured overflow is expected. Confirm the test can fail — reverting the fix moved the assertion from 120 to 0.
 
 ### The docs dev server scaffold overwrites a newly created component page
 
