@@ -1,5 +1,5 @@
-import type { ColorScheme } from '../../composables/use-color-scheme'
+import type { ColorPreference } from '../../composables/use-color-scheme'
 
 export interface ThemeSwitcherEmits {
-  toggle: [ColorScheme]
+  toggle: [ColorPreference]
 }

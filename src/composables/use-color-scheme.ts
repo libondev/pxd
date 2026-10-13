@@ -16,6 +16,12 @@ interface Subscriber {
   mode: ColorPreference
 }
 
+const SCHEME_CYCLE: Record<ColorPreference, ColorPreference> = {
+  auto: 'light',
+  light: 'dark',
+  dark: 'auto',
+}
+
 export function useColorScheme(options: Options = {}) {
   const uniqueId = getUniqueId()
   const EVENT_NAME = '#toggle-color-scheme'
@@ -90,14 +96,10 @@ export function useColorScheme(options: Options = {}) {
     styleHandles.disableTransitionStyleEl = null
   }
 
-  function toggleDarkMode() {
+  function toggleDarkMode(mode?: ColorPreference) {
     createDisableTransitionStyle()
 
-    if (colorScheme.value === 'auto') {
-      colorScheme.value = isDark.value ? 'light' : 'dark'
-    } else {
-      colorScheme.value = 'auto'
-    }
+    colorScheme.value = mode ?? SCHEME_CYCLE[colorScheme.value]
 
     updateStorages()
     removeDisableTransitionStyle()

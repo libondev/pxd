@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import type { ColorPreference } from '../../composables/use-color-scheme'
 import type { ThemeSwitcherEmits } from './types'
+import type { Component } from 'vue'
+import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
 import { computed, watch } from 'vue'
@@ -13,29 +16,37 @@ defineOptions({
 
 const emits = defineEmits<ThemeSwitcherEmits>()
 
-const { isDark, toggleDarkMode } = useColorScheme({
+const { colorScheme, toggleDarkMode } = useColorScheme({
   syncStatus: true,
 })
 
-const renderIcon = computed(() => (isDark.value ? MoonIcon : SunIcon))
+const SCHEME_ICONS: Record<ColorPreference, Component> = {
+  auto: DeviceAlternateIcon,
+  light: SunIcon,
+  dark: MoonIcon,
+}
+
+const renderIcon = computed(() => SCHEME_ICONS[colorScheme.value])
 
 watch(
-  () => isDark.value,
+  () => colorScheme.value,
   (newVal) => {
-    emits('toggle', newVal ? 'dark' : 'light')
+    emits('toggle', newVal)
   },
 )
 </script>
 
 <template>
   <PButton
+    icon
     data-theme-switcher
     aria-label="Toggle color mode"
     class="pxd-theme-switcher"
     v-bind="$attrs"
-    icon
-    @click="toggleDarkMode"
+    @click="toggleDarkMode()"
   >
-    <Component :is="renderIcon" class="size-em" />
+    <Transition name="pxd-transition--fade-scale" mode="out-in">
+      <Component :is="renderIcon" class="size-em" />
+    </Transition>
   </PButton>
 </template>

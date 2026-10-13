@@ -385,7 +385,7 @@
   },
   "/components/theme-switcher": {
     "title": "Theme Switcher",
-    "description": "Component that allows users to switch between light and dark themes."
+    "description": "Component that cycles the theme through auto (follows the system), light and dark."
   },
   "/components/time-picker": {
     "title": "Time Picker",

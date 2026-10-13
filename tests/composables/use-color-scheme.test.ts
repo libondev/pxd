@@ -19,7 +19,7 @@ const TestComponent = defineComponent({
       toggleDarkMode,
     }
   },
-  template: '<div><button @click="toggleDarkMode">Toggle</button><span>{{ isDark }}</span></div>',
+  template: '<div><button @click="toggleDarkMode()">Toggle</button><span>{{ isDark }}</span></div>',
 })
 
 describe('use-color-scheme memory leak prevention', () => {
@@ -218,5 +218,34 @@ describe('use-color-scheme memory leak prevention', () => {
     const callsAfterUnmount = setItemSpy.mock.calls.length
     await new Promise((resolve) => setTimeout(resolve, 10))
     expect(setItemSpy.mock.calls.length).toBe(callsAfterUnmount)
+  })
+})
+
+const SchemeComponent = defineComponent({
+  name: 'SchemeComponent',
+  setup() {
+    const { colorScheme, toggleDarkMode } = useColorScheme()
+
+    return {
+      colorScheme,
+      toggleDarkMode,
+    }
+  },
+  template:
+    '<div><button @click="toggleDarkMode(\'light\')">Light</button><button @click="toggleDarkMode(\'auto\')">Auto</button><span>{{ colorScheme }}</span></div>',
+})
+
+describe('use-color-scheme mode switching', () => {
+  it('should apply a passed mode instead of cycling', async () => {
+    const wrapper = mount(SchemeComponent)
+    const buttons = wrapper.findAll('button')
+
+    await buttons[0].trigger('click')
+    expect(wrapper.find('span').text()).toBe('light')
+
+    await buttons[1].trigger('click')
+    expect(wrapper.find('span').text()).toBe('auto')
+
+    wrapper.unmount()
   })
 })

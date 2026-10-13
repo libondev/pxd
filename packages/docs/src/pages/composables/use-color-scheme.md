@@ -8,7 +8,7 @@ Manages dark/light color scheme with localStorage persistence and multi-instance
 function useColorScheme(options?: Options): {
   isDark: ComputedRef<boolean>
   colorScheme: Ref<ColorPreference>
-  toggleDarkMode: () => void
+  toggleDarkMode: (mode?: ColorPreference) => void
 }
 ```
 

@@ -1,6 +1,6 @@
 # Theme Switcher
 
-Component that allows users to switch between light and dark themes.
+Component that cycles the theme through `auto` (follows the system), `light` and `dark`.
 
 ## Further
 
@@ -35,4 +35,4 @@ Support all attributes of the [button](/components/button) component (except slo
 
 | Name | Type | Description |
 | --- | --- | --- |
-| toggle | `(scheme: ColorScheme) => void` | Emitted when the resolved colour scheme changes. |
+| toggle | `(scheme: ColorPreference) => void` | Emitted when the colour scheme preference changes. |
