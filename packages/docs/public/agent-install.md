@@ -277,7 +277,7 @@ Then add the viewport meta, the empty touch handler, the overscroll guard and th
 </html>
 ```
 
-Each of those lines earns its place: `height: 100%` on the three root elements for anything sized against the viewport; `interactive-widget=resizes-content` so the on-screen keyboard resizes the layout viewport instead of overlaying inputs; `viewport-fit=cover` so the layout extends under the notch and home indicator; `ontouchstart=""` because mobile Safari skips `:active` until the document has handled a touch event; `overscroll-none` (`overscroll-behavior: none` without Tailwind) against rubber-band scrolling; and the inline script applies the stored colour scheme before the app bundle runs, so there is no light flash on load.
+Each of those lines earns its place: `height: 100%` on the three root elements for anything sized against the viewport; `interactive-widget=resizes-content` so the on-screen keyboard resizes the layout viewport instead of overlaying inputs; `viewport-fit=cover` so the layout extends under the notch and home indicator; `ontouchstart=""` because mobile Safari skips `:active` until the document has handled a touch event; `overscroll-none` (`overscroll-behavior: none` without Tailwind) against rubber-band scrolling; and the inline script re-applies the stored colour scheme — the `fe.system.color-scheme` key in `localStorage`, holding `'dark'`, `'light'` or `'auto'` — before the app bundle runs, so there is no light flash on load.
 
 Finally, wrap the content of `src/App.vue` in a config provider, keeping whatever the file already renders inside it:
 
@@ -325,7 +325,7 @@ Report what was installed, which files were written and which options were skipp
 
 Close with what PXD still offers beyond that. **Set none of it up unless asked:**
 
-- **Dark theme**: PXD switches theme on a `.dark` class on `<html>` — `<PThemeSwitcher />` or the `useColorScheme()` composable flips it and persists the choice in `localStorage`. Step 9 already applies the stored choice early enough to avoid a flash.
+- **Dark theme**: PXD switches theme on a `.dark` class on `<html>` — `<PThemeSwitcher />` or the `useColorScheme()` composable flips it and writes `'dark'`, `'light'` or `'auto'` to the `fe.system.color-scheme` key in `localStorage`. Step 9 already reads that key early enough to avoid a flash.
 - **Locale**: the provider from step 9 is already mounted, so switching language is one prop away — `<PConfigProvider :locale="zhCN">` with any locale from `pxd/locales/*`.
 - **Runtime APIs**: `useMessage()` renders nothing until a `<PMessage group="..." />` is mounted in the tree, and `useLoadingBar()` likewise needs a `<PLoadingBar group="..." />`.
 
