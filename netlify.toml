@@ -24,6 +24,12 @@ to = "/agent-install.md"
 status = 200
 force = true
 
+[[redirects]]
+from = "/agent-usage.md"
+to = "/agent-usage.md"
+status = 200
+force = true
+
 # vite-ssg writes one flat `*.html` per route, so `/guide/introduction` needs the
 # extension appended before the catch-all below gets a chance to answer.
 [[redirects]]

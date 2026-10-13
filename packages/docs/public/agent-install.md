@@ -292,7 +292,21 @@ Finally, wrap the content of `src/App.vue` in a config provider, keeping whateve
 
 Nothing forces this — PXD reads its defaults without it — but it is the injection point for locale, component size and the motion switches, and later steps and features expect a place to hang those. It renders one wrapper element (`as` changes the tag), so give it `class="h-full"` too when anything inside is sized against the viewport.
 
-## 10. Verify and report
+## 10. Point the project's agent at these docs
+
+Write this block into the project's agent instructions file — an existing `AGENTS.md`, `CLAUDE.md` or `.cursor/rules/*.mdc`, or a new `AGENTS.md` in the project root if there is none. Append it; never replace what that file already says.
+
+```md
+## PXD
+Docs index: https://pxd-ui.netlify.app/llms.txt
+Any docs page is also served as raw Markdown: append `.md` to its URL.
+Before using a PXD component, read https://pxd-ui.netlify.app/components/<kebab-name>.md
+and take its props, slots, events and methods from the tables there — do not guess prop names.
+```
+
+This is the one step that outlives the session. Everything above is already done, so what is left to hand over is the part the next agent needs: without the block, that agent works from a half-remembered component and invents the prop names.
+
+## 11. Verify and report
 
 Run the dev server or a build once, so `components.d.ts` is generated, then run the type check and confirm a component renders.
 
@@ -307,9 +321,12 @@ Report what was installed, which files were written and which options were skipp
 - **The `components.d.ts` generation and the `types` entry in `tsconfig.json`** — drop the `dts` option and the `"pxd/volar"` entry; explicit imports still work.
 - **Auto-import through the resolver** — swap it for explicit `import { Button } from 'pxd'`, or for `app.use(PXD)` if bundle size stops mattering.
 - **`.npmrc` with `shamefully-hoist`**, if a strict package manager made it necessary — remove it and hoist `pxd`'s deps some other way.
+- **The block written into the project's agent file in step 10** — delete it; the build does not care, the next agent simply stops knowing where the docs are.
 
 Close with what PXD still offers beyond that. **Set none of it up unless asked:**
 
 - **Dark theme**: PXD switches theme on a `.dark` class on `<html>` — `<PThemeSwitcher />` or the `useColorScheme()` composable flips it and persists the choice in `localStorage`. Step 9 already applies the stored choice early enough to avoid a flash.
 - **Locale**: the provider from step 9 is already mounted, so switching language is one prop away — `<PConfigProvider :locale="zhCN">` with any locale from `pxd/locales/*`.
 - **Runtime APIs**: `useMessage()` renders nothing until a `<PMessage group="..." />` is mounted in the tree, and `useLoadingBar()` likewise needs a `<PLoadingBar group="..." />`.
+
+Finally, name where the docs live, for the user and for whatever agent opens this project next: `https://pxd-ui.netlify.app/llms.txt` indexes every page PXD documents, and `https://pxd-ui.netlify.app/agent-usage.md` is the guide to writing code against the library — how to read a component page, and the APIs that only work in pairs.

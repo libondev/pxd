@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { siteUrl as SITE_URL } from './site-url.js'
 
 const PAGES_DIR = fileURLToPath(new URL('../src/pages', import.meta.url))
+const PUBLIC_DIR = fileURLToPath(new URL('../public', import.meta.url))
 const PAGE_META_FILE = fileURLToPath(new URL('../src/consts/page-meta.json', import.meta.url))
 
 const SITE_DESCRIPTION =
@@ -34,6 +35,20 @@ function collectPages() {
 
 function toUrl(routePath) {
   return routePath === '/' ? `${SITE_URL}/` : `${SITE_URL}${routePath}`
+}
+
+// The agent guides live in `public/` because they are served as files rather than rendered as
+// pages, so collectPages never sees them and they need their own section in the index.
+function collectAgentGuides() {
+  return fs
+    .readdirSync(PUBLIC_DIR, { encoding: 'utf-8' })
+    .filter((file) => /^agent-.+\.md$/.test(file))
+    .sort()
+    .map((file) => {
+      const content = fs.readFileSync(path.join(PUBLIC_DIR, file), 'utf-8')
+
+      return { path: `/${file}`, title: readTitle(content, file) }
+    })
 }
 
 // Markdown pages are served next to their rendered html under the same path. Pages that come
@@ -85,7 +100,7 @@ function readPageMeta() {
   return fs.existsSync(PAGE_META_FILE) ? JSON.parse(fs.readFileSync(PAGE_META_FILE, 'utf-8')) : {}
 }
 
-function renderLlms(pages) {
+function renderLlms(pages, agentGuides) {
   const pageMeta = readPageMeta()
   const grouped = new Map()
 
@@ -104,12 +119,15 @@ function renderLlms(pages) {
     grouped.get(group).push(link)
   })
 
-  const sections = [...grouped.entries()]
-    .map(
+  const sections = [
+    `## Agents\n\n${agentGuides
+      .map(({ title, path: routePath }) => `- [${title}](${toUrl(routePath)})`)
+      .join('\n')}`,
+    ...[...grouped.entries()].map(
       ([group, links]) =>
         `## ${group.charAt(0).toUpperCase() + group.slice(1)}\n\n${links.join('\n')}`,
-    )
-    .join('\n\n')
+    ),
+  ].join('\n\n')
 
   return `# PXD
 
@@ -117,23 +135,9 @@ function renderLlms(pages) {
 
 PXD is a universal Vue component library: one codebase for Vue 2.7+ and Vue 3.2+, with no \`vue-demi\` and no duplicated source. Theming is plain CSS variables behind a \`.dark\` class, popovers become bottom sheets on small screens, and every animation can be turned off with \`--duration: 0\`.
 
-Every documented page is also served as raw Markdown: take its URL and append \`.md\`. \`llms-full.txt\` repeats the whole documentation in a single file.
+Every documented page is also served as raw Markdown: take its URL and append \`.md\`. Fetch the page you are about to write code against rather than the whole library.
 
 ${sections}
-`
-}
-
-function renderLlmsFull(pages) {
-  const documents = pages
-    .filter((page) => page.file.endsWith('.md'))
-    .map((page) => fs.readFileSync(page.file, 'utf-8').trim())
-    .join('\n\n---\n\n')
-
-  return `# PXD
-
-> ${SITE_DESCRIPTION}
-
-${documents}
 `
 }
 
@@ -169,8 +173,7 @@ export default function seoFilesPlugin() {
 
       fs.mkdirSync(outputDir, { recursive: true })
       fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), renderSitemap(pages))
-      fs.writeFileSync(path.join(outputDir, 'llms.txt'), renderLlms(pages))
-      fs.writeFileSync(path.join(outputDir, 'llms-full.txt'), renderLlmsFull(pages))
+      fs.writeFileSync(path.join(outputDir, 'llms.txt'), renderLlms(pages, collectAgentGuides()))
       writeMarkdownSources(pages, outputDir)
     },
   }
