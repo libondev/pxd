@@ -98,7 +98,7 @@ watch(
         v-bind="$attrs"
       >
         <header
-          class="pxd-modal--header px-6 pbs-4 sm:pbs-6 empty:py-3 relative shrink-0"
+          class="pxd-modal--header px-6 pbs-4 sm:pbs-6 relative shrink-0 empty:hidden"
           :class="defaultStyles.headerClass"
         >
           <slot name="header">
