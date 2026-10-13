@@ -76,3 +76,11 @@ from = "/llm.txt"
 to = "/llms.txt"
 status = 301
 force = true
+
+# Keep the default Netlify subdomain alive as a permanent redirect so the links already
+# indexed under it hand their ranking over instead of returning nothing.
+[[redirects]]
+from = "https://pxd-ui.netlify.app/*"
+to = "https://pxd.libondev.cn/:splat"
+status = 301
+force = true

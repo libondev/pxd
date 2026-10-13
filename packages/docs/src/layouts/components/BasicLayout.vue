@@ -81,7 +81,12 @@ const componentSourcePath = computed(() => {
 const metaOfCurrentPage = computed(() => pageMetaMap[route.path])
 
 const pageTitle = computed(() => {
-  const label = metaOfCurrentPage.value?.title || humanize(route.path.split('/').pop() || 'PXD')
+  const slug = route.path.split('/').pop() || 'PXD'
+  const label = metaOfCurrentPage.value?.title || humanize(slug)
+
+  if (route.path === '/') {
+    return HOME_TITLE
+  }
 
   if (route.path.startsWith('/components/')) {
     return `${label} - Vue Component | PXD`
@@ -91,11 +96,9 @@ const pageTitle = computed(() => {
     return `${label} - Vue Composable | PXD`
   }
 
-  if (route.path === '/' || label === 'PXD') {
-    return HOME_TITLE
-  }
-
-  return `${label} - PXD`
+  // Pages whose heading is the library name (the introduction) cannot title themselves:
+  // they would repeat the home page, so they fall back to their file name.
+  return `${label === 'PXD' ? humanize(slug) : label} - PXD`
 })
 
 const pageDescription = computed(() => metaOfCurrentPage.value?.description || DEFAULT_DESCRIPTION)

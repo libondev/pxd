@@ -2,7 +2,7 @@
 
 一套代码同时兼容 Vue 2.7 & 3.2 的通用 UI 组件库。内置亮暗色主题，自适应 PC 与移动端，支持完全禁用动画。
 
-[English](README.md) | [Online Preview](https://pxd-ui.netlify.app/)
+[English](README.md) | [Online Preview](https://pxd.libondev.cn/)
 
 > [!WARNING]
 > 项目正在积极开发中，尚未做好投入生产的准备
@@ -15,7 +15,7 @@
 | 3.2.x | `unplugin-vue-define-options@3.1.2+` |
 | >=3.3 | 无需配置 |
 
-组件通过 `defineOptions()` 宏声明名称与选项，该宏到 Vue 3.3 才被官方支持，因此 Vue 2.7 与 Vue 3.2 需要额外安装转换插件，详见[安装文档](https://pxd-ui.netlify.app/guide/installation)。
+组件通过 `defineOptions()` 宏声明名称与选项，该宏到 Vue 3.3 才被官方支持，因此 Vue 2.7 与 Vue 3.2 需要额外安装转换插件，详见[安装文档](https://pxd.libondev.cn/guide/installation)。
 
 ## 特性
 

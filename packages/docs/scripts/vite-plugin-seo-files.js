@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
@@ -5,10 +6,16 @@ import { siteUrl as SITE_URL } from './site-url.js'
 
 const PAGES_DIR = fileURLToPath(new URL('../src/pages', import.meta.url))
 const PUBLIC_DIR = fileURLToPath(new URL('../public', import.meta.url))
+const ROOT_DIR = fileURLToPath(new URL('../../../', import.meta.url))
 const PAGE_META_FILE = fileURLToPath(new URL('../src/consts/page-meta.json', import.meta.url))
 
 const SITE_DESCRIPTION =
   'A universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.'
+
+// The json-ld block in index.html is static, so its version has to be stamped in at build time.
+const LIBRARY_VERSION = JSON.parse(
+  fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf-8'),
+).version
 
 // The catch-all route renders the 404 page, so it must stay out of every crawler-facing file.
 const EXCLUDED_FILES = ['[...all].vue']
@@ -57,8 +64,58 @@ function toDocumentUrl(page) {
   return page.file.endsWith('.md') ? `${toUrl(page.path)}.md` : toUrl(page.path)
 }
 
-function toLastModified(filePath) {
-  return fs.statSync(filePath).mtime.toISOString().slice(0, 10)
+// Vite copies publicDir verbatim, so anything served as a file has to have its placeholder
+// resolved here — `transformIndexHtml` only ever sees the html entry.
+const PLACEHOLDER_FILES = ['robots.txt', 'agent-install.md', 'agent-usage.md']
+
+function replaceSiteUrlPlaceholders(outputDir) {
+  PLACEHOLDER_FILES.forEach((file) => {
+    const target = path.join(outputDir, file)
+
+    if (fs.existsSync(target)) {
+      fs.writeFileSync(
+        target,
+        fs.readFileSync(target, 'utf-8').replaceAll('__SITE_URL__', SITE_URL),
+      )
+    }
+  })
+}
+
+// `git log` walks newest first, so the first date seen for a path is its last commit.
+function collectCommitDates() {
+  const dates = new Map()
+
+  try {
+    const log = execFileSync('git', ['log', '--format=@%cs', '--name-only'], {
+      cwd: ROOT_DIR,
+      encoding: 'utf-8',
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    let current = ''
+
+    log.split('\n').forEach((line) => {
+      if (line.startsWith('@')) {
+        current = line.slice(1).trim()
+      } else if (line.trim()) {
+        const absolutePath = path.resolve(ROOT_DIR, line.trim())
+
+        if (!dates.has(absolutePath)) {
+          dates.set(absolutePath, current)
+        }
+      }
+    })
+  } catch {
+    // No git available (tarball checkout): leave the map empty and fall back to mtime.
+  }
+
+  return dates
+}
+
+function toLastModified(filePath, commitDates) {
+  // A CI checkout stamps every file with the clone time, which would mark the whole site as
+  // edited on every build until crawlers stop trusting `lastmod`.
+  return commitDates.get(filePath) || fs.statSync(filePath).mtime.toISOString().slice(0, 10)
 }
 
 function readTitle(content, routePath) {
@@ -73,7 +130,7 @@ function readTitle(content, routePath) {
   return routePath === '/' ? 'PXD' : routePath.split('/').pop()
 }
 
-function renderSitemap(pages) {
+function renderSitemap(pages, commitDates) {
   const urls = pages
     .map(({ file, path: routePath }) => {
       const priority = routePath === '/' ? '1.0' : '0.7'
@@ -81,7 +138,7 @@ function renderSitemap(pages) {
       return [
         '  <url>',
         `    <loc>${toUrl(routePath)}</loc>`,
-        `    <lastmod>${toLastModified(file)}</lastmod>`,
+        `    <lastmod>${toLastModified(file, commitDates)}</lastmod>`,
         '    <changefreq>weekly</changefreq>',
         `    <priority>${priority}</priority>`,
         '  </url>',
@@ -165,16 +222,19 @@ export default function seoFilesPlugin() {
     },
 
     transformIndexHtml(html) {
-      return html.replaceAll('__SITE_URL__', SITE_URL)
+      return html
+        .replaceAll('__SITE_URL__', SITE_URL)
+        .replaceAll('__VERSION__', LIBRARY_VERSION)
     },
 
     closeBundle() {
       const pages = collectPages()
 
       fs.mkdirSync(outputDir, { recursive: true })
-      fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), renderSitemap(pages))
+      fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), renderSitemap(pages, collectCommitDates()))
       fs.writeFileSync(path.join(outputDir, 'llms.txt'), renderLlms(pages, collectAgentGuides()))
       writeMarkdownSources(pages, outputDir)
+      replaceSiteUrlPlaceholders(outputDir)
     },
   }
 }

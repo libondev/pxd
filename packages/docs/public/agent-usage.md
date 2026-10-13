@@ -6,7 +6,7 @@ You are a coding agent. `agent-install.md` set PXD up in a project; this guide i
 
 The documentation is served as raw Markdown, one file per page, so nothing you fetch carries the site around it:
 
-- `https://pxd-ui.netlify.app/llms.txt` — the index: every guide, component and composable page, one line each, about 20 KB.
+- `__SITE_URL__/llms.txt` — the index: every guide, component and composable page, one line each, about 20 KB.
 - Any page URL with `.md` appended — that page alone. Components are `/components/<name>.md`, composables `/composables/<name>.md`.
 
 The rendered page answers at the same URL without the `.md`. Do not read it: it carries the same text wrapped in the site's layout, navigation and hydration payload.

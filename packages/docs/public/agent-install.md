@@ -298,9 +298,9 @@ Write this block into the project's agent instructions file — an existing `AGE
 
 ```md
 ## PXD
-Docs index: https://pxd-ui.netlify.app/llms.txt
+Docs index: __SITE_URL__/llms.txt
 Any docs page is also served as raw Markdown: append `.md` to its URL.
-Before using a PXD component, read https://pxd-ui.netlify.app/components/<kebab-name>.md
+Before using a PXD component, read __SITE_URL__/components/<kebab-name>.md
 and take its props, slots, events and methods from the tables there — do not guess prop names.
 ```
 
@@ -329,4 +329,4 @@ Close with what PXD still offers beyond that. **Set none of it up unless asked:*
 - **Locale**: the provider from step 9 is already mounted, so switching language is one prop away — `<PConfigProvider :locale="zhCN">` with any locale from `pxd/locales/*`.
 - **Runtime APIs**: `useMessage()` renders nothing until a `<PMessage group="..." />` is mounted in the tree, and `useLoadingBar()` likewise needs a `<PLoadingBar group="..." />`.
 
-Finally, name where the docs live, for the user and for whatever agent opens this project next: `https://pxd-ui.netlify.app/llms.txt` indexes every page PXD documents, and `https://pxd-ui.netlify.app/agent-usage.md` is the guide to writing code against the library — how to read a component page, and the APIs that only work in pairs.
+Finally, name where the docs live, for the user and for whatever agent opens this project next: `__SITE_URL__/llms.txt` indexes every page PXD documents, and `__SITE_URL__/agent-usage.md` is the guide to writing code against the library — how to read a component page, and the APIs that only work in pairs.

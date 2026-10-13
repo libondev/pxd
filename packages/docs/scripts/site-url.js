@@ -1,4 +1,4 @@
-const DEFAULT_SITE_URL = 'https://pxd-ui.netlify.app'
+const DEFAULT_SITE_URL = 'https://pxd.libondev.cn'
 
 export function resolveSiteUrl(env = process.env) {
   const configured = env.SITE_URL?.trim()

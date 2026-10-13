@@ -2,7 +2,7 @@
 
 A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.
 
-[简体中文](README-CN.md) | [Online Preview](https://pxd-ui.netlify.app/)
+[简体中文](README-CN.md) | [Online Preview](https://pxd.libondev.cn/)
 
 
 > [!WARNING]
@@ -16,7 +16,7 @@ A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in
 | 3.2.x | `unplugin-vue-define-options@3.1.2+` |
 | >=3.3 | None |
 
-Components declare their options through `defineOptions()`, a macro that only landed in Vue 3.3, so Vue 2.7 and Vue 3.2 need the transform plugin. See [Installation](https://pxd-ui.netlify.app/guide/installation) for the setup.
+Components declare their options through `defineOptions()`, a macro that only landed in Vue 3.3, so Vue 2.7 and Vue 3.2 need the transform plugin. See [Installation](https://pxd.libondev.cn/guide/installation) for the setup.
 
 ## Features
 
