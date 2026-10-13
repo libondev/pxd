@@ -41,6 +41,25 @@ from = "/composables/:slug"
 to = "/composables/:slug.html"
 status = 200
 
+# The markdown sources an agent reads instead of the rendered page live at the same path.
+[[redirects]]
+from = "/guide/:slug.md"
+to = "/guide/:slug.md"
+status = 200
+force = true
+
+[[redirects]]
+from = "/components/:slug.md"
+to = "/components/:slug.md"
+status = 200
+force = true
+
+[[redirects]]
+from = "/composables/:slug.md"
+to = "/composables/:slug.md"
+status = 200
+force = true
+
 [[redirects]]
 from = "/*"
 to = "/404.html"

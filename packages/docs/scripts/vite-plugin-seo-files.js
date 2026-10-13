@@ -36,6 +36,12 @@ function toUrl(routePath) {
   return routePath === '/' ? `${SITE_URL}/` : `${SITE_URL}${routePath}`
 }
 
+// Markdown pages are served next to their rendered html under the same path. Pages that come
+// from a `.vue` file have no markdown to serve, so they keep pointing at the html.
+function toDocumentUrl(page) {
+  return page.file.endsWith('.md') ? `${toUrl(page.path)}.md` : toUrl(page.path)
+}
+
 function toLastModified(filePath) {
   return fs.statSync(filePath).mtime.toISOString().slice(0, 10)
 }
@@ -89,7 +95,7 @@ function renderLlms(pages) {
     const description = pageMeta[page.path]?.description
     const [section] = page.path.split('/').filter(Boolean)
     const group = section ?? 'Pages'
-    const link = `- [${title}](${toUrl(page.path)})${description ? `: ${description}` : ''}`
+    const link = `- [${title}](${toDocumentUrl(page)})${description ? `: ${description}` : ''}`
 
     if (!grouped.has(group)) {
       grouped.set(group, [])
@@ -111,6 +117,8 @@ function renderLlms(pages) {
 
 PXD is a universal Vue component library: one codebase for Vue 2.7+ and Vue 3.2+, with no \`vue-demi\` and no duplicated source. Theming is plain CSS variables behind a \`.dark\` class, popovers become bottom sheets on small screens, and every animation can be turned off with \`--duration: 0\`.
 
+Every documented page is also served as raw Markdown: take its URL and append \`.md\`. \`llms-full.txt\` repeats the whole documentation in a single file.
+
 ${sections}
 `
 }
@@ -127,6 +135,19 @@ function renderLlmsFull(pages) {
 
 ${documents}
 `
+}
+
+// The rendered html carries the layout, the nav and the hydration payload, which is mostly noise
+// for an agent. Serve the markdown sources next to it under the same path.
+function writeMarkdownSources(pages, outputDir) {
+  pages
+    .filter((page) => page.file.endsWith('.md'))
+    .forEach(({ file, path: routePath }) => {
+      const target = path.join(outputDir, `${routePath}.md`)
+
+      fs.mkdirSync(path.dirname(target), { recursive: true })
+      fs.copyFileSync(file, target)
+    })
 }
 
 export default function seoFilesPlugin() {
@@ -150,6 +171,7 @@ export default function seoFilesPlugin() {
       fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), renderSitemap(pages))
       fs.writeFileSync(path.join(outputDir, 'llms.txt'), renderLlms(pages))
       fs.writeFileSync(path.join(outputDir, 'llms-full.txt'), renderLlmsFull(pages))
+      writeMarkdownSources(pages, outputDir)
     },
   }
 }
