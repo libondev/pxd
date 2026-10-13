@@ -13,6 +13,8 @@ export interface SelectProps {
   modelValue?: ListModelValue
   suffixIcon?: boolean
   placeholder?: string
+  filterable?: boolean
+  filterPlaceholder?: string
   labelFormat?: (items: ListOptions) => string
   closeOnPressEscape?: boolean
 }

@@ -65,7 +65,7 @@ describe('select', () => {
     wrapper.unmount()
   })
 
-  it('should toggle values when multiple and emit change on each selection', async () => {
+  it('should emit change once when a multiple popover closes', async () => {
     const Host = defineComponent({
       components: { Select },
       setup() {
@@ -96,20 +96,80 @@ describe('select', () => {
     expect(wrapper.vm.value).toEqual([1])
     expect(wrapper.text()).toContain('One')
     expect(items[0]?.getAttribute('data-checked')).toBe('true')
-    expect(wrapper.vm.changed).toEqual([1])
+    expect(wrapper.vm.changed).toBeUndefined()
 
     items[2]?.click()
     await nextTick()
 
     expect(wrapper.vm.value).toEqual([1, 3])
     expect(wrapper.text()).toContain('One, Three')
-    expect(wrapper.vm.changed).toEqual([1, 3])
+    expect(wrapper.vm.changed).toBeUndefined()
 
     items[0]?.click()
     await nextTick()
 
     expect(wrapper.vm.value).toEqual([3])
+    expect(wrapper.vm.changed).toBeUndefined()
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
     expect(wrapper.vm.changed).toEqual([3])
+
+    wrapper.unmount()
+  })
+
+  it('should filter options through the search input when filterable', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: {
+        options,
+        filterable: true,
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const searchInput = document.body.querySelector<HTMLInputElement>(
+      '.pxd-select--search',
+    ) as HTMLInputElement
+    expect(searchInput).not.toBeNull()
+    expect(document.activeElement).toBe(searchInput)
+
+    searchInput.value = 'thr'
+    searchInput.dispatchEvent(new Event('input'))
+    await nextTick()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+    expect(items).toHaveLength(1)
+    expect(items[0]?.textContent).toContain('Three')
+
+    wrapper.unmount()
+  })
+
+  it('should keep the trigger label when the selected option is filtered out', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: {
+        modelValue: 3,
+        options,
+        filterable: true,
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const searchInput = document.body.querySelector<HTMLInputElement>(
+      '.pxd-select--search',
+    ) as HTMLInputElement
+
+    searchInput.value = 'one'
+    searchInput.dispatchEvent(new Event('input'))
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Three')
 
     wrapper.unmount()
   })

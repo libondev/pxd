@@ -66,6 +66,61 @@ function labelFormatter(valueList) {
 </template>
 ```
 
+## Filterable
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const options = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Cherry', value: 'cherry' },
+  { label: 'Durian', value: 'durian' },
+  { label: 'Grape', value: 'grape' },
+  { label: 'Mango', value: 'mango' },
+]
+</script>
+
+<template>
+  <PSelect
+    v-model="value"
+    class="w-full"
+    filterable
+    filter-placeholder="Search"
+    :options="options"
+    placeholder="Please select"
+  />
+</template>
+```
+
+## Virtual
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const options = Array.from({ length: 2000 }, (_, index) => ({
+  label: `Option ${index + 1}`,
+  value: index + 1,
+}))
+</script>
+
+<template>
+  <PSelect
+    v-model="value"
+    class="w-full"
+    virtual
+    :options="options"
+    placeholder="Please select"
+  />
+</template>
+```
+
 ## Custom
 
 ```vue demo
@@ -109,6 +164,8 @@ const options = [
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | suffix-icon | `boolean` | `true` | Show the chevron icon in the trigger suffix |
 | placeholder | `string` | - | Text shown in the trigger while nothing is selected |
+| filterable | `boolean` | `false` | Show a search input at the top of the popover that filters the options |
+| filter-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
 | close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
 
@@ -116,5 +173,14 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: ListModelValue) => void` | Emitted when the selection changes, right after an option is chosen in single mode and when the menu closes in multiple mode. |
+| change | `(value: ListModelValue) => void` | Emitted when the selection is committed, right after an option is picked in single mode and once when the popover closes in multiple mode. |
 | update:modelValue | `(value: ListModelValue) => void` | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Trigger label. Slot props: `label`. |
+| prefix | Leading area inside the trigger button. |
+| item | Option content. Slot props: `item`, `index`, `group`, `group-index`. |
+| empty | Shown when the visible option list is empty. |

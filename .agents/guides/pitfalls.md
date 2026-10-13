@@ -207,3 +207,16 @@ a comment beside the fix.
 - **Cause**: The popover's rendered truth is the internal `useDelayDestroy` `visible` ref it seeds once from the prop, so the prop is an imperative command: only a *change* in `props.modelValue` reaches `handlePopoverShow` / `handlePopoverHide` through the `watch`. A wrapper that feeds `:model-value="props.modelValue ?? localVisible"` freezes that value whenever the parent supplied one, so writing `localVisible` never produces a change the popover can observe.
 - **Fix**: Make a local ref the only source passed down (`localVisible = shallowRef(props.modelValue ?? false)`), let `watch(() => props.modelValue)` merely mirror the parent into it, and have close/set paths write the ref plus `emits('update:modelValue')`. Every open and close then reaches the popover as a real prop change.
 - **Testing note**: Assert DOM state (`data-visible` on `.pxd-popover--wrapper`), not just `emitted('update:modelValue')` — an event can fire while the popover stays open.
+
+### A menu keymap steals characters from a search input
+
+- **Symptom**: Typing in the filter input above a `PList` selects an option instead — a space picks the active row mid-word.
+- **Cause**: `useListKeyboardController` keymaps written for menus map `' '` to `activate`, and the handler is bound where the menu would own focus. Once an input owns focus, every printable key must reach it.
+- **Fix**: Give the searchable variant its own keymap without `' '` and bind the handler to the input's `keydown` (it bubbles to the popover wrapper anyway, which still covers the non-searchable case). Focus the input on open, or set `auto-focus-element` so the focus trap targets it — a manual `focus()` can otherwise be undone by the trap's `initialFocus`.
+- **Related**: `MentionFilterMethod` aside, `useListFilter` is synchronous; a remote filter needs the request-id guarding in `use-mention-suggest.ts`.
+
+### Selected labels must resolve from the full options, not the filtered ones
+
+- **Symptom**: The trigger of a filterable select goes blank as soon as the search text excludes the current selection — the value is still set, only its label disappears.
+- **Cause**: Resolving the label from the list's current `options` makes it a function of the filter; an option the query drops has no row to resolve against.
+- **Fix**: Resolve from the unfiltered source (`useSelectedListItems(() => props.options || [], modelValue)`) and pass the filtered array to `PList` only.
