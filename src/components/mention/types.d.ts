@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 import type { ListOptions } from '../list/types'
 
 export type MentionFilterMethod = (

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 import type { ListModelValue, ListOptions } from '../list/types'
 import type { PageNumberEmits, PageNumberProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'

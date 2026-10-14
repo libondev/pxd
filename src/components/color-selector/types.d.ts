@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentSize } from '../../types/shared'
 
 export interface ColorSelectorProps {
   size?: ComponentSize
