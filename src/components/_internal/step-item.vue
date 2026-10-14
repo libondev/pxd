@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { StepsOption, StepsStatus } from './types'
+import type { StepsOption, StepsStatus } from '../steps/types'
 import CheckIcon from '@gdsicon/vue/check'
 import CrossIcon from '@gdsicon/vue/cross'
 import { computed } from 'vue'
