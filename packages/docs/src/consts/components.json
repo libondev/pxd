@@ -2,7 +2,7 @@
   {
     "camelized": "Active Graph",
     "name": "active-graph",
-    "category": "Decoration"
+    "category": "Data Display"
   },
   {
     "camelized": "Approval Card",
@@ -17,7 +17,7 @@
   {
     "camelized": "Backtop",
     "name": "backtop",
-    "category": "Button"
+    "category": "Navigation"
   },
   {
     "camelized": "Badge",
@@ -27,12 +27,12 @@
   {
     "camelized": "Book",
     "name": "book",
-    "category": "Layout"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Border Beam",
     "name": "border-beam",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Breadcrumb",
@@ -42,7 +42,7 @@
   {
     "camelized": "Browser",
     "name": "browser",
-    "category": "Layout"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Bubble",
@@ -62,12 +62,12 @@
   {
     "camelized": "Card",
     "name": "card",
-    "category": "Data Display"
+    "category": "Layout"
   },
   {
     "camelized": "Carousel",
     "name": "carousel",
-    "category": "Layout"
+    "category": "Data Display"
   },
   {
     "camelized": "Checkbox",
@@ -77,7 +77,7 @@
   {
     "camelized": "Checkerboard",
     "name": "checkerboard",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Chip",
@@ -92,7 +92,7 @@
   {
     "camelized": "Collapse",
     "name": "collapse",
-    "category": "Overlay"
+    "category": "Layout"
   },
   {
     "camelized": "Color Selector",
@@ -127,7 +127,7 @@
   {
     "camelized": "Dash Line",
     "name": "dash-line",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Date Picker",
@@ -137,7 +137,7 @@
   {
     "camelized": "Description",
     "name": "description",
-    "category": "Data Display"
+    "category": "Typography"
   },
   {
     "camelized": "Drawer",
@@ -167,7 +167,7 @@
   {
     "camelized": "Fader",
     "name": "fader",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Feedback Bar",
@@ -217,7 +217,7 @@
   {
     "camelized": "List",
     "name": "list",
-    "category": "Form"
+    "category": "Data Display"
   },
   {
     "camelized": "Loading Bar",
@@ -232,7 +232,7 @@
   {
     "camelized": "Marching Ants",
     "name": "marching-ants",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Marquee",
@@ -247,7 +247,7 @@
   {
     "camelized": "Mention",
     "name": "mention",
-    "category": "AI"
+    "category": "Form"
   },
   {
     "camelized": "Menu",
@@ -272,7 +272,7 @@
   {
     "camelized": "Noise Background",
     "name": "noise-background",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Note",
@@ -332,7 +332,7 @@
   {
     "camelized": "Radial Burst",
     "name": "radial-burst",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Radio",
@@ -357,7 +357,7 @@
   {
     "camelized": "Reveal",
     "name": "reveal",
-    "category": "Decoration"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Rolling Number",
@@ -402,7 +402,7 @@
   {
     "camelized": "Shimmer Text",
     "name": "shimmer-text",
-    "category": "Typography"
+    "category": "Motion & Decoration"
   },
   {
     "camelized": "Skeleton",
@@ -457,7 +457,7 @@
   {
     "camelized": "Swipe Cell",
     "name": "swipe-cell",
-    "category": "Overlay"
+    "category": "Data Display"
   },
   {
     "camelized": "Switch",
@@ -507,7 +507,7 @@
   {
     "camelized": "Todo List",
     "name": "todo-list",
-    "category": "Form"
+    "category": "AI"
   },
   {
     "camelized": "Toggle Button",
