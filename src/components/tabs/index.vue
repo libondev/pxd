@@ -264,10 +264,6 @@ watch(
     if (index >= 0) {
       navigation.setActiveIndex(index)
     }
-
-    if (import.meta.env?.DEV && activeValue.value !== undefined && index < 0) {
-      console.warn(`[pxd] PTabs: active value "${String(activeValue.value)}" matches no option.`)
-    }
   },
   { immediate: true, flush: 'post' },
 )
