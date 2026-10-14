@@ -1,4 +1,4 @@
-import type { SwipeCellCloseTrigger } from './types'
+import type { SwipeCellCloseTrigger } from '../../components/swipe-cell/types'
 
 export type SwipeCellEntry = {
   getGroup: () => string

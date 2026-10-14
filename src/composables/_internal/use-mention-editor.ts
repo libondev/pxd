@@ -13,7 +13,7 @@ import {
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
-} from '../../utils/mention-html.js'
+} from '../../utils/_internal/mention-html.js'
 
 export interface UseMentionEditorOptions {
   editorRef: Ref<HTMLElement | undefined>

@@ -1,5 +1,5 @@
 import type { AvatarGroupProps } from '../components/avatar-group/types'
-import { createContext } from '../utils/context.js'
+import { createContext } from '../utils/_internal/context.js'
 
 export interface AvatarGroupContext {
   props: AvatarGroupProps

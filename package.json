@@ -37,16 +37,6 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/*.d.ts",
-        "dist/*/index.d.ts"
-      ]
-    }
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -87,14 +77,10 @@
       "types": "./dist/locales/*.d.ts",
       "default": "./dist/locales/*.js"
     },
-    "./types/*": "./dist/types/*.d.ts",
+    "./types/*": "./dist/types/*/index.d.ts",
     "./utils/*": {
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
-    },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*"
     }
   },
   "scripts": {

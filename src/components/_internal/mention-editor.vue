@@ -3,7 +3,7 @@ import type { ComponentSize } from '../../types/shared'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
-import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
+import { DEFAULT_TRIGGER } from '../../utils/_internal/mention-html.js'
 
 defineOptions({
   name: 'PMentionEditor',

@@ -1,5 +1,5 @@
 import type { ButtonGroupProps } from '../components/button-group/types'
-import { createContext } from '../utils/context.js'
+import { createContext } from '../utils/_internal/context.js'
 
 export interface ButtonGroupContext {
   props: ButtonGroupProps

@@ -12,8 +12,8 @@ import type {
 import type { ComponentValue, MaybeElementRef } from '../../types/shared'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { computed, onScopeDispose, shallowRef } from 'vue'
+import { isFuzzyMatch } from '../../utils/_internal/fuzzy-match.js'
 import { getElement } from '../../utils/dom.js'
-import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
 
 export interface TreeNodeMeta {

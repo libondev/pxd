@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SwipeCellEntry } from './instances'
+import type { SwipeCellEntry } from '../../utils/_internal/swipe-cell-instances'
 import type {
   SwipeCellCloseTrigger,
   SwipeCellEmits,
@@ -11,8 +11,8 @@ import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watc
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
+import { exclusiveOpen, registerSwipeCell } from '../../utils/_internal/swipe-cell-instances.js'
 import { getElement } from '../../utils/dom.js'
-import { exclusiveOpen, registerSwipeCell } from './instances.js'
 
 defineOptions({
   name: 'PSwipeCell',

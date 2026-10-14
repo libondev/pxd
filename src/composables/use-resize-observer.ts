@@ -1,7 +1,7 @@
-import type { ObserverResults, ObserverSpec, TargetRef } from '../utils/observer.js'
+import type { ObserverResults, ObserverSpec, TargetRef } from '../utils/_internal/observer.js'
 import type { MaybeRefOrGetter } from 'vue'
+import { createObserver } from '../utils/_internal/observer.js'
 import { isServer } from '../utils/is.js'
-import { createObserver } from '../utils/observer.js'
 
 function normalize(options?: ResizeObserverOptions) {
   return options?.box ?? ''
