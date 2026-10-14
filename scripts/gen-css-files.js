@@ -1,9 +1,5 @@
-import { outputFileSync } from 'fs-extra/esm'
-import { readFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import process from 'node:process'
-
-const cwd = process.cwd()
 
 const styles = readFileSync(resolve('src', 'styles', 'tw.css'), 'utf-8')
 
@@ -20,12 +16,6 @@ const distStyleDir = resolve('dist', 'styles')
 const distStylePath = resolve(distStyleDir, 'tw.css')
 const distSourcePath = resolve(distStyleDir, 'source.css')
 
-outputFileSync(distStylePath, styles, {
-  encoding: 'utf-8',
-  cwd,
-})
-
-outputFileSync(distSourcePath, fileContent, {
-  encoding: 'utf-8',
-  cwd,
-})
+mkdirSync(distStyleDir, { recursive: true })
+writeFileSync(distStylePath, styles, 'utf-8')
+writeFileSync(distSourcePath, fileContent, 'utf-8')

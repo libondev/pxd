@@ -2,10 +2,29 @@ import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { globSync } from 'tinyglobby'
 import { humanize, pascalize } from './utils.js'
 
 const isNeedStageChange = process.argv.includes('--stage')
+
+function globSortKey(file) {
+  if (file.endsWith('/index.vue')) {
+    return path.posix.basename(path.posix.dirname(file))
+  }
+
+  return path.posix.basename(file)
+}
+
+function globSync(pattern, options) {
+  return fs
+    .globSync(pattern, options)
+    .map((file) => file.replaceAll('\\', '/'))
+    .sort((a, b) => {
+      const ka = globSortKey(a)
+      const kb = globSortKey(b)
+
+      return ka < kb ? -1 : ka > kb ? 1 : a < b ? -1 : a > b ? 1 : 0
+    })
+}
 
 function updateComponentsIndex() {
   const components = globSync('src/components/**/index.vue')
@@ -30,7 +49,9 @@ function updateComponentsIndex() {
 }
 
 function updateComposablesIndex() {
-  const files = globSync(['src/composables/*.ts', '!src/composables/index.ts'])
+  const files = globSync('src/composables/*.ts', {
+    exclude: ['src/composables/index.ts'],
+  })
 
   const matchRegex = /src\/composables\/(.*?)\.ts/
 
