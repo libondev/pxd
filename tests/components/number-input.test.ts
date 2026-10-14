@@ -27,6 +27,35 @@ describe('number-input', () => {
     wrapper.unmount()
   })
 
+  it('should default controlsPosition to sides', () => {
+    const wrapper = mount(NumberInput)
+
+    expect(wrapper.props('controlsPosition')).toBe('sides')
+
+    wrapper.unmount()
+  })
+
+  it('should stack both controls in the suffix when controlsPosition is right', async () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        modelValue: 1,
+        controlsPosition: 'right',
+      },
+    })
+
+    expect(wrapper.find('.pxd-input--prefix').find('button').exists()).toBe(false)
+
+    const buttons = wrapper.find('.pxd-input--suffix').findAll('button')
+    expect(buttons).toHaveLength(2)
+
+    await buttons[0].trigger('pointerdown')
+    await buttons[1].trigger('pointerdown')
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[2], [1]])
+
+    wrapper.unmount()
+  })
+
   it('should accept custom min and max', () => {
     const wrapper = mount(NumberInput, {
       props: {

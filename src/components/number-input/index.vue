@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<NumberInputProps>(), {
   controls: true,
   clearValue: null,
   scientific: true,
+  controlsPosition: 'sides',
   min: Number.MIN_SAFE_INTEGER,
   max: Number.MAX_SAFE_INTEGER,
   thousandsSeparator: ',',
@@ -264,7 +265,7 @@ watch(
   >
     <template #prefix>
       <button
-        v-if="controls"
+        v-if="controls && controlsPosition !== 'right'"
         tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-l-inherit border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
@@ -284,8 +285,41 @@ watch(
     <template #suffix>
       <slot name="suffix" />
 
+      <div
+        v-if="controls && controlsPosition === 'right'"
+        class="flex aspect-square h-full flex-col rounded-r-inherit border-l"
+      >
+        <button
+          tabindex="-1"
+          class="flex h-1/2 w-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-tr-inherit border-b font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+          :disabled="increaseDisabled"
+          @pointerdown="startIncrease"
+          @pointercancel="stopIncrease"
+          @pointerup="stopIncrease"
+          @contextmenu.prevent="NOOP"
+        >
+          <slot name="plusIcon">
+            <PlusIcon class="size-2 pointer-events-none" />
+          </slot>
+        </button>
+
+        <button
+          tabindex="-1"
+          class="flex h-1/2 w-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-br-inherit font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+          :disabled="decreaseDisabled"
+          @pointerdown="startDecrease"
+          @pointercancel="stopDecrease"
+          @pointerup="stopDecrease"
+          @contextmenu.prevent="NOOP"
+        >
+          <slot name="minusIcon">
+            <MinusIcon class="size-2 pointer-events-none" />
+          </slot>
+        </button>
+      </div>
+
       <button
-        v-if="controls"
+        v-else-if="controls"
         tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-r-inherit border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"

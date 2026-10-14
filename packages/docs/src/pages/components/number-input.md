@@ -121,6 +121,20 @@ const value = ref(0)
 </template>
 ```
 
+## Controls position
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+</script>
+
+<template>
+  <PNumberInput v-model="value" controls-position="right" class="max-w-xs" />
+</template>
+```
+
 ## Icons
 
 ```vue demo
@@ -177,6 +191,7 @@ const value = ref(0)
 | readonly | `boolean` | - | Accept focus but block editing and the step controls |
 | disabled | `boolean` | - | Block all interaction and grey out the control |
 | controls | `boolean` | `true` | Show the plus and minus buttons |
+| controls-position | `'sides' \| 'right'` | `'sides'` | Place the buttons on both sides, or stacked in the suffix |
 | precision | `number` | - | Fixed number of decimal places, inferred from `step` when omitted |
 | thousands | `boolean` | - | Group the integer part with the separator while the input is not focused |
 | thousands-separator | `string` | `','` | Character placed between each group of three digits |

@@ -7,10 +7,11 @@ export interface NumberInputProps {
   controls?: boolean
   precision?: number
   thousands?: boolean
-  thousandsSeparator?: string
   scientific?: boolean
   clearValue?: number | null
   modelValue?: number | null
+  controlsPosition?: 'sides' | 'right'
+  thousandsSeparator?: string
 }
 
 export interface NumberInputEmits {
