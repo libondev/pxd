@@ -327,32 +327,6 @@ function handleKeydown(event: KeyboardEvent) {
   }
 }
 
-function isPercent(value: number) {
-  return value >= 0 && value <= PERCENT_TOTAL
-}
-
-function warnLength(name: string, value: number[]) {
-  warn(
-    `${name} holds ${value.length} value${value.length === 1 ? '' : 's'} but the group has 2 panels; only the first two are used.`,
-  )
-}
-
-function warn(message: string) {
-  if (import.meta.env?.DEV) {
-    console.warn(`[pxd] PResizable: ${message}`)
-  }
-}
-
-function warnSum(name: string, value: Pair) {
-  const total = roundSize(value[0] + value[1])
-
-  if (Math.abs(total - PERCENT_TOTAL) > 0.01) {
-    warn(
-      `${name} adds up to ${total}% instead of ${PERCENT_TOTAL}%; the panels keep the sizes they were given.`,
-    )
-  }
-}
-
 const position = computed(() => sizes.value[0])
 const ariaValueNow = computed(() => roundSize(position.value))
 
@@ -374,55 +348,6 @@ watch(
     initialPair ??= [leading, trailing]
   },
   { immediate: true, flush: 'sync' },
-)
-
-watch(
-  () => [props.modelValue, props.minSize, props.defaultValue],
-  () => {
-    if (!import.meta.env?.DEV) {
-      return
-    }
-
-    const mins = toPair(props.minSize)
-
-    if (props.minSize.length !== 2) {
-      warnLength('min-size', props.minSize)
-    }
-
-    if (!isPercent(mins[0]) || !isPercent(mins[1])) {
-      warn(`min-size values must be between 0 and ${PERCENT_TOTAL}, got [${mins.join(', ')}].`)
-    } else if (mins[0] + mins[1] > PERCENT_TOTAL) {
-      warn(
-        `min-size [${mins.join(', ')}] adds up to more than ${PERCENT_TOTAL}%, so no split fits and the constraint is ignored.`,
-      )
-    }
-
-    for (const [name, value] of [
-      ['model-value', props.modelValue],
-      ['default-value', props.defaultValue],
-    ] as const) {
-      if (isNil(value)) {
-        continue
-      }
-
-      if (value.length !== 2) {
-        warnLength(name, value)
-        continue
-      }
-
-      warnSum(name, [value[0], value[1]])
-    }
-
-    const { min, max } = bounds.value
-    const leading = sizes.value[0]
-
-    if (leading < min || leading > max) {
-      warn(
-        `the leading panel sits at ${leading}%, outside its ${min}-${max}% range; it keeps that size until it is dragged.`,
-      )
-    }
-  },
-  { immediate: true, flush: 'post' },
 )
 
 defineExpose({
