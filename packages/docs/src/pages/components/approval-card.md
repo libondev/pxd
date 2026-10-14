@@ -10,9 +10,9 @@ Inline confirmation card for agent workflows. It shows the command an agent want
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const result = ref(null)
+const result = shallowRef(null)
 
 function onDecide(value) {
   result.value = value
@@ -91,10 +91,10 @@ function onDecide(result) {
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const status = ref('pending')
-const isRunning = ref(false)
+const status = shallowRef('pending')
+const isRunning = shallowRef(false)
 
 function onApprove() {
   status.value = 'approved'
@@ -134,9 +134,9 @@ The card exposes its decisions through a template `ref`, so a host can settle th
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const card = ref(null)
+const card = shallowRef(null)
 
 function approveAll() {
   card.value.approve()

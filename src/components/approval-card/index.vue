@@ -177,18 +177,23 @@ defineExpose({
     @keydown.esc="onEscape"
   >
     <div class="pxd-approval-card--header gap-2 flex items-center">
-      <div class="pxd-approval-card--icon p-1.5 shrink-0 rounded-md border" :class="iconClass">
+      <div
+        class="pxd-approval-card--icon size-8 flex shrink-0 items-center justify-center rounded-md border"
+        :class="iconClass"
+      >
         <Component :is="statusIcon" class="size-4" />
       </div>
 
       <div class="min-w-0 flex-1">
-        <div class="pxd-approval-card--title font-medium text-sm truncate text-foreground">
+        <div
+          class="pxd-approval-card--title font-medium text-sm leading-tight truncate text-foreground"
+        >
           {{ computedTitle }}
         </div>
 
         <div
           v-if="description"
-          class="pxd-approval-card--description text-sm truncate text-foreground-secondary"
+          class="pxd-approval-card--description text-sm truncate leading-none text-foreground-secondary"
         >
           {{ description }}
         </div>
@@ -218,11 +223,11 @@ defineExpose({
       </div>
 
       <div class="gap-2 ms-auto flex items-center">
-        <PButton :disabled="isDisabled" @click="reject()">
+        <PButton size="sm" :disabled="isDisabled" @click="reject()">
           {{ configProvider.locale.approval.reject }}
         </PButton>
 
-        <PButton variant="primary" :loading="loading" @click="approve()">
+        <PButton size="sm" variant="primary" :loading="loading" @click="approve()">
           {{ configProvider.locale.approval.approve }}
         </PButton>
       </div>
