@@ -6,9 +6,10 @@
 - `pnpm dev:lib` — 库开发（`unbuild --stub`，`dist` 是指向 `src` 的 symlink）
 - `pnpm dev:docs` — 只起文档
 - `pnpm build:lib` — `update-exports` → `build:core` → `build:style`
-- `pnpm build` — 再加 `build:docs`
-- `pnpm build:only` — 跳过 `update-exports`
+- `pnpm build` — `build:lib` + `build:docs`
+- `pnpm build:only` — 跳过 `update-exports` / `build:style`（部署文档站用）
 - `pnpm preview` — 预览文档
+- `pnpm check:type` / `pnpm check:fmt` / `pnpm check:suffix` — 类型、格式、`.js` 后缀检查
 
 ## Pipeline
 
@@ -37,6 +38,6 @@ Conventional Commits：`<type>(<scope>): <subject>`，破坏性变更在 scope �
 ## Troubleshooting
 
 1. 构建失败 — 分步单独跑 `build:core` / `build:style` 定位
-2. 类型错误 — 查 `tsconfig.app.json` 的 include 与 types
+2. 类型错误 — `pnpm check:type`；查 `tsconfig.app.json` 的 include 与 types
 3. lint 报错 — `pnpm lint:fix`，规则在 `vite.config.ts` → `lint`
 4. 测试相关 — 见 `.agents/guides/testing.md`

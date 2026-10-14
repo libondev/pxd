@@ -37,9 +37,9 @@ pxd/
 - `pnpm dev` — Dev mode (lib + docs)
 - `pnpm build:lib` — Build library
 - `pnpm test` — Run unit tests
-- `pnpm type-check` — `vue-tsc` over `tsconfig.app.json`
+- `pnpm check:type` — `vue-tsc` over `tsconfig.app.json`
 - `pnpm lint:fix` — Lint and auto-fix
-- `pnpm fmt:all` — Format all files
+- `pnpm fmt` — Format all files
 
 ## Hard Rules (MUST follow)
 

@@ -88,7 +88,7 @@ a comment beside the fix.
 
 - **Symptom**: After removing an unused variable from an SFC, the Problems panel still reports it at the old line while grep shows it is gone.
 - **Cause**: Volar keeps a stale diagnostics snapshot when the file is edited by an external process (several edit tool calls in one session).
-- **Fix**: Trust `pnpm type-check` and `pnpm test`; re-open or reindex the file to clear the entry.
+- **Fix**: Trust `pnpm check:type` and `pnpm test`; re-open or reindex the file to clear the entry.
 
 ### Collapse `v-show` hides content from Find in page
 

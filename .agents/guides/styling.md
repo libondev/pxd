@@ -22,8 +22,8 @@
 
 ## Commands
 
-- `pnpm lint` / `pnpm fmt` — 只处理 staged 文件
-- `pnpm lint:all` / `pnpm fmt:all` — 全量
+- `pnpm lint` / `pnpm fmt` — 全量
 - `pnpm lint:fix` — 自动修复
-- `pnpm fmt:check` — 只检查格式
+- `pnpm check:fmt` — 只检查格式（不写入）
 - `pnpm fmt:eol` — 把工作区文件换行统一为 LF
+- `pnpm check:suffix` — 检查相对导入是否带 `.js` 后缀
