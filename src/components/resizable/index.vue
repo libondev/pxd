@@ -5,7 +5,6 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { throttleByRaf } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
-import { clamp, PERCENT_TOTAL, roundSize, toPair } from './utils'
 
 defineOptions({
   name: 'PResizable',
@@ -29,6 +28,7 @@ const props = withDefaults(defineProps<ResizableProps>(), {
 
 const emits = defineEmits<ResizableEmits>()
 
+const PERCENT_TOTAL = 100
 const uid = getUniqueId('pxd-resizable')
 const containerRef = shallowRef<HTMLElement>()
 const handleRef = shallowRef<HTMLElement>()
@@ -59,18 +59,21 @@ const bounds = computed<{ min: number; max: number }>(() => {
 const leadingId = `${uid}-leading`
 const trailingId = `${uid}-trailing`
 const collapsed = shallowRef(false)
-// The pair as it was before folding, so expanding gives back what the user was
-// working with rather than the configured starting point.
+
 let expandedPair: Pair | null = null
 let initialPair: Pair | null = null
 
-watch(
-  sizes,
-  ([leading, trailing]) => {
-    initialPair ??= [leading, trailing]
-  },
-  { immediate: true, flush: 'sync' },
-)
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
+}
+
+function roundSize(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
+function toPair(value?: number[] | null): [number, number] {
+  return [value?.[0] ?? 0, value?.[1] ?? 0]
+}
 
 function setSizes(next: Pair) {
   const current = sizes.value
@@ -93,16 +96,12 @@ function resize(deltaPercent: number) {
   const [leading, trailing] = sizes.value
   const { min, max } = bounds.value
 
-  // Clamp the movement so the leading panel stays inside its own range, then
-  // hand the trailing panel the same delta so the pair keeps summing to 100%.
   const applied = clamp(deltaPercent, min - leading, max - leading)
 
   if (applied === 0) {
     return false
   }
 
-  // The trailing panel is derived from the already rounded value, so the pair
-  // keeps the exact sum it had and repeated drags cannot drift.
   const newLeading = roundSize(leading + applied)
 
   return setSizes([newLeading, roundSize(leading + trailing - newLeading)])
@@ -169,8 +168,7 @@ function toggleCollapse() {
   collapsed.value = true
 
   const { min } = bounds.value
-  // Whatever the leading panel gives up goes to its neighbour, so the pair keeps
-  // summing to 100% while folded.
+
   if (setSizes([min, PERCENT_TOTAL - min])) {
     commitChange()
   }
@@ -206,9 +204,6 @@ const flushResize = throttleByRaf(() => {
   resized = resizeByPixels(delta) || resized
 })
 
-// The capture target is the handle itself, never `event.target`: a child element
-// can be swapped mid-drag, which would both throw on release and strand the drag.
-// Holding the capture also keeps the drag alive when the pointer leaves the window.
 function releaseCapture() {
   const id = activePointerId
   const el = handleRef.value
@@ -221,9 +216,7 @@ function releaseCapture() {
 
   try {
     el.releasePointerCapture(id)
-  } catch {
-    // Already released: the pointer was cancelled or the element went away.
-  }
+  } catch {}
 }
 
 function resetDragging() {
@@ -247,9 +240,7 @@ function handlePointerDown(event: PointerEvent) {
 
   try {
     handleRef.value?.setPointerCapture(event.pointerId)
-  } catch {
-    // Capture is an optimisation; the drag still works through plain bubbling.
-  }
+  } catch {}
 }
 
 function handlePointerMove(event: PointerEvent) {
@@ -362,9 +353,29 @@ function warnSum(name: string, value: Pair) {
   }
 }
 
-// The model is the caller's truth, so a value the group would rather correct is
-// reported rather than rewritten: silently rewriting it would fight whatever
-// writes it back.
+const position = computed(() => sizes.value[0])
+const ariaValueNow = computed(() => roundSize(position.value))
+
+const ariaValueText = computed(() =>
+  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
+)
+
+function panelStyle(index: number) {
+  return {
+    flexBasis: `${sizes.value[index]}%`,
+    flexGrow: 0,
+    flexShrink: 1,
+  }
+}
+
+watch(
+  sizes,
+  ([leading, trailing]) => {
+    initialPair ??= [leading, trailing]
+  },
+  { immediate: true, flush: 'sync' },
+)
+
 watch(
   () => [props.modelValue, props.minSize, props.defaultValue],
   () => {
@@ -414,26 +425,6 @@ watch(
   { immediate: true, flush: 'post' },
 )
 
-const position = computed(() => sizes.value[0])
-const ariaValueNow = computed(() => roundSize(position.value))
-// A bare number is announced as "30" - no unit, and nothing about the fold.
-// valuetext is the only place a separator can put either, since it has no
-// aria-expanded to lean on.
-const ariaValueText = computed(() =>
-  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
-)
-
-function panelStyle(index: number) {
-  return {
-    flexBasis: `${sizes.value[index]}%`,
-    flexGrow: 0,
-    // The handle takes layout space of its own, so the row is always a little
-    // wider than the panels. Shrinking spreads that remainder instead of
-    // letting the container clip the last panel.
-    flexShrink: 1,
-  }
-}
-
 defineExpose({
   getPanelSizes: () => sizes.value.slice(),
   reset,
@@ -456,14 +447,6 @@ defineExpose({
       <slot name="leading" :size="sizes[0]" />
     </div>
 
-    <!--
-      A *focusable* separator is a widget, and only that flavour may carry
-      aria-valuenow / aria-valuemin / aria-valuemax - which is why it takes a
-      tabindex and the key handler below, not just a pointer drag. aria-expanded
-      is not a separator state at any focusability: it marks control over
-      visibility, and folding a panel never hides it. The fold therefore rides
-      on aria-valuetext.
-    -->
     <div
       ref="handleRef"
       role="separator"
@@ -479,7 +462,7 @@ defineExpose({
       :data-collapsed="collapsed || undefined"
       :data-handler="handle"
       :data-orientation="direction"
-      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:border-primary aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
+      class="pxd-resizable-handle relative shrink-0 touch-none bg-border self-focus-ring select-none hover:after:bg-primary/15 active:after:bg-primary/20 aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
       @pointerdown.prevent="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -526,8 +509,8 @@ defineExpose({
 }
 
 .pxd-resizable-handle[data-orientation='horizontal'] {
+  width: 1px;
   height: 100%;
-  border-left-width: 1px;
   cursor: ew-resize;
 
   &::before {
@@ -542,7 +525,7 @@ defineExpose({
 
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
-  border-bottom-width: 1px;
+  height: 1px;
   cursor: ns-resize;
 
   &::before {
