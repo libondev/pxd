@@ -1,11 +1,9 @@
 # Tree
 
-Tree view driven by the `data` prop, with expandable parents, single or cascading multiple
-selection, disabled nodes, built-in search and virtualized rows for large trees.
+Tree view driven by the `data` prop, with expandable parents and single or cascading multiple
+selection.
 
 ## Default
-
-Use `v-model` to bind the selected value, click a parent row or its arrow to expand it.
 
 ```vue demo
 <script setup>
@@ -33,8 +31,9 @@ const data = [
 
 ## Multiple
 
-Set `multiple` to show a checkbox on every row. Checking a parent checks its whole subtree, a
-partially checked parent stays out of the model.
+Shift-click selects everything between two rows in document order, starting from wherever the
+selection last landed. A further shift-click moves the range instead of extending it, so shifting
+back inside it shortens it again; a disabled row is neither an end nor part of one.
 
 ```vue demo
 <script setup>
@@ -49,6 +48,8 @@ const data = [
     children: [
       { label: 'components', value: 'components' },
       { label: 'composables', value: 'composables' },
+      { label: 'context', value: 'context' },
+      { label: 'utils', value: 'utils' },
     ],
   },
   { label: 'docs', value: 'docs' },
@@ -62,9 +63,7 @@ const data = [
 
 ## Independent selection
 
-Checking a parent normally cascades through its subtree. Set `check-strictly` to keep every
-node on its own: the model holds exactly the values that were picked, a parent never lights up
-because its children are checked, and no row shows the partial state.
+Every node is selected on its own: no cascading, no partial state.
 
 ```vue demo
 <script setup>
@@ -86,38 +85,88 @@ const data = [
 </script>
 
 <template>
-<PTree
-  v-model="value"
-  class="w-72 max-h-64"
-  multiple
-  check-strictly
-  :data="data"
-  :default-expanded-keys="['src']"
-/>
+  <PTree
+    v-model="value"
+    class="w-72 max-h-64"
+    multiple
+    check-strictly
+    :data="data"
+    :default-expanded-keys="['src']"
+  />
 </template>
 ```
 
-## Expand on click
+## Selectable nodes
 
-`expand-on-click` is `true` by default, a parent row expands its children. Set it to `false` to
-let the row toggle the selection instead and keep the arrow as the only expand control.
+A refused node keeps its looks, still expands, drags and takes drops — only the selection is out of
+reach. With `multiple`, such a parent is never checked itself, but it still reports a partial state
+while something it holds is selected.
 
 ```vue demo
 <script setup>
+import { ref } from 'vue'
+
+const value = ref([])
+
 const data = [
-  { label: 'src', value: 'src', children: [{ label: 'tree', value: 'tree' }] },
-  { label: 'docs', value: 'docs' },
+  {
+    label: 'src',
+    value: 'src',
+    children: [
+      { label: 'index.vue', value: 'index.vue', saved: true },
+      { label: 'tree', value: 'tree', saved: true },
+      { label: 'utils.ts', value: 'utils.ts' },
+    ],
+  },
+  { label: 'README.md', value: 'README.md' },
 ]
 </script>
 
 <template>
-  <PTree class="w-72 max-h-64" :data="data" expand-on-click />
+  <PTree
+    v-model="value"
+    class="w-72 max-h-64"
+    multiple
+    :data="data"
+    :default-expanded-keys="['src']"
+    :selectable="(node) => !node.saved"
+  />
+</template>
+```
+
+## Expand only
+
+A parent row becomes a handle for its subtree: the click opens or closes it and leaves the
+selection to the rows below. In `multiple` mode only the checkbox selects. To keep a node out of
+the selection whatever is clicked, reach for `selectable`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref()
+
+const data = [
+  {
+    label: 'src',
+    value: 'src',
+    children: [
+      { label: 'index.vue', value: 'index.vue' },
+      { label: 'tree', value: 'tree', children: [{ label: 'types.d.ts', value: 'types.d.ts' }] },
+    ],
+  },
+  { label: 'README.md', value: 'README.md' },
+]
+</script>
+
+<template>
+  <PTree v-model="value" class="w-72 max-h-64" expand-only :data="data" />
 </template>
 ```
 
 ## Disabled
 
-A disabled node cannot be selected and is skipped while navigating, its arrow still expands it.
+A disabled node is skipped by the keyboard, but its arrow still expands it.
 
 ```vue demo
 <script setup>
@@ -140,12 +189,9 @@ const data = [
 
 ## Search
 
-Set `filterable` to render a search field. Matching is fuzzy, every matched node keeps its
-ancestor chain visible, `highlight-match` marks the matched substring. A fuzzy hit that is not one
-unbroken run of characters still shows its row, just without the highlight.
-
-Bind `v-model:search-value` to clear the query from the outside; left unbound the field keeps its
-own state.
+A match keeps its ancestor chain visible. Replacing the content through `node-content` also means
+drawing the `highlight-match` mark yourself: the slot receives `parts`, the label split into
+`{ text, matched }` runs.
 
 ```vue demo
 <script setup>
@@ -171,8 +217,7 @@ const data = [
 
 ## Virtual
 
-Set `virtual` to render only the visible rows. The container needs a height, `item-size` is the
-row height in pixels and `over-scan` the extra rows kept above and below the viewport.
+The container needs a `height`.
 
 ```vue demo
 <script setup>
@@ -189,8 +234,6 @@ const data = Array.from({ length: 2000 }, (_, index) => ({
 ```
 
 ## Controlled expansion
-
-Bind `expanded-keys` to drive the expansion, the tree emits the next set on every change.
 
 ```vue demo
 <script setup>
@@ -218,9 +261,9 @@ const data = [
 
 ## Keyboard
 
-The tree handles its own keyboard: `ArrowUp` and `ArrowDown` move the active row, `ArrowRight`
-expands or enters a subtree, `ArrowLeft` collapses or jumps to the parent, `Home` and `End`
-jump to both ends, `Enter` and `Space` toggle the selection.
+`ArrowUp`/`ArrowDown` move the active row, `ArrowRight` expands or enters a subtree, `ArrowLeft`
+collapses or jumps to the parent, `Home`/`End` jump to both ends, `Enter`/`Space` toggle the
+selection.
 
 ```vue demo
 <script setup>
@@ -237,14 +280,13 @@ const data = [
 
 ## Custom icons
 
-Every icon is a slot, the built-in graphic is only the fallback. The switcher keeps its own
-click target and `aria-expanded`, a custom arrow stays clickable.
+The tree draws no icon of its own: a row shows one only if a slot provides it.
 
 ```vue demo
 <script setup>
 const data = [
-  { label: 'src', value: 'src', children: [{ label: 'tree', value: 'tree' }] },
-  { label: 'docs', value: 'docs' },
+  { label: 'src', value: 'src', type: 'folder', children: [{ label: 'tree', value: 'tree', type: 'file' }] },
+  { label: 'docs', value: 'docs', type: 'file' },
 ]
 </script>
 
@@ -254,8 +296,8 @@ const data = [
       <span class="text-xs">{{ expanded ? '-' : '+' }}</span>
     </template>
 
-    <template #node-icon="{ node, expanded }">
-      <span class="text-xs">{{ node.value === 'docs' ? '#' : expanded ? 'v' : '>' }}</span>
+    <template #node-icon="{ node, expanded, hasChildren }">
+      <span class="text-xs">{{ node.type === 'file' ? '#' : expanded ? 'v' : '>' }}</span>
     </template>
   </PTree>
 </template>
@@ -263,9 +305,7 @@ const data = [
 
 ## Matches-only search
 
-While searching, the tree keeps every hit and the ancestors it sits under, so a match deep in
-the tree stays reachable. Set `search-matches-only` when the ancestors are noise: the rows become
-the hits alone, flattened to the top level.
+The hits are rendered alone, flattened to the top level, instead of together with their ancestors.
 
 ```vue demo
 <script setup>
@@ -293,11 +333,42 @@ const data = [
 </template>
 ```
 
+## Drag and drop
+
+A drop emits `update:data` with the next shape, so bind the tree with `v-model:data` (`.sync` /
+`@update:data` on Vue 2). Dragging is off while a search is active. `inside` is offered by parents,
+and by a childless row too once `drop-inside-leaf` is set, the dragged node becoming its first
+child; a node that took a child expands itself.
+
+Touch and pen must hold the row still for 300ms before it drags, because a finger that moves at
+once is scrolling the page; a mouse starts on the first 5px of movement. The tree never scrolls on
+its own, so a touch drag is limited to the rows already in view.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const data = ref([
+  {
+    label: 'src',
+    value: 'src',
+    children: [
+      { label: 'components', value: 'components' },
+      { label: 'composables', value: 'composables' },
+    ],
+  },
+  { label: 'docs', value: 'docs' },
+])
+</script>
+
+<template>
+  <PTree v-model:data="data" draggable drop-inside-leaf class="w-72 max-h-64" />
+</template>
+```
+
 ## Restricting where a node may land
 
-`allow-drop` replaces the built-in policy. The structural rules always hold - a node never lands
-on itself or inside its own subtree - but everything else is yours: the callback sees the dragged
-node, the row under the pointer and the position, and a `false` means no indicator is drawn.
+A node never lands on itself or inside its own subtree, whatever the predicate returns.
 
 ```vue demo
 <script setup>
@@ -319,18 +390,15 @@ function allowDrop({ targetValue, position }) {
 </script>
 
 <template>
-<PTree
-  v-model:data="data"
-  allow-drop="allowDrop"
-  class="w-72 max-h-64"
-  default-expanded-keys="['src']"
-  draggable
-  :data="data"
-/>
+  <PTree
+    v-model:data="data"
+    class="w-72 max-h-64"
+    :allow-drop="allowDrop"
+    :default-expanded-keys="['src']"
+    draggable
+  />
 </template>
 ```
-
-Add `node-drag-preview` to replace the card that follows the pointer.
 
 ```vue demo
 <script setup>
@@ -343,75 +411,21 @@ const data = ref([
 </script>
 
 <template>
-<PTree v-model:data="data" class="w-72 max-h-64" draggable :data="data">
-  <template #node-drag-preview="{ node }">
-    <span class="text-foreground-secondary">{{ node.label }}</span>
-  </template>
-</PTree>
-</template>
-```
-## Drag and drop
-
-Set `draggable` to reorder the tree. A drop never changes the tree on its own: it emits
-`update:data` with the next shape, so bind it with `v-model:data` (or `.sync` / a manual
-`@update:data` listener on Vue 2). Hovering a collapsed parent opens it after a moment, so a
-node can be dropped into a subtree that was not visible yet. Dragging is off while a search is
-active, because a query hides whole branches and a position inside the result would not mean
-the same thing in the full tree.
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const data = ref([
-  {
-    label: 'src',
-    value: 'src',
-    children: [
-      { label: 'components', value: 'components' },
-      { label: 'composables', value: 'composables' },
-    ],
-  },
-  { label: 'docs', value: 'docs' },
-])
-</script>
-
-<template>
-  <PTree v-model:data="data" draggable class="w-72 max-h-64" />
+  <PTree v-model:data="data" class="w-72 max-h-64" draggable>
+    <template #node-drag-preview="{ node }">
+      <span class="text-foreground-secondary">{{ node.label }}</span>
+    </template>
+  </PTree>
 </template>
 ```
 
-Add the `node-drag-handle` slot to drag from a grip instead of the whole row. That is what
-keeps the gesture usable on touch, where a vertical drag and a scroll are the same movement.
+## Imperative methods
 
 ```vue demo
 <script setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 
-const data = ref([
-  { label: 'src', value: 'src', children: [{ label: 'tree', value: 'tree' }] },
-  { label: 'docs', value: 'docs' },
-])
-</script>
-
-<template>
-<PTree v-model:data="data" draggable class="w-72 max-h-64">
-  <template #node-drag-handle>
-    <span class="text-xs text-foreground-secondary">::</span>
-  </template>
-</PTree>
-</template>
-```
-
-## Methods
-
-A template `ref` reaches the expand and collapse helpers.
-
-```vue demo
-<script setup>
-import { ref } from 'vue'
-
-const tree = ref()
+const tree = shallowRef()
 
 const data = [
   { label: 'src', value: 'src', children: [{ label: 'tree', value: 'tree' }] },
@@ -421,10 +435,10 @@ const data = [
 
 <template>
   <PStack gap="2">
-    <PTree ref="tree" class="w-72 max-h-64" :data="data" />
-
     <PButton size="sm" @click="tree?.expandAll()"> Expand all </PButton>
     <PButton size="sm" @click="tree?.collapseAll()"> Collapse all </PButton>
+
+    <PTree ref="tree" class="w-72 max-h-64" :data="data" />
   </PStack>
 </template>
 ```
@@ -438,10 +452,11 @@ const data = [
 | multiple | `boolean` | `false` | Show a checkbox and cascade the selection through the parents |
 | check-strictly | `boolean` | `false` | Keep every node independently selectable, without cascading and without the partial state |
 | disabled | `boolean` | `false` | Disable the selection and the keyboard of the whole tree |
-| expand-on-click | `boolean` | `true` | Expand a parent when its row is clicked, set it to `false` to select instead |
+| selectable | `(node: TreeOption) => boolean` | every node | Keep a node out of the selection without disabling it: it still expands, drags and takes drops |
+| expand-only | `boolean` | `false` | A row click only opens or closes a parent instead of selecting it; in `multiple` mode only the checkbox selects |
 | draggable | `boolean` | `false` | Allow a row to be dragged to another position, off while searching or when `disabled` is set |
 | allow-drop | `(info: TreeDropInfo) => boolean` | disabled nodes | Decide whether a drop may land, overriding the built-in policy |
-| show-icon | `boolean` | `true` | Show the built-in folder icon on every row |
+| drop-inside-leaf | `boolean` | `false` | Let a row without children take the dragged node as its first child, instead of only before/after |
 | search-matches-only | `boolean` | `false` | While searching, render the hits alone instead of the hits plus their ancestors |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large trees |
 | item-size | `number` | `32` | Row height in px when `virtual` is enabled |
@@ -515,10 +530,9 @@ interface TreeMoveDetail {
 | Name | Description |
 | --- | --- |
 | node-switcher | Expand arrow. Slot props: `node`, `depth`, `expanded`. |
-| node-icon | Node icon. Slot props: `node`, `depth`, `expanded`. |
-| node-content | Node text. Slot props: `node`, `depth`. |
-| node-suffix | Content appended to the row. Slot props: `node`. |
-| node-drag-handle | Grip that starts a drag. Rendering it restricts dragging to the grip, leaving the row to click. Slot props: `node`, `depth`. |
+| node-icon | Node icon, nothing is drawn without it. Slot props: `node`, `depth`, `expanded`, `hasChildren`. |
+| node-content | Node text. Slot props: `node`, `depth`, `hasChildren`, `parts` (the label split for `highlight-match`, `undefined` when nothing is marked). |
+| node-suffix | Content appended to the row. Slot props: `node`, `hasChildren`. |
 | node-drag-preview | Card that follows the pointer while dragging. Slot props: `node`. |
 | search | Replaces the search field. |
 | empty | Content shown when the tree has no row, or the search matched nothing. |

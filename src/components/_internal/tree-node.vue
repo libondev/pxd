@@ -3,10 +3,7 @@ import type { ComponentClass, ComponentValue } from '../../types/shared'
 import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import FolderClosedIcon from '@gdsicon/vue/folder-closed'
-import FolderOpenIcon from '@gdsicon/vue/folder-open'
 import MinusIcon from '@gdsicon/vue/minus'
-import MoreVerticalIcon from '@gdsicon/vue/more-vertical'
 import { computed } from 'vue'
 
 defineOptions({
@@ -26,43 +23,39 @@ const props = defineProps<{
   active: boolean
   multiple: boolean
   disabled: boolean
+  selectable: boolean
   setSize: number
   indent: number
   id: string
   highlightQuery: string
-  showIcon: boolean
   draggable: boolean
-  dragHandle: boolean
   dragging: boolean
   dropPosition?: TreeDropPosition
   itemClass?: ComponentClass
 }>()
 
 const emits = defineEmits<{
-  'row-click': [value: ComponentValue]
-  check: [value: ComponentValue]
+  check: [value: ComponentValue, event: MouseEvent]
   toggle: [value: ComponentValue]
+  'row-click': [value: ComponentValue, event: MouseEvent]
   'drag-pointerdown': [value: ComponentValue, event: PointerEvent]
 }>()
 
-function onPointerdown(event: PointerEvent): void {
-  // A handle owns the gesture on touch, where a vertical drag is indistinguishable from a scroll.
-  if (!props.draggable || props.dragHandle) {
-    return
-  }
-
-  emits('drag-pointerdown', props.value, event)
-}
-
 const disabled = computed(() => props.disabled || props.node.disabled === true)
+
+const unavailable = computed(() => disabled.value || !props.selectable)
 
 const checkboxClass = computed(() => {
   if (props.checked) {
-    return disabled.value ? 'border-gray-500 bg-gray-500' : 'border-primary bg-primary'
+    return unavailable.value ? 'border-gray-500 bg-gray-500' : 'border-primary bg-primary'
   }
 
-  return disabled.value ? 'border-gray-500 bg-gray-100' : 'border-gray-alpha-400 bg-background-100'
+  return unavailable.value
+    ? 'border-gray-500 bg-gray-100 cursor-not-allowed'
+    : 'border-gray-alpha-400 bg-background-100'
 })
+
+const indentSize = computed(() => props.depth * props.indent + 8)
 
 const parts = computed<TreeHighlightPart[] | undefined>(() => {
   const query = props.highlightQuery
@@ -84,6 +77,14 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     { text: label.slice(at + query.length), matched: false },
   ].filter((part) => part.text)
 })
+
+function onPointerdown(event: PointerEvent): void {
+  if (!props.draggable) {
+    return
+  }
+
+  emits('drag-pointerdown', props.value, event)
+}
 </script>
 
 <template>
@@ -107,7 +108,7 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     :aria-setsize="setSize"
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
-    :style="{ paddingInlineStart: depth * indent + 8 + 'px' }"
+    :style="{ paddingInlineStart: indentSize + 'px', '--node-indent': indentSize + 'px' }"
     class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1.5 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none pointer-fine:hover:bg-gray-100"
     :class="[
       itemClass,
@@ -116,28 +117,18 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
         'z-1 ring-primary data-[active=true]:ring-1': active,
         'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500': disabled,
         'opacity-40': dragging,
-        'before:inset-x-0 before:h-0.5 before:absolute before:bg-primary':
+        'bg-gray-300 ring-1 ring-primary': dropPosition === 'inside',
+        'before:end-0 before:absolute before:start-(--node-indent) before:border-t-2 before:bg-primary':
           dropPosition === 'before' || dropPosition === 'after',
         'before:-top-px': dropPosition === 'before',
-        'before:bottom-px': dropPosition === 'after',
+        'before:bottom-0': dropPosition === 'after',
       },
     ]"
     v-bind="$attrs"
-    @click="emits('row-click', value)"
+    @click="emits('row-click', value, $event)"
     @pointerdown="onPointerdown"
     @dragstart.prevent
   >
-    <span
-      v-if="dragHandle"
-      data-tree-drag-handle
-      class="pxd-tree--drag-handle size-4 me-0.5 inline-flex shrink-0 cursor-grab items-center justify-center opacity-0 group-hover/row:opacity-60 group-data-[dragging=true]/row:opacity-60 motion-safe:transition-opacity"
-      @pointerdown.stop="emits('drag-pointerdown', value, $event)"
-    >
-      <slot name="node-drag-handle" :node="node" :depth="depth">
-        <MoreVerticalIcon class="size-3" />
-      </slot>
-    </span>
-
     <span
       v-if="hasChildren"
       data-tree-switcher
@@ -156,9 +147,10 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     <span
       v-if="multiple"
       aria-hidden="true"
+      :data-selectable="selectable"
       class="pxd-tree--checkbox size-4 p-0.5 inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm border text-primary-foreground"
       :class="checkboxClass"
-      @click.stop="emits('check', value)"
+      @click.stop="emits('check', value, $event)"
     >
       <CheckIcon v-if="checked" class="size-3" />
       <MinusIcon v-else-if="indeterminate" class="size-3" />
@@ -166,18 +158,27 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     </span>
 
     <span
-      v-if="showIcon && $slots['node-icon']"
+      v-if="$slots['node-icon']"
       aria-hidden="true"
       class="pxd-tree--icon size-4 inline-flex shrink-0 items-center justify-center"
     >
-      <slot name="node-icon" :node="node" :depth="depth" :expanded="expanded">
-        <FolderOpenIcon v-if="expanded" class="size-4" />
-        <FolderClosedIcon v-else-if="hasChildren" class="size-4" />
-      </slot>
+      <slot
+        name="node-icon"
+        :node="node"
+        :depth="depth"
+        :expanded="expanded"
+        :has-children="hasChildren"
+      />
     </span>
 
     <span class="pxd-tree--content min-w-0 flex-1 truncate">
-      <slot name="node-content" :node="node" :depth="depth">
+      <slot
+        name="node-content"
+        :node="node"
+        :depth="depth"
+        :parts="parts"
+        :has-children="hasChildren"
+      >
         <template v-if="parts">
           <mark
             v-for="(part, partIndex) in parts"
@@ -191,7 +192,7 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
       </slot>
     </span>
 
-    <slot name="node-suffix" :node="node" />
+    <slot name="node-suffix" :node="node" :has-children="hasChildren" />
   </div>
 </template>
 

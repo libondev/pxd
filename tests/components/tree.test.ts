@@ -1,4 +1,4 @@
-import type { TreeDropInfo } from '../../src/components/tree/types'
+import type { TreeDropInfo, TreeOption } from '../../src/components/tree/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import Tree from '../../src/components/tree/index.vue'
@@ -48,20 +48,20 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
-  it('should select and expand a parent row in single mode', async () => {
-    const wrapper = mount(Tree, { props: { data, expandOnClick: true } })
+  it('should select a parent row without opening it by default', async () => {
+    const wrapper = mount(Tree, { props: { data } })
 
     await wrapper.find('[data-key=src]').trigger('click')
 
     expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('src')
-    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
-    expect(wrapper.findAll('[data-tree-item]').length).toBe(5)
+    expect(wrapper.emitted('update:expandedKeys')).toBeUndefined()
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
 
     wrapper.unmount()
   })
 
-  it('should select and expand a parent row in multiple mode', async () => {
-    const wrapper = mount(Tree, { props: { data, multiple: true, expandOnClick: true } })
+  it('should check a parent row without opening it by default', async () => {
+    const wrapper = mount(Tree, { props: { data, multiple: true } })
 
     await wrapper.find('[data-key=src]').trigger('click')
 
@@ -72,29 +72,53 @@ describe('tree', () => {
       'list',
       'composables',
     ])
-    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
-
-    wrapper.unmount()
-  })
-
-  it('should not select a row when expandOnClick is off and it has no checkbox hit', async () => {
-    const wrapper = mount(Tree, { props: { data, multiple: true, expandOnClick: false } })
-
-    await wrapper.find('[data-key="readme"]').trigger('click')
-
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['readme'])
     expect(wrapper.emitted('update:expandedKeys')).toBeUndefined()
 
     wrapper.unmount()
   })
 
-  it('should check the node row when expandOnClick is false', async () => {
-    const wrapper = mount(Tree, { props: { data, expandOnClick: false } })
+  it('should open a parent row without selecting it when expandOnly is set', async () => {
+    const wrapper = mount(Tree, { props: { data, expandOnly: true } })
 
+    await wrapper.find('[data-key=src]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
+
+    // The rows below it are what a click selects.
     await wrapper.find('[data-key="readme"]').trigger('click')
 
     expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('readme')
-    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    wrapper.unmount()
+  })
+
+  it('should leave a multiple selection to the checkbox when expandOnly is set', async () => {
+    const wrapper = mount(Tree, { props: { data, multiple: true, expandOnly: true } })
+
+    // The parent opens, and a row without children does nothing at all: picking is the checkbox's
+    // job in a tree of checkboxes.
+    await wrapper.find('[data-key=src]').trigger('click')
+    await wrapper.find('[data-key="readme"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
+
+    // A shift-click is a range ask rather than a pick, so it still reaches for one.
+    await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['readme'])
+
+    // The checkbox still checks it, cascade and all.
+    await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual([
+      'src',
+      'components',
+      'tree',
+      'list',
+      'composables',
+    ])
 
     wrapper.unmount()
   })
@@ -252,6 +276,307 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
+  it('should keep a refused node out of the selection', async () => {
+    const saved = [
+      {
+        value: 'src',
+        label: 'src',
+        saved: true,
+        children: [
+          { value: 'index.vue', label: 'index.vue', saved: true },
+          { value: 'utils.ts', label: 'utils.ts' },
+        ],
+      },
+      { value: 'readme', label: 'readme' },
+    ]
+    const wrapper = mount(Tree, {
+      props: {
+        data: saved,
+        expandOnly: true,
+        selectable: (node: TreeOption) => node.saved !== true,
+      },
+    })
+
+    // What was saved already still opens, it just cannot be selected.
+    await wrapper.find('[data-key="src"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
+
+    await wrapper.find('[data-key="index.vue"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    await wrapper.find('[data-key="utils.ts"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('utils.ts')
+
+    wrapper.unmount()
+  })
+
+  it('should still let a refused node take a drop', async () => {
+    const saved = [
+      {
+        value: 'src',
+        label: 'src',
+        saved: true,
+        children: [{ value: 'a.js', label: 'a.js' }],
+      },
+      { value: 'b.js', label: 'b.js' },
+    ]
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data: saved,
+        draggable: true,
+        selectable: (node: TreeOption) => node.saved !== true,
+      },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'b.js', 48, 16)
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBe('inside')
+
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    expect(wrapper.emitted('update:data')?.length).toBe(1)
+
+    wrapper.unmount()
+  })
+
+  it('should report a refused parent as partial without putting it in the model', async () => {
+    const saved = [
+      {
+        value: 'src',
+        label: 'src',
+        saved: true,
+        children: [
+          { value: 'a.js', label: 'a.js' },
+          { value: 'b.js', label: 'b.js' },
+        ],
+      },
+    ]
+    const wrapper = mount(Tree, {
+      props: {
+        data: saved,
+        multiple: true,
+        defaultExpandedKeys: ['src'],
+        selectable: (node: TreeOption) => node.saved !== true,
+      },
+    })
+
+    await wrapper.find('[data-key="a.js"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['a.js'])
+    expect(wrapper.emitted('change')?.at(-1)?.[0]).toMatchObject({
+      checkedValues: ['a.js'],
+      halfCheckedValues: ['src'],
+    })
+
+    const emitted = wrapper.emitted('update:modelValue')?.length ?? 0
+
+    await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.length).toBe(emitted)
+    expect(wrapper.find('[data-key="src"] .pxd-tree--checkbox').attributes('data-selectable')).toBe(
+      'false',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('should keep a refused node the model already carries', async () => {
+    const saved = [
+      { value: 'a.js', label: 'a.js' },
+      { value: 'b.js', label: 'b.js', saved: true },
+    ]
+    const wrapper = mount(Tree, {
+      props: {
+        data: saved,
+        multiple: true,
+        modelValue: ['a.js', 'b.js'],
+        selectable: (node: TreeOption) => node.saved !== true,
+      },
+    })
+    const vm = wrapper.vm as unknown as { getCheckedKeys: () => string[] }
+
+    // A saved row opens as selected and stays that way, it just cannot be toggled any more.
+    expect(vm.getCheckedKeys()).toEqual(['a.js', 'b.js'])
+
+    await wrapper.find('[data-key="b.js"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    await wrapper.find('[data-key="a.js"] .pxd-tree--checkbox').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['b.js'])
+
+    wrapper.unmount()
+  })
+
+  it('should skip a refused node in a shift-click range', async () => {
+    const saved = [
+      { value: 'a.js', label: 'a.js' },
+      { value: 'src', label: 'src', saved: true },
+      { value: 'b.js', label: 'b.js' },
+    ]
+    const wrapper = mount(Tree, {
+      props: {
+        data: saved,
+        multiple: true,
+        selectable: (node: TreeOption) => node.saved !== true,
+      },
+    })
+
+    await wrapper.find('[data-key="a.js"]').trigger('click')
+    await wrapper.find('[data-key="b.js"]').trigger('click', { shiftKey: true })
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['a.js', 'b.js'])
+
+    wrapper.unmount()
+  })
+
+  it('should take the range a shift-click spans, either way round', async () => {
+    const range = ['src', 'components', 'tree', 'list', 'composables', 'readme']
+    const mountTree = () =>
+      mount(Tree, {
+        props: { data, multiple: true, defaultExpandedKeys: ['src'] },
+      })
+
+    const down = mountTree()
+
+    await down.find('[data-key="src"]').trigger('click')
+    await down.find('[data-key="readme"]').trigger('click', { shiftKey: true })
+
+    // `tree` and `list` sit in a collapsed node between the two ends, and `docs` is disabled.
+    expect(down.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(range)
+
+    down.unmount()
+
+    const up = mountTree()
+
+    await up.find('[data-key="readme"]').trigger('click')
+    await up.find('[data-key="src"]').trigger('click', { shiftKey: true })
+
+    expect(up.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(range)
+
+    // A disabled row cannot be an end of the range either.
+    const emitted = up.emitted('update:modelValue')?.length ?? 0
+
+    await up.find('[data-key="docs"]').trigger('click', { shiftKey: true })
+
+    expect(up.emitted('update:modelValue')?.length).toBe(emitted)
+
+    up.unmount()
+  })
+
+  it('should move the range a shift-click covers instead of piling it up', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, defaultExpandedKeys: ['src'] },
+    })
+
+    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+    // The model has to be fed back for a range to have anything to move: what is dropped is what
+    // the previous extension left in it.
+    const click = async (key: string, shift = false) => {
+      await wrapper.find(`[data-key="${key}"]`).trigger('click', { shiftKey: shift })
+      await wrapper.setProps({ modelValue: last() })
+    }
+
+    await click('src')
+    await click('readme', true)
+
+    expect(last()).toEqual(['src', 'components', 'tree', 'list', 'composables', 'readme'])
+
+    // Shifting back inside the span shortens it: the wider end is dropped, not kept.
+    await click('composables', true)
+
+    expect(last()).toEqual(['src', 'components', 'tree', 'list', 'composables'])
+
+    // …and reaching out again takes it back.
+    await click('readme', true)
+
+    expect(last()).toEqual(['src', 'components', 'tree', 'list', 'composables', 'readme'])
+
+    wrapper.unmount()
+  })
+
+  it('should extend from the row the selection last landed on', async () => {
+    const wrapper = mount(Tree, {
+      props: { data, multiple: true, defaultExpandedKeys: ['src'] },
+    })
+
+    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+
+    await wrapper.find('[data-key="src"]').trigger('click')
+    await wrapper.setProps({ modelValue: last() })
+
+    // Clearing it again leaves the anchor behind, so the shift-click still reaches from `src`.
+    await wrapper.find('[data-key="src"]').trigger('click')
+    await wrapper.setProps({ modelValue: last() })
+
+    expect(last()).toEqual([])
+
+    await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
+
+    expect(last()).toEqual(['src', 'components', 'tree', 'list', 'composables', 'readme'])
+
+    wrapper.unmount()
+  })
+
+  it('should take the range without cascading when checkStrictly is set', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        multiple: true,
+        checkStrictly: true,
+        defaultExpandedKeys: ['src'],
+      },
+    })
+
+    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+
+    await wrapper.find('[data-key="components"]').trigger('click')
+    await wrapper.setProps({ modelValue: last() })
+    await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
+
+    // `src` sits above the range, and the cascade would have pulled it in.
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual([
+      'components',
+      'tree',
+      'list',
+      'composables',
+      'readme',
+    ])
+
+    wrapper.unmount()
+  })
+
+  it('should leave a shift-click alone without multiple', async () => {
+    const wrapper = mount(Tree, { props: { data } })
+
+    await wrapper.find('[data-key="src"]').trigger('click')
+    await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
+
+    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('readme')
+
+    wrapper.unmount()
+  })
+
+  it('should not open the row a shift-click lands on', async () => {
+    const wrapper = mount(Tree, { props: { data, multiple: true } })
+
+    await wrapper.find('[data-key="readme"]').trigger('click')
+    await wrapper.find('[data-key="src"]').trigger('click', { shiftKey: true })
+
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    wrapper.unmount()
+  })
+
   it('should keep every ancestor chain visible while searching', async () => {
     const wrapper = mount(Tree, { props: { data, filterable: true } })
 
@@ -357,13 +682,21 @@ describe('tree', () => {
       props: { data },
       slots: {
         'node-icon':
-          '<template #node-icon="{ expanded }">{{ expanded ? "OPEN" : "SHUT" }}</template>',
-        'node-content': '<template #node-content="{ node }"><b>{{ node.label }}</b></template>',
+          '<template #node-icon="{ expanded, hasChildren }">{{ hasChildren ? (expanded ? "OPEN" : "SHUT") : "LEAF" }}</template>',
+        'node-content':
+          '<template #node-content="{ node, hasChildren }"><b>{{ node.label }}</b>{{ hasChildren ? "DIR" : "FILE" }}</template>',
+        'node-suffix':
+          '<template #node-suffix="{ hasChildren }"><i>{{ hasChildren ? "SUF-DIR" : "SUF-FILE" }}</i></template>',
       },
     })
 
-    expect(wrapper.text()).toContain('SHUT')
+    expect(wrapper.find('[data-key="src"] .pxd-tree--icon').text()).toBe('SHUT')
+    expect(wrapper.find('[data-key="docs"] .pxd-tree--icon').text()).toBe('LEAF')
     expect(wrapper.find('[data-key="src"] b').text()).toBe('src')
+    expect(wrapper.find('[data-key="src"] .pxd-tree--content').text()).toBe('srcDIR')
+    expect(wrapper.find('[data-key="docs"] .pxd-tree--content').text()).toBe('docsFILE')
+    expect(wrapper.find('[data-key="src"] i').text()).toBe('SUF-DIR')
+    expect(wrapper.find('[data-key="readme"] i').text()).toBe('SUF-FILE')
 
     wrapper.unmount()
   })
@@ -407,7 +740,7 @@ describe('tree', () => {
 
   const ROW_HEIGHT = 32
 
-  function pointer(type: string, x: number, y: number) {
+  function pointer(type: string, x: number, y: number, pointerType = 'mouse') {
     const event = new Event(type, { bubbles: true, cancelable: true }) as PointerEvent
 
     Object.defineProperties(event, {
@@ -415,7 +748,7 @@ describe('tree', () => {
       clientX: { value: x },
       clientY: { value: y },
       pointerId: { value: 1 },
-      pointerType: { value: 'mouse' },
+      pointerType: { value: pointerType },
     })
 
     return event
@@ -447,6 +780,28 @@ describe('tree', () => {
       configurable: true,
       value: () => ({ top: 0, bottom: height, height, left: 0, right: 200, width: 200 }),
     })
+
+    // A list far taller than the rows the pointer walks over, so a move never lands inside its
+    // auto-scroll band and no drag test has to wait out a scroll frame.
+    stubContainerRect(wrapper, -1000, 1000)
+  }
+
+  function stubRect(el: any, top: number, bottom: number) {
+    Object.defineProperty(el, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({
+        top,
+        bottom,
+        height: bottom - top,
+        left: 0,
+        right: 200,
+        width: 200,
+      }),
+    })
+  }
+
+  function stubContainerRect(wrapper: any, top: number, bottom: number) {
+    stubRect(wrapper.find('[role="tree"]').element, top, bottom)
   }
 
   function startDrag(wrapper: any, from: string, fromY: number, toY: number) {
@@ -468,7 +823,6 @@ describe('tree', () => {
         allowDrop: ({ targetValue, position }: TreeDropInfo) => {
           seen.push(targetValue + ':' + position)
 
-          // `docs` is disabled in the fixture, so the tree refuses it on its own.
           return targetValue === 'docs'
         },
       },
@@ -479,26 +833,25 @@ describe('tree', () => {
 
     await wrapper.vm.$nextTick()
 
-    expect(seen).toEqual(['docs:after'])
-    expect(wrapper.find('[data-key="docs"]').attributes('data-drop')).toBe('after')
+    expect(seen.at(-1)).toBe('readme:before')
+    expect(wrapper.find('[data-key="docs"]').attributes('data-drop')).toBeUndefined()
 
     window.dispatchEvent(pointer('pointerup', 0, 60))
 
-    const moved = wrapper.emitted('update:data')?.[0]?.[0] as { value: string }[]
+    expect(wrapper.emitted('update:data')).toBeUndefined()
 
-    expect(moved.map((node) => node.value)).toEqual(['docs', 'src', 'readme'])
-
-    stubRows(wrapper)
-    startDrag(wrapper, 'readme', 80, 16)
+    startDrag(wrapper, 'readme', 80, 40)
 
     await wrapper.vm.$nextTick()
 
-    expect(seen).toEqual(['docs:after', 'src:inside'])
-    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBeUndefined()
+    expect(seen.at(-1)).toBe('docs:before')
+    expect(wrapper.find('[data-key="docs"]').attributes('data-drop')).toBe('before')
 
-    window.dispatchEvent(pointer('pointerup', 0, 16))
+    window.dispatchEvent(pointer('pointerup', 0, 40))
 
-    expect(wrapper.emitted('update:data')?.length).toBe(1)
+    const moved = wrapper.emitted('update:data')?.[0]?.[0] as { value: string }[]
+
+    expect(moved.map((node) => node.value)).toEqual(['src', 'readme', 'docs'])
 
     wrapper.unmount()
   })
@@ -650,26 +1003,54 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
-  it('should hide the node icon when show-icon is off', () => {
-    // The glyph belongs to the `node-icon` slot, so there is nothing to hide without one.
-    const slots = { 'node-icon': '<i data-test="icon" />' }
+  it('should mark the matched part of a label, and hand it to the content slot', async () => {
+    const highlighted = mount(Tree, { props: { data, filterable: true, highlightMatch: true } })
+
+    await highlighted.find('input').setValue('read')
+
+    const marks = highlighted.findAll('[data-key="readme"] .pxd-tree--match')
+
+    expect(marks.map((mark) => mark.text())).toEqual(['read', 'me'])
+    expect(marks[0].classes()).toContain('bg-yellow-200')
+
+    highlighted.unmount()
+
+    const custom = mount(Tree, {
+      props: { data, filterable: true, highlightMatch: true },
+      slots: {
+        'node-content':
+          '<template #node-content="{ node, parts }"><template v-if="parts"><b v-for="(part, index) in parts" :key="index">{{ part.matched ? "[" + part.text + "]" : part.text }}</b></template><template v-else>{{ node.label }}</template></template>',
+      },
+    })
+
+    await custom.find('input').setValue('read')
+
+    expect(custom.find('[data-key="readme"] .pxd-tree--content').text()).toBe('[read]me')
+
+    // Without a highlight there is nothing for the slot to draw from.
+    await custom.find('input').setValue('')
+
+    expect(custom.find('[data-key="readme"] .pxd-tree--content').text()).toBe('readme')
+
+    custom.unmount()
+  })
+
+  it('should draw the node icon only when its slot is given', () => {
+    // The glyph belongs to the `node-icon` slot, so without one there is nothing to reserve.
     const withoutSlot = mount(Tree, { props: { data } })
 
     expect(withoutSlot.findAll('.pxd-tree--icon').length).toBe(0)
 
     withoutSlot.unmount()
 
-    const on = mount(Tree, { props: { data }, slots })
+    const withSlot = mount(Tree, {
+      props: { data },
+      slots: { 'node-icon': '<i data-test="icon" />' },
+    })
 
-    expect(on.findAll('.pxd-tree--icon').length).toBe(3)
+    expect(withSlot.findAll('.pxd-tree--icon').length).toBe(3)
 
-    on.unmount()
-
-    const off = mount(Tree, { props: { data, showIcon: false }, slots })
-
-    expect(off.findAll('.pxd-tree--icon').length).toBe(0)
-
-    off.unmount()
+    withSlot.unmount()
   })
 
   it('should show only the matched rows when search-matches-only is set', async () => {
@@ -919,29 +1300,327 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
-  it('should drag from the handle alone when a handle slot is given', async () => {
-    const wrapper = mount(Tree, {
-      attachTo: document.body,
-      props: { data, draggable: true },
-      slots: { 'node-drag-handle': '<span class="grip">..</span>' },
-    })
+  it('should read a touch that moves at once as a scroll', async () => {
+    vi.useFakeTimers()
 
-    expect(wrapper.findAll('[data-tree-drag-handle]').length).toBe(3)
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
 
     stubRows(wrapper)
 
-    const row = startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
-    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+    const row = wrapper.find('[data-key="docs"]')
+
+    row.element.dispatchEvent(pointer('pointerdown', 0, 48, 'touch'))
+    row.element.dispatchEvent(pointer('pointermove', 0, ROW_HEIGHT / 2, 'touch'))
+
+    await wrapper.vm.$nextTick()
+    expect(row.attributes('data-dragging')).toBe('false')
+
+    // The press belonged to the page, so the scrolling this finger starts is left to it.
+    const scroll = new Event('touchmove', { cancelable: true })
+
+    window.dispatchEvent(scroll)
+    expect(scroll.defaultPrevented).toBe(false)
+
+    vi.advanceTimersByTime(500)
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2, 'touch'))
 
     expect(wrapper.emitted('update:data')).toBeUndefined()
 
-    const handle = row.find('[data-tree-drag-handle]')
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
 
-    handle.element.dispatchEvent(pointer('pointerdown', 0, 48))
-    handle.element.dispatchEvent(pointer('pointermove', 0, ROW_HEIGHT / 2))
-    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
+  it('should drag a touch once it has held still', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+
+    const row = wrapper.find('[data-key="docs"]')
+
+    row.element.dispatchEvent(pointer('pointerdown', 0, 48, 'touch'))
+    vi.advanceTimersByTime(300)
+
+    await wrapper.vm.$nextTick()
+    expect(row.attributes('data-dragging')).toBe('true')
+
+    // From here the page must not scroll under the finger.
+    const scroll = new Event('touchmove', { cancelable: true })
+
+    window.dispatchEvent(scroll)
+    expect(scroll.defaultPrevented).toBe(true)
+
+    row.element.dispatchEvent(pointer('pointermove', 0, ROW_HEIGHT / 2, 'touch'))
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBe('inside')
+
+    window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2, 'touch'))
 
     expect(wrapper.emitted('update:data')?.length).toBe(1)
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should resolve the drop against the row the pointer is left over after a scroll', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'src', 16, 80)
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="readme"]').attributes('data-drop')).toBe('after')
+
+    // The page scrolls up under a pointer that never moved, so another row sits under it now.
+    stubContainerRect(wrapper, -960, 1040)
+    window.dispatchEvent(new Event('scroll'))
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="readme"]').attributes('data-drop')).toBeUndefined()
+
+    window.dispatchEvent(pointer('pointerup', 0, 80))
+
+    wrapper.unmount()
+  })
+
+  it('should leave the scrolling to the browser', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+
+    const container = wrapper.find('[role="tree"]')
+    const written: number[] = []
+
+    Object.defineProperty(container.element, 'scrollTop', {
+      configurable: true,
+      get: () => 0,
+      set: (value: number) => written.push(value),
+    })
+    stubContainerRect(wrapper, 0, 100)
+
+    // Dragged right into the edge of the list: nothing scrolls unless the user scrolls it.
+    startDrag(wrapper, 'docs', 48, 96)
+    await wrapper.vm.$nextTick()
+    expect(written).toEqual([])
+
+    wrapper.find('[data-key="docs"]').element.dispatchEvent(pointer('pointermove', 0, 50))
+    expect(written).toEqual([])
+
+    window.dispatchEvent(pointer('pointerup', 0, 50))
+
+    wrapper.unmount()
+  })
+
+  it('should only nest into a childless row when drop-inside-leaf is set', async () => {
+    const off = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(off)
+    startDrag(off, 'docs', 48, 80)
+
+    await off.vm.$nextTick()
+    expect(off.find('[data-key="readme"]').attributes('data-drop')).toBe('after')
+
+    off.unmount()
+
+    const on = mount(Tree, {
+      attachTo: document.body,
+      props: { data, draggable: true, dropInsideLeaf: true },
+    })
+
+    stubRows(on)
+    startDrag(on, 'docs', 48, 80)
+
+    await on.vm.$nextTick()
+    expect(on.find('[data-key="readme"]').attributes('data-drop')).toBe('inside')
+
+    window.dispatchEvent(pointer('pointerup', 0, 80))
+
+    const next = on.emitted('update:data')?.[0]?.[0] as {
+      value: string
+      children: { value: string }[]
+    }[]
+
+    expect(next.map((node) => node.value)).toEqual(['src', 'readme'])
+    expect(next[1].children.map((node) => node.value)).toEqual(['docs'])
+    expect(on.emitted('move')?.[0]?.[0]).toMatchObject({
+      value: 'docs',
+      from: { parentValue: undefined, index: 1 },
+      to: { parentValue: 'readme', index: 0, targetValue: 'readme', position: 'inside' },
+    })
+
+    on.unmount()
+  })
+
+  it('should not open a childless row the drag hovers', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data, draggable: true, dropInsideLeaf: true },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'docs', 48, 80)
+
+    vi.advanceTimersByTime(500)
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('expand')).toBeUndefined()
+
+    window.dispatchEvent(pointer('pointerup', 0, 80))
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should spell a gap between rows with the row below it', async () => {
+    const seen: string[] = []
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data,
+        draggable: true,
+        defaultExpandedKeys: ['src'],
+        allowDrop: ({ targetValue, position }: TreeDropInfo) => {
+          seen.push(targetValue + ':' + position)
+
+          return true
+        },
+      },
+    })
+
+    stubRows(wrapper)
+
+    const at = (key: string) => wrapper.find(`[data-key="${key}"]`)
+    const move = (y: number) => {
+      at('readme').element.dispatchEvent(pointer('pointermove', 0, y))
+
+      return wrapper.vm.$nextTick()
+    }
+
+    expect(at('components').attributes('style')).toContain('--node-indent: 24px')
+
+    startDrag(wrapper, 'readme', 144, 28)
+    await wrapper.vm.$nextTick()
+
+    // Past `src` and its children there is only one slot left, and `docs` three rows down is the
+    // row that owns it.
+    expect(seen.at(-1)).toBe('docs:before')
+    expect(at('src').attributes('data-drop')).toBeUndefined()
+    expect(at('docs').attributes('data-drop')).toBe('before')
+
+    // As `src`'s own first child, on the child's own half.
+    await move(36)
+    expect(at('components').attributes('data-drop')).toBe('before')
+
+    // Both halves of a gap name the row under it, so the lower one keeps it either way.
+    await move(60)
+    expect(at('composables').attributes('data-drop')).toBe('before')
+
+    await move(68)
+    expect(at('components').attributes('data-drop')).toBeUndefined()
+    expect(at('composables').attributes('data-drop')).toBe('before')
+
+    // Last at its own level, with no sibling below to say it instead, so it keeps an `after`.
+    await move(92)
+    expect(at('composables').attributes('data-drop')).toBe('after')
+
+    await move(100)
+    expect(at('composables').attributes('data-drop')).toBeUndefined()
+    expect(at('docs').attributes('data-drop')).toBe('before')
+
+    // The middle of a row that can take children outlines the row instead.
+    await move(48)
+    expect(at('components').attributes('data-drop')).toBe('inside')
+    expect(at('components').classes()).toEqual(
+      expect.arrayContaining(['ring-1', 'ring-primary', 'bg-gray-300']),
+    )
+
+    window.dispatchEvent(pointer('pointerup', 0, 48))
+
+    wrapper.unmount()
+  })
+
+  it('should open the row that just took a child', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'readme', 80, 16)
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBe('inside')
+
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    const next = wrapper.emitted('update:data')?.[0]?.[0] as typeof data
+
+    await wrapper.setProps({ data: next })
+
+    expect(wrapper.emitted('expand')?.[0]?.[0]).toMatchObject({ value: 'src' })
+    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(5)
+    expect(wrapper.find('[data-key="readme"]').attributes('style')).toContain('--node-indent: 24px')
+
+    wrapper.unmount()
+  })
+
+  it('should let a child drop below its parent as a sibling', async () => {
+    const single = [
+      {
+        value: 'root',
+        label: 'root',
+        children: [
+          { value: 'a', label: 'a' },
+          { value: 'b', label: 'b' },
+        ],
+      },
+    ]
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: { data: single, draggable: true, defaultExpandedKeys: ['root'] },
+    })
+
+    stubRows(wrapper)
+
+    startDrag(wrapper, 'b', 80, 28)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-key="root"]').attributes('data-drop')).toBe('after')
+
+    window.dispatchEvent(pointer('pointerup', 0, 28))
+
+    const next = wrapper.emitted('update:data')?.[0]?.[0] as { value: string }[]
+
+    expect(next.map((node) => node.value)).toEqual(['root', 'b'])
+    expect(wrapper.emitted('move')?.[0]?.[0]).toMatchObject({
+      value: 'b',
+      from: { parentValue: 'root', index: 1 },
+      to: { parentValue: undefined, index: 1, targetValue: 'root', position: 'after' },
+    })
+
+    wrapper.unmount()
+  })
+
+  it('should not select the row a drag was released on', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'readme', 80, 16)
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    // The browser fires a click of its own after the gesture, on the row the press started from.
+    await wrapper.find('[data-key="readme"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    // Without a drag in front of it, the same row still selects.
+    wrapper.find('[data-key="readme"]').element.dispatchEvent(pointer('pointerdown', 0, 80))
+    window.dispatchEvent(pointer('pointerup', 0, 80))
+    await wrapper.find('[data-key="readme"]').trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('readme')
 
     wrapper.unmount()
   })

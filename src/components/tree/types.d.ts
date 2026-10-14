@@ -15,6 +15,14 @@ export type TreeModelValue = ComponentValue | ComponentValue[] | null
 
 export type TreeFilterFn = (node: TreeOption, query: string) => boolean
 
+/**
+ * Decides whether a node takes part in the selection. A refused node stays a full citizen: it
+ * expands, drags and takes drops like any other, it only never lands in the model. That is what
+ * separates it from `disabled`, and it is how a tree of folders offers only its files, or one that
+ * reopens over saved data keeps what was saved out of reach.
+ */
+export type TreeSelectableFn = (node: TreeOption) => boolean
+
 export interface TreeNodeDetail {
   value: ComponentValue
   node: TreeOption
@@ -23,7 +31,6 @@ export interface TreeNodeDetail {
 export interface TreeChangeDetail extends TreeNodeDetail {
   checked: boolean
   checkedValues: ComponentValue[]
-  /** Partially checked parents of the new selection, empty without the cascade. */
   halfCheckedValues: ComponentValue[]
 }
 
@@ -40,9 +47,7 @@ export interface TreeDropTarget {
 }
 
 export interface TreeMoveLocation {
-  /** The parent the node sat in, `undefined` at the root level. */
   parentValue?: ComponentValue
-  /** Position inside that parent's children. */
   index: number
 }
 
@@ -80,7 +85,6 @@ export interface TreeFlatNode {
   parentValue?: ComponentValue
   hasChildren: boolean
   expanded: boolean
-  matched: boolean
 }
 
 export interface TreeProps {
@@ -89,10 +93,11 @@ export interface TreeProps {
   multiple?: boolean
   checkStrictly?: boolean
   disabled?: boolean
-  expandOnClick?: boolean
+  selectable?: TreeSelectableFn
+  expandOnly?: boolean
   draggable?: boolean
   allowDrop?: TreeAllowDropFn
-  showIcon?: boolean
+  dropInsideLeaf?: boolean
   virtual?: boolean
   itemSize?: number
   overScan?: number

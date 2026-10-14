@@ -13,16 +13,16 @@ import type {
 import { computed, shallowRef, useSlots } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
-import { useTreeDrag } from '../../composables/_internal/use-tree-drag.js'
-import { isTreeDescendant, moveTreeNode } from '../../composables/_internal/use-tree-move.js'
 import {
+  isTreeDescendant,
+  moveTreeNode,
+  useTreeDrag,
   useTreeIndex,
   useTreeMatched,
   useTreeRows,
-} from '../../composables/_internal/use-tree-rows.js'
-import { useTreeSelection } from '../../composables/_internal/use-tree-selection.js'
+  useTreeSelection,
+} from '../../composables/_internal/use-tree.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
-import { getElement } from '../../utils/dom.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNumber } from '../../utils/is.js'
 import PTreeNode from '../_internal/tree-node.vue'
@@ -43,9 +43,9 @@ const props = withDefaults(defineProps<TreeProps>(), {
   multiple: false,
   checkStrictly: false,
   disabled: false,
-  expandOnClick: false,
+  expandOnly: false,
   draggable: false,
-  showIcon: true,
+  dropInsideLeaf: false,
   virtual: false,
   itemSize: 32,
   overScan: 4,
@@ -77,11 +77,12 @@ const matched = useTreeMatched(
   () => props.filter,
 )
 
-const { checked, indeterminate, toggle } = useTreeSelection({
+const { checked, indeterminate, toggle, extend, isSelectable } = useTreeSelection({
   index,
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   checkStrictly: () => props.checkStrictly,
+  selectable: () => props.selectable,
 })
 
 const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
@@ -157,12 +158,13 @@ function toValues(value: TreeModelValue): ComponentValue[] {
   return value == null ? [] : [value]
 }
 
-function onCheck(row: TreeFlatNode): void {
-  if (props.disabled || row.node.disabled) {
+function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
+  if (props.disabled || !isSelectable(row.key)) {
     return
   }
 
-  const next = toggle(row.key)
+  // A shift-click reaches for everything between the last one and this row, in either direction.
+  const next = event?.shiftKey ? extend(row.key) : toggle(row.key)
   const checkedValues = toValues(next.value)
 
   emits('update:modelValue', next.value)
@@ -228,15 +230,9 @@ function scrollRowIntoView(index: number): void {
     return
   }
 
-  const selector = `[data-tree-item][data-index="${index}"]`
-  getElement(selector, containerRef.value)?.scrollIntoView({
-    block: 'nearest',
-    behavior: 'instant',
-  })
-}
+  const row = containerRef.value?.querySelector(`[data-tree-item][data-index="${index}"]`)
 
-function isNavDisabled(index: number): boolean {
-  return isNodeDisabled(rows.value[index])
+  row?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
 }
 
 /**
@@ -246,7 +242,7 @@ function isNavDisabled(index: number): boolean {
  */
 const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
   count: () => rows.value.length,
-  isDisabled: isNavDisabled,
+  isDisabled: (index) => isNodeDisabled(rows.value[index]),
   onActivateItem: (index) => {
     const row = rows.value[index]
     if (row) {
@@ -364,41 +360,47 @@ const renderEntries = computed<RenderEntry[]>(() => {
 
 const slots = useSlots()
 
-/**
- * A row rendered with slot children carries the DYNAMIC_SLOTS patch flag, so it re-renders
- * with every tree update no matter which row changed. Without a node slot the flag stays
- * off and each row is skipped unless one of its own props moved.
- */
-const hasDragHandle = computed(() => !!slots['node-drag-handle'])
-
-/** A drag handle is a node slot too: forwarding it puts every row back on the dynamic path. */
 const hasNodeSlot = computed(
   () =>
-    hasDragHandle.value ||
-    !!slots.node ||
     !!slots['node-switcher'] ||
     !!slots['node-icon'] ||
     !!slots['node-content'] ||
     !!slots['node-suffix'],
 )
 
-function onRowClick(value: ComponentValue): void {
+function isDragClick(): boolean {
+  return didDrag()
+}
+
+function onRowClick(value: ComponentValue, event?: MouseEvent): void {
+  if (isDragClick()) {
+    return
+  }
+
   const row = getRow(value)
 
   if (!row) {
     return
   }
 
-  // The row always selects, in both modes: with a checkbox the row is still the bigger target,
-  // and the keyboard path already selects on Enter/Space, so this keeps the two in step.
-  onCheck(row)
+  if (props.expandOnly && !event?.shiftKey) {
+    if (row.hasChildren) {
+      toggleNode(row)
+    }
 
-  if (row.hasChildren && props.expandOnClick) {
-    toggleNode(row)
+    if (props.multiple || row.hasChildren) {
+      return
+    }
   }
+
+  onCheck(row, event)
 }
 
 function onSwitcherClick(value: ComponentValue): void {
+  if (isDragClick()) {
+    return
+  }
+
   const row = getRow(value)
 
   if (row) {
@@ -406,20 +408,16 @@ function onSwitcherClick(value: ComponentValue): void {
   }
 }
 
-function onCheckboxClick(value: ComponentValue): void {
+function onCheckboxClick(value: ComponentValue, event?: MouseEvent): void {
+  if (isDragClick()) {
+    return
+  }
+
   const row = getRow(value)
 
   if (row) {
-    onCheck(row)
+    onCheck(row, event)
   }
-}
-
-function onContainerFocus() {
-  focused.value = true
-}
-
-function onContainerBlur() {
-  focused.value = false
 }
 
 function scrollToKey(value: ComponentValue): void {
@@ -512,12 +510,18 @@ const {
   x: dragX,
   y: dragY,
   onPointerDown: onDragPointerdown,
+  didDrag,
 } = useTreeDrag({
   container: containerRef,
   rows: () => rows.value,
   enabled: () => dragEnabled.value,
+  dropInsideLeaf: () => props.dropInsideLeaf,
   canDrop,
-  onExpand: (value) => setExpandedByValue(value, true),
+  onExpand: (value) => {
+    if (getRow(value)?.hasChildren) {
+      setExpandedByValue(value, true)
+    }
+  },
   onCommit,
 })
 
@@ -543,6 +547,11 @@ function onCommit(value: ComponentValue, target: TreeDropTarget): void {
 
   emits('update:data', result.data)
   emits('move', result.detail)
+
+  // A node that just took a child opens itself, so the drop lands in view instead of folded away.
+  if (target.position === 'inside') {
+    setExpandedByValue(target.targetValue, true)
+  }
 }
 
 defineExpose({
@@ -561,11 +570,6 @@ defineExpose({
 </script>
 
 <template>
-  <!--
-    The filter sits outside the tree on purpose: a text field is not a node, and `role="tree"`
-    owns only `treeitem` content. Keeping it a sibling also leaves it on screen while the tree
-    scrolls.
-  -->
   <div data-tree class="pxd-tree-root w-full max-w-full">
     <div v-if="filterable" data-tree-search class="pxd-tree--search mbe-1">
       <slot name="search">
@@ -587,8 +591,8 @@ defineExpose({
       :aria-activedescendant="focused ? activeDescendant : undefined"
       v-bind="$attrs"
       @keydown="onKeydown"
-      @focus="onContainerFocus"
-      @blur="onContainerBlur"
+      @focus="focused = true"
+      @blur="focused = false"
     >
       <div class="pxd-tree--content w-full" :class="{ relative: virtual }" :style="contentStyle">
         <div
@@ -615,11 +619,10 @@ defineExpose({
             :disabled="disabled"
             :set-size="rows.length"
             :indent="indent"
+            :selectable="isSelectable(entry.key)"
             :highlight-query="highlightQuery"
-            :show-icon="showIcon"
             :item-class="itemClass"
             :draggable="dragEnabled"
-            :drag-handle="hasDragHandle"
             :dragging="entry.key === dragValue"
             :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
             @row-click="onRowClick"
@@ -627,10 +630,6 @@ defineExpose({
             @check="onCheckboxClick"
             @toggle="onSwitcherClick"
           >
-            <template #node="scope">
-              <slot name="node" v-bind="scope" />
-            </template>
-
             <template #node-switcher="scope">
               <slot name="node-switcher" v-bind="scope" />
             </template>
@@ -645,10 +644,6 @@ defineExpose({
 
             <template #node-suffix="scope">
               <slot name="node-suffix" v-bind="scope" />
-            </template>
-
-            <template #node-drag-handle="scope">
-              <slot name="node-drag-handle" v-bind="scope" />
             </template>
           </PTreeNode>
 
@@ -668,11 +663,10 @@ defineExpose({
             :disabled="disabled"
             :set-size="rows.length"
             :indent="indent"
+            :selectable="isSelectable(entry.key)"
             :highlight-query="highlightQuery"
-            :show-icon="showIcon"
             :item-class="itemClass"
             :draggable="dragEnabled"
-            :drag-handle="hasDragHandle"
             :dragging="entry.key === dragValue"
             :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
             @row-click="onRowClick"
@@ -694,6 +688,7 @@ defineExpose({
     <PTeleport to="body">
       <div
         v-if="dragValue !== undefined"
+        aria-hidden="true"
         class="pxd-tree--drag-preview px-2 py-1 text-sm shadow-lg pointer-events-none fixed z-50 rounded-md border border-gray-300 bg-background-100 text-foreground"
         :style="{ left: dragX + 'px', top: dragY + 'px' }"
       >
