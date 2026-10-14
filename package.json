@@ -170,7 +170,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@10.34.7",
   "pnpm": {
     "patchedDependencies": {
       "mkdist": "patches/mkdist.patch"
