@@ -65,11 +65,11 @@ function onCopy(text: string) {
 
 <template>
   <div data-snippet :class="classes" :data-variant="variant" v-bind="attrs">
-    <div class="pxd-snippet--container flex-1">
+    <div class="pxd-snippet--container min-w-0 flex-1">
       <pre
         v-for="(t, i) of computedTextList"
         :key="i"
-        class="m-0 p-0 leading-tight"
+        class="m-0 p-0 leading-tight break-words whitespace-pre-wrap"
         :data-prompt="prompt"
         :class="{ 'before:content-[attr(data-prompt)] before:select-none': prompt }"
         >{{ t }}</pre>
