@@ -14,9 +14,10 @@
 
 1. **Exports**: `scripts/update-exports.js` 刷新 `src/index.ts`、`src/components/index.ts`、`src/composables/index.ts`、`packages/docs/src/consts/{components,composables}.json`、根 `volar.d.ts`，最后 `git add` 这些文件。
 2. **Code**: `scripts/build-core.js` 用 mkdist 把 `src` 编译到 `dist`（ESM + `.d.ts`）。
-3. **Styles**: `build:style` 两步。
-   - `gen-styles-file`（`scripts/gen-css-files.js`）把 `src/styles/tw.css` 原样写到 `dist/styles/tw.css`，再包上 `@layer` / `@import` / `@source` 生成 `dist/styles/source.css`。
-   - `gen-tw-css-file` 用 Tailwind CLI 把 `dist/styles/source.css` 编译成 `dist/styles/styles.css`。
+3. **Styles**: `build:style` → `scripts/gen-css-files.js`（须在真实 `dist/` 上跑，不能是 `dev:lib` 的 stub）。
+   - 把 `src/styles/tw.css` 写到 `dist/styles/tw.css`。
+   - 临时生成 `dist/styles/source.css`（`@layer` / `@import` / `@source` 包一层，路径相对 `dist/styles` 扫编译后的 components/composables/constants）。
+   - 调 Tailwind CLI 编译出 `dist/styles/styles.css`，然后删除 `source.css`（不进源码、也不留在发布产物里）。
 
 ## Safety
 
