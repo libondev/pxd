@@ -87,8 +87,7 @@ function onClick() {
       top: calc(var(--steps-indicator-size) / 2);
       left: calc(50% + var(--steps-indicator-size) / 2 + var(--steps-gap));
       right: calc(-50% + var(--steps-indicator-size) / 2 + var(--steps-gap));
-      height: 1px;
-      background-color: var(--color-border);
+      border-bottom: 1px solid var(--color-border);
     }
 
     &[data-status='finish']::after {
@@ -107,8 +106,7 @@ function onClick() {
       top: calc(var(--steps-indicator-size) + var(--steps-gap) / 2);
       bottom: calc(var(--steps-gap) / 2);
       left: calc(var(--steps-indicator-size) / 2 + var(--spacing));
-      width: 1px;
-      background-color: var(--color-border);
+      border-left: 1px solid var(--color-border);
     }
 
     &[data-status='finish']::after {

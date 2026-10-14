@@ -162,7 +162,7 @@ its own sizes.
       <div class="flex h-full items-center justify-center">Leading</div>
     </template>
     <template #trailing>
-      <PResizable direction="vertical" handle class="border-t">
+      <PResizable direction="vertical" handle>
         <template #leading>
           <div class="flex h-full items-center justify-center">One</div>
         </template>

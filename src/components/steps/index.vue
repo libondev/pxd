@@ -4,7 +4,7 @@ import { computed, shallowRef } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getFallbackValue } from '../../utils/helper.js'
-import PStepsItem from './step-item.vue'
+import PStepsItem from '../_internal/step-item.vue'
 
 defineOptions({
   name: 'PSteps',

@@ -479,7 +479,7 @@ defineExpose({
       :data-collapsed="collapsed || undefined"
       :data-handler="handle"
       :data-orientation="direction"
-      class="pxd-resizable-handle relative shrink-0 touch-none bg-border self-focus-ring select-none hover:after:bg-primary/15 active:after:bg-primary/20 aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
+      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:border-primary aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
       @pointerdown.prevent="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -525,11 +525,9 @@ defineExpose({
   transform: translate(-50%, -50%);
 }
 
-/* Scoped to the handle's own direction: nesting a resizable must not let the
-   outer group restyle the inner group's handles. */
 .pxd-resizable-handle[data-orientation='horizontal'] {
-  width: 1px;
   height: 100%;
+  border-left-width: 1px;
   cursor: ew-resize;
 
   &::before {
@@ -544,7 +542,7 @@ defineExpose({
 
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
-  height: 1px;
+  border-bottom-width: 1px;
   cursor: ns-resize;
 
   &::before {
