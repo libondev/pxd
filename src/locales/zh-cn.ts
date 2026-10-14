@@ -20,6 +20,19 @@ const zhCN = {
       '十二月',
     ],
   },
+  timeAgo: {
+    now: '刚刚',
+    invalid: '无效时间',
+    past: '{value}{unit}前',
+    future: '{value}{unit}后',
+    unit: {
+      minute: { one: '分', other: '分' },
+      hour: { one: '小时', other: '小时' },
+      day: { one: '天', other: '天' },
+      month: { one: '个月', other: '个月' },
+      year: { one: '年', other: '年' },
+    },
+  },
   compare: {
     less: '少',
     more: '多',

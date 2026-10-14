@@ -220,3 +220,16 @@ a comment beside the fix.
 - **Symptom**: The trigger of a filterable select goes blank as soon as the search text excludes the current selection — the value is still set, only its label disappears.
 - **Cause**: Resolving the label from the list's current `options` makes it a function of the filter; an option the query drops has no row to resolve against.
 - **Fix**: Resolve from the unfiltered source (`useSelectedListItems(() => props.options || [], modelValue)`) and pass the filtered array to `PList` only.
+
+### A component that reads the clock in `setup` needs the clock frozen in its tests
+
+- **Symptom**: Two `PTimeAgo` cases failed by exactly one unit — `'in 3 hours'` came back as `'in 2 hours'`, `'5 seconds ago'` as `'6 seconds ago'` — and both read like an off-by-one inside the component.
+- **Cause**: Two mechanisms, one per case. The component captures `now` in `setup`, which runs a fraction of a millisecond after the test evaluated `Date.now() + 3 * HOUR`; the difference is therefore *just under* three hours, and `Math.floor(abs / HOUR)` floors it to two (a past value adds that same fraction, which is why only the future case failed). Separately, Vitest's fake clock *is* `Date`: `vi.advanceTimersByTime` advances the very time `vi.setSystemTime` sets, so setting `T + 5s` and then advancing one second makes the interval callback read `T + 6s`.
+- **Fix**: Freeze the clock (`vi.useFakeTimers()` + `vi.setSystemTime`) whenever an assertion sits on a bucket boundary, so the test and the component read the identical instant. To drive an interval, only advance it — `advanceTimersByTime(5 * SECOND)` fires it five times and lands on five seconds; never `setSystemTime` beforehand. Restore with `vi.useRealTimers()` in `afterEach`.
+
+### A delay derived from data must be clamped before it reaches `setTimeout`
+
+- **Symptom**: Scheduling an update for the moment a label changes fires in a tight loop and pins a CPU core. A 400-day-old `PTimeAgo` asks for a 330-day delay; nothing throws, the page simply never idles.
+- **Cause**: The delay is coerced to a 32-bit signed integer. Node warns and substitutes 1 ms (`TimeoutOverflowWarning: 3000000000 does not fit into a 32-bit signed integer`, and the same for `TimeoutNaNWarning`), browsers follow the spec and set it to 0. Either way the callback runs at once and reschedules the same delay. `NaN` arrives through the same door: an unparseable date makes the age `NaN`, and `Math.max` / `Math.min` carry it into the delay.
+- **Fix**: Hold every delay below the 32-bit limit — clamp it, or simply refuse to schedule one that is longer than the behaviour is worth (`PTimeAgo` stops at a day) — and never schedule a non-finite one (`Number.isFinite(delay)`). A constant delay such as a fixed 60 s interval cannot reach this; only a delay computed from the data can.
+- **Testing note**: Assert through `vi.spyOn(globalThis, 'setTimeout')` and check the delay argument. Rendered output cannot expose a broken clamp, because the failure mode is a hang rather than a wrong value.

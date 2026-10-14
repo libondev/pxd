@@ -115,6 +115,7 @@ declare module 'vue' {
     PText: (typeof import('pxd/components/text'))['default']
     PTextarea: (typeof import('pxd/components/textarea'))['default']
     PThemeSwitcher: (typeof import('pxd/components/theme-switcher'))['default']
+    PTimeAgo: (typeof import('pxd/components/time-ago'))['default']
     PTimePicker: (typeof import('pxd/components/time-picker'))['default']
     PTimeline: (typeof import('pxd/components/timeline'))['default']
     PTimelineItem: (typeof import('pxd/components/timeline-item'))['default']

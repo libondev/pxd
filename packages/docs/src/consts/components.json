@@ -490,6 +490,11 @@
     "category": "Utilities"
   },
   {
+    "camelized": "Time Ago",
+    "name": "time-ago",
+    "category": "Data Display"
+  },
+  {
     "camelized": "Time Picker",
     "name": "time-picker",
     "category": "Form"

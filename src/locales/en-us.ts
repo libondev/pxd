@@ -5,6 +5,19 @@ const enUS = {
     day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   },
+  timeAgo: {
+    now: 'just now',
+    invalid: 'Invalid date',
+    past: '{value} {unit} ago',
+    future: 'in {value} {unit}',
+    unit: {
+      minute: { one: 'minute', other: 'minutes' },
+      hour: { one: 'hour', other: 'hours' },
+      day: { one: 'day', other: 'days' },
+      month: { one: 'month', other: 'months' },
+      year: { one: 'year', other: 'years' },
+    },
+  },
   compare: {
     less: 'Less',
     more: 'More',

@@ -391,6 +391,10 @@
     "title": "Theme Switcher",
     "description": "Component that cycles the theme through auto (follows the system), light and dark."
   },
+  "/components/time-ago": {
+    "title": "Time Ago",
+    "description": "Render how long ago a timestamp, date string or Date object was, in the active locale."
+  },
   "/components/time-picker": {
     "title": "Time Picker",
     "description": "Select specific time only."
