@@ -112,7 +112,6 @@ const computedClasses = computed(() => {
   <Component
     data-stack
     :is="props.as"
-    class="pxd-stack flex max-w-full"
     :class="computedClasses"
     v-bind="attrs"
     :style="formattedGap"
