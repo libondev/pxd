@@ -242,8 +242,21 @@ a comment beside the fix.
 - **Do not auto-scroll a drag you do not own**: two attempts at edge auto-scroll — first walking outwards through the page, then scoped to the dragged list — were both removed in favour of letting the browser scroll. A pointer drag has to fight the browser for the gesture, and every edge test reads a box that some scroll can move; the trees that ship no scrolling code (antd/rc-tree, Element Plus) get away with it because native HTML5 DnD hands the gesture to the browser. Following the scroll is all a drag needs: a `scroll` listener on the container and on `window` that refreshes the origin and re-resolves the target.
 - **Related**: `setPointerCapture` on the scroll container keeps `pointerup` arriving when the drag is released outside the window; release it behind a `hasPointerCapture` check, which returns false where `releasePointerCapture` throws.
 
+### A repeat interaction with an open popover emits no `show`
+
+- **Symptom**: A wrapper that restarts its auto-close countdown on the popover's `show` event resets nothing when the same trigger is clicked again — and with `toggleOnTrigger` left at its default, that second click closes the popover instead.
+- **Cause**: `show` / `visible-change` fire only on a real visibility change, so re-activating the already active trigger goes through `updateActiveTrigger` and stays silent; the interaction itself surfaces as `trigger-click`, which `activateTrigger(trigger, toggleOnTrigger)` emits before it decides between hide, reposition and open.
+- **Fix**: Restart the timer on `trigger-click` and pass `:toggle-on-trigger="false"` (`PHint`, `src/components/hint/index.vue`), so a repeated interaction keeps the rendered element and only resets the deadline.
+- **Related**: A wrapper also cannot reach the popover's own wrapper element to pause on hover — `PPopover` renders it internally and teleports it to `body`. Bind those listeners on the root element the wrapper renders inside the `content` slot.
+
 ### A drag ends with a click the browser makes on its own
 
 - **Symptom**: Releasing a drag back on the row it started from toggles that row — it gets selected, checked or expanded, none of which the user asked for.
 - **Cause**: The browser dispatches a `click` after `pointerup` whenever both share an ancestor, and a drag that returns to its starting row does exactly that. A drag crossing into another row sends the click to the common ancestor instead, which is why only the same-row case misbehaves.
 - **Fix**: Keep a flag for the gesture that actually moved something, clear it on the next `pointerdown`, and ignore clicks while it is set (`didDrag()` in `use-tree.ts`, checked by the tree's click handlers). Clearing it at the end of the gesture is not enough: the click arrives after the drop has already been committed and the session reset.
+
+### A promise prop must not be the return value of a watcher getter
+
+- **Symptom**: `watch(() => props.promise, subscribe, { immediate: true })` works until the promise rejects — then Vue logs `Unhandled error during execution of watcher getter` and the rejection surfaces again as an unhandled promise, in tests as Vitest's "Unhandled Errors" (`PHint`, `src/components/hint/index.vue`).
+- **Cause**: `watch` with a getter runs it through `callWithAsyncErrorHandling`, which attaches `res.catch(err => handleError(err, instance, WATCH_GETTER))` to any promise the getter *returns*. The getter returns the `promise` prop itself, so the rejection is reported as a component error, and in dev `handleError` rethrows it into a promise nothing observes. One rejection a consumer already handles thus produces both a Vue warning and an unhandled rejection.
+- **Fix**: Subscribe from `watchEffect` (its callback goes through `callWithErrorHandling`, which ignores return values), or make the getter return a wrapper such as `() => [props.promise]`. Attaching the handler in `setup` directly is also unaffected — only the returned value path is.

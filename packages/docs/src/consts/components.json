@@ -185,6 +185,11 @@
     "category": "Layout"
   },
   {
+    "camelized": "Hint",
+    "name": "hint",
+    "category": "Overlay"
+  },
+  {
     "camelized": "Hold Button",
     "name": "hold-button",
     "category": "Button"

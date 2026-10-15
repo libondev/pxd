@@ -42,6 +42,7 @@ withDefaults(defineProps<CardProps>(), { shape: 'default' })
 - 无顶层 `await`，无 reactive `Map` / `Set`
 - 事件 kebab-case；分支必须带花括号
 - 组件自有类型放同目录 `types.d.ts`，跨组件共享类型放 `src/types/shared`
+- 包装其它组件的组件只声明「自己会读取」「默认值与被包装组件不同」「需要与自己生成的 class/style 合并」的 props，其余属性一律靠 `v-bind="$attrs"` 落到被包装组件（见 `PHint` / `PTooltip` 对 `PPopover`）；这类透传属性在文档页用一句话说明并链到被包装组件，不进 Props 表
 - 容器组件通过数据 prop（`options` 之类）渲染子项 —— 仓库已无自注册模式，原因见 pitfalls.md
 - 每个 `XxxEmits` 条目都要有真实派发路径（组件自身 / 它调用的 composable / 经 context 的子组件），不留死声明
 - 根元素带无值标记属性 `data-<组件名>`（如 `data-card`、`data-list-item`），作为稳定的外部选择器

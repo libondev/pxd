@@ -48,6 +48,7 @@ declare module 'vue' {
     PGauge: (typeof import('pxd/components/gauge'))['default']
     PGrid: (typeof import('pxd/components/grid'))['default']
     PGridItem: (typeof import('pxd/components/grid-item'))['default']
+    PHint: (typeof import('pxd/components/hint'))['default']
     PHoldButton: (typeof import('pxd/components/hold-button'))['default']
     PHueText: (typeof import('pxd/components/hue-text'))['default']
     PInput: (typeof import('pxd/components/input'))['default']

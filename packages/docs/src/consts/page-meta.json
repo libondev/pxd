@@ -147,6 +147,10 @@
     "title": "Grid",
     "description": "Display elements in a grid layout."
   },
+  "/components/hint": {
+    "title": "Hint",
+    "description": "Display a transient hint above the element that was interacted with, closed automatically after a delay."
+  },
   "/components/hold-button": {
     "title": "Hold Button",
     "description": "Press and hold the button to trigger some logic (such as delete)."
