@@ -8,7 +8,7 @@ import {
   queryMentionElements,
   serializeMentionHtml,
   setMentionEditorContent,
-} from '../../src/utils/mention-html'
+} from '../../src/utils/_internal/mention-html'
 import { useSetupWrapper } from '../helpers/setup'
 
 /**

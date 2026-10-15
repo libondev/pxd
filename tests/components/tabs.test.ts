@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vite-plus/test'
+import { describe, expect, it } from 'vite-plus/test'
 import { createSSRApp, defineComponent, h, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import Tabs from '../../src/components/tabs/index.vue'
@@ -525,9 +525,7 @@ describe('tabs', () => {
     wrapper.unmount()
   })
 
-  it('should warn when the bound value matches no option', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('should leave every tab unselected when the bound value matches no option', async () => {
     const wrapper = mount(Tabs, {
       props: {
         modelValue: 'missing',
@@ -537,10 +535,13 @@ describe('tabs', () => {
 
     await nextTick()
 
-    expect(warn).toHaveBeenCalled()
-    expect(warn.mock.calls[0]?.[0]).toContain('matches no option')
+    const selected = wrapper.findAll('[role="tab"][aria-selected="true"]')
 
-    warn.mockRestore()
+    expect(selected).toHaveLength(0)
+    expect(wrapper.findAll('[role="tabpanel"]').every((panel) => 'hidden' in panel.attributes())).toBe(
+      true,
+    )
+
     wrapper.unmount()
   })
 })

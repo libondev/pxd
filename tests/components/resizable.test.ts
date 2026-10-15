@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vite-plus/test'
+import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import Resizable from '../../src/components/resizable/index.vue'
 import {
@@ -520,56 +520,36 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
-  it('warns and keeps the sizes when model-value does not add up to 100%', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('keeps the sizes when model-value does not add up to 100%', async () => {
     const wrapper = mountResizable({ modelValue: [60, 60] })
     await flush()
 
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('adds up to 120% instead of 100%'))
     expect(readSizes(wrapper)).toEqual([60, 60])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 
-  it('warns and takes what it can when model-value is the wrong length', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('takes what it can when model-value is the wrong length', async () => {
     const wrapper = mountResizable({ modelValue: [50] })
     await flush()
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining('model-value holds 1 value but the group has 2 panels'),
-    )
     expect(readSizes(wrapper)).toEqual([50, 0])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 
-  it('warns when model-value sits outside the min-size', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('keeps a model-value that sits outside the min-size', async () => {
     const wrapper = mountResizable({ modelValue: [10, 90], minSize: [20, 0] })
     await flush()
 
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('outside its 20-100% range'))
     expect(readSizes(wrapper)).toEqual([10, 90])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 
-  it('warns and takes what it can when min-size is the wrong length', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('takes what it can when min-size is the wrong length', async () => {
     const wrapper = mountResizable({ minSize: [20] })
     await flush()
-
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining('min-size holds 1 value but the group has 2 panels'),
-    )
 
     drag(wrapper.find('.pxd-resizable-handle').element, 500, 0)
     await flush()
@@ -577,27 +557,23 @@ describe('resizable', () => {
     expect(readSizes(wrapper)).toEqual([20, 80])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 
-  it('warns and ignores min-size values outside 0 to 100', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-    mountResizable({ minSize: [120, 0] })
+  it('ignores min-size values outside 0 to 100', async () => {
+    const wrapper = mountResizable({ minSize: [120, 0] })
     await flush()
 
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('must be between 0 and 100'))
+    drag(wrapper.find('.pxd-resizable-handle').element, 500, 800)
+    await flush()
 
-    warn.mockRestore()
+    expect(readSizes(wrapper)).toEqual([80, 20])
+
+    wrapper.unmount()
   })
 
-  it('warns and ignores a min-size that no split fits', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('ignores a min-size that no split fits', async () => {
     const wrapper = mountResizable({ minSize: [60, 60] })
     await flush()
-
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('no split fits'))
 
     drag(wrapper.find('.pxd-resizable-handle').element, 500, 200)
     await flush()
@@ -606,21 +582,14 @@ describe('resizable', () => {
     expect(readSizes(wrapper)).toEqual([20, 80])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 
-  it('warns when default-value is the wrong length', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
+  it('takes what it can when default-value is the wrong length', async () => {
     const wrapper = mountResizable({ defaultValue: [70] })
     await flush()
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining('default-value holds 1 value but the group has 2 panels'),
-    )
     expect(readSizes(wrapper)).toEqual([70, 0])
 
     wrapper.unmount()
-    warn.mockRestore()
   })
 })

@@ -6,7 +6,7 @@ import {
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
-} from '../../src/utils/mention-html'
+} from '../../src/utils/_internal/mention-html'
 
 const ZWSP = '\u200B'
 
