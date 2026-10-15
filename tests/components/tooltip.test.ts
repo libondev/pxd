@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import Popover from '../../src/components/popover/index.vue'
 import Tooltip from '../../src/components/tooltip/index.vue'
 
 describe('tooltip', () => {
@@ -33,17 +34,26 @@ describe('tooltip', () => {
     wrapper.unmount()
   })
 
-  it('should default showArrow to true', () => {
+  it('should forward undeclared props to the popover', () => {
     const wrapper = mount(Tooltip, {
       props: {
         content: 'Text',
+        showArrow: false,
+        destroyDelay: 100,
+        triggerSelector: '[data-tooltip-trigger]',
+        contentStyle: 'color: red',
       },
       slots: {
         default: '<button>Hover</button>',
       },
     })
 
-    expect(wrapper.props('showArrow')).toBe(true)
+    const popover = wrapper.findComponent(Popover)
+
+    expect(popover.props('showArrow')).toBe(false)
+    expect(popover.props('destroyDelay')).toBe(100)
+    expect(popover.props('triggerSelector')).toBe('[data-tooltip-trigger]')
+    expect(popover.props('contentStyle')).toBe('color: red')
 
     wrapper.unmount()
   })
