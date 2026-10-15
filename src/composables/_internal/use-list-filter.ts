@@ -1,7 +1,7 @@
 import type { ListOption, ListOptions } from '../../components/list/types'
 import type { MaybeRefOrGetter, ComputedRef } from 'vue'
 import { computed } from 'vue'
-import { isFuzzyMatch } from '../../utils/_internal/fuzzy-match.js'
+import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
