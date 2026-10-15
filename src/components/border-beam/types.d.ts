@@ -1,4 +1,4 @@
-export type BorderBeamVariant = 'glow' | 'line'
+export type BorderBeamVariant = 'glow' | 'line' | 'bottom'
 
 export interface BorderBeamProps {
   variant?: BorderBeamVariant

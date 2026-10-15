@@ -50,6 +50,18 @@ describe('border-beam', () => {
     wrapper.unmount()
   })
 
+  it('should reflect the bottom variant on data-variant', () => {
+    const wrapper = mount(BorderBeam, {
+      props: {
+        variant: 'bottom',
+      },
+    })
+
+    expect(wrapper.attributes('data-variant')).toBe('bottom')
+
+    wrapper.unmount()
+  })
+
   it('should reflect the disabled prop on data-disabled', async () => {
     const wrapper = mount(BorderBeam, {
       props: {

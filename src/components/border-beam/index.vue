@@ -62,6 +62,18 @@ const computedStyle = computed(() => {
   inherits: true;
 }
 
+@property --pxd-border-beam-x {
+  syntax: '<number>';
+  initial-value: 0.5;
+  inherits: true;
+}
+
+@property --pxd-border-beam-edge {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+
 .pxd-border-beam {
   --pxd-border-beam-mask-conic: conic-gradient(
     from var(--pxd-border-beam-angle),
@@ -256,6 +268,145 @@ const computedStyle = computed(() => {
   animation: none;
 }
 
+.pxd-border-beam[data-variant='bottom'] {
+  animation:
+    pxd-animation-border-beam-travel 2.4s linear infinite,
+    pxd-animation-border-beam-edge 2.4s linear infinite;
+}
+
+.pxd-border-beam[data-variant='bottom']::before {
+  display: none;
+}
+
+.pxd-border-beam[data-variant='bottom']::after {
+  opacity: calc(var(--border-beam-strength) * var(--pxd-border-beam-edge));
+  padding: 1px;
+  background:
+    radial-gradient(
+      ellipse 32px 23px at calc(var(--pxd-border-beam-x) * 100%) calc(100% + 2px),
+      rgba(255, 255, 255, 0.38),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 36px 27px at calc(var(--pxd-border-beam-x) * 100%) 100%,
+      var(--border-beam-stroke-color-1, var(--color-pink-700)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 30px 24px at calc(var(--pxd-border-beam-x) * 100% + 39px) 100%,
+      var(--border-beam-stroke-color-2, var(--color-blue-600)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 33px 21px at calc(var(--pxd-border-beam-x) * 100% - 36px) 100%,
+      var(--border-beam-stroke-color-3, var(--color-green-600)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 29px 26px at calc(var(--pxd-border-beam-x) * 100% - 54px) 100%,
+      var(--border-beam-stroke-color-4, var(--color-teal-700)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 27px 23px at calc(var(--pxd-border-beam-x) * 100% + 51px) 100%,
+      var(--border-beam-stroke-color-5, var(--color-purple-600)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 36px 18px at calc(var(--pxd-border-beam-x) * 100% + 21px) 100%,
+      var(--border-beam-stroke-color-6, var(--color-blue-600)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 30px 17px at calc(var(--pxd-border-beam-x) * 100% - 21px) 100%,
+      var(--border-beam-stroke-color-7, var(--color-amber-600)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 25px 21px at calc(var(--pxd-border-beam-x) * 100% + 66px) 100%,
+      var(--border-beam-stroke-color-8, var(--color-pink-700)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 23px 23px at calc(var(--pxd-border-beam-x) * 100% - 66px) 100%,
+      var(--border-beam-stroke-color-9, var(--color-purple-700)),
+      transparent
+    );
+  mask:
+    radial-gradient(
+      ellipse 78px 45px at calc(var(--pxd-border-beam-x) * 100%) 100%,
+      white 0%,
+      rgba(255, 255, 255, 0.5) 45%,
+      transparent 100%
+    ),
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: intersect, exclude;
+  animation: none;
+}
+
+.pxd-border-beam[data-variant='bottom'] .pxd-border-beam--bloom {
+  opacity: calc(var(--border-beam-strength) * var(--pxd-border-beam-edge));
+  background:
+    radial-gradient(
+      ellipse 42px 30px at calc(var(--pxd-border-beam-x) * 100%) 100%,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 36px 27px at calc(var(--pxd-border-beam-x) * 100%) 100%,
+      var(--border-beam-glow-color-1, hsla(var(--color-pink-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 30px 24px at calc(var(--pxd-border-beam-x) * 100% + 39px) 100%,
+      var(--border-beam-glow-color-2, hsla(var(--color-blue-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 33px 21px at calc(var(--pxd-border-beam-x) * 100% - 36px) 100%,
+      var(--border-beam-glow-color-3, hsla(var(--color-green-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 29px 26px at calc(var(--pxd-border-beam-x) * 100% - 54px) 100%,
+      var(--border-beam-glow-color-4, hsla(var(--color-teal-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 27px 23px at calc(var(--pxd-border-beam-x) * 100% + 51px) 100%,
+      var(--border-beam-glow-color-5, hsla(var(--color-purple-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 36px 18px at calc(var(--pxd-border-beam-x) * 100% + 21px) 100%,
+      var(--border-beam-glow-color-6, hsla(var(--color-blue-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 30px 17px at calc(var(--pxd-border-beam-x) * 100% - 21px) 100%,
+      var(--border-beam-glow-color-7, hsla(var(--color-amber-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 25px 21px at calc(var(--pxd-border-beam-x) * 100% + 66px) 100%,
+      var(--border-beam-glow-color-8, hsla(var(--color-pink-700-value), 40%)),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 23px 23px at calc(var(--pxd-border-beam-x) * 100% - 66px) 100%,
+      var(--border-beam-glow-color-9, hsla(var(--color-purple-700-value), 40%)),
+      transparent
+    );
+  mask: radial-gradient(
+    ellipse 84px 82px at calc(var(--pxd-border-beam-x) * 100%) 100%,
+    white 0%,
+    rgba(255, 255, 255, 0.5) 35%,
+    transparent 100%
+  );
+  mask-composite: add;
+}
+
 .pxd-border-beam[data-disabled='true'] {
   animation-play-state: paused;
 }
@@ -281,6 +432,36 @@ const computedStyle = computed(() => {
   }
   100% {
     filter: hue-rotate(-30deg) brightness(1.3) saturate(1.2);
+  }
+}
+
+@keyframes pxd-animation-border-beam-travel {
+  from {
+    --pxd-border-beam-x: 0.06;
+  }
+  to {
+    --pxd-border-beam-x: 0.94;
+  }
+}
+
+@keyframes pxd-animation-border-beam-edge {
+  0% {
+    --pxd-border-beam-edge: 0;
+  }
+  12.5% {
+    --pxd-border-beam-edge: 0;
+  }
+  32.5% {
+    --pxd-border-beam-edge: 1;
+  }
+  67.5% {
+    --pxd-border-beam-edge: 1;
+  }
+  87.5% {
+    --pxd-border-beam-edge: 0;
+  }
+  100% {
+    --pxd-border-beam-edge: 0;
   }
 }
 

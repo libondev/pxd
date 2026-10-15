@@ -18,7 +18,7 @@ Animated border beam component. The beam follows the `border-radius` of the oute
 
 ## Variant
 
-Use `variant="line"` for a 1px beam that travels along the border. The default `glow` variant keeps the broader light.
+Use `variant="line"` for a 1px beam that travels along the border, or `variant="bottom"` for a beam that travels along the bottom edge only. The default `glow` variant keeps the broader light.
 
 ```vue demo
 <template>
@@ -42,6 +42,13 @@ Use `variant="line"` for a 1px beam that travels along the border. The default `
       class="h-28 w-64 flex items-center justify-center bg-background-100 rounded-xl shadow-border-base"
     >
       line
+    </PBorderBeam>
+
+    <PBorderBeam
+      variant="bottom"
+      class="h-28 w-64 flex items-center justify-center bg-background-100 rounded-xl shadow-border-base"
+    >
+      bottom
     </PBorderBeam>
   </PStack>
 </template>
@@ -147,7 +154,7 @@ const disabled = shallowRef(false)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| variant | `'glow' \| 'line'` | `'glow'` | Beam appearance. `glow` is the broader light effect; `line` is a 1px beam that travels along the border. |
+| variant | `'glow' \| 'line' \| 'bottom'` | `'glow'` | Beam appearance. `glow` is the broader light effect; `line` is a 1px beam that travels along the border; `bottom` is a beam that travels along the bottom edge only. |
 | color | `string \| string[]` | - | Override the beam colors. A string uses one color for all spots; an array distributes colors around the border. |
 | strength | `number` | `1` | Overall effect intensity (0-1). Only affects the beam, glow, and bloom layers. |
 | disabled | `boolean` | `false` | Stop the animation. The beam freezes, then shrinks and fades out. |
