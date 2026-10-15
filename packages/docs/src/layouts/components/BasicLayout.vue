@@ -377,10 +377,22 @@ useHead({
       white-space: nowrap;
     }
 
+    /* Keep the trailing Description column from collapsing when an earlier
+       column holds a long unbreakable snippet, such as a long union type. */
+    th:last-child,
+    td:last-child {
+      min-width: 16rem;
+    }
+
     @media (max-width: 48rem) {
       th,
       td {
         padding: 0.6em 0.5em;
+      }
+
+      th:last-child,
+      td:last-child {
+        min-width: 12rem;
       }
 
       & :not(pre) > code {
