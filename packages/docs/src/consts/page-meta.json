@@ -429,7 +429,7 @@
   },
   "/components/tree": {
     "title": "Tree",
-    "description": "Tree view driven by the data prop, with expandable parents, single or cascading multiple selection, disabled nodes, built-in search and virtualized rows for la…"
+    "description": "Tree view driven by the data prop, with expandable parents and single or cascading multiple selection."
   },
   "/components/virtual-list": {
     "title": "Virtual List",

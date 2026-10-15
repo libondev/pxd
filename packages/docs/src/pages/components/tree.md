@@ -1,7 +1,6 @@
 # Tree
 
-Tree view driven by the `data` prop, with expandable parents and single or cascading multiple
-selection.
+Tree view driven by the `data` prop, with expandable parents and single or cascading multiple selection.
 
 ## Default
 
