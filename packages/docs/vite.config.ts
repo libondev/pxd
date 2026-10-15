@@ -111,7 +111,7 @@ export default defineConfig(({ mode }) => {
         async markdownItSetup(md) {
           md.use(attrs)
           md.use(anchor, {
-            slugify: (s) => slugify(s),
+            slugify: (s: string) => slugify(s),
             permalink: anchor.permalink.headerLink(),
           })
           md.use(container)
