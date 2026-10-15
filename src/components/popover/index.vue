@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   closeOnInvisible: true,
   autoFocusElement: false,
   closeOnPressEscape: true,
+  closeOnOutsideClick: true,
   returnFocusOnDeactivate: true,
 })
 
@@ -83,7 +84,6 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 
 const configProvider = useConfigProvider()
 
-const allowOutsideClick = computed(() => !triggerMethods.value.includes('manual'))
 const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
 const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
@@ -104,7 +104,7 @@ const {
 } = useDelayDestroy(props.modelValue, {
   delay: () => props.destroyDelay,
   visibleChange(v) {
-    if (!allowOutsideClick.value) {
+    if (triggerMethods.value.includes('manual')) {
       return
     }
 
@@ -127,13 +127,11 @@ useFocusTrap(focusTrapContainer, () => ({
 
 useOutsideClick(wrapperRef, {
   allowList: [triggerRef, wrapperRef],
-  enabled: () => {
-    return isVisible.value && allowOutsideClick.value
-  },
+  enabled: () => isVisible.value,
   onTrigger: (ev) => {
     emits('outside-click', ev)
 
-    if (allowOutsideClick.value) {
+    if (props.closeOnOutsideClick) {
       handlePopoverHide()
     }
   },
@@ -639,7 +637,7 @@ defineExpose({
           <div
             v-if="showArrow"
             ref="arrowRef"
-            class="pxd-popover--arrow pointer-events-none absolute z-1 will-change-[left,top]"
+            class="pxd-popover--arrow pointer-events-none absolute z-1"
           >
             <PPopoverArrow
               fill="var(--popover-arrow-color,transparent)"
@@ -656,9 +654,54 @@ defineExpose({
 <style lang="postcss">
 .pxd-popover--wrapper {
   --popover-padding: calc(var(--popover-offset, 8) * 1px);
+  --popover-origin: center;
 
-  .pxd-popover--content.variant-invert + .pxd-popover--arrow {
-    --popover-arrow-border: var(--color-gray-300);
+  &[data-position='top'] {
+    --popover-origin: center bottom;
+  }
+
+  &[data-position='top-start'] {
+    --popover-origin: left bottom;
+  }
+
+  &[data-position='top-end'] {
+    --popover-origin: right bottom;
+  }
+
+  &[data-position='bottom'] {
+    --popover-origin: center top;
+  }
+
+  &[data-position='bottom-start'] {
+    --popover-origin: left top;
+  }
+
+  &[data-position='bottom-end'] {
+    --popover-origin: right top;
+  }
+
+  &[data-position='left'] {
+    --popover-origin: right center;
+  }
+
+  &[data-position='left-start'] {
+    --popover-origin: right top;
+  }
+
+  &[data-position='left-end'] {
+    --popover-origin: right bottom;
+  }
+
+  &[data-position='right'] {
+    --popover-origin: left center;
+  }
+
+  &[data-position='right-start'] {
+    --popover-origin: left top;
+  }
+
+  &[data-position='right-end'] {
+    --popover-origin: left bottom;
   }
 
   &[data-position^='top'] {
@@ -700,75 +743,32 @@ defineExpose({
       left: -6px;
     }
   }
-}
 
-.pxd-popover--container {
-  transition-property: opacity, transform;
-  max-height: min(800px, 80vh);
-  max-height: min(800px, 80dvh);
+  .pxd-popover--content.variant-invert + .pxd-popover--arrow {
+    --popover-arrow-border: var(--color-gray-300);
+  }
 
-  [data-visible='true'] & {
+  .pxd-popover--container {
+    transition-property: opacity, transform;
+    transform-origin: var(--popover-origin);
+    max-height: min(800px, 80vh);
+    max-height: min(800px, 80dvh);
+  }
+
+  &[data-visible='true'] .pxd-popover--container {
     opacity: 1;
     pointer-events: auto;
   }
 
-  [data-visible='false'] &[data-transition-type='fade-scale'] {
+  &[data-visible='false'] .pxd-popover--container[data-transition-type='fade-scale'] {
     opacity: 0;
     transform: scale(var(--popover-scale));
     transition-duration: var(--faster-transition-duration);
   }
 
-  [data-visible='false'] &[data-transition-type='fade-slide'] {
+  &[data-visible='false'] .pxd-popover--container[data-transition-type='fade-slide'] {
     transform: translateY(100%);
     transition-duration: var(--faster-transition-duration);
-  }
-
-  [data-position='top'] & {
-    transform-origin: center bottom;
-  }
-
-  [data-position='top-start'] & {
-    transform-origin: left bottom;
-  }
-
-  [data-position='top-end'] & {
-    transform-origin: right bottom;
-  }
-
-  [data-position='bottom'] & {
-    transform-origin: center top;
-  }
-
-  [data-position='bottom-start'] & {
-    transform-origin: left top;
-  }
-
-  [data-position='bottom-end'] & {
-    transform-origin: right top;
-  }
-
-  [data-position='left'] & {
-    transform-origin: right center;
-  }
-
-  [data-position='left-start'] & {
-    transform-origin: right top;
-  }
-
-  [data-position='left-end'] & {
-    transform-origin: right bottom;
-  }
-
-  [data-position='right'] & {
-    transform-origin: left center;
-  }
-
-  [data-position='right-start'] & {
-    transform-origin: left top;
-  }
-
-  [data-position='right-end'] & {
-    transform-origin: left bottom;
   }
 }
 </style>

@@ -29,6 +29,7 @@ export interface PopoverProps {
   fillTriggerWidth?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
+  closeOnOutsideClick?: boolean
   lockScrollOnVisible?: boolean
   returnFocusOnDeactivate?: boolean
 }

@@ -40,7 +40,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
   </PStack>
 
   <PStack justify="between" class="w-lg my-2">
-    <PStack direction="vertical">
+    <PStack direction="vertical" class="w-auto">
       <PPopover
         content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="left-start"
@@ -72,7 +72,7 @@ const content = 'The hymn of humanity is the hymn of courage.'
       </PPopover>
     </PStack>
 
-    <PStack direction="vertical" align="end">
+    <PStack direction="vertical" align="end" class="w-auto">
       <PPopover
         content-class="p-4 bg-background-100 shadow-sm border rounded-md"
         position="right-start"
@@ -394,6 +394,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | return-focus-on-deactivate | `boolean` | `true` | Return focus to the trigger when the Popover closes |
 | close-on-invisible | `boolean` | `true` | Hide the Popover when the trigger is clipped or scrolled out of view |
+| close-on-outside-click | `boolean` | `true` | Close the Popover when a click lands outside of it and its trigger |
 | close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
 | lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
 

@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
     height="7"
     viewBox="0 0 14 7"
     xmlns="http://www.w3.org/2000/svg"
-    class="pxd-popover-arrow"
+    class="pxd-popover-arrow motion-safe:transition-[fill]"
     :data-position="position"
     v-bind="$attrs"
   >

@@ -455,6 +455,55 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should close on an outside click', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('click')
+    await flush()
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    expect(wrapper.emitted('outside-click')).toHaveLength(1)
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should keep the popover open on an outside click when close-on-outside-click is false', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+        closeOnOutsideClick: false,
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('click')
+    await flush()
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    expect(wrapper.emitted('outside-click')).toHaveLength(1)
+    expect(wrapper.emitted('hide')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('should emit escape and hide when the overlay reports Escape', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
