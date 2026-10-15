@@ -442,6 +442,29 @@ const data = [
 </template>
 ```
 
+## Loading
+
+Set `loading` to cover the tree with a loading mask: the `empty` slot stays hidden, the built-in search field swaps its prefix for a loading icon, and the tree ignores the keyboard and the search input until it is set back to `false`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const loading = ref(true)
+const data = []
+</script>
+
+<template>
+  <PStack align="center">
+    <PTree class="w-72 max-h-64" filterable :loading="loading" :data="data">
+      <template #empty>No folders.</template>
+    </PTree>
+
+    <PButton size="sm" @click="loading = !loading"> Toggle </PButton>
+  </PStack>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -465,6 +488,7 @@ const data = [
 | expanded-keys | `ComponentValue[]` | - | Controlled expanded nodes |
 | default-expanded-keys | `ComponentValue[]` | `[]` | Expanded nodes before the user changes them |
 | children-field | `string` | `'children'` | Field of a node holding its children |
+| loading | `boolean` | `false` | Cover the tree with a loading mask, hide the `empty` slot, put the built-in search field in its loading state and ignore the search input and the keyboard |
 | filterable | `boolean` | `false` | Render the search field |
 | filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
 | highlight-match | `boolean` | `false` | Mark the matched substring of the label. Only a contiguous run of characters is marked: a fuzzy hit that is not one still shows its row, just without the highlight |
@@ -494,7 +518,7 @@ const data = [
 | update:expandedKeys | `(keys: ComponentValue[]) => void` | Emitted when a node is expanded or collapsed. |
 | expand | `(detail: TreeNodeDetail) => void` | Emitted when a node is expanded. |
 | collapse | `(detail: TreeNodeDetail) => void` | Emitted when a node is collapsed. |
-| update:searchValue | `(query: string) => void` | Emitted when the search field changes. Write it back through `search-value` to control the field. |
+| update:searchValue | `(query: string) => void` | Emitted when the search field changes while not loading. Write it back through `search-value` to control the field. |
 
 ```ts
 interface TreeNodeDetail {

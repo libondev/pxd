@@ -25,6 +25,7 @@ import {
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNumber } from '../../utils/is.js'
+import PLoadingMask from '../_internal/loading-mask.vue'
 import PTreeNode from '../_internal/tree-node.vue'
 import PSearchInput from '../search-input/index.vue'
 import PTeleport from '../teleport/index.vue'
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   overScan: 4,
   indent: 16,
   childrenField: 'children',
+  loading: false,
   filterable: false,
   highlightMatch: false,
   searchPlaceholder: 'Search',
@@ -178,6 +180,10 @@ function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
 }
 
 function onSearchInput(value: string): void {
+  if (props.loading) {
+    return
+  }
+
   internalSearchValue.value = value
   emits('update:searchValue', value)
 }
@@ -304,7 +310,7 @@ const KEYMAP: ListKeyboardMap = {
 
 const { onKeydown } = useListKeyboardController({
   keymap: KEYMAP,
-  enabled: () => !props.disabled,
+  enabled: () => !props.disabled && !props.loading,
   onCommand: (command) => dispatch(command),
 })
 
@@ -576,6 +582,7 @@ defineExpose({
         <PSearchInput
           :model-value="searchValue"
           :placeholder="searchPlaceholder"
+          :loading="loading"
           @update:model-value="onSearchInput"
         />
       </slot>
@@ -585,8 +592,10 @@ defineExpose({
       ref="containerRef"
       role="tree"
       tabindex="0"
-      class="pxd-tree m-0 p-1 scroll-p-1 w-full max-w-full overflow-auto rounded-inherit bg-background-100 outline-none"
+      class="pxd-tree m-0 p-1 scroll-p-1 relative w-full max-w-full overflow-auto rounded-inherit bg-background-100 outline-none"
+      :class="{ 'min-h-22': loading && !rows.length }"
       :style="containerStyle"
+      :aria-busy="loading"
       :aria-multiselectable="multiple || undefined"
       :aria-activedescendant="focused ? activeDescendant : undefined"
       v-bind="$attrs"
@@ -677,9 +686,11 @@ defineExpose({
         </div>
       </div>
 
+      <PLoadingMask v-if="loading" />
+
       <div
-        v-if="!rows.length"
-        class="pxd-tree--empty py-7 text-sm text-center text-foreground-secondary"
+        v-else-if="!rows.length"
+        class="pxd-tree--empty py-7.5 text-sm text-center text-foreground-secondary"
       >
         <slot name="empty" />
       </div>

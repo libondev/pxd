@@ -1624,4 +1624,78 @@ describe('tree', () => {
 
     wrapper.unmount()
   })
+
+  it('should cover the tree with a loading mask and ignore the keyboard', async () => {
+    const wrapper = mount(Tree, { attachTo: document.body, props: { data, loading: true } })
+
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(true)
+    expect(wrapper.find('.pxd-tree').attributes('aria-busy')).toBe('true')
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    await wrapper.find('.pxd-tree').trigger('focus')
+    await wrapper.find('.pxd-tree').trigger('keydown', { key: 'ArrowDown' })
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-active')).toBe('false')
+
+    await wrapper.setProps({ loading: false })
+
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(false)
+    expect(wrapper.find('.pxd-tree').attributes('aria-busy')).toBe('false')
+
+    await wrapper.find('.pxd-tree').trigger('keydown', { key: 'ArrowDown' })
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-active')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should hide the empty slot and keep the mask readable while loading without rows', async () => {
+    const wrapper = mount(Tree, {
+      props: { data: [], loading: true },
+      slots: { empty: 'Nothing here' },
+    })
+
+    expect(wrapper.text()).not.toContain('Nothing here')
+    expect(wrapper.find('.pxd-loading-mask').exists()).toBe(true)
+    expect(wrapper.find('.pxd-tree').classes()).toContain('min-h-22')
+
+    await wrapper.setProps({ loading: false })
+
+    expect(wrapper.text()).toContain('Nothing here')
+    expect(wrapper.find('.pxd-tree').classes()).not.toContain('min-h-22')
+
+    wrapper.unmount()
+  })
+
+  it('should hand the loading state to the built-in search field', async () => {
+    const wrapper = mount(Tree, { props: { data, filterable: true, loading: true } })
+    const icon = () => wrapper.find('[data-tree-search] .pxd-search-input--prefix-icon svg')
+
+    expect(icon().classes()).toContain('motion-safe:animate-spin')
+
+    await wrapper.setProps({ loading: false })
+
+    expect(icon().classes()).not.toContain('motion-safe:animate-spin')
+
+    wrapper.unmount()
+  })
+
+  it('should ignore the search field while loading', async () => {
+    const wrapper = mount(Tree, { props: { data, filterable: true, loading: true } })
+    const keys = () =>
+      wrapper.findAll('[data-tree-item]').map((item) => item.attributes('data-key'))
+
+    await wrapper.find('input').setValue('tree')
+
+    expect(wrapper.emitted('update:searchValue')).toBeUndefined()
+    expect(keys()).toEqual(['src', 'docs', 'readme'])
+
+    await wrapper.setProps({ loading: false })
+    await wrapper.find('input').setValue('tree')
+
+    expect(wrapper.emitted('update:searchValue')?.[0]?.[0]).toBe('tree')
+    expect(keys()).toEqual(['src', 'components', 'tree'])
+
+    wrapper.unmount()
+  })
 })

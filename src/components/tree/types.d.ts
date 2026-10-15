@@ -106,6 +106,7 @@ export interface TreeProps {
   expandedKeys?: ComponentValue[]
   defaultExpandedKeys?: ComponentValue[]
   childrenField?: string
+  loading?: boolean
   filterable?: boolean
   filter?: TreeFilterFn
   /** Render only the nodes the filter matched, instead of the hits plus their ancestors. */
