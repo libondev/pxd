@@ -42,8 +42,6 @@ const value = ref('medium')
 
 ## Colors
 
-Set `colors` per level, the key is the level index. A level without an entry carries the colour of the previous one, the lowest level falls back to `primary`. A value can be any CSS background, so a gradient gives a smooth transition.
-
 ```vue demo
 <script setup>
 import { ref } from 'vue'
@@ -59,7 +57,7 @@ const colors = {
   0: 'var(--color-gray-700)',
   1: 'var(--color-blue-700)',
   2: 'linear-gradient(90deg, var(--color-blue-700), var(--color-amber-700))',
-  3: 'linear-gradient(90deg, var(--color-amber-700), var(--color-red-700))',
+  3: 'linear-gradient(90deg, var(--color-blue-700), var(--color-amber-700), var(--color-red-700))',
 }
 
 const value = ref('high')

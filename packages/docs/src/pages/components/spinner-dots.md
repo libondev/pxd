@@ -1,4 +1,4 @@
-# Dots Spinner
+# Spinner Dots
 
 Braille-style spinner that cycles through dot-matrix characters to indicate a running process.
 
