@@ -233,7 +233,7 @@
   },
   "/components/overlay": {
     "title": "Overlay",
-    "description": "Highlight certain contents."
+    "description": "a floating UI element that renders on top of the main application content to display temporary information, capture user input, or block interaction"
   },
   "/components/page-number": {
     "title": "Page Number",

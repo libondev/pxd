@@ -21,7 +21,6 @@ defineOptions({
 const props = withDefaults(defineProps<OverlayProps>(), {
   modelValue: false,
   showOverlay: true,
-  appendToBody: true,
   closeOnPressEscape: true,
   lockScrollOnVisible: true,
   closeOnClickOverlay: false,
@@ -136,7 +135,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PTeleport :disabled="!appendToBody">
+  <PTeleport>
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         data-overlay

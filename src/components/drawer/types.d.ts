@@ -9,7 +9,6 @@ export interface DrawerProps {
   position?: BasePosition
   modelValue?: boolean
   loadingText?: string
-  appendToBody?: boolean
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean

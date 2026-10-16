@@ -22,7 +22,6 @@ defineOptions({
 const props = withDefaults(defineProps<DrawerProps>(), {
   position: 'right',
   modelValue: false,
-  appendToBody: true,
   autoFocusElement: false,
   defaultFooterStyle: true,
   defaultHeaderStyle: false,
@@ -89,7 +88,6 @@ watch(
 <template>
   <POverlay
     :model-value="isVisible"
-    :append-to-body="appendToBody"
     :close-on-press-escape="closeOnPressEscape"
     @escape="closeOverlayIfNeed"
     @click="onOverlayClick"

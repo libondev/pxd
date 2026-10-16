@@ -283,7 +283,6 @@ function handleClose() {
 | loading | `boolean` | - | Cover the modal with a loading mask and block closing |
 | model-value | `boolean` | `false` | Whether the modal is open |
 | loading-text | `string` | `'Loading...'` | Text shown inside the loading mask |
-| append-to-body | `boolean` | `true` | Teleport the modal to `body` to escape overflow containers |
 | wrapper-class | `string \| any[] \| object` | - | Class applied to the modal panel element |
 | content-class | `string \| any[] \| object` | - | Class applied to the scrollable content element |
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |

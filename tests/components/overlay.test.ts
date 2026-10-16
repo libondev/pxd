@@ -17,8 +17,8 @@ describe('overlay', () => {
         return { outer, inner }
       },
       template: `
-        <Overlay v-model="outer" :append-to-body="false">
-          <Overlay v-model="inner" :append-to-body="false" />
+        <Overlay v-model="outer">
+          <Overlay v-model="inner" />
         </Overlay>
       `,
     })
@@ -49,8 +49,8 @@ describe('overlay', () => {
         return { outer, inner }
       },
       template: `
-        <Overlay v-model="outer" :append-to-body="false">
-          <Overlay v-model="inner" :append-to-body="false" :close-on-press-escape="false" />
+        <Overlay v-model="outer">
+          <Overlay v-model="inner" :close-on-press-escape="false" />
         </Overlay>
       `,
     })

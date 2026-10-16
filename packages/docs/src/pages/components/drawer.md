@@ -530,7 +530,6 @@ function handleClose() {
 | position | `BasePosition` | `right` | Edge the drawer slides in from: `top`, `right`, `bottom` or `left` |
 | model-value | `boolean` | `false` | Whether the drawer is open, use with `v-model` |
 | loading-text | `string` | `'Loading...'` | Text shown by the loading mask while `loading` |
-| append-to-body | `boolean` | `true` | Teleport the drawer overlay into `document.body` |
 | wrapper-class | `string \| any[] \| object` | - | Class applied to the drawer panel |
 | content-class | `string \| any[] \| object` | - | Class applied to the scrollable content area |
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the element matching a CSS selector |
