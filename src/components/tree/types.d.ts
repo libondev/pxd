@@ -17,6 +17,9 @@ export type TreeModelValue = ComponentValue | ComponentValue[] | null
 
 export type TreeFilterFn = (node: TreeOption, query: string) => boolean
 
+/** Hands the tree the nodes a query matched, their ancestors included. */
+export type TreeRemoteFilterFn = (query: string) => TreeOptions | Promise<TreeOptions>
+
 /** Hands the children of a node to the tree. An empty array marks it a leaf. */
 export type TreeLoadResolve = (children: TreeOptions) => void
 
@@ -24,7 +27,6 @@ export type TreeLoadResolve = (children: TreeOptions) => void
 export type TreeLoadReject = () => void
 
 export interface TreeLoadDetail {
-  /** The node whose children are asked for, as the tree holds it. */
   node: TreeOption
   depth: number
   parent?: TreeOption
@@ -36,12 +38,7 @@ export type TreeLoadFn = (
   reject: TreeLoadReject,
 ) => void
 
-/**
- * Decides whether a node takes part in the selection. A refused node stays a full citizen: it
- * expands, drags and takes drops like any other, it only never lands in the model. That is what
- * separates it from `disabled`, and it is how a tree of folders offers only its files, or one that
- * reopens over saved data keeps what was saved out of reach.
- */
+/** Keeps a node out of the model without the rest of `disabled`: it still expands and takes drops. */
 export type TreeSelectableFn = (node: TreeOption) => boolean
 
 export interface TreeNodeDetail {
@@ -75,16 +72,12 @@ export interface TreeMoveLocation {
 export interface TreeDropInfo {
   dragValue: ComponentValue
   dragNode: TreeOption
-  /** The row the drop is aimed at. */
   targetValue: ComponentValue
   targetNode: TreeOption
   position: TreeDropPosition
 }
 
-/**
- * Decides whether a drop may land. Supplying it takes over the policy rules; the structural
- * ones (a node never lands on itself or inside its own subtree) hold either way.
- */
+/** Decides whether a drop may land; the structural rules hold either way. */
 export type TreeAllowDropFn = (info: TreeDropInfo) => boolean
 
 export interface TreeMoveDetail {
@@ -92,7 +85,6 @@ export interface TreeMoveDetail {
   node: TreeOption
   from: TreeMoveLocation
   to: TreeMoveLocation & {
-    /** The row the drop was aimed at. */
     targetValue: ComponentValue
     position: TreeDropPosition
   }
@@ -134,6 +126,8 @@ export interface TreeProps {
   loading?: boolean
   filterable?: boolean
   filter?: TreeFilterFn
+  /** Fetches the nodes a query matched, their ancestors included: giving it searches remotely. */
+  remoteFilter?: TreeRemoteFilterFn
   /** Render only the nodes the filter matched, instead of the hits plus their ancestors. */
   searchMatchesOnly?: boolean
   /** Highlights the query inside a label. Only a contiguous run of characters is marked: a

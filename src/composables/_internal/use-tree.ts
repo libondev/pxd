@@ -7,14 +7,16 @@ import type {
   TreeModelValue,
   TreeOption,
   TreeOptions,
+  TreeRemoteFilterFn,
   TreeSelectableFn,
 } from '../../components/tree/types'
 import type { ComponentValue, MaybeElementRef } from '../../types/shared'
-import type { ComputedRef, MaybeRefOrGetter } from 'vue'
-import { computed, onScopeDispose, shallowRef } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
+import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { getElement } from '../../utils/dom.js'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
+import { debounce } from '../../utils/timing.js'
 
 export interface TreeNodeMeta {
   node: TreeOptions[number]
@@ -30,7 +32,6 @@ export interface TreeIndex {
   byValue: Map<ComponentValue, TreeNodeMeta>
 }
 
-/** Depth-first pre-order walk: `list` is document order, `end` marks subtree bounds. */
 export function createTreeIndex(data: TreeOptions, childrenField: string): TreeIndex {
   const list: TreeNodeMeta[] = []
   const byValue = new Map<ComponentValue, TreeNodeMeta>()
@@ -94,11 +95,7 @@ function graftNode(
   return changed ? { ...node, [childrenField]: children } : node
 }
 
-/**
- * Copies lazily loaded children into the tree the index walks. Children already in `data` win over
- * a cached request, and a node the graft does not touch keeps its identity, so consumer code that
- * holds onto a node still recognises it.
- */
+/** Children in `data` win over a cached request, and an untouched node keeps its identity. */
 export function graftLoadedChildren(
   data: TreeOptions,
   loaded: Map<ComponentValue, TreeOptions>,
@@ -127,16 +124,12 @@ function defaultFilter(node: TreeOptions[number], query: string): boolean {
 }
 
 export interface TreeMatched {
-  /** Every hit plus its ancestor chain: ancestor-closed, so the row walk can prune subtrees. */
+  /** Every hit plus its ancestors: ancestor-closed, so the row walk can prune whole subtrees. */
   visible: ReadonlySet<ComponentValue>
-  /** The hits alone, without the ancestors kept only for context. */
+  /** The hits alone. */
   exact: ReadonlySet<ComponentValue>
 }
 
-/**
- * Splits the current query into the two sets the row walk needs: the ancestor-closed one that
- * prunes whole subtrees, and the hits on their own.
- */
 export function useTreeMatched(
   index: MaybeRefOrGetter<TreeIndex>,
   query: MaybeRefOrGetter<string>,
@@ -173,22 +166,101 @@ export function useTreeMatched(
   })
 }
 
+const REMOTE_SEARCH_DEBOUNCE = 200
+
+export interface UseTreeSearchOptions {
+  query: MaybeRefOrGetter<string>
+  remoteFilter?: MaybeRefOrGetter<TreeRemoteFilterFn | undefined>
+}
+
+export interface UseTreeSearchReturn {
+  /** The forest the query last settled on, absent before the first answer. */
+  matches: ShallowRef<TreeOptions | undefined>
+  remote: ComputedRef<boolean>
+  /** Whether a request is in flight, the debounce window included. */
+  pending: ShallowRef<boolean>
+  active: ComputedRef<boolean>
+}
+
+export function useTreeSearch(options: UseTreeSearchOptions): UseTreeSearchReturn {
+  const matches = shallowRef<TreeOptions>()
+  const pending = shallowRef(false)
+  const remote = computed(() => typeof toValue(options.remoteFilter) === 'function')
+  const needle = computed(() => (toValue(options.query) ?? '').trim())
+  const active = computed(() => remote.value && needle.value !== '' && matches.value !== undefined)
+
+  let requestId = 0
+
+  /** A query that moves on retires the request it interrupts, so its answer can never land. */
+  function invalidate(): void {
+    requestId += 1
+    runSearch.cancel()
+  }
+
+  async function run(query: string): Promise<void> {
+    const at = ++requestId
+    const remoteFilter = toValue(options.remoteFilter)
+
+    if (!remoteFilter) {
+      return
+    }
+
+    try {
+      const result = await remoteFilter(query)
+
+      if (at === requestId) {
+        matches.value = Array.isArray(result) ? result : []
+      }
+    } catch {
+      if (at === requestId) {
+        matches.value = []
+      }
+    } finally {
+      if (at === requestId) {
+        pending.value = false
+      }
+    }
+  }
+
+  const runSearch = debounce((query: string) => {
+    void run(query)
+  }, REMOTE_SEARCH_DEBOUNCE)
+
+  watch(
+    [remote, needle],
+    ([isRemote, query]) => {
+      invalidate()
+
+      // A forest from an earlier query must not outlive it.
+      if (!isRemote || !query) {
+        matches.value = undefined
+        pending.value = false
+        return
+      }
+
+      // Pending from the keystroke rather than from the request: the debounce window is part of it.
+      pending.value = true
+      runSearch(query)
+    },
+    { immediate: true },
+  )
+
+  onScopeDispose(invalidate)
+
+  return { matches, remote, pending, active }
+}
+
 export interface UseTreeRowsOptions {
   query: MaybeRefOrGetter<string>
   expanded: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
   matched: MaybeRefOrGetter<ReadonlySet<ComponentValue>>
   /** The hits without their ancestors; only read when `matchesOnly` is on. */
   exactMatched?: MaybeRefOrGetter<ReadonlySet<ComponentValue> | undefined>
-  /** Drop the ancestors that only stayed visible for context, and flatten what is left. */
   matchesOnly?: MaybeRefOrGetter<boolean | undefined>
-  /** A childless row whose children the tree still has to fetch keeps its arrow. */
   canLoad?: MaybeRefOrGetter<((value: ComponentValue) => boolean) | undefined>
 }
 
 /**
- * Visible rows in document order. Collapsed subtrees and, while searching,
- * everything outside the matched ancestor chains are pruned.
- *
  * Selection state is deliberately absent: it changes on every click, and putting it here would
  * rebuild all N rows for a change that touches two of them. Read the sets at render time instead.
  */
@@ -260,15 +332,12 @@ export interface UseTreeSelectionOptions {
   index: MaybeRefOrGetter<TreeIndex>
   modelValue: MaybeRefOrGetter<TreeModelValue | undefined>
   multiple: MaybeRefOrGetter<boolean>
-  /** Keep every node on its own: no cascade, and no parent lit up by its children. */
   checkStrictly?: MaybeRefOrGetter<boolean | undefined>
-  /** Refuses a node a place in the selection, without the rest of the disabled behaviour. */
   selectable?: MaybeRefOrGetter<TreeSelectableFn | undefined>
 }
 
 export interface TreeToggleResult {
   value: TreeModelValue
-  /** Parents left partially checked by the new selection, empty without the cascade. */
   halfCheckedValues: ComponentValue[]
 }
 
@@ -276,13 +345,8 @@ export interface UseTreeSelectionReturn {
   checked: ComputedRef<Set<ComponentValue>>
   indeterminate: ComputedRef<Set<ComponentValue>>
   toggle: (value: ComponentValue) => TreeToggleResult
-  /**
-   * Extend the selection to `value`: the span between the anchor and it in document order, both
-   * ends included and disabled nodes left out. Without an anchor it toggles instead. Meant for a
-   * shift-click.
-   */
+  /** The span between the anchor and `value`, both ends included; toggles without an anchor. */
   extend: (value: ComponentValue) => TreeToggleResult
-  /** Whether a key could join the selection at all, disabled and refused nodes aside. */
   isSelectable: (value: ComponentValue) => boolean
 }
 
@@ -299,11 +363,7 @@ function collect(modelValue: TreeModelValue | undefined): Set<ComponentValue> {
   return modelValue == null ? new Set() : new Set([modelValue])
 }
 
-/**
- * Post-order pass over the pre-order node list. A node with selectable descendants
- * counts as checked when every one of them is, which is what makes a parent light up
- * after its children were picked one by one. One pass, so cascades stay O(n).
- */
+/** One post-order pass, so a cascade stays O(n): a parent lights up once every child is checked. */
 function derive(
   list: TreeNodeMeta[],
   selected: ReadonlySet<ComponentValue>,
@@ -327,9 +387,8 @@ function derive(
     const takes = selectable(meta)
     const isChecked = total > 0 ? hit === total : selected.has(meta.node.value)
 
-    // A refused node is only refused the clicks and the ranges: one the model already carries stays
-    // selected, and one it does not never lands there. A partial subtree is still reported, so a
-    // parent can say that some of what it holds is selected.
+    // A refused node is refused the clicks only: what the model carries stays selected, and a
+    // partial subtree still lights its parent.
     if (isChecked && (takes || selected.has(meta.node.value))) {
       checked.add(meta.node.value)
     } else if (hit > 0) {
@@ -347,15 +406,10 @@ function derive(
 
 export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelectionReturn {
   const selected = computed(() => collect(toValue(options.modelValue)))
-  /**
-   * Where the selection last landed and how far the last extension reached. A shift-click drops
-   * the span that extension covered before taking the new one, so the range follows the pointer
-   * rather than piling up.
-   */
+  /** Where the selection last landed, and how far the last extension reached. */
   let anchor: ComponentValue | undefined
   let current: ComponentValue | undefined
 
-  /** A node takes part in the selection unless it is disabled or the tree refuses it. */
   function selectable(meta: TreeNodeMeta): boolean {
     return meta.node.disabled !== true && toValue(options.selectable)?.(meta.node) !== false
   }
@@ -402,8 +456,7 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
     const next = new Set(selected.value)
     const willCheck = !state.value.checked.has(value)
 
-    // A clearing click leaves the anchor where the last selection put it, so a shift-click after
-    // it still extends from a row the selection knows about.
+    // A clearing click leaves the anchor, so a shift-click after it still extends from there.
     if (willCheck) {
       anchor = value
       current = value
@@ -436,7 +489,6 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
     return toToggleResult(list, derive(list, next, selectable))
   }
 
-  /** The nodes between two of them in document order, both ends included, either way round. */
   function span(from: TreeNodeMeta, to: TreeNodeMeta): TreeNodeMeta[] {
     const { list } = toValue(options.index)
     const start = list.indexOf(from)
@@ -457,9 +509,8 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
 
     const next = new Set(selected.value)
 
-    // Undo what the last extension covered before taking the new span, the way React Aria's
-    // `extendSelection` does: it is what lets a shift-click back inside the span shrink it instead
-    // of leaving the wider range behind. The anchor itself comes back in the pass below.
+    // Undo the last span before taking the new one, the way React Aria's `extendSelection` does:
+    // that is what lets a shift-click back inside the span shrink it instead of leaving it wider.
     for (const item of span(from, reached ?? to)) {
       next.delete(item.node.value)
     }
@@ -486,10 +537,7 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
   }
 }
 
-/**
- * Walks up from `value` looking for `ancestorValue`. Reached in O(depth) instead of scanning
- * `index.list`, which the hit test runs on every pointer move.
- */
+/** Walks up instead of scanning `index.list`: the hit test runs this on every pointer move. */
 export function isTreeDescendant(
   index: TreeIndex,
   ancestorValue: ComponentValue,
@@ -522,10 +570,7 @@ interface Removal {
   index: number
 }
 
-/**
- * Removes the node and rebuilds only the lists and nodes along its path, so untouched
- * subtrees keep their identity and a reference comparison still recognises them.
- */
+/** Rebuilds only the path to the node, so untouched subtrees keep their identity. */
 function removeNode(
   list: TreeOptions,
   childrenField: string,
@@ -626,11 +671,8 @@ export interface TreeMoveResult {
 }
 
 /**
- * Relocates a node relative to a target row.
- *
- * The node is detached before the target is looked up, which is what rejects the whole
- * family of invalid drops for free: the node itself and its own descendants are no longer
- * in the tree, so the insertion pass simply never finds them.
+ * The node is detached before the target is looked up, which rejects the whole family of invalid
+ * drops for free: it and its descendant are no longer in the tree to be found.
  */
 export function moveTreeNode(
   data: TreeOptions,
@@ -670,25 +712,17 @@ export function moveTreeNode(
   }
 }
 
-/** Movement before the pointer is treated as a drag, so a plain click never arms it. */
 const DRAG_THRESHOLD = 5
 
-/**
- * How long a touch or pen must hold still before it drags. A finger that moves inside this window
- * is panning the page, and by then the browser has taken the gesture for a scroll.
- */
+/** A finger that moves inside this window is panning the page, so a touch must hold still. */
 const HOLD_DELAY = 300
 
-/** How long a collapsed parent must be hovered before it opens. */
 const EXPAND_DELAY = 500
 
 export interface UseTreeDragOptions {
   container: MaybeElementRef<HTMLElement>
-  /** Rendered rows, the only ones the pointer can be measured against. */
   rows: MaybeRefOrGetter<TreeFlatNode[]>
-  /** Whole-session gate: off while searching, while disabled, or without the prop. */
   enabled: MaybeRefOrGetter<boolean>
-  /** Offer `inside` in the middle of a row without children, so a drop can give it some. */
   dropInsideLeaf: MaybeRefOrGetter<boolean>
   /** Rejects a position the tree will refuse, so no indicator is ever painted for it. */
   canDrop: (
@@ -700,20 +734,14 @@ export interface UseTreeDragOptions {
   onCommit: (value: ComponentValue, target: TreeDropTarget) => void
 }
 
-/**
- * One row measured once, in content coordinates rather than viewport ones: the numbers stay the
- * same while the container scrolls, so a cached rect survives a scroll of either kind.
- */
+/** Content coordinates, not viewport ones, so a cached rect survives a scroll. */
 interface RowRect {
   row: TreeFlatNode
   top: number
   height: number
 }
 
-/**
- * A press that has not become a drag yet. A mouse converts it on the first move past the
- * threshold; touch and pen wait out `HOLD_DELAY` first.
- */
+/** A press not yet a drag: a mouse converts it past the threshold, a touch waits out the hold. */
 interface Armed {
   value: ComponentValue
   x: number
@@ -760,10 +788,8 @@ export function useTreeDrag(options: UseTreeDragOptions) {
   }
 
   /**
-   * The cache is stale only when the rendered window itself moved. `data-index` is the row's
-   * position in the whole list, so a row count change (a hover expand) and a window sliding
-   * under a virtual list both land here, while plain scrolling does not — and plain scrolling
-   * is exactly what the content coordinates already absorb.
+   * Stale only when the rendered window moved: `data-index` is the row's position in the whole
+   * list, so a count change and a virtual window sliding both land here, plain scrolling does not.
    */
   function isCacheStale(items: NodeListOf<HTMLElement>): boolean {
     if (items.length !== cachedRects.length) {
@@ -774,11 +800,7 @@ export function useTreeDrag(options: UseTreeDragOptions) {
     return Number(items[0]?.dataset.index) !== cachedRects[0]?.row.index
   }
 
-  /**
-   * The cached tops are content offsets and survive any scroll, but the origin they are read
-   * against does not: without this, a scrolled list resolves the pointer against where the rows
-   * used to be, and the drop lands a scroll away from the row underneath it.
-   */
+  /** The cached tops survive a scroll, the origin they are read against does not. */
   function refreshOrigin(): void {
     const container = getElement(options.container)
 
@@ -820,9 +842,8 @@ export function useTreeDrag(options: UseTreeDragOptions) {
   }
 
   /**
-   * The row after an expanded one sits inside its subtree, while the slot its own `after` names
-   * lies past all of it: the sibling below it. A row that is last at its level has no such
-   * sibling, so its `after` stays the only way to say it.
+   * The row after an expanded one sits inside its subtree, so `after` names the sibling below
+   * instead; a row that is last at its level has no such sibling.
    */
   function afterRow(index: number, row: TreeFlatNode): TreeDropTarget {
     for (let at = index + 1; at < cachedRects.length; at++) {
@@ -1090,10 +1111,7 @@ export function useTreeDrag(options: UseTreeDragOptions) {
     }
   }
 
-  /**
-   * Whether the gesture that just ended moved a node. The click the browser fires at the end of
-   * it belongs to the drag, not to the row it started from, until the next press clears this.
-   */
+  /** Whether the gesture that just ended moved a node, so its trailing click belongs to the drag. */
   function didDrag(): boolean {
     return justDragged
   }

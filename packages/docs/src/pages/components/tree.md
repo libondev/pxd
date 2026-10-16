@@ -30,9 +30,8 @@ const data = [
 
 ## Multiple
 
-Shift-click selects everything between two rows in document order, starting from wherever the
-selection last landed. A further shift-click moves the range instead of extending it, so shifting
-back inside it shortens it again; a disabled row is neither an end nor part of one.
+A shift-click takes the span between two rows in document order, starting where the selection last
+landed; a further one moves that span, and a disabled row is neither an end nor part of one.
 
 ```vue demo
 <script setup>
@@ -97,9 +96,8 @@ const data = [
 
 ## Selectable nodes
 
-A refused node keeps its looks, still expands, drags and takes drops — only the selection is out of
-reach. With `multiple`, such a parent is never checked itself, but it still reports a partial state
-while something it holds is selected.
+A refused node keeps its looks, expands and takes drops; only the selection is out of reach. Under
+`multiple` it is never checked itself, but still reports a partial state.
 
 ```vue demo
 <script setup>
@@ -135,9 +133,8 @@ const data = [
 
 ## Expand only
 
-A parent row becomes a handle for its subtree: the click opens or closes it and leaves the
-selection to the rows below. In `multiple` mode only the checkbox selects. To keep a node out of
-the selection whatever is clicked, reach for `selectable`.
+A parent row becomes a handle for its subtree: the click opens or closes it, and under `multiple`
+only the checkbox selects. To refuse a node whatever is clicked, reach for `selectable`.
 
 ```vue demo
 <script setup>
@@ -211,6 +208,56 @@ const data = [
   <PTree class="w-72 max-h-64" filterable highlight-match :data="data">
     <template #empty>No match.</template>
   </PTree>
+</template>
+```
+
+## Remote search
+
+Giving `remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
+keystroke instead of through the local `filter`. It hands back the matched nodes with their
+ancestors, and that forest replaces `data` while the query is active, at its real depths with the
+chains to a hit opened; `search-matches-only` flattens it. Only the latest answer counts, the field
+spins while a request is in flight, and the `empty` slot covers one. Clearing the query restores
+`data`.
+
+```vue demo
+<script setup>
+const source = [
+  {
+    label: 'src',
+    value: 'src',
+    children: [
+      { label: 'components', value: 'components', children: [{ label: 'tree', value: 'tree' }] },
+      { label: 'composables', value: 'composables' },
+    ],
+  },
+  { label: 'docs', value: 'docs' },
+]
+
+// A real one would ask a server; the shape it hands back is the same either way.
+function search(query) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(keepMatched(source, query)), 500)
+  })
+}
+
+function keepMatched(nodes, query) {
+  const result = []
+
+  for (const node of nodes) {
+    const children = keepMatched(node.children ?? [], query)
+
+    if (children.length || node.label.includes(query)) {
+      result.push(children.length ? { ...node, children } : { ...node, children: undefined })
+    }
+  }
+
+  return result
+}
+</script>
+
+<template>
+  <PTree class="w-72 max-h-64" filterable :data="source" :remote-filter="search" />
 </template>
 ```
 
@@ -335,13 +382,12 @@ const data = [
 ## Drag and drop
 
 A drop emits `update:data` with the next shape, so bind the tree with `v-model:data` (`.sync` /
-`@update:data` on Vue 2). Dragging is off while a search is active. `inside` is offered by parents,
-and by a childless row too once `drop-inside-leaf` is set, the dragged node becoming its first
-child; a node that took a child expands itself.
+`@update:data` on Vue 2). Dragging is off while searching, and `drop-inside-leaf` lets a childless
+row take the dragged node as its first child.
 
-Touch and pen must hold the row still for 300ms before it drags, because a finger that moves at
-once is scrolling the page; a mouse starts on the first 5px of movement. The tree never scrolls on
-its own, so a touch drag is limited to the rows already in view.
+Touch and pen must hold still for 300ms before they drag, because a finger that moves at once is
+scrolling the page; a mouse starts on the first 5px. The tree never scrolls on its own, so a touch
+drag reaches only the rows in view.
 
 ```vue demo
 <script setup>
@@ -444,7 +490,8 @@ const data = [
 
 ## Loading
 
-Set `loading` to cover the tree with a loading mask: the `empty` slot stays hidden, the built-in search field swaps its prefix for a loading icon, and the tree ignores the keyboard and the search input until it is set back to `false`.
+Set `loading` to cover the tree with a mask: the `empty` slot hides, the built-in search field shows
+a spinner, and the keyboard and the search input are ignored.
 
 ```vue demo
 <script setup>
@@ -468,15 +515,13 @@ const data = []
 ## Lazy loading
 
 With `lazy`, a node without children in `data` still shows an arrow, and the first time it opens
-`load` is called with what the tree knows about that node (see `TreeLoadDetail`) and the two ways to
-settle the request: `resolve(children)` puts them in the tree, an empty array making the node a leaf,
-while `reject()` leaves it unloaded so the next expand asks again. A node that resolved before is
-never asked twice, one marked `isLeaf` is never asked at all, and one whose children already sit in
-`data` is passed over: the data wins.
+`load` is called with what the tree knows about it (see `TreeLoadDetail`): `resolve(children)` puts
+them in the tree, an empty array making the node a leaf, while `reject()` leaves it unloaded so the
+next expand asks again. A node that resolved before is never asked twice, one marked `isLeaf` never
+at all, and one whose children already sit in `data` is passed over.
 
 Under `draggable`, nothing can be dropped *inside* a parent whose children the tree has not fetched
-yet, and a drop anywhere else proposes the whole tree through `update:data`, the subtrees loaded so
-far included.
+yet; elsewhere the drop proposes the whole tree through `update:data`, loaded subtrees included.
 
 ```vue demo
 <script setup>
@@ -514,11 +559,11 @@ function load({ node }, resolve) {
 | multiple | `boolean` | `false` | Show a checkbox and cascade the selection through the parents |
 | check-strictly | `boolean` | `false` | Keep every node independently selectable, without cascading and without the partial state |
 | disabled | `boolean` | `false` | Disable the selection and the keyboard of the whole tree |
-| selectable | `(node: TreeOption) => boolean` | every node | Keep a node out of the selection without disabling it: it still expands, drags and takes drops |
-| expand-only | `boolean` | `false` | A row click only opens or closes a parent instead of selecting it; in `multiple` mode only the checkbox selects |
-| draggable | `boolean` | `false` | Allow a row to be dragged to another position, off while searching or when `disabled` is set |
+| selectable | `(node: TreeOption) => boolean` | every node | Keep a node out of the selection without disabling it |
+| expand-only | `boolean` | `false` | A row click only opens or closes a parent instead of selecting it; under `multiple` the checkbox selects |
+| draggable | `boolean` | `false` | Allow a row to be dragged to another position; off while searching and when `disabled` |
 | allow-drop | `(info: TreeDropInfo) => boolean` | disabled nodes | Decide whether a drop may land, overriding the built-in policy |
-| drop-inside-leaf | `boolean` | `false` | Let a row without children take the dragged node as its first child, instead of only before/after |
+| drop-inside-leaf | `boolean` | `false` | Let a childless row take the dragged node as its first child |
 | search-matches-only | `boolean` | `false` | While searching, render the hits alone instead of the hits plus their ancestors |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large trees |
 | item-size | `number` | `32` | Row height in px when `virtual` is enabled |
@@ -529,11 +574,12 @@ function load({ node }, resolve) {
 | default-expanded-keys | `ComponentValue[]` | `[]` | Expanded nodes before the user changes them |
 | children-field | `string` | `'children'` | Field of a node holding its children |
 | lazy | `boolean` | `false` | Fetch the children of a node when it first opens instead of reading them from `data` |
-| load | `(detail: TreeLoadDetail, resolve: TreeLoadResolve, reject: TreeLoadReject) => void` | - | Fetch the children of a node nothing else provided: `resolve` hands them over, `reject` leaves the node unloaded so the next expand asks again |
-| loading | `boolean` | `false` | Cover the tree with a loading mask, hide the `empty` slot, put the built-in search field in its loading state and ignore the search input and the keyboard |
+| load | `(detail: TreeLoadDetail, resolve: TreeLoadResolve, reject: TreeLoadReject) => void` | - | Fetch the children of a node nothing else provided: `resolve` hands them over, `reject` leaves it for the next expand |
+| loading | `boolean` | `false` | Cover the tree with a loading mask; the search input and the keyboard are ignored |
 | filterable | `boolean` | `false` | Render the search field |
 | filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
-| highlight-match | `boolean` | `false` | Mark the matched substring of the label. Only a contiguous run of characters is marked: a fuzzy hit that is not one still shows its row, just without the highlight |
+| remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter`: it returns the matched nodes with their ancestors, which replace `data` while the query is active |
+| highlight-match | `boolean` | `false` | Mark the matched substring of the label; a fuzzy hit that is not a contiguous run stays unmarked |
 | search-placeholder | `string` | `'Search'` | Placeholder of the search field |
 | search-value | `string` | - | Controlled search query |
 | default-search-value | `string` | `''` | Search query before the user types |

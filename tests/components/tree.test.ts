@@ -1,4 +1,10 @@
-import type { TreeDropInfo, TreeLoadFn, TreeOption } from '../../src/components/tree/types'
+import type {
+  TreeDropInfo,
+  TreeLoadFn,
+  TreeOption,
+  TreeOptions,
+  TreeRemoteFilterFn,
+} from '../../src/components/tree/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import Tree from '../../src/components/tree/index.vue'
@@ -603,6 +609,218 @@ describe('tree', () => {
 
     wrapper.unmount()
   })
+  const remoteForest: TreeOptions = [
+    {
+      value: 'src',
+      label: 'src',
+      children: [
+        {
+          value: 'components',
+          label: 'components',
+          children: [{ value: 'tree', label: 'tree' }],
+        },
+      ],
+    },
+  ]
+
+  it('should render the forest the remote filter resolved to', async () => {
+    vi.useFakeTimers()
+
+    const remoteFilter = vi.fn<TreeRemoteFilterFn>(() => Promise.resolve(remoteForest))
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter,
+        // A local filter that refuses everything still never answers for the query.
+        filter: () => false,
+      },
+    })
+
+    await wrapper.find('input').setValue('  tree  ')
+
+    expect(remoteFilter).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(200)
+
+    expect(remoteFilter).toHaveBeenCalledWith('tree')
+
+    const rows = wrapper.findAll('[data-tree-item]')
+
+    expect(rows.map((row) => row.attributes('data-key'))).toEqual(['src', 'components', 'tree'])
+    expect(rows.map((row) => row.attributes('aria-level'))).toEqual(['1', '2', '3'])
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should flatten the returned forest under search-matches-only', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        searchMatchesOnly: true,
+        remoteFilter: () => Promise.resolve(remoteForest),
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+    await vi.advanceTimersByTimeAsync(200)
+
+    const rows = wrapper.findAll('[data-tree-item]')
+
+    expect(rows.map((row) => row.attributes('data-key'))).toEqual(['src', 'components', 'tree'])
+    expect(rows.map((row) => row.attributes('aria-level'))).toEqual(['1', '1', '1'])
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should show no row and a busy field while the query is in flight', async () => {
+    vi.useFakeTimers()
+
+    let settle: ((nodes: TreeOptions) => void) | undefined
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter: () =>
+          new Promise<TreeOptions>((resolve) => {
+            settle = resolve
+          }),
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(0)
+    expect(
+      wrapper.find('[data-tree-search] .pxd-search-input--prefix-icon svg').classes(),
+    ).toContain('motion-safe:animate-spin')
+
+    await vi.advanceTimersByTimeAsync(200)
+
+    settle?.(remoteForest)
+    await vi.advanceTimersByTimeAsync(0)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should keep only the answer to the latest query', async () => {
+    vi.useFakeTimers()
+
+    const settle: ((nodes: TreeOptions) => void)[] = []
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter: () =>
+          new Promise<TreeOptions>((resolve) => {
+            settle.push(resolve)
+          }),
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+    await vi.advanceTimersByTimeAsync(200)
+
+    await wrapper.find('input').setValue('readme')
+    await vi.advanceTimersByTimeAsync(200)
+
+    expect(settle.length).toBe(2)
+
+    // The first answer lands after the query moved on, so it is dropped.
+    settle[0]([{ value: 'src', label: 'src' }])
+    await vi.advanceTimersByTimeAsync(0)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(0)
+
+    settle[1](remoteForest)
+    await vi.advanceTimersByTimeAsync(0)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('[data-tree-item]').map((row) => row.attributes('data-key'))).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should render no row when the remote filter fails', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter: () => Promise.reject(new Error('offline')),
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+    await vi.advanceTimersByTimeAsync(200)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(0)
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
+  it('should keep the local filter when no remote filter is given', async () => {
+    const wrapper = mount(Tree, { props: { data, filterable: true } })
+
+    await wrapper.find('input').setValue('tree')
+
+    expect(wrapper.findAll('[data-tree-item]').map((row) => row.attributes('data-key'))).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+
+    wrapper.unmount()
+  })
+
+  it('should go back to the data when the query is cleared', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter: () => Promise.resolve(remoteForest),
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+    await vi.advanceTimersByTimeAsync(200)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    await wrapper.find('input').setValue('')
+
+    expect(wrapper.findAll('[data-tree-item]').map((row) => row.attributes('data-key'))).toEqual([
+      'src',
+      'docs',
+      'readme',
+    ])
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
+
   it('should move the active node with the keyboard', async () => {
     const wrapper = mount(Tree, { attachTo: document.body, props: { data } })
 

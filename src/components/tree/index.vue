@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
+import type { TreeMatched } from '../../composables/_internal/use-tree'
 import type { ComponentValue } from '../../types/shared'
 import type {
   TreeDropPosition,
@@ -22,6 +23,7 @@ import {
   useTreeIndex,
   useTreeMatched,
   useTreeRows,
+  useTreeSearch,
   useTreeSelection,
 } from '../../composables/_internal/use-tree.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
@@ -67,23 +69,34 @@ const emits = defineEmits<TreeEmits>()
 const uid = getUniqueId()
 const containerRef = shallowRef<HTMLElement>()
 const internalSearchValue = shallowRef(props.defaultSearchValue ?? '')
-// Controlled when `searchValue` is given, the internal copy otherwise, exactly like expandedKeys.
 const searchValue = computed(() => props.searchValue ?? internalSearchValue.value)
 const internalExpandedKeys = shallowRef<ComponentValue[]>([...(props.defaultExpandedKeys ?? [])])
 const loadedChildren = shallowRef(new Map<ComponentValue, TreeOptions>())
 const loadingKeys = shallowRef(new Set<ComponentValue>())
 
-/** What the index walks: the caller's data with every lazily loaded subtree grafted into it. */
 const treeData = computed(() =>
   graftLoadedChildren(props.data, loadedChildren.value, props.childrenField),
 )
 
+const {
+  matches: remoteMatches,
+  remote: remoteMode,
+  pending: searchPending,
+  active: remoteActive,
+} = useTreeSearch({
+  query: () => searchValue.value,
+  remoteFilter: () => props.remoteFilter,
+})
+
+const searchData = computed(() =>
+  remoteActive.value ? (remoteMatches.value ?? []) : treeData.value,
+)
+
 const index = useTreeIndex(
-  () => treeData.value,
+  () => searchData.value,
   () => props.childrenField,
 )
 
-/** A childless row the tree has not fetched from yet keeps its arrow, and so does one mid-request. */
 function canLoad(value: ComponentValue): boolean {
   if (!props.lazy || !props.load || loadedChildren.value.has(value)) {
     return false
@@ -94,11 +107,29 @@ function canLoad(value: ComponentValue): boolean {
   return meta !== undefined && meta.node.isLeaf !== true && meta.children.length === 0
 }
 
-const matched = useTreeMatched(
+const localMatched = useTreeMatched(
   index,
   () => searchValue.value,
   () => props.filter,
 )
+
+/** A query still on its way shows no row at all, rather than letting the local filter answer it. */
+const NO_MATCHED: TreeMatched = { visible: new Set(), exact: new Set() }
+
+const matched = computed<TreeMatched>(() => {
+  if (!remoteMode.value) {
+    return localMatched.value
+  }
+
+  if (!remoteActive.value) {
+    return NO_MATCHED
+  }
+
+  // The whole returned forest shows: an ancestor is as much a hit as the node at the end of it.
+  const visible = new Set(index.value.list.map((meta) => meta.node.value))
+
+  return { visible, exact: visible }
+})
 
 const { checked, indeterminate, toggle, extend, isSelectable } = useTreeSelection({
   index,
@@ -132,10 +163,7 @@ function commitLoading(value: ComponentValue, next: boolean): void {
   loadingKeys.value = keys
 }
 
-/**
- * Fetches the children of a node the tree has never seen. Reading the open state instead of the
- * click reaches every way a node opens: pointer, keyboard, a drag hover, a controlled `expandedKeys`.
- */
+/** Reads the open set rather than the click, so a drag hover and a controlled key reach it too. */
 function ensureLoaded(value: ComponentValue): void {
   const load = props.load
   const meta = index.value.byValue.get(value)
@@ -165,8 +193,7 @@ function ensureLoaded(value: ComponentValue): void {
   )
 }
 
-// `treeData` is a source too: a key that names a node below a parent still on its way only becomes
-// loadable once that parent arrives, and the open set alone would never tell us about it again.
+// `treeData` too: a key below a parent still on its way only becomes loadable once it arrives.
 watch(
   [expanded, treeData],
   ([keys]) => {
@@ -244,7 +271,6 @@ function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
     return
   }
 
-  // A shift-click reaches for everything between the last one and this row, in either direction.
   const next = event?.shiftKey ? extend(row.key) : toggle(row.key)
   const checkedValues = toValues(next.value)
 
@@ -266,11 +292,7 @@ function onSearchInput(value: string): void {
   internalSearchValue.value = value
   emits('update:searchValue', value)
 }
-/**
- * A plain getter object, not `reactive()`: `useVirtualList` reads these inside computeds and
- * watchers, which track the getter just the same, while a reactive wrapper would hand the
- * virtualizer a deep proxy of the rows instead of the rows themselves.
- */
+/** Not `reactive()`: the virtualizer would get a deep proxy of the rows instead of the rows. */
 const virtualOptions = {
   dataKey: 'key',
   get enabled() {
@@ -320,11 +342,7 @@ function scrollRowIntoView(index: number): void {
   row?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
 }
 
-/**
- * The active row follows the keyboard only. The pointer never sets it: the tree already
- * carries the selection highlight, so a second marker would survive the pointer leaving
- * and duplicate what `checked` already shows.
- */
+/** Keyboard only: a pointer-set marker would outlive the pointer and duplicate `checked`. */
 const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
   count: () => rows.value.length,
   isDisabled: (index) => isNodeDisabled(rows.value[index]),
@@ -393,11 +411,7 @@ const { onKeydown } = useListKeyboardController({
   onCommand: (command) => dispatch(command),
 })
 
-/**
- * A focus indicator left on a blurred element lies about where the focus is, so the
- * active row is only painted while the tree holds it. The index itself is kept:
- * tabbing back in resumes on the row the user left from.
- */
+/** Painted only while focused: a marker on a blurred element lies about where the focus is. */
 const focused = shallowRef(false)
 
 const activeDescendant = computed(() =>
@@ -412,8 +426,6 @@ interface RenderEntry extends TreeFlatNode {
 
 const renderEntries = computed<RenderEntry[]>(() => {
   if (props.virtual) {
-    // Only the window is ever built here: materialising an entry per row would cost more than
-    // the rows the virtual layout shows, and it would redo that on every scroll frame.
     return virtualItems.value.flatMap((virtualItem) => {
       const row = rows.value[virtualItem.index]
 
@@ -516,8 +528,7 @@ function scrollToKey(value: ComponentValue): void {
 function setActiveKey(value: ComponentValue): void {
   const at = getRow(value)?.index
 
-  // Without the scroll the row can sit outside the virtual window, and aria-activedescendant
-  // would then point at an id nothing in the document carries.
+  // Without the scroll, aria-activedescendant can point at a row outside the virtual window.
   if (at === undefined) {
     return
   }
@@ -526,10 +537,7 @@ function setActiveKey(value: ComponentValue): void {
   scrollRowIntoView(at)
 }
 
-/**
- * Reads the whole index rather than the rendered rows: a collapsed subtree still holds checked
- * nodes, and this is the same set, in the same document order, that `change` reports.
- */
+/** The whole index, not the rendered rows: a collapsed subtree still holds checked nodes. */
 function getCheckedKeys(includeIndeterminate = false): ComponentValue[] {
   const result: ComponentValue[] = []
 
@@ -548,10 +556,7 @@ function getVisibleKeys(): ComponentValue[] {
   return rows.value.map((row) => row.key)
 }
 
-/**
- * A search hides whole subtrees, so a row only tells you where it sits among what is left.
- * Dragging while a query is active would drop a node relative to an incomplete neighbourhood.
- */
+/** Dragging while a query is active would drop a node relative to an incomplete neighbourhood. */
 const dragEnabled = computed(
   () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
 )
@@ -564,9 +569,8 @@ function canDrop(
   const meta = index.value.byValue.get(targetValue)
   const dragNode = index.value.byValue.get(value)?.node
 
-  // Structural: a node can never land on itself or inside its own subtree, nor inside a parent
-  // whose children were never fetched — the tree would name that parent as holding the dragged
-  // node alone, and the subtree nobody has seen yet would be gone from the tree a drop proposes.
+  // Structural: never on itself or inside its own subtree, and never inside an unloaded parent —
+  // the tree a drop proposes would lose the subtree nobody has seen yet.
   if (
     !meta ||
     !dragNode ||
@@ -577,8 +581,6 @@ function canDrop(
     return false
   }
 
-  // Policy: `allow-drop` takes it over, so a consumer can allow what the tree forbids by
-  // default (a disabled target) and forbid what it would otherwise allow.
   if (props.allowDrop) {
     return props.allowDrop({
       dragValue: value,
@@ -617,18 +619,13 @@ const dragNode = computed(() =>
   dragValue.value === undefined ? undefined : index.value.byValue.get(dragValue.value)?.node,
 )
 
-/** The source node behind a key, collapsed subtree included, so callers never lose data the tree hides. */
 function getData(value: ComponentValue): TreeOption | undefined {
   return index.value.byValue.get(value)?.node
 }
 
-/**
- * The tree never writes `data` itself: the caller owns it, so a drop only proposes the next
- * tree through `update:data`. A move that resolves to the current shape emits nothing.
- */
+/** The caller owns `data`: a drop only proposes the next tree, and a no-op move is silent. */
 function onCommit(value: ComponentValue, target: TreeDropTarget): void {
-  // The grafted tree, not the prop: a node that arrived through `load` lives only in there, and the
-  // next tree therefore carries the loaded subtrees along.
+  // The grafted tree, not the prop: nodes that arrived through `load` live only in there.
   const result = moveTreeNode(treeData.value, props.childrenField, value, target)
 
   if (!result) {
@@ -638,7 +635,6 @@ function onCommit(value: ComponentValue, target: TreeDropTarget): void {
   emits('update:data', result.data)
   emits('move', result.detail)
 
-  // A node that just took a child opens itself, so the drop lands in view instead of folded away.
   if (target.position === 'inside') {
     setExpandedByValue(target.targetValue, true)
   }
@@ -666,7 +662,7 @@ defineExpose({
         <PSearchInput
           :model-value="searchValue"
           :placeholder="searchPlaceholder"
-          :loading="loading"
+          :loading="loading || searchPending"
           @update:model-value="onSearchInput"
         />
       </slot>
