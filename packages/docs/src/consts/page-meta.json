@@ -431,6 +431,10 @@
     "title": "Tooltip",
     "description": "Display prompt information for mouse hover."
   },
+  "/components/tour": {
+    "title": "Tour",
+    "description": "Guide users through a product by highlighting a target element step by step."
+  },
   "/components/tree": {
     "title": "Tree",
     "description": "Tree view driven by the data prop, with expandable parents and single or cascading multiple selection."

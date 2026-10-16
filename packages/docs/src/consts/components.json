@@ -540,6 +540,11 @@
     "category": "Overlay"
   },
   {
+    "camelized": "Tour",
+    "name": "tour",
+    "category": "Overlay"
+  },
+  {
     "camelized": "Tree",
     "name": "tree",
     "category": "Data Display"

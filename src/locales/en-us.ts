@@ -38,6 +38,12 @@ const enUS = {
     prev: 'Previous question',
     next: 'Next question',
   },
+  tour: {
+    next: 'Next',
+    prev: 'Previous',
+    done: 'Done',
+    skip: 'Skip',
+  },
   results: {
     searchText: 'No results found for',
     noData: 'No data available',

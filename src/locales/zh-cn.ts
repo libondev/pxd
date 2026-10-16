@@ -53,6 +53,12 @@ const zhCN = {
     prev: '上一题',
     next: '下一题',
   },
+  tour: {
+    next: '下一步',
+    prev: '上一步',
+    done: '完成',
+    skip: '跳过',
+  },
   results: {
     searchText: '未找到结果：',
     noData: '暂无数据',
