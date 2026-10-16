@@ -139,7 +139,7 @@ watch(
     <slot />
 
     <template #content>
-      <div class="px-2.5 py-2">
+      <div class="p-3">
         <slot name="content" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
           <h3 v-if="title" :id="titleId" class="m-0 text-sm font-medium">
             {{ title }}
@@ -151,7 +151,7 @@ watch(
         </slot>
       </div>
 
-      <div class="gap-1.5 px-2 pbs-0.5 pbe-2 ms-auto flex items-center justify-end">
+      <div class="gap-1.5 px-2 pbe-2 flex items-center justify-end">
         <slot name="actions" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
           <PButton size="sm" variant="ghost" :disabled="isPending" @click="onCancel">
             {{ computedCancelText }}
