@@ -97,6 +97,7 @@
     "lint": "vp lint",
     "lint:fix": "vp lint --fix",
     "fmt": "vp fmt",
+    "fmt:all": "run-s fmt fmt:eol",
     "fmt:eol": "node scripts/fmt-eol.js",
     "check:fmt": "vp fmt --check",
     "check:type": "vp run typecheck",
