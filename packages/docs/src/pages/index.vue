@@ -83,20 +83,38 @@ const inventory = computed(
 </script>
 
 <template>
-  <main class="home">
-    <section class="hero">
-      <div class="ruled">
-        <span class="gutter">01 — One codebase</span>
-        <h1 class="display">One codebase.</h1>
+  <main class="@container w-full">
+    <section class="overflow-x-clip">
+      <div class="gap-5 px-6 py-5 relative flex items-start">
+        <span
+          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
+          >01 — One codebase</span
+        >
+        <h1
+          class="font-semibold max-sm:whitespace-normal text-[clamp(32px,calc(10.2cqw_-_20.5px),148px)] leading-[0.94] tracking-[-0.045em] whitespace-nowrap"
+        >
+          One codebase.
+        </h1>
       </div>
 
-      <div class="ruled">
-        <span class="gutter">02 — Both versions</span>
-        <h1 class="display">Vue 2.7+ <span class="amp">&amp;</span> Vue 3.2+.</h1>
+      <div
+        class="gap-5 px-6 py-5 before:inset-x-0 before:top-0 relative flex items-start before:absolute before:h-px before:bg-gray-300 dark:before:bg-gray-400"
+      >
+        <span
+          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
+          >02 — Both versions</span
+        >
+        <h1
+          class="font-semibold max-sm:whitespace-normal text-[clamp(32px,calc(10.2cqw_-_20.5px),148px)] leading-[0.94] tracking-[-0.045em] whitespace-nowrap"
+        >
+          Vue 2.7+ <span>&amp;</span> Vue 3.2+.
+        </h1>
       </div>
 
-      <div class="lede relative">
-        <p>
+      <div
+        class="px-6 py-5 ps-50 max-sm:ps-6 before:inset-x-0 before:top-0 relative before:absolute before:h-px before:bg-gray-300"
+      >
+        <p class="max-w-[62ch] text-15 leading-[1.55] text-foreground-secondary">
           A universal UI component library: {{ componentList.length }} components and
           {{ composableList.length }} composables, built-in light/dark theme, PC &amp; mobile ready,
           and every animation can be turned off.
@@ -104,8 +122,10 @@ const inventory = computed(
       </div>
     </section>
 
-    <section class="bar">
-      <div class="bar-cell">
+    <section class="max-lg:grid-cols-2 max-md:grid-cols-1 grid grid-cols-4">
+      <div
+        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:first:border-t-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+      >
         <PLinkButton shape="rounded" variant="primary" href="/guide/introduction">
           Get Started
 
@@ -115,7 +135,9 @@ const inventory = computed(
         </PLinkButton>
       </div>
 
-      <div class="bar-cell">
+      <div
+        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+      >
         <PLinkButton shape="rounded" :href="githubLink" target="_blank" external-icon>
           <template #prefix>
             <IconStarFill />
@@ -125,14 +147,16 @@ const inventory = computed(
         </PLinkButton>
       </div>
 
-      <div class="bar-cell">
+      <div
+        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+      >
         <PSnippet aria-label="Copy install command" variant="secondary" :text="INSTALL_COMMAND" />
       </div>
 
-      <div class="bar-cell bar-cell--agent">
-        <span class="agent-hint text-sm text-foreground-secondary"
-          >Want an agent to install it?</span
-        >
+      <div
+        class="gap-0.5 px-6 py-2 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex flex-col items-start justify-center border-y border-s first:border-s-0"
+      >
+        <span class="text-sm text-foreground-secondary">Want an agent to install it?</span>
 
         <PCopyButton
           aria-label="Copy AI prompt"
@@ -146,39 +170,52 @@ const inventory = computed(
       </div>
     </section>
 
-    <section class="index">
-      <header class="sec-head max-sm:flex-col">
-        <h2>Components</h2>
-        <span class="tally">{{ inventory }}</span>
+    <section class="border-b">
+      <header class="gap-1 p-4 max-sm:flex-col flex items-baseline justify-between border-b">
+        <h2 class="font-semibold text-13">Components</h2>
+        <span class="font-mono text-11 text-foreground-secondary">{{ inventory }}</span>
       </header>
 
-      <div class="index-cols">
-        <div v-for="group in indexGroups" :key="group.label" class="group-item">
-          <h3 class="group-label">{{ group.label }}</h3>
+      <div class="px-4 gap-x-7 max-lg:columns-3 max-md:columns-2 columns-5">
+        <div v-for="group in indexGroups" :key="group.label" class="pt-3.5 pb-4 break-inside-avoid">
+          <h3
+            class="font-normal font-mono text-[10px] tracking-[0.06em] text-foreground-secondary uppercase"
+          >
+            {{ group.label }}
+          </h3>
 
-          <ul>
+          <ul class="-ms-1.5 gap-x-0.75 flex flex-wrap gap-y-px">
             <li v-for="item in group.children" :key="item.path">
-              <RouterLink :to="item.path" class="motion-safe:transition-colors">{{
-                item.label
-              }}</RouterLink>
+              <RouterLink
+                :to="item.path"
+                class="px-1.5 inline-block rounded-sm py-px text-13 text-foreground no-underline hover:bg-gray-alpha-200 focus-visible:bg-gray-alpha-200 motion-safe:transition-colors"
+                >{{ item.label }}</RouterLink
+              >
             </li>
           </ul>
         </div>
       </div>
     </section>
 
-    <section class="spec">
-      <header class="sec-head max-sm:flex-col">
-        <h2>What you get</h2>
-        <span class="tally">{{ CAPABILITIES.length }} capabilities</span>
+    <section>
+      <header class="gap-1 p-4 max-sm:flex-col flex items-baseline justify-between border-b">
+        <h2 class="font-semibold text-13">What you get</h2>
+        <span class="font-mono text-11 text-foreground-secondary"
+          >{{ CAPABILITIES.length }} capabilities</span
+        >
       </header>
 
       <div class="px-4">
-        <table>
+        <table class="w-full border-collapse">
           <tbody>
-            <tr v-for="capability in CAPABILITIES" :key="capability.title">
-              <th scope="row">{{ capability.title }}</th>
-              <td>
+            <tr v-for="capability in CAPABILITIES" :key="capability.title" class="border-b">
+              <th
+                scope="row"
+                class="w-60 max-md:w-40 pe-5 py-3.5 font-medium text-start align-top text-13"
+              >
+                {{ capability.title }}
+              </th>
+              <td class="py-3.5 max-w-[68ch] align-top text-13 text-foreground-secondary">
                 {{ capability.detail }}
               </td>
             </tr>
@@ -188,290 +225,6 @@ const inventory = computed(
     </section>
   </main>
 </template>
-
-<style lang="postcss">
-.home {
-  container-type: inline-size;
-  width: 100%;
-}
-
-.hero {
-  /* A fallback font can be wider than Inter; clip instead of scrolling the page. */
-  overflow-x: clip;
-}
-
-.ruled {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 20px 24px;
-}
-
-.ruled + .ruled::before,
-.lede::before {
-  content: '';
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline: 0;
-  height: 1px;
-  background-color: var(--color-gray-300);
-}
-
-.dark .ruled::before {
-  background-color: var(--color-gray-400);
-}
-
-.gutter {
-  flex: 0 0 132px;
-  padding-block-start: 12px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-foreground-secondary);
-  white-space: nowrap;
-}
-
-.display {
-  font-size: clamp(32px, calc(10.2cqw - 20.5px), 148px);
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 0.94;
-  white-space: nowrap;
-}
-
-.display .amp {
-  color: var(--docs-accent);
-}
-
-.lede {
-  padding: 20px 24px 20px 200px;
-
-  p {
-    max-width: 62ch;
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--color-foreground-secondary);
-  }
-}
-
-.bar {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-block: 1px solid var(--color-gray-300);
-}
-
-.dark .bar {
-  border-color: var(--color-gray-400);
-}
-
-.bar-cell {
-  display: flex;
-  align-items: center;
-  min-height: 74px;
-  padding: 16px 24px;
-  border-inline-start: 1px solid var(--color-gray-300);
-
-  &:first-child {
-    border-inline-start: 0;
-  }
-}
-
-.dark .bar-cell {
-  border-color: var(--color-gray-400);
-}
-
-.bar-cell--agent {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 2px;
-  padding-block: 8px;
-}
-
-.sec-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 4px;
-  padding: 16px;
-  border-block-end: 1px solid var(--color-gray-300);
-
-  h2 {
-    font-size: 13px;
-    font-weight: 600;
-  }
-}
-
-.dark .sec-head {
-  border-color: var(--color-gray-400);
-}
-
-.tally {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--color-foreground-secondary);
-}
-
-.index {
-  border-block-end: 1px solid var(--color-gray-300);
-}
-
-.index-cols {
-  padding-inline: 16px;
-  columns: 5;
-  column-gap: 28px;
-}
-
-.group-item {
-  break-inside: avoid;
-  padding-block: 14px 15px;
-
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1px 3px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  a {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    color: var(--docs-fg);
-    text-decoration: none;
-
-    &:hover,
-    &:focus-visible {
-      background-color: var(--color-gray-alpha-200);
-      color: var(--color-foreground);
-    }
-  }
-}
-
-.dark .group-item::after {
-  background-color: var(--color-gray-400);
-}
-
-.group-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-foreground-secondary);
-}
-
-.group-label + ul {
-  margin-inline-start: -0.375rem;
-}
-
-.spec {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  tr {
-    border-block-end: 1px solid var(--color-gray-300);
-  }
-
-  th {
-    text-align: left;
-    vertical-align: top;
-    width: 240px;
-    padding: 14px 20px 14px 0;
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  td {
-    vertical-align: top;
-    padding-block: 14px;
-    font-size: 13px;
-    color: var(--color-foreground-secondary);
-    max-width: 68ch;
-  }
-
-  code {
-    margin-inline-start: 0.5em;
-    white-space: nowrap;
-  }
-}
-
-.dark .spec tr {
-  border-color: var(--color-gray-400);
-}
-
-@media (max-width: 64rem) {
-  .index-cols {
-    columns: 3;
-  }
-
-  .bar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .bar-cell {
-    &:nth-child(odd) {
-      border-inline-start: 0;
-    }
-
-    &:nth-child(n + 3) {
-      border-block-start: 1px solid var(--color-gray-300);
-    }
-  }
-
-  .dark .bar-cell {
-    border-color: var(--color-gray-400);
-  }
-}
-
-@media (max-width: 48rem) {
-  .bar {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .bar-cell {
-    border-inline-start: 0;
-    border-block-start: 1px solid var(--color-gray-300);
-
-    &:first-child {
-      border-block-start: 0;
-    }
-  }
-
-  .dark .bar-cell {
-    border-color: var(--color-gray-400);
-  }
-
-  .index-cols {
-    columns: 2;
-  }
-
-  .spec th {
-    width: 160px;
-  }
-}
-
-@media (max-width: 40rem) {
-  .gutter {
-    display: none;
-  }
-
-  .display {
-    white-space: normal;
-  }
-
-  .lede {
-    padding-inline: 24px;
-  }
-}
-</style>
 
 <route lang="yaml">
 meta:
