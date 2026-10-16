@@ -122,9 +122,9 @@ const inventory = computed(
       </div>
     </section>
 
-    <section class="max-lg:grid-cols-2 max-md:grid-cols-1 grid grid-cols-4">
+    <section class="max-lg:grid-cols-2 max-md:grid-cols-1 grid grid-cols-4 border-b">
       <div
-        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:first:border-t-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+        class="px-6 py-4 max-lg:odd:border-s-0 max-md:border-s-0 flex min-h-[74px] items-center border-s border-t first:border-s-0"
       >
         <PLinkButton shape="rounded" variant="primary" href="/guide/introduction">
           Get Started
@@ -136,7 +136,7 @@ const inventory = computed(
       </div>
 
       <div
-        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+        class="px-6 py-4 max-lg:odd:border-s-0 max-md:border-s-0 flex min-h-[74px] items-center border-s border-t first:border-s-0"
       >
         <PLinkButton shape="rounded" :href="githubLink" target="_blank" external-icon>
           <template #prefix>
@@ -148,20 +148,20 @@ const inventory = computed(
       </div>
 
       <div
-        class="px-6 py-4 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex min-h-[74px] items-center border-y border-s first:border-s-0"
+        class="px-6 py-4 max-lg:odd:border-s-0 max-md:border-s-0 flex min-h-[74px] items-center border-s border-t first:border-s-0"
       >
         <PSnippet aria-label="Copy install command" variant="secondary" :text="INSTALL_COMMAND" />
       </div>
 
       <div
-        class="gap-0.5 px-6 py-2 max-lg:odd:border-s-0 max-lg:nth-[n+3]:border-t max-md:border-s-0 max-md:nth-[n+2]:border-t flex flex-col items-start justify-center border-y border-s first:border-s-0"
+        class="gap-0.5 px-6 py-2 max-lg:odd:border-s-0 max-md:border-s-0 flex flex-col items-start justify-center border-s border-t first:border-s-0"
       >
         <span class="text-sm text-foreground-secondary">Want an agent to install it?</span>
 
         <PCopyButton
           aria-label="Copy AI prompt"
           size="sm"
-          class="-ml-2 pr-2.5"
+          class="-ml-3 pr-2.5"
           variant="ghost"
           :text="AGENT_INSTALL_PROMPT"
         >
