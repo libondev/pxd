@@ -340,7 +340,7 @@
     "description": "Display a snippet of copyable code for the command line."
   },
   "/components/spinner-dots": {
-    "title": "Dots Spinner",
+    "title": "Spinner Dots",
     "description": "Braille-style spinner that cycles through dot-matrix characters to indicate a running process."
   },
   "/components/spinner": {
