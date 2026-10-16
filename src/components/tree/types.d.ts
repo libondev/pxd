@@ -5,6 +5,8 @@ export interface TreeOption {
   label?: ComponentLabel
   disabled?: boolean
   children?: TreeOption[]
+  /** Marks a leaf under `lazy`: no arrow, and never handed to `load`. */
+  isLeaf?: boolean
   keywords?: string[]
   [key: string]: any
 }
@@ -14,6 +16,25 @@ export type TreeOptions = TreeOption[]
 export type TreeModelValue = ComponentValue | ComponentValue[] | null
 
 export type TreeFilterFn = (node: TreeOption, query: string) => boolean
+
+/** Hands the children of a node to the tree. An empty array marks it a leaf. */
+export type TreeLoadResolve = (children: TreeOptions) => void
+
+/** Gives up on a node without children: the arrow stays, and the next expand asks again. */
+export type TreeLoadReject = () => void
+
+export interface TreeLoadDetail {
+  /** The node whose children are asked for, as the tree holds it. */
+  node: TreeOption
+  depth: number
+  parent?: TreeOption
+}
+
+export type TreeLoadFn = (
+  detail: TreeLoadDetail,
+  resolve: TreeLoadResolve,
+  reject: TreeLoadReject,
+) => void
 
 /**
  * Decides whether a node takes part in the selection. A refused node stays a full citizen: it
@@ -106,6 +127,10 @@ export interface TreeProps {
   expandedKeys?: ComponentValue[]
   defaultExpandedKeys?: ComponentValue[]
   childrenField?: string
+  /** Fetch the children of a node when it first opens, instead of reading them from `data`. */
+  lazy?: boolean
+  /** Fetches the children of a node neither `data` nor an earlier request provided. */
+  load?: TreeLoadFn
   loading?: boolean
   filterable?: boolean
   filter?: TreeFilterFn

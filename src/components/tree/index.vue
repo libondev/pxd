@@ -8,12 +8,14 @@ import type {
   TreeFlatNode,
   TreeModelValue,
   TreeOption,
+  TreeOptions,
   TreeProps,
 } from './types'
-import { computed, shallowRef, useSlots } from 'vue'
+import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
+  graftLoadedChildren,
   isTreeDescendant,
   moveTreeNode,
   useTreeDrag,
@@ -52,6 +54,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   overScan: 4,
   indent: 16,
   childrenField: 'children',
+  lazy: false,
   loading: false,
   filterable: false,
   highlightMatch: false,
@@ -67,11 +70,29 @@ const internalSearchValue = shallowRef(props.defaultSearchValue ?? '')
 // Controlled when `searchValue` is given, the internal copy otherwise, exactly like expandedKeys.
 const searchValue = computed(() => props.searchValue ?? internalSearchValue.value)
 const internalExpandedKeys = shallowRef<ComponentValue[]>([...(props.defaultExpandedKeys ?? [])])
+const loadedChildren = shallowRef(new Map<ComponentValue, TreeOptions>())
+const loadingKeys = shallowRef(new Set<ComponentValue>())
+
+/** What the index walks: the caller's data with every lazily loaded subtree grafted into it. */
+const treeData = computed(() =>
+  graftLoadedChildren(props.data, loadedChildren.value, props.childrenField),
+)
 
 const index = useTreeIndex(
-  () => props.data,
+  () => treeData.value,
   () => props.childrenField,
 )
+
+/** A childless row the tree has not fetched from yet keeps its arrow, and so does one mid-request. */
+function canLoad(value: ComponentValue): boolean {
+  if (!props.lazy || !props.load || loadedChildren.value.has(value)) {
+    return false
+  }
+
+  const meta = index.value.byValue.get(value)
+
+  return meta !== undefined && meta.node.isLeaf !== true && meta.children.length === 0
+}
 
 const matched = useTreeMatched(
   index,
@@ -96,7 +117,65 @@ const rows = useTreeRows(index, {
   matched: () => matched.value.visible,
   exactMatched: () => matched.value.exact,
   matchesOnly: () => props.searchMatchesOnly,
+  canLoad: () => canLoad,
 })
+
+function commitLoading(value: ComponentValue, next: boolean): void {
+  const keys = new Set(loadingKeys.value)
+
+  if (next) {
+    keys.add(value)
+  } else {
+    keys.delete(value)
+  }
+
+  loadingKeys.value = keys
+}
+
+/**
+ * Fetches the children of a node the tree has never seen. Reading the open state instead of the
+ * click reaches every way a node opens: pointer, keyboard, a drag hover, a controlled `expandedKeys`.
+ */
+function ensureLoaded(value: ComponentValue): void {
+  const load = props.load
+  const meta = index.value.byValue.get(value)
+
+  if (!load || !meta || loadingKeys.value.has(value) || !canLoad(value)) {
+    return
+  }
+
+  const parentValue = meta.parentValue
+
+  commitLoading(value, true)
+
+  load(
+    {
+      node: meta.node,
+      depth: meta.depth,
+      parent: parentValue === undefined ? undefined : index.value.byValue.get(parentValue)?.node,
+    },
+    (children) => {
+      commitLoading(value, false)
+
+      const next = new Map(loadedChildren.value)
+      next.set(value, children)
+      loadedChildren.value = next
+    },
+    () => commitLoading(value, false),
+  )
+}
+
+// `treeData` is a source too: a key that names a node below a parent still on its way only becomes
+// loadable once that parent arrives, and the open set alone would never tell us about it again.
+watch(
+  [expanded, treeData],
+  ([keys]) => {
+    for (const value of keys) {
+      ensureLoaded(value)
+    }
+  },
+  { immediate: true },
+)
 
 const rowByKey = computed(() => {
   const result = new Map<ComponentValue, TreeFlatNode>()
@@ -485,12 +564,15 @@ function canDrop(
   const meta = index.value.byValue.get(targetValue)
   const dragNode = index.value.byValue.get(value)?.node
 
-  // Structural: a node can never land on itself or inside its own subtree.
+  // Structural: a node can never land on itself or inside its own subtree, nor inside a parent
+  // whose children were never fetched — the tree would name that parent as holding the dragged
+  // node alone, and the subtree nobody has seen yet would be gone from the tree a drop proposes.
   if (
     !meta ||
     !dragNode ||
     targetValue === value ||
-    isTreeDescendant(index.value, value, targetValue)
+    isTreeDescendant(index.value, value, targetValue) ||
+    (position === 'inside' && canLoad(targetValue))
   ) {
     return false
   }
@@ -545,7 +627,9 @@ function getData(value: ComponentValue): TreeOption | undefined {
  * tree through `update:data`. A move that resolves to the current shape emits nothing.
  */
 function onCommit(value: ComponentValue, target: TreeDropTarget): void {
-  const result = moveTreeNode(props.data, props.childrenField, value, target)
+  // The grafted tree, not the prop: a node that arrived through `load` lives only in there, and the
+  // next tree therefore carries the loaded subtrees along.
+  const result = moveTreeNode(treeData.value, props.childrenField, value, target)
 
   if (!result) {
     return
@@ -621,6 +705,7 @@ defineExpose({
             :index="entry.index"
             :has-children="entry.hasChildren"
             :expanded="entry.expanded"
+            :loading="loadingKeys.has(entry.key)"
             :checked="checked.has(entry.key)"
             :indeterminate="indeterminate.has(entry.key)"
             :active="entry.active"
@@ -665,6 +750,7 @@ defineExpose({
             :index="entry.index"
             :has-children="entry.hasChildren"
             :expanded="entry.expanded"
+            :loading="loadingKeys.has(entry.key)"
             :checked="checked.has(entry.key)"
             :indeterminate="indeterminate.has(entry.key)"
             :active="entry.active"

@@ -465,6 +465,46 @@ const data = []
 </template>
 ```
 
+## Lazy loading
+
+With `lazy`, a node without children in `data` still shows an arrow, and the first time it opens
+`load` is called with what the tree knows about that node (see `TreeLoadDetail`) and the two ways to
+settle the request: `resolve(children)` puts them in the tree, an empty array making the node a leaf,
+while `reject()` leaves it unloaded so the next expand asks again. A node that resolved before is
+never asked twice, one marked `isLeaf` is never asked at all, and one whose children already sit in
+`data` is passed over: the data wins.
+
+Under `draggable`, nothing can be dropped *inside* a parent whose children the tree has not fetched
+yet, and a drop anywhere else proposes the whole tree through `update:data`, the subtrees loaded so
+far included.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const data = ref([
+  { label: 'src', value: 'src' },
+  { label: 'docs', value: 'docs', isLeaf: true },
+])
+
+const children = {
+  src: [
+    { label: 'components', value: 'src/components' },
+    { label: 'composables', value: 'src/composables' },
+  ],
+  'src/components': [{ label: 'tree', value: 'src/components/tree' }],
+}
+
+function load({ node }, resolve) {
+  setTimeout(() => resolve(children[node.value] ?? []), 600)
+}
+</script>
+
+<template>
+  <PTree class="w-72 max-h-64" lazy :data="data" :load="load" />
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -488,6 +528,8 @@ const data = []
 | expanded-keys | `ComponentValue[]` | - | Controlled expanded nodes |
 | default-expanded-keys | `ComponentValue[]` | `[]` | Expanded nodes before the user changes them |
 | children-field | `string` | `'children'` | Field of a node holding its children |
+| lazy | `boolean` | `false` | Fetch the children of a node when it first opens instead of reading them from `data` |
+| load | `(detail: TreeLoadDetail, resolve: TreeLoadResolve, reject: TreeLoadReject) => void` | - | Fetch the children of a node nothing else provided: `resolve` hands them over, `reject` leaves the node unloaded so the next expand asks again |
 | loading | `boolean` | `false` | Cover the tree with a loading mask, hide the `empty` slot, put the built-in search field in its loading state and ignore the search input and the keyboard |
 | filterable | `boolean` | `false` | Render the search field |
 | filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
@@ -504,8 +546,17 @@ const data = []
 | value | `string \| number` | Identifier of the node, unique in the whole tree |
 | label | `string \| number \| null` | Text of the node |
 | children | `TreeOption[]` | Child nodes, read from `children-field` |
+| isLeaf | `boolean` | Mark a leaf under `lazy`: no arrow, and never handed to `load` |
 | disabled | `boolean` | Ignore selection and skip the node while navigating |
 | keywords | `string[]` | Extra terms matched by the built-in filter |
+
+### TreeLoadDetail
+
+| Name | Type | Description |
+| --- | --- | --- |
+| node | `TreeOption` | The node whose children are asked for |
+| depth | `number` | Depth of the node, `0` at the top level |
+| parent | `TreeOption` | The node holding it, absent at the top level |
 
 ## Events
 
@@ -552,7 +603,7 @@ interface TreeMoveDetail {
 
 | Name | Description |
 | --- | --- |
-| node-switcher | Expand arrow. Slot props: `node`, `depth`, `expanded`. |
+| node-switcher | Expand arrow, replaced by a spinner while a lazy node loads. Slot props: `node`, `depth`, `expanded`, `loading`. |
 | node-icon | Node icon, nothing is drawn without it. Slot props: `node`, `depth`, `expanded`, `hasChildren`. |
 | node-content | Node text. Slot props: `node`, `depth`, `hasChildren`, `parts` (the label split for `highlight-match`, `undefined` when nothing is marked). |
 | node-suffix | Content appended to the row. Slot props: `node`, `hasChildren`. |

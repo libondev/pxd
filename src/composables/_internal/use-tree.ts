@@ -70,6 +70,58 @@ export function useTreeIndex(
   return computed(() => createTreeIndex(toValue(data) ?? [], toValue(childrenField) ?? 'children'))
 }
 
+function graftNode(
+  node: TreeOption,
+  loaded: Map<ComponentValue, TreeOptions>,
+  childrenField: string,
+): TreeOption {
+  const own = node[childrenField]
+  const fromData = Array.isArray(own) && own.length > 0
+  const source: TreeOptions = fromData ? own : (loaded.get(node.value) ?? [])
+  const children: TreeOptions = []
+  let changed = !fromData && loaded.has(node.value)
+
+  for (const child of source) {
+    const grafted = graftNode(child, loaded, childrenField)
+
+    if (grafted !== child) {
+      changed = true
+    }
+
+    children.push(grafted)
+  }
+
+  return changed ? { ...node, [childrenField]: children } : node
+}
+
+/**
+ * Copies lazily loaded children into the tree the index walks. Children already in `data` win over
+ * a cached request, and a node the graft does not touch keeps its identity, so consumer code that
+ * holds onto a node still recognises it.
+ */
+export function graftLoadedChildren(
+  data: TreeOptions,
+  loaded: Map<ComponentValue, TreeOptions>,
+  childrenField: string,
+): TreeOptions {
+  if (loaded.size === 0) {
+    return data
+  }
+
+  let changed = false
+  const next = data.map((node) => {
+    const grafted = graftNode(node, loaded, childrenField)
+
+    if (grafted !== node) {
+      changed = true
+    }
+
+    return grafted
+  })
+
+  return changed ? next : data
+}
+
 function defaultFilter(node: TreeOptions[number], query: string): boolean {
   return isFuzzyMatch(String(node.label ?? ''), query, node.keywords)
 }
@@ -129,6 +181,8 @@ export interface UseTreeRowsOptions {
   exactMatched?: MaybeRefOrGetter<ReadonlySet<ComponentValue> | undefined>
   /** Drop the ancestors that only stayed visible for context, and flatten what is left. */
   matchesOnly?: MaybeRefOrGetter<boolean | undefined>
+  /** A childless row whose children the tree still has to fetch keeps its arrow. */
+  canLoad?: MaybeRefOrGetter<((value: ComponentValue) => boolean) | undefined>
 }
 
 /**
@@ -149,6 +203,7 @@ export function useTreeRows(
     const searching = (toValue(options.query) ?? '').trim().length > 0
     const matchesOnly = searching && toValue(options.matchesOnly) === true
     const exact = toValue(options.exactMatched) ?? matched
+    const canLoad = toValue(options.canLoad)
     const rows: TreeFlatNode[] = []
 
     let cursor = 0
@@ -175,7 +230,7 @@ export function useTreeRows(
         depth: matchesOnly ? 0 : meta.depth,
         index: rows.length,
         parentValue: matchesOnly ? undefined : meta.parentValue,
-        hasChildren: meta.children.length > 0,
+        hasChildren: meta.children.length > 0 || canLoad?.(value) === true,
         expanded: expanded.has(value),
       })
 

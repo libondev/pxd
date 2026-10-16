@@ -3,6 +3,7 @@ import type { ComponentClass, ComponentValue } from '../../types/shared'
 import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed } from 'vue'
 
@@ -18,6 +19,7 @@ const props = defineProps<{
   index: number
   hasChildren: boolean
   expanded: boolean
+  loading: boolean
   checked: boolean
   indeterminate: boolean
   active: boolean
@@ -103,6 +105,7 @@ function onPointerdown(event: PointerEvent): void {
     :data-drop="dropPosition"
     :aria-level="depth + 1"
     :aria-expanded="hasChildren ? expanded : undefined"
+    :aria-busy="loading || undefined"
     :aria-selected="multiple ? undefined : checked"
     :aria-checked="multiple ? (indeterminate ? 'mixed' : checked) : undefined"
     :aria-setsize="setSize"
@@ -135,8 +138,16 @@ function onPointerdown(event: PointerEvent): void {
       class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
       @click.stop="emits('toggle', value)"
     >
-      <slot name="node-switcher" :node="node" :depth="depth" :expanded="expanded">
+      <slot
+        name="node-switcher"
+        :node="node"
+        :depth="depth"
+        :loading="loading"
+        :expanded="expanded"
+      >
+        <LoaderCircleIcon v-if="loading" class="size-3 motion-safe:animate-spin" />
         <ChevronRightIcon
+          v-else
           class="size-3 motion-safe:transition-transform"
           :class="{ 'rotate-90': expanded }"
         />

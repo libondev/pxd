@@ -1,4 +1,4 @@
-import type { TreeDropInfo, TreeOption } from '../../src/components/tree/types'
+import type { TreeDropInfo, TreeLoadFn, TreeOption } from '../../src/components/tree/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import Tree from '../../src/components/tree/index.vue'
@@ -1695,6 +1695,221 @@ describe('tree', () => {
 
     expect(wrapper.emitted('update:searchValue')?.[0]?.[0]).toBe('tree')
     expect(keys()).toEqual(['src', 'components', 'tree'])
+
+    wrapper.unmount()
+  })
+
+  const lazyData = [{ value: 'src', label: 'src' }]
+
+  it('should load the children of a node the first time it opens', async () => {
+    const load = vi.fn<TreeLoadFn>((detail, resolve) => {
+      resolve([{ value: detail.node.value + '/tree', label: 'tree' }])
+    })
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
+
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(1)
+    expect(wrapper.find('[data-tree-switcher]').exists()).toBe(true)
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(load).toHaveBeenCalledTimes(1)
+    expect(load.mock.calls[0]?.[0]).toMatchObject({
+      node: { value: 'src' },
+      depth: 0,
+      parent: undefined,
+    })
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(2)
+    expect(wrapper.find('[data-key="src/tree"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should ask a node for its children only once', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => {
+      resolve([{ value: 'components', label: 'components' }])
+    })
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(load).toHaveBeenCalledTimes(1)
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(2)
+
+    wrapper.unmount()
+  })
+
+  it('should mark the row as busy while its children are on their way', async () => {
+    let settle: ((children: TreeOption[]) => void) | undefined
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => {
+      settle = resolve
+    })
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="src"]').attributes('aria-busy')).toBe('true')
+    expect(wrapper.find('[data-tree-switcher] svg').classes()).toContain('motion-safe:animate-spin')
+
+    settle?.([{ value: 'components', label: 'components' }])
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[data-key="src"]').attributes('aria-busy')).toBeUndefined()
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(2)
+
+    wrapper.unmount()
+  })
+
+  it('should drop the arrow of a node that loaded no children', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: lazyData,
+        lazy: true,
+        load: vi.fn<TreeLoadFn>((_detail, resolve) => resolve([])),
+      },
+    })
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBeUndefined()
+    expect(wrapper.find('[data-tree-switcher]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should keep an unloaded node expandable when the request fails', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, _resolve, reject) => reject())
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="src"]').attributes('aria-busy')).toBeUndefined()
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(1)
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(load).toHaveBeenCalledTimes(2)
+
+    wrapper.unmount()
+  })
+
+  it('should load the nodes that start out expanded', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => {
+      resolve([{ value: 'components', label: 'components' }])
+    })
+    const wrapper = mount(Tree, {
+      props: { data: lazyData, lazy: true, load, defaultExpandedKeys: ['src'] },
+    })
+
+    expect(load).toHaveBeenCalledTimes(1)
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(2)
+
+    wrapper.unmount()
+  })
+
+  it('should load a key that only shows up below a node still on its way', async () => {
+    const load = vi.fn<TreeLoadFn>((detail, resolve) => {
+      resolve(
+        detail.node.value === 'src'
+          ? [{ value: 'components', label: 'components' }]
+          : [{ value: 'tree', label: 'tree' }],
+      )
+    })
+    const wrapper = mount(Tree, {
+      props: {
+        data: lazyData,
+        lazy: true,
+        load,
+        defaultExpandedKeys: ['src', 'components'],
+      },
+    })
+
+    expect(load.mock.calls.map((call) => call[0])).toMatchObject([
+      { node: { value: 'src' }, depth: 0, parent: undefined },
+      { node: { value: 'components' }, depth: 1, parent: { value: 'src' } },
+    ])
+    expect(wrapper.find('[data-key="tree"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should leave a node the data or its own flag settles alone', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => resolve([]))
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          { value: 'src', label: 'src', children: [{ value: 'tree', label: 'tree' }] },
+          { value: 'docs', label: 'docs', isLeaf: true },
+        ],
+        lazy: true,
+        load,
+      },
+    })
+
+    await wrapper.find('[data-key="src"] [data-tree-switcher]').trigger('click')
+
+    expect(load).not.toHaveBeenCalled()
+    expect(wrapper.find('[data-key="docs"] [data-tree-switcher]').exists()).toBe(false)
+    expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
+
+    wrapper.unmount()
+  })
+
+  it('should refuse to nest into a parent whose children were never loaded', async () => {
+    const load = vi.fn<TreeLoadFn>(() => {})
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data: [
+          { value: 'src', label: 'src' },
+          { value: 'file', label: 'file' },
+        ],
+        lazy: true,
+        draggable: true,
+        load,
+      },
+    })
+
+    stubRows(wrapper)
+    startDrag(wrapper, 'file', 48, 16)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-drop')).toBeUndefined()
+    expect(load).not.toHaveBeenCalled()
+
+    window.dispatchEvent(pointer('pointerup', 0, 16))
+
+    expect(wrapper.emitted('update:data')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should carry the loaded subtrees in the tree a drop proposes', async () => {
+    const wrapper = mount(Tree, {
+      attachTo: document.body,
+      props: {
+        data: lazyData,
+        lazy: true,
+        draggable: true,
+        load: vi.fn<TreeLoadFn>((_detail, resolve) => {
+          resolve([{ value: 'file', label: 'file' }])
+        }),
+      },
+    })
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    // Below the middle of `src`, so the gap under it is the drop the pointer asks for.
+    stubRows(wrapper)
+    startDrag(wrapper, 'file', 48, 30)
+    window.dispatchEvent(pointer('pointerup', 0, 30))
+
+    const next = wrapper.emitted('update:data')?.[0]?.[0] as TreeOption[]
+
+    expect(next.map((node) => node.value)).toEqual(['src', 'file'])
 
     wrapper.unmount()
   })

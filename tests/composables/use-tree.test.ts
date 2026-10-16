@@ -1,6 +1,11 @@
 import type { TreeOption, TreeOptions } from '../../src/components/tree/types'
+import type { ComponentValue } from '../../src/types/shared'
 import { describe, expect, it } from 'vite-plus/test'
-import { createTreeIndex, moveTreeNode } from '../../src/composables/_internal/use-tree'
+import {
+  createTreeIndex,
+  graftLoadedChildren,
+  moveTreeNode,
+} from '../../src/composables/_internal/use-tree'
 
 const indexData = [
   {
@@ -49,6 +54,57 @@ const data: TreeOptions = [
   },
   { value: 'docs', label: 'docs' },
 ]
+
+function loaded(entries: [ComponentValue, TreeOptions][]): Map<ComponentValue, TreeOptions> {
+  return new Map(entries)
+}
+
+describe('graftLoadedChildren', () => {
+  const tree: TreeOptions = [
+    { value: 'src', children: [{ value: 'components' }] },
+    { value: 'docs' },
+  ]
+
+  it('should hand back the very same data while nothing was loaded', () => {
+    expect(graftLoadedChildren(tree, loaded([]), 'children')).toBe(tree)
+  })
+
+  it('should graft children under the node that resolved them', () => {
+    const result = graftLoadedChildren(tree, loaded([['docs', [{ value: 'guide' }]]]), 'children')
+
+    expect(keysOf(result[1])).toEqual(['guide'])
+    expect(result[0]).toBe(tree[0])
+
+    // The caller's own data is never written to.
+    expect(tree[1]?.children).toBeUndefined()
+  })
+
+  it('should keep the children the data already carries', () => {
+    const result = graftLoadedChildren(tree, loaded([['src', [{ value: 'other' }]]]), 'children')
+
+    expect(keysOf(result[0])).toEqual(['components'])
+  })
+
+  it('should graft into a subtree loaded earlier', () => {
+    const result = graftLoadedChildren(
+      [{ value: 'src' }],
+      loaded([
+        ['src', [{ value: 'components' }]],
+        ['components', [{ value: 'tree' }]],
+      ]),
+      'children',
+    )
+
+    expect(keysOf(result[0])).toEqual(['components'])
+    expect(keysOf(result[0]?.children?.[0])).toEqual(['tree'])
+  })
+
+  it('should spell out a node that resolved with no children', () => {
+    const result = graftLoadedChildren([{ value: 'docs' }], loaded([['docs', []]]), 'children')
+
+    expect(result[0]?.children).toEqual([])
+  })
+})
 
 function keys(list: TreeOption[]): unknown[] {
   return list.map((node) => node.value)
