@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { OverlayEmits, OverlayProps } from './types'
-import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useLockScroll } from '../../composables/_internal/use-lock-scroll.js'
 import { useOverlayManager } from '../../composables/_internal/use-overlay-manager.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { getElement } from '../../utils/dom.js'
 import { NOOP } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 import PTeleport from '../teleport/index.vue'
@@ -30,13 +29,9 @@ const emits = defineEmits<OverlayEmits>()
 
 const configProvider = useConfigProvider()
 
-const clipPath = shallowRef('')
 const computedStyle = computed(() => ({
   '--overlay-index': props.zIndex,
-  'clip-path': clipPath.value,
 }))
-
-let cacheShownElement: HTMLElement | null = null
 
 const { lockScroll, unlockScroll } = useLockScroll(() => document.body, { walkAncestors: true })
 
@@ -55,49 +50,6 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
   },
 })
 
-function getShownElementClipPath(el: HTMLElement) {
-  const { top, left, right, bottom } = el.getBoundingClientRect()
-
-  clipPath.value = `polygon(
-    0% 0%,
-    0% 100%,
-    ${left}px 100%,
-    ${left}px ${top}px,
-    ${right}px ${top}px,
-    ${right}px ${bottom}px,
-    ${left}px ${bottom}px,
-    ${left}px 100%,
-    100% 100%,
-    100% 0%
-  )`
-}
-
-async function getShownElementIfNeed() {
-  const { shownElement, modelValue } = props
-
-  if (!modelValue || !shownElement) {
-    toggleShownElementClasses()
-    clipPath.value = ''
-    return
-  }
-
-  await nextTick()
-
-  const el = getElement(shownElement)
-
-  if (!el) {
-    return
-  }
-
-  cacheShownElement = el
-  getShownElementClipPath(el)
-  toggleShownElementClasses(true)
-}
-
-function toggleShownElementClasses(force: boolean = false) {
-  cacheShownElement?.classList.toggle('pointer-events-auto!', force)
-}
-
 function onOverlayVisibleChange(visible: boolean) {
   if (isServer()) {
     return
@@ -105,13 +57,11 @@ function onOverlayVisibleChange(visible: boolean) {
 
   if (visible) {
     registerOverlay()
-    getShownElementIfNeed()
 
     return
   }
 
   unregisterOverlay()
-  toggleShownElementClasses()
 }
 
 function onOverlayClick(ev: PointerEvent) {
@@ -125,13 +75,6 @@ function onOverlayClick(ev: PointerEvent) {
 }
 
 watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
-
-watch(() => props.shownElement, getShownElementIfNeed)
-
-onBeforeUnmount(() => {
-  toggleShownElementClasses()
-  cacheShownElement = null
-})
 </script>
 
 <template>
