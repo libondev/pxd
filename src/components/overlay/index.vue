@@ -39,7 +39,7 @@ const computedStyle = computed(() => ({
 
 let cacheShownElement: HTMLElement | null = null
 
-const { lockScroll, unlockScroll } = useLockScroll()
+const { lockScroll, unlockScroll } = useLockScroll(() => document.body, { walkAncestors: true })
 
 const { registerOverlay, unregisterOverlay } = useOverlayManager({
   enabled: () => props.modelValue,

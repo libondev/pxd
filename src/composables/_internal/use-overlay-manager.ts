@@ -1,7 +1,9 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose } from 'vue'
-import { cachedOff, cachedOn } from '../../utils/event.js'
+import { cachedOff, cachedOn, preventDefaultScroll } from '../../utils/event.js'
 import { toValue } from '../../utils/helper.js'
+
+const touchMoveOptions = { passive: false }
 
 interface OverlayManagerOptions {
   enabled?: MaybeRefOrGetter<boolean>
@@ -17,10 +19,38 @@ interface OverlayManagerEntry {
 }
 
 let isKeydownListening = false
+let rootInteractionLocks = 0
+let addedPointerEventsNone = false
 const overlayStack: OverlayManagerEntry[] = []
 
 function getTopOverlay() {
   return overlayStack.at(-1)
+}
+
+// The locked container is per overlay, but the inert root and the touchmove guard are process-wide.
+function lockRootInteraction() {
+  if (rootInteractionLocks++) {
+    return
+  }
+
+  const rootEl = document.documentElement
+
+  addedPointerEventsNone = !rootEl.classList.contains('pointer-events-none')
+  rootEl.classList.add('pointer-events-none')
+  cachedOn(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
+}
+
+function unlockRootInteraction() {
+  if (--rootInteractionLocks > 0) {
+    return
+  }
+
+  cachedOff(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
+
+  if (addedPointerEventsNone) {
+    document.documentElement.classList.remove('pointer-events-none')
+    addedPointerEventsNone = false
+  }
 }
 
 function onEscapeKeydown(ev: KeyboardEvent) {
@@ -78,6 +108,7 @@ export function useOverlayManager(options: OverlayManagerOptions) {
 
     if (shouldLockScroll && !isLockedScroll) {
       lockScroll()
+      lockRootInteraction()
       isLockedScroll = true
     }
 
@@ -104,6 +135,7 @@ export function useOverlayManager(options: OverlayManagerOptions) {
 
     if (isLockedScroll) {
       unlockScroll()
+      unlockRootInteraction()
       isLockedScroll = false
     }
 

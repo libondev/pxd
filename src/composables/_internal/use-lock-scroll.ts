@@ -1,26 +1,26 @@
-import type { MaybeElementRef } from '../../types/shared/utils'
+import type { MaybeElementRef } from '../../types/shared'
 import { onScopeDispose } from 'vue'
 import { getElement, hasScrollbar, isScrollable } from '../../utils/dom.js'
-import { cachedOff, cachedOn, preventDefaultScroll } from '../../utils/event.js'
 
-const rootLockClassNames = ['pointer-events-none']
-const touchMoveOptions = { passive: false }
+interface LockedStyle {
+  property: string
+  lockedValue: string
+  prevValue: string
+  prevPriority: string
+}
 
 interface ElementLock {
   count: number
-  prevStyles: [property: string, value: string, priority: string][]
+  styles: LockedStyle[]
 }
 
 const elementLocks = new WeakMap<HTMLElement, ElementLock>()
 
-let rootTouchMoveLocks = 0
-let rootAddedClassNames: string[] = []
-
 function lockElementScroll(el: HTMLElement): boolean {
-  const lock = elementLocks.get(el)
+  const locked = elementLocks.get(el)
 
-  if (lock) {
-    lock.count++
+  if (locked) {
+    locked.count++
     return true
   }
 
@@ -30,25 +30,28 @@ function lockElementScroll(el: HTMLElement): boolean {
     return false
   }
 
+  const { y: yScrollbar } = hasScrollbar(el)
+
   // `hidden` (unlike `clip`) keeps the element a scroll container, so its scroll offset survives.
   const styles: Record<string, string> = { 'overflow-x': 'hidden', 'overflow-y': 'hidden' }
-  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(el)
 
-  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
+  // The gutter only reserves space for the block-axis scrollbar, an inline-axis one needs none.
+  if (yScrollbar && yScrollable) {
     styles['scrollbar-gutter'] = 'stable'
   }
 
-  const prevStyles = Object.keys(styles).map((property): ElementLock['prevStyles'][number] => [
+  const lockedStyles = Object.entries(styles).map(([property, lockedValue]): LockedStyle => ({
     property,
-    el.style.getPropertyValue(property),
-    el.style.getPropertyPriority(property),
-  ])
+    lockedValue,
+    prevValue: el.style.getPropertyValue(property),
+    prevPriority: el.style.getPropertyPriority(property),
+  }))
 
-  for (const [property, value] of Object.entries(styles)) {
-    el.style.setProperty(property, value, 'important')
+  for (const { property, lockedValue } of lockedStyles) {
+    el.style.setProperty(property, lockedValue, 'important')
   }
 
-  elementLocks.set(el, { count: 1, prevStyles })
+  elementLocks.set(el, { count: 1, styles: lockedStyles })
 
   return true
 }
@@ -60,9 +63,14 @@ function unlockElementScroll(el: HTMLElement) {
     return
   }
 
-  for (const [property, value, priority] of lock.prevStyles) {
-    if (value) {
-      el.style.setProperty(property, value, priority)
+  for (const { property, lockedValue, prevValue, prevPriority } of lock.styles) {
+    // The value no longer belongs to this lock, restoring ours would drop the other change.
+    if (el.style.getPropertyValue(property) !== lockedValue) {
+      continue
+    }
+
+    if (prevValue) {
+      el.style.setProperty(property, prevValue, prevPriority)
     } else {
       el.style.removeProperty(property)
     }
@@ -71,88 +79,40 @@ function unlockElementScroll(el: HTMLElement) {
   elementLocks.delete(el)
 }
 
-function lockRootScroll() {
-  const rootEl = document.documentElement
-  const classNames = [...rootLockClassNames]
-  cachedOn(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
-
-  const { x: xScrollbar, y: yScrollbar } = hasScrollbar(rootEl)
-  const { x: xScrollable, y: yScrollable } = isScrollable(rootEl)
-
-  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
-    classNames.push('scrollbar-gutter-stable', 'scrollbar-disabled')
-  }
-
-  rootAddedClassNames = classNames.filter((className) => !rootEl.classList.contains(className))
-  rootEl.classList.add(...classNames)
+interface LockScrollOptions {
+  /** Whether to keep looking up the ancestor chain when the anchor itself does not scroll. */
+  walkAncestors?: boolean
 }
 
-function unlockRootScroll() {
-  cachedOff(document, 'touchmove', preventDefaultScroll, touchMoveOptions)
-  document.documentElement.classList.remove(...rootAddedClassNames)
-  rootAddedClassNames = []
-}
-
-/** Locks the root scroll, or only `target`'s own scroll when it is given. */
-export function useLockScroll(target?: MaybeElementRef) {
-  const isElementMode = target !== undefined
+/** Locks the scroll container that `target` sits in. */
+export function useLockScroll(target: MaybeElementRef, options: LockScrollOptions = {}) {
+  const { walkAncestors = false } = options
   const lockedElements: HTMLElement[] = []
-  let instanceTouchMoveLocks = 0
 
   function isLocked() {
-    if (isElementMode) {
-      const el = getElement(target)
-
-      return !!el && elementLocks.has(el)
-    }
-
-    return rootTouchMoveLocks > 0
+    return lockedElements.length > 0
   }
 
   function lockScroll() {
-    if (isElementMode) {
-      const el = getElement(target)
-
-      if (el && lockElementScroll(el)) {
+    // A container this module already locked still counts, even though it now reads `hidden`.
+    for (let el = getElement(target); el; el = walkAncestors ? el.parentElement : null) {
+      if (lockElementScroll(el)) {
         lockedElements.push(el)
+        return
       }
-
-      return
     }
-
-    if (rootTouchMoveLocks === 0) {
-      lockRootScroll()
-    }
-
-    rootTouchMoveLocks++
-    instanceTouchMoveLocks++
   }
 
   function unlockScroll() {
-    if (isElementMode) {
-      const el = lockedElements.pop()
+    const el = lockedElements.pop()
 
-      if (el) {
-        unlockElementScroll(el)
-      }
-
-      return
-    }
-
-    if (instanceTouchMoveLocks <= 0) {
-      return
-    }
-
-    instanceTouchMoveLocks--
-    rootTouchMoveLocks--
-
-    if (!rootTouchMoveLocks) {
-      unlockRootScroll()
+    if (el) {
+      unlockElementScroll(el)
     }
   }
 
   onScopeDispose(() => {
-    while (instanceTouchMoveLocks > 0 || lockedElements.length > 0) {
+    while (lockedElements.length > 0) {
       unlockScroll()
     }
   })

@@ -8,6 +8,7 @@ describe('useOverlayManager', () => {
   })
 
   afterEach(() => {
+    document.documentElement.classList.remove('pointer-events-none')
     vi.useRealTimers()
   })
 
@@ -44,5 +45,59 @@ describe('useOverlayManager', () => {
     registerOverlay()
     expect(isTopOverlay()).toBe(true)
     unmount()
+  })
+
+  it('should disable page interaction while the scroll is locked', () => {
+    const { registerOverlay, unregisterOverlay, unmount } = useSetupWrapper(() =>
+      useOverlayManager({
+        enabled: true,
+        lockScrollOnVisible: true,
+        lockScroll: vi.fn(),
+        unlockScroll: vi.fn(),
+      }),
+    )
+
+    registerOverlay()
+    expect(document.documentElement.classList.contains('pointer-events-none')).toBe(true)
+
+    const event = new Event('touchmove', { cancelable: true })
+    document.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+
+    unregisterOverlay()
+    expect(document.documentElement.classList.contains('pointer-events-none')).toBe(false)
+
+    const unlockedEvent = new Event('touchmove', { cancelable: true })
+    document.dispatchEvent(unlockedEvent)
+    expect(unlockedEvent.defaultPrevented).toBe(false)
+
+    unmount()
+  })
+
+  it('should keep page interaction disabled until every overlay unlocks', () => {
+    const createManager = () =>
+      useSetupWrapper(() =>
+        useOverlayManager({
+          enabled: true,
+          lockScrollOnVisible: true,
+          lockScroll: vi.fn(),
+          unlockScroll: vi.fn(),
+        }),
+      )
+
+    const first = createManager()
+    const second = createManager()
+
+    first.registerOverlay()
+    second.registerOverlay()
+
+    first.unregisterOverlay()
+    expect(document.documentElement.classList.contains('pointer-events-none')).toBe(true)
+
+    second.unregisterOverlay()
+    expect(document.documentElement.classList.contains('pointer-events-none')).toBe(false)
+
+    first.unmount()
+    second.unmount()
   })
 })
