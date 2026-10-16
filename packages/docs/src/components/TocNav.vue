@@ -12,10 +12,12 @@ function onItemClick(item: { id: string }) {
   <div class="p-2">
     <div id="docs-toc-title" class="p-2 text-xs font-bold uppercase">On this page</div>
 
-    <PToc
-      :offset="50"
-      selector=".markdown-body > h2[id], .markdown-body > h3[id], .markdown-body + h2[id]"
-      @item-click="onItemClick"
-    />
+    <PScrollable class="max-h-[calc(100vh-6rem)]">
+      <PToc
+        :offset="50"
+        selector=".markdown-body > h2[id], .markdown-body > h3[id], .markdown-body + h2[id]"
+        @item-click="onItemClick"
+      />
+    </PScrollable>
   </div>
 </template>
