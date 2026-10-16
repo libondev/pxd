@@ -772,7 +772,7 @@ defineExpose({
 
       <div
         v-else-if="!rows.length"
-        class="pxd-tree--empty py-7.5 text-sm text-center text-foreground-secondary"
+        class="pxd-tree--empty py-8.5 text-sm text-center text-foreground-secondary"
       >
         <slot name="empty" />
       </div>
