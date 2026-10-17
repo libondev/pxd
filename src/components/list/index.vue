@@ -212,37 +212,55 @@ function refreshActiveItem(): void {
 watch(activeIndex, syncActiveItem, { flush: 'post' })
 watch(renderEntries, refreshActiveItem, { flush: 'post' })
 
-function scrollToFirstSelected() {
+function scrollToFirstSelected(): boolean {
   const firstValue = toArray(props.modelValue)[0]
 
   if (isNil(firstValue)) {
-    return
+    return false
   }
 
   const target = itemRows.value.find((row) => row.option.value === firstValue)
 
   if (!target) {
-    return
+    return false
   }
 
   if (props.virtual) {
     nextTick(() => scrollNavIndexIntoView(target.navIndex))
-    return
+    return true
   }
 
   const container = containerRef.value
   const item = getElement(`[data-list-item][data-index="${target.navIndex}"]`, container)
 
   if (!container || !item) {
-    return
+    return false
   }
 
   const itemRect = item.getBoundingClientRect()
   const containerRect = container.getBoundingClientRect()
 
-  if (itemRect.bottom > containerRect.bottom) {
+  if (itemRect.top < containerRect.top) {
+    // Keep one row between the selection and the top edge.
+    container.scrollTop -= containerRect.top - itemRect.top + itemRect.height
+  } else if (itemRect.bottom > containerRect.bottom) {
     // Keep one row between the selection and the bottom edge.
     container.scrollTop += itemRect.bottom - containerRect.bottom + itemRect.height
+  }
+
+  return true
+}
+
+function scrollToFirstOption(): void {
+  if (props.virtual) {
+    if (rows.value.length > 0) {
+      scrollToIndex(0, { align: 'start', behavior: 'instant' })
+    }
+    return
+  }
+
+  if (containerRef.value) {
+    containerRef.value.scrollTop = 0
   }
 }
 
@@ -255,14 +273,20 @@ watch(
   rows,
   async () => {
     await nextTick()
-    scrollToFirstSelected()
+
+    if (!scrollToFirstSelected()) {
+      scrollToFirstOption()
+    }
   },
   { flush: 'post' },
 )
 
 onMounted(() => {
   refreshActiveItem()
-  scrollToFirstSelected()
+
+  if (!scrollToFirstSelected()) {
+    scrollToFirstOption()
+  }
 })
 
 defineExpose({
