@@ -27,7 +27,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emits = defineEmits<Emits>()
 
-const modelValue = useModelValue(props, emits)
+const dampingFactor = 9
+let maxSwipedDamped = 0
+let hasDraggedInDismissDirection = false
+let releaseAnimationId = 0
 
 const containerRef = shallowRef<HTMLElement>()
 
@@ -44,28 +47,7 @@ const computedStyle = computed(() => {
   }
 })
 
-const dampingFactor = 9
-let maxSwipedDamped = 0
-let hasDraggedInDismissDirection = false
-let releaseAnimationId = 0
-
-function animateRelease(from: number, decayRate = 0.88) {
-  caf(releaseAnimationId)
-
-  const step = () => {
-    const next = from * decayRate
-    if (Math.abs(next) < 0.5) {
-      gestureMoveOffset.value = 0
-      return
-    }
-    from = next
-    gestureMoveOffset.value = from
-    releaseAnimationId = raf(step)
-  }
-
-  releaseAnimationId = raf(step)
-}
-
+const modelValue = useModelValue(props, emits)
 useSwipeGesture(containerRef, {
   handleSelector: '.pxd-dismiss-container--handle',
   swipeThreshold: 0,
@@ -102,6 +84,23 @@ useSwipeGesture(containerRef, {
     animateRelease(gestureMoveOffset.value)
   },
 })
+
+function animateRelease(from: number, decayRate = 0.88) {
+  caf(releaseAnimationId)
+
+  const step = () => {
+    const next = from * decayRate
+    if (Math.abs(next) < 0.5) {
+      gestureMoveOffset.value = 0
+      return
+    }
+    from = next
+    gestureMoveOffset.value = from
+    releaseAnimationId = raf(step)
+  }
+
+  releaseAnimationId = raf(step)
+}
 </script>
 
 <template>

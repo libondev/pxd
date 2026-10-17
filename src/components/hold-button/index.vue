@@ -17,23 +17,7 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
 
 const emits = defineEmits<HoldButtonEmits>()
 
-const attrs = useAttrs()
-
 const status = shallowRef<HoldButtonStatus>('idle')
-
-const computedAttrs = computed(() => {
-  return {
-    class: [
-      'pxd-hold-button relative motion-safe:transition-appearance',
-      {
-        scalable: props.scalable,
-        effective: status.value !== 'canceled',
-      },
-    ],
-    ...attrs,
-  }
-})
-
 const computedStyle = computed(() => {
   const { durations, progressColor } = props
 
@@ -45,6 +29,21 @@ const computedStyle = computed(() => {
   return {
     '--hold-button-durations': `${_durations}ms`,
     '--hold-button-progress-color': progressColor,
+  }
+})
+
+const attrs = useAttrs()
+
+const computedAttrs = computed(() => {
+  return {
+    class: [
+      'pxd-hold-button relative motion-safe:transition-appearance',
+      {
+        scalable: props.scalable,
+        effective: status.value !== 'canceled',
+      },
+    ],
+    ...attrs,
   }
 })
 

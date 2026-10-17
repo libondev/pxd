@@ -19,19 +19,16 @@ const props = withDefaults(defineProps<HintProps>(), {
 
 const emits = defineEmits<HintEmits>()
 
-const configProvider = useConfigProvider()
-
-const visible = shallowRef(false)
-const status = shallowRef<HintStatus>('idle')
-const statusValue = shallowRef<unknown>()
-const statusError = shallowRef<unknown>()
-
 let closeTimer: ReturnType<typeof setTimeout> | null = null
 let closeDeadline = 0
 let closeRemaining = 0
 let isHovering = false
 let promiseToken = 0
 
+const visible = shallowRef(false)
+const status = shallowRef<HintStatus>('idle')
+const statusValue = shallowRef<unknown>()
+const statusError = shallowRef<unknown>()
 const statusVariant = computed(() => {
   const current = status.value
 
@@ -49,6 +46,8 @@ const contentClassComputed = computed(() => [
   computedVariant.value.base,
   props.contentClass,
 ])
+
+const configProvider = useConfigProvider()
 
 function clearCloseTimer() {
   if (closeTimer) {
@@ -79,7 +78,6 @@ function startCloseTimer() {
     scheduleClose(props.duration)
   }
 }
-
 // 悬停期间暂停、离开后按剩余时长续跑，否则用户伸手去点关闭按钮时提示会先消失
 function pauseCloseTimer() {
   if (!props.pauseOnHover) {
@@ -111,17 +109,6 @@ function resumeCloseTimer() {
 function handleClose() {
   visible.value = false
 }
-
-watch(visible, (isVisible) => {
-  if (isVisible) {
-    startCloseTimer()
-  } else {
-    clearCloseTimer()
-    isHovering = false
-    emits('close')
-  }
-})
-
 function subscribePromise(promise: Promise<unknown> | undefined) {
   // 换 promise 即换会话，旧请求晚到的结果不能覆盖新请求
   const token = ++promiseToken
@@ -158,11 +145,19 @@ function subscribePromise(promise: Promise<unknown> | undefined) {
   )
 }
 
+watch(visible, (isVisible) => {
+  if (isVisible) {
+    startCloseTimer()
+  } else {
+    clearCloseTimer()
+    isHovering = false
+    emits('close')
+  }
+})
 // 不用 watch(() => props.promise)：Vue 会给 watcher getter 返回的 promise 挂 catch，reject 时报组件错误
 watchEffect(() => {
   subscribePromise(props.promise)
 })
-
 // 显示期间换内容时重新起跑完整时长，否则用户还没看清新文案提示就先消失了
 watch(
   () => props.content,

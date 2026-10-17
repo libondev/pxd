@@ -24,28 +24,20 @@ const props = withDefaults(defineProps<MarqueeProps>(), {
 
 const emits = defineEmits<MarqueeEmits>()
 
-const wrapRef = shallowRef<HTMLElement>()
-const contentRef = shallowRef<HTMLElement>()
-
-const phase = shallowRef<'idle' | 'first' | 'loop'>('idle')
-const contentStyle = shallowRef<Record<string, string>>()
-
 let wrapWidth = 0
 let contentWidth = 0
 let appliedSpeed = 0
 let appliedDelay = 0
 let restartRafId = 0
+const scheduleSync = throttleByRaf(() => {
+  syncScroll(false)
+})
 
-function toDelay(value: number | string | undefined) {
-  const n = Number(value)
-  return Number.isFinite(n) && n >= 0 ? n : 1
-}
+const wrapRef = shallowRef<HTMLElement>()
+const contentRef = shallowRef<HTMLElement>()
 
-function toSpeed(value: number | string | undefined) {
-  const n = Number(value)
-  return Number.isFinite(n) && n > 0 ? n : 60
-}
-
+const phase = shallowRef<'idle' | 'first' | 'loop'>('idle')
+const contentStyle = shallowRef<Record<string, string>>()
 const delaySec = computed(() => toDelay(props.delay))
 const speed = computed(() => toSpeed(props.speed))
 
@@ -69,6 +61,17 @@ const contentClass = computed(() => {
   return 'block max-w-full truncate'
 })
 
+useResizeObserver(wrapRef, scheduleSync)
+
+function toDelay(value: number | string | undefined) {
+  const n = Number(value)
+  return Number.isFinite(n) && n >= 0 ? n : 1
+}
+
+function toSpeed(value: number | string | undefined) {
+  const n = Number(value)
+  return Number.isFinite(n) && n > 0 ? n : 60
+}
 function clearRestart() {
   if (restartRafId) {
     caf(restartRafId)
@@ -164,11 +167,6 @@ function syncScroll(force = false) {
 
   armFirst()
 }
-
-const scheduleSync = throttleByRaf(() => {
-  syncScroll(false)
-})
-
 function reset() {
   if (isServer()) {
     return
@@ -197,8 +195,6 @@ function onAnimationIteration(event: AnimationEvent) {
 }
 
 watch(() => [props.scrollable, props.wrapable, props.text, delaySec.value, speed.value], reset)
-
-useResizeObserver(wrapRef, scheduleSync)
 
 onMounted(reset)
 onBeforeUnmount(() => {

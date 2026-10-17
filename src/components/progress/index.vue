@@ -18,8 +18,6 @@ const props = withDefaults(defineProps<ProgressProps>(), {
   variant: 'primary',
 })
 
-const configProvider = useConfigProvider()
-
 const VARIANTS_COLORS = {
   primary: 'var(--color-primary)',
   success: 'hsl(var(--color-blue-700-value))',
@@ -43,24 +41,6 @@ const computedLabel = computed(() => {
 
   return false
 })
-
-const { classes } = useTailwindVariant(
-  {
-    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
-    variants: {
-      size: {
-        sm: 'h-2',
-        md: 'h-2.5',
-        lg: 'h-3.5',
-      },
-    },
-  },
-  {
-    mergeAttrsClass: false,
-    selection: () => ({ size: props.size || configProvider.size }),
-  },
-)
-
 const relativeProgress = computed(() => progress.value - props.min)
 
 const percentage = computed(() => {
@@ -84,6 +64,24 @@ const computedProgressBarStyles = computed(() => {
     backgroundColor: computedColors.value || VARIANTS_COLORS.primary,
   }
 })
+
+const configProvider = useConfigProvider()
+const { classes } = useTailwindVariant(
+  {
+    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
+    },
+  },
+  {
+    mergeAttrsClass: false,
+    selection: () => ({ size: props.size || configProvider.size }),
+  },
+)
 </script>
 
 <template>

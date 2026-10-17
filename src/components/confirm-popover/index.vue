@@ -23,17 +23,15 @@ const props = withDefaults(defineProps<ConfirmPopoverProps>(), {
 
 const emits = defineEmits<ConfirmPopoverEmits>()
 
-const configProvider = useConfigProvider()
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-
 const titleId = getUniqueId('confirm-popover-title')
+// Bumped on every open and close, so a confirm that settles after the popover
+// was dismissed cannot confirm an action the user already abandoned.
+let sessionId = 0
 
 const isPending = shallowRef(false)
 const localVisible = shallowRef(props.modelValue ?? false)
 
-// Bumped on every open and close, so a confirm that settles after the popover
-// was dismissed cannot confirm an action the user already abandoned.
-let sessionId = 0
+const configProvider = useConfigProvider()
 
 const computedConfirmText = computed(() => {
   return props.confirmText ?? configProvider.locale.interaction.confirm
@@ -43,6 +41,8 @@ const computedCancelText = computed(() => {
   return props.cancelText ?? configProvider.locale.interaction.cancel
 })
 
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+
 function applyVisible(value: boolean) {
   if (localVisible.value === value) {
     return
@@ -51,7 +51,6 @@ function applyVisible(value: boolean) {
   sessionId++
   localVisible.value = value
 }
-
 // The popover owns the trigger, so its own state is authoritative: mirror it
 // locally and forward it, otherwise a controlled parent that never writes back
 // would leave the popover impossible to close.

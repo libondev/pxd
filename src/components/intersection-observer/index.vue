@@ -25,6 +25,14 @@ const containerSize = shallowRef({
   '--slot-estimated-height': getCssUnitValue(props.height),
 })
 
+useIntersectionObserver(
+  containerRef,
+  ([{ entry }]) => {
+    onVisibleChange(entry.isIntersecting)
+  },
+  props,
+)
+
 function getRenderedSlotSize() {
   const { offsetWidth, offsetHeight } = containerRef.value!
 
@@ -55,14 +63,6 @@ function onVisibleChange(isIntersecting: boolean) {
 
   emits('visible-change', isIntersecting)
 }
-
-useIntersectionObserver(
-  containerRef,
-  ([{ entry }]) => {
-    onVisibleChange(entry.isIntersecting)
-  },
-  props,
-)
 </script>
 
 <template>

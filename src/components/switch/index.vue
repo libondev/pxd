@@ -31,8 +31,10 @@ const SIZES = {
 }
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
+
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+
+const modelValue = useModelValue(props, emits)
 
 provideSwitchContext({ props, emits, name: getUniqueId() })
 </script>

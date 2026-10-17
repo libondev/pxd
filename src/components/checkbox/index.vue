@@ -28,6 +28,8 @@ const uniqueId = getUniqueId()
 
 const checkboxGroupContext = useCheckboxGroupContext()
 
+const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
+
 const modelValue = useModelValue(
   checkboxGroupContext?.props ?? props,
   checkboxGroupContext?.emits ?? emits,
@@ -44,8 +46,6 @@ const isSelected = computed(() => {
 
   return modelValue.value === props.value
 })
-
-const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
 
 const { classes } = useTailwindVariant(
   {

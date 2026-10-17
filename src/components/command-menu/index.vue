@@ -32,14 +32,13 @@ const emits = defineEmits<CommandMenuEmits>()
 
 const uniqueId = getUniqueId()
 
-const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
-
 const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
-
 const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => modelValue.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -51,7 +50,6 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
     End: 'last',
   },
 })
-const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
 function hideModal() {
   filterKeyword.value = ''

@@ -36,7 +36,6 @@ const emits = defineEmits<{
 }>()
 
 const editorRef = shallowRef<HTMLElement>()
-
 const inputHeightClasses = computed(() => {
   return {
     sm: `${BASIC_MIN_HEIGHTS.sm} py-1`,

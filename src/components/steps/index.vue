@@ -22,13 +22,6 @@ const props = withDefaults(defineProps<StepsProps>(), {
 })
 const emits = defineEmits<StepsEmits>()
 
-const configProvider = useConfigProvider()
-
-const modelValue = useModelValue(props, emits)
-/** Uncontrolled fallback: a bound `modelValue` always wins. */
-const innerValue = shallowRef<number | undefined>(props.defaultValue)
-const activeIndex = computed(() => props.modelValue ?? innerValue.value ?? 0)
-
 const SIZES = {
   sm: {
     indicatorSize: '1.25rem',
@@ -56,6 +49,12 @@ const SIZES = {
   },
 }
 
+/** Uncontrolled fallback: a bound `modelValue` always wins. */
+const innerValue = shallowRef<number | undefined>(props.defaultValue)
+const activeIndex = computed(() => props.modelValue ?? innerValue.value ?? 0)
+
+const configProvider = useConfigProvider()
+
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
 const computedStyle = computed(() => {
@@ -70,6 +69,8 @@ const computedStyle = computed(() => {
     '--steps-gap': size.gap,
   }
 })
+
+const modelValue = useModelValue(props, emits)
 
 function resolveStatus(option: StepsOption, index: number): StepsStatus {
   if (option.status) {

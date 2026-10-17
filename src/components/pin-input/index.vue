@@ -26,14 +26,11 @@ const props = withDefaults(defineProps<PinInputProps>(), {
 
 const emits = defineEmits<PinInputEmits>()
 
-const configProvider = useConfigProvider()
+const NUMERIC_REGEX = /^\d+$/
+const ALPHABETIC_REGEX = /^[a-z]+$/i
+const ALPHANUMERIC_REGEX = /^[0-9a-z]+$/i
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
-
-const modelValue = useModelValue(props, emits)
-
-let localValue: string = modelValue.value
-
 const computedInputType = computed(() => {
   const { type } = props
 
@@ -49,6 +46,11 @@ const computedInputType = computed(() => {
 const computedInputMode = computed(() => {
   return props.type.includes('numeric') ? 'numeric' : 'text'
 })
+
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits)
+
+let localValue: string = modelValue.value
 
 const { classes } = useTailwindVariant(
   {
@@ -148,7 +150,6 @@ function onContainerClick(ev: MouseEvent) {
 
   inputsRef.value[firstEmptyIndex]?.select()
 }
-
 // Triggered when the IME composition finishes.
 function onCompositionEnd(ev: CompositionEvent) {
   const input = ev.target as HTMLInputElement
@@ -163,11 +164,6 @@ function onCompositionEnd(ev: CompositionEvent) {
 
   setInputValue('', index)
 }
-
-const NUMERIC_REGEX = /^\d+$/
-const ALPHABETIC_REGEX = /^[a-z]+$/i
-const ALPHANUMERIC_REGEX = /^[0-9a-z]+$/i
-
 function validateInputValue(value: string) {
   if (!value) {
     return false
@@ -185,7 +181,6 @@ function validateInputValue(value: string) {
 
   return false
 }
-
 // Move focus between inputs when arrow keys are pressed.
 function onContainerKeydown(ev: KeyboardEvent) {
   const index = Number((ev.target as HTMLInputElement).dataset.index)

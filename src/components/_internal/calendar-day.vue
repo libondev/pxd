@@ -2,6 +2,21 @@
 import type { CalendarDay } from '../calendar/types'
 import { createTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
+defineOptions({
+  name: 'PCalendarDay',
+  inheritAttrs: false,
+})
+
+const props = defineProps<{
+  day: CalendarDay
+  selected: boolean
+  compact: boolean
+}>()
+
+const emits = defineEmits<{
+  change: [day: CalendarDay]
+}>()
+
 const cellClasses = createTailwindVariant({
   base: 'pxd-calendar--grid-cell shrink-0 self-focus-ring outline-none motion-safe:transition-colors',
   variants: {
@@ -34,21 +49,6 @@ const dateClasses = createTailwindVariant({
     },
   },
 })
-
-defineOptions({
-  name: 'PCalendarDay',
-  inheritAttrs: false,
-})
-
-const props = defineProps<{
-  day: CalendarDay
-  selected: boolean
-  compact: boolean
-}>()
-
-const emits = defineEmits<{
-  change: [day: CalendarDay]
-}>()
 
 function selectDate() {
   if (props.day.isDisabled) {

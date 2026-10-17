@@ -19,10 +19,6 @@ defineOptions({
     event: 'update:modelValue',
   },
 })
-
-const DATE_FORMAT_TOKEN_RE = /(YYYY|YY|MM|DD|M|D)/
-const YEAR_FORMAT_TOKEN_RE = /YYYY|YY/
-
 const props = withDefaults(defineProps<DatePickerProps>(), {
   suffixIcon: true,
   closeOnPressEscape: true,
@@ -31,14 +27,16 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
 })
 
 const emits = defineEmits<DatePickerEmits>()
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+
+const DATE_FORMAT_TOKEN_RE = /(YYYY|YY|MM|DD|M|D)/
+const YEAR_FORMAT_TOKEN_RE = /YYYY|YY/
 
 const popoverVisible = shallowRef(false)
 const draftInput = shallowRef<string | null>(null)
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
-
 const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null)
 
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const modelValue = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {

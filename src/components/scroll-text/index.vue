@@ -16,15 +16,19 @@ const props = withDefaults(defineProps<ScrollTextProps>(), {
   speed: 40,
 })
 
+let wrapWidth = 0
+let contentWidth = 0
+let appliedSpeed = 0
+let initialRafId = 0
+
 const wrapRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
 const contentStyle = shallowRef<Record<string, string>>()
 
-let wrapWidth = 0
-let contentWidth = 0
-let appliedSpeed = 0
-let initialRafId = 0
+useResizeObserver(wrapRef, () => {
+  syncOverflow(false)
+})
 
 function toSpeed(value: number | string | undefined) {
   const n = Number(value)
@@ -90,10 +94,6 @@ watch(
   },
   { flush: 'post' },
 )
-
-useResizeObserver(wrapRef, () => {
-  syncOverflow(false)
-})
 
 // The first measurement is deferred to a rAF instead of running synchronously in
 // the mounted queue, where a batch of instances reading layout forces one reflow

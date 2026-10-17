@@ -24,6 +24,14 @@ const props = withDefaults(defineProps<LoadingBarProps>(), {
   trickleThreshold: 300,
 })
 
+let prevTimestamp = 0
+let prevAnimationKey = 0
+
+let hiddenBarTimeout: ReturnType<typeof setTimeout>
+let enableTransitionTimeout: ReturnType<typeof setTimeout>
+
+const ENABLE_TRANSITION_DELAY = 0
+
 const status = shallowRef<LoadingBarStatus>('finish')
 const hiddenBar = shallowRef(false)
 const progressValue = shallowRef(0)
@@ -43,7 +51,6 @@ const { attrs, classes } = useTailwindVariant(
     selection: () => ({ locally: isTruthyProp(props.to) }),
   },
 )
-
 const { classes: innerClasses } = useTailwindVariant(
   {
     base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance motion-safe:will-change-transform',
@@ -60,14 +67,6 @@ const { classes: innerClasses } = useTailwindVariant(
     selection: () => ({ status: status.value }),
   },
 )
-
-let prevTimestamp = 0
-let prevAnimationKey = 0
-
-let hiddenBarTimeout: ReturnType<typeof setTimeout>
-let enableTransitionTimeout: ReturnType<typeof setTimeout>
-
-const ENABLE_TRANSITION_DELAY = 0
 
 function getIncreaseDelta(n: number) {
   if (n >= 0 && n < 0.2) {

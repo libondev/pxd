@@ -28,8 +28,41 @@ const props = withDefaults(defineProps<RatingProps>(), {
 
 const emits = defineEmits<RatingEmits>()
 
+let activePointerId: number | null = null
+let ratingRect: DOMRect | null = null
+let lastClientX: number | null = null
+
+const ratingRef = shallowRef<HTMLElement>()
+const hoverValue = shallowRef<number | null>(null)
+const dragValue = shallowRef<number | null>(null)
+
+const scheduleDragUpdate = throttleByRaf(() => {
+  if (lastClientX !== null) {
+    dragValue.value = getValueFromPosition(lastClientX)
+  }
+})
+
+const isDragging = shallowRef(false)
+const starCount = computed(() => Math.max(1, props.count))
+
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
+
+const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
+const fills = computed(() => {
+  const value = displayValue.value
+  const result: number[] = []
+  for (let i = 0; i < starCount.value; i++) {
+    if (i + 1 <= value) {
+      result.push(1)
+    } else if (props.allowHalf && i + 0.5 <= value) {
+      result.push(0.5)
+    } else {
+      result.push(0)
+    }
+  }
+  return result
+})
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -60,34 +93,6 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
 )
-
-const ratingRef = shallowRef<HTMLElement>()
-const hoverValue = shallowRef<number | null>(null)
-const dragValue = shallowRef<number | null>(null)
-const isDragging = shallowRef(false)
-
-let activePointerId: number | null = null
-let ratingRect: DOMRect | null = null
-let lastClientX: number | null = null
-
-const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
-
-const starCount = computed(() => Math.max(1, props.count))
-
-const fills = computed(() => {
-  const value = displayValue.value
-  const result: number[] = []
-  for (let i = 0; i < starCount.value; i++) {
-    if (i + 1 <= value) {
-      result.push(1)
-    } else if (props.allowHalf && i + 0.5 <= value) {
-      result.push(0.5)
-    } else {
-      result.push(0)
-    }
-  }
-  return result
-})
 
 function getValueFromPosition(clientX: number): number {
   if (!ratingRef.value) {
@@ -131,13 +136,6 @@ function resetDragging() {
 function isActivePointer(event: PointerEvent) {
   return isDragging.value && event.pointerId === activePointerId
 }
-
-const scheduleDragUpdate = throttleByRaf(() => {
-  if (lastClientX !== null) {
-    dragValue.value = getValueFromPosition(lastClientX)
-  }
-})
-
 function handlePointerDown(event: PointerEvent) {
   if (props.readonly || props.disabled || !ratingRef.value) {
     return

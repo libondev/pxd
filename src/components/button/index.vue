@@ -33,6 +33,20 @@ const isDisabled = computed<boolean>(
 const computedVariant = computed(() => {
   return props.variant || buttonGroupContext?.props.variant || 'default'
 })
+const btnContentClasses = computed(() => {
+  const { icon, align } = props
+  const internalAlign = icon ? 'center' : align
+  const alignClasses = {
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
+  }[internalAlign || buttonGroupContext?.props.align || 'center']
+
+  return {
+    'px-1.5': !icon,
+    [alignClasses]: true,
+  }
+})
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -97,21 +111,6 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
 )
-
-const btnContentClasses = computed(() => {
-  const { icon, align } = props
-  const internalAlign = icon ? 'center' : align
-  const alignClasses = {
-    left: 'justify-start',
-    center: 'justify-center',
-    right: 'justify-end',
-  }[internalAlign || buttonGroupContext?.props.align || 'center']
-
-  return {
-    'px-1.5': !icon,
-    [alignClasses]: true,
-  }
-})
 </script>
 
 <template>

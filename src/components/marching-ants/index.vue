@@ -45,6 +45,49 @@ interface ClipBoundary {
   intersect: (from: Point, to: Point) => Point
 }
 
+defineOptions({
+  name: 'PMarchingAnts',
+  inheritAttrs: false,
+})
+
+const props = withDefaults(defineProps<MarchingAntsProps>(), {
+  as: 'div',
+  color: '#00ff88',
+  lineSize: 2,
+  dashSize: 8,
+  gap: 4,
+})
+
+const targetRef = shallowRef<HTMLElement | ComponentPublicInstance>()
+const outline = shallowRef<Outline>()
+
+const dashArray = computed(() => {
+  const dash = parseFloat(getCssUnitValue(props.dashSize, '8') || '8')
+  const gap = parseFloat(getCssUnitValue(props.gap, '4') || '4')
+  return { value: `${dash} ${gap}`, offset: `-${dash + gap}` }
+})
+
+const strokeStyle = computed(() => ({
+  '--marching-ants-color': props.color,
+  '--marching-ants-stroke-width': getCssUnitValue(props.lineSize, '2px'),
+  '--marching-ants-dash-array': dashArray.value.value,
+  '--marching-ants-dash-offset': dashArray.value.offset,
+}))
+
+const circleOutline = computed<EllipseOutline | undefined>(() => {
+  const value = outline.value
+  return value?.type === 'ellipse' && Math.abs(value.rx - value.ry) < 0.5 ? value : undefined
+})
+
+const ellipseOutline = computed<EllipseOutline | undefined>(() => {
+  const value = outline.value
+  return value?.type === 'ellipse' && !circleOutline.value ? value : undefined
+})
+
+const pathOutline = computed<PathOutline | undefined>(() =>
+  outline.value?.type === 'path' ? outline.value : undefined,
+)
+
 const resolveLength = (value: string, reference: number) =>
   value.endsWith('%') ? (parseFloat(value) / 100) * reference : parseFloat(value)
 
@@ -490,50 +533,6 @@ function getOutline(element: HTMLElement): Outline {
 
   return createRectangleOutline(elementRect.width, elementRect.height)
 }
-
-defineOptions({
-  name: 'PMarchingAnts',
-  inheritAttrs: false,
-})
-
-const props = withDefaults(defineProps<MarchingAntsProps>(), {
-  as: 'div',
-  color: '#00ff88',
-  lineSize: 2,
-  dashSize: 8,
-  gap: 4,
-})
-
-const targetRef = shallowRef<HTMLElement | ComponentPublicInstance>()
-const outline = shallowRef<Outline>()
-
-const dashArray = computed(() => {
-  const dash = parseFloat(getCssUnitValue(props.dashSize, '8') || '8')
-  const gap = parseFloat(getCssUnitValue(props.gap, '4') || '4')
-  return { value: `${dash} ${gap}`, offset: `-${dash + gap}` }
-})
-
-const strokeStyle = computed(() => ({
-  '--marching-ants-color': props.color,
-  '--marching-ants-stroke-width': getCssUnitValue(props.lineSize, '2px'),
-  '--marching-ants-dash-array': dashArray.value.value,
-  '--marching-ants-dash-offset': dashArray.value.offset,
-}))
-
-const circleOutline = computed<EllipseOutline | undefined>(() => {
-  const value = outline.value
-  return value?.type === 'ellipse' && Math.abs(value.rx - value.ry) < 0.5 ? value : undefined
-})
-
-const ellipseOutline = computed<EllipseOutline | undefined>(() => {
-  const value = outline.value
-  return value?.type === 'ellipse' && !circleOutline.value ? value : undefined
-})
-
-const pathOutline = computed<PathOutline | undefined>(() =>
-  outline.value?.type === 'path' ? outline.value : undefined,
-)
-
 function select() {
   const target = getElement(targetRef.value)
   if (!target) {

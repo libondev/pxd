@@ -16,15 +16,15 @@ defineOptions({
 
 const emits = defineEmits<ThemeSwitcherEmits>()
 
-const { colorScheme, toggleDarkMode } = useColorScheme({
-  syncStatus: true,
-})
-
 const SCHEME_ICONS: Record<ColorPreference, Component> = {
   auto: DeviceAlternateIcon,
   light: SunIcon,
   dark: MoonIcon,
 }
+
+const { colorScheme, toggleDarkMode } = useColorScheme({
+  syncStatus: true,
+})
 
 const renderIcon = computed(() => SCHEME_ICONS[colorScheme.value])
 

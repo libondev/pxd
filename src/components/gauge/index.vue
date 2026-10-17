@@ -40,10 +40,6 @@ const defaultColors: GaugeProps['colors'] = {
   60: 'var(--color-green-700)',
 }
 
-const configProvider = useConfigProvider()
-
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
-
 const progress = computed(() => {
   if (props.indeterminate) {
     return 0
@@ -51,7 +47,6 @@ const progress = computed(() => {
 
   return Math.min(Math.max(props.modelValue || 0, 0), 100)
 })
-
 // Arc length is taken as a percentage of the geometric arc; round linecap overhangs
 // past the endpoints, so trimming slightly keeps gaps from looking too full.
 const progressArc = computed(() => {
@@ -125,6 +120,10 @@ const progressColors = computed(() => {
     secondary: secondaryColor,
   }
 })
+
+const configProvider = useConfigProvider()
+
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 </script>
 
 <template>

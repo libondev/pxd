@@ -31,10 +31,8 @@ const props = withDefaults(defineProps<TourProps>(), {
 
 const emits = defineEmits<TourEmits>()
 
-const configProvider = useConfigProvider()
-const motionReduced = useMotionReduced()
-
 const titleId = getUniqueId('pxd-tour-title')
+
 const popoverVisible = shallowRef(false)
 const localCurrent = shallowRef(normalizeCurrent(props.current))
 
@@ -42,20 +40,11 @@ const activeStep = computed(() => props.steps[localCurrent.value])
 const isLastStep = computed(() => localCurrent.value >= props.steps.length - 1)
 
 const currentPosition = computed(() => activeStep.value?.position ?? 'bottom')
-
-const maskStyle = computed<CSSProperties>(() => {
-  return {
-    top: `${rect.value.top}px`,
-    left: `${rect.value.left}px`,
-    width: `${rect.value.width}px`,
-    height: `${rect.value.height}px`,
-    borderRadius: targetRadius.value || '0px',
-  }
-})
-
 const tourStyle = computed<CSSProperties>(() => ({
   '--tour-index': props.zIndex,
 }))
+
+const configProvider = useConfigProvider()
 
 const nextText = computed(() => {
   const { nextText: customNextText } = activeStep.value ?? {}
@@ -68,6 +57,27 @@ const nextText = computed(() => {
 })
 
 const prevText = computed(() => activeStep.value?.prevText || configProvider.locale.tour.prev)
+
+const motionReduced = useMotionReduced()
+const { rect, targetRadius, isCentered, isLoading, goTo, cancel } = useTourTarget({
+  step: activeStep,
+  motionReduced,
+  onMissingTarget,
+  onError: onStepError,
+  onResolved: () => {
+    popoverVisible.value = true
+  },
+})
+
+const maskStyle = computed<CSSProperties>(() => {
+  return {
+    top: `${rect.value.top}px`,
+    left: `${rect.value.left}px`,
+    width: `${rect.value.width}px`,
+    height: `${rect.value.height}px`,
+    borderRadius: targetRadius.value || '0px',
+  }
+})
 
 function normalizeCurrent(index: number) {
   if (props.steps.length === 0) {
@@ -94,17 +104,6 @@ function onStepError(error: unknown, index: number) {
 function onMissingTarget(index: number) {
   onStepError(new Error(`[PTour] target not found for step ${index}`), index)
 }
-
-const { rect, targetRadius, isCentered, isLoading, goTo, cancel } = useTourTarget({
-  step: activeStep,
-  motionReduced,
-  onMissingTarget,
-  onError: onStepError,
-  onResolved: () => {
-    popoverVisible.value = true
-  },
-})
-
 function goToStep(index: number) {
   if (props.steps.length === 0 || index < 0 || index >= props.steps.length) {
     return

@@ -10,18 +10,20 @@ defineOptions({
   name: 'PCollapse',
   inheritAttrs: false,
 })
-
-const uid = getUniqueId()
 const props = defineProps<CollapseProps>()
 const emits = defineEmits<CollapseEmits>()
 
-const collapseGroup = useCollapseGroupContext()
+const uid = getUniqueId()
+
 const internalExpand = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
+
+const collapseGroup = useCollapseGroupContext()
 
 const isExpanded = computed(() =>
   collapseGroup ? collapseGroup.expandedIds.value.has(uid) : internalExpand.value,
 )
+
 const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
 
 function setExpanded(expanded: boolean, exclusive = false) {

@@ -14,14 +14,13 @@ const props = defineProps<AvatarProps>()
 const emits = defineEmits<AvatarEmits>()
 
 const loadingStatus = shallowRef<AvatarStatus>('idle')
+const isHideAvatar = computed(
+  () => !props.src || props.placeholder || loadingStatus.value === 'error',
+)
 
 const avatarGroupContext = useAvatarGroupContext()
 
 const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext?.props.size))
-
-const isHideAvatar = computed(
-  () => !props.src || props.placeholder || loadingStatus.value === 'error',
-)
 
 function onLoadError(event: Event) {
   loadingStatus.value = 'error'

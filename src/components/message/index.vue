@@ -25,6 +25,14 @@ const props = withDefaults(defineProps<MessageProps>(), {
 const emits = defineEmits<MessageEmits>()
 
 const groupMessages = ref<MessageItemConfig[]>([])
+const messageGroupStyle = computed(() => {
+  const frontHeight = groupMessages.value[0]?.height || 0
+
+  return {
+    '--message-width': getCssUnitValue(props.width),
+    '--message-front-height': getCssUnitValue(frontHeight),
+  }
+})
 
 const {
   groupExpand,
@@ -50,15 +58,6 @@ useDocumentHidden((isHidden) => {
     pauseAll()
   } else {
     resumeAll()
-  }
-})
-
-const messageGroupStyle = computed(() => {
-  const frontHeight = groupMessages.value[0]?.height || 0
-
-  return {
-    '--message-width': getCssUnitValue(props.width),
-    '--message-front-height': getCssUnitValue(frontHeight),
   }
 })
 

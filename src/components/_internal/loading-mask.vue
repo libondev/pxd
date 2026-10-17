@@ -3,15 +3,14 @@ import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useLockScroll } from '../../composables/_internal/use-lock-scroll.js'
 import PSpinner from '../spinner/index.vue'
 
-defineOptions({
-  name: 'PLoadingMask',
-  inheritAttrs: false,
-})
-
 interface LoadingMaskProps {
   text?: string
 }
 
+defineOptions({
+  name: 'PLoadingMask',
+  inheritAttrs: false,
+})
 const props = withDefaults(defineProps<LoadingMaskProps>(), {
   text: 'Loading...',
 })

@@ -10,6 +10,13 @@ import { useCollapseMotion } from '../../composables/_internal/use-collapse-moti
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import PBadge from '../badge/index.vue'
 
+type JsonTokenType = 'key' | 'string' | 'number' | 'literal' | 'text'
+
+interface JsonToken {
+  type: JsonTokenType
+  value: string
+}
+
 defineOptions({
   name: 'PToolCall',
   inheritAttrs: false,
@@ -18,11 +25,6 @@ defineOptions({
 const props = withDefaults(defineProps<ToolCallProps>(), {
   status: 'pending',
 })
-
-const isOpen = shallowRef(true)
-const configProvider = useConfigProvider()
-const contentRef = shallowRef<HTMLElement>()
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
 
 const STATUS_META: Record<
   ToolCallStatus,
@@ -54,13 +56,19 @@ const STATUS_META: Record<
   },
 }
 
+const isOpen = shallowRef(true)
+const contentRef = shallowRef<HTMLElement>()
 const statusMeta = computed(() => STATUS_META[props.status])
-const statusLabel = computed(() => configProvider.locale.toolCall[props.status])
-
 const inputText = computed(() => formatPayload(props.input))
 const outputText = computed(() => formatPayload(props.output))
 const inputTokens = computed(() => (inputText.value ? tokenizeJson(inputText.value) : []))
 const outputTokens = computed(() => (outputText.value ? tokenizeJson(outputText.value) : []))
+
+const configProvider = useConfigProvider()
+
+const statusLabel = computed(() => configProvider.locale.toolCall[props.status])
+
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
 
 function formatPayload(value: unknown) {
   if (value === undefined) {
@@ -81,14 +89,6 @@ function formatPayload(value: unknown) {
     return String(value)
   }
 }
-
-type JsonTokenType = 'key' | 'string' | 'number' | 'literal' | 'text'
-
-interface JsonToken {
-  type: JsonTokenType
-  value: string
-}
-
 function tokenizeJson(source: string): JsonToken[] {
   const tokens: JsonToken[] = []
   const re =

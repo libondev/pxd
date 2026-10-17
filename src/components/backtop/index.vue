@@ -26,6 +26,28 @@ const emits = defineEmits<BacktopEmits>()
 let scrollContainer: ReturnType<typeof getScrollTarget> | null
 let scrollContainerEl: ReturnType<typeof getScrollElement> | null
 
+const scrollTop = shallowRef(0)
+const maxScrollTop = shallowRef(0)
+
+const updateScrollTop = throttleByRaf(() => {
+  if (!scrollContainerEl) {
+    return
+  }
+
+  scrollTop.value = scrollContainerEl.scrollTop
+  maxScrollTop.value = Math.max(0, scrollContainerEl.scrollHeight - scrollContainerEl.clientHeight)
+})
+
+const wrapperRef = shallowRef<HTMLElement>()
+
+const isVisible = computed(() => {
+  if (props.scrollTarget === 'top') {
+    return scrollTop.value >= props.visibleThreshold
+  }
+
+  return maxScrollTop.value - scrollTop.value >= props.visibleThreshold
+})
+
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-backtop',
@@ -45,27 +67,6 @@ const { attrs, classes } = useTailwindVariant(
 )
 
 const motionReduce = useMotionReduced()
-
-const scrollTop = shallowRef(0)
-const maxScrollTop = shallowRef(0)
-const wrapperRef = shallowRef<HTMLElement>()
-
-const isVisible = computed(() => {
-  if (props.scrollTarget === 'top') {
-    return scrollTop.value >= props.visibleThreshold
-  }
-
-  return maxScrollTop.value - scrollTop.value >= props.visibleThreshold
-})
-
-const updateScrollTop = throttleByRaf(() => {
-  if (!scrollContainerEl) {
-    return
-  }
-
-  scrollTop.value = scrollContainerEl.scrollTop
-  maxScrollTop.value = Math.max(0, scrollContainerEl.scrollHeight - scrollContainerEl.clientHeight)
-})
 
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)

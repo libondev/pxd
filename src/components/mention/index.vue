@@ -35,22 +35,20 @@ const props = withDefaults(defineProps<MentionProps>(), {
 
 const emits = defineEmits<MentionEmits>()
 
-const modelValue = useModelValue(props, emits)
-const configProvider = useConfigProvider()
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-
 const listId = getUniqueId('mention-list')
 const searchInputId = getUniqueId('mention-search')
 
-const { value: popoverVisible, toggle: togglePopoverVisible } = useToggleValue(false)
 const editorRef = shallowRef<InstanceType<typeof PMentionEditor>>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const searchInputRef = shallowRef<HTMLInputElement>()
 
-function resolveOptions(trigger: string): ListOptions {
-  return typeof props.options === 'function' ? props.options(trigger) : props.options
-}
+const modelValue = useModelValue(props, emits)
+const configProvider = useConfigProvider()
 
+const computedSize = computed(() => props.size || configProvider.size)
+
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const { value: popoverVisible, toggle: togglePopoverVisible } = useToggleValue(false)
 const {
   filterKeyword,
   listOptions,
@@ -74,13 +72,6 @@ const shouldRenderList = computed(
   () => listOptions.value.length > 0 || isPending.value || isEmptyResult.value,
 )
 
-const computedSize = computed(() => props.size || configProvider.size)
-
-watch(listOptions, async () => {
-  await nextTick()
-  listRef.value?.setFirstAsActive()
-})
-
 const { onKeydown: onSearchKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value && !isPending.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -93,6 +84,9 @@ const { onKeydown: onSearchKeydown } = useListKeyboardController({
   },
 })
 
+function resolveOptions(trigger: string): ListOptions {
+  return typeof props.options === 'function' ? props.options(trigger) : props.options
+}
 async function focusSearchInput() {
   await nextTick()
 
@@ -145,6 +139,11 @@ function onOptionSelect(item: ListOptionSelected) {
 function onMentionClick(payload: MentionClickPayload) {
   emits('mention-click', payload)
 }
+
+watch(listOptions, async () => {
+  await nextTick()
+  listRef.value?.setFirstAsActive()
+})
 </script>
 
 <template>

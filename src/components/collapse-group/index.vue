@@ -30,8 +30,9 @@ const SIZES = {
   },
 }
 
-const configProvider = useConfigProvider()
 const expandedIds = ref(new Set<string>())
+
+const configProvider = useConfigProvider()
 
 const computedStyle = computed(() => {
   const { padding, fontSize, fontWeight } = getFallbackValue(props.size, SIZES, configProvider.size)

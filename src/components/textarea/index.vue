@@ -27,11 +27,11 @@ const emits = defineEmits<TextareaEmits>()
 
 const uniqueId = getUniqueId()
 
+const isComposing = shallowRef(false)
+
 const modelValue = useModelValue(props, emits)
 
 const configProvider = useConfigProvider()
-const isComposing = shallowRef(false)
-
 const {
   isWordLimitShown,
   hasMaxLength,

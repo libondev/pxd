@@ -21,18 +21,11 @@ const props = withDefaults(defineProps<RevealProps>(), {
 
 const containerRef = shallowRef<HTMLElement>()
 const revealed = shallowRef(props.trigger === 'mount')
-
-/** Bare numbers are seconds, matching the CSS `animation-*` time grammar. */
-function getTimeUnitValue(value: number | string) {
-  return typeof value === 'number' ? `${value}s` : value
-}
-
 const computedStyle = computed(() => ({
   '--reveal-duration': getTimeUnitValue(props.duration),
   '--reveal-delay': getTimeUnitValue(props.delay),
   '--reveal-distance': getCssUnitValue(props.distance),
 }))
-
 // Mount mode leaves the target unresolved, so the observer is never acquired.
 const target = computed(() => (props.trigger === 'viewport' ? containerRef.value : undefined))
 
@@ -63,6 +56,11 @@ const { observer, stop } = useIntersectionObserver(
  * leaving that content permanently invisible.
  */
 const gated = computed(() => props.trigger === 'viewport' && !!observer.value)
+
+/** Bare numbers are seconds, matching the CSS `animation-*` time grammar. */
+function getTimeUnitValue(value: number | string) {
+  return typeof value === 'number' ? `${value}s` : value
+}
 </script>
 
 <template>

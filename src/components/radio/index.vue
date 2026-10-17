@@ -21,7 +21,10 @@ const emits = defineEmits<RadioEmits>()
 const uniqueId = getUniqueId()
 
 const radioGroupContext = useRadioGroupContext()
+
 const radioGroupName = radioGroupContext?.name ?? getUniqueId()
+
+const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
 const modelValue = useModelValue(
   radioGroupContext?.props ?? props,
@@ -29,8 +32,6 @@ const modelValue = useModelValue(
 )
 
 const isSelected = computed(() => modelValue.value === props.value)
-
-const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
 const { classes } = useTailwindVariant(
   {

@@ -27,12 +27,11 @@ const props = withDefaults(defineProps<OverlayProps>(), {
 
 const emits = defineEmits<OverlayEmits>()
 
-const configProvider = useConfigProvider()
-
 const computedStyle = computed(() => ({
   '--overlay-index': props.zIndex,
 }))
 
+const configProvider = useConfigProvider()
 const { lockScroll, unlockScroll } = useLockScroll(() => document.body, { walkAncestors: true })
 
 const { registerOverlay, unregisterOverlay } = useOverlayManager({

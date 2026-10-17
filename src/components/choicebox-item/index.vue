@@ -15,11 +15,10 @@ defineOptions({
 
 const props = defineProps<ChoiceboxItemProps>()
 
-const choiceboxGroupContext = useChoiceboxContext()
-
 const inputId = getUniqueId()
 const internalId = getUniqueId()
-const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
+
+const choiceboxGroupContext = useChoiceboxContext()
 
 const isMultiple = computed(() => {
   return !!choiceboxGroupContext?.props.multiple
@@ -28,6 +27,15 @@ const isMultiple = computed(() => {
 const isDisabled = computed(() => {
   return props.disabled || !!choiceboxGroupContext?.props.disabled || false
 })
+const inputName = computed(() => {
+  if (isMultiple.value) {
+    return internalId
+  }
+
+  return choiceboxGroupContext?.name || internalId
+})
+
+const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
 
 const isSelected = computed(() => {
   if (isMultiple.value) {
@@ -112,14 +120,6 @@ const { classes: innerClasses } = useTailwindVariant(
     }),
   },
 )
-
-const inputName = computed(() => {
-  if (isMultiple.value) {
-    return internalId
-  }
-
-  return choiceboxGroupContext?.name || internalId
-})
 
 function onInputChange(event: Event) {
   if (isDisabled.value) {

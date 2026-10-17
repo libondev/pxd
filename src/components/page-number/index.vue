@@ -26,34 +26,11 @@ const props = withDefaults(defineProps<PageNumberProps>(), {
   showQuickJumper: false,
   pageSizeOptions: () => [10, 25, 50, 100],
 })
-
-const mappedPageSizeOptions = computed<ListOptions>(() => {
-  const label = configProvider.locale.pagination.perPage
-
-  return props.pageSizeOptions.map((size) => ({
-    label: String(size) + label,
-    value: size,
-  }))
-})
-
 const emits = defineEmits<PageNumberEmits>()
-
-const configProvider = useConfigProvider()
 
 const pageInput = ref(String(props.modelValue))
 const internalPageSize = ref(props.pageSize)
 const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
-const pagesBtnSize = computed(() => {
-  const inheritSize = props.size || configProvider.size
-
-  return {
-    sm: 'xs',
-    md: 'sm',
-    lg: 'md',
-  }[inheritSize] as ComponentSize
-})
-const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
-
 const pageItems = computed<(number | 'ellipsis-left' | 'ellipsis-right')[]>(() => {
   if (pageCount.value <= 7) {
     return Array.from({ length: pageCount.value }, (_, index) => index + 1)
@@ -85,6 +62,27 @@ const pageItems = computed<(number | 'ellipsis-left' | 'ellipsis-right')[]>(() =
     pageCount.value,
   ]
 })
+
+const configProvider = useConfigProvider()
+
+const mappedPageSizeOptions = computed<ListOptions>(() => {
+  const label = configProvider.locale.pagination.perPage
+
+  return props.pageSizeOptions.map((size) => ({
+    label: String(size) + label,
+    value: size,
+  }))
+})
+const pagesBtnSize = computed(() => {
+  const inheritSize = props.size || configProvider.size
+
+  return {
+    sm: 'xs',
+    md: 'sm',
+    lg: 'md',
+  }[inheritSize] as ComponentSize
+})
+const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
 
 function setPage(page: number) {
   if (!props.disabled && page !== props.modelValue) {

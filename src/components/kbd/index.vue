@@ -25,9 +25,6 @@ const INTERNAL_KEYS = {
   enter: '↵',
 }
 
-const configProvider = useConfigProvider()
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
-
 const internalKey = computed(() => {
   return Object.entries(INTERNAL_KEYS)
     .filter(([k]) => {
@@ -36,6 +33,10 @@ const internalKey = computed(() => {
     .map(([, v]) => v)
     .join('')
 })
+
+const configProvider = useConfigProvider()
+
+const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 </script>
 
 <template>

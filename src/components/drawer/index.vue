@@ -33,9 +33,6 @@ const props = withDefaults(defineProps<DrawerProps>(), {
 const emits = defineEmits<DrawerEmits>()
 
 const drawerRef = shallowRef<HTMLElement>()
-const isVisible = useModelValue(props, emits)
-const configProvider = useConfigProvider()
-
 const ensurePosition = computed(() => {
   const { position } = props
   if (['top', 'bottom', 'left', 'right'].includes(position)) {
@@ -53,7 +50,15 @@ const defaultStyles = computed(() => ({
     ? 'border-t pbs-4 bg-background-200 dark:bg-background-100'
     : '',
 }))
+const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
 
+const computedStyle = computed(() => ({
+  '--modal-index': props.zIndex,
+  '--drawer-size': getCssUnitValue(props.size),
+}))
+
+const isVisible = useModelValue(props, emits)
+const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   props,
   emits,
@@ -62,13 +67,6 @@ const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
     isVisible.value = false
   },
 })
-
-const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
-
-const computedStyle = computed(() => ({
-  '--modal-index': props.zIndex,
-  '--drawer-size': getCssUnitValue(props.size),
-}))
 
 watch(
   () => isVisible.value,

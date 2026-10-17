@@ -31,7 +31,19 @@ const NATIVE_DISABLED_TAGS = new Set([
   'fieldset',
 ])
 
+const nativeDisabled = computed(() => {
+  if (!props.disabled || typeof props.as !== 'string') {
+    return undefined
+  }
+
+  return NATIVE_DISABLED_TAGS.has(props.as.toLowerCase()) ? true : undefined
+})
+
 const { value: selectedValue, onItemSelect } = useListContext()
+
+const isChecked = computed(() => {
+  return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
+})
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -49,18 +61,6 @@ const { attrs, classes } = useTailwindVariant(
     selection: () => ({ variant: props.variant }),
   },
 )
-
-const nativeDisabled = computed(() => {
-  if (!props.disabled || typeof props.as !== 'string') {
-    return undefined
-  }
-
-  return NATIVE_DISABLED_TAGS.has(props.as.toLowerCase()) ? true : undefined
-})
-
-const isChecked = computed(() => {
-  return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
-})
 
 function onItemClick(ev: MouseEvent) {
   const value = props.value

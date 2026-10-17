@@ -25,6 +25,9 @@ interface QuestionnaireOption {
   value: string
   description: string
 }
+type QuestionnaireRenderQuestion = Omit<QuestionnaireQuestion, 'options'> & {
+  options: QuestionnaireOption[]
+}
 
 defineOptions({
   name: 'PQuestionnaire',
@@ -36,25 +39,7 @@ const props = withDefaults(defineProps<QuestionnaireProps>(), {
 })
 const emits = defineEmits<QuestionnaireEmits>()
 
-const configProvider = useConfigProvider()
 const contentRef = shallowRef<HTMLElement>()
-const { value: isExpanded, toggle: toggleExpand } = useToggleValue(true)
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
-
-function onToggleClick() {
-  toggleExpand()
-}
-
-function onDetailsToggle(ev: Event) {
-  const details = ev.currentTarget as HTMLDetailsElement
-
-  // Find-in-page / fragment navigation opens <details> natively.
-  if (details.open && !isExpanded.value) {
-    skipEnterMotion()
-    isExpanded.value = true
-  }
-}
-
 const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
 const currentState = shallowRef<QuestionnaireState>('choosing')
 const currentIndex = shallowRef(0)
@@ -84,10 +69,23 @@ const showSubmitButton = computed(() => {
   return currentIndex.value === questionsCount - 1 && question.allowFreeformInput
 })
 
-type QuestionnaireRenderQuestion = Omit<QuestionnaireQuestion, 'options'> & {
-  options: QuestionnaireOption[]
+const configProvider = useConfigProvider()
+const { value: isExpanded, toggle: toggleExpand } = useToggleValue(true)
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
+
+function onToggleClick() {
+  toggleExpand()
 }
 
+function onDetailsToggle(ev: Event) {
+  const details = ev.currentTarget as HTMLDetailsElement
+
+  // Find-in-page / fragment navigation opens <details> natively.
+  if (details.open && !isExpanded.value) {
+    skipEnterMotion()
+    isExpanded.value = true
+  }
+}
 function createInitialAnswers(questions: QuestionnaireQuestion[]): QuestionnaireAnswers {
   return questions.reduce((answers, question) => {
     answers[question.header] = {
@@ -221,7 +219,6 @@ function onListModelUpdate(next: ListModelValue) {
 function onFreeformInput(value: string) {
   updateCurrentAnswer((answer) => ({ ...answer, freeText: value }))
 }
-
 // When the radio is selected, the selected item will be deselected if the text is entered manually.
 function onFreeformInputChange() {
   const question = currentQuestion.value

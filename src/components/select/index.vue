@@ -30,34 +30,8 @@ const props = withDefaults(defineProps<SelectProps>(), {
 })
 const emits = defineEmits<SelectEmits>()
 
-// Resolved from the full options so a selected item that the filter drops still has a label.
-const selectedItems = useSelectedListItems(
-  () => props.options || [],
-  () => props.modelValue,
-)
-const configProvider = useConfigProvider()
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-
 const listId = getUniqueId('select-list')
 const searchInputId = getUniqueId('select-search')
-
-const popoverVisible = shallowRef(false)
-const listRef = shallowRef<InstanceType<typeof PList>>()
-const searchInputRef = shallowRef<HTMLInputElement>()
-
-const filterKeyword = shallowRef('')
-const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
-
-const listOptions = computed<ListOptions>(() =>
-  props.filterable ? filteredOptions.value : (props.options ?? []),
-)
-
-const computedSize = computed(() => props.size || configProvider.size)
-
-// Single mode commits on pick and closes; multiple mode stays open and commits `change`
-// once when the popover closes, so a round of toggles is one event.
-const { selected, apply, reset, commit } = useListSelection(props, emits)
-
 const FILTERABLE_KEYMAP: ListKeyboardMap = {
   ArrowDown: 'next',
   ArrowUp: 'previous',
@@ -71,11 +45,17 @@ const DEFAULT_KEYMAP: ListKeyboardMap = {
   ' ': 'activate',
 }
 
-const { onKeydown } = useListKeyboardController({
-  enabled: () => popoverVisible.value,
-  onCommand: (command) => listRef.value?.dispatch(command) ?? false,
-  keymap: () => (props.filterable ? FILTERABLE_KEYMAP : DEFAULT_KEYMAP),
-})
+const popoverVisible = shallowRef(false)
+const listRef = shallowRef<InstanceType<typeof PList>>()
+const searchInputRef = shallowRef<HTMLInputElement>()
+
+const filterKeyword = shallowRef('')
+
+// Resolved from the full options so a selected item that the filter drops still has a label.
+const selectedItems = useSelectedListItems(
+  () => props.options || [],
+  () => props.modelValue,
+)
 
 const translatedLabel = computed(() => {
   if (props.labelFormat) {
@@ -84,6 +64,39 @@ const translatedLabel = computed(() => {
 
   return selectedItems.value.map((item) => item.label).join(', ')
 })
+
+const configProvider = useConfigProvider()
+
+const computedSize = computed(() => props.size || configProvider.size)
+
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+// Single mode commits on pick and closes; multiple mode stays open and commits `change`
+// once when the popover closes, so a round of toggles is one event.
+const { selected, apply, reset, commit } = useListSelection(props, emits)
+const { onKeydown } = useListKeyboardController({
+  enabled: () => popoverVisible.value,
+  onCommand: (command) => listRef.value?.dispatch(command) ?? false,
+  keymap: () => (props.filterable ? FILTERABLE_KEYMAP : DEFAULT_KEYMAP),
+})
+const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
+
+const listOptions = computed<ListOptions>(() =>
+  props.filterable ? filteredOptions.value : (props.options ?? []),
+)
+
+function onSearchInput(ev: Event) {
+  filterKeyword.value = (ev.target as HTMLInputElement).value
+}
+
+function onListUpdate(next: ListModelValue) {
+  if (isNil(next)) {
+    return
+  }
+
+  if (apply(next)) {
+    popoverVisible.value = false
+  }
+}
 
 watch(popoverVisible, async (visible) => {
   if (!visible) {
@@ -107,20 +120,6 @@ watch(listOptions, async () => {
   await nextTick()
   listRef.value?.setFirstAsActive()
 })
-
-function onSearchInput(ev: Event) {
-  filterKeyword.value = (ev.target as HTMLInputElement).value
-}
-
-function onListUpdate(next: ListModelValue) {
-  if (isNil(next)) {
-    return
-  }
-
-  if (apply(next)) {
-    popoverVisible.value = false
-  }
-}
 </script>
 
 <template>

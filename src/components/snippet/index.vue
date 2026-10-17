@@ -20,11 +20,10 @@ const props = withDefaults(defineProps<SnippetProps>(), {
 
 const emits = defineEmits<SnippetEmits>()
 
-const configProvider = useConfigProvider()
-
 const computedTextList = computed(() => toArray(props.text))
 const copyText = computed(() => computedTextList.value.join('\n'))
 
+const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-snippet ps-3 pe-1 gap-4 group/snippet relative flex items-center rounded-lg border tabular-nums',

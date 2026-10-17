@@ -15,6 +15,8 @@ const props = withDefaults(defineProps<BubbleProps>(), {
   variant: 'default',
 })
 
+const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'System message'))
+
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-bubble group/bubble sibling:mbs-2 gap-2 flex max-w-full cursor-default',
@@ -61,8 +63,6 @@ const { classes: contentClasses } = useTailwindVariant(
     }),
   },
 )
-
-const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'System message'))
 </script>
 
 <template>

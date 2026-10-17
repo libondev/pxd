@@ -26,10 +26,10 @@ const props = withDefaults(defineProps<CalendarProps>(), {
 })
 
 const emits = defineEmits<CalendarEmits>()
-const configProvider = useConfigProvider()
 
 const today = dayjs()
 const todayKey = today.format('YYYY-MM-DD')
+
 const uncontrolledValue = shallowRef(props.defaultValue)
 const panelDate = shallowRef(dayjs(props.modelValue ?? props.defaultValue ?? today.valueOf()))
 
@@ -40,12 +40,6 @@ const selectedValue = computed(() => {
 const selectedDateKey = computed(() => {
   return isNil(selectedValue.value) ? null : dayjs(selectedValue.value).format('YYYY-MM-DD')
 })
-
-const weekDays = computed(() => {
-  const days = configProvider.locale.date.day
-  return [...days.slice(1), days[0]]
-})
-
 const calendarDays = computed<CalendarDay[]>(() => {
   const firstDayOfMonth = panelDate.value.startOf('month')
   const startOffset = (firstDayOfMonth.day() + 6) % 7
@@ -74,6 +68,13 @@ const panelInfo = computed<CalendarPanelInfo>(() => ({
   year: panelDate.value.year(),
   month: panelDate.value.month() + 1,
 }))
+
+const configProvider = useConfigProvider()
+
+const weekDays = computed(() => {
+  const days = configProvider.locale.date.day
+  return [...days.slice(1), days[0]]
+})
 
 function emitPanelChange() {
   emits('panel-change', panelInfo.value)

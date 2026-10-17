@@ -15,6 +15,24 @@ const props = withDefaults(defineProps<TextProps>(), {
   align: 'left',
 })
 
+const presetSize = {
+  '--text-xs': 'text-xs',
+  '--text-sm': 'sm:text-sm',
+  '--text-md': 'md:text-md',
+  '--text-lg': 'lg:text-lg',
+  '--text-xl': 'xl:text-xl',
+}
+
+const computedStyle = computed(() => {
+  const { size } = props
+
+  return getResponsiveValue(
+    size,
+    (typeof size === 'object' ? size.xs : size) ?? '14px',
+    (acc, bp, value) => (acc[bp] = acc[`--text-${bp}`] = getCssUnitValue(value)),
+  )
+})
+
 const { attrs, classes: variantClasses } = useTailwindVariant(
   {
     base: 'pxd-text m-0 shrink-0',
@@ -40,24 +58,6 @@ const { attrs, classes: variantClasses } = useTailwindVariant(
     }),
   },
 )
-
-const presetSize = {
-  '--text-xs': 'text-xs',
-  '--text-sm': 'sm:text-sm',
-  '--text-md': 'md:text-md',
-  '--text-lg': 'lg:text-lg',
-  '--text-xl': 'xl:text-xl',
-}
-
-const computedStyle = computed(() => {
-  const { size } = props
-
-  return getResponsiveValue(
-    size,
-    (typeof size === 'object' ? size.xs : size) ?? '14px',
-    (acc, bp, value) => (acc[bp] = acc[`--text-${bp}`] = getCssUnitValue(value)),
-  )
-})
 
 const computedClasses = computed(() => {
   const classes = [

@@ -16,6 +16,14 @@ import PLoadingMask from '../_internal/loading-mask.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
 
+interface RenderEntry {
+  key: string | number
+  start?: number
+  row?: ListRow
+  itemRow?: ListItemRow
+  headerLabel?: ListHeaderRow['label']
+}
+
 defineOptions({
   name: 'PList',
   inheritAttrs: false,
@@ -42,11 +50,6 @@ const flattened = computed(() => flattenListOptions(props.options))
 const rows = computed(() => flattened.value.rows)
 const itemRows = computed(() => flattened.value.itemRows)
 const navigableCount = computed(() => flattened.value.navigableCount)
-
-function isNavDisabled(index: number): boolean {
-  return itemRows.value[index]?.option.disabled === true
-}
-
 const virtualOptions = reactive({
   dataKey: 'key',
   enabled: () => props.virtual,
@@ -63,8 +66,52 @@ const virtualOptions = reactive({
   },
 })
 
+const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
+  useListNavigation({
+    loop: () => props.loop,
+    count: () => navigableCount.value,
+    defaultActiveIndex: () => props.defaultActiveIndex,
+    isDisabled: isNavDisabled,
+    onActivateItem,
+    scrollToIndex: scrollNavIndexIntoView,
+  })
 const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
+const renderEntries = computed<RenderEntry[]>(() => {
+  if (props.virtual) {
+    return virtualItems.value.map((virtualItem) => {
+      const row = rows.value[virtualItem.index]
+      return {
+        key: virtualItem.key,
+        start: virtualItem.start,
+        row,
+        itemRow: row?.type === 'item' ? row : undefined,
+        headerLabel: row?.type === 'header' ? row.label : undefined,
+      }
+    })
+  }
+
+  return rows.value.map((row) => ({
+    key: row.key,
+    row,
+    itemRow: row.type === 'item' ? row : undefined,
+    headerLabel: row.type === 'header' ? row.label : undefined,
+  }))
+})
+
+const contentStyle = computed(() => {
+  if (!props.virtual) {
+    return undefined
+  }
+
+  return {
+    height: `${totalSize.value}px`,
+  }
+})
+
+function isNavDisabled(index: number): boolean {
+  return itemRows.value[index]?.option.disabled === true
+}
 function scrollNavIndexIntoView(navIndex: number) {
   const row = itemRows.value[navIndex]
   if (!row) {
@@ -121,17 +168,6 @@ function onActivateItem(navIndex: number) {
 
   onItemSelect(row.option.value)
 }
-
-const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
-  useListNavigation({
-    loop: () => props.loop,
-    count: () => navigableCount.value,
-    defaultActiveIndex: () => props.defaultActiveIndex,
-    isDisabled: isNavDisabled,
-    onActivateItem,
-    scrollToIndex: scrollNavIndexIntoView,
-  })
-
 function dispatchCommand(command: ListNavigationCommand): boolean {
   if (props.loading) {
     return false
@@ -139,47 +175,6 @@ function dispatchCommand(command: ListNavigationCommand): boolean {
 
   return dispatch(command)
 }
-
-interface RenderEntry {
-  key: string | number
-  start?: number
-  row?: ListRow
-  itemRow?: ListItemRow
-  headerLabel?: ListHeaderRow['label']
-}
-
-const renderEntries = computed<RenderEntry[]>(() => {
-  if (props.virtual) {
-    return virtualItems.value.map((virtualItem) => {
-      const row = rows.value[virtualItem.index]
-      return {
-        key: virtualItem.key,
-        start: virtualItem.start,
-        row,
-        itemRow: row?.type === 'item' ? row : undefined,
-        headerLabel: row?.type === 'header' ? row.label : undefined,
-      }
-    })
-  }
-
-  return rows.value.map((row) => ({
-    key: row.key,
-    row,
-    itemRow: row.type === 'item' ? row : undefined,
-    headerLabel: row.type === 'header' ? row.label : undefined,
-  }))
-})
-
-const contentStyle = computed(() => {
-  if (!props.virtual) {
-    return undefined
-  }
-
-  return {
-    height: `${totalSize.value}px`,
-  }
-})
-
 function findItemElement(navIndex: number): HTMLElement | null {
   return getElement(`[data-list-item][data-index="${navIndex}"]`, containerRef.value)
 }
@@ -208,10 +203,6 @@ function refreshActiveItem(): void {
     findItemElement(activeIndex.value)?.setAttribute('data-active', 'true')
   }
 }
-
-watch(activeIndex, syncActiveItem, { flush: 'post' })
-watch(renderEntries, refreshActiveItem, { flush: 'post' })
-
 function scrollToFirstSelected(): boolean {
   const firstValue = toArray(props.modelValue)[0]
 
@@ -264,6 +255,8 @@ function scrollToFirstOption(): void {
   }
 }
 
+watch(activeIndex, syncActiveItem, { flush: 'post' })
+watch(renderEntries, refreshActiveItem, { flush: 'post' })
 provideListContext({
   value: computed(() => props.modelValue),
   onItemSelect,

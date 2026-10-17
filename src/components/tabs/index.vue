@@ -26,24 +26,56 @@ const emits = defineEmits<TabsEmits>()
 
 const BORDER_WIDTH = 2
 const SCROLL_EPSILON = 2
+const uid = getUniqueId('pxd-tabs')
+let resizeObserver: ResizeObserver | null = null
 
-const modelValue = useModelValue(props, emits, { withChange: false })
 /** Uncontrolled fallback: a bound `modelValue` always wins. */
 const innerValue = shallowRef<ComponentValue | undefined>(props.defaultValue)
 const activeValue = computed(() =>
   props.modelValue === undefined ? innerValue.value : props.modelValue,
 )
-
-const slots = useSlots()
-const uid = getUniqueId('pxd-tabs')
-
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
 const overflowing = shallowRef(false)
 const canScrollLeft = shallowRef(false)
 const canScrollRight = shallowRef(false)
+/**
+ * Values whose panel was already activated. Kept as a plain array because
+ * reactive collections are banned here, and pruned so dynamic option lists
+ * cannot grow it without bound.
+ */
+const activatedValues = shallowRef<ComponentValue[]>([])
 
-let resizeObserver: ResizeObserver | null = null
+const modelValue = useModelValue(props, emits, { withChange: false })
+const slots = useSlots()
+/** Roving tabindex: arrow keys move focus and activate, matching the APG tabs pattern. */
+const navigation = useListNavigation({
+  count: () => props.options.length,
+  isDisabled: (index) => !!props.options[index]?.disabled,
+  scrollToIndex: (index) => focusTab(index),
+})
+
+const { onKeydown: onNavKeydown } = useListKeyboardController({
+  keymap: {
+    ArrowRight: 'next',
+    ArrowLeft: 'previous',
+    Home: 'first',
+    End: 'last',
+  },
+  onCommand: (command) => {
+    if (!navigation.dispatch(command)) {
+      return false
+    }
+
+    const option = props.options[navigation.activeIndex.value]
+
+    if (option) {
+      select(option.value)
+    }
+
+    return true
+  },
+})
 
 function tabId(index: number) {
   return `${uid}-tab-${index}`
@@ -68,35 +100,6 @@ function select(value: ComponentValue) {
   modelValue.value = value
   emits('change', value)
 }
-
-/**
- * Values whose panel was already activated. Kept as a plain array because
- * reactive collections are banned here, and pruned so dynamic option lists
- * cannot grow it without bound.
- */
-const activatedValues = shallowRef<ComponentValue[]>([])
-
-watch(
-  activeValue,
-  (value) => {
-    if (value !== undefined && !activatedValues.value.includes(value)) {
-      activatedValues.value = [...activatedValues.value, value]
-    }
-  },
-  { immediate: true, flush: 'sync' },
-)
-
-watch(
-  () => props.options.map((option) => option.value),
-  (values) => {
-    const kept = activatedValues.value.filter((value) => values.includes(value))
-
-    if (kept.length !== activatedValues.value.length) {
-      activatedValues.value = kept
-    }
-  },
-)
-
 function isActivated(option: TabsOptions) {
   return isActiveOption(option) || activatedValues.value.includes(option.value)
 }
@@ -178,36 +181,6 @@ function focusTab(index: number) {
   tab?.focus()
   scrollActiveTabIntoView()
 }
-
-/** Roving tabindex: arrow keys move focus and activate, matching the APG tabs pattern. */
-const navigation = useListNavigation({
-  count: () => props.options.length,
-  isDisabled: (index) => !!props.options[index]?.disabled,
-  scrollToIndex: (index) => focusTab(index),
-})
-
-const { onKeydown: onNavKeydown } = useListKeyboardController({
-  keymap: {
-    ArrowRight: 'next',
-    ArrowLeft: 'previous',
-    Home: 'first',
-    End: 'last',
-  },
-  onCommand: (command) => {
-    if (!navigation.dispatch(command)) {
-      return false
-    }
-
-    const option = props.options[navigation.activeIndex.value]
-
-    if (option) {
-      select(option.value)
-    }
-
-    return true
-  },
-})
-
 function teardownScrollObservers() {
   resizeObserver?.disconnect()
   resizeObserver = null
@@ -237,6 +210,26 @@ function setupScrollObservers() {
   updateScrollState()
 }
 
+watch(
+  activeValue,
+  (value) => {
+    if (value !== undefined && !activatedValues.value.includes(value)) {
+      activatedValues.value = [...activatedValues.value, value]
+    }
+  },
+  { immediate: true, flush: 'sync' },
+)
+
+watch(
+  () => props.options.map((option) => option.value),
+  (values) => {
+    const kept = activatedValues.value.filter((value) => values.includes(value))
+
+    if (kept.length !== activatedValues.value.length) {
+      activatedValues.value = kept
+    }
+  },
+)
 watch(
   () => props.options.length,
   () => {

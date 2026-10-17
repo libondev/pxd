@@ -32,8 +32,6 @@ const props = withDefaults(defineProps<NumberInputProps>(), {
 
 const emits = defineEmits<NumberInputEmits>()
 
-const modelValue = useModelValue(props, emits, { withChange: false })
-
 const REGEXPS = {
   'remove-leading-zeros': /^(-?)0+(?=\d)/,
   'thousands-separator': /\B(?=(\d{3})+(?!\d))/g,
@@ -45,15 +43,6 @@ const inputData = reactive<NumberInputData>({
   currentValue: props.modelValue,
   userInput: null,
 })
-
-function formatWithThousands(value: string | number): string {
-  const str = String(value)
-  const dotIndex = str.indexOf('.')
-  const intPart = dotIndex === -1 ? str : str.slice(0, dotIndex)
-  const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
-  return intPart.replace(REGEXPS['thousands-separator'], props.thousandsSeparator) + decPart
-}
-
 const inputValue = computed(() => {
   if (inputData.userInput !== null) {
     return inputData.userInput
@@ -88,7 +77,6 @@ const decreaseDisabled = computed(
 const increaseDisabled = computed(
   () => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max),
 )
-
 const valuePrecision = computed(() => {
   if (props.precision) {
     return props.precision
@@ -105,16 +93,23 @@ const valuePrecision = computed(() => {
   return stringValue.length - decimalIndex - 1
 })
 
+const modelValue = useModelValue(props, emits, { withChange: false })
 const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
   disabled: decreaseDisabled,
   action: decreaseValue,
 })
-
 const { start: startIncrease, stop: stopIncrease } = useRepeatAction({
   disabled: increaseDisabled,
   action: increaseValue,
 })
 
+function formatWithThousands(value: string | number): string {
+  const str = String(value)
+  const dotIndex = str.indexOf('.')
+  const intPart = dotIndex === -1 ? str : str.slice(0, dotIndex)
+  const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
+  return intPart.replace(REGEXPS['thousands-separator'], props.thousandsSeparator) + decPart
+}
 function toPrecision(value: number | null) {
   if (!value) {
     return value

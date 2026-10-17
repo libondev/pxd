@@ -17,6 +17,21 @@ const props = withDefaults(defineProps<SkeletonProps>(), {
   animated: true,
 })
 
+const computedStyle = computed(() => {
+  const { width, height, boxHeight } = props
+
+  const styles = {
+    width: getCssUnitValue(width),
+    height: getCssUnitValue(height),
+  } as CSSProperties
+
+  if (boxHeight) {
+    styles['margin-bottom'] = getCssUnitValue(increaseWithUnit(boxHeight, -Number(height)))
+  }
+
+  return styles
+})
+
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-skeleton relative block shrink-0 overflow-hidden',
@@ -42,21 +57,6 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
-
-const computedStyle = computed(() => {
-  const { width, height, boxHeight } = props
-
-  const styles = {
-    width: getCssUnitValue(width),
-    height: getCssUnitValue(height),
-  } as CSSProperties
-
-  if (boxHeight) {
-    styles['margin-bottom'] = getCssUnitValue(increaseWithUnit(boxHeight, -Number(height)))
-  }
-
-  return styles
-})
 </script>
 
 <template>

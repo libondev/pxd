@@ -38,104 +38,6 @@ const maxRows = computed(() => {
   return Number.isFinite(rows) && rows > 0 ? Math.floor(rows) : 1
 })
 
-const computedActionClass = computed(() => {
-  return cn(
-    'pxd-ellipsis-text--action cursor-pointer whitespace-nowrap text-blue-900',
-    isExpanded.value ? props.lessActionClass : props.moreActionClass,
-  )
-})
-
-const displayText = computed(() => {
-  if (isExpanded.value) {
-    return {
-      content: props.text,
-      action: props.lessText,
-    }
-  }
-
-  return {
-    content: ellipsisText.value,
-    action: props.moreText,
-  }
-})
-
-function toggleAction() {
-  if (!props.action) {
-    return
-  }
-
-  isExpanded.value = !isExpanded.value
-  emits('toggle', isExpanded.value)
-  updateEllipsis()
-}
-
-function parseSize(value: string) {
-  const parsed = Number.parseFloat(value)
-  return Number.isFinite(parsed) ? parsed : 0
-}
-
-function getLineHeightPx(style: CSSStyleDeclaration) {
-  const lineHeight = style.lineHeight
-  const fontSize = parseSize(style.fontSize)
-  if (!lineHeight || lineHeight === 'normal') {
-    return fontSize > 0 ? fontSize * 1.2 : 19.2
-  }
-
-  const parsed = parseSize(lineHeight)
-  if (parsed <= 0) {
-    return fontSize > 0 ? fontSize * 1.2 : 19.2
-  }
-
-  return parsed
-}
-
-function getFontShorthand(style: CSSStyleDeclaration) {
-  const fontStyle = style.fontStyle || 'normal'
-  const fontWeight = style.fontWeight || '400'
-  const fontSize = style.fontSize || '16px'
-  const fontFamily = style.fontFamily || 'sans-serif'
-  return `${fontStyle} ${fontWeight} ${fontSize} ${fontFamily}`
-}
-
-function getAvailableWidth(container: HTMLElement) {
-  const containerStyle = getStyle(container)
-  const paddingLeft = parseSize(containerStyle.paddingLeft)
-  const paddingRight = parseSize(containerStyle.paddingRight)
-  return Math.max(0, container.clientWidth - paddingLeft - paddingRight)
-}
-
-function measureLineCount(
-  text: string,
-  textFont: string,
-  maxWidth: number,
-  actionText?: string,
-  actionFont?: string,
-) {
-  const items: RichInlineItem[] = [{ text, font: textFont }]
-  if (actionText) {
-    items.push({ text: actionText, font: actionFont || textFont, break: 'never' })
-  }
-  return measureRichInlineStats(prepareRichInline(items), maxWidth).lineCount
-}
-
-function joinChars(chars: string[], start: number, end: number) {
-  return chars.slice(start, end).join('')
-}
-
-function buildCandidate(chars: string[], keep: number, dots: string, position: 'start' | 'middle') {
-  if (keep <= 0) {
-    return dots
-  }
-
-  if (position === 'start') {
-    return `${dots}${joinChars(chars, chars.length - keep, chars.length)}`
-  }
-
-  const headLen = Math.ceil(keep / 2)
-  const tailLen = keep - headLen
-  return `${joinChars(chars, 0, headLen)}${dots}${joinChars(chars, chars.length - tailLen, chars.length)}`
-}
-
 const updateEllipsis = scheduleByRaf(async () => {
   if (isServer()) {
     return
@@ -240,6 +142,106 @@ const updateEllipsis = scheduleByRaf(async () => {
   ellipsisText.value = best || dots
 })
 
+const computedActionClass = computed(() => {
+  return cn(
+    'pxd-ellipsis-text--action cursor-pointer whitespace-nowrap text-blue-900',
+    isExpanded.value ? props.lessActionClass : props.moreActionClass,
+  )
+})
+
+const displayText = computed(() => {
+  if (isExpanded.value) {
+    return {
+      content: props.text,
+      action: props.lessText,
+    }
+  }
+
+  return {
+    content: ellipsisText.value,
+    action: props.moreText,
+  }
+})
+
+useResizeObserver(containerRef, updateEllipsis)
+
+function toggleAction() {
+  if (!props.action) {
+    return
+  }
+
+  isExpanded.value = !isExpanded.value
+  emits('toggle', isExpanded.value)
+  updateEllipsis()
+}
+
+function parseSize(value: string) {
+  const parsed = Number.parseFloat(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+function getLineHeightPx(style: CSSStyleDeclaration) {
+  const lineHeight = style.lineHeight
+  const fontSize = parseSize(style.fontSize)
+  if (!lineHeight || lineHeight === 'normal') {
+    return fontSize > 0 ? fontSize * 1.2 : 19.2
+  }
+
+  const parsed = parseSize(lineHeight)
+  if (parsed <= 0) {
+    return fontSize > 0 ? fontSize * 1.2 : 19.2
+  }
+
+  return parsed
+}
+
+function getFontShorthand(style: CSSStyleDeclaration) {
+  const fontStyle = style.fontStyle || 'normal'
+  const fontWeight = style.fontWeight || '400'
+  const fontSize = style.fontSize || '16px'
+  const fontFamily = style.fontFamily || 'sans-serif'
+  return `${fontStyle} ${fontWeight} ${fontSize} ${fontFamily}`
+}
+
+function getAvailableWidth(container: HTMLElement) {
+  const containerStyle = getStyle(container)
+  const paddingLeft = parseSize(containerStyle.paddingLeft)
+  const paddingRight = parseSize(containerStyle.paddingRight)
+  return Math.max(0, container.clientWidth - paddingLeft - paddingRight)
+}
+
+function measureLineCount(
+  text: string,
+  textFont: string,
+  maxWidth: number,
+  actionText?: string,
+  actionFont?: string,
+) {
+  const items: RichInlineItem[] = [{ text, font: textFont }]
+  if (actionText) {
+    items.push({ text: actionText, font: actionFont || textFont, break: 'never' })
+  }
+  return measureRichInlineStats(prepareRichInline(items), maxWidth).lineCount
+}
+
+function joinChars(chars: string[], start: number, end: number) {
+  return chars.slice(start, end).join('')
+}
+
+function buildCandidate(chars: string[], keep: number, dots: string, position: 'start' | 'middle') {
+  if (keep <= 0) {
+    return dots
+  }
+
+  if (position === 'start') {
+    return `${dots}${joinChars(chars, chars.length - keep, chars.length)}`
+  }
+
+  const headLen = Math.ceil(keep / 2)
+  const tailLen = keep - headLen
+  return `${joinChars(chars, 0, headLen)}${dots}${joinChars(chars, chars.length - tailLen, chars.length)}`
+}
+
 watch(
   () => [
     props.text,
@@ -262,8 +264,6 @@ watch(
     flush: 'post',
   },
 )
-
-useResizeObserver(containerRef, updateEllipsis)
 
 onBeforeUnmount(() => {
   updateEllipsis.cancel()

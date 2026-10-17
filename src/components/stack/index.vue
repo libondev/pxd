@@ -18,42 +18,6 @@ const props = withDefaults(defineProps<StackProps>(), {
   justify: 'start',
 })
 
-const { attrs, classes: variantClasses } = useTailwindVariant(
-  {
-    base: 'pxd-stack flex w-full max-w-full gap-(--xs) [--xs:1rem]',
-    variants: {
-      wrap: {
-        true: 'flex-wrap',
-      },
-      align: {
-        start: 'items-start',
-        end: 'items-end',
-        center: 'items-center',
-        between: 'items-between',
-        around: 'items-around',
-        evenly: 'items-evenly',
-        stretch: 'items-stretch',
-      },
-      justify: {
-        start: 'justify-start',
-        end: 'justify-end',
-        center: 'justify-center',
-        between: 'justify-between',
-        around: 'justify-around',
-        evenly: 'justify-evenly',
-        stretch: 'justify-stretch',
-      },
-    },
-  },
-  {
-    selection: () => ({
-      wrap: props.wrap,
-      align: props.align,
-      justify: props.justify,
-    }),
-  },
-)
-
 const presetDir = {
   '--xs:vertical': 'flex-col',
   '--xs:horizontal': 'flex-row',
@@ -96,6 +60,42 @@ const formattedDirection = computed(() => {
     },
   )
 })
+
+const { attrs, classes: variantClasses } = useTailwindVariant(
+  {
+    base: 'pxd-stack flex w-full max-w-full gap-(--xs) [--xs:1rem]',
+    variants: {
+      wrap: {
+        true: 'flex-wrap',
+      },
+      align: {
+        start: 'items-start',
+        end: 'items-end',
+        center: 'items-center',
+        between: 'items-between',
+        around: 'items-around',
+        evenly: 'items-evenly',
+        stretch: 'items-stretch',
+      },
+      justify: {
+        start: 'justify-start',
+        end: 'justify-end',
+        center: 'justify-center',
+        between: 'justify-between',
+        around: 'justify-around',
+        evenly: 'justify-evenly',
+        stretch: 'justify-stretch',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      wrap: props.wrap,
+      align: props.align,
+      justify: props.justify,
+    }),
+  },
+)
 
 const computedClasses = computed(() => {
   const classes = [

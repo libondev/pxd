@@ -35,8 +35,6 @@ let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let isPointerEntering = false
 let maxDrag = 0
 
-const slots = useSlots()
-
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
@@ -90,6 +88,7 @@ const loopPlacement = computed(() => {
   return 'none'
 })
 
+const slots = useSlots()
 useSwipeGesture(sliderRef, {
   axis: () => props.direction,
   onPress: ({ size }) => {

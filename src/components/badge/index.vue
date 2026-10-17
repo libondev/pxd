@@ -21,7 +21,52 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 
 const emits = defineEmits<BadgeEmits>()
 
+const iconSlotClasses = createTailwindVariant({
+  base: 'inline-flex shrink-0 items-center justify-center',
+  variants: {
+    size: {
+      sm: 'w-3 h-3 p-0.5 text-11',
+      md: 'w-4 h-4 text-xs',
+      lg: 'w-5 h-5 text-sm',
+    },
+    slot: {},
+  },
+  compoundVariants: [
+    {
+      size: 'sm',
+      slot: 'prefix',
+      class: '-ms-0.5',
+    },
+    {
+      size: 'md',
+      slot: 'prefix',
+      class: '-ms-01',
+    },
+    {
+      size: 'lg',
+      slot: 'prefix',
+      class: '-ms-1.5',
+    },
+    {
+      size: 'sm',
+      slot: 'suffix',
+      class: '-me-0.5',
+    },
+    {
+      size: 'md',
+      slot: 'suffix',
+      class: '-me-1.5',
+    },
+    {
+      size: 'lg',
+      slot: 'suffix',
+      class: '-me-1.5',
+    },
+  ],
+})
+
 const configProvider = useConfigProvider()
+
 const computedSize = computed(() => props.size || configProvider.size)
 
 const { attrs, classes } = useTailwindVariant(
@@ -73,50 +118,6 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
-
-const iconSlotClasses = createTailwindVariant({
-  base: 'inline-flex shrink-0 items-center justify-center',
-  variants: {
-    size: {
-      sm: 'w-3 h-3 p-0.5 text-11',
-      md: 'w-4 h-4 text-xs',
-      lg: 'w-5 h-5 text-sm',
-    },
-    slot: {},
-  },
-  compoundVariants: [
-    {
-      size: 'sm',
-      slot: 'prefix',
-      class: '-ms-0.5',
-    },
-    {
-      size: 'md',
-      slot: 'prefix',
-      class: '-ms-01',
-    },
-    {
-      size: 'lg',
-      slot: 'prefix',
-      class: '-ms-1.5',
-    },
-    {
-      size: 'sm',
-      slot: 'suffix',
-      class: '-me-0.5',
-    },
-    {
-      size: 'md',
-      slot: 'suffix',
-      class: '-me-1.5',
-    },
-    {
-      size: 'lg',
-      slot: 'suffix',
-      class: '-me-1.5',
-    },
-  ],
-})
 
 function onClose(ev: Event) {
   emits('close', ev)

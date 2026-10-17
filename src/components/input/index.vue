@@ -34,15 +34,14 @@ const props = withDefaults(defineProps<InputProps>(), {
 const emits = defineEmits<InputEmits>()
 
 const uniqueId = getUniqueId()
+
 const inputRef = shallowRef<HTMLInputElement>()
-
-const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits, { withChange: false })
-
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
 const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
 
+const configProvider = useConfigProvider()
+const modelValue = useModelValue(props, emits, { withChange: false })
 const {
   isWordLimitShown,
   hasMaxLength,

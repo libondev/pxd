@@ -36,17 +36,24 @@ const props = withDefaults(defineProps<SwipeCellProps>(), {
 
 const emits = defineEmits<SwipeCellEmits>()
 
-const rootRef = shallowRef()
-const contentRef = shallowRef<HTMLElement>()
-const prefixRef = shallowRef<HTMLElement>()
-const suffixRef = shallowRef<HTMLElement>()
-
 let alive = true
 let offset = 0
 let openToken = 0
 let trackOffset = 0
 let gestureStartOffset = 0
+const cellEntry: SwipeCellEntry = {
+  getGroup: () => props.group,
+  close: (trigger) => {
+    void setOpen(false, trigger)
+  },
+}
 
+const unregisterCell = registerSwipeCell(cellEntry)
+
+const rootRef = shallowRef()
+const contentRef = shallowRef<HTMLElement>()
+const prefixRef = shallowRef<HTMLElement>()
+const suffixRef = shallowRef<HTMLElement>()
 const dragging = shallowRef(false)
 const openedSide = shallowRef<SwipeCellSide | false>(props.modelValue)
 const prefixWidth = shallowRef(0)
@@ -68,14 +75,70 @@ const suffixSlotState = shallowReactive<SwipeCellSlotState>({
   overSwipe: false,
 })
 
-const cellEntry: SwipeCellEntry = {
-  getGroup: () => props.group,
-  close: (trigger) => {
-    void setOpen(false, trigger)
-  },
-}
+useSwipeGesture(rootRef, {
+  disabled: () => props.disabled,
+  beforeStart: () => {
+    const side = openedSide.value
 
-const unregisterCell = registerSwipeCell(cellEntry)
+    if (!side || !props.beforeClose) {
+      return true
+    }
+
+    return Promise.resolve(props.beforeClose(side)).then(
+      (allowed) => allowed && alive && !props.disabled,
+    )
+  },
+  onPress: () => {
+    openToken += 1
+    measureWidths()
+    gestureStartOffset = trackOffset
+  },
+  onFollow: ({ displacement }) => {
+    if (!dragging.value) {
+      dragging.value = true
+    }
+
+    trackOffset = gestureStartOffset + displacement
+    applyOffset(clampOffset(trackOffset))
+    syncSlots()
+  },
+  onRelease: ({ displacement, axisLocked, event }) => {
+    if (event.type === 'pointercancel') {
+      openToken += 1
+      syncOpenOffset()
+      return
+    }
+
+    if (!axisLocked) {
+      return
+    }
+
+    trackOffset = gestureStartOffset + displacement
+    void releaseSwipe()
+  },
+  onTap: ({ startEvent, vetoed }) => {
+    if (vetoed || !startEvent) {
+      return
+    }
+
+    const target = startEvent.target
+
+    if (target instanceof Node) {
+      closeByTarget(target)
+    }
+  },
+})
+
+useOutsideClick(getRootEl, {
+  eventName: 'pointerdown',
+  listenerOptions: { capture: true },
+  enabled: () => Boolean(openedSide.value) && !props.disabled,
+  onTrigger: () => {
+    void close('outside')
+  },
+})
+
+useResizeObserver([prefixRef, suffixRef], measureWidths)
 
 function getRootEl() {
   return getElement(rootRef)
@@ -284,71 +347,6 @@ async function releaseSwipe() {
 
   await setOpen(next)
 }
-
-useSwipeGesture(rootRef, {
-  disabled: () => props.disabled,
-  beforeStart: () => {
-    const side = openedSide.value
-
-    if (!side || !props.beforeClose) {
-      return true
-    }
-
-    return Promise.resolve(props.beforeClose(side)).then(
-      (allowed) => allowed && alive && !props.disabled,
-    )
-  },
-  onPress: () => {
-    openToken += 1
-    measureWidths()
-    gestureStartOffset = trackOffset
-  },
-  onFollow: ({ displacement }) => {
-    if (!dragging.value) {
-      dragging.value = true
-    }
-
-    trackOffset = gestureStartOffset + displacement
-    applyOffset(clampOffset(trackOffset))
-    syncSlots()
-  },
-  onRelease: ({ displacement, axisLocked, event }) => {
-    if (event.type === 'pointercancel') {
-      openToken += 1
-      syncOpenOffset()
-      return
-    }
-
-    if (!axisLocked) {
-      return
-    }
-
-    trackOffset = gestureStartOffset + displacement
-    void releaseSwipe()
-  },
-  onTap: ({ startEvent, vetoed }) => {
-    if (vetoed || !startEvent) {
-      return
-    }
-
-    const target = startEvent.target
-
-    if (target instanceof Node) {
-      closeByTarget(target)
-    }
-  },
-})
-
-useOutsideClick(getRootEl, {
-  eventName: 'pointerdown',
-  listenerOptions: { capture: true },
-  enabled: () => Boolean(openedSide.value) && !props.disabled,
-  onTrigger: () => {
-    void close('outside')
-  },
-})
-
-useResizeObserver([prefixRef, suffixRef], measureWidths)
 
 watch(
   () => props.modelValue,

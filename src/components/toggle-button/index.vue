@@ -25,15 +25,16 @@ const emits = defineEmits<ToggleButtonEmits>()
 
 const toggleButtonGroupContext = useToggleButtonGroupContext()
 
+const isDisabled = computed(
+  () => props.disabled || toggleButtonGroupContext?.props.disabled || false,
+)
+const computedVariant = computed(() => {
+  return props.variant || toggleButtonGroupContext?.props.variant || 'ghost'
+})
+
 const modelValue = useModelValue(
   toggleButtonGroupContext?.props ?? props,
   toggleButtonGroupContext?.emits ?? emits,
-)
-
-const configProvider = useConfigProvider()
-
-const isDisabled = computed(
-  () => props.disabled || toggleButtonGroupContext?.props.disabled || false,
 )
 
 const isChecked = computed(() => {
@@ -44,10 +45,7 @@ const isChecked = computed(() => {
   return modelValue.value === props.value
 })
 
-const computedVariant = computed(() => {
-  return props.variant || toggleButtonGroupContext?.props.variant || 'ghost'
-})
-
+const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none motion-safe:transition-colors',

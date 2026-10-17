@@ -37,25 +37,16 @@ const BUCKETS = [
   { unit: 'month', size: MONTH, limit: YEAR },
   { unit: 'year', size: YEAR, limit: Infinity },
 ] as const
-
-const configProvider = useConfigProvider()
+let refreshTimer: ReturnType<typeof setTimeout> | undefined
 
 const timestamp = computed(() => dayjs(props.value).valueOf())
 
 const now = shallowRef(Date.now())
+const dateTime = computed(() =>
+  Number.isFinite(timestamp.value) ? dayjs(timestamp.value).toISOString() : undefined,
+)
 
-function resolveBucket(age: number) {
-  const bucket = BUCKETS.find((item) => age < item.limit) ?? BUCKETS[BUCKETS.length - 1]
-
-  return { bucket, value: Math.floor(age / bucket.size) }
-}
-
-function getNextDelay() {
-  const age = Math.abs(now.value - timestamp.value)
-  const { bucket, value } = resolveBucket(age)
-
-  return Math.min((value + 1) * bucket.size, bucket.limit) - age
-}
+const configProvider = useConfigProvider()
 
 const text = computed(() => {
   const locale = configProvider.locale.timeAgo
@@ -79,12 +70,18 @@ const text = computed(() => {
     .replace('{unit}', unit)
 })
 
-const dateTime = computed(() =>
-  Number.isFinite(timestamp.value) ? dayjs(timestamp.value).toISOString() : undefined,
-)
+function resolveBucket(age: number) {
+  const bucket = BUCKETS.find((item) => age < item.limit) ?? BUCKETS[BUCKETS.length - 1]
 
-let refreshTimer: ReturnType<typeof setTimeout> | undefined
+  return { bucket, value: Math.floor(age / bucket.size) }
+}
 
+function getNextDelay() {
+  const age = Math.abs(now.value - timestamp.value)
+  const { bucket, value } = resolveBucket(age)
+
+  return Math.min((value + 1) * bucket.size, bucket.limit) - age
+}
 function stopTimer() {
   clearTimeout(refreshTimer)
 }

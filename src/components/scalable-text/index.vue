@@ -17,10 +17,20 @@ const props = withDefaults(defineProps<ScalableTextProps>(), {
 })
 
 const PRECISION = 0.5
+const scheduleAdjust = scheduleByRaf(adjust, { defer: true })
 
 const needsWrap = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const fittedFontSize = shallowRef<number | null>(null)
+const computedStyle = computed(() => {
+  const size = fittedFontSize.value
+  if (size === null) {
+    return undefined
+  }
+  return { fontSize: `${size}px` } as Record<string, string>
+})
+
+useResizeObserver(containerRef, scheduleAdjust)
 
 function parseSize(value: string): number {
   return Number.parseFloat(value) || 0
@@ -135,20 +145,8 @@ function adjust() {
   needsWrap.value = false
 }
 
-const scheduleAdjust = scheduleByRaf(adjust, { defer: true })
-
-const computedStyle = computed(() => {
-  const size = fittedFontSize.value
-  if (size === null) {
-    return undefined
-  }
-  return { fontSize: `${size}px` } as Record<string, string>
-})
-
 // Watch only the specific props that matter, no deep traversal
 watch(() => [props.text, props.minFontSize], scheduleAdjust, { flush: 'post' })
-
-useResizeObserver(containerRef, scheduleAdjust)
 
 onBeforeUnmount(() => {
   scheduleAdjust.cancel()

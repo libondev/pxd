@@ -6,6 +6,8 @@ import { throttleByRaf } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 
+type Pair = [number, number]
+
 defineOptions({
   name: 'PResizable',
   inheritAttrs: false,
@@ -14,9 +16,6 @@ defineOptions({
     event: 'update:modelValue',
   },
 })
-
-type Pair = [number, number]
-
 const props = withDefaults(defineProps<ResizableProps>(), {
   direction: 'horizontal',
   modelValue: null,
@@ -30,17 +29,33 @@ const emits = defineEmits<ResizableEmits>()
 
 const PERCENT_TOTAL = 100
 const uid = getUniqueId('pxd-resizable')
+const leadingId = `${uid}-leading`
+const trailingId = `${uid}-trailing`
+let expandedPair: Pair | null = null
+let initialPair: Pair | null = null
+let activePointerId: number | null = null
+let startPosition = 0
+let accumulated = 0
+let resized = false
+const flushResize = throttleByRaf(() => {
+  if (accumulated === 0) {
+    return
+  }
+
+  const delta = accumulated
+  accumulated = 0
+  resized = resizeByPixels(delta) || resized
+})
+const KEYBOARD_STEP = 1
+const KEYBOARD_STEP_LARGE = 10
+
 const containerRef = shallowRef<HTMLElement>()
 const handleRef = shallowRef<HTMLElement>()
-
-const modelValue = useModelValue(props, emits, { withChange: false })
-
 const isControlled = computed(() => !isNil(props.modelValue))
 const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
 const sizes = computed<Pair>(() =>
   isControlled.value ? toPair(props.modelValue) : innerSizes.value,
 )
-
 /**
  * The range the leading panel may travel through. The trailing panel needs no
  * bounds of its own: the pair always sums to 100, so the leading panel's floor
@@ -55,13 +70,15 @@ const bounds = computed<{ min: number; max: number }>(() => {
 
   return { min: leading, max: PERCENT_TOTAL - trailing }
 })
-
-const leadingId = `${uid}-leading`
-const trailingId = `${uid}-trailing`
 const collapsed = shallowRef(false)
+const position = computed(() => sizes.value[0])
+const ariaValueNow = computed(() => roundSize(position.value))
 
-let expandedPair: Pair | null = null
-let initialPair: Pair | null = null
+const ariaValueText = computed(() =>
+  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
+)
+
+const modelValue = useModelValue(props, emits, { withChange: false })
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
@@ -106,7 +123,6 @@ function resize(deltaPercent: number) {
 
   return setSizes([newLeading, roundSize(leading + trailing - newLeading)])
 }
-
 /**
  * Moving the divider brings a folded pair back, so a collapsed panel is never a
  * dead end. The remembered sizes go with it: they described a pair that no
@@ -184,26 +200,9 @@ function reset() {
     emits('reset', sizes.value.slice())
   }
 }
-
-let activePointerId: number | null = null
-let startPosition = 0
-let accumulated = 0
-let resized = false
-
 function axisOf(event: PointerEvent) {
   return props.direction === 'horizontal' ? event.clientX : event.clientY
 }
-
-const flushResize = throttleByRaf(() => {
-  if (accumulated === 0) {
-    return
-  }
-
-  const delta = accumulated
-  accumulated = 0
-  resized = resizeByPixels(delta) || resized
-})
-
 function releaseCapture() {
   const id = activePointerId
   const el = handleRef.value
@@ -293,10 +292,6 @@ function handleLostCapture() {
 
   resetDragging()
 }
-
-const KEYBOARD_STEP = 1
-const KEYBOARD_STEP_LARGE = 10
-
 function handleKeydown(event: KeyboardEvent) {
   if (props.disabled) {
     return
@@ -326,14 +321,6 @@ function handleKeydown(event: KeyboardEvent) {
     commitChange()
   }
 }
-
-const position = computed(() => sizes.value[0])
-const ariaValueNow = computed(() => roundSize(position.value))
-
-const ariaValueText = computed(() =>
-  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
-)
-
 function panelStyle(index: number) {
   return {
     flexBasis: `${sizes.value[index]}%`,

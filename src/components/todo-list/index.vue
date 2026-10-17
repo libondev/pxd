@@ -34,13 +34,6 @@ const props = withDefaults(defineProps<TodoProps>(), {
 })
 const emits = defineEmits<TodoEmits>()
 
-const configProvider = useConfigProvider()
-const slots = useSlots()
-
-const hasItemSlot = computed(() => !!slots.item)
-const hasEmptySlot = computed(() => !!slots.empty)
-const hasItemContentSlot = computed(() => !!slots['item-content'])
-
 const MARKER_CLASSES: Record<TodoStatus, string> = {
   pending: 'border-2 border-gray-alpha-400',
   in_progress: '',
@@ -60,23 +53,7 @@ const isExpanded = shallowRef(props.defaultExpanded)
 const contentRef = shallowRef<HTMLElement>()
 
 const currentOptions = computed(() => props.modelValue ?? innerValue.value ?? props.options)
-
-watch(
-  () => props.options,
-  (options) => {
-    if (props.modelValue === undefined) {
-      innerValue.value = options
-    }
-  },
-)
-
 const expanded = computed(() => !props.collapsible || isExpanded.value)
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, expanded)
-
-function resolveStatus(item: TodoOption): TodoStatus {
-  return item.status ?? 'pending'
-}
-
 const stats = computed<TodoStats>(() => {
   const options = currentOptions.value
   const result: TodoStats = {
@@ -103,9 +80,6 @@ const stats = computed<TodoStats>(() => {
 
   return result
 })
-
-const headerTitle = computed(() => props.title ?? configProvider.locale.todo.title)
-
 const summaryText = computed(() => {
   const { inProgress, pending, total, canceled } = stats.value
   const totalCount = total - canceled
@@ -114,8 +88,22 @@ const summaryText = computed(() => {
   return totalCount > 0 ? `${currentCount}/${totalCount}` : ''
 })
 
+const configProvider = useConfigProvider()
+
+const headerTitle = computed(() => props.title ?? configProvider.locale.todo.title)
 const emptyText = computed(() => props.empty ?? configProvider.locale.results.noData)
 
+const slots = useSlots()
+
+const hasItemSlot = computed(() => !!slots.item)
+const hasEmptySlot = computed(() => !!slots.empty)
+const hasItemContentSlot = computed(() => !!slots['item-content'])
+
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, expanded)
+
+function resolveStatus(item: TodoOption): TodoStatus {
+  return item.status ?? 'pending'
+}
 function commit(index: number, status: TodoStatus) {
   const prev = currentOptions.value[index]
 
@@ -217,6 +205,15 @@ function onDetailsToggle(ev: Event) {
     isExpanded.value = true
   }
 }
+
+watch(
+  () => props.options,
+  (options) => {
+    if (props.modelValue === undefined) {
+      innerValue.value = options
+    }
+  },
+)
 
 defineExpose({
   isExpanded,

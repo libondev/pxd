@@ -33,20 +33,7 @@ const props = withDefaults(defineProps<ApprovalCardProps>(), {
 
 const emits = defineEmits<ApprovalCardEmits>()
 
-const configProvider = useConfigProvider()
-
-const internalStatus = shallowRef<ApprovalStatus>('pending')
-const remembered = shallowRef(false)
 let timerId: ReturnType<typeof setTimeout> | undefined
-
-const status = computed<ApprovalStatus>(() => props.modelValue ?? internalStatus.value)
-const isPending = computed(() => status.value === 'pending')
-const isDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
-
-const computedTitle = computed(() => props.title || configProvider.locale.approval.title)
-const computedStatusLabel = computed(() => configProvider.locale.approval[status.value])
-const commandList = computed(() => toArray(props.command).filter(Boolean))
-
 const STATUS_ICON: Record<ApprovalStatus, typeof TerminalIcon> = {
   pending: TerminalIcon,
   approved: CheckCircleFillIcon,
@@ -75,12 +62,23 @@ const VARIANT_CLASS: Record<ComponentVariant, string> = {
   success: 'border-green-400 bg-green-200 text-green-900',
 }
 
+const internalStatus = shallowRef<ApprovalStatus>('pending')
+const remembered = shallowRef(false)
+const status = computed<ApprovalStatus>(() => props.modelValue ?? internalStatus.value)
+const isPending = computed(() => status.value === 'pending')
+const isDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
+const commandList = computed(() => toArray(props.command).filter(Boolean))
 const statusIcon = computed(() => STATUS_ICON[status.value])
 const statusBadge = computed(() => STATUS_BADGE[status.value])
 
 const iconClass = computed(() =>
   isPending.value ? VARIANT_CLASS[props.variant] : STATUS_CLASS[status.value],
 )
+
+const configProvider = useConfigProvider()
+
+const computedTitle = computed(() => props.title || configProvider.locale.approval.title)
+const computedStatusLabel = computed(() => configProvider.locale.approval[status.value])
 
 function clearTimer() {
   if (timerId !== undefined) {

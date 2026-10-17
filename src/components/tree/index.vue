@@ -34,6 +34,12 @@ import PTreeNode from '../_internal/tree-node.vue'
 import PSearchInput from '../search-input/index.vue'
 import PTeleport from '../teleport/index.vue'
 
+interface RenderEntry extends TreeFlatNode {
+  start?: number
+  id: string
+  active: boolean
+}
+
 defineOptions({
   name: 'PTree',
   inheritAttrs: false,
@@ -67,6 +73,19 @@ const props = withDefaults(defineProps<TreeProps>(), {
 const emits = defineEmits<TreeEmits>()
 
 const uid = getUniqueId()
+/** A query still on its way shows no row at all, rather than letting the local filter answer it. */
+const NO_MATCHED: TreeMatched = { visible: new Set(), exact: new Set() }
+const KEYMAP: ListKeyboardMap = {
+  ArrowDown: 'next',
+  ArrowUp: 'previous',
+  ArrowRight: 'enter-child',
+  ArrowLeft: 'leave-parent',
+  End: 'last',
+  Enter: 'activate',
+  Home: 'first',
+  ' ': 'activate',
+}
+
 const containerRef = shallowRef<HTMLElement>()
 const internalSearchValue = shallowRef(props.defaultSearchValue ?? '')
 const searchValue = computed(() => props.searchValue ?? internalSearchValue.value)
@@ -76,6 +95,35 @@ const loadingKeys = shallowRef(new Set<ComponentValue>())
 
 const treeData = computed(() =>
   graftLoadedChildren(props.data, loadedChildren.value, props.childrenField),
+)
+const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
+const expanded = computed(() => new Set(expandedKeys.value))
+const highlightQuery = computed(() => (props.highlightMatch ? searchValue.value.trim() : ''))
+
+const containerStyle = computed(() => {
+  const height = props.height
+
+  if (height == null) {
+    return undefined
+  }
+
+  return { height: isNumber(height) ? height + 'px' : height }
+})
+/** Painted only while focused: a marker on a blurred element lies about where the focus is. */
+const focused = shallowRef(false)
+/** Dragging while a query is active would drop a node relative to an incomplete neighbourhood. */
+const dragEnabled = computed(
+  () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
+)
+
+const slots = useSlots()
+
+const hasNodeSlot = computed(
+  () =>
+    !!slots['node-switcher'] ||
+    !!slots['node-icon'] ||
+    !!slots['node-content'] ||
+    !!slots['node-suffix'],
 )
 
 const {
@@ -96,25 +144,11 @@ const index = useTreeIndex(
   () => searchData.value,
   () => props.childrenField,
 )
-
-function canLoad(value: ComponentValue): boolean {
-  if (!props.lazy || !props.load || loadedChildren.value.has(value)) {
-    return false
-  }
-
-  const meta = index.value.byValue.get(value)
-
-  return meta !== undefined && meta.node.isLeaf !== true && meta.children.length === 0
-}
-
 const localMatched = useTreeMatched(
   index,
   () => searchValue.value,
   () => props.filter,
 )
-
-/** A query still on its way shows no row at all, rather than letting the local filter answer it. */
-const NO_MATCHED: TreeMatched = { visible: new Set(), exact: new Set() }
 
 const matched = computed<TreeMatched>(() => {
   if (!remoteMode.value) {
@@ -138,10 +172,6 @@ const { checked, indeterminate, toggle, extend, isSelectable } = useTreeSelectio
   checkStrictly: () => props.checkStrictly,
   selectable: () => props.selectable,
 })
-
-const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
-const expanded = computed(() => new Set(expandedKeys.value))
-
 const rows = useTreeRows(index, {
   query: () => searchValue.value,
   expanded,
@@ -151,6 +181,160 @@ const rows = useTreeRows(index, {
   canLoad: () => canLoad,
 })
 
+/** Not `reactive()`: the virtualizer would get a deep proxy of the rows instead of the rows. */
+const virtualOptions = {
+  dataKey: 'key',
+  get enabled() {
+    return props.virtual
+  },
+  get items() {
+    return rows.value
+  },
+  get itemSize() {
+    return props.itemSize
+  },
+  get overScan() {
+    return props.overScan
+  },
+}
+
+const rowByKey = computed(() => {
+  const result = new Map<ComponentValue, TreeFlatNode>()
+  rows.value.forEach((row) => result.set(row.key, row))
+  return result
+})
+
+const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
+
+const contentStyle = computed(() =>
+  props.virtual ? { height: totalSize.value + 'px' } : undefined,
+)
+
+/** Keyboard only: a pointer-set marker would outlive the pointer and duplicate `checked`. */
+const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
+  count: () => rows.value.length,
+  isDisabled: (index) => isNodeDisabled(rows.value[index]),
+  onActivateItem: (index) => {
+    const row = rows.value[index]
+    if (row) {
+      onCheck(row)
+    }
+  },
+  onRight: (index) => {
+    const row = rows.value[index]
+    if (!row) {
+      return
+    }
+
+    if (row.hasChildren && !row.expanded) {
+      setExpandedByValue(row.key, true)
+      return
+    }
+
+    if (row.hasChildren && index + 1 < rows.value.length) {
+      setActiveIndex(index + 1)
+      scrollRowIntoView(index + 1)
+    }
+  },
+  onLeft: () => {
+    const row = rows.value[activeIndex.value]
+    if (!row) {
+      return
+    }
+
+    if (row.hasChildren && row.expanded) {
+      setExpandedByValue(row.key, false)
+      return
+    }
+
+    if (row.parentValue === undefined) {
+      return
+    }
+
+    const parentIndex = getRow(row.parentValue)?.index
+    if (parentIndex === undefined) {
+      return
+    }
+
+    setActiveIndex(parentIndex)
+    scrollRowIntoView(parentIndex)
+  },
+  scrollToIndex: scrollRowIntoView,
+})
+
+const activeDescendant = computed(() =>
+  activeIndex.value >= 0 ? uid + '-' + activeIndex.value : undefined,
+)
+const renderEntries = computed<RenderEntry[]>(() => {
+  if (props.virtual) {
+    return virtualItems.value.flatMap((virtualItem) => {
+      const row = rows.value[virtualItem.index]
+
+      return row
+        ? [
+            {
+              ...row,
+              id: uid + '-' + row.index,
+              start: virtualItem.start,
+              active: focused.value && activeIndex.value === row.index,
+            },
+          ]
+        : []
+    })
+  }
+
+  const entries: RenderEntry[] = []
+
+  for (const row of rows.value) {
+    entries.push({
+      ...row,
+      id: uid + '-' + row.index,
+      active: focused.value && activeIndex.value === row.index,
+    })
+  }
+
+  return entries
+})
+
+const { onKeydown } = useListKeyboardController({
+  keymap: KEYMAP,
+  enabled: () => !props.disabled && !props.loading,
+  onCommand: (command) => dispatch(command),
+})
+const {
+  value: dragValue,
+  target: dropTarget,
+  x: dragX,
+  y: dragY,
+  onPointerDown: onDragPointerdown,
+  didDrag,
+} = useTreeDrag({
+  container: containerRef,
+  rows: () => rows.value,
+  enabled: () => dragEnabled.value,
+  dropInsideLeaf: () => props.dropInsideLeaf,
+  canDrop,
+  onExpand: (value) => {
+    if (getRow(value)?.hasChildren) {
+      setExpandedByValue(value, true)
+    }
+  },
+  onCommit,
+})
+
+const dragNode = computed(() =>
+  dragValue.value === undefined ? undefined : index.value.byValue.get(dragValue.value)?.node,
+)
+
+function canLoad(value: ComponentValue): boolean {
+  if (!props.lazy || !props.load || loadedChildren.value.has(value)) {
+    return false
+  }
+
+  const meta = index.value.byValue.get(value)
+
+  return meta !== undefined && meta.node.isLeaf !== true && meta.children.length === 0
+}
 function commitLoading(value: ComponentValue, next: boolean): void {
   const keys = new Set(loadingKeys.value)
 
@@ -162,7 +346,6 @@ function commitLoading(value: ComponentValue, next: boolean): void {
 
   loadingKeys.value = keys
 }
-
 /** Reads the open set rather than the click, so a drag hover and a controlled key reach it too. */
 function ensureLoaded(value: ComponentValue): void {
   const load = props.load
@@ -192,24 +375,6 @@ function ensureLoaded(value: ComponentValue): void {
     () => commitLoading(value, false),
   )
 }
-
-// `treeData` too: a key below a parent still on its way only becomes loadable once it arrives.
-watch(
-  [expanded, treeData],
-  ([keys]) => {
-    for (const value of keys) {
-      ensureLoaded(value)
-    }
-  },
-  { immediate: true },
-)
-
-const rowByKey = computed(() => {
-  const result = new Map<ComponentValue, TreeFlatNode>()
-  rows.value.forEach((row) => result.set(row.key, row))
-  return result
-})
-
 function getRow(value: ComponentValue): TreeFlatNode | undefined {
   return rowByKey.value.get(value)
 }
@@ -292,41 +457,6 @@ function onSearchInput(value: string): void {
   internalSearchValue.value = value
   emits('update:searchValue', value)
 }
-/** Not `reactive()`: the virtualizer would get a deep proxy of the rows instead of the rows. */
-const virtualOptions = {
-  dataKey: 'key',
-  get enabled() {
-    return props.virtual
-  },
-  get items() {
-    return rows.value
-  },
-  get itemSize() {
-    return props.itemSize
-  },
-  get overScan() {
-    return props.overScan
-  },
-}
-
-const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
-
-const highlightQuery = computed(() => (props.highlightMatch ? searchValue.value.trim() : ''))
-
-const containerStyle = computed(() => {
-  const height = props.height
-
-  if (height == null) {
-    return undefined
-  }
-
-  return { height: isNumber(height) ? height + 'px' : height }
-})
-
-const contentStyle = computed(() =>
-  props.virtual ? { height: totalSize.value + 'px' } : undefined,
-)
-
 function isNodeDisabled(row: TreeFlatNode): boolean {
   return props.disabled || row.node.disabled === true
 }
@@ -341,130 +471,6 @@ function scrollRowIntoView(index: number): void {
 
   row?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
 }
-
-/** Keyboard only: a pointer-set marker would outlive the pointer and duplicate `checked`. */
-const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
-  count: () => rows.value.length,
-  isDisabled: (index) => isNodeDisabled(rows.value[index]),
-  onActivateItem: (index) => {
-    const row = rows.value[index]
-    if (row) {
-      onCheck(row)
-    }
-  },
-  onRight: (index) => {
-    const row = rows.value[index]
-    if (!row) {
-      return
-    }
-
-    if (row.hasChildren && !row.expanded) {
-      setExpandedByValue(row.key, true)
-      return
-    }
-
-    if (row.hasChildren && index + 1 < rows.value.length) {
-      setActiveIndex(index + 1)
-      scrollRowIntoView(index + 1)
-    }
-  },
-  onLeft: () => {
-    const row = rows.value[activeIndex.value]
-    if (!row) {
-      return
-    }
-
-    if (row.hasChildren && row.expanded) {
-      setExpandedByValue(row.key, false)
-      return
-    }
-
-    if (row.parentValue === undefined) {
-      return
-    }
-
-    const parentIndex = getRow(row.parentValue)?.index
-    if (parentIndex === undefined) {
-      return
-    }
-
-    setActiveIndex(parentIndex)
-    scrollRowIntoView(parentIndex)
-  },
-  scrollToIndex: scrollRowIntoView,
-})
-
-const KEYMAP: ListKeyboardMap = {
-  ArrowDown: 'next',
-  ArrowUp: 'previous',
-  ArrowRight: 'enter-child',
-  ArrowLeft: 'leave-parent',
-  End: 'last',
-  Enter: 'activate',
-  Home: 'first',
-  ' ': 'activate',
-}
-
-const { onKeydown } = useListKeyboardController({
-  keymap: KEYMAP,
-  enabled: () => !props.disabled && !props.loading,
-  onCommand: (command) => dispatch(command),
-})
-
-/** Painted only while focused: a marker on a blurred element lies about where the focus is. */
-const focused = shallowRef(false)
-
-const activeDescendant = computed(() =>
-  activeIndex.value >= 0 ? uid + '-' + activeIndex.value : undefined,
-)
-
-interface RenderEntry extends TreeFlatNode {
-  start?: number
-  id: string
-  active: boolean
-}
-
-const renderEntries = computed<RenderEntry[]>(() => {
-  if (props.virtual) {
-    return virtualItems.value.flatMap((virtualItem) => {
-      const row = rows.value[virtualItem.index]
-
-      return row
-        ? [
-            {
-              ...row,
-              id: uid + '-' + row.index,
-              start: virtualItem.start,
-              active: focused.value && activeIndex.value === row.index,
-            },
-          ]
-        : []
-    })
-  }
-
-  const entries: RenderEntry[] = []
-
-  for (const row of rows.value) {
-    entries.push({
-      ...row,
-      id: uid + '-' + row.index,
-      active: focused.value && activeIndex.value === row.index,
-    })
-  }
-
-  return entries
-})
-
-const slots = useSlots()
-
-const hasNodeSlot = computed(
-  () =>
-    !!slots['node-switcher'] ||
-    !!slots['node-icon'] ||
-    !!slots['node-content'] ||
-    !!slots['node-suffix'],
-)
-
 function isDragClick(): boolean {
   return didDrag()
 }
@@ -536,7 +542,6 @@ function setActiveKey(value: ComponentValue): void {
   setActiveIndex(at)
   scrollRowIntoView(at)
 }
-
 /** The whole index, not the rendered rows: a collapsed subtree still holds checked nodes. */
 function getCheckedKeys(includeIndeterminate = false): ComponentValue[] {
   const result: ComponentValue[] = []
@@ -555,12 +560,6 @@ function getCheckedKeys(includeIndeterminate = false): ComponentValue[] {
 function getVisibleKeys(): ComponentValue[] {
   return rows.value.map((row) => row.key)
 }
-
-/** Dragging while a query is active would drop a node relative to an incomplete neighbourhood. */
-const dragEnabled = computed(
-  () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
-)
-
 function canDrop(
   value: ComponentValue,
   targetValue: ComponentValue,
@@ -593,36 +592,9 @@ function canDrop(
 
   return meta.node.disabled !== true
 }
-
-const {
-  value: dragValue,
-  target: dropTarget,
-  x: dragX,
-  y: dragY,
-  onPointerDown: onDragPointerdown,
-  didDrag,
-} = useTreeDrag({
-  container: containerRef,
-  rows: () => rows.value,
-  enabled: () => dragEnabled.value,
-  dropInsideLeaf: () => props.dropInsideLeaf,
-  canDrop,
-  onExpand: (value) => {
-    if (getRow(value)?.hasChildren) {
-      setExpandedByValue(value, true)
-    }
-  },
-  onCommit,
-})
-
-const dragNode = computed(() =>
-  dragValue.value === undefined ? undefined : index.value.byValue.get(dragValue.value)?.node,
-)
-
 function getData(value: ComponentValue): TreeOption | undefined {
   return index.value.byValue.get(value)?.node
 }
-
 /** The caller owns `data`: a drop only proposes the next tree, and a no-op move is silent. */
 function onCommit(value: ComponentValue, target: TreeDropTarget): void {
   // The grafted tree, not the prop: nodes that arrived through `load` live only in there.
@@ -639,6 +611,17 @@ function onCommit(value: ComponentValue, target: TreeDropTarget): void {
     setExpandedByValue(target.targetValue, true)
   }
 }
+
+// `treeData` too: a key below a parent still on its way only becomes loadable once it arrives.
+watch(
+  [expanded, treeData],
+  ([keys]) => {
+    for (const value of keys) {
+      ensureLoaded(value)
+    }
+  },
+  { immediate: true },
+)
 
 defineExpose({
   focus: () => containerRef.value?.focus(),

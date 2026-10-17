@@ -32,9 +32,6 @@ const props = withDefaults(defineProps<ModalProps>(), {
 const emits = defineEmits<ModalEmits>()
 
 const modalRef = shallowRef<HTMLElement>()
-const isVisible = useModelValue(props, emits)
-const configProvider = useConfigProvider()
-
 const computedStyle = computed(() => {
   return {
     '--modal-index': props.zIndex,
@@ -51,6 +48,8 @@ const defaultStyles = computed(() => ({
     : '',
 }))
 
+const isVisible = useModelValue(props, emits)
+const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   props,
   emits,

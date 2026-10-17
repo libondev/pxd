@@ -21,7 +21,10 @@ const emits = defineEmits<SwitchItemEmits>()
 const uniqueId = getUniqueId()
 
 const switchGroupContext = useSwitchContext()
+
 const switchGroupName = switchGroupContext?.name ?? getUniqueId()
+
+const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
 const modelValue = useModelValue(
   switchGroupContext?.props ?? props,
@@ -29,8 +32,6 @@ const modelValue = useModelValue(
 )
 
 const isChecked = computed(() => modelValue.value === props.value)
-
-const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
 const { classes } = useTailwindVariant(
   {

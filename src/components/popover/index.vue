@@ -45,6 +45,7 @@ let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let triggerElementsCache: HTMLElement[] | null = null
 let cleanupAutoUpdate: (() => void) | null = null
+const throttledUpdatePosition = throttleByRaf(updatePosition)
 
 const arrowRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
@@ -53,7 +54,7 @@ const activeTriggerRef = shallowRef<HTMLElement | null>(null)
 const activeTriggerIndex = shallowRef(-1)
 const hasMultipleTriggers = shallowRef(false)
 const pointerPosition = shallowRef<{ x: number; y: number } | null>(null)
-const localPosition = shallowRef(props.position)
+
 const pointReference: VirtualElement = {
   getBoundingClientRect() {
     const { x = 0, y = 0 } = pointerPosition.value ?? {}
@@ -72,6 +73,7 @@ const pointReference: VirtualElement = {
   },
 }
 
+const localPosition = shallowRef(props.position)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
 const popoverMaxWidth = computed(() => getCssUnitValue(props.maxWidth))
@@ -81,9 +83,6 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-arrow-color': props.arrowColor,
   '--popover-max-width': popoverMaxWidth.value,
 }))
-
-const configProvider = useConfigProvider()
-
 const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
 const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
@@ -96,6 +95,7 @@ const computePositionMiddleware = computed(() => {
   ]
 })
 
+const configProvider = useConfigProvider()
 const {
   render: isRender,
   visible: isVisible,
@@ -329,9 +329,6 @@ async function updatePosition() {
     })
   }
 }
-
-const throttledUpdatePosition = throttleByRaf(updatePosition)
-
 async function handlePopoverShow() {
   if (showPopoverTimer || props.disabled) {
     return

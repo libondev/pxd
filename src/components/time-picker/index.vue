@@ -46,10 +46,7 @@ const paddedTimes = {
   minutes: Array.from({ length: 60 }, (_, i) => padStringZero(i)),
   seconds: Array.from({ length: 60 }, (_, i) => padStringZero(i)),
 }
-
-const configProvider = useConfigProvider()
-
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const scrollTimers: ReturnType<typeof setTimeout>[] = []
 
 const timeHoursRef = shallowRef<HTMLElement>()
 const timeMinutesRef = shallowRef<HTMLElement>()
@@ -58,15 +55,6 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 const popoverVisible = shallowRef(false)
 
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
-const committedValue = shallowRef<string | number>('')
-
-const modelValue = useModelValue(props, emits, {
-  get() {
-    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
-  },
-})
-
-const scrollTimers: ReturnType<typeof setTimeout>[] = []
 
 const onTimeListScroll = throttleByRaf((ev: Event) => {
   const target = ev.target as HTMLElement
@@ -88,6 +76,17 @@ const onTimeListScroll = throttleByRaf((ev: Event) => {
 
     dayjsDateTime.value = dayjsDateTime.value.set(type, clampedValue)
   }, 100)
+})
+
+const committedValue = shallowRef<string | number>('')
+
+const configProvider = useConfigProvider()
+
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const modelValue = useModelValue(props, emits, {
+  get() {
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
+  },
 })
 
 function padStringZero(value: number | string): string {

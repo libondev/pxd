@@ -46,27 +46,6 @@ const decimalPlaces = computed(() => {
 
   return Math.min(str.length - dotIndex - 1, 10)
 })
-
-function formatNumber(rawValue: number): string {
-  // avoid -0
-  const d = decimalPlaces.value
-  const raw = Math.abs(rawValue) < 5 * 10 ** -(d + 1) ? 0 : rawValue
-  const val = raw.toFixed(d)
-
-  if (!props.thousands) {
-    return val
-  }
-
-  const [intPart, decPart] = val.split('.')
-  const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-  return isUndefined(decPart) ? formatted : `${formatted}.${decPart}`
-}
-
-function maskDigitsAsZero(formatted: string): string {
-  return formatted.replace(/\d/g, '0')
-}
-
 const formattedValue = computed(() => formatNumber(displayValue.value))
 
 const scrollChars = computed(() => {
@@ -90,6 +69,25 @@ const scrollStyle = computed(() => ({
   '--pxd-rolling-duration': `${Math.max(props.durations, 0)}ms`,
 }))
 
+function formatNumber(rawValue: number): string {
+  // avoid -0
+  const d = decimalPlaces.value
+  const raw = Math.abs(rawValue) < 5 * 10 ** -(d + 1) ? 0 : rawValue
+  const val = raw.toFixed(d)
+
+  if (!props.thousands) {
+    return val
+  }
+
+  const [intPart, decPart] = val.split('.')
+  const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+  return isUndefined(decPart) ? formatted : `${formatted}.${decPart}`
+}
+
+function maskDigitsAsZero(formatted: string): string {
+  return formatted.replace(/\d/g, '0')
+}
 function easeOutCubic(t: number): number {
   return t === 1 ? 1 : 1 - 2 ** (-10 * t)
 }

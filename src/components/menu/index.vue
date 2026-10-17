@@ -25,12 +25,11 @@ const props = withDefaults(defineProps<MenuProps>(), {
 })
 
 const emits = defineEmits<MenuEmits>()
+
 const listRef = shallowRef<InstanceType<typeof PList>>()
+const popoverVisible = shallowRef(false)
 
 const { selected, apply, reset, commit } = useListSelection(props, emits)
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-
-const popoverVisible = shallowRef(false)
 
 // Action menus (no v-model) keep List uncontrolled so checkmarks never appear.
 // Selection menus forward the session `selected` that List already toggled.
@@ -42,6 +41,7 @@ const listModelValue = computed(() => {
   return selected.value
 })
 
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -55,6 +55,16 @@ const { onKeydown } = useListKeyboardController({
   },
 })
 
+function onListModelUpdate(value: ListModelValue) {
+  if (isNil(value)) {
+    return
+  }
+
+  if (apply(value)) {
+    popoverVisible.value = false
+  }
+}
+
 watch(popoverVisible, async (visible) => {
   if (visible) {
     reset()
@@ -65,16 +75,6 @@ watch(popoverVisible, async (visible) => {
 
   commit()
 })
-
-function onListModelUpdate(value: ListModelValue) {
-  if (isNil(value)) {
-    return
-  }
-
-  if (apply(value)) {
-    popoverVisible.value = false
-  }
-}
 </script>
 
 <template>

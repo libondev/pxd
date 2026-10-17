@@ -4,6 +4,13 @@ import type { DashLineProps } from './types'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format.js'
 
+interface LineConfig {
+  x1: string
+  y1: string
+  x2: string
+  y2: string
+}
+
 defineOptions({
   name: 'PDashLine',
   inheritAttrs: false,
@@ -12,6 +19,13 @@ defineOptions({
 const props = withDefaults(defineProps<DashLineProps>(), {
   position: () => ['top'],
 })
+
+const lineMap: Record<BasePosition, LineConfig> = {
+  top: { x1: '0', y1: '0', x2: '100%', y2: '0' },
+  bottom: { x1: '0', y1: '100%', x2: '100%', y2: '100%' },
+  left: { x1: '0', y1: '0', x2: '0', y2: '100%' },
+  right: { x1: '100%', y1: '0', x2: '100%', y2: '100%' },
+}
 
 const positions = computed<BasePosition[]>(() =>
   Array.isArray(props.position) ? props.position : [props.position],
@@ -24,21 +38,6 @@ const dashArray = computed(() => {
   const gap = parseFloat(getCssUnitValue(props.gap) ?? '8')
   return `${dash},${gap}`
 })
-
-interface LineConfig {
-  x1: string
-  y1: string
-  x2: string
-  y2: string
-}
-
-const lineMap: Record<BasePosition, LineConfig> = {
-  top: { x1: '0', y1: '0', x2: '100%', y2: '0' },
-  bottom: { x1: '0', y1: '100%', x2: '100%', y2: '100%' },
-  left: { x1: '0', y1: '0', x2: '0', y2: '100%' },
-  right: { x1: '100%', y1: '0', x2: '100%', y2: '100%' },
-}
-
 const lines = computed(() => positions.value.map((pos) => lineMap[pos]))
 </script>
 

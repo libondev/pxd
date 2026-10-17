@@ -15,16 +15,15 @@ const props = withDefaults(defineProps<FaderProps>(), {
   direction: 'both',
 })
 
+const DEFAULT_SIZE = 16
+const DIFF_THRESHOLD = 16
+
 const fader = shallowRef({
   top: false,
   left: false,
   right: false,
   bottom: false,
 })
-
-const DEFAULT_SIZE = 16
-const DIFF_THRESHOLD = 16
-
 const computedStyle = computed(() => ({
   '--fader-color': props.color,
   '--fader-size': getCssUnitValue(props.size),

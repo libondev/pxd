@@ -19,8 +19,6 @@ const props = withDefaults(defineProps<NoteProps>(), {
   variant: 'default',
 })
 
-const configProvider = useConfigProvider()
-
 const VARIANTS_ICON = {
   success: CheckCircleIcon,
   error: StopIcon,
@@ -45,6 +43,7 @@ const computedLabel = computed(() => {
   return false
 })
 
+const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-note gap-2 sm:items-center max-sm:flex-col flex max-w-full rounded-md border',
