@@ -161,6 +161,9 @@ Set `virtual` to render only the visible rows, `item-size` is the estimated row 
 
 ```vue demo
 <script setup>
+import { ref } from 'vue'
+
+const value = ref('extension-100')
 const options = Array.from({ length: 1000 }, (_, index) => ({
   label: `Extension ${index + 1}`,
   value: `extension-${index + 1}`,
@@ -169,6 +172,7 @@ const options = Array.from({ length: 1000 }, (_, index) => ({
 
 <template>
   <PList
+    v-model="value"
     class="w-64 max-h-40"
     virtual
     :item-size="36"

@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import List from '../../src/components/list/index.vue'
 
@@ -451,6 +451,41 @@ describe('list', () => {
     expect(wrapper.find('.pxd-list--content').attributes('style')).toContain('height: 80px')
 
     wrapper.unmount()
+  })
+
+  it('should scroll to the first selected option in the virtual layout', async () => {
+    // happy-dom has no layout, so provide the metrics that bound the scroll range.
+    Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+      configurable: true,
+      get: () => 36000,
+    })
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+      configurable: true,
+      get: () => 160,
+    })
+
+    try {
+      const wrapper = mount(List, {
+        props: {
+          virtual: true,
+          itemSize: 36,
+          modelValue: 'extension-100',
+          options: Array.from({ length: 1000 }, (_, index) => ({
+            label: `Extension ${index + 1}`,
+            value: `extension-${index + 1}`,
+          })),
+        },
+      })
+
+      await flushPromises()
+
+      expect(wrapper.find('[data-list]').element.scrollTop).toBeGreaterThan(0)
+
+      wrapper.unmount()
+    } finally {
+      Reflect.deleteProperty(HTMLElement.prototype, 'scrollHeight')
+      Reflect.deleteProperty(HTMLElement.prototype, 'clientHeight')
+    }
   })
 
   it('should merge itemClass into every rendered item', () => {

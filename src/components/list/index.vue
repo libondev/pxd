@@ -2,7 +2,7 @@
 import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
 import type { ListItemRow, ListHeaderRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
-import { computed, reactive, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, reactive, shallowRef } from 'vue'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
   flattenListOptions,
@@ -14,6 +14,8 @@ import { resolveOptionByValue } from '../../composables/_internal/use-selected-l
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { provideListContext } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
+import { toArray } from '../../utils/format.js'
+import { isNil } from '../../utils/is.js'
 import PLoadingMask from '../_internal/loading-mask.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
@@ -51,8 +53,8 @@ function isNavDisabled(index: number): boolean {
 const virtualOptions = reactive({
   dataKey: 'key',
   enabled: () => props.virtual,
-  scrollPaddingStart: 16,
-  scrollPaddingEnd: 16,
+  scrollPaddingStart: props.itemSize / 2,
+  scrollPaddingEnd: props.itemSize / 2,
   get items() {
     return rows.value
   },
@@ -185,9 +187,49 @@ const contentStyle = computed(() => {
   }
 })
 
+function scrollToFirstSelected() {
+  const firstValue = toArray(props.modelValue)[0]
+
+  if (isNil(firstValue)) {
+    return
+  }
+
+  const target = rows.value.find(
+    (row): row is ListItemRow => row.type === 'item' && row.option.value === firstValue,
+  )
+
+  if (!target) {
+    return
+  }
+
+  if (props.virtual) {
+    nextTick(() => scrollNavIndexIntoView(target.navIndex))
+    return
+  }
+
+  const container = containerRef.value
+  const item = getElement(`[data-list-item][data-index="${target.navIndex}"]`, container)
+
+  if (!container || !item) {
+    return
+  }
+
+  const itemRect = item.getBoundingClientRect()
+  const containerRect = container.getBoundingClientRect()
+
+  if (itemRect.bottom > containerRect.bottom) {
+    // Keep one row between the selection and the bottom edge.
+    container.scrollTop += itemRect.bottom - containerRect.bottom + itemRect.height
+  }
+}
+
 provideListContext({
   value: computed(() => props.modelValue),
   onItemSelect,
+})
+
+onMounted(() => {
+  scrollToFirstSelected()
 })
 
 defineExpose({
