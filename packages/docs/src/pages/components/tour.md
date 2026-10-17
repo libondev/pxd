@@ -51,10 +51,8 @@ function openTour() {
 | current                | `number`     | `0`     | Index of the active step, supports `v-model:current`              |
 | steps                  | `TourStep[]` | -       | Steps to walk through                                             |
 | z-index                | `number`     | `10`    | Stacking order of the overlay, highlight frame and bubble         |
-| show-progress          | `boolean`    | `true`  | Show the `current / total` counter in the bubble                  |
 | show-skip              | `boolean`    | `true`  | Show the skip button in the bubble                                |
-| close-on-click-overlay | `boolean`    | `false` | Close the tour when the dimmed area is clicked                    |
-| close-on-press-escape  | `boolean`    | `true`  | Close the tour when `Esc` is pressed                              |
+| show-progress          | `boolean`    | `true`  | Show the `current / total` counter in the bubble                  |
 
 ### TourStep
 

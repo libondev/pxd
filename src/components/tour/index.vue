@@ -26,8 +26,6 @@ const props = withDefaults(defineProps<TourProps>(), {
   zIndex: 10,
   showSkip: true,
   showProgress: true,
-  closeOnClickOverlay: false,
-  closeOnPressEscape: true,
 })
 
 const emits = defineEmits<TourEmits>()
@@ -132,12 +130,6 @@ function close() {
   emits('update:modelValue', false)
 }
 
-function onOverlayClick() {
-  if (props.closeOnClickOverlay) {
-    close()
-  }
-}
-
 function onKeydown(ev: KeyboardEvent) {
   if (ev.key === 'ArrowRight') {
     ev.preventDefault()
@@ -206,9 +198,8 @@ defineExpose({
     :z-index="zIndex"
     :show-overlay="false"
     :model-value="modelValue"
-    :close-on-press-escape="closeOnPressEscape"
-    :close-on-click-overlay="closeOnClickOverlay"
-    @click="onOverlayClick"
+    :close-on-press-escape="false"
+    :close-on-click-overlay="false"
   >
     <div
       v-if="modelValue"

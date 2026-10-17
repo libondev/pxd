@@ -17,8 +17,6 @@ export interface TourProps {
   zIndex?: number
   showSkip?: boolean
   showProgress?: boolean
-  closeOnClickOverlay?: boolean
-  closeOnPressEscape?: boolean
 }
 
 export interface TourEmits {
