@@ -9,7 +9,8 @@
 - `pnpm build` — `build:lib` + `build:docs`
 - `pnpm build:only` — 跳过 `update-exports` / `build:style`（部署文档站用）
 - `pnpm preview` — 预览文档
-- `pnpm check:type` / `pnpm check:fmt` / `pnpm check:suffix` — 类型、格式、`.js` 后缀检查
+- `pnpm check:type` / `pnpm check:fmt` / `pnpm lint` — 类型、格式、lint（含 `.js` 后缀、Vue script setup 顺序与 EOL）
+- `pnpm lint:fix` — 自动修复 lint 问题，并继续执行 `fmt:eol` 覆盖非 lint 文件
 
 ## Pipeline
 
@@ -24,7 +25,7 @@
 
 - 不要手动编辑 `dist/`：开发态它是 `src` 的 symlink，发布态是生成物。
 - 新增/删除组件后确认 barrel 与 `volar.d.ts` 已更新（`pnpm update-exports`）。
-- 换行由 `pnpm fmt:eol`（`scripts/fmt-eol.js`）统一；`git checkout-index -f -a` 会跳过仅换行不同的文件。
+- 换行由 `pnpm fmt:eol`（`scripts/lint/fmt-file-eol.js`）统一；`git checkout-index -f -a` 会跳过仅换行不同的文件。
 
 ## Hooks
 

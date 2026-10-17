@@ -26,4 +26,4 @@
 - `pnpm lint:fix` — 自动修复
 - `pnpm check:fmt` — 只检查格式（不写入）
 - `pnpm fmt:eol` — 把工作区文件换行统一为 LF
-- `pnpm check:suffix` — 检查相对导入是否带 `.js` 后缀
+- `pnpm lint` / `pnpm lint:fix` — 检查或自动修复相对导入的 `.js` 后缀与文件 EOL

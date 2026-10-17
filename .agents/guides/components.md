@@ -44,10 +44,11 @@ withDefaults(defineProps<CardProps>(), { shape: 'default' })
   2. `defineOptions` / `defineProps` / `withDefaults` / `defineEmits`
   3. 普通常量（非响应式、非 ref/computed）
   4. `ref` / `shallowRef` / `reactive` / `computed` 等本地响应式状态
-  5. 函数（事件处理与局部助手）
-  6. `watch` / `watchEffect` / `provide`（含 `provideXxxContext`）
-  7. 生命周期（`onMounted` / `onUnmounted` 等）
-  8. `defineExpose`（永远最后）
+  5. 自定义 composable（`useXxx()` 调用）
+  6. 函数（事件处理与局部助手）
+  7. `watch` / `watchEffect` / `provide`（含 `provideXxxContext`）
+  8. 生命周期（`onMounted` / `onUnmounted` 等）
+  9. `defineExpose`（永远最后）
 - 无顶层 `await`，无 reactive `Map` / `Set`
 - 事件 kebab-case；分支必须带花括号
 - 组件自有类型放同目录 `types.d.ts`，跨组件共享类型放 `src/types/shared`

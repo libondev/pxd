@@ -49,9 +49,12 @@ export default defineConfig({
   },
 
   lint: {
-    jsPlugins: ['eslint-plugin-better-tailwindcss'],
+    jsPlugins: ['eslint-plugin-better-tailwindcss', './scripts/lint/pxd-plugin.js'],
     rules: {
       curly: 'error',
+      'pxd/vue-setup-api-order': 'error',
+      'pxd/import-js-suffix': 'error',
+      'pxd/file-eol': 'error',
       'vitest/require-mock-type-parameters': 'off',
       'better-tailwindcss/no-deprecated-classes': 'error',
       'better-tailwindcss/enforce-shorthand-classes': 'error',
