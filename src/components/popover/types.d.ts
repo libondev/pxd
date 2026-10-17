@@ -24,6 +24,7 @@ export interface PopoverProps {
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
+  ariaLabelledby?: string
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean
   fillTriggerWidth?: boolean

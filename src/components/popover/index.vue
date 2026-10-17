@@ -610,6 +610,7 @@ defineExpose({
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
+        :aria-labelledby="ariaLabelledby"
         class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"

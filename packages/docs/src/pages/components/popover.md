@@ -388,6 +388,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | interactive | `boolean` | `true` | Keep the Popover open while the pointer moves over it |
 | auto-position | `boolean` | `true` | Reposition on scroll and resize, and flip when it would be clipped |
 | wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
+| aria-labelledby | `string` | - | ID of the element that labels the Popover dialog |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
 | content-style | `CSSProperties \| string` | - | Inline style bound to the Popover content |
 | toggle-on-trigger | `boolean` | `true` | Hide the Popover when the trigger is activated again |
