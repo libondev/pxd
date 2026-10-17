@@ -75,7 +75,7 @@ function openTour() {
 | change            | `(index: number, step: TourStep) => void` | Emitted when the tour moves to another step.                           |
 | finish            | `() => void`                              | Emitted when the last step is completed or the tour is closed from it. |
 | skip              | `() => void`                              | Emitted when the skip button is pressed.                               |
-| error             | `(error: unknown, index: number) => void` | Emitted when a step target is missing or `beforeEnter` throws.         |
+| error             | `(error: unknown, index: number) => void` | Emitted when a step target cannot be resolved or `beforeEnter` throws. |
 
 ## Methods
 

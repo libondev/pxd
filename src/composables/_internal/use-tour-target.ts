@@ -1,8 +1,8 @@
 import type { TourStep } from '../../components/tour/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { getElement, getStyle, resolveScrollBehavior } from '../../utils/dom.js'
-import { cachedOff, cachedOn, scheduleByRaf } from '../../utils/event.js'
+import { caf, cachedOff, cachedOn, raf, scheduleByRaf } from '../../utils/event.js'
 import { toValue } from '../../utils/helper.js'
 import { isServer } from '../../utils/is.js'
 
@@ -23,10 +23,14 @@ export interface UseTourTargetOptions {
 
 const ZERO_RECT: TourRect = { top: 0, left: 0, width: 0, height: 0 }
 
+function isSameRect(a: TourRect, b: TourRect) {
+  return a.top === b.top && a.left === b.left && a.width === b.width && a.height === b.height
+}
+
 /**
  * Resolves the rect of the current step target and keeps it in sync with scroll,
- * resize and target size changes. `beforeEnter` runs before the target is
- * resolved, and the scroll into view happens once the element is known.
+ * resize, target size and target position changes. `beforeEnter` runs before the
+ * target is resolved, and the scroll into view happens once the element is known.
  */
 export function useTourTarget(options: UseTourTargetOptions) {
   const { step, motionReduced, onMissingTarget, onError, onResolved } = options
@@ -40,20 +44,48 @@ export function useTourTarget(options: UseTourTargetOptions) {
   let token = 0
   let resizeObserver: ResizeObserver | null = null
   let isListening = false
+  let positionFrame = 0
 
   const scheduleUpdate = scheduleByRaf(measure)
 
   const isCentered = computed(() => !hasTarget.value)
 
+  function centeredRect(): TourRect {
+    if (isServer()) {
+      return ZERO_RECT
+    }
+
+    return {
+      top: window.innerHeight / 2,
+      left: window.innerWidth / 2,
+      width: 0,
+      height: 0,
+    }
+  }
+
   function measure() {
     if (!targetEl) {
+      const nextRect = centeredRect()
+
+      if (!isSameRect(rect.value, nextRect)) {
+        rect.value = nextRect
+      }
+
       return
     }
 
     const { top, left, width, height } = targetEl.getBoundingClientRect()
+    const nextRect = { top, left, width, height }
 
-    rect.value = { top, left, width, height }
-    targetRadius.value = getStyle(targetEl).borderRadius
+    if (!isSameRect(rect.value, nextRect)) {
+      rect.value = nextRect
+    }
+
+    const radius = getStyle(targetEl).borderRadius
+
+    if (radius !== targetRadius.value) {
+      targetRadius.value = radius
+    }
   }
 
   function observeTarget(el: HTMLElement | null) {
@@ -66,6 +98,41 @@ export function useTourTarget(options: UseTourTargetOptions) {
 
     resizeObserver = new ResizeObserver(scheduleUpdate)
     resizeObserver.observe(el)
+  }
+
+  function startPositionTracking() {
+    if (isServer() || positionFrame) {
+      return
+    }
+
+    positionFrame = raf(trackPosition)
+  }
+
+  function stopPositionTracking() {
+    if (!positionFrame) {
+      return
+    }
+
+    caf(positionFrame)
+    positionFrame = 0
+  }
+
+  function trackPosition() {
+    positionFrame = 0
+
+    if (!targetEl) {
+      return
+    }
+
+    const { top, left, width, height } = targetEl.getBoundingClientRect()
+    const nextRect = { top, left, width, height }
+
+    if (!isSameRect(rect.value, nextRect)) {
+      rect.value = nextRect
+      targetRadius.value = getStyle(targetEl).borderRadius
+    }
+
+    positionFrame = raf(trackPosition)
   }
 
   function startListening() {
@@ -90,6 +157,7 @@ export function useTourTarget(options: UseTourTargetOptions) {
 
   function detach() {
     stopListening()
+    stopPositionTracking()
     scheduleUpdate.cancel()
     observeTarget(null)
     targetEl = null
@@ -100,11 +168,12 @@ export function useTourTarget(options: UseTourTargetOptions) {
 
   function center() {
     observeTarget(null)
-    stopListening()
+    stopPositionTracking()
     targetEl = null
     targetRadius.value = ''
     hasTarget.value = false
-    rect.value = ZERO_RECT
+    rect.value = centeredRect()
+    startListening()
   }
 
   /**
@@ -129,6 +198,7 @@ export function useTourTarget(options: UseTourTargetOptions) {
     measure()
     observeTarget(el)
     startListening()
+    startPositionTracking()
     onResolved()
   }
 
@@ -165,38 +235,46 @@ export function useTourTarget(options: UseTourTargetOptions) {
       return
     }
 
-    const el = getElement(currentStep.target) as HTMLElement | null
+    try {
+      const el = getElement(currentStep.target) as HTMLElement | null
 
-    if (!el) {
-      onMissingTarget(index)
+      if (!el) {
+        onMissingTarget(index)
 
-      return
+        return
+      }
+
+      attachTarget(el, currentToken)
+
+      if (currentToken !== token) {
+        return
+      }
+
+      el.scrollIntoView({
+        block: 'center',
+        behavior: resolveScrollBehavior('auto', motionReduced),
+      })
+
+      // The smooth scroll settles after this frame; re-measure on the next one so
+      // the highlight lands on the final position instead of the pre-scroll one.
+      scheduleUpdate()
+    } catch (error) {
+      if (currentToken !== token) {
+        return
+      }
+
+      isLoading.value = false
+      onError(error, index)
     }
-
-    attachTarget(el, currentToken)
-
-    el.scrollIntoView({
-      block: 'center',
-      behavior: resolveScrollBehavior('auto', motionReduced),
-    })
-
-    // The smooth scroll settles after this frame; re-measure on the next one so
-    // the highlight lands on the final position instead of the pre-scroll one.
-    scheduleUpdate()
   }
 
-  onMounted(() => {
-    if (isServer()) {
-      return
-    }
-
-    startListening()
-  })
-
-  onBeforeUnmount(() => {
+  function cancel() {
     token++
+    isLoading.value = false
     detach()
-  })
+  }
+
+  onBeforeUnmount(cancel)
 
   return {
     rect,
@@ -205,5 +283,6 @@ export function useTourTarget(options: UseTourTargetOptions) {
     isCentered,
     isLoading,
     goTo,
+    cancel,
   }
 }

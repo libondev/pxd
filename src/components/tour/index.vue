@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { TourEmits, TourProps } from './types'
 import type { CSSProperties } from 'vue'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
+import { getUniqueId } from '../../utils/helper.js'
 import { isServer } from '../../utils/is.js'
 import PButton from '../button/index.vue'
 import POverlay from '../overlay/index.vue'
@@ -33,10 +34,12 @@ const emits = defineEmits<TourEmits>()
 const configProvider = useConfigProvider()
 const motionReduced = useMotionReduced()
 
+const titleId = getUniqueId('pxd-tour-title')
 const popoverVisible = shallowRef(false)
+const localCurrent = shallowRef(normalizeCurrent(props.current))
 
-const activeStep = computed(() => props.steps[props.current])
-const isLastStep = computed(() => props.current >= props.steps.length - 1)
+const activeStep = computed(() => props.steps[localCurrent.value])
+const isLastStep = computed(() => localCurrent.value >= props.steps.length - 1)
 
 const currentPosition = computed(() => activeStep.value?.position ?? 'bottom')
 
@@ -66,8 +69,17 @@ const nextText = computed(() => {
 
 const prevText = computed(() => activeStep.value?.prevText || configProvider.locale.tour.prev)
 
-function onMissingTarget(index: number) {
-  emits('error', new Error(`[PTour] target not found for step ${index}`), index)
+function normalizeCurrent(index: number) {
+  if (props.steps.length === 0) {
+    return 0
+  }
+
+  return Math.min(Math.max(index, 0), props.steps.length - 1)
+}
+
+function onStepError(error: unknown, index: number) {
+  emits('error', error, index)
+  popoverVisible.value = false
 
   if (index >= props.steps.length - 1) {
     close()
@@ -79,31 +91,37 @@ function onMissingTarget(index: number) {
   goToStep(index + 1)
 }
 
-const { rect, targetRadius, isCentered, isLoading, goTo } = useTourTarget({
+function onMissingTarget(index: number) {
+  onStepError(new Error(`[PTour] target not found for step ${index}`), index)
+}
+
+const { rect, targetRadius, isCentered, isLoading, goTo, cancel } = useTourTarget({
   step: activeStep,
   motionReduced,
   onMissingTarget,
-  onError: (error: unknown, index: number) => {
-    emits('error', error, index)
-  },
+  onError: onStepError,
   onResolved: () => {
     popoverVisible.value = true
   },
 })
 
 function goToStep(index: number) {
-  if (index < 0 || index >= props.steps.length) {
+  if (props.steps.length === 0 || index < 0 || index >= props.steps.length) {
     return
   }
 
-  if (index === props.current) {
-    goTo(index)
+  const nextIndex = normalizeCurrent(index)
+
+  if (nextIndex === localCurrent.value) {
+    goTo(nextIndex)
 
     return
   }
 
-  emits('update:current', index)
-  emits('change', index, props.steps[index]!)
+  localCurrent.value = nextIndex
+  emits('update:current', nextIndex)
+  emits('change', nextIndex, props.steps[nextIndex]!)
+  goTo(nextIndex)
 }
 
 function next() {
@@ -114,11 +132,11 @@ function next() {
     return
   }
 
-  goToStep(props.current + 1)
+  goToStep(localCurrent.value + 1)
 }
 
 function prev() {
-  goToStep(props.current - 1)
+  goToStep(localCurrent.value - 1)
 }
 
 function skip() {
@@ -155,35 +173,82 @@ watch(
 
     if (!visible) {
       cachedOff(window, 'keydown', onKeydown)
+      cancel()
+
+      return
+    }
+
+    localCurrent.value = normalizeCurrent(props.current)
+
+    if (props.steps.length === 0) {
+      popoverVisible.value = false
+      close()
 
       return
     }
 
     cachedOn(window, 'keydown', onKeydown)
-    goTo(props.current)
+    goTo(localCurrent.value)
   },
   { immediate: true },
 )
 
 watch(
   () => props.current,
-  (index, previousIndex) => {
-    if (!props.modelValue || index === previousIndex) {
+  (index) => {
+    const nextIndex = normalizeCurrent(index)
+
+    if (nextIndex === localCurrent.value) {
       return
     }
 
-    goTo(index)
+    localCurrent.value = nextIndex
+
+    if (!props.modelValue) {
+      return
+    }
+
+    if (props.steps.length === 0) {
+      popoverVisible.value = false
+      close()
+
+      return
+    }
+
+    goTo(nextIndex)
   },
 )
 
 watch(
   () => props.steps,
   () => {
+    if (props.steps.length === 0) {
+      localCurrent.value = 0
+      popoverVisible.value = false
+
+      if (props.modelValue) {
+        close()
+      }
+
+      return
+    }
+
+    const nextIndex = normalizeCurrent(localCurrent.value)
+
+    if (nextIndex !== localCurrent.value) {
+      localCurrent.value = nextIndex
+      emits('update:current', nextIndex)
+    }
+
     if (props.modelValue) {
-      goTo(props.current)
+      goTo(nextIndex)
     }
   },
 )
+
+onBeforeUnmount(() => {
+  cachedOff(window, 'keydown', onKeydown)
+})
 
 defineExpose({
   next,
@@ -204,8 +269,6 @@ defineExpose({
     <div
       v-if="modelValue"
       data-tour
-      role="dialog"
-      aria-modal="true"
       :data-centered="isCentered"
       :data-loading="isLoading"
       class="pxd-tour inset-0 pointer-events-auto fixed z-(--tour-index) select-none"
@@ -224,8 +287,9 @@ defineExpose({
         :close-on-outside-click="false"
         :close-on-invisible="false"
         :close-on-press-escape="false"
-        :return-focus-on-deactivate="false"
+        :aria-labelledby="activeStep?.title ? titleId : undefined"
         :auto-focus-element="true"
+        :wrapper-class="isCentered ? 'pxd-tour--popover-centered' : undefined"
         :z-index="zIndex + 1"
         class="pxd-tour--popover pointer-events-auto"
         content-class="pxd-tour--content bg-background-100 p-3 shadow-border-menu rounded-xl"
@@ -237,7 +301,7 @@ defineExpose({
         />
 
         <template #content>
-          <h4 v-if="activeStep?.title" class="font-medium m-0 text-15">
+          <h4 v-if="activeStep?.title" :id="titleId" class="font-medium m-0 text-15">
             {{ activeStep.title }}
           </h4>
 
@@ -250,14 +314,14 @@ defineExpose({
               v-if="showProgress"
               class="text-xs mr-4 flex-1 text-foreground-secondary tabular-nums"
             >
-              {{ current + 1 }}/{{ steps.length }}
+              {{ localCurrent + 1 }}/{{ steps.length }}
             </span>
 
             <PButton v-if="showSkip && !isLastStep" variant="ghost" size="sm" @click="skip">
               {{ configProvider.locale.tour.skip }}
             </PButton>
 
-            <PButton v-if="current > 0" variant="ghost" size="sm" @click="prev">
+            <PButton v-if="localCurrent > 0" variant="ghost" size="sm" @click="prev">
               {{ prevText }}
             </PButton>
 
@@ -274,5 +338,12 @@ defineExpose({
 <style lang="postcss">
 .pxd-tour--mask {
   box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.6);
+}
+
+.pxd-tour--popover-centered {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }
 </style>

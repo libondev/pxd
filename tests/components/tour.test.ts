@@ -374,3 +374,302 @@ describe('tour', () => {
     wrapper.unmount()
   })
 })
+
+describe('tour step handling fixes', () => {
+  afterEach(() => {
+    document.body.innerHTML = ''
+    document.documentElement.className = ''
+    document.body.removeAttribute('style')
+    document.documentElement.removeAttribute('style')
+  })
+
+  it('advances without an external v-model:current binding', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true), target }
+      },
+      template: `<Tour
+        v-model="visible"
+        :steps="[
+          { target: () => target, title: 'One' },
+          { target: () => target, title: 'Two' },
+        ]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const next = Array.from(document.querySelectorAll('button')).find(
+      (btn) => btn.textContent?.trim() === 'Next',
+    )
+
+    next!.click()
+    await flush()
+
+    const tour = wrapper.findComponent(Tour)
+    const content = document.querySelector('.pxd-tour--content') as HTMLElement
+
+    expect(tour.emitted('update:current')).toStrictEqual([[1]])
+    expect(content.textContent).toContain('Two')
+    expect(content.textContent).toContain('2/2')
+
+    wrapper.unmount()
+  })
+
+  it('emits error and continues when a target resolver throws', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return {
+          visible: ref(true),
+          target,
+          broken: () => {
+            throw new Error('target exploded')
+          },
+        }
+      },
+      template: `<Tour
+        v-model="visible"
+        :steps="[
+          { target: broken, title: 'Broken' },
+          { target: () => target, title: 'Two' },
+        ]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const tour = wrapper.findComponent(Tour)
+    const content = document.querySelector('.pxd-tour--content') as HTMLElement
+
+    expect(tour.emitted('error')).toHaveLength(1)
+    expect(content.textContent).toContain('Two')
+
+    wrapper.unmount()
+  })
+
+  it('emits error and continues when beforeEnter rejects', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return {
+          visible: ref(true),
+          target,
+          fail: () => Promise.reject(new Error('before enter failed')),
+        }
+      },
+      template: `<Tour
+        v-model="visible"
+        :steps="[
+          { target: () => target, title: 'One', beforeEnter: fail },
+          { target: () => target, title: 'Two' },
+        ]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const tour = wrapper.findComponent(Tour)
+    const content = document.querySelector('.pxd-tour--content') as HTMLElement
+
+    expect(tour.emitted('error')).toHaveLength(1)
+    expect(content.textContent).toContain('Two')
+
+    wrapper.unmount()
+  })
+
+  it('cancels a pending beforeEnter when the tour closes', async () => {
+    const target = makeTarget()
+    const scrollIntoView = vi.fn()
+
+    target.scrollIntoView = scrollIntoView
+
+    let resolveBeforeEnter!: () => void
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return {
+          visible: ref(true),
+          target,
+          beforeEnter: () =>
+            new Promise<void>((resolve) => {
+              resolveBeforeEnter = resolve
+            }),
+        }
+      },
+      template: `<Tour
+        v-model="visible"
+        :steps="[{ target: () => target, title: 'One', beforeEnter }]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    ;(wrapper.vm as unknown as { visible: boolean }).visible = false
+    await flush()
+
+    resolveBeforeEnter()
+    await flush()
+
+    expect(scrollIntoView).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
+  it('centers the anchor when a step has no target', async () => {
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true) }
+      },
+      template: `<Tour v-model="visible" :steps="[{ title: 'Intro' }]" />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const root = document.querySelector('[data-tour]') as HTMLElement
+    const anchor = document.querySelector('[data-tour-anchor]') as HTMLElement
+    const bubble = document.querySelector('.pxd-popover--wrapper') as HTMLElement
+
+    expect(root.getAttribute('data-centered')).toBe('true')
+    expect(anchor.style.top).toBe(`${window.innerHeight / 2}px`)
+    expect(anchor.style.left).toBe(`${window.innerWidth / 2}px`)
+    expect(bubble.className).toContain('pxd-tour--popover-centered')
+
+    wrapper.unmount()
+  })
+
+  it('tracks target position changes while the step is active', async () => {
+    const target = document.createElement('button')
+    let targetRect = {
+      top: 100,
+      left: 200,
+      width: 40,
+      height: 20,
+      right: 240,
+      bottom: 120,
+      x: 200,
+      y: 100,
+    }
+
+    target.getBoundingClientRect = () =>
+      ({
+        ...targetRect,
+        toJSON: () => ({}),
+      }) as DOMRect
+
+    document.body.appendChild(target)
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true), target }
+      },
+      template: `<Tour v-model="visible" :steps="[{ target: () => target }]" />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    targetRect = {
+      top: 300,
+      left: 400,
+      width: 60,
+      height: 30,
+      right: 460,
+      bottom: 330,
+      x: 400,
+      y: 300,
+    }
+
+    await new Promise(requestAnimationFrame)
+    await nextTick()
+
+    const mask = document.querySelector('.pxd-tour--mask') as HTMLElement
+
+    expect(mask.style.top).toBe('300px')
+    expect(mask.style.left).toBe('400px')
+    expect(mask.style.width).toBe('60px')
+    expect(mask.style.height).toBe('30px')
+
+    wrapper.unmount()
+  })
+
+  it('clamps an out-of-range current step', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true), current: ref(5), target }
+      },
+      template: `<Tour
+        v-model="visible"
+        v-model:current="current"
+        :steps="[{ target: () => target, title: 'Only' }]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const content = document.querySelector('.pxd-tour--content') as HTMLElement
+
+    expect(content.textContent).toContain('Only')
+    expect(content.textContent).toContain('1/1')
+
+    wrapper.unmount()
+  })
+
+  it('closes when opened without steps', async () => {
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true) }
+      },
+      template: `<Tour v-model="visible" :steps="[]" />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('labels the popover dialog from the active step title', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { visible: ref(true), target }
+      },
+      template: `<Tour v-model="visible" :steps="[{ target: () => target, title: 'One' }]" />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    const dialog = document.querySelector('.pxd-popover--wrapper') as HTMLElement
+    const title = document.querySelector('.pxd-tour--content h4') as HTMLElement
+
+    expect(dialog.getAttribute('aria-labelledby')).toBe(title.id)
+
+    wrapper.unmount()
+  })
+})
