@@ -113,14 +113,14 @@ describe('menu', () => {
       new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
     )
     await nextTick()
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-active')).toBe('true')
 
     popoverWrapper.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
     )
     await nextTick()
 
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })
@@ -149,7 +149,7 @@ describe('menu', () => {
     )
     await nextTick()
 
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })
@@ -231,10 +231,10 @@ describe('menu', () => {
     )
     await nextTick()
 
-    expect(firstItems?.[0]?.getAttribute('aria-selected')).toBe('true')
-    expect(firstItems?.[1]?.getAttribute('aria-selected')).toBe('false')
-    expect(secondItems?.[0]?.getAttribute('aria-selected')).toBe('false')
-    expect(secondItems?.[1]?.getAttribute('aria-selected')).toBe('false')
+    expect(firstItems?.[0]?.getAttribute('data-active')).toBe('true')
+    expect(firstItems?.[1]?.getAttribute('data-active')).not.toBe('true')
+    expect(secondItems?.[0]?.getAttribute('data-active')).not.toBe('true')
+    expect(secondItems?.[1]?.getAttribute('data-active')).not.toBe('true')
 
     firstMenu.unmount()
     secondMenu.unmount()

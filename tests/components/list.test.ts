@@ -176,7 +176,7 @@ describe('list', () => {
     wrapper.unmount()
   })
 
-  it('should expose setActiveIndex and mark the option as selected', async () => {
+  it('should expose setActiveIndex and mark the option as active', async () => {
     const wrapper = mount(List, {
       props: {
         options: [
@@ -190,8 +190,33 @@ describe('list', () => {
     await wrapper.vm.$nextTick()
 
     const items = wrapper.findAll('[data-list-item]')
-    expect(items[0]?.attributes('aria-selected')).toBe('false')
-    expect(items[1]?.attributes('aria-selected')).toBe('true')
+    expect(items[0]?.attributes('data-active')).toBeUndefined()
+    expect(items[1]?.attributes('data-active')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should use aria-selected for selection instead of active state', async () => {
+    const wrapper = mount(List, {
+      props: {
+        modelValue: '1',
+        options: [
+          { label: 'Item 1', value: '1' },
+          { label: 'Item 2', value: '2' },
+        ],
+      },
+    })
+
+    const items = wrapper.findAll('[data-list-item]')
+    expect(items[0]?.attributes('aria-selected')).toBe('true')
+    expect(items[1]?.attributes('aria-selected')).toBe('false')
+
+    ;(wrapper.vm as any).setActiveIndex(1)
+    await wrapper.vm.$nextTick()
+
+    expect(items[0]?.attributes('aria-selected')).toBe('true')
+    expect(items[1]?.attributes('aria-selected')).toBe('false')
+    expect(items[1]?.attributes('data-active')).toBe('true')
 
     wrapper.unmount()
   })
@@ -434,6 +459,25 @@ describe('list', () => {
     wrapper.unmount()
   })
 
+  it('should ignore direct clicks on disabled options and expose aria-disabled', async () => {
+    const wrapper = mount(List, {
+      props: {
+        options: [{ as: 'button', label: 'Item', value: '1', disabled: true }],
+      },
+    })
+
+    const item = wrapper.find('[data-list-item]')
+    expect(item.attributes('aria-disabled')).toBe('true')
+    expect(item.element.hasAttribute('disabled')).toBe(true)
+
+    await item.trigger('click')
+
+    expect(wrapper.emitted('change')).toBeUndefined()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('should size the content for the virtual layout', async () => {
     const wrapper = mount(List, {
       props: {
@@ -486,6 +530,75 @@ describe('list', () => {
       Reflect.deleteProperty(HTMLElement.prototype, 'scrollHeight')
       Reflect.deleteProperty(HTMLElement.prototype, 'clientHeight')
     }
+  })
+
+  it('should scroll to the selected option when options arrive after mount', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+      configurable: true,
+      get: () => 36000,
+    })
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+      configurable: true,
+      get: () => 160,
+    })
+
+    try {
+      const wrapper = mount(List, {
+        props: {
+          virtual: true,
+          itemSize: 36,
+          modelValue: 'extension-100',
+          options: [],
+        },
+      })
+
+      await flushPromises()
+
+      await wrapper.setProps({
+        options: Array.from({ length: 1000 }, (_, index) => ({
+          label: `Extension ${index + 1}`,
+          value: `extension-${index + 1}`,
+        })),
+      })
+      await flushPromises()
+
+      expect(wrapper.find('[data-list]').element.scrollTop).toBeGreaterThan(0)
+
+      wrapper.unmount()
+    } finally {
+      Reflect.deleteProperty(HTMLElement.prototype, 'scrollHeight')
+      Reflect.deleteProperty(HTMLElement.prototype, 'clientHeight')
+    }
+  })
+
+  it('should not re-render item slots on pointerover', async () => {
+    let slotCalls = 0
+    const wrapper = mount(List, {
+      props: {
+        options: Array.from({ length: 50 }, (_, index) => ({
+          label: `Item ${index + 1}`,
+          value: `item-${index + 1}`,
+        })),
+      },
+      slots: {
+        item: () => {
+          slotCalls++
+          return 'Item'
+        },
+      },
+    })
+
+    slotCalls = 0
+    await wrapper.findAll('[data-list-item]')[1]?.trigger('pointerover', {
+      pageX: 10,
+      pageY: 20,
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(slotCalls).toBe(0)
+    expect(wrapper.findAll('[data-list-item]')[1]?.attributes('data-active')).toBe('true')
+
+    wrapper.unmount()
   })
 
   it('should merge itemClass into every rendered item', () => {

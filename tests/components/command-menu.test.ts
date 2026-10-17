@@ -82,26 +82,26 @@ describe('command-menu', () => {
       expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(2),
     )
     await vi.waitFor(() =>
-      expect(document.body.querySelector('[data-list-item]')?.getAttribute('aria-selected')).toBe(
+      expect(document.body.querySelector('[data-list-item]')?.getAttribute('data-active')).toBe(
         'true',
       ),
     )
 
     const input = document.body.querySelector('input') as HTMLInputElement
     const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-active')).toBe('true')
 
     input.focus()
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }))
     await nextTick()
 
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
     expect(document.activeElement).toBe(input)
 
     input.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
     await nextTick()
 
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })

@@ -146,14 +146,14 @@ describe('split-button', () => {
       new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
     )
     await nextTick()
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[0]?.getAttribute('data-active')).toBe('true')
 
     popoverWrapper.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true }),
     )
     await nextTick()
 
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })

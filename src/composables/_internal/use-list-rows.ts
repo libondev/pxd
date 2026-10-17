@@ -14,6 +14,8 @@ export interface ListItemRow {
   key: string
   option: ListOption
   navIndex: number
+  /** Index of this row in the flattened render/virtualizer row list. */
+  rowIndex: number
   group?: ListOptionGroup
   groupIndex?: number
   itemIndex: number
@@ -23,6 +25,8 @@ export type ListRow = ListHeaderRow | ListItemRow
 
 export interface FlattenListOptionsResult {
   rows: ListRow[]
+  /** Item rows indexed by their dense `navIndex`. */
+  itemRows: ListItemRow[]
   navigableCount: number
 }
 
@@ -32,6 +36,7 @@ export interface FlattenListOptionsResult {
  */
 export function flattenListOptions(options: ListOptionEntry[]): FlattenListOptionsResult {
   const rows: ListRow[] = []
+  const itemRows: ListItemRow[] = []
   let navIndex = 0
 
   for (let groupIndex = 0; groupIndex < options.length; groupIndex++) {
@@ -48,29 +53,38 @@ export function flattenListOptions(options: ListOptionEntry[]): FlattenListOptio
 
       for (let itemIndex = 0; itemIndex < entry.options.length; itemIndex++) {
         const option = entry.options[itemIndex]
-        rows.push({
+        const row: ListItemRow = {
           type: 'item',
           key: String(option.value),
           option,
           navIndex: navIndex++,
+          rowIndex: rows.length,
           group: entry,
           groupIndex,
           itemIndex,
-        })
+        }
+
+        rows.push(row)
+        itemRows.push(row)
       }
     } else {
-      rows.push({
+      const row: ListItemRow = {
         type: 'item',
         key: String(entry.value),
         option: entry,
         navIndex: navIndex++,
+        rowIndex: rows.length,
         itemIndex: groupIndex,
-      })
+      }
+
+      rows.push(row)
+      itemRows.push(row)
     }
   }
 
   return {
     rows,
+    itemRows,
     navigableCount: navIndex,
   }
 }

@@ -21,6 +21,16 @@ const props = withDefaults(defineProps<ListItemProps>(), {
 
 const emits = defineEmits<ListItemEmits>()
 
+const NATIVE_DISABLED_TAGS = new Set([
+  'button',
+  'input',
+  'select',
+  'textarea',
+  'option',
+  'optgroup',
+  'fieldset',
+])
+
 const { value: selectedValue, onItemSelect } = useListContext()
 
 const { attrs, classes } = useTailwindVariant(
@@ -28,10 +38,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-list-item min-h-9 p-2 text-sm pe-8 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       variant: {
-        error: 'text-red-900 active:bg-red-100 pointer-fine:aria-selected:bg-red-100',
-        warning: 'text-amber-900 active:bg-amber-100 pointer-fine:aria-selected:bg-amber-100',
+        error: 'text-red-900 active:bg-red-100 pointer-fine:data-[active=true]:bg-red-100',
+        warning: 'text-amber-900 active:bg-amber-100 pointer-fine:data-[active=true]:bg-amber-100',
         default:
-          'text-foreground active:bg-gray-alpha-100 pointer-fine:aria-selected:bg-gray-alpha-100',
+          'text-foreground active:bg-gray-alpha-100 pointer-fine:data-[active=true]:bg-gray-alpha-100',
       },
     },
   },
@@ -40,6 +50,14 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
+const nativeDisabled = computed(() => {
+  if (!props.disabled || typeof props.as !== 'string') {
+    return undefined
+  }
+
+  return NATIVE_DISABLED_TAGS.has(props.as.toLowerCase()) ? true : undefined
+})
+
 const isChecked = computed(() => {
   return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
 })
@@ -47,7 +65,7 @@ const isChecked = computed(() => {
 function onItemClick(ev: MouseEvent) {
   const value = props.value
 
-  if (isNil(value)) {
+  if (props.disabled || isNil(value)) {
     return
   }
 
@@ -66,7 +84,10 @@ function onItemClick(ev: MouseEvent) {
     :data-variant="variant"
     :data-checked="isChecked"
     :data-disabled="disabled"
-    :aria-selected="active"
+    :data-active="active"
+    :aria-selected="isChecked"
+    :aria-disabled="disabled"
+    :disabled="nativeDisabled"
     :class="classes"
     v-bind="attrs"
     @click.stop="onItemClick"

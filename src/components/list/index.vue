@@ -2,13 +2,9 @@
 import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
 import type { ListItemRow, ListHeaderRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
-import { computed, nextTick, onMounted, reactive, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, reactive, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
-import {
-  flattenListOptions,
-  resolveNavigableOption,
-  resolveRowIndexByNavIndex,
-} from '../../composables/_internal/use-list-rows.js'
+import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
 import { resolveNextListValue } from '../../composables/_internal/use-list-selection.js'
 import { resolveOptionByValue } from '../../composables/_internal/use-selected-list-item.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
@@ -44,10 +40,11 @@ const containerRef = shallowRef<HTMLElement>()
 
 const flattened = computed(() => flattenListOptions(props.options))
 const rows = computed(() => flattened.value.rows)
+const itemRows = computed(() => flattened.value.itemRows)
 const navigableCount = computed(() => flattened.value.navigableCount)
 
 function isNavDisabled(index: number): boolean {
-  return resolveNavigableOption(rows.value, index)?.option.disabled === true
+  return itemRows.value[index]?.option.disabled === true
 }
 
 const virtualOptions = reactive({
@@ -69,13 +66,13 @@ const virtualOptions = reactive({
 const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
 function scrollNavIndexIntoView(navIndex: number) {
-  const rowIndex = resolveRowIndexByNavIndex(rows.value, navIndex)
-  if (rowIndex < 0) {
+  const row = itemRows.value[navIndex]
+  if (!row) {
     return
   }
 
   if (props.virtual) {
-    scrollToIndex(rowIndex, { align: 'auto', behavior: 'instant' })
+    scrollToIndex(row.rowIndex, { align: 'auto', behavior: 'instant' })
     return
   }
 
@@ -99,7 +96,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
 
   const option = resolveOptionByValue(props.options, value)
 
-  if (!option) {
+  if (!option || option.disabled) {
     return
   }
 
@@ -117,7 +114,7 @@ function onActivateItem(navIndex: number) {
     return
   }
 
-  const row = resolveNavigableOption(rows.value, navIndex)
+  const row = itemRows.value[navIndex]
   if (!row) {
     return
   }
@@ -134,10 +131,6 @@ const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive }
     onActivateItem,
     scrollToIndex: scrollNavIndexIntoView,
   })
-
-function isItemActive(row: ListItemRow): boolean {
-  return activeIndex.value === row.navIndex
-}
 
 function dispatchCommand(command: ListNavigationCommand): boolean {
   if (props.loading) {
@@ -187,6 +180,38 @@ const contentStyle = computed(() => {
   }
 })
 
+function findItemElement(navIndex: number): HTMLElement | null {
+  return getElement(`[data-list-item][data-index="${navIndex}"]`, containerRef.value)
+}
+
+function syncActiveItem(next: number, previous: number): void {
+  if (previous >= 0) {
+    findItemElement(previous)?.removeAttribute('data-active')
+  }
+
+  if (next >= 0) {
+    findItemElement(next)?.setAttribute('data-active', 'true')
+  }
+}
+
+function refreshActiveItem(): void {
+  const container = containerRef.value
+  if (!container) {
+    return
+  }
+
+  container.querySelectorAll<HTMLElement>('[data-list-item][data-active]').forEach((el) => {
+    el.removeAttribute('data-active')
+  })
+
+  if (activeIndex.value >= 0) {
+    findItemElement(activeIndex.value)?.setAttribute('data-active', 'true')
+  }
+}
+
+watch(activeIndex, syncActiveItem, { flush: 'post' })
+watch(renderEntries, refreshActiveItem, { flush: 'post' })
+
 function scrollToFirstSelected() {
   const firstValue = toArray(props.modelValue)[0]
 
@@ -194,9 +219,7 @@ function scrollToFirstSelected() {
     return
   }
 
-  const target = rows.value.find(
-    (row): row is ListItemRow => row.type === 'item' && row.option.value === firstValue,
-  )
+  const target = itemRows.value.find((row) => row.option.value === firstValue)
 
   if (!target) {
     return
@@ -228,7 +251,17 @@ provideListContext({
   onItemSelect,
 })
 
+watch(
+  rows,
+  async () => {
+    await nextTick()
+    scrollToFirstSelected()
+  },
+  { flush: 'post' },
+)
+
 onMounted(() => {
+  refreshActiveItem()
   scrollToFirstSelected()
 })
 
@@ -274,7 +307,6 @@ defineExpose({
           v-else-if="entry.itemRow"
           v-bind="entry.itemRow.option"
           :index="entry.itemRow.navIndex"
-          :active="isItemActive(entry.itemRow)"
           :class="itemClass"
         >
           <template v-if="$slots.item">
