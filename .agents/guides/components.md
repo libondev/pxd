@@ -39,6 +39,15 @@ withDefaults(defineProps<CardProps>(), { shape: 'default' })
 - `<script lang="ts" setup>`（`lang` 在前）+ Composition API，不用 Options API
 - `defineOptions({ name: 'P<Name>', inheritAttrs: false })`
 - `defineProps` / `defineEmits` / `withDefaults`，不用 `defineModel`；类型名是 `CardProps` / `CardEmits`（不加 `P` 前缀），从 `./types` 导入
+- `<script setup>` 顶层声明必须按固定顺序分组，组内可继续按依赖关系排列，但组间不得交叉：
+  1. `import`
+  2. `defineOptions` / `defineProps` / `withDefaults` / `defineEmits`
+  3. 普通常量（非响应式、非 ref/computed）
+  4. `ref` / `shallowRef` / `reactive` / `computed` 等本地响应式状态
+  5. 函数（事件处理与局部助手）
+  6. `watch` / `watchEffect` / `provide`（含 `provideXxxContext`）
+  7. 生命周期（`onMounted` / `onUnmounted` 等）
+  8. `defineExpose`（永远最后）
 - 无顶层 `await`，无 reactive `Map` / `Set`
 - 事件 kebab-case；分支必须带花括号
 - 组件自有类型放同目录 `types.d.ts`，跨组件共享类型放 `src/types/shared`

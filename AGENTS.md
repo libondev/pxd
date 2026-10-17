@@ -46,6 +46,7 @@ pxd/
 - **Always** maintain dual Vue 2.7 & 3 compatibility
 - **Never** edit `dist/` or generated files by hand
 - **Use** Composition API with `<script setup>` only (no Options API)
+- **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups.
 - **Avoid** Vue 3-only features: `defineModel`, top-level `await`, reactive Map/Set
 - **Check** existing patterns before introducing new patterns
 - Events: kebab-case. Curly braces: always required.
