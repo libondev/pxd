@@ -1,4 +1,4 @@
-import type { ComponentDirection } from '../../types/shared'
+import type { ComponentDirection } from '../../types/shared/props'
 import type { ComponentPublicInstance } from 'vue'
 
 export interface FaderProps {

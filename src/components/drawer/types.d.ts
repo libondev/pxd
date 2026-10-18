@@ -1,4 +1,4 @@
-import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared'
+import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared/props'
 
 export interface DrawerProps {
   zIndex?: number

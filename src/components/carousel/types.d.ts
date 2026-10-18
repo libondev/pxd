@@ -3,7 +3,7 @@ import type {
   ComponentDirection,
   ComponentLabel,
   ComponentValue,
-} from '../../types/shared'
+} from '../../types/shared/props'
 
 export interface CarouselOption {
   /** Rendered as the slide content when no `item` slot is provided. */

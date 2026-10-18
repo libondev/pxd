@@ -1,4 +1,4 @@
-import type { ComponentDirection, ComponentLabel, ComponentSize } from '../../types/shared'
+import type { ComponentDirection, ComponentLabel, ComponentSize } from '../../types/shared/props'
 
 export type StepsStatus = 'process' | 'finish' | 'error' | 'wait'
 

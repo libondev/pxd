@@ -10,7 +10,8 @@ import type {
   TreeRemoteFilterFn,
   TreeSelectableFn,
 } from '../../components/tree/types'
-import type { ComponentValue, MaybeElementRef } from '../../types/shared'
+import type { ComponentValue } from '../../types/shared/props'
+import type { MaybeElementRef } from '../../types/shared/utils'
 import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
 import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { getElement } from '../../utils/dom.js'

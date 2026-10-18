@@ -1,4 +1,4 @@
-import type { ComponentClass, ComponentPosition } from '../../types/shared'
+import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
 import type { CSSProperties } from 'vue'
 
 export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual'

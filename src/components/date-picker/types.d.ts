@@ -1,4 +1,4 @@
-import type { ComponentDateTimeValue, ComponentSize } from '../../types/shared'
+import type { ComponentDateTimeValue, ComponentSize } from '../../types/shared/props'
 
 export interface DatePickerProps {
   size?: ComponentSize

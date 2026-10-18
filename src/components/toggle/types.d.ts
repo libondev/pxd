@@ -1,4 +1,4 @@
-import type { ComponentBeforeChange, ComponentSize } from '../../types/shared'
+import type { ComponentBeforeChange, ComponentSize } from '../../types/shared/props'
 
 export type ValueType = boolean | number | string | undefined
 

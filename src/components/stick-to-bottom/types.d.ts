@@ -1,4 +1,4 @@
-import type { ComponentClass } from '../../types/shared'
+import type { ComponentClass } from '../../types/shared/props'
 import type { CSSProperties } from 'vue'
 
 export interface StickToBottomProps {

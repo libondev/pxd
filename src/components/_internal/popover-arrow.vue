@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentPosition } from '../../types/shared'
+import type { ComponentPosition } from '../../types/shared/props'
 
 interface Props {
   position?: ComponentPosition

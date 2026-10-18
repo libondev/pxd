@@ -1,4 +1,5 @@
-import type { Awaitable, ComponentAs, ComponentClass } from '../../types/shared'
+import type { ComponentAs, ComponentClass } from '../../types/shared/props'
+import type { Awaitable } from '../../types/shared/utils'
 
 export type SwipeCellSide = 'prefix' | 'suffix'
 export type SwipeCellDirection = 'left' | 'right'

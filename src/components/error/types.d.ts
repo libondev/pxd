@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared'
+import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface ErrorType {
   link?: string

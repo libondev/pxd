@@ -1,4 +1,4 @@
-import type { ComponentDateTimeValue } from '../../types/shared'
+import type { ComponentDateTimeValue } from '../../types/shared/props'
 
 export interface CalendarDateInfo {
   year: number

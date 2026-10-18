@@ -1,4 +1,4 @@
-import type { ResponsiveValue } from '../types/shared'
+import type { ResponsiveValue } from '../types/shared/props'
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeElement } from '../types/shared/utils'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'

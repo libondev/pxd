@@ -1,4 +1,4 @@
-import type { BasePosition } from '../../types/shared'
+import type { BasePosition } from '../../types/shared/props'
 
 export interface DashLineProps {
   position?: BasePosition | BasePosition[]

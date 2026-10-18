@@ -1,4 +1,4 @@
-import type { ComponentSizeWithXs, ComponentAlign } from '../../types/shared'
+import type { ComponentSizeWithXs, ComponentAlign } from '../../types/shared/props'
 import type { ButtonVariant } from '../button/types'
 
 export interface ButtonGroupProps {

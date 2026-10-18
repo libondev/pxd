@@ -1,4 +1,4 @@
-import type { MaybeElementRef } from '../../types/shared'
+import type { MaybeElementRef } from '../../types/shared/utils'
 import type { MaybeRefOrGetter } from 'vue'
 import { nextTick, onScopeDispose, watch } from 'vue'
 import { getElement } from '../../utils/dom.js'

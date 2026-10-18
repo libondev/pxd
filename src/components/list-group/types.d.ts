@@ -1,4 +1,4 @@
-import type { ComponentLabel } from '../../types/shared'
+import type { ComponentLabel } from '../../types/shared/props'
 
 export interface ListGroupProps {
   label?: string

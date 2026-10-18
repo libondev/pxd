@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentVariant } from '../../types/shared'
+import type { ComponentLabel, ComponentVariant } from '../../types/shared/props'
 
 export interface ChipProps {
   size?: number | string

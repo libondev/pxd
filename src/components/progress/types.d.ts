@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentVariant } from '../../types/shared'
+import type { ComponentSize, ComponentVariant } from '../../types/shared/props'
 
 export interface ProgressProps {
   min?: number

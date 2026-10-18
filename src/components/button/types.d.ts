@@ -4,7 +4,7 @@ import type {
   ComponentShape,
   ComponentSizeWithXs,
   ComponentVariantWithDefault,
-} from '../../types/shared'
+} from '../../types/shared/props'
 
 export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'link'
 

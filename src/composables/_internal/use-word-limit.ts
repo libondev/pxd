@@ -1,4 +1,4 @@
-import type { ComponentLabel } from '../../types/shared'
+import type { ComponentLabel } from '../../types/shared/props'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { computed } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'

@@ -1,4 +1,4 @@
-import type { MaybeElementRef } from '../../types/shared'
+import type { MaybeElementRef } from '../../types/shared/utils'
 import { onScopeDispose } from 'vue'
 import { getElement, hasScrollbar, isScrollable } from '../../utils/dom.js'
 

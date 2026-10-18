@@ -1,5 +1,5 @@
 import type { MessageItemConfig } from '../../composables/use-message'
-import type { ComponentPosition } from '../../types/shared'
+import type { ComponentPosition } from '../../types/shared/props'
 
 export interface MessageProps {
   max?: number

@@ -1,4 +1,4 @@
-import type { ComponentLabel } from '../../types/shared'
+import type { ComponentLabel } from '../../types/shared/props'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
 

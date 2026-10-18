@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentValue } from '../../types/shared'
+import type { ComponentLabel, ComponentValue } from '../../types/shared/props'
 
 export interface ChoiceboxItemProps {
   label?: ComponentLabel

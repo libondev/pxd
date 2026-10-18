@@ -1,4 +1,4 @@
-import type { ComponentSizeWithXs } from '../../types/shared'
+import type { ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface GaugeProps {
   modelValue?: number | null

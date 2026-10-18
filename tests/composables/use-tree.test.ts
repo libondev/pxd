@@ -1,5 +1,5 @@
 import type { TreeOption, TreeOptions } from '../../src/components/tree/types'
-import type { ComponentValue } from '../../src/types/shared'
+import type { ComponentValue } from '../../src/types/shared/props'
 import { describe, expect, it } from 'vite-plus/test'
 import {
   createTreeIndex,

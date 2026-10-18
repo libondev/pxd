@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentClass, ComponentValue } from '../../types/shared'
+import type { ComponentClass, ComponentValue } from '../../types/shared/props'
 import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'

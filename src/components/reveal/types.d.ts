@@ -1,4 +1,4 @@
-import type { BasePosition } from '../../types/shared'
+import type { BasePosition } from '../../types/shared/props'
 
 export type RevealTrigger = 'mount' | 'viewport'
 

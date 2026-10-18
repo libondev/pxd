@@ -1,4 +1,4 @@
-import type { ComponentShape } from '../../types/shared'
+import type { ComponentShape } from '../../types/shared/props'
 
 export interface SkeletonProps {
   loading?: boolean

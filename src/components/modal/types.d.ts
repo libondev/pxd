@@ -1,4 +1,4 @@
-import type { ComponentClass, ComponentLabel } from '../../types/shared'
+import type { ComponentClass, ComponentLabel } from '../../types/shared/props'
 
 export interface ModalProps {
   zIndex?: number

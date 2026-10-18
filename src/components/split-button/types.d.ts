@@ -1,4 +1,4 @@
-import type { ComponentShape, ComponentSizeWithXs } from '../../types/shared'
+import type { ComponentShape, ComponentSizeWithXs } from '../../types/shared/props'
 import type { ListModelValue, ListOptions } from '../list/types'
 import { ButtonVariant } from '../button/types'
 

@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSize, ComponentValue } from '../../types/shared'
+import type { ComponentLabel, ComponentSize, ComponentValue } from '../../types/shared/props'
 import type { CheckboxProps } from '../checkbox/types'
 
 type ToggleButtonModelValue = ComponentValue | boolean

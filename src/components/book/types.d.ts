@@ -1,4 +1,4 @@
-import type { ComponentLabel, ResponsiveValue } from '../../types/shared'
+import type { ComponentLabel, ResponsiveValue } from '../../types/shared/props'
 
 export interface BookProps {
   color?: string

@@ -1,4 +1,4 @@
-import type { ComponentAs } from '../../types/shared'
+import type { ComponentAs } from '../../types/shared/props'
 
 export interface ScrollTextProps {
   as?: ComponentAs

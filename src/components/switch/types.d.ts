@@ -1,4 +1,4 @@
-import type { ComponentOption, ComponentSize } from '../../types/shared'
+import type { ComponentOption, ComponentSize } from '../../types/shared/props'
 
 export interface SwitchProps {
   disabled?: boolean

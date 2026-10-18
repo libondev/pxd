@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentOption } from '../../types/shared'
+import type { ComponentSize, ComponentOption } from '../../types/shared/props'
 
 export interface PageNumberProps {
   /** page */

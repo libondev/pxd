@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentDateTimeValue } from '../../types/shared'
+import type { ComponentDateTimeValue } from '../../types/shared/props'
 import type { DatePickerEmits, DatePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'

@@ -1,4 +1,4 @@
-import type { ComponentClass, ComponentPosition } from '../../types/shared'
+import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
 
 export type HintStatus = 'idle' | 'pending' | 'success' | 'error'
 

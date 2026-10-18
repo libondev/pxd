@@ -1,4 +1,4 @@
-import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared'
+import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared/props'
 
 export interface InputProps {
   size?: ComponentSizeWithXs

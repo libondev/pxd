@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentVariant } from '../../types/shared'
+import type { ComponentVariant } from '../../types/shared/props'
 import type { BadgeVariant } from '../badge/types'
 import type {
   ApprovalCardEmits,

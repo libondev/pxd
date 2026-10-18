@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentDirection } from '../../types/shared'
+import type { ComponentDirection } from '../../types/shared/props'
 import type { StackProps } from './types'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'

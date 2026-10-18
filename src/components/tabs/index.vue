@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentValue } from '../../types/shared'
+import type { ComponentValue } from '../../types/shared/props'
 import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'

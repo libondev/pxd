@@ -38,6 +38,9 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./volar": "./volar.d.ts",
+    "./tw.css": "./dist/styles/tw.css",
+    "./styles.css": "./dist/styles/styles.css",
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
@@ -58,9 +61,6 @@
       "types": "./dist/locales/index.d.ts",
       "default": "./dist/locales/index.js"
     },
-    "./volar": "./volar.d.ts",
-    "./tw.css": "./dist/styles/tw.css",
-    "./styles.css": "./dist/styles/styles.css",
     "./components/*": {
       "types": "./dist/components/*/index.d.vue.ts",
       "default": "./dist/components/*/index.vue"
@@ -77,7 +77,6 @@
       "types": "./dist/locales/*.d.ts",
       "default": "./dist/locales/*.js"
     },
-    "./types/*": "./dist/types/*/index.d.ts",
     "./utils/*": {
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"

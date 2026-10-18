@@ -3,7 +3,7 @@ import type {
   ComponentValue,
   ComponentOption,
   ResponsiveValue,
-} from '../../types/shared'
+} from '../../types/shared/props'
 import type { CheckboxProps } from '../checkbox/types'
 
 export interface ToggleButtonGroupProps {

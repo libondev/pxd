@@ -3,7 +3,7 @@ import type {
   ComponentValue,
   ComponentOption,
   ResponsiveValue,
-} from '../../types/shared'
+} from '../../types/shared/props'
 
 export interface ChoiceboxProps {
   gap?: ResponsiveValue<number | string>

@@ -1,4 +1,4 @@
-import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared'
+import type { ComponentAs, ComponentDirection, ResponsiveValue } from '../../types/shared/props'
 
 type Align = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch'
 

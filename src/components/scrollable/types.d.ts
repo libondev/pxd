@@ -1,4 +1,5 @@
-import type { ComponentClass, ComponentDirection, Nullable } from '../../types/shared'
+import type { ComponentClass, ComponentDirection } from '../../types/shared/props'
+import type { Nullable } from '../../types/shared/utils'
 import type { CSSProperties } from 'vue'
 
 export interface ScrollableProps {

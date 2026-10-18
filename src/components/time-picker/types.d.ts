@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentDateTimeValue } from '../../types/shared'
+import type { ComponentSize, ComponentDateTimeValue } from '../../types/shared/props'
 
 export interface DateTimePreset<T = Date> {
   label: string

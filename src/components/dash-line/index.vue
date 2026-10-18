@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BasePosition } from '../../types/shared'
+import type { BasePosition } from '../../types/shared/props'
 import type { DashLineProps } from './types'
 import { computed } from 'vue'
 import { getCssUnitValue } from '../../utils/format.js'

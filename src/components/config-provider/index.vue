@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentAs } from '../../types/shared'
+import type { ComponentAs } from '../../types/shared/props'
 import type { ConfigProviderProps } from './types'
 import { computed } from 'vue'
 import { provideConfigProvider } from '../../contexts/config-provider.js'

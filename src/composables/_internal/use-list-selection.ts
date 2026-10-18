@@ -1,5 +1,5 @@
 import type { ListModelValue } from '../../components/list/types'
-import type { ComponentValue } from '../../types/shared'
+import type { ComponentValue } from '../../types/shared/props'
 import { shallowRef } from 'vue'
 import { toArray } from '../../utils/format.js'
 

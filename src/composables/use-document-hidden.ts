@@ -1,4 +1,4 @@
-import type { Callback } from '../types/shared'
+import type { Callback } from '../types/shared/utils'
 import { onScopeDispose, onMounted, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event.js'
 import { isServer } from '../utils/is.js'

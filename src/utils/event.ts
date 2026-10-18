@@ -1,4 +1,4 @@
-import type { Callback, Nullable } from '../types/shared'
+import type { Callback, Nullable } from '../types/shared/utils'
 import { nextTick } from 'vue'
 import { isOverflowScrollable } from './dom.js'
 import { isServer } from './is.js'

@@ -1,5 +1,6 @@
 import type { Locale } from '../../locales'
-import type { ComponentSize, DeepPartial } from '../../types/shared'
+import type { ComponentSize } from '../../types/shared/props'
+import type { DeepPartial } from '../../types/shared/utils'
 
 export interface ConfigProviderProps {
   size?: ComponentSize

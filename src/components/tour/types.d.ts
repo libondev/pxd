@@ -1,4 +1,4 @@
-import type { ComponentPosition } from '../../types/shared'
+import type { ComponentPosition } from '../../types/shared/props'
 
 export interface TourStep {
   target?: string | HTMLElement | (() => HTMLElement | null)

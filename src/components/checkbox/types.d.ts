@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentValue, ComponentShape } from '../../types/shared'
+import type { ComponentLabel, ComponentValue, ComponentShape } from '../../types/shared/props'
 
 type CheckboxModelValue = ComponentValue | boolean
 

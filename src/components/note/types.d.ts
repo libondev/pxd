@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSize } from '../../types/shared'
+import type { ComponentLabel, ComponentSize } from '../../types/shared/props'
 
 export type NoteVariant =
   | 'success'

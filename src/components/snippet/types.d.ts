@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared'
+import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared/props'
 
 export interface SnippetProps {
   text?: string | string[] | null

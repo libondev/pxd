@@ -1,4 +1,4 @@
-import type { ResponsiveValue } from '../../types/shared'
+import type { ResponsiveValue } from '../../types/shared/props'
 
 export interface GridItemProps {
   row?: ResponsiveValue<string | number>

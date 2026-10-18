@@ -1,4 +1,4 @@
-import type { ComponentAs, ComponentShape, ComponentSize } from '../../types/shared'
+import type { ComponentAs, ComponentShape, ComponentSize } from '../../types/shared/props'
 
 export type BadgeVariant =
   | 'pill'

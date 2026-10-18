@@ -1,5 +1,5 @@
 import type { TooltipVariant } from '../../constants/tooltip-variants'
-import type { ComponentClass, ComponentPosition } from '../../types/shared'
+import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
 
 export interface TooltipProps {
   content?: string

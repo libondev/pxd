@@ -1,5 +1,5 @@
 import type { VirtualListOptions } from '../../composables/use-virtual-list'
-import type { ComponentClass } from '../../types/shared'
+import type { ComponentClass } from '../../types/shared/props'
 
 export interface VirtualListProps extends VirtualListOptions {
   listClass?: ComponentClass

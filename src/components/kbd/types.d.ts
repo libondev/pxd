@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentLabel } from '../../types/shared'
+import type { ComponentSize, ComponentLabel } from '../../types/shared/props'
 
 export interface KbdProps {
   alt?: boolean

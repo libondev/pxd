@@ -3,7 +3,7 @@ import type {
   ComponentClass,
   ComponentLabel,
   ComponentValue,
-} from '../../types/shared'
+} from '../../types/shared/props'
 
 export interface ListOption {
   as?: ComponentAs
