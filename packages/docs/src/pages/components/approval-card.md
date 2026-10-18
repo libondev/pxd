@@ -71,7 +71,7 @@ function onApprove(result) {
 
 ## Timeout
 
-`timeout` dismisses an undecided card after the given milliseconds. The result carries `cause: 'timeout'`, so the host can tell an expired wait from an active skip.
+`timeout` dismisses an undecided card after the given milliseconds. The result carries `cause: 'timeout'`, so the host can tell an expired wait from an active skip. While the timeout is running, a thin countdown bar drains across the top of the card.
 
 ```vue demo
 <template>

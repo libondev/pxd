@@ -174,6 +174,29 @@ describe('approval-card', () => {
     vi.useRealTimers()
   })
 
+  it('should render the countdown bar while the timeout is running', async () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        timeout: 1000,
+      },
+    })
+
+    expect(wrapper.find('.pxd-approval-card--progress').exists()).toBe(true)
+
+    const bar = wrapper.find('.pxd-approval-card--progress').element
+
+    wrapper.vm.reset()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.pxd-approval-card--progress').element).not.toBe(bar)
+
+    await wrapper.setProps({ modelValue: 'approved' })
+
+    expect(wrapper.find('.pxd-approval-card--progress').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('should carry the remember flag into the approve result', async () => {
     const wrapper = mount(ApprovalCard, {
       props: {

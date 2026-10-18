@@ -64,6 +64,7 @@ const VARIANT_CLASS: Record<ComponentVariant, string> = {
 
 const internalStatus = shallowRef<ApprovalStatus>('pending')
 const remembered = shallowRef(false)
+const timerKey = shallowRef(0)
 const status = computed<ApprovalStatus>(() => props.modelValue ?? internalStatus.value)
 const isPending = computed(() => status.value === 'pending')
 const isDisabled = computed(() => isTruthyProp(props.disabled) || isTruthyProp(props.loading))
@@ -95,6 +96,8 @@ function startTimer() {
   if (!isPending.value || !timeout) {
     return
   }
+
+  timerKey.value++
 
   timerId = setTimeout(() => {
     dismiss('timeout')
@@ -168,12 +171,20 @@ defineExpose({
 <template>
   <div
     data-approval-card
-    class="pxd-approval-card bg-background p-3 gap-2 flex w-full max-w-full flex-col rounded-xl border"
+    class="pxd-approval-card bg-background p-3 gap-2 relative flex w-full max-w-full flex-col overflow-hidden rounded-xl border"
     :data-status="status"
     :data-variant="variant"
     v-bind="$attrs"
     @keydown.esc="onEscape"
   >
+    <div
+      v-if="isPending && timeout"
+      :key="timerKey"
+      aria-hidden="true"
+      class="pxd-approval-card--progress inset-x-0 top-0 h-0.5 absolute rounded-full bg-current"
+      :style="{ animationDuration: `${timeout}ms` }"
+    />
+
     <div class="pxd-approval-card--header gap-2 flex items-center">
       <div
         class="pxd-approval-card--icon size-8 flex shrink-0 items-center justify-center rounded-md border"
@@ -232,3 +243,20 @@ defineExpose({
     </div>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-approval-card--progress {
+  animation: pxd-approval-card-countdown linear forwards;
+  transform-origin: left;
+}
+
+@keyframes pxd-approval-card-countdown {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+</style>
