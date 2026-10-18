@@ -8,6 +8,7 @@ import {
 } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOn, off, once, throttleByRaf } from '../../utils/event.js'
+import { getColorByThreshold } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PEffortSlider',
@@ -156,25 +157,14 @@ const tickList = computed(() => {
   })
 })
 
-const fillStyle = computed(() => {
-  const colors = props.colors
+const fillColor = computed(() =>
+  getColorByThreshold(currentIndex.value, { 0: PRIMARY_COLOR, ...props.colors }),
+)
 
-  let color = PRIMARY_COLOR
-
-  for (let level = currentIndex.value; colors && level >= 0; level--) {
-    const candidate = colors[String(level)]
-
-    if (candidate) {
-      color = candidate
-      break
-    }
-  }
-
-  return {
-    width: `${percentage.value}%`,
-    background: color,
-  }
-})
+const fillStyle = computed(() => ({
+  backgroundColor: fillColor.value,
+  clipPath: `inset(0 ${100 - percentage.value}% 0 0)`,
+}))
 
 function setValue(index: number) {
   const option = optionList.value[index]
@@ -364,7 +354,7 @@ onBeforeUnmount(() => {
       @pointerdown.prevent="onTrackPointerdown"
     >
       <div
-        class="pxd-effort-slider--fill inset-y-0 left-0 pointer-events-none absolute rounded-full motion-safe:transition-[width]"
+        class="pxd-effort-slider--fill inset-0 pointer-events-none absolute rounded-full motion-safe:transition-colors"
         :class="{ 'motion-safe:transition-none': dragging || focused }"
         :style="fillStyle"
       />

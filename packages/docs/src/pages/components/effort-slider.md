@@ -56,8 +56,8 @@ const options = [
 const colors = {
   0: 'var(--color-gray-700)',
   1: 'var(--color-blue-700)',
-  2: 'linear-gradient(90deg, var(--color-blue-700), var(--color-amber-700))',
-  3: 'linear-gradient(90deg, var(--color-blue-700), var(--color-amber-700), var(--color-red-700))',
+  2: 'var(--color-amber-700)',
+  3: 'var(--color-red-700)',
 }
 
 const value = ref('high')
@@ -107,7 +107,7 @@ const value = ref('low')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | options | `Array<EffortOption \| string>` | - | Levels from low to high, a string is used as both label and value, `value` falls back to the option index |
-| colors | `Record<string, string>` | - | Fill colour per level, the key is the level index, a level without an entry carries the previous one, the lowest level falls back to `primary` |
+| colors | `Record<string, string>` | - | Fill colour keyed by level index, the fill takes the colour of the highest key at or below the current level, levels below the lowest key fall back to `primary` |
 | disabled | `boolean` | - | Disable clicking, dragging and keyboard interaction |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
 | model-value | `string \| number \| null` | - | Value of the selected level, snapped to the first option when it matches none |

@@ -55,7 +55,9 @@ describe('effort-slider', () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'high' } })
 
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain('66.666')
+    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain(
+      'clip-path: inset(0 33.33',
+    )
 
     wrapper.unmount()
   })
@@ -313,49 +315,66 @@ describe('effort-slider', () => {
     wrapper.unmount()
   })
 
-  it('should colour the fill by the current level', async () => {
-    const wrapper = mount(EffortSlider, {
-      props: { options: OPTIONS, modelValue: 'low', colors: { 0: 'red', 2: 'blue' } },
-    })
-
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain('red')
-
-    await wrapper.setProps({ modelValue: 'medium' })
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain('red')
-
-    await wrapper.setProps({ modelValue: 'high' })
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain('blue')
-
-    await wrapper.setProps({ modelValue: 'max' })
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain('blue')
-
-    wrapper.unmount()
-  })
-
-  it('should fall back to the primary colour when the lowest level has none', () => {
-    const wrapper = mount(EffortSlider, {
-      props: { options: OPTIONS, modelValue: 'low', colors: { 1: 'red' } },
-    })
-
-    expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain(
-      'var(--color-primary)',
-    )
-
-    wrapper.unmount()
-  })
-
-  it('should keep a gradient value for a level', () => {
+  it('should paint the whole fill with the colour of the current level', () => {
     const wrapper = mount(EffortSlider, {
       props: {
         options: OPTIONS,
-        modelValue: 'low',
-        colors: { 0: 'linear-gradient(90deg, red, blue)' },
+        modelValue: 'high',
+        colors: { 0: 'red', 1: 'green', 2: 'blue', 3: 'orange' },
       },
+    })
+    const style = wrapper.find('.pxd-effort-slider--fill').attributes('style')
+
+    expect(style).toContain('background-color: blue')
+    expect(style).not.toContain('linear-gradient')
+
+    wrapper.unmount()
+  })
+
+  it('should use the colour of the highest threshold at or below the current level', async () => {
+    const wrapper = mount(EffortSlider, {
+      props: { options: OPTIONS, modelValue: 'medium', colors: { 0: 'red', 2: 'blue' } },
+    })
+    const style = () => wrapper.find('.pxd-effort-slider--fill').attributes('style')
+
+    expect(style()).toContain('background-color: red')
+
+    await wrapper.setProps({ modelValue: 'max' })
+
+    expect(style()).toContain('background-color: blue')
+
+    wrapper.unmount()
+  })
+
+  it('should fall back to the primary colour below the lowest threshold', () => {
+    const wrapper = mount(EffortSlider, {
+      props: { options: OPTIONS, modelValue: 'low', colors: { 2: 'blue' } },
     })
 
     expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain(
-      'linear-gradient(90deg, red, blue)',
+      'background-color: var(--color-primary)',
     )
+
+    wrapper.unmount()
+  })
+
+  it('should reveal the solid fill up to the pointer while dragging', async () => {
+    const wrapper = mount(EffortSlider, {
+      props: { options: OPTIONS, modelValue: 'high', colors: { 0: 'red', 2: 'blue' } },
+    })
+    const fill = () => wrapper.find<HTMLElement>('.pxd-effort-slider--fill').element.style
+    const color = fill().backgroundColor
+
+    expect(color).toContain('blue')
+    expect(fill().clipPath).toContain('inset(0 33.33')
+
+    const track = stubTrack(wrapper)
+
+    await track.trigger('pointerdown', { clientX: 80 })
+
+    // The parent holds the value back, so the colour stays put while the reveal follows the pointer.
+    expect(fill().clipPath).toBe('inset(0 20% 0 0)')
+    expect(fill().backgroundColor).toBe(color)
 
     wrapper.unmount()
   })
