@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vite-plus/test'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
 import { CARET_ANCHOR, DEFAULT_TRIGGER, queryMentionElements } from '../../src/utils/_internal/mention-html'
@@ -251,6 +251,8 @@ describe('useMentionEditor', () => {
   })
 
   it('inserts a chip with an anchor and restores the caret into that anchor', async () => {
+    vi.useRealTimers()
+
     const h = createHarness('Hello ')
     caretIn(lastText(h.editor), 6)
     typeMentionTrigger(h)

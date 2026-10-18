@@ -33,6 +33,7 @@ interface Harness {
   editor: HTMLElement
   api: ReturnType<typeof useMentionEditor>
   model: ReturnType<typeof ref<string>>
+  destroy: () => void
 }
 
 function makeRng(seed: number) {
@@ -72,7 +73,7 @@ function createHarness(initialHtml: string) {
   editor.addEventListener('keydown', (e) => api.onKeydown(e as KeyboardEvent))
   editor.addEventListener('paste', (e) => api.onPaste(e as ClipboardEvent))
 
-  return { editor, api, model } satisfies Harness
+  return { editor, api, model, destroy: wrapper.unmount } satisfies Harness
 }
 
 /**
@@ -294,6 +295,7 @@ const open: Harness[] = []
 afterEach(() => {
   while (open.length) {
     const h = open.pop()!
+    h.destroy()
     h.editor.remove()
   }
 })

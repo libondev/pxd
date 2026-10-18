@@ -1,5 +1,5 @@
 import type { ListOption } from '../../src/components/list/types'
-import { describe, expect, it, vi } from 'vite-plus/test'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { ref } from 'vue'
 import { useMentionSuggest } from '../../src/composables/_internal/use-mention-suggest'
 import { useSetupWrapper } from '../helpers/setup'
@@ -31,6 +31,10 @@ function setup(options: {
 
   return { api, requested, visible }
 }
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('useMentionSuggest', () => {
   it('asks for options through the trigger that opened the popover', () => {
@@ -73,7 +77,6 @@ describe('useMentionSuggest', () => {
     expect(filterMethod).toHaveBeenCalledWith('rev', '/')
 
     api.unmount()
-    vi.useRealTimers()
   })
 
   it('calls an empty result only for a query that was actually typed', () => {
@@ -119,6 +122,5 @@ describe('useMentionSuggest', () => {
     expect(api.isPending.value).toBe(false)
 
     api.unmount()
-    vi.useRealTimers()
   })
 })
