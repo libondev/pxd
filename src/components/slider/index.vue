@@ -484,7 +484,7 @@ onBeforeUnmount(stopDragging)
       <span
         v-for="stop in stopList"
         :key="stop.value"
-        class="pxd-slider--stop size-1 pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
+        class="pxd-slider--stop size-1 pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-alpha-200"
         :style="{ left: `${stop.percentage}%` }"
       />
 

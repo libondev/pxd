@@ -354,15 +354,15 @@ onBeforeUnmount(() => {
       @pointerdown.prevent="onTrackPointerdown"
     >
       <div
-        class="pxd-effort-slider--fill inset-0 pointer-events-none absolute rounded-full motion-safe:transition-colors"
-        :class="{ 'motion-safe:transition-none': dragging || focused }"
+        class="pxd-effort-slider--fill inset-0 pointer-events-none absolute rounded-full motion-safe:transition-[clip-path,background-color]"
+        :class="{ 'motion-safe:transition-colors': dragging || focused }"
         :style="fillStyle"
       />
 
       <span
         v-for="tick in tickList"
         :key="tick.level"
-        class="pxd-effort-slider--tick size-1 pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
+        class="pxd-effort-slider--tick size-1 pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-alpha-200"
         :style="{ left: `${tick.percentage}%` }"
       />
 
