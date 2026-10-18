@@ -181,7 +181,7 @@ defineExpose({
       v-if="isPending && timeout"
       :key="timerKey"
       aria-hidden="true"
-      class="pxd-approval-card--progress inset-x-0 top-0 h-0.5 absolute rounded-full bg-current"
+      class="pxd-approval-card--progress pxd-countdown-progress inset-x-0 top-0 h-0.5 absolute rounded-full bg-current"
       :style="{ animationDuration: `${timeout}ms` }"
     />
 
@@ -243,20 +243,3 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style lang="postcss">
-.pxd-approval-card--progress {
-  animation: pxd-approval-card-countdown linear forwards;
-  transform-origin: left;
-}
-
-@keyframes pxd-approval-card-countdown {
-  from {
-    transform: scaleX(1);
-  }
-
-  to {
-    transform: scaleX(0);
-  }
-}
-</style>

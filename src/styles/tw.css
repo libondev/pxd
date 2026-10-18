@@ -557,6 +557,21 @@
   text-box-edge: cap alphabetic;
 }
 
+.pxd-countdown-progress {
+  animation: pxd-countdown-shrink linear forwards;
+  transform-origin: left;
+}
+
+@keyframes pxd-countdown-shrink {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
 @layer base {
   *,
   &::before,

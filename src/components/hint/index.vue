@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
           v-if="progressVisible"
           :key="progressKey"
           aria-hidden="true"
-          class="pxd-hint--progress-bar inset-x-0 top-0 h-0.5 absolute bg-current"
+          class="pxd-hint--progress-bar pxd-countdown-progress inset-x-0 top-0 h-0.5 absolute bg-current"
           :style="{ animationDuration: `${progressDuration}ms` }"
         />
       </div>
@@ -249,22 +249,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="postcss">
-.pxd-hint--progress-bar {
-  animation: pxd-hint-countdown linear forwards;
-  transform-origin: left;
-}
-
 .pxd-hint--content[data-pause-on-hover='true']:hover .pxd-hint--progress-bar {
   animation-play-state: paused;
-}
-
-@keyframes pxd-hint-countdown {
-  from {
-    transform: scaleX(1);
-  }
-
-  to {
-    transform: scaleX(0);
-  }
 }
 </style>
