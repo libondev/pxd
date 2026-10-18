@@ -26,28 +26,34 @@ let isHovering = false
 let promiseToken = 0
 
 const visible = shallowRef(false)
+const progressDuration = shallowRef(0)
+const progressKey = shallowRef(0)
 const status = shallowRef<HintStatus>('idle')
 const statusValue = shallowRef<unknown>()
 const statusError = shallowRef<unknown>()
-const statusVariant = computed(() => {
-  const current = status.value
 
-  if (current === 'success' || current === 'error') {
-    return current
-  }
-
-  return 'default'
-})
+const progressVisible = computed(
+  () => visible.value && progressDuration.value > 0 && status.value !== 'pending',
+)
+const statusVariant = computed(() =>
+  status.value === 'success' || status.value === 'error' ? status.value : 'default',
+)
 
 const computedVariant = computed(() => TOOLTIP_VARIANTS[statusVariant.value])
 
 const contentClassComputed = computed(() => [
+  'relative',
   TOOLTIP_CONTENT_CLASS,
   computedVariant.value.base,
   props.contentClass,
 ])
 
 const configProvider = useConfigProvider()
+
+function restartProgress(duration: number) {
+  progressDuration.value = duration
+  progressKey.value++
+}
 
 function clearCloseTimer() {
   if (closeTimer) {
@@ -60,7 +66,6 @@ function scheduleClose(delay: number) {
   clearCloseTimer()
   closeRemaining = delay
 
-  // promise 未结算就先挂着，duration 到了也不关
   if (!props.duration || delay <= 0 || isHovering || status.value === 'pending') {
     return
   }
@@ -75,10 +80,11 @@ function scheduleClose(delay: number) {
 
 function startCloseTimer() {
   if (visible.value) {
+    restartProgress(props.duration)
     scheduleClose(props.duration)
   }
 }
-// 悬停期间暂停、离开后按剩余时长续跑，否则用户伸手去点关闭按钮时提示会先消失
+
 function pauseCloseTimer() {
   if (!props.pauseOnHover) {
     return
@@ -110,7 +116,6 @@ function handleClose() {
   visible.value = false
 }
 function subscribePromise(promise: Promise<unknown> | undefined) {
-  // 换 promise 即换会话，旧请求晚到的结果不能覆盖新请求
   const token = ++promiseToken
 
   statusValue.value = undefined
@@ -154,16 +159,19 @@ watch(visible, (isVisible) => {
     emits('close')
   }
 })
-// 不用 watch(() => props.promise)：Vue 会给 watcher getter 返回的 promise 挂 catch，reject 时报组件错误
+
+// Don't use watch(() => props.promise): Vue will attach a catch to the promise returned by the watcher getter,
+// and an error will be reported in the component when it rejects.
 watchEffect(() => {
   subscribePromise(props.promise)
 })
-// 显示期间换内容时重新起跑完整时长，否则用户还没看清新文案提示就先消失了
+
 watch(
   () => props.content,
   () => {
     if (isHovering) {
       closeRemaining = props.duration
+      restartProgress(props.duration)
       return
     }
 
@@ -173,7 +181,6 @@ watch(
 
 onBeforeUnmount(() => {
   clearCloseTimer()
-  // 让在飞的结果失效，卸载后不再写状态、不再排计时器
   promiseToken++
 })
 </script>
@@ -204,6 +211,7 @@ onBeforeUnmount(() => {
     <template #content="{ activeTrigger, activeTriggerIndex }">
       <div
         class="pxd-hint--content gap-1.5 flex items-center"
+        :data-pause-on-hover="pauseOnHover ? 'true' : 'false'"
         @pointerenter="pauseCloseTimer"
         @pointerleave="resumeCloseTimer"
       >
@@ -227,7 +235,36 @@ onBeforeUnmount(() => {
         >
           <CrossIcon class="size-3" />
         </button>
+
+        <div
+          v-if="progressVisible"
+          :key="progressKey"
+          aria-hidden="true"
+          class="pxd-hint--progress-bar inset-x-0 top-0 h-0.5 absolute bg-current"
+          :style="{ animationDuration: `${progressDuration}ms` }"
+        />
       </div>
     </template>
   </PPopover>
 </template>
+
+<style lang="postcss">
+.pxd-hint--progress-bar {
+  animation: pxd-hint-countdown linear forwards;
+  transform-origin: left;
+}
+
+.pxd-hint--content[data-pause-on-hover='true']:hover .pxd-hint--progress-bar {
+  animation-play-state: paused;
+}
+
+@keyframes pxd-hint-countdown {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+</style>
