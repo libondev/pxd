@@ -671,12 +671,12 @@
 
 .scrollbar-disabled,
 .scrollbar-disabled-x {
-  overflow-x: clip !important;
+  overflow-x: hidden !important;
 }
 
 .scrollbar-disabled,
 .scrollbar-disabled-y {
-  overflow-y: clip !important;
+  overflow-y: hidden !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

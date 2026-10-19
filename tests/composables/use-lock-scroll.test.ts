@@ -3,7 +3,7 @@ import { useLockScroll } from '../../src/composables/_internal/use-lock-scroll'
 import * as dom from '../../src/utils/dom'
 import { runWithScope } from '../helpers/setup'
 
-const rootStyleProperties = ['overflow-x', 'overflow-y', 'scrollbar-gutter']
+const lockClasses = ['scrollbar-disabled', 'scrollbar-gutter-stable']
 
 // happy-dom resolves no default overflow, so the document never looks scrollable on its own.
 function mockDocumentScrollable() {
@@ -15,9 +15,7 @@ function mockDocumentScrollable() {
 
 describe('useLockScroll', () => {
   afterEach(() => {
-    for (const property of rootStyleProperties) {
-      document.documentElement.style.removeProperty(property)
-    }
+    document.documentElement.classList.remove(...lockClasses)
 
     vi.restoreAllMocks()
   })
@@ -61,11 +59,11 @@ describe('useLockScroll', () => {
 
     result.lockScroll()
 
-    expect(document.documentElement.style.overflowY).toBe('hidden')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(true)
 
     result.unlockScroll()
 
-    expect(document.documentElement.style.overflowY).toBe('')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(false)
     el.remove()
     stop()
   })
@@ -79,7 +77,7 @@ describe('useLockScroll', () => {
     result.lockScroll()
 
     expect(result.isLocked()).toBe(false)
-    expect(document.documentElement.style.overflowY).toBe('')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(false)
     el.remove()
     stop()
   })
@@ -94,7 +92,7 @@ describe('useLockScroll', () => {
     result.lockScroll()
     stop()
 
-    expect(document.documentElement.style.overflowY).toBe('')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(false)
     expect(result.isLocked()).toBe(false)
   })
 
@@ -107,7 +105,7 @@ describe('useLockScroll', () => {
     second.result.unlockScroll()
 
     expect(first.result.isLocked()).toBe(true)
-    expect(document.documentElement.style.overflowY).toBe('hidden')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(true)
 
     first.stop()
     second.stop()
@@ -133,14 +131,13 @@ describe('useLockScroll', () => {
 
       result.lockScroll()
 
-      expect(el.style.overflowX).toBe('hidden')
-      expect(el.style.overflowY).toBe('hidden')
-      expect(el.style.getPropertyPriority('overflow-y')).toBe('important')
-      expect(document.documentElement.style.overflowY).toBe('')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(true)
+      expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(false)
       expect(result.isLocked()).toBe(true)
 
       result.unlockScroll()
 
+      expect(el.classList.contains('scrollbar-disabled')).toBe(false)
       expect(el.style.overflowX).toBe('auto')
       expect(el.style.overflowY).toBe('auto')
       expect(result.isLocked()).toBe(false)
@@ -154,10 +151,10 @@ describe('useLockScroll', () => {
       const { result, stop } = runWithScope(() => useLockScroll(el))
 
       result.lockScroll()
-      expect(el.style.getPropertyValue('scrollbar-gutter')).toBe('stable')
+      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(true)
 
       result.unlockScroll()
-      expect(el.style.getPropertyValue('scrollbar-gutter')).toBe('')
+      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(false)
       stop()
     })
 
@@ -168,7 +165,7 @@ describe('useLockScroll', () => {
       const { result, stop } = runWithScope(() => useLockScroll(el))
 
       result.lockScroll()
-      expect(el.style.getPropertyValue('scrollbar-gutter')).toBe('')
+      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(false)
       stop()
     })
 
@@ -194,8 +191,8 @@ describe('useLockScroll', () => {
 
       result.lockScroll()
 
-      expect(el.style.overflowY).toBe('')
-      expect(container.style.overflowY).toBe('hidden')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(false)
+      expect(container.classList.contains('scrollbar-disabled')).toBe(true)
       expect(result.isLocked()).toBe(true)
       stop()
     })
@@ -209,7 +206,7 @@ describe('useLockScroll', () => {
 
       result.lockScroll()
 
-      expect(container.style.overflowY).toBe('auto')
+      expect(container.classList.contains('scrollbar-disabled')).toBe(false)
       expect(result.isLocked()).toBe(false)
       stop()
     })
@@ -220,7 +217,7 @@ describe('useLockScroll', () => {
 
       result.lockScroll()
 
-      expect(el.style.overflowY).toBe('hidden')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(true)
       stop()
     })
 
@@ -246,11 +243,11 @@ describe('useLockScroll', () => {
       second.result.lockScroll()
       first.result.unlockScroll()
 
-      expect(el.style.overflowY).toBe('hidden')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(true)
 
       second.result.unlockScroll()
 
-      expect(el.style.overflowY).toBe('auto')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(false)
       first.stop()
       second.stop()
     })
@@ -260,11 +257,11 @@ describe('useLockScroll', () => {
       const { result, stop } = runWithScope(() => useLockScroll(el))
 
       result.lockScroll()
-      expect(el.style.overflowY).toBe('hidden')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(true)
 
       stop()
 
-      expect(el.style.overflowY).toBe('auto')
+      expect(el.classList.contains('scrollbar-disabled')).toBe(false)
     })
   })
 })

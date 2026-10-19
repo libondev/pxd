@@ -2,16 +2,9 @@ import type { MaybeElementRef } from '../../types/shared/utils'
 import { onScopeDispose } from 'vue'
 import { getElement, hasScrollbar, isScrollable } from '../../utils/dom.js'
 
-interface LockedStyle {
-  property: string
-  lockedValue: string
-  prevValue: string
-  prevPriority: string
-}
-
 interface ElementLock {
   count: number
-  styles: LockedStyle[]
+  classes: string[]
 }
 
 const elementLocks = new WeakMap<HTMLElement, ElementLock>()
@@ -31,27 +24,16 @@ function lockElementScroll(el: HTMLElement): boolean {
   }
 
   const { y: yScrollbar } = hasScrollbar(el)
-
-  // `hidden` (unlike `clip`) keeps the element a scroll container, so its scroll offset survives.
-  const styles: Record<string, string> = { 'overflow-x': 'hidden', 'overflow-y': 'hidden' }
+  const classes = ['scrollbar-disabled']
 
   // The gutter only reserves space for the block-axis scrollbar, an inline-axis one needs none.
   if (yScrollbar && yScrollable) {
-    styles['scrollbar-gutter'] = 'stable'
+    classes.push('scrollbar-gutter-stable!')
   }
 
-  const lockedStyles = Object.entries(styles).map(([property, lockedValue]): LockedStyle => ({
-    property,
-    lockedValue,
-    prevValue: el.style.getPropertyValue(property),
-    prevPriority: el.style.getPropertyPriority(property),
-  }))
+  el.classList.add(...classes)
 
-  for (const { property, lockedValue } of lockedStyles) {
-    el.style.setProperty(property, lockedValue, 'important')
-  }
-
-  elementLocks.set(el, { count: 1, styles: lockedStyles })
+  elementLocks.set(el, { count: 1, classes })
 
   return true
 }
@@ -63,18 +45,7 @@ function unlockElementScroll(el: HTMLElement) {
     return
   }
 
-  for (const { property, lockedValue, prevValue, prevPriority } of lock.styles) {
-    // The value no longer belongs to this lock, restoring ours would drop the other change.
-    if (el.style.getPropertyValue(property) !== lockedValue) {
-      continue
-    }
-
-    if (prevValue) {
-      el.style.setProperty(property, prevValue, prevPriority)
-    } else {
-      el.style.removeProperty(property)
-    }
-  }
+  el.classList.remove(...lock.classes)
 
   elementLocks.delete(el)
 }

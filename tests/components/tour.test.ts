@@ -126,14 +126,12 @@ describe('tour', () => {
     const wrapper = mountTour({ visible: true })
     await flush()
 
-    const rootStyle = document.documentElement.getAttribute('style') ?? ''
-
-    expect(rootStyle).toContain('overflow-y: hidden')
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(true)
 
     ;(wrapper.vm as unknown as { visible: boolean }).visible = false
     await flush()
 
-    expect(document.documentElement.getAttribute('style')).toBeNull()
+    expect(document.documentElement.classList.contains('scrollbar-disabled')).toBe(false)
 
     wrapper.unmount()
   })
