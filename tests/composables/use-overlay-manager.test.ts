@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
+import { nextTick, ref } from 'vue'
 import { useOverlayManager } from '../../src/composables/_internal/use-overlay-manager'
 import { useSetupWrapper } from '../helpers/setup'
 
@@ -27,6 +28,31 @@ describe('useOverlayManager', () => {
     expect(typeof isTopOverlay).toBe('function')
     expect(typeof registerOverlay).toBe('function')
     expect(typeof unregisterOverlay).toBe('function')
+    unmount()
+  })
+
+  it('should follow the enabled flag', async () => {
+    const enabled = ref(false)
+    const { isTopOverlay, unmount } = useSetupWrapper(() =>
+      useOverlayManager({
+        enabled,
+        lockScroll: vi.fn(),
+        unlockScroll: vi.fn(),
+      }),
+    )
+
+    expect(isTopOverlay()).toBe(false)
+
+    enabled.value = true
+    await nextTick()
+
+    expect(isTopOverlay()).toBe(true)
+
+    enabled.value = false
+    await nextTick()
+
+    expect(isTopOverlay()).toBe(false)
+
     unmount()
   })
 

@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { onScopeDispose } from 'vue'
+import { onScopeDispose, watch } from 'vue'
 import {
   cachedOff,
   cachedOn,
@@ -149,6 +149,22 @@ export function useOverlayManager(options: OverlayManagerOptions) {
 
     removeKeydownListener()
   }
+
+  watch(
+    () => toValue(enabled),
+    (isEnabled, wasEnabled) => {
+      if (isEnabled === wasEnabled) {
+        return
+      }
+
+      if (isEnabled) {
+        registerOverlay()
+        return
+      }
+
+      unregisterOverlay()
+    },
+  )
 
   onScopeDispose(() => {
     unregisterOverlay()
