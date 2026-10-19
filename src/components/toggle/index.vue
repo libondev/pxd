@@ -59,7 +59,6 @@ async function onCheckboxChange(e: Event) {
 
   const changedValue = rawValue ? props.activeValue : props.inactiveValue
   modelValue.value = changedValue
-  emits('change', changedValue)
 }
 </script>
 
