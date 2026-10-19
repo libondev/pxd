@@ -97,7 +97,7 @@ const { attrs, classes } = useTailwindVariant(
       </slot>
 
       <span class="flex-1 shrink-0">
-        <slot />
+        <slot>{{ text }}</slot>
       </span>
     </div>
 

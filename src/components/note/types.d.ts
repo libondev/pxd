@@ -14,5 +14,6 @@ export interface NoteProps {
   variant?: NoteVariant
   size?: ComponentSize
   fill?: boolean
+  text?: string
   label?: boolean | ComponentLabel
 }
