@@ -48,11 +48,11 @@ const isChecked = computed(() => {
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
+    base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-1.75 text-sm rounded-md`,
+        sm: `${BASIC_HEIGHTS.sm} px-1.75 rounded-md text-13`,
         md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
         lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
       },
