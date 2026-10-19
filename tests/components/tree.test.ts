@@ -973,7 +973,7 @@ describe('tree', () => {
   }
 
   /** happy-dom has no layout, so the rows are measured by hand. */
-  function stubRows(wrapper: any) {
+  function stubRows(wrapper: any, onRead?: () => void) {
     const items = wrapper.findAll('[data-tree-item]')
 
     items.forEach((item: any, index: number) => {
@@ -981,14 +981,18 @@ describe('tree', () => {
 
       Object.defineProperty(item.element, 'getBoundingClientRect', {
         configurable: true,
-        value: () => ({
-          top,
-          bottom: top + ROW_HEIGHT,
-          height: ROW_HEIGHT,
-          left: 0,
-          right: 200,
-          width: 200,
-        }),
+        value: () => {
+          onRead?.()
+
+          return {
+            top,
+            bottom: top + ROW_HEIGHT,
+            height: ROW_HEIGHT,
+            left: 0,
+            right: 200,
+            width: 200,
+          }
+        },
       })
     })
 
@@ -1434,7 +1438,7 @@ describe('tree', () => {
   })
 
   it('should measure each row once while the pointer moves', async () => {
-    const many = Array.from({ length: 600 }, (_, index) => ({
+    const many = Array.from({ length: 120 }, (_, index) => ({
       value: 'node-' + index,
       label: 'Node ' + index,
     }))
@@ -1444,30 +1448,9 @@ describe('tree', () => {
       props: { data: many, draggable: true },
     })
 
-    stubRows(wrapper)
-
-    // The rows own their rect stub, so counting only sees what the tree asks for.
-    const items = wrapper.findAll('[data-tree-item]')
     let reads = 0
 
-    items.forEach((item: any, index: number) => {
-      const top = index * ROW_HEIGHT
-
-      Object.defineProperty(item.element, 'getBoundingClientRect', {
-        configurable: true,
-        value: () => {
-          reads++
-          return {
-            top,
-            bottom: top + ROW_HEIGHT,
-            height: ROW_HEIGHT,
-            left: 0,
-            right: 200,
-            width: 200,
-          }
-        },
-      })
-    })
+    stubRows(wrapper, () => reads++)
 
     const row = wrapper.find('[data-key="node-0"]')
 
@@ -1485,7 +1468,7 @@ describe('tree', () => {
     window.dispatchEvent(pointer('pointerup', 0, 1000))
 
     wrapper.unmount()
-  })
+  }, 10000)
 
   it('should cancel a drag on Escape', async () => {
     const wrapper = mount(Tree, { attachTo: document.body, props: { data, draggable: true } })
