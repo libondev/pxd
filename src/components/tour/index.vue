@@ -5,7 +5,7 @@ import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { cachedOff, cachedOn } from '../../utils/event.js'
+import { cachedOff, cachedOn, isCompositionKeydown } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isServer } from '../../utils/is.js'
 import PButton from '../button/index.vue'
@@ -148,6 +148,17 @@ function close() {
 }
 
 function onKeydown(ev: KeyboardEvent) {
+  if (
+    ev.defaultPrevented ||
+    ev.ctrlKey ||
+    ev.metaKey ||
+    ev.altKey ||
+    ev.shiftKey ||
+    isCompositionKeydown(ev)
+  ) {
+    return
+  }
+
   if (ev.key === 'ArrowRight') {
     ev.preventDefault()
     next()

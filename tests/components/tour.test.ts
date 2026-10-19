@@ -420,6 +420,45 @@ describe('tour step handling fixes', () => {
     wrapper.unmount()
   })
 
+  it('ignores modified or composing arrow keys', async () => {
+    const target = makeTarget()
+
+    const Demo = defineComponent({
+      components: { Tour },
+      setup() {
+        return { current: ref(0), target, visible: ref(true) }
+      },
+      template: `<Tour
+        v-model="visible"
+        v-model:current="current"
+        :steps="[
+          { target: () => target, title: 'One' },
+          { target: () => target, title: 'Two' },
+        ]"
+      />`,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', ctrlKey: true }))
+    await flush()
+
+    const composing = new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true })
+    Object.assign(composing, { isComposing: true })
+    window.dispatchEvent(composing)
+    await flush()
+
+    expect((wrapper.vm as unknown as { current: number }).current).toBe(0)
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }))
+    await flush()
+
+    expect((wrapper.vm as unknown as { current: number }).current).toBe(1)
+
+    wrapper.unmount()
+  })
+
   it('emits error and continues when a target resolver throws', async () => {
     const target = makeTarget()
 
