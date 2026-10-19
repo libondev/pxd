@@ -385,7 +385,7 @@ defineExpose({
       :data-collapsed="collapsed || undefined"
       :data-handler="handle"
       :data-orientation="direction"
-      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none aria-disabled:cursor-default after:motion-safe:transition-colors"
+      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
       @pointerdown.prevent="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -452,7 +452,7 @@ defineExpose({
 .pxd-resizable-handle[data-orientation='horizontal'] {
   height: 100%;
   border-left-width: 1px;
-  cursor: ew-resize;
+  cursor: col-resize;
 
   &::before {
     width: 0.375rem;
@@ -467,7 +467,7 @@ defineExpose({
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
   border-bottom-width: 1px;
-  cursor: ns-resize;
+  cursor: row-resize;
 
   &::before {
     width: 1.5rem;
