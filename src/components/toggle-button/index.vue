@@ -60,13 +60,16 @@ const { attrs, classes } = useTailwindVariant(
         default: 'border-gray-400 bg-background-100',
         ghost: 'border-transparent bg-transparent',
       },
-      disabled: {},
+      disabled: {
+        true: 'cursor-not-allowed',
+        false: 'cursor-pointer',
+      },
       checked: {},
     },
     compoundVariants: [
       { checked: true, disabled: false, class: 'bg-gray-300' },
       { checked: true, disabled: true, class: 'bg-gray-200' },
-      { checked: false, disabled: true, class: 'cursor-not-allowed text-gray-400' },
+      { checked: false, disabled: true, class: 'text-gray-400' },
       { checked: false, disabled: false, class: 'hover:bg-background-hover' },
       { variant: 'default', checked: true, disabled: true, class: 'bg-gray-100' },
     ],
