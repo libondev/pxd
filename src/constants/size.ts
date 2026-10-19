@@ -1,13 +1,13 @@
 export const BASIC_HEIGHTS = {
-  xs: 'h-6',
-  sm: 'h-7.5',
+  xs: 'h-7',
+  sm: 'h-8',
   md: 'h-9',
-  lg: 'h-11',
+  lg: 'h-10',
 }
 
 export const BASIC_MIN_HEIGHTS = {
-  xs: 'min-h-6',
-  sm: 'min-h-7.5',
+  xs: 'min-h-7',
+  sm: 'min-h-8',
   md: 'min-h-9',
-  lg: 'min-h-11',
+  lg: 'min-h-10',
 }

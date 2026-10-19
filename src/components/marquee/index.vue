@@ -211,7 +211,7 @@ defineExpose({
   <Component
     data-marquee
     :is="as"
-    class="pxd-marquee text-sm min-h-10 py-2 px-3 gap-2 relative flex w-full max-w-full overflow-hidden bg-(--marquee-background) text-(--marquee-color)"
+    class="pxd-marquee text-sm min-h-9 py-2 px-3 gap-2 relative flex w-full max-w-full overflow-hidden bg-(--marquee-background) text-(--marquee-color)"
     :class="isWrapMode ? 'items-start' : 'items-center'"
     :data-pause-on-hover="pauseOnHover ? 'true' : 'false'"
     :style="rootStyle"

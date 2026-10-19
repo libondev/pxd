@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<ProjectBannerProps>(), { variant: 'defaul
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'gap-x-2 py-2 leading-5 min-h-10 text-sm flex w-full -translate-y-px items-center justify-center border-y',
+    base: 'gap-x-2 py-2 leading-5 min-h-9 text-sm flex w-full -translate-y-px items-center justify-center border-y',
     variants: {
       variant: {
         default: 'border-gray-400 bg-gray-100 text-gray-900',

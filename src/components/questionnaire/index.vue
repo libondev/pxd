@@ -418,7 +418,7 @@ watch(
 
     <template v-else-if="currentState === 'skipped'">
       <p
-        class="pxd-questionnaire--skipped text-sm h-11.5 px-3 flex cursor-default items-center text-foreground-secondary italic"
+        class="pxd-questionnaire--skipped text-sm h-12 px-3 flex cursor-default items-center text-foreground-secondary italic"
       >
         Skipped questions
       </p>
