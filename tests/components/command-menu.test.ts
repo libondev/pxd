@@ -124,12 +124,14 @@ describe('command-menu', () => {
     const modal = document.body.querySelector<HTMLElement>('[data-modal]')!
     const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
 
-    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+    await vi.waitFor(() => expect(items[0]?.getAttribute('data-active')).toBe('true'))
 
-    modal.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }))
+    modal.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
+    )
     await nextTick()
 
-    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })
