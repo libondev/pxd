@@ -45,6 +45,11 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
     }
 
     emits('escape', ev)
+
+    if (ev.defaultPrevented) {
+      return
+    }
+
     emits('update:modelValue', false)
   },
 })

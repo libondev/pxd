@@ -66,4 +66,28 @@ describe('overlay', () => {
 
     wrapper.unmount()
   })
+
+  it('should allow the escape handler to cancel closing', async () => {
+    const Demo = defineComponent({
+      components: { Overlay },
+      setup() {
+        function onEscape(ev: KeyboardEvent) {
+          ev.preventDefault()
+        }
+
+        return { visible: ref(true), onEscape }
+      },
+      template: '<Overlay v-model="visible" @escape="onEscape" />',
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await flush()
+
+    expect((wrapper.vm as any).visible).toBe(true)
+
+    wrapper.unmount()
+  })
 })
