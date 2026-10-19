@@ -5,6 +5,10 @@ import { isServer } from './is.js'
 
 export function NOOP() {}
 
+export function isCompositionKeydown(ev: KeyboardEvent): boolean {
+  return ev.isComposing || ev.keyCode === 229
+}
+
 type EventHandler<E extends Event = Event> = (event: E) => void
 
 interface CachedEntry {

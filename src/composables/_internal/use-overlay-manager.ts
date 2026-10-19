@@ -1,6 +1,11 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose } from 'vue'
-import { cachedOff, cachedOn, preventDefaultScroll } from '../../utils/event.js'
+import {
+  cachedOff,
+  cachedOn,
+  isCompositionKeydown,
+  preventDefaultScroll,
+} from '../../utils/event.js'
 import { toValue } from '../../utils/helper.js'
 
 const touchMoveOptions = { passive: false }
@@ -56,7 +61,7 @@ function unlockRootInteraction() {
 function onEscapeKeydown(ev: KeyboardEvent) {
   const entry = getTopOverlay()
 
-  if (!entry) {
+  if (!entry || ev.defaultPrevented || ev.repeat || isCompositionKeydown(ev)) {
     return
   }
 

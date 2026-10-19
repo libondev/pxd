@@ -100,4 +100,56 @@ describe('useOverlayManager', () => {
     first.unmount()
     second.unmount()
   })
+
+  function createEscapeManager() {
+    const onPressEscape = vi.fn()
+    const { registerOverlay, unmount } = useSetupWrapper(() =>
+      useOverlayManager({
+        enabled: true,
+        lockScroll: vi.fn(),
+        unlockScroll: vi.fn(),
+        onPressEscape,
+      }),
+    )
+
+    registerOverlay()
+
+    return { onPressEscape, unmount }
+  }
+
+  it('should ignore Escape while composing', () => {
+    const { onPressEscape, unmount } = createEscapeManager()
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    Object.assign(event, { isComposing: true })
+
+    document.dispatchEvent(event)
+
+    expect(onPressEscape).not.toHaveBeenCalled()
+
+    unmount()
+  })
+
+  it('should ignore Escape already handled by a nested component', () => {
+    const { onPressEscape, unmount } = createEscapeManager()
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    event.preventDefault()
+    document.dispatchEvent(event)
+
+    expect(onPressEscape).not.toHaveBeenCalled()
+
+    unmount()
+  })
+
+  it('should ignore repeated Escape', () => {
+    const { onPressEscape, unmount } = createEscapeManager()
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    Object.assign(event, { repeat: true })
+
+    document.dispatchEvent(event)
+
+    expect(onPressEscape).not.toHaveBeenCalled()
+
+    unmount()
+  })
 })
