@@ -1,6 +1,6 @@
 import type { ViteDevServer } from 'vite-plus'
 import { execSync } from 'node:child_process'
-import { writeFileSync } from 'node:fs'
+import { existsSync, writeFileSync } from 'node:fs'
 import path, { sep } from 'node:path'
 import process from 'node:process'
 import { humanize, pascalize } from '../../../scripts/utils.js'
@@ -19,8 +19,6 @@ export function fileCreateWatcher() {
       ])
 
       watcher.on('add', (filePath: string) => {
-        execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
-
         if (filePath.endsWith('index.vue') && !ignorePattern.test(filePath)) {
           const componentName = filePath.split(sep).at(-2) || ''
           const componentNamePascal = pascalize(componentName)
@@ -32,6 +30,11 @@ export function fileCreateWatcher() {
             'components',
             `${componentName}.md`,
           )
+
+          if (existsSync(mdFilePath)) {
+            return
+          }
+
           const mdFileContent = `# ${humanize(componentName)}\n
 New component description.\n
 ## Default\n\n
@@ -42,6 +45,7 @@ New component description.\n
 \`\`\`
 `
           writeFileSync(mdFilePath, mdFileContent)
+          execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
         }
 
         const composablesDir = path.resolve(process.cwd(), '../../src/composables')
@@ -60,8 +64,14 @@ New component description.\n
             'composables',
             `${composableName}.md`,
           )
+
+          if (existsSync(mdFilePath)) {
+            return
+          }
+
           const mdFileContent = `# ${humanize(composableName)}\n\nTODO: Add description.\n\n## Exports\n\n\`\`\`ts\n// TODO: Add exports\n\`\`\`\n`
           writeFileSync(mdFilePath, mdFileContent)
+          execSync(`pnpm -w update-exports`, { cwd: process.cwd() })
         }
       })
     },
