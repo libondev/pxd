@@ -108,4 +108,25 @@ describe('search-input', () => {
 
     loadingWrapper.unmount()
   })
+
+  it('should not search while composing', async () => {
+    const onSearch = vi.fn()
+    const wrapper = mount(SearchInput, {
+      attrs: {
+        onSearch,
+      },
+    })
+    const input = wrapper.find('input')
+
+    await input.setValue('test')
+
+    const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    Object.assign(event, { isComposing: true })
+
+    input.element.dispatchEvent(event)
+
+    expect(onSearch).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
 })

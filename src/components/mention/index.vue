@@ -9,6 +9,7 @@ import { usePopoverResponsive } from '../../composables/_internal/use-popover-re
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { DEFAULT_TRIGGER } from '../../utils/_internal/mention-html.js'
+import { isCompositionKeydown } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PMentionEditor from '../_internal/mention-editor.vue'
 import PList from '../list/index.vue'
@@ -107,7 +108,7 @@ function onSearchInput(ev: Event) {
 }
 
 function onSearchKeydownWithEscape(ev: KeyboardEvent) {
-  if (ev.key === 'Escape' && props.closeOnPressEscape) {
+  if (ev.key === 'Escape' && props.closeOnPressEscape && !isCompositionKeydown(ev)) {
     ev.preventDefault()
     ev.stopPropagation()
     closeSuggest()

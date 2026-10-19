@@ -4,6 +4,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { shallowRef } from 'vue'
 import { useForwardRefExpose } from '../../composables/_internal/use-forward-ref-expose.js'
+import { isCompositionKeydown } from '../../utils/event.js'
 import PInput from '../input/index.vue'
 
 defineOptions({
@@ -21,7 +22,7 @@ const emits = defineEmits<SearchInputEmits>()
 const inputRef = shallowRef<InstanceType<typeof PInput>>()
 
 function onKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Enter' || props.loading) {
+  if (event.key !== 'Enter' || props.loading || isCompositionKeydown(event)) {
     return
   }
 

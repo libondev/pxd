@@ -5,7 +5,7 @@ import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
-import { NOOP } from '../../utils/event.js'
+import { NOOP, isCompositionKeydown } from '../../utils/event.js'
 import { toNumber } from '../../utils/format.js'
 import { isNil, isNumber, isUndefined } from '../../utils/is.js'
 import PInput from '../input/index.vue'
@@ -166,6 +166,10 @@ function decreaseValue() {
 }
 
 function onInputKeydown(ev: KeyboardEvent) {
+  if (isCompositionKeydown(ev)) {
+    return
+  }
+
   const key = ev.key
 
   if (!props.scientific && ['e', 'E'].includes(key)) {

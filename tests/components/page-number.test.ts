@@ -165,6 +165,29 @@ describe('page-number', () => {
     wrapper.unmount()
   })
 
+  it('should ignore Enter in the quick jumper while composing', async () => {
+    const wrapper = mount(PageNumber, {
+      props: {
+        showQuickJumper: true,
+        total: 200,
+        pageSize: 10,
+      },
+    })
+
+    const input = wrapper.find('.pxd-page-number--jumper')
+
+    await input.setValue('12')
+
+    const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    Object.assign(event, { isComposing: true })
+
+    input.element.dispatchEvent(event)
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('limits quick-jumper pages to the available range', async () => {
     const wrapper = mount(PageNumber, {
       props: {

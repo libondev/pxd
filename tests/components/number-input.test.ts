@@ -56,6 +56,22 @@ describe('number-input', () => {
     wrapper.unmount()
   })
 
+  it('should ignore arrow keys while composing', () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        modelValue: 1,
+      },
+    })
+    const event = new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true })
+
+    Object.assign(event, { isComposing: true })
+    wrapper.find('input').element.dispatchEvent(event)
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('should accept custom min and max', () => {
     const wrapper = mount(NumberInput, {
       props: {

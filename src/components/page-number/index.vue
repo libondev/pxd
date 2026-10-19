@@ -6,6 +6,7 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, ref, watch } from 'vue'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isCompositionKeydown } from '../../utils/event.js'
 import PSelect from '../select/index.vue'
 
 defineOptions({
@@ -104,7 +105,7 @@ function submitPageInput() {
 }
 
 function onPageInputKeydown(event: KeyboardEvent) {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' && !isCompositionKeydown(event)) {
     submitPageInput()
   }
 }
