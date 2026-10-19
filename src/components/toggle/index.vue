@@ -59,6 +59,7 @@ async function onCheckboxChange(e: Event) {
 
   const changedValue = rawValue ? props.activeValue : props.inactiveValue
   modelValue.value = changedValue
+  emits('change', changedValue)
 }
 </script>
 
@@ -98,7 +99,7 @@ async function onCheckboxChange(e: Event) {
       <div
         :data-checked="isChecked"
         :data-disabled="isDisabled"
-        class="pxd-toggle--handle-icon text-xs shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-foreground-secondary motion-safe:transition-appearance dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
+        class="pxd-toggle--handle-icon shadow-sm bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full text-[10px] text-foreground-secondary motion-safe:transition-appearance dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
       >
         <div class="inset-0 pointer-events-none absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">
