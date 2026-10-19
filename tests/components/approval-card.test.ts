@@ -155,6 +155,32 @@ describe('approval-card', () => {
     wrapper.unmount()
   })
 
+  it('should consume Escape while pending', () => {
+    const wrapper = mount(ApprovalCard)
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    wrapper.element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(wrapper.emitted().decide).toEqual([[{ status: 'dismissed', cause: 'escape' }]])
+
+    wrapper.unmount()
+  })
+
+  it('should let Escape through after it is dismissed', async () => {
+    const wrapper = mount(ApprovalCard)
+
+    await wrapper.trigger('keydown', { key: 'Escape' })
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    wrapper.element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(false)
+    expect(wrapper.emitted().decide).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
   it('should dismiss on timeout', async () => {
     vi.useFakeTimers()
 

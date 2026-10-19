@@ -15,6 +15,7 @@ import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
 import TerminalIcon from '@gdsicon/vue/terminal'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isCompositionKeydown } from '../../utils/event.js'
 import { isTruthyProp, toArray } from '../../utils/format.js'
 import PBadge from '../badge/index.vue'
 import PButton from '../button/index.vue'
@@ -147,11 +148,12 @@ function reset() {
   startTimer()
 }
 
-function onEscape() {
-  if (!props.closeOnPressEscape) {
+function onEscape(ev: KeyboardEvent) {
+  if (!props.closeOnPressEscape || !isPending.value || isCompositionKeydown(ev)) {
     return
   }
 
+  ev.preventDefault()
   dismiss('escape')
 }
 

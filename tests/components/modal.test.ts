@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
+import ApprovalCard from '../../src/components/approval-card/index.vue'
 import Input from '../../src/components/input/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 
@@ -188,6 +189,32 @@ describe('modal', () => {
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(true)
 
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should let an approval card consume Escape before closing', async () => {
+    const Host = defineComponent({
+      components: { ApprovalCard, Modal },
+      setup() {
+        return { visible: ref(true) }
+      },
+      template: '<Modal v-model="visible"><ApprovalCard title="Approve" /></Modal>',
+    })
+    const wrapper = mount(Host, { attachTo: document.body })
+    await nextTick()
+
+    const card = document.body.querySelector<HTMLElement>('[data-approval-card]')!
+
+    card.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(true)
+
+    card.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
     await nextTick()
 
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)
