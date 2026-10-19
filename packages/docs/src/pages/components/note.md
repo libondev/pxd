@@ -110,6 +110,7 @@ Display text that requires attention or provides additional information.
 | --- | --- | --- | --- |
 | variant | `'success' \| 'error' \| 'warning' \| 'default' \| 'primary' \| 'violet' \| 'cyan'` | `default` | `ghost` | Color and icon variant: `default`, `primary`, `success`, `error`, `warning`, `violet`, `cyan` |
 | size | `'sm' \| 'md' \| 'lg'` | - | Padding and text size, falls back to the `ConfigProvider` size |
+| text | `string` | - | Content |
 | fill | `boolean` | - | Fill the background instead of only drawing a border |
 | label | `boolean \| string \| number \| null` | `true` | `true` renders the variant icon, a string renders text, `false` hides it |
 

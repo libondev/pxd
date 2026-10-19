@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<ResizableProps>(), {
   defaultValue: () => [PERCENT_TOTAL / 2, PERCENT_TOTAL / 2],
   handle: false,
   disabled: false,
+  unit: 'percent',
 })
 
 const emits = defineEmits<ResizableEmits>()
@@ -37,6 +38,7 @@ let activePointerId: number | null = null
 let startPosition = 0
 let accumulated = 0
 let resized = false
+let dragContainerSize = 0
 const flushResize = throttleByRaf(() => {
   if (accumulated === 0) {
     return
@@ -57,25 +59,40 @@ const sizes = computed<Pair>(() =>
   isControlled.value ? toPair(props.modelValue) : innerSizes.value,
 )
 /**
+ * The sizes the panel slots are handed. A drag moves `sizes` on every frame but
+ * only publishes here when the drag ends, so panel content is never re-rendered mid-drag.
+ */
+const settledSizes = shallowRef<Pair>(sizes.value)
+const unitSuffix = computed(() => (props.unit === 'px' ? 'px' : '%'))
+/**
+ * What the pair sums to. Percent sizes are always measured against 100; pixel
+ * sizes have no such fixed total, so they add up to whatever they add up to.
+ */
+const totalSize = computed(() =>
+  props.unit === 'px' ? sizes.value[0] + sizes.value[1] : PERCENT_TOTAL,
+)
+/**
  * The range the leading panel may travel through. The trailing panel needs no
- * bounds of its own: the pair always sums to 100, so the leading panel's floor
+ * bounds of its own: the pair sums to `totalSize`, so the leading panel's floor
  * already is the trailing panel's ceiling and the other way round.
  */
 const bounds = computed<{ min: number; max: number }>(() => {
   const [leading, trailing] = toPair(props.minSize)
 
-  if (leading + trailing > PERCENT_TOTAL) {
-    return { min: 0, max: PERCENT_TOTAL }
+  if (leading + trailing > totalSize.value) {
+    return { min: 0, max: totalSize.value }
   }
 
-  return { min: leading, max: PERCENT_TOTAL - trailing }
+  return { min: leading, max: totalSize.value - trailing }
 })
 const collapsed = shallowRef(false)
 const position = computed(() => sizes.value[0])
 const ariaValueNow = computed(() => roundSize(position.value))
 
 const ariaValueText = computed(() =>
-  collapsed.value ? `${ariaValueNow.value}%, folded` : `${ariaValueNow.value}%`,
+  collapsed.value
+    ? `${ariaValueNow.value}${unitSuffix.value}, folded`
+    : `${ariaValueNow.value}${unitSuffix.value}`,
 )
 
 const modelValue = useModelValue(props, emits, { withChange: false })
@@ -139,21 +156,26 @@ function applyDelta(deltaPercent: number) {
   return changed
 }
 
-function resizeByPixels(delta: number) {
+function readContainerSize(): number {
   const container = containerRef.value
 
   if (!container) {
+    return 0
+  }
+
+  return props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
+}
+
+function resizeByPixels(delta: number) {
+  if (props.unit === 'px') {
+    return applyDelta(delta)
+  }
+
+  if (dragContainerSize <= 0) {
     return false
   }
 
-  const containerSize =
-    props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
-
-  if (containerSize <= 0) {
-    return false
-  }
-
-  return applyDelta((delta / containerSize) * PERCENT_TOTAL)
+  return applyDelta((delta / dragContainerSize) * PERCENT_TOTAL)
 }
 
 function commitChange() {
@@ -185,7 +207,7 @@ function toggleCollapse() {
 
   const { min } = bounds.value
 
-  if (setSizes([min, PERCENT_TOTAL - min])) {
+  if (setSizes([min, totalSize.value - min])) {
     commitChange()
   }
 }
@@ -222,9 +244,11 @@ function resetDragging() {
   startPosition = 0
   accumulated = 0
   resized = false
+  dragContainerSize = 0
 
   flushResize.cancel()
   releaseCapture()
+  settledSizes.value = sizes.value
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -236,6 +260,7 @@ function handlePointerDown(event: PointerEvent) {
   startPosition = axisOf(event)
   accumulated = 0
   resized = false
+  dragContainerSize = readContainerSize()
 
   try {
     handleRef.value?.setPointerCapture(event.pointerId)
@@ -323,9 +348,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 function panelStyle(index: number) {
   return {
-    flexBasis: `${sizes.value[index]}%`,
-    flexGrow: 0,
-    flexShrink: 1,
+    flexBasis: `${sizes.value[index]}${unitSuffix.value}`,
   }
 }
 
@@ -336,6 +359,11 @@ watch(
   },
   { immediate: true, flush: 'sync' },
 )
+watch(sizes, (value) => {
+  if (activePointerId === null) {
+    settledSizes.value = value
+  }
+})
 
 defineExpose({
   getPanelSizes: () => sizes.value.slice(),
@@ -348,6 +376,7 @@ defineExpose({
     data-resizable
     ref="containerRef"
     :data-orientation="direction"
+    :data-unit="unit"
     class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[orientation=vertical]:flex-col"
     v-bind="$attrs"
   >
@@ -356,7 +385,7 @@ defineExpose({
       class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(0)"
     >
-      <slot name="leading" :size="sizes[0]" />
+      <slot name="leading" :size="settledSizes[0]" />
     </div>
 
     <div
@@ -374,7 +403,7 @@ defineExpose({
       :data-collapsed="collapsed || undefined"
       :data-handler="handle"
       :data-orientation="direction"
-      class="pxd-resizable-handle relative shrink-0 touch-none bg-border self-focus-ring select-none hover:after:bg-primary/15 active:after:bg-primary/20 aria-disabled:cursor-default motion-safe:transition-colors after:motion-safe:transition-colors"
+      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none aria-disabled:cursor-default after:motion-safe:transition-colors"
       @pointerdown.prevent="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -389,12 +418,21 @@ defineExpose({
       class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(1)"
     >
-      <slot name="trailing" :size="sizes[1]" />
+      <slot name="trailing" :size="settledSizes[1]" />
     </div>
   </div>
 </template>
 
 <style lang="postcss">
+.pxd-resizable-panel {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.pxd-resizable[data-unit='px'] .pxd-resizable-panel {
+  flex-shrink: 0;
+}
+
 .pxd-resizable-handle[data-handler='true']::before {
   content: '';
   position: absolute;
@@ -416,13 +454,17 @@ defineExpose({
   position: absolute;
   top: 50%;
   left: 50%;
-  padding: 4px;
+  padding: 1.5px;
   transform: translate(-50%, -50%);
 }
 
+.pxd-resizable-handle:hover::after {
+  background-color: var(--color-primary);
+}
+
 .pxd-resizable-handle[data-orientation='horizontal'] {
-  width: 1px;
   height: 100%;
+  border-left-width: 1px;
   cursor: ew-resize;
 
   &::before {
@@ -437,7 +479,7 @@ defineExpose({
 
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
-  height: 1px;
+  border-bottom-width: 1px;
   cursor: ns-resize;
 
   &::before {

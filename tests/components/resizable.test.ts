@@ -100,6 +100,90 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
+  it('keeps the slot size settled while the drag moves the panel', async () => {
+    const frames: FrameRequestCallback[] = []
+    const originalRaf = globalThis.requestAnimationFrame
+
+    globalThis.requestAnimationFrame = ((frame: FrameRequestCallback) => frames.push(frame)) as any
+
+    const renders: number[] = []
+    const Probe = defineComponent({
+      props: { size: { type: Number, required: true } },
+      setup: (props) => () => {
+        renders.push(props.size)
+
+        return h('span', String(props.size))
+      },
+    })
+    const wrapper = mountResizable(
+      { defaultValue: [30, 70] },
+      { leading: ({ size }: { size: number }) => h(Probe, { size }), trailing: () => 'B' },
+    )
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    expect(renders).toEqual([30])
+
+    handle.element.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
+    handle.element.dispatchEvent(createPointerEvent('pointermove', { x: 600 }))
+    frames.forEach((frame) => frame(0))
+    globalThis.requestAnimationFrame = originalRaf
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([40, 60])
+    expect(renders).toEqual([30])
+
+    handle.element.dispatchEvent(createPointerEvent('pointerup', { x: 600 }))
+    await flush()
+
+    expect(renders).toEqual([30, 40])
+    expect(wrapper.text()).toContain('40')
+
+    wrapper.unmount()
+  })
+
+  it('settles the slot size on a keyboard step', async () => {
+    const wrapper = mountResizable(
+      { defaultValue: [30, 70] },
+      { leading: ({ size }: { size: number }) => `L${size}`, trailing: () => 'B' },
+    )
+
+    await wrapper.find('.pxd-resizable-handle').trigger('keydown', { key: 'ArrowRight' })
+    await flush()
+
+    expect(wrapper.text()).toContain('L31')
+
+    wrapper.unmount()
+  })
+
+  it('settles the slot size when a drag is cancelled', async () => {
+    const frames: FrameRequestCallback[] = []
+    const originalRaf = globalThis.requestAnimationFrame
+
+    globalThis.requestAnimationFrame = ((frame: FrameRequestCallback) => frames.push(frame)) as any
+
+    const wrapper = mountResizable(
+      { defaultValue: [30, 70] },
+      { leading: ({ size }: { size: number }) => `L${size}`, trailing: () => 'B' },
+    )
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    handle.element.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
+    handle.element.dispatchEvent(createPointerEvent('pointermove', { x: 600 }))
+    frames.forEach((frame) => frame(0))
+    globalThis.requestAnimationFrame = originalRaf
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([40, 60])
+    expect(wrapper.text()).toContain('L30')
+
+    handle.element.dispatchEvent(createPointerEvent('pointercancel', { x: 600 }))
+    await flush()
+
+    expect(wrapper.text()).toContain('L40')
+
+    wrapper.unmount()
+  })
+
   it('follows model-value when controlled', async () => {
     const model = ref([25, 75])
 
@@ -589,6 +673,106 @@ describe('resizable', () => {
     await flush()
 
     expect(readSizes(wrapper)).toEqual([70, 0])
+
+    wrapper.unmount()
+  })
+
+  it('renders pixel sizes when unit is px', async () => {
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] })
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([320, 680])
+    expect(wrapper.attributes('data-unit')).toBe('px')
+    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuetext')).toBe('320px')
+
+    wrapper.unmount()
+  })
+
+  it('defaults to percent sizes', () => {
+    const wrapper = mountResizable()
+
+    expect(wrapper.attributes('data-unit')).toBe('percent')
+    expect(readSizes(wrapper)).toEqual([50, 50])
+    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuetext')).toBe('50%')
+
+    wrapper.unmount()
+  })
+
+  it('drags by pixels without measuring the container', async () => {
+    const wrapper = mount(Resizable, {
+      props: { unit: 'px', defaultValue: [320, 680] },
+    })
+    await flush()
+
+    drag(wrapper.find('.pxd-resizable-handle').element, 500, 650)
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([470, 530])
+    expect(wrapper.emitted('change')).toEqual([[[470, 530]]])
+
+    wrapper.unmount()
+  })
+
+  it('steps pixel sizes from the keyboard', async () => {
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] })
+    await flush()
+
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    await handle.trigger('keydown', { key: 'ArrowRight' })
+    expect(readSizes(wrapper)).toEqual([321, 679])
+
+    await handle.trigger('keydown', { key: 'ArrowRight', shiftKey: true })
+    expect(readSizes(wrapper)).toEqual([331, 669])
+
+    wrapper.unmount()
+  })
+
+  it('clamps pixel sizes to their pixel min-size', async () => {
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [100, 100] })
+    await flush()
+
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    expect(handle.attributes('aria-valuemin')).toBe('100')
+    expect(handle.attributes('aria-valuemax')).toBe('900')
+
+    drag(handle.element, 500, 0)
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([100, 900])
+
+    wrapper.unmount()
+  })
+
+  it('ignores pixel min-sizes that no split fits', async () => {
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [600, 600] })
+    await flush()
+
+    drag(wrapper.find('.pxd-resizable-handle').element, 500, 0)
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([0, 1000])
+
+    wrapper.unmount()
+  })
+
+  it('folds a pixel pair to its pixel min-size', async () => {
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [120, 0] })
+    await flush()
+
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    handle.element.dispatchEvent(createPointerEvent('dblclick'))
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([120, 880])
+    expect(handle.attributes('aria-valuetext')).toBe('120px, folded')
+
+    handle.element.dispatchEvent(createPointerEvent('dblclick'))
+    await flush()
+
+    expect(readSizes(wrapper)).toEqual([320, 680])
 
     wrapper.unmount()
   })

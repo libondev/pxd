@@ -285,7 +285,7 @@
   },
   "/components/resizable": {
     "title": "Resizable",
-    "description": "Two panels side by side, separated by a draggable divider that keeps their sizes as percentages of the group."
+    "description": "Two panels side by side, separated by a draggable divider that keeps their sizes as percentages of the group, or as fixed pixels when unit is px."
   },
   "/components/reveal": {
     "title": "Reveal",
