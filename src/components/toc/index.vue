@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TocEmits, TocItem, TocProps } from './types'
 import { computed, ref, shallowRef, watch } from 'vue'
-import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
+import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useScrollspy } from '../../composables/use-scrollspy.js'

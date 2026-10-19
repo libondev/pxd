@@ -2,7 +2,7 @@
 import type { BacktopProps, BacktopEmits } from './types'
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
-import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
+import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { getScrollTarget, getScrollElement, resolveScrollBehavior } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'

@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { computed, onScopeDispose, shallowRef } from 'vue'
-import { isServer } from '../../utils/is.js'
-import { useMediaQuery } from '../use-media-query.js'
+import { isServer } from '../utils/is.js'
+import { useMediaQuery } from './use-media-query.js'
 
 interface RootDurationState {
   reduced: Ref<boolean>

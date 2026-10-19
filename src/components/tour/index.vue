@@ -2,7 +2,7 @@
 import type { TourEmits, TourProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
-import { useMotionReduced } from '../../composables/_internal/use-motion-reduce.js'
+import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOff, cachedOn, isCompositionKeydown } from '../../utils/event.js'
