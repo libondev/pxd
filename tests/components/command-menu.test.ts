@@ -105,4 +105,32 @@ describe('command-menu', () => {
 
     wrapper.unmount()
   })
+
+  it('should delegate navigation keys from the modal wrapper to the list', async () => {
+    const wrapper = mount(CommandMenu, {
+      props: {
+        modelValue: true,
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+    })
+
+    await vi.waitFor(() =>
+      expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(2),
+    )
+
+    const modal = document.body.querySelector<HTMLElement>('[data-modal]')!
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+
+    expect(items[0]?.getAttribute('aria-selected')).toBe('true')
+
+    modal.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect(items[1]?.getAttribute('aria-selected')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

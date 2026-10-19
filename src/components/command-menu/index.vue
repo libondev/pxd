@@ -51,6 +51,13 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
   },
 })
 
+function onModalKeydown(ev: KeyboardEvent) {
+  // On small screens the modal wrapper owns the focus, not the input.
+  if (ev.target === ev.currentTarget) {
+    onListKeydown(ev)
+  }
+}
+
 function hideModal() {
   filterKeyword.value = ''
   emits('hide')
@@ -93,6 +100,7 @@ watch(filteredOptions, async () => {
     :close-on-press-escape="closeOnPressEscape"
     :close-on-click-overlay="closeOnClickOverlay"
     v-bind="$attrs"
+    @keydown="onModalKeydown"
     @show="showModal"
     @hide="hideModal"
   >
