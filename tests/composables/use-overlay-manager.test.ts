@@ -152,4 +152,49 @@ describe('useOverlayManager', () => {
 
     unmount()
   })
+
+  function createOverlay(handler: () => boolean | void) {
+    const { registerOverlay, unmount } = useSetupWrapper(() =>
+      useOverlayManager({
+        enabled: true,
+        lockScroll: vi.fn(),
+        unlockScroll: vi.fn(),
+        onPressEscape: handler,
+      }),
+    )
+
+    registerOverlay()
+
+    return unmount
+  }
+
+  it('should continue to the next overlay when the top one does not consume Escape', () => {
+    const outer = vi.fn(() => true)
+    const inner = vi.fn(() => false)
+    const unmountOuter = createOverlay(outer)
+    const unmountInner = createOverlay(inner)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+
+    expect(inner).toHaveBeenCalledOnce()
+    expect(outer).toHaveBeenCalledOnce()
+
+    unmountOuter()
+    unmountInner()
+  })
+
+  it('should stop at the first overlay that consumes Escape', () => {
+    const outer = vi.fn(() => true)
+    const inner = vi.fn(() => true)
+    const unmountOuter = createOverlay(outer)
+    const unmountInner = createOverlay(inner)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+
+    expect(inner).toHaveBeenCalledOnce()
+    expect(outer).not.toHaveBeenCalled()
+
+    unmountOuter()
+    unmountInner()
+  })
 })

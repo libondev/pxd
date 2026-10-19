@@ -59,8 +59,8 @@ function onClickToClose() {
 | Name | Type | Description |
 | --- | --- | --- |
 | click | `(event: PointerEvent) => void` | Emitted when the backdrop is clicked. |
-| escape | `(event: KeyboardEvent) => void` | Emitted when the Escape key is pressed while this overlay is the topmost open one and `close-on-press-escape` is set. |
-| update:modelValue | `(value: boolean) => void` | Emitted with `false` after Escape, or after a backdrop click when `close-on-click-overlay` is set. |
+| escape | `(event: KeyboardEvent) => void` | Emitted when Escape reaches this overlay: either it is the topmost one, or every overlay above it left the event unconsumed. Call `event.preventDefault()` to keep the overlay open. |
+| update:modelValue | `(value: boolean) => void` | Emitted with `false` after Escape unless the `escape` handler prevented it, or after a backdrop click when `close-on-click-overlay` is set. |
 
 ## Slots
 

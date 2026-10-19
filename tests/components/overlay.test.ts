@@ -40,7 +40,7 @@ describe('overlay', () => {
     wrapper.unmount()
   })
 
-  it('should not close underlying overlay if top disables escape', async () => {
+  it('should reach the underlying overlay when the top one disables escape', async () => {
     const Demo = defineComponent({
       components: { Overlay },
       setup() {
@@ -62,7 +62,7 @@ describe('overlay', () => {
     await flush()
 
     expect((wrapper.vm as any).inner).toBe(true)
-    expect((wrapper.vm as any).outer).toBe(true)
+    expect((wrapper.vm as any).outer).toBe(false)
 
     wrapper.unmount()
   })

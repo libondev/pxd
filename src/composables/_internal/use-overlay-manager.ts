@@ -15,7 +15,8 @@ interface OverlayManagerOptions {
   lockScrollOnVisible?: MaybeRefOrGetter<boolean>
   lockScroll: () => void
   unlockScroll: () => void
-  onPressEscape?: (ev: KeyboardEvent) => void
+  /** Return `false` to let the next overlay below handle the event. */
+  onPressEscape?: (ev: KeyboardEvent) => boolean | void
 }
 
 interface OverlayManagerEntry {
@@ -59,9 +60,7 @@ function unlockRootInteraction() {
 }
 
 function onEscapeKeydown(ev: KeyboardEvent) {
-  const entry = getTopOverlay()
-
-  if (!entry || ev.defaultPrevented || ev.repeat || isCompositionKeydown(ev)) {
+  if (!overlayStack.length || ev.defaultPrevented || ev.repeat || isCompositionKeydown(ev)) {
     return
   }
 
@@ -71,7 +70,11 @@ function onEscapeKeydown(ev: KeyboardEvent) {
     return
   }
 
-  entry?.onPressEscape?.(ev)
+  for (let index = overlayStack.length - 1; index >= 0; index--) {
+    if (overlayStack[index]?.onPressEscape?.(ev) !== false) {
+      return
+    }
+  }
 }
 
 function ensureKeydownListener() {
