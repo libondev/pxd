@@ -17,7 +17,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {
   gap: 0,
-  variant: 'ghost',
+  variant: 'default',
   multiple: true,
   modelValue: () => [],
 })
@@ -27,7 +27,7 @@ const configProvider = useConfigProvider()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-toggle-button-group group/toggle-button-group w-max overflow-hidden',
+    base: 'pxd-toggle-button-group group/toggle-button-group w-max',
     variants: {
       size: {
         sm: 'rounded-md',

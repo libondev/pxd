@@ -36,7 +36,7 @@ const isChecked = ref(false)
 </template>
 ```
 
-## Outline
+## Ghost
 
 ```vue demo
 <script setup>
@@ -47,7 +47,7 @@ const checked = ref(false)
 </script>
 
 <template>
-  <PToggleButton v-model="checked" variant="outline" aria-label="Toggle bold">
+  <PToggleButton v-model="checked" variant="ghost" aria-label="Toggle bold">
     <TextBoldIcon />
   </PToggleButton>
 </template>
@@ -70,7 +70,7 @@ const checked = ref(true)
       <TextBoldIcon />
     </PToggleButton>
 
-    <PToggleButton v-model="uncheck" disabled variant="outline" aria-label="Toggle bold">
+    <PToggleButton v-model="uncheck" disabled variant="ghost" aria-label="Toggle bold">
       <TextBoldIcon />
     </PToggleButton>
 
@@ -78,7 +78,7 @@ const checked = ref(true)
       <TextBoldIcon />
     </PToggleButton>
 
-    <PToggleButton v-model="checked" disabled variant="outline" aria-label="Toggle bold">
+    <PToggleButton v-model="checked" disabled variant="ghost" aria-label="Toggle bold">
       <TextBoldIcon />
     </PToggleButton>
   </PStack>
@@ -103,7 +103,6 @@ const toggleButtonOptions = [
 <template>
   <PToggleButtonGroup
     v-model="functions"
-    variant="outline"
     :options="toggleButtonOptions"
   />
 </template>
@@ -127,7 +126,6 @@ const toggleButtonOptions = [
 <template>
   <PToggleButtonGroup
     v-model="functions"
-    variant="outline"
     :multiple="false"
     :options="toggleButtonOptions"
   />
@@ -153,7 +151,6 @@ const toggleButtonOptions = [
   <PToggleButtonGroup
     v-model="functions"
     size="sm"
-    variant="outline"
     :options="toggleButtonOptions"
   />
 </template>
@@ -181,14 +178,12 @@ const toggleButtonOptions = [
     <PToggleButtonGroup
       v-model="functions"
       gap="0"
-      variant="outline"
       :options="toggleButtonOptions"
     />
 
     <PToggleButtonGroup
       v-model="functions"
       :gap="{ xs: 1, sm: 2, md: 4 }"
-      variant="outline"
       :options="toggleButtonOptions"
     />
   </PStack>
@@ -242,7 +237,6 @@ const toggleButtonOptions = [
   <PToggleButtonGroup
     v-model="functions"
     disabled
-    variant="outline"
     :options="toggleButtonOptions"
   />
 </template>
@@ -252,7 +246,7 @@ const toggleButtonOptions = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| variant | `'ghost' \| 'outline'` | - | Visual style: `ghost` is transparent, `outline` adds a border |
+| variant | `'ghost' \| 'default'` | `default` | Visual style: `ghost` is transparent, `default` adds a border |
 | disabled | `boolean` | - | Disable the button, also forced on by the parent group |
 | label | `string \| number \| null` | - | Text rendered in the default slot when no slot content is given |
 | size | `'sm' \| 'md' \| 'lg'` | - | Button size, inherited from the group or config provider when unset |
@@ -275,7 +269,7 @@ const toggleButtonOptions = [
 | disabled | `boolean` | - | Disable every button in the group |
 | multiple | `boolean` | `true` | Allow several buttons to stay active at the same time |
 | options | `{ label, value, disabled? }[]` | - | Buttons rendered from the default slot, one per option |
-| variant | `'ghost' \| 'outline'` | `ghost` | Default variant for every button, overridable per button |
+| variant | `'ghost' \| 'default'` | `ghost` | Default variant for every button, overridable per button |
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | `() => []` | Active value, or an array of values when `multiple` |
 
 ## ToggleButtonGroup Events

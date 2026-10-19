@@ -12,7 +12,7 @@ export interface ToggleButtonGroupProps {
   disabled?: boolean
   multiple?: boolean
   options?: ComponentOption[]
-  variant?: 'ghost' | 'outline'
+  variant?: 'default' | 'ghost'
   modelValue?: ComponentValue | ComponentValue[]
 }
 

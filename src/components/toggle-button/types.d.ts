@@ -7,7 +7,7 @@ export interface ToggleButtonProps {
   size?: ComponentSize
   label?: ComponentLabel
   value?: ToggleButtonModelValue
-  variant?: 'ghost' | 'outline'
+  variant?: 'default' | 'ghost'
   disabled?: boolean
   modelValue?: ToggleButtonModelValue | ToggleButtonModelValue[]
 }

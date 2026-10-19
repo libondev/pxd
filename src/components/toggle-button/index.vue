@@ -29,7 +29,7 @@ const isDisabled = computed(
   () => props.disabled || toggleButtonGroupContext?.props.disabled || false,
 )
 const computedVariant = computed(() => {
-  return props.variant || toggleButtonGroupContext?.props.variant || 'ghost'
+  return props.variant || toggleButtonGroupContext?.props.variant || 'default'
 })
 
 const modelValue = useModelValue(
@@ -48,7 +48,7 @@ const isChecked = computed(() => {
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none motion-safe:transition-colors',
+    base: 'pxd-toggle-button gap-2 font-medium relative inline-flex shrink-0 appearance-none items-center justify-center border self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
@@ -57,7 +57,7 @@ const { attrs, classes } = useTailwindVariant(
         lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
       },
       variant: {
-        outline: 'border-gray-400 bg-background-100',
+        default: 'border-gray-400 bg-background-100',
         ghost: 'border-transparent bg-transparent',
       },
       disabled: {},
@@ -67,8 +67,8 @@ const { attrs, classes } = useTailwindVariant(
       { checked: true, disabled: false, class: 'bg-gray-300' },
       { checked: true, disabled: true, class: 'bg-gray-200' },
       { checked: false, disabled: true, class: 'cursor-not-allowed text-gray-400' },
-      { checked: false, disabled: false, class: 'hover:bg-background-hover hover:text-gray-900' },
-      { variant: 'outline', checked: true, disabled: true, class: 'bg-gray-100' },
+      { checked: false, disabled: false, class: 'hover:bg-background-hover' },
+      { variant: 'default', checked: true, disabled: true, class: 'bg-gray-100' },
     ],
   },
   {
