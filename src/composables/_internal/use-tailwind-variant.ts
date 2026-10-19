@@ -1,6 +1,6 @@
 import type { ClassValue } from 'cn'
-import { cn } from 'cn'
 import { computed, useAttrs } from 'vue'
+import { cn } from '../../utils/cn.js'
 
 type TailwindVariantSchema = Record<string, Record<string, ClassValue>>
 type TailwindVariantFallback = string | number | boolean

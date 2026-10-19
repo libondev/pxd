@@ -119,8 +119,7 @@ function removeKeydownListener() {
 }
 
 export function useOverlayManager(options: OverlayManagerOptions) {
-  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape, zIndex } =
-    options
+  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape, zIndex } = options
 
   let isLockedScroll = false
   const overlayId = Symbol('pxd-overlay-id')

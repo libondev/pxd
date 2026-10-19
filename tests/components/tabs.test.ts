@@ -538,9 +538,9 @@ describe('tabs', () => {
     const selected = wrapper.findAll('[role="tab"][aria-selected="true"]')
 
     expect(selected).toHaveLength(0)
-    expect(wrapper.findAll('[role="tabpanel"]').every((panel) => 'hidden' in panel.attributes())).toBe(
-      true,
-    )
+    expect(
+      wrapper.findAll('[role="tabpanel"]').every((panel) => 'hidden' in panel.attributes()),
+    ).toBe(true)
 
     wrapper.unmount()
   })

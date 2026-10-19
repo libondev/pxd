@@ -182,13 +182,17 @@ describe('modal', () => {
 
     input.focus()
 
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await nextTick()
 
     expect((wrapper.vm as unknown as { value: string }).value).toBe('')
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(true)
 
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await nextTick()
 
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)
@@ -209,12 +213,16 @@ describe('modal', () => {
 
     const card = document.body.querySelector<HTMLElement>('[data-approval-card]')!
 
-    card.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    card.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await nextTick()
 
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(true)
 
-    card.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    card.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await nextTick()
 
     expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)

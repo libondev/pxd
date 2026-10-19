@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
-import { CARET_ANCHOR, DEFAULT_TRIGGER, queryMentionElements } from '../../src/utils/_internal/mention-html'
+import {
+  CARET_ANCHOR,
+  DEFAULT_TRIGGER,
+  queryMentionElements,
+} from '../../src/utils/_internal/mention-html'
 import { useSetupWrapper } from '../helpers/setup'
 
 /**

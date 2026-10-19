@@ -52,10 +52,14 @@ writeFileSync(distSourcePath, sourceCss, 'utf-8')
 try {
   const tailwindCli = resolve(root, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs')
 
-  const result = spawnSync(process.execPath, [tailwindCli, '-i', distSourcePath, '-o', distStylesPath, '-m'], {
-    cwd: root,
-    stdio: 'inherit',
-  })
+  const result = spawnSync(
+    process.execPath,
+    [tailwindCli, '-i', distSourcePath, '-o', distStylesPath, '-m'],
+    {
+      cwd: root,
+      stdio: 'inherit',
+    },
+  )
 
   if (result.error) {
     throw result.error
