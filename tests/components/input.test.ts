@@ -143,4 +143,51 @@ describe('input', () => {
 
     wrapper.unmount()
   })
+
+  it('should consume Escape when clearing a value', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: 'test',
+      },
+    })
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    wrapper.find('input').element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual([''])
+
+    wrapper.unmount()
+  })
+
+  it('should let Escape through when there is nothing to clear', async () => {
+    const wrapper = mount(Input)
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    wrapper.find('input').element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should ignore keydown while composing', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: 'test',
+      },
+    })
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    Object.assign(event, { isComposing: true })
+
+    wrapper.find('input').element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(false)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
 })

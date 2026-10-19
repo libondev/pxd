@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import { nextTick } from 'vue'
+import { defineComponent, nextTick, ref } from 'vue'
+import Input from '../../src/components/input/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 
 describe('modal', () => {
@@ -161,6 +162,35 @@ describe('modal', () => {
     await nextTick()
 
     expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+
+    wrapper.unmount()
+  })
+
+  it('should let a focused input consume Escape before closing', async () => {
+    const Host = defineComponent({
+      components: { Input, Modal },
+      setup() {
+        return { visible: ref(true), value: ref('abc') }
+      },
+      template: '<Modal v-model="visible"><Input v-model="value" /></Modal>',
+    })
+    const wrapper = mount(Host, { attachTo: document.body })
+    await nextTick()
+
+    const input = document.body.querySelector<HTMLInputElement>('.pxd-modal input')!
+
+    input.focus()
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect((wrapper.vm as unknown as { value: string }).value).toBe('')
+    expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(true)
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect((wrapper.vm as unknown as { visible: boolean }).visible).toBe(false)
 
     wrapper.unmount()
   })

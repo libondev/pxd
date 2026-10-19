@@ -9,9 +9,10 @@ import { useTailwindVariant } from '../../composables/_internal/use-tailwind-var
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { NOOP } from '../../utils/event.js'
+import { NOOP, isCompositionKeydown } from '../../utils/event.js'
 import { isTruthyProp } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
+import { isNil } from '../../utils/is.js'
 
 defineOptions({
   name: 'PInput',
@@ -143,10 +144,18 @@ function onKeydown(event: KeyboardEvent) {
     return
   }
 
-  if (event.key === 'Enter') {
-    onChange(event)
-  } else if (event.key === 'Escape' && props.clearOnPressEscape) {
-    clear(event)
+  if (!isCompositionKeydown(event)) {
+    if (event.key === 'Enter') {
+      onChange(event)
+    } else if (event.key === 'Escape' && props.clearOnPressEscape) {
+      const hasValue = !isNil(modelValue.value) && modelValue.value !== ''
+
+      clear(event)
+
+      if (hasValue) {
+        event.preventDefault()
+      }
+    }
   }
 
   emits('keydown', event)
