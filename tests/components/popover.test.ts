@@ -528,4 +528,27 @@ describe('popover', () => {
 
     wrapper.unmount()
   })
+
+  it('should not move focus when a hover popover opens', async () => {
+    const input = document.createElement('input')
+
+    document.body.appendChild(input)
+    input.focus()
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('pointerover')
+    await flush()
+
+    expect(document.activeElement).toBe(input)
+
+    wrapper.unmount()
+  })
+
 })

@@ -9,7 +9,7 @@ import { useDelayDestroy } from '../../composables/use-delay-destroy.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { throttleByRaf } from '../../utils/event.js'
-import { getCssUnitValue, toArray } from '../../utils/format.js'
+import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
 
@@ -83,7 +83,14 @@ const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-arrow-color': props.arrowColor,
   '--popover-max-width': popoverMaxWidth.value,
 }))
-const focusTrapContainer = computed(() => (isVisible.value ? wrapperRef.value : null))
+// Hover popovers must not steal focus. Click-triggered popovers keep the trap for Tab
+// containment, but only auto-focus when the caller asked for it.
+const shouldTrapFocus = computed(
+  () => isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'),
+)
+const focusTrapContainer = computed(() =>
+  isVisible.value && shouldTrapFocus.value ? wrapperRef.value : null,
+)
 const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
   return [
@@ -120,10 +127,14 @@ const {
   },
 })
 
-useFocusTrap(focusTrapContainer, () => ({
-  autoFocusElement: props.autoFocusElement,
-  returnFocusOnDeactivate: props.returnFocusOnDeactivate,
-}))
+useFocusTrap(focusTrapContainer, () => {
+  const options = {
+    autoFocusElement: props.autoFocusElement,
+    returnFocusOnDeactivate: props.returnFocusOnDeactivate,
+  }
+
+  return isTruthyProp(props.autoFocusElement) ? options : { ...options, initialFocus: false }
+})
 
 useOutsideClick(wrapperRef, {
   allowList: [triggerRef, wrapperRef],
