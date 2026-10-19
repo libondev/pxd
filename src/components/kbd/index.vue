@@ -12,7 +12,7 @@ defineOptions({
 const props = defineProps<KbdProps>()
 
 const SIZES = {
-  sm: 'h-5 text-xs',
+  sm: 'h-5 text-13px',
   md: 'h-6 text-sm',
   lg: 'h-7 text-sm',
 }

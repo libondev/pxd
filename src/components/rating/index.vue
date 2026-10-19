@@ -69,7 +69,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-rating inline-flex cursor-pointer touch-none items-center rounded-sm self-focus-ring select-none',
     variants: {
       size: {
-        sm: 'text-sm',
+        sm: 'text-13px',
         md: 'text-base',
         lg: 'text-xl',
       },

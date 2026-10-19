@@ -144,7 +144,7 @@ watch(
             {{ title }}
           </h3>
 
-          <p v-if="description" class="m-0 text-13 text-foreground-secondary">
+          <p v-if="description" class="m-0 text-13px text-foreground-secondary">
             {{ description }}
           </p>
         </slot>

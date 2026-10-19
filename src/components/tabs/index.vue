@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
       height: 1.5rem;
       padding: 0 0.375rem;
       border-radius: var(--radius-md);
-      font-size: var(--text-13);
+      font-size: var(--text-13px);
       background-color: var(--color-gray-alpha-200);
 
       &:disabled {

@@ -29,7 +29,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-snippet ps-3 pe-1 gap-4 group/snippet relative flex items-center rounded-lg border tabular-nums',
     variants: {
       size: {
-        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 pe-0.75 text-sm`,
+        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 pe-0.75 text-13px`,
         md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-1 text-sm`,
         lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2 text-base`,
       },

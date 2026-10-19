@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<SwitchProps>(), {
 const emits = defineEmits<SwitchEmits>()
 
 const SIZES = {
-  sm: `${BASIC_HEIGHTS.sm} text-13`,
+  sm: `${BASIC_HEIGHTS.sm} text-13px`,
   md: `${BASIC_HEIGHTS.md} text-sm`,
   lg: `${BASIC_HEIGHTS.lg} text-base`,
 }

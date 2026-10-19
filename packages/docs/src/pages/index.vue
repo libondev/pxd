@@ -87,7 +87,7 @@ const inventory = computed(
     <section class="overflow-x-clip">
       <div class="gap-5 px-6 py-5 relative flex items-start">
         <span
-          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
+          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-10px tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
           >01 — One codebase</span
         >
         <h1
@@ -101,7 +101,7 @@ const inventory = computed(
         class="gap-5 px-6 py-5 before:inset-x-0 before:top-0 relative flex items-start before:absolute before:h-px before:bg-gray-300 dark:before:bg-gray-400"
       >
         <span
-          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
+          class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-10px tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
           >02 — Both versions</span
         >
         <h1
@@ -114,7 +114,7 @@ const inventory = computed(
       <div
         class="px-6 py-5 ps-50 max-sm:ps-6 before:inset-x-0 before:top-0 relative before:absolute before:h-px before:bg-gray-300"
       >
-        <p class="max-w-[62ch] text-15 leading-[1.55] text-foreground-secondary">
+        <p class="max-w-[62ch] text-15px leading-[1.55] text-foreground-secondary">
           A universal UI component library: {{ componentList.length }} components and
           {{ composableList.length }} composables, built-in light/dark theme, PC &amp; mobile ready,
           and every animation can be turned off.
@@ -172,14 +172,14 @@ const inventory = computed(
 
     <section class="border-b">
       <header class="gap-1 p-4 max-sm:flex-col flex items-baseline justify-between border-b">
-        <h2 class="font-semibold text-13">Components</h2>
-        <span class="font-mono text-11 text-foreground-secondary">{{ inventory }}</span>
+        <h2 class="font-semibold text-13px">Components</h2>
+        <span class="font-mono text-11px text-foreground-secondary">{{ inventory }}</span>
       </header>
 
       <div class="px-4 gap-x-7 max-lg:columns-3 max-md:columns-2 columns-5">
         <div v-for="group in indexGroups" :key="group.label" class="pt-3.5 pb-4 break-inside-avoid">
           <h3
-            class="font-normal font-mono text-[10px] tracking-[0.06em] text-foreground-secondary uppercase"
+            class="font-normal font-mono text-10px tracking-[0.06em] text-foreground-secondary uppercase"
           >
             {{ group.label }}
           </h3>
@@ -188,7 +188,7 @@ const inventory = computed(
             <li v-for="item in group.children" :key="item.path">
               <RouterLink
                 :to="item.path"
-                class="px-1.5 inline-block rounded-sm py-px text-13 text-foreground no-underline hover:bg-gray-alpha-200 focus-visible:bg-gray-alpha-200 motion-safe:transition-colors"
+                class="px-1.5 inline-block rounded-sm py-px text-13px text-foreground no-underline hover:bg-gray-alpha-200 focus-visible:bg-gray-alpha-200 motion-safe:transition-colors"
                 >{{ item.label }}</RouterLink
               >
             </li>
@@ -199,8 +199,8 @@ const inventory = computed(
 
     <section>
       <header class="gap-1 p-4 max-sm:flex-col flex items-baseline justify-between border-b">
-        <h2 class="font-semibold text-13">What you get</h2>
-        <span class="font-mono text-11 text-foreground-secondary"
+        <h2 class="font-semibold text-13px">What you get</h2>
+        <span class="font-mono text-11px text-foreground-secondary"
           >{{ CAPABILITIES.length }} capabilities</span
         >
       </header>
@@ -211,11 +211,11 @@ const inventory = computed(
             <tr v-for="capability in CAPABILITIES" :key="capability.title" class="border-b">
               <th
                 scope="row"
-                class="w-60 max-md:w-40 pe-5 py-3.5 font-medium text-start align-top text-13"
+                class="w-60 max-md:w-40 pe-5 py-3.5 font-medium text-start align-top text-13px"
               >
                 {{ capability.title }}
               </th>
-              <td class="py-3.5 max-w-[68ch] align-top text-13 text-foreground-secondary">
+              <td class="py-3.5 max-w-[68ch] align-top text-13px text-foreground-secondary">
                 {{ capability.detail }}
               </td>
             </tr>

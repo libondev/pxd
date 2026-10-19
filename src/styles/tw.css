@@ -452,9 +452,10 @@
   --shadow-border-fullscreen:
     var(--shadow-border-value), var(--shadow-fullscreen-value), var(--shadow-background-border);
 
-  --text-11: 11px;
-  --text-13: 13px;
-  --text-15: 15px;
+  --text-10px: 10px;
+  --text-11px: 11px;
+  --text-13px: 13px;
+  --text-15px: 15px;
 }
 
 @utility default-animation-duration {
