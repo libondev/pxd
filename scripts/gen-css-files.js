@@ -40,9 +40,7 @@ const styles = readFileSync(resolve(srcDir, 'styles', 'tw.css'), 'utf-8')
 // Intermediate Tailwind entry: lives under dist/styles so @source ../components etc. resolve to built files.
 const sourceCss = `@layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities) source("../components/");
-@source "../composables/";
-@source '../constants';
+@import "tailwindcss/utilities.css" layer(utilities);
 
 ${styles}
 `

@@ -2,6 +2,10 @@
 @custom-variant sibling (& + &);
 @custom-variant within-group (&:is([data-group] *));
 
+@source '../constants';
+@source '../components';
+@source '../composables';
+
 :root {
   --background-100-value: 0, 0%, 100%;
   --background-200-value: 0, 0%, 97%;
