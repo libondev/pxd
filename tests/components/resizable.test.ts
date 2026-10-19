@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import Resizable from '../../src/components/resizable/index.vue'
 import {
@@ -9,8 +9,10 @@ import {
   flush,
   readSizes,
   roundSizes,
+  setContainerSize,
   total,
 } from '../helpers/resizable'
+import { installResizeObserverMock } from '../helpers/setup'
 
 function slots(leading = 'A', trailing = 'B') {
   return { leading: () => leading, trailing: () => trailing }
@@ -23,15 +25,6 @@ function mountResizable(
 ) {
   const wrapper = mount(Resizable, { props, slots: scoped })
 
-  Object.defineProperty(wrapper.element, 'offsetWidth', {
-    value: CONTAINER_SIZE,
-    configurable: true,
-  })
-  Object.defineProperty(wrapper.element, 'offsetHeight', {
-    value: CONTAINER_SIZE,
-    configurable: true,
-  })
-
   if (ref) {
     ref.value = wrapper.vm
   }
@@ -40,6 +33,10 @@ function mountResizable(
 }
 
 describe('resizable', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('renders both panel slots', () => {
     const wrapper = mountResizable()
 
@@ -677,13 +674,90 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
-  it('renders pixel sizes when unit is px', async () => {
-    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] })
+  it('renders a pinned leading panel and a filling trailing one', async () => {
+    const exposed = ref<any>()
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([320, 680])
+    const panels = wrapper.findAll('.pxd-resizable-panel')
+
+    expect(panels[0].attributes('style')).toContain('flex-basis: 320px')
+    expect(panels[1].attributes('style') || '').not.toContain('flex-basis')
+    expect(exposed.value.getPanelSizes()).toEqual([320, 680])
     expect(wrapper.attributes('data-unit')).toBe('px')
     expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuetext')).toBe('320px')
+
+    wrapper.unmount()
+  })
+
+  it('lets the trailing panel follow a container resize', async () => {
+    const observers = installResizeObserverMock()
+    const exposed = ref<any>()
+    const wrapper = mountResizable(
+      { unit: 'px', defaultValue: [320] },
+      {
+        leading: ({ size }: { size: number }) => `L${size}`,
+        trailing: ({ size }: { size: number }) => `T${size}`,
+      },
+      exposed,
+    )
+    await flush()
+
+    expect(observers.observed()).toContain(wrapper.element)
+
+    setContainerSize(700)
+    observers.fireAll()
+    await flush()
+
+    expect(exposed.value.getPanelSizes()).toEqual([320, 380])
+    expect(wrapper.text()).toContain('L320')
+    expect(wrapper.text()).toContain('T380')
+
+    setContainerSize(200)
+    observers.fireAll()
+    await flush()
+
+    expect(exposed.value.getPanelSizes()).toEqual([320, 0])
+
+    setContainerSize(CONTAINER_SIZE)
+    wrapper.unmount()
+  })
+
+  it('cannot move a pixel group it has not measured yet', async () => {
+    const observers = installResizeObserverMock()
+    const exposed = ref<any>()
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320] }, slots(), exposed)
+    await flush()
+
+    const handle = wrapper.find('.pxd-resizable-handle')
+
+    setContainerSize(0)
+    observers.fireAll()
+    await flush()
+
+    expect(handle.attributes('aria-valuenow')).toBe('320')
+    expect(handle.attributes('aria-valuemin')).toBe('320')
+    expect(handle.attributes('aria-valuemax')).toBe('320')
+
+    drag(handle.element, 500, 600)
+    await handle.trigger('keydown', { key: 'Home' })
+    await flush()
+
+    expect(exposed.value.getPanelSizes()).toEqual([320, 0])
+
+    setContainerSize(CONTAINER_SIZE)
+    wrapper.unmount()
+  })
+
+  it('takes only the leading size from a controlled pixel group', async () => {
+    const exposed = ref<any>()
+    const wrapper = mountResizable({ unit: 'px', modelValue: [320, 999] }, slots(), exposed)
+    await flush()
+
+    expect(exposed.value.getPanelSizes()).toEqual([320, 680])
+
+    await wrapper.setProps({ modelValue: [500, 999] })
+    expect(exposed.value.getPanelSizes()).toEqual([500, 500])
 
     wrapper.unmount()
   })
@@ -698,38 +772,44 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
-  it('drags by pixels without measuring the container', async () => {
-    const wrapper = mount(Resizable, {
-      props: { unit: 'px', defaultValue: [320, 680] },
-    })
+  it('drags the pinned leading panel and lets the trailing one follow', async () => {
+    const exposed = ref<any>()
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
     drag(wrapper.find('.pxd-resizable-handle').element, 500, 650)
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([470, 530])
+    expect(exposed.value.getPanelSizes()).toEqual([470, 530])
     expect(wrapper.emitted('change')).toEqual([[[470, 530]]])
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[470, 530]])
 
     wrapper.unmount()
   })
 
   it('steps pixel sizes from the keyboard', async () => {
-    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] })
+    const exposed = ref<any>()
+    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
     const handle = wrapper.find('.pxd-resizable-handle')
 
     await handle.trigger('keydown', { key: 'ArrowRight' })
-    expect(readSizes(wrapper)).toEqual([321, 679])
+    expect(exposed.value.getPanelSizes()).toEqual([321, 679])
 
     await handle.trigger('keydown', { key: 'ArrowRight', shiftKey: true })
-    expect(readSizes(wrapper)).toEqual([331, 669])
+    expect(exposed.value.getPanelSizes()).toEqual([331, 669])
 
     wrapper.unmount()
   })
 
   it('clamps pixel sizes to their pixel min-size', async () => {
-    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [100, 100] })
+    const exposed = ref<any>()
+    const wrapper = mountResizable(
+      { unit: 'px', defaultValue: [320, 680], minSize: [100, 100] },
+      slots(),
+      exposed,
+    )
     await flush()
 
     const handle = wrapper.find('.pxd-resizable-handle')
@@ -740,25 +820,35 @@ describe('resizable', () => {
     drag(handle.element, 500, 0)
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([100, 900])
+    expect(exposed.value.getPanelSizes()).toEqual([100, 900])
 
     wrapper.unmount()
   })
 
   it('ignores pixel min-sizes that no split fits', async () => {
-    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [600, 600] })
+    const exposed = ref<any>()
+    const wrapper = mountResizable(
+      { unit: 'px', defaultValue: [320, 680], minSize: [600, 600] },
+      slots(),
+      exposed,
+    )
     await flush()
 
     drag(wrapper.find('.pxd-resizable-handle').element, 500, 0)
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([0, 1000])
+    expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
 
     wrapper.unmount()
   })
 
   it('folds a pixel pair to its pixel min-size', async () => {
-    const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680], minSize: [120, 0] })
+    const exposed = ref<any>()
+    const wrapper = mountResizable(
+      { unit: 'px', defaultValue: [320, 680], minSize: [120, 0] },
+      slots(),
+      exposed,
+    )
     await flush()
 
     const handle = wrapper.find('.pxd-resizable-handle')
@@ -766,13 +856,13 @@ describe('resizable', () => {
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([120, 880])
+    expect(exposed.value.getPanelSizes()).toEqual([120, 880])
     expect(handle.attributes('aria-valuetext')).toBe('120px, folded')
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
 
-    expect(readSizes(wrapper)).toEqual([320, 680])
+    expect(exposed.value.getPanelSizes()).toEqual([320, 680])
 
     wrapper.unmount()
   })

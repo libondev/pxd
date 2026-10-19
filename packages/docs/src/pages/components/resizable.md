@@ -1,12 +1,11 @@
 # Resizable
 
-Two panels side by side, separated by a draggable divider that keeps their sizes as percentages of
-the group, or as fixed pixels when `unit` is `px`.
+Two panels side by side, separated by a draggable divider that trades their sizes — as shares of the
+group by default, or in pixels when `unit` is `px`.
 
 ## Default
 
-`leading` and `trailing` are the two panels. In a horizontal group they are the left and the
-right one; in a vertical group, the top and the bottom one.
+`leading` and `trailing` are the two panels; `direction` lays them out as a row or a column.
 
 ```vue demo
 <script setup>
@@ -36,15 +35,8 @@ const direction = ref('horizontal')
 
 ## Sizes
 
-unit: percent
-
-Dragging only trades size between the two panels, so there is only one number to keep: the size of
-the leading panel. Pass `v-model` to hold it somewhere else, or `:default-value` to set where an
-uncontrolled group starts. Leave both off and the group splits evenly.
-
-Each panel slot receives the size of its panel, but only once a change settles: a drag publishes
-it on release, so dragging never re-renders panel content. Bind `v-model` or call `getPanelSizes()`
-when you need the number live.
+Dragging only trades size between the panels. Use `v-model` to own the pair or `default-value` to
+set where an uncontrolled group starts; each panel slot receives its size once a change settles.
 
 ```vue demo
 <script setup>
@@ -72,27 +64,22 @@ const sizes = ref([25, 75])
 </template>
 ```
 
-The sizes are the caller's truth: a `model-value` that does not add up to 100, or that sits outside
-`min-size`, is rendered as given rather than silently rewritten.
+A `model-value` is rendered as given, even when the pair does not add up to 100 or sits outside
+`min-size`.
 
 ## Pixel sizes
 
-`unit="px"` reads every size as pixels instead of a share of the group, so a panel keeps its width
-when the container changes size — which is what a fixed sidebar wants. No size is derived from the
-container in this mode: the pair is not forced to fill it, so leftover space stays empty and a pair
-wider than the container is clipped by the group. Dragging still trades pixels one for one.
-
-`min-size` is read in the same unit, and the default `[50, 50]` really is 50px per panel, so pass
-`default-value` or `v-model`.
+`unit="px"` pins the leading panel and gives the rest of the container to the trailing one. Only
+the leading size is read from `default-value` / `v-model`.
 
 ```vue demo
 <template>
-  <PResizable unit="px" :default-value="[240, 160]" :min-size="[120, 0]" class="w-100 h-50 max-w-full border rounded-lg">
-    <template #leading>
-      <div class="flex h-full items-center justify-center">Leading — 240px</div>
+  <PResizable unit="px" :default-value="[240]" :min-size="[120, 0]" class="w-full h-50 border rounded-lg">
+    <template #leading="{ size }">
+      <div class="flex h-full items-center justify-center">Leading — {{ size }}px</div>
     </template>
     <template #trailing>
-      <div class="flex h-full items-center justify-center">Trailing — 160px</div>
+      <div class="flex h-full items-center justify-center">Trailing — the rest</div>
     </template>
   </PResizable>
 </template>
@@ -100,10 +87,8 @@ wider than the container is clipped by the group. Dragging still trades pixels o
 
 ## Bounds
 
-`min-size` takes one floor per panel, in the group's `unit`. Because the pair always sums to a fixed
-total, a floor is at the same time the other panel's ceiling: `[20, 40]` means leading 20-60 and
-trailing 40-80. Floors that add up to more than that total leave no split that fits, so they are
-ignored.
+`min-size` floors each panel in `unit`; because the pair fills the group, each floor is also the
+other panel's ceiling. Floors that cannot fit are ignored.
 
 ```vue demo
 <template>
@@ -120,13 +105,8 @@ ignored.
 
 ## Collapse
 
-Double clicking folds the leading panel down to its `min-size` and hands the space to the trailing
-panel; double clicking again gives the pair back the exact sizes it had, not the configured start.
-Without a `min-size` the panel folds all the way to zero. Dragging a folded pair expands it, so it
-is never a dead end.
-
-`aria-valuetext` on the divider spells the fold out for screen readers, and `data-collapsed` is
-there for styling.
+Double click folds the leading panel to its `min-size`; double click again restores the previous
+split. Dragging or pressing an arrow key expands a folded pair.
 
 ```vue demo
 <template>
@@ -143,8 +123,7 @@ there for styling.
 
 ## Grip
 
-`handle` draws the grip in the middle of the divider. The divider itself is always there, because
-it is what you drag.
+`handle` draws a grip on the divider.
 
 ```vue demo
 <template>
@@ -161,7 +140,7 @@ it is what you drag.
 
 ## Disabled
 
-`disabled` stops the divider from dragging and folding.
+`disabled` stops dragging, keyboard resizing and folding.
 
 ```vue demo
 <template>
@@ -178,8 +157,7 @@ it is what you drag.
 
 ## Nested
 
-A group has exactly two panels, so a third one is a group nested inside a panel. Each group keeps
-its own sizes.
+A group has two panels, so a third is a nested group with its own sizes.
 
 ```vue demo
 <template>
@@ -203,33 +181,27 @@ its own sizes.
 
 ## Keyboard
 
-The divider is a focusable `separator`: arrow keys move it by 1% — or by 1px under `unit="px"` —
-holding shift multiplies that by ten, and `Home` / `End` snap it to the ends of its range. Moving a
-folded pair brings it back, so a keyboard user is never trapped behind a fold they cannot undo.
-
-Double clicking folds the leading panel, see [Collapse](#collapse).
+The divider is focusable: arrow keys along the group's axis move it by one step (ten with shift),
+and `Home` / `End` snap to the bounds. Moving a folded pair expands it.
 
 ## Accessibility
 
-The divider is a widget rather than a static line, and it is announced as one. It reports the
-leading panel's position through `aria-valuenow`, the range it may travel through through
-`aria-valuemin` and `aria-valuemax`, and both panels through `aria-controls`. `aria-valuetext`
-spells the number out with its unit and carries the fold state, which is the one field the
-`separator` role leaves free-form.
-
-`disabled` mirrors into `aria-disabled` and takes the divider out of the tab order.
+The divider is a focusable `separator` that reports the leading position and range through
+`aria-valuenow`, `aria-valuemin` and `aria-valuemax`, and links both panels with `aria-controls`.
+`aria-valuetext` adds the unit and fold state; `disabled` maps to `aria-disabled` and removes the
+divider from the tab order.
 
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | direction | `'horizontal' \| 'vertical'` | `horizontal` | Axis along which the two panels are laid out and resized |
-| unit | `'percent' \| 'px'` | `percent` | Unit every size is written in; `percent` tracks the container, `px` pins the panels so a container resize leaves their widths alone |
+| unit | `'percent' \| 'px'` | `percent` | Unit every size is written in; `percent` shares the container between both panels, `px` pins the leading panel and gives the rest to the trailing one |
 | min-size | `number[]` | `[0, 0]` | Smallest allowed size of each panel, in `unit`; each one is also the other panel's ceiling |
 | handle | `boolean` | `false` | Draw the grip in the middle of the divider |
 | disabled | `boolean` | `false` | Stop the divider from being dragged, moved or folded |
-| default-value | `number[]` | `[50, 50]` | Sizes an uncontrolled group starts from, in `unit`; read once, on setup |
-| model-value | `number[] \| null` | `null` | The two sizes in `unit`, leading first; unset means the group keeps them itself |
+| default-value | `number[]` | `[50, 50]` | Sizes an uncontrolled group starts from, in `unit`; read once, on setup, and under `px` only the leading size |
+| model-value | `number[] \| null` | `null` | The two sizes in `unit`, leading first; under `px` only the leading size is read, and unset means the group keeps them itself |
 
 ## Events
 
@@ -243,8 +215,8 @@ spells the number out with its unit and carries the fold state, which is the one
 
 | Name | Description |
 | --- | --- |
-| leading | The leading panel — left in a horizontal group, top in a vertical one. Slot props: `size`, in `unit`; it settles when a change commits. |
-| trailing | The trailing panel — right in a horizontal group, bottom in a vertical one. Slot props: `size`, in `unit`; it settles when a change commits. |
+| leading | Leading panel. Slot props: `size` in `unit`, updated when a change settles. |
+| trailing | Trailing panel. Slot props: `size` in `unit`, updated when a change settles. |
 
 ## Methods
 

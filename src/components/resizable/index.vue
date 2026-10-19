@@ -1,12 +1,21 @@
 <script lang="ts" setup>
 import type { ResizableEmits, ResizableProps } from './types'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, onMounted, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { throttleByRaf } from '../../utils/event.js'
+import { clampValue } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 
 type Pair = [number, number]
+
+interface DragState {
+  pointerId: number
+  position: number
+  delta: number
+  resized: boolean
+}
 
 defineOptions({
   name: 'PResizable',
@@ -29,153 +38,139 @@ const props = withDefaults(defineProps<ResizableProps>(), {
 const emits = defineEmits<ResizableEmits>()
 
 const PERCENT_TOTAL = 100
+const KEYBOARD_STEP = 1
+const KEYBOARD_STEP_LARGE = 10
 const uid = getUniqueId('pxd-resizable')
 const leadingId = `${uid}-leading`
 const trailingId = `${uid}-trailing`
-let expandedPair: Pair | null = null
-let initialPair: Pair | null = null
-let activePointerId: number | null = null
-let startPosition = 0
-let accumulated = 0
-let resized = false
-let dragContainerSize = 0
-const flushResize = throttleByRaf(() => {
-  if (accumulated === 0) {
-    return
-  }
-
-  const delta = accumulated
-  accumulated = 0
-  resized = resizeByPixels(delta) || resized
-})
-const KEYBOARD_STEP = 1
-const KEYBOARD_STEP_LARGE = 10
+const initialSizes = toPair(isNil(props.modelValue) ? props.defaultValue : props.modelValue)
+let drag: DragState | null = null
+const flushResize = throttleByRaf(applyPendingDelta)
 
 const containerRef = shallowRef<HTMLElement>()
 const handleRef = shallowRef<HTMLElement>()
+const containerSize = shallowRef(0)
 const isControlled = computed(() => !isNil(props.modelValue))
+const isPixel = computed(() => props.unit === 'px')
 const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
-const sizes = computed<Pair>(() =>
-  isControlled.value ? toPair(props.modelValue) : innerSizes.value,
-)
-/**
- * The sizes the panel slots are handed. A drag moves `sizes` on every frame but
- * only publishes here when the drag ends, so panel content is never re-rendered mid-drag.
- */
+/** Percent sizes are measured against 100; pixel sizes fill the measured container. */
+const totalSize = computed(() => (isPixel.value ? containerSize.value : PERCENT_TOTAL))
+/** Only the leading size of a pixel group comes from the caller. */
+const sizes = computed<Pair>(() => {
+  const source = toPair(isControlled.value ? props.modelValue : innerSizes.value)
+  const leading = source[0]
+
+  return isPixel.value ? [leading, Math.max(totalSize.value - leading, 0)] : source
+})
+/** The pair the panel slots are handed, updated only when a change settles. */
 const settledSizes = shallowRef<Pair>(sizes.value)
-const unitSuffix = computed(() => (props.unit === 'px' ? 'px' : '%'))
-/**
- * What the pair sums to. Percent sizes are always measured against 100; pixel
- * sizes have no such fixed total, so they add up to whatever they add up to.
- */
-const totalSize = computed(() =>
-  props.unit === 'px' ? sizes.value[0] + sizes.value[1] : PERCENT_TOTAL,
-)
-/**
- * The range the leading panel may travel through. The trailing panel needs no
- * bounds of its own: the pair sums to `totalSize`, so the leading panel's floor
- * already is the trailing panel's ceiling and the other way round.
- */
+const restoreSizes = shallowRef<Pair | null>(null)
+const collapsed = computed(() => restoreSizes.value !== null)
+const unitSuffix = computed(() => (isPixel.value ? 'px' : '%'))
+
 const bounds = computed<{ min: number; max: number }>(() => {
   const [leading, trailing] = toPair(props.minSize)
+  const total = totalSize.value
 
-  if (leading + trailing > totalSize.value) {
-    return { min: 0, max: totalSize.value }
+  if (total <= 0) {
+    return { min: sizes.value[0], max: sizes.value[0] }
   }
 
-  return { min: leading, max: totalSize.value - trailing }
-})
-const collapsed = shallowRef(false)
-const position = computed(() => sizes.value[0])
-const ariaValueNow = computed(() => roundSize(position.value))
+  if (leading + trailing > total) {
+    return { min: 0, max: total }
+  }
 
-const ariaValueText = computed(() =>
-  collapsed.value
-    ? `${ariaValueNow.value}${unitSuffix.value}, folded`
-    : `${ariaValueNow.value}${unitSuffix.value}`,
+  return { min: leading, max: total - trailing }
+})
+const ariaValueNow = computed(() => roundSize(sizes.value[0]))
+const ariaValueText = computed(
+  () => `${ariaValueNow.value}${unitSuffix.value}${collapsed.value ? ', folded' : ''}`,
 )
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max)
-}
+useResizeObserver(containerRef, syncContainerSize)
 
 function roundSize(value: number): number {
   return Math.round(value * 100) / 100
 }
 
-function toPair(value?: number[] | null): [number, number] {
+function toPair(value?: number[] | null): Pair {
   return [value?.[0] ?? 0, value?.[1] ?? 0]
 }
 
-function setSizes(next: Pair) {
-  const current = sizes.value
-  const rounded: Pair = [roundSize(next[0]), roundSize(next[1])]
+function setSizes([leading, trailing]: Pair) {
+  const [currentLeading, currentTrailing] = sizes.value
+  const nextLeading = roundSize(leading)
+  const next: Pair = isPixel.value
+    ? [nextLeading, roundSize(Math.max(totalSize.value - nextLeading, 0))]
+    : [nextLeading, roundSize(trailing)]
 
-  if (rounded[0] === current[0] && rounded[1] === current[1]) {
+  if (next[0] === currentLeading && next[1] === currentTrailing) {
     return false
   }
 
   if (!isControlled.value) {
-    innerSizes.value = rounded
+    innerSizes.value = next
   }
 
-  modelValue.value = rounded
+  modelValue.value = next
 
   return true
 }
 
-function resize(deltaPercent: number) {
+function applyDelta(delta: number) {
   const [leading, trailing] = sizes.value
   const { min, max } = bounds.value
-
-  const applied = clamp(deltaPercent, min - leading, max - leading)
+  const applied = clampValue(delta, min - leading, max - leading)
 
   if (applied === 0) {
     return false
   }
 
-  const newLeading = roundSize(leading + applied)
+  const nextLeading = roundSize(leading + applied)
+  const changed = setSizes([nextLeading, roundSize(leading + trailing - nextLeading)])
 
-  return setSizes([newLeading, roundSize(leading + trailing - newLeading)])
-}
-/**
- * Moving the divider brings a folded pair back, so a collapsed panel is never a
- * dead end. The remembered sizes go with it: they described a pair that no
- * longer exists once it has been moved somewhere else.
- */
-function applyDelta(deltaPercent: number) {
-  const changed = resize(deltaPercent)
-
-  if (changed && collapsed.value) {
-    collapsed.value = false
-    expandedPair = null
+  if (changed) {
+    restoreSizes.value = null
   }
 
   return changed
 }
 
-function readContainerSize(): number {
+function syncContainerSize() {
   const container = containerRef.value
 
   if (!container) {
-    return 0
+    containerSize.value = 0
+    return
   }
 
-  return props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
+  containerSize.value =
+    props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
 }
 
-function resizeByPixels(delta: number) {
-  if (props.unit === 'px') {
+function applyPendingDelta() {
+  if (!drag || drag.delta === 0) {
+    return
+  }
+
+  const delta = drag.delta
+
+  drag.delta = 0
+  drag.resized = applyPointerDelta(delta) || drag.resized
+}
+
+function applyPointerDelta(delta: number) {
+  if (isPixel.value) {
     return applyDelta(delta)
   }
 
-  if (dragContainerSize <= 0) {
+  if (containerSize.value <= 0) {
     return false
   }
 
-  return applyDelta((delta / dragContainerSize) * PERCENT_TOTAL)
+  return applyDelta((delta / containerSize.value) * PERCENT_TOTAL)
 }
 
 function commitChange() {
@@ -187,23 +182,19 @@ function toggleCollapse() {
     return
   }
 
-  const [leading, trailing] = sizes.value
+  const restore = restoreSizes.value
 
-  if (collapsed.value) {
-    const restore = expandedPair ?? initialPair ?? ([leading, trailing] as Pair)
+  if (restore) {
+    restoreSizes.value = null
 
-    expandedPair = null
-    collapsed.value = false
-
-    if (setSizes([restore[0], restore[1]])) {
+    if (setSizes(restore)) {
       commitChange()
     }
 
     return
   }
 
-  expandedPair = [leading, trailing]
-  collapsed.value = true
+  restoreSizes.value = [sizes.value[0], sizes.value[1]]
 
   const { min } = bounds.value
 
@@ -213,42 +204,32 @@ function toggleCollapse() {
 }
 
 function reset() {
-  const restore = initialPair ?? toPair(props.defaultValue)
+  restoreSizes.value = null
 
-  expandedPair = null
-  collapsed.value = false
-
-  if (setSizes([restore[0], restore[1]])) {
+  if (setSizes(initialSizes)) {
     emits('reset', sizes.value.slice())
   }
 }
+
 function axisOf(event: PointerEvent) {
   return props.direction === 'horizontal' ? event.clientX : event.clientY
 }
-function releaseCapture() {
-  const id = activePointerId
-  const el = handleRef.value
 
-  activePointerId = null
+function resetDragging() {
+  const pointerId = drag?.pointerId
+  const handle = handleRef.value
 
-  if (!el || id === null) {
+  flushResize.cancel()
+  drag = null
+  settledSizes.value = sizes.value
+
+  if (pointerId === undefined || !handle) {
     return
   }
 
   try {
-    el.releasePointerCapture(id)
+    handle.releasePointerCapture(pointerId)
   } catch {}
-}
-
-function resetDragging() {
-  startPosition = 0
-  accumulated = 0
-  resized = false
-  dragContainerSize = 0
-
-  flushResize.cancel()
-  releaseCapture()
-  settledSizes.value = sizes.value
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -256,11 +237,13 @@ function handlePointerDown(event: PointerEvent) {
     return
   }
 
-  activePointerId = event.pointerId
-  startPosition = axisOf(event)
-  accumulated = 0
-  resized = false
-  dragContainerSize = readContainerSize()
+  drag = {
+    pointerId: event.pointerId,
+    position: axisOf(event),
+    delta: 0,
+    resized: false,
+  }
+  syncContainerSize()
 
   try {
     handleRef.value?.setPointerCapture(event.pointerId)
@@ -268,33 +251,30 @@ function handlePointerDown(event: PointerEvent) {
 }
 
 function handlePointerMove(event: PointerEvent) {
-  if (event.pointerId !== activePointerId) {
+  if (!drag || event.pointerId !== drag.pointerId) {
     return
   }
 
   event.preventDefault()
 
   const position = axisOf(event)
-  accumulated += position - startPosition
-  startPosition = position
+
+  drag.delta += position - drag.position
+  drag.position = position
 
   flushResize()
 }
 
 function handlePointerUp(event: PointerEvent) {
-  if (event.pointerId !== activePointerId) {
+  if (!drag || event.pointerId !== drag.pointerId) {
     return
   }
 
   flushResize.cancel()
+  applyPendingDelta()
 
-  if (accumulated !== 0) {
-    const delta = accumulated
-    accumulated = 0
-    resized = resizeByPixels(delta) || resized
-  }
+  const didResize = drag.resized
 
-  const didResize = resized
   resetDragging()
 
   if (didResize) {
@@ -303,7 +283,7 @@ function handlePointerUp(event: PointerEvent) {
 }
 
 function handlePointerCancel(event: PointerEvent) {
-  if (event.pointerId !== activePointerId) {
+  if (!drag || event.pointerId !== drag.pointerId) {
     return
   }
 
@@ -311,12 +291,13 @@ function handlePointerCancel(event: PointerEvent) {
 }
 
 function handleLostCapture() {
-  if (activePointerId === null) {
+  if (!drag) {
     return
   }
 
   resetDragging()
 }
+
 function handleKeydown(event: KeyboardEvent) {
   if (props.disabled) {
     return
@@ -331,9 +312,9 @@ function handleKeydown(event: KeyboardEvent) {
   } else if (event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')) {
     delta = step
   } else if (event.key === 'Home') {
-    delta = bounds.value.min - position.value
+    delta = bounds.value.min - sizes.value[0]
   } else if (event.key === 'End') {
-    delta = bounds.value.max - position.value
+    delta = bounds.value.max - sizes.value[0]
   }
 
   if (delta === null) {
@@ -346,24 +327,25 @@ function handleKeydown(event: KeyboardEvent) {
     commitChange()
   }
 }
+
+/** Only the leading panel of a pixel group gets a basis; the trailing one fills. */
 function panelStyle(index: number) {
+  if (isPixel.value && index === 1) {
+    return {}
+  }
+
   return {
     flexBasis: `${sizes.value[index]}${unitSuffix.value}`,
   }
 }
 
-watch(
-  sizes,
-  ([leading, trailing]) => {
-    initialPair ??= [leading, trailing]
-  },
-  { immediate: true, flush: 'sync' },
-)
 watch(sizes, (value) => {
-  if (activePointerId === null) {
+  if (!drag) {
     settledSizes.value = value
   }
 })
+
+onMounted(syncContainerSize)
 
 defineExpose({
   getPanelSizes: () => sizes.value.slice(),
@@ -429,8 +411,13 @@ defineExpose({
   flex-shrink: 1;
 }
 
-.pxd-resizable[data-unit='px'] .pxd-resizable-panel {
+.pxd-resizable[data-unit='px'] .pxd-resizable-panel:first-child {
   flex-shrink: 0;
+}
+
+.pxd-resizable[data-unit='px'] .pxd-resizable-panel:last-child {
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
 .pxd-resizable-handle[data-handler='true']::before {
@@ -454,7 +441,7 @@ defineExpose({
   position: absolute;
   top: 50%;
   left: 50%;
-  padding: 1.5px;
+  padding: 2px;
   transform: translate(-50%, -50%);
 }
 
