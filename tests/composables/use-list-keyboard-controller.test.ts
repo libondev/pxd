@@ -60,29 +60,45 @@ describe('useListKeyboardController', () => {
     expect(event.defaultPrevented).toBe(true)
   })
 
-  it('should use default scrolling keys and allow overriding them', () => {
+  it('should use default scrolling keys for keys missing from the keymap', () => {
+    const onCommand = vi.fn(() => true)
+    const { onKeydown: handleKeydown } = useListKeyboardController({
+      keymap: { ArrowDown: 'next' },
+      onCommand,
+    })
+    const event = new KeyboardEvent('keydown', { key: 'PageDown', cancelable: true })
+
+    handleKeydown(event)
+
+    expect(onCommand).not.toHaveBeenCalled()
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  it('should let the keymap take precedence over the default scrolling keys', () => {
     const onCommand = vi.fn(() => true)
     const { onKeydown: handleKeydown } = useListKeyboardController({
       keymap: { PageDown: 'next' },
       onCommand,
     })
-    const defaultEvent = new KeyboardEvent('keydown', { key: 'PageDown', cancelable: true })
+    const event = new KeyboardEvent('keydown', { key: 'PageDown', cancelable: true })
 
-    handleKeydown(defaultEvent)
+    handleKeydown(event)
 
-    expect(onCommand).not.toHaveBeenCalled()
-    expect(defaultEvent.defaultPrevented).toBe(true)
+    expect(onCommand).toHaveBeenCalledWith('next', event)
+    expect(event.defaultPrevented).toBe(true)
+  })
 
-    const { onKeydown: handleOverriddenKeydown } = useListKeyboardController({
+  it('should leave modified keys alone', () => {
+    const onCommand = vi.fn(() => true)
+    const { onKeydown: handleKeydown } = useListKeyboardController({
       keymap: { PageDown: 'next' },
       onCommand,
-      preventDefaultKeys: [],
     })
-    const overriddenEvent = new KeyboardEvent('keydown', { key: 'PageDown', cancelable: true })
+    const event = new KeyboardEvent('keydown', { key: 'PageDown', ctrlKey: true, cancelable: true })
 
-    handleOverriddenKeydown(overriddenEvent)
+    handleKeydown(event)
 
-    expect(onCommand).toHaveBeenCalledWith('next', overriddenEvent)
-    expect(overriddenEvent.defaultPrevented).toBe(true)
+    expect(onCommand).not.toHaveBeenCalled()
+    expect(event.defaultPrevented).toBe(false)
   })
 })

@@ -28,27 +28,27 @@ export function useListKeyboardController(options: UseListKeyboardControllerOpti
       return
     }
 
-    const preventDefaultKeys = toValue(options.preventDefaultKeys) ?? DEFAULT_PREVENT_DEFAULT_KEYS
-    if (preventDefaultKeys.includes(ev.key)) {
-      ev.preventDefault()
-      return
-    }
-
     if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) {
       return
     }
 
     const command = toValue(options.keymap)[ev.key]
-    if (!command) {
+
+    if (command) {
+      if (!options.onCommand(command, ev)) {
+        return
+      }
+
+      ev.preventDefault()
+      ev.stopPropagation()
       return
     }
 
-    if (!options.onCommand(command, ev)) {
-      return
-    }
+    const preventDefaultKeys = toValue(options.preventDefaultKeys) ?? DEFAULT_PREVENT_DEFAULT_KEYS
 
-    ev.preventDefault()
-    ev.stopPropagation()
+    if (preventDefaultKeys.includes(ev.key)) {
+      ev.preventDefault()
+    }
   }
 
   return { onKeydown }
