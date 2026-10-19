@@ -15,6 +15,7 @@ import type { MaybeElementRef } from '../../types/shared/utils'
 import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
 import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { getElement } from '../../utils/dom.js'
+import { isCompositionKeydown } from '../../utils/event.js'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
 import { debounce } from '../../utils/timing.js'
@@ -997,7 +998,7 @@ export function useTreeDrag(options: UseTreeDragOptions) {
     window.removeEventListener('pointermove', onPointerMove as EventListener)
     window.removeEventListener('pointerup', onPointerUp)
     window.removeEventListener('pointercancel', onPointerCancel)
-    window.removeEventListener('keydown', onKeydown)
+    window.removeEventListener('keydown', onKeydown, true)
     window.removeEventListener('touchmove', onTouchMove)
     window.removeEventListener('scroll', followScroll)
     getElement(options.container)?.removeEventListener('scroll', followScroll)
@@ -1080,9 +1081,14 @@ export function useTreeDrag(options: UseTreeDragOptions) {
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      reset()
+    if (event.key !== 'Escape' || isCompositionKeydown(event)) {
+      return
     }
+
+    // Capture phase: the overlay manager listens on document later and must see the
+    // event as consumed, otherwise cancelling a drag would also close the dialog.
+    event.preventDefault()
+    reset()
   }
 
   function onPointerDown(nodeValue: ComponentValue, event: PointerEvent): void {
@@ -1105,7 +1111,7 @@ export function useTreeDrag(options: UseTreeDragOptions) {
     window.addEventListener('pointermove', onPointerMove as EventListener)
     window.addEventListener('pointerup', onPointerUp)
     window.addEventListener('pointercancel', onPointerCancel)
-    window.addEventListener('keydown', onKeydown)
+    window.addEventListener('keydown', onKeydown, true)
 
     if (session.hold) {
       session.timer = setTimeout(() => onHoldEnd(session), HOLD_DELAY)

@@ -1493,9 +1493,12 @@ describe('tree', () => {
     stubRows(wrapper)
     startDrag(wrapper, 'docs', 48, ROW_HEIGHT / 2)
 
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    window.dispatchEvent(event)
     window.dispatchEvent(pointer('pointerup', 0, ROW_HEIGHT / 2))
 
+    expect(event.defaultPrevented).toBe(true)
     expect(wrapper.emitted('update:data')).toBeUndefined()
 
     wrapper.unmount()
