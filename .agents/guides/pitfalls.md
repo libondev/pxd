@@ -149,7 +149,7 @@ a comment beside the fix.
 
 - **Symptom**: A utility such as `text-trim-both` vanishes from the DOM when the same element also carries a font-size class built through `createTailwindVariant`, while it survives in a plain static `class` attribute.
 - **Cause**: `cn` merges with tailwind-merge, which groups every `text-*` utility it recognises. An unknown/custom `text-*` class in the base is treated as a conflicting member of that group and is removed when a later `text-*` class (e.g. `text-xs`, or a colour variant) is appended.
-- **Fix**: Keep a custom `text-*` utility out of a variant base when the variants themselves add `text-*` classes, or wrap it in a non-`text-*` form (e.g. an `[@media]`/arbitrary variant or a dedicated CSS rule). Static class attributes are unaffected because they never pass through `cn`.
+- **Fix**: Register custom font-size scales in the `font-size` class group of `src/utils/cn.ts`; otherwise keep a custom `text-*` utility out of a variant base when the variants themselves add `text-*` classes, or wrap it in a non-`text-*` form (e.g. an `[@media]`/arbitrary variant or a dedicated CSS rule). Static class attributes are unaffected because they never pass through `cn`.
 
 ### KeepAlive only caches stateful component vnodes
 
