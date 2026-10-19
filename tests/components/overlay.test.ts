@@ -67,6 +67,30 @@ describe('overlay', () => {
     wrapper.unmount()
   })
 
+  it('should close the overlay with the highest z-index', async () => {
+    const Demo = defineComponent({
+      components: { Overlay },
+      setup() {
+        return { high: ref(true), low: ref(true) }
+      },
+      template: `
+        <Overlay v-model="high" :z-index="20" />
+        <Overlay v-model="low" :z-index="5" />
+      `,
+    })
+
+    const wrapper = mount(Demo, { attachTo: document.body })
+    await flush()
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flush()
+
+    expect((wrapper.vm as any).high).toBe(false)
+    expect((wrapper.vm as any).low).toBe(true)
+
+    wrapper.unmount()
+  })
+
   it('should allow the escape handler to cancel closing', async () => {
     const Demo = defineComponent({
       components: { Overlay },

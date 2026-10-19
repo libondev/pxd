@@ -179,13 +179,14 @@ describe('useOverlayManager', () => {
     unmount()
   })
 
-  function createOverlay(handler: () => boolean | void) {
+  function createOverlay(handler: () => boolean | void, zIndex?: number) {
     const { registerOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
         enabled: true,
         lockScroll: vi.fn(),
         unlockScroll: vi.fn(),
         onPressEscape: handler,
+        zIndex: () => zIndex,
       }),
     )
 
@@ -222,5 +223,20 @@ describe('useOverlayManager', () => {
 
     unmountOuter()
     unmountInner()
+  })
+
+  it('should order overlays by z-index before registration order', () => {
+    const high = vi.fn(() => true)
+    const low = vi.fn(() => true)
+    const unmountHigh = createOverlay(high, 20)
+    const unmountLow = createOverlay(low, 5)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+
+    expect(high).toHaveBeenCalledOnce()
+    expect(low).not.toHaveBeenCalled()
+
+    unmountHigh()
+    unmountLow()
   })
 })

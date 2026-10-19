@@ -17,11 +17,13 @@ interface OverlayManagerOptions {
   unlockScroll: () => void
   /** Return `false` to let the next overlay below handle the event. */
   onPressEscape?: (ev: KeyboardEvent) => boolean | void
+  zIndex?: MaybeRefOrGetter<number | undefined>
 }
 
 interface OverlayManagerEntry {
   id: symbol
   onPressEscape: OverlayManagerOptions['onPressEscape']
+  zIndex: OverlayManagerOptions['zIndex']
 }
 
 let isKeydownListening = false
@@ -29,8 +31,29 @@ let rootInteractionLocks = 0
 let addedPointerEventsNone = false
 const overlayStack: OverlayManagerEntry[] = []
 
+function getEntryZIndex(entry: OverlayManagerEntry) {
+  const value = Number(toValue(entry.zIndex))
+
+  return Number.isFinite(value) ? value : 0
+}
+
 function getTopOverlay() {
-  return overlayStack.at(-1)
+  let top: OverlayManagerEntry | undefined
+
+  for (const entry of overlayStack) {
+    if (!top || getEntryZIndex(entry) >= getEntryZIndex(top)) {
+      top = entry
+    }
+  }
+
+  return top
+}
+
+function getOverlaysFromTop() {
+  return overlayStack
+    .map((entry, index) => ({ entry, index }))
+    .sort((a, b) => getEntryZIndex(b.entry) - getEntryZIndex(a.entry) || b.index - a.index)
+    .map(({ entry }) => entry)
 }
 
 // The locked container is per overlay, but the inert root and the touchmove guard are process-wide.
@@ -70,8 +93,8 @@ function onEscapeKeydown(ev: KeyboardEvent) {
     return
   }
 
-  for (let index = overlayStack.length - 1; index >= 0; index--) {
-    if (overlayStack[index]?.onPressEscape?.(ev) !== false) {
+  for (const entry of getOverlaysFromTop()) {
+    if (entry.onPressEscape?.(ev) !== false) {
       return
     }
   }
@@ -96,7 +119,8 @@ function removeKeydownListener() {
 }
 
 export function useOverlayManager(options: OverlayManagerOptions) {
-  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape } = options
+  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape, zIndex } =
+    options
 
   let isLockedScroll = false
   const overlayId = Symbol('pxd-overlay-id')
@@ -129,6 +153,7 @@ export function useOverlayManager(options: OverlayManagerOptions) {
     overlayStack.push({
       id: overlayId,
       onPressEscape,
+      zIndex,
     })
 
     ensureKeydownListener()

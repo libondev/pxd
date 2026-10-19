@@ -39,6 +39,7 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
   lockScrollOnVisible: () => props.lockScrollOnVisible,
   lockScroll,
   unlockScroll,
+  zIndex: () => props.zIndex,
   onPressEscape: (ev: KeyboardEvent) => {
     if (!props.closeOnPressEscape) {
       return false

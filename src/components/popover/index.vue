@@ -91,6 +91,15 @@ const shouldTrapFocus = computed(
 const focusTrapContainer = computed(() =>
   isVisible.value && shouldTrapFocus.value ? wrapperRef.value : null,
 )
+const overlayZIndex = computed(() => {
+  if (props.zIndex === undefined || props.zIndex === '') {
+    return undefined
+  }
+
+  const value = Number(props.zIndex)
+
+  return Number.isFinite(value) ? value : undefined
+})
 const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
   return [
@@ -601,6 +610,7 @@ defineExpose({
 
     <POverlay
       :model-value="isVisible"
+      :z-index="overlayZIndex"
       :show-overlay="adaptive"
       :close-on-press-escape="closeOnPressEscape"
       :lock-scroll-on-visible="lockScrollOnVisible"

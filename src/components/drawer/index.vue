@@ -86,6 +86,7 @@ watch(
 <template>
   <POverlay
     :model-value="isVisible"
+    :z-index="zIndex"
     :close-on-press-escape="closeOnPressEscape"
     @escape="closeOverlayIfNeed"
     @click="onOverlayClick"
