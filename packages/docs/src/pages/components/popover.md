@@ -245,11 +245,7 @@ const actions = [
 </template>
 ```
 
-`trigger-selector` matches the final DOM elements inside the default slot. When using it on a Vue component, make sure the component forwards the matching attribute or class to a real DOM element. The `activeTrigger` slot prop is the matched DOM element, not the Vue component instance.
-
 ## Align to point
-
-Set `align-point` to position the Popover at the pointer position. With `hover`, the Popover follows the pointer while it is inside the trigger. With `click`, it toggles at the clicked point. With `contextmenu`, each right-click updates the position and a click hides the Popover.
 
 ```vue demo
 <script setup>

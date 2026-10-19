@@ -75,6 +75,7 @@ const pointReference: VirtualElement = {
 
 const localPosition = shallowRef(props.position)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
+const isManual = computed(() => triggerMethods.value.includes('manual'))
 const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
 const popoverMaxWidth = computed(() => getCssUnitValue(props.maxWidth))
 const wrapperStyle = computed<CSSProperties>(() => ({
@@ -120,7 +121,7 @@ const {
 } = useDelayDestroy(props.modelValue, {
   delay: () => props.destroyDelay,
   visibleChange(v) {
-    if (triggerMethods.value.includes('manual')) {
+    if (isManual.value) {
       return
     }
 
@@ -151,7 +152,7 @@ useOutsideClick(wrapperRef, {
   onTrigger: (ev) => {
     emits('outside-click', ev)
 
-    if (props.closeOnOutsideClick) {
+    if (!isManual.value && props.closeOnOutsideClick) {
       handlePopoverHide()
     }
   },
@@ -329,7 +330,7 @@ async function updatePosition() {
 
   localPosition.value = placement
 
-  if (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped) {
+  if (!isManual.value && (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped)) {
     handlePopoverHide(true)
     return
   }
@@ -373,7 +374,10 @@ async function handlePopoverShow() {
 
 function handlePopoverEscape(ev: KeyboardEvent) {
   emits('escape', ev)
-  handlePopoverHide()
+
+  if (!isManual.value) {
+    handlePopoverHide()
+  }
 }
 
 async function handlePopoverHide(immediate: boolean = false) {

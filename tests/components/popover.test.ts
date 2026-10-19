@@ -551,4 +551,56 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should keep a manual popover open on an outside click', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+        trigger: 'manual',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await flush()
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    expect(document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')).toBe(
+      'true',
+    )
+    expect(wrapper.emitted('outside-click')).toHaveLength(1)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should keep a manual popover open on Escape', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+        trigger: 'manual',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+      },
+    })
+
+    await flush()
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flush()
+
+    expect(document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')).toBe(
+      'true',
+    )
+    expect(wrapper.emitted('escape')).toHaveLength(1)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
 })
