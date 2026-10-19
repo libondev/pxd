@@ -276,8 +276,8 @@ defineExpose({
         class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="toggleType"
       >
-        <EyeOffIcon v-if="isPasswordVisible" class="size-3 pointer-events-none" />
-        <EyeIcon v-else class="size-3 pointer-events-none" />
+        <EyeOffIcon v-if="isPasswordVisible" class="size-3" />
+        <EyeIcon v-else class="size-3" />
       </button>
       <button
         v-if="clearable"
@@ -285,13 +285,13 @@ defineExpose({
         class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="clear"
       >
-        <CrossIcon class="size-3 pointer-events-none" />
+        <CrossIcon class="size-3" />
       </button>
     </div>
 
     <span
       v-if="isWordLimitShown"
-      class="pxd-input--word-limit text-xs px-1.5 -ms-1.5 pointer-events-none shrink-0 text-nowrap text-foreground-secondary"
+      class="pxd-input--word-limit text-xs px-1.5 -ms-1.5 shrink-0 text-nowrap text-foreground-secondary"
       :class="{
         'right-0 pe-0 mbs-1 absolute top-full': isWordLimitOutside,
         'text-red-900': isWordLimitExceeded,

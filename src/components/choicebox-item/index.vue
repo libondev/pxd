@@ -75,7 +75,7 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: innerClasses } = useTailwindVariant(
   {
-    base: 'pxd-choicebox-item--inner size-4 p-0.5 pointer-events-none order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
+    base: 'pxd-choicebox-item--inner size-4 p-0.5 order-2 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
     variants: {
       disabled: {},
       multiple: {
@@ -202,7 +202,7 @@ function onInputChange(event: Event) {
 <style lang="postcss">
 .pxd-choicebox-item[aria-selected='true'] {
   .pxd-choicebox-item--option {
-    background-color: hsla(var(--primary), 0.08);
+    background-color: hsla(var(--primary), 0.1);
   }
 
   .pxd-choicebox-item--label,

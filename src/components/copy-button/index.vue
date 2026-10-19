@@ -28,11 +28,7 @@ async function onCopyClick(ev: PointerEvent) {
     <slot v-if="$slots.default" :copied="isCopied" />
 
     <template #suffix>
-      <Transition
-        name="pxd-transition--fade-scale"
-        mode="out-in"
-        class="pxd-copy-button--icon pointer-events-none"
-      >
+      <Transition name="pxd-transition--fade-scale" mode="out-in" class="pxd-copy-button--icon">
         <CheckIcon v-if="isCopied" />
         <CopyIcon v-else />
       </Transition>

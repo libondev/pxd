@@ -274,7 +274,7 @@ watch(
         @contextmenu.prevent="NOOP"
       >
         <slot name="minusIcon">
-          <MinusIcon class="pointer-events-none" />
+          <MinusIcon />
         </slot>
       </button>
 
@@ -298,7 +298,7 @@ watch(
           @contextmenu.prevent="NOOP"
         >
           <slot name="plusIcon">
-            <PlusIcon class="size-2 pointer-events-none" />
+            <PlusIcon class="size-2" />
           </slot>
         </button>
 
@@ -312,7 +312,7 @@ watch(
           @contextmenu.prevent="NOOP"
         >
           <slot name="minusIcon">
-            <MinusIcon class="size-2 pointer-events-none" />
+            <MinusIcon class="size-2" />
           </slot>
         </button>
       </div>
@@ -328,7 +328,7 @@ watch(
         @contextmenu.prevent="NOOP"
       >
         <slot name="plusIcon">
-          <PlusIcon class="pointer-events-none" />
+          <PlusIcon />
         </slot>
       </button>
     </template>

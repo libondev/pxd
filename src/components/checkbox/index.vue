@@ -49,7 +49,7 @@ const isSelected = computed(() => {
 
 const { classes } = useTailwindVariant(
   {
-    base: 'pxd-checkbox--inner size-4 p-0.5 pointer-events-none inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
+    base: 'pxd-checkbox--inner size-4 p-0.5 inline-flex shrink-0 transform-gpu items-center justify-center overflow-hidden border text-primary-foreground peer-focus-ring motion-safe:transition-colors',
     variants: {
       checked: {},
       disabled: {},

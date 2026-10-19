@@ -653,6 +653,10 @@
   transform: scale(0.8);
 }
 
+[class*='pxd-'] svg {
+  pointer-events: none;
+}
+
 /* Make exit faster than enter */
 [class*='pxd-transition--'][class*='-leave-active'] {
   transition-duration: var(--faster-transition-duration) !important;

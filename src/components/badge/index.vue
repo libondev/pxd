@@ -104,7 +104,7 @@ const { attrs, classes } = useTailwindVariant(
         rounded: 'rounded-full',
       },
       size: {
-        sm: 'px-1.5 h-5 text-13px',
+        sm: 'px-1.5 h-5 text-10px',
         md: 'px-2.5 h-6 text-xs',
         lg: 'px-3 h-8 text-sm',
       },
@@ -142,7 +142,7 @@ function onClose(ev: Event) {
       :class="iconSlotClasses({ size: computedSize, slot: 'suffix' })"
       @click.stop="onClose"
     >
-      <CrossIcon class="pointer-events-none" />
+      <CrossIcon />
     </button>
   </Component>
 </template>
