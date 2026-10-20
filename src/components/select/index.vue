@@ -172,7 +172,7 @@ watch(listOptions, async () => {
       <label
         v-if="filterable"
         :for="searchInputId"
-        class="px-3 py-2 flex items-center border-b bg-background-100"
+        class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
       >
         <input
           :id="searchInputId"

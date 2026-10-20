@@ -40,7 +40,7 @@ const { attrs, classes } = useTailwindVariant(
     <div v-if="$slots.header" class="pxd-card--header text-trim-both">
       <slot name="header" />
     </div>
-    <div class="pxd-card--content p-4 text-trim-both">
+    <div class="pxd-card--content p-3 text-trim-both">
       <slot />
     </div>
     <div v-if="$slots.footer" class="pxd-card--footer text-trim-both">

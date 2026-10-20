@@ -8,7 +8,7 @@
 
 :root {
   --background-100-value: 0, 0%, 100%;
-  --background-200-value: 0, 0%, 97%;
+  --background-200-value: 0, 0%, 98%;
 
   --color-gray-alpha-100-value: #0000000d;
   --color-gray-alpha-200-value: #00000015;
@@ -167,7 +167,7 @@
 }
 
 :root.dark {
-  --background-100-value: 0, 0%, 5%;
+  --background-100-value: 0, 0%, 4%;
   --background-200-value: 0, 0%, 0%;
 
   --color-gray-alpha-100-value: #ffffff0f;

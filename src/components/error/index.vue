@@ -23,7 +23,7 @@ const { attrs, classes } = useTailwindVariant(
     variants: {
       variant: {
         default: '',
-        card: 'p-4 gap-2 w-full max-w-full flex-col items-center rounded-lg border border-red-400 bg-red-200 empty:hidden',
+        card: 'p-3 gap-2 w-full max-w-full flex-col items-center rounded-lg border border-red-400 bg-red-200 empty:hidden',
       },
       size: {
         xs: 'text-xs [--mt:0.125rem]',

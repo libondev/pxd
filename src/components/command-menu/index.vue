@@ -107,7 +107,7 @@ watch(filteredOptions, async () => {
     <template #header>
       <label
         :for="uniqueId"
-        class="py-2 px-3 sm:py-3 -mx-6 -mbs-4 sm:-mbs-6 gap-2 flex items-center border-b bg-background-100"
+        class="px-4 py-3 -mx-5 -mbs-5 gap-2 flex items-center border-b bg-background-100"
       >
         <input
           :id="uniqueId"

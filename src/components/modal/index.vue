@@ -41,10 +41,10 @@ const computedStyle = computed(() => {
 
 const defaultStyles = computed(() => ({
   headerClass: props.defaultHeaderStyle
-    ? 'pbe-4 sm:pbe-6 border-b bg-background-200 dark:bg-background-100'
+    ? 'pbe-5 border-b bg-background-200 dark:bg-background-100'
     : '',
   footerClass: props.defaultFooterStyle
-    ? 'border-t pbs-4 bg-background-200 dark:bg-background-100'
+    ? 'pbs-5 border-t bg-background-200 dark:bg-background-100'
     : '',
 }))
 
@@ -99,20 +99,17 @@ watch(
         v-bind="$attrs"
       >
         <header
-          class="pxd-modal--header px-6 pbs-4 sm:pbs-6 relative shrink-0 empty:hidden"
-          :class="[defaultStyles.headerClass, { 'pe-15': closeable }]"
+          class="pxd-modal--header px-5 pbs-5 relative shrink-0 empty:hidden"
+          :class="[defaultStyles.headerClass, { 'pe-13': closeable }]"
         >
           <slot name="header">
-            <h3
-              v-if="$slots.title || title"
-              class="text-lg sm:text-xl font-semibold tracking-tight m-0"
-            >
+            <h3 v-if="title || $slots.title" class="text-lg font-semibold tracking-tight m-0">
               <slot name="title">
                 {{ title }}
               </slot>
             </h3>
 
-            <div v-if="$slots.subtitle || subtitle" class="mbs-4 text-sm text-muted-foreground">
+            <div v-if="subtitle || $slots.subtitle" class="mbs-1 text-sm text-gray-900">
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
@@ -124,7 +121,7 @@ watch(
             variant="ghost"
             size="sm"
             icon
-            class="top-4 right-6 sm:top-6 size-7 absolute"
+            class="top-4 right-5 sm:top-5 size-7 absolute"
             :aria-label="configProvider.locale.interaction.close"
             :title="configProvider.locale.interaction.close"
             @click="closeOverlayIfNeed"
@@ -133,16 +130,13 @@ watch(
           </PButton>
         </header>
 
-        <div
-          class="pxd-modal--content px-6 py-4 sm:py-6 empty:py-3 h-full flex-1 overflow-auto"
-          :class="contentClass"
-        >
+        <div class="pxd-modal--content p-5 h-full flex-1 overflow-auto" :class="contentClass">
           <slot />
         </div>
 
         <footer
           v-if="$slots.footer"
-          class="pxd-modal--footer px-4 pbe-4 gap-2 relative flex shrink-0 items-center justify-between"
+          class="pxd-modal--footer px-3 pbe-3 gap-2 relative flex shrink-0 items-center justify-between"
           :class="defaultStyles.footerClass"
         >
           <slot name="footer" />
