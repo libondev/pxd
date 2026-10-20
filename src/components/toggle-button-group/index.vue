@@ -30,6 +30,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-toggle-button-group group/toggle-button-group w-max',
     variants: {
       size: {
+        xs: 'rounded-sm',
         sm: 'rounded-md',
         md: 'rounded-md',
         lg: 'rounded-lg',

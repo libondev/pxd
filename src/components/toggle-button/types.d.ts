@@ -1,11 +1,11 @@
-import type { ComponentLabel, ComponentSize, ComponentValue } from '../../types/shared/props'
+import type { ComponentLabel, ComponentSizeWithXs, ComponentValue } from '../../types/shared/props'
 import type { CheckboxProps } from '../checkbox/types'
 
 type ToggleButtonModelValue = ComponentValue | boolean
 
 export interface ToggleButtonProps {
   icon?: boolean
-  size?: ComponentSize
+  size?: ComponentSizeWithXs
   label?: ComponentLabel
   value?: ToggleButtonModelValue
   variant?: 'default' | 'ghost'
