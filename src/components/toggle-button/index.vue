@@ -51,10 +51,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-toggle-button gap-2 font-normal relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
-        xs: `${BASIC_HEIGHTS.xs} px-1.25 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-1.75 text-sm rounded-md`,
+        xs: `${BASIC_HEIGHTS.xs} px-1.5 text-xs rounded-sm`,
+        sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
         md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
-        lg: `${BASIC_HEIGHTS.lg} px-2.75 text-base rounded-lg`,
+        lg: `${BASIC_HEIGHTS.lg} px-3 text-base rounded-lg`,
       },
       variant: {
         default: 'border-gray-400 bg-background-100',
@@ -65,6 +65,9 @@ const { attrs, classes } = useTailwindVariant(
         false: 'cursor-pointer',
       },
       checked: {},
+      icon: {
+        true: 'aspect-square',
+      },
     },
     compoundVariants: [
       { checked: true, disabled: false, class: 'bg-gray-300' },
@@ -76,6 +79,7 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => ({
+      icon: props.icon,
       size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
       checked: isChecked.value,
       variant: computedVariant.value,

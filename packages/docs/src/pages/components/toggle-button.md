@@ -66,19 +66,19 @@ const checked = ref(true)
 
 <template>
   <PStack align="center" class="pxd-toggle-button-group">
-    <PToggleButton v-model="uncheck" disabled aria-label="Toggle bold">
+    <PToggleButton v-model="uncheck" disabled aria-label="Toggle bold" icon>
       <TextBoldIcon />
     </PToggleButton>
 
-    <PToggleButton v-model="uncheck" disabled variant="ghost" aria-label="Toggle bold">
+    <PToggleButton v-model="uncheck" disabled variant="ghost" aria-label="Toggle bold" icon>
       <TextBoldIcon />
     </PToggleButton>
 
-    <PToggleButton v-model="checked" disabled aria-label="Toggle bold">
+    <PToggleButton v-model="checked" disabled aria-label="Toggle bold" icon>
       <TextBoldIcon />
     </PToggleButton>
 
-    <PToggleButton v-model="checked" disabled variant="ghost" aria-label="Toggle bold">
+    <PToggleButton v-model="checked" disabled variant="ghost" aria-label="Toggle bold" icon>
       <TextBoldIcon />
     </PToggleButton>
   </PStack>
@@ -249,6 +249,7 @@ const toggleButtonOptions = [
 | variant | `'ghost' \| 'default'` | `default` | Visual style: `ghost` is transparent, `default` adds a border |
 | disabled | `boolean` | - | Disable the button, also forced on by the parent group |
 | label | `string \| number \| null` | - | Text rendered in the default slot when no slot content is given |
+| icon | `boolean` | `false` | Render as a square icon-only button with centered content |
 | size | `'sm' \| 'md' \| 'lg'` | - | Button size, inherited from the group or config provider when unset |
 | value | `string \| number \| boolean` | `true` | Value this button contributes to the group model |
 | model-value | `string \| number \| boolean \| (string \| number \| boolean)[]` | - | Checked state, an array of values inside a group |

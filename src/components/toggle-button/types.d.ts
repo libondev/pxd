@@ -4,6 +4,7 @@ import type { CheckboxProps } from '../checkbox/types'
 type ToggleButtonModelValue = ComponentValue | boolean
 
 export interface ToggleButtonProps {
+  icon?: boolean
   size?: ComponentSize
   label?: ComponentLabel
   value?: ToggleButtonModelValue
