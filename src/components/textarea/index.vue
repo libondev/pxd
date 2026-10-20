@@ -136,6 +136,7 @@ function onCompositionEnd(event: CompositionEvent) {
       v-model="modelValue"
       class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
       :class="nativeTextareaClasses"
+      spellcheck="false"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"

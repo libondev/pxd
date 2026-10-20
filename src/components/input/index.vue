@@ -238,6 +238,7 @@ defineExpose({
       :id="uniqueId"
       ref="inputRef"
       class="px-3 py-0 file:font-medium size-full appearance-none rounded-none border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      spellcheck="false"
       autocorrect="off"
       autocomplete="off"
       autocapitalize="off"
