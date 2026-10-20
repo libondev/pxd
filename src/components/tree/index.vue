@@ -703,19 +703,19 @@ defineExpose({
             @check="onCheckboxClick"
             @toggle="onSwitcherClick"
           >
-            <template #node-switcher="scope">
+            <template v-if="$slots['node-switcher']" #node-switcher="scope">
               <slot name="node-switcher" v-bind="scope" />
             </template>
 
-            <template #node-icon="scope">
+            <template v-if="$slots['node-icon']" #node-icon="scope">
               <slot name="node-icon" v-bind="scope" />
             </template>
 
-            <template #node-content="scope">
+            <template v-if="$slots['node-content']" #node-content="scope">
               <slot name="node-content" v-bind="scope" />
             </template>
 
-            <template #node-suffix="scope">
+            <template v-if="$slots['node-suffix']" #node-suffix="scope">
               <slot name="node-suffix" v-bind="scope" />
             </template>
           </PTreeNode>
