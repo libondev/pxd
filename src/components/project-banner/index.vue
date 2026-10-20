@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { ProjectBannerProps } from './types'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
   name: 'PProjectBanner',
@@ -9,10 +11,16 @@ defineOptions({
 
 const props = withDefaults(defineProps<ProjectBannerProps>(), { variant: 'default' })
 
+const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'gap-x-2 py-2 leading-5 min-h-9 text-sm flex w-full -translate-y-px items-center justify-center border-y',
+    base: 'gap-x-2 py-2 leading-5 text-sm flex w-full -translate-y-px items-center justify-center border-y',
     variants: {
+      size: {
+        sm: BASIC_MIN_HEIGHTS.sm,
+        md: BASIC_MIN_HEIGHTS.md,
+        lg: BASIC_MIN_HEIGHTS.lg,
+      },
       variant: {
         default: 'border-gray-400 bg-gray-100 text-gray-900',
         warning: 'border-amber-400 bg-amber-100 text-amber-900',
@@ -23,7 +31,7 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
   {
-    selection: () => ({ variant: props.variant }),
+    selection: () => ({ size: configProvider.size, variant: props.variant }),
   },
 )
 

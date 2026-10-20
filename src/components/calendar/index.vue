@@ -166,7 +166,7 @@ watch(
       </PButton>
       <PButton
         icon
-        size="sm"
+        size="xs"
         variant="ghost"
         class="text-foreground-secondary"
         aria-label="Previous month"
@@ -175,13 +175,13 @@ watch(
         <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
       </PButton>
 
-      <PButton size="sm" @click="selectToday">
+      <PButton size="xs" class="px-0" @click="selectToday">
         {{ configProvider.locale.date.today }}
       </PButton>
 
       <PButton
         icon
-        size="sm"
+        size="xs"
         variant="ghost"
         class="text-foreground-secondary"
         aria-label="Next month"
@@ -191,7 +191,7 @@ watch(
       </PButton>
       <PButton
         icon
-        size="sm"
+        size="xs"
         variant="ghost"
         class="text-foreground-secondary"
         aria-label="Next year"
@@ -210,7 +210,7 @@ watch(
         v-for="weekDay in weekDays"
         :key="weekDay"
         class="pxd-calendar--grid-head text-xs font-medium text-gray-800"
-        :class="compact ? 'min-h-6 py-1 text-center' : 'p-2 border-r border-b text-right'"
+        :class="compact ? 'py-1 text-center' : 'p-2 border-r border-b text-right'"
         role="columnheader"
       >
         {{ weekDay }}

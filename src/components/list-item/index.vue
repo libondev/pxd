@@ -3,6 +3,8 @@ import type { ListItemEmits, ListItemProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { useListContext } from '../../contexts/list.js'
 import { toArray } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
@@ -45,10 +47,16 @@ const isChecked = computed(() => {
   return !isNil(props.value) && toArray(selectedValue.value).includes(props.value)
 })
 
+const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item min-h-9 p-2 text-sm pe-8 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item p-2 text-sm pe-8 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
+      size: {
+        sm: BASIC_MIN_HEIGHTS.sm,
+        md: BASIC_MIN_HEIGHTS.md,
+        lg: BASIC_MIN_HEIGHTS.lg,
+      },
       variant: {
         error: 'text-red-900 active:bg-red-100 pointer-fine:data-[active=true]:bg-red-100',
         warning: 'text-amber-900 active:bg-amber-100 pointer-fine:data-[active=true]:bg-amber-100',
@@ -58,7 +66,7 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
   {
-    selection: () => ({ variant: props.variant }),
+    selection: () => ({ size: configProvider.size, variant: props.variant }),
   },
 )
 

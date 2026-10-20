@@ -2,6 +2,8 @@
 import type { MarqueeEmits, MarqueeProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
+import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
@@ -60,6 +62,9 @@ const contentClass = computed(() => {
 
   return 'block max-w-full truncate'
 })
+
+const configProvider = useConfigProvider()
+const minHeightClass = computed(() => BASIC_MIN_HEIGHTS[configProvider.size])
 
 useResizeObserver(wrapRef, scheduleSync)
 
@@ -211,8 +216,8 @@ defineExpose({
   <Component
     data-marquee
     :is="as"
-    class="pxd-marquee text-sm min-h-9 py-2 px-3 gap-2 relative flex w-full max-w-full overflow-hidden bg-(--marquee-background) text-(--marquee-color)"
-    :class="isWrapMode ? 'items-start' : 'items-center'"
+    class="pxd-marquee text-sm py-2 px-3 gap-2 relative flex w-full max-w-full overflow-hidden bg-(--marquee-background) text-(--marquee-color)"
+    :class="[minHeightClass, isWrapMode ? 'items-start' : 'items-center']"
     :data-pause-on-hover="pauseOnHover ? 'true' : 'false'"
     :style="rootStyle"
     v-bind="$attrs"
