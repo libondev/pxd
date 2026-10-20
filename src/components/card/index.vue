@@ -17,7 +17,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-card border bg-background-100',
     variants: {
       shape: {
-        default: 'rounded-md',
+        default: 'rounded-lg',
         square: 'rounded-none',
         rounded: 'rounded-xl',
       },
