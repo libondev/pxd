@@ -51,6 +51,7 @@ declare module 'vue' {
     PHint: (typeof import('pxd/components/hint'))['default']
     PHoldButton: (typeof import('pxd/components/hold-button'))['default']
     PHueText: (typeof import('pxd/components/hue-text'))['default']
+    PImagePreview: (typeof import('pxd/components/image-preview'))['default']
     PInput: (typeof import('pxd/components/input'))['default']
     PIntersectionObserver: (typeof import('pxd/components/intersection-observer'))['default']
     PKbd: (typeof import('pxd/components/kbd'))['default']

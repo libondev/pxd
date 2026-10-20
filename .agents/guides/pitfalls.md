@@ -266,3 +266,9 @@ a comment beside the fix.
 - **Symptom**: `scrollToIndex()` (or `scrollToOffset()`) called from a `useVirtualList` consumer's `onMounted` does nothing at all, while the identical call from a keyboard or pointer handler works — `PList` scrolling to the first selected option is the case that surfaced it.
 - **Cause**: `new Virtualizer({ count: 0 })` gets its real count only from `useVirtualList`'s own `onMounted`/watcher, so no render has read `getVirtualItems()` yet when the consumer's hook runs. `getOffsetForIndex` reads `this.measurementsCache[index]` directly (not through `getMeasurements()`), gets `undefined` and `scrollToIndex` returns early — it never reaches `scrollToFn`, so the reconcile loop cannot recover either. The spacer height is still `0px` in that tick as well, which would clamp the offset to 0 via `getMaxScrollOffset()`.
 - **Fix**: Defer the command by one tick, so the re-render pushes the count, the measurements and the content height before the offset is computed (`scrollToFirstSelected` in `src/components/list/index.vue`). Any `useVirtualList` consumer scrolling on mount needs the same `nextTick` — `tree`, `virtual-list` and `bubble` reach `scrollToIndex` from handlers only today.
+
+### POverlay locks the root, so slotted content must re-enable pointer events
+
+- **Symptom**: An overlay panel built on `POverlay` renders correctly but ignores every click; only Escape still closes it.
+- **Cause**: `useOverlayManager` puts `pointer-events: none` on `<html>` while an overlay is open, and `pointer-events` is inherited. `POverlay` re-enables it only on its own mask, not on the slotted panel. Its `z-index` prop likewise styles the mask, not the slot.
+- **Fix**: Give the teleported panel `pointer-events-auto` and its own stacking value — `calc(var(--modal-index) + 5)` by default, overridable through a local variable when a `zIndex` prop is set (`PImagePreview`).

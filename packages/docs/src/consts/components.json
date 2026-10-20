@@ -200,6 +200,11 @@
     "category": "Typography"
   },
   {
+    "camelized": "Image Preview",
+    "name": "image-preview",
+    "category": "Data Display"
+  },
+  {
     "camelized": "Input",
     "name": "input",
     "category": "Form"
