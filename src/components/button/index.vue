@@ -37,9 +37,9 @@ const btnContentClasses = computed(() => {
   const { icon, align } = props
   const internalAlign = icon ? 'center' : align
   const alignClasses = {
-    left: 'justify-start',
-    center: 'justify-center',
-    right: 'justify-end',
+    left: 'text-start',
+    center: 'text-center',
+    right: 'text-end',
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
@@ -129,7 +129,7 @@ const { attrs, classes } = useTailwindVariant(
     <PSpinner v-if="loading" />
     <slot v-else name="prefix" />
 
-    <span class="inline-flex flex-1 shrink-0 items-center truncate" :class="btnContentClasses">
+    <span class="min-w-0 flex-1 truncate" :class="btnContentClasses">
       <slot />
     </span>
 
