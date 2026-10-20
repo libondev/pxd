@@ -47,7 +47,7 @@ const defaultStyles = computed(() => ({
     ? 'pbe-5 border-b bg-background-200 dark:bg-background-100'
     : '',
   footerClass: props.defaultFooterStyle
-    ? 'pbs-5 border-t bg-background-200 dark:bg-background-100'
+    ? 'pbs-3 border-t bg-background-200 dark:bg-background-100'
     : '',
 }))
 
