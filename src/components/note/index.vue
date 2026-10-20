@@ -49,7 +49,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-note gap-2 sm:items-center max-sm:flex-col flex max-w-full rounded-md border',
     variants: {
       size: {
-        sm: 'px-2 py-1.5 text-13px',
+        sm: 'px-2 py-1.5 text-sm',
         md: 'px-3 py-2 text-sm',
         lg: 'px-4 py-2.5 text-base',
       },

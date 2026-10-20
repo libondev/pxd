@@ -27,7 +27,7 @@ const { attrs, classes } = useTailwindVariant(
       },
       size: {
         xs: 'text-xs [--mt:0.125rem]',
-        sm: 'text-13px [--mt:0.125rem]',
+        sm: 'text-sm [--mt:0.125rem]',
         md: 'text-sm [--mt:0.125rem]',
         lg: 'text-base [--mt:0.25rem]',
       },
