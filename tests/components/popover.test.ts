@@ -80,6 +80,55 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should stop trigger clicks from bubbling when stop-propagation is set', async () => {
+    const outer = document.createElement('div')
+    const onOuterClick = vi.fn()
+
+    outer.addEventListener('click', onOuterClick)
+    document.body.appendChild(outer)
+
+    const wrapper = mount(Popover, {
+      attachTo: outer,
+      props: {
+        trigger: 'click',
+        stopPropagation: true,
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('click')
+
+    expect(onOuterClick).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
+  it('should let trigger clicks bubble by default', async () => {
+    const outer = document.createElement('div')
+    const onOuterClick = vi.fn()
+
+    outer.addEventListener('click', onOuterClick)
+    document.body.appendChild(outer)
+
+    const wrapper = mount(Popover, {
+      attachTo: outer,
+      props: {
+        trigger: 'click',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('click')
+
+    expect(onOuterClick).toHaveBeenCalledTimes(1)
+
+    wrapper.unmount()
+  })
+
   it('should default showDelay to 0', () => {
     const wrapper = mount(Popover, {
       slots: {

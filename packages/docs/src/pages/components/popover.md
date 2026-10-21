@@ -369,6 +369,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | offset | `number` | - | Gap in `px` between the Popover and its trigger |
 | trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| ('click' \| 'hover' \| 'contextmenu' \| 'manual')[]` | `() => ['hover']` | Trigger methods; takes one or an array of `hover`, `click`, `contextmenu`, `manual` |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
+| stop-propagation | `boolean` | - | Stop the click on a resolved trigger from bubbling to its ancestors. |
 | align-point | `boolean` | - | Align the Popover to the pointer position. |
 | disabled | `boolean` | - | Ignore every trigger event so the Popover cannot be shown |
 | adaptive | `boolean` | - | Render as a fullscreen overlay with dimmed backdrop, locked scroll and slide motion |

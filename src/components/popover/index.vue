@@ -442,6 +442,10 @@ function onTriggerClick(ev: Event) {
     return
   }
 
+  if (props.stopPropagation) {
+    ev.stopPropagation()
+  }
+
   emits('trigger-click', ev as PointerEvent)
 
   if (triggerMethods.value.includes('click')) {

@@ -128,6 +128,7 @@ watch(
     :adaptive="isAdaptive"
     :fill-trigger-width="false"
     :auto-focus-element="true"
+    :stop-propagation="stopPropagation"
     :wrapper-class="responsiveClasses.wrapper"
     :content-class="responsiveClasses.content"
     :close-on-press-escape="!isPending"
