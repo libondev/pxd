@@ -104,7 +104,7 @@ const overlayZIndex = computed(() => {
 const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
 const computePositionMiddleware = computed(() => {
   return [
-    shift(),
+    shift({ padding: { left: 4, right: 4 } }),
     props.autoPosition && flip(),
     props.showArrow && arrow({ element: arrowRef.value }),
     props.closeOnInvisible && hide({ strategy: 'escaped' }),
