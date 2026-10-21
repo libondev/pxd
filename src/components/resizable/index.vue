@@ -14,7 +14,8 @@ interface DragState {
   pointerId: number
   position: number
   delta: number
-  resized: boolean
+  start: Pair
+  startCollapsed: boolean
 }
 
 defineOptions({
@@ -30,9 +31,12 @@ const props = withDefaults(defineProps<ResizableProps>(), {
   modelValue: null,
   minSize: () => [0, 0],
   defaultValue: () => [PERCENT_TOTAL / 2, PERCENT_TOTAL / 2],
+  collapsed: null,
+  dblclickAction: 'reset',
   handle: false,
   disabled: false,
   unit: 'percent',
+  reverse: false,
 })
 
 const emits = defineEmits<ResizableEmits>()
@@ -43,30 +47,36 @@ const KEYBOARD_STEP_LARGE = 10
 const uid = getUniqueId('pxd-resizable')
 const leadingId = `${uid}-leading`
 const trailingId = `${uid}-trailing`
-const initialSizes = toPair(isNil(props.modelValue) ? props.defaultValue : props.modelValue)
 let drag: DragState | null = null
-const flushResize = throttleByRaf(applyPendingDelta)
+const flushResize = throttleByRaf(flushPointer)
 
 const containerRef = shallowRef<HTMLElement>()
 const handleRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef(0)
+const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
+const innerCollapsed = shallowRef(false)
+/** Pointer position in `unit` during a drag; unclamped so a leftward overshoot is not swallowed. */
+const dragPointer = shallowRef<number | null>(null)
+const dragCollapsed = shallowRef(false)
+/** Leading size to restore when a folded panel is expanded without dragging. */
+const foldedFrom = shallowRef<number | null>(null)
 const isControlled = computed(() => !isNil(props.modelValue))
 const isPixel = computed(() => props.unit === 'px')
-const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
+/** `reverse` only means anything where a panel fills the rest, i.e. under `px`. */
+const isReversed = computed(() => isPixel.value && props.reverse)
 /** Percent sizes are measured against 100; pixel sizes fill the measured container. */
 const totalSize = computed(() => (isPixel.value ? containerSize.value : PERCENT_TOTAL))
-/** Only the leading size of a pixel group comes from the caller. */
+/** Under `px` only the pinned panel's size comes from the caller. */
 const sizes = computed<Pair>(() => {
-  const source = toPair(isControlled.value ? props.modelValue : innerSizes.value)
-  const leading = source[0]
+  const [leading, trailing] = toPair(isControlled.value ? props.modelValue : innerSizes.value)
+  const total = totalSize.value
 
-  return isPixel.value ? [leading, Math.max(totalSize.value - leading, 0)] : source
+  if (isReversed.value) {
+    return [Math.max(total - trailing, 0), trailing]
+  }
+
+  return isPixel.value ? [leading, Math.max(total - leading, 0)] : [leading, trailing]
 })
-/** The pair the panel slots are handed, updated only when a change settles. */
-const settledSizes = shallowRef<Pair>(sizes.value)
-const restoreSizes = shallowRef<Pair | null>(null)
-const collapsed = computed(() => restoreSizes.value !== null)
-const unitSuffix = computed(() => (isPixel.value ? 'px' : '%'))
 
 const bounds = computed<{ min: number; max: number }>(() => {
   const [leading, trailing] = toPair(props.minSize)
@@ -82,7 +92,39 @@ const bounds = computed<{ min: number; max: number }>(() => {
 
   return { min: leading, max: total - trailing }
 })
-const ariaValueNow = computed(() => roundSize(sizes.value[0]))
+const collapsed = computed(() =>
+  dragPointer.value === null ? (props.collapsed ?? innerCollapsed.value) : dragCollapsed.value,
+)
+/** The bound the divider parks against while folded. */
+const foldedLeading = computed(() => (isReversed.value ? bounds.value.max : bounds.value.min))
+/** Half of the pinned floor; a panel without a floor has nothing to fold past. */
+const foldThreshold = computed(
+  () => (isReversed.value ? totalSize.value - bounds.value.max : bounds.value.min) / 2,
+)
+const renderedSizes = computed<Pair>(() => {
+  if (collapsed.value) {
+    return foldedPair()
+  }
+
+  if (dragPointer.value === null) {
+    return sizes.value
+  }
+
+  const { min, max } = bounds.value
+  const pointer = isReversed.value
+    ? Math.min(dragPointer.value, max)
+    : Math.max(dragPointer.value, min)
+
+  return pairFrom(pointer)
+})
+/** The pair the panel slots are handed, updated only when a change settles. */
+const settledSizes = shallowRef<Pair>(renderedSizes.value)
+const unitSuffix = computed(() => (isPixel.value ? 'px' : '%'))
+/** An empty panel puts the divider on a container edge, where a line is just residue. */
+const isFlush = computed(() => renderedSizes.value[0] <= 0 || renderedSizes.value[1] <= 0)
+const ariaValueNow = computed(() =>
+  roundSize(collapsed.value ? foldedLeading.value : renderedSizes.value[0]),
+)
 const ariaValueText = computed(
   () => `${ariaValueNow.value}${unitSuffix.value}${collapsed.value ? ', folded' : ''}`,
 )
@@ -99,24 +141,101 @@ function toPair(value?: number[] | null): Pair {
   return [value?.[0] ?? 0, value?.[1] ?? 0]
 }
 
-function setSizes([leading, trailing]: Pair) {
-  const [currentLeading, currentTrailing] = sizes.value
-  const nextLeading = roundSize(leading)
-  const next: Pair = isPixel.value
-    ? [nextLeading, roundSize(Math.max(totalSize.value - nextLeading, 0))]
-    : [nextLeading, roundSize(trailing)]
+function pairFrom(leading: number): Pair {
+  const next = roundSize(leading)
 
-  if (next[0] === currentLeading && next[1] === currentTrailing) {
-    return false
-  }
+  return [next, roundSize(Math.max(totalSize.value - next, 0))]
+}
 
+function foldedPair(): Pair {
+  const total = roundSize(totalSize.value)
+
+  return isReversed.value ? [total, 0] : [0, total]
+}
+
+function writeSizes(next: Pair) {
   if (!isControlled.value) {
     innerSizes.value = next
   }
 
   modelValue.value = next
+}
+
+function setSizes([leading, trailing]: Pair) {
+  const [currentLeading, currentTrailing] = sizes.value
+  const nextLeading = roundSize(leading)
+  const next: Pair = isPixel.value ? pairFrom(nextLeading) : [nextLeading, roundSize(trailing)]
+
+  if (next[0] === currentLeading && next[1] === currentTrailing) {
+    return false
+  }
+
+  writeSizes(next)
 
   return true
+}
+
+function foldLeading(from: number): boolean {
+  foldedFrom.value = from
+
+  if (isNil(props.collapsed)) {
+    innerCollapsed.value = true
+  }
+
+  emits('update:collapsed', true)
+
+  return setSizes(foldedPair())
+}
+
+function clearFold(wasCollapsed: boolean) {
+  foldedFrom.value = null
+
+  if (isNil(props.collapsed)) {
+    innerCollapsed.value = false
+  }
+
+  if (wasCollapsed) {
+    emits('update:collapsed', false)
+  }
+}
+
+function expandLeading(): boolean {
+  const wasCollapsed = collapsed.value
+  const { min, max } = bounds.value
+  const changed = setSizes(pairFrom(clampValue(foldedFrom.value ?? sizes.value[0], min, max)))
+
+  clearFold(wasCollapsed)
+
+  return changed
+}
+
+function reset() {
+  const wasCollapsed = collapsed.value
+  const { min, max } = bounds.value
+  const configured = toPair(props.defaultValue)
+  const target = isReversed.value ? totalSize.value - configured[1] : configured[0]
+  const next = pairFrom(clampValue(target, min, max))
+  const changed = setSizes(next)
+
+  clearFold(wasCollapsed)
+
+  if (!changed && !wasCollapsed) {
+    return
+  }
+
+  if (!changed) {
+    writeSizes(next)
+  }
+
+  emits('reset', next)
+}
+
+function toggleFold() {
+  const changed = collapsed.value ? expandLeading() : foldLeading(sizes.value[0])
+
+  if (changed) {
+    emits('change', sizes.value.slice())
+  }
 }
 
 function applyDelta(delta: number) {
@@ -129,13 +248,8 @@ function applyDelta(delta: number) {
   }
 
   const nextLeading = roundSize(leading + applied)
-  const changed = setSizes([nextLeading, roundSize(leading + trailing - nextLeading)])
 
-  if (changed) {
-    restoreSizes.value = null
-  }
-
-  return changed
+  return setSizes([nextLeading, roundSize(leading + trailing - nextLeading)])
 }
 
 function syncContainerSize() {
@@ -143,6 +257,7 @@ function syncContainerSize() {
 
   if (!container) {
     containerSize.value = 0
+
     return
   }
 
@@ -150,65 +265,48 @@ function syncContainerSize() {
     props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
 }
 
-function applyPendingDelta() {
-  if (!drag || drag.delta === 0) {
+function flushPointer() {
+  const current = dragPointer.value
+
+  if (!drag || current === null || drag.delta === 0) {
     return
   }
 
   const delta = drag.delta
+  const step = isPixel.value
+    ? delta
+    : containerSize.value > 0
+      ? (delta / containerSize.value) * PERCENT_TOTAL
+      : 0
 
   drag.delta = 0
-  drag.resized = applyPointerDelta(delta) || drag.resized
-}
 
-function applyPointerDelta(delta: number) {
-  if (isPixel.value) {
-    return applyDelta(delta)
-  }
-
-  if (containerSize.value <= 0) {
-    return false
-  }
-
-  return applyDelta((delta / containerSize.value) * PERCENT_TOTAL)
-}
-
-function commitChange() {
-  emits('change', sizes.value.slice())
-}
-
-function toggleCollapse() {
-  if (props.disabled) {
+  if (step === 0) {
     return
   }
 
-  const restore = restoreSizes.value
+  const { min, max } = bounds.value
+  const next = roundSize(current + step)
+  const pointer = isReversed.value ? Math.max(next, min) : Math.min(next, max)
 
-  if (restore) {
-    restoreSizes.value = null
-
-    if (setSizes(restore)) {
-      commitChange()
-    }
-
+  if (pointer === current) {
     return
   }
 
-  restoreSizes.value = [sizes.value[0], sizes.value[1]]
+  dragPointer.value = pointer
 
-  const { min } = bounds.value
+  const threshold = foldThreshold.value
+  const folded =
+    threshold > 0 &&
+    (isReversed.value ? totalSize.value - pointer <= threshold : pointer <= threshold)
 
-  if (setSizes([min, totalSize.value - min])) {
-    commitChange()
+  if (folded !== dragCollapsed.value) {
+    dragCollapsed.value = folded
+    foldedFrom.value = folded ? foldedLeading.value : null
+    emits('update:collapsed', folded)
   }
-}
 
-function reset() {
-  restoreSizes.value = null
-
-  if (setSizes(initialSizes)) {
-    emits('reset', sizes.value.slice())
-  }
+  modelValue.value = renderedSizes.value.slice()
 }
 
 function axisOf(event: PointerEvent) {
@@ -217,18 +315,16 @@ function axisOf(event: PointerEvent) {
 
 function resetDragging() {
   const pointerId = drag?.pointerId
-  const handle = handleRef.value
 
   flushResize.cancel()
   drag = null
-  settledSizes.value = sizes.value
-
-  if (pointerId === undefined || !handle) {
-    return
-  }
+  dragPointer.value = null
+  dragCollapsed.value = false
 
   try {
-    handle.releasePointerCapture(pointerId)
+    if (pointerId !== undefined) {
+      handleRef.value?.releasePointerCapture(pointerId)
+    }
   } catch {}
 }
 
@@ -237,13 +333,25 @@ function handlePointerDown(event: PointerEvent) {
     return
   }
 
+  syncContainerSize()
+
+  const startCollapsed = collapsed.value
+  const [startLeading, startTrailing] = renderedSizes.value
+  const { min, max } = bounds.value
+  const threshold = foldThreshold.value
+
   drag = {
     pointerId: event.pointerId,
     position: axisOf(event),
     delta: 0,
-    resized: false,
+    start: [startLeading, startTrailing],
+    startCollapsed,
   }
-  syncContainerSize()
+  // A folded handle starts at the threshold, so a rightward drag expands at once and a leftward one stays folded.
+  dragPointer.value = startCollapsed
+    ? Math.max(isReversed.value ? totalSize.value - threshold : threshold, 0)
+    : clampValue(sizes.value[0], min, max)
+  dragCollapsed.value = startCollapsed
 
   try {
     handleRef.value?.setPointerCapture(event.pointerId)
@@ -265,37 +373,69 @@ function handlePointerMove(event: PointerEvent) {
   flushResize()
 }
 
-function handlePointerUp(event: PointerEvent) {
-  if (!drag || event.pointerId !== drag.pointerId) {
+function finishDrag(reportChange: boolean) {
+  if (!drag || dragPointer.value === null) {
     return
   }
 
   flushResize.cancel()
-  applyPendingDelta()
+  flushPointer()
 
-  const didResize = drag.resized
+  const { start, startCollapsed } = drag
+  const folded = dragCollapsed.value
+  const [leading, trailing] = renderedSizes.value
+  const changed = folded !== startCollapsed || leading !== start[0] || trailing !== start[1]
+  const settled: Pair = folded ? foldedPair() : [leading, trailing]
 
   resetDragging()
 
-  if (didResize) {
-    commitChange()
+  if (!changed) {
+    return
+  }
+
+  foldedFrom.value = folded ? foldedLeading.value : null
+
+  if (isNil(props.collapsed)) {
+    innerCollapsed.value = folded
+  }
+
+  setSizes(settled)
+
+  if (reportChange) {
+    emits('change', settled)
+  }
+}
+
+function handlePointerUp(event: PointerEvent) {
+  if (drag && event.pointerId === drag.pointerId) {
+    finishDrag(true)
   }
 }
 
 function handlePointerCancel(event: PointerEvent) {
-  if (!drag || event.pointerId !== drag.pointerId) {
-    return
+  if (drag && event.pointerId === drag.pointerId) {
+    finishDrag(false)
   }
-
-  resetDragging()
 }
 
 function handleLostCapture() {
-  if (!drag) {
+  if (drag) {
+    finishDrag(false)
+  }
+}
+
+function handleDblclick() {
+  if (props.disabled) {
     return
   }
 
-  resetDragging()
+  if (props.dblclickAction === 'fold') {
+    toggleFold()
+
+    return
+  }
+
+  reset()
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -303,52 +443,73 @@ function handleKeydown(event: KeyboardEvent) {
     return
   }
 
-  const step = event.shiftKey ? KEYBOARD_STEP_LARGE : KEYBOARD_STEP
   const horizontal = props.direction === 'horizontal'
-  let delta: number | null = null
+  const back = horizontal ? 'ArrowLeft' : 'ArrowUp'
+  const forward = horizontal ? 'ArrowRight' : 'ArrowDown'
 
-  if (event.key === (horizontal ? 'ArrowLeft' : 'ArrowUp')) {
-    delta = -step
-  } else if (event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')) {
-    delta = step
-  } else if (event.key === 'Home') {
-    delta = bounds.value.min - sizes.value[0]
-  } else if (event.key === 'End') {
-    delta = bounds.value.max - sizes.value[0]
-  }
-
-  if (delta === null) {
+  if (![back, forward, 'Home', 'End'].includes(event.key)) {
     return
   }
 
   event.preventDefault()
 
-  if (applyDelta(delta)) {
-    commitChange()
+  const wasCollapsed = collapsed.value
+
+  if (wasCollapsed) {
+    expandLeading()
+  }
+
+  const step = event.shiftKey ? KEYBOARD_STEP_LARGE : KEYBOARD_STEP
+  const leading = sizes.value[0]
+  let delta = event.key === back ? -step : step
+
+  if (event.key === 'Home') {
+    delta = bounds.value.min - leading
+  } else if (event.key === 'End') {
+    delta = bounds.value.max - leading
+  }
+
+  if (applyDelta(delta) || wasCollapsed) {
+    emits('change', sizes.value.slice())
   }
 }
 
-/** Only the leading panel of a pixel group gets a basis; the trailing one fills. */
+/** Only the pinned panel of a pixel group gets a basis; the other one fills. */
 function panelStyle(index: number) {
-  if (isPixel.value && index === 1) {
+  if (isPixel.value && index === (isReversed.value ? 0 : 1)) {
     return {}
   }
 
   return {
-    flexBasis: `${sizes.value[index]}${unitSuffix.value}`,
+    flexBasis: `${renderedSizes.value[index]}${unitSuffix.value}`,
   }
 }
 
-watch(sizes, (value) => {
-  if (!drag) {
+watch(renderedSizes, (value) => {
+  if (dragPointer.value === null) {
     settledSizes.value = value
   }
 })
 
+watch(
+  () => props.collapsed,
+  (next, prev) => {
+    if (isNil(props.collapsed) || dragPointer.value !== null) {
+      return
+    }
+
+    if (next === true && sizes.value[0] !== 0) {
+      foldLeading(sizes.value[0])
+    } else if (prev === true) {
+      expandLeading()
+    }
+  },
+)
+
 onMounted(syncContainerSize)
 
 defineExpose({
-  getPanelSizes: () => sizes.value.slice(),
+  getPanelSizes: () => renderedSizes.value.slice(),
   reset,
 })
 </script>
@@ -359,6 +520,7 @@ defineExpose({
     ref="containerRef"
     :data-orientation="direction"
     :data-unit="unit"
+    :data-reverse="reverse || undefined"
     class="pxd-resizable flex size-full max-w-full flex-row overflow-hidden data-[orientation=vertical]:flex-col"
     v-bind="$attrs"
   >
@@ -383,6 +545,7 @@ defineExpose({
       :aria-controls="`${leadingId} ${trailingId}`"
       :aria-disabled="disabled || undefined"
       :data-collapsed="collapsed || undefined"
+      :data-flush="isFlush || undefined"
       :data-handler="handle"
       :data-orientation="direction"
       class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
@@ -392,7 +555,7 @@ defineExpose({
       @pointercancel="handlePointerCancel"
       @lostpointercapture="handleLostCapture"
       @keydown="handleKeydown"
-      @dblclick.prevent.stop="toggleCollapse"
+      @dblclick.prevent.stop="handleDblclick"
     />
 
     <div
@@ -420,6 +583,17 @@ defineExpose({
   flex-grow: 1;
 }
 
+.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable-panel:first-child {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable-panel:last-child {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
 .pxd-resizable-handle[data-handler='true']::before {
   content: '';
   position: absolute;
@@ -432,17 +606,10 @@ defineExpose({
   z-index: 1;
 }
 
-.pxd-resizable-handle[data-collapsed='true']::before {
-  opacity: 0.4;
-}
-
 .pxd-resizable-handle::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  padding: 2px;
-  transform: translate(-50%, -50%);
+  background-color: transparent;
 }
 
 .pxd-resizable-handle:hover::after {
@@ -450,9 +617,11 @@ defineExpose({
 }
 
 .pxd-resizable-handle[data-orientation='horizontal'] {
+  width: 1px;
   height: 100%;
-  border-left-width: 1px;
+  margin-right: -1px;
   cursor: col-resize;
+  background-color: var(--color-gray-300);
 
   &::before {
     width: 0.375rem;
@@ -460,14 +629,20 @@ defineExpose({
   }
 
   &::after {
+    top: 0;
+    left: 50%;
+    width: 0.25rem;
     height: 100%;
+    transform: translateX(-50%);
   }
 }
 
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
-  border-bottom-width: 1px;
+  height: 1px;
+  margin-bottom: -1px;
   cursor: row-resize;
+  background-color: var(--color-gray-300);
 
   &::before {
     width: 1.5rem;
@@ -475,7 +650,20 @@ defineExpose({
   }
 
   &::after {
+    top: 50%;
+    left: 0;
     width: 100%;
+    height: 0.25rem;
+    transform: translateY(-50%);
   }
+}
+
+.pxd-resizable-handle[data-collapsed='true'],
+.pxd-resizable-handle[data-flush='true'] {
+  background-color: transparent;
+}
+
+.pxd-resizable-handle[data-collapsed='true']::before {
+  opacity: 0.4;
 }
 </style>

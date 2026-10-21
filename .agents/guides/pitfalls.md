@@ -272,3 +272,9 @@ a comment beside the fix.
 - **Symptom**: An overlay panel built on `POverlay` renders correctly but ignores every click; only Escape still closes it.
 - **Cause**: `useOverlayManager` puts `pointer-events: none` on `<html>` while an overlay is open, and `pointer-events` is inherited. `POverlay` re-enables it only on its own mask, not on the slotted panel. Its `z-index` prop likewise styles the mask, not the slot.
 - **Fix**: Give the teleported panel `pointer-events-auto` and its own stacking value — `calc(var(--modal-index) + 5)` by default, overridable through a local variable when a `zIndex` prop is set (`PImagePreview`).
+
+### A drag must not accumulate from the value it clamped
+
+- **Symptom**: A splitter stops at its minimum width and the rest of the gesture is swallowed — continuing left never folds the panel, and the caller has to fake a negative minimum to keep the pointer alive.
+- **Cause**: The pointer delta was applied to the *rendered* size, which had already been clamped to the bounds, so each frame started from the floor and the extra travel was discarded.
+- **Fix**: Keep the pointer position as its own value in gesture space, apply deltas to that, and derive the render size (`max(pointer, min)`) from it. Fold detection compares the pointer, not the render size; the clamp belongs on the way out, never on the way in.

@@ -105,21 +105,44 @@ other panel's ceiling. Floors that cannot fit are ignored.
 
 ## Collapse
 
-Double click folds the leading panel to its `min-size`; double click again restores the previous
-split. Dragging or pressing an arrow key expands a folded pair.
+Dragging stops at `min-size`; another half of it past that folds the panel to 0, and coming back
+past the same point unfolds it — all inside the gesture, committed on release. `collapsed` makes
+the fold controllable.
 
 ```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const sizes = ref([256, 744])
+const collapsed = ref(false)
+</script>
+
 <template>
-  <PResizable :default-value="[30, 70]" :min-size="[15, 0]" class="w-100 h-50 max-w-full border rounded-lg">
-    <template #leading>
-      <div class="flex h-full items-center justify-center">Leading</div>
-    </template>
-    <template #trailing>
-      <div class="flex h-full items-center justify-center">Trailing</div>
-    </template>
-  </PResizable>
+  <PStack direction="vertical" gap="3">
+    <PText secondary>{{ collapsed ? 'Folded' : `${sizes[0]}px` }}</PText>
+
+    <PResizable
+      v-model="sizes"
+      v-model:collapsed="collapsed"
+      unit="px"
+      :min-size="[180, 0]"
+      :default-value="[256, 0]"
+      class="w-full h-50 border rounded-lg"
+    >
+      <template #leading>
+        <div class="flex h-full items-center justify-center">Leading</div>
+      </template>
+      <template #trailing>
+        <div class="flex h-full items-center justify-center">Trailing</div>
+      </template>
+    </PResizable>
+  </PStack>
 </template>
 ```
+
+Double click resets the leading panel to `default-value`, clamped into the bounds, and unfolds it;
+`dblclick-action="fold"` folds instead. A panel with no `min-size` floor has nothing to fold past,
+so dragging it just stops at 0.
 
 ## Grip
 
@@ -140,7 +163,7 @@ split. Dragging or pressing an arrow key expands a folded pair.
 
 ## Disabled
 
-`disabled` stops dragging, keyboard resizing and folding.
+`disabled` stops dragging, keyboard resizing, resetting and folding.
 
 ```vue demo
 <template>
@@ -179,6 +202,39 @@ A group has two panels, so a third is a nested group with its own sizes.
 </template>
 ```
 
+## Three columns
+
+Nesting a `reverse` group in the trailing slot gives the VS Code split: the left and right columns
+keep their px size, the middle takes the rest, and either divider takes width from the middle.
+A fold past `min-size[1] / 2` hides the right column instead.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const left = ref([96, 0])
+const right = ref([0, 120])
+</script>
+
+<template>
+  <PResizable v-model="left" unit="px" :min-size="[80, 220]" :default-value="[96, 0]" class="w-100 h-50 max-w-full border rounded-lg">
+    <template #leading>
+      <div class="flex h-full items-center justify-center">Left</div>
+    </template>
+    <template #trailing>
+      <PResizable v-model="right" reverse unit="px" :min-size="[120, 100]" :default-value="[0, 120]">
+        <template #leading>
+          <div class="flex h-full items-center justify-center">Middle</div>
+        </template>
+        <template #trailing>
+          <div class="flex h-full items-center justify-center">Right</div>
+        </template>
+      </PResizable>
+    </template>
+  </PResizable>
+</template>
+```
+
 ## Keyboard
 
 The divider is focusable: arrow keys along the group's axis move it by one step (ten with shift),
@@ -188,8 +244,8 @@ and `Home` / `End` snap to the bounds. Moving a folded pair expands it.
 
 The divider is a focusable `separator` that reports the leading position and range through
 `aria-valuenow`, `aria-valuemin` and `aria-valuemax`, and links both panels with `aria-controls`.
-`aria-valuetext` adds the unit and fold state; `disabled` maps to `aria-disabled` and removes the
-divider from the tab order.
+`aria-valuetext` adds the unit and fold state; a folded pair reports its floor as the value.
+`disabled` maps to `aria-disabled` and removes the divider from the tab order.
 
 ## Props
 
@@ -197,18 +253,22 @@ divider from the tab order.
 | --- | --- | --- | --- |
 | direction | `'horizontal' \| 'vertical'` | `horizontal` | Axis along which the two panels are laid out and resized |
 | unit | `'percent' \| 'px'` | `percent` | Unit every size is written in; `percent` shares the container between both panels, `px` pins the leading panel and gives the rest to the trailing one |
+| reverse | `boolean` | `false` | Under `px`, pin the trailing panel and give the rest to the leading one |
 | min-size | `number[]` | `[0, 0]` | Smallest allowed size of each panel, in `unit`; each one is also the other panel's ceiling |
+| collapsed | `boolean \| null` | `null` | Fold the leading panel to 0; unset means the group keeps the flag itself |
+| dblclick-action | `'reset' \| 'fold'` | `reset` | What a double click on the divider does |
 | handle | `boolean` | `false` | Draw the grip in the middle of the divider |
-| disabled | `boolean` | `false` | Stop the divider from being dragged, moved or folded |
-| default-value | `number[]` | `[50, 50]` | Sizes an uncontrolled group starts from, in `unit`; read once, on setup, and under `px` only the leading size |
-| model-value | `number[] \| null` | `null` | The two sizes in `unit`, leading first; under `px` only the leading size is read, and unset means the group keeps them itself |
+| disabled | `boolean` | `false` | Stop the divider from being dragged, moved, reset or folded |
+| default-value | `number[]` | `[50, 50]` | Sizes an uncontrolled group starts from and the target of a double click, in `unit`; under `px` only the pinned size is read |
+| model-value | `number[] \| null` | `null` | The two sizes in `unit`, leading first; under `px` only the pinned size is read — the leading one, or the trailing one with `reverse` — and unset means the group keeps them itself |
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(sizes: number[]) => void` | Emitted when a drag, a key press or a double click commits new panel sizes. |
-| reset | `(sizes: number[]) => void` | Emitted when the panels are put back to the sizes the group started from. |
+| change | `(sizes: number[]) => void` | Emitted when a drag, a key press or a fold commits new panel sizes. |
+| reset | `(sizes: number[]) => void` | Emitted when the panels go back to `default-value`. |
+| update:collapsed | `(collapsed: boolean) => void` | Emitted when the leading panel folds or unfolds. |
 | update:modelValue | `(sizes: number[]) => void` | Emitted whenever a panel size changes. |
 
 ## Slots
@@ -223,4 +283,4 @@ divider from the tab order.
 | Name | Type | Description |
 | --- | --- | --- |
 | getPanelSizes | `() => number[]` | Read the current panel sizes in the group's `unit`, leading first. |
-| reset | `() => void` | Restore the sizes the group started from and expand the pair if it is folded. |
+| reset | `() => void` | Restore `default-value` and unfold the pair. |

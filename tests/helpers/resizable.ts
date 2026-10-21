@@ -4,6 +4,7 @@ import { nextTick } from 'vue'
 export const CONTAINER_SIZE = 1000
 
 let containerSize = CONTAINER_SIZE
+const sizeByElement = new WeakMap<HTMLElement, number>()
 
 // happy-dom reports no layout, so the container's measured box is faked here. The
 // component reads it on mount, on pointer down and from its resize observer.
@@ -13,9 +14,11 @@ function stubOffset(name: 'offsetWidth' | 'offsetHeight') {
   Object.defineProperty(HTMLElement.prototype, name, {
     configurable: true,
     get(this: HTMLElement) {
-      return this.classList.contains('pxd-resizable')
-        ? containerSize
-        : (original?.get?.call(this) ?? 0)
+      if (!this.classList.contains('pxd-resizable')) {
+        return original?.get?.call(this) ?? 0
+      }
+
+      return sizeByElement.get(this) ?? containerSize
     },
   })
 }
@@ -26,6 +29,11 @@ stubOffset('offsetHeight')
 /** Resize the container the group measures itself against. */
 export function setContainerSize(size: number) {
   containerSize = size
+}
+
+/** Give one group its own measured width, for nested layouts. */
+export function setElementSize(element: HTMLElement, size: number) {
+  sizeByElement.set(element, size)
 }
 
 // happy-dom has no pointer capture, and a stubbed capture is enough: the events
