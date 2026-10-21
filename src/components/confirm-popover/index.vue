@@ -27,6 +27,8 @@ const titleId = getUniqueId('confirm-popover-title')
 // Bumped on every open and close, so a confirm that settles after the popover
 // was dismissed cannot confirm an action the user already abandoned.
 let sessionId = 0
+// Switching to another matched trigger abandons the row the confirm was started for.
+let activeTriggerElement: HTMLElement | null = null
 
 const isPending = shallowRef(false)
 const localVisible = shallowRef(props.modelValue ?? false)
@@ -62,6 +64,21 @@ function onVisibleChange(value: boolean) {
 function close() {
   applyVisible(false)
   emits('update:modelValue', false)
+}
+
+function onTriggerClick(ev: PointerEvent) {
+  if (!props.triggerSelector || !(ev.target instanceof Element)) {
+    return
+  }
+
+  const trigger = ev.target.closest<HTMLElement>(props.triggerSelector)
+
+  if (!trigger || trigger === activeTriggerElement) {
+    return
+  }
+
+  activeTriggerElement = trigger
+  sessionId++
 }
 
 async function onConfirm() {
@@ -129,18 +146,24 @@ watch(
     :adaptive="isAdaptive"
     :fill-trigger-width="false"
     :auto-focus-element="true"
+    :trigger-selector="triggerSelector"
     :stop-propagation="stopPropagation"
     :wrapper-class="responsiveClasses.wrapper"
     :content-class="responsiveClasses.content"
     :close-on-press-escape="!isPending"
     :lock-scroll-on-visible="isAdaptive"
     @update:model-value="onVisibleChange"
+    @trigger-click="onTriggerClick"
   >
     <slot />
 
-    <template #content>
+    <template #content="{ activeTrigger, activeTriggerIndex }">
       <div class="p-3 max-w-64">
-        <slot name="content" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
+        <slot
+          name="content"
+          :active-trigger="activeTrigger"
+          :active-trigger-index="activeTriggerIndex"
+        >
           <h3 v-if="title" :id="titleId" class="m-0 text-sm font-medium">
             {{ title }}
           </h3>

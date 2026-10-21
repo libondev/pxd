@@ -1,6 +1,7 @@
 import type { computePosition } from '@floating-ui/dom'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
+import { h } from 'vue'
 import ConfirmPopover from '../../src/components/confirm-popover/index.vue'
 
 const mocks = vi.hoisted(() => ({
@@ -265,6 +266,78 @@ describe('confirm-popover', () => {
 
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     expect(getContentElement()).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should share one popover across matched triggers', async () => {
+    const wrapper = mount(ConfirmPopover, {
+      attachTo: document.body,
+      props: { triggerSelector: '[data-row]' },
+      slots: {
+        default: `
+          <button data-row data-title="First">First</button>
+          <button data-row data-title="Second">Second</button>
+        `,
+        content: (params: { activeTrigger: HTMLElement | null; activeTriggerIndex: number }) =>
+          h(
+            'span',
+            { class: 'active-row' },
+            `${params.activeTrigger?.dataset.title}:${params.activeTriggerIndex}`,
+          ),
+      },
+    })
+
+    const rows = wrapper.findAll('[data-row]')
+
+    await rows[0].trigger('click')
+    await flush()
+
+    expect(getContentElement()?.querySelector('.active-row')?.textContent).toBe('First:0')
+
+    await rows[1].trigger('click')
+    await flush()
+
+    expect(getContentElement()?.querySelector('.active-row')?.textContent).toBe('Second:1')
+    expect(isVisible()).toBe(true)
+    expect(mocks.computePosition.mock.calls.at(-1)?.[0]).toBe(rows[1].element)
+
+    wrapper.unmount()
+  })
+
+  it('should abandon a pending confirm when another matched trigger is clicked', async () => {
+    let resolveConfirm: ((value: boolean) => void) | undefined
+    const beforeConfirm = () =>
+      new Promise<boolean>((resolve) => {
+        resolveConfirm = resolve
+      })
+
+    const wrapper = mount(ConfirmPopover, {
+      attachTo: document.body,
+      props: { triggerSelector: '[data-row]', beforeConfirm },
+      slots: {
+        default: `
+          <button data-row data-title="First">First</button>
+          <button data-row data-title="Second">Second</button>
+        `,
+      },
+    })
+
+    const rows = wrapper.findAll('[data-row]')
+
+    await rows[0].trigger('click')
+    await flush()
+    clickAction(1)
+    await flush()
+
+    await rows[1].trigger('click')
+    await flush()
+
+    resolveConfirm?.(true)
+    await flush()
+
+    expect(wrapper.emitted('confirm')).toBeUndefined()
+    expect(isVisible()).toBe(true)
 
     wrapper.unmount()
   })

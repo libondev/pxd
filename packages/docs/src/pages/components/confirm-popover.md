@@ -80,6 +80,48 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 </template>
 ```
 
+## Multiple triggers
+
+`trigger-selector` lets any number of DOM elements share one confirm popover, so a list or tree can render a single instance. The popover follows the matched trigger, and the `content` / `actions` slots receive the active one — switching triggers while a `before-confirm` is still pending discards that confirm.
+
+```vue demo
+<template>
+  <PConfirmPopover trigger-selector="[data-confirm-file]">
+    <PStack direction="vertical" align="start" class="w-full gap-1">
+      <button
+        v-for="file in ['report.pdf', 'photo.png', 'notes.md']"
+        :key="file"
+        type="button"
+        data-confirm-file
+        :data-file="file"
+        class="h-8 w-full rounded-md border px-2 text-start text-sm bg-background-100"
+      >
+        {{ file }}
+      </button>
+    </PStack>
+
+    <template #content="{ activeTrigger }">
+      <div class="p-3 flex max-w-64 flex-col gap-2">
+        <p class="m-0 text-sm font-medium">Delete {{ activeTrigger?.dataset.file }}?</p>
+        <p class="m-0 text-13px text-foreground-secondary">This action cannot be undone.</p>
+      </div>
+    </template>
+
+    <template #actions="{ confirm, cancel, pending }">
+      <div class="gap-1.5 flex items-center justify-end">
+        <PButton size="sm" variant="ghost" :disabled="pending" @click="cancel">
+          Cancel
+        </PButton>
+
+        <PButton size="sm" variant="error" :loading="pending" @click="confirm">
+          Delete
+        </PButton>
+      </div>
+    </template>
+  </PConfirmPopover>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -92,6 +134,7 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 | confirm-variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'simple' \| 'link'` | `primary` | Variant of the confirm button |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | Preferred placement, flipped when there is no room; `-start` and `-end` align to the edge |
 | disabled | `boolean` | - | Ignore every trigger event so the popover cannot be shown |
+| trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot; every matched element shares this popover |
 | stop-propagation | `boolean` | - | Stop the trigger click from bubbling to its ancestors. |
 | before-confirm | `() => Awaitable<boolean \| void>` | - | Ran before confirming; return `false` or reject to keep the popover open |
 
@@ -108,5 +151,5 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 | Name | Description |
 | --- | --- |
 | default | Trigger content. |
-| content | Replaces the whole popover body. Slot props: `confirm: () => void`, `cancel: () => void`, `pending: boolean`. |
-| actions | Replaces only the buttons. Slot props: `confirm: () => void`, `cancel: () => void`, `pending: boolean`. |
+| content | Replaces the whole popover body. Slot props: `confirm: () => void`, `cancel: () => void`, `pending: boolean`, `activeTrigger: HTMLElement \| null`, `activeTriggerIndex: number`. |
+| actions | Replaces only the buttons. Slot props: `confirm: () => void`, `cancel: () => void`, `pending: boolean`, `activeTrigger: HTMLElement \| null`, `activeTriggerIndex: number`. |

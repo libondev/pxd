@@ -13,6 +13,7 @@ export interface ConfirmPopoverProps {
   confirmVariant?: ButtonVariant
   position?: ComponentPosition
   disabled?: boolean
+  triggerSelector?: string
   stopPropagation?: boolean
   beforeConfirm?: ConfirmBeforeConfirm
 }
