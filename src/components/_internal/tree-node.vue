@@ -112,7 +112,7 @@ function onPointerdown(event: PointerEvent): void {
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
     :style="{ paddingInlineStart: indentSize + 'px', '--node-indent': indentSize + 'px' }"
-    class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1.5 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none pointer-fine:hover:bg-gray-100"
+    class="pxd-tree--node group/row min-h-8 py-1 pe-1 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none pointer-fine:hover:bg-gray-100"
     :class="[
       itemClass,
       {
@@ -211,8 +211,8 @@ function onPointerdown(event: PointerEvent): void {
 .pxd-tree--switcher.relative {
   &::after {
     content: '';
-    width: 150%;
-    height: 150%;
+    width: 125%;
+    height: 125%;
     position: absolute;
     left: 50%;
     top: 50%;
