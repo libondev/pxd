@@ -140,7 +140,6 @@ watch(filteredOptions, async () => {
 
     <PList
       ref="listRef"
-      :loop="false"
       :virtual="virtual"
       :options="filteredOptions"
       :default-active-index="0"
