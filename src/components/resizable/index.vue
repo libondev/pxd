@@ -44,6 +44,7 @@ const emits = defineEmits<ResizableEmits>()
 const PERCENT_TOTAL = 100
 const KEYBOARD_STEP = 1
 const KEYBOARD_STEP_LARGE = 10
+const UNFOLD_DISTANCE = 10
 const uid = getUniqueId('pxd-resizable')
 const leadingId = `${uid}-leading`
 const trailingId = `${uid}-trailing`
@@ -135,6 +136,15 @@ useResizeObserver(containerRef, syncContainerSize)
 
 function roundSize(value: number): number {
   return Math.round(value * 100) / 100
+}
+
+/** Pixel distance as the group's `unit`. */
+function toUnit(px: number): number {
+  if (isPixel.value) {
+    return px
+  }
+
+  return containerSize.value > 0 ? (px / containerSize.value) * PERCENT_TOTAL : 0
 }
 
 function toPair(value?: number[] | null): Pair {
@@ -272,12 +282,7 @@ function flushPointer() {
     return
   }
 
-  const delta = drag.delta
-  const step = isPixel.value
-    ? delta
-    : containerSize.value > 0
-      ? (delta / containerSize.value) * PERCENT_TOTAL
-      : 0
+  const step = toUnit(drag.delta)
 
   drag.delta = 0
 
@@ -338,7 +343,9 @@ function handlePointerDown(event: PointerEvent) {
   const startCollapsed = collapsed.value
   const [startLeading, startTrailing] = renderedSizes.value
   const { min, max } = bounds.value
-  const threshold = foldThreshold.value
+  const boundary = isReversed.value ? totalSize.value - foldThreshold.value : foldThreshold.value
+  const deadZone = toUnit(UNFOLD_DISTANCE)
+  const collapsedPointer = isReversed.value ? boundary + deadZone : boundary - deadZone
 
   drag = {
     pointerId: event.pointerId,
@@ -347,9 +354,9 @@ function handlePointerDown(event: PointerEvent) {
     start: [startLeading, startTrailing],
     startCollapsed,
   }
-  // A folded handle starts at the threshold, so a rightward drag expands at once and a leftward one stays folded.
+  // A collapsed handle parks one dead zone short of the boundary, so opening it takes a real drag.
   dragPointer.value = startCollapsed
-    ? Math.max(isReversed.value ? totalSize.value - threshold : threshold, 0)
+    ? Math.max(collapsedPointer, 0)
     : clampValue(sizes.value[0], min, max)
   dragCollapsed.value = startCollapsed
 

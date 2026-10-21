@@ -1043,8 +1043,39 @@ describe('resizable', () => {
     await flush()
 
     expect(collapsed.value).toBe(false)
-    expect(sizes.value).toEqual([210, 790])
+    expect(sizes.value).toEqual([200, 800])
 
+    wrapper.unmount()
+  })
+
+  it('opens a collapsed pair only after a real drag', async () => {
+    const exposed = ref<any>()
+    const wrapper = mountResizable(
+      { unit: 'px', defaultValue: [256], minSize: [180, 0], collapsed: true },
+      slots(),
+      exposed,
+    )
+    await flush()
+
+    const handle = wrapper.find('.pxd-resizable-handle')
+    const frames = stubFrames()
+
+    handle.element.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
+    handle.element.dispatchEvent(createPointerEvent('pointermove', { x: 509 }))
+    frames.run()
+    await flush()
+
+    expect(handle.attributes('data-collapsed')).toBe('true')
+    expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
+
+    handle.element.dispatchEvent(createPointerEvent('pointermove', { x: 512 }))
+    frames.run()
+    await flush()
+
+    expect(handle.attributes('data-collapsed')).toBeUndefined()
+    expect(exposed.value.getPanelSizes()).toEqual([180, 820])
+
+    frames.restore()
     wrapper.unmount()
   })
 
