@@ -53,6 +53,8 @@ const props = withDefaults(defineProps<TreeProps>(), {
   data: () => [],
   multiple: false,
   checkStrictly: false,
+  showSwitcher: true,
+  showCheckbox: true,
   disabled: false,
   expandOnly: false,
   draggable: false,
@@ -690,6 +692,8 @@ defineExpose({
             :active="entry.active"
             :multiple="multiple"
             :disabled="disabled"
+            :show-switcher="showSwitcher"
+            :show-checkbox="showCheckbox"
             :set-size="rows.length"
             :indent="indent"
             :selectable="isSelectable(entry.key)"
@@ -735,6 +739,8 @@ defineExpose({
             :active="entry.active"
             :multiple="multiple"
             :disabled="disabled"
+            :show-switcher="showSwitcher"
+            :show-checkbox="showCheckbox"
             :set-size="rows.length"
             :indent="indent"
             :selectable="isSelectable(entry.key)"

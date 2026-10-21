@@ -26,6 +26,8 @@ const props = defineProps<{
   multiple: boolean
   disabled: boolean
   selectable: boolean
+  showSwitcher: boolean
+  showCheckbox: boolean
   setSize: number
   indent: number
   id: string
@@ -133,7 +135,7 @@ function onPointerdown(event: PointerEvent): void {
     @dragstart.prevent
   >
     <span
-      v-if="hasChildren"
+      v-if="showSwitcher && hasChildren"
       data-tree-switcher
       class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
       @click.stop="emits('toggle', value)"
@@ -153,10 +155,10 @@ function onPointerdown(event: PointerEvent): void {
         />
       </slot>
     </span>
-    <span v-else aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0" />
+    <span v-else-if="showSwitcher" aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0" />
 
     <span
-      v-if="multiple"
+      v-if="multiple && showCheckbox"
       aria-hidden="true"
       :data-selectable="selectable"
       class="pxd-tree--checkbox size-4 p-0.5 inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm border text-primary-foreground"
@@ -177,6 +179,7 @@ function onPointerdown(event: PointerEvent): void {
         name="node-icon"
         :node="node"
         :depth="depth"
+        :loading="loading"
         :expanded="expanded"
         :has-children="hasChildren"
       />

@@ -105,6 +105,10 @@ export interface TreeProps {
   modelValue?: TreeModelValue
   multiple?: boolean
   checkStrictly?: boolean
+  /** Hides the switcher column, its leaf spacer included: expansion stays on the keyboard and `expandKey`. */
+  showSwitcher?: boolean
+  /** Hides the built-in checkbox: a row click still checks. */
+  showCheckbox?: boolean
   disabled?: boolean
   selectable?: TreeSelectableFn
   expandOnly?: boolean

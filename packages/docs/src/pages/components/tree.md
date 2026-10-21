@@ -558,6 +558,8 @@ function load({ node }, resolve) {
 | model-value | `TreeModelValue` | `null` | Selected value, an array when `multiple` is set |
 | multiple | `boolean` | `false` | Show a checkbox and cascade the selection through the parents |
 | check-strictly | `boolean` | `false` | Keep every node independently selectable, without cascading and without the partial state |
+| show-switcher | `boolean` | `true` | Draw the switcher column; hiding it drops the leaf spacer too, so `indent` sets where the row starts |
+| show-checkbox | `boolean` | `true` | Draw the built-in checkbox under `multiple`; a row click still checks |
 | disabled | `boolean` | `false` | Disable the selection and the keyboard of the whole tree |
 | selectable | `(node: TreeOption) => boolean` | every node | Keep a node out of the selection without disabling it |
 | expand-only | `boolean` | `false` | A row click only opens or closes a parent instead of selecting it; under `multiple` the checkbox selects |
