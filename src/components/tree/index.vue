@@ -62,7 +62,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   virtual: false,
   itemSize: 32,
   overScan: 4,
-  indent: 20,
+  indent: 16,
   childrenField: 'children',
   lazy: false,
   loading: false,
