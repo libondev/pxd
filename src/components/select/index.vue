@@ -154,7 +154,9 @@ watch(listOptions, async () => {
       </template>
 
       <template v-if="translatedLabel">
-        <slot :label="translatedLabel">{{ translatedLabel }}</slot>
+        <div class="truncate">
+          <slot :label="translatedLabel">{{ translatedLabel }}</slot>
+        </div>
       </template>
       <template v-else>
         {{ placeholder }}

@@ -129,7 +129,7 @@ const { attrs, classes } = useTailwindVariant(
     <PSpinner v-if="loading" />
     <slot v-else name="prefix" />
 
-    <span class="min-w-0 flex-1 truncate" :class="btnContentClasses">
+    <span class="min-w-0 flex flex-1 items-center" :class="btnContentClasses">
       <slot />
     </span>
 
