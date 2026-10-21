@@ -2,6 +2,7 @@ import type { computePosition } from '@floating-ui/dom'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { h } from 'vue'
+import Overlay from '../../src/components/overlay/index.vue'
 import Popover from '../../src/components/popover/index.vue'
 
 const mocks = vi.hoisted(() => ({
@@ -48,6 +49,26 @@ describe('popover', () => {
     })
 
     expect(wrapper.exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should mount the overlay only once the content is rendered', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    expect(wrapper.findComponent(Overlay).exists()).toBe(false)
+
+    await wrapper.find('.pxd-popover').trigger('click')
+    await flush()
+
+    expect(wrapper.findComponent(Overlay).exists()).toBe(true)
 
     wrapper.unmount()
   })

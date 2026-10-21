@@ -1,5 +1,4 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { nextTick, ref } from 'vue'
 import { useOverlayManager } from '../../src/composables/_internal/use-overlay-manager'
 import { useSetupWrapper } from '../helpers/setup'
 
@@ -19,7 +18,6 @@ describe('useOverlayManager', () => {
 
     const { isTopOverlay, registerOverlay, unregisterOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
-        enabled: true,
         lockScroll,
         unlockScroll,
       }),
@@ -31,38 +29,12 @@ describe('useOverlayManager', () => {
     unmount()
   })
 
-  it('should follow the enabled flag', async () => {
-    const enabled = ref(false)
-    const { isTopOverlay, unmount } = useSetupWrapper(() =>
-      useOverlayManager({
-        enabled,
-        lockScroll: vi.fn(),
-        unlockScroll: vi.fn(),
-      }),
-    )
-
-    expect(isTopOverlay()).toBe(false)
-
-    enabled.value = true
-    await nextTick()
-
-    expect(isTopOverlay()).toBe(true)
-
-    enabled.value = false
-    await nextTick()
-
-    expect(isTopOverlay()).toBe(false)
-
-    unmount()
-  })
-
   it('should be top overlay when only one', () => {
     const lockScroll = vi.fn()
     const unlockScroll = vi.fn()
 
     const { isTopOverlay, registerOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
-        enabled: true,
         lockScroll,
         unlockScroll,
       }),
@@ -76,7 +48,6 @@ describe('useOverlayManager', () => {
   it('should disable page interaction while the scroll is locked', () => {
     const { registerOverlay, unregisterOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
-        enabled: true,
         lockScrollOnVisible: true,
         lockScroll: vi.fn(),
         unlockScroll: vi.fn(),
@@ -104,7 +75,6 @@ describe('useOverlayManager', () => {
     const createManager = () =>
       useSetupWrapper(() =>
         useOverlayManager({
-          enabled: true,
           lockScrollOnVisible: true,
           lockScroll: vi.fn(),
           unlockScroll: vi.fn(),
@@ -131,7 +101,6 @@ describe('useOverlayManager', () => {
     const onPressEscape = vi.fn()
     const { registerOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
-        enabled: true,
         lockScroll: vi.fn(),
         unlockScroll: vi.fn(),
         onPressEscape,
@@ -182,7 +151,6 @@ describe('useOverlayManager', () => {
   function createOverlay(handler: () => boolean | void, zIndex?: number) {
     const { registerOverlay, unmount } = useSetupWrapper(() =>
       useOverlayManager({
-        enabled: true,
         lockScroll: vi.fn(),
         unlockScroll: vi.fn(),
         onPressEscape: handler,

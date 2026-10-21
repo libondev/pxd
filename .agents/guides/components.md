@@ -57,6 +57,7 @@ withDefaults(defineProps<CardProps>(), { shape: 'default' })
 - 每个 `XxxEmits` 条目都要有真实派发路径（组件自身 / 它调用的 composable / 经 context 的子组件），不留死声明
 - 根元素带无值标记属性 `data-<组件名>`（如 `data-card`、`data-list-item`），作为稳定的外部选择器
 - 根元素是 `PTeleport` / `POverlay` 时标记要下移到真正的 DOM 根元素上：写在 `PTeleport` 上会被 Vue 3 的 `Teleport` 吞掉，写在 `POverlay` 上会落到遮罩层而不是内容层
+- 命名分层：composable 的行为开关一律 `enabled?: MaybeRefOrGetter<boolean>`（默认 `true`），逐项谓词用 `isDisabled(...)`，组件 prop 一律 `disabled`；不要再引入 `when` / `active` 这类同类开关
 
 ## After creating a component
 

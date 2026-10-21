@@ -270,8 +270,8 @@ defineExpose({
 
 <template>
   <POverlay
+    variant="none"
     :z-index="zIndex"
-    :show-overlay="false"
     :model-value="modelValue"
     :close-on-press-escape="false"
     :close-on-click-overlay="false"

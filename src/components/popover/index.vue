@@ -52,7 +52,6 @@ const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const activeTriggerRef = shallowRef<HTMLElement | null>(null)
 const activeTriggerIndex = shallowRef(-1)
-const hasMultipleTriggers = shallowRef(false)
 const pointerPosition = shallowRef<{ x: number; y: number } | null>(null)
 
 const pointReference: VirtualElement = {
@@ -77,20 +76,19 @@ const localPosition = shallowRef(props.position)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const isManual = computed(() => triggerMethods.value.includes('manual'))
 const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
-const popoverMaxWidth = computed(() => getCssUnitValue(props.maxWidth))
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
   '--popover-offset': props.offset,
   '--popover-arrow-color': props.arrowColor,
-  '--popover-max-width': popoverMaxWidth.value,
+  '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
 // Hover popovers must not steal focus. Click-triggered popovers keep the trap for Tab
 // containment, but only auto-focus when the caller asked for it.
-const shouldTrapFocus = computed(
-  () => isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'),
-)
 const focusTrapContainer = computed(() =>
-  isVisible.value && shouldTrapFocus.value ? wrapperRef.value : null,
+  isVisible.value &&
+  (isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'))
+    ? wrapperRef.value
+    : null,
 )
 const overlayZIndex = computed(() => {
   if (props.zIndex === undefined || props.zIndex === '') {
@@ -100,16 +98,6 @@ const overlayZIndex = computed(() => {
   const value = Number(props.zIndex)
 
   return Number.isFinite(value) ? value : undefined
-})
-const triggerPointerMoveFn = computed(() => (props.alignPoint ? onTriggerPointerMove : undefined))
-const computePositionMiddleware = computed(() => {
-  return [
-    shift({ padding: { left: 4, right: 4 } }),
-    props.autoPosition && flip(),
-    props.showArrow && arrow({ element: arrowRef.value }),
-    props.closeOnInvisible && hide({ strategy: 'escaped' }),
-    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
-  ]
 })
 
 const configProvider = useConfigProvider()
@@ -181,8 +169,6 @@ function getTriggerElements() {
     triggerElementsCache = Array.from(
       triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector),
     )
-
-    hasMultipleTriggers.value = triggerElementsCache.length > 0
   }
 
   return triggerElementsCache
@@ -190,7 +176,6 @@ function getTriggerElements() {
 
 function clearTriggerElementsCache() {
   triggerElementsCache = null
-  hasMultipleTriggers.value = false
 }
 
 function resolveTriggerElement(target: EventTarget | null) {
@@ -304,11 +289,21 @@ function updatePopoverMinWidth() {
 
   const trigger = activeTriggerRef.value || triggerRef.value
   const triggerWidth = trigger.getBoundingClientRect().width
-  const maxWidth = popoverMaxWidth.value
+  const maxWidth = getCssUnitValue(props.maxWidth)
 
   wrapperRef.value.style.minWidth = maxWidth
     ? `min(${triggerWidth}px, ${maxWidth})`
     : `${triggerWidth}px`
+}
+
+function getPositionMiddleware() {
+  return [
+    shift({ padding: { left: 4, right: 4 } }),
+    props.autoPosition && flip(),
+    props.showArrow && arrow({ element: arrowRef.value }),
+    props.closeOnInvisible && hide({ strategy: 'escaped' }),
+    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
+  ]
 }
 
 async function updatePosition() {
@@ -324,7 +319,7 @@ async function updatePosition() {
     wrapperRef.value,
     {
       placement: props.position,
-      middleware: computePositionMiddleware.value,
+      middleware: getPositionMiddleware(),
     },
   )
 
@@ -611,15 +606,16 @@ defineExpose({
     @click="onTriggerClick"
     @contextmenu="onTriggerContextmenu"
     @pointerover="onTriggerPointerOver"
-    @pointermove="triggerPointerMoveFn"
+    @pointermove="onTriggerPointerMove"
     @pointerleave="onTriggerPointerLeave"
   >
     <slot />
 
     <POverlay
+      v-if="isRender"
       :model-value="isVisible"
       :z-index="overlayZIndex"
-      :show-overlay="adaptive"
+      :variant="adaptive ? 'default' : 'none'"
       :close-on-press-escape="closeOnPressEscape"
       :lock-scroll-on-visible="lockScrollOnVisible"
       @escape="handlePopoverEscape"

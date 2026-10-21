@@ -6,7 +6,7 @@ import { toValue } from '../utils/helper.js'
 
 interface Options {
   action: Callback
-  disabled?: MaybeRefOrGetter<boolean>
+  enabled?: MaybeRefOrGetter<boolean>
   finalInterval?: number
   initialInterval?: number
   accelerationDuration?: number
@@ -22,7 +22,7 @@ export function useRepeatAction(options: Options): Results
 export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   const {
     action,
-    disabled,
+    enabled = true,
     finalInterval = 30,
     initialInterval = 500,
     accelerationDuration = 1000,
@@ -43,7 +43,7 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   }
 
   function step() {
-    if (!running || toValue(disabled)) {
+    if (!running || !toValue(enabled)) {
       stop()
       return
     }
@@ -72,7 +72,7 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   }
 
   function start() {
-    if (running || toValue(disabled)) {
+    if (running || !toValue(enabled)) {
       return
     }
 

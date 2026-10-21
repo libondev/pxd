@@ -18,7 +18,7 @@ function useOutsideClick(
 ```ts
 interface Options {
   allowList?: MaybeElementRef<HTMLElement>[]
-  enabled?: (ev: PointerEvent) => boolean
+  enabled?: MaybeRefOrGetter<boolean>
   onTrigger?: (ev: PointerEvent) => void
 }
 ```
@@ -29,5 +29,5 @@ interface Options {
 | --- | --- | --- |
 | `container` | `MaybeElementRef<HTMLElement>` | The container element to detect outside clicks for |
 | `options.allowList` | `MaybeElementRef<HTMLElement>[]` | Elements excluded from outside click detection |
-| `options.enabled` | `(ev: PointerEvent) => boolean` | Whether the outside click detection is enabled |
+| `options.enabled` | `MaybeRefOrGetter<boolean>` | Binds the document listener only while it resolves to `true` |
 | `options.onTrigger` | `(ev: PointerEvent) => void` | Callback fired when an outside click is detected |

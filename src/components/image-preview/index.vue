@@ -292,8 +292,8 @@ defineExpose({
 
     <POverlay
       v-model="isVisible"
+      variant="none"
       :z-index="zIndex"
-      :show-overlay="false"
       :close-on-press-escape="closeOnPressEscape"
     >
       <Transition name="pxd-transition--fade" appear>

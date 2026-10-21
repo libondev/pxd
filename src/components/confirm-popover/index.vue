@@ -52,6 +52,10 @@ function applyVisible(value: boolean) {
 
   sessionId++
   localVisible.value = value
+
+  if (!value) {
+    isPending.value = false
+  }
 }
 // The popover owns the trigger, so its own state is authoritative: mirror it
 // locally and forward it, otherwise a controlled parent that never writes back
@@ -120,15 +124,6 @@ watch(
   (value) => {
     if (value !== undefined) {
       applyVisible(value)
-    }
-  },
-)
-
-watch(
-  () => localVisible.value,
-  (value) => {
-    if (!value) {
-      isPending.value = false
     }
   },
 )

@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { onScopeDispose, watch } from 'vue'
+import { onScopeDispose } from 'vue'
 import {
   cachedOff,
   cachedOn,
@@ -11,7 +11,6 @@ import { toValue } from '../../utils/helper.js'
 const touchMoveOptions = { passive: false }
 
 interface OverlayManagerOptions {
-  enabled?: MaybeRefOrGetter<boolean>
   lockScrollOnVisible?: MaybeRefOrGetter<boolean>
   lockScroll: () => void
   unlockScroll: () => void
@@ -119,7 +118,7 @@ function removeKeydownListener() {
 }
 
 export function useOverlayManager(options: OverlayManagerOptions) {
-  const { enabled, lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape, zIndex } = options
+  const { lockScrollOnVisible, lockScroll, unlockScroll, onPressEscape, zIndex } = options
 
   let isLockedScroll = false
   const overlayId = Symbol('pxd-overlay-id')
@@ -131,10 +130,6 @@ export function useOverlayManager(options: OverlayManagerOptions) {
   }
 
   function registerOverlay() {
-    if (!toValue(enabled)) {
-      return
-    }
-
     const shouldLockScroll = toValue(lockScrollOnVisible)
 
     if (shouldLockScroll && !isLockedScroll) {
@@ -173,22 +168,6 @@ export function useOverlayManager(options: OverlayManagerOptions) {
 
     removeKeydownListener()
   }
-
-  watch(
-    () => toValue(enabled),
-    (isEnabled, wasEnabled) => {
-      if (isEnabled === wasEnabled) {
-        return
-      }
-
-      if (isEnabled) {
-        registerOverlay()
-        return
-      }
-
-      unregisterOverlay()
-    },
-  )
 
   onScopeDispose(() => {
     unregisterOverlay()

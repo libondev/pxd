@@ -47,9 +47,8 @@ function onClickToClose() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | z-index | `number` | - | Stacking order of the overlay, applied through the `--overlay-index` variable |
-| variant | `'default' \| 'blurred' \| 'transparent'` | - | Backdrop treatment; `blurred` adds a backdrop blur, `transparent` fades out |
+| variant | `'default' \| 'blurred' \| 'none'` | - | Backdrop treatment; `blurred` adds a backdrop blur, `none` renders no backdrop at all so only the slotted content is placed |
 | model-value | `boolean` | `false` | Whether the overlay is visible |
-| show-overlay | `boolean` | `true` | Render the backdrop; `false` keeps only the slotted content |
 | close-on-press-escape | `boolean` | `true` | Close the overlay when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `false` | Close the overlay when the backdrop is clicked |
 | lock-scroll-on-visible | `boolean` | `true` | Prevent the page behind the overlay from scrolling |

@@ -1,14 +1,16 @@
-import type { Ref } from 'vue'
-import { customRef, onScopeDispose } from 'vue'
+import type { Ref, ShallowRef } from 'vue'
+import { onScopeDispose, shallowRef } from 'vue'
 import { cachedOn } from '../utils/event.js'
 import { isServer } from '../utils/is.js'
 
-interface CacheObject {
-  [key: string]: {
-    count: number
-    query: MediaQueryList
-    cleanups: Array<() => void>
-  }
+type QueryCallback = (e: MediaQueryList) => void
+
+interface CacheEntry {
+  count: number
+  matches: ShallowRef<boolean>
+  query: MediaQueryList
+  callbacks: Set<QueryCallback>
+  unbind: () => void
 }
 
 export const PRESET_MEDIA_QUERIES = {
@@ -29,85 +31,56 @@ export const PRESET_MEDIA_QUERIES = {
   XXL_UP: '(width >= 96rem)',
 }
 
-const CACHED_QUERIES: CacheObject = {}
+const CACHED_QUERIES: Record<string, CacheEntry> = {}
 
-export function useMediaQuery(
-  condition: string,
-  callback?: (e: MediaQueryList) => void,
-): Ref<boolean> {
-  let initialized = false
-  let mediaQuery: CacheObject[string] | undefined
-  let unbindChange: (() => void) | undefined
+function createEntry(condition: string): CacheEntry {
+  const query = window.matchMedia(condition)
+  const matches = shallowRef(query.matches)
+  const callbacks = new Set<QueryCallback>()
 
-  const matches = customRef<boolean>((track, trigger) => ({
-    get() {
-      track()
+  const unbind = cachedOn(
+    query,
+    'change',
+    () => {
+      matches.value = query.matches
 
-      if (isServer()) {
-        return false
+      for (const callback of callbacks) {
+        callback(query)
       }
-
-      if (!initialized) {
-        let cached = CACHED_QUERIES[condition]
-
-        if (cached) {
-          cached.count++
-        } else {
-          cached = CACHED_QUERIES[condition] = {
-            count: 1,
-            query: window.matchMedia(condition),
-            cleanups: [],
-          }
-        }
-
-        // Close over the immutable `entry` snapshot, never over the mutable
-        // `mediaQuery` slot: that slot is cleared on dispose, so reading it here
-        // would throw for any consumer disposed before the last one.
-        const entry = cached
-        const handler = () => {
-          callback?.(entry.query)
-          trigger()
-        }
-
-        unbindChange = cachedOn(entry.query, 'change', handler, { passive: true })
-
-        entry.cleanups.push(unbindChange)
-
-        mediaQuery = entry
-        initialized = true
-      }
-
-      return mediaQuery?.query.matches ?? false
     },
-    set() {
-      trigger()
-    },
-  }))
+    { passive: true },
+  )
 
-  function stop() {
-    if (!mediaQuery) {
-      return
-    }
+  return { count: 0, matches, query, callbacks, unbind }
+}
 
-    const entry = mediaQuery
+export function useMediaQuery(condition: string, callback?: QueryCallback): Ref<boolean> {
+  if (isServer()) {
+    return shallowRef(false)
+  }
 
-    unbindChange?.()
-    unbindChange = undefined
+  const entry = (CACHED_QUERIES[condition] ??= createEntry(condition))
+  const handler = callback ? () => callback(entry.query) : null
 
-    entry.count--
+  entry.count++
 
-    if (entry.count <= 0) {
-      entry.cleanups.forEach((unbind) => unbind())
-      entry.cleanups = []
-      delete CACHED_QUERIES[condition]
-    }
-
-    mediaQuery = undefined
+  if (handler) {
+    entry.callbacks.add(handler)
   }
 
   onScopeDispose(() => {
-    stop()
+    if (handler) {
+      entry.callbacks.delete(handler)
+    }
+
+    if (--entry.count > 0) {
+      return
+    }
+
+    entry.unbind()
+
+    delete CACHED_QUERIES[condition]
   })
 
-  return matches
+  return entry.matches
 }

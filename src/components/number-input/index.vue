@@ -95,11 +95,11 @@ const valuePrecision = computed(() => {
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
-  disabled: decreaseDisabled,
+  enabled: () => !decreaseDisabled.value,
   action: decreaseValue,
 })
 const { start: startIncrease, stop: stopIncrease } = useRepeatAction({
-  disabled: increaseDisabled,
+  enabled: () => !increaseDisabled.value,
   action: increaseValue,
 })
 

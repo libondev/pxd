@@ -1,8 +1,7 @@
 export interface OverlayProps {
   zIndex?: number
-  variant?: 'default' | 'blurred' | 'transparent'
+  variant?: 'default' | 'blurred' | 'none'
   modelValue?: boolean
-  showOverlay?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   lockScrollOnVisible?: boolean

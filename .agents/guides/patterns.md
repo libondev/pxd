@@ -58,3 +58,8 @@ Reusable code patterns and examples discovered during development.
 
 - **Use case**: A virtual list that scrolls an item into view should not leave it flush against the edge it aligned to — a row in the last visible slot reads as the last row of the list.
 - **Example**: Raise the virtualizer's `scrollPaddingStart` / `scrollPaddingEnd` by one row (`virtualOptions` in `src/components/list/index.vue`: `props.itemSize + 16`). Both are read only by `getOffsetForIndex`, where they set the visibility threshold and the alignment offset, so `scrollToIndex(index, { align: 'auto' })` — from keyboard navigation and from a mount-time scroll alike — keeps one row of space in both directions with no post-adjustment of the offset. The same knob does not exist for a hand-rolled `scrollIntoView({ block: 'nearest' })` path, which needs CSS `scroll-padding` instead (still 8px on `PList`'s non-virtual rows).
+
+### Mount the overlay only once it has content
+
+- **Use case**: A floating layer rendered once per list row (popover, confirm popover) pays the teleport cost while closed — one extra patch after mount plus a permanent anchor in `body`.
+- **Example**: `PPopover` guards `<POverlay>` with `v-if="isRender"` instead of adding a "don't teleport yet" flag to `POverlay` / `PTeleport`. Closed rows mount neither the overlay nor its teleport; the opened instance pays the usual post-mount move once. A `defer` flag would have to be turned off exactly when content exists, and content outlives visibility during `destroyDelay` — a closed-triggered flag would move a still-visible leave transition back into its trigger's stacking context.

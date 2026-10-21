@@ -761,7 +761,7 @@ defineExpose({
       </div>
     </div>
 
-    <PTeleport to="body">
+    <PTeleport>
       <div
         v-if="dragValue !== undefined"
         aria-hidden="true"

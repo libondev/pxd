@@ -56,7 +56,7 @@ export interface SwipeTapState {
 }
 
 export interface SwipeGestureOptions {
-  disabled?: MaybeRefOrGetter<boolean>
+  enabled?: MaybeRefOrGetter<boolean>
   /** CSS selector for the drag handle element within the container. */
   handleSelector?: string
   /** Swipe axis. Reactive; accepts a ref or getter. */
@@ -116,6 +116,7 @@ export function useSwipeGesture(
   options: SwipeGestureOptions = {},
 ) {
   const {
+    enabled = true,
     handleSelector,
     axisLockThreshold = 0,
     axisLockRatio = 1,
@@ -355,16 +356,16 @@ export function useSwipeGesture(
   }
 
   const unwatch = watch(
-    () => [getElement(containerRef), toValue(options.disabled), toValue(options.axis)] as const,
-    async ([el, disabled]) => {
-      if (!el || disabled) {
+    () => [getElement(containerRef), toValue(enabled), toValue(options.axis)] as const,
+    async ([el, active]) => {
+      if (!el || !active) {
         unbind()
         return
       }
 
       await nextTick()
 
-      if (stopped || getElement(containerRef) !== el || toValue(options.disabled)) {
+      if (stopped || getElement(containerRef) !== el || !toValue(enabled)) {
         return
       }
 

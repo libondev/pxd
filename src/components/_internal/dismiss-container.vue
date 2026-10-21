@@ -51,7 +51,7 @@ const modelValue = useModelValue(props, emits)
 useSwipeGesture(containerRef, {
   handleSelector: '.pxd-dismiss-container--handle',
   swipeThreshold: 0,
-  disabled: () => props.disabled,
+  enabled: () => !props.disabled,
   axis: gestureAxis,
   onPress: ({ size }) => {
     caf(releaseAnimationId)

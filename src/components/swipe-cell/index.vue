@@ -76,7 +76,7 @@ const suffixSlotState = shallowReactive<SwipeCellSlotState>({
 })
 
 useSwipeGesture(rootRef, {
-  disabled: () => props.disabled,
+  enabled: () => !props.disabled,
   beforeStart: () => {
     const side = openedSide.value
 

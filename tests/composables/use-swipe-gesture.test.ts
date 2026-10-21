@@ -204,7 +204,7 @@ describe('useSwipeGesture', () => {
     vi.useFakeTimers()
 
     const onFollow = vi.fn()
-    const wrapper = mountGesture({ disabled: true, swipeThreshold: 0, onFollow })
+    const wrapper = mountGesture({ enabled: false, swipeThreshold: 0, onFollow })
     await nextTick()
     await nextTick()
 

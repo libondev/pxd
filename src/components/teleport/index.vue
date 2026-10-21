@@ -42,6 +42,29 @@ const targetEl = computed(() => {
   return container ?? document.body
 })
 
+function syncContainer() {
+  const el = containerRef.value
+
+  if (!el || !homeLocation) {
+    return
+  }
+
+  if (props.disabled) {
+    if (isTeleported) {
+      const { parent, nextSibling } = homeLocation
+      parent.insertBefore(el, nextSibling)
+      isTeleported = false
+    }
+
+    return
+  }
+
+  if (targetEl.value) {
+    targetEl.value.append(el)
+    isTeleported = true
+  }
+}
+
 onMounted(() => {
   mounted.value = true
 
@@ -56,36 +79,10 @@ onMounted(() => {
       nextSibling: el.nextSibling,
     }
 
-    if (!props.disabled && targetEl.value) {
-      targetEl.value.append(el)
-      isTeleported = true
-    }
+    syncContainer()
   }
 
-  watch(
-    () => [targetEl.value, props.disabled],
-    () => {
-      const el = containerRef.value
-      if (!el || !homeLocation) {
-        return
-      }
-
-      if (props.disabled) {
-        if (isTeleported) {
-          const { parent, nextSibling } = homeLocation
-          parent.insertBefore(el, nextSibling)
-          isTeleported = false
-        }
-
-        return
-      }
-
-      if (targetEl.value) {
-        targetEl.value.append(el)
-        isTeleported = true
-      }
-    },
-  )
+  watch(() => [targetEl.value, props.disabled], syncContainer)
 })
 
 onBeforeUnmount(() => {

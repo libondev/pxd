@@ -8,6 +8,21 @@ async function flush() {
 }
 
 describe('overlay', () => {
+  it('should render no backdrop when variant is none', async () => {
+    const wrapper = mount(Overlay, {
+      attachTo: document.body,
+      props: { modelValue: true, variant: 'none' },
+      slots: { default: '<div class="slotted">content</div>' },
+    })
+
+    await flush()
+
+    expect(document.body.querySelector('.pxd-overlay')).toBeNull()
+    expect(document.body.querySelector('.slotted')).not.toBeNull()
+
+    wrapper.unmount()
+  })
+
   it('should close only top overlay on Escape', async () => {
     const Demo = defineComponent({
       components: { Overlay },

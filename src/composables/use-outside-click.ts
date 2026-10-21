@@ -1,4 +1,5 @@
 import type { MaybeElementRef } from '../types/shared/utils'
+import type { MaybeRefOrGetter } from 'vue'
 import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
@@ -8,7 +9,7 @@ interface Options<E extends Event = PointerEvent> {
   allowList?: MaybeElementRef<HTMLElement>[]
   eventName?: string
   listenerOptions?: AddEventListenerOptions
-  enabled?: (ev: E) => boolean
+  enabled?: MaybeRefOrGetter<boolean>
   onTrigger?: (ev: E) => void
 }
 
@@ -17,12 +18,6 @@ export function useOutsideClick<E extends Event = PointerEvent>(
   options: Options<E> = {},
 ) {
   function onClick(ev: Event) {
-    const { enabled } = options
-
-    if (typeof enabled === 'function' && !enabled(ev as E)) {
-      return
-    }
-
     const { onTrigger, allowList = [container] } = options
 
     const currentTarget = ev.target as HTMLElement
@@ -50,11 +45,11 @@ export function useOutsideClick<E extends Event = PointerEvent>(
   }
 
   const unwatch = watch(
-    () => toValue(container),
-    (dom) => {
+    () => Boolean(toValue(container)) && toValue(options.enabled ?? true),
+    (active) => {
       unbind()
 
-      if (dom) {
+      if (active) {
         bind()
       }
     },

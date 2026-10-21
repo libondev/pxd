@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
+import { ref } from 'vue'
 import { useRepeatAction } from '../../src/composables/use-repeat-action'
 import { useSetupWrapper } from '../helpers/setup'
 
@@ -68,6 +69,35 @@ describe('useRepeatAction', () => {
     expect(action).toHaveBeenCalledTimes(3)
 
     stop()
+    unmount()
+  })
+
+  it('should ignore start and stop repeating while disabled', () => {
+    const action = vi.fn()
+    const enabled = ref(false)
+    const { start, unmount } = useSetupWrapper(() =>
+      useRepeatAction({
+        action,
+        enabled,
+        initialInterval: 100,
+        finalInterval: 50,
+      }),
+    )
+
+    start()
+    vi.advanceTimersByTime(500)
+    expect(action).not.toHaveBeenCalled()
+
+    enabled.value = true
+    start()
+    expect(action).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(100)
+    enabled.value = false
+
+    vi.advanceTimersByTime(100)
+    expect(action).toHaveBeenCalledTimes(2)
+
     unmount()
   })
 
