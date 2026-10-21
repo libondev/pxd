@@ -115,7 +115,8 @@
     "@tanstack/virtual-core": "catalog:default",
     "cn": "catalog:default",
     "dayjs": "catalog:default",
-    "focus-trap": "catalog:default"
+    "focus-trap": "catalog:default",
+    "microlighter": "catalog:default"
   },
   "devDependencies": {
     "@tailwindcss/cli": "catalog:default",

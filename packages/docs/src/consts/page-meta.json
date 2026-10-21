@@ -71,6 +71,10 @@
     "title": "Choicebox",
     "description": "A larger form of Radio or Checkbox, where the user has a larger tap target and more details."
   },
+  "/components/code-block": {
+    "title": "Code Block",
+    "description": "Display multi-line source code with syntax highlighting, line numbers and a copy button. Highlighting uses the CSS Custom Highlight API, so unsupported browser…"
+  },
   "/components/collapse": {
     "title": "Collapse",
     "description": "A set of headings, vertically stacked, that each reveal an related section of content. Commonly referred to as an accordion."

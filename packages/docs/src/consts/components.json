@@ -90,6 +90,11 @@
     "category": "Form"
   },
   {
+    "camelized": "Code Block",
+    "name": "code-block",
+    "category": "Typography"
+  },
+  {
     "camelized": "Collapse",
     "name": "collapse",
     "category": "Layout"

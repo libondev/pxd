@@ -178,6 +178,8 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
+      // Microlighter loads grammars with a template-literal dynamic import the dep optimizer cannot rewrite.
+      exclude: ['microlighter'],
       include: [
         '@gdsicon/vue',
         '@vue/shared',

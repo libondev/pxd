@@ -27,6 +27,7 @@ declare module 'vue' {
     PChip: (typeof import('pxd/components/chip'))['default']
     PChoicebox: (typeof import('pxd/components/choicebox'))['default']
     PChoiceboxItem: (typeof import('pxd/components/choicebox-item'))['default']
+    PCodeBlock: (typeof import('pxd/components/code-block'))['default']
     PCollapse: (typeof import('pxd/components/collapse'))['default']
     PCollapseGroup: (typeof import('pxd/components/collapse-group'))['default']
     PColorSelector: (typeof import('pxd/components/color-selector'))['default']

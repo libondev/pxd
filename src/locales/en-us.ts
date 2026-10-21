@@ -87,6 +87,10 @@ const enUS = {
     thumbDown: 'Thumb down',
     close: 'Dismiss',
   },
+  codeBlock: {
+    expand: 'Show more',
+    collapse: 'Show less',
+  },
 }
 
 export type Locale = typeof enUS

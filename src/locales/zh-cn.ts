@@ -102,6 +102,10 @@ const zhCN = {
     thumbDown: '点踩',
     close: '关闭',
   },
+  codeBlock: {
+    expand: '展开全部',
+    collapse: '收起',
+  },
 } satisfies Locale
 
 export default zhCN
