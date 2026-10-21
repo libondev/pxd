@@ -37,9 +37,9 @@ const btnContentClasses = computed(() => {
   const { icon, align } = props
   const internalAlign = icon ? 'center' : align
   const alignClasses = {
-    left: 'text-start',
-    center: 'text-center',
-    right: 'text-end',
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
