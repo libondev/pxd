@@ -57,7 +57,7 @@ const checkboxClass = computed(() => {
     : 'border-gray-alpha-400 bg-background-100'
 })
 
-const indentSize = computed(() => props.depth * props.indent + 8)
+const indentSize = computed(() => Math.max(props.depth * props.indent, 8))
 
 const parts = computed<TreeHighlightPart[] | undefined>(() => {
   const query = props.highlightQuery
@@ -112,7 +112,7 @@ function onPointerdown(event: PointerEvent): void {
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
     :style="{ paddingInlineStart: indentSize + 'px', '--node-indent': indentSize + 'px' }"
-    class="pxd-tree--node group/row min-h-8 py-1 pe-1 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none hover:bg-gray-100"
+    class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none hover:bg-gray-100"
     :class="[
       itemClass,
       {
@@ -182,7 +182,7 @@ function onPointerdown(event: PointerEvent): void {
       />
     </span>
 
-    <span class="pxd-tree--content min-w-0 flex-1 truncate">
+    <span class="pxd-tree--content min-w-0 pl-0.5 flex-1 truncate">
       <slot
         name="node-content"
         :node="node"
