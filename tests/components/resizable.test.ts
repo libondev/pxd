@@ -612,7 +612,7 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
-  it('announces the fold through aria-valuetext', async () => {
+  it('drops the separator range once folded', async () => {
     const wrapper = mountResizable({
       defaultValue: [30, 70],
       minSize: [10, 0],
@@ -627,8 +627,12 @@ describe('resizable', () => {
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
 
-    expect(handle.attributes('aria-valuetext')).toBe('10%, folded')
-    expect(handle.attributes('aria-valuemin')).toBe('10')
+    expect(handle.attributes('role')).toBe('separator')
+    expect(handle.attributes('tabindex')).toBe('-1')
+    expect(handle.attributes('aria-valuenow')).toBeUndefined()
+    expect(handle.attributes('aria-valuemin')).toBeUndefined()
+    expect(handle.attributes('aria-valuemax')).toBeUndefined()
+    expect(handle.attributes('aria-valuetext')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -901,7 +905,7 @@ describe('resizable', () => {
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
-    expect(handle.attributes('aria-valuetext')).toBe('120px, folded')
+    expect(handle.attributes('aria-valuetext')).toBeUndefined()
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
@@ -1093,8 +1097,11 @@ describe('resizable', () => {
     expect(wrapper.findAll('.pxd-resizable-panel')[0].attributes('style')).toContain(
       'flex-basis: 0px',
     )
-    expect(handle.attributes('aria-valuemin')).toBe('180')
-    expect(handle.attributes('aria-valuetext')).toBe('180px, folded')
+    expect(wrapper.findAll('.pxd-resizable-panel')[0].element.hasAttribute('inert')).toBe(true)
+    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(false)
+    expect(handle.attributes('tabindex')).toBe('-1')
+    expect(handle.attributes('aria-valuemin')).toBeUndefined()
+    expect(handle.attributes('aria-valuetext')).toBeUndefined()
 
     await wrapper.setProps({ collapsed: false })
     await flush()
@@ -1102,7 +1109,24 @@ describe('resizable', () => {
     expect(wrapper.findAll('.pxd-resizable-panel')[0].attributes('style')).toContain(
       'flex-basis: 256px',
     )
+    expect(wrapper.findAll('.pxd-resizable-panel')[0].element.hasAttribute('inert')).toBe(false)
+    expect(handle.attributes('tabindex')).toBe('0')
+    expect(handle.attributes('aria-valuemin')).toBe('180')
     expect(handle.attributes('aria-valuetext')).toBe('256px')
+
+    wrapper.unmount()
+  })
+
+  it('marks a panel squeezed to zero as inert', async () => {
+    const wrapper = mountResizable({ modelValue: [100, 0] })
+    await flush()
+
+    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(true)
+
+    await wrapper.setProps({ modelValue: [40, 60] })
+    await flush()
+
+    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(false)
 
     wrapper.unmount()
   })

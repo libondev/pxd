@@ -52,12 +52,12 @@ const sizes = ref([25, 75])
       <PText secondary>{{ sizes.map((size) => size + '%').join(' / ') }}</PText>
     </PStack>
 
-    <PResizable v-model="sizes" class="w-100 h-50 max-w-full border rounded-lg">
+    <PResizable v-model="sizes" class="w-100 h-50 max-w-full text-sm border rounded-lg">
       <template #leading="{ size }">
-        <div class="flex h-full items-center justify-center">Leading — {{ size }}%</div>
+        <div class="flex h-full items-center justify-center">{{ size }}%</div>
       </template>
       <template #trailing="{ size }">
-        <div class="flex h-full items-center justify-center">Trailing — {{ size }}%</div>
+        <div class="flex h-full items-center justify-center">{{ size }}%</div>
       </template>
     </PResizable>
   </PStack>
@@ -74,12 +74,12 @@ the leading size is read from `default-value` / `v-model`.
 
 ```vue demo
 <template>
-  <PResizable unit="px" :default-value="[240]" :min-size="[120, 0]" class="w-full h-50 border rounded-lg">
+  <PResizable unit="px" :default-value="[240]" :min-size="[120, 0]" class="w-full h-50 border rounded-lg text-sm">
     <template #leading="{ size }">
-      <div class="flex h-full items-center justify-center">Leading — {{ size }}px</div>
+      <div class="flex h-full items-center justify-center">{{ size }}px</div>
     </template>
     <template #trailing>
-      <div class="flex h-full items-center justify-center">Trailing — the rest</div>
+      <div class="flex h-full items-center justify-center">the rest</div>
     </template>
   </PResizable>
 </template>
@@ -92,12 +92,12 @@ other panel's ceiling. Floors that cannot fit are ignored.
 
 ```vue demo
 <template>
-  <PResizable :default-value="[30, 70]" :min-size="[20, 40]" class="w-100 h-50 max-w-full border rounded-lg">
+  <PResizable :default-value="[30, 70]" :min-size="[20, 40]" class="w-100 h-50 max-w-full border rounded-lg text-sm">
     <template #leading>
-      <div class="flex h-full items-center justify-center">Leading — 20 to 60%</div>
+      <div class="flex h-full items-center justify-center">20 to 60%</div>
     </template>
     <template #trailing>
-      <div class="flex h-full items-center justify-center">Trailing — 40 to 80%</div>
+      <div class="flex h-full items-center justify-center">40 to 80%</div>
     </template>
   </PResizable>
 </template>
@@ -119,7 +119,10 @@ const collapsed = ref(false)
 
 <template>
   <PStack direction="vertical" gap="3">
-    <PText secondary>{{ collapsed ? 'Folded' : `${sizes[0]}px` }}</PText>
+    <PStack align="center" gap="3">
+      <PButton size="sm" @click="() => (collapsed = !collapsed)">Toggle</PButton>
+      <PText secondary>{{ collapsed ? 'Folded' : `${sizes[0]}px` }}</PText>
+    </PStack>
 
     <PResizable
       v-model="sizes"
@@ -238,14 +241,17 @@ const right = ref([0, 120])
 ## Keyboard
 
 The divider is focusable: arrow keys along the group's axis move it by one step (ten with shift),
-and `Home` / `End` snap to the bounds. Moving a folded pair expands it.
+and `Home` / `End` snap to the bounds. A folded pair is out of the tab order, so unfolding it has
+to come from the app through `collapsed`.
 
 ## Accessibility
 
 The divider is a focusable `separator` that reports the leading position and range through
-`aria-valuenow`, `aria-valuemin` and `aria-valuemax`, and links both panels with `aria-controls`.
-`aria-valuetext` adds the unit and fold state; a folded pair reports its floor as the value.
-`disabled` maps to `aria-disabled` and removes the divider from the tab order.
+`aria-valuenow`, `aria-valuemin` and `aria-valuemax`, and links both panels with `aria-controls`;
+`aria-valuetext` adds the unit. A panel squeezed to 0 is `inert`, so nothing inside it is
+focusable or reachable by AT. `disabled` maps to `aria-disabled`. A disabled or folded divider
+leaves the tab order, and a folded one drops the value range with it — the app's own trigger is
+what has to carry the fold state, e.g. through `aria-expanded`.
 
 ## Props
 

@@ -123,11 +123,18 @@ const settledSizes = shallowRef<Pair>(renderedSizes.value)
 const unitSuffix = computed(() => (isPixel.value ? 'px' : '%'))
 /** An empty panel puts the divider on a container edge, where a line is just residue. */
 const isFlush = computed(() => renderedSizes.value[0] <= 0 || renderedSizes.value[1] <= 0)
-const ariaValueNow = computed(() =>
-  roundSize(collapsed.value ? foldedLeading.value : renderedSizes.value[0]),
-)
-const ariaValueText = computed(
-  () => `${ariaValueNow.value}${unitSuffix.value}${collapsed.value ? ', folded' : ''}`,
+const ariaValueNow = computed(() => roundSize(renderedSizes.value[0]))
+const ariaValueText = computed(() => `${ariaValueNow.value}${unitSuffix.value}`)
+/** Folded, the divider is out of the tab order and cannot move, so it exposes no value range. */
+const separatorRange = computed(() =>
+  collapsed.value
+    ? {}
+    : {
+        'aria-valuenow': ariaValueNow.value,
+        'aria-valuemin': bounds.value.min,
+        'aria-valuemax': bounds.value.max,
+        'aria-valuetext': ariaValueText.value,
+      },
 )
 
 const modelValue = useModelValue(props, emits, { withChange: false })
@@ -492,6 +499,11 @@ function panelStyle(index: number) {
   }
 }
 
+/** A panel clipped to nothing is gone for focus and AT, not just for the eye. */
+function isPanelEmpty(index: number) {
+  return renderedSizes.value[index] <= 0 || undefined
+}
+
 watch(renderedSizes, (value) => {
   if (dragPointer.value === null) {
     settledSizes.value = value
@@ -535,6 +547,7 @@ defineExpose({
       :id="leadingId"
       class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(0)"
+      :inert="isPanelEmpty(0)"
     >
       <slot name="leading" :size="settledSizes[0]" />
     </div>
@@ -542,13 +555,10 @@ defineExpose({
     <div
       ref="handleRef"
       role="separator"
-      :tabindex="disabled ? -1 : 0"
+      :tabindex="disabled || collapsed ? -1 : 0"
       aria-label="Resize the panels"
       :aria-orientation="direction"
-      :aria-valuenow="ariaValueNow"
-      :aria-valuemin="bounds.min"
-      :aria-valuemax="bounds.max"
-      :aria-valuetext="ariaValueText"
+      v-bind="separatorRange"
       :aria-controls="`${leadingId} ${trailingId}`"
       :aria-disabled="disabled || undefined"
       :data-collapsed="collapsed || undefined"
@@ -556,7 +566,7 @@ defineExpose({
       :data-handler="handle"
       :data-orientation="direction"
       class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
-      @pointerdown.prevent="handlePointerDown"
+      @pointerdown="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
       @pointercancel="handlePointerCancel"
@@ -569,6 +579,7 @@ defineExpose({
       :id="trailingId"
       class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(1)"
+      :inert="isPanelEmpty(1)"
     >
       <slot name="trailing" :size="settledSizes[1]" />
     </div>
@@ -579,6 +590,11 @@ defineExpose({
 .pxd-resizable-panel {
   flex-grow: 0;
   flex-shrink: 1;
+}
+
+/* Fallback for browsers without `inert`: hidden keeps the content out of focus, AT and hit testing. */
+.pxd-resizable-panel[inert] {
+  visibility: hidden;
 }
 
 .pxd-resizable[data-unit='px'] .pxd-resizable-panel:first-child {
