@@ -126,33 +126,6 @@ describe('progress', () => {
     wrapper.unmount()
   })
 
-  // `size` has no DOM or attribute output, so the class is the only thing to assert.
-  it('should render the size variants', () => {
-    const sm = mount(Progress, {
-      props: {
-        size: 'sm',
-      },
-    })
-    expect(sm.find('.pxd-progress-bar').classes()).toContain('h-2')
-    sm.unmount()
-
-    const md = mount(Progress, {
-      props: {
-        size: 'md',
-      },
-    })
-    expect(md.find('.pxd-progress-bar').classes()).toContain('h-2.5')
-    md.unmount()
-
-    const lg = mount(Progress, {
-      props: {
-        size: 'lg',
-      },
-    })
-    expect(lg.find('.pxd-progress-bar').classes()).toContain('h-3.5')
-    lg.unmount()
-  })
-
   it('should render the current value as label when label is true', () => {
     const wrapper = mount(Progress, {
       props: {

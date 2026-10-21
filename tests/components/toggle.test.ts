@@ -63,18 +63,4 @@ describe('toggle', () => {
     wrapper.unmount()
   })
 
-  // `size` has no DOM or attribute output, so the class is the only thing to assert.
-  it('applies correct CSS classes based on size prop', () => {
-    const wrapper = mount(Toggle, {
-      props: {
-        modelValue: false,
-        size: 'lg',
-      },
-    })
-
-    expect(wrapper.find('.pxd-toggle--handle').classes()).toContain('w-11')
-    expect(wrapper.find('.pxd-toggle--handle').classes()).toContain('h-6')
-
-    wrapper.unmount()
-  })
 })

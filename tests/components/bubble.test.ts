@@ -43,6 +43,18 @@ describe('bubble', () => {
     wrapper.unmount()
   })
 
+  it('should render default slot', () => {
+    const wrapper = mount(Bubble, {
+      slots: {
+        default: 'Custom content',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Custom content')
+
+    wrapper.unmount()
+  })
+
   it('should render header', () => {
     const wrapper = mount(Bubble, {
       props: {
@@ -63,18 +75,6 @@ describe('bubble', () => {
     })
 
     expect(wrapper.find('[data-bubble-avatar]').exists()).toBe(true)
-
-    wrapper.unmount()
-  })
-
-  it('should render default slot', () => {
-    const wrapper = mount(Bubble, {
-      slots: {
-        default: 'Custom content',
-      },
-    })
-
-    expect(wrapper.text()).toContain('Custom content')
 
     wrapper.unmount()
   })

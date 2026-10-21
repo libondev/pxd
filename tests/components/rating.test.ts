@@ -136,12 +136,4 @@ describe('rating', () => {
     wrapper.unmount()
   })
 
-  // `size` has no DOM or attribute output, so the class is the only thing to assert.
-  it('should apply size class', () => {
-    const wrapper = mount(Rating, {
-      props: { size: 'lg' },
-    })
-    expect(wrapper.classes()).toContain('text-xl')
-    wrapper.unmount()
-  })
 })

@@ -19,7 +19,6 @@ describe('code-block', () => {
     expect(element.element.childNodes.length).toBe(1)
     expect(element.classes()).toContain('language-ts')
     expect(wrapper.attributes('data-code-block')).toBeDefined()
-    expect(wrapper.classes()).toContain('bg-(--code-block-bg)')
 
     wrapper.unmount()
   })

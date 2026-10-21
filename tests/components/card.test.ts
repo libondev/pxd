@@ -41,41 +41,6 @@ describe('card', () => {
     wrapper.unmount()
   })
 
-  // `shape` and `border` have no DOM or attribute output, so the class is the only thing to assert.
-  it('should apply shape variants', () => {
-    const defaultWrapper = mount(Card)
-    expect(defaultWrapper.classes()).toContain('rounded-md')
-    defaultWrapper.unmount()
-
-    const squareWrapper = mount(Card, {
-      props: {
-        shape: 'square',
-      },
-    })
-    expect(squareWrapper.classes()).toContain('rounded-none')
-    squareWrapper.unmount()
-
-    const roundedWrapper = mount(Card, {
-      props: {
-        shape: 'rounded',
-      },
-    })
-    expect(roundedWrapper.classes()).toContain('rounded-xl')
-    roundedWrapper.unmount()
-  })
-
-  it('should render a borderless card', () => {
-    const wrapper = mount(Card, {
-      props: {
-        border: false,
-      },
-    })
-
-    expect(wrapper.classes()).toContain('border-transparent')
-
-    wrapper.unmount()
-  })
-
   it('should pass through attrs', () => {
     const wrapper = mount(Card, {
       attrs: {

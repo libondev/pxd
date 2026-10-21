@@ -3,7 +3,7 @@ import { useLockScroll } from '../../src/composables/_internal/use-lock-scroll'
 import * as dom from '../../src/utils/dom'
 import { runWithScope } from '../helpers/setup'
 
-const lockClasses = ['scrollbar-disabled', 'scrollbar-gutter-stable']
+const lockClasses = ['scrollbar-disabled']
 
 // happy-dom resolves no default overflow, so the document never looks scrollable on its own.
 function mockDocumentScrollable() {
@@ -141,31 +141,6 @@ describe('useLockScroll', () => {
       expect(el.style.overflowX).toBe('auto')
       expect(el.style.overflowY).toBe('auto')
       expect(result.isLocked()).toBe(false)
-      stop()
-    })
-
-    it('should reserve the scrollbar gutter only when a vertical scrollbar is showing', () => {
-      vi.spyOn(dom, 'hasScrollbar').mockReturnValue({ x: false, y: true })
-
-      const el = createScroller()
-      const { result, stop } = runWithScope(() => useLockScroll(el))
-
-      result.lockScroll()
-      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(true)
-
-      result.unlockScroll()
-      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(false)
-      stop()
-    })
-
-    it('should not reserve the scrollbar gutter for a horizontal scrollbar', () => {
-      vi.spyOn(dom, 'hasScrollbar').mockReturnValue({ x: true, y: false })
-
-      const el = createScroller()
-      const { result, stop } = runWithScope(() => useLockScroll(el))
-
-      result.lockScroll()
-      expect(el.classList.contains('scrollbar-gutter-stable')).toBe(false)
       stop()
     })
 

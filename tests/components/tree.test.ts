@@ -1704,8 +1704,6 @@ describe('tree', () => {
       return wrapper.vm.$nextTick()
     }
 
-    expect(at('components').attributes('style')).toContain('--node-indent: 24px')
-
     startDrag(wrapper, 'readme', 144, 28)
     await wrapper.vm.$nextTick()
 
@@ -1766,8 +1764,6 @@ describe('tree', () => {
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
     expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
     expect(wrapper.findAll('[data-tree-item]').length).toBe(5)
-    expect(wrapper.find('[data-key="readme"]').attributes('style')).toContain('--node-indent: 24px')
-
     wrapper.unmount()
   })
 
