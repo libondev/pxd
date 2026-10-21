@@ -50,6 +50,7 @@ describe('button', () => {
 
 ## Rules
 
+- 不测纯外观：尺寸、圆角、间距、缩进、颜色等样式类或内联样式不写断言；类名只在它本身就是组件输出时断言（如 `stack` 的布局类、`material` 的变体），或承载状态时断言（如 `scrollbar-disabled`）
 - 覆盖关键路径与边界（空值、极值、多次触发）
 - 断言事件用 `wrapper.emitted('<name>')`；单个用例只能证明事件会触发，证明不了它"存在" —— 死声明审计见 `.agents/guides/docs.md`
 - 外部依赖要 mock；把组件对象当 prop 传入时用 `markRaw`
