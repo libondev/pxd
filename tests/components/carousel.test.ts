@@ -149,6 +149,30 @@ describe('carousel', () => {
     wrapper.unmount()
   })
 
+  it('should move the progress fill to the active indicator', async () => {
+    Element.prototype.getAnimations = vi.fn().mockReturnValue([])
+
+    const wrapper = mount(Carousel, {
+      props: {
+        autoplay: false,
+        loop: true,
+        options: slides,
+      },
+    })
+
+    const progress = () => wrapper.findAll('.pxd-carousel--indicator-progress')
+    expect(progress()).toHaveLength(1)
+    expect(progress()[0].element.closest('[data-index]')?.getAttribute('data-index')).toBe('0')
+
+    await wrapper.find('.pxd-carousel--next-btn').trigger('click')
+    await flushPromises()
+
+    expect(progress()).toHaveLength(1)
+    expect(progress()[0].element.closest('[data-index]')?.getAttribute('data-index')).toBe('1')
+
+    wrapper.unmount()
+  })
+
   it('should pass the option and its index to the item slot', () => {
     const wrapper = mount(Carousel, {
       props: {

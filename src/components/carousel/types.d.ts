@@ -22,7 +22,6 @@ export interface CarouselProps {
   interval?: number
   indicator?: boolean
   direction?: ComponentDirection
-  indicatorType?: 'dot' | 'line'
   indicatorPosition?: BasePosition | 'center'
   pauseOnHover?: boolean
   toggleOnWheel?: boolean

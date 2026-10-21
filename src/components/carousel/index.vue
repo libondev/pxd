@@ -22,7 +22,6 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   indicator: true,
   direction: 'horizontal',
   pauseOnHover: true,
-  indicatorType: 'dot',
   indicatorPosition: 'center',
   options: () => [],
 })
@@ -32,12 +31,13 @@ const emits = defineEmits<CarouselEmits>()
 let isToggling = false
 let pendingDelta: number | null = null
 let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
-let isPointerEntering = false
 let maxDrag = 0
 
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
+const isAutoPlayPaused = shallowRef(false)
+const progressKey = shallowRef(0)
 
 const slideCount = computed(() => props.options.length)
 
@@ -66,6 +66,7 @@ const rootStyle = computed<CSSProperties>(() => {
   return {
     height: getCssUnitValue(props.height),
     '--carousel-item-count': slideCount.value,
+    '--carousel-progress-duration': `${props.interval}ms`,
   }
 })
 
@@ -221,10 +222,11 @@ function clearAutoPlayTimer() {
 function restartAutoPlay() {
   clearAutoPlayTimer()
 
-  if (!props.autoplay || isPointerEntering) {
+  if (!props.autoplay || isAutoPlayPaused.value) {
     return
   }
 
+  progressKey.value++
   autoPlayTimerId = setTimeout(() => {
     onToggleClick(1)
   }, props.interval)
@@ -232,13 +234,13 @@ function restartAutoPlay() {
 
 function onPointerEnter() {
   if (props.pauseOnHover) {
-    isPointerEntering = true
+    isAutoPlayPaused.value = true
     clearAutoPlayTimer()
   }
 }
 
 function onPointerLeave() {
-  isPointerEntering = false
+  isAutoPlayPaused.value = false
   restartAutoPlay()
 }
 
@@ -274,7 +276,8 @@ onBeforeUnmount(() => {
     data-carousel
     v-bind="$attrs"
     :data-orientation="direction"
-    :data-indicator-type="indicatorType"
+    :data-autoplay="autoplay"
+    :data-autoplay-paused="isAutoPlayPaused || undefined"
     :data-indicator-position="indicatorPosition"
     :data-loop-placement="loopPlacement"
     class="pxd-carousel group relative w-full touch-none overflow-hidden"
@@ -310,9 +313,15 @@ onBeforeUnmount(() => {
           v-for="(_, i) in slideCount"
           :key="i"
           :data-index="i"
-          class="pxd-carousel--indicator-item relative h-(--carousel-dot-height) w-(--carousel-dot-width) cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
-          :class="{ 'bg-primary!': i === displayIndex }"
-        />
+          class="pxd-carousel--indicator-item h-2 relative cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-[width,background-color]"
+          :class="i === displayIndex ? 'w-8' : 'w-2'"
+        >
+          <span
+            v-if="i === displayIndex"
+            :key="progressKey"
+            class="pxd-carousel--indicator-progress block h-full rounded-full bg-primary"
+          />
+        </button>
       </slot>
     </div>
 
@@ -342,26 +351,6 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .pxd-carousel {
-  &[data-indicator-type='dot'] {
-    --carousel-dot-width: 0.5rem;
-    --carousel-dot-height: 0.5rem;
-  }
-
-  &[data-indicator-type='line'] {
-    &[data-indicator-position='top'],
-    &[data-indicator-position='bottom'],
-    &[data-indicator-position='center'] {
-      --carousel-dot-width: 1rem;
-      --carousel-dot-height: 0.25rem;
-    }
-
-    &[data-indicator-position='left'],
-    &[data-indicator-position='right'] {
-      --carousel-dot-width: 0.25rem;
-      --carousel-dot-height: 1rem;
-    }
-  }
-
   &[data-indicator-position='top'] {
     .pxd-carousel--indicator {
       left: 0.75rem;
@@ -461,11 +450,36 @@ onBeforeUnmount(() => {
       transform: rotate(90deg);
     }
   }
+
+  &[data-autoplay='false'] .pxd-carousel--indicator-progress {
+    width: 100%;
+    animation: none;
+  }
+
+  &[data-autoplay='false'] .pxd-carousel--indicator-progress,
+  &[data-autoplay-paused] .pxd-carousel--indicator-progress {
+    animation-play-state: paused;
+  }
 }
 
 .pxd-carousel--indicator-item::before {
   content: '';
   position: absolute;
   inset: -0.25rem;
+}
+
+.pxd-carousel--indicator-progress {
+  width: 0;
+  animation: pxd-carousel-indicator-progress var(--carousel-progress-duration) linear forwards;
+}
+
+@keyframes pxd-carousel-indicator-progress {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
 }
 </style>
