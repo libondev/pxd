@@ -788,4 +788,21 @@ defineExpose({
     border-bottom-right-radius: 0;
   }
 }
+
+@media (hover: hover) {
+  .pxd-tree--row:has(> .pxd-tree--node:is([data-checked='true'], :hover)):has(
+      + .pxd-tree--row > .pxd-tree--node:is([data-checked='true'], :hover)
+    )
+    > .pxd-tree--node {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .pxd-tree--row:has(> .pxd-tree--node:is([data-checked='true'], :hover))
+    + .pxd-tree--row
+    > .pxd-tree--node:is([data-checked='true'], :hover) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
 </style>
