@@ -111,11 +111,13 @@ const containerStyle = computed(() => {
 
   return { height: isNumber(height) ? height + 'px' : height }
 })
-/** Painted only while focused: a marker on a blurred element lies about where the focus is. */
+
 const focused = shallowRef(false)
-/** Dragging while a query is active would drop a node relative to an incomplete neighbourhood. */
 const dragEnabled = computed(
   () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
+)
+const rowsTransition = computed(() =>
+  props.virtual || searchValue.value ? 'pxd-tree-transition-none' : 'pxd-tree-transition',
 )
 
 const slots = useSlots()
@@ -668,94 +670,106 @@ defineExpose({
       @focus="focused = true"
       @blur="focused = false"
     >
-      <div class="pxd-tree--content w-full" :class="{ relative: virtual }" :style="contentStyle">
+      <TransitionGroup
+        tag="div"
+        :name="rowsTransition"
+        class="pxd-tree--content w-full"
+        :class="{ relative: virtual }"
+        :style="contentStyle"
+      >
         <div
           v-for="entry in renderEntries"
           :key="entry.key"
           :data-checked="checked.has(entry.key)"
-          class="pxd-tree--row w-full"
+          class="pxd-tree--row grid w-full grid-rows-[1fr]"
           :class="{ 'left-0 top-0 absolute': virtual }"
           :style="virtual ? { transform: 'translateY(' + entry.start + 'px)' } : undefined"
         >
-          <PTreeNode
-            v-if="hasNodeSlot"
-            :id="entry.id"
-            :node="entry.node"
-            :value="entry.key"
-            :depth="entry.depth"
-            :index="entry.index"
-            :has-children="entry.hasChildren"
-            :expanded="entry.expanded"
-            :loading="loadingKeys.has(entry.key)"
-            :checked="checked.has(entry.key)"
-            :indeterminate="indeterminate.has(entry.key)"
-            :active="entry.active"
-            :multiple="multiple"
-            :disabled="disabled"
-            :show-switcher="showSwitcher"
-            :show-checkbox="showCheckbox"
-            :set-size="rows.length"
-            :indent="indent"
-            :selectable="isSelectable(entry.key)"
-            :highlight-query="highlightQuery"
-            :item-class="itemClass"
-            :draggable="dragEnabled"
-            :dragging="entry.key === dragValue"
-            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
-            @row-click="onRowClick"
-            @drag-pointerdown="onDragPointerdown"
-            @check="onCheckboxClick"
-            @toggle="onSwitcherClick"
-          >
-            <template v-if="$slots['node-switcher']" #node-switcher="scope">
-              <slot name="node-switcher" v-bind="scope" />
-            </template>
+          <div class="pxd-tree--clip min-h-0">
+            <PTreeNode
+              v-if="hasNodeSlot"
+              :id="entry.id"
+              :node="entry.node"
+              :value="entry.key"
+              :depth="entry.depth"
+              :index="entry.index"
+              :has-children="entry.hasChildren"
+              :expanded="entry.expanded"
+              :loading="loadingKeys.has(entry.key)"
+              :checked="checked.has(entry.key)"
+              :indeterminate="indeterminate.has(entry.key)"
+              :active="entry.active"
+              :multiple="multiple"
+              :disabled="disabled"
+              :show-switcher="showSwitcher"
+              :show-checkbox="showCheckbox"
+              :set-size="rows.length"
+              :indent="indent"
+              :selectable="isSelectable(entry.key)"
+              :highlight-query="highlightQuery"
+              :item-class="itemClass"
+              :draggable="dragEnabled"
+              :dragging="entry.key === dragValue"
+              :drop-position="
+                dropTarget?.targetValue === entry.key ? dropTarget.position : undefined
+              "
+              @row-click="onRowClick"
+              @drag-pointerdown="onDragPointerdown"
+              @check="onCheckboxClick"
+              @toggle="onSwitcherClick"
+            >
+              <template v-if="$slots['node-switcher']" #node-switcher="scope">
+                <slot name="node-switcher" v-bind="scope" />
+              </template>
 
-            <template v-if="$slots['node-icon']" #node-icon="scope">
-              <slot name="node-icon" v-bind="scope" />
-            </template>
+              <template v-if="$slots['node-icon']" #node-icon="scope">
+                <slot name="node-icon" v-bind="scope" />
+              </template>
 
-            <template v-if="$slots['node-content']" #node-content="scope">
-              <slot name="node-content" v-bind="scope" />
-            </template>
+              <template v-if="$slots['node-content']" #node-content="scope">
+                <slot name="node-content" v-bind="scope" />
+              </template>
 
-            <template v-if="$slots['node-suffix']" #node-suffix="scope">
-              <slot name="node-suffix" v-bind="scope" />
-            </template>
-          </PTreeNode>
+              <template v-if="$slots['node-suffix']" #node-suffix="scope">
+                <slot name="node-suffix" v-bind="scope" />
+              </template>
+            </PTreeNode>
 
-          <PTreeNode
-            v-else
-            :id="entry.id"
-            :node="entry.node"
-            :value="entry.key"
-            :depth="entry.depth"
-            :index="entry.index"
-            :has-children="entry.hasChildren"
-            :expanded="entry.expanded"
-            :loading="loadingKeys.has(entry.key)"
-            :checked="checked.has(entry.key)"
-            :indeterminate="indeterminate.has(entry.key)"
-            :active="entry.active"
-            :multiple="multiple"
-            :disabled="disabled"
-            :show-switcher="showSwitcher"
-            :show-checkbox="showCheckbox"
-            :set-size="rows.length"
-            :indent="indent"
-            :selectable="isSelectable(entry.key)"
-            :highlight-query="highlightQuery"
-            :item-class="itemClass"
-            :draggable="dragEnabled"
-            :dragging="entry.key === dragValue"
-            :drop-position="dropTarget?.targetValue === entry.key ? dropTarget.position : undefined"
-            @row-click="onRowClick"
-            @drag-pointerdown="onDragPointerdown"
-            @check="onCheckboxClick"
-            @toggle="onSwitcherClick"
-          />
+            <PTreeNode
+              v-else
+              :id="entry.id"
+              :node="entry.node"
+              :value="entry.key"
+              :depth="entry.depth"
+              :index="entry.index"
+              :has-children="entry.hasChildren"
+              :expanded="entry.expanded"
+              :loading="loadingKeys.has(entry.key)"
+              :checked="checked.has(entry.key)"
+              :indeterminate="indeterminate.has(entry.key)"
+              :active="entry.active"
+              :multiple="multiple"
+              :disabled="disabled"
+              :show-switcher="showSwitcher"
+              :show-checkbox="showCheckbox"
+              :set-size="rows.length"
+              :indent="indent"
+              :selectable="isSelectable(entry.key)"
+              :highlight-query="highlightQuery"
+              :item-class="itemClass"
+              :draggable="dragEnabled"
+              :dragging="entry.key === dragValue"
+              :drop-position="
+                dropTarget?.targetValue === entry.key ? dropTarget.position : undefined
+              "
+              @row-click="onRowClick"
+              @drag-pointerdown="onDragPointerdown"
+              @check="onCheckboxClick"
+              @toggle="onSwitcherClick"
+            />
+          </div>
         </div>
-      </div>
+      </TransitionGroup>
 
       <PLoadingMask v-if="loading" />
 
@@ -784,31 +798,55 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-tree--row[data-checked='true'] {
-  & + & > .pxd-tree--node {
+  & + & > .pxd-tree--clip > .pxd-tree--node {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
 
-  &:has(+ &) > .pxd-tree--node {
+  &:has(+ &) > .pxd-tree--clip > .pxd-tree--node {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
 }
 
 @media (hover: hover) {
-  .pxd-tree--row:has(> .pxd-tree--node:is([data-checked='true'], :hover)):has(
-      + .pxd-tree--row > .pxd-tree--node:is([data-checked='true'], :hover)
+  .pxd-tree--row:has(> .pxd-tree--clip > .pxd-tree--node:is([data-checked='true'], :hover)):has(
+      + .pxd-tree--row > .pxd-tree--clip > .pxd-tree--node:is([data-checked='true'], :hover)
     )
+    > .pxd-tree--clip
     > .pxd-tree--node {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
 
-  .pxd-tree--row:has(> .pxd-tree--node:is([data-checked='true'], :hover))
+  .pxd-tree--row:has(> .pxd-tree--clip > .pxd-tree--node:is([data-checked='true'], :hover))
     + .pxd-tree--row
+    > .pxd-tree--clip
     > .pxd-tree--node:is([data-checked='true'], :hover) {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
+}
+
+.pxd-tree-transition-enter-active,
+.pxd-tree-transition-leave-active {
+  transition-property: grid-template-rows, opacity;
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
+}
+
+.pxd-tree-transition-leave-active {
+  transition-duration: var(--faster-transition-duration);
+}
+
+.pxd-tree-transition-enter-active > .pxd-tree--clip,
+.pxd-tree-transition-leave-active > .pxd-tree--clip {
+  overflow: hidden;
+}
+
+.pxd-tree-transition-enter-from,
+.pxd-tree-transition-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
 }
 </style>
