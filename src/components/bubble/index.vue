@@ -87,15 +87,13 @@ const { classes: contentClasses } = useTailwindVariant(
         v-if="header || $slots.header"
         class="pxd-bubble--header flex items-center text-13px text-foreground-secondary group-data-[role=user]/bubble:justify-end"
       >
-        <slot name="header">
-          {{ header }}
-        </slot>
+        <slot name="header">{{ header }}</slot>
       </header>
 
       <div :class="contentClasses">
         <PSpinner v-if="loading" class="translate-y-0.5" />
         <template v-else>
-          <slot>{{ text }}</slot>
+          <span>{{ text }}</span>
           <div
             v-if="$slots.reactions"
             class="pxd-bubble--reactions mbs-1.5 gap-1.5 flex items-center"
