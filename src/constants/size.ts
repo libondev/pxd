@@ -1,4 +1,5 @@
 export const BASIC_HEIGHTS = {
+  xxs: 'h-6',
   xs: 'h-7',
   sm: 'h-8',
   md: 'h-9',

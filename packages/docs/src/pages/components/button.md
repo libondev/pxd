@@ -7,6 +7,7 @@ One of the most basic components, it will help you complete the interaction.
 ```vue demo
 <template>
   <PStack align="center">
+    <PButton size="xs">Small</PButton>
     <PButton size="sm">Small</PButton>
     <PButton size="md">Medium</PButton>
     <PButton size="lg">Large</PButton>

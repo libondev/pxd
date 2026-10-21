@@ -2,7 +2,7 @@ import type { ComponentSizeWithXs, ComponentAlign } from '../../types/shared/pro
 import type { ButtonVariant } from '../button/types'
 
 export interface ButtonGroupProps {
-  size?: ComponentSizeWithXs
+  size?: ComponentSizeWithXs | 'xxs'
   align?: ComponentAlign
   variant?: ButtonVariant
   disabled?: boolean

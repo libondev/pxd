@@ -11,7 +11,7 @@ export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | '
 export interface ButtonProps {
   as?: ComponentAs
   variant?: ButtonVariant
-  size?: ComponentSizeWithXs
+  size?: ComponentSizeWithXs | 'xxs'
   shape?: ComponentShape
   align?: ComponentAlign
   icon?: boolean
