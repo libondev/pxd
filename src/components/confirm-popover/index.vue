@@ -121,6 +121,7 @@ watch(
   <PPopover
     data-confirm-popover
     class="pxd-confirm-popover"
+    v-bind="$attrs"
     trigger="click"
     :model-value="localVisible"
     :position="position"
@@ -133,13 +134,12 @@ watch(
     :content-class="responsiveClasses.content"
     :close-on-press-escape="!isPending"
     :lock-scroll-on-visible="isAdaptive"
-    v-bind="$attrs"
     @update:model-value="onVisibleChange"
   >
     <slot />
 
     <template #content>
-      <div class="p-3">
+      <div class="p-3 max-w-64">
         <slot name="content" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
           <h3 v-if="title" :id="titleId" class="m-0 text-sm font-medium">
             {{ title }}
