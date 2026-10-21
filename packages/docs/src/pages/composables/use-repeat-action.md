@@ -1,25 +1,28 @@
-# useOutsideClick
+# useRepeatAction
 
-Detects clicks outside a container with allowlist support and optional enable/disable logic.
+Repeats an action while pointer is pressed, with acceleration from initial interval to final interval.
 
 ## Exports
 
 ```ts
-function useOutsideClick(
-  container: MaybeElementRef<HTMLElement>,
-  options?: Options,
-): {
-  stop: () => void
-}
+function useRepeatAction(action: Callback): Results
+function useRepeatAction(options: Options): Results
 ```
 
 ## Types
 
 ```ts
 interface Options {
-  allowList?: MaybeElementRef<HTMLElement>[]
-  enabled?: MaybeRefOrGetter<boolean>
-  onTrigger?: (ev: PointerEvent) => void
+  action: Callback
+  disabled?: MaybeRefOrGetter<boolean>
+  finalInterval?: number
+  initialInterval?: number
+  accelerationDuration?: number
+}
+
+interface Results {
+  start: Callback
+  stop: Callback
 }
 ```
 
@@ -27,7 +30,9 @@ interface Options {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `container` | `MaybeElementRef<HTMLElement>` | The container element to detect outside clicks for |
-| `options.allowList` | `MaybeElementRef<HTMLElement>[]` | Elements excluded from outside click detection |
-| `options.enabled` | `MaybeRefOrGetter<boolean>` | Binds the document listener only while it resolves to `true` |
-| `options.onTrigger` | `(ev: PointerEvent) => void` | Callback fired when an outside click is detected |
+| `action` | `Callback` | The action to repeat |
+| `options.action` | `Callback` | The action to repeat |
+| `options.enabled` | `MaybeRefOrGetter<boolean>` | Whether the repeat action is enabled |
+| `options.finalInterval` | `number` | The final repeat interval in milliseconds |
+| `options.initialInterval` | `number` | The initial repeat interval in milliseconds |
+| `options.accelerationDuration` | `number` | Duration in milliseconds to accelerate from initial to final interval |
