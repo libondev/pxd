@@ -93,7 +93,9 @@ const { classes: contentClasses } = useTailwindVariant(
       <div :class="contentClasses">
         <PSpinner v-if="loading" class="translate-y-0.5" />
         <template v-else>
-          <span>{{ text }}</span>
+          <slot>
+            <span>{{ text }}</span>
+          </slot>
           <div
             v-if="$slots.reactions"
             class="pxd-bubble--reactions mbs-1.5 gap-1.5 flex items-center"
