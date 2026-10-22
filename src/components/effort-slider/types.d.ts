@@ -6,6 +6,7 @@ export interface EffortSliderProps {
   disabled?: boolean
   size?: ComponentSize
   modelValue?: string | number | null
+  defaultValue?: string | number | null
 }
 
 export interface EffortSliderEmits {

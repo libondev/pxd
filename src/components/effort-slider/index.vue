@@ -86,6 +86,9 @@ const focused = shallowRef(false)
 const dragPosition = shallowRef<number | null>(null)
 const labelShift = shallowRef(0)
 
+const innerValue = shallowRef<EffortSliderProps['modelValue']>(props.defaultValue)
+const activeValue = computed(() => props.modelValue ?? innerValue.value)
+
 const optionList = computed(() =>
   props.options.map((option, index) =>
     typeof option === 'string'
@@ -97,7 +100,7 @@ const optionList = computed(() =>
 const levelCount = computed(() => optionList.value.length)
 
 const currentIndex = computed(() => {
-  const index = optionList.value.findIndex((option) => option.value === modelValue.value)
+  const index = optionList.value.findIndex((option) => option.value === activeValue.value)
 
   return index === -1 ? 0 : index
 })
@@ -173,7 +176,8 @@ function setValue(index: number) {
     return null
   }
 
-  if (option.value !== modelValue.value) {
+  if (option.value !== activeValue.value) {
+    innerValue.value = option.value
     modelValue.value = option.value
   }
 
@@ -228,7 +232,7 @@ function onTrackPointerdown(ev: PointerEvent) {
   }
 
   trackRect = trackRef.value?.getBoundingClientRect() ?? null
-  dragStartValue = modelValue.value ?? null
+  dragStartValue = activeValue.value ?? null
   lastUpdatedValue = null
   lastClientX = ev.clientX
   dragging.value = true
@@ -323,9 +327,10 @@ function initModelValue() {
     return
   }
 
-  const isValid = optionList.value.some((item) => item.value === props.modelValue)
+  const isValid = optionList.value.some((item) => item.value === activeValue.value)
 
   if (!isValid) {
+    innerValue.value = option.value
     modelValue.value = option.value
   }
 }

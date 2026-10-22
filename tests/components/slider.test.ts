@@ -35,10 +35,50 @@ describe('slider', () => {
     wrapper.unmount()
   })
 
-  it('should default modelValue to 0', () => {
-    const wrapper = mount(Slider)
+  it('should start an uncontrolled slider at min', () => {
+    const wrapper = mount(Slider, { props: { min: 20 } })
 
-    expect(wrapper.props('modelValue')).toBe(0)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 0%')
+
+    wrapper.unmount()
+  })
+
+  it('should keep its own value without modelValue', async () => {
+    const wrapper = mount(Slider, { props: { defaultValue: 20 } })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 60 })
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 60%')
+
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 60 }))
+
+    expect(wrapper.emitted('change')).toEqual([[60]])
+
+    wrapper.unmount()
+  })
+
+  it('should keep its own range without modelValue', async () => {
+    const wrapper = mount(Slider, {
+      props: { range: true, defaultValue: [20, 60], marks: { 0: 'Low', 100: 'High' } },
+    })
+
+    await wrapper.findAll('.pxd-slider--mark')[1].trigger('click')
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[[20, 100]]])
+
+    wrapper.unmount()
+  })
+
+  it('should ignore defaultValue once modelValue is bound', () => {
+    const wrapper = mount(Slider, { props: { defaultValue: 20, modelValue: 70 } })
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 70%')
 
     wrapper.unmount()
   })

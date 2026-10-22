@@ -11,6 +11,7 @@ export interface SliderProps {
   size?: ComponentSize
   variant?: ComponentVariant | 'secondary'
   modelValue?: number | number[] | null
+  defaultValue?: number | number[] | null
 }
 
 export interface SliderEmits {

@@ -29,7 +29,6 @@ const props = withDefaults(defineProps<SliderProps>(), {
   min: 0,
   max: 100,
   step: 1,
-  modelValue: 0,
   variant: 'primary',
 })
 
@@ -116,10 +115,15 @@ const activeThumb = shallowRef<ThumbIndex | null>(null)
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 
+const innerValue = shallowRef<number | number[]>(
+  props.defaultValue ?? (props.range ? [props.min, props.min] : props.min),
+)
+const activeValue = computed(() => props.modelValue ?? innerValue.value)
+
 // Outside range mode the start slot is pinned to `min`, so both modes share one pair and
 // only the emitted payload differs.
 const valueRange = computed<[number, number]>(() => {
-  const value = modelValue.value
+  const value = activeValue.value
 
   if (props.range) {
     return Array.isArray(value) ? (value as [number, number]) : [props.min, value as number]
@@ -131,6 +135,7 @@ const valueRange = computed<[number, number]>(() => {
 function setValue(range: [number, number]) {
   const value = props.range ? range : range[1]
 
+  innerValue.value = value
   modelValue.value = value
 
   return value
@@ -408,7 +413,8 @@ function initModelValue() {
   ) as [number, number]
   const value = props.range ? snapped : snapped[1]
 
-  if (!isSameValue(modelValue.value, value)) {
+  if (!isSameValue(activeValue.value, value)) {
+    innerValue.value = value
     modelValue.value = value
   }
 }

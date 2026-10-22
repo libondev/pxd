@@ -40,6 +40,20 @@ const value = ref('medium')
 </template>
 ```
 
+## Uncontrolled
+
+Without `v-model` the slider keeps its own state, and `default-value` picks the starting level.
+
+```vue demo
+<template>
+  <PEffortSlider
+    :options="['low', 'medium', 'high', 'max']"
+    default-value="medium"
+    style="width: 240px;"
+  />
+</template>
+```
+
 ## Colors
 
 ```vue demo
@@ -110,7 +124,8 @@ const value = ref('low')
 | colors | `Record<string, string>` | - | Fill colour keyed by level index, the fill takes the colour of the highest key at or below the current level, levels below the lowest key fall back to `primary` |
 | disabled | `boolean` | - | Disable clicking, dragging and keyboard interaction |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
-| model-value | `string \| number \| null` | - | Value of the selected level, snapped to the first option when it matches none |
+| default-value | `string \| number \| null` | - | Level an uncontrolled slider starts from |
+| model-value | `string \| number \| null` | - | Value of the selected level, snapped to the first option when it matches none, bound value wins over `default-value` |
 
 ## Events
 

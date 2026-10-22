@@ -51,6 +51,51 @@ describe('effort-slider', () => {
     wrapper.unmount()
   })
 
+  it('should keep its own level without modelValue', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, defaultValue: 'medium' } })
+    const thumb = wrapper.find('.pxd-effort-slider--thumb')
+
+    await thumb.trigger('keydown', { code: 'ArrowRight' })
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(thumb.attributes('style')).toContain('66.66')
+    expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('High')
+
+    wrapper.unmount()
+  })
+
+  it('should follow the pointer in an uncontrolled drag', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, defaultValue: 'low' } })
+    const track = stubTrack(wrapper)
+    const thumb = wrapper.find('.pxd-effort-slider--thumb')
+
+    await track.trigger('pointerdown', { clientX: 70 })
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(thumb.attributes('style')).toContain('left: 70%')
+
+    dispatch('pointerup', 70)
+    await nextTick()
+
+    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(thumb.attributes('style')).toContain('66.66')
+
+    wrapper.unmount()
+  })
+
+  it('should ignore defaultValue once modelValue is bound', () => {
+    const wrapper = mount(EffortSlider, {
+      props: { options: OPTIONS, defaultValue: 'low', modelValue: 'max' },
+    })
+
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('Max')
+
+    wrapper.unmount()
+  })
+
   it('should keep a matching modelValue untouched on mount', () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'high' } })
 

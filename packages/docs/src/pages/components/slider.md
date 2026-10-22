@@ -31,6 +31,20 @@ const value = ref(30)
 </template>
 ```
 
+## Uncontrolled
+
+Without `v-model` the slider keeps its own state, and `default-value` picks the starting value.
+
+```vue demo
+<script setup>
+const marks = { 0: 'Low', 50: 'Mid', 100: 'High' }
+</script>
+
+<template>
+  <PSlider :default-value="30" :marks="marks" style="width: 200px;" />
+</template>
+```
+
 ## Disabled
 
 ```vue demo
@@ -206,7 +220,8 @@ const steps = Object.keys(marks).map(i => Number(i))
 | disabled | `boolean` | - | Disable dragging, pointer and keyboard interaction |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Track colour, e.g. `primary`, `success`, `secondary` |
-| model-value | `number \| number[] \| null` | `0` | Current value, an array when `range` is enabled |
+| default-value | `number \| number[] \| null` | `min` | Value an uncontrolled slider starts from, `[min, min]` when `range` is enabled |
+| model-value | `number \| number[] \| null` | - | Current value, an array when `range` is enabled, bound value wins over `default-value` |
 
 ## Events
 
