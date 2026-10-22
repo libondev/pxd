@@ -16,6 +16,18 @@ describe('checkerboard', () => {
     wrapper.unmount()
   })
 
+  it('should apply the variant', () => {
+    const wrapper = mount(Checkerboard)
+    expect(wrapper.attributes('data-variant')).toBe('checkerboard')
+    wrapper.unmount()
+
+    for (const variant of ['grid', 'dots'] as const) {
+      const variantWrapper = mount(Checkerboard, { props: { variant } })
+      expect(variantWrapper.attributes('data-variant')).toBe(variant)
+      variantWrapper.unmount()
+    }
+  })
+
   it('should apply a custom size', () => {
     const wrapper = mount(Checkerboard, {
       props: {
