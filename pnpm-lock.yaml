@@ -90,6 +90,9 @@ catalogs:
     markdown-it-plugins:
       specifier: ^0.4.0
       version: 0.4.0
+    microlighter:
+      specifier: ^2.2.0
+      version: 2.2.0
     mkdist:
       specifier: ^2.4.1
       version: 2.4.1
@@ -178,6 +181,9 @@ importers:
       focus-trap:
         specifier: catalog:default
         version: 8.2.3
+      microlighter:
+        specifier: catalog:default
+        version: 2.2.0
     devDependencies:
       '@tailwindcss/cli':
         specifier: catalog:default
@@ -3229,6 +3235,10 @@ packages:
   memorystream@0.3.1:
     resolution: {integrity: sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw==}
     engines: {node: '>= 0.10.0'}
+
+  microlighter@2.2.0:
+    resolution: {integrity: sha512-XFUHmKclX4taKWVpYkqJ/GlfUS27FzQTCph1u3v9OwkmQJGXry3Pk1e7SivLz6xGOCxRVyi3DSrztF3e460jrg==}
+    engines: {node: '>=18'}
 
   micromark-util-character@2.1.1:
     resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
@@ -6990,6 +7000,8 @@ snapshots:
   mdurl@2.1.0: {}
 
   memorystream@0.3.1: {}
+
+  microlighter@2.2.0: {}
 
   micromark-util-character@2.1.1:
     dependencies:
