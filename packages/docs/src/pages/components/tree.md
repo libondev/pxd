@@ -96,8 +96,9 @@ const data = [
 
 ## Selectable nodes
 
-A refused node keeps its looks, expands and takes drops; only the selection is out of reach. Under
-`multiple` it is never checked itself, but still reports a partial state.
+A refused node keeps its row, expands and takes drops; only its checkbox greys out, and a click
+leaves the selection alone. Under `multiple` it is never checked by a click, but a partial subtree
+still marks it, and one the model already carries stays checked.
 
 ```vue demo
 <script setup>
@@ -216,9 +217,9 @@ const data = [
 Giving `remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
 keystroke instead of through the local `filter`. It hands back the matched nodes with their
 ancestors, and that forest replaces `data` while the query is active, at its real depths with the
-chains to a hit opened; `search-matches-only` flattens it. Only the latest answer counts, the field
-spins while a request is in flight, and the `empty` slot covers one. Clearing the query restores
-`data`.
+chains to a hit opened; `search-matches-only` flattens it. Only the latest answer counts, and the
+field spins from the keystroke until one lands: before the first answer the `empty` slot covers the
+gap, after it the previous forest stays until the next arrives. Clearing the query restores `data`.
 
 ```vue demo
 <script setup>
@@ -555,7 +556,7 @@ function load({ node }, resolve) {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | data | `TreeOptions` | `() => []` | Tree data, see `TreeOption` |
-| model-value | `TreeModelValue` | `null` | Selected value, an array when `multiple` is set |
+| model-value | `TreeModelValue` | - | Selected value, an array when `multiple` is set |
 | multiple | `boolean` | `false` | Show a checkbox and cascade the selection through the parents |
 | check-strictly | `boolean` | `false` | Keep every node independently selectable, without cascading and without the partial state |
 | show-switcher | `boolean` | `true` | Draw the switcher column; hiding it drops the leaf spacer too, so `indent` sets where the row starts |
@@ -564,7 +565,7 @@ function load({ node }, resolve) {
 | selectable | `(node: TreeOption) => boolean` | every node | Keep a node out of the selection without disabling it |
 | expand-only | `boolean` | `false` | A row click only opens or closes a parent instead of selecting it; under `multiple` the checkbox selects |
 | draggable | `boolean` | `false` | Allow a row to be dragged to another position; off while searching and when `disabled` |
-| allow-drop | `(info: TreeDropInfo) => boolean` | disabled nodes | Decide whether a drop may land, overriding the built-in policy |
+| allow-drop | `(info: TreeDropInfo) => boolean` | - | Decide whether a drop may land, replacing the built-in refusal of disabled rows |
 | drop-inside-leaf | `boolean` | `false` | Let a childless row take the dragged node as its first child |
 | search-matches-only | `boolean` | `false` | While searching, render the hits alone instead of the hits plus their ancestors |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large trees |
@@ -668,9 +669,9 @@ interface TreeMoveDetail {
 | setActiveKey | `(value: ComponentValue) => void` | Move the active row to the node. |
 | expandKey | `(value: ComponentValue) => void` | Expand the node. |
 | collapseKey | `(value: ComponentValue) => void` | Collapse the node. |
-| expandAll | `() => void` | Expand every parent node. |
+| expandAll | `() => void` | Expand every node that holds children, a lazily unfetched one left closed. |
 | collapseAll | `() => void` | Collapse every node. |
 | getCheckedKeys | `(includeIndeterminate?: boolean) => ComponentValue[]` | Return the checked values in document order, optionally including the partially checked ones. Covers collapsed subtrees, the same set `change` reports. |
-| getVisibleKeys | `() => ComponentValue[]` | Return the values of the rendered rows. |
+| getVisibleKeys | `() => ComponentValue[]` | Return the values of the visible rows. |
 | getData | `(value: ComponentValue) => TreeOption \| undefined` | Return the source node of a key, collapsed rows included. |
 | activeIndex | `number` | Index of the active row, `-1` when there is none. |
