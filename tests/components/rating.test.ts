@@ -135,5 +135,4 @@ describe('rating', () => {
     expect(filledOverlays[4].attributes('style')).toContain('clip-path: inset(0 100% 0 0)')
     wrapper.unmount()
   })
-
 })
