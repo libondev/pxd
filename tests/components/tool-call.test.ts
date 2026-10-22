@@ -91,6 +91,27 @@ describe('tool-call', () => {
     wrapper.unmount()
   })
 
+  it('follows the controlled expanded state', async () => {
+    const wrapper = mount(ToolCall, {
+      props: { name: 'search_flights', modelValue: false },
+    })
+
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
+
+    await wrapper.setProps({ modelValue: true })
+    await nextTick()
+
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+
+    await wrapper.find('summary').trigger('click')
+    await nextTick()
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+
+    wrapper.unmount()
+  })
+
   it('toggles open state on trigger click', async () => {
     const wrapper = mount(ToolCall, {
       props: {

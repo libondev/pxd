@@ -5,4 +5,9 @@ export interface ToolCallProps {
   status?: ToolCallStatus
   input?: unknown
   output?: unknown
+  modelValue?: boolean
+}
+
+export interface ToolCallEmits {
+  'update:modelValue': [open: boolean]
 }

@@ -59,11 +59,38 @@ Collapsible card for tool / function call traces with input and output payloads.
 </template>
 ```
 
+## Controlled
+
+`v-model` owns the expanded state; without it the card toggles itself.
+
+```vue demo
+<template>
+  <PStack direction="vertical" class="gap-3">
+    <PButton @click="open = !open">{{ open ? 'Collapse' : 'Expand' }}</PButton>
+
+    <PToolCall v-model="open" name="search_flights" :input="{ origin: 'LHR' }" />
+  </PStack>
+</template>
+
+<script setup>
+import { shallowRef } from 'vue'
+
+const open = shallowRef(false)
+</script>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | name | `string` | - | Tool name shown in the header |
 | status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon and badge |
+| modelValue | `boolean` | - | Expanded state; the card toggles itself when omitted |
 | input | `unknown` | - | Request payload (objects are pretty-printed as JSON) |
 | output | `unknown` | - | Response payload (objects are pretty-printed as JSON) |
+
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| update:modelValue | `(open: boolean) => void` | Emitted when the card is expanded or collapsed. |

@@ -273,6 +273,12 @@ a comment beside the fix.
 - **Cause**: `useOverlayManager` puts `pointer-events: none` on `<html>` while an overlay is open, and `pointer-events` is inherited. `POverlay` re-enables it only on its own mask, not on the slotted panel. Its `z-index` prop likewise styles the mask, not the slot.
 - **Fix**: Give the teleported panel `pointer-events-auto` and its own stacking value — `calc(var(--modal-index) + 5)` by default, overridable through a local variable when a `zIndex` prop is set (`PImagePreview`).
 
+### `whitespace-pre` content leaks its intrinsic width into the ancestor layout
+
+- **Symptom**: `PToolCall` widened its own container (and the surrounding chat column) whenever a payload line was long, instead of scrolling inside the payload box.
+- **Cause**: `overflow-x: auto` + `max-w-full` clamp the *used* width only. While an ancestor measures intrinsic width — a flex item's automatic minimum size, a grid `1fr`/`auto` track, `fit-content` — the percentage `max-width` resolves as `none`, so the `<pre>`'s min/max-content width is the width of its longest unbroken line and propagates up the whole chain.
+- **Fix**: Give the scroll box `w-0 min-w-full` (`width: 0` makes the intrinsic contribution 0; `min-width: 100%` restores the full container width at layout time), so the payload scrolls and nothing above it grows.
+
 ### A drag must not accumulate from the value it clamped
 
 - **Symptom**: A splitter stops at its minimum width and the rest of the gesture is swallowed — continuing left never folds the panel, and the caller has to fake a negative minimum to keep the pointer alive.

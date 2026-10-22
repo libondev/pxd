@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ToolCallProps, ToolCallStatus } from './types'
+import type { ToolCallEmits, ToolCallProps, ToolCallStatus } from './types'
 import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import ClockIcon from '@gdsicon/vue/clock'
@@ -20,11 +20,18 @@ interface JsonToken {
 defineOptions({
   name: 'PToolCall',
   inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:modelValue',
+  },
 })
 
 const props = withDefaults(defineProps<ToolCallProps>(), {
   status: 'pending',
+  // Explicit `undefined` keeps Vue's Boolean casting from coercing an absent prop to `false`.
+  modelValue: undefined,
 })
+const emits = defineEmits<ToolCallEmits>()
 
 const STATUS_META: Record<
   ToolCallStatus,
@@ -56,8 +63,10 @@ const STATUS_META: Record<
   },
 }
 
-const isOpen = shallowRef(true)
+const innerOpen = shallowRef(true)
 const contentRef = shallowRef<HTMLElement>()
+/** Uncontrolled fallback: a bound `modelValue` always wins. */
+const isOpen = computed(() => props.modelValue ?? innerOpen.value)
 const statusMeta = computed(() => STATUS_META[props.status])
 const inputText = computed(() => formatPayload(props.input))
 const outputText = computed(() => formatPayload(props.output))
@@ -138,8 +147,16 @@ function tokenClass(type: JsonTokenType) {
   }
 }
 
+function setOpen(open: boolean) {
+  if (props.modelValue === undefined) {
+    innerOpen.value = open
+  }
+
+  emits('update:modelValue', open)
+}
+
 function onToggleClick() {
-  isOpen.value = !isOpen.value
+  setOpen(!isOpen.value)
 }
 
 function onDetailsToggle(ev: Event) {
@@ -147,7 +164,7 @@ function onDetailsToggle(ev: Event) {
 
   if (details.open && !isOpen.value) {
     skipEnterMotion()
-    isOpen.value = true
+    setOpen(true)
   }
 }
 </script>
@@ -198,7 +215,7 @@ function onDetailsToggle(ev: Event) {
             {{ configProvider.locale.toolCall.input }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 min-w-full max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of inputTokens"
               :key="`input-${index}`"
@@ -213,7 +230,7 @@ function onDetailsToggle(ev: Event) {
             {{ configProvider.locale.toolCall.output }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 min-w-full max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of outputTokens"
               :key="`output-${index}`"
