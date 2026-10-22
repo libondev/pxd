@@ -42,7 +42,6 @@ const statusVariant = computed(() =>
 const computedVariant = computed(() => TOOLTIP_VARIANTS[statusVariant.value])
 
 const contentClassComputed = computed(() => [
-  'relative',
   TOOLTIP_CONTENT_CLASS,
   computedVariant.value.base,
   props.contentClass,
@@ -210,8 +209,8 @@ onBeforeUnmount(() => {
 
     <template #content="{ activeTrigger, activeTriggerIndex }">
       <div
-        class="pxd-hint--content gap-1.5 flex items-center"
-        :data-pause-on-hover="pauseOnHover ? 'true' : 'false'"
+        class="pxd-hint--content gap-1.5 px-3 py-2 flex items-center"
+        :data-pause-on-hover="pauseOnHover"
         @pointerenter="pauseCloseTimer"
         @pointerleave="resumeCloseTimer"
       >

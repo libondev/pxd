@@ -25,7 +25,12 @@ const isDisabled = computed(() => {
 })
 
 const contentClassComputed = computed(() => {
-  const classes = [TOOLTIP_CONTENT_CLASS, computedVariant.value.base, props.contentClass]
+  const classes = [
+    'px-3 py-2',
+    TOOLTIP_CONTENT_CLASS,
+    computedVariant.value.base,
+    props.contentClass,
+  ]
 
   return classes
 })
