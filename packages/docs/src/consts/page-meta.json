@@ -287,6 +287,10 @@
     "title": "Rating",
     "description": "Rating component for user feedback"
   },
+  "/components/reactions": {
+    "title": "Reactions",
+    "description": "Shows the emoji reactions under a message and lets the reader add their own or take it off again."
+  },
   "/components/reasoning": {
     "title": "Reasoning",
     "description": "Collapsible reasoning UI for assistant \"thinking\" traces."

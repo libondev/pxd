@@ -284,3 +284,9 @@ a comment beside the fix.
 - **Symptom**: A splitter stops at its minimum width and the rest of the gesture is swallowed — continuing left never folds the panel, and the caller has to fake a negative minimum to keep the pointer alive.
 - **Cause**: The pointer delta was applied to the *rendered* size, which had already been clamped to the bounds, so each frame started from the floor and the extra travel was discarded.
 - **Fix**: Keep the pointer position as its own value in gesture space, apply deltas to that, and derive the render size (`max(pointer, min)`) from it. Fold detection compares the pointer, not the render size; the clamp belongs on the way out, never on the way in.
+
+### A typed emit cannot take a union of event names
+
+- **Symptom**: `vue-tsc` rejects `emits(event, payload)` where `event: 'add' | 'remove'`, complaining that `Argument of type '"add" | "remove"' is not assignable to parameter of type '"remove"'`.
+- **Cause**: `defineEmits<T>()` turns every key into its own overload `(evt: K, ...args: T[K]) => void`. A union key has to satisfy all of them at once, so it collapses onto the last overload and the payload tuple of the other event no longer matches.
+- **Fix**: Branch on the event name at the call site so each `emits()` receives a literal — `if (event === 'add') { emits('add', emoji) } else { emits('remove', emoji) }` (`src/components/reactions/index.vue`). Giving both events the same payload tuple also works, but it flattens the public API for the sake of one helper.

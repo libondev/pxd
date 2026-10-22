@@ -88,6 +88,7 @@ declare module 'vue' {
     PRadio: (typeof import('pxd/components/radio'))['default']
     PRadioGroup: (typeof import('pxd/components/radio-group'))['default']
     PRating: (typeof import('pxd/components/rating'))['default']
+    PReactions: (typeof import('pxd/components/reactions'))['default']
     PReasoning: (typeof import('pxd/components/reasoning'))['default']
     PResizable: (typeof import('pxd/components/resizable'))['default']
     PReveal: (typeof import('pxd/components/reveal'))['default']

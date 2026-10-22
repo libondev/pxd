@@ -360,6 +360,11 @@
     "category": "Form"
   },
   {
+    "camelized": "Reactions",
+    "name": "reactions",
+    "category": "AI"
+  },
+  {
     "camelized": "Reasoning",
     "name": "reasoning",
     "category": "AI"
