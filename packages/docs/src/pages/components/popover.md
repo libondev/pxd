@@ -209,6 +209,8 @@ const content =
 
 Use `trigger-selector` when several DOM elements should share one popover instance. The popover keeps the same floating element open and updates its position to the active matched trigger.
 
+Trigger clicks are read in the capture phase, so an inner `@click.stop` still reaches the popover: use it to keep a clickable row from reacting without disabling the trigger. Mark a subtree with `data-popover-ignore` when its events should not reach the popover at all. A popover nested inside another one's trigger area owns its own events.
+
 ```vue demo
 <script setup>
 const actions = [
@@ -361,6 +363,89 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </template>
 ```
 
+## Nested popovers
+
+The nearest popover owns the trigger event. Clicking the small button opens its own popover and closes the row one, so two contents are never shown at once, and no manual stop is needed.
+
+```vue demo
+<script setup>
+const rows = [
+  { key: 'inbox', label: 'Inbox', detail: '12 unread messages' },
+  { key: 'drafts', label: 'Drafts', detail: '3 unsent drafts' },
+]
+</script>
+
+<template>
+  <PPopover
+    trigger="click"
+    trigger-selector="[data-row]"
+    content-class="p-3 bg-background-100 shadow-sm border rounded-md text-sm"
+  >
+    <PStack direction="vertical" class="w-64 gap-1">
+      <div
+        v-for="row in rows"
+        :key="row.key"
+        data-row
+        :data-detail="row.detail"
+        class="h-9 pe-1 ps-2 flex items-center justify-between rounded-md border cursor-pointer"
+      >
+        {{ row.label }}
+
+        <PPopover trigger="click" content-class="p-2 bg-background-100 shadow-sm border rounded-md text-sm">
+          <PButton size="sm" variant="ghost"> Actions </PButton>
+
+          <template #content> Actions for {{ row.label }} </template>
+        </PPopover>
+      </div>
+    </PStack>
+
+    <template #content="{ activeTrigger }">
+      {{ activeTrigger?.dataset.detail }}
+    </template>
+  </PPopover>
+</template>
+```
+
+## Ignored trigger areas
+
+Every chip matches `trigger-selector`, but the second one carries `data-popover-ignore`: events inside it are never treated as a trigger, for any trigger method. A popover that is already open stays open until the pointer leaves it.
+
+```vue demo
+<script setup>
+const chips = [
+  { key: 'inbox', label: 'Inbox', description: '12 unread messages' },
+  { key: 'drafts', label: 'Drafts', description: '3 unsent drafts', ignored: true },
+  { key: 'sent', label: 'Sent', description: 'Everything delivered' },
+]
+</script>
+
+<template>
+  <PPopover
+    trigger="hover"
+    trigger-selector="[data-chip]"
+    content-class="p-3 bg-background-100 shadow-sm border rounded-md text-sm"
+  >
+    <PStack class="w-64 gap-1">
+      <button
+        v-for="chip in chips"
+        :key="chip.key"
+        type="button"
+        data-chip
+        :data-description="chip.description"
+        :data-popover-ignore="chip.ignored ? '' : undefined"
+        class="h-8 px-2 rounded-md border bg-background-100 text-sm"
+      >
+        {{ chip.label }}
+      </button>
+    </PStack>
+
+    <template #content="{ activeTrigger }">
+      {{ activeTrigger?.dataset.description }}
+    </template>
+  </PPopover>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -369,7 +454,6 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | offset | `number` | - | Gap in `px` between the Popover and its trigger |
 | trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| ('click' \| 'hover' \| 'contextmenu' \| 'manual')[]` | `() => ['hover']` | Trigger methods; takes one or an array of `hover`, `click`, `contextmenu`, `manual` |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
-| stop-propagation | `boolean` | - | Stop the click on a resolved trigger from bubbling to its ancestors. |
 | align-point | `boolean` | - | Align the Popover to the pointer position. |
 | disabled | `boolean` | - | Ignore every trigger event so the Popover cannot be shown |
 | adaptive | `boolean` | - | Render as a fullscreen overlay with dimmed backdrop, locked scroll and slide motion |
