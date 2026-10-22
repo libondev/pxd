@@ -114,7 +114,7 @@ function onPointerdown(event: PointerEvent): void {
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
     :style="{ paddingInlineStart: indentSize + 'px', '--node-indent': indentSize + 'px' }"
-    class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none hover:bg-gray-100"
+    class="pxd-tree--node group/row min-h-8 py-1 pe-1 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none hover:bg-gray-100"
     :class="[
       itemClass,
       {
@@ -137,6 +137,7 @@ function onPointerdown(event: PointerEvent): void {
     <span
       v-if="showSwitcher && hasChildren"
       data-tree-switcher
+      tabindex="-1"
       class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
       @click.stop="emits('toggle', value)"
     >
@@ -224,7 +225,11 @@ function onPointerdown(event: PointerEvent): void {
   }
 
   &:hover::after {
-    background-color: var(--color-gray-alpha-100);
+    background-color: var(--color-gray-alpha-200);
+  }
+
+  &:active::after {
+    background-color: var(--color-gray-alpha-300);
   }
 }
 </style>
