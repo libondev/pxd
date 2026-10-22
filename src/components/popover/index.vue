@@ -8,7 +8,7 @@ import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { useDelayDestroy } from '../../composables/use-delay-destroy.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { throttleByRaf } from '../../utils/event.js'
+import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
@@ -45,6 +45,7 @@ let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let triggerElementsCache: HTMLElement[] | null = null
 let cleanupAutoUpdate: (() => void) | null = null
+let hideFrame = 0
 const throttledUpdatePosition = throttleByRaf(updatePosition)
 
 const arrowRef = shallowRef<HTMLElement>(null!)
@@ -151,7 +152,26 @@ function clearShowTimer() {
   }
 }
 
+function cancelHideFrame() {
+  caf(hideFrame)
+  hideFrame = 0
+}
+
+// One frame of grace lets a pointer crossing the gap between matched triggers reach the next one.
+function hideOnNextFrame() {
+  if (hideFrame) {
+    return
+  }
+
+  hideFrame = raf(() => {
+    hideFrame = 0
+    handlePopoverHide()
+  })
+}
+
 function clearHideTimer() {
+  cancelHideFrame()
+
   if (hidePopoverTimer) {
     clearTimeout(hidePopoverTimer)
     hidePopoverTimer = null
@@ -443,6 +463,10 @@ function onTriggerClick(ev: Event) {
   const trigger = resolveTriggerElement(ev.target)
 
   if (!trigger) {
+    if (!isManual.value && props.closeOnOutsideClick && isVisible.value) {
+      handlePopoverHide()
+    }
+
     return
   }
 
@@ -488,6 +512,29 @@ function onTriggerPointerOver(ev: PointerEvent) {
   }
 }
 
+// pointerout bubbles, so it also covers what pointerleave used to handle.
+function onTriggerPointerOut(ev: PointerEvent) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
+    return
+  }
+
+  const next = ev.relatedTarget
+  const isInside = next instanceof Node && triggerRef.value.contains(next)
+
+  if (!isInside) {
+    clearHideTimer()
+    handlePopoverHide()
+    return
+  }
+
+  // Still inside: only the gap between matched triggers gets a frame of grace.
+  if (!props.triggerSelector || !resolveTriggerElement(ev.target) || resolveTriggerElement(next)) {
+    return
+  }
+
+  hideOnNextFrame()
+}
+
 function onTriggerPointerMove(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
@@ -502,14 +549,6 @@ function onTriggerPointerMove(ev: PointerEvent) {
   if (isVisible.value) {
     updatePosition()
   }
-}
-
-function onTriggerPointerLeave() {
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
-    return
-  }
-
-  handlePopoverHide()
 }
 
 function onTriggerContextmenu(ev: PointerEvent) {
@@ -619,8 +658,8 @@ defineExpose({
     @click.capture="onTriggerClick"
     @contextmenu="onTriggerContextmenu"
     @pointerover="onTriggerPointerOver"
+    @pointerout="onTriggerPointerOut"
     @pointermove="onTriggerPointerMove"
-    @pointerleave="onTriggerPointerLeave"
   >
     <slot />
 

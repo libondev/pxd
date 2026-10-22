@@ -392,7 +392,7 @@ describe('popover', () => {
       y: 330,
     })
 
-    await trigger.trigger('pointerleave')
+    await trigger.trigger('pointerout')
     await flush()
     expect(wrapper.emitted('hide')).toHaveLength(1)
 
@@ -486,6 +486,106 @@ describe('popover', () => {
     expect(wrapper.emitted('hide')).toBeUndefined()
     expect(getBodyText('.content')).toBe('Second')
     expect(mocks.computePosition.mock.calls.at(-1)?.[0]).toBe(triggers[1].element)
+
+    wrapper.unmount()
+  })
+
+  it('should hide when the pointer rests in the gap between matched triggers', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'hover',
+        triggerSelector: '[data-popover-trigger]',
+      },
+      slots: {
+        default: `
+          <button data-popover-trigger data-title="First">First</button>
+          <button data-popover-trigger data-title="Second">Second</button>
+        `,
+        content: '<span>Content</span>',
+      },
+    })
+
+    const triggers = wrapper.findAll('[data-popover-trigger]')
+    const triggerArea = wrapper.find('.pxd-popover').element
+
+    await triggers[0].trigger('pointerover')
+    await flush()
+
+    triggers[0].element.dispatchEvent(
+      new PointerEvent('pointerout', { relatedTarget: triggerArea, bubbles: true }),
+    )
+
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should keep the popover open when the pointer crosses the gap onto another trigger', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'hover',
+        triggerSelector: '[data-popover-trigger]',
+      },
+      slots: {
+        default: `
+          <button data-popover-trigger data-title="First">First</button>
+          <button data-popover-trigger data-title="Second">Second</button>
+        `,
+        content: (params: { activeTrigger: HTMLElement | null }) =>
+          h('span', { class: 'content' }, params.activeTrigger?.dataset.title),
+      },
+    })
+
+    const triggers = wrapper.findAll('[data-popover-trigger]')
+    const triggerArea = wrapper.find('.pxd-popover').element
+
+    await triggers[0].trigger('pointerover')
+    await flush()
+
+    triggers[0].element.dispatchEvent(
+      new PointerEvent('pointerout', { relatedTarget: triggerArea, bubbles: true }),
+    )
+    await triggers[1].trigger('pointerover')
+
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    expect(wrapper.emitted('hide')).toBeUndefined()
+    expect(getBodyText('.content')).toBe('Second')
+
+    wrapper.unmount()
+  })
+
+  it('should hide when clicking the gap between matched triggers', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+        triggerSelector: '[data-popover-trigger]',
+      },
+      slots: {
+        default: `
+          <button data-popover-trigger>First</button>
+          <button data-popover-trigger>Second</button>
+        `,
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.findAll('[data-popover-trigger]')[0].trigger('click')
+    await flush()
+
+    expect(wrapper.emitted('show')).toHaveLength(1)
+
+    await wrapper.find('.pxd-popover').trigger('click')
+    await flush()
+
+    expect(wrapper.emitted('hide')).toHaveLength(1)
 
     wrapper.unmount()
   })

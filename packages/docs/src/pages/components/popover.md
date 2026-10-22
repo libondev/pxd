@@ -205,7 +205,7 @@ const content =
 </template>
 ```
 
-## Multiple trigger elements
+## Multiple trigger
 
 Use `trigger-selector` when several DOM elements should share one popover instance. The popover keeps the same floating element open and updates its position to the active matched trigger.
 
@@ -226,7 +226,7 @@ const actions = [
     trigger-selector="[data-popover-trigger]"
     content-class="p-3 bg-background-100 shadow-sm border rounded-md text-sm"
   >
-    <PStack>
+    <div class="flex">
       <button
         v-for="action in actions"
         :key="action.key"
@@ -234,11 +234,11 @@ const actions = [
         data-popover-trigger
         :data-popover-key="action.key"
         :data-popover-description="action.description"
-        class="h-8 w-8 rounded-md border bg-background-100 font-medium"
+        class="h-8 w-8 -ms-px border bg-background-100 font-medium first:ms-0 first:rounded-s-md last:rounded-e-md"
       >
         {{ action.label }}
       </button>
-    </PStack>
+    </div>
 
     <template #content="{ activeTrigger, activeTriggerIndex }">
       {{ activeTrigger.dataset.popoverDescription + activeTriggerIndex }}
