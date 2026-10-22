@@ -142,7 +142,7 @@ function onPointerdown(event: PointerEvent): void {
       v-if="showSwitcher && hasChildren"
       data-tree-switcher
       tabindex="-1"
-      class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center"
+      class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
       @click.stop="emits('toggle', value)"
     >
       <slot
