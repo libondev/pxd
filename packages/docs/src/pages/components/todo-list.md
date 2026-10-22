@@ -30,6 +30,26 @@ function onChange({ item, status }) {
 </template>
 ```
 
+## Simple
+
+`variant="simple"` drops the card background, border and header padding, so the plan sits inline like `PReasoning`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const options = ref([
+  { content: 'Read the failing snapshot diff', status: 'completed' },
+  { content: 'Rewrite the todo-list docs page', status: 'in_progress' },
+  { content: 'Re-run the component tests', status: 'pending' },
+])
+</script>
+
+<template>
+  <PTodoList :options="options" variant="simple" default-expanded title="Plan" />
+</template>
+```
+
 ## Readonly
 
 `readonly` renders an agent's plan without any interaction — the status buttons are disabled
@@ -158,6 +178,7 @@ const options = ref([
 | model-value | `TodoOption[]` | - | Bound list state; takes precedence over `options`. |
 | default-value | `TodoOption[]` | - | List state used before the consumer binds `v-model`. |
 | options | `TodoOption[]` | `[]` | Items to render while uncontrolled; each entry is `{ id?, content?, description?, status?, disabled? }`. |
+| variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and header padding. |
 | readonly | `boolean` | `false` | Render as a static list: status buttons are disabled and rows ignore clicks. |
 | collapsible | `boolean` | `true` | Allow folding the list away behind the header. |
 | default-expanded | `boolean` | `false` | Whether the list starts open. |

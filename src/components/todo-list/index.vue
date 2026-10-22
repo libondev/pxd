@@ -27,6 +27,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<TodoProps>(), {
+  variant: 'default',
   options: () => [],
   readonly: false,
   collapsible: true,
@@ -231,17 +232,22 @@ defineExpose({
 <template>
   <details
     data-todo-list
-    class="pxd-todo-list group/todo w-full max-w-full rounded-xl border bg-background-100 text-foreground"
+    class="pxd-todo-list group/todo w-full max-w-full text-foreground"
+    :class="{ 'rounded-xl border bg-background-100': variant === 'default' }"
     :open="detailsOpen"
     v-bind="$attrs"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-todo-list--header group/todo gap-2 p-3 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center justify-between border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
-      :class="{ 'cursor-default': !collapsible }"
+      class="pxd-todo-list--header group/todo gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center justify-between border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
+      :class="{
+        'p-3 font-medium': variant === 'default',
+        'cursor-default': !collapsible,
+      }"
       @click.prevent="onToggleClick"
     >
-      <ListUnorderedIcon class="size-3 font-medium shrink-0" />
+      <ListUnorderedIcon class="size-3 shrink-0" />
+
       <slot
         name="header"
         :expanded="expanded"
@@ -249,13 +255,13 @@ defineExpose({
         :title="headerTitle"
         :summary="summaryText"
       >
-        <span class="pxd-todo-list--title font-medium min-w-0 text-sm flex-1 truncate">
+        <span class="pxd-todo-list--title min-w-0 text-sm flex-1 truncate">
           {{ headerTitle }}
         </span>
 
         <span
           v-if="summaryText"
-          class="pxd-todo-list--summary text-sm shrink-0 text-foreground-secondary"
+          class="pxd-todo-list--summary text-xs shrink-0 text-foreground-secondary"
           aria-live="polite"
         >
           {{ summaryText }}
@@ -275,7 +281,11 @@ defineExpose({
       :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
     >
       <ul
-        class="pxd-todo-list--list max-h-40 m-0 p-3 gap-2 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto border-t"
+        class="pxd-todo-list--list max-h-40 m-0 py-3 ps-3 gap-2 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
+        :class="{
+          'border-t': variant === 'default',
+          'ms-1.5 mbs-1.5 border-l': variant === 'simple',
+        }"
       >
         <li
           v-if="currentOptions.length === 0"

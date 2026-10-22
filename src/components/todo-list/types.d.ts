@@ -1,6 +1,7 @@
 import type { ComponentLabel } from '../../types/shared/props'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
+export type TodoVariant = 'default' | 'simple'
 
 /** Key accepted by the imperative methods: an option `id`, or its index. */
 export type TodoItemKey = string | number
@@ -32,6 +33,7 @@ export interface TodoStats {
 }
 
 export interface TodoProps {
+  variant?: TodoVariant
   /** Items to render while uncontrolled; `modelValue` takes precedence. */
   options?: TodoOption[]
   modelValue?: TodoOption[]
