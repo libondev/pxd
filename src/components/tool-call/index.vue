@@ -178,7 +178,7 @@ watch(
       class="pxd-tool-call--content overflow-hidden"
       :class="{
         'border-t': variant === 'default',
-        'ms-2 border-l': variant === 'simple',
+        'ms-1.5 mbs-1.5 border-l': variant === 'simple',
         'motion-safe:transition-[height]': isOpen || isLeaving,
       }"
     >
