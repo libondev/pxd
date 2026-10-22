@@ -109,12 +109,12 @@ onBeforeUnmount(() => {
             <div
               class="sm:flex p-2 gap-1 hidden items-center justify-end border-t bg-background-200"
             >
-              <PText secondary class="text-13px"> Open </PText>
+              <PText secondary class="text-[13px]"> Open </PText>
               <PKbd enter />
 
               <PSeparator class="mx-1" />
 
-              <PText secondary class="text-13px"> Toggle </PText>
+              <PText secondary class="text-[13px]"> Toggle </PText>
               <PKbd label="↑" />
               <PKbd label="↓" />
             </div>

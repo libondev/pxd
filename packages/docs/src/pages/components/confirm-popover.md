@@ -103,7 +103,7 @@ Replace the buttons with the `actions` slot — for example a hold button that o
     <template #content="{ activeTrigger }">
       <div class="p-3 flex max-w-64 flex-col gap-2">
         <p class="m-0 text-sm font-medium">Delete {{ activeTrigger?.dataset.file }}?</p>
-        <p class="m-0 text-13px text-foreground-secondary">This action cannot be undone.</p>
+        <p class="m-0 text-[13px] text-foreground-secondary">This action cannot be undone.</p>
       </div>
     </template>
 

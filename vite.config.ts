@@ -35,7 +35,6 @@ export default defineConfig({
     ignorePatterns: [
       'dist',
       'node_modules',
-      'src/utils/_internal/cn-tables.ts',
       '.vscode',
       '.zed',
       '.agent',
@@ -77,7 +76,6 @@ export default defineConfig({
     ignorePatterns: [
       'dist',
       'node_modules',
-      'src/utils/_internal/cn-tables.ts',
       '.vscode',
       '.zed',
       '.agent',

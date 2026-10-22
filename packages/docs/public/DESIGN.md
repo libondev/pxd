@@ -246,8 +246,6 @@ Dark mode inverts the palette while maintaining the same semantic roles. Backgro
 
 The type system uses **Inter** as the primary font family, with Geist as the preferred alternative and Arial as the system fallback. Font rendering is optimized with antialiased smoothing, ligatures disabled, and `optimizeLegibility` enabled.
 
-The scale uses both standard Tailwind sizes and custom pixel-based tokens (`--text-13px` at 13px and `--text-15px` at 15px) to achieve precise typographic rhythm. All text inherits the font stack globally -- there is no need to apply font classes to individual elements.
-
 - **Headlines (h1--h3):** Set in Inter Semi-Bold (600) with tight letter-spacing for a crisp, editorial feel. Used sparingly for page titles and section headings.
 - **Body text:** Inter Regular (400) at 15px with generous 1.6 line-height for comfortable reading in long-form content.
 - **Labels and UI text:** Inter Medium (500) at 13px for buttons, form labels, and navigation items. Tighter line-height (1.4) for compact UI density.

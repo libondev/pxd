@@ -26,6 +26,6 @@ export const TOOLTIP_VARIANTS = {
 }
 
 export const TOOLTIP_CONTENT_CLASS =
-  'rounded-md text-13px break-words whitespace-pre-line bg-(--popover-arrow-color) motion-safe:transition-colors'
+  'rounded-md text-[13px] break-words whitespace-pre-line bg-(--popover-arrow-color) motion-safe:transition-colors'
 
 export type TooltipVariant = keyof typeof TOOLTIP_VARIANTS

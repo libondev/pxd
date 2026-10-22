@@ -25,7 +25,7 @@ const iconSlotClasses = createTailwindVariant({
   base: 'inline-flex shrink-0 items-center justify-center',
   variants: {
     size: {
-      sm: 'w-3 h-3 p-0.5 text-11px',
+      sm: 'w-3 h-3 p-0.5 text-[10px]',
       md: 'w-4 h-4 text-xs',
       lg: 'w-5 h-5 text-sm',
     },
@@ -104,7 +104,7 @@ const { attrs, classes } = useTailwindVariant(
         rounded: 'rounded-full',
       },
       size: {
-        sm: 'px-1.5 h-5 text-10px',
+        sm: 'px-1.5 h-5 text-[10px]',
         md: 'px-2.5 h-6 text-xs',
         lg: 'px-3 h-8 text-sm',
       },

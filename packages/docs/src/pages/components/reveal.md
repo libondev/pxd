@@ -9,7 +9,7 @@ Fade an element in while it moves from an offset and optional blur into place. B
   <PReveal>
     <PCard class="w-80">
       <div class="font-medium">Content that fades in</div>
-      <div class="text-13px text-gray-600">No observer is created in this mode.</div>
+      <div class="text-[13px] text-gray-600">No observer is created in this mode.</div>
     </PCard>
   </PReveal>
 </template>

@@ -46,9 +46,9 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-code-block relative flex flex-col overflow-hidden rounded-lg border border-gray-alpha-300 bg-(--code-block-bg) text-gray-1000',
     variants: {
       size: {
-        sm: 'text-11px',
-        md: 'text-13px',
-        lg: 'text-15px',
+        sm: 'text-[10px]',
+        md: 'text-[13px]',
+        lg: 'text-[15px]',
       },
     },
   },

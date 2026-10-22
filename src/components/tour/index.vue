@@ -311,7 +311,7 @@ defineExpose({
         />
 
         <template #content>
-          <h4 v-if="activeStep?.title" :id="titleId" class="font-medium m-0 text-15px">
+          <h4 v-if="activeStep?.title" :id="titleId" class="font-medium m-0 text-[15px]">
             {{ activeStep.title }}
           </h4>
 

@@ -451,11 +451,6 @@
     var(--shadow-border-value), var(--shadow-modal-value), var(--shadow-background-border);
   --shadow-border-fullscreen:
     var(--shadow-border-value), var(--shadow-fullscreen-value), var(--shadow-background-border);
-
-  --text-10px: 10px;
-  --text-11px: 11px;
-  --text-13px: 13px;
-  --text-15px: 15px;
 }
 
 @utility default-animation-duration {
