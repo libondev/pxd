@@ -5,4 +5,5 @@ export interface BubbleProps {
   avatar?: string
   loading?: boolean
   variant?: 'default' | 'ghost'
+  interactive?: boolean
 }

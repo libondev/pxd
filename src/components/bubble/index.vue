@@ -43,15 +43,29 @@ const { classes: contentClasses } = useTailwindVariant(
         assistant: 'bg-gray-100',
       },
       variant: {
-        ghost: 'bg-background border-transparent text-foreground hover:bg-gray-200',
-        default: 'hover:bg-gray-300',
+        default: '',
+        ghost: 'bg-background border-transparent text-foreground',
       },
+      interactive: {},
     },
     compoundVariants: [
       {
+        role: ['system', 'assistant'],
+        variant: 'default',
+        interactive: true,
+        class: 'hover:bg-gray-300',
+      },
+      {
         role: 'user',
         variant: 'default',
-        class: 'hover:bg-primary hover:brightness-90',
+        interactive: true,
+        class: 'hover:brightness-90',
+      },
+      {
+        role: 'user',
+        variant: 'ghost',
+        interactive: true,
+        class: 'hover:bg-gray-200',
       },
     ],
   },
@@ -60,6 +74,7 @@ const { classes: contentClasses } = useTailwindVariant(
     selection: () => ({
       role: props.role,
       variant: props.variant,
+      interactive: props.interactive,
     }),
   },
 )

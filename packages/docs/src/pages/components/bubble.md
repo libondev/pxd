@@ -182,6 +182,7 @@ function addMessage() {
 | avatar | `string` | - | Avatar image URL rendered before the bubble, the `avatar` slot overrides it |
 | loading | `boolean` | - | Replace the message content with a spinner |
 | variant | `default` \| `ghost` | `default` | Render a transparent bubble without border |
+| interactive | `boolean` | `true` | Show hover feedback, set to `false` for read-only messages |
 
 ## Slots
 
