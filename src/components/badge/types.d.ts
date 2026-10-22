@@ -1,4 +1,9 @@
-import type { ComponentAs, ComponentShape, ComponentSize } from '../../types/shared/props'
+import type {
+  ComponentAs,
+  ComponentShape,
+  ComponentSize,
+  ComponentSizeWithXs,
+} from '../../types/shared/props'
 
 export type BadgeVariant =
   | 'pill'
@@ -27,7 +32,7 @@ export type BadgeVariant =
 
 export interface BadgeProps {
   as?: ComponentAs
-  size?: ComponentSize
+  size?: ComponentSizeWithXs
   shape?: ComponentShape
   variant?: BadgeVariant
   closeable?: boolean
