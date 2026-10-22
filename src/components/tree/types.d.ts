@@ -1,14 +1,22 @@
 import type { ComponentClass, ComponentLabel, ComponentValue } from '../../types/shared/props'
 
 export interface TreeOption {
-  value: ComponentValue
+  value?: ComponentValue
   label?: ComponentLabel
   disabled?: boolean
   children?: TreeOption[]
-  /** Marks a leaf under `lazy`: no arrow, and never handed to `load`. */
   isLeaf?: boolean
   keywords?: string[]
   [key: string]: any
+}
+
+/** Where a node keeps each of the fields the tree reads. */
+export interface TreeFieldNames {
+  value?: string
+  label?: string
+  children?: string
+  disabled?: string
+  isLeaf?: string
 }
 
 export type TreeOptions = TreeOption[]
@@ -20,7 +28,7 @@ export type TreeFilterFn = (node: TreeOption, query: string) => boolean
 /** Hands the tree the nodes a query matched, their ancestors included. */
 export type TreeRemoteFilterFn = (query: string) => TreeOptions | Promise<TreeOptions>
 
-/** Hands the children of a node to the tree. An empty array marks it a leaf. */
+/** Hands the children of a node to the tree. An empty array settles it as a leaf, never asked again. */
 export type TreeLoadResolve = (children: TreeOptions) => void
 
 /** Gives up on a node without children: the arrow stays, and the next expand asks again. */
@@ -122,7 +130,8 @@ export interface TreeProps {
   indent?: number
   expandedKeys?: ComponentValue[]
   defaultExpandedKeys?: ComponentValue[]
-  childrenField?: string
+  accordion?: boolean
+  fieldNames?: TreeFieldNames
   /** Fetch the children of a node when it first opens, instead of reading them from `data`. */
   lazy?: boolean
   /** Fetches the children of a node neither `data` nor an earlier request provided. */
@@ -151,5 +160,7 @@ export interface TreeEmits {
   'update:expandedKeys': [ComponentValue[]]
   expand: [TreeNodeDetail]
   collapse: [TreeNodeDetail]
+  'node-click': [TreeNodeDetail, MouseEvent]
+  'node-contextmenu': [TreeNodeDetail, MouseEvent]
   'update:searchValue': [string]
 }

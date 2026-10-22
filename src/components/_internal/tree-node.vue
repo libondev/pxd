@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentClass, ComponentValue } from '../../types/shared/props'
+import type { ComponentClass, ComponentLabel, ComponentValue } from '../../types/shared/props'
 import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
@@ -14,6 +14,7 @@ defineOptions({
 
 const props = defineProps<{
   node: TreeOption
+  label: ComponentLabel
   value: ComponentValue
   depth: number
   index: number
@@ -25,6 +26,7 @@ const props = defineProps<{
   active: boolean
   multiple: boolean
   disabled: boolean
+  nodeDisabled: boolean
   selectable: boolean
   showSwitcher: boolean
   showCheckbox: boolean
@@ -42,10 +44,11 @@ const emits = defineEmits<{
   check: [value: ComponentValue, event: MouseEvent]
   toggle: [value: ComponentValue]
   'row-click': [value: ComponentValue, event: MouseEvent]
+  'row-contextmenu': [value: ComponentValue, event: MouseEvent]
   'drag-pointerdown': [value: ComponentValue, event: PointerEvent]
 }>()
 
-const disabled = computed(() => props.disabled || props.node.disabled === true)
+const disabled = computed(() => props.disabled || props.nodeDisabled)
 
 const unavailable = computed(() => disabled.value || !props.selectable)
 
@@ -68,17 +71,17 @@ const parts = computed<TreeHighlightPart[] | undefined>(() => {
     return undefined
   }
 
-  const label = String(props.node.label ?? '')
-  const at = label.toLowerCase().indexOf(query.toLowerCase())
+  const text = String(props.label ?? '')
+  const at = text.toLowerCase().indexOf(query.toLowerCase())
 
   if (at === -1) {
     return undefined
   }
 
   return [
-    { text: label.slice(0, at), matched: false },
-    { text: label.slice(at, at + query.length), matched: true },
-    { text: label.slice(at + query.length), matched: false },
+    { text: text.slice(0, at), matched: false },
+    { text: text.slice(at, at + query.length), matched: true },
+    { text: text.slice(at + query.length), matched: false },
   ].filter((part) => part.text)
 })
 
@@ -131,6 +134,7 @@ function onPointerdown(event: PointerEvent): void {
     ]"
     v-bind="$attrs"
     @click="emits('row-click', value, $event)"
+    @contextmenu="emits('row-contextmenu', value, $event)"
     @pointerdown="onPointerdown"
     @dragstart.prevent
   >
@@ -138,7 +142,7 @@ function onPointerdown(event: PointerEvent): void {
       v-if="showSwitcher && hasChildren"
       data-tree-switcher
       tabindex="-1"
-      class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
+      class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center"
       @click.stop="emits('toggle', value)"
     >
       <slot
@@ -159,7 +163,7 @@ function onPointerdown(event: PointerEvent): void {
     <span v-else-if="showSwitcher" aria-hidden="true" class="pxd-tree--switcher size-4 shrink-0" />
 
     <span
-      v-if="multiple && showCheckbox"
+      v-if="showCheckbox && multiple"
       aria-hidden="true"
       :data-selectable="selectable"
       class="pxd-tree--checkbox size-4 p-0.5 inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm border text-primary-foreground"
@@ -192,6 +196,8 @@ function onPointerdown(event: PointerEvent): void {
         :node="node"
         :depth="depth"
         :parts="parts"
+        :loading="loading"
+        :expanded="expanded"
         :has-children="hasChildren"
       >
         <template v-if="parts">
@@ -203,11 +209,18 @@ function onPointerdown(event: PointerEvent): void {
             >{{ part.text }}</mark
           >
         </template>
-        <template v-else>{{ node.label }}</template>
+        <template v-else>{{ label }}</template>
       </slot>
     </span>
 
-    <slot name="node-suffix" :node="node" :has-children="hasChildren" />
+    <slot
+      name="node-suffix"
+      :node="node"
+      :depth="depth"
+      :loading="loading"
+      :expanded="expanded"
+      :has-children="hasChildren"
+    />
   </div>
 </template>
 

@@ -99,6 +99,54 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
+  it('should collapse an expanded row from its row when the switcher is hidden', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          { value: 'src', label: 'src', children: [{ value: 'index.vue', label: 'index.vue' }] },
+          { value: 'pxd', label: 'pxd', isLeaf: false },
+          { value: 'file', label: 'file' },
+        ],
+        expandOnly: true,
+        showSwitcher: false,
+        expandedKeys: ['pxd', 'file'],
+      },
+    })
+
+    // A key the caller put on a leaf stays open: nothing on that row can close it.
+    expect(wrapper.find('[data-key="file"]').attributes('aria-expanded')).toBeUndefined()
+    expect(wrapper.find('[data-key="pxd"]').attributes('aria-expanded')).toBe('true')
+
+    await wrapper.find('[data-key="pxd"]').trigger('click')
+
+    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['file'])
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should reopen a parent collapsed from its row', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [{ value: 'pxd', label: 'pxd', isLeaf: false }],
+        expandOnly: true,
+        showSwitcher: false,
+        expandedKeys: ['pxd'],
+      },
+    })
+
+    await wrapper.find('[data-key="pxd"]').trigger('click')
+
+    expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual([])
+
+    await wrapper.setProps({ expandedKeys: [] })
+    await wrapper.find('[data-key="pxd"]').trigger('click')
+
+    expect(wrapper.emitted('update:expandedKeys')?.[1]?.[0]).toEqual(['pxd'])
+
+    wrapper.unmount()
+  })
+
   it('should leave a multiple selection to the checkbox when expandOnly is set', async () => {
     const wrapper = mount(Tree, { props: { data, multiple: true, expandOnly: true } })
 
@@ -956,6 +1004,120 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
+  it('should keep one node open per level when accordion is set', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          { value: 'a', label: 'a', children: [{ value: 'a1', label: 'a1' }] },
+          { value: 'b', label: 'b', children: [{ value: 'b1', label: 'b1' }] },
+        ],
+        accordion: true,
+      },
+    })
+
+    await wrapper.find('[data-key="a"] [data-tree-switcher]').trigger('click')
+    await wrapper.find('[data-key="b"] [data-tree-switcher]').trigger('click')
+
+    expect(wrapper.emitted('update:expandedKeys')?.at(-1)?.[0]).toEqual(['b'])
+    expect(wrapper.find('[data-key="a"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-key="a1"]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should emit node-click with the row it landed on', async () => {
+    const wrapper = mount(Tree, { props: { data } })
+
+    await wrapper.find('[data-key="readme"]').trigger('click')
+
+    const [detail, event] = wrapper.emitted('node-click')?.[0] ?? []
+
+    expect(detail).toMatchObject({ value: 'readme', node: { label: 'readme' } })
+    expect(event).toBeDefined()
+
+    wrapper.unmount()
+  })
+
+  it('should emit node-contextmenu without swallowing the browser menu', async () => {
+    const wrapper = mount(Tree, { props: { data } })
+
+    const row = wrapper.find('[data-key="readme"]')
+
+    await row.trigger('contextmenu')
+
+    expect(wrapper.emitted('node-contextmenu')?.[0]?.[0]).toMatchObject({ value: 'readme' })
+    expect(wrapper.emitted('node-contextmenu')?.[0]?.[1]).toBeDefined()
+
+    wrapper.unmount()
+  })
+
+  it('should return only the leaves when asked', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          {
+            value: 'src',
+            label: 'src',
+            children: [
+              { value: 'a', label: 'a' },
+              { value: 'b', label: 'b' },
+            ],
+          },
+        ],
+        multiple: true,
+        modelValue: ['src', 'a', 'b'],
+      },
+    })
+    const vm = wrapper.vm as unknown as { getCheckedKeys: (leafOnly?: boolean) => string[] }
+
+    expect(vm.getCheckedKeys()).toEqual(['src', 'a', 'b'])
+    expect(vm.getCheckedKeys(true)).toEqual(['a', 'b'])
+
+    wrapper.unmount()
+  })
+
+  it('should read every field through fieldNames', async () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          {
+            id: 'src',
+            title: 'src',
+            nodes: [{ id: 'components', title: 'components' }],
+            off: true,
+          },
+        ],
+        fieldNames: { value: 'id', label: 'title', children: 'nodes', disabled: 'off' },
+      },
+    })
+    const vm = wrapper.vm as unknown as { getData: (value: string) => TreeOption | undefined }
+
+    expect(wrapper.find('[data-key="src"]').attributes('data-disabled')).toBe('true')
+    expect(wrapper.find('[data-key="src"] .pxd-tree--content').text()).toBe('src')
+    expect(vm.getData('components')?.title).toBe('components')
+
+    await wrapper.find('[data-key="src"] [data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="components"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should read isLeaf through fieldNames', () => {
+    const wrapper = mount(Tree, {
+      props: {
+        data: [{ id: 'docs', title: 'docs', leaf: true }],
+        fieldNames: { value: 'id', label: 'title', isLeaf: 'leaf' },
+        lazy: true,
+        load: () => {},
+      },
+    })
+
+    expect(wrapper.find('[data-tree-switcher]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   const ROW_HEIGHT = 32
 
   function pointer(type: string, x: number, y: number, pointerType = 'mouse') {
@@ -1395,7 +1557,9 @@ describe('tree', () => {
         modelValue: ['a'],
       },
     })
-    const vm = wrapper.vm as unknown as { getCheckedKeys: (i?: boolean) => string[] }
+    const vm = wrapper.vm as unknown as {
+      getCheckedKeys: (leafOnly?: boolean, includeIndeterminate?: boolean) => string[]
+    }
 
     expect(vm.getCheckedKeys()).toEqual(['a'])
 
@@ -1405,7 +1569,7 @@ describe('tree', () => {
       'src',
     ])
     expect(vm.getCheckedKeys()).toEqual(['a'])
-    expect(vm.getCheckedKeys(true)).toEqual(['src', 'a'])
+    expect(vm.getCheckedKeys(false, true)).toEqual(['src', 'a'])
 
     wrapper.unmount()
   })
@@ -1962,19 +2126,105 @@ describe('tree', () => {
     wrapper.unmount()
   })
 
-  it('should drop the arrow of a node that loaded no children', async () => {
-    const wrapper = mount(Tree, {
-      props: {
-        data: lazyData,
-        lazy: true,
-        load: vi.fn<TreeLoadFn>((_detail, resolve) => resolve([])),
-      },
-    })
+  it('should turn a node into a leaf when its request came back empty', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => resolve([]))
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
 
     await wrapper.find('[data-tree-switcher]').trigger('click')
 
+    expect(load).toHaveBeenCalledTimes(1)
     expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBeUndefined()
     expect(wrapper.find('[data-tree-switcher]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should expand and collapse a parent whose children are empty', async () => {
+    const wrapper = mount(Tree, {
+      props: { data: [{ value: 'empty', label: 'empty', isLeaf: false }] },
+    })
+
+    expect(wrapper.find('[data-tree-switcher]').exists()).toBe(true)
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="empty"]').attributes('aria-expanded')).toBe('true')
+
+    await wrapper.find('[data-tree-switcher]').trigger('click')
+
+    expect(wrapper.find('[data-key="empty"]').attributes('aria-expanded')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should treat an empty children array as a leaf', () => {
+    const wrapper = mount(Tree, {
+      props: { data: [{ value: 'empty', label: 'empty', children: [] }] },
+    })
+
+    expect(wrapper.find('[data-tree-switcher]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should let isLeaf outrank the data', async () => {
+    const load = vi.fn<TreeLoadFn>((_detail, resolve) => resolve([]))
+    const wrapper = mount(Tree, {
+      props: {
+        data: [
+          { value: 'leaf', label: 'leaf', isLeaf: true, children: [] },
+          {
+            value: 'stale',
+            label: 'stale',
+            isLeaf: true,
+            children: [{ value: 'child', label: 'child' }],
+          },
+          { value: 'empty', label: 'empty', isLeaf: false },
+        ],
+        lazy: true,
+        load,
+      },
+    })
+
+    expect(wrapper.find('[data-key="leaf"] [data-tree-switcher]').exists()).toBe(false)
+    expect(wrapper.find('[data-key="stale"] [data-tree-switcher]').exists()).toBe(false)
+    expect(wrapper.find('[data-key="empty"] [data-tree-switcher]').exists()).toBe(true)
+
+    await wrapper.find('[data-key="leaf"]').trigger('click')
+
+    expect(load).not.toHaveBeenCalled()
+    expect(wrapper.find('[data-key="child"]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should open a lazy tree level by level when expanding all', async () => {
+    const load = vi.fn<TreeLoadFn>((detail, resolve) => {
+      if (detail.depth === 0) {
+        resolve([{ value: 'components', label: 'components' }])
+        return
+      }
+
+      resolve(detail.depth === 1 ? [{ value: 'tree', label: 'tree' }] : [])
+    })
+    const wrapper = mount(Tree, { props: { data: lazyData, lazy: true, load } })
+    const vm = wrapper.vm as unknown as {
+      expandAll: () => void
+      getVisibleKeys: () => string[]
+    }
+
+    vm.expandAll()
+
+    for (let i = 0; i < 6; i++) {
+      await wrapper.vm.$nextTick()
+    }
+
+    expect(load.mock.calls.map((call) => (call[0].node as TreeOption).value)).toEqual([
+      'src',
+      'components',
+      'tree',
+    ])
+    expect(vm.getVisibleKeys()).toEqual(['src', 'components', 'tree'])
 
     wrapper.unmount()
   })

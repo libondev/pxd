@@ -17,8 +17,11 @@ import { useListKeyboardController } from '../../composables/_internal/use-list-
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
   graftLoadedChildren,
+  hasTreeChildren,
   isTreeDescendant,
+  isTreeLeaf,
   moveTreeNode,
+  resolveTreeFieldNames,
   useTreeDrag,
   useTreeIndex,
   useTreeMatched,
@@ -59,11 +62,11 @@ const props = withDefaults(defineProps<TreeProps>(), {
   expandOnly: false,
   draggable: false,
   dropInsideLeaf: false,
+  accordion: false,
   virtual: false,
   itemSize: 32,
   overScan: 4,
   indent: 16,
-  childrenField: 'children',
   lazy: false,
   loading: false,
   filterable: false,
@@ -94,10 +97,10 @@ const searchValue = computed(() => props.searchValue ?? internalSearchValue.valu
 const internalExpandedKeys = shallowRef<ComponentValue[]>([...(props.defaultExpandedKeys ?? [])])
 const loadedChildren = shallowRef(new Map<ComponentValue, TreeOptions>())
 const loadingKeys = shallowRef(new Set<ComponentValue>())
+const expandAllPending = shallowRef(false)
 
-const treeData = computed(() =>
-  graftLoadedChildren(props.data, loadedChildren.value, props.childrenField),
-)
+const fields = computed(() => resolveTreeFieldNames(props.fieldNames))
+const treeData = computed(() => graftLoadedChildren(props.data, loadedChildren.value, fields.value))
 const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
 const expanded = computed(() => new Set(expandedKeys.value))
 const highlightQuery = computed(() => (props.highlightMatch ? searchValue.value.trim() : ''))
@@ -146,12 +149,13 @@ const searchData = computed(() =>
 
 const index = useTreeIndex(
   () => searchData.value,
-  () => props.childrenField,
+  () => fields.value,
 )
 const localMatched = useTreeMatched(
   index,
   () => searchValue.value,
   () => props.filter,
+  () => fields.value,
 )
 
 const matched = computed<TreeMatched>(() => {
@@ -164,7 +168,7 @@ const matched = computed<TreeMatched>(() => {
   }
 
   // The whole returned forest shows: an ancestor is as much a hit as the node at the end of it.
-  const visible = new Set(index.value.list.map((meta) => meta.node.value))
+  const visible = new Set(index.value.list.map((meta) => meta.node[fields.value.value]))
 
   return { visible, exact: visible }
 })
@@ -175,6 +179,7 @@ const { checked, indeterminate, toggle, extend, isSelectable } = useTreeSelectio
   multiple: () => props.multiple,
   checkStrictly: () => props.checkStrictly,
   selectable: () => props.selectable,
+  fieldNames: () => fields.value,
 })
 const rows = useTreeRows(index, {
   query: () => searchValue.value,
@@ -183,6 +188,7 @@ const rows = useTreeRows(index, {
   exactMatched: () => matched.value.exact,
   matchesOnly: () => props.searchMatchesOnly,
   canLoad: () => canLoad,
+  fieldNames: () => fields.value,
 })
 
 /** Not `reactive()`: the virtualizer would get a deep proxy of the rows instead of the rows. */
@@ -337,7 +343,11 @@ function canLoad(value: ComponentValue): boolean {
 
   const meta = index.value.byValue.get(value)
 
-  return meta !== undefined && meta.node.isLeaf !== true && meta.children.length === 0
+  return (
+    meta !== undefined &&
+    meta.node[fields.value.isLeaf] !== true &&
+    !hasTreeChildren(meta.node, fields.value)
+  )
 }
 function commitLoading(value: ComponentValue, next: boolean): void {
   const keys = new Set(loadingKeys.value)
@@ -388,12 +398,38 @@ function commitExpandedKeys(next: ComponentValue[]): void {
   emits('update:expandedKeys', next)
 }
 
+function siblingKeys(value: ComponentValue): ComponentValue[] {
+  const meta = index.value.byValue.get(value)
+
+  if (!meta) {
+    return []
+  }
+
+  const siblings =
+    meta.parentValue === undefined
+      ? index.value.list.filter((item) => item.parentValue === undefined)
+      : (index.value.byValue.get(meta.parentValue)?.children ?? [])
+
+  return siblings.map((item) => item.node[fields.value.value])
+}
+
 function setExpandedByValue(value: ComponentValue, next: boolean): void {
   if (expanded.value.has(value) === next) {
     return
   }
 
-  const current = expandedKeys.value
+  let current = expandedKeys.value
+
+  if (next && props.accordion) {
+    const siblings = new Set(siblingKeys(value))
+
+    current = current.filter((key) => key === value || !siblings.has(key))
+  }
+
+  if (!next) {
+    expandAllPending.value = false
+  }
+
   commitExpandedKeys(next ? [...current, value] : current.filter((key) => key !== value))
 
   const node = index.value.byValue.get(value)?.node
@@ -417,13 +453,23 @@ function toggleNode(row: TreeFlatNode): void {
   setExpandedByValue(row.key, !row.expanded)
 }
 
+function expandableKeys(): ComponentValue[] {
+  return index.value.list
+    .filter((meta) => {
+      const value = meta.node[fields.value.value]
+
+      return !isTreeLeaf(meta.node, fields.value, canLoad(value))
+    })
+    .map((meta) => meta.node[fields.value.value])
+}
+
 function expandAll(): void {
-  commitExpandedKeys(
-    index.value.list.filter((meta) => meta.children.length > 0).map((meta) => meta.node.value),
-  )
+  expandAllPending.value = true
+  commitExpandedKeys(expandableKeys())
 }
 
 function collapseAll(): void {
+  expandAllPending.value = false
   commitExpandedKeys([])
 }
 
@@ -462,7 +508,7 @@ function onSearchInput(value: string): void {
   emits('update:searchValue', value)
 }
 function isNodeDisabled(row: TreeFlatNode): boolean {
-  return props.disabled || row.node.disabled === true
+  return props.disabled || row.node[fields.value.disabled] === true
 }
 
 function scrollRowIntoView(index: number): void {
@@ -479,7 +525,7 @@ function isDragClick(): boolean {
   return didDrag()
 }
 
-function onRowClick(value: ComponentValue, event?: MouseEvent): void {
+function onRowClick(value: ComponentValue, event: MouseEvent): void {
   if (isDragClick()) {
     return
   }
@@ -489,6 +535,8 @@ function onRowClick(value: ComponentValue, event?: MouseEvent): void {
   if (!row) {
     return
   }
+
+  emits('node-click', { value, node: row.node }, event)
 
   if (props.expandOnly && !event?.shiftKey) {
     if (row.hasChildren) {
@@ -547,15 +595,21 @@ function setActiveKey(value: ComponentValue): void {
   scrollRowIntoView(at)
 }
 /** The whole index, not the rendered rows: a collapsed subtree still holds checked nodes. */
-function getCheckedKeys(includeIndeterminate = false): ComponentValue[] {
+function getCheckedKeys(leafOnly = false, includeIndeterminate = false): ComponentValue[] {
   const result: ComponentValue[] = []
 
   for (const meta of index.value.list) {
-    const value = meta.node.value
+    const value = meta.node[fields.value.value]
 
-    if (checked.value.has(value) || (includeIndeterminate && indeterminate.value.has(value))) {
-      result.push(value)
+    if (!checked.value.has(value) && !(includeIndeterminate && indeterminate.value.has(value))) {
+      continue
     }
+
+    if (leafOnly && !isTreeLeaf(meta.node, fields.value, canLoad(value))) {
+      continue
+    }
+
+    result.push(value)
   }
 
   return result
@@ -594,7 +648,7 @@ function canDrop(
     })
   }
 
-  return meta.node.disabled !== true
+  return meta.node[fields.value.disabled] !== true
 }
 function getData(value: ComponentValue): TreeOption | undefined {
   return index.value.byValue.get(value)?.node
@@ -602,7 +656,7 @@ function getData(value: ComponentValue): TreeOption | undefined {
 /** The caller owns `data`: a drop only proposes the next tree, and a no-op move is silent. */
 function onCommit(value: ComponentValue, target: TreeDropTarget): void {
   // The grafted tree, not the prop: nodes that arrived through `load` live only in there.
-  const result = moveTreeNode(treeData.value, props.childrenField, value, target)
+  const result = moveTreeNode(treeData.value, fields.value, value, target)
 
   if (!result) {
     return
@@ -616,6 +670,14 @@ function onCommit(value: ComponentValue, target: TreeDropTarget): void {
   }
 }
 
+function onRowContextMenu(value: ComponentValue, event: MouseEvent): void {
+  const row = getRow(value)
+
+  if (row) {
+    emits('node-contextmenu', { value, node: row.node }, event)
+  }
+}
+
 // `treeData` too: a key below a parent still on its way only becomes loadable once it arrives.
 watch(
   [expanded, treeData],
@@ -626,6 +688,22 @@ watch(
   },
   { immediate: true },
 )
+
+// `expandAll` on a lazy tree: a level only exists once its parent resolved, so keep opening.
+watch(treeData, () => {
+  if (!expandAllPending.value) {
+    return
+  }
+
+  const missing = expandableKeys().filter((key) => !expanded.value.has(key))
+
+  if (missing.length === 0) {
+    expandAllPending.value = false
+    return
+  }
+
+  commitExpandedKeys([...expandedKeys.value, ...missing])
+})
 
 defineExpose({
   focus: () => containerRef.value?.focus(),
@@ -690,6 +768,8 @@ defineExpose({
               v-if="hasNodeSlot"
               :id="entry.id"
               :node="entry.node"
+              :label="entry.node[fields.label]"
+              :node-disabled="entry.node[fields.disabled] === true"
               :value="entry.key"
               :depth="entry.depth"
               :index="entry.index"
@@ -714,6 +794,7 @@ defineExpose({
                 dropTarget?.targetValue === entry.key ? dropTarget.position : undefined
               "
               @row-click="onRowClick"
+              @row-contextmenu="onRowContextMenu"
               @drag-pointerdown="onDragPointerdown"
               @check="onCheckboxClick"
               @toggle="onSwitcherClick"
@@ -739,6 +820,8 @@ defineExpose({
               v-else
               :id="entry.id"
               :node="entry.node"
+              :label="entry.node[fields.label]"
+              :node-disabled="entry.node[fields.disabled] === true"
               :value="entry.key"
               :depth="entry.depth"
               :index="entry.index"
@@ -763,6 +846,7 @@ defineExpose({
                 dropTarget?.targetValue === entry.key ? dropTarget.position : undefined
               "
               @row-click="onRowClick"
+              @row-contextmenu="onRowContextMenu"
               @drag-pointerdown="onDragPointerdown"
               @check="onCheckboxClick"
               @toggle="onSwitcherClick"
@@ -789,7 +873,7 @@ defineExpose({
         :style="{ left: dragX + 'px', top: dragY + 'px' }"
       >
         <slot name="node-drag-preview" :node="dragNode">
-          {{ dragNode?.label }}
+          {{ dragNode?.[fields.label] }}
         </slot>
       </div>
     </PTeleport>

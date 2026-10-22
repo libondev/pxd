@@ -516,10 +516,11 @@ const data = []
 ## Lazy loading
 
 With `lazy`, a node without children in `data` still shows an arrow, and the first time it opens
-`load` is called with what the tree knows about it (see `TreeLoadDetail`): `resolve(children)` puts
-them in the tree, an empty array making the node a leaf, while `reject()` leaves it unloaded so the
-next expand asks again. A node that resolved before is never asked twice, one marked `isLeaf` never
-at all, and one whose children already sit in `data` is passed over.
+`load` is called with what the tree knows about it (see `TreeLoadDetail`): `resolve(children)` puts them in the tree, while `reject()` leaves it unloaded so the next expand asks again. A node that resolved before is never asked twice, one marked `isLeaf` never at all, and one whose children already sit in `data` is passed over.
+
+Only a non-empty `children` array marks a parent: `children: []` is a leaf, and so is a node whose request resolved with nothing. `isLeaf` outranks both — `true` means a leaf whatever `data` holds, `false` keeps the arrow on a node that has no children yet, which is how a file tree tells an empty folder from a file.
+
+`expandAll()` opens level by level: each request that lands brings the next level into view, so a whole lazy tree ends up open rather than only its first level.
 
 Under `draggable`, nothing can be dropped *inside* a parent whose children the tree has not fetched
 yet; elsewhere the drop proposes the whole tree through `update:data`, loaded subtrees included.
@@ -575,7 +576,8 @@ function load({ node }, resolve) {
 | indent | `number` | `16` | Indentation added per depth level in px |
 | expanded-keys | `ComponentValue[]` | - | Controlled expanded nodes |
 | default-expanded-keys | `ComponentValue[]` | `[]` | Expanded nodes before the user changes them |
-| children-field | `string` | `'children'` | Field of a node holding its children |
+| accordion | `boolean` | `false` | Keep one node open per level: expanding a node closes its siblings |
+| field-names | `TreeFieldNames` | - | Rename the fields read from a node: `value`, `label`, `children`, `disabled`, `isLeaf` |
 | lazy | `boolean` | `false` | Fetch the children of a node when it first opens instead of reading them from `data` |
 | load | `(detail: TreeLoadDetail, resolve: TreeLoadResolve, reject: TreeLoadReject) => void` | - | Fetch the children of a node nothing else provided: `resolve` hands them over, `reject` leaves it for the next expand |
 | loading | `boolean` | `false` | Cover the tree with a loading mask; the search input and the keyboard are ignored |
@@ -590,12 +592,14 @@ function load({ node }, resolve) {
 
 ### TreeOption
 
+Fields are read through `field-names`: `value`, `label`, `children`, `disabled` and `isLeaf` by name unless it says otherwise.
+
 | Name | Type | Description |
 | --- | --- | --- |
 | value | `string \| number` | Identifier of the node, unique in the whole tree |
 | label | `string \| number \| null` | Text of the node |
-| children | `TreeOption[]` | Child nodes, read from `children-field` |
-| isLeaf | `boolean` | Mark a leaf under `lazy`: no arrow, and never handed to `load` |
+| children | `TreeOption[]` | Child nodes; only a non-empty array marks a parent, so an empty one leaves no arrow |
+| isLeaf | `boolean` | Outranks the data: `true` is a leaf with no arrow, never handed to `load`. `false` keeps the arrow on a node that has no children yet |
 | disabled | `boolean` | Ignore selection and skip the node while navigating |
 | keywords | `string[]` | Extra terms matched by the built-in filter |
 
@@ -618,6 +622,8 @@ function load({ node }, resolve) {
 | update:expandedKeys | `(keys: ComponentValue[]) => void` | Emitted when a node is expanded or collapsed. |
 | expand | `(detail: TreeNodeDetail) => void` | Emitted when a node is expanded. |
 | collapse | `(detail: TreeNodeDetail) => void` | Emitted when a node is collapsed. |
+| node-click | `(detail: TreeNodeDetail, event: MouseEvent) => void` | Emitted when a row is clicked; a click that ends a drag stays silent. |
+| node-contextmenu | `(detail: TreeNodeDetail, event: MouseEvent) => void` | Emitted when a row is right-clicked; the browser menu is left alone, so the caller decides whether to `preventDefault`. |
 | update:searchValue | `(query: string) => void` | Emitted when the search field changes while not loading. Write it back through `search-value` to control the field. |
 
 ```ts
@@ -669,9 +675,9 @@ interface TreeMoveDetail {
 | setActiveKey | `(value: ComponentValue) => void` | Move the active row to the node. |
 | expandKey | `(value: ComponentValue) => void` | Expand the node. |
 | collapseKey | `(value: ComponentValue) => void` | Collapse the node. |
-| expandAll | `() => void` | Expand every node that holds children, a lazily unfetched one left closed. |
+| expandAll | `() => void` | Expand every parent, an empty folder (`isLeaf: false`) included; under `lazy` each level opens as it lands. |
 | collapseAll | `() => void` | Collapse every node. |
-| getCheckedKeys | `(includeIndeterminate?: boolean) => ComponentValue[]` | Return the checked values in document order, optionally including the partially checked ones. Covers collapsed subtrees, the same set `change` reports. |
+| getCheckedKeys | `(leafOnly?: boolean, includeIndeterminate?: boolean) => ComponentValue[]` | Return the checked values in document order, only the leaves when `leafOnly` is set, optionally including the partially checked ones. Covers collapsed subtrees, the same set `change` reports. |
 | getVisibleKeys | `() => ComponentValue[]` | Return the values of the visible rows. |
 | getData | `(value: ComponentValue) => TreeOption \| undefined` | Return the source node of a key, collapsed rows included. |
 | activeIndex | `number` | Index of the active row, `-1` when there is none. |

@@ -1,6 +1,7 @@
 import type {
   TreeDropPosition,
   TreeDropTarget,
+  TreeFieldNames,
   TreeFilterFn,
   TreeFlatNode,
   TreeMoveDetail,
@@ -34,7 +35,28 @@ export interface TreeIndex {
   byValue: Map<ComponentValue, TreeNodeMeta>
 }
 
-export function createTreeIndex(data: TreeOptions, childrenField: string): TreeIndex {
+export interface ResolvedTreeFieldNames {
+  value: string
+  label: string
+  children: string
+  disabled: string
+  isLeaf: string
+}
+
+export function resolveTreeFieldNames(
+  fieldNames: TreeFieldNames | undefined,
+): ResolvedTreeFieldNames {
+  return {
+    value: fieldNames?.value ?? 'value',
+    label: fieldNames?.label ?? 'label',
+    children: fieldNames?.children ?? 'children',
+    disabled: fieldNames?.disabled ?? 'disabled',
+    isLeaf: fieldNames?.isLeaf ?? 'isLeaf',
+  }
+}
+
+export function createTreeIndex(data: TreeOptions, fieldNames?: TreeFieldNames): TreeIndex {
+  const fields = resolveTreeFieldNames(fieldNames)
   const list: TreeNodeMeta[] = []
   const byValue = new Map<ComponentValue, TreeNodeMeta>()
 
@@ -44,14 +66,15 @@ export function createTreeIndex(data: TreeOptions, childrenField: string): TreeI
     depth: number,
   ): TreeNodeMeta {
     const meta: TreeNodeMeta = { node, children: [], parentValue, depth, end: 0 }
+    const value = node[fields.value]
 
     list.push(meta)
-    byValue.set(node.value, meta)
+    byValue.set(value, meta)
 
-    const children = node[childrenField]
+    const children = node[fields.children]
     if (Array.isArray(children)) {
       for (const child of children) {
-        meta.children.push(visit(child, node.value, depth + 1))
+        meta.children.push(visit(child, value, depth + 1))
       }
     }
 
@@ -68,24 +91,25 @@ export function createTreeIndex(data: TreeOptions, childrenField: string): TreeI
 
 export function useTreeIndex(
   data: MaybeRefOrGetter<TreeOptions>,
-  childrenField: MaybeRefOrGetter<string>,
+  fieldNames: MaybeRefOrGetter<TreeFieldNames | undefined>,
 ): ComputedRef<TreeIndex> {
-  return computed(() => createTreeIndex(toValue(data) ?? [], toValue(childrenField) ?? 'children'))
+  return computed(() => createTreeIndex(toValue(data) ?? [], toValue(fieldNames)))
 }
 
 function graftNode(
   node: TreeOption,
   loaded: Map<ComponentValue, TreeOptions>,
-  childrenField: string,
+  fields: ResolvedTreeFieldNames,
 ): TreeOption {
-  const own = node[childrenField]
+  const own = node[fields.children]
   const fromData = Array.isArray(own) && own.length > 0
-  const source: TreeOptions = fromData ? own : (loaded.get(node.value) ?? [])
+  const value = node[fields.value]
+  const source: TreeOptions = fromData ? own : (loaded.get(value) ?? [])
   const children: TreeOptions = []
-  let changed = !fromData && loaded.has(node.value)
+  let changed = !fromData && loaded.has(value)
 
   for (const child of source) {
-    const grafted = graftNode(child, loaded, childrenField)
+    const grafted = graftNode(child, loaded, fields)
 
     if (grafted !== child) {
       changed = true
@@ -94,22 +118,23 @@ function graftNode(
     children.push(grafted)
   }
 
-  return changed ? { ...node, [childrenField]: children } : node
+  return changed ? { ...node, [fields.children]: children } : node
 }
 
 /** Children in `data` win over a cached request, and an untouched node keeps its identity. */
 export function graftLoadedChildren(
   data: TreeOptions,
   loaded: Map<ComponentValue, TreeOptions>,
-  childrenField: string,
+  fieldNames?: TreeFieldNames,
 ): TreeOptions {
   if (loaded.size === 0) {
     return data
   }
 
+  const fields = resolveTreeFieldNames(fieldNames)
   let changed = false
   const next = data.map((node) => {
-    const grafted = graftNode(node, loaded, childrenField)
+    const grafted = graftNode(node, loaded, fields)
 
     if (grafted !== node) {
       changed = true
@@ -121,8 +146,38 @@ export function graftLoadedChildren(
   return changed ? next : data
 }
 
-function defaultFilter(node: TreeOptions[number], query: string): boolean {
-  return isFuzzyMatch(String(node.label ?? ''), query, node.keywords)
+/** Only a non-empty array marks a parent: `children: []` is a leaf unless `isLeaf` says otherwise. */
+export function hasTreeChildren(node: TreeOption, fieldNames?: TreeFieldNames): boolean {
+  const children = node[resolveTreeFieldNames(fieldNames).children]
+
+  return Array.isArray(children) && children.length > 0
+}
+
+/**
+ * `isLeaf` first, then the data, then a lazy node still waiting. `loadable` means a request would
+ * start now, so a node whose request resolved with nothing becomes a leaf.
+ */
+export function isTreeLeaf(
+  node: TreeOption,
+  fieldNames: TreeFieldNames | undefined,
+  loadable: boolean,
+): boolean {
+  const fields = resolveTreeFieldNames(fieldNames)
+  const isLeaf = node[fields.isLeaf]
+
+  if (isLeaf !== undefined) {
+    return isLeaf
+  }
+
+  return !hasTreeChildren(node, fields) && !loadable
+}
+
+function defaultFilter(
+  node: TreeOptions[number],
+  query: string,
+  fields: ResolvedTreeFieldNames,
+): boolean {
+  return isFuzzyMatch(String(node[fields.label] ?? ''), query, node.keywords)
 }
 
 export interface TreeMatched {
@@ -136,6 +191,7 @@ export function useTreeMatched(
   index: MaybeRefOrGetter<TreeIndex>,
   query: MaybeRefOrGetter<string>,
   filter: MaybeRefOrGetter<TreeFilterFn | undefined>,
+  fieldNames?: MaybeRefOrGetter<TreeFieldNames | undefined>,
 ): ComputedRef<TreeMatched> {
   return computed(() => {
     const visible = new Set<ComponentValue>()
@@ -146,7 +202,8 @@ export function useTreeMatched(
       return { visible, exact }
     }
 
-    const match = toValue(filter) ?? defaultFilter
+    const fields = resolveTreeFieldNames(toValue(fieldNames))
+    const match = toValue(filter) ?? ((node: TreeOption) => defaultFilter(node, needle, fields))
     const { list, byValue } = toValue(index)
 
     for (const meta of list) {
@@ -154,8 +211,8 @@ export function useTreeMatched(
         continue
       }
 
-      exact.add(meta.node.value)
-      visible.add(meta.node.value)
+      exact.add(meta.node[fields.value])
+      visible.add(meta.node[fields.value])
 
       let parentValue = meta.parentValue
       while (parentValue !== undefined && !visible.has(parentValue)) {
@@ -260,6 +317,7 @@ export interface UseTreeRowsOptions {
   exactMatched?: MaybeRefOrGetter<ReadonlySet<ComponentValue> | undefined>
   matchesOnly?: MaybeRefOrGetter<boolean | undefined>
   canLoad?: MaybeRefOrGetter<((value: ComponentValue) => boolean) | undefined>
+  fieldNames?: MaybeRefOrGetter<TreeFieldNames | undefined>
 }
 
 /**
@@ -278,18 +336,19 @@ export function useTreeRows(
     const matchesOnly = searching && toValue(options.matchesOnly) === true
     const exact = toValue(options.exactMatched) ?? matched
     const canLoad = toValue(options.canLoad)
+    const fields = resolveTreeFieldNames(toValue(options.fieldNames))
     const rows: TreeFlatNode[] = []
 
     let cursor = 0
     while (cursor < list.length) {
       const meta = list[cursor]
 
-      if (searching && !matched.has(meta.node.value)) {
+      if (searching && !matched.has(meta.node[fields.value])) {
         cursor = meta.end
         continue
       }
 
-      const value = meta.node.value
+      const value = meta.node[fields.value]
 
       // An ancestor kept alive only for context is skipped, but its subtree still walks: a hit
       // can sit below a parent that did not match on its own.
@@ -304,7 +363,7 @@ export function useTreeRows(
         depth: matchesOnly ? 0 : meta.depth,
         index: rows.length,
         parentValue: matchesOnly ? undefined : meta.parentValue,
-        hasChildren: meta.children.length > 0 || canLoad?.(value) === true,
+        hasChildren: !isTreeLeaf(meta.node, fields, canLoad?.(value) === true),
         expanded: expanded.has(value),
       })
 
@@ -336,6 +395,7 @@ export interface UseTreeSelectionOptions {
   multiple: MaybeRefOrGetter<boolean>
   checkStrictly?: MaybeRefOrGetter<boolean | undefined>
   selectable?: MaybeRefOrGetter<TreeSelectableFn | undefined>
+  fieldNames?: MaybeRefOrGetter<TreeFieldNames | undefined>
 }
 
 export interface TreeToggleResult {
@@ -370,6 +430,7 @@ function derive(
   list: TreeNodeMeta[],
   selected: ReadonlySet<ComponentValue>,
   selectable: (meta: TreeNodeMeta) => boolean,
+  fields: ResolvedTreeFieldNames,
 ): DerivedState {
   const checked = new Set<ComponentValue>()
   const indeterminate = new Set<ComponentValue>()
@@ -377,6 +438,7 @@ function derive(
 
   for (let i = list.length - 1; i >= 0; i--) {
     const meta = list[i]
+    const value = meta.node[fields.value]
     let total = 0
     let hit = 0
 
@@ -387,14 +449,14 @@ function derive(
     }
 
     const takes = selectable(meta)
-    const isChecked = total > 0 ? hit === total : selected.has(meta.node.value)
+    const isChecked = total > 0 ? hit === total : selected.has(value)
 
     // A refused node is refused the clicks only: what the model carries stays selected, and a
     // partial subtree still lights its parent.
-    if (isChecked && (takes || selected.has(meta.node.value))) {
-      checked.add(meta.node.value)
+    if (isChecked && (takes || selected.has(value))) {
+      checked.add(value)
     } else if (hit > 0) {
-      indeterminate.add(meta.node.value)
+      indeterminate.add(value)
     }
 
     stats.set(meta, {
@@ -412,8 +474,14 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
   let anchor: ComponentValue | undefined
   let current: ComponentValue | undefined
 
+  function fields(): ResolvedTreeFieldNames {
+    return resolveTreeFieldNames(toValue(options.fieldNames))
+  }
+
   function selectable(meta: TreeNodeMeta): boolean {
-    return meta.node.disabled !== true && toValue(options.selectable)?.(meta.node) !== false
+    return (
+      meta.node[fields().disabled] !== true && toValue(options.selectable)?.(meta.node) !== false
+    )
   }
 
   function isSelectable(value: ComponentValue): boolean {
@@ -428,18 +496,20 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
       return { checked: selected.value, indeterminate: new Set<ComponentValue>() }
     }
 
-    return derive(toValue(options.index).list, selected.value, selectable)
+    return derive(toValue(options.index).list, selected.value, selectable, fields())
   })
 
   /** Document order, so the emitted array never depends on the order the user clicked. */
   function toToggleResult(list: TreeNodeMeta[], result: DerivedState): TreeToggleResult {
+    const names = fields()
+
     return {
       value: list
-        .filter((item) => result.checked.has(item.node.value))
-        .map((item) => item.node.value),
+        .filter((item) => result.checked.has(item.node[names.value]))
+        .map((item) => item.node[names.value]),
       halfCheckedValues: list
-        .filter((item) => result.indeterminate.has(item.node.value))
-        .map((item) => item.node.value),
+        .filter((item) => result.indeterminate.has(item.node[names.value]))
+        .map((item) => item.node[names.value]),
     }
   }
 
@@ -474,6 +544,8 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
       return toToggleResult(list, { checked: next, indeterminate: new Set() })
     }
 
+    const names = fields()
+
     for (let i = list.indexOf(meta); i < meta.end; i++) {
       const item = list[i]
 
@@ -482,13 +554,13 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
       }
 
       if (willCheck) {
-        next.add(item.node.value)
+        next.add(item.node[names.value])
       } else {
-        next.delete(item.node.value)
+        next.delete(item.node[names.value])
       }
     }
 
-    return toToggleResult(list, derive(list, next, selectable))
+    return toToggleResult(list, derive(list, next, selectable, names))
   }
 
   function span(from: TreeNodeMeta, to: TreeNodeMeta): TreeNodeMeta[] {
@@ -511,15 +583,17 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
 
     const next = new Set(selected.value)
 
+    const names = fields()
+
     // Undo the last span before taking the new one, the way React Aria's `extendSelection` does:
     // that is what lets a shift-click back inside the span shrink it instead of leaving it wider.
     for (const item of span(from, reached ?? to)) {
-      next.delete(item.node.value)
+      next.delete(item.node[names.value])
     }
 
     for (const item of span(from, to)) {
       if (selectable(item)) {
-        next.add(item.node.value)
+        next.add(item.node[names.value])
       }
     }
 
@@ -527,7 +601,7 @@ export function useTreeSelection(options: UseTreeSelectionOptions): UseTreeSelec
 
     return toValue(options.checkStrictly)
       ? toToggleResult(list, { checked: next, indeterminate: new Set() })
-      : toToggleResult(list, derive(list, next, selectable))
+      : toToggleResult(list, derive(list, next, selectable, names))
   }
 
   return {
@@ -575,11 +649,11 @@ interface Removal {
 /** Rebuilds only the path to the node, so untouched subtrees keep their identity. */
 function removeNode(
   list: TreeOptions,
-  childrenField: string,
+  fields: ResolvedTreeFieldNames,
   value: ComponentValue,
   parentValue?: ComponentValue,
 ): Removal | undefined {
-  const at = list.findIndex((node) => node.value === value)
+  const at = list.findIndex((node) => node[fields.value] === value)
 
   if (at !== -1) {
     return {
@@ -591,20 +665,20 @@ function removeNode(
   }
 
   for (let i = 0; i < list.length; i++) {
-    const children = list[i][childrenField]
+    const children = list[i][fields.children]
 
     if (!Array.isArray(children)) {
       continue
     }
 
-    const result = removeNode(children, childrenField, value, list[i].value)
+    const result = removeNode(children, fields, value, list[i][fields.value])
 
     if (!result) {
       continue
     }
 
     const next = [...list]
-    next[i] = { ...list[i], [childrenField]: result.list }
+    next[i] = { ...list[i], [fields.children]: result.list }
 
     return { ...result, list: next }
   }
@@ -620,23 +694,23 @@ interface Insertion {
 
 function insertNode(
   list: TreeOptions,
-  childrenField: string,
+  fields: ResolvedTreeFieldNames,
   target: TreeDropTarget,
   node: TreeOption,
   parentValue?: ComponentValue,
 ): Insertion | undefined {
-  const at = list.findIndex((item) => item.value === target.targetValue)
+  const at = list.findIndex((item) => item[fields.value] === target.targetValue)
 
   if (at !== -1) {
     const next = [...list]
 
     if (target.position === 'inside') {
-      const raw = next[at][childrenField]
+      const raw = next[at][fields.children]
       const children = Array.isArray(raw) ? raw : []
 
-      next[at] = { ...next[at], [childrenField]: [...children, node] }
+      next[at] = { ...next[at], [fields.children]: [...children, node] }
 
-      return { list: next, parentValue: next[at].value, index: children.length }
+      return { list: next, parentValue: next[at][fields.value], index: children.length }
     }
 
     const index = target.position === 'after' ? at + 1 : at
@@ -646,20 +720,20 @@ function insertNode(
   }
 
   for (let i = 0; i < list.length; i++) {
-    const children = list[i][childrenField]
+    const children = list[i][fields.children]
 
     if (!Array.isArray(children)) {
       continue
     }
 
-    const result = insertNode(children, childrenField, target, node, list[i].value)
+    const result = insertNode(children, fields, target, node, list[i][fields.value])
 
     if (!result) {
       continue
     }
 
     const next = [...list]
-    next[i] = { ...list[i], [childrenField]: result.list }
+    next[i] = { ...list[i], [fields.children]: result.list }
 
     return { ...result, list: next }
   }
@@ -678,17 +752,18 @@ export interface TreeMoveResult {
  */
 export function moveTreeNode(
   data: TreeOptions,
-  childrenField: string,
+  fieldNames: TreeFieldNames | undefined,
   value: ComponentValue,
   target: TreeDropTarget,
 ): TreeMoveResult | undefined {
-  const removal = removeNode(data, childrenField, value)
+  const fields = resolveTreeFieldNames(fieldNames)
+  const removal = removeNode(data, fields, value)
 
   if (!removal) {
     return undefined
   }
 
-  const insertion = insertNode(removal.list, childrenField, target, removal.node)
+  const insertion = insertNode(removal.list, fields, target, removal.node)
 
   if (!insertion) {
     return undefined

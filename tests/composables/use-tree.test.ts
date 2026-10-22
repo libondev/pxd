@@ -17,7 +17,7 @@ const indexData = [
 
 describe('createTreeIndex', () => {
   it('should walk the tree in document order with depths', () => {
-    const { list } = createTreeIndex(indexData, 'children')
+    const { list } = createTreeIndex(indexData, {})
 
     expect(list.map((meta) => meta.node.value)).toEqual(['a', 'a-1', 'a-2', 'b'])
     expect(list.map((meta) => meta.depth)).toEqual([0, 1, 1, 0])
@@ -25,19 +25,21 @@ describe('createTreeIndex', () => {
   })
 
   it('should mark the exclusive end of every subtree', () => {
-    const { list } = createTreeIndex(indexData, 'children')
+    const { list } = createTreeIndex(indexData, {})
 
     expect(list.map((meta) => meta.end)).toEqual([3, 2, 3, 4])
   })
 
   it('should read children from a custom field', () => {
-    const { list } = createTreeIndex([{ value: 'root', nodes: [{ value: 'child' }] }], 'nodes')
+    const { list } = createTreeIndex([{ value: 'root', nodes: [{ value: 'child' }] }], {
+      children: 'nodes',
+    })
 
     expect(list.map((meta) => meta.node.value)).toEqual(['root', 'child'])
   })
 
   it('should keep an entry without children addressable', () => {
-    const { byValue } = createTreeIndex(indexData, 'children')
+    const { byValue } = createTreeIndex(indexData, {})
 
     expect(byValue.get('a-2')?.children.length).toBe(0)
   })
@@ -66,11 +68,11 @@ describe('graftLoadedChildren', () => {
   ]
 
   it('should hand back the very same data while nothing was loaded', () => {
-    expect(graftLoadedChildren(tree, loaded([]), 'children')).toBe(tree)
+    expect(graftLoadedChildren(tree, loaded([]), {})).toBe(tree)
   })
 
   it('should graft children under the node that resolved them', () => {
-    const result = graftLoadedChildren(tree, loaded([['docs', [{ value: 'guide' }]]]), 'children')
+    const result = graftLoadedChildren(tree, loaded([['docs', [{ value: 'guide' }]]]), {})
 
     expect(keysOf(result[1])).toEqual(['guide'])
     expect(result[0]).toBe(tree[0])
@@ -80,7 +82,7 @@ describe('graftLoadedChildren', () => {
   })
 
   it('should keep the children the data already carries', () => {
-    const result = graftLoadedChildren(tree, loaded([['src', [{ value: 'other' }]]]), 'children')
+    const result = graftLoadedChildren(tree, loaded([['src', [{ value: 'other' }]]]), {})
 
     expect(keysOf(result[0])).toEqual(['components'])
   })
@@ -92,7 +94,6 @@ describe('graftLoadedChildren', () => {
         ['src', [{ value: 'components' }]],
         ['components', [{ value: 'tree' }]],
       ]),
-      'children',
     )
 
     expect(keysOf(result[0])).toEqual(['components'])
@@ -100,7 +101,7 @@ describe('graftLoadedChildren', () => {
   })
 
   it('should spell out a node that resolved with no children', () => {
-    const result = graftLoadedChildren([{ value: 'docs' }], loaded([['docs', []]]), 'children')
+    const result = graftLoadedChildren([{ value: 'docs' }], loaded([['docs', []]]), {})
 
     expect(result[0]?.children).toEqual([])
   })
@@ -116,7 +117,7 @@ function keysOf(node: TreeOption | undefined): unknown[] {
 
 describe('moveTreeNode', () => {
   it('should move a node between the root and a subtree', () => {
-    const result = moveTreeNode(data, 'children', 'docs', {
+    const result = moveTreeNode(data, {}, 'docs', {
       targetValue: 'src',
       position: 'inside',
     })
@@ -137,7 +138,7 @@ describe('moveTreeNode', () => {
   })
 
   it('should reorder siblings', () => {
-    const result = moveTreeNode(data, 'children', 'docs', {
+    const result = moveTreeNode(data, {}, 'docs', {
       targetValue: 'src',
       position: 'before',
     })
@@ -148,7 +149,7 @@ describe('moveTreeNode', () => {
   })
 
   it('should insert after a sibling', () => {
-    const result = moveTreeNode(data, 'children', 'src', {
+    const result = moveTreeNode(data, {}, 'src', {
       targetValue: 'docs',
       position: 'after',
     })
@@ -159,7 +160,7 @@ describe('moveTreeNode', () => {
   })
 
   it('should move a parent with its whole subtree', () => {
-    const result = moveTreeNode(data, 'children', 'src', {
+    const result = moveTreeNode(data, {}, 'src', {
       targetValue: 'docs',
       position: 'inside',
     })
@@ -171,7 +172,7 @@ describe('moveTreeNode', () => {
 
   it('should refuse to drop a node on itself', () => {
     expect(
-      moveTreeNode(data, 'children', 'docs', {
+      moveTreeNode(data, {}, 'docs', {
         targetValue: 'docs',
         position: 'after',
       }),
@@ -180,7 +181,7 @@ describe('moveTreeNode', () => {
 
   it('should refuse to drop a parent into its own subtree', () => {
     expect(
-      moveTreeNode(data, 'children', 'src', {
+      moveTreeNode(data, {}, 'src', {
         targetValue: 'composables',
         position: 'inside',
       }),
@@ -189,14 +190,14 @@ describe('moveTreeNode', () => {
 
   it('should refuse a move that lands where it started', () => {
     expect(
-      moveTreeNode(data, 'children', 'components', {
+      moveTreeNode(data, {}, 'components', {
         targetValue: 'composables',
         position: 'before',
       }),
     ).toBeUndefined()
 
     expect(
-      moveTreeNode(data, 'children', 'composables', {
+      moveTreeNode(data, {}, 'composables', {
         targetValue: 'src',
         position: 'inside',
       }),
@@ -206,7 +207,7 @@ describe('moveTreeNode', () => {
   it('should respect the children field', () => {
     const nested: TreeOptions = [{ value: 'a', items: [{ value: 'b' }] }, { value: 'c' }]
 
-    const result = moveTreeNode(nested, 'items', 'c', {
+    const result = moveTreeNode(nested, { children: 'items' }, 'c', {
       targetValue: 'b',
       position: 'inside',
     })
@@ -215,7 +216,7 @@ describe('moveTreeNode', () => {
   })
 
   it('should keep untouched subtrees identical by reference', () => {
-    const result = moveTreeNode(data, 'children', 'docs', {
+    const result = moveTreeNode(data, {}, 'docs', {
       targetValue: 'composables',
       position: 'after',
     })
