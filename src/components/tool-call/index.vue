@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { ToolCallEmits, ToolCallProps, ToolCallStatus } from './types'
+import type { ToolCallProps, ToolCallStatus } from './types'
 import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import ClockIcon from '@gdsicon/vue/clock'
 import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
-import { computed, shallowRef } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import PBadge from '../badge/index.vue'
@@ -20,18 +20,12 @@ interface JsonToken {
 defineOptions({
   name: 'PToolCall',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:modelValue',
-  },
 })
 
 const props = withDefaults(defineProps<ToolCallProps>(), {
   status: 'pending',
-  // Explicit `undefined` keeps Vue's Boolean casting from coercing an absent prop to `false`.
-  modelValue: undefined,
+  expand: true,
 })
-const emits = defineEmits<ToolCallEmits>()
 
 const STATUS_META: Record<
   ToolCallStatus,
@@ -63,10 +57,8 @@ const STATUS_META: Record<
   },
 }
 
-const innerOpen = shallowRef(true)
+const isOpen = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
-/** Uncontrolled fallback: a bound `modelValue` always wins. */
-const isOpen = computed(() => props.modelValue ?? innerOpen.value)
 const statusMeta = computed(() => STATUS_META[props.status])
 const inputText = computed(() => formatPayload(props.input))
 const outputText = computed(() => formatPayload(props.output))
@@ -147,16 +139,8 @@ function tokenClass(type: JsonTokenType) {
   }
 }
 
-function setOpen(open: boolean) {
-  if (props.modelValue === undefined) {
-    innerOpen.value = open
-  }
-
-  emits('update:modelValue', open)
-}
-
 function onToggleClick() {
-  setOpen(!isOpen.value)
+  isOpen.value = !isOpen.value
 }
 
 function onDetailsToggle(ev: Event) {
@@ -164,9 +148,17 @@ function onDetailsToggle(ev: Event) {
 
   if (details.open && !isOpen.value) {
     skipEnterMotion()
-    setOpen(true)
+    isOpen.value = true
   }
 }
+
+// `expand` is a command: it applies whenever it changes, and the trigger stays free afterwards.
+watch(
+  () => props.expand,
+  (expand) => {
+    isOpen.value = expand
+  },
+)
 </script>
 
 <template>

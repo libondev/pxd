@@ -91,14 +91,14 @@ describe('tool-call', () => {
     wrapper.unmount()
   })
 
-  it('follows the controlled expanded state', async () => {
+  it('applies the expand command from outside', async () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'search_flights', modelValue: false },
+      props: { name: 'search_flights', expand: false },
     })
 
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
 
-    await wrapper.setProps({ modelValue: true })
+    await wrapper.setProps({ expand: true })
     await nextTick()
 
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
@@ -106,8 +106,7 @@ describe('tool-call', () => {
     await wrapper.find('summary').trigger('click')
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
 
     wrapper.unmount()
   })

@@ -59,23 +59,36 @@ Collapsible card for tool / function call traces with input and output payloads.
 </template>
 ```
 
-## Controlled
+## Latest expanded
 
-`v-model` owns the expanded state; without it the card toggles itself.
+`expand` follows the last call in the list: the new card opens, the older ones collapse. It is a command, not a binding — the card keeps toggling itself on click.
 
 ```vue demo
 <template>
   <PStack direction="vertical" class="gap-3">
-    <PButton @click="open = !open">{{ open ? 'Collapse' : 'Expand' }}</PButton>
+    <PButton @click="push">Run another call</PButton>
 
-    <PToolCall v-model="open" name="search_flights" :input="{ origin: 'LHR' }" />
+    <PToolCall
+      v-for="(call, index) of calls"
+      :key="call.id"
+      :expand="index === calls.length - 1"
+      :name="call.name"
+      :input="call.input"
+    />
   </PStack>
 </template>
 
 <script setup>
 import { shallowRef } from 'vue'
 
-const open = shallowRef(false)
+const NAMES = ['search_flights', 'lookup_weather', 'get_forecast']
+const calls = shallowRef([{ id: 1, name: NAMES[0], input: { origin: 'LHR' } }])
+
+function push() {
+  const id = calls.value.length + 1
+
+  calls.value = [...calls.value, { id, name: NAMES[id % NAMES.length], input: { q: id } }]
+}
 </script>
 ```
 
@@ -85,12 +98,6 @@ const open = shallowRef(false)
 | --- | --- | --- | --- |
 | name | `string` | - | Tool name shown in the header |
 | status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon and badge |
-| modelValue | `boolean` | - | Expanded state; the card toggles itself when omitted |
+| expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
 | input | `unknown` | - | Request payload (objects are pretty-printed as JSON) |
 | output | `unknown` | - | Response payload (objects are pretty-printed as JSON) |
-
-## Events
-
-| Name | Type | Description |
-| --- | --- | --- |
-| update:modelValue | `(open: boolean) => void` | Emitted when the card is expanded or collapsed. |
