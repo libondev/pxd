@@ -28,6 +28,22 @@ Collapsible card for tool / function call traces with input and output payloads.
 </template>
 ```
 
+## Simple
+
+`variant="simple"` drops the card background, border and trigger padding, so the call sits inline like `PReasoning`.
+
+```vue demo
+<template>
+  <PToolCall
+    variant="simple"
+    name="search_flights"
+    status="completed"
+    :input="{ origin: 'LHR', destination: 'SFO' }"
+    :output="{ route: 'LHR -> SFO', priceUsd: 742 }"
+  />
+</template>
+```
+
 ## Status
 
 ```vue demo
@@ -97,6 +113,7 @@ function push() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | name | `string` | - | Tool name shown in the header |
+| variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
 | status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon and badge |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
 | input | `unknown` | - | Request payload (objects are pretty-printed as JSON) |

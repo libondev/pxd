@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import type { ToolCallProps, ToolCallStatus } from './types'
-import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import ClockIcon from '@gdsicon/vue/clock'
-import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
-import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
+import FunctionIcon from '@gdsicon/vue/function'
 import { computed, shallowRef, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -23,43 +20,23 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ToolCallProps>(), {
+  variant: 'default',
   status: 'pending',
   expand: true,
 })
 
 const STATUS_META: Record<
   ToolCallStatus,
-  {
-    icon: typeof CheckCircleFillIcon
-    iconClass: string
-    badge: 'green-subtle' | 'red-subtle' | 'blue-subtle' | 'gray-subtle'
-  }
+  'green-subtle' | 'red-subtle' | 'blue-subtle' | 'gray-subtle'
 > = {
-  pending: {
-    icon: ClockIcon,
-    iconClass: 'text-foreground-secondary',
-    badge: 'gray-subtle',
-  },
-  running: {
-    icon: LoaderCircleIcon,
-    iconClass: 'text-blue-900 motion-safe:animate-spin',
-    badge: 'blue-subtle',
-  },
-  completed: {
-    icon: CheckCircleFillIcon,
-    iconClass: 'text-green-900',
-    badge: 'green-subtle',
-  },
-  error: {
-    icon: CrossCircleFillIcon,
-    iconClass: 'text-red-900',
-    badge: 'red-subtle',
-  },
+  pending: 'gray-subtle',
+  running: 'blue-subtle',
+  completed: 'green-subtle',
+  error: 'red-subtle',
 }
 
 const isOpen = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
-const statusMeta = computed(() => STATUS_META[props.status])
 const inputText = computed(() => formatPayload(props.input))
 const outputText = computed(() => formatPayload(props.output))
 const inputTokens = computed(() => (inputText.value ? tokenizeJson(inputText.value) : []))
@@ -164,40 +141,46 @@ watch(
 <template>
   <details
     data-tool-call
-    class="pxd-tool-call w-full max-w-full rounded-xl border bg-background-100"
+    class="pxd-tool-call w-full max-w-full"
+    :class="{ 'rounded-xl border bg-background-100': variant === 'default' }"
     v-bind="$attrs"
     :open="detailsOpen"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-tool-call--trigger gap-2 p-3 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      class="pxd-tool-call--trigger gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      :class="variant === 'simple' ? '' : 'p-3 font-medium'"
       @click.prevent="onToggleClick"
     >
-      <Component :is="statusMeta.icon" class="size-4 shrink-0" :class="statusMeta.iconClass" />
+      <FunctionIcon class="size-3 shrink-0 text-foreground-secondary" />
 
-      <span class="pxd-tool-call--name min-w-0 font-medium flex-1 truncate text-foreground">
+      <span class="pxd-tool-call--name min-w-0 flex-1 truncate text-foreground">
         {{ name }}
       </span>
 
       <PBadge
         class="pxd-tool-call--status shrink-0"
-        size="sm"
+        size="xs"
         shape="rounded"
-        :variant="statusMeta.badge"
+        :variant="STATUS_META[status]"
       >
         {{ statusLabel }}
       </PBadge>
 
       <ChevronDownIcon
-        class="size-4 shrink-0 text-foreground-secondary motion-safe:transition-transform"
+        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform"
         :class="{ '-rotate-180': isOpen }"
       />
     </summary>
 
     <div
       ref="contentRef"
-      class="pxd-tool-call--content overflow-hidden border-t"
-      :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
+      class="pxd-tool-call--content overflow-hidden"
+      :class="{
+        'border-t': variant === 'default',
+        'ms-2 border-l': variant === 'simple',
+        'motion-safe:transition-[height]': isOpen || isLeaving,
+      }"
     >
       <div class="gap-4 p-3 flex flex-col">
         <div v-if="inputText" class="pxd-tool-call--section gap-2 flex flex-col">
@@ -207,7 +190,7 @@ watch(
             {{ configProvider.locale.toolCall.input }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 min-w-full max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 max-w-full min-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of inputTokens"
               :key="`input-${index}`"
@@ -222,7 +205,7 @@ watch(
             {{ configProvider.locale.toolCall.output }}
           </div>
           <pre
-            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 min-w-full max-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
+            class="pxd-tool-call--code m-0 p-3 text-xs leading-relaxed w-0 max-w-full min-w-full overflow-x-auto rounded-lg bg-gray-100 font-mono whitespace-pre"
           ><span
               v-for="(token, index) of outputTokens"
               :key="`output-${index}`"
