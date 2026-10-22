@@ -144,11 +144,12 @@ onBeforeUnmount(() => {
   max-width: none;
   overflow: visible;
   text-overflow: clip;
-  animation: pxd-scroll-text-shift calc(var(--scroll-text-duration) * 1.25) linear infinite;
+  animation: pxd-scroll-text-shift calc(var(--scroll-text-duration) * 1.6667) linear infinite;
 }
 
 @keyframes pxd-scroll-text-shift {
-  0% {
+  0%,
+  6% {
     transform: translateX(0);
   }
 
