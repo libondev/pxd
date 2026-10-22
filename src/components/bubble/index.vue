@@ -113,7 +113,7 @@ const { classes: contentClasses } = useTailwindVariant(
           </slot>
           <div
             v-if="$slots.reactions"
-            class="pxd-bubble--reactions mbs-1.5 gap-1.5 flex items-center"
+            class="pxd-bubble--reactions mbs-1.5 gap-2 flex items-center"
           >
             <slot name="reactions" />
           </div>

@@ -275,7 +275,7 @@ defineExpose({
       :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
     >
       <ul
-        class="pxd-todo-list--list max-h-40 m-0 p-3 gap-1.5 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto border-t"
+        class="pxd-todo-list--list max-h-40 m-0 p-3 gap-2 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto border-t"
       >
         <li
           v-if="currentOptions.length === 0"
@@ -288,7 +288,7 @@ defineExpose({
         <template v-for="(item, index) in currentOptions" :key="item.id ?? index">
           <li
             v-if="hasItemSlot"
-            class="pxd-todo-list--item gap-1.5 flex items-center"
+            class="pxd-todo-list--item gap-2 flex items-center"
             :data-status="resolveStatus(item)"
             @click="onItemClick(index, item)"
           >
@@ -303,7 +303,7 @@ defineExpose({
 
           <li
             v-else
-            class="pxd-todo-list--item gap-1.5 flex items-center"
+            class="pxd-todo-list--item gap-2 flex items-center"
             :class="{
               'cursor-pointer': !readonly && !item.disabled,
               'opacity-50': item.disabled,

@@ -168,7 +168,7 @@ watch(
         </slot>
       </div>
 
-      <div class="gap-1.5 px-2 pbe-2 flex items-center justify-end">
+      <div class="gap-2 px-2 pbe-2 flex items-center justify-end">
         <slot name="actions" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
           <PButton size="sm" variant="ghost" :disabled="isPending" @click="onCancel">
             {{ computedCancelText }}

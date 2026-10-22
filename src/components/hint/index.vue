@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
 
     <template #content="{ activeTrigger, activeTriggerIndex }">
       <div
-        class="pxd-hint--content gap-1.5 px-3 py-2 flex items-center"
+        class="pxd-hint--content gap-2 px-3 py-2 flex items-center"
         :data-pause-on-hover="pauseOnHover"
         @pointerenter="pauseCloseTimer"
         @pointerleave="resumeCloseTimer"

@@ -50,7 +50,7 @@ watch(
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-reasoning--trigger group ps-1 gap-1.5 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center text-foreground-secondary self-focus-ring outline-none select-none hover:text-foreground motion-safe:transition-colors"
+      class="pxd-reasoning--trigger group ps-1 gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center text-foreground-secondary self-focus-ring outline-none select-none hover:text-foreground motion-safe:transition-colors"
       @click.prevent="onToggleClick"
     >
       <BrainIcon class="text-xs shrink-0" />
@@ -60,7 +60,7 @@ watch(
       </PShimmerText>
 
       <ChevronRightIcon
-        class="text-xs shrink-0 opacity-0 group-hover:opacity-100 motion-safe:transition-transform-opacity"
+        class="size-3 shrink-0 opacity-0 group-hover:opacity-100 motion-safe:transition-transform-opacity"
         :class="{ 'rotate-90 opacity-100': isOpen }"
       />
     </summary>

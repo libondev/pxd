@@ -75,7 +75,7 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Box side length in `px`: `24`, `30`, `36` or `44`, falling back to the config size |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Component size |
 | error | `boolean \| string` | - | Any truthy value turns on the error border and focus ring |
 | length | `number` | `4` | Number of single-character boxes to render |
 | readonly | `boolean` | - | Allow focus and selection but block typing |

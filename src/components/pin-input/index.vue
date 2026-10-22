@@ -270,7 +270,7 @@ defineExpose({
   <label
     data-pin-input
     v-bind="$attrs"
-    class="pxd-pin-input gap-1.5 flex size-max items-center"
+    class="pxd-pin-input gap-2 flex size-max items-center"
     @keydown="onContainerKeydown"
     @compositionend="onCompositionEnd"
     @focusin="onInputElFocus"

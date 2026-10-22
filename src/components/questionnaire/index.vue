@@ -300,7 +300,7 @@ watch(
           :class="{ 'border-b': detailsOpen }"
           @click.prevent="onToggleClick"
         >
-          <QuestionIcon class="size-4 font-medium shrink-0" />
+          <QuestionIcon class="size-3 font-medium shrink-0" />
 
           <span class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate">
             {{ currentQuestion.question }}
