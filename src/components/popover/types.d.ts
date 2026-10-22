@@ -8,7 +8,6 @@ export interface PopoverProps {
   offset?: number
   trigger?: PopoverTrigger | PopoverTrigger[]
   triggerSelector?: string
-  stopPropagation?: boolean
   alignPoint?: boolean
   disabled?: boolean
   adaptive?: boolean

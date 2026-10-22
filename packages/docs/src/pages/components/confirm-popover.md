@@ -135,7 +135,6 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | Preferred placement, flipped when there is no room; `-start` and `-end` align to the edge |
 | disabled | `boolean` | - | Ignore every trigger event so the popover cannot be shown |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot; every matched element shares this popover |
-| stop-propagation | `boolean` | - | Stop the trigger click from bubbling to its ancestors. |
 | before-confirm | `() => Awaitable<boolean \| void>` | - | Ran before confirming; return `false` or reject to keep the popover open |
 
 ## Events

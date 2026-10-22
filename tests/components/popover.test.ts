@@ -101,27 +101,151 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
-  it('should stop trigger clicks from bubbling when stop-propagation is set', async () => {
-    const outer = document.createElement('div')
-    const onOuterClick = vi.fn()
-
-    outer.addEventListener('click', onOuterClick)
-    document.body.appendChild(outer)
-
+  it('should receive trigger clicks that a nested handler stops', async () => {
     const wrapper = mount(Popover, {
-      attachTo: outer,
+      attachTo: document.body,
       props: {
         trigger: 'click',
-        stopPropagation: true,
+        triggerSelector: '[data-trigger]',
       },
       slots: {
-        default: '<button>Trigger</button>',
+        default: () =>
+          h(
+            'button',
+            {
+              'data-trigger': '',
+              onClick: (ev: MouseEvent) => ev.stopPropagation(),
+            },
+            'Trigger',
+          ),
       },
     })
 
-    await wrapper.find('.pxd-popover').trigger('click')
+    await wrapper.find('[data-trigger]').trigger('click')
 
-    expect(onOuterClick).not.toHaveBeenCalled()
+    expect(wrapper.emitted('trigger-click')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should leave clicks to a nested popover', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', triggerSelector: '[data-row]' },
+      slots: {
+        default: () =>
+          h('div', { 'data-row': '' }, [
+            h(
+              Popover,
+              { trigger: 'click', triggerSelector: '[data-inner-trigger]' },
+              {
+                default: () => h('button', { 'data-inner-trigger': '' }, 'Inner'),
+                content: () => h('span', 'Inner content'),
+              },
+            ),
+          ]),
+        content: () => h('span', 'Outer content'),
+      },
+    })
+
+    await wrapper.find('[data-row]').trigger('click')
+    await flush()
+
+    expect(wrapper.emitted('trigger-click')).toHaveLength(1)
+    expect(getBodyText('.pxd-popover--content')).toBe('Outer content')
+
+    await wrapper.find('[data-inner-trigger]').trigger('click')
+    await flush()
+
+    expect(wrapper.emitted('trigger-click')).toHaveLength(1)
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should show only the nested popover when hovering inside it', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'hover', triggerSelector: '[data-row]' },
+      slots: {
+        default: () =>
+          h('div', { 'data-row': '' }, [
+            h('span', 'Row'),
+            h(
+              Popover,
+              { trigger: 'hover', triggerSelector: '[data-inner-trigger]' },
+              {
+                default: () => h('button', { 'data-inner-trigger': '' }, 'Inner'),
+                content: () => h('span', 'Inner content'),
+              },
+            ),
+          ]),
+        content: () => h('span', 'Outer content'),
+      },
+    })
+
+    await wrapper.find('[data-row]').trigger('pointerover')
+    await flush()
+
+    expect(wrapper.emitted('show')).toHaveLength(1)
+
+    await wrapper.find('[data-inner-trigger]').trigger('pointerover')
+    await flush()
+
+    expect(wrapper.emitted('hide')).toHaveLength(1)
+    expect(getBodyText('.pxd-popover--content')).toBe('Inner content')
+
+    wrapper.unmount()
+  })
+
+  it('should ignore clicks inside data-popover-ignore', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: () => h('button', { 'data-popover-ignore': '' }, 'Trigger'),
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+
+    expect(wrapper.emitted('trigger-click')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should not open from an ignored hover trigger', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'hover', triggerSelector: '[data-chip]' },
+      slots: {
+        default: () => h('button', { 'data-chip': '', 'data-popover-ignore': '' }, 'Ignored'),
+        content: () => h('span', 'Content'),
+      },
+    })
+
+    await wrapper.find('[data-chip]').trigger('pointerover')
+    await flush()
+
+    expect(wrapper.emitted('show')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should not open from an ignored contextmenu trigger', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'contextmenu', triggerSelector: '[data-chip]' },
+      slots: {
+        default: () => h('button', { 'data-chip': '', 'data-popover-ignore': '' }, 'Ignored'),
+        content: () => h('span', 'Content'),
+      },
+    })
+
+    await wrapper.find('[data-chip]').trigger('contextmenu')
+    await flush()
+
+    expect(wrapper.emitted('show')).toBeUndefined()
 
     wrapper.unmount()
   })

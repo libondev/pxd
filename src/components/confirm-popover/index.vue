@@ -142,7 +142,6 @@ watch(
     :fill-trigger-width="false"
     :auto-focus-element="true"
     :trigger-selector="triggerSelector"
-    :stop-propagation="stopPropagation"
     :wrapper-class="responsiveClasses.wrapper"
     :content-class="responsiveClasses.content"
     :close-on-press-escape="!isPending"

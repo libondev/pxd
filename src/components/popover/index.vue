@@ -75,15 +75,13 @@ const pointReference: VirtualElement = {
 const localPosition = shallowRef(props.position)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const isManual = computed(() => triggerMethods.value.includes('manual'))
-const transitionType = computed(() => (props.adaptive ? 'fade-slide' : 'fade-scale'))
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
   '--popover-offset': props.offset,
   '--popover-arrow-color': props.arrowColor,
   '--popover-max-width': getCssUnitValue(props.maxWidth),
 }))
-// Hover popovers must not steal focus. Click-triggered popovers keep the trap for Tab
-// containment, but only auto-focus when the caller asked for it.
+// Hover popovers must not steal focus; click ones trap Tab but only focus on request.
 const focusTrapContainer = computed(() =>
   isVisible.value &&
   (isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'))
@@ -196,6 +194,23 @@ function resolveTriggerElement(target: EventTarget | null) {
   return matched
 }
 
+// Capture phase makes the nearest popover own the event; an ignored subtree owns none.
+function isForeignTarget(target: EventTarget | null) {
+  if (!(target instanceof Element) || target.closest('[data-popover-ignore]')) {
+    return true
+  }
+
+  if (target.closest('[data-popover]') === triggerRef.value) {
+    return false
+  }
+
+  if (isVisible.value) {
+    handlePopoverHide()
+  }
+
+  return true
+}
+
 function setActiveTrigger(trigger: HTMLElement | null) {
   activeTriggerRef.value = trigger
 
@@ -239,13 +254,9 @@ function startAutoUpdate() {
   cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, updatePosition)
 }
 
-async function syncPosition(waitForDom: boolean = false) {
+async function syncPosition() {
   disposeAutoUpdate()
-
-  if (waitForDom) {
-    await nextTick()
-  }
-
+  await nextTick()
   await updatePosition()
   startAutoUpdate()
 }
@@ -264,7 +275,7 @@ async function updateActiveTrigger(trigger: HTMLElement | null) {
   setActiveTrigger(trigger)
 
   if (isVisible.value) {
-    await syncPosition(true)
+    await syncPosition()
   }
 }
 
@@ -359,11 +370,9 @@ async function handlePopoverShow() {
     }, props.showDelay)
   })
 
-  // Render first, then position the wrapper while it is still invisible
-  // (transitions are disabled via CSS when data-visible is false), so the
-  // enter animation always starts from the correct position.
+  // Position before the enter transition starts, while data-visible is still false.
   const visiblePromise = showPopover()
-  await syncPosition(true)
+  await syncPosition()
   await visiblePromise
 }
 
@@ -427,7 +436,7 @@ function updatePointerPosition(ev: PointerEvent) {
 }
 
 function onTriggerClick(ev: Event) {
-  if (props.disabled) {
+  if (props.disabled || isForeignTarget(ev.target)) {
     return
   }
 
@@ -435,10 +444,6 @@ function onTriggerClick(ev: Event) {
 
   if (!trigger) {
     return
-  }
-
-  if (props.stopPropagation) {
-    ev.stopPropagation()
   }
 
   emits('trigger-click', ev as PointerEvent)
@@ -465,6 +470,10 @@ function onTriggerClick(ev: Event) {
 
 function onTriggerPointerOver(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('hover')) {
+    return
+  }
+
+  if (isForeignTarget(ev.target)) {
     return
   }
 
@@ -505,6 +514,10 @@ function onTriggerPointerLeave() {
 
 function onTriggerContextmenu(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
+    return
+  }
+
+  if (isForeignTarget(ev.target)) {
     return
   }
 
@@ -603,7 +616,7 @@ defineExpose({
     :data-visible="isVisible"
     :data-disabled="disabled"
     v-bind="$attrs"
-    @click="onTriggerClick"
+    @click.capture="onTriggerClick"
     @contextmenu="onTriggerContextmenu"
     @pointerover="onTriggerPointerOver"
     @pointermove="onTriggerPointerMove"
@@ -621,7 +634,6 @@ defineExpose({
       @escape="handlePopoverEscape"
     >
       <div
-        v-if="isRender"
         ref="wrapperRef"
         tabindex="-1"
         role="dialog"
@@ -640,7 +652,7 @@ defineExpose({
       >
         <div
           class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full default-transition-duration default-transition-timing-function"
-          :data-transition-type="transitionType"
+          :data-transition-type="adaptive ? 'fade-slide' : 'fade-scale'"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
         >

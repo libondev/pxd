@@ -14,7 +14,6 @@ export interface ConfirmPopoverProps {
   position?: ComponentPosition
   disabled?: boolean
   triggerSelector?: string
-  stopPropagation?: boolean
   beforeConfirm?: ConfirmBeforeConfirm
 }
 
