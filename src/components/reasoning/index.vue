@@ -12,7 +12,10 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ReasoningProps>(), { streaming: true })
+const props = withDefaults(defineProps<ReasoningProps>(), {
+  variant: 'default',
+  streaming: true,
+})
 
 const isOpen = shallowRef(!!props.streaming)
 const contentRef = shallowRef<HTMLElement>()
@@ -45,30 +48,50 @@ watch(
   <details
     data-reasoning
     class="pxd-reasoning w-full max-w-full"
+    :class="{ 'rounded-xl border bg-background-100': variant === 'default' }"
     v-bind="$attrs"
     :open="detailsOpen"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-reasoning--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center text-foreground-secondary self-focus-ring outline-none select-none hover:text-foreground motion-safe:transition-colors"
+      class="pxd-reasoning--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      :class="
+        variant === 'default'
+          ? 'p-3 font-medium'
+          : 'text-foreground-secondary hover:text-foreground motion-safe:transition-colors'
+      "
       @click.prevent="onToggleClick"
     >
-      <BrainIcon class="text-xs shrink-0" />
+      <BrainIcon
+        class="shrink-0"
+        :class="variant === 'default' ? 'size-3 text-foreground-secondary' : 'text-xs'"
+      />
 
-      <PShimmerText class="pxd-reasoning--title" :disabled="!streaming">
+      <PShimmerText
+        class="pxd-reasoning--title"
+        :class="{ 'min-w-0 flex-1 truncate text-foreground': variant === 'default' }"
+        :disabled="!streaming"
+      >
         {{ configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
       <ChevronRightIcon
-        class="size-3 shrink-0 opacity-0 group-hover:opacity-100 motion-safe:transition-transform-opacity"
-        :class="{ 'rotate-90 opacity-100': isOpen }"
+        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        :class="{
+          'rotate-90 opacity-100': isOpen,
+          'opacity-0 group-hover:opacity-100': variant === 'simple',
+        }"
       />
     </summary>
 
     <div
       ref="contentRef"
-      class="pxd-reasoning--content mbs-1.5 text-sm ms-1.5 ps-3 overflow-hidden border-l text-foreground-secondary"
-      :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
+      class="pxd-reasoning--content overflow-hidden"
+      :class="{
+        'p-3 text-sm border-t text-foreground-secondary': variant === 'default',
+        'mbs-1.5 text-sm ms-1.5 ps-3 border-l text-foreground-secondary': variant === 'simple',
+        'motion-safe:transition-[height]': isOpen || isLeaving,
+      }"
     >
       <slot />
     </div>
