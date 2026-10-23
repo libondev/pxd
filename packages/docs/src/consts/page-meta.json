@@ -409,7 +409,7 @@
   },
   "/components/theme-switcher": {
     "title": "Theme Switcher",
-    "description": "Component that cycles the theme through auto (follows the system), light and dark."
+    "description": "Component that toggles the theme between auto (follows the system preference) and inverted (shows the opposite of the system preference), with the icon reflect…"
   },
   "/components/time-ago": {
     "title": "Time Ago",
