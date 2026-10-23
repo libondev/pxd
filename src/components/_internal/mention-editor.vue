@@ -3,6 +3,7 @@ import type { ComponentSize } from '../../types/shared/props'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { DEFAULT_TRIGGER } from '../../utils/_internal/mention-html.js'
 
 defineOptions({
@@ -19,7 +20,6 @@ const props = withDefaults(
     triggers?: string[]
   }>(),
   {
-    size: 'md',
     modelValue: '',
     placeholder: '',
     disabled: false,
@@ -43,6 +43,10 @@ const inputHeightClasses = computed(() => {
     lg: `${BASIC_MIN_HEIGHTS.lg} py-2.75`,
   }
 })
+
+const configProvider = useConfigProvider()
+
+const computedSize = computed(() => props.size || configProvider.size)
 
 const {
   isEmpty,
@@ -99,7 +103,7 @@ defineExpose({
     <div
       ref="editorRef"
       class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
-      :class="inputHeightClasses[size]"
+      :class="inputHeightClasses[computedSize]"
       role="textbox"
       aria-multiline="true"
       :contenteditable="disabled ? 'false' : 'true'"
