@@ -49,7 +49,7 @@ defineExpose({
   <div
     data-stick-to-bottom
     ref="containerRef"
-    class="pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto"
+    class="pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto [overflow-anchor:none]"
     v-bind="$attrs"
   >
     <div

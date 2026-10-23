@@ -2,7 +2,7 @@
 
 Keep a scroll container pinned to the bottom while content updates, until the user scrolls away. Scrolling back to the bottom restores auto-follow.
 
-Auto-scroll is always **instant** — smooth scrolling is not supported, so continuous chat-style follow stays stable.
+Auto-scroll is always **instant** — smooth scrolling is not supported, so continuous chat-style follow stays stable. The container opts out of scroll anchoring (`overflow-anchor: none`), so browser compensation for reflowed content cannot break follow mid-stream.
 
 **Height required:** the container only scrolls when its height is constrained (for example `h-40`, or a flex child with `min-h-0`). Without that, it grows with content and never scrolls.
 

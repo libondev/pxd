@@ -133,6 +133,93 @@ describe('PStickToBottom', () => {
     expect(wrapper.props('enabled')).toBe(true)
   })
 
+  it('keeps following when content grows after the programmatic scroll', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as {
+      isAtBottom: boolean
+      scrollToBottom: () => void
+      stickIfNeeded: () => void
+    }
+
+    vm.scrollToBottom()
+    expect(container.scrollTop).toBe(100)
+
+    metrics.scrollHeight = 600
+    container.dispatchEvent(new Event('scroll'))
+
+    expect(vm.isAtBottom).toBe(true)
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(500)
+  })
+
+  it('stops following when the user scrolls away and resumes at the bottom', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as {
+      isAtBottom: boolean
+      stickIfNeeded: () => void
+    }
+
+    container.scrollTop = 20
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(false)
+
+    metrics.scrollHeight = 400
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(20)
+
+    container.scrollTop = 300
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(300)
+  })
+
+  it('ignores sub-threshold upward adjustments while following', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean }
+
+    container.scrollTop = 92
+    metrics.scrollHeight = 600
+    container.dispatchEvent(new Event('scroll'))
+
+    expect(vm.isAtBottom).toBe(true)
+  })
+
   it('applies contentClass and contentStyle to the content wrapper', () => {
     const wrapper = mount(StickToBottom, {
       props: {

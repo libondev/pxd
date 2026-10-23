@@ -26,6 +26,15 @@ a comment beside the fix.
 
 <!-- Add new entries below this line -->
 
+### A scroll position measurement cannot tell the user from the browser
+
+- **Symptom**: `useStickToBottom` lost follow mid-stream in an AI chat: after a large assistant batch — or after the page re-rendered it as markdown — the view froze a screen away from the bottom and no later update scrolled it back.
+- **Cause**: `isAtBottom` was re-measured absolutely on every `scroll` event, and any event whose live distance exceeded the threshold latched it to `false` — permanently, because `stickIfNeeded` gates on it. A programmatic scroll-to-bottom, Chrome's scroll-anchoring compensation for reflowed content above the viewport, and focus scrolling all fire scroll events without the user touching anything, so follow died on its own. Growth that fires no mutation (images, web fonts) left nothing to recover it.
+- **Fix**: Treat only an upward scroll past the threshold as user intent — the composable's own stick always scrolls down, so every other event may promote `isAtBottom` back on but never demote it. Disable `overflow-anchor` on the managed container: anchoring compensation is the largest source of scroll events that masquerade as the user, and a container pinned to the bottom wants to move with its content anyway.
+- **Related**: the virtualizer in `useVirtualList` leaves the scroll element alone by default (`anchorTo: "start"`, `followOnAppend: false`), which is what makes the direction rule safe under `PBubbleGroup`; a configuration that scrolls programmatically on content updates would need the same distinction.
+
+---
+
 ### `animation-fill-mode: both` pins animated values and pins a stacking context with them
 
 - **Symptom**: A page of one-shot entry animations (PReveal, 16 instances) ran fine on load but stayed sluggish while scrolling — the compositor never reclaimed the layers. Dropping `forwards` fixed it with no visible behaviour change.

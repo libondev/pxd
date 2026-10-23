@@ -38,6 +38,11 @@ export interface UseStickToBottomReturn {
  *
  * Auto-scroll is always instant to avoid smooth-animation races that
  * break continuous follow in chat-style lists.
+ *
+ * Only an upward scroll breaks follow. Every other scroll event is either
+ * this composable's own stick or a browser adjustment (scroll anchoring,
+ * focus scrolling), and re-measuring the live distance there would latch
+ * `isAtBottom` off mid-stream — so it may only promote the state back on.
  */
 export function useStickToBottom(
   container: MaybeRefOrGetter<Nullable<HTMLElement>>,
@@ -47,6 +52,8 @@ export function useStickToBottom(
   const { threshold = 16, enabled = true } = options
 
   const isAtBottom = shallowRef(true)
+
+  let lastScrollTop = 0
 
   function getContainerEl() {
     return getElement(toValue(container))
@@ -85,6 +92,7 @@ export function useStickToBottom(
     const top = Math.max(0, el.scrollHeight - el.clientHeight)
 
     el.scrollTo({ top, behavior: 'instant' })
+    lastScrollTop = top
     isAtBottom.value = true
   }
 
@@ -101,8 +109,32 @@ export function useStickToBottom(
     scrollToBottom()
   }
 
+  // 上移超过 threshold 才是用户离开：自身 stick 永远向下滚，而 scroll anchoring
+  // 对视图上方重排的补偿、焦点滚动同样产生 scroll 事件，按实时距离绝对测量会把
+  // 它们误判成用户滚走并锁死跟随（流式内容一边长高一边触发，恰好是最常见的路径）。
+  function handleScroll() {
+    const el = getContainerEl()
+
+    if (!el) {
+      return
+    }
+
+    const top = el.scrollTop
+    const scrolledAway = top < lastScrollTop - getThreshold()
+
+    lastScrollTop = top
+
+    if (scrolledAway) {
+      update()
+      return
+    }
+
+    if (!isAtBottom.value && measureAtBottom(el)) {
+      isAtBottom.value = true
+    }
+  }
+
   if (!isServer()) {
-    const scheduleUpdate = throttleByRaf(update)
     const scheduleStick = throttleByRaf(stickIfNeeded)
 
     useResizeObserver(
@@ -128,8 +160,7 @@ export function useStickToBottom(
       () => getContainerEl(),
       (el, oldEl) => {
         if (oldEl) {
-          cachedOff(oldEl, 'scroll', scheduleUpdate, { passive: true })
-          scheduleUpdate.cancel()
+          cachedOff(oldEl, 'scroll', handleScroll, { passive: true })
           scheduleStick.cancel()
         }
 
@@ -137,7 +168,8 @@ export function useStickToBottom(
           return
         }
 
-        cachedOn(el, 'scroll', scheduleUpdate, { passive: true })
+        lastScrollTop = el.scrollTop
+        cachedOn(el, 'scroll', handleScroll, { passive: true })
         update()
       },
       {
@@ -150,10 +182,9 @@ export function useStickToBottom(
       const el = getContainerEl()
 
       if (el) {
-        cachedOff(el, 'scroll', scheduleUpdate, { passive: true })
+        cachedOff(el, 'scroll', handleScroll, { passive: true })
       }
 
-      scheduleUpdate.cancel()
       scheduleStick.cancel()
       stopWatch()
     })

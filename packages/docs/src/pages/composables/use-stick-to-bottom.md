@@ -4,6 +4,8 @@ Keep a scroll container pinned to the bottom while content changes, until the us
 
 Auto-scroll is always **instant**. Smooth scrolling is intentionally unsupported: animation frames re-measure mid-scroll, flip `isAtBottom` off, and break continuous follow in chat-style lists.
 
+Only an upward scroll breaks follow. The composable's own scroll writes and browser adjustments (scroll anchoring, focus scrolling) never clear `isAtBottom`, so content that keeps growing — streaming markdown, images, web fonts — cannot latch the view off the bottom. Set `overflow-anchor: none` on the container when you supply your own element; anchoring compensation otherwise reads as the user scrolling away. `PStickToBottom` applies it for you.
+
 ## Exports
 
 ```ts
