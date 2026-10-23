@@ -82,6 +82,33 @@ const value = ref('high')
 </template>
 ```
 
+## Gradient
+
+A gradient colour is painted as the fill's background image across the whole track, so dragging reveals the gradient instead of stretching it.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const options = [
+  { label: 'Low', value: 'low' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'High', value: 'high' },
+  { label: 'Max', value: 'max' },
+]
+
+const colors = {
+  0: 'linear-gradient(90deg, var(--color-green-600), var(--color-teal-500), var(--color-blue-600))',
+}
+
+const value = ref('max')
+</script>
+
+<template>
+  <PEffortSlider v-model="value" :options="options" :colors="colors" style="width: 240px;" />
+</template>
+```
+
 ## Sizes
 
 ```vue demo
@@ -121,7 +148,7 @@ const value = ref('low')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | options | `Array<EffortOption \| string>` | - | Levels from low to high, a string is used as both label and value, `value` falls back to the option index |
-| colors | `Record<string, string>` | - | Fill colour keyed by level index, the fill takes the colour of the highest key at or below the current level, levels below the lowest key fall back to `primary` |
+| colors | `Record<string, string>` | - | Fill colour keyed by level index, the fill takes the colour of the highest key at or below the current level, levels below the lowest key fall back to `primary`, a gradient value is applied as the fill's background image across the whole track |
 | disabled | `boolean` | - | Disable clicking, dragging and keyboard interaction |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
 | default-value | `string \| number \| null` | - | Level an uncontrolled slider starts from |

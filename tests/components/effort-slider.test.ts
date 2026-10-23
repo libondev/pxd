@@ -370,7 +370,7 @@ describe('effort-slider', () => {
     })
     const style = wrapper.find('.pxd-effort-slider--fill').attributes('style')
 
-    expect(style).toContain('background-color: blue')
+    expect(style).toContain('background: blue')
     expect(style).not.toContain('linear-gradient')
 
     wrapper.unmount()
@@ -382,11 +382,26 @@ describe('effort-slider', () => {
     })
     const style = () => wrapper.find('.pxd-effort-slider--fill').attributes('style')
 
-    expect(style()).toContain('background-color: red')
+    expect(style()).toContain('background: red')
 
     await wrapper.setProps({ modelValue: 'max' })
 
-    expect(style()).toContain('background-color: blue')
+    expect(style()).toContain('background: blue')
+
+    wrapper.unmount()
+  })
+
+  it('should paint a gradient colour as the fill background', () => {
+    const wrapper = mount(EffortSlider, {
+      props: {
+        options: OPTIONS,
+        modelValue: 'high',
+        colors: { 0: 'linear-gradient(90deg, green, blue)' },
+      },
+    })
+    const style = wrapper.find('.pxd-effort-slider--fill').attributes('style')
+
+    expect(style).toContain('background: linear-gradient(90deg, green, blue)')
 
     wrapper.unmount()
   })
@@ -397,7 +412,7 @@ describe('effort-slider', () => {
     })
 
     expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain(
-      'background-color: var(--color-primary)',
+      'background: var(--color-primary)',
     )
 
     wrapper.unmount()
@@ -420,6 +435,30 @@ describe('effort-slider', () => {
     // The parent holds the value back, so the colour stays put while the reveal follows the pointer.
     expect(fill().clipPath).toBe('inset(0 20% 0 0)')
     expect(fill().backgroundColor).toBe(color)
+
+    wrapper.unmount()
+  })
+
+  it('should reveal the gradient fill up to the pointer while dragging', async () => {
+    const wrapper = mount(EffortSlider, {
+      props: {
+        options: OPTIONS,
+        modelValue: 'high',
+        colors: { 0: 'linear-gradient(90deg, green, blue)' },
+      },
+    })
+    const fill = () => wrapper.find<HTMLElement>('.pxd-effort-slider--fill').element.style
+    const image = fill().backgroundImage
+
+    expect(image).toContain('linear-gradient')
+
+    const track = stubTrack(wrapper)
+
+    await track.trigger('pointerdown', { clientX: 80 })
+
+    // The image is anchored to the whole track, so the reveal moves while the gradient stays put.
+    expect(fill().clipPath).toBe('inset(0 20% 0 0)')
+    expect(fill().backgroundImage).toBe(image)
 
     wrapper.unmount()
   })

@@ -165,7 +165,7 @@ const fillColor = computed(() =>
 )
 
 const fillStyle = computed(() => ({
-  backgroundColor: fillColor.value,
+  background: fillColor.value,
   clipPath: `inset(0 ${100 - percentage.value}% 0 0)`,
 }))
 
