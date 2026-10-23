@@ -55,6 +55,8 @@ export function useStickToBottom(
 
   const lastScrollTop = shallowRef(0)
 
+  const upwardDelta = shallowRef(0)
+
   function getContainerEl() {
     return getElement(toValue(container))
   }
@@ -118,9 +120,11 @@ export function useStickToBottom(
     }
   }
 
-  // 上移超过 threshold 才是用户离开：自身 stick 永远向下滚，而 scroll anchoring
+  // 上移累计超过 threshold 才算用户离开：自身 stick 永远向下滚，而 scroll anchoring
   // 对视图上方重排的补偿、焦点滚动同样产生 scroll 事件，按实时距离绝对测量会把
   // 它们误判成用户滚走并锁死跟随（流式内容一边长高一边触发，恰好是最常见的路径）。
+  // 连续小幅上移（触控板慢滑、慢速拖动滚动条）单次位移不足 threshold，因此按
+  // 累计位移判定；任何向下移动（含自身 stick 与浏览器回调）都会清零重新累计。
   function handleScroll() {
     const el = getContainerEl()
 
@@ -129,11 +133,18 @@ export function useStickToBottom(
     }
 
     const top = el.scrollTop
-    const scrolledAway = top < lastScrollTop.value - getThreshold()
+    const delta = lastScrollTop.value - top
 
     lastScrollTop.value = top
 
-    if (scrolledAway) {
+    if (delta <= 0) {
+      upwardDelta.value = 0
+    } else {
+      upwardDelta.value += delta
+    }
+
+    if (upwardDelta.value > getThreshold()) {
+      upwardDelta.value = 0
       update()
       return
     }

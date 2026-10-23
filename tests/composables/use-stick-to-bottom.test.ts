@@ -220,6 +220,73 @@ describe('PStickToBottom', () => {
     expect(vm.isAtBottom).toBe(true)
   })
 
+  it('stops following after consecutive sub-threshold upward scrolls', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    patchScrollMetrics(container, {
+      scrollHeight: 400,
+      clientHeight: 100,
+      scrollTop: 300,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean; stickIfNeeded: () => void }
+
+    container.scrollTop = 294
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    container.scrollTop = 288
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    container.scrollTop = 282
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(false)
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(282)
+
+    wrapper.unmount()
+  })
+
+  it('resets accumulated upward travel when the scroll direction reverses', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    patchScrollMetrics(container, {
+      scrollHeight: 400,
+      clientHeight: 100,
+      scrollTop: 300,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean }
+
+    container.scrollTop = 290
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    container.scrollTop = 295
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    container.scrollTop = 285
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    container.scrollTop = 278
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('applies contentClass and contentStyle to the content wrapper', () => {
     const wrapper = mount(StickToBottom, {
       props: {
