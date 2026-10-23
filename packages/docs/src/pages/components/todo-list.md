@@ -21,12 +21,7 @@ function onChange({ item, status }) {
 </script>
 
 <template>
-  <PTodoList
-    v-model="options"
-    title="Tasks"
-    default-expanded
-    @change="onChange"
-  />
+  <PTodoList v-model="options" title="Tasks" @change="onChange" />
 </template>
 ```
 
@@ -46,7 +41,7 @@ const options = ref([
 </script>
 
 <template>
-  <PTodoList :options="options" variant="simple" default-expanded title="Plan" />
+  <PTodoList :options="options" variant="simple" title="Plan" />
 </template>
 ```
 
@@ -68,11 +63,7 @@ const options = ref([
 </script>
 
 <template>
-  <PTodoList
-    :options="options"
-    readonly
-    default-expanded
-  />
+  <PTodoList :options="options" readonly />
 </template>
 ```
 
@@ -97,7 +88,6 @@ const last = ref('')
 <template>
   <PTodoList
     :options="options"
-    default-expanded
     @change="({ status }) => (last = `${last ? last + ' → ' : ''}${status}`)"
   >
   </PTodoList>
@@ -106,10 +96,9 @@ const last = ref('')
 </template>
 ```
 
-## Collapsible
+## Expanded
 
-`collapsible` controls whether the header folds the list away. `default-expanded` decides the
-initial state, and `toggle` reports every fold.
+`expand` is a command, not a binding: the list applies it whenever the value changes and keeps folding itself on click.
 
 ```vue demo
 <script setup>
@@ -121,18 +110,13 @@ const options = ref([
   { content: 'Collect every still-relevant job before the final answer', status: 'pending' },
 ])
 
-const expanded = ref(true)
+const expanded = ref(false)
 </script>
 
 <template>
-  <PTodoList
-    :options="options"
-    collapsible
-    default-expanded
-    @toggle="expanded = $event"
-  />
+  <PButton @click="expanded = !expanded">{{ expanded ? 'Fold' : 'Unfold' }}</PButton>
 
-  <p class="mt-3 text-sm text-foreground-secondary">{{ expanded ? 'Open' : 'Folded' }}</p>
+  <PTodoList :options="options" :expand="expanded" class="mt-3" />
 </template>
 ```
 
@@ -155,11 +139,7 @@ const options = ref([
 </script>
 
 <template>
-  <PTodoList
-    :options="options"
-    title="Plan"
-    default-expanded
-  />
+  <PTodoList :options="options" title="Plan" />
 </template>
 ```
 
@@ -167,7 +147,7 @@ const options = ref([
 
 ```vue demo
 <template>
-  <PTodoList :options="[]" empty="Nothing planned yet" default-expanded />
+  <PTodoList :options="[]" empty="Nothing planned yet" />
 </template>
 ```
 
@@ -180,8 +160,7 @@ const options = ref([
 | options | `TodoOption[]` | `[]` | Items to render while uncontrolled; each entry is `{ id?, content?, description?, status?, disabled? }`. |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and header padding. |
 | readonly | `boolean` | `false` | Render as a static list: status buttons are disabled and rows ignore clicks. |
-| collapsible | `boolean` | `true` | Allow folding the list away behind the header. |
-| default-expanded | `boolean` | `false` | Whether the list starts open. |
+| expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
 | title | `ComponentLabel` | `locale.todo.title` | Header title. |
 | empty | `ComponentLabel` | `locale.results.noData` | Text shown when there is no item. |
 
@@ -191,7 +170,6 @@ const options = ref([
 | --- | --- | --- |
 | change | `(detail: TodoChangeDetail) => void` | Emitted when an item moves to another status. |
 | update:modelValue | `(options: TodoOption[]) => void` | Emitted together with `change`, carrying the next list state. |
-| toggle | `(expanded: boolean, event: MouseEvent) => void` | Emitted when the header folds or unfolds the list. |
 
 `detail` reports which item moved and what the whole list becomes:
 
@@ -218,11 +196,7 @@ interface TodoChangeDetail {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| isExpanded | `boolean` | Whether the list is currently open. |
 | stats | `TodoStats` | Item counts per status, plus `total`. |
-| expand | `() => void` | Open the list. |
-| collapse | `() => void` | Close the list. |
-| toggleExpand | `(next?: boolean) => void` | Toggle the list, or force it open or closed. |
 | start | `(target: TodoItemKey) => void` | Move an item to `in_progress`. |
 | complete | `(target: TodoItemKey) => void` | Move an item to `completed`. |
 | cancel | `(target: TodoItemKey) => void` | Move an item to `canceled`. |

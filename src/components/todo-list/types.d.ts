@@ -40,8 +40,8 @@ export interface TodoProps {
   defaultValue?: TodoOption[]
   /** Render as a static list: no status buttons, no row click. */
   readonly?: boolean
-  collapsible?: boolean
-  defaultExpanded?: boolean
+  /** Expanded state, applied whenever the value changes. */
+  expand?: boolean
   /** Header title; falls back to `locale.todo.title`. */
   title?: ComponentLabel
   /** Empty-state text; falls back to `locale.results.noData`. */
@@ -51,5 +51,4 @@ export interface TodoProps {
 export interface TodoEmits {
   change: [TodoChangeDetail]
   'update:modelValue': [TodoOption[]]
-  toggle: [expanded: boolean, event: MouseEvent]
 }

@@ -9,7 +9,7 @@ import type {
   TodoStatus,
 } from './types'
 import CheckIcon from '@gdsicon/vue/check'
-import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
@@ -30,8 +30,7 @@ const props = withDefaults(defineProps<TodoProps>(), {
   variant: 'default',
   options: () => [],
   readonly: false,
-  collapsible: true,
-  defaultExpanded: false,
+  expand: true,
 })
 const emits = defineEmits<TodoEmits>()
 
@@ -50,11 +49,10 @@ const NEXT_STATUS: Record<TodoStatus, TodoStatus> = {
 }
 
 const innerValue = shallowRef<TodoOption[] | undefined>(props.defaultValue)
-const isExpanded = shallowRef(props.defaultExpanded)
+const isOpen = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
 
 const currentOptions = computed(() => props.modelValue ?? innerValue.value ?? props.options)
-const expanded = computed(() => !props.collapsible || isExpanded.value)
 const stats = computed<TodoStats>(() => {
   const options = currentOptions.value
   const result: TodoStats = {
@@ -100,7 +98,7 @@ const hasItemSlot = computed(() => !!slots.item)
 const hasEmptySlot = computed(() => !!slots.empty)
 const hasItemContentSlot = computed(() => !!slots['item-content'])
 
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, expanded)
+const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
 
 function resolveStatus(item: TodoOption): TodoStatus {
   return item.status ?? 'pending'
@@ -175,35 +173,17 @@ function reset(target: TodoItemKey) {
   setStatus(target, 'pending')
 }
 
-function expand() {
-  isExpanded.value = true
-}
-
-function collapse() {
-  isExpanded.value = false
-}
-
-function toggleExpand(next?: boolean) {
-  isExpanded.value = next ?? !isExpanded.value
-}
-
-function onToggleClick(ev: MouseEvent) {
-  if (!props.collapsible) {
-    return
-  }
-
-  isExpanded.value = !isExpanded.value
-
-  emits('toggle', isExpanded.value, ev)
+function onToggleClick() {
+  isOpen.value = !isOpen.value
 }
 
 function onDetailsToggle(ev: Event) {
   const details = ev.currentTarget as HTMLDetailsElement
 
   // Find-in-page / fragment navigation opens <details> natively.
-  if (details.open && !expanded.value) {
+  if (details.open && !isOpen.value) {
     skipEnterMotion()
-    isExpanded.value = true
+    isOpen.value = true
   }
 }
 
@@ -216,12 +196,16 @@ watch(
   },
 )
 
+// `expand` is a command: it applies whenever it changes, and the trigger stays free afterwards.
+watch(
+  () => props.expand,
+  (expand) => {
+    isOpen.value = expand
+  },
+)
+
 defineExpose({
-  isExpanded,
   stats,
-  expand,
-  collapse,
-  toggleExpand,
   start,
   complete,
   cancel,
@@ -240,17 +224,14 @@ defineExpose({
   >
     <summary
       class="pxd-todo-list--header group/todo gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center justify-between border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
-      :class="{
-        'p-3 font-medium': variant === 'default',
-        'cursor-default': !collapsible,
-      }"
+      :class="{ 'p-3 font-medium': variant === 'default' }"
       @click.prevent="onToggleClick"
     >
       <ListUnorderedIcon class="size-3 shrink-0" />
 
       <slot
         name="header"
-        :expanded="expanded"
+        :expanded="isOpen"
         :stats="stats"
         :title="headerTitle"
         :summary="summaryText"
@@ -268,17 +249,19 @@ defineExpose({
         </span>
       </slot>
 
-      <ChevronDownIcon
-        v-if="collapsible"
-        class="pxd-todo-list--caret text-xs shrink-0 opacity-0 group-hover/todo:opacity-100 motion-safe:transition-transform-opacity"
-        :class="{ 'rotate-180 opacity-100': isExpanded }"
+      <ChevronRightIcon
+        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        :class="{
+          'rotate-90 opacity-100': isOpen,
+          'opacity-0 group-hover:opacity-100': variant === 'simple',
+        }"
       />
     </summary>
 
     <div
       ref="contentRef"
       class="pxd-todo-list--content overflow-hidden"
-      :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
+      :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
     >
       <ul
         class="pxd-todo-list--list max-h-40 m-0 py-3 ps-3 gap-2 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"

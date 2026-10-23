@@ -28,7 +28,7 @@ async function mountTodoList(props: Record<string, unknown> = {}, slots?: Record
 
 describe('todo-list', () => {
   it('renders every option with its content', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     expect(wrapper.findAll('.pxd-todo-list--item')).toHaveLength(3)
     expect(wrapper.text()).toContain('Rewrite types.d.ts')
@@ -39,7 +39,7 @@ describe('todo-list', () => {
 
   it('renders an option description', async () => {
     const wrapper = await mountTodoList({
-      defaultExpanded: true,
+      expand: true,
       options: [{ content: 'Task', description: 'Extra detail' }],
     })
 
@@ -49,7 +49,7 @@ describe('todo-list', () => {
   })
 
   it('exposes the resolved status on each row', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
     const items = wrapper.findAll('.pxd-todo-list--item')
 
     expect(items[0]?.attributes('data-status')).toBe('in_progress')
@@ -60,7 +60,7 @@ describe('todo-list', () => {
   })
 
   it('falls back to pending when an option has no status', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true, options: [{ content: 'Task' }] })
+    const wrapper = await mountTodoList({ expand: true, options: [{ content: 'Task' }] })
 
     expect(wrapper.find('.pxd-todo-list--item').attributes('data-status')).toBe('pending')
 
@@ -68,7 +68,7 @@ describe('todo-list', () => {
   })
 
   it('renders the indicator and the body in every row', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     for (const item of wrapper.findAll('.pxd-todo-list--item')) {
       expect(item.find('.pxd-todo-list--indicator').exists()).toBe(true)
@@ -80,7 +80,7 @@ describe('todo-list', () => {
 
   it('renders one marker per item and an icon for the finished states', async () => {
     const wrapper = await mountTodoList({
-      defaultExpanded: true,
+      expand: true,
       options: [
         { content: 'A', status: 'pending' },
         { content: 'B', status: 'completed' },
@@ -148,7 +148,7 @@ describe('todo-list', () => {
   })
 
   it('cycles the status forward when an indicator is clicked', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     await wrapper.findAll('.pxd-todo-list--indicator')[1]?.trigger('click')
     await nextTick()
@@ -168,7 +168,7 @@ describe('todo-list', () => {
   })
 
   it('reopens a completed item', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     await wrapper.findAll('.pxd-todo-list--indicator')[2]?.trigger('click')
     await nextTick()
@@ -184,7 +184,7 @@ describe('todo-list', () => {
 
   it('reopens a canceled item', async () => {
     const wrapper = await mountTodoList({
-      defaultExpanded: true,
+      expand: true,
       options: [{ content: 'A', status: 'canceled' }],
     })
 
@@ -200,7 +200,7 @@ describe('todo-list', () => {
   })
 
   it('updates internal state when uncontrolled', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     await wrapper.findAll('.pxd-todo-list--indicator')[1]?.trigger('click')
     await nextTick()
@@ -215,7 +215,7 @@ describe('todo-list', () => {
   it('keeps rendering the bound modelValue', async () => {
     const modelValue = ref(OPTIONS)
     const wrapper = mount(TodoList, {
-      props: { options: [], modelValue: modelValue.value, defaultExpanded: true },
+      props: { options: [], modelValue: modelValue.value, expand: true },
     })
 
     await nextTick()
@@ -229,7 +229,7 @@ describe('todo-list', () => {
   })
 
   it('ignores clicks when readonly', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true, readonly: true })
+    const wrapper = await mountTodoList({ expand: true, readonly: true })
 
     expect(wrapper.findAll('.pxd-todo-list--indicator')[0]?.attributes('disabled')).toBeDefined()
 
@@ -244,7 +244,7 @@ describe('todo-list', () => {
 
   it('ignores clicks on a disabled item', async () => {
     const wrapper = await mountTodoList({
-      defaultExpanded: true,
+      expand: true,
       options: [{ content: 'A', disabled: true }],
     })
 
@@ -256,40 +256,55 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('emits toggle and reveals the content', async () => {
+  it('folds and unfolds from the trigger', async () => {
     const wrapper = await mountTodoList()
+
+    await wrapper.find('summary').trigger('click')
+    await nextTick()
 
     expect(wrapper.find('details').attributes('open')).toBeUndefined()
 
     await wrapper.find('summary').trigger('click')
     await nextTick()
 
-    expect(wrapper.emitted('toggle')?.[0]?.[0]).toBe(true)
     expect(wrapper.find('details').attributes('open')).toBeDefined()
-
-    await wrapper.find('summary').trigger('click')
-    await nextTick()
-
-    expect(wrapper.emitted('toggle')?.[1]?.[0]).toBe(false)
 
     wrapper.unmount()
   })
 
-  it('stays open and silent when collapsible is off', async () => {
-    const wrapper = await mountTodoList({ collapsible: false })
+  it('follows expand whenever it changes', async () => {
+    const wrapper = await mountTodoList({ expand: false })
 
-    await wrapper.find('summary').trigger('click')
+    expect(wrapper.find('details').attributes('open')).toBeUndefined()
+
+    await wrapper.setProps({ expand: true })
     await nextTick()
 
-    expect(wrapper.emitted('toggle')).toBeUndefined()
     expect(wrapper.find('details').attributes('open')).toBeDefined()
-    expect(wrapper.find('.pxd-todo-list--caret').exists()).toBe(false)
+
+    await wrapper.setProps({ expand: false })
+    await nextTick()
+
+    expect(wrapper.find('details').attributes('open')).toBeUndefined()
 
     wrapper.unmount()
   })
 
-  it('starts expanded when asked', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+  it('keeps folding itself after expand changes', async () => {
+    const wrapper = await mountTodoList({ expand: false })
+
+    await wrapper.setProps({ expand: true })
+    await nextTick()
+    await wrapper.find('summary').trigger('click')
+    await nextTick()
+
+    expect(wrapper.find('details').attributes('open')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('starts expanded by default', async () => {
+    const wrapper = await mountTodoList()
 
     expect(wrapper.find('details').attributes('open')).toBeDefined()
 
@@ -298,7 +313,7 @@ describe('todo-list', () => {
 
   it('drives the status through the exposed methods', async () => {
     const wrapper = await mountTodoList({
-      defaultExpanded: true,
+      expand: true,
       options: [{ id: 'a', content: 'A' }],
     })
     const vm = wrapper.vm as any
@@ -323,7 +338,7 @@ describe('todo-list', () => {
   })
 
   it('resolves an exposed method argument as an index', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true })
+    const wrapper = await mountTodoList({ expand: true })
 
     ;(wrapper.vm as any).complete(1)
     await nextTick()
@@ -334,37 +349,12 @@ describe('todo-list', () => {
   })
 
   it('ignores exposed status changes when readonly', async () => {
-    const wrapper = await mountTodoList({ defaultExpanded: true, readonly: true })
+    const wrapper = await mountTodoList({ expand: true, readonly: true })
 
     ;(wrapper.vm as any).complete(0)
     await nextTick()
 
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-
-    wrapper.unmount()
-  })
-
-  it('exposes the expanded state and fold controls', async () => {
-    const wrapper = await mountTodoList()
-    const vm = wrapper.vm as any
-
-    expect(vm.isExpanded).toBe(false)
-
-    vm.expand()
-    await nextTick()
-    expect(vm.isExpanded).toBe(true)
-
-    vm.collapse()
-    await nextTick()
-    expect(vm.isExpanded).toBe(false)
-
-    vm.toggleExpand()
-    await nextTick()
-    expect(vm.isExpanded).toBe(true)
-
-    vm.toggleExpand(false)
-    await nextTick()
-    expect(vm.isExpanded).toBe(false)
 
     wrapper.unmount()
   })
@@ -384,7 +374,7 @@ describe('todo-list', () => {
   })
 
   it('follows a replaced options array', async () => {
-    const wrapper = mount(TodoList, { props: { options: OPTIONS, defaultExpanded: true } })
+    const wrapper = mount(TodoList, { props: { options: OPTIONS, expand: true } })
 
     await nextTick()
     await wrapper.setProps({ options: [{ content: 'New task' }] })
@@ -398,7 +388,7 @@ describe('todo-list', () => {
 
   it('replaces the row through the item slot', async () => {
     const wrapper = await mountTodoList(
-      { defaultExpanded: true },
+      { expand: true },
       { item: '<p class="custom-row">custom</p>' },
     )
 
@@ -411,7 +401,7 @@ describe('todo-list', () => {
 
   it('replaces the text through the item-content slot', async () => {
     const wrapper = await mountTodoList(
-      { defaultExpanded: true },
+      { expand: true },
       {
         'item-content': (params: any) =>
           h('p', { class: 'custom-text' }, `${params.item.content}!`),
@@ -426,7 +416,7 @@ describe('todo-list', () => {
 
   it('replaces the header through the header slot', async () => {
     const wrapper = await mountTodoList(
-      { defaultExpanded: true },
+      { expand: true },
       { header: (params: any) => h('p', { class: 'custom-header' }, params.summary) },
     )
 
