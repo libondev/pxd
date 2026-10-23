@@ -31,8 +31,12 @@ const ICON_SIZES = {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
-const nodeSizeClasses = computed(() => getFallbackValue(props.size, NODE_SIZES, configProvider.size))
-const iconSizeClasses = computed(() => getFallbackValue(props.size, ICON_SIZES, configProvider.size))
+const nodeSizeClasses = computed(() =>
+  getFallbackValue(props.size, NODE_SIZES, configProvider.size),
+)
+const iconSizeClasses = computed(() =>
+  getFallbackValue(props.size, ICON_SIZES, configProvider.size),
+)
 
 const nodeClasses = computed(() => [
   `is-${computedSize.value} p-px left-[0.28125rem] -translate-x-1/2 leading-none`,

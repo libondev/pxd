@@ -32,7 +32,10 @@ describe('useCountdown', () => {
 
   it('should start countdown from specified durations value', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ durations: 5000, active: false, inverted: false, millisecond: true }, mockEmits),
+      useCountdown(
+        { durations: 5000, active: false, inverted: false, millisecond: true },
+        mockEmits,
+      ),
     )
     expect(result.timestamp.value).toBe(5000)
     stop()
@@ -48,7 +51,10 @@ describe('useCountdown', () => {
 
   it('should handle millisecond mode correctly', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ durations: 5000, millisecond: true, active: false, inverted: false }, mockEmits),
+      useCountdown(
+        { durations: 5000, millisecond: true, active: false, inverted: false },
+        mockEmits,
+      ),
     )
     expect(result.timestamp.value).toBe(5000)
     stop()
@@ -172,7 +178,10 @@ describe('useCountdown', () => {
 
   it('should default startAt to 0 when not provided', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ durations: 5000, active: false, inverted: false, millisecond: true }, mockEmits),
+      useCountdown(
+        { durations: 5000, active: false, inverted: false, millisecond: true },
+        mockEmits,
+      ),
     )
     expect(result.timestamp.value).toBe(5000)
     stop()
@@ -180,7 +189,10 @@ describe('useCountdown', () => {
 
   it('should default startAt to 0 when not provided in countup mode', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ durations: 5000, active: false, inverted: true, millisecond: true }, mockEmits),
+      useCountdown(
+        { durations: 5000, active: false, inverted: true, millisecond: true },
+        mockEmits,
+      ),
     )
     expect(result.timestamp.value).toBe(0)
     stop()

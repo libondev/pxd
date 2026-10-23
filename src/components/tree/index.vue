@@ -32,8 +32,8 @@ import {
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNumber } from '../../utils/is.js'
-import PLoadingMask from '../loading-mask/index.vue'
 import PTreeNode from '../_internal/tree-node.vue'
+import PLoadingMask from '../loading-mask/index.vue'
 import PSearchInput from '../search-input/index.vue'
 import PTeleport from '../teleport/index.vue'
 

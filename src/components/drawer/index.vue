@@ -6,8 +6,8 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getCssUnitValue } from '../../utils/format.js'
-import PLoadingMask from '../loading-mask/index.vue'
 import PButton from '../button/index.vue'
+import PLoadingMask from '../loading-mask/index.vue'
 import POverlay from '../overlay/index.vue'
 
 defineOptions({

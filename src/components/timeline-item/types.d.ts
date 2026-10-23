@@ -1,5 +1,5 @@
-import type { Component } from 'vue'
 import type { ComponentSize } from '../../types/shared/props'
+import type { Component } from 'vue'
 
 export type TimelineItemPlacement = 'top' | 'bottom'
 export type TimelineItemType = 'primary' | 'success' | 'warning' | 'danger' | 'info' | ''

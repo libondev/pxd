@@ -146,15 +146,11 @@ export function useStickToBottom(
   if (!isServer()) {
     useResizeObserver(() => [getContentEl(), getContainerEl()], stickIfNeeded)
 
-    useMutationObserver(
-      () => getContainerEl(),
-      stickIfNeeded,
-      {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      },
-    )
+    useMutationObserver(() => getContainerEl(), stickIfNeeded, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    })
 
     const stopWatch = watch(
       () => getContainerEl(),
