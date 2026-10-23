@@ -5,7 +5,7 @@ import { isServer } from '../utils/is.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from './use-media-query.js'
 
 export type ColorScheme = 'light' | 'dark'
-export type ColorPreference = ColorScheme | 'auto'
+export type ColorPreference = ColorScheme | 'auto' | 'inverted'
 
 interface Options {
   syncStatus?: boolean
@@ -17,8 +17,9 @@ interface Subscriber {
 }
 
 const SCHEME_CYCLE: Record<ColorPreference, ColorPreference> = {
-  auto: 'light',
-  light: 'dark',
+  auto: 'inverted',
+  inverted: 'auto',
+  light: 'auto',
   dark: 'auto',
 }
 
@@ -42,6 +43,9 @@ export function useColorScheme(options: Options = {}) {
     }
     if (colorScheme.value === 'light') {
       return false
+    }
+    if (colorScheme.value === 'inverted') {
+      return !preferredDark.value
     }
     return preferredDark.value
   })
@@ -123,7 +127,7 @@ export function useColorScheme(options: Options = {}) {
   if (!isServer()) {
     const stored = localStorage.getItem(STORAGE_KEY)
 
-    if (stored === 'dark' || stored === 'light' || stored === 'auto') {
+    if (stored === 'dark' || stored === 'light' || stored === 'inverted' || stored === 'auto') {
       colorScheme.value = stored as ColorPreference
       updateStorages()
     }

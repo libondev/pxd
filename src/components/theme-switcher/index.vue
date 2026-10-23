@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { ColorPreference } from '../../composables/use-color-scheme'
 import type { ThemeSwitcherEmits } from './types'
-import type { Component } from 'vue'
 import DeviceAlternateIcon from '@gdsicon/vue/device-alternate'
 import MoonIcon from '@gdsicon/vue/moon'
 import SunIcon from '@gdsicon/vue/sun'
@@ -16,17 +14,17 @@ defineOptions({
 
 const emits = defineEmits<ThemeSwitcherEmits>()
 
-const SCHEME_ICONS: Record<ColorPreference, Component> = {
-  auto: DeviceAlternateIcon,
-  light: SunIcon,
-  dark: MoonIcon,
-}
-
-const { colorScheme, toggleDarkMode } = useColorScheme({
+const { colorScheme, isDark, toggleDarkMode } = useColorScheme({
   syncStatus: true,
 })
 
-const renderIcon = computed(() => SCHEME_ICONS[colorScheme.value])
+const renderIcon = computed(() => {
+  if (colorScheme.value === 'auto') {
+    return DeviceAlternateIcon
+  }
+
+  return isDark.value ? MoonIcon : SunIcon
+})
 
 watch(
   () => colorScheme.value,

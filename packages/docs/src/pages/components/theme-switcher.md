@@ -1,13 +1,13 @@
 # Theme Switcher
 
-Component that cycles the theme through `auto` (follows the system), `light` and `dark`.
+Component that toggles the theme between `auto` (follows the system preference) and `inverted` (shows the opposite of the system preference), with the icon reflecting the currently displayed scheme.
 
 ## Further
 
 Put the following code in your `html > head`to ensure the correctness of the theme when the page is overloaded. (This is not necessary, it is only necessary to perform this operation when this kind of problem occurs.)
 
 ```js
-(()=>{if(typeof window==='undefined')return;let p=matchMedia('(prefers-color-scheme:dark)').matches;let s=localStorage.getItem('fe.system.color-scheme')||'auto';if(s==='dark'||(p&&s==='auto'))document.documentElement.classList.toggle('dark',true)})()
+(()=>{if(typeof window==='undefined')return;let p=matchMedia('(prefers-color-scheme:dark)').matches;let s=localStorage.getItem('fe.system.color-scheme')||'auto';if(s==='dark'||(s==='inverted'?!p:p&&s==='auto'))document.documentElement.classList.toggle('dark',true)})()
 ```
 
 ## Default
