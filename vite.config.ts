@@ -72,7 +72,7 @@ export default defineConfig({
         },
       ],
     },
-    plugins: ['oxc', 'react', 'eslint', 'import', 'vitest', 'promise', 'unicorn', 'typescript'],
+    plugins: ['oxc', 'eslint', 'import', 'vitest', 'promise', 'unicorn', 'typescript'],
     ignorePatterns: [
       'dist',
       'node_modules',
