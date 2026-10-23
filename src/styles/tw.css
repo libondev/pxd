@@ -158,7 +158,6 @@
   -moz-text-size-adjust: none;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
-  text-autospace: auto;
   font-synthesis: none;
   color-scheme: light;
   background-color: var(--color-background-100);
