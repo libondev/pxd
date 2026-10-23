@@ -14,7 +14,7 @@ import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
-import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
+import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
@@ -49,7 +49,6 @@ const NEXT_STATUS: Record<TodoStatus, TodoStatus> = {
 }
 
 const innerValue = shallowRef<TodoOption[] | undefined>(props.defaultValue)
-const isOpen = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
 
 const currentOptions = computed(() => props.modelValue ?? innerValue.value ?? props.options)
@@ -98,7 +97,10 @@ const hasItemSlot = computed(() => !!slots.item)
 const hasEmptySlot = computed(() => !!slots.empty)
 const hasItemContentSlot = computed(() => !!slots['item-content'])
 
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
+const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+  contentRef,
+  () => props.expand,
+)
 
 function resolveStatus(item: TodoOption): TodoStatus {
   return item.status ?? 'pending'
@@ -173,34 +175,12 @@ function reset(target: TodoItemKey) {
   setStatus(target, 'pending')
 }
 
-function onToggleClick() {
-  isOpen.value = !isOpen.value
-}
-
-function onDetailsToggle(ev: Event) {
-  const details = ev.currentTarget as HTMLDetailsElement
-
-  // Find-in-page / fragment navigation opens <details> natively.
-  if (details.open && !isOpen.value) {
-    skipEnterMotion()
-    isOpen.value = true
-  }
-}
-
 watch(
   () => props.options,
   (options) => {
     if (props.modelValue === undefined) {
       innerValue.value = options
     }
-  },
-)
-
-// `expand` is a command: it applies whenever it changes, and the trigger stays free afterwards.
-watch(
-  () => props.expand,
-  (expand) => {
-    isOpen.value = expand
   },
 )
 
@@ -216,15 +196,19 @@ defineExpose({
 <template>
   <details
     data-todo-list
-    class="pxd-todo-list group/todo w-full max-w-full text-foreground"
+    class="pxd-todo-list group/todo w-full max-w-full"
     :class="{ 'rounded-xl border bg-background-100': variant === 'default' }"
     :open="detailsOpen"
     v-bind="$attrs"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-todo-list--header group/todo gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center justify-between border-none bg-transparent font-inherit text-inherit self-focus-ring outline-none select-none"
-      :class="{ 'p-3 font-medium': variant === 'default' }"
+      class="pxd-todo-list--header group/todo gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit self-focus-ring outline-none select-none"
+      :class="{
+        'p-3 font-medium text-foreground': variant === 'default',
+        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
+          variant === 'simple',
+      }"
       @click.prevent="onToggleClick"
     >
       <ListUnorderedIcon class="size-3 shrink-0" />
@@ -236,13 +220,13 @@ defineExpose({
         :title="headerTitle"
         :summary="summaryText"
       >
-        <span class="pxd-todo-list--title min-w-0 text-sm flex-1 truncate">
+        <span class="pxd-todo-list--title min-w-0 text-sm truncate">
           {{ headerTitle }}
         </span>
 
         <span
           v-if="summaryText"
-          class="pxd-todo-list--summary text-xs shrink-0 text-foreground-secondary"
+          class="pxd-todo-list--summary font-normal text-xs shrink-0 text-foreground-secondary"
           aria-live="polite"
         >
           {{ summaryText }}
@@ -253,6 +237,7 @@ defineExpose({
         class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
         :class="{
           'rotate-90 opacity-100': isOpen,
+          'ml-auto': variant === 'default',
           'opacity-0 group-hover:opacity-100': variant === 'simple',
         }"
       />

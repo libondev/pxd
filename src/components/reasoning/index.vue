@@ -2,8 +2,8 @@
 import type { ReasoningProps } from './types'
 import BrainIcon from '@gdsicon/vue/brain'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { shallowRef, watch } from 'vue'
-import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
+import { shallowRef } from 'vue'
+import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import PShimmerText from '../shimmer-text/index.vue'
 
@@ -17,30 +17,12 @@ const props = withDefaults(defineProps<ReasoningProps>(), {
   streaming: true,
 })
 
-const isOpen = shallowRef(!!props.streaming)
 const contentRef = shallowRef<HTMLElement>()
 
 const configProvider = useConfigProvider()
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isOpen)
-
-function onToggleClick() {
-  isOpen.value = !isOpen.value
-}
-
-function onDetailsToggle(ev: Event) {
-  const details = ev.currentTarget as HTMLDetailsElement
-
-  if (details.open && !isOpen.value) {
-    skipEnterMotion()
-    isOpen.value = true
-  }
-}
-
-watch(
+const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+  contentRef,
   () => props.streaming,
-  (streaming) => {
-    isOpen.value = !!streaming
-  },
 )
 </script>
 
@@ -55,23 +37,16 @@ watch(
   >
     <summary
       class="pxd-reasoning--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
-      :class="
-        variant === 'default'
-          ? 'p-3 font-medium'
-          : 'text-foreground-secondary hover:text-foreground motion-safe:transition-colors'
-      "
+      :class="{
+        'p-3 font-medium text-foreground': variant === 'default',
+        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
+          variant === 'simple',
+      }"
       @click.prevent="onToggleClick"
     >
-      <BrainIcon
-        class="shrink-0"
-        :class="variant === 'default' ? 'size-3 text-foreground-secondary' : 'text-xs'"
-      />
+      <BrainIcon class="size-3 shrink-0" />
 
-      <PShimmerText
-        class="pxd-reasoning--title"
-        :class="{ 'min-w-0 flex-1 truncate text-foreground': variant === 'default' }"
-        :disabled="!streaming"
-      >
+      <PShimmerText class="pxd-reasoning--title" :disabled="!streaming">
         {{ configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
@@ -79,6 +54,7 @@ watch(
         class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
         :class="{
           'rotate-90 opacity-100': isOpen,
+          'ml-auto': variant === 'default',
           'opacity-0 group-hover:opacity-100': variant === 'simple',
         }"
       />

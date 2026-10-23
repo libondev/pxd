@@ -1,42 +1,25 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
+import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { getStyle } from '../../utils/dom.js'
 import { toValue } from '../../utils/helper.js'
 
-export function useCollapseMotion(
+export function useDetailsCollapse(
   contentRef: Ref<HTMLElement | undefined>,
-  expanded: MaybeRefOrGetter<boolean>,
+  source: MaybeRefOrGetter<boolean>,
 ) {
-  // Stays true during leave so height can animate before `open` is removed.
-  const detailsOpen = shallowRef(false)
+  const isOpen = shallowRef(toValue(source))
 
-  let ready = false
+  // Stays true during leave so height can animate before `open` is removed.
+  const detailsOpen = shallowRef(isOpen.value)
+
   let skipEnter = false
   let stopWait: (() => void) | undefined
 
-  const isLeaving = computed(() => detailsOpen.value && !toValue(expanded))
-
-  function skipEnterMotion() {
-    skipEnter = true
-  }
+  const isLeaving = computed(() => detailsOpen.value && !isOpen.value)
 
   function clearWait() {
     stopWait?.()
     stopWait = undefined
-  }
-
-  function finish() {
-    clearWait()
-
-    const el = contentRef.value
-    if (el) {
-      el.style.height = ''
-      el.style.overflow = ''
-    }
-
-    if (!toValue(expanded)) {
-      detailsOpen.value = false
-    }
   }
 
   function animate(isExpanded: boolean) {
@@ -56,7 +39,14 @@ export function useCollapseMotion(
       if (event && ((event as TransitionEvent).propertyName !== 'height' || event.target !== el)) {
         return
       }
-      finish()
+
+      clearWait()
+      el.style.height = ''
+      el.style.overflow = ''
+
+      if (!isOpen.value) {
+        detailsOpen.value = false
+      }
     }
 
     const ms = (Number.parseFloat(getStyle(el).transitionDuration) || 0) * 1000
@@ -73,39 +63,44 @@ export function useCollapseMotion(
     }
   }
 
+  function onToggleClick() {
+    isOpen.value = !isOpen.value
+  }
+
+  function onDetailsToggle(ev: Event) {
+    const details = ev.currentTarget as HTMLDetailsElement
+
+    if (details.open && !isOpen.value) {
+      skipEnter = true
+      isOpen.value = true
+    }
+  }
+
   watch(
-    () => toValue(expanded),
-    (isExpanded) => {
-      if (isExpanded) {
-        detailsOpen.value = true
-      }
-
-      if (!ready) {
-        detailsOpen.value = isExpanded
-        return
-      }
-
-      if (isExpanded && skipEnter) {
-        skipEnter = false
-        return
-      }
-
-      animate(isExpanded)
+    () => toValue(source),
+    (value) => {
+      isOpen.value = value
     },
-    { immediate: true, flush: 'post' },
   )
 
-  onMounted(() => {
-    ready = true
-  })
+  watch(
+    () => isOpen.value,
+    (open) => {
+      if (open) {
+        detailsOpen.value = true
 
-  onScopeDispose(() => {
-    clearWait()
-  })
+        if (skipEnter) {
+          skipEnter = false
+          return
+        }
+      }
 
-  return {
-    detailsOpen,
-    isLeaving,
-    skipEnterMotion,
-  }
+      animate(open)
+    },
+    { flush: 'post' },
+  )
+
+  onScopeDispose(clearWait)
+
+  return { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle }
 }

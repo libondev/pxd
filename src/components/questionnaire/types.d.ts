@@ -11,9 +11,6 @@ export interface QuestionnaireQuestion {
 export interface QuestionnaireAnswer {
   selected: string[]
   freeText: string | null
-  /**
-   * True if no freeText is selected or used
-   */
   skipped: boolean
 }
 
@@ -23,6 +20,7 @@ export interface QuestionnaireAnswers {
 
 export interface QuestionnaireProps {
   questions?: QuestionnaireQuestion[]
+  expand?: boolean
 }
 
 export interface QuestionnaireEmits {

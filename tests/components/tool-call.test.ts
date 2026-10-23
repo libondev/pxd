@@ -1,3 +1,7 @@
+import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
+import ClockIcon from '@gdsicon/vue/clock'
+import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
@@ -10,24 +14,29 @@ describe('tool-call', () => {
     })
 
     expect(wrapper.find('.pxd-tool-call--name').text()).toBe('search_flights')
-    expect(wrapper.find('.pxd-tool-call--status').text()).toBe('Pending')
+    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
+    expect(wrapper.find('.pxd-badge').exists()).toBe(false)
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
 
     wrapper.unmount()
   })
 
-  it('renders status labels', async () => {
+  it('renders status icons', async () => {
     const wrapper = mount(ToolCall, {
       props: { name: 'lookup_weather', status: 'completed' },
     })
 
-    expect(wrapper.find('.pxd-tool-call--status').text()).toBe('Completed')
+    expect(wrapper.findComponent(CheckCircleFillIcon).exists()).toBe(true)
 
     await wrapper.setProps({ status: 'running' })
-    expect(wrapper.find('.pxd-tool-call--status').text()).toBe('Running')
+    expect(wrapper.findComponent(LoaderCircleIcon).exists()).toBe(true)
+    expect(wrapper.findComponent(LoaderCircleIcon).classes()).toContain('motion-safe:animate-spin')
 
     await wrapper.setProps({ status: 'error' })
-    expect(wrapper.find('.pxd-tool-call--status').text()).toBe('Error')
+    expect(wrapper.findComponent(CrossCircleFillIcon).exists()).toBe(true)
+
+    await wrapper.setProps({ status: 'pending' })
+    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
 
     wrapper.unmount()
   })

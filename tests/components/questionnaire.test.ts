@@ -184,6 +184,29 @@ describe('questionnaire', () => {
     wrapper.unmount()
   })
 
+  it('applies the expand command from outside', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        expand: false,
+      },
+    })
+
+    expect(wrapper.get('details').attributes('open')).toBeUndefined()
+
+    await wrapper.setProps({ expand: true })
+    await nextTick()
+
+    expect(wrapper.get('details').attributes('open')).toBeDefined()
+
+    await wrapper.get('summary').trigger('click')
+    await nextTick()
+
+    expect(wrapper.get('details').attributes('open')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('keeps the folded questions in the DOM for find-in-page', async () => {
     const wrapper = mount(Questionnaire, {
       props: {

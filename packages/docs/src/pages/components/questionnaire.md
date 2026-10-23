@@ -128,6 +128,7 @@ function onSubmit(answers) {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | questions | `QuestionnaireQuestion[]` | `() => []` | Questions to display. |
+| expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
 
 ### QuestionnaireQuestion
 

@@ -75,46 +75,13 @@ Collapsible card for tool / function call traces with input and output payloads.
 </template>
 ```
 
-## Latest expanded
-
-`expand` follows the last call in the list: the new card opens, the older ones collapse. It is a command, not a binding — the card keeps toggling itself on click.
-
-```vue demo
-<template>
-  <PStack direction="vertical" class="gap-3">
-    <PButton @click="push">Run another call</PButton>
-
-    <PToolCall
-      v-for="(call, index) of calls"
-      :key="call.id"
-      :expand="index === calls.length - 1"
-      :name="call.name"
-      :input="call.input"
-    />
-  </PStack>
-</template>
-
-<script setup>
-import { shallowRef } from 'vue'
-
-const NAMES = ['search_flights', 'lookup_weather', 'get_forecast']
-const calls = shallowRef([{ id: 1, name: NAMES[0], input: { origin: 'LHR' } }])
-
-function push() {
-  const id = calls.value.length + 1
-
-  calls.value = [...calls.value, { id, name: NAMES[id % NAMES.length], input: { q: id } }]
-}
-</script>
-```
-
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | name | `string` | - | Tool name shown in the header |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
-| status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon and badge |
+| status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon in the header |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
 | input | `unknown` | - | Request payload (objects are pretty-printed as JSON) |
 | output | `unknown` | - | Response payload (objects are pretty-printed as JSON) |

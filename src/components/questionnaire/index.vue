@@ -12,8 +12,7 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import CrossIcon from '@gdsicon/vue/cross'
 import QuestionIcon from '@gdsicon/vue/question'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
-import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
-import { useToggleValue } from '../../composables/use-toggle-value.js'
+import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { toArray } from '../../utils/format.js'
 import PButton from '../button/index.vue'
@@ -36,6 +35,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<QuestionnaireProps>(), {
   questions: () => [],
+  expand: true,
 })
 const emits = defineEmits<QuestionnaireEmits>()
 
@@ -70,22 +70,10 @@ const showSubmitButton = computed(() => {
 })
 
 const configProvider = useConfigProvider()
-const { value: isExpanded, toggle: toggleExpand } = useToggleValue(true)
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
-
-function onToggleClick() {
-  toggleExpand()
-}
-
-function onDetailsToggle(ev: Event) {
-  const details = ev.currentTarget as HTMLDetailsElement
-
-  // Find-in-page / fragment navigation opens <details> natively.
-  if (details.open && !isExpanded.value) {
-    skipEnterMotion()
-    isExpanded.value = true
-  }
-}
+const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+  contentRef,
+  () => props.expand,
+)
 function createInitialAnswers(questions: QuestionnaireQuestion[]): QuestionnaireAnswers {
   return questions.reduce((answers, question) => {
     answers[question.header] = {
@@ -323,7 +311,7 @@ watch(
         <div
           ref="contentRef"
           class="pxd-questionnaire--content overflow-hidden rounded-b-xl border-t"
-          :class="{ 'motion-safe:transition-[height]': isExpanded || isLeaving }"
+          :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
         >
           <PList
             :model-value="currentAnswer.selected"
