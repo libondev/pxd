@@ -44,11 +44,11 @@ const ensurePosition = computed(() => {
 
 const defaultStyles = computed(() => ({
   headerClass: props.defaultHeaderStyle
-    ? 'pbe-5 border-b bg-background-200 dark:bg-background-100'
-    : '',
+    ? 'border-b bg-background-200 dark:bg-background-100'
+    : '-mbe-5',
   footerClass: props.defaultFooterStyle
-    ? 'pbs-3 border-t bg-background-200 dark:bg-background-100'
-    : '',
+    ? 'border-t bg-background-200 dark:bg-background-100'
+    : '-mbs-3',
 }))
 
 const transitionName = computed(() => `pxd-transition--drawer-${ensurePosition.value}`)
@@ -115,7 +115,7 @@ watch(
         v-bind="$attrs"
       >
         <header
-          class="pxd-drawer--header px-5 pbs-5 relative shrink-0 empty:hidden"
+          class="pxd-drawer--header p-5 relative shrink-0 empty:hidden"
           :class="[defaultStyles.headerClass, { 'pe-13': closeable }]"
         >
           <slot name="header">
@@ -134,15 +134,15 @@ watch(
 
           <PButton
             v-if="closeable"
-            variant="ghost"
-            size="sm"
             icon
-            class="top-4 right-5 sm:top-5 size-7 absolute"
+            size="xs"
+            variant="ghost"
+            class="top-5 right-4 absolute"
             :aria-label="configProvider.locale.interaction.close"
             :title="configProvider.locale.interaction.close"
             @click="closeOverlayIfNeed"
           >
-            <CrossIcon class="size-3" aria-hidden="true" />
+            <CrossIcon class="size-3" />
           </PButton>
         </header>
 
@@ -152,7 +152,7 @@ watch(
 
         <footer
           v-if="$slots.footer"
-          class="pxd-drawer--footer px-3 pbe-3 gap-2 relative flex shrink-0 items-center justify-between"
+          class="pxd-drawer--footer p-3 gap-2 relative flex shrink-0 items-center justify-between"
           :class="defaultStyles.footerClass"
         >
           <slot name="footer" />
