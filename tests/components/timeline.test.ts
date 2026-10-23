@@ -121,13 +121,13 @@ describe('timeline-item', () => {
       props: {
         color: 'rgb(1, 2, 3)',
         hollow: true,
-        size: 'large',
+        size: 'lg',
         type: 'success',
       },
     })
     const node = wrapper.find('.pxd-timeline-item--node')
 
-    expect(node.classes()).toEqual(expect.arrayContaining(['is-large', 'is-success', 'is-hollow']))
+    expect(node.classes()).toEqual(expect.arrayContaining(['is-lg', 'is-success', 'is-hollow']))
     expect(node.attributes('style')).toContain('rgb(1, 2, 3)')
 
     wrapper.unmount()

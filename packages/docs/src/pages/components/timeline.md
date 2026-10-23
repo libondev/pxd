@@ -70,7 +70,7 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 
 <template>
   <PTimeline>
-    <PTimelineItem :icon="CheckCircleIcon" size="large" type="primary">
+    <PTimelineItem :icon="CheckCircleIcon" size="lg" type="primary">
       Custom icon
     </PTimelineItem>
     <PTimelineItem color="#7928ca">Custom color</PTimelineItem>
@@ -115,7 +115,7 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 | placement | `'top' \| 'bottom'` | `bottom` | Timestamp position |
 | type | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''` | Node type |
 | color | `string` | `''` | Custom node color |
-| size | `'normal' \| 'large'` | `normal` | Node size |
+| size | `'sm' \| 'md' \| 'lg'` | - | Node size, falls back to the config provider size |
 | icon | `string \| Component` | - | Node icon component |
 | hollow | `boolean` | `false` | Render a hollow node |
 

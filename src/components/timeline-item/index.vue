@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { TimelineItemProps } from './types'
 import { computed } from 'vue'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getFallbackValue } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PTimelineItem',
@@ -12,11 +14,29 @@ const props = withDefaults(defineProps<TimelineItemProps>(), {
   placement: 'bottom',
   type: '',
   color: '',
-  size: 'normal',
 })
 
+const NODE_SIZES = {
+  sm: 'min-w-1.5 min-h-1.5',
+  md: 'min-w-2 min-h-2',
+  lg: 'min-w-2.5 min-h-2.5',
+}
+
+const ICON_SIZES = {
+  sm: 'size-2',
+  md: 'size-3',
+  lg: 'size-3.5',
+}
+
+const configProvider = useConfigProvider()
+
+const computedSize = computed(() => props.size || configProvider.size)
+const nodeSizeClasses = computed(() => getFallbackValue(props.size, NODE_SIZES, configProvider.size))
+const iconSizeClasses = computed(() => getFallbackValue(props.size, ICON_SIZES, configProvider.size))
+
 const nodeClasses = computed(() => [
-  `is-${props.size} min-w-2 min-h-2 p-px left-[0.28125rem] -translate-x-1/2 leading-none`,
+  `is-${computedSize.value} p-px left-[0.28125rem] -translate-x-1/2 leading-none`,
+  nodeSizeClasses.value,
   props.type && `is-${props.type}`,
   { 'is-hollow': props.hollow },
   {
@@ -49,7 +69,7 @@ const nodeClasses = computed(() => [
       :class="nodeClasses"
       :style="{ backgroundColor: color, borderColor: color }"
     >
-      <Component :is="icon" v-if="icon" class="pxd-timeline-item--icon size-3" />
+      <Component :is="icon" v-if="icon" class="pxd-timeline-item--icon" :class="iconSizeClasses" />
     </div>
     <div
       v-else

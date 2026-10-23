@@ -1,8 +1,8 @@
 import type { Component } from 'vue'
+import type { ComponentSize } from '../../types/shared/props'
 
 export type TimelineItemPlacement = 'top' | 'bottom'
 export type TimelineItemType = 'primary' | 'success' | 'warning' | 'danger' | 'info' | ''
-export type TimelineItemSize = 'normal' | 'large'
 
 export interface TimelineItemProps {
   timestamp?: string
@@ -10,7 +10,7 @@ export interface TimelineItemProps {
   placement?: TimelineItemPlacement
   type?: TimelineItemType
   color?: string
-  size?: TimelineItemSize
+  size?: ComponentSize
   icon?: string | Component
   hollow?: boolean
 }
