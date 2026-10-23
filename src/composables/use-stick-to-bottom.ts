@@ -2,7 +2,7 @@ import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { shallowRef, watch, onScopeDispose } from 'vue'
 import { getElement } from '../utils/dom.js'
-import { cachedOff, cachedOn, throttleByRaf } from '../utils/event.js'
+import { cachedOff, cachedOn } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
 import { useMutationObserver } from './use-mutation-observer.js'
@@ -53,7 +53,7 @@ export function useStickToBottom(
 
   const isAtBottom = shallowRef(true)
 
-  let lastScrollTop = 0
+  const lastScrollTop = shallowRef(0)
 
   function getContainerEl() {
     return getElement(toValue(container))
@@ -68,8 +68,11 @@ export function useStickToBottom(
   }
 
   function measureAtBottom(el: HTMLElement) {
-    const distanceToBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    return distanceToBottom <= getThreshold()
+    return el.scrollHeight - el.scrollTop - el.clientHeight <= getThreshold()
+  }
+
+  function getBottomTop(el: HTMLElement) {
+    return Math.max(0, el.scrollHeight - el.clientHeight)
   }
 
   function update() {
@@ -89,10 +92,10 @@ export function useStickToBottom(
       return
     }
 
-    const top = Math.max(0, el.scrollHeight - el.clientHeight)
+    const top = getBottomTop(el)
 
     el.scrollTo({ top, behavior: 'instant' })
-    lastScrollTop = top
+    lastScrollTop.value = top
     isAtBottom.value = true
   }
 
@@ -101,12 +104,18 @@ export function useStickToBottom(
     scrollToBottom()
   }
 
+  // RO/MO 回调先于绘制执行，同步 stick 避免先画出一帧顶部内容再跳到底部；
+  // 已到位时跳过，避免同帧重复滚动。
   function stickIfNeeded() {
     if (!toValue(enabled) || !isAtBottom.value) {
       return
     }
 
-    scrollToBottom()
+    const el = getContainerEl()
+
+    if (el && el.scrollTop !== getBottomTop(el)) {
+      scrollToBottom()
+    }
   }
 
   // 上移超过 threshold 才是用户离开：自身 stick 永远向下滚，而 scroll anchoring
@@ -120,9 +129,9 @@ export function useStickToBottom(
     }
 
     const top = el.scrollTop
-    const scrolledAway = top < lastScrollTop - getThreshold()
+    const scrolledAway = top < lastScrollTop.value - getThreshold()
 
-    lastScrollTop = top
+    lastScrollTop.value = top
 
     if (scrolledAway) {
       update()
@@ -135,20 +144,11 @@ export function useStickToBottom(
   }
 
   if (!isServer()) {
-    const scheduleStick = throttleByRaf(stickIfNeeded)
-
-    useResizeObserver(
-      () => [getContentEl(), getContainerEl()],
-      () => {
-        scheduleStick()
-      },
-    )
+    useResizeObserver(() => [getContentEl(), getContainerEl()], stickIfNeeded)
 
     useMutationObserver(
       () => getContainerEl(),
-      () => {
-        scheduleStick()
-      },
+      stickIfNeeded,
       {
         childList: true,
         subtree: true,
@@ -161,14 +161,13 @@ export function useStickToBottom(
       (el, oldEl) => {
         if (oldEl) {
           cachedOff(oldEl, 'scroll', handleScroll, { passive: true })
-          scheduleStick.cancel()
         }
 
         if (!el) {
           return
         }
 
-        lastScrollTop = el.scrollTop
+        lastScrollTop.value = el.scrollTop
         cachedOn(el, 'scroll', handleScroll, { passive: true })
         update()
       },
@@ -185,7 +184,6 @@ export function useStickToBottom(
         cachedOff(el, 'scroll', handleScroll, { passive: true })
       }
 
-      scheduleStick.cancel()
       stopWatch()
     })
   }
