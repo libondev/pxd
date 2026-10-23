@@ -98,7 +98,10 @@ const options = [
 ]
 
 const colors = {
-  0: 'linear-gradient(90deg, var(--color-green-600), var(--color-teal-500), var(--color-blue-600))',
+  0: 'var(--color-blue-600)',
+  1: 'var(--color-amber-700)',
+  2: 'var(--color-red-800)',
+  3: 'linear-gradient(90deg, var(--color-blue-600), var(--color-amber-700), var(--color-red-800))',
 }
 
 const value = ref('max')
