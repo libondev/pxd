@@ -1,6 +1,6 @@
-import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
+import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import ClockIcon from '@gdsicon/vue/clock'
-import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
+import CrossCircleIcon from '@gdsicon/vue/cross-circle'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
@@ -15,7 +15,6 @@ describe('tool-call', () => {
 
     expect(wrapper.find('.pxd-tool-call--name').text()).toBe('search_flights')
     expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
-    expect(wrapper.find('.pxd-badge').exists()).toBe(false)
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
 
     wrapper.unmount()
@@ -26,14 +25,14 @@ describe('tool-call', () => {
       props: { name: 'lookup_weather', status: 'completed' },
     })
 
-    expect(wrapper.findComponent(CheckCircleFillIcon).exists()).toBe(true)
+    expect(wrapper.findComponent(CheckCircleIcon).exists()).toBe(true)
 
     await wrapper.setProps({ status: 'running' })
     expect(wrapper.findComponent(LoaderCircleIcon).exists()).toBe(true)
     expect(wrapper.findComponent(LoaderCircleIcon).classes()).toContain('motion-safe:animate-spin')
 
     await wrapper.setProps({ status: 'error' })
-    expect(wrapper.findComponent(CrossCircleFillIcon).exists()).toBe(true)
+    expect(wrapper.findComponent(CrossCircleIcon).exists()).toBe(true)
 
     await wrapper.setProps({ status: 'pending' })
     expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)

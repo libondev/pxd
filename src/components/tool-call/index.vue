@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ToolCallProps, ToolCallStatus } from './types'
-import CheckCircleFillIcon from '@gdsicon/vue/check-circle-fill'
+import CheckCircleIcon from '@gdsicon/vue/check-circle'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import ClockIcon from '@gdsicon/vue/clock'
-import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
+import CrossCircleIcon from '@gdsicon/vue/cross-circle'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
@@ -24,8 +24,8 @@ const props = withDefaults(defineProps<ToolCallProps>(), {
 const STATUS_ICON: Record<ToolCallStatus, typeof ClockIcon> = {
   pending: ClockIcon,
   running: LoaderCircleIcon,
-  completed: CheckCircleFillIcon,
-  error: CrossCircleFillIcon,
+  completed: CheckCircleIcon,
+  error: CrossCircleIcon,
 }
 
 const contentRef = shallowRef<HTMLElement>()
@@ -82,7 +82,11 @@ function formatPayload(value: unknown) {
       <Component
         :is="STATUS_ICON[status]"
         class="size-3 shrink-0"
-        :class="{ 'motion-safe:animate-spin': status === 'running' }"
+        :class="{
+          'text-red-900': status === 'error',
+          'text-green-900': status === 'completed',
+          'motion-safe:animate-spin text-blue-900': status === 'running',
+        }"
       />
 
       <span class="pxd-tool-call--name min-w-0 truncate">
