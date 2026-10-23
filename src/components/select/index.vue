@@ -2,7 +2,7 @@
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
 import type { ListModelValue, ListOptions } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
-import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
@@ -140,7 +140,7 @@ watch(listOptions, async () => {
     @wrapper-keydown="onKeydown"
   >
     <PButton
-      class="px-1.5 justify-between"
+      class="px-1.5 justify-between text-inherit"
       align="left"
       full-width
       :class="{ 'text-gray-600': !translatedLabel }"
@@ -163,9 +163,9 @@ watch(listOptions, async () => {
       </template>
 
       <template v-if="suffixIcon" #suffix>
-        <ChevronDownIcon
+        <ChevronRightIcon
           class="text-sm me-1.5 text-foreground-secondary motion-safe:transition-transform"
-          :class="{ 'rotate-180': popoverVisible }"
+          :class="{ 'rotate-90': popoverVisible }"
         />
       </template>
     </PButton>
