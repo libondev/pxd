@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ToolCallProps, ToolCallStatus } from './types'
-import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import FunctionIcon from '@gdsicon/vue/function'
 import { computed, shallowRef, watch } from 'vue'
 import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
@@ -167,9 +167,12 @@ watch(
         {{ statusLabel }}
       </PBadge>
 
-      <ChevronDownIcon
-        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform"
-        :class="{ '-rotate-180': isOpen }"
+      <ChevronRightIcon
+        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        :class="{
+          'rotate-90 opacity-100': isOpen,
+          'opacity-0 group-hover:opacity-100': variant === 'simple',
+        }"
       />
     </summary>
 
