@@ -141,7 +141,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | title | `string` | - | Heading rendered in the trigger, overridable by the `title` slot |
-| expand | `boolean` | - | Expand the panel; inside a group this is the initial state only |
+| expand | `boolean` | `false` | Expand the panel; inside a group this is the initial state only |
 
 ## Events
 

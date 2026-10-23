@@ -4,6 +4,10 @@ import { defineComponent, nextTick } from 'vue'
 import CollapseGroup from '../../src/components/collapse-group/index.vue'
 import Collapse from '../../src/components/collapse/index.vue'
 
+function openStates(wrapper: ReturnType<typeof mount>) {
+  return wrapper.findAll('details').map((item) => (item.element as HTMLDetailsElement).open)
+}
+
 describe('collapse-group', () => {
   it('renders with slot content', () => {
     const wrapper = mount(CollapseGroup, {
@@ -39,18 +43,97 @@ describe('collapse-group', () => {
     })
 
     const wrapper = mount(Host)
-    const details = () =>
-      wrapper.findAll('details').map((item) => (item.element as HTMLDetailsElement).open)
 
     await wrapper.findAll('summary')[0]!.trigger('click')
     await nextTick()
     await nextTick()
-    expect(details()).toEqual([true, false])
+    expect(openStates(wrapper)).toEqual([true, false])
 
     await wrapper.findAll('summary')[1]!.trigger('click')
     await nextTick()
     await nextTick()
-    expect(details()).toEqual([false, true])
+    expect(openStates(wrapper)).toEqual([false, true])
+
+    wrapper.unmount()
+  })
+
+  it('applies the expand command with accordion exclusivity', async () => {
+    const Host = defineComponent({
+      components: { Collapse, CollapseGroup },
+      props: { expandA: Boolean, expandB: Boolean },
+      template: `
+        <CollapseGroup>
+          <Collapse title="A" :expand="expandA">a-body</Collapse>
+          <Collapse title="B" :expand="expandB">b-body</Collapse>
+        </CollapseGroup>
+      `,
+    })
+
+    const wrapper = mount(Host, { props: { expandA: true, expandB: true } })
+    await nextTick()
+    await nextTick()
+
+    expect(openStates(wrapper)).toEqual([false, true])
+
+    await wrapper.setProps({ expandA: false, expandB: false })
+    await nextTick()
+    await nextTick()
+
+    expect(openStates(wrapper)).toEqual([false, false])
+
+    wrapper.unmount()
+  })
+
+  it('releases the accordion slot when the open panel unmounts', async () => {
+    const Host = defineComponent({
+      components: { Collapse, CollapseGroup },
+      props: { showA: Boolean, showC: Boolean },
+      template: `
+        <CollapseGroup>
+          <Collapse v-if="showA" title="A">a-body</Collapse>
+          <Collapse v-if="showC" expand title="C">c-body</Collapse>
+        </CollapseGroup>
+      `,
+    })
+
+    const wrapper = mount(Host, { props: { showA: true, showC: false } })
+
+    await wrapper.findAll('summary')[0]!.trigger('click')
+    await nextTick()
+    await nextTick()
+    expect(openStates(wrapper)).toEqual([true])
+
+    await wrapper.setProps({ showA: false })
+    await nextTick()
+
+    await wrapper.setProps({ showC: true })
+    await nextTick()
+    await nextTick()
+    expect(openStates(wrapper)).toEqual([true])
+
+    wrapper.unmount()
+  })
+
+  it('keeps several panels open in multiple mode', async () => {
+    const Host = defineComponent({
+      components: { Collapse, CollapseGroup },
+      template: `
+        <CollapseGroup multiple>
+          <Collapse title="A">a-body</Collapse>
+          <Collapse title="B">b-body</Collapse>
+        </CollapseGroup>
+      `,
+    })
+
+    const wrapper = mount(Host)
+
+    await wrapper.findAll('summary')[0]!.trigger('click')
+    await nextTick()
+    await wrapper.findAll('summary')[1]!.trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(openStates(wrapper)).toEqual([true, true])
 
     wrapper.unmount()
   })

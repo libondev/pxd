@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { CollapseEmits, CollapseProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
-import { computed, shallowRef, watch } from 'vue'
-import { useCollapseMotion } from '../../composables/_internal/use-collapse-motion.js'
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useCollapseGroupContext } from '../../contexts/collapse.js'
 import { getUniqueId } from '../../utils/helper.js'
 
@@ -10,59 +10,59 @@ defineOptions({
   name: 'PCollapse',
   inheritAttrs: false,
 })
-const props = defineProps<CollapseProps>()
+const props = withDefaults(defineProps<CollapseProps>(), {
+  expand: false,
+})
 const emits = defineEmits<CollapseEmits>()
 
 const uid = getUniqueId()
-
-const internalExpand = shallowRef(props.expand)
 const contentRef = shallowRef<HTMLElement>()
 
 const collapseGroup = useCollapseGroupContext()
 
-const isExpanded = computed(() =>
-  collapseGroup ? collapseGroup.expandedIds.value.has(uid) : internalExpand.value,
+const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+  contentRef,
+  () => props.expand,
 )
 
-const { detailsOpen, isLeaving, skipEnterMotion } = useCollapseMotion(contentRef, isExpanded)
-
-function setExpanded(expanded: boolean, exclusive = false) {
-  if (collapseGroup) {
-    const ids = collapseGroup.expandedIds.value
-    if (exclusive && !collapseGroup.props.multiple) {
-      ids.clear()
-    }
-    if (expanded) {
-      ids.add(uid)
-    } else {
-      ids.delete(uid)
-    }
-    return
-  }
-
-  internalExpand.value = expanded
-}
-
-function onToggleClick(ev: MouseEvent) {
+function onTriggerClick(ev: MouseEvent) {
   emits('toggle', ev)
-  setExpanded(!isExpanded.value, true)
-}
-
-function onDetailsToggle(ev: Event) {
-  const details = ev.currentTarget as HTMLDetailsElement
-
-  // Find-in-page / fragment navigation opens <details> natively.
-  if (details.open && !isExpanded.value) {
-    skipEnterMotion()
-    setExpanded(true, true)
-  }
+  onToggleClick()
 }
 
 watch(
-  () => props.expand,
-  (expand) => setExpanded(!!expand),
+  isOpen,
+  (open) => {
+    const group = collapseGroup
+
+    if (!group || group.props.multiple) {
+      return
+    }
+
+    if (open) {
+      group.openUid.value = uid
+    } else if (group.openUid.value === uid) {
+      group.openUid.value = ''
+    }
+  },
   { immediate: true },
 )
+
+watch(
+  () => collapseGroup?.openUid.value,
+  (openUid) => {
+    if (openUid && openUid !== uid) {
+      isOpen.value = false
+    }
+  },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => {
+  if (collapseGroup?.openUid.value === uid) {
+    collapseGroup.openUid.value = ''
+  }
+})
 </script>
 
 <template>
@@ -75,7 +75,7 @@ watch(
   >
     <summary
       class="pxd-collapse--trigger pe-1 group/collapse flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center justify-between border-none bg-transparent font-inherit self-focus-ring outline-none"
-      @click.prevent="onToggleClick"
+      @click.prevent="onTriggerClick"
     >
       <h3 class="pxd-collapse--title m-0 min-w-0 flex-1 font-inherit text-inherit">
         <slot name="title">
@@ -93,7 +93,7 @@ watch(
       ref="contentRef"
       class="pxd-collapse--content"
       :class="{
-        'motion-safe:transition-[height]': isExpanded || isLeaving,
+        'motion-safe:transition-[height]': isOpen || isLeaving,
       }"
     >
       <slot />

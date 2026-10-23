@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CollapseGroupProps } from './types'
-import { computed, ref } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { provideCollapseGroupContext } from '../../contexts/collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getFallbackValue } from '../../utils/helper.js'
@@ -30,7 +30,7 @@ const SIZES = {
   },
 }
 
-const expandedIds = ref(new Set<string>())
+const openUid = shallowRef('')
 
 const configProvider = useConfigProvider()
 
@@ -45,7 +45,7 @@ const computedStyle = computed(() => {
 })
 
 provideCollapseGroupContext({
-  expandedIds,
+  openUid,
   props,
 })
 </script>

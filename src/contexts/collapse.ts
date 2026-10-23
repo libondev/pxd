@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { createContext } from '../utils/_internal/context.js'
 
 export interface CollapseGroupContext {
-  expandedIds: Ref<Set<string>>
+  openUid: Ref<string>
   props: CollapseGroupProps
 }
 
