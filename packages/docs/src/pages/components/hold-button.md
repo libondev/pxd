@@ -74,7 +74,7 @@ Set `progress-color` to modify the color of the progress bar.
 
 ## Cancelable
 
-After `cancelable` is set, the process can be cancelled while mouse is holding and leaving the button. At the same time, you can listen to the `cancel` event to know when it has been cancelled.
+After `cancelable` is set, moving the pointer off the button pauses the hold and emits `cancel`; moving back resumes it from where it stopped.
 
 ```vue demo
 <script setup>
@@ -120,7 +120,7 @@ Set `scalable="false"` to disable zooming when pressed.
 | disabled | `boolean` | - | Disable the button and ignore pointer interaction |
 | scalable | `boolean` | `true` | Scale the button down while it is pressed |
 | durations | `number \| string` | - | Hold time in `ms` before confirm, defaults to `2000` |
-| cancelable | `boolean` | - | Allow cancelling by moving the pointer off the button |
+| cancelable | `boolean` | - | Pause the hold when the pointer moves off the button |
 | progress-color | `string` | - | CSS colour used for the filling progress overlay |
 
 ## Events
@@ -130,7 +130,7 @@ Set `scalable="false"` to disable zooming when pressed.
 | cancel | `() => void` | Emitted when a holding pointer leaves the button while `cancelable` is set. |
 | confirm | `() => void` | Emitted when the progress overlay has fully filled up. |
 | release | `(confirmed: boolean) => void` | Emitted when the pointer is released or cancelled after a press. |
-| pointerup | `(ev: PointerEvent) => void` | Emitted together with `release` when the document receives a pointer release after a press. |
+| pointerup | `(ev: PointerEvent) => void` | Emitted together with `release` when the button receives a pointer release after a press. |
 | pointerdown | `(ev: PointerEvent) => void` | Emitted when the button is pressed. |
 
 ## Slots

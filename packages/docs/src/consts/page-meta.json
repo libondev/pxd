@@ -289,7 +289,7 @@
   },
   "/components/reactions": {
     "title": "Reactions",
-    "description": "Shows the emoji reactions under a message and lets the reader add their own or take it off again."
+    "description": "Opens an emoji picker beside its content and keeps the reaction list in sync through v-model; the chips are rendered by the parent, through the methods exposed…"
   },
   "/components/reasoning": {
     "title": "Reasoning",

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
-import { computed, onBeforeUnmount, shallowRef, useAttrs } from 'vue'
-import { getStyle } from '../../utils/dom.js'
-import { off, once } from '../../utils/event.js'
+import { onBeforeUnmount, shallowRef } from 'vue'
+import { caf, raf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
 
 defineOptions({
@@ -17,142 +16,159 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
 
 const emits = defineEmits<HoldButtonEmits>()
 
+const DEFAULT_DURATION = 2000
+
+let activePointerId: number | null = null
+let frameId = 0
+let held = 0
+let lastFrameAt = 0
+
 const status = shallowRef<HoldButtonStatus>('idle')
-const computedStyle = computed(() => {
-  const { durations, progressColor } = props
+const progress = shallowRef(0)
 
-  let _durations = Number(durations)
-  if (Number.isNaN(_durations) || _durations < 0) {
-    _durations = 2000
-  }
+function getDuration() {
+  const value = Number(props.durations)
 
-  return {
-    '--hold-button-durations': `${_durations}ms`,
-    '--hold-button-progress-color': progressColor,
-  }
-})
-
-const attrs = useAttrs()
-
-const computedAttrs = computed(() => {
-  return {
-    class: [
-      'pxd-hold-button relative motion-safe:transition-appearance',
-      {
-        scalable: props.scalable,
-        effective: status.value !== 'canceled',
-      },
-    ],
-    ...attrs,
-  }
-})
+  return Number.isFinite(value) && value > 0 ? value : DEFAULT_DURATION
+}
 
 function onTriggerVibrate() {
-  if (!props.vibrate) {
-    return
-  }
-
-  if (typeof window.navigator.vibrate !== 'function') {
-    return
-  }
-
-  window.navigator.vibrate(100)
-}
-
-function onPointerEnter(e: PointerEvent) {
-  if (props.disabled) {
-    return
-  }
-
-  if (!checkIsHolding(e)) {
-    status.value = 'idle'
-    return
-  }
-
-  if (status.value === 'canceled') {
-    status.value = 'loading'
+  if (props.vibrate && typeof window.navigator.vibrate === 'function') {
+    window.navigator.vibrate(100)
   }
 }
 
-function onPointerLeave(e: PointerEvent) {
-  if (props.disabled || !checkIsHolding(e) || !props.cancelable) {
+function stopProgress() {
+  if (!frameId) {
     return
   }
 
-  if (status.value === 'loading' || status.value === 'confirmed') {
-    status.value = 'canceled'
-    emits('cancel')
+  caf(frameId)
+  frameId = 0
+}
+
+function startProgress() {
+  lastFrameAt = Date.now()
+
+  if (!frameId) {
+    frameId = raf(updateProgress)
   }
 }
 
-function onPointerDown(event: PointerEvent) {
-  if (props.disabled) {
+function updateProgress() {
+  const now = Date.now()
+  const duration = getDuration()
+
+  frameId = 0
+  held += now - lastFrameAt
+  lastFrameAt = now
+
+  if (held >= duration) {
+    progress.value = 1
+    status.value = 'confirmed'
+    emits('confirm')
+    return
+  }
+
+  progress.value = held / duration
+  frameId = raf(updateProgress)
+}
+
+function pauseHold() {
+  if (status.value !== 'loading') {
+    return
+  }
+
+  stopProgress()
+  status.value = 'canceled'
+  emits('cancel')
+}
+
+function resumeHold() {
+  if (status.value !== 'canceled') {
     return
   }
 
   status.value = 'loading'
+  startProgress()
+}
+
+function onPointerDown(event: PointerEvent) {
+  if (props.disabled || event.button !== 0) {
+    return
+  }
+
+  const target = event.currentTarget as HTMLElement
+
+  // Capture keeps `pointerup` coming when the pointer is released outside the window.
+  target.setPointerCapture(event.pointerId)
+
+  activePointerId = event.pointerId
+  held = 0
+  progress.value = 0
+  status.value = 'loading'
+  startProgress()
 
   emits('pointerdown', event)
+}
 
-  once(document, 'pointerup', onPointerUp)
-  once(document, 'pointercancel', onPointerUp)
+function onPointerMove(event: PointerEvent) {
+  if (event.pointerId !== activePointerId || !props.cancelable) {
+    return
+  }
+
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  const isInside =
+    event.clientX >= rect.left &&
+    event.clientX <= rect.right &&
+    event.clientY >= rect.top &&
+    event.clientY <= rect.bottom
+
+  if (isInside) {
+    resumeHold()
+    return
+  }
+
+  pauseHold()
 }
 
 function onPointerUp(event: PointerEvent) {
-  if (props.disabled) {
+  if (event.pointerId !== activePointerId) {
     return
   }
 
   const isConfirmed = status.value === 'confirmed'
 
+  activePointerId = null
+  stopProgress()
+  held = 0
   status.value = 'idle'
+  progress.value = 0
 
   emits('release', isConfirmed)
   emits('pointerup', event)
-
   onTriggerVibrate()
-
-  cleanPointerReleaseEvents()
 }
 
-function onTransitionEnd({ target, propertyName }: TransitionEvent) {
-  if (status.value !== 'loading') {
-    return
-  }
-
-  const stylesValue = getStyle(target as HTMLElement).getPropertyValue(propertyName)
-  const isConfirmed = stylesValue === 'inset(0px)'
-
-  if (isConfirmed) {
-    emits('confirm')
-    status.value = 'confirmed'
-    return
-  }
-
-  status.value = 'loading'
-}
-
-function cleanPointerReleaseEvents() {
-  off(document, 'pointerup', onPointerUp)
-  off(document, 'pointercancel', onPointerUp)
-}
-
-function checkIsHolding(e: PointerEvent) {
-  return e.buttons === 1
-}
-
-onBeforeUnmount(() => {
-  cleanPointerReleaseEvents()
-})
+onBeforeUnmount(stopProgress)
 </script>
 
 <template>
   <PButton
+    type="button"
     data-hold-button
-    v-bind="computedAttrs"
+    v-bind="$attrs"
+    :disabled="disabled"
+    :class="[
+      'pxd-hold-button relative motion-safe:transition-appearance',
+      { scalable, holding: status === 'loading' || status === 'confirmed' },
+    ]"
+    :style="{ '--hold-button-progress': progress, '--hold-button-progress-color': progressColor }"
     @pointerdown="onPointerDown"
-    @pointerenter="onPointerEnter"
-    @pointerleave="onPointerLeave"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
+    @lostpointercapture="onPointerUp"
   >
     <template #prefix>
       <slot name="prefix" />
@@ -165,8 +181,6 @@ onBeforeUnmount(() => {
       <div
         class="pxd-hold-button--overlay pointer-events-none absolute -inset-px rounded-inherit bg-(--hold-button-progress-color) default-transition-timing-function!"
         :class="{ confirmed: status === 'confirmed' }"
-        :style="computedStyle"
-        @transitionend="onTransitionEnd"
       />
     </template>
   </PButton>
@@ -185,7 +199,7 @@ onBeforeUnmount(() => {
   .pxd-hold-button--overlay {
     --opacity: 0.45;
     opacity: var(--opacity);
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(0 calc(100% - var(--hold-button-progress) * 100%) 0 0);
     transition:
       clip-path 0.1s,
       opacity 0s;
@@ -195,11 +209,8 @@ onBeforeUnmount(() => {
     }
   }
 
-  &.effective:not(.is-disabled):active .pxd-hold-button--overlay {
-    clip-path: inset(0px);
-    transition:
-      clip-path var(--hold-button-durations),
-      opacity 0.1s;
+  &.holding:not(.is-disabled) .pxd-hold-button--overlay {
+    transition: opacity 0.1s;
   }
 }
 </style>
