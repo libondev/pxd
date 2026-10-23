@@ -6,4 +6,6 @@ export interface GaugeProps {
   indeterminate?: boolean
   size?: ComponentSizeWithXs
   colors?: Record<string, string>
+  primaryColor?: string
+  secondaryColor?: string
 }

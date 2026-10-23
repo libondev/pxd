@@ -72,6 +72,12 @@ const progress3 = ref(68)
 import { ref } from 'vue'
 
 const progress = ref(15)
+const colors = {
+  0: 'var(--color-blue-800)',
+  30: 'var(--color-amber-800)',
+  60: 'var(--color-pink-700)',
+  80: 'var(--color-teal-700)'
+}
 
 function increase() {
   if (progress.value < 100) {
@@ -88,7 +94,7 @@ function decrease() {
 
 <template>
   <PStack direction="vertical" gap="8">
-    <PGauge v-model="progress" show-value />
+    <PGauge v-model="progress" show-value :colors="colors" />
 
     <PStack>
       <PButton variant="primary" @click="increase">Increase</PButton>
@@ -98,22 +104,28 @@ function decrease() {
 </template>
 ```
 
-## Custom secondary color
+## Custom colors
 
 ```vue demo
 <script setup>
 import { ref } from 'vue'
 
 const progress = ref(50)
-
-const colors = {
-  primary: 'var(--color-blue-700)',
-  secondary: 'var(--color-blue-300)',
-}
 </script>
 
 <template>
-  <PGauge v-model="progress" :colors="colors" />
+  <PStack align="center" gap="8">
+    <PGauge
+      v-model="progress"
+      primary-color="var(--color-blue-700)"
+      secondary-color="var(--color-blue-300)"
+    />
+    <PGauge
+      v-model="progress"
+      primary-color="var(--color-teal-700)"
+      secondary-color="var(--color-teal-300)"
+    />
+  </PStack>
 </template>
 ```
 
@@ -143,5 +155,7 @@ const progress = ref(50)
 | model-value | `number \| null` | `60` | Progress percentage, clamped between `0` and `100` |
 | show-value | `boolean` | `false` | Show the percentage in the center, always hidden at `xs` size |
 | indeterminate | `boolean` | - | Ignore the value and show an activity icon over a gray track |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Diameter in `px`: `24`, `32`, `64` or `128`, falling back to the config size |
-| colors | `Record<string, string>` | - | Color stops keyed by threshold, with `primary` and `secondary` overrides |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Component size |
+| colors | `Record<string, string>` | - | Color stops keyed by threshold |
+| primary-color | `string` | - | Fill color, overrides the `colors` scale |
+| secondary-color | `string` | - | Track color |
