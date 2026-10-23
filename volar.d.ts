@@ -63,6 +63,7 @@ declare module 'vue' {
     PListItem: (typeof import('pxd/components/list-item'))['default']
     PLoadingBar: (typeof import('pxd/components/loading-bar'))['default']
     PLoadingDots: (typeof import('pxd/components/loading-dots'))['default']
+    PLoadingMask: (typeof import('pxd/components/loading-mask'))['default']
     PMarchingAnts: (typeof import('pxd/components/marching-ants'))['default']
     PMarquee: (typeof import('pxd/components/marquee'))['default']
     PMaterial: (typeof import('pxd/components/material'))['default']

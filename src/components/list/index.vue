@@ -12,7 +12,7 @@ import { provideListContext } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
 import { toArray } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
-import PLoadingMask from '../_internal/loading-mask.vue'
+import PLoadingMask from '../loading-mask/index.vue'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
 

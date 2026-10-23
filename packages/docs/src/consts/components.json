@@ -245,6 +245,11 @@
     "category": "Feedback"
   },
   {
+    "camelized": "Loading Mask",
+    "name": "loading-mask",
+    "category": "Feedback"
+  },
+  {
     "camelized": "Marching Ants",
     "name": "marching-ants",
     "category": "Motion & Decoration"

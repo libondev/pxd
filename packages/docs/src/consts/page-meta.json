@@ -195,6 +195,10 @@
     "title": "Loading Dots",
     "description": "Indicate an action running in the background."
   },
+  "/components/loading-mask": {
+    "title": "Loading Mask",
+    "description": "Cover an element with a spinner and a loading hint. Locks the scroll of the containing element while visible."
+  },
   "/components/marching-ants": {
     "title": "Marching Ants",
     "description": "Click a target to draw an animated dashed outline around its visible shape. The target supports border-radius, clip-path, and radial-gradient mask-image."
