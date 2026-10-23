@@ -29,7 +29,7 @@ Customize its size and line color.
 
 ```vue demo
 <template>
-  <PPlaceholder color="var(--color-gray-300)" class="h-24" invert></PPlaceholder>
+  <PPlaceholder color="var(--color-gray-300)" class="h-24" inverted></PPlaceholder>
 </template>
 ```
 
@@ -52,7 +52,7 @@ Customize its size and line color.
 | --- | --- | --- | --- |
 | gap | `number \| string` | - | Size of the stripe tile, bare numbers are treated as `px` |
 | color | `string` | - | Stripe color, defaults to the current text color |
-| invert | `boolean` | - | Flip the stripe angle from `-45deg` to `45deg` |
+| inverted | `boolean` | - | Flip the stripe angle from `-45deg` to `45deg` |
 
 ## Slots
 

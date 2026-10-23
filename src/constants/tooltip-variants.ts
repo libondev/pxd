@@ -1,7 +1,7 @@
 export const TOOLTIP_VARIANTS = {
-  invert: {
+  inverted: {
     bg: 'var(--color-background-100)',
-    base: 'text-foreground border variant-invert',
+    base: 'text-foreground border variant-inverted',
   },
   default: {
     bg: 'var(--color-gray-1000)',

@@ -22,7 +22,7 @@ const computedStyle = computed(() => {
   <div
     data-placeholder
     class="pxd-placeholder max-w-full min-w-full"
-    :class="{ 'is-invert': invert }"
+    :class="{ 'is-inverted': inverted }"
     :style="computedStyle"
     v-bind="$attrs"
   >
@@ -48,7 +48,7 @@ const computedStyle = computed(() => {
   background-size: var(--placeholder-gap) var(--placeholder-gap);
 }
 
-.pxd-placeholder.is-invert {
+.pxd-placeholder.is-inverted {
   --placeholder-deg: 45deg;
 }
 </style>

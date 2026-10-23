@@ -33,8 +33,8 @@ The component inherits from popover and supports all the properties of popover. 
 ```vue demo
 <template>
   <PStack>
-    <PTooltip variant="invert" content="The Evil Rabbit Jumped over the Fence">
-      <PButton>invert</PButton>
+    <PTooltip variant="inverted" content="The Evil Rabbit Jumped over the Fence">
+      <PButton>inverted</PButton>
     </PTooltip>
 
     <PTooltip variant="default" content="The Evil Rabbit Jumped over the Fence">
@@ -161,7 +161,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | content | `string` | - | Plain text content, overridable by the `content` slot |
-| variant | `'default' \| 'error' \| 'warning' \| 'success' \| 'invert' \| 'violet'` | `default` | Color scheme: `default`, `invert`, `success`, `warning`, `error` or `violet` |
+| variant | `'default' \| 'error' \| 'warning' \| 'success' \| 'inverted' \| 'violet'` | `default` | Color scheme: `default`, `inverted`, `success`, `warning`, `error` or `violet` |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `top` | Preferred placement, flipped when there is no room; `-start` and `-end` align to the edge |
 | disabled | `boolean` | - | Prevent the tooltip from opening on any trigger |
 | show-delay | `number` | `300` | Delay in `ms` before the tooltip appears |

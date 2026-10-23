@@ -216,7 +216,7 @@ function resetStatus() {
     />
 
     <PCountdown
-      invert
+      inverted
       :active="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
@@ -229,7 +229,7 @@ function resetStatus() {
 
 ## Invert
 
-Setting the `invert` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
+Setting the `inverted` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
 
 ```vue demo
 <script setup>
@@ -246,10 +246,10 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown invert :active="active" :durations="5000" @finish="resetStatus" />
+    <PCountdown inverted :active="active" :durations="5000" @finish="resetStatus" />
 
     <!-- timers without durations will not stop voluntarily -->
-    <PCountdown invert :active="active" :start-at="3000" />
+    <PCountdown inverted :active="active" :start-at="3000" />
   </PStack>
 </template>
 ```

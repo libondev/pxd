@@ -19,7 +19,7 @@ function useCountdown<T extends Record<string, any>>(
 
 ```ts
 interface CountdownOptions {
-  invert?: boolean
+  inverted?: boolean
   active?: boolean
   startAt?: number
   endTime?: number

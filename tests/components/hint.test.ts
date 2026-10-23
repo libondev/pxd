@@ -117,7 +117,7 @@ describe('hint', () => {
   })
 
   it('should keep the click trigger and the colors internal', () => {
-    const wrapper = mountComponent({ trigger: 'hover', variant: 'invert' })
+    const wrapper = mountComponent({ trigger: 'hover', variant: 'inverted' })
 
     expect(wrapper.findComponent(Popover).props('trigger')).toBe('click')
     expect(getVariant()).toBe('default')

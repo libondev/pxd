@@ -817,7 +817,7 @@ defineExpose({
     }
   }
 
-  .pxd-popover--content.variant-invert + .pxd-popover--arrow {
+  .pxd-popover--content.variant-inverted + .pxd-popover--arrow {
     --popover-arrow-border: var(--color-gray-300);
   }
 
