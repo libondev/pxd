@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { VirtualListOptions } from '../../composables/use-virtual-list'
 import type { BubbleGroupProps } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
@@ -17,11 +16,24 @@ const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 
 const { totalSize, virtualItems, measureElement } = useVirtualList(
   () => stickRef.value?.containerRef ?? null,
-  props as unknown as VirtualListOptions,
+  {
+    get dataKey() {
+      return props.dataKey
+    },
+    get items() {
+      return props.data
+    },
+    get itemSize() {
+      return props.itemSize
+    },
+    get overScan() {
+      return props.overScan
+    },
+  },
 )
 
 const contentStyle = computed(() => {
-  if (!props.items) {
+  if (!props.data) {
     return undefined
   }
 
@@ -32,9 +44,9 @@ const contentStyle = computed(() => {
 })
 
 watch(
-  () => props.items?.length,
+  () => props.data?.length,
   (newLen, oldLen) => {
-    if (!props.items || !newLen || !oldLen || newLen <= oldLen) {
+    if (!props.data || !newLen || !oldLen || newLen <= oldLen) {
       return
     }
 
@@ -59,7 +71,7 @@ onMounted(() => {
     :content-style="contentStyle"
     v-bind="$attrs"
   >
-    <template v-if="items">
+    <template v-if="data">
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"
@@ -68,7 +80,7 @@ onMounted(() => {
         class="pxd-bubble-group--item sibling:pbs-2 left-0 top-0 absolute w-full"
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
-        <slot name="item" :item="items[virtualItem.index]" :index="virtualItem.index" />
+        <slot name="item" :item="data[virtualItem.index]" :index="virtualItem.index" />
       </div>
     </template>
 

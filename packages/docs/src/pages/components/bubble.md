@@ -138,7 +138,7 @@ function addMessage() {
 
 ## Group With Virtual Scroll
 
-Pass `items` to enable virtual scrolling for large message lists.
+Pass `data` to enable virtual scrolling for large message lists.
 
 ```vue demo
 <script setup>
@@ -164,7 +164,7 @@ function addMessage() {
 <template>
   <PButton class="mb-2" @click="addMessage">Add Message</PButton>
 
-  <PBubbleGroup class="max-h-80" :items="messages" data-key="id">
+  <PBubbleGroup class="max-h-80" :data="messages" data-key="id">
     <template #item="{ item }">
       <PBubble :role="item.role" :text="item.message" />
     </template>
@@ -198,7 +198,7 @@ function addMessage() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| items | `any[]` | - | Data array, enables virtual scrolling when provided |
+| data | `any[]` | - | Data array, enables virtual scrolling when provided |
 | data-key | `string` | - | Unique key field name for list items |
 | item-size | `number` | `80` | Estimated item height in pixels |
 | over-scan | `number` | `3` | Number of items to render beyond the visible area |
@@ -207,5 +207,5 @@ function addMessage() {
 
 | Name | Description |
 | --- | --- |
-| default | Default slot (used when `items` is not provided) |
+| default | Default slot (used when `data` is not provided) |
 | item | Scoped slot for virtual scroll mode: `{ item, index }` |

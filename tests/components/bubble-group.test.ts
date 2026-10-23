@@ -75,7 +75,7 @@ describe('bubble-group', () => {
 
   it('keeps following the bottom while items stream in', async () => {
     const wrapper = mount(BubbleGroup, {
-      props: { items: [{ id: 1 }, { id: 2 }], dataKey: 'id' },
+      props: { data: [{ id: 1 }, { id: 2 }], dataKey: 'id' },
     })
 
     const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
@@ -86,15 +86,16 @@ describe('bubble-group', () => {
     })
     await flushRaf()
 
-    await wrapper.setProps({ items: [{ id: 1 }, { id: 2 }, { id: 3 }] })
+    metrics.scrollHeight = 300
+    await wrapper.setProps({ data: [{ id: 1 }, { id: 2 }, { id: 3 }] })
     await nextTick()
-    expect(scrollTo).toHaveBeenCalledWith({ top: 100, behavior: 'instant' })
-    
+    expect(scrollTo).toHaveBeenCalledWith({ top: 200, behavior: 'instant' })
+
     metrics.scrollHeight = 500
     container.dispatchEvent(new Event('scroll'))
     await flushRaf()
 
-    await wrapper.setProps({ items: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
+    await wrapper.setProps({ data: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
     await nextTick()
     expect(scrollTo).toHaveBeenLastCalledWith({ top: 400, behavior: 'instant' })
 
