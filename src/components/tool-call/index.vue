@@ -8,6 +8,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isNil } from '../../utils/is.ts'
 import PCodeBlock from '../code-block/index.vue'
 
 defineOptions({
@@ -41,7 +42,7 @@ const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDe
 )
 
 function formatPayload(value: unknown) {
-  if (value === undefined) {
+  if (isNil(value) || !value) {
     return ''
   }
 
@@ -54,7 +55,7 @@ function formatPayload(value: unknown) {
   }
 
   try {
-    return JSON.stringify(value, null, 2) ?? ''
+    return JSON.stringify(value) ?? ''
   } catch {
     return String(value)
   }
@@ -120,11 +121,11 @@ function formatPayload(value: unknown) {
             {{ configProvider.locale.toolCall.input }}
           </div>
           <PCodeBlock
-            class="pxd-tool-call--code bg-gray-100"
+            class="pxd-tool-call--code"
             :code="inputText"
+            copy-btn="hidden"
             language="json"
             size="sm"
-            copy-btn="hidden"
           />
         </div>
 
@@ -135,11 +136,11 @@ function formatPayload(value: unknown) {
             {{ configProvider.locale.toolCall.output }}
           </div>
           <PCodeBlock
-            class="pxd-tool-call--code bg-gray-100"
+            class="pxd-tool-call--code"
             :code="outputText"
+            copy-btn="hidden"
             language="json"
             size="sm"
-            copy-btn="hidden"
           />
         </div>
       </div>

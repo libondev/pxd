@@ -41,7 +41,11 @@ async function flush() {
         return
       }
 
-      await module.highlightAll()
+      // `.pxd-code-block--line-code` are the per-line code nodes of PCodeBlock's line mode;
+      // they sit inside a row wrapper instead of being a direct `pre > code` child.
+      await module.highlightAll({
+        selector: 'pre > code, .pxd-code-block--line-code',
+      })
     }
   } catch {
     // A failed run has already cleared the registered ranges; retrying on every edit only spams.

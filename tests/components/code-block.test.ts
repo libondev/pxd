@@ -46,12 +46,120 @@ describe('code-block', () => {
     wrapper.unmount()
   })
 
-  it('renders one gutter row per line', () => {
+  it('renders one line row with a clickable number per line', () => {
     const wrapper = mount(CodeBlock, {
-      props: { code: 'a\nb\nc', lineNumbers: true },
+      props: { code: 'a\nb\nc', language: 'ts', lineNumbers: true },
     })
 
-    expect(wrapper.findAll('.pxd-code-block--gutter span').length).toBe(3)
+    const rows = wrapper.findAll('.pxd-code-block--line')
+
+    expect(rows.length).toBe(3)
+    expect(rows[0].find('.pxd-code-block--line-number').text()).toBe('1')
+    expect(rows[2].find('.pxd-code-block--line-number').text()).toBe('3')
+    expect(rows[0].get('code').text()).toBe('a')
+    expect(rows[0].get('code').classes()).toContain('language-ts')
+
+    wrapper.unmount()
+  })
+
+  it('marks highlighted, added and removed lines', () => {
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: 'a\nb\nc\nd',
+        highlightedLines: [2],
+        addedLines: [3],
+        removedLines: [4],
+      },
+    })
+
+    const rows = wrapper.findAll('.pxd-code-block--line')
+
+    expect(rows[0].attributes('data-highlighted')).toBeUndefined()
+    expect(rows[1].attributes('data-highlighted')).toBe('true')
+    expect(rows[2].attributes('data-added')).toBe('true')
+    expect(rows[3].attributes('data-removed')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('toggles the line anchor in the URL from the line number', async () => {
+    const wrapper = mount(CodeBlock, {
+      props: { code: 'a\nb\nc', lineNumbers: true },
+      attachTo: document.body,
+    })
+
+    const rows = wrapper.findAll('.pxd-code-block--line')
+    const buttons = wrapper.findAll('.pxd-code-block--line-number')
+
+    await buttons[1].trigger('click')
+
+    expect(window.location.hash).toMatch(/-L2$/)
+    expect(rows[1].attributes('data-active')).toBe('true')
+
+    await buttons[1].trigger('click')
+
+    expect(window.location.hash).toBe('')
+    expect(rows[1].attributes('data-active')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('renders the title header with the switcher and the copy button', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.resolve() },
+    })
+
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: 'a',
+        title: 'Table.jsx',
+        switcher: {
+          options: [
+            { label: 'JavaScript', value: 'js' },
+            { label: 'TypeScript', value: 'ts' },
+          ],
+          value: 'js',
+        },
+      },
+    })
+
+    const header = wrapper.get('.pxd-code-block--header')
+
+    expect(header.text()).toContain('Table.jsx')
+    expect(header.find('select').exists()).toBe(true)
+    expect(header.find('[data-copy-button]').exists()).toBe(true)
+    expect(header.find('select').element.selectedOptions[0].value).toBe('js')
+
+    await wrapper.get('select').setValue('ts')
+
+    expect(wrapper.emitted('switcher-change')?.[0]).toEqual(['ts'])
+
+    wrapper.unmount()
+  })
+
+  it('emits tabs-change from the tab bar', async () => {
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: 'a',
+        tabs: {
+          options: [
+            { label: 'JavaScript', value: 'js' },
+            { label: 'TypeScript', value: 'ts' },
+          ],
+          value: 'js',
+        },
+      },
+    })
+
+    const tabsEls = wrapper.findAll('[role="tab"]')
+
+    expect(tabsEls.length).toBe(2)
+    expect(tabsEls[0].attributes('aria-selected')).toBe('true')
+
+    await tabsEls[1].trigger('click')
+
+    expect(wrapper.emitted('tabs-change')?.[0]).toEqual(['ts'])
 
     wrapper.unmount()
   })
@@ -82,7 +190,9 @@ describe('code-block', () => {
     await new Promise((resolve) => setTimeout(resolve, 10))
 
     expect(highlightAll).toHaveBeenCalledTimes(1)
-    expect(highlightAll).toHaveBeenCalledWith()
+    expect(highlightAll).toHaveBeenCalledWith({
+      selector: 'pre > code, .pxd-code-block--line-code',
+    })
 
     first.unmount()
     second.unmount()

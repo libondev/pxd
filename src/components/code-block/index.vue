@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { CodeBlockEmits, CodeBlockProps } from './types'
-import { computed, onMounted, shallowRef, watch } from 'vue'
+import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import FileIcon from '@gdsicon/vue/file'
+import { computed, onMounted, onUnmounted, shallowRef, useSlots, watch } from 'vue'
 import {
   MAX_HIGHLIGHT_LENGTH,
   useCodeHighlight,
@@ -27,8 +29,20 @@ const DEFAULT_MAX_HEIGHT = '20rem'
 const bodyEl = shallowRef<HTMLElement | null>(null)
 const expanded = shallowRef(false)
 const isOverflowing = shallowRef(false)
+const activeLine = shallowRef<number | null>(null)
 
-const lineCount = computed(() => props.code.split('\n').length)
+const lines = computed(() => props.code.split('\n'))
+
+const highlightedSet = computed(() => new Set(props.highlightedLines))
+const addedSet = computed(() => new Set(props.addedLines))
+const removedSet = computed(() => new Set(props.removedLines))
+const isLineMode = computed(
+  () =>
+    props.lineNumbers ||
+    highlightedSet.value.size > 0 ||
+    addedSet.value.size > 0 ||
+    removedSet.value.size > 0,
+)
 const isOversized = computed(() => props.code.length > MAX_HIGHLIGHT_LENGTH)
 const maxHeight = computed(() => getCssUnitValue(props.maxHeight, DEFAULT_MAX_HEIGHT))
 const isClipped = computed(() => props.collapsible && !expanded.value)
@@ -38,12 +52,31 @@ const languageClass = computed(() => {
   // Oversized blocks drop the language class so the scanner skips them instead of tokenizing.
   return language && !isOversized.value ? `language-${language}` : undefined
 })
+const lineAnchorPrefix = computed(() => getLineAnchorPrefix(props.code))
+const activeSwitcherValue = computed(
+  () => props.switcher?.value ?? props.switcher?.options[0]?.value,
+)
+const activeSwitcherLabel = computed(() => {
+  const option = props.switcher?.options.find((item) => item.value === activeSwitcherValue.value)
+
+  return option?.label ?? option?.value
+})
+const activeTabValue = computed(() => props.tabs?.value ?? props.tabs?.options[0]?.value)
 
 const configProvider = useConfigProvider()
+
+const resolvedSize = computed(() => props.size || configProvider.size)
+const lineRowClass = computed(() => (resolvedSize.value === 'lg' ? 'h-6' : 'h-5'))
+const lineCodeClass = computed(() => (resolvedSize.value === 'lg' ? 'leading-6' : 'leading-5'))
+
 const { scheduleHighlight } = useCodeHighlight()
+const slots = useSlots()
+
+const hasHeader = computed(() => !!(props.title || props.switcher || slots.header || slots.actions))
+
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-code-block relative flex flex-col overflow-hidden rounded-lg border border-gray-alpha-300 bg-(--code-block-bg) text-gray-1000',
+    base: 'pxd-code-block relative flex flex-col text-gray-1000',
     variants: {
       size: {
         sm: 'text-[13px]',
@@ -58,6 +91,18 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+
+/** FNV-1a over the code: line anchors must stay stable across reloads to be shareable. */
+function getLineAnchorPrefix(code: string) {
+  let hash = 0x811c9dc5
+
+  for (let index = 0; index < code.length; index++) {
+    hash ^= code.charCodeAt(index)
+    hash = Math.imul(hash, 0x01000193)
+  }
+
+  return `C${(hash >>> 0).toString(16).padStart(8, '0')}`
+}
 
 function measureOverflow() {
   const element = bodyEl.value
@@ -77,6 +122,79 @@ function onCopy(text: string) {
   emits('copy', text)
 }
 
+function getLineAnchor(line: number) {
+  return `${lineAnchorPrefix.value}-L${line}`
+}
+
+function toggleLineAnchor(line: number) {
+  const { pathname, search } = window.location
+
+  if (activeLine.value === line) {
+    activeLine.value = null
+    history.replaceState(null, '', `${pathname}${search}`)
+
+    return
+  }
+
+  activeLine.value = line
+  history.replaceState(null, '', `#${getLineAnchor(line)}`)
+}
+
+function syncActiveLineFromHash() {
+  const hash = window.location.hash.slice(1)
+  const line = Number(hash.slice(`${lineAnchorPrefix.value}-L`.length))
+
+  if (hash.startsWith(`${lineAnchorPrefix.value}-L`) && line >= 1 && line <= lines.value.length) {
+    activeLine.value = line
+    document.getElementById(hash)?.scrollIntoView({ block: 'nearest' })
+
+    return
+  }
+
+  activeLine.value = null
+}
+
+function onHashChange() {
+  syncActiveLineFromHash()
+}
+
+function onSwitcherChange(event: Event) {
+  emits('switcher-change', (event.target as HTMLSelectElement).value)
+}
+
+function onTabSelect(value: string) {
+  emits('tabs-change', value)
+}
+
+function onTabsKeydown(event: KeyboardEvent) {
+  const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+
+  if (!keys.includes(event.key)) {
+    return
+  }
+
+  event.preventDefault()
+
+  const tabEls = [
+    ...(event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('[role="tab"]'),
+  ]
+  const currentIndex = tabEls.findIndex((element) => element === document.activeElement)
+  let nextIndex = currentIndex
+
+  if (event.key === 'ArrowRight') {
+    nextIndex = (currentIndex + 1) % tabEls.length
+  } else if (event.key === 'ArrowLeft') {
+    nextIndex = (currentIndex - 1 + tabEls.length) % tabEls.length
+  } else if (event.key === 'Home') {
+    nextIndex = 0
+  } else {
+    nextIndex = tabEls.length - 1
+  }
+
+  tabEls[nextIndex]?.focus()
+  tabEls[nextIndex]?.click()
+}
+
 watch(
   () => [
     props.code,
@@ -84,6 +202,10 @@ watch(
     props.size,
     props.maxHeight,
     props.collapsible,
+    props.lineNumbers,
+    props.highlightedLines,
+    props.addedLines,
+    props.removedLines,
     expanded.value,
   ],
   () => {
@@ -93,78 +215,163 @@ watch(
   { flush: 'post' },
 )
 
-onMounted(measureOverflow)
+watch(
+  () => props.code,
+  () => {
+    activeLine.value = null
+  },
+)
+
+onMounted(() => {
+  measureOverflow()
+  syncActiveLineFromHash()
+  window.addEventListener('hashchange', onHashChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('hashchange', onHashChange)
+})
 </script>
 
 <template>
   <div data-code-block :class="classes" v-bind="attrs">
     <div
-      v-if="title || $slots.header || $slots.actions"
-      class="pxd-code-block--header gap-3 px-3 py-2 text-sm flex items-center border-b border-gray-alpha-300"
+      v-if="tabs"
+      class="pxd-code-block--tabs-bar pt-4 pb-3 scrollbar-none flex items-center overflow-x-auto"
     >
-      <slot name="header">{{ title }}</slot>
-
-      <div class="gap-1 ms-auto flex items-center">
-        <slot name="actions" />
+      <div role="tablist" class="min-w-0 flex items-center" @keydown="onTabsKeydown">
+        <button
+          v-for="option in tabs.options"
+          :key="option.value"
+          type="button"
+          role="tab"
+          :tabindex="option.value === activeTabValue ? 0 : -1"
+          :aria-selected="option.value === activeTabValue"
+          class="h-8 px-3 font-medium cursor-pointer rounded-md text-[13px] text-gray-900 not-aria-selected:hover:text-gray-1000 aria-selected:bg-gray-200 aria-selected:text-gray-1000 motion-safe:transition-colors"
+          @click="onTabSelect(option.value)"
+        >
+          {{ option.label || option.value }}
+        </button>
       </div>
     </div>
 
-    <div class="group/code-block relative">
-      <div
-        ref="bodyEl"
-        class="pxd-code-block--body overflow-x-hidden overflow-y-auto self-focus-ring"
-        tabindex="0"
-        :style="{ maxHeight: expanded ? undefined : maxHeight }"
-      >
-        <div class="flex font-mono">
+    <div
+      v-if="hasHeader"
+      class="pxd-code-block--header gap-2 ps-3 pe-1 h-9 flex items-center rounded-t-lg border bg-background-200"
+    >
+      <slot name="header">
+        <FileIcon class="size-4 shrink-0 text-gray-900" aria-hidden="true" />
+        <span class="min-w-0 truncate text-[13px] text-gray-900">{{ title }}</span>
+      </slot>
+
+      <div class="gap-1 min-w-0 ms-auto flex items-center">
+        <slot name="actions" />
+
+        <div v-if="switcher" class="h-7 group/select relative shrink-0">
           <div
-            v-if="lineNumbers"
             aria-hidden="true"
-            class="pxd-code-block--gutter p-3 shrink-0 border-e border-gray-alpha-300 text-right text-gray-700 tabular-nums select-none"
+            class="px-2 gap-1 flex h-full cursor-pointer items-center rounded-md bg-background-200 text-[13px] whitespace-nowrap text-gray-900 group-hover/select:bg-gray-200 has-focus-visible:self-focus-ring motion-safe:transition-colors"
           >
-            <span v-for="line of lineCount" :key="line" class="block">{{ line }}</span>
+            <span class="truncate">{{ activeSwitcherLabel }}</span>
+            <ChevronDownIcon class="size-3.5 shrink-0" />
           </div>
 
-          <pre
-            class="pxd-code-block--pre p-3 notranslate min-w-0 flex-1 overflow-x-auto"
-            translate="no"
-          ><code v-text="code" :class="languageClass" /></pre>
+          <select
+            class="inset-0 absolute cursor-pointer opacity-0 outline-none"
+            :value="activeSwitcherValue"
+            @change="onSwitcherChange"
+          >
+            <option v-for="option in switcher.options" :key="option.value" :value="option.value">
+              {{ option.label || option.value }}
+            </option>
+          </select>
         </div>
-      </div>
 
-      <div
-        v-if="isClipped"
-        class="inset-x-0 bottom-0 h-16 pointer-events-none absolute bg-linear-to-t from-(--code-block-bg) to-transparent"
-      />
-
-      <div
-        v-if="copyBtn !== 'hidden'"
-        class="end-3 top-3 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
-        :class="{ 'opacity-0 group-hover/code-block:opacity-100': copyBtn === 'hover' }"
-      >
         <PCopyButton
+          v-if="copyBtn !== 'hidden'"
           icon
-          size="sm"
+          size="xs"
           variant="ghost"
-          class="bg-(--code-block-bg)"
           :text="code"
           @copy="onCopy"
         />
       </div>
     </div>
 
-    <div v-if="collapsible && isOverflowing" class="border-t border-gray-alpha-300">
-      <PButton variant="ghost" size="sm" full-width class="rounded-none" @click="toggleExpanded">
-        {{ configProvider.locale.codeBlock[expanded ? 'collapse' : 'expand'] }}
-      </PButton>
+    <div
+      class="pxd-code-block--content overflow-hidden border border-gray-alpha-300"
+      :class="hasHeader ? 'rounded-b-lg border-t-0' : 'rounded-lg'"
+    >
+      <div class="group/code-block relative">
+        <div
+          ref="bodyEl"
+          class="pxd-code-block--body overflow-x-hidden overflow-y-auto self-focus-ring"
+          tabindex="0"
+          :style="{ maxHeight: expanded ? undefined : maxHeight }"
+        >
+          <pre
+            v-if="isLineMode"
+            class="pxd-code-block--pre py-4 notranslate overflow-x-auto font-mono"
+            translate="no"
+          ><div
+              v-for="(line, index) in lines"
+              :id="getLineAnchor(index + 1)"
+              :key="index"
+              class="pxd-code-block--line relative ps-4 pe-4 flex items-center data-highlighted:bg-blue-300 data-highlighted:shadow-[inset_2px_0_0_0_var(--color-blue-900)] data-active:bg-amber-300 data-active:shadow-[inset_2px_0_0_0_var(--color-amber-900)] data-added:bg-green-300 data-added:shadow-[inset_2px_0_0_0_var(--color-green-900)] data-removed:bg-red-300 data-removed:shadow-[inset_2px_0_0_0_var(--color-red-900)]"
+              :class="lineRowClass"
+              :data-highlighted="highlightedSet.has(index + 1) || undefined"
+              :data-added="addedSet.has(index + 1) || undefined"
+              :data-removed="removedSet.has(index + 1) || undefined"
+              :data-active="activeLine === index + 1 || undefined"
+            >
+              <button
+                v-if="lineNumbers"
+                type="button"
+                tabindex="-1"
+                aria-hidden="true"
+                class="pxd-code-block--line-number w-8 pe-4 shrink-0 text-right text-gray-600 tabular-nums cursor-pointer select-none hover:text-gray-1000 motion-safe:transition-colors"
+                @click="toggleLineAnchor(index + 1)"
+              >{{ index + 1 }}</button>
+
+              <code
+                v-text="line"
+                class="pxd-code-block--line-code whitespace-pre bg-transparent! border-0! p-0! m-0!"
+                :class="[languageClass, lineCodeClass]"
+              />
+            </div></pre>
+
+          <pre
+            v-else
+            class="pxd-code-block--pre p-3 notranslate min-w-0 flex-1 overflow-x-auto font-mono"
+            translate="no"
+          ><code v-text="code" class="bg-transparent! border-0! p-0! m-0!" :class="languageClass" /></pre>
+        </div>
+
+        <div
+          v-if="isClipped"
+          class="pxd-code-block--fade inset-x-0 bottom-0 h-16 backdrop-blur-xl pointer-events-none absolute"
+        />
+
+        <div
+          v-if="copyBtn !== 'hidden' && !hasHeader"
+          class="end-3 top-3 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
+          :class="{ 'opacity-0 group-hover/code-block:opacity-100': copyBtn === 'hover' }"
+        >
+          <PCopyButton icon size="sm" variant="ghost" :text="code" @copy="onCopy" />
+        </div>
+      </div>
+
+      <div v-if="collapsible && isOverflowing" class="border-t border-gray-alpha-300">
+        <PButton variant="ghost" size="sm" full-width class="rounded-none" @click="toggleExpanded">
+          {{ configProvider.locale.codeBlock[expanded ? 'collapse' : 'expand'] }}
+        </PButton>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
 .pxd-code-block {
-  --code-block-bg: var(--color-background-100);
-
   --syntax-comment: hsl(var(--color-gray-700-value));
   --syntax-keyword: hsl(var(--color-purple-900-value));
   --syntax-operator: hsl(var(--color-gray-800-value));
@@ -253,5 +460,34 @@ onMounted(measureOverflow)
 
 .pxd-code-block code::highlight(deleted) {
   color: var(--syntax-deleted);
+}
+
+.pxd-code-block--fade {
+  mask-image: linear-gradient(to top, black, transparent);
+}
+
+.pxd-code-block--line[data-added='true']::after,
+.pxd-code-block--line[data-removed='true']::after {
+  position: absolute;
+  inset: 0;
+  padding-left: 8px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.pxd-code-block--line[data-added='true']::after {
+  content: '+';
+  color: var(--color-green-900);
+}
+
+.pxd-code-block--line[data-removed='true']::after {
+  content: '-';
+  color: var(--color-red-900);
+}
+
+@media (max-width: 600px) {
+  .pxd-code-block--line-number {
+    display: none;
+  }
 }
 </style>
