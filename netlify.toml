@@ -67,15 +67,15 @@ status = 200
 force = true
 
 [[redirects]]
-from = "/*"
-to = "/404.html"
-status = 404
-
-[[redirects]]
 from = "/llm.txt"
 to = "/llms.txt"
 status = 301
 force = true
+
+[[redirects]]
+from = "/*"
+to = "/404.html"
+status = 404
 
 # Keep the default Netlify subdomain alive as a permanent redirect so the links already
 # indexed under it hand their ranking over instead of returning nothing.
