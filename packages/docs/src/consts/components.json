@@ -120,6 +120,11 @@
     "category": "Overlay"
   },
   {
+    "camelized": "Context Usage",
+    "name": "context-usage",
+    "category": "AI"
+  },
+  {
     "camelized": "Copy Button",
     "name": "copy-button",
     "category": "Button"

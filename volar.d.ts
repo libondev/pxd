@@ -34,6 +34,7 @@ declare module 'vue' {
     PCommandMenu: (typeof import('pxd/components/command-menu'))['default']
     PConfigProvider: (typeof import('pxd/components/config-provider'))['default']
     PConfirmPopover: (typeof import('pxd/components/confirm-popover'))['default']
+    PContextUsage: (typeof import('pxd/components/context-usage'))['default']
     PCopyButton: (typeof import('pxd/components/copy-button'))['default']
     PCountdown: (typeof import('pxd/components/countdown'))['default']
     PDashLine: (typeof import('pxd/components/dash-line'))['default']
