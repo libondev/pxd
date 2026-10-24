@@ -31,7 +31,6 @@ export default defineConfig({
       functions: ['cn', 'useTailwindVariant'],
       stylesheet: './src/styles/tw.css',
     },
-    patterns: [],
     ignorePatterns: [
       'dist',
       'node_modules',
@@ -78,7 +77,7 @@ export default defineConfig({
       'node_modules',
       '.vscode',
       '.zed',
-      '.agent',
+      '.agents',
       '.claude',
       '.codex',
       '.cursor',

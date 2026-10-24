@@ -4,7 +4,7 @@
 
 ## Toolchain
 
-- **包管理**: pnpm@10.34.5，依赖版本集中在 `pnpm-workspace.yaml` 的 `catalog:`；不要在本文件抄版本号，它们会过期。
+- **包管理**: pnpm@10.34.7，依赖版本集中在 `pnpm-workspace.yaml` 的 `catalog:`；不要在本文件抄版本号，它们会过期。
 - **开发态**: `pnpm dev:lib` 走 `unbuild --stub`，此时 `dist` 是指向 `src` 的 symlink，内容不是构建产物。
 - **构建**: `scripts/build-core.js` 调 mkdist（`src` → `dist`，`format: esm`、`declaration: true`、loaders 含 vue/postcss）。
 - **工具链**: vite-plus 包住 Vite / Vitest / oxlint / oxfmt，配置全在根 `vite.config.ts`；仓库没有 `eslint.config.*`、`vitest.config.*`、Prettier 配置。
@@ -35,4 +35,4 @@
 
 - `vite.config.ts` — 唯一配置点：`fmt` / `lint` / `test` / `run.tasks` / `staged`
 - `scripts/update-exports.js` — barrel、docs 列表、`volar.d.ts` 的生成器
-- `scripts/build-core.js`、`scripts/gen-css-files.js`、`scripts/fmt-eol.js`
+- `scripts/build-core.js`、`scripts/gen-css-files.js`、`scripts/lint/fmt-file-eol.js`
