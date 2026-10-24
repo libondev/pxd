@@ -134,6 +134,7 @@ useFocusTrap(focusTrapContainer, () => {
 })
 
 useOutsideClick(wrapperRef, {
+  eventName: 'pointerdown',
   allowList: [triggerRef, wrapperRef],
   enabled: () => isVisible.value,
   onTrigger: (ev) => {

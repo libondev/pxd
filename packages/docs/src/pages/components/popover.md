@@ -476,7 +476,7 @@ const chips = [
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | return-focus-on-deactivate | `boolean` | `true` | Return focus to the trigger when the Popover closes |
 | close-on-invisible | `boolean` | `true` | Hide the Popover when the trigger is clipped or scrolled out of view |
-| close-on-outside-click | `boolean` | `true` | Close the Popover when a click lands outside of it and its trigger |
+| close-on-outside-click | `boolean` | `true` | Close the Popover when the pointer is pressed outside of it and its trigger |
 | close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
 | lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
 
@@ -487,7 +487,7 @@ const chips = [
 | show | `() => void` | Emitted when the popover becomes visible. |
 | hide | `() => void` | Emitted when the popover becomes hidden. |
 | escape | `(event: KeyboardEvent) => void` | Emitted when `Escape` is pressed while the popover is open, before it hides. |
-| outside-click | `(event: PointerEvent) => void` | Emitted when a click lands outside both the trigger and the popover while it is open. |
+| outside-click | `(event: PointerEvent) => void` | Emitted when the pointer is pressed outside both the trigger and the popover while it is open. Judged by where the press starts, so a drag that begins inside and releases outside does not count. |
 | trigger-click | `(event: PointerEvent) => void` | Emitted when one of the resolved trigger elements is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted when the visible state changes. |
 | wrapper-keydown | `(event: KeyboardEvent) => void` | Emitted when a key is pressed inside the popover while it is open. |

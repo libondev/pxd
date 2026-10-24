@@ -307,3 +307,11 @@ a comment beside the fix.
 - **Symptom**: `vue-tsc` rejects `emits(event, payload)` where `event: 'add' | 'remove'`, complaining that `Argument of type '"add" | "remove"' is not assignable to parameter of type '"remove"'`.
 - **Cause**: `defineEmits<T>()` turns every key into its own overload `(evt: K, ...args: T[K]) => void`. A union key has to satisfy all of them at once, so it collapses onto the last overload and the payload tuple of the other event no longer matches.
 - **Fix**: Branch on the event name at the call site so each `emits()` receives a literal — `if (event === 'add') { emits('add', emoji) } else { emits('remove', emoji) }` (`src/components/reactions/index.vue`). Giving both events the same payload tuple also works, but it flattens the public API for the sake of one helper.
+
+---
+
+### An outside-click check must anchor on the press, not on the browser's `click`
+
+- **Symptom**: Dragging a control inside a `PPopover` (the `PEffortSlider` track, text selection in an input) and releasing with the pointer outside the popover closed it, discarding the value the drag had just committed.
+- **Cause**: `useOutsideClick` listened to `click` on `document` and read `ev.target`. When a press and its release land on different elements the browser dispatches `click` on their nearest common *ancestor* (the same mechanism as "A drag ends with a click the browser makes on its own"), so a drag that started inside the popover surfaced as a `click` on `body` — indistinguishable from a real outside click.
+- **Fix**: Judge outside-ness by where the gesture started: pass `eventName: 'pointerdown'` so a press inside the popover can never become an outside event, whatever the release does (`src/components/popover/index.vue`, matching the `swipe-cell` call site, Radix `DismissableLayer`, Floating UI `useDismiss` and VueUse `onClickOutside`, which are all press-anchored). Any new `useOutsideClick` consumer that dismisses on outside interaction should anchor on the press the same way; the composable's `click` default only suits listeners that never fire mid-drag.

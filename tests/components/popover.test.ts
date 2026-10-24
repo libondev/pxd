@@ -749,7 +749,7 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
-  it('should close on an outside click', async () => {
+  it('should close on an outside press', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
       props: {
@@ -764,7 +764,7 @@ describe('popover', () => {
     await wrapper.find('.pxd-popover').trigger('click')
     await flush()
 
-    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
     await flush()
 
     expect(wrapper.emitted('outside-click')).toHaveLength(1)
@@ -773,7 +773,34 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
-  it('should keep the popover open on an outside click when close-on-outside-click is false', async () => {
+  it('should not close when a drag starts inside and releases outside', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        trigger: 'click',
+      },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('.pxd-popover').trigger('click')
+    await flush()
+
+    const content = document.body.querySelector('.pxd-popover--content') as HTMLElement
+
+    content.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    expect(wrapper.emitted('outside-click')).toBeUndefined()
+    expect(wrapper.emitted('hide')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should keep the popover open on an outside press when close-on-outside-click is false', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
       props: {
@@ -789,7 +816,7 @@ describe('popover', () => {
     await wrapper.find('.pxd-popover').trigger('click')
     await flush()
 
-    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
     await flush()
 
     expect(wrapper.emitted('outside-click')).toHaveLength(1)
@@ -845,7 +872,7 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
-  it('should keep a manual popover open on an outside click', async () => {
+  it('should keep a manual popover open on an outside press', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
       props: {
@@ -860,7 +887,7 @@ describe('popover', () => {
 
     await flush()
 
-    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
     await flush()
 
     expect(document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')).toBe(
