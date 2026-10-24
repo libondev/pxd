@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   loading: false,
   filterable: false,
   highlightMatch: false,
-  searchPlaceholder: 'Search',
+  searchPlaceholder: '',
   defaultSearchValue: '',
 })
 

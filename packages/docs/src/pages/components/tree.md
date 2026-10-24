@@ -585,7 +585,7 @@ function load({ node }, resolve) {
 | filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
 | remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter`: it returns the matched nodes with their ancestors, which replace `data` while the query is active |
 | highlight-match | `boolean` | `false` | Mark the matched substring of the label; a fuzzy hit that is not a contiguous run stays unmarked |
-| search-placeholder | `string` | `'Search'` | Placeholder of the search field |
+| search-placeholder | `string` | - | Placeholder of the search field |
 | search-value | `string` | - | Controlled search query |
 | default-search-value | `string` | `''` | Search query before the user types |
 | item-class | `ComponentClass` | - | Class merged into every rendered row |
