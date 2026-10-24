@@ -7,7 +7,7 @@ export interface ModalProps {
   width?: string | number
   loading?: boolean
   modelValue?: boolean
-  loadingText?: string
+  loadingText?: ComponentLabel
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean

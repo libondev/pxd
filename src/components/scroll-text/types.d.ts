@@ -1,7 +1,7 @@
-import type { ComponentAs } from '../../types/shared/props'
+import type { ComponentAs, ComponentLabel } from '../../types/shared/props'
 
 export interface ScrollTextProps {
   as?: ComponentAs
-  text?: string
+  text?: ComponentLabel
   speed?: number | string
 }

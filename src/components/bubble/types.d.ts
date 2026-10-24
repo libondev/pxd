@@ -1,6 +1,6 @@
 export interface BubbleProps {
   role?: 'user' | 'system' | 'assistant'
-  text?: string
+  text?: ComponentLabel
   header?: string
   avatar?: string
   loading?: boolean

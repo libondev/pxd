@@ -106,8 +106,13 @@ const updateEllipsis = scheduleByRaf(async () => {
       const candidate = `${joinChars(baseChars, 0, mid)}${dots}`
 
       if (
-        measureLineCount(candidate, textFont, availableWidth, actionText, actionFont) <=
-        maxRows.value
+        measureLineCount(
+          candidate,
+          textFont,
+          availableWidth,
+          String(actionText ?? ''),
+          actionFont,
+        ) <= maxRows.value
       ) {
         best = candidate
         low = mid + 1
@@ -130,7 +135,8 @@ const updateEllipsis = scheduleByRaf(async () => {
     const candidate = buildCandidate(chars, mid, dots, props.position)
 
     if (
-      measureLineCount(candidate, textFont, availableWidth, actionText, actionFont) <= maxRows.value
+      measureLineCount(candidate, textFont, availableWidth, String(actionText ?? ''), actionFont) <=
+      maxRows.value
     ) {
       best = candidate
       low = mid + 1

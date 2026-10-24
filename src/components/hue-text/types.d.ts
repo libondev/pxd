@@ -1,4 +1,6 @@
+import type { ComponentLabel } from '../../types/shared/props'
+
 export interface HueTextProps {
-  text?: string
+  text?: ComponentLabel
   tinted?: boolean
 }

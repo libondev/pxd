@@ -1,7 +1,11 @@
-import type { ComponentSize, ComponentVariantWithDefault } from '../../types/shared/props'
+import type {
+  ComponentSize,
+  ComponentVariantWithDefault,
+  ComponentLabel,
+} from '../../types/shared/props'
 
 export interface SnippetProps {
-  text?: string | string[] | null
+  text?: ComponentLabel | ComponentLabel[]
   size?: ComponentSize
   prompt?: boolean | string
   copyBtn?: 'always' | 'hover' | 'hidden'

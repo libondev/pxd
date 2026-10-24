@@ -5,8 +5,8 @@ export interface TourStep {
   title?: string
   description?: string
   position?: ComponentPosition
-  nextText?: string
-  prevText?: string
+  nextText?: ComponentLabel
+  prevText?: ComponentLabel
   beforeEnter?: (ctx: { index: number; step: TourStep }) => void | Promise<void>
 }
 

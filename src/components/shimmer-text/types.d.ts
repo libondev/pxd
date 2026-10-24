@@ -6,7 +6,7 @@ export interface ShimmerGradientStop {
 }
 
 export interface ShimmerTextProps {
-  text?: string
+  text?: ComponentLabel
   color?: string | ShimmerGradientStop[]
   variant?: ShimmerTextVariant
   disabled?: boolean

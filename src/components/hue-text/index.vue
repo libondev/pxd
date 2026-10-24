@@ -11,7 +11,7 @@ const props = defineProps<HueTextProps>()
 
 const hue = computed(() => {
   let hash = 0
-  const name = props.text ?? ''
+  const name = `${props.text ?? ''}`
 
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash)

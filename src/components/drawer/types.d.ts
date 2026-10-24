@@ -8,7 +8,7 @@ export interface DrawerProps {
   loading?: boolean
   position?: BasePosition
   modelValue?: boolean
-  loadingText?: string
+  loadingText?: ComponentLabel
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean

@@ -1,5 +1,7 @@
+import type { ComponentLabel } from '../../types/shared/props'
+
 export interface CopyButtonProps {
-  text?: string | ((ev: PointerEvent) => string)
+  text?: ComponentLabel | ((ev: PointerEvent) => ComponentLabel)
 }
 
 export interface CopyButtonEmits {

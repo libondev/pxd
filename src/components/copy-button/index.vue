@@ -16,7 +16,7 @@ const emits = defineEmits<CopyButtonEmits>()
 const { isCopied, copyText } = useCopyClick()
 
 async function onCopyClick(ev: PointerEvent) {
-  const text = (typeof props.text === 'function' ? props.text(ev) : props.text) || ''
+  const text = `${(typeof props.text === 'function' ? props.text(ev) : props.text) ?? ''}`
 
   await copyText(text)
   emits('copy', text, ev)
