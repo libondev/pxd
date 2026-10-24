@@ -99,6 +99,59 @@ describe('tool-call', () => {
     wrapper.unmount()
   })
 
+  it('renders content-block arrays as plain text without JSON highlighting', () => {
+    const wrapper = mount(ToolCall, {
+      props: {
+        name: 'bash',
+        status: 'completed',
+        input: { command: 'pnpm test', timeout: 30000 },
+        output: [{ type: 'text', text: '$ pnpm test\n ✓ 8 tests passed\n Done in 2.14s' }],
+      },
+    })
+
+    const codes = wrapper.findAll('.pxd-tool-call--code')
+
+    expect(codes).toHaveLength(2)
+    expect(codes[1]!.text()).toContain('$ pnpm test')
+    expect(codes[1]!.text()).toContain('Done in 2.14s')
+    expect(codes[1]!.text()).not.toContain('"type"')
+    expect(wrapper.findAll('code')[0]!.classes()).toContain('language-json')
+    expect(wrapper.findAll('code')[1]!.classes()).not.toContain('language-json')
+
+    wrapper.unmount()
+  })
+
+  it('marks image blocks with a placeholder instead of dumping base64', () => {
+    const wrapper = mount(ToolCall, {
+      props: {
+        name: 'screenshot',
+        status: 'completed',
+        output: [
+          { type: 'text', text: 'captured 800x600' },
+          { type: 'image', data: 'iVBORw0KGgo=', mimeType: 'image/png' },
+        ],
+      },
+    })
+
+    const text = wrapper.find('.pxd-tool-call--code').text()
+
+    expect(text).toContain('captured 800x600')
+    expect(text).toContain('[image]')
+    expect(text).not.toContain('iVBORw0KGgo')
+
+    wrapper.unmount()
+  })
+
+  it('falls back to JSON for arrays that are not content blocks', () => {
+    const wrapper = mount(ToolCall, {
+      props: { name: 'list', output: [{ path: 'src/a.ts' }] },
+    })
+
+    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"path"')
+
+    wrapper.unmount()
+  })
+
   it('applies the expand command from outside', async () => {
     const wrapper = mount(ToolCall, {
       props: { name: 'search_flights', expand: false },

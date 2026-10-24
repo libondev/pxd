@@ -11,6 +11,11 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isNil } from '../../utils/is.ts'
 import PCodeBlock from '../code-block/index.vue'
 
+interface PayloadView {
+  text: string
+  isJson: boolean
+}
+
 defineOptions({
   name: 'PToolCall',
   inheritAttrs: false,
@@ -31,8 +36,8 @@ const STATUS_ICON: Record<ToolCallStatus, typeof ClockIcon> = {
 
 const contentRef = shallowRef<HTMLElement>()
 
-const inputText = computed(() => formatPayload(props.input))
-const outputText = computed(() => formatPayload(props.output))
+const inputPayload = computed(() => formatPayload(props.input))
+const outputPayload = computed(() => formatPayload(props.output))
 
 const configProvider = useConfigProvider()
 
@@ -41,24 +46,69 @@ const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDe
   () => props.expand,
 )
 
-function formatPayload(value: unknown) {
+function formatPayload(value: unknown): PayloadView {
   if (isNil(value) || !value) {
-    return ''
+    return { text: '', isJson: false }
+  }
+
+  const blockText = formatContentBlocks(value)
+
+  if (blockText !== undefined) {
+    return { text: blockText, isJson: false }
   }
 
   if (typeof value === 'string') {
     try {
-      return JSON.stringify(JSON.parse(value), null, 2)
+      return { text: JSON.stringify(JSON.parse(value), null, 2), isJson: true }
     } catch {
-      return value
+      return { text: value, isJson: false }
     }
   }
 
   try {
-    return JSON.stringify(value) ?? ''
+    return { text: JSON.stringify(value, null, 2) ?? '', isJson: true }
   } catch {
-    return String(value)
+    return { text: String(value), isJson: false }
   }
+}
+// pi agent sdk / Anthropic deliver tool results as content-block arrays; unwrap them so
+// terminal output reads as text instead of an escaped JSON blob.
+function formatContentBlocks(value: unknown): string | undefined {
+  if (!Array.isArray(value)) {
+    return undefined
+  }
+
+  const lines: string[] = []
+
+  for (const item of value) {
+    if (isTextBlock(item)) {
+      lines.push(item.text)
+    } else if (isImageBlock(item)) {
+      lines.push('[image]')
+    } else {
+      return undefined
+    }
+  }
+
+  return lines.length > 0 ? lines.join('\n') : undefined
+}
+
+function isTextBlock(value: unknown): value is { type: 'text'; text: string } {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const { type, text } = value as Record<string, unknown>
+
+  return type === 'text' && typeof text === 'string'
+}
+
+function isImageBlock(value: unknown): value is { type: 'image' } {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  return (value as Record<string, unknown>).type === 'image'
 }
 </script>
 
@@ -114,7 +164,7 @@ function formatPayload(value: unknown) {
       }"
     >
       <div class="gap-4 p-3 flex flex-col">
-        <div v-if="inputText" class="pxd-tool-call--section gap-2 flex flex-col">
+        <div v-if="inputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
           <div
             class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
           >
@@ -122,14 +172,14 @@ function formatPayload(value: unknown) {
           </div>
           <PCodeBlock
             class="pxd-tool-call--code"
-            :code="inputText"
+            :code="inputPayload.text"
+            :language="inputPayload.isJson ? 'json' : undefined"
             copy-btn="hidden"
-            language="json"
             size="sm"
           />
         </div>
 
-        <div v-if="outputText" class="pxd-tool-call--section gap-2 flex flex-col">
+        <div v-if="outputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
           <div
             class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
           >
@@ -137,9 +187,9 @@ function formatPayload(value: unknown) {
           </div>
           <PCodeBlock
             class="pxd-tool-call--code"
-            :code="outputText"
+            :code="outputPayload.text"
+            :language="outputPayload.isJson ? 'json' : undefined"
             copy-btn="hidden"
-            language="json"
             size="sm"
           />
         </div>
