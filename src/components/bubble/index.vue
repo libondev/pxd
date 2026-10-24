@@ -19,7 +19,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-bubble group/bubble sibling:mbs-2 gap-2 flex max-w-full cursor-default',
+    base: 'pxd-bubble group/bubble sibling:mbs-2 text-sm gap-2 flex max-w-full cursor-default',
     variants: {
       role: {
         user: 'ps-10 flex-row-reverse',
@@ -97,7 +97,7 @@ const { classes: contentClasses } = useTailwindVariant(
       </slot>
     </div>
 
-    <div class="pxd-bubble--wrapper text-sm gap-1 flex w-max flex-col">
+    <div class="pxd-bubble--wrapper gap-1 flex w-max flex-col">
       <header
         v-if="header || $slots.header"
         class="pxd-bubble--header flex items-center text-[13px] text-foreground-secondary group-data-[role=user]/bubble:justify-end"
