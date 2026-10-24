@@ -95,7 +95,7 @@ function onItemLeave() {
       <div
         v-for="(item, index) in viewItems"
         :key="index"
-        class="pxd-context-usage--segment basis-0 min-w-[1%] cursor-pointer border-l bg-(--context-usage-color) motion-safe:transition-opacity"
+        class="pxd-context-usage--segment basis-0 min-w-[1%] border-l bg-(--context-usage-color) motion-safe:transition-opacity"
         :style="{
           '--context-usage-color': item.color,
           flexGrow: item.tokens,
@@ -114,7 +114,7 @@ function onItemLeave() {
       <li
         v-for="(item, index) in viewItems"
         :key="index"
-        class="min-w-0 gap-2 text-sm m-0! flex cursor-pointer items-center motion-safe:transition-opacity"
+        class="min-w-0 gap-2 text-sm m-0! flex cursor-default items-center motion-safe:transition-opacity"
         :style="{ opacity: item.opacity }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
