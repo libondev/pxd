@@ -28,8 +28,10 @@
 发布入口由 `package.json` → `exports` 唯一定义，不要在此复制清单：
 
 - `.` 主入口、`./resolver` unplugin resolver、`./components` / `./composables` / `./locales` 分组 barrel
-- `./components/*`、`./composables/*`、`./contexts/*`、`./locales/*`、`./types/*`、`./utils/*` 逐项导入
+- `./components/*`、`./composables/*`、`./contexts/*`、`./locales/*`、`./utils/*` 逐项导入
 - `./volar`、`./tw.css`、`./styles.css`
+
+组件公开类型（含 `XxxProps` / `XxxEmits`）不占独立入口：`update-exports.js` 会在组件 barrel 里按 `export type * from './xxx/types'` 转发，用户从主入口 `import type { TreeOption } from 'pxd'` 即可。
 
 ## Key files
 

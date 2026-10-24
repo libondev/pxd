@@ -183,7 +183,7 @@ const customValue = ref(false)
 | model-value | `boolean \| number \| string \| undefined` | - | Current value, checked against `active-value` |
 | active-value | `boolean \| number \| string \| undefined` | `true` | Value emitted when the switch is turned on |
 | inactive-value | `boolean \| number \| string \| undefined` | `false` | Value emitted when the switch is turned off |
-| before-change | `ComponentBeforeChange<ValueType>` | - | Sync or async guard, a falsy result rejects the change |
+| before-change | `ComponentBeforeChange<ToggleValueType>` | - | Sync or async guard, a falsy result rejects the change |
 | active-color | `string` | - | Track color when checked, accepts any CSS color |
 | inactive-color | `string` | - | Track color when unchecked, accepts any CSS color |
 | active-label | `string` | - | Text shown beside the switch when it is on |

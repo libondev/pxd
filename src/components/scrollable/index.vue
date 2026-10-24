@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import type {
-  ScrollableCachedPadding,
-  ScrollableDragState,
-  ScrollableEmits,
-  ScrollableProps,
-} from './types'
+import type { ComponentDirection } from '../../types/shared/props'
+import type { ScrollableEmits, ScrollableProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
@@ -13,6 +9,20 @@ import { cachedOff, cachedOn, off, once } from '../../utils/event.js'
 import { raf, throttleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 import PFader from '../fader/index.vue'
+
+interface DragState {
+  isDragging: boolean
+  direction: ComponentDirection | null
+  startClientPos: number
+  startThumbPos: number
+}
+
+interface CachedPadding {
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
 
 defineOptions({
   name: 'PScrollable',
@@ -44,14 +54,14 @@ const MIN_THUMB = 30
 let triggerRightFired = false
 let triggerBottomFired = false
 
-let dragState: ScrollableDragState = {
+let dragState: DragState = {
   isDragging: false,
   direction: null,
   startClientPos: 0,
   startThumbPos: 0,
 }
 
-let cachedPadding: ScrollableCachedPadding = {
+let cachedPadding: CachedPadding = {
   top: 0,
   bottom: 0,
   left: 0,

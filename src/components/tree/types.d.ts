@@ -98,16 +98,6 @@ export interface TreeMoveDetail {
   }
 }
 
-export interface TreeFlatNode {
-  key: ComponentValue
-  node: TreeOption
-  depth: number
-  index: number
-  parentValue?: ComponentValue
-  hasChildren: boolean
-  expanded: boolean
-}
-
 export interface TreeProps {
   data?: TreeOptions
   modelValue?: TreeModelValue

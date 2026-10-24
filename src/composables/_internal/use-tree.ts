@@ -3,7 +3,6 @@ import type {
   TreeDropTarget,
   TreeFieldNames,
   TreeFilterFn,
-  TreeFlatNode,
   TreeMoveDetail,
   TreeModelValue,
   TreeOption,
@@ -20,6 +19,16 @@ import { isCompositionKeydown } from '../../utils/event.js'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
 import { debounce } from '../../utils/timing.js'
+
+export interface TreeFlatNode {
+  key: ComponentValue
+  node: TreeOption
+  depth: number
+  index: number
+  parentValue?: ComponentValue
+  hasChildren: boolean
+  expanded: boolean
+}
 
 export interface TreeNodeMeta {
   node: TreeOptions[number]

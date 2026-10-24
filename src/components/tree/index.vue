@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
-import type { TreeMatched } from '../../composables/_internal/use-tree'
+import type { TreeFlatNode, TreeMatched } from '../../composables/_internal/use-tree'
 import type { ComponentValue } from '../../types/shared/props'
 import type {
   TreeDropPosition,
   TreeDropTarget,
   TreeEmits,
-  TreeFlatNode,
   TreeModelValue,
   TreeOption,
   TreeOptions,

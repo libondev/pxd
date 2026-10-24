@@ -45,7 +45,18 @@ function updateComponentsIndex() {
     return exports
   }, '')
 
-  fs.writeFileSync(path.join(process.cwd(), 'src', 'components', 'index.ts'), fileContent)
+  // Re-export component types so they are importable from the package entry.
+  // Underscore-prefixed dirs (e.g. `_internal`) are private and stay out.
+  const types = globSync('src/components/**/types.d.ts')
+    .map((file) => file.match(/src\/components\/(.*?)\/types\.d\.ts/)?.[1])
+    .filter((name) => name && !name.startsWith('_'))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .map((name) => `export type * from './${name}/types'`)
+
+  fs.writeFileSync(
+    path.join(process.cwd(), 'src', 'components', 'index.ts'),
+    `${fileContent}${types.join('\n')}\n`,
+  )
 }
 
 function updateComposablesIndex() {

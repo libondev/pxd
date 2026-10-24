@@ -1,15 +1,15 @@
 import type { ComponentBeforeChange, ComponentSize } from '../../types/shared/props'
 
-export type ValueType = boolean | number | string | undefined
+export type ToggleValueType = boolean | number | string | undefined
 
 export interface ToggleProps {
   size?: ComponentSize
   loading?: boolean
   disabled?: boolean
-  modelValue?: ValueType
-  activeValue?: ValueType
-  inactiveValue?: ValueType
-  beforeChange?: ComponentBeforeChange<ValueType>
+  modelValue?: ToggleValueType
+  activeValue?: ToggleValueType
+  inactiveValue?: ToggleValueType
+  beforeChange?: ComponentBeforeChange<ToggleValueType>
   activeColor?: string
   inactiveColor?: string
   activeLabel?: string
