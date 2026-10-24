@@ -180,7 +180,7 @@ updateVolarDts()
 if (isNeedStageChange) {
   try {
     execSync(
-      'git add volar.d.ts src/index.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json packages/docs/src/consts/composables.json',
+      'git add volar.d.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json packages/docs/src/consts/composables.json',
     )
     execSync('git commit -m "chore: update pkg exports"')
   } catch {
