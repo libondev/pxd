@@ -15,7 +15,7 @@
 ## Pipeline
 
 1. **Exports**: `scripts/update-exports.js` 刷新 `src/index.ts`、`src/components/index.ts`、`src/composables/index.ts`、`packages/docs/src/consts/{components,composables}.json`、根 `volar.d.ts`，最后 `git add` 这些文件。
-2. **Code**: `scripts/build-core.js` 用 mkdist 把 `src` 编译到 `dist`（ESM + `.d.ts`）。
+2. **Code**: `scripts/build-core.js` 先删掉 `dev:lib` 留下的 `dist` symlink（如有，防止写入穿透到 `src`），再用 mkdist 把 `src` 编译到 `dist`（ESM + `.d.ts`）。
 3. **Styles**: `build:style` → `scripts/gen-css-files.js`（须在真实 `dist/` 上跑，不能是 `dev:lib` 的 stub）。
    - 把 `src/styles/tw.css` 写到 `dist/styles/tw.css`。
    - 临时生成 `dist/styles/source.css`（`@layer` / `@import` / `@source` 包一层，路径相对 `dist/styles` 扫编译后的 components/composables/constants）。

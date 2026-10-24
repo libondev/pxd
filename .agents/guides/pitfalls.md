@@ -294,6 +294,14 @@ a comment beside the fix.
 - **Cause**: The pointer delta was applied to the *rendered* size, which had already been clamped to the bounds, so each frame started from the floor and the extra travel was discarded.
 - **Fix**: Keep the pointer position as its own value in gesture space, apply deltas to that, and derive the render size (`max(pointer, min)`) from it. Fold detection compares the pointer, not the render size; the clamp belongs on the way out, never on the way in.
 
+### Writing into a symlinked `dist` overwrites the sources
+
+- **Symptom**: Building while `dist` was left as the `dev:lib` stub (`unbuild --stub`) — via `build:core`, `build:lib`, and therefore `pnpm publish` through `prepublishOnly` — compiles the library straight into `src/`: loaders overwrite `src/components/*/index.vue` and friends in place.
+- **Cause**: The stub makes `dist` a symlink to `src`, and mkdist writes into `distDir` without `lstat`-ing it first, so every `dist/...` path resolves through the link to `src/...`. `gen-css-files.js` guarded itself (`assertRealDist`), but nothing removed the stub before the mkdist step that runs first in every build pipeline.
+- **Fix**: `scripts/build-core.js` unlinks `dist` before calling mkdist when `lstatSync` reports a symlink — `rmSync` on a link removes the link itself, never the target. Any new script that writes into `dist/` needs the same check, or must run after `build:core`.
+
+---
+
 ### A typed emit cannot take a union of event names
 
 - **Symptom**: `vue-tsc` rejects `emits(event, payload)` where `event: 'add' | 'remove'`, complaining that `Argument of type '"add" | "remove"' is not assignable to parameter of type '"remove"'`.
