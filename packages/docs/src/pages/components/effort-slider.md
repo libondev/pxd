@@ -112,6 +112,23 @@ const value = ref('max')
 </template>
 ```
 
+## Particles
+
+`particles` flows small dots through the fill. The dots are clipped to the filled part of the track and hidden under `prefers-reduced-motion`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const options = ['low', 'medium', 'high', 'max']
+const value = ref('high')
+</script>
+
+<template>
+  <PEffortSlider v-model="value" :options="options" particles style="width: 240px;" />
+</template>
+```
+
 ## Sizes
 
 ```vue demo
@@ -152,6 +169,7 @@ const value = ref('low')
 | --- | --- | --- | --- |
 | options | `Array<EffortOption \| string>` | - | Levels from low to high, a string is used as both label and value, `value` falls back to the option index |
 | colors | `Record<string, string>` | - | Fill colour keyed by level index, the fill takes the colour of the highest key at or below the current level, levels below the lowest key fall back to `primary`, a gradient value is applied as the fill's background image across the whole track |
+| particles | `boolean` | - | Flow small dots along the fill, hidden under `prefers-reduced-motion` |
 | disabled | `boolean` | - | Disable clicking, dragging and keyboard interaction |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
 | default-value | `string \| number \| null` | - | Level an uncontrolled slider starts from |

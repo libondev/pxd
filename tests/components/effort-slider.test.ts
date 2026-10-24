@@ -123,6 +123,19 @@ describe('effort-slider', () => {
     wrapper.unmount()
   })
 
+  it('should render particles inside the fill only when particles is on', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'high' } })
+    const fill = wrapper.find('.pxd-effort-slider--fill')
+
+    expect(fill.findAll('.pxd-effort-slider--particle')).toHaveLength(0)
+
+    await wrapper.setProps({ particles: true })
+
+    expect(fill.findAll('.pxd-effort-slider--particle')).toHaveLength(10)
+
+    wrapper.unmount()
+  })
+
   it('should jump to the pressed level', async () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'low' } })
     const track = stubTrack(wrapper)

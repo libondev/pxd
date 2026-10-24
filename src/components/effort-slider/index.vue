@@ -19,12 +19,6 @@ defineOptions({
   },
 })
 
-const PRIMARY_COLOR = 'var(--color-primary)'
-
-function clamp(value: number, lower: number, upper: number) {
-  return Math.min(Math.max(value, lower), upper)
-}
-
 const props = defineProps<EffortSliderProps>()
 
 const emits = defineEmits<EffortSliderEmits>()
@@ -78,6 +72,9 @@ let dragStartValue: string | number | null = null
 let lastUpdatedValue: string | number | null = null
 let stopMoveListener: (() => void) | null = null
 
+const PARTICLE_COUNT = 10
+const PARTICLE_DURATION = 2
+
 const trackRef = shallowRef<HTMLElement>()
 const thumbRef = shallowRef<HTMLElement>()
 const labelRef = shallowRef<HTMLElement>()
@@ -121,8 +118,16 @@ const percentage = computed(() => {
 
 const labelVisible = computed(() => dragging.value || focused.value)
 
-// The label stays centred on the thumb and is clamped against the thumb box instead of
-// switching its alignment per level, so a label at either end lines up with the thumb edge.
+function clamp(value: number, lower: number, upper: number) {
+  return Math.min(Math.max(value, lower), upper)
+}
+
+function particleSeed(index: number, salt: number) {
+  const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453
+
+  return value - Math.floor(value)
+}
+
 function updateLabelShift() {
   const label = labelRef.value
   const thumb = thumbRef.value
@@ -161,13 +166,35 @@ const tickList = computed(() => {
 })
 
 const fillColor = computed(() =>
-  getColorByThreshold(currentIndex.value, { 0: PRIMARY_COLOR, ...props.colors }),
+  getColorByThreshold(currentIndex.value, { 0: 'var(--color-primary)', ...props.colors }),
 )
 
 const fillStyle = computed(() => ({
   background: fillColor.value,
   clipPath: `inset(0 ${100 - percentage.value}% 0 0)`,
 }))
+
+const particleList = computed(() => {
+  if (!props.particles) {
+    return []
+  }
+
+  return Array.from({ length: PARTICLE_COUNT }, (_, index) => {
+    const duration = PARTICLE_DURATION + particleSeed(index, 5) * 2
+    const position = (index + 0.5 + (particleSeed(index, 1) - 0.5) * 0.9) / PARTICLE_COUNT
+
+    return {
+      id: index,
+      style: {
+        '--p-duration': `${duration.toFixed(2)}s`,
+        '--p-delay': `${(-(position * duration)).toFixed(2)}s`,
+        '--p-size': `${(1.5 + particleSeed(index, 2) * 3).toFixed(2)}px`,
+        '--p-y': `${(particleSeed(index, 3) * 50 - 25).toFixed(1)}%`,
+        '--p-opacity': (0.35 + particleSeed(index, 4) * 0.55).toFixed(2),
+      },
+    }
+  })
+})
 
 function setValue(index: number) {
   const option = optionList.value[index]
@@ -359,10 +386,18 @@ onBeforeUnmount(() => {
       @pointerdown.prevent="onTrackPointerdown"
     >
       <div
-        class="pxd-effort-slider--fill inset-0 pointer-events-none absolute rounded-full motion-safe:transition-[clip-path,background-color]"
+        class="pxd-effort-slider--fill inset-0 pointer-events-none absolute overflow-hidden rounded-full motion-safe:transition-[clip-path,background-color]"
         :class="{ 'motion-safe:transition-colors': dragging || focused }"
         :style="fillStyle"
-      />
+      >
+        <span
+          v-for="particle in particleList"
+          :key="particle.id"
+          aria-hidden="true"
+          class="pxd-effort-slider--particle inset-y-0 left-0 absolute w-full motion-reduce:animate-none!"
+          :style="particle.style"
+        />
+      </div>
 
       <span
         v-for="tick in tickList"
@@ -435,5 +470,33 @@ onBeforeUnmount(() => {
 
 .dark .pxd-effort-slider--thumb::before {
   box-shadow: 0 0 0 1px var(--color-background-200);
+}
+
+.pxd-effort-slider--particle {
+  animation: pxd-effort-slider-particle-flow var(--p-duration) linear infinite;
+  animation-delay: var(--p-delay);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(50% + var(--p-y));
+    left: 50%;
+    width: var(--p-size);
+    height: var(--p-size);
+    border-radius: 50%;
+    background-color: var(--color-gray-500);
+    transform: translate(-50%, -50%);
+    opacity: var(--p-opacity);
+  }
+}
+
+@keyframes pxd-effort-slider-particle-flow {
+  from {
+    transform: translateX(50%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 </style>
