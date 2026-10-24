@@ -1,5 +1,5 @@
 export interface BubbleGroupProps {
-  data?: any[]
+  data?: readonly any[]
   dataKey?: string
   itemSize?: number
   overScan?: number

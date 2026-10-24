@@ -4,7 +4,7 @@ interface FieldNames {
 }
 
 export interface ActiveGraphProps {
-  data?: Record<string, any>[]
+  data?: readonly Record<string, any>[]
   legend?: boolean
   colors?: Record<string, string>
   startDate?: string | Date

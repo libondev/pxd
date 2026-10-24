@@ -6,7 +6,7 @@ export interface ImagePreviewItem {
 export type ImagePreviewSource = string | ImagePreviewItem
 
 export interface ImagePreviewProps {
-  data?: ImagePreviewSource[]
+  data?: readonly ImagePreviewSource[]
   index?: number
   zIndex?: number
   closeOnPressEscape?: boolean

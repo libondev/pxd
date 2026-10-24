@@ -5,5 +5,5 @@ type Range<N extends number, Acc extends number[] = []> = Acc['length'] extends 
 export interface SpinnerDotsProps {
   variant?: `dots${Range<10>}`
   interval?: number
-  data?: string[]
+  data?: readonly string[]
 }

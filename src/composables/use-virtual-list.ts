@@ -27,7 +27,7 @@ export interface VirtualListOptions {
   enabled?: MaybeRefOrGetter<boolean>
   status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
-  items?: any[]
+  items?: readonly any[]
   itemSize?: number
   overScan?: number
   columnGap?: number

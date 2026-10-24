@@ -64,7 +64,10 @@ export function resolveTreeFieldNames(
   }
 }
 
-export function createTreeIndex(data: TreeOptions, fieldNames?: TreeFieldNames): TreeIndex {
+export function createTreeIndex(
+  data: readonly TreeOption[],
+  fieldNames?: TreeFieldNames,
+): TreeIndex {
   const fields = resolveTreeFieldNames(fieldNames)
   const list: TreeNodeMeta[] = []
   const byValue = new Map<ComponentValue, TreeNodeMeta>()
@@ -99,7 +102,7 @@ export function createTreeIndex(data: TreeOptions, fieldNames?: TreeFieldNames):
 }
 
 export function useTreeIndex(
-  data: MaybeRefOrGetter<TreeOptions>,
+  data: MaybeRefOrGetter<readonly TreeOption[]>,
   fieldNames: MaybeRefOrGetter<TreeFieldNames | undefined>,
 ): ComputedRef<TreeIndex> {
   return computed(() => createTreeIndex(toValue(data) ?? [], toValue(fieldNames)))
@@ -132,10 +135,10 @@ function graftNode(
 
 /** Children in `data` win over a cached request, and an untouched node keeps its identity. */
 export function graftLoadedChildren(
-  data: TreeOptions,
+  data: readonly TreeOption[],
   loaded: Map<ComponentValue, TreeOptions>,
   fieldNames?: TreeFieldNames,
-): TreeOptions {
+): readonly TreeOption[] {
   if (loaded.size === 0) {
     return data
   }
@@ -657,7 +660,7 @@ interface Removal {
 
 /** Rebuilds only the path to the node, so untouched subtrees keep their identity. */
 function removeNode(
-  list: TreeOptions,
+  list: readonly TreeOption[],
   fields: ResolvedTreeFieldNames,
   value: ComponentValue,
   parentValue?: ComponentValue,
@@ -702,7 +705,7 @@ interface Insertion {
 }
 
 function insertNode(
-  list: TreeOptions,
+  list: readonly TreeOption[],
   fields: ResolvedTreeFieldNames,
   target: TreeDropTarget,
   node: TreeOption,
@@ -760,7 +763,7 @@ export interface TreeMoveResult {
  * drops for free: it and its descendant are no longer in the tree to be found.
  */
 export function moveTreeNode(
-  data: TreeOptions,
+  data: readonly TreeOption[],
   fieldNames: TreeFieldNames | undefined,
   value: ComponentValue,
   target: TreeDropTarget,

@@ -4,7 +4,7 @@ export interface TreeOption {
   value?: ComponentValue
   label?: ComponentLabel
   disabled?: boolean
-  children?: TreeOption[]
+  children?: readonly TreeOption[]
   isLeaf?: boolean
   keywords?: string[]
   [key: string]: any
@@ -99,7 +99,7 @@ export interface TreeMoveDetail {
 }
 
 export interface TreeProps {
-  data?: TreeOptions
+  data?: readonly TreeOption[]
   modelValue?: TreeModelValue
   multiple?: boolean
   checkStrictly?: boolean
