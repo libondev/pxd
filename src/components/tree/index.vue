@@ -48,7 +48,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -489,7 +489,7 @@ function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
   const next = event?.shiftKey ? extend(row.key) : toggle(row.key)
   const checkedValues = toValues(next.value)
 
-  emits('update:modelValue', next.value)
+  emits('update:model-value', next.value)
   emits('change', {
     value: row.key,
     node: row.node,

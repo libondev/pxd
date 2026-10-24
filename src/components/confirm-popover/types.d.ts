@@ -20,5 +20,5 @@ export interface ConfirmPopoverProps {
 export interface ConfirmPopoverEmits {
   confirm: []
   cancel: []
-  'update:modelValue': [visible: boolean]
+  'update:model-value': [visible: boolean]
 }

@@ -135,7 +135,7 @@ describe('drawer', () => {
     closeButton?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[false]])
 
     wrapper.unmount()
   })

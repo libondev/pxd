@@ -15,7 +15,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -117,7 +117,7 @@ function selectDate(day: CalendarDay) {
   }
 
   emits('change', value)
-  emits('update:modelValue', value)
+  emits('update:model-value', value)
 }
 
 function selectToday() {

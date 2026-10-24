@@ -119,7 +119,7 @@ describe('split-button', () => {
     document.body.querySelector<HTMLElement>('[data-list-item]')?.click()
 
     expect(wrapper.emitted('change')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
+    expect(wrapper.emitted('update:model-value')).toHaveLength(1)
 
     wrapper.unmount()
   })

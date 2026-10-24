@@ -19,5 +19,5 @@ export interface ReactionsEmits {
   add: [emoji: string]
   remove: [emoji: string]
   change: [reactions: Reaction[]]
-  'update:modelValue': [reactions: Reaction[]]
+  'update:model-value': [reactions: Reaction[]]
 }

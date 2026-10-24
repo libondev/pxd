@@ -73,7 +73,7 @@ describe('checkbox-group', () => {
     wrapper.unmount()
   })
 
-  it('should emit update:modelValue and change when unchecking an option', async () => {
+  it('should emit update:model-value and change when unchecking an option', async () => {
     const wrapper = mount(CheckboxGroup, {
       props: {
         options,
@@ -83,13 +83,13 @@ describe('checkbox-group', () => {
 
     await wrapper.findAll('input')[0].setValue(false)
 
-    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['b']])
+    expect(wrapper.emitted('update:model-value')?.[0]).toEqual([['b']])
     expect(wrapper.emitted('change')?.[0]).toEqual([['b']])
 
     wrapper.unmount()
   })
 
-  it('should emit update:modelValue when checking an option', async () => {
+  it('should emit update:model-value when checking an option', async () => {
     const wrapper = mount(CheckboxGroup, {
       props: {
         options,
@@ -99,7 +99,7 @@ describe('checkbox-group', () => {
 
     await wrapper.findAll('input')[1].setValue(true)
 
-    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['a', 'b']])
+    expect(wrapper.emitted('update:model-value')?.[0]).toEqual([['a', 'b']])
 
     wrapper.unmount()
   })

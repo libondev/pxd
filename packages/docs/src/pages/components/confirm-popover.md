@@ -143,7 +143,7 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 | --- | --- | --- |
 | confirm | `() => void` | Emitted after `before-confirm` settles without returning `false`. |
 | cancel | `() => void` | Emitted when the cancel button is clicked. |
-| update:modelValue | `(visible: boolean) => void` | Emitted when the visibility changes. |
+| update:model-value | `(visible: boolean) => void` | Emitted when the visibility changes. |
 
 ## Slots
 

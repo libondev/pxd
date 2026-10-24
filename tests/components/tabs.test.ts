@@ -178,14 +178,14 @@ describe('tabs', () => {
     expect(html).toContain('role="tabpanel"')
   })
 
-  it('should emit update:modelValue and change exactly once per click', async () => {
+  it('should emit update:model-value and change exactly once per click', async () => {
     const { wrapper, active } = mountWithModel()
     const tabs = wrapper.findComponent(Tabs)
 
     await nextTick()
     await wrapper.findAll('[role="tab"]')[1]!.trigger('click')
 
-    expect(tabs.emitted('update:modelValue')).toEqual([['2']])
+    expect(tabs.emitted('update:model-value')).toEqual([['2']])
     expect(tabs.emitted('change')).toEqual([['2']])
     expect(active.value).toBe('2')
 
@@ -200,7 +200,7 @@ describe('tabs', () => {
     await wrapper.findAll('[role="tab"]')[0]!.trigger('click')
 
     expect(tabs.emitted('change')).toBeUndefined()
-    expect(tabs.emitted('update:modelValue')).toBeUndefined()
+    expect(tabs.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -236,7 +236,7 @@ describe('tabs', () => {
     await nextTick()
     await wrapper.findAll('[role="tab"]')[1]!.trigger('click')
 
-    expect(tabs.emitted('update:modelValue')).toEqual([[2]])
+    expect(tabs.emitted('update:model-value')).toEqual([[2]])
     expect(tabs.emitted('change')).toEqual([[2]])
 
     wrapper.unmount()

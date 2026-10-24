@@ -8,7 +8,7 @@ describe('useListSelection', () => {
 
     expect(apply(2)).toBe(true)
     expect(selected.value).toBe(2)
-    expect(emits).toHaveBeenCalledWith('update:modelValue', 2)
+    expect(emits).toHaveBeenCalledWith('update:model-value', 2)
     expect(emits).toHaveBeenCalledWith('change', 2)
   })
 

@@ -18,7 +18,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -116,10 +116,10 @@ const {
 
     if (v) {
       emits('show')
-      emits('update:modelValue', true)
+      emits('update:model-value', true)
     } else {
       emits('hide')
-      emits('update:modelValue', false)
+      emits('update:model-value', false)
     }
   },
 })

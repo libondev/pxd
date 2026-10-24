@@ -48,7 +48,7 @@ describe('tree', () => {
 
     expect(detail?.value).toBe('src')
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.findAll('[data-tree-item]').length).toBe(5)
 
     wrapper.unmount()
@@ -59,7 +59,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key=src]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('src')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('src')
     expect(wrapper.emitted('update:expandedKeys')).toBeUndefined()
     expect(wrapper.findAll('[data-tree-item]').length).toBe(3)
 
@@ -71,7 +71,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key=src]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       'src',
       'components',
       'tree',
@@ -88,13 +88,13 @@ describe('tree', () => {
 
     await wrapper.find('[data-key=src]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
 
     // The rows below it are what a click selects.
     await wrapper.find('[data-key="readme"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('readme')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('readme')
 
     wrapper.unmount()
   })
@@ -120,7 +120,7 @@ describe('tree', () => {
     await wrapper.find('[data-key="pxd"]').trigger('click')
 
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['file'])
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -155,18 +155,18 @@ describe('tree', () => {
     await wrapper.find('[data-key=src]').trigger('click')
     await wrapper.find('[data-key="readme"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['src'])
 
     // A shift-click is a range ask rather than a pick, so it still reaches for one.
     await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['readme'])
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual(['readme'])
 
     // The checkbox still checks it, cascade and all.
     await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual([
       'src',
       'components',
       'tree',
@@ -182,7 +182,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="list"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('list')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('list')
     expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({
       value: 'list',
       node: { value: 'list', label: 'list' },
@@ -201,7 +201,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="components"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['components', 'tree', 'list'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['components', 'tree', 'list'])
 
     wrapper.unmount()
   })
@@ -213,7 +213,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['src'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['src'])
 
     // Controlled: the parent feeds the model back before any row changes.
     await wrapper.setProps({ modelValue: ['src'] })
@@ -256,7 +256,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="list"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['tree'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['tree'])
 
     wrapper.unmount()
   })
@@ -268,7 +268,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="docs"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -301,7 +301,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="docs"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -325,7 +325,7 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="root"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['root', 'a'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['root', 'a'])
 
     wrapper.unmount()
   })
@@ -354,16 +354,16 @@ describe('tree', () => {
     // What was saved already still opens, it just cannot be selected.
     await wrapper.find('[data-key="src"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('[data-key="src"]').attributes('aria-expanded')).toBe('true')
 
     await wrapper.find('[data-key="index.vue"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     await wrapper.find('[data-key="utils.ts"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('utils.ts')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('utils.ts')
 
     wrapper.unmount()
   })
@@ -423,17 +423,17 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="a.js"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['a.js'])
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual(['a.js'])
     expect(wrapper.emitted('change')?.at(-1)?.[0]).toMatchObject({
       checkedValues: ['a.js'],
       halfCheckedValues: ['src'],
     })
 
-    const emitted = wrapper.emitted('update:modelValue')?.length ?? 0
+    const emitted = wrapper.emitted('update:model-value')?.length ?? 0
 
     await wrapper.find('[data-key="src"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.length).toBe(emitted)
+    expect(wrapper.emitted('update:model-value')?.length).toBe(emitted)
     expect(wrapper.find('[data-key="src"] .pxd-tree--checkbox').attributes('data-selectable')).toBe(
       'false',
     )
@@ -461,11 +461,11 @@ describe('tree', () => {
 
     await wrapper.find('[data-key="b.js"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     await wrapper.find('[data-key="a.js"] .pxd-tree--checkbox').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['b.js'])
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual(['b.js'])
 
     wrapper.unmount()
   })
@@ -487,7 +487,7 @@ describe('tree', () => {
     await wrapper.find('[data-key="a.js"]').trigger('click')
     await wrapper.find('[data-key="b.js"]').trigger('click', { shiftKey: true })
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(['a.js', 'b.js'])
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual(['a.js', 'b.js'])
 
     wrapper.unmount()
   })
@@ -505,7 +505,7 @@ describe('tree', () => {
     await down.find('[data-key="readme"]').trigger('click', { shiftKey: true })
 
     // `tree` and `list` sit in a collapsed node between the two ends, and `docs` is disabled.
-    expect(down.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(range)
+    expect(down.emitted('update:model-value')?.at(-1)?.[0]).toEqual(range)
 
     down.unmount()
 
@@ -514,14 +514,14 @@ describe('tree', () => {
     await up.find('[data-key="readme"]').trigger('click')
     await up.find('[data-key="src"]').trigger('click', { shiftKey: true })
 
-    expect(up.emitted('update:modelValue')?.at(-1)?.[0]).toEqual(range)
+    expect(up.emitted('update:model-value')?.at(-1)?.[0]).toEqual(range)
 
     // A disabled row cannot be an end of the range either.
-    const emitted = up.emitted('update:modelValue')?.length ?? 0
+    const emitted = up.emitted('update:model-value')?.length ?? 0
 
     await up.find('[data-key="docs"]').trigger('click', { shiftKey: true })
 
-    expect(up.emitted('update:modelValue')?.length).toBe(emitted)
+    expect(up.emitted('update:model-value')?.length).toBe(emitted)
 
     up.unmount()
   })
@@ -531,7 +531,7 @@ describe('tree', () => {
       props: { data, multiple: true, defaultExpandedKeys: ['src'] },
     })
 
-    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+    const last = () => wrapper.emitted('update:model-value')?.at(-1)?.[0] as string[]
     // The model has to be fed back for a range to have anything to move: what is dropped is what
     // the previous extension left in it.
     const click = async (key: string, shift = false) => {
@@ -562,7 +562,7 @@ describe('tree', () => {
       props: { data, multiple: true, defaultExpandedKeys: ['src'] },
     })
 
-    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+    const last = () => wrapper.emitted('update:model-value')?.at(-1)?.[0] as string[]
 
     await wrapper.find('[data-key="src"]').trigger('click')
     await wrapper.setProps({ modelValue: last() })
@@ -590,14 +590,14 @@ describe('tree', () => {
       },
     })
 
-    const last = () => wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string[]
+    const last = () => wrapper.emitted('update:model-value')?.at(-1)?.[0] as string[]
 
     await wrapper.find('[data-key="components"]').trigger('click')
     await wrapper.setProps({ modelValue: last() })
     await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
 
     // `src` sits above the range, and the cascade would have pulled it in.
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toEqual([
       'components',
       'tree',
       'list',
@@ -614,7 +614,7 @@ describe('tree', () => {
     await wrapper.find('[data-key="src"]').trigger('click')
     await wrapper.find('[data-key="readme"]').trigger('click', { shiftKey: true })
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('readme')
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toBe('readme')
 
     wrapper.unmount()
   })
@@ -884,7 +884,7 @@ describe('tree', () => {
 
     await wrapper.find('.pxd-tree').trigger('keydown', { key: 'Enter' })
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('src')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('src')
 
     wrapper.unmount()
   })
@@ -1977,14 +1977,14 @@ describe('tree', () => {
     // The browser fires a click of its own after the gesture, on the row the press started from.
     await wrapper.find('[data-key="readme"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     // Without a drag in front of it, the same row still selects.
     wrapper.find('[data-key="readme"]').element.dispatchEvent(pointer('pointerdown', 0, 80))
     window.dispatchEvent(pointer('pointerup', 0, 80))
     await wrapper.find('[data-key="readme"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('readme')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('readme')
 
     wrapper.unmount()
   })

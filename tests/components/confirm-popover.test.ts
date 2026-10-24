@@ -116,7 +116,7 @@ describe('confirm-popover', () => {
 
     expect(beforeConfirm).toHaveBeenCalledTimes(1)
     expect(wrapper.emitted('confirm')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([false])
     expect(isVisible()).toBe(false)
 
     wrapper.unmount()
@@ -134,7 +134,7 @@ describe('confirm-popover', () => {
     await flush()
 
     expect(wrapper.emitted('confirm')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([false])
     expect(isVisible()).toBe(false)
 
     wrapper.unmount()
@@ -149,7 +149,7 @@ describe('confirm-popover', () => {
     await flush()
 
     expect(wrapper.emitted('confirm')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([true])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([true])
     expect(isVisible()).toBe(true)
 
     wrapper.unmount()
@@ -164,7 +164,7 @@ describe('confirm-popover', () => {
     await flush()
 
     expect(wrapper.emitted('confirm')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([true])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([true])
     expect(isVisible()).toBe(true)
 
     wrapper.unmount()
@@ -207,7 +207,7 @@ describe('confirm-popover', () => {
 
     expect(beforeConfirm).not.toHaveBeenCalled()
     expect(wrapper.emitted('cancel')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([false])
 
     wrapper.unmount()
   })
@@ -264,7 +264,7 @@ describe('confirm-popover', () => {
 
     await openPopover(wrapper)
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(getContentElement()).toBeNull()
 
     wrapper.unmount()

@@ -615,7 +615,7 @@ Fields are read through `field-names`: `value`, `label`, `children`, `disabled` 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| update:modelValue | `(value: TreeModelValue) => void` | Emitted when the selection changes. |
+| update:model-value | `(value: TreeModelValue) => void` | Emitted when the selection changes. |
 | update:data | `(data: TreeOptions) => void` | Emitted when a drag is dropped, carrying the whole next tree. |
 | move | `(detail: TreeMoveDetail) => void` | Emitted when a drag is dropped, carrying where the node came from and landed. |
 | change | `(detail: TreeChangeDetail) => void` | Emitted when a node is checked or unchecked. |

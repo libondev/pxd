@@ -26,7 +26,7 @@ describe('switch-item', () => {
     expect(items[1]!.attributes('aria-selected')).toBe('false')
 
     await items[1]!.find('input').setValue(true)
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2']])
 
     wrapper.unmount()
   })
@@ -92,7 +92,7 @@ describe('switch-item', () => {
     const items = wrapper.findAllComponents(SwitchItem)
     await items[1]!.find('.pxd-switch-item--label').trigger('focusin')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2']])
 
     wrapper.unmount()
   })

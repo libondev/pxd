@@ -118,7 +118,7 @@ describe('list', () => {
 
     await items[0].trigger('click')
     expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({ label: 'Item 1', value: '1' })
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('1')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('1')
 
     wrapper.unmount()
   })
@@ -136,11 +136,11 @@ describe('list', () => {
     })
 
     await wrapper.findAll('[data-list-item]')[1].trigger('click')
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1', '2'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['1', '2'])
 
     await wrapper.setProps({ modelValue: ['1', '2'] })
     await wrapper.findAll('[data-list-item]')[0].trigger('click')
-    expect(wrapper.emitted('update:modelValue')?.[1]?.[0]).toEqual(['2'])
+    expect(wrapper.emitted('update:model-value')?.[1]?.[0]).toEqual(['2'])
 
     wrapper.unmount()
   })
@@ -364,7 +364,7 @@ describe('list', () => {
 
     await wrapper.vm.$nextTick()
     expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({ label: 'Item 2', value: '2' })
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe('2')
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe('2')
 
     wrapper.unmount()
   })
@@ -473,7 +473,7 @@ describe('list', () => {
     await item.trigger('click')
 
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -758,7 +758,7 @@ describe('list', () => {
 
     await wrapper.findAll('[data-list-item]')[1].trigger('click')
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

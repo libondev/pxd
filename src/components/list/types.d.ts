@@ -47,5 +47,5 @@ export interface ListProps {
 
 export interface ListEmits {
   change: [ListOptionSelected]
-  'update:modelValue': [ListModelValue]
+  'update:model-value': [ListModelValue]
 }

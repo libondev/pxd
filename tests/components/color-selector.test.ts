@@ -33,13 +33,13 @@ describe('color-selector', () => {
     wrapper.unmount()
   })
 
-  it('should emit update:modelValue on select', async () => {
+  it('should emit update:model-value on select', async () => {
     const wrapper = mount(ColorSelector)
 
     const radio = wrapper.find('input[type="radio"]')
     await radio.setValue()
 
-    expect(wrapper.emitted()).toHaveProperty('update:modelValue')
+    expect(wrapper.emitted()).toHaveProperty('update:model-value')
 
     wrapper.unmount()
   })

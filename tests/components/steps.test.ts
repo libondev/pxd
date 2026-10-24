@@ -74,12 +74,12 @@ describe('steps', () => {
     wrapper.unmount()
   })
 
-  it('emits update:modelValue and change on step click', async () => {
+  it('emits update:model-value and change on step click', async () => {
     const wrapper = await mountSteps({ clickable: true, modelValue: 0 })
 
     await wrapper.findAll('.pxd-steps-item')[2]!.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([2])
     expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
 
     wrapper.unmount()
@@ -90,7 +90,7 @@ describe('steps', () => {
 
     await wrapper.findAll('.pxd-steps-item')[1]!.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -101,7 +101,7 @@ describe('steps', () => {
 
     await wrapper.findAll('.pxd-steps-item')[2]!.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -116,7 +116,7 @@ describe('steps', () => {
 
     await wrapper.findAll('.pxd-steps-item')[1]!.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -209,7 +209,7 @@ describe('steps', () => {
 
     await wrapper.findAll('.custom-step')[2]!.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([2])
     expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
 
     wrapper.unmount()

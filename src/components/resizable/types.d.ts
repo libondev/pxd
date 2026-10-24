@@ -19,5 +19,5 @@ export interface ResizableEmits {
   change: [number[]]
   reset: [number[]]
   'update:collapsed': [boolean]
-  'update:modelValue': [number[]]
+  'update:model-value': [number[]]
 }

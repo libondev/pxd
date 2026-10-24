@@ -62,7 +62,7 @@ describe('modal', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[false]])
 
     wrapper.unmount()
   })
@@ -83,7 +83,7 @@ describe('modal', () => {
     overlay?.dispatchEvent(new Event('click'))
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[false]])
 
     wrapper.unmount()
   })
@@ -162,7 +162,7 @@ describe('modal', () => {
     closeButton?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[false]])
 
     wrapper.unmount()
   })

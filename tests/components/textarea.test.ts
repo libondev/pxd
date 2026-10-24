@@ -21,8 +21,8 @@ describe('textarea', () => {
 
     expect(textarea.element.value).toBe('test2')
 
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['test2'])
+    expect(wrapper.emitted('update:model-value')).toBeTruthy()
+    expect(wrapper.emitted('update:model-value')![0]).toEqual(['test2'])
 
     wrapper.unmount()
   })
@@ -115,7 +115,7 @@ describe('textarea', () => {
     await textarea.trigger('compositionend')
 
     expect(textarea.element.value).toBe('test')
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -133,7 +133,7 @@ describe('textarea', () => {
     await textarea.trigger('compositionend')
 
     expect(textarea.element.value).toBe('tes')
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['tes'])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual(['tes'])
 
     wrapper.unmount()
   })

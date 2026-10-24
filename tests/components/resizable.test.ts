@@ -250,7 +250,7 @@ describe('resizable', () => {
     wrapper.unmount()
   })
 
-  it('emits update:modelValue on drag and change once on pointerup', async () => {
+  it('emits update:model-value on drag and change once on pointerup', async () => {
     const wrapper = mountResizable()
     await flush()
 
@@ -264,7 +264,7 @@ describe('resizable', () => {
     handle.dispatchEvent(createPointerEvent('pointerup', { x: 650 }))
     await flush()
 
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[65, 35]])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[65, 35]])
     expect(wrapper.emitted('change')).toEqual([[[65, 35]]])
 
     wrapper.unmount()
@@ -277,7 +277,7 @@ describe('resizable', () => {
     drag(wrapper.find('.pxd-resizable-handle').element, 500, 500)
     await flush()
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -579,7 +579,7 @@ describe('resizable', () => {
     await flush()
 
     expect(readSizes(wrapper)).toEqual([50, 50])
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -829,7 +829,7 @@ describe('resizable', () => {
 
     expect(exposed.value.getPanelSizes()).toEqual([470, 530])
     expect(wrapper.emitted('change')).toEqual([[[470, 530]]])
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[470, 530]])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[470, 530]])
 
     wrapper.unmount()
   })
@@ -1005,7 +1005,7 @@ describe('resizable', () => {
     await flush()
 
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[0, 1000]])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[0, 1000]])
 
     handle.dispatchEvent(createPointerEvent('pointerup', { x: 320 }))
     await flush()
@@ -1218,7 +1218,7 @@ describe('resizable', () => {
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([800, 200])
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[800, 200]])
+    expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[800, 200]])
     expect(wrapper.emitted('change')).toEqual([[[800, 200]]])
 
     wrapper.unmount()

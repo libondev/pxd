@@ -154,4 +154,4 @@ const time = ref('18:30:00')
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: ComponentDateTimeValue) => void` | Emitted when a new time is committed by the input, a preset, the `Now` button, or an outside click. |
-| update:modelValue | `(value: ComponentDateTimeValue) => void` | Emitted when the committed time is written to the model. |
+| update:model-value | `(value: ComponentDateTimeValue) => void` | Emitted when the committed time is written to the model. |

@@ -101,7 +101,7 @@ const checked = ref(false)
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number \| boolean) => void` | Emitted when the checkbox is toggled by a click. |
-| update:modelValue | `(value: string \| number \| boolean) => void` | Emitted right after `change` with the same value. |
+| update:model-value | `(value: string \| number \| boolean) => void` | Emitted right after `change` with the same value. |
 
 ## CheckboxGroup Props
 
@@ -116,4 +116,4 @@ const checked = ref(false)
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: (string \| number \| boolean)[]) => void` | Emitted when a checkbox inside the group is checked or unchecked. |
-| update:modelValue | `(value: (string \| number \| boolean)[]) => void` | Emitted right after `change` with the new list of checked values. |
+| update:model-value | `(value: (string \| number \| boolean)[]) => void` | Emitted right after `change` with the new list of checked values. |

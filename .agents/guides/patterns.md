@@ -33,7 +33,7 @@ Reusable code patterns and examples discovered during development.
 ### List selection session
 
 - **Use case**: A popover or menu that updates `v-model` immediately but should only emit `change` when the interaction commits (menu close in multiple mode).
-- **Example**: `List` owns toggle via `resolveNextListValue` and emits `update:modelValue` with the next value; `useListSelection.apply(next)` stores that value for the open session (no second toggle) and returns whether the overlay should close; `commit()` emits `change` only if multiple selection actually changed. Action menus leave `List` uncontrolled (`modelValue` unbound) so checkmarks never show.
+- **Example**: `List` owns toggle via `resolveNextListValue` and emits `update:model-value` with the next value; `useListSelection.apply(next)` stores that value for the open session (no second toggle) and returns whether the overlay should close; `commit()` emits `change` only if multiple selection actually changed. Action menus leave `List` uncontrolled (`modelValue` unbound) so checkmarks never show.
 
 ### Shared pointer-gesture composable with an async start gate
 

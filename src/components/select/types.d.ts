@@ -21,5 +21,5 @@ export interface SelectProps {
 
 export interface SelectEmits {
   change: [ListModelValue]
-  'update:modelValue': [ListModelValue]
+  'update:model-value': [ListModelValue]
 }

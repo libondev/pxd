@@ -98,7 +98,7 @@ describe('approval-card', () => {
 
     expect(wrapper.emitted().decide).toEqual([[{ status: 'approved', remember: false }]])
     expect(wrapper.emitted().approve).toEqual([[{ status: 'approved', remember: false }]])
-    expect(wrapper.emitted()['update:modelValue']).toEqual([['approved']])
+    expect(wrapper.emitted()['update:model-value']).toEqual([['approved']])
     expect(wrapper.find('.pxd-approval-card--actions').exists()).toBe(false)
 
     wrapper.unmount()
@@ -267,7 +267,7 @@ describe('approval-card', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.attributes('data-status')).toBe('pending')
-    expect(wrapper.emitted()['update:modelValue']).toEqual([['rejected'], ['pending']])
+    expect(wrapper.emitted()['update:model-value']).toEqual([['rejected'], ['pending']])
 
     wrapper.unmount()
   })

@@ -289,7 +289,7 @@ as expected.
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
-| update:modelValue | `(value: ListModelValue) => void` | Emitted when the selection changes. |
+| update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
 
 `change` carries the selected option without `as` and `keywords`:
 

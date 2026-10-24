@@ -70,7 +70,7 @@ function openTour() {
 
 | Name              | Type                                      | Description                                                            |
 | ----------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
-| update:modelValue | `(value: boolean) => void`                | Emitted when the visibility changes.                                   |
+| update:model-value | `(value: boolean) => void`                | Emitted when the visibility changes.                                   |
 | update:current    | `(value: number) => void`                 | Emitted when the active step index changes.                            |
 | change            | `(index: number, step: TourStep) => void` | Emitted when the tour moves to another step.                           |
 | finish            | `() => void`                              | Emitted when the last step is completed or the tour is closed from it. |

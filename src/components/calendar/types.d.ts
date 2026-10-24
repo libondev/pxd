@@ -33,5 +33,5 @@ export interface CalendarProps {
 export interface CalendarEmits {
   'panel-change': [info: CalendarPanelInfo]
   change: [ComponentDateTimeValue]
-  'update:modelValue': [ComponentDateTimeValue]
+  'update:model-value': [ComponentDateTimeValue]
 }

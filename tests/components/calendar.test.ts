@@ -49,7 +49,7 @@ describe('calendar', () => {
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
     expect(wrapper.emitted('change')).toEqual([[august20]])
-    expect(wrapper.emitted('update:modelValue')).toEqual([[august20]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[august20]])
 
     wrapper.unmount()
   })
@@ -66,7 +66,7 @@ describe('calendar', () => {
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
     expect(wrapper.emitted('change')).toEqual([['2024-08-20']])
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2024-08-20']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2024-08-20']])
 
     wrapper.unmount()
   })
@@ -87,7 +87,7 @@ describe('calendar', () => {
     await disabledCell.trigger('click')
 
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -119,7 +119,7 @@ describe('calendar', () => {
 
     await findTodayButton(wrapper).trigger('click')
 
-    const emittedValue = wrapper.emitted('update:modelValue')?.[0]?.[0]
+    const emittedValue = wrapper.emitted('update:model-value')?.[0]?.[0]
     const panelChanges = wrapper.emitted('panel-change')
     const latestPanel = panelChanges?.[panelChanges.length - 1]?.[0] as {
       year: number

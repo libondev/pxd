@@ -26,7 +26,7 @@ describe('choicebox-item', () => {
     expect(items[1]!.attributes('aria-selected')).toBe('false')
 
     await items[1]!.find('input').setValue(true)
-    expect(wrapper.emitted('update:modelValue')).toEqual([['b']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['b']])
 
     wrapper.unmount()
   })
@@ -45,10 +45,10 @@ describe('choicebox-item', () => {
     expect(items[0]!.attributes('aria-selected')).toBe('true')
 
     await items[0]!.find('input').setValue(false)
-    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([[]])
+    expect(wrapper.emitted('update:model-value')?.[0]).toEqual([[]])
 
     await items[1]!.find('input').setValue(true)
-    expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([['a', 'b']])
+    expect(wrapper.emitted('update:model-value')?.[1]).toEqual([['a', 'b']])
 
     wrapper.unmount()
   })

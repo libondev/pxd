@@ -263,18 +263,18 @@ describe('menu', () => {
     items[0]?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual(['1'])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual(['1'])
     expect(items[0]?.getAttribute('data-checked')).toBe('true')
 
     items[1]?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')?.[1]?.[0]).toEqual(['1', '2'])
+    expect(wrapper.emitted('update:model-value')?.[1]?.[0]).toEqual(['1', '2'])
 
     items[0]?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')?.[2]?.[0]).toEqual(['2'])
+    expect(wrapper.emitted('update:model-value')?.[2]?.[0]).toEqual(['2'])
     expect(wrapper.emitted('change')).toBeUndefined()
     expect(items[0]?.getAttribute('data-checked')).toBe('false')
     expect(items[1]?.getAttribute('data-checked')).toBe('true')

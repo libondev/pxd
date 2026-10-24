@@ -158,7 +158,7 @@ describe('todo-list', () => {
       status: 'in_progress',
       prevStatus: 'pending',
     })
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       OPTIONS[0],
       { content: 'Delete legacy components', status: 'in_progress' },
       OPTIONS[2],
@@ -237,7 +237,7 @@ describe('todo-list', () => {
     await nextTick()
 
     expect(wrapper.emitted('change')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -354,7 +354,7 @@ describe('todo-list', () => {
     ;(wrapper.vm as any).complete(0)
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

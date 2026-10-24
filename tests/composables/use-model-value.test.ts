@@ -10,14 +10,14 @@ describe('useModelValue', () => {
     expect(modelValue.value).toBe('initial')
   })
 
-  it('should emit update:modelValue on set', () => {
+  it('should emit update:model-value on set', () => {
     const props = { modelValue: 'initial' }
     const emits = vi.fn()
     const modelValue = useModelValue(props, emits)
 
     modelValue.value = 'changed'
 
-    expect(emits).toHaveBeenCalledWith('update:modelValue', 'changed')
+    expect(emits).toHaveBeenCalledWith('update:model-value', 'changed')
   })
 
   it('should emit change by default', () => {
@@ -37,7 +37,7 @@ describe('useModelValue', () => {
 
     modelValue.value = 'changed'
 
-    expect(emits).toHaveBeenCalledWith('update:modelValue', 'changed')
+    expect(emits).toHaveBeenCalledWith('update:model-value', 'changed')
     expect(emits).not.toHaveBeenCalledWith('change', 'changed')
   })
 })

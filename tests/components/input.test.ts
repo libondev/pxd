@@ -26,7 +26,7 @@ describe('input', () => {
     wrapper.unmount()
   })
 
-  it('should emit update:modelValue', async () => {
+  it('should emit update:model-value', async () => {
     const wrapper = mount(Input, {
       props: {
         modelValue: 'test',
@@ -36,7 +36,7 @@ describe('input', () => {
     await wrapper.find('input').setValue('test2')
 
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+    expect(wrapper.emitted('update:model-value')).toBeTruthy()
   })
 
   it('should type is password', async () => {
@@ -120,7 +120,7 @@ describe('input', () => {
     await input.trigger('compositionend')
 
     expect(input.element.value).toBe('test')
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['test'])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual(['test'])
 
     wrapper.unmount()
   })
@@ -139,7 +139,7 @@ describe('input', () => {
     await input.trigger('compositionend')
 
     expect(input.element.value).toBe('tes')
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['tes'])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual(['tes'])
 
     wrapper.unmount()
   })
@@ -156,7 +156,7 @@ describe('input', () => {
     wrapper.find('input').element.dispatchEvent(event)
 
     expect(event.defaultPrevented).toBe(true)
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([''])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual([''])
 
     wrapper.unmount()
   })
@@ -186,7 +186,7 @@ describe('input', () => {
     wrapper.find('input').element.dispatchEvent(event)
 
     expect(event.defaultPrevented).toBe(false)
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

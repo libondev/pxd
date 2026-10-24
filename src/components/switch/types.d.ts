@@ -10,5 +10,5 @@ export interface SwitchProps {
 
 export interface SwitchEmits {
   change: [NonNullable<SwitchProps['modelValue']>]
-  'update:modelValue': [NonNullable<SwitchProps['modelValue']>]
+  'update:model-value': [NonNullable<SwitchProps['modelValue']>]
 }

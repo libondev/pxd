@@ -13,7 +13,7 @@ interface Props {
 
 interface Emits {
   change?: [value: boolean]
-  'update:modelValue': [value: boolean]
+  'update:model-value': [value: boolean]
 }
 
 defineOptions({

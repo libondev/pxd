@@ -50,14 +50,14 @@ describe('rating', () => {
     wrapper.unmount()
   })
 
-  it('should emit update:modelValue on pointer tap', async () => {
+  it('should emit update:model-value on pointer tap', async () => {
     const wrapper = mountRating()
 
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
 
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([3])
+    expect(wrapper.emitted('update:model-value')).toBeTruthy()
+    expect(wrapper.emitted('update:model-value')![0]).toEqual([3])
     wrapper.unmount()
   })
 
@@ -68,7 +68,7 @@ describe('rating', () => {
     document.dispatchEvent(pointerEvent('pointermove', 80, 1, 'touch'))
     document.dispatchEvent(pointerEvent('pointerup', 80, 1, 'touch'))
 
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([4])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual([4])
     wrapper.unmount()
   })
 
@@ -78,7 +78,7 @@ describe('rating', () => {
     await wrapper.trigger('pointerdown', { clientX: 10, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 10))
 
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([0.5])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual([0.5])
     wrapper.unmount()
   })
 
@@ -88,7 +88,7 @@ describe('rating', () => {
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
 
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([0])
+    expect(wrapper.emitted('update:model-value')![0]).toEqual([0])
     wrapper.unmount()
   })
 
@@ -99,7 +99,7 @@ describe('rating', () => {
     document.dispatchEvent(pointerEvent('pointermove', 80))
     document.dispatchEvent(pointerEvent('pointercancel', 80))
 
-    expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    expect(wrapper.emitted('update:model-value')).toBeFalsy()
     wrapper.unmount()
   })
 
@@ -109,7 +109,7 @@ describe('rating', () => {
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
 
-    expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    expect(wrapper.emitted('update:model-value')).toBeFalsy()
     wrapper.unmount()
   })
 
@@ -119,7 +119,7 @@ describe('rating', () => {
     await wrapper.trigger('pointerdown', { clientX: 50, pointerId: 1 })
     document.dispatchEvent(pointerEvent('pointerup', 50))
 
-    expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    expect(wrapper.emitted('update:model-value')).toBeFalsy()
     wrapper.unmount()
   })
 

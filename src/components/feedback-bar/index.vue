@@ -22,11 +22,11 @@ function handleClose() {
 }
 
 function handleThumbUp() {
-  emits('thumbUp')
+  emits('thumb-up')
 }
 
 function handleThumbDown() {
-  emits('thumbDown')
+  emits('thumb-down')
 }
 </script>
 

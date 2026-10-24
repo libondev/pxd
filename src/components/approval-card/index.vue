@@ -25,6 +25,10 @@ import PSnippet from '../snippet/index.vue'
 defineOptions({
   name: 'PApprovalCard',
   inheritAttrs: false,
+  model: {
+    prop: 'modelValue',
+    event: 'update:model-value',
+  },
 })
 
 const props = withDefaults(defineProps<ApprovalCardProps>(), {
@@ -115,7 +119,7 @@ function commit(next: ApprovalDecision, extra: Omit<ApprovalResult, 'status'> = 
   const result: ApprovalResult = { ...extra, status: next }
 
   internalStatus.value = next
-  emits('update:modelValue', next)
+  emits('update:model-value', next)
   emits('decide', result)
 
   if (next === 'approved') {
@@ -144,7 +148,7 @@ function reset() {
   clearTimer()
   remembered.value = false
   internalStatus.value = 'pending'
-  emits('update:modelValue', 'pending')
+  emits('update:model-value', 'pending')
   startTimer()
 }
 

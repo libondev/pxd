@@ -14,5 +14,5 @@ export interface SplitButtonProps {
 
 export interface SplitButtonEmits {
   change: [ListModelValue]
-  'update:modelValue': [ListModelValue]
+  'update:model-value': [ListModelValue]
 }

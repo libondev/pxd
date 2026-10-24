@@ -247,7 +247,7 @@ async function beforeClose() {
 | open | `(side: 'prefix' \| 'suffix') => void` | Emitted when the cell opens. |
 | close | `() => void` | Emitted when the cell closes. |
 | over-swipe | `(state: SwipeCellOverSwipeState) => void` | Emitted after release when drag distance reaches the over-swipe threshold. |
-| update:modelValue | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
+| update:model-value | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
 
 ## Slots
 

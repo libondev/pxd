@@ -182,7 +182,7 @@ const options = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number) => void` | Emitted once when a tab becomes active through a click or a keyboard command. |
-| update:modelValue | `(value: string \| number) => void` | Emitted together with `change` in controlled mode. |
+| update:model-value | `(value: string \| number) => void` | Emitted together with `change` in controlled mode. |
 
 ## Slots
 

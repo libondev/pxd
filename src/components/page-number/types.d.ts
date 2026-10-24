@@ -14,5 +14,5 @@ export interface PageNumberProps {
 
 export interface PageNumberEmits {
   'update:pageSize': [page: number]
-  'update:modelValue': [page: number]
+  'update:model-value': [page: number]
 }

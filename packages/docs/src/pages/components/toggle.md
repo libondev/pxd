@@ -194,4 +194,4 @@ const customValue = ref(false)
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: boolean \| number \| string) => void` | Emitted when the switch is toggled and the `before-change` guard allows it. |
-| update:modelValue | `(value: boolean \| number \| string) => void` | Emitted when the active or inactive value is written to the model. |
+| update:model-value | `(value: boolean \| number \| string) => void` | Emitted when the active or inactive value is written to the model. |

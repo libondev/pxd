@@ -545,10 +545,10 @@ function handleClose() {
 | --- | --- | --- |
 | show | `() => void` | Emitted when the drawer becomes visible. |
 | hide | `() => void` | Emitted when the drawer stops being visible. |
-| change | `(visible: boolean) => void` | Emitted together with `update:modelValue` when the open state of the drawer changes. |
+| change | `(visible: boolean) => void` | Emitted together with `update:model-value` when the open state of the drawer changes. |
 | outside-click | `(ev: PointerEvent) => void` | Emitted when the overlay behind the drawer is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted after every change of the drawer's open state. |
-| update:modelValue | `(visible: boolean) => void` | Emitted when the open state of the drawer changes. |
+| update:model-value | `(visible: boolean) => void` | Emitted when the open state of the drawer changes. |
 
 ## Slots
 

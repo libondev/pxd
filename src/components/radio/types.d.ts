@@ -9,5 +9,5 @@ export interface RadioProps {
 
 export interface RadioEmits {
   change: [NonNullable<RadioProps['modelValue']>]
-  'update:modelValue': [NonNullable<RadioProps['modelValue']>]
+  'update:model-value': [NonNullable<RadioProps['modelValue']>]
 }

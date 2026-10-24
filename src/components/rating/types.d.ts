@@ -14,5 +14,5 @@ export interface RatingProps {
 
 export interface RatingEmits {
   change: [NonNullable<RatingProps['modelValue']>]
-  'update:modelValue': [NonNullable<RatingProps['modelValue']>]
+  'update:model-value': [NonNullable<RatingProps['modelValue']>]
 }

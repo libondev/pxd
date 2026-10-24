@@ -259,7 +259,7 @@ const toggleButtonOptions = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the button is clicked. |
-| update:modelValue | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the button writes its new checked state to the model. |
+| update:model-value | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the button writes its new checked state to the model. |
 
 ## ToggleButtonGroup Props
 
@@ -278,7 +278,7 @@ const toggleButtonOptions = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when a button inside the group is clicked. |
-| update:modelValue | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the group writes the new selection to the model. |
+| update:model-value | `(value: string \| number \| boolean \| (string \| number \| boolean)[]) => void` | Emitted when the group writes the new selection to the model. |
 
 ## Slots
 

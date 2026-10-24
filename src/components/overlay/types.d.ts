@@ -10,5 +10,5 @@ export interface OverlayProps {
 export interface OverlayEmits {
   click: [PointerEvent]
   escape: [KeyboardEvent]
-  'update:modelValue': [boolean]
+  'update:model-value': [boolean]
 }

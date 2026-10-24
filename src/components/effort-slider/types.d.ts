@@ -11,5 +11,5 @@ export interface EffortSliderProps {
 
 export interface EffortSliderEmits {
   change: [string | number]
-  'update:modelValue': [string | number]
+  'update:model-value': [string | number]
 }

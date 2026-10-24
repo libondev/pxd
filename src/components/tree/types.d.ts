@@ -153,7 +153,7 @@ export interface TreeProps {
 }
 
 export interface TreeEmits {
-  'update:modelValue': [TreeModelValue]
+  'update:model-value': [TreeModelValue]
   'update:data': [TreeOptions]
   move: [TreeMoveDetail]
   change: [TreeChangeDetail]

@@ -49,5 +49,5 @@ export interface SwipeCellEmits {
   open: [side: SwipeCellSide]
   close: []
   'over-swipe': [state: SwipeCellOverSwipeState]
-  'update:modelValue': [side: SwipeCellSide | false]
+  'update:model-value': [side: SwipeCellSide | false]
 }

@@ -12,7 +12,7 @@ export interface CommandMenuProps {
 }
 
 export interface CommandMenuEmits {
-  'update:modelValue': [boolean]
+  'update:model-value': [boolean]
   change: [boolean]
   show: []
   hide: []

@@ -162,4 +162,4 @@ const value = ref('low')
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number) => void` | Emitted when a drag or an arrow key settles on a new level. |
-| update:modelValue | `(value: string \| number) => void` | Emitted whenever the level changes, including when the initial value is snapped to the first option on mount. |
+| update:model-value | `(value: string \| number) => void` | Emitted whenever the level changes, including when the initial value is snapped to the first option on mount. |

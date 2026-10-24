@@ -132,7 +132,7 @@ const modelValue = ref('1')
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number) => void` | Emitted when the user selects a different item. |
-| update:modelValue | `(value: string \| number) => void` | Emitted when the selected value changes. |
+| update:model-value | `(value: string \| number) => void` | Emitted when the selected value changes. |
 
 ## SwitchItem Props
 

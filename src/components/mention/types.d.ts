@@ -31,5 +31,5 @@ export interface MentionClickPayload {
 export interface MentionEmits {
   change: [string]
   'mention-click': [MentionClickPayload]
-  'update:modelValue': [string]
+  'update:model-value': [string]
 }

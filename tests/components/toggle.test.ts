@@ -24,8 +24,8 @@ describe('toggle', () => {
 
     await wrapper.find('input[type="checkbox"]').setValue(true)
 
-    expect(wrapper.emitted()).toHaveProperty('update:modelValue')
-    expect(wrapper.emitted()['update:modelValue'][0]).toEqual([true])
+    expect(wrapper.emitted()).toHaveProperty('update:model-value')
+    expect(wrapper.emitted()['update:model-value'][0]).toEqual([true])
 
     wrapper.unmount()
   })
@@ -41,7 +41,7 @@ describe('toggle', () => {
 
     await wrapper.find('input[type="checkbox"]').setValue(true)
 
-    expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['active'])
+    expect(wrapper.emitted()['update:model-value'][0]).toEqual(['active'])
 
     wrapper.unmount()
   })

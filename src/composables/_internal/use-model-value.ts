@@ -7,7 +7,7 @@ interface BaseProps {
 
 interface BaseEmits {
   (event: 'change', ...args: any[]): void
-  (event: 'update:modelValue', ...args: any[]): void
+  (event: 'update:model-value', ...args: any[]): void
 }
 
 interface ModelValueOptions {
@@ -31,7 +31,7 @@ export function useModelValue<P extends BaseProps, E extends BaseEmits>(
         if (withChange) {
           emits('change', value)
         }
-        emits('update:modelValue', value)
+        emits('update:model-value', value)
       }),
   })
 

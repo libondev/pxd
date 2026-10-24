@@ -17,7 +17,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -144,7 +144,7 @@ function skip() {
 }
 
 function close() {
-  emits('update:modelValue', false)
+  emits('update:model-value', false)
 }
 
 function onKeydown(ev: KeyboardEvent) {

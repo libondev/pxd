@@ -13,7 +13,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -46,7 +46,7 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
     emits('escape', ev)
 
     if (!ev.defaultPrevented) {
-      emits('update:modelValue', false)
+      emits('update:model-value', false)
     }
 
     return true
@@ -74,7 +74,7 @@ function onOverlayClick(ev: PointerEvent) {
     return
   }
 
-  emits('update:modelValue', false)
+  emits('update:model-value', false)
 }
 
 watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })

@@ -62,7 +62,7 @@ Always derive the tables from source, never from memory or from an older version
 ## Events
 
 `Events` documents **what the component emits to the outside while it is used** — every entry of its
-`XxxEmits` interface, plus `update:modelValue` when the component is controllable.
+`XxxEmits` interface, plus `update:model-value` when the component is controllable.
 
 ```md
 ## Events
@@ -71,7 +71,7 @@ Always derive the tables from source, never from memory or from an older version
 | --- | --- | --- |
 | open | `(side: 'prefix' \| 'suffix') => void` | Emitted when the cell opens. |
 | close | `() => void` | Emitted when the cell closes. |
-| update:modelValue | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
+| update:model-value | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
 ```
 
 Rules:
@@ -79,8 +79,8 @@ Rules:
 - Heading is always `## Events`. Never `## Emits`.
 - Columns are always `| Name | Type | Description |`.
 - **Name** is the event name exactly as declared in the source, including casing — `over-swipe`,
-  `panel-change`, `update:modelValue`. Do not rewrite it as `update:model-value`.
-- Write the name **unquoted and unbackticked** — a bare `update:modelValue`, never `'update:modelValue'`.
+  `panel-change`, `update:model-value`. Do not rewrite it as `update:model-value`.
+- Write the name **unquoted and unbackticked** — a bare `update:model-value`, never `'update:model-value'`.
   The Type cell already carries the backticks.
 - **Type** is the full handler signature in backticks, with the payload argument names from the
   source: `(side: SwipeCellSide) => void`, `(value: number) => void`, `() => void`.
@@ -100,7 +100,7 @@ Dispatch is usually indirect, so a missing `emits()` call in one file proves not
 three carriers:
 
 1. The component — `emits('<name>', …)` in `index.vue`.
-2. A composable it calls — `useModelValue` dispatches `change` / `update:modelValue`,
+2. A composable it calls — `useModelValue` dispatches `change` / `update:model-value`,
    `use-countdown` dispatches `change` / `reset` / `finish`. Calling one for its **getter only**
    (`useModelValue(props, emits, { get })`, result never assigned) dispatches nothing.
 3. A child through an injected context — `checkbox-group` passes `emits` into

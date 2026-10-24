@@ -20,7 +20,7 @@ export interface TourProps {
 }
 
 export interface TourEmits {
-  'update:modelValue': [boolean]
+  'update:model-value': [boolean]
   'update:current': [number]
   change: [index: number, step: TourStep]
   finish: []

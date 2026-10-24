@@ -10,7 +10,7 @@ interface ListSelectionProps {
 
 interface ListSelectionEmits {
   (event: 'change', value: NonNullable<ListModelValue>): void
-  (event: 'update:modelValue', value: NonNullable<ListModelValue>): void
+  (event: 'update:model-value', value: NonNullable<ListModelValue>): void
 }
 
 function readSelection(props: ListSelectionProps): ListModelValue {
@@ -54,11 +54,11 @@ export function useListSelection(props: ListSelectionProps, emits: ListSelection
 
     if (props.multiple) {
       dirty = true
-      emits('update:modelValue', nextValue)
+      emits('update:model-value', nextValue)
       return false
     }
 
-    emits('update:modelValue', nextValue)
+    emits('update:model-value', nextValue)
     emits('change', nextValue)
     return true
   }

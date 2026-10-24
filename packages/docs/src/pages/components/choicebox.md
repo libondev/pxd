@@ -136,7 +136,7 @@ const modelValue = ref('trial')
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string \| number \| (string \| number)[]) => void` | Emitted when an item in the group is selected or deselected. |
-| update:modelValue | `(value: string \| number \| (string \| number)[]) => void` | Emitted right after `change` with the new selection. |
+| update:model-value | `(value: string \| number \| (string \| number)[]) => void` | Emitted right after `change` with the new selection. |
 
 ## ChoiceboxItem Props
 

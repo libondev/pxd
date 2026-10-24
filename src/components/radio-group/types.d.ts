@@ -8,5 +8,5 @@ export interface RadioGroupProps {
 
 export interface RadioGroupEmits {
   change: [NonNullable<RadioGroupProps['modelValue']>]
-  'update:modelValue': [NonNullable<RadioGroupProps['modelValue']>]
+  'update:model-value': [NonNullable<RadioGroupProps['modelValue']>]
 }

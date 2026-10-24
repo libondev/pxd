@@ -51,4 +51,4 @@ const color = ref(colors[0])
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: string) => void` | Emitted when another color swatch is selected. |
-| update:modelValue | `(value: string) => void` | Emitted right after `change` with the selected color. |
+| update:model-value | `(value: string) => void` | Emitted right after `change` with the selected color. |

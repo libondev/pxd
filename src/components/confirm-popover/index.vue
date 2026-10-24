@@ -12,7 +12,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -62,12 +62,12 @@ function applyVisible(value: boolean) {
 // would leave the popover impossible to close.
 function onVisibleChange(value: boolean) {
   applyVisible(value)
-  emits('update:modelValue', value)
+  emits('update:model-value', value)
 }
 
 function close() {
   applyVisible(false)
-  emits('update:modelValue', false)
+  emits('update:model-value', false)
 }
 
 function onTriggerClick(ev: PointerEvent) {

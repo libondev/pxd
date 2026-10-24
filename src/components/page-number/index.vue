@@ -14,7 +14,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -87,7 +87,7 @@ const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
 
 function setPage(page: number) {
   if (!props.disabled && page !== props.modelValue) {
-    emits('update:modelValue', page)
+    emits('update:model-value', page)
   }
 }
 

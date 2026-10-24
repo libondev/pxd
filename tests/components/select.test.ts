@@ -59,7 +59,7 @@ describe('select', () => {
     document.body.querySelectorAll<HTMLElement>('[data-list-item]')[1]?.click()
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe(2)
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe(2)
     expect(wrapper.emitted('change')?.[0]?.[0]).toBe(2)
 
     wrapper.unmount()

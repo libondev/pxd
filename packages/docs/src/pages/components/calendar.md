@@ -114,7 +114,7 @@ const value = ref(Date.now())
 | --- | --- | --- |
 | panel-change | `(info: CalendarPanelInfo) => void` | Emitted when the visible month or year of the panel changes. |
 | change | `(value: number \| string \| Date \| null) => void` | Emitted when a non-disabled date is selected. |
-| update:modelValue | `(value: number \| string \| Date \| null) => void` | Emitted when a non-disabled date is selected. |
+| update:model-value | `(value: number \| string \| Date \| null) => void` | Emitted when a non-disabled date is selected. |
 
 ## Slots
 

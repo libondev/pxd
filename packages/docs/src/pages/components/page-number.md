@@ -70,4 +70,4 @@ const page = ref(1)
 | Name | Type | Description |
 | --- | --- | --- |
 | update:pageSize | `(page: number) => void` | Emitted when the page size changes. |
-| update:modelValue | `(page: number) => void` | Emitted when the page changes. |
+| update:model-value | `(page: number) => void` | Emitted when the page changes. |

@@ -44,7 +44,7 @@ describe('date-picker', () => {
     cell!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2024/08/20']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2024/08/20']])
     expect(wrapper.emitted('change')).toEqual([['2024/08/20']])
 
     wrapper.unmount()
@@ -55,7 +55,7 @@ describe('date-picker', () => {
 
     await typeAndChange(wrapper, '2024')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2024-01-01']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2024-01-01']])
     expect(wrapper.find('input').element.value).toBe('2024-01-01')
 
     wrapper.unmount()
@@ -66,7 +66,7 @@ describe('date-picker', () => {
 
     await typeAndChange(wrapper, '2024-08')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2024-08-01']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['2024-08-01']])
 
     wrapper.unmount()
   })
@@ -80,7 +80,7 @@ describe('date-picker', () => {
 
     await typeAndChange(wrapper, '20')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('input').element.value).toBe('20')
 
     wrapper.unmount()
@@ -97,7 +97,7 @@ describe('date-picker', () => {
     wrapper.findComponent({ name: 'PPopover' }).vm.$emit('outside-click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('input').element.value).toBe('2024-08-15')
 
     wrapper.unmount()
@@ -112,7 +112,7 @@ describe('date-picker', () => {
 
     await typeAndChange(wrapper, '2024')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBe(new Date(2024, 0, 1).getTime())
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe(new Date(2024, 0, 1).getTime())
 
     wrapper.unmount()
   })

@@ -163,7 +163,7 @@ function approveAll() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| update:modelValue | `(status: ApprovalStatus) => void` | Emitted when the card settles on a decision. |
+| update:model-value | `(status: ApprovalStatus) => void` | Emitted when the card settles on a decision. |
 | decide | `(result: ApprovalResult) => void` | Emitted on every decision, whichever way it went. |
 | approve | `(result: ApprovalResult) => void` | Emitted when the command is allowed. |
 | reject | `(result: ApprovalResult) => void` | Emitted when the command is refused. |

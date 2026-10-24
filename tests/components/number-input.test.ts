@@ -51,7 +51,7 @@ describe('number-input', () => {
     await buttons[0].trigger('pointerdown')
     await buttons[1].trigger('pointerdown')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[2], [1]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[2], [1]])
 
     wrapper.unmount()
   })
@@ -67,7 +67,7 @@ describe('number-input', () => {
     Object.assign(event, { isComposing: true })
     wrapper.find('input').element.dispatchEvent(event)
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -121,7 +121,7 @@ describe('number-input', () => {
     const buttons = wrapper.findAll('button')
     await buttons[1].trigger('pointerdown')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1001])
+    expect(wrapper.emitted('update:model-value')?.[0]).toEqual([1001])
 
     wrapper.unmount()
   })

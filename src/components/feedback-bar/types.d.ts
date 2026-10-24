@@ -4,6 +4,6 @@ export interface FeedbackBarProps {
 
 export interface FeedbackBarEmits {
   close: []
-  thumbUp: []
-  thumbDown: []
+  'thumb-up': []
+  'thumb-down': []
 }

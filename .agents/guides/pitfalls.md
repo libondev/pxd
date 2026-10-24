@@ -115,7 +115,7 @@ a comment beside the fix.
 
 - **Symptom**: A continuously controlled component still drops frames after pointer updates are throttled with `requestAnimationFrame`.
 - **Cause**: Each frame synchronously emits both the live model update and the committed change event, so consumer listeners remain in the rendering hot path.
-- **Fix**: Emit only `update:modelValue` during interaction, then synchronously process the final pointer position and emit `change` once when the interaction commits.
+- **Fix**: Emit only `update:model-value` during interaction, then synchronously process the final pointer position and emit `change` once when the interaction commits.
 
 ### Slot children may be wrapped in Fragments
 
@@ -212,10 +212,10 @@ a comment beside the fix.
 
 ### A PPopover wrapper must not derive its `model-value` from a fallback getter
 
-- **Symptom**: A component wrapping `PPopover` opens from the trigger but its own close command does nothing — the popover stays on screen while the component reports `update:modelValue` as `false` and runs the confirmed action anyway.
+- **Symptom**: A component wrapping `PPopover` opens from the trigger but its own close command does nothing — the popover stays on screen while the component reports `update:model-value` as `false` and runs the confirmed action anyway.
 - **Cause**: The popover's rendered truth is the internal `useDelayDestroy` `visible` ref it seeds once from the prop, so the prop is an imperative command: only a *change* in `props.modelValue` reaches `handlePopoverShow` / `handlePopoverHide` through the `watch`. A wrapper that feeds `:model-value="props.modelValue ?? localVisible"` freezes that value whenever the parent supplied one, so writing `localVisible` never produces a change the popover can observe.
-- **Fix**: Make a local ref the only source passed down (`localVisible = shallowRef(props.modelValue ?? false)`), let `watch(() => props.modelValue)` merely mirror the parent into it, and have close/set paths write the ref plus `emits('update:modelValue')`. Every open and close then reaches the popover as a real prop change.
-- **Testing note**: Assert DOM state (`data-visible` on `.pxd-popover--wrapper`), not just `emitted('update:modelValue')` — an event can fire while the popover stays open.
+- **Fix**: Make a local ref the only source passed down (`localVisible = shallowRef(props.modelValue ?? false)`), let `watch(() => props.modelValue)` merely mirror the parent into it, and have close/set paths write the ref plus `emits('update:model-value')`. Every open and close then reaches the popover as a real prop change.
+- **Testing note**: Assert DOM state (`data-visible` on `.pxd-popover--wrapper`), not just `emitted('update:model-value')` — an event can fire while the popover stays open.
 
 ### A menu keymap steals characters from a search input
 

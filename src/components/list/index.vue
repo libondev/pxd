@@ -29,7 +29,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -149,7 +149,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
 
   const nextValue = resolveNextListValue(props.modelValue, value, props.multiple)
 
-  emits('update:modelValue', nextValue)
+  emits('update:model-value', nextValue)
   emits('change', toSelectedOption(option))
 }
 

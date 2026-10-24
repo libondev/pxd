@@ -22,7 +22,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -128,7 +128,7 @@ function commit(index: number, status: TodoStatus) {
   const detail: TodoChangeDetail = { item, index, status, prevStatus, options }
 
   emits('change', detail)
-  emits('update:modelValue', options)
+  emits('update:model-value', options)
 }
 
 function onItemClick(index: number, item: TodoOption) {

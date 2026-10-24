@@ -867,7 +867,7 @@ describe('popover', () => {
       'true',
     )
     expect(wrapper.emitted('outside-click')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -893,7 +893,7 @@ describe('popover', () => {
       'true',
     )
     expect(wrapper.emitted('escape')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

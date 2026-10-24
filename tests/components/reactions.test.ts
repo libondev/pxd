@@ -49,7 +49,7 @@ describe('reactions', () => {
       { emoji: '👍', count: 4, mine: true },
       { emoji: '🚀', count: 1, mine: true },
     ])
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       { emoji: '👍', count: 4, mine: true },
       { emoji: '🚀', count: 1, mine: true },
     ])
@@ -64,7 +64,7 @@ describe('reactions', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.emitted('remove')?.[0]).toEqual(['🚀'])
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       { emoji: '🚀', count: 1, mine: false },
     ])
 
@@ -78,7 +78,7 @@ describe('reactions', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.emitted('remove')?.[0]).toEqual(['🚀'])
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([])
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([])
 
     wrapper.unmount()
   })
@@ -91,7 +91,7 @@ describe('reactions', () => {
 
     expect(wrapper.emitted('add')).toBeUndefined()
     expect(wrapper.emitted('remove')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -135,7 +135,7 @@ describe('reactions', () => {
     await flushPopover()
 
     expect(wrapper.emitted('add')?.[0]).toEqual(['❤️'])
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       ...reactions,
       { emoji: '❤️', count: 1, mine: true },
     ])
@@ -153,7 +153,7 @@ describe('reactions', () => {
     getPickerButtons()[0].click()
     await flushPopover()
 
-    expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toEqual([
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([
       { emoji: '👍', count: 4, mine: true },
       { emoji: '🚀', count: 1, mine: true },
     ])
@@ -169,7 +169,7 @@ describe('reactions', () => {
     await flushPopover()
 
     expect(wrapper.emitted('add')).toBeUndefined()
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

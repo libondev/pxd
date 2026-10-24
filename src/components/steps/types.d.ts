@@ -21,5 +21,5 @@ export interface StepsProps {
 
 export interface StepsEmits {
   change: [number]
-  'update:modelValue': [number]
+  'update:model-value': [number]
 }

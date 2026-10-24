@@ -72,8 +72,8 @@ describe('more-button', () => {
     await wrapper.find('.pxd-more-button button').trigger('click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.emitted()).toHaveProperty('update:modelValue')
-    expect(wrapper.emitted()['update:modelValue'][0]).toEqual([false])
+    expect(wrapper.emitted()).toHaveProperty('update:model-value')
+    expect(wrapper.emitted()['update:model-value'][0]).toEqual([false])
 
     wrapper.unmount()
   })

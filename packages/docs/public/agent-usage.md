@@ -22,7 +22,7 @@ Three entries in the index — the home page, the component overview and the ico
 A component page opens with what the component is for, then `vue demo` blocks in the order the page wants you to meet them. Each block is real, runnable code with its template — copy it and adjust it rather than re-deriving the markup. The tables come last and they are the contract:
 
 - `## Props` — name, type, default, meaning. Take the name exactly as it is written, kebab-case included.
-- `## Slots` and `## Events` — what the component offers outward. Events are kebab-case, so an `update:modelValue` entry is `@update:model-value` in a template.
+- `## Slots` and `## Events` — what the component offers outward. Events are kebab-case, so an `update:model-value` entry is `@update:model-value` in a template.
 - `## Methods` — what a `ref` on the component exposes.
 - A table named after a sub-component (`## ButtonGroup Props`) belongs to `<PButtonGroup>`: the page documents a family, not a single tag.
 

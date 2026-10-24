@@ -38,7 +38,7 @@ describe('slider', () => {
   it('should start an uncontrolled slider at min', () => {
     const wrapper = mount(Slider, { props: { min: 20 } })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 0%')
 
     wrapper.unmount()
@@ -52,7 +52,7 @@ describe('slider', () => {
 
     await slider.trigger('pointerdown', { clientX: 60 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60]])
     expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 60%')
 
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 60 }))
@@ -69,7 +69,7 @@ describe('slider', () => {
 
     await wrapper.findAll('.pxd-slider--mark')[1].trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[[20, 100]]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[[20, 100]]])
 
     wrapper.unmount()
   })
@@ -77,7 +77,7 @@ describe('slider', () => {
   it('should ignore defaultValue once modelValue is bound', () => {
     const wrapper = mount(Slider, { props: { defaultValue: 20, modelValue: 70 } })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 70%')
 
     wrapper.unmount()
@@ -125,12 +125,12 @@ describe('slider', () => {
 
     await slider.trigger('pointerdown', { clientX: 10 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[10]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[10]])
     expect(wrapper.emitted('change')).toBeUndefined()
 
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 80 }))
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[10], [80]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[10], [80]])
     expect(wrapper.emitted('change')).toEqual([[80]])
 
     wrapper.unmount()
@@ -147,7 +147,7 @@ describe('slider', () => {
     // Drag to the far left: the value must land on `min`, not on a multiple of step.
     await slider.trigger('pointerdown', { clientX: 0 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[5]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[5]])
 
     wrapper.unmount()
   })
@@ -163,7 +163,7 @@ describe('slider', () => {
     // 50 is 10 away from 60 and 20 away from 30, so the closest value wins.
     await slider.trigger('pointerdown', { clientX: 50 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60]])
 
     wrapper.unmount()
   })
@@ -179,7 +179,7 @@ describe('slider', () => {
     // 40 sits exactly between 30 and 60.
     await slider.trigger('pointerdown', { clientX: 40 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[30]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[30]])
 
     wrapper.unmount()
   })
@@ -194,7 +194,7 @@ describe('slider', () => {
 
     await slider.trigger('pointerdown', { clientX: 79 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[80]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[80]])
 
     wrapper.unmount()
   })
@@ -210,7 +210,7 @@ describe('slider', () => {
     // No allowed value is left, so the pointer cannot move the value away from min.
     await slider.trigger('pointerdown', { clientX: 90 })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -238,10 +238,10 @@ describe('slider', () => {
     const thumb = wrapper.find('.pxd-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'ArrowRight' })
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     await thumb.trigger('keydown', { code: 'ArrowLeft' })
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60]])
 
     wrapper.unmount()
   })
@@ -255,11 +255,11 @@ describe('slider', () => {
     // A controlled parent can still push a value that is not on the grid.
     await wrapper.setProps({ modelValue: 45 })
     await thumb.trigger('keydown', { code: 'ArrowRight' })
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60]])
 
     await wrapper.setProps({ modelValue: 45 })
     await thumb.trigger('keydown', { code: 'ArrowLeft' })
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60], [30]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60], [30]])
 
     wrapper.unmount()
   })
@@ -269,7 +269,7 @@ describe('slider', () => {
       props: { min: 0, max: 100, step: [10, 30, 60, 100], modelValue: 50 },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[60]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[60]])
 
     wrapper.unmount()
   })
@@ -279,7 +279,7 @@ describe('slider', () => {
       props: { min: 0, max: 100, step: [10, 30, 60, 100], modelValue: 60 },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -289,7 +289,7 @@ describe('slider', () => {
       props: { range: true, min: 0, max: 100, step: [10, 30, 60, 100], modelValue: [45, 70] },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[[30, 60]]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[[30, 60]]])
 
     wrapper.unmount()
   })
@@ -300,7 +300,7 @@ describe('slider', () => {
     })
 
     // 22 snaps up to 30 and 12 snaps down to 10, so the pair has to be reordered.
-    expect(wrapper.emitted('update:modelValue')).toEqual([[[10, 30]]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[[10, 30]]])
 
     wrapper.unmount()
   })
@@ -310,7 +310,7 @@ describe('slider', () => {
       props: { min: 20, max: 100, step: [], modelValue: 50 },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[20]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[20]])
 
     wrapper.unmount()
   })
@@ -320,7 +320,7 @@ describe('slider', () => {
       props: { min: 0, max: 100, step: 5, modelValue: 7 },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -387,7 +387,7 @@ describe('slider', () => {
 
     await wrapper.findAll('.pxd-slider--mark')[1].trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[50]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[50]])
     expect(wrapper.emitted('change')).toEqual([[50]])
 
     wrapper.unmount()
@@ -400,12 +400,12 @@ describe('slider', () => {
 
     await wrapper.findAll('.pxd-slider--mark')[1].trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[[10, 80]]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[[10, 80]]])
 
     await wrapper.setProps({ modelValue: [10, 80] })
     await wrapper.findAll('.pxd-slider--mark')[0].trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[[10, 80]], [[20, 80]]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[[10, 80]], [[20, 80]]])
 
     wrapper.unmount()
   })
@@ -421,7 +421,7 @@ describe('slider', () => {
 
     await mark.trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -437,7 +437,7 @@ describe('slider', () => {
     // 50% of a 100-wide track over [5, 105] is 55, an exact step offset from min.
     await slider.trigger('pointerdown', { clientX: 50 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[55]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[55]])
 
     wrapper.unmount()
   })

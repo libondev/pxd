@@ -46,7 +46,7 @@ describe('page-number', () => {
 
     await wrapper.find('[aria-label="Page 3"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[3]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[3]])
 
     wrapper.unmount()
   })
@@ -63,7 +63,7 @@ describe('page-number', () => {
 
     await wrapper.find('[aria-label="Next page"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[2]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[2]])
 
     await wrapper.setProps({ modelValue: 5 })
 
@@ -89,7 +89,7 @@ describe('page-number', () => {
 
     await wrapper.find('[aria-label="Page 2"]').trigger('click')
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -107,7 +107,7 @@ describe('page-number', () => {
     await input.setValue('12')
     await input.trigger('keydown', { key: 'Enter' })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[12]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[12]])
 
     wrapper.unmount()
   })
@@ -130,7 +130,7 @@ describe('page-number', () => {
 
     input.element.dispatchEvent(event)
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })
@@ -148,7 +148,7 @@ describe('page-number', () => {
     await input.setValue('20')
     await input.trigger('blur')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([[5]])
+    expect(wrapper.emitted('update:model-value')).toEqual([[5]])
     expect((input.element as HTMLInputElement).value).toBe('5')
 
     wrapper.unmount()

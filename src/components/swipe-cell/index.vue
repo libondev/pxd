@@ -19,7 +19,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -271,7 +271,7 @@ async function setOpen(side: SwipeCellSide | false, trigger?: SwipeCellCloseTrig
 
   openedSide.value = side
   syncOpenOffset()
-  emits('update:modelValue', side)
+  emits('update:model-value', side)
 
   if (side) {
     emits('open', side)

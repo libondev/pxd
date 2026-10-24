@@ -35,7 +35,7 @@ export interface InputEmits {
   focus: [FocusEvent]
   blur: [FocusEvent]
   keydown: [KeyboardEvent]
-  'update:modelValue': [string]
+  'update:model-value': [string]
   compositionstart: [CompositionEvent]
   compositionupdate: [CompositionEvent]
   compositionend: [CompositionEvent]

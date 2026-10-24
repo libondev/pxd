@@ -195,7 +195,7 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: number) => void` | Emitted when the current step changes. |
-| update:modelValue | `(value: number) => void` | Emitted together with `change`. |
+| update:model-value | `(value: number) => void` | Emitted together with `change`. |
 
 ## Slots
 

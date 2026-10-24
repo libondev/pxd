@@ -31,7 +31,7 @@ const emits = defineEmits<{
   trigger: [string]
   change: [string]
   submit: [string]
-  'update:modelValue': [string]
+  'update:model-value': [string]
   'mention-click': [{ key: string; label: string; trigger: string; event: MouseEvent }]
 }>()
 
@@ -68,7 +68,7 @@ const {
   getTriggers: () => props.triggers,
   isDisabled: () => props.disabled,
   onUpdate: (html) => {
-    emits('update:modelValue', html)
+    emits('update:model-value', html)
     emits('change', html)
   },
   onSubmit: (html) => emits('submit', html),

@@ -70,4 +70,4 @@ const date2 = ref('2024-08-15')
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: ComponentDateTimeValue) => void` | Emitted when a date different from the current one is committed, by picking it in the calendar, typing it into the field or clearing the field. |
-| update:modelValue | `(value: ComponentDateTimeValue) => void` | Emitted together with `change` when a date different from the current one is committed. |
+| update:model-value | `(value: ComponentDateTimeValue) => void` | Emitted together with `change` when a date different from the current one is committed. |

@@ -9,7 +9,7 @@ defineOptions({
   inheritAttrs: false,
   model: {
     prop: 'modelValue',
-    event: 'update:modelValue',
+    event: 'update:model-value',
   },
 })
 
@@ -36,7 +36,7 @@ function commit(next: Reaction[], event: 'add' | 'remove', emoji: string) {
   }
 
   emits('change', next)
-  emits('update:modelValue', next)
+  emits('update:model-value', next)
 }
 
 function pick(emoji: string) {

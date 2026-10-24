@@ -13,5 +13,5 @@ export interface CheckboxProps {
 
 export interface CheckboxEmits {
   change: [NonNullable<CheckboxModelValue>]
-  'update:modelValue': [NonNullable<CheckboxModelValue>]
+  'update:model-value': [NonNullable<CheckboxModelValue>]
 }

@@ -8,5 +8,5 @@ export interface ColorSelectorProps {
 
 export interface ColorSelectorEmits {
   change: [NonNullable<ColorSelectorProps['modelValue']>]
-  'update:modelValue': [NonNullable<ColorSelectorProps['modelValue']>]
+  'update:model-value': [NonNullable<ColorSelectorProps['modelValue']>]
 }

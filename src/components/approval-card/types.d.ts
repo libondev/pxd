@@ -30,7 +30,7 @@ export interface ApprovalCardProps {
 }
 
 export interface ApprovalCardEmits {
-  'update:modelValue': [status: ApprovalStatus]
+  'update:model-value': [status: ApprovalStatus]
   decide: [result: ApprovalResult]
   approve: [result: ApprovalResult]
   reject: [result: ApprovalResult]

@@ -174,7 +174,7 @@ const options = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: ListModelValue) => void` | Emitted when the selection is committed, right after an option is picked in single mode and once when the popover closes in multiple mode. |
-| update:modelValue | `(value: ListModelValue) => void` | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |
+| update:model-value | `(value: ListModelValue) => void` | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |
 
 ## Slots
 

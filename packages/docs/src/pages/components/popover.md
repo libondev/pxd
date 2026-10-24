@@ -491,7 +491,7 @@ const chips = [
 | trigger-click | `(event: PointerEvent) => void` | Emitted when one of the resolved trigger elements is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted when the visible state changes. |
 | wrapper-keydown | `(event: KeyboardEvent) => void` | Emitted when a key is pressed inside the popover while it is open. |
-| update:modelValue | `(visible: boolean) => void` | Emitted right after `show` or `hide` with the new visibility. |
+| update:model-value | `(visible: boolean) => void` | Emitted right after `show` or `hide` with the new visibility. |
 
 ## Slots
 

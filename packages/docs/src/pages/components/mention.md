@@ -179,7 +179,7 @@ const options = [
 | --- | --- | --- |
 | change | `(value: string) => void` | Emitted when the editor HTML changes. |
 | mention-click | `(payload: MentionClickPayload) => void` | Emitted when a mention chip is clicked. |
-| update:modelValue | `(value: string) => void` | Emitted when the editor HTML changes. |
+| update:model-value | `(value: string) => void` | Emitted when the editor HTML changes. |
 
 ```ts
 interface MentionClickPayload {

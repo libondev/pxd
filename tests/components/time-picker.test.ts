@@ -55,7 +55,7 @@ describe('time-picker', () => {
 
     await typeAndChange(wrapper, '12:30:00')
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['12:30:00']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['12:30:00']])
     expect(wrapper.emitted('change')).toEqual([['12:30:00']])
 
     wrapper.unmount()
@@ -68,7 +68,7 @@ describe('time-picker', () => {
     wrapper.findComponent({ name: 'PPopover' }).vm.$emit('outside-click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['12:30:00']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['12:30:00']])
     expect(wrapper.emitted('change')).toEqual([['12:30:00']])
 
     wrapper.unmount()
@@ -84,7 +84,7 @@ describe('time-picker', () => {
     wrapper.findComponent({ name: 'PPopover' }).vm.$emit('outside-click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()

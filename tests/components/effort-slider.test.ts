@@ -46,7 +46,7 @@ describe('effort-slider', () => {
   it('should snap a missing modelValue to the first option on mount', () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS } })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['low']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['low']])
 
     wrapper.unmount()
   })
@@ -57,7 +57,7 @@ describe('effort-slider', () => {
 
     await thumb.trigger('keydown', { code: 'ArrowRight' })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['high']])
     expect(wrapper.emitted('change')).toEqual([['high']])
     expect(thumb.attributes('style')).toContain('66.66')
     expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('High')
@@ -73,7 +73,7 @@ describe('effort-slider', () => {
     await track.trigger('pointerdown', { clientX: 70 })
     await nextTick()
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['high']])
     expect(thumb.attributes('style')).toContain('left: 70%')
 
     dispatch('pointerup', 70)
@@ -90,7 +90,7 @@ describe('effort-slider', () => {
       props: { options: OPTIONS, defaultValue: 'low', modelValue: 'max' },
     })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('Max')
 
     wrapper.unmount()
@@ -99,7 +99,7 @@ describe('effort-slider', () => {
   it('should keep a matching modelValue untouched on mount', () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'high' } })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.find('.pxd-effort-slider--fill').attributes('style')).toContain(
       'clip-path: inset(0 33.33',
     )
@@ -129,7 +129,7 @@ describe('effort-slider', () => {
 
     await track.trigger('pointerdown', { clientX: 20 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['medium']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['medium']])
     expect(wrapper.emitted('change')).toBeUndefined()
 
     dispatch('pointerup', 20)
@@ -146,7 +146,7 @@ describe('effort-slider', () => {
     // 50 sits exactly between the medium and the high level.
     await track.trigger('pointerdown', { clientX: 50 })
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['medium']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['medium']])
 
     wrapper.unmount()
   })
@@ -158,7 +158,7 @@ describe('effort-slider', () => {
     await track.trigger('pointerdown', { clientX: 0 })
     dispatch('pointerup', 0)
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -176,7 +176,7 @@ describe('effort-slider', () => {
     dispatch('pointermove', 70)
     await vi.advanceTimersByTimeAsync(32)
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['high']])
 
     dispatch('pointerup', 70)
     await nextTick()
@@ -197,7 +197,7 @@ describe('effort-slider', () => {
     dispatch('pointermove', 100)
     await vi.advanceTimersByTimeAsync(32)
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([['max']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['max']])
 
     wrapper.unmount()
   })
@@ -211,7 +211,7 @@ describe('effort-slider', () => {
     await vi.advanceTimersByTimeAsync(32)
 
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('left: 45%')
-    expect(wrapper.emitted('update:modelValue')).toEqual([['medium']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['medium']])
 
     dispatch('pointerup', 45)
     await nextTick()
@@ -235,7 +235,7 @@ describe('effort-slider', () => {
 
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('66.66')
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('data-dragging')).toBe('false')
-    expect(wrapper.emitted('update:modelValue')).toEqual([['high']])
+    expect(wrapper.emitted('update:model-value')).toEqual([['high']])
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -250,7 +250,7 @@ describe('effort-slider', () => {
     await vi.advanceTimersByTimeAsync(32)
     dispatch('pointerup', 10)
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
@@ -275,7 +275,7 @@ describe('effort-slider', () => {
     const thumb = wrapper.find('.pxd-effort-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'ArrowUp' })
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     await thumb.trigger('keydown', { code: 'ArrowLeft' })
     expect(wrapper.emitted('change')).toEqual([['high']])
@@ -473,7 +473,7 @@ describe('effort-slider', () => {
     await track.trigger('pointerdown', { clientX: 100 })
     await thumb.trigger('keydown', { code: 'ArrowRight' })
 
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
     expect(wrapper.emitted('change')).toBeUndefined()
 
     wrapper.unmount()
