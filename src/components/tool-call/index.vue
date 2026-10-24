@@ -140,8 +140,8 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
         }"
       />
 
-      <span class="pxd-tool-call--name min-w-0 truncate">
-        {{ name }}
+      <span class="pxd-tool-call--title min-w-0 truncate">
+        {{ title }}
       </span>
 
       <ChevronRightIcon
