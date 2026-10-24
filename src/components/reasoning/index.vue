@@ -47,7 +47,7 @@ const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDe
       <BrainIcon class="size-3 shrink-0" />
 
       <PShimmerText class="pxd-reasoning--title" :disabled="!streaming">
-        {{ configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
+        {{ title ?? configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
       <ChevronRightIcon

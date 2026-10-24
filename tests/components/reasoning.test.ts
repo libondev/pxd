@@ -14,6 +14,24 @@ describe('reasoning', () => {
     wrapper.unmount()
   })
 
+  it('renders the locale title by default', () => {
+    const wrapper = mount(Reasoning)
+
+    expect(wrapper.find('.pxd-reasoning--title').text()).toBe('Thinking...')
+
+    wrapper.unmount()
+  })
+
+  it('renders the title prop instead of the locale text', () => {
+    const wrapper = mount(Reasoning, {
+      props: { title: 'Planning' },
+    })
+
+    expect(wrapper.find('.pxd-reasoning--title').text()).toBe('Planning')
+
+    wrapper.unmount()
+  })
+
   it('toggles on trigger click', async () => {
     const wrapper = mount(Reasoning, {
       slots: { default: '<p>Trace</p>' },

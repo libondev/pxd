@@ -52,3 +52,4 @@ setTimeout(() => {
 | --- | --- | --- | --- |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
 | streaming | `boolean` | `true` | Streaming state; the panel opens while it is `true` and the title shimmers |
+| title | `ComponentLabel` | - | Title text; falls back to `locale.reasoning.thinking` / `thought` |
