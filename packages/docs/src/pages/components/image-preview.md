@@ -105,3 +105,4 @@ const images = [
 | zoomOut | `() => void` | Decrease the zoom by one step. |
 | rotate | `() => void` | Rotate the image by 90 degrees clockwise. |
 | reset | `() => void` | Reset zoom, rotation and position. |
+| download | `() => Promise<void>` | Download the current image to the local machine. |

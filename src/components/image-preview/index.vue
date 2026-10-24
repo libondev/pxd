@@ -3,6 +3,7 @@ import type { ImagePreviewEmits, ImagePreviewItem, ImagePreviewProps } from './t
 import ChevronLeftIcon from '@gdsicon/vue/chevron-left'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import CrossIcon from '@gdsicon/vue/cross'
+import DownloadIcon from '@gdsicon/vue/download'
 import MagnifyingGlassMinusIcon from '@gdsicon/vue/magnifying-glass-minus'
 import MagnifyingGlassPlusIcon from '@gdsicon/vue/magnifying-glass-plus'
 import RefreshCounterClockwiseIcon from '@gdsicon/vue/refresh-counter-clockwise'
@@ -103,6 +104,31 @@ function rotate() {
 
 function reset() {
   resetTransform()
+}
+
+function getDownloadName(src: string) {
+  if (src.startsWith('data:')) {
+    return 'image'
+  }
+
+  return src.split(/[?#]/)[0].split('/').pop() || 'image'
+}
+
+async function download() {
+  const image = currentImage.value
+
+  if (!image) {
+    return
+  }
+
+  const blob = await (await fetch(image.src)).blob()
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+
+  link.href = url
+  link.download = getDownloadName(image.src)
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url))
 }
 
 function switchTo(index: number) {
@@ -262,6 +288,7 @@ defineExpose({
   zoomOut,
   rotate,
   reset,
+  download,
 })
 </script>
 
@@ -390,6 +417,10 @@ defineExpose({
 
             <button type="button" aria-label="Reset" :class="CONTROL_CLASS" @click="reset">
               <RefreshCounterClockwiseIcon class="size-4" />
+            </button>
+
+            <button type="button" aria-label="Download" :class="CONTROL_CLASS" @click="download">
+              <DownloadIcon class="size-4" />
             </button>
           </div>
         </div>

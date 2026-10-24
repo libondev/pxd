@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { flushPromises, mount } from '@vue/test-utils'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import ImagePreview from '../../src/components/image-preview/index.vue'
 
@@ -45,6 +45,41 @@ function clickControl(label: string) {
 async function openPreview(wrapper: ReturnType<typeof mountImagePreview>, index = 0) {
   await wrapper.findAll('button')[index].trigger('click')
   await nextTick()
+}
+
+function stubDownload() {
+  const blob = new Blob(['image'], { type: 'image/jpeg' })
+  const fetchMock = vi.fn().mockResolvedValue({ blob: () => Promise.resolve(blob) })
+  const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock')
+  const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+  const clickMock = vi.spyOn(HTMLElement.prototype, 'click').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    if (this.tagName === 'A') {
+      return
+    }
+
+    this.dispatchEvent(
+      new PointerEvent('click', { bubbles: true, composed: true, cancelable: true }),
+    )
+  })
+
+  vi.stubGlobal('fetch', fetchMock)
+
+  function getDownloadedLink() {
+    return clickMock.mock.contexts.find(
+      (el) => el instanceof HTMLAnchorElement,
+    ) as HTMLAnchorElement
+  }
+
+  function restore() {
+    clickMock.mockRestore()
+    createObjectURL.mockRestore()
+    revokeObjectURL.mockRestore()
+    vi.unstubAllGlobals()
+  }
+
+  return { fetchMock, getDownloadedLink, restore }
 }
 
 describe('image-preview', () => {
@@ -284,6 +319,43 @@ describe('image-preview', () => {
     expect(getPreviewImage().style.transform).toContain('rotate(0deg)')
 
     wrapper.unmount()
+  })
+
+  it('downloads the current image', async () => {
+    const { fetchMock, getDownloadedLink, restore } = stubDownload()
+    const wrapper = mountImagePreview()
+
+    await openPreview(wrapper, 1)
+    clickControl('Download')
+    await flushPromises()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith(IMAGES[1].src)
+
+    const link = getDownloadedLink()
+
+    expect(link.download).toBe('two.jpg')
+    expect(link.href).toBe('blob:mock')
+
+    wrapper.unmount()
+    restore()
+  })
+
+  it('falls back to a generic name for data URLs', async () => {
+    const dataUrl =
+      'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22/%3E'
+    const { fetchMock, getDownloadedLink, restore } = stubDownload()
+    const wrapper = mountImagePreview({ data: [{ src: dataUrl, alt: 'Data' }] })
+
+    await openPreview(wrapper)
+    clickControl('Download')
+    await flushPromises()
+
+    expect(fetchMock).toHaveBeenCalledWith(dataUrl)
+    expect(getDownloadedLink().download).toBe('image')
+
+    wrapper.unmount()
+    restore()
   })
 
   it('pans the image with a pointer drag', async () => {
