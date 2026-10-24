@@ -56,7 +56,7 @@ const progress = computed(() => {
 const isComplete = computed(() => progress.value >= 100)
 const hasProgress = computed(() => progress.value > 0)
 
-const strokeWidth = computed(() => (props.size === 'xs' ? 14 : 10))
+const strokeWidth = computed(() => (props.size === 'xs' ? 16 : 10))
 
 const bar = computed(() => {
   const arc = (progress.value / 100) * CIRCUMFERENCE
