@@ -179,6 +179,10 @@
     "title": "Kbd",
     "description": "Display keyboard input that triggers an action."
   },
+  "/components/label": {
+    "title": "Label",
+    "description": "A styled native label element for form field captions."
+  },
   "/components/link-button": {
     "title": "Link Button",
     "description": "Inherit button style links."

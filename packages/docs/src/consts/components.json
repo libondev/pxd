@@ -225,6 +225,11 @@
     "category": "Typography"
   },
   {
+    "camelized": "Label",
+    "name": "label",
+    "category": "Form"
+  },
+  {
     "camelized": "Link Button",
     "name": "link-button",
     "category": "Button"
