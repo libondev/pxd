@@ -95,6 +95,10 @@
     "title": "Confirm Popover",
     "description": "A popover that asks for a second confirmation before running an action. The trigger is whatever you put in the default slot, and the popover opens above it wit…"
   },
+  "/components/context-usage": {
+    "title": "Context Usage",
+    "description": "A segmented bar that shows how an AI context window is filled."
+  },
   "/components/copy-button": {
     "title": "Copy Button",
     "description": "A button that copies a given string to the clipboard and provides feedback when copied."
