@@ -190,7 +190,7 @@ function onPointerdown(event: PointerEvent): void {
       />
     </span>
 
-    <span class="pxd-tree--content min-w-0 pl-0.5 flex-1 truncate">
+    <span class="pxd-tree--content min-w-0 flex-1 truncate">
       <slot
         name="node-content"
         :node="node"
