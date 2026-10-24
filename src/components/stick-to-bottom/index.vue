@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { StickToBottomEmits, StickToBottomProps } from './types'
 import { shallowRef, watch } from 'vue'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
 
 defineOptions({
@@ -17,6 +18,10 @@ const emits = defineEmits<StickToBottomEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
+
+const { classes, attrs } = useTailwindVariant({
+  base: 'pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto [overflow-anchor:none]',
+})
 
 const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } = useStickToBottom(
   containerRef,
@@ -46,12 +51,7 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    data-stick-to-bottom
-    ref="containerRef"
-    class="pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto [overflow-anchor:none]"
-    v-bind="$attrs"
-  >
+  <div data-stick-to-bottom ref="containerRef" :class="classes" v-bind="attrs">
     <div
       ref="contentRef"
       class="pxd-stick-to-bottom--content"
