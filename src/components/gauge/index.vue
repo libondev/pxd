@@ -29,7 +29,6 @@ const SIZES = {
 const PROGRESS_BAR_GAP = 5
 
 const RADIUS = 42
-const STROKE_WIDTH = 10
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const GAP_LENGTH = (PROGRESS_BAR_GAP / 100) * CIRCUMFERENCE
 const GAP_OFFSET = GAP_LENGTH / 2
@@ -57,6 +56,8 @@ const progress = computed(() => {
 const isComplete = computed(() => progress.value >= 100)
 const hasProgress = computed(() => progress.value > 0)
 
+const strokeWidth = computed(() => (props.size === 'xs' ? 14 : 10))
+
 const bar = computed(() => {
   const arc = (progress.value / 100) * CIRCUMFERENCE
 
@@ -64,7 +65,10 @@ const bar = computed(() => {
     return { arc, offset: 0 }
   }
 
-  return { arc: Math.max(STROKE_WIDTH / 2, arc - STROKE_WIDTH), offset: -GAP_OFFSET }
+  return {
+    arc: Math.max(strokeWidth.value / 2, arc - strokeWidth.value),
+    offset: -GAP_OFFSET,
+  }
 })
 
 const track = computed(() => {
@@ -120,7 +124,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
         v-if="track"
         :d="RING_PATH"
         fill="none"
-        :stroke-width="STROKE_WIDTH"
+        :stroke-width="strokeWidth"
         stroke-linecap="round"
         :stroke-dashoffset="track.offset"
         :stroke="progressColors.secondary"
@@ -132,7 +136,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
         v-if="hasProgress || isComplete"
         :d="RING_PATH"
         fill="none"
-        :stroke-width="STROKE_WIDTH"
+        :stroke-width="strokeWidth"
         :stroke-dashoffset="bar.offset"
         stroke-linecap="round"
         :stroke="progressColors.primary"
