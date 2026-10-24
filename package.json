@@ -99,7 +99,7 @@
     "fmt:all": "run-s fmt fmt:eol",
     "fmt:eol": "node scripts/lint/fmt-file-eol.js",
     "check:fmt": "vp fmt --check",
-    "check:type": "vp run typecheck",
+    "check:type": "vp run typecheck && vp run typecheck:test",
     "test": "vp test run",
     "test:watch": "vp test",
     "preview": "pnpm --filter docs preview",

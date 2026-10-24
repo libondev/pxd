@@ -122,6 +122,9 @@ export default defineConfig({
       typecheck: {
         command: 'vue-tsc -p tsconfig.app.json --noEmit',
       },
+      'typecheck:test': {
+        command: 'vue-tsc -p tsconfig.test.json --noEmit',
+      },
     },
   },
 

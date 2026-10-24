@@ -19,7 +19,7 @@
 - `tsconfig.app.json` — 继承 `@vue/tsconfig/tsconfig.dom.json`，收 `src/**`，开 `noUnusedLocals` / `noUnusedParameters`，`types: ["vite/client"]`。
 - `tsconfig.node.json` — 构建与工具配置，`@tsconfig/node22` + `moduleResolution: Bundler`。
 - `tsconfig.test.json` — 继承 app，收 `tests/**/*.test.ts`，`types: ["node"]`；DOM 由 happy-dom 在运行时提供，不是类型来源。
-- 类型检查：`pnpm check:type` → `vue-tsc -p tsconfig.app.json --noEmit`（定义在 `vite.config.ts` 的 `run.tasks`）。
+- 类型检查：`pnpm check:type` → `vp run typecheck`（`tsconfig.app.json`）+ `vp run typecheck:test`（`tsconfig.test.json`），两个任务都定义在 `vite.config.ts` 的 `run.tasks`。
 - 没有 `vueCompilerOptions` / `strictTemplates` 配置。
 - 库源码与测试都不用路径别名，一律相对路径（`../../src/components/...`）；`fmt` 的 internalPattern 只是排序分组，别据此写别名。
 
