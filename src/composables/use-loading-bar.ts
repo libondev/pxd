@@ -1,6 +1,6 @@
 // Part of the realization comes from: https://github.com/rstacruz/nprogress
 
-import { isServer } from '../utils/is.ts'
+import { isServer } from '../utils/is.js'
 
 export const UPDATE_LOADING_BAR_EVENT_NAME = '#update-loading-bar'
 

@@ -8,7 +8,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isNil } from '../../utils/is.ts'
+import { isNil } from '../../utils/is.js'
 import PCodeBlock from '../code-block/index.vue'
 
 interface PayloadView {
