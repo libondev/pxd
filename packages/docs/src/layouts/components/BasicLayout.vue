@@ -285,7 +285,7 @@ useHead({
     }
   }
 
-  pre code {
+  pre > code {
     max-width: 100%;
     font-size: 0.875rem;
   }
@@ -377,8 +377,6 @@ useHead({
       white-space: nowrap;
     }
 
-    /* Keep the trailing Description column from collapsing when an earlier
-       column holds a long unbreakable snippet, such as a long union type. */
     th:last-child,
     td:last-child {
       min-width: 16rem;
@@ -395,7 +393,7 @@ useHead({
         min-width: 12rem;
       }
 
-      & :not(pre) > code {
+      code:not(pre > code) {
         margin-right: 0.1em;
         padding-inline: 0.35em;
       }
