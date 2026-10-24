@@ -102,12 +102,12 @@ const { attrs, classes } = useTailwindVariant(
       const { size, shape, fullWidth, icon } = props
 
       return {
-        icon,
         size: size || buttonGroupContext?.props.size || configProvider.size,
         shape: buttonGroupContext ? 'default' : shape,
         variant: computedVariant.value,
         fullWidth,
         disabled: isDisabled.value,
+        icon,
       }
     },
   },
@@ -130,7 +130,7 @@ const { attrs, classes } = useTailwindVariant(
     <PSpinner v-if="loading" />
     <slot v-else name="prefix" />
 
-    <span class="min-w-0 flex flex-1 items-center" :class="btnContentClasses">
+    <span class="min-w-0 flex flex-1 items-center empty:hidden" :class="btnContentClasses">
       <slot />
     </span>
 

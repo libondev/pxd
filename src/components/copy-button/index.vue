@@ -27,11 +27,13 @@ async function onCopyClick(ev: PointerEvent) {
   <PButton data-copy-button class="pxd-copy-button" v-bind="$attrs" @click="onCopyClick">
     <slot v-if="$slots.default" :copied="isCopied" />
 
-    <template #suffix>
-      <Transition name="pxd-transition--fade-scale" mode="out-in" class="pxd-copy-button--icon">
-        <CheckIcon v-if="isCopied" />
-        <CopyIcon v-else />
-      </Transition>
-    </template>
+    <Transition
+      name="pxd-transition--fade-scale"
+      mode="out-in"
+      class="pxd-copy-button--icon not-first:ms-1.5"
+    >
+      <CheckIcon v-if="isCopied" />
+      <CopyIcon v-else />
+    </Transition>
   </PButton>
 </template>
