@@ -8,12 +8,12 @@ import { nextTick } from 'vue'
 import ToolCall from '../../src/components/tool-call/index.vue'
 
 describe('tool-call', () => {
-  it('renders name and defaults to pending', () => {
+  it('renders title and defaults to pending', () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'search_flights' },
+      props: { title: 'search_flights' },
     })
 
-    expect(wrapper.find('.pxd-tool-call--name').text()).toBe('search_flights')
+    expect(wrapper.find('.pxd-tool-call--title').text()).toBe('search_flights')
     expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
 
@@ -22,7 +22,7 @@ describe('tool-call', () => {
 
   it('renders status icons', async () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'lookup_weather', status: 'completed' },
+      props: { title: 'lookup_weather', status: 'completed' },
     })
 
     expect(wrapper.findComponent(CheckCircleIcon).exists()).toBe(true)
@@ -43,7 +43,7 @@ describe('tool-call', () => {
   it('pretty-prints object input and output', () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'search_flights',
+        title: 'search_flights',
         status: 'completed',
         input: { origin: 'LHR', destination: 'SFO' },
         output: { route: 'LHR -> SFO', stops: 0 },
@@ -64,7 +64,7 @@ describe('tool-call', () => {
   it('pretty-prints JSON string payloads', () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'echo',
+        title: 'echo',
         input: '{"ok":true}',
       },
     })
@@ -77,7 +77,7 @@ describe('tool-call', () => {
 
   it('hides input and output when omitted', () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'noop' },
+      props: { title: 'noop' },
     })
 
     expect(wrapper.findAll('.pxd-tool-call--section')).toHaveLength(0)
@@ -89,7 +89,7 @@ describe('tool-call', () => {
   it('keeps plain string payloads as-is when not JSON', () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'log',
+        title: 'log',
         output: 'not-json',
       },
     })
@@ -102,7 +102,7 @@ describe('tool-call', () => {
   it('renders content-block arrays as plain text without JSON highlighting', () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'bash',
+        title: 'bash',
         status: 'completed',
         input: { command: 'pnpm test', timeout: 30000 },
         output: [{ type: 'text', text: '$ pnpm test\n ✓ 8 tests passed\n Done in 2.14s' }],
@@ -124,7 +124,7 @@ describe('tool-call', () => {
   it('marks image blocks with a placeholder instead of dumping base64', () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'screenshot',
+        title: 'screenshot',
         status: 'completed',
         output: [
           { type: 'text', text: 'captured 800x600' },
@@ -144,7 +144,7 @@ describe('tool-call', () => {
 
   it('falls back to JSON for arrays that are not content blocks', () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'list', output: [{ path: 'src/a.ts' }] },
+      props: { title: 'list', output: [{ path: 'src/a.ts' }] },
     })
 
     expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"path"')
@@ -154,7 +154,7 @@ describe('tool-call', () => {
 
   it('applies the expand command from outside', async () => {
     const wrapper = mount(ToolCall, {
-      props: { name: 'search_flights', expand: false },
+      props: { title: 'search_flights', expand: false },
     })
 
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
@@ -175,7 +175,7 @@ describe('tool-call', () => {
   it('toggles open state on trigger click', async () => {
     const wrapper = mount(ToolCall, {
       props: {
-        name: 'search_flights',
+        title: 'search_flights',
         input: { q: 1 },
       },
     })

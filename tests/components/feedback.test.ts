@@ -40,7 +40,7 @@ describe('feedback-bar', () => {
 
     await wrapper.findAll('button')[0]!.trigger('click')
 
-    expect(wrapper.emitted('thumbUp')).toHaveLength(1)
+    expect(wrapper.emitted('thumb-up')).toHaveLength(1)
 
     wrapper.unmount()
   })
@@ -54,7 +54,7 @@ describe('feedback-bar', () => {
 
     await wrapper.findAll('button')[1]!.trigger('click')
 
-    expect(wrapper.emitted('thumbDown')).toHaveLength(1)
+    expect(wrapper.emitted('thumb-down')).toHaveLength(1)
 
     wrapper.unmount()
   })

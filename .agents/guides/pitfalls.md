@@ -315,3 +315,11 @@ a comment beside the fix.
 - **Symptom**: Dragging a control inside a `PPopover` (the `PEffortSlider` track, text selection in an input) and releasing with the pointer outside the popover closed it, discarding the value the drag had just committed.
 - **Cause**: `useOutsideClick` listened to `click` on `document` and read `ev.target`. When a press and its release land on different elements the browser dispatches `click` on their nearest common *ancestor* (the same mechanism as "A drag ends with a click the browser makes on its own"), so a drag that started inside the popover surfaced as a `click` on `body` — indistinguishable from a real outside click.
 - **Fix**: Judge outside-ness by where the gesture started: pass `eventName: 'pointerdown'` so a press inside the popover can never become an outside event, whatever the release does (`src/components/popover/index.vue`, matching the `swipe-cell` call site, Radix `DismissableLayer`, Floating UI `useDismiss` and VueUse `onClickOutside`, which are all press-anchored). Any new `useOutsideClick` consumer that dismisses on outside interaction should anchor on the press the same way; the composable's `click` default only suits listeners that never fire mid-drag.
+
+---
+
+### Stale fsModuleCache entries make whole suites uncollectable
+
+- **Symptom**: Entire suites fail at collection with `TypeError: Cannot read properties of undefined (reading 'config')` pointing at the file's first `describe` — no test inside runs. Only specific files are hit; an identical copy of the file under another name passes, and editing the content changes nothing.
+- **Cause**: vite-plus's `fsModuleCache` (default `node_modules/.vitest-cache`) is a transform cache keyed by file path. A stale entry — left behind by a rename/refactor of the test file or its imports — no longer matches the current module graph, and the mismatch surfaces inside Vitest as this TypeError instead of a resolution error.
+- **Fix**: Run `vp test --clearCache` (or delete `node_modules/.vitest-cache`) and rerun. `node_modules/.vitest` and `node_modules/.vite` are different caches — clearing them does nothing for this.
