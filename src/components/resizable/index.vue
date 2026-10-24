@@ -640,11 +640,10 @@ defineExpose({
 }
 
 .pxd-resizable-handle[data-orientation='horizontal'] {
-  width: 1px;
   height: 100%;
   margin-right: -1px;
+  border-left-width: 1px;
   cursor: col-resize;
-  background-color: var(--color-gray-300);
 
   &::before {
     width: 0.375rem;
@@ -662,10 +661,9 @@ defineExpose({
 
 .pxd-resizable-handle[data-orientation='vertical'] {
   width: 100%;
-  height: 1px;
   margin-bottom: -1px;
+  border-bottom-width: 1px;
   cursor: row-resize;
-  background-color: var(--color-gray-300);
 
   &::before {
     width: 1.5rem;
