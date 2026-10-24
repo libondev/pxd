@@ -63,7 +63,7 @@ function onInputChange() {
     role="switch"
     :aria-selected="isChecked"
     :data-disabled="isDisabled"
-    class="pxd-switch-item flex-1 shrink-0 cursor-pointer"
+    class="pxd-switch-item relative flex-1 shrink-0 cursor-pointer"
     :for="uniqueId"
     v-bind="$attrs"
   >

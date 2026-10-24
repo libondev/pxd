@@ -158,7 +158,7 @@ function onInputChange(event: Event) {
     v-bind="attrs"
   >
     <div
-      class="pxd-choicebox-item--option p-3 flex items-center justify-between motion-safe:transition-colors"
+      class="pxd-choicebox-item--option relative p-3 flex items-center justify-between motion-safe:transition-colors"
     >
       <input
         :id="inputId"

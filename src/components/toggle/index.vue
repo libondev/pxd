@@ -69,7 +69,7 @@ async function onCheckboxChange(e: Event) {
     role="switch"
     :for="uniqueId"
     :aria-checked="isChecked"
-    class="pxd-toggle group/toggle inline-flex cursor-pointer touch-manipulation items-center select-none"
+    class="pxd-toggle group/toggle relative inline-flex cursor-pointer touch-manipulation items-center select-none"
     :aria-label="modelValue ? activeLabel : inactiveLabel"
     v-bind="$attrs"
   >

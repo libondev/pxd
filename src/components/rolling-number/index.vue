@@ -234,7 +234,7 @@ defineExpose({
 <template>
   <span
     data-rolling-number
-    class="pxd-rolling-number tabular-nums text-trim-both"
+    class="pxd-rolling-number relative tabular-nums text-trim-both"
     role="status"
     aria-live="polite"
     aria-atomic="true"
