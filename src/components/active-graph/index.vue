@@ -12,6 +12,7 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getAllDatesBetween } from '../../utils/date.js'
 import { scheduleByRaf } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'
+import { getColorByThreshold } from '../../utils/helper.js'
 import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
@@ -96,30 +97,6 @@ const computedColors = computed(() => {
     20: 'var(--color-green-900)',
   }
 })
-
-const colorThresholds = computed(() =>
-  Object.keys(computedColors.value)
-    .map(Number)
-    .sort((a, b) => a - b),
-)
-
-function getColor(count: number): string {
-  const colors = computedColors.value
-  const thresholds = colorThresholds.value
-  const length = thresholds.length
-
-  if (length === 0) {
-    return ''
-  }
-
-  for (let i = 0; i < length; i++) {
-    if (count < thresholds[i]!) {
-      return colors[thresholds[i - 1]!]!
-    }
-  }
-
-  return colors[thresholds[length - 1]!]!
-}
 
 const rangedDates = computed(() =>
   getAllDatesBetween(
@@ -277,7 +254,7 @@ function createTransposedTableData(): ActiveGraphRowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getColor(count),
+      color: getColorByThreshold(count, computedColors.value),
     })
 
     const isLastItem = i === dateListLength - 1
@@ -345,7 +322,7 @@ function createStandardTableData(): ActiveGraphRowData[] {
       hidden: false,
       date: dateStr,
       count,
-      color: getColor(count),
+      color: getColorByThreshold(count, computedColors.value),
     })
   }
 
