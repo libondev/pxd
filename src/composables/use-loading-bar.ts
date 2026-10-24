@@ -1,5 +1,7 @@
 // Part of the realization comes from: https://github.com/rstacruz/nprogress
 
+import { isServer } from '../utils/is.ts'
+
 export const UPDATE_LOADING_BAR_EVENT_NAME = '#update-loading-bar'
 
 export type LoadingBarActionType = 'start' | 'error' | 'finish' | 'increase'
@@ -13,6 +15,10 @@ export interface LoadingBarEventParams {
 interface Options extends LoadingBarEventParams {}
 
 export function useLoadingBar(options: Options) {
+  if (isServer()) {
+    return
+  }
+
   window.dispatchEvent(new CustomEvent(UPDATE_LOADING_BAR_EVENT_NAME, { detail: options }))
 }
 
