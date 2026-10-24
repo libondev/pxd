@@ -1,5 +1,7 @@
+import type { ComponentLabel } from '../../types/shared/props'
+
 export interface DescriptionProps {
-  title?: string
+  title?: ComponentLabel
   tooltip?: string
   description?: string
 }

@@ -1,3 +1,5 @@
+import type { ComponentLabel } from '../../types/shared/props'
+
 export interface CodeBlockSwitcherOption {
   label?: string
   value: string
@@ -11,7 +13,7 @@ export interface CodeBlockSwitcherProps {
 export interface CodeBlockProps {
   code: string
   language?: string
-  title?: string
+  title?: ComponentLabel
   size?: 'sm' | 'md' | 'lg'
   lineNumbers?: boolean
   highlightedLines?: number[]

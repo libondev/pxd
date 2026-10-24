@@ -1,4 +1,6 @@
+import type { ComponentLabel } from '../../types/shared/props'
+
 export interface EmptyStateProps {
-  title?: string
+  title?: ComponentLabel
   description?: string
 }

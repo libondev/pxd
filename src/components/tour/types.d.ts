@@ -1,8 +1,8 @@
-import type { ComponentPosition } from '../../types/shared/props'
+import type { ComponentPosition, ComponentLabel } from '../../types/shared/props'
 
 export interface TourStep {
   target?: string | HTMLElement | (() => HTMLElement | null)
-  title?: string
+  title?: ComponentLabel
   description?: string
   position?: ComponentPosition
   nextText?: ComponentLabel
