@@ -672,6 +672,18 @@
   overflow-y: hidden !important;
 }
 
+.grid-template-rows-1fr {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.grid-template-rows-0fr {
+  grid-template-rows: minmax(0, 0fr);
+}
+
+.grid-template-cols-1fr {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration: 0 !important;

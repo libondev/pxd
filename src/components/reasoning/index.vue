@@ -15,14 +15,15 @@ defineOptions({
 const props = withDefaults(defineProps<ReasoningProps>(), {
   variant: 'default',
   streaming: true,
+  expand: true,
 })
 
 const contentRef = shallowRef<HTMLElement>()
 
 const configProvider = useConfigProvider()
-const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
-  () => props.streaming,
+  () => props.expand,
 )
 </script>
 
@@ -62,14 +63,18 @@ const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDe
 
     <div
       ref="contentRef"
-      class="pxd-reasoning--content overflow-hidden"
-      :class="{
-        'p-3 text-sm border-t text-foreground-secondary': variant === 'default',
-        'mbs-1.5 text-sm ms-1.5 ps-3 border-l text-foreground-secondary': variant === 'simple',
-        'motion-safe:transition-[height]': isOpen || isLeaving,
-      }"
+      class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
+      :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
-      <slot />
+      <div
+        class="pxd-reasoning--content"
+        :class="{
+          'p-3 text-sm border-t text-foreground-secondary': variant === 'default',
+          'mbs-1.5 text-sm ms-1.5 ps-3 border-l text-foreground-secondary': variant === 'simple',
+        }"
+      >
+        <slot />
+      </div>
     </div>
   </details>
 </template>

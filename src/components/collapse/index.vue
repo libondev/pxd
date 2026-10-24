@@ -20,7 +20,7 @@ const contentRef = shallowRef<HTMLElement>()
 
 const collapseGroup = useCollapseGroupContext()
 
-const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
 )
@@ -91,12 +91,12 @@ onBeforeUnmount(() => {
 
     <div
       ref="contentRef"
-      class="pxd-collapse--content"
-      :class="{
-        'motion-safe:transition-[height]': isOpen || isLeaving,
-      }"
+      class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
+      :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
-      <slot />
+      <div class="pxd-collapse--content">
+        <slot />
+      </div>
     </div>
   </details>
 </template>

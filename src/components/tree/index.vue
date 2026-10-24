@@ -758,7 +758,7 @@ defineExpose({
           v-for="entry in renderEntries"
           :key="entry.key"
           :data-checked="checked.has(entry.key)"
-          class="pxd-tree--row grid w-full grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+          class="pxd-tree--row grid-template-cols-1fr grid-template-rows-1fr grid w-full"
           :class="{ 'left-0 top-0 absolute': virtual }"
           :style="virtual ? { transform: 'translateY(' + entry.start + 'px)' } : undefined"
         >

@@ -4,12 +4,20 @@ import { nextTick } from 'vue'
 import Reasoning from '../../src/components/reasoning/index.vue'
 
 describe('reasoning', () => {
-  it('opens when streaming', () => {
-    const wrapper = mount(Reasoning, {
-      props: { streaming: true },
-    })
+  it('is expanded by default', () => {
+    const wrapper = mount(Reasoning)
 
     expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('starts collapsed when expand is false', () => {
+    const wrapper = mount(Reasoning, {
+      props: { expand: false },
+    })
+
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
 
     wrapper.unmount()
   })

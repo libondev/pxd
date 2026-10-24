@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch } from 'vue'
+import { onScopeDispose, shallowRef, watch } from 'vue'
 import { getStyle } from '../../utils/dom.js'
 import { toValue } from '../../utils/helper.js'
 
@@ -9,40 +9,34 @@ export function useDetailsCollapse(
 ) {
   const isOpen = shallowRef(toValue(source))
 
-  // Stays true during leave so height can animate before `open` is removed.
+  // Stays true during leave so the grid row can animate before `open` is removed.
   const detailsOpen = shallowRef(isOpen.value)
 
-  let skipEnter = false
   let stopWait: (() => void) | undefined
-
-  const isLeaving = computed(() => detailsOpen.value && !isOpen.value)
 
   function clearWait() {
     stopWait?.()
     stopWait = undefined
   }
 
-  function animate(isExpanded: boolean) {
+  function waitForLeaveEnd() {
     const el = contentRef.value
     if (!el) {
+      detailsOpen.value = false
       return
     }
 
     clearWait()
 
-    el.style.overflow = 'hidden'
-    el.style.height = isExpanded ? '0' : `${el.scrollHeight}px`
-    void el.offsetHeight
-    el.style.height = isExpanded ? `${el.scrollHeight}px` : '0'
-
     const done = (event?: Event) => {
-      if (event && ((event as TransitionEvent).propertyName !== 'height' || event.target !== el)) {
+      if (
+        event &&
+        ((event as TransitionEvent).propertyName !== 'grid-template-rows' || event.target !== el)
+      ) {
         return
       }
 
       clearWait()
-      el.style.height = ''
-      el.style.overflow = ''
 
       if (!isOpen.value) {
         detailsOpen.value = false
@@ -50,6 +44,7 @@ export function useDetailsCollapse(
     }
 
     const ms = (Number.parseFloat(getStyle(el).transitionDuration) || 0) * 1000
+
     if (!ms) {
       done()
       return
@@ -71,7 +66,6 @@ export function useDetailsCollapse(
     const details = ev.currentTarget as HTMLDetailsElement
 
     if (details.open && !isOpen.value) {
-      skipEnter = true
       isOpen.value = true
     }
   }
@@ -88,19 +82,14 @@ export function useDetailsCollapse(
     (open) => {
       if (open) {
         detailsOpen.value = true
-
-        if (skipEnter) {
-          skipEnter = false
-          return
-        }
+      } else {
+        waitForLeaveEnd()
       }
-
-      animate(open)
     },
     { flush: 'post' },
   )
 
   onScopeDispose(clearWait)
 
-  return { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle }
+  return { isOpen, detailsOpen, onToggleClick, onDetailsToggle }
 }

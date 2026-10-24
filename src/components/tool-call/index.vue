@@ -41,7 +41,7 @@ const outputPayload = computed(() => formatPayload(props.output))
 
 const configProvider = useConfigProvider()
 
-const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
 )
@@ -156,42 +156,46 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
 
     <div
       ref="contentRef"
-      class="pxd-tool-call--content overflow-hidden"
-      :class="{
-        'border-t': variant === 'default',
-        'ms-1.5 mbs-1.5 border-l': variant === 'simple',
-        'motion-safe:transition-[height]': isOpen || isLeaving,
-      }"
+      class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
+      :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
-      <div class="gap-4 p-3 flex flex-col">
-        <div v-if="inputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
-          <div
-            class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
-          >
-            {{ configProvider.locale.toolCall.input }}
+      <div
+        class="pxd-tool-call--content"
+        :class="{
+          'border-t': variant === 'default',
+          'ms-1.5 mbs-1.5 border-l': variant === 'simple',
+        }"
+      >
+        <div class="gap-4 p-3 flex flex-col">
+          <div v-if="inputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
+            <div
+              class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
+            >
+              {{ configProvider.locale.toolCall.input }}
+            </div>
+            <PCodeBlock
+              class="pxd-tool-call--code"
+              :code="inputPayload.text"
+              :language="inputPayload.isJson ? 'json' : undefined"
+              copy-btn="hidden"
+              size="sm"
+            />
           </div>
-          <PCodeBlock
-            class="pxd-tool-call--code"
-            :code="inputPayload.text"
-            :language="inputPayload.isJson ? 'json' : undefined"
-            copy-btn="hidden"
-            size="sm"
-          />
-        </div>
 
-        <div v-if="outputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
-          <div
-            class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
-          >
-            {{ configProvider.locale.toolCall.output }}
+          <div v-if="outputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
+            <div
+              class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
+            >
+              {{ configProvider.locale.toolCall.output }}
+            </div>
+            <PCodeBlock
+              class="pxd-tool-call--code"
+              :code="outputPayload.text"
+              :language="outputPayload.isJson ? 'json' : undefined"
+              copy-btn="hidden"
+              size="sm"
+            />
           </div>
-          <PCodeBlock
-            class="pxd-tool-call--code"
-            :code="outputPayload.text"
-            :language="outputPayload.isJson ? 'json' : undefined"
-            copy-btn="hidden"
-            size="sm"
-          />
         </div>
       </div>
     </div>

@@ -70,7 +70,7 @@ const showSubmitButton = computed(() => {
 })
 
 const configProvider = useConfigProvider()
-const { isOpen, detailsOpen, isLeaving, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
 )
@@ -310,76 +310,80 @@ watch(
 
         <div
           ref="contentRef"
-          class="pxd-questionnaire--content overflow-hidden rounded-b-xl border-t"
-          :class="{ 'motion-safe:transition-[height]': isOpen || isLeaving }"
+          class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
+          :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
         >
-          <PList
-            :model-value="currentAnswer.selected"
-            :multiple="currentQuestion.multiSelect"
-            :options="currentQuestion.options"
-            @update:model-value="onListModelUpdate"
-            @change="onAnswerItemSelect"
-          >
-            <template #item="{ item }">
-              <div v-if="item.label" class="flex flex-col">
-                <span>{{ item.label }}</span>
-                <span class="text-foreground-secondary">{{ item.description }}</span>
+          <div class="pxd-questionnaire--content border-t">
+            <PList
+              :model-value="currentAnswer.selected"
+              :multiple="currentQuestion.multiSelect"
+              :options="currentQuestion.options"
+              @update:model-value="onListModelUpdate"
+              @change="onAnswerItemSelect"
+            >
+              <template #item="{ item }">
+                <div v-if="item.label" class="flex flex-col">
+                  <span>{{ item.label }}</span>
+                  <span class="text-foreground-secondary">{{ item.description }}</span>
+                </div>
+
+                <PInput
+                  v-else
+                  :model-value="currentAnswer.freeText"
+                  :placeholder="item.description"
+                  class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
+                  @update:model-value="onFreeformInput"
+                  @change="onFreeformInputChange"
+                  @click.stop
+                />
+              </template>
+            </PList>
+
+            <div
+              v-if="questions.length > 1 || showSubmitButton"
+              class="p-2 flex items-center justify-between border-t"
+            >
+              <div v-if="questions.length > 1" class="gap-1 flex items-center">
+                <PButton
+                  variant="ghost"
+                  :class="{ 'pointer-events-none opacity-50': !currentIndex }"
+                  icon
+                  :title="configProvider.locale.questionnaire.prev"
+                  :aria-label="configProvider.locale.questionnaire.prev"
+                  :aria-disabled="!currentIndex"
+                  @click="toggleCurrentIndex(-1)"
+                >
+                  <ChevronDownIcon class="rotate-90" aria-hidden="true" />
+                </PButton>
+
+                <PButton
+                  variant="ghost"
+                  :class="{
+                    'pointer-events-none opacity-50': currentIndex >= questions.length - 1,
+                  }"
+                  icon
+                  :title="configProvider.locale.questionnaire.next"
+                  :aria-label="configProvider.locale.questionnaire.next"
+                  :aria-disabled="currentIndex >= questions.length - 1"
+                  @click="toggleCurrentIndex(1)"
+                >
+                  <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
+                </PButton>
+
+                <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
+                  {{ currentIndex + 1 }}/{{ questions.length }}
+                </span>
               </div>
 
-              <PInput
-                v-else
-                :model-value="currentAnswer.freeText"
-                :placeholder="item.description"
-                class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
-                @update:model-value="onFreeformInput"
-                @change="onFreeformInputChange"
-                @click.stop
-              />
-            </template>
-          </PList>
+              <div class="gap-2 ms-auto flex items-center">
+                <PButton variant="ghost" @click="skipCurrentQuestion">
+                  {{ configProvider.locale.interaction.skip }}
+                </PButton>
 
-          <div
-            v-if="questions.length > 1 || showSubmitButton"
-            class="p-2 flex items-center justify-between border-t"
-          >
-            <div v-if="questions.length > 1" class="gap-1 flex items-center">
-              <PButton
-                variant="ghost"
-                :class="{ 'pointer-events-none opacity-50': !currentIndex }"
-                icon
-                :title="configProvider.locale.questionnaire.prev"
-                :aria-label="configProvider.locale.questionnaire.prev"
-                :aria-disabled="!currentIndex"
-                @click="toggleCurrentIndex(-1)"
-              >
-                <ChevronDownIcon class="rotate-90" aria-hidden="true" />
-              </PButton>
-
-              <PButton
-                variant="ghost"
-                :class="{ 'pointer-events-none opacity-50': currentIndex >= questions.length - 1 }"
-                icon
-                :title="configProvider.locale.questionnaire.next"
-                :aria-label="configProvider.locale.questionnaire.next"
-                :aria-disabled="currentIndex >= questions.length - 1"
-                @click="toggleCurrentIndex(1)"
-              >
-                <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
-              </PButton>
-
-              <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
-                {{ currentIndex + 1 }}/{{ questions.length }}
-              </span>
-            </div>
-
-            <div class="gap-2 ms-auto flex items-center">
-              <PButton variant="ghost" @click="skipCurrentQuestion">
-                {{ configProvider.locale.interaction.skip }}
-              </PButton>
-
-              <PButton v-show="showSubmitButton" variant="primary" @click="onSubmitAnswers">
-                {{ configProvider.locale.interaction.submit }}
-              </PButton>
+                <PButton v-show="showSubmitButton" variant="primary" @click="onSubmitAnswers">
+                  {{ configProvider.locale.interaction.submit }}
+                </PButton>
+              </div>
             </div>
           </div>
         </div>
