@@ -1,4 +1,4 @@
-import type { TocItem } from '../../src/components/toc/types'
+import type { TocItem, TocScrollSource } from '../../src/components/toc/types'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { computed, defineComponent, h, nextTick, ref } from 'vue'
@@ -50,6 +50,26 @@ function click(el: Element, init: MouseEventInit = {}) {
   el.dispatchEvent(event)
 
   return event
+}
+
+/** A source over fixed item offsets; `scroll` doubles as the reactive change signal. */
+function fakeSource(starts: number[], maxScroll: number) {
+  const scroll = ref(0)
+  const scrollToIndex = vi.fn()
+  const source: TocScrollSource = {
+    getOffsetForIndex: (index) => {
+      void scroll.value
+      return starts[index]
+    },
+    getScrollOffset: () => scroll.value,
+    getMaxScrollOffset: () => {
+      void scroll.value
+      return maxScroll
+    },
+    scrollToIndex,
+  }
+
+  return { source, scroll, scrollToIndex }
 }
 
 /** The outline is read on mount and on mutation, both through a rAF-scheduled pass. */
@@ -510,6 +530,125 @@ describe('toc', () => {
     await settle()
 
     expect(scrollTo).toHaveBeenCalledWith({ top: 620, behavior: 'smooth' })
+
+    wrapper.unmount()
+  })
+
+  it('renders the data outline and ignores the selector', async () => {
+    stubHeadings([{ top: 0 }])
+
+    const wrapper = mount(Toc, {
+      props: {
+        data: [
+          { id: 'a', label: 'Alpha', level: 1 },
+          { id: 'b', label: 'Beta', level: 2 },
+        ],
+        selector: SELECTOR,
+      },
+    })
+    await settle()
+
+    const links = wrapper.findAll('a')
+
+    expect(links).toHaveLength(2)
+    expect(links[0]!.attributes('href')).toBe('#a')
+    expect(links[0]!.text()).toBe('Alpha')
+
+    wrapper.unmount()
+  })
+
+  it('tracks the active entry through the source offsets', async () => {
+    const { source, scroll } = fakeSource([30, 120, 240], 1000)
+
+    const wrapper = mount(Toc, {
+      props: {
+        data: [
+          { id: 'a', label: 'A', level: 1 },
+          { id: 'b', label: 'B', level: 1 },
+          { id: 'c', label: 'C', level: 1 },
+        ],
+        source,
+        offset: 20,
+      },
+    })
+    await settle()
+
+    // No entry has crossed the probe line yet; the first one still holds the highlight.
+    expect(wrapper.findAll('a')[0]!.attributes('aria-current')).toBe('location')
+
+    scroll.value = 150
+    await settle()
+
+    expect(wrapper.findAll('a')[1]!.attributes('aria-current')).toBe('location')
+    expect(wrapper.findAll('a')[0]!.attributes('aria-current')).toBeUndefined()
+    expect(wrapper.emitted('active-change')?.at(-1)?.[0]).toMatchObject({ id: 'b' })
+
+    wrapper.unmount()
+  })
+
+  it('hands the highlight to the last entry when the source reaches its end', async () => {
+    const { source, scroll } = fakeSource([0, 120], 260)
+
+    const wrapper = mount(Toc, {
+      props: {
+        data: [
+          { id: 'a', label: 'A', level: 1 },
+          { id: 'b', label: 'B', level: 1 },
+        ],
+        source,
+      },
+    })
+    await settle()
+
+    scroll.value = 259
+    await settle()
+
+    expect(wrapper.findAll('a')[1]!.attributes('aria-current')).toBe('location')
+
+    wrapper.unmount()
+  })
+
+  it('renders a data outline without tracking when no source is given', async () => {
+    const wrapper = mount(Toc, {
+      props: { data: [{ id: 'a', label: 'A', level: 1 }] },
+    })
+    await settle()
+
+    expect(wrapper.find('a').attributes('aria-current')).toBeUndefined()
+
+    const vm = wrapper.vm as unknown as { scrollTo: (id: string) => boolean }
+
+    expect(vm.scrollTo('a')).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('scrolls through the source on click and through the exposed scrollTo', () => {
+    const { source, scrollToIndex } = fakeSource([0, 120], 260)
+
+    const wrapper = mount(Toc, {
+      props: {
+        data: [
+          { id: 'a', label: 'A', level: 1 },
+          { id: 'b', label: 'B', level: 1 },
+        ],
+        source,
+        scrollBehavior: 'smooth',
+      },
+    })
+
+    const event = click(wrapper.findAll('a')[1]!.element)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(scrollToIndex).toHaveBeenCalledWith(1, { behavior: 'smooth' })
+    expect(wrapper.emitted('item-click')?.[0]?.[0]).toMatchObject({ id: 'b' })
+
+    const vm = wrapper.vm as unknown as { scrollTo: (id: string) => boolean }
+
+    expect(vm.scrollTo('a')).toBe(true)
+    expect(scrollToIndex).toHaveBeenLastCalledWith(0, { behavior: 'smooth' })
+    expect(vm.scrollTo('nope')).toBe(false)
+    expect(scrollTo).not.toHaveBeenCalled()
 
     wrapper.unmount()
   })

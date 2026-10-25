@@ -16,6 +16,7 @@ defineOptions({
 
 const INDENT_BASE = 8
 const INDENT_STEP = 14
+const BOTTOM_TOLERANCE = 2
 
 const ITEM_ACTIVE_CLASS = 'pxd-toc--item_active bg-gray-200 text-primary'
 const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-gray-900'
@@ -26,6 +27,9 @@ interface TocEntry {
 }
 
 const props = withDefaults(defineProps<TocProps>(), {
+  data: null,
+  selector: '',
+  source: null,
   offset: 0,
   scrollBehavior: 'auto',
   scrollTarget: null,
@@ -43,6 +47,8 @@ const { attrs, classes } = useTailwindVariant({
 const listEl = ref<HTMLElement | null>(null)
 
 const entries = shallowRef<TocEntry[]>([])
+
+const isDataMode = computed(() => props.data != null)
 
 function outlineRoot(): HTMLElement {
   return props.scrollTarget ?? document.body
@@ -64,6 +70,14 @@ function isSameOutline(next: TocEntry[], current: TocEntry[]): boolean {
 }
 
 function readOutline(): void {
+  if (isDataMode.value || !props.selector) {
+    if (entries.value.length) {
+      entries.value = []
+    }
+
+    return
+  }
+
   const next = Array.from(outlineRoot().querySelectorAll<HTMLElement>(props.selector))
     .filter((el) => el.id)
     .map<TocEntry>((el) => ({
@@ -86,16 +100,60 @@ function readOutline(): void {
 
 const scheduleRead = scheduleByRaf(readOutline)
 
-const { activeEl, update } = useScrollspy(
-  computed(() => entries.value.map((entry) => entry.el)),
+const { activeIndex: spyActiveIndex, update } = useScrollspy(
+  computed(() => (isDataMode.value ? [] : entries.value.map((entry) => entry.el))),
   {
     scrollTarget: () => props.scrollTarget,
     topOffset: () => props.offset,
   },
 )
 
-const items = computed(() => entries.value.map((entry) => entry.item))
-const activeId = computed(() => activeEl.value?.id ?? null)
+const items = computed<TocItem[]>(() =>
+  isDataMode.value ? props.data! : entries.value.map((entry) => entry.item),
+)
+
+// Data mode bisects the source's cached offsets instead of DOM rects: the active entry sits at
+// the probe line, where the owning list has it rendered and measured; distant entries may be
+// estimates, which only ever shifts the jump target, never the highlight.
+const activeIndex = computed(() => {
+  const source = props.source
+  const count = items.value.length
+
+  if (!isDataMode.value || !source || !count) {
+    return spyActiveIndex.value
+  }
+
+  const scrollOffset = source.getScrollOffset()
+
+  if (scrollOffset == null) {
+    return -1
+  }
+
+  const maxScroll = source.getMaxScrollOffset()
+
+  // A short trailing entry can never be scrolled up to the probe line.
+  if (maxScroll > 1 && scrollOffset >= maxScroll - BOTTOM_TOLERANCE) {
+    return count - 1
+  }
+
+  let low = 0
+  let high = count
+
+  while (low < high) {
+    const mid = (low + high) >> 1
+    const start = source.getOffsetForIndex(mid)
+
+    if (start == null || start - props.offset > scrollOffset) {
+      high = mid
+    } else {
+      low = mid + 1
+    }
+  }
+
+  return Math.max(low - 1, 0)
+})
+
+const activeId = computed(() => items.value[activeIndex.value]?.id ?? null)
 
 const tocItems = computed(() => {
   if (!items.value.length) {
@@ -112,9 +170,6 @@ const tocItems = computed(() => {
   }))
 })
 
-// Indexed by the outline, not the spy's targets, so a dropped element can't shift later rows.
-const activeRowIndex = computed(() => items.value.findIndex((item) => item.id === activeId.value))
-
 function getScrollTop(target: HTMLElement, container: HTMLElement): number {
   const top = target.getBoundingClientRect().top
 
@@ -126,6 +181,16 @@ function getScrollTop(target: HTMLElement, container: HTMLElement): number {
 }
 
 function scrollTo(id: string): boolean {
+  const index = items.value.findIndex((item) => item.id === id)
+
+  if (index >= 0 && isDataMode.value && props.source) {
+    props.source.scrollToIndex(index, {
+      behavior: resolveScrollBehavior(props.scrollBehavior, motionReduce),
+    })
+
+    return true
+  }
+
   const target = document.getElementById(id)
 
   if (!target) {
@@ -158,7 +223,7 @@ function onItemClick(item: TocItem, event: MouseEvent): void {
 
 function keepActiveVisible(): void {
   const list = listEl.value
-  const index = activeRowIndex.value
+  const index = activeIndex.value
 
   if (!props.scrollActiveIntoView || !list || index < 0) {
     return
@@ -189,7 +254,7 @@ if (!isServer()) {
     attributeFilter: ['id'],
   })
 
-  watch(() => [props.selector, props.scrollTarget], scheduleRead, {
+  watch(() => [props.selector, props.scrollTarget, props.data], scheduleRead, {
     immediate: true,
     flush: 'post',
   })

@@ -1,3 +1,4 @@
+import type { TocScrollSource } from '../../src/components/toc/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
@@ -100,5 +101,46 @@ describe('bubble-group', () => {
     expect(scrollTo).toHaveBeenLastCalledWith({ top: 400, behavior: 'instant' })
 
     wrapper.unmount()
+  })
+
+  it('exposes a toc source over the virtualizer', async () => {
+    // happy-dom has no layout: every box measures as the 50px estimate, so offsets stay stable.
+    const rectSpy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+      top: 0,
+      bottom: 50,
+      height: 50,
+      left: 0,
+      right: 0,
+      width: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    const wrapper = mount(BubbleGroup, {
+      props: { data: [{ id: 1 }, { id: 2 }, { id: 3 }], dataKey: 'id', virtual: true },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { scrollTo } = patchScrollMetrics(container, {
+      scrollHeight: 500,
+      clientHeight: 100,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    try {
+      const tocSource = (wrapper.vm as unknown as { tocSource: TocScrollSource }).tocSource
+
+      expect(tocSource.getOffsetForIndex(0)).toBe(0)
+      expect(tocSource.getOffsetForIndex(2)).toBe(100)
+      expect(tocSource.getScrollOffset()).toBe(0)
+
+      tocSource.scrollToIndex(2)
+      expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 100 }))
+    } finally {
+      rectSpy.mockRestore()
+      wrapper.unmount()
+    }
   })
 })

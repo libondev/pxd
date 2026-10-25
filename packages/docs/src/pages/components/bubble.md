@@ -210,3 +210,9 @@ function addMessage() {
 | --- | --- |
 | default | Default slot (used when `data` is not provided) |
 | item | Scoped slot for `data` mode: `{ item, index }` |
+
+## BubbleGroup Methods
+
+| Name | Type | Description |
+| --- | --- | --- |
+| tocSource | `TocScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking the virtualized messages. |

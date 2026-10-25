@@ -1,3 +1,7 @@
+import type { TocScrollSource, TocScrollToOptions } from '../../types/shared/toc'
+
+export type { TocScrollSource, TocScrollToOptions }
+
 export interface TocItem {
   /** `id` of the heading element this entry scrolls to. */
   id: string
@@ -8,10 +12,14 @@ export interface TocItem {
 }
 
 export interface TocProps {
+  /** Outline entries as data, for lists that do not keep every entry in the DOM; overrides `selector`. */
+  data?: TocItem[] | null
   /** Headings that make up the outline, as a CSS selector. */
-  selector: string
+  selector?: string
   /** Scrollable container holding the headings; leave empty to read the document. */
   scrollTarget?: HTMLElement | null
+  /** Position and scroll source for a data-driven outline; without it the outline renders without tracking. */
+  source?: TocScrollSource | null
   /** Pixels kept above the heading when scrolling to it, and the spy probe line. */
   offset?: number
   /** Scroll animation when an entry is activated; `auto` follows the system motion preference. */

@@ -1,3 +1,4 @@
+import type { TocScrollSource } from '../types/shared/toc'
 import type { MaybeElementRef } from '../types/shared/utils'
 import type { VirtualItem } from '@tanstack/virtual-core'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
@@ -114,6 +115,32 @@ export function useVirtualList<Options extends VirtualListOptions>(
     },
   })
 
+  // `getVirtualItems()` refreshes the measurements cache, normally a render's job; the version
+  // read makes the getters reactive per the `TocScrollSource` contract.
+  function refreshMeasurements() {
+    void triggerVersion.value
+    virtualizer.getVirtualItems()
+  }
+
+  const tocSource: TocScrollSource = {
+    getOffsetForIndex(index) {
+      refreshMeasurements()
+      return virtualizer.getOffsetForIndex(index, 'start')?.[0]
+    },
+    getScrollOffset() {
+      refreshMeasurements()
+      return virtualizer.scrollOffset
+    },
+    getMaxScrollOffset() {
+      refreshMeasurements()
+      return Math.max(virtualizer.getTotalSize() - (virtualizer.scrollRect?.height ?? 0), 0)
+    },
+    scrollToIndex(index, options) {
+      virtualizer.getVirtualItems()
+      virtualizer.scrollToIndex(index, { align: 'start', behavior: options?.behavior })
+    },
+  }
+
   const virtualItems = computed<VirtualListItem[]>(() => {
     void triggerVersion.value
     if (!getEnabled()) {
@@ -150,12 +177,9 @@ export function useVirtualList<Options extends VirtualListOptions>(
     virtualizer.setOptions({
       ...virtualizer.options,
       count: enabled ? (options.items?.length ?? 0) : 0,
-      estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
-      getItemKey,
       overscan: options.overScan ?? DEFAULTS.overScan,
       lanes: options.columnCount ?? DEFAULTS.columnCount,
       gap: options.columnGap ?? DEFAULTS.columnGap,
-      getScrollElement: () => (enabled ? (toValue(containerRef) ?? null) : null),
     })
 
     if (enabled) {
@@ -188,6 +212,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
       options.columnCount,
       options.columnGap,
       options.overScan,
+      options.items,
+      options.items?.length,
     ],
     () => {
       if (getEnabled()) {
@@ -199,7 +225,6 @@ export function useVirtualList<Options extends VirtualListOptions>(
       }
     },
   )
-  watch(() => [options.items, options.items?.length], updateVirtualizer)
 
   onMounted(() => {
     if (getEnabled()) {
@@ -240,6 +265,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
     scrollToIndex,
     scrollToOffset,
     scrollBy,
+    tocSource,
     getVirtualizer: () => virtualizer,
   }
 }

@@ -182,15 +182,69 @@ const viewport = shallowRef(null)
 </template>
 ```
 
+## Data-Driven Outline
+
+Pass `data` together with `source` when the outlined entries live in a list that does not keep every entry in the DOM, such as a virtualized `PBubbleGroup`. The outline comes from data, the highlight is tracked against the source's cached item offsets, and activation scrolls through the source — no DOM elements are queried. `PBubbleGroup` and `PVirtualList` expose a ready `tocSource` through their template ref; entries map to the list by index, so keep the array aligned with the list's `data`.
+
+```vue demo
+<script setup>
+import { computed, ref } from 'vue'
+
+const messages = ref(
+  Array.from({ length: 60 }, (_, index) => ({
+    id: index,
+    role: index % 2 === 0 ? 'system' : 'user',
+    message: `The Evil Rabbit Jumped over the Fence ${index}`,
+  })),
+)
+
+const group = ref()
+const outline = computed(() =>
+  messages.value.map((message, index) => ({
+    id: String(message.id),
+    label: `Message ${index + 1}`,
+    level: 1,
+  })),
+)
+</script>
+
+<template>
+  <div class="flex items-start gap-6 max-sm:flex-col">
+    <PToc :data="outline" :source="group?.tocSource" class="w-40 shrink-0" />
+
+    <PBubbleGroup ref="group" class="max-h-60 flex-1" :data="messages" data-key="id" virtual>
+      <template #item="{ item }">
+        <PBubble :role="item.role" :text="item.message" />
+      </template>
+    </PBubbleGroup>
+  </div>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
+| data | `TocItem[] \| null` | `null` | Outline entries as an array, for lists that do not keep every entry in the DOM (e.g. a virtualized `PBubbleGroup`); takes precedence over `selector`. |
 | selector | `string` | - | Headings that make up the outline, as a CSS selector matched inside `scroll-target` (or the document). Re-read when it changes, and when that subtree mutates. |
 | scroll-target | `HTMLElement \| null` | `null` | Scrollable container holding the headings; the outline is read and watched inside it. Leave empty to read the document. |
-| offset | `number` | `0` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. |
+| source | `TocScrollSource \| null` | `null` | Position and scroll source for a data-driven outline; read `tocSource` from a virtualized list's template ref. Without it a data outline renders without active tracking or scrolling. |
+| offset | `number` | `0` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. In data mode only the probe line applies. |
 | scroll-behavior | `'auto' \| 'instant' \| 'smooth'` | `'auto'` | Scroll animation when an entry is activated; `auto` follows the system motion preference. |
 | scroll-active-into-view | `boolean` | `true` | Scroll the active entry back into view when it leaves the list. |
+
+```ts
+interface TocScrollSource {
+  /** Scroll offset that aligns `index` with the top of the viewport, or undefined while unknown. */
+  getOffsetForIndex: (index: number) => number | undefined
+  /** Current scroll offset of the container, or null while unavailable. */
+  getScrollOffset: () => number | null
+  /** Furthest scroll offset the container can reach. */
+  getMaxScrollOffset: () => number
+  /** Scroll `index` to the top of the viewport. */
+  scrollToIndex: (index: number, options?: { behavior?: ScrollBehavior }) => void
+}
+```
 
 ## Events
 
@@ -221,6 +275,6 @@ interface TocItem {
 | Name | Type | Description |
 | --- | --- | --- |
 | activeId | `string \| null` | The id of the entry that is currently highlighted. |
-| items | `TocItem[]` | The outline the component read from `scroll-target` (or the document). |
-| scrollTo | `(id: string) => boolean` | Scroll to the entry with the given id, returning whether it was found. |
-| update | `() => void` | Recompute the highlighted entry from the current layout. |
+| items | `TocItem[]` | The outline, read from `scroll-target` (or the document), or taken from the `data` prop. |
+| scrollTo | `(id: string) => boolean` | Scroll to the entry with the given id — through `source` in data mode — returning whether it was found. |
+| update | `() => void` | Recompute the highlighted entry from the current layout; a data-driven outline updates itself. |
