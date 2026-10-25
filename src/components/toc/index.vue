@@ -297,7 +297,7 @@ defineExpose({
         <a
           v-else
           :href="`#${row.item.id}`"
-          class="pxd-toc--item-label py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-colors"
+          class="pxd-toc--item-label py-1.5 pe-2 block w-full max-w-full cursor-pointer truncate rounded-md text-start no-underline self-focus-ring outline-none motion-safe:transition-[color,background,border-radius]"
           :class="row.item.id === activeId ? ITEM_ACTIVE_CLASS : ITEM_IDLE_CLASS"
           :style="{ paddingInlineStart: `${row.depth * INDENT_STEP + INDENT_BASE}px` }"
           :aria-current="row.item.id === activeId ? 'location' : undefined"
