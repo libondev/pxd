@@ -238,6 +238,10 @@ watch(listOptions, async () => {
           </slot>
         </template>
       </PList>
+
+      <div v-if="$slots.footer" class="pxd-mention--footer p-2 border-t">
+        <slot name="footer" />
+      </div>
     </template>
   </PPopover>
 </template>

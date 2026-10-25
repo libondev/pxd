@@ -109,6 +109,10 @@ watch(popoverVisible, async (visible) => {
           <slot name="item" v-bind="itemSlotProps" />
         </template>
       </PList>
+
+      <div v-if="$slots.footer" class="pxd-menu--footer p-2 border-t">
+        <slot name="footer" />
+      </div>
     </template>
   </PPopover>
 </template>

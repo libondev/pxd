@@ -197,6 +197,7 @@ interface MentionClickPayload {
 | item | Custom list item: `{ item, index, group, groupIndex }` |
 | group | Custom group label: `{ group, index }` |
 | empty | Custom empty search result content |
+| footer | Bottom area of the dropdown, below the option list. |
 
 ## Notes
 

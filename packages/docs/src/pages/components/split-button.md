@@ -108,3 +108,4 @@ const options = [
 | default | Default slot: `{ data }` |
 | icon | Custom dropdown icon |
 | item | Custom menu item content: `{ item, index }` |
+| footer | Bottom area of the dropdown, below the option list. |

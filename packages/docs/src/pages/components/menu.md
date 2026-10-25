@@ -133,3 +133,4 @@ const options = [
 | --- | --- |
 | default | Default slot |
 | item | Custom item content: `{ item, index }` |
+| footer | Bottom area of the dropdown, below the option list. |

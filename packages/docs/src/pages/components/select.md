@@ -185,3 +185,4 @@ const options = [
 | item | Option content. Slot props: `item`, `index`, `group`, `group-index`. |
 | empty | Shown when the visible option list is empty. |
 | suffix | Trigger suffix area. Replaces the default chevron icon. |
+| footer | Bottom area of the dropdown, below the option list. |
