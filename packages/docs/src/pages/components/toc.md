@@ -146,7 +146,7 @@ const viewport = shallowRef(null)
           :href="`#${item.id}`"
           :aria-label="item.label"
           :aria-current="active ? 'location' : undefined"
-          class="group relative flex h-5 items-center rounded-sm p-1 no-underline self-focus-ring outline-none"
+          class="group relative flex h-full items-center rounded-sm p-1 no-underline self-focus-ring outline-none"
           @click="select"
         >
           <span
@@ -210,7 +210,7 @@ const outline = computed(() =>
 
 <template>
   <div class="flex items-start gap-6 max-sm:flex-col">
-    <PToc :data="outline" :source="group?.scrollSource" class="w-40 shrink-0" />
+    <PToc :data="outline" :source="group?.scrollSource" class="w-40 shrink-0 max-h-60 overflow-auto" />
 
     <PBubbleGroup ref="group" class="max-h-60 flex-1" :data="messages" data-key="id" virtual>
       <template #item="{ item }">
