@@ -14,9 +14,12 @@ const props = defineProps<BubbleGroupProps>()
 
 const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 
+const isVirtual = computed(() => props.virtual === true && !!props.data)
+
 const { totalSize, virtualItems, measureElement } = useVirtualList(
   () => stickRef.value?.containerRef ?? null,
   {
+    enabled: () => isVirtual.value,
     get dataKey() {
       return props.dataKey
     },
@@ -33,7 +36,7 @@ const { totalSize, virtualItems, measureElement } = useVirtualList(
 )
 
 const contentStyle = computed(() => {
-  if (!props.data) {
+  if (!isVirtual.value) {
     return undefined
   }
 
@@ -42,6 +45,10 @@ const contentStyle = computed(() => {
     containIntrinsicSize: `auto ${totalSize.value}px`,
   }
 })
+
+function getDataItemKey(item: any, index: number) {
+  return (props.dataKey ? item[props.dataKey] : index) ?? index
+}
 
 watch(
   () => props.data?.length,
@@ -71,7 +78,7 @@ onMounted(() => {
     :content-style="contentStyle"
     v-bind="$attrs"
   >
-    <template v-if="data">
+    <template v-if="data && virtual">
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"
@@ -81,6 +88,16 @@ onMounted(() => {
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
         <slot name="item" :item="data[virtualItem.index]" :index="virtualItem.index" />
+      </div>
+    </template>
+
+    <template v-else-if="data">
+      <div
+        v-for="(item, index) in data"
+        :key="getDataItemKey(item, index)"
+        class="pxd-bubble-group--item sibling:pbs-2 w-full"
+      >
+        <slot name="item" :item="item" :index="index" />
       </div>
     </template>
 

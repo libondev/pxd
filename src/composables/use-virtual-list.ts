@@ -131,12 +131,12 @@ export function useVirtualList<Options extends VirtualListOptions>(
   })
 
   function measureElement(el: Element | ComponentPublicInstance | null) {
-    if (!getEnabled()) {
+    if (!el) {
+      virtualizer.measureElement(null)
       return
     }
 
-    if (!el) {
-      virtualizer.measureElement(null)
+    if (!getEnabled()) {
       return
     }
 
