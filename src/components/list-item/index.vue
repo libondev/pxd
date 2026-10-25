@@ -50,7 +50,7 @@ const isChecked = computed(() => {
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item p-2 text-sm pe-8 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item p-2 text-sm pe-40 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       size: {
         sm: BASIC_MIN_HEIGHTS.sm,
