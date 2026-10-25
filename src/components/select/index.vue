@@ -126,6 +126,7 @@ watch(listOptions, async () => {
   <PPopover
     data-select
     v-model="popoverVisible"
+    v-bind="$attrs"
     class="pxd-select"
     trigger="click"
     position="bottom"
@@ -136,7 +137,6 @@ watch(listOptions, async () => {
     :content-class="responsiveClasses.content"
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
-    v-bind="$attrs"
     @wrapper-keydown="onKeydown"
   >
     <PButton
@@ -209,7 +209,7 @@ watch(listOptions, async () => {
         :virtual="virtual"
         :loop="!filterable"
         :default-active-index="filterable ? 0 : -1"
-        class="max-h-68 min-h-0 flex-1"
+        class="max-h-68 min-h-0 flex-1 overflow-auto"
         @update:model-value="onListUpdate"
       >
         <template v-if="$slots.item" #item="itemSlotProps">
