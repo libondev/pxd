@@ -56,7 +56,7 @@ const viewItems = computed(() =>
 const configProvider = useConfigProvider()
 const { classes, attrs } = useTailwindVariant(
   {
-    base: 'pxd-context-usage--track flex w-full overflow-hidden rounded-full bg-gray-200',
+    base: 'pxd-context-usage--track flex w-full overflow-hidden rounded-full',
     variants: {
       size: {
         sm: 'h-1.5',
@@ -105,7 +105,7 @@ function onItemLeave() {
         @pointerleave="onItemLeave()"
       />
       <div
-        class="pxd-context-usage--free basis-0 pointer-events-none"
+        class="pxd-context-usage--free basis-0 pointer-events-none bg-gray-alpha-200"
         :style="{ flexGrow: freeTokens }"
       />
     </div>
