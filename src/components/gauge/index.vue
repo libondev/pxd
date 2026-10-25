@@ -38,7 +38,7 @@ const RING_PATH =
   `M 50 ${50 - RADIUS} A ${RADIUS} ${RADIUS} 0 1 1 50 ${50 + RADIUS}` +
   ` A ${RADIUS} ${RADIUS} 0 1 1 50 ${50 - RADIUS}`
 
-const DEFAULT_TRACK_COLOR = 'var(--color-gray-200)'
+const DEFAULT_TRACK_COLOR = 'var(--color-gray-alpha-200)'
 
 const defaultColors: GaugeProps['colors'] = {
   0: 'var(--color-red-800)',
