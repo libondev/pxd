@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CollapseEmits, CollapseProps } from './types'
-import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useCollapseGroupContext } from '../../contexts/collapse.js'
@@ -31,7 +31,7 @@ function onTriggerClick(ev: MouseEvent) {
 }
 
 watch(
-  isOpen,
+  () => isOpen.value,
   (open) => {
     const group = collapseGroup
 
@@ -83,9 +83,9 @@ onBeforeUnmount(() => {
         </slot>
       </h3>
 
-      <ChevronDownIcon
+      <ChevronRightIcon
         class="size-4 shrink-0 motion-safe:transition-transform"
-        :class="{ '-rotate-180': detailsOpen }"
+        :class="{ 'rotate-90': isOpen }"
       />
     </summary>
 

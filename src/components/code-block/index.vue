@@ -257,7 +257,7 @@ onUnmounted(() => {
 
     <div
       v-if="hasHeader"
-      class="pxd-code-block--header gap-2 ps-3 pe-1 h-9 flex items-center rounded-t-lg border bg-background-200"
+      class="pxd-code-block--header gap-2 ps-3 pe-0.75 h-9 flex items-center rounded-t-lg border bg-background-200"
     >
       <slot name="header">
         <FileIcon class="size-4 shrink-0 text-gray-900" aria-hidden="true" />
@@ -273,7 +273,7 @@ onUnmounted(() => {
             class="px-2 gap-1 flex h-full cursor-pointer items-center rounded-md bg-background-200 text-[13px] whitespace-nowrap text-gray-900 group-hover/select:bg-gray-200 has-focus-visible:self-focus-ring motion-safe:transition-colors"
           >
             <span class="truncate">{{ activeSwitcherLabel }}</span>
-            <ChevronDownIcon class="size-3.5 shrink-0" />
+            <ChevronDownIcon class="size-3 shrink-0" />
           </div>
 
           <select
@@ -354,7 +354,7 @@ onUnmounted(() => {
 
         <div
           v-if="copyBtn !== 'hidden' && !hasHeader"
-          class="end-3 top-3 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
+          class="end-3.5 top-2 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
           :class="{ 'opacity-0 group-hover/code-block:opacity-100': copyBtn === 'hover' }"
         >
           <PCopyButton icon size="sm" variant="ghost" :text="code" @copy="onCopy" />

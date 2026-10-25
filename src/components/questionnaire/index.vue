@@ -8,7 +8,7 @@ import type {
   QuestionnaireState,
   QuestionnaireQuestion,
 } from './types'
-import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import CrossIcon from '@gdsicon/vue/cross'
 import QuestionIcon from '@gdsicon/vue/question'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
@@ -297,9 +297,9 @@ watch(
           <!-- preventDefault is load-bearing: stopping propagation alone would leave
                the summary's native disclosure default action free to run. -->
           <PButton
-            variant="ghost"
-            size="sm"
             icon
+            size="xs"
+            variant="ghost"
             :title="configProvider.locale.questionnaire.skipAll"
             :aria-label="configProvider.locale.questionnaire.skipAll"
             @click.prevent.stop="skipAllQuestions"
@@ -310,7 +310,7 @@ watch(
 
         <div
           ref="contentRef"
-          class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
+          class="grid-template-cols-1fr grid overflow-hidden rounded-b-xl motion-safe:transition-[grid-template-rows]"
           :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
         >
           <div class="pxd-questionnaire--content border-t">
@@ -345,29 +345,31 @@ watch(
             >
               <div v-if="questions.length > 1" class="gap-1 flex items-center">
                 <PButton
+                  icon
+                  size="xs"
                   variant="ghost"
                   :class="{ 'pointer-events-none opacity-50': !currentIndex }"
-                  icon
                   :title="configProvider.locale.questionnaire.prev"
                   :aria-label="configProvider.locale.questionnaire.prev"
                   :aria-disabled="!currentIndex"
                   @click="toggleCurrentIndex(-1)"
                 >
-                  <ChevronDownIcon class="rotate-90" aria-hidden="true" />
+                  <ChevronRightIcon class="rotate-180" aria-hidden="true" />
                 </PButton>
 
                 <PButton
+                  icon
+                  size="xs"
                   variant="ghost"
                   :class="{
                     'pointer-events-none opacity-50': currentIndex >= questions.length - 1,
                   }"
-                  icon
                   :title="configProvider.locale.questionnaire.next"
                   :aria-label="configProvider.locale.questionnaire.next"
                   :aria-disabled="currentIndex >= questions.length - 1"
                   @click="toggleCurrentIndex(1)"
                 >
-                  <ChevronDownIcon class="-rotate-90" aria-hidden="true" />
+                  <ChevronRightIcon aria-hidden="true" />
                 </PButton>
 
                 <span class="text-sm ms-2 text-foreground-secondary tabular-nums select-none">
@@ -376,11 +378,16 @@ watch(
               </div>
 
               <div class="gap-2 ms-auto flex items-center">
-                <PButton variant="ghost" @click="skipCurrentQuestion">
+                <PButton size="xs" variant="ghost" @click="skipCurrentQuestion">
                   {{ configProvider.locale.interaction.skip }}
                 </PButton>
 
-                <PButton v-show="showSubmitButton" variant="primary" @click="onSubmitAnswers">
+                <PButton
+                  size="xs"
+                  v-show="showSubmitButton"
+                  variant="primary"
+                  @click="onSubmitAnswers"
+                >
                   {{ configProvider.locale.interaction.submit }}
                 </PButton>
               </div>
