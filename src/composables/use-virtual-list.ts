@@ -1,4 +1,3 @@
-import type { TocScrollSource } from '../types/shared/toc'
 import type { MaybeElementRef } from '../types/shared/utils'
 import type { VirtualItem } from '@tanstack/virtual-core'
 import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
@@ -37,6 +36,27 @@ export interface VirtualListOptions {
   scrollPaddingEnd?: number
   onBottom?: () => void | Promise<void>
   bottomThreshold?: number
+}
+
+export interface VirtualListScrollToOptions {
+  /** Scroll animation for the jump. */
+  behavior?: ScrollBehavior
+}
+
+/**
+ * Position and scroll operations for a data-driven outline. Implementations must read reactive
+ * state (e.g. a layout version) inside the getters, so `PToc` re-evaluates tracking whenever the
+ * scroll position or item measurements change.
+ */
+export interface VirtualListScrollSource {
+  /** Scroll offset that aligns `index` with the top of the viewport, or undefined while unknown. */
+  getOffsetForIndex: (index: number) => number | undefined
+  /** Current scroll offset of the container, or null while unavailable. */
+  getScrollOffset: () => number | null
+  /** Furthest scroll offset the container can reach. */
+  getMaxScrollOffset: () => number
+  /** Scroll `index` to the top of the viewport. */
+  scrollToIndex: (index: number, options?: VirtualListScrollToOptions) => void
 }
 
 export function useVirtualList<Options extends VirtualListOptions>(
@@ -116,13 +136,13 @@ export function useVirtualList<Options extends VirtualListOptions>(
   })
 
   // `getVirtualItems()` refreshes the measurements cache, normally a render's job; the version
-  // read makes the getters reactive per the `TocScrollSource` contract.
+  // read makes the getters reactive per the `VirtualListScrollSource` contract.
   function refreshMeasurements() {
     void triggerVersion.value
     virtualizer.getVirtualItems()
   }
 
-  const tocSource: TocScrollSource = {
+  const scrollSource: VirtualListScrollSource = {
     getOffsetForIndex(index) {
       refreshMeasurements()
       return virtualizer.getOffsetForIndex(index, 'start')?.[0]
@@ -265,7 +285,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
     scrollToIndex,
     scrollToOffset,
     scrollBy,
-    tocSource,
+    scrollSource,
     getVirtualizer: () => virtualizer,
   }
 }

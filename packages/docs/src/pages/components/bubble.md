@@ -215,4 +215,4 @@ function addMessage() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| tocSource | `TocScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking the virtualized messages. |
+| scrollSource | `VirtualListScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking the virtualized messages. |

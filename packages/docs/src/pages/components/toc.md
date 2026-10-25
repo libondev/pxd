@@ -184,7 +184,7 @@ const viewport = shallowRef(null)
 
 ## Data-Driven Outline
 
-Pass `data` together with `source` when the outlined entries live in a list that does not keep every entry in the DOM, such as a virtualized `PBubbleGroup`. The outline comes from data, the highlight is tracked against the source's cached item offsets, and activation scrolls through the source — no DOM elements are queried. `PBubbleGroup` and `PVirtualList` expose a ready `tocSource` through their template ref; entries map to the list by index, so keep the array aligned with the list's `data`.
+Pass `data` together with `source` when the outlined entries live in a list that does not keep every entry in the DOM, such as a virtualized `PBubbleGroup`. The outline comes from data, the highlight is tracked against the source's cached item offsets, and activation scrolls through the source — no DOM elements are queried. `PBubbleGroup` and `PVirtualList` expose a ready `scrollSource` through their template ref; entries map to the list by index, so keep the array aligned with the list's `data`.
 
 ```vue demo
 <script setup>
@@ -210,7 +210,7 @@ const outline = computed(() =>
 
 <template>
   <div class="flex items-start gap-6 max-sm:flex-col">
-    <PToc :data="outline" :source="group?.tocSource" class="w-40 shrink-0" />
+    <PToc :data="outline" :source="group?.scrollSource" class="w-40 shrink-0" />
 
     <PBubbleGroup ref="group" class="max-h-60 flex-1" :data="messages" data-key="id" virtual>
       <template #item="{ item }">
@@ -228,13 +228,13 @@ const outline = computed(() =>
 | data | `TocItem[] \| null` | `null` | Outline entries as an array, for lists that do not keep every entry in the DOM (e.g. a virtualized `PBubbleGroup`); takes precedence over `selector`. |
 | selector | `string` | - | Headings that make up the outline, as a CSS selector matched inside `scroll-target` (or the document). Re-read when it changes, and when that subtree mutates. |
 | scroll-target | `HTMLElement \| null` | `null` | Scrollable container holding the headings; the outline is read and watched inside it. Leave empty to read the document. |
-| source | `TocScrollSource \| null` | `null` | Position and scroll source for a data-driven outline; read `tocSource` from a virtualized list's template ref. Without it a data outline renders without active tracking or scrolling. |
+| source | `VirtualListScrollSource \| null` | `null` | Position and scroll source for a data-driven outline; read `scrollSource` from a virtualized list's template ref. Without it a data outline renders without active tracking or scrolling. |
 | offset | `number` | `0` | Pixels kept above the heading when scrolling to it, and the probe line used to detect the active entry. In data mode only the probe line applies. |
 | scroll-behavior | `'auto' \| 'instant' \| 'smooth'` | `'auto'` | Scroll animation when an entry is activated; `auto` follows the system motion preference. |
 | scroll-active-into-view | `boolean` | `true` | Scroll the active entry back into view when it leaves the list. |
 
 ```ts
-interface TocScrollSource {
+interface VirtualListScrollSource {
   /** Scroll offset that aligns `index` with the top of the viewport, or undefined while unknown. */
   getOffsetForIndex: (index: number) => number | undefined
   /** Current scroll offset of the container, or null while unavailable. */

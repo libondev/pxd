@@ -1,4 +1,4 @@
-import type { TocScrollSource } from '../../src/components/toc/types'
+import type { VirtualListScrollSource } from '../../src/composables/use-virtual-list'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
@@ -130,13 +130,14 @@ describe('bubble-group', () => {
     await flushRaf()
 
     try {
-      const tocSource = (wrapper.vm as unknown as { tocSource: TocScrollSource }).tocSource
+      const scrollSource = (wrapper.vm as unknown as { scrollSource: VirtualListScrollSource })
+        .scrollSource
 
-      expect(tocSource.getOffsetForIndex(0)).toBe(0)
-      expect(tocSource.getOffsetForIndex(2)).toBe(100)
-      expect(tocSource.getScrollOffset()).toBe(0)
+      expect(scrollSource.getOffsetForIndex(0)).toBe(0)
+      expect(scrollSource.getOffsetForIndex(2)).toBe(100)
+      expect(scrollSource.getScrollOffset()).toBe(0)
 
-      tocSource.scrollToIndex(2)
+      scrollSource.scrollToIndex(2)
       expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 100 }))
     } finally {
       rectSpy.mockRestore()

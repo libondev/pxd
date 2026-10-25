@@ -1,6 +1,7 @@
-import type { TocScrollSource, TocScrollToOptions } from '../../types/shared/toc'
-
-export type { TocScrollSource, TocScrollToOptions }
+import type {
+  VirtualListScrollSource,
+  VirtualListScrollToOptions,
+} from '../../composables/use-virtual-list'
 
 export interface TocItem {
   /** `id` of the heading element this entry scrolls to. */
@@ -19,7 +20,7 @@ export interface TocProps {
   /** Scrollable container holding the headings; leave empty to read the document. */
   scrollTarget?: HTMLElement | null
   /** Position and scroll source for a data-driven outline; without it the outline renders without tracking. */
-  source?: TocScrollSource | null
+  source?: VirtualListScrollSource | null
   /** Pixels kept above the heading when scrolling to it, and the spy probe line. */
   offset?: number
   /** Scroll animation when an entry is activated; `auto` follows the system motion preference. */

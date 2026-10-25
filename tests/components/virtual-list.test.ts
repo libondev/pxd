@@ -1,4 +1,4 @@
-import type { TocScrollSource } from '../../src/components/toc/types'
+import type { VirtualListScrollSource } from '../../src/composables/use-virtual-list'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import VirtualList from '../../src/components/virtual-list/index.vue'
@@ -57,10 +57,11 @@ describe('virtual-list', () => {
       },
     })
 
-    const tocSource = (wrapper.vm as unknown as { tocSource: TocScrollSource }).tocSource
+    const scrollSource = (wrapper.vm as unknown as { scrollSource: VirtualListScrollSource })
+      .scrollSource
 
-    expect(tocSource.getOffsetForIndex(0)).toBe(0)
-    expect(typeof tocSource.scrollToIndex).toBe('function')
+    expect(scrollSource.getOffsetForIndex(0)).toBe(0)
+    expect(typeof scrollSource.scrollToIndex).toBe('function')
 
     wrapper.unmount()
   })

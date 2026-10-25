@@ -1,4 +1,5 @@
-import type { TocItem, TocScrollSource } from '../../src/components/toc/types'
+import type { TocItem } from '../../src/components/toc/types'
+import type { VirtualListScrollSource } from '../../src/composables/use-virtual-list'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { computed, defineComponent, h, nextTick, ref } from 'vue'
@@ -56,7 +57,7 @@ function click(el: Element, init: MouseEventInit = {}) {
 function fakeSource(starts: number[], maxScroll: number) {
   const scroll = ref(0)
   const scrollToIndex = vi.fn()
-  const source: TocScrollSource = {
+  const source: VirtualListScrollSource = {
     getOffsetForIndex: (index) => {
       void scroll.value
       return starts[index]

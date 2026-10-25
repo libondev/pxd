@@ -187,7 +187,7 @@ Reaching the bottom is reported through the `on-bottom` prop, not an event.
 | totalSize | `number` | Total scrollable size of the list in pixels, `0` while the list is disabled. |
 | virtualItems | `VirtualListItem[]` | Items the virtualizer currently renders, empty while the list is disabled. |
 | getVirtualizer | `() => Virtualizer<HTMLElement, HTMLElement>` | Get the underlying TanStack virtualizer instance. |
-| tocSource | `TocScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking this list's cached offsets. |
+| scrollSource | `VirtualListScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking this list's cached offsets. |
 | scrollToIndex | `(index: number, options?: ScrollToIndexOptions) => void` | Scroll to the item at the given index. |
 | scrollToOffset | `(toOffset: number, options?: ScrollToOffsetOptions) => void` | Scroll to an absolute pixel offset. |
 | scrollBy | `(delta: number, options?: ScrollToOffsetOptions) => void` | Scroll by a pixel delta. |

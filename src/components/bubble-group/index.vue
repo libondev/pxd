@@ -16,7 +16,7 @@ const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 
 const isVirtual = computed(() => props.virtual === true && !!props.data)
 
-const { totalSize, virtualItems, measureElement, tocSource } = useVirtualList(
+const { totalSize, virtualItems, measureElement, scrollSource } = useVirtualList(
   () => stickRef.value?.containerRef ?? null,
   {
     enabled: () => isVirtual.value,
@@ -68,7 +68,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  tocSource,
+  scrollSource,
 })
 </script>
 
