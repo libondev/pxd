@@ -5,6 +5,7 @@ export type ComponentVariantWithDefault = ComponentVariant | 'default'
 
 export type ComponentSize = 'sm' | 'md' | 'lg'
 export type ComponentSizeWithXs = ComponentSize | 'xs'
+export type ComponentSizeWithXxs = ComponentSizeWithXs | 'xxs'
 
 export type ComponentShape = 'default' | 'square' | 'rounded'
 export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'

@@ -51,6 +51,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-toggle-button gap-2 font-normal relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
+        xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[10px]`,
         xs: `${BASIC_HEIGHTS.xs} px-1.5 text-xs rounded-sm`,
         sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
         md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
@@ -70,11 +71,20 @@ const { attrs, classes } = useTailwindVariant(
       },
     },
     compoundVariants: [
-      { checked: true, disabled: false, class: 'bg-gray-300' },
-      { checked: true, disabled: true, class: 'bg-gray-200' },
-      { checked: false, disabled: true, class: 'text-gray-400' },
+      {
+        checked: true,
+        disabled: false,
+        class: 'border-primary bg-primary text-primary-foreground',
+      },
+      {
+        variant: 'default',
+        checked: true,
+        disabled: true,
+        class: 'border-gray-500 bg-gray-300',
+      },
+      { variant: 'ghost', checked: true, disabled: true, class: 'bg-gray-300' },
       { checked: false, disabled: false, class: 'hover:bg-background-hover' },
-      { variant: 'default', checked: true, disabled: true, class: 'bg-gray-100' },
+      { checked: false, disabled: true, class: 'bg-gray-100 text-gray-600' },
     ],
   },
   {

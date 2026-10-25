@@ -2,7 +2,7 @@ import type {
   ComponentAs,
   ComponentAlign,
   ComponentShape,
-  ComponentSizeWithXs,
+  ComponentSizeWithXxs,
   ComponentVariantWithDefault,
 } from '../../types/shared/props'
 
@@ -11,7 +11,7 @@ export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | '
 export interface ButtonProps {
   as?: ComponentAs
   variant?: ButtonVariant
-  size?: ComponentSizeWithXs | 'xxs'
+  size?: ComponentSizeWithXxs
   shape?: ComponentShape
   align?: ComponentAlign
   icon?: boolean

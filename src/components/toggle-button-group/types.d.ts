@@ -1,5 +1,5 @@
 import type {
-  ComponentSizeWithXs,
+  ComponentSizeWithXxs,
   ComponentValue,
   ComponentOption,
   ResponsiveValue,
@@ -8,7 +8,7 @@ import type { CheckboxProps } from '../checkbox/types'
 
 export interface ToggleButtonGroupProps {
   gap?: ResponsiveValue<string | number>
-  size?: ComponentSizeWithXs
+  size?: ComponentSizeWithXxs
   disabled?: boolean
   multiple?: boolean
   options?: ComponentOption[]
