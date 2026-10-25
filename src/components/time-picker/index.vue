@@ -295,8 +295,10 @@ onBeforeUnmount(() => {
       @change="onInputValueChange"
       @keydown.enter="togglePopoverVisible(true)"
     >
-      <template v-if="suffixIcon" #suffix>
-        <ClockIcon class="me-3" />
+      <template #suffix>
+        <slot name="suffix">
+          <ClockIcon v-if="suffixIcon" class="me-3" />
+        </slot>
       </template>
     </PInput>
 

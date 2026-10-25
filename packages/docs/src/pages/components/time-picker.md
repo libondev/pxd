@@ -155,3 +155,9 @@ const time = ref('18:30:00')
 | --- | --- | --- |
 | change | `(value: ComponentDateTimeValue) => void` | Emitted when a new time is committed by the input, a preset, the `Now` button, or an outside click. |
 | update:model-value | `(value: ComponentDateTimeValue) => void` | Emitted when the committed time is written to the model. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| suffix | Input suffix area. Replaces the default clock icon. |

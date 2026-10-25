@@ -162,11 +162,14 @@ watch(listOptions, async () => {
         {{ placeholder }}
       </template>
 
-      <template v-if="suffixIcon" #suffix>
-        <ChevronDownIcon
-          class="text-sm me-1.5 text-foreground-secondary motion-safe:transition-transform"
-          :class="{ 'rotate-180': popoverVisible }"
-        />
+      <template #suffix>
+        <slot name="suffix">
+          <ChevronDownIcon
+            v-if="suffixIcon"
+            class="text-sm me-1.5 text-foreground-secondary motion-safe:transition-transform"
+            :class="{ 'rotate-180': popoverVisible }"
+          />
+        </slot>
       </template>
     </PButton>
 

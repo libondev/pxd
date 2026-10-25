@@ -71,3 +71,9 @@ const date2 = ref('2024-08-15')
 | --- | --- | --- |
 | change | `(value: ComponentDateTimeValue) => void` | Emitted when a date different from the current one is committed, by picking it in the calendar, typing it into the field or clearing the field. |
 | update:model-value | `(value: ComponentDateTimeValue) => void` | Emitted together with `change` when a date different from the current one is committed. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| suffix | Input suffix area. Replaces the default calendar icon. |

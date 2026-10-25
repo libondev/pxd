@@ -271,8 +271,10 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       @clear="onInputValueChange"
       @change="onInputValueChange"
     >
-      <template v-if="suffixIcon" #suffix>
-        <CalendarIcon class="me-3" />
+      <template #suffix>
+        <slot name="suffix">
+          <CalendarIcon v-if="suffixIcon" class="me-3" />
+        </slot>
       </template>
     </PInput>
 
