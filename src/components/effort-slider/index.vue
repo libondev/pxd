@@ -437,12 +437,6 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .pxd-effort-slider--thumb {
-  &:active,
-  &[data-dragging='true'] {
-    --slider-thumb-scale: 1.3;
-    z-index: 1;
-  }
-
   &::before,
   &::after {
     content: '';
@@ -463,8 +457,19 @@ onBeforeUnmount(() => {
   }
 
   &::after {
-    width: 200%;
-    height: 200%;
+    width: 150%;
+    height: 150%;
+  }
+
+  &:active,
+  &[data-dragging='true'] {
+    --slider-thumb-scale: 1.3;
+    z-index: 1;
+
+    &::after {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
