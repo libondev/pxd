@@ -58,7 +58,7 @@ provideToggleButtonGroupContext({ props, emits })
     v-bind="attrs"
   >
     <slot>
-      <PToggleButton v-for="option in options" :key="option.value" v-bind="option" />
+      <PToggleButton v-for="option in options" :key="option.value" class="flex-1" v-bind="option" />
     </slot>
   </PStack>
 </template>
