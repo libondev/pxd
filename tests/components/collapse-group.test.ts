@@ -25,8 +25,8 @@ describe('collapse-group', () => {
       props: { size: 'sm' },
     })
 
-    expect(wrapper.element.style.getPropertyValue('--collapse-padding')).toBe('12px')
-    expect(wrapper.element.style.getPropertyValue('--collapse-font-size')).toBe('16px')
+    expect(wrapper.element.style.getPropertyValue('--collapse-padding')).toBe('0.75rem')
+    expect(wrapper.element.style.getPropertyValue('--collapse-font-size')).toBe('1rem')
 
     wrapper.unmount()
   })

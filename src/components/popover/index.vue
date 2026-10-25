@@ -727,7 +727,7 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-popover--wrapper {
-  --popover-padding: calc(var(--popover-offset, 8) * 1px);
+  --popover-padding: calc(var(--popover-offset, 8) * 0.0625rem);
   --popover-origin: center;
 
   &[data-position='top'] {
@@ -825,8 +825,8 @@ defineExpose({
   .pxd-popover--container {
     transition-property: opacity, transform;
     transform-origin: var(--popover-origin);
-    max-height: min(800px, 80vh);
-    max-height: min(800px, 80dvh);
+    max-height: min(50rem, 80vh);
+    max-height: min(50rem, 80dvh);
   }
 
   &[data-visible='true'] .pxd-popover--container {

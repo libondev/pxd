@@ -12,7 +12,7 @@ defineOptions({
 const props = withDefaults(defineProps<RevealProps>(), {
   duration: 1,
   delay: 0,
-  distance: 16,
+  distance: '1rem',
   direction: 'bottom',
   trigger: 'mount',
   rootMargin: '0px',
@@ -81,7 +81,7 @@ function getTimeUnitValue(value: number | string) {
 .pxd-reveal {
   --reveal-duration: 0.5s;
   --reveal-delay: 0s;
-  --reveal-distance: 16px;
+  --reveal-distance: 1rem;
   --reveal-x: 0px;
   --reveal-y: 0px;
 

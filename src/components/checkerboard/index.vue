@@ -33,7 +33,7 @@ const computedStyle = computed(() => ({
 
 <style>
 .pxd-checkerboard {
-  --checkerboard-size: 20px;
+  --checkerboard-size: 1.25rem;
   --checkerboard-primary-color: var(--color-gray-200);
   --checkerboard-background-color: var(--color-background-100);
   background-image: repeating-conic-gradient(

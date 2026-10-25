@@ -14,18 +14,18 @@ const props = defineProps<CollapseGroupProps>()
 
 const SIZES = {
   sm: {
-    padding: '12px',
-    fontSize: '16px',
+    padding: '0.75rem',
+    fontSize: '1rem',
     fontWeight: '500',
   },
   md: {
-    padding: '24px',
-    fontSize: '24px',
+    padding: '1.5rem',
+    fontSize: '1.5rem',
     fontWeight: '600',
   },
   lg: {
-    padding: '30px',
-    fontSize: '28px',
+    padding: '1.875rem',
+    fontSize: '1.75rem',
     fontWeight: '600',
   },
 }

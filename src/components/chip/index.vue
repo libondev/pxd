@@ -61,6 +61,6 @@ const { classes } = useTailwindVariant(
   display: block;
   content: attr(data-label);
   transform: scale(0.875);
-  padding-inline: 2px;
+  padding-inline: 0.125rem;
 }
 </style>

@@ -420,10 +420,10 @@
   --spacing-em: 1em;
   --spacing-inherit: inherit;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 0.25rem);
   --radius-inherit: inherit;
 
   --shadow-small: var(--shadow-small-value);

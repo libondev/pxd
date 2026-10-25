@@ -162,7 +162,7 @@ watch(
             {{ title }}
           </h3>
 
-          <p v-if="description" class="m-0 text-[13px] text-foreground-secondary">
+          <p v-if="description" class="m-0 text-[0.8125rem] text-foreground-secondary">
             {{ description }}
           </p>
         </slot>

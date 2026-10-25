@@ -416,11 +416,11 @@ defineExpose({
 
 <style>
 .pxd-scrollable--scrollbar-x {
-  height: calc(var(--scrollbar-size, 6) * 1px);
+  height: calc(var(--scrollbar-size, 6) * 0.0625rem);
 }
 
 .pxd-scrollable--scrollbar-y {
-  width: calc(var(--scrollbar-size, 6) * 1px);
+  width: calc(var(--scrollbar-size, 6) * 0.0625rem);
 }
 
 .pxd-scrollable--thumb {

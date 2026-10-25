@@ -484,12 +484,12 @@ onBeforeUnmount(() => {
       role="grid"
       aria-readonly="true"
       class="table-fixed border-separate"
-      style="border-spacing: 3px"
+      style="border-spacing: 0.1875rem"
       @pointerleave="onPointerLeave"
     >
       <thead v-if="!graphOnly" class="text-xs">
         <tr class="h-3">
-          <th class="pxd-active-graph--label" style="width: 30px; min-width: 30px" />
+          <th class="pxd-active-graph--label w-8 min-w-8" />
 
           <th
             v-for="(col, i) in tableHeadList"
@@ -560,7 +560,7 @@ onBeforeUnmount(() => {
     <Transition v-if="tooltip" name="pxd-transition--fade" mode="out-in" appear>
       <div
         v-if="showTooltip"
-        class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 shadow-lg pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-[13px] text-gray-100"
+        class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 shadow-lg pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-[0.8125rem] text-gray-100"
         :style="`transform: translate(${tooltipInfo.left}px, ${tooltipInfo.top}px);`"
       >
         <slot name="tooltip" :data="tooltipInfo"

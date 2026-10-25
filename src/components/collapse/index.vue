@@ -103,8 +103,8 @@ onBeforeUnmount(() => {
 
 <style>
 .pxd-collapse--trigger {
-  padding-block: var(--collapse-padding, 24px);
-  font-size: var(--collapse-font-size, 24px);
+  padding-block: var(--collapse-padding, 1.5rem);
+  font-size: var(--collapse-font-size, 1.5rem);
   font-weight: var(--collapse-font-weight, 600);
 }
 </style>

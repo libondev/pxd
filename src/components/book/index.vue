@@ -140,10 +140,10 @@ const computedClasses = computed(() => {
 .pxd-book {
   --book-default-width: 196;
   --book-depth: 29cqw;
-  --book-border-radius: 6px 4px 4px 6px;
+  --book-border-radius: 0.375rem 0.25rem 0.25rem 0.375rem;
   --hover-rotate: -20deg;
   --hover-scale: 1.066;
-  --hover-translate-x: -8px;
+  --hover-translate-x: -0.5rem;
   --aspect-ratio: 49 / 60;
   --bg-shadow:
     linear-gradient(
@@ -168,7 +168,7 @@ const computedClasses = computed(() => {
       rgba(0, 0, 0, 0)
     );
 
-  perspective: 900px;
+  perspective: 56.25rem;
 }
 
 .pxd-book--container {

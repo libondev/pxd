@@ -44,7 +44,7 @@ defineProps<BrowserProps>()
         >
           <LockClosedIcon class="text-sm text-foreground-secondary" />
 
-          <div class="ps-1.5 min-w-0 flex-1 truncate text-center text-[13px] text-gray-1000">
+          <div class="ps-1.5 min-w-0 flex-1 truncate text-center text-[0.8125rem] text-gray-1000">
             {{ address }}
           </div>
 

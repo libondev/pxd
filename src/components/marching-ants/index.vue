@@ -53,7 +53,7 @@ defineOptions({
 const props = withDefaults(defineProps<MarchingAntsProps>(), {
   as: 'div',
   color: '#00ff88',
-  lineSize: 2,
+  lineSize: '0.125rem',
   dashSize: 8,
   gap: 4,
 })
@@ -69,7 +69,7 @@ const dashArray = computed(() => {
 
 const strokeStyle = computed(() => ({
   '--marching-ants-color': props.color,
-  '--marching-ants-stroke-width': getCssUnitValue(props.lineSize, '2px'),
+  '--marching-ants-stroke-width': getCssUnitValue(props.lineSize, '0.125rem'),
   '--marching-ants-dash-array': dashArray.value.value,
   '--marching-ants-dash-offset': dashArray.value.offset,
 }))

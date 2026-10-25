@@ -367,7 +367,7 @@ onBeforeUnmount(() => {
     }
 
     .pxd-tabs--nav-item {
-      border-bottom: 2px solid transparent;
+      border-bottom: 0.125rem solid transparent;
       padding: 0.875rem 0.375rem;
 
       &:not(:disabled) {
@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
       height: 1.5rem;
       padding: 0 0.375rem;
       border-radius: var(--radius-md);
-      font-size: 13px;
+      font-size: 0.8125rem;
       background-color: var(--color-gray-alpha-200);
 
       &:disabled {

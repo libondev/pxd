@@ -20,7 +20,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<CommandMenuProps>(), {
-  width: '640px',
+  width: '40rem',
   modelValue: false,
   placeholder: '',
   closeOnSelectItem: true,

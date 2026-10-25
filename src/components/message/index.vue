@@ -236,7 +236,7 @@ defineExpose({
 
 <style lang="postcss">
 .pxd-message {
-  --message-width: 356px;
+  --message-width: 22.25rem;
 
   .pxd-message--group {
     align-items: center;
@@ -244,13 +244,13 @@ defineExpose({
   }
 
   &[data-position^='top'] {
-    --item-offset: 10px;
+    --item-offset: 0.625rem;
     --starting-offset: -100%;
     top: 1rem;
   }
 
   &[data-position^='bottom'] {
-    --item-offset: -10px;
+    --item-offset: -0.625rem;
     --starting-offset: 100%;
     bottom: 1rem;
 
@@ -295,8 +295,8 @@ defineExpose({
       position: absolute;
       right: 0;
       left: 0;
-      top: -18px;
-      height: 24px;
+      top: -1.125rem;
+      height: 1.5rem;
       z-index: -1;
     }
   }

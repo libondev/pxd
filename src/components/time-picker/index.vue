@@ -307,19 +307,19 @@ onBeforeUnmount(() => {
         <PButton
           size="xs"
           variant="ghost"
-          class="sm:px-0.5 rounded-md text-[13px]"
+          class="sm:px-0.5 rounded-md text-[0.8125rem]"
           @click="onCancelClick"
         >
           {{ configProvider.locale.interaction.cancel }}
         </PButton>
 
-        <PButton size="xs" variant="ghost" class="sm:px-0 text-[13px]" @click="onSetNowClick">
+        <PButton size="xs" variant="ghost" class="sm:px-0 text-[0.8125rem]" @click="onSetNowClick">
           {{ configProvider.locale.date.now }}
         </PButton>
       </div>
 
       <div
-        class="sm:text-[15px] max-sm:text-base flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
+        class="sm:text-[0.9375rem] max-sm:text-base flex max-w-full transform-gpu items-stretch tabular-nums outline-none select-none"
         @click.stop="onTimeListClick"
       >
         <div class="p-2 gap-1 relative mx-auto flex items-center">
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
             v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-[13px] sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-colors"
+            class="px-1.5 py-0.5 sm:text-[0.8125rem] sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-colors"
           >
             {{ preset.label }}
           </button>

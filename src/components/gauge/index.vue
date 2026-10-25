@@ -149,7 +149,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
       v-if="indeterminate"
       aria-hidden="true"
       class="pxd-gauge--indeterminate inset-0 font-medium absolute flex items-center justify-center text-center text-foreground-secondary"
-      style="font-size: clamp(10px, calc(var(--gauge-size, 48px) * 0.38), 50px)"
+      style="font-size: clamp(0.625rem, calc(var(--gauge-size, 3rem) * 0.38), 3.125rem)"
     >
       <ChartActivityIcon />
     </div>
@@ -158,7 +158,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
       v-else-if="showValue && computedSize !== SIZES.xs"
       aria-hidden="true"
       class="pxd-gauge--value inset-0 font-medium absolute flex items-center justify-center text-center"
-      style="font-size: calc(var(--gauge-size, 48px) * 0.28)"
+      style="font-size: calc(var(--gauge-size, 3rem) * 0.28)"
     >
       {{ progress }}
     </div>

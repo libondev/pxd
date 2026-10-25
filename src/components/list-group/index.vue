@@ -20,7 +20,7 @@ const minHeightClass = computed(() => BASIC_MIN_HEIGHTS[configProvider.size])
     role="group"
     data-list-group
     :aria-label="label"
-    class="pxd-list-group px-2 py-1 flex items-center text-[13px] text-foreground-secondary"
+    class="pxd-list-group px-2 py-1 flex items-center text-[0.8125rem] text-foreground-secondary"
     :class="minHeightClass"
     v-bind="$attrs"
   >
