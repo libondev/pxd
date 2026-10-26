@@ -1764,7 +1764,9 @@ describe('tree', () => {
     Object.defineProperty(container.element, 'scrollTop', {
       configurable: true,
       get: () => 0,
-      set: (value: number) => written.push(value),
+      set: (value: number) => {
+        written.push(value)
+      },
     })
     stubContainerRect(wrapper, 0, 100)
 
