@@ -72,7 +72,7 @@ let dragStartValue: string | number | null = null
 let lastUpdatedValue: string | number | null = null
 let stopMoveListener: (() => void) | null = null
 
-const PARTICLE_COUNT = 10
+const PARTICLE_COUNT = 16
 const PARTICLE_DURATION = 2
 
 const trackRef = shallowRef<HTMLElement>()
@@ -489,7 +489,7 @@ onBeforeUnmount(() => {
     width: var(--p-size);
     height: var(--p-size);
     border-radius: 50%;
-    background-color: var(--color-gray-500);
+    background-color: #ccc;
     transform: translate(-50%, -50%);
     opacity: var(--p-opacity);
   }

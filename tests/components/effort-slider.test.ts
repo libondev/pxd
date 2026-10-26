@@ -131,7 +131,7 @@ describe('effort-slider', () => {
 
     await wrapper.setProps({ particles: true })
 
-    expect(fill.findAll('.pxd-effort-slider--particle')).toHaveLength(10)
+    expect(fill.findAll('.pxd-effort-slider--particle')).toHaveLength(16)
 
     wrapper.unmount()
   })
