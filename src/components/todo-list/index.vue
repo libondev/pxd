@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComponentSize } from '../../types/shared/props'
 import type {
   TodoChangeDetail,
   TodoEmits,
@@ -15,6 +16,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
@@ -37,8 +39,45 @@ const emits = defineEmits<TodoEmits>()
 const MARKER_CLASSES: Record<TodoStatus, string> = {
   pending: 'border-2 border-gray-alpha-400',
   in_progress: '',
-  completed: 'p-1 bg-teal-600 text-white',
-  canceled: 'p-1 bg-gray-alpha-400 text-white',
+  completed: 'bg-teal-600 text-white',
+  canceled: 'bg-gray-alpha-400 text-white',
+}
+
+const SIZE_CLASSES: Record<
+  ComponentSize,
+  {
+    header: string
+    list: string
+    indicator: string
+    marker: string
+    icon: string
+    meta: string
+  }
+> = {
+  sm: {
+    header: 'px-2 py-1.5',
+    list: 'py-1.5 ps-1.5 gap-1 max-h-32',
+    indicator: 'size-3.5',
+    marker: 'p-0.75',
+    icon: 'size-3',
+    meta: 'text-[0.6875rem]',
+  },
+  md: {
+    header: 'px-2.5 py-2',
+    list: 'py-2 ps-2 gap-1.5 max-h-36',
+    indicator: 'size-4',
+    marker: 'p-1',
+    icon: 'size-3',
+    meta: 'text-xs',
+  },
+  lg: {
+    header: 'p-3',
+    list: 'py-3 ps-3 gap-2 max-h-40',
+    indicator: 'size-5',
+    marker: 'p-1.5',
+    icon: 'size-4',
+    meta: 'text-[0.8125rem]',
+  },
 }
 
 const NEXT_STATUS: Record<TodoStatus, TodoStatus> = {
@@ -88,6 +127,7 @@ const summaryText = computed(() => {
 
 const configProvider = useConfigProvider()
 
+const computedSize = computed(() => props.size || configProvider.size)
 const headerTitle = computed(() => props.title ?? configProvider.locale.todo.title)
 const emptyText = computed(() => props.empty ?? configProvider.locale.results.noData)
 
@@ -96,6 +136,26 @@ const slots = useSlots()
 const hasItemSlot = computed(() => !!slots.item)
 const hasEmptySlot = computed(() => !!slots.empty)
 const hasItemContentSlot = computed(() => !!slots['item-content'])
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-todo-list group/todo w-full max-w-full',
+    variants: {
+      size: {
+        sm: 'text-xs',
+        md: 'text-sm',
+        lg: 'text-base',
+      },
+      variant: {
+        default: 'rounded-xl border bg-background-100',
+        simple: '',
+      },
+    },
+  },
+  {
+    selection: () => ({ size: computedSize.value, variant: props.variant }),
+  },
+)
 
 const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
@@ -196,22 +256,21 @@ defineExpose({
 <template>
   <details
     data-todo-list
-    class="pxd-todo-list group/todo w-full max-w-full"
-    :class="{ 'rounded-xl border bg-background-100': variant === 'default' }"
+    :class="classes"
     :open="detailsOpen"
-    v-bind="$attrs"
+    v-bind="attrs"
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-todo-list--header group/todo gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit self-focus-ring outline-none select-none"
-      :class="{
-        'p-3 font-medium text-foreground': variant === 'default',
-        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
-          variant === 'simple',
-      }"
+      class="pxd-todo-list--header group/todo gap-2 flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit self-focus-ring outline-none select-none"
+      :class="
+        variant === 'default'
+          ? ['font-medium text-foreground', SIZE_CLASSES[computedSize].header]
+          : 'text-foreground-secondary hover:text-foreground motion-safe:transition-colors'
+      "
       @click.prevent="onToggleClick"
     >
-      <ListUnorderedIcon class="size-3 shrink-0" />
+      <ListUnorderedIcon class="shrink-0" :class="SIZE_CLASSES[computedSize].icon" />
 
       <slot
         name="header"
@@ -220,13 +279,14 @@ defineExpose({
         :title="headerTitle"
         :summary="summaryText"
       >
-        <span class="pxd-todo-list--title min-w-0 text-sm truncate">
+        <span class="pxd-todo-list--title min-w-0 truncate">
           {{ headerTitle }}
         </span>
 
         <span
           v-if="summaryText"
-          class="pxd-todo-list--summary font-normal text-xs shrink-0 text-foreground-secondary"
+          class="pxd-todo-list--summary font-normal shrink-0 text-foreground-secondary"
+          :class="SIZE_CLASSES[computedSize].meta"
           aria-live="polite"
         >
           {{ summaryText }}
@@ -234,12 +294,15 @@ defineExpose({
       </slot>
 
       <ChevronRightIcon
-        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
-        :class="{
-          'rotate-90 opacity-100': isOpen,
-          'ml-auto': variant === 'default',
-          'opacity-0 group-hover:opacity-100': variant === 'simple',
-        }"
+        class="shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        :class="[
+          SIZE_CLASSES[computedSize].icon,
+          {
+            'rotate-90 opacity-100': isOpen,
+            'ml-auto': variant === 'default',
+            'opacity-0 group-hover:opacity-100': variant === 'simple',
+          },
+        ]"
       />
     </summary>
 
@@ -248,111 +311,104 @@ defineExpose({
       class="grid-template-cols-1fr grid overflow-hidden motion-safe:transition-[grid-template-rows]"
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
-      <div
-        class="pxd-todo-list--content"
-        :class="{
-          'border-t': variant === 'default',
-          'ms-1.5 mbs-1.5 border-l': variant === 'simple',
-        }"
-      >
-        <ul
-          class="pxd-todo-list--list max-h-40 m-0 py-3 ps-3 gap-2 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
-          :class="{
+      <ul
+        class="pxd-todo-list--content m-0 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
+        :class="[
+          SIZE_CLASSES[computedSize].list,
+          {
             'border-t': variant === 'default',
             'ms-1.5 mbs-1.5 border-l': variant === 'simple',
-          }"
+          },
+        ]"
+      >
+        <li
+          v-if="currentOptions.length === 0"
+          class="pxd-todo-list--empty text-foreground-secondary"
         >
+          <slot v-if="hasEmptySlot" name="empty" />
+          <template v-else>{{ emptyText }}</template>
+        </li>
+
+        <template v-for="(item, index) in currentOptions" :key="item.id ?? index">
           <li
-            v-if="currentOptions.length === 0"
-            class="pxd-todo-list--empty text-sm text-foreground-secondary"
+            v-if="hasItemSlot"
+            class="pxd-todo-list--item gap-2 flex items-center"
+            :data-status="resolveStatus(item)"
+            @click="onItemClick(index, item)"
           >
-            <slot v-if="hasEmptySlot" name="empty" />
-            <template v-else>{{ emptyText }}</template>
+            <slot
+              name="item"
+              :item="item"
+              :index="index"
+              :status="resolveStatus(item)"
+              :toggle="() => onItemClick(index, item)"
+            />
           </li>
 
-          <template v-for="(item, index) in currentOptions" :key="item.id ?? index">
-            <li
-              v-if="hasItemSlot"
-              class="pxd-todo-list--item gap-2 flex items-center"
-              :data-status="resolveStatus(item)"
-              @click="onItemClick(index, item)"
+          <li
+            v-else
+            class="pxd-todo-list--item gap-2 flex items-center"
+            :class="{
+              'cursor-pointer': !readonly && !item.disabled,
+              'opacity-50': item.disabled,
+            }"
+            :data-status="resolveStatus(item)"
+            @click="onItemClick(index, item)"
+          >
+            <button
+              class="pxd-todo-list--indicator p-0 block shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
+              :class="SIZE_CLASSES[computedSize].indicator"
+              type="button"
+              :disabled="readonly || item.disabled"
+              :aria-label="item.content == null ? undefined : String(item.content)"
+              @click.stop="onItemClick(index, item)"
             >
-              <slot
-                name="item"
-                :item="item"
-                :index="index"
-                :status="resolveStatus(item)"
-                :toggle="() => onItemClick(index, item)"
+              <LoaderCircleIcon
+                v-if="resolveStatus(item) === 'in_progress'"
+                class="motion-safe:animate-spin block size-full text-blue-900"
               />
-            </li>
 
-            <li
-              v-else
-              class="pxd-todo-list--item gap-2 flex items-center"
-              :class="{
-                'cursor-pointer': !readonly && !item.disabled,
-                'opacity-50': item.disabled,
-              }"
-              :data-status="resolveStatus(item)"
-              @click="onItemClick(index, item)"
-            >
-              <button
-                class="pxd-todo-list--indicator p-0 size-4 block shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
-                type="button"
-                :disabled="readonly || item.disabled"
-                :aria-label="item.content == null ? undefined : String(item.content)"
-                @click.stop="onItemClick(index, item)"
+              <span
+                v-else
+                class="pxd-todo-list--marker block size-full rounded-full"
+                :class="[MARKER_CLASSES[resolveStatus(item)], SIZE_CLASSES[computedSize].marker]"
               >
-                <LoaderCircleIcon
-                  v-if="resolveStatus(item) === 'in_progress'"
-                  class="motion-safe:animate-spin block size-full text-blue-900"
+                <CheckIcon v-if="resolveStatus(item) === 'completed'" class="block size-full" />
+                <MinusIcon v-else-if="resolveStatus(item) === 'canceled'" class="block size-full" />
+              </span>
+            </button>
+
+            <div class="pxd-todo-list--body min-w-0 flex-1">
+              <div v-if="hasItemContentSlot" class="pxd-todo-list--text min-w-0">
+                <slot
+                  name="item-content"
+                  :item="item"
+                  :index="index"
+                  :status="resolveStatus(item)"
                 />
+              </div>
 
-                <span
-                  v-else
-                  class="pxd-todo-list--marker block size-full rounded-full"
-                  :class="MARKER_CLASSES[resolveStatus(item)]"
+              <template v-else>
+                <div
+                  class="pxd-todo-list--text min-w-0"
+                  :class="{
+                    'text-foreground-secondary line-through': resolveStatus(item) === 'completed',
+                  }"
                 >
-                  <CheckIcon v-if="resolveStatus(item) === 'completed'" class="block size-full" />
-                  <MinusIcon
-                    v-else-if="resolveStatus(item) === 'canceled'"
-                    class="block size-full"
-                  />
-                </span>
-              </button>
-
-              <div class="pxd-todo-list--body min-w-0 flex-1">
-                <div v-if="hasItemContentSlot" class="pxd-todo-list--text min-w-0">
-                  <slot
-                    name="item-content"
-                    :item="item"
-                    :index="index"
-                    :status="resolveStatus(item)"
-                  />
+                  {{ item.content }}
                 </div>
 
-                <template v-else>
-                  <div
-                    class="pxd-todo-list--text min-w-0 text-sm"
-                    :class="{
-                      'text-foreground-secondary line-through': resolveStatus(item) === 'completed',
-                    }"
-                  >
-                    {{ item.content }}
-                  </div>
-
-                  <div
-                    v-if="item.description"
-                    class="pxd-todo-list--description text-sm text-foreground-secondary"
-                  >
-                    {{ item.description }}
-                  </div>
-                </template>
-              </div>
-            </li>
-          </template>
-        </ul>
-      </div>
+                <div
+                  v-if="item.description"
+                  class="pxd-todo-list--description text-foreground-secondary"
+                >
+                  {{ item.description }}
+                </div>
+              </template>
+            </div>
+          </li>
+        </template>
+      </ul>
     </div>
   </details>
 </template>

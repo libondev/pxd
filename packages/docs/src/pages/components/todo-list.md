@@ -159,6 +159,7 @@ const options = ref([
 | default-value | `TodoOption[]` | - | List state used before the consumer binds `v-model`. |
 | options | `TodoOption[]` | `[]` | Items to render while uncontrolled; each entry is `{ id?, content?, description?, status?, disabled? }`. |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and header padding. |
+| size | `'sm' \| 'md' \| 'lg'` | - | Padding, font size and marker size; falls back to the config provider size. |
 | readonly | `boolean` | `false` | Render as a static list: status buttons are disabled and rows ignore clicks. |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
 | title | `ComponentLabel` | `locale.todo.title` | Header title. |

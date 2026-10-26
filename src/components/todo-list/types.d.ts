@@ -1,4 +1,4 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentLabel, ComponentSize } from '../../types/shared/props'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
 export type TodoVariant = 'default' | 'simple'
@@ -34,6 +34,8 @@ export interface TodoStats {
 
 export interface TodoProps {
   variant?: TodoVariant
+  /** Padding, font and marker size; falls back to the config provider size. */
+  size?: ComponentSize
   /** Items to render while uncontrolled; `modelValue` takes precedence. */
   options?: TodoOption[]
   modelValue?: TodoOption[]
