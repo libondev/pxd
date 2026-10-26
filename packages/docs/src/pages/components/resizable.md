@@ -121,7 +121,7 @@ const collapsed = ref(false)
   <PStack direction="vertical" gap="3">
     <PStack align="center" gap="3">
       <PButton size="sm" @click="() => (collapsed = !collapsed)">Toggle</PButton>
-      <PText secondary>{{ collapsed ? 'Folded' : `${sizes[0]}px` }}</PText>
+      <PText secondary>{{ collapsed ? 'Folded' : sizes[0] }}</PText>
     </PStack>
 
     <PResizable
