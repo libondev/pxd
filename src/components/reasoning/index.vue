@@ -47,7 +47,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
     >
       <BrainIcon class="size-3 shrink-0" />
 
-      <PShimmerText class="pxd-reasoning--title" :disabled="!streaming">
+      <PShimmerText class="pxd-reasoning--title leading-inherit" :disabled="!streaming">
         {{ title ?? configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
