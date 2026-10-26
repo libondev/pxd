@@ -352,6 +352,26 @@ describe('effort-slider', () => {
     wrapper.unmount()
   })
 
+  it('should re-clamp the label when the track is hovered', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'max' } })
+    const track = stubTrack(wrapper)
+    const label = wrapper.find('.pxd-effort-slider--label')
+
+    // Mounted without layout, so the first clamp had nothing to measure.
+    expect(label.attributes('style')).toContain('+ 0px')
+
+    stubWidths([
+      [track.element, 100],
+      [label.element, 40],
+    ])
+
+    await track.trigger('pointerenter')
+
+    expect(label.attributes('style')).toContain('-20px')
+
+    wrapper.unmount()
+  })
+
   it('should keep the label inside the track when it is clamped', async () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'low' } })
     const track = stubTrack(wrapper)

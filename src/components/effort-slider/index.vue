@@ -137,7 +137,8 @@ function updateLabelShift() {
 
   // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
   // zoom or transform, while the shift below is applied in unscaled pixels.
-  const { clientWidth: trackWidth, offsetWidth: labelWidth } = track
+  const trackWidth = track.clientWidth
+  const labelWidth = label.offsetWidth
 
   if (!trackWidth || labelWidth > trackWidth) {
     labelShift.value = 0
@@ -379,6 +380,7 @@ onBeforeUnmount(() => {
       :class="classes"
       :aria-disabled="disabled"
       @pointerdown.prevent="onTrackPointerdown"
+      @pointerenter="updateLabelShift"
     >
       <div
         class="pxd-effort-slider--fill inset-0 pointer-events-none absolute overflow-hidden rounded-full motion-safe:transition-[clip-path,background-color]"
