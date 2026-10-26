@@ -21,6 +21,7 @@ export interface TocProps {
   scrollTarget?: HTMLElement | null
   /** Position and scroll source for a data-driven outline; without it the outline renders without tracking. */
   source?: VirtualListScrollSource | null
+  itemClass?: string
   /** Pixels kept above the heading when scrolling to it, and the spy probe line. */
   offset?: number
   /** Scroll animation when an entry is activated; `auto` follows the system motion preference. */

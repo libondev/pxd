@@ -285,6 +285,7 @@ defineExpose({
         v-for="row in tocItems"
         :key="row.item.id"
         data-toc-item
+        :class="itemClass"
         class="pxd-toc--item m-0 flex list-none"
       >
         <slot
