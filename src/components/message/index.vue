@@ -216,7 +216,7 @@ defineExpose({
         tag="ol"
         name="pxd-transition-message"
         class="pxd-message--group min-w-16 p-0 m-0 flex h-auto w-full max-w-full"
-        :class="{ 'gap-3': groupExpand }"
+        :class="{ 'gap-2': groupExpand }"
         @pointerenter="onPointerEnter"
         @pointerleave="onPointerLeave"
         @pointercancel="onPointerLeave"

@@ -91,7 +91,7 @@ const { attrs, classes } = useTailwindVariant(
 
 <template>
   <div data-note :class="classes" :data-variant="variant" v-bind="attrs">
-    <div class="gap-3 flex flex-1 shrink-0">
+    <div class="gap-2 flex flex-1 shrink-0">
       <slot v-if="computedLabel" name="label">
         <Component :is="computedLabel" class="size-4 font-medium h-lh shrink-0" />
       </slot>
