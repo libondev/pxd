@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
           v-for="particle in particleList"
           :key="particle.id"
           aria-hidden="true"
-          class="pxd-effort-slider--particle inset-y-0 left-0 absolute w-full motion-reduce:animate-none!"
+          class="pxd-effort-slider--particle inset-y-0 left-0 absolute w-full"
           :style="particle.style"
         />
       </div>
