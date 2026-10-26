@@ -130,7 +130,7 @@ watch(
           </PButton>
         </header>
 
-        <div class="pxd-modal--content p-5 h-full flex-1 overflow-auto" :class="contentClass">
+        <div class="pxd-modal--content p-5 h-full flex-1 overflow-auto scrollbar-gutter-stable" :class="contentClass">
           <slot />
         </div>
 

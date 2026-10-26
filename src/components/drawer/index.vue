@@ -146,7 +146,10 @@ watch(
           </PButton>
         </header>
 
-        <div class="pxd-drawer--content p-5 h-full flex-1 overflow-auto" :class="contentClass">
+        <div
+          class="pxd-drawer--content p-5 h-full flex-1 scrollbar-gutter-stable overflow-auto"
+          :class="contentClass"
+        >
           <slot />
         </div>
 
