@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSize } from '../../types/shared/props'
+import type { ComponentText, ComponentSize } from '../../types/shared/props'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
 export type TodoVariant = 'default' | 'simple'
@@ -10,8 +10,8 @@ export interface TodoOption {
   /** Stable key for rendering and for the imperative methods; falls back to the index. */
   id?: TodoItemKey
   /** Main label. Named after `todo_write`'s field so agent output can be bound directly. */
-  content?: ComponentLabel
-  description?: ComponentLabel
+  content?: ComponentText
+  description?: ComponentText
   status?: TodoStatus
   disabled?: boolean
 }
@@ -45,9 +45,9 @@ export interface TodoProps {
   /** Expanded state, applied whenever the value changes. */
   expand?: boolean
   /** Header title; falls back to `locale.todo.title`. */
-  title?: ComponentLabel
+  title?: ComponentText
   /** Empty-state text; falls back to `locale.results.noData`. */
-  empty?: ComponentLabel
+  empty?: ComponentText
 }
 
 export interface TodoEmits {

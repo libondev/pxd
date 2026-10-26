@@ -1,8 +1,8 @@
-import type { ComponentClass, ComponentLabel, ComponentValue } from '../../types/shared/props'
+import type { ComponentClass, ComponentText, ComponentValue } from '../../types/shared/props'
 
 export interface TreeOption {
   value?: ComponentValue
-  label?: ComponentLabel
+  label?: ComponentText
   disabled?: boolean
   children?: readonly TreeOption[]
   isLeaf?: boolean

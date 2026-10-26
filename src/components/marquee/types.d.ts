@@ -1,8 +1,8 @@
-import type { ComponentAs, ComponentLabel } from '../../types/shared/props'
+import type { ComponentAs, ComponentText } from '../../types/shared/props'
 
 export interface MarqueeProps {
   as?: ComponentAs
-  text?: ComponentLabel
+  text?: ComponentText
   color?: string
   background?: string
   delay?: number | string

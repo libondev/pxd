@@ -1,5 +1,5 @@
 import type {
-  ComponentLabel,
+  ComponentText,
   ComponentValue,
   ComponentOption,
   ResponsiveValue,
@@ -7,7 +7,7 @@ import type {
 
 export interface ChoiceboxProps {
   gap?: ResponsiveValue<number | string>
-  label?: ComponentLabel
+  label?: ComponentText
   multiple?: boolean
   disabled?: boolean
   options?: ComponentOption[]

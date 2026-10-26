@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSize } from '../../types/shared/props'
+import type { ComponentText, ComponentSize } from '../../types/shared/props'
 
 export type NoteVariant =
   | 'success'
@@ -14,6 +14,6 @@ export interface NoteProps {
   variant?: NoteVariant
   size?: ComponentSize
   fill?: boolean
-  text?: ComponentLabel
-  label?: boolean | ComponentLabel
+  text?: ComponentText
+  label?: boolean | ComponentText
 }

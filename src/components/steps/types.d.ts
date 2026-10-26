@@ -1,10 +1,10 @@
-import type { ComponentDirection, ComponentLabel, ComponentSize } from '../../types/shared/props'
+import type { ComponentDirection, ComponentText, ComponentSize } from '../../types/shared/props'
 
 export type StepsStatus = 'process' | 'finish' | 'error' | 'wait'
 
 export interface StepsOption {
-  title?: ComponentLabel
-  description?: ComponentLabel
+  title?: ComponentText
+  description?: ComponentText
   status?: StepsStatus
   disabled?: boolean
 }

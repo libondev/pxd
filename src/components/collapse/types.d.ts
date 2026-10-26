@@ -1,7 +1,7 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 
 export interface CollapseProps {
-  title?: ComponentLabel
+  title?: ComponentText
   expand?: boolean
 }
 

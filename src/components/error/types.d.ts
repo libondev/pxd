@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared/props'
+import type { ComponentText, ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface ErrorType {
   link?: string
@@ -9,7 +9,7 @@ export interface ErrorType {
 
 export interface ErrorProps {
   size?: ComponentSizeWithXs
-  label?: ComponentLabel
+  label?: ComponentText
   error?: ErrorType
   variant?: 'default' | 'card'
 }

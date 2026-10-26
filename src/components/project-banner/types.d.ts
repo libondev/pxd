@@ -1,8 +1,8 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 
 export type ProjectBannerVariant = 'default' | 'warning' | 'error' | 'success' | 'info'
 
 export interface ProjectBannerProps {
-  label?: ComponentLabel
+  label?: ComponentText
   variant?: ProjectBannerVariant
 }

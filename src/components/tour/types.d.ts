@@ -1,12 +1,12 @@
-import type { ComponentPosition, ComponentLabel } from '../../types/shared/props'
+import type { ComponentPosition, ComponentText } from '../../types/shared/props'
 
 export interface TourStep {
   target?: string | HTMLElement | (() => HTMLElement | null)
-  title?: ComponentLabel
+  title?: ComponentText
   description?: string
   position?: ComponentPosition
-  nextText?: ComponentLabel
-  prevText?: ComponentLabel
+  nextText?: ComponentText
+  prevText?: ComponentText
   beforeEnter?: (ctx: { index: number; step: TourStep }) => void | Promise<void>
 }
 

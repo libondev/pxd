@@ -4,9 +4,9 @@ import type { ComponentClass } from '../../types/shared/props'
 export interface VirtualListProps extends VirtualListOptions {
   listClass?: ComponentClass
   itemClass?: ComponentClass
-  errorText?: ComponentLabel
-  loadingText?: ComponentLabel
-  finishedText?: ComponentLabel
+  errorText?: ComponentText
+  loadingText?: ComponentText
+  finishedText?: ComponentText
 }
 
 export interface VirtualListEmits {

@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentSizeWithXs } from '../../types/shared/props'
+import type { ComponentText, ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface TextareaProps {
   rows?: string | number
@@ -11,7 +11,7 @@ export interface TextareaProps {
   minLength?: number | string
   maxLength?: number | string
   trimOverflow?: boolean
-  modelValue?: ComponentLabel
+  modelValue?: ComponentText
   placeholder?: string
   showWordLimit?: boolean | string
   wordLimitPosition?: 'inside' | 'outside'

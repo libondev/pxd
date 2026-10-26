@@ -1,6 +1,6 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 
 export interface HueTextProps {
-  text?: ComponentLabel
+  text?: ComponentText
   tinted?: boolean
 }

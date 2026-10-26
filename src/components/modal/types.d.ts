@@ -1,13 +1,13 @@
-import type { ComponentClass, ComponentLabel } from '../../types/shared/props'
+import type { ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface ModalProps {
   zIndex?: number
-  title?: ComponentLabel
-  subtitle?: ComponentLabel
+  title?: ComponentText
+  subtitle?: ComponentText
   width?: string | number
   loading?: boolean
   modelValue?: boolean
-  loadingText?: ComponentLabel
+  loadingText?: ComponentText
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean

@@ -1,14 +1,14 @@
-import type { BasePosition, ComponentClass, ComponentLabel } from '../../types/shared/props'
+import type { BasePosition, ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface DrawerProps {
   zIndex?: number
-  title?: ComponentLabel
-  subtitle?: ComponentLabel
+  title?: ComponentText
+  subtitle?: ComponentText
   size?: number | string
   loading?: boolean
   position?: BasePosition
   modelValue?: boolean
-  loadingText?: ComponentLabel
+  loadingText?: ComponentText
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
   autoFocusElement?: string | boolean

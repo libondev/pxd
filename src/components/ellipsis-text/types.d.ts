@@ -1,4 +1,4 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 
 export interface EllipsisTextProps {
   text: string
@@ -6,8 +6,8 @@ export interface EllipsisTextProps {
   rows?: number
   action?: boolean
   position?: 'start' | 'middle' | 'end'
-  moreText?: ComponentLabel
-  lessText?: ComponentLabel
+  moreText?: ComponentText
+  lessText?: ComponentText
   moreActionClass?: string
   lessActionClass?: string
 }

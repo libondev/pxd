@@ -1,11 +1,11 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { computed } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'
 import { toValue } from '../../utils/helper.js'
 
 interface WordLimitOptions {
-  modelValue: MaybeRefOrGetter<ComponentLabel>
+  modelValue: MaybeRefOrGetter<ComponentText>
   showWordLimit: MaybeRefOrGetter<unknown>
   maxLength: MaybeRefOrGetter<string | number | null | undefined>
   wordLimitPosition: MaybeRefOrGetter<'inside' | 'outside' | undefined>

@@ -1,13 +1,13 @@
 import type {
   ComponentAs,
   ComponentClass,
-  ComponentLabel,
+  ComponentText,
   ComponentValue,
 } from '../../types/shared/props'
 
 export interface ListOption {
   as?: ComponentAs
-  label?: ComponentLabel
+  label?: ComponentText
   value: ComponentValue
   disabled?: boolean
   variant?: 'default' | 'error' | 'warning'

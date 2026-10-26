@@ -1,6 +1,6 @@
 export interface LinkButtonProps {
   href: string
-  text?: ComponentLabel
+  text?: ComponentText
   align?: 'left' | 'center' | 'right'
   target?: '_blank' | '_self' | '_parent' | '_top'
   externalIcon?: boolean

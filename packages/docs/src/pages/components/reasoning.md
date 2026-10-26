@@ -43,4 +43,4 @@ setTimeout(() => {
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
 | streaming | `boolean` | `true` | Streaming state; drives the shimmer and the title (`thinking` / `thought`) |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
-| title | `ComponentLabel` | - | Title text; falls back to `locale.reasoning.thinking` / `thought` |
+| title | `ComponentText` | - | Title text; falls back to `locale.reasoning.thinking` / `thought` |

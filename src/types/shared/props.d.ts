@@ -12,7 +12,7 @@ export type ComponentBreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type ComponentBreakpoint<T = string> = Record<ComponentBreakpointKeys, T>
 
 export type ComponentAs = string | object
-export type ComponentLabel = string | number | undefined | null
+export type ComponentText = string | number | undefined | null
 export type ComponentValue = string | number
 
 export type ComponentClass = string | any[] | Record<string, any>
@@ -29,7 +29,7 @@ export type ComponentPosition<Position extends string = BasePosition> =
 export type ResponsiveValue<T> = T | Partial<ComponentBreakpoint<T>>
 
 export interface ComponentOption {
-  label: ComponentLabel
+  label: ComponentText
   value: ComponentValue
   disabled?: boolean
 }

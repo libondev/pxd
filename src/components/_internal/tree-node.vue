@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentClass, ComponentLabel, ComponentValue } from '../../types/shared/props'
+import type { ComponentClass, ComponentText, ComponentValue } from '../../types/shared/props'
 import type { TreeDropPosition, TreeHighlightPart, TreeOption } from '../tree/types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
@@ -14,7 +14,7 @@ defineOptions({
 
 const props = defineProps<{
   node: TreeOption
-  label: ComponentLabel
+  label: ComponentText
   value: ComponentValue
   depth: number
   index: number

@@ -1,3 +1,3 @@
 export interface LoadingMaskProps {
-  text?: ComponentLabel
+  text?: ComponentText
 }

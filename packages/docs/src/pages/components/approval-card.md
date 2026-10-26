@@ -149,8 +149,8 @@ function approveAll() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | modelValue | `'pending' \| 'approved' \| 'rejected' \| 'dismissed'` | - | Controlled status; the card manages its own status when omitted |
-| title | `ComponentLabel` | `'Run this command?'` | Card heading |
-| description | `ComponentLabel` | - | Secondary line under the title |
+| title | `ComponentText` | `'Run this command?'` | Card heading |
+| description | `ComponentText` | - | Secondary line under the title |
 | command | `string \| string[]` | - | Command text; an array renders one command per line |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success'` | `'warning'` | Risk level, tints the leading icon |
 | loading | `boolean` | `false` | Disables the actions and spins the approve button |

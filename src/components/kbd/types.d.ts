@@ -1,4 +1,4 @@
-import type { ComponentSize, ComponentLabel } from '../../types/shared/props'
+import type { ComponentSize, ComponentText } from '../../types/shared/props'
 
 export interface KbdProps {
   alt?: boolean
@@ -6,6 +6,6 @@ export interface KbdProps {
   meta?: boolean
   enter?: boolean
   shift?: boolean
-  label?: ComponentLabel
+  label?: ComponentText
   size?: ComponentSize
 }

@@ -1,6 +1,6 @@
 export interface MoreButtonProps {
-  moreText?: ComponentLabel
-  lessText?: ComponentLabel
+  moreText?: ComponentText
+  lessText?: ComponentText
   modelValue?: boolean
 }
 

@@ -1,4 +1,4 @@
-import type { ComponentLabel, ComponentVariant } from '../../types/shared/props'
+import type { ComponentText, ComponentVariant } from '../../types/shared/props'
 
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'dismissed'
 
@@ -17,8 +17,8 @@ export interface ApprovalResult {
 export interface ApprovalCardProps {
   modelValue?: ApprovalStatus
   /** Fallback title; renders `locale.approval.title`. */
-  title?: ComponentLabel
-  description?: ComponentLabel
+  title?: ComponentText
+  description?: ComponentText
   command?: string | string[]
   variant?: ComponentVariant
   loading?: boolean

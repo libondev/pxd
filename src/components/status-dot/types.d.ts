@@ -1,6 +1,6 @@
-import type { ComponentLabel } from '../../types/shared/props'
+import type { ComponentText } from '../../types/shared/props'
 
 export interface StatusDotProps {
-  label?: boolean | ComponentLabel
+  label?: boolean | ComponentText
   state?: 'QUEUED' | 'BUILDING' | 'READY' | 'ERROR' | 'CANCELED'
 }
