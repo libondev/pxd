@@ -62,7 +62,7 @@ export async function flush(times = 4) {
 
 /** Panel sizes as actually rendered, i.e. what a user would see. */
 export function readSizes(wrapper: VueWrapper<any>): number[] {
-  return wrapper.findAll('.pxd-resizable-panel').map((node) => {
+  return wrapper.findAll('.pxd-resizable--panel').map((node) => {
     const matched = /flex-basis:\s*([\d.]+)(?:%|px)/.exec(node.attributes('style') || '')
 
     return matched ? Number(matched[1]) : 0

@@ -56,18 +56,19 @@ const handleRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef(0)
 const innerSizes = shallowRef<Pair>(toPair(props.defaultValue))
 const innerCollapsed = shallowRef(false)
-/** Pointer position in `unit` during a drag; unclamped so a leftward overshoot is not swallowed. */
+// Pointer position in `unit` during a drag; unclamped so a leftward overshoot is not swallowed.
 const dragPointer = shallowRef<number | null>(null)
 const dragCollapsed = shallowRef(false)
-/** Leading size to restore when a folded panel is expanded without dragging. */
+// Leading size to restore when a folded panel is expanded without dragging.
 const foldedFrom = shallowRef<number | null>(null)
 const isControlled = computed(() => !isNil(props.modelValue))
 const isPixel = computed(() => props.unit === 'px')
-/** `reverse` only means anything where a panel fills the rest, i.e. under `px`. */
+const isHorizontal = computed(() => props.direction === 'horizontal')
+// `reverse` only means anything where a panel fills the rest, i.e. under `px`.
 const isReversed = computed(() => isPixel.value && props.reverse)
-/** Percent sizes are measured against 100; pixel sizes fill the measured container. */
+// Percent sizes are measured against 100; pixel sizes fill the measured container.
 const totalSize = computed(() => (isPixel.value ? containerSize.value : PERCENT_TOTAL))
-/** Under `px` only the pinned panel's size comes from the caller. */
+// Under `px` only the pinned panel's size comes from the caller.
 const sizes = computed<Pair>(() => {
   const [leading, trailing] = toPair(isControlled.value ? props.modelValue : innerSizes.value)
   const total = totalSize.value
@@ -96,9 +97,9 @@ const bounds = computed<{ min: number; max: number }>(() => {
 const collapsed = computed(() =>
   dragPointer.value === null ? (props.collapsed ?? innerCollapsed.value) : dragCollapsed.value,
 )
-/** The bound the divider parks against while folded. */
+// The bound the divider parks against while folded.
 const foldedLeading = computed(() => (isReversed.value ? bounds.value.max : bounds.value.min))
-/** Half of the pinned floor; a panel without a floor has nothing to fold past. */
+// Half of the pinned floor; a panel without a floor has nothing to fold past.
 const foldThreshold = computed(
   () => (isReversed.value ? totalSize.value - bounds.value.max : bounds.value.min) / 2,
 )
@@ -118,14 +119,13 @@ const renderedSizes = computed<Pair>(() => {
 
   return pairFrom(pointer)
 })
-/** The pair the panel slots are handed, updated only when a change settles. */
+// The pair the panel slots are handed, updated only when a change settles.
 const settledSizes = shallowRef<Pair>(renderedSizes.value)
 const unitSuffix = computed(() => (isPixel.value ? 'px' : '%'))
-/** An empty panel puts the divider on a container edge, where a line is just residue. */
+// An empty panel puts the divider on a container edge, where a line is just residue.
 const isFlush = computed(() => renderedSizes.value[0] <= 0 || renderedSizes.value[1] <= 0)
 const ariaValueNow = computed(() => roundSize(renderedSizes.value[0]))
-const ariaValueText = computed(() => `${ariaValueNow.value}${unitSuffix.value}`)
-/** Folded, the divider is out of the tab order and cannot move, so it exposes no value range. */
+// Folded, the divider is out of the tab order and cannot move, so it exposes no value range.
 const separatorRange = computed(() =>
   collapsed.value
     ? {}
@@ -133,7 +133,7 @@ const separatorRange = computed(() =>
         'aria-valuenow': ariaValueNow.value,
         'aria-valuemin': bounds.value.min,
         'aria-valuemax': bounds.value.max,
-        'aria-valuetext': ariaValueText.value,
+        'aria-valuetext': `${ariaValueNow.value}${unitSuffix.value}`,
       },
 )
 
@@ -145,7 +145,7 @@ function roundSize(value: number): number {
   return Math.round(value * 100) / 100
 }
 
-/** Pixel distance as the group's `unit`. */
+// Pixel distance as the group's `unit`.
 function toUnit(px: number): number {
   if (isPixel.value) {
     return px
@@ -236,11 +236,11 @@ function reset() {
 
   clearFold(wasCollapsed)
 
-  if (!changed && !wasCollapsed) {
-    return
-  }
-
   if (!changed) {
+    if (!wasCollapsed) {
+      return
+    }
+
     writeSizes(next)
   }
 
@@ -278,8 +278,7 @@ function syncContainerSize() {
     return
   }
 
-  containerSize.value =
-    props.direction === 'horizontal' ? container.offsetWidth : container.offsetHeight
+  containerSize.value = isHorizontal.value ? container.offsetWidth : container.offsetHeight
 }
 
 function flushPointer() {
@@ -322,7 +321,7 @@ function flushPointer() {
 }
 
 function axisOf(event: PointerEvent) {
-  return props.direction === 'horizontal' ? event.clientX : event.clientY
+  return isHorizontal.value ? event.clientX : event.clientY
 }
 
 function resetDragging() {
@@ -457,9 +456,8 @@ function handleKeydown(event: KeyboardEvent) {
     return
   }
 
-  const horizontal = props.direction === 'horizontal'
-  const back = horizontal ? 'ArrowLeft' : 'ArrowUp'
-  const forward = horizontal ? 'ArrowRight' : 'ArrowDown'
+  const back = isHorizontal.value ? 'ArrowLeft' : 'ArrowUp'
+  const forward = isHorizontal.value ? 'ArrowRight' : 'ArrowDown'
 
   if (![back, forward, 'Home', 'End'].includes(event.key)) {
     return
@@ -488,7 +486,7 @@ function handleKeydown(event: KeyboardEvent) {
   }
 }
 
-/** Only the pinned panel of a pixel group gets a basis; the other one fills. */
+// Only the pinned panel of a pixel group gets a basis; the other one fills.
 function panelStyle(index: number) {
   if (isPixel.value && index === (isReversed.value ? 0 : 1)) {
     return {}
@@ -499,16 +497,19 @@ function panelStyle(index: number) {
   }
 }
 
-/** A panel clipped to nothing is gone for focus and AT, not just for the eye. */
+// A panel clipped to nothing is gone for focus and AT, not just for the eye.
 function isPanelEmpty(index: number) {
   return renderedSizes.value[index] <= 0 || undefined
 }
 
-watch(renderedSizes, (value) => {
-  if (dragPointer.value === null) {
-    settledSizes.value = value
-  }
-})
+watch(
+  () => renderedSizes.value,
+  (value) => {
+    if (dragPointer.value === null) {
+      settledSizes.value = value
+    }
+  },
+)
 
 watch(
   () => props.collapsed,
@@ -545,7 +546,7 @@ defineExpose({
   >
     <div
       :id="leadingId"
-      class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
+      class="pxd-resizable--panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(0)"
       :inert="isPanelEmpty(0)"
     >
@@ -563,9 +564,8 @@ defineExpose({
       :aria-disabled="disabled || undefined"
       :data-collapsed="collapsed || undefined"
       :data-flush="isFlush || undefined"
-      :data-handler="handle"
       :data-orientation="direction"
-      class="pxd-resizable-handle relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
+      class="pxd-resizable--handle group relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
       @pointerdown="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -573,11 +573,17 @@ defineExpose({
       @lostpointercapture="handleLostCapture"
       @keydown="handleKeydown"
       @dblclick.prevent.stop="handleDblclick"
-    />
+    >
+      <span
+        v-if="handle"
+        class="pxd-resizable--handle-thumb pointer-events-none absolute z-1 block -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-300 group-hover:bg-primary group-hover:delay-200"
+        :class="isHorizontal ? 'w-1 h-6 left-0 top-1/2' : 'w-6 h-1 top-0 left-1/2'"
+      />
+    </div>
 
     <div
       :id="trailingId"
-      class="pxd-resizable-panel min-w-0 min-h-0 overflow-hidden"
+      class="pxd-resizable--panel min-w-0 min-h-0 overflow-hidden"
       :style="panelStyle(1)"
       :inert="isPanelEmpty(1)"
     >
@@ -587,68 +593,49 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-resizable-panel {
+.pxd-resizable--panel {
   flex-grow: 0;
   flex-shrink: 1;
 }
 
-/* Fallback for browsers without `inert`: hidden keeps the content out of focus, AT and hit testing. */
-.pxd-resizable-panel[inert] {
+.pxd-resizable--panel[inert] {
   visibility: hidden;
 }
 
-.pxd-resizable[data-unit='px'] .pxd-resizable-panel:first-child {
+.pxd-resizable[data-unit='px'] .pxd-resizable--panel:first-child {
   flex-shrink: 0;
 }
 
-.pxd-resizable[data-unit='px'] .pxd-resizable-panel:last-child {
+.pxd-resizable[data-unit='px'] .pxd-resizable--panel:last-child {
   flex-basis: 0;
   flex-grow: 1;
 }
 
-.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable-panel:first-child {
+.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable--panel:first-child {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable-panel:last-child {
+.pxd-resizable[data-unit='px'][data-reverse] .pxd-resizable--panel:last-child {
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.pxd-resizable-handle[data-handler='true']::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 0.5rem;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-gray-300);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.pxd-resizable-handle::after {
+.pxd-resizable--handle::after {
   content: '';
   position: absolute;
   background-color: transparent;
 }
 
-.pxd-resizable-handle:hover::after {
+.pxd-resizable--handle:hover::after {
   background-color: var(--color-primary);
 }
 
-.pxd-resizable-handle[data-orientation='horizontal'] {
+.pxd-resizable--handle[data-orientation='horizontal'] {
   height: 100%;
-  margin-right: -1px;
   border-left-width: 1px;
   cursor: col-resize;
-
-  &::before {
-    width: 0.375rem;
-    height: 1.5rem;
-  }
 
   &::after {
     top: 0;
@@ -659,16 +646,10 @@ defineExpose({
   }
 }
 
-.pxd-resizable-handle[data-orientation='vertical'] {
+.pxd-resizable--handle[data-orientation='vertical'] {
   width: 100%;
-  margin-bottom: -1px;
   border-bottom-width: 1px;
   cursor: row-resize;
-
-  &::before {
-    width: 1.5rem;
-    height: 0.375rem;
-  }
 
   &::after {
     top: 50%;
@@ -679,12 +660,12 @@ defineExpose({
   }
 }
 
-.pxd-resizable-handle[data-collapsed='true'],
-.pxd-resizable-handle[data-flush='true'] {
-  background-color: transparent;
+.pxd-resizable--handle[data-collapsed='true'],
+.pxd-resizable--handle[data-flush='true'] {
+  border-color: transparent;
 }
 
-.pxd-resizable-handle[data-collapsed='true']::before {
+.pxd-resizable--handle[data-collapsed='true'] .pxd-resizable--handle-thumb {
   opacity: 0.4;
 }
 </style>

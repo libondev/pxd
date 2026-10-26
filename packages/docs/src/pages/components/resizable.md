@@ -17,8 +17,8 @@ const direction = ref('horizontal')
 <template>
   <PStack direction="vertical">
     <PSwitch v-model="direction">
-      <PSwitchItem value="horizontal">Row</PSwitchItem>
-      <PSwitchItem value="vertical">Col</PSwitchItem>
+      <PSwitchItem value="horizontal">Horizontal</PSwitchItem>
+      <PSwitchItem value="vertical">Vertical</PSwitchItem>
     </PSwitch>
 
     <PResizable :direction="direction" class="w-100 h-50 max-w-full border rounded-lg">

@@ -58,7 +58,7 @@ describe('resizable', () => {
   it('renders both panel slots', () => {
     const wrapper = mountResizable()
 
-    expect(wrapper.findAll('.pxd-resizable-panel')).toHaveLength(2)
+    expect(wrapper.findAll('.pxd-resizable--panel')).toHaveLength(2)
     expect(wrapper.text()).toContain('A')
     expect(wrapper.text()).toContain('B')
 
@@ -79,7 +79,7 @@ describe('resizable', () => {
 
     expect(wrapper.props('direction')).toBe('horizontal')
     expect(wrapper.attributes('data-orientation')).toBe('horizontal')
-    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-orientation')).toBe('horizontal')
+    expect(wrapper.find('.pxd-resizable--handle').attributes('aria-orientation')).toBe('horizontal')
 
     wrapper.unmount()
   })
@@ -134,7 +134,7 @@ describe('resizable', () => {
       { defaultValue: [30, 70] },
       { leading: ({ size }: { size: number }) => h(Probe, { size }), trailing: () => 'B' },
     )
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(renders).toEqual([30])
 
@@ -162,7 +162,7 @@ describe('resizable', () => {
       { leading: ({ size }: { size: number }) => `L${size}`, trailing: () => 'B' },
     )
 
-    await wrapper.find('.pxd-resizable-handle').trigger('keydown', { key: 'ArrowRight' })
+    await wrapper.find('.pxd-resizable--handle').trigger('keydown', { key: 'ArrowRight' })
     await flush()
 
     expect(wrapper.text()).toContain('L31')
@@ -180,7 +180,7 @@ describe('resizable', () => {
       { defaultValue: [30, 70] },
       { leading: ({ size }: { size: number }) => `L${size}`, trailing: () => 'B' },
     )
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     handle.element.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
     handle.element.dispatchEvent(createPointerEvent('pointermove', { x: 600 }))
@@ -229,7 +229,7 @@ describe('resizable', () => {
     })
     await flush()
 
-    const handles = wrapper.findAll('.pxd-resizable-handle')
+    const handles = wrapper.findAll('.pxd-resizable--handle')
 
     expect(handles).toHaveLength(2)
     expect(handles[0]!.attributes('data-orientation')).toBe('horizontal')
@@ -242,7 +242,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ direction: 'vertical' })
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 650, 'y')
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 650, 'y')
     await flush()
 
     expect(readSizes(wrapper)).toEqual([65, 35])
@@ -254,7 +254,7 @@ describe('resizable', () => {
     const wrapper = mountResizable()
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
 
     handle.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
     handle.dispatchEvent(createPointerEvent('pointermove', { x: 650 }))
@@ -274,7 +274,7 @@ describe('resizable', () => {
     const wrapper = mountResizable()
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 500)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 500)
     await flush()
 
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
@@ -288,7 +288,7 @@ describe('resizable', () => {
     await flush()
 
     // 15% is under the 20% floor but still above the 10% fold threshold.
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 150)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 150)
     await flush()
 
     expect(readSizes(wrapper)).toEqual([20, 80])
@@ -300,7 +300,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [0, 40] })
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 1000)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 1000)
     await flush()
 
     expect(readSizes(wrapper)).toEqual([60, 40])
@@ -312,7 +312,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [15, 10] })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
 
     for (let step = 0; step < 40; step++) {
       const offset = ((step * 37) % 21) - 10
@@ -333,7 +333,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [50, 50] }, slots(), exposed)
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
 
     // A third of a pixel on a 1000px container is 0.0333...%.
     for (let step = 0; step < 40; step++) {
@@ -353,7 +353,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [30, 70], minSize: [10, 0] })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     drag(handle.element, 500, 550)
     await flush()
@@ -374,7 +374,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [10, 90], minSize: [20, 0] })
     await flush()
 
-    wrapper.find('.pxd-resizable-handle').element.dispatchEvent(createPointerEvent('dblclick'))
+    wrapper.find('.pxd-resizable--handle').element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
 
     expect(readSizes(wrapper)).toEqual([20, 80])
@@ -386,7 +386,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [40, 60], dblclickAction: 'fold' })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
@@ -408,7 +408,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [40, 60], dblclickAction: 'fold' })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
@@ -433,7 +433,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     drag(handle.element, 500, 650)
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
@@ -458,7 +458,7 @@ describe('resizable', () => {
 
     expect(exposed.value.getPanelSizes()).toEqual([60, 40])
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 600)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 600)
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([70, 30])
@@ -475,8 +475,8 @@ describe('resizable', () => {
     const plain = mountResizable()
     const gripped = mountResizable({ handle: true })
 
-    expect(plain.find('.pxd-resizable-handle').attributes('data-handler')).toBe('false')
-    expect(gripped.find('.pxd-resizable-handle').attributes('data-handler')).toBe('true')
+    expect(plain.find('.pxd-resizable--handle-thumb').exists()).toBe(false)
+    expect(gripped.find('.pxd-resizable--handle-thumb').exists()).toBe(true)
 
     plain.unmount()
     gripped.unmount()
@@ -486,7 +486,7 @@ describe('resizable', () => {
     const wrapper = mountResizable()
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     await handle.trigger('keydown', { key: 'ArrowRight' })
 
@@ -504,7 +504,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [20, 30] })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     await handle.trigger('keydown', { key: 'Home' })
 
@@ -521,7 +521,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ direction: 'vertical' })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     await handle.trigger('keydown', { key: 'ArrowUp' })
 
@@ -538,7 +538,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ defaultValue: [40, 60], dblclickAction: 'fold' })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
@@ -558,7 +558,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ disabled: true })
     await flush()
 
-    await wrapper.find('.pxd-resizable-handle').trigger('keydown', { key: 'ArrowRight' })
+    await wrapper.find('.pxd-resizable--handle').trigger('keydown', { key: 'ArrowRight' })
 
     expect(readSizes(wrapper)).toEqual([50, 50])
     expect(wrapper.emitted('change')).toBeUndefined()
@@ -570,7 +570,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ disabled: true })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('aria-disabled')).toBe('true')
 
@@ -588,8 +588,8 @@ describe('resizable', () => {
   it('exposes the leading position and range as a focusable separator', () => {
     const wrapper = mountResizable({ defaultValue: [30, 70], minSize: [10, 20] })
 
-    const panels = wrapper.findAll('.pxd-resizable-panel')
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const panels = wrapper.findAll('.pxd-resizable--panel')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('role')).toBe('separator')
     expect(handle.attributes('tabindex')).toBe('0')
@@ -620,7 +620,7 @@ describe('resizable', () => {
     })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('aria-valuetext')).toBe('30%')
 
@@ -640,7 +640,7 @@ describe('resizable', () => {
   it('takes the divider out of the tab order while disabled', () => {
     const wrapper = mountResizable({ disabled: true })
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('tabindex')).toBe('-1')
     expect(handle.attributes('aria-disabled')).toBe('true')
@@ -679,7 +679,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [20] })
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 150)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 150)
     await flush()
 
     expect(readSizes(wrapper)).toEqual([20, 80])
@@ -691,7 +691,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [120, 0] })
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 800)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 800)
     await flush()
 
     expect(readSizes(wrapper)).toEqual([80, 20])
@@ -703,7 +703,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ minSize: [60, 60] })
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 200)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 200)
     await flush()
 
     // 300px of 1000 is 30%, and nothing constrains the pair any more.
@@ -726,13 +726,13 @@ describe('resizable', () => {
     const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
-    const panels = wrapper.findAll('.pxd-resizable-panel')
+    const panels = wrapper.findAll('.pxd-resizable--panel')
 
     expect(panels[0].attributes('style')).toContain('flex-basis: 320px')
     expect(panels[1].attributes('style') || '').not.toContain('flex-basis')
     expect(exposed.value.getPanelSizes()).toEqual([320, 680])
     expect(wrapper.attributes('data-unit')).toBe('px')
-    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuetext')).toBe('320px')
+    expect(wrapper.find('.pxd-resizable--handle').attributes('aria-valuetext')).toBe('320px')
 
     wrapper.unmount()
   })
@@ -776,7 +776,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ unit: 'px', defaultValue: [320] }, slots(), exposed)
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     setContainerSize(0)
     observers.fireAll()
@@ -814,7 +814,7 @@ describe('resizable', () => {
 
     expect(wrapper.attributes('data-unit')).toBe('percent')
     expect(readSizes(wrapper)).toEqual([50, 50])
-    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuetext')).toBe('50%')
+    expect(wrapper.find('.pxd-resizable--handle').attributes('aria-valuetext')).toBe('50%')
 
     wrapper.unmount()
   })
@@ -824,7 +824,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 650)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 650)
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([470, 530])
@@ -839,7 +839,7 @@ describe('resizable', () => {
     const wrapper = mountResizable({ unit: 'px', defaultValue: [320, 680] }, slots(), exposed)
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     await handle.trigger('keydown', { key: 'ArrowRight' })
     expect(exposed.value.getPanelSizes()).toEqual([321, 679])
@@ -859,7 +859,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('aria-valuemin')).toBe('100')
     expect(handle.attributes('aria-valuemax')).toBe('900')
@@ -882,7 +882,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 0)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 0)
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
@@ -899,7 +899,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     handle.element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
@@ -924,7 +924,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
     const frames = stubFrames()
 
     handle.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
@@ -940,7 +940,7 @@ describe('resizable', () => {
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
-    expect(wrapper.find('.pxd-resizable-handle').attributes('data-collapsed')).toBe('true')
+    expect(wrapper.find('.pxd-resizable--handle').attributes('data-collapsed')).toBe('true')
     expect(wrapper.emitted('update:collapsed')).toEqual([[true]])
 
     frames.restore()
@@ -956,7 +956,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
     const frames = stubFrames()
 
     handle.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
@@ -996,7 +996,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
     const frames = stubFrames()
 
     handle.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
@@ -1043,7 +1043,7 @@ describe('resizable', () => {
 
     expect(collapsed.value).toBe(true)
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 620)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 620)
     await flush()
 
     expect(collapsed.value).toBe(false)
@@ -1061,7 +1061,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
     const frames = stubFrames()
 
     handle.element.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
@@ -1092,13 +1092,13 @@ describe('resizable', () => {
     })
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
-    expect(wrapper.findAll('.pxd-resizable-panel')[0].attributes('style')).toContain(
+    expect(wrapper.findAll('.pxd-resizable--panel')[0].attributes('style')).toContain(
       'flex-basis: 0px',
     )
-    expect(wrapper.findAll('.pxd-resizable-panel')[0].element.hasAttribute('inert')).toBe(true)
-    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(false)
+    expect(wrapper.findAll('.pxd-resizable--panel')[0].element.hasAttribute('inert')).toBe(true)
+    expect(wrapper.findAll('.pxd-resizable--panel')[1].element.hasAttribute('inert')).toBe(false)
     expect(handle.attributes('tabindex')).toBe('-1')
     expect(handle.attributes('aria-valuemin')).toBeUndefined()
     expect(handle.attributes('aria-valuetext')).toBeUndefined()
@@ -1106,10 +1106,10 @@ describe('resizable', () => {
     await wrapper.setProps({ collapsed: false })
     await flush()
 
-    expect(wrapper.findAll('.pxd-resizable-panel')[0].attributes('style')).toContain(
+    expect(wrapper.findAll('.pxd-resizable--panel')[0].attributes('style')).toContain(
       'flex-basis: 256px',
     )
-    expect(wrapper.findAll('.pxd-resizable-panel')[0].element.hasAttribute('inert')).toBe(false)
+    expect(wrapper.findAll('.pxd-resizable--panel')[0].element.hasAttribute('inert')).toBe(false)
     expect(handle.attributes('tabindex')).toBe('0')
     expect(handle.attributes('aria-valuemin')).toBe('180')
     expect(handle.attributes('aria-valuetext')).toBe('256px')
@@ -1121,12 +1121,12 @@ describe('resizable', () => {
     const wrapper = mountResizable({ modelValue: [100, 0] })
     await flush()
 
-    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(true)
+    expect(wrapper.findAll('.pxd-resizable--panel')[1].element.hasAttribute('inert')).toBe(true)
 
     await wrapper.setProps({ modelValue: [40, 60] })
     await flush()
 
-    expect(wrapper.findAll('.pxd-resizable-panel')[1].element.hasAttribute('inert')).toBe(false)
+    expect(wrapper.findAll('.pxd-resizable--panel')[1].element.hasAttribute('inert')).toBe(false)
 
     wrapper.unmount()
   })
@@ -1140,7 +1140,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle').element
+    const handle = wrapper.find('.pxd-resizable--handle').element
     const frames = stubFrames()
 
     handle.dispatchEvent(createPointerEvent('pointerdown', { x: 500 }))
@@ -1166,7 +1166,7 @@ describe('resizable', () => {
     const wrapper = mountResizable()
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
 
     expect(handle.attributes('data-flush')).toBeUndefined()
 
@@ -1194,13 +1194,13 @@ describe('resizable', () => {
     )
     await flush()
 
-    const panels = wrapper.findAll('.pxd-resizable-panel')
+    const panels = wrapper.findAll('.pxd-resizable--panel')
 
     expect(exposed.value.getPanelSizes()).toEqual([680, 320])
     expect(panels[0].attributes('style') || '').not.toContain('flex-basis')
     expect(panels[1].attributes('style')).toContain('flex-basis: 320px')
     expect(wrapper.attributes('data-reverse')).toBe('true')
-    expect(wrapper.find('.pxd-resizable-handle').attributes('aria-valuenow')).toBe('680')
+    expect(wrapper.find('.pxd-resizable--handle').attributes('aria-valuenow')).toBe('680')
 
     wrapper.unmount()
   })
@@ -1214,7 +1214,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 620)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 620)
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([800, 200])
@@ -1233,7 +1233,7 @@ describe('resizable', () => {
     )
     await flush()
 
-    const handle = wrapper.find('.pxd-resizable-handle')
+    const handle = wrapper.find('.pxd-resizable--handle')
     const frames = stubFrames()
 
     // The default threshold is half the trailing floor, i.e. 100px left of the pinned width.
@@ -1278,12 +1278,12 @@ describe('resizable', () => {
     )
     await flush()
 
-    drag(wrapper.find('.pxd-resizable-handle').element, 500, 700)
+    drag(wrapper.find('.pxd-resizable--handle').element, 500, 700)
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([800, 200])
 
-    wrapper.find('.pxd-resizable-handle').element.dispatchEvent(createPointerEvent('dblclick'))
+    wrapper.find('.pxd-resizable--handle').element.dispatchEvent(createPointerEvent('dblclick'))
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([680, 320])
@@ -1338,7 +1338,7 @@ describe('resizable', () => {
 
     expect(inner.value.getPanelSizes()).toEqual([424, 320])
 
-    drag(wrapper.findAll('.pxd-resizable-handle')[0].element, 500, 600)
+    drag(wrapper.findAll('.pxd-resizable--handle')[0].element, 500, 600)
     await flush()
 
     expect(left.value).toEqual([356, 644])
