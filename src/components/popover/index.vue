@@ -73,6 +73,7 @@ const pointReference: VirtualElement = {
   },
 }
 
+const positionReady = shallowRef(false)
 const localPosition = shallowRef(props.position)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const isManual = computed(() => triggerMethods.value.includes('manual'))
@@ -85,6 +86,7 @@ const wrapperStyle = computed<CSSProperties>(() => ({
 // Hover popovers must not steal focus; click ones trap Tab but only focus on request.
 const focusTrapContainer = computed(() =>
   isVisible.value &&
+  positionReady.value &&
   (isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'))
     ? wrapperRef.value
     : null,
@@ -392,8 +394,13 @@ async function handlePopoverShow() {
   })
 
   // Position before the enter transition starts, while data-visible is still false.
+  if (!isVisible.value) {
+    positionReady.value = false
+  }
+
   const visiblePromise = showPopover()
   await syncPosition()
+  positionReady.value = true
   await visiblePromise
 }
 
@@ -666,7 +673,7 @@ defineExpose({
 
     <POverlay
       v-if="isRender"
-      :model-value="isVisible"
+      :model-value="isVisible && positionReady"
       :z-index="overlayZIndex"
       :variant="adaptive ? 'default' : 'none'"
       :close-on-press-escape="closeOnPressEscape"
@@ -678,14 +685,14 @@ defineExpose({
         tabindex="-1"
         role="dialog"
         aria-modal="true"
-        :data-visible="isVisible"
+        :data-visible="isVisible && positionReady"
         :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
         :aria-labelledby="ariaLabelledby"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:hidden"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"

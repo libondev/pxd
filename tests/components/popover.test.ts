@@ -73,6 +73,52 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should wait for the initial position before revealing the wrapper', async () => {
+    let resolvePosition: ((value: Awaited<ReturnType<typeof computePosition>>) => void) | undefined
+
+    mocks.computePosition.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolvePosition = resolve
+        }),
+    )
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    await new Promise(requestAnimationFrame)
+    await new Promise(requestAnimationFrame)
+    await Promise.resolve()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')
+
+    expect(floating).not.toBeNull()
+    expect(floating?.dataset.visible).toBe('false')
+
+    resolvePosition?.({
+      x: 42,
+      y: 64,
+      placement: 'bottom',
+      strategy: 'absolute',
+      middlewareData: {},
+    })
+    await flush()
+
+    expect(floating?.dataset.visible).toBe('true')
+    expect(floating?.style.left).toBe('42px')
+    expect(floating?.style.top).toBe('64px')
+
+    wrapper.unmount()
+  })
+
   it('should default position to bottom', () => {
     const wrapper = mount(Popover, {
       slots: {
