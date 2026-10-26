@@ -76,7 +76,6 @@ const PARTICLE_COUNT = 16
 const PARTICLE_DURATION = 2
 
 const trackRef = shallowRef<HTMLElement>()
-const thumbRef = shallowRef<HTMLElement>()
 const labelRef = shallowRef<HTMLElement>()
 const dragging = shallowRef(false)
 const focused = shallowRef(false)
@@ -130,29 +129,25 @@ function particleSeed(index: number, salt: number) {
 
 function updateLabelShift() {
   const label = labelRef.value
-  const thumb = thumbRef.value
   const track = trackRef.value
 
-  if (!label || !thumb || !track) {
+  if (!label || !track) {
     return
   }
 
-  const trackWidth = track.getBoundingClientRect().width
-  const labelWidth = label.getBoundingClientRect().width
-  const thumbWidth = thumb.getBoundingClientRect().width
+  // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
+  // zoom or transform, while the shift below is applied in unscaled pixels.
+  const { clientWidth: trackWidth, offsetWidth: labelWidth } = track
 
-  if (!trackWidth || !thumbWidth || labelWidth > trackWidth) {
+  if (!trackWidth || labelWidth > trackWidth) {
     labelShift.value = 0
     return
   }
 
   const center = (percentage.value / 100) * trackWidth
-  const left = center - labelWidth / 2
-  // The label may reach as far as the thumb box, so its edge lines up with the thumb at the ends.
-  const lower = -thumbWidth / 2
-  const upper = trackWidth + thumbWidth / 2 - labelWidth
-
-  labelShift.value = clamp(left, lower, Math.max(lower, upper)) - left
+  const half = labelWidth / 2
+  // The label stays inside the track, so at the ends it stops at the track edge.
+  labelShift.value = clamp(center, half, trackWidth - half) - center
 }
 
 const tickList = computed(() => {
@@ -407,7 +402,6 @@ onBeforeUnmount(() => {
       />
 
       <div
-        ref="thumbRef"
         role="slider"
         :tabindex="disabled ? -1 : 0"
         :aria-valuemin="0"

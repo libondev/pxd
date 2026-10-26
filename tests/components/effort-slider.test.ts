@@ -18,6 +18,14 @@ function stubTrack(wrapper: ReturnType<typeof mount>) {
   return track
 }
 
+function stubWidths(sizes: Array<[Element, number]>) {
+  // happy-dom has no layout, so the layout widths come from these stubs.
+  sizes.forEach(([element, width]) => {
+    Object.defineProperty(element, 'clientWidth', { configurable: true, value: width })
+    Object.defineProperty(element, 'offsetWidth', { configurable: true, value: width })
+  })
+}
+
 function dispatch(type: string, clientX: number) {
   document.dispatchEvent(new PointerEvent(type, { clientX }))
 }
@@ -332,33 +340,33 @@ describe('effort-slider', () => {
     const thumb = wrapper.find('.pxd-effort-slider--thumb')
     const label = wrapper.find('.pxd-effort-slider--label')
 
-    label.element.getBoundingClientRect = () => ({ width: 40 }) as DOMRect
-    thumb.element.getBoundingClientRect = () => ({ width: 10 }) as DOMRect
-    track.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+    stubWidths([
+      [track.element, 100],
+      [label.element, 40],
+    ])
 
     await thumb.trigger('focus')
 
-    expect(label.attributes('style')).toContain('-15px')
+    expect(label.attributes('style')).toContain('-20px')
 
     wrapper.unmount()
   })
 
-  it('should line the label up with the thumb edge when it is clamped', async () => {
+  it('should keep the label inside the track when it is clamped', async () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'low' } })
     const track = stubTrack(wrapper)
-    const thumb = wrapper.find('.pxd-effort-slider--thumb')
     const label = wrapper.find('.pxd-effort-slider--label')
 
-    // happy-dom has no layout, so the widths come from the rect stubs below.
-    label.element.getBoundingClientRect = () => ({ width: 40 }) as DOMRect
-    thumb.element.getBoundingClientRect = () => ({ width: 10 }) as DOMRect
-    track.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+    stubWidths([
+      [track.element, 100],
+      [label.element, 40],
+    ])
 
     await wrapper.setProps({ modelValue: 'max' })
 
-    // The thumb sits at 100% of a 100px track, so its right edge is 105px and a 40px
-    // label centred there needs a 15px pull back to line up with it.
-    expect(label.attributes('style')).toContain('-15px')
+    // A 40px label centred on 100% of a 100px track would end at 120px, so it is pulled
+    // 20px back to sit flush with the track's right edge.
+    expect(label.attributes('style')).toContain('-20px')
 
     wrapper.unmount()
   })
