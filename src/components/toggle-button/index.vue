@@ -48,7 +48,7 @@ const isChecked = computed(() => {
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-toggle-button gap-2 font-normal relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
+    base: 'pxd-toggle-button gap-2 font-normal relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none whitespace-nowrap self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
         xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[0.625rem]`,
