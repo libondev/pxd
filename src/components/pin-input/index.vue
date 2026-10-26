@@ -58,7 +58,7 @@ const { classes } = useTailwindVariant(
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} text-xs`,
-        sm: `${BASIC_HEIGHTS.sm} text-sm`,
+        sm: `${BASIC_HEIGHTS.sm} text-[0.8125rem]`,
         md: `${BASIC_HEIGHTS.md} text-sm`,
         lg: `${BASIC_HEIGHTS.lg} text-base`,
       },
