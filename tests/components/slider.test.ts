@@ -2,6 +2,14 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import Slider from '../../src/components/slider/index.vue'
 
+function stubWidths(sizes: Array<[Element, number]>) {
+  // happy-dom has no layout, so the layout widths come from these stubs.
+  sizes.forEach(([element, width]) => {
+    Object.defineProperty(element, 'clientWidth', { configurable: true, value: width })
+    Object.defineProperty(element, 'offsetWidth', { configurable: true, value: width })
+  })
+}
+
 describe('slider', () => {
   it('renders properly', () => {
     const wrapper = mount(Slider)
@@ -438,6 +446,65 @@ describe('slider', () => {
     await slider.trigger('pointerdown', { clientX: 50 })
 
     expect(wrapper.emitted('update:model-value')).toEqual([[55]])
+
+    wrapper.unmount()
+  })
+
+  it('should keep the label inside the slider when it is clamped', async () => {
+    const wrapper = mount(Slider, { props: { modelValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+    const label = wrapper.find('.pxd-slider--label')
+
+    stubWidths([
+      [slider.element, 100],
+      [label.element, 40],
+    ])
+
+    await wrapper.setProps({ modelValue: 100 })
+
+    // A 40px label centred on 100% of a 100px slider would end at 120px, so it is pulled
+    // 20px back to sit flush with the slider's right edge.
+    expect(label.attributes('style')).toContain('-20px')
+
+    wrapper.unmount()
+  })
+
+  it('should re-clamp the label when the thumb is hovered', async () => {
+    const wrapper = mount(Slider, { props: { modelValue: 100 } })
+    const slider = wrapper.find('.pxd-slider')
+    const thumb = wrapper.find('.pxd-slider--thumb')
+    const label = wrapper.find('.pxd-slider--label')
+
+    // Mounted without layout, so the first clamp had nothing to measure.
+    expect(label.attributes('style')).toContain('+ 0px')
+
+    stubWidths([
+      [slider.element, 100],
+      [label.element, 40],
+    ])
+
+    await thumb.trigger('pointerenter')
+
+    expect(label.attributes('style')).toContain('-20px')
+
+    wrapper.unmount()
+  })
+
+  it('should clamp each label of a range slider to its own side', async () => {
+    const wrapper = mount(Slider, { props: { range: true, modelValue: [0, 100] } })
+    const slider = wrapper.find('.pxd-slider')
+    const labels = wrapper.findAll('.pxd-slider--label')
+
+    stubWidths([
+      [slider.element, 100],
+      [labels[0].element, 40],
+      [labels[1].element, 40],
+    ])
+
+    await wrapper.findAll('.pxd-slider--thumb')[0].trigger('pointerenter')
+
+    expect(labels[0].attributes('style')).toContain('+ 20px')
+    expect(labels[1].attributes('style')).toContain('-20px')
 
     wrapper.unmount()
   })

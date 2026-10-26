@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import {
   createTailwindVariant,
@@ -112,6 +112,8 @@ let stopMoveListener: (() => void) | null = null
 
 const sliderRef = shallowRef<HTMLElement>()
 const activeThumb = shallowRef<ThumbIndex | null>(null)
+const labelRefList = [shallowRef<HTMLElement>(), shallowRef<HTMLElement>()]
+const labelShiftList = shallowRef<number[]>([0, 0])
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 
@@ -303,6 +305,40 @@ const trackStyle = computed(() => ({
     : getFallbackValue(props.variant, VARIANTS, 'primary'),
 }))
 
+function setLabelRef(index: ThumbIndex, el: unknown) {
+  labelRefList[index].value = el instanceof HTMLElement ? el : undefined
+}
+
+function getLabelShift(percentage: number, label: HTMLElement | undefined, sliderWidth: number) {
+  if (!label || !sliderWidth) {
+    return 0
+  }
+
+  const labelWidth = label.offsetWidth
+  const center = (percentage / 100) * sliderWidth
+  const half = labelWidth / 2
+
+  // The label stays inside the slider, so at the ends it stops at the edge.
+  return labelWidth > sliderWidth ? 0 : clamp(center, half, sliderWidth - half) - center
+}
+
+function updateLabelShifts() {
+  const slider = sliderRef.value
+
+  if (!slider) {
+    return
+  }
+
+  // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
+  // zoom or transform, while the shift below is applied in unscaled pixels.
+  const sliderWidth = slider.clientWidth
+
+  labelShiftList.value = [
+    getLabelShift(startPercentage.value, labelRefList[0].value, sliderWidth),
+    getLabelShift(endPercentage.value, labelRefList[1].value, sliderWidth),
+  ]
+}
+
 function updateValueFromPosition(clientX: number) {
   const index = activeThumb.value
 
@@ -467,7 +503,13 @@ function selectMark(value: number) {
   emits('change', setValue(next))
 }
 
+watch(() => [startPercentage.value, endPercentage.value], updateLabelShifts, { flush: 'post' })
+
 initModelValue()
+
+onMounted(() => {
+  updateLabelShifts()
+})
 
 onBeforeUnmount(stopDragging)
 </script>
@@ -504,9 +546,12 @@ onBeforeUnmount(stopDragging)
         @keydown="onThumbKeydown($event, thumb.index)"
         @contextmenu.prevent
         @pointerdown.prevent.stop="startDragging($event, thumb.index)"
+        @pointerenter="updateLabelShifts"
       >
         <span
+          :ref="(el: unknown) => setLabelRef(thumb.index, el)"
           class="pxd-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+          :style="{ translate: `calc(-50% + ${labelShiftList[thumb.index]}px)` }"
         >
           {{ thumb.value }}
         </span>
