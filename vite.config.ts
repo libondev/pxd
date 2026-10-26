@@ -133,6 +133,7 @@ export default defineConfig({
 
   test: {
     globals: false,
+    fsModuleCache: false,
     fileParallelism: true,
     environment: 'happy-dom',
     include: ['tests/**/*.test.ts'],
