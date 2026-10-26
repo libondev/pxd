@@ -149,11 +149,11 @@ onBeforeUnmount(() => {
 
 @keyframes pxd-scroll-text-shift {
   0%,
-  6% {
+  8% {
     transform: translateX(0);
   }
 
-  80%,
+  75%,
   100% {
     transform: translateX(calc(-1 * var(--scroll-text-distance)));
   }
