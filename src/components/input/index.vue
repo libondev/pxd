@@ -63,7 +63,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: `${BASIC_HEIGHTS.xs} text-sm rounded-sm`,
+        xs: `${BASIC_HEIGHTS.xs} text-xs rounded-sm`,
         sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md`,
         md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
         lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
