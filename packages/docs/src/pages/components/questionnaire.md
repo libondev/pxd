@@ -31,7 +31,7 @@ function onSubmit(answers) {
 </script>
 
 <template>
-  <PQuestionnaire :questions="questions" @submit="onSubmit" />
+  <PQuestionnaire :data="questions" @submit="onSubmit" />
 </template>
 ```
 
@@ -66,7 +66,7 @@ function onSubmit(answers) {
 </script>
 
 <template>
-  <PQuestionnaire :questions="questions" @submit="onSubmit" />
+  <PQuestionnaire :data="questions" @submit="onSubmit" />
 </template>
 ```
 
@@ -119,7 +119,7 @@ function onSubmit(answers) {
 </script>
 
 <template>
-  <PQuestionnaire :questions="questions" @submit="onSubmit" />
+  <PQuestionnaire :data="questions" @submit="onSubmit" />
 </template>
 ```
 
@@ -127,7 +127,8 @@ function onSubmit(answers) {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| questions | `QuestionnaireQuestion[]` | `() => []` | Questions to display. |
+| data | `QuestionnaireQuestion[]` | `() => []` | Questions to display. |
+| size | `'sm' \| 'md' \| 'lg'` | - | Padding and font size of the header, list and footer; falls back to the config provider size. |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
 
 ### QuestionnaireQuestion
@@ -144,7 +145,7 @@ function onSubmit(answers) {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| submit | `(answers: QuestionnaireAnswers) => void` | Emitted when the questionnaire is submitted. |
+| submit | `(answers: QuestionnaireAnswers) => void` | Emitted when the answers are submitted, including when every question is skipped. |
 
 `answers` is keyed by each question's `header`:
 

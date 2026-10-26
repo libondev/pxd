@@ -52,6 +52,8 @@ const zhCN = {
     skipAll: '跳过全部问题',
     prev: '上一题',
     next: '下一题',
+    expand: '展开',
+    collapse: '收起',
   },
   tour: {
     next: '下一步',

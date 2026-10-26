@@ -1,3 +1,5 @@
+import type { ComponentSize } from '../../types/shared/props'
+
 export type QuestionnaireState = 'choosing' | 'skipped' | 'submitted'
 
 export interface QuestionnaireQuestion {
@@ -19,7 +21,9 @@ export interface QuestionnaireAnswers {
 }
 
 export interface QuestionnaireProps {
-  questions?: QuestionnaireQuestion[]
+  data?: QuestionnaireQuestion[]
+  /** Padding and font size; falls back to the config provider size. */
+  size?: ComponentSize
   expand?: boolean
 }
 

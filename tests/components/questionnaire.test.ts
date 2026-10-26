@@ -21,7 +21,7 @@ describe('questionnaire', () => {
   it('submits immediately after selecting the last single-choice answer', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion()],
+        data: [createQuestion()],
       },
     })
 
@@ -46,7 +46,7 @@ describe('questionnaire', () => {
   it('keeps multi-select changes until the submit button is pressed', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [
+        data: [
           createQuestion({
             multiSelect: true,
             options: [
@@ -80,7 +80,7 @@ describe('questionnaire', () => {
   it('submits a freeform answer when it is entered manually', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion({ allowFreeformInput: true })],
+        data: [createQuestion({ allowFreeformInput: true })],
       },
     })
 
@@ -101,7 +101,7 @@ describe('questionnaire', () => {
   it('skips the current question and advances to the next one', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [
+        data: [
           createQuestion(),
           createQuestion({
             header: 'mode',
@@ -125,7 +125,7 @@ describe('questionnaire', () => {
   it('submits the last question as skipped', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion({ multiSelect: true })],
+        data: [createQuestion({ multiSelect: true })],
       },
     })
 
@@ -148,15 +148,17 @@ describe('questionnaire', () => {
   it('labels icon buttons with a title and accessible name', () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
       },
     })
 
     const skipAll = wrapper.get('button[title="Skip all questions"]')
+    const collapse = wrapper.get('button[title="Collapse"]')
     const prev = wrapper.get('button[title="Previous question"]')
     const next = wrapper.get('button[title="Next question"]')
 
     expect(skipAll.attributes('aria-label')).toBe('Skip all questions')
+    expect(collapse.attributes('aria-label')).toBe('Collapse')
     expect(prev.attributes('aria-label')).toBe('Previous question')
     expect(next.attributes('aria-label')).toBe('Next question')
 
@@ -166,7 +168,7 @@ describe('questionnaire', () => {
   it('folds the question from the title row', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
       },
     })
 
@@ -184,10 +186,32 @@ describe('questionnaire', () => {
     wrapper.unmount()
   })
 
+  it('folds the question from the arrow button', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
+      },
+    })
+    const collapse = () => wrapper.get('button[title="Collapse"]')
+
+    expect(collapse().attributes('aria-expanded')).toBe('true')
+
+    await collapse().trigger('click')
+
+    expect(wrapper.get('details').attributes('open')).toBeUndefined()
+    expect(wrapper.get('button[title="Expand"]').attributes('aria-expanded')).toBe('false')
+
+    await wrapper.get('button[title="Expand"]').trigger('click')
+
+    expect(wrapper.get('details').attributes('open')).toBeDefined()
+
+    wrapper.unmount()
+  })
+
   it('applies the expand command from outside', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
         expand: false,
       },
     })
@@ -210,7 +234,7 @@ describe('questionnaire', () => {
   it('keeps the folded questions in the DOM for find-in-page', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
       },
     })
 
@@ -226,7 +250,7 @@ describe('questionnaire', () => {
   it('folds the questions from a natively focusable summary', () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
       },
       attachTo: document.body,
     })
@@ -247,7 +271,7 @@ describe('questionnaire', () => {
   it('cancels the summary default action when skip-all is pressed', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion(), createQuestion({ header: 'mode' })],
+        data: [createQuestion(), createQuestion({ header: 'mode' })],
       },
       attachTo: document.body,
     })
@@ -265,17 +289,23 @@ describe('questionnaire', () => {
     wrapper.unmount()
   })
 
-  it('clears answers and enters the skipped state', async () => {
+  it('submits every answer as skipped and enters the skipped state', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion()],
+        data: [createQuestion()],
       },
     })
 
     await wrapper.get('button[title="Skip all questions"]').trigger('click')
 
     expect(wrapper.text()).toContain('Skipped questions')
-    expect(wrapper.emitted('submit')).toBeUndefined()
+    expect(wrapper.emitted('submit')?.[0]?.[0]).toEqual({
+      flow: {
+        selected: [],
+        freeText: null,
+        skipped: true,
+      },
+    })
 
     wrapper.unmount()
   })
@@ -283,13 +313,13 @@ describe('questionnaire', () => {
   it('resets its state when the questions reference changes', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
-        questions: [createQuestion()],
+        data: [createQuestion()],
       },
     })
 
     await wrapper.get('[data-list-item]').trigger('click')
     await wrapper.setProps({
-      questions: [
+      data: [
         createQuestion({
           header: 'mode',
           question: 'Which mode should run?',

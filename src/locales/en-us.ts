@@ -37,6 +37,8 @@ const enUS = {
     skipAll: 'Skip all questions',
     prev: 'Previous question',
     next: 'Next question',
+    expand: 'Expand',
+    collapse: 'Collapse',
   },
   tour: {
     next: 'Next',
