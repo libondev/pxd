@@ -388,6 +388,7 @@ watch(
         >
           <div class="pxd-questionnaire--content border-t">
             <PList
+              class="max-h-60"
               :model-value="currentAnswer.selected"
               :multiple="currentQuestion.multiSelect"
               :options="currentQuestion.options"
