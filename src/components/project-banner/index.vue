@@ -17,9 +17,9 @@ const { attrs, classes } = useTailwindVariant(
     base: 'gap-x-2 py-2 leading-5 text-sm flex w-full -translate-y-px items-center justify-center border-y',
     variants: {
       size: {
-        sm: BASIC_MIN_HEIGHTS.sm,
-        md: BASIC_MIN_HEIGHTS.md,
-        lg: BASIC_MIN_HEIGHTS.lg,
+        sm: `${BASIC_MIN_HEIGHTS.sm} text-xs`,
+        md: `${BASIC_MIN_HEIGHTS.md} text-sm`,
+        lg: `${BASIC_MIN_HEIGHTS.lg} text-sm`,
       },
       variant: {
         default: 'border-gray-400 bg-gray-100 text-gray-900',
