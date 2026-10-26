@@ -110,11 +110,11 @@ function onItemLeave() {
       />
     </div>
 
-    <ul v-if="legend" class="pxd-context-usage--legend gap-1 flex flex-col">
+    <ul v-if="legend" class="pxd-context-usage--legend flex flex-col">
       <li
         v-for="(item, index) in viewItems"
         :key="index"
-        class="min-w-0 gap-2 text-sm m-0! flex cursor-default items-center motion-safe:transition-opacity"
+        class="min-w-0 gap-2 sibling:pt-1 text-sm m-0! flex cursor-default items-center motion-safe:transition-opacity"
         :style="{ opacity: item.opacity }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
