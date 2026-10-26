@@ -152,6 +152,25 @@ describe('scroll-text', () => {
     wrapper.unmount()
   })
 
+  it('should clamp duration to a minimum for barely overflowing content', async () => {
+    const wrapper = mount(ScrollText, {
+      props: {
+        text: 'Label',
+        speed: 40,
+      },
+    })
+
+    mockSizes(wrapper, 100, 102)
+    await wrapper.setProps({ text: 'Barely overflowing label' })
+    await wrapper.vm.$nextTick()
+
+    const style = wrapper.attributes('style') ?? ''
+    expect(style).toContain('--scroll-text-distance: 2px')
+    expect(style).toContain('--scroll-text-duration: 1s')
+
+    wrapper.unmount()
+  })
+
   it('should detect overflow on the first frame without ResizeObserver delivery', async () => {
     const wrapper = mount(ScrollText, {
       props: {

@@ -45,7 +45,7 @@ const items = [
 
 ## Speed
 
-`speed` is pixels per second. Slower values are easier to read in narrow sidebars.
+`speed` is pixels per second. Slower values are easier to read in narrow sidebars. Travel time is clamped to a 1s minimum, so a label that only overflows by a few pixels does not flicker.
 
 ```vue demo
 <template>

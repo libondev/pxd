@@ -16,6 +16,8 @@ const props = withDefaults(defineProps<ScrollTextProps>(), {
   speed: 40,
 })
 
+const MIN_DURATION = 1
+
 let wrapWidth = 0
 let contentWidth = 0
 let appliedSpeed = 0
@@ -83,7 +85,7 @@ function syncOverflow(force = false) {
   appliedSpeed = nextSpeed
   contentStyle.value = {
     '--scroll-text-distance': `${distance}px`,
-    '--scroll-text-duration': `${distance / nextSpeed}s`,
+    '--scroll-text-duration': `${Math.max(distance / nextSpeed, MIN_DURATION)}s`,
   }
 }
 
