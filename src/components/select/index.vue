@@ -129,7 +129,6 @@ watch(listOptions, async () => {
     v-bind="$attrs"
     class="pxd-select"
     trigger="click"
-    position="bottom"
     :auto-focus-element="filterable"
     :disabled="disabled"
     :adaptive="isAdaptive"
