@@ -109,7 +109,7 @@ function onItemClick(ev: MouseEvent) {
 
     <CheckIcon
       v-if="isChecked"
-      class="pxd-list-item--checked right-2 absolute top-1/2 -translate-y-1/2 text-primary"
+      class="pxd-list-item--checked right-2.5 absolute top-1/2 -translate-y-1/2 text-primary"
     />
   </Component>
 </template>
