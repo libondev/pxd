@@ -4,6 +4,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getScrollTarget, getScrollElement, resolveScrollBehavior } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
@@ -24,23 +25,31 @@ const props = withDefaults(defineProps<BacktopProps>(), {
 const emits = defineEmits<BacktopEmits>()
 
 let scrollContainer: ReturnType<typeof getScrollTarget> | null
-let scrollContainerEl: ReturnType<typeof getScrollElement> | null
 
 const scrollTop = shallowRef(0)
 const maxScrollTop = shallowRef(0)
+const scrollContainerEl = shallowRef<HTMLElement | null>(null)
+const isMeasured = shallowRef(false)
 
 const updateScrollTop = throttleByRaf(() => {
-  if (!scrollContainerEl) {
+  const el = scrollContainerEl.value
+
+  if (!el) {
     return
   }
 
-  scrollTop.value = scrollContainerEl.scrollTop
-  maxScrollTop.value = Math.max(0, scrollContainerEl.scrollHeight - scrollContainerEl.clientHeight)
+  isMeasured.value = true
+  scrollTop.value = el.scrollTop
+  maxScrollTop.value = Math.max(0, el.scrollHeight - el.clientHeight)
 })
 
 const wrapperRef = shallowRef<HTMLElement>()
 
 const isVisible = computed(() => {
+  if (!isMeasured.value) {
+    return false
+  }
+
   if (props.scrollTarget === 'top') {
     return scrollTop.value >= props.visibleThreshold
   }
@@ -68,16 +77,19 @@ const { attrs, classes } = useTailwindVariant(
 
 const motionReduce = useMotionReduced()
 
+// 内容/布局变化不触发 scroll 事件，靠 RO 重新校验，避免页面切换后残留过期状态
+useResizeObserver(() => scrollContainerEl.value, updateScrollTop)
+
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)
 
-  if (!scrollContainer || !scrollContainerEl) {
+  if (!scrollContainer || !scrollContainerEl.value) {
     return
   }
 
   const top =
     props.scrollTarget === 'bottom'
-      ? Math.max(0, scrollContainerEl.scrollHeight - scrollContainerEl.clientHeight)
+      ? Math.max(0, scrollContainerEl.value.scrollHeight - scrollContainerEl.value.clientHeight)
       : 0
 
   scrollContainer.scrollTo({
@@ -89,7 +101,7 @@ function onActionClick(ev: PointerEvent) {
 
 onMounted(() => {
   scrollContainer = getScrollTarget(wrapperRef.value!)
-  scrollContainerEl = getScrollElement(scrollContainer)
+  scrollContainerEl.value = getScrollElement(scrollContainer)
 
   updateScrollTop()
   cachedOn(scrollContainer, 'scroll', updateScrollTop, { passive: true })
@@ -100,7 +112,7 @@ onBeforeUnmount(() => {
   updateScrollTop.cancel()
 
   scrollContainer = null
-  scrollContainerEl = null
+  scrollContainerEl.value = null
 })
 </script>
 
