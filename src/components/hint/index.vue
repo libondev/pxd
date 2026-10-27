@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
 
     <template #content="{ activeTrigger, activeTriggerIndex }">
       <div
-        class="pxd-hint--content gap-2 px-3 py-2 flex items-center"
+        class="pxd-hint--content gap-2 px-3 py-2 relative flex items-center overflow-hidden rounded-inherit"
         :data-pause-on-hover="pauseOnHover"
         @pointerenter="pauseCloseTimer"
         @pointerleave="resumeCloseTimer"
@@ -239,7 +239,7 @@ onBeforeUnmount(() => {
           v-if="progressVisible"
           :key="progressKey"
           aria-hidden="true"
-          class="pxd-hint--progress-bar pxd-countdown-progress inset-x-0 top-0 h-0.5 absolute bg-current"
+          class="pxd-hint--progress-bar pxd-countdown-progress inset-x-0 top-0 h-0.5 absolute bg-gray-400"
           :style="{ animationDuration: `${progressDuration}ms` }"
         />
       </div>
