@@ -1,7 +1,7 @@
 import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { onScopeDispose, shallowRef } from 'vue'
-import { doubleRaf, caf } from '../utils/event.js'
+import { caf, raf } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
 
 interface Options {
@@ -46,11 +46,13 @@ export function useDelayDestroy(
         resolve(visible.value)
       } else {
         caf(visibleRafId)
-        visibleRafId = doubleRaf(() => {
-          visibleRafId = 0
-          visible.value = true
-          resolve(visible.value)
-          visibleChange?.(visible.value)
+        visibleRafId = raf(() => {
+          visibleRafId = raf(() => {
+            visibleRafId = 0
+            visible.value = true
+            resolve(visible.value)
+            visibleChange?.(visible.value)
+          })
         })
       }
     })

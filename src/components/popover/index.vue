@@ -45,6 +45,7 @@ let showPopoverTimer: ReturnType<typeof setTimeout> | null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null
 let triggerElementsCache: HTMLElement[] | null = null
 let cleanupAutoUpdate: (() => void) | null = null
+let skipAutoUpdateCompute = false
 let hideFrame = 0
 const throttledUpdatePosition = throttleByRaf(updatePosition)
 
@@ -269,12 +270,23 @@ function getReferenceElement() {
   return activeTriggerRef.value || triggerRef.value
 }
 
+function onAutoUpdate() {
+  if (skipAutoUpdateCompute) {
+    skipAutoUpdateCompute = false
+    return
+  }
+
+  throttledUpdatePosition()
+}
+
 function startAutoUpdate() {
   if (!props.autoPosition || !wrapperRef.value) {
     return
   }
 
-  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, updatePosition)
+  // autoUpdate recomputes once on start; syncPosition has just computed, so skip that call.
+  skipAutoUpdateCompute = true
+  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, onAutoUpdate)
 }
 
 async function syncPosition() {
@@ -308,6 +320,7 @@ function disposeAutoUpdate() {
     cleanupAutoUpdate = null
   }
 
+  skipAutoUpdateCompute = false
   throttledUpdatePosition.cancel()
 }
 
@@ -359,7 +372,12 @@ async function updatePosition() {
 
   localPosition.value = placement
 
-  if (!isManual.value && (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped)) {
+  // The open-time compute runs pre-reveal; an invisible-anchor close applies only to a revealed popover.
+  if (
+    !isManual.value &&
+    isVisible.value &&
+    (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped)
+  ) {
     handlePopoverHide(true)
     return
   }
@@ -384,9 +402,14 @@ async function handlePopoverShow() {
     return
   }
 
-  await new Promise<void>((resolve) => {
-    clearHideTimer()
+  clearHideTimer()
 
+  // Fully shown and tracked: a modelValue echo must not restart the position sync.
+  if (isVisible.value && positionReady.value && cleanupAutoUpdate) {
+    return
+  }
+
+  await new Promise<void>((resolve) => {
     showPopoverTimer = setTimeout(() => {
       showPopoverTimer = null
       resolve()
@@ -555,7 +578,7 @@ function onTriggerPointerMove(ev: PointerEvent) {
   updatePointerPosition(ev)
 
   if (isVisible.value) {
-    updatePosition()
+    throttledUpdatePosition()
   }
 }
 

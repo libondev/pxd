@@ -105,4 +105,37 @@ describe('useDelayDestroy', () => {
 
     unmount()
   })
+
+  it('should reveal visible on the second frame after show()', async () => {
+    const { show, visible, unmount } = withSetup(() => useDelayDestroy(false, { delay: 300 }))
+
+    void show()
+    await vi.advanceTimersByTimeAsync(16)
+    expect(visible.value).toBe(false)
+
+    await vi.advanceTimersByTimeAsync(16)
+    expect(visible.value).toBe(true)
+
+    unmount()
+  })
+
+  it('should not reveal when hide() lands between the two reveal frames', async () => {
+    const { show, hide, visible, render, unmount } = withSetup(() =>
+      useDelayDestroy(false, { delay: 300 }),
+    )
+
+    void show()
+    await vi.advanceTimersByTimeAsync(16)
+
+    // The first frame has fired and scheduled the second: this hide must still reach it.
+    const pending = hide()
+    await vi.advanceTimersByTimeAsync(16)
+    expect(visible.value).toBe(false)
+
+    await vi.advanceTimersByTimeAsync(300)
+    await expect(pending).resolves.toBe(false)
+    expect(render.value).toBe(false)
+
+    unmount()
+  })
 })
