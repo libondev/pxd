@@ -71,8 +71,7 @@ function formatPayload(value: unknown): PayloadView {
     return { text: String(value), isJson: false }
   }
 }
-// pi agent sdk / Anthropic deliver tool results as content-block arrays; unwrap them so
-// terminal output reads as text instead of an escaped JSON blob.
+
 function formatContentBlocks(value: unknown): string | undefined {
   if (!Array.isArray(value)) {
     return undefined
@@ -122,7 +121,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-tool-call--trigger gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      class="pxd-tool-call--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
       :class="{
         'p-3 font-medium text-foreground': variant === 'default',
         'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
