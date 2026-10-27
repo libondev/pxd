@@ -53,25 +53,25 @@ const SIZE_CLASSES: Record<
   }
 > = {
   sm: {
-    header: 'py-1.5 ps-2.5 pe-1.5',
-    item: 'min-h-7 text-xs',
-    footer: 'p-1.5',
+    header: 'p-2',
+    item: 'min-h-7',
+    footer: 'p-2',
     answers: 'px-3! py-2!',
     skipped: 'h-10 px-2.5',
     icon: 'size-3',
   },
   md: {
-    header: 'py-1.5 ps-3 pe-2',
-    item: 'min-h-8 text-sm',
-    footer: 'p-2',
+    header: 'px-2.5 py-2',
+    item: 'min-h-8',
+    footer: 'px-2.5 py-2',
     answers: 'px-3.5! py-2.5!',
     skipped: 'h-11 px-3',
     icon: 'size-3',
   },
   lg: {
-    header: 'py-2 ps-3 pe-2',
-    item: 'min-h-9 text-base',
-    footer: 'p-2.5',
+    header: 'px-3 py-2.5',
+    item: 'min-h-9',
+    footer: 'px-3 py-2.5',
     answers: 'px-4! py-3!',
     skipped: 'h-12 px-3',
     icon: 'size-4',
@@ -351,8 +351,6 @@ watch(
             {{ currentQuestion.question }}
           </span>
 
-          <!-- preventDefault is load-bearing: stopping propagation alone would leave
-               the summary's native disclosure default action free to run. -->
           <PButton
             icon
             size="xs"
@@ -398,8 +396,10 @@ watch(
             >
               <template #item="{ item }">
                 <div v-if="item.label" class="flex flex-col">
-                  <span>{{ item.label }}</span>
-                  <span class="text-foreground-secondary">{{ item.description }}</span>
+                  <span class="text-sm">{{ item.label }}</span>
+                  <span class="text-xs mbs-0.5 text-foreground-secondary">{{
+                    item.description
+                  }}</span>
                 </div>
 
                 <PInput
@@ -407,7 +407,7 @@ watch(
                   :model-value="currentAnswer.freeText"
                   :placeholder="item.description"
                   :size="computedSize"
-                  class="-me-6 my-0.5 w-[calc(100%+1.5rem)] max-w-none"
+                  class="-me-8 my-0.5 w-[calc(100%+2rem)] max-w-none"
                   @update:model-value="onFreeformInput"
                   @change="onFreeformInputChange"
                   @click.stop

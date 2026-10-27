@@ -55,12 +55,12 @@ const SIZE_CLASSES: Record<
   }
 > = {
   sm: {
-    header: 'px-2 py-1.5',
-    list: 'py-1.5 ps-1.5 gap-1 max-h-32',
+    header: 'p-2',
+    list: 'py-2 ps-2 gap-1 max-h-32',
     indicator: 'size-3.5',
     marker: 'p-0.75',
     icon: 'size-3',
-    meta: 'text-[0.6875rem]',
+    meta: 'text-xs',
   },
   md: {
     header: 'px-2.5 py-2',
@@ -68,15 +68,15 @@ const SIZE_CLASSES: Record<
     indicator: 'size-4',
     marker: 'p-1',
     icon: 'size-3',
-    meta: 'text-xs',
+    meta: 'text-sm',
   },
   lg: {
-    header: 'p-3',
+    header: 'px-3 py-2.5',
     list: 'py-3 ps-3 gap-2 max-h-40',
     indicator: 'size-5',
     marker: 'p-1.5',
     icon: 'size-4',
-    meta: 'text-[0.8125rem]',
+    meta: 'text-base',
   },
 }
 
@@ -142,7 +142,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-todo-list group/todo w-full max-w-full',
     variants: {
       size: {
-        sm: 'text-xs',
+        sm: 'rounded-lg text-[13px]',
         md: 'text-sm',
         lg: 'text-base',
       },
@@ -153,7 +153,7 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
   {
-    selection: () => ({ size: computedSize.value, variant: props.variant }),
+    selection: () => ({ variant: props.variant, size: computedSize.value }),
   },
 )
 
@@ -400,7 +400,7 @@ defineExpose({
 
                 <div
                   v-if="item.description"
-                  class="pxd-todo-list--description text-foreground-secondary"
+                  class="pxd-todo-list--description text-xs mbs-0.5 text-foreground-secondary"
                 >
                   {{ item.description }}
                 </div>
