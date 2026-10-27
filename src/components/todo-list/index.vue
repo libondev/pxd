@@ -56,7 +56,7 @@ const SIZE_CLASSES: Record<
 > = {
   sm: {
     header: 'p-2',
-    list: 'py-2 ps-2 gap-1 max-h-32',
+    list: 'py-2 ps-2 gap-1',
     indicator: 'size-3.5',
     marker: 'p-0.75',
     icon: 'size-3',
@@ -64,7 +64,7 @@ const SIZE_CLASSES: Record<
   },
   md: {
     header: 'px-2.5 py-2',
-    list: 'py-2 ps-2 gap-1.5 max-h-36',
+    list: 'py-2 ps-2 gap-1.5',
     indicator: 'size-4',
     marker: 'p-1',
     icon: 'size-3',
@@ -72,7 +72,7 @@ const SIZE_CLASSES: Record<
   },
   lg: {
     header: 'px-3 py-2.5',
-    list: 'py-3 ps-3 gap-2 max-h-40',
+    list: 'py-3 ps-3 gap-2',
     indicator: 'size-5',
     marker: 'p-1.5',
     icon: 'size-4',
@@ -312,7 +312,7 @@ defineExpose({
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <ul
-        class="pxd-todo-list--content m-0 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
+        class="pxd-todo-list--content m-0 max-h-40 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
         :class="[
           SIZE_CLASSES[computedSize].list,
           {
