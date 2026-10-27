@@ -400,6 +400,7 @@ defineExpose({
 
                 <div
                   v-if="item.description"
+                  :class="{ 'line-through': resolveStatus(item) === 'completed' }"
                   class="pxd-todo-list--description text-xs mbs-0.5 text-foreground-secondary"
                 >
                   {{ item.description }}
