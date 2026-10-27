@@ -19,7 +19,7 @@ const ariaLabel = computed(() => (props.role === 'user' ? 'User message' : 'Syst
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-bubble group/bubble sibling:mbs-4 text-sm gap-2 flex max-w-full cursor-default',
+    base: 'pxd-bubble group/bubble sibling:pbs-3 text-sm gap-2 flex max-w-full cursor-default',
     variants: {
       role: {
         user: 'ps-10 flex-row-reverse',

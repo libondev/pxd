@@ -88,7 +88,7 @@ defineExpose({
         :key="virtualItem.key"
         :ref="(el: any) => measureElement(el)"
         :data-index="virtualItem.index"
-        class="pxd-bubble-group--item sibling:mbs-4 left-0 top-0 absolute w-full"
+        class="pxd-bubble-group--item sibling:pbs-3 left-0 top-0 absolute w-full"
         :style="{ transform: `translateY(${virtualItem.start}px)` }"
       >
         <slot name="item" :item="data[virtualItem.index]" :index="virtualItem.index" />
@@ -99,7 +99,7 @@ defineExpose({
       <div
         v-for="(item, index) in data"
         :key="getDataItemKey(item, index)"
-        class="pxd-bubble-group--item sibling:mbs-4 w-full"
+        class="pxd-bubble-group--item sibling:pbs-3 w-full"
       >
         <slot name="item" :item="item" :index="index" />
       </div>
