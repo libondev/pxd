@@ -12,12 +12,14 @@ defineOptions({
 const props = withDefaults(defineProps<StickToBottomProps>(), {
   enabled: true,
   threshold: 16,
+  pauseOnInteract: false,
 })
 
 const emits = defineEmits<StickToBottomEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
+const actionRef = shallowRef<HTMLElement>()
 
 const { classes, attrs } = useTailwindVariant({
   base: 'pxd-stick-to-bottom min-h-0 w-full max-w-full overflow-y-auto [overflow-anchor:none]',
@@ -29,6 +31,8 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
   {
     threshold: () => props.threshold,
     enabled: () => props.enabled,
+    pauseOnInteract: () => props.pauseOnInteract,
+    interactExclude: actionRef,
   },
 )
 
@@ -61,7 +65,11 @@ defineExpose({
       <slot />
     </div>
 
-    <div v-if="$slots.action" class="pxd-stick-to-bottom--action bottom-0 sticky w-full">
+    <div
+      v-if="$slots.action"
+      ref="actionRef"
+      class="pxd-stick-to-bottom--action bottom-0 sticky w-full"
+    >
       <slot
         name="action"
         :is-at-bottom="isAtBottom"

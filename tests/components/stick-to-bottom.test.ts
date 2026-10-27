@@ -131,5 +131,6 @@ describe('PStickToBottom', () => {
 
     expect(wrapper.props('threshold')).toBe(16)
     expect(wrapper.props('enabled')).toBe(true)
+    expect(wrapper.props('pauseOnInteract')).toBe(false)
   })
 })

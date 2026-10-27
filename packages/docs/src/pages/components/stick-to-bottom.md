@@ -58,6 +58,40 @@ function append() {
 </template>
 ```
 
+## Pause on interaction
+
+With `pause-on-interact`, a pointerdown on the content suspends auto-follow until the next scroll or an explicit stick — expanding a panel keeps the reading position instead of snapping to the bottom. Pointerdowns inside the `action` slot are excluded, so controls there keep following.
+
+```vue demo
+<script setup lang="ts">
+import ArrowUpIcon from '@gdsicon/vue/arrow-up'
+</script>
+
+<template>
+  <PStickToBottom pause-on-interact class="relative h-56 rounded-lg border border-dashed p-2">
+    <PCollapseGroup multiple>
+      <PCollapse v-for="i in 8" :key="i" :title="`Panel ${i}`">
+        <div class="mb-4">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
+          alias debitis beatae nesciunt veniam excepturi soluta magnam vitae.
+        </div>
+      </PCollapse>
+    </PCollapseGroup>
+
+    <template #action="{ isAtBottom, forceStickToBottom }">
+      <PButton
+        v-if="!isAtBottom"
+        class="mx-auto flex"
+        size="sm" shape="rounded" icon
+        @click="forceStickToBottom"
+      >
+        <ArrowUpIcon class="rotate-180" />
+      </PButton>
+    </template>
+  </PStickToBottom>
+</template>
+```
+
 ## Scroll to bottom action
 
 Use the `action` slot with `PBacktop` to jump back to the bottom after the user scrolls away. The slot exposes `isAtBottom`, `scrollToBottom`, and `forceStickToBottom`.
@@ -104,6 +138,7 @@ function append() {
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
+| pause-on-interact | `boolean` | `false` | Suspend auto-follow from the next pointerdown on the content until a scroll or explicit stick |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | content-style | `CSSProperties \| string` | - | Extra style on the inner content wrapper |
 

@@ -354,4 +354,86 @@ describe('PStickToBottom', () => {
     await action.trigger('click')
     expect(container.scrollTop).toBe(100)
   })
+
+  it('keeps the reading position after pointer interaction when pauseOnInteract is on', async () => {
+    const wrapper = mount(StickToBottom, {
+      props: { pauseOnInteract: true },
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean; stickIfNeeded: () => void }
+
+    container.dispatchEvent(new Event('pointerdown'))
+    metrics.scrollHeight = 600
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(100)
+    expect(vm.isAtBottom).toBe(false)
+
+    container.scrollTop = 500
+    container.dispatchEvent(new Event('scroll'))
+    expect(vm.isAtBottom).toBe(true)
+
+    metrics.scrollHeight = 800
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(700)
+  })
+
+  it('keeps following when the pointerdown comes from the action slot', async () => {
+    const wrapper = mount(StickToBottom, {
+      props: { pauseOnInteract: true },
+      slots: {
+        default: '<div>content</div>',
+        action: '<div class="action-area">bottom</div>',
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
+
+    wrapper
+      .find('.pxd-stick-to-bottom--action .action-area')
+      .element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    metrics.scrollHeight = 600
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(500)
+  })
+
+  it('keeps following after pointer interaction by default', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
+
+    container.dispatchEvent(new Event('pointerdown'))
+    metrics.scrollHeight = 600
+
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(500)
+  })
 })

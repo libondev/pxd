@@ -19,6 +19,13 @@ export interface UseStickToBottomOptions {
    * @default true
    */
   enabled?: MaybeRefOrGetter<boolean>
+  /**
+   * Suspend auto-stick from the next pointerdown on the content until a scroll or explicit stick.
+   * @default false
+   */
+  pauseOnInteract?: MaybeRefOrGetter<boolean>
+  /** Pointerdowns inside this element (e.g. a sticky input bar) never start the pause. */
+  interactExclude?: MaybeRefOrGetter<Nullable<HTMLElement>>
 }
 
 export interface UseStickToBottomReturn {
@@ -26,7 +33,7 @@ export interface UseStickToBottomReturn {
   scrollToBottom: () => void
   /** Scroll to bottom and re-enable auto-stick. */
   forceStickToBottom: () => void
-  /** Scroll to bottom only when currently at bottom and enabled. */
+  /** Scroll to bottom only when currently at bottom and enabled; a pause re-measures instead. */
   stickIfNeeded: () => void
   /** Re-measure whether the container is at the bottom. */
   update: () => void
@@ -43,17 +50,27 @@ export interface UseStickToBottomReturn {
  * this composable's own stick or a browser adjustment (scroll anchoring,
  * focus scrolling), and re-measuring the live distance there would latch
  * `isAtBottom` off mid-stream — so it may only promote the state back on.
+ *
+ * With `pauseOnInteract`, pointer interaction with the content suspends
+ * auto-stick until the next scroll or explicit stick call.
  */
 export function useStickToBottom(
   container: MaybeRefOrGetter<Nullable<HTMLElement>>,
   content?: MaybeRefOrGetter<Nullable<HTMLElement>>,
   options: UseStickToBottomOptions = {},
 ): UseStickToBottomReturn {
-  const { threshold = 16, enabled = true } = options
+  const {
+    threshold = 16,
+    enabled = true,
+    pauseOnInteract = false,
+    interactExclude = null,
+  } = options
 
   const isAtBottom = shallowRef(true)
 
   const lastScrollTop = shallowRef(0)
+
+  let paused = false
 
   const upwardDelta = shallowRef(0)
 
@@ -94,6 +111,7 @@ export function useStickToBottom(
       return
     }
 
+    paused = false
     const top = getBottomTop(el)
 
     el.scrollTo({ top, behavior: 'instant' })
@@ -106,9 +124,12 @@ export function useStickToBottom(
     scrollToBottom()
   }
 
-  // RO/MO 回调先于绘制执行，同步 stick 避免先画出一帧顶部内容再跳到底部；
-  // 已到位时跳过，避免同帧重复滚动。
   function stickIfNeeded() {
+    if (paused) {
+      update()
+      return
+    }
+
     if (!toValue(enabled) || !isAtBottom.value) {
       return
     }
@@ -120,17 +141,29 @@ export function useStickToBottom(
     }
   }
 
-  // 上移累计超过 threshold 才算用户离开：自身 stick 永远向下滚，而 scroll anchoring
-  // 对视图上方重排的补偿、焦点滚动同样产生 scroll 事件，按实时距离绝对测量会把
-  // 它们误判成用户滚走并锁死跟随（流式内容一边长高一边触发，恰好是最常见的路径）。
-  // 连续小幅上移（触控板慢滑、慢速拖动滚动条）单次位移不足 threshold，因此按
-  // 累计位移判定；任何向下移动（含自身 stick 与浏览器回调）都会清零重新累计。
+  function handlePointerdown(event: Event) {
+    if (!toValue(pauseOnInteract) || paused) {
+      return
+    }
+
+    const exclude = getElement(toValue(interactExclude))
+    const target = event.target
+
+    if (target instanceof Element && exclude?.contains(target)) {
+      return
+    }
+
+    paused = true
+  }
+
   function handleScroll() {
     const el = getContainerEl()
 
     if (!el) {
       return
     }
+
+    paused = false
 
     const top = el.scrollTop
     const delta = lastScrollTop.value - top
@@ -168,6 +201,7 @@ export function useStickToBottom(
       (el, oldEl) => {
         if (oldEl) {
           cachedOff(oldEl, 'scroll', handleScroll, { passive: true })
+          cachedOff(oldEl, 'pointerdown', handlePointerdown)
         }
 
         if (!el) {
@@ -176,6 +210,7 @@ export function useStickToBottom(
 
         lastScrollTop.value = el.scrollTop
         cachedOn(el, 'scroll', handleScroll, { passive: true })
+        cachedOn(el, 'pointerdown', handlePointerdown)
         update()
       },
       {
@@ -189,6 +224,7 @@ export function useStickToBottom(
 
       if (el) {
         cachedOff(el, 'scroll', handleScroll, { passive: true })
+        cachedOff(el, 'pointerdown', handlePointerdown)
       }
 
       stopWatch()
