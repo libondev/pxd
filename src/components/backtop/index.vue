@@ -4,8 +4,9 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
+import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
-import { getScrollTarget, getScrollElement, resolveScrollBehavior } from '../../utils/dom.js'
+import { getScrollTarget, getScrollElement, isViewportScroll, resolveScrollBehavior } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'
@@ -77,8 +78,22 @@ const { attrs, classes } = useTailwindVariant(
 
 const motionReduce = useMotionReduced()
 
-// 内容/布局变化不触发 scroll 事件，靠 RO 重新校验，避免页面切换后残留过期状态
 useResizeObserver(() => scrollContainerEl.value, updateScrollTop)
+
+useMutationObserver(
+  () => {
+    const el = scrollContainerEl.value
+
+    return el && !isViewportScroll(el) ? el : null
+  },
+  updateScrollTop,
+  {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class', 'hidden'],
+  },
+)
 
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)
@@ -108,8 +123,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  cachedOff(scrollContainer, 'scroll', updateScrollTop, { passive: true })
   updateScrollTop.cancel()
+  cachedOff(scrollContainer, 'scroll', updateScrollTop, { passive: true })
 
   scrollContainer = null
   scrollContainerEl.value = null
