@@ -69,6 +69,7 @@ onMounted(() => {
 
 defineExpose({
   scrollSource,
+  forceStickToBottom: () => stickRef.value?.forceStickToBottom(),
 })
 </script>
 

@@ -216,3 +216,4 @@ function addMessage() {
 | Name | Type | Description |
 | --- | --- | --- |
 | scrollSource | `VirtualListScrollSource` | Position and scroll source for `PToc`'s data-driven outline, tracking the virtualized messages. |
+| forceStickToBottom | `() => void` | Scroll to the bottom and re-enable auto-follow — call it when the data set is replaced (a new conversation), since the instance survives a same-component route switch. |

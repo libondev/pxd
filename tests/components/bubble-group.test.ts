@@ -126,6 +126,35 @@ describe('bubble-group', () => {
     wrapper.unmount()
   })
 
+  it('exposes forceStickToBottom for data-set switches', async () => {
+    const wrapper = mount(BubbleGroup, {
+      props: {
+        data: Array.from({ length: 20 }, (_, index) => ({ id: index })),
+        dataKey: 'id',
+        virtual: true,
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    patchScrollMetrics(container, {
+      scrollHeight: 1920,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    expect(container.scrollTop).toBe(1120)
+
+    container.scrollTop = 300
+    container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
+
+    ;(wrapper.vm as unknown as { forceStickToBottom: () => void }).forceStickToBottom()
+    expect(container.scrollTop).toBe(1120)
+
+    wrapper.unmount()
+  })
+
   it('exposes a toc source over the virtualizer', async () => {
     // happy-dom has no layout: every box measures as the 50px estimate, so offsets stay stable.
     const rectSpy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
