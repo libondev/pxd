@@ -134,11 +134,14 @@ export function createObserver<
       }
     }
 
-    function dispatch(items: TItem[]) {
+    function dispatch(
+      targets: Map<HTMLElement, Set<Subscription<TItem>>>,
+      items: TItem[],
+    ) {
       const batches = new Map<Subscription<TItem>, TItem[]>()
 
       for (const entry of items) {
-        const subs = pool?.targets.get(entry.target as HTMLElement)
+        const subs = targets.get(entry.target as HTMLElement)
 
         if (!subs) {
           continue
@@ -164,7 +167,10 @@ export function createObserver<
       let entry = pools.get(key)
 
       if (!entry) {
-        const created = spec.create(dispatch, value)
+        // Dispatch belongs to the pool, not to the wrapper that created it: that wrapper is
+        // disposed while subscribers remain, and a callback reading its state would drop every
+        // later entry of a pool still in use.
+        const created = spec.create((items) => dispatch(entry!.targets, items), value)
 
         if (!created) {
           return undefined
