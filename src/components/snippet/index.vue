@@ -60,6 +60,10 @@ const { attrs, classes } = useTailwindVariant(
 function onCopy(text: string) {
   emits('copy', text)
 }
+
+function onError(error: unknown) {
+  emits('error', error)
+}
 </script>
 
 <template>
@@ -88,6 +92,7 @@ function onCopy(text: string) {
         :text="copyText"
         class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 text-inherit"
         @copy="onCopy"
+        @error="onError"
       />
     </div>
   </div>

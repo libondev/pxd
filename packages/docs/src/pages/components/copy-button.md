@@ -49,4 +49,5 @@ CopyButton extends the [Button component](/components/button).
 
 | Name | Type | Description |
 | --- | --- | --- |
-| copy | `(text: string \| null \| undefined, event: PointerEvent) => void` | Emitted when the copy action is triggered. |
+| copy | `(text: string, event: PointerEvent) => void` | Emitted after the text has been copied to the clipboard. |
+| error | `(error: unknown, event: PointerEvent) => void` | Emitted when copying fails after both the Clipboard API and the fallback failed. |

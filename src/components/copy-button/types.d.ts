@@ -6,4 +6,5 @@ export interface CopyButtonProps {
 
 export interface CopyButtonEmits {
   copy: [string, PointerEvent]
+  error: [unknown, PointerEvent]
 }

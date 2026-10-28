@@ -74,4 +74,34 @@ describe('useCopyClick', () => {
     expect(isCopied.value).toBe(false)
     stop()
   })
+
+  it('should fall back to execCommand when the clipboard API rejects', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('denied')) },
+      configurable: true,
+    })
+    const execCommand = vi.fn(() => true)
+    document.execCommand = execCommand
+
+    const { result, stop } = runWithScope(() => useCopyClick())
+
+    await result.copyText('test')
+    expect(execCommand).toHaveBeenCalled()
+    expect(result.isCopied.value).toBe(true)
+    stop()
+  })
+
+  it('should reject and keep isCopied false when the copy fails', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('denied')) },
+      configurable: true,
+    })
+    document.execCommand = vi.fn(() => false)
+
+    const { result, stop } = runWithScope(() => useCopyClick())
+
+    await expect(result.copyText('test')).rejects.toThrow('denied')
+    expect(result.isCopied.value).toBe(false)
+    stop()
+  })
 })

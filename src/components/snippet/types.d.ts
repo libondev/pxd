@@ -14,4 +14,5 @@ export interface SnippetProps {
 
 export interface SnippetEmits {
   copy: [string]
+  error: [unknown]
 }

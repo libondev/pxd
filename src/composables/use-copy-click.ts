@@ -1,11 +1,9 @@
 import type { Nullable } from '../types/shared/utils'
 import { onScopeDispose, shallowRef } from 'vue'
-import { withResolvers } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
 
 export function useCopyClick() {
   let copiedTimer: ReturnType<typeof setTimeout>
-  let copyResolvers: ReturnType<typeof withResolvers<void>> | null = null
 
   const isCopied = shallowRef(false)
 
@@ -15,29 +13,26 @@ export function useCopyClick() {
     }
 
     try {
-      await navigator.clipboard.writeText(text)
-    } catch {
-      copyTextCompat(text)
-    }
-
-    if (!copyResolvers) {
-      copyResolvers = withResolvers<void>()
-      copyResolvers.resolve()
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        throw new Error('Clipboard API is not available')
+      }
+    } catch (error) {
+      if (!copyTextCompat(text)) {
+        throw error
+      }
     }
 
     isCopied.value = true
     clearTimeout(copiedTimer)
     copiedTimer = setTimeout(() => {
       isCopied.value = false
-      copyResolvers = null
     }, 1500)
-
-    return copyResolvers.promise
   }
 
   onScopeDispose(() => {
     clearTimeout(copiedTimer)
-    copyResolvers = null
   })
 
   return {
@@ -49,8 +44,12 @@ export function useCopyClick() {
 function copyTextCompat(text: string) {
   const textarea = document.createElement('textarea')
   textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.top = '-9999px'
+  textarea.setAttribute('readonly', '')
   document.body.appendChild(textarea)
   textarea.select()
-  document.execCommand('copy')
+  const copied = document.execCommand('copy')
   document.body.removeChild(textarea)
+  return copied
 }

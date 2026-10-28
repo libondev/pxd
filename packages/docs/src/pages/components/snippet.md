@@ -77,3 +77,4 @@ const text = ['cd my-project', 'npm install pxd', 'npm run dev']
 | Name | Type | Description |
 | --- | --- | --- |
 | copy | `(text: string) => void` | Emitted after the copy button has written the snippet text to the clipboard. |
+| error | `(error: unknown) => void` | Emitted when copying the snippet text fails. |
