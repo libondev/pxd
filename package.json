@@ -134,18 +134,11 @@
     "unplugin-vue-components": "catalog:default",
     "vite-plus": "catalog:",
     "vue": "catalog:default",
-    "vue-router": "catalog:default",
     "vue-sfc-transformer": "catalog:default",
     "vue-tsc": "catalog:default"
   },
   "peerDependencies": {
-    "vue": ">=2.7.0 <3.0.0 || >=3.2.0",
-    "vue-router": ">=3.5.0"
-  },
-  "peerDependenciesMeta": {
-    "vue-router": {
-      "optional": true
-    }
+    "vue": ">=2.7.0 <3.0.0 || >=3.2.0"
   },
   "packageManager": "pnpm@10.34.7",
   "pnpm": {

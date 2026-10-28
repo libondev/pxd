@@ -1,7 +1,29 @@
-import type { RouteLocationNormalized, Router } from 'vue-router'
 import { nextTick } from 'vue'
 import { NOOP } from '../utils/event.js'
 import { isServer } from '../utils/is.js'
+
+interface RouteLocationNormalized {
+  fullPath: string
+  hash: string
+  matched: unknown[]
+  meta: Record<string, unknown>
+  name: string | symbol | null | undefined
+  params: Record<string, string | string[] | undefined>
+  path: string
+  query: Record<string, string | null | (string | null)[]>
+  redirectedFrom?: RouteLocationNormalized
+}
+
+// Structural subset of the router API used here, compatible with vue-router.
+interface Router {
+  beforeResolve(guard: NavigationGuard): () => void
+  afterEach(guard: NavigationHookAfter): () => void
+  onError(handler: (error: unknown) => void): () => void
+}
+
+type NavigationGuard = (to: RouteLocationNormalized, from: RouteLocationNormalized) => Promise<void> | void
+
+type NavigationHookAfter = (to: RouteLocationNormalized, from: RouteLocationNormalized) => void
 
 type ShouldTransition = (to: RouteLocationNormalized, from: RouteLocationNormalized) => boolean
 
@@ -15,8 +37,8 @@ interface Registration {
   dispose: () => void
 }
 
-// Guards belong to the router, not to the call: a second call has to join the
-// existing registration instead of stacking another transition onto every navigation.
+// Guards live on the router: repeat calls join the existing registration
+// instead of stacking another transition onto every navigation.
 const registrations = new WeakMap<Router, Registration>()
 
 function release(router: Router, registration: Registration, shouldTransition?: ShouldTransition) {
@@ -37,16 +59,13 @@ function release(router: Router, registration: Registration, shouldTransition?: 
 }
 
 /**
- * Wraps router navigations in the View Transitions API so route changes animate
- * between the old and new view.
+ * Wraps route navigations in the View Transitions API.
  *
- * Requires a browser with `document.startViewTransition` support and a router
- * that supports the View Transitions lifecycle. Returns a disposer that removes
- * the registered guards; it is a no-op when the API is unavailable. Calls for
- * the same router share one registration, removed once every caller has disposed.
+ * Returns a disposer; a no-op when the API is unavailable. Calls for the same
+ * router share one registration, removed once every caller has disposed.
  *
- * @param router The vue-router instance to attach the guards to.
- * @param options.shouldTransition Called with `(to, from)` before each navigation; `false` navigates without a transition. Each caller may pass one, and any of them declining skips the transition.
+ * @param router Router instance to attach the guards to.
+ * @param options.shouldTransition Called with `(to, from)`; returning `false` skips the transition.
  * @returns A function that removes the guards.
  */
 export function useViewTransition(router: Router, options: Options = {}): () => void {
@@ -114,14 +133,10 @@ export function useViewTransition(router: Router, options: Options = {}): () => 
       return rendered
     })
 
-    // The browser rejects `ready` whenever it skips the transition — hidden
-    // document, a newer transition superseding this one, a failed capture. With
-    // nobody observing it that becomes an unhandled rejection in the console.
+    // The browser rejects `ready` whenever it skips the transition; silence it
     void transition.ready.catch(NOOP)
 
-    // When the document is already hidden the spec skips the transition without
-    // scheduling the update callback. `finished` still fulfills in that case, so
-    // use it to release the navigation instead of letting it hang.
+    // Hidden documents skip the update callback entirely, so release via `finished`
     void transition.finished.then(unblock, unblock)
 
     return blocked
@@ -136,8 +151,8 @@ export function useViewTransition(router: Router, options: Options = {}): () => 
   })
 
   registration.dispose = () => {
-    // Release an in-flight navigation first: dropping the guards also drops the
-    // afterEach / onError hooks that would otherwise resolve it.
+    // Release an in-flight navigation first: dropping the guards also drops
+    // the afterEach / onError hooks that would otherwise resolve it.
     settle?.()
 
     stopBeforeResolve()
