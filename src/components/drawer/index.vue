@@ -147,7 +147,7 @@ watch(
         </header>
 
         <div
-          class="pxd-drawer--content p-5 h-full flex-1 scrollbar-gutter-stable overflow-auto"
+          class="pxd-drawer--content p-5 empty:py-2.5 h-full flex-1 scrollbar-gutter-stable overflow-auto"
           :class="contentClass"
         >
           <slot />
