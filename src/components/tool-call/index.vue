@@ -159,7 +159,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <div
-        class="pxd-tool-call--content gap-4 flex flex-col"
+        class="pxd-tool-call--content gap-4 flex flex-col min-w-0"
         :class="{
           'p-3 border-t': variant === 'default',
           'ms-1.5 mbs-1.5 ps-3 py-1 border-l': variant === 'simple',
