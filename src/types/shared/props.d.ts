@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'vue'
 import type { Awaitable } from './utils'
+import type { CSSProperties } from 'vue'
 
 export type ComponentVariant = 'primary' | 'error' | 'warning' | 'success'
 export type ComponentVariantWithDefault = ComponentVariant | 'default'

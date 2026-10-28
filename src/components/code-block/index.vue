@@ -76,7 +76,7 @@ const hasHeader = computed(() => !!(props.title || props.switcher || slots.heade
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-code-block min-w-0 max-w-full relative flex flex-col text-gray-1000',
+    base: 'pxd-code-block min-w-0 relative flex max-w-full flex-col text-gray-1000',
     variants: {
       size: {
         sm: 'text-[0.8125rem]',

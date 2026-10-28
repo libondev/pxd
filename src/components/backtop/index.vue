@@ -6,7 +6,12 @@ import { useTailwindVariant } from '../../composables/_internal/use-tailwind-var
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
-import { getScrollTarget, getScrollElement, isViewportScroll, resolveScrollBehavior } from '../../utils/dom.js'
+import {
+  getScrollTarget,
+  getScrollElement,
+  isViewportScroll,
+  resolveScrollBehavior,
+} from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
 import PTeleport from '../teleport/index.vue'

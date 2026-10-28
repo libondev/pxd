@@ -134,10 +134,7 @@ export function createObserver<
       }
     }
 
-    function dispatch(
-      targets: Map<HTMLElement, Set<Subscription<TItem>>>,
-      items: TItem[],
-    ) {
+    function dispatch(targets: Map<HTMLElement, Set<Subscription<TItem>>>, items: TItem[]) {
       const batches = new Map<Subscription<TItem>, TItem[]>()
 
       for (const entry of items) {

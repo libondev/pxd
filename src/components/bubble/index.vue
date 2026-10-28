@@ -35,10 +35,10 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: contentClasses } = useTailwindVariant(
   {
-    base: 'pxd-bubble--content w-max max-w-full px-2.5 py-2 relative overflow-hidden rounded-lg border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
+    base: 'pxd-bubble--content px-2.5 py-2 relative w-max max-w-full overflow-hidden rounded-lg border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
     variants: {
       role: {
-        user: 'bg-primary text-primary-foreground ms-auto motion-safe:transition-[filter]',
+        user: 'ms-auto bg-primary text-primary-foreground motion-safe:transition-[filter]',
         system: 'bg-gray-100',
         assistant: 'bg-gray-100',
       },
@@ -100,7 +100,7 @@ const { classes: contentClasses } = useTailwindVariant(
     <div class="pxd-bubble--wrapper gap-1 flex w-max flex-col">
       <header
         v-if="header || $slots.header"
-        class="pxd-bubble--header flex shrink-0 items-center gap-1 text-xs text-foreground-secondary empty:hidden group-data-[role=user]/bubble:justify-end"
+        class="pxd-bubble--header gap-1 text-xs flex shrink-0 items-center text-foreground-secondary group-data-[role=user]/bubble:justify-end empty:hidden"
       >
         <slot name="header">{{ header }}</slot>
       </header>
@@ -122,7 +122,7 @@ const { classes: contentClasses } = useTailwindVariant(
 
       <footer
         v-if="$slots.footer"
-        class="pxd-bubble--footer flex shrink-0 text-xs gap-1 items-center empty:hidden group-data-[role=user]/bubble:justify-end"
+        class="pxd-bubble--footer text-xs gap-1 flex shrink-0 items-center group-data-[role=user]/bubble:justify-end empty:hidden"
       >
         <slot name="footer" />
       </footer>

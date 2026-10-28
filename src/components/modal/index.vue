@@ -131,7 +131,7 @@ watch(
         </header>
 
         <div
-          class="pxd-modal--content empty:py-2.5 p-5 h-full flex-1 overflow-auto scrollbar-gutter-stable"
+          class="pxd-modal--content empty:py-2.5 p-5 h-full flex-1 scrollbar-gutter-stable overflow-auto"
           :class="contentClass"
         >
           <slot />

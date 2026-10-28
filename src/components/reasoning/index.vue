@@ -70,7 +70,8 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
         class="pxd-reasoning--content"
         :class="{
           'p-3 text-sm border-t text-foreground-secondary': variant === 'default',
-          'mbs-1.5 text-sm ms-1.5 py-1 ps-3 border-l text-foreground-secondary': variant === 'simple',
+          'mbs-1.5 text-sm ms-1.5 py-1 ps-3 border-l text-foreground-secondary':
+            variant === 'simple',
         }"
       >
         <slot />
