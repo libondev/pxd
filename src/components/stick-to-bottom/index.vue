@@ -12,7 +12,6 @@ defineOptions({
 const props = withDefaults(defineProps<StickToBottomProps>(), {
   enabled: true,
   threshold: 16,
-  pauseOnInteract: false,
 })
 
 const emits = defineEmits<StickToBottomEmits>()
@@ -31,7 +30,6 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
   {
     threshold: () => props.threshold,
     enabled: () => props.enabled,
-    pauseOnInteract: () => props.pauseOnInteract,
     interactExclude: actionRef,
   },
 )

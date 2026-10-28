@@ -4,9 +4,9 @@ Keep a scroll container pinned to the bottom while content changes, until the us
 
 Auto-scroll is always **instant**. Smooth scrolling is intentionally unsupported: animation frames re-measure mid-scroll, flip `isAtBottom` off, and break continuous follow in chat-style lists.
 
-Only an upward scroll breaks follow. The composable's own scroll writes and browser adjustments (scroll anchoring, focus scrolling) never clear `isAtBottom`, so content that keeps growing — streaming markdown, images, web fonts — cannot latch the view off the bottom. Set `overflow-anchor: none` on the container when you supply your own element; anchoring compensation otherwise reads as the user scrolling away. `PStickToBottom` applies it for you.
+Only an upward move that the layout does not explain, and that lands off the bottom, breaks follow — decided one frame after the move, once the height it was compensating for has landed. The composable's own writes, browser adjustments (scroll anchoring, focus scrolling, clamping after a shrink), a virtualizer re-measuring its items and a mount-time measurement never clear it, so content that keeps growing — streaming markdown, images, web fonts — cannot latch the view off the bottom, and a container mounted over content already taller than the viewport starts at the bottom. While following, the bottom is re-asserted frame by frame until the geometry stops moving: a measurement pass can land after the write with no box or node change left to observe. Set `overflow-anchor: none` on the container when you supply your own element; anchoring compensation otherwise reads as the user scrolling away. `PStickToBottom` applies it for you.
 
-With `pauseOnInteract`, a pointerdown on the content suspends auto-stick until the next scroll or an explicit `scrollToBottom` / `forceStickToBottom` — user-triggered size changes (expanding a panel, selecting text) keep the reading position. `stickIfNeeded` re-measures instead of scrolling while paused. Pointerdowns inside `interactExclude` (e.g. a sticky input bar) never start the pause.
+A resize that follows a pointerdown is never stuck for: a panel the user expands owns the viewport, and the window keeps extending while the layout it started moves, so a collapse animation cannot drag the view either. When that resize leaves the view off the bottom, follow ends like a scroll away would — coming back to the bottom resumes it. Pointerdowns inside `interactExclude` (e.g. a sticky action bar) do not count as interacting with the content.
 
 ## Exports
 
@@ -22,13 +22,9 @@ function useStickToBottom(
 
 ```ts
 interface UseStickToBottomOptions {
-  /** Pixel distance from the bottom considered "at bottom". @default 16 */
   threshold?: MaybeRefOrGetter<number>
-  /** Whether content updates should auto-scroll while at bottom. @default true */
   enabled?: MaybeRefOrGetter<boolean>
-  /** Suspend auto-stick from the next pointerdown on the content until a scroll or explicit stick. @default false */
-  pauseOnInteract?: MaybeRefOrGetter<boolean>
-  /** Pointerdowns inside this element never start the pause. */
+  /** Pointerdowns inside this element never count as interacting with the content. */
   interactExclude?: MaybeRefOrGetter<Nullable<HTMLElement>>
 }
 
@@ -49,8 +45,7 @@ interface UseStickToBottomReturn {
 | `content` | `MaybeRefOrGetter<Nullable<HTMLElement>>` | Optional content root for ResizeObserver (falls back to `container`) |
 | `options.threshold` | `MaybeRefOrGetter<number>` | Distance from bottom considered "at bottom" |
 | `options.enabled` | `MaybeRefOrGetter<boolean>` | Whether updates auto-scroll while at bottom |
-| `options.pauseOnInteract` | `MaybeRefOrGetter<boolean>` | Suspend auto-stick from the next pointerdown on the content until a scroll or explicit stick |
-| `options.interactExclude` | `MaybeRefOrGetter<Nullable<HTMLElement>>` | Pointerdowns inside this element never start the pause |
+| `options.interactExclude` | `MaybeRefOrGetter<Nullable<HTMLElement>>` | Pointerdowns inside this element never count as interacting with the content |
 
 MutationObserver watches `container` (its subtree covers in-container content). Pass `content` when the measured content root is a distinct child that should drive ResizeObserver.
 
@@ -61,7 +56,7 @@ MutationObserver watches `container` (its subtree covers in-container content). 
 | `isAtBottom` | `ShallowRef<boolean>` | Whether the container is currently within the bottom threshold |
 | `scrollToBottom` | `() => void` | Instantly scroll the container to the bottom (Y axis only) |
 | `forceStickToBottom` | `() => void` | Scroll to bottom and re-enable auto-stick |
-| `stickIfNeeded` | `() => void` | Scroll to bottom only when currently at bottom and enabled; re-measures instead while paused by interaction |
+| `stickIfNeeded` | `() => void` | Scroll to bottom only while following and enabled, and not while a resize the user caused is still moving |
 | `update` | `() => void` | Re-measure whether the container is at the bottom |
 
 ## Usage

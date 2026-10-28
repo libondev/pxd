@@ -103,6 +103,29 @@ describe('bubble-group', () => {
     wrapper.unmount()
   })
 
+  it('follows the bottom when it mounts over loaded items', async () => {
+    const wrapper = mount(BubbleGroup, {
+      props: {
+        data: Array.from({ length: 20 }, (_, index) => ({ id: index })),
+        dataKey: 'id',
+        virtual: true,
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { scrollTo } = patchScrollMetrics(container, {
+      scrollHeight: 1920,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 1120, behavior: 'instant' })
+    expect(container.scrollTop).toBe(1120)
+
+    wrapper.unmount()
+  })
+
   it('exposes a toc source over the virtualizer', async () => {
     // happy-dom has no layout: every box measures as the 50px estimate, so offsets stay stable.
     const rectSpy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
@@ -135,7 +158,8 @@ describe('bubble-group', () => {
 
       expect(scrollSource.getOffsetForIndex(0)).toBe(0)
       expect(scrollSource.getOffsetForIndex(2)).toBe(100)
-      expect(scrollSource.getScrollOffset()).toBe(0)
+      // Mounting follows the bottom, so the list starts at the last of the 500px
+      expect(scrollSource.getScrollOffset()).toBe(400)
 
       scrollSource.scrollToIndex(2)
       expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 100 }))

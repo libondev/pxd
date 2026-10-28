@@ -2,6 +2,8 @@
 
 Keep a scroll container pinned to the bottom while content updates, until the user scrolls away. Scrolling back to the bottom restores auto-follow.
 
+Only an upward scroll that the layout does not explain breaks follow, and a container that mounts with content already taller than the viewport starts at the bottom. A resize the user caused — expanding a collapse, selecting text — never pulls the view down, and if it moves the view off the bottom, auto-follow ends until you scroll back or use the action.
+
 Auto-scroll is always **instant** — smooth scrolling is not supported, so continuous chat-style follow stays stable. The container opts out of scroll anchoring (`overflow-anchor: none`), so browser compensation for reflowed content cannot break follow mid-stream.
 
 **Height required:** the container only scrolls when its height is constrained (for example `h-40`, or a flex child with `min-h-0`). Without that, it grows with content and never scrolls.
@@ -58,9 +60,9 @@ function append() {
 </template>
 ```
 
-## Pause on interaction
+## Interaction keeps the position
 
-With `pause-on-interact`, a pointerdown on the content suspends auto-follow until the next scroll or an explicit stick — expanding a panel keeps the reading position instead of snapping to the bottom. Pointerdowns inside the `action` slot are excluded, so controls there keep following.
+A resize the user causes — expanding a collapse, selecting text — never pulls the view to the bottom: while the layout that interaction started is still moving, the viewport belongs to it. Pointerdowns inside the `action` slot are excluded, so controls there keep following.
 
 ```vue demo
 <script setup lang="ts">
@@ -68,7 +70,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 </script>
 
 <template>
-  <PStickToBottom pause-on-interact class="relative h-56 rounded-lg border border-dashed p-2">
+  <PStickToBottom class="relative h-56 rounded-lg border border-dashed p-2">
     <PCollapseGroup multiple>
       <PCollapse v-for="i in 8" :key="i" :title="`Panel ${i}`">
         <div class="mb-4">
@@ -138,7 +140,6 @@ function append() {
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
-| pause-on-interact | `boolean` | `false` | Suspend auto-follow from the next pointerdown on the content until a scroll or explicit stick |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | content-style | `CSSProperties \| string` | - | Extra style on the inner content wrapper |
 
@@ -164,5 +165,5 @@ function append() {
 | isAtBottom | `boolean` | Whether the container is currently within the bottom threshold. |
 | scrollToBottom | `() => void` | Scroll instantly to the bottom, leaving horizontal scroll untouched. |
 | forceStickToBottom | `() => void` | Scroll to the bottom and re-enable auto-stick. |
-| stickIfNeeded | `() => void` | Scroll to the bottom only when already at the bottom and `enabled` is true. |
+| stickIfNeeded | `() => void` | Scroll to the bottom only while following and `enabled` is true. |
 | update | `() => void` | Re-measure whether the container is at the bottom. |

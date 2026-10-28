@@ -4,7 +4,6 @@ import type { CSSProperties } from 'vue'
 export interface StickToBottomProps {
   enabled?: boolean
   threshold?: number
-  pauseOnInteract?: boolean
   contentClass?: ComponentClass
   contentStyle?: CSSProperties | string
 }

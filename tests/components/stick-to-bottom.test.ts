@@ -106,10 +106,14 @@ describe('PStickToBottom', () => {
 
     const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
     patchScrollMetrics(container, {
-      scrollHeight: 200,
+      scrollHeight: 400,
       clientHeight: 100,
-      scrollTop: 100,
+      scrollTop: 0,
     })
+
+    // Listeners attach on the flush after mount, and the mount itself lands on the bottom
+    await flushRaf()
+    expect(container.scrollTop).toBe(300)
 
     const vm = wrapper.vm as unknown as {
       isAtBottom: boolean
@@ -131,6 +135,5 @@ describe('PStickToBottom', () => {
 
     expect(wrapper.props('threshold')).toBe(16)
     expect(wrapper.props('enabled')).toBe(true)
-    expect(wrapper.props('pauseOnInteract')).toBe(false)
   })
 })

@@ -106,10 +106,14 @@ describe('PStickToBottom', () => {
 
     const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
     patchScrollMetrics(container, {
-      scrollHeight: 200,
+      scrollHeight: 400,
       clientHeight: 100,
-      scrollTop: 100,
+      scrollTop: 0,
     })
+
+    // Listeners attach on the flush after mount, and the mount itself lands on the bottom
+    await flushRaf()
+    expect(container.scrollTop).toBe(300)
 
     const vm = wrapper.vm as unknown as {
       isAtBottom: boolean
@@ -131,6 +135,82 @@ describe('PStickToBottom', () => {
 
     expect(wrapper.props('threshold')).toBe(16)
     expect(wrapper.props('enabled')).toBe(true)
+  })
+
+  it('survives a correction that writes the offset before the layout catches up', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 1920,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    expect(container.scrollTop).toBe(1120)
+
+    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
+
+    // A virtualizer re-measuring shorter items writes the offset first,
+    container.scrollTop = 400
+    container.dispatchEvent(new Event('scroll'))
+
+    // and the height it was compensating for only lands in the next frame
+    metrics.scrollHeight = 1200
+    await flushRaf()
+
+    // The move was the layout's, so the container keeps following
+    metrics.scrollHeight = 5000
+    vm.stickIfNeeded()
+    expect(container.scrollTop).toBe(4200)
+
+    wrapper.unmount()
+  })
+
+  it('stops following when the interaction leaves the view off the bottom', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="panel">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 200,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      // Expanding a panel grows the content while the interaction window is open
+      now.mockReturnValue(1000)
+      wrapper.find('.panel').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+      metrics.scrollHeight = 600
+      vm.stickIfNeeded()
+      expect(container.scrollTop).toBe(100)
+
+      // Later growth must not yank the view back down: the interaction ended follow
+      now.mockReturnValue(2000)
+      metrics.scrollHeight = 800
+      vm.stickIfNeeded()
+      expect(container.scrollTop).toBe(100)
+
+      // Scrolling back to the bottom resumes it
+      container.scrollTop = 700
+      container.dispatchEvent(new Event('scroll'))
+      metrics.scrollHeight = 900
+      vm.stickIfNeeded()
+      expect(container.scrollTop).toBe(800)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
   })
 
   it('keeps following when content grows after the programmatic scroll', async () => {
@@ -184,6 +264,7 @@ describe('PStickToBottom', () => {
 
     container.scrollTop = 20
     container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
     expect(vm.isAtBottom).toBe(false)
 
     metrics.scrollHeight = 400
@@ -245,6 +326,7 @@ describe('PStickToBottom', () => {
 
     container.scrollTop = 282
     container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
     expect(vm.isAtBottom).toBe(false)
 
     vm.stickIfNeeded()
@@ -282,6 +364,7 @@ describe('PStickToBottom', () => {
 
     container.scrollTop = 278
     container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
     expect(vm.isAtBottom).toBe(false)
 
     wrapper.unmount()
@@ -355,41 +438,8 @@ describe('PStickToBottom', () => {
     expect(container.scrollTop).toBe(100)
   })
 
-  it('keeps the reading position after pointer interaction when pauseOnInteract is on', async () => {
-    const wrapper = mount(StickToBottom, {
-      props: { pauseOnInteract: true },
-      slots: { default: '<div>content</div>' },
-    })
-
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
-    const { metrics } = patchScrollMetrics(container, {
-      scrollHeight: 200,
-      clientHeight: 100,
-      scrollTop: 100,
-    })
-    await flushRaf()
-
-    const vm = wrapper.vm as unknown as { isAtBottom: boolean; stickIfNeeded: () => void }
-
-    container.dispatchEvent(new Event('pointerdown'))
-    metrics.scrollHeight = 600
-
-    vm.stickIfNeeded()
-    expect(container.scrollTop).toBe(100)
-    expect(vm.isAtBottom).toBe(false)
-
-    container.scrollTop = 500
-    container.dispatchEvent(new Event('scroll'))
-    expect(vm.isAtBottom).toBe(true)
-
-    metrics.scrollHeight = 800
-    vm.stickIfNeeded()
-    expect(container.scrollTop).toBe(700)
-  })
-
   it('keeps following when the pointerdown comes from the action slot', async () => {
     const wrapper = mount(StickToBottom, {
-      props: { pauseOnInteract: true },
       slots: {
         default: '<div>content</div>',
         action: '<div class="action-area">bottom</div>',
@@ -409,28 +459,6 @@ describe('PStickToBottom', () => {
     wrapper
       .find('.pxd-stick-to-bottom--action .action-area')
       .element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
-    metrics.scrollHeight = 600
-
-    vm.stickIfNeeded()
-    expect(container.scrollTop).toBe(500)
-  })
-
-  it('keeps following after pointer interaction by default', async () => {
-    const wrapper = mount(StickToBottom, {
-      slots: { default: '<div>content</div>' },
-    })
-
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
-    const { metrics } = patchScrollMetrics(container, {
-      scrollHeight: 200,
-      clientHeight: 100,
-      scrollTop: 100,
-    })
-    await flushRaf()
-
-    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
-
-    container.dispatchEvent(new Event('pointerdown'))
     metrics.scrollHeight = 600
 
     vm.stickIfNeeded()
