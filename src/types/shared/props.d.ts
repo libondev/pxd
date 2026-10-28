@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'vue'
 import type { Awaitable } from './utils'
 
 export type ComponentVariant = 'primary' | 'error' | 'warning' | 'success'
@@ -16,6 +17,7 @@ export type ComponentText = string | number | undefined | null
 export type ComponentValue = string | number
 
 export type ComponentClass = string | any[] | Record<string, any>
+export type ComponentStyle = CSSProperties | string
 
 export type ComponentAlign = 'left' | 'center' | 'right'
 export type ComponentDirection = 'horizontal' | 'vertical'
