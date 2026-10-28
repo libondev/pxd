@@ -2,7 +2,7 @@
 import type { PopoverEmits, PopoverProps, PopoverTrigger } from './types'
 import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties } from 'vue'
-import { arrow, autoUpdate, computePosition, flip, shift, hide } from '@floating-ui/dom'
+import { arrow, autoUpdate, computePosition, flip, hide, shift } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { useDelayDestroy } from '../../composables/use-delay-destroy.js'
@@ -41,12 +41,16 @@ const props = withDefaults(defineProps<PopoverProps>(), {
 
 const emits = defineEmits<PopoverEmits>()
 
-let showPopoverTimer: ReturnType<typeof setTimeout> | null
-let hidePopoverTimer: ReturnType<typeof setTimeout> | null
-let triggerElementsCache: HTMLElement[] | null = null
-let cleanupAutoUpdate: (() => void) | null = null
-let skipAutoUpdateCompute = false
+// The layer is fixed, so its box never joins the document's scrollable overflow — no pre-reveal
+// frame can flash a page scrollbar — and it stays at the origin, moving by transform only, which
+// also keeps its width independent of where it lands.
+const HIDDEN_TRANSFORM = 'translate(0, -200%)'
+
+let showPopoverTimer: ReturnType<typeof setTimeout> | null = null
+let hidePopoverTimer: ReturnType<typeof setTimeout> | null = null
 let hideFrame = 0
+let triggerElements: HTMLElement[] | null = null
+let cleanupAutoUpdate: (() => void) | null = null
 const throttledUpdatePosition = throttleByRaf(updatePosition)
 
 const arrowRef = shallowRef<HTMLElement>(null!)
@@ -76,18 +80,25 @@ const pointReference: VirtualElement = {
 
 const positionReady = shallowRef(false)
 const localPosition = shallowRef(props.position)
+const wrapperTransform = shallowRef(HIDDEN_TRANSFORM)
 const triggerMethods = computed<PopoverTrigger[]>(() => toArray(props.trigger))
 const isManual = computed(() => triggerMethods.value.includes('manual'))
+// Everything visible or interactive waits for the first position: the reveal, the overlay and the
+// focus trap all hang off this one flag.
+const isRevealed = computed(() => isVisible.value && positionReady.value)
 const wrapperStyle = computed<CSSProperties>(() => ({
   '--popover-index': props.zIndex,
   '--popover-offset': props.offset,
   '--popover-arrow-color': props.arrowColor,
-  '--popover-max-width': getCssUnitValue(props.maxWidth),
+  // An unset var resolves `sm:max-w-(--popover-max-width)` to `none`, dropping the viewport cap.
+  '--popover-max-width': getCssUnitValue(props.maxWidth, '100%'),
+  left: 0,
+  top: 0,
+  transform: wrapperTransform.value,
 }))
 // Hover popovers must not steal focus; click ones trap Tab but only focus on request.
 const focusTrapContainer = computed(() =>
-  isVisible.value &&
-  positionReady.value &&
+  isRevealed.value &&
   (isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'))
     ? wrapperRef.value
     : null,
@@ -137,6 +148,7 @@ useFocusTrap(focusTrapContainer, () => {
 })
 
 useOutsideClick(wrapperRef, {
+  // Judged on the press, not the browser's click: a drag that starts inside must not dismiss.
   eventName: 'pointerdown',
   allowList: [triggerRef, wrapperRef],
   enabled: () => isVisible.value,
@@ -156,11 +168,15 @@ function clearShowTimer() {
   }
 }
 
-function cancelHideFrame() {
+function clearHideTimer() {
   caf(hideFrame)
   hideFrame = 0
-}
 
+  if (hidePopoverTimer) {
+    clearTimeout(hidePopoverTimer)
+    hidePopoverTimer = null
+  }
+}
 // One frame of grace lets a pointer crossing the gap between matched triggers reach the next one.
 function hideOnNextFrame() {
   if (hideFrame) {
@@ -173,31 +189,18 @@ function hideOnNextFrame() {
   })
 }
 
-function clearHideTimer() {
-  cancelHideFrame()
-
-  if (hidePopoverTimer) {
-    clearTimeout(hidePopoverTimer)
-    hidePopoverTimer = null
-  }
-}
-
 function getTriggerElements() {
   if (!props.triggerSelector) {
     return []
   }
 
-  if (!triggerElementsCache) {
-    triggerElementsCache = Array.from(
+  if (!triggerElements) {
+    triggerElements = Array.from(
       triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector),
     )
   }
 
-  return triggerElementsCache
-}
-
-function clearTriggerElementsCache() {
-  triggerElementsCache = null
+  return triggerElements
 }
 
 function resolveTriggerElement(target: EventTarget | null) {
@@ -217,7 +220,6 @@ function resolveTriggerElement(target: EventTarget | null) {
 
   return matched
 }
-
 // Capture phase makes the nearest popover own the event; an ignored subtree owns none.
 function isForeignTarget(target: EventTarget | null) {
   if (!(target instanceof Element) || target.closest('[data-popover-ignore]')) {
@@ -270,13 +272,87 @@ function getReferenceElement() {
   return activeTriggerRef.value || triggerRef.value
 }
 
-function onAutoUpdate() {
-  if (skipAutoUpdateCompute) {
-    skipAutoUpdateCompute = false
+function syncMinWidth() {
+  const wrapper = wrapperRef.value
+
+  if (!wrapper || props.alignPoint) {
     return
   }
 
-  throttledUpdatePosition()
+  if (!props.fillTriggerWidth) {
+    wrapper.style.minWidth = ''
+    return
+  }
+
+  const triggerWidth = (activeTriggerRef.value || triggerRef.value).getBoundingClientRect().width
+  const maxWidth = getCssUnitValue(props.maxWidth)
+
+  wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
+}
+// A subpixel transform blurs text; snap to the device pixel grid like floating-ui's useFloating.
+function roundByDPR(value: number) {
+  const dpr = window.devicePixelRatio || 1
+
+  return Math.round(value * dpr) / dpr
+}
+
+function getPositionMiddleware() {
+  return [
+    // crossAxis too: for top/bottom placements the x axis is otherwise never clamped.
+    shift({ padding: 4, crossAxis: true }),
+    props.autoPosition && flip(),
+    props.showArrow && arrow({ element: arrowRef.value }),
+    props.closeOnInvisible && hide({ strategy: 'escaped' }),
+    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
+  ]
+}
+
+async function updatePosition() {
+  if (!wrapperRef.value) {
+    return
+  }
+
+  syncMinWidth()
+
+  const { x, y, placement, middlewareData } = await computePosition(
+    getReferenceElement(),
+    wrapperRef.value,
+    {
+      strategy: 'fixed',
+      placement: props.position,
+      middleware: getPositionMiddleware(),
+    },
+  )
+
+  // The open-time compute runs pre-reveal, where a still parked layer reads as escaped; only a
+  // revealed popover may close itself.
+  if (
+    !isManual.value &&
+    isRevealed.value &&
+    (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped)
+  ) {
+    handlePopoverHide(true)
+    return
+  }
+
+  const transform = props.adaptive ? '' : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
+
+  // autoUpdate computes several times per open (its own first call, resize observer, scroll); only
+  // a changed result is worth touching the DOM.
+  if (transform === wrapperTransform.value && placement === localPosition.value) {
+    return
+  }
+
+  localPosition.value = placement
+  wrapperTransform.value = transform
+
+  if (middlewareData.arrow) {
+    const { x: arrowX, y: arrowY } = middlewareData.arrow
+    Object.assign(arrowRef.value.style, {
+      left: arrowX != null ? `${Math.max(Math.ceil(arrowX), 5)}px` : '',
+      top: arrowY != null ? `${Math.max(Math.ceil(arrowY), 5)}px` : '',
+    })
+  }
 }
 
 function startAutoUpdate() {
@@ -284,9 +360,16 @@ function startAutoUpdate() {
     return
   }
 
-  // autoUpdate recomputes once on start; syncPosition has just computed, so skip that call.
-  skipAutoUpdateCompute = true
-  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, onAutoUpdate)
+  cleanupAutoUpdate = autoUpdate(getReferenceElement(), wrapperRef.value, throttledUpdatePosition)
+}
+
+function disposeAutoUpdate() {
+  if (cleanupAutoUpdate) {
+    cleanupAutoUpdate()
+    cleanupAutoUpdate = null
+  }
+
+  throttledUpdatePosition.cancel()
 }
 
 async function syncPosition() {
@@ -314,89 +397,6 @@ async function updateActiveTrigger(trigger: HTMLElement | null) {
   }
 }
 
-function disposeAutoUpdate() {
-  if (cleanupAutoUpdate) {
-    cleanupAutoUpdate()
-    cleanupAutoUpdate = null
-  }
-
-  skipAutoUpdateCompute = false
-  throttledUpdatePosition.cancel()
-}
-
-function updatePopoverMinWidth() {
-  if (!wrapperRef.value || props.alignPoint) {
-    return
-  }
-
-  if (!props.fillTriggerWidth) {
-    wrapperRef.value.style.minWidth = ''
-    return
-  }
-
-  const trigger = activeTriggerRef.value || triggerRef.value
-  const triggerWidth = trigger.getBoundingClientRect().width
-  const maxWidth = getCssUnitValue(props.maxWidth)
-
-  wrapperRef.value.style.minWidth = maxWidth
-    ? `min(${triggerWidth}px, ${maxWidth})`
-    : `${triggerWidth}px`
-}
-
-function getPositionMiddleware() {
-  return [
-    shift({ padding: { left: 4, right: 4 } }),
-    props.autoPosition && flip(),
-    props.showArrow && arrow({ element: arrowRef.value }),
-    props.closeOnInvisible && hide({ strategy: 'escaped' }),
-    props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
-  ]
-}
-
-async function updatePosition() {
-  if (!wrapperRef.value) {
-    return
-  }
-
-  const referenceElement = getReferenceElement()
-  updatePopoverMinWidth()
-
-  const { x, y, placement, middlewareData } = await computePosition(
-    referenceElement,
-    wrapperRef.value,
-    {
-      placement: props.position,
-      middleware: getPositionMiddleware(),
-    },
-  )
-
-  localPosition.value = placement
-
-  // The open-time compute runs pre-reveal; an invisible-anchor close applies only to a revealed popover.
-  if (
-    !isManual.value &&
-    isVisible.value &&
-    (middlewareData.hide?.referenceHidden || middlewareData.hide?.escaped)
-  ) {
-    handlePopoverHide(true)
-    return
-  }
-
-  const wrapperPositionStyle = {
-    left: props.adaptive ? '0' : `${x}px`,
-    top: props.adaptive ? '0' : `${y}px`,
-  } as const
-
-  Object.assign(wrapperRef.value.style, wrapperPositionStyle)
-
-  if (middlewareData.arrow) {
-    const { x: arrowX, y: arrowY } = middlewareData.arrow
-    Object.assign(arrowRef.value.style, {
-      left: arrowX != null ? `${Math.max(Math.ceil(arrowX), 5)}px` : '',
-      top: arrowY != null ? `${Math.max(Math.ceil(arrowY), 5)}px` : '',
-    })
-  }
-}
 async function handlePopoverShow() {
   if (showPopoverTimer || props.disabled) {
     return
@@ -405,7 +405,7 @@ async function handlePopoverShow() {
   clearHideTimer()
 
   // Fully shown and tracked: a modelValue echo must not restart the position sync.
-  if (isVisible.value && positionReady.value && cleanupAutoUpdate) {
+  if (isRevealed.value && cleanupAutoUpdate) {
     return
   }
 
@@ -419,6 +419,7 @@ async function handlePopoverShow() {
   // Position before the enter transition starts, while data-visible is still false.
   if (!isVisible.value) {
     positionReady.value = false
+    wrapperTransform.value = HIDDEN_TRANSFORM
   }
 
   const visiblePromise = showPopover()
@@ -444,9 +445,9 @@ async function handlePopoverHide(immediate: boolean = false) {
     clearHideTimer()
   }
 
-  await new Promise<void>((resolve) => {
-    clearShowTimer()
+  clearShowTimer()
 
+  await new Promise<void>((resolve) => {
     hidePopoverTimer = setTimeout(
       () => {
         hidePopoverTimer = null
@@ -456,7 +457,7 @@ async function handlePopoverHide(immediate: boolean = false) {
     )
   })
 
-  clearTriggerElementsCache()
+  triggerElements = null
   disposeAutoUpdate()
 
   hidePopover()
@@ -480,10 +481,7 @@ function activateTrigger(trigger: HTMLElement, toggleSameTrigger: boolean = true
 }
 
 function updatePointerPosition(ev: PointerEvent) {
-  pointerPosition.value = {
-    x: ev.clientX,
-    y: ev.clientY,
-  }
+  pointerPosition.value = { x: ev.clientX, y: ev.clientY }
 }
 
 function onTriggerClick(ev: Event) {
@@ -542,7 +540,6 @@ function onTriggerPointerOver(ev: PointerEvent) {
     activateTrigger(trigger, false)
   }
 }
-
 // pointerout bubbles, so it also covers what pointerleave used to handle.
 function onTriggerPointerOut(ev: PointerEvent) {
   if (props.disabled || !triggerMethods.value.includes('hover')) {
@@ -567,11 +564,7 @@ function onTriggerPointerOut(ev: PointerEvent) {
 }
 
 function onTriggerPointerMove(ev: PointerEvent) {
-  if (props.disabled || !triggerMethods.value.includes('hover')) {
-    return
-  }
-
-  if (!props.alignPoint) {
+  if (props.disabled || !triggerMethods.value.includes('hover') || !props.alignPoint) {
     return
   }
 
@@ -624,11 +617,7 @@ function onWrapperKeydown(ev: KeyboardEvent) {
 }
 
 function onWrapperPointerEnter() {
-  if (props.disabled) {
-    return
-  }
-
-  if (!props.interactive || !isVisible.value) {
+  if (props.disabled || !props.interactive || !isVisible.value) {
     return
   }
 
@@ -636,11 +625,7 @@ function onWrapperPointerEnter() {
 }
 
 function onWrapperPointerLeave() {
-  if (props.disabled) {
-    return
-  }
-
-  if (!triggerMethods.value.includes('hover')) {
+  if (props.disabled || !triggerMethods.value.includes('hover')) {
     return
   }
 
@@ -668,7 +653,7 @@ onBeforeUnmount(() => {
   clearShowTimer()
   clearHideTimer()
   disposeAutoUpdate()
-  clearTriggerElementsCache()
+  triggerElements = null
 })
 
 defineExpose({
@@ -696,7 +681,7 @@ defineExpose({
 
     <POverlay
       v-if="isRender"
-      :model-value="isVisible && positionReady"
+      :model-value="isRevealed"
       :z-index="overlayZIndex"
       :variant="adaptive ? 'default' : 'none'"
       :close-on-press-escape="closeOnPressEscape"
@@ -708,14 +693,14 @@ defineExpose({
         tabindex="-1"
         role="dialog"
         aria-modal="true"
-        :data-visible="isVisible && positionReady"
+        :data-visible="isRevealed"
         :data-adaptive="adaptive"
         :data-position="localPosition"
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="wrapperStyle"
         :aria-labelledby="ariaLabelledby"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) absolute -top-full -left-full isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) max-sm:max-w-full fixed isolate z-(--popover-index) flex max-h-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"

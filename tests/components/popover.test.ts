@@ -6,9 +6,10 @@ import Overlay from '../../src/components/overlay/index.vue'
 import Popover from '../../src/components/popover/index.vue'
 
 const mocks = vi.hoisted(() => ({
+  // The reveal converges over a few passes; every pass has to agree on the same result.
   computePosition: vi.fn<typeof computePosition>(async () => ({
-    x: 0,
-    y: 0,
+    x: 42,
+    y: 64,
     placement: 'bottom',
     strategy: 'absolute',
     middlewareData: {},
@@ -113,8 +114,7 @@ describe('popover', () => {
     await flush()
 
     expect(floating?.dataset.visible).toBe('true')
-    expect(floating?.style.left).toBe('42px')
-    expect(floating?.style.top).toBe('64px')
+    expect(floating?.style.transform).toBe('translate(42px, 64px)')
 
     wrapper.unmount()
   })

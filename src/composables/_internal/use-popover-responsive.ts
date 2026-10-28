@@ -3,7 +3,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../use-media-query.js'
 
 const ADAPTIVE_CLASSES = {
   content: 'bg-background-100 shadow-border-menu w-full rounded-tl-xl rounded-tr-xl',
-  wrapper: 'fixed w-full h-full items-end pointer-events-none',
+  wrapper: 'w-full h-full items-end pointer-events-none',
 } as const
 
 const DEFAULT_CLASSES = {
