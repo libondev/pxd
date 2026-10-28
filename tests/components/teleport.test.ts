@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
+import { defineComponent, getCurrentInstance, h, onMounted } from 'vue'
 import Teleport from '../../src/components/teleport/index.vue'
 
 describe('teleport', () => {
@@ -27,6 +28,31 @@ describe('teleport', () => {
     })
 
     expect(wrapper.exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should teleport before the slot content mounts', () => {
+    let parentAtMount: string | undefined
+
+    const Content = defineComponent({
+      setup() {
+        const instance = getCurrentInstance()
+
+        onMounted(() => {
+          parentAtMount = (instance?.vnode.el as HTMLElement | null)?.parentElement?.tagName
+        })
+
+        return () => h('div', { class: 'content' }, 'x')
+      },
+    })
+
+    const wrapper = mount(Teleport, {
+      attachTo: document.body,
+      slots: { default: () => h(Content) },
+    })
+
+    expect(parentAtMount).toBe('BODY')
 
     wrapper.unmount()
   })

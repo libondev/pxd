@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TeleportLocation, TeleportProps } from './types'
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { isServer, isVue3 } from '../../utils/is.js'
 
 defineOptions({
@@ -17,8 +17,11 @@ let homeLocation: TeleportLocation | null
 
 // A teleported subtree cannot be prerendered: the content never reaches the HTML, so
 // hydration would rebuild it elsewhere and leave the server copy orphaned. Render it
-// in place for the server pass and for the first client render, then move it.
-const mounted = shallowRef(false)
+// in place for the server pass and for hydrating, then move it. A fresh client render
+// has nothing to match, and rendering it in place once exposes it to the host's
+// containing block and scroll offsets — which floating layers measure.
+const isHydrating = Boolean(getCurrentInstance()?.vnode.el)
+const mounted = shallowRef(!inServer && !isHydrating)
 
 const isDisabled = computed(() => props.disabled || !mounted.value)
 const containerRef = shallowRef<HTMLElement>()
