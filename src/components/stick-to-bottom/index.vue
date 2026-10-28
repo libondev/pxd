@@ -54,12 +54,7 @@ defineExpose({
 
 <template>
   <div data-stick-to-bottom ref="containerRef" :class="classes" v-bind="attrs">
-    <div
-      ref="contentRef"
-      class="pxd-stick-to-bottom--content"
-      :class="contentClass"
-      :style="contentStyle"
-    >
+    <div ref="contentRef" class="pxd-stick-to-bottom--content" :class="contentClass">
       <slot />
     </div>
 

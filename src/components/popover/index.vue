@@ -714,7 +714,6 @@ defineExpose({
           <div
             class="pxd-popover--content h-full max-h-inherit overflow-auto"
             :class="contentClass"
-            :style="contentStyle"
           >
             <slot
               name="content"

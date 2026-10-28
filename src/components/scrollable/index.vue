@@ -371,7 +371,6 @@ defineExpose({
     <div
       ref="contentRef"
       :class="contentClass"
-      :style="contentStyle"
       class="pxd-scrollable--content relative scrollbar-none h-full max-h-inherit max-w-full flex-1 shrink-0 overflow-scroll intrinsic-size-auto"
       @scroll.passive="onContainerScroll"
     >
