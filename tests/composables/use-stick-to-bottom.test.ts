@@ -374,14 +374,12 @@ describe('PStickToBottom', () => {
     const wrapper = mount(StickToBottom, {
       props: {
         contentClass: 'custom-content',
-        contentStyle: { height: '120px' },
       },
       slots: { default: '<div>content</div>' },
     })
 
     const content = wrapper.find('.pxd-stick-to-bottom--content')
     expect(content.classes()).toContain('custom-content')
-    expect(content.attributes('style')).toContain('height: 120px')
   })
 
   it('exposes containerRef for external scroll consumers', () => {

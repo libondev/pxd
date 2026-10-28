@@ -105,7 +105,6 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
 | wrapper-class | `string \| any[] \| object` | - | Class applied to the outer wrapper element |
 | content-class | `string \| any[] \| object` | - | Class applied to the scrolling content element |
-| content-style | `CSSProperties \| string` | - | Inline style applied to the scrolling content element |
 | scrollbar-size | `number` | - | Scrollbar thickness in `px`, defaulting to `6` |
 | scrollbar-color | `string` | - | Thumb color, defaulting to `--color-gray-alpha-300` |
 | scrollbar-hover-color | `string` | - | Thumb color on hover or active, defaulting to `--color-gray-alpha-500` |

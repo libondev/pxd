@@ -1,5 +1,4 @@
 import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
-import type { CSSProperties } from 'vue'
 
 export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual'
 
@@ -23,7 +22,6 @@ export interface PopoverProps {
   destroyDelay?: number
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  contentStyle?: CSSProperties | string
   ariaLabelledby?: string
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean

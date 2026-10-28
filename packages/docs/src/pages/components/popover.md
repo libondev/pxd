@@ -471,7 +471,6 @@ const chips = [
 | wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
 | aria-labelledby | `string` | - | ID of the element that labels the Popover dialog |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
-| content-style | `CSSProperties \| string` | - | Inline style bound to the Popover content |
 | toggle-on-trigger | `boolean` | `true` | Hide the Popover when the trigger is activated again |
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | return-focus-on-deactivate | `boolean` | `true` | Return focus to the trigger when the Popover closes |

@@ -41,8 +41,8 @@ const contentStyle = computed(() => {
   }
 
   return {
-    height: `${totalSize.value}px`,
-    containIntrinsicSize: `auto ${totalSize.value}px`,
+    '--bubble-group-height': `${totalSize.value}px`,
+    '--bubble-group-containIntrinsicSize': `auto ${totalSize.value}px`,
   }
 })
 
@@ -79,8 +79,8 @@ defineExpose({
     data-bubble-group
     class="pxd-bubble-group relative overflow-x-hidden"
     :threshold="8"
-    content-class="pxd-bubble-group--content relative w-full content-visibility-auto"
-    :content-style="contentStyle"
+    content-class="pxd-bubble-group--content relative w-full content-visibility-auto h-(--bubble-group-height) [contain-intrinsic-size:var(--bubble-group-containIntrinsicSize)]"
+    :style="contentStyle"
     v-bind="$attrs"
   >
     <template v-if="data && virtual">

@@ -1,5 +1,4 @@
 import type { ComponentClass, ComponentDirection } from '../../types/shared/props'
-import type { CSSProperties } from 'vue'
 
 export interface ScrollableProps {
   fader?: boolean
@@ -10,7 +9,6 @@ export interface ScrollableProps {
   faderDirection?: ComponentDirection | 'both'
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  contentStyle?: CSSProperties | string
   scrollbarSize?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string

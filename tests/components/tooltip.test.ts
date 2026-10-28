@@ -41,7 +41,6 @@ describe('tooltip', () => {
         showArrow: false,
         destroyDelay: 100,
         triggerSelector: '[data-tooltip-trigger]',
-        contentStyle: 'color: red',
       },
       slots: {
         default: '<button>Hover</button>',
@@ -53,7 +52,6 @@ describe('tooltip', () => {
     expect(popover.props('showArrow')).toBe(false)
     expect(popover.props('destroyDelay')).toBe(100)
     expect(popover.props('triggerSelector')).toBe('[data-tooltip-trigger]')
-    expect(popover.props('contentStyle')).toBe('color: red')
 
     wrapper.unmount()
   })

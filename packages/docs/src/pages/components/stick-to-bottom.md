@@ -141,7 +141,6 @@ function append() {
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
-| content-style | `CSSProperties \| string` | - | Extra style on the inner content wrapper |
 
 ## Events
 
