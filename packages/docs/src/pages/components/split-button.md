@@ -100,7 +100,7 @@ const options = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: ListModelValue) => void` | Emitted when an option is selected from the dropdown. |
-| main-click | `(value: ListModelValue) => void` | Emitted when the primary button is clicked. |
+| main-click | `() => void` | Emitted when the primary button is clicked. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted right after `change` with the selected value. |
 
 ## Slots
