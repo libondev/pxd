@@ -867,12 +867,10 @@ defineExpose({
   &[data-visible='false'] .pxd-popover--container[data-transition-type='fade-scale'] {
     opacity: 0;
     transform: scale(var(--popover-scale));
-    transition-duration: var(--faster-transition-duration);
   }
 
   &[data-visible='false'] .pxd-popover--container[data-transition-type='fade-slide'] {
     transform: translateY(100%);
-    transition-duration: var(--faster-transition-duration);
   }
 }
 </style>

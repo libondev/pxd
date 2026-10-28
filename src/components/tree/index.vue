@@ -918,10 +918,6 @@ defineExpose({
   transition-timing-function: var(--default-transition-timing-function);
 }
 
-.pxd-tree-transition-leave-active {
-  transition-duration: var(--faster-transition-duration);
-}
-
 .pxd-tree-transition-enter-active > .pxd-tree--clip,
 .pxd-tree-transition-leave-active > .pxd-tree--clip {
   overflow: hidden;

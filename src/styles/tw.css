@@ -414,7 +414,6 @@
 
   --default-transition-duration: var(--duration);
   --default-transition-timing-function: var(--timing-function);
-  --faster-transition-duration: calc(var(--duration) * 0.7);
 
   --z-1: 1;
   --spacing-em: 1em;
@@ -648,11 +647,6 @@
 
 [class*='pxd-'] svg {
   pointer-events: none;
-}
-
-/* Make exit faster than enter */
-[class*='pxd-transition--'][class*='-leave-active'] {
-  transition-duration: var(--faster-transition-duration) !important;
 }
 
 [data-enter-motion='false'][class*='-enter-active'],
