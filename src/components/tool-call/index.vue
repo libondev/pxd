@@ -159,42 +159,40 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <div
-        class="pxd-tool-call--content"
+        class="pxd-tool-call--content gap-4 flex flex-col"
         :class="{
-          'border-t': variant === 'default',
-          'ms-1.5 mbs-1.5 border-l': variant === 'simple',
+          'p-3 border-t': variant === 'default',
+          'ms-1.5 mbs-1.5 ps-3 py-1 border-l': variant === 'simple',
         }"
       >
-        <div class="gap-4 p-3 flex flex-col">
-          <div v-if="inputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
-            <div
-              class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
-            >
-              {{ configProvider.locale.toolCall.input }}
-            </div>
-            <PCodeBlock
-              class="pxd-tool-call--code"
-              :code="inputPayload.text"
-              :language="inputPayload.isJson ? 'json' : undefined"
-              copy-btn="hidden"
-              size="sm"
-            />
+        <div v-if="inputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
+          <div
+            class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
+          >
+            {{ configProvider.locale.toolCall.input }}
           </div>
+          <PCodeBlock
+            class="pxd-tool-call--code"
+            :code="inputPayload.text"
+            :language="inputPayload.isJson ? 'json' : undefined"
+            copy-btn="hidden"
+            size="sm"
+          />
+        </div>
 
-          <div v-if="outputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
-            <div
-              class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
-            >
-              {{ configProvider.locale.toolCall.output }}
-            </div>
-            <PCodeBlock
-              class="pxd-tool-call--code"
-              :code="outputPayload.text"
-              :language="outputPayload.isJson ? 'json' : undefined"
-              copy-btn="hidden"
-              size="sm"
-            />
+        <div v-if="outputPayload.text" class="pxd-tool-call--section gap-2 flex flex-col">
+          <div
+            class="pxd-tool-call--label text-xs font-medium tracking-wide text-foreground-secondary uppercase"
+          >
+            {{ configProvider.locale.toolCall.output }}
           </div>
+          <PCodeBlock
+            class="pxd-tool-call--code"
+            :code="outputPayload.text"
+            :language="outputPayload.isJson ? 'json' : undefined"
+            copy-btn="hidden"
+            size="sm"
+          />
         </div>
       </div>
     </div>
