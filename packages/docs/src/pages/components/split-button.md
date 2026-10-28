@@ -92,6 +92,7 @@ const options = [
 | options | `ListOption[]` | - | Menu items, each needing a `value` for the checked state |
 | disabled | `boolean` | - | Disable the primary button and the dropdown trigger |
 | model-value | `ListOptionSelected['value']` | - | Value of the selected option, exposed to the default slot as `data` |
+| main-button-props | `ButtonProps` | - | Extra props forwarded to the primary button, e.g. `loading`, `icon`, `full-width` |
 | close-on-press-escape | `boolean` | - | Close the dropdown when pressing `Escape` |
 
 ## Events
@@ -99,6 +100,7 @@ const options = [
 | Name | Type | Description |
 | --- | --- | --- |
 | change | `(value: ListModelValue) => void` | Emitted when an option is selected from the dropdown. |
+| main-click | `(value: ListModelValue) => void` | Emitted when the primary button is clicked. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted right after `change` with the selected value. |
 
 ## Slots

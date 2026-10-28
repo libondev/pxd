@@ -40,17 +40,24 @@ const computedSize = computed(() => props.size || configProvider.size)
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
   >
-    <PButton :disabled="disabled" :variant="variant" :shape="shape" :size="computedSize">
+    <PButton
+      :shape="shape"
+      :variant="variant"
+      :size="computedSize"
+      :disabled="disabled"
+      v-bind="mainButtonProps"
+      @click="emits('main-click')"
+    >
       <slot :data="selectedItem" />
     </PButton>
 
     <PButton
-      data-split-button-trigger
-      :disabled="disabled"
-      :variant="variant"
-      :shape="shape"
-      :size="computedSize"
       icon
+      :shape="shape"
+      :variant="variant"
+      :disabled="disabled"
+      :size="computedSize"
+      data-split-button-trigger
     >
       <slot name="icon">
         <ChevronDownIcon />
