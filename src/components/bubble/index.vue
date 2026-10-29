@@ -97,7 +97,7 @@ const { classes: contentClasses } = useTailwindVariant(
       </slot>
     </div>
 
-    <div class="pxd-bubble--wrapper gap-1 flex w-max flex-col">
+    <div class="pxd-bubble--wrapper gap-1 flex flex-col">
       <header
         v-if="header || $slots.header"
         class="pxd-bubble--header gap-1 text-xs flex shrink-0 items-center text-foreground-secondary group-data-[role=user]/bubble:justify-end empty:hidden"
