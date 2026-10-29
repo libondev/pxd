@@ -67,6 +67,7 @@ function updateProgress() {
     progress.value = 1
     status.value = 'confirmed'
     emits('confirm')
+    onTriggerVibrate()
     return
   }
 
@@ -81,7 +82,6 @@ function pauseHold() {
 
   stopProgress()
   status.value = 'canceled'
-  emits('cancel')
 }
 
 function resumeHold() {
@@ -113,7 +113,7 @@ function onPointerDown(event: PointerEvent) {
 }
 
 function onPointerMove(event: PointerEvent) {
-  if (event.pointerId !== activePointerId || !props.cancelable) {
+  if (event.pointerId !== activePointerId) {
     return
   }
 
@@ -137,6 +137,7 @@ function onPointerUp(event: PointerEvent) {
     return
   }
 
+  const heldProgress = progress.value
   const isConfirmed = status.value === 'confirmed'
 
   activePointerId = null
@@ -145,9 +146,11 @@ function onPointerUp(event: PointerEvent) {
   status.value = 'idle'
   progress.value = 0
 
-  emits('release', isConfirmed)
+  if (!isConfirmed) {
+    emits('cancel', heldProgress)
+  }
+
   emits('pointerup', event)
-  onTriggerVibrate()
 }
 
 onBeforeUnmount(stopProgress)

@@ -38,7 +38,7 @@ function sleep(ms: number) {
 }
 
 describe('hold-button', () => {
-  it('should trigger `confirm` and `release` event', async () => {
+  it('should trigger `confirm` and not emit `cancel` afterwards', async () => {
     const wrapper = mount(HoldButton, {
       props: {
         durations: 40,
@@ -52,15 +52,14 @@ describe('hold-button', () => {
 
     release(wrapper)
 
-    expect(wrapper.emitted().release[0]).toEqual([true])
+    expect(wrapper.emitted()).not.toHaveProperty('cancel')
 
     wrapper.unmount()
   })
 
-  it('should pause on leaving, resume on re-entering and release as not confirmed', async () => {
+  it('should pause on leaving and resume on re-entering', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        cancelable: true,
         durations: 100,
       },
     })
@@ -70,8 +69,6 @@ describe('hold-button', () => {
 
     // happy-dom reports a zero-sized rect, so only the origin counts as inside.
     move(wrapper, 100)
-
-    expect(wrapper.emitted()).toHaveProperty('cancel')
 
     const paused = readProgress(wrapper)
 
@@ -87,25 +84,26 @@ describe('hold-button', () => {
 
     release(wrapper)
 
-    expect(wrapper.emitted().release[0]).toEqual([true])
+    expect(wrapper.emitted()).not.toHaveProperty('cancel')
 
     wrapper.unmount()
   })
 
-  it('should release as not confirmed when the pointer leaves and is released', async () => {
+  it('should emit `cancel` with the paused progress when released after leaving', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        cancelable: true,
         durations: 100,
       },
     })
 
     press(wrapper)
     move(wrapper, 100)
+
+    const paused = readProgress(wrapper)
+
     release(wrapper)
 
-    expect(wrapper.emitted()).toHaveProperty('cancel')
-    expect(wrapper.emitted().release[0]).toEqual([false])
+    expect(wrapper.emitted().cancel[0]).toEqual([paused])
     expect(readProgress(wrapper)).toBe(0)
 
     wrapper.unmount()
@@ -121,11 +119,11 @@ describe('hold-button', () => {
     press(wrapper, 1)
     release(wrapper, 2)
 
-    expect(wrapper.emitted()).not.toHaveProperty('release')
+    expect(wrapper.emitted()).not.toHaveProperty('cancel')
 
     release(wrapper, 1)
 
-    expect(wrapper.emitted().release[0]).toEqual([false])
+    expect(wrapper.emitted().cancel[0]).toEqual([0])
 
     wrapper.unmount()
   })

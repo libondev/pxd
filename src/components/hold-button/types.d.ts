@@ -5,14 +5,12 @@ export interface HoldButtonProps {
   disabled?: boolean
   scalable?: boolean
   durations?: number | string
-  cancelable?: boolean
   progressColor?: string
 }
 
 export interface HoldButtonEmits {
-  cancel: []
+  cancel: [progress: number]
   confirm: []
-  release: [confirmed: boolean]
   pointerup: [PointerEvent]
   pointerdown: [PointerEvent]
 }

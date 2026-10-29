@@ -13,22 +13,10 @@ import confetti from 'canvas-confetti'
 function onConfirm() {
   confetti()
 }
-
-function onFinished(isFinished) {
-  if (!isFinished) {
-    return
-  }
-
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.7 },
-  })
-}
 </script>
 
 <template>
-  <PHoldButton @confirm="onConfirm" @release="onFinished"> Hole me </PHoldButton>
+  <PHoldButton @confirm="onConfirm"> Hole me </PHoldButton>
 </template>
 ```
 
@@ -72,35 +60,27 @@ Set `progress-color` to modify the color of the progress bar.
 </template>
 ```
 
-## Cancelable
+## Cancel
 
-After `cancelable` is set, moving the pointer off the button pauses the hold and emits `cancel`; moving back resumes it from where it stopped.
+Releasing the button before the hold completes emits `cancel` with the progress reached at that moment (from `0` to `1`).
 
 ```vue demo
 <script setup>
 import confetti from 'canvas-confetti'
 
-function onCanceled() {
-  alert('canceled')
-}
-
-function onFinished(isFinished) {
-  if (isFinished) {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.7 },
-    })
-  }
+function onCanceled(progress) {
+  alert(`canceled at ${Math.round(progress * 100)}%`)
 }
 </script>
 
 <template>
-  <PHoldButton durations="1000" cancelable @cancel="onCanceled" @release="onFinished">
+  <PHoldButton durations="1000" @confirm="confetti" @cancel="onCanceled">
     Lasts one second
   </PHoldButton>
 </template>
 ```
+
+Moving the pointer off the button pauses the hold; moving it back resumes from where it stopped.
 
 ## Scalable
 
@@ -116,21 +96,19 @@ Set `scalable="false"` to disable zooming when pressed.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| vibrate | `boolean` | `true` | Vibrate the device for 100 ms after release |
+| vibrate | `boolean` | `true` | Vibrate the device for 100 ms when the hold completes |
 | disabled | `boolean` | - | Disable the button and ignore pointer interaction |
 | scalable | `boolean` | `true` | Scale the button down while it is pressed |
 | durations | `number \| string` | - | Hold time in `ms` before confirm, defaults to `2000` |
-| cancelable | `boolean` | - | Pause the hold when the pointer moves off the button |
 | progress-color | `string` | - | CSS colour used for the filling progress overlay |
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| cancel | `() => void` | Emitted when a holding pointer leaves the button while `cancelable` is set. |
+| cancel | `(progress: number) => void` | Emitted when the pointer is released before the hold completes. |
 | confirm | `() => void` | Emitted when the progress overlay has fully filled up. |
-| release | `(confirmed: boolean) => void` | Emitted when the pointer is released or cancelled after a press. |
-| pointerup | `(ev: PointerEvent) => void` | Emitted together with `release` when the button receives a pointer release after a press. |
+| pointerup | `(ev: PointerEvent) => void` | Emitted when the button receives a pointer release after a press. |
 | pointerdown | `(ev: PointerEvent) => void` | Emitted when the button is pressed. |
 
 ## Slots
