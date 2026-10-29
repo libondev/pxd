@@ -1,3 +1,5 @@
+import type { ComponentText } from '../../types/shared/props'
+
 export type ShimmerTextVariant = 'sunrise' | 'bubble' | 'tonic' | 'spring' | 'twilight'
 
 export interface ShimmerGradientStop {
@@ -10,5 +12,5 @@ export interface ShimmerTextProps {
   color?: string | ShimmerGradientStop[]
   variant?: ShimmerTextVariant
   disabled?: boolean
-  durations?: number
+  duration?: number
 }

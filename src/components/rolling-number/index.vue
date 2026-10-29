@@ -13,7 +13,7 @@ defineOptions({
 const props = withDefaults(defineProps<RollingNumberProps>(), {
   value: 0,
   mode: 'tween',
-  durations: 2000,
+  duration: 2000,
   thousands: false,
   animateOnMount: true,
 })
@@ -66,7 +66,7 @@ const scrollChars = computed(() => {
 })
 
 const scrollStyle = computed(() => ({
-  '--pxd-rolling-duration': `${Math.max(props.durations, 0)}ms`,
+  '--pxd-rolling-duration': `${Math.max(props.duration, 0)}ms`,
 }))
 
 function formatNumber(rawValue: number): string {
@@ -112,7 +112,7 @@ function animate(timestamp: number) {
   }
 
   const elapsed = timestamp - startTime
-  const progress = Math.min(elapsed / props.durations, 1)
+  const progress = Math.min(elapsed / props.duration, 1)
   const eased = easeOutCubic(progress)
 
   displayValue.value = startValue + (targetValue - startValue) * eased
@@ -134,7 +134,7 @@ function startTweenAnimation(target: number) {
   targetValue = target
   startTime = -1
 
-  if (props.durations <= 0) {
+  if (props.duration <= 0) {
     displayValue.value = target
     emits('finish')
     return
@@ -149,7 +149,7 @@ function scheduleScrollFinish() {
   finishTimer = setTimeout(() => {
     finishTimer = null
     emits('finish')
-  }, props.durations)
+  }, props.duration)
 }
 
 async function startScrollAnimation(target: number, fromMasked = false) {
@@ -157,7 +157,7 @@ async function startScrollAnimation(target: number, fromMasked = false) {
 
   const targetText = formatNumber(target)
 
-  if (props.durations <= 0) {
+  if (props.duration <= 0) {
     scrollTransition.value = false
     scrollText.value = null
     displayValue.value = target

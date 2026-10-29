@@ -24,7 +24,7 @@ interface Options {
   action?: Action
   message?: string | VNode
   promise?: Promise<unknown>
-  durations?: number
+  duration?: number
   closeable?: boolean
   error?: PromiseMessageHandler
   success?: PromiseMessageHandler
@@ -43,7 +43,7 @@ interface Options {
 | `options.action` | `Action` | Action configuration for the message |
 | `options.message` | `string \| VNode` | The message content (alternative to `msg`) |
 | `options.promise` | `Promise<unknown>` | Promise that triggers message lifecycle |
-| `options.durations` | `number` | Display duration in milliseconds |
+| `options.duration` | `number` | Display duration in milliseconds |
 | `options.closeable` | `boolean` | Whether the message is closeable |
 | `options.error` | `PromiseMessageHandler` | Handler for promise rejection |
 | `options.success` | `PromiseMessageHandler` | Handler for promise resolution |

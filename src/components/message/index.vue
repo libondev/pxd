@@ -145,7 +145,7 @@ function handleCreateMessage(data: MessageItemConfig) {
 
   if (isPromiseLoading) {
     handlePromiseMessage(message)
-  } else if (message.durations) {
+  } else if (message.duration) {
     startTimer(message)
   }
 }

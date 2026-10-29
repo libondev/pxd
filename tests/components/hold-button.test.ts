@@ -41,7 +41,7 @@ describe('hold-button', () => {
   it('should trigger `confirm` and not emit `cancel` afterwards', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 40,
+        duration: 40,
       },
     })
 
@@ -60,7 +60,7 @@ describe('hold-button', () => {
   it('should pause on leaving and resume on re-entering', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 100,
+        duration: 100,
       },
     })
 
@@ -92,7 +92,7 @@ describe('hold-button', () => {
   it('should emit `cancel` with the paused progress when released after leaving', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 100,
+        duration: 100,
       },
     })
 
@@ -112,7 +112,7 @@ describe('hold-button', () => {
   it('should ignore releases of other pointers', () => {
     const wrapper = mount(HoldButton, {
       props: {
-        durations: 100,
+        duration: 100,
       },
     })
 
@@ -153,10 +153,10 @@ describe('hold-button', () => {
     wrapper.unmount()
   })
 
-  it('should fall back to the default duration when `durations` is not a positive number', async () => {
+  it('should fall back to the default duration when `duration` is not a positive number', async () => {
     const wrapper = mount(HoldButton, {
       props: {
-        durations: '',
+        duration: 0,
       },
     })
 

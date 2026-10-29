@@ -1,7 +1,7 @@
 export interface RollingNumberProps {
   mode?: 'tween' | 'scroll'
   value?: number | string
-  durations?: number
+  duration?: number
   thousands?: boolean
   animateOnMount?: boolean
 }

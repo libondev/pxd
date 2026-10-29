@@ -11,14 +11,14 @@ describe('countdown', () => {
     wrapper.unmount()
   })
 
-  it('should accept durations prop', () => {
+  it('should accept duration prop', () => {
     const wrapper = mount(Countdown, {
       props: {
-        durations: 5000,
+        duration: 5000,
       },
     })
 
-    expect(wrapper.props('durations')).toBe(5000)
+    expect(wrapper.props('duration')).toBe(5000)
 
     wrapper.unmount()
   })
@@ -58,7 +58,7 @@ describe('countdown', () => {
   it('should render scoped slot', () => {
     const wrapper = mount(Countdown, {
       props: {
-        durations: 5000,
+        duration: 5000,
       },
       slots: {
         default: '<template #default="{ times }"><span>{{ times }}</span></template>',

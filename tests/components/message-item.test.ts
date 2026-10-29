@@ -8,7 +8,7 @@ describe('message-item', () => {
     id: 'test-1',
     type: 'info',
     message: 'Test message',
-    durations: 3000,
+    duration: 3000,
   } satisfies MessageItemConfig
 
   it('renders properly', () => {

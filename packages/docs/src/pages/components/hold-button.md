@@ -20,15 +20,13 @@ function onConfirm() {
 </template>
 ```
 
-## Durations
+## Duration
 
-Set the `durations` property to determine how long it will trigger.
-
-It receives a number or a number of string type (if it cannot be converted by `Number()`, the default value will be 2000).
+Set the `duration` property to determine how long it will trigger.
 
 ```vue demo
 <template>
-  <PHoldButton :durations="1000"> Lasts one second </PHoldButton>
+  <PHoldButton ::duration="1000"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -56,7 +54,7 @@ Set `progress-color` to modify the color of the progress bar.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1000" progress-color="var(--color-red-500)"> Lasts one second </PHoldButton>
+  <PHoldButton :duration="1000" progress-color="var(--color-red-500)"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -74,7 +72,7 @@ function onCanceled(progress) {
 </script>
 
 <template>
-  <PHoldButton durations="1000" @confirm="confetti" @cancel="onCanceled">
+  <PHoldButton :duration="1000" @confirm="confetti" @cancel="onCanceled">
     Lasts one second
   </PHoldButton>
 </template>
@@ -88,7 +86,7 @@ Set `scalable="false"` to disable zooming when pressed.
 
 ```vue demo
 <template>
-  <PHoldButton durations="1000" :scalable="false"> Lasts one second </PHoldButton>
+  <PHoldButton :duration="1000" :scalable="false"> Lasts one second </PHoldButton>
 </template>
 ```
 
@@ -99,7 +97,7 @@ Set `scalable="false"` to disable zooming when pressed.
 | vibrate | `boolean` | `true` | Vibrate the device for 100 ms when the hold completes |
 | disabled | `boolean` | - | Disable the button and ignore pointer interaction |
 | scalable | `boolean` | `true` | Scale the button down while it is pressed |
-| durations | `number \| string` | - | Hold time in `ms` before confirm, defaults to `2000` |
+| duration | `number` | - | Hold time in `ms` before confirm, defaults to `2000` |
 | progress-color | `string` | - | CSS colour used for the filling progress overlay |
 
 ## Events

@@ -103,7 +103,7 @@ function addMessage() {
   useMessage("Now it's:" + Date.now(), {
     class: 'bg-blue-100 border border-dashed border-blue-600 font-mono',
     closeable: true,
-    durations: 5000,
+    duration: 5000,
     group: 'max',
   })
 }

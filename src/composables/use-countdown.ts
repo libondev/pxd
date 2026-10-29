@@ -32,7 +32,7 @@ export interface CountdownOptions {
    * The duration of the countdown.
    * @default 0
    */
-  durations?: number
+  duration?: number
   /**
    * The precision of the countdown.
    * @default 0
@@ -69,19 +69,19 @@ export function useCountdown<T extends Record<string, any>>(
   const timeRef = shallowRef<number>(0)
 
   const totalDuration = computed(() => {
-    const { endTime, durations } = props
+    const { endTime, duration } = props
 
     if (endTime) {
       const end = formatTime(endTime) - Date.now()
       return Math.max(0, end)
     }
 
-    // In count-up mode with no durations, count up indefinitely.
-    if (props.inverted && [undefined, 0].includes(durations)) {
+    // In count-up mode with no duration, count up indefinitely.
+    if (props.inverted && [undefined, 0].includes(duration)) {
       return Infinity
     }
 
-    return Math.max(0, formatTime(durations ?? 0))
+    return Math.max(0, formatTime(duration ?? 0))
   })
 
   const isInfiniteCountup = computed(() => props.inverted && totalDuration.value === Infinity)
@@ -223,7 +223,7 @@ export function useCountdown<T extends Record<string, any>>(
   )
 
   const unwatchTimes = watch(
-    () => [props.durations, props.endTime, props.startAt],
+    () => [props.duration, props.endTime, props.startAt],
     () => {
       setCurrent()
       isFinished = false

@@ -24,7 +24,7 @@ interface CountdownOptions {
   startAt?: number
   endTime?: number
   autoReset?: boolean
-  durations?: number
+  duration?: number
   precision?: number
   millisecond?: boolean
   intuitive?: boolean

@@ -4,7 +4,7 @@ export interface HoldButtonProps {
   vibrate?: boolean
   disabled?: boolean
   scalable?: boolean
-  durations?: number | string
+  duration?: number
   progressColor?: string
 }
 

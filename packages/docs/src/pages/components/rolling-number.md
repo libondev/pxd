@@ -18,11 +18,11 @@ Display a number with a rolling animation effect, supporting decimals and thousa
 </template>
 ```
 
-## Durations
+## Duration
 
 ```vue demo
 <template>
-  <PRollingNumber :value="999" :durations="5000" />
+  <PRollingNumber :value="999" :duration="5000" />
 </template>
 ```
 
@@ -32,7 +32,7 @@ Numbers between different fonts may shake when they change, and `tabular-nums` c
 
 ```vue demo
 <template>
-  <PRollingNumber value="999+ Users" class="tabular-nums" :durations="5000" />
+  <PRollingNumber value="999+ Users" class="tabular-nums" :duration="5000" />
 </template>
 ```
 
@@ -87,7 +87,7 @@ function changeValue() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | value | `number \| string` | `0` | Target number. A string may include a numeric prefix plus unit/suffix (e.g. `"999+ Users"`). |
-| durations | `number` | `2000` | Animation duration in milliseconds. |
+| duration | `number` | `2000` | Animation duration in milliseconds. |
 | animateOnMount | `boolean` | `true` | Whether to play the animation on first mount. When `false`, the initial value is shown as-is; later value changes still animate. |
 | thousands | `boolean` | `false` | Format the integer part with thousand separators. |
 | mode | `'tween' \| 'scroll'` | `'tween'` | `tween` interpolates the value; `scroll` rolls each digit |

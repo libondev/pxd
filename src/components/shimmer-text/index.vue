@@ -9,7 +9,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ShimmerTextProps>(), {
   disabled: false,
-  durations: 1500,
+  duration: 1500,
   color: 'var(--color-gray-100)',
 })
 
@@ -68,7 +68,7 @@ const shimmerStyle = computed(() => {
 
   return {
     backgroundImage,
-    '--shimmer-total-duration': `${props.durations}ms`,
+    '--shimmer-total-duration': `${props.duration}ms`,
   }
 })
 

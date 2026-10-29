@@ -76,7 +76,7 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
     message._startedAtMs = Date.now()
 
     if (isNil(message._remainingMs)) {
-      message._remainingMs = message.durations
+      message._remainingMs = message.duration
     }
 
     clearTimer(message)
@@ -87,7 +87,7 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
   }
 
   function pauseMessage(message: MessageItemConfig) {
-    if (!message.durations || message.durations <= 0) {
+    if (!message.duration || message.duration <= 0) {
       return
     }
 
@@ -99,12 +99,12 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
     clearTimer(message)
 
     const elapsed = Date.now() - message._startedAtMs!
-    const remaining = message._remainingMs ?? message.durations
+    const remaining = message._remainingMs ?? message.duration
     message._remainingMs = Math.max(0, remaining - elapsed)
   }
 
   function resumeMessage(message: MessageItemConfig) {
-    if (!message.durations || message.durations <= 0) {
+    if (!message.duration || message.duration <= 0) {
       return
     }
 
@@ -156,8 +156,8 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
       // it may have been closed or cleared while the promise was pending
       const isAlive = toValue(messages).includes(message)
 
-      if (isAlive && message.durations && message.durations > 0) {
-        message._remainingMs = message.durations
+      if (isAlive && message.duration && message.duration > 0) {
+        message._remainingMs = message.duration
         startTimer(message)
       }
     }

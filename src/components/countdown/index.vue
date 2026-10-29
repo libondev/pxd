@@ -12,7 +12,7 @@ defineOptions({
 const props = withDefaults(defineProps<CountdownProps>(), {
   active: false,
   endTime: 0,
-  durations: 0,
+  duration: 0,
   precision: 0,
   autoReset: true,
   millisecond: true,

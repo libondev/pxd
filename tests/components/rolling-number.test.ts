@@ -24,7 +24,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: 42,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -37,7 +37,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: -100,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -50,7 +50,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: 3.14,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -64,7 +64,7 @@ describe('rolling-number', () => {
       props: {
         value: 1234567,
         thousands: true,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -78,7 +78,7 @@ describe('rolling-number', () => {
       props: {
         value: 1234567.89,
         thousands: true,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -91,7 +91,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: 100,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -105,7 +105,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: 50,
-        durations: 0,
+        duration: 0,
       },
     })
 
@@ -120,7 +120,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: -100,
-        durations: 1000,
+        duration: 1000,
       },
     })
 
@@ -140,7 +140,7 @@ describe('rolling-number', () => {
     const wrapper = mount(RollingNumber, {
       props: {
         value: 99,
-        durations: 0,
+        duration: 0,
       },
     })
 

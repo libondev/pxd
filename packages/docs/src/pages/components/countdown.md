@@ -9,7 +9,7 @@ Do something when you arrive at the appointed time.
 import { ref } from 'vue'
 
 const active = ref(false)
-const durations = ref(5000)
+const duration = ref(5000)
 
 function resetStatus() {
   active.value = false
@@ -20,7 +20,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown :active="active" :durations="durations" @finish="resetStatus" />
+    <PCountdown :active="active" :duration="duration" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -32,7 +32,7 @@ function resetStatus() {
 import { ref } from 'vue'
 
 const active = ref(false)
-const durations = ref(86400000)
+const duration = ref(86400000)
 
 function resetStatus() {
   active.value = false
@@ -46,28 +46,28 @@ function resetStatus() {
     <PCountdown
       :active="active"
       format="DD HH:mm:ss"
-      :durations="durations"
+      :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
       format="DD HH:mm:ss.S"
-      :durations="durations"
+      :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
       format="DD HH:mm:ss.SS"
-      :durations="durations"
+      :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
       :active="active"
       format="DD HH:mm:ss.SSS"
-      :durations="durations"
+      :duration="duration"
       @finish="resetStatus"
     />
   </PStack>
@@ -99,7 +99,7 @@ function resetStatus() {
       ref="countdownRef"
       intuitive
       :active="active"
-      :durations="5000"
+      :duration="5000"
       format="HH:mm:ss.SSS"
       @finish="resetStatus"
     />
@@ -131,7 +131,7 @@ function resetStatus() {
 
     <PButton @click="reset">Reset</PButton>
 
-    <PCountdown ref="countdownRef" :active="active" :durations="10000" @finish="resetStatus" />
+    <PCountdown ref="countdownRef" :active="active" :duration="10000" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -183,7 +183,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown :active="active" :millisecond="false" :durations="endTime" @finish="resetStatus" />
+    <PCountdown :active="active" :millisecond="false" :duration="endTime" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -211,7 +211,7 @@ function resetStatus() {
       :active="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
-      :durations="10000"
+      :duration="10000"
       @finish="resetStatus"
     />
 
@@ -220,7 +220,7 @@ function resetStatus() {
       :active="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
-      :durations="10000"
+      :duration="10000"
       @finish="resetStatus"
     />
   </PStack>
@@ -229,7 +229,7 @@ function resetStatus() {
 
 ## Invert
 
-Setting the `inverted` property can be converted into positive timing, and the `durations` passed in is the end time. If it is not set, it will not stop automatically.
+Setting the `inverted` property can be converted into positive timing, and the `duration` passed in is the end time. If it is not set, it will not stop automatically.
 
 ```vue demo
 <script setup>
@@ -246,9 +246,9 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown inverted :active="active" :durations="5000" @finish="resetStatus" />
+    <PCountdown inverted :active="active" :duration="5000" @finish="resetStatus" />
 
-    <!-- timers without durations will not stop voluntarily -->
+    <!-- timers without duration will not stop voluntarily -->
     <PCountdown inverted :active="active" :start-at="3000" />
   </PStack>
 </template>
@@ -268,7 +268,7 @@ const active = ref(false)
 
 <template>
   <div class="h-16">
-    <PCountdown intuitive :active="active" :durations="5000" @finish="active = false">
+    <PCountdown intuitive :active="active" :duration="5000" @finish="active = false">
       <template #default="{ times }">
         <PButton variant="primary" class="relative z-10 font-mono" @click="active = !active">
           <template #prefix>

@@ -27,9 +27,7 @@ const status = shallowRef<HoldButtonStatus>('idle')
 const progress = shallowRef(0)
 
 function getDuration() {
-  const value = Number(props.durations)
-
-  return Number.isFinite(value) && value > 0 ? value : DEFAULT_DURATION
+  return props.duration && props.duration > 0 ? props.duration : DEFAULT_DURATION
 }
 
 function onTriggerVibrate() {
