@@ -196,7 +196,7 @@ defineExpose({
         class="pxd-approval-card--icon size-8 flex shrink-0 items-center justify-center rounded-md border"
         :class="iconClass"
       >
-        <Component :is="statusIcon" class="size-4" />
+        <Component :is="statusIcon" class="size-em" />
       </div>
 
       <div class="min-w-0 flex-1">

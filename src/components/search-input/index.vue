@@ -48,9 +48,9 @@ defineExpose(useForwardRefExpose(inputRef))
   >
     <template #prefix>
       <div class="pxd-search-input--prefix-icon ps-3">
-        <LoaderCircleIcon v-if="loading" class="size-4 motion-safe:animate-spin" />
+        <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin size-sm" />
         <slot v-else name="prefix">
-          <MagnifyingGlassIcon class="size-4" />
+          <MagnifyingGlassIcon class="size-sm" />
         </slot>
       </div>
     </template>

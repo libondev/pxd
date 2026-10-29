@@ -284,7 +284,7 @@ onBeforeUnmount(() => {
         aria-label="Scroll tabs left"
         @click="scrollTabs('prev')"
       >
-        <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
+        <ChevronRightIcon class="size-em rotate-180" aria-hidden="true" />
       </button>
 
       <div
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
         aria-label="Scroll tabs right"
         @click="scrollTabs('next')"
       >
-        <ChevronRightIcon class="size-4" aria-hidden="true" />
+        <ChevronRightIcon class="size-em" aria-hidden="true" />
       </button>
     </div>
 

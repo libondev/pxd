@@ -45,14 +45,14 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
       }"
       @click.prevent="onToggleClick"
     >
-      <BrainIcon class="size-3 shrink-0" />
+      <BrainIcon class="size-em shrink-0" />
 
       <PShimmerText class="pxd-reasoning--title leading-inherit" :disabled="!streaming">
         {{ title ?? configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
       </PShimmerText>
 
       <ChevronRightIcon
-        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        class="size-em shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
         :class="{
           'rotate-90 opacity-100': isOpen,
           'ml-auto': variant === 'default',

@@ -124,14 +124,14 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
       class="pxd-tool-call--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
       :class="{
         'p-3 font-medium text-foreground': variant === 'default',
-        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
+      'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
           variant === 'simple',
       }"
       @click.prevent="onToggleClick"
     >
       <Component
         :is="STATUS_ICON[status]"
-        class="size-3 shrink-0"
+        class="size-em shrink-0"
         :class="{
           'text-red-900': status === 'error',
           'text-green-900': status === 'completed',
@@ -144,7 +144,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
       </span>
 
       <ChevronRightIcon
-        class="size-3 shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        class="size-em shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
         :class="{
           'rotate-90 opacity-100': isOpen,
           'ml-auto': variant === 'default',

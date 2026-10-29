@@ -81,7 +81,7 @@ onMounted(() => {
     <Component
       :is="TYPE_ICONS[itemData.type]"
       v-if="itemData.type"
-      class="pxd-message--icon me-2 size-4 h-lh shrink-0"
+      class="pxd-message--icon me-2 size-em h-lh shrink-0"
       :class="itemData.type"
     />
 

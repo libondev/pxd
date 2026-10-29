@@ -371,7 +371,7 @@ defineExpose({
             :class="CONTROL_CLASS"
             @click="close"
           >
-            <CrossIcon class="size-4" />
+            <CrossIcon class="size-em" />
           </button>
 
           <button
@@ -400,7 +400,7 @@ defineExpose({
             class="bottom-4 p-1 gap-0.5 bg-black/50 backdrop-blur-sm absolute left-1/2 flex -translate-x-1/2 items-center rounded-lg"
           >
             <button type="button" aria-label="Zoom out" :class="CONTROL_CLASS" @click="zoomOut">
-              <MagnifyingGlassMinusIcon class="size-4" />
+              <MagnifyingGlassMinusIcon class="size-em" />
             </button>
 
             <span data-image-preview-zoom class="min-w-12 text-sm text-center tabular-nums">
@@ -408,19 +408,19 @@ defineExpose({
             </span>
 
             <button type="button" aria-label="Zoom in" :class="CONTROL_CLASS" @click="zoomIn">
-              <MagnifyingGlassPlusIcon class="size-4" />
+              <MagnifyingGlassPlusIcon class="size-em" />
             </button>
 
             <button type="button" aria-label="Rotate" :class="CONTROL_CLASS" @click="rotate">
-              <RotateClockwiseIcon class="size-4" />
+              <RotateClockwiseIcon class="size-em" />
             </button>
 
             <button type="button" aria-label="Reset" :class="CONTROL_CLASS" @click="reset">
-              <RefreshCounterClockwiseIcon class="size-4" />
+              <RefreshCounterClockwiseIcon class="size-em" />
             </button>
 
             <button type="button" aria-label="Download" :class="CONTROL_CLASS" @click="download">
-              <DownloadIcon class="size-4" />
+              <DownloadIcon class="size-em" />
             </button>
           </div>
         </div>

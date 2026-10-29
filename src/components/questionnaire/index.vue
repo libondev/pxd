@@ -49,7 +49,6 @@ const SIZE_CLASSES: Record<
     footer: string
     answers: string
     skipped: string
-    icon: string
   }
 > = {
   sm: {
@@ -58,7 +57,6 @@ const SIZE_CLASSES: Record<
     footer: 'p-2',
     answers: 'px-3! py-2!',
     skipped: 'h-10 px-2.5',
-    icon: 'size-3',
   },
   md: {
     header: 'px-2.5 py-2',
@@ -66,7 +64,6 @@ const SIZE_CLASSES: Record<
     footer: 'px-2.5 py-2',
     answers: 'px-3.5! py-2.5!',
     skipped: 'h-11 px-3',
-    icon: 'size-3',
   },
   lg: {
     header: 'px-3 py-2.5',
@@ -74,7 +71,6 @@ const SIZE_CLASSES: Record<
     footer: 'px-3 py-2.5',
     answers: 'px-4! py-3!',
     skipped: 'h-12 px-3',
-    icon: 'size-4',
   },
 }
 
@@ -345,7 +341,7 @@ watch(
           :class="[SIZE_CLASSES[computedSize].header, { 'border-b': detailsOpen }]"
           @click.prevent="onToggleClick"
         >
-          <QuestionIcon class="font-medium shrink-0" :class="SIZE_CLASSES[computedSize].icon" />
+          <QuestionIcon class="font-medium size-em shrink-0" />
 
           <span class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate">
             {{ currentQuestion.question }}

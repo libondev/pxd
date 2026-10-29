@@ -162,7 +162,7 @@ watch(
         aria-label="Previous year"
         @click="changeYear(-1)"
       >
-        <ChevronDoubleLeftIcon class="size-4" aria-hidden="true" />
+        <ChevronDoubleLeftIcon class="size-em" aria-hidden="true" />
       </PButton>
       <PButton
         icon
@@ -172,7 +172,7 @@ watch(
         aria-label="Previous month"
         @click="changeMonth(-1)"
       >
-        <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
+        <ChevronRightIcon class="size-em rotate-180" aria-hidden="true" />
       </PButton>
 
       <PButton size="xs" class="px-0" @click="selectToday">
@@ -187,7 +187,7 @@ watch(
         aria-label="Next month"
         @click="changeMonth(1)"
       >
-        <ChevronRightIcon class="size-4" aria-hidden="true" />
+        <ChevronRightIcon class="size-em" aria-hidden="true" />
       </PButton>
       <PButton
         icon
@@ -197,7 +197,7 @@ watch(
         aria-label="Next year"
         @click="changeYear(1)"
       >
-        <ChevronDoubleRightIcon class="size-4" aria-hidden="true" />
+        <ChevronDoubleRightIcon class="size-em" aria-hidden="true" />
       </PButton>
     </div>
 

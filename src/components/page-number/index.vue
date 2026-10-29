@@ -145,7 +145,7 @@ watch(
       :aria-label="configProvider.locale.pagination.prev"
       @click="setPage(modelValue - 1)"
     >
-      <ChevronRightIcon class="size-4 rotate-180" aria-hidden="true" />
+      <ChevronRightIcon class="size-em rotate-180" aria-hidden="true" />
     </button>
 
     <template v-for="item in pageItems" :key="item">
@@ -211,7 +211,7 @@ watch(
       :aria-label="configProvider.locale.pagination.next"
       @click="setPage(modelValue + 1)"
     >
-      <ChevronRightIcon class="size-4" aria-hidden="true" />
+      <ChevronRightIcon class="size-em" aria-hidden="true" />
     </button>
   </nav>
 </template>

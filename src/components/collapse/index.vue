@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
       </h3>
 
       <ChevronRightIcon
-        class="size-4 shrink-0 motion-safe:transition-transform"
+        class="size-em shrink-0 motion-safe:transition-transform"
         :class="{ 'rotate-90': isOpen }"
       />
     </summary>

@@ -260,7 +260,7 @@ onUnmounted(() => {
       class="pxd-code-block--header gap-2 ps-3 pe-0.75 h-9 flex items-center rounded-t-lg border bg-background-200"
     >
       <slot name="header">
-        <FileIcon class="size-4 shrink-0 text-gray-900" aria-hidden="true" />
+        <FileIcon class="size-em shrink-0 text-gray-900" aria-hidden="true" />
         <span class="min-w-0 truncate text-[0.8125rem] text-gray-900">{{ title }}</span>
       </slot>
 

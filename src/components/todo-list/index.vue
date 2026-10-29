@@ -48,34 +48,26 @@ const SIZE_CLASSES: Record<
   {
     header: string
     list: string
-    indicator: string
     marker: string
-    icon: string
     meta: string
   }
 > = {
   sm: {
     header: 'p-2',
     list: 'py-2 ps-2 gap-1',
-    indicator: 'size-3.5',
     marker: 'p-0.75',
-    icon: 'size-3',
     meta: 'text-xs',
   },
   md: {
     header: 'px-2.5 py-2',
     list: 'py-2 ps-2 gap-1.5',
-    indicator: 'size-4',
     marker: 'p-1',
-    icon: 'size-3',
     meta: 'text-sm',
   },
   lg: {
     header: 'px-3 py-2.5',
     list: 'py-3 ps-3 gap-2',
-    indicator: 'size-5',
     marker: 'p-1.5',
-    icon: 'size-4',
     meta: 'text-base',
   },
 }
@@ -270,7 +262,7 @@ defineExpose({
       "
       @click.prevent="onToggleClick"
     >
-      <ListUnorderedIcon class="shrink-0" :class="SIZE_CLASSES[computedSize].icon" />
+      <ListUnorderedIcon class="size-em shrink-0" />
 
       <slot
         name="header"
@@ -294,15 +286,12 @@ defineExpose({
       </slot>
 
       <ChevronRightIcon
-        class="shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
-        :class="[
-          SIZE_CLASSES[computedSize].icon,
-          {
-            'rotate-90 opacity-100': isOpen,
-            'ml-auto': variant === 'default',
-            'opacity-0 group-hover:opacity-100': variant === 'simple',
-          },
-        ]"
+        class="size-em shrink-0 text-foreground-secondary motion-safe:transition-transform-opacity"
+        :class="{
+          'rotate-90 opacity-100': isOpen,
+          'ml-auto': variant === 'default',
+          'opacity-0 group-hover:opacity-100': variant === 'simple',
+        }"
       />
     </summary>
 
@@ -356,8 +345,7 @@ defineExpose({
             @click="onItemClick(index, item)"
           >
             <button
-              class="pxd-todo-list--indicator p-0 block shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
-              :class="SIZE_CLASSES[computedSize].indicator"
+              class="pxd-todo-list--indicator p-0 block size-em shrink-0 border-none bg-transparent leading-none text-inherit self-focus-ring"
               type="button"
               :disabled="readonly || item.disabled"
               :aria-label="item.content == null ? undefined : String(item.content)"

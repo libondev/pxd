@@ -37,7 +37,7 @@ const breadcrumbContext = useBreadcrumbContext()
       <Component
         v-if="breadcrumbContext.separatorIcon"
         :is="breadcrumbContext.separatorIcon"
-        class="size-3"
+        class="size-em"
       />
       <template v-else>{{ breadcrumbContext.separator }}</template>
     </span>

@@ -36,7 +36,7 @@ function handleThumbDown() {
     class="pxd-feedback-bar p-1.5 gap-1 flex w-full max-w-full items-center overflow-hidden rounded-xl border bg-background-100"
     v-bind="$attrs"
   >
-    <InformationIcon aria-hidden="true" class="size-3 ms-2.5 me-1 shrink-0 text-gray-900" />
+    <InformationIcon aria-hidden="true" class="ms-2.5 me-1 size-em shrink-0 text-gray-900" />
 
     <span class="pxd-feedback-bar--label text-sm flex-1 shrink-0 text-foreground">
       {{ label }}
@@ -51,7 +51,7 @@ function handleThumbDown() {
       :title="configProvider.locale.feedback.thumbUp"
       @click="handleThumbUp"
     >
-      <ThumbUpIcon class="size-3" />
+      <ThumbUpIcon class="size-em" />
     </PButton>
 
     <PButton
@@ -63,7 +63,7 @@ function handleThumbDown() {
       :title="configProvider.locale.feedback.thumbDown"
       @click="handleThumbDown"
     >
-      <ThumbDownIcon class="size-3" />
+      <ThumbDownIcon class="size-em" />
     </PButton>
 
     <PButton
@@ -75,7 +75,7 @@ function handleThumbDown() {
       :title="configProvider.locale.feedback.close"
       @click="handleClose"
     >
-      <CrossIcon class="size-3" />
+      <CrossIcon class="size-em" />
     </PButton>
   </div>
 </template>
