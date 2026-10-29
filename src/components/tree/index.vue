@@ -736,7 +736,7 @@ defineExpose({
       ref="containerRef"
       role="tree"
       tabindex="0"
-      class="pxd-tree m-0 relative w-full max-w-full rounded-inherit bg-background-100 outline-none"
+      class="pxd-tree m-0 relative w-full max-w-full rounded-inherit outline-none"
       :class="{ 'min-h-22': loading && !rows.length }"
       :style="containerStyle"
       :aria-busy="loading"
