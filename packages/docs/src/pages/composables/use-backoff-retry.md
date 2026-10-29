@@ -7,7 +7,16 @@ Native `fetch` does not reject on HTTP 4xx/5xx. Throw an error that carries a `s
 ## Exports
 
 ```ts
+// from 'pxd/composables'
 function useBackoffRetry(defaultConfig?: BackoffRetryConfig): UseBackoffRetryReturn
+```
+
+```ts
+// from 'pxd/utils/backoff-retry' — no Vue dependency
+function backoffRetry<T>(
+  fn: (signal: AbortSignal) => Promise<T>,
+  config?: BackoffRetryConfig,
+): Promise<T>
 function isRetryableError(error: unknown): boolean
 ```
 
@@ -91,3 +100,25 @@ const { retry } = useBackoffRetry({
 ```
 
 `isRetryableError` treats 429 / 408 / 5xx, common network codes (`ECONNRESET`, `ETIMEDOUT`, …), Axios `ERR_NETWORK` / `ERR_BAD_RESPONSE`, and browser `TypeError` fetch failures as retryable.
+
+### Pure function
+
+`backoffRetry` is the scope-free variant of `retry()` — same engine and config, no effect scope, no Vue dependency (safe in Node / Electron main). Map any failure domain (e.g. AI tool-call results) to a throw inside `fn`, then decide via `retryable`.
+
+```ts
+import { backoffRetry } from 'pxd/utils/backoff-retry'
+
+const output = await backoffRetry(
+  async (signal) => {
+    const result = await runTool(call, { signal })
+    if (result.isError) {
+      throw Object.assign(new Error(result.content), { tool: call.name })
+    }
+    return result
+  },
+  {
+    maxRetries: 2,
+    retryable: (error) => (error as { tool?: string }).tool === call.name,
+  },
+)
+```

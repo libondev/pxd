@@ -1,29 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { isRetryableError, useBackoffRetry } from '../../src/composables/use-backoff-retry'
+import { useBackoffRetry } from '../../src/composables/use-backoff-retry'
 import { useSetupWrapper } from '../helpers/setup'
-
-describe('isRetryableError', () => {
-  it('retries 429 / 408 / 5xx', () => {
-    expect(isRetryableError({ status: 429 })).toBe(true)
-    expect(isRetryableError({ statusCode: 408 })).toBe(true)
-    expect(isRetryableError({ response: { status: 503 } })).toBe(true)
-    expect(isRetryableError({ status: 400 })).toBe(false)
-  })
-
-  it('retries network codes along cause chain and breaks cycles', () => {
-    const a: any = { code: 'ECONNRESET' }
-    const b: any = { cause: a }
-    a.cause = b
-
-    expect(isRetryableError(b)).toBe(true)
-    expect(isRetryableError({ code: 'ERR_NETWORK' })).toBe(true)
-  })
-
-  it('retries browser fetch TypeError network failures', () => {
-    expect(isRetryableError(new TypeError('Failed to fetch'))).toBe(true)
-    expect(isRetryableError(new TypeError('something else'))).toBe(false)
-  })
-})
 
 describe('useBackoffRetry', () => {
   beforeEach(() => {
