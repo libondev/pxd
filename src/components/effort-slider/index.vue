@@ -485,7 +485,7 @@ onBeforeUnmount(() => {
     width: var(--p-size);
     height: var(--p-size);
     border-radius: 50%;
-    background-color: #ccc;
+    background-color: var(--color-background-100);
     transform: translate(-50%, -50%);
     opacity: var(--p-opacity);
   }
