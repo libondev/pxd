@@ -724,6 +724,7 @@ defineExpose({
     <div v-if="filterable" data-tree-search class="pxd-tree--search mbe-1">
       <slot name="search">
         <PSearchInput
+          clearable
           :model-value="searchValue"
           :placeholder="searchPlaceholder"
           :loading="loading || searchPending"
