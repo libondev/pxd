@@ -20,7 +20,7 @@ interface Options {
   action?: Action
   message?: string | VNode
   promise?: Promise<unknown>
-  durations?: number
+  duration?: number
   closeable?: boolean
   error?: PromiseMessageHandler
   success?: PromiseMessageHandler
@@ -65,7 +65,7 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
     id: options.id ?? Math.random(),
     message: msg,
     group: options.group ?? 'default',
-    durations: options.durations ?? 3000,
+    duration: options.duration ?? 3000,
     closeable: options.closeable ?? false,
   }
 
