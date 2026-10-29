@@ -72,6 +72,7 @@ const enUS = {
     approve: 'Run',
     reject: 'Skip',
     remember: 'Always allow',
+    reason: 'Reason (optional)',
     pending: 'Pending',
     approved: 'Approved',
     rejected: 'Rejected',

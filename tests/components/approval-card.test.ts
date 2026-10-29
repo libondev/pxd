@@ -238,6 +238,114 @@ describe('approval-card', () => {
     wrapper.unmount()
   })
 
+  it('should carry the feedback input into the reject result', async () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        allowFeedback: true,
+      },
+    })
+
+    await wrapper.find('.pxd-approval-card--feedback input').setValue('needs review first')
+    await findButton(wrapper, 'Skip')!.trigger('click')
+
+    expect(wrapper.emitted().reject).toEqual([
+      [{ status: 'rejected', reason: 'needs review first' }],
+    ])
+
+    wrapper.unmount()
+  })
+
+  it('should omit the reason when the feedback input is empty', async () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        allowFeedback: true,
+      },
+    })
+
+    await wrapper.find('.pxd-approval-card--feedback input').setValue('   ')
+    await findButton(wrapper, 'Skip')!.trigger('click')
+
+    expect(wrapper.emitted().reject).toEqual([[{ status: 'rejected', reason: undefined }]])
+
+    wrapper.unmount()
+  })
+
+  it('should prefer an explicit imperative reason over the feedback input', async () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        allowFeedback: true,
+      },
+    })
+
+    await wrapper.find('.pxd-approval-card--feedback input').setValue('typed')
+    wrapper.vm.reject('explicit')
+
+    expect(wrapper.emitted().reject).toEqual([[{ status: 'rejected', reason: 'explicit' }]])
+
+    wrapper.unmount()
+  })
+
+  it('should clear the feedback input on `reset()`', async () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        allowFeedback: true,
+      },
+    })
+
+    await wrapper.find('.pxd-approval-card--feedback input').setValue('nope')
+    await findButton(wrapper, 'Skip')!.trigger('click')
+    wrapper.vm.reset()
+    await wrapper.vm.$nextTick()
+
+    const input = wrapper.find('.pxd-approval-card--feedback input').element as HTMLInputElement
+
+    expect(input.value).toBe('')
+
+    wrapper.unmount()
+  })
+
+  it('should render the default slot instead of the command block', () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        command: 'rm -rf dist',
+      },
+      slots: {
+        default: '<pre class="diff">-old\n+new</pre>',
+      },
+    })
+
+    expect(wrapper.find('.diff').exists()).toBe(true)
+    expect(wrapper.find('.pxd-approval-card--command').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('rm -rf dist')
+
+    wrapper.unmount()
+  })
+
+  it('should override the remember label', () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        rememberable: true,
+        rememberLabel: 'Always allow pnpm',
+      },
+    })
+
+    expect(wrapper.find('[data-checkbox]').text()).toBe('Always allow pnpm')
+
+    wrapper.unmount()
+  })
+
+  it('should fall back to the locale remember label', () => {
+    const wrapper = mount(ApprovalCard, {
+      props: {
+        rememberable: true,
+      },
+    })
+
+    expect(wrapper.find('[data-checkbox]').text()).toBe('Always allow')
+
+    wrapper.unmount()
+  })
+
   it('should follow `modelValue` instead of the internal status', async () => {
     const wrapper = mount(ApprovalCard, {
       props: {

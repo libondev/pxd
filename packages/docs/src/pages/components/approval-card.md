@@ -22,7 +22,7 @@ function onDecide(value) {
 
 ## Command lines
 
-An array renders one command per line.
+An array renders one command per line. The card settles the whole array with a single decision — `ApprovalResult` carries no per-line identifier, so render one card per call when the calls must be decided separately.
 
 ```vue demo
 <template>
@@ -35,6 +35,22 @@ An array renders one command per line.
 
     <PApprovalCard title="Install dependencies?" command="pnpm install" />
   </PStack>
+</template>
+```
+
+## Custom body
+
+The default slot replaces the command block, so a tool call that writes or edits files can render a diff instead of plain text. `command` is ignored while the slot is provided.
+
+```vue demo
+<template>
+  <PApprovalCard title="Apply this patch?" variant="error">
+    <pre class="text-xs m-0 leading-tight overflow-x-auto rounded-lg border border-gray-alpha-300 bg-gray-200 p-3">--- a/src/math.ts
++++ b/src/math.ts
+@@ -1,3 +1,3 @@
+-export const sum = (a, b) => a - b
++export const sum = (a, b) => a + b</pre>
+  </PApprovalCard>
 </template>
 ```
 
@@ -55,7 +71,7 @@ An array renders one command per line.
 
 ## Always allow
 
-`rememberable` adds a checkbox whose state is carried into the `approve` result.
+`rememberable` adds a checkbox whose state is carried into the `approve` result. The checkbox label follows `locale.approval.remember` and can be overridden per card with `rememberLabel`.
 
 ```vue demo
 <template>
@@ -69,9 +85,27 @@ function onApprove(result) {
 </script>
 ```
 
+## Reject feedback
+
+`allowFeedback` adds an optional single-line input inline with the actions. Its content is carried into the `reject` result as `reason`; an empty input leaves `reason` undefined. An explicit argument to the imperative `reject(reason)` wins over the input.
+
+```vue demo
+<template>
+  <PApprovalCard allowFeedback command="rm -rf dist" variant="error" @reject="onReject" />
+</template>
+
+<script setup>
+function onReject(result) {
+  console.log(result.reason)
+}
+</script>
+```
+
 ## Timeout
 
 `timeout` dismisses an undecided card after the given milliseconds. The result carries `cause: 'timeout'`, so the host can tell an expired wait from an active skip. While the timeout is running, a thin countdown bar drains across the top of the card.
+
+`dismissed` is not approval: a host that suspends a run until the card settles must map every non-`approved` result to a denial, otherwise a timed-out or skipped request lets the run continue silently.
 
 ```vue demo
 <template>
@@ -156,6 +190,8 @@ function approveAll() {
 | loading | `boolean` | `false` | Disables the actions and spins the approve button |
 | timeout | `number` | `0` | Milliseconds before an undecided card dismisses itself; `0` never times out |
 | rememberable | `boolean` | `false` | Shows the "Always allow" checkbox |
+| rememberLabel | `ComponentText` | `'Always allow'` | Checkbox label; falls back to `locale.approval.remember` |
+| allowFeedback | `boolean` | `false` | Shows a reason input whose content is carried into the reject result |
 | closeOnPressEscape | `boolean` | `true` | Dismisses the card when Escape is pressed while focus is inside it |
 | disabled | `boolean` | `false` | Disables the actions |
 
@@ -177,6 +213,12 @@ interface ApprovalResult {
   remember?: boolean
 }
 ```
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Replaces the command block; `command` is ignored when provided. |
 
 ## Methods
 

@@ -87,6 +87,7 @@ const zhCN = {
     approve: '运行',
     reject: '跳过',
     remember: '总是允许',
+    reason: '原因(可选)',
     pending: '待确认',
     approved: '已允许',
     rejected: '已拒绝',

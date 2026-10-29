@@ -8,7 +8,6 @@ export type ApprovalCause = 'escape' | 'close' | 'timeout'
 
 export interface ApprovalResult {
   status: ApprovalDecision
-  /** Only set on `dismissed`: separates an active skip from the timeout that ends the wait. */
   cause?: ApprovalCause
   reason?: string
   remember?: boolean
@@ -16,15 +15,15 @@ export interface ApprovalResult {
 
 export interface ApprovalCardProps {
   modelValue?: ApprovalStatus
-  /** Fallback title; renders `locale.approval.title`. */
   title?: ComponentText
   description?: ComponentText
   command?: string | string[]
   variant?: ComponentVariant
   loading?: boolean
-  /** Milliseconds before an undecided card dismisses itself; `0` never times out. */
   timeout?: number
   rememberable?: boolean
+  rememberLabel?: ComponentText
+  allowFeedback?: boolean
   closeOnPressEscape?: boolean
   disabled?: boolean
 }

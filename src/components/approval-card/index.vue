@@ -20,6 +20,7 @@ import { isTruthyProp, toArray } from '../../utils/format.js'
 import PBadge from '../badge/index.vue'
 import PButton from '../button/index.vue'
 import PCheckbox from '../checkbox/index.vue'
+import PInput from '../input/index.vue'
 import PSnippet from '../snippet/index.vue'
 
 defineOptions({
@@ -69,6 +70,7 @@ const VARIANT_CLASS: Record<ComponentVariant, string> = {
 
 const internalStatus = shallowRef<ApprovalStatus>('pending')
 const remembered = shallowRef(false)
+const feedback = shallowRef('')
 const timerKey = shallowRef(0)
 const status = computed<ApprovalStatus>(() => props.modelValue ?? internalStatus.value)
 const isPending = computed(() => status.value === 'pending')
@@ -85,6 +87,9 @@ const configProvider = useConfigProvider()
 
 const computedTitle = computed(() => props.title || configProvider.locale.approval.title)
 const computedStatusLabel = computed(() => configProvider.locale.approval[status.value])
+const computedRememberLabel = computed(
+  () => props.rememberLabel || configProvider.locale.approval.remember,
+)
 
 function clearTimer() {
   if (timerId !== undefined) {
@@ -137,7 +142,8 @@ function approve(reason?: string) {
 }
 
 function reject(reason?: string) {
-  commit('rejected', { reason })
+  const feedbackReason = props.allowFeedback ? feedback.value.trim() || undefined : undefined
+  commit('rejected', { reason: reason || feedbackReason })
 }
 
 function dismiss(cause: ApprovalCause = 'close') {
@@ -147,6 +153,7 @@ function dismiss(cause: ApprovalCause = 'close') {
 function reset() {
   clearTimer()
   remembered.value = false
+  feedback.value = ''
   internalStatus.value = 'pending'
   emits('update:model-value', 'pending')
   startTimer()
@@ -224,16 +231,23 @@ defineExpose({
       </PBadge>
     </div>
 
-    <div v-if="commandList.length > 0" class="pxd-approval-card--command">
+    <slot v-if="$slots.default" />
+
+    <div v-else-if="commandList.length > 0" class="pxd-approval-card--command">
       <PSnippet :text="commandList" variant="secondary" copy-btn="hover" :prompt="false" />
     </div>
 
     <div v-if="isPending" class="pxd-approval-card--actions gap-2 flex items-center">
-      <div v-if="rememberable" class="pxd-approval-card--remember">
-        <PCheckbox
-          v-model="remembered"
+      <div v-if="rememberable" class="pxd-approval-card--remember shrink-0">
+        <PCheckbox v-model="remembered" :disabled="isDisabled" :label="computedRememberLabel" />
+      </div>
+
+      <div v-if="allowFeedback" class="pxd-approval-card--feedback min-w-0 flex-1">
+        <PInput
+          v-model="feedback"
+          size="sm"
           :disabled="isDisabled"
-          :label="configProvider.locale.approval.remember"
+          :placeholder="configProvider.locale.approval.reason"
         />
       </div>
 
