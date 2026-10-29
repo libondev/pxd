@@ -52,7 +52,7 @@ describe('useRepeatAction', () => {
         action,
         initialInterval: 500,
         finalInterval: 30,
-        accelerationDuration: 1000,
+        duration: 1000,
       }),
     )
 

@@ -9,7 +9,7 @@ interface Options {
   enabled?: MaybeRefOrGetter<boolean>
   finalInterval?: number
   initialInterval?: number
-  accelerationDuration?: number
+  duration?: number
 }
 
 interface Results {
@@ -25,7 +25,7 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
     enabled = true,
     finalInterval = 30,
     initialInterval = 500,
-    accelerationDuration = 1000,
+    duration = 1000,
   } = typeof actionOrOptions === 'function' ? { action: actionOrOptions } : actionOrOptions
 
   let running = false
@@ -34,11 +34,11 @@ export function useRepeatAction(actionOrOptions: Options | Callback): Results {
   let nextInterval = initialInterval
 
   function intervalAt(elapsed: number) {
-    if (elapsed >= accelerationDuration) {
+    if (elapsed >= duration) {
       return finalInterval
     }
 
-    const progress = elapsed / accelerationDuration
+    const progress = elapsed / duration
     return initialInterval - (initialInterval - finalInterval) * progress
   }
 

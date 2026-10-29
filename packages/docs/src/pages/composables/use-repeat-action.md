@@ -14,10 +14,10 @@ function useRepeatAction(options: Options): Results
 ```ts
 interface Options {
   action: Callback
-  disabled?: MaybeRefOrGetter<boolean>
+  enabled?: MaybeRefOrGetter<boolean>
   finalInterval?: number
   initialInterval?: number
-  accelerationDuration?: number
+  duration?: number
 }
 
 interface Results {
@@ -35,4 +35,4 @@ interface Results {
 | `options.enabled` | `MaybeRefOrGetter<boolean>` | Whether the repeat action is enabled |
 | `options.finalInterval` | `number` | The final repeat interval in milliseconds |
 | `options.initialInterval` | `number` | The initial repeat interval in milliseconds |
-| `options.accelerationDuration` | `number` | Duration in milliseconds to accelerate from initial to final interval |
+| `options.duration` | `number` | Duration in milliseconds to accelerate from initial to final interval |
