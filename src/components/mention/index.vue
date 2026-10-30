@@ -124,6 +124,10 @@ function onSearchKeydownWithEscape(ev: KeyboardEvent) {
 }
 
 function onEditorSubmit(html: string) {
+  if (popoverVisible.value) {
+    return
+  }
+
   emits('submit', html)
 }
 
