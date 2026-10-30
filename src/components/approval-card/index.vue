@@ -215,7 +215,7 @@ defineExpose({
 
         <div
           v-if="description"
-          class="pxd-approval-card--description text-sm truncate leading-none text-foreground-secondary"
+          class="pxd-approval-card--description text-xs truncate leading-none text-foreground-secondary"
         >
           {{ description }}
         </div>
