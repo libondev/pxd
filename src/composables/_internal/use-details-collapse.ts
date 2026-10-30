@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { onScopeDispose, shallowRef, watch } from 'vue'
+import { nextTick, onScopeDispose, shallowRef, watch } from 'vue'
 import { getStyle } from '../../utils/dom.js'
 import { toValue } from '../../utils/helper.js'
 
@@ -12,6 +12,7 @@ export function useDetailsCollapse(
   // Stays true during leave so the grid row can animate before `open` is removed.
   const detailsOpen = shallowRef(isOpen.value)
 
+  let pendingEnter = false
   let stopWait: (() => void) | undefined
 
   function clearWait() {
@@ -58,8 +59,33 @@ export function useDetailsCollapse(
     }
   }
 
+  function enter() {
+    pendingEnter = true
+    detailsOpen.value = true
+
+    // A closed details renders no content, so `open` must be laid out at 0fr before the row flips.
+    void nextTick(() => {
+      if (!pendingEnter) {
+        return
+      }
+
+      pendingEnter = false
+      void contentRef.value?.offsetHeight
+      isOpen.value = true
+    })
+  }
+
+  function leave() {
+    pendingEnter = false
+    isOpen.value = false
+  }
+
   function onToggleClick() {
-    isOpen.value = !isOpen.value
+    if (isOpen.value) {
+      leave()
+    } else {
+      enter()
+    }
   }
 
   function onDetailsToggle(ev: Event) {
@@ -73,7 +99,11 @@ export function useDetailsCollapse(
   watch(
     () => toValue(source),
     (value) => {
-      isOpen.value = value
+      if (value) {
+        enter()
+      } else {
+        leave()
+      }
     },
   )
 

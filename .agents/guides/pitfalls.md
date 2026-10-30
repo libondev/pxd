@@ -26,6 +26,12 @@ a comment beside the fix.
 
 <!-- Add new entries below this line -->
 
+### A closed `<details>` leaves the first enter with no start value to transition from
+
+- **Symptom**: The first expand of `useDetailsCollapse` (Reasoning, ToolCall, TodoList, Questionnaire) snapped open with no animation while every later toggle animated. Disabling reduced motion made it visible: `--duration: 0` hides the same snap.
+- **Cause**: A closed `<details>` renders no content, so flipping `open` and the `grid-template-rows` class inside one style change event gives the browser no rendered `0fr` style to transition from; it starts at the after-change value. Leave is unaffected because `open` is only removed after `transitionend`.
+- **Fix**: Commit `open` first, let one style pass land (`nextTick` + read `offsetHeight`), then flip the row.
+
 ### A scroll position measurement cannot tell the user from the browser
 
 - **Symptom**: `useStickToBottom` lost follow mid-stream in an AI chat: after a large assistant batch — or after the page re-rendered it as markdown — the view froze a screen away from the bottom and no later update scrolled it back.
