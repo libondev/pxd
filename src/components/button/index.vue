@@ -53,7 +53,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none focus-visible:z-1 motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
     variants: {
       size: {
-        xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[0.625rem]`,
+        xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[0.6875rem]`,
         xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
         sm: `${BASIC_HEIGHTS.sm} px-2 rounded-md text-[0.8125rem]`,
         md: `${BASIC_HEIGHTS.md} px-3 text-sm rounded-md`,
