@@ -1,4 +1,3 @@
-import type { Router } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, it } from 'vite-plus/test'
 import { useViewTransition } from '../../src/composables/use-view-transition'
 
@@ -110,7 +109,7 @@ describe('useViewTransition', () => {
 
     expect(router.counts.beforeResolve()).toBe(0)
 
-    const stop = useViewTransition(router as unknown as Router)
+    const stop = useViewTransition(router as any)
 
     expect(router.counts.beforeResolve()).toBe(1)
     expect(router.counts.afterEach()).toBe(1)
@@ -127,7 +126,7 @@ describe('useViewTransition', () => {
     delete (document as Partial<Document>).startViewTransition
 
     const router = createRouter()
-    const stop = useViewTransition(router as unknown as Router)
+    const stop = useViewTransition(router as any)
 
     expect(router.counts.beforeResolve()).toBe(0)
     expect(() => stop()).not.toThrow()
@@ -137,7 +136,7 @@ describe('useViewTransition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
 
-    useViewTransition(router as unknown as Router)
+    useViewTransition(router as any)
 
     const to = { fullPath: '/guide' }
     const [blocked] = router.runBeforeResolve(to) as [Promise<void>]
@@ -165,7 +164,7 @@ describe('useViewTransition', () => {
     mockStartViewTransition({ runsCallback: false })
     const router = createRouter()
 
-    useViewTransition(router as unknown as Router)
+    useViewTransition(router as any)
 
     const to = { fullPath: '/components' }
     const [blocked] = router.runBeforeResolve(to) as [Promise<void>]
@@ -186,7 +185,7 @@ describe('useViewTransition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
 
-    useViewTransition(router as unknown as Router)
+    useViewTransition(router as any)
 
     const stale = { fullPath: '/stale' }
     const current = { fullPath: '/current' }
@@ -208,7 +207,7 @@ describe('useViewTransition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
 
-    useViewTransition(router as unknown as Router)
+    useViewTransition(router as any)
 
     const to = { fullPath: '/missing' }
     router.runBeforeResolve(to)
@@ -226,7 +225,7 @@ describe('useViewTransition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
 
-    const stop = useViewTransition(router as unknown as Router)
+    const stop = useViewTransition(router as any)
     stop()
 
     router.runBeforeResolve({ fullPath: '/guide' })
@@ -236,7 +235,7 @@ describe('useViewTransition', () => {
 
   it('should share one registration per router across calls', () => {
     const router = createRouter()
-    const typed = router as unknown as Router
+    const typed = router as any
 
     const stopFirst = useViewTransition(typed)
     const stopSecond = useViewTransition(typed)
@@ -260,8 +259,8 @@ describe('useViewTransition', () => {
     const first = createRouter()
     const second = createRouter()
 
-    useViewTransition(first as unknown as Router)
-    useViewTransition(second as unknown as Router)
+    useViewTransition(first as any)
+    useViewTransition(second as any)
 
     expect(first.counts.beforeResolve()).toBe(1)
     expect(second.counts.beforeResolve()).toBe(1)
@@ -269,7 +268,7 @@ describe('useViewTransition', () => {
 
   it('should register again once every caller has disposed', () => {
     const router = createRouter()
-    const typed = router as unknown as Router
+    const typed = router as any
 
     useViewTransition(typed)()
 
@@ -284,7 +283,7 @@ describe('useViewTransition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
 
-    useViewTransition(router as unknown as Router, { shouldTransition: () => false })
+    useViewTransition(router as any, { shouldTransition: () => false })
 
     const [result] = router.runBeforeResolve({ fullPath: '/guide' })
 
@@ -296,7 +295,7 @@ describe('useViewTransition', () => {
     const router = createRouter()
     const seen: unknown[][] = []
 
-    useViewTransition(router as unknown as Router, {
+    useViewTransition(router as any, {
       shouldTransition: (to, from) => {
         seen.push([to, from])
         return true
@@ -314,7 +313,7 @@ describe('useViewTransition', () => {
   it('should let any caller veto the transition', () => {
     const transitions = mockStartViewTransition()
     const router = createRouter()
-    const typed = router as unknown as Router
+    const typed = router as any
 
     useViewTransition(typed)
     const stopSecond = useViewTransition(typed, { shouldTransition: () => false })
@@ -332,7 +331,7 @@ describe('useViewTransition', () => {
     mockStartViewTransition()
     const router = createRouter()
 
-    const stop = useViewTransition(router as unknown as Router)
+    const stop = useViewTransition(router as any)
     const [blocked] = router.runBeforeResolve({ fullPath: '/guide' }) as [Promise<void>]
 
     let settled = false
