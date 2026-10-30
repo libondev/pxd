@@ -325,6 +325,8 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 ## Fill trigger width
 
+Only sets `min-width`, so content wider than the trigger still grows. To clamp the content exactly to the trigger width, use the exposed `--popover-trigger-width` variable, e.g. `content-class="w-(--popover-trigger-width)"` (the content scrolls internally).
+
 ```vue demo
 <script setup>
 const content = 'Do not go gentle into that good night, rage, rage against the dying of the light.'

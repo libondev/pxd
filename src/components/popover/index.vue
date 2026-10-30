@@ -272,19 +272,21 @@ function getReferenceElement() {
   return activeTriggerRef.value || triggerRef.value
 }
 
-function syncMinWidth() {
+function syncWidth() {
   const wrapper = wrapperRef.value
 
-  if (!wrapper || props.alignPoint) {
-    return
-  }
-
-  if (!props.fillTriggerWidth) {
-    wrapper.style.minWidth = ''
+  if (!wrapper) {
     return
   }
 
   const triggerWidth = (activeTriggerRef.value || triggerRef.value).getBoundingClientRect().width
+  wrapper.style.setProperty('--popover-trigger-width', `${triggerWidth}px`)
+
+  if (props.alignPoint || !props.fillTriggerWidth) {
+    wrapper.style.minWidth = ''
+    return
+  }
+
   const maxWidth = getCssUnitValue(props.maxWidth)
 
   wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
@@ -312,7 +314,7 @@ async function updatePosition() {
     return
   }
 
-  syncMinWidth()
+  syncWidth()
 
   const { x, y, placement, middlewareData } = await computePosition(
     getReferenceElement(),

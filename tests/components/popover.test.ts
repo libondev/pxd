@@ -700,11 +700,13 @@ describe('popover', () => {
 
     const popover = document.body.querySelector('.pxd-popover--wrapper') as HTMLElement
     expect(popover.style.minWidth).toBe('min(120px, 200px)')
+    expect(popover.style.getPropertyValue('--popover-trigger-width')).toBe('120px')
 
     await secondTrigger.trigger('click')
     await flush()
 
     expect(popover.style.minWidth).toBe('min(280px, 200px)')
+    expect(popover.style.getPropertyValue('--popover-trigger-width')).toBe('280px')
 
     wrapper.unmount()
   })
@@ -722,8 +724,12 @@ describe('popover', () => {
       },
     })
 
+    const host = wrapper.find('[data-popover]')
     const trigger = wrapper.find('button')
 
+    vi.spyOn(host.element, 'getBoundingClientRect').mockReturnValue({
+      width: 120,
+    } as DOMRect)
     vi.spyOn(trigger.element, 'getBoundingClientRect').mockReturnValue({
       width: 120,
     } as DOMRect)
@@ -733,6 +739,7 @@ describe('popover', () => {
 
     const popover = document.body.querySelector('.pxd-popover--wrapper') as HTMLElement
     expect(popover.style.minWidth).toBe('')
+    expect(popover.style.getPropertyValue('--popover-trigger-width')).toBe('120px')
 
     wrapper.unmount()
   })
