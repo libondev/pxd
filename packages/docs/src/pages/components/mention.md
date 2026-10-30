@@ -205,6 +205,7 @@ const options = [
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the editor, falls back to the config provider size |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | filter-method | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; `trigger` is the keyword that opened the popover |
+| filter-debounce | `boolean` | `true` | Debounce the `filter-method` search by 200ms while typing; `false` filters on every keystroke |
 | submit-on-enter | `boolean` | `true` | Submit on `Enter` instead of inserting a line break |
 | rows | `number` | `1` | Visible lines; `1` keeps the size-based minimum height |
 | auto-grow | `boolean` | `true` | Grow the editor with its content; `false` fixes the height at `rows` with internal scrolling |

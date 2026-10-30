@@ -107,6 +107,58 @@ describe('mention', () => {
     wrapper.unmount()
   })
 
+  it('filters on every keystroke when filter-debounce is disabled', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: {
+        options,
+        filterMethod: (query: string) =>
+          options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
+        filterDebounce: false,
+      },
+    })
+    wrapper.vm.openSuggest()
+    await flushPopover()
+
+    const input = document.body.querySelector<HTMLInputElement>('.pxd-mention--search')!
+    input.value = 'bo'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    await flushPopover()
+
+    const labels = [...document.body.querySelectorAll('[data-list-item]')].map(
+      (el) => el.textContent,
+    )
+    expect(labels).toEqual(['Bob'])
+
+    wrapper.unmount()
+  })
+
+  it('defers the search while filter-debounce is on', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: {
+        options,
+        filterMethod: (query: string) =>
+          options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
+      },
+    })
+    wrapper.vm.openSuggest()
+    await flushPopover()
+
+    const input = document.body.querySelector<HTMLInputElement>('.pxd-mention--search')!
+    input.value = 'bo'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    await nextTick()
+
+    expect(input.getAttribute('aria-busy')).toBe('true')
+    expect(document.body.querySelectorAll('[data-list-item]').length).toBe(3)
+
+    wrapper.vm.closeSuggest()
+    await flushPopover()
+
+    wrapper.unmount()
+  })
+
   it('exposes imperative writes with escaped plain text', async () => {
     const wrapper = mount(Mention, { attachTo: document.body })
 

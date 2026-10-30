@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<MentionProps>(), {
   triggers: () => [DEFAULT_TRIGGER],
   placeholder: '',
   searchPlaceholder: '',
+  filterDebounce: true,
   disabled: false,
   closeOnPressEscape: true,
   submitOnEnter: true,
@@ -66,6 +67,7 @@ const {
 } = useMentionSuggest({
   getOptions: resolveOptions,
   getFilterMethod: () => props.filterMethod,
+  isFilterDebounced: () => props.filterDebounce,
   isDisabled: () => props.disabled,
   visible: popoverVisible,
   setVisible: (visible) => togglePopoverVisible(visible),

@@ -11,6 +11,7 @@ export type MentionOptionsResult = ListOptions | Promise<ListOptions>
 export interface UseMentionSuggestOptions {
   getOptions: (trigger: string) => MentionOptionsResult
   getFilterMethod: () => MentionFilterMethod | undefined
+  isFilterDebounced: () => boolean
   isDisabled: () => boolean
   visible: Ref<boolean>
   setVisible: (visible: boolean) => void
@@ -47,6 +48,7 @@ function isOptionsEmpty(options: ListOptions): boolean {
 export function useMentionSuggest({
   getOptions,
   getFilterMethod,
+  isFilterDebounced,
   isDisabled,
   visible,
   setVisible,
@@ -145,6 +147,11 @@ export function useMentionSuggest({
 
     if (!query.trim() || !getFilterMethod()) {
       runFilterDebounced.cancel()
+      void runFilter(query, trigger)
+      return
+    }
+
+    if (!isFilterDebounced()) {
       void runFilter(query, trigger)
       return
     }

@@ -21,6 +21,7 @@ function setup(options: {
         return options.resolve ? options.resolve(trigger) : trigger === '/' ? COMMANDS : FILES
       },
       getFilterMethod: () => options.filterMethod as never,
+      isFilterDebounced: () => true,
       isDisabled: () => false,
       visible,
       setVisible: (next) => {

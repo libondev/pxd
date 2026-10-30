@@ -15,6 +15,7 @@ export interface MentionProps {
   size?: ComponentSize
   virtual?: boolean
   filterMethod?: MentionFilterMethod
+  filterDebounce?: boolean
   placeholder?: string
   searchPlaceholder?: string
   disabled?: boolean
