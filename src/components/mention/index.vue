@@ -73,9 +73,6 @@ const {
   setVisible: (visible) => togglePopoverVisible(visible),
 })
 
-// PList covers its own loading state and hides its empty slot while loading, so the
-// list only has to stay out of the way before anything has been asked: an unfiltered
-// empty list reads as "no results for ''" the moment the popover opens.
 const shouldRenderList = computed(
   () => listOptions.value.length > 0 || isPending.value || isEmptyResult.value,
 )
@@ -87,6 +84,7 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
     ArrowDown: 'next',
     ArrowUp: 'previous',
     Enter: 'activate',
+    Tab: 'activate',
     Home: 'first',
     End: 'last',
   },
