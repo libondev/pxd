@@ -30,7 +30,7 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
   {
     threshold: () => props.threshold,
     enabled: () => props.enabled,
-    interactExclude: actionRef,
+    action: actionRef,
   },
 )
 

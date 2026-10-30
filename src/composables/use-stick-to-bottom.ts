@@ -8,50 +8,41 @@ import { isServer } from '../utils/is.js'
 import { useMutationObserver } from './use-mutation-observer.js'
 import { useResizeObserver } from './use-resize-observer.js'
 
-// Long enough to cover a collapse animation, short enough that the next streamed chunk still follows
+// Covers a collapse animation, short enough that streaming still follows
 const interactionQuietMs = 350
 
 export interface UseStickToBottomOptions {
   threshold?: MaybeRefOrGetter<number>
   enabled?: MaybeRefOrGetter<boolean>
-  /** Pointerdowns inside this element never count as interacting with the content. */
-  interactExclude?: MaybeRefOrGetter<Nullable<HTMLElement>>
+  /** Sticky bar inside the container: pointerdowns there are ignored, and hiding it shifts the scroll range. */
+  action?: MaybeRefOrGetter<Nullable<HTMLElement>>
 }
 
 export interface UseStickToBottomReturn {
   isAtBottom: ShallowRef<boolean>
   scrollToBottom: () => void
-  /** Scroll to bottom and re-enable follow. */
   forceStickToBottom: () => void
   stickIfNeeded: () => void
   update: () => void
 }
 
 /**
- * Keep a scroll container pinned to the bottom while content changes.
- *
- * Follow is a flag of its own, not `isAtBottom`: a container mounted over content that is already
- * taller than the viewport measures "not at bottom" before the first stick runs, and gating on that
- * measurement parked it at the top. Only an upward scroll the layout does not explain, and that
- * lands off the bottom, breaks follow — the composable's own writes, browser clamping and a
- * virtualizer correcting item sizes move the container the same way without meaning to leave.
- *
- * A resize the user caused — expanding a collapse, selecting text — owns the viewport until the
- * layout it started stops moving, so it can neither pull the view down nor be dragged by it.
+ * Follow is a flag of its own: a container mounted over content taller than the viewport measures
+ * "not at bottom" before the first stick runs. Only an upward move the layout does not explain ends it.
  */
 export function useStickToBottom(
   container: MaybeRefOrGetter<Nullable<HTMLElement>>,
   content?: MaybeRefOrGetter<Nullable<HTMLElement>>,
   options: UseStickToBottomOptions = {},
 ): UseStickToBottomReturn {
-  const { threshold = 16, enabled = true, interactExclude = null } = options
+  const { threshold = 16, enabled = true, action = null } = options
 
   const isAtBottom = shallowRef(true)
 
   let following = true
   let lastScrollTop = 0
   let upwardDelta = 0
-  let interactionAt = 0
+  let interactionUntil = 0
   let judgeFrame = 0
   let judgeHeight = 0
   let settleFrame = 0
@@ -65,6 +56,10 @@ export function useStickToBottom(
 
   function getContentEl() {
     return getElement(toValue(content)) ?? getContainerEl()
+  }
+
+  function getActionEl() {
+    return getElement(toValue(action))
   }
 
   function getThreshold() {
@@ -89,6 +84,15 @@ export function useStickToBottom(
     isAtBottom.value = measureAtBottom(el)
   }
 
+  function writeBottom(el: HTMLElement, top: number) {
+    cancelJudge()
+
+    // Smooth races the content growth it follows
+    el.scrollTo({ top, behavior: 'instant' })
+    lastScrollTop = el.scrollTop
+    isAtBottom.value = true
+  }
+
   function scrollToBottom() {
     const el = getContainerEl()
 
@@ -96,13 +100,7 @@ export function useStickToBottom(
       return
     }
 
-    cancelJudge()
-    const top = getBottomTop(el)
-
-    // Smooth animation races the content growth it is meant to follow
-    el.scrollTo({ top, behavior: 'instant' })
-    lastScrollTop = el.scrollTop
-    isAtBottom.value = true
+    writeBottom(el, getBottomTop(el))
   }
 
   function forceStickToBottom() {
@@ -117,23 +115,17 @@ export function useStickToBottom(
       return
     }
 
-    // A pending judgement owns the offset until it resolves: sticking now would undo a scroll the
-    // user may be making, and the judge sticks for itself when the move turns out to be layout
+    // A pending judgement owns the offset; it sticks for itself if the move turns out to be layout
     if (!toValue(enabled) || judgeFrame) {
       return
     }
 
-    // A resize the user just caused (expanding a reasoning or tool-call panel) owns the viewport,
-    // and the window keeps extending while the layout it started is still moving, so a collapse
-    // animation cannot drag the view to the bottom either
-    if (performance.now() - interactionAt < interactionQuietMs) {
-      interactionAt = performance.now()
-
-      // When that resize leaves the view off the bottom, the user has left: ending follow here is
-      // what keeps the next measurement pass or streamed chunk from yanking the view back down
+    // The quiet window keeps a collapse animation from dragging the view
+    if (performance.now() < interactionUntil) {
+      // Off the bottom after that resize means the user left; the next chunk must not yank back down
       if (!measureAtBottom(el)) {
         following = false
-        update()
+        isAtBottom.value = false
       }
 
       return
@@ -143,16 +135,17 @@ export function useStickToBottom(
       return
     }
 
-    if (el.scrollTop !== getBottomTop(el)) {
-      scrollToBottom()
+    const bottom = getBottomTop(el)
+
+    if (el.scrollTop !== bottom) {
+      writeBottom(el, bottom)
     }
 
     settle()
   }
 
-  // The height is produced by measurement passes that keep growing the content after the write, and
-  // a later pass can land with nothing to observe it: no box changed, no node was added. So the
-  // bottom is asserted across frames until the geometry stops moving.
+  // A measurement pass can grow the content after the write with nothing left to observe it, so the
+  // bottom is re-asserted until the geometry rests
   function settle() {
     if (settleFrame) {
       return
@@ -174,7 +167,7 @@ export function useStickToBottom(
       !following ||
       !toValue(enabled) ||
       judgeFrame ||
-      performance.now() - interactionAt < interactionQuietMs
+      performance.now() < interactionUntil
     ) {
       return
     }
@@ -188,29 +181,30 @@ export function useStickToBottom(
       settleCount = 3
     }
 
-    if (top !== getBottomTop(el)) {
-      scrollToBottom()
+    const bottom = getBottomTop(el)
+
+    if (top !== bottom) {
+      writeBottom(el, bottom)
     }
 
     settleTop = el.scrollTop
     settleHeight = el.scrollHeight
 
-    // Bounded: three frames of rest, and a write that cannot land (a clamped or zoomed range) must
-    // not spin forever
-    if (settleCount > 0 && settleCount < 20) {
+    // Bounded: three frames of rest
+    if (settleCount > 0) {
       settleFrame = raf(settleTick)
     }
   }
 
   function handlePointerdown(event: Event) {
-    const exclude = getElement(toValue(interactExclude))
+    const exclude = getActionEl()
     const target = event.target
 
     if (target instanceof Element && exclude?.contains(target)) {
       return
     }
 
-    interactionAt = performance.now()
+    interactionUntil = performance.now() + interactionQuietMs
   }
 
   function cancelJudge() {
@@ -222,8 +216,8 @@ export function useStickToBottom(
     upwardDelta = 0
   }
 
-  // A correction writes the offset before the layout that explains it lands, so an upward move can
-  // only be told apart from the user's one frame later, once the height has caught up.
+  // The offset is written before the layout that explains it lands, so an upward move is only
+  // readable a frame later
   function decide() {
     judgeFrame = 0
 
@@ -264,35 +258,46 @@ export function useStickToBottom(
 
     lastScrollTop = top
 
-    // Being at the bottom again resumes follow, whatever moved the container there
+    if (delta > 0 && following) {
+      upwardDelta += delta
+
+      // A judge bails on its own once follow is off
+      if (!judgeFrame) {
+        judgeHeight = el.scrollHeight
+        judgeFrame = raf(decide)
+      }
+
+      return
+    }
+
+    upwardDelta = 0
+
+    // While following, this read would only force a layout of what a chunk just patched
+    if (following) {
+      return
+    }
+
+    // Back at the bottom resumes follow, whatever moved the container there
     if (measureAtBottom(el)) {
       isAtBottom.value = true
       following = true
     }
-
-    if (delta <= 0) {
-      upwardDelta = 0
-      return
-    }
-
-    if (!judgeFrame) {
-      judgeHeight = el.scrollHeight
-      judgeFrame = raf(decide)
-    }
-
-    upwardDelta += delta
   }
 
   if (!isServer()) {
     useResizeObserver(() => [getContentEl(), getContainerEl()], stickIfNeeded)
 
-    useMutationObserver(() => getContainerEl(), stickIfNeeded, {
+    useMutationObserver(() => getContentEl(), stickIfNeeded, {
       childList: true,
       subtree: true,
       characterData: true,
-      // A sibling hidden with a style toggle (a sticky action bar) changes the scroll range without
-      // changing any box the resize observers watch
+    })
+
+    // Its style toggles move the scroll range without resizing an observed box. Watched alone, so
+    // transcript churn stays out
+    useMutationObserver(() => getActionEl(), stickIfNeeded, {
       attributes: true,
+      subtree: true,
       attributeFilter: ['style', 'class', 'hidden'],
     })
 
