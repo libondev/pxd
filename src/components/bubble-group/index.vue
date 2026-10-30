@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { BubbleGroupProps } from './types'
-import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { computed, onMounted, shallowRef } from 'vue'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import PBacktop from '../backtop/index.vue'
 import PStickToBottom from '../stick-to-bottom/index.vue'
@@ -42,26 +42,12 @@ const contentStyle = computed(() => {
 
   return {
     '--bubble-group-height': `${totalSize.value}px`,
-    '--bubble-group-containIntrinsicSize': `auto ${totalSize.value}px`,
   }
 })
 
 function getDataItemKey(item: any, index: number) {
   return (props.dataKey ? item[props.dataKey] : index) ?? index
 }
-
-watch(
-  () => props.data?.length,
-  (newLen, oldLen) => {
-    if (!props.data || !newLen || !oldLen || newLen <= oldLen) {
-      return
-    }
-
-    void nextTick(() => {
-      stickRef.value?.stickIfNeeded()
-    })
-  },
-)
 
 onMounted(() => {
   stickRef.value?.forceStickToBottom()
@@ -79,7 +65,7 @@ defineExpose({
     data-bubble-group
     class="pxd-bubble-group relative overflow-x-hidden"
     :threshold="8"
-    content-class="pxd-bubble-group--content relative w-full content-visibility-auto h-(--bubble-group-height) [contain-intrinsic-size:var(--bubble-group-containIntrinsicSize)]"
+    content-class="pxd-bubble-group--content relative w-full h-(--bubble-group-height)"
     :style="contentStyle"
     v-bind="$attrs"
   >
