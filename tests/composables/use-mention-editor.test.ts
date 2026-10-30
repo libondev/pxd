@@ -30,12 +30,21 @@ interface Harness {
   updates: string[]
   triggers: { n: number; keywords: string[] }
   clicks: { key: string; label: string; trigger: string }[]
+  submits: string[]
   destroy: () => void
+}
+
+interface HarnessOptions {
+  isSubmitOnEnter?: () => boolean
 }
 
 const open: Harness[] = []
 
-function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER]): Harness {
+function createHarness(
+  initialHtml = '',
+  keywords: string[] = [DEFAULT_TRIGGER],
+  options: HarnessOptions = {},
+): Harness {
   const editor = document.createElement('div')
   editor.className = 'pxd-mention-editor'
   editor.setAttribute('contenteditable', 'true')
@@ -45,6 +54,7 @@ function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER])
   const model = ref(initialHtml)
   const updates: string[] = []
   const clicks: { key: string; label: string; trigger: string }[] = []
+  const submits: string[] = []
   const triggers = { n: 0, keywords: [] as string[] }
 
   const wrapper = useSetupWrapper(() => {
@@ -55,6 +65,7 @@ function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER])
       getModelValue: () => model.value,
       getTriggers: () => keywords,
       isDisabled: () => false,
+      isSubmitOnEnter: options.isSubmitOnEnter ?? (() => true),
       onUpdate: (html) => {
         model.value = html
         updates.push(html)
@@ -63,7 +74,9 @@ function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER])
         triggers.n += 1
         triggers.keywords.push(trigger)
       },
-      onSubmit: () => {},
+      onSubmit: (html) => {
+        submits.push(html)
+      },
       onMentionClick: (payload) => {
         clicks.push({ key: payload.key, label: payload.label, trigger: payload.trigger })
       },
@@ -77,6 +90,7 @@ function createHarness(initialHtml = '', keywords: string[] = [DEFAULT_TRIGGER])
     updates,
     triggers,
     clicks,
+    submits,
     destroy: wrapper.unmount,
   }
 
@@ -252,6 +266,21 @@ describe('useMentionEditor', () => {
     typeAtCaret('x')
     h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
     expect(h.api.isEmpty.value).toBe(false)
+  })
+
+  it('counts a lone space as content', () => {
+    const h = createHarness('')
+
+    caretIn(h.editor, 0)
+    typeAtCaret(' ')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    expect(h.api.isEmpty.value).toBe(false)
+
+    // Deleting it returns to the empty state.
+    h.editor.replaceChildren()
+    caretIn(h.editor, 0)
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    expect(h.api.isEmpty.value).toBe(true)
   })
 
   it('inserts a chip with an anchor and restores the caret into that anchor', async () => {
@@ -568,5 +597,101 @@ describe('useMentionEditor', () => {
 
     h.api.onCompositionEnd()
     expect(h.updates).toHaveLength(1)
+  })
+
+  it('submits the current html on Enter and keeps Shift+Enter native', () => {
+    const h = createHarness('Hello')
+
+    const shift = new KeyboardEvent('keydown', {
+      key: 'Enter',
+      shiftKey: true,
+      bubbles: true,
+      cancelable: true,
+    })
+    h.editor.dispatchEvent(shift)
+    expect(shift.defaultPrevented).toBe(false)
+    expect(h.submits).toEqual([])
+
+    h.editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }))
+    expect(h.submits).toEqual(['Hello'])
+  })
+
+  it('leaves Enter native when submitOnEnter is false', () => {
+    const h = createHarness('Hello', [DEFAULT_TRIGGER], { isSubmitOnEnter: () => false })
+
+    const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    h.editor.dispatchEvent(ev)
+
+    expect(ev.defaultPrevented).toBe(false)
+    expect(h.submits).toEqual([])
+  })
+
+  it('refuses a mid-word trigger', () => {
+    const h = createHarness('foo', ['/'])
+
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h, '/')
+    expect(h.triggers.n).toBe(0)
+  })
+
+  it('inserts a chip with an explicit trigger at the caret when no suggest is open', () => {
+    const h = createHarness('Hello ')
+    caretIn(lastText(h.editor), 6)
+
+    expect(h.api.insertMention('review', 'review', '/')).toBe(true)
+    expect(h.model.value).toBe('Hello <mention key="review" trigger="/">review</mention>')
+    expectAnchorInvariant(h.editor)
+  })
+
+  it('setText escapes plain text and parks the caret at the end', () => {
+    const h = createHarness('')
+    h.api.setText('a < b & c')
+
+    expect(h.model.value).toBe('a &lt; b &amp; c')
+
+    const sel = getSelection()!
+    expect(sel.anchorNode).toBe(h.editor)
+    expect(sel.anchorOffset).toBe(h.editor.childNodes.length)
+  })
+
+  it('insertText writes escaped plain text at the caret', () => {
+    const h = createHarness('Hello ')
+    caretIn(lastText(h.editor), 6)
+
+    expect(h.api.insertText('a<b\nz')).toBe(true)
+    expect(h.model.value).toBe('Hello a&lt;b\nz')
+    expectAnchorInvariant(h.editor)
+  })
+
+  it('clear empties the editor and emits the empty value', () => {
+    const h = createHarness('Hello <mention key="1">Alice</mention>')
+    h.api.clear()
+
+    expect(h.model.value).toBe('')
+    expect(h.editor.querySelector('mention')).toBeNull()
+  })
+
+  it('replaceQuery swaps the active trigger span for escaped text', () => {
+    const h = createHarness('Hi ')
+
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h)
+
+    expect(h.api.replaceQuery('正文 <b>')).toBe(true)
+    expect(h.model.value).toBe('Hi 正文 &lt;b&gt;')
+    expectAnchorInvariant(h.editor)
+
+    // The span is consumed; a second call has nothing left to replace.
+    expect(h.api.replaceQuery('more')).toBe(false)
+  })
+
+  it('replaceQuery with empty text just eats the span', () => {
+    const h = createHarness('Hi ')
+
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h)
+
+    expect(h.api.replaceQuery('')).toBe(true)
+    expect(h.model.value).toBe('Hi ')
   })
 })

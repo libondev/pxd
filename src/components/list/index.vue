@@ -11,6 +11,7 @@ import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { provideListContext } from '../../contexts/list.js'
 import { getElement } from '../../utils/dom.js'
 import { toArray } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 import PListGroup from '../list-group/index.vue'
 import PListItem from '../list-item/index.vue'
@@ -44,6 +45,8 @@ const props = withDefaults(defineProps<ListProps>(), {
 
 const emits = defineEmits<ListEmits>()
 
+const uid = getUniqueId('list-item')
+
 const containerRef = shallowRef<HTMLElement>()
 
 const flattened = computed(() => flattenListOptions(props.options))
@@ -75,6 +78,12 @@ const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive }
     onActivateItem,
     scrollToIndex: scrollNavIndexIntoView,
   })
+
+// Stable ids so host comboboxes can point aria-activedescendant at the active row.
+const activeItemId = computed(() =>
+  activeIndex.value >= 0 ? `${uid}-${activeIndex.value}` : undefined,
+)
+
 const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
 const renderEntries = computed<RenderEntry[]>(() => {
@@ -288,6 +297,7 @@ defineExpose({
   setActiveIndex,
   setFirstAsActive,
   activeIndex,
+  activeItemId,
 })
 </script>
 
@@ -323,6 +333,7 @@ defineExpose({
         <PListItem
           v-else-if="entry.itemRow"
           v-bind="entry.itemRow.option"
+          :id="`${uid}-${entry.itemRow.navIndex}`"
           :index="entry.itemRow.navIndex"
           :class="itemClass"
         >

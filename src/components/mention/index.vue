@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ListOptionSelected, ListOptions } from '../list/types'
-import type { MentionClickPayload, MentionEmits, MentionProps } from './types'
+import type { MentionClickPayload, MentionEmits, MentionProps, MentionSelectPayload } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
@@ -32,6 +32,9 @@ const props = withDefaults(defineProps<MentionProps>(), {
   searchPlaceholder: '',
   disabled: false,
   closeOnPressEscape: true,
+  submitOnEnter: true,
+  rows: 1,
+  autoGrow: true,
 })
 
 const emits = defineEmits<MentionEmits>()
@@ -50,11 +53,13 @@ const computedSize = computed(() => props.size || configProvider.size)
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const { value: popoverVisible, toggle: togglePopoverVisible } = useToggleValue(false)
+
 const {
+  activeTrigger,
   filterKeyword,
   listOptions,
-  isEmptyResult,
   isPending,
+  isEmptyResult,
   open: openSuggest,
   close: closeSuggest,
   setKeyword,
@@ -73,7 +78,7 @@ const shouldRenderList = computed(
   () => listOptions.value.length > 0 || isPending.value || isEmptyResult.value,
 )
 
-const { onKeydown: onSearchKeydown } = useListKeyboardController({
+const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value && !isPending.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
   keymap: {
@@ -85,7 +90,7 @@ const { onKeydown: onSearchKeydown } = useListKeyboardController({
   },
 })
 
-function resolveOptions(trigger: string): ListOptions {
+function resolveOptions(trigger: string): ListOptions | Promise<ListOptions> {
   return typeof props.options === 'function' ? props.options(trigger) : props.options
 }
 async function focusSearchInput() {
@@ -115,7 +120,11 @@ function onSearchKeydownWithEscape(ev: KeyboardEvent) {
     return
   }
 
-  onSearchKeydown(ev)
+  onListKeydown(ev)
+}
+
+function onEditorSubmit(html: string) {
+  emits('submit', html)
 }
 
 function onOptionSelect(item: ListOptionSelected) {
@@ -130,7 +139,21 @@ function onOptionSelect(item: ListOptionSelected) {
     return
   }
 
-  const inserted = editorRef.value?.insertMention(key, label)
+  const payload: MentionSelectPayload = {
+    key,
+    label,
+    trigger: activeTrigger.value || DEFAULT_TRIGGER,
+    item,
+  }
+
+  emits('select', payload)
+
+  if (props.beforeInsert?.(payload) === false) {
+    closeSuggest()
+    return
+  }
+
+  const inserted = editorRef.value?.insertMention(key, label, payload.trigger)
 
   if (inserted) {
     closeSuggest()
@@ -145,6 +168,19 @@ watch(listOptions, async () => {
   await nextTick()
   listRef.value?.setFirstAsActive()
 })
+
+defineExpose({
+  focus: () => editorRef.value?.focus(),
+  blur: () => editorRef.value?.blur(),
+  clear: () => editorRef.value?.clear(),
+  setText: (text: string) => editorRef.value?.setText(text),
+  insertText: (text: string) => editorRef.value?.insertText(text),
+  insertMention: (key: string, label: string, trigger?: string) =>
+    editorRef.value?.insertMention(key, label, trigger),
+  replaceQuery: (text: string) => editorRef.value?.replaceQuery(text),
+  openSuggest: (trigger?: string) => openSuggest(trigger ?? props.triggers[0] ?? DEFAULT_TRIGGER),
+  closeSuggest,
+})
 </script>
 
 <template>
@@ -154,7 +190,7 @@ watch(listOptions, async () => {
     class="w-full"
     position="bottom-start"
     :trigger="[]"
-    :auto-focus-element="true"
+    auto-focus-element
     :return-focus-on-deactivate="false"
     fill-trigger-width
     :disabled="disabled"
@@ -176,8 +212,15 @@ watch(listOptions, async () => {
       :placeholder="placeholder"
       :disabled="disabled"
       :triggers="triggers"
+      :submit-on-enter="submitOnEnter"
+      :rows="rows"
+      :auto-grow="autoGrow"
+      :max-rows="maxRows"
+      :editor-class="editorClass"
+      :editor-attrs="editorAttrs"
       @trigger="openSuggest"
       @mention-click="onMentionClick"
+      @submit="onEditorSubmit"
     />
 
     <template #content>
@@ -211,7 +254,7 @@ watch(listOptions, async () => {
           class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
           @click="closeSuggest"
         >
-          <kbd class="appearance-none font-sans">Esc</kbd>
+          <kbd class="font-sans appearance-none">Esc</kbd>
         </button>
       </label>
 
@@ -224,7 +267,7 @@ watch(listOptions, async () => {
         :loading="isPending"
         :options="listOptions"
         :default-active-index="0"
-        class="max-h-68 min-h-0 flex-1"
+        class="max-h-68 min-h-0 w-(--popover-trigger-width) flex-1"
         @change="onOptionSelect"
       >
         <template v-if="$slots.item" #item="itemSlotProps">

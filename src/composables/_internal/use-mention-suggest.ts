@@ -6,8 +6,10 @@ import { debounce } from '../../utils/timing.js'
 import { filterListOptions } from './use-list-filter.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
+export type MentionOptionsResult = ListOptions | Promise<ListOptions>
+
 export interface UseMentionSuggestOptions {
-  getOptions: (trigger: string) => ListOptions
+  getOptions: (trigger: string) => MentionOptionsResult
   getFilterMethod: () => MentionFilterMethod | undefined
   isDisabled: () => boolean
   visible: Ref<boolean>
@@ -15,6 +17,7 @@ export interface UseMentionSuggestOptions {
 }
 
 export interface UseMentionSuggestReturn {
+  activeTrigger: ShallowRef<string>
   filterKeyword: ShallowRef<string>
   listOptions: ShallowRef<ListOptions>
   isPending: ShallowRef<boolean>
@@ -40,9 +43,7 @@ function isOptionsEmpty(options: ListOptions): boolean {
   })
 }
 
-/**
- * Suggestion popover state: keyword, list options, and async filter races.
- */
+/** Suggestion popover state: keyword, list options, and async filter races. */
 export function useMentionSuggest({
   getOptions,
   getFilterMethod,
@@ -67,44 +68,51 @@ export function useMentionSuggest({
     runFilterDebounced.cancel()
   }
 
-  async function runFilter(query: string, trigger: string) {
-    const requestId = ++filterRequestId
-    const trimmed = query.trim()
-
-    if (!trimmed) {
-      isPending.value = false
-      listOptions.value = getOptions(trigger)
-      return
-    }
-
-    const filterMethod = getFilterMethod()
-
-    if (!filterMethod) {
-      isPending.value = false
-      listOptions.value = filterListOptions(getOptions(trigger), trimmed)
-      return
-    }
-
+  // Every async load funnels through here, so a stale request never wins the race.
+  async function settlePending(requestId: number, load: () => Promise<ListOptions>) {
     isPending.value = true
 
     try {
-      const result = await filterMethod(trimmed, trigger)
-      if (requestId !== filterRequestId) {
-        return
-      }
+      const result = await load()
 
-      listOptions.value = Array.isArray(result) ? result : []
+      if (requestId === filterRequestId) {
+        listOptions.value = result
+      }
     } catch {
-      if (requestId !== filterRequestId) {
-        return
+      if (requestId === filterRequestId) {
+        listOptions.value = []
       }
-
-      listOptions.value = []
     } finally {
       if (requestId === filterRequestId) {
         isPending.value = false
       }
     }
+  }
+
+  async function runFilter(query: string, trigger: string) {
+    const requestId = ++filterRequestId
+    const trimmed = query.trim()
+    const filterMethod = getFilterMethod()
+
+    if (trimmed && filterMethod) {
+      await settlePending(requestId, async () => {
+        const result = await filterMethod(trimmed, trigger)
+        return Array.isArray(result) ? result : []
+      })
+      return
+    }
+
+    const result = getOptions(trigger)
+
+    if (!(result instanceof Promise)) {
+      isPending.value = false
+      listOptions.value = trimmed ? filterListOptions(result, trimmed) : result
+      return
+    }
+
+    await settlePending(requestId, async () =>
+      trimmed ? filterListOptions(await result, trimmed) : result,
+    )
   }
 
   function open(trigger: string) {
@@ -114,7 +122,8 @@ export function useMentionSuggest({
 
     activeTrigger.value = trigger
     filterKeyword.value = ''
-    listOptions.value = getOptions(trigger)
+    // The sync resolver settles before the first paint; a promise holds the list on loading.
+    void runFilter('', trigger)
     setVisible(true)
   }
 
@@ -152,6 +161,7 @@ export function useMentionSuggest({
   })
 
   return {
+    activeTrigger,
     filterKeyword,
     listOptions,
     isPending,

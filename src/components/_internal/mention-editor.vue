@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { ComponentSize } from '../../types/shared/props'
+import type { ComponentClass, ComponentSize } from '../../types/shared/props'
+import type { MentionClickPayload } from '../mention/types'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
@@ -18,12 +19,24 @@ const props = withDefaults(
     disabled?: boolean
     size?: ComponentSize
     triggers?: string[]
+    submitOnEnter?: boolean
+    rows?: number
+    autoGrow?: boolean
+    maxRows?: number
+    editorClass?: ComponentClass
+    editorAttrs?: Record<string, unknown>
   }>(),
   {
     modelValue: '',
     placeholder: '',
     disabled: false,
     triggers: () => [DEFAULT_TRIGGER],
+    submitOnEnter: true,
+    rows: 1,
+    autoGrow: true,
+    maxRows: undefined,
+    editorClass: undefined,
+    editorAttrs: undefined,
   },
 )
 
@@ -32,26 +45,54 @@ const emits = defineEmits<{
   change: [string]
   submit: [string]
   'update:model-value': [string]
-  'mention-click': [{ key: string; label: string; trigger: string; event: MouseEvent }]
+  'mention-click': [MentionClickPayload]
 }>()
 
+// `lh` follows the element's own line-height so the geometry survives font overrides;
+// browsers without the unit ignore it and fall back to the min-height classes.
+const SIZES = {
+  sm: { height: `${BASIC_MIN_HEIGHTS.sm} py-[0.3125rem]`, pad: '0.3125rem' },
+  md: { height: `${BASIC_MIN_HEIGHTS.md} py-[0.46875rem]`, pad: '0.46875rem' },
+  lg: { height: `${BASIC_MIN_HEIGHTS.lg} py-2.75`, pad: '0.6875rem' },
+} as const
+
 const editorRef = shallowRef<HTMLElement>()
-const inputHeightClasses = computed(() => {
-  return {
-    sm: `${BASIC_MIN_HEIGHTS.sm} py-[0.3125rem]`,
-    md: `${BASIC_MIN_HEIGHTS.md} py-[0.46875rem]`,
-    lg: `${BASIC_MIN_HEIGHTS.lg} py-2.75`,
-  }
-})
 
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
+const editorSizeStyle = computed(() => {
+  const style: Record<string, string> = {}
+  const vertical = `calc(${SIZES[computedSize.value].pad} * 2)`
+
+  if (props.rows > 1) {
+    style.minHeight = `calc(${props.rows}lh + ${vertical})`
+  }
+
+  if (props.maxRows != null) {
+    style.maxHeight = `calc(${props.maxRows}lh + ${vertical})`
+    style.overflowY = 'auto'
+  }
+
+  if (!props.autoGrow) {
+    style.height = `calc(${props.rows}lh + ${vertical})`
+    style.overflowY = 'auto'
+  }
+
+  return style
+})
+
 const {
   isEmpty,
   isComposing,
   insertMention,
+  focus,
+  blur,
+  clear,
+  setText,
+  insertText,
+  replaceQuery,
   restoreCaret,
   onBeforeInput,
   onInput,
@@ -67,12 +108,13 @@ const {
   getModelValue: () => props.modelValue ?? '',
   getTriggers: () => props.triggers,
   isDisabled: () => props.disabled,
+  isSubmitOnEnter: () => props.submitOnEnter,
   onUpdate: (html) => {
     emits('update:model-value', html)
     emits('change', html)
   },
-  onSubmit: (html) => emits('submit', html),
   onTrigger: (trigger) => emits('trigger', trigger),
+  onSubmit: (html) => emits('submit', html),
   onMentionClick: (payload) => emits('mention-click', payload),
 })
 
@@ -82,6 +124,12 @@ onMounted(() => {
 
 defineExpose({
   insertMention,
+  focus,
+  blur,
+  clear,
+  setText,
+  insertText,
+  replaceQuery,
   restoreCaret,
 })
 </script>
@@ -103,7 +151,8 @@ defineExpose({
     <div
       ref="editorRef"
       class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
-      :class="inputHeightClasses[computedSize]"
+      :class="[SIZES[computedSize].height, editorClass]"
+      :style="editorSizeStyle"
       role="textbox"
       aria-multiline="true"
       :contenteditable="disabled ? 'false' : 'true'"
@@ -111,6 +160,7 @@ defineExpose({
       :data-disabled="disabled"
       :aria-placeholder="placeholder"
       :aria-disabled="disabled"
+      v-bind="editorAttrs"
       @beforeinput="onBeforeInput"
       @input="onInput"
       @keydown="onKeydown"

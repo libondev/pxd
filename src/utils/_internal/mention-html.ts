@@ -1,7 +1,7 @@
 export const MENTION_TAG = 'MENTION'
 export const MENTION_TAG_LOWER = MENTION_TAG.toLowerCase()
 
-const BLOCK_TAGS = new Set(['DIV', 'P', 'LI', 'PRE'])
+export const BLOCK_TAGS = new Set(['DIV', 'P', 'LI', 'PRE'])
 
 /** The trigger a chip falls back to when its markup carries no `trigger` attribute. */
 export const DEFAULT_TRIGGER = '@'
@@ -84,9 +84,12 @@ export function serializeMentionHtml(root: HTMLElement): string {
 
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces,
-      // and drop the caret anchor so it never reaches the public HTML.
-      result += (node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, '')
+      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces, and
+      // drop the caret anchor so it never reaches the public HTML. Escaping keeps
+      // a typed `<` or `&` from coming back as markup on the next parse.
+      result += escapeMentionText(
+        (node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, ''),
+      )
       return
     }
 
@@ -134,7 +137,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
 /**
  * Build a DocumentFragment from public mention HTML (text + legal `<mention>` only).
  */
-function parseMentionHtml(html: string): DocumentFragment {
+function parseMentionFragment(html: string): DocumentFragment {
   const fragment = document.createDocumentFragment()
 
   if (!html) {
@@ -215,7 +218,7 @@ function appendPlainText(target: Node, text: string) {
 
 export function setMentionEditorContent(root: HTMLElement, html: string) {
   root.replaceChildren()
-  root.appendChild(parseMentionHtml(html))
+  root.appendChild(parseMentionFragment(html))
 
   if (!root.childNodes.length) {
     root.appendChild(document.createElement('br'))

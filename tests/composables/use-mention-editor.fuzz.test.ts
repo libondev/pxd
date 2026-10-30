@@ -57,6 +57,7 @@ function createHarness(initialHtml: string) {
       getModelValue: () => model.value,
       getTriggers: () => [DEFAULT_TRIGGER],
       isDisabled: () => false,
+      isSubmitOnEnter: () => true,
       onUpdate: (html) => {
         model.value = html
       },

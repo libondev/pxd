@@ -7,6 +7,11 @@ import {
   serializeMentionHtml,
   setMentionEditorContent,
 } from '../../src/utils/_internal/mention-html'
+import {
+  escapePlainTextAsHtml,
+  mentionHtmlToText,
+  parseMentionHtml,
+} from '../../src/utils/mention-html'
 
 const ZWSP = '\u200B'
 
@@ -247,5 +252,68 @@ describe('chip element and clipboard sanitizing', () => {
     host.appendChild(sanitizeMentionClipboardHtml('one\ntwo <mention key="1">A</mention>'))
     expect(host.querySelector('br')).not.toBeNull()
     expectAnchorInvariant(host)
+  })
+})
+
+describe('public mention-html utils', () => {
+  it('parses the public contract into a flat token list', () => {
+    expect(parseMentionHtml('')).toEqual([])
+
+    expect(parseMentionHtml('Hi <mention key="1">Alice</mention>!')).toEqual([
+      { type: 'text', text: 'Hi ' },
+      { type: 'mention', key: '1', label: 'Alice', trigger: '@' },
+      { type: 'text', text: '!' },
+    ])
+
+    expect(parseMentionHtml('<mention key="review" trigger="/">review</mention>')).toEqual([
+      { type: 'mention', key: 'review', label: 'review', trigger: '/' },
+    ])
+  })
+
+  it('reads blocks and <br> as newlines, matching the serializer', () => {
+    expect(parseMentionHtml('a<br>b')).toEqual([{ type: 'text', text: 'a\nb' }])
+    expect(parseMentionHtml('a<div>b</div>')).toEqual([{ type: 'text', text: 'a\nb' }])
+  })
+
+  it('renders chips as trigger+label and honors chipText', () => {
+    expect(mentionHtmlToText('Ping <mention key="1">Alice</mention>')).toBe('Ping @Alice')
+    expect(mentionHtmlToText('<mention key="review" trigger="/">review</mention>')).toBe('/review')
+
+    expect(
+      mentionHtmlToText('<mention key="1">Alice</mention>', {
+        chipText: (mention) => `[${mention.label}#${mention.key}]`,
+      }),
+    ).toBe('[Alice#1]')
+  })
+
+  it('survives the html → text → refill round trip', () => {
+    const values = [
+      'Hello <mention key="1">Alice</mention>',
+      '<mention key="review" trigger="/">review</mention>\nsecond line',
+      'plain text &amp; &lt;tags&gt;',
+      'first<mention key="1">A</mention>\nsecond',
+    ]
+
+    for (const html of values) {
+      const text = mentionHtmlToText(html)
+      const refilled = escapePlainTextAsHtml(text)
+
+      // The editor normalizes <br> back to \n on serialize; the text form is what
+      // has to agree with the model value.
+      expect(mentionHtmlToText(serializeMentionHtml(build(refilled)))).toBe(text)
+    }
+  })
+
+  it('escapes typed markup so the model re-parses as text', () => {
+    const root = document.createElement('div')
+    root.setAttribute('contenteditable', 'true')
+    // A text node, the way the editor actually holds typed characters.
+    root.appendChild(document.createTextNode('fish & chips <b>bold</b>'))
+    expect(serializeMentionHtml(root)).toBe('fish &amp; chips &lt;b&gt;bold&lt;/b&gt;')
+  })
+
+  it('escapePlainTextAsHtml keeps markup inert and newlines as <br>', () => {
+    expect(escapePlainTextAsHtml('a < b & c')).toBe('a &lt; b &amp; c')
+    expect(escapePlainTextAsHtml('one\ntwo')).toBe('one<br>two')
   })
 })
