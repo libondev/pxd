@@ -926,7 +926,7 @@ defineExpose({
 
 .pxd-tree-transition-enter-from,
 .pxd-tree-transition-leave-to {
-  grid-template-rows: 0fr;
+  grid-template-rows: minmax(0, 0fr);
   opacity: 0;
 }
 </style>
