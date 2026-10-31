@@ -55,10 +55,6 @@ const enUS = {
     prev: 'Previous page',
     next: 'Next page',
   },
-  reasoning: {
-    thinking: 'Thinking...',
-    thought: 'Thought',
-  },
   toolCall: {
     pending: 'Pending',
     running: 'Running',
@@ -77,13 +73,6 @@ const enUS = {
     approved: 'Approved',
     rejected: 'Rejected',
     dismissed: 'Skipped',
-  },
-  todo: {
-    title: 'Tasks',
-    inProgress: 'in progress',
-    pending: 'pending',
-    completed: 'completed',
-    canceled: 'canceled',
   },
   feedback: {
     thumbUp: 'Thumb up',

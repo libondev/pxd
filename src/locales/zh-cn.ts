@@ -70,10 +70,6 @@ const zhCN = {
     prev: '上一页',
     next: '下一页',
   },
-  reasoning: {
-    thinking: '正在思考...',
-    thought: '思考',
-  },
   toolCall: {
     pending: '等待中',
     running: '运行中',
@@ -92,13 +88,6 @@ const zhCN = {
     approved: '已允许',
     rejected: '已拒绝',
     dismissed: '已跳过',
-  },
-  todo: {
-    title: '任务',
-    inProgress: '进行中',
-    pending: '待处理',
-    completed: '已完成',
-    canceled: '已取消',
   },
   feedback: {
     thumbUp: '点赞',
