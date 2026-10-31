@@ -31,7 +31,7 @@ defineProps<EmptyStateProps>()
           </slot>
         </p>
 
-        <p class="pxd-empty-state--description text-sm text-center text-foreground-secondary">
+        <p class="pxd-empty-state--description text-[0.8125rem] text-center text-foreground-secondary">
           <slot name="description">
             {{ description }}
           </slot>
