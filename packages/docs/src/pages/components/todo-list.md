@@ -162,7 +162,7 @@ const options = ref([
 | size | `'sm' \| 'md' \| 'lg'` | - | Padding, font size and marker size; falls back to the config provider size. |
 | readonly | `boolean` | `false` | Render as a static list: status buttons are disabled and rows ignore clicks. |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
-| title | `ComponentText` | `locale.todo.title` | Header title. |
+| title | `ComponentText` | - | Header title. |
 | empty | `ComponentText` | `locale.results.noData` | Text shown when there is no item. |
 
 ## Events

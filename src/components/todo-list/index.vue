@@ -120,7 +120,6 @@ const summaryText = computed(() => {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
-const headerTitle = computed(() => props.title ?? configProvider.locale.todo.title)
 const emptyText = computed(() => props.empty ?? configProvider.locale.results.noData)
 
 const slots = useSlots()
@@ -268,11 +267,11 @@ defineExpose({
         name="header"
         :expanded="isOpen"
         :stats="stats"
-        :title="headerTitle"
+        :title="title"
         :summary="summaryText"
       >
         <span class="pxd-todo-list--title min-w-0 truncate">
-          {{ headerTitle }}
+          {{ title }}
         </span>
 
         <span

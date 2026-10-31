@@ -100,7 +100,7 @@ describe('todo-list', () => {
   })
 
   it('summarises progress in the header', async () => {
-    const wrapper = await mountTodoList()
+    const wrapper = await mountTodoList({ title: 'Tasks' })
 
     expect(wrapper.find('.pxd-todo-list--title').text()).toBe('Tasks')
     expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1/3')

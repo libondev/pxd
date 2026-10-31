@@ -44,7 +44,7 @@ export interface TodoProps {
   readonly?: boolean
   /** Expanded state, applied whenever the value changes. */
   expand?: boolean
-  /** Header title; falls back to `locale.todo.title`. */
+  /** Header title. */
   title?: ComponentText
   /** Empty-state text; falls back to `locale.results.noData`. */
   empty?: ComponentText
