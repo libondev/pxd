@@ -3,7 +3,7 @@ import type { MentionRemoteFilterFn } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { debounce } from '../../utils/timing.js'
-import { filterListOptions } from './use-list-filter.js'
+import { filterListOptions } from './use-list-search.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
 export type MentionOptionsResult = ListOptions | Promise<ListOptions>
@@ -93,6 +93,11 @@ export function useMentionSuggest({
     }
   }
 
+  /** The local predicate only applies to a local answer; a remote one comes back filtered. */
+  function withFilter(options: ListOptions, query: string): ListOptions {
+    return query ? filterListOptions(options, query, getFilter()) : options
+  }
+
   async function runFilter(query: string, trigger: string) {
     const requestId = ++filterRequestId
     const trimmed = query.trim()
@@ -110,13 +115,11 @@ export function useMentionSuggest({
 
     if (!(result instanceof Promise)) {
       isPending.value = false
-      listOptions.value = trimmed ? filterListOptions(result, trimmed, getFilter()) : result
+      listOptions.value = withFilter(result, trimmed)
       return
     }
 
-    await settlePending(requestId, async () =>
-      trimmed ? filterListOptions(await result, trimmed, getFilter()) : result,
-    )
+    await settlePending(requestId, async () => withFilter(await result, trimmed))
   }
 
   function open(trigger: string) {

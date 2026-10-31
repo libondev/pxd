@@ -13,12 +13,12 @@ import type {
 import type { ComponentValue } from '../../types/shared/props'
 import type { MaybeElementRef } from '../../types/shared/utils'
 import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch } from 'vue'
+import { computed, onScopeDispose, shallowRef } from 'vue'
 import { getElement } from '../../utils/dom.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
-import { debounce } from '../../utils/timing.js'
+import { useRemoteSearch } from './use-remote-search.js'
 
 export interface TreeFlatNode {
   key: ComponentValue
@@ -237,8 +237,6 @@ export function useTreeMatched(
   })
 }
 
-const REMOTE_SEARCH_DEBOUNCE = 200
-
 export interface UseTreeSearchOptions {
   query: MaybeRefOrGetter<string>
   remoteFilter?: MaybeRefOrGetter<TreeRemoteFilterFn | undefined>
@@ -254,69 +252,13 @@ export interface UseTreeSearchReturn {
 }
 
 export function useTreeSearch(options: UseTreeSearchOptions): UseTreeSearchReturn {
-  const matches = shallowRef<TreeOptions>()
-  const pending = shallowRef(false)
-  const remote = computed(() => typeof toValue(options.remoteFilter) === 'function')
-  const needle = computed(() => (toValue(options.query) ?? '').trim())
+  const { matches, needle, remote, pending } = useRemoteSearch<TreeOption>({
+    query: options.query,
+    search: options.remoteFilter,
+  })
+
+  // Before the first answer the tree keeps rendering `data`: the empty slot covers the gap.
   const active = computed(() => remote.value && needle.value !== '' && matches.value !== undefined)
-
-  let requestId = 0
-
-  /** A query that moves on retires the request it interrupts, so its answer can never land. */
-  function invalidate(): void {
-    requestId += 1
-    runSearch.cancel()
-  }
-
-  async function run(query: string): Promise<void> {
-    const at = ++requestId
-    const remoteFilter = toValue(options.remoteFilter)
-
-    if (!remoteFilter) {
-      return
-    }
-
-    try {
-      const result = await remoteFilter(query)
-
-      if (at === requestId) {
-        matches.value = Array.isArray(result) ? result : []
-      }
-    } catch {
-      if (at === requestId) {
-        matches.value = []
-      }
-    } finally {
-      if (at === requestId) {
-        pending.value = false
-      }
-    }
-  }
-
-  const runSearch = debounce((query: string) => {
-    void run(query)
-  }, REMOTE_SEARCH_DEBOUNCE)
-
-  watch(
-    [remote, needle],
-    ([isRemote, query]) => {
-      invalidate()
-
-      // A forest from an earlier query must not outlive it.
-      if (!isRemote || !query) {
-        matches.value = undefined
-        pending.value = false
-        return
-      }
-
-      // Pending from the keystroke rather than from the request: the debounce window is part of it.
-      pending.value = true
-      runSearch(query)
-    },
-    { immediate: true },
-  )
-
-  onScopeDispose(invalidate)
 
   return { matches, remote, pending, active }
 }

@@ -1,89 +1,98 @@
-import type { ListOptions, ListRemoteFilterFn } from '../../components/list/types'
+import type {
+  ListFilterMethodFn,
+  ListOption,
+  ListOptionEntry,
+  ListOptions,
+  ListRemoteFilterFn,
+} from '../../components/list/types'
 import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch } from 'vue'
+import { computed } from 'vue'
+import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
-import { debounce } from '../../utils/timing.js'
+import { useRemoteSearch } from './use-remote-search.js'
+import { isListOptionGroup } from './use-selected-list-item.js'
 
-const REMOTE_SEARCH_DEBOUNCE = 200
+// Options are stable prop objects, so their search text is derived once: rebuilding it per
+// keystroke was roughly half the local filter cost on a 2000-option list.
+const optionTextCache = new WeakMap<ListOption, string>()
+
+function getOptionText(option: ListOption): string {
+  const cached = optionTextCache.get(option)
+
+  if (cached !== undefined) {
+    return cached
+  }
+
+  const text = `${String(option.label ?? '')}${String(option.description ?? '')}`.trim()
+
+  optionTextCache.set(option, text)
+
+  return text
+}
+
+function defaultFilter(option: ListOption, query: string): boolean {
+  return isFuzzyMatch(getOptionText(option), query)
+}
+
+/** Pure filter over list options. Groups with no matching children are dropped. */
+export function filterListOptions(
+  options: ListOptions,
+  query: string,
+  filter: ListFilterMethodFn | undefined = defaultFilter,
+): ListOptions {
+  const needle = query.trim()
+
+  if (!needle) {
+    return options
+  }
+
+  const result: ListOptions = []
+
+  for (const entry of options) {
+    if (isListOptionGroup(entry)) {
+      const matched = entry.options.filter((item) => filter(item, needle))
+
+      if (matched.length) {
+        result.push({ ...entry, options: matched })
+      }
+    } else if (filter(entry, needle)) {
+      result.push(entry)
+    }
+  }
+
+  return result
+}
 
 export interface UseListSearchOptions {
-  query: MaybeRefOrGetter<string>
+  filterMethod?: MaybeRefOrGetter<ListFilterMethodFn | undefined>
   remoteFilter?: MaybeRefOrGetter<ListRemoteFilterFn | undefined>
 }
 
 export interface UseListSearchReturn {
-  /** The options the query last settled on, absent before the first answer. */
-  matches: ShallowRef<ListOptions | undefined>
-  remote: ComputedRef<boolean>
-  /** Whether a request is in flight, the debounce window included. */
+  /** The remote answer while a query is active, the locally filtered options otherwise. */
+  listOptions: ComputedRef<ListOptions>
+  /** Whether a remote request is in flight, the debounce window included. */
   pending: ShallowRef<boolean>
-  /** Whether a non-empty query searches remotely, so `matches` replaces the local result. */
-  active: ComputedRef<boolean>
 }
 
-export function useListSearch({ query, remoteFilter }: UseListSearchOptions): UseListSearchReturn {
-  const matches = shallowRef<ListOptions>()
-  const pending = shallowRef(false)
-  const remote = computed(() => typeof toValue(remoteFilter) === 'function')
-  const needle = computed(() => (toValue(query) ?? '').trim())
+export function useListSearch(
+  options: MaybeRefOrGetter<ListOptions>,
+  query: MaybeRefOrGetter<string>,
+  { filterMethod, remoteFilter }: UseListSearchOptions = {},
+): UseListSearchReturn {
+  const { matches, needle, remote, pending } = useRemoteSearch<ListOptionEntry>({
+    query,
+    search: remoteFilter,
+  })
+
+  const localOptions = computed(() =>
+    filterListOptions(toValue(options) ?? [], needle.value, toValue(filterMethod)),
+  )
   const active = computed(() => remote.value && needle.value !== '')
 
-  let requestId = 0
-
-  function invalidate(): void {
-    requestId += 1
-    runSearch.cancel()
-  }
-
-  async function run(query: string): Promise<void> {
-    const at = ++requestId
-    const search = toValue(remoteFilter)
-
-    if (!search) {
-      return
-    }
-
-    try {
-      const result = await search(query)
-
-      if (at === requestId) {
-        matches.value = Array.isArray(result) ? result : []
-      }
-    } catch {
-      if (at === requestId) {
-        matches.value = []
-      }
-    } finally {
-      if (at === requestId) {
-        pending.value = false
-      }
-    }
-  }
-
-  const runSearch = debounce((query: string) => {
-    void run(query)
-  }, REMOTE_SEARCH_DEBOUNCE)
-
-  watch(
-    [remote, needle],
-    ([isRemote, current]) => {
-      invalidate()
-
-      // An answer from an earlier query must not outlive it.
-      if (!isRemote || !current) {
-        matches.value = undefined
-        pending.value = false
-        return
-      }
-
-      // Pending from the keystroke rather than from the request: the debounce window is part of it.
-      pending.value = true
-      runSearch(current)
-    },
-    { immediate: true },
+  const listOptions = computed(() =>
+    active.value ? (matches.value ?? []) : localOptions.value,
   )
 
-  onScopeDispose(invalidate)
-
-  return { matches, remote, pending, active }
+  return { listOptions, pending }
 }

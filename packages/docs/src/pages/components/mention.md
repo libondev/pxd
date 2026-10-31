@@ -208,7 +208,7 @@ const options = [
 | triggers | `string[]` | `() => ['@']` | Keywords that open the popover, in the order they are matched |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the editor, falls back to the config provider size |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match | Predicate deciding which option shows while the query is being typed |
+| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`; `trigger` is the keyword that opened the popover |
 | filter-debounce | `boolean` | `true` | Debounce the `remote-filter` search by 200ms while typing; `false` searches on every keystroke |
 | submit-on-enter | `boolean` | `true` | Submit on `Enter` instead of inserting a line break |

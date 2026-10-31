@@ -25,7 +25,15 @@ export interface ListOptionGroup {
 
 export type ListOptionEntry = ListOption | ListOptionGroup
 
-export type ListOptionSelected = Omit<ListOption, 'as' | 'icon'>
+/** The option an event carries: the data fields, without the render-only `as` and `icon`. */
+export interface ListOptionSelected {
+  label?: ComponentText
+  value: ComponentValue
+  disabled?: boolean
+  variant?: 'default' | 'error' | 'warning'
+  description?: string
+}
+
 export type ListOptions = ListOptionEntry[]
 export type ListModelValue = ComponentValue | ComponentValue[] | null
 

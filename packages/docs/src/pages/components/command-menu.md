@@ -93,7 +93,7 @@ function search(query) {
 | width | `string \| number` | `640px` | Width of the inner dialog, forwarded to `PModal` |
 | model-value | `boolean` | `false` | Whether the full-screen command menu is open |
 | options | `ListOptions` | - | Items or `group` entries, fuzzy-matched against the typed keyword |
-| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match | Predicate deciding which option shows while the keyword is being typed |
+| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the keyword is being typed |
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`; the options it returns replace `options` while the query is active |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | placeholder | `string` | `` | Placeholder for the filter input |

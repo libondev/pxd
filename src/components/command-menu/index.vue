@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import type { ListOptions } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
-import { computed, nextTick, shallowRef, watch } from 'vue'
-import { useListFilter } from '../../composables/_internal/use-list-filter.js'
+import { nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -40,17 +38,10 @@ const listRef = shallowRef<InstanceType<typeof PList>>()
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
-const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword, {
-  filter: () => props.filterMethod,
-})
-const { matches, pending, active } = useListSearch({
-  query: filterKeyword,
+const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
+  filterMethod: () => props.filterMethod,
   remoteFilter: () => props.remoteFilter,
 })
-
-const listOptions = computed<ListOptions>(() =>
-  active.value ? (matches.value ?? []) : filteredOptions.value,
-)
 
 const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => modelValue.value,

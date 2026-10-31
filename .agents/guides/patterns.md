@@ -30,6 +30,18 @@ Reusable code patterns and examples discovered during development.
 - **Use case**: DOM `id`/`for` and registry keys that must be unique within an app, SSR-stable, and not forked by Vue 2.7 vs 3 APIs.
 - **Example**: `getUniqueId` — count on `getCurrentInstance().proxy.$root` (exists on both 2.7 and 3); each `createApp` / `new Vue()` starts at 0. No `useId` / `appContext`.
 
+### Local predicate plus optional remote search behind one composable
+
+- **Use case**: Any list-backed picker that needs a synchronous local filter and an async remote one without every caller re-deriving which result wins.
+- **Example**: `useListSearch(options, query, { filterMethod, remoteFilter })` (`src/composables/_internal/use-list-search.ts`) returns the list to render plus `pending`; the caller passes props through getters (`filterMethod: () => props.filterMethod`) and never builds the precedence itself. `useRemoteSearch<T>` (`use-remote-search.ts`) owns the 200ms debounce, the request-id race and `pending`; each caller keeps its own definition of "active" — the list uses `remote && needle`, `PTree` additionally requires a settled answer so it can keep rendering `data` until then. Prefer returning the composed result (`listOptions`) over the pieces: it keeps the precedence rule in one file and takes an empty query back to the original array by reference.
+
+### Memoize per-option derived strings by object identity
+
+- **Use case**: A per-keystroke scan over a long option list that rebuilds the same string per option (`label + description`) on every pass.
+- **Example**: `getOptionText` caches its result in a `WeakMap<ListOption, string>` keyed by the option object; on a 2000-option list this cut a local filter pass from 0.54ms to 0.21ms, because the concatenation was about half of it. Measure before assuming the matcher dominates: `isFuzzyMatch` already caches its own haystacks by string value, so the remaining per-option cost is the concatenation and the array rebuild.
+  - The cache assumes options are stable objects. Mutating `label` / `description` in place does not refresh it — the same trap as any identity-keyed memo. If a caller needs live edits, replace the option object rather than mutating it.
+  - Text-value-keyed caches (`fuzzy-match.ts`) do not have that problem but cannot help here: building the key costs as much as the string being cached.
+
 ### List selection session
 
 - **Use case**: A popover or menu that updates `v-model` immediately but should only emit `change` when the interaction commits (menu close in multiple mode).

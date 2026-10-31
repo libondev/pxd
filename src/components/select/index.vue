@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
-import type { ListModelValue, ListOptions } from '../list/types'
+import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
-import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
@@ -79,20 +78,9 @@ const { onKeydown } = useListKeyboardController({
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
   keymap: () => (props.filterable ? FILTERABLE_KEYMAP : DEFAULT_KEYMAP),
 })
-const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword, {
-  filter: () => props.filterMethod,
-})
-const { matches, pending, active } = useListSearch({
-  query: filterKeyword,
+const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
+  filterMethod: () => props.filterMethod,
   remoteFilter: () => props.remoteFilter,
-})
-
-const listOptions = computed<ListOptions>(() => {
-  if (active.value) {
-    return matches.value ?? []
-  }
-
-  return props.filterable ? filteredOptions.value : (props.options ?? [])
 })
 
 function onSearchInput(ev: Event) {

@@ -317,17 +317,8 @@ as expected.
 | change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
 
-`change` carries the selected option without `as` and `icon`:
-
-```ts
-interface ListOptionSelected {
-  label?: string | number
-  value: string | number
-  disabled?: boolean
-  variant?: 'default' | 'error' | 'warning'
-  description?: string
-}
-```
+`change` carries the selected option as `ListOptionSelected`: its data fields only, without the
+render-only `as` and `icon`.
 
 ## ListItem Events
 

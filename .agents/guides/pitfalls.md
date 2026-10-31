@@ -228,7 +228,7 @@ a comment beside the fix.
 - **Symptom**: Typing in the filter input above a `PList` selects an option instead — a space picks the active row mid-word.
 - **Cause**: `useListKeyboardController` keymaps written for menus map `' '` to `activate`, and the handler is bound where the menu would own focus. Once an input owns focus, every printable key must reach it.
 - **Fix**: Give the searchable variant its own keymap without `' '` and bind the handler to the input's `keydown` (it bubbles to the popover wrapper anyway, which still covers the non-searchable case). Focus the input on open, or set `auto-focus-element` so the focus trap targets it — a manual `focus()` can otherwise be undone by the trap's `initialFocus`.
-- **Related**: `useListFilter` is synchronous by design; a remote search goes through `remote-filter`, which is request-id guarded — `use-list-search.ts` for `PSelect` / `PCommandMenu`, `use-mention-suggest.ts` for `PMention`.
+- **Related**: `filterListOptions` is synchronous by design; a remote search goes through `remote-filter`, which is request-id guarded — `use-remote-search.ts` behind `useListSearch` for `PSelect` / `PCommandMenu`, `use-mention-suggest.ts` for `PMention`.
 
 ### Selected labels must resolve from the full options, not the filtered ones
 
@@ -272,9 +272,9 @@ a comment beside the fix.
 
 ### A callback option typed `MaybeRefOrGetter` is invoked when passed bare
 
-- **Symptom**: A predicate handed straight to a composable option (`useListFilter(options, query, { filter })`) never filters: `toValue` calls it with no arguments and treats the boolean result as the value.
+- **Symptom**: A predicate handed straight to a composable option (`useListSearch(options, query, { filterMethod })`) never filters: `toValue` calls it with no arguments and treats the boolean result as the value.
 - **Cause**: `toValue` resolves a function by calling it, so `MaybeRefOrGetter<SomeFn>` cannot distinguish a callback value from a getter that returns one. Every callback-shaped `MaybeRefOrGetter` in the repo (`filter-method`, `remote-filter`, `itemSelector`, …) has this shape.
-- **Fix**: Always wrap at the boundary — call sites pass `() => props.filter` — and read the option with `toValue` inside the composable. Never assume a bare function reaches the composable unchanged.
+- **Fix**: Always wrap at the boundary — call sites pass `() => props.filterMethod` — and read the option with `toValue` inside the composable. Never assume a bare function reaches the composable unchanged.
 
 ### A promise prop must not be the return value of a watcher getter
 
