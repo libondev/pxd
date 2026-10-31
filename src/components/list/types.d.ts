@@ -4,6 +4,7 @@ import type {
   ComponentText,
   ComponentValue,
 } from '../../types/shared/props'
+import type { Component } from 'vue'
 
 export interface ListOption {
   as?: ComponentAs
@@ -12,6 +13,7 @@ export interface ListOption {
   disabled?: boolean
   variant?: 'default' | 'error' | 'warning'
   description?: string
+  icon?: string | Component
   keywords?: string[]
   [key: string]: any
 }
@@ -24,7 +26,7 @@ export interface ListOptionGroup {
 
 export type ListOptionEntry = ListOption | ListOptionGroup
 
-export type ListOptionSelected = Omit<ListOption, 'as' | 'keywords'>
+export type ListOptionSelected = Omit<ListOption, 'as' | 'icon' | 'keywords'>
 export type ListOptions = ListOptionEntry[]
 export type ListModelValue = ComponentValue | ComponentValue[] | null
 
@@ -33,15 +35,11 @@ export interface ListProps {
   multiple?: boolean
   modelValue?: ListModelValue
   options?: ListOptionEntry[]
-  /** Class merged into every internally rendered list item. */
   itemClass?: ComponentClass
   defaultActiveIndex?: number
   loading?: boolean
-  /** Enable virtualized rendering for large option sets. */
   virtual?: boolean
-  /** Estimated row height in px when `virtual` is enabled. */
   itemSize?: number
-  /** Extra rows rendered outside the viewport when `virtual` is enabled. */
   overScan?: number
 }
 

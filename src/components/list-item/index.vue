@@ -100,10 +100,19 @@ function onItemClick(ev: MouseEvent) {
     v-bind="attrs"
     @click.stop="onItemClick"
   >
+    <Component
+      :is="icon"
+      v-if="icon"
+      aria-hidden="true"
+      class="pxd-list-item--icon size-em shrink-0"
+    />
+
     <slot>
       <div class="pxd-list-item--content">
         <span>{{ label }}</span>
-        <div v-if="description" class="mbs-0.5 text-foreground-secondary">{{ description }}</div>
+        <div v-if="description" class="mbs-0.5 truncate text-[0.8125rem] text-foreground-secondary">
+          {{ description }}
+        </div>
       </div>
     </slot>
 

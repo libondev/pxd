@@ -95,6 +95,31 @@ const options = [
 </template>
 ```
 
+## Icon
+
+Pass `icon` in an option to render it before the label, the default item content stays in place.
+
+```vue demo
+<script setup>
+import BookmarkIcon from '@gdsicon/vue/bookmark'
+import FileIcon from '@gdsicon/vue/file'
+
+const options = [
+  { label: 'Figma Import', value: 'figma-import', icon: FileIcon },
+  {
+    label: 'Manage Extensions',
+    value: 'manage-extensions',
+    icon: BookmarkIcon,
+    description: 'Jump to manage extensions',
+  },
+]
+</script>
+
+<template>
+  <PList class="w-64" :options="options" />
+</template>
+```
+
 ## Custom item
 
 The `item` slot replaces the content of an option.
@@ -252,6 +277,7 @@ as expected.
 | value | `string \| number` | Value written to the model when the option is selected |
 | label | `string \| number \| null` | Text of the option |
 | description | `string` | Second line below the label |
+| icon | `string \| Component` | Icon rendered before the label |
 | variant | `'default' \| 'error' \| 'warning'` | Text and background colors of the option |
 | disabled | `boolean` | Ignore clicks and skip the option while navigating |
 | as | `string \| object` | Element or component rendered as the option root |
@@ -272,6 +298,7 @@ as expected.
 | value | `string \| number` | - | Value written to the model when the item is selected |
 | label | `string \| number \| null` | - | Text of the item |
 | description | `string` | - | Second line below the label |
+| icon | `string \| Component` | - | Icon rendered before the label |
 | variant | `'default' \| 'error' \| 'warning'` | `'default'` | Text and background colors of the item |
 | disabled | `boolean` | `false` | Ignore clicks and skip the item while navigating |
 | as | `string \| object` | `'div'` | Element or component rendered as the item root |
@@ -291,7 +318,7 @@ as expected.
 | change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
 
-`change` carries the selected option without `as` and `keywords`:
+`change` carries the selected option without `as`, `icon` and `keywords`:
 
 ```ts
 interface ListOptionSelected {

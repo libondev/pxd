@@ -140,7 +140,7 @@ function scrollNavIndexIntoView(navIndex: number) {
 }
 
 function toSelectedOption(option: ListOption): ListOptionSelected {
-  const { as, keywords, ...selectedOption } = option
+  const { as, icon, ...selectedOption } = option
 
   return selectedOption
 }

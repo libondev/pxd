@@ -1,8 +1,5 @@
 <script lang="ts" setup>
 import type { ListGroupProps } from './types'
-import { computed } from 'vue'
-import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
-import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
   name: 'PListGroup',
@@ -10,9 +7,6 @@ defineOptions({
 })
 
 defineProps<ListGroupProps>()
-
-const configProvider = useConfigProvider()
-const minHeightClass = computed(() => BASIC_MIN_HEIGHTS[configProvider.size])
 </script>
 
 <template>
@@ -20,8 +14,7 @@ const minHeightClass = computed(() => BASIC_MIN_HEIGHTS[configProvider.size])
     role="group"
     data-list-group
     :aria-label="label"
-    class="pxd-list-group px-2 py-1 flex items-center text-[0.8125rem] text-foreground-secondary"
-    :class="minHeightClass"
+    class="pxd-list-group px-2 py-1 flex items-center text-[0.8125rem] leading-inherit text-foreground-secondary"
     v-bind="$attrs"
   >
     {{ label }}

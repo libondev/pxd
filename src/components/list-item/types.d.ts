@@ -7,6 +7,7 @@ export interface ListItemProps {
   variant?: ListOption['variant']
   disabled?: ListOption['disabled']
   description?: ListOption['description']
+  icon?: ListOption['icon']
   /** Navigable index within the list (for keyboard / pointer). */
   index?: number
   /** Whether this item is the keyboard/pointer active item. */
