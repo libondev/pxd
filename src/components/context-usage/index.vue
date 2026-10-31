@@ -124,8 +124,15 @@ function onItemLeave() {
           class="pxd-context-usage--dot size-2 shrink-0 rounded-full bg-(--context-usage-color)"
           :style="{ '--context-usage-color': item.color }"
         />
-        <span class="min-w-0 flex-1 truncate text-foreground-secondary">{{ item.name }}</span>
-        <span class="text-gray-900">{{ item.percentage.toFixed(1) }}%</span>
+
+        <span class="min-w-0 flex-1 shrink-0 truncate text-foreground-secondary">{{
+          item.name
+        }}</span>
+        <span class="text-xs text-foreground-secondary tabular-nums">{{ item.tokens }}</span>
+        <span
+          class="text-xs min-w-10 inline-flex justify-end text-foreground-secondary tabular-nums"
+          >{{ item.percentage.toFixed(1) }}%</span
+        >
       </li>
     </ul>
   </div>
