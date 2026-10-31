@@ -622,6 +622,7 @@ defineExpose({
   flex-shrink: 0;
 }
 
+.pxd-resizable--handle::before,
 .pxd-resizable--handle::after {
   content: '';
   position: absolute;
@@ -637,12 +638,20 @@ defineExpose({
   border-left-width: 1px;
   cursor: col-resize;
 
+  &::before,
   &::after {
     top: 0;
     left: 50%;
-    width: 0.25rem;
     height: 100%;
     transform: translateX(-50%);
+  }
+
+  &::before {
+    width: 0.5rem;
+  }
+
+  &::after {
+    width: 0.25rem;
   }
 }
 
@@ -651,12 +660,20 @@ defineExpose({
   border-bottom-width: 1px;
   cursor: row-resize;
 
+  &::before,
   &::after {
     top: 50%;
     left: 0;
     width: 100%;
-    height: 0.25rem;
     transform: translateY(-50%);
+  }
+
+  &::before {
+    height: 0.5rem;
+  }
+
+  &::after {
+    height: 0.25rem;
   }
 }
 
