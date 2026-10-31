@@ -1,14 +1,12 @@
-import type { ListOption, ListOptions } from '../../components/list/types'
+import type { ListFilterMethodFn, ListOption, ListOptions } from '../../components/list/types'
 import type { MaybeRefOrGetter, ComputedRef } from 'vue'
 import { computed } from 'vue'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 
-export type ListFilterFn = (text: string, search: string, keywords: string[]) => boolean
-
 export interface UseListFilterOptions {
-  filter?: ListFilterFn
+  filter?: MaybeRefOrGetter<ListFilterMethodFn | undefined>
 }
 
 export interface UseListFilterReturn {
@@ -18,6 +16,10 @@ export interface UseListFilterReturn {
 
 function getOptionText(option: ListOption): string {
   return `${String(option.label ?? '')}${String(option.description ?? '')}`.trim()
+}
+
+function defaultFilter(option: ListOption, query: string): boolean {
+  return isFuzzyMatch(getOptionText(option), query)
 }
 
 function countListOptions(options: ListOptions): number {
@@ -40,7 +42,7 @@ function countListOptions(options: ListOptions): number {
 export function filterListOptions(
   options: ListOptions,
   query: string,
-  filter: ListFilterFn = isFuzzyMatch,
+  filter: ListFilterMethodFn = defaultFilter,
 ): ListOptions {
   const needle = query.trim()
 
@@ -52,14 +54,12 @@ export function filterListOptions(
 
   for (const entry of options) {
     if (isListOptionGroup(entry)) {
-      const matched = entry.options.filter((item) =>
-        filter(getOptionText(item), needle, item.keywords ?? []),
-      )
+      const matched = entry.options.filter((item) => filter(item, needle))
 
       if (matched.length) {
         result.push({ ...entry, options: matched })
       }
-    } else if (filter(getOptionText(entry), needle, entry.keywords ?? [])) {
+    } else if (filter(entry, needle)) {
       result.push(entry)
     }
   }
@@ -70,10 +70,14 @@ export function filterListOptions(
 export function useListFilter(
   options: MaybeRefOrGetter<ListOptions>,
   keyword: MaybeRefOrGetter<string>,
-  { filter = isFuzzyMatch }: UseListFilterOptions = {},
+  { filter }: UseListFilterOptions = {},
 ): UseListFilterReturn {
   const filteredOptions = computed(() =>
-    filterListOptions(toValue(options) ?? [], toValue(keyword) ?? '', filter),
+    filterListOptions(
+      toValue(options) ?? [],
+      toValue(keyword) ?? '',
+      toValue(filter) ?? defaultFilter,
+    ),
   )
 
   const visibleCount = computed(() => countListOptions(filteredOptions.value))

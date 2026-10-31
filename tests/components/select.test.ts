@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
 import Select from '../../src/components/select/index.vue'
 import { flushPopover } from '../helpers/flush-popover'
@@ -170,6 +170,63 @@ describe('select', () => {
     await nextTick()
 
     expect(wrapper.text()).toContain('Three')
+
+    wrapper.unmount()
+  })
+
+  it('should let a filter predicate decide with the whole option', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: {
+        options,
+        filterable: true,
+        filterMethod: (option) => option.label === 'One',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const searchInput = document.body.querySelector<HTMLInputElement>(
+      '.pxd-select--search',
+    ) as HTMLInputElement
+    searchInput.value = 'zzz'
+    searchInput.dispatchEvent(new Event('input'))
+    await nextTick()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+    expect(items).toHaveLength(1)
+    expect(items[0]?.textContent).toContain('One')
+
+    wrapper.unmount()
+  })
+
+  it('should render the options a remote filter settles on', async () => {
+    const remoteFilter = vi.fn(async (query: string) => [{ label: `Result ${query}`, value: 'r' }])
+
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: {
+        options,
+        filterable: true,
+        remoteFilter,
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const searchInput = document.body.querySelector<HTMLInputElement>(
+      '.pxd-select--search',
+    ) as HTMLInputElement
+    searchInput.value = 'thr'
+    searchInput.dispatchEvent(new Event('input'))
+
+    await vi.waitFor(() => expect(remoteFilter).toHaveBeenCalledWith('thr'))
+    await vi.waitFor(() =>
+      expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(1),
+    )
+    expect(document.body.querySelector('[data-list-item]')?.textContent).toContain('Result thr')
 
     wrapper.unmount()
   })

@@ -681,7 +681,7 @@ describe('tree', () => {
         filterable: true,
         remoteFilter,
         // A local filter that refuses everything still never answers for the query.
-        filter: () => false,
+        filterMethod: () => false,
       },
     })
 

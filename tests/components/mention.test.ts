@@ -112,7 +112,7 @@ describe('mention', () => {
       attachTo: document.body,
       props: {
         options,
-        filterMethod: (query: string) =>
+        remoteFilter: (query: string) =>
           options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
         filterDebounce: false,
       },
@@ -138,7 +138,7 @@ describe('mention', () => {
       attachTo: document.body,
       props: {
         options,
-        filterMethod: (query: string) =>
+        remoteFilter: (query: string) =>
           options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
       },
     })

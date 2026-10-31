@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { ListOptions } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
-import { nextTick, shallowRef, watch } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
+import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -38,7 +40,18 @@ const listRef = shallowRef<InstanceType<typeof PList>>()
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
-const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
+const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword, {
+  filter: () => props.filterMethod,
+})
+const { matches, pending, active } = useListSearch({
+  query: filterKeyword,
+  remoteFilter: () => props.remoteFilter,
+})
+
+const listOptions = computed<ListOptions>(() =>
+  active.value ? (matches.value ?? []) : filteredOptions.value,
+)
+
 const { onKeydown: onListKeydown } = useListKeyboardController({
   enabled: () => modelValue.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -82,7 +95,7 @@ function onInputKeyword(event: Event) {
   filterKeyword.value = input.value.replaceAll("'", '')
 }
 
-watch(filteredOptions, async () => {
+watch(listOptions, async () => {
   await nextTick()
   listRef.value?.setFirstAsActive()
 })
@@ -141,7 +154,8 @@ watch(filteredOptions, async () => {
     <PList
       ref="listRef"
       :virtual="virtual"
-      :options="filteredOptions"
+      :options="listOptions"
+      :loading="pending"
       :default-active-index="0"
       class="sm:max-h-110 h-full"
       @change="onListItemSelect"

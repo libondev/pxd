@@ -1,5 +1,5 @@
-import type { ListOptions } from '../../components/list/types'
-import type { MentionFilterMethod } from '../../components/mention/types'
+import type { ListFilterMethodFn, ListOptions } from '../../components/list/types'
+import type { MentionRemoteFilterFn } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { computed, shallowRef, watch } from 'vue'
 import { debounce } from '../../utils/timing.js'
@@ -10,7 +10,8 @@ export type MentionOptionsResult = ListOptions | Promise<ListOptions>
 
 export interface UseMentionSuggestOptions {
   getOptions: (trigger: string) => MentionOptionsResult
-  getFilterMethod: () => MentionFilterMethod | undefined
+  getFilter: () => ListFilterMethodFn | undefined
+  getRemoteFilter: () => MentionRemoteFilterFn | undefined
   isFilterDebounced: () => boolean
   isDisabled: () => boolean
   visible: Ref<boolean>
@@ -47,7 +48,8 @@ function isOptionsEmpty(options: ListOptions): boolean {
 /** Suggestion popover state: keyword, list options, and async filter races. */
 export function useMentionSuggest({
   getOptions,
-  getFilterMethod,
+  getFilter,
+  getRemoteFilter,
   isFilterDebounced,
   isDisabled,
   visible,
@@ -94,11 +96,11 @@ export function useMentionSuggest({
   async function runFilter(query: string, trigger: string) {
     const requestId = ++filterRequestId
     const trimmed = query.trim()
-    const filterMethod = getFilterMethod()
+    const remoteFilter = getRemoteFilter()
 
-    if (trimmed && filterMethod) {
+    if (trimmed && remoteFilter) {
       await settlePending(requestId, async () => {
-        const result = await filterMethod(trimmed, trigger)
+        const result = await remoteFilter(trimmed, trigger)
         return Array.isArray(result) ? result : []
       })
       return
@@ -108,12 +110,12 @@ export function useMentionSuggest({
 
     if (!(result instanceof Promise)) {
       isPending.value = false
-      listOptions.value = trimmed ? filterListOptions(result, trimmed) : result
+      listOptions.value = trimmed ? filterListOptions(result, trimmed, getFilter()) : result
       return
     }
 
     await settlePending(requestId, async () =>
-      trimmed ? filterListOptions(await result, trimmed) : result,
+      trimmed ? filterListOptions(await result, trimmed, getFilter()) : result,
     )
   }
 
@@ -145,7 +147,7 @@ export function useMentionSuggest({
     const trigger = activeTrigger.value
     filterKeyword.value = query
 
-    if (!query.trim() || !getFilterMethod()) {
+    if (!query.trim() || !getRemoteFilter()) {
       runFilterDebounced.cancel()
       void runFilter(query, trigger)
       return

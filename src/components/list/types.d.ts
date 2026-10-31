@@ -14,7 +14,6 @@ export interface ListOption {
   variant?: 'default' | 'error' | 'warning'
   description?: string
   icon?: string | Component
-  keywords?: string[]
   [key: string]: any
 }
 
@@ -26,9 +25,12 @@ export interface ListOptionGroup {
 
 export type ListOptionEntry = ListOption | ListOptionGroup
 
-export type ListOptionSelected = Omit<ListOption, 'as' | 'icon' | 'keywords'>
+export type ListOptionSelected = Omit<ListOption, 'as' | 'icon'>
 export type ListOptions = ListOptionEntry[]
 export type ListModelValue = ComponentValue | ComponentValue[] | null
+
+export type ListFilterMethodFn = (option: ListOption, query: string) => boolean
+export type ListRemoteFilterFn = (query: string) => ListOptions | Promise<ListOptions>
 
 export interface ListProps {
   loop?: boolean

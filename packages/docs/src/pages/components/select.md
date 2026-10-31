@@ -96,6 +96,81 @@ const options = [
 </template>
 ```
 
+## Custom filter
+
+`filter-method` replaces the built-in fuzzy match with a predicate over the whole option, so aliases
+or any other field can match the query.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+import { isFuzzyMatch } from 'pxd/utils/fuzzy-match'
+
+const value = ref('')
+
+const options = [
+  { label: 'Preferences', value: 'preferences', aliases: ['settings', 'config'] },
+  { label: 'Delete Workspace', value: 'delete-workspace', aliases: ['remove', 'trash'] },
+]
+
+function filter(option, query) {
+  return isFuzzyMatch(`${option.label} ${option.aliases.join(' ')}`, query)
+}
+</script>
+
+<template>
+  <PSelect
+    v-model="value"
+    class="w-full"
+    filterable
+    filter-placeholder="Search"
+    placeholder="Please select"
+    :options="options"
+    :filter-method="filter"
+  />
+</template>
+```
+
+## Remote search
+
+`remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
+keystroke instead of through the local `filter-method`, and the options it returns replace `options`
+while the query is active. Only the latest answer counts, and the list shows its loading mask from
+the keystroke until one lands. Clearing the query restores `options`.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const options = [
+  { label: 'Import Extension', value: 'import-extension' },
+  { label: 'Manage Extensions', value: 'manage-extensions' },
+  { label: 'Flags Explorer', value: 'flags-explorer' },
+]
+
+// A real one would ask a server; the shape it hands back is the same either way.
+function search(query) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(options.filter((option) => option.label.includes(query))), 400)
+  })
+}
+</script>
+
+<template>
+  <PSelect
+    v-model="value"
+    class="w-full"
+    filterable
+    filter-placeholder="Search"
+    placeholder="Please select"
+    :options="options"
+    :remote-filter="search"
+  />
+</template>
+```
+
 ## Virtual
 
 ```vue demo
@@ -166,6 +241,8 @@ const options = [
 | placeholder | `string` | - | Text shown in the trigger while nothing is selected |
 | filterable | `boolean` | `false` | Show a search input at the top of the popover that filters the options |
 | filter-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
+| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match | Predicate deciding which option shows while the query is being typed |
+| remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`; the options it returns replace `options` while the query is active |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
 | close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
 

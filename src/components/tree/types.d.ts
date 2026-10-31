@@ -6,7 +6,6 @@ export interface TreeOption {
   disabled?: boolean
   children?: readonly TreeOption[]
   isLeaf?: boolean
-  keywords?: string[]
   [key: string]: any
 }
 
@@ -23,7 +22,7 @@ export type TreeOptions = TreeOption[]
 
 export type TreeModelValue = ComponentValue | ComponentValue[] | null
 
-export type TreeFilterFn = (node: TreeOption, query: string) => boolean
+export type TreeFilterMethodFn = (node: TreeOption, query: string) => boolean
 
 /** Hands the tree the nodes a query matched, their ancestors included. */
 export type TreeRemoteFilterFn = (query: string) => TreeOptions | Promise<TreeOptions>
@@ -128,7 +127,7 @@ export interface TreeProps {
   load?: TreeLoadFn
   loading?: boolean
   filterable?: boolean
-  filter?: TreeFilterFn
+  filterMethod?: TreeFilterMethodFn
   /** Fetches the nodes a query matched, their ancestors included: giving it searches remotely. */
   remoteFilter?: TreeRemoteFilterFn
   /** Render only the nodes the filter matched, instead of the hits plus their ancestors. */

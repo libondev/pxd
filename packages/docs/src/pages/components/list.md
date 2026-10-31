@@ -281,7 +281,6 @@ as expected.
 | variant | `'default' \| 'error' \| 'warning'` | Text and background colors of the option |
 | disabled | `boolean` | Ignore clicks and skip the option while navigating |
 | as | `string \| object` | Element or component rendered as the option root |
-| keywords | `string[]` | Extra terms matched by the filter of `PCommandMenu` |
 
 ### ListOptionGroup
 
@@ -318,7 +317,7 @@ as expected.
 | change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
 
-`change` carries the selected option without `as`, `icon` and `keywords`:
+`change` carries the selected option without `as` and `icon`:
 
 ```ts
 interface ListOptionSelected {

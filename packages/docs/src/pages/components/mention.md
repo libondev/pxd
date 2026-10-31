@@ -22,7 +22,11 @@ const options = [
 </template>
 ```
 
-## Async filter
+## Remote search
+
+`remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
+keystroke instead of through the local `filter-method`, and the options it returns replace the
+suggestion list while the query is active.
 
 ```vue demo
 <script setup>
@@ -31,13 +35,13 @@ import { ref } from 'vue'
 const value = ref('')
 
 const all = [
-  { label: 'Alice', value: '1', keywords: ['alice'] },
-  { label: 'Bob', value: '2', keywords: ['bob'] },
-  { label: 'Charlie', value: '3', keywords: ['charlie'] },
-  { label: 'Diana', value: '4', keywords: ['diana'] },
+  { label: 'Alice', value: '1' },
+  { label: 'Bob', value: '2' },
+  { label: 'Charlie', value: '3' },
+  { label: 'Diana', value: '4' },
 ]
 
-async function filterMethod(query) {
+async function search(query) {
   await new Promise((resolve) => setTimeout(resolve, 200))
   const needle = query.toLowerCase()
   return all.filter((item) => item.label.toLowerCase().includes(needle))
@@ -48,7 +52,7 @@ async function filterMethod(query) {
   <PMention
     v-model="value"
     class="max-w-md"
-    :filter-method="filterMethod"
+    :remote-filter="search"
     placeholder="Type @ then search in the popover"
     search-placeholder="Filter people"
   />
@@ -95,7 +99,7 @@ function optionsFor(trigger) {
 
 ## Per-trigger search
 
-`filter-method` receives the keyword as its second argument, so one search can serve every trigger.
+`remote-filter` receives the keyword as its second argument, so one search can serve every trigger.
 
 ```vue demo
 <script setup>
@@ -106,7 +110,7 @@ const value = ref('')
 const files = ['src/App.vue', 'src/router.ts', 'src/utils/mention-html.ts']
 const commands = ['review', 'test', 'lint']
 
-async function filterMethod(query, trigger) {
+async function search(query, trigger) {
   await new Promise((resolve) => setTimeout(resolve, 200))
   const source = trigger === '/' ? commands : files
   const needle = query.toLowerCase()
@@ -122,7 +126,7 @@ async function filterMethod(query, trigger) {
     v-model="value"
     class="max-w-md"
     :triggers="['@', '/']"
-    :filter-method="filterMethod"
+    :remote-filter="search"
     placeholder="Type @ for a file or / for a command"
     search-placeholder="Filter..."
   />
@@ -204,8 +208,9 @@ const options = [
 | triggers | `string[]` | `() => ['@']` | Keywords that open the popover, in the order they are matched |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the editor, falls back to the config provider size |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| filter-method | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Async/sync search; `trigger` is the keyword that opened the popover |
-| filter-debounce | `boolean` | `true` | Debounce the `filter-method` search by 200ms while typing; `false` filters on every keystroke |
+| filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match | Predicate deciding which option shows while the query is being typed |
+| remote-filter | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`; `trigger` is the keyword that opened the popover |
+| filter-debounce | `boolean` | `true` | Debounce the `remote-filter` search by 200ms while typing; `false` searches on every keystroke |
 | submit-on-enter | `boolean` | `true` | Submit on `Enter` instead of inserting a line break |
 | rows | `number` | `1` | Visible lines; `1` keeps the size-based minimum height |
 | auto-grow | `boolean` | `true` | Grow the editor with its content; `false` fixes the height at `rows` with internal scrolling |

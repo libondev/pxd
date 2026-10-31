@@ -1,7 +1,7 @@
 import type { ComponentClass, ComponentSize } from '../../types/shared/props'
-import type { ListOptionSelected, ListOptions } from '../list/types'
+import type { ListFilterMethodFn, ListOptionSelected, ListOptions } from '../list/types'
 
-export type MentionFilterMethod = (
+export type MentionRemoteFilterFn = (
   query: string,
   trigger: string,
 ) => ListOptions | Promise<ListOptions>
@@ -14,7 +14,8 @@ export interface MentionProps {
   triggers?: string[]
   size?: ComponentSize
   virtual?: boolean
-  filterMethod?: MentionFilterMethod
+  filterMethod?: ListFilterMethodFn
+  remoteFilter?: MentionRemoteFilterFn
   filterDebounce?: boolean
   placeholder?: string
   searchPlaceholder?: string

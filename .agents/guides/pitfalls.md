@@ -228,7 +228,7 @@ a comment beside the fix.
 - **Symptom**: Typing in the filter input above a `PList` selects an option instead — a space picks the active row mid-word.
 - **Cause**: `useListKeyboardController` keymaps written for menus map `' '` to `activate`, and the handler is bound where the menu would own focus. Once an input owns focus, every printable key must reach it.
 - **Fix**: Give the searchable variant its own keymap without `' '` and bind the handler to the input's `keydown` (it bubbles to the popover wrapper anyway, which still covers the non-searchable case). Focus the input on open, or set `auto-focus-element` so the focus trap targets it — a manual `focus()` can otherwise be undone by the trap's `initialFocus`.
-- **Related**: `MentionFilterMethod` aside, `useListFilter` is synchronous; a remote filter needs the request-id guarding in `use-mention-suggest.ts`.
+- **Related**: `useListFilter` is synchronous by design; a remote search goes through `remote-filter`, which is request-id guarded — `use-list-search.ts` for `PSelect` / `PCommandMenu`, `use-mention-suggest.ts` for `PMention`.
 
 ### Selected labels must resolve from the full options, not the filtered ones
 
@@ -269,6 +269,12 @@ a comment beside the fix.
 - **Symptom**: Releasing a drag back on the row it started from toggles that row — it gets selected, checked or expanded, none of which the user asked for.
 - **Cause**: The browser dispatches a `click` after `pointerup` whenever both share an ancestor, and a drag that returns to its starting row does exactly that. A drag crossing into another row sends the click to the common ancestor instead, which is why only the same-row case misbehaves.
 - **Fix**: Keep a flag for the gesture that actually moved something, clear it on the next `pointerdown`, and ignore clicks while it is set (`didDrag()` in `use-tree.ts`, checked by the tree's click handlers). Clearing it at the end of the gesture is not enough: the click arrives after the drop has already been committed and the session reset.
+
+### A callback option typed `MaybeRefOrGetter` is invoked when passed bare
+
+- **Symptom**: A predicate handed straight to a composable option (`useListFilter(options, query, { filter })`) never filters: `toValue` calls it with no arguments and treats the boolean result as the value.
+- **Cause**: `toValue` resolves a function by calling it, so `MaybeRefOrGetter<SomeFn>` cannot distinguish a callback value from a getter that returns one. Every callback-shaped `MaybeRefOrGetter` in the repo (`filter-method`, `remote-filter`, `itemSelector`, …) has this shape.
+- **Fix**: Always wrap at the boundary — call sites pass `() => props.filter` — and read the option with `toValue` inside the composable. Never assume a bare function reaches the composable unchanged.
 
 ### A promise prop must not be the return value of a watcher getter
 

@@ -1,6 +1,12 @@
 import type { ComponentSize, ComponentShape } from '../../types/shared/props'
 import type { ButtonVariant } from '../button/types'
-import type { ListModelValue, ListOption, ListOptions } from '../list/types'
+import type {
+  ListFilterMethodFn,
+  ListModelValue,
+  ListOption,
+  ListOptions,
+  ListRemoteFilterFn,
+} from '../list/types'
 
 export interface SelectProps {
   size?: ComponentSize
@@ -15,6 +21,8 @@ export interface SelectProps {
   placeholder?: string
   filterable?: boolean
   filterPlaceholder?: string
+  filterMethod?: ListFilterMethodFn
+  remoteFilter?: ListRemoteFilterFn
   labelFormat?: (items: ListOptions) => string
   closeOnPressEscape?: boolean
 }

@@ -8,7 +8,7 @@ const FILES = [{ label: 'App.vue', value: 'src/App.vue' }]
 const COMMANDS = [{ label: 'review', value: 'review' }]
 
 function setup(options: {
-  filterMethod?: (query: string, trigger: string) => unknown
+  remoteFilter?: (query: string, trigger: string) => unknown
   resolve?: (trigger: string) => ListOption[]
 }) {
   const visible = ref(false)
@@ -20,7 +20,8 @@ function setup(options: {
         requested.push(trigger)
         return options.resolve ? options.resolve(trigger) : trigger === '/' ? COMMANDS : FILES
       },
-      getFilterMethod: () => options.filterMethod as never,
+      getFilter: () => undefined,
+      getRemoteFilter: () => options.remoteFilter as never,
       isFilterDebounced: () => true,
       isDisabled: () => false,
       visible,
@@ -68,14 +69,14 @@ describe('useMentionSuggest', () => {
   it('passes the opening trigger to an async filter', async () => {
     vi.useFakeTimers()
 
-    const filterMethod = vi.fn((query: string) => [{ label: query, value: query }])
-    const { api } = setup({ filterMethod })
+    const remoteFilter = vi.fn((query: string) => [{ label: query, value: query }])
+    const { api } = setup({ remoteFilter })
 
     api.open('/')
     api.setKeyword('rev')
     await vi.advanceTimersByTimeAsync(200)
 
-    expect(filterMethod).toHaveBeenCalledWith('rev', '/')
+    expect(remoteFilter).toHaveBeenCalledWith('rev', '/')
 
     api.unmount()
   })
@@ -99,7 +100,7 @@ describe('useMentionSuggest', () => {
     let resolveFilter!: (options: ListOption[]) => void
 
     const { api } = setup({
-      filterMethod: () =>
+      remoteFilter: () =>
         new Promise<ListOption[]>((resolve) => {
           resolveFilter = resolve
         }),

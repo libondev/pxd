@@ -1,4 +1,9 @@
-import type { ListOptions, ListOptionSelected } from '../list/types'
+import type {
+  ListFilterMethodFn,
+  ListOptions,
+  ListOptionSelected,
+  ListRemoteFilterFn,
+} from '../list/types'
 
 export interface CommandMenuProps {
   width?: string | number
@@ -9,6 +14,8 @@ export interface CommandMenuProps {
   closeOnSelectItem?: boolean
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
+  filterMethod?: ListFilterMethodFn
+  remoteFilter?: ListRemoteFilterFn
 }
 
 export interface CommandMenuEmits {

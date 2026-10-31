@@ -6,6 +6,7 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListFilter } from '../../composables/_internal/use-list-filter.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
+import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useSelectedListItems } from '../../composables/_internal/use-selected-list-item.js'
@@ -78,11 +79,21 @@ const { onKeydown } = useListKeyboardController({
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
   keymap: () => (props.filterable ? FILTERABLE_KEYMAP : DEFAULT_KEYMAP),
 })
-const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword)
+const { filteredOptions } = useListFilter(() => props.options ?? [], filterKeyword, {
+  filter: () => props.filterMethod,
+})
+const { matches, pending, active } = useListSearch({
+  query: filterKeyword,
+  remoteFilter: () => props.remoteFilter,
+})
 
-const listOptions = computed<ListOptions>(() =>
-  props.filterable ? filteredOptions.value : (props.options ?? []),
-)
+const listOptions = computed<ListOptions>(() => {
+  if (active.value) {
+    return matches.value ?? []
+  }
+
+  return props.filterable ? filteredOptions.value : (props.options ?? [])
+})
 
 function onSearchInput(ev: Event) {
   filterKeyword.value = (ev.target as HTMLInputElement).value
@@ -204,6 +215,7 @@ watch(listOptions, async () => {
         ref="listRef"
         :model-value="selected"
         :options="listOptions"
+        :loading="pending"
         :multiple="multiple"
         :virtual="virtual"
         :loop="!filterable"

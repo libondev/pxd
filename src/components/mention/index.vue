@@ -66,7 +66,8 @@ const {
   setKeyword,
 } = useMentionSuggest({
   getOptions: resolveOptions,
-  getFilterMethod: () => props.filterMethod,
+  getFilter: () => props.filterMethod,
+  getRemoteFilter: () => props.remoteFilter,
   isFilterDebounced: () => props.filterDebounce,
   isDisabled: () => props.disabled,
   visible: popoverVisible,

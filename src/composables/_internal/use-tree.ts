@@ -2,7 +2,7 @@ import type {
   TreeDropPosition,
   TreeDropTarget,
   TreeFieldNames,
-  TreeFilterFn,
+  TreeFilterMethodFn,
   TreeMoveDetail,
   TreeModelValue,
   TreeOption,
@@ -189,7 +189,7 @@ function defaultFilter(
   query: string,
   fields: ResolvedTreeFieldNames,
 ): boolean {
-  return isFuzzyMatch(String(node[fields.label] ?? ''), query, node.keywords)
+  return isFuzzyMatch(String(node[fields.label] ?? ''), query)
 }
 
 export interface TreeMatched {
@@ -202,7 +202,7 @@ export interface TreeMatched {
 export function useTreeMatched(
   index: MaybeRefOrGetter<TreeIndex>,
   query: MaybeRefOrGetter<string>,
-  filter: MaybeRefOrGetter<TreeFilterFn | undefined>,
+  filter: MaybeRefOrGetter<TreeFilterMethodFn | undefined>,
   fieldNames?: MaybeRefOrGetter<TreeFieldNames | undefined>,
 ): ComputedRef<TreeMatched> {
   return computed(() => {

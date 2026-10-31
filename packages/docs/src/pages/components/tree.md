@@ -215,7 +215,7 @@ const data = [
 ## Remote search
 
 Giving `remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
-keystroke instead of through the local `filter`. It hands back the matched nodes with their
+keystroke instead of through the local `filter-method`. It hands back the matched nodes with their
 ancestors, and that forest replaces `data` while the query is active, at its real depths with the
 chains to a hit opened; `search-matches-only` flattens it. Only the latest answer counts, and the
 field spins from the keystroke until one lands: before the first answer the `empty` slot covers the
@@ -582,8 +582,8 @@ function load({ node }, resolve) {
 | load | `(detail: TreeLoadDetail, resolve: TreeLoadResolve, reject: TreeLoadReject) => void` | - | Fetch the children of a node nothing else provided: `resolve` hands them over, `reject` leaves it for the next expand |
 | loading | `boolean` | `false` | Cover the tree with a loading mask; the search input and the keyboard are ignored |
 | filterable | `boolean` | `false` | Render the search field |
-| filter | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding whether a node matches |
-| remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter`: it returns the matched nodes with their ancestors, which replace `data` while the query is active |
+| filter-method | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding which node shows while the query is being typed |
+| remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter-method`: it returns the matched nodes with their ancestors, which replace `data` while the query is active |
 | highlight-match | `boolean` | `false` | Mark the matched substring of the label; a fuzzy hit that is not a contiguous run stays unmarked |
 | search-placeholder | `string` | - | Placeholder of the search field |
 | search-value | `string` | - | Controlled search query |
@@ -601,7 +601,6 @@ Fields are read through `field-names`: `value`, `label`, `children`, `disabled` 
 | children | `TreeOption[]` | Child nodes; only a non-empty array marks a parent, so an empty one leaves no arrow |
 | isLeaf | `boolean` | Outranks the data: `true` is a leaf with no arrow, never handed to `load`. `false` keeps the arrow on a node that has no children yet |
 | disabled | `boolean` | Ignore selection and skip the node while navigating |
-| keywords | `string[]` | Extra terms matched by the built-in filter |
 
 ### TreeLoadDetail
 

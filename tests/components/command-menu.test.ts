@@ -135,4 +135,56 @@ describe('command-menu', () => {
 
     wrapper.unmount()
   })
+
+  it('should let a filter predicate decide with the whole option', async () => {
+    const wrapper = mount(CommandMenu, {
+      props: {
+        modelValue: true,
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+        filterMethod: (option) => option.label === 'Option 1',
+      },
+    })
+
+    await vi.waitFor(() => expect(document.body.querySelector('input')).not.toBeNull())
+
+    const input = document.body.querySelector('input') as HTMLInputElement
+    input.value = 'zzz'
+    input.dispatchEvent(new Event('input'))
+    await nextTick()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+    expect(items).toHaveLength(1)
+    expect(items[0]?.textContent).toContain('Option 1')
+
+    wrapper.unmount()
+  })
+
+  it('should render the options a remote filter settles on', async () => {
+    const remoteFilter = vi.fn(async (query: string) => [{ label: `Result ${query}`, value: 'r' }])
+
+    const wrapper = mount(CommandMenu, {
+      props: {
+        modelValue: true,
+        options: [{ label: 'Option 1', value: '1' }],
+        remoteFilter,
+      },
+    })
+
+    await vi.waitFor(() => expect(document.body.querySelector('input')).not.toBeNull())
+
+    const input = document.body.querySelector('input') as HTMLInputElement
+    input.value = 'abc'
+    input.dispatchEvent(new Event('input'))
+
+    await vi.waitFor(() => expect(remoteFilter).toHaveBeenCalledWith('abc'))
+    await vi.waitFor(() =>
+      expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(1),
+    )
+    expect(document.body.querySelector('[data-list-item]')?.textContent).toContain('Result abc')
+
+    wrapper.unmount()
+  })
 })

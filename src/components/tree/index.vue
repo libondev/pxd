@@ -153,7 +153,7 @@ const index = useTreeIndex(
 const localMatched = useTreeMatched(
   index,
   () => searchValue.value,
-  () => props.filter,
+  () => props.filterMethod,
   () => fields.value,
 )
 

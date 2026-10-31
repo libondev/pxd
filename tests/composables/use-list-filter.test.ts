@@ -1,3 +1,4 @@
+import type { ListFilterMethodFn } from '../../src/components/list/types'
 import { describe, expect, it } from 'vite-plus/test'
 import { ref } from 'vue'
 import { filterListOptions, useListFilter } from '../../src/composables/_internal/use-list-filter'
@@ -77,5 +78,29 @@ describe('useListFilter', () => {
     )
 
     expect(result).toEqual([])
+  })
+
+  it('should hand the whole option to a custom filter', () => {
+    const options = [{ label: 'Preferences', value: '1', aliases: ['settings', 'config'] }]
+    const filter: ListFilterMethodFn = (option, query) =>
+      [...(option.aliases ?? []), String(option.label)].some((term) => term.includes(query))
+
+    expect(filterListOptions(options, 'settings', filter)).toEqual(options)
+    expect(filterListOptions(options, 'nothing', filter)).toEqual([])
+  })
+
+  it('should read a late filter on the next run', () => {
+    const options = [
+      { label: 'Hello', value: '1' },
+      { label: 'World', value: '2' },
+    ]
+    const filter = ref<ListFilterMethodFn>()
+    const keyword = ref('zzz')
+    const { filteredOptions } = useListFilter(options, keyword, { filter: () => filter.value })
+
+    expect(filteredOptions.value).toEqual([])
+
+    filter.value = () => true
+    expect(filteredOptions.value).toEqual(options)
   })
 })
