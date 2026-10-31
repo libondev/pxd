@@ -22,10 +22,10 @@ describe('reasoning', () => {
     wrapper.unmount()
   })
 
-  it('renders the locale title by default', () => {
+  it('renders an empty title when none is provided', () => {
     const wrapper = mount(Reasoning)
 
-    expect(wrapper.find('.pxd-reasoning--title').text()).toBe('Thinking...')
+    expect(wrapper.find('.pxd-reasoning--title').text()).toBe('')
 
     wrapper.unmount()
   })

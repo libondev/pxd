@@ -16,7 +16,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <PReasoning :streaming="streaming">
+  <PReasoning :streaming="streaming" :title="streaming ? 'Thinking...' : 'Thought'">
     <div v-for="i in 5" :key="i">
       <p>This is a reasoning component. {{ i }}</p>
     </div>
@@ -28,7 +28,7 @@ setTimeout(() => {
 
 ```vue demo
 <template>
-  <PReasoning variant="simple" :expand="false">
+  <PReasoning variant="simple" :expand="false" title="Thought">
     <div v-for="i in 5" :key="i">
       <p>This is a reasoning component. {{ i }}</p>
     </div>
@@ -41,6 +41,6 @@ setTimeout(() => {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
-| streaming | `boolean` | `true` | Streaming state; drives the shimmer and the title (`thinking` / `thought`) |
+| streaming | `boolean` | `true` | Streaming state; drives the shimmer |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
-| title | `ComponentText` | - | Title text; falls back to `locale.reasoning.thinking` / `thought` |
+| title | `ComponentText` | - | Title text |

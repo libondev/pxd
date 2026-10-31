@@ -4,7 +4,6 @@ import BrainIcon from '@gdsicon/vue/brain'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { shallowRef } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
-import { useConfigProvider } from '../../contexts/config-provider.js'
 import PShimmerText from '../shimmer-text/index.vue'
 
 defineOptions({
@@ -20,7 +19,6 @@ const props = withDefaults(defineProps<ReasoningProps>(), {
 
 const contentRef = shallowRef<HTMLElement>()
 
-const configProvider = useConfigProvider()
 const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
@@ -48,7 +46,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
       <BrainIcon class="size-em shrink-0" />
 
       <PShimmerText class="pxd-reasoning--title leading-inherit" :disabled="!streaming">
-        {{ title ?? configProvider.locale.reasoning[streaming ? 'thinking' : 'thought'] }}
+        {{ title }}
       </PShimmerText>
 
       <ChevronRightIcon
