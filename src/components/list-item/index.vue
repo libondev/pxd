@@ -108,9 +108,14 @@ function onItemClick(ev: MouseEvent) {
     />
 
     <slot>
-      <div class="pxd-list-item--content">
-        <span>{{ label }}</span>
-        <div v-if="description" class="mbs-0.5 truncate text-[0.8125rem] text-foreground-secondary">
+      <div class="pxd-list-item--content min-w-0 flex-1">
+        <span class="min-w-0 truncate">{{ label }}</span>
+        <div
+          v-if="description"
+          :title="description"
+          :aria-label="description"
+          class="min-w-0 w-full truncate text-[0.8125rem] text-foreground-secondary"
+        >
           {{ description }}
         </div>
       </div>
