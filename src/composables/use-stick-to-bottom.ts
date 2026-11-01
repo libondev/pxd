@@ -2,7 +2,7 @@ import type { Nullable } from '../types/shared/utils'
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { shallowRef, watch, onScopeDispose } from 'vue'
 import { getElement } from '../utils/dom.js'
-import { caf, cachedOff, cachedOn, raf } from '../utils/event.js'
+import { caf, cachedOff, cachedOn, raf, throttleByRaf } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
 import { useMutationObserver } from './use-mutation-observer.js'
@@ -285,7 +285,12 @@ export function useStickToBottom(
   }
 
   if (!isServer()) {
-    useResizeObserver(() => [getContentEl(), getContainerEl()], stickIfNeeded)
+    // A resize callback may not write layout: scrolling inside one delivery re-enters it and
+    // Chromium drops the rest of the frame ("ResizeObserver loop completed with undelivered
+    // notifications"). Deferred a frame, a burst of content and container entries costs one stick.
+    const scheduleStick = throttleByRaf(stickIfNeeded)
+
+    useResizeObserver(() => [getContentEl(), getContainerEl()], scheduleStick)
 
     useMutationObserver(() => getContentEl(), stickIfNeeded, {
       childList: true,
@@ -327,6 +332,7 @@ export function useStickToBottom(
 
     onScopeDispose(() => {
       cancelJudge()
+      scheduleStick.cancel()
 
       if (settleFrame) {
         caf(settleFrame)
