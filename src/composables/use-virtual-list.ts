@@ -93,6 +93,12 @@ export function useVirtualList<Options extends VirtualListOptions>(
     scrollPaddingStart: options.scrollPaddingStart,
     scrollPaddingEnd: options.scrollPaddingEnd,
     laneAssignmentMode: 'measured',
+    // A measurement written inside the observer's own delivery re-triggers it: the item's new size
+    // moves the container, whose resize the same pass is still reporting, and Chromium gives up on
+    // the rest of the frame ("ResizeObserver loop completed with undelivered notifications"). The
+    // option moves both observer writes - the container rect and the item measurements - to the
+    // next frame, which is where a measurement belongs anyway.
+    useAnimationFrameWithResizeObserver: true,
     observeElementRect,
     observeElementOffset,
     scrollToFn: elementScroll,
