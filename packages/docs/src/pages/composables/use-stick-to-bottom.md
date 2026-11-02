@@ -49,6 +49,8 @@ interface UseStickToBottomReturn {
 
 ResizeObserver watches `content` and `container`. MutationObserver watches `content` for child and text changes; `action` is observed separately for style/class toggles, because hiding it changes the scroll range without resizing any box.
 
+A consumer that produces its own geometry — a virtual list sizing its content from measurements — reports it by calling `stickIfNeeded` once the height has been applied. That growth arrives as a style on the container, which no node observer sees, and the resize delivery for it lands after the paint it should have corrected.
+
 ## Returns
 
 | Name | Type | Description |

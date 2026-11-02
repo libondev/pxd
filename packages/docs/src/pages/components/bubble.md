@@ -201,7 +201,7 @@ function addMessage() {
 | data | `any[]` | - | Data array rendered through the `item` slot |
 | virtual | `boolean` | `false` | Enable virtual scrolling, requires `data` |
 | data-key | `string` | - | Unique key field name for list items |
-| item-size | `number` | `80` | Estimated item height in pixels when `virtual` is enabled |
+| item-size | `number \| ((index: number) => number)` | `80` | Height of an unmeasured row when `virtual` is enabled, or a per-index guess |
 | over-scan | `number` | `3` | Number of items to render beyond the visible area when `virtual` is enabled |
 
 ## BubbleGroup Slots

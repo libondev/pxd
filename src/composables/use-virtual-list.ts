@@ -7,7 +7,7 @@ import {
   observeElementRect,
   Virtualizer,
 } from '@tanstack/virtual-core'
-import { computed, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
+import { computed, nextTick, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
 import { toValue } from '../utils/helper.js'
 import { isNil } from '../utils/is.js'
 
@@ -28,7 +28,7 @@ export interface VirtualListOptions {
   status?: 'loading' | 'finished' | 'error' | ''
   dataKey?: string
   items?: readonly any[]
-  itemSize?: number
+  itemSize?: number | ((index: number) => number)
   overScan?: number
   columnGap?: number
   columnCount?: number
@@ -36,6 +36,12 @@ export interface VirtualListOptions {
   scrollPaddingEnd?: number
   onBottom?: () => void | Promise<void>
   bottomThreshold?: number
+  /**
+   * Something holds the bottom of the viewport. Its size is final for the frame when this fires and
+   * `nextTick` reaches it, so rows are measured before the paint instead of on the resize delivery
+   * that would follow it.
+   */
+  onGeometryChange?: () => void
 }
 
 export interface VirtualListScrollToOptions {
@@ -65,10 +71,18 @@ export function useVirtualList<Options extends VirtualListOptions>(
 ) {
   let reachBottomFired = false
   let cleanup: (() => void) | undefined
+  let reportedTotal = -1
+  let measureQueued = false
 
   const triggerVersion = shallowRef(0)
 
   const getEnabled = () => toValue(options.enabled) !== false
+
+  function getItemSize(index: number) {
+    const size = options.itemSize
+
+    return typeof size === 'function' ? size(index) : (size ?? DEFAULTS.itemSize)
+  }
 
   function getItemKey(index: number): string | number {
     if (options.dataKey) {
@@ -82,10 +96,34 @@ export function useVirtualList<Options extends VirtualListOptions>(
     return index
   }
 
+  // Every reactive mirror below derives from an imperative cache, and a holder of the bottom has to
+  // hear about a finished layout before the frame paints.
+  function bumpGeometry() {
+    triggerVersion.value++
+
+    const notify = options.onGeometryChange
+
+    if (!notify) {
+      return
+    }
+
+    // The measurement cache is memoized on count and options, so the total is stale until a read
+    virtualizer.getVirtualItems()
+
+    const total = virtualizer.getTotalSize()
+
+    if (total === reportedTotal) {
+      return
+    }
+
+    reportedTotal = total
+    void nextTick(notify)
+  }
+
   const virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
     count: 0,
     getScrollElement: () => (getEnabled() ? (toValue(containerRef) ?? null) : null),
-    estimateSize: () => options.itemSize ?? DEFAULTS.itemSize,
+    estimateSize: getItemSize,
     getItemKey,
     overscan: options.overScan ?? DEFAULTS.overScan,
     lanes: options.columnCount ?? DEFAULTS.columnCount,
@@ -107,7 +145,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
         return
       }
 
-      triggerVersion.value++
+      bumpGeometry()
 
       const { status = DEFAULTS.status, items } = options
 
@@ -127,7 +165,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
       }
 
       const totalSize = instance.getTotalSize()
-      const threshold = bottomThreshold ?? itemSize
+      const threshold =
+        bottomThreshold ?? (typeof itemSize === 'number' ? itemSize : DEFAULTS.itemSize)
       const scrollBottom = scrollOffset + scrollRect.height
 
       if (scrollBottom >= totalSize - threshold) {
@@ -183,6 +222,40 @@ export function useVirtualList<Options extends VirtualListOptions>(
     return virtualizer.getTotalSize()
   })
 
+  const pendingMeasure = new Set<HTMLElement>()
+
+  // Reads first, writes after: a patch costs one layout instead of one per row, and the sizes land
+  // before the paint a holder of the bottom would otherwise correct a frame later.
+  function flushMeasure() {
+    const sizes: Array<[number, number]> = []
+
+    pendingMeasure.forEach((el) => {
+      const size = el.offsetHeight
+
+      if (size) {
+        sizes.push([virtualizer.indexFromElement(el), size])
+      }
+    })
+
+    pendingMeasure.clear()
+
+    for (const [index, size] of sizes) {
+      virtualizer.resizeItem(index, size)
+    }
+  }
+
+  function scheduleMeasure() {
+    if (measureQueued) {
+      return
+    }
+
+    measureQueued = true
+    void nextTick(() => {
+      measureQueued = false
+      flushMeasure()
+    })
+  }
+
   function measureElement(el: Element | ComponentPublicInstance | null) {
     if (!el) {
       virtualizer.measureElement(null)
@@ -195,9 +268,18 @@ export function useVirtualList<Options extends VirtualListOptions>(
 
     const htmlEl = el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el
     virtualizer.measureElement(htmlEl)
+
+    // The virtualizer skips its own ref-time read while it believes it is scrolling, and a holder
+    // of the bottom scrolls on every growth: the window this mounts would paint at estimates.
+    if (options.onGeometryChange) {
+      pendingMeasure.add(htmlEl)
+      scheduleMeasure()
+    }
   }
 
-  function updateVirtualizer() {
+  // Options, count and observer lifetime move together: one entry point keeps `_willUpdate` from
+  // running against a container the observers no longer watch.
+  function sync() {
     const enabled = getEnabled()
 
     virtualizer.setOptions({
@@ -208,60 +290,23 @@ export function useVirtualList<Options extends VirtualListOptions>(
       gap: options.columnGap ?? DEFAULTS.columnGap,
     })
 
-    if (enabled) {
-      virtualizer._willUpdate()
-    }
+    if (!enabled) {
+      cleanup?.()
+      cleanup = undefined
+      pendingMeasure.clear()
+      bumpGeometry()
 
-    triggerVersion.value++
-  }
-
-  function mountObservers() {
-    if (cleanup || !getEnabled()) {
       return
     }
 
     virtualizer._willUpdate()
-    cleanup = virtualizer._didMount()
-  }
 
-  function unmountObservers() {
-    cleanup?.()
-    cleanup = undefined
-    triggerVersion.value++
-  }
-
-  watch(
-    () => [
-      getEnabled(),
-      options.itemSize,
-      options.dataKey,
-      options.columnCount,
-      options.columnGap,
-      options.overScan,
-      options.items,
-      options.items?.length,
-    ],
-    () => {
-      if (getEnabled()) {
-        updateVirtualizer()
-        mountObservers()
-      } else {
-        unmountObservers()
-        updateVirtualizer()
-      }
-    },
-  )
-
-  onMounted(() => {
-    if (getEnabled()) {
-      mountObservers()
-      updateVirtualizer()
+    if (!cleanup) {
+      cleanup = virtualizer._didMount()
     }
-  })
 
-  onScopeDispose(() => {
-    unmountObservers()
-  })
+    bumpGeometry()
+  }
 
   function scrollToIndex(...args: Parameters<typeof virtualizer.scrollToIndex>) {
     if (!getEnabled()) {
@@ -283,6 +328,29 @@ export function useVirtualList<Options extends VirtualListOptions>(
     }
     virtualizer.scrollBy(...args)
   }
+
+  watch(
+    () => [
+      getEnabled(),
+      typeof options.itemSize === 'function' ? 'fn' : options.itemSize,
+      options.dataKey,
+      options.columnCount,
+      options.columnGap,
+      options.overScan,
+      options.items,
+      options.items?.length,
+    ],
+    sync,
+  )
+
+  onMounted(sync)
+
+  onScopeDispose(() => {
+    cleanup?.()
+    cleanup = undefined
+    pendingMeasure.clear()
+    triggerVersion.value++
+  })
 
   return {
     virtualItems,

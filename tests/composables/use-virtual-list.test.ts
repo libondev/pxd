@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { shallowRef } from 'vue'
+import { nextTick, shallowRef } from 'vue'
 import { useVirtualList } from '../../src/composables/use-virtual-list'
 import { useSetupWrapper } from '../helpers/setup'
 
@@ -108,6 +108,48 @@ describe('useVirtualList', () => {
     const virtualizer = getVirtualizer()
     expect(virtualizer.options.scrollPaddingStart).toBe(0)
     expect(virtualizer.options.scrollPaddingEnd).toBe(0)
+    unmount()
+  })
+
+  it('guesses per index when itemSize is a function', () => {
+    const container = document.createElement('div')
+    const { totalSize, unmount } = useSetupWrapper(() =>
+      useVirtualList(() => container, {
+        dataKey: 'id',
+        items: [{ id: 0 }, { id: 1 }, { id: 2 }],
+        itemSize: (index: number) => (index === 0 ? 100 : 50),
+      }),
+    )
+
+    expect(totalSize.value).toBe(200)
+    unmount()
+  })
+
+  it('reports a finished geometry once the total size lands', async () => {
+    const container = document.createElement('div')
+    const items = shallowRef([{ id: 0 }, { id: 1 }])
+    const seen: number[] = []
+
+    const { totalSize, unmount } = useSetupWrapper(() =>
+      useVirtualList(() => container, {
+        dataKey: 'id',
+        get items() {
+          return items.value
+        },
+        itemSize: 50,
+        onGeometryChange: () => seen.push(totalSize.value),
+      }),
+    )
+
+    await nextTick()
+    expect(seen).toEqual([100])
+
+    items.value = [{ id: 0 }, { id: 1 }, { id: 2 }]
+    // The report is queued from inside the flush that applies the new size
+    await nextTick()
+    await nextTick()
+    expect(seen).toEqual([100, 150])
+
     unmount()
   })
 

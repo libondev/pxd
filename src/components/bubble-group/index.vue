@@ -32,6 +32,9 @@ const { totalSize, virtualItems, measureElement, scrollSource } = useVirtualList
     get overScan() {
       return props.overScan
     },
+    // The content's height comes from the measured total, so the grow is not a node the stick can
+    // see: its size is only final once the render that applies it has landed.
+    onGeometryChange: () => stickRef.value?.stickIfNeeded(),
   },
 )
 
