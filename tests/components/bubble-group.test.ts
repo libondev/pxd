@@ -155,6 +155,70 @@ describe('bubble-group', () => {
     wrapper.unmount()
   })
 
+  it('exposes a dom scroll source when virtualization is off', async () => {
+    const wrapper = mount(BubbleGroup, {
+      props: {
+        data: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
+        dataKey: 'id',
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { scrollTo } = patchScrollMetrics(container, {
+      scrollHeight: 300,
+      clientHeight: 100,
+      scrollTop: 200,
+    })
+
+    Object.defineProperty(container, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({
+        top: 0,
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+    })
+
+    const rows = wrapper.findAll('.pxd-bubble-group--item')
+
+    rows.forEach((row, index) => {
+      Object.defineProperty(row.element, 'getBoundingClientRect', {
+        configurable: true,
+        value: () => ({
+          top: index * 100,
+          bottom: index * 100 + 50,
+          height: 50,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: index * 100,
+          toJSON: () => ({}),
+        }),
+      })
+    })
+
+    await flushRaf()
+    scrollTo.mockClear()
+
+    const source = (wrapper.vm as unknown as { scrollSource: VirtualListScrollSource }).scrollSource
+
+    expect(source.getScrollOffset()).toBe(200)
+    expect(source.getMaxScrollOffset()).toBe(200)
+    expect(source.getOffsetForIndex(1)).toBe(300)
+
+    source.scrollToIndex(2)
+    expect(scrollTo).toHaveBeenCalledWith({ top: 400, behavior: 'auto' })
+
+    wrapper.unmount()
+  })
+
   it('exposes a toc source over the virtualizer', async () => {
     // happy-dom has no layout: every box measures as the 50px estimate, so offsets stay stable.
     const rectSpy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
