@@ -29,6 +29,10 @@ export interface UseStickToBottomReturn {
 /**
  * Follow is a flag of its own: a container mounted over content taller than the viewport measures
  * "not at bottom" before the first stick runs. Only an upward move the layout does not explain ends it.
+ *
+ * Growth arrives through the content observers, the deferred resize pass, and `stickIfNeeded` calls
+ * from a consumer that computes its own height (a virtual list sizing its content from measurements,
+ * whose growth is a style no node observer can attribute and a resize that lands after the paint).
  */
 export function useStickToBottom(
   container: MaybeRefOrGetter<Nullable<HTMLElement>>,
@@ -207,6 +211,14 @@ export function useStickToBottom(
     interactionUntil = performance.now() + interactionQuietMs
   }
 
+  function handleWheel(event: Event) {
+    if ((event as WheelEvent).deltaY >= 0) {
+      return
+    }
+
+    interactionUntil = performance.now() + interactionQuietMs
+  }
+
   function cancelJudge() {
     if (judgeFrame) {
       caf(judgeFrame)
@@ -312,6 +324,7 @@ export function useStickToBottom(
         if (oldEl) {
           cachedOff(oldEl, 'scroll', handleScroll, { passive: true })
           cachedOff(oldEl, 'pointerdown', handlePointerdown)
+          cachedOff(oldEl, 'wheel', handleWheel, { passive: true })
         }
 
         if (!el) {
@@ -320,6 +333,7 @@ export function useStickToBottom(
 
         lastScrollTop = el.scrollTop
         cachedOn(el, 'scroll', handleScroll, { passive: true })
+        cachedOn(el, 'wheel', handleWheel, { passive: true })
         cachedOn(el, 'pointerdown', handlePointerdown)
         update()
         stickIfNeeded()
@@ -343,6 +357,7 @@ export function useStickToBottom(
 
       if (el) {
         cachedOff(el, 'scroll', handleScroll, { passive: true })
+        cachedOff(el, 'wheel', handleWheel, { passive: true })
         cachedOff(el, 'pointerdown', handlePointerdown)
       }
 
