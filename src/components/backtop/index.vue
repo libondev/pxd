@@ -32,13 +32,14 @@ const emits = defineEmits<BacktopEmits>()
 
 let scrollHost: ReturnType<typeof getScrollTarget> | null
 
-let scrollTop = 0
 let maxScrollTop = 0
-let measured = false
-let offsetDirty = false
-let rangeDirty = false
+// Starts stale, so the first evaluation reads the range off the element
+let rangeDirty = true
 
 const scrollContainerEl = shallowRef<HTMLElement | null>(null)
+const contentVersion = shallowRef(0)
+const wrapperRef = shallowRef<HTMLElement>()
+const isVisible = shallowRef(false)
 
 const update = throttleByRaf(() => {
   const el = scrollContainerEl.value
@@ -50,19 +51,12 @@ const update = throttleByRaf(() => {
   if (rangeDirty) {
     rangeDirty = false
     maxScrollTop = Math.max(0, el.scrollHeight - el.clientHeight)
-    measured = true
   }
 
-  if (offsetDirty) {
-    offsetDirty = false
-    scrollTop = el.scrollTop
-  }
+  const distance = props.scrollTarget === 'top' ? el.scrollTop : maxScrollTop - el.scrollTop
 
-  refreshVisible()
+  isVisible.value = distance >= props.visibleThreshold
 })
-
-const wrapperRef = shallowRef<HTMLElement>()
-const isVisible = shallowRef(false)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -84,12 +78,9 @@ const { attrs, classes } = useTailwindVariant(
 
 const motionReduce = useMotionReduced()
 
-useResizeObserver(() => scrollContainerEl.value, scheduleRange)
-
-useMutationObserver(getRangeTargets, scheduleRange, {
-  attributes: true,
-  attributeFilter: ['style', 'class', 'hidden'],
-})
+// An expanding panel moves a content root's box, while the container box and the node tree stay
+// as they were
+useResizeObserver(getContentTargets, invalidateRange)
 
 useMutationObserver(
   () => {
@@ -97,33 +88,18 @@ useMutationObserver(
 
     return el && !isViewportScroll(el) ? el : null
   },
-  scheduleRange,
+  () => {
+    contentVersion.value++
+    invalidateRange()
+  },
   {
     childList: true,
     subtree: true,
   },
 )
 
-function refreshVisible() {
-  const next =
-    measured &&
-    (props.scrollTarget === 'top'
-      ? scrollTop >= props.visibleThreshold
-      : maxScrollTop - scrollTop >= props.visibleThreshold)
-
-  if (next !== isVisible.value) {
-    isVisible.value = next
-  }
-}
-
-function scheduleOffset() {
-  offsetDirty = true
-  update()
-}
-
-function scheduleRange() {
+function invalidateRange() {
   rangeDirty = true
-  offsetDirty = true
   update()
 }
 
@@ -148,30 +124,27 @@ function bindScrollHost() {
   update.cancel()
 
   if (scrollHost) {
-    cachedOff(scrollHost, 'scroll', scheduleOffset, { passive: true })
+    cachedOff(scrollHost, 'scroll', update, { passive: true })
   }
 
   scrollHost = host
   scrollContainerEl.value = el
 
   if (host) {
-    cachedOn(host, 'scroll', scheduleOffset, { passive: true })
+    cachedOn(host, 'scroll', update, { passive: true })
   } else {
-    measured = false
     isVisible.value = false
   }
 
-  scheduleRange()
+  invalidateRange()
 }
 
-function getRangeTargets(): HTMLElement[] {
+function getContentTargets(): HTMLElement[] {
+  void contentVersion.value
+
   const el = scrollContainerEl.value
 
-  if (!el || isViewportScroll(el)) {
-    return []
-  }
-
-  return [el, ...Array.from(el.children)] as HTMLElement[]
+  return el ? ([el, ...Array.from(el.children)] as HTMLElement[]) : []
 }
 
 function onActionClick(ev: PointerEvent) {
@@ -193,7 +166,7 @@ function onActionClick(ev: PointerEvent) {
   })
 }
 
-watch([() => props.scrollTarget, () => props.visibleThreshold], refreshVisible)
+watch(() => [props.scrollTarget, props.visibleThreshold], update)
 
 watch(() => props.scrollContainer, bindScrollHost, { flush: 'post' })
 
@@ -203,7 +176,7 @@ onBeforeUnmount(() => {
   update.cancel()
 
   if (scrollHost) {
-    cachedOff(scrollHost, 'scroll', scheduleOffset, { passive: true })
+    cachedOff(scrollHost, 'scroll', update, { passive: true })
   }
 
   scrollHost = null
