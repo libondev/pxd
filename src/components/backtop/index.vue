@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { BacktopProps, BacktopEmits } from './types'
 import ArrowUpIcon from '@gdsicon/vue/arrow-up'
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
@@ -32,36 +32,37 @@ const emits = defineEmits<BacktopEmits>()
 
 let scrollContainer: ReturnType<typeof getScrollTarget> | null
 
-const scrollTop = shallowRef(0)
-const maxScrollTop = shallowRef(0)
-const scrollContainerEl = shallowRef<HTMLElement | null>(null)
-const isMeasured = shallowRef(false)
+let scrollTop = 0
+let maxScrollTop = 0
+let measured = false
+let offsetDirty = false
+let rangeDirty = false
 
-const updateScrollTop = throttleByRaf(() => {
+const scrollContainerEl = shallowRef<HTMLElement | null>(null)
+
+const update = throttleByRaf(() => {
   const el = scrollContainerEl.value
 
   if (!el) {
     return
   }
 
-  isMeasured.value = true
-  scrollTop.value = el.scrollTop
-  maxScrollTop.value = Math.max(0, el.scrollHeight - el.clientHeight)
+  if (rangeDirty) {
+    rangeDirty = false
+    maxScrollTop = Math.max(0, el.scrollHeight - el.clientHeight)
+    measured = true
+  }
+
+  if (offsetDirty) {
+    offsetDirty = false
+    scrollTop = el.scrollTop
+  }
+
+  refreshVisible()
 })
 
 const wrapperRef = shallowRef<HTMLElement>()
-
-const isVisible = computed(() => {
-  if (!isMeasured.value) {
-    return false
-  }
-
-  if (props.scrollTarget === 'top') {
-    return scrollTop.value >= props.visibleThreshold
-  }
-
-  return maxScrollTop.value - scrollTop.value >= props.visibleThreshold
-})
+const isVisible = shallowRef(false)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -83,7 +84,12 @@ const { attrs, classes } = useTailwindVariant(
 
 const motionReduce = useMotionReduced()
 
-useResizeObserver(() => scrollContainerEl.value, updateScrollTop)
+useResizeObserver(() => scrollContainerEl.value, scheduleRange)
+
+useMutationObserver(getRangeTargets, scheduleRange, {
+  attributes: true,
+  attributeFilter: ['style', 'class', 'hidden'],
+})
 
 useMutationObserver(
   () => {
@@ -91,14 +97,45 @@ useMutationObserver(
 
     return el && !isViewportScroll(el) ? el : null
   },
-  updateScrollTop,
+  scheduleRange,
   {
     childList: true,
     subtree: true,
-    attributes: true,
-    attributeFilter: ['style', 'class', 'hidden'],
   },
 )
+
+function refreshVisible() {
+  const next =
+    measured &&
+    (props.scrollTarget === 'top'
+      ? scrollTop >= props.visibleThreshold
+      : maxScrollTop - scrollTop >= props.visibleThreshold)
+
+  if (next !== isVisible.value) {
+    isVisible.value = next
+  }
+}
+
+function scheduleOffset() {
+  offsetDirty = true
+  update()
+}
+
+function scheduleRange() {
+  rangeDirty = true
+  offsetDirty = true
+  update()
+}
+
+function getRangeTargets(): HTMLElement[] {
+  const el = scrollContainerEl.value
+
+  if (!el || isViewportScroll(el)) {
+    return []
+  }
+
+  return [el, ...Array.from(el.children)] as HTMLElement[]
+}
 
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)
@@ -119,17 +156,19 @@ function onActionClick(ev: PointerEvent) {
   })
 }
 
+watch([() => props.scrollTarget, () => props.visibleThreshold], refreshVisible)
+
 onMounted(() => {
   scrollContainer = getScrollTarget(wrapperRef.value!)
   scrollContainerEl.value = getScrollElement(scrollContainer)
 
-  updateScrollTop()
-  cachedOn(scrollContainer, 'scroll', updateScrollTop, { passive: true })
+  scheduleRange()
+  cachedOn(scrollContainer, 'scroll', scheduleOffset, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  updateScrollTop.cancel()
-  cachedOff(scrollContainer, 'scroll', updateScrollTop, { passive: true })
+  update.cancel()
+  cachedOff(scrollContainer, 'scroll', scheduleOffset, { passive: true })
 
   scrollContainer = null
   scrollContainerEl.value = null
