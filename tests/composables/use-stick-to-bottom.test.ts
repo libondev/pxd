@@ -382,10 +382,10 @@ describe('PStickToBottom', () => {
     expect(content.classes()).toContain('custom-content')
   })
 
-  it('applies class to the wrapper and scrollClass to the scroller', () => {
+  it('applies class to the wrapper and wrapperClass to the scroller', () => {
     const wrapper = mount(StickToBottom, {
       attrs: { class: 'outer-class' },
-      props: { scrollClass: 'inner-class' },
+      props: { wrapperClass: 'inner-class' },
       slots: { default: '<div>content</div>' },
     })
 

@@ -155,6 +155,36 @@ describe('bubble-group', () => {
     wrapper.unmount()
   })
 
+  it('points the action backtop at the scroll container', async () => {
+    const wrapper = mount(BubbleGroup, {
+      props: {
+        data: [{ id: 'a' }, { id: 'b' }],
+        dataKey: 'id',
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    patchScrollMetrics(container, {
+      scrollHeight: 1000,
+      clientHeight: 100,
+      scrollTop: 900,
+    })
+
+    await flushRaf()
+
+    const backtop = wrapper.find('[data-backtop]').element as HTMLElement
+
+    expect(backtop.style.display).toBe('none')
+
+    container.scrollTop = 0
+    container.dispatchEvent(new Event('scroll'))
+    await flushRaf()
+
+    expect(backtop.style.display).not.toBe('none')
+
+    wrapper.unmount()
+  })
+
   it('exposes a dom scroll source when virtualization is off', async () => {
     const wrapper = mount(BubbleGroup, {
       props: {
@@ -188,6 +218,11 @@ describe('bubble-group', () => {
     const rows = wrapper.findAll('.pxd-bubble-group--item')
 
     rows.forEach((row, index) => {
+      Object.defineProperty(row.element, 'offsetTop', {
+        configurable: true,
+        value: index * 100,
+      })
+
       Object.defineProperty(row.element, 'getBoundingClientRect', {
         configurable: true,
         value: () => ({
@@ -204,6 +239,7 @@ describe('bubble-group', () => {
       })
     })
 
+    container.dispatchEvent(new Event('scroll'))
     await flushRaf()
     scrollTo.mockClear()
 

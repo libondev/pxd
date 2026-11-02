@@ -3,6 +3,7 @@ import type { VirtualListScrollSource } from '../../composables/use-virtual-list
 import type { BubbleGroupProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, onMounted, onScopeDispose, shallowRef } from 'vue'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { cachedOn, throttleByRaf } from '../../utils/event.js'
 import PBacktop from '../backtop/index.vue'
@@ -20,6 +21,8 @@ const itemStyles = new Map<number, CSSProperties>()
 
 const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 const scrollVersion = shallowRef(0)
+
+let domOffsets: number[] = []
 
 const isVirtual = computed(() => props.virtual === true && !!props.data)
 
@@ -57,6 +60,18 @@ const contentStyle = computed(() => {
   }
 })
 
+useResizeObserver(
+  () => stickRef.value?.contentRef ?? null,
+  () => {
+    if (isVirtual.value) {
+      return
+    }
+
+    measureDomOffsets()
+    scrollVersion.value++
+  },
+)
+
 function getItemStyle(start: number): CSSProperties {
   let style = itemStyles.get(start)
 
@@ -80,25 +95,44 @@ function getContainer(): HTMLElement | null {
   return stickRef.value?.containerRef ?? null
 }
 
-function getItemElement(index: number): HTMLElement | null {
+function measureDomOffsets() {
+  const container = getContainer()
   const content = stickRef.value?.contentRef
 
-  return (content?.children[index] as HTMLElement | undefined) ?? null
+  if (!container || !content) {
+    domOffsets = []
+    return
+  }
+
+  const base =
+    content.getBoundingClientRect().top -
+    container.getBoundingClientRect().top +
+    container.scrollTop +
+    content.clientTop
+  const rows = content.children
+  const next: number[] = []
+
+  for (let index = 0; index < rows.length; index++) {
+    next.push(base + (rows[index] as HTMLElement).offsetTop)
+  }
+
+  domOffsets = next
 }
 
 function getDomOffset(index: number): number | undefined {
   void scrollVersion.value
 
-  const container = getContainer()
-  const row = getItemElement(index)
+  const content = stickRef.value?.contentRef
 
-  if (!container || !row) {
+  if (!content) {
     return undefined
   }
 
-  return (
-    row.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop
-  )
+  if (domOffsets.length !== content.children.length) {
+    measureDomOffsets()
+  }
+
+  return domOffsets[index]
 }
 
 const bumpScroll = throttleByRaf(() => {
@@ -106,6 +140,7 @@ const bumpScroll = throttleByRaf(() => {
     return
   }
 
+  measureDomOffsets()
   scrollVersion.value++
 })
 
@@ -161,6 +196,7 @@ onMounted(() => {
   }
 
   stickRef.value?.forceStickToBottom()
+  measureDomOffsets()
 })
 
 onScopeDispose(() => {
@@ -179,7 +215,8 @@ defineExpose({
   <PStickToBottom
     ref="stickRef"
     data-bubble-group
-    class="pxd-bubble-group relative overflow-x-hidden"
+    class="pxd-bubble-group min-h-0 h-full flex-1"
+    wrapper-class="overflow-x-hidden ps-2 py-4 pe-1 scrollbar-gutter-stable"
     :threshold="8"
     content-class="pxd-bubble-group--content relative w-full h-(--bubble-group-height)"
     :style="contentStyle"
@@ -211,8 +248,9 @@ defineExpose({
 
     <slot v-else />
 
-    <template #action>
+    <template #action="{ container }">
       <PBacktop
+        :scroll-container="container"
         class="bottom-1 shadow-sm left-1/2 z-1 w-max -translate-x-1/2 rounded-full"
         scroll-target="bottom"
         :append-to-body="false"
