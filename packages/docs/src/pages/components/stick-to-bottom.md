@@ -8,6 +8,8 @@ Auto-scroll is always **instant** — smooth scrolling is not supported, so cont
 
 **Height required:** the container only scrolls when its height is constrained (for example `h-40`, or a flex child with `min-h-0`). Without that, it grows with content and never scrolls.
 
+The component root is a relative wrapper: `class` and attributes style the wrapper, while `wrapper-class` and the built-in scroll styles apply to the inner scroll container. The `action` slot renders outside that container, so it stays pinned without participating in the scroll.
+
 ## Default
 
 ```vue demo
@@ -25,7 +27,7 @@ function append() {
   <div class="flex flex-col gap-2">
     <PButton @click="append">Add item</PButton>
 
-    <PStickToBottom class="h-40 rounded-lg border border-dashed p-2">
+    <PStickToBottom class="h-40 rounded-lg border border-dashed" wrapper-class="p-2">
       <div v-for="item in items" :key="item" class="p-2 rounded bg-background-100">
         {{ item }}
       </div>
@@ -51,7 +53,7 @@ function append() {
   <div class="flex flex-col gap-2">
     <PButton @click="append">Append log</PButton>
 
-    <PStickToBottom :enabled="false" class="h-36 rounded-lg border border-dashed p-2">
+    <PStickToBottom :enabled="false" class="h-36 rounded-lg border border-dashed" wrapper-class="p-2">
       <div v-for="item in items" :key="item" class="py-1">
         {{ item }}
       </div>
@@ -70,7 +72,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 </script>
 
 <template>
-  <PStickToBottom class="relative h-56 rounded-lg border border-dashed p-2">
+  <PStickToBottom class="relative h-56 rounded-lg border border-dashed" wrapper-class="p-2">
     <PCollapseGroup multiple>
       <PCollapse v-for="i in 8" :key="i" :title="`Panel ${i}`">
         <div class="mb-4">
@@ -114,7 +116,7 @@ function append() {
   <div class="flex flex-col gap-2">
     <PButton @click="append">Send message</PButton>
 
-    <PStickToBottom class="relative h-40 rounded-lg border border-dashed p-2">
+    <PStickToBottom class="relative h-40 rounded-lg border border-dashed" wrapper-class="p-2">
       <div v-for="item in items" :key="item" class="p-2 rounded bg-background-100">
         {{ item }}
       </div>
@@ -141,6 +143,7 @@ function append() {
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
+| wrapper-class | `ComponentClass` | - | Extra class on the scroll container; the wrapper receives `class` and attributes |
 
 ## Events
 
@@ -153,7 +156,7 @@ function append() {
 | Name | Props | Description |
 | --- | --- | --- |
 | default | - | Scrollable content |
-| action | `{ isAtBottom, scrollToBottom, forceStickToBottom }` | Sticky action area for controls such as a jump-to-bottom button |
+| action | `{ container, isAtBottom, scrollToBottom, forceStickToBottom }` | Overlay action area rendered outside the scroll container; `container` is the scroll element |
 
 ## Methods
 

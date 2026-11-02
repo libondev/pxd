@@ -382,6 +382,40 @@ describe('PStickToBottom', () => {
     expect(content.classes()).toContain('custom-content')
   })
 
+  it('applies class to the wrapper and scrollClass to the scroller', () => {
+    const wrapper = mount(StickToBottom, {
+      attrs: { class: 'outer-class' },
+      props: { scrollClass: 'inner-class' },
+      slots: { default: '<div>content</div>' },
+    })
+
+    const root = wrapper.find('.pxd-stick-to-bottom--root')
+    const scroller = wrapper.find('.pxd-stick-to-bottom')
+
+    expect(root.classes()).toContain('outer-class')
+    expect(scroller.classes()).toContain('inner-class')
+    expect(scroller.classes()).not.toContain('outer-class')
+
+    wrapper.unmount()
+  })
+
+  it('renders the action outside the scroll container', () => {
+    const wrapper = mount(StickToBottom, {
+      slots: {
+        default: '<div>content</div>',
+        action: '<div class="action-area">bottom</div>',
+      },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom')
+    const action = wrapper.find('.pxd-stick-to-bottom--action')
+
+    expect(container.element.contains(action.element)).toBe(false)
+    expect(action.element.parentElement).toBe(wrapper.element)
+
+    wrapper.unmount()
+  })
+
   it('exposes containerRef for external scroll consumers', () => {
     const wrapper = mount(StickToBottom, {
       slots: { default: '<div>content</div>' },

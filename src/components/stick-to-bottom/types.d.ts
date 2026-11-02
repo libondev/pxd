@@ -4,6 +4,7 @@ export interface StickToBottomProps {
   enabled?: boolean
   threshold?: number
   contentClass?: ComponentClass
+  wrapperClass?: ComponentClass
 }
 
 export interface StickToBottomEmits {
