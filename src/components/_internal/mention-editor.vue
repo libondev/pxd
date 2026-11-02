@@ -183,6 +183,7 @@ defineExpose({
 .pxd-mention--chip {
   display: inline-block;
   min-width: 0;
+  vertical-align: middle;
   margin-inline-end: 0.25rem;
   color: var(--color-blue-900);
   overflow: hidden;
