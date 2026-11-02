@@ -181,9 +181,13 @@ defineExpose({
 }
 
 .pxd-mention--chip {
-  display: inline;
+  display: inline-block;
+  min-width: 0;
   margin-inline-end: 0.25rem;
   color: var(--color-blue-900);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   cursor: pointer;
 
   &:hover {
