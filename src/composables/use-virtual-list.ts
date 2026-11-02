@@ -73,6 +73,8 @@ export function useVirtualList<Options extends VirtualListOptions>(
   let cleanup: (() => void) | undefined
   let reportedTotal = -1
   let measureQueued = false
+  let lastItems: readonly VirtualItem[] | undefined
+  let lastTotal = -1
 
   const triggerVersion = shallowRef(0)
 
@@ -99,20 +101,19 @@ export function useVirtualList<Options extends VirtualListOptions>(
   // Every reactive mirror below derives from an imperative cache, and a holder of the bottom has to
   // hear about a finished layout before the frame paints.
   function bumpGeometry() {
-    triggerVersion.value++
+    // The measurement cache is memoized on count and options, so the total is stale until a read
+    const items = virtualizer.getVirtualItems()
+    const total = virtualizer.getTotalSize()
+
+    if (items !== lastItems || total !== lastTotal) {
+      lastItems = items
+      lastTotal = total
+      triggerVersion.value++
+    }
 
     const notify = options.onGeometryChange
 
-    if (!notify) {
-      return
-    }
-
-    // The measurement cache is memoized on count and options, so the total is stale until a read
-    virtualizer.getVirtualItems()
-
-    const total = virtualizer.getTotalSize()
-
-    if (total === reportedTotal) {
+    if (!notify || total === reportedTotal) {
       return
     }
 
@@ -137,6 +138,7 @@ export function useVirtualList<Options extends VirtualListOptions>(
     // option moves both observer writes - the container rect and the item measurements - to the
     // next frame, which is where a measurement belongs anyway.
     useAnimationFrameWithResizeObserver: true,
+    useScrollendEvent: true,
     observeElementRect,
     observeElementOffset,
     scrollToFn: elementScroll,
