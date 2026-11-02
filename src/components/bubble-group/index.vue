@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { BubbleGroupProps } from './types'
+import type { CSSProperties } from 'vue'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import PBacktop from '../backtop/index.vue'
@@ -11,6 +12,9 @@ defineOptions({
 })
 
 const props = defineProps<BubbleGroupProps>()
+
+const ITEM_STYLE_CACHE_LIMIT = 512
+const itemStyles = new Map<number, CSSProperties>()
 
 const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 
@@ -48,6 +52,21 @@ const contentStyle = computed(() => {
   }
 })
 
+function getItemStyle(start: number): CSSProperties {
+  let style = itemStyles.get(start)
+
+  if (!style) {
+    if (itemStyles.size >= ITEM_STYLE_CACHE_LIMIT) {
+      itemStyles.clear()
+    }
+
+    style = { transform: `translateY(${start}px)`, contain: 'layout' }
+    itemStyles.set(start, style)
+  }
+
+  return style
+}
+
 function getDataItemKey(item: any, index: number) {
   return (props.dataKey ? item[props.dataKey] : index) ?? index
 }
@@ -76,10 +95,10 @@ defineExpose({
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"
-        :ref="(el: any) => measureElement(el)"
+        :ref="measureElement"
         :data-index="virtualItem.index"
         class="pxd-bubble-group--item sibling:pbs-3 left-0 top-0 absolute w-full"
-        :style="{ transform: `translateY(${virtualItem.start}px)` }"
+        :style="getItemStyle(virtualItem.start)"
       >
         <slot name="item" :item="data[virtualItem.index]" :index="virtualItem.index" />
       </div>
