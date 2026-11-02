@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { TocEmits, TocItem, TocProps } from './types'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, onScopeDispose, ref, shallowRef, watch } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useScrollspy } from '../../composables/use-scrollspy.js'
 import { getScrollElement, isViewportScroll, resolveScrollBehavior } from '../../utils/dom.js'
-import { scheduleByRaf } from '../../utils/event.js'
+import { caf, raf, scheduleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
 defineOptions({
@@ -47,6 +47,8 @@ const { attrs, classes } = useTailwindVariant({
 const listEl = ref<HTMLElement | null>(null)
 
 const entries = shallowRef<TocEntry[]>([])
+
+let revealFrame = 0
 
 const isDataMode = computed(() => props.data != null)
 
@@ -222,27 +224,41 @@ function onItemClick(item: TocItem, event: MouseEvent): void {
 }
 
 function keepActiveVisible(): void {
-  const list = listEl.value
-  const index = activeIndex.value
-
-  if (!props.scrollActiveIntoView || !list || index < 0) {
+  if (!props.scrollActiveIntoView || revealFrame) {
     return
   }
 
-  const row = list.children[index] as HTMLElement | undefined
+  revealFrame = raf(() => {
+    revealFrame = 0
 
-  if (!row) {
-    return
-  }
+    const list = listEl.value
+    const index = activeIndex.value
 
-  const listRect = list.getBoundingClientRect()
-  const rowRect = row.getBoundingClientRect()
+    if (!list || index < 0) {
+      return
+    }
 
-  if (rowRect.top < listRect.top) {
-    list.scrollTop -= listRect.top - rowRect.top
-  } else if (rowRect.bottom > listRect.bottom) {
-    list.scrollTop += rowRect.bottom - listRect.bottom
-  }
+    const row = list.children[index] as HTMLElement | undefined
+
+    if (!row) {
+      return
+    }
+
+    if (list.scrollHeight <= list.clientHeight) {
+      return
+    }
+
+    const rowTop = row.offsetTop - list.offsetTop - list.clientTop
+    const rowBottom = rowTop + row.offsetHeight
+    const viewTop = list.scrollTop
+    const viewBottom = viewTop + list.clientHeight
+
+    if (rowTop < viewTop) {
+      list.scrollTop = rowTop
+    } else if (rowBottom > viewBottom) {
+      list.scrollTop = rowBottom - list.clientHeight
+    }
+  })
 }
 
 if (!isServer()) {
@@ -268,6 +284,15 @@ if (!isServer()) {
     },
     { flush: 'post' },
   )
+
+  onScopeDispose(() => {
+    if (!revealFrame) {
+      return
+    }
+
+    caf(revealFrame)
+    revealFrame = 0
+  })
 }
 
 defineExpose({
