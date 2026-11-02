@@ -6,6 +6,7 @@ export interface BacktopProps {
   visibleThreshold?: number
   scrollTarget?: 'top' | 'bottom'
   scrollBehavior?: ScrollBehavior
+  scrollContainer?: HTMLElement | null
 }
 
 export interface BacktopEmits {

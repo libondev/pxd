@@ -99,4 +99,51 @@ describe('backtop', () => {
     wrapper.unmount()
     host.remove()
   })
+
+  it('observes an explicit scroll container that is not an ancestor', async () => {
+    const host = document.createElement('div')
+    const content = document.createElement('div')
+
+    host.style.overflowY = 'auto'
+    host.appendChild(content)
+    document.body.appendChild(host)
+
+    const metrics = { scrollHeight: 600, clientHeight: 100, scrollTop: 300 }
+
+    Object.defineProperties(host, {
+      scrollHeight: { configurable: true, get: () => metrics.scrollHeight },
+      clientHeight: { configurable: true, get: () => metrics.clientHeight },
+      scrollTop: {
+        configurable: true,
+        get: () => metrics.scrollTop,
+        set: (value: number) => {
+          metrics.scrollTop = value
+        },
+      },
+    })
+
+    const wrapper = mount(Backtop, {
+      props: {
+        appendToBody: false,
+        scrollContainer: host,
+        scrollTarget: 'bottom',
+        visibleThreshold: 30,
+      },
+      attachTo: document.body,
+    })
+    await flushFrames()
+
+    const backtop = document.querySelector('[data-backtop]') as HTMLElement
+
+    expect(backtop.style.display).not.toBe('none')
+
+    metrics.scrollTop = 500
+    host.dispatchEvent(new Event('scroll'))
+    await flushFrames()
+
+    expect(backtop.style.display).toBe('none')
+
+    wrapper.unmount()
+    host.remove()
+  })
 })

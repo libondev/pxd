@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<BacktopProps>(), {
 
 const emits = defineEmits<BacktopEmits>()
 
-let scrollContainer: ReturnType<typeof getScrollTarget> | null
+let scrollHost: ReturnType<typeof getScrollTarget> | null
 
 let scrollTop = 0
 let maxScrollTop = 0
@@ -127,6 +127,43 @@ function scheduleRange() {
   update()
 }
 
+function resolveScrollHost(): ReturnType<typeof getScrollTarget> | null {
+  if (props.scrollContainer) {
+    return props.scrollContainer
+  }
+
+  const wrapper = wrapperRef.value
+
+  return wrapper ? getScrollTarget(wrapper) : null
+}
+
+function bindScrollHost() {
+  const host = resolveScrollHost()
+  const el = host ? getScrollElement(host) : null
+
+  if (host === scrollHost && el === scrollContainerEl.value) {
+    return
+  }
+
+  update.cancel()
+
+  if (scrollHost) {
+    cachedOff(scrollHost, 'scroll', scheduleOffset, { passive: true })
+  }
+
+  scrollHost = host
+  scrollContainerEl.value = el
+
+  if (host) {
+    cachedOn(host, 'scroll', scheduleOffset, { passive: true })
+  } else {
+    measured = false
+    isVisible.value = false
+  }
+
+  scheduleRange()
+}
+
 function getRangeTargets(): HTMLElement[] {
   const el = scrollContainerEl.value
 
@@ -140,7 +177,7 @@ function getRangeTargets(): HTMLElement[] {
 function onActionClick(ev: PointerEvent) {
   emits('click', ev)
 
-  if (!scrollContainer || !scrollContainerEl.value) {
+  if (!scrollHost || !scrollContainerEl.value) {
     return
   }
 
@@ -149,7 +186,7 @@ function onActionClick(ev: PointerEvent) {
       ? Math.max(0, scrollContainerEl.value.scrollHeight - scrollContainerEl.value.clientHeight)
       : 0
 
-  scrollContainer.scrollTo({
+  scrollHost.scrollTo({
     top,
     left: 0,
     behavior: resolveScrollBehavior(props.scrollBehavior, motionReduce),
@@ -158,19 +195,18 @@ function onActionClick(ev: PointerEvent) {
 
 watch([() => props.scrollTarget, () => props.visibleThreshold], refreshVisible)
 
-onMounted(() => {
-  scrollContainer = getScrollTarget(wrapperRef.value!)
-  scrollContainerEl.value = getScrollElement(scrollContainer)
+watch(() => props.scrollContainer, bindScrollHost, { flush: 'post' })
 
-  scheduleRange()
-  cachedOn(scrollContainer, 'scroll', scheduleOffset, { passive: true })
-})
+onMounted(bindScrollHost)
 
 onBeforeUnmount(() => {
   update.cancel()
-  cachedOff(scrollContainer, 'scroll', scheduleOffset, { passive: true })
 
-  scrollContainer = null
+  if (scrollHost) {
+    cachedOff(scrollHost, 'scroll', scheduleOffset, { passive: true })
+  }
+
+  scrollHost = null
   scrollContainerEl.value = null
 })
 </script>

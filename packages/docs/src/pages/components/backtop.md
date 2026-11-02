@@ -47,6 +47,7 @@ A back-to-top button that appears once the page or its container scrolls past a 
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the built-in trigger button, overridable by the default slot |
 | scroll-target | `'top' \| 'bottom'` | `top` | Scroll to the `top` or `bottom` on click |
 | scroll-behavior | `'smooth' \| 'instant' \| 'auto'` | `auto` | Scroll animation on click; `auto` follows the system motion preference. |
+| scroll-container | `HTMLElement \| null` | - | Explicit scroll element; required when the button is rendered outside the scrolling element. Falls back to the nearest scrollable ancestor. |
 
 ## Events
 
