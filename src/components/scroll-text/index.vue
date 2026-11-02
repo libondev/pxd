@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<ScrollTextProps>(), {
   as: 'span',
   text: '',
   speed: 40,
+  threshold: 10,
 })
 
 const MIN_DURATION = 1
@@ -62,7 +63,7 @@ function syncOverflow(force = false) {
   }
 
   const distance = nextContent - nextWrap
-  const nextOverflowing = distance > 1
+  const nextOverflowing = distance > props.threshold
 
   if (!nextOverflowing) {
     clearOverflow()
@@ -90,7 +91,7 @@ function syncOverflow(force = false) {
 }
 
 watch(
-  () => [props.text, toSpeed(props.speed)],
+  () => [props.text, toSpeed(props.speed), props.threshold],
   () => {
     syncOverflow(true)
   },

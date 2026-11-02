@@ -45,7 +45,7 @@ const items = [
 
 ## Speed
 
-`speed` is pixels per second. Slower values are easier to read in narrow sidebars. Travel time is clamped to a 1s minimum, so a label that only overflows by a few pixels does not flicker.
+`speed` is pixels per second. Slower values are easier to read in narrow sidebars. `threshold` is the minimum overflow in px before scrolling starts, so text that barely clips stays still. Travel time is clamped to a 1s minimum, so short distances do not flicker.
 
 ```vue demo
 <template>
@@ -69,6 +69,7 @@ const items = [
 | as | `string \| object` | `span` | Root element |
 | text | `string` | `` | Fallback content when default slot is empty |
 | speed | `number \| string` | `40` | Scroll speed in px/s |
+| threshold | `number` | `10` | Minimum overflow in px before scrolling starts |
 
 ## Slots
 

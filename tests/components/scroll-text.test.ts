@@ -152,7 +152,7 @@ describe('scroll-text', () => {
     wrapper.unmount()
   })
 
-  it('should clamp duration to a minimum for barely overflowing content', async () => {
+  it('should clamp duration to a minimum for short travel', async () => {
     const wrapper = mount(ScrollText, {
       props: {
         text: 'Label',
@@ -160,13 +160,50 @@ describe('scroll-text', () => {
       },
     })
 
-    mockSizes(wrapper, 100, 102)
+    mockSizes(wrapper, 100, 120)
     await wrapper.setProps({ text: 'Barely overflowing label' })
     await wrapper.vm.$nextTick()
 
     const style = wrapper.attributes('style') ?? ''
-    expect(style).toContain('--scroll-text-distance: 2px')
+    expect(style).toContain('--scroll-text-distance: 20px')
     expect(style).toContain('--scroll-text-duration: 1s')
+
+    wrapper.unmount()
+  })
+
+  it('should ignore overflow under the minimum threshold', async () => {
+    const wrapper = mount(ScrollText, {
+      props: {
+        text: 'Label',
+      },
+    })
+
+    mockSizes(wrapper, 100, 108)
+    await wrapper.setProps({ text: 'Slightly overflowing label' })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.attributes('data-overflow')).toBe('false')
+    expect(wrapper.attributes('style') ?? '').not.toContain('--scroll-text-distance')
+
+    wrapper.unmount()
+  })
+
+  it('should apply a custom threshold', async () => {
+    const wrapper = mount(ScrollText, {
+      props: {
+        text: 'Label',
+        threshold: 50,
+      },
+    })
+
+    mockSizes(wrapper, 100, 120)
+    await wrapper.setProps({ text: 'Overflowing label' })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.attributes('data-overflow')).toBe('false')
+
+    await wrapper.setProps({ threshold: 10 })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.attributes('data-overflow')).toBe('true')
 
     wrapper.unmount()
   })
