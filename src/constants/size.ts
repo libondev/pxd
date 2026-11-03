@@ -7,6 +7,7 @@ export const BASIC_HEIGHTS = {
 }
 
 export const BASIC_MIN_HEIGHTS = {
+  xxs: 'min-h-6',
   xs: 'min-h-7',
   sm: 'min-h-8',
   md: 'min-h-9',
