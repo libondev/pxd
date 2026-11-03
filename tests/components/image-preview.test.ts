@@ -130,6 +130,42 @@ describe('image-preview', () => {
     wrapper.unmount()
   })
 
+  it('renders only the viewer with the viewer variant', async () => {
+    const wrapper = mountImagePreview({ variant: 'viewer' })
+
+    expect(wrapper.props('variant')).toBe('viewer')
+    expect(wrapper.findAll('button')).toHaveLength(0)
+
+    ;(wrapper.vm as unknown as { open: (index: number) => void }).open(2)
+    await nextTick()
+
+    expect(getCounter()).toBe('3 / 3')
+    expect(getPreviewImage().getAttribute('src')).toBe(IMAGES[2].src)
+
+    wrapper.unmount()
+  })
+
+  it('loads sources on demand with the viewer variant', async () => {
+    const first = vi.fn().mockResolvedValue('https://example.com/one.jpg')
+    const second = vi.fn().mockResolvedValue('https://example.com/two.jpg')
+    const wrapper = mountImagePreview({
+      variant: 'viewer',
+      data: [{ src: first }, { src: second }],
+    })
+
+    expect(first).not.toHaveBeenCalled()
+
+    ;(wrapper.vm as unknown as { open: (index: number) => void }).open(1)
+    await flushPromises()
+    await nextTick()
+
+    expect(first).not.toHaveBeenCalled()
+    expect(second).toHaveBeenCalledTimes(1)
+    expect(getPreviewImage().getAttribute('src')).toBe('https://example.com/two.jpg')
+
+    wrapper.unmount()
+  })
+
   it('hides gallery controls for a single image', async () => {
     const wrapper = mountImagePreview({ data: [IMAGES[0]] })
 
@@ -396,6 +432,87 @@ describe('image-preview', () => {
 
     expect(getZoomText()).toBe('100%')
     expect(getPreviewImage().style.transform).toContain('rotate(0deg)')
+
+    wrapper.unmount()
+  })
+
+  it('resolves loader sources for the thumbnails', async () => {
+    const loader = vi.fn().mockResolvedValue('https://example.com/lazy.jpg')
+    const wrapper = mountImagePreview({ data: [{ src: loader, alt: 'Lazy' }] })
+
+    expect(wrapper.findAll('img')).toHaveLength(0)
+
+    await flushPromises()
+
+    expect(loader).toHaveBeenCalledTimes(1)
+    expect(wrapper.findAll('img')).toHaveLength(1)
+    expect(wrapper.findAll('img')[0].attributes('src')).toBe('https://example.com/lazy.jpg')
+
+    wrapper.unmount()
+  })
+
+  it('requests the current image when the preview opens and switches', async () => {
+    const wrapper = mountImagePreview()
+
+    await openPreview(wrapper, 1)
+    expect(wrapper.emitted('request')).toEqual([[1, IMAGES[1]]])
+
+    clickControl('Next image')
+    await nextTick()
+    expect(wrapper.emitted('request')).toEqual([
+      [1, IMAGES[1]],
+      [2, IMAGES[2]],
+    ])
+
+    wrapper.unmount()
+  })
+
+  it('renders the loading and error slots', async () => {
+    let resolveLazy!: (src: string) => void
+    const lazy = () =>
+      new Promise<string>((resolve) => {
+        resolveLazy = resolve
+      })
+    const failing = vi.fn().mockRejectedValue(new Error('failed'))
+    const wrapper = mount(ImagePreview, {
+      attachTo: document.body,
+      props: { data: [{ src: lazy }, { src: failing }] },
+      slots: {
+        loading: '<span data-loading>Loading</span>',
+        error: '<span data-error>Failed</span>',
+      },
+    })
+
+    await openPreview(wrapper)
+    expect(document.body.querySelector('[data-loading]')).not.toBeNull()
+
+    resolveLazy('https://example.com/lazy.jpg')
+    await flushPromises()
+    await nextTick()
+    expect(document.body.querySelector('[data-loading]')).toBeNull()
+    expect(getPreviewImage().getAttribute('src')).toBe('https://example.com/lazy.jpg')
+
+    clickControl('Next image')
+    await flushPromises()
+    await nextTick()
+    expect(document.body.querySelector('[data-error]')).not.toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('passes the resolved source to the item slot', async () => {
+    const loader = vi.fn().mockResolvedValue('https://example.com/lazy.jpg')
+    const wrapper = mount(ImagePreview, {
+      props: { data: [{ src: loader }] },
+      slots: {
+        item: '<span data-item>{{ status }}|{{ src }}</span>',
+      },
+    })
+
+    expect(wrapper.find('[data-item]').text()).toBe('loading|')
+
+    await flushPromises()
+    expect(wrapper.find('[data-item]').text()).toBe('ready|https://example.com/lazy.jpg')
 
     wrapper.unmount()
   })

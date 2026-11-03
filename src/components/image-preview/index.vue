@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import type { ImagePreviewEmits, ImagePreviewItem, ImagePreviewProps } from './types'
+import type {
+  ImagePreviewEmits,
+  ImagePreviewItem,
+  ImagePreviewLoader,
+  ImagePreviewProps,
+  ImagePreviewStatus,
+} from './types'
 import ChevronLeftIcon from '@gdsicon/vue/chevron-left'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import CrossIcon from '@gdsicon/vue/cross'
@@ -13,6 +19,13 @@ import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isServer } from '../../utils/is.js'
 import POverlay from '../overlay/index.vue'
+import PSpinner from '../spinner/index.vue'
+
+interface SourceState {
+  status: ImagePreviewStatus
+  src?: string
+  loader: ImagePreviewLoader
+}
 
 defineOptions({
   name: 'PImagePreview',
@@ -21,6 +34,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<ImagePreviewProps>(), {
   index: 0,
+  variant: 'default',
   closeOnPressEscape: true,
   closeOnClickOverlay: true,
 })
@@ -51,9 +65,14 @@ const rotation = shallowRef(0)
 const offsetX = shallowRef(0)
 const offsetY = shallowRef(0)
 const isDragging = shallowRef(false)
+const sources = shallowRef<Record<number, SourceState>>({})
 
 const images = computed<ImagePreviewItem[]>(() =>
   (props.data ?? []).map((image) => (typeof image === 'string' ? { src: image } : image)),
+)
+
+const items = computed(() =>
+  images.value.map((image, index) => ({ image, index, ...resolveSource(index, image) })),
 )
 
 const currentIndex = computed(() => {
@@ -67,6 +86,7 @@ const currentIndex = computed(() => {
 })
 
 const currentImage = computed(() => images.value[currentIndex.value])
+const currentItem = computed(() => items.value[currentIndex.value])
 const dialogLabel = computed(() => currentImage.value?.alt || 'Image preview')
 const zoomPercent = computed(() => `${Math.round(zoom.value * 100)}%`)
 const imageStyle = computed(() => ({
@@ -78,6 +98,59 @@ const dialogStyle = computed(() => ({
 
 const configProvider = useConfigProvider()
 useFocusTrap(dialogRef)
+
+function isLoader(src: ImagePreviewItem['src']): src is ImagePreviewLoader {
+  return typeof src === 'function'
+}
+
+function resolveSource(
+  index: number,
+  image: ImagePreviewItem,
+): Pick<SourceState, 'status' | 'src'> {
+  if (!isLoader(image.src)) {
+    return { status: 'ready', src: image.src }
+  }
+
+  const source = sources.value[index]
+
+  return source?.loader === image.src ? source : { status: 'loading' }
+}
+
+function setSource(index: number, source: SourceState) {
+  sources.value = { ...sources.value, [index]: source }
+}
+
+function loadSource(index: number, image: ImagePreviewItem) {
+  const loader = image.src
+
+  if (!isLoader(loader) || sources.value[index]?.loader === loader) {
+    return
+  }
+
+  setSource(index, { status: 'loading', loader })
+
+  loader().then(
+    (src) => {
+      if (sources.value[index]?.loader === loader) {
+        setSource(index, { status: 'ready', loader, src })
+      }
+    },
+    () => {
+      if (sources.value[index]?.loader === loader) {
+        setSource(index, { status: 'error', loader })
+      }
+    },
+  )
+}
+
+function requestCurrent() {
+  const item = currentItem.value
+
+  if (item) {
+    emits('request', item.index, item.image)
+    loadSource(item.index, item.image)
+  }
+}
 
 function resetTransform() {
   zoom.value = 1
@@ -115,18 +188,18 @@ function getDownloadName(src: string) {
 }
 
 async function download() {
-  const image = currentImage.value
+  const src = currentItem.value?.src
 
-  if (!image) {
+  if (!src) {
     return
   }
 
-  const blob = await (await fetch(image.src)).blob()
+  const blob = await (await fetch(src)).blob()
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
 
   link.href = url
-  link.download = getDownloadName(image.src)
+  link.download = getDownloadName(src)
   link.click()
   setTimeout(() => URL.revokeObjectURL(url))
 }
@@ -151,6 +224,7 @@ function switchTo(index: number) {
 
 function switchBy(delta: number) {
   switchTo(currentIndex.value + delta)
+  requestCurrent()
 }
 
 function open(index = currentIndex.value) {
@@ -161,6 +235,7 @@ function open(index = currentIndex.value) {
   isVisible.value = true
   resetTransform()
   switchTo(index)
+  requestCurrent()
 }
 
 function close() {
@@ -247,6 +322,18 @@ function onKeydown(ev: KeyboardEvent) {
 }
 
 watch(
+  () => images.value.map((image) => image.src),
+  () => {
+    if (isServer() || props.variant === 'viewer') {
+      return
+    }
+
+    images.value.forEach((image, index) => loadSource(index, image))
+  },
+  { immediate: true },
+)
+
+watch(
   () => props.index,
   (index) => {
     activeIndex.value = index
@@ -294,18 +381,25 @@ defineExpose({
 
 <template>
   <div data-image-preview v-bind="$attrs">
-    <div class="gap-2 flex flex-wrap">
+    <div v-if="variant !== 'viewer'" class="gap-2 flex flex-wrap">
       <button
-        v-for="(image, index) in images"
-        :key="`${image.src}-${index}`"
+        v-for="item in items"
+        :key="item.index"
         type="button"
-        :aria-label="image.alt || `Preview image ${index + 1}`"
+        :aria-label="item.image.alt || `Preview image ${item.index + 1}`"
         class="size-20 p-0 shrink-0 cursor-pointer appearance-none overflow-hidden rounded-md border-0 bg-gray-100 self-focus-ring"
-        @click="open(index)"
+        @click="open(item.index)"
       >
-        <slot name="item" :image="image" :index="index">
+        <slot
+          name="item"
+          :image="item.image"
+          :index="item.index"
+          :src="item.src"
+          :status="item.status"
+        >
           <img
-            :src="image.src"
+            v-if="item.src"
+            :src="item.src"
             alt=""
             loading="lazy"
             decoding="async"
@@ -344,15 +438,34 @@ defineExpose({
             @wheel.prevent="onWheel"
             @click="onBackdropClick"
           >
-            <img
-              v-if="currentImage"
-              :key="currentImage.src"
-              :src="currentImage.src"
-              :alt="currentImage.alt || `Image ${currentIndex + 1}`"
-              draggable="false"
-              class="size-full object-contain"
-              :style="imageStyle"
-            />
+            <template v-if="currentItem">
+              <img
+                v-if="currentItem.src"
+                :key="currentItem.src"
+                :src="currentItem.src"
+                :alt="currentItem.image.alt || `Image ${currentIndex + 1}`"
+                draggable="false"
+                class="size-full object-contain"
+                :style="imageStyle"
+              />
+
+              <slot
+                v-else-if="currentItem.status === 'loading'"
+                name="loading"
+                :index="currentIndex"
+                :item="currentItem.image"
+              >
+                <span class="flex size-full items-center justify-center">
+                  <PSpinner class="text-2xl text-white/70" />
+                </span>
+              </slot>
+
+              <slot v-else name="error" :index="currentIndex" :item="currentItem.image">
+                <span class="text-sm text-white/70 flex size-full items-center justify-center">
+                  Failed to load image
+                </span>
+              </slot>
+            </template>
           </div>
 
           <span
