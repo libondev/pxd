@@ -35,3 +35,9 @@ Cover an element with a spinner and a loading hint. Locks the scroll of the cont
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | text | `string` | `Loading...` | Hint text shown next to the spinner |
+
+## Slots
+
+| Name     | Description       |
+| -------- | ----------------- |
+| default  | Default content.  |
