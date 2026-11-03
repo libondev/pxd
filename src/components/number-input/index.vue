@@ -244,7 +244,6 @@ watch(
 <template>
   <PInput
     data-number-input
-    v-bind="$attrs"
     :min="min"
     :max="max"
     align="center"
@@ -256,6 +255,7 @@ watch(
     :model-value="inputValue"
     :default-prefix-style="false"
     :default-suffix-style="false"
+    v-bind="$attrs"
     @blur="onInputBlur"
     @focus="onInputFocus"
     @change="onInputChange"
