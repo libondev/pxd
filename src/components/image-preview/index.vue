@@ -47,7 +47,7 @@ const ZOOM_STEP = 0.25
 const DRAG_THRESHOLD = 3
 
 const CONTROL_CLASS =
-  'size-8 inline-flex cursor-pointer appearance-none items-center justify-center rounded-md border-0 bg-transparent p-0 font-inherit text-white outline-none hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-white'
+  'size-8 inline-flex text-sm cursor-pointer appearance-none items-center justify-center rounded-md border-0 bg-transparent p-0 font-inherit text-white outline-none hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-white'
 const ARROW_CLASS =
   'top-1/2 size-9 -translate-y-1/2 inline-flex cursor-pointer appearance-none items-center justify-center rounded-full border-0 bg-black/50 p-0 font-inherit text-white outline-none hover:bg-black/70 focus-visible:outline-2 focus-visible:outline-white absolute'
 
@@ -480,7 +480,7 @@ defineExpose({
           <button
             type="button"
             :aria-label="configProvider.locale.interaction.close"
-            class="top-4 right-4 absolute"
+            class="top-10 right-10 absolute"
             :class="CONTROL_CLASS"
             @click="close"
           >
