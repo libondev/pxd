@@ -94,9 +94,16 @@ Tool results are not always JSON. Plain strings render as-is, and content-block 
 
 | Name    | Type                                               | Default   | Description                                                                                                |
 | ------- | -------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
-| name    | `string`                                           | -         | Tool name shown in the header                                                                              |
+| title   | `string`                                           | -         | Tool name shown in the header                                                                              |
 | variant | `'default' \| 'simple'`                            | `default` | `simple` drops the card background, border and trigger padding                                             |
 | status  | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon in the header                                                                                  |
 | expand  | `boolean`                                          | `true`    | Expanded state, applied whenever the value changes                                                         |
 | input   | `unknown`                                          | -         | Request payload (objects and JSON strings are pretty-printed as JSON, content-block arrays as plain text)  |
 | output  | `unknown`                                          | -         | Response payload (objects and JSON strings are pretty-printed as JSON, content-block arrays as plain text) |
+
+## Slots
+
+| Name   | Description                                                         |
+| ------ | ------------------------------------------------------------------- |
+| input  | Replaces the input code block; renders even when `input` is empty   |
+| output | Replaces the output code block; renders even when `output` is empty |

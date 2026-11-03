@@ -1,44 +1,44 @@
-import CheckCircleIcon from '@gdsicon/vue/check-circle'
-import ClockIcon from '@gdsicon/vue/clock'
-import CrossCircleIcon from '@gdsicon/vue/cross-circle'
-import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
-import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
-import { nextTick } from 'vue'
-import ToolCall from '../../src/components/tool-call/index.vue'
+import CheckCircleIcon from '@gdsicon/vue/check-circle';
+import ClockIcon from '@gdsicon/vue/clock';
+import CrossCircleIcon from '@gdsicon/vue/cross-circle';
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle';
+import { mount } from '@vue/test-utils';
+import { describe, expect, it } from 'vite-plus/test';
+import { nextTick } from 'vue';
+import ToolCall from '../../src/components/tool-call/index.vue';
 
 describe('tool-call', () => {
   it('renders title and defaults to pending', () => {
     const wrapper = mount(ToolCall, {
       props: { title: 'search_flights' },
-    })
+    });
 
-    expect(wrapper.find('.pxd-tool-call--title').text()).toBe('search_flights')
-    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect(wrapper.find('.pxd-tool-call--title').text()).toBe('search_flights');
+    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true);
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true);
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('renders status icons', async () => {
     const wrapper = mount(ToolCall, {
       props: { title: 'lookup_weather', status: 'completed' },
-    })
+    });
 
-    expect(wrapper.findComponent(CheckCircleIcon).exists()).toBe(true)
+    expect(wrapper.findComponent(CheckCircleIcon).exists()).toBe(true);
 
-    await wrapper.setProps({ status: 'running' })
-    expect(wrapper.findComponent(LoaderCircleIcon).exists()).toBe(true)
-    expect(wrapper.findComponent(LoaderCircleIcon).classes()).toContain('motion-safe:animate-spin')
+    await wrapper.setProps({ status: 'running' });
+    expect(wrapper.findComponent(LoaderCircleIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(LoaderCircleIcon).classes()).toContain('motion-safe:animate-spin');
 
-    await wrapper.setProps({ status: 'error' })
-    expect(wrapper.findComponent(CrossCircleIcon).exists()).toBe(true)
+    await wrapper.setProps({ status: 'error' });
+    expect(wrapper.findComponent(CrossCircleIcon).exists()).toBe(true);
 
-    await wrapper.setProps({ status: 'pending' })
-    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true)
+    await wrapper.setProps({ status: 'pending' });
+    expect(wrapper.findComponent(ClockIcon).exists()).toBe(true);
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('pretty-prints object input and output', () => {
     const wrapper = mount(ToolCall, {
@@ -48,18 +48,18 @@ describe('tool-call', () => {
         input: { origin: 'LHR', destination: 'SFO' },
         output: { route: 'LHR -> SFO', stops: 0 },
       },
-    })
+    });
 
-    const codes = wrapper.findAll('.pxd-tool-call--code')
+    const codes = wrapper.findAll('.pxd-tool-call--code');
 
-    expect(codes).toHaveLength(2)
-    expect(codes[0].text()).toContain('"origin":')
-    expect(codes[0].text()).toContain('"LHR"')
-    expect(codes[1].text()).toContain('"stops":')
-    expect(codes[1].text()).toContain('0')
+    expect(codes).toHaveLength(2);
+    expect(codes[0].text()).toContain('"origin":');
+    expect(codes[0].text()).toContain('"LHR"');
+    expect(codes[1].text()).toContain('"stops":');
+    expect(codes[1].text()).toContain('0');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('pretty-prints JSON string payloads', () => {
     const wrapper = mount(ToolCall, {
@@ -67,24 +67,24 @@ describe('tool-call', () => {
         title: 'echo',
         input: '{"ok":true}',
       },
-    })
+    });
 
-    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"ok":')
-    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('true')
+    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"ok":');
+    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('true');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('hides input and output when omitted', () => {
     const wrapper = mount(ToolCall, {
       props: { title: 'noop' },
-    })
+    });
 
-    expect(wrapper.findAll('.pxd-tool-call--section')).toHaveLength(0)
-    expect(wrapper.findAll('.pxd-tool-call--code')).toHaveLength(0)
+    expect(wrapper.findAll('.pxd-tool-call--section')).toHaveLength(0);
+    expect(wrapper.findAll('.pxd-tool-call--code')).toHaveLength(0);
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('keeps plain string payloads as-is when not JSON', () => {
     const wrapper = mount(ToolCall, {
@@ -92,12 +92,12 @@ describe('tool-call', () => {
         title: 'log',
         output: 'not-json',
       },
-    })
+    });
 
-    expect(wrapper.find('.pxd-tool-call--code').text()).toBe('not-json')
+    expect(wrapper.find('.pxd-tool-call--code').text()).toBe('not-json');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('renders content-block arrays as plain text without JSON highlighting', () => {
     const wrapper = mount(ToolCall, {
@@ -107,19 +107,19 @@ describe('tool-call', () => {
         input: { command: 'pnpm test', timeout: 30000 },
         output: [{ type: 'text', text: '$ pnpm test\n ✓ 8 tests passed\n Done in 2.14s' }],
       },
-    })
+    });
 
-    const codes = wrapper.findAll('.pxd-tool-call--code')
+    const codes = wrapper.findAll('.pxd-tool-call--code');
 
-    expect(codes).toHaveLength(2)
-    expect(codes[1]!.text()).toContain('$ pnpm test')
-    expect(codes[1]!.text()).toContain('Done in 2.14s')
-    expect(codes[1]!.text()).not.toContain('"type"')
-    expect(wrapper.findAll('code')[0]!.classes()).toContain('language-json')
-    expect(wrapper.findAll('code')[1]!.classes()).not.toContain('language-json')
+    expect(codes).toHaveLength(2);
+    expect(codes[1]!.text()).toContain('$ pnpm test');
+    expect(codes[1]!.text()).toContain('Done in 2.14s');
+    expect(codes[1]!.text()).not.toContain('"type"');
+    expect(wrapper.findAll('code')[0]!.classes()).toContain('language-json');
+    expect(wrapper.findAll('code')[1]!.classes()).not.toContain('language-json');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('marks image blocks with a placeholder instead of dumping base64', () => {
     const wrapper = mount(ToolCall, {
@@ -131,46 +131,62 @@ describe('tool-call', () => {
           { type: 'image', data: 'iVBORw0KGgo=', mimeType: 'image/png' },
         ],
       },
-    })
+    });
 
-    const text = wrapper.find('.pxd-tool-call--code').text()
+    const text = wrapper.find('.pxd-tool-call--code').text();
 
-    expect(text).toContain('captured 800x600')
-    expect(text).toContain('[image]')
-    expect(text).not.toContain('iVBORw0KGgo')
+    expect(text).toContain('captured 800x600');
+    expect(text).toContain('[image]');
+    expect(text).not.toContain('iVBORw0KGgo');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('falls back to JSON for arrays that are not content blocks', () => {
     const wrapper = mount(ToolCall, {
       props: { title: 'list', output: [{ path: 'src/a.ts' }] },
-    })
+    });
 
-    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"path"')
+    expect(wrapper.find('.pxd-tool-call--code').text()).toContain('"path"');
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
   it('applies the expand command from outside', async () => {
     const wrapper = mount(ToolCall, {
       props: { title: 'search_flights', expand: false },
-    })
+    });
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false);
 
-    await wrapper.setProps({ expand: true })
-    await nextTick()
+    await wrapper.setProps({ expand: true });
+    await nextTick();
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true);
 
-    await wrapper.find('summary').trigger('click')
-    await nextTick()
+    await wrapper.find('summary').trigger('click');
+    await nextTick();
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false);
 
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
+
+  it('replaces payload blocks with input and output slots', () => {
+    const wrapper = mount(ToolCall, {
+      props: { title: 'search_flights' },
+      slots: {
+        input: '<pre class="custom-input">{"origin":"LHR"}</pre>',
+        output: '<pre class="custom-output">{"priceUsd":742}</pre>',
+      },
+    });
+
+    expect(wrapper.find('.custom-input').exists()).toBe(true);
+    expect(wrapper.find('.custom-output').exists()).toBe(true);
+    expect(wrapper.findAll('.pxd-tool-call--code')).toHaveLength(0);
+
+    wrapper.unmount();
+  });
 
   it('toggles open state on trigger click', async () => {
     const wrapper = mount(ToolCall, {
@@ -178,20 +194,20 @@ describe('tool-call', () => {
         title: 'search_flights',
         input: { q: 1 },
       },
-    })
+    });
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true);
 
-    await wrapper.find('summary').trigger('click')
-    await nextTick()
+    await wrapper.find('summary').trigger('click');
+    await nextTick();
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(false);
 
-    await wrapper.find('summary').trigger('click')
-    await nextTick()
+    await wrapper.find('summary').trigger('click');
+    await nextTick();
 
-    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true)
+    expect((wrapper.find('details').element as HTMLDetailsElement).open).toBe(true);
 
-    wrapper.unmount()
-  })
-})
+    wrapper.unmount();
+  });
+});
