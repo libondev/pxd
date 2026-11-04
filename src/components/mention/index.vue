@@ -200,11 +200,11 @@ defineExpose({
     fill-trigger-width
     :disabled="disabled"
     :adaptive="isAdaptive"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
+    :wrapper-class="[responsiveClasses.wrapper, wrapperClass]"
+    :content-class="[responsiveClasses.content, contentClass]"
+    :lock-scroll-on-visible="isAdaptive"
     @show="onPopoverShow"
     @hide="onPopoverHide"
   >

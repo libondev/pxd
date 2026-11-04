@@ -27,6 +27,8 @@ export interface MentionProps {
   maxRows?: number
   editorClass?: ComponentClass
   editorAttrs?: Record<string, unknown>
+  contentClass?: ComponentClass
+  wrapperClass?: ComponentClass
   beforeInsert?: (payload: MentionSelectPayload) => boolean | void
 }
 
