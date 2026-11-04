@@ -300,9 +300,8 @@ function roundByDPR(value: number) {
 
 function getPositionMiddleware() {
   return [
-    // crossAxis too: for top/bottom placements the x axis is otherwise never clamped.
-    shift({ padding: 4, crossAxis: true }),
     props.autoPosition && flip(),
+    shift({ padding: 4, crossAxis: true }),
     props.showArrow && arrow({ element: arrowRef.value }),
     props.closeOnInvisible && hide({ strategy: 'escaped' }),
     props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
