@@ -19,6 +19,7 @@ import PLoadingMask from '../loading-mask/index.vue'
 
 interface RenderEntry {
   key: string | number
+  index?: number
   start?: number
   row?: ListRow
   itemRow?: ListItemRow
@@ -84,7 +85,10 @@ const activeItemId = computed(() =>
   activeIndex.value >= 0 ? `${uid}-${activeIndex.value}` : undefined,
 )
 
-const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
+const { totalSize, virtualItems, measureElement, scrollToIndex } = useVirtualList(
+  containerRef,
+  virtualOptions,
+)
 
 const renderEntries = computed<RenderEntry[]>(() => {
   if (props.virtual) {
@@ -92,6 +96,7 @@ const renderEntries = computed<RenderEntry[]>(() => {
       const row = rows.value[virtualItem.index]
       return {
         key: virtualItem.key,
+        index: virtualItem.index,
         start: virtualItem.start,
         row,
         itemRow: row?.type === 'item' ? row : undefined,
@@ -323,6 +328,8 @@ defineExpose({
       <div
         v-for="entry in renderEntries"
         :key="entry.key"
+        :ref="virtual ? measureElement : undefined"
+        :data-index="entry.index"
         role="presentation"
         class="pxd-list--row w-full"
         :class="{ 'left-0 top-0 absolute': virtual }"
