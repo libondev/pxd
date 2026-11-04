@@ -4,6 +4,6 @@ export interface BubbleProps {
   header?: string
   avatar?: string
   loading?: boolean
-  variant?: 'default' | 'ghost'
+  variant?: 'default' | 'ghost' | 'primary' | 'secondary'
   interactive?: boolean
 }

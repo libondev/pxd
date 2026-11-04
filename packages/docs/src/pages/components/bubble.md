@@ -183,7 +183,7 @@ function addMessage() {
 | header | `string` | - | Text shown above the bubble |
 | avatar | `string` | - | Avatar image URL rendered before the bubble, the `avatar` slot overrides it |
 | loading | `boolean` | - | Replace the message content with a spinner |
-| variant | `default` \| `ghost` | `default` | Render a transparent bubble without border |
+| variant | `'default' \| 'primary' \| 'secondary' \| 'ghost'` | `'default'` | Bubble appearance: `default` uses the neutral surface, `primary` the brand color with inverted text, `secondary` a gray surface, `ghost` a transparent background without border |
 | interactive | `boolean` | `true` | Show hover feedback, set to `false` for read-only messages |
 
 ## Slots
