@@ -35,15 +35,18 @@ const { attrs, classes } = useTailwindVariant(
 
 const { classes: contentClasses } = useTailwindVariant(
   {
-    base: 'pxd-bubble--content px-2.5 py-2 relative w-max max-w-full overflow-hidden rounded-lg border border-gray-alpha-100 break-all whitespace-pre-wrap motion-safe:transition-colors',
+    base: 'pxd-bubble--content px-2.5 py-2 relative w-max max-w-full overflow-hidden rounded-lg border break-all whitespace-pre-wrap motion-safe:transition-colors',
     variants: {
       role: {
-        user: 'ms-auto bg-primary text-primary-foreground motion-safe:transition-[filter]',
-        system: 'bg-gray-100',
-        assistant: 'bg-gray-100',
+        user: 'ms-auto',
+        system: '',
+        assistant: '',
       },
       variant: {
-        default: '',
+        default: 'bg-background-100',
+        primary:
+          'border-primary bg-primary text-primary-foreground motion-safe:transition-[filter]',
+        secondary: 'bg-gray-100',
         ghost: 'bg-background border-transparent text-foreground',
       },
       interactive: {},
@@ -57,7 +60,7 @@ const { classes: contentClasses } = useTailwindVariant(
       },
       {
         role: 'user',
-        variant: 'default',
+        variant: 'primary',
         interactive: true,
         class: 'hover:brightness-90',
       },

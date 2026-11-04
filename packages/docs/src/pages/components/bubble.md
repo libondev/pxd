@@ -16,7 +16,9 @@ Show the conversation.
 ```vue demo
 <template>
   <PBubble variant="ghost" role="system">The Evil Rabbit Jumped over the Fence</PBubble>
-  <PBubble variant="ghost" role="user">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble variant="default" role="assistant">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble variant="primary" role="user">The Evil Rabbit Jumped over the Fence</PBubble>
+  <PBubble variant="secondary" role="assistant">The Evil Rabbit Jumped over the Fence</PBubble>
 </template>
 ```
 
