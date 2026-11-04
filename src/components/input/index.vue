@@ -64,7 +64,7 @@ const { attrs, classes } = useTailwindVariant(
     variants: {
       size: {
         xs: `${BASIC_HEIGHTS.xs} text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} rounded-md text-[0.8125rem]`,
+        sm: `${BASIC_HEIGHTS.sm} rounded-md text-sm`,
         md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
         lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
       },

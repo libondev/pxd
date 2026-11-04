@@ -56,8 +56,8 @@ const navigableCount = computed(() => flattened.value.navigableCount)
 const virtualOptions = reactive({
   dataKey: 'key',
   enabled: () => props.virtual,
-  scrollPaddingStart: props.itemSize / 2,
-  scrollPaddingEnd: props.itemSize / 2,
+  scrollPaddingStart: props.itemSize,
+  scrollPaddingEnd: props.itemSize,
   get items() {
     return rows.value
   },

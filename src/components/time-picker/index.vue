@@ -304,16 +304,11 @@ onBeforeUnmount(() => {
 
     <template #content>
       <div class="p-1.5 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton
-          size="xs"
-          variant="ghost"
-          class="sm:px-0.5 rounded-md text-[0.8125rem]"
-          @click="onCancelClick"
-        >
+        <PButton size="xs" variant="ghost" class="rounded-md" @click="onCancelClick">
           {{ configProvider.locale.interaction.cancel }}
         </PButton>
 
-        <PButton size="xs" variant="ghost" class="sm:px-0 text-[0.8125rem]" @click="onSetNowClick">
+        <PButton size="xs" variant="ghost" class="rounded-md" @click="onSetNowClick">
           {{ configProvider.locale.date.now }}
         </PButton>
       </div>
@@ -382,7 +377,7 @@ onBeforeUnmount(() => {
             v-for="(preset, i) in presets"
             :key="preset.label"
             :data-index="i"
-            class="px-1.5 py-0.5 sm:text-[0.8125rem] sm:leading-4 max-sm:leading-5 max-sm:text-sm cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-colors"
+            class="px-1.5 py-0.5 leading-4 text-xs cursor-pointer appearance-none rounded-sm border-none bg-gray-300 font-inherit whitespace-nowrap text-foreground self-focus-ring outline-none hover:bg-gray-400 active:bg-gray-500 motion-safe:transition-colors"
           >
             {{ preset.label }}
           </button>

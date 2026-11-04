@@ -79,8 +79,8 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-code-block min-w-0 relative flex max-w-full flex-col text-gray-1000',
     variants: {
       size: {
-        sm: 'text-[0.8125rem]',
-        md: 'text-[0.8125rem]',
+        sm: 'text-sm',
+        md: 'text-xs',
         lg: 'text-[0.9375rem]',
       },
     },
@@ -247,7 +247,7 @@ onUnmounted(() => {
           role="tab"
           :tabindex="option.value === activeTabValue ? 0 : -1"
           :aria-selected="option.value === activeTabValue"
-          class="h-8 px-3 font-medium cursor-pointer rounded-md text-[0.8125rem] text-gray-900 not-aria-selected:hover:text-gray-1000 aria-selected:bg-gray-200 aria-selected:text-gray-1000 motion-safe:transition-colors"
+          class="h-8 px-3 font-medium text-xs cursor-pointer rounded-md text-gray-900 not-aria-selected:hover:text-gray-1000 aria-selected:bg-gray-200 aria-selected:text-gray-1000 motion-safe:transition-colors"
           @click="onTabSelect(option.value)"
         >
           {{ option.label || option.value }}
@@ -261,7 +261,7 @@ onUnmounted(() => {
     >
       <slot name="header">
         <FileIcon class="size-em shrink-0 text-gray-900" aria-hidden="true" />
-        <span class="min-w-0 truncate text-[0.8125rem] text-gray-900">{{ title }}</span>
+        <span class="min-w-0 text-xs truncate text-gray-900">{{ title }}</span>
       </slot>
 
       <div class="gap-1 min-w-0 ms-auto flex items-center">
@@ -270,7 +270,7 @@ onUnmounted(() => {
         <div v-if="switcher" class="h-7 group/select relative shrink-0">
           <div
             aria-hidden="true"
-            class="px-2 gap-1 flex h-full cursor-pointer items-center rounded-md bg-background-200 text-[0.8125rem] whitespace-nowrap text-gray-900 group-hover/select:bg-gray-200 has-focus-visible:self-focus-ring motion-safe:transition-colors"
+            class="px-2 gap-1 text-xs flex h-full cursor-pointer items-center rounded-md bg-background-200 whitespace-nowrap text-gray-900 group-hover/select:bg-gray-200 has-focus-visible:self-focus-ring motion-safe:transition-colors"
           >
             <span class="truncate">{{ activeSwitcherLabel }}</span>
             <ChevronDownIcon class="size-3 shrink-0" />

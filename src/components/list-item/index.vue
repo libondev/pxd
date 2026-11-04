@@ -114,7 +114,7 @@ function onItemClick(ev: MouseEvent) {
           v-if="description"
           :title="description"
           :aria-label="description"
-          class="min-w-0 w-full truncate text-[0.8125rem] text-foreground-secondary"
+          class="min-w-0 text-xs w-full truncate text-foreground-secondary"
         >
           {{ description }}
         </div>
