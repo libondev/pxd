@@ -529,6 +529,55 @@ describe('useMentionEditor', () => {
     expect(h.model.value).not.toContain(ZWSP)
   })
 
+  it('pastes over the placeholder <br> instead of leaving it as a blank line', () => {
+    const h = createHarness('')
+    expect(h.editor.querySelector('br')).not.toBeNull()
+
+    const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(ev, 'clipboardData', {
+      value: {
+        getData: (type: string) =>
+          type === 'text/html' ? '<meta charset="utf-8">\nhello\n' : 'hello',
+      },
+    })
+    h.editor.dispatchEvent(ev)
+
+    expect(h.editor.querySelector('br')).toBeNull()
+    expect(h.model.value).toBe('hello')
+  })
+
+  it('keeps the value stable across select-all, cut and paste', () => {
+    const h = createHarness('hello<br>')
+    const store: Record<string, string> = {}
+
+    for (let round = 0; round < 3; round += 1) {
+      const range = document.createRange()
+      range.selectNodeContents(h.editor)
+      const sel = getSelection()!
+      sel.removeAllRanges()
+      sel.addRange(range)
+
+      const cut = new ClipboardEvent('cut', { bubbles: true, cancelable: true })
+      Object.defineProperty(cut, 'clipboardData', {
+        value: {
+          setData: (type: string, value: string) => {
+            store[type] = value
+          },
+        },
+      })
+      h.editor.dispatchEvent(cut)
+
+      const paste = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
+      Object.defineProperty(paste, 'clipboardData', {
+        value: { getData: (type: string) => store[type] ?? '' },
+      })
+      h.editor.dispatchEvent(paste)
+    }
+
+    expect(h.editor.querySelector('br')).toBeNull()
+    expect(h.model.value).toBe('hello')
+  })
+
   it('copies the public contract instead of the DOM, so no anchor leaks', () => {
     const h = createHarness('Hello <mention key="1">Alice</mention>tail')
     const store: Record<string, string> = {}

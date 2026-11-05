@@ -159,6 +159,28 @@ export function sanitizeMentionClipboardHtml(html: string): DocumentFragment {
   return fragment
 }
 
+/**
+ * Our copies carry the editor's edge line breaks as `\n`, so pasting them back would
+ * add a blank line on every round trip.
+ */
+export function trimMentionEdgeBreaks(fragment: DocumentFragment): DocumentFragment {
+  let first = fragment.firstChild
+
+  while (first?.nodeName === 'BR') {
+    first.remove()
+    first = fragment.firstChild
+  }
+
+  let last = fragment.lastChild
+
+  while (last?.nodeName === 'BR') {
+    last.remove()
+    last = fragment.lastChild
+  }
+
+  return fragment
+}
+
 function appendSanitizedChildren(source: Node, target: Node) {
   for (const child of Array.from(source.childNodes)) {
     if (child.nodeType === Node.TEXT_NODE) {

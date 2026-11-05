@@ -13,6 +13,7 @@ import {
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
+  trimMentionEdgeBreaks,
 } from '../../utils/_internal/mention-html.js'
 
 export interface UseMentionEditorOptions {
@@ -586,26 +587,18 @@ export function useMentionEditor({
     ev.preventDefault()
 
     const clipboard = ev.clipboardData
-    const selection = window.getSelection()
+    const range = resolveInsertRange()
 
-    if (!selection) {
+    if (!range) {
       return
-    }
-
-    let range: Range
-
-    if (selection.rangeCount > 0) {
-      range = selection.getRangeAt(0)
-    } else {
-      // The paste is cancelled before this runs, so it has to land somewhere.
-      range = document.createRange()
-      range.selectNodeContents(editorRef.value as HTMLElement)
     }
 
     range.deleteContents()
     range.insertNode(
-      sanitizeMentionClipboardHtml(
-        clipboard?.getData('text/html') || escapePlainTextAsHtml(clipboard?.getData('text/plain') ?? ''),
+      trimMentionEdgeBreaks(
+        sanitizeMentionClipboardHtml(
+          clipboard?.getData('text/html') || escapePlainTextAsHtml(clipboard?.getData('text/plain') ?? ''),
+        ),
       ),
     )
     range.collapse(false)
