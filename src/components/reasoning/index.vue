@@ -65,7 +65,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <div
-        class="pxd-reasoning--content"
+        class="pxd-reasoning--content whitespace-normal"
         :class="{
           'p-3 text-sm border-t text-foreground-secondary': variant === 'default',
           'mbs-1.5 text-sm ms-1.5 py-1 ps-3 border-l text-foreground-secondary':
