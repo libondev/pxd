@@ -128,9 +128,8 @@ function onItemLeave() {
         <span class="min-w-0 flex-1 shrink-0 truncate text-foreground-secondary">{{
           item.name
         }}</span>
-        <span class="text-xs text-foreground-secondary tabular-nums">{{ item.tokens }}</span>
-        <span
-          class="text-xs min-w-10 inline-flex justify-end text-foreground-secondary tabular-nums"
+        <span class="text-xs text-foreground-secondary">{{ item.tokens }}</span>
+        <span class="text-xs min-w-10 inline-flex justify-end text-foreground-secondary"
           >{{ item.percentage.toFixed(1) }}%</span
         >
       </li>
