@@ -44,3 +44,10 @@ setTimeout(() => {
 | streaming | `boolean` | `true` | Streaming state; drives the shimmer |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
 | title | `ComponentText` | - | Title text |
+| shimmerVariant | `'sunrise' \| 'bubble' \| 'tonic' \| 'spring' \| 'twilight'` | - | Gradient preset forwarded to the inner Shimmer Text while streaming |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Reasoning content |
