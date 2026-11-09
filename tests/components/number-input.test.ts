@@ -125,4 +125,33 @@ describe('number-input', () => {
 
     wrapper.unmount()
   })
+
+  it.each([
+    ['1,048,576', ',', 1048576],
+    ['-1,048,576', ',', -1048576],
+    ['1_048_576', '_', 1048576],
+  ] as const)(
+    'should parse pasted %s with thousands formatting',
+    async (text, separator, expected) => {
+      const wrapper = mount(NumberInput, {
+        props: {
+          thousands: true,
+          thousandsSeparator: separator,
+        },
+      })
+      const input = wrapper.find('input')
+
+      await input.setValue(text)
+      await input.trigger('change')
+
+      expect(wrapper.emitted('update:model-value')?.[0]).toEqual([expected])
+      expect(wrapper.emitted('change')?.[0][0]).toBe(expected)
+
+      await input.trigger('blur')
+
+      expect(input.element.value).toBe(text)
+
+      wrapper.unmount()
+    },
+  )
 })

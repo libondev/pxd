@@ -110,6 +110,11 @@ function formatWithThousands(value: string | number): string {
   const decPart = dotIndex === -1 ? '' : str.slice(dotIndex)
   return intPart.replace(REGEXPS['thousands-separator'], props.thousandsSeparator) + decPart
 }
+function parseInputValue(value: string) {
+  const plain = props.thousands ? value.split(props.thousandsSeparator).join('') : value
+
+  return Number.parseFloat(plain)
+}
 function toPrecision(value: number | null) {
   if (!value) {
     return value
@@ -214,14 +219,14 @@ function onInputInput(value: string) {
   const normalized = value.replace(REGEXPS['remove-leading-zeros'], '$1')
   inputData.userInput = normalized
 
-  const newValue = normalized === '' ? null : Number.parseFloat(normalized)
+  const newValue = normalized === '' ? null : parseInputValue(normalized)
 
   inputData.currentValue = toPrecision(newValue ?? 0)
   modelValue.value = inputData.currentValue
 }
 
 function onInputChange(value: string, event: Event) {
-  let newValue = toPrecision(value === '' ? null : Number.parseFloat(value))
+  let newValue = toPrecision(value === '' ? null : parseInputValue(value))
 
   if (isNumber(newValue)) {
     newValue = clampToRange(newValue)
