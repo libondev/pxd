@@ -160,10 +160,11 @@ A set of headings, vertically stacked, that each reveal an related section of co
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Content revealed when the panel expands. |
+| title | Heading inside the trigger, falling back to the `title` prop. |
 
 ## CollapseGroup Slots
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | `PCollapse` panels stacked in the group. |
