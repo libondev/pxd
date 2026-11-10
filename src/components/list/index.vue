@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ListNavigationCommand } from '../../composables/_internal/use-list-navigation.js'
-import type { ListItemRow, ListHeaderRow, ListRow } from '../../composables/_internal/use-list-rows'
+import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
-import { computed, nextTick, onMounted, reactive, shallowRef, watch } from 'vue'
+import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
 import { resolveNextListValue } from '../../composables/_internal/use-list-selection.js'
@@ -23,7 +23,6 @@ interface RenderEntry {
   start?: number
   row?: ListRow
   itemRow?: ListItemRow
-  headerLabel?: ListHeaderRow['label']
 }
 
 defineOptions({
@@ -53,8 +52,23 @@ const containerRef = shallowRef<HTMLElement>()
 const flattened = computed(() => flattenListOptions(props.options))
 const rows = computed(() => flattened.value.rows)
 const itemRows = computed(() => flattened.value.itemRows)
-const navigableCount = computed(() => flattened.value.navigableCount)
-const virtualOptions = reactive({
+
+const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
+  useListNavigation({
+    loop: () => props.loop,
+    count: () => itemRows.value.length,
+    defaultActiveIndex: () => props.defaultActiveIndex,
+    isDisabled: isNavDisabled,
+    onActivateItem,
+    scrollToIndex: scrollNavIndexIntoView,
+  })
+
+// Stable ids so host comboboxes can point aria-activedescendant at the active row.
+const activeItemId = computed(() =>
+  activeIndex.value >= 0 ? `${uid}-${activeIndex.value}` : undefined,
+)
+
+const { totalSize, virtualItems, measureElement, scrollToIndex } = useVirtualList(containerRef, {
   dataKey: 'key',
   enabled: () => props.virtual,
   scrollPaddingStart: props.itemSize,
@@ -70,26 +84,6 @@ const virtualOptions = reactive({
   },
 })
 
-const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
-  useListNavigation({
-    loop: () => props.loop,
-    count: () => navigableCount.value,
-    defaultActiveIndex: () => props.defaultActiveIndex,
-    isDisabled: isNavDisabled,
-    onActivateItem,
-    scrollToIndex: scrollNavIndexIntoView,
-  })
-
-// Stable ids so host comboboxes can point aria-activedescendant at the active row.
-const activeItemId = computed(() =>
-  activeIndex.value >= 0 ? `${uid}-${activeIndex.value}` : undefined,
-)
-
-const { totalSize, virtualItems, measureElement, scrollToIndex } = useVirtualList(
-  containerRef,
-  virtualOptions,
-)
-
 const renderEntries = computed<RenderEntry[]>(() => {
   if (props.virtual) {
     return virtualItems.value.map((virtualItem) => {
@@ -100,7 +94,6 @@ const renderEntries = computed<RenderEntry[]>(() => {
         start: virtualItem.start,
         row,
         itemRow: row?.type === 'item' ? row : undefined,
-        headerLabel: row?.type === 'header' ? row.label : undefined,
       }
     })
   }
@@ -109,18 +102,7 @@ const renderEntries = computed<RenderEntry[]>(() => {
     key: row.key,
     row,
     itemRow: row.type === 'item' ? row : undefined,
-    headerLabel: row.type === 'header' ? row.label : undefined,
   }))
-})
-
-const contentStyle = computed(() => {
-  if (!props.virtual) {
-    return undefined
-  }
-
-  return {
-    height: `${totalSize.value}px`,
-  }
 })
 
 function isNavDisabled(index: number): boolean {
@@ -137,8 +119,7 @@ function scrollNavIndexIntoView(navIndex: number) {
     return
   }
 
-  const selector = `[data-list-item][data-index="${navIndex}"]`
-  getElement(selector, containerRef.value)?.scrollIntoView({
+  findItemElement(navIndex)?.scrollIntoView({
     block: 'nearest',
     behavior: 'instant',
   })
@@ -168,7 +149,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
 }
 
 function onActivateItem(navIndex: number) {
-  const el = getElement(`[data-list-item][data-index="${navIndex}"]`, containerRef.value)
+  const el = findItemElement(navIndex)
 
   if (el) {
     el.click()
@@ -236,7 +217,7 @@ function scrollToFirstSelected(): boolean {
   }
 
   const container = containerRef.value
-  const item = getElement(`[data-list-item][data-index="${target.navIndex}"]`, container)
+  const item = findItemElement(target.navIndex)
 
   if (!container || !item) {
     return false
@@ -269,31 +250,31 @@ function scrollToFirstOption(): void {
   }
 }
 
-watch(activeIndex, syncActiveItem, { flush: 'post' })
-watch(renderEntries, refreshActiveItem, { flush: 'post' })
+function restoreScroll(): void {
+  if (!scrollToFirstSelected()) {
+    scrollToFirstOption()
+  }
+}
+
+watch(() => activeIndex.value, syncActiveItem, { flush: 'post' })
+watch(() => renderEntries.value, refreshActiveItem, { flush: 'post' })
+watch(
+  () => rows.value,
+  async () => {
+    await nextTick()
+    restoreScroll()
+  },
+  { flush: 'post' },
+)
+
 provideListContext({
   value: computed(() => props.modelValue),
   onItemSelect,
 })
 
-watch(
-  rows,
-  async () => {
-    await nextTick()
-
-    if (!scrollToFirstSelected()) {
-      scrollToFirstOption()
-    }
-  },
-  { flush: 'post' },
-)
-
 onMounted(() => {
   refreshActiveItem()
-
-  if (!scrollToFirstSelected()) {
-    scrollToFirstOption()
-  }
+  restoreScroll()
 })
 
 defineExpose({
@@ -323,7 +304,7 @@ defineExpose({
       role="presentation"
       class="pxd-list--content w-full"
       :class="{ relative: virtual }"
-      :style="contentStyle"
+      :style="virtual ? { height: `${totalSize}px` } : undefined"
     >
       <div
         v-for="entry in renderEntries"
@@ -335,7 +316,7 @@ defineExpose({
         :class="{ 'left-0 top-0 absolute': virtual }"
         :style="virtual ? { transform: `translateY(${entry.start}px)` } : undefined"
       >
-        <PListGroup v-if="entry.row?.type === 'header'" :label="entry.headerLabel" />
+        <PListGroup v-if="entry.row?.type === 'header'" :label="entry.row.label" />
 
         <PListItem
           v-else-if="entry.itemRow"
