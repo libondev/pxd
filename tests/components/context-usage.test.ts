@@ -136,21 +136,14 @@ describe('context-usage', () => {
     wrapper.unmount()
   })
 
-  it('renders each segment as a progressively lighter tint of the primary color', () => {
+  it('assigns a distinct palette color per segment by index', () => {
     const wrapper = mount(ContextUsage, {
       props: { total: 200000, data },
     })
 
-    const segments = wrapper.findAll('.pxd-context-usage--segment')
-    expect(segments[0].attributes('style')).toContain(
-      '--context-usage-color: color-mix(in srgb, var(--color-primary) 100%',
-    )
-    expect(segments[1].attributes('style')).toContain(
-      '--context-usage-color: color-mix(in srgb, var(--color-primary) 90%',
-    )
-    expect(segments[2].attributes('style')).toContain(
-      '--context-usage-color: color-mix(in srgb, var(--color-primary) 80%',
-    )
+    const colors = wrapper.findAll('.pxd-context-usage--dot').map((dot) => dot.attributes('style'))
+
+    expect(new Set(colors).size).toBe(data.length)
 
     wrapper.unmount()
   })
@@ -167,9 +160,6 @@ describe('context-usage', () => {
 
     expect(segments[0].attributes('style')).toContain('opacity: 0.2')
     expect(segments[1].attributes('style')).toContain('opacity: 1')
-    expect(segments[1].attributes('style')).toContain(
-      '--context-usage-color: color-mix(in srgb, var(--color-primary) 90%',
-    )
     expect(rows[0].attributes('style')).toContain('opacity: 0.2')
     expect(rows[1].attributes('style')).toContain('opacity: 1')
 

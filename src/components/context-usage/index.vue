@@ -13,8 +13,18 @@ const props = withDefaults(defineProps<ContextUsageProps>(), {
   legend: true,
 })
 
-const TINT_STEP = 10
-const TINT_FLOOR = 20
+const SEGMENT_COLORS = [
+  'var(--color-primary)',
+  'var(--color-gray-600)',
+  'var(--color-blue-700)',
+  'var(--color-red-700)',
+  'var(--color-amber-700)',
+  'var(--color-green-700)',
+  'var(--color-teal-700)',
+  'var(--color-purple-700)',
+  'var(--color-pink-700)',
+] as const
+
 const DIM_OPACITY = 0.2
 
 const hoveredIndex = ref<number | null>(null)
@@ -34,9 +44,8 @@ const freeTokens = computed(() => Math.max(props.total - usedTokens.value, 0))
 const items = computed(() =>
   [...props.data]
     .sort((a, b) => b.tokens - a.tokens)
-    .map((segment, index) => ({
+    .map((segment) => ({
       ...segment,
-      tint: Math.max(100 - index * TINT_STEP, TINT_FLOOR),
       percentage: props.total > 0 ? (segment.tokens / props.total) * 100 : 0,
     })),
 )
@@ -47,7 +56,7 @@ const viewItems = computed(() =>
 
     return {
       ...item,
-      color: `color-mix(in srgb, var(--color-primary) ${item.tint}%, var(--color-background-100))`,
+      color: SEGMENT_COLORS[index % SEGMENT_COLORS.length],
       opacity: isDimmed ? DIM_OPACITY : 1,
     }
   }),
@@ -95,7 +104,7 @@ function onItemLeave() {
       <div
         v-for="(item, index) in viewItems"
         :key="index"
-        class="pxd-context-usage--segment basis-0 min-w-[1%] border-l bg-(--context-usage-color) motion-safe:transition-opacity"
+        class="pxd-context-usage--segment basis-0 min-w-[2%] border-l bg-(--context-usage-color) motion-safe:transition-opacity"
         :style="{
           '--context-usage-color': item.color,
           flexGrow: item.tokens,
@@ -110,18 +119,18 @@ function onItemLeave() {
       />
     </div>
 
-    <ul v-if="legend" class="pxd-context-usage--legend flex flex-col">
+    <ul v-if="legend" class="pxd-context-usage--legend px-0.5 flex flex-col">
       <li
         v-for="(item, index) in viewItems"
         :key="index"
-        class="min-w-0 gap-2 sibling:pt-1 text-sm m-0! flex cursor-default items-center motion-safe:transition-opacity"
+        class="min-w-0 gap-2 sibling:pt-1 text-sm m-0! flex cursor-default items-center leading-none motion-safe:transition-opacity"
         :style="{ opacity: item.opacity }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
       >
         <i
           aria-hidden="true"
-          class="pxd-context-usage--dot size-2 shrink-0 rounded-full bg-(--context-usage-color)"
+          class="pxd-context-usage--dot size-2 rounded-xs shrink-0 bg-(--context-usage-color)"
           :style="{ '--context-usage-color': item.color }"
         />
 

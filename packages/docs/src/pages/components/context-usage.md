@@ -75,7 +75,7 @@ const data = [
 
 ## Hover highlight
 
-Hover a segment or a legend row: the matching pair stays at full strength while every other one dims.
+Hover a segment or legend row to dim the others.
 
 ```vue demo
 <script setup>
@@ -95,8 +95,8 @@ const data = [
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| total | `number` | - | Context window size in tokens, the denominator of the fill |
-| data | `ContextUsageSegment[]` | - | Filled segments, sorted by `tokens` in descending order before rendering, rendered left to right as progressively lighter tints of the primary color and at least `1%` wide each, see `ContextUsageSegment` |
+| total | `number` | - | Context window size in tokens |
+| data | `ContextUsageSegment[]` | - | Filled segments, see `ContextUsageSegment` |
 | size | `'sm' \| 'md' \| 'lg'` | - | Bar height, falls back to the config provider |
 | legend | `boolean` | `true` | Show the legend list under the bar |
 
@@ -105,4 +105,4 @@ const data = [
 | Name | Type | Description |
 | --- | --- | --- |
 | name | `string` | Legend label of the segment |
-| tokens | `number` | Tokens the segment occupies; widths and legend percentages are derived from it, a non-empty segment never renders narrower than `1%` of the bar, the remaining window is the track |
+| tokens | `number` | Tokens the segment occupies |
