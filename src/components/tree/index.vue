@@ -190,8 +190,13 @@ const rows = useTreeRows(index, {
   fieldNames: () => fields.value,
 })
 
-/** Not `reactive()`: the virtualizer would get a deep proxy of the rows instead of the rows. */
-const virtualOptions = {
+const rowByKey = computed(() => {
+  const result = new Map<ComponentValue, TreeFlatNode>()
+  rows.value.forEach((row) => result.set(row.key, row))
+  return result
+})
+
+const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, {
   dataKey: 'key',
   get enabled() {
     return props.virtual
@@ -205,15 +210,7 @@ const virtualOptions = {
   get overScan() {
     return props.overScan
   },
-}
-
-const rowByKey = computed(() => {
-  const result = new Map<ComponentValue, TreeFlatNode>()
-  rows.value.forEach((row) => result.set(row.key, row))
-  return result
 })
-
-const { totalSize, virtualItems, scrollToIndex } = useVirtualList(containerRef, virtualOptions)
 
 const contentStyle = computed(() =>
   props.virtual ? { height: totalSize.value + 'px' } : undefined,
