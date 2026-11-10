@@ -496,4 +496,73 @@ describe('PStickToBottom', () => {
     vm.stickIfNeeded()
     expect(container.scrollTop).toBe(500)
   })
+
+  it('keeps following when an explicit stick comes while the interaction window is open', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 1920,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { forceStickToBottom: () => void; stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      // The click that asks for the new content, then the consumer pinning it before it lands
+      now.mockReturnValue(1000)
+      wrapper.find('.item').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+      vm.forceStickToBottom()
+
+      // The replacement grows while the quiet window would still be open
+      metrics.scrollHeight = 4000
+      vm.stickIfNeeded()
+      expect(container.scrollTop).toBe(3200)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
+  })
+
+  it('does not read a shrinking clamp as the user scrolling when growth lands before the judge', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 2000,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { forceStickToBottom: () => void; stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      now.mockReturnValue(1000)
+      wrapper.find('.item').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+      vm.forceStickToBottom()
+
+      // The content shrinks under the offset and the browser clamps it to the new bottom
+      metrics.scrollHeight = 900
+      container.scrollTop = 100
+      container.dispatchEvent(new Event('scroll'))
+
+      // The replacement grows in the same frame, so the judge sees the bottom moved away
+      metrics.scrollHeight = 1200
+      vm.stickIfNeeded()
+
+      expect(container.scrollTop).toBe(400)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
+  })
 })

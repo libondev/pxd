@@ -109,6 +109,7 @@ export function useStickToBottom(
 
   function forceStickToBottom() {
     following = true
+    interactionUntil = 0
     scrollToBottom()
   }
 
@@ -271,6 +272,13 @@ export function useStickToBottom(
     lastScrollTop = top
 
     if (delta > 0 && following) {
+      // A move that stops at the bottom is the content shrinking under the offset, not the user
+      if (top >= getBottomTop(el)) {
+        upwardDelta = 0
+
+        return
+      }
+
       upwardDelta += delta
 
       // A judge bails on its own once follow is off
