@@ -7,7 +7,7 @@ import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { useListContext } from '../../contexts/list.js'
 import { toArray } from '../../utils/format.js'
-import { isNil } from '../../utils/is.js'
+import { isNil, isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PListItem',
@@ -50,7 +50,7 @@ const isChecked = computed(() => {
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-list-item p-2 text-sm pe-10 gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
+    base: 'pxd-list-item px-2 py-1.5 text-sm gap-2 flex w-full max-w-full cursor-pointer items-center rounded-md outline-none content-visibility-auto data-[disabled=true]:pointer-events-none data-[disabled=true]:text-gray-700',
     variants: {
       size: {
         sm: BASIC_MIN_HEIGHTS.sm,
@@ -63,10 +63,18 @@ const { attrs, classes } = useTailwindVariant(
         default:
           'text-foreground active:bg-gray-alpha-100 pointer-fine:data-[active=true]:bg-gray-alpha-100',
       },
+      selectable: {
+        true: 'pe-10',
+        false: 'pe-2',
+      },
     },
   },
   {
-    selection: () => ({ size: configProvider.size, variant: props.variant }),
+    selection: () => ({
+      size: configProvider.size,
+      variant: props.variant,
+      selectable: !isUndefined(selectedValue.value),
+    }),
   },
 )
 
@@ -114,7 +122,7 @@ function onItemClick(ev: MouseEvent) {
           v-if="description"
           :title="description"
           :aria-label="description"
-          class="min-w-0 text-xs w-full truncate text-foreground-secondary"
+          class="min-w-0 text-xs mbs-0.5 w-full truncate text-foreground-secondary"
         >
           {{ description }}
         </div>
