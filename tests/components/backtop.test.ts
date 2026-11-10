@@ -1,206 +1,149 @@
-<script lang="ts" setup>
-import type { BacktopProps, BacktopEmits } from './types'
-import ArrowUpIcon from '@gdsicon/vue/arrow-up'
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { useMotionReduced } from '../../composables/use-motion-reduce.js'
-import { useMutationObserver } from '../../composables/use-mutation-observer.js'
-import { useResizeObserver } from '../../composables/use-resize-observer.js'
-import {
-  getScrollTarget,
-  getScrollElement,
-  isViewportScroll,
-  resolveScrollBehavior,
-} from '../../utils/dom.js'
-import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
-import PButton from '../button/index.vue'
-import PTeleport from '../teleport/index.vue'
+import { mount } from '@vue/test-utils'
+import { describe, expect, it } from 'vite-plus/test'
+import { nextTick } from 'vue'
+import Backtop from '../../src/components/backtop/index.vue'
 
-defineOptions({
-  name: 'PBacktop',
-  inheritAttrs: false,
-})
-
-const props = withDefaults(defineProps<BacktopProps>(), {
-  visibleThreshold: 30,
-  appendToBody: true,
-  scrollTarget: 'top',
-  scrollBehavior: 'auto',
-})
-
-const emits = defineEmits<BacktopEmits>()
-
-let scrollHost: ReturnType<typeof getScrollTarget> | null
-
-let maxScrollTop = 0
-// Starts stale, so the first evaluation reads the range off the element
-let rangeDirty = true
-
-const scrollContainerEl = shallowRef<HTMLElement | null>(null)
-const contentVersion = shallowRef(0)
-const wrapperRef = shallowRef<HTMLElement>()
-const isVisible = shallowRef(false)
-
-const update = throttleByRaf(() => {
-  const el = scrollContainerEl.value
-
-  if (!el) {
-    return
-  }
-
-  if (rangeDirty) {
-    rangeDirty = false
-    maxScrollTop = Math.max(0, el.scrollHeight - el.clientHeight)
-  }
-
-  const distance = props.scrollTarget === 'top' ? el.scrollTop : maxScrollTop - el.scrollTop
-
-  isVisible.value = distance >= props.visibleThreshold
-})
-
-const { attrs, classes } = useTailwindVariant(
-  {
-    base: 'pxd-backtop',
-    variants: {
-      appendToBody: {
-        true: 'fixed',
-        false: 'absolute',
-      },
-      visible: {
-        true: 'will-change-transform',
-      },
-    },
-  },
-  {
-    selection: () => ({ appendToBody: props.appendToBody, visible: isVisible.value }),
-  },
-)
-
-const motionReduce = useMotionReduced()
-
-// An expanding panel moves a content root's box, while the container box and the node tree stay
-// as they were
-useResizeObserver(getContentTargets, invalidateRange)
-
-useMutationObserver(
-  () => {
-    const el = scrollContainerEl.value
-
-    return el && !isViewportScroll(el) ? el : null
-  },
-  () => {
-    contentVersion.value++
-    invalidateRange()
-  },
-  {
-    childList: true,
-    subtree: true,
-  },
-)
-
-function invalidateRange() {
-  rangeDirty = true
-  update()
+async function flushFrames() {
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  await nextTick()
 }
 
-function resolveScrollHost(): ReturnType<typeof getScrollTarget> | null {
-  if (props.scrollContainer) {
-    return props.scrollContainer
-  }
+describe('backtop', () => {
+  it('renders properly', () => {
+    const wrapper = mount(Backtop)
 
-  const wrapper = wrapperRef.value
+    expect(wrapper.exists()).toBe(true)
 
-  return wrapper ? getScrollTarget(wrapper) : null
-}
-
-function bindScrollHost() {
-  const host = resolveScrollHost()
-  const el = host ? getScrollElement(host) : null
-
-  if (host === scrollHost && el === scrollContainerEl.value) {
-    return
-  }
-
-  update.cancel()
-
-  if (scrollHost) {
-    cachedOff(scrollHost, 'scroll', update, { passive: true })
-  }
-
-  scrollHost = host
-  scrollContainerEl.value = el
-
-  if (host) {
-    cachedOn(host, 'scroll', update, { passive: true })
-  } else {
-    isVisible.value = false
-  }
-
-  invalidateRange()
-}
-
-function getContentTargets(): HTMLElement[] {
-  void contentVersion.value
-
-  const el = scrollContainerEl.value
-
-  return el ? ([el, ...Array.from(el.children)] as HTMLElement[]) : []
-}
-
-function onActionClick(ev: PointerEvent) {
-  emits('click', ev)
-
-  if (!scrollHost || !scrollContainerEl.value) {
-    return
-  }
-
-  const top =
-    props.scrollTarget === 'bottom'
-      ? Math.max(0, scrollContainerEl.value.scrollHeight - scrollContainerEl.value.clientHeight)
-      : 0
-
-  scrollHost.scrollTo({
-    top,
-    left: 0,
-    behavior: resolveScrollBehavior(props.scrollBehavior, motionReduce),
+    wrapper.unmount()
   })
-}
 
-watch(() => [props.scrollTarget, props.visibleThreshold], update)
+  it('should set default visibleThreshold', () => {
+    const wrapper = mount(Backtop)
 
-watch(() => props.scrollContainer, bindScrollHost, { flush: 'post' })
+    expect(wrapper.props('visibleThreshold')).toBe(30)
 
-onMounted(bindScrollHost)
+    wrapper.unmount()
+  })
 
-onBeforeUnmount(() => {
-  update.cancel()
+  it('should set custom visibleThreshold', () => {
+    const wrapper = mount(Backtop, {
+      props: {
+        visibleThreshold: 100,
+      },
+    })
 
-  if (scrollHost) {
-    cachedOff(scrollHost, 'scroll', update, { passive: true })
-  }
+    expect(wrapper.props('visibleThreshold')).toBe(100)
 
-  scrollHost = null
-  scrollContainerEl.value = null
+    wrapper.unmount()
+  })
+
+  it('should set appendToBody default', () => {
+    const wrapper = mount(Backtop)
+
+    expect(wrapper.props('appendToBody')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should set scrollTarget default', () => {
+    const wrapper = mount(Backtop)
+
+    expect(wrapper.props('scrollTarget')).toBe('top')
+
+    wrapper.unmount()
+  })
+
+  it('re-measures when the scroll range changes without a scroll event', async () => {
+    const host = document.createElement('div')
+    const content = document.createElement('div')
+
+    // An inline overflow makes this the scroll target; happy-dom has no layout, so the metrics
+    // are stubbed on it the same way the scroll-driven tests do
+    host.style.overflowY = 'auto'
+    host.appendChild(content)
+    document.body.appendChild(host)
+
+    const metrics = { scrollHeight: 200, clientHeight: 100, scrollTop: 100 }
+
+    Object.defineProperties(host, {
+      scrollHeight: { configurable: true, get: () => metrics.scrollHeight },
+      clientHeight: { configurable: true, get: () => metrics.clientHeight },
+      scrollTop: {
+        configurable: true,
+        get: () => metrics.scrollTop,
+        set: (value: number) => {
+          metrics.scrollTop = value
+        },
+      },
+    })
+
+    const wrapper = mount(Backtop, {
+      props: { appendToBody: false, scrollTarget: 'bottom', visibleThreshold: 30 },
+      attachTo: host,
+    })
+    await flushFrames()
+
+    const backtop = host.querySelector('[data-backtop]') as HTMLElement
+
+    // At the bottom: hidden, and the range has not been seen changing yet
+    expect(backtop.style.display).toBe('none')
+
+    // A panel expands above: the range grows, no scroll event and no container box change
+    metrics.scrollHeight = 600
+    content.setAttribute('style', 'height: 600px')
+    await flushFrames()
+
+    expect(backtop.style.display).not.toBe('none')
+
+    wrapper.unmount()
+    host.remove()
+  })
+
+  it('observes an explicit scroll container that is not an ancestor', async () => {
+    const host = document.createElement('div')
+    const content = document.createElement('div')
+
+    host.style.overflowY = 'auto'
+    host.appendChild(content)
+    document.body.appendChild(host)
+
+    const metrics = { scrollHeight: 600, clientHeight: 100, scrollTop: 300 }
+
+    Object.defineProperties(host, {
+      scrollHeight: { configurable: true, get: () => metrics.scrollHeight },
+      clientHeight: { configurable: true, get: () => metrics.clientHeight },
+      scrollTop: {
+        configurable: true,
+        get: () => metrics.scrollTop,
+        set: (value: number) => {
+          metrics.scrollTop = value
+        },
+      },
+    })
+
+    const wrapper = mount(Backtop, {
+      props: {
+        appendToBody: false,
+        scrollContainer: host,
+        scrollTarget: 'bottom',
+        visibleThreshold: 30,
+      },
+      attachTo: document.body,
+    })
+    await flushFrames()
+
+    const backtop = document.querySelector('[data-backtop]') as HTMLElement
+
+    expect(backtop.style.display).not.toBe('none')
+
+    metrics.scrollTop = 500
+    host.dispatchEvent(new Event('scroll'))
+    await flushFrames()
+
+    expect(backtop.style.display).toBe('none')
+
+    wrapper.unmount()
+    host.remove()
+  })
 })
-</script>
-
-<template>
-  <PTeleport :disabled="!appendToBody">
-    <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
-      <div
-        data-backtop
-        v-show="isVisible"
-        ref="wrapperRef"
-        :class="classes"
-        v-bind="attrs"
-        @click="onActionClick"
-      >
-        <slot>
-          <PButton :size="size" shape="rounded" icon>
-            <ArrowUpIcon :class="{ 'rotate-180': scrollTarget === 'bottom' }" />
-          </PButton>
-        </slot>
-      </div>
-    </Transition>
-  </PTeleport>
-</template>
