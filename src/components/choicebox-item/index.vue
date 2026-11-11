@@ -184,7 +184,7 @@ function onInputChange(event: Event) {
 
         <span
           v-if="description || $slots.description"
-          class="pxd-choicebox-item--description text-[0.8125rem] text-foreground-secondary empty:hidden"
+          class="pxd-choicebox-item--description text-xs text-foreground-secondary empty:hidden"
         >
           <slot name="description">
             {{ description }}
