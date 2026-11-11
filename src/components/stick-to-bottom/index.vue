@@ -70,7 +70,7 @@ defineExpose({
     <div
       v-if="$slots.action"
       ref="actionRef"
-      class="pxd-stick-to-bottom--action inset-x-0 bottom-0 absolute z-1"
+      class="pxd-stick-to-bottom--action inset-x-0 bottom-1 absolute z-1"
     >
       <slot
         name="action"
