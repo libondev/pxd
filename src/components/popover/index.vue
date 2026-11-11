@@ -292,6 +292,12 @@ function syncWidth() {
   wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
 }
 
+function roundByDPR(value: number) {
+  const dpr = window.devicePixelRatio || 1
+
+  return Math.round(value * dpr) / dpr
+}
+
 function getPositionMiddleware() {
   return [
     props.autoPosition && flip(),
@@ -330,7 +336,7 @@ async function updatePosition() {
     return
   }
 
-  const transform = props.adaptive ? '' : `translate(${Math.round(x)}px, ${Math.round(y)}px)`
+  const transform = props.adaptive ? '' : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
 
   // autoUpdate computes several times per open (its own first call, resize observer, scroll); only
   // a changed result is worth touching the DOM.
@@ -695,19 +701,19 @@ defineExpose({
         :class="wrapperClass"
         :style="wrapperStyle"
         :aria-labelledby="ariaLabelledby"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) max-sm:max-w-full fixed isolate z-(--popover-index) flex max-h-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) fixed isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
         @keydown="onWrapperKeydown"
         @pointerenter="onWrapperPointerEnter"
         @pointerleave="onWrapperPointerLeave"
       >
         <div
-          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full default-transition-duration default-transition-timing-function"
+          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit max-w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="adaptive ? 'fade-slide' : 'fade-scale'"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
         >
           <div
-            class="pxd-popover--content h-full max-h-inherit overflow-auto"
+            class="pxd-popover--content h-full max-h-inherit max-w-inherit overflow-auto"
             :class="contentClass"
           >
             <slot
