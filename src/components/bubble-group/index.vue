@@ -216,8 +216,7 @@ defineExpose({
     ref="stickRef"
     data-bubble-group
     class="pxd-bubble-group min-h-0 h-full flex-1"
-    wrapper-class="overflow-x-hidden ps-2 py-4 pe-1 scrollbar-gutter-stable"
-    :threshold="8"
+    wrapper-class="overflow-x-hidden px-1 py-4 scrollbar-gutter-both"
     content-class="pxd-bubble-group--content relative w-full h-(--bubble-group-height)"
     :style="contentStyle"
     v-bind="$attrs"
