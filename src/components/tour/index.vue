@@ -350,10 +350,12 @@ defineExpose({
   box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.6);
 }
 
-.pxd-tour--popover-centered {
-  position: fixed !important;
+.pxd-popover--wrapper.pxd-tour--popover-centered {
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
+  top: round(nearest, 50%, 1px) !important;
+  left: round(nearest, 50%, 1px) !important;
+  transform: translate(round(nearest, -50%, 1px), round(nearest, -50%, 1px)) !important;
 }
 </style>

@@ -155,6 +155,8 @@ watch(
 .pxd-modal {
   max-height: min(50rem, 80vh);
   max-height: min(50rem, 80dvh);
+  translate: round(nearest, var(--tw-translate-x, 0px), 1px)
+    round(nearest, var(--tw-translate-y, 0px), 1px);
 }
 
 .pxd-transition--modal-enter-active,

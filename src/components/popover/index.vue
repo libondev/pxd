@@ -291,12 +291,6 @@ function syncWidth() {
 
   wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
 }
-// A subpixel transform blurs text; snap to the device pixel grid like floating-ui's useFloating.
-function roundByDPR(value: number) {
-  const dpr = window.devicePixelRatio || 1
-
-  return Math.round(value * dpr) / dpr
-}
 
 function getPositionMiddleware() {
   return [
@@ -336,7 +330,7 @@ async function updatePosition() {
     return
   }
 
-  const transform = props.adaptive ? '' : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
+  const transform = props.adaptive ? '' : `translate(${Math.round(x)}px, ${Math.round(y)}px)`
 
   // autoUpdate computes several times per open (its own first call, resize observer, scroll); only
   // a changed result is worth touching the DOM.
