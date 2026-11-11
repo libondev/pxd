@@ -3,7 +3,7 @@ import type { ComponentPosition, ComponentText } from '../../types/shared/props'
 export interface TourStep {
   target?: string | HTMLElement | (() => HTMLElement | null)
   title?: ComponentText
-  description?: string
+  description?: ComponentText
   position?: ComponentPosition
   nextText?: ComponentText
   prevText?: ComponentText

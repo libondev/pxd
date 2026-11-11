@@ -4,5 +4,5 @@ export interface ChoiceboxItemProps {
   label?: ComponentText
   value: ComponentValue
   disabled?: boolean
-  description?: string
+  description?: ComponentText
 }

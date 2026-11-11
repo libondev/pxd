@@ -36,6 +36,10 @@ export interface ComponentOption {
   disabled?: boolean
 }
 
+export interface ComponentOptionWithDescription extends ComponentOption {
+  description?: ComponentText
+}
+
 export type ComponentBeforeChange<T> = (value: T) => Awaitable<T>
 
 export type ComponentDateTimeValue = number | string | Date | null

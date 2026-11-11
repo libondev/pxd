@@ -27,11 +27,11 @@ export type ListOptionEntry = ListOption | ListOptionGroup
 
 /** The option an event carries: the data fields, without the render-only `as` and `icon`. */
 export interface ListOptionSelected {
-  label?: ComponentText
-  value: ComponentValue
-  disabled?: boolean
-  variant?: 'default' | 'error' | 'warning'
-  description?: string
+  label?: ListOption['label']
+  value: ListOption['value']
+  disabled?: ListOption['disabled']
+  variant?: ListOption['variant']
+  description?: ListOption['description']
 }
 
 export type ListOptions = ListOptionEntry[]

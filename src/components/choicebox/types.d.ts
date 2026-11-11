@@ -1,7 +1,7 @@
 import type {
   ComponentText,
   ComponentValue,
-  ComponentOption,
+  ComponentOptionWithDescription,
   ResponsiveValue,
 } from '../../types/shared/props'
 
@@ -10,7 +10,7 @@ export interface ChoiceboxProps {
   label?: ComponentText
   multiple?: boolean
   disabled?: boolean
-  options?: ComponentOption[]
+  options?: ComponentOptionWithDescription[]
   modelValue?: ComponentValue | ComponentValue[]
 }
 

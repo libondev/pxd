@@ -47,7 +47,7 @@ const isSelected = computed(() => {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-md border motion-safe:transition-colors',
+    base: 'pxd-choicebox-item w-full flex-1 shrink-0 rounded-lg border motion-safe:transition-colors',
     variants: {
       disabled: {
         true: 'cursor-not-allowed opacity-50',
@@ -158,7 +158,7 @@ function onInputChange(event: Event) {
     v-bind="attrs"
   >
     <div
-      class="pxd-choicebox-item--option p-3 relative flex items-center justify-between motion-safe:transition-colors"
+      class="pxd-choicebox-item--option p-3 gap-2 relative flex items-center justify-between motion-safe:transition-colors"
     >
       <input
         :id="inputId"
@@ -184,7 +184,7 @@ function onInputChange(event: Event) {
 
         <span
           v-if="description || $slots.description"
-          class="pxd-choicebox-item--description text-sm text-foreground-secondary empty:hidden"
+          class="pxd-choicebox-item--description text-[0.8125rem] text-foreground-secondary empty:hidden"
         >
           <slot name="description">
             {{ description }}

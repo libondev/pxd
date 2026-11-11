@@ -24,7 +24,10 @@ defineProps<DescriptionProps>()
         <InformationIcon class="text-base scale-125" />
       </PTooltip>
     </dt>
-    <dd class="pxd-description--description text-sm font-medium leading-4 text-foreground">
+    <dd
+      v-if="description || $slots.description"
+      class="pxd-description--description text-sm font-medium leading-4 text-foreground empty:hidden"
+    >
       <slot name="description">
         {{ description }}
       </slot>
