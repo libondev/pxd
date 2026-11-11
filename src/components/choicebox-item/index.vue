@@ -175,13 +175,17 @@ function onInputChange(event: Event) {
         <CheckIcon v-if="isMultiple && isSelected" />
       </span>
 
-      <div class="gap-1 flex flex-col">
+      <div class="gap-0.5 flex flex-col">
         <span class="pxd-choicebox-item--label text-sm font-medium">
           <slot name="label">
             {{ label }}
           </slot>
         </span>
-        <span class="pxd-choicebox-item--description text-sm text-gray-900 empty:hidden">
+
+        <span
+          v-if="description || $slots.description"
+          class="pxd-choicebox-item--description text-sm text-foreground-secondary empty:hidden"
+        >
           <slot name="description">
             {{ description }}
           </slot>
