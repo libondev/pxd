@@ -128,4 +128,4 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | Name | Type | Description |
 | --- | --- | --- |
 | scrollTo | `(top: number, left: number) => void` | Scroll the content to the given offsets. |
-| forceUpdate | `() => void` | Recalculate the cached padding and scrollbar metrics immediately. |
+| forceUpdate | `() => void` | Recalculate the scrollbar metrics immediately. |

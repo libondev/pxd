@@ -5,23 +5,18 @@ import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getStyle } from '../../utils/dom.js'
-import { cachedOff, cachedOn, off, once } from '../../utils/event.js'
-import { raf, throttleByRaf } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
+import { cachedOff, cachedOn, off, on, raf, throttleByRaf } from '../../utils/event.js'
 import PFader from '../fader/index.vue'
 
 interface DragState {
-  isDragging: boolean
-  direction: ComponentDirection | null
+  direction: ComponentDirection
   startClientPos: number
   startThumbPos: number
 }
 
-interface CachedPadding {
+interface ScrollPos {
   top: number
-  bottom: number
   left: number
-  right: number
 }
 
 defineOptions({
@@ -32,49 +27,35 @@ defineOptions({
 const props = withDefaults(defineProps<ScrollableProps>(), {
   fader: true,
   scrollbar: true,
-  bottomThreshold: 10,
+  bottomThreshold: 16,
 })
 
 const emits = defineEmits<ScrollableEmits>()
 
+const MIN_THUMB = 30
+const reachedEnd: Record<ComponentDirection, boolean> = { horizontal: false, vertical: false }
+
+let drag: DragState | null = null
+let lastScrollPos: ScrollPos | null = null
+const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
+
 const wrapperRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
-// Avoid using ref to guarantee all states to ensure that
-// computed will not cause meaningless updates when the state changes.
+// Equal shallowRef writes do not wake the render effect on every measurement frame.
 const isScrollableX = shallowRef(false)
 const isScrollableY = shallowRef(false)
 const verticalThumbTop = shallowRef(0)
 const horizontalThumbLeft = shallowRef(0)
 const verticalThumbHeight = shallowRef(0)
 const horizontalThumbWidth = shallowRef(0)
+const observedContent = shallowRef<HTMLElement[]>([])
 
-const MIN_THUMB = 30
-
-let triggerRightFired = false
-let triggerBottomFired = false
-
-let dragState: DragState = {
-  isDragging: false,
-  direction: null,
-  startClientPos: 0,
-  startThumbPos: 0,
-}
-
-let cachedPadding: CachedPadding = {
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-}
-
-const computedStyle = computed(() => {
-  return {
-    '--scrollbar-size': props.scrollbarSize,
-    '--scrollbar-color': props.scrollbarColor,
-    '--scrollbar-hover-color': props.scrollbarHoverColor,
-  }
-})
+const computedStyle = computed(() => ({
+  '--scrollbar-size': props.scrollbarSize,
+  '--scrollbar-color': props.scrollbarColor,
+  '--scrollbar-hover-color': props.scrollbarHoverColor,
+}))
 
 const verticalThumbStyle = computed(() => ({
   height: `${verticalThumbHeight.value}px`,
@@ -85,6 +66,32 @@ const horizontalThumbStyle = computed(() => ({
   width: `${horizontalThumbWidth.value}px`,
   transform: `translateX(${horizontalThumbLeft.value}px)`,
 }))
+
+useResizeObserver(
+  () => (props.scrollbar ? [wrapperRef.value, contentRef.value, ...observedContent.value] : []),
+  throttledUpdate,
+)
+
+useMutationObserver(
+  () => (props.scrollbar ? contentRef.value : undefined),
+  (items) => {
+    if (items.some((item) => item.entry.type === 'childList')) {
+      syncObservedContent()
+    }
+
+    throttledUpdate()
+  },
+  { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] },
+)
+
+function readPadding(el: HTMLElement) {
+  const { paddingTop, paddingRight, paddingBottom, paddingLeft } = getStyle(el)
+
+  return {
+    x: (Number.parseFloat(paddingLeft) || 0) + (Number.parseFloat(paddingRight) || 0),
+    y: (Number.parseFloat(paddingTop) || 0) + (Number.parseFloat(paddingBottom) || 0),
+  }
+}
 
 function updateScrollbarMetrics() {
   if (!props.scrollbar) {
@@ -97,64 +104,65 @@ function updateScrollbarMetrics() {
     return
   }
 
-  const { top: pt, bottom: pb, left: pl, right: pr } = cachedPadding
+  const padding = readPadding(contentEl)
+  const { clientWidth, clientHeight, scrollWidth, scrollHeight, scrollTop, scrollLeft } = contentEl
 
-  const {
-    clientWidth: clientW,
-    clientHeight: clientH,
-    scrollWidth: scrollW,
-    scrollHeight: scrollH,
-  } = contentEl
+  // Track pixels come from the wrapper, ratios from the padding-adjusted content.
+  const trackW = wrapperRef.value!.clientWidth
+  const trackH = wrapperRef.value!.clientHeight
 
-  // Track size uses the wrapper's padding-box so outer padding is accounted for.
-  const trackW = wrapperRef.value!.clientWidth ?? clientW
-  const trackH = wrapperRef.value!.clientHeight ?? clientH
+  const effClientW = Math.max(0, clientWidth - padding.x)
+  const effClientH = Math.max(0, clientHeight - padding.y)
+  const effScrollW = Math.max(effClientW, scrollWidth - padding.x)
+  const effScrollH = Math.max(effClientH, scrollHeight - padding.y)
 
-  const effClientW = Math.max(0, clientW - pl - pr)
-  const effClientH = Math.max(0, clientH - pt - pb)
-  const effScrollW = Math.max(effClientW, scrollW - pl - pr)
-  const effScrollH = Math.max(effClientH, scrollH - pt - pb)
-
-  // Scrollability and ratios use effective sizes, while thumb pixels use track size.
-  const _isScrollableX = effScrollW > effClientW
-  const _isScrollableY = effScrollH > effClientH
+  isScrollableX.value = effScrollW > effClientW
+  isScrollableY.value = effScrollH > effClientH
 
   const verticalRatio = effScrollH > 0 ? effClientH / effScrollH : 0
   const horizontalRatio = effScrollW > 0 ? effClientW / effScrollW : 0
 
-  const _verticalThumbHeight = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
-  const _horizontalThumbWidth = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)
+  verticalThumbHeight.value = Math.max(Math.round(trackH * verticalRatio), MIN_THUMB)
+  horizontalThumbWidth.value = Math.max(Math.round(trackW * horizontalRatio), MIN_THUMB)
 
-  const scrollableWidth = Math.max(0, trackW - _horizontalThumbWidth)
-  const scrollableHeight = Math.max(0, trackH - _verticalThumbHeight)
+  const scrollableHeight = Math.max(0, trackH - verticalThumbHeight.value)
+  const scrollableWidth = Math.max(0, trackW - horizontalThumbWidth.value)
+  const maxScrollX = Math.max(1, scrollWidth - clientWidth)
+  const maxScrollY = Math.max(1, scrollHeight - clientHeight)
 
-  const maxScrollX = Math.max(1, scrollW - clientW)
-  const maxScrollY = Math.max(1, scrollH - clientH)
-
-  const verticalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollTop / maxScrollY))
-  const horizontalScrollPercentage = Math.min(1, Math.max(0, contentEl.scrollLeft / maxScrollX))
-
-  const _verticalThumbTop = verticalScrollPercentage * scrollableHeight
-  const _horizontalThumbLeft = horizontalScrollPercentage * scrollableWidth
-
-  isScrollableX.value = _isScrollableX
-  isScrollableY.value = _isScrollableY
-  verticalThumbHeight.value = _verticalThumbHeight
-  horizontalThumbWidth.value = _horizontalThumbWidth
-  verticalThumbTop.value = _verticalThumbTop
-  horizontalThumbLeft.value = _horizontalThumbLeft
+  verticalThumbTop.value = Math.min(1, Math.max(0, scrollTop / maxScrollY)) * scrollableHeight
+  horizontalThumbLeft.value = Math.min(1, Math.max(0, scrollLeft / maxScrollX)) * scrollableWidth
 }
 
-const throttledUpdate = throttleByRaf(updateScrollbarMetrics)
+function checkEnd(
+  direction: ComponentDirection,
+  curr: number,
+  prev: number,
+  clientSize: number,
+  scrollSize: number,
+  ev: Event,
+) {
+  if (curr === prev) {
+    return
+  }
 
-let lastScrollTop = 0
-let lastScrollLeft = 0
-let lastScrollInit = false
+  const atEnd = Math.floor(curr + clientSize) >= scrollSize - props.bottomThreshold
+
+  if (atEnd && !reachedEnd[direction]) {
+    reachedEnd[direction] = true
+    emits('bottom', direction, ev)
+    return
+  }
+
+  if (!atEnd) {
+    reachedEnd[direction] = false
+  }
+}
 
 function onContainerScroll(ev: Event) {
   emits('scroll', ev)
 
-  if (props.scrollbar && !dragState.isDragging) {
+  if (props.scrollbar && !drag) {
     throttledUpdate()
   }
 
@@ -163,100 +171,26 @@ function onContainerScroll(ev: Event) {
     return
   }
 
-  if (props.loading) {
-    // While loading, only snapshot the position without firing end events.
-    lastScrollTop = el.scrollTop
-    lastScrollLeft = el.scrollLeft
-    lastScrollInit = true
+  const pos: ScrollPos = { top: el.scrollTop, left: el.scrollLeft }
+  const prev = lastScrollPos
+  lastScrollPos = pos
+
+  if (props.loading || !prev) {
     return
   }
 
-  const currTop = el.scrollTop
-  const currLeft = el.scrollLeft
-
-  let movedY = false
-  let movedX = false
-
-  if (!lastScrollInit) {
-    lastScrollTop = currTop
-    lastScrollLeft = currLeft
-    lastScrollInit = true
-  } else {
-    movedY = currTop !== lastScrollTop
-    movedX = currLeft !== lastScrollLeft
-  }
-
-  const threshold = props.bottomThreshold ?? 0
-
-  // Only run the end check for the direction that actually scrolled.
-  if (movedY) {
-    const scrollBottom = Math.floor(currTop + el.clientHeight)
-
-    if (scrollBottom >= el.scrollHeight - threshold) {
-      if (!triggerBottomFired) {
-        triggerBottomFired = true
-        emits('bottom', 'vertical', ev)
-      }
-    } else {
-      triggerBottomFired = false
-    }
-  } else if (movedX) {
-    const scrollRight = Math.floor(currLeft + el.clientWidth)
-
-    if (scrollRight >= el.scrollWidth - threshold) {
-      if (!triggerRightFired) {
-        triggerRightFired = true
-        emits('bottom', 'horizontal', ev)
-      }
-    } else {
-      triggerRightFired = false
-    }
-  }
-
-  lastScrollTop = currTop
-  lastScrollLeft = currLeft
+  checkEnd('vertical', pos.top, prev.top, el.clientHeight, el.scrollHeight, ev)
+  checkEnd('horizontal', pos.left, prev.left, el.clientWidth, el.scrollWidth, ev)
 }
 
-function startDragVertical(e: MouseEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-
-  if (!contentRef.value) {
-    return
-  }
-
-  dragState = {
-    isDragging: true,
-    direction: 'vertical',
-    startClientPos: e.clientY,
-    startThumbPos: verticalThumbTop.value,
-  }
-
+function startDrag(direction: ComponentDirection, clientPos: number, thumbPos: number) {
+  drag = { direction, startClientPos: clientPos, startThumbPos: thumbPos }
   cachedOn(document, 'mousemove', onDragMove)
-  once(document, 'mouseup', onEndDrag)
-}
-
-function startDragHorizontal(e: MouseEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-
-  if (!contentRef.value) {
-    return
-  }
-
-  dragState = {
-    isDragging: true,
-    direction: 'horizontal',
-    startClientPos: e.clientX,
-    startThumbPos: horizontalThumbLeft.value,
-  }
-
-  cachedOn(document, 'mousemove', onDragMove)
-  once(document, 'mouseup', onEndDrag)
+  on(document, 'mouseup', onEndDrag)
 }
 
 function onDragMove(e: MouseEvent) {
-  if (!dragState.isDragging || !dragState.direction) {
+  if (!drag) {
     return
   }
 
@@ -265,35 +199,31 @@ function onDragMove(e: MouseEvent) {
     return
   }
 
-  if (dragState.direction === 'vertical') {
-    const trackH = wrapperRef.value!.clientHeight ?? contentEl.clientHeight
-    const thumbH = verticalThumbHeight.value
-    const scrollableH = Math.max(0, trackH - thumbH)
-    const delta = e.clientY - dragState.startClientPos
-    const newThumbTop = Math.max(0, Math.min(scrollableH, dragState.startThumbPos + delta))
-    const maxScroll = Math.max(0, contentEl.scrollHeight - contentEl.clientHeight)
+  const isVertical = drag.direction === 'vertical'
+  const trackSize = isVertical ? wrapperRef.value!.clientHeight : wrapperRef.value!.clientWidth
+  const thumbSize = isVertical ? verticalThumbHeight.value : horizontalThumbWidth.value
+  const scrollable = Math.max(0, trackSize - thumbSize)
+  const clientSize = isVertical ? contentEl.clientHeight : contentEl.clientWidth
+  const scrollSize = isVertical ? contentEl.scrollHeight : contentEl.scrollWidth
+  const delta = (isVertical ? e.clientY : e.clientX) - drag.startClientPos
+  const thumbPos = Math.max(0, Math.min(scrollable, drag.startThumbPos + delta))
+  const offset = scrollable > 0 ? (thumbPos / scrollable) * Math.max(0, scrollSize - clientSize) : 0
 
-    contentEl.scrollTop = scrollableH > 0 ? (newThumbTop / scrollableH) * maxScroll : 0
-    verticalThumbTop.value = newThumbTop
+  if (isVertical) {
+    contentEl.scrollTop = offset
+    verticalThumbTop.value = thumbPos
     return
   }
 
-  const trackW = wrapperRef.value!.clientWidth ?? contentEl.clientWidth
-  const thumbW = horizontalThumbWidth.value
-  const scrollableW = Math.max(0, trackW - thumbW)
-  const delta = e.clientX - dragState.startClientPos
-  const newThumbLeft = Math.max(0, Math.min(scrollableW, dragState.startThumbPos + delta))
-  const maxScroll = Math.max(0, contentEl.scrollWidth - contentEl.clientWidth)
-
-  contentEl.scrollLeft = scrollableW > 0 ? (newThumbLeft / scrollableW) * maxScroll : 0
-  horizontalThumbLeft.value = newThumbLeft
+  contentEl.scrollLeft = offset
+  horizontalThumbLeft.value = thumbPos
 }
 
 function onEndDrag(ev: MouseEvent) {
   ev.stopPropagation()
-  dragState.isDragging = false
-  dragState.direction = null
+  drag = null
   cachedOff(document, 'mousemove', onDragMove)
+  off(document, 'mouseup', onEndDrag)
   throttledUpdate.cancel()
   raf(updateScrollbarMetrics)
 }
@@ -305,44 +235,19 @@ function scrollTo(top: number, left: number) {
   contentRef.value.scrollTo({ top, left, behavior: 'instant' })
 }
 
-if (props.scrollbar) {
-  useResizeObserver(wrapperRef, throttledUpdate)
-  useMutationObserver(contentRef, throttledUpdate, { childList: true, subtree: true })
-}
-
-function getContainerPadding() {
+function syncObservedContent() {
   const contentEl = contentRef.value
-
-  if (!contentEl) {
-    return
-  }
-
-  const { paddingTop, paddingRight, paddingBottom, paddingLeft } = getStyle(contentEl)
-
-  cachedPadding = {
-    top: Number.parseFloat(paddingTop) || 0,
-    bottom: Number.parseFloat(paddingBottom) || 0,
-    left: Number.parseFloat(paddingLeft) || 0,
-    right: Number.parseFloat(paddingRight) || 0,
-  }
+  observedContent.value = contentEl ? (Array.from(contentEl.children) as HTMLElement[]) : []
 }
 
 function forceUpdate() {
   throttledUpdate.cancel()
-  getContainerPadding()
+  syncObservedContent()
   updateScrollbarMetrics()
 }
 
-onMounted(async () => {
-  if (isServer()) {
-    return
-  }
-
-  if (!props.scrollbar && !props.fader) {
-    return
-  }
-
-  getContainerPadding()
+onMounted(() => {
+  syncObservedContent()
   raf(updateScrollbarMetrics)
 })
 
@@ -387,26 +292,26 @@ defineExpose({
 
     <template v-if="scrollbar">
       <div
-        v-if="isScrollableX"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-x left-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
+        :class="{ 'pointer-events-none opacity-0!': !isScrollableX }"
       >
         <div
           class="pxd-scrollable--thumb h-inherit rounded-full group-hover/scrollable:will-change-transform active:opacity-100 motion-safe:transition-colors"
           :style="horizontalThumbStyle"
-          @mousedown="startDragHorizontal"
+          @mousedown.prevent.stop="startDrag('horizontal', $event.clientX, horizontalThumbLeft)"
         />
       </div>
 
       <div
-        v-if="isScrollableY"
         aria-hidden="true"
         class="pxd-scrollable--scrollbar-y top-0 right-0 bottom-0 absolute touch-none opacity-(--o) delay-1000 select-none group-hover/scrollable:delay-0 active:opacity-100 motion-safe:transition-opacity"
+        :class="{ 'pointer-events-none opacity-0!': !isScrollableY }"
       >
         <div
           class="pxd-scrollable--thumb w-inherit rounded-full group-hover/scrollable:will-change-transform active:opacity-100 motion-safe:transition-colors"
           :style="verticalThumbStyle"
-          @mousedown="startDragVertical"
+          @mousedown.prevent.stop="startDrag('vertical', $event.clientY, verticalThumbTop)"
         />
       </div>
     </template>
