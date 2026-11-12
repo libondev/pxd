@@ -164,7 +164,7 @@ watch(listOptions, async () => {
         <slot name="suffix">
           <ChevronDownIcon
             v-if="suffixIcon"
-            class="text-sm me-1.5 text-foreground-secondary motion-safe:transition-transform"
+            class="text-sm text-foreground-secondary motion-safe:transition-transform"
             :class="{ 'rotate-180': popoverVisible }"
           />
         </slot>
