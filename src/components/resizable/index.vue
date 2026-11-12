@@ -565,7 +565,7 @@ defineExpose({
       :data-collapsed="collapsed || undefined"
       :data-flush="isFlush || undefined"
       :data-orientation="direction"
-      class="pxd-resizable--handle group relative shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
+      class="pxd-resizable--handle group relative z-1 shrink-0 touch-none self-focus-ring select-none hover:after:delay-200 aria-disabled:cursor-default after:motion-safe:transition-colors"
       @pointerdown="handlePointerDown"
       @pointermove="handlePointerMove"
       @pointerup="handlePointerUp"
@@ -576,7 +576,7 @@ defineExpose({
     >
       <span
         v-if="handle"
-        class="pxd-resizable--handle-thumb pointer-events-none absolute z-1 block -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-300 group-hover:bg-primary group-hover:delay-200"
+        class="pxd-resizable--handle-thumb pointer-events-none absolute block -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-300 group-hover:bg-primary group-hover:delay-200"
         :class="isHorizontal ? 'w-1 h-6 left-0 top-1/2' : 'w-6 h-1 top-0 left-1/2'"
       />
     </div>
