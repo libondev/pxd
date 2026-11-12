@@ -254,7 +254,10 @@ defineExpose({
     />
 
     <template #content>
-      <label :for="searchInputId" class="px-3 py-2 gap-2 flex items-center bg-background-100">
+      <label
+        :for="searchInputId"
+        class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
+      >
         <input
           :id="searchInputId"
           ref="searchInputRef"
@@ -294,7 +297,7 @@ defineExpose({
         :loading="isPending"
         :options="listOptions"
         :default-active-index="0"
-        class="max-h-68 min-h-0 w-(--popover-trigger-width) flex-1 border-t"
+        class="max-h-68 min-h-0 w-(--popover-trigger-width) flex-1"
         @change="onOptionSelect"
       >
         <template v-if="$slots.item" #item="itemSlotProps">
