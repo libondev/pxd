@@ -138,7 +138,7 @@ watch(listOptions, async () => {
     @wrapper-keydown="onKeydown"
   >
     <PButton
-      class="px-1.5 justify-between text-inherit"
+      class="justify-between text-inherit"
       align="left"
       full-width
       :class="{ 'text-gray-600': !translatedLabel }"
