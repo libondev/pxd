@@ -29,6 +29,8 @@ const props = defineProps<{
   nodeDisabled: boolean
   selectable: boolean
   showSwitcher: boolean
+  /** The arrow stays as an indicator while a search derives the expansion itself. */
+  switcherDisabled?: boolean
   showCheckbox: boolean
   setSize: number
   indent: number
@@ -92,6 +94,16 @@ function onPointerdown(event: PointerEvent): void {
 
   emits('drag-pointerdown', props.value, event)
 }
+
+/** A disabled arrow is a glyph only: the press falls through to the row instead of toggling. */
+function onSwitcherClick(event: MouseEvent): void {
+  if (props.switcherDisabled) {
+    return
+  }
+
+  event.stopPropagation()
+  emits('toggle', props.value)
+}
 </script>
 
 <template>
@@ -143,7 +155,9 @@ function onPointerdown(event: PointerEvent): void {
       data-tree-switcher
       tabindex="-1"
       class="pxd-tree--switcher size-4 relative inline-flex shrink-0 items-center justify-center rounded-sm motion-safe:after:transition-colors"
-      @click.stop="emits('toggle', value)"
+      :class="{ 'cursor-default': switcherDisabled }"
+      :data-disabled="switcherDisabled || undefined"
+      @click="onSwitcherClick"
     >
       <slot
         name="node-switcher"
@@ -244,5 +258,9 @@ function onPointerdown(event: PointerEvent): void {
   &:active::after {
     background-color: var(--color-gray-alpha-300);
   }
+}
+
+.pxd-tree--switcher[data-disabled='true']::after {
+  content: none;
 }
 </style>

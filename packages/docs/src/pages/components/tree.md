@@ -186,9 +186,10 @@ const data = [
 
 ## Search
 
-A match keeps its ancestor chain visible. Replacing the content through `node-content` also means
-drawing the `highlight-match` mark yourself: the slot receives `parts`, the label split into
-`{ text, matched }` runs.
+A match keeps its ancestor chain visible. The query owns expansion while it is active: the arrows
+only mark where the hits sit, and toggling resumes once it is cleared. Replacing the content through
+`node-content` also means drawing the `highlight-match` mark yourself: the slot receives `parts`, the
+label split into `{ text, matched }` runs.
 
 ```vue demo
 <script setup>

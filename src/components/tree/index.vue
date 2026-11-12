@@ -103,6 +103,8 @@ const treeData = computed(() => graftLoadedChildren(props.data, loadedChildren.v
 const expandedKeys = computed(() => props.expandedKeys ?? internalExpandedKeys.value)
 const expanded = computed(() => new Set(expandedKeys.value))
 const highlightQuery = computed(() => (props.highlightMatch ? searchValue.value.trim() : ''))
+/** Rows derive `expanded` from the hit set while a query is on, so a toggle would write a key the view ignores. */
+const searching = computed(() => searchValue.value.trim().length > 0)
 
 const containerStyle = computed(() => {
   const height = props.height
@@ -115,9 +117,7 @@ const containerStyle = computed(() => {
 })
 
 const focused = shallowRef(false)
-const dragEnabled = computed(
-  () => props.draggable && !props.disabled && searchValue.value.trim().length === 0,
-)
+const dragEnabled = computed(() => props.draggable && !props.disabled && !searching.value)
 const rowsTransition = computed(() =>
   props.virtual || searchValue.value ? 'pxd-tree-transition-none' : 'pxd-tree-transition',
 )
@@ -233,7 +233,10 @@ const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
     }
 
     if (row.hasChildren && !row.expanded) {
-      setExpandedByValue(row.key, true)
+      if (!searching.value) {
+        setExpandedByValue(row.key, true)
+      }
+
       return
     }
 
@@ -248,7 +251,7 @@ const { activeIndex, dispatch, setActiveIndex } = useListNavigation({
       return
     }
 
-    if (row.hasChildren && row.expanded) {
+    if (!searching.value && row.hasChildren && row.expanded) {
       setExpandedByValue(row.key, false)
       return
     }
@@ -442,7 +445,7 @@ function setExpandedByValue(value: ComponentValue, next: boolean): void {
 }
 
 function toggleNode(row: TreeFlatNode): void {
-  if (!row.hasChildren) {
+  if (!row.hasChildren || searching.value) {
     return
   }
 
@@ -779,6 +782,7 @@ defineExpose({
               :multiple="multiple"
               :disabled="disabled"
               :show-switcher="showSwitcher"
+              :switcher-disabled="searching"
               :show-checkbox="showCheckbox"
               :set-size="rows.length"
               :indent="indent"
@@ -831,6 +835,7 @@ defineExpose({
               :multiple="multiple"
               :disabled="disabled"
               :show-switcher="showSwitcher"
+              :switcher-disabled="searching"
               :show-checkbox="showCheckbox"
               :set-size="rows.length"
               :indent="indent"

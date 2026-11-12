@@ -389,6 +389,12 @@ a comment beside the fix.
 - **Fix**: Use `\u00A0` for a separator that must survive typing and normalize it back to a space when serializing (`CHIP_SEPARATOR` in `src/utils/_internal/mention-html.ts`), and treat the chip's `U+200B` + separator prefix as one unit when deciding whether a deletion targets the chip.
 - **Related**: the same class of problem hits any inline token whose separator is ordinary whitespace — the DOM is not a stable place to keep it.
 
+### A control must not write state the current view derives
+
+- **Symptom**: With the tree's search active, clicking an arrow still emitted `expand` / `update:expandedKeys` and stored the key, while the rows never moved — under `search-matches-only` the arrow showed collapsed next to children that were already visible, and clearing the query then revealed a collapse the user had asked for while reading hits.
+- **Cause**: `useTreeRows` derives `expanded` from "the next row is deeper" whenever a query is on and skips the `expanded`-based prune, so `expandedKeys` has no effect on that view; the toggle entry points (`toggleNode`, `ArrowRight` / `ArrowLeft`) still wrote it.
+- **Fix**: Gate every toggle entry point on the same flag the row builder reads (`searching`), and render the arrow as a non-interactive indicator while it is set (`switcher-disabled` on `PTreeNode`, press falls through to the row). Any filtered view that derives a state instead of reading it needs the same split.
+
 ### `pnpm fmt` rewrites files the change never touched
 
 - **Symptom**: A small mention-component change left 24 modified files; 16 differed only by semicolons, quote style, Tailwind class order or a missing final newline.
