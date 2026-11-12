@@ -26,6 +26,39 @@ describe('mention', () => {
     wrapper.unmount()
   })
 
+  it('emits mention-remove with the value that restores the chip', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: { modelValue: 'Hi <mention key="1">Alice</mention>' },
+    })
+
+    const text = editor().firstChild as Text
+    const range = document.createRange()
+    range.setStart(text, text.data.length)
+    range.collapse(true)
+    const selection = getSelection()!
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    editor()!.dispatchEvent(
+      new InputEvent('beforeinput', {
+        inputType: 'deleteContentForward',
+        bubbles: true,
+        cancelable: true,
+      }),
+    )
+    await nextTick()
+
+    expect(wrapper.emitted('mention-remove')?.[0]?.[0]).toEqual({
+      key: '1',
+      label: 'Alice',
+      trigger: '@',
+      html: 'Hi <mention key="1">Alice</mention>',
+    })
+
+    wrapper.unmount()
+  })
+
   it('emits submit with the current html on Enter', async () => {
     const wrapper = mount(Mention, {
       attachTo: document.body,
@@ -59,7 +92,7 @@ describe('mention', () => {
       item: { value: '1', label: 'Alice' },
     })
     expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe(
-      '<mention key="1">Alice</mention>',
+      '<mention key="1">Alice</mention> ',
     )
 
     wrapper.unmount()
@@ -169,7 +202,7 @@ describe('mention', () => {
     expect(wrapper.vm.insertMention('review', 'review', '/')).toBe(true)
     await nextTick()
     expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toBe(
-      'a &lt; b &amp; c<mention key="review" trigger="/">review</mention>',
+      'a &lt; b &amp; c<mention key="review" trigger="/">review</mention> ',
     )
 
     wrapper.vm.clear()

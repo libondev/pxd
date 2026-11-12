@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { ListOptionSelected, ListOptions } from '../list/types'
-import type { MentionClickPayload, MentionEmits, MentionProps, MentionSelectPayload } from './types'
+import type {
+  MentionClickPayload,
+  MentionEmits,
+  MentionProps,
+  MentionRemovePayload,
+  MentionSelectPayload,
+} from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
@@ -42,6 +48,9 @@ const emits = defineEmits<MentionEmits>()
 
 const listId = getUniqueId('mention-list')
 const searchInputId = getUniqueId('mention-search')
+
+// A hide caused by a press outside must not pull focus back out of wherever the user went.
+let isHideFromOutsideClick = false
 
 const editorRef = shallowRef<InstanceType<typeof PMentionEditor>>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
@@ -101,10 +110,20 @@ async function focusSearchInput() {
 }
 
 function onPopoverShow() {
+  isHideFromOutsideClick = false
   focusSearchInput()
 }
 
+function onPopoverOutsideClick() {
+  isHideFromOutsideClick = true
+}
+
 function onPopoverHide() {
+  if (isHideFromOutsideClick) {
+    isHideFromOutsideClick = false
+    return
+  }
+
   // Must wait until focus-trap finishes deactivating; sync focus is pulled back into the trap.
   editorRef.value?.restoreCaret()
 }
@@ -169,6 +188,10 @@ function onMentionClick(payload: MentionClickPayload) {
   emits('mention-click', payload)
 }
 
+function onMentionRemove(payload: MentionRemovePayload) {
+  emits('mention-remove', payload)
+}
+
 watch(listOptions, async () => {
   await nextTick()
   listRef.value?.setFirstAsActive()
@@ -206,6 +229,7 @@ defineExpose({
     :content-class="[responsiveClasses.content, contentClass]"
     :lock-scroll-on-visible="isAdaptive"
     @show="onPopoverShow"
+    @outside-click="onPopoverOutsideClick"
     @hide="onPopoverHide"
   >
     <PMentionEditor
@@ -225,14 +249,12 @@ defineExpose({
       :editor-attrs="editorAttrs"
       @trigger="openSuggest"
       @mention-click="onMentionClick"
+      @mention-remove="onMentionRemove"
       @submit="onEditorSubmit"
     />
 
     <template #content>
-      <label
-        :for="searchInputId"
-        class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
-      >
+      <label :for="searchInputId" class="px-3 py-2 gap-2 flex items-center bg-background-100">
         <input
           :id="searchInputId"
           ref="searchInputRef"
@@ -272,7 +294,7 @@ defineExpose({
         :loading="isPending"
         :options="listOptions"
         :default-active-index="0"
-        class="max-h-68 min-h-0 w-(--popover-trigger-width) flex-1"
+        class="max-h-68 min-h-0 w-(--popover-trigger-width) flex-1 border-t"
         @change="onOptionSelect"
       >
         <template v-if="$slots.item" #item="itemSlotProps">

@@ -2,8 +2,10 @@ import type { Ref, ShallowRef } from 'vue'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import {
   CARET_ANCHOR,
+  CHIP_SEPARATOR,
   DEFAULT_TRIGGER,
   MENTION_TAG_LOWER,
+  chipPrefixLength,
   createCaretAnchor,
   createMentionElement,
   escapePlainTextAsHtml,
@@ -16,6 +18,12 @@ import {
   trimMentionEdgeBreaks,
 } from '../../utils/_internal/mention-html.js'
 
+export interface MentionChipRef {
+  key: string
+  label: string
+  trigger: string
+}
+
 export interface UseMentionEditorOptions {
   editorRef: Ref<HTMLElement | undefined>
   getModelValue: () => string
@@ -25,12 +33,8 @@ export interface UseMentionEditorOptions {
   onUpdate: (html: string) => void
   onTrigger: (trigger: string) => void
   onSubmit: (html: string) => void
-  onMentionClick: (payload: {
-    key: string
-    label: string
-    trigger: string
-    event: MouseEvent
-  }) => void
+  onMentionClick: (payload: MentionChipRef & { event: MouseEvent }) => void
+  onMentionRemove: (payload: MentionChipRef & { html: string }) => void
 }
 
 export interface UseMentionEditorReturn {
@@ -66,6 +70,7 @@ export function useMentionEditor({
   onTrigger,
   onSubmit,
   onMentionClick,
+  onMentionRemove,
 }: UseMentionEditorOptions): UseMentionEditorReturn {
   const isComposing = shallowRef(false)
   const isEmpty = shallowRef(true)
@@ -257,6 +262,20 @@ export function useMentionEditor({
     return container.nodeName === 'BR' ? '\n' : 'start'
   }
 
+  // A chip needs a separator unless what follows already separates it: whitespace, or a
+  // line ending that no one reads as the chip running into the next token.
+  function needsSeparator(node: Node | null): boolean {
+    if (!node) {
+      return true
+    }
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      return !/^\s/.test((node as Text).data)
+    }
+
+    return (node as Element).nodeName !== 'BR'
+  }
+
   function detectTriggerAfterInput() {
     if (isComposing.value || isDisabled() || !pendingAtInsert) {
       return
@@ -336,19 +355,23 @@ export function useMentionEditor({
     range.insertNode(mention)
 
     const sibling = mention.nextSibling
+    // A chip carries its own trailing separator, so two chips picked in a row never
+    // serialize as one run of text. The anchor stays adjacent to the chip, where
+    // Android needs an editable node to keep the keyboard up.
+    const anchorText = CARET_ANCHOR + (needsSeparator(sibling) ? CHIP_SEPARATOR : '')
     let anchor: Text
 
     if (sibling?.nodeType === Node.TEXT_NODE) {
       const text = sibling as Text
-      text.textContent = CARET_ANCHOR + (text.textContent ?? '')
+      text.textContent = anchorText + (text.textContent ?? '')
       anchor = text
     } else {
-      anchor = createCaretAnchor()
+      anchor = document.createTextNode(anchorText)
       mention.parentNode?.insertBefore(anchor, sibling ?? null)
     }
 
     const caret = document.createRange()
-    caret.setStart(anchor, 1)
+    caret.setStart(anchor, anchorText.length)
     caret.collapse(true)
 
     triggerRange = null
@@ -474,8 +497,17 @@ export function useMentionEditor({
       return
     }
 
-    // The anchor always follows a chip, so `next` is the text node the caret belongs in.
+    // Both neighbours are read before the removal: a detached node has none.
     const next = mention.nextSibling
+    const before = mention.previousSibling
+    const trailing = next?.nodeType === Node.TEXT_NODE ? (next as Text) : null
+    // The value the consumer can restore: the editor still holds the chip here.
+    const removed: MentionChipRef & { html: string } = {
+      key: mention.getAttribute('key') ?? '',
+      label: getMentionLabel(mention),
+      trigger: mention.getAttribute('trigger') || DEFAULT_TRIGGER,
+      html: serializeMentionHtml(editor),
+    }
 
     cancelScheduledRestore()
     clearTriggerRange()
@@ -483,7 +515,11 @@ export function useMentionEditor({
     mention.remove()
     editor.focus({ preventScroll: true })
 
-    const before = mention.previousSibling
+    // The anchor and the separator exist for the chip, so they leave with it; the
+    // node stays (possibly empty) because the caret may have to land in it.
+    if (trailing) {
+      trailing.data = trailing.data.slice(chipPrefixLength(trailing))
+    }
 
     if (before?.nodeType === Node.TEXT_NODE && editor.contains(before)) {
       placeCaret(before, before.textContent?.length ?? 0)
@@ -494,6 +530,7 @@ export function useMentionEditor({
     }
 
     emitHTML()
+    onMentionRemove(removed)
   }
 
   // Own the deletes that would eat a chip or its anchor; plain-character deletes stay
@@ -533,9 +570,13 @@ export function useMentionEditor({
         deleteMentionElement(insideMention)
         handled = true
       } else if (startContainer.nodeType === Node.TEXT_NODE) {
-        const prev = (startContainer as Text).previousSibling
+        const text = startContainer as Text
+        const prev = text.previousSibling
+        // Anywhere inside the chip's own anchor + separator deletes the chip: those
+        // characters are not content the user can step through one at a time.
+        const inChipPrefix = startOffset <= chipPrefixLength(text)
 
-        if (isMentionElement(prev) && startOffset === 0) {
+        if (isMentionElement(prev) && inChipPrefix) {
           deleteMentionElement(prev as HTMLElement)
           handled = true
         }
@@ -552,6 +593,62 @@ export function useMentionEditor({
     return handled
   }
 
+  // Forward deletion owns the same cases; leaving it to the browser deletes the
+  // host element without the caret bookkeeping the backward path does.
+  function tryDeleteForward(): boolean {
+    if (!editorRef.value) {
+      return false
+    }
+
+    const selection = window.getSelection()
+
+    if (!selection || selection.rangeCount === 0) {
+      return false
+    }
+
+    const range = selection.getRangeAt(0)
+
+    if (!selection.isCollapsed) {
+      const mention = closestMention(range.startContainer) || closestMention(range.endContainer)
+
+      if (mention) {
+        deleteMentionElement(mention)
+        return true
+      }
+
+      return false
+    }
+
+    const { startContainer, startOffset } = range
+    const insideMention = closestMention(startContainer)
+
+    if (
+      insideMention &&
+      (insideMention === startContainer || insideMention.contains(startContainer))
+    ) {
+      deleteMentionElement(insideMention)
+      return true
+    }
+
+    if (startContainer.nodeType === Node.TEXT_NODE) {
+      const next = startContainer.nextSibling
+
+      if (isMentionElement(next) && startOffset === (startContainer as Text).data.length) {
+        deleteMentionElement(next as HTMLElement)
+        return true
+      }
+    } else if (startContainer.nodeType === Node.ELEMENT_NODE) {
+      const next = startContainer.childNodes[startOffset]
+
+      if (isMentionElement(next)) {
+        deleteMentionElement(next as HTMLElement)
+        return true
+      }
+    }
+
+    return false
+  }
+
   // Android pre-selects the character to delete, so the anchor arrives as a selected
   // range; its position is looked up because typing after a chip pushes it along.
   function mentionOwningAnchorDelete(range: Range): HTMLElement | null {
@@ -562,21 +659,27 @@ export function useMentionEditor({
     }
 
     const text = startContainer as Text
-    const anchorIndex = text.data.indexOf(CARET_ANCHOR)
+    const prev = text.previousSibling
 
-    if (anchorIndex < 0 || anchorIndex < startOffset) {
+    if (!isMentionElement(prev)) {
       return null
     }
 
     const to = endContainer === startContainer ? range.endOffset : text.data.length
+    const prefix = chipPrefixLength(text)
 
-    if (anchorIndex >= to) {
+    // Selecting a piece of the chip's own anchor + separator deletes the chip.
+    if (startOffset <= prefix && to <= prefix) {
+      return prev as HTMLElement
+    }
+
+    const anchorIndex = text.data.indexOf(CARET_ANCHOR)
+
+    if (anchorIndex < 0 || anchorIndex < startOffset || anchorIndex >= to) {
       return null
     }
 
-    const prev = text.previousSibling
-
-    return isMentionElement(prev) ? (prev as HTMLElement) : null
+    return prev as HTMLElement
   }
 
   function onPaste(ev: ClipboardEvent) {
@@ -597,7 +700,8 @@ export function useMentionEditor({
     range.insertNode(
       trimMentionEdgeBreaks(
         sanitizeMentionClipboardHtml(
-          clipboard?.getData('text/html') || escapePlainTextAsHtml(clipboard?.getData('text/plain') ?? ''),
+          clipboard?.getData('text/html') ||
+            escapePlainTextAsHtml(clipboard?.getData('text/plain') ?? ''),
         ),
       ),
     )
@@ -618,8 +722,11 @@ export function useMentionEditor({
 
     const backwardDelete =
       ev.inputType === 'deleteEntireSoftLine' || ev.inputType.endsWith('Backward')
+    const forwardDelete = ev.inputType.endsWith('Forward')
 
     if (backwardDelete && !isComposing.value && tryDeleteBackward()) {
+      ev.preventDefault()
+    } else if (forwardDelete && !isComposing.value && tryDeleteForward()) {
       ev.preventDefault()
     }
   }
@@ -652,6 +759,8 @@ export function useMentionEditor({
     }
 
     if (ev.key === 'Backspace' && !ev.isComposing && tryDeleteBackward()) {
+      ev.preventDefault()
+    } else if (ev.key === 'Delete' && !ev.isComposing && tryDeleteForward()) {
       ev.preventDefault()
     }
   }
@@ -699,7 +808,10 @@ export function useMentionEditor({
     }
 
     clipboard.setData('text/html', `<meta charset="utf-8">${serializeMentionHtml(source)}`)
-    clipboard.setData('text/plain', (source.textContent ?? '').replace(/\u200B/g, ''))
+    clipboard.setData(
+      'text/plain',
+      (source.textContent ?? '').replace(/\u200B/g, '').replace(/\u00A0/g, ' '),
+    )
     ev.preventDefault()
 
     if (ev.type === 'cut' && selection.rangeCount > 0) {

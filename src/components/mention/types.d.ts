@@ -39,6 +39,14 @@ export interface MentionClickPayload {
   event: MouseEvent
 }
 
+export interface MentionRemovePayload {
+  key: string
+  label: string
+  trigger: string
+  /** The value before the chip was removed, ready to be written back. */
+  html: string
+}
+
 export interface MentionTokenMention {
   key: string
   label: string
@@ -65,5 +73,6 @@ export interface MentionEmits {
   submit: [string]
   select: [MentionSelectPayload]
   'mention-click': [MentionClickPayload]
+  'mention-remove': [MentionRemovePayload]
   'update:model-value': [string]
 }

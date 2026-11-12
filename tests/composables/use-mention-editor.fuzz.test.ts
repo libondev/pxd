@@ -64,6 +64,7 @@ function createHarness(initialHtml: string) {
       onTrigger: () => {},
       onSubmit: () => {},
       onMentionClick: () => {},
+      onMentionRemove: () => {},
     }),
   )
 

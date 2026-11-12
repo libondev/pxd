@@ -15,8 +15,24 @@ export const DEFAULT_TRIGGER = '@'
  */
 export const CARET_ANCHOR = '\u200B'
 
+/**
+ * The space a chip owns on its right. It must be a no-break space: Chrome
+ * normalizes a trailing plain space away as soon as the next character is typed
+ * into that text node, and the value loses the separation the chip was picked
+ * with. Serialization turns it back into an ordinary space.
+ */
+export const CHIP_SEPARATOR = '\u00A0'
+
 export function createCaretAnchor(): Text {
   return document.createTextNode(CARET_ANCHOR)
+}
+
+/**
+ * Length of the chip's own prefix — the caret anchor plus at most one separator —
+ * at the start of `text`. Zero when the text does not start with an anchor.
+ */
+export function chipPrefixLength(text: Text): number {
+  return /^\u200B[\u00A0 ]?/.exec(text.data)?.[0].length ?? 0
 }
 
 export function isMentionElement(node: Node | null | undefined): boolean {

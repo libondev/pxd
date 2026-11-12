@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentClass, ComponentSize } from '../../types/shared/props'
-import type { MentionClickPayload } from '../mention/types'
+import type { MentionClickPayload, MentionRemovePayload } from '../mention/types'
 import { computed, onMounted, shallowRef } from 'vue'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
@@ -46,6 +46,7 @@ const emits = defineEmits<{
   submit: [string]
   'update:model-value': [string]
   'mention-click': [MentionClickPayload]
+  'mention-remove': [MentionRemovePayload]
 }>()
 
 // `lh` follows the element's own line-height so the geometry survives font overrides;
@@ -116,6 +117,7 @@ const {
   onTrigger: (trigger) => emits('trigger', trigger),
   onSubmit: (html) => emits('submit', html),
   onMentionClick: (payload) => emits('mention-click', payload),
+  onMentionRemove: (payload) => emits('mention-remove', payload),
 })
 
 onMounted(() => {
@@ -188,8 +190,9 @@ defineExpose({
   display: inline-block;
   min-width: 0;
   vertical-align: top;
-  margin-inline-end: 0.25rem;
+  padding-inline: 0.125rem;
   color: var(--color-blue-900);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

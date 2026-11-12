@@ -360,3 +360,38 @@ a comment beside the fix.
 - **Symptom**: `PBubbleGroup` opened at the bottom on a first visit, but a remount over already loaded items (leave to another route, come back) sat at the top of a scrollable list, with the jump-to-bottom button working.
 - **Cause**: `useStickToBottom` gated `stickIfNeeded` on `isAtBottom`, and the container-element watcher ran on the flush *after* the virtual list's first render — so `update()` measured a content that was already taller than the viewport with `scrollTop` still 0, latched `isAtBottom` off, and no later resize, mutation or scroll ever re-enabled it. The mount stick could not win: `PBubbleGroup`'s `onMounted` runs before `useVirtualList` sets `count`, so the content had no height yet. A first visit hid it because the items arrive over IPC, i.e. long after the mount flush.
 - **Fix**: Follow is its own flag, broken only by an upward move past the threshold that the layout does not explain, decided one frame after the move so the height a correction was compensating for has landed; mount sticks once when the container attaches, and a scroll that lands at the bottom resumes follow. The lesson transfers to anything that decides "should I react to growth" from a live geometry read: read it from an event that carries intent, not from a snapshot whose timing depends on the mount flush order — and never infer intent from a delta that layout can also produce. The second half of the same lesson: the size that defines the predicate is produced by the virtualizer's measurement passes, and the last pass can land *after* the write with no box or node left to observe, so the predicate has to be re-asserted frame by frame until the geometry stops moving instead of being written once per event. The same interaction that causes a resize must also *end* follow when it moves the view off the bottom: skipping one stick while keeping the flag on just delays the yank to the next measurement pass.
+
+---
+
+### A detached node has no siblings, so read neighbours before `remove()`
+
+- **Symptom**: Deleting a mention chip always put the caret at the start of the text *after* the chip — including a forward delete, which must land before it — and the `previousSibling` branches of the caret fallback never ran.
+- **Cause**: `deleteMentionElement` read `mention.previousSibling` after `mention.remove()`. A detached node reports `null` for both neighbours, so those branches were dead code and every deletion fell through to the `next` fallback, which happens to be correct for a backward delete and therefore looked intentional.
+- **Fix**: Snapshot `next` and `before` before the removal. Any DOM surgery that needs a neighbour afterwards — caret placement, merge decisions, focus fallback — must capture it first.
+
+### Programmatic DOM writes are not in the browser's undo stack
+
+- **Symptom**: `PMention`'s docs promised native `Ctrl/Cmd+Z`, yet a removed chip never came back, an inserted chip could not be undone either, and what a few more undo steps restored depended on the browser.
+- **Cause**: The chip lifecycle is `range.insertNode()` / `element.remove()` — script writes into the editable. Native history records what the *editing engine* did (typing, paste, and the snapshots it takes around them); a script mutation gets no entry, so undo walks past it. Chromium sometimes restores a region snapshot that happens to contain the chip, which makes the behaviour look browser-specific instead of absent.
+- **Fix**: Do not promise undo for content a component writes itself. Either hand the consumer what it needs to restore (`PMention` emits `mention-remove` with the value before the removal) or route the write through a command the engine records. "Uses the native contenteditable history" stops being true the moment a chip is inserted by script.
+
+### Closing a popover must not restore focus when the user pressed outside
+
+- **Symptom**: Opening `PMention`'s suggestions and then clicking another field (or a send button) pulled focus straight back into the editor — the click landed, but the caret jumped out of the control the user had just chosen.
+- **Cause**: The wrapper restored the caret on every `hide`, and `hide` fires for every close path. `restoreCaret()` defers one tick (the popover's focus trap has to deactivate first), so it ran *after* the browser had focused the outside target.
+- **Fix**: Only an in-place close (Escape, a pick, a programmatic close) returns focus. `PPopover` emits `outside-click` before it hides — record that, skip the restore, and clear the flag on `show`.
+- **Testing note**: happy-dom does not move focus on `pointerdown`, so `document.activeElement` cannot pin this either way; the guard needs a browser check.
+
+### A trailing plain space in a text node is not durable
+
+- **Symptom**: A mention chip inserted `chip + U+200B + ' '`, and the space was gone the moment the user typed the next character — the value came out as `@Alicex`. Backspace then needed three presses to delete the chip: the space, the invisible anchor, and only then the chip.
+- **Cause**: Chrome normalizes a trailing collapsible space out of the text node as part of the next insertion, so the character lands *before* it and the space disappears. Verified over CDP against a bare contenteditable: `"\u200B "` + typing `x` gives `"\u200Bx"`. The anchor then sits between the caret and the chip, which is why each invisible character costs its own key press.
+- **Fix**: Use `\u00A0` for a separator that must survive typing and normalize it back to a space when serializing (`CHIP_SEPARATOR` in `src/utils/_internal/mention-html.ts`), and treat the chip's `U+200B` + separator prefix as one unit when deciding whether a deletion targets the chip.
+- **Related**: the same class of problem hits any inline token whose separator is ordinary whitespace — the DOM is not a stable place to keep it.
+
+### `pnpm fmt` rewrites files the change never touched
+
+- **Symptom**: A small mention-component change left 24 modified files; 16 differed only by semicolons, quote style, Tailwind class order or a missing final newline.
+- **Cause**: The committed tree is not formatted by the current `oxfmt` / Tailwind-sort config, so a repo-wide `vp fmt` normalises every stale file. `pnpm check:fmt` lists the same files on a clean checkout — that is how to tell pre-existing churn from your own.
+- **Fix**: Format only the paths you changed — `pnpm exec vp fmt <paths…>` takes file arguments — or revert the rest afterwards (`git checkout -- <paths>`); keep `check:fmt` failures that also exist on `HEAD` out of the diff.
+

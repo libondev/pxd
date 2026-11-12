@@ -1,8 +1,10 @@
+import type { MentionRemovePayload } from '../../src/components/mention/types'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { ref, shallowRef } from 'vue'
 import { useMentionEditor } from '../../src/composables/_internal/use-mention-editor'
 import {
   CARET_ANCHOR,
+  CHIP_SEPARATOR,
   DEFAULT_TRIGGER,
   queryMentionElements,
 } from '../../src/utils/_internal/mention-html'
@@ -30,6 +32,7 @@ interface Harness {
   updates: string[]
   triggers: { n: number; keywords: string[] }
   clicks: { key: string; label: string; trigger: string }[]
+  removes: MentionRemovePayload[]
   submits: string[]
   destroy: () => void
 }
@@ -54,6 +57,7 @@ function createHarness(
   const model = ref(initialHtml)
   const updates: string[] = []
   const clicks: { key: string; label: string; trigger: string }[] = []
+  const removes: MentionRemovePayload[] = []
   const submits: string[] = []
   const triggers = { n: 0, keywords: [] as string[] }
 
@@ -80,6 +84,9 @@ function createHarness(
       onMentionClick: (payload) => {
         clicks.push({ key: payload.key, label: payload.label, trigger: payload.trigger })
       },
+      onMentionRemove: (payload) => {
+        removes.push(payload)
+      },
     })
   })
 
@@ -90,6 +97,7 @@ function createHarness(
     updates,
     triggers,
     clicks,
+    removes,
     submits,
     destroy: wrapper.unmount,
   }
@@ -128,7 +136,7 @@ function chips(editor: HTMLElement): HTMLElement[] {
   return queryMentionElements(editor)
 }
 
-/** Chips with no editable text node on their right — the failure list is the message. */
+/** Chips with no editable text node on their right 鈥?the failure list is the message. */
 function unanchoredChips(editor: HTMLElement): string[] {
   return chips(editor)
     .filter((chip) => {
@@ -295,16 +303,54 @@ describe('useMentionEditor', () => {
     expectAnchorInvariant(h.editor)
 
     const anchor = h.editor.querySelector('mention')!.nextSibling as Text
-    expect(anchor.textContent).toBe(ZWSP)
-    // The public value never carries the anchor.
-    expect(h.model.value).toBe('Hello <mention key="u1">Alice</mention>')
+    // The chip owns its separator: anchor first, then the space that keeps two chips
+    // from running together. It is a no-break space because Chrome drops a trailing
+    // plain space the moment typing continues in that text node.
+    expect(anchor.textContent).toBe(ZWSP + CHIP_SEPARATOR)
+    // The public value never carries the anchor, and the separator serializes as a space.
+    expect(h.model.value).toBe('Hello <mention key="u1">Alice</mention> ')
 
     // The caret moves only once the suggest popover has released its focus trap.
     h.api.restoreCaret()
     await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(getSelection()!.anchorNode).toBe(anchor)
-    expect(getSelection()!.anchorOffset).toBe(1)
+    expect(getSelection()!.anchorOffset).toBe(2)
+  })
+
+  it('removes the chip on the first backspace at its separator', () => {
+    const h = createHarness('')
+    caretIn(h.editor, 0)
+    expect(h.api.insertMention('u1', 'Alice')).toBe(true)
+
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
+    caretIn(anchor, anchor.data.length)
+
+    const ev = new InputEvent('beforeinput', {
+      inputType: 'deleteContentBackward',
+      bubbles: true,
+      cancelable: true,
+    })
+    h.editor.dispatchEvent(ev)
+
+    expect(ev.defaultPrevented).toBe(true)
+    expect(h.editor.querySelector('mention')).toBeNull()
+    // The separator leaves with the chip instead of lingering as a stray space.
+    expect(h.model.value).toBe('')
+  })
+
+  it('separates two chips picked back to back', () => {
+    const h = createHarness('')
+    caretIn(h.editor, 0)
+    expect(h.api.insertMention('u1', 'Alice')).toBe(true)
+
+    const anchor = h.editor.querySelector('mention')!.nextSibling as Text
+    caretIn(anchor, anchor.data.length)
+    typeMentionTrigger(h)
+    expect(h.api.insertMention('u2', 'Bob')).toBe(true)
+
+    expect(h.model.value).toBe('<mention key="u1">Alice</mention> <mention key="u2">Bob</mention> ')
+    expectAnchorInvariant(h.editor)
   })
 
   it('opens the suggest popover for @ at a word boundary only', () => {
@@ -341,7 +387,7 @@ describe('useMentionEditor', () => {
 
     expect(h.triggers.keywords).toEqual(['/'])
     expect(h.api.insertMention('review', 'review')).toBe(true)
-    expect(h.model.value).toBe('Hi <mention key="review" trigger="/">review</mention>')
+    expect(h.model.value).toBe('Hi <mention key="review" trigger="/">review</mention> ')
     expectAnchorInvariant(h.editor)
   })
 
@@ -466,7 +512,27 @@ describe('useMentionEditor', () => {
 
     expect(ev.defaultPrevented).toBe(true)
     expect(h.editor.querySelector('mention')).toBeNull()
-    expect(h.model.value).toBe('Hi  there')
+    expect(h.model.value).toBe('Hi there')
+    expectAnchorInvariant(h.editor)
+  })
+
+  it('removes the whole chip on a forward delete and leaves the caret before it', () => {
+    const h = createHarness('Hi <mention key="1">Alice</mention> there')
+    const before = h.editor.querySelector('mention')!.previousSibling as Text
+    caretIn(before, before.data.length)
+
+    const ev = new InputEvent('beforeinput', {
+      inputType: 'deleteContentForward',
+      bubbles: true,
+      cancelable: true,
+    })
+    h.editor.dispatchEvent(ev)
+
+    expect(ev.defaultPrevented).toBe(true)
+    expect(h.editor.querySelector('mention')).toBeNull()
+    expect(h.model.value).toBe('Hi there')
+    expect(getSelection()!.anchorNode).toBe(before)
+    expect(getSelection()!.anchorOffset).toBe(before.data.length)
     expectAnchorInvariant(h.editor)
   })
 
@@ -635,6 +701,30 @@ describe('useMentionEditor', () => {
     expect(h.clicks).toEqual([{ key: '1', label: 'Alice', trigger: DEFAULT_TRIGGER }])
   })
 
+  it('reports a removed chip with the value that brings it back', () => {
+    const h = createHarness('Hi <mention key="1">Alice</mention> there')
+    const before = h.editor.querySelector('mention')!.previousSibling as Text
+    caretIn(before, before.data.length)
+
+    h.editor.dispatchEvent(
+      new InputEvent('beforeinput', {
+        inputType: 'deleteContentForward',
+        bubbles: true,
+        cancelable: true,
+      }),
+    )
+
+    expect(h.removes).toEqual([
+      {
+        key: '1',
+        label: 'Alice',
+        trigger: DEFAULT_TRIGGER,
+        html: 'Hi <mention key="1">Alice</mention> there',
+      },
+    ])
+    expect(h.model.value).toBe('Hi there')
+  })
+
   it('does not emit while the user is composing', () => {
     const h = createHarness('Hello')
     h.api.onCompositionStart()
@@ -661,7 +751,9 @@ describe('useMentionEditor', () => {
     expect(shift.defaultPrevented).toBe(false)
     expect(h.submits).toEqual([])
 
-    h.editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }))
+    h.editor.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    )
     expect(h.submits).toEqual(['Hello'])
   })
 
@@ -688,7 +780,7 @@ describe('useMentionEditor', () => {
     caretIn(lastText(h.editor), 6)
 
     expect(h.api.insertMention('review', 'review', '/')).toBe(true)
-    expect(h.model.value).toBe('Hello <mention key="review" trigger="/">review</mention>')
+    expect(h.model.value).toBe('Hello <mention key="review" trigger="/">review</mention> ')
     expectAnchorInvariant(h.editor)
   })
 
@@ -726,8 +818,8 @@ describe('useMentionEditor', () => {
     caretIn(lastText(h.editor), 3)
     typeTrigger(h)
 
-    expect(h.api.replaceQuery('正文 <b>')).toBe(true)
-    expect(h.model.value).toBe('Hi 正文 &lt;b&gt;')
+    expect(h.api.replaceQuery('姝ｆ枃 <b>')).toBe(true)
+    expect(h.model.value).toBe('Hi 姝ｆ枃 &lt;b&gt;')
     expectAnchorInvariant(h.editor)
 
     // The span is consumed; a second call has nothing left to replace.

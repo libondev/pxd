@@ -231,6 +231,7 @@ const options = [
 | submit | `(value: string) => void` | Emitted when `Enter` is pressed with `submit-on-enter` enabled. |
 | select | `(payload: MentionSelectPayload) => void` | Emitted when an option is picked, before the chip is inserted. |
 | mention-click | `(payload: MentionClickPayload) => void` | Emitted when a mention chip is clicked. |
+| mention-remove | `(payload: MentionRemovePayload) => void` | Emitted after `Backspace` or `Delete` removes a chip, including a selection that spans it. |
 | update:model-value | `(value: string) => void` | Emitted when the editor HTML changes. |
 
 ```ts
@@ -246,6 +247,14 @@ interface MentionClickPayload {
   label: string
   trigger: string
   event: MouseEvent
+}
+
+interface MentionRemovePayload {
+  key: string
+  label: string
+  trigger: string
+  /** The value before the chip was removed, ready to be written back. */
+  html: string
 }
 ```
 
@@ -276,9 +285,22 @@ interface MentionClickPayload {
 
 - Type a configured trigger in the editor to open suggestions. It stays until you pick an item (so typing a literal `@` remains possible if you dismiss the popover).
 - A trigger only fires at content start, after whitespace, or right after a chip — never mid-word, so `@` inside an email or URL stays plain text.
-- `Escape` closes the popover through the search input and the overlay.
+- `Escape` closes the popover through the search input and the overlay; a press outside closes it and leaves focus wherever the user moved it.
 - Chips carry the trigger that created them in a `trigger` attribute, omitted for the default `@`: `<mention key="review" trigger="/">review</mention>`.
-- Mentions are read-only chips (`contenteditable="false"`). Backspace removes a whole chip.
+- Mentions are read-only chips (`contenteditable="false"`). Both `Backspace` and `Delete` remove a whole chip and leave the caret on the text beside it.
+- Picking a chip leaves a trailing space after it, so two chips picked back to back never run together in the value. That space belongs to the chip: the `Backspace` that deletes a chip takes it along.
 - Paste keeps only legal `<mention key>` nodes; everything else becomes plain text.
-- Undo/redo uses the browser's native contenteditable history (`Ctrl/Cmd+Z`, etc.).
+- Undo covers only what the browser itself edits: typing and paste. Chip insertion and chip removal write the DOM directly, so `Ctrl/Cmd+Z` does not bring a removed chip back — `mention-remove` exists for the app to provide that itself.
 - `pxd/utils/mention-html` exports the value-format helpers: `mentionHtmlToText`, `parseMentionHtml` and `escapePlainTextAsHtml` for plain-text output, token parsing and safe refills.
+
+A removed chip is reported with the value it was removed from, so the app can restore it on its own undo:
+
+```ts
+function onRemove(payload: MentionRemovePayload) {
+  lastRemoved = payload.html
+}
+
+function undo() {
+  value.value = lastRemoved
+}
+```
