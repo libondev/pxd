@@ -237,7 +237,14 @@ function scrollTo(top: number, left: number) {
 
 function syncObservedContent() {
   const contentEl = contentRef.value
-  observedContent.value = contentEl ? (Array.from(contentEl.children) as HTMLElement[]) : []
+  const next = contentEl ? (Array.from(contentEl.children) as HTMLElement[]) : []
+  const prev = observedContent.value
+
+  if (prev.length === next.length && prev.every((el, i) => el === next[i])) {
+    return
+  }
+
+  observedContent.value = next
 }
 
 function forceUpdate() {
