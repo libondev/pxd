@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { FaderProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useMutationObserver } from '../../composables/use-mutation-observer.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { getElement } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
@@ -13,17 +14,16 @@ defineOptions({
 
 const props = withDefaults(defineProps<FaderProps>(), {
   direction: 'both',
+  size: 16,
+  threshold: 16,
 })
 
-const DEFAULT_SIZE = 16
-const DIFF_THRESHOLD = 16
+const showTop = shallowRef(false)
+const showLeft = shallowRef(false)
+const showRight = shallowRef(false)
+const showBottom = shallowRef(false)
+const observedContent = shallowRef<HTMLElement[]>([])
 
-const fader = shallowRef({
-  top: false,
-  left: false,
-  right: false,
-  bottom: false,
-})
 const computedStyle = computed(() => ({
   '--fader-color': props.color,
   '--fader-size': getCssUnitValue(props.size),
@@ -31,45 +31,71 @@ const computedStyle = computed(() => ({
 
 const formattedContainer = computed(() => getElement(props.scrollTarget))
 
-const onContainerScroll = throttleByRaf(() => {
+const updateFaders = throttleByRaf(() => {
   const container = formattedContainer.value
 
   if (!container || !container.isConnected) {
     return
   }
 
-  const { size = DEFAULT_SIZE } = props
+  const { size, threshold } = props
   const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container
 
-  fader.value = {
-    left: scrollLeft >= size,
-    right: scrollLeft + clientWidth < scrollWidth - DIFF_THRESHOLD,
-    top: scrollTop >= size,
-    bottom: scrollTop + clientHeight < scrollHeight - DIFF_THRESHOLD,
-  }
+  showLeft.value = scrollLeft >= size
+  showRight.value = scrollLeft + clientWidth < scrollWidth - threshold
+  showTop.value = scrollTop >= size
+  showBottom.value = scrollTop + clientHeight < scrollHeight - threshold
 })
 
-useResizeObserver(() => formattedContainer.value, onContainerScroll)
+useResizeObserver(() => {
+  const container = formattedContainer.value
+  return container ? [container, ...observedContent.value] : []
+}, updateFaders)
+
+useMutationObserver(
+  () => formattedContainer.value,
+  (items) => {
+    if (items.some((item) => item.entry.type === 'childList')) {
+      syncObservedContent()
+    }
+
+    updateFaders()
+  },
+  { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] },
+)
+
+function syncObservedContent() {
+  const container = formattedContainer.value
+  const next = container ? (Array.from(container.children) as HTMLElement[]) : []
+  const prev = observedContent.value
+
+  if (prev.length === next.length && prev.every((el, i) => el === next[i])) {
+    return
+  }
+
+  observedContent.value = next
+}
 
 watch(
   () => formattedContainer.value,
   (container, oldDom) => {
     if (oldDom) {
-      cachedOff(oldDom, 'scroll', onContainerScroll)
+      cachedOff(oldDom, 'scroll', updateFaders)
     }
 
     if (!container) {
       return
     }
 
-    cachedOn(container, 'scroll', onContainerScroll, { passive: true })
+    cachedOn(container, 'scroll', updateFaders, { passive: true })
+    syncObservedContent()
   },
   { immediate: true },
 )
 
 onBeforeUnmount(() => {
-  onContainerScroll.cancel()
-  cachedOff(formattedContainer.value, 'scroll', onContainerScroll)
+  updateFaders.cancel()
+  cachedOff(formattedContainer.value, 'scroll', updateFaders)
 })
 </script>
 
@@ -82,14 +108,14 @@ onBeforeUnmount(() => {
     v-bind="$attrs"
   >
     <div
-      v-if="['both', 'horizontal'].includes(direction)"
+      v-if="direction !== 'vertical'"
       class="pxd-fader--item horizontal inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
-      :class="{ left: fader.left, right: fader.right }"
+      :class="{ left: showLeft, right: showRight }"
     />
     <div
-      v-if="['both', 'vertical'].includes(direction)"
+      v-if="direction !== 'horizontal'"
       class="pxd-fader--item vertical inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
-      :class="{ top: fader.top, bottom: fader.bottom }"
+      :class="{ top: showTop, bottom: showBottom }"
     />
   </div>
 </template>

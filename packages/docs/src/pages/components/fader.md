@@ -57,7 +57,8 @@ const containerRef = shallowRef()
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number` | - | Gradient width in `px`, `16` by default |
+| size | `number` | `16` | Gradient width in `px` |
 | color | `string` | - | CSS color the gradient fades into |
+| threshold | `number` | `16` | Distance in `px` from the end at which the fader is hidden |
 | scroll-target | `string \| HTMLElement \| ComponentPublicInstance \| null` | - | Scrollable container to watch: a CSS selector, an element, or a component instance |
 | direction | `'horizontal' \| 'vertical' \| 'both'` | `both` | Edges that can show a fader: `horizontal`, `vertical` or `both` |

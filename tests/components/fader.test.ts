@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import Fader from '../../src/components/fader/index.vue'
+import { installMutationObserverMock, installResizeObserverMock } from '../helpers/setup'
 
 function createScrollContainer() {
   const el = document.createElement('div')
@@ -45,6 +46,11 @@ async function scrollTo(
 }
 
 describe('fader', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
   it('renders properly', () => {
     const wrapper = mount(Fader)
 
@@ -155,6 +161,48 @@ describe('fader', () => {
     await scrollTo(first, 0)
 
     expect(horizontalFlags(wrapper).left).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('updates faders when content changes without a scroll event', async () => {
+    const resize = installResizeObserverMock()
+    const mutation = installMutationObserverMock()
+    const container = createScrollContainer()
+    const child = document.createElement('div')
+
+    container.el.appendChild(child)
+
+    const wrapper = mount(Fader, { props: { scrollTarget: container.el } })
+    await nextTick()
+
+    expect(resize.observed()).toContain(child)
+
+    const vertical = wrapper.find('.pxd-fader--item.vertical')
+
+    // ResizeObserver delivers an initial notification for the observed content.
+    resize.fireAll()
+    await flushRaf()
+    expect(vertical.classes('bottom')).toBe(true)
+
+    container.metrics.scrollHeight = 100
+    mutation.fireAll()
+    await flushRaf()
+    expect(vertical.classes('bottom')).toBe(false)
+
+    container.metrics.scrollHeight = 300
+    resize.fireAll()
+    await flushRaf()
+    expect(vertical.classes('bottom')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('applies the default gradient size when size is omitted', () => {
+    const wrapper = mount(Fader)
+
+    expect(wrapper.attributes('style')).toContain('--fader-size')
+    expect(wrapper.attributes('style')).toContain('16px')
 
     wrapper.unmount()
   })
