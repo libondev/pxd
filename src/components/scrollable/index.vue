@@ -288,6 +288,7 @@ defineExpose({
       :color="faderColor"
       :scroll-target="contentRef"
       :direction="faderDirection"
+      :threshold="bottomThreshold"
     />
 
     <template v-if="scrollbar">

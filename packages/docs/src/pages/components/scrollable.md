@@ -108,7 +108,7 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | scrollbar-size | `number` | - | Scrollbar thickness in `px`, defaulting to `6` |
 | scrollbar-color | `string` | - | Thumb color, defaulting to `--color-gray-alpha-300` |
 | scrollbar-hover-color | `string` | - | Thumb color on hover or active, defaulting to `--color-gray-alpha-500` |
-| bottom-threshold | `number` | `10` | Distance in `px` from the end that triggers the `bottom` event |
+| bottom-threshold | `number` | `16` | Distance in `px` from the end that triggers the `bottom` event |
 
 ## Events
 
