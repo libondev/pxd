@@ -43,8 +43,12 @@ const spec: ObserverSpec<MutationObserver, MutationObserverInit, MutationRecord>
 
     next.filter((el) => !prev.includes(el)).forEach((el) => observer.observe(el, options))
   },
-  // A `subtree` observer reports descendants, so the owning element has to be looked up.
+  // Every record belongs to the single root; with several, `subtree` records need their owner looked up.
   resolveTarget(record, observed) {
+    if (observed.length === 1) {
+      return observed[0]
+    }
+
     return observed.find((el) => el === record.target || el.contains(record.target))
   },
 }
