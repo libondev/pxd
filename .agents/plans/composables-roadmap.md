@@ -27,8 +27,8 @@ An A component is only worth extracting when the four questions in
 | `stick-to-bottom` | `useStickToBottom` (public) | done |
 | `theme-switcher` | `useColorScheme` (public) | done |
 | `intersection-observer` | `useIntersectionObserver` (public) | done |
-| `hold-button` | inline timer state machine | candidate: `useHold` (public long-press behavior) |
-| `loading-bar` | inline ticker + public event emitter | candidate: fold the ticker into `useLoadingBar` |
+| `hold-button` | `useHold` (public) | done; pointer capture and the inside-rect check stay in the component |
+| `loading-bar` | inline ticker + public event emitter | deferred: the rAF timestamp leaks into the increase amount (see below) |
 
 ### B. Interactive
 
@@ -53,13 +53,18 @@ No composables. These are the components the convention explicitly excludes: ext
 
 ## Priority queue
 
+Done: `useCarousel`, `useHold`, `useListSelection`, `useOverlayDialog`, the `ButtonVariant`
+layering fix and the slider geometry utils.
+
+Deferred, in order:
+
 1. **`use-popup-engine`** - drop the `props` / `emits` parameters for explicit `MaybeRefOrGetter`
-   inputs and `onXxx` callbacks. Last item on the audit's debt list; needs the popover suite to
-   stay green.
-2. **`useHold`** - extract the `hold-button` timer into a public composable (progress, confirm,
-   cancel, pause/resume) and leave pointer capture plus the inside-rect check in the component.
-3. **`useLoadingBar`** - move the trickle/ticker state machine out of the component behind the
-   existing public event API.
+   inputs and `onXxx` callbacks. It has one consumer, 23 prop reads and eight emits, so the change
+   is mechanical but wide; it should ship alone with the popover suite as the safety net.
+2. **`useLoadingBar`** - move the trickle/ticker state machine out of the component. Blocked on a
+   deliberate fix first: `raf(increaseProgress)` hands the animation timestamp to `n`, so
+   `const amount = n || getIncreaseDelta(...)` jumps the bar to the cap instead of trickling.
+   Fix that with a test, then extract.
 
 ## Explicitly not doing
 
