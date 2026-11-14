@@ -39,8 +39,9 @@ const contentClassComputed = computed(() => {
 <template>
   <PPopover
     data-tooltip
-    role="tooltip"
     class="pxd-tooltip"
+    :trigger="['hover', 'focus']"
+    content-role="tooltip"
     :data-variant="variant"
     :position="position"
     :disabled="isDisabled"
