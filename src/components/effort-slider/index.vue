@@ -7,7 +7,9 @@ import {
   useTailwindVariant,
 } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getLabelShift, getPercentage, getRelativePosition } from '../../utils/_internal/slider.js'
 import { cachedOn, off, once, throttleByRaf } from '../../utils/event.js'
+import { clampValue } from '../../utils/format.js'
 import { getColorByThreshold } from '../../utils/helper.js'
 
 defineOptions({
@@ -87,7 +89,7 @@ const percentage = computed(() => {
     return position * 100
   }
 
-  return count > 1 ? (currentIndex.value / (count - 1)) * 100 : 100
+  return count > 1 ? getPercentage(currentIndex.value, 0, count - 1) : 100
 })
 
 const labelVisible = computed(() => dragging.value || focused.value)
@@ -97,7 +99,7 @@ const tickList = computed(() => {
   return Array.from({ length: Math.max(0, count - 2) }, (_, index) => {
     const level = index + 1
 
-    return { level, percentage: (level / (count - 1)) * 100 }
+    return { level, percentage: getPercentage(level, 0, count - 1) }
   })
 })
 
@@ -158,10 +160,6 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-function clamp(value: number, lower: number, upper: number) {
-  return Math.min(Math.max(value, lower), upper)
-}
-
 function particleSeed(index: number, salt: number) {
   const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453
 
@@ -178,18 +176,7 @@ function updateLabelShift() {
 
   // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
   // zoom or transform, while the shift below is applied in unscaled pixels.
-  const trackWidth = track.clientWidth
-  const labelWidth = label.offsetWidth
-
-  if (!trackWidth || labelWidth > trackWidth) {
-    labelShift.value = 0
-    return
-  }
-
-  const center = (percentage.value / 100) * trackWidth
-  const half = labelWidth / 2
-  // The label stays inside the track, so at the ends it stops at the track edge.
-  labelShift.value = clamp(center, half, trackWidth - half) - center
+  labelShift.value = getLabelShift(percentage.value, label.offsetWidth, track.clientWidth)
 }
 function setValue(index: number) {
   const option = optionList.value[index]
@@ -213,7 +200,7 @@ function relativePosition(clientX: number) {
     return null
   }
 
-  return clamp((clientX - rect.left) / rect.width, 0, 1)
+  return getRelativePosition(clientX, rect)
 }
 
 function nearestIndex(clientX: number) {
@@ -227,7 +214,7 @@ function nearestIndex(clientX: number) {
   const raw = position * (count - 1)
   const lower = Math.floor(raw)
 
-  return clamp(raw - lower > 0.5 ? lower + 1 : lower, 0, count - 1)
+  return clampValue(raw - lower > 0.5 ? lower + 1 : lower, 0, count - 1)
 }
 
 function updateFromPosition(clientX: number) {
@@ -284,7 +271,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
 
   ev.preventDefault()
 
-  const next = clamp(index, 0, count - 1)
+  const next = clampValue(index, 0, count - 1)
 
   if (next === currentIndex.value) {
     return

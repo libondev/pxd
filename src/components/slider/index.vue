@@ -7,7 +7,9 @@ import {
   useTailwindVariant,
 } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getLabelShift, getPercentage, getRelativePosition } from '../../utils/_internal/slider.js'
 import { cachedOn, once, throttleByRaf } from '../../utils/event.js'
+import { clampValue } from '../../utils/format.js'
 import { getFallbackValue } from '../../utils/helper.js'
 
 type ThumbIndex = 0 | 1
@@ -107,7 +109,7 @@ const stopList = computed(() => {
   // Only the interior steps get a dot: the track edges already say where min
   // and max are, and a dot there has nowhere to sit without hanging off the track.
   return values
-    .map((value) => ({ value, percentage: getPercentage(value) }))
+    .map((value) => ({ value, percentage: getPercentage(value, props.min, props.max) }))
     .filter((stop) => stop.percentage > 0 && stop.percentage < 100)
 })
 
@@ -129,7 +131,7 @@ const markList = computed(() => {
   return entries.map((mark, index) => ({
     value: mark.value,
     label: mark.label,
-    percentage: getPercentage(mark.value),
+    percentage: getPercentage(mark.value, props.min, props.max),
     // The outermost labels are pinned to the track edges. Anchoring on
     // value === min/max instead left every other mark centred, so a label near
     // an end hung off the track.
@@ -164,8 +166,8 @@ const valueRange = computed<[number, number]>(() => {
 
   return [props.min, Array.isArray(value) ? (value[1] ?? 0) : (value as number)]
 })
-const startPercentage = computed(() => getPercentage(valueRange.value[0]))
-const endPercentage = computed(() => getPercentage(valueRange.value[1]))
+const startPercentage = computed(() => getPercentage(valueRange.value[0], props.min, props.max))
+const endPercentage = computed(() => getPercentage(valueRange.value[1], props.min, props.max))
 const trackStyle = computed(() => ({
   left: `${startPercentage.value}%`,
   width: `${endPercentage.value - startPercentage.value}%`,
@@ -228,19 +230,12 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-function clamp(value: number, lower: number, upper: number) {
-  return Math.min(Math.max(value, lower), upper)
-}
 function setValue(range: [number, number]) {
   const value = props.range ? range : range[1]
 
   activeValue.value = value
 
   return value
-}
-
-function getPercentage(value: number) {
-  return clamp(((value - props.min) / (props.max - props.min)) * 100, 0, 100)
 }
 
 function getNumericStepValues(min: number, max: number, step: number) {
@@ -257,7 +252,7 @@ function toValidValue(value: number) {
   if (!Array.isArray(props.step)) {
     const offset = value - props.min
 
-    return clamp(
+    return clampValue(
       props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : value,
       props.min,
       props.max,
@@ -300,19 +295,6 @@ function setLabelRef(index: ThumbIndex, el: unknown) {
   labelRefList[index].value = el instanceof HTMLElement ? el : undefined
 }
 
-function getLabelShift(percentage: number, label: HTMLElement | undefined, sliderWidth: number) {
-  if (!label || !sliderWidth) {
-    return 0
-  }
-
-  const labelWidth = label.offsetWidth
-  const center = (percentage / 100) * sliderWidth
-  const half = labelWidth / 2
-
-  // The label stays inside the slider, so at the ends it stops at the edge.
-  return labelWidth > sliderWidth ? 0 : clamp(center, half, sliderWidth - half) - center
-}
-
 function updateLabelShifts() {
   const slider = sliderRef.value
 
@@ -323,10 +305,12 @@ function updateLabelShifts() {
   // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
   // zoom or transform, while the shift below is applied in unscaled pixels.
   const sliderWidth = slider.clientWidth
+  const startLabel = labelRefList[0].value
+  const endLabel = labelRefList[1].value
 
   labelShiftList.value = [
-    getLabelShift(startPercentage.value, labelRefList[0].value, sliderWidth),
-    getLabelShift(endPercentage.value, labelRefList[1].value, sliderWidth),
+    startLabel ? getLabelShift(startPercentage.value, startLabel.offsetWidth, sliderWidth) : 0,
+    endLabel ? getLabelShift(endPercentage.value, endLabel.offsetWidth, sliderWidth) : 0,
   ]
 }
 
@@ -338,7 +322,7 @@ function updateValueFromPosition(clientX: number) {
   }
 
   const rect = sliderRect ?? sliderRef.value.getBoundingClientRect()
-  const position = clamp((clientX - rect.left) / rect.width, 0, 1)
+  const position = getRelativePosition(clientX, rect)
   const next = [...valueRange.value] as [number, number]
 
   next[index] = toValidValue(props.min + position * (props.max - props.min))
@@ -460,7 +444,7 @@ function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
   const next = [...valueRange.value] as [number, number]
   // A thumb never crosses the other one; outside range mode the start slot is pinned to
   // `min`, which leaves the full [min, max] span.
-  next[index] = clamp(
+  next[index] = clampValue(
     isToMin ? lower : isToMax ? upper : toKeyboardValue(next[index], isNegative),
     lower,
     upper,
