@@ -25,7 +25,12 @@ const emits = defineEmits<MenuEmits>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const popoverVisible = shallowRef(false)
 
-const { selected, apply, reset, commit } = useListSelection(props, emits)
+const { selected, apply, reset, commit } = useListSelection({
+  modelValue: () => props.modelValue,
+  multiple: () => props.multiple,
+  onUpdateModelValue: (value) => emits('update:model-value', value),
+  onChange: (value) => emits('change', value),
+})
 
 // Action menus (no v-model) keep List uncontrolled so checkmarks never appear.
 // Selection menus forward the session `selected` that List already toggled.

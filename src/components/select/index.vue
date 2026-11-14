@@ -68,7 +68,12 @@ const computedSize = computed(() => props.size || configProvider.size)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 // Single mode commits on pick and closes; multiple mode stays open and commits `change`
 // once when the popover closes, so a round of toggles is one event.
-const { selected, apply, reset, commit } = useListSelection(props, emits)
+const { selected, apply, reset, commit } = useListSelection({
+  modelValue: () => props.modelValue,
+  multiple: () => props.multiple,
+  onUpdateModelValue: (value) => emits('update:model-value', value),
+  onChange: (value) => emits('change', value),
+})
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,

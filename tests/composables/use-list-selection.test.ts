@@ -3,35 +3,53 @@ import { useListSelection } from '../../src/composables/_internal/use-list-selec
 
 describe('useListSelection', () => {
   it('should emit change immediately in single mode and ask to close', () => {
-    const emits = vi.fn()
-    const { apply, selected } = useListSelection({ modelValue: null }, emits)
+    const onUpdateModelValue = vi.fn()
+    const onChange = vi.fn()
+    const { apply, selected } = useListSelection({
+      modelValue: null,
+      onUpdateModelValue,
+      onChange,
+    })
 
     expect(apply(2)).toBe(true)
     expect(selected.value).toBe(2)
-    expect(emits).toHaveBeenCalledWith('update:model-value', 2)
-    expect(emits).toHaveBeenCalledWith('change', 2)
+    expect(onUpdateModelValue).toHaveBeenCalledWith(2)
+    expect(onChange).toHaveBeenCalledWith(2)
   })
 
   it('should keep local multiple state without waiting for props', () => {
-    const emits = vi.fn()
-    const { apply, selected, commit } = useListSelection({ multiple: true, modelValue: [] }, emits)
+    const onUpdateModelValue = vi.fn()
+    const onChange = vi.fn()
+    const { apply, selected, commit } = useListSelection({
+      multiple: true,
+      modelValue: [],
+      onUpdateModelValue,
+      onChange,
+    })
 
     expect(apply([1])).toBe(false)
     expect(apply([1, 3])).toBe(false)
     expect(apply([3])).toBe(false)
     expect(selected.value).toEqual([3])
-    expect(emits).toHaveBeenCalledTimes(3)
-    expect(emits).not.toHaveBeenCalledWith('change', expect.anything())
+    expect(onUpdateModelValue).toHaveBeenCalledTimes(3)
+    expect(onChange).not.toHaveBeenCalled()
 
     commit()
-    expect(emits).toHaveBeenCalledWith('change', [3])
+    expect(onChange).toHaveBeenCalledWith([3])
   })
 
   it('should not emit change on commit when nothing changed', () => {
-    const emits = vi.fn()
-    const { commit } = useListSelection({ multiple: true, modelValue: [] }, emits)
+    const onUpdateModelValue = vi.fn()
+    const onChange = vi.fn()
+    const { commit } = useListSelection({
+      multiple: true,
+      modelValue: [],
+      onUpdateModelValue,
+      onChange,
+    })
 
     commit()
-    expect(emits).not.toHaveBeenCalled()
+    expect(onUpdateModelValue).not.toHaveBeenCalled()
+    expect(onChange).not.toHaveBeenCalled()
   })
 })

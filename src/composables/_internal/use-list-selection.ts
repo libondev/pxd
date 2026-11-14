@@ -1,22 +1,20 @@
 import type { ListModelValue } from '../../components/list/types'
 import type { ComponentValue } from '../../types/shared/props'
-import { shallowRef } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { shallowRef, toValue } from 'vue'
 import { toArray } from '../../utils/format.js'
 
-interface ListSelectionProps {
-  modelValue?: ListModelValue
-  multiple?: boolean
+interface ListSelectionOptions {
+  modelValue?: MaybeRefOrGetter<ListModelValue | undefined>
+  multiple?: MaybeRefOrGetter<boolean | undefined>
+  onChange?: (value: NonNullable<ListModelValue>) => void
+  onUpdateModelValue?: (value: NonNullable<ListModelValue>) => void
 }
 
-interface ListSelectionEmits {
-  (event: 'change', value: NonNullable<ListModelValue>): void
-  (event: 'update:model-value', value: NonNullable<ListModelValue>): void
-}
+function readSelection(options: ListSelectionOptions): ListModelValue {
+  const value = toValue(options.modelValue)
 
-function readSelection(props: ListSelectionProps): ListModelValue {
-  return props.multiple
-    ? (toArray(props.modelValue) as ComponentValue[])
-    : (props.modelValue ?? null)
+  return toValue(options.multiple) ? (toArray(value) as ComponentValue[]) : (value ?? null)
 }
 
 function toggleSelected(selected: ComponentValue[], value: ComponentValue): ComponentValue[] {
@@ -40,36 +38,38 @@ export function resolveNextListValue(
  * Menu selection session. `apply(next)` accepts the value already computed by List —
  * do not toggle again here.
  */
-export function useListSelection(props: ListSelectionProps, emits: ListSelectionEmits) {
-  const selected = shallowRef<ListModelValue>(readSelection(props))
+export function useListSelection(options: ListSelectionOptions) {
+  const selected = shallowRef<ListModelValue>(readSelection(options))
   let dirty = false
+
+  const isMultiple = () => toValue(options.multiple) ?? false
 
   function reset() {
     dirty = false
-    selected.value = readSelection(props)
+    selected.value = readSelection(options)
   }
 
   function apply(nextValue: NonNullable<ListModelValue>): boolean {
     selected.value = nextValue
 
-    if (props.multiple) {
+    if (isMultiple()) {
       dirty = true
-      emits('update:model-value', nextValue)
+      options.onUpdateModelValue?.(nextValue)
       return false
     }
 
-    emits('update:model-value', nextValue)
-    emits('change', nextValue)
+    options.onUpdateModelValue?.(nextValue)
+    options.onChange?.(nextValue)
     return true
   }
 
   function commit() {
-    if (!props.multiple || !dirty) {
+    if (!isMultiple() || !dirty) {
       return
     }
 
     dirty = false
-    emits('change', selected.value ?? [])
+    options.onChange?.(selected.value ?? [])
   }
 
   return { selected, apply, reset, commit }
