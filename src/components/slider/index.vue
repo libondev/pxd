@@ -86,21 +86,6 @@ const scheduleUpdate = throttleByRaf(() => {
 const sliderRef = shallowRef<HTMLElement>()
 const activeThumb = shallowRef<ThumbIndex | null>(null)
 const labelShiftList = shallowRef<number[]>([0, 0])
-const innerValue = shallowRef<number | number[]>(
-  props.defaultValue ?? (props.range ? [props.min, props.min] : props.min),
-)
-const activeValue = computed(() => props.modelValue ?? innerValue.value)
-// Outside range mode the start slot is pinned to `min`, so both modes share one pair and
-// only the emitted payload differs.
-const valueRange = computed<[number, number]>(() => {
-  const value = activeValue.value
-
-  if (props.range) {
-    return Array.isArray(value) ? (value as [number, number]) : [props.min, value as number]
-  }
-
-  return [props.min, Array.isArray(value) ? (value[1] ?? 0) : (value as number)]
-})
 const stepValues = computed<number[]>(() => {
   const { step, min, max } = props
 
@@ -110,9 +95,6 @@ const stepValues = computed<number[]>(() => {
 
   return [...step].sort((a, b) => a - b).filter((value) => value >= min && value <= max)
 })
-const startPercentage = computed(() => getPercentage(valueRange.value[0]))
-const endPercentage = computed(() => getPercentage(valueRange.value[1]))
-
 const stopList = computed(() => {
   const { stops, min, max, step } = props
 
@@ -164,6 +146,26 @@ const markList = computed(() => {
     }),
   }))
 })
+
+// Uncontrolled fallback: a bound `modelValue` always wins.
+const activeValue = useModelValue(props, emits, {
+  withChange: false,
+  defaultValue: () => props.defaultValue ?? (props.range ? [props.min, props.min] : props.min),
+})
+
+// Outside range mode the start slot is pinned to `min`, so both modes share one pair and
+// only the emitted payload differs.
+const valueRange = computed<[number, number]>(() => {
+  const value = activeValue.value
+
+  if (props.range) {
+    return Array.isArray(value) ? (value as [number, number]) : [props.min, value as number]
+  }
+
+  return [props.min, Array.isArray(value) ? (value[1] ?? 0) : (value as number)]
+})
+const startPercentage = computed(() => getPercentage(valueRange.value[0]))
+const endPercentage = computed(() => getPercentage(valueRange.value[1]))
 const trackStyle = computed(() => ({
   left: `${startPercentage.value}%`,
   width: `${endPercentage.value - startPercentage.value}%`,
@@ -225,7 +227,6 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
-const modelValue = useModelValue(props, emits, { withChange: false })
 
 function clamp(value: number, lower: number, upper: number) {
   return Math.min(Math.max(value, lower), upper)
@@ -233,8 +234,7 @@ function clamp(value: number, lower: number, upper: number) {
 function setValue(range: [number, number]) {
   const value = props.range ? range : range[1]
 
-  innerValue.value = value
-  modelValue.value = value
+  activeValue.value = value
 
   return value
 }
@@ -434,8 +434,7 @@ function initModelValue() {
   const value = props.range ? snapped : snapped[1]
 
   if (!isSameValue(activeValue.value, value)) {
-    innerValue.value = value
-    modelValue.value = value
+    activeValue.value = value
   }
 }
 

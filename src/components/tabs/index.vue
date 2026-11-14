@@ -2,7 +2,7 @@
 import type { ComponentValue } from '../../types/shared/props'
 import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -26,11 +26,6 @@ const SCROLL_EPSILON = 2
 const uid = getUniqueId('pxd-tabs')
 let resizeObserver: ResizeObserver | null = null
 
-/** Uncontrolled fallback: a bound `modelValue` always wins. */
-const innerValue = shallowRef<ComponentValue | undefined>(props.defaultValue)
-const activeValue = computed(() =>
-  props.modelValue === undefined ? innerValue.value : props.modelValue,
-)
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
 const overflowing = shallowRef(false)
@@ -43,7 +38,11 @@ const canScrollRight = shallowRef(false)
  */
 const activatedValues = shallowRef<ComponentValue[]>([])
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+/** Uncontrolled fallback: a bound `modelValue` always wins. */
+const activeValue = useModelValue(props, emits, {
+  withChange: false,
+  defaultValue: () => props.defaultValue,
+})
 const configProvider = useConfigProvider()
 const slots = useSlots()
 /** Roving tabindex: arrow keys move focus and activate, matching the APG tabs pattern. */
@@ -94,8 +93,7 @@ function select(value: ComponentValue) {
     return
   }
 
-  innerValue.value = value
-  modelValue.value = value
+  activeValue.value = value
   emits('change', value)
 }
 function isActivated(option: TabsOptions) {
