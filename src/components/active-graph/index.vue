@@ -15,6 +15,13 @@ import { getCssUnitValue } from '../../utils/format.js'
 import { getColorByThreshold } from '../../utils/helper.js'
 import { isUndefined } from '../../utils/is.js'
 
+interface DateInfo {
+  year: number
+  month: number
+  day: number
+  weekday: number
+}
+
 defineOptions({
   name: 'PActiveGraph',
   inheritAttrs: false,
@@ -28,10 +35,14 @@ const props = withDefaults(defineProps<ActiveGraphProps>(), {
 
 const emits = defineEmits<ActiveGraphEmits>()
 
-const configProvider = useConfigProvider()
-
 const CELL_GAP = 3
 const CELL_SIZE = 12
+let colorsSource: Record<string, string> | undefined
+let colorsCache: Record<string, string> | undefined
+let dateCountData: readonly Record<string, any>[] | undefined
+let dateCountNames: { date: string; count: string } | undefined
+let dateCountMapCache: Record<string, number> | undefined
+const scheduleRefreshTableBodyList = scheduleByRaf(refreshTableBodyList)
 
 const itemRadiusStyle = computed(() => {
   return {
@@ -40,37 +51,6 @@ const itemRadiusStyle = computed(() => {
 })
 
 const selectedDate = shallowRef(props.defaultSelect)
-
-const getDefaultStartDate = () => {
-  const date = new Date()
-  date.setFullYear(date.getFullYear() - 1)
-
-  while (date.getDay() !== 0) {
-    date.setDate(date.getDate() - 1)
-  }
-
-  return date
-}
-
-const getDefaultEndDate = () => {
-  return new Date()
-}
-
-function isShallowEqualObject(a: object, b: object): boolean {
-  const keys = Object.keys(a)
-
-  if (keys.length !== Object.keys(b).length) {
-    return false
-  }
-
-  return keys.every(
-    (key) => (a as Record<string, unknown>)[key] === (b as Record<string, unknown>)[key],
-  )
-}
-
-let colorsSource: Record<string, string> | undefined
-let colorsCache: Record<string, string> | undefined
-
 const computedColors = computed(() => {
   if (props.colors) {
     if (
@@ -97,40 +77,6 @@ const computedColors = computed(() => {
     20: 'var(--color-green-900)',
   }
 })
-
-const rangedDates = computed(() =>
-  getAllDatesBetween(
-    props.startDate || getDefaultStartDate(),
-    props.endDate || getDefaultEndDate(),
-  ),
-)
-
-interface DateInfo {
-  year: number
-  month: number
-  day: number
-  weekday: number
-}
-
-const dateInfoList = computed<DateInfo[]>(() =>
-  rangedDates.value.dates.map((dateStr) => {
-    // a bare 'YYYY-MM-DD' string is parsed as UTC by `new Date()`, so the local
-    // getters below would return the previous day in negative-offset timezones
-    const date = new Date(`${dateStr}T00:00:00`)
-
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth(),
-      day: date.getDate(),
-      weekday: date.getDay(),
-    }
-  }),
-)
-
-let dateCountData: readonly Record<string, any>[] | undefined
-let dateCountNames: { date: string; count: string } | undefined
-let dateCountMapCache: Record<string, number> | undefined
-
 const dateCountMap = computed(() => {
   const fieldNames = props.fieldNames || { date: 'date', count: 'count' }
 
@@ -152,12 +98,6 @@ const dateCountMap = computed(() => {
 
   return dateCountMapCache
 })
-
-// get localized day of week
-function getLocalizedDay(dayIndex: number) {
-  return configProvider.locale.date.day[dayIndex]
-}
-
 const tableHeadList = computed(() => {
   // transpose mode: table head is day of week
   if (props.transpose) {
@@ -169,7 +109,61 @@ const tableHeadList = computed(() => {
   // non-transpose mode: table head is month
   return createMonthHeaders()
 })
+const tableBodyList = shallowRef<ActiveGraphRowData[]>([])
 
+const configProvider = useConfigProvider()
+
+const getDefaultStartDate = () => {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() - 1)
+
+  while (date.getDay() !== 0) {
+    date.setDate(date.getDate() - 1)
+  }
+
+  return date
+}
+
+const getDefaultEndDate = () => {
+  return new Date()
+}
+
+const rangedDates = computed(() =>
+  getAllDatesBetween(
+    props.startDate || getDefaultStartDate(),
+    props.endDate || getDefaultEndDate(),
+  ),
+)
+const dateInfoList = computed<DateInfo[]>(() =>
+  rangedDates.value.dates.map((dateStr) => {
+    // a bare 'YYYY-MM-DD' string is parsed as UTC by `new Date()`, so the local
+    // getters below would return the previous day in negative-offset timezones
+    const date = new Date(`${dateStr}T00:00:00`)
+
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate(),
+      weekday: date.getDay(),
+    }
+  }),
+)
+
+function isShallowEqualObject(a: object, b: object): boolean {
+  const keys = Object.keys(a)
+
+  if (keys.length !== Object.keys(b).length) {
+    return false
+  }
+
+  return keys.every(
+    (key) => (a as Record<string, unknown>)[key] === (b as Record<string, unknown>)[key],
+  )
+}
+// get localized day of week
+function getLocalizedDay(dayIndex: number) {
+  return configProvider.locale.date.day[dayIndex]
+}
 // check if should mark as month header
 function shouldMarkAsMonthHeader(
   currentMonth: number,
@@ -211,13 +205,9 @@ function createMonthHeaders() {
 
   return monthHeaders
 }
-
-const tableBodyList = shallowRef<ActiveGraphRowData[]>([])
-
 function refreshTableBodyList() {
   tableBodyList.value = props.transpose ? createTransposedTableData() : createStandardTableData()
 }
-
 // create transposed table data (rows are dates, columns are days of week)
 function createTransposedTableData(): ActiveGraphRowData[] {
   const dataMap = dateCountMap.value
@@ -283,7 +273,6 @@ function createTransposedTableData(): ActiveGraphRowData[] {
 
   return markMonthRows(monthRows)
 }
-
 // create standard table data (rows are days of week, columns are dates)
 function createStandardTableData(): ActiveGraphRowData[] {
   const dataMap = dateCountMap.value
@@ -328,7 +317,6 @@ function createStandardTableData(): ActiveGraphRowData[] {
 
   return result
 }
-
 // mark month rows
 function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
   const monthMap = {} as Record<string, boolean>
@@ -357,46 +345,18 @@ function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
   return rows
 }
 
-const scheduleRefreshTableBodyList = scheduleByRaf(refreshTableBodyList)
-
 refreshTableBodyList()
 
-watch(
-  () => [
-    dateCountMap.value,
-    rangedDates.value,
-    props.transpose,
-    computedColors.value,
-    configProvider.locale.date.day,
-    configProvider.locale.date.month,
-  ],
-  scheduleRefreshTableBodyList,
-  { flush: 'post' },
-)
-
-function onCellClick(event: MouseEvent) {
-  const target = event.target as HTMLElement
-  const date = target.dataset.date
-
-  if (!date) {
-    return
-  }
-
-  selectedDate.value = selectedDate.value === date ? '' : date
-
-  emits('change', date, event)
-}
-
 let tbodyRect: DOMRect
-const tbodyRef = shallowRef<HTMLTableSectionElement>()
-const tooltipInfo = shallowRef<ActiveGraphTooltipInfo>({} as ActiveGraphTooltipInfo)
-
-const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
-
 const pendingTooltip = {
   target: null as HTMLTableCellElement | null,
   date: '',
 }
+
+const tbodyRef = shallowRef<HTMLTableSectionElement>()
+const tooltipInfo = shallowRef<ActiveGraphTooltipInfo>({} as ActiveGraphTooltipInfo)
+
+const { value: showTooltip, setValue: setShowTooltip } = useDelayChange(false, { delay: 500 })
 
 const scheduleTooltipUpdate = scheduleByRaf(() => {
   const { target, date } = pendingTooltip
@@ -429,6 +389,18 @@ const scheduleTooltipUpdate = scheduleByRaf(() => {
   }
 })
 
+function onCellClick(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  const date = target.dataset.date
+
+  if (!date) {
+    return
+  }
+
+  selectedDate.value = selectedDate.value === date ? '' : date
+
+  emits('change', date, event)
+}
 // when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {
   pendingTooltip.target = null
@@ -438,7 +410,6 @@ function onPointerLeave() {
   tooltipInfo.value = {} as ActiveGraphTooltipInfo
   tbodyRect = null!
 }
-
 // when pointer hovers over a cell, show the tooltip
 function onPointerOver(ev: MouseEvent) {
   if (!props.tooltip) {
@@ -466,6 +437,19 @@ function onPointerOver(ev: MouseEvent) {
   pendingTooltip.date = date
   scheduleTooltipUpdate()
 }
+
+watch(
+  () => [
+    dateCountMap.value,
+    rangedDates.value,
+    props.transpose,
+    computedColors.value,
+    configProvider.locale.date.day,
+    configProvider.locale.date.month,
+  ],
+  scheduleRefreshTableBodyList,
+  { flush: 'post' },
+)
 
 onBeforeUnmount(() => {
   scheduleRefreshTableBodyList.cancel()

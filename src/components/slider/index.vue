@@ -10,6 +10,8 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOn, once, throttleByRaf } from '../../utils/event.js'
 import { getFallbackValue } from '../../utils/helper.js'
 
+type ThumbIndex = 0 | 1
+
 defineOptions({
   name: 'PSlider',
   inheritAttrs: false,
@@ -18,13 +20,6 @@ defineOptions({
     event: 'update:model-value',
   },
 })
-
-type ThumbIndex = 0 | 1
-
-function clamp(value: number, lower: number, upper: number) {
-  return Math.min(Math.max(value, lower), upper)
-}
-
 const props = withDefaults(defineProps<SliderProps>(), {
   min: 0,
   max: 100,
@@ -33,30 +28,6 @@ const props = withDefaults(defineProps<SliderProps>(), {
 })
 
 const emits = defineEmits<SliderEmits>()
-
-const configProvider = useConfigProvider()
-
-const { attrs, classes } = useTailwindVariant(
-  {
-    base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
-    variants: {
-      size: {
-        sm: 'h-2',
-        md: 'h-2.5',
-        lg: 'h-3.5',
-      },
-      disabled: {
-        true: 'cursor-not-allowed',
-      },
-    },
-  },
-  {
-    selection: () => ({
-      size: props.size || configProvider.size,
-      disabled: props.disabled,
-    }),
-  },
-)
 
 const sliderThumbClasses = createTailwindVariant({
   base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
@@ -109,19 +80,20 @@ let sliderRect: DOMRect | null = null
 let lastClientX: number | null = null
 let lastUpdatedValue: number | [number, number] | null = null
 let stopMoveListener: (() => void) | null = null
+const labelRefList = [shallowRef<HTMLElement>(), shallowRef<HTMLElement>()]
+const scheduleUpdate = throttleByRaf(() => {
+  if (lastClientX !== null) {
+    updateValueFromPosition(lastClientX)
+  }
+})
 
 const sliderRef = shallowRef<HTMLElement>()
 const activeThumb = shallowRef<ThumbIndex | null>(null)
-const labelRefList = [shallowRef<HTMLElement>(), shallowRef<HTMLElement>()]
 const labelShiftList = shallowRef<number[]>([0, 0])
-
-const modelValue = useModelValue(props, emits, { withChange: false })
-
 const innerValue = shallowRef<number | number[]>(
   props.defaultValue ?? (props.range ? [props.min, props.min] : props.min),
 )
 const activeValue = computed(() => props.modelValue ?? innerValue.value)
-
 // Outside range mode the start slot is pinned to `min`, so both modes share one pair and
 // only the emitted payload differs.
 const valueRange = computed<[number, number]>(() => {
@@ -133,31 +105,6 @@ const valueRange = computed<[number, number]>(() => {
 
   return [props.min, Array.isArray(value) ? (value[1] ?? 0) : (value as number)]
 })
-
-function setValue(range: [number, number]) {
-  const value = props.range ? range : range[1]
-
-  innerValue.value = value
-  modelValue.value = value
-
-  return value
-}
-
-function getPercentage(value: number) {
-  return clamp(((value - props.min) / (props.max - props.min)) * 100, 0, 100)
-}
-
-function getNumericStepValues(min: number, max: number, step: number) {
-  if (step <= 0) {
-    return []
-  }
-
-  // Only the values the drag/keyboard snapping can actually reach are stoppable.
-  const count = Math.floor((max - min) / step)
-
-  return Array.from({ length: count + 1 }, (_, index) => min + index * step)
-}
-
 const stepValues = computed<number[]>(() => {
   const { step, min, max } = props
 
@@ -167,51 +114,6 @@ const stepValues = computed<number[]>(() => {
 
   return [...step].sort((a, b) => a - b).filter((value) => value >= min && value <= max)
 })
-
-function toValidValue(value: number) {
-  if (!Array.isArray(props.step)) {
-    const offset = value - props.min
-
-    return clamp(
-      props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : value,
-      props.min,
-      props.max,
-    )
-  }
-
-  if (!stepValues.value.length) {
-    return props.min
-  }
-
-  // Ties resolve to the lower value because the list is sorted ascending.
-  return stepValues.value.reduce((closest, stepValue) =>
-    Math.abs(stepValue - value) < Math.abs(closest - value) ? stepValue : closest,
-  )
-}
-
-function toKeyboardValue(current: number, isNegative: boolean) {
-  if (!Array.isArray(props.step)) {
-    return isNegative ? current - props.step : current + props.step
-  }
-
-  const values = stepValues.value
-
-  if (!values.length) {
-    return props.min
-  }
-
-  const index = values.indexOf(current)
-
-  if (index !== -1) {
-    return values[Math.min(Math.max(index + (isNegative ? -1 : 1), 0), values.length - 1)]
-  }
-
-  // The current value is off-grid: jump to the closest allowed value in the pressed direction.
-  const candidates = isNegative ? values.slice().reverse() : values
-
-  return candidates.find((value) => (isNegative ? value < current : value > current)) ?? current
-}
-
 const startPercentage = computed(() => getPercentage(valueRange.value[0]))
 const endPercentage = computed(() => getPercentage(valueRange.value[1]))
 
@@ -266,6 +168,15 @@ const markList = computed(() => {
     }),
   }))
 })
+const trackStyle = computed(() => ({
+  left: `${startPercentage.value}%`,
+  width: `${endPercentage.value - startPercentage.value}%`,
+  backgroundColor: props.disabled
+    ? 'var(--color-gray-alpha-400)'
+    : getFallbackValue(props.variant, VARIANTS, 'primary'),
+}))
+
+const configProvider = useConfigProvider()
 
 const thumbList = computed(() => {
   const base = {
@@ -297,14 +208,98 @@ const thumbList = computed(() => {
   }))
 })
 
-const trackStyle = computed(() => ({
-  left: `${startPercentage.value}%`,
-  width: `${endPercentage.value - startPercentage.value}%`,
-  backgroundColor: props.disabled
-    ? 'var(--color-gray-alpha-400)'
-    : getFallbackValue(props.variant, VARIANTS, 'primary'),
-}))
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
+      disabled: {
+        true: 'cursor-not-allowed',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      disabled: props.disabled,
+    }),
+  },
+)
+const modelValue = useModelValue(props, emits, { withChange: false })
 
+function clamp(value: number, lower: number, upper: number) {
+  return Math.min(Math.max(value, lower), upper)
+}
+function setValue(range: [number, number]) {
+  const value = props.range ? range : range[1]
+
+  innerValue.value = value
+  modelValue.value = value
+
+  return value
+}
+
+function getPercentage(value: number) {
+  return clamp(((value - props.min) / (props.max - props.min)) * 100, 0, 100)
+}
+
+function getNumericStepValues(min: number, max: number, step: number) {
+  if (step <= 0) {
+    return []
+  }
+
+  // Only the values the drag/keyboard snapping can actually reach are stoppable.
+  const count = Math.floor((max - min) / step)
+
+  return Array.from({ length: count + 1 }, (_, index) => min + index * step)
+}
+function toValidValue(value: number) {
+  if (!Array.isArray(props.step)) {
+    const offset = value - props.min
+
+    return clamp(
+      props.step > 0 ? Math.round(offset / props.step) * props.step + props.min : value,
+      props.min,
+      props.max,
+    )
+  }
+
+  if (!stepValues.value.length) {
+    return props.min
+  }
+
+  // Ties resolve to the lower value because the list is sorted ascending.
+  return stepValues.value.reduce((closest, stepValue) =>
+    Math.abs(stepValue - value) < Math.abs(closest - value) ? stepValue : closest,
+  )
+}
+
+function toKeyboardValue(current: number, isNegative: boolean) {
+  if (!Array.isArray(props.step)) {
+    return isNegative ? current - props.step : current + props.step
+  }
+
+  const values = stepValues.value
+
+  if (!values.length) {
+    return props.min
+  }
+
+  const index = values.indexOf(current)
+
+  if (index !== -1) {
+    return values[Math.min(Math.max(index + (isNegative ? -1 : 1), 0), values.length - 1)]
+  }
+
+  // The current value is off-grid: jump to the closest allowed value in the pressed direction.
+  const candidates = isNegative ? values.slice().reverse() : values
+
+  return candidates.find((value) => (isNegative ? value < current : value > current)) ?? current
+}
 function setLabelRef(index: ThumbIndex, el: unknown) {
   labelRefList[index].value = el instanceof HTMLElement ? el : undefined
 }
@@ -362,13 +357,6 @@ function updateValueFromPosition(clientX: number) {
     lastUpdatedValue = setValue(next)
   }
 }
-
-const scheduleUpdate = throttleByRaf(() => {
-  if (lastClientX !== null) {
-    updateValueFromPosition(lastClientX)
-  }
-})
-
 function handleMove(ev: PointerEvent) {
   if (activeThumb.value === null || props.disabled) {
     return

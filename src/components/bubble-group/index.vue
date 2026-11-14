@@ -18,13 +18,21 @@ const props = defineProps<BubbleGroupProps>()
 
 const ITEM_STYLE_CACHE_LIMIT = 512
 const itemStyles = new Map<number, CSSProperties>()
+let domOffsets: number[] = []
+let stopScroll: (() => void) | null = null
 
 const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 const scrollVersion = shallowRef(0)
-
-let domOffsets: number[] = []
-
 const isVirtual = computed(() => props.virtual === true && !!props.data)
+
+const bumpScroll = throttleByRaf(() => {
+  if (isVirtual.value) {
+    return
+  }
+
+  measureDomOffsets()
+  scrollVersion.value++
+})
 
 const {
   totalSize,
@@ -49,6 +57,48 @@ const {
   // see: its size is only final once the render that applies it has landed.
   onGeometryChange: () => stickRef.value?.stickIfNeeded(),
 })
+
+const scrollSource: VirtualListScrollSource = {
+  getOffsetForIndex(index) {
+    return isVirtual.value ? virtualScrollSource.getOffsetForIndex(index) : getDomOffset(index)
+  },
+  getScrollOffset() {
+    if (isVirtual.value) {
+      return virtualScrollSource.getScrollOffset()
+    }
+
+    void scrollVersion.value
+
+    return getContainer()?.scrollTop ?? null
+  },
+  getMaxScrollOffset() {
+    if (isVirtual.value) {
+      return virtualScrollSource.getMaxScrollOffset()
+    }
+
+    void scrollVersion.value
+
+    const container = getContainer()
+
+    return container ? Math.max(0, container.scrollHeight - container.clientHeight) : 0
+  },
+  scrollToIndex(index, options) {
+    if (isVirtual.value) {
+      virtualScrollSource.scrollToIndex(index, options)
+
+      return
+    }
+
+    const offset = getDomOffset(index)
+    const container = getContainer()
+
+    if (offset == null || !container) {
+      return
+    }
+
+    container.scrollTo({ top: Math.max(0, offset), behavior: options?.behavior ?? 'auto' })
+  },
+}
 
 const contentStyle = computed(() => {
   if (!isVirtual.value) {
@@ -134,59 +184,6 @@ function getDomOffset(index: number): number | undefined {
 
   return domOffsets[index]
 }
-
-const bumpScroll = throttleByRaf(() => {
-  if (isVirtual.value) {
-    return
-  }
-
-  measureDomOffsets()
-  scrollVersion.value++
-})
-
-const scrollSource: VirtualListScrollSource = {
-  getOffsetForIndex(index) {
-    return isVirtual.value ? virtualScrollSource.getOffsetForIndex(index) : getDomOffset(index)
-  },
-  getScrollOffset() {
-    if (isVirtual.value) {
-      return virtualScrollSource.getScrollOffset()
-    }
-
-    void scrollVersion.value
-
-    return getContainer()?.scrollTop ?? null
-  },
-  getMaxScrollOffset() {
-    if (isVirtual.value) {
-      return virtualScrollSource.getMaxScrollOffset()
-    }
-
-    void scrollVersion.value
-
-    const container = getContainer()
-
-    return container ? Math.max(0, container.scrollHeight - container.clientHeight) : 0
-  },
-  scrollToIndex(index, options) {
-    if (isVirtual.value) {
-      virtualScrollSource.scrollToIndex(index, options)
-
-      return
-    }
-
-    const offset = getDomOffset(index)
-    const container = getContainer()
-
-    if (offset == null || !container) {
-      return
-    }
-
-    container.scrollTo({ top: Math.max(0, offset), behavior: options?.behavior ?? 'auto' })
-  },
-}
-
-let stopScroll: (() => void) | null = null
 
 onMounted(() => {
   const container = getContainer()

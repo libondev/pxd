@@ -23,32 +23,6 @@ const props = defineProps<EffortSliderProps>()
 
 const emits = defineEmits<EffortSliderEmits>()
 
-const configProvider = useConfigProvider()
-
-const modelValue = useModelValue(props, emits, { withChange: false })
-
-const { attrs, classes } = useTailwindVariant(
-  {
-    base: 'pxd-effort-slider--track group relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
-    variants: {
-      size: {
-        sm: 'h-2',
-        md: 'h-2.5',
-        lg: 'h-3.5',
-      },
-      disabled: {
-        true: 'cursor-not-allowed',
-      },
-    },
-  },
-  {
-    selection: () => ({
-      size: props.size || configProvider.size,
-      disabled: props.disabled,
-    }),
-  },
-)
-
 const thumbClasses = createTailwindVariant({
   base: 'pxd-effort-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
   variants: {
@@ -74,6 +48,11 @@ let stopMoveListener: (() => void) | null = null
 
 const PARTICLE_COUNT = 16
 const PARTICLE_DURATION = 2
+const scheduleUpdate = throttleByRaf(() => {
+  if (lastClientX !== null) {
+    updateFromPosition(lastClientX)
+  }
+})
 
 const trackRef = shallowRef<HTMLElement>()
 const labelRef = shallowRef<HTMLElement>()
@@ -116,41 +95,6 @@ const percentage = computed(() => {
 })
 
 const labelVisible = computed(() => dragging.value || focused.value)
-
-function clamp(value: number, lower: number, upper: number) {
-  return Math.min(Math.max(value, lower), upper)
-}
-
-function particleSeed(index: number, salt: number) {
-  const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453
-
-  return value - Math.floor(value)
-}
-
-function updateLabelShift() {
-  const label = labelRef.value
-  const track = trackRef.value
-
-  if (!label || !track) {
-    return
-  }
-
-  // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
-  // zoom or transform, while the shift below is applied in unscaled pixels.
-  const trackWidth = track.clientWidth
-  const labelWidth = label.offsetWidth
-
-  if (!trackWidth || labelWidth > trackWidth) {
-    labelShift.value = 0
-    return
-  }
-
-  const center = (percentage.value / 100) * trackWidth
-  const half = labelWidth / 2
-  // The label stays inside the track, so at the ends it stops at the track edge.
-  labelShift.value = clamp(center, half, trackWidth - half) - center
-}
-
 const tickList = computed(() => {
   const count = levelCount.value
 
@@ -192,6 +136,65 @@ const particleList = computed(() => {
   })
 })
 
+const configProvider = useConfigProvider()
+
+const modelValue = useModelValue(props, emits, { withChange: false })
+
+const { attrs, classes } = useTailwindVariant(
+  {
+    base: 'pxd-effort-slider--track group relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-2.5',
+        lg: 'h-3.5',
+      },
+      disabled: {
+        true: 'cursor-not-allowed',
+      },
+    },
+  },
+  {
+    selection: () => ({
+      size: props.size || configProvider.size,
+      disabled: props.disabled,
+    }),
+  },
+)
+
+function clamp(value: number, lower: number, upper: number) {
+  return Math.min(Math.max(value, lower), upper)
+}
+
+function particleSeed(index: number, salt: number) {
+  const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453
+
+  return value - Math.floor(value)
+}
+
+function updateLabelShift() {
+  const label = labelRef.value
+  const track = trackRef.value
+
+  if (!label || !track) {
+    return
+  }
+
+  // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
+  // zoom or transform, while the shift below is applied in unscaled pixels.
+  const trackWidth = track.clientWidth
+  const labelWidth = label.offsetWidth
+
+  if (!trackWidth || labelWidth > trackWidth) {
+    labelShift.value = 0
+    return
+  }
+
+  const center = (percentage.value / 100) * trackWidth
+  const half = labelWidth / 2
+  // The label stays inside the track, so at the ends it stops at the track edge.
+  labelShift.value = clamp(center, half, trackWidth - half) - center
+}
 function setValue(index: number) {
   const option = optionList.value[index]
 
@@ -242,13 +245,6 @@ function updateFromPosition(clientX: number) {
   // what this drag emitted, not against `modelValue`.
   lastUpdatedValue = setValue(index)
 }
-
-const scheduleUpdate = throttleByRaf(() => {
-  if (lastClientX !== null) {
-    updateFromPosition(lastClientX)
-  }
-})
-
 function onTrackPointerdown(ev: PointerEvent) {
   if (props.disabled || dragging.value) {
     return

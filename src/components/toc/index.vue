@@ -9,23 +9,15 @@ import { getScrollElement, isViewportScroll, resolveScrollBehavior } from '../..
 import { caf, raf, scheduleByRaf } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
 
-defineOptions({
-  name: 'PToc',
-  inheritAttrs: false,
-})
-
-const INDENT_BASE = 8
-const INDENT_STEP = 14
-const BOTTOM_TOLERANCE = 2
-
-const ITEM_ACTIVE_CLASS = 'pxd-toc--item_active bg-gray-200 text-primary'
-const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-gray-900'
-
 interface TocEntry {
   el: HTMLElement
   item: TocItem
 }
 
+defineOptions({
+  name: 'PToc',
+  inheritAttrs: false,
+})
 const props = withDefaults(defineProps<TocProps>(), {
   data: null,
   selector: '',
@@ -38,19 +30,92 @@ const props = withDefaults(defineProps<TocProps>(), {
 
 const emit = defineEmits<TocEmits>()
 
+const INDENT_BASE = 8
+const INDENT_STEP = 14
+const BOTTOM_TOLERANCE = 2
+
+const ITEM_ACTIVE_CLASS = 'pxd-toc--item_active bg-gray-200 text-primary'
+const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-gray-900'
+let revealFrame = 0
+const scheduleRead = scheduleByRaf(readOutline)
+
+const listEl = ref<HTMLElement | null>(null)
+
+const entries = shallowRef<TocEntry[]>([])
+const isDataMode = computed(() => props.data != null)
+const items = computed<TocItem[]>(() =>
+  isDataMode.value ? props.data! : entries.value.map((entry) => entry.item),
+)
+const tocItems = computed(() => {
+  if (!items.value.length) {
+    return []
+  }
+
+  // Depth is measured against the shallowest heading present, not `h1`.
+  const minLevel = items.value.reduce((min, item) => Math.min(min, item.level), Infinity)
+
+  return items.value.map((item, index) => ({
+    item,
+    index,
+    depth: item.level - minLevel,
+  }))
+})
+
 const motionReduce = useMotionReduced()
 
 const { attrs, classes } = useTailwindVariant({
   base: 'pxd-toc text-sm w-full max-w-full',
 })
+const { activeIndex: spyActiveIndex, update } = useScrollspy(
+  computed(() => (isDataMode.value ? [] : entries.value.map((entry) => entry.el))),
+  {
+    scrollTarget: () => props.scrollTarget,
+    topOffset: () => props.offset,
+  },
+)
 
-const listEl = ref<HTMLElement | null>(null)
+// Data mode bisects the source's cached offsets instead of DOM rects: the active entry sits at
+// the probe line, where the owning list has it rendered and measured; distant entries may be
+// estimates, which only ever shifts the jump target, never the highlight.
+const activeIndex = computed(() => {
+  const source = props.source
+  const count = items.value.length
 
-const entries = shallowRef<TocEntry[]>([])
+  if (!isDataMode.value || !source || !count) {
+    return spyActiveIndex.value
+  }
 
-let revealFrame = 0
+  const scrollOffset = source.getScrollOffset()
 
-const isDataMode = computed(() => props.data != null)
+  if (scrollOffset == null) {
+    return -1
+  }
+
+  const maxScroll = source.getMaxScrollOffset()
+
+  // A short trailing entry can never be scrolled up to the probe line.
+  if (maxScroll > 1 && scrollOffset >= maxScroll - BOTTOM_TOLERANCE) {
+    return count - 1
+  }
+
+  let low = 0
+  let high = count
+
+  while (low < high) {
+    const mid = (low + high) >> 1
+    const start = source.getOffsetForIndex(mid)
+
+    if (start == null || start - props.offset > scrollOffset) {
+      high = mid
+    } else {
+      low = mid + 1
+    }
+  }
+
+  return Math.max(low - 1, 0)
+})
+
+const activeId = computed(() => items.value[activeIndex.value]?.id ?? null)
 
 function outlineRoot(): HTMLElement {
   return props.scrollTarget ?? document.body
@@ -99,79 +164,6 @@ function readOutline(): void {
 
   entries.value = next
 }
-
-const scheduleRead = scheduleByRaf(readOutline)
-
-const { activeIndex: spyActiveIndex, update } = useScrollspy(
-  computed(() => (isDataMode.value ? [] : entries.value.map((entry) => entry.el))),
-  {
-    scrollTarget: () => props.scrollTarget,
-    topOffset: () => props.offset,
-  },
-)
-
-const items = computed<TocItem[]>(() =>
-  isDataMode.value ? props.data! : entries.value.map((entry) => entry.item),
-)
-
-// Data mode bisects the source's cached offsets instead of DOM rects: the active entry sits at
-// the probe line, where the owning list has it rendered and measured; distant entries may be
-// estimates, which only ever shifts the jump target, never the highlight.
-const activeIndex = computed(() => {
-  const source = props.source
-  const count = items.value.length
-
-  if (!isDataMode.value || !source || !count) {
-    return spyActiveIndex.value
-  }
-
-  const scrollOffset = source.getScrollOffset()
-
-  if (scrollOffset == null) {
-    return -1
-  }
-
-  const maxScroll = source.getMaxScrollOffset()
-
-  // A short trailing entry can never be scrolled up to the probe line.
-  if (maxScroll > 1 && scrollOffset >= maxScroll - BOTTOM_TOLERANCE) {
-    return count - 1
-  }
-
-  let low = 0
-  let high = count
-
-  while (low < high) {
-    const mid = (low + high) >> 1
-    const start = source.getOffsetForIndex(mid)
-
-    if (start == null || start - props.offset > scrollOffset) {
-      high = mid
-    } else {
-      low = mid + 1
-    }
-  }
-
-  return Math.max(low - 1, 0)
-})
-
-const activeId = computed(() => items.value[activeIndex.value]?.id ?? null)
-
-const tocItems = computed(() => {
-  if (!items.value.length) {
-    return []
-  }
-
-  // Depth is measured against the shallowest heading present, not `h1`.
-  const minLevel = items.value.reduce((min, item) => Math.min(min, item.level), Infinity)
-
-  return items.value.map((item, index) => ({
-    item,
-    index,
-    depth: item.level - minLevel,
-  }))
-})
-
 function getScrollTop(target: HTMLElement, container: HTMLElement): number {
   const top = target.getBoundingClientRect().top
 
