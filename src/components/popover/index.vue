@@ -10,6 +10,7 @@ import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import POverlay from '../overlay/index.vue'
 
@@ -41,6 +42,8 @@ const emits = defineEmits<PopoverEmits>()
 // frame can flash a page scrollbar — and it stays at the origin, moving by transform only, which
 // also keeps its width independent of where it lands.
 const HIDDEN_TRANSFORM = 'translate(0, -200%)'
+
+const contentId = getUniqueId()
 
 let showPopoverTimer: ReturnType<typeof setTimeout> | null = null
 let hidePopoverTimer: ReturnType<typeof setTimeout> | null = null
@@ -547,6 +550,15 @@ function onTriggerPointerOut(ev: PointerEvent) {
   const isInside = next instanceof Node && triggerRef.value.contains(next)
 
   if (!isInside) {
+    // Focus may still rest on the trigger or the content even after the pointer left.
+    if (
+      triggerMethods.value.includes('focus') &&
+      (triggerRef.value.contains(document.activeElement) ||
+        wrapperRef.value?.contains(document.activeElement))
+    ) {
+      return
+    }
+
     clearHideTimer()
     handlePopoverHide()
     return
@@ -613,6 +625,66 @@ function onWrapperKeydown(ev: KeyboardEvent) {
   emits('wrapper-keydown', ev)
 }
 
+function onTriggerFocusIn(ev: FocusEvent) {
+  if (props.disabled || !triggerMethods.value.includes('focus')) {
+    return
+  }
+
+  if (isForeignTarget(ev.target)) {
+    return
+  }
+
+  const trigger = resolveTriggerElement(ev.target)
+
+  if (trigger) {
+    activateTrigger(trigger, false)
+  }
+}
+
+function onTriggerFocusOut(ev: FocusEvent) {
+  if (props.disabled || !triggerMethods.value.includes('focus')) {
+    return
+  }
+
+  const next = ev.relatedTarget
+
+  if (
+    next instanceof Node &&
+    (triggerRef.value.contains(next) || wrapperRef.value?.contains(next))
+  ) {
+    return
+  }
+
+  handlePopoverHide()
+}
+
+function syncTriggerAria() {
+  const triggers = props.triggerSelector ? getTriggerElements() : [triggerRef.value]
+  const isTooltip = props.contentRole === 'tooltip'
+
+  for (const trigger of triggers) {
+    if (!trigger) {
+      continue
+    }
+
+    if (isTooltip) {
+      if (isVisible.value) {
+        trigger.setAttribute('aria-describedby', contentId)
+      } else {
+        trigger.removeAttribute('aria-describedby')
+      }
+
+      continue
+    }
+
+    trigger.setAttribute('aria-haspopup', 'dialog')
+    trigger.setAttribute(
+      'aria-expanded',
+      String(isVisible.value && trigger === activeTriggerRef.value),
+    )
+  }
+}
+
 function onWrapperPointerEnter() {
   if (props.disabled || !props.interactive || !isVisible.value) {
     return
@@ -639,6 +711,8 @@ watch(
     }
   },
 )
+
+watch(() => [isVisible.value, activeTriggerRef.value], syncTriggerAria, { flush: 'post' })
 
 onMounted(() => {
   if (props.modelValue) {
@@ -670,6 +744,8 @@ defineExpose({
     v-bind="$attrs"
     @click.capture="onTriggerClick"
     @contextmenu="onTriggerContextmenu"
+    @focusin.capture="onTriggerFocusIn"
+    @focusout.capture="onTriggerFocusOut"
     @pointerover="onTriggerPointerOver"
     @pointerout="onTriggerPointerOut"
     @pointermove="onTriggerPointerMove"
@@ -688,8 +764,9 @@ defineExpose({
       <div
         ref="wrapperRef"
         tabindex="-1"
-        role="dialog"
-        aria-modal="true"
+        :id="contentId"
+        :role="contentRole || 'dialog'"
+        :aria-modal="contentRole ? undefined : 'true'"
         :data-visible="isRevealed"
         :data-adaptive="adaptive"
         :data-position="localPosition"

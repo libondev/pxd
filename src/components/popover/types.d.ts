@@ -1,6 +1,6 @@
 import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
 
-export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual'
+export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
 export interface PopoverProps {
   zIndex?: number | string
@@ -22,6 +22,7 @@ export interface PopoverProps {
   destroyDelay?: number
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
+  contentRole?: string
   ariaLabelledby?: string
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean
