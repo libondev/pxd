@@ -43,7 +43,7 @@ CopyButton extends the [Button component](/components/button).
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| text | `string \| null` | - | Text to copy to the clipboard |
+| text | `ComponentText \| ((event: PointerEvent) => ComponentText)` | - | Text to copy, or a function that receives the click event |
 
 ## Events
 

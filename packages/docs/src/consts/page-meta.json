@@ -485,7 +485,7 @@
   },
   "/composables/use-countdown": {
     "title": "useCountdown",
-    "description": "Manages countdown/count-up timers with configurable precision and event emission."
+    "description": "Manages countdown/count-up timers and their event emission."
   },
   "/composables/use-deferred-value": {
     "title": "useDeferredValue",

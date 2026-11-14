@@ -165,6 +165,29 @@ onMounted(() => {
 </template>
 ```
 
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| items | `readonly any[]` | `() => []` | Rows to render; each row is passed to the `item` slot |
+| data-key | `string` | `'id'` | Field of an item used as its stable key |
+| item-size | `number \| ((index: number) => number)` | `50` | Row height in px, or a function returning it per index |
+| status | `'loading' \| 'finished' \| 'error' \| ''` | `''` | Renders a message row under the list and, for `error`, makes it clickable |
+| enabled | `boolean` | `true` | When `false`, nothing is rendered and `totalSize` stays `0` |
+| over-scan | `number` | `2` | Extra rows rendered outside the viewport |
+| column-gap | `number` | `0` | Horizontal gap between masonry columns, in px |
+| column-count | `number` | `1` | Masonry column count; `1` renders a plain vertical list |
+| scroll-padding-start | `number` | - | Space before the first row, in px |
+| scroll-padding-end | `number` | - | Space after the last row, in px |
+| on-bottom | `() => void \| Promise<void>` | - | Called when the last row enters the bottom threshold; the way to load more |
+| bottom-threshold | `number` | `item-size` | Distance from the bottom that triggers `on-bottom`, in px |
+| on-geometry-change | `() => void` | - | Called once a frame after the container geometry settles, for hosts that size the list |
+| list-class | `ComponentClass` | - | Extra class on the inner content wrapper |
+| item-class | `ComponentClass` | - | Extra class on every item wrapper |
+| error-text | `ComponentText` | `'Request failed. Click to reload'` | Message shown while `status` is `error` |
+| loading-text | `ComponentText` | `'Loading...'` | Message shown while `status` is `loading` |
+| finished-text | `ComponentText` | `'Finished'` | Message shown while `status` is `finished` |
+
 ## Events
 
 | Name | Type | Description |

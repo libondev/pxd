@@ -261,5 +261,5 @@ async function beforeClose() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| open | `(side: 'prefix' \| 'suffix') => Promise<boolean>` | Open a side imperatively. |
 | close | `(trigger?: SwipeCellCloseTrigger) => Promise<boolean>` | Close imperatively. |
+| open | `(side: 'prefix' \| 'suffix') => Promise<boolean>` | Open a side imperatively. |

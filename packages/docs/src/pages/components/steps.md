@@ -199,6 +199,6 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 
 ## Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| item | `{ item, index, status }` | Replaces the indicator and labels of a step. |
+| Name | Description |
+| --- | --- |
+| item | Replaces the indicator and labels of a step. Slot props: `{ item, index, status }`. |

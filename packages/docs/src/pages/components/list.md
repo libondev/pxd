@@ -290,6 +290,16 @@ as expected.
 | label | `string` | Text of the group header |
 | options | `ListOption[]` | Options rendered under the header |
 
+## Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
+| update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
+
+`change` carries the selected option as `ListOptionSelected`: its data fields only, without the
+render-only `as` and `icon`.
+
 ## ListItem Props
 
 | Name | Type | Default | Description |
@@ -304,27 +314,17 @@ as expected.
 | index | `number` | - | Navigable index inside the parent list |
 | active | `boolean` | `false` | Whether the item is the keyboard or pointer active one |
 
-## ListGroup Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| label | `string` | - | Text of the group header, also used as its accessible name |
-
-## Events
-
-| Name | Type | Description |
-| --- | --- | --- |
-| change | `(option: ListOptionSelected) => void` | Emitted when an option is selected. |
-| update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
-
-`change` carries the selected option as `ListOptionSelected`: its data fields only, without the
-render-only `as` and `icon`.
-
 ## ListItem Events
 
 | Name | Type | Description |
 | --- | --- | --- |
 | click | `(value: string \| number, ev: MouseEvent) => void` | Emitted when the item is clicked. |
+
+## ListGroup Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| label | `string` | - | Text of the group header, also used as its accessible name |
 
 ## Slots
 
@@ -342,6 +342,7 @@ render-only `as` and `icon`.
 | setActiveIndex | `(index: number) => void` | Make the option at the given navigable index active. |
 | setFirstAsActive | `() => void` | Make the first enabled option active. |
 | activeIndex | `number` | Navigable index of the active option, `-1` when none is active. |
+| activeItemId | `string \| undefined` | Id of the active row element, for pointing `aria-activedescendant` at it. |
 
 ```ts
 type ListNavigationCommand =

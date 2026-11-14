@@ -182,7 +182,7 @@ function approveAll() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| modelValue | `'pending' \| 'approved' \| 'rejected' \| 'dismissed'` | - | Controlled status; the card manages its own status when omitted |
+| model-value | `'pending' \| 'approved' \| 'rejected' \| 'dismissed'` | - | Controlled status; the card manages its own status when omitted |
 | title | `ComponentText` | `'Run this command?'` | Card heading |
 | description | `ComponentText` | - | Secondary line under the title |
 | command | `string \| string[]` | - | Command text; an array renders one command per line |
@@ -190,9 +190,9 @@ function approveAll() {
 | loading | `boolean` | `false` | Disables the actions and spins the approve button |
 | timeout | `number` | `0` | Milliseconds before an undecided card dismisses itself; `0` never times out |
 | rememberable | `boolean` | `false` | Shows the "Always allow" checkbox |
-| rememberLabel | `ComponentText` | `'Always allow'` | Checkbox label; falls back to `locale.approval.remember` |
-| allowFeedback | `boolean` | `false` | Shows a reason input whose content is carried into the reject result |
-| closeOnPressEscape | `boolean` | `true` | Dismisses the card when Escape is pressed while focus is inside it |
+| remember-label | `ComponentText` | `'Always allow'` | Checkbox label; falls back to `locale.approval.remember` |
+| allow-feedback | `boolean` | `false` | Shows a reason input whose content is carried into the reject result |
+| close-on-press-escape | `boolean` | `true` | Dismisses the card when Escape is pressed while focus is inside it |
 | disabled | `boolean` | `false` | Disables the actions |
 
 ## Events

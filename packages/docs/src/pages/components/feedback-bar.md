@@ -21,5 +21,5 @@ Quick feedback bar.
 | Name | Type | Description |
 | --- | --- | --- |
 | close | `() => void` | Emitted when the close button is clicked. |
-| thumbUp | `() => void` | Emitted when the thumb-up button is clicked. |
-| thumbDown | `() => void` | Emitted when the thumb-down button is clicked. |
+| thumb-up | `() => void` | Emitted when the thumb-up button is clicked. |
+| thumb-down | `() => void` | Emitted when the thumb-down button is clicked. |

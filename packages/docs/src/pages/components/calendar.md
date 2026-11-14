@@ -118,7 +118,7 @@ const value = ref(Date.now())
 
 ## Slots
 
-| Name | Parameters | Description |
-| --- | --- | --- |
-| item | `{ year, month, date, timestamp }` | Content rendered inside each date |
-| header | `{ year, month }` | Calendar header |
+| Name | Description |
+| --- | --- |
+| item | Content rendered inside each date. Slot props: `{ year, month, date, timestamp }`. |
+| header | Calendar header. Slot props: `{ year, month }`. |

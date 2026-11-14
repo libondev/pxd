@@ -20,7 +20,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown :active="active" :duration="duration" @finish="resetStatus" />
+    <PCountdown :enabled="active" :duration="duration" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -44,28 +44,28 @@ function resetStatus() {
     <PToggle v-model="active" label="Active" />
 
     <PCountdown
-      :active="active"
+      :enabled="active"
       format="DD HH:mm:ss"
       :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
-      :active="active"
+      :enabled="active"
       format="DD HH:mm:ss.S"
       :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
-      :active="active"
+      :enabled="active"
       format="DD HH:mm:ss.SS"
       :duration="duration"
       @finish="resetStatus"
     />
 
     <PCountdown
-      :active="active"
+      :enabled="active"
       format="DD HH:mm:ss.SSS"
       :duration="duration"
       @finish="resetStatus"
@@ -98,7 +98,7 @@ function resetStatus() {
     <PCountdown
       ref="countdownRef"
       intuitive
-      :active="active"
+      :enabled="active"
       :duration="5000"
       format="HH:mm:ss.SSS"
       @finish="resetStatus"
@@ -131,7 +131,7 @@ function resetStatus() {
 
     <PButton @click="reset">Reset</PButton>
 
-    <PCountdown ref="countdownRef" :active="active" :duration="10000" @finish="resetStatus" />
+    <PCountdown ref="countdownRef" :enabled="active" :duration="10000" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -157,7 +157,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown :active="active" :endTime="endTime" @finish="resetStatus" />
+    <PCountdown :enabled="active" :endTime="endTime" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -183,7 +183,7 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown :active="active" :millisecond="false" :duration="endTime" @finish="resetStatus" />
+    <PCountdown :enabled="active" :millisecond="false" :duration="endTime" @finish="resetStatus" />
   </PStack>
 </template>
 ```
@@ -208,7 +208,7 @@ function resetStatus() {
     <PToggle v-model="active" label="Active" />
 
     <PCountdown
-      :active="active"
+      :enabled="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
       :duration="10000"
@@ -217,7 +217,7 @@ function resetStatus() {
 
     <PCountdown
       inverted
-      :active="active"
+      :enabled="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
       :duration="10000"
@@ -246,10 +246,10 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown inverted :active="active" :duration="5000" @finish="resetStatus" />
+    <PCountdown inverted :enabled="active" :duration="5000" @finish="resetStatus" />
 
     <!-- timers without duration will not stop voluntarily -->
-    <PCountdown inverted :active="active" :start-at="3000" />
+    <PCountdown inverted :enabled="active" :start-at="3000" />
   </PStack>
 </template>
 ```
@@ -268,7 +268,7 @@ const active = ref(false)
 
 <template>
   <div class="h-16">
-    <PCountdown intuitive :active="active" :duration="5000" @finish="active = false">
+    <PCountdown intuitive :enabled="active" :duration="5000" @finish="active = false">
       <template #default="{ times }">
         <PButton variant="primary" class="relative z-10 font-mono" @click="active = !active">
           <template #prefix>
@@ -291,11 +291,25 @@ const active = ref(false)
 </template>
 ```
 
+## Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| enabled | `boolean` | `false` | Start the timer; switching it off pauses, switching it back on resumes |
+| inverted | `boolean` | `false` | Count up instead of down |
+| startAt | `number` | - | Time already elapsed when the timer starts; in count-up mode the starting value |
+| endTime | `number` | `0` | Absolute end timestamp; takes precedence over `duration` |
+| duration | `number` | `0` | Timer length; in count-up mode `0` counts up indefinitely |
+| autoReset | `boolean` | `true` | Restart from the initial time when `enabled` turns on after `finish` |
+| millisecond | `boolean` | `true` | Interpret `startAt`, `endTime` and `duration` as milliseconds; `false` means seconds |
+| intuitive | `boolean` | `false` | Round the remaining time up to whole seconds |
+| format | `string` | `'HH:mm:ss'` | dayjs duration format of the rendered value |
+
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(active: boolean) => void` | Emitted when the `active` prop changes. |
+| change | `(enabled: boolean) => void` | Emitted when the `enabled` prop changes. |
 | reset | `() => void` | Emitted when the countdown is restarted from its initial time. |
 | finish | `() => void` | Emitted when the countdown reaches its end. |
 
@@ -303,7 +317,7 @@ const active = ref(false)
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Renders the formatted time when empty. Slot props: `enabled`, `times` (`{ dd, hh, mm, ss, ms }`). |
 
 ## Methods
 

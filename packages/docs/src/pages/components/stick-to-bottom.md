@@ -53,7 +53,7 @@ function append() {
   <div class="flex flex-col gap-2">
     <PButton @click="append">Append log</PButton>
 
-    <PStickToBottom :enabled="false" class="h-36 rounded-lg border border-dashed" wrapper-class="p-2">
+    <PStickToBottom disabled class="h-36 rounded-lg border border-dashed" wrapper-class="p-2">
       <div v-for="item in items" :key="item" class="py-1">
         {{ item }}
       </div>
@@ -141,7 +141,7 @@ function append() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
-| enabled | `boolean` | `true` | Whether updates auto-scroll while at bottom |
+| disabled | `boolean` | `false` | Stop auto-scrolling while the container is at the bottom |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | wrapper-class | `ComponentClass` | - | Extra class on the scroll container; the wrapper receives `class` and attributes |
 
@@ -153,10 +153,10 @@ function append() {
 
 ## Slots
 
-| Name | Props | Description |
-| --- | --- | --- |
-| default | - | Scrollable content |
-| action | `{ container, isAtBottom, scrollToBottom, forceStickToBottom }` | Overlay action area rendered outside the scroll container; `container` is the scroll element |
+| Name | Description |
+| --- | --- |
+| default | Scrollable content. |
+| action | Overlay action area rendered outside the scroll container. Slot props: `{ container, isAtBottom, scrollToBottom, forceStickToBottom }`; `container` is the scroll element. |
 
 ## Methods
 
@@ -167,5 +167,5 @@ function append() {
 | isAtBottom | `boolean` | Whether the container is currently within the bottom threshold. |
 | scrollToBottom | `() => void` | Scroll instantly to the bottom, leaving horizontal scroll untouched. |
 | forceStickToBottom | `() => void` | Scroll to the bottom and re-enable auto-stick. |
-| stickIfNeeded | `() => void` | Scroll to the bottom only while following and `enabled` is true. |
+| stickIfNeeded | `() => void` | Scroll to the bottom only while following and `disabled` is not true. |
 | update | `() => void` | Re-measure whether the container is at the bottom. |

@@ -186,7 +186,7 @@ const options = [
 
 ## Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| item | `{ option, active }` | Content of the panel, rendered while the tab is active |
+| Name | Description |
+| --- | --- |
+| item | Content of the panel, rendered while the tab is active. Slot props: `{ option, active }`. |
 | label | `{ option, active }` | Replaces the `label` text of the tab trigger |

@@ -1,6 +1,6 @@
 # useCountdown
 
-Manages countdown/count-up timers with configurable precision and event emission.
+Manages countdown/count-up timers and their event emission.
 
 ## Exports
 
@@ -20,12 +20,11 @@ function useCountdown<T extends Record<string, any>>(
 ```ts
 interface CountdownOptions {
   inverted?: boolean
-  active?: boolean
+  enabled?: boolean
   startAt?: number
   endTime?: number
   autoReset?: boolean
   duration?: number
-  precision?: number
   millisecond?: boolean
   intuitive?: boolean
 }

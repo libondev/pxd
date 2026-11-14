@@ -38,6 +38,6 @@ Cover an element with a spinner and a loading hint. Locks the scroll of the cont
 
 ## Slots
 
-| Name     | Description       |
-| -------- | ----------------- |
-| default  | Default content.  |
+| Name | Description |
+| --- | --- |
+| default | Default content. |

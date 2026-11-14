@@ -74,53 +74,19 @@ const val = ref('')
 
 ## Props
 
-`SearchInput` forwards the input props below to `PInput`.
-
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | loading | `boolean` | `false` | Replaces the prefix with a loading icon. |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Input size. |
-| error | `boolean \| string` | - | Error state. |
-| min | `number \| string` | - | Minimum value. |
-| max | `number \| string` | - | Maximum value. |
-| align | `'left' \| 'center' \| 'right'` | `left` | Text alignment. |
-| readonly | `boolean` | - | Makes the input read-only. |
-| disabled | `boolean` | - | Disables the input. |
-| password | `boolean` | - | Enables password input mode. |
-| autofocus | `boolean` | - | Focuses the input automatically. |
-| input-type | `string` | - | Native input type. |
-| input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Preferred virtual keyboard. |
-| min-length | `number \| string` | - | Minimum input length. |
-| max-length | `number \| string` | - | Maximum input length. |
-| trim-overflow | `boolean` | `false` | Trims overflow after composition ends when `max-length` is set. |
-| clearable | `boolean` | - | Shows a clear button when the input has a value. |
-| clear-value | `string \| number \| null` | - | Value used after clearing. |
-| model-value | `string \| number \| null` | - | Current input value. Use `v-model` for two-way binding. |
-| placeholder | `string` | - | Placeholder text. |
-| prefix-class | `string \| any[] \| object` | - | Additional prefix classes. |
-| suffix-class | `string \| any[] \| object` | - | Additional suffix classes. |
-| select-on-focus | `boolean` | - | Selects the input value on focus. |
-| show-word-limit | `boolean \| string` | - | Shows the current word count. |
-| word-limit-position | `'inside' \| 'outside'` | `inside` | Word count position. |
-| clear-on-press-escape | `boolean` | `true` | Clears the input when Escape is pressed. |
-| default-prefix-style | `boolean` | `false` | Controls the prefix container style. |
-| default-suffix-style | `boolean` | `true` | Controls the suffix container style. |
+
+SearchInput extends the [Input component](/components/input): every other prop and event — `v-model`,
+`size`, `disabled`, `clearable`, `@focus`, `@click`, the native `input` event — is forwarded to
+`PInput` unchanged.
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
 | search | `(value: string) => void` | Emitted when Enter is pressed with a non-empty value while not loading. |
-| click | `(event: MouseEvent) => void` | Emitted when the input container is clicked. |
-| change | `(value: string, event: Event) => void` | Emitted when the input value changes. |
-| focus | `(event: FocusEvent) => void` | Emitted when the input gains focus. |
-| blur | `(event: FocusEvent) => void` | Emitted when the input loses focus. |
-| keydown | `(event: KeyboardEvent) => void` | Emitted when a key is pressed. |
-| update:model-value | `(value: string) => void` | Emitted when the input value changes. Used by `v-model`. |
-| compositionstart | `(event: CompositionEvent) => void` | Emitted when text composition starts. |
-| compositionupdate | `(event: CompositionEvent) => void` | Emitted when text composition updates. |
-| compositionend | `(event: CompositionEvent) => void` | Emitted when text composition ends. |
-| input | `(event: Event) => void` | Native DOM input event from the inner `<input>`, forwarded through attribute fallthrough rather than declared by this component. |
 
 ## Slots
 

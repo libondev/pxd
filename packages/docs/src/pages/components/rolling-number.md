@@ -88,7 +88,7 @@ function changeValue() {
 | --- | --- | --- | --- |
 | value | `number \| string` | `0` | Target number. A string may include a numeric prefix plus unit/suffix (e.g. `"999+ Users"`). |
 | duration | `number` | `2000` | Animation duration in milliseconds. |
-| animateOnMount | `boolean` | `true` | Whether to play the animation on first mount. When `false`, the initial value is shown as-is; later value changes still animate. |
+| animate-on-mount | `boolean` | `true` | Whether to play the animation on first mount. When `false`, the initial value is shown as-is; later value changes still animate. |
 | thousands | `boolean` | `false` | Format the integer part with thousand separators. |
 | mode | `'tween' \| 'scroll'` | `'tween'` | `tween` interpolates the value; `scroll` rolls each digit |
 
