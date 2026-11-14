@@ -1,7 +1,8 @@
 import type { VirtualListOptions } from '../../composables/use-virtual-list'
 import type { ComponentClass } from '../../types/shared/props'
 
-export interface VirtualListProps extends VirtualListOptions {
+export interface VirtualListProps extends Omit<VirtualListOptions, 'enabled'> {
+  enabled?: boolean
   listClass?: ComponentClass
   itemClass?: ComponentClass
   errorText?: ComponentText

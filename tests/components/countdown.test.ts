@@ -43,14 +43,14 @@ describe('countdown', () => {
     wrapper.unmount()
   })
 
-  it('should accept active prop', () => {
+  it('should accept enabled prop', () => {
     const wrapper = mount(Countdown, {
       props: {
-        active: true,
+        enabled: true,
       },
     })
 
-    expect(wrapper.props('active')).toBe(true)
+    expect(wrapper.props('enabled')).toBe(true)
 
     wrapper.unmount()
   })

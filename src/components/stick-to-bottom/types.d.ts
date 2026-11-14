@@ -1,7 +1,7 @@
 import type { ComponentClass } from '../../types/shared/props'
 
 export interface StickToBottomProps {
-  enabled?: boolean
+  disabled?: boolean
   threshold?: number
   contentClass?: ComponentClass
   wrapperClass?: ComponentClass

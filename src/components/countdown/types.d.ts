@@ -5,7 +5,7 @@ export interface CountdownProps extends CountdownOptions {
 }
 
 export interface CountdownEmits {
-  change: [active: boolean]
+  change: [enabled: boolean]
   reset: []
   finish: []
 }

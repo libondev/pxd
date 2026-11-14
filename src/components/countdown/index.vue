@@ -5,15 +5,14 @@ import { useCountdown } from '../../composables/use-countdown.js'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
 
 defineOptions({
-  name: 'PCountDown',
+  name: 'PCountdown',
   inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<CountdownProps>(), {
-  active: false,
+  enabled: false,
   endTime: 0,
   duration: 0,
-  precision: 0,
   autoReset: true,
   millisecond: true,
   format: 'HH:mm:ss',
@@ -64,7 +63,7 @@ defineExpose({
     class="pxd-countdown relative w-max max-w-full leading-none tabular-nums text-trim-both"
     v-bind="$attrs"
   >
-    <slot :active="active" :times="times">
+    <slot :enabled="enabled" :times="times">
       {{ displayTimes }}
     </slot>
   </div>

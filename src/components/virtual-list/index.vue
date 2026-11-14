@@ -11,6 +11,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<VirtualListProps>(), {
   dataKey: 'id',
+  enabled: true,
   columnGap: 0,
   columnCount: 1,
   items: () => [],

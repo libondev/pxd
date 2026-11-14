@@ -10,7 +10,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<StickToBottomProps>(), {
-  enabled: true,
+  disabled: false,
   threshold: 16,
 })
 
@@ -32,7 +32,7 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
   contentRef,
   {
     threshold: () => props.threshold,
-    enabled: () => props.enabled,
+    enabled: () => !props.disabled,
     action: actionRef,
   },
 )
