@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<CommandMenuProps>(), {
 const emits = defineEmits<CommandMenuEmits>()
 
 const uniqueId = getUniqueId()
+const listId = getUniqueId('command-menu-list')
 
 const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
@@ -114,10 +115,11 @@ watch(listOptions, async () => {
           :value="filterKeyword"
           :placeholder="placeholder"
           aria-autocomplete="list"
-          :aria-controls="uniqueId"
-          :aria-labelledby="uniqueId"
+          :aria-controls="listId"
+          :aria-label="placeholder || undefined"
           role="combobox"
           aria-expanded="true"
+          :aria-activedescendant="listRef?.activeItemId"
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
@@ -139,6 +141,7 @@ watch(listOptions, async () => {
     </template>
 
     <PList
+      :id="listId"
       ref="listRef"
       :virtual="virtual"
       :options="listOptions"

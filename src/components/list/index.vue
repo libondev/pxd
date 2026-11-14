@@ -319,6 +319,8 @@ defineExpose({
           v-bind="entry.itemRow.option"
           :id="`${uid}-${entry.itemRow.navIndex}`"
           :index="entry.itemRow.navIndex"
+          :aria-posinset="entry.itemRow.navIndex + 1"
+          :aria-setsize="itemRows.length"
           :class="itemClass"
         >
           <template v-if="$slots.item">

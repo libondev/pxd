@@ -142,6 +142,8 @@ watch(listOptions, async () => {
       :shape="shape"
       :size="computedSize"
       :disabled="disabled"
+      :aria-haspopup="filterable ? 'combobox' : 'listbox'"
+      :aria-expanded="popoverVisible"
     >
       <template v-if="$slots.prefix" #prefix>
         <slot name="prefix" />
@@ -187,6 +189,7 @@ watch(listOptions, async () => {
           :aria-controls="listId"
           :aria-expanded="popoverVisible"
           :aria-disabled="disabled"
+          :aria-activedescendant="listRef?.activeItemId"
           :placeholder="filterPlaceholder"
           class="pxd-select--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
           @input="onSearchInput"

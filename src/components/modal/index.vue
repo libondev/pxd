@@ -6,6 +6,7 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getCssUnitValue } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PButton from '../button/index.vue'
 import PLoadingMask from '../loading-mask/index.vue'
 import POverlay from '../overlay/index.vue'
@@ -26,6 +27,9 @@ const props = withDefaults(defineProps<ModalProps>(), {
 })
 
 const emits = defineEmits<ModalEmits>()
+
+const titleId = getUniqueId()
+const subtitleId = getUniqueId()
 
 const modalRef = shallowRef<HTMLElement>()
 const computedStyle = computed(() => {
@@ -86,12 +90,13 @@ watch(
         role="dialog"
         tabindex="-1"
         aria-modal="true"
-        :aria-expanded="isVisible"
         class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-(--modal-width) max-sm:bottom-0 pointer-events-auto fixed z-(--modal-index) flex w-full max-w-full flex-col overflow-clip rounded-t-lg bg-background-100 shadow-border-modal outline-none motion-safe:transition-appearance dark:bg-background-200"
         :class="wrapperClass"
         :style="computedStyle"
         :data-enter-motion="configProvider.enterMotion"
         :data-leave-motion="configProvider.leaveMotion"
+        :aria-labelledby="title || $slots.title ? titleId : undefined"
+        :aria-describedby="subtitle || $slots.subtitle ? subtitleId : undefined"
         v-bind="$attrs"
       >
         <header
@@ -99,13 +104,21 @@ watch(
           :class="[defaultStyles.headerClass, { 'pe-13': closeable }]"
         >
           <slot name="header">
-            <h3 v-if="title || $slots.title" class="text-lg font-semibold tracking-tight m-0">
+            <h3
+              v-if="title || $slots.title"
+              :id="titleId"
+              class="text-lg font-semibold tracking-tight m-0"
+            >
               <slot name="title">
                 {{ title }}
               </slot>
             </h3>
 
-            <div v-if="subtitle || $slots.subtitle" class="mbs-1 text-sm text-gray-900">
+            <div
+              v-if="subtitle || $slots.subtitle"
+              :id="subtitleId"
+              class="mbs-1 text-sm text-gray-900"
+            >
               <slot name="subtitle">
                 {{ subtitle }}
               </slot>
