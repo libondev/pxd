@@ -28,7 +28,7 @@ An A component is only worth extracting when the four questions in
 | `theme-switcher` | `useColorScheme` (public) | done |
 | `intersection-observer` | `useIntersectionObserver` (public) | done |
 | `hold-button` | `useHold` (public) | done; pointer capture and the inside-rect check stay in the component |
-| `loading-bar` | inline ticker + public event emitter | deferred: the rAF timestamp leaks into the increase amount (see below) |
+| `loading-bar` | `useLoadingBarProgress` (internal) | done; ticker extracted and the rAF timestamp leak fixed |
 
 ### B. Interactive
 
@@ -52,15 +52,11 @@ No composables. These are the components the convention explicitly excludes: ext
 
 ## Priority queue
 
-Done: `useCarousel`, `useHold`, `useListSelection`, `useOverlayDialog`, the `ButtonVariant`
-move to `src/types/components` and the slider geometry utils.
+Done: `useCarousel`, `useHold`, `useLoadingBarProgress`, `useListSelection`, `useOverlayDialog`,
+the popup engine, the `ButtonVariant` move to `src/types/components` and the slider geometry utils.
 
-Deferred:
-
-1. **`useLoadingBar`** - move the trickle/ticker state machine out of the component. Blocked on a
-   deliberate fix first: `raf(increaseProgress)` hands the animation timestamp to `n`, so
-   `const amount = n || getIncreaseDelta(...)` jumps the bar to the cap instead of trickling.
-   Fix that with a test, then extract.
+No deferred extractions remain. `resizable` and the C-tier components stay component-local for the
+reasons above.
 
 ## Explicitly not doing
 
