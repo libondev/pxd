@@ -243,7 +243,7 @@ onUnmounted(() => {
   <div data-code-block :class="classes" v-bind="attrs">
     <div
       v-if="tabs"
-      class="pxd-code-block--tabs-bar pt-4 pb-3 scrollbar-none flex items-center overflow-x-auto"
+      class="pxd-code-block--tabs-bar pbs-4 pbe-3 scrollbar-none flex items-center overflow-x-auto"
     >
       <div role="tablist" class="min-w-0 flex items-center" @keydown="onTabsKeydown">
         <button

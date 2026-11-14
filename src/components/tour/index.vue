@@ -318,7 +318,7 @@ defineExpose({
           <div class="gap-2 mbs-2.5 flex items-center justify-between">
             <span
               v-if="showProgress"
-              class="text-xs mr-4 flex-1 text-foreground-secondary tabular-nums"
+              class="text-xs me-4 flex-1 text-foreground-secondary tabular-nums"
             >
               {{ localCurrent + 1 }}/{{ steps.length }}
             </span>

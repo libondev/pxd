@@ -123,7 +123,7 @@ function onItemLeave() {
       <li
         v-for="(item, index) in viewItems"
         :key="index"
-        class="min-w-0 gap-2 sibling:pt-1 text-sm m-0! flex cursor-default items-center leading-none motion-safe:transition-opacity"
+        class="min-w-0 gap-2 sibling:pbs-1 text-sm m-0! flex cursor-default items-center leading-none motion-safe:transition-opacity"
         :style="{ opacity: item.opacity }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
