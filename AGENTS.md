@@ -7,8 +7,8 @@
 - **Type**: Component Library / UI Framework
 - **Language**: TypeScript + Vue 3 (Composition API)
 - **Build**: mkdist; dev stub via unbuild
-- **Toolchain**: vite-plus wraps Vite, Vitest, oxlint and oxfmt — root `vite.config.ts` is the only config
-- **Docs**: markdown + `vue demo` blocks in `packages/docs` (hand-rolled SPA, not VitePress)
+- **Toolchain**: vite-plus wraps Vite, Vitest, oxlint and oxfmt — root `vite.config.ts` is the only config for the library; `packages/docs` owns its own
+- **Docs**: markdown + `vue demo` blocks in `packages/docs`
 - **Package Manager**: pnpm
 
 ## Project Structure
@@ -27,7 +27,7 @@ pxd/
 │   └── utils/               # Utility functions
 ├── packages/
 │   ├── docs/                # Documentation site
-│   └── cli/                 # CLI tools (future)
+│   └── cli/                 # CLI tools (placeholder, private, not published)
 ├── tests/                   # Unit tests (mirrors src/ structure)
 └── scripts/                 # Build utilities
 ```
@@ -37,7 +37,7 @@ pxd/
 - `pnpm dev` — Dev mode (lib + docs)
 - `pnpm build:lib` — Build library
 - `pnpm test` — Run unit tests
-- `pnpm check:type` — `vue-tsc` over `tsconfig.app.json`
+- `pnpm check:type` — `vue-tsc` over `tsconfig.app.json` and `tsconfig.test.json`
 - `pnpm lint:fix` — Lint and auto-fix
 - `pnpm fmt` — Format all files
 
@@ -46,7 +46,7 @@ pxd/
 - **Always** maintain dual Vue 2.7 & 3 compatibility
 - **Never** edit `dist/` or generated files by hand
 - **Use** Composition API with `<script setup>` only (no Options API)
-- **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → custom composables → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups.
+- **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → custom composables → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups, except where a later declaration is a dependency of an earlier one — dependency wins, and `pnpm lint:fix` keeps that order.
 - **Avoid** Vue 3-only features: `defineModel`, top-level `await`, reactive Map/Set
 - **Check** existing patterns before introducing new patterns
 - Events: kebab-case. Curly braces: always required.

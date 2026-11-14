@@ -195,7 +195,7 @@ a comment beside the fix.
 
 - **Symptom**: `pnpm fmt:eol` rewrote `src/` files but left `.md` and other documents on CRLF.
 - **Cause**: With `* text=auto eol=lf` in `.gitattributes`, a CRLF working copy is *content identical* to the LF blob, so git treats such a file as up to date and skips it even with `-f`.
-- **Fix**: `scripts/fmt-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
+- **Fix**: `scripts/lint/fmt-file-eol.js` rewrites the tracked files directly. Rewriting invalidates the index stat entry, which makes `git status` report the file as modified although the blob is unchanged, so the script re-adds the rewritten files whose bytes still match the blob — `git update-index --refresh` does not clear this.
 
 ### Per-gesture recognizer state must be reset by the terminal handler
 
@@ -401,3 +401,10 @@ a comment beside the fix.
 - **Cause**: The committed tree is not formatted by the current `oxfmt` / Tailwind-sort config, so a repo-wide `vp fmt` normalises every stale file. `pnpm check:fmt` lists the same files on a clean checkout — that is how to tell pre-existing churn from your own.
 - **Fix**: Format only the paths you changed — `pnpm exec vp fmt <paths…>` takes file arguments — or revert the rest afterwards (`git checkout -- <paths>`); keep `check:fmt` failures that also exist on `HEAD` out of the diff.
 
+
+### Moving a type local changes the runtime prop the compiler infers
+
+- **Symptom**: After `MaybeRefOrGetter` moved from `vue` into `src/types/shared/utils.d.ts`, `PVirtualList` rendered nothing: `enabled` was `false` at mount even though no caller passed it, so the virtualizer reported `count: 0`.
+- **Cause**: `@vue/compiler-sfc` resolves a prop's type through *relative* imports but not through an external package. While the type came from `vue` it stayed unresolved and produced no runtime prop; the local definition resolves to `boolean | Ref<boolean> | (() => boolean)`, so the compiler now emits a **Boolean** prop — and an omitted Boolean prop is cast to `false`. Same mechanism as *Optional `modelValue` unions that include boolean default to `false`*, reached through a type import instead of the declaration.
+- **Fix**: Never let `MaybeRefOrGetter<T>` reach `defineProps`. Give the component its own plain prop (`VirtualListProps extends Omit<VirtualListOptions, 'enabled'>` plus `enabled?: boolean`) and an explicit `withDefaults` value, keeping the `MaybeRefOrGetter` shape for composable options only.
+- **Related**: any type alias that gains or loses a local definition can change prop inference. Resolving a previously external type is a runtime change, not a type-only one — check the props of every component whose `types.d.ts` mentions it.

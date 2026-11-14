@@ -49,6 +49,8 @@ withDefaults(defineProps<CardProps>(), { shape: 'default' })
   7. `watch` / `watchEffect` / `provide`（含 `provideXxxContext`）
   8. 生命周期（`onMounted` / `onUnmounted` 等）
   9. `defineExpose`（永远最后）
+
+  依赖优先于分组：被后面组读取的声明留在原位（`const rowByKey = computed(() => rows.value…)` 必须排在产出 `rows` 的 `useTreeRows()` 之后，`const contentStyle = computed(… totalSize …)` 同理）。`pxd/vue-setup-api-order` 的自动修复不会跨过依赖重排，`pnpm lint:fix` 收敛到的顺序就是这两条规则的合取。
 - 无顶层 `await`，无 reactive `Map` / `Set`
 - 事件 kebab-case；分支必须带花括号
 - 组件自有类型放同目录 `types.d.ts`，跨组件共享类型放 `src/types/shared`；`types.d.ts` 会被 barrel `export type *` 转发为公共 API（`_` 前缀目录如 `_internal` 除外），内部实现类型不放这里（放组件 `<script setup>` 内或 `composables/_internal`）
