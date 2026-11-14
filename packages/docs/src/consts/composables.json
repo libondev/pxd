@@ -4,6 +4,10 @@
     "name": "use-backoff-retry"
   },
   {
+    "camelized": "Use Carousel",
+    "name": "use-carousel"
+  },
+  {
     "camelized": "Use Client Online",
     "name": "use-client-online"
   },

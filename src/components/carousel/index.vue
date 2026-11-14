@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import type { CarouselMove } from '../../composables/use-carousel.js'
 import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots } from 'vue'
+import { computed, nextTick, shallowRef, useSlots } from 'vue'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
+import { useCarousel } from '../../composables/use-carousel.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
 import { getCssUnitValue } from '../../utils/format.js'
 
@@ -28,32 +30,14 @@ const props = withDefaults(defineProps<CarouselProps>(), {
 
 const emits = defineEmits<CarouselEmits>()
 
-let isToggling = false
-let pendingDelta: number | null = null
-let autoPlayTimerId: ReturnType<typeof setTimeout> | null = null
 let maxDrag = 0
 
 const sliderRef = shallowRef<HTMLElement>()
 const virtualIndex = shallowRef(props.index)
 const gestureMoveOffset = shallowRef(0)
-const isAutoPlayPaused = shallowRef(false)
-const progressKey = shallowRef(0)
 
 const slideCount = computed(() => props.options.length)
-
-const displayIndex = computed(() => {
-  const length = slideCount.value
-  if (length === 0) {
-    return 0
-  }
-  return ((virtualIndex.value % length) + length) % length
-})
-
-const isAtFirst = computed(() => displayIndex.value === 0)
-const isAtLast = computed(() => displayIndex.value === slideCount.value - 1)
 const isHorizontal = computed(() => props.direction === 'horizontal')
-const isLooping = computed(() => props.loop && slideCount.value > 1)
-
 const computedStyle = computed(() => {
   const translateValue = `calc(${virtualIndex.value * -100}% + ${gestureMoveOffset.value}px)`
 
@@ -74,7 +58,7 @@ const loopPlacement = computed(() => {
   const length = slideCount.value
   const lastIndex = length - 1
 
-  if (!isLooping.value) {
+  if (!props.loop || length <= 1) {
     return 'none'
   }
 
@@ -89,7 +73,28 @@ const loopPlacement = computed(() => {
   return 'none'
 })
 
+const {
+  index: currentIndex,
+  isAtFirst,
+  isAtLast,
+  isAutoPlayPaused,
+  progressKey,
+  next,
+  prev,
+  goTo,
+  pause,
+  resume,
+} = useCarousel({
+  count: () => slideCount.value,
+  defaultIndex: props.index,
+  loop: () => props.loop,
+  autoplay: () => props.autoplay,
+  interval: () => props.interval,
+  transition: animateMove,
+  onChange: (index) => emits('change', index),
+})
 const slots = useSlots()
+
 useSwipeGesture(sliderRef, {
   axis: () => props.direction,
   onPress: ({ size }) => {
@@ -114,60 +119,40 @@ useSwipeGesture(sliderRef, {
     }
 
     if (isHorizontal.value) {
-      performToggle(direction === 'left' ? 1 : -1)
+      void (direction === 'left' ? next() : prev())
     } else {
-      performToggle(direction === 'top' ? 1 : -1)
+      void (direction === 'top' ? next() : prev())
     }
   },
 })
 
-async function performToggle(delta: number) {
-  const length = slideCount.value
+async function animateMove(move: CarouselMove) {
+  const el = sliderRef.value
 
-  if (length === 0) {
+  if (!el) {
     return
   }
 
-  await awaitAnimationEnd(sliderRef.value)
-
-  if (isLooping.value) {
-    virtualIndex.value += delta
+  if (!move.wrapped) {
+    virtualIndex.value = move.to
 
     await nextTick()
-    await awaitAnimationEnd(sliderRef.value)
+    await awaitAnimationEnd(el)
 
-    if (virtualIndex.value >= length) {
-      await resetSliderPosition(0)
-    } else if (virtualIndex.value <= -1) {
-      await resetSliderPosition(length - 1)
-    }
-  } else {
-    virtualIndex.value = Math.max(0, Math.min(virtualIndex.value + delta, length - 1))
-  }
-
-  emits('change', virtualIndex.value)
-  restartAutoPlay()
-}
-
-async function onToggleClick(delta: number) {
-  if (isToggling) {
-    pendingDelta = delta
     return
   }
 
-  isToggling = true
+  virtualIndex.value = move.from + move.direction
 
-  try {
-    await performToggle(delta)
+  await nextTick()
+  await awaitAnimationEnd(el)
 
-    while (pendingDelta != null) {
-      const next = pendingDelta
-      pendingDelta = null
-      await performToggle(next)
-    }
-  } finally {
-    isToggling = false
-  }
+  el.style.transition = 'none'
+  virtualIndex.value = move.to
+
+  await nextTick()
+  void el.offsetHeight
+  el.style.transition = ''
 }
 
 function onWheelToggle(ev: WheelEvent) {
@@ -175,9 +160,7 @@ function onWheelToggle(ev: WheelEvent) {
     return
   }
 
-  const length = slideCount.value
-
-  if (length <= 1) {
+  if (slideCount.value <= 1) {
     return
   }
 
@@ -195,53 +178,17 @@ function onWheelToggle(ev: WheelEvent) {
     ev.preventDefault()
   }
 
-  onToggleClick(delta)
-}
-
-async function resetSliderPosition(resetIndex: number) {
-  const el = sliderRef.value
-  if (!el) {
-    return
-  }
-
-  el.style.transition = 'none'
-  virtualIndex.value = resetIndex
-
-  await nextTick()
-  void el.offsetHeight
-  el.style.transition = ''
-}
-
-function clearAutoPlayTimer() {
-  if (autoPlayTimerId != null) {
-    clearTimeout(autoPlayTimerId)
-    autoPlayTimerId = null
-  }
-}
-
-function restartAutoPlay() {
-  clearAutoPlayTimer()
-
-  if (!props.autoplay || isAutoPlayPaused.value) {
-    return
-  }
-
-  progressKey.value++
-  autoPlayTimerId = setTimeout(() => {
-    onToggleClick(1)
-  }, props.interval)
+  void (delta > 0 ? next() : prev())
 }
 
 function onPointerEnter() {
   if (props.pauseOnHover) {
-    isAutoPlayPaused.value = true
-    clearAutoPlayTimer()
+    pause()
   }
 }
 
 function onPointerLeave() {
-  isAutoPlayPaused.value = false
-  restartAutoPlay()
+  resume()
 }
 
 function onIndicatorClick(ev: MouseEvent) {
@@ -252,23 +199,10 @@ function onIndicatorClick(ev: MouseEvent) {
     return
   }
 
-  const deltaIndex = targetIndex - displayIndex.value
-
-  if (deltaIndex !== 0) {
-    clearAutoPlayTimer()
-    onToggleClick(deltaIndex)
+  if (targetIndex !== currentIndex.value) {
+    void goTo(targetIndex)
   }
 }
-
-onMounted(async () => {
-  await nextTick()
-
-  restartAutoPlay()
-})
-
-onBeforeUnmount(() => {
-  clearAutoPlayTimer()
-})
 </script>
 
 <template>
@@ -308,16 +242,16 @@ onBeforeUnmount(() => {
       class="pxd-carousel--indicator gap-2 absolute z-1 flex w-max items-center"
       @click="onIndicatorClick"
     >
-      <slot name="indicator" :current="displayIndex" :total="slideCount">
+      <slot name="indicator" :current="currentIndex" :total="slideCount">
         <button
           v-for="(_, i) in slideCount"
           :key="i"
           :data-index="i"
           class="pxd-carousel--indicator-item h-2 relative cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-[width,background-color]"
-          :class="i === displayIndex ? 'w-8' : 'w-2'"
+          :class="i === currentIndex ? 'w-8' : 'w-2'"
         >
           <span
-            v-if="i === displayIndex"
+            v-if="i === currentIndex"
             :key="progressKey"
             class="pxd-carousel--indicator-progress block h-full rounded-full bg-primary"
           />
@@ -331,7 +265,7 @@ onBeforeUnmount(() => {
         aria-label="Carousel arrow left"
         :disabled="!loop && isAtFirst"
         class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
-        @click="onToggleClick(-1)"
+        @click="prev()"
       >
         <ChevronRightIcon class="rotate-180" />
       </button>
@@ -341,7 +275,7 @@ onBeforeUnmount(() => {
         aria-label="Carousel arrow right"
         :disabled="!loop && isAtLast"
         class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
-        @click="onToggleClick(1)"
+        @click="next()"
       >
         <ChevronRightIcon />
       </button>
