@@ -84,28 +84,27 @@ export function escapePlainTextAsHtml(text: string): string {
   return escapeMentionText(text).replace(/\n/g, '<br>')
 }
 
+export interface MentionTreeHandlers {
+  /** A text node, with the editor's NBSP glue and caret anchors normalised away. */
+  onText: (text: string) => void
+  /** A legal `<mention>` chip. */
+  onMention: (el: HTMLElement) => void
+  /** A `<br>`. */
+  onBreak: () => void
+  /** A block element that carries content: emit a line break where one is missing. */
+  onBlock: () => void
+}
+
 /**
- * Serialize an editor DOM tree into the public HTML contract:
- * plain text + `<mention key="...">label</mention>` only.
+ * Walk a mention DOM tree in document order — chips, text, breaks and block
+ * boundaries — for both the public parser and the serializer.
  */
-export function serializeMentionHtml(root: HTMLElement): string {
-  let result = ''
-
-  /** Start a block's content on its own line, unless it already is on one. */
-  function startLine() {
-    if (result && !result.endsWith('\n')) {
-      result += '\n'
-    }
-  }
-
+export function walkMentionTree(root: Node, handlers: MentionTreeHandlers): void {
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      // Normalize insert glue NBSP so the public HTML keeps ordinary spaces, and
-      // drop the caret anchor so it never reaches the public HTML. Escaping keeps
-      // a typed `<` or `&` from coming back as markup on the next parse.
-      result += escapeMentionText(
-        (node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, ''),
-      )
+      // Normalize insert glue NBSP so a public value keeps ordinary spaces, and
+      // drop the caret anchor so it never reaches the public value.
+      handlers.onText((node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, ''))
       return
     }
 
@@ -116,16 +115,12 @@ export function serializeMentionHtml(root: HTMLElement): string {
     const el = node as HTMLElement
 
     if (isMentionElement(el)) {
-      const key = el.getAttribute('key') ?? ''
-      const label = getMentionLabel(el)
-      const trigger = el.getAttribute('trigger')
-      const triggerAttr = trigger ? ` trigger="${escapeMentionAttr(trigger)}"` : ''
-      result += `<${MENTION_TAG_LOWER} key="${escapeMentionAttr(key)}"${triggerAttr}>${escapeMentionText(label)}</${MENTION_TAG_LOWER}>`
+      handlers.onMention(el)
       return
     }
 
     if (el.tagName === 'BR') {
-      result += '\n'
+      handlers.onBreak()
       return
     }
 
@@ -133,7 +128,7 @@ export function serializeMentionHtml(root: HTMLElement): string {
     // nothing in this component creates them. A block only needs a line of its
     // own when it carries content — an empty one is already just its <br>.
     if (BLOCK_TAGS.has(el.tagName) && (el.textContent || el.querySelector(MENTION_TAG_LOWER))) {
-      startLine()
+      handlers.onBlock()
     }
 
     for (const child of Array.from(el.childNodes)) {
@@ -144,6 +139,36 @@ export function serializeMentionHtml(root: HTMLElement): string {
   for (const child of Array.from(root.childNodes)) {
     walk(child)
   }
+}
+
+/**
+ * Serialize an editor DOM tree into the public HTML contract:
+ * plain text + `<mention key="...">label</mention>` only.
+ */
+export function serializeMentionHtml(root: HTMLElement): string {
+  let result = ''
+
+  walkMentionTree(root, {
+    onText: (text) => {
+      // Escaping keeps a typed `<` or `&` from coming back as markup on the next parse.
+      result += escapeMentionText(text)
+    },
+    onMention: (el) => {
+      const key = el.getAttribute('key') ?? ''
+      const label = getMentionLabel(el)
+      const trigger = el.getAttribute('trigger')
+      const triggerAttr = trigger ? ` trigger="${escapeMentionAttr(trigger)}"` : ''
+      result += `<${MENTION_TAG_LOWER} key="${escapeMentionAttr(key)}"${triggerAttr}>${escapeMentionText(label)}</${MENTION_TAG_LOWER}>`
+    },
+    onBreak: () => {
+      result += '\n'
+    },
+    onBlock: () => {
+      if (result && !result.endsWith('\n')) {
+        result += '\n'
+      }
+    },
+  })
 
   // The editor keeps a single <br> so an empty field still has a line box. That
   // placeholder is not a line break, so an empty value stays empty.

@@ -1,4 +1,5 @@
-import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter } from '../types/shared/utils'
+import type { ComponentPublicInstance } from 'vue'
 import { toValue } from './helper.js'
 import { isServer } from './is.js'
 
@@ -85,6 +86,7 @@ export function getElementOffsetFromScrollContainer(
   }
 }
 
+/** Whether the element is allowed to scroll on each axis by its computed `overflow`. */
 export function isScrollable(el: HTMLElement) {
   const { overflowX, overflowY } = getStyle(el)
 
@@ -102,6 +104,7 @@ export function isScrollable(el: HTMLElement) {
   }
 }
 
+/** Whether the content overflows on each axis, whatever the `overflow` style says. */
 export function hasScrollbar(el: HTMLElement) {
   const { scrollHeight, clientHeight, scrollWidth, clientWidth } = el
 
@@ -163,51 +166,17 @@ export function getScrollPosition(el: HTMLElement | Window | Document) {
   }
 }
 
-// Get the scrollbar size (width and height).
-export function getScrollbarSize(element?: HTMLElement) {
-  if (!element) {
-    const div = document.createElement('div')
-    div.style.cssText =
-      'width:50px;height:50px;overflow:scroll;position:absolute;top:-9999px;visibility:hidden;box-sizing:content-box'
-    document.body.appendChild(div)
-
-    const size = {
-      width: div.offsetWidth - div.clientWidth,
-      height: div.offsetHeight - div.clientHeight,
-    }
-
-    document.body.removeChild(div)
-    return size
-  }
-
-  if ([document.body, document.documentElement].includes(element)) {
-    return {
-      width: window.innerWidth - element.clientWidth,
-      height: window.innerHeight - element.clientHeight,
-    }
-  }
-
-  return {
-    width: element.offsetWidth - element.clientWidth,
-    height: element.offsetHeight - element.clientHeight,
-  }
-}
-
-// Gets the size of the window visible area
-export function getViewportRect() {
-  const rect = document.documentElement.getBoundingClientRect()
-
-  rect.width = document.documentElement.clientWidth
-  rect.height = document.documentElement.clientHeight
-
-  return rect as DOMRect
-}
-
-export function isOverflowScrollable(ele: Element): boolean {
+/** The element itself scrolls: it may scroll by style and its content overflows. */
+function isOverflowScroller(ele: Element): boolean {
   const { x: xScrollbar, y: yScrollbar } = hasScrollbar(ele as HTMLElement)
   const { x: xScrollable, y: yScrollable } = isScrollable(ele as HTMLElement)
 
-  if ((xScrollbar && xScrollable) || (yScrollbar && yScrollable)) {
+  return (xScrollbar && xScrollable) || (yScrollbar && yScrollable)
+}
+
+/** Whether the element or one of its ancestors up to `<body>` really scrolls. */
+export function isOverflowScrollable(ele: Element): boolean {
+  if (isOverflowScroller(ele)) {
     return true
   }
 

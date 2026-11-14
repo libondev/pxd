@@ -1,7 +1,5 @@
 import type { ResponsiveValue } from '../types/shared/props'
-import type { Nullable } from '../types/shared/utils'
-import type { MaybeElement } from '../types/shared/utils'
-import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import type { Nullable, MaybeRefOrGetter } from '../types/shared/utils'
 import { getCurrentInstance, unref } from 'vue'
 import { isNil } from './is.js'
 
@@ -99,9 +97,6 @@ export function getResponsiveValue<V extends string | number>(
     {} as Parameters<typeof valueSetter>[0],
   )
 }
-
-export type UnRefElementReturn<T extends MaybeElement = MaybeElement> =
-  T extends ComponentPublicInstance ? Exclude<MaybeElement, ComponentPublicInstance> : T | undefined
 
 export function toValue<T>(source: MaybeRefOrGetter<T>): T {
   return typeof source === 'function' ? (source as () => T)() : unref(source)

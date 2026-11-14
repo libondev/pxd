@@ -178,10 +178,6 @@ export function caf(id: number) {
   cancelAnimationFrame(id)
 }
 
-export function doubleRaf(fn: FrameRequestCallback): number {
-  return raf(() => raf(fn))
-}
-
 interface ThrottleByRafReturnType<T extends Callback> {
   (...args: Parameters<T>): void
   cancel: () => void
