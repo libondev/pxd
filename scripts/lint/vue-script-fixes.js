@@ -180,10 +180,36 @@ function classifyStatement(node) {
       return 'composables'
     }
 
-    throw new Error(`unsupported top-level call \`${name || '<anonymous>'}()\``)
+    return null
   }
 
-  throw new Error(`unsupported top-level ${node.type}`)
+  return null
+}
+
+/** Split entries at the statements the sorter must leave in place. */
+function splitSegments(entries) {
+  const segments = []
+  let current = []
+
+  for (const entry of entries) {
+    if (entry.group === null) {
+      if (current.length > 0) {
+        segments.push(current)
+        current = []
+      }
+
+      segments.push([entry])
+      continue
+    }
+
+    current.push(entry)
+  }
+
+  if (current.length > 0) {
+    segments.push(current)
+  }
+
+  return segments
 }
 
 function hasLineBreak(text) {
@@ -470,7 +496,7 @@ export function reorderScriptContent(content) {
     index,
     group: classifyStatement(node),
   }))
-  const sorted = sortEntries(entries)
+  const sorted = splitSegments(entries).flatMap((segment) => sortEntries(segment))
 
   if (sorted.every((entry, index) => entry.index === index)) {
     return { changed: false }
@@ -625,9 +651,42 @@ export function applyImportJsSuffixFixes(content, filename) {
   return { changed: true, content: nextContent }
 }
 
+const SCRIPT_SETUP_PATTERN = /(<script\b[^>]*\bsetup\b[^>]*>)([\s\S]*?)(<\/script>)/
+
+/**
+ * Reorder the `<script setup>` block of an SFC, or the whole text when the linter already
+ * hands over the script body. Parsing the full SFC as script throws, which the rule used to
+ * swallow — that is how files drifted out of the documented order without a single report.
+ */
+function reorderInFile(content, filename) {
+  if (!filename.endsWith('.vue')) {
+    return reorderScriptContent(content)
+  }
+
+  const match = SCRIPT_SETUP_PATTERN.exec(content)
+
+  if (!match) {
+    return reorderScriptContent(content)
+  }
+
+  const script = match[2]
+  const order = reorderScriptContent(script)
+
+  if (!order.changed) {
+    return order
+  }
+
+  const start = match.index + match[1].length
+
+  return {
+    changed: true,
+    replacement: content.slice(0, start) + order.replacement + content.slice(start + script.length),
+  }
+}
+
 export function applyVueScriptFixes(content, filename) {
   const suffix = applyImportJsSuffixFixes(content, filename)
-  const order = reorderScriptContent(suffix.content)
+  const order = reorderInFile(suffix.content, filename)
 
   return {
     content: order.changed ? order.replacement : suffix.content,
