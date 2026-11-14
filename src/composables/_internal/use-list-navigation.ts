@@ -1,4 +1,5 @@
-import type { MaybeRefOrGetter, ShallowRef } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
+import type { ShallowRef } from 'vue'
 import { shallowRef, watch } from 'vue'
 import { toValue } from '../../utils/helper.js'
 

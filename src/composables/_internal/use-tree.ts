@@ -11,8 +11,8 @@ import type {
   TreeSelectableFn,
 } from '../../components/tree/types'
 import type { ComponentValue } from '../../types/shared/props'
-import type { MaybeElementRef } from '../../types/shared/utils'
-import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
+import type { MaybeElementRef, MaybeRefOrGetter } from '../../types/shared/utils'
+import type { ComputedRef, ShallowRef } from 'vue'
 import { computed, onScopeDispose, shallowRef } from 'vue'
 import { getElement } from '../../utils/dom.js'
 import { isCompositionKeydown } from '../../utils/event.js'

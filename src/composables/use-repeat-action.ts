@@ -1,5 +1,4 @@
-import type { Callback } from '../types/shared/utils'
-import type { MaybeRefOrGetter } from 'vue'
+import type { Callback, MaybeRefOrGetter } from '../types/shared/utils'
 import { onScopeDispose } from 'vue'
 import { off, once } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'

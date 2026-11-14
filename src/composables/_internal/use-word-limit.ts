@@ -1,5 +1,6 @@
 import type { ComponentText } from '../../types/shared/props'
-import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
+import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'
 import { toValue } from '../../utils/helper.js'

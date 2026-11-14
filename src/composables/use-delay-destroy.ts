@@ -1,5 +1,5 @@
-import type { Nullable } from '../types/shared/utils'
-import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { Nullable, MaybeRefOrGetter } from '../types/shared/utils'
+import type { Ref } from 'vue'
 import { onScopeDispose, shallowRef } from 'vue'
 import { caf, raf } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'

@@ -1,5 +1,4 @@
-import type { MaybeElementRef } from '../types/shared/utils'
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeElementRef, MaybeRefOrGetter } from '../types/shared/utils'
 import { onScopeDispose, watch } from 'vue'
 import { cachedOff, cachedOn } from '../utils/event.js'
 import { toValue } from '../utils/helper.js'

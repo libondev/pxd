@@ -55,7 +55,7 @@ function createTailwindVariantResolver<T extends TailwindVariantSchema>(
     const classes: ClassValue[] = [config.base]
 
     for (const key in selection) {
-      if (!Object.hasOwn(selection, key)) {
+      if (!Object.prototype.hasOwnProperty.call(selection, key)) {
         continue
       }
 

@@ -1,5 +1,5 @@
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
 import type { MessageItemConfig } from '../use-message.js'
-import type { MaybeRefOrGetter } from 'vue'
 import { shallowRef, watchEffect } from 'vue'
 import { toValue } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'

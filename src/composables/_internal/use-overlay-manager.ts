@@ -1,4 +1,4 @@
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
 import { onScopeDispose } from 'vue'
 import {
   cachedOff,

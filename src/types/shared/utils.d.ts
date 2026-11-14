@@ -1,4 +1,7 @@
-import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import type { ComponentPublicInstance, Ref } from 'vue'
+
+/** Vue 3.3 introduced this type; Vue 2.7 / 3.2 need the local definition. */
+export type MaybeRefOrGetter<T> = T | Ref<T> | (() => T)
 
 export type Awaitable<T> = T | PromiseLike<T>
 export type Callback = (...args: any[]) => any

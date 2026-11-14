@@ -1,4 +1,5 @@
-import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
+import type { ComputedRef, ShallowRef } from 'vue'
 import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { toValue } from '../../utils/helper.js'
 import { debounce } from '../../utils/timing.js'

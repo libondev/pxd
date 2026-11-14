@@ -1,5 +1,5 @@
+import type { MaybeRefOrGetter } from '../types/shared/utils'
 import type { ObserverResults, ObserverSpec, TargetRef } from '../utils/_internal/observer.js'
-import type { MaybeRefOrGetter } from 'vue'
 import { createObserver } from '../utils/_internal/observer.js'
 import { isServer } from '../utils/is.js'
 

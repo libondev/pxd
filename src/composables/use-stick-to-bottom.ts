@@ -1,5 +1,5 @@
-import type { Nullable } from '../types/shared/utils'
-import type { MaybeRefOrGetter, ShallowRef } from 'vue'
+import type { Nullable, MaybeRefOrGetter } from '../types/shared/utils'
+import type { ShallowRef } from 'vue'
 import { shallowRef, watch, onScopeDispose } from 'vue'
 import { getElement } from '../utils/dom.js'
 import { caf, cachedOff, cachedOn, raf, throttleByRaf } from '../utils/event.js'

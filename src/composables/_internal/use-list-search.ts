@@ -5,7 +5,8 @@ import type {
   ListOptions,
   ListRemoteFilterFn,
 } from '../../components/list/types'
-import type { ComputedRef, MaybeRefOrGetter, ShallowRef } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
+import type { ComputedRef, ShallowRef } from 'vue'
 import { computed } from 'vue'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
 import { toValue } from '../../utils/helper.js'
@@ -90,9 +91,7 @@ export function useListSearch(
   )
   const active = computed(() => remote.value && needle.value !== '')
 
-  const listOptions = computed(() =>
-    active.value ? (matches.value ?? []) : localOptions.value,
-  )
+  const listOptions = computed(() => (active.value ? (matches.value ?? []) : localOptions.value))
 
   return { listOptions, pending }
 }

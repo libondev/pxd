@@ -11,10 +11,10 @@ export interface CountdownOptions {
    */
   inverted?: boolean
   /**
-   * Whether the countdown is active.
+   * Whether the countdown is running.
    * @default false
    */
-  active?: boolean
+  enabled?: boolean
   /**
    * The start time of the countdown.
    */
@@ -33,11 +33,6 @@ export interface CountdownOptions {
    * @default 0
    */
   duration?: number
-  /**
-   * The precision of the countdown.
-   * @default 0
-   */
-  precision?: number
   /**
    * Whether the time stamp is in milliseconds.
    * @default true
@@ -153,7 +148,7 @@ export function useCountdown<T extends Record<string, any>>(
     setCurrent()
     emits('reset')
 
-    if (props.active) {
+    if (props.enabled) {
       frame()
     }
   }
@@ -195,11 +190,11 @@ export function useCountdown<T extends Record<string, any>>(
   }
 
   const unwatchActive = watch(
-    () => props.active,
-    (isActive) => {
-      emits('change', isActive)
+    () => props.enabled,
+    (isEnabled) => {
+      emits('change', isEnabled)
 
-      if (isActive) {
+      if (isEnabled) {
         if (isPaused) {
           const elapsed = props.inverted ? timeRef.value : totalDuration.value - timeRef.value
           startTimestamp = performance.now() - elapsed
@@ -227,7 +222,7 @@ export function useCountdown<T extends Record<string, any>>(
     () => {
       setCurrent()
       isFinished = false
-      if (props.active) {
+      if (props.enabled) {
         reset()
       }
     },

@@ -1,4 +1,5 @@
-import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { MaybeRefOrGetter } from '../types/shared/utils'
+import type { Ref } from 'vue'
 import { onScopeDispose, ref, watch } from 'vue'
 import { toValue } from '../utils/helper.js'
 

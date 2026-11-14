@@ -1,6 +1,6 @@
-import type { MaybeElementRef } from '../types/shared/utils'
+import type { MaybeElementRef, MaybeRefOrGetter } from '../types/shared/utils'
 import type { VirtualItem } from '@tanstack/virtual-core'
-import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
   elementScroll,
   observeElementOffset,

@@ -5,7 +5,7 @@ import type {
   ListOptions,
   ListOptionSelected,
 } from '../../components/list/types'
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter } from '../../types/shared/utils'
 import { computed } from 'vue'
 import { toArray } from '../../utils/format.js'
 import { toValue } from '../../utils/helper.js'
