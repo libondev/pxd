@@ -1,24 +1,15 @@
 import type { UseFocusTrapOptions } from './use-focus-trap.js'
-import type { Ref } from 'vue'
-import { computed } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import { computed, toValue } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'
 import { useFocusTrap } from './use-focus-trap.js'
 
-interface OverlayDialogProps {
-  autoFocusElement?: string | boolean
-  closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
-  loading?: boolean
-}
-
-interface OverlayDialogEmits {
-  (event: 'outside-click', ev: PointerEvent): void
-}
-
 interface OverlayDialogOptions {
-  props: OverlayDialogProps
-  emits: OverlayDialogEmits
+  autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
+  loading?: MaybeRefOrGetter<boolean | undefined>
+  closeOnClickOverlay?: MaybeRefOrGetter<boolean | undefined>
   elementRef: Ref<HTMLElement | undefined>
+  onOutsideClick?: (ev: PointerEvent) => void
   onClose: () => void
 }
 
@@ -26,29 +17,29 @@ interface OverlayDialogOptions {
  * Shared dialog (Modal/Drawer) behaviors: focus trap wiring and overlay
  * click/escape close handlers.
  */
-export function useOverlayDialog({ props, emits, elementRef, onClose }: OverlayDialogOptions): {
+export function useOverlayDialog(options: OverlayDialogOptions): {
   closeOverlayIfNeed: () => void
   onOverlayClick: (ev: PointerEvent) => void
 } {
-  // Esc and outside clicks only request a close (vetoed while loading) — never deactivate the trap.
+  // Esc and outside clicks only request a close (vetoed while loading) - never deactivate the trap.
   const focusTrapOptions = computed<UseFocusTrapOptions>(() => ({
-    autoFocusElement: props.autoFocusElement,
+    autoFocusElement: toValue(options.autoFocusElement),
   }))
 
-  useFocusTrap(elementRef, focusTrapOptions)
+  useFocusTrap(options.elementRef, focusTrapOptions)
 
   function closeOverlayIfNeed() {
-    if (isTruthyProp(props.loading)) {
+    if (isTruthyProp(toValue(options.loading))) {
       return
     }
 
-    onClose()
+    options.onClose()
   }
 
   function onOverlayClick(ev: PointerEvent) {
-    emits('outside-click', ev)
+    options.onOutsideClick?.(ev)
 
-    if (!isTruthyProp(props.closeOnClickOverlay)) {
+    if (!isTruthyProp(toValue(options.closeOnClickOverlay))) {
       return
     }
 

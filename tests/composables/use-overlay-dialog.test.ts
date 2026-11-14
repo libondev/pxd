@@ -18,8 +18,7 @@ describe('useOverlayDialog', () => {
     const elementRef = ref<HTMLElement>()
     const { unmount } = useSetupWrapper(() =>
       useOverlayDialog({
-        props: { closeOnPressEscape: true, closeOnClickOverlay: true },
-        emits: () => {},
+        closeOnClickOverlay: true,
         elementRef,
         onClose: () => {},
       }),
@@ -40,8 +39,7 @@ describe('useOverlayDialog', () => {
     const onClose = vi.fn()
     const { closeOverlayIfNeed, unmount } = useSetupWrapper(() =>
       useOverlayDialog({
-        props: { loading: true },
-        emits: () => {},
+        loading: true,
         elementRef: ref(),
         onClose,
       }),
@@ -50,6 +48,28 @@ describe('useOverlayDialog', () => {
     closeOverlayIfNeed()
 
     expect(onClose).not.toHaveBeenCalled()
+
+    unmount()
+  })
+
+  it('should forward outside clicks and close when allowed', () => {
+    const onClose = vi.fn()
+    const onOutsideClick = vi.fn()
+    const { onOverlayClick, unmount } = useSetupWrapper(() =>
+      useOverlayDialog({
+        closeOnClickOverlay: true,
+        elementRef: ref(),
+        onOutsideClick,
+        onClose,
+      }),
+    )
+
+    const event = new PointerEvent('pointerdown')
+
+    onOverlayClick(event)
+
+    expect(onOutsideClick).toHaveBeenCalledWith(event)
+    expect(onClose).toHaveBeenCalledTimes(1)
 
     unmount()
   })

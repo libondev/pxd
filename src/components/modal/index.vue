@@ -51,9 +51,11 @@ const defaultStyles = computed(() => ({
 const isVisible = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
-  props,
-  emits,
+  autoFocusElement: () => props.autoFocusElement,
+  loading: () => props.loading,
+  closeOnClickOverlay: () => props.closeOnClickOverlay,
   elementRef: modalRef,
+  onOutsideClick: (ev) => emits('outside-click', ev),
   onClose: () => {
     isVisible.value = false
   },
