@@ -38,6 +38,7 @@ provideSwitchContext({ props, emits, name: getUniqueId() })
 <template>
   <div
     data-switch
+    role="radiogroup"
     class="pxd-switch p-1 flex touch-manipulation rounded-lg border"
     :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
     v-bind="$attrs"

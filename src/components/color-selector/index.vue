@@ -41,7 +41,7 @@ const { classes } = useTailwindVariant(
 </script>
 
 <template>
-  <div data-color-selector role="tabpanel" class="pxd-color-selector gap-2 flex" v-bind="$attrs">
+  <div data-color-selector role="radiogroup" class="pxd-color-selector gap-2 flex" v-bind="$attrs">
     <template v-for="color in colors" :key="color">
       <input
         type="radio"
@@ -49,7 +49,6 @@ const { classes } = useTailwindVariant(
         :value="color"
         :style="{ color }"
         :class="classes"
-        :aria-selected="modelValue === color"
         :checked="modelValue === color"
         :tabindex="modelValue === color ? 0 : -1"
         @change="modelValue = color"

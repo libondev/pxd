@@ -64,8 +64,6 @@ function onInputChange() {
 <template>
   <label
     data-radio
-    role="radio"
-    :aria-selected="isSelected"
     :data-disabled="isDisabled"
     class="pxd-radio group/radio gap-2 relative inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"

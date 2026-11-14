@@ -22,8 +22,8 @@ describe('choicebox-item', () => {
     expect(items).toHaveLength(2)
     expect(wrapper.text()).toContain('Option A')
     expect(wrapper.text()).toContain('Option B')
-    expect(items[0]!.attributes('aria-selected')).toBe('true')
-    expect(items[1]!.attributes('aria-selected')).toBe('false')
+    expect(items[0]!.find('input').element.checked).toBe(true)
+    expect(items[1]!.find('input').element.checked).toBe(false)
 
     await items[1]!.find('input').setValue(true)
     expect(wrapper.emitted('update:model-value')).toEqual([['b']])
@@ -41,8 +41,8 @@ describe('choicebox-item', () => {
     })
 
     const items = wrapper.findAllComponents(ChoiceboxItem)
-    expect(items[0]!.attributes('role')).toBe('checkbox')
-    expect(items[0]!.attributes('aria-selected')).toBe('true')
+    expect(items[0]!.find('input').attributes('type')).toBe('checkbox')
+    expect(items[0]!.find('input').element.checked).toBe(true)
 
     await items[0]!.find('input').setValue(false)
     expect(wrapper.emitted('update:model-value')?.[0]).toEqual([[]])

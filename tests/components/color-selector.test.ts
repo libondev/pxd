@@ -6,7 +6,7 @@ describe('color-selector', () => {
   it('renders properly', () => {
     const wrapper = mount(ColorSelector)
 
-    expect(wrapper.find('[role="tabpanel"]').exists()).toBe(true)
+    expect(wrapper.find('[role="radiogroup"]').exists()).toBe(true)
 
     wrapper.unmount()
   })

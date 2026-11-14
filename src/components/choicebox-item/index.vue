@@ -150,9 +150,7 @@ function onInputChange(event: Event) {
 <template>
   <label
     data-choicebox-item
-    :role="isMultiple ? 'checkbox' : 'radio'"
     :data-disabled="isDisabled"
-    :aria-selected="isSelected"
     :for="inputId"
     :class="classes"
     v-bind="attrs"
@@ -204,7 +202,7 @@ function onInputChange(event: Event) {
 </template>
 
 <style lang="postcss">
-.pxd-choicebox-item[aria-selected='true'] {
+.pxd-choicebox-item:has(:checked) {
   .pxd-choicebox-item--option {
     background-color: hsla(var(--primary), 0.1);
   }

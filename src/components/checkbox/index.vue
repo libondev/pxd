@@ -106,8 +106,6 @@ function onInputChange(event: Event) {
 <template>
   <label
     data-checkbox
-    role="checkbox"
-    :aria-selected="isSelected"
     :data-disabled="isDisabled"
     class="pxd-checkbox group/checkbox gap-2 relative inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"
     :for="uniqueId"
@@ -119,6 +117,7 @@ function onInputChange(event: Event) {
       type="checkbox"
       class="peer visually-hidden"
       :checked="isSelected"
+      :indeterminate="indeterminate"
       :disabled="isDisabled"
       :name="uniqueId"
       @change="onInputChange"

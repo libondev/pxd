@@ -62,18 +62,18 @@ async function onCheckboxChange(e: Event) {
 <template>
   <label
     data-toggle
-    role="switch"
     :for="uniqueId"
-    :aria-checked="isChecked"
     class="pxd-toggle group/toggle relative inline-flex cursor-pointer touch-manipulation items-center select-none"
-    :aria-label="modelValue ? activeLabel : inactiveLabel"
     v-bind="$attrs"
   >
     <input
       :id="uniqueId"
       type="checkbox"
+      role="switch"
       :disabled="isDisabled"
       :checked="isChecked"
+      :aria-checked="isChecked"
+      :aria-label="modelValue ? activeLabel : inactiveLabel"
       class="pxd-toggle--input peer visually-hidden"
       @change.prevent="onCheckboxChange"
     />

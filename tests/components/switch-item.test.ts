@@ -22,8 +22,7 @@ describe('switch-item', () => {
     expect(items).toHaveLength(2)
     expect(wrapper.text()).toContain('Tab 1')
     expect(wrapper.text()).toContain('Tab 2')
-    expect(items[0]!.attributes('aria-selected')).toBe('true')
-    expect(items[1]!.attributes('aria-selected')).toBe('false')
+    expect(wrapper.find('[role="radiogroup"]').exists()).toBe(true)
 
     await items[1]!.find('input').setValue(true)
     expect(wrapper.emitted('update:model-value')).toEqual([['2']])
@@ -43,7 +42,7 @@ describe('switch-item', () => {
     expect(items[0]!.find('input').attributes('type')).toBe('radio')
     expect(items[0]!.find('input').attributes('checked')).toBe('')
     expect(items[1]!.find('input').attributes('checked')).toBeUndefined()
-    expect(items[0]!.attributes('role')).toBe('switch')
+    expect(items[0]!.attributes('role')).toBeUndefined()
 
     wrapper.unmount()
   })
