@@ -25,6 +25,7 @@ const BORDER_WIDTH = 2
 const SCROLL_EPSILON = 2
 const uid = getUniqueId('pxd-tabs')
 let resizeObserver: ResizeObserver | null = null
+const tabRefs = new Map<ComponentValue, HTMLElement>()
 
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
@@ -80,6 +81,14 @@ function tabId(index: number) {
 
 function panelId(index: number) {
   return `${uid}-panel-${index}`
+}
+
+function setTabRef(value: ComponentValue, el: unknown) {
+  if (el instanceof HTMLElement) {
+    tabRefs.set(value, el)
+  } else {
+    tabRefs.delete(value)
+  }
 }
 
 function isActiveOption(option: TabsOptions) {
@@ -149,7 +158,8 @@ function scrollActiveTabIntoView() {
     return
   }
 
-  const active = nav.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+  const selectedValue = activeValue.value
+  const active = selectedValue === undefined ? undefined : tabRefs.get(selectedValue)
 
   if (!active) {
     return
@@ -172,9 +182,12 @@ function scrollActiveTabIntoView() {
 }
 
 function focusTab(index: number) {
-  const tab = innerNavRef.value?.querySelectorAll<HTMLElement>('[role="tab"]')[index]
+  const option = props.options[index]
 
-  tab?.focus()
+  if (option) {
+    tabRefs.get(option.value)?.focus()
+  }
+
   scrollActiveTabIntoView()
 }
 function teardownScrollObservers() {
@@ -298,6 +311,7 @@ onBeforeUnmount(() => {
             v-for="(option, index) in options"
             :key="option.value"
             role="tab"
+            :ref="(el: unknown) => setTabRef(option.value, el)"
             :id="tabId(index)"
             :disabled="option.disabled"
             :tabindex="isActiveOption(option) ? 0 : -1"

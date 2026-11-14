@@ -25,12 +25,12 @@ const props = withDefaults(defineProps<CodeBlockProps>(), {
 const emits = defineEmits<CodeBlockEmits>()
 
 const DEFAULT_MAX_HEIGHT = '20rem'
+const tabRefs = new Map<string, HTMLElement>()
 
 const bodyEl = shallowRef<HTMLElement | null>(null)
 const expanded = shallowRef(false)
 const isOverflowing = shallowRef(false)
 const activeLine = shallowRef<number | null>(null)
-
 const lines = computed(() => props.code.split('\n'))
 
 const highlightedSet = computed(() => new Set(props.highlightedLines))
@@ -166,6 +166,14 @@ function onTabSelect(value: string) {
   emits('tabs-change', value)
 }
 
+function setTabRef(value: string, el: unknown) {
+  if (el instanceof HTMLElement) {
+    tabRefs.set(value, el)
+  } else {
+    tabRefs.delete(value)
+  }
+}
+
 function onTabsKeydown(event: KeyboardEvent) {
   const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
 
@@ -175,9 +183,7 @@ function onTabsKeydown(event: KeyboardEvent) {
 
   event.preventDefault()
 
-  const tabEls = [
-    ...(event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('[role="tab"]'),
-  ]
+  const tabEls = props.tabs?.options.map((option) => tabRefs.get(option.value)) ?? []
   const currentIndex = tabEls.findIndex((element) => element === document.activeElement)
   let nextIndex = currentIndex
 
@@ -245,6 +251,7 @@ onUnmounted(() => {
           :key="option.value"
           type="button"
           role="tab"
+          :ref="(el: unknown) => setTabRef(option.value, el)"
           :tabindex="option.value === activeTabValue ? 0 : -1"
           :aria-selected="option.value === activeTabValue"
           class="h-8 px-3 font-medium text-xs cursor-pointer rounded-md text-gray-900 not-aria-selected:hover:text-gray-1000 aria-selected:bg-gray-200 aria-selected:text-gray-1000 motion-safe:transition-colors"
