@@ -129,7 +129,7 @@ watch(
   <nav
     data-page-number
     class="pxd-page-number gap-1 inline-flex w-full max-w-full items-center"
-    aria-label="Pagination"
+    :aria-label="configProvider.locale.pagination.label"
     :aria-disabled="disabled"
     v-bind="$attrs"
   >
@@ -166,7 +166,7 @@ watch(
             : 'hover:bg-background-hover hover:text-foreground',
         ]"
         :aria-current="item === modelValue ? 'page' : undefined"
-        :aria-label="`Page ${item}`"
+        :aria-label="configProvider.locale.pagination.page.replace('{value}', String(item))"
         :disabled="disabled"
         @click="setPage(item)"
       >
@@ -194,7 +194,7 @@ watch(
       step="1"
       inputmode="numeric"
       :disabled="disabled"
-      aria-label="Jump to page"
+      :aria-label="configProvider.locale.pagination.jumpTo"
       @blur="submitPageInput"
       @keydown="onPageInputKeydown"
     />

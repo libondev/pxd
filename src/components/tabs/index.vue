@@ -6,6 +6,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, w
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { PTabSlot } from './tab-slot.js'
 
@@ -43,6 +44,7 @@ const canScrollRight = shallowRef(false)
 const activatedValues = shallowRef<ComponentValue[]>([])
 
 const modelValue = useModelValue(props, emits, { withChange: false })
+const configProvider = useConfigProvider()
 const slots = useSlots()
 /** Roving tabindex: arrow keys move focus and activate, matching the APG tabs pattern. */
 const navigation = useListNavigation({
@@ -277,7 +279,7 @@ onBeforeUnmount(() => {
         type="button"
         class="pxd-tabs--arrow px-1.5 inline-flex shrink-0 items-center justify-center self-stretch border-r border-border text-foreground-secondary self-focus-ring outline-none hover:text-foreground enabled:cursor-pointer disabled:pointer-events-none disabled:border-transparent disabled:opacity-35 motion-safe:transition-colors"
         :disabled="!canScrollLeft"
-        aria-label="Scroll tabs left"
+        :aria-label="configProvider.locale.tabs.scrollPrev"
         @click="scrollTabs('prev')"
       >
         <ChevronRightIcon class="size-em rotate-180" aria-hidden="true" />
@@ -319,7 +321,7 @@ onBeforeUnmount(() => {
         type="button"
         class="pxd-tabs--arrow px-1.5 inline-flex shrink-0 items-center justify-center self-stretch border-l border-border text-foreground-secondary self-focus-ring outline-none hover:text-foreground enabled:cursor-pointer disabled:pointer-events-none disabled:border-transparent disabled:opacity-35 motion-safe:transition-colors"
         :disabled="!canScrollRight"
-        aria-label="Scroll tabs right"
+        :aria-label="configProvider.locale.tabs.scrollNext"
         @click="scrollTabs('next')"
       >
         <ChevronRightIcon class="size-em" aria-hidden="true" />

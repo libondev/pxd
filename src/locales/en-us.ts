@@ -50,10 +50,17 @@ const enUS = {
     searchText: 'No results found for',
     noData: 'No data available',
   },
+  tabs: {
+    scrollPrev: 'Scroll tabs left',
+    scrollNext: 'Scroll tabs right',
+  },
   pagination: {
     perPage: '/page',
     prev: 'Previous page',
     next: 'Next page',
+    label: 'Pagination',
+    page: 'Page {value}',
+    jumpTo: 'Jump to page',
   },
   toolCall: {
     pending: 'Pending',

@@ -65,10 +65,17 @@ const zhCN = {
     searchText: '未找到结果：',
     noData: '暂无数据',
   },
+  tabs: {
+    scrollPrev: '向左滚动标签',
+    scrollNext: '向右滚动标签',
+  },
   pagination: {
     perPage: '条/页',
     prev: '上一页',
     next: '下一页',
+    label: '分页',
+    page: '第 {value} 页',
+    jumpTo: '跳转到',
   },
   toolCall: {
     pending: '等待中',
