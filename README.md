@@ -25,7 +25,7 @@ Components declare their options through `defineOptions()`, a macro that only la
 - Motion-safe: Turn off every animation with `--duration: 0`, or follow `prefers-reduced-motion`
 - Responsive: Popovers become bottom sheets on small screens, with a built-in swipe gesture engine
 - AI-ready: Bubble, Reasoning, ToolCall, Mention, CommandMenu and StickToBottom for chat UIs
-- Lean: Only 7 runtime dependencies, ESM-only, full tree-shaking
+- Lean: ESM-only, full tree-shaking
 - Accessible: Focus trap with nested-dialog coordination, keyboard navigation and ARIA roles
 - TypeScript: Full type definitions, resolver for auto imports and Volar global component types
 - Inspired by the [Geist Design System](https://vercel.com/geist/introduction)
@@ -65,7 +65,7 @@ pnpm build
 ### Component Naming Rules
 
 - Components that can be used independently do not need to add -group/-item suffix, such as: `Checkbox`, `Avatar`, `Toggle`, `ToggleButton`
-- Components that are used to manage a group of sub-components need to add -group suffix, such as: `CheckboxGroup`, `RadioGroup`, `ToggleGroup`, `ToggleButtonGroup`
+- Components that are used to manage a group of sub-components need to add -group suffix, such as: `CheckboxGroup`, `RadioGroup`, `ToggleButtonGroup`
 - Components that can only be used as a sub-component of another component need to add -item suffix, such as: `ListItem`, `GridItem`, `MessageItem`
 
 ## Reference
