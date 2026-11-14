@@ -1,3 +1,4 @@
+import type { ListOption } from '../../src/components/list/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
@@ -144,7 +145,7 @@ describe('command-menu', () => {
           { label: 'Option 1', value: '1' },
           { label: 'Option 2', value: '2' },
         ],
-        filterMethod: (option) => option.label === 'Option 1',
+        filterMethod: (option: ListOption) => option.label === 'Option 1',
       },
     })
 

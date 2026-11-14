@@ -1,3 +1,4 @@
+import type { ListOption } from '../../src/components/list/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
@@ -180,7 +181,7 @@ describe('select', () => {
       props: {
         options,
         filterable: true,
-        filterMethod: (option) => option.label === 'One',
+        filterMethod: (option: ListOption) => option.label === 'One',
       },
     })
 

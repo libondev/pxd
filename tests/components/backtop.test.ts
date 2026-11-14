@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import Backtop from '../../src/components/backtop/index.vue'
+import { installResizeObserverMock } from '../helpers/setup'
 
 async function flushFrames() {
   await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
@@ -55,6 +56,8 @@ describe('backtop', () => {
   })
 
   it('re-measures when the scroll range changes without a scroll event', async () => {
+    // happy-dom delivers no resize callback, so the observed box is fired by hand
+    const resize = installResizeObserverMock()
     const host = document.createElement('div')
     const content = document.createElement('div')
 
@@ -92,12 +95,14 @@ describe('backtop', () => {
     // A panel expands above: the range grows, no scroll event and no container box change
     metrics.scrollHeight = 600
     content.setAttribute('style', 'height: 600px')
+    resize.fireAll()
     await flushFrames()
 
     expect(backtop.style.display).not.toBe('none')
 
     wrapper.unmount()
     host.remove()
+    vi.unstubAllGlobals()
   })
 
   it('observes an explicit scroll container that is not an ancestor', async () => {
