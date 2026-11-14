@@ -1,12 +1,10 @@
+import type { ButtonVariant } from '../../types/shared/button'
 import type {
   ComponentAs,
   ComponentAlign,
   ComponentShape,
   ComponentSizeWithXxs,
-  ComponentVariantWithDefault,
 } from '../../types/shared/props'
-
-export type ButtonVariant = ComponentVariantWithDefault | 'ghost' | 'simple' | 'link'
 
 export interface ButtonProps {
   as?: ComponentAs

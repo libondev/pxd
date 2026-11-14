@@ -1,6 +1,7 @@
+import type { ButtonVariant } from '../../types/shared/button'
 import type { ComponentShape, ComponentSizeWithXs } from '../../types/shared/props'
+import type { ButtonProps } from '../button/types'
 import type { ListModelValue, ListOptions } from '../list/types'
-import { ButtonVariant, type ButtonProps } from '../button/types'
 
 export interface SplitButtonProps {
   variant?: ButtonVariant

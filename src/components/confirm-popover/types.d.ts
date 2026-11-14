@@ -1,6 +1,6 @@
+import type { ButtonVariant } from '../../types/shared/button'
 import type { ComponentPosition, ComponentText } from '../../types/shared/props'
 import type { Awaitable } from '../../types/shared/utils'
-import type { ButtonVariant } from '../button/types'
 
 export type ConfirmBeforeConfirm = () => Awaitable<boolean | void>
 

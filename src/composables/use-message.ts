@@ -1,4 +1,4 @@
-import type { ButtonProps } from '../components/button/types'
+import type { ButtonVariant } from '../types/shared/button'
 import type { ComponentClass } from '../types/shared/props'
 import type { VNode } from 'vue'
 import { isServer } from '../utils/is.js'
@@ -8,7 +8,7 @@ type PromiseMessageHandler = MessageContent | ((data: unknown) => MessageContent
 
 interface Action {
   label?: string
-  variant?: ButtonProps['variant']
+  variant?: ButtonVariant
   onClick?: () => void
 }
 
