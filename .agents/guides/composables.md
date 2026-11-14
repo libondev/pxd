@@ -43,7 +43,8 @@ passes.
 
 4. **No imports from `src/components/**`.** A composable that depends on a component's types is a
    component in disguise. Put the shared type in `src/types/shared` (or define it in the composable)
-   instead.
+   instead, and import it from the defining module directly. Never re-export it through a component's
+   `types.d.ts`.
 
 5. **Small return surface.** Refs plus actions, few keys, nouns for state (`timestamp`, `value`) and
    verbs for actions (`reset`, `stop`, `toggle`). If the return object mirrors the internal state,

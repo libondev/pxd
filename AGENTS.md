@@ -50,6 +50,7 @@ pxd/
 - **Avoid** post-3.3 APIs: `defineModel` (3.4+), top-level `await` in `<script setup>`
 - **Check** existing patterns before introducing new patterns
 - **Composables**: never take a component's `props` object or `emits` — see `.agents/guides/composables.md`
+- **Never** add a re-export (`export ... from`, `export type { X }`) — import from the defining module; only generated barrels may re-export.
 - Events: kebab-case. Curly braces: always required.
 - **Docs**: a component page must document `## Events` (every `XxxEmits` entry) and `## Methods` (every `defineExpose()` entry). Omit a section only when it is genuinely empty. Follow `.agents/guides/docs.md` exactly — headings, column names, and section order are fixed there.
 - **No path aliases** in library source or tests — relative imports only.
