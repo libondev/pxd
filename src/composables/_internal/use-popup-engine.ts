@@ -1,8 +1,8 @@
 import type { ComponentPosition } from '../../types/shared/props'
 import type { VirtualElement } from '@floating-ui/dom'
-import type { CSSProperties, Ref, ShallowRef } from 'vue'
+import type { CSSProperties, MaybeRefOrGetter, Ref, ShallowRef } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, hide, shift } from '@floating-ui/dom'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, toValue, watch } from 'vue'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -12,62 +12,49 @@ import { useOutsideClick } from '../use-outside-click.js'
 export type PopupTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
 export interface PopupOptions {
-  alignPoint?: boolean
-  adaptive?: boolean
-  arrowColor?: string
-  autoFocusElement?: string | boolean
-  autoPosition?: boolean
-  closeOnInvisible?: boolean
-  closeOnOutsideClick?: boolean
-  contentRole?: string
-  destroyDelay?: number
-  disabled?: boolean
-  fillTriggerWidth?: boolean
-  hideDelay?: number
-  interactive?: boolean
-  maxWidth?: number | string
-  modelValue?: boolean
-  offset?: number
-  position?: ComponentPosition
-  showArrow?: boolean
-  showDelay?: number
-  toggleOnTrigger?: boolean
-  trigger?: PopupTrigger | PopupTrigger[]
-  triggerSelector?: string
-  zIndex?: number | string
+  alignPoint?: MaybeRefOrGetter<boolean | undefined>
+  adaptive?: MaybeRefOrGetter<boolean | undefined>
+  arrowColor?: MaybeRefOrGetter<string | undefined>
+  autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
+  autoPosition?: MaybeRefOrGetter<boolean | undefined>
+  closeOnInvisible?: MaybeRefOrGetter<boolean | undefined>
+  closeOnOutsideClick?: MaybeRefOrGetter<boolean | undefined>
+  contentRole?: MaybeRefOrGetter<string | undefined>
+  destroyDelay?: MaybeRefOrGetter<number | undefined>
+  disabled?: MaybeRefOrGetter<boolean | undefined>
+  fillTriggerWidth?: MaybeRefOrGetter<boolean | undefined>
+  hideDelay?: MaybeRefOrGetter<number | undefined>
+  interactive?: MaybeRefOrGetter<boolean | undefined>
+  maxWidth?: MaybeRefOrGetter<number | string | undefined>
+  modelValue?: MaybeRefOrGetter<boolean | undefined>
+  offset?: MaybeRefOrGetter<number | undefined>
+  position?: MaybeRefOrGetter<ComponentPosition | undefined>
+  showArrow?: MaybeRefOrGetter<boolean | undefined>
+  showDelay?: MaybeRefOrGetter<number | undefined>
+  toggleOnTrigger?: MaybeRefOrGetter<boolean | undefined>
+  trigger?: MaybeRefOrGetter<PopupTrigger | PopupTrigger[] | undefined>
+  triggerSelector?: MaybeRefOrGetter<string | undefined>
+  zIndex?: MaybeRefOrGetter<number | string | undefined>
 }
 
-export interface PopupEngineEmits {
-  (event: 'visible-change', visible: boolean): void
-  (event: 'show'): void
-  (event: 'hide'): void
-  (event: 'update:model-value', visible: boolean): void
-  (event: 'escape', ev: KeyboardEvent): void
-  (event: 'outside-click', ev: PointerEvent): void
-  (event: 'trigger-click', ev: PointerEvent): void
-  (event: 'wrapper-keydown', ev: KeyboardEvent): void
+export interface PopupEngineCallbacks {
+  onVisibleChange?: (visible: boolean) => void
+  onShow?: () => void
+  onHide?: () => void
+  onUpdateModelValue?: (visible: boolean) => void
+  onEscape?: (ev: KeyboardEvent) => void
+  onOutsideClick?: (ev: PointerEvent) => void
+  onTriggerClick?: (ev: PointerEvent) => void
+  onWrapperKeydown?: (ev: KeyboardEvent) => void
 }
 
-export interface PopupEngineOptions {
-  props: PopupOptions
-  emits: PopupEngineEmits
+export interface PopupEngineOptions extends PopupOptions, PopupEngineCallbacks {
   triggerRef: Ref<HTMLElement>
   wrapperRef: Ref<HTMLElement>
   arrowRef: Ref<HTMLElement>
 }
 
-/**
- * Shared popup engine: trigger registry and events, show/hide timers, outside-click
- * dismissal, floating-ui positioning and trigger aria relationships. Popover presets
- * (tooltip, select, menu, …) only add their own overlay, trap and markup on top.
- */
-export function usePopupEngine({
-  props,
-  emits,
-  triggerRef,
-  wrapperRef,
-  arrowRef,
-}: PopupEngineOptions): {
+export function usePopupEngine(options: PopupEngineOptions): {
   contentId: string
   isRender: Ref<boolean>
   isVisible: Ref<boolean>
@@ -95,6 +82,8 @@ export function usePopupEngine({
   onWrapperPointerEnter: () => void
   onWrapperPointerLeave: () => void
 } {
+  const { triggerRef, wrapperRef, arrowRef } = options
+
   // The layer is fixed, so its box never joins the document's scrollable overflow — no pre-reveal
   // frame can flash a page scrollbar — and it stays at the origin, moving by transform only, which
   // also keeps its width independent of where it lands.
@@ -132,19 +121,19 @@ export function usePopupEngine({
   }
 
   const positionReady = shallowRef(false)
-  const localPosition = shallowRef(props.position)
+  const localPosition = shallowRef(toValue(options.position))
   const wrapperTransform = shallowRef(HIDDEN_TRANSFORM)
-  const triggerMethods = computed<PopupTrigger[]>(() => toArray(props.trigger))
+  const triggerMethods = computed<PopupTrigger[]>(() => toArray(toValue(options.trigger)))
   const isManual = computed(() => triggerMethods.value.includes('manual'))
   // Everything visible or interactive waits for the first position: the reveal, the overlay and the
   // focus trap all hang off this one flag.
   const isRevealed = computed(() => isVisible.value && positionReady.value)
   const wrapperStyle = computed<CSSProperties>(() => ({
-    '--popover-index': props.zIndex,
-    '--popover-offset': props.offset,
-    '--popover-arrow-color': props.arrowColor,
+    '--popover-index': toValue(options.zIndex),
+    '--popover-offset': toValue(options.offset),
+    '--popover-arrow-color': toValue(options.arrowColor),
     // An unset var resolves `sm:max-w-(--popover-max-width)` to `none`, dropping the viewport cap.
-    '--popover-max-width': getCssUnitValue(props.maxWidth, '100%'),
+    '--popover-max-width': getCssUnitValue(toValue(options.maxWidth), '100%'),
     left: 0,
     top: 0,
     transform: wrapperTransform.value,
@@ -152,7 +141,7 @@ export function usePopupEngine({
   // Hover popovers must not steal focus; click ones trap Tab but only focus on request.
   const focusTrapContainer = computed(() =>
     isRevealed.value &&
-    (isTruthyProp(props.autoFocusElement) || triggerMethods.value.includes('click'))
+    (isTruthyProp(toValue(options.autoFocusElement)) || triggerMethods.value.includes('click'))
       ? wrapperRef.value
       : null,
   )
@@ -162,21 +151,21 @@ export function usePopupEngine({
     visible: isVisible,
     show: showPopover,
     hide: hidePopover,
-  } = useDelayDestroy(props.modelValue, {
-    delay: () => props.destroyDelay ?? 0,
+  } = useDelayDestroy(() => toValue(options.modelValue), {
+    delay: () => toValue(options.destroyDelay) ?? 0,
     visibleChange(v) {
       if (isManual.value) {
         return
       }
 
-      emits('visible-change', v)
+      options.onVisibleChange?.(v)
 
       if (v) {
-        emits('show')
-        emits('update:model-value', true)
+        options.onShow?.()
+        options.onUpdateModelValue?.(true)
       } else {
-        emits('hide')
-        emits('update:model-value', false)
+        options.onHide?.()
+        options.onUpdateModelValue?.(false)
       }
     },
   })
@@ -187,9 +176,9 @@ export function usePopupEngine({
     allowList: [triggerRef, wrapperRef],
     enabled: () => isVisible.value,
     onTrigger: (ev) => {
-      emits('outside-click', ev)
+      options.onOutsideClick?.(ev)
 
-      if (!isManual.value && props.closeOnOutsideClick) {
+      if (!isManual.value && toValue(options.closeOnOutsideClick)) {
         void handlePopoverHide()
       }
     },
@@ -223,22 +212,24 @@ export function usePopupEngine({
     })
   }
 
-  function getTriggerElements() {
-    if (!props.triggerSelector) {
+  function getTriggerElements(): HTMLElement[] {
+    const selector = toValue(options.triggerSelector)
+
+    if (!selector) {
       return []
     }
 
     if (!triggerElements) {
-      triggerElements = Array.from(
-        triggerRef.value.querySelectorAll<HTMLElement>(props.triggerSelector),
-      )
+      triggerElements = Array.from(triggerRef.value.querySelectorAll<HTMLElement>(selector))
     }
 
     return triggerElements
   }
 
   function resolveTriggerElement(target: EventTarget | null) {
-    if (!props.triggerSelector) {
+    const selector = toValue(options.triggerSelector)
+
+    if (!selector) {
       return triggerRef.value
     }
 
@@ -246,7 +237,7 @@ export function usePopupEngine({
       return null
     }
 
-    const matched = target.closest<HTMLElement>(props.triggerSelector)
+    const matched = target.closest<HTMLElement>(selector)
 
     if (!matched || !triggerRef.value.contains(matched)) {
       return null
@@ -274,7 +265,7 @@ export function usePopupEngine({
   function setActiveTrigger(trigger: HTMLElement | null) {
     activeTriggerRef.value = trigger
 
-    if (!props.triggerSelector) {
+    if (!toValue(options.triggerSelector)) {
       activeTriggerIndex.value = 0
       return
     }
@@ -283,7 +274,7 @@ export function usePopupEngine({
   }
 
   function ensureActiveTrigger() {
-    if (!props.triggerSelector) {
+    if (!toValue(options.triggerSelector)) {
       if (!activeTriggerRef.value) {
         setActiveTrigger(triggerRef.value)
       }
@@ -297,7 +288,7 @@ export function usePopupEngine({
   }
 
   function getReferenceElement() {
-    if (props.alignPoint && pointerPosition.value) {
+    if (toValue(options.alignPoint) && pointerPosition.value) {
       return pointReference
     }
 
@@ -316,12 +307,12 @@ export function usePopupEngine({
     const triggerWidth = (activeTriggerRef.value || triggerRef.value).getBoundingClientRect().width
     wrapper.style.setProperty('--popover-trigger-width', `${triggerWidth}px`)
 
-    if (props.alignPoint || !props.fillTriggerWidth) {
+    if (toValue(options.alignPoint) || !toValue(options.fillTriggerWidth)) {
       wrapper.style.minWidth = ''
       return
     }
 
-    const maxWidth = getCssUnitValue(props.maxWidth)
+    const maxWidth = getCssUnitValue(toValue(options.maxWidth))
 
     wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
   }
@@ -334,11 +325,11 @@ export function usePopupEngine({
 
   function getPositionMiddleware() {
     return [
-      props.autoPosition && flip(),
+      toValue(options.autoPosition) && flip(),
       shift({ padding: 4, crossAxis: true }),
-      props.showArrow && arrow({ element: arrowRef.value }),
-      props.closeOnInvisible && hide({ strategy: 'escaped' }),
-      props.closeOnInvisible && hide({ strategy: 'referenceHidden' }),
+      toValue(options.showArrow) && arrow({ element: arrowRef.value }),
+      toValue(options.closeOnInvisible) && hide({ strategy: 'escaped' }),
+      toValue(options.closeOnInvisible) && hide({ strategy: 'referenceHidden' }),
     ]
   }
 
@@ -354,7 +345,7 @@ export function usePopupEngine({
       wrapperRef.value,
       {
         strategy: 'fixed',
-        placement: props.position,
+        placement: toValue(options.position),
         middleware: getPositionMiddleware(),
       },
     )
@@ -370,7 +361,9 @@ export function usePopupEngine({
       return
     }
 
-    const transform = props.adaptive ? '' : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
+    const transform = toValue(options.adaptive)
+      ? ''
+      : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
 
     // autoUpdate computes several times per open (its own first call, resize observer, scroll); only
     // a changed result is worth touching the DOM.
@@ -391,7 +384,7 @@ export function usePopupEngine({
   }
 
   function startAutoUpdate() {
-    if (!props.autoPosition || !wrapperRef.value) {
+    if (!toValue(options.autoPosition) || !wrapperRef.value) {
       return
     }
 
@@ -433,7 +426,7 @@ export function usePopupEngine({
   }
 
   async function handlePopoverShow() {
-    if (showPopoverTimer || props.disabled) {
+    if (showPopoverTimer || toValue(options.disabled)) {
       return
     }
 
@@ -448,7 +441,7 @@ export function usePopupEngine({
       showPopoverTimer = setTimeout(() => {
         showPopoverTimer = null
         resolve()
-      }, props.showDelay)
+      }, toValue(options.showDelay))
     })
 
     // Position before the enter transition starts, while data-visible is still false.
@@ -464,7 +457,7 @@ export function usePopupEngine({
   }
 
   function handlePopoverEscape(ev: KeyboardEvent) {
-    emits('escape', ev)
+    options.onEscape?.(ev)
 
     if (!isManual.value) {
       void handlePopoverHide()
@@ -488,7 +481,7 @@ export function usePopupEngine({
           hidePopoverTimer = null
           resolve()
         },
-        immediate ? 0 : props.hideDelay,
+        immediate ? 0 : toValue(options.hideDelay),
       )
     })
 
@@ -499,7 +492,7 @@ export function usePopupEngine({
   }
 
   function activateTrigger(trigger: HTMLElement, toggleSameTrigger: boolean = true) {
-    const isSameTrigger = trigger === activeTriggerRef.value || !props.triggerSelector
+    const isSameTrigger = trigger === activeTriggerRef.value || !toValue(options.triggerSelector)
 
     if (isVisible.value && isSameTrigger && toggleSameTrigger) {
       void handlePopoverHide()
@@ -520,34 +513,34 @@ export function usePopupEngine({
   }
 
   function onTriggerClick(ev: Event) {
-    if (props.disabled || isForeignTarget(ev.target)) {
+    if (toValue(options.disabled) || isForeignTarget(ev.target)) {
       return
     }
 
     const trigger = resolveTriggerElement(ev.target)
 
     if (!trigger) {
-      if (!isManual.value && props.closeOnOutsideClick && isVisible.value) {
+      if (!isManual.value && toValue(options.closeOnOutsideClick) && isVisible.value) {
         void handlePopoverHide()
       }
 
       return
     }
 
-    emits('trigger-click', ev as PointerEvent)
+    options.onTriggerClick?.(ev as PointerEvent)
 
     if (triggerMethods.value.includes('click')) {
       if (triggerMethods.value.includes('hover') && isVisible.value) {
         return
       }
 
-      if (props.alignPoint && !isVisible.value) {
+      if (toValue(options.alignPoint) && !isVisible.value) {
         updatePointerPosition(ev as PointerEvent)
       }
 
-      activateTrigger(trigger, props.toggleOnTrigger)
+      activateTrigger(trigger, toValue(options.toggleOnTrigger))
     } else if (
-      props.alignPoint &&
+      toValue(options.alignPoint) &&
       isVisible.value &&
       triggerMethods.value.includes('contextmenu') &&
       !triggerMethods.value.includes('hover')
@@ -557,7 +550,7 @@ export function usePopupEngine({
   }
 
   function onTriggerPointerOver(ev: PointerEvent) {
-    if (props.disabled || !triggerMethods.value.includes('hover')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('hover')) {
       return
     }
 
@@ -568,7 +561,7 @@ export function usePopupEngine({
     const trigger = resolveTriggerElement(ev.target)
 
     if (trigger) {
-      if (props.alignPoint) {
+      if (toValue(options.alignPoint)) {
         updatePointerPosition(ev)
       }
 
@@ -577,7 +570,7 @@ export function usePopupEngine({
   }
   // pointerout bubbles, so it also covers what pointerleave used to handle.
   function onTriggerPointerOut(ev: PointerEvent) {
-    if (props.disabled || !triggerMethods.value.includes('hover')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('hover')) {
       return
     }
 
@@ -601,7 +594,7 @@ export function usePopupEngine({
 
     // Still inside: only the gap between matched triggers gets a frame of grace.
     if (
-      !props.triggerSelector ||
+      !toValue(options.triggerSelector) ||
       !resolveTriggerElement(ev.target) ||
       resolveTriggerElement(next)
     ) {
@@ -612,7 +605,11 @@ export function usePopupEngine({
   }
 
   function onTriggerPointerMove(ev: PointerEvent) {
-    if (props.disabled || !triggerMethods.value.includes('hover') || !props.alignPoint) {
+    if (
+      toValue(options.disabled) ||
+      !triggerMethods.value.includes('hover') ||
+      !toValue(options.alignPoint)
+    ) {
       return
     }
 
@@ -624,7 +621,7 @@ export function usePopupEngine({
   }
 
   function onTriggerContextmenu(ev: PointerEvent) {
-    if (props.disabled || !triggerMethods.value.includes('contextmenu')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('contextmenu')) {
       return
     }
 
@@ -640,7 +637,7 @@ export function usePopupEngine({
 
     ev.preventDefault()
 
-    if (props.alignPoint) {
+    if (toValue(options.alignPoint)) {
       setActiveTrigger(trigger)
       updatePointerPosition(ev)
 
@@ -657,7 +654,7 @@ export function usePopupEngine({
   }
 
   function onTriggerFocusIn(ev: FocusEvent) {
-    if (props.disabled || !triggerMethods.value.includes('focus')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('focus')) {
       return
     }
 
@@ -673,7 +670,7 @@ export function usePopupEngine({
   }
 
   function onTriggerFocusOut(ev: FocusEvent) {
-    if (props.disabled || !triggerMethods.value.includes('focus')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('focus')) {
       return
     }
 
@@ -690,15 +687,15 @@ export function usePopupEngine({
   }
 
   function onWrapperKeydown(ev: KeyboardEvent) {
-    if (props.disabled || !isVisible.value) {
+    if (toValue(options.disabled) || !isVisible.value) {
       return
     }
 
-    emits('wrapper-keydown', ev)
+    options.onWrapperKeydown?.(ev)
   }
 
   function onWrapperPointerEnter() {
-    if (props.disabled || !props.interactive || !isVisible.value) {
+    if (toValue(options.disabled) || !toValue(options.interactive) || !isVisible.value) {
       return
     }
 
@@ -706,7 +703,7 @@ export function usePopupEngine({
   }
 
   function onWrapperPointerLeave() {
-    if (props.disabled || !triggerMethods.value.includes('hover')) {
+    if (toValue(options.disabled) || !triggerMethods.value.includes('hover')) {
       return
     }
 
@@ -714,8 +711,8 @@ export function usePopupEngine({
   }
 
   function syncTriggerAria() {
-    const triggers = props.triggerSelector ? getTriggerElements() : [triggerRef.value]
-    const isTooltip = props.contentRole === 'tooltip'
+    const triggers = toValue(options.triggerSelector) ? getTriggerElements() : [triggerRef.value]
+    const isTooltip = toValue(options.contentRole) === 'tooltip'
 
     for (const trigger of triggers) {
       if (!trigger) {
@@ -741,7 +738,7 @@ export function usePopupEngine({
   }
 
   watch(
-    () => props.modelValue,
+    () => toValue(options.modelValue),
     (visible) => {
       if (visible) {
         void handlePopoverShow()
@@ -754,7 +751,7 @@ export function usePopupEngine({
   watch([isVisible, activeTriggerRef], syncTriggerAria, { flush: 'post' })
 
   onMounted(() => {
-    if (props.modelValue) {
+    if (toValue(options.modelValue)) {
       void handlePopoverShow()
     }
   })

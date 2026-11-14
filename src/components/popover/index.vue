@@ -48,7 +48,41 @@ const overlayZIndex = computed(() => {
 
 const configProvider = useConfigProvider()
 
-const engine = usePopupEngine({ props, emits, triggerRef, wrapperRef, arrowRef })
+const engine = usePopupEngine({
+  modelValue: () => props.modelValue,
+  trigger: () => props.trigger,
+  triggerSelector: () => props.triggerSelector,
+  alignPoint: () => props.alignPoint,
+  disabled: () => props.disabled,
+  adaptive: () => props.adaptive,
+  maxWidth: () => props.maxWidth,
+  position: () => props.position,
+  showDelay: () => props.showDelay,
+  hideDelay: () => props.hideDelay,
+  showArrow: () => props.showArrow,
+  arrowColor: () => props.arrowColor,
+  interactive: () => props.interactive,
+  autoPosition: () => props.autoPosition,
+  destroyDelay: () => props.destroyDelay,
+  contentRole: () => props.contentRole,
+  toggleOnTrigger: () => props.toggleOnTrigger,
+  autoFocusElement: () => props.autoFocusElement,
+  fillTriggerWidth: () => props.fillTriggerWidth,
+  closeOnInvisible: () => props.closeOnInvisible,
+  closeOnOutsideClick: () => props.closeOnOutsideClick,
+  zIndex: () => props.zIndex,
+  triggerRef,
+  wrapperRef,
+  arrowRef,
+  onVisibleChange: (visible) => emits('visible-change', visible),
+  onShow: () => emits('show'),
+  onHide: () => emits('hide'),
+  onUpdateModelValue: (visible) => emits('update:model-value', visible),
+  onEscape: (ev) => emits('escape', ev),
+  onOutsideClick: (ev) => emits('outside-click', ev),
+  onTriggerClick: (ev) => emits('trigger-click', ev),
+  onWrapperKeydown: (ev) => emits('wrapper-keydown', ev),
+})
 
 useFocusTrap(engine.focusTrapContainer, () => {
   const options = {

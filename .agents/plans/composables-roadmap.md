@@ -40,9 +40,8 @@ Shared seams that already exist: `useModelValue` (controlled/uncontrolled), `use
 confirm-popover, menu), `useOverlayDialog` (modal, drawer), `useFocusTrap`, `useSwipeGesture`
 (carousel, swipe-cell), `useTourTarget`, `useScrollspy`, `useResizeObserver` / `useMutationObserver`.
 
-The only remaining props-coupled internal is `_internal/use-popup-engine.ts` (popover, tooltip and
-everything built on them). It is the highest-risk extraction left and should ship with the popover
-tests, not as a drive-by change.
+`_internal/use-popup-engine.ts` (popover, tooltip and everything built on them) now takes explicit
+`MaybeRefOrGetter` inputs and `onXxx` callbacks too. The popover suite stayed green through the move.
 
 ### C. Presentation
 
@@ -56,12 +55,9 @@ No composables. These are the components the convention explicitly excludes: ext
 Done: `useCarousel`, `useHold`, `useListSelection`, `useOverlayDialog`, the `ButtonVariant`
 move to `src/types/components` and the slider geometry utils.
 
-Deferred, in order:
+Deferred:
 
-1. **`use-popup-engine`** - drop the `props` / `emits` parameters for explicit `MaybeRefOrGetter`
-   inputs and `onXxx` callbacks. It has one consumer, 23 prop reads and eight emits, so the change
-   is mechanical but wide; it should ship alone with the popover suite as the safety net.
-2. **`useLoadingBar`** - move the trickle/ticker state machine out of the component. Blocked on a
+1. **`useLoadingBar`** - move the trickle/ticker state machine out of the component. Blocked on a
    deliberate fix first: `raf(increaseProgress)` hands the animation timestamp to `n`, so
    `const amount = n || getIncreaseDelta(...)` jumps the bar to the cap instead of trickling.
    Fix that with a test, then extract.

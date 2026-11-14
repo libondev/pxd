@@ -112,12 +112,11 @@ Re-run with:
 Get-ChildItem -Recurse src/composables -Filter *.ts | Select-String -Pattern 'emits:|EmitFn|props:'
 ```
 
-No public composable takes `props` or `emits`, and no composable imports a component's types. Known
-debt stays `_internal`:
+No public composable takes `props` or `emits`, and no composable imports a component's types. One
+`_internal` exception remains:
 
-| Composables | Coupling | Plan |
+| Composables | Coupling | Why it is allowed |
 | --- | --- | --- |
-| `_internal/use-model-value.ts` | `props` / `emits` | allowed exception: adapting controlled/uncontrolled prop semantics is its whole job |
-| `_internal/use-popup-engine.ts` | `props` / `emits` | refactor carefully alongside the popover tests |
+| `_internal/use-model-value.ts` | `props` / `emits` | adapting controlled/uncontrolled prop semantics is its whole job |
 
 The remaining priority queue and the component triage live in `.agents/plans/composables-roadmap.md`.
