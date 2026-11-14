@@ -4,13 +4,13 @@ Displays the current page hierarchy and lets users navigate to parent routes.
 
 ## Default
 
-Use `PBreadcrumbItem` for each level. Set `to` on items that should navigate; the final item usually represents the current page and does not need a link.
+Use `PBreadcrumbItem` for each level. Set `href` on items that should navigate; the final item usually represents the current page and does not need a link.
 
 ```vue demo
 <template>
   <PBreadcrumb>
-    <PBreadcrumbItem to="/">Home</PBreadcrumbItem>
-    <PBreadcrumbItem to="/guide/components">Components</PBreadcrumbItem>
+    <PBreadcrumbItem href="/">Home</PBreadcrumbItem>
+    <PBreadcrumbItem href="/guide/components">Components</PBreadcrumbItem>
     <PBreadcrumbItem>Breadcrumb</PBreadcrumbItem>
   </PBreadcrumb>
 </template>
@@ -28,14 +28,14 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 <template>
   <div class="flex flex-col gap-3">
     <PBreadcrumb separator=">">
-      <PBreadcrumbItem to="/">Home</PBreadcrumbItem>
-      <PBreadcrumbItem to="/guide/components">Components</PBreadcrumbItem>
+      <PBreadcrumbItem href="/">Home</PBreadcrumbItem>
+      <PBreadcrumbItem href="/guide/components">Components</PBreadcrumbItem>
       <PBreadcrumbItem>Breadcrumb</PBreadcrumbItem>
     </PBreadcrumb>
 
     <PBreadcrumb :separator-icon="ChevronRightIcon">
-      <PBreadcrumbItem to="/">Home</PBreadcrumbItem>
-      <PBreadcrumbItem to="/guide/components">Components</PBreadcrumbItem>
+      <PBreadcrumbItem href="/">Home</PBreadcrumbItem>
+      <PBreadcrumbItem href="/guide/components">Components</PBreadcrumbItem>
       <PBreadcrumbItem>Breadcrumb</PBreadcrumbItem>
     </PBreadcrumb>
   </div>
@@ -49,8 +49,8 @@ Use `replace` to navigate with `RouterLink` without creating a new browser histo
 ```vue demo
 <template>
   <PBreadcrumb>
-    <PBreadcrumbItem to="/" replace>Home</PBreadcrumbItem>
-    <PBreadcrumbItem to="/guide/components">Components</PBreadcrumbItem>
+    <PBreadcrumbItem href="/" replace>Home</PBreadcrumbItem>
+    <PBreadcrumbItem href="/guide/components">Components</PBreadcrumbItem>
     <PBreadcrumbItem>Breadcrumb</PBreadcrumbItem>
   </PBreadcrumb>
 </template>
@@ -67,7 +67,7 @@ Use `replace` to navigate with `RouterLink` without creating a new browser histo
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| to | `string \| object` | - | Target route passed to the global `RouterLink`. |
+| href | `string \| Record<string, unknown>` | - | Target route passed to the global `RouterLink`. |
 | replace | `boolean` | `false` | Replaces the current history entry when navigating. |
 
 ## Slots

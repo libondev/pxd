@@ -13,10 +13,6 @@ import { getColorByThreshold } from '../../utils/helper.js'
 defineOptions({
   name: 'PEffortSlider',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<EffortSliderProps>()

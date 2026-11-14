@@ -1,12 +1,11 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import { onScopeDispose } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { onScopeDispose, toValue } from 'vue'
 import {
   cachedOff,
   cachedOn,
   isCompositionKeydown,
   preventDefaultScroll,
 } from '../../utils/event.js'
-import { toValue } from '../../utils/helper.js'
 
 const touchMoveOptions = { passive: false }
 

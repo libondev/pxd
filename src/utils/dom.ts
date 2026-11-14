@@ -1,6 +1,5 @@
-import type { MaybeRefOrGetter } from '../types/shared/utils'
-import type { ComponentPublicInstance } from 'vue'
-import { toValue } from './helper.js'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
+import { toValue } from 'vue'
 import { isServer } from './is.js'
 
 function getWindowTop() {
@@ -38,52 +37,9 @@ export function getElement(
   return (el as ComponentPublicInstance)?.$el ?? el
 }
 
-// export function getElementRectFromContainer(
-//   elementOrRect: Element | DOMRect,
-//   viewportOrRect: Element | DOMRect,
-// ) {
-//   const selfRect =
-//     elementOrRect instanceof Element ? elementOrRect.getBoundingClientRect() : elementOrRect
-//   const wrapRect =
-//     viewportOrRect instanceof Element ? viewportOrRect.getBoundingClientRect() : viewportOrRect
-
-//   return {
-//     top: selfRect.top,
-//     bottom: selfRect.bottom,
-//     left: selfRect.left,
-//     right: selfRect.right,
-//     width: selfRect.width,
-//     height: selfRect.height,
-//     scrollTop: selfRect.top - wrapRect.top,
-//     scrollBottom: selfRect.bottom - wrapRect.top,
-//     scrollLeft: selfRect.left - wrapRect.left,
-//     scrollRight: selfRect.right - wrapRect.left,
-//   }
-// }
-
 /** Whether the element scrolls with the viewport instead of scrolling on its own. */
 export function isViewportScroll(el: HTMLElement) {
   return getWindowTop().includes(el) || el === document.body
-}
-
-/** Viewport-relative top offset for scrollspy */
-export function getElementOffsetFromScrollContainer(
-  element: Element,
-  scrollContainer: HTMLElement,
-) {
-  const elementRect = element.getBoundingClientRect()
-  if (isViewportScroll(scrollContainer)) {
-    return {
-      top: elementRect.top,
-      left: elementRect.left,
-    }
-  }
-
-  const containerRect = scrollContainer.getBoundingClientRect()
-  return {
-    top: elementRect.top - containerRect.top,
-    left: elementRect.left - containerRect.left,
-  }
 }
 
 /** Whether the element is allowed to scroll on each axis by its computed `overflow`. */

@@ -9,10 +9,6 @@ import PToggleButton from '../toggle-button/index.vue'
 defineOptions({
   name: 'PToggleButtonGroup',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {

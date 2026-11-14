@@ -1,6 +1,5 @@
-import type { MaybeRefOrGetter } from '../types/shared/utils'
-import type { ShallowRef } from 'vue'
-import { computed, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
+import type { ShallowRef, MaybeRefOrGetter } from 'vue'
+import { computed, onMounted, onScopeDispose, shallowRef, watch, toValue } from 'vue'
 import {
   getScrollElement,
   getScrollListener,
@@ -8,7 +7,6 @@ import {
   isViewportScroll,
 } from '../utils/dom.js'
 import { off, on, scheduleByRaf } from '../utils/event.js'
-import { toValue } from '../utils/helper.js'
 import { isServer } from '../utils/is.js'
 import { useResizeObserver } from './use-resize-observer.js'
 

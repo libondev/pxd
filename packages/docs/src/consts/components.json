@@ -505,11 +505,6 @@
     "category": "Navigation"
   },
   {
-    "camelized": "Teleport",
-    "name": "teleport",
-    "category": "Utilities"
-  },
-  {
     "camelized": "Text",
     "name": "text",
     "category": "Typography"

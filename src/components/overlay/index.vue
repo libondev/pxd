@@ -6,15 +6,10 @@ import { useOverlayManager } from '../../composables/_internal/use-overlay-manag
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP } from '../../utils/event.js'
 import { isServer } from '../../utils/is.js'
-import PTeleport from '../teleport/index.vue'
 
 defineOptions({
   name: 'POverlay',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<OverlayProps>(), {
@@ -81,7 +76,7 @@ watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
 </script>
 
 <template>
-  <PTeleport>
+  <Teleport to="body">
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         data-overlay
@@ -100,5 +95,5 @@ watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
     </Transition>
 
     <slot />
-  </PTeleport>
+  </Teleport>
 </template>

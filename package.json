@@ -1,7 +1,7 @@
 {
   "name": "pxd",
   "version": "0.2.0",
-  "description": "A universal Vue 2.7 & 3.2 component library built from one codebase. Built-in light/dark theme. PC & mobile ready. Animation-free mode supported.",
+  "description": "A universal Vue 3.3+ component library built from one codebase. Built-in light/dark theme. PC & mobile ready. Animation-free mode supported.",
   "keywords": [
     "component-library",
     "dark-mode",
@@ -12,7 +12,6 @@
     "ui",
     "vue",
     "vue-components",
-    "vue2",
     "vue3"
   ],
   "homepage": "https://github.com/libondev/pxd#readme",
@@ -139,7 +138,7 @@
     "vue-tsc": "catalog:default"
   },
   "peerDependencies": {
-    "vue": ">=2.7.0 <3.0.0 || >=3.2.0"
+    "vue": ">=3.3.0"
   },
   "packageManager": "pnpm@10.34.9",
   "pnpm": {

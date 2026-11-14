@@ -1,7 +1,5 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import type { ComputedRef, ShallowRef } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch } from 'vue'
-import { toValue } from '../../utils/helper.js'
+import type { ComputedRef, ShallowRef, MaybeRefOrGetter } from 'vue'
+import { computed, onScopeDispose, shallowRef, watch, toValue } from 'vue'
 import { debounce } from '../../utils/timing.js'
 
 const REMOTE_SEARCH_DEBOUNCE = 200

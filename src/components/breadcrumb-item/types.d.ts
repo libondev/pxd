@@ -1,4 +1,4 @@
 export interface BreadcrumbItemProps {
-  to?: string | Record<string, unknown>
+  href?: string | Record<string, unknown>
   replace?: boolean
 }

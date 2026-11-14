@@ -11,10 +11,6 @@ import { isUndefined } from '../../utils/is.js'
 defineOptions({
   name: 'PPinInput',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<PinInputProps>(), {

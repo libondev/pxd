@@ -5,11 +5,9 @@ import type {
   ListOptions,
   ListRemoteFilterFn,
 } from '../../components/list/types'
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import type { ComputedRef, ShallowRef } from 'vue'
-import { computed } from 'vue'
+import type { ComputedRef, ShallowRef, MaybeRefOrGetter } from 'vue'
+import { computed, toValue } from 'vue'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
-import { toValue } from '../../utils/helper.js'
 import { useRemoteSearch } from './use-remote-search.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
 

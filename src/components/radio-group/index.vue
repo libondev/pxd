@@ -8,10 +8,6 @@ import PStack from '../stack/index.vue'
 defineOptions({
   name: 'PRadioGroup',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<RadioGroupProps>()

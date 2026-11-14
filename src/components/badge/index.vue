@@ -72,7 +72,7 @@ const computedSize = computed(() => props.size || configProvider.size)
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-badge font-medium gap-1 inline-flex items-center justify-center font-sans leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
+    base: 'pxd-badge font-medium gap-1 font-sans inline-flex items-center justify-center leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
     variants: {
       variant: {
         pill: 'border bg-background-100',

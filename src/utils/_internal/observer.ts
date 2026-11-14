@@ -1,10 +1,8 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
 import type { Nullable } from '../../types/shared/utils.js'
-import type { Ref } from 'vue'
-import { onScopeDispose, shallowRef, watch } from 'vue'
+import type { Ref, MaybeRefOrGetter } from 'vue'
+import { onScopeDispose, shallowRef, watch, toValue } from 'vue'
 import { getElement } from '../dom.js'
 import { toArray } from '../format.js'
-import { toValue } from '../helper.js'
 import { isNotNil, isServer } from '../is.js'
 
 export type TargetRef =

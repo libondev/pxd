@@ -11,10 +11,6 @@ import { getUniqueId } from '../../utils/helper.js'
 defineOptions({
   name: 'PTextarea',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<TextareaProps>(), {

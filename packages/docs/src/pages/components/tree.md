@@ -383,9 +383,9 @@ const data = [
 
 ## Drag and drop
 
-A drop emits `update:data` with the next shape, so bind the tree with `v-model:data` (`.sync` /
-`@update:data` on Vue 2). Dragging is off while searching, and `drop-inside-leaf` lets a childless
-row take the dragged node as its first child.
+A drop emits `update:data` with the next shape, so bind the tree with `v-model:data`. Dragging is
+off while searching, and `drop-inside-leaf` lets a childless row take the dragged node as its first
+child.
 
 Touch and pen must hold still for 300ms before they drag, because a finger that moves at once is
 scrolling the page; a mouse starts on the first 5px. The tree never scrolls on its own, so a touch

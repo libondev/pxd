@@ -1,7 +1,6 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
 import type { MessageItemConfig } from '../use-message.js'
-import { shallowRef, watchEffect } from 'vue'
-import { toValue } from '../../utils/helper.js'
+import type { MaybeRefOrGetter } from 'vue'
+import { shallowRef, watchEffect, toValue } from 'vue'
 import { isNil } from '../../utils/is.js'
 
 const TRANSITION_LOCK_MS = 250

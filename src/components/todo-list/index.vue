@@ -22,10 +22,6 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 defineOptions({
   name: 'PTodoList',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<TodoProps>(), {
@@ -263,13 +259,7 @@ defineExpose({
     >
       <ListUnorderedIcon class="size-em shrink-0" />
 
-      <slot
-        name="header"
-        :expanded="isOpen"
-        :stats="stats"
-        :title="title"
-        :summary="summaryText"
-      >
+      <slot name="header" :expanded="isOpen" :stats="stats" :title="title" :summary="summaryText">
         <span class="pxd-todo-list--title min-w-0 truncate">
           {{ title }}
         </span>

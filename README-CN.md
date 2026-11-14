@@ -1,6 +1,6 @@
 # PXD
 
-一套代码同时兼容 Vue 2.7 & 3.2 的通用 UI 组件库。内置亮暗色主题，自适应 PC 与移动端，支持完全禁用动画。
+面向 Vue 3.3+ 的通用 UI 组件库。内置亮暗色主题，自适应 PC 与移动端，支持完全禁用动画。
 
 [English](README.md) | [Online Preview](https://pxd.libondev.cn/)
 
@@ -9,17 +9,10 @@
 
 ## 环境要求
 
-| Vue 版本 | 额外配置 |
-| --- | --- |
-| 2.7.x | `unplugin-vue-define-options@1.5.5+` |
-| 3.2.x | `unplugin-vue-define-options@3.1.2+` |
-| >=3.3 | 无需配置 |
-
-组件通过 `defineOptions()` 宏声明名称与选项，该宏到 Vue 3.3 才被官方支持，因此 Vue 2.7 与 Vue 3.2 需要额外安装转换插件，详见[安装文档](https://pxd.libondev.cn/guide/installation)。
+需要 Vue `>= 3.3`，详见[安装文档](https://pxd.libondev.cn/guide/installation)。
 
 ## 特性
 
-- 通用兼容：一套代码同时支持 Vue 2.7+ 和 Vue 3.2+，不依赖 `vue-demi`，没有两份源码
 - 主题系统：亮色/暗色主题即纯 CSS 变量，切换只是一次 class 增删，无运行时样式注入
 - 动效可控：`--duration: 0` 即可全局关闭动画，也自动尊重 `prefers-reduced-motion`
 - 响应式：小屏下浮层自动变为底部抽屉，内置基于 Pointer Events 的手势引擎

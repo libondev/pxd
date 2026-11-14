@@ -1,113 +1,113 @@
 <script lang="ts" setup>
-import type { ToolCallProps, ToolCallStatus } from './types';
-import CheckCircleIcon from '@gdsicon/vue/check-circle';
-import ChevronRightIcon from '@gdsicon/vue/chevron-right';
-import ClockIcon from '@gdsicon/vue/clock';
-import CrossCircleIcon from '@gdsicon/vue/cross-circle';
-import LoaderCircleIcon from '@gdsicon/vue/loader-circle';
-import { computed, shallowRef } from 'vue';
-import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js';
-import { useConfigProvider } from '../../contexts/config-provider.js';
-import { isNil } from '../../utils/is.js';
-import PCodeBlock from '../code-block/index.vue';
+import type { ToolCallProps, ToolCallStatus } from './types'
+import CheckCircleIcon from '@gdsicon/vue/check-circle'
+import ChevronRightIcon from '@gdsicon/vue/chevron-right'
+import ClockIcon from '@gdsicon/vue/clock'
+import CrossCircleIcon from '@gdsicon/vue/cross-circle'
+import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
+import { computed, shallowRef } from 'vue'
+import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
+import { isNil } from '../../utils/is.js'
+import PCodeBlock from '../code-block/index.vue'
 
 interface PayloadView {
-  text: string;
-  isJson: boolean;
+  text: string
+  isJson: boolean
 }
 
 defineOptions({
   name: 'PToolCall',
   inheritAttrs: false,
-});
+})
 
 const props = withDefaults(defineProps<ToolCallProps>(), {
   variant: 'default',
   status: 'pending',
   expand: true,
-});
+})
 
 const STATUS_ICON: Record<ToolCallStatus, typeof ClockIcon> = {
   pending: ClockIcon,
   running: LoaderCircleIcon,
   completed: CheckCircleIcon,
   error: CrossCircleIcon,
-};
+}
 
-const contentRef = shallowRef<HTMLElement>();
+const contentRef = shallowRef<HTMLElement>()
 
-const inputPayload = computed(() => formatPayload(props.input));
-const outputPayload = computed(() => formatPayload(props.output));
+const inputPayload = computed(() => formatPayload(props.input))
+const outputPayload = computed(() => formatPayload(props.output))
 
-const configProvider = useConfigProvider();
+const configProvider = useConfigProvider()
 
 const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
-);
+)
 
 function formatPayload(value: unknown): PayloadView {
   if (isNil(value) || !value) {
-    return { text: '', isJson: false };
+    return { text: '', isJson: false }
   }
 
-  const blockText = formatContentBlocks(value);
+  const blockText = formatContentBlocks(value)
 
   if (blockText !== undefined) {
-    return { text: blockText, isJson: false };
+    return { text: blockText, isJson: false }
   }
 
   if (typeof value === 'string') {
     try {
-      return { text: JSON.stringify(JSON.parse(value), null, 2), isJson: true };
+      return { text: JSON.stringify(JSON.parse(value), null, 2), isJson: true }
     } catch {
-      return { text: value, isJson: false };
+      return { text: value, isJson: false }
     }
   }
 
   try {
-    return { text: JSON.stringify(value, null, 2) ?? '', isJson: true };
+    return { text: JSON.stringify(value, null, 2) ?? '', isJson: true }
   } catch {
-    return { text: String(value), isJson: false };
+    return { text: String(value), isJson: false }
   }
 }
 
 function formatContentBlocks(value: unknown): string | undefined {
   if (!Array.isArray(value)) {
-    return undefined;
+    return undefined
   }
 
-  const lines: string[] = [];
+  const lines: string[] = []
 
   for (const item of value) {
     if (isTextBlock(item)) {
-      lines.push(item.text);
+      lines.push(item.text)
     } else if (isImageBlock(item)) {
-      lines.push('[image]');
+      lines.push('[image]')
     } else {
-      return undefined;
+      return undefined
     }
   }
 
-  return lines.length > 0 ? lines.join('\n') : undefined;
+  return lines.length > 0 ? lines.join('\n') : undefined
 }
 
 function isTextBlock(value: unknown): value is { type: 'text'; text: string } {
   if (typeof value !== 'object' || value === null) {
-    return false;
+    return false
   }
 
-  const { type, text } = value as Record<string, unknown>;
+  const { type, text } = value as Record<string, unknown>
 
-  return type === 'text' && typeof text === 'string';
+  return type === 'text' && typeof text === 'string'
 }
 
 function isImageBlock(value: unknown): value is { type: 'image' } {
   if (typeof value !== 'object' || value === null) {
-    return false;
+    return false
   }
 
-  return (value as Record<string, unknown>).type === 'image';
+  return (value as Record<string, unknown>).type === 'image'
 }
 </script>
 

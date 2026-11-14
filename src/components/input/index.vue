@@ -17,10 +17,6 @@ import { isNil } from '../../utils/is.js'
 defineOptions({
   name: 'PInput',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<InputProps>(), {

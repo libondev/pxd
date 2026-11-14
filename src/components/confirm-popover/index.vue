@@ -10,10 +10,6 @@ import PPopover from '../popover/index.vue'
 defineOptions({
   name: 'PConfirmPopover',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ConfirmPopoverProps>(), {

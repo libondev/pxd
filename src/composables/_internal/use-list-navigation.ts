@@ -1,7 +1,5 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import type { ShallowRef } from 'vue'
-import { shallowRef, watch } from 'vue'
-import { toValue } from '../../utils/helper.js'
+import type { ShallowRef, MaybeRefOrGetter } from 'vue'
+import { shallowRef, watch, toValue } from 'vue'
 
 export interface UseListNavigationOptions {
   loop?: MaybeRefOrGetter<boolean>

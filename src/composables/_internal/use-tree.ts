@@ -11,13 +11,12 @@ import type {
   TreeSelectableFn,
 } from '../../components/tree/types'
 import type { ComponentValue } from '../../types/shared/props'
-import type { MaybeElementRef, MaybeRefOrGetter } from '../../types/shared/utils'
-import type { ComputedRef, ShallowRef } from 'vue'
-import { computed, onScopeDispose, shallowRef } from 'vue'
+import type { MaybeElementRef } from '../../types/shared/utils'
+import type { ComputedRef, ShallowRef, MaybeRefOrGetter } from 'vue'
+import { computed, onScopeDispose, shallowRef, toValue } from 'vue'
 import { getElement } from '../../utils/dom.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import { isFuzzyMatch } from '../../utils/fuzzy-match.js'
-import { toValue } from '../../utils/helper.js'
 import { useRemoteSearch } from './use-remote-search.js'
 
 export interface TreeFlatNode {

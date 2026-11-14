@@ -10,10 +10,6 @@ import PInput from '../input/index.vue'
 defineOptions({
   name: 'PSearchInput',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<SearchInputProps>()

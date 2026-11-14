@@ -11,10 +11,6 @@ import PSwitchItem from '../switch-item/index.vue'
 defineOptions({
   name: 'PSwitch',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<SwitchProps>(), {

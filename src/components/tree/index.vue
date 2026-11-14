@@ -34,7 +34,6 @@ import { isNumber } from '../../utils/is.js'
 import PTreeNode from '../_internal/tree-node.vue'
 import PLoadingMask from '../loading-mask/index.vue'
 import PSearchInput from '../search-input/index.vue'
-import PTeleport from '../teleport/index.vue'
 
 interface RenderEntry extends TreeFlatNode {
   start?: number
@@ -45,10 +44,6 @@ interface RenderEntry extends TreeFlatNode {
 defineOptions({
   name: 'PTree',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<TreeProps>(), {
@@ -867,7 +862,7 @@ defineExpose({
       </div>
     </div>
 
-    <PTeleport>
+    <Teleport to="body">
       <div
         v-if="dragValue !== undefined"
         aria-hidden="true"
@@ -878,7 +873,7 @@ defineExpose({
           {{ dragNode?.[fields.label] }}
         </slot>
       </div>
-    </PTeleport>
+    </Teleport>
   </div>
 </template>
 

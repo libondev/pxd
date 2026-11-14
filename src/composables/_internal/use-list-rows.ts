@@ -88,24 +88,3 @@ export function flattenListOptions(options: ListOptionEntry[]): FlattenListOptio
     navigableCount: navIndex,
   }
 }
-
-export function resolveNavigableOption(rows: ListRow[], navIndex: number): ListItemRow | undefined {
-  for (const row of rows) {
-    if (row.type === 'item' && row.navIndex === navIndex) {
-      return row
-    }
-  }
-
-  return undefined
-}
-
-export function resolveRowIndexByNavIndex(rows: ListRow[], navIndex: number): number {
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i]
-    if (row.type === 'item' && row.navIndex === navIndex) {
-      return i
-    }
-  }
-
-  return -1
-}

@@ -1,6 +1,6 @@
 # PXD
 
-A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.
+A universal UI component library for Vue 3.3+. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.
 
 [简体中文](README-CN.md) | [Online Preview](https://pxd.libondev.cn/)
 
@@ -10,17 +10,10 @@ A universal UI component library: one codebase for Vue 2.7+ & Vue 3.2+. Built-in
 
 ## Requirements
 
-| Vue version | Extra setup |
-| --- | --- |
-| 2.7.x | `unplugin-vue-define-options@1.5.5+` |
-| 3.2.x | `unplugin-vue-define-options@3.1.2+` |
-| >=3.3 | None |
-
-Components declare their options through `defineOptions()`, a macro that only landed in Vue 3.3, so Vue 2.7 and Vue 3.2 need the transform plugin. See [Installation](https://pxd.libondev.cn/guide/installation) for the setup.
+Requires Vue `>= 3.3`. See [Installation](https://pxd.libondev.cn/guide/installation) for the setup.
 
 ## Features
 
-- Universal: One codebase for Vue 2.7+ and Vue 3.2+, no `vue-demi` and no duplicated source
 - Theming: Light & dark themes as plain CSS variables, switching is a single class toggle
 - Motion-safe: Turn off every animation with `--duration: 0`, or follow `prefers-reduced-motion`
 - Responsive: Popovers become bottom sheets on small screens, with a built-in swipe gesture engine

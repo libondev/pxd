@@ -8,7 +8,6 @@ import { cachedOff, cachedOn } from '../../utils/event.js'
 import { caf, raf } from '../../utils/event.js'
 import { clampValue, isTruthyProp } from '../../utils/format.js'
 import { isServer } from '../../utils/is.js'
-import PTeleport from '../teleport/index.vue'
 
 defineOptions({
   name: 'PLoadingBar',
@@ -16,6 +15,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<LoadingBarProps>(), {
+  to: 'body',
   group: 'default',
   speed: 300,
   minimum: 0.08,
@@ -208,7 +208,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PTeleport :to="to">
+  <Teleport :to="to">
     <div data-loading-bar aria-hidden="true" :class="classes" v-bind="attrs">
       <div
         :data-hidden="hiddenBar"
@@ -217,5 +217,5 @@ onBeforeUnmount(() => {
         :style="{ transform: `scaleX(${progressValue})` }"
       />
     </div>
-  </PTeleport>
+  </Teleport>
 </template>

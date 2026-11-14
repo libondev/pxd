@@ -1,14 +1,13 @@
-import type { MaybeElementRef, MaybeRefOrGetter } from '../types/shared/utils'
+import type { MaybeElementRef } from '../types/shared/utils'
 import type { VirtualItem } from '@tanstack/virtual-core'
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, MaybeRefOrGetter } from 'vue'
 import {
   elementScroll,
   observeElementOffset,
   observeElementRect,
   Virtualizer,
 } from '@tanstack/virtual-core'
-import { computed, nextTick, onMounted, onScopeDispose, watch, shallowRef } from 'vue'
-import { toValue } from '../utils/helper.js'
+import { computed, nextTick, onMounted, onScopeDispose, watch, shallowRef, toValue } from 'vue'
 import { isNil } from '../utils/is.js'
 
 export interface VirtualListItem extends VirtualItem {

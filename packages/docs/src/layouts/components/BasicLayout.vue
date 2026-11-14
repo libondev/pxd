@@ -8,9 +8,9 @@ import pageMeta from '@/consts/page-meta.json'
 import Menus from '../../components/Menus.vue'
 import TocNav from '../../components/TocNav.vue'
 
-const HOME_TITLE = 'PXD - One Codebase for Vue 2.7+ & Vue 3.2+'
+const HOME_TITLE = 'PXD - Universal UI components for Vue 3.3+'
 const DEFAULT_DESCRIPTION =
-  'A universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.'
+  'A universal UI component library for Vue 3.3+, built from one codebase. Built-in light/dark theme, PC & mobile ready, animation-free mode supported.'
 
 const pageMetaMap = pageMeta as Record<string, { title: string; description: string } | undefined>
 

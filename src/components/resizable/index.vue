@@ -21,10 +21,6 @@ interface DragState {
 defineOptions({
   name: 'PResizable',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 const props = withDefaults(defineProps<ResizableProps>(), {
   direction: 'horizontal',

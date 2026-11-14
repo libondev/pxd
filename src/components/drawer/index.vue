@@ -13,10 +13,6 @@ import POverlay from '../overlay/index.vue'
 defineOptions({
   name: 'PDrawer',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<DrawerProps>(), {

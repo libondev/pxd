@@ -1,9 +1,7 @@
 import type { ComponentText } from '../../types/shared/props'
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import type { ComputedRef } from 'vue'
-import { computed } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import { computed, toValue } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'
-import { toValue } from '../../utils/helper.js'
 
 interface WordLimitOptions {
   modelValue: MaybeRefOrGetter<ComponentText>

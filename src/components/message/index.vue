@@ -9,7 +9,6 @@ import { cachedOff, cachedOn } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import { isServer } from '../../utils/is.js'
 import PMessageItem from '../message-item/index.vue'
-import PTeleport from '../teleport/index.vue'
 
 defineOptions({
   name: 'PMessage',
@@ -200,7 +199,7 @@ defineExpose({
 </script>
 
 <template>
-  <PTeleport>
+  <Teleport to="body">
     <section
       data-message
       class="pxd-message h-0 fixed z-20 flex w-(--message-width)"
@@ -231,7 +230,7 @@ defineExpose({
         />
       </TransitionGroup>
     </section>
-  </PTeleport>
+  </Teleport>
 </template>
 
 <style lang="postcss">

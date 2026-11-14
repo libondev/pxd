@@ -9,10 +9,6 @@ import { getUniqueId } from '../../utils/helper.js'
 defineOptions({
   name: 'PSwitchItem',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<SwitchItemProps>()

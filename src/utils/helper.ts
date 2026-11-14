@@ -1,6 +1,6 @@
 import type { ResponsiveValue } from '../types/shared/props'
-import type { Nullable, MaybeRefOrGetter } from '../types/shared/utils'
-import { getCurrentInstance, unref } from 'vue'
+import type { Nullable } from '../types/shared/utils'
+import { getCurrentInstance } from 'vue'
 import { isNil } from './is.js'
 
 let fallbackId = 0
@@ -44,40 +44,6 @@ export function getColorByThreshold(value: number, colors: Record<string, string
   return colors[keys.at(-1)!]!
 }
 
-// type DocumentDirection = 'rtl' | 'ltr' | 'auto'
-
-// export function getDocumentDirection(): DocumentDirection {
-//   if (isServer()) {
-//     return 'ltr'
-//   }
-
-//   const dirAttribute = document.documentElement.getAttribute('dir')
-
-//   if (dirAttribute === 'auto' || !dirAttribute) {
-//     return window.getComputedStyle(document.documentElement).direction as DocumentDirection
-//   }
-
-//   return dirAttribute as DocumentDirection
-// }
-
-// export function getPlatform() {
-//   if (isServer()) {
-//     return 'linux'
-//   }
-
-//   const platform = navigator.platform.toLowerCase()
-//   const userAgent = navigator.userAgent.toLowerCase()
-
-//   if (platform.includes('mac') || userAgent.includes('mac')) {
-//     return 'mac'
-//   }
-//   if (platform.includes('win') || userAgent.includes('win')) {
-//     return 'windows'
-//   }
-
-//   return 'linux'
-// }
-
 export function getResponsiveValue<V extends string | number>(
   prop: ResponsiveValue<V> | undefined,
   xsValue: Nullable<V>,
@@ -96,30 +62,4 @@ export function getResponsiveValue<V extends string | number>(
     },
     {} as Parameters<typeof valueSetter>[0],
   )
-}
-
-export function toValue<T>(source: MaybeRefOrGetter<T>): T {
-  return typeof source === 'function' ? (source as () => T)() : unref(source)
-}
-
-type PromiseWithResolvers<T> = {
-  promise: Promise<T>
-  resolve: (value: T | PromiseLike<T>) => void
-  reject: (reason?: unknown) => void
-}
-
-export function withResolvers<T>(): PromiseWithResolvers<T> {
-  if (typeof Promise.withResolvers === 'function') {
-    return Promise.withResolvers<T>()
-  }
-
-  let resolve!: (value: T | PromiseLike<T>) => void
-  let reject!: (reason?: unknown) => void
-
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res
-    reject = rej
-  })
-
-  return { promise, resolve, reject }
 }

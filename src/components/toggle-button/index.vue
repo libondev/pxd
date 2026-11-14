@@ -11,10 +11,6 @@ import { toArray } from '../../utils/format.js'
 defineOptions({
   name: 'PToggleButton',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ToggleButtonProps>(), {
@@ -53,7 +49,7 @@ const { attrs, classes } = useTailwindVariant(
       size: {
         xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[0.6875rem]`,
         xs: `${BASIC_HEIGHTS.xs} px-1.5 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-2 rounded-md text-sm`,
+        sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
         md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
         lg: `${BASIC_HEIGHTS.lg} px-3 text-base rounded-lg`,
       },

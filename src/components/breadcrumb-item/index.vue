@@ -19,8 +19,8 @@ const breadcrumbContext = useBreadcrumbContext()
     v-bind="$attrs"
   >
     <RouterLink
-      v-if="to"
-      :to="to"
+      v-if="href"
+      :to="href"
       :replace="replace"
       class="rounded-sm text-inherit no-underline self-focus-ring outline-none hover:text-foreground motion-safe:transition-colors"
     >

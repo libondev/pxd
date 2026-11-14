@@ -9,10 +9,6 @@ import PStepsItem from '../_internal/step-item.vue'
 defineOptions({
   name: 'PSteps',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<StepsProps>(), {

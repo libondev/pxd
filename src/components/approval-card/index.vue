@@ -26,10 +26,6 @@ import PSnippet from '../snippet/index.vue'
 defineOptions({
   name: 'PApprovalCard',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ApprovalCardProps>(), {

@@ -7,10 +7,6 @@ import PStack from '../stack/index.vue'
 defineOptions({
   name: 'PCheckboxGroup',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<CheckboxGroupProps>(), {

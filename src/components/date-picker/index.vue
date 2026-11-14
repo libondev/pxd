@@ -14,10 +14,6 @@ import PPopover from '../popover/index.vue'
 defineOptions({
   name: 'PDatePicker',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 const props = withDefaults(defineProps<DatePickerProps>(), {
   suffixIcon: true,

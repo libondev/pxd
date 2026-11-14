@@ -6,7 +6,7 @@ import composableList from '@/consts/composables.json'
 import { githubLink, siteUrl } from '@/consts/link'
 
 useHead({
-  title: `PXD - One Codebase for Vue 2.7+ & Vue 3.2+`,
+  title: `PXD - Universal UI components for Vue 3.3+`,
 })
 
 const INSTALL_COMMAND = 'pnpm install pxd'
@@ -15,8 +15,9 @@ const AGENT_INSTALL_PROMPT = `Read ${siteUrl}/agent-install.md and follow it to 
 
 const CAPABILITIES = [
   {
-    title: 'One codebase, both versions',
-    detail: 'The same source runs on Vue 2.7+ and Vue 3.2+ — nothing is maintained twice.',
+    title: 'One codebase, one runtime',
+    detail:
+      'The same source compiles straight to Vue 3.3+ — no version forks, nothing maintained twice.',
   },
   {
     title: 'Light and dark themes',
@@ -39,8 +40,7 @@ const CAPABILITIES = [
   },
   {
     title: 'Import only what you use',
-    detail:
-      'ESM-only with 7 runtime dependencies, a resolver for auto imports and full tree-shaking.',
+    detail: 'ESM-only with a resolver for auto imports and full tree-shaking.',
   },
   {
     title: 'Accessible by default',
@@ -102,12 +102,12 @@ const inventory = computed(
       >
         <span
           class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
-          >02 — Both versions</span
+          >02 — Vue 3 only</span
         >
         <h1
           class="font-semibold max-sm:whitespace-normal text-[clamp(32px,calc(10.2cqw_-_20.5px),148px)] leading-[0.94] tracking-[-0.045em] whitespace-nowrap"
         >
-          Vue 2.7+ <span>&amp;</span> Vue 3.2+.
+          Built for Vue 3.3+.
         </h1>
       </div>
 

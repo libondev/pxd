@@ -1,7 +1,5 @@
-import type { MaybeRefOrGetter } from '../types/shared/utils'
-import type { Ref } from 'vue'
-import { onScopeDispose, ref, watch } from 'vue'
-import { toValue } from '../utils/helper.js'
+import type { Ref, MaybeRefOrGetter } from 'vue'
+import { onScopeDispose, ref, watch, toValue } from 'vue'
 
 interface Options<T> {
   deep?: boolean

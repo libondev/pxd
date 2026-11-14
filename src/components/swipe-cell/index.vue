@@ -17,10 +17,6 @@ import { getElement } from '../../utils/dom.js'
 defineOptions({
   name: 'PSwipeCell',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<SwipeCellProps>(), {

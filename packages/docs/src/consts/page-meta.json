@@ -403,10 +403,6 @@
     "title": "Tabs",
     "description": "Display tab content."
   },
-  "/components/teleport": {
-    "title": "Teleport",
-    "description": "Provide 2.7 with behavior similar to the <Teleport> component built in 3."
-  },
   "/components/text": {
     "title": "Text",
     "description": "Display text using well-defined typographic styles."
@@ -565,7 +561,7 @@
   },
   "/guide/faq": {
     "title": "FAQ",
-    "description": "Common problems when using PXD across Vue versions, bundlers and style setups, with their fixes."
+    "description": "Common problems when using PXD across bundlers and style setups, with their fixes."
   },
   "/guide/installation-icon": {
     "title": "Installation Icon",
@@ -577,7 +573,7 @@
   },
   "/guide/introduction": {
     "title": "PXD",
-    "description": "PXD is a universal UI component library for Vue 2.7+ and Vue 3.2+, built from one codebase: no vue-demi, no duplicated source."
+    "description": "PXD is a universal UI component library for Vue 3.3+, built from one codebase."
   },
   "/guide/problems": {
     "title": "问题记录",
@@ -589,6 +585,6 @@
   },
   "/guide/why": {
     "title": "为什么做 PXD",
-    "description": "pxd 是一个同时兼容 Vue 2 与 Vue 3 的 UI 组件库，同一套代码无需切换依赖版本即可用在两个大版本的项目里。"
+    "description": "pxd 是一个面向 Vue 3.3+ 的 UI 组件库，内置亮暗色主题、动效开关与移动端适配。"
   }
 }

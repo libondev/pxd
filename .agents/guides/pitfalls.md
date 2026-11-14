@@ -64,8 +64,8 @@ a comment beside the fix.
 
 ### Per-caller shared state belongs in the module, not in a scope
 
-- **Symptom**: One `<html>` attribute change made every subscriber repeat the same forced style recalc; on Vue 2.7 / 3.3 each one also re-rendered although the value never changed.
-- **Cause**: N subscribers each owned a copy of the derived state. Vue 3.4 compares a computed's old and new value before triggering, but 2.7 and 3.3 trigger on any recompute, so moving the value into a ref that nothing owns is not enough — the recompute itself has to be deduplicated.
+- **Symptom**: One `<html>` attribute change made every subscriber repeat the same forced style recalc; on Vue 3.3 each one also re-rendered although the value never changed.
+- **Cause**: N subscribers each owned a copy of the derived state. Vue 3.4 compares a computed's old and new value before triggering, but 3.3 triggers on any recompute, so moving the value into a ref that nothing owns is not enough — the recompute itself has to be deduplicated.
 - **Fix**: `useMotionReduced` keeps one module-level `MutationObserver` behind a subscriber count, held only while someone listens, and assigns the new value through a shared `shallowRef`: assigning an unchanged value already skips the notify step, so subscribers never wake for the mutations that do not reach `--duration`. The cost stays at one read per batch regardless of subscriber count.
 
 ### A resize observer is a proxy for content change, and a blind one inside a scrolled container
@@ -108,7 +108,7 @@ a comment beside the fix.
 ### Collapse `v-show` hides content from Find in page
 
 - **Symptom**: Find in page cannot match text inside a collapsed PCollapse panel, and unlike native `<details>` the panel does not auto-expand on a match.
-- **Cause**: `v-show` sets `display: none` and Find in page skips that subtree. `hidden="until-found"` is the HTML primitive for it, but Vue 2.7 / 3.2 coerce `hidden` to a boolean attribute, so the string cannot be bound reliably.
+- **Cause**: `v-show` sets `display: none` and Find in page skips that subtree. `hidden="until-found"` is the HTML primitive for it, but Vue coerces `hidden` to a boolean attribute, so the string cannot be bound reliably.
 - **Fix**: Use native `<details>`/`<summary>`. Keep `open` true during the leave height animation, then remove it; skip enter motion when `toggle` opens the element without a click (find / fragment navigation).
 
 ### Scheduled shallowRef refresh misses in-place prop mutations
@@ -139,7 +139,7 @@ a comment beside the fix.
 
 - **Symptom**: Selecting a date in PCalendar re-rendered all 42 day cells per click while only 2 changed in the DOM.
 - **Cause**: `patchFlag & 1024` (`DYNAMIC_SLOTS`) makes `shouldUpdateComponent` return `true` unconditionally, and forwarded slot children (`_: 3`) get that flag whenever the owning component's own slots are unstable.
-- **Fix**: Do not forward user slots inside `v-for` children — render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else`), so unchanged cells skip via the props path. `v-memo` would also fix it but is Vue 3-only and breaks Vue 2.7 compat; setting `useSlots()._ = 1` works but rides on undocumented SlotFlags.
+- **Fix**: Do not forward user slots inside `v-for` children — render the child without slot children when the user slot is absent (`v-if="$slots.default"` branch plus a slot-less `v-else`), so unchanged cells skip via the props path. `v-memo` would also fix it but adds per-cell memo bookkeeping; setting `useSlots()._ = 1` works but rides on undocumented SlotFlags.
 - **Related**: the props path fails the same way when a rebuilt object prop gives the child a new identity — `shouldUpdateComponent` compares prop *values*, so pass the fields that matter instead of the whole row object. Count renders by `instance.subTree` identity: `instance.vnode` is replaced on the skip path too and cannot tell the two apart.
 
 ### Vue test warnings: unresolved components and reactive component props
@@ -169,8 +169,8 @@ a comment beside the fix.
 ### KeepAlive only caches stateful component vnodes
 
 - **Symptom**: `keep-alive` looks wired up but switching away and back resets the panel state anyway.
-- **Cause**: `<KeepAlive><Component :is="slotFn" /></KeepAlive>` makes the child a function component (shapeFlag `FUNCTIONAL_COMPONENT`), and KeepAlive's cache branch only accepts `STATEFUL_COMPONENT` (`shapeFlag & 4`) or suspense (`& 128`) children. Everything else falls through `current = null; return rawVNode` and is re-created on every activation. A bare function is also not a valid component type on Vue 2.7 — `h(slotFn)` renders an empty comment.
-- **Fix**: Put a real component in between. `src/components/tabs/tab-slot.ts` renders slot content inside `defineComponent`; KeepAlive then caches it, and the same wrapper keeps the Vue 2.7 path working. Never hand a slot function to `<component :is>`.
+- **Cause**: `<KeepAlive><Component :is="slotFn" /></KeepAlive>` makes the child a function component (shapeFlag `FUNCTIONAL_COMPONENT`), and KeepAlive's cache branch only accepts `STATEFUL_COMPONENT` (`shapeFlag & 4`) or suspense (`& 128`) children. Everything else falls through `current = null; return rawVNode` and is re-created on every activation.
+- **Fix**: Put a real component in between. `src/components/tabs/tab-slot.ts` renders slot content inside `defineComponent`, and KeepAlive then caches it. Never hand a slot function to `<component :is>`.
 
 ### Self-registering children never reach the first render pass
 

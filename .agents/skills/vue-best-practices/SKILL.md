@@ -1,6 +1,6 @@
 ---
 name: vue-best-practices
-description: Vue TypeScript, vue-tsc, Volar, component props typing, testing. Trimmed to the rules that apply to this dual Vue 2.7 + 3 component library.
+description: Vue TypeScript, vue-tsc, Volar, component props typing, testing. Trimmed to the rules that apply to this Vue 3.3+ component library.
 license: MIT
 metadata:
   author: hyf0

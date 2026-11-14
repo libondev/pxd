@@ -3,7 +3,7 @@ import type { IntersectionObserverEmits, IntersectionObserverProps } from './typ
 import { nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-intersection-observer.js'
 import { getCssUnitValue } from '../../utils/format.js'
-import FragmentContainer from '../_internal/fragment-container.vue'
+import PFragmentContainer from '../_internal/fragment-container.vue'
 
 defineOptions({
   name: 'PIntersectionObserver',
@@ -74,9 +74,9 @@ function onVisibleChange(isIntersecting: boolean) {
     v-bind="$attrs"
   >
     <KeepAlive v-if="keepAlive">
-      <FragmentContainer v-if="isVisible">
+      <PFragmentContainer v-if="isVisible">
         <slot />
-      </FragmentContainer>
+      </PFragmentContainer>
     </KeepAlive>
 
     <template v-else>

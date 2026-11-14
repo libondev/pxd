@@ -9,10 +9,6 @@ import { getUniqueId } from '../../utils/helper.js'
 defineOptions({
   name: 'PRadio',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<RadioProps>()

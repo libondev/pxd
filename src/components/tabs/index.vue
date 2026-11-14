@@ -12,10 +12,6 @@ import { PTabSlot } from './tab-slot.js'
 defineOptions({
   name: 'PTabs',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<TabsProps>(), {

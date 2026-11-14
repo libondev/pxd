@@ -1,9 +1,8 @@
 import type { TourStep } from '../../components/tour/types'
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, toValue } from 'vue'
 import { getElement, getStyle, resolveScrollBehavior } from '../../utils/dom.js'
 import { caf, cachedOff, cachedOn, raf, scheduleByRaf } from '../../utils/event.js'
-import { toValue } from '../../utils/helper.js'
 import { isServer } from '../../utils/is.js'
 
 export interface TourRect {

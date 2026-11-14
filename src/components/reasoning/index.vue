@@ -45,7 +45,11 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
     >
       <BrainIcon class="size-em shrink-0" />
 
-      <PShimmerText :variant="shimmerVariant" class="pxd-reasoning--title leading-inherit" :disabled="!streaming">
+      <PShimmerText
+        :variant="shimmerVariant"
+        class="pxd-reasoning--title leading-inherit"
+        :disabled="!streaming"
+      >
         {{ title }}
       </PShimmerText>
 

@@ -11,10 +11,6 @@ import { getUniqueId } from '../../utils/helper.js'
 defineOptions({
   name: 'PCheckbox',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<CheckboxProps>(), {

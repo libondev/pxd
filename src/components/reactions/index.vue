@@ -7,10 +7,6 @@ import PPopover from '../popover/index.vue'
 defineOptions({
   name: 'PReactions',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ReactionsProps>(), {

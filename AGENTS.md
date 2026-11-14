@@ -1,6 +1,6 @@
 ## Project Overview
 
-**PXD** — Universal UI component library for Vue 2.7+ & 3.2+, based on the Geist Design System. Monorepo with pnpm workspaces.
+**PXD** — Universal UI component library for Vue 3.3+, based on the Geist Design System. Monorepo with pnpm workspaces.
 
 ### Key Characteristics
 
@@ -43,11 +43,11 @@ pxd/
 
 ## Hard Rules (MUST follow)
 
-- **Always** maintain dual Vue 2.7 & 3 compatibility
+- **Always** target Vue 3.3+ only, no runtime version checks
 - **Never** edit `dist/` or generated files by hand
 - **Use** Composition API with `<script setup>` only (no Options API)
 - **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → custom composables → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups, except where a later declaration is a dependency of an earlier one — dependency wins, and `pnpm lint:fix` keeps that order.
-- **Avoid** Vue 3-only features: `defineModel`, top-level `await`, reactive Map/Set
+- **Avoid** post-3.3 APIs: `defineModel` (3.4+), top-level `await` in `<script setup>`
 - **Check** existing patterns before introducing new patterns
 - Events: kebab-case. Curly braces: always required.
 - **Docs**: a component page must document `## Events` (every `XxxEmits` entry) and `## Methods` (every `defineExpose()` entry). Omit a section only when it is genuinely empty. Follow `.agents/guides/docs.md` exactly — headings, column names, and section order are fixed there.

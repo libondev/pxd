@@ -21,7 +21,10 @@ interface Router {
   onError(handler: (error: unknown) => void): () => void
 }
 
-type NavigationGuard = (to: RouteLocationNormalized, from: RouteLocationNormalized) => Promise<void> | void
+type NavigationGuard = (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+) => Promise<void> | void
 
 type NavigationHookAfter = (to: RouteLocationNormalized, from: RouteLocationNormalized) => void
 

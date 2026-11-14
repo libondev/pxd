@@ -117,7 +117,6 @@ declare module 'vue' {
     PSwitch: (typeof import('pxd/components/switch'))['default']
     PSwitchItem: (typeof import('pxd/components/switch-item'))['default']
     PTabs: (typeof import('pxd/components/tabs'))['default']
-    PTeleport: (typeof import('pxd/components/teleport'))['default']
     PText: (typeof import('pxd/components/text'))['default']
     PTextarea: (typeof import('pxd/components/textarea'))['default']
     PThemeSwitcher: (typeof import('pxd/components/theme-switcher'))['default']

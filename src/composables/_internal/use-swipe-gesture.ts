@@ -1,7 +1,7 @@
-import type { MaybeElementRef, MaybeRefOrGetter } from '../../types/shared/utils'
-import { nextTick, onScopeDispose, watch } from 'vue'
+import type { MaybeElementRef } from '../../types/shared/utils'
+import type { MaybeRefOrGetter } from 'vue'
+import { nextTick, onScopeDispose, watch, toValue } from 'vue'
 import { getElement } from '../../utils/dom.js'
-import { toValue } from '../../utils/helper.js'
 
 export type SwipeDirection = 'left' | 'right' | 'top' | 'bottom'
 

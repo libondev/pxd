@@ -6,8 +6,8 @@ import Breadcrumb from '../../src/components/breadcrumb/index.vue'
 
 function createItems() {
   return [
-    h(BreadcrumbItem, { to: '/', replace: true }, () => 'Home'),
-    h(BreadcrumbItem, { to: '/components' }, () => 'Components'),
+    h(BreadcrumbItem, { href: '/', replace: true }, () => 'Home'),
+    h(BreadcrumbItem, { href: '/components' }, () => 'Components'),
     h(BreadcrumbItem, () => 'Breadcrumb'),
   ]
 }

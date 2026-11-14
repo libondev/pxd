@@ -1,6 +1,6 @@
 # FAQ
 
-Common problems when using PXD across Vue versions, bundlers and style setups, with their fixes.
+Common problems when using PXD across bundlers and style setups, with their fixes.
 
 ## Failed to resolve import "xxx" from xxx
 
@@ -8,20 +8,6 @@ Strict package managers such as pnpm do not hoist dependencies of `pxd`. Add a `
 
 ```
 shamefully-hoist=true
-```
-
-## camelCase events do not fire in Vue 2
-
-Vue 2 treats `camelCase` and `kebab-case` listeners as different events, and emits are conventionally written in kebab-case. Switch to the kebab-case form when a listener does not fire:
-
-```html
-<!-- Vue 2 only -->
-
-<!-- Bad (doesn't work) -->
-<Test @cellClick="handleCellClick" />
-
-<!-- Good (works) -->
-<Test @cell-click="handleCellClick" />
 ```
 
 ## No loader is configured for ".vue" files

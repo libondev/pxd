@@ -13,10 +13,6 @@ import PModal from '../modal/index.vue'
 defineOptions({
   name: 'PCommandMenu',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<CommandMenuProps>(), {

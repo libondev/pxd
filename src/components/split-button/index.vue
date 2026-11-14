@@ -11,10 +11,6 @@ import PMenu from '../menu/index.vue'
 defineOptions({
   name: 'PSplitButton',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = defineProps<SplitButtonProps>()

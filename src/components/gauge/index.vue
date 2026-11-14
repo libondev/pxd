@@ -8,10 +8,6 @@ import { getColorByThreshold, getFallbackValue } from '../../utils/helper.js'
 defineOptions({
   name: 'PGauge',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<GaugeProps>(), {

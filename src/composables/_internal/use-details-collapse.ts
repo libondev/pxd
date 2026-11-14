@@ -1,8 +1,6 @@
-import type { MaybeRefOrGetter } from '../../types/shared/utils'
-import type { Ref } from 'vue'
-import { nextTick, onScopeDispose, shallowRef, watch } from 'vue'
+import type { Ref, MaybeRefOrGetter } from 'vue'
+import { nextTick, onScopeDispose, shallowRef, watch, toValue } from 'vue'
 import { getStyle } from '../../utils/dom.js'
-import { toValue } from '../../utils/helper.js'
 
 export function useDetailsCollapse(
   contentRef: Ref<HTMLElement | undefined>,

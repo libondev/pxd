@@ -12,10 +12,6 @@ import PPopover from '../popover/index.vue'
 defineOptions({
   name: 'PMenu',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<MenuProps>(), {

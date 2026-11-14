@@ -42,7 +42,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
 <template>
   <kbd
     data-kbd
-    class="pxd-keyboard px-1.5 ms-1 inline-flex items-center rounded-md border bg-background-100 text-center font-sans leading-none text-nowrap whitespace-nowrap text-gray-1000 text-trim-both"
+    class="pxd-keyboard px-1.5 ms-1 font-sans inline-flex items-center rounded-md border bg-background-100 text-center leading-none text-nowrap whitespace-nowrap text-gray-1000 text-trim-both"
     :class="computedSize"
     v-bind="$attrs"
   >

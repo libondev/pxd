@@ -12,10 +12,6 @@ import PSelect from '../select/index.vue'
 defineOptions({
   name: 'PPageNumber',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<PageNumberProps>(), {

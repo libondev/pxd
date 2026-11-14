@@ -8,10 +8,6 @@ import PStack from '../stack/index.vue'
 defineOptions({
   name: 'PChoicebox',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<ChoiceboxProps>(), { gap: 3 })

@@ -14,7 +14,6 @@ import {
 } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
 import PButton from '../button/index.vue'
-import PTeleport from '../teleport/index.vue'
 
 defineOptions({
   name: 'PBacktop',
@@ -185,7 +184,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PTeleport :disabled="!appendToBody">
+  <Teleport to="body" :disabled="!appendToBody">
     <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
       <div
         data-backtop
@@ -202,5 +201,5 @@ onBeforeUnmount(() => {
         </slot>
       </div>
     </Transition>
-  </PTeleport>
+  </Teleport>
 </template>

@@ -7,10 +7,6 @@ import PButton from '../button/index.vue'
 defineOptions({
   name: 'PMoreButton',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 
 const props = withDefaults(defineProps<MoreButtonProps>(), {

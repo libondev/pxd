@@ -15,10 +15,6 @@ type ThumbIndex = 0 | 1
 defineOptions({
   name: 'PSlider',
   inheritAttrs: false,
-  model: {
-    prop: 'modelValue',
-    event: 'update:model-value',
-  },
 })
 const props = withDefaults(defineProps<SliderProps>(), {
   min: 0,

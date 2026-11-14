@@ -27,8 +27,8 @@ Reusable code patterns and examples discovered during development.
 
 ### Per-app unique id via `$root` + WeakMap
 
-- **Use case**: DOM `id`/`for` and registry keys that must be unique within an app, SSR-stable, and not forked by Vue 2.7 vs 3 APIs.
-- **Example**: `getUniqueId` — count on `getCurrentInstance().proxy.$root` (exists on both 2.7 and 3); each `createApp` / `new Vue()` starts at 0. No `useId` / `appContext`.
+- **Use case**: DOM `id`/`for` and registry keys that must be unique within an app and SSR-stable.
+- **Example**: `getUniqueId` — count on `getCurrentInstance().proxy.$root`; each `createApp` starts at 0. No `useId` (3.5+, above the 3.3 floor) and no `appContext`.
 
 ### Local predicate plus optional remote search behind one composable
 
@@ -64,7 +64,7 @@ Reusable code patterns and examples discovered during development.
 ### Clock-derived text under SSR hydration
 
 - **Use case**: Any component whose output depends on a clock, a random value or the device rather than on props alone — relative time, a time-of-day greeting. Its server-rendered text can never equal what the client computes on its first pass, so hydration always reports a mismatch.
-- **Example**: Put `data-allow-mismatch="text"` on the element holding the value. Vue 3.5 reads it for a `text` / `children` mismatch, silences the warning, and leaves the correction in place — `el.textContent = vnode.children` runs either way. The prerendered text therefore survives as a no-JavaScript fallback and no warning is logged. Proven in `PTimeAgo` (`src/components/time-ago/index.vue`) by rendering with `renderToString` at one clock, hydrating at another, and asserting both the corrected text and the absence of a `Hydration` warning — set the attribute to an unrelated type and the warning returns, so the assertion is not vacuous. Two bounds: the attribute is inert on Vue 2.7, whose hydration has no such opt-out, and name only the mismatch type you mean (`text`, not `""` or `children`) so structural, class and style mismatches still warn.
+- **Example**: Put `data-allow-mismatch="text"` on the element holding the value. Vue 3.5 reads it for a `text` / `children` mismatch, silences the warning, and leaves the correction in place — `el.textContent = vnode.children` runs either way. The prerendered text therefore survives as a no-JavaScript fallback and no warning is logged. Proven in `PTimeAgo` (`src/components/time-ago/index.vue`) by rendering with `renderToString` at one clock, hydrating at another, and asserting both the corrected text and the absence of a `Hydration` warning — set the attribute to an unrelated type and the warning returns, so the assertion is not vacuous. Two bounds: name only the mismatch type you mean (`text`, not `""` or `children`) so structural, class and style mismatches still warn.
 
 ### Keeping a scrolled-to row off the edge with `scrollPadding*`
 
@@ -74,7 +74,7 @@ Reusable code patterns and examples discovered during development.
 ### Mount the overlay only once it has content
 
 - **Use case**: A floating layer rendered once per list row (popover, confirm popover) pays the teleport cost while closed — one extra patch after mount plus a permanent anchor in `body`.
-- **Example**: `PPopover` guards `<POverlay>` with `v-if="isRender"` instead of adding a "don't teleport yet" flag to `POverlay` / `PTeleport`. Closed rows mount neither the overlay nor its teleport; the opened instance pays the usual post-mount move once. A `defer` flag would have to be turned off exactly when content exists, and content outlives visibility during `destroyDelay` — a closed-triggered flag would move a still-visible leave transition back into its trigger's stacking context.
+- **Example**: `PPopover` guards `<POverlay>` with `v-if="isRender"` instead of adding a "don't teleport yet" flag to `POverlay`. Closed rows mount neither the overlay nor its teleport; the opened instance pays the usual post-mount move once. A `defer` flag would have to be turned off exactly when content exists, and content outlives visibility during `destroyDelay` — a closed-triggered flag would move a still-visible leave transition back into its trigger's stacking context.
 
 ### DOM-less outline tracking over a virtualizer
 
