@@ -1,4 +1,4 @@
-import type { ButtonVariant } from '../../types/shared/button'
+import type { ButtonVariant } from '../../types/components/button'
 import type { ComponentSize, ComponentShape } from '../../types/shared/props'
 import type {
   ListFilterMethodFn,

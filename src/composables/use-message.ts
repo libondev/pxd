@@ -1,4 +1,4 @@
-import type { ButtonVariant } from '../types/shared/button'
+import type { ButtonVariant } from '../types/components/button'
 import type { ComponentClass } from '../types/shared/props'
 import type { VNode } from 'vue'
 import { isServer } from '../utils/is.js'

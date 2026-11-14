@@ -54,7 +54,7 @@ No composables. These are the components the convention explicitly excludes: ext
 ## Priority queue
 
 Done: `useCarousel`, `useHold`, `useListSelection`, `useOverlayDialog`, the `ButtonVariant`
-layering fix and the slider geometry utils.
+move to `src/types/components` and the slider geometry utils.
 
 Deferred, in order:
 

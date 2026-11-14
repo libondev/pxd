@@ -12,6 +12,16 @@ When logic belongs in a composable, where it lives, and what its interface must 
 Default to `_internal/`. A composable graduates to public only when the graduation checklist below
 passes.
 
+## Type placement
+
+| Kind | Location |
+| --- | --- |
+| Generic design-system types (props, tokens, shared unions) | `src/types/shared/` |
+| Types owned by a component domain but used by several components | `src/types/components/<name>.d.ts` |
+| Types owned by a composable domain but used by several composables | `src/types/composables/<name>.d.ts` |
+
+Import a shared type from its defining module. Never re-export it through a component's `types.d.ts`.
+
 ## Interface rules (MUST)
 
 1. **Input is domain values, not the component's `props` object.**
@@ -42,8 +52,8 @@ passes.
    (`use-swipe-gesture`).
 
 4. **No imports from `src/components/**`.** A composable that depends on a component's types is a
-   component in disguise. Put the shared type in `src/types/shared` (or define it in the composable)
-   instead, and import it from the defining module directly. Never re-export it through a component's
+   component in disguise. Put the shared type under `src/types/` following the type placement table
+   above, and import it from the defining module directly. Never re-export it through a component's
    `types.d.ts`.
 
 5. **Small return surface.** Refs plus actions, few keys, nouns for state (`timestamp`, `value`) and
