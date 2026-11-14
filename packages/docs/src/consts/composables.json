@@ -40,6 +40,10 @@
     "name": "use-document-hidden"
   },
   {
+    "camelized": "Use Hold",
+    "name": "use-hold"
+  },
+  {
     "camelized": "Use Intersection Observer",
     "name": "use-intersection-observer"
   },

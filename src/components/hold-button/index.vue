@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { HoldButtonEmits, HoldButtonProps, HoldButtonStatus } from './types'
-import { onBeforeUnmount, shallowRef } from 'vue'
-import { caf, raf } from '../../utils/event.js'
+import type { HoldButtonEmits, HoldButtonProps } from './types'
+import { useHold } from '../../composables/use-hold.js'
 import PButton from '../button/index.vue'
 
 defineOptions({
@@ -16,79 +15,22 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
 
 const emits = defineEmits<HoldButtonEmits>()
 
-const DEFAULT_DURATION = 2000
-
 let activePointerId: number | null = null
-let frameId = 0
-let held = 0
-let lastFrameAt = 0
 
-const status = shallowRef<HoldButtonStatus>('idle')
-const progress = shallowRef(0)
-
-function getDuration() {
-  return props.duration && props.duration > 0 ? props.duration : DEFAULT_DURATION
-}
+const { status, progress, start, pause, resume, stop } = useHold({
+  duration: () => props.duration,
+  enabled: () => !props.disabled,
+  onConfirm: () => {
+    emits('confirm')
+    onTriggerVibrate()
+  },
+  onCancel: (progress) => emits('cancel', progress),
+})
 
 function onTriggerVibrate() {
   if (props.vibrate && typeof window.navigator.vibrate === 'function') {
     window.navigator.vibrate(100)
   }
-}
-
-function stopProgress() {
-  if (!frameId) {
-    return
-  }
-
-  caf(frameId)
-  frameId = 0
-}
-
-function startProgress() {
-  lastFrameAt = Date.now()
-
-  if (!frameId) {
-    frameId = raf(updateProgress)
-  }
-}
-
-function updateProgress() {
-  const now = Date.now()
-  const duration = getDuration()
-
-  frameId = 0
-  held += now - lastFrameAt
-  lastFrameAt = now
-
-  if (held >= duration) {
-    progress.value = 1
-    status.value = 'confirmed'
-    emits('confirm')
-    onTriggerVibrate()
-    return
-  }
-
-  progress.value = held / duration
-  frameId = raf(updateProgress)
-}
-
-function pauseHold() {
-  if (status.value !== 'loading') {
-    return
-  }
-
-  stopProgress()
-  status.value = 'canceled'
-}
-
-function resumeHold() {
-  if (status.value !== 'canceled') {
-    return
-  }
-
-  status.value = 'loading'
-  startProgress()
 }
 
 function onPointerDown(event: PointerEvent) {
@@ -102,10 +44,7 @@ function onPointerDown(event: PointerEvent) {
   target.setPointerCapture(event.pointerId)
 
   activePointerId = event.pointerId
-  held = 0
-  progress.value = 0
-  status.value = 'loading'
-  startProgress()
+  start()
 
   emits('pointerdown', event)
 }
@@ -123,11 +62,12 @@ function onPointerMove(event: PointerEvent) {
     event.clientY <= rect.bottom
 
   if (isInside) {
-    resumeHold()
+    resume()
+
     return
   }
 
-  pauseHold()
+  pause()
 }
 
 function onPointerUp(event: PointerEvent) {
@@ -135,23 +75,11 @@ function onPointerUp(event: PointerEvent) {
     return
   }
 
-  const heldProgress = progress.value
-  const isConfirmed = status.value === 'confirmed'
-
   activePointerId = null
-  stopProgress()
-  held = 0
-  status.value = 'idle'
-  progress.value = 0
-
-  if (!isConfirmed) {
-    emits('cancel', heldProgress)
-  }
+  stop()
 
   emits('pointerup', event)
 }
-
-onBeforeUnmount(stopProgress)
 </script>
 
 <template>
