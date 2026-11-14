@@ -519,4 +519,62 @@ describe('effort-slider', () => {
 
     wrapper.unmount()
   })
+  it('should snap an unknown modelValue to the first option', () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'unknown' } })
+
+    expect(wrapper.emitted('update:model-value')).toEqual([['low']])
+
+    wrapper.unmount()
+  })
+
+  it('should tolerate an empty option list', () => {
+    const wrapper = mount(EffortSlider, { props: { options: [] } })
+
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
+    expect(wrapper.find('.pxd-effort-slider--thumb').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should pin a single option to the end of the track', () => {
+    const wrapper = mount(EffortSlider, {
+      props: { options: [{ label: 'Only', value: 'only' }], modelValue: 'only' },
+    })
+
+    expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('left: 100%')
+    expect(wrapper.findAll('.pxd-effort-slider--tick')).toHaveLength(0)
+
+    wrapper.unmount()
+  })
+
+  it('should clamp pointer positions outside the track', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'high' } })
+    const track = stubTrack(wrapper)
+
+    await track.trigger('pointerdown', { clientX: -50 })
+    expect(wrapper.emitted('update:model-value')).toEqual([['low']])
+    dispatch('pointercancel', -50)
+
+    await track.trigger('pointerdown', { clientX: 500 })
+    expect(wrapper.emitted('update:model-value')).toEqual([['low'], ['max']])
+
+    wrapper.unmount()
+  })
+
+  it('should not shift the label when it is wider than the track', async () => {
+    const wrapper = mount(EffortSlider, { props: { options: OPTIONS, modelValue: 'max' } })
+    const track = stubTrack(wrapper)
+    const label = wrapper.find('.pxd-effort-slider--label')
+
+    stubWidths([
+      [track.element, 100],
+      [label.element, 120],
+    ])
+
+    await wrapper.find('.pxd-effort-slider--thumb').trigger('focus')
+
+    expect(label.attributes('style')).toContain('+ 0px')
+
+    wrapper.unmount()
+  })
 })

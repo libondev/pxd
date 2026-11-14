@@ -654,6 +654,9 @@ describe('list', () => {
     } finally {
       if (originalRect) {
         Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', originalRect)
+      } else {
+        // happy-dom defines the method on Element.prototype, so remove the shadow we added.
+        Reflect.deleteProperty(HTMLElement.prototype, 'getBoundingClientRect')
       }
     }
   })

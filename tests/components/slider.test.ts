@@ -508,4 +508,141 @@ describe('slider', () => {
 
     wrapper.unmount()
   })
+  it('should jump to min and max with Home and End', async () => {
+    const wrapper = mount(Slider, { props: { min: 10, max: 90, modelValue: 50 } })
+    const thumb = wrapper.find('.pxd-slider--thumb')
+
+    await thumb.trigger('keydown', { code: 'Home' })
+    expect(wrapper.emitted('change')).toEqual([[10]])
+
+    await thumb.trigger('keydown', { code: 'End' })
+    expect(wrapper.emitted('change')).toEqual([[10], [90]])
+
+    wrapper.unmount()
+  })
+
+  it('should clamp Home and End to the other thumb in range mode', async () => {
+    const wrapper = mount(Slider, {
+      props: { range: true, min: 0, max: 100, modelValue: [20, 80] },
+    })
+    const thumbs = wrapper.findAll('.pxd-slider--thumb')
+
+    await thumbs[0].trigger('keydown', { code: 'End' })
+    expect(wrapper.emitted('change')).toEqual([[[80, 80]]])
+
+    await thumbs[1].trigger('keydown', { code: 'Home' })
+    expect(wrapper.emitted('change')).toEqual([[[80, 80]], [[20, 20]]])
+
+    wrapper.unmount()
+  })
+
+  it('should ignore pointer and keyboard input when disabled', async () => {
+    const wrapper = mount(Slider, { props: { disabled: true, modelValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+    const thumb = wrapper.find('.pxd-slider--thumb')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await thumb.trigger('keydown', { code: 'ArrowRight' })
+    await slider.trigger('pointerdown', { clientX: 10 })
+
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
+    expect(wrapper.emitted('change')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should hand the drag over when a thumb passes its neighbour', async () => {
+    const wrapper = mount(Slider, {
+      props: { range: true, min: 0, max: 100, modelValue: [20, 80] },
+    })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await wrapper.findAll('.pxd-slider--thumb')[0].trigger('pointerdown', { clientX: 20 })
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 90 }))
+
+    expect(wrapper.emitted('update:model-value')).toEqual([[[80, 90]]])
+    expect(wrapper.emitted('change')).toEqual([[[80, 90]]])
+
+    wrapper.unmount()
+  })
+
+  it('should clamp pointer positions outside the track', async () => {
+    const wrapper = mount(Slider, { props: { modelValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 50, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 0 })
+    expect(wrapper.emitted('update:model-value')).toEqual([[0]])
+    document.dispatchEvent(new PointerEvent('pointercancel', { clientX: 0 }))
+
+    await slider.trigger('pointerdown', { clientX: 500 })
+    expect(wrapper.emitted('update:model-value')).toEqual([[0], [100]])
+
+    wrapper.unmount()
+  })
+
+  it('should keep the raw value when the numeric step is zero or negative', async () => {
+    const wrapper = mount(Slider, { props: { min: 0, max: 100, step: 0, modelValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 37 })
+
+    expect(wrapper.emitted('update:model-value')).toEqual([[37]])
+
+    wrapper.unmount()
+  })
+
+  it('should emit change with the final value when a drag returns to its starting point', async () => {
+    const wrapper = mount(Slider, { props: { defaultValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 40 })
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 50 }))
+
+    expect(wrapper.emitted('update:model-value')).toEqual([[40], [50]])
+    expect(wrapper.emitted('change')).toEqual([[50]])
+
+    wrapper.unmount()
+  })
+
+  it('should not emit change when the drag is cancelled', async () => {
+    const wrapper = mount(Slider, { props: { defaultValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+
+    slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
+
+    await slider.trigger('pointerdown', { clientX: 40 })
+    document.dispatchEvent(new PointerEvent('pointercancel', { clientX: 40 }))
+
+    expect(wrapper.emitted('update:model-value')).toEqual([[40]])
+    expect(wrapper.emitted('change')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should not shift the label when it is wider than the slider', async () => {
+    const wrapper = mount(Slider, { props: { modelValue: 50 } })
+    const slider = wrapper.find('.pxd-slider')
+    const thumb = wrapper.find('.pxd-slider--thumb')
+    const label = wrapper.find('.pxd-slider--label')
+
+    stubWidths([
+      [slider.element, 100],
+      [label.element, 120],
+    ])
+
+    await thumb.trigger('pointerenter')
+
+    expect(label.attributes('style')).toContain('+ 0px')
+
+    wrapper.unmount()
+  })
 })
