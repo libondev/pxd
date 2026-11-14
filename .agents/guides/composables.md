@@ -1,0 +1,112 @@
+# Composables
+
+When logic belongs in a composable, where it lives, and what its interface must look like.
+
+## Placement
+
+| Location | Visibility | Use |
+| --- | --- | --- |
+| `src/composables/` | public: exported through the generated barrel, `./composables/*`, documented | headless behavior users may build their own view on |
+| `src/composables/_internal/` | private to the library: never exported, never documented | a seam shared by several components, or a component's testable core |
+
+Default to `_internal/`. A composable graduates to public only when the graduation checklist below
+passes.
+
+## Interface rules (MUST)
+
+1. **Input is domain values, not the component's `props` object.**
+
+   ```ts
+   // good
+   useCountdown({ duration: () => props.duration, onFinish: () => emits('finish') })
+
+   // bad: the composable is now a copy of one component's prop surface
+   useCountdown(props, emits)
+   ```
+
+   Every input that can change is `MaybeRefOrGetter<T>` and is read with `toValue`. Never read
+   `props.x` inside a composable, and never type its signature with a component's `XxxProps`.
+
+2. **A composable never emits.** Report outward through `onXxx` callbacks; the component maps them
+   to its public events.
+
+   ```ts
+   const { reset } = useCountdown({
+     onReset: () => emits('reset'),
+   })
+   ```
+
+3. **No DOM protocol in the signature.** `el` / `rect` / `pointerId` / `scrollTop` / `clientX`
+   parameters mean the seam is wrong. Extract the value or state layer; keep pointer capture, layout
+   reads and browser protocols in the component, or in a dedicated `_internal` DOM composable
+   (`use-swipe-gesture`).
+
+4. **No imports from `src/components/**`.** A composable that depends on a component's types is a
+   component in disguise. Put the shared type in `src/types/shared` (or define it in the composable)
+   instead.
+
+5. **Small return surface.** Refs plus actions, few keys, nouns for state (`timestamp`, `value`) and
+   verbs for actions (`reset`, `stop`, `toggle`). If the return object mirrors the internal state,
+   the module is shallow.
+
+6. **Own the cleanup.** Register `onScopeDispose`; never require the caller to remember `stop()`.
+
+7. **Own the defaults.** A public composable must work when called with no options. Component-level
+   defaults are a separate concern, see `components.md`.
+
+## Before writing one
+
+Answer all four. Any "no" means the logic stays in the component.
+
+- [ ] Does it have a second consumer, or is it a deliberate public headless API?
+- [ ] Can the interface be named in domain terms, without referring to "the component"?
+- [ ] Is the behavior stateful, asynchronous or time-based enough to test without mounting?
+- [ ] Deletion test: if the composable disappeared, would the complexity reappear in two or more
+      places?
+
+Do **not** create a composable for:
+
+- one-off derived styles or `computed` class names;
+- DOM geometry, pointer capture, scroll measurement, animation orchestration;
+- a pass-through whose interface is the component's props;
+- "consistency" with another component's file layout.
+
+## Graduation checklist (`_internal` -> public)
+
+- [ ] A deliberate decision to support it as public API.
+- [ ] Domain-only signature: `MaybeRefOrGetter` inputs, `onXxx` callbacks, no `props` / `emits`.
+- [ ] Tests in `tests/composables/<name>.test.ts`, at least one through `runWithScope()` without
+      mounting a component.
+- [ ] Docs page `packages/docs/src/pages/composables/<name>.md` with `## Exports`, `## Types` and
+      `## Params`.
+- [ ] Run `node scripts/update-exports.js` to regenerate `src/composables/index.ts`,
+      `packages/docs/src/consts/composables.json` and `volar.d.ts`. It stages and commits the
+      generated files itself.
+- [ ] Breaking changes to an already-public composable are marked with `!` in the commit and noted
+      in the changelog.
+
+## Testing
+
+- `runWithScope()` / `useSetupWrapper()` from `tests/helpers/setup.ts`.
+- Fake `performance.now()` / `Date.now()` / timers where behavior is time-based, see
+  `tests/composables/use-countdown.test.ts`.
+- Assert through the returned interface, not internals. DOM, accessibility and emitted events stay
+  the component tests' job.
+
+## Audit snapshot (2026-11-14)
+
+Re-run with:
+
+```powershell
+Get-ChildItem -Recurse src/composables -Filter *.ts | Select-String -Pattern 'emits:|EmitFn|props:'
+```
+
+No public composable takes `props` or `emits`. Known debt stays `_internal`:
+
+| Composables | Coupling | Plan |
+| --- | --- | --- |
+| `_internal/use-model-value.ts` | `props` / `emits` | allowed exception: adapting controlled/uncontrolled prop semantics is its whole job |
+| `_internal/use-list-selection.ts` | `props` / `emits` | refactor to options + `onXxx` when next touched |
+| `_internal/use-overlay-dialog.ts` | `props` / `emits` | refactor to options + `onXxx` when next touched |
+| `_internal/use-popup-engine.ts` | `props` / `emits` | refactor carefully alongside the popover tests |
+| `use-message.ts` (public) | imports `ButtonProps` from `src/components/button/types` | move the shared type to `src/types/shared` |

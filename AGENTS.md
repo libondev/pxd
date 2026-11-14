@@ -49,6 +49,7 @@ pxd/
 - **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → custom composables → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups, except where a later declaration is a dependency of an earlier one — dependency wins, and `pnpm lint:fix` keeps that order.
 - **Avoid** post-3.3 APIs: `defineModel` (3.4+), top-level `await` in `<script setup>`
 - **Check** existing patterns before introducing new patterns
+- **Composables**: never take a component's `props` object or `emits` — see `.agents/guides/composables.md`
 - Events: kebab-case. Curly braces: always required.
 - **Docs**: a component page must document `## Events` (every `XxxEmits` entry) and `## Methods` (every `defineExpose()` entry). Omit a section only when it is genuinely empty. Follow `.agents/guides/docs.md` exactly — headings, column names, and section order are fixed there.
 - **No path aliases** in library source or tests — relative imports only.
@@ -83,6 +84,7 @@ Medium / Low.
 Then consult the relevant file:
 
 - Component development → `.agents/guides/components.md`
+- Composable design → `.agents/guides/composables.md`
 - Testing → `.agents/guides/testing.md`
 - Styling / Tailwind → `.agents/guides/styling.md`
 - Build / release → `.agents/guides/build.md`
